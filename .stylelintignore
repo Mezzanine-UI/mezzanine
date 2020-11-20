@@ -1,0 +1,7 @@
+*.js
+*.jtx
+*.ts
+*.tsx
+*.md
+
+prebuilts/

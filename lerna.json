@@ -1,0 +1,23 @@
+{
+  "packages": ["packages/*"],
+  "npmClient": "yarn",
+  "npmClientArgs": ["--no-lockfile"],
+  "useWorkspaces": true,
+  "version": "independent",
+  "command": {
+    "version": {
+      "ignoreChanges": [
+        "**/__fixtures__/**",
+        "*.spec.*",
+        "**/*.md",
+        "**/*.mdx"
+      ],
+      "message": "chore(release): %s",
+      "conventionalCommits": true,
+      "yes": true
+    },
+    "publish": {
+      "contents": "dist"
+    }
+  }
+}
