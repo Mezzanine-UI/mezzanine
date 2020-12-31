@@ -1,0 +1,17 @@
+@use 'sass:list';
+
+$prefix: mzn-css;
+
+$default-props: (color, display, text-align);
+
+@mixin core($props: ()) {
+  $props: list.join($default-props, $props);
+
+  .#{$prefix} {
+    @each $prop in $props {
+      &--#{$prop} {
+        #{$prop}: var(--#{$prefix}-#{$prop});
+      }
+    }
+  }
+}
