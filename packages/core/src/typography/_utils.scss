@@ -1,0 +1,43 @@
+@use '../utils/list' as utils-list;
+
+@mixin nowrap() {
+  white-space: nowrap;
+}
+
+@mixin overflow-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @include nowrap;
+}
+
+@function _px-to-em-base($px, $base) {
+  @if $px == 0 {
+    @return 0;
+  }
+
+  @return $px / 16px * $base;
+}
+
+@function px-to-em($px) {
+  @return _px-to-em-base($px, 1em);
+}
+
+@function px-to-rem($px) {
+  @return _px-to-em-base($px, 1rem);
+}
+
+// Applies antialiasing via font-smoothing to text.
+@mixin smooth-font() {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Adds an invisible, zero-width prefix to a container's text.
+// This ensures that the baseline is always where the text would be, instead
+// of defaulting to the container bottom when text is empty.
+@mixin zero-width-prefix() {
+  &::before {
+    content: "\200b";
+  }
+}
