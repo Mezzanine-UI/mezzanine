@@ -14,10 +14,12 @@ module.exports = {
       'always',
       {
         ignore: [
+          'after-comment',
           'first-nested'
         ],
         ignoreAtRules: [
-          'import',
+          'use',
+          'forward',
           'include',
           'if',
           'else'

@@ -7,6 +7,7 @@
 
 # dependencies
 /node_modules
+**/node_modules
 
 # IDEs and editors
 /.idea
@@ -38,7 +39,7 @@ testem.log
 /.sass-cache
 /connect.lock
 /coverage
-/typings
+**/coverage
 
 # System Files
 .DS_Store

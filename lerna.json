@@ -7,8 +7,9 @@
   "command": {
     "version": {
       "ignoreChanges": [
-        "**/__fixtures__/**",
-        "*.spec.*",
+        "**/__test-utils__",
+        "**/*.spec.*",
+        "**/*.stories.*",
         "**/*.md",
         "**/*.mdx"
       ],
