@@ -1,0 +1,21 @@
+@use '~@mezzanine-ui/core/css';
+@use '~@mezzanine-ui/core/palette';
+@use '~@mezzanine-ui/core/typography';
+@use '~@mezzanine-ui/core/spacing';
+@use '~@mezzanine-ui/core/icon';
+@use '~@mezzanine-ui/core/button';
+
+:root {
+  @include palette.variables("light");
+  @include typography.variables();
+  @include spacing.variables();
+}
+
+.theme-dark {
+  @include palette.variables("dark");
+}
+
+@include css.core();
+@include typography.core();
+@include icon.core();
+@include button.core();
