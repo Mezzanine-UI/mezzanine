@@ -7,23 +7,15 @@
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "importHelpers": true,
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es2017",
+    "module": "esnext",
     "moduleResolution": "node",
     "noEmitHelpers": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
     "sourceMap": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es5",
-      "es2015",
-      "es2016",
-      "es2017",
-      "esnext"
-    ]
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
   "exclude": ["node_modules", "**/node_modules"]
 }

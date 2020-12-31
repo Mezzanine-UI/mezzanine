@@ -152,6 +152,12 @@ module.exports = {
         next: 'default',
       },
     ],
+    'prefer-arrow-callback': [
+      2,
+      {
+        allowNamedFunctions: true,
+      },
+    ],
     quotes: [
       2,
       'single',
@@ -189,8 +195,30 @@ module.exports = {
         project: './tsconfig.*?.json',
       },
       rules: {
+        'import/no-extraneous-dependencies': [
+          2,
+          {
+            packageDir: [
+              './',
+              './packages/core',
+              './packages/react',
+            ],
+          },
+        ],
         'import/prefer-default-export': 0,
         indent: 0,
+        'prefer-arrow-callback': [
+          2,
+          {
+            allowNamedFunctions: true,
+          },
+        ],
+        'max-len': [
+          2,
+          {
+            code: 120,
+          },
+        ],
         '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/explicit-module-boundary-types': 0,
         '@typescript-eslint/indent': [2, 2],
@@ -207,7 +235,16 @@ module.exports = {
     },
     {
       files: [
+        './packages/icons/**/*.ts',
+      ],
+      rules: {
+        'max-len': 0,
+      },
+    },
+    {
+      files: [
         './packages/react/**/*.tsx',
+        './**/*.mdx',
       ],
       parserOptions: {
         ecmaFeatures: {
@@ -234,14 +271,16 @@ module.exports = {
         'react/jsx-closing-bracket-location': [
           2,
           {
-            nonEmpty: 'after-props',
-            selfClosing: 'after-props',
+            nonEmpty: 'tag-aligned',
+            selfClosing: 'tag-aligned',
           },
         ],
         'react/jsx-filename-extension': 0,
         'react/jsx-fragments': 0,
         'react/jsx-no-target-blank': 0,
+        'react/jsx-props-no-spreading': 0,
         'react/prop-types': 0,
+        'react/react-in-jsx-scope': 0,
         'react/static-property-placement': 0,
       },
     },
