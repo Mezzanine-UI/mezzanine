@@ -1,0 +1,17 @@
+@use 'sass:map';
+
+@function assign($map, $maps...) {
+  @each $m in $maps {
+    $map: map.merge($map, $m);
+  }
+
+  @return $map;
+}
+
+@function omit($map, $keys) {
+  @each $key in $keys {
+    $map: map.remove($map, $key);
+  }
+
+  @return $map;
+}
