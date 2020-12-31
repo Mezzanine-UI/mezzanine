@@ -1,0 +1,44 @@
+@use 'sass:list';
+@use 'sass:meta';
+
+@function flat-map($list, $mapFn) {
+  $list: map($list, $mapFn);
+  $list: flat-push((), $list...);
+
+  @return $list;
+}
+
+@function flat-push($list, $values...) {
+  @each $value in $values {
+    $pusher: if(
+      meta.type-of($value) == list,
+      meta.get-function("join", $module: list),
+      meta.get-function("append", $module: list)
+    );
+    $list: meta.call($pusher, $list, $value);
+  }
+
+  @return $list;
+}
+
+@function includes($list, $value) {
+  @return list.index($list, $value) != null;
+}
+
+@function map($list, $mapFn) {
+  @for $index from 1 through list.length($list) {
+    $value: list.nth($list, $index);
+    $value: meta.call($mapFn, $value);
+    $list: list.set-nth($list, $index, $value);
+  }
+
+  @return $list;
+}
+
+@function push($list, $values...) {
+  @each $value in $values {
+    $list: list.append($list, $value);
+  }
+
+  @return $list;
+}
