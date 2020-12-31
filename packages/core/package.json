@@ -3,10 +3,24 @@
   "version": "0.0.0",
   "description": "Core for mezzanine-ui",
   "author": "Mezzanine",
-  "repository": "git@github.com:Mezzanine-UI/mezzanine.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mezzanine-UI/mezzanine.git",
+    "directory": "packages/core"
+  },
   "license": "MIT",
-  "sideEffects": false,
+  "sideEffects": [
+    "**/*.scss",
+    "**/*.css"
+  ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "@mezzanine-ui/icons": "^0.0.0"
   }
 }
