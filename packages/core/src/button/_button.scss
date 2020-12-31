@@ -1,0 +1,209 @@
+@use 'sass:map';
+@use '../size';
+@use '../palette';
+@use '../typography/utils' as utils-typography;
+@use '../typography';
+@use '../icon';
+@use './utils';
+
+$prefix: mzn-button;
+$colors: (primary, secondary, error);
+$variants: (contained, outlined, text);
+$sizes: size.$sizes;
+
+$default-options: (
+  label-min-width: 32px,
+  label-min-width-small: 24px,
+  padding-x: 16px,
+  padding-x-small: 12px,
+  icon-size: 24px,
+  icon-size-small: 16px,
+  icon-label-gap-x: 4px,
+  outlined-border-width: 1px,
+);
+
+@function _get-typography-variant-from-size($size) {
+  @return map.get(
+    (
+      small: button3,
+      medium: button2,
+      large: button1,
+    ),
+    $size
+  );
+}
+
+@mixin _base-color() {
+  &:disabled {
+    color: palette.color(action-disabled);
+  }
+
+  &:not(:disabled) {
+    // Fallback to transparent for text and outlined button.
+    background-color: var(--#{$prefix}-bg, transparent);
+    color: var(--#{$prefix}-color);
+
+    &:hover {
+      background-color: var(--#{$prefix}-hover-bg);
+    }
+
+    &:focus,
+    &:active {
+      background-color: var(--#{$prefix}-active-bg);
+    }
+  }
+
+  @each $color in $colors {
+    &--#{$color} {
+      --#{$prefix}-color: #{palette.color($color)};
+      --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
+      --#{$prefix}-active-bg: #{palette.color(#{$color}-active-bg)};
+    }
+  }
+}
+
+@mixin _outlined-border-color($options) {
+  $outlined-border-width: map.get($options, outlined-border-width);
+
+  border: #{$outlined-border-width} solid var(--#{$prefix}-border);
+
+  &:disabled {
+    border-color: palette.color(action-disabled);
+  }
+
+  @each $color in $colors {
+    &.#{$prefix}--#{$color} {
+      --#{$prefix}-border: #{palette.color($color)};
+    }
+  }
+}
+
+@mixin _contained-color() {
+  &:disabled {
+    background-color: palette.color(action-disabled-bg);
+  }
+
+  @each $color in $colors {
+    &.#{$prefix}--#{$color} {
+      --#{$prefix}-color: #{palette.color(on-#{$color})};
+      --#{$prefix}-bg: #{palette.color($color)};
+      --#{$prefix}-hover-bg: #{palette.color(#{$color}-light)};
+      --#{$prefix}-active-bg: #{palette.color(#{$color}-dark)};
+    }
+  }
+}
+
+@mixin _padding-x($options, $is-outlined) {
+  $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
+  $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
+
+  @if $is-outlined {
+    $outlined-border-width: map.get($options, outlined-border-width);
+    $padding-x: calc(#{$padding-x} - #{$outlined-border-width});
+    $padding-x-small: calc(#{$padding-x-small} - #{$outlined-border-width});
+  }
+
+  &:not(.#{$prefix}--icon) {
+    padding: 0 $padding-x;
+
+    &.#{$prefix}--small {
+      padding: 0 $padding-x-small;
+    }
+  }
+}
+
+@mixin _icon-button-size() {
+  padding: 0;
+  width: var(--#{$prefix}-height);
+
+  .#{icon.$prefix} {
+    margin: 0;
+  }
+}
+
+@mixin _size($options) {
+  $label-min-width: map.get($options, label-min-width);
+  $label-min-width-small: map.get($options, label-min-width-small);
+  $padding-x: map.get($options, padding-x);
+  $padding-x-small: map.get($options, padding-x-small);
+  $icon-size: map.get($options, icon-size);
+  $icon-size-small: map.get($options, icon-size-small);
+  $icon-label-gap-x: map.get($options, icon-label-gap-x);
+  $outlined-border-width: map.get($options, outlined-border-width);
+
+  .#{icon.$prefix} {
+    font-size: utils-typography.px-to-rem($icon-size);
+    // For icon on the left of button.
+    margin-left: -#{utils-typography.px-to-rem($icon-label-gap-x)};
+    margin-right: utils-typography.px-to-rem($icon-label-gap-x);
+  }
+
+  @each $size in $sizes {
+    $typography-variant: _get-typography-variant-from-size($size);
+
+    &--#{$size} {
+      --mzn-button-height: #{typography.prop($typography-variant, line-height)};
+
+      height: var(--#{$prefix}-height);
+
+      @include typography.variant($typography-variant);
+
+      @if $size == small {
+        .#{icon.$prefix} {
+          font-size: utils-typography.px-to-rem($icon-size-small);
+        }
+      }
+    }
+  }
+
+  @include _padding-x($options, false);
+
+  &__label {
+    min-width: utils-typography.px-to-rem($label-min-width);
+
+    .#{$prefix}--small & {
+      min-width: utils-typography.px-to-rem($label-min-width-small);
+    }
+
+    + .#{icon.$prefix} {
+      // For icon on the right of button.
+      margin-right: -#{utils-typography.px-to-rem($icon-label-gap-x)};
+      margin-left: utils-typography.px-to-rem($icon-label-gap-x);
+    }
+  }
+}
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+
+  .#{$prefix} {
+    @include utils.reset();
+    @include utils-typography.nowrap();
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+
+    &:disabled,
+    &--loading {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    @include _base-color();
+    @include _size($options);
+
+    &--outlined {
+      @include _outlined-border-color($options);
+      @include _padding-x($options, true);
+    }
+
+    &--contained {
+      @include _contained-color();
+    }
+
+    &--icon {
+      @include _icon-button-size();
+    }
+  }
+}
