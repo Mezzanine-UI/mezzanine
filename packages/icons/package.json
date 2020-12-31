@@ -1,0 +1,19 @@
+{
+  "name": "@mezzanine-ui/icons",
+  "version": "0.0.0",
+  "description": "Icons for mezzanine-ui",
+  "author": "Mezzanine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mezzanine-UI/mezzanine.git",
+    "directory": "packages/icons"
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.scss",
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
