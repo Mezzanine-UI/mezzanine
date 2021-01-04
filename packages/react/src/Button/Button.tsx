@@ -1,5 +1,6 @@
 import {
   ButtonHTMLAttributes,
+  ComponentType,
   DetailedHTMLProps,
   forwardRef,
   ReactNode,
@@ -14,7 +15,7 @@ import {
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 
-export type ButtonComponent = 'button' | 'label' | 'a';
+export type ButtonComponent = 'button' | 'label' | 'a' | ComponentType<ButtonProps>;
 
 export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
   /**
