@@ -102,6 +102,18 @@ describe('<Button />', () => {
         expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
       });
     });
+
+    it('aria-disablee from props should not override', () => {
+      const { getHostHTMLElement } = render(
+        <Button
+          aria-disabled={false}
+          disabled
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-disabled')).toBeTruthy();
+    });
   });
 
   describe('prop: iconEnd', () => {

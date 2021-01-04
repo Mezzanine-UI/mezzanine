@@ -7,6 +7,9 @@ import {
   Queries,
 } from '@testing-library/react';
 
+export {
+  default as TestRenderer,
+} from 'react-test-renderer';
 export * from '@testing-library/react';
 
 export type RenderResult<Q extends Queries = typeof queries> = CoreRenderResult<Q> & {
