@@ -1,6 +1,6 @@
-import { MznspacingLevel } from './typings';
+import { MznSpacingLevel } from './typings';
 import { prefix } from './constants';
 
 export const classes = {
-  level: (level: MznspacingLevel) => `${prefix}--${level}`,
+  level: (level: MznSpacingLevel) => `${prefix}--${level}`,
 };

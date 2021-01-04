@@ -1,1 +1,1 @@
-export type MznspacingLevel = number;
+export type MznSpacingLevel = number;
