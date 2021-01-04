@@ -2,12 +2,13 @@
 @use '../typography/utils' as utils-typography;
 
 $prefix: mzn-spacing;
-// Use `index - 1` as level since list of sass starts with 1.
+// The spacing level starts from 1.
 $default-levels: (4px, 8px, 12px, 16px, 24px, 32px, 40px, 48px, 64px, 96px, 160px);
 
 @mixin variables($levels: $default-levels) {
-  @for $level from 0 to list.length($levels) {
-    $size: list.nth($levels, $level + 1);
+  // Use `index` as level since list of sass starts with 1.
+  @for $level from 1 through list.length($levels) {
+    $size: list.nth($levels, $level);
     $size: utils-typography.px-to-em($size);
 
     --#{$prefix}-#{$level}: #{$size};
