@@ -3,7 +3,6 @@ import {
   forwardRef,
   HTMLAttributes,
   ReactNode,
-  useMemo,
 } from 'react';
 import {
   classes,
@@ -85,7 +84,7 @@ const Typography = forwardRef<HTMLElement, TypographyProps>(function Typography(
     style: styleProp,
     ...rest
   } = props;
-  const cssVars = useMemo(() => toTypographyCssVars({ align, color, display }), [align, color, display]);
+  const cssVars = toTypographyCssVars({ align, color, display });
   const style = {
     ...cssVars,
     ...styleProp,
