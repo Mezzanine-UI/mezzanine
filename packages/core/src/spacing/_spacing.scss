@@ -9,7 +9,7 @@ $default-levels: (4px, 8px, 12px, 16px, 24px, 32px, 40px, 48px, 64px, 96px, 160p
   // Use `index` as level since list of sass starts with 1.
   @for $level from 1 through list.length($levels) {
     $size: list.nth($levels, $level);
-    $size: utils-typography.px-to-em($size);
+    $size: utils-typography.px-to-rem($size);
 
     --#{$prefix}-#{$level}: #{$size};
   }
