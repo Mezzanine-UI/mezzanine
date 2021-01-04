@@ -2,7 +2,6 @@ import {
   DetailedHTMLProps,
   forwardRef,
   HTMLAttributes,
-  ReactNode,
 } from 'react';
 import {
   toTypographyCssVars,
@@ -28,13 +27,11 @@ function getComponentFromVariant(variant: TypographyVariant): TypographyComponen
   return 'span';
 }
 
-export interface TypographyProps extends DetailedHTMLProps <HTMLAttributes<HTMLElement>, HTMLElement> {
+export interface TypographyProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
   /**
    * The css variable for `text-align`.
    */
   align?: TypographyAlign;
-  children?: ReactNode;
-  className?: string;
   /**
    * The color name provided by palette.
    */
