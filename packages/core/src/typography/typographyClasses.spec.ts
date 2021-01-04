@@ -1,7 +1,7 @@
 import { TypographyVariant } from './typings';
-import { classes } from './classes';
+import { typographyClasses as classes } from './typographyClasses';
 
-describe('typography:classes', () => {
+describe('typography:typographyClasses', () => {
   it('prop:variant', () => {
     const variants: TypographyVariant[] = [
       'h1',
@@ -27,15 +27,15 @@ describe('typography:classes', () => {
   });
 
   it('prop:align', () => {
-    expect(classes.align).toBe('mzn-css--text-align');
+    expect(classes.align).toBe('mzn-typography--align');
   });
 
   it('prop:color', () => {
-    expect(classes.color).toBe('mzn-css--color');
+    expect(classes.color).toBe('mzn-typography--color');
   });
 
   it('prop:display', () => {
-    expect(classes.display).toBe('mzn-css--display');
+    expect(classes.display).toBe('mzn-typography--display');
   });
 
   it('prop:ellipsis', () => {

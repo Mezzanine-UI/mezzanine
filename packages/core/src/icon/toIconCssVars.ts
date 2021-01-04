@@ -1,5 +1,6 @@
-import { prefix as cssPrefix, toCssVar } from '../css';
-import { Color, prefix as palettePrefix } from '../palette';
+import { toCssVar } from '../css';
+import { Color, palettePrefix } from '../palette';
+import { iconPrefix } from './constants';
 import { IconCssVars } from './typings';
 
 export function toIconCssVars(variables: IconCssVars): Record<string, any> {
@@ -24,6 +25,6 @@ export function toIconCssVars(variables: IconCssVars): Record<string, any> {
   }
 
   return {
-    [`--${cssPrefix}-color`]: colorValue,
+    [`--${iconPrefix}-color`]: colorValue,
   };
 }

@@ -36,7 +36,7 @@ describe('icon:toIconCssVars', () => {
       it(message, () => {
         const cssVars = toIconCssVars({ color });
 
-        expect(cssVars['--mzn-css-color']).toBe(expected);
+        expect(cssVars['--mzn-icon-color']).toBe(expected);
       });
     });
   });

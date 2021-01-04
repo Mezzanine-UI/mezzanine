@@ -237,6 +237,18 @@ $default-options: (
       }
     }
 
+    &--align {
+      text-align: var(--#{$prefix}-align);
+    }
+
+    &--color {
+      color: var(--#{$prefix}-color);
+    }
+
+    &--display {
+      display: var(--#{$prefix}-display);
+    }
+
     &--ellipsis {
       @include utils.overflow-ellipsis();
     }

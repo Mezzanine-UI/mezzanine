@@ -45,7 +45,7 @@ describe('typography:toTypographyCssVars', () => {
       it(message, () => {
         const cssVars = toTypographyCssVars({ color });
 
-        expect(cssVars['--mzn-css-color']).toBe(expected);
+        expect(cssVars['--mzn-typography-color']).toBe(expected);
       });
     });
   });

@@ -1,12 +1,12 @@
-import { classes } from './classes';
+import { iconClasses as classes } from './iconClasses';
 
-describe('icon:classes', () => {
+describe('icon:iconClasses', () => {
   it('prop:host', () => {
     expect(classes.host).toBe('mzn-icon');
   });
 
   it('prop:color', () => {
-    expect(classes.color).toBe('mzn-css--color');
+    expect(classes.color).toBe('mzn-icon--color');
   });
 
   it('prop:spin', () => {

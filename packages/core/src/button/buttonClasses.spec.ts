@@ -1,7 +1,7 @@
-import { classes } from './classes';
+import { buttonClasses as classes } from './buttonClasses';
 import { ButtonColor, ButtonSize, ButtonVariant } from './typings';
 
-describe('button:classes', () => {
+describe('button:buttonClasses', () => {
   it('prop:host', () => {
     expect(classes.host).toBe('mzn-button');
   });

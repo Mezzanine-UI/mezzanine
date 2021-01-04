@@ -1,1 +1,1 @@
-export const prefix = 'mzn-button';
+export const buttonPrefix = 'mzn-button';

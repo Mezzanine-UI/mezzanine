@@ -1,7 +1,7 @@
 import { toCssVar } from '../css';
 import { MznSpacingLevel } from './typings';
-import { prefix } from './constants';
+import { spacingPrefix } from './constants';
 
 export function toSpacingCssVar(level: MznSpacingLevel) {
-  return toCssVar(`${prefix}-${level}`);
+  return toCssVar(`${spacingPrefix}-${level}`);
 }

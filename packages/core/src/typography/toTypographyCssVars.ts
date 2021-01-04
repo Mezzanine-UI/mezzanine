@@ -1,5 +1,6 @@
-import { prefix as cssPrefix, toCssVar } from '../css';
-import { prefix as palettePrefix } from '../palette';
+import { toCssVar } from '../css';
+import { palettePrefix } from '../palette';
+import { typographyPrefix } from './constants';
 import { TypographyCssVars } from './typings';
 
 export function toTypographyCssVars(variables: TypographyCssVars) {
@@ -10,10 +11,10 @@ export function toTypographyCssVars(variables: TypographyCssVars) {
   } = variables;
 
   return {
-    [`--${cssPrefix}-align`]: align,
-    [`--${cssPrefix}-color`]: !color || color === 'inherit'
+    [`--${typographyPrefix}-align`]: align,
+    [`--${typographyPrefix}-color`]: !color || color === 'inherit'
       ? color
       : toCssVar(`${palettePrefix}-${color}`),
-    [`--${cssPrefix}-display`]: display,
+    [`--${typographyPrefix}-display`]: display,
   };
 }

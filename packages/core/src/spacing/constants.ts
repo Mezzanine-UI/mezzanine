@@ -1,1 +1,1 @@
-export const prefix = 'mzn-spacing';
+export const spacingPrefix = 'mzn-spacing';

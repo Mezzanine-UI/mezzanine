@@ -1,1 +1,1 @@
-export const prefix = 'mzn-typography';
+export const typographyPrefix = 'mzn-typography';
