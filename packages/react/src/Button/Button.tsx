@@ -67,6 +67,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     loading = false,
     iconEnd: iconEndProp,
     iconStart: iconStartProp,
+    onClick,
     size = 'medium',
     type = 'button',
     variant = 'text',
@@ -106,6 +107,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         className,
       )}
       disabled={disabled}
+      onClick={(event) => {
+        if (!disabled && !loading && onClick) {
+          onClick(event);
+        }
+      }}
       type={type}
     >
       {iconStart}

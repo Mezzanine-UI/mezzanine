@@ -1,7 +1,11 @@
 import { PlusIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
-import { cleanup, render } from '../../__test-utils__';
+import {
+  cleanup,
+  fireEvent,
+  render,
+} from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -208,6 +212,38 @@ describe('<Button />', () => {
 
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
       expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+    });
+  });
+
+  describe('prop:onClick', () => {
+    it('should be fired on click event', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(<Button onClick={onClick} />);
+      const element = getHostHTMLElement();
+
+      fireEvent.click(element);
+
+      expect(onClick).toBeCalledTimes(1);
+    });
+
+    it('should not be fired if disabled=true', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(<Button disabled onClick={onClick} />);
+      const element = getHostHTMLElement();
+
+      fireEvent.click(element);
+
+      expect(onClick).not.toBeCalled();
+    });
+
+    it('should not be fired if loading=true', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(<Button loading onClick={onClick} />);
+      const element = getHostHTMLElement();
+
+      fireEvent.click(element);
+
+      expect(onClick).not.toBeCalled();
     });
   });
 
