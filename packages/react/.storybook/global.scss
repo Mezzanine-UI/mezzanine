@@ -1,4 +1,3 @@
-@use '~@mezzanine-ui/core/css';
 @use '~@mezzanine-ui/core/palette';
 @use '~@mezzanine-ui/core/typography';
 @use '~@mezzanine-ui/core/spacing';
@@ -15,7 +14,6 @@
   @include palette.variables("dark");
 }
 
-@include css.core();
 @include typography.core();
 @include icon.core();
 @include button.core();

@@ -5,9 +5,9 @@ import {
   ReactNode,
 } from 'react';
 import {
-  classes,
   toTypographyCssVars,
   TypographyAlign,
+  typographyClasses as classes,
   TypographyColor,
   TypographyDisplay,
   TypographyVariant,

@@ -77,8 +77,8 @@ describe('<Icon />', () => {
         const { getHostHTMLElement } = render(<Icon icon={PlusIcon} color={color} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-css--color')).toBe(!!color);
-        expect(element.style.getPropertyValue('--mzn-css-color')).toBe(expected);
+        expect(element.classList.contains('mzn-icon--color')).toBe(!!color);
+        expect(element.style.getPropertyValue('--mzn-icon-color')).toBe(expected);
       });
     });
   });

@@ -93,8 +93,8 @@ describe('<Typography />', () => {
         );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-css--text-align')).toBe(!!align);
-        expect(element.style.getPropertyValue('--mzn-css-align')).toBe(align || '');
+        expect(element.classList.contains('mzn-typography--align')).toBe(!!align);
+        expect(element.style.getPropertyValue('--mzn-typography-align')).toBe(align || '');
       });
     });
   });
@@ -145,8 +145,8 @@ describe('<Typography />', () => {
         );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-css--color')).toBe(!!color);
-        expect(element.style.getPropertyValue('--mzn-css-color')).toBe(expected);
+        expect(element.classList.contains('mzn-typography--color')).toBe(!!color);
+        expect(element.style.getPropertyValue('--mzn-typography-color')).toBe(expected);
       });
     });
   });
@@ -167,8 +167,8 @@ describe('<Typography />', () => {
         );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-css--display')).toBe(!!display);
-        expect(element.style.getPropertyValue('--mzn-css-display')).toBe(display || '');
+        expect(element.classList.contains('mzn-typography--display')).toBe(!!display);
+        expect(element.style.getPropertyValue('--mzn-typography-display')).toBe(display || '');
       });
     });
   });

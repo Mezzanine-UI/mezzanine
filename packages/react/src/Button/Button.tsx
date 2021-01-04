@@ -7,10 +7,10 @@ import {
 } from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
 import {
+  buttonClasses as classes,
   ButtonColor,
   ButtonSize,
   ButtonVariant,
-  classes,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';

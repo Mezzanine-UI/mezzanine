@@ -1,6 +1,10 @@
 import { forwardRef, SVGProps } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import { classes, IconColor, toIconCssVars } from '@mezzanine-ui/core/icon';
+import {
+  iconClasses as classes,
+  IconColor,
+  toIconCssVars,
+} from '@mezzanine-ui/core/icon';
 import { cx } from '../utils/cx';
 
 export interface IconProps extends SVGProps<SVGSVGElement> {
