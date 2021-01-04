@@ -1,4 +1,4 @@
-import { forwardRef, SVGProps, useMemo } from 'react';
+import { forwardRef, SVGProps } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { classes, IconColor, toIconCssVars } from '@mezzanine-ui/core/icon';
 import { cx } from '../utils/cx';
@@ -32,7 +32,7 @@ const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(props, ref) {
     ...rest
   } = props;
   const { definition } = icon;
-  const cssVars = useMemo(() => toIconCssVars({ color }), [color]);
+  const cssVars = toIconCssVars({ color });
   const style = {
     ...cssVars,
     ...styleProp,
