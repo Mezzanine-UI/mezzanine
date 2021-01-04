@@ -1,7 +1,7 @@
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { boolean } from '@storybook/addon-knobs';
 import Icon from '../Icon';
-import Button, { IconButton } from '.';
+import Button from '.';
 
 export default {
   title: 'Basic/Button',
@@ -116,36 +116,6 @@ export const WithIcons = () => (
     >
       search
     </Button>
-  </div>
-);
-
-export const OnlyIcon = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, min-content)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <IconButton variant="outlined" size="small">
-      <Icon icon={PlusIcon} />
-    </IconButton>
-    <IconButton color="secondary" variant="outlined">
-      <Icon icon={PlusIcon} />
-    </IconButton>
-    <IconButton disabled variant="outlined" size="large">
-      <Icon icon={PlusIcon} />
-    </IconButton>
-    <IconButton variant="contained" size="small">
-      <Icon icon={PlusIcon} />
-    </IconButton>
-    <IconButton color="secondary" variant="contained">
-      <Icon icon={PlusIcon} />
-    </IconButton>
-    <IconButton disabled variant="contained" size="large">
-      <Icon icon={PlusIcon} />
-    </IconButton>
   </div>
 );
 

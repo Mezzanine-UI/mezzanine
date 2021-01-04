@@ -17,8 +17,6 @@ import Icon from '../Icon';
 export type ButtonComponent = 'button' | 'label' | 'a';
 
 export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
-  children?: ReactNode;
-  className?: string;
   /**
    * The color name provided by palette.
    * @default 'primary'
@@ -50,7 +48,7 @@ export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTML
   size?: ButtonSize;
   /**
    * The variant of button.
-   * @default 'basic'
+   * @default 'text'
    */
   variant?: ButtonVariant;
 }
