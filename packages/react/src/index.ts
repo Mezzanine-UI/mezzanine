@@ -10,11 +10,13 @@ export {
   IconButtonProps,
   IconButton,
 } from './Button';
+
 export {
   IconColor,
   IconProps,
   default as Icon,
 } from './Icon';
+
 export {
   TypographyAlign,
   TypographyColor,
@@ -24,3 +26,12 @@ export {
   TypographyProps,
   default as Typography,
 } from './Typography';
+
+export {
+  InputComponent,
+  InputTextColor,
+  InputBoarderColor,
+  InputSize,
+  InputProps,
+  default as Input,
+} from './Input';

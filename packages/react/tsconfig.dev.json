@@ -6,5 +6,12 @@
   },
   "include": ["src"],
   "exclude": ["**/*.spec.*"],
-  "references": [{ "path": "../icons" }, { "path": "../core" }]
+  "references": [
+    {
+      "path": "../icons"
+    },
+    {
+      "path": "../core"
+    }
+  ]
 }
