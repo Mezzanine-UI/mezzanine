@@ -4,6 +4,18 @@
     "importHelpers": false,
     "noEmitHelpers": false
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.*"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "**/*.spec.*"
+  ],
+  "references": [
+    {
+      "path": "../icons"
+    },
+    {
+      "path": "../core"
+    }
+  ]
 }

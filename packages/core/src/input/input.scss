@@ -1,0 +1,55 @@
+@use '../size';
+@use '../palette';
+@use '../typography';
+
+@mixin _size($options) {
+  $label-min-width: map.get($options, label-min-width);
+  $label-min-width-small: map.get($options, label-min-width-small);
+  $padding-x: map.get($options, padding-x);
+  $padding-x-small: map.get($options, padding-x-small);
+  $icon-size: map.get($options, icon-size);
+  $icon-size-small: map.get($options, icon-size-small);
+  $icon-label-gap-x: map.get($options, icon-label-gap-x);
+  $outlined-border-width: map.get($options, outlined-border-width);
+
+  .#{icon.$prefix} {
+    font-size: utils-typography.px-to-rem($icon-size);
+    // For icon on the left of button.
+    margin-left: -#{utils-typography.px-to-rem($icon-label-gap-x)};
+    margin-right: utils-typography.px-to-rem($icon-label-gap-x);
+  }
+
+  @each $size in $sizes {
+    $typography-variant: _get-typography-variant-from-size($size);
+
+    &--#{$size} {
+      --mzn-button-height: #{typography.prop($typography-variant, line-height)};
+
+      height: var(--#{$prefix}-height);
+
+      @include typography.variant($typography-variant);
+
+      @if $size == small {
+        .#{icon.$prefix} {
+          font-size: utils-typography.px-to-rem($icon-size-small);
+        }
+      }
+    }
+  }
+
+  @include _padding-x($options, false);
+
+  &__label {
+    min-width: utils-typography.px-to-rem($label-min-width);
+
+    .#{$prefix}--small & {
+      min-width: utils-typography.px-to-rem($label-min-width-small);
+    }
+
+    + .#{icon.$prefix} {
+      // For icon on the right of button.
+      margin-right: -#{utils-typography.px-to-rem($icon-label-gap-x)};
+      margin-left: utils-typography.px-to-rem($icon-label-gap-x);
+    }
+  }
+}

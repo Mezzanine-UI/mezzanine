@@ -16,6 +16,7 @@ export type {
   IconColor,
   IconProps,
 } from './Icon';
+
 export {
   default as Icon,
 } from './Icon';
@@ -30,3 +31,12 @@ export type {
 export {
   default as Typography,
 } from './Typography';
+
+export {
+  InputComponent,
+  InputTextColor,
+  InputBoarderColor,
+  InputSize,
+  InputProps,
+  default as Input,
+} from './Input';
