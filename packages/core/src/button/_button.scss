@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use '../utils/list';
 @use '../orientation';
 @use '../size';
 @use '../palette';
@@ -9,7 +10,8 @@
 
 $prefix: mzn-button;
 $group-prefix: #{$prefix}-group;
-$colors: (primary, secondary, error);
+$colors: (primary, secondary);
+$colors-and-error: list.push($colors, error);
 $variants: (contained, outlined, text);
 $sizes: size.$sizes;
 
@@ -55,7 +57,7 @@ $default-options: (
     }
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &--#{$color} {
       --#{$prefix}-color: #{palette.color($color)};
       --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
@@ -73,7 +75,7 @@ $default-options: (
     border-color: palette.color(action-disabled);
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &.#{$prefix}--#{$color} {
       --#{$prefix}-border: #{palette.color($color)};
     }
@@ -85,7 +87,7 @@ $default-options: (
     background-color: palette.color(action-disabled-bg);
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &.#{$prefix}--#{$color} {
       --#{$prefix}-color: #{palette.color(on-#{$color})};
       --#{$prefix}-bg: #{palette.color($color)};

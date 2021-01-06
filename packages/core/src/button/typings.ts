@@ -3,7 +3,7 @@ import { MainColor } from '../palette';
 import { MznSize } from '../size';
 import { MznSpacingLevel } from '../spacing';
 
-export type ButtonColor = Extract<MainColor, 'primary' | 'secondary' | 'error'>;
+export type ButtonColor = Extract<MainColor, 'primary' | 'secondary'>;
 export type ButtonGroupOrientation = MznOrientation;
 export type ButtonGroupSpacing = MznSpacingLevel;
 export type ButtonSize = MznSize;
