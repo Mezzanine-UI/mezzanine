@@ -1,0 +1,51 @@
+@use 'sass:map';
+@use '../size';
+@use '../palette';
+@use '../typography';
+@use '../typography/utils' as utils-typography;
+
+$prefix: mzn-input;
+// $colors: (primary, border, error);
+// $variants: (contained, outlined, text);
+$inputSizes: size.$sizes;
+
+$default-options: (
+  label-min-width: 32px,
+  label-min-width-small: 24px,
+  padding-x: 16px,
+  padding-x-small: 12px,
+  // icon-size: 24px,
+  // icon-size-small: 16px,
+);
+
+@mixin _error() {
+  border-color: palette.color(error);
+}
+
+@mixin core($options: ()) {
+  .#{$prefix} {
+    display: inline-flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-style: solid;
+    border-width: 1px;
+
+    &:hover {
+      &:not(:disabled):not(.#{$prefix}--error) {
+        &:hover,
+        &:focus {
+          border-color: palette.color(primary);
+        }
+      }
+    }
+
+    &--error {
+      @include _error();
+    }
+
+    &:focus {
+      outline: none;
+      border-color: palette.color(primary);
+    }
+  }
+}

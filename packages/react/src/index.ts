@@ -33,9 +33,6 @@ export {
 } from './Typography';
 
 export {
-  InputComponent,
-  InputTextColor,
-  InputBoarderColor,
   InputSize,
   InputProps,
   default as Input,
