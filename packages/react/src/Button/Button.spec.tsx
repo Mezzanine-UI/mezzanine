@@ -55,7 +55,6 @@ describe('<Button />', () => {
     const colors: ButtonColor[] = [
       'primary',
       'secondary',
-      'error',
     ];
 
     colors.forEach((color) => {
@@ -113,6 +112,15 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
 
       expect(element.getAttribute('aria-disabled')).toBeTruthy();
+    });
+  });
+
+  describe('prop:error', () => {
+    it('should add class if error=true', () => {
+      const { getHostHTMLElement } = render(<Button error />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button--error')).toBeTruthy();
     });
   });
 

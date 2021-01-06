@@ -213,20 +213,24 @@ describe('<ButtonGroup />', () => {
     });
   });
 
-  describe('props: color,disabled,size,variant that can override props of buttons inside group', () => {
+  describe('props: color,disabled,error,size,variant that can override props of buttons inside group', () => {
     function testOverrideProps(
       testInstance: TestRenderer.ReactTestInstance,
       {
         color,
         disabled,
+        error,
         size,
         variant,
-      }: Required<Pick<ButtonProps, 'color' | 'disabled' | 'size' | 'variant'>>,
+      }: Required<Pick<ButtonProps, 'color' | 'disabled' | 'error' | 'size' | 'variant'>>,
     ) {
-      expect(testInstance.findByType(Button).props.color).toBe(color);
-      expect(testInstance.findByType(Button).props.disabled).toBe(disabled);
-      expect(testInstance.findByType(Button).props.size).toBe(size);
-      expect(testInstance.findByType(Button).props.variant).toBe(variant);
+      const buttonInstance = testInstance.findByType(Button);
+
+      expect(buttonInstance.props.color).toBe(color);
+      expect(buttonInstance.props.disabled).toBe(disabled);
+      expect(buttonInstance.props.error).toBe(error);
+      expect(buttonInstance.props.size).toBe(size);
+      expect(buttonInstance.props.variant).toBe(variant);
     }
 
     it('all by default', () => {
@@ -242,6 +246,7 @@ describe('<ButtonGroup />', () => {
         {
           color: 'primary',
           disabled: false,
+          error: false,
           size: 'medium',
           variant: 'text',
         },
@@ -253,6 +258,7 @@ describe('<ButtonGroup />', () => {
         <ButtonGroup
           color="secondary"
           disabled
+          error
           size="small"
           variant="contained"
         >
@@ -266,6 +272,7 @@ describe('<ButtonGroup />', () => {
         {
           color: 'secondary',
           disabled: true,
+          error: true,
           size: 'small',
           variant: 'contained',
         },
@@ -275,14 +282,16 @@ describe('<ButtonGroup />', () => {
     it('should not override if child explicitly provided props', () => {
       const testRenderer = TestRenderer.create(
         <ButtonGroup
-          color="secondary"
+          color="primary"
           disabled
+          error
           size="small"
           variant="contained"
         >
           <Button
-            color="error"
+            color="secondary"
             disabled={false}
+            error={false}
             size="large"
             variant="outlined"
           />
@@ -293,8 +302,9 @@ describe('<ButtonGroup />', () => {
       testOverrideProps(
         testInstance,
         {
-          color: 'error',
+          color: 'secondary',
           disabled: false,
+          error: false,
           size: 'large',
           variant: 'outlined',
         },

@@ -29,6 +29,11 @@ export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTML
    */
   component?: ButtonComponent;
   /**
+   * If true, will use error color instead of color from props.
+   * @default false
+   */
+  error?: boolean;
+  /**
    * The icon placed on the end of button.
    */
   iconEnd?: ReactNode;
@@ -64,6 +69,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     color = 'primary',
     component = 'button',
     disabled = false,
+    error = false,
     loading = false,
     iconEnd: iconEndProp,
     iconStart: iconStartProp,
@@ -101,6 +107,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         classes.color(color),
         classes.size(size),
         {
+          [classes.error]: error,
           [classes.icon]: asIconBtn,
           [classes.loading]: loading,
         },

@@ -42,6 +42,11 @@ export interface ButtonGroupProps extends DetailedHTMLProps<HTMLAttributes<HTMLD
    */
   disabled?: boolean;
   /**
+   * If the `error` of a button inside group not provided, the `error` of group will override it.
+   * @default false
+   */
+  error?: boolean;
+  /**
    * If `true`, set width: 100%.
    * @default false
    */
@@ -79,6 +84,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     className,
     color = 'primary',
     disabled = false,
+    error = false,
     fullWidth = false,
     orientation = 'horizontal',
     role = 'group',
@@ -117,6 +123,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
         return cloneElement(child, {
           color: child.props.color || color,
           disabled: child.props.disabled ?? disabled,
+          error: child.props.error ?? error,
           size: child.props.size || size,
           variant: child.props.variant || variant,
         });

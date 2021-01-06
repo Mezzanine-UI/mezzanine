@@ -17,7 +17,7 @@ export const Contained = () => (
   >
     <Button variant="contained">primary</Button>
     <Button variant="contained" color="secondary">secondary</Button>
-    <Button variant="contained" color="error">error</Button>
+    <Button variant="contained" error>error</Button>
     <Button variant="contained" disabled>disabled</Button>
   </div>
 );
@@ -32,7 +32,7 @@ export const Outlined = () => (
   >
     <Button variant="outlined">primary</Button>
     <Button variant="outlined" color="secondary">secondary</Button>
-    <Button variant="outlined" color="error">error</Button>
+    <Button variant="outlined" error>error</Button>
     <Button variant="outlined" disabled>disabled</Button>
   </div>
 );
@@ -47,7 +47,7 @@ export const Text = () => (
   >
     <Button>primary</Button>
     <Button color="secondary">secondary</Button>
-    <Button color="error">error</Button>
+    <Button error>error</Button>
     <Button disabled>disabled</Button>
   </div>
 );
