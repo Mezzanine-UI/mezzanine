@@ -1,0 +1,154 @@
+@use 'sass:map';
+@use '../spacing';
+@use '../size';
+@use '../palette';
+@use '../typography/utils' as utils-typography;
+@use '../typography';
+
+$prefix: mzn-selection;
+$colors: (primary, secondary, error);
+$sizes: size.$sizes;
+
+$default-options: (
+  min-width: 56px,
+  min-width-small: 44px,
+  select-padding-x: spacing.level(2),
+  box-padding-x: spacing.level(1),
+
+  // for checkbox.scss
+  border-width: 1px,
+  border-color: palette.color(text-primary),
+  icon-size: 22px,
+  icon-size-small: 14px,
+);
+
+@function _get-typography-variant-from-size($size) {
+  @return map.get(
+    (
+      small: input3,
+      medium: input2,
+      large: input1,
+    ),
+    $size
+  );
+}
+
+// -> checkbox
+// @mixin _box_color($options) {
+//   $border-width: map.get($options, border-width);
+//   $border-color: map.get($options, border-color);
+
+//   border: #{$border-width} solid $border-color;
+
+//   &:disabled {
+//     cursor: not-allowed;
+//     border-color: palette.color(action-disabled);
+//   }
+// }
+
+// @mixin _check-size($options) {
+//   @each $size in $sizes {
+//     &--#{$size} {
+
+//     }
+//   }
+// }
+
+@mixin _size($options) {
+  $min-width: map.get($options, min-width);
+  $min-width-small: map.get($options, min-width-small);
+
+  // for checkbox.scss
+  $icon-size: map.get($options, icon-size);
+  $icon-size-small: map.get($options, icon-size-small);
+  $border-width: map.get($options, border-width);
+  $border-color: map.get($options, border-color);
+
+  @each $size in $sizes {
+    $typography-variant: _get-typography-variant-from-size($size);
+
+    &--#{$size} {
+      --mzn-selection-height: #{typography.prop($typography-variant, line-height)};
+
+      height: var(--#{$prefix}-height);
+      min-width: 56px;
+
+      @include typography.variant($typography-variant);
+
+      @if $size == small {
+        min-width: 44px;
+      }
+
+      &--#{check} {
+        width: $icon-size;
+        height: $icon-size;
+        border: $border-width solid $border-color;
+
+        @if $size == small {
+          width: $icon-size-small;
+          height: $icon-size-small;
+        }
+      }
+    }
+  }
+}
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $select-padding-x: map.get($options, select-padding-x);
+  $box-padding-x: map.get($options, box-padding-x);
+
+  .#{$prefix} {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    padding-right: $select-padding-x;
+
+    @include _size($options);
+
+    &--select {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      background-color: transparent;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      padding-left: $box-padding-x;
+      padding-right: $box-padding-x;
+      outline: 0;
+      cursor: pointer;
+      user-select: none;
+      vertical-align: middle;
+      text-decoration: none;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    &--input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      cursor: inherit;
+      z-index: 1;
+    }
+
+    &--check {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #{palette.color(text-secondary)};
+    }
+  }
+}

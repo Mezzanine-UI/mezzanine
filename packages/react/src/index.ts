@@ -24,3 +24,8 @@ export {
   TypographyProps,
   default as Typography,
 } from './Typography';
+
+export {
+  CheckboxProps,
+  default as Checkbox,
+} from './Checkbox';
