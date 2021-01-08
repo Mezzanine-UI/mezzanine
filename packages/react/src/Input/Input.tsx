@@ -55,9 +55,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         },
         className,
       )}
-      onChange={(e) => e.target.value}
       placeholder={placeholder}
       disabled={disabled}
+      aria-disabled={disabled}
     />
   );
 });

@@ -20,7 +20,7 @@ export const Basic = () => {
       <Input />
       <Input disabled />
       <Input error={error} />
-      <Input value="Example" />
+      <Input value="Example" readOnly />
     </div>
   );
 };
