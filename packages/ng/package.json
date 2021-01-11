@@ -1,0 +1,49 @@
+{
+  "name": "@mezzanine-ui/ng",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d . --disableLifeCycleHooks --disablePrivate --disableProtected",
+    "storybook": "npm run docs:json && start-storybook -p 6006",
+    "storybook:build": "npm run docs:json && build-storybook"
+  },
+  "peerDependencies": {
+    "@angular/animations": "^11.0.5",
+    "@angular/cdk": "^11.0.3",
+    "@angular/common": "^11.0.5",
+    "@angular/core": "^11.0.5",
+    "@angular/forms": "^11.0.5",
+    "rxjs": "^6.6.0",
+    "zone.js": "^0.11.3"
+  },
+  "dependencies": {
+    "@mezzanine-ui/core": "^0.0.0",
+    "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@angular-builders/jest": "^11.0.0",
+    "@angular-devkit/build-angular": "~0.1100.5",
+    "@angular-eslint/eslint-plugin": "^1.0.0",
+    "@angular-eslint/eslint-plugin-template": "^1.0.0",
+    "@angular-eslint/template-parser": "^1.0.0",
+    "@angular/animations": "~11.0.5",
+    "@angular/cdk": "~11.0.3",
+    "@angular/cli": "~11.0.5",
+    "@angular/common": "~11.0.5",
+    "@angular/compiler": "~11.0.5",
+    "@angular/compiler-cli": "~11.0.5",
+    "@angular/core": "~11.0.5",
+    "@angular/forms": "~11.0.5",
+    "@angular/platform-browser": "~11.0.5",
+    "@angular/platform-browser-dynamic": "~11.0.5",
+    "@angular/router": "~11.0.5",
+    "@compodoc/compodoc": "^1.1.11",
+    "@storybook/angular": "^6.1.11",
+    "@testing-library/angular": "^10.3.0",
+    "ng-packagr": "^11.0.0",
+    "jest-preset-angular": "^8.3.2",
+    "rxjs": "~6.6.0",
+    "zone.js": "~0.11.3"
+  }
+}
