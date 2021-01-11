@@ -6,15 +6,11 @@ import { IconCssVars } from './typings';
 export function toIconCssVars(variables: IconCssVars): Record<string, any> {
   const { color } = variables;
 
-  if (!color) {
-    return {};
-  }
-
-  let colorValue: string;
+  let colorValue: string | undefined;
 
   if (color === 'inherit') {
     colorValue = color;
-  } else {
+  } else if (color) {
     /**
      * Use `action-disabled` color of palette as `disabled` color of icon.
      */
