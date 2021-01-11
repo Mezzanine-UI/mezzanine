@@ -16,7 +16,7 @@ export interface InputProps extends
    * The size of input.
    * @default 'medium'
    */
-  inputSize?: InputSize;
+  size?: InputSize;
   /**
    * The icon placed on the start of input.
    */
@@ -54,7 +54,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     children,
     className,
     disabled = false,
-    inputSize = 'medium',
+    size = 'medium',
     placeholder = '',
     iconStart: iconStartProp,
     iconEnd: iconEndProp,
@@ -78,7 +78,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         [classes.icon('start')]: iconStart,
         [classes.icon('end')]: iconEnd,
       },
-      classes.inputSize(inputSize))}
+      classes.size(size))}
     >
       {iconStart ? (
         <div className={cx(
