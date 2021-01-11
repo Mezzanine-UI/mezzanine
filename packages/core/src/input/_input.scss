@@ -2,20 +2,21 @@
 @use '../size';
 @use '../palette';
 @use '../typography';
+@use '../icon';
 @use '../typography/utils' as utils-typography;
+@use './utils';
 
 $prefix: mzn-input;
-// $colors: (primary, border, error);
-// $variants: (contained, outlined, text);
 $inputSizes: size.$sizes;
 
 $default-options: (
-  label-min-width: 32px,
-  label-min-width-small: 24px,
   padding-x: 16px,
   padding-x-small: 12px,
-  // icon-size: 24px,
-  // icon-size-small: 16px,
+  padding-x-with-icon: 12px,
+  padding-x-small-with-icon: 8px,
+  icon-size: 24px,
+  icon-size-small: 16px,
+  padding-decorator: 4px,
 );
 
 @function _get-typography-variant-from-size($size) {
@@ -32,18 +33,28 @@ $default-options: (
 @mixin _padding-x($options, $is-outlined) {
   $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
   $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
+  $padding-x-with-icon: utils-typography.px-to-rem(map.get($options, padding-x-with-icon));
+  $padding-x-small-with-icon: utils-typography.px-to-rem(map.get($options, padding-x-small-with-icon));
 
-  // @if $is-outlined {
-  //   $outlined-border-width: map.get($options, outlined-border-width);
-  //   $padding-x: calc(#{$padding-x} - #{$outlined-border-width});
-  //   $padding-x-small: calc(#{$padding-x-small} - #{$outlined-border-width});
-  // }
+  padding: 0 $padding-x;
 
-  &:not(.#{$prefix}--icon) {
-    padding: 0 $padding-x;
+  &.mzn-input-icon--start {
+    padding: 0 $padding-x 0 $padding-x-with-icon;
+  }
 
-    &.#{$prefix}--small {
-      padding: 0 $padding-x-small;
+  &.mzn-input-icon--end {
+    padding: 0 $padding-x-with-icon 0 $padding-x;
+  }
+
+  &.#{$prefix}--small {
+    padding: 0 $padding-x-small;
+
+    &.mzn-input-icon--start {
+      padding: 0 $padding-x 0 $padding-x-small-with-icon;
+    }
+
+    &.mzn-input-icon--end {
+      padding: 0 $padding-x-small-with-icon 0 $padding-x;
     }
   }
 }
@@ -51,71 +62,117 @@ $default-options: (
 @mixin _size($options) {
   $padding-x: map.get($options, padding-x);
   $padding-x-small: map.get($options, padding-x-small);
-  // $icon-size: map.get($options, icon-size);
-  // $icon-size-small: map.get($options, icon-size-small);
-  // $icon-label-gap-x: map.get($options, icon-label-gap-x);
+  $icon-size: map.get($options, icon-size);
+  $icon-size-small: map.get($options, icon-size-small);
 
-  // .#{icon.$prefix} {
-  //   font-size: utils-typography.px-to-rem($icon-size);
-  //   // For icon on the left of button.
-  //   margin-left: -#{utils-typography.px-to-rem($icon-label-gap-x)};
-  //   margin-right: utils-typography.px-to-rem($icon-label-gap-x);
-  // }
+  .#{icon.$prefix} {
+    font-size: utils-typography.px-to-rem($icon-size);
+  }
 
   @each $size in $inputSizes {
     $typography-variant: _get-typography-variant-from-size($size);
 
     &--#{$size} {
-      // --mzn-button-height: #{typography.prop($typography-variant, line-height)};
-
-      // height: var(--#{$prefix}-height);
-
       @include typography.variant($typography-variant);
 
-      // @if $size == small {
-      //   .#{icon.$prefix} {
-      //     font-size: utils-typography.px-to-rem($icon-size-small);
-      //   }
-      // }
+      @if $size == small {
+        .#{icon.$prefix} {
+          font-size: utils-typography.px-to-rem($icon-size-small);
+        }
+      }
     }
   }
-
-  @include _padding-x($options, false);
 }
 
-@mixin _error() {
-  border-color: palette.color(error);
+@mixin _icon-button-size() {
+  padding: 0;
+
+  .#{icon.$prefix} {
+    margin: 0;
+  }
 }
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
   .#{$prefix} {
-    display: inline-flex;
-    justify-content: flex-start;
-    align-items: center;
-    border-style: solid;
-    border-width: 1px;
+    @include utils.reset();
 
-    &:hover {
-      &:not(:disabled):not(.#{$prefix}--error) {
-        &:hover,
-        &:focus {
-          border-color: palette.color(primary);
+    border: none;
+    outline: none;
+    background-color: transparent;
+
+    &--wrapper {
+      display: inline-flex;
+      position: relative;
+      justify-content: space-between;
+      border-width: 1px;
+      border-style: solid;
+      border-color: palette.color(border);
+
+      &:hover {
+        &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
+          &:hover {
+            border-color: palette.color(primary);
+          }
         }
+      }
+
+      @include _padding-x($options, false);
+    }
+
+    &--wrapper:focus-within {
+      border-color: palette.color(primary);
+
+      &:not(.#{$prefix}--disabled) {
+        border-color: palette.color(primary);
       }
     }
 
-    &--error {
-      @include _error();
-    }
-
-    &:focus {
-      outline: none;
-      border-color: palette.color(primary);
-    }
-
     @include _size($options);
-    @include _padding-x($options, false);
+
+    &--error {
+      border-color: palette.color(error);
+    }
+
+    &--errorMessage {
+      @include typography.variant(caption);
+
+      white-space: nowrap;
+      color: palette.color(error);
+      position: absolute;
+      right: 0;
+      bottom: -20px;
+    }
+
+    &--disabled {
+      border-color: palette.color(action-disabled);
+    }
+
+    &-decorator {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      white-space: nowrap;
+      color: var(--mzn-color-action-inactive);
+
+      $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
+
+      &.mzn-input-text--start {
+        padding: 0 $padding-decorator 0 0;
+      }
+
+      &.mzn-input-text--end {
+        padding: 0 0 0 $padding-decorator;
+      }
+
+      &.mzn-input-icon--start {
+        padding: 0 $padding-decorator 0 0;
+      }
+
+      &.mzn-input-icon--end {
+        padding: 0 0 0 $padding-decorator;
+      }
+    }
   }
 }

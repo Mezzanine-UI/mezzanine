@@ -1,0 +1,14 @@
+@mixin reset() {
+  width: 100%;
+  background-color: transparent;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 0;
+  border-radius: 0;
+  border-style: solid;
+  border-width: 1px;
+  outline: none;
+  padding: 0;
+  box-sizing: border-box;
+}

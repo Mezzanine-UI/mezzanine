@@ -1,9 +1,14 @@
-import { InputSize } from './typings';
+import { InputSize, InputDecoratorPosition } from './typings';
 import { inputPrefix } from './constants';
 
 export const inputClasses = {
   host: inputPrefix,
+  wrapper: `${inputPrefix}--wrapper`,
   error: `${inputPrefix}--error`,
+  errorMessage: `${inputPrefix}--errorMessage`,
+  disabled: `${inputPrefix}--disabled`,
   inputSize: (inputSize: InputSize) => `${inputPrefix}--${inputSize}`,
-  // icon: `${inputPrefix}--icon`,
+  decoratorHost: `${inputPrefix}-decorator`,
+  icon: (iconPosition: InputDecoratorPosition) => `${inputPrefix}-icon--${iconPosition}`,
+  text: (textPosition: InputDecoratorPosition) => `${inputPrefix}-text--${textPosition}`,
 };
