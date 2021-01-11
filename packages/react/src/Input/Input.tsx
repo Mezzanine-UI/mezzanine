@@ -3,12 +3,17 @@ import {
   DetailedHTMLProps,
   forwardRef,
   ReactNode,
+  useState,
+  useEffect,
+  useCallback,
 } from 'react';
+import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
 import { cx } from '../utils/cx';
+import Icon from '../Icon';
 
 export interface InputProps extends
   DetailedHTMLProps <Omit <InputHTMLAttributes<HTMLInputElement>, 'size'>, HTMLInputElement> {
@@ -34,23 +39,23 @@ export interface InputProps extends
    */
   textEnd?: ReactNode;
   /**
-   * The placeholder of input.
+   * The error of input.
    * @default ''
    */
-  placeholder?: string;
-  /**
-   * The errorMessage of input.
-   * @default ''
-   */
-  errorMessage?: string;
+  error?: boolean;
+  clearable?: boolean;
 }
 
 /**
  * The react component for `mezzanine` input.
  */
-const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
   const {
-    errorMessage,
+    value,
+    onChange,
+    defaultValue,
+    clearable = false,
+    error = false,
     children,
     className,
     disabled = false,
@@ -68,13 +73,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
   const textStart: ReactNode = textStartProp;
   const textEnd: ReactNode = textEndProp;
 
-  // const hasIcon = !!(iconStart || iconEnd);
+  const [inputs, setInputs] = useState(defaultValue || '');
+
+  const handleChange = useCallback((e) => {
+    setInputs(e.target.value);
+  }, []);
+
+  useEffect(() => {
+    if (value && value !== defaultValue) {
+      setInputs(value);
+    }
+  }, [defaultValue, ref, value]);
 
   return (
     <div className={cx(classes.wrapper,
       {
         [classes.disabled]: disabled,
-        [classes.error]: errorMessage,
+        [classes.error]: error,
         [classes.icon('start')]: iconStart,
         [classes.icon('end')]: iconEnd,
       },
@@ -103,8 +118,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         </span>
       ) : null}
       <input
-        className={classes.host}
+        type="text"
         ref={ref}
+        value={inputs}
+        onChange={handleChange}
+        className={classes.host}
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
@@ -129,10 +147,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           {textEnd}
         </span>
       ) : null}
-      {errorMessage ? (
-        <span className={classes.errorMessage}>
-          {errorMessage}
-        </span>
+      {clearable ? (
+        <button
+          onClick={() => setInputs('')}
+          className={cx(classes.decoratorHost,
+            {
+              [classes.icon('end')]: iconEnd,
+              [classes.clearButton]: clearable,
+            })}
+          type="button"
+        >
+          <Icon icon={TimesIcon} />
+        </button>
       ) : null}
     </div>
   );

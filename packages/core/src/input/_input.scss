@@ -95,6 +95,11 @@ $default-options: (
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
+  // ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  //   color: #8F8F8F;
+  //   opacity: 1; /* Firefox */
+  // }
+
   .#{$prefix} {
     @include utils.reset();
 
@@ -149,12 +154,26 @@ $default-options: (
       border-color: palette.color(action-disabled);
     }
 
+    &--clearButton {
+      border: none;
+      padding: 0;
+      background-color: transparent;
+      outline: none;
+      cursor: pointer;
+
+      &:hover {
+        color: palette.color(primary);
+      }
+    }
+
     &-decorator {
       display: flex;
       justify-content: center;
       align-items: center;
       white-space: nowrap;
       color: var(--mzn-color-action-inactive);
+
+      @include _size($options);
 
       $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
 
