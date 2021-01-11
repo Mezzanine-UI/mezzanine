@@ -15,14 +15,26 @@
   },
   "scripts": {
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "storybook": "start-storybook -p 6006"
+  },
+  "peerDependencies": {
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1"
   },
   "dependencies": {
     "@mezzanine-ui/core": "^0.0.0",
     "clsx": "^1.1.1"
   },
-  "peerDependencies": {
+  "devDependencies": {
+    "@storybook/react": "^6.1.11",
+    "@testing-library/react": "^11.2.2",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-test-renderer": "^17.0.0",
     "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react-docgen-typescript-loader": "^3.7.2",
+    "react-dom": "^17.0.1",
+    "react-test-renderer": "^17.0.1"
   }
 }
