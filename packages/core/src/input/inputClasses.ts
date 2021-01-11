@@ -7,7 +7,7 @@ export const inputClasses = {
   error: `${inputPrefix}--error`,
   errorMessage: `${inputPrefix}--errorMessage`,
   disabled: `${inputPrefix}--disabled`,
-  inputSize: (inputSize: InputSize) => `${inputPrefix}--${inputSize}`,
+  size: (size: InputSize) => `${inputPrefix}--${size}`,
   decoratorHost: `${inputPrefix}-decorator`,
   icon: (iconPosition: InputDecoratorPosition) => `${inputPrefix}-icon--${iconPosition}`,
   text: (textPosition: InputDecoratorPosition) => `${inputPrefix}-text--${textPosition}`,

@@ -45,15 +45,48 @@ export const Sizes = () => (
       alignItems: 'center',
     }}
   >
-    <Input inputSize="small" />
-    <Input inputSize="medium" />
-    <Input inputSize="large" />
-    <Input inputSize="small" disabled />
-    <Input inputSize="medium" disabled />
-    <Input inputSize="large" disabled />
-    <Input inputSize="small" errorMessage="錯誤提示！" />
-    <Input inputSize="medium" errorMessage="錯誤提示！" />
-    <Input inputSize="large" errorMessage="錯誤提示！" />
+    <Input
+      placeholder="請輸入文字"
+      size="small"
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="medium"
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="large"
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="small"
+      disabled
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="medium"
+      disabled
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="large"
+      disabled
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="small"
+      errorMessage="錯誤提示！"
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="medium"
+      errorMessage="錯誤提示！"
+    />
+    <Input
+      placeholder="請輸入文字"
+      size="large"
+      errorMessage="錯誤提示！"
+    />
   </div>
 );
 
@@ -67,60 +100,65 @@ export const WithIcons = () => (
       alignItems: 'center',
     }}
   >
-    <Input />
+    <Input placeholder="請輸入文字" />
     <Input
+      placeholder="請輸入文字"
       iconEnd={<Icon icon={PlusIcon} />}
       disabled
     />
     <Input
+      placeholder="請輸入文字"
       iconStart={<Icon icon={PlusIcon} />}
       errorMessage="錯誤提示！"
     />
     <Input
+      placeholder="請輸入文字"
       iconEnd={<Icon icon={PlusIcon} />}
-      inputSize="small"
+      size="small"
     />
     <Input
+      placeholder="請輸入文字"
       iconStart={<Icon icon={PlusIcon} />}
-      inputSize="small"
+      size="small"
     />
     <Input
+      placeholder="請輸入文字"
       iconStart={<Icon icon={PlusIcon} />}
-      inputSize="large"
+      size="large"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       textStart="$"
       textEnd="TWD"
-      inputSize="large"
+      size="large"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       textStart="$"
       textEnd="TWD"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       textStart="$"
       textEnd="TWD"
-      inputSize="small"
+      size="small"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       iconStart={<Icon icon={PlusIcon} />}
       textEnd="價格"
-      inputSize="large"
+      size="large"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       textStart="$"
       textEnd="TWD"
     />
     <Input
-      placeholder="請輸入金額"
+      placeholder="輸入金額"
       textStart="$"
       textEnd="TWD"
-      inputSize="small"
+      size="small"
     />
   </div>
 );
