@@ -8,6 +8,5 @@
       "@mezzanine-ui/core": ["core/src"],
       "@mezzanine-ui/core/*": ["core/src/*"]
     }
-  },
-  "references": [{ "path": "./packages/core" }, { "path": "./packages/react" }]
+  }
 }
