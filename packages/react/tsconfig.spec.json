@@ -4,6 +4,5 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },
-  "include": ["__test-utils__", "**/*.spec.*"],
-  "references": [{ "path": "./tsconfig.dev.json" }]
+  "include": ["__test-utils__", "**/*.spec.*"]
 }

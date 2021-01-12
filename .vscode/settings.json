@@ -1,4 +1,15 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "eslint.format.enable": true
+  "eslint.format.enable": true,
+  "eslint.options": {
+    "extensions": [".js", ".ts", ".tsx", ".mdx", ".html"]
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "markdownreact",
+    "html"
+  ]
 }

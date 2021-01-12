@@ -1,32 +1,48 @@
 import {
-  DetailedHTMLProps, forwardRef, HTMLAttributes,
+  ChangeEventHandler,
+  forwardRef, useEffect, useState,
 } from 'react';
-// import { cx } from '../utils/cx';
-import Selection from '../Selection/Selection';
+import {
+  checkboxClasses as classes,
+} from '@mezzanine-ui/core/checkbox';
+import { cx } from '../utils/cx';
+import Selection, { SelectionProps } from '../Selection/Selection';
 
-export interface CheckboxProps extends DetailedHTMLProps<HTMLAttributes<HTMLLabelElement>, HTMLElement> {
-  canHover?: boolean;
-  checked?: boolean;
+export interface CheckboxProps extends Omit<SelectionProps, 'checked' | 'children' | 'htmlFor' | 'label' | 'type'> {
   children?: string;
-  defaultChecked?: boolean;
-  disabled?: boolean;
-  hasError?: boolean;
+  className?: string;
   indeterminate?: boolean;
-  size?: 'large' | 'medium' | 'small';
-  value?: boolean;
 }
 
+/** @todo */
+// 1. Hover state
+// 2. Selected icon
+// 3. State Logic
+// 4. Group Mode
+// 5. Tree Mode
 const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(props, ref) {
   const {
     canHover,
-    checked,
     children,
-    // className,
+    className,
     defaultChecked,
     disabled,
     hasError,
+    indeterminate,
     size = 'medium',
+    value,
+    // onChange,
   } = props;
+
+  const [checked, setChecked] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (defaultChecked) setChecked(true);
+  }, [defaultChecked]);
+
+  const onChangeHandler: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setChecked(event.target.checked);
+  };
 
   return (
     <Selection
@@ -39,20 +55,58 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(p
       size={size}
       label={children}
       disabled={disabled}
+      value={value}
+      onChange={onChangeHandler}
     >
-      {/* <span
+      <span
         className={cx(
-          classes.check,
-          classes[color],
-          classes[size],
+          classes.host,
+          classes.checkbox(size),
           {
-            [classes.indeterminate]: indeterminate,
-            [classes.checked]: checked,
+            [classes.selected]: checked || defaultChecked || indeterminate,
             [classes.disabled]: disabled,
+            [classes.disabledBg]: (checked || indeterminate) && disabled,
+            [classes.error]: hasError,
           },
           className,
         )}
-      /> */}
+      >
+        {checked ? (
+          <svg
+            aria-hidden
+            className={classes.icon(size)}
+            data-icon-name="check"
+            focusable={false}
+          >
+            <path
+              fill="white"
+              fillRule="evenodd"
+              stroke="none"
+              strokeWidth="1"
+              d="M 17.993 8.768
+              l -7.625 7.625
+              L 6.4 12.425
+              l 1.061-1.06 2.908 2.907 6.564-6.563z"
+            />
+          </svg>
+        ) : null}
+        {indeterminate ? (
+          <svg
+            aria-hidden
+            className={classes.icon(size)}
+            data-icon-name="indeterminate"
+            focusable={false}
+          >
+            <path
+              fill="white"
+              fillRule="evenodd"
+              stroke="none"
+              strokeWidth="1"
+              d="M 18 10 L 18 12 L 4 12 L 4 10 Z"
+            />
+          </svg>
+        ) : null}
+      </span>
     </Selection>
   );
 });

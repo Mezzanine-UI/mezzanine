@@ -1,8 +1,92 @@
-import { TypographyColor } from '@mezzanine-ui/core/typography';
-import Typography from '.';
+import { Story, Meta } from '@storybook/react';
+import Typography, {
+  TypographyAlign,
+  TypographyColor,
+  TypographyDisplay,
+  TypographyProps,
+  TypographyVariant,
+} from '.';
 
 export default {
   title: 'Basic/Typography',
+} as Meta;
+
+const aligns: TypographyAlign[] = [
+  'left',
+  'center',
+  'right',
+  'justify',
+];
+const colors: TypographyColor[] = [
+  'inherit',
+  'primary',
+  'secondary',
+  'error',
+  'warning',
+  'success',
+  'text-primary',
+  'text-secondary',
+  'text-disabled',
+];
+const displays: TypographyDisplay[] = [
+  'block',
+  'inline-block',
+  'flex',
+  'inline-flex',
+];
+const variants: TypographyVariant[] = [
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'body1',
+  'body2',
+  'button1',
+  'button2',
+  'button3',
+  'input1',
+  'input2',
+  'input3',
+  'caption',
+];
+
+export const Playgroud: Story<TypographyProps> = ({ children, ...props }) => (
+  <Typography {...props}>{children}</Typography>
+);
+
+Playgroud.args = {
+  children: 'Hello World!',
+  variant: 'body1',
+  ellipsis: false,
+  noWrap: false,
+};
+Playgroud.argTypes = {
+  align: {
+    control: {
+      type: 'select',
+      options: [undefined, ...aligns],
+    },
+  },
+  color: {
+    control: {
+      type: 'select',
+      options: [undefined, ...colors],
+    },
+  },
+  display: {
+    control: {
+      type: 'select',
+      options: [undefined, ...displays],
+    },
+  },
+  variant: {
+    control: {
+      type: 'select',
+      options: variants,
+    },
+  },
 };
 
 export const Variants = () => (
@@ -37,26 +121,12 @@ export const Variants = () => (
   </>
 );
 
-export const Colors = () => {
-  const colors: TypographyColor[] = [
-    'inherit',
-    'primary',
-    'secondary',
-    'error',
-    'warning',
-    'success',
-    'text-primary',
-    'text-secondary',
-    'text-disabled',
-  ];
-
-  return (
-    <>
-      {colors.map((color) => (
-        <Typography key={color} color={color}>
-          {color}
-        </Typography>
-      ))}
-    </>
-  );
-};
+export const Colors = () => (
+  <>
+    {colors.map((color) => (
+      <Typography key={color} color={color}>
+        {color}
+      </Typography>
+    ))}
+  </>
+);

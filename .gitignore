@@ -4,6 +4,10 @@
 /dist
 /tmp
 /out-tsc
+/storybook-static
+**/storybook-static
+documentation.json
+**/documentation.json
 
 # dependencies
 /node_modules

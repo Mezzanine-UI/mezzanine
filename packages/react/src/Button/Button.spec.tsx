@@ -55,7 +55,6 @@ describe('<Button />', () => {
     const colors: ButtonColor[] = [
       'primary',
       'secondary',
-      'error',
     ];
 
     colors.forEach((color) => {
@@ -102,6 +101,27 @@ describe('<Button />', () => {
         expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
       });
     });
+
+    it('aria-disablee from props should not override', () => {
+      const { getHostHTMLElement } = render(
+        <Button
+          aria-disabled={false}
+          disabled
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-disabled')).toBeTruthy();
+    });
+  });
+
+  describe('prop:error', () => {
+    it('should add class if error=true', () => {
+      const { getHostHTMLElement } = render(<Button error />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button--error')).toBeTruthy();
+    });
   });
 
   describe('prop: iconEnd', () => {
@@ -121,7 +141,7 @@ describe('<Button />', () => {
       expect(childElementCount).toBe(2);
       expect(labelElement?.textContent).toBe('Hello');
       expect(labelElement?.tagName.toLowerCase()).toBe('span');
-      expect(iconEndElement?.tagName.toLowerCase()).toBe('svg');
+      expect(iconEndElement?.tagName.toLowerCase()).toBe('i');
       expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
@@ -141,7 +161,7 @@ describe('<Button />', () => {
       } = element;
 
       expect(childElementCount).toBe(2);
-      expect(iconStartElement?.tagName.toLowerCase()).toBe('svg');
+      expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
       expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
       expect(labelElement?.textContent).toBe('Hello');
       expect(labelElement?.tagName.toLowerCase()).toBe('span');

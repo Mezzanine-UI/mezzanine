@@ -14,7 +14,7 @@ export interface SelectionProps {
   hasError?: boolean;
   htmlFor?: string;
   label?: string;
-  size: SelectionSize;
+  size?: SelectionSize;
   type: 'checkbox' | 'radio';
   value?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -24,8 +24,8 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(function Selectio
   const {
     // canHover,
     checked,
-    // children,
-    defaultChecked,
+    children,
+    // defaultChecked,
     disabled,
     // hasError,
     htmlFor,
@@ -49,15 +49,14 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(function Selectio
         <input
           aria-disabled={disabled}
           className={classes.input}
-          checked={checked || defaultChecked}
+          checked={checked}
           disabled={disabled}
           id={htmlFor}
           type={type}
           value={value}
           onChange={onChange}
         />
-        {/* {children} */}
-        <span className={classes.check(size)} />
+        {children}
       </div>
       <span className={classes.label(size)}>{label}</span>
     </label>

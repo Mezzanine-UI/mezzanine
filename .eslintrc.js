@@ -201,6 +201,7 @@ module.exports = {
             packageDir: [
               './',
               './packages/core',
+              './packages/ng',
               './packages/react',
             ],
           },
@@ -283,6 +284,45 @@ module.exports = {
         'react/react-in-jsx-scope': 0,
         'react/static-property-placement': 0,
       },
+    },
+    {
+      files: [
+        './packages/ng/**/*.ts',
+      ],
+      parserOptions: {
+        project: './packages/ng/tsconfig.*?.json',
+      },
+      extends: [
+        'plugin:@angular-eslint/recommended',
+        'plugin:@angular-eslint/template/process-inline-templates',
+      ],
+      rules: {
+        'no-underscore-dangle': 0,
+        '@angular-eslint/directive-selector': [
+          2,
+          {
+            type: 'attribute',
+            prefix: 'mzn',
+            style: 'camelCase',
+          },
+        ],
+        '@angular-eslint/component-selector': [
+          2,
+          {
+            type: 'element',
+            prefix: 'mzn',
+            style: 'kebab-case',
+          },
+        ],
+        '@angular-eslint/no-host-metadata-property': 0,
+      },
+    },
+    {
+      files: ['./packages/ng/**/*.html'],
+      parser: '@angular-eslint/template-parser',
+      extends: [
+        'plugin:@angular-eslint/template/recommended',
+      ],
     },
     {
       files: [

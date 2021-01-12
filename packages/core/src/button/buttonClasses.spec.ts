@@ -28,12 +28,15 @@ describe('button:buttonClasses', () => {
     const colors: ButtonColor[] = [
       'primary',
       'secondary',
-      'error',
     ];
 
     colors.forEach((color) => {
       expect(classes.color(color)).toBe(`mzn-button--${color}`);
     });
+  });
+
+  it('prop:error', () => {
+    expect(classes.error).toBe('mzn-button--error');
   });
 
   it('prop:size', () => {

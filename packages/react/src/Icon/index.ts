@@ -1,4 +1,5 @@
-export {
+export type {
   IconColor,
 } from '@mezzanine-ui/core/icon';
-export { IconProps, default } from './Icon';
+export type { IconProps } from './Icon';
+export { default } from './Icon';

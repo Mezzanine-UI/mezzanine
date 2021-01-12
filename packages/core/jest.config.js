@@ -9,9 +9,6 @@ module.exports = {
     },
   },
   moduleFileExtensions: ['js', 'json', 'ts', 'tsx'],
-  moduleNameMapper: {
-    '@mezzanine-ui/icons$': '<rootDir>/../icons/src',
-  },
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: ['src/**/*', '!**/index.ts'],
