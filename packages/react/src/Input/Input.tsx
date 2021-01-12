@@ -102,7 +102,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  const checkValueRules = useCallback(({
+  const handleChange = useCallback(({
     target,
   }) => {
     let testedValue = target.value;
@@ -130,11 +130,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     alphabetNumberOnly,
     maxLength,
   ]);
-
-  const handleChange = useCallback((e) => {
-    setInputs(e.target.value);
-    checkValueRules(e);
-  }, [checkValueRules]);
 
   useEffect(() => {
     if (value && value !== defaultValue) {
