@@ -48,26 +48,26 @@ export interface InputProps extends
    * @default 'false';
    */
   clearable?: boolean;
-  /**
-   * Only for number.
-   * @default 'false';
-   */
-  numberOnly?: boolean;
-  /**
-   * Only for alphabet.
-   * @default 'false';
-   */
-  alphabetOnly?: boolean;
-  /**
-   * Only for alphabet and number.
-   * @default 'false';
-   */
-  alphabetNumberOnly?: boolean;
-  /**
-   * Maximum length of the input .
-   * @default 'false';
-   */
-  maxLength?: number;
+  // /**
+  //  * Only for number.
+  //  * @default 'false';
+  //  */
+  // numberOnly?: boolean;
+  // /**
+  //  * Only for alphabet.
+  //  * @default 'false';
+  //  */
+  // alphabetOnly?: boolean;
+  // /**
+  //  * Only for alphabet and number.
+  //  * @default 'false';
+  //  */
+  // alphabetNumberOnly?: boolean;
+  // /**
+  //  * Maximum length of the input .
+  //  * @default 'false';
+  //  */
+  // maxLength?: number;
 }
 
 /**
@@ -75,10 +75,10 @@ export interface InputProps extends
  */
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
   const {
-    numberOnly,
-    alphabetOnly,
-    alphabetNumberOnly,
-    maxLength,
+    // numberOnly,
+    // alphabetOnly,
+    // alphabetNumberOnly,
+    // maxLength,
     value,
     defaultValue,
     clearable = false,
@@ -102,39 +102,39 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  const checkValueRules = useCallback(({
-    target,
-  }) => {
-    let testedValue = target.value;
+  // const checkValueRules = useCallback(({
+  //   target,
+  // }) => {
+  //   let testedValue = target.value;
 
-    if (numberOnly) {
-      testedValue = testedValue?.replace(/[^0-9]/g, '');
-    }
+  //   if (numberOnly) {
+  //     testedValue = testedValue?.replace(/[^0-9]/g, '');
+  //   }
 
-    if (alphabetOnly) {
-      testedValue = testedValue?.replace(/[^a-z]/gi, '');
-    }
+  //   if (alphabetOnly) {
+  //     testedValue = testedValue?.replace(/[^a-z]/gi, '');
+  //   }
 
-    if (alphabetNumberOnly) {
-      testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
-    }
+  //   if (alphabetNumberOnly) {
+  //     testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
+  //   }
 
-    if (maxLength) {
-      testedValue = testedValue?.substr(0, maxLength);
-    }
+  //   if (maxLength) {
+  //     testedValue = testedValue?.substr(0, maxLength);
+  //   }
 
-    setInputs(testedValue);
-  }, [
-    numberOnly,
-    alphabetOnly,
-    alphabetNumberOnly,
-    maxLength,
-  ]);
+  //   setInputs(testedValue);
+  // }, [
+  //   numberOnly,
+  //   alphabetOnly,
+  //   alphabetNumberOnly,
+  //   maxLength,
+  // ]);
 
   const handleChange = useCallback((e) => {
     setInputs(e.target.value);
-    checkValueRules(e);
-  }, [checkValueRules]);
+    // checkValueRules(e);
+  }, []);
 
   useEffect(() => {
     if (value && value !== defaultValue) {

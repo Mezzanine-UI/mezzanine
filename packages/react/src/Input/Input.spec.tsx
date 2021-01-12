@@ -191,4 +191,152 @@ describe('<Input />', () => {
       expect(inputElement?.getAttribute('value')).toBe('Tom Hardy');
     });
   });
+
+  // describe('prop: numberOnly', () => {
+  //   it('should enter number only content', () => {
+  //     const { getHostHTMLElement } = render(<Input numberOnly />);
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: 'a123' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/^\d*$/.test(inputValue)).toBeTruthy();
+  //         expect(inputValue).toBe('123');
+  //       }
+  //     }
+  //   });
+
+  //   it('should enter number only content and be less than max width ', () => {
+  //     const { getHostHTMLElement } = render(
+  //       <Input
+  //         numberOnly
+  //         maxLength={6}
+  //       />,
+  //     );
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: 'a123bc45d67e8' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/^\d*$/.test(inputValue)).toBeTruthy();
+  //         expect(inputValue).toBe('123456');
+  //       }
+  //     }
+  //   });
+  // });
+
+  // describe('prop: alphabetOnly', () => {
+  //   it('should enter alphabet only content', () => {
+  //     const { getHostHTMLElement } = render(<Input alphabetOnly />);
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: 'AbC3' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/[^a-z]/i.test(inputValue)).toBeFalsy();
+  //         expect(inputValue).toBe('AbC');
+  //       }
+  //     }
+  //   });
+
+  //   it('should enter alphabet only content and be less than max width ', () => {
+  //     const { getHostHTMLElement } = render(
+  //       <Input
+  //         alphabetOnly
+  //         maxLength={6}
+  //       />,
+  //     );
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: 'A12bC34D5efG7h8' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/[^a-z]/i.test(inputValue)).toBeFalsy();
+  //         expect(inputValue).toBe('AbCDef');
+  //       }
+  //     }
+  //   });
+  // });
+
+  // describe('prop: alphabetNumberOnly', () => {
+  //   it('should enter alphabet and number only', () => {
+  //     const { getHostHTMLElement } = render(<Input alphabetNumberOnly />);
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: '*Ab/C3' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/[^a-zA-Z0-9]/.test(inputValue)).toBeFalsy();
+  //         expect(inputValue).toBe('AbC3');
+  //       }
+  //     }
+  //   });
+
+  //   it('should enter alphabet and number only content and be less than max width ', () => {
+  //     const { getHostHTMLElement } = render(
+  //       <Input
+  //         alphabetNumberOnly
+  //         maxLength={6}
+  //       />,
+  //     );
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: '*A1bC#34%D5+' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(/[^a-zA-Z0-9]/i.test(inputValue)).toBeFalsy();
+  //         expect(inputValue).toBe('A1bC34');
+  //       }
+  //     }
+  //   });
+  // });
+
+  // describe('prop: maxLength', () => {
+  //   it('should enter content whose length is between 0 and max length', () => {
+  //     const { getHostHTMLElement } = render(<Input maxLength={8} />);
+  //     const element = getHostHTMLElement();
+  //     const {
+  //       firstElementChild: inputElement,
+  //     } = element;
+
+  //     if (inputElement) {
+  //       fireEvent.change(inputElement, { target: { value: '0123456789' } });
+  //       const inputValue = inputElement.getAttribute('value');
+
+  //       if (inputValue) {
+  //         expect(inputValue).toBe('01234567');
+  //       }
+  //     }
+  //   });
+  // });
 });
