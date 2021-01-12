@@ -11,7 +11,7 @@ import {
 } from '@mezzanine-ui/core/icon';
 import { cx } from '../utils/cx';
 
-export interface IconProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
+export interface IconProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'> {
   /**
    * Color name provided by palette.
    */

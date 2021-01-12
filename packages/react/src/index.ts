@@ -1,26 +1,32 @@
 export { cx } from './utils/cx';
 
-export {
+export type {
   ButtonColor,
   ButtonComponent,
   ButtonSize,
   ButtonVariant,
   ButtonProps,
-  default as Button,
   IconButtonProps,
+} from './Button';
+export type {
+  default as Button,
   IconButton,
 } from './Button';
-export {
+export type {
   IconColor,
   IconProps,
-  default as Icon,
 } from './Icon';
 export {
+  default as Icon,
+} from './Icon';
+export type {
   TypographyAlign,
   TypographyColor,
   TypographyComponent,
   TypographyDisplay,
   TypographyVariant,
   TypographyProps,
+} from './Typography';
+export {
   default as Typography,
 } from './Typography';

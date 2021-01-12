@@ -21,7 +21,8 @@ import { IconButtonProps } from './IconButton';
 
 export type ButtonGroupChild = ReactElement<ButtonProps | IconButtonProps>;
 
-export interface ButtonGroupProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface ButtonGroupProps extends
+  Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref'> {
   /**
    * If `true`, all buttons will not have spacing between each others.
    * @default false

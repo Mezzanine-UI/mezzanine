@@ -17,7 +17,8 @@ import Icon from '../Icon';
 
 export type ButtonComponent = 'button' | 'label' | 'a' | ComponentType<ButtonProps>;
 
-export interface ButtonProps extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> {
+export interface ButtonProps extends
+  Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'ref'> {
   /**
    * The color name provided by palette.
    * @default 'primary'

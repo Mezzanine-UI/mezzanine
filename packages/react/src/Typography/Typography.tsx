@@ -27,7 +27,7 @@ function getComponentFromVariant(variant: TypographyVariant): TypographyComponen
   return 'span';
 }
 
-export interface TypographyProps extends DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> {
+export interface TypographyProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'> {
   /**
    * The css variable for `text-align`.
    */

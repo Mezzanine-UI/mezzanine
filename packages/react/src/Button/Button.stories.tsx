@@ -1,11 +1,11 @@
+import { Story, Meta } from '@storybook/react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
-import { boolean } from '@storybook/addon-knobs';
 import Icon from '../Icon';
 import Button from '.';
 
 export default {
   title: 'Basic/Button',
-};
+} as Meta;
 
 export const Contained = () => (
   <div
@@ -119,10 +119,14 @@ export const WithIcons = () => (
   </div>
 );
 
-export const Loading = () => {
-  const loading = boolean('loading', true);
+interface LoadingStoryArgs {
+  loading: boolean;
+}
 
-  return (
-    <Button loading={loading} variant="contained">ok</Button>
-  );
+export const Loading: Story<LoadingStoryArgs> = ({ loading }) => (
+  <Button loading={loading} variant="contained">ok</Button>
+);
+
+Loading.args = {
+  loading: true,
 };
