@@ -1,4 +1,4 @@
-export { IconDefinition } from './typings';
+export type { IconDefinition } from './typings';
 
 /**
  * icons

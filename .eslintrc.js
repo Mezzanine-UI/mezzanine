@@ -294,6 +294,7 @@ module.exports = {
       },
       extends: [
         'plugin:@angular-eslint/recommended',
+        'plugin:@angular-eslint/template/process-inline-templates',
       ],
       rules: {
         'no-underscore-dangle': 0,
@@ -313,10 +314,12 @@ module.exports = {
             style: 'kebab-case',
           },
         ],
+        '@angular-eslint/no-host-metadata-property': 0,
       },
     },
     {
       files: ['./packages/ng/**/*.html'],
+      parser: '@angular-eslint/template-parser',
       extends: [
         'plugin:@angular-eslint/template/recommended',
       ],
