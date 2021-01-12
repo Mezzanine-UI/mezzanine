@@ -60,8 +60,6 @@ $default-options: (
 }
 
 @mixin _size($options) {
-  $padding-x: map.get($options, padding-x);
-  $padding-x-small: map.get($options, padding-x-small);
   $icon-size: map.get($options, icon-size);
   $icon-size-small: map.get($options, icon-size-small);
 
@@ -95,17 +93,8 @@ $default-options: (
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
-  // ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  //   color: #8F8F8F;
-  //   opacity: 1; /* Firefox */
-  // }
-
   .#{$prefix} {
     @include utils.reset();
-
-    border: none;
-    outline: none;
-    background-color: transparent;
 
     &--wrapper {
       display: inline-flex;
@@ -114,6 +103,17 @@ $default-options: (
       border-width: 1px;
       border-style: solid;
       border-color: palette.color(border);
+      background-color: palette.color(surface);
+
+      ::placeholder {
+        color: palette.color(text-secondary);
+      }
+
+      &.#{$prefix}--disabled {
+        ::placeholder {
+          color: palette.color(text-disabled);
+        }
+      }
 
       &:hover {
         &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
@@ -140,18 +140,9 @@ $default-options: (
       border-color: palette.color(error);
     }
 
-    &--errorMessage {
-      @include typography.variant(caption);
-
-      white-space: nowrap;
-      color: palette.color(error);
-      position: absolute;
-      right: 0;
-      bottom: -20px;
-    }
-
     &--disabled {
-      border-color: palette.color(action-disabled);
+      border-color: transparent;
+      background-color: palette.color(action-disabled-bg);
     }
 
     &--clearButton {

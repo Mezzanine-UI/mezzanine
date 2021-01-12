@@ -112,7 +112,9 @@ export const WithIcons = () => {
         alignItems: 'center',
       }}
     >
-      <Input placeholder="請輸入文字" />
+      <Input
+        placeholder="請輸入文字"
+      />
       <Input
         placeholder="請輸入文字"
         iconEnd={<Icon icon={PlusIcon} />}
@@ -126,17 +128,14 @@ export const WithIcons = () => {
       <Input
         placeholder="請輸入文字"
         iconEnd={<Icon icon={PlusIcon} />}
-        size="small"
       />
       <Input
         placeholder="請輸入文字"
         iconStart={<Icon icon={PlusIcon} />}
-        size="small"
       />
       <Input
         placeholder="請輸入文字"
         iconStart={<Icon icon={PlusIcon} />}
-        size="large"
       />
       <Input
         placeholder="輸入金額"
@@ -179,10 +178,26 @@ export const WithIcons = () => {
         numberOnly
       />
       <Input
+        alphabetOnly
         maxLength={20}
         placeholder="搜尋..."
         iconStart={<Icon icon={SearchIcon} />}
         size="large"
+        clearable
+      />
+      <Input
+        alphabetOnly
+        maxLength={20}
+        placeholder="搜尋..."
+        iconStart={<Icon icon={SearchIcon} />}
+        clearable
+      />
+      <Input
+        alphabetOnly
+        maxLength={20}
+        placeholder="搜尋..."
+        iconStart={<Icon icon={SearchIcon} />}
+        size="small"
         clearable
       />
     </div>
