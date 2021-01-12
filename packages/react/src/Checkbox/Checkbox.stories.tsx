@@ -5,13 +5,24 @@ export default {
 };
 
 export const Basic = () => (
-  <div>
+  <div style={{
+    display: 'inline-grid',
+    gridTemplateColumns: 'repeat(2, max-content)',
+    gap: '16px',
+    alignItems: 'center',
+  }}
+  >
+    Unselected
     <Checkbox />
-    <Checkbox canHover />
-    <Checkbox hasError />
-    <Checkbox indeterminate />
+    Disabled Unselected
     <Checkbox disabled />
+    Error Unselected
+    <Checkbox hasError />
+    Disabled Selected
     <Checkbox disabled defaultChecked />
+    Enabled Indeterminate
+    <Checkbox indeterminate />
+    Disabled Indeterminate
     <Checkbox disabled indeterminate />
   </div>
 );
@@ -35,6 +46,14 @@ export const Sizes = () => (
 );
 
 export const Group = () => (
+  <div>
+    <Checkbox>
+      預設文字
+    </Checkbox>
+  </div>
+);
+
+export const Tree = () => (
   <div>
     <Checkbox>
       預設文字

@@ -1,0 +1,77 @@
+@use 'sass:map';
+@use '../palette';
+@use '../size';
+
+$prefix: mzn-checkbox;
+$colors: (primary, secondary, error);
+$sizes: size.$sizes;
+
+$default-options: (
+  border-width: 1px,
+  border-color: palette.color(text-secondary),
+  box-size: 22px,
+  box-size-small: 14px,
+);
+
+@mixin _size($options) {
+  $box-size: map.get($options, box-size);
+  $box-size-small: map.get($options, box-size-small);
+  $border-width: map.get($options, border-width);
+  $border-color: map.get($options, border-color);
+
+  @each $size in $sizes {
+    &--#{$size} {
+      height: $box-size;
+      width: $box-size;
+
+      &--icon {
+        height: $box-size;
+        width: $box-size;
+        color: #fff;
+      }
+
+      @if $size == small {
+        width: $box-size-small;
+        height: $box-size-small;
+      }
+    }
+  }
+}
+
+@mixin _border-color($options) {
+  $border-width: map.get($options, border-width);
+  $border-color: map.get($options, border-color);
+
+  border: $border-width solid $border-color;
+
+  &--disabled {
+    border-color: palette.color(action-disabled-bg);
+  }
+
+  &--error {
+    border-color: palette.color(error);
+  }
+
+  &:hover {
+    border-color: palette.color(primary);
+  }
+}
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+
+  .#{$prefix} {
+    &--selected {
+      background-color: palette.color(primary);
+      border-color: palette.color(primary);
+
+      &--disabled {
+        background-color: palette.color(action-disabled-bg);
+        border-color: palette.color(action-disabled-bg);
+      }
+    }
+
+    @include _size($options);
+    @include _border-color($options);
+  }
+}

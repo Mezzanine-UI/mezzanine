@@ -4,6 +4,7 @@
 @use '~@mezzanine-ui/core/icon';
 @use '~@mezzanine-ui/core/button';
 @use '~@mezzanine-ui/core/selection';
+@use '~@mezzanine-ui/core/checkbox';
 
 :root {
   @include palette.variables("light");
@@ -19,3 +20,4 @@
 @include icon.core();
 @include button.core();
 @include selection.core();
+@include checkbox.core();
