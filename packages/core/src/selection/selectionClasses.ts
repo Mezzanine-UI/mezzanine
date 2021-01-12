@@ -7,5 +7,4 @@ export const selectionClasses = {
   input: `${selectionPrefix}--input`,
   size: (size: SelectionSize) => `${selectionPrefix}--${size}`,
   label: (size: SelectionSize) => `${selectionPrefix}--${size}--label`,
-  check: (size: SelectionSize) => `${selectionPrefix}--${size}--check`,
 };
