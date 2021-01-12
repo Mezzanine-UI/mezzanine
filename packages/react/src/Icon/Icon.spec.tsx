@@ -12,7 +12,7 @@ describe('<Icon />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(
-    SVGSVGElement,
+    HTMLElement,
     (ref) => render(<Icon ref={ref} icon={PlusIcon} />),
   );
 
@@ -36,11 +36,12 @@ describe('<Icon />', () => {
       expect(element.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
 
-    it('should set focusable to false', () => {
+    it('should set focusable of svg to false', () => {
       const { getHostHTMLElement } = render(<Icon icon={PlusIcon} />);
       const element = getHostHTMLElement();
+      const svgElement = element.firstElementChild;
 
-      expect(element.getAttribute('focusable')).toBe('false');
+      expect(svgElement?.getAttribute('focusable')).toBe('false');
     });
   });
 

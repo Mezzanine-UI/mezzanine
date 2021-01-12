@@ -141,7 +141,7 @@ describe('<Button />', () => {
       expect(childElementCount).toBe(2);
       expect(labelElement?.textContent).toBe('Hello');
       expect(labelElement?.tagName.toLowerCase()).toBe('span');
-      expect(iconEndElement?.tagName.toLowerCase()).toBe('svg');
+      expect(iconEndElement?.tagName.toLowerCase()).toBe('i');
       expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
@@ -161,7 +161,7 @@ describe('<Button />', () => {
       } = element;
 
       expect(childElementCount).toBe(2);
-      expect(iconStartElement?.tagName.toLowerCase()).toBe('svg');
+      expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
       expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
       expect(labelElement?.textContent).toBe('Hello');
       expect(labelElement?.tagName.toLowerCase()).toBe('span');

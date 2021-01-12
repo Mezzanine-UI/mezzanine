@@ -13,7 +13,7 @@ export {
 export * from '@testing-library/react';
 
 export type RenderResult<Q extends Queries = typeof queries> = CoreRenderResult<Q> & {
-  getHostHTMLElement(): HTMLElement;
+  getHostHTMLElement<E extends Element = HTMLElement>(): E;
 };
 
 export function render(
@@ -29,7 +29,7 @@ export function render(ui: ReactElement, options?: RenderOptions): any {
   const coreResult = coreRender(ui, options);
   const result: RenderResult = {
     ...coreResult,
-    getHostHTMLElement: () => coreResult.container.firstElementChild as HTMLElement,
+    getHostHTMLElement: <E extends Element = HTMLElement>() => coreResult.container.firstElementChild as E,
   };
 
   return result;
