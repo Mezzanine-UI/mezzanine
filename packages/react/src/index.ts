@@ -37,3 +37,9 @@ export {
   InputProps,
   default as Input,
 } from './Input';
+
+export {
+  TextareaSize,
+  TextareaProps,
+  default as Textarea,
+} from './Textarea';

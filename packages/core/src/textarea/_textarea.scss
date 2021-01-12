@@ -1,0 +1,114 @@
+@use 'sass:map';
+@use '../size';
+@use '../palette';
+@use '../typography';
+@use '../icon';
+@use '../typography/utils' as utils-typography;
+@use './utils';
+
+$prefix: mzn-textarea;
+$textareaSizes: size.$sizes;
+
+$default-options: (
+  padding-x: 16px,
+  padding-x-small: 12px,
+  padding-x-with-icon: 12px,
+  padding-x-small-with-icon: 8px,
+  icon-size: 24px,
+  icon-size-small: 16px,
+  padding-decorator: 4px,
+);
+
+@function _get-typography-variant-from-size($size) {
+  @return map.get(
+    (
+      small: body1,
+      medium: body1,
+      large: body2,
+    ),
+    $size
+  );
+}
+
+@mixin _padding-x($options, $is-outlined) {
+  $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
+  $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
+
+  padding: 8px $padding-x;
+
+  &.#{$prefix}--small {
+    padding: 8px $padding-x-small;
+  }
+}
+
+@mixin _size($options) {
+  @each $size in $textareaSizes {
+    $typography-variant: _get-typography-variant-from-size($size);
+
+    &--#{$size} {
+      @include typography.variant($typography-variant);
+    }
+  }
+}
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+
+  .#{$prefix} {
+    @include utils.reset();
+
+    &--wrapper {
+      display: inline-flex;
+      position: relative;
+      justify-content: space-between;
+      border-width: 1px;
+      border-style: solid;
+      border-color: palette.color(border);
+
+      &:hover {
+        &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
+          &:hover {
+            border-color: palette.color(primary);
+          }
+        }
+      }
+
+      ::placeholder {
+        color: palette.color(text-secondary);
+      }
+
+      &.#{$prefix}--disabled {
+        ::placeholder {
+          color: palette.color(text-disabled);
+        }
+      }
+
+      @include _padding-x($options, false);
+    }
+
+    &--wrapper:focus-within {
+      border-color: palette.color(primary);
+
+      &:not(.#{$prefix}--disabled) {
+        border-color: palette.color(primary);
+      }
+    }
+
+    @include _size($options);
+
+    &--error {
+      border-color: palette.color(error);
+    }
+
+    &--disabled {
+      background-color: palette.color(action-disabled-bg);
+      border-color: transparent;
+    }
+
+    &--counting {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+    }
+  }
+}
