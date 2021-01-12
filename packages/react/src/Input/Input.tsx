@@ -63,11 +63,11 @@ export interface InputProps extends
   //  * @default 'false';
   //  */
   // alphabetNumberOnly?: boolean;
-  // /**
-  //  * Maximum length of the input .
-  //  * @default 'false';
-  //  */
-  // maxLength?: number;
+  /**
+   * Maximum length of the input .
+   * @default 'false';
+   */
+  maxLength?: number;
 }
 
 /**
@@ -78,7 +78,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     // numberOnly,
     // alphabetOnly,
     // alphabetNumberOnly,
-    // maxLength,
+    maxLength,
     value,
     defaultValue,
     clearable = false,
@@ -102,39 +102,39 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  // const checkValueRules = useCallback(({
-  //   target,
-  // }) => {
-  //   let testedValue = target.value;
+  const checkValueRules = useCallback(({
+    target,
+  }) => {
+    let testedValue = target.value;
 
-  //   if (numberOnly) {
-  //     testedValue = testedValue?.replace(/[^0-9]/g, '');
-  //   }
+    // if (numberOnly) {
+    //   testedValue = testedValue?.replace(/[^0-9]/g, '');
+    // }
 
-  //   if (alphabetOnly) {
-  //     testedValue = testedValue?.replace(/[^a-z]/gi, '');
-  //   }
+    // if (alphabetOnly) {
+    //   testedValue = testedValue?.replace(/[^a-z]/gi, '');
+    // }
 
-  //   if (alphabetNumberOnly) {
-  //     testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
-  //   }
+    // if (alphabetNumberOnly) {
+    //   testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
+    // }
 
-  //   if (maxLength) {
-  //     testedValue = testedValue?.substr(0, maxLength);
-  //   }
+    if (maxLength) {
+      testedValue = testedValue?.substr(0, maxLength);
+    }
 
-  //   setInputs(testedValue);
-  // }, [
-  //   numberOnly,
-  //   alphabetOnly,
-  //   alphabetNumberOnly,
-  //   maxLength,
-  // ]);
+    setInputs(testedValue);
+  }, [
+    // numberOnly,
+    // alphabetOnly,
+    // alphabetNumberOnly,
+    maxLength,
+  ]);
 
   const handleChange = useCallback((e) => {
     setInputs(e.target.value);
-    // checkValueRules(e);
-  }, []);
+    checkValueRules(e);
+  }, [checkValueRules]);
 
   useEffect(() => {
     if (value && value !== defaultValue) {
