@@ -56,8 +56,6 @@ describe('prop: color', () => {
   });
 
   const colors: CheckboxColor[] = [
-    'border',
-    'disabled',
     'error',
     'primary',
   ];
@@ -80,8 +78,6 @@ describe('prop: checked', () => {
 
       expect(element.hasAttribute('checked')).toBe(checked);
       expect(element.getAttribute('aria-checked')).toBe(`${checked}`);
-      expect(element.hasAttribute('checked')).toBePartiallyChecked(checked);
-      expect(element.getAttribute('aria-checked')).toBePartiallyChecked(`${checked}`);
     });
   });
 });
