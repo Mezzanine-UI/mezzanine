@@ -1,5 +1,8 @@
+import { Renderer2, RendererStyleFlags2 } from '@angular/core';
+
 export function setElementCssVars(
-  element: HTMLElement,
+  element: Element,
+  renderer: Renderer2,
   style: Record<string, any>,
 ) {
   // eslint-disable-next-line guard-for-in
@@ -7,9 +10,9 @@ export function setElementCssVars(
     const value = style[key];
 
     if (value != null) {
-      element.style.setProperty(key, value);
+      renderer.setStyle(element, key, value, RendererStyleFlags2.DashCase);
     } else {
-      element.style.removeProperty(key);
+      renderer.removeStyle(element, key, RendererStyleFlags2.DashCase);
     }
   }
 }

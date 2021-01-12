@@ -15,6 +15,7 @@ import {
   HostBinding,
   Input,
   OnChanges,
+  Renderer2,
 } from '@angular/core';
 import {
   BooleanInput,
@@ -53,6 +54,7 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
 
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
+    private readonly renderer: Renderer2,
   ) {}
 
   /**
@@ -106,13 +108,11 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
 
   private _setVariant(previousValue: TypedSimpleChangePreviousValue<TypographyVariant>) {
     if (previousValue !== this.variant) {
-      const { classList } = this.$host;
-
       if (previousValue) {
-        classList.remove(classes.variant(previousValue));
+        this.renderer.removeClass(this.$host, classes.variant(previousValue));
       }
 
-      classList.add(classes.variant(this.variant));
+      this.renderer.addClass(this.$host, classes.variant(this.variant));
     }
   }
 
@@ -123,25 +123,32 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
       display: this.display,
     });
 
-    setElementCssVars(this.$host, style);
+    setElementCssVars(this.$host, this.renderer, style);
   }
 
   private _setTitleAttr() {
     const { status, content } = this._ellipsisInfo;
 
     if (status && content) {
-      this.$host.setAttribute('title', content);
+      this.renderer.setAttribute(this.$host, 'title', content);
     } else {
-      this.$host.removeAttribute('title');
+      this.renderer.removeAttribute(this.$host, 'title');
     }
   }
 
   ngOnChanges(changes: TypedSimpleChanges<MznTypographyDirective>) {
-    if (changes.variant) {
-      this._setVariant(changes.variant.previousValue);
+    const {
+      align,
+      color,
+      display,
+      variant,
+    } = changes;
+
+    if (variant) {
+      this._setVariant(variant.previousValue);
     }
 
-    if (changes.align || changes.color || changes.display) {
+    if (align || color || display) {
       this._setCssVars();
     }
   }

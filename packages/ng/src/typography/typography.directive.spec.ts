@@ -10,7 +10,7 @@ import { render } from '@testing-library/angular';
 import { MznTypographyDirective } from '.';
 
 describe('MznTypographyDirective', () => {
-  describe('prop: variant', () => {
+  describe('input: variant', () => {
     it('should render variant="body1" by default', async () => {
       const result = await render(MznTypographyDirective, {
         template: `
@@ -56,7 +56,7 @@ describe('MznTypographyDirective', () => {
       });
     });
 
-    it('should remove class of previous variant after changed', async () => {
+    it('should sync corresponding class of variant after changed', async () => {
       const result = await render(MznTypographyDirective, {
         template: `
           <p [mznTypography]="variant">Hello</p>
@@ -66,6 +66,8 @@ describe('MznTypographyDirective', () => {
         },
       });
       const element = result.container.firstElementChild as HTMLElement;
+
+      expect(element.classList.contains('mzn-typography--body1')).toBeTruthy();
 
       result.rerender({
         variant: 'body2',
