@@ -3,6 +3,7 @@ import { PlusIcon } from '@mezzanine-ui/icons';
 import {
   cleanup,
   render,
+  fireEvent,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -23,6 +24,15 @@ describe('<Input />', () => {
     'foo',
     (className) => render(<Input className={className} />),
   );
+
+  describe('prop: error', () => {
+    it('should add error style', () => {
+      const { getHostHTMLElement } = render(<Input error />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-input--error')).toBeTruthy();
+    });
+  });
 
   describe('prop: disabled', () => {
     it('should has disabled and aria-disabled attributes', () => {
@@ -134,6 +144,51 @@ describe('<Input />', () => {
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
       expect(textEndElement?.tagName.toLowerCase()).toBe('span');
+    });
+  });
+
+  describe('prop: clearable', () => {
+    it('should render the clear button on the right side', () => {
+      const { getHostHTMLElement } = render(<Input clearable />);
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: inputElement,
+        lastElementChild: clearButtonElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(inputElement?.tagName.toLowerCase()).toBe('input');
+      expect(clearButtonElement?.tagName.toLowerCase()).toBe('button');
+    });
+
+    it('should clear value when click the clear button', () => {
+      const { getHostHTMLElement } = render(<Input clearable />);
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: inputElement,
+        lastElementChild: clearButtonElement,
+      } = element;
+
+      if (inputElement && clearButtonElement) {
+        fireEvent.change(inputElement, { target: { value: 'entered content' } });
+
+        fireEvent.click(clearButtonElement);
+
+        expect(inputElement.getAttribute('value')).toBe('');
+      }
+    });
+  });
+
+  describe('prop: value', () => {
+    it('should set value prop to input value', () => {
+      const { getHostHTMLElement } = render(<Input value="Tom Hardy" />);
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: inputElement,
+      } = element;
+
+      expect(inputElement?.getAttribute('value')).toBe('Tom Hardy');
     });
   });
 });
