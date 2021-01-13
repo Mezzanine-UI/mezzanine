@@ -1,27 +1,34 @@
 import {
+  ChangeDetectionStrategy,
   Component as Directive,
   ElementRef,
   HostBinding,
   Input,
   OnChanges,
   Renderer2,
+  ViewEncapsulation,
 } from '@angular/core';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import type { IconColor } from '@mezzanine-ui/core/icon';
 import { iconClasses as classes, toIconCssVars } from '@mezzanine-ui/core/icon';
 import {
   BooleanInput,
+  CssVarsRef,
   InputBoolean,
-  setElementCssVars,
   TypedSimpleChanges,
 } from '../core';
+
+/* eslint-disable @angular-eslint/no-input-rename */
 
 /**
  * The ng directive for `mezzanine` icon.
  */
 @Directive({
-  selector: '[mznIcon],i[mznIcon]',
+  selector: 'i[mznIcon]',
   exportAs: 'mznIcon',
+  preserveWhitespaces: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
   host: {
     [`[class.${classes.host}]`]: 'true',
     '[attr.aria-hidden]': 'true',
@@ -59,12 +66,10 @@ import {
 export class MznIconDirective implements OnChanges {
   static ngAcceptInputType_spin: BooleanInput;
 
-  private get $host() {
-    return this.elementRef.nativeElement;
-  }
+  private cssVarsRef = new CssVarsRef(this.elementRef, this.renderer);
 
   constructor(
-    private readonly elementRef: ElementRef<SVGElement>,
+    private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
   ) {}
 
@@ -90,19 +95,17 @@ export class MznIconDirective implements OnChanges {
   @InputBoolean()
   spin = false;
 
-  private _setCssVars() {
-    const style = toIconCssVars({
+  private setCssVars() {
+    this.cssVarsRef.value = toIconCssVars({
       color: this.color,
     });
-
-    setElementCssVars(this.$host, this.renderer, style);
   }
 
   ngOnChanges(changes: TypedSimpleChanges<MznIconDirective>) {
     const { color } = changes;
 
     if (color) {
-      this._setCssVars();
+      this.setCssVars();
     }
   }
 }

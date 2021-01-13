@@ -19,9 +19,9 @@ import {
 } from '@angular/core';
 import {
   BooleanInput,
+  CssVarsRef,
   InputBoolean,
   InputNotEmptyEnum,
-  setElementCssVars,
   TypedSimpleChangePreviousValue,
   TypedSimpleChanges,
 } from '../core';
@@ -47,7 +47,9 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
     return this.elementRef.nativeElement;
   }
 
-  private _ellipsisInfo: EllipsisInfo = {
+  private cssVarsRef = new CssVarsRef(this.elementRef, this.renderer);
+
+  private ellipsisInfo: EllipsisInfo = {
     status: false,
     content: null,
   };
@@ -106,7 +108,7 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
   @InputBoolean()
   noWrap = false;
 
-  private _setVariant(previousValue: TypedSimpleChangePreviousValue<TypographyVariant>) {
+  private setVariant(previousValue: TypedSimpleChangePreviousValue<TypographyVariant>) {
     if (previousValue !== this.variant) {
       if (previousValue) {
         this.renderer.removeClass(this.$host, classes.variant(previousValue));
@@ -116,18 +118,16 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
     }
   }
 
-  private _setCssVars() {
-    const style = toTypographyCssVars({
+  private setCssVars() {
+    this.cssVarsRef.value = toTypographyCssVars({
       align: this.align,
       color: this.color,
       display: this.display,
     });
-
-    setElementCssVars(this.$host, this.renderer, style);
   }
 
-  private _setTitleAttr() {
-    const { status, content } = this._ellipsisInfo;
+  private setTitleAttr() {
+    const { status, content } = this.ellipsisInfo;
 
     if (status && content) {
       this.renderer.setAttribute(this.$host, 'title', content);
@@ -145,23 +145,26 @@ export class MznTypographyDirective implements OnChanges, AfterViewChecked {
     } = changes;
 
     if (variant) {
-      this._setVariant(variant.previousValue);
+      this.setVariant(variant.previousValue);
     }
 
     if (align || color || display) {
-      this._setCssVars();
+      this.setCssVars();
     }
   }
 
   ngAfterViewChecked() {
     const { textContent: content } = this.$host;
 
-    if (this._ellipsisInfo.status !== this.ellipsis || this._ellipsisInfo.content !== content) {
-      this._ellipsisInfo = {
+    if (
+      this.ellipsisInfo.status !== this.ellipsis ||
+      this.ellipsisInfo.content !== content
+    ) {
+      this.ellipsisInfo = {
         status: this.ellipsis,
         content,
       };
-      this._setTitleAttr();
+      this.setTitleAttr();
     }
   }
 }

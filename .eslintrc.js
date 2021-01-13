@@ -208,16 +208,32 @@ module.exports = {
         ],
         'import/prefer-default-export': 0,
         indent: 0,
-        'prefer-arrow-callback': [
-          2,
-          {
-            allowNamedFunctions: true,
-          },
-        ],
         'max-len': [
           2,
           {
             code: 120,
+          },
+        ],
+        'no-underscore-dangle': [
+          2,
+          {
+            allowAfterThis: true,
+          },
+        ],
+        'operator-linebreak': [
+          2,
+          'after',
+          {
+            overrides: {
+              '?': 'before',
+              ':': 'before',
+            },
+          },
+        ],
+        'prefer-arrow-callback': [
+          2,
+          {
+            allowNamedFunctions: true,
           },
         ],
         '@typescript-eslint/explicit-function-return-type': 0,
@@ -297,7 +313,6 @@ module.exports = {
         'plugin:@angular-eslint/template/process-inline-templates',
       ],
       rules: {
-        'no-underscore-dangle': 0,
         '@angular-eslint/directive-selector': [
           2,
           {
