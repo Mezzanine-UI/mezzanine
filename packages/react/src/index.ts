@@ -12,6 +12,7 @@ export type {
   default as Button,
   IconButton,
 } from './Button';
+
 export type {
   IconColor,
   IconProps,
@@ -20,6 +21,7 @@ export type {
 export {
   default as Icon,
 } from './Icon';
+
 export type {
   TypographyAlign,
   TypographyColor,
@@ -32,14 +34,18 @@ export {
   default as Typography,
 } from './Typography';
 
-export {
-  InputSize,
+export type {
   InputProps,
+  InputSize,
+} from './Input';
+export {
   default as Input,
 } from './Input';
 
-export {
+export type {
   TextareaSize,
   TextareaProps,
+} from './Textarea';
+export {
   default as Textarea,
 } from './Textarea';
