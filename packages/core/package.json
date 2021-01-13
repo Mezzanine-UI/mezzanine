@@ -19,5 +19,8 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "tslib": "^2.1.0"
   }
 }
