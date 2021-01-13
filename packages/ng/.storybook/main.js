@@ -3,7 +3,8 @@ module.exports = {
     '../src/**/*.stories.@(mdx|ts)'
   ],
   addons: [
+    '@storybook/addon-essentials',
     '@storybook/addon-links',
-    '@storybook/addon-essentials'
+    '@storybook/addon-storysource',
   ]
 };

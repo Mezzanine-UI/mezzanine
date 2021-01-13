@@ -14,14 +14,11 @@ import {
   SpinnerIcon,
   TimesIcon,
   TimesCircleFilledIcon,
-  IconDefinition,
 } from '@mezzanine-ui/icons';
-import { IconColor } from '@mezzanine-ui/core/icon';
-import { MznIconDirective, MznIconModule } from '.';
+import { IconColor, MznIconDirective, MznIconModule } from '.';
 
 export default {
   title: 'Basic/Icon',
-  component: MznIconDirective,
   decorators: [
     moduleMetadata({
       imports: [MznIconModule],
@@ -29,42 +26,46 @@ export default {
   ],
 } as Meta;
 
-interface AllStoryArgs {
-  icons: IconDefinition[];
-  search: string;
-  spin: boolean;
-}
+const colors: IconColor[] = [
+  'inherit',
+  'primary',
+  'secondary',
+  'error',
+  'warning',
+  'success',
+  'disabled',
+];
 
-export const All: Story<AllStoryArgs> = ({ icons, search, ...args }) => ({
-  component: MznIconDirective,
-  props: {
-    ...args,
-    icons: icons.filter((icon) => !search || icon.name.includes(search)),
-    search,
-  },
+export const Playgroud: Story<MznIconDirective> = (args) => ({
+  props: args,
   template: `
-    <div
-      [ngStyle]="{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        rowGap: '16px',
-        color: 'var(--mzn-color-action-inactive)',
-        fontSize: '48px',
-        textAlign: 'center'
-      }"
-    >
-      <ng-container *ngFor="let icon of icons;">
-        <div>
-          <i [mznIcon]="icon" [mznIconSpin]="spin"></i>
-          <div [style.font-size.px]="20">{{icon.name}}</div>
-        </div>
-      </ng-container>
-    </div>
+    <i 
+      [mznIcon]="icon"
+      [mznIconColor]="color"
+      [mznIconSpin]="spin"
+    ></i>
   `,
 });
 
-All.args = {
-  icons: [
+Playgroud.args = {
+  icon: PlusIcon,
+  spin: false,
+};
+Playgroud.argTypes = {
+  color: {
+    control: {
+      type: 'select',
+      options: [undefined, ...colors],
+    },
+  },
+};
+
+interface AllStoryArgs {
+  search: string;
+}
+
+export const All: Story<AllStoryArgs> = ({ search }) => {
+  const icons = [
     CheckIcon,
     CheckCircleFilledIcon,
     ChevronUpIcon,
@@ -78,19 +79,42 @@ All.args = {
     SpinnerIcon,
     TimesIcon,
     TimesCircleFilledIcon,
-  ],
-  search: '',
-  spin: false,
+  ].filter((icon) => !search || icon.name.includes(search));
+
+  return {
+    props: {
+      icons,
+    },
+    template: `
+      <div
+        [ngStyle]="{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          rowGap: '16px',
+          color: 'var(--mzn-color-action-inactive)',
+          fontSize: '48px',
+          textAlign: 'center'
+        }"
+      >
+        <ng-container *ngFor="let icon of icons;">
+          <div>
+            <i [mznIcon]="icon" [mznIconSpin]="spin"></i>
+            <div [style.font-size.px]="20">{{icon.name}}</div>
+          </div>
+        </ng-container>
+      </div>
+    `,
+  };
 };
 
-interface ColorsStoryArgs {
-  colors: IconColor[];
-}
+All.args = {
+  search: '',
+};
 
-export const Colors: Story<ColorsStoryArgs> = (args) => ({
-  component: MznIconDirective,
+export const Colors: Story = (args) => ({
   props: {
     ...args,
+    colors,
     icon: CheckIcon,
   },
   template: `
@@ -106,15 +130,3 @@ export const Colors: Story<ColorsStoryArgs> = (args) => ({
     </div>
   `,
 });
-
-Colors.args = {
-  colors: [
-    'inherit',
-    'primary',
-    'secondary',
-    'error',
-    'warning',
-    'success',
-    'disabled',
-  ],
-};

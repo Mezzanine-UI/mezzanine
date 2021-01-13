@@ -1,11 +1,17 @@
 import { moduleMetadata } from '@storybook/angular';
 import { Story, Meta } from '@storybook/angular/types-6-0';
 
-import { MznTypographyDirective, MznTypographyModule } from '.';
+import {
+  MznTypographyDirective,
+  MznTypographyModule,
+  TypographyAlign,
+  TypographyColor,
+  TypographyDisplay,
+  TypographyVariant,
+} from '.';
 
 export default {
   title: 'Basic/Typography',
-  component: MznTypographyDirective,
   decorators: [
     moduleMetadata({
       imports: [MznTypographyModule],
@@ -13,8 +19,97 @@ export default {
   ],
 } as Meta;
 
-const Template: Story<MznTypographyDirective> = (args) => ({
-  component: MznTypographyDirective,
+const aligns: TypographyAlign[] = [
+  'left',
+  'center',
+  'right',
+  'justify',
+];
+const colors: TypographyColor[] = [
+  'inherit',
+  'primary',
+  'secondary',
+  'error',
+  'warning',
+  'success',
+  'text-primary',
+  'text-secondary',
+  'text-disabled',
+];
+const displays: TypographyDisplay[] = [
+  'block',
+  'inline-block',
+  'flex',
+  'inline-flex',
+];
+const variants: TypographyVariant[] = [
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+  'body1',
+  'body2',
+  'button1',
+  'button2',
+  'button3',
+  'input1',
+  'input2',
+  'input3',
+  'caption',
+];
+
+export const Playgroud: Story<MznTypographyDirective & { content: string; }> = (args) => ({
+  props: args,
+  template: `
+    <p
+      [mznTypography]="variant"
+      [mznTypographyAlign]="align"
+      [mznTypographyColor]="color"
+      [mznTypographyDisplay]="display"
+      [mznTypographyEllipsis]="ellipsis"
+      [mznTypographyNoWrap]="noWrap"
+    >
+      {{content}}
+    </p>
+  `,
+});
+
+Playgroud.args = {
+  content: 'Hello World!',
+  variant: 'body1',
+  ellipsis: false,
+  noWrap: false,
+};
+Playgroud.argTypes = {
+  align: {
+    control: {
+      type: 'select',
+      options: [undefined, ...aligns],
+    },
+  },
+  color: {
+    control: {
+      type: 'select',
+      options: [undefined, ...colors],
+    },
+  },
+  display: {
+    control: {
+      type: 'select',
+      options: [undefined, ...displays],
+    },
+  },
+  variant: {
+    control: {
+      type: 'select',
+      options: variants,
+    },
+  },
+};
+
+export const Variants: Story = (args) => ({
   props: args,
   template: `
     <h1 mznTypography="h1">h1. Heading</h1>
@@ -45,10 +140,7 @@ const Template: Story<MznTypographyDirective> = (args) => ({
   `,
 });
 
-export const Variants = Template.bind({});
-
-export const Colors: Story<MznTypographyDirective> = (args) => ({
-  component: MznTypographyDirective,
+export const Colors: Story = (args) => ({
   props: args,
   template: `
     <p mznTypography mznTypographyColor="inherit">inherit</p>
