@@ -63,12 +63,15 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textare
   }, [defaultValue, ref, value]);
 
   return (
-    <div className={cx(classes.wrapper,
-      {
-        [classes.disabled]: disabled,
-        [classes.error]: error,
-      },
-      classes.size(size))}
+    <div className={
+      cx(classes.wrapper,
+        classes.size(size),
+        {
+          [classes.disabled]: disabled,
+          [classes.error]: error,
+        },
+        className)
+    }
     >
       <textarea
         ref={ref}
@@ -78,6 +81,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textare
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
+        aria-disabled={disabled}
         maxLength={maxLength}
       />
       {maxLength ? (

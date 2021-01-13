@@ -47,8 +47,8 @@ describe('<Input />', () => {
     });
   });
 
-  describe('prop: inputSize', () => {
-    it('should render inputSize="medium" by default', () => {
+  describe('prop: size', () => {
+    it('should render size="medium" by default', () => {
       const { getHostHTMLElement } = render(<Input />);
       const element = getHostHTMLElement();
 
@@ -321,22 +321,21 @@ describe('<Input />', () => {
   //   });
   // });
 
-  // describe('prop: maxLength', () => {
-  //   it('should enter content whose length is between 0 and max length', () => {
-  //     const { getHostHTMLElement } = render(<Input maxLength={8} />);
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
+  describe('prop: maxLength', () => {
+    it('should enter content whose length is between 0 and max length', () => {
+      const { getHostHTMLElement } = render(<Input maxLength={8} />);
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: inputElement,
+      } = element;
 
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: '0123456789' } });
-  //       const inputValue = inputElement.getAttribute('value');
+      if (inputElement) {
+        fireEvent.change(inputElement, { target: { value: '0123456789' } });
 
-  //       if (inputValue) {
-  //         expect(inputValue).toBe('01234567');
-  //       }
-  //     }
-  //   });
-  // });
+        const inputValue = inputElement.getAttribute('value');
+
+        expect(inputValue).toBe('01234567');
+      }
+    });
+  });
 });
