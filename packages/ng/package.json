@@ -5,8 +5,8 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d . --disableLifeCycleHooks --disablePrivate --disableProtected",
-    "storybook": "npm run docs:json && start-storybook -p 6006",
-    "storybook:build": "npm run docs:json && build-storybook"
+    "storybook": "yarn docs:json && start-storybook -p 6006",
+    "storybook:build": "yarn docs:json && build-storybook"
   },
   "peerDependencies": {
     "@angular/animations": "^11.0.8",
