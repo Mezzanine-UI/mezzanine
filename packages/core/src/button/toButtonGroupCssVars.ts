@@ -1,8 +1,9 @@
+import { CssVarInterpolations } from '../css';
 import { toSpacingCssVar } from '../spacing';
 import { ButtonGroupCssVars } from './typings';
 import { buttonGroupPrefix } from './constants';
 
-export function toButtonGroupCssVars(variables: ButtonGroupCssVars): Record<string, any> {
+export function toButtonGroupCssVars(variables: ButtonGroupCssVars): CssVarInterpolations {
   const {
     size,
     spacing,

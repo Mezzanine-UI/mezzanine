@@ -1,9 +1,9 @@
-import { toCssVar } from '../css';
+import { CssVarInterpolations, toCssVar } from '../css';
 import { Color, palettePrefix } from '../palette';
 import { iconPrefix } from './constants';
 import { IconCssVars } from './typings';
 
-export function toIconCssVars(variables: IconCssVars): Record<string, any> {
+export function toIconCssVars(variables: IconCssVars): CssVarInterpolations {
   const { color } = variables;
 
   let colorValue: string | undefined;

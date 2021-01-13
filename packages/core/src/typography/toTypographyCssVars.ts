@@ -1,9 +1,9 @@
-import { toCssVar } from '../css';
+import { CssVarInterpolations, toCssVar } from '../css';
 import { palettePrefix } from '../palette';
 import { typographyPrefix } from './constants';
 import { TypographyCssVars } from './typings';
 
-export function toTypographyCssVars(variables: TypographyCssVars) {
+export function toTypographyCssVars(variables: TypographyCssVars): CssVarInterpolations {
   const {
     align,
     color,
