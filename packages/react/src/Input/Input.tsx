@@ -104,32 +104,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const handleChange = useCallback(({
     target,
-  }) => {
-    let testedValue = target.value;
-
-    if (numberOnly) {
-      testedValue = testedValue?.replace(/[^0-9]/g, '');
-    }
-
-    if (alphabetOnly) {
-      testedValue = testedValue?.replace(/[^a-z]/gi, '');
-    }
-
-    if (alphabetNumberOnly) {
-      testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
-    }
-
-    if (maxLength) {
-      testedValue = testedValue?.substr(0, maxLength);
-    }
-
-    setInputs(testedValue);
-  }, [
-    numberOnly,
-    alphabetOnly,
-    alphabetNumberOnly,
-    maxLength,
-  ]);
+  }) => setInputs(target.value), []);
 
   useEffect(() => {
     if (value && value !== defaultValue) {
