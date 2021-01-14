@@ -1,4 +1,6 @@
 @use 'sass:map';
+@use '../utils/list';
+@use '../orientation';
 @use '../size';
 @use '../palette';
 @use '../typography/utils' as utils-typography;
@@ -7,7 +9,9 @@
 @use './utils';
 
 $prefix: mzn-button;
-$colors: (primary, secondary, error);
+$group-prefix: #{$prefix}-group;
+$colors: (primary, secondary);
+$colors-and-error: list.push($colors, error);
 $variants: (contained, outlined, text);
 $sizes: size.$sizes;
 
@@ -53,7 +57,7 @@ $default-options: (
     }
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &--#{$color} {
       --#{$prefix}-color: #{palette.color($color)};
       --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
@@ -71,7 +75,7 @@ $default-options: (
     border-color: palette.color(action-disabled);
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &.#{$prefix}--#{$color} {
       --#{$prefix}-border: #{palette.color($color)};
     }
@@ -83,7 +87,7 @@ $default-options: (
     background-color: palette.color(action-disabled-bg);
   }
 
-  @each $color in $colors {
+  @each $color in $colors-and-error {
     &.#{$prefix}--#{$color} {
       --#{$prefix}-color: #{palette.color(on-#{$color})};
       --#{$prefix}-bg: #{palette.color($color)};
@@ -173,6 +177,30 @@ $default-options: (
   }
 }
 
+@mixin _group-attached-spacing($orientation) {
+  $direction: if($orientation == horizontal, left, top);
+
+  .#{$prefix} {
+    &:not(:first-child) {
+      border-#{$direction}: 1px solid var(--#{$prefix}-color);
+    }
+
+    &--outlined {
+      &:not(:first-child) {
+        margin-#{$direction}: -1px;
+        border-#{$direction}: 0;
+      }
+    }
+
+    &--contained {
+      &:not(:first-child) {
+        margin-#{$direction}: 1px;
+        border-#{$direction}: 0;
+      }
+    }
+  }
+}
+
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
@@ -204,6 +232,37 @@ $default-options: (
 
     &--icon {
       @include _icon-button-size();
+    }
+  }
+
+  .#{$group-prefix} {
+    display: inline-grid;
+    grid-auto-flow: column;
+    gap: var(--#{$group-prefix}-spacing);
+    align-items: center;
+
+    &--full-width {
+      width: 100%;
+    }
+
+    &--vertical {
+      grid-auto-flow: row;
+    }
+
+    &--attached {
+      display: inline-flex;
+      gap: 0;
+
+      @each $orientation in orientation.$orientations {
+        &.#{$group-prefix}--#{$orientation} {
+          @if $orientation == vertical {
+            flex-direction: column;
+            align-items: stretch;
+          }
+
+          @include _group-attached-spacing($orientation);
+        }
+      }
     }
   }
 }

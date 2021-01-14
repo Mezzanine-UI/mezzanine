@@ -1,5 +1,4 @@
-import { boolean, text } from '@storybook/addon-knobs';
-import React from 'react';
+import { Story, Meta } from '@storybook/react';
 import {
   CheckIcon,
   CheckCircleFilledIcon,
@@ -15,14 +14,44 @@ import {
   TimesIcon,
   TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
-import { IconColor } from '@mezzanine-ui/core/icon';
-import Icon from '.';
+import Icon, { IconColor, IconProps } from '.';
 
-export default { title: 'Basic/Icon' };
+const colors: IconColor[] = [
+  'inherit',
+  'primary',
+  'secondary',
+  'error',
+  'warning',
+  'success',
+  'disabled',
+];
 
-export const All = () => {
-  const search = text('search', '');
-  const spin = boolean('spin', false);
+export default {
+  title: 'Basic/Icon',
+} as Meta;
+
+export const Playgroud: Story<IconProps> = ({ children, ...props }) => (
+  <Icon {...props} icon={PlusIcon} />
+);
+
+Playgroud.args = {
+  icon: PlusIcon,
+  spin: false,
+};
+Playgroud.argTypes = {
+  color: {
+    control: {
+      type: 'select',
+      options: [undefined, ...colors],
+    },
+  },
+};
+
+interface AllStoryArgs {
+  search: string;
+}
+
+export const All: Story<AllStoryArgs> = ({ search }) => {
   const icons = [
     CheckIcon,
     CheckCircleFilledIcon,
@@ -52,7 +81,7 @@ export const All = () => {
     >
       {icons.map((icon) => (
         <div key={icon.name}>
-          <Icon icon={icon} spin={spin} />
+          <Icon icon={icon} />
           <div style={{ fontSize: 20 }}>{icon.name}</div>
         </div>
       ))}
@@ -60,31 +89,23 @@ export const All = () => {
   );
 };
 
-export const Colors = () => {
-  const colors: IconColor[] = [
-    'inherit',
-    'primary',
-    'secondary',
-    'error',
-    'warning',
-    'success',
-    'disabled',
-  ];
-
-  return (
-    <div
-      style={{
-        color: 'var(--mzn-color-action-inactive)',
-        fontSize: 48,
-      }}
-    >
-      {colors.map((color) => (
-        <Icon
-          key={color}
-          icon={CheckIcon}
-          color={color}
-        />
-      ))}
-    </div>
-  );
+All.args = {
+  search: '',
 };
+
+export const Colors = () => (
+  <div
+    style={{
+      color: 'var(--mzn-color-action-inactive)',
+      fontSize: 48,
+    }}
+  >
+    {colors.map((color) => (
+      <Icon
+        key={color}
+        icon={CheckIcon}
+        color={color}
+      />
+    ))}
+  </div>
+);

@@ -21,6 +21,6 @@
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
-    "@mezzanine-ui/icons": "^0.0.0"
+    "tslib": "^2.1.0"
   }
 }

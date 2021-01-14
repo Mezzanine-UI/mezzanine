@@ -1,10 +1,11 @@
+import { Meta } from '@storybook/react';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { IconButton } from '.';
 
 export default {
   title: 'Basic/Button/IconButton',
-};
+} as Meta;
 
 export const All = () => (
   <div

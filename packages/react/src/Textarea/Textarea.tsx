@@ -24,71 +24,78 @@ export interface TextareaProps
    * @default 'false';
    */
   error?: boolean;
-  /**
-   * Maximum length of the textarea .
-   * @default 'false';
-   */
-  maxLength?: number;
 }
 
 /**
  * The react component for `mezzanine` textarea.
  */
-const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(props, ref:any) {
-  const {
-    maxLength,
-    value,
-    defaultValue,
-    error = false,
-    children,
-    className,
-    disabled = false,
-    size = 'medium',
-    placeholder = '',
-    ...rest
-  } = props;
+const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, TextareaProps>(
+  function Textarea(props, ref:any) {
+    const {
+      onChange,
+      maxLength,
+      value,
+      defaultValue,
+      error = false,
+      children,
+      className,
+      disabled = false,
+      size = 'medium',
+      placeholder = '',
+      ...rest
+    } = props;
 
-  const [text, setText] = useState(defaultValue || '');
+    const [text, setText] = useState<any>(defaultValue || '');
+    const textLength = text.length;
 
-  const handleChange = useCallback(({
-    target,
-  }) => {
-    setText(target.value);
-  }, []);
+    const handleChange = useCallback((e) => {
+      if (onChange) {
+        onChange(e);
+      }
+      setText(e.target.value);
+    }, [onChange]);
 
-  useEffect(() => {
-    if (value && value !== defaultValue) {
-      setText(value);
-    }
-  }, [defaultValue, ref, value]);
+    useEffect(() => {
+      if (value && value !== defaultValue) {
+        setText(value);
+      }
+    }, [defaultValue, ref, value]);
 
-  return (
-    <div className={
-      cx(classes.wrapper,
-        classes.size(size),
+    return (
+      <div className={cx(classes.wrapper,
         {
           [classes.disabled]: disabled,
           [classes.error]: error,
         },
-        className)
-    }
-    >
-      <textarea
-        ref={ref}
-        value={text}
-        onChange={handleChange}
-        className={classes.host}
-        {...rest}
-        placeholder={placeholder}
-        disabled={disabled}
-        aria-disabled={disabled}
-        maxLength={maxLength}
-      />
-      {maxLength ? (
-        <span className={classes.counting}>123</span>
-      ) : null}
-    </div>
-  );
-});
+        classes.size(size))}
+      >
+        <textarea
+          ref={ref}
+          value={text}
+          onChange={handleChange}
+          className={cx(classes.host, classes.size(size))}
+          {...rest}
+          placeholder={placeholder}
+          disabled={disabled}
+          maxLength={maxLength}
+        />
+        {maxLength ? (
+          <span className={cx(
+            classes.counting,
+            {
+              [classes.disabled]: disabled,
+              [classes.error]: error,
+            },
+          )}
+          >
+            {textLength}
+            /
+            {maxLength}
+          </span>
+        ) : null}
+      </div>
+    );
+  },
+);
 
 export default Textarea;

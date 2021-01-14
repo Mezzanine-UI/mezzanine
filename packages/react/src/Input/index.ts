@@ -1,4 +1,5 @@
 export {
   InputSize,
 } from '@mezzanine-ui/core/input';
-export { InputProps, default } from './Input';
+export type { InputProps } from './Input';
+export { default } from './Input';

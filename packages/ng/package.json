@@ -1,0 +1,62 @@
+{
+  "name": "@mezzanine-ui/ng",
+  "version": "0.0.0",
+  "description": "Angular components for mezzanine-ui",
+  "author": "Mezzanine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mezzanine-UI/mezzanine.git",
+    "directory": "packages/ng"
+  },
+  "license": "MIT",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "docs:json": "compodoc -p ./tsconfig.json -e json -d . --disableLifeCycleHooks --disablePrivate --disableProtected",
+    "storybook": "yarn docs:json && start-storybook -p 6006",
+    "storybook:build": "yarn docs:json && build-storybook"
+  },
+  "peerDependencies": {
+    "@angular/animations": "^11.0.8",
+    "@angular/cdk": "^11.0.3",
+    "@angular/common": "^11.0.8",
+    "@angular/core": "^11.0.8",
+    "@angular/forms": "^11.0.8",
+    "rxjs": "^6.6.3",
+    "zone.js": "^0.11.3"
+  },
+  "dependencies": {
+    "@mezzanine-ui/core": "^0.0.0",
+    "@mezzanine-ui/icons": "^0.0.0",
+    "tslib": "^2.1.0"
+  },
+  "devDependencies": {
+    "@angular-builders/jest": "^11.0.0",
+    "@angular-devkit/build-angular": "~0.1100.6",
+    "@angular-eslint/eslint-plugin": "^1.0.0",
+    "@angular-eslint/eslint-plugin-template": "^1.0.0",
+    "@angular-eslint/template-parser": "^1.0.0",
+    "@angular/animations": "~11.0.8",
+    "@angular/cdk": "~11.0.3",
+    "@angular/cli": "~11.0.6",
+    "@angular/common": "~11.0.8",
+    "@angular/compiler": "~11.0.8",
+    "@angular/compiler-cli": "~11.0.8",
+    "@angular/core": "~11.0.8",
+    "@angular/forms": "~11.0.8",
+    "@angular/platform-browser": "~11.0.8",
+    "@angular/platform-browser-dynamic": "~11.0.8",
+    "@angular/router": "~11.0.8",
+    "@compodoc/compodoc": "^1.1.11",
+    "@storybook/angular": "^6.1.14",
+    "@testing-library/angular": "^10.3.1",
+    "ng-packagr": "^11.0.3",
+    "jest-preset-angular": "^8.3.2",
+    "rxjs": "~6.6.3",
+    "zone.js": "~0.11.3"
+  }
+}

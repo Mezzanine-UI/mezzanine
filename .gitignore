@@ -4,6 +4,10 @@
 /dist
 /tmp
 /out-tsc
+/storybook-static
+**/storybook-static
+documentation.json
+**/documentation.json
 
 # dependencies
 /node_modules
@@ -31,7 +35,6 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
 /libpeerconnection.log
 testem.log
 

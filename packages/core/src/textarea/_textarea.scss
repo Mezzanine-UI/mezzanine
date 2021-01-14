@@ -10,27 +10,39 @@ $prefix: mzn-textarea;
 $textareaSizes: size.$sizes;
 
 $default-options: (
+  width:290px,
+  width-small: 246px,
+  height: 100px,
   padding-x: 16px,
   padding-x-small: 12px,
-  padding-x-with-icon: 12px,
-  padding-x-small-with-icon: 8px,
-  icon-size: 24px,
-  icon-size-small: 16px,
-  padding-decorator: 4px,
 );
 
 @function _get-typography-variant-from-size($size) {
   @return map.get(
     (
-      small: body1,
+      small: body2,
       medium: body1,
-      large: body2,
+      large: body1,
     ),
     $size
   );
 }
 
-@mixin _padding-x($options, $is-outlined) {
+@mixin _width($options) {
+  $height: utils-typography.px-to-rem(map.get($options, height));
+  $width: utils-typography.px-to-rem(map.get($options, width));
+  $width-small: utils-typography.px-to-rem(map.get($options, width-small));
+
+  min-width: $width;
+  width: 100%;
+  min-height: $height;
+
+  &.#{$prefix}--small {
+    min-width: $width-small;
+  }
+}
+
+@mixin _padding-x($options) {
   $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
   $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
 
@@ -61,9 +73,11 @@ $default-options: (
       display: inline-flex;
       position: relative;
       justify-content: space-between;
+      align-items: center;
       border-width: 1px;
       border-style: solid;
       border-color: palette.color(border);
+      background-color: palette.color(surface);
 
       &:hover {
         &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
@@ -78,12 +92,19 @@ $default-options: (
       }
 
       &.#{$prefix}--disabled {
+        background-color: palette.color(action-disabled-bg);
+        border-color: transparent;
+
         ::placeholder {
           color: palette.color(text-disabled);
         }
       }
 
-      @include _padding-x($options, false);
+      &.#{$prefix}--error {
+        border-color: palette.color(error);
+      }
+
+      @include _width($options);
     }
 
     &--wrapper:focus-within {
@@ -94,21 +115,27 @@ $default-options: (
       }
     }
 
+    &.#{$prefix}:focus + .#{$prefix}--counting {
+      color: palette.color(primary);
+    }
+
     @include _size($options);
-
-    &--error {
-      border-color: palette.color(error);
-    }
-
-    &--disabled {
-      background-color: palette.color(action-disabled-bg);
-      border-color: transparent;
-    }
+    @include _padding-x($options);
 
     &--counting {
       position: absolute;
-      bottom: 0;
+      bottom: -20px;
       right: 0;
+
+      &.#{$prefix}--disabled {
+        color: palette.color(action-disabled-bg);
+      }
+
+      &.#{$prefix}--error {
+        color: palette.color(error);
+      }
+
+      @include typography.variant(caption);
     }
   }
 }

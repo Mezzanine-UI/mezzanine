@@ -1,4 +1,8 @@
-import { forwardRef, SVGProps } from 'react';
+import {
+  DetailedHTMLProps,
+  forwardRef,
+  HTMLAttributes,
+} from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
   iconClasses as classes,
@@ -7,7 +11,7 @@ import {
 } from '@mezzanine-ui/core/icon';
 import { cx } from '../utils/cx';
 
-export interface IconProps extends SVGProps<SVGSVGElement> {
+export interface IconProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'> {
   /**
    * Color name provided by palette.
    */
@@ -26,7 +30,7 @@ export interface IconProps extends SVGProps<SVGSVGElement> {
 /**
  * The react component for `mezzanine` icon.
  */
-const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(props, ref) {
+const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
   const {
     className,
     color,
@@ -43,8 +47,7 @@ const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(props, ref) {
   };
 
   return (
-    <svg
-      {...definition.svg}
+    <i
       {...rest}
       ref={ref}
       aria-hidden
@@ -57,11 +60,15 @@ const Icon = forwardRef<SVGSVGElement, IconProps>(function Icon(props, ref) {
         className,
       )}
       data-icon-name={icon.name}
-      focusable={false}
       style={style}
     >
-      <path {...definition.path} />
-    </svg>
+      <svg
+        {...definition.svg}
+        focusable={false}
+      >
+        <path {...definition.path} />
+      </svg>
+    </i>
   );
 });
 

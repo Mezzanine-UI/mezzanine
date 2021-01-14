@@ -31,10 +31,6 @@ export interface InputProps extends
    */
   iconEnd?: ReactNode;
   /**
-   * The text placed on the start of input.
-   */
-  textStart?: ReactNode;
-  /**
    * The text placed on the end of input.
    */
   textEnd?: ReactNode;
@@ -48,26 +44,6 @@ export interface InputProps extends
    * @default 'false';
    */
   clearable?: boolean;
-  // /**
-  //  * Only for number.
-  //  * @default 'false';
-  //  */
-  // numberOnly?: boolean;
-  // /**
-  //  * Only for alphabet.
-  //  * @default 'false';
-  //  */
-  // alphabetOnly?: boolean;
-  // /**
-  //  * Only for alphabet and number.
-  //  * @default 'false';
-  //  */
-  // alphabetNumberOnly?: boolean;
-  /**
-   * Maximum length of the input .
-   * @default 'false';
-   */
-  maxLength?: number;
 }
 
 /**
@@ -75,11 +51,8 @@ export interface InputProps extends
  */
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
   const {
-    // numberOnly,
-    // alphabetOnly,
-    // alphabetNumberOnly,
-    maxLength,
     value,
+    onChange,
     defaultValue,
     clearable = false,
     error = false,
@@ -90,51 +63,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     placeholder = '',
     iconStart: iconStartProp,
     iconEnd: iconEndProp,
-    textStart: textStartProp,
     textEnd: textEndProp,
     ...rest
   } = props;
 
   const iconStart: ReactNode = iconStartProp;
   const iconEnd: ReactNode = iconEndProp;
-  const textStart: ReactNode = textStartProp;
+  // const textStart: ReactNode = textStartProp;
   const textEnd: ReactNode = textEndProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  const checkValueRules = useCallback(({
-    target,
-  }) => {
-    let testedValue = target.value;
-
-    // if (numberOnly) {
-    //   testedValue = testedValue?.replace(/[^0-9]/g, '');
-    // }
-
-    // if (alphabetOnly) {
-    //   testedValue = testedValue?.replace(/[^a-z]/gi, '');
-    // }
-
-    // if (alphabetNumberOnly) {
-    //   testedValue = testedValue?.replace(/[^a-z^A-Z^0-9]/g, '');
-    // }
-
-    if (maxLength) {
-      testedValue = testedValue?.substr(0, maxLength);
-    }
-
-    setInputs(testedValue);
-  }, [
-    // numberOnly,
-    // alphabetOnly,
-    // alphabetNumberOnly,
-    maxLength,
-  ]);
-
   const handleChange = useCallback((e) => {
+    if (onChange) {
+      onChange(e);
+    }
     setInputs(e.target.value);
-    checkValueRules(e);
-  }, [checkValueRules]);
+  }, [onChange]);
 
   useEffect(() => {
     if (value && value !== defaultValue) {
@@ -143,17 +88,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
   }, [defaultValue, ref, value]);
 
   return (
-    <div className={cx(
-      classes.wrapper,
-      classes.size(size),
+    <div className={cx(classes.wrapper,
       {
         [classes.disabled]: disabled,
         [classes.error]: error,
         [classes.icon('start')]: iconStart,
         [classes.icon('end')]: iconEnd,
       },
-      className,
-    )}
+      classes.size(size))}
     >
       {iconStart ? (
         <div className={cx(
@@ -166,47 +108,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           {iconStart}
         </div>
       ) : null}
-      {textStart ? (
-        <span className={cx(
-          classes.decoratorHost,
-          {
-            [classes.text('start')]: textStart,
-          },
-        )}
-        >
-          {textStart}
-        </span>
-      ) : null}
       <input
         type="text"
         ref={ref}
         value={inputs}
         onChange={handleChange}
-        className={classes.host}
+        className={cx(classes.host, classes.size(size))}
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
-        aria-disabled={disabled}
       />
-      {iconEnd ? (
+      {(iconEnd || textEnd) ? (
         <div className={cx(classes.decoratorHost,
           {
             [classes.icon('end')]: iconEnd,
           })}
         >
-          {iconEnd}
+          {iconEnd || textEnd}
         </div>
-      ) : null}
-      {textEnd ? (
-        <span className={cx(
-          classes.decoratorHost,
-          {
-            [classes.text('end')]: textEnd,
-          },
-        )}
-        >
-          {textEnd}
-        </span>
       ) : null}
       {clearable ? (
         <button

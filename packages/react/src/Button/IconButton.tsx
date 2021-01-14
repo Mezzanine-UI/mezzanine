@@ -2,6 +2,9 @@ import { forwardRef, ReactNode } from 'react';
 import Button, { ButtonProps } from './Button';
 
 export interface IconButtonProps extends Omit<ButtonProps, 'iconEnd' | 'iconStart'> {
+  /**
+   * The icon element.
+   */
   children: ReactNode;
 }
 

@@ -31,7 +31,7 @@ describe('<IconButton />', () => {
     } = element;
 
     expect(childElementCount).toBe(1);
-    expect(iconStartElement?.tagName.toLowerCase()).toBe('svg');
+    expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
     expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
   });
 });

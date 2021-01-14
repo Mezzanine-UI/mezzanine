@@ -16,6 +16,13 @@
   @include palette.variables("dark");
 }
 
+.sb-show-main {
+  background-color: palette.color(bg);
+  color: palette.color(text-primary);
+  // @todo use animation system
+  transition: background-color 0.3s ease-in-out;
+}
+
 @include typography.core();
 @include icon.core();
 @include button.core();
