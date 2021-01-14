@@ -126,30 +126,35 @@ export const WithIcons = () => (
       iconStart={<Icon icon={PlusIcon} />}
     />
     <Input
+      iconStart={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
       textEnd="TWD"
       size="large"
     />
     <Input
+      iconStart={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
       textEnd="TWD"
     />
     <Input
+      iconStart={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
       textEnd="TWD"
       size="small"
     />
     <Input
-      placeholder="輸入金額"
       iconStart={<Icon icon={PlusIcon} />}
+      placeholder="輸入金額"
       textEnd="價格"
       size="large"
     />
     <Input
+      iconStart={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
       textEnd="TWD"
     />
     <Input
+      iconStart={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
       textEnd="TWD"
       size="small"

@@ -38,23 +38,23 @@ $default-options: (
 
   padding: 0 $padding-x;
 
-  &.mzn-input-icon--start {
-    padding: 0 $padding-x 0 $padding-x-with-icon;
+  &.#{$prefix}-icon--start {
+    padding-left: $padding-x-with-icon;
   }
 
-  &.mzn-input-icon--end {
-    padding: 0 $padding-x-with-icon 0 $padding-x;
+  &.#{$prefix}-icon--end {
+    padding-right: $padding-x-with-icon;
   }
 
   &.#{$prefix}--small {
     padding: 0 $padding-x-small;
 
-    &.mzn-input-icon--start {
-      padding: 0 $padding-x 0 $padding-x-small-with-icon;
+    &.#{$prefix}-icon--start {
+      padding-left: $padding-x-small-with-icon;
     }
 
-    &.mzn-input-icon--end {
-      padding: 0 $padding-x-small-with-icon 0 $padding-x;
+    &.#{$prefix}-icon--end {
+      padding-right: $padding-x-small-with-icon;
     }
   }
 }
