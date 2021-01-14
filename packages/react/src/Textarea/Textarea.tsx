@@ -32,6 +32,7 @@ export interface TextareaProps
 const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, TextareaProps>(
   function Textarea(props, ref:any) {
     const {
+      onChange,
       maxLength,
       value,
       defaultValue,
@@ -47,11 +48,12 @@ const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, Textare
     const [text, setText] = useState<any>(defaultValue || '');
     const textLength = text.length;
 
-    const handleChange = useCallback(({
-      target,
-    }) => {
-      setText(target.value);
-    }, []);
+    const handleChange = useCallback((e) => {
+      if (onChange) {
+        onChange(e);
+      }
+      setText(e.target.value);
+    }, [onChange]);
 
     useEffect(() => {
       if (value && value !== defaultValue) {
@@ -71,7 +73,7 @@ const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, Textare
           ref={ref}
           value={text}
           onChange={handleChange}
-          className={classes.host}
+          className={cx(classes.host, classes.size(size))}
           {...rest}
           placeholder={placeholder}
           disabled={disabled}

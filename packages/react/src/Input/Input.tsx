@@ -30,10 +30,10 @@ export interface InputProps extends
    * The icon placed on the end of input.
    */
   iconEnd?: ReactNode;
-  /**
-   * The text placed on the start of input.
-   */
-  textStart?: ReactNode;
+  // /**
+  //  * The text placed on the start of input.
+  //  */
+  // textStart?: ReactNode;
   /**
    * The text placed on the end of input.
    */
@@ -48,26 +48,6 @@ export interface InputProps extends
    * @default 'false';
    */
   clearable?: boolean;
-  /**
-   * Only for number.
-   * @default 'false';
-   */
-  numberOnly?: boolean;
-  /**
-   * Only for alphabet.
-   * @default 'false';
-   */
-  alphabetOnly?: boolean;
-  /**
-   * Only for alphabet and number.
-   * @default 'false';
-   */
-  alphabetNumberOnly?: boolean;
-  /**
-   * Maximum length of the input .
-   * @default 'false';
-   */
-  maxLength?: number;
 }
 
 /**
@@ -75,11 +55,8 @@ export interface InputProps extends
  */
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
   const {
-    numberOnly,
-    alphabetOnly,
-    alphabetNumberOnly,
-    maxLength,
     value,
+    onChange,
     defaultValue,
     clearable = false,
     error = false,
@@ -90,21 +67,23 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     placeholder = '',
     iconStart: iconStartProp,
     iconEnd: iconEndProp,
-    textStart: textStartProp,
     textEnd: textEndProp,
     ...rest
   } = props;
 
   const iconStart: ReactNode = iconStartProp;
   const iconEnd: ReactNode = iconEndProp;
-  const textStart: ReactNode = textStartProp;
+  // const textStart: ReactNode = textStartProp;
   const textEnd: ReactNode = textEndProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  const handleChange = useCallback(({
-    target,
-  }) => setInputs(target.value), []);
+  const handleChange = useCallback((e) => {
+    if (onChange) {
+      onChange(e);
+    }
+    setInputs(e.target.value);
+  }, [onChange]);
 
   useEffect(() => {
     if (value && value !== defaultValue) {
@@ -133,46 +112,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           {iconStart}
         </div>
       ) : null}
-      {textStart ? (
-        <span className={cx(
-          classes.decoratorHost,
-          {
-            [classes.text('start')]: textStart,
-          },
-        )}
-        >
-          {textStart}
-        </span>
-      ) : null}
       <input
         type="text"
         ref={ref}
         value={inputs}
         onChange={handleChange}
-        className={classes.host}
+        className={cx(classes.host, classes.size(size))}
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
       />
-      {iconEnd ? (
+      {(iconEnd || textEnd) ? (
         <div className={cx(classes.decoratorHost,
           {
             [classes.icon('end')]: iconEnd,
           })}
         >
-          {iconEnd}
+          {iconEnd || textEnd}
         </div>
-      ) : null}
-      {textEnd ? (
-        <span className={cx(
-          classes.decoratorHost,
-          {
-            [classes.text('end')]: textEnd,
-          },
-        )}
-        >
-          {textEnd}
-        </span>
       ) : null}
       {clearable ? (
         <button
