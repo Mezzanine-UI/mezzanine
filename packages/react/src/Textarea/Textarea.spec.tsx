@@ -75,6 +75,17 @@ describe('<Textarea />', () => {
 
   describe('prop: onChange', () => {
     it('should set entered content to text state', () => {
+      const { getHostHTMLElement } = render(<Textarea />);
+      const element = getHostHTMLElement();
+
+      const textareaElement = element.getElementsByTagName('textarea')[0];
+
+      fireEvent.change(textareaElement, { target: { value: 'I will tell you the story' } });
+
+      expect(textareaElement.value).toBe('I will tell you the story');
+    });
+
+    it('should set entered content to text state', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(<Textarea onChange={onChange} />);
       const element = getHostHTMLElement();
