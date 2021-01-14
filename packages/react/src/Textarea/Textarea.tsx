@@ -25,7 +25,15 @@ export interface TextareaProps
    * @default 'false';
    */
   error?: boolean;
+  /**
+   * The value of textarea.
+   * @default '';
+   */
   value?: string;
+  /**
+   * The defaultValue of textarea.
+   * @default '';
+   */
   defaultValue?: string;
 }
 
@@ -37,8 +45,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const {
       onChange,
       maxLength,
-      value,
-      defaultValue,
+      value = '',
+      defaultValue = '',
       error = false,
       children,
       className,
