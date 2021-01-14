@@ -92,7 +92,7 @@ describe('<Input />', () => {
       } = element;
 
       expect(childElementCount).toBe(2);
-      expect(iconStartWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('svg');
+      expect(iconStartWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
       expect(iconStartWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
     });
@@ -110,24 +110,8 @@ describe('<Input />', () => {
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(iconEndWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('svg');
+      expect(iconEndWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
       expect(iconEndWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-    });
-  });
-
-  describe('prop: textStart', () => {
-    it('should render the text on the left side', () => {
-      const { getHostHTMLElement } = render(<Input textStart="Start" />);
-      const element = getHostHTMLElement();
-      const {
-        firstElementChild: textStartElement,
-        lastElementChild: inputElement,
-        childElementCount,
-      } = element;
-
-      expect(childElementCount).toBe(2);
-      expect(textStartElement?.tagName.toLowerCase()).toBe('span');
-      expect(inputElement?.tagName.toLowerCase()).toBe('input');
     });
   });
 
@@ -137,13 +121,13 @@ describe('<Input />', () => {
       const element = getHostHTMLElement();
       const {
         firstElementChild: inputElement,
-        lastElementChild: textEndElement,
+        lastElementChild: textEndWrapperElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(textEndElement?.tagName.toLowerCase()).toBe('span');
+      expect(textEndWrapperElement?.innerHTML).toBe('End');
     });
   });
 
@@ -192,150 +176,18 @@ describe('<Input />', () => {
     });
   });
 
-  // describe('prop: numberOnly', () => {
-  //   it('should enter number only content', () => {
-  //     const { getHostHTMLElement } = render(<Input numberOnly />);
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: 'a123' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/^\d*$/.test(inputValue)).toBeTruthy();
-  //         expect(inputValue).toBe('123');
-  //       }
-  //     }
-  //   });
-
-  //   it('should enter number only content and be less than max width ', () => {
-  //     const { getHostHTMLElement } = render(
-  //       <Input
-  //         numberOnly
-  //         maxLength={6}
-  //       />,
-  //     );
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: 'a123bc45d67e8' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/^\d*$/.test(inputValue)).toBeTruthy();
-  //         expect(inputValue).toBe('123456');
-  //       }
-  //     }
-  //   });
-  // });
-
-  // describe('prop: alphabetOnly', () => {
-  //   it('should enter alphabet only content', () => {
-  //     const { getHostHTMLElement } = render(<Input alphabetOnly />);
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: 'AbC3' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/[^a-z]/i.test(inputValue)).toBeFalsy();
-  //         expect(inputValue).toBe('AbC');
-  //       }
-  //     }
-  //   });
-
-  //   it('should enter alphabet only content and be less than max width ', () => {
-  //     const { getHostHTMLElement } = render(
-  //       <Input
-  //         alphabetOnly
-  //         maxLength={6}
-  //       />,
-  //     );
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: 'A12bC34D5efG7h8' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/[^a-z]/i.test(inputValue)).toBeFalsy();
-  //         expect(inputValue).toBe('AbCDef');
-  //       }
-  //     }
-  //   });
-  // });
-
-  // describe('prop: alphabetNumberOnly', () => {
-  //   it('should enter alphabet and number only', () => {
-  //     const { getHostHTMLElement } = render(<Input alphabetNumberOnly />);
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: '*Ab/C3' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/[^a-zA-Z0-9]/.test(inputValue)).toBeFalsy();
-  //         expect(inputValue).toBe('AbC3');
-  //       }
-  //     }
-  //   });
-
-  //   it('should enter alphabet and number only content and be less than max width ', () => {
-  //     const { getHostHTMLElement } = render(
-  //       <Input
-  //         alphabetNumberOnly
-  //         maxLength={6}
-  //       />,
-  //     );
-  //     const element = getHostHTMLElement();
-  //     const {
-  //       firstElementChild: inputElement,
-  //     } = element;
-
-  //     if (inputElement) {
-  //       fireEvent.change(inputElement, { target: { value: '*A1bC#34%D5+' } });
-  //       const inputValue = inputElement.getAttribute('value');
-
-  //       if (inputValue) {
-  //         expect(/[^a-zA-Z0-9]/i.test(inputValue)).toBeFalsy();
-  //         expect(inputValue).toBe('A1bC34');
-  //       }
-  //     }
-  //   });
-  // });
-
-  describe('prop: maxLength', () => {
-    it('should enter content whose length is between 0 and max length', () => {
-      const { getHostHTMLElement } = render(<Input maxLength={8} />);
+  describe('prop: onChange', () => {
+    it('should set entered content to text state', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(<Input onChange={onChange} />);
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: inputElement,
-      } = element;
 
-      if (inputElement) {
-        fireEvent.change(inputElement, { target: { value: '0123456789' } });
+      const inputElement = element.getElementsByTagName('input')[0];
 
-        const inputValue = inputElement.getAttribute('value');
+      fireEvent.change(inputElement, { target: { value: 'Don Diablo' } });
 
-        expect(inputValue).toBe('01234567');
-      }
+      expect(onChange).toBeCalled();
+      expect(inputElement.value).toBe('Don Diablo');
     });
   });
 });
