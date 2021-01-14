@@ -8,10 +8,10 @@ export const Basic = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 200px)',
-      gridTemplateRows: '60px',
-      gap: '16px',
-      alignItems: 'center',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gridTemplateRows: 'repeat(3, 102px)',
+      gap: '24px',
+      justifyItems: 'center',
     }}
   >
     <Textarea
@@ -41,19 +41,19 @@ export const Sizes = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 200px)',
-      gridTemplateRows: '60px',
-      gap: '16px',
-      alignItems: 'center',
+      gridTemplateColumns: '250px 300px 300px',
+      gridTemplateRows: 'repeat(3, 102px)',
+      gap: '24px',
+      justifyItems: 'center',
     }}
   >
     <Textarea
       placeholder="輸入文字..."
       size="small"
+      maxLength={20}
     />
     <Textarea
       placeholder="輸入文字..."
-      size="medium"
     />
     <Textarea
       placeholder="輸入文字..."
