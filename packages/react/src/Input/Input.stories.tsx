@@ -127,18 +127,15 @@ export const WithIcons = () => (
     />
     <Input
       placeholder="輸入金額"
-      textStart="$"
       textEnd="TWD"
       size="large"
     />
     <Input
       placeholder="輸入金額"
-      textStart="$"
       textEnd="TWD"
     />
     <Input
       placeholder="輸入金額"
-      textStart="$"
       textEnd="TWD"
       size="small"
     />
@@ -150,12 +147,10 @@ export const WithIcons = () => (
     />
     <Input
       placeholder="輸入金額"
-      textStart="$"
       textEnd="TWD"
     />
     <Input
       placeholder="輸入金額"
-      textStart="$"
       textEnd="TWD"
       size="small"
     />

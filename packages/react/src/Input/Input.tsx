@@ -30,10 +30,6 @@ export interface InputProps extends
    * The icon placed on the end of input.
    */
   iconEnd?: ReactNode;
-  // /**
-  //  * The text placed on the start of input.
-  //  */
-  // textStart?: ReactNode;
   /**
    * The text placed on the end of input.
    */
@@ -73,7 +69,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const iconStart: ReactNode = iconStartProp;
   const iconEnd: ReactNode = iconEndProp;
-  // const textStart: ReactNode = textStartProp;
   const textEnd: ReactNode = textEndProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
