@@ -5,13 +5,5 @@
     "noEmitHelpers": false
   },
   "include": ["src"],
-  "exclude": ["**/*.spec.*"],
-  "references": [
-    {
-      "path": "../icons"
-    },
-    {
-      "path": "../core"
-    }
-  ]
+  "exclude": ["**/*.spec.*"]
 }

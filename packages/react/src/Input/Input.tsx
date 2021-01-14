@@ -51,13 +51,13 @@ export interface InputProps extends
  */
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
   const {
+    className,
     value,
     onChange,
     defaultValue,
     clearable = false,
     error = false,
     children,
-    className,
     disabled = false,
     size = 'medium',
     placeholder = '',
@@ -69,7 +69,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const iconStart: ReactNode = iconStartProp;
   const iconEnd: ReactNode = iconEndProp;
-  // const textStart: ReactNode = textStartProp;
   const textEnd: ReactNode = textEndProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
@@ -93,9 +92,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         [classes.disabled]: disabled,
         [classes.error]: error,
         [classes.icon('start')]: iconStart,
-        [classes.icon('end')]: iconEnd,
+        [classes.icon('end')]: iconEnd || textEnd || clearable,
       },
-      classes.size(size))}
+      classes.size(size),
+      className)}
     >
       {iconStart ? (
         <div className={cx(
