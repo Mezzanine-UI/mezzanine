@@ -13,7 +13,8 @@ import {
 import { cx } from '../utils/cx';
 
 export interface TextareaProps
-  extends DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement> {
+  extends DetailedHTMLProps <Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value | defaultValue'>,
+  HTMLTextAreaElement> {
   /**
    * The size of textarea.
    * @default 'medium'
@@ -24,12 +25,14 @@ export interface TextareaProps
    * @default 'false';
    */
   error?: boolean;
+  value?: string;
+  defaultValue?: string;
 }
 
 /**
  * The react component for `mezzanine` textarea.
  */
-const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, TextareaProps>(
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea(props, ref:any) {
     const {
       onChange,
@@ -45,7 +48,7 @@ const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, Textare
       ...rest
     } = props;
 
-    const [text, setText] = useState<any>(defaultValue || '');
+    const [text, setText] = useState(defaultValue || '');
     const textLength = text.length;
 
     const handleChange = useCallback((e) => {
@@ -67,7 +70,8 @@ const Textarea = forwardRef<TextareaHTMLAttributes<HTMLTextAreaElement>, Textare
           [classes.disabled]: disabled,
           [classes.error]: error,
         },
-        classes.size(size))}
+        classes.size(size),
+        className)}
       >
         <textarea
           ref={ref}
