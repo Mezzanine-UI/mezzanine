@@ -26,13 +26,9 @@ describe('<Textarea />', () => {
     it('should set value prop as textarea value', () => {
       const { getHostHTMLElement } = render(<Textarea value="Talk about your story" />);
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: textareaElement,
-      } = element;
+      const textareaElement = element.getElementsByTagName('textarea')[0];
 
-      console.log('textareaElement', textareaElement);
-
-      expect(textareaElement?.getAttribute('value')).toBe('Talk about your story');
+      expect(textareaElement?.value).toBe('Talk about your story');
     });
   });
 
@@ -77,7 +73,7 @@ describe('<Textarea />', () => {
     });
   });
 
-  describe('onChange', () => {
+  describe('action: onChange', () => {
     it('should set entered content to text state', () => {
       const { getHostHTMLElement } = render(<Textarea />);
       const element = getHostHTMLElement();
@@ -86,7 +82,7 @@ describe('<Textarea />', () => {
 
       fireEvent.change(textareaElement, { target: { value: 'I will tell you the story' } });
 
-      expect(textareaElement.getAttribute('value')).toBe('I will tell you the story');
+      expect(textareaElement.value).toBe('I will tell you the story');
     });
   });
 
@@ -95,16 +91,17 @@ describe('<Textarea />', () => {
       const { getHostHTMLElement } = render(<Textarea maxLength={8} />);
       const element = getHostHTMLElement();
       const {
-        firstElementChild: textareaElement,
         lastElementChild: annotationElement,
         childElementCount,
       } = element;
+
+      const textareaElement = element.getElementsByTagName('textarea')[0];
 
       expect(childElementCount).toBe(2);
       expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
       expect(annotationElement?.tagName.toLowerCase()).toBe('span');
 
-      expect(textareaElement?.getAttribute('maxlength')).toBe(8);
+      expect(textareaElement?.maxLength).toBe(8);
     });
   });
 });
