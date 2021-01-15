@@ -37,7 +37,8 @@ describe('<Textarea />', () => {
       const { getHostHTMLElement } = render(<Textarea error />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-textarea--error')).toBeTruthy();
+      expect(element.classList.contains('mzn-input--error')).toBeTruthy();
+      expect(element.classList.contains('textarea')).toBeTruthy();
     });
   });
 
@@ -59,7 +60,8 @@ describe('<Textarea />', () => {
       const { getHostHTMLElement } = render(<Textarea />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-textarea--medium')).toBeTruthy();
+      expect(element.classList.contains('mzn-input--medium')).toBeTruthy();
+      expect(element.classList.contains('textarea')).toBeTruthy();
     });
   });
 

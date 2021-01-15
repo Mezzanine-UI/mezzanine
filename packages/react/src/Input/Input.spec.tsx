@@ -51,8 +51,9 @@ describe('<Input />', () => {
     it('should render size="medium" by default', () => {
       const { getHostHTMLElement } = render(<Input />);
       const element = getHostHTMLElement();
+      const inputElement = element.getElementsByTagName('input')[0];
 
-      expect(element.classList.contains('mzn-input--medium')).toBeTruthy();
+      expect(inputElement.classList.contains('mzn-input--medium')).toBeTruthy();
     });
 
     const sizes: InputSize[] = [
@@ -65,8 +66,9 @@ describe('<Input />', () => {
       it(`should add class if size="${size}"`, () => {
         const { getHostHTMLElement } = render(<Input size={size} />);
         const element = getHostHTMLElement();
+        const inputElement = element.getElementsByTagName('input')[0];
 
-        expect(element.classList.contains(`mzn-input--${size}`)).toBeTruthy();
+        expect(inputElement.classList.contains(`mzn-input--${size}`)).toBeTruthy();
       });
     });
   });

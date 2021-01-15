@@ -116,64 +116,76 @@ $default-options: (
     @include utils.reset();
     @include _size($options);
 
+    display: inline-flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: palette.color(border);
+    background-color: palette.color(surface);
+    box-sizing: border-box;
+
     &.textarea {
-      height: 100%;
+      @include _width($options);
     }
 
-    &--wrapper {
-      display: inline-flex;
-      position: relative;
-      justify-content: space-between;
-      align-items: center;
-      border-width: 1px;
-      border-style: solid;
-      border-color: palette.color(border);
-      background-color: palette.color(surface);
-      box-sizing: border-box;
-
-      &.textarea {
-        @include _width($options);
+    &:hover {
+      &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
+        &:hover {
+          border-color: palette.color(primary);
+        }
       }
+    }
+
+    &.#{$prefix}--error {
+      border-color: palette.color(error);
+    }
+
+    &.#{$prefix}--disabled {
+      border-color: transparent;
+      background-color: palette.color(action-disabled-bg);
+
+      ::placeholder {
+        color: palette.color(text-disabled);
+      }
+    }
+
+    @include _padding-x($options, false);
+    @include _size($options);
+
+    &--tag {
+      width: 100%;
+      background-color: transparent;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      margin: -1px;
+      border: none;
+      outline: none;
+      padding: 0;
+      box-sizing: border-box;
+      resize: none;
 
       ::placeholder {
         color: palette.color(text-secondary);
       }
 
-      &:hover {
-        &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
-          &:hover {
-            border-color: palette.color(primary);
-          }
-        }
+      &.#{$prefix}--tag:focus + .#{$prefix}--counting {
+        color: palette.color(primary);
       }
 
-      &.#{$prefix}--error {
-        border-color: palette.color(error);
+      &.textarea {
+        height: 100%;
       }
-
-      &.#{$prefix}--disabled {
-        border-color: transparent;
-        background-color: palette.color(action-disabled-bg);
-
-        ::placeholder {
-          color: palette.color(text-disabled);
-        }
-      }
-
-      @include _padding-x($options, false);
-      @include _size($options);
     }
 
-    &--wrapper:focus-within {
+    &:focus-within {
       border-color: palette.color(primary);
 
       &:not(.#{$prefix}--disabled) {
         border-color: palette.color(primary);
       }
-    }
-
-    &.#{$prefix}:focus + .#{$prefix}--counting {
-      color: palette.color(primary);
     }
 
     &--clearButton {

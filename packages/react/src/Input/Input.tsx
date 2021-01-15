@@ -88,8 +88,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   return (
     <div className={cx(
-      classes.wrapper,
-      classes.size(size),
+      classes.host,
       {
         [classes.disabled]: disabled,
         [classes.error]: error,
@@ -115,7 +114,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         ref={ref}
         value={inputs}
         onChange={handleChange}
-        className={cx(classes.host, classes.size(size))}
+        className={cx(
+          classes.tag,
+          classes.size(size),
+        )}
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
