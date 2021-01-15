@@ -3,7 +3,7 @@ import { inputPrefix } from './constants';
 
 export const inputClasses = {
   host: inputPrefix,
-  wrapper: `${inputPrefix}--wrapper`,
+  tag: `${inputPrefix}--tag`,
   error: `${inputPrefix}--error`,
   disabled: `${inputPrefix}--disabled`,
   size: (size: InputSize) => `${inputPrefix}--${size}`,

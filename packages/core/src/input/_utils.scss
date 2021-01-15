@@ -1,13 +1,10 @@
 @mixin reset() {
-  width: 100%;
-  background-color: transparent;
-  color: inherit;
-  font-size: inherit;
-  line-height: inherit;
-  margin: -1px;
-  border: none;
-  outline: none;
-  padding: 0;
+  display: inline-flex;
+  position: relative;
+  justify-content: space-between;
+  align-items: center;
+  border-width: 1px;
+  border-style: solid;
   box-sizing: border-box;
   resize: none;
 }

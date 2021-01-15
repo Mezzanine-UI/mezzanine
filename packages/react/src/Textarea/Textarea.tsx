@@ -73,7 +73,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     }, [defaultValue, ref, value]);
 
     return (
-      <div className={cx(classes.wrapper,
+      <div className={cx(classes.host,
         {
           [classes.disabled]: disabled,
           [classes.error]: error,
@@ -85,7 +85,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           value={text}
           onChange={handleChange}
-          className={cx(classes.host, classes.size(size))}
+          className={cx(classes.tag, classes.size(size))}
           {...rest}
           placeholder={placeholder}
           disabled={disabled}
