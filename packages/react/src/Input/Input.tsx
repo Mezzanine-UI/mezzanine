@@ -87,15 +87,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
   }, [defaultValue, ref, value]);
 
   return (
-    <div className={cx(classes.host,
+    <div className={cx(
+      classes.host,
       {
         [classes.disabled]: disabled,
         [classes.error]: error,
         [classes.icon('start')]: iconStart,
         [classes.icon('end')]: iconEnd || textEnd || clearable,
       },
-      classes.size(size),
-      className)}
+      className,
+    )}
     >
       {iconStart ? (
         <div className={cx(
@@ -113,16 +114,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         ref={ref}
         value={inputs}
         onChange={handleChange}
-        className={cx(classes.tag, classes.size(size))}
+        className={cx(
+          classes.tag,
+          classes.size(size),
+        )}
         {...rest}
         placeholder={placeholder}
         disabled={disabled}
+        aria-disabled={disabled}
       />
       {(iconEnd || textEnd) ? (
-        <div className={cx(classes.decoratorHost,
+        <div className={cx(
+          classes.decoratorHost,
           {
             [classes.icon('end')]: iconEnd || textEnd,
-          })}
+          },
+        )}
         >
           {iconEnd || textEnd}
         </div>
@@ -130,11 +137,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
       {clearable ? (
         <button
           onClick={() => setInputs('')}
-          className={cx(classes.decoratorHost,
+          className={cx(
+            classes.decoratorHost,
             {
               [classes.icon('end')]: iconEnd,
               [classes.clearButton]: clearable,
-            })}
+            },
+          )}
           type="button"
         >
           <Icon icon={TimesIcon} />

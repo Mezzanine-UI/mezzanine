@@ -89,6 +89,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...rest}
           placeholder={placeholder}
           disabled={disabled}
+          aria-disabled={disabled}
           maxLength={maxLength}
         />
         {maxLength ? (
