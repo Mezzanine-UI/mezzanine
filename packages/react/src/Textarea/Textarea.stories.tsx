@@ -41,8 +41,8 @@ export const Sizes = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: '250px 300px 300px',
-      gridTemplateRows: 'repeat(3, 102px)',
+      gridTemplateColumns: '500px',
+      gridTemplateRows: 'repeat(8, 102px)',
       gap: '24px',
       justifyItems: 'center',
     }}

@@ -17,6 +17,9 @@ $default-options: (
   icon-size: 24px,
   icon-size-small: 16px,
   padding-decorator: 4px,
+  width: 452px,
+  width-small: 388px,
+  height: 100px,
 );
 
 @function _get-typography-variant-from-size($size) {
@@ -38,6 +41,11 @@ $default-options: (
 
   padding: 0 $padding-x;
 
+  &.textarea {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
   &.#{$prefix}-icon--start {
     padding-left: $padding-x-with-icon;
   }
@@ -48,6 +56,11 @@ $default-options: (
 
   &.#{$prefix}--small {
     padding: 0 $padding-x-small;
+
+    &.textarea {
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
 
     &.#{$prefix}-icon--start {
       padding-left: $padding-x-small-with-icon;
@@ -82,11 +95,30 @@ $default-options: (
   }
 }
 
+@mixin _width($options) {
+  $height: utils-typography.px-to-rem(map.get($options, height));
+  $width: utils-typography.px-to-rem(map.get($options, width));
+  $width-small: utils-typography.px-to-rem(map.get($options, width-small));
+
+  min-width: $width;
+  width: 100%;
+  min-height: $height;
+
+  &.#{$prefix}--small {
+    min-width: $width-small;
+  }
+}
+
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
   .#{$prefix} {
     @include utils.reset();
+    @include _size($options);
+
+    &.textarea {
+      height: 100%;
+    }
 
     &--wrapper {
       display: inline-flex;
@@ -97,15 +129,14 @@ $default-options: (
       border-style: solid;
       border-color: palette.color(border);
       background-color: palette.color(surface);
+      box-sizing: border-box;
+
+      &.textarea {
+        @include _width($options);
+      }
 
       ::placeholder {
         color: palette.color(text-secondary);
-      }
-
-      &.#{$prefix}--disabled {
-        ::placeholder {
-          color: palette.color(text-disabled);
-        }
       }
 
       &:hover {
@@ -113,6 +144,19 @@ $default-options: (
           &:hover {
             border-color: palette.color(primary);
           }
+        }
+      }
+
+      &.#{$prefix}--error {
+        border-color: palette.color(error);
+      }
+
+      &.#{$prefix}--disabled {
+        border-color: transparent;
+        background-color: palette.color(action-disabled-bg);
+
+        ::placeholder {
+          color: palette.color(text-disabled);
         }
       }
 
@@ -128,15 +172,8 @@ $default-options: (
       }
     }
 
-    @include _size($options);
-
-    &--error {
-      border-color: palette.color(error);
-    }
-
-    &--disabled {
-      border-color: transparent;
-      background-color: palette.color(action-disabled-bg);
+    &.#{$prefix}:focus + .#{$prefix}--counting {
+      color: palette.color(primary);
     }
 
     &--clearButton {
@@ -167,6 +204,22 @@ $default-options: (
       &.mzn-input-icon--end {
         padding: 0 0 0 $padding-decorator;
       }
+    }
+
+    &--counting {
+      position: absolute;
+      bottom: -20px;
+      right: 0;
+
+      &.#{$prefix}--disabled {
+        color: palette.color(action-disabled-bg);
+      }
+
+      &.#{$prefix}--error {
+        color: palette.color(error);
+      }
+
+      @include typography.variant(caption);
     }
   }
 }
