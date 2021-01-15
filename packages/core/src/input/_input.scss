@@ -114,6 +114,7 @@ $default-options: (
 
   .#{$prefix} {
     @include utils.reset();
+    @include _padding-x($options, false);
     @include _size($options);
 
     display: inline-flex;
@@ -151,9 +152,6 @@ $default-options: (
       }
     }
 
-    @include _padding-x($options, false);
-    @include _size($options);
-
     &--tag {
       width: 100%;
       background-color: transparent;
@@ -166,6 +164,7 @@ $default-options: (
       padding: 0;
       box-sizing: border-box;
       resize: none;
+      @include _size($options);
 
       ::placeholder {
         color: palette.color(text-secondary);

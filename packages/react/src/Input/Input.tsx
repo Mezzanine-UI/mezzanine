@@ -89,6 +89,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
   return (
     <div className={cx(
       classes.host,
+      classes.size(size),
       {
         [classes.disabled]: disabled,
         [classes.error]: error,
