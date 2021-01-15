@@ -7,7 +7,7 @@ export default {
   title: 'Basic/Button',
 } as Meta;
 
-export const Contained = () => (
+export const Variants = () => (
   <div
     style={{
       display: 'inline-grid',
@@ -19,32 +19,10 @@ export const Contained = () => (
     <Button variant="contained" color="secondary">secondary</Button>
     <Button variant="contained" error>error</Button>
     <Button variant="contained" disabled>disabled</Button>
-  </div>
-);
-
-export const Outlined = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(4, min-content)',
-      gap: '16px',
-    }}
-  >
     <Button variant="outlined">primary</Button>
     <Button variant="outlined" color="secondary">secondary</Button>
     <Button variant="outlined" error>error</Button>
     <Button variant="outlined" disabled>disabled</Button>
-  </div>
-);
-
-export const Text = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(4, min-content)',
-      gap: '16px',
-    }}
-  >
     <Button>primary</Button>
     <Button color="secondary">secondary</Button>
     <Button error>error</Button>
