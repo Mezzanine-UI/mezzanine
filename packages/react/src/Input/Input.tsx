@@ -121,7 +121,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
       {(iconEnd || textEnd) ? (
         <div className={cx(classes.decoratorHost,
           {
-            [classes.icon('end')]: iconEnd,
+            [classes.icon('end')]: iconEnd || textEnd,
           })}
         >
           {iconEnd || textEnd}
