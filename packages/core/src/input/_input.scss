@@ -17,8 +17,10 @@ $default-options: (
   icon-size: 24px,
   icon-size-small: 16px,
   padding-decorator: 4px,
-  width: 452px,
-  width-small: 388px,
+  input-width: 160px,
+  input-width-small: 132px,
+  textarea-width: 452px,
+  textarea-width-small: 388px,
   height: 100px,
 );
 
@@ -97,15 +99,26 @@ $default-options: (
 
 @mixin _width($options) {
   $height: utils-typography.px-to-rem(map.get($options, height));
-  $width: utils-typography.px-to-rem(map.get($options, width));
-  $width-small: utils-typography.px-to-rem(map.get($options, width-small));
+  $input-width: utils-typography.px-to-rem(map.get($options, input-width));
+  $input-width-small: utils-typography.px-to-rem(map.get($options, input-width-small));
+  $textarea-width: utils-typography.px-to-rem(map.get($options, textarea-width));
+  $textarea-width-small: utils-typography.px-to-rem(map.get($options, textarea-width-small));
 
-  min-width: $width;
+  min-width: $input-width;
   width: 100%;
-  min-height: $height;
 
   &.#{$prefix}--small {
-    min-width: $width-small;
+    min-width: $input-width-small;
+  }
+
+  &.textarea {
+    min-width: $textarea-width;
+    width: 100%;
+    min-height: $height;
+
+    &.#{$prefix}--small {
+      min-width: $textarea-width-small;
+    }
   }
 }
 
@@ -116,6 +129,7 @@ $default-options: (
     @include utils.reset();
     @include _padding-x($options, false);
     @include _size($options);
+    @include _width($options);
 
     display: inline-flex;
     position: relative;
@@ -128,8 +142,6 @@ $default-options: (
     box-sizing: border-box;
 
     &.textarea {
-      @include _width($options);
-
       align-items: flex-start;
     }
 
@@ -222,11 +234,11 @@ $default-options: (
 
       $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
 
-      &.mzn-input-icon--start {
+      &.#{$prefix}-icon--start {
         padding: 0 $padding-decorator 0 0;
       }
 
-      &.mzn-input-icon--end {
+      &.#{$prefix}-icon--end {
         padding: 0 0 0 $padding-decorator;
       }
     }
