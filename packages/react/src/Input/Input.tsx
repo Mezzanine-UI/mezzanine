@@ -135,7 +135,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           {iconEnd || textEnd}
         </div>
       ) : null}
-      {clearable ? (
+      {clearable && inputs ? (
         <button
           onClick={() => setInputs('')}
           className={cx(
