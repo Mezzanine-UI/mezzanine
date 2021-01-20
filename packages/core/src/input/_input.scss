@@ -136,6 +136,11 @@ $default-options: (
         &:hover {
           border-color: palette.color(primary);
         }
+
+        .#{$prefix}--clearButton {
+          opacity: 1;
+          color: palette.color(primary);
+        }
       }
     }
 
@@ -174,6 +179,11 @@ $default-options: (
         color: palette.color(primary);
       }
 
+      &.#{$prefix}--tag:focus + .#{$prefix}--clearButton {
+        opacity: 1;
+        color: palette.color(primary);
+      }
+
       &.textarea {
         height: 100%;
       }
@@ -193,10 +203,7 @@ $default-options: (
       background-color: transparent;
       outline: none;
       cursor: pointer;
-
-      &:hover {
-        color: palette.color(primary);
-      }
+      opacity: 0;
     }
 
     &-decorator {
