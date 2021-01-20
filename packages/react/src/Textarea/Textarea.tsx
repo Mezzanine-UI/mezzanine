@@ -10,7 +10,9 @@ import {
   textareaClasses as classes,
   TextareaSize,
 } from '@mezzanine-ui/core/textarea';
+import { TimesIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
+import Icon from '../Icon';
 
 export interface TextareaProps
   extends DetailedHTMLProps <Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value | defaultValue'>,
@@ -35,6 +37,11 @@ export interface TextareaProps
    * @default '';
    */
   defaultValue?: string;
+  /**
+   * The button for clear textarea.
+   * @default 'false';
+   */
+  clearable?: boolean;
 }
 
 /**
@@ -48,6 +55,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       value = '',
       defaultValue = '',
       error = false,
+      clearable = false,
       children,
       className,
       disabled = false,
@@ -75,6 +83,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     return (
       <div className={cx(classes.host,
         {
+          [classes.icon('end')]: clearable,
           [classes.disabled]: disabled,
           [classes.error]: error,
         },
@@ -85,7 +94,8 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           value={text}
           onChange={handleChange}
-          className={cx(classes.tag, classes.size(size))}
+          className={cx(classes.tag,
+            classes.size(size))}
           {...rest}
           placeholder={placeholder}
           disabled={disabled}
@@ -105,6 +115,21 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             /
             {maxLength}
           </span>
+        ) : null}
+        {clearable && text ? (
+          <button
+            onClick={() => setText('')}
+            className={cx(
+              classes.decoratorHost,
+              {
+                [classes.icon('end')]: clearable,
+                [classes.clearButton]: clearable,
+              },
+            )}
+            type="button"
+          >
+            <Icon icon={TimesIcon} />
+          </button>
         ) : null}
       </div>
     );

@@ -130,6 +130,7 @@ export const WithIcons = () => (
       placeholder="輸入金額"
       inputSuffix="TWD"
       size="large"
+      clearable
     />
     <Input
       inputPrefix={<Icon icon={PlusIcon} />}
