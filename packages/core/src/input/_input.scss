@@ -131,15 +131,8 @@ $default-options: (
     @include _size($options);
     @include _width($options);
 
-    display: inline-flex;
-    position: relative;
-    justify-content: space-between;
-    align-items: center;
-    border-width: 1px;
-    border-style: solid;
     border-color: palette.color(border);
     background-color: palette.color(surface);
-    box-sizing: border-box;
 
     &.textarea {
       align-items: flex-start;
