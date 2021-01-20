@@ -101,11 +101,16 @@ describe('<Textarea />', () => {
   });
 
   describe('prop: maxLength', () => {
-    it('should enter content whose length is between 0 and max length and display annotation', () => {
-      const { getHostHTMLElement } = render(<Textarea maxLength={8} />);
+    it('should restrict content length between 0 and max length and display current value length', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          maxLength={8}
+          value="hello"
+        />,
+      );
       const element = getHostHTMLElement();
       const {
-        lastElementChild: annotationElement,
+        lastElementChild: countAnnotationElement,
         childElementCount,
       } = element;
 
@@ -113,9 +118,9 @@ describe('<Textarea />', () => {
 
       expect(childElementCount).toBe(2);
       expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
-      expect(annotationElement?.tagName.toLowerCase()).toBe('span');
-
+      expect(countAnnotationElement?.tagName.toLowerCase()).toBe('span');
       expect(textareaElement?.maxLength).toBe(8);
+      expect(countAnnotationElement?.innerHTML).toBe('5/8');
     });
   });
 
