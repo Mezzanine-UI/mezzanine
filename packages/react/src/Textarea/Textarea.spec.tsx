@@ -87,7 +87,7 @@ describe('<Textarea />', () => {
       expect(textareaElement.value).toBe('I will tell you the story');
     });
 
-    it('should set entered content to text state', () => {
+    it('should execute passing onChange function when entering text', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(<Textarea onChange={onChange} />);
       const element = getHostHTMLElement();
@@ -96,17 +96,21 @@ describe('<Textarea />', () => {
 
       fireEvent.change(textareaElement, { target: { value: 'I will tell you the story' } });
 
-      expect(onChange).toBeCalled();
-      expect(textareaElement.value).toBe('I will tell you the story');
+      expect(onChange).toBeCalledTimes(1);
     });
   });
 
   describe('prop: maxLength', () => {
-    it('should enter content whose length is between 0 and max length and display annotation', () => {
-      const { getHostHTMLElement } = render(<Textarea maxLength={8} />);
+    it('should restrict content length between 0 and max length and display current value length', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          maxLength={8}
+          value="hello"
+        />,
+      );
       const element = getHostHTMLElement();
       const {
-        lastElementChild: annotationElement,
+        lastElementChild: countAnnotationElement,
         childElementCount,
       } = element;
 
@@ -114,9 +118,47 @@ describe('<Textarea />', () => {
 
       expect(childElementCount).toBe(2);
       expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
-      expect(annotationElement?.tagName.toLowerCase()).toBe('span');
-
+      expect(countAnnotationElement?.tagName.toLowerCase()).toBe('span');
       expect(textareaElement?.maxLength).toBe(8);
+      expect(countAnnotationElement?.innerHTML).toBe('5/8');
+    });
+  });
+
+  describe('prop: clearable', () => {
+    it('should render the clear button on the right side when input value exists', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          clearable
+          value="This is an apple"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: textareaElement,
+
+        lastElementChild: clearButtonElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
+      expect(clearButtonElement?.tagName.toLowerCase()).toBe('button');
+    });
+
+    it('should clear value when click the clear button', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          clearable
+          value="This is an apple"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const textareaElement = element.getElementsByTagName('textarea')[0];
+      const clearButtonElement = element.getElementsByTagName('button')[0];
+
+      fireEvent.click(clearButtonElement);
+
+      expect(textareaElement.value).toBe('');
     });
   });
 });
