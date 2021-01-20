@@ -129,6 +129,8 @@ $default-options: (
 
     &.textarea {
       @include _width($options);
+
+      align-items: flex-start;
     }
 
     &:hover {
@@ -179,7 +181,7 @@ $default-options: (
         color: palette.color(primary);
       }
 
-      &.#{$prefix}--tag:focus + .#{$prefix}--clearButton {
+      &.#{$prefix}--tag:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
         opacity: 1;
         color: palette.color(primary);
       }

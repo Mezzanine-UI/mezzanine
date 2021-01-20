@@ -1,5 +1,4 @@
-import { TextareaSize } from './typings';
-// import { textareaPrefix } from './constants';
+import { TextareaSize, TextareaDecoratorPosition } from './typings';
 import { inputPrefix } from '../input/constants';
 
 export const textareaClasses = {
@@ -8,5 +7,8 @@ export const textareaClasses = {
   error: `${inputPrefix}--error textarea`,
   disabled: `${inputPrefix}--disabled textarea`,
   size: (size: TextareaSize) => `${inputPrefix}--${size} textarea`,
+  icon: (iconPosition: TextareaDecoratorPosition) => `${inputPrefix}-icon--${iconPosition} textarea`,
   counting: `${inputPrefix}--counting`,
+  decoratorHost: `${inputPrefix}-decorator`,
+  clearButton: `${inputPrefix}--clearButton`,
 };
