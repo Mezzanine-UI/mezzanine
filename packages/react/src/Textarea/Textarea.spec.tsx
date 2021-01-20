@@ -118,4 +118,42 @@ describe('<Textarea />', () => {
       expect(textareaElement?.maxLength).toBe(8);
     });
   });
+
+  describe('prop: clearable', () => {
+    it('should render the clear button on the right side when input value exists', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          clearable
+          value="This is an apple"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: textareaElement,
+
+        lastElementChild: clearButtonElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
+      expect(clearButtonElement?.tagName.toLowerCase()).toBe('button');
+    });
+
+    it('should clear value when click the clear button', () => {
+      const { getHostHTMLElement } = render(
+        <Textarea
+          clearable
+          value="This is an apple"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const textareaElement = element.getElementsByTagName('textarea')[0];
+      const clearButtonElement = element.getElementsByTagName('button')[0];
+
+      fireEvent.click(clearButtonElement);
+
+      expect(textareaElement.value).toBe('');
+    });
+  });
 });

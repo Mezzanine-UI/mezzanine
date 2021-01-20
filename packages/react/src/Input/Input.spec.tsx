@@ -141,11 +141,10 @@ describe('<Input />', () => {
       );
       const element = getHostHTMLElement();
       const {
+        firstElementChild: inputElement,
         lastElementChild: clearButtonElement,
         childElementCount,
       } = element;
-
-      const inputElement = element.getElementsByTagName('input')[0];
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
@@ -165,7 +164,7 @@ describe('<Input />', () => {
 
       fireEvent.click(clearButtonElement);
 
-      expect(inputElement.getAttribute('value')).toBe('');
+      expect(inputElement.value).toBe('');
     });
   });
 
@@ -173,11 +172,9 @@ describe('<Input />', () => {
     it('should set value prop to input value', () => {
       const { getHostHTMLElement } = render(<Input value="Tom Hardy" />);
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: inputElement,
-      } = element;
+      const inputElement = element.getElementsByTagName('input')[0];
 
-      expect(inputElement?.getAttribute('value')).toBe('Tom Hardy');
+      expect(inputElement.value).toBe('Tom Hardy');
     });
   });
 
