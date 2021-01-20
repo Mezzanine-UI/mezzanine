@@ -83,65 +83,69 @@ describe('<Input />', () => {
     });
   });
 
-  describe('prop: iconStart', () => {
+  describe('prop: inputPrefix', () => {
     it('should render the icon on the left side', () => {
-      const { getHostHTMLElement } = render(<Input iconStart={<Icon icon={PlusIcon} />} />);
+      const { getHostHTMLElement } = render(<Input inputPrefix={<Icon icon={PlusIcon} />} />);
       const element = getHostHTMLElement();
       const {
-        firstElementChild: iconStartWrapperElement,
+        firstElementChild: inputPrefixWrapperElement,
         lastElementChild: inputElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
-      expect(iconStartWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
-      expect(iconStartWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(inputPrefixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
+      expect(inputPrefixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
     });
   });
 
-  describe('prop: iconEnd', () => {
+  describe('prop: inputSuffix', () => {
     it('should render the icon on the right side', () => {
-      const { getHostHTMLElement } = render(<Input iconEnd={<Icon icon={PlusIcon} />} />);
+      const { getHostHTMLElement } = render(<Input inputSuffix={<Icon icon={PlusIcon} />} />);
       const element = getHostHTMLElement();
       const {
         firstElementChild: inputElement,
-        lastElementChild: iconEndWrapperElement,
+        lastElementChild: inputSuffixWrapperElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(iconEndWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
-      expect(iconEndWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(inputSuffixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
+      expect(inputSuffixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
-  });
 
-  describe('prop: textEnd', () => {
     it('should render the text on the right side', () => {
-      const { getHostHTMLElement } = render(<Input textEnd="End" />);
+      const { getHostHTMLElement } = render(<Input inputSuffix="End" />);
       const element = getHostHTMLElement();
       const {
         firstElementChild: inputElement,
-        lastElementChild: textEndWrapperElement,
+        lastElementChild: inputSuffixWrapperElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(textEndWrapperElement?.innerHTML).toBe('End');
+      expect(inputSuffixWrapperElement?.innerHTML).toBe('End');
     });
   });
 
   describe('prop: clearable', () => {
-    it('should render the clear button on the right side', () => {
-      const { getHostHTMLElement } = render(<Input clearable />);
+    it('should render the clear button on the right side when input value exists', () => {
+      const { getHostHTMLElement } = render(
+        <Input
+          clearable
+          value="entered text"
+        />,
+      );
       const element = getHostHTMLElement();
       const {
-        firstElementChild: inputElement,
         lastElementChild: clearButtonElement,
         childElementCount,
       } = element;
+
+      const inputElement = element.getElementsByTagName('input')[0];
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
@@ -149,20 +153,19 @@ describe('<Input />', () => {
     });
 
     it('should clear value when click the clear button', () => {
-      const { getHostHTMLElement } = render(<Input clearable />);
+      const { getHostHTMLElement } = render(
+        <Input
+          clearable
+          value="entered text"
+        />,
+      );
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: inputElement,
-        lastElementChild: clearButtonElement,
-      } = element;
+      const inputElement = element.getElementsByTagName('input')[0];
+      const clearButtonElement = element.getElementsByTagName('button')[0];
 
-      if (inputElement && clearButtonElement) {
-        fireEvent.change(inputElement, { target: { value: 'entered content' } });
+      fireEvent.click(clearButtonElement);
 
-        fireEvent.click(clearButtonElement);
-
-        expect(inputElement.getAttribute('value')).toBe('');
-      }
+      expect(inputElement.getAttribute('value')).toBe('');
     });
   });
 
@@ -180,6 +183,17 @@ describe('<Input />', () => {
 
   describe('prop: onChange', () => {
     it('should set entered content to text state', () => {
+      const { getHostHTMLElement } = render(<Input />);
+      const element = getHostHTMLElement();
+
+      const inputElement = element.getElementsByTagName('input')[0];
+
+      fireEvent.change(inputElement, { target: { value: 'I will tell you the story' } });
+
+      expect(inputElement.value).toBe('I will tell you the story');
+    });
+
+    it('should execute passing onChange function when entering text', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(<Input onChange={onChange} />);
       const element = getHostHTMLElement();
@@ -188,8 +202,7 @@ describe('<Input />', () => {
 
       fireEvent.change(inputElement, { target: { value: 'Don Diablo' } });
 
-      expect(onChange).toBeCalled();
-      expect(inputElement.value).toBe('Don Diablo');
+      expect(onChange).toBeCalledTimes(1);
     });
   });
 });
