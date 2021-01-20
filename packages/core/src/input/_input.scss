@@ -177,17 +177,22 @@ $default-options: (
         color: palette.color(text-secondary);
       }
 
-      &.#{$prefix}--tag:focus + .#{$prefix}--counting {
-        color: palette.color(primary);
-      }
-
-      &.#{$prefix}--tag:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
+      &.#{$prefix}--tag:focus + .#{$prefix}--clearButton {
         opacity: 1;
         color: palette.color(primary);
       }
 
       &.textarea {
         height: 100%;
+
+        &.#{$prefix}--tag:focus + .#{$prefix}--counting {
+          color: palette.color(primary);
+        }
+
+        &.#{$prefix}--tag:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
+          opacity: 1;
+          color: palette.color(primary);
+        }
       }
     }
 
