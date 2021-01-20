@@ -182,7 +182,7 @@ $default-options: (
         color: palette.color(text-secondary);
       }
 
-      &.#{$prefix}--tag:focus + .#{$prefix}--clearButton {
+      &:focus + .#{$prefix}--clearButton {
         opacity: 1;
         color: palette.color(primary);
       }
@@ -190,11 +190,11 @@ $default-options: (
       &.textarea {
         height: 100%;
 
-        &.#{$prefix}--tag:focus + .#{$prefix}--counting {
+        &:focus + .#{$prefix}--counting {
           color: palette.color(primary);
         }
 
-        &.#{$prefix}--tag:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
+        &:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
           opacity: 1;
           color: palette.color(primary);
         }
