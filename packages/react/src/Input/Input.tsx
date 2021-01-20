@@ -25,15 +25,11 @@ export interface InputProps extends
   /**
    * The icon placed on the start of input.
    */
-  iconStart?: ReactNode;
+  inputPrefix?: ReactNode;
   /**
-   * The icon placed on the end of input.
+   * The icon or text placed on the end of input.
    */
-  iconEnd?: ReactNode;
-  /**
-   * The text placed on the end of input.
-   */
-  textEnd?: ReactNode;
+  inputSuffix?: ReactNode;
   /**
    * The error of input.
    * @default 'false';
@@ -61,15 +57,13 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     disabled = false,
     size = 'medium',
     placeholder = '',
-    iconStart: iconStartProp,
-    iconEnd: iconEndProp,
-    textEnd: textEndProp,
+    inputPrefix: inputPrefixProp,
+    inputSuffix: inputSuffixProp,
     ...rest
   } = props;
 
-  const iconStart: ReactNode = iconStartProp;
-  const iconEnd: ReactNode = iconEndProp;
-  const textEnd: ReactNode = textEndProp;
+  const inputPrefix: ReactNode = inputPrefixProp;
+  const inputSuffix: ReactNode = inputSuffixProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
@@ -93,21 +87,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
       {
         [classes.disabled]: disabled,
         [classes.error]: error,
-        [classes.icon('start')]: iconStart,
-        [classes.icon('end')]: iconEnd || textEnd || clearable,
+        [classes.icon('start')]: inputPrefix,
+        [classes.icon('end')]: inputSuffix || clearable,
       },
       className,
     )}
     >
-      {iconStart ? (
+      {inputPrefix ? (
         <div className={cx(
           classes.decoratorHost,
           {
-            [classes.icon('start')]: iconStart,
+            [classes.icon('start')]: inputPrefix,
           },
         )}
         >
-          {iconStart}
+          {inputPrefix}
         </div>
       ) : null}
       <input
@@ -124,15 +118,15 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         disabled={disabled}
         aria-disabled={disabled}
       />
-      {(iconEnd || textEnd) ? (
+      {inputSuffix ? (
         <div className={cx(
           classes.decoratorHost,
           {
-            [classes.icon('end')]: iconEnd || textEnd,
+            [classes.icon('end')]: inputSuffix,
           },
         )}
         >
-          {iconEnd || textEnd}
+          {inputSuffix}
         </div>
       ) : null}
       {clearable && inputs ? (
@@ -141,7 +135,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           className={cx(
             classes.decoratorHost,
             {
-              [classes.icon('end')]: iconEnd,
+              [classes.icon('end')]: inputSuffix,
               [classes.clearButton]: clearable,
             },
           )}

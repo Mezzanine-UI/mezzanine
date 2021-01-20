@@ -105,74 +105,74 @@ export const WithIcons = () => (
     />
     <Input
       placeholder="請輸入文字"
-      iconEnd={<Icon icon={PlusIcon} />}
+      inputSuffix={<Icon icon={PlusIcon} />}
       disabled
     />
     <Input
       placeholder="請輸入文字"
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       error
     />
     <Input
       placeholder="請輸入文字"
-      iconEnd={<Icon icon={PlusIcon} />}
+      inputSuffix={<Icon icon={PlusIcon} />}
     />
     <Input
       placeholder="請輸入文字"
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
     />
     <Input
       placeholder="請輸入文字"
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="TWD"
+      inputSuffix="TWD"
       size="large"
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="TWD"
+      inputSuffix="TWD"
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="TWD"
+      inputSuffix="TWD"
       size="small"
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="價格"
+      inputSuffix="價格"
       size="large"
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="TWD"
+      inputSuffix="TWD"
     />
     <Input
-      iconStart={<Icon icon={PlusIcon} />}
+      inputPrefix={<Icon icon={PlusIcon} />}
       placeholder="輸入金額"
-      textEnd="TWD"
+      inputSuffix="TWD"
       size="small"
     />
     <Input
       placeholder="搜尋..."
-      iconStart={<Icon icon={SearchIcon} />}
+      inputPrefix={<Icon icon={SearchIcon} />}
       size="large"
       clearable
     />
     <Input
       placeholder="搜尋..."
-      iconStart={<Icon icon={SearchIcon} />}
+      inputPrefix={<Icon icon={SearchIcon} />}
       clearable
     />
     <Input
       placeholder="搜尋..."
-      iconStart={<Icon icon={SearchIcon} />}
+      inputPrefix={<Icon icon={SearchIcon} />}
       size="small"
       clearable
     />
