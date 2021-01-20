@@ -135,7 +135,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           className={cx(
             classes.decoratorHost,
             {
-              [classes.icon('end')]: inputSuffix,
+              [classes.icon('end')]: clearable,
               [classes.clearButton]: clearable,
             },
           )}
