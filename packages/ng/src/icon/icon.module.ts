@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MznIconDirective } from './icon.directive';
+import { MznIconComponent } from './icon.component';
 
 @NgModule({
   imports: [CommonModule],
-  declarations: [MznIconDirective],
-  exports: [MznIconDirective],
+  declarations: [MznIconComponent],
+  exports: [MznIconComponent],
 })
 export class MznIconModule {}

@@ -3,16 +3,16 @@ import { toCssVar } from '@mezzanine-ui/core/css';
 import { Color } from '@mezzanine-ui/core/palette';
 import { IconColor } from '@mezzanine-ui/core/icon';
 import { render } from '@testing-library/angular';
-import { MznIconDirective } from '.';
+import { MznIconComponent } from '.';
 
-describe('MznIconDirective', () => {
+describe('MznIconComponent', () => {
   describe('attrs, aria-*, data-*', () => {
     let element: HTMLElement;
 
     beforeEach(async () => {
-      const result = await render(MznIconDirective, {
+      const result = await render(MznIconComponent, {
         template: `
-          <i [mznIcon]="icon"></i>
+          <i [mzn-icon]="icon"></i>
         `,
         componentProperties: {
           icon: PlusIcon,
@@ -43,9 +43,9 @@ describe('MznIconDirective', () => {
 
   describe('input: icon', () => {
     it('should sync IconDefinition after changed', async () => {
-      const result = await render(MznIconDirective, {
+      const result = await render(MznIconComponent, {
         template: `
-          <i [mznIcon]="icon"></i>
+          <i [mzn-icon]="icon"></i>
         `,
         componentProperties: {
           icon: PlusIcon,
@@ -80,7 +80,6 @@ describe('MznIconDirective', () => {
     });
   });
 
-
   describe('prop: color', () => {
     const colorMaps: ([IconColor, Color] | IconColor | undefined)[] = [
       undefined,
@@ -111,9 +110,9 @@ describe('MznIconDirective', () => {
         : 'should not add class and style if color=undefined';
 
       it(message, async () => {
-        const result = await render(MznIconDirective, {
+        const result = await render(MznIconComponent, {
           template: `
-            <i [mznIcon]="icon" [mznIconColor]="color"></i>
+            <i [mzn-icon]="icon" [color]="color"></i>
           `,
           componentProperties: {
             icon: PlusIcon,
@@ -128,9 +127,9 @@ describe('MznIconDirective', () => {
     });
 
     it('should sync color css variable after changed', async () => {
-      const result = await render(MznIconDirective, {
+      const result = await render(MznIconComponent, {
         template: `
-          <i [mznIcon]="icon" [mznIconColor]="color"></i>
+          <i [mzn-icon]="icon" [color]="color"></i>
         `,
         componentProperties: {
           icon: PlusIcon,
@@ -165,9 +164,9 @@ describe('MznIconDirective', () => {
         : 'should not add class if spin=false';
 
       it(message, async () => {
-        const result = await render(MznIconDirective, {
+        const result = await render(MznIconComponent, {
           template: `
-            <i [mznIcon]="icon" [mznIconSpin]="spin"></i>
+            <i [mzn-icon]="icon" [spin]="spin"></i>
           `,
           componentProperties: {
             icon: PlusIcon,

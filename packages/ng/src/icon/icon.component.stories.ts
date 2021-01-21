@@ -15,7 +15,7 @@ import {
   TimesIcon,
   TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
-import { IconColor, MznIconDirective, MznIconModule } from '.';
+import { IconColor, MznIconComponent, MznIconModule } from '.';
 
 export default {
   title: 'Basic/Icon',
@@ -36,13 +36,13 @@ const colors: IconColor[] = [
   'disabled',
 ];
 
-export const Playgroud: Story<MznIconDirective> = (args) => ({
+export const Playgroud: Story<MznIconComponent> = (args) => ({
   props: args,
   template: `
     <i 
-      [mznIcon]="icon"
-      [mznIconColor]="color"
-      [mznIconSpin]="spin"
+      [mzn-icon]="icon"
+      [color]="color"
+      [spin]="spin"
     ></i>
   `,
 });
@@ -98,7 +98,7 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
       >
         <ng-container *ngFor="let icon of icons;">
           <div>
-            <i [mznIcon]="icon" [mznIconSpin]="spin"></i>
+            <i [mzn-icon]="icon" [spin]="spin"></i>
             <div [style.font-size.px]="20">{{icon.name}}</div>
           </div>
         </ng-container>
@@ -125,7 +125,7 @@ export const Colors: Story = (args) => ({
       }"
     >
       <ng-container *ngFor="let color of colors;">
-        <i [mznIcon]="icon" [mznIconColor]="color"></i>
+        <i [mzn-icon]="icon" [color]="color"></i>
       </ng-container>
     </div>
   `,
