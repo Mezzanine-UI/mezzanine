@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
-import { MznTypographyDirective } from './typography.directive';
+import { MznTypographyComponent } from './typography.component';
 
 @NgModule({
-  declarations: [MznTypographyDirective],
-  exports: [MznTypographyDirective],
+  declarations: [MznTypographyComponent],
+  exports: [MznTypographyComponent],
 })
 export class MznTypographyModule {}

@@ -4,5 +4,5 @@ export type {
   TypographyDisplay,
   TypographyVariant,
 } from '@mezzanine-ui/core/typography';
-export * from './typography.directive';
+export * from './typography.component';
 export * from './typography.module';
