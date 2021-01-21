@@ -310,7 +310,10 @@ module.exports = {
       },
       extends: [
         'plugin:@angular-eslint/recommended',
-        'plugin:@angular-eslint/template/process-inline-templates',
+        /**
+         * @todo fix bugs
+         */
+        // 'plugin:@angular-eslint/template/process-inline-templates',
       ],
       rules: {
         '@angular-eslint/directive-selector': [
@@ -324,27 +327,28 @@ module.exports = {
         '@angular-eslint/component-selector': [
           2,
           {
-            type: 'element',
+            type: ['element', 'attribute'],
             prefix: 'mzn',
             style: 'kebab-case',
           },
         ],
-        '@angular-eslint/no-host-metadata-property': 0,
       },
     },
-    {
-      files: ['./packages/ng/**/*.html'],
-      parser: '@angular-eslint/template-parser',
-      extends: [
-        'plugin:@angular-eslint/template/recommended',
-      ],
-    },
+    // {
+    //   files: ['./packages/ng/**/*.html'],
+    //   parser: '@angular-eslint/template-parser',
+    //   extends: [
+    //     'plugin:@angular-eslint/template/recommended',
+    //   ],
+    // },
     {
       files: [
         './**/*.spec.{ts,tsx}',
       ],
       rules: {
+        'max-classes-per-file': 0,
         '@typescript-eslint/ban-ts-ignore': 0,
+        '@typescript-eslint/no-useless-constructor': 0,
       },
     },
     {
