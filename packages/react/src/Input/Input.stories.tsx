@@ -164,6 +164,7 @@ export const WithIcons = () => (
       inputPrefix={<Icon icon={SearchIcon} />}
       size="large"
       clearable
+      error
     />
     <Input
       placeholder="搜尋..."

@@ -110,6 +110,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         value={inputs}
         onChange={handleChange}
         className={cx(
+          {
+            [classes.error]: error,
+          },
           classes.tag,
           classes.size(size),
         )}
@@ -122,6 +125,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         <div className={cx(
           classes.decoratorHost,
           {
+            [classes.error]: error,
             [classes.icon('end')]: inputSuffix,
           },
         )}
@@ -135,6 +139,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           className={cx(
             classes.decoratorHost,
             {
+              [classes.error]: error,
               [classes.icon('end')]: clearable,
               [classes.clearButton]: clearable,
             },

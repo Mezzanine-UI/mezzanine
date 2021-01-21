@@ -95,6 +95,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           value={text}
           onChange={handleChange}
           className={cx(classes.tag,
+            {
+              [classes.error]: error,
+            },
             classes.size(size))}
           {...rest}
           placeholder={placeholder}
@@ -122,6 +125,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             className={cx(
               classes.decoratorHost,
               {
+                [classes.error]: error,
                 [classes.icon('end')]: clearable,
                 [classes.clearButton]: clearable,
               },

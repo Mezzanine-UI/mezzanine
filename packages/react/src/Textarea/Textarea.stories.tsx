@@ -28,6 +28,7 @@ export const Basic = () => (
       placeholder="輸入文字..."
       maxLength={50}
       error
+      clearable
     />
     <Textarea
       placeholder="輸入文字..."
