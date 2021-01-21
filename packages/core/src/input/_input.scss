@@ -202,9 +202,7 @@ $default-options: (
     }
 
     &:focus-within {
-      border-color: palette.color(primary);
-
-      &:not(.#{$prefix}--disabled) {
+      &:not(.#{$prefix}--error) {
         border-color: palette.color(primary);
       }
     }
