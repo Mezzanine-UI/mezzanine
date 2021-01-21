@@ -7,26 +7,20 @@ export type {
   ButtonVariant,
   ButtonProps,
   IconButtonProps,
-} from './Button';
-export type {
   default as Button,
   IconButton,
 } from './Button';
-export type {
+export {
   IconColor,
   IconProps,
-} from './Icon';
-export {
   default as Icon,
 } from './Icon';
-export type {
+export {
   TypographyAlign,
   TypographyColor,
   TypographyComponent,
   TypographyDisplay,
   TypographyVariant,
   TypographyProps,
-} from './Typography';
-export {
   default as Typography,
 } from './Typography';

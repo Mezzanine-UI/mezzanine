@@ -9,8 +9,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import type { IconDefinition } from '@mezzanine-ui/icons';
-import type { IconColor } from '@mezzanine-ui/core/icon';
-import { iconClasses as classes, toIconCssVars } from '@mezzanine-ui/core/icon';
+import { iconClasses as classes, IconColor, toIconCssVars } from '@mezzanine-ui/core/icon';
 import {
   BooleanInput,
   createCssVarsChangeEffect,

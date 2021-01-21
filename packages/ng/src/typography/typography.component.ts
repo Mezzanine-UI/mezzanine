@@ -1,12 +1,10 @@
-import type {
+import {
+  toTypographyCssVars,
+  typographyClasses as classes,
   TypographyAlign,
   TypographyColor,
   TypographyDisplay,
   TypographyVariant,
-} from '@mezzanine-ui/core/typography';
-import {
-  toTypographyCssVars,
-  typographyClasses as classes,
 } from '@mezzanine-ui/core/typography';
 import {
   AfterViewChecked,
