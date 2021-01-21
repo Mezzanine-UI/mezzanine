@@ -2,7 +2,7 @@ import { moduleMetadata } from '@storybook/angular';
 import { Story, Meta } from '@storybook/angular/types-6-0';
 
 import {
-  MznTypographyDirective,
+  MznTypographyComponent,
   MznTypographyModule,
   TypographyAlign,
   TypographyColor,
@@ -60,16 +60,16 @@ const variants: TypographyVariant[] = [
   'caption',
 ];
 
-export const Playgroud: Story<MznTypographyDirective & { content: string; }> = (args) => ({
+export const Playgroud: Story<MznTypographyComponent & { content: string; }> = (args) => ({
   props: args,
   template: `
     <p
-      [mznTypography]="variant"
-      [mznTypographyAlign]="align"
-      [mznTypographyColor]="color"
-      [mznTypographyDisplay]="display"
-      [mznTypographyEllipsis]="ellipsis"
-      [mznTypographyNoWrap]="noWrap"
+      [mzn-typography]="variant"
+      [align]="align"
+      [color]="color"
+      [display]="display"
+      [ellipsis]="ellipsis"
+      [noWrap]="noWrap"
     >
       {{content}}
     </p>
@@ -112,45 +112,45 @@ Playgroud.argTypes = {
 export const Variants: Story = (args) => ({
   props: args,
   template: `
-    <h1 mznTypography="h1">h1. Heading</h1>
-    <h2 mznTypography="h2">h2. Heading</h2>
-    <h3 mznTypography="h3">h3. Heading</h3>
-    <h4 mznTypography="h4">h4. Heading</h4>
-    <h5 mznTypography="h5">h5. Heading</h5>
-    <h6 mznTypography="h6">h6. Heading</h6>
-    <p mznTypography>
+    <h1 mzn-typography="h1">h1. Heading</h1>
+    <h2 mzn-typography="h2">h2. Heading</h2>
+    <h3 mzn-typography="h3">h3. Heading</h3>
+    <h4 mzn-typography="h4">h4. Heading</h4>
+    <h5 mzn-typography="h5">h5. Heading</h5>
+    <h6 mzn-typography="h6">h6. Heading</h6>
+    <p mzn-typography>
       body1. Lorem ipsum dolor sit amet consectetur adipisicing elit.
       Neque, asperiores fuga porro officiis mollitia qui,
       consectetur sed provident suscipit voluptate quae
       similique minima itaque officia non impedit perferendis quis consequatur?
     </p>
-    <p mznTypography="body2">
+    <p mzn-typography="body2">
       body2. Lorem ipsum dolor sit amet consectetur adipisicing elit.
       Neque, asperiores fuga porro officiis mollitia qui,
       consectetur sed provident suscipit voluptate quae
       similique minima itaque officia non impedit perferendis quis consequatur?
     </p>
-    <span mznTypography="button1" mznTypographyDisplay="block">button 1</span>
-    <span mznTypography="button2" mznTypographyDisplay="block">button 2</span>
-    <span mznTypography="button3" mznTypographyDisplay="block">button 3</span>
-    <span mznTypography="input1" mznTypographyDisplay="block">input 1</span>
-    <span mznTypography="input2" mznTypographyDisplay="block">input 2</span>
-    <span mznTypography="input3" mznTypographyDisplay="block">input 3</span>
-    <span mznTypography="caption" mznTypographyDisplay="block">caption text</span>
+    <span mzn-typography="button1" display="block">button 1</span>
+    <span mzn-typography="button2" display="block">button 2</span>
+    <span mzn-typography="button3" display="block">button 3</span>
+    <span mzn-typography="input1" display="block">input 1</span>
+    <span mzn-typography="input2" display="block">input 2</span>
+    <span mzn-typography="input3" display="block">input 3</span>
+    <span mzn-typography="caption" display="block">caption text</span>
   `,
 });
 
 export const Colors: Story = (args) => ({
   props: args,
   template: `
-    <p mznTypography mznTypographyColor="inherit">inherit</p>
-    <p mznTypography mznTypographyColor="primary">primary</p>
-    <p mznTypography mznTypographyColor="secondary">secondary</p>
-    <p mznTypography mznTypographyColor="error">error</p>
-    <p mznTypography mznTypographyColor="warning">warning</p>
-    <p mznTypography mznTypographyColor="success">success</p>
-    <p mznTypography mznTypographyColor="text-primary">text-primary</p>
-    <p mznTypography mznTypographyColor="text-secondary">text-secondary</p>
-    <p mznTypography mznTypographyColor="text-disabled">text-disabled</p>
+    <p mzn-typography color="inherit">inherit</p>
+    <p mzn-typography color="primary">primary</p>
+    <p mzn-typography color="secondary">secondary</p>
+    <p mzn-typography color="error">error</p>
+    <p mzn-typography color="warning">warning</p>
+    <p mzn-typography color="success">success</p>
+    <p mzn-typography color="text-primary">text-primary</p>
+    <p mzn-typography color="text-secondary">text-secondary</p>
+    <p mzn-typography color="text-disabled">text-disabled</p>
   `,
 });

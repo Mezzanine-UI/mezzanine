@@ -1,4 +1,5 @@
 export * from './changes';
 export * from './corercion';
-export * from './css-vars';
+export * from './destroyable';
+export * from './dom';
 export * from './input-types';

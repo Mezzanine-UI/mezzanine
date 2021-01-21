@@ -7,14 +7,14 @@ import {
   TypographyVariant,
 } from '@mezzanine-ui/core/typography';
 import { render } from '@testing-library/angular';
-import { MznTypographyDirective } from '.';
+import { MznTypographyComponent } from '.';
 
-describe('MznTypographyDirective', () => {
+describe('MznTypographyComponent', () => {
   describe('input: variant', () => {
     it('should render variant="body1" by default', async () => {
-      const result = await render(MznTypographyDirective, {
+      const result = await render(MznTypographyComponent, {
         template: `
-          <p mznTypography>Hello</p>
+          <p mzn-typography>Hello</p>
         `,
       });
       const element = result.container.firstElementChild as HTMLElement;
@@ -42,9 +42,9 @@ describe('MznTypographyDirective', () => {
 
     variants.forEach((variant) => {
       it(`should render variant="${variant}"`, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p [mznTypography]="variant">Hello</p>
+            <p [mzn-typography]="variant">Hello</p>
           `,
           componentProperties: {
             variant,
@@ -57,9 +57,9 @@ describe('MznTypographyDirective', () => {
     });
 
     it('should sync corresponding class of variant after changed', async () => {
-      const result = await render(MznTypographyDirective, {
+      const result = await render(MznTypographyComponent, {
         template: `
-          <p [mznTypography]="variant">Hello</p>
+          <p [mzn-typography]="variant">Hello</p>
         `,
         componentProperties: {
           variant: 'body1',
@@ -87,9 +87,9 @@ describe('MznTypographyDirective', () => {
         : 'should not add class and style if align=undefined';
 
       it(message, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p mznTypography [mznTypographyAlign]="align">Hello</p>
+            <p mzn-typography [align]="align">Hello</p>
           `,
           componentProperties: {
             align,
@@ -142,9 +142,9 @@ describe('MznTypographyDirective', () => {
         : 'should not add class and style if color=undefined';
 
       it(message, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p mznTypography [mznTypographyColor]="color">Hello</p>
+            <p mzn-typography [color]="color">Hello</p>
           `,
           componentProperties: {
             color,
@@ -167,9 +167,9 @@ describe('MznTypographyDirective', () => {
         : 'should not add class and style if display=undefined';
 
       it(message, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p mznTypography [mznTypographyDisplay]="display">Hello</p>
+            <p mzn-typography [display]="display">Hello</p>
           `,
           componentProperties: {
             display,
@@ -190,9 +190,9 @@ describe('MznTypographyDirective', () => {
         : 'should not add class and not provide titile attribute if ellipsis=false';
 
       it(message, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p mznTypography [mznTypographyEllipsis]="ellipsis">Hello</p>
+            <p mzn-typography [ellipsis]="ellipsis">Hello</p>
           `,
           componentProperties: {
             ellipsis,
@@ -206,9 +206,9 @@ describe('MznTypographyDirective', () => {
     });
 
     it('should sync title attribute after ellipsis or text changed', async () => {
-      const result = await render(MznTypographyDirective, {
+      const result = await render(MznTypographyComponent, {
         template: `
-          <p mznTypography [mznTypographyEllipsis]="ellipsis">{{content}}</p>
+          <p mzn-typography [ellipsis]="ellipsis">{{content}}</p>
         `,
         componentProperties: {
           content: 'Hello',
@@ -246,9 +246,9 @@ describe('MznTypographyDirective', () => {
         : 'should not add class if noWrap=false';
 
       it(message, async () => {
-        const result = await render(MznTypographyDirective, {
+        const result = await render(MznTypographyComponent, {
           template: `
-            <p mznTypography [mznTypographyNoWrap]="noWrap">Hello</p>
+            <p mzn-typography [noWrap]="noWrap">Hello</p>
           `,
           componentProperties: {
             noWrap,
