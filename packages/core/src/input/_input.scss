@@ -139,14 +139,22 @@ $default-options: (
     }
 
     &:hover {
-      &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
+      &:not(.#{$prefix}--disabled) {
         &:hover {
           border-color: palette.color(primary);
+
+          &.#{$prefix}--error {
+            border-color: palette.color(error);
+          }
         }
 
         .#{$prefix}--clearButton {
           opacity: 1;
           color: palette.color(primary);
+
+          &.#{$prefix}--error {
+            color: palette.color(error);
+          }
         }
       }
     }
@@ -185,18 +193,32 @@ $default-options: (
       &:focus + .#{$prefix}--clearButton {
         opacity: 1;
         color: palette.color(primary);
+
+        &.#{$prefix}--error {
+          opacity: 1;
+          color: palette.color(error);
+        }
       }
 
       &.textarea {
         height: 100%;
 
-        &:focus + .#{$prefix}--counting {
+        &.#{$prefix}:focus + .#{$prefix}--counting {
           color: palette.color(primary);
+
+          &.#{$prefix}--error {
+            color: palette.color(error);
+          }
         }
 
         &:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
           opacity: 1;
           color: palette.color(primary);
+
+          &.#{$prefix}--error {
+            opacity: 1;
+            color: palette.color(error);
+          }
         }
       }
     }
