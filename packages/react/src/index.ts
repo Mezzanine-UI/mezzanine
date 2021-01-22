@@ -37,15 +37,11 @@ export {
 export type {
   InputProps,
   InputSize,
-} from './Input';
+} from './TextInput/Input';
 export {
   default as Input,
-} from './Input';
+} from './TextInput/Input';
 
 export type {
-  TextareaSize,
   TextareaProps,
-} from './Textarea';
-export {
-  default as Textarea,
-} from './Textarea';
+} from './TextInput/Textarea';

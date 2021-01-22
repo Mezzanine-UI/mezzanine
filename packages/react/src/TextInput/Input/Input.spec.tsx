@@ -4,12 +4,12 @@ import {
   cleanup,
   render,
   fireEvent,
-} from '../../__test-utils__';
+} from '../../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
-import Icon from '../Icon';
+} from '../../../__test-utils__/common';
+import Icon from '../../Icon';
 import Input from '.';
 
 describe('<Input />', () => {

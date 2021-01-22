@@ -1,6 +1,6 @@
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Input from '.';
-import Icon from '../Icon';
+import Icon from '../../Icon';
 
 export default {
   title: 'Basic/Input',

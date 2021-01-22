@@ -5,15 +5,14 @@ import {
   ReactNode,
   useState,
   useEffect,
-  useCallback,
 } from 'react';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import { cx } from '../utils/cx';
-import Icon from '../Icon';
+import { cx } from '../../utils/cx';
+import Icon from '../../Icon';
 
 export interface InputProps extends
   DetailedHTMLProps <Omit <InputHTMLAttributes<HTMLInputElement>, 'size'>, HTMLInputElement> {
@@ -67,13 +66,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
-  const handleChange = useCallback((e) => {
-    if (onChange) {
-      onChange(e);
-    }
-    setInputs(e.target.value);
-  }, [onChange]);
-
   useEffect(() => {
     if (value && value !== defaultValue) {
       setInputs(value);
@@ -108,12 +100,16 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         type="text"
         ref={ref}
         value={inputs}
-        onChange={handleChange}
+        onChange={(e) => {
+          if (onChange) {
+            onChange(e);
+          }
+          setInputs(e.target.value);
+        }}
         className={cx(
           {
             [classes.error]: error,
           },
-          classes.tag,
           classes.size(size),
         )}
         {...rest}

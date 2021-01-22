@@ -2,11 +2,11 @@ import {
   cleanup,
   render,
   fireEvent,
-} from '../../__test-utils__';
+} from '../../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+} from '../../../__test-utils__/common';
 import Textarea from '.';
 
 describe('<Textarea />', () => {

@@ -4,24 +4,23 @@ import {
   forwardRef,
   useState,
   useEffect,
-  useCallback,
 } from 'react';
 import {
-  textareaClasses as classes,
-  TextareaSize,
-} from '@mezzanine-ui/core/textarea';
+  inputClasses as classes,
+  InputSize,
+} from '@mezzanine-ui/core/input';
 import { TimesIcon } from '@mezzanine-ui/icons';
-import { cx } from '../utils/cx';
-import Icon from '../Icon';
+import { cx } from '../../utils/cx';
+import Icon from '../../Icon';
 
 export interface TextareaProps
   extends DetailedHTMLProps <Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value | defaultValue'>,
   HTMLTextAreaElement> {
   /**
-   * The size of textarea.
+   * The size of input.
    * @default 'medium'
    */
-  size?: TextareaSize;
+  size?: InputSize;
   /**
    * The error of textarea.
    * @default 'false'
@@ -71,13 +70,6 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const [text, setText] = useState(defaultValue || '');
     const textLength = text.length;
 
-    const handleChange = useCallback((e) => {
-      if (onChange) {
-        onChange(e);
-      }
-      setText(e.target.value);
-    }, [onChange]);
-
     useEffect(() => {
       if (value && value !== defaultValue) {
         setText(value);
@@ -86,6 +78,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
 
     return (
       <div className={cx(classes.host,
+        classes.multiple,
         {
           [classes.icon('end')]: clearable,
           [classes.disabled]: disabled,
@@ -97,12 +90,19 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         <textarea
           ref={ref}
           value={text}
-          onChange={handleChange}
-          className={cx(classes.tag,
+          onChange={(e) => {
+            if (onChange) {
+              onChange(e);
+            }
+            setText(e.target.value);
+          }}
+          className={cx(
+            classes.multiple,
+            classes.size(size),
             {
               [classes.error]: error,
             },
-            classes.size(size))}
+          )}
           {...rest}
           placeholder={placeholder}
           disabled={disabled}
@@ -128,6 +128,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             onClick={() => setText('')}
             className={cx(
               classes.decoratorHost,
+              classes.multiple,
               {
                 [classes.error]: error,
                 [classes.icon('end')]: clearable,
