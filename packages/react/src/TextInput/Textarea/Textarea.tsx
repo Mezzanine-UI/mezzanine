@@ -1,9 +1,8 @@
 import {
-  TextareaHTMLAttributes,
-  DetailedHTMLProps,
   forwardRef,
   useState,
   useEffect,
+  Ref,
 } from 'react';
 import {
   inputClasses as classes,
@@ -13,58 +12,68 @@ import { TimesIcon } from '@mezzanine-ui/icons';
 import { cx } from '../../utils/cx';
 import Icon from '../../Icon';
 
-export interface TextareaProps
-  extends DetailedHTMLProps <Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value | defaultValue'>,
-  HTMLTextAreaElement> {
+export interface TextareaProps {
+  className?: string;
   /**
-   * The size of input.
-   * @default 'medium'
-   */
-  size?: InputSize;
-  /**
-   * The error of textarea.
+   * The setting for clear textarea.
    * @default 'false'
    */
-  error?: boolean;
-  /**
-   * The value of textarea.
-   * @default ''
-   */
-  value?: string;
+  clearable?: boolean;
   /**
    * The defaultValue of textarea.
    * @default ''
    */
   defaultValue?: string;
   /**
-   * The button for clear textarea.
+   * The setting for disable textarea.
+   * @default 'false';
+   */
+  disabled?: boolean;
+  /**
+   * The error of textarea.
    * @default 'false'
    */
-  clearable?: boolean;
+  error?: boolean;
   /**
    * The max length of textarea.
    */
   maxTextLength?: number;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  /**
+   * The placeholder of textarea.
+   * @default '';
+   */
+  placeholder?: string;
+  /**
+   * The size of textarea.
+   * @default 'medium'
+   */
+  size?: InputSize;
+  /**
+   * The value of textarea.
+   * @default ''
+   */
+  textareaRef?: Ref<HTMLTextAreaElement>;
+  value?: string;
 }
 
 /**
  * The react component for `mezzanine` textarea.
  */
-const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  function Textarea(props, ref:any) {
+const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
+  function Textarea(props, ref) {
     const {
-      onChange,
-      maxTextLength,
-      value = '',
-      defaultValue = '',
-      error = false,
-      clearable = false,
-      children,
       className,
+      clearable = false,
+      defaultValue = '',
       disabled = false,
-      size = 'medium',
+      error = false,
+      maxTextLength,
+      onChange,
       placeholder = '',
-      ...rest
+      size = 'medium',
+      value = '',
+      textareaRef,
     } = props;
 
     const [text, setText] = useState(defaultValue || '');
@@ -74,21 +83,23 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       if (value && value !== defaultValue) {
         setText(value);
       }
-    }, [defaultValue, ref, value]);
+    }, [defaultValue, value]);
 
     return (
-      <div className={cx(classes.host,
-        classes.multiple,
-        {
-          [classes.icon('end')]: clearable,
-          [classes.disabled]: disabled,
-          [classes.error]: error,
-        },
-        classes.size(size),
-        className)}
+      <div
+        ref={ref}
+        className={cx(classes.host,
+          classes.multiple,
+          {
+            [classes.icon('end')]: clearable,
+            [classes.disabled]: disabled,
+            [classes.error]: error,
+          },
+          classes.size(size),
+          className)}
       >
         <textarea
-          ref={ref}
+          ref={textareaRef}
           value={text}
           onChange={(e) => {
             if (onChange) {
@@ -103,7 +114,6 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
               [classes.error]: error,
             },
           )}
-          {...rest}
           placeholder={placeholder}
           disabled={disabled}
           aria-disabled={disabled}

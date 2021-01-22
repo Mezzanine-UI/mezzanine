@@ -1,10 +1,9 @@
 import {
-  InputHTMLAttributes,
-  DetailedHTMLProps,
   forwardRef,
   ReactNode,
   useState,
   useEffect,
+  Ref,
 } from 'react';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
@@ -14,55 +13,75 @@ import {
 import { cx } from '../../utils/cx';
 import Icon from '../../Icon';
 
-export interface InputProps extends
-  DetailedHTMLProps <Omit <InputHTMLAttributes<HTMLInputElement>, 'size'>, HTMLInputElement> {
+export interface InputProps {
+  className?: string;
+  /**
+   * The clearable setting of input.
+   * @default 'false';
+   */
+  clearable?: boolean;
+  /**
+   * The default value of input.
+   * @default '';
+   */
+  defaultValue?: string;
+  /**
+   * The disable setting of input.
+   * @default 'false';
+   */
+  disabled?: boolean;
+  /**
+   * The error of input.
+   * @default 'false';
+   */
+  error?: boolean;
+  inputRef?: Ref<HTMLInputElement>;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  /**
+   * The placeholder of input.
+   * @default '';
+   */
+  placeholder?: string;
+  /**
+   * The icon placed on the start of input.
+   */
+  prefix?: ReactNode;
   /**
    * The size of input.
    * @default 'medium'
    */
   size?: InputSize;
   /**
-   * The icon placed on the start of input.
-   */
-  inputPrefix?: ReactNode;
-  /**
    * The icon or text placed on the end of input.
    */
-  inputSuffix?: ReactNode;
-  /**
-   * The error of input.
-   * @default 'false';
-   */
-  error?: boolean;
+  suffix?: ReactNode;
   /**
    * The button for clear input.
    * @default 'false';
    */
-  clearable?: boolean;
+  value?: string;
+  readOnly?: boolean;
 }
 
 /**
  * The react component for `mezzanine` input.
  */
-const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref:any) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
   const {
     className,
-    value,
-    onChange,
-    defaultValue,
     clearable = false,
-    error = false,
-    children,
+    defaultValue,
     disabled = false,
-    size = 'medium',
+    error = false,
+    onChange,
     placeholder = '',
-    inputPrefix: inputPrefixProp,
-    inputSuffix: inputSuffixProp,
-    ...rest
+    prefix,
+    size = 'medium',
+    suffix,
+    value,
+    readOnly = false,
+    inputRef,
   } = props;
-
-  const inputPrefix: ReactNode = inputPrefixProp;
-  const inputSuffix: ReactNode = inputSuffixProp;
 
   const [inputs, setInputs] = useState(defaultValue || '');
 
@@ -73,32 +92,34 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
   }, [defaultValue, ref, value]);
 
   return (
-    <div className={cx(
-      classes.host,
-      classes.size(size),
-      {
-        [classes.disabled]: disabled,
-        [classes.error]: error,
-        [classes.icon('start')]: inputPrefix,
-        [classes.icon('end')]: inputSuffix || clearable,
-      },
-      className,
-    )}
+    <div
+      ref={ref}
+      className={cx(
+        classes.host,
+        classes.size(size),
+        {
+          [classes.disabled]: disabled,
+          [classes.error]: error,
+          [classes.icon('start')]: prefix,
+          [classes.icon('end')]: suffix || clearable,
+        },
+        className,
+      )}
     >
-      {inputPrefix ? (
+      {prefix ? (
         <div className={cx(
           classes.decoratorHost,
           {
-            [classes.icon('start')]: inputPrefix,
+            [classes.icon('start')]: prefix,
           },
         )}
         >
-          {inputPrefix}
+          {prefix}
         </div>
       ) : null}
       <input
+        ref={inputRef}
         type="text"
-        ref={ref}
         value={inputs}
         onChange={(e) => {
           if (onChange) {
@@ -112,21 +133,21 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
           },
           classes.size(size),
         )}
-        {...rest}
+        readOnly={readOnly}
         placeholder={placeholder}
         disabled={disabled}
         aria-disabled={disabled}
       />
-      {inputSuffix ? (
+      {suffix ? (
         <div className={cx(
           classes.decoratorHost,
           {
             [classes.error]: error,
-            [classes.icon('end')]: inputSuffix,
+            [classes.icon('end')]: suffix,
           },
         )}
         >
-          {inputSuffix}
+          {suffix}
         </div>
       ) : null}
       {clearable && inputs ? (
