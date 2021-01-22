@@ -203,7 +203,7 @@ $default-options: (
       &.textarea {
         height: 100%;
 
-        &.#{$prefix}:focus + .#{$prefix}--counting {
+        &:focus + .#{$prefix}--counting {
           color: palette.color(primary);
 
           &.#{$prefix}--error {
