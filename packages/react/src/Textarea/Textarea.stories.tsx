@@ -17,22 +17,22 @@ export const Basic = () => (
     <Textarea
       clearable
       placeholder="輸入文字..."
-      maxLength={50}
+      maxTextLength={50}
     />
     <Textarea
       placeholder="輸入文字..."
-      maxLength={50}
+      maxTextLength={50}
       disabled
     />
     <Textarea
       placeholder="輸入文字..."
-      maxLength={50}
+      maxTextLength={50}
       error
       clearable
     />
     <Textarea
       placeholder="輸入文字..."
-      maxLength={50}
+      maxTextLength={50}
       value="Example"
       readOnly
     />
@@ -52,7 +52,7 @@ export const Sizes = () => (
     <Textarea
       placeholder="輸入文字..."
       size="small"
-      maxLength={20}
+      maxTextLength={20}
     />
     <Textarea
       placeholder="輸入文字..."

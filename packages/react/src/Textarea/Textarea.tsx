@@ -24,24 +24,28 @@ export interface TextareaProps
   size?: TextareaSize;
   /**
    * The error of textarea.
-   * @default 'false';
+   * @default 'false'
    */
   error?: boolean;
   /**
    * The value of textarea.
-   * @default '';
+   * @default ''
    */
   value?: string;
   /**
    * The defaultValue of textarea.
-   * @default '';
+   * @default ''
    */
   defaultValue?: string;
   /**
    * The button for clear textarea.
-   * @default 'false';
+   * @default 'false'
    */
   clearable?: boolean;
+  /**
+   * The max length of textarea.
+   */
+  maxTextLength?: number;
 }
 
 /**
@@ -51,7 +55,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea(props, ref:any) {
     const {
       onChange,
-      maxLength,
+      maxTextLength,
       value = '',
       defaultValue = '',
       error = false,
@@ -103,9 +107,9 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           placeholder={placeholder}
           disabled={disabled}
           aria-disabled={disabled}
-          maxLength={maxLength}
+          maxLength={maxTextLength}
         />
-        {maxLength ? (
+        {maxTextLength ? (
           <span className={cx(
             classes.counting,
             {
@@ -116,7 +120,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           >
             {textLength}
             /
-            {maxLength}
+            {maxTextLength}
           </span>
         ) : null}
         {clearable && text ? (
