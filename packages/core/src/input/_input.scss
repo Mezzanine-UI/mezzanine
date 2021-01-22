@@ -43,7 +43,7 @@ $default-options: (
 
   padding: 0 $padding-x;
 
-  &.textarea {
+  &.#{$prefix}--multiple {
     padding-top: 8px;
     padding-bottom: 8px;
   }
@@ -59,7 +59,7 @@ $default-options: (
   &.#{$prefix}--small {
     padding: 0 $padding-x-small;
 
-    &.textarea {
+    &.#{$prefix}--multiple {
       padding-top: 8px;
       padding-bottom: 8px;
     }
@@ -111,7 +111,7 @@ $default-options: (
     min-width: $input-width-small;
   }
 
-  &.textarea {
+  &.#{$prefix}--multiple {
     min-width: $textarea-width;
     width: 100%;
     min-height: $height;
@@ -134,7 +134,7 @@ $default-options: (
     border-color: palette.color(border);
     background-color: palette.color(surface);
 
-    &.textarea {
+    &.#{$prefix}--multiple {
       align-items: flex-start;
     }
 
@@ -172,7 +172,8 @@ $default-options: (
       }
     }
 
-    &--tag {
+    input,
+    textarea {
       width: 100%;
       background-color: transparent;
       color: inherit;
@@ -200,7 +201,7 @@ $default-options: (
         }
       }
 
-      &.textarea {
+      &.#{$prefix}--multiple {
         height: 100%;
 
         &:focus + .#{$prefix}--counting {
