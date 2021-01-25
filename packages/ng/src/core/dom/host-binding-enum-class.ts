@@ -12,8 +12,10 @@ export function HostBindingEnumClass<T>(getClass: (value: T) => string, values: 
       const privatePropName = `$$HostBindingEnumClass__${propName}_${value}`;
 
       if (Object.prototype.hasOwnProperty.call(target, privatePropName)) {
-        // eslint-disable-next-line no-console
-        console.warn(`The prop '${privatePropName}' is already exist, it will be overrided by ${propName} decorator.`);
+        throw new Error(`
+          The prop '${privatePropName}' is already exist,
+          it will be overrided by @HostBindingEnumClass on prop '${propName}'.
+        `);
       }
 
       Object.defineProperty(target, privatePropName, {
