@@ -35,8 +35,10 @@ function createInputDecorator<T, D>(
     const privatePropName = `$$${name}__${propName}`;
 
     if (Object.prototype.hasOwnProperty.call(target, privatePropName)) {
-      // eslint-disable-next-line no-console
-      console.warn(`The prop '${privatePropName}' is already exist, it will be overrided by ${name} decorator.`);
+      throw new Error(`
+        The prop '${privatePropName}' is already exist,
+        it will be overrided by @${name} on prop '${propName}'.
+      `);
     }
 
     Object.defineProperty(target, privatePropName, {
