@@ -1,1 +1,1 @@
-export const textFieldPrefix = 'mzn-textField';
+export const textFieldPrefix = 'mzn-text-field';

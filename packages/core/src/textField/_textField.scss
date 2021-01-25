@@ -6,7 +6,7 @@
 @use '../typography/utils' as utils-typography;
 @use './utils';
 
-$prefix: mzn-textfield;
+$prefix: mzn-text-field;
 $inputSizes: size.$sizes;
 
 $default-options: (
