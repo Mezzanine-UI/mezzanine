@@ -124,7 +124,6 @@ $default-options: (
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
-  $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
 
   .#{$prefix} {
     @include utils.reset();
@@ -132,12 +131,10 @@ $default-options: (
     @include _size($options);
     @include _width($options);
 
-    ::placeholder {
-      color: palette.color(text-secondary);
-    }
-
     border-color: palette.color(border);
     background-color: palette.color(surface);
+
+    $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
 
     &:focus-within {
       border-color: palette.color(error);
