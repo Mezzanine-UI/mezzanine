@@ -10,18 +10,11 @@ $prefix: mzn-input;
 $inputSizes: size.$sizes;
 
 $default-options: (
-  padding-x: 16px,
-  padding-x-small: 12px,
-  padding-x-with-icon: 12px,
-  padding-x-small-with-icon: 8px,
-  icon-size: 24px,
-  icon-size-small: 16px,
   padding-decorator: 4px,
   input-width: 160px,
   input-width-small: 132px,
   textarea-width: 452px,
   textarea-width-small: 388px,
-  height: 100px,
 );
 
 @function _get-typography-variant-from-size($size) {
@@ -35,89 +28,12 @@ $default-options: (
   );
 }
 
-@mixin _padding-x($options, $is-outlined) {
-  $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
-  $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
-  $padding-x-with-icon: utils-typography.px-to-rem(map.get($options, padding-x-with-icon));
-  $padding-x-small-with-icon: utils-typography.px-to-rem(map.get($options, padding-x-small-with-icon));
-
-  padding: 0 $padding-x;
-
-  &.#{$prefix}--multiple {
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
-  &.#{$prefix}-icon--start {
-    padding-left: $padding-x-with-icon;
-  }
-
-  &.#{$prefix}-icon--end {
-    padding-right: $padding-x-with-icon;
-  }
-
-  &.#{$prefix}--small {
-    padding: 0 $padding-x-small;
-
-    &.#{$prefix}--multiple {
-      padding-top: 8px;
-      padding-bottom: 8px;
-    }
-
-    &.#{$prefix}-icon--start {
-      padding-left: $padding-x-small-with-icon;
-    }
-
-    &.#{$prefix}-icon--end {
-      padding-right: $padding-x-small-with-icon;
-    }
-  }
-}
-
 @mixin _size($options) {
-  $icon-size: map.get($options, icon-size);
-  $icon-size-small: map.get($options, icon-size-small);
-
-  .#{icon.$prefix} {
-    font-size: utils-typography.px-to-rem($icon-size);
-  }
-
   @each $size in $inputSizes {
     $typography-variant: _get-typography-variant-from-size($size);
 
-    &--#{$size} {
+    &.#{$prefix}--#{$size} {
       @include typography.variant($typography-variant);
-
-      @if $size == small {
-        .#{icon.$prefix} {
-          font-size: utils-typography.px-to-rem($icon-size-small);
-        }
-      }
-    }
-  }
-}
-
-@mixin _width($options) {
-  $height: utils-typography.px-to-rem(map.get($options, height));
-  $input-width: utils-typography.px-to-rem(map.get($options, input-width));
-  $input-width-small: utils-typography.px-to-rem(map.get($options, input-width-small));
-  $textarea-width: utils-typography.px-to-rem(map.get($options, textarea-width));
-  $textarea-width-small: utils-typography.px-to-rem(map.get($options, textarea-width-small));
-
-  min-width: $input-width;
-  width: 100%;
-
-  &.#{$prefix}--small {
-    min-width: $input-width-small;
-  }
-
-  &.#{$prefix}--multiple {
-    min-width: $textarea-width;
-    width: 100%;
-    min-height: $height;
-
-    &.#{$prefix}--small {
-      min-width: $textarea-width-small;
     }
   }
 }
@@ -125,152 +41,37 @@ $default-options: (
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
-  .#{$prefix} {
+  input,
+  textarea {
     @include utils.reset();
-    @include _padding-x($options, false);
     @include _size($options);
-    @include _width($options);
-
-    border-color: palette.color(border);
-    background-color: palette.color(surface);
 
     &.#{$prefix}--multiple {
-      align-items: flex-start;
-    }
+      height: 100%;
 
-    &:hover {
-      &:not(.#{$prefix}--disabled) {
-        &:hover {
-          border-color: palette.color(primary);
-
-          &.#{$prefix}--error {
-            border-color: palette.color(error);
-          }
-        }
-
-        .#{$prefix}--clearButton {
-          opacity: 1;
-          color: palette.color(primary);
-
-          &.#{$prefix}--error {
-            color: palette.color(error);
-          }
-        }
-      }
-    }
-
-    &.#{$prefix}--error {
-      border-color: palette.color(error);
-    }
-
-    &.#{$prefix}--disabled {
-      border-color: transparent;
-      background-color: palette.color(action-disabled-bg);
-
-      ::placeholder {
-        color: palette.color(text-disabled);
-      }
-    }
-
-    input,
-    textarea {
-      width: 100%;
-      background-color: transparent;
-      color: inherit;
-      font-size: inherit;
-      line-height: inherit;
-      margin: -1px;
-      border: none;
-      outline: none;
-      padding: 0;
-      box-sizing: border-box;
-      resize: none;
-      @include _size($options);
-
-      ::placeholder {
-        color: palette.color(text-secondary);
-      }
-
-      &:focus + .#{$prefix}--clearButton {
-        opacity: 1;
+      &:focus + .#{$prefix}--counting {
         color: palette.color(primary);
 
         &.#{$prefix}--error {
-          opacity: 1;
           color: palette.color(error);
         }
       }
+    }
+  }
 
-      &.#{$prefix}--multiple {
-        height: 100%;
+  .#{$prefix}--counting {
+    position: absolute;
+    bottom: -20px;
+    right: 0;
 
-        &:focus + .#{$prefix}--counting {
-          color: palette.color(primary);
-
-          &.#{$prefix}--error {
-            color: palette.color(error);
-          }
-        }
-
-        &:focus + .#{$prefix}--counting + .#{$prefix}--clearButton {
-          opacity: 1;
-          color: palette.color(primary);
-
-          &.#{$prefix}--error {
-            opacity: 1;
-            color: palette.color(error);
-          }
-        }
-      }
+    &.#{$prefix}--disabled {
+      color: palette.color(action-disabled-bg);
     }
 
-    &:focus-within {
-      &:not(.#{$prefix}--error) {
-        border-color: palette.color(primary);
-      }
+    &.#{$prefix}--error {
+      color: palette.color(error);
     }
 
-    &--clearButton {
-      border: none;
-      padding: 0;
-      background-color: transparent;
-      outline: none;
-      cursor: pointer;
-      opacity: 0;
-    }
-
-    &-decorator {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      white-space: nowrap;
-      color: var(--mzn-color-action-inactive);
-
-      $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
-
-      &.#{$prefix}-icon--start {
-        padding: 0 $padding-decorator 0 0;
-      }
-
-      &.#{$prefix}-icon--end {
-        padding: 0 0 0 $padding-decorator;
-      }
-    }
-
-    &--counting {
-      position: absolute;
-      bottom: -20px;
-      right: 0;
-
-      &.#{$prefix}--disabled {
-        color: palette.color(action-disabled-bg);
-      }
-
-      &.#{$prefix}--error {
-        color: palette.color(error);
-      }
-
-      @include typography.variant(caption);
-    }
+    @include typography.variant(caption);
   }
 }

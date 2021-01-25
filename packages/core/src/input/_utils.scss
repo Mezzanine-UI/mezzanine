@@ -1,10 +1,10 @@
 @mixin reset() {
-  display: inline-flex;
-  position: relative;
-  justify-content: space-between;
-  align-items: center;
-  border-width: 1px;
-  border-style: solid;
+  width: 100%;
+  background-color: transparent;
+  margin: -1px;
+  border: none;
+  outline: none;
+  padding: 0;
   box-sizing: border-box;
   resize: none;
 }
