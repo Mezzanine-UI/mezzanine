@@ -134,8 +134,6 @@ $default-options: (
     border-color: palette.color(border);
     background-color: palette.color(surface);
 
-    $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
-
     &:focus-within {
       border-color: palette.color(error);
 
@@ -200,6 +198,8 @@ $default-options: (
       cursor: pointer;
       opacity: 0;
     }
+
+    $padding-decorator: utils-typography.px-to-rem(map.get($options, padding-decorator));
 
     .#{$prefix}--prefix {
       display: flex;
