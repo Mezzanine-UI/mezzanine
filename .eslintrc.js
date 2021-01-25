@@ -348,6 +348,7 @@ module.exports = {
       rules: {
         'max-classes-per-file': 0,
         '@typescript-eslint/ban-ts-ignore': 0,
+        '@typescript-eslint/no-non-null-assertion': 0,
         '@typescript-eslint/no-useless-constructor': 0,
       },
     },
