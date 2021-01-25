@@ -40,7 +40,6 @@ export const Sizes = () => (
     style={{
       display: 'inline-grid',
       gridTemplateColumns: 'repeat(3, 200px)',
-      gridTemplateRows: '60px',
       gap: '16px',
       alignItems: 'center',
     }}
@@ -95,7 +94,6 @@ export const WithIcons = () => (
     style={{
       display: 'inline-grid',
       gridTemplateColumns: 'repeat(3, 200px)',
-      gridTemplateRows: '60px',
       gap: '16px',
       alignItems: 'center',
     }}

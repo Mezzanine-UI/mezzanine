@@ -2,15 +2,14 @@ import {
   forwardRef,
   useState,
   useEffect,
-  Ref,
+  ReactNode,
 } from 'react';
 import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import { TimesIcon } from '@mezzanine-ui/icons';
+import TextField from 'react/src/TextField';
 import { cx } from '../../utils/cx';
-import Icon from '../../Icon';
 
 export interface TextareaProps {
   className?: string;
@@ -50,20 +49,23 @@ export interface TextareaProps {
    */
   size?: InputSize;
   /**
+   * The icon or text placed on the end of input.
+   */
+  suffix?: ReactNode;
+  /**
    * The value of textarea.
    * @default ''
    */
-  textareaRef?: Ref<HTMLTextAreaElement>;
   value?: string;
+  readOnly?: boolean;
 }
 
 /**
  * The react component for `mezzanine` textarea.
  */
-const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
+const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   function Textarea(props, ref) {
     const {
-      className,
       clearable = false,
       defaultValue = '',
       disabled = false,
@@ -72,8 +74,9 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
       onChange,
       placeholder = '',
       size = 'medium',
+      suffix,
       value = '',
-      textareaRef,
+      readOnly = false,
     } = props;
 
     const [text, setText] = useState(defaultValue || '');
@@ -86,21 +89,19 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
     }, [defaultValue, value]);
 
     return (
-      <div
-        ref={ref}
-        className={cx(classes.host,
-          classes.multiple,
-          {
-            [classes.icon('end')]: clearable,
-            [classes.disabled]: disabled,
-            [classes.error]: error,
-          },
-          classes.size(size),
-          className)}
+      <TextField
+        suffix={suffix}
+        onClear={() => setText('')}
+        disabled={disabled}
+        error={error}
+        size={size}
+        multiple
+        clearable={clearable && !!text}
       >
         <textarea
-          ref={textareaRef}
+          ref={ref}
           value={text}
+          readOnly={readOnly}
           onChange={(e) => {
             if (onChange) {
               onChange(e);
@@ -133,24 +134,7 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
             {maxTextLength}
           </span>
         ) : null}
-        {clearable && text ? (
-          <button
-            onClick={() => setText('')}
-            className={cx(
-              classes.decoratorHost,
-              classes.multiple,
-              {
-                [classes.error]: error,
-                [classes.icon('end')]: clearable,
-                [classes.clearButton]: clearable,
-              },
-            )}
-            type="button"
-          >
-            <Icon icon={TimesIcon} />
-          </button>
-        ) : null}
-      </div>
+      </TextField>
     );
   },
 );

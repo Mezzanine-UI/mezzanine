@@ -3,15 +3,13 @@ import {
   ReactNode,
   useState,
   useEffect,
-  Ref,
 } from 'react';
-import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
+import TextField from 'react/src/TextField';
 import { cx } from '../../utils/cx';
-import Icon from '../../Icon';
 
 export interface InputProps {
   className?: string;
@@ -35,7 +33,6 @@ export interface InputProps {
    * @default 'false';
    */
   error?: boolean;
-  inputRef?: Ref<HTMLInputElement>;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /**
    * The placeholder of input.
@@ -68,7 +65,6 @@ export interface InputProps {
  */
 const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref) {
   const {
-    className,
     clearable = false,
     defaultValue,
     disabled = false,
@@ -80,7 +76,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     suffix,
     value,
     readOnly = false,
-    inputRef,
   } = props;
 
   const [inputs, setInputs] = useState(defaultValue || '');
@@ -89,36 +84,20 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     if (value && value !== defaultValue) {
       setInputs(value);
     }
-  }, [defaultValue, ref, value]);
+  }, [defaultValue, value]);
 
   return (
-    <div
-      ref={ref}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        {
-          [classes.disabled]: disabled,
-          [classes.error]: error,
-          [classes.icon('start')]: prefix,
-          [classes.icon('end')]: suffix || clearable,
-        },
-        className,
-      )}
+    <TextField
+      suffix={suffix}
+      prefix={prefix}
+      onClear={() => setInputs('')}
+      disabled={disabled}
+      error={error}
+      size={size}
+      clearable={clearable && !!inputs}
     >
-      {prefix ? (
-        <div className={cx(
-          classes.decoratorHost,
-          {
-            [classes.icon('start')]: prefix,
-          },
-        )}
-        >
-          {prefix}
-        </div>
-      ) : null}
       <input
-        ref={inputRef}
+        ref={ref}
         type="text"
         value={inputs}
         onChange={(e) => {
@@ -138,35 +117,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
         disabled={disabled}
         aria-disabled={disabled}
       />
-      {suffix ? (
-        <div className={cx(
-          classes.decoratorHost,
-          {
-            [classes.error]: error,
-            [classes.icon('end')]: suffix,
-          },
-        )}
-        >
-          {suffix}
-        </div>
-      ) : null}
-      {clearable && inputs ? (
-        <button
-          onClick={() => setInputs('')}
-          className={cx(
-            classes.decoratorHost,
-            {
-              [classes.error]: error,
-              [classes.icon('end')]: clearable,
-              [classes.clearButton]: clearable,
-            },
-          )}
-          type="button"
-        >
-          <Icon icon={TimesIcon} />
-        </button>
-      ) : null}
-    </div>
+    </TextField>
   );
 });
 

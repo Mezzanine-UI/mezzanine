@@ -8,8 +8,8 @@ export const Basic = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gridTemplateRows: 'repeat(3, 102px)',
+      gridTemplateColumns: '500px',
+      gridTemplateRows: 'repeat(8, 102px)',
       gap: '24px',
       justifyItems: 'center',
     }}

@@ -45,3 +45,11 @@ export {
 export type {
   TextareaProps,
 } from './TextInput/Textarea';
+
+export type {
+  TextFieldProps,
+  TextFieldSize,
+} from './TextField';
+export {
+  default as TextField,
+} from './TextField';
