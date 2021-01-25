@@ -11,7 +11,6 @@ export const Basic = () => (
     style={{
       display: 'inline-grid',
       gridTemplateColumns: 'repeat(3, 200px)',
-      gridTemplateRows: '60px',
       gap: '16px',
       alignItems: 'center',
     }}
