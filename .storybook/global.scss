@@ -4,7 +4,7 @@
 @use '~@mezzanine-ui/core/icon';
 @use '~@mezzanine-ui/core/button';
 @use '~@mezzanine-ui/core/input';
-@use '~@mezzanine-ui/core/textField';
+@use '~@mezzanine-ui/core/text-field';
 
 :root {
   @include palette.variables("light");
@@ -27,4 +27,4 @@
 @include icon.core();
 @include button.core();
 @include input.core();
-@include textField.core();
+@include text-field.core();

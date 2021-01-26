@@ -6,7 +6,7 @@ import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   textFieldClasses as classes,
   TextFieldSize,
-} from '@mezzanine-ui/core/textField';
+} from '@mezzanine-ui/core/text-field';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 
