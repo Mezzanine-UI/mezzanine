@@ -32,13 +32,24 @@ describe('<Textarea />', () => {
     });
   });
 
+  describe('prop: readOnly', () => {
+    it('should has readOnly attribute', () => {
+      [false, true].forEach((readOnly) => {
+        const { getHostHTMLElement } = render(<Textarea readOnly={readOnly} />);
+        const element = getHostHTMLElement();
+        const inputElement = element.getElementsByTagName('input')[0];
+
+        expect(inputElement.hasAttribute('readOnly')).toBe(readOnly);
+      });
+    });
+  });
+
   describe('prop: error', () => {
     it('should add error style', () => {
       const { getHostHTMLElement } = render(<Textarea error />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-input--error')).toBeTruthy();
-      expect(element.classList.contains('textarea')).toBeTruthy();
+      expect(element.classList.contains('mzn-text-field--error')).toBeTruthy();
     });
   });
 
@@ -59,9 +70,9 @@ describe('<Textarea />', () => {
     it('should render size="medium" by default', () => {
       const { getHostHTMLElement } = render(<Textarea />);
       const element = getHostHTMLElement();
+      const textareaElement = element.getElementsByTagName('textarea')[0];
 
-      expect(element.classList.contains('mzn-input--medium')).toBeTruthy();
-      expect(element.classList.contains('textarea')).toBeTruthy();
+      expect(textareaElement.classList.contains('mzn-input--medium')).toBeTruthy();
     });
   });
 
@@ -100,27 +111,23 @@ describe('<Textarea />', () => {
     });
   });
 
-  describe('prop: maxLength', () => {
+  describe('prop: maxTextLength', () => {
     it('should restrict content length between 0 and max length and display current value length', () => {
       const { getHostHTMLElement } = render(
         <Textarea
-          maxLength={8}
+          maxTextLength={8}
           value="hello"
         />,
       );
       const element = getHostHTMLElement();
       const {
-        lastElementChild: countAnnotationElement,
+        lastElementChild: lengthAnnotationElement,
         childElementCount,
       } = element;
 
-      const textareaElement = element.getElementsByTagName('textarea')[0];
-
       expect(childElementCount).toBe(2);
-      expect(textareaElement?.tagName.toLowerCase()).toBe('textarea');
-      expect(countAnnotationElement?.tagName.toLowerCase()).toBe('span');
-      expect(textareaElement?.maxLength).toBe(8);
-      expect(countAnnotationElement?.innerHTML).toBe('5/8');
+      expect(lengthAnnotationElement?.tagName.toLowerCase()).toBe('span');
+      expect(lengthAnnotationElement?.innerHTML).toBe('5/8');
     });
   });
 

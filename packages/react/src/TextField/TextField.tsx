@@ -102,7 +102,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
       )}
       {clearable && (
         <button
-          onClick={() => onClear?.()}
+          onClick={onClear}
           className={cx(
             {
               [classes.error]: error,

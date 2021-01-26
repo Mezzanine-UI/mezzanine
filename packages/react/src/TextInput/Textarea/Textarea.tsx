@@ -8,7 +8,7 @@ import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import TextField from 'react/src/TextField';
+import TextField from '../../TextField';
 import { cx } from '../../utils/cx';
 
 export interface TextareaProps {
@@ -77,6 +77,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
       suffix,
       value = '',
       readOnly = false,
+      className,
     } = props;
 
     const [text, setText] = useState(defaultValue || '');
@@ -97,6 +98,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
         size={size}
         multiple
         clearable={clearable && !!text}
+        className={className}
       >
         <textarea
           ref={ref}

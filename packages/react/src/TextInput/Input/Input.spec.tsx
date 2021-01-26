@@ -30,7 +30,7 @@ describe('<Input />', () => {
       const { getHostHTMLElement } = render(<Input error />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-input--error')).toBeTruthy();
+      expect(element.classList.contains('mzn-text-field--error')).toBeTruthy();
     });
   });
 
@@ -43,6 +43,18 @@ describe('<Input />', () => {
 
         expect(inputElement.hasAttribute('disabled')).toBe(disabled);
         expect(inputElement.getAttribute('aria-disabled')).toBe(`${disabled}`);
+      });
+    });
+  });
+
+  describe('prop: readOnly', () => {
+    it('should has readOnly attribute', () => {
+      [false, true].forEach((readOnly) => {
+        const { getHostHTMLElement } = render(<Input readOnly={readOnly} />);
+        const element = getHostHTMLElement();
+        const inputElement = element.getElementsByTagName('input')[0];
+
+        expect(inputElement.hasAttribute('readOnly')).toBe(readOnly);
       });
     });
   });
@@ -83,51 +95,51 @@ describe('<Input />', () => {
     });
   });
 
-  describe('prop: inputPrefix', () => {
+  describe('prop: prefix', () => {
     it('should render the icon on the left side', () => {
-      const { getHostHTMLElement } = render(<Input inputPrefix={<Icon icon={PlusIcon} />} />);
+      const { getHostHTMLElement } = render(<Input prefix={<Icon icon={PlusIcon} />} />);
       const element = getHostHTMLElement();
       const {
-        firstElementChild: inputPrefixWrapperElement,
+        firstElementChild: prefixWrapperElement,
         lastElementChild: inputElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
-      expect(inputPrefixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
-      expect(inputPrefixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(prefixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
+      expect(prefixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
     });
   });
 
-  describe('prop: inputSuffix', () => {
+  describe('prop: suffix', () => {
     it('should render the icon on the right side', () => {
-      const { getHostHTMLElement } = render(<Input inputSuffix={<Icon icon={PlusIcon} />} />);
+      const { getHostHTMLElement } = render(<Input suffix={<Icon icon={PlusIcon} />} />);
       const element = getHostHTMLElement();
       const {
         firstElementChild: inputElement,
-        lastElementChild: inputSuffixWrapperElement,
+        lastElementChild: suffixWrapperElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(inputSuffixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
-      expect(inputSuffixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(suffixWrapperElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
+      expect(suffixWrapperElement?.firstElementChild?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
 
     it('should render the text on the right side', () => {
-      const { getHostHTMLElement } = render(<Input inputSuffix="End" />);
+      const { getHostHTMLElement } = render(<Input suffix="End" />);
       const element = getHostHTMLElement();
       const {
         firstElementChild: inputElement,
-        lastElementChild: inputSuffixWrapperElement,
+        lastElementChild: suffixWrapperElement,
         childElementCount,
       } = element;
 
       expect(childElementCount).toBe(2);
       expect(inputElement?.tagName.toLowerCase()).toBe('input');
-      expect(inputSuffixWrapperElement?.innerHTML).toBe('End');
+      expect(suffixWrapperElement?.innerHTML).toBe('End');
     });
   });
 

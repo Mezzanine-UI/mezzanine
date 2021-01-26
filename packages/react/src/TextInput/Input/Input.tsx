@@ -8,7 +8,7 @@ import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
-import TextField from 'react/src/TextField';
+import TextField from '../../TextField';
 import { cx } from '../../utils/cx';
 
 export interface InputProps {
@@ -76,6 +76,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
     suffix,
     value,
     readOnly = false,
+    className,
   } = props;
 
   const [inputs, setInputs] = useState(defaultValue || '');
@@ -95,6 +96,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(props, ref
       error={error}
       size={size}
       clearable={clearable && !!inputs}
+      className={className}
     >
       <input
         ref={ref}
