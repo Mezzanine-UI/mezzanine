@@ -16,3 +16,4 @@ export { SearchIcon } from './search';
 export { SpinnerIcon } from './spinner';
 export { TimesIcon } from './times';
 export { TimesCircleFilledIcon } from './times-circle-filled';
+export { FolderOpenIcon } from './folder-open';
