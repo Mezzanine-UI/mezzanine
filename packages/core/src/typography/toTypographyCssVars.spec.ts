@@ -31,6 +31,7 @@ describe('typography:toTypographyCssVars', () => {
 
       if (Array.isArray(colorMap)) {
         const [iconColor, expectedColor] = colorMap;
+
         color = iconColor;
         expected = toCssVar(`mzn-color-${expectedColor}`);
       } else {

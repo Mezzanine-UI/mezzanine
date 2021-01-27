@@ -138,6 +138,7 @@ describe('MznButtonMixin', () => {
             },
           });
         }
+
         const element = result.container.firstElementChild as HTMLElement;
 
         testDisabled(element, disabled);
@@ -175,6 +176,7 @@ describe('MznButtonMixin', () => {
             },
           });
         }
+
         const element = result.container.firstElementChild as HTMLElement;
 
         expect(element.classList.contains('mzn-button--error')).toBe(error);
@@ -212,6 +214,7 @@ describe('MznButtonMixin', () => {
             },
           });
         }
+
         const element = result.container.firstElementChild as HTMLElement;
 
         expect(element.classList.contains('mzn-button--loading')).toBe(loading);

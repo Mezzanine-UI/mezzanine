@@ -21,6 +21,7 @@ export function toIconCssVars(variables: IconCssVars): CssVarInterpolations {
     const colorName: Color = color === 'disabled'
       ? 'action-disabled'
       : color;
+
     colorValue = toCssVar(`${palettePrefix}-${colorName}`);
   }
 

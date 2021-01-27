@@ -130,6 +130,7 @@ describe('MznTypographyComponent', () => {
 
       if (Array.isArray(colorMap)) {
         const [typographyColor, expectedColor] = colorMap;
+
         color = typographyColor;
         expected = toCssVar(`mzn-color-${expectedColor}`);
       } else {
