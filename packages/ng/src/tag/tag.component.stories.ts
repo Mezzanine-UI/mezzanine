@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { MznTagComponent, MznTagModule, TagSize } from '.';
 
 export default {
-  title: 'DataDisplay/Tag',
+  title: 'Data Display/Tag',
   decorators: [
     moduleMetadata({
       imports: [MznTagModule],
