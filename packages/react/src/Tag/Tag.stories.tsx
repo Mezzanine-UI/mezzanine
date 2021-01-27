@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import Tag, { TagProps, TagSize } from '.';
 
 export default {
-  title: 'DataDisplay/Tag',
+  title: 'Data Display/Tag',
 } as Meta;
 
 const sizes: TagSize[] = [
