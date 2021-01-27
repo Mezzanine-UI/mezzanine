@@ -14,6 +14,7 @@ import {
   SpinnerIcon,
   TimesIcon,
   TimesCircleFilledIcon,
+  FolderOpenIcon,
 } from '@mezzanine-ui/icons';
 import { IconColor, MznIconComponent, MznIconModule } from '.';
 
@@ -79,6 +80,7 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
     SpinnerIcon,
     TimesIcon,
     TimesCircleFilledIcon,
+    FolderOpenIcon,
   ].filter((icon) => !search || icon.name.includes(search));
 
   return {
