@@ -1,7 +1,8 @@
 *.js
-*.jtx
+*.jsx
 *.ts
 *.tsx
 *.md
+*.mdx
 
 prebuilts/

@@ -1,0 +1,10 @@
+# Add files here to ignore them from prettier formatting
+
+/dist
+**/dist
+/coverage
+**/coverage
+**/*.ts
+**/*.tsx
+**/*.css
+**/*.scss

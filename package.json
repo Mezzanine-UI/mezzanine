@@ -20,7 +20,7 @@
     "packages/*"
   ],
   "scripts": {
-    "format": "prettier './**/*.{json,md,mdx}' --write",
+    "format": "prettier './**/*.{json,md,mdx,html}' --write",
     "lint:css": "stylelint ./**/*.scss",
     "lint:es": "eslint . --ext .js,.ts,.tsx,.mdx,.html",
     "lint": "yarn lint:es && yarn lint:css",
