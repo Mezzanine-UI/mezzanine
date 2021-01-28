@@ -19,7 +19,7 @@ import {
 import { IconColor, MznIconComponent, MznIconModule } from '.';
 
 export default {
-  title: 'Basic/Icon',
+  title: 'General/Icon',
   decorators: [
     moduleMetadata({
       imports: [MznIconModule],

@@ -5,7 +5,7 @@ import { Icon } from '..';
 import Button, { ButtonGroup, ButtonGroupProps, IconButton } from '.';
 
 export default {
-  title: 'Basic/Button/ButtonGroup',
+  title: 'General/Button/ButtonGroup',
 } as Meta;
 
 const orientations: ButtonGroupOrientation[] = [

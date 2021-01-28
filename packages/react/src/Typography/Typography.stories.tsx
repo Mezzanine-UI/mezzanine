@@ -8,7 +8,7 @@ import Typography, {
 } from '.';
 
 export default {
-  title: 'Basic/Typography',
+  title: 'General/Typography',
 } as Meta;
 
 const aligns: TypographyAlign[] = [

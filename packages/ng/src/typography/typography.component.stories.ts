@@ -11,7 +11,7 @@ import {
 } from '.';
 
 export default {
-  title: 'Basic/Typography',
+  title: 'General/Typography',
   decorators: [
     moduleMetadata({
       imports: [MznTypographyModule],

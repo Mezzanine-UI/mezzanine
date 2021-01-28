@@ -28,7 +28,7 @@ const colors: IconColor[] = [
 ];
 
 export default {
-  title: 'Basic/Icon',
+  title: 'General/Icon',
 } as Meta;
 
 export const Playgroud: Story<IconProps> = ({ children, ...props }) => (

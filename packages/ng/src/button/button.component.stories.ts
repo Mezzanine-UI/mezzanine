@@ -5,7 +5,7 @@ import { MznIconModule } from '../icon';
 import { MznButtonModule } from '.';
 
 export default {
-  title: 'Basic/Button',
+  title: 'General/Button',
   decorators: [
     moduleMetadata({
       imports: [MznButtonModule, MznIconModule],

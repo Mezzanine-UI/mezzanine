@@ -4,7 +4,7 @@ import Icon from '../Icon';
 import { IconButton } from '.';
 
 export default {
-  title: 'Basic/Button/IconButton',
+  title: 'General/Button/IconButton',
 } as Meta;
 
 export const All = () => (

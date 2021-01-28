@@ -4,7 +4,7 @@ import Icon from '../Icon';
 import Button from '.';
 
 export default {
-  title: 'Basic/Button',
+  title: 'General/Button',
 } as Meta;
 
 export const Variants = () => (

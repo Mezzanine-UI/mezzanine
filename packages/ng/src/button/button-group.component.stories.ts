@@ -5,7 +5,7 @@ import { MznIconModule } from '../icon';
 import { ButtonGroupOrientation, MznButtonGroupComponent, MznButtonModule } from '.';
 
 export default {
-  title: 'Basic/Button/ButtonGroup',
+  title: 'General/Button/ButtonGroup',
   decorators: [
     moduleMetadata({
       imports: [MznButtonModule, MznIconModule],
