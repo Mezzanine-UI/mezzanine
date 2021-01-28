@@ -4,6 +4,7 @@
 @use '~@mezzanine-ui/core/icon';
 @use '~@mezzanine-ui/core/button';
 @use '~@mezzanine-ui/core/tag';
+@use '~@mezzanine-ui/core/empty';
 
 :root {
   @include palette.variables("light");
@@ -26,3 +27,4 @@
 @include icon.core();
 @include button.core();
 @include tag.core();
+@include empty.core();
