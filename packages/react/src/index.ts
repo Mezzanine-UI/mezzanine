@@ -1,6 +1,9 @@
 export { cx } from './utils/cx';
 
-export type {
+/**
+ * General
+ */
+export {
   ButtonColor,
   ButtonComponent,
   ButtonSize,
@@ -24,7 +27,16 @@ export {
   TypographyProps,
   default as Typography,
 } from './Typography';
+
+/**
+ * Data Display
+ */
 export {
   EmptyProps,
   default as Empty,
 } from './Empty';
+export {
+  TagProps,
+  TagSize,
+  default as Tag,
+} from './Tag';
