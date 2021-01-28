@@ -4,5 +4,5 @@ export const emptyClasses = {
   host: emptyPrefix,
   icon: `${emptyPrefix}__icon`,
   title: `${emptyPrefix}__title`,
-  fullHeight: `${emptyPrefix}--fullHeight`,
+  fullHeight: `${emptyPrefix}--full-height`,
 } as const;

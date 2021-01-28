@@ -29,22 +29,22 @@ describe('<Empty />', () => {
     expect(element.classList.contains('mzn-empty')).toBeTruthy();
   });
 
-  it('should render the text and wrap it by description rendered by p', () => {
+  it('should render the text and wrap it by description rendered by div', () => {
     const { getHostHTMLElement, getByText } = render(<Empty>No Data</Empty>);
     const element = getHostHTMLElement();
     const descriptionElement = getByText('No Data');
 
     expect(element.textContent).toBe('No Data');
     expect(descriptionElement.textContent).toBe('No Data');
-    expect(descriptionElement.tagName.toLowerCase()).toBe('p');
+    expect(descriptionElement.tagName.toLowerCase()).toBe('div');
   });
 
   describe('prop: fullHeight', () => {
-    it('should contain mzn-empty--fullHeight class if fullHeight=true', () => {
+    it('should contain mzn-empty--full-height class if fullHeight=true', () => {
       const { getHostHTMLElement } = render(<Empty fullHeight>No Data</Empty>);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-empty--fullHeight')).toBeTruthy();
+      expect(element.classList.contains('mzn-empty--full-height')).toBeTruthy();
     });
   });
 
@@ -73,12 +73,12 @@ describe('<Empty />', () => {
   });
 
   describe('prop: title', () => {
-    it('should render the text and wrap it by title rendered by p', () => {
+    it('should render the text and wrap it by title rendered by div', () => {
       const { getByText } = render(<Empty title="title">No Data</Empty>);
       const titleElement = getByText('title');
 
       expect(titleElement.textContent).toBe('title');
-      expect(titleElement.tagName.toLowerCase()).toBe('p');
+      expect(titleElement.tagName.toLowerCase()).toBe('div');
       expect(titleElement.classList.contains('mzn-empty__title')).toBeTruthy();
     });
   });
