@@ -24,3 +24,7 @@ export {
   TypographyProps,
   default as Typography,
 } from './Typography';
+export {
+  EmptyProps,
+  default as Empty,
+} from './Empty';
