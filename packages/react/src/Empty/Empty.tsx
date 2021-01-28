@@ -60,7 +60,7 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) 
       {image}
       {title && (
         <Typography
-          component="p"
+          component="div"
           variant="h3"
           className={classes.title}
           color="text-secondary"
@@ -69,7 +69,7 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) 
         </Typography>
       )}
       <Typography
-        component="p"
+        component="div"
         variant="body1"
         color="text-secondary"
       >
