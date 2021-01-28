@@ -17,3 +17,4 @@ export { SpinnerIcon } from './spinner';
 export { TimesIcon } from './times';
 export { TimesCircleFilledIcon } from './times-circle-filled';
 export { FolderOpenIcon } from './folder-open';
+export { MinusCircleFilledIcon } from './minus-circle-filled';
