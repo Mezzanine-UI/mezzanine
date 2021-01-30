@@ -3,6 +3,7 @@
 @use '~@mezzanine-ui/core/spacing';
 @use '~@mezzanine-ui/core/icon';
 @use '~@mezzanine-ui/core/button';
+@use '~@mezzanine-ui/core/switch';
 @use '~@mezzanine-ui/core/tag';
 @use '~@mezzanine-ui/core/empty';
 
@@ -26,5 +27,6 @@
 @include typography.core();
 @include icon.core();
 @include button.core();
+@include switch.core();
 @include tag.core();
 @include empty.core();
