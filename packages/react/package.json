@@ -25,8 +25,8 @@
   "dependencies": {
     "@mezzanine-ui/core": "^0.0.0",
     "@mezzanine-ui/icons": "^0.0.0",
-    "tslib": "^2.1.0",
-    "clsx": "^1.1.1"
+    "clsx": "^1.1.1",
+    "tslib": "^2.1.0"
   },
   "devDependencies": {
     "@storybook/react": "^6.1.15",
