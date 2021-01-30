@@ -29,6 +29,14 @@ export {
 } from './Typography';
 
 /**
+ * Data Entry
+ */
+export {
+  SwitchSize,
+  default as Switch,
+} from './Switch';
+
+/**
  * Data Display
  */
 export {
