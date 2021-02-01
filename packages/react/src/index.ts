@@ -51,6 +51,12 @@ export {
  * Data Display
  */
 export {
+  BadgeContainer,
+  BadgeContainerProps,
+  BadgeProps,
+  default as Badge,
+} from './Badge';
+export {
   EmptyProps,
   default as Empty,
 } from './Empty';
