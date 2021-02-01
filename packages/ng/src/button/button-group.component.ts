@@ -23,10 +23,10 @@ import {
   createCssVarsChangeEffect,
   HostBindingEnumClass,
   InputBoolean,
-  InputNotEmptyEnum,
+  InputEnum,
   InputNumber,
   TypedSimpleChanges,
-} from '../core';
+} from '../cdk';
 import { MznButtonGroupControlInputs, MznButtonGroupControlInputsToken } from './button-group.tokens';
 
 @Component({
@@ -102,7 +102,7 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
   ])
   @HostBinding('attr.aria-orientation')
   @Input()
-  @InputNotEmptyEnum<ButtonGroupOrientation>('horizontal')
+  @InputEnum<ButtonGroupOrientation>({ fallback: 'horizontal' })
   orientation: ButtonGroupOrientation = 'horizontal';
 
   /**
@@ -117,11 +117,7 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
    * If the `size` of a button inside group not provided, the `size` of group will override it.
    */
   @Input()
-  size?: ButtonSize;
-
-  private get _size() {
-    return this.size || 'medium';
-  }
+  size: ButtonSize = 'medium';
 
   /**
    * The spacing level of button gap between each buttons.
@@ -129,12 +125,8 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
    * @default small:3,others:4
    */
   @Input()
-  @InputNumber(NaN)
-  spacing?: ButtonGroupSpacing;
-
-  private get _spacing() {
-    return Number.isNaN(this.spacing) ? undefined : this.spacing;
-  }
+  @InputNumber({ fallback: NaN })
+  spacing: ButtonGroupSpacing;
 
   /**
    * If the `variant` of a button inside group not provided, the `variant` of group will override it.
@@ -146,8 +138,8 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
     this.elementRef,
     this.renderer,
     () => toButtonGroupCssVars({
-      spacing: this._spacing,
-      size: this._size,
+      spacing: Number.isNaN(this.spacing) ? undefined : this.spacing,
+      size: this.size,
     }),
   );
 

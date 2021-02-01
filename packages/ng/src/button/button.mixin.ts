@@ -15,8 +15,9 @@ import {
 import {
   HostBindingEnumClass,
   InputBoolean,
-  NonNullEnumInput,
-} from '../core';
+  EnumInput,
+  InputDescriptor,
+} from '../cdk';
 import { MznButtonGroupControlInputs } from './button-group.tokens';
 
 @Directive()
@@ -37,42 +38,44 @@ export abstract class MznButtonMixin {
    * The color name provided by palette.
    * @default 'primary'
    */
-  @Input()
-  color?: ButtonColor;
-
   @HostBindingEnumClass(classes.color, [
     'primary',
     'secondary',
   ])
-  get resolvedColor() {
-    return this.color || this.buttonGroup?.color || 'primary';
-  }
+  @Input()
+  @InputDescriptor<ButtonColor, MznButtonMixin>({
+    get(this, color?: ButtonColor) {
+      return color || this.buttonGroup?.color || 'primary';
+    },
+  })
+  color: ButtonColor;
 
   /**
    * The native disabled.
+   * @default false
    */
-  @Input()
-  @InputBoolean()
-  disabled?: boolean;
-
   @HostBinding('attr.aria-disabled')
   @HostBinding('disabled')
-  get resolvedDisabled() {
-    return (this.disabled ?? this.buttonGroup?.disabled) || false;
-  }
+  @Input()
+  @InputBoolean<MznButtonMixin>({
+    get(this, disabled?: boolean) {
+      return (disabled ?? this.buttonGroup?.disabled) || false;
+    },
+  })
+  disabled: boolean;
 
   /**
    * If true, will use error color instead of color from props.
    * @default false
    */
-  @Input()
-  @InputBoolean()
-  error?: boolean;
-
   @HostBinding(`class.${classes.error}`)
-  get resolvedError() {
-    return (this.error ?? this.buttonGroup?.error) || false;
-  }
+  @Input()
+  @InputBoolean<MznButtonMixin>({
+    get(this, error?: boolean) {
+      return (error ?? this.buttonGroup?.error) || false;
+    },
+  })
+  error: boolean;
 
   /**
    * If true, replace the original icon.
@@ -88,27 +91,29 @@ export abstract class MznButtonMixin {
    * The size of button.
    * @default 'medium'
    */
-  @Input()
-  size?: ButtonSize;
-
   @HostBindingEnumClass(classes.size, [
     'small',
     'medium',
     'large',
   ])
-  get resolvedSize() {
-    return this.size || this.buttonGroup?.size || 'medium';
-  }
+  @Input()
+  @InputDescriptor<ButtonSize, MznButtonMixin>({
+    get(this, size?: ButtonSize) {
+      return size || this.buttonGroup?.size || 'medium';
+    },
+  })
+  size: ButtonSize;
 
   /**
    * The variant of button.
    * @default 'text'
    */
-  abstract variant: NonNullEnumInput<ButtonVariant>;
+  abstract variant: EnumInput<ButtonVariant>;
 
   @HostBindingEnumClass(classes.variant, [
     'contained',
     'outlined',
+    'text',
   ])
   get resolvedVariant() {
     return this.variant || this.buttonGroup?.variant || 'text';

@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import { FolderOpenIcon } from '@mezzanine-ui/icons';
-import { BooleanInput, InputBoolean } from '../core';
+import { BooleanInput, InputBoolean } from '../cdk';
 
 /**
  * The ng component for `mezzanine` empty.
