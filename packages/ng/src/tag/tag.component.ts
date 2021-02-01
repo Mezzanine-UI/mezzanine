@@ -9,7 +9,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { HostBindingEnumClass, InputBoolean } from '../cdk';
+import { BooleanInput, HostBindingEnumClass, InputBoolean } from '../cdk';
 
 /**
  * The ng component for `mezzanine` tag.
@@ -34,6 +34,10 @@ import { HostBindingEnumClass, InputBoolean } from '../cdk';
   `,
 })
 export class MznTagComponent {
+  static ngAcceptInputType_closable: BooleanInput;
+
+  static ngAcceptInputType_disabled: BooleanInput;
+
   @HostBinding(`class.${classes.host}`)
   readonly bindHostClass = true;
 

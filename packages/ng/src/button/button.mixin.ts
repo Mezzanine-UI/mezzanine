@@ -15,8 +15,7 @@ import {
 import {
   HostBindingEnumClass,
   InputBoolean,
-  EnumInput,
-  InputDescriptor,
+  EnumWithFallbackInput,
 } from '../cdk';
 import { MznButtonGroupControlInputs } from './button-group.tokens';
 
@@ -24,7 +23,7 @@ import { MznButtonGroupControlInputs } from './button-group.tokens';
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class MznButtonMixin {
   constructor(
-    readonly elementRef: ElementRef<HTMLElement>,
+    protected readonly elementRef: ElementRef<HTMLElement>,
     protected readonly renderer: Renderer2,
     protected readonly buttonGroup?: MznButtonGroupControlInputs,
   ) {}
@@ -43,12 +42,15 @@ export abstract class MznButtonMixin {
     'secondary',
   ])
   @Input()
-  @InputDescriptor<ButtonColor, MznButtonMixin>({
-    get(this, color?: ButtonColor) {
-      return color || this.buttonGroup?.color || 'primary';
-    },
-  })
-  color: ButtonColor;
+  get color() {
+    return this._color || this.buttonGroup?.color || 'primary';
+  }
+
+  set color(color: ButtonColor) {
+    this._color = color;
+  }
+
+  private _color?: ButtonColor;
 
   /**
    * The native disabled.
@@ -57,12 +59,16 @@ export abstract class MznButtonMixin {
   @HostBinding('attr.aria-disabled')
   @HostBinding('disabled')
   @Input()
-  @InputBoolean<MznButtonMixin>({
-    get(this, disabled?: boolean) {
-      return (disabled ?? this.buttonGroup?.disabled) || false;
-    },
-  })
-  disabled: boolean;
+  @InputBoolean()
+  get disabled() {
+    return (this._disabled ?? this.buttonGroup?.disabled) || false;
+  }
+
+  set disabled(disabled: boolean) {
+    this._disabled = disabled;
+  }
+
+  private _disabled?: boolean;
 
   /**
    * If true, will use error color instead of color from props.
@@ -70,12 +76,16 @@ export abstract class MznButtonMixin {
    */
   @HostBinding(`class.${classes.error}`)
   @Input()
-  @InputBoolean<MznButtonMixin>({
-    get(this, error?: boolean) {
-      return (error ?? this.buttonGroup?.error) || false;
-    },
-  })
-  error: boolean;
+  @InputBoolean()
+  get error() {
+    return (this._error ?? this.buttonGroup?.error) || false;
+  }
+
+  set error(error: boolean) {
+    this._error = error;
+  }
+
+  private _error?: boolean;
 
   /**
    * If true, replace the original icon.
@@ -97,25 +107,28 @@ export abstract class MznButtonMixin {
     'large',
   ])
   @Input()
-  @InputDescriptor<ButtonSize, MznButtonMixin>({
-    get(this, size?: ButtonSize) {
-      return size || this.buttonGroup?.size || 'medium';
-    },
-  })
-  size: ButtonSize;
+  get size() {
+    return this._size || this.buttonGroup?.size || 'medium';
+  }
+
+  set size(size: ButtonSize) {
+    this._size = size;
+  }
+
+  private _size?: ButtonSize;
 
   /**
    * The variant of button.
    * @default 'text'
    */
-  abstract variant: EnumInput<ButtonVariant>;
+  abstract variantInput: EnumWithFallbackInput<ButtonVariant>;
 
   @HostBindingEnumClass(classes.variant, [
     'contained',
     'outlined',
     'text',
   ])
-  get resolvedVariant() {
-    return this.variant || this.buttonGroup?.variant || 'text';
+  get variant() {
+    return this.variantInput || this.buttonGroup?.variant || 'text';
   }
 }

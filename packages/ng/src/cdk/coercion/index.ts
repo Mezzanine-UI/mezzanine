@@ -1,6 +1,6 @@
-export * from './input-desciptor.decorator';
+export * from './input-coercion.decorator';
 
 export * from './boolean';
 export * from './css-pixel';
-export * from './enum';
+export * from './enum-with-fallback';
 export * from './number';

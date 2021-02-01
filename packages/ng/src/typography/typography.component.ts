@@ -21,9 +21,10 @@ import {
   BooleanInput,
   createChangeEffect,
   createCssVarsChangeEffect,
+  EnumWithFallbackInput,
   HostBindingEnumClass,
   InputBoolean,
-  InputEnum,
+  InputEnumWithFallback,
   TypedSimpleChanges,
 } from '../cdk';
 
@@ -50,40 +51,16 @@ export class MznTypographyComponent implements OnChanges, AfterViewChecked {
 
   static ngAcceptInputType_noWrap: BooleanInput;
 
+  static ngAcceptInputType_variant: EnumWithFallbackInput<TypographyVariant>;
+
   constructor(
-    readonly elementRef: ElementRef<HTMLElement>,
+    private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
   ) {}
 
-  get hostElement() {
+  private get hostElement() {
     return this.elementRef.nativeElement;
   }
-
-  /**
-   * Applies the typography variant.
-   * @default 'body1'
-   */
-  // eslint-disable-next-line @angular-eslint/no-input-rename
-  @HostBindingEnumClass(classes.variant, [
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'body1',
-    'body2',
-    'button1',
-    'button2',
-    'button3',
-    'input1',
-    'input2',
-    'input3',
-    'caption',
-  ])
-  @Input('mzn-typography')
-  @InputEnum<TypographyVariant>({ fallback: 'body1' })
-  variant: TypographyVariant;
 
   /**
    * The css variable for `text-align`.
@@ -125,6 +102,32 @@ export class MznTypographyComponent implements OnChanges, AfterViewChecked {
   @Input()
   @InputBoolean()
   noWrap = false;
+
+  /**
+   * Applies the typography variant.
+   * @default 'body1'
+   */
+  // eslint-disable-next-line @angular-eslint/no-input-rename
+  @HostBindingEnumClass(classes.variant, [
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'body1',
+    'body2',
+    'button1',
+    'button2',
+    'button3',
+    'input1',
+    'input2',
+    'input3',
+    'caption',
+  ])
+  @Input('mzn-typography')
+  @InputEnumWithFallback<TypographyVariant>('body1')
+  variant: TypographyVariant;
 
   private readonly changeHostCssVars = createCssVarsChangeEffect(
     this.elementRef,

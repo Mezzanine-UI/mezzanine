@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { configure, render, RenderResult } from '@testing-library/angular';
 import { toCssVar } from '@mezzanine-ui/core/css';
 import { MznIconModule } from '../icon';
@@ -286,6 +286,7 @@ describe('MznButtonGroupComponent', () => {
   describe('inputs: color,disabled,error,size,variant that can accept inputs from button group', () => {
     function testOverrideInputs(
       buttonComponent: MznButtonComponent,
+      buttonElementRef: ElementRef<HTMLButtonElement>,
       {
         color,
         disabled,
@@ -294,23 +295,23 @@ describe('MznButtonGroupComponent', () => {
         variant,
       }: Required<Pick<MznButtonGroupComponent, 'color' | 'disabled' | 'error' | 'size' | 'variant'>>,
     ) {
-      const element = buttonComponent.elementRef.nativeElement;
+      const buttonElement = buttonElementRef.nativeElement;
 
       expect(buttonComponent.color).toBe(color);
-      expect(element.classList.contains(`mzn-button--${color}`)).toBeTruthy();
+      expect(buttonElement.classList.contains(`mzn-button--${color}`)).toBeTruthy();
 
       expect(buttonComponent.disabled).toBe(disabled);
-      expect(element.hasAttribute('disabled')).toBe(disabled);
-      expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
+      expect(buttonElement.hasAttribute('disabled')).toBe(disabled);
+      expect(buttonElement.getAttribute('aria-disabled')).toBe(`${disabled}`);
 
       expect(buttonComponent.error).toBe(error);
-      expect(element.classList.contains('mzn-button--error')).toBe(error);
+      expect(buttonElement.classList.contains('mzn-button--error')).toBe(error);
 
       expect(buttonComponent.size).toBe(size);
-      expect(element.classList.contains(`mzn-button--${size}`)).toBeTruthy();
+      expect(buttonElement.classList.contains(`mzn-button--${size}`)).toBeTruthy();
 
-      expect(buttonComponent.resolvedVariant).toBe(variant);
-      expect(element.classList.contains(`mzn-button--${variant}`)).toBe(variant !== 'text');
+      expect(buttonComponent.variant).toBe(variant);
+      expect(buttonElement.classList.contains(`mzn-button--${variant}`)).toBe(variant !== 'text');
     }
 
     it('all by default', async () => {
@@ -325,6 +326,9 @@ describe('MznButtonGroupComponent', () => {
       class TestingComponent {
         @ViewChild('button')
         button: MznButtonComponent;
+
+        @ViewChild('button', { read: ElementRef })
+        buttonElementRef: ElementRef<HTMLButtonElement>;
       }
 
       const { fixture } = await render(TestingComponent, {
@@ -333,6 +337,7 @@ describe('MznButtonGroupComponent', () => {
 
       testOverrideInputs(
         fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
         {
           color: 'primary',
           disabled: false,
@@ -370,6 +375,9 @@ describe('MznButtonGroupComponent', () => {
         @ViewChild('button')
         button: MznButtonComponent;
 
+        @ViewChild('button', { read: ElementRef })
+        buttonElementRef: ElementRef<HTMLButtonElement>;
+
         color: ButtonColor = expects.color;
 
         disabled = expects.disabled;
@@ -385,27 +393,51 @@ describe('MznButtonGroupComponent', () => {
         declarations: [MznButtonComponent, MznButtonGroupComponent],
       });
 
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
 
       expects.color = 'primary';
       rerender(expects);
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
 
       expects.disabled = false;
       rerender(expects);
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
 
       expects.error = false;
       rerender(expects);
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
 
       expects.size = 'large';
       rerender(expects);
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
 
       expects.variant = 'outlined';
       rerender(expects);
-      testOverrideInputs(fixture.componentInstance.button, expects);
+      testOverrideInputs(
+        fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
+        expects,
+      );
     });
 
     it('should not override if child explicitly provided props', async () => {
@@ -435,6 +467,9 @@ describe('MznButtonGroupComponent', () => {
       class TestingComponent {
         @ViewChild('button')
         button: MznButtonComponent;
+
+        @ViewChild('button', { read: ElementRef })
+        buttonElementRef: ElementRef<HTMLButtonElement>;
       }
 
       const { fixture } = await render(TestingComponent, {
@@ -443,6 +478,7 @@ describe('MznButtonGroupComponent', () => {
 
       testOverrideInputs(
         fixture.componentInstance.button,
+        fixture.componentInstance.buttonElementRef,
         {
           color: 'secondary',
           disabled: false,

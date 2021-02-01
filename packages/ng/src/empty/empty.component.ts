@@ -32,7 +32,7 @@ import { BooleanInput, InputBoolean } from '../cdk';
   `,
 })
 export class MznEmptyComponent {
-  static ngAcceptInputType_spin: BooleanInput;
+  static ngAcceptInputType_fullHeight: BooleanInput;
 
   @HostBinding(`class.${classes.host}`)
   readonly bindHostClass = true;

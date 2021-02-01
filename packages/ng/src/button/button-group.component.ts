@@ -23,7 +23,6 @@ import {
   createCssVarsChangeEffect,
   HostBindingEnumClass,
   InputBoolean,
-  InputEnum,
   InputNumber,
   TypedSimpleChanges,
 } from '../cdk';
@@ -65,23 +64,26 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
 
   /**
    * If the `color` of a button inside group not provided, the `color` of group will override it.
+   * @default 'primary'
    */
   @Input()
-  color?: ButtonColor;
+  color: ButtonColor = 'primary';
 
   /**
    * If the `disabled` of a button inside group not provided, the `disabled` of group will override it.
+   * @default false
    */
   @Input()
   @InputBoolean()
-  disabled?: boolean;
+  disabled = false;
 
   /**
    * If the `error` of a button inside group not provided, the `error` of group will override it.
+   * @default false
    */
   @Input()
   @InputBoolean()
-  error?: boolean;
+  error = false;
 
   /**
    * If `true`, set width: 100%.
@@ -102,7 +104,6 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
   ])
   @HostBinding('attr.aria-orientation')
   @Input()
-  @InputEnum<ButtonGroupOrientation>({ fallback: 'horizontal' })
   orientation: ButtonGroupOrientation = 'horizontal';
 
   /**
@@ -125,14 +126,15 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
    * @default small:3,others:4
    */
   @Input()
-  @InputNumber({ fallback: NaN })
+  @InputNumber(NaN)
   spacing: ButtonGroupSpacing;
 
   /**
    * If the `variant` of a button inside group not provided, the `variant` of group will override it.
+   * @default 'text'
    */
   @Input()
-  variant?: ButtonVariant;
+  variant: ButtonVariant = 'text';
 
   private readonly changeHostCssVars = createCssVarsChangeEffect(
     this.elementRef,

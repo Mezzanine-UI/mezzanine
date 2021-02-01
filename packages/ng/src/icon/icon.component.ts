@@ -48,7 +48,7 @@ export class MznIconComponent implements OnChanges {
   static ngAcceptInputType_spin: BooleanInput;
 
   constructor(
-    readonly elementRef: ElementRef<HTMLElement>,
+    private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
   ) {}
 

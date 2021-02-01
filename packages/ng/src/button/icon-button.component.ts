@@ -14,7 +14,7 @@ import {
   buttonClasses as classes,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
-import { EnumInput } from '../cdk';
+import { EnumWithFallbackInput } from '../cdk';
 import { MznButtonMixin } from './button.mixin';
 import { MznButtonGroupControlInputs, MznButtonGroupControlInputsToken } from './button-group.tokens';
 
@@ -53,5 +53,5 @@ export class MznIconButtonComponent extends MznButtonMixin {
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('mzn-icon-button')
-  variant: EnumInput<ButtonVariant>;
+  variantInput: EnumWithFallbackInput<ButtonVariant>;
 }
