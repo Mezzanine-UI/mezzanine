@@ -9,7 +9,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core';
-import { HostBindingEnumClass, InputBoolean } from '../core';
+import { HostBindingEnumClass, InputBoolean } from '../cdk';
 
 /**
  * The ng component for `mezzanine` tag.

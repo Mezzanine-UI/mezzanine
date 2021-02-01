@@ -296,17 +296,17 @@ describe('MznButtonGroupComponent', () => {
     ) {
       const element = buttonComponent.elementRef.nativeElement;
 
-      expect(buttonComponent.resolvedColor).toBe(color);
+      expect(buttonComponent.color).toBe(color);
       expect(element.classList.contains(`mzn-button--${color}`)).toBeTruthy();
 
-      expect(buttonComponent.resolvedDisabled).toBe(disabled);
+      expect(buttonComponent.disabled).toBe(disabled);
       expect(element.hasAttribute('disabled')).toBe(disabled);
       expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
 
-      expect(buttonComponent.resolvedError).toBe(error);
+      expect(buttonComponent.error).toBe(error);
       expect(element.classList.contains('mzn-button--error')).toBe(error);
 
-      expect(buttonComponent.resolvedSize).toBe(size);
+      expect(buttonComponent.size).toBe(size);
       expect(element.classList.contains(`mzn-button--${size}`)).toBeTruthy();
 
       expect(buttonComponent.resolvedVariant).toBe(variant);

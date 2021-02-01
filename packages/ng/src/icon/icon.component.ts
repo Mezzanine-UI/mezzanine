@@ -15,7 +15,7 @@ import {
   createCssVarsChangeEffect,
   InputBoolean,
   TypedSimpleChanges,
-} from '../core';
+} from '../cdk';
 
 /**
  * The ng component for `mezzanine` icon.

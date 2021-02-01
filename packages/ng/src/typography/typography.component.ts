@@ -23,9 +23,9 @@ import {
   createCssVarsChangeEffect,
   HostBindingEnumClass,
   InputBoolean,
-  InputNotEmptyEnum,
+  InputEnum,
   TypedSimpleChanges,
-} from '../core';
+} from '../cdk';
 
 interface EllipsisInfo {
   status: boolean;
@@ -82,7 +82,7 @@ export class MznTypographyComponent implements OnChanges, AfterViewChecked {
     'caption',
   ])
   @Input('mzn-typography')
-  @InputNotEmptyEnum<TypographyVariant>('body1')
+  @InputEnum<TypographyVariant>({ fallback: 'body1' })
   variant: TypographyVariant;
 
   /**
