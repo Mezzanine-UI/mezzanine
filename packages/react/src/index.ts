@@ -46,6 +46,14 @@ export {
   SwitchSize,
   default as Switch,
 } from './Switch';
+export {
+  UploadButtonProps,
+  UploadButton,
+  UploadResultProps,
+  UploadResultSize,
+  UploadResultStatus,
+  UploadResult,
+} from './Upload';
 
 /**
  * Data Display
