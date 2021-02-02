@@ -57,3 +57,13 @@ export {
   AlertProps,
   default as Alert,
 } from './Alert';
+
+/**
+ * Utility
+ */
+export {
+  ElementGetter,
+  getElement,
+  PortalProps,
+  default as Portal,
+} from './Portal';
