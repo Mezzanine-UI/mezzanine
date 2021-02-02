@@ -20,7 +20,7 @@ export function createPreview(options) {
             'Navigation',
             'Data Entry',
             'Data Display',
-            'Feed Back'
+            'Feedback'
           ]
         }
       }
