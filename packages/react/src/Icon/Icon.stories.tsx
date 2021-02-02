@@ -15,6 +15,8 @@ import {
   TimesCircleFilledIcon,
   FolderOpenIcon,
   MinusCircleFilledIcon,
+  UploadIcon,
+  DownloadIcon,
 } from '@mezzanine-ui/icons';
 import Icon, { IconColor, IconProps } from '.';
 
@@ -70,6 +72,8 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
     TimesCircleFilledIcon,
     FolderOpenIcon,
     MinusCircleFilledIcon,
+    UploadIcon,
+    DownloadIcon,
   ].filter((icon) => !search || icon.name.includes(search));
 
   return (
