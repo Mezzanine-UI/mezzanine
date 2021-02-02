@@ -28,7 +28,7 @@ $default-options: (
   $icon-label-gap-x: map.get($options, icon-label-gap-x);
 
   .#{$prefix} {
-    --#{$prefix}-padding-x: #{utils-typography.px-to-rem($padding-x)};
+    --#{$prefix}-padding-x: #{$padding-x};
 
     display: inline-flex;
     align-items: center;
@@ -56,15 +56,15 @@ $default-options: (
 
     &__label {
       display: inline-block;
-      min-width: utils-typography.px-to-rem($label-min-width);
+      min-width: $label-min-width;
 
       @include utils-typography.nowrap();
     }
 
     &__close-icon {
       font-size: utils-typography.px-to-rem($icon-size);
-      margin-right: -#{utils-typography.px-to-rem($icon-label-gap-x)};
-      margin-left: utils-typography.px-to-rem($icon-label-gap-x);
+      margin-right: -#{$icon-label-gap-x};
+      margin-left: $icon-label-gap-x;
       outline: 0;
       cursor: pointer;
     }
@@ -83,12 +83,12 @@ $default-options: (
     }
 
     &--small {
-      --#{$prefix}-padding-x: #{utils-typography.px-to-rem($padding-x-small)};
+      --#{$prefix}-padding-x: #{$padding-x-small};
 
       @include typography.variant(caption, (text-decoration, text-transform));
 
       .#{$prefix}__label {
-        min-width: utils-typography.px-to-rem($label-min-width-small);
+        min-width: $label-min-width-small;
       }
 
       .#{$prefix}__close-icon {
