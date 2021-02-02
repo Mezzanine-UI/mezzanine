@@ -48,3 +48,12 @@ export {
   TagSize,
   default as Tag,
 } from './Tag';
+
+/**
+ * Feedback
+ */
+export {
+  AlertStatus,
+  AlertProps,
+  default as Alert,
+} from './Alert';
