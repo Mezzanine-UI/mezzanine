@@ -18,3 +18,5 @@ export { TimesIcon } from './times';
 export { TimesCircleFilledIcon } from './times-circle-filled';
 export { FolderOpenIcon } from './folder-open';
 export { MinusCircleFilledIcon } from './minus-circle-filled';
+export { UploadIcon } from './upload';
+export { DownloadIcon } from './download';
