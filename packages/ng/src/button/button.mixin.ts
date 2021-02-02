@@ -121,7 +121,7 @@ export abstract class MznButtonMixin {
    * The variant of button.
    * @default 'text'
    */
-  abstract variantInput: EnumWithFallbackInput<ButtonVariant>;
+  protected abstract _variant: EnumWithFallbackInput<ButtonVariant>;
 
   @HostBindingEnumClass(classes.variant, [
     'contained',
@@ -129,6 +129,6 @@ export abstract class MznButtonMixin {
     'text',
   ])
   get variant() {
-    return this.variantInput || this.buttonGroup?.variant || 'text';
+    return this._variant || this.buttonGroup?.variant || 'text';
   }
 }

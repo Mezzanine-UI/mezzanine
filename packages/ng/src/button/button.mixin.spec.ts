@@ -23,7 +23,7 @@ class TestingButtonComponent extends MznButtonMixin {
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('variant')
-  variantInput: ButtonVariant;
+  protected _variant: ButtonVariant;
 }
 
 configure({

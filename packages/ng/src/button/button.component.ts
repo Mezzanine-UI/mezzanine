@@ -67,5 +67,5 @@ export class MznButtonComponent extends MznButtonMixin {
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('mzn-button')
-  variantInput: EnumWithFallbackInput<ButtonVariant>;
+  protected _variant: EnumWithFallbackInput<ButtonVariant>;
 }
