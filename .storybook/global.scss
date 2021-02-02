@@ -6,6 +6,7 @@
 @use '~@mezzanine-ui/core/input';
 @use '~@mezzanine-ui/core/textarea';
 @use '~@mezzanine-ui/core/switch';
+@use '~@mezzanine-ui/core/upload';
 @use '~@mezzanine-ui/core/badge';
 @use '~@mezzanine-ui/core/tag';
 @use '~@mezzanine-ui/core/empty';
@@ -34,6 +35,7 @@
 @include input.core();
 @include textarea.core();
 @include switch.core();
+@include upload.core();
 @include badge.core();
 @include tag.core();
 @include empty.core();
