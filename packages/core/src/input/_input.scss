@@ -1,77 +1,20 @@
 @use 'sass:map';
-@use '../size';
-@use '../palette';
-@use '../typography';
-@use '../icon';
-@use '../typography/utils' as utils-typography;
-@use './utils';
+@use '../text-field';
 
 $prefix: mzn-input;
-$inputSizes: size.$sizes;
+$sizes: text-field.$sizes;
 
-$default-options: (
-  padding-decorator: 4px,
-  input-width: 160px,
-  input-width-small: 132px,
-  textarea-width: 452px,
-  textarea-width-small: 388px,
-);
-
-@function _get-typography-variant-from-size($size) {
-  @return map.get(
-    (
-      small: input3,
-      medium: input2,
-      large: input1,
-    ),
-    $size
-  );
-}
-
-@mixin _size($options) {
-  @each $size in $inputSizes {
-    $typography-variant: _get-typography-variant-from-size($size);
-
-    &.#{$prefix}--#{$size} {
-      @include typography.variant($typography-variant);
-    }
-  }
-}
+$default-options: map.deep-merge(text-field.$default-options, ());
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
 
-  input,
-  textarea {
-    @include utils.reset();
-    @include _size($options);
+  @include text-field.core($options);
 
-    &.#{$prefix}--multiple {
-      height: 100%;
-
-      &:focus + .#{$prefix}--counting {
-        color: palette.color(primary);
-
-        &.#{$prefix}--error {
-          color: palette.color(error);
-        }
-      }
+  .#{$prefix} {
+    input {
+      padding-left: var(--#{text-field.$prefix}-padding-left);
+      padding-right: var(--#{text-field.$prefix}-padding-right);
     }
-  }
-
-  .#{$prefix}--counting {
-    position: absolute;
-    bottom: -20px;
-    right: 0;
-
-    &.#{$prefix}--disabled {
-      color: palette.color(action-disabled-bg);
-    }
-
-    &.#{$prefix}--error {
-      color: palette.color(error);
-    }
-
-    @include typography.variant(caption);
   }
 }

@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  MouseEventHandler,
   ReactNode,
 } from 'react';
 import { TimesIcon } from '@mezzanine-ui/icons';
@@ -11,38 +12,49 @@ import { cx } from '../utils/cx';
 import Icon from '../Icon';
 
 export interface TextFieldProps {
+  /**
+   * Whether the field is active.
+   */
+  active?: boolean;
   children?: ReactNode;
   className?: string;
   /**
-   * The clearable setting of input.
-   * @default 'false';
+   * Whether to show the clear button.
+   * @default false
    */
   clearable?: boolean;
   /**
-   * The disable setting of input.
-   * @default 'false';
+   * Whether the field is disabled.
+   * @default false
    */
   disabled?: boolean;
   /**
-   * The error of input.
-   * @default 'false';
+   * Whether the field is error.
+   * @default false
    */
   error?: boolean;
-  onClear?: VoidFunction;
   /**
-   * The icon placed on the start of input.
+   * If `true`, set width: 100%.
+   * @default false
+   */
+  fullWidth?: boolean;
+  /**
+   * The callback will be fired after clear icon clicked.
+   */
+  onClear?: MouseEventHandler;
+  /**
+   * The prefix addon of the field.
    */
   prefix?: ReactNode;
   /**
-   * The size of input.
+   * The size of field.
    * @default 'medium'
    */
   size?: TextFieldSize;
   /**
-   * The icon or text placed on the end of input.
+   * The suffix addon of the field.
    */
   suffix?: ReactNode;
-  multiple?: boolean;
 }
 
 /**
@@ -50,12 +62,13 @@ export interface TextFieldProps {
  */
 const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(props, ref) {
   const {
-    multiple,
+    active = false,
     children,
     className,
     clearable = false,
     disabled = false,
     error = false,
+    fullWidth,
     onClear,
     prefix,
     size = 'medium',
@@ -69,51 +82,33 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
         classes.host,
         classes.size(size),
         {
-          [classes.multiple]: multiple,
+          [classes.active]: active,
+          [classes.clearable]: clearable,
           [classes.disabled]: disabled,
           [classes.error]: error,
-          [classes.prefix]: prefix,
-          [classes.suffix]: suffix || clearable,
+          [classes.fullWidth]: fullWidth,
+          [classes.withPrefix]: prefix,
+          [classes.withSuffix]: suffix,
         },
         className,
       )}
     >
-      {prefix && (
-        <div className={cx(
-          {
-            [classes.prefix]: prefix,
-          },
-        )}
-        >
-          {prefix}
-        </div>
-      )}
+      {prefix && <div className={classes.prefix}>{prefix}</div>}
       {children}
-      {suffix && (
-        <div className={cx(
-          {
-            [classes.error]: error,
-            [classes.suffix]: suffix,
-          },
-        )}
-        >
-          {suffix}
-        </div>
-      )}
+      {suffix && <div className={classes.suffix}>{suffix}</div>}
       {clearable && (
-        <button
-          onClick={onClear}
-          className={cx(
-            {
-              [classes.error]: error,
-              [classes.suffix]: clearable,
-              [classes.clearButton]: clearable,
-            },
-          )}
-          type="button"
-        >
-          <Icon icon={TimesIcon} />
-        </button>
+        <Icon
+          className={classes.clearIcon}
+          icon={TimesIcon}
+          onClick={(event) => {
+            if (!disabled && onClear) {
+              onClear(event);
+            }
+          }}
+          onMouseDown={(event) => event.preventDefault()}
+          role="button"
+          tabIndex={-1}
+        />
       )}
     </div>
   );

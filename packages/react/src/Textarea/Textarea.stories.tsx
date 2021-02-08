@@ -1,38 +1,37 @@
 import Textarea from '.';
 
 export default {
-  title: 'Basic/Textarea',
+  title: 'Data Entry/Textarea',
 };
 
 export const Basic = () => (
   <div
     style={{
       display: 'inline-grid',
+      gridTemplateRows: 'repeat(4, 102px)',
       gridTemplateColumns: '500px',
-      gridTemplateRows: 'repeat(8, 102px)',
       gap: '24px',
-      justifyItems: 'center',
     }}
   >
     <Textarea
       clearable
       placeholder="輸入文字..."
-      maxTextLength={50}
+      maxLength={100}
     />
     <Textarea
       placeholder="輸入文字..."
-      maxTextLength={50}
+      maxLength={50}
       disabled
     />
     <Textarea
       placeholder="輸入文字..."
-      maxTextLength={50}
+      maxLength={50}
       error
       clearable
     />
     <Textarea
       placeholder="輸入文字..."
-      maxTextLength={50}
+      maxLength={50}
       value="Example"
       readOnly
     />
@@ -43,8 +42,8 @@ export const Sizes = () => (
   <div
     style={{
       display: 'inline-grid',
+      gridTemplateRows: 'repeat(3, 102px)',
       gridTemplateColumns: '500px',
-      gridTemplateRows: 'repeat(8, 102px)',
       gap: '24px',
       justifyItems: 'center',
     }}
@@ -52,7 +51,7 @@ export const Sizes = () => (
     <Textarea
       placeholder="輸入文字..."
       size="small"
-      maxTextLength={20}
+      maxLength={20}
     />
     <Textarea
       placeholder="輸入文字..."
@@ -60,36 +59,6 @@ export const Sizes = () => (
     <Textarea
       placeholder="輸入文字..."
       size="large"
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="small"
-      disabled
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="medium"
-      disabled
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="large"
-      disabled
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="small"
-      error
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="medium"
-      error
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      size="large"
-      error
     />
   </div>
 );

@@ -1,4 +1,5 @@
-export { cx } from './utils/cx';
+export * from './utils/composeRefs';
+export * from './utils/cx';
 
 export type {
   ButtonColor,
@@ -34,22 +35,14 @@ export {
   default as Typography,
 } from './Typography';
 
-export type {
+export {
   InputProps,
   InputSize,
-} from './TextInput/Input';
-export {
   default as Input,
-} from './TextInput/Input';
+} from './Input';
 
 export type {
   TextareaProps,
-} from './TextInput/Textarea';
-
-export type {
-  TextFieldProps,
-  TextFieldSize,
-} from './TextField';
-export {
-  default as TextField,
-} from './TextField';
+  TextareaSize,
+  default as Textarea,
+} from './Textarea';
