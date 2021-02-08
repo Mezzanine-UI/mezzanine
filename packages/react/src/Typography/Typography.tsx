@@ -13,7 +13,7 @@ import {
 } from '@mezzanine-ui/core/typography';
 import { cx } from '../utils/cx';
 
-export type TypographyComponent = `h${1 | 2 | 3 | 4 | 5 | 6}` | 'p' | 'span' | 'label' | 'div';
+export type TypographyComponent = `h${1 | 2 | 3 | 4 | 5 | 6}` | 'p' | 'span' | 'label' | 'div' | 'caption';
 
 function getComponentFromVariant(variant: TypographyVariant): TypographyComponent {
   if (variant.startsWith('h')) {

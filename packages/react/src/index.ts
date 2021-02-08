@@ -1,4 +1,5 @@
-export { cx } from './utils/cx';
+export * from './utils/composeRefs';
+export * from './utils/cx';
 
 /**
  * General
@@ -31,6 +32,16 @@ export {
 /**
  * Data Entry
  */
+export {
+  InputProps,
+  InputSize,
+  default as Input,
+} from './Input';
+export {
+  TextareaProps,
+  TextareaSize,
+  default as Textarea,
+} from './Textarea';
 export {
   SwitchSize,
   default as Switch,

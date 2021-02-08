@@ -102,7 +102,7 @@ describe('<Button />', () => {
       });
     });
 
-    it('aria-disablee from props should not override', () => {
+    it('aria-disable from props should not override', () => {
       const { getHostHTMLElement } = render(
         <Button
           aria-disabled={false}
