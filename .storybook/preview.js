@@ -13,6 +13,17 @@ export function createPreview(options) {
           disable: false,
         },
       },
+      options: {
+        storySort: {
+          order: [
+            'General',
+            'Navigation',
+            'Data Entry',
+            'Data Display',
+            'Feedback'
+          ]
+        }
+      }
     },
     globalTypes: {
       theme: {

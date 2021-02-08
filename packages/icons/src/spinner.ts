@@ -9,7 +9,7 @@ export const SpinnerIcon: IconDefinition = {
     path: {
       fill: 'currentColor',
       fillRule: 'evenodd',
-      d: 'M12 4.25a7.75 7.75 0 0 1 .246 15.496L12 19.75v-1.5a6.25 6.25 0 1 0 0-12.5 6.25 6.25 0 0 0-6.246 6.021L5.75 12h-1.5A7.75 7.75 0 0 1 12 4.25z',
+      d: 'M12 4a8 8 0 0 1 8 8h0-1.715c.001-3.394-2.69-6.16-6.055-6.282L12 5.714z',
     },
   },
 };

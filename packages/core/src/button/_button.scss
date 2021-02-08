@@ -98,8 +98,8 @@ $default-options: (
 }
 
 @mixin _padding-x($options, $is-outlined) {
-  $padding-x: utils-typography.px-to-rem(map.get($options, padding-x));
-  $padding-x-small: utils-typography.px-to-rem(map.get($options, padding-x-small));
+  $padding-x: map.get($options, padding-x);
+  $padding-x-small: map.get($options, padding-x-small);
 
   @if $is-outlined {
     $outlined-border-width: map.get($options, outlined-border-width);
@@ -138,8 +138,8 @@ $default-options: (
   .#{icon.$prefix} {
     font-size: utils-typography.px-to-rem($icon-size);
     // For icon on the left of button.
-    margin-left: -#{utils-typography.px-to-rem($icon-label-gap-x)};
-    margin-right: utils-typography.px-to-rem($icon-label-gap-x);
+    margin-left: -#{$icon-label-gap-x};
+    margin-right: $icon-label-gap-x;
   }
 
   @each $size in $sizes {
@@ -163,16 +163,16 @@ $default-options: (
   @include _padding-x($options, false);
 
   &__label {
-    min-width: utils-typography.px-to-rem($label-min-width);
+    min-width: $label-min-width;
 
     .#{$prefix}--small & {
-      min-width: utils-typography.px-to-rem($label-min-width-small);
+      min-width: $label-min-width-small;
     }
 
     + .#{icon.$prefix} {
       // For icon on the right of button.
-      margin-right: -#{utils-typography.px-to-rem($icon-label-gap-x)};
-      margin-left: utils-typography.px-to-rem($icon-label-gap-x);
+      margin-right: -#{$icon-label-gap-x};
+      margin-left: $icon-label-gap-x;
     }
   }
 }

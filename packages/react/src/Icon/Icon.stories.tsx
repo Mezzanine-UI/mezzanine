@@ -13,6 +13,8 @@ import {
   SpinnerIcon,
   TimesIcon,
   TimesCircleFilledIcon,
+  FolderOpenIcon,
+  MinusCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import Icon, { IconColor, IconProps } from '.';
 
@@ -27,7 +29,7 @@ const colors: IconColor[] = [
 ];
 
 export default {
-  title: 'Basic/Icon',
+  title: 'General/Icon',
 } as Meta;
 
 export const Playgroud: Story<IconProps> = ({ children, ...props }) => (
@@ -66,6 +68,8 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
     SpinnerIcon,
     TimesIcon,
     TimesCircleFilledIcon,
+    FolderOpenIcon,
+    MinusCircleFilledIcon,
   ].filter((icon) => !search || icon.name.includes(search));
 
   return (

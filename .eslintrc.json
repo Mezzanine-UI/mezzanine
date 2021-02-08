@@ -1,0 +1,301 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.*?.json"
+  },
+  "plugins": ["@typescript-eslint", "import"],
+  "overrides": [
+    {
+      "files": ["*.js", "*.jsx", "*.ts", "*.tsx"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended",
+        "airbnb-typescript"
+      ],
+      "rules": {
+        "arrow-parens": [
+          "error",
+          "always",
+          {
+            "requireForBlockBody": true
+          }
+        ],
+        "comma-dangle": [
+          "error",
+          {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "only-multiline",
+            "exports": "only-multiline",
+            "functions": "only-multiline"
+          }
+        ],
+        "indent": ["error", 2],
+        "max-len": ["error", 120],
+        "no-async-promise-executor": "off",
+        "no-bitwise": [
+          "error",
+          {
+            "allow": ["~"],
+            "int32Hint": true
+          }
+        ],
+        "no-console": [
+          "error",
+          {
+            "allow": ["warn", "error"]
+          }
+        ],
+        "no-multiple-empty-lines": [
+          "error",
+          {
+            "max": 1
+          }
+        ],
+        "no-trailing-spaces": "error",
+        "no-underscore-dangle": [
+          "error",
+          {
+            "allowAfterThis": true
+          }
+        ],
+        "operator-linebreak": [
+          "error",
+          "after",
+          {
+            "overrides": {
+              "?": "before",
+              ":": "before"
+            }
+          }
+        ],
+        "padding-line-between-statements": [
+          "error",
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": "return"
+          },
+          {
+            "blankLine": "always",
+            "prev": ["const", "let", "var"],
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": ["const", "let", "var"],
+            "next": ["const", "let", "var"]
+          },
+          {
+            "blankLine": "always",
+            "prev": "directive",
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": "directive",
+            "next": "directive"
+          },
+          {
+            "blankLine": "always",
+            "prev": "block-like",
+            "next": "*"
+          },
+          {
+            "blankLine": "always",
+            "prev": ["expression", "multiline-expression"],
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": ["expression", "multiline-expression"],
+            "next": ["expression", "multiline-expression"]
+          },
+          {
+            "blankLine": "always",
+            "prev": "switch",
+            "next": "*"
+          },
+          {
+            "blankLine": "always",
+            "prev": "import",
+            "next": "*"
+          },
+          {
+            "blankLine": "any",
+            "prev": "import",
+            "next": "import"
+          },
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": "case"
+          },
+          {
+            "blankLine": "any",
+            "prev": "case",
+            "next": "case"
+          },
+          {
+            "blankLine": "always",
+            "prev": "*",
+            "next": "default"
+          },
+          {
+            "blankLine": "any",
+            "prev": "case",
+            "next": "default"
+          }
+        ],
+        "prefer-arrow-callback": [
+          "error",
+          {
+            "allowNamedFunctions": true
+          }
+        ],
+        "quotes": ["error", "single"],
+        "quote-props": ["error", "as-needed"],
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "packageDir": [
+              "./",
+              "./packages/core",
+              "./packages/ng",
+              "./packages/react"
+            ]
+          }
+        ],
+        "import/prefer-default-export": "off"
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "rules": {
+        "no-unused-vars": [
+          "error",
+          {
+            "varsIgnorePattern": "^_",
+            "argsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "indent": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/indent": ["error", 2],
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "varsIgnorePattern": "^_",
+            "argsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["./packages/icons/**/*.ts"],
+      "rules": {
+        "max-len": "off"
+      }
+    },
+    {
+      "files": ["./packages/ng/**/*.ts"],
+      "parserOptions": {
+        "project": "./packages/ng/tsconfig.*?.json"
+      },
+      "plugins": ["@angular-eslint"],
+      "extends": [
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "@angular-eslint/directive-selector": [
+          "error",
+          {
+            "type": "attribute",
+            "prefix": "mzn",
+            "style": "camelCase"
+          }
+        ],
+        "@angular-eslint/component-selector": [
+          "error",
+          {
+            "type": ["element", "attribute"],
+            "prefix": "mzn",
+            "style": "kebab-case"
+          }
+        ]
+      }
+    },
+    {
+      "files": ["./packages/ng/**/*.html"],
+      "plugins": ["@angular-eslint/template"],
+      "extends": ["plugin:@angular-eslint/template/recommended"]
+    },
+    {
+      "files": ["*.tsx", "*.mdx"],
+      "parserOptions": {
+        "ecmaFeatures": {
+          "jsx": true
+        }
+      },
+      "extends": ["airbnb/hooks", "plugin:react/recommended"],
+      "plugins": ["react", "react-hooks"],
+      "settings": {
+        "react": {
+          "pragma": "React",
+          "version": "detect"
+        }
+      },
+      "rules": {
+        "jsx-a11y/label-has-for": "off",
+        "react/display-name": "off",
+        "react/jsx-closing-bracket-location": [
+          "error",
+          {
+            "nonEmpty": "tag-aligned",
+            "selfClosing": "tag-aligned"
+          }
+        ],
+        "react/jsx-filename-extension": "off",
+        "react/jsx-fragments": "off",
+        "react/jsx-no-target-blank": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/static-property-placement": "off"
+      }
+    },
+    {
+      "files": ["*.spec.{ts,tsx}"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "max-classes-per-file": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-useless-constructor": "off"
+      }
+    },
+    {
+      "files": ["*.mdx"],
+      "extends": ["plugin:mdx/recommended"],
+      "rules": {
+        "no-unused-vars": "off"
+      }
+    }
+  ]
+}

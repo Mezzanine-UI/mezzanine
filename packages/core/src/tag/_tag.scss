@@ -1,0 +1,99 @@
+@use 'sass:map';
+@use '../size';
+@use '../palette';
+@use '../typography/utils' as utils-typography;
+@use '../typography';
+
+$prefix: mzn-tag;
+$sizes: size.$sizes;
+
+$default-options: (
+  label-min-width: 32px,
+  label-min-width-small: 24px,
+  padding-x: 12px,
+  padding-x-small: 8px,
+  icon-size: 20px,
+  icon-size-small: 12px,
+  icon-label-gap-x: 4px,
+);
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $label-min-width: map.get($options, label-min-width);
+  $label-min-width-small: map.get($options, label-min-width-small);
+  $padding-x: map.get($options, padding-x);
+  $padding-x-small: map.get($options, padding-x-small);
+  $icon-size: map.get($options, icon-size);
+  $icon-size-small: map.get($options, icon-size-small);
+  $icon-label-gap-x: map.get($options, icon-label-gap-x);
+
+  .#{$prefix} {
+    --#{$prefix}-padding-x: #{$padding-x};
+
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+    background-color: palette.color(primary-hover-bg);
+    color: palette.color(text-primary);
+    box-sizing: border-box;
+
+    @include typography.variant(input2, (text-decoration, text-transform));
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      outline: 0;
+
+      &:first-child:last-child {
+        margin: 0 calc(var(--#{$prefix}-padding-x) * -1);
+      }
+    }
+
+    &,
+    a:first-child:last-child {
+      padding: 0 var(--#{$prefix}-padding-x);
+    }
+
+    &__label {
+      display: inline-block;
+      min-width: $label-min-width;
+
+      @include utils-typography.nowrap();
+    }
+
+    &__close-icon {
+      font-size: utils-typography.px-to-rem($icon-size);
+      margin-right: -#{$icon-label-gap-x};
+      margin-left: $icon-label-gap-x;
+      outline: 0;
+      cursor: pointer;
+    }
+
+    &--disabled {
+      background-color: palette.color(action-disabled-bg);
+      color: palette.color(action-disabled);
+
+      .#{$prefix}__close-icon {
+        cursor: default;
+      }
+    }
+
+    &--medium {
+      line-height: typography.prop(input3, line-height);
+    }
+
+    &--small {
+      --#{$prefix}-padding-x: #{$padding-x-small};
+
+      @include typography.variant(caption, (text-decoration, text-transform));
+
+      .#{$prefix}__label {
+        min-width: $label-min-width-small;
+      }
+
+      .#{$prefix}__close-icon {
+        font-size: utils-typography.px-to-rem($icon-size-small);
+      }
+    }
+  }
+}

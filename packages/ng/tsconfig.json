@@ -1,15 +1,17 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "plugins": [{ "name": "@angular/language-service" }],
     "strictPropertyInitialization": false
   },
   "angularCompilerOptions": {
+    "enableResourceInlining": true,
+    "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true,
     "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "enableResourceInlining": true
+    "strictMetadataEmit": true
   },
   "references": [
     {

@@ -5,6 +5,10 @@
 @use '~@mezzanine-ui/core/button';
 @use '~@mezzanine-ui/core/input';
 @use '~@mezzanine-ui/core/textarea';
+@use '~@mezzanine-ui/core/switch';
+@use '~@mezzanine-ui/core/tag';
+@use '~@mezzanine-ui/core/empty';
+@use '~@mezzanine-ui/core/alert';
 
 :root {
   @include palette.variables("light");
@@ -28,3 +32,7 @@
 @include button.core();
 @include input.core();
 @include textarea.core();
+@include switch.core();
+@include tag.core();
+@include empty.core();
+@include alert.core();

@@ -1,0 +1,67 @@
+@use 'sass:map';
+@use '../palette';
+@use '../typography';
+@use '../typography/utils' as utils-typography;
+
+$prefix: mzn-alert;
+$statuses: (
+  success,
+  warning,
+  error,
+);
+$icon-horizontal-padding: 12px;
+$line-height: typography.prop(body1, line-height);
+
+$default-options: (
+  box-height: 40px,
+  icon-size: 24px,
+  icon-horizontal-padding: $icon-horizontal-padding,
+  line-height: $line-height
+);
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $box-height: map.get($options, box-height);
+  $icon-size: map.get($options, icon-size);
+  $icon-horizontal-padding: map.get($options, icon-horizontal-padding);
+  $line-height: map.get($options, line-height);
+
+  $icon-width: $icon-size + $icon-horizontal-padding * 2;
+  $close-icon-width: $icon-size + 12px;
+
+  .#{$prefix} {
+    display: grid;
+    grid-template-columns: $icon-width minmax(0, 1fr) $close-icon-width;
+    align-content: start;
+    width: 100%;
+
+    &__icon {
+      $vertical-padding: #{($box-height - $icon-size) / 2};
+
+      padding: $vertical-padding $icon-horizontal-padding;
+      font-size: utils-typography.px-to-rem($icon-size);
+    }
+
+    &__close-icon {
+      padding: 8px 8px 8px 4px;
+      font-size: utils-typography.px-to-rem($icon-size);
+      color: palette.color(action-disabled);
+      cursor: pointer;
+
+      :hover {
+        color: palette.color(action-active);
+      }
+    }
+
+    &__message {
+      padding: calc((#{$box-height} - #{$line-height}) / 2) 0;
+      word-wrap: break-word;
+    }
+
+    @each $status in $statuses {
+      &--#{$status} {
+        background-color: palette.color(#{$status}-hover-bg);
+      }
+    }
+  }
+}
