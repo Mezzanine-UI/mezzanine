@@ -97,6 +97,7 @@ export {
 /**
  * Utility
  */
+export * from './Notifier';
 export {
   PopoverProps,
   default as Popover,
