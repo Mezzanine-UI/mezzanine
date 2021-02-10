@@ -124,50 +124,6 @@ describe('<Button />', () => {
     });
   });
 
-  describe('prop: iconEnd', () => {
-    it('should render icon after button label', () => {
-      const { getHostHTMLElement } = render(
-        <Button iconEnd={<Icon icon={PlusIcon} />}>
-          Hello
-        </Button>,
-      );
-      const element = getHostHTMLElement();
-      const {
-        firstElementChild: labelElement,
-        lastElementChild: iconEndElement,
-        childElementCount,
-      } = element;
-
-      expect(childElementCount).toBe(2);
-      expect(labelElement?.textContent).toBe('Hello');
-      expect(labelElement?.tagName.toLowerCase()).toBe('span');
-      expect(iconEndElement?.tagName.toLowerCase()).toBe('i');
-      expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-    });
-  });
-
-  describe('prop: iconStart', () => {
-    it('should render icon before button label', () => {
-      const { getHostHTMLElement } = render(
-        <Button iconStart={<Icon icon={PlusIcon} />}>
-          Hello
-        </Button>,
-      );
-      const element = getHostHTMLElement();
-      const {
-        firstElementChild: iconStartElement,
-        lastElementChild: labelElement,
-        childElementCount,
-      } = element;
-
-      expect(childElementCount).toBe(2);
-      expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
-      expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-      expect(labelElement?.textContent).toBe('Hello');
-      expect(labelElement?.tagName.toLowerCase()).toBe('span');
-    });
-  });
-
   describe('prop: loading', () => {
     [false, true].forEach((loading) => {
       const message = loading
@@ -182,7 +138,7 @@ describe('<Button />', () => {
       });
     });
 
-    it('should replace iconStart w/ loading icon if no icon provided', () => {
+    it('should replace prefix w/ loading icon if no icon provided', () => {
       const { getHostHTMLElement } = render(<Button loading>Hello</Button>);
       const element = getHostHTMLElement();
       const { firstElementChild: loadingIconElement } = element;
@@ -190,9 +146,9 @@ describe('<Button />', () => {
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
     });
 
-    it('should replace iconStart w/ loading icon if only iconStart provided', () => {
+    it('should replace prefix w/ loading icon if only prefix provided', () => {
       const { getHostHTMLElement } = render(
-        <Button loading iconStart={<Icon icon={PlusIcon} />}>
+        <Button loading prefix={<Icon icon={PlusIcon} />}>
           Hello
         </Button>,
       );
@@ -202,9 +158,9 @@ describe('<Button />', () => {
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
     });
 
-    it('should replace iconEnd w/ loading icon if only iconEnd provided', () => {
+    it('should replace suffix w/ loading icon if only suffix provided', () => {
       const { getHostHTMLElement } = render(
-        <Button loading iconEnd={<Icon icon={PlusIcon} />}>
+        <Button loading suffix={<Icon icon={PlusIcon} />}>
           Hello
         </Button>,
       );
@@ -214,12 +170,12 @@ describe('<Button />', () => {
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
     });
 
-    it('should replace iconStart w/ loading icon if both iconStart and iconEnd provided', () => {
+    it('should replace prefix w/ loading icon if both prefix and suffix provided', () => {
       const { getHostHTMLElement } = render(
         <Button
           loading
-          iconEnd={<Icon icon={PlusIcon} />}
-          iconStart={<Icon icon={PlusIcon} />}
+          prefix={<Icon icon={PlusIcon} />}
+          suffix={<Icon icon={PlusIcon} />}
         >
           Hello
         </Button>,
@@ -227,11 +183,11 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
       const {
         firstElementChild: loadingIconElement,
-        lastElementChild: iconEndElement,
+        lastElementChild: suffixElement,
       } = element;
 
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
-      expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(suffixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
 
@@ -267,6 +223,28 @@ describe('<Button />', () => {
     });
   });
 
+  describe('prop: prefix', () => {
+    it('should render icon before button label', () => {
+      const { getHostHTMLElement } = render(
+        <Button prefix={<Icon icon={PlusIcon} />}>
+          Hello
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: prefixElement,
+        lastElementChild: labelElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(prefixElement?.tagName.toLowerCase()).toBe('i');
+      expect(prefixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(labelElement?.textContent).toBe('Hello');
+      expect(labelElement?.tagName.toLowerCase()).toBe('span');
+    });
+  });
+
   describe('prop: size', () => {
     it('should render size="medium" by default', () => {
       const { getHostHTMLElement } = render(<Button />);
@@ -288,6 +266,28 @@ describe('<Button />', () => {
 
         expect(element.classList.contains(`mzn-button--${size}`)).toBeTruthy();
       });
+    });
+  });
+
+  describe('prop: suffix', () => {
+    it('should render icon after button label', () => {
+      const { getHostHTMLElement } = render(
+        <Button suffix={<Icon icon={PlusIcon} />}>
+          Hello
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+      const {
+        firstElementChild: labelElement,
+        lastElementChild: suffixdElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(labelElement?.textContent).toBe('Hello');
+      expect(labelElement?.tagName.toLowerCase()).toBe('span');
+      expect(suffixdElement?.tagName.toLowerCase()).toBe('i');
+      expect(suffixdElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
 

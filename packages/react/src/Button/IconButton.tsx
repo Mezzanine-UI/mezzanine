@@ -1,7 +1,7 @@
 import { forwardRef, ReactNode } from 'react';
 import Button, { ButtonProps } from './Button';
 
-export interface IconButtonProps extends Omit<ButtonProps, 'iconEnd' | 'iconStart'> {
+export interface IconButtonProps extends Omit<ButtonProps, 'prefix' | 'suffix'> {
   /**
    * The icon element.
    */
@@ -18,7 +18,7 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconB
     <Button
       ref={ref as any}
       {...rest}
-      iconStart={children}
+      prefix={children}
     />
   );
 });

@@ -18,7 +18,7 @@ import Icon from '../Icon';
 export type ButtonComponent = 'button' | 'label' | 'a' | ComponentType<ButtonProps>;
 
 export interface ButtonProps extends
-  Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'ref'> {
+  Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'prefix' | 'ref'> {
   /**
    * The color name provided by palette.
    * @default 'primary'
@@ -35,24 +35,24 @@ export interface ButtonProps extends
    */
   error?: boolean;
   /**
-   * The icon placed on the end of button.
-   */
-  iconEnd?: ReactNode;
-  /**
-   * The icon placed on the start of button.
-   */
-  iconStart?: ReactNode;
-  /**
    * If true, replace the original icon.
-   * Replace iconEnd if only iconEnd provided, or iconStart.
+   * Replace suffix if only suffix provided, or prefix.
    * @default false
    */
   loading?: boolean;
+  /**
+   * The element placed on the start of button.
+   */
+  prefix?: ReactNode;
   /**
    * The size of button.
    * @default 'medium'
    */
   size?: ButtonSize;
+  /**
+   * The element placed on the end of button.
+   */
+  suffix?: ReactNode;
   /**
    * The variant of button.
    * @default 'text'
@@ -72,30 +72,30 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     disabled = false,
     error = false,
     loading = false,
-    iconEnd: iconEndProp,
-    iconStart: iconStartProp,
     onClick,
+    prefix: prefixProp,
     size = 'medium',
+    suffix: suffixProp,
     type = 'button',
     variant = 'text',
     ...rest
   } = props;
   const Component = component as 'button';
 
-  let iconStart: ReactNode = iconStartProp;
-  let iconEnd: ReactNode = iconEndProp;
+  let prefix: ReactNode = prefixProp;
+  let suffix: ReactNode = suffixProp;
 
   if (loading) {
     const loadingIcon = <Icon icon={SpinnerIcon} spin />;
 
-    if (iconEnd && !iconStart) {
-      iconEnd = loadingIcon;
+    if (suffix && !prefix) {
+      suffix = loadingIcon;
     } else {
-      iconStart = loadingIcon;
+      prefix = loadingIcon;
     }
   }
 
-  const asIconBtn = children == null && !!(iconStart || iconEnd);
+  const asIconBtn = children == null && !!(prefix || suffix);
 
   return (
     <Component
@@ -122,9 +122,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
       }}
       type={type}
     >
-      {iconStart}
+      {prefix}
       {children && <span className={classes.label}>{children}</span>}
-      {iconEnd}
+      {suffix}
     </Component>
   );
 });

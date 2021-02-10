@@ -26,12 +26,12 @@ describe('<IconButton />', () => {
     );
     const element = getHostHTMLElement();
     const {
-      firstElementChild: iconStartElement,
+      firstElementChild: iconElement,
       childElementCount,
     } = element;
 
     expect(childElementCount).toBe(1);
-    expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
-    expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+    expect(iconElement?.tagName.toLowerCase()).toBe('i');
+    expect(iconElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
   });
 });

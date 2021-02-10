@@ -61,34 +61,34 @@ export const WithIcons = () => (
     }}
   >
     <Button
-      iconStart={<Icon icon={PlusIcon} />}
+      prefix={<Icon icon={PlusIcon} />}
       color="secondary"
       variant="contained"
     >
       plus
     </Button>
     <Button
-      iconEnd={<Icon icon={SearchIcon} />}
+      suffix={<Icon icon={SearchIcon} />}
       variant="contained"
     >
       search
     </Button>
     <Button
-      iconEnd={<Icon icon={SearchIcon} />}
+      suffix={<Icon icon={SearchIcon} />}
       disabled
       variant="contained"
     >
       search
     </Button>
     <Button
-      iconEnd={<Icon icon={SearchIcon} />}
+      suffix={<Icon icon={SearchIcon} />}
       size="small"
       variant="contained"
     >
       search
     </Button>
     <Button
-      iconEnd={<Icon icon={SearchIcon} />}
+      suffix={<Icon icon={SearchIcon} />}
       size="large"
       variant="contained"
     >
