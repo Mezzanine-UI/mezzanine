@@ -16,21 +16,21 @@ import { useSwitchControl } from './useSwitchControl';
 export interface SwitchProps
   extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>, 'ref' | 'onChange'> {
   /**
-   * If true, switch will be opened.
+   * Whether the switch is checked.
    */
   checked?: boolean;
   /**
-   * If true, switch will be opened initially.
+   * Whether the switch is checked by default.
+   * Only used for uncontrolled.
    */
   defaultChecked?: boolean;
   /**
-   * If true, replace the border and background color.
+   * Whether the switch is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
-   * If true, replace the original icon.
-   * Replace iconEnd if only iconEnd provided, or iconStart.
+   * Whether the switch is loading.
    * @default false
    */
   loading?: boolean;
