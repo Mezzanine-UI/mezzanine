@@ -27,60 +27,58 @@ describe('MznButtonComponent', () => {
     expect(labelElement.classList.contains('mzn-button__label')).toBeTruthy();
   });
 
-  describe('icon', () => {
-    describe('on the start', () => {
-      it('should render icon before button label', async () => {
-        const { container } = await render(MznButtonComponent, {
-          template: `
-            <button mzn-button>Hello<i [mzn-icon]="icon"></i></button>
-          `,
-          componentProperties: {
-            icon: PlusIcon,
-          },
-        });
-        const element = container.firstElementChild as HTMLElement;
-        const {
-          firstElementChild: iconStartElement,
-          lastElementChild: labelElement,
-          childElementCount,
-        } = element;
-
-        expect(childElementCount).toBe(2);
-        expect(iconStartElement?.tagName.toLowerCase()).toBe('i');
-        expect(iconStartElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-        expect(labelElement?.textContent).toBe('Hello');
-        expect(labelElement?.tagName.toLowerCase()).toBe('span');
+  describe('prefix', () => {
+    it('should render icon before button label', async () => {
+      const { container } = await render(MznButtonComponent, {
+        template: `
+          <button mzn-button><ng-template #prefix><i [mzn-icon]="icon"></i></ng-template>Hello</button>
+        `,
+        componentProperties: {
+          icon: PlusIcon,
+        },
       });
+      const element = container.firstElementChild as HTMLElement;
+      const {
+        firstElementChild: prefixElement,
+        lastElementChild: labelElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(prefixElement?.tagName.toLowerCase()).toBe('i');
+      expect(prefixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(labelElement?.textContent).toBe('Hello');
+      expect(labelElement?.tagName.toLowerCase()).toBe('span');
     });
+  });
 
-    describe('on the end', () => {
-      it('should render icon after button label', async () => {
-        const { container } = await render(MznButtonComponent, {
-          template: `
-            <button mzn-button iconOnEnd>Hello<i [mzn-icon]="icon"></i></button>
-          `,
-          componentProperties: {
-            icon: PlusIcon,
-          },
-        });
-        const element = container.firstElementChild as HTMLElement;
-        const {
-          firstElementChild: labelElement,
-          lastElementChild: iconEndElement,
-          childElementCount,
-        } = element;
-
-        expect(childElementCount).toBe(2);
-        expect(labelElement?.textContent).toBe('Hello');
-        expect(labelElement?.tagName.toLowerCase()).toBe('span');
-        expect(iconEndElement?.tagName.toLowerCase()).toBe('i');
-        expect(iconEndElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+  describe('suffix', () => {
+    it('should render icon after button label', async () => {
+      const { container } = await render(MznButtonComponent, {
+        template: `
+          <button mzn-button>Hello<ng-template #suffix><i [mzn-icon]="icon"></i></ng-template></button>
+        `,
+        componentProperties: {
+          icon: PlusIcon,
+        },
       });
+      const element = container.firstElementChild as HTMLElement;
+      const {
+        firstElementChild: labelElement,
+        lastElementChild: suffixElement,
+        childElementCount,
+      } = element;
+
+      expect(childElementCount).toBe(2);
+      expect(labelElement?.textContent).toBe('Hello');
+      expect(labelElement?.tagName.toLowerCase()).toBe('span');
+      expect(suffixElement?.tagName.toLowerCase()).toBe('i');
+      expect(suffixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
 
   describe('input: loading', () => {
-    it('should place loading icon on the start if no icon provided', async () => {
+    it('should place loading icon on the start if no prefix or suffix provided', async () => {
       const { container } = await render(MznButtonComponent, {
         template: `
           <button mzn-button loading>Hello</button>
@@ -95,10 +93,15 @@ describe('MznButtonComponent', () => {
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
     });
 
-    it('should replace icon on the start w/ loading icon if iconOnEnd=false', async () => {
+    it('should replace icon on the start w/ loading icon if only prefix provided', async () => {
       const { container } = await render(MznButtonComponent, {
         template: `
-          <button mzn-button loading><i [mzn-icon]="icon"></i>Hello</button>
+          <button mzn-button loading>
+            <ng-template #prefix>
+              <i [mzn-icon]="icon"></i>
+            </ng-template>
+            Hello
+          </button>
         `,
         componentProperties: {
           icon: PlusIcon,
@@ -110,10 +113,15 @@ describe('MznButtonComponent', () => {
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
     });
 
-    it('should replace icon on the end w/ loading icon if iconOnEnd=true', async () => {
+    it('should replace icon on the end w/ loading icon if only suffix provided', async () => {
       const { container } = await render(MznButtonComponent, {
         template: `
-          <button mzn-button iconOnEnd loading>Hello<i [mzn-icon]="icon"></i></button>
+          <button mzn-button loading>
+            Hello
+            <ng-template #suffix>
+              <i [mzn-icon]="icon"></i>
+            </ng-template>
+          </button>
         `,
         componentProperties: {
           icon: PlusIcon,
@@ -123,6 +131,33 @@ describe('MznButtonComponent', () => {
       const { lastElementChild: loadingIconElement } = element;
 
       expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+    });
+
+    it('should replace icon on the start w/ loading icon if both prefix and suffix provided', async () => {
+      const { container } = await render(MznButtonComponent, {
+        template: `
+          <button mzn-button loading>
+            <ng-template #prefix>
+              <i [mzn-icon]="icon"></i>
+            </ng-template>
+            Hello
+            <ng-template #suffix>
+              <i [mzn-icon]="icon"></i>
+            </ng-template>
+          </button>
+        `,
+        componentProperties: {
+          icon: PlusIcon,
+        },
+      });
+      const element = container.firstElementChild as HTMLElement;
+      const {
+        firstElementChild: loadingIconElement,
+        lastElementChild: suffixElement,
+      } = element;
+
+      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(suffixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
 });

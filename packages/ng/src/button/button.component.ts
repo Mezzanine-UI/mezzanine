@@ -1,19 +1,21 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ContentChild,
   ElementRef,
   Inject,
   Input,
   Optional,
   Renderer2,
   SkipSelf,
+  TemplateRef,
   ViewEncapsulation,
 } from '@angular/core';
 import {
   buttonClasses as classes,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
-import { InputBoolean, EnumWithFallbackInput } from '../cdk';
+import { EnumWithFallbackInput } from '../cdk';
 import { MznButtonMixin } from './button.mixin';
 import { MznButtonGroupControlInputs, MznButtonGroupControlInputsToken } from './button-group.tokens';
 
@@ -27,20 +29,32 @@ import { MznButtonGroupControlInputs, MznButtonGroupControlInputsToken } from '.
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
   template: `
-    <ng-template #iconTemplate>
-      <i
-        *ngIf="loading"
-        [mzn-icon]="loadingIcon"
-        spin
-      ></i>
-      <ng-content *ngIf="!loading" select="[mzn-icon]"></ng-content>
+    <ng-template #prefixTemplate let-ref let-showLoading="showLoading">
+      <ng-container *ngIf="loading && showLoading; else ref">
+        <i
+          [mzn-icon]="loadingIcon"
+          spin
+        ></i>
+      </ng-container>
     </ng-template>
 
-    <ng-template *ngIf="!iconOnEnd" [ngTemplateOutlet]="iconTemplate"></ng-template>
+    <ng-container
+      [ngTemplateOutlet]="prefixTemplate"
+      [ngTemplateOutletContext]="{
+        $implicit: prefix,
+        showLoading: !onlySuffix
+      }"
+    ></ng-container>
     <span [class]="labelClass">
       <ng-content></ng-content>
     </span>
-    <ng-template *ngIf="iconOnEnd" [ngTemplateOutlet]="iconTemplate"></ng-template>
+    <ng-container
+      [ngTemplateOutlet]="prefixTemplate"
+      [ngTemplateOutletContext]="{
+        $implicit: suffix,
+        showLoading: onlySuffix
+      }"
+    ></ng-container>
   `,
 })
 export class MznButtonComponent extends MznButtonMixin {
@@ -55,15 +69,17 @@ export class MznButtonComponent extends MznButtonMixin {
     super(elementRef, renderer, buttonGroup);
   }
 
-  readonly labelClass = classes.label;
+  @ContentChild('prefix')
+  prefix?: TemplateRef<any>;
 
-  /**
-   * Place icon after the label.
-   * @default false
-   */
-  @Input()
-  @InputBoolean()
-  iconOnEnd = false;
+  @ContentChild('suffix')
+  suffix?: TemplateRef<any>;
+
+  get onlySuffix() {
+    return !this.prefix && !!this.suffix;
+  }
+
+  readonly labelClass = classes.label;
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('mzn-button')

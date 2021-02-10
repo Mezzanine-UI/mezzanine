@@ -83,38 +83,44 @@ export const WithIcons: Story<WithIconsStoryArgs> = (args) => ({
         mzn-button="contained"
         color="secondary"
       >
-        <i [mzn-icon]="plusIcon"></i>
+        <ng-template #prefix>
+          <i [mzn-icon]="plusIcon"></i>
+        </ng-template>
         plus
       </button>
       <button
         mzn-button="contained"
-        iconOnEnd
       >
-        <i [mzn-icon]="searchIcon"></i>
+        <ng-template #prefix>
+          <i [mzn-icon]="searchIcon"></i>
+        </ng-template>
         search
       </button>
       <button
         mzn-button="contained"
         disabled
-        iconOnEnd
       >
-        <i [mzn-icon]="searchIcon"></i>
+        <ng-template #suffix>
+          <i [mzn-icon]="searchIcon"></i>
+        </ng-template>
         search
       </button>
       <button
         mzn-button="contained"
         size="small"
-        iconOnEnd
       >
-        <i [mzn-icon]="searchIcon"></i>
+        <ng-template #suffix>
+          <i [mzn-icon]="searchIcon"></i>
+        </ng-template>
         search
       </button>
       <button
         mzn-button="contained"
         size="large"
-        iconOnEnd
       >
-        <i [mzn-icon]="searchIcon"></i>
+        <ng-template #suffix>
+          <i [mzn-icon]="searchIcon"></i>
+        </ng-template>
         search
       </button>
     </div>
@@ -136,7 +142,12 @@ export const Loading: Story<LoadingStoryArgs> = (args) => ({
   template: `
     <button mzn-button="contained" [loading]="loading">ok</button>
     &nbsp;
-    <button mzn-button="contained" [loading]="loading"><i [mzn-icon]="plusIcon"></i>ok</button>
+    <button mzn-button="contained" [loading]="loading">
+      <ng-template #prefix>
+        <i [mzn-icon]="plusIcon"></i>
+      </ng-template>
+      ok
+    </button>
   `,
 });
 

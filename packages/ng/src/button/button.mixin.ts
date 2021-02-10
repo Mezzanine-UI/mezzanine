@@ -88,8 +88,8 @@ export abstract class MznButtonMixin {
   private _error?: boolean;
 
   /**
-   * If true, replace the original icon.
-   * Replace iconEnd if only iconEnd provided, or iconStart.
+   * If true, add a loading icon.
+   * Replace suffix if only suffix provided, or prefix.
    * @default false
    */
   @HostBinding(`class.${classes.loading}`)
