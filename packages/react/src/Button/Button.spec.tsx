@@ -97,6 +97,7 @@ describe('<Button />', () => {
         const { getHostHTMLElement } = render(<Button disabled={disabled} />);
         const element = getHostHTMLElement();
 
+        expect(element.classList.contains('mzn-button--disabled')).toBe(disabled);
         expect(element.hasAttribute('disabled')).toBe(disabled);
         expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
       });

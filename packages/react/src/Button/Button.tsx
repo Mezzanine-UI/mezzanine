@@ -15,7 +15,7 @@ import {
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 
-export type ButtonComponent = 'button' | 'label' | 'a' | ComponentType<ButtonProps>;
+export type ButtonComponent = 'button' | 'a' | ComponentType<ButtonProps>;
 
 export interface ButtonProps extends
   Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'prefix' | 'ref'> {
@@ -108,6 +108,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         classes.color(color),
         classes.size(size),
         {
+          [classes.disabled]: disabled,
           [classes.error]: error,
           [classes.icon]: asIconBtn,
           [classes.loading]: loading,
