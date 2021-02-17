@@ -190,6 +190,7 @@
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
+        "consistent-return": "off",
         "indent": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": "off",
@@ -281,7 +282,7 @@
       }
     },
     {
-      "files": ["*.spec.{ts,tsx}"],
+      "files": ["*.spec.{ts,tsx}", "./packages/react/__test-utils__/**/*"],
       "env": {
         "jest": true
       },

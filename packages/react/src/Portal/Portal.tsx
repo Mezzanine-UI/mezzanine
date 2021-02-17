@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react';
 import { createPortal } from 'react-dom';
-import { ElementGetter, getElement } from './getElement';
+import { ElementGetter, getElement } from '../utils/getElement';
 
 export interface PortalProps {
   /**
