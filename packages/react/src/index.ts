@@ -1,6 +1,8 @@
 export * from './utils/composeRefs';
 export * from './utils/cx';
 
+export * from './hooks/useComposeRefs';
+
 /**
  * General
  */

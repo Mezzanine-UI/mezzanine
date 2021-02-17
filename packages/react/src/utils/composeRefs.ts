@@ -1,5 +1,6 @@
 import { Ref } from 'react';
 
+export type ComposableRef<T> = Ref<T> | null | undefined;
 export type ComposedRef<T> = Extract<Ref<T>, (...args: any[]) => any>;
 
 /**
@@ -19,7 +20,7 @@ export type ComposedRef<T> = Extract<Ref<T>, (...args: any[]) => any>;
  *   );
  * });
  */
-export function composeRefs<T>(refs: (Ref<T> | null | undefined)[]): ComposedRef<T> {
+export function composeRefs<T>(refs: ComposableRef<T>[]): ComposedRef<T> {
   return (element) => {
     refs.forEach((ref) => {
       if (typeof ref === 'function') {

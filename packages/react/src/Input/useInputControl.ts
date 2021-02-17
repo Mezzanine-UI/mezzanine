@@ -1,5 +1,6 @@
 import { Ref, useRef } from 'react';
-import { ComposedRef, composeRefs } from '../utils/composeRefs';
+import { ComposedRef } from '../utils/composeRefs';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { InputValueControl, useInputValueControl, UseInputValueControlProps } from './useInputValueControl';
 
 export interface UseInputControlProps<E extends HTMLInputElement | HTMLTextAreaElement>
@@ -17,7 +18,7 @@ export function useInputControl<E extends HTMLInputElement | HTMLTextAreaElement
 ): InputControl<E> {
   const { ref: refProp } = props;
   const ref = useRef<E>(null);
-  const composedRef = composeRefs([refProp, ref]);
+  const composedRef = useComposeRefs([refProp, ref]);
   const valueControl = useInputValueControl({ ...props, ref });
   const active = !!valueControl.value;
 
