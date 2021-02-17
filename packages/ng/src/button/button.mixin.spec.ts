@@ -13,7 +13,7 @@ import { ButtonColor, ButtonSize, ButtonVariant } from '.';
 
 @Component({
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'button[mzn-testing-button]',
+  selector: 'button[mzn-testing-button],a[mzn-testing-button]',
   template: '<ng-content></ng-content>',
 })
 class TestingButtonComponent extends MznButtonMixin {
@@ -106,6 +106,7 @@ describe('MznButtonMixin', () => {
 
   describe('input: disabled', () => {
     function testDisabled(element: HTMLElement, disabled: boolean) {
+      expect(element.classList.contains('mzn-button--disabled')).toBe(disabled);
       expect(element.hasAttribute('disabled')).toBe(disabled);
       expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
     }

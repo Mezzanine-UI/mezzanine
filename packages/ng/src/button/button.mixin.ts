@@ -56,6 +56,7 @@ export abstract class MznButtonMixin {
    * The native disabled.
    * @default false
    */
+  @HostBinding(`class.${classes.disabled}`)
   @HostBinding('attr.aria-disabled')
   @HostBinding('disabled')
   @Input()
@@ -130,5 +131,12 @@ export abstract class MznButtonMixin {
   ])
   get variant() {
     return this._variant || this.buttonGroup?.variant || 'text';
+  }
+
+  @HostBinding('click')
+  protected onClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).tagName === 'A') {
+      event.preventDefault();
+    }
   }
 }
