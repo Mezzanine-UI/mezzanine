@@ -35,6 +35,10 @@ describe('button:buttonClasses', () => {
     });
   });
 
+  it('prop:disabled', () => {
+    expect(classes.disabled).toBe('mzn-button--disabled');
+  });
+
   it('prop:error', () => {
     expect(classes.error).toBe('mzn-button--error');
   });

@@ -38,11 +38,11 @@ $default-options: (
 }
 
 @mixin _base-color() {
-  &:disabled {
+  &--disabled {
     color: palette.color(action-disabled);
   }
 
-  &:not(:disabled) {
+  &:not(.#{$prefix}--disabled) {
     // Fallback to transparent for text and outlined button.
     background-color: var(--#{$prefix}-bg, transparent);
     color: var(--#{$prefix}-color);
@@ -71,7 +71,7 @@ $default-options: (
 
   border: #{$outlined-border-width} solid var(--#{$prefix}-border);
 
-  &:disabled {
+  &.#{$prefix}--disabled {
     border-color: palette.color(action-disabled);
   }
 
@@ -83,7 +83,7 @@ $default-options: (
 }
 
 @mixin _contained-color() {
-  &:disabled {
+  &.#{$prefix}--disabled {
     background-color: palette.color(action-disabled-bg);
   }
 
@@ -214,7 +214,7 @@ $default-options: (
     justify-content: center;
     align-items: center;
 
-    &:disabled,
+    &--disabled,
     &--loading {
       cursor: default;
       pointer-events: none;
