@@ -24,6 +24,7 @@
             "requireForBlockBody": true
           }
         ],
+        "class-methods-use-this": "off",
         "comma-dangle": [
           "error",
           {
