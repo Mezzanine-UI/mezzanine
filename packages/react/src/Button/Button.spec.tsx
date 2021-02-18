@@ -78,7 +78,6 @@ describe('<Button />', () => {
     const components: ButtonComponent[] = [
       'button',
       'a',
-      'label',
     ];
 
     components.forEach((component) => {
@@ -103,7 +102,7 @@ describe('<Button />', () => {
       });
     });
 
-    it('aria-disable from props should not override', () => {
+    it('aria-disabled from props should not override', () => {
       const { getHostHTMLElement } = render(
         <Button
           aria-disabled={false}

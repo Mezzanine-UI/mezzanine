@@ -25,7 +25,7 @@ export interface ButtonProps extends
    */
   color?: ButtonColor;
   /**
-   * Override the componoent used to render.
+   * Override the component used to render.
    * @default 'button'
    */
   component?: ButtonComponent;
