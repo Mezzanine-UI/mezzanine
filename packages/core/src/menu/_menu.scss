@@ -1,0 +1,156 @@
+@use 'sass:map';
+@use '../size';
+@use '../palette';
+@use '../typography';
+@use '../typography/utils' as utils-typography;
+
+$prefix: mzn-menu;
+$divider-prefix: #{$prefix}-divider;
+$item-prefix: #{$prefix}-item;
+$item-group-prefix: #{$prefix}-item-group;
+
+$sizes: size.$sizes;
+
+$default-options: (
+  padding-y: 4px,
+  divider-height: 1px,
+  item-padding-x: 16px,
+  item-padding-x-small: 12px,
+  item-active-icon-gap: 4px,
+  item-active-icon-size: 24px,
+  item-active-icon-size-small: 16px,
+  item-group-label-margin-top: 8px,
+  item-group-label-margin-bottom: 4px,
+  grouped-item-padding-left: 24px,
+);
+
+@mixin _divider($options) {
+  $divider-height: map.get($options, divider-height);
+
+  .#{$divider-prefix} {
+    margin: 0;
+    border: none;
+    background-color: palette.color(border);
+    height: $divider-height;
+  }
+}
+
+@mixin _item($options) {
+  $item-active-icon-gap: map.get($options, item-active-icon-gap);
+  $grouped-item-padding-left: map.get($options, grouped-item-padding-left);
+
+  .#{$item-prefix} {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--#{$item-prefix}-padding-x);
+    background-color: palette.color(surface);
+    color: palette.color(text-primary);
+    list-style-type: none;
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &__label {
+      width: 100%;
+    }
+
+    &__active-icon {
+      margin-left: $item-active-icon-gap;
+      margin-right: -#{$item-active-icon-gap};
+      color: palette.color(primary);
+      font-size: var(--#{$item-prefix}-active-icon-size);
+    }
+
+    &--active {
+      background-color: palette.color(primary-active-bg);
+    }
+
+    &--disabled {
+      color: palette.color(text-disabled);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &:hover {
+      &:not(.#{$item-prefix}--active, .#{$item-prefix}--disabled) {
+        background-color: palette.color(primary-hover-bg);
+      }
+    }
+
+    .#{$item-group-prefix} & {
+      padding-left: $grouped-item-padding-left;
+    }
+  }
+}
+
+@mixin _item-group($options) {
+  .#{$item-group-prefix} {
+    &__label {
+      display: block;
+      color: palette.color(text-secondary);
+      margin-top: map.get($options, item-group-label-margin-top);
+      margin-bottom: map.get($options, item-group-label-margin-bottom);
+      padding: 0 var(--#{$item-prefix}-padding-x);
+
+      @include typography.variant(caption);
+    }
+
+    &__items {
+      padding: 0;
+      list-style-type: none;
+    }
+  }
+}
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $padding-y: map.get($options, padding-y);
+  $item-padding-x: map.get($options, item-padding-x);
+  $item-padding-x-small: map.get($options, item-padding-x-small);
+  $item-active-icon-size: map.get($options, item-active-icon-size);
+  $item-active-icon-size-small: map.get($options, item-active-icon-size-small);
+  $max-height: calc(var(--#{$item-prefix}-item-height) * var(--#{$prefix}-items-in-view) + #{$padding-y * 2 + 2px});
+
+  .#{$prefix} {
+    --#{$item-prefix}-padding-x: #{$item-padding-x};
+    --#{$item-prefix}-active-icon-size: #{$item-active-icon-size};
+
+    max-height: var(--#{$prefix}-max-height, $max-height);
+    margin: 0;
+    padding: $padding-y 0;
+    background-color: palette.color(surface);
+    border: 1px solid palette.color(border);
+    overflow-y: auto;
+    list-style-type: none;
+    box-sizing: border-box;
+
+    @each $size in $sizes {
+      &--#{$size} {
+        $typography-variant: map.get(
+          (
+            small: input3,
+            medium: input2,
+            large: input1,
+          ),
+          $size
+        );
+
+        @if $size == small {
+          --#{$item-prefix}-padding-x: #{$item-padding-x-small};
+          --#{$item-prefix}-active-icon-size: #{$item-active-icon-size-small};
+        }
+
+        --#{$item-prefix}-item-height: #{typography.prop($typography-variant, line-height)};
+
+        .#{$item-prefix} {
+          @include typography.variant($typography-variant, (line-height));
+
+          line-height: var(--#{$item-prefix}-item-height);
+        }
+      }
+    }
+  }
+
+  @include _divider($options);
+  @include _item($options);
+  @include _item-group($options);
+}

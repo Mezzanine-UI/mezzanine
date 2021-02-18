@@ -3,6 +3,7 @@
 @use '~@mezzanine-ui/core/spacing';
 @use '~@mezzanine-ui/core/icon';
 @use '~@mezzanine-ui/core/button';
+@use '~@mezzanine-ui/core/menu';
 @use '~@mezzanine-ui/core/input';
 @use '~@mezzanine-ui/core/textarea';
 @use '~@mezzanine-ui/core/switch';
@@ -36,6 +37,7 @@
 @include textarea.core();
 @include switch.core();
 @include upload.core();
+@include menu.core();
 @include badge.core();
 @include tag.core();
 @include empty.core();
