@@ -12,6 +12,7 @@
 @use '~@mezzanine-ui/core/tag';
 @use '~@mezzanine-ui/core/empty';
 @use '~@mezzanine-ui/core/alert';
+@use '~@mezzanine-ui/core/popover';
 
 :root {
   @include palette.variables("light");
@@ -42,3 +43,4 @@
 @include tag.core();
 @include empty.core();
 @include alert.core();
+@include popover.core();
