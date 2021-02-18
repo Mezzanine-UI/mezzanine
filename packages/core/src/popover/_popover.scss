@@ -1,0 +1,35 @@
+@use 'sass:map';
+@use '../palette';
+@use '../typography';
+
+$prefix: mzn-popover;
+
+$default-options: (
+  min-width: 160px,
+  title-margin-bottom: 4px,
+);
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $min-width: map.get($options, min-width);
+  $title-margin-bottom: map.get($options, title-margin-bottom);
+
+  .#{$prefix} {
+    padding: 16px;
+    background-color: palette.color(surface);
+    border: 1px solid palette.color(border);
+    color: palette.color(text-primary);
+    min-width: $min-width;
+    box-sizing: border-box;
+
+    &__title {
+      margin: 0 0 $title-margin-bottom 0;
+
+      @include typography.variant(h5);
+    }
+
+    &__content {
+      @include typography.variant(body2);
+    }
+  }
+}
