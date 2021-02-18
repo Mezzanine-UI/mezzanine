@@ -2,6 +2,7 @@ import {
   Directive,
   ElementRef,
   HostBinding,
+  HostListener,
   Input,
   Renderer2,
 } from '@angular/core';
@@ -133,10 +134,13 @@ export abstract class MznButtonMixin {
     return this._variant || this.buttonGroup?.variant || 'text';
   }
 
-  @HostBinding('click')
+  @HostListener('click')
   protected onClick(event: MouseEvent) {
-    if ((event.target as HTMLElement).tagName === 'A') {
-      event.preventDefault();
+    if (this.disabled) {
+      if (event.target instanceof HTMLAnchorElement) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
     }
   }
 }
