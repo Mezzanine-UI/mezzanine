@@ -1,7 +1,12 @@
 export * from './utils/composeRefs';
 export * from './utils/cx';
+export * from './utils/getElement';
 
+export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
+export * from './hooks/useDocumentEscapeKeyDown';
+export * from './hooks/useDocumentEvents';
+export * from './hooks/useIsomorphicLayoutEffect';
 
 /**
  * General
@@ -89,8 +94,17 @@ export {
  * Utility
  */
 export {
-  ElementGetter,
-  getElement,
+  PopoverProps,
+  default as Popover,
+} from './Popover';
+export {
+  PopperPlacement,
+  PopperPositionStrategy,
+  PopperOptions,
+  PopperProps,
+  default as Popper,
+} from './Popper';
+export {
   PortalProps,
   default as Portal,
 } from './Portal';
