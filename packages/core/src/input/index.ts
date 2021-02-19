@@ -1,3 +1,1 @@
-export * from './typings';
-export * from './constants';
-export * from './inputClasses';
+export * from './input';
