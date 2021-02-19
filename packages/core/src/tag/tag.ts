@@ -1,5 +1,8 @@
-import { TagSize } from './typings';
-import { tagPrefix } from './constants';
+import { MznSize } from '../size';
+
+export type TagSize = MznSize;
+
+export const tagPrefix = 'mzn-tag';
 
 export const tagClasses = {
   host: tagPrefix,
