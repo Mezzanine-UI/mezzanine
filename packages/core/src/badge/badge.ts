@@ -1,4 +1,4 @@
-import { badgePrefix } from './constants';
+export const badgePrefix = 'mzn-badge';
 
 export const badgeClasses = {
   host: badgePrefix,

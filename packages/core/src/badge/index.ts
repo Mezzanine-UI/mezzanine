@@ -1,2 +1,1 @@
-export * from './constants';
-export * from './badgeClasses';
+export * from './badge';
