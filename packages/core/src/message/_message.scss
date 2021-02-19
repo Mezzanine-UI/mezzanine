@@ -1,0 +1,78 @@
+@use 'sass:map';
+@use '../palette';
+@use '../typography';
+@use '../typography/utils' as utils-typography;
+@use '../spacing';
+
+$prefix: mzn-message;
+
+$statuses: (success, warning, error, info);
+
+$icon-horizontal-padding: 12px;
+$line-height: typography.prop(body1, line-height);
+
+$default-options: (
+  height: 40px,
+  padding-left: 12px,
+  padding-right: 24px,
+  icon-size: 24px,
+  icon-gap: 12px,
+);
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $height: map.get($options, height);
+  $padding-left: map.get($options, padding-left);
+  $padding-right: map.get($options, padding-right);
+  $icon-size: map.get($options, icon-size);
+  $icon-gap: map.get($options, icon-gap);
+
+  $icon-width: $icon-size + $icon-horizontal-padding * 2;
+
+  .#{$prefix} {
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    height: $height;
+    padding-left: $padding-left;
+    padding-right: $padding-right;
+    background-color: palette.color(surface);
+    border: 1px solid var(--#{$prefix}-color);
+    flex-shrink: 0;
+    box-sizing: border-box;
+
+    &:not(:first-child) {
+      margin-top: spacing.level(4);
+    }
+
+    &__icon {
+      color: var(--#{$prefix}-color);
+      font-size: utils-typography.px-to-rem($icon-size);
+      margin-right: $icon-gap;
+    }
+
+    &__content {
+      @include typography.variant(body1);
+      @include utils-typography.overflow-ellipsis();
+    }
+
+    @each $status in $statuses {
+      &--#{$status} {
+        --#{$prefix}-color: #{palette.color(if($status == "info", primary, $status))};
+      }
+    }
+
+    &__root {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+  }
+}
