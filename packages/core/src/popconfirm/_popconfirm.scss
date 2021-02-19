@@ -1,0 +1,43 @@
+@use 'sass:map';
+@use '../palette';
+@use '../typography/utils' as utils-typography;
+@use '../icon';
+@use '../popover';
+
+$prefix: mzn-popconfirm;
+
+$default-options: (
+  min-width: 244px,
+  title-icon-size: 24px,
+  title-icon-gap: 8px,
+  content-margin-top: 16px,
+);
+
+@mixin core($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $min-width: map.get($options, min-width);
+  $title-icon-size: map.get($options, title-icon-size);
+  $title-icon-gap: map.get($options, title-icon-gap);
+  $content-margin-top: map.get($options, content-margin-top);
+
+  .#{$prefix} {
+    min-width: $min-width;
+
+    .#{popover.$prefix}__title {
+      display: flex;
+      align-items: center;
+
+      .#{icon.$prefix} {
+        font-size: utils-typography.px-to-rem($title-icon-size);
+        margin-right: $title-icon-gap;
+      }
+    }
+
+    .#{popover.$prefix}__content {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-top: $content-margin-top;
+    }
+  }
+}
