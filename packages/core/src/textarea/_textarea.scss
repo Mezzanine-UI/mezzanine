@@ -7,6 +7,7 @@ $prefix: mzn-textarea;
 $sizes: text-field.$sizes;
 
 $default-options: (
+  text-field: text-field.$default-options,
   min-width: 452px,
   min-width-small: 388px,
   min-height: 102px,
@@ -16,13 +17,14 @@ $default-options: (
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
+  $text-field-options: map.get($options, text-field);
   $min-width: map.get($options, min-width);
   $min-width-small: map.get($options, min-width-small);
   $min-height: map.get($options, min-height);
   $padding-y: map.get($options, padding-y);
   $count-gap: map.get($options, count-gap);
 
-  @include text-field.core($options);
+  @include text-field.core($text-field-options);
 
   .#{$prefix} {
     min-width: $min-width;
