@@ -89,6 +89,10 @@ export {
   AlertProps,
   default as Alert,
 } from './Alert';
+export {
+  PopconfirmProps,
+  default as Popconfirm,
+} from './Popconfirm';
 
 /**
  * Utility
