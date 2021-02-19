@@ -1,5 +1,11 @@
-import { ButtonColor, ButtonSize, ButtonVariant } from './typings';
-import { buttonPrefix } from './constants';
+import { MainColor } from '../palette';
+import { MznSize } from '../size';
+
+export type ButtonColor = Extract<MainColor, 'primary' | 'secondary'>;
+export type ButtonSize = MznSize;
+export type ButtonVariant = 'contained' | 'outlined' | 'text';
+
+export const buttonPrefix = 'mzn-button';
 
 export const buttonClasses = {
   host: buttonPrefix,
