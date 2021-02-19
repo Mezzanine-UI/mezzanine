@@ -13,6 +13,7 @@
 @use '~@mezzanine-ui/core/empty';
 @use '~@mezzanine-ui/core/alert';
 @use '~@mezzanine-ui/core/popover';
+@use '~@mezzanine-ui/core/popconfirm';
 
 :root {
   @include palette.variables("light");
@@ -44,3 +45,4 @@
 @include empty.core();
 @include alert.core();
 @include popover.core();
+@include popconfirm.core();
