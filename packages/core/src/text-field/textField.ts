@@ -1,5 +1,8 @@
-import { TextFieldSize } from './typings';
-import { textFieldPrefix } from './constants';
+import { MznSize } from '../size';
+
+export type TextFieldSize = MznSize;
+
+export const textFieldPrefix = 'mzn-text-field';
 
 export const textFieldClasses = {
   host: textFieldPrefix,
@@ -14,4 +17,4 @@ export const textFieldClasses = {
   prefix: `${textFieldPrefix}__prefix`,
   suffix: `${textFieldPrefix}__suffix`,
   clearIcon: `${textFieldPrefix}__clear-icon`,
-};
+} as const;
