@@ -4,12 +4,15 @@
 $prefix: mzn-input;
 $sizes: text-field.$sizes;
 
-$default-options: map.deep-merge(text-field.$default-options, ());
+$default-options: (
+  text-field: text-field.$default-options,
+);
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
+  $text-field-options: map.get($options, text-field);
 
-  @include text-field.core($options);
+  @include text-field.core($text-field-options);
 
   .#{$prefix} {
     input {
