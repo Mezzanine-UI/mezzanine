@@ -90,6 +90,11 @@ export {
   default as Alert,
 } from './Alert';
 export {
+  MessageStatus,
+  MessageData,
+  default as Message,
+} from './Message';
+export {
   PopconfirmProps,
   default as Popconfirm,
 } from './Popconfirm';
