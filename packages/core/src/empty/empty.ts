@@ -1,4 +1,4 @@
-import { emptyPrefix } from './constants';
+export const emptyPrefix = 'mzn-empty';
 
 export const emptyClasses = {
   host: emptyPrefix,
