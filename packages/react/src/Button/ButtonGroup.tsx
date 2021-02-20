@@ -19,7 +19,7 @@ import { cx } from '../utils/cx';
 import { ButtonProps } from './Button';
 import { IconButtonProps } from './IconButton';
 
-export type ButtonGroupChild = ReactElement<ButtonProps | IconButtonProps>;
+export type ButtonGroupChild = ReactElement<ButtonProps | IconButtonProps> | null | undefined | false;
 
 export interface ButtonGroupProps extends
   Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref'> {
@@ -120,6 +120,10 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     >
       {Children.map(children, (unknownChild) => {
         const child = unknownChild as ButtonGroupChild;
+
+        if (!child) {
+          return null;
+        }
 
         return cloneElement(child, {
           color: child.props.color || color,
