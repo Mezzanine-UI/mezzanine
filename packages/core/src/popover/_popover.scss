@@ -9,7 +9,7 @@ $default-options: (
   title-margin-bottom: 4px,
 );
 
-@mixin core($options: ()) {
+@mixin _core($options) {
   $options: map.deep-merge($default-options, $options);
   $min-width: map.get($options, min-width);
   $title-margin-bottom: map.get($options, title-margin-bottom);
@@ -31,5 +31,15 @@ $default-options: (
     &__content {
       @include typography.variant(body2);
     }
+  }
+}
+
+$_included: false;
+
+@mixin core($options: ()) {
+  @if not $_included {
+    $_included: true !global;
+
+    @include _core($options);
   }
 }

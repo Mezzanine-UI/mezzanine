@@ -1,5 +1,4 @@
 @use 'sass:map';
-@use '../palette';
 @use '../typography/utils' as utils-typography;
 @use '../icon';
 @use '../popover';
@@ -7,6 +6,7 @@
 $prefix: mzn-popconfirm;
 
 $default-options: (
+  popover: popover.$default-options,
   min-width: 244px,
   title-icon-size: 24px,
   title-icon-gap: 8px,
@@ -15,10 +15,13 @@ $default-options: (
 
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
+  $popover-options: map.get($options, popover);
   $min-width: map.get($options, min-width);
   $title-icon-size: map.get($options, title-icon-size);
   $title-icon-gap: map.get($options, title-icon-gap);
   $content-margin-top: map.get($options, content-margin-top);
+
+  @include popover.core($popover-options);
 
   .#{$prefix} {
     min-width: $min-width;
