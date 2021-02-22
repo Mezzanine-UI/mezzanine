@@ -25,6 +25,8 @@
     "lint:es": "eslint . --ext .js,.ts,.tsx,.mdx,.html",
     "lint": "yarn lint:es && yarn lint:css",
     "commit": "git-cz",
+    "system:test": "yarn workspace @mezzanine-ui/system test",
+    "system:test:coverage": "yarn system:test --coverage",
     "core:test": "yarn workspace @mezzanine-ui/core test",
     "core:test:coverage": "yarn core:test --coverage",
     "ng:test": "yarn workspace @mezzanine-ui/ng test",

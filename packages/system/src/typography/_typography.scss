@@ -1,0 +1,216 @@
+@use 'sass:list';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+@use 'sass:string';
+@use '../utils/list' as utils-list;
+@use '../utils/map' as utils-map;
+@use './utils';
+
+$prefix: mzn-typography;
+$base-props: (font-family);
+$props: utils-list.push(
+  $base-props,
+  font-size,
+  font-weight,
+  letter-spacing,
+  line-height,
+  text-decoration,
+  text-transform
+);
+$variants: (h1, h2, h3, h4, h5, h6, body1, body2, caption, button1, button2, button3, input1, input2, input3);
+
+$default-options: (
+  transformers: (
+    font-size: meta.get-function("px-to-rem", $module: utils),
+    letter-spacing: meta.get-function("px-to-em", $module: utils),
+    line-height: meta.get-function("px-to-rem", $module: utils),
+  ),
+  base: (
+    font-family: string.unquote("PingFang TC, Microsoft JhengHei"),
+  ),
+  h1: (
+    font-size: 32px,
+    font-weight: 600,
+    letter-spacing: 4px,
+    line-height: 48px,
+  ),
+  h2: (
+    font-size: 24px,
+    font-weight: 600,
+    letter-spacing: 2px,
+    line-height: 36px,
+  ),
+  h3: (
+    font-size: 22px,
+    font-weight: 500,
+    letter-spacing: 2px,
+    line-height: 32px,
+  ),
+  h4: (
+    font-size: 18px,
+    font-weight: 500,
+    letter-spacing: 1px,
+    line-height: 28px,
+  ),
+  h5: (
+    font-size: 15px,
+    font-weight: 500,
+    letter-spacing: 0,
+    line-height: 24px,
+  ),
+  h6: (
+    font-size: 13px,
+    font-weight: 500,
+    letter-spacing: 0,
+    line-height: 20px,
+  ),
+  button1: (
+    font-size: 15px,
+    font-weight: 500,
+    letter-spacing: 2px,
+    line-height: 40px,
+    text-transform: uppercase,
+  ),
+  button2: (
+    font-size: 15px,
+    font-weight: 500,
+    letter-spacing: 2px,
+    line-height: 32px,
+    text-transform: uppercase,
+  ),
+  button3: (
+    font-size: 13px,
+    font-weight: 500,
+    letter-spacing: 1px,
+    line-height: 24px,
+    text-transform: uppercase,
+  ),
+  input1: (
+    font-size: 15px,
+    font-weight: 400,
+    letter-spacing: 1px,
+    line-height: 40px,
+  ),
+  input2: (
+    font-size: 15px,
+    font-weight: 400,
+    letter-spacing: 1px,
+    line-height: 32px,
+  ),
+  input3: (
+    font-size: 13px,
+    font-weight: 400,
+    letter-spacing: 0,
+    line-height: 24px,
+  ),
+  body1: (
+    font-size: 15px,
+    font-weight: 400,
+    letter-spacing: 0,
+    line-height: 24px,
+  ),
+  body2: (
+    font-size: 13px,
+    font-weight: 400,
+    letter-spacing: 0,
+    line-height: 20px,
+  ),
+  caption: (
+    font-size: 12px,
+    font-weight: 400,
+    letter-spacing: 0,
+    line-height: 16px,
+  ),
+);
+
+@function is-variant-valid($variant) {
+  @return utils-list.includes($variants, $variant);
+}
+
+@function is-prop-valid($prop) {
+  @return utils-list.includes($props, $prop);
+}
+
+@mixin variables($options: (), $defaults: $default-options) {
+  $options: map.deep-merge($defaults, $options);
+  $transformers: map.get($options, "transformers");
+  $base: map.get($options, "base");
+  $variants-options: utils-map.omit($options, ("transformers", "base"));
+
+  @each $prop, $value in $base {
+    @if not is-prop-valid($prop) {
+      @error "Invalid prop #{$prop}. Please choose one of #{$props}";
+    }
+
+    @if $value != null {
+      --#{$prefix}-base-#{$prop}: #{$value};
+    }
+  }
+
+  @each $variant, $props-options in $variants-options {
+    @if not is-variant-valid($variant) {
+      @error "Invalid variant #{$variant}. Please choose one of #{$variants}";
+    }
+
+    @each $prop, $value in $props-options {
+      @if not is-prop-valid($prop) {
+        @error "Invalid prop #{$prop}. Please choose one of #{$props}";
+      }
+
+      $transformer: map.get($transformers, $prop);
+
+      @if meta.type-of($transformer) == "function" and meta.type-of($value) == number {
+        $value: meta.call($transformer, $value);
+      }
+
+      @if $value != null {
+        --#{$prefix}-#{$variant}-#{$prop}: #{$value};
+      }
+    }
+  }
+}
+
+// Get the css variable of the specific prop of variant.
+@function prop($variant, $prop, $fallback: null) {
+  @if not is-variant-valid($variant) {
+    @error "Invalid variant #{$variant}. Please choose one of #{$variants}";
+  }
+
+  @if not is-prop-valid($prop) {
+    @error "Invalid prop #{$prop}. Please choose one of #{$props}";
+  }
+
+  $varname: --#{$prefix}-#{$variant}-#{$prop};
+
+  @if $fallback == null {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+@mixin variant($variant, $exclude-props: ()) {
+  @if not is-variant-valid($variant) {
+    @error "Invalid variant #{$variant}. Please choose one of #{$variants}";
+  }
+
+  // Only accept valid props.
+  @each $prop in $exclude-props {
+    @if not is-prop-valid($prop) {
+      @error "Invalid prop #{$prop}. Please choose one of #{$props}";
+    }
+  }
+
+  @each $prop, $value in $props {
+    @if not utils-list.includes($exclude-props, $prop) {
+      $fallback: null;
+
+      @if utils-list.includes($base-props, $prop) {
+        $fallback: var(--#{$prefix}-base-#{$prop});
+      }
+
+      #{$prop}: prop($variant, $prop, $fallback);
+    }
+  }
+}

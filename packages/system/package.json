@@ -1,0 +1,26 @@
+{
+  "name": "@mezzanine-ui/system",
+  "version": "0.0.0",
+  "description": "Design System for mezzanine-ui",
+  "author": "Mezzanine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mezzanine-UI/mezzanine.git",
+    "directory": "packages/system"
+  },
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.scss",
+    "**/*.css"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "tslib": "^2.1.0"
+  }
+}

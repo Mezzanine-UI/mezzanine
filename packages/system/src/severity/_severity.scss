@@ -1,0 +1,4 @@
+@use 'sass:list';
+
+$severities: (success, warning, error);
+$severities-for-feedback: list.append($severities, info);
