@@ -1,6 +1,6 @@
-import { MznSize } from '../size';
+import { Size } from '@mezzanine-ui/system/size';
 
-export type TextareaSize = MznSize;
+export type TextareaSize = Size;
 
 export const textareaPrefix = 'mzn-textarea';
 

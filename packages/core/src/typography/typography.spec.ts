@@ -1,5 +1,5 @@
-import { toCssVar } from '../css';
-import { Color } from '../palette';
+import { toCssVar } from '@mezzanine-ui/system/css';
+import { Color } from '@mezzanine-ui/system/palette';
 import {
   toTypographyCssVars,
   typographyClasses as classes,

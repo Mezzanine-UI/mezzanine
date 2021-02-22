@@ -1,22 +1,16 @@
 @use 'sass:map';
-@use '../palette';
-@use '../typography';
-@use '../typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/severity';
+@use '~@mezzanine-ui/system/typography';
 
 $prefix: mzn-alert;
-$statuses: (
-  success,
-  warning,
-  error,
-);
-$icon-horizontal-padding: 12px;
-$line-height: typography.prop(body1, line-height);
+$severities: severity.$severities;
 
 $default-options: (
   box-height: 40px,
   icon-size: 24px,
-  icon-horizontal-padding: $icon-horizontal-padding,
-  line-height: $line-height
+  icon-horizontal-padding: 12px,
+  line-height: typography.prop(body1, line-height),
 );
 
 @mixin core($options: ()) {
@@ -39,12 +33,12 @@ $default-options: (
       $vertical-padding: #{($box-height - $icon-size) / 2};
 
       padding: $vertical-padding $icon-horizontal-padding;
-      font-size: utils-typography.px-to-rem($icon-size);
+      font-size: typography.px-to-rem($icon-size);
     }
 
     &__close-icon {
       padding: 8px 8px 8px 4px;
-      font-size: utils-typography.px-to-rem($icon-size);
+      font-size: typography.px-to-rem($icon-size);
       color: palette.color(action-disabled);
       cursor: pointer;
 
@@ -58,9 +52,9 @@ $default-options: (
       word-wrap: break-word;
     }
 
-    @each $status in $statuses {
-      &--#{$status} {
-        background-color: palette.color(#{$status}-hover-bg);
+    @each $severity in $severities {
+      &--#{$severity} {
+        background-color: palette.color(#{$severity}-hover-bg);
       }
     }
   }

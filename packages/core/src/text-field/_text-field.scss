@@ -1,8 +1,7 @@
 @use 'sass:map';
-@use '../size';
-@use '../palette';
-@use '../typography';
-@use '../typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/size';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
 @use '../icon';
 
 $prefix: mzn-text-field;
@@ -40,7 +39,7 @@ $default-options: (
   $prefix-suffix-gap: map.get($options, prefix-suffix-gap);
 
   .#{$prefix} {
-    --#{$prefix}-icon-size: #{utils-typography.px-to-rem($icon-size)};
+    --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size)};
     --#{$prefix}-padding-x: #{$padding-x};
     --#{$prefix}-padding-x-prefix: calc(var(--#{$prefix}-padding-x) + var(--#{$prefix}-icon-size));
     --#{$prefix}-padding-left: var(--#{$prefix}-padding-x);
@@ -188,7 +187,7 @@ $default-options: (
 
         @if $size == small {
           --#{$prefix}-padding-x: #{$padding-x-small};
-          --#{$prefix}-icon-size: #{utils-typography.px-to-rem($icon-size-small)};
+          --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size-small)};
 
           min-width: $min-width-small;
         }

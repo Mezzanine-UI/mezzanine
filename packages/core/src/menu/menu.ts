@@ -1,7 +1,7 @@
-import { CssVarInterpolations } from '../css';
-import { MznSize } from '../size';
+import { CssVarInterpolations } from '@mezzanine-ui/system/css';
+import { Size } from '@mezzanine-ui/system/size';
 
-export type MenuSize = MznSize;
+export type MenuSize = Size;
 
 export interface MenuCssVars {
   itemsInView: number;

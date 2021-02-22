@@ -1,257 +1,40 @@
-@use 'sass:list';
-@use 'sass:map';
-@use 'sass:math';
-@use 'sass:meta';
-@use 'sass:string';
-@use '../utils/list' as utils-list;
-@use '../utils/map' as utils-map;
-@use './utils';
-
-$prefix: mzn-typography;
-$valid-base-props: (font-family);
-$valid-props: utils-list.push(
-  $valid-base-props,
-  font-size,
-  font-weight,
-  letter-spacing,
-  line-height,
-  text-decoration,
-  text-transform
-);
-$valid-common-variants: (h1, h2, h3, h4, h5, h6, body1, body2, caption);
-$valid-component-variants: (button1, button2, button3, input1, input2, input3);
-$valid-variants: list.join($valid-common-variants, $valid-component-variants);
-
-$default-options: (
-  transformers: (
-    font-size: meta.get-function("px-to-rem", $module: utils),
-    letter-spacing: meta.get-function("px-to-em", $module: utils),
-    line-height: meta.get-function("px-to-rem", $module: utils),
-  ),
-  base: (
-    font-family: string.unquote("PingFang TC, Microsoft JhengHei"),
-  ),
-  h1: (
-    font-size: 32px,
-    font-weight: 600,
-    letter-spacing: 4px,
-    line-height: 48px,
-  ),
-  h2: (
-    font-size: 24px,
-    font-weight: 600,
-    letter-spacing: 2px,
-    line-height: 36px,
-  ),
-  h3: (
-    font-size: 22px,
-    font-weight: 500,
-    letter-spacing: 2px,
-    line-height: 32px,
-  ),
-  h4: (
-    font-size: 18px,
-    font-weight: 500,
-    letter-spacing: 1px,
-    line-height: 28px,
-  ),
-  h5: (
-    font-size: 15px,
-    font-weight: 500,
-    letter-spacing: 0,
-    line-height: 24px,
-  ),
-  h6: (
-    font-size: 13px,
-    font-weight: 500,
-    letter-spacing: 0,
-    line-height: 20px,
-  ),
-  button1: (
-    font-size: 15px,
-    font-weight: 500,
-    letter-spacing: 2px,
-    line-height: 40px,
-    text-transform: uppercase,
-  ),
-  button2: (
-    font-size: 15px,
-    font-weight: 500,
-    letter-spacing: 2px,
-    line-height: 32px,
-    text-transform: uppercase,
-  ),
-  button3: (
-    font-size: 13px,
-    font-weight: 500,
-    letter-spacing: 1px,
-    line-height: 24px,
-    text-transform: uppercase,
-  ),
-  input1: (
-    font-size: 15px,
-    font-weight: 400,
-    letter-spacing: 1px,
-    line-height: 40px,
-  ),
-  input2: (
-    font-size: 15px,
-    font-weight: 400,
-    letter-spacing: 1px,
-    line-height: 32px,
-  ),
-  input3: (
-    font-size: 13px,
-    font-weight: 400,
-    letter-spacing: 0,
-    line-height: 24px,
-  ),
-  body1: (
-    font-size: 15px,
-    font-weight: 400,
-    letter-spacing: 0,
-    line-height: 24px,
-  ),
-  body2: (
-    font-size: 13px,
-    font-weight: 400,
-    letter-spacing: 0,
-    line-height: 20px,
-  ),
-  caption: (
-    font-size: 12px,
-    font-weight: 400,
-    letter-spacing: 0,
-    line-height: 16px,
-  ),
-);
-
-@function is-variant-valid($variant) {
-  @return utils-list.includes($valid-variants, $variant);
-}
-
-@function is-prop-valid($prop) {
-  @return utils-list.includes($valid-props, $prop);
-}
-
-@mixin variables($options: (), $defaults: $default-options) {
-  $options: map.deep-merge($defaults, $options);
-  $transformers: map.get($options, "transformers");
-  $base: map.get($options, "base");
-  $variants: utils-map.omit($options, ("transformers", "base"));
-
-  @each $prop, $value in $base {
-    @if not is-prop-valid($prop) {
-      @error "Invalid prop #{$prop}. Please choose one of #{$valid-props}";
-    }
-
-    @if $value != null {
-      --#{$prefix}-base-#{$prop}: #{$value};
-    }
-  }
-
-  @each $variant, $props in $variants {
-    @if not is-variant-valid($variant) {
-      @error "Invalid variant #{$variant}. Please choose one of #{$valid-variants}";
-    }
-
-    @each $prop, $value in $props {
-      @if not is-prop-valid($prop) {
-        @error "Invalid prop #{$prop}. Please choose one of #{$valid-props}";
-      }
-
-      $transformer: map.get($transformers, $prop);
-
-      @if meta.type-of($transformer) == "function" and meta.type-of($value) == number {
-        $value: meta.call($transformer, $value);
-      }
-
-      @if $value != null {
-        --#{$prefix}-#{$variant}-#{$prop}: #{$value};
-      }
-    }
-  }
-}
-
-// Get the css variable of the specific prop of variant.
-@function prop($variant, $prop, $fallback: null) {
-  @if not is-variant-valid($variant) {
-    @error "Invalid variant #{$variant}. Please choose one of #{$valid-variants}";
-  }
-
-  @if not is-prop-valid($prop) {
-    @error "Invalid prop #{$prop}. Please choose one of #{$valid-props}";
-  }
-
-  $varname: --#{$prefix}-#{$variant}-#{$prop};
-
-  @if $fallback == null {
-    @return var(#{$varname});
-  }
-
-  @return var(#{$varname}, $fallback);
-}
-
-@mixin variant($variant, $exclude-props: ()) {
-  @if not is-variant-valid($variant) {
-    @error "Invalid variant #{$variant}. Please choose one of #{$valid-variants}";
-  }
-
-  // Only accept valid props.
-  @each $prop in $exclude-props {
-    @if not is-prop-valid($prop) {
-      @error "Invalid prop #{$prop}. Please choose one of #{$valid-props}";
-    }
-  }
-
-  @each $prop, $value in $valid-props {
-    @if not utils-list.includes($exclude-props, $prop) {
-      $fallback: null;
-
-      @if utils-list.includes($valid-base-props, $prop) {
-        $fallback: var(--#{$prefix}-base-#{$prop});
-      }
-
-      #{$prop}: prop($variant, $prop, $fallback);
-    }
-  }
-}
+@use '~@mezzanine-ui/system/typography';
 
 @mixin core() {
-  .#{$prefix} {
-    @each $prop in $valid-base-props {
-      #{$prop}: var(--#{$prefix}-base-#{$prop});
+  .#{typography.$prefix} {
+    @each $prop in typography.$base-props {
+      #{$prop}: var(--#{typography.$prefix}-base-#{$prop});
     }
 
-    @include utils.smooth-font();
+    @include typography.smooth-font();
 
-    @each $variant in $valid-variants {
+    @each $variant in typography.$variants {
       &--#{$variant} {
         margin: 0;
 
-        @include utils.smooth-font();
-        @include variant($variant);
+        @include typography.smooth-font();
+        @include typography.variant($variant);
       }
     }
 
     &--align {
-      text-align: var(--#{$prefix}-align);
+      text-align: var(--#{typography.$prefix}-align);
     }
 
     &--color {
-      color: var(--#{$prefix}-color);
+      color: var(--#{typography.$prefix}-color);
     }
 
     &--display {
-      display: var(--#{$prefix}-display);
+      display: var(--#{typography.$prefix}-display);
     }
 
     &--ellipsis {
-      @include utils.overflow-ellipsis();
+      @include typography.overflow-ellipsis();
     }
 
     &--nowrap {
-      @include utils.nowrap();
+      @include typography.nowrap();
     }
   }
 }

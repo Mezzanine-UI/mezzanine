@@ -1,10 +1,10 @@
-import { CssVarInterpolations } from '../css';
-import { MznOrientation } from '../orientation';
-import { MznSpacingLevel, toSpacingCssVar } from '../spacing';
+import { CssVarInterpolations } from '@mezzanine-ui/system/css';
+import { Orientation } from '@mezzanine-ui/system/orientation';
+import { SpacingLevel, toSpacingCssVar } from '@mezzanine-ui/system/spacing';
 import { buttonPrefix, ButtonSize } from './button';
 
-export type ButtonGroupOrientation = MznOrientation;
-export type ButtonGroupSpacing = MznSpacingLevel;
+export type ButtonGroupOrientation = Orientation;
+export type ButtonGroupSpacing = SpacingLevel;
 
 export interface ButtonGroupCssVars {
   size: ButtonSize;

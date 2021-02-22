@@ -1,8 +1,7 @@
 @use 'sass:map';
-@use '../size';
-@use '../palette';
-@use '../typography/utils' as utils-typography;
-@use '../typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/size';
 
 $prefix: mzn-tag;
 $sizes: size.$sizes;
@@ -58,11 +57,11 @@ $default-options: (
       display: inline-block;
       min-width: $label-min-width;
 
-      @include utils-typography.nowrap();
+      @include typography.nowrap();
     }
 
     &__close-icon {
-      font-size: utils-typography.px-to-rem($icon-size);
+      font-size: typography.px-to-rem($icon-size);
       margin-right: -#{$icon-label-gap-x};
       margin-left: $icon-label-gap-x;
       outline: 0;
@@ -92,7 +91,7 @@ $default-options: (
       }
 
       .#{$prefix}__close-icon {
-        font-size: utils-typography.px-to-rem($icon-size-small);
+        font-size: typography.px-to-rem($icon-size-small);
       }
     }
   }

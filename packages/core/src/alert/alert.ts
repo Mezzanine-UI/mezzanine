@@ -3,8 +3,9 @@ import {
   ExclamationCircleFilledIcon,
   MinusCircleFilledIcon,
 } from '@mezzanine-ui/icons';
+import { Severity } from '@mezzanine-ui/system/severity';
 
-export type AlertStatus = 'success' | 'warning' | 'error';
+export type AlertSeverity = Severity;
 
 export const alertPrefix = 'mzn-alert';
 export const alertIcons = {
@@ -18,5 +19,5 @@ export const alertClasses = {
   icon: `${alertPrefix}__icon`,
   closeIcon: `${alertPrefix}__close-icon`,
   message: `${alertPrefix}__message`,
-  status: (status: AlertStatus) => `${alertPrefix}--${status}`,
+  severity: (severity: AlertSeverity) => `${alertPrefix}--${severity}`,
 } as const;

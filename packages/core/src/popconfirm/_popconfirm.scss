@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use '../typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use '../popover';
 
@@ -31,7 +31,7 @@ $default-options: (
       align-items: center;
 
       .#{icon.$prefix} {
-        font-size: utils-typography.px-to-rem($title-icon-size);
+        font-size: typography.px-to-rem($title-icon-size);
         margin-right: $title-icon-gap;
       }
     }

@@ -4,8 +4,9 @@ import {
   InfoCircleFilledIcon,
   MinusCircleFilledIcon,
 } from '@mezzanine-ui/icons';
+import { SeverityForFeedback } from '@mezzanine-ui/system/severity';
 
-export type MessageStatus = 'success' | 'warning' | 'error' | 'info';
+export type MessageSeverity = SeverityForFeedback;
 
 export const messagePrefix = 'mzn-message';
 
@@ -21,5 +22,5 @@ export const messageClasses = {
   root: `${messagePrefix}__root`,
   icon: `${messagePrefix}__icon`,
   content: `${messagePrefix}__content`,
-  status: (status: MessageStatus) => `${messagePrefix}--${status}`,
+  severity: (severity: MessageSeverity) => `${messagePrefix}--${severity}`,
 } as const;

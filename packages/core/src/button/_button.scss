@@ -1,10 +1,9 @@
 @use 'sass:map';
-@use '../utils/list';
-@use '../orientation';
-@use '../size';
-@use '../palette';
-@use '../typography/utils' as utils-typography;
-@use '../typography';
+@use '~@mezzanine-ui/system/utils/list';
+@use '~@mezzanine-ui/system/orientation';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/size';
+@use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use './utils';
 
@@ -127,7 +126,7 @@ $default-options: (
   $outlined-border-width: map.get($options, outlined-border-width);
 
   .#{icon.$prefix} {
-    font-size: utils-typography.px-to-rem($icon-size);
+    font-size: typography.px-to-rem($icon-size);
   }
 
   @each $size in $sizes {
@@ -142,7 +141,7 @@ $default-options: (
 
       @if $size == small {
         .#{icon.$prefix} {
-          font-size: utils-typography.px-to-rem($icon-size-small);
+          font-size: typography.px-to-rem($icon-size-small);
         }
       }
     }
@@ -208,7 +207,7 @@ $default-options: (
 
   .#{$prefix} {
     @include utils.reset();
-    @include utils-typography.nowrap();
+    @include typography.nowrap();
 
     display: inline-flex;
     justify-content: center;

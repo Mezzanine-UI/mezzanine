@@ -1,8 +1,8 @@
-import { MainColor } from '../palette';
-import { MznSize } from '../size';
+import { MainColor } from '@mezzanine-ui/system/palette';
+import { Size } from '@mezzanine-ui/system/size';
 
 export type ButtonColor = Extract<MainColor, 'primary' | 'secondary'>;
-export type ButtonSize = MznSize;
+export type ButtonSize = Size;
 export type ButtonVariant = 'contained' | 'outlined' | 'text';
 
 export const buttonPrefix = 'mzn-button';

@@ -1,6 +1,6 @@
 @use 'sass:map';
-@use '../palette';
-@use '../typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
 
 $prefix: mzn-badge;
 

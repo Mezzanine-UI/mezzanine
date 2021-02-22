@@ -1,7 +1,7 @@
 import type { IconDefinition } from '@mezzanine-ui/icons';
-import { MznSize } from '../size';
+import { Size } from '@mezzanine-ui/system/size';
 
-export type SwitchSize = Extract<MznSize, 'medium' | 'large'>;
+export type SwitchSize = Extract<Size, 'medium' | 'large'>;
 
 export const switchPrefix = 'mzn-switch';
 

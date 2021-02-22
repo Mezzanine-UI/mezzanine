@@ -1,10 +1,11 @@
-import { CssVarInterpolations, toCssVar } from '../css';
+import { CssVarInterpolations, toCssVar } from '@mezzanine-ui/system/css';
 import {
   GradualMainColor,
   MainColor,
   palettePrefix,
   TextColor,
-} from '../palette';
+} from '@mezzanine-ui/system/palette';
+import { typographyPrefix, TypographyVariant } from '@mezzanine-ui/system/typography';
 
 export type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
 
@@ -17,20 +18,11 @@ export type TypographyColor =
 type TypographyDisplayBase = 'block' | 'flex';
 export type TypographyDisplay = TypographyDisplayBase | `inline-${TypographyDisplayBase}`;
 
-export type TypographyVariant =
-  | `h${1 | 2 | 3 | 4 | 5 | 6}`
-  | `button${1 | 2 | 3}`
-  | `input${1 | 2 | 3}`
-  | `body${1 | 2}`
-  | 'caption';
-
 export interface TypographyCssVars {
   align?: TypographyAlign;
   color?: TypographyColor;
   display?: TypographyDisplay;
 }
-
-export const typographyPrefix = 'mzn-typography';
 
 export const typographyClasses = {
   variant: (variant: TypographyVariant) => `${typographyPrefix}--${variant}`,

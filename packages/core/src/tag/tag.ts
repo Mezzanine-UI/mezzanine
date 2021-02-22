@@ -1,6 +1,6 @@
-import { MznSize } from '../size';
+import { Size } from '@mezzanine-ui/system/size';
 
-export type TagSize = MznSize;
+export type TagSize = Size;
 
 export const tagPrefix = 'mzn-tag';
 

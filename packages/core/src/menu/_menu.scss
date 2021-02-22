@@ -1,8 +1,7 @@
 @use 'sass:map';
-@use '../size';
-@use '../palette';
-@use '../typography';
-@use '../typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/size';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
 
 $prefix: mzn-menu;
 $divider-prefix: #{$prefix}-divider;

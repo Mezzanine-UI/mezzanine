@@ -1,10 +1,7 @@
 @use 'sass:map';
-@use '../utils/list';
-@use '../orientation';
-@use '../size';
-@use '../palette';
-@use '../typography/utils' as utils-typography;
-@use '../typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/size';
+@use '~@mezzanine-ui/system/typography';
 @use '../icon';
 
 $prefix: mzn-upload;
@@ -53,7 +50,7 @@ $default-options: (
     &__name {
       width: 100%;
 
-      @include utils-typography.overflow-ellipsis();
+      @include typography.overflow-ellipsis();
     }
 
     &__actions {
@@ -62,7 +59,7 @@ $default-options: (
       gap: $icon-gap;
       align-items: center;
       flex-shrink: 0;
-      font-size: var(--#{$result-prefix}-icon-size, utils-typography.px-to-rem($icon-size));
+      font-size: var(--#{$result-prefix}-icon-size, typography.px-to-rem($icon-size));
       color: var(--#{$result-prefix}-action-color, palette.color(action-inactive));
       margin-left: $name-icon-gap;
     }
@@ -106,7 +103,7 @@ $default-options: (
     @each $size in $sizes {
       &--#{$size} {
         @if $size == small {
-          --#{$result-prefix}-icon-size: #{utils-typography.px-to-rem($icon-size-small)};
+          --#{$result-prefix}-icon-size: #{typography.px-to-rem($icon-size-small)};
 
           padding: 0 $padding-right-small 0 $padding-left-small;
         }

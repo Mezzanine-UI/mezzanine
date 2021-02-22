@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use '../typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/typography';
 
 $prefix: mzn-empty;
 
@@ -12,7 +12,7 @@ $default-options: (
 @mixin core($options: ()) {
   $options: map.deep-merge($default-options, $options);
   $padding: map.get($options, padding);
-  $icon-size: utils-typography.px-to-rem(map.get($options, icon-size));
+  $icon-size: typography.px-to-rem(map.get($options, icon-size));
   $title-gap: map.get($options, title-gap);
 
   .#{$prefix} {

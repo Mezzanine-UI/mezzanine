@@ -1,0 +1,33 @@
+@use './typography';
+@use './icon';
+@use './button';
+@use './popover';
+@use './menu';
+@use './input';
+@use './switch';
+@use './textarea';
+@use './upload';
+@use './badge';
+@use './empty';
+@use './tag';
+@use './alert';
+@use './message';
+@use './popconfirm';
+
+@mixin styles() {
+  @include typography.core();
+  @include icon.core();
+  @include button.core();
+  @include popover.core();
+  @include menu.core();
+  @include input.core();
+  @include switch.core();
+  @include textarea.core();
+  @include upload.core();
+  @include badge.core();
+  @include empty.core();
+  @include tag.core();
+  @include alert.core();
+  @include message.core();
+  @include popconfirm.core();
+}

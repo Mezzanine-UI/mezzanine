@@ -1,12 +1,12 @@
 @use 'sass:map';
-@use '../palette';
-@use '../typography';
-@use '../typography/utils' as utils-typography;
-@use '../spacing';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/severity';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
 
 $prefix: mzn-message;
 
-$statuses: (success, warning, error, info);
+$severities: severity.$severities-for-feedback;
 
 $icon-horizontal-padding: 12px;
 $line-height: typography.prop(body1, line-height);
@@ -47,18 +47,18 @@ $default-options: (
 
     &__icon {
       color: var(--#{$prefix}-color);
-      font-size: utils-typography.px-to-rem($icon-size);
+      font-size: typography.px-to-rem($icon-size);
       margin-right: $icon-gap;
     }
 
     &__content {
       @include typography.variant(body1);
-      @include utils-typography.overflow-ellipsis();
+      @include typography.overflow-ellipsis();
     }
 
-    @each $status in $statuses {
-      &--#{$status} {
-        --#{$prefix}-color: #{palette.color(if($status == "info", primary, $status))};
+    @each $severity in $severities {
+      &--#{$severity} {
+        --#{$prefix}-color: #{palette.color(if($severity == "info", primary, $severity))};
       }
     }
 

@@ -1,5 +1,5 @@
-import { toCssVar } from '../css';
-import { Color } from '../palette';
+import { toCssVar } from '@mezzanine-ui/system/css';
+import { Color } from '@mezzanine-ui/system/palette';
 import { iconClasses as classes, IconColor, toIconCssVars } from '.';
 
 describe('icon', () => {

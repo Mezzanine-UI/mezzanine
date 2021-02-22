@@ -1,6 +1,6 @@
-import { MznSize } from '../size';
+import { Size } from '@mezzanine-ui/system/size';
 
-export type TextFieldSize = MznSize;
+export type TextFieldSize = Size;
 
 export const textFieldPrefix = 'mzn-text-field';
 
