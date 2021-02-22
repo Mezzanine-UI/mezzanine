@@ -3,8 +3,8 @@ import { ButtonColor, ButtonSize, ButtonVariant } from '@mezzanine-ui/core/butto
 
 export interface MznButtonGroupControlInputs {
   color?: ButtonColor;
+  danger?: boolean;
   disabled?: boolean;
-  error?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
 }

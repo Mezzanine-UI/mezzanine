@@ -17,12 +17,19 @@ import {
   HostBindingEnumClass,
   InputBoolean,
   EnumWithFallbackInput,
+  BooleanInput,
 } from '../cdk';
 import { MznButtonGroupControlInputs } from './button-group.tokens';
 
 @Directive()
 // eslint-disable-next-line @angular-eslint/directive-class-suffix
 export abstract class MznButtonMixin {
+  static ngAcceptInputType_danger: BooleanInput;
+
+  static ngAcceptInputType_disabled: BooleanInput;
+
+  static ngAcceptInputType_loading: BooleanInput;
+
   constructor(
     protected readonly elementRef: ElementRef<HTMLElement>,
     protected readonly renderer: Renderer2,
@@ -54,6 +61,23 @@ export abstract class MznButtonMixin {
   private _color?: ButtonColor;
 
   /**
+   * If true, will use error color instead of color from props.
+   * @default false
+   */
+  @HostBinding(`class.${classes.danger}`)
+  @Input()
+  @InputBoolean()
+  get danger() {
+    return (this._danger ?? this.buttonGroup?.danger) || false;
+  }
+
+  set danger(danger: boolean) {
+    this._danger = danger;
+  }
+
+  private _danger?: boolean;
+
+  /**
    * The native disabled.
    * @default false
    */
@@ -71,23 +95,6 @@ export abstract class MznButtonMixin {
   }
 
   private _disabled?: boolean;
-
-  /**
-   * If true, will use error color instead of color from props.
-   * @default false
-   */
-  @HostBinding(`class.${classes.error}`)
-  @Input()
-  @InputBoolean()
-  get error() {
-    return (this._error ?? this.buttonGroup?.error) || false;
-  }
-
-  set error(error: boolean) {
-    this._error = error;
-  }
-
-  private _error?: boolean;
 
   /**
    * If true, add a loading icon.

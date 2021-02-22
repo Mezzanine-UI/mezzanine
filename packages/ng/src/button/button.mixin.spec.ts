@@ -104,6 +104,44 @@ describe('MznButtonMixin', () => {
     });
   });
 
+  describe('input:danger', () => {
+    it('should render danger=false by default', async () => {
+      const result = await render(TestingButtonComponent, {
+        template: `
+          <button mzn-testing-button>Hello</button>
+        `,
+      });
+      const element = result.container.firstElementChild as HTMLElement;
+
+      expect(element.classList.contains('mzn-button--danger')).toBeFalsy();
+    });
+
+    it('should add class if danger=true', async () => {
+      let result: RenderResult<TestingButtonComponent> | undefined;
+
+      for await (const danger of [false, true]) {
+        if (result) {
+          result.rerender({
+            danger,
+          });
+        } else {
+          result = await render(TestingButtonComponent, {
+            template: `
+              <button mzn-testing-button [danger]="danger">Hello</button>
+            `,
+            componentProperties: {
+              danger,
+            },
+          });
+        }
+
+        const element = result.container.firstElementChild as HTMLElement;
+
+        expect(element.classList.contains('mzn-button--danger')).toBe(danger);
+      }
+    });
+  });
+
   describe('input: disabled', () => {
     function testDisabled(element: HTMLElement, disabled: boolean) {
       expect(element.classList.contains('mzn-button--disabled')).toBe(disabled);
@@ -144,44 +182,6 @@ describe('MznButtonMixin', () => {
         const element = result.container.firstElementChild as HTMLElement;
 
         testDisabled(element, disabled);
-      }
-    });
-  });
-
-  describe('input:error', () => {
-    it('should render error=false by default', async () => {
-      const result = await render(TestingButtonComponent, {
-        template: `
-          <button mzn-testing-button>Hello</button>
-        `,
-      });
-      const element = result.container.firstElementChild as HTMLElement;
-
-      expect(element.classList.contains('mzn-button--error')).toBeFalsy();
-    });
-
-    it('should add class if error=true', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
-
-      for await (const error of [false, true]) {
-        if (result) {
-          result.rerender({
-            error,
-          });
-        } else {
-          result = await render(TestingButtonComponent, {
-            template: `
-              <button mzn-testing-button [error]="error">Hello</button>
-            `,
-            componentProperties: {
-              error,
-            },
-          });
-        }
-
-        const element = result.container.firstElementChild as HTMLElement;
-
-        expect(element.classList.contains('mzn-button--error')).toBe(error);
       }
     });
   });

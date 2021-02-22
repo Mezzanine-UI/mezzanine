@@ -73,8 +73,8 @@ export const DropdownLike: Story = (args) => ({
     <mzn-button-group
       attached
       [color]="color"
+      [danger]="danger"
       [disabled]="disabled"
-      [error]="error"
       [size]="size"
       [variant]="variant"
     >
@@ -100,8 +100,8 @@ export const DropdownLike: Story = (args) => ({
 
 DropdownLike.args = {
   color: 'primary',
+  danger: false,
   disabled: false,
-  error: false,
   size: 'medium',
   variant: 'contained',
   icon: ChevronDownIcon,

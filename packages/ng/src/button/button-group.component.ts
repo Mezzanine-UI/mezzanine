@@ -20,6 +20,7 @@ import {
   toButtonGroupCssVars,
 } from '@mezzanine-ui/core/button';
 import {
+  BooleanInput,
   createCssVarsChangeEffect,
   HostBindingEnumClass,
   InputBoolean,
@@ -45,6 +46,14 @@ import { MznButtonGroupControlInputs, MznButtonGroupControlInputsToken } from '.
   `,
 })
 export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnChanges, OnInit {
+  static ngAcceptInputType_attached: BooleanInput;
+
+  static ngAcceptInputType_danger: BooleanInput;
+
+  static ngAcceptInputType_disabled: BooleanInput;
+
+  static ngAcceptInputType_fullWidth: BooleanInput;
+
   constructor(
     private readonly elementRef: ElementRef<HTMLElement>,
     private readonly renderer: Renderer2,
@@ -70,20 +79,20 @@ export class MznButtonGroupComponent implements MznButtonGroupControlInputs, OnC
   color: ButtonColor = 'primary';
 
   /**
+   * If the `error` of a button inside group not provided, the `error` of group will override it.
+   * @default false
+   */
+  @Input()
+  @InputBoolean()
+  danger = false;
+
+  /**
    * If the `disabled` of a button inside group not provided, the `disabled` of group will override it.
    * @default false
    */
   @Input()
   @InputBoolean()
   disabled = false;
-
-  /**
-   * If the `error` of a button inside group not provided, the `error` of group will override it.
-   * @default false
-   */
-  @Input()
-  @InputBoolean()
-  error = false;
 
   /**
    * If `true`, set width: 100%.

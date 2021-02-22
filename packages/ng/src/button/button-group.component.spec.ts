@@ -283,29 +283,29 @@ describe('MznButtonGroupComponent', () => {
     });
   });
 
-  describe('inputs: color,disabled,error,size,variant that can accept inputs from button group', () => {
+  describe('inputs: color,danger,disabled,size,variant that can accept inputs from button group', () => {
     function testOverrideInputs(
       buttonComponent: MznButtonComponent,
       buttonElementRef: ElementRef<HTMLButtonElement>,
       {
         color,
+        danger,
         disabled,
-        error,
         size,
         variant,
-      }: Required<Pick<MznButtonGroupComponent, 'color' | 'disabled' | 'error' | 'size' | 'variant'>>,
+      }: Required<Pick<MznButtonGroupComponent, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>>,
     ) {
       const buttonElement = buttonElementRef.nativeElement;
 
       expect(buttonComponent.color).toBe(color);
       expect(buttonElement.classList.contains(`mzn-button--${color}`)).toBeTruthy();
 
+      expect(buttonComponent.danger).toBe(danger);
+      expect(buttonElement.classList.contains('mzn-button--danger')).toBe(danger);
+
       expect(buttonComponent.disabled).toBe(disabled);
       expect(buttonElement.hasAttribute('disabled')).toBe(disabled);
       expect(buttonElement.getAttribute('aria-disabled')).toBe(`${disabled}`);
-
-      expect(buttonComponent.error).toBe(error);
-      expect(buttonElement.classList.contains('mzn-button--error')).toBe(error);
 
       expect(buttonComponent.size).toBe(size);
       expect(buttonElement.classList.contains(`mzn-button--${size}`)).toBeTruthy();
@@ -340,8 +340,8 @@ describe('MznButtonGroupComponent', () => {
         fixture.componentInstance.buttonElementRef,
         {
           color: 'primary',
+          danger: false,
           disabled: false,
-          error: false,
           size: 'medium',
           variant: 'text',
         },
@@ -349,10 +349,10 @@ describe('MznButtonGroupComponent', () => {
     });
 
     it('provided by group', async () => {
-      const expects: Required<Pick<MznButtonGroupComponent, 'color' | 'disabled' | 'error' | 'size' | 'variant'>> = {
+      const expects: Required<Pick<MznButtonGroupComponent, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>> = {
         color: 'secondary',
+        danger: true,
         disabled: true,
-        error: true,
         size: 'small',
         variant: 'contained',
       };
@@ -362,8 +362,8 @@ describe('MznButtonGroupComponent', () => {
         template: `
           <mzn-button-group
             [color]="color"
+            [danger]="danger"
             [disabled]="disabled"
-            [error]="error"
             [size]="size"
             [variant]="variant"
           >
@@ -380,9 +380,9 @@ describe('MznButtonGroupComponent', () => {
 
         color: ButtonColor = expects.color;
 
-        disabled = expects.disabled;
+        danger = expects.danger;
 
-        error = expects.error;
+        disabled = expects.disabled;
 
         size: ButtonSize = expects.size;
 
@@ -407,7 +407,7 @@ describe('MznButtonGroupComponent', () => {
         expects,
       );
 
-      expects.disabled = false;
+      expects.danger = false;
       rerender(expects);
       testOverrideInputs(
         fixture.componentInstance.button,
@@ -415,7 +415,7 @@ describe('MznButtonGroupComponent', () => {
         expects,
       );
 
-      expects.error = false;
+      expects.disabled = false;
       rerender(expects);
       testOverrideInputs(
         fixture.componentInstance.button,
@@ -446,8 +446,8 @@ describe('MznButtonGroupComponent', () => {
         template: `
           <mzn-button-group
             color="primary"
+            danger
             disabled
-            error
             size="small"
             variant="contained"
           >
@@ -455,8 +455,8 @@ describe('MznButtonGroupComponent', () => {
               #button
               mzn-button="outlined"
               color="secondary"
+              [danger]="false"
               [disabled]="false"
-              [error]="false"
               size="large"
             >
               Hello
@@ -481,8 +481,8 @@ describe('MznButtonGroupComponent', () => {
         fixture.componentInstance.buttonElementRef,
         {
           color: 'secondary',
+          danger: false,
           disabled: false,
-          error: false,
           size: 'large',
           variant: 'outlined',
         },
