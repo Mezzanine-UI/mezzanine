@@ -43,7 +43,7 @@ export const Playgroud: Story<ButtonGroupProps> = ({ attached, orientation }) =>
     <br />
     <ButtonGroup
       attached={attached}
-      error
+      danger
       variant="text"
       size="small"
       orientation={orientation}

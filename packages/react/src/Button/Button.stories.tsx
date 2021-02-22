@@ -17,15 +17,15 @@ export const Variants = () => (
   >
     <Button variant="contained">primary</Button>
     <Button variant="contained" color="secondary">secondary</Button>
-    <Button variant="contained" error>error</Button>
+    <Button variant="contained" danger>danger</Button>
     <Button variant="contained" disabled>disabled</Button>
     <Button variant="outlined">primary</Button>
     <Button variant="outlined" color="secondary">secondary</Button>
-    <Button variant="outlined" error>error</Button>
+    <Button variant="outlined" danger>danger</Button>
     <Button variant="outlined" disabled>disabled</Button>
     <Button>primary</Button>
     <Button color="secondary">secondary</Button>
-    <Button error>error</Button>
+    <Button danger>danger</Button>
     <Button disabled>disabled</Button>
   </div>
 );

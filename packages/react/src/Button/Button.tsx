@@ -33,7 +33,7 @@ export interface ButtonProps extends
    * If true, will use error color instead of color from props.
    * @default false
    */
-  error?: boolean;
+  danger?: boolean;
   /**
    * If true, replace the original icon.
    * Replace suffix if only suffix provided, or prefix.
@@ -69,8 +69,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     className,
     color = 'primary',
     component = 'button',
+    danger = false,
     disabled = false,
-    error = false,
     loading = false,
     onClick,
     prefix: prefixProp,
@@ -108,8 +108,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         classes.color(color),
         classes.size(size),
         {
+          [classes.danger]: danger,
           [classes.disabled]: disabled,
-          [classes.error]: error,
           [classes.icon]: asIconBtn,
           [classes.loading]: loading,
         },

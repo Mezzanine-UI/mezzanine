@@ -213,22 +213,22 @@ describe('<ButtonGroup />', () => {
     });
   });
 
-  describe('props: color,disabled,error,size,variant that can override props of buttons inside group', () => {
+  describe('props: color,danger,disabled,size,variant that can override props of buttons inside group', () => {
     function testOverrideProps(
       testInstance: TestRenderer.ReactTestInstance,
       {
         color,
+        danger,
         disabled,
-        error,
         size,
         variant,
-      }: Required<Pick<ButtonProps, 'color' | 'disabled' | 'error' | 'size' | 'variant'>>,
+      }: Required<Pick<ButtonProps, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>>,
     ) {
       const buttonInstance = testInstance.findByType(Button);
 
       expect(buttonInstance.props.color).toBe(color);
+      expect(buttonInstance.props.danger).toBe(danger);
       expect(buttonInstance.props.disabled).toBe(disabled);
-      expect(buttonInstance.props.error).toBe(error);
       expect(buttonInstance.props.size).toBe(size);
       expect(buttonInstance.props.variant).toBe(variant);
     }
@@ -245,8 +245,8 @@ describe('<ButtonGroup />', () => {
         testInstance,
         {
           color: 'primary',
+          danger: false,
           disabled: false,
-          error: false,
           size: 'medium',
           variant: 'text',
         },
@@ -257,8 +257,8 @@ describe('<ButtonGroup />', () => {
       const testRenderer = TestRenderer.create(
         <ButtonGroup
           color="secondary"
+          danger
           disabled
-          error
           size="small"
           variant="contained"
         >
@@ -271,8 +271,8 @@ describe('<ButtonGroup />', () => {
         testInstance,
         {
           color: 'secondary',
+          danger: true,
           disabled: true,
-          error: true,
           size: 'small',
           variant: 'contained',
         },
@@ -283,15 +283,15 @@ describe('<ButtonGroup />', () => {
       const testRenderer = TestRenderer.create(
         <ButtonGroup
           color="primary"
+          danger
           disabled
-          error
           size="small"
           variant="contained"
         >
           <Button
             color="secondary"
+            danger={false}
             disabled={false}
-            error={false}
             size="large"
             variant="outlined"
           />
@@ -303,8 +303,8 @@ describe('<ButtonGroup />', () => {
         testInstance,
         {
           color: 'secondary',
+          danger: false,
           disabled: false,
-          error: false,
           size: 'large',
           variant: 'outlined',
         },

@@ -90,6 +90,15 @@ describe('<Button />', () => {
     });
   });
 
+  describe('prop:danger', () => {
+    it('should add class if danger=true', () => {
+      const { getHostHTMLElement } = render(<Button danger />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button--danger')).toBeTruthy();
+    });
+  });
+
   describe('prop: disabled', () => {
     it('should has disabled and aria-disabled attributes', () => {
       [false, true].forEach((disabled) => {
@@ -112,15 +121,6 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
 
       expect(element.getAttribute('aria-disabled')).toBeTruthy();
-    });
-  });
-
-  describe('prop:error', () => {
-    it('should add class if error=true', () => {
-      const { getHostHTMLElement } = render(<Button error />);
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-button--error')).toBeTruthy();
     });
   });
 
