@@ -10,7 +10,7 @@
 $prefix: mzn-button;
 $group-prefix: #{$prefix}-group;
 $colors: (primary, secondary);
-$colors-and-error: list.push($colors, error);
+$colors-and-danger: list.push($colors, danger);
 $variants: (contained, outlined, text);
 $sizes: size.$sizes;
 
@@ -56,8 +56,10 @@ $default-options: (
     }
   }
 
-  @each $color in $colors-and-error {
-    &--#{$color} {
+  @each $name in $colors-and-danger {
+    $color: if($name == "danger", "error", $name);
+
+    &--#{$name} {
       --#{$prefix}-color: #{palette.color($color)};
       --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
       --#{$prefix}-active-bg: #{palette.color(#{$color}-active-bg)};
@@ -74,8 +76,10 @@ $default-options: (
     border-color: palette.color(action-disabled);
   }
 
-  @each $color in $colors-and-error {
-    &.#{$prefix}--#{$color} {
+  @each $name in $colors-and-danger {
+    $color: if($name == "danger", "error", $name);
+
+    &.#{$prefix}--#{$name} {
       --#{$prefix}-border: #{palette.color($color)};
     }
   }
@@ -86,8 +90,10 @@ $default-options: (
     background-color: palette.color(action-disabled-bg);
   }
 
-  @each $color in $colors-and-error {
-    &.#{$prefix}--#{$color} {
+  @each $name in $colors-and-danger {
+    $color: if($name == "danger", "error", $name);
+
+    &.#{$prefix}--#{$name} {
       --#{$prefix}-color: #{palette.color(on-#{$color})};
       --#{$prefix}-bg: #{palette.color($color)};
       --#{$prefix}-hover-bg: #{palette.color(#{$color}-light)};

@@ -13,8 +13,8 @@ export const buttonClasses = {
   variant: (variant: ButtonVariant) => (variant === 'text' ? '' : `${buttonPrefix}--${variant}`),
   color: (color: ButtonColor) => `${buttonPrefix}--${color}`,
   size: (size: ButtonSize) => `${buttonPrefix}--${size}`,
+  danger: `${buttonPrefix}--danger`,
   disabled: `${buttonPrefix}--disabled`,
-  error: `${buttonPrefix}--error`,
   icon: `${buttonPrefix}--icon`,
   loading: `${buttonPrefix}--loading`,
 };
