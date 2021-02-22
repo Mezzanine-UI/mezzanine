@@ -24,15 +24,15 @@ export const Variants: Story = (args) => ({
       }"
     >
       <button mzn-button="contained">primary</button>
-      <button mzn-button="contained" [color]="secondary">secondary</button>
+      <button mzn-button="contained" color="secondary">secondary</button>
       <button mzn-button="contained" error>error</button>
       <button mzn-button="contained" disabled>disabled</button>
       <button mzn-button="outlined">primary</button>
-      <button mzn-button="outlined" [color]="secondary">secondary</button>
+      <button mzn-button="outlined" color="secondary">secondary</button>
       <button mzn-button="outlined" error>error</button>
       <button mzn-button="outlined" disabled>disabled</button>
       <button mzn-button>primary</button>
-      <button mzn-button [color]="secondary">secondary</button>
+      <button mzn-button color="secondary">secondary</button>
       <button mzn-button error>error</button>
       <button mzn-button disabled>disabled</button>
     </div>

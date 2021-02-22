@@ -11,7 +11,7 @@ import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   alertClasses as classes,
   alertIcons,
-  AlertStatus,
+  AlertSeverity,
 } from '@mezzanine-ui/core/alert';
 import { HostBindingEnumClass } from '../cdk';
 
@@ -26,9 +26,9 @@ import { HostBindingEnumClass } from '../cdk';
   encapsulation: ViewEncapsulation.None,
   template: `
     <i
-      [mzn-icon]="statusIcon"
+      [mzn-icon]="severityIcon"
       [class]="classes.icon"
-      [color]="status"
+      [color]="severity"
     ></i>
     <p mzn-typography="body1" [class]="classes.message">
       <ng-content></ng-content>
@@ -49,30 +49,30 @@ export class MznAlertComponent {
 
   closeIcon = TimesIcon;
 
-  get statusIcon() {
-    return alertIcons[this.status];
+  get severityIcon() {
+    return alertIcons[this.severity];
   }
 
   /**
-   * Alert status.
+   * The severity of alert.
    * @default 'success'
    */
-  @HostBindingEnumClass(classes.status, [
+  @HostBindingEnumClass(classes.severity, [
     'success',
     'warning',
     'error',
   ])
   @Input()
-  status: AlertStatus = 'success';
+  severity: AlertSeverity = 'success';
 
   /**
    * Fired on close icon clicked.
    */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output()
-  readonly close = new EventEmitter<PointerEvent>();
+  readonly close = new EventEmitter<MouseEvent>();
 
-  onClose(event: PointerEvent) {
+  onClose(event: MouseEvent) {
     this.close.emit(event);
   }
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { configure, render, RenderResult } from '@testing-library/angular';
-import { toCssVar } from '@mezzanine-ui/core/css';
+import { toCssVar } from '@mezzanine-ui/system/css';
 import { MznIconModule } from '../icon';
 import {
   ButtonColor,

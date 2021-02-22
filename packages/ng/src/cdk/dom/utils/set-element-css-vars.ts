@@ -1,5 +1,5 @@
 import { Renderer2, RendererStyleFlags2 } from '@angular/core';
-import { CssVarInterpolations } from '@mezzanine-ui/core/css';
+import { CssVarInterpolations } from '@mezzanine-ui/system/css';
 
 export function setElementCssVars(
   element: Element,

@@ -1,5 +1,5 @@
 import { ElementRef, Renderer2 } from '@angular/core';
-import { CssVarInterpolations } from '@mezzanine-ui/core/css';
+import { CssVarInterpolations } from '@mezzanine-ui/system/css';
 import { createChangeEffect } from '../../changes';
 import { setElementCssVars } from './set-element-css-vars';
 

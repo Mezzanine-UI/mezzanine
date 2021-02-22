@@ -1,13 +1,13 @@
-import { toCssVar } from '@mezzanine-ui/core/css';
-import { Color } from '@mezzanine-ui/core/palette';
+import { toCssVar } from '@mezzanine-ui/system/css';
+import { Color } from '@mezzanine-ui/system/palette';
+import { render } from '@testing-library/angular';
 import {
+  MznTypographyComponent,
   TypographyAlign,
   TypographyColor,
   TypographyDisplay,
   TypographyVariant,
-} from '@mezzanine-ui/core/typography';
-import { render } from '@testing-library/angular';
-import { MznTypographyComponent } from '.';
+} from '.';
 
 describe('MznTypographyComponent', () => {
   describe('input: variant', () => {

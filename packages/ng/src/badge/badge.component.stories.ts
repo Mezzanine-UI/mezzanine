@@ -1,7 +1,6 @@
 import { moduleMetadata } from '@storybook/angular';
 import { Story, Meta } from '@storybook/angular/types-6-0';
-import { MznBadgeModule } from '.';
-import { MznBadgeComponent } from './badge.component';
+import { MznBadgeComponent, MznBadgeModule } from '.';
 
 export default {
   title: 'Data Display/Badge',

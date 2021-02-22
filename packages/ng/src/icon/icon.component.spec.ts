@@ -1,6 +1,6 @@
 import { CheckIcon, IconDefinition, PlusIcon } from '@mezzanine-ui/icons';
-import { toCssVar } from '@mezzanine-ui/core/css';
-import { Color } from '@mezzanine-ui/core/palette';
+import { toCssVar } from '@mezzanine-ui/system/css';
+import { Color } from '@mezzanine-ui/system/palette';
 import { IconColor } from '@mezzanine-ui/core/icon';
 import { render } from '@testing-library/angular';
 import { MznIconComponent } from '.';

@@ -1,7 +1,7 @@
 import { moduleMetadata } from '@storybook/angular';
 import { Story, Meta } from '@storybook/angular/types-6-0';
 import { action } from '@storybook/addon-actions';
-import { AlertStatus, MznAlertComponent, MznAlertModule } from '.';
+import { AlertSeverity, MznAlertComponent, MznAlertModule } from '.';
 
 export default {
   title: 'Feedback/Alert',
@@ -12,7 +12,7 @@ export default {
   ],
 } as Meta;
 
-const statusList: AlertStatus[] = [
+const severities: AlertSeverity[] = [
   'success',
   'warning',
   'error',
@@ -22,7 +22,7 @@ export const Playground: Story<MznAlertComponent & { content: string; }> = (args
   props: args,
   template: `
     <mzn-alert
-      [status]="status"
+      [severity]="severity"
       (close)="onClose($event)"
     >
       {{content}}
@@ -33,14 +33,14 @@ export const Playground: Story<MznAlertComponent & { content: string; }> = (args
 Playground.args = {
   content: 'Alert',
   onClose: action('onClose'),
-  status: 'success',
+  severity: 'success',
 };
 
 Playground.argTypes = {
-  status: {
+  severity: {
     control: {
       type: 'select',
-      options: statusList,
+      options: severities,
     },
   },
 };

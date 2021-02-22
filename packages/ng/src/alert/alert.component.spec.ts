@@ -6,7 +6,7 @@ import {
 } from '@testing-library/angular';
 import { MznIconModule } from '../icon';
 import { MznTypographyModule } from '../typography';
-import { AlertStatus, MznAlertComponent } from '.';
+import { AlertSeverity, MznAlertComponent } from '.';
 
 configure({
   defaultImports: [
@@ -28,7 +28,7 @@ describe('MznAlertComponent', () => {
     expect(element.classList.contains('mzn-alert')).toBeTruthy();
   });
 
-  it('should wrap the content by a p element and render status icon and close icon', async () => {
+  it('should wrap the content by a p element and render severity icon and close icon', async () => {
     const { container } = await render(MznAlertComponent, {
       template: `
         <mzn-alert>Hello</mzn-alert>
@@ -36,7 +36,7 @@ describe('MznAlertComponent', () => {
     });
     const element = container.firstElementChild as HTMLElement;
     const {
-      firstElementChild: statusIconElement,
+      firstElementChild: severityIconElement,
       lastElementChild: closeIconElement,
       children,
     } = element;
@@ -44,8 +44,8 @@ describe('MznAlertComponent', () => {
 
     expect(element.textContent).toBe('Hello');
 
-    expect(statusIconElement?.tagName.toLowerCase()).toBe('i');
-    expect(statusIconElement?.classList.contains('mzn-alert__icon'));
+    expect(severityIconElement?.tagName.toLowerCase()).toBe('i');
+    expect(severityIconElement?.classList.contains('mzn-alert__icon'));
 
     expect(messageElement?.textContent).toBe('Hello');
     expect(messageElement?.tagName.toLowerCase()).toBe('p');
@@ -55,8 +55,8 @@ describe('MznAlertComponent', () => {
     expect(closeIconElement?.classList.contains('mzn-alert__close-icon'));
   });
 
-  describe('input: status', () => {
-    it('should render status="success" by default', async () => {
+  describe('input: severity', () => {
+    it('should render severity="success" by default', async () => {
       const result = await render(MznAlertComponent, {
         template: `
           <mzn-alert>Hello</mzn-alert>
@@ -67,25 +67,25 @@ describe('MznAlertComponent', () => {
       expect(element.classList.contains('mzn-alert--success')).toBeTruthy();
     });
 
-    const statuses: AlertStatus[] = [
+    const severities: AlertSeverity[] = [
       'success',
       'warning',
       'error',
     ];
 
-    statuses.forEach((status) => {
-      it(`should add class if type="${status}"`, async () => {
+    severities.forEach((severity) => {
+      it(`should add class if type="${severity}"`, async () => {
         const result = await render(MznAlertComponent, {
           template: `
-            <mzn-alert [status]="status">Hello</mzn-alert>
+            <mzn-alert [severity]="severity">Hello</mzn-alert>
           `,
           componentProperties: {
-            status,
+            severity,
           },
         });
         const element = result.container.firstElementChild as HTMLElement;
 
-        expect(element.classList.contains(`mzn-alert--${status}`)).toBeTruthy();
+        expect(element.classList.contains(`mzn-alert--${severity}`)).toBeTruthy();
       });
     });
   });
