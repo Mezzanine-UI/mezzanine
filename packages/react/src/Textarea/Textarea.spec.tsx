@@ -128,6 +128,7 @@ describe('<Textarea />', () => {
             />
           );
         };
+
         const { getHostHTMLElement } = render(<TestComponent />);
         const element = getHostHTMLElement();
 
@@ -165,6 +166,7 @@ describe('<Textarea />', () => {
         />
       );
     };
+
     const { getHostHTMLElement } = render(<ControlledTextarea />);
     const element = getHostHTMLElement();
     const textareaElement = getTextareaElement(element);

@@ -134,6 +134,7 @@ describe('<Input />', () => {
             />
           );
         };
+
         const { getHostHTMLElement } = render(<TestComponent />);
         const element = getHostHTMLElement();
 
@@ -171,6 +172,7 @@ describe('<Input />', () => {
         />
       );
     };
+
     const { getHostHTMLElement } = render(<ControlledInput />);
     const element = getHostHTMLElement();
     const inputElement = getInputElement(element);

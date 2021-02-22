@@ -1,5 +1,5 @@
 export {
-  MessageStatus,
+  MessageSeverity,
 } from '@mezzanine-ui/core/message';
 export {
   MessageData,

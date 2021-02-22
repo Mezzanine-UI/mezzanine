@@ -7,7 +7,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Alert, { AlertStatus } from '.';
+import Alert, { AlertSeverity } from '.';
 
 describe('<Alert />', () => {
   afterEach(cleanup);
@@ -53,26 +53,26 @@ describe('<Alert />', () => {
     });
   });
 
-  describe('prop: status', () => {
-    it('should render status="success" by default', () => {
+  describe('prop: severity', () => {
+    it('should render severity="success" by default', () => {
       const { getHostHTMLElement } = render(<Alert />);
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-alert--success')).toBeTruthy();
     });
 
-    const statuses: AlertStatus[] = [
+    const severities: AlertSeverity[] = [
       'success',
       'warning',
       'error',
     ];
 
-    statuses.forEach((status) => {
-      it(`should add class if type="${status}"`, () => {
-        const { getHostHTMLElement } = render(<Alert status={status} />);
+    severities.forEach((severity) => {
+      it(`should add class if type="${severity}"`, () => {
+        const { getHostHTMLElement } = render(<Alert severity={severity} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-alert--${status}`)).toBeTruthy();
+        expect(element.classList.contains(`mzn-alert--${severity}`)).toBeTruthy();
       });
     });
   });

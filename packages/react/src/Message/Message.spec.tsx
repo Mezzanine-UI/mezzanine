@@ -10,9 +10,9 @@ import {
   cleanup,
   render,
 } from '../../__test-utils__';
-import Message, { MessageStatus } from '.';
+import Message, { MessageSeverity } from '.';
 
-const messageStatus: MessageStatus[] = [
+const severities: MessageSeverity[] = [
   'success',
   'warning',
   'error',
@@ -36,8 +36,8 @@ describe('<Message />', () => {
     expect(element.textContent).toBe('foo');
   });
 
-  describe('prop: status', () => {
-    it('should render status="info" by default', () => {
+  describe('prop: severity', () => {
+    it('should render severity="info" by default', () => {
       const { getHostHTMLElement } = render(<Message />);
       const element = getHostHTMLElement();
 
@@ -63,18 +63,18 @@ describe('<Message />', () => {
       },
     };
 
-    messageStatus.forEach((status) => {
-      it(`should add class if status="${status}"`, () => {
-        const { getHostHTMLElement } = render(<Message status={status} />);
+    severities.forEach((severity) => {
+      it(`should add class if severity="${severity}"`, () => {
+        const { getHostHTMLElement } = render(<Message severity={severity} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-message--${status}`)).toBeTruthy();
+        expect(element.classList.contains(`mzn-message--${severity}`)).toBeTruthy();
       });
 
-      const targetIcon = icons[status].icon;
+      const targetIcon = icons[severity].icon;
 
-      it(`should render "${targetIcon.name}" icon if status="${status}"`, () => {
-        const { getHostHTMLElement } = render(<Message status={status} />);
+      it(`should render "${targetIcon.name}" icon if severity="${severity}"`, () => {
+        const { getHostHTMLElement } = render(<Message severity={severity} />);
         const element = getHostHTMLElement();
         const {
           firstElementChild: iconElement,
@@ -89,8 +89,8 @@ describe('<Message />', () => {
 describe('Message API', () => {
   afterEach(cleanup);
 
-  messageStatus.forEach((status) => {
-    describe(`Message.${status}`, () => {
+  severities.forEach((severity) => {
+    describe(`Message.${severity}`, () => {
       afterEach(() => {
         act(() => {
           Message.destroy();
@@ -98,7 +98,7 @@ describe('Message API', () => {
       });
 
       const testMessage = 'foo';
-      const handler = Message[status];
+      const handler = Message[severity];
 
       expect(handler).toBeInstanceOf(Function);
 
@@ -114,7 +114,7 @@ describe('Message API', () => {
         expect(rootElement?.classList.contains('mzn-message__root')).toBeTruthy();
       });
 
-      it(`should find ${status} message and be able to remove it`, () => {
+      it(`should find ${severity} message and be able to remove it`, () => {
         let reference: ReactText;
 
         act(() => {
@@ -127,7 +127,7 @@ describe('Message API', () => {
 
         const messageElement = rootElement?.firstElementChild;
 
-        expect(messageElement?.classList.contains(`mzn-message--${status}`)).toBeTruthy();
+        expect(messageElement?.classList.contains(`mzn-message--${severity}`)).toBeTruthy();
         expect(messageElement?.textContent).toBe(testMessage);
 
         act(() => {

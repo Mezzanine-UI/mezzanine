@@ -1,4 +1,4 @@
-import { toCssVar } from '@mezzanine-ui/core/css';
+import { toCssVar } from '@mezzanine-ui/system/css';
 import {
   ButtonGroupOrientation,
   ButtonGroupSpacing,

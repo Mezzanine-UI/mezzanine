@@ -1,5 +1,5 @@
-import { toCssVar } from '@mezzanine-ui/core/css';
-import { Color } from '@mezzanine-ui/core/palette';
+import { toCssVar } from '@mezzanine-ui/system/css';
+import { Color } from '@mezzanine-ui/system/palette';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,

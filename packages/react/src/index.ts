@@ -85,12 +85,12 @@ export {
  * Feedback
  */
 export {
-  AlertStatus,
+  AlertSeverity,
   AlertProps,
   default as Alert,
 } from './Alert';
 export {
-  MessageStatus,
+  MessageSeverity,
   MessageData,
   default as Message,
 } from './Message';

@@ -1,5 +1,5 @@
 export {
-  AlertStatus,
+  AlertSeverity,
 } from '@mezzanine-ui/core/alert';
 export {
   AlertProps,

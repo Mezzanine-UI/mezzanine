@@ -1,5 +1,8 @@
 import {
-  DetailedHTMLProps, forwardRef, HTMLAttributes, MouseEventHandler,
+  DetailedHTMLProps,
+  forwardRef,
+  HTMLAttributes,
+  MouseEventHandler,
 } from 'react';
 import {
   toUploadResultCssVars,

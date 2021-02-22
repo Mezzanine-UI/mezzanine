@@ -1,7 +1,7 @@
 import {
-  MessageStatus,
   messageClasses as classes,
   messageIcons,
+  MessageSeverity,
 } from '@mezzanine-ui/core/message';
 import { FC, Key } from 'react';
 import { cx } from '../utils/cx';
@@ -20,10 +20,10 @@ export interface MessageData extends NotifierData {
    */
   duration?: NotifierData['duration'];
   /**
-   * Status of the message, controlls the styles.
+   * The severity of the message.
    * @default info
    */
-  status?: MessageStatus;
+  severity?: MessageSeverity;
 }
 
 export interface Message
@@ -31,10 +31,10 @@ export interface Message
   FC<MessageData>,
   Notifier<MessageData>,
   Record<
-  MessageStatus,
+  MessageSeverity,
   (
     message: MessageData['children'],
-    props?: Omit<MessageData, 'children' | 'status'>,
+    props?: Omit<MessageData, 'children' | 'severity'>,
   ) => Key
   > {
 }
@@ -49,15 +49,15 @@ export interface Message
 const Message: Message = ((props) => {
   const {
     children,
-    status = 'info',
+    severity = 'info',
   } = props;
-  const icon = messageIcons[status];
+  const icon = messageIcons[severity];
 
   return (
     <div
       className={cx(
         classes.host,
-        classes.status(status),
+        classes.severity(severity),
       )}
     >
       <Icon
@@ -89,11 +89,11 @@ Message.config = config;
 Message.destroy = destroy;
 Message.remove = remove;
 
-(['success', 'warning', 'error', 'info'] as const).forEach((status) => {
-  Message[status] = (message, props) => Message.add({
+(['success', 'warning', 'error', 'info'] as const).forEach((severity) => {
+  Message[severity] = (message, props) => Message.add({
     ...props,
     children: message,
-    status,
+    severity,
   });
 });
 

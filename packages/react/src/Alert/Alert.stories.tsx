@@ -5,10 +5,10 @@ export default {
   title: 'Feedback/Alert',
 } as Meta;
 
-type PlaygroundArgs = Required<Pick<AlertProps, 'children' | 'status'>>;
+type PlaygroundArgs = Required<Pick<AlertProps, 'children' | 'severity'>>;
 
-export const Playground: Story<PlaygroundArgs> = ({ children, status, ...args }) => (
-  <Alert status={status} {...args}>
+export const Playground: Story<PlaygroundArgs> = ({ children, severity, ...args }) => (
+  <Alert severity={severity} {...args}>
     {children}
   </Alert>
 );
@@ -18,12 +18,7 @@ Playground.args = {
 };
 
 Playground.argTypes = {
-  children: {
-    control: {
-      type: 'text',
-    },
-  },
-  status: {
+  severity: {
     control: {
       type: 'select',
       options: [

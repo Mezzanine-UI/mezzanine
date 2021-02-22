@@ -1,5 +1,5 @@
 import { Story, Meta } from '@storybook/react';
-import { Typography } from '..';
+import Typography from '../Typography';
 import Empty, { EmptyProps } from './Empty';
 
 export default {

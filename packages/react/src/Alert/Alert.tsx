@@ -7,7 +7,7 @@ import {
 import {
   alertClasses as classes,
   alertIcons,
-  AlertStatus,
+  AlertSeverity,
 } from '@mezzanine-ui/core/alert';
 import {
   TimesIcon,
@@ -23,10 +23,10 @@ export interface AlertProps
    */
   onClose?: MouseEventHandler;
   /**
-   * Alert status.
+   * The severity of alert.
    * @default success
    */
-  status?: AlertStatus;
+  severity?: AlertSeverity;
 }
 
 /**
@@ -38,25 +38,25 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) 
     className,
     children,
     onClose,
-    status = 'success',
+    severity = 'success',
     ...rest
   } = props;
 
-  const targetIcon = alertIcons[status];
+  const targetIcon = alertIcons[severity];
 
   return (
     <div
       ref={ref}
       className={cx(
         classes.host,
-        classes.status(status),
+        classes.severity(severity),
         className,
       )}
       {...rest}
     >
       <Icon
         icon={targetIcon}
-        color={status}
+        color={severity}
         className={classes.icon}
       />
       <Typography
