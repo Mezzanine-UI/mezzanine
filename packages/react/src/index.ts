@@ -17,9 +17,14 @@ export {
   ButtonSize,
   ButtonVariant,
   ButtonProps,
-  IconButtonProps,
   default as Button,
+  IconButtonProps,
   IconButton,
+  ButtonGroupChild,
+  ButtonGroupOrientation,
+  ButtonGroupSpacing,
+  ButtonGroupProps,
+  ButtonGroup,
 } from './Button';
 export {
   IconColor,
@@ -37,18 +42,57 @@ export {
 } from './Typography';
 
 /**
+ * Navigation
+ */
+export {
+  MenuSize,
+  MenuDividerProps,
+  MenuDivider,
+  MenuItemProps,
+  MenuItem,
+  MenuItemGroupProps,
+  MenuItemGroup,
+  MenuProps,
+  default as Menu,
+} from './Menu';
+
+/**
+ * Data Display
+ */
+export {
+  BadgeContainerProps,
+  BadgeContainer,
+  BadgeProps,
+  default as Badge,
+} from './Badge';
+export {
+  EmptyProps,
+  default as Empty,
+} from './Empty';
+export {
+  TagSize,
+  TagProps,
+  default as Tag,
+} from './Tag';
+
+/**
  * Data Entry
  */
 export {
-  InputProps,
   InputSize,
+  InputProps,
   default as Input,
 } from './Input';
 export {
-  TextareaProps,
   TextareaSize,
+  TextareaProps,
   default as Textarea,
 } from './Textarea';
+export {
+  TextFieldSize,
+  TextFieldProps,
+  default as TextField,
+} from './TextField';
 export {
   SwitchSize,
   default as Switch,
@@ -63,25 +107,6 @@ export {
 } from './Upload';
 
 /**
- * Data Display
- */
-export {
-  BadgeContainer,
-  BadgeContainerProps,
-  BadgeProps,
-  default as Badge,
-} from './Badge';
-export {
-  EmptyProps,
-  default as Empty,
-} from './Empty';
-export {
-  TagProps,
-  TagSize,
-  default as Tag,
-} from './Tag';
-
-/**
  * Feedback
  */
 export {
@@ -90,8 +115,8 @@ export {
   default as Alert,
 } from './Alert';
 export {
-  MessageSeverity,
   MessageData,
+  MessageSeverity,
   default as Message,
 } from './Message';
 export {
