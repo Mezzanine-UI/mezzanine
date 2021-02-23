@@ -1,0 +1,38 @@
+@use '~@mezzanine-ui/system/typography' as *;
+
+.#{$prefix} {
+  @each $prop in $base-props {
+    #{$prop}: var(--#{$prefix}-base-#{$prop});
+  }
+
+  @include smooth-font();
+
+  @each $variant in $variants {
+    &--#{$variant} {
+      margin: 0;
+
+      @include smooth-font();
+      @include variant($variant);
+    }
+  }
+
+  &--align {
+    text-align: var(--#{$prefix}-align);
+  }
+
+  &--color {
+    color: var(--#{$prefix}-color);
+  }
+
+  &--display {
+    display: var(--#{$prefix}-display);
+  }
+
+  &--ellipsis {
+    @include overflow-ellipsis();
+  }
+
+  &--nowrap {
+    @include nowrap();
+  }
+}

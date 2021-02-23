@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
+@use './message' as *;
+
+$height: 40px !default;
+$padding-left: 12px !default;
+$padding-right: 24px !default;
+$icon-size: 24px !default;
+$icon-gap: 12px !default;
+
+.#{$prefix} {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  height: $height;
+  margin-top: spacing.level(4);
+  padding-left: $padding-left;
+  padding-right: $padding-right;
+  background-color: palette.color(surface);
+  border: 1px solid var(--#{$prefix}-color);
+  flex-shrink: 0;
+  box-sizing: border-box;
+
+  &__icon {
+    color: var(--#{$prefix}-color);
+    font-size: typography.px-to-rem($icon-size);
+    margin-right: $icon-gap;
+  }
+
+  &__content {
+    @include typography.variant(body1);
+    @include typography.overflow-ellipsis();
+  }
+
+  @each $severity in $severities {
+    &--#{$severity} {
+      --#{$prefix}-color: #{palette.color(if($severity == "info", primary, $severity))};
+    }
+  }
+
+  &__root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+}

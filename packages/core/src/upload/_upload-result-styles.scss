@@ -1,0 +1,105 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use './upload-result' as *;
+
+$min-width: 292px !default;
+$padding-left: 16px !default;
+$padding-left-small: 12px !default;
+$padding-right: 8px !default;
+$padding-right-small: 4px !default;
+$icon-size: 24px !default;
+$icon-size-small: 16px !default;
+$icon-gap: 4px !default;
+$name-icon-gap: 4px !default;
+
+.#{$prefix} {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: palette.color(surface);
+  border: 1px solid palette.color(border);
+  min-width: $min-width;
+  padding: 0 $padding-right 0 $padding-left;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  .#{icon.$prefix} {
+    cursor: pointer;
+  }
+
+  &__name {
+    width: 100%;
+
+    @include typography.overflow-ellipsis();
+  }
+
+  &__actions {
+    display: inline-grid;
+    grid-auto-flow: column;
+    gap: $icon-gap;
+    align-items: center;
+    flex-shrink: 0;
+    font-size: var(--#{$prefix}-icon-size, typography.px-to-rem($icon-size));
+    color: var(--#{$prefix}-action-color, palette.color(action-inactive));
+    margin-left: $name-icon-gap;
+  }
+
+  &--loading {
+    --#{$prefix}-action-color: #{palette.color(primary)};
+
+    &::before {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: palette.color(primary-hover-bg);
+      transform-origin: left;
+      transform: scaleX(calc(var(--#{$prefix}-percentage, 0) / 100));
+    }
+
+    .#{icon.$prefix} {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
+  &:hover {
+    &:not(.#{$prefix}--error) {
+      --#{$prefix}-action-color: #{palette.color(primary)};
+
+      border-color: palette.color(primary);
+    }
+  }
+
+  &--error {
+    --#{$prefix}-action-color: #{palette.color(error)};
+
+    border-color: palette.color(error);
+    color: palette.color(error);
+  }
+
+  @each $size in $sizes {
+    &--#{$size} {
+      @if $size == small {
+        --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size-small)};
+
+        padding: 0 $padding-right-small 0 $padding-left-small;
+      }
+
+      @include typography.variant(
+        map.get(
+          (
+            small: input3,
+            medium: input2,
+            large: input1,
+          ),
+          $size
+        )
+      );
+    }
+  }
+}

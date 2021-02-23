@@ -1,0 +1,77 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './tag' as *;
+
+$label-min-width: 32px !default;
+$label-min-width-small: 24px !default;
+$padding-x: 12px !default;
+$padding-x-small: 8px !default;
+$icon-size: 20px !default;
+$icon-size-small: 12px !default;
+$icon-label-gap-x: 4px !default;
+
+.#{$prefix} {
+  --#{$prefix}-padding-x: #{$padding-x};
+
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  background-color: palette.color(primary-hover-bg);
+  color: palette.color(text-primary);
+  box-sizing: border-box;
+
+  @include typography.variant(input2, (text-decoration, text-transform));
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    outline: 0;
+
+    &:first-child:last-child {
+      margin: 0 calc(var(--#{$prefix}-padding-x) * -1);
+    }
+  }
+
+  &,
+  a:first-child:last-child {
+    padding: 0 var(--#{$prefix}-padding-x);
+  }
+
+  &__label {
+    display: inline-block;
+    min-width: var(--#{$prefix}-label-min-width, $label-min-width);
+
+    @include typography.nowrap();
+  }
+
+  &__close-icon {
+    font-size: var(--#{$prefix}-close-icon-size, typography.px-to-rem($icon-size));
+    margin-right: -#{$icon-label-gap-x};
+    margin-left: $icon-label-gap-x;
+    outline: 0;
+    cursor: pointer;
+  }
+
+  &--disabled {
+    background-color: palette.color(action-disabled-bg);
+    color: palette.color(action-disabled);
+
+    .#{$prefix}__close-icon {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
+  &--medium {
+    line-height: typography.prop(input3, line-height);
+  }
+
+  &--small {
+    --#{$prefix}-padding-x: #{$padding-x-small};
+    --#{$prefix}-label-min-width: #{$label-min-width-small};
+    --#{$prefix}-close-icon-size: #{typography.px-to-rem($icon-size-small)};
+
+    @include typography.variant(caption, (text-decoration, text-transform));
+  }
+}

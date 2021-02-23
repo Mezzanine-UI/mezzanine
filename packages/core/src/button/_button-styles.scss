@@ -1,0 +1,236 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/utils/list';
+@use '~@mezzanine-ui/system/orientation';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use './utils';
+@use './button' as *;
+
+$colors-and-danger: list.push($colors, danger);
+
+@function _get-colors($name) {
+  @return if($name == "danger", "error", $name);
+}
+
+$label-min-width: 32px !default;
+$label-min-width-small: 24px !default;
+$padding-x: 16px !default;
+$padding-x-small: 12px !default;
+$icon-size: 24px !default;
+$icon-size-small: 16px !default;
+$prefix-label-gap-x: 4px !default;
+$outlined-border-width: 1px !default;
+
+@mixin _base-color() {
+  &--disabled {
+    color: palette.color(action-disabled);
+  }
+
+  &:not(.#{$prefix}--disabled) {
+    // Fallback to transparent for text and outlined button.
+    background-color: var(--#{$prefix}-bg, transparent);
+    color: var(--#{$prefix}-color);
+
+    &:hover {
+      background-color: var(--#{$prefix}-hover-bg);
+    }
+
+    &:focus,
+    &:active {
+      background-color: var(--#{$prefix}-active-bg);
+    }
+  }
+
+  @each $name in $colors-and-danger {
+    $color: _get-colors($name);
+
+    &--#{$name} {
+      --#{$prefix}-color: #{palette.color($color)};
+      --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
+      --#{$prefix}-active-bg: #{palette.color(#{$color}-active-bg)};
+    }
+  }
+}
+
+@mixin _outlined-border-color() {
+  border: #{$outlined-border-width} solid var(--#{$prefix}-border);
+
+  &.#{$prefix}--disabled {
+    border-color: palette.color(action-disabled);
+  }
+
+  @each $name in $colors-and-danger {
+    $color: _get-colors($name);
+
+    &.#{$prefix}--#{$name} {
+      --#{$prefix}-border: #{palette.color($color)};
+    }
+  }
+}
+
+@mixin _contained-color() {
+  &.#{$prefix}--disabled {
+    background-color: palette.color(action-disabled-bg);
+  }
+
+  @each $name in $colors-and-danger {
+    $color: if($name == "danger", "error", $name);
+
+    &.#{$prefix}--#{$name} {
+      --#{$prefix}-color: #{palette.color(on-#{$color})};
+      --#{$prefix}-bg: #{palette.color($color)};
+      --#{$prefix}-hover-bg: #{palette.color(#{$color}-light)};
+      --#{$prefix}-active-bg: #{palette.color(#{$color}-dark)};
+    }
+  }
+}
+
+@mixin _size() {
+  padding: 0 $padding-x;
+
+  @each $size in $sizes {
+    $typography-variant: map.get(
+      (
+        small: button3,
+        medium: button2,
+        large: button1,
+      ),
+      $size
+    );
+
+    &--#{$size} {
+      --#{$prefix}-height: #{typography.prop($typography-variant, line-height)};
+
+      height: var(--#{$prefix}-height);
+
+      @include typography.variant($typography-variant);
+
+      @if $size == small {
+        padding: 0 $padding-x-small;
+      }
+    }
+  }
+
+  &__label {
+    min-width: $label-min-width;
+
+    .#{$prefix}--small & {
+      min-width: $label-min-width-small;
+    }
+  }
+
+  .#{icon.$prefix} {
+    font-size: typography.px-to-rem($icon-size);
+
+    .#{$prefix}--small & {
+      font-size: typography.px-to-rem($icon-size-small);
+    }
+  }
+
+  > * {
+    &:not(.#{$prefix}__label) {
+      &:first-child {
+        // For element on the left of button.
+        margin-left: -#{$prefix-label-gap-x};
+        margin-right: $prefix-label-gap-x;
+      }
+
+      &:last-child {
+        // For element on the right of button.
+        margin-right: -#{$prefix-label-gap-x};
+        margin-left: $prefix-label-gap-x;
+      }
+
+      &:first-child:last-child {
+        margin: 0;
+      }
+    }
+  }
+}
+
+@mixin _group-attached-spacing($orientation) {
+  $direction: if($orientation == horizontal, left, top);
+
+  .#{$prefix} {
+    &:not(:first-child) {
+      border-#{$direction}: 1px solid var(--#{$prefix}-color);
+    }
+
+    &--outlined {
+      &:not(:first-child) {
+        margin-#{$direction}: -1px;
+        border-#{$direction}: 0;
+      }
+    }
+
+    &--contained {
+      &:not(:first-child) {
+        margin-#{$direction}: 1px;
+        border-#{$direction}: 0;
+      }
+    }
+  }
+}
+
+.#{$prefix} {
+  @include utils.reset();
+  @include typography.nowrap();
+
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  &--disabled,
+  &--loading {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  @include _base-color();
+  @include _size();
+
+  &--outlined {
+    @include _outlined-border-color();
+  }
+
+  &--contained {
+    @include _contained-color();
+  }
+
+  &--icon {
+    padding: 0;
+    width: var(--#{$prefix}-height);
+  }
+}
+
+.#{$group-prefix} {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: var(--#{$group-prefix}-spacing);
+  align-items: center;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--vertical {
+    grid-auto-flow: row;
+  }
+
+  &--attached {
+    display: inline-flex;
+    gap: 0;
+
+    @each $orientation in orientation.$orientations {
+      &.#{$group-prefix}--#{$orientation} {
+        @if $orientation == vertical {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        @include _group-attached-spacing($orientation);
+      }
+    }
+  }
+}

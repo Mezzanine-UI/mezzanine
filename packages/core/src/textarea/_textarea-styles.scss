@@ -1,0 +1,56 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../text-field';
+@use './textarea' as *;
+
+$min-width: 452px !default;
+$min-width-small: 388px !default;
+$min-height: 102px !default;
+$padding-y: 8px !default;
+$count-gap: 4px !default;
+
+.#{$prefix} {
+  min-width: $min-width;
+  min-height: $min-height;
+  padding: #{$padding-y} 0;
+
+  textarea {
+    height: 100%;
+    margin: 0;
+    padding-left: var(--#{text-field.$prefix}-padding-left);
+    padding-right: var(--#{text-field.$prefix}-padding-right);
+
+    @include typography.variant(body1);
+  }
+
+  .#{text-field.$prefix}__clear-icon {
+    top: $padding-y;
+  }
+
+  &.#{text-field.$prefix}--small {
+    min-width: $min-width-small;
+
+    textarea {
+      @include typography.variant(body2);
+    }
+  }
+
+  &__count {
+    position: absolute;
+    top: calc(100% + #{$count-gap});
+    right: 0;
+    color: palette.color(text-secondary);
+
+    .#{$prefix}--upper-limit & {
+      color: palette.color(primary);
+    }
+
+    .#{text-field.$prefix}--error & {
+      color: palette.color(error);
+    }
+
+    .#{text-field.$prefix}--disabled & {
+      color: palette.color(text-disabled);
+    }
+  }
+}

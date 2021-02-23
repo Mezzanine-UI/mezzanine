@@ -1,0 +1,6 @@
+@use './upload' as *;
+
+.#{$input-prefix} {
+  position: absolute;
+  width: 0;
+}

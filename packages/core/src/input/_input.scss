@@ -1,23 +1,4 @@
-@use 'sass:map';
 @use '../text-field';
 
 $prefix: mzn-input;
 $sizes: text-field.$sizes;
-
-$default-options: (
-  text-field: text-field.$default-options,
-);
-
-@mixin core($options: ()) {
-  $options: map.deep-merge($default-options, $options);
-  $text-field-options: map.get($options, text-field);
-
-  @include text-field.core($text-field-options);
-
-  .#{$prefix} {
-    input {
-      padding-left: var(--#{text-field.$prefix}-padding-left);
-      padding-right: var(--#{text-field.$prefix}-padding-right);
-    }
-  }
-}

@@ -1,0 +1,10 @@
+@use 'sass:map';
+@use '../text-field';
+@use './input' as *;
+
+.#{$prefix} {
+  input {
+    padding-left: var(--#{text-field.$prefix}-padding-left);
+    padding-right: var(--#{text-field.$prefix}-padding-right);
+  }
+}

@@ -1,0 +1,51 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './badge' as *;
+
+$dot-size: 8px !default;
+$standalone-margin: 2px !default;
+
+$content-height: typography.prop(body2, line-height);
+
+.#{$prefix} {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  min-width: $content-height;
+  height: $content-height;
+  // For standalone
+  margin: $standalone-margin;
+  padding: 0 4px;
+  background-color: palette.color(error);
+  color: palette.color(on-error);
+  border-radius: calc(#{$content-height} / 2);
+  box-sizing: border-box;
+
+  @include typography.variant(body2);
+
+  &__container {
+    display: inline-block;
+    position: relative;
+
+    .#{$prefix} {
+      position: absolute;
+      right: 0;
+      top: 0;
+      margin: 0;
+      transform-origin: center;
+      transform: translate(50%, -50%);
+    }
+  }
+
+  &--dot {
+    min-width: initial;
+    width: $dot-size;
+    height: $dot-size;
+    border-radius: 50%;
+  }
+
+  &--hide {
+    display: none;
+  }
+}

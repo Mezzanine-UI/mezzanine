@@ -1,33 +1,49 @@
-@use './typography';
-@use './icon';
-@use './button';
-@use './popover';
-@use './menu';
-@use './input';
-@use './switch';
-@use './textarea';
-@use './upload';
-@use './badge';
-@use './empty';
-@use './tag';
-@use './alert';
-@use './message';
-@use './popconfirm';
+@use 'sass:map';
+@use 'sass:meta';
 
-@mixin styles() {
-  @include typography.core();
-  @include icon.core();
-  @include button.core();
-  @include popover.core();
-  @include menu.core();
-  @include input.core();
-  @include switch.core();
-  @include textarea.core();
-  @include upload.core();
-  @include badge.core();
-  @include empty.core();
-  @include tag.core();
-  @include alert.core();
-  @include message.core();
-  @include popconfirm.core();
+@mixin _load-styles($all-options, $namespace, $name: $namespace) {
+  $options: map.get($all-options, $name);
+
+  @if $options != false {
+    @if $options != null and meta.type-of($options) != "map" {
+      @error "Invalid options of #{$name}. Only accept false, null or map";
+    }
+
+    $url: #{"~@mezzanine-ui/core/"}#{$namespace}#{"/"}#{$name}#{"-styles"};
+
+    @include meta.load-css($url, $options);
+  }
+}
+
+@mixin styles($options: ()) {
+  // General
+  @include _load-styles($options, typography);
+  @include _load-styles($options, icon);
+  @include _load-styles($options, button);
+
+  // Utility
+  @include _load-styles($options, popover);
+
+  // Navigation
+  @include _load-styles($options, menu);
+
+  // Data Display
+  @include _load-styles($options, badge);
+  @include _load-styles($options, empty);
+  @include _load-styles($options, tag);
+
+  // Data Entry Common
+  @include _load-styles($options, text-field);
+
+  // Data Entry
+  @include _load-styles($options, input);
+  @include _load-styles($options, switch);
+  @include _load-styles($options, textarea);
+  @include _load-styles($options, upload);
+  @include _load-styles($options, upload, upload-result);
+
+  // Feedback
+  @include _load-styles($options, alert);
+  @include _load-styles($options, message);
+  @include _load-styles($options, popconfirm);
 }

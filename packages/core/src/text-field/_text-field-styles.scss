@@ -1,0 +1,182 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/size';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use './text-field' as *;
+
+$min-width: 160px !default;
+$min-width-small: 132px !default;
+$padding-x: 16px !default;
+$padding-x-small: 12px !default;
+$icon-size: 24px !default;
+$icon-size-small: 16px !default;
+$prefix-suffix-gap: 4px !default;
+
+.#{$prefix} {
+  --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size)};
+  --#{$prefix}-padding-x: #{$padding-x};
+  --#{$prefix}-padding-x-prefix: calc(var(--#{$prefix}-padding-x) + var(--#{$prefix}-icon-size));
+  --#{$prefix}-padding-left: var(--#{$prefix}-padding-x);
+  --#{$prefix}-padding-right: var(--#{$prefix}-padding-x);
+  --#{$prefix}-prefix-x-gap: calc(var(--#{$prefix}-padding-x) - #{$prefix-suffix-gap});
+
+  position: relative;
+  display: inline-flex;
+  min-width: $min-width;
+  background-color: palette.color(surface);
+  border: 1px solid var(--#{$prefix}-status-color, palette.color(border));
+  color: palette.color(text-secondary);
+  caret-color: palette.color(text-primary);
+  box-sizing: border-box;
+
+  input,
+  textarea {
+    font: inherit;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    color: inherit;
+    outline: none;
+    resize: none;
+    box-sizing: border-box;
+  }
+
+  ::placeholder {
+    color: inherit;
+  }
+
+  &__prefix,
+  &__suffix,
+  &__clear-icon {
+    position: absolute;
+    top: calc(calc(var(--#{$prefix}-inner-height) - var(--#{$prefix}-icon-size)) / 2);
+  }
+
+  &__prefix,
+  &__suffix {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  &__prefix {
+    left: var(--#{$prefix}-prefix-x-gap);
+  }
+
+  &__suffix,
+  &__clear-icon {
+    right: var(--#{$prefix}-prefix-x-gap);
+  }
+
+  &__clear-icon {
+    background-color: inherit;
+    border: none;
+    color: var(--#{$prefix}-status-color);
+    padding: 0;
+    line-height: 0;
+    outline: none;
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .#{icon.$prefix} {
+    font-size: var(--#{$prefix}-icon-size);
+  }
+
+  &:not(.#{$prefix}--disabled) {
+    .#{icon.$prefix} {
+      &:not(.#{$prefix}__clear-icon) {
+        color: palette.color(action-inactive);
+      }
+    }
+  }
+
+  &--active {
+    color: palette.color(text-primary);
+
+    &:hover,
+    &:focus-within {
+      &:not(.#{$prefix}--disabled) {
+        .#{$prefix}__clear-icon {
+          visibility: visible;
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &--error {
+    --#{$prefix}-status-color: #{palette.color(error)};
+  }
+
+  &--disabled {
+    background-color: palette.color(action-disabled-bg);
+    border-color: transparent;
+    color: palette.color(text-disabled);
+
+    &,
+    input,
+    textarea {
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .#{icon.$prefix} {
+      color: palette.color(action-disabled);
+    }
+  }
+
+  &--prefix {
+    --#{$prefix}-padding-left: var(--#{$prefix}-padding-x-prefix);
+  }
+
+  &--clearable,
+  &--suffix {
+    --#{$prefix}-padding-right: var(--#{$prefix}-padding-x-prefix);
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &:hover,
+  &:focus-within {
+    &:not(.#{$prefix}--disabled) {
+      &:not(.#{$prefix}--error) {
+        --#{$prefix}-status-color: #{palette.color(primary)};
+      }
+    }
+  }
+
+  @each $size in $sizes {
+    $typography-variant: map.get(
+      (
+        small: input3,
+        medium: input2,
+        large: input1,
+      ),
+      $size
+    );
+    $height: typography.prop($typography-variant, line-height);
+    $inner-height: calc(#{$height} - 2px);
+
+    &--#{$size} {
+      --#{$prefix}-inner-height: #{$inner-height};
+
+      @if $size == small {
+        --#{$prefix}-padding-x: #{$padding-x-small};
+        --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size-small)};
+
+        min-width: $min-width-small;
+      }
+
+      @include typography.variant($typography-variant, (line-height));
+
+      line-height: var(--#{$prefix}-inner-height);
+    }
+  }
+}

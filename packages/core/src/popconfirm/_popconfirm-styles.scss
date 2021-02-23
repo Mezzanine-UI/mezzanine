@@ -1,0 +1,30 @@
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use '../popover';
+@use './popconfirm' as *;
+
+$min-width: 244px !default;
+$title-icon-size: 24px !default;
+$title-icon-gap: 8px !default;
+$content-margin-top: 16px !default;
+
+.#{$prefix} {
+  min-width: $min-width;
+
+  .#{popover.$prefix}__title {
+    display: flex;
+    align-items: center;
+
+    .#{icon.$prefix} {
+      font-size: typography.px-to-rem($title-icon-size);
+      margin-right: $title-icon-gap;
+    }
+  }
+
+  .#{popover.$prefix}__content {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: $content-margin-top;
+  }
+}

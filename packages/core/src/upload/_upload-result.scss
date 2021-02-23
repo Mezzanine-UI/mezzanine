@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/size';
+@use './upload';
 
-$prefix: mzn-switch;
+$prefix: #{upload.$prefix}-result;
 $sizes: size.$sizes;

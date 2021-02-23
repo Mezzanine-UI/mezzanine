@@ -1,0 +1,28 @@
+@use '~@mezzanine-ui/system/typography';
+@use './empty' as *;
+
+$padding: 8px !default;
+$icon-size: 48px !default;
+$title-gap: 4px !default;
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: $padding;
+  box-sizing: border-box;
+
+  &__icon {
+    font-size: typography.px-to-rem($icon-size);
+  }
+
+  &__title {
+    margin-bottom: $title-gap;
+  }
+
+  &--full-height {
+    height: 100%;
+  }
+}
