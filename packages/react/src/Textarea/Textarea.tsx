@@ -12,7 +12,7 @@ import {
 import { cx } from '../utils/cx';
 import TextField, { TextFieldProps } from '../TextField';
 import Typography from '../Typography';
-import { useInputControl } from '../Input';
+import { useInputControl, useInputFormControl } from '../Input';
 
 export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'prefix' | 'suffix'> {
   /**
@@ -33,8 +33,14 @@ export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children
   placeholder?: string;
   /**
    * Whether the textarea is readonly.
+   * @default false
    */
   readOnly?: boolean;
+  /**
+   * Whether the input is required.
+   * @default false
+   */
+  required?: boolean;
   /**
    * The rows of textarea.
    */
@@ -53,8 +59,8 @@ export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children
    */
   textareaProps?: Omit<
   DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>,
-  | keyof TextareaProps
-  | `aria-${'disabled' | 'multiline' | 'readonly'}`
+  | Exclude<keyof TextareaProps, 'className'>
+  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   | 'ref'
   >;
   /**
@@ -71,13 +77,14 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
     className,
     clearable = false,
     defaultValue,
-    disabled = false,
-    error = false,
-    fullWidth = false,
+    disabled: disabledProp = false,
+    error: errorProp = false,
+    fullWidth: fullWidthProp = false,
     maxLength,
     onChange: onChangeProp,
-    placeholder = '',
+    placeholder,
     readOnly = false,
+    required: requiredProp = false,
     rows,
     size = 'medium',
     textareaRef: textareaRefProp,
@@ -95,6 +102,17 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
     defaultValue,
     onChange: onChangeProp,
     value: valueProp,
+  });
+  const {
+    disabled,
+    error,
+    fullWidth,
+    required,
+  } = useInputFormControl({
+    disabled: disabledProp,
+    error: errorProp,
+    fullWidth: fullWidthProp,
+    required: requiredProp,
   });
   const currentLength = value.length;
   const upperLimit = typeof maxLength === 'number' && currentLength >= maxLength;
@@ -123,11 +141,13 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
         aria-disabled={disabled}
         aria-multiline
         aria-readonly={readOnly}
+        aria-required={required}
         disabled={disabled}
         maxLength={maxLength}
         onChange={onChange}
         placeholder={placeholder}
         readOnly={readOnly}
+        required={required}
         rows={rows}
         value={value}
       />
