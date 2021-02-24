@@ -42,6 +42,9 @@
   @include _load-styles($options, upload);
   @include _load-styles($options, upload, upload-result);
 
+  // Data Entry Form
+  @include _load-styles($options, form, form-field);
+
   // Feedback
   @include _load-styles($options, alert);
   @include _load-styles($options, message);

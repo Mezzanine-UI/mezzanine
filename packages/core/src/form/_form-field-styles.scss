@@ -1,0 +1,89 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use '../text-field';
+@use './form-field' as *;
+
+$preserve-margin-bottom: 24px !default;
+$label-gap: 4px !default;
+$asterisk-gap: 4px !default;
+$label-remark-gap: 32px !default;
+$remark-icon-size: 16px !default;
+$remark-icon-gap: 4px !default;
+$severity-icon-size: 16px !default;
+$severity-icon-gap: 4px !default;
+$message-gap: 4px !default;
+
+.#{$prefix} {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: $preserve-margin-bottom;
+
+  &__label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: $label-gap;
+    color: palette.color(action-inactive);
+
+    @include typography.variant(h6);
+  }
+
+  &__asterisk,
+  &__remark,
+  &__message {
+    @include typography.variant(caption);
+  }
+
+  &__asterisk {
+    margin-left: $asterisk-gap;
+    color: palette.color(error);
+    vertical-align: top;
+  }
+
+  &__remark {
+    display: inline-flex;
+    align-items: center;
+    margin-left: $label-remark-gap;
+
+    .#{icon.$prefix} {
+      font-size: $remark-icon-size;
+
+      &:not(:first-child) {
+        margin-left: $remark-icon-gap;
+      }
+    }
+  }
+
+  &__message {
+    display: inline-flex;
+    align-items: center;
+    position: absolute;
+    top: 100%;
+    margin-top: $message-gap;
+    color: var(--#{$prefix}-severity-color, palette.color(action-inactive));
+  }
+
+  &__severity-icon {
+    font-size: typography.px-to-rem($severity-icon-size);
+    margin-right: $severity-icon-gap;
+  }
+
+  &--disabled {
+    .#{$prefix}__message {
+      display: none;
+    }
+  }
+
+  &--full-width {
+    width: 100%;
+  }
+
+  @each $severity in $severities {
+    &--#{$severity} {
+      --#{$prefix}-severity-color: #{palette.color($severity)};
+    }
+  }
+}

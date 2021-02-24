@@ -1,0 +1,5 @@
+@use '~@mezzanine-ui/system/severity';
+@use './form';
+
+$prefix: #{form.$prefix}-field;
+$severities: severity.$severities;
