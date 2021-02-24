@@ -11,6 +11,11 @@ export {
   default as TestRenderer,
 } from 'react-test-renderer';
 export * from '@testing-library/react';
+export {
+  act as actHook,
+  renderHook,
+  cleanup as cleanupHook,
+} from '@testing-library/react-hooks';
 
 export type RenderResult<Q extends Queries = typeof queries> = CoreRenderResult<Q> & {
   getHostHTMLElement<E extends Element = HTMLElement>(): E;

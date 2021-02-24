@@ -12,6 +12,7 @@ import {
 import { cx } from '../utils/cx';
 import TextField, { TextFieldProps } from '../TextField';
 import { useInputControl } from './useInputControl';
+import { useInputFormControl } from './useInputFormControl';
 
 export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear'> {
   /**
@@ -28,7 +29,7 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
   inputProps?: Omit<
   DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
   | Exclude<keyof InputProps, 'className'>
-  | `aria-${'disabled' | 'multiline' | 'readonly'}`
+  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   | 'ref'
   >;
   /**
@@ -41,8 +42,14 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
   placeholder?: string;
   /**
    * Whether the input is readonly.
+   * @default false
    */
   readOnly?: boolean;
+  /**
+   * Whether the input is required.
+   * @default false
+   */
+  required?: boolean;
   /**
    * The size of input.
    * @default 'medium'
@@ -62,15 +69,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
     className,
     clearable = false,
     defaultValue,
-    disabled = false,
-    error = false,
-    fullWidth = false,
+    disabled: disabledProp = false,
+    error: errorProp = false,
+    fullWidth: fullWidthProp = false,
     inputRef: inputRefProp,
     inputProps,
     onChange: onChangeProp,
     placeholder,
     prefix,
     readOnly = false,
+    required: requiredProp = false,
     size = 'medium',
     suffix,
     value: valueProp,
@@ -86,6 +94,17 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
     defaultValue,
     onChange: onChangeProp,
     value: valueProp,
+  });
+  const {
+    disabled,
+    error,
+    fullWidth,
+    required,
+  } = useInputFormControl({
+    disabled: disabledProp,
+    error: errorProp,
+    fullWidth: fullWidthProp,
+    required: requiredProp,
   });
 
   return (
@@ -111,10 +130,12 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
         aria-disabled={disabled}
         aria-multiline={false}
         aria-readonly={readOnly}
+        aria-required={required}
         disabled={disabled}
         onChange={onChange}
         placeholder={placeholder}
         readOnly={readOnly}
+        required={required}
         value={value}
       />
     </TextField>
