@@ -85,6 +85,10 @@ export {
   default as Drawer,
 } from './Drawer';
 export {
+  DropdownProps,
+  default as Dropdown,
+} from './Dropdown';
+export {
   NavigationItem,
   NavigationItemProps,
   NavigationSubMenu,

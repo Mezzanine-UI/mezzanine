@@ -16,6 +16,8 @@ export { EyeSlashIcon } from './eye-slash';
 export { FolderOpenIcon } from './folder-open';
 export { InfoCircleFilledIcon } from './info-circle-filled';
 export { MinusCircleFilledIcon } from './minus-circle-filled';
+export { MoreHorizontalIcon } from './more-horizontal';
+export { MoreVerticalIcon } from './more-vertical';
 export { PlusIcon } from './plus';
 export { SearchIcon } from './search';
 export { SpinnerIcon } from './spinner';
