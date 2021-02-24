@@ -3,6 +3,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '../icon';
+@use '../form';
 @use './text-field' as *;
 
 $min-width: 160px !default;
@@ -20,12 +21,13 @@ $prefix-suffix-gap: 4px !default;
   --#{$prefix}-padding-left: var(--#{$prefix}-padding-x);
   --#{$prefix}-padding-right: var(--#{$prefix}-padding-x);
   --#{$prefix}-prefix-x-gap: calc(var(--#{$prefix}-padding-x) - #{$prefix-suffix-gap});
+  --#{$prefix}-interact-icon-color: var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color));
 
   position: relative;
   display: inline-flex;
   min-width: $min-width;
   background-color: palette.color(surface);
-  border: 1px solid var(--#{$prefix}-status-color, palette.color(border));
+  border: 1px solid var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color, palette.color(border)));
   color: palette.color(text-secondary);
   caret-color: palette.color(text-primary);
   box-sizing: border-box;
@@ -74,7 +76,7 @@ $prefix-suffix-gap: 4px !default;
   &__clear-icon {
     background-color: inherit;
     border: none;
-    color: var(--#{$prefix}-status-color);
+    color: var(--#{$prefix}-interact-icon-color);
     padding: 0;
     line-height: 0;
     outline: none;
@@ -146,7 +148,7 @@ $prefix-suffix-gap: 4px !default;
   &:hover,
   &:focus-within {
     &:not(.#{$prefix}--disabled) {
-      &:not(.#{$prefix}--error) {
+      &:not(.#{$prefix}--error, .#{form.$field-prefix}--success, .#{form.$field-prefix}--error, .#{form.$field-prefix}--warning) {
         --#{$prefix}-status-color: #{palette.color(primary)};
       }
     }
