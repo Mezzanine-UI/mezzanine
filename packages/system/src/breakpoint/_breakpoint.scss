@@ -1,0 +1,74 @@
+@use 'sass:map';
+@use '../utils/list' as utils-list;
+
+$prefix: mzn-bp;
+
+$sm: 576px !default;
+$md: 768px !default;
+$lg: 992px !default;
+$xl: 1200px !default;
+$xxl: 1400px !default;
+
+$breakpoints: (
+  sm: $sm,
+  md: $md,
+  lg: $lg,
+  xl: $xl,
+  xxl: $xxl,
+);
+
+$breakpoint-names: (
+  sm,
+  md,
+  lg,
+  xl,
+  xxl,
+);
+
+@function is-valid-breakpoint-name($breakpoint-name) {
+  @return utils-list.includes($breakpoint-names, $breakpoint-name);
+}
+
+@function get($breakpoint-name) {
+  @if not is-valid-breakpoint-name($breakpoint-name) {
+    @error "Invalid breakpoint name #{$breakpoint-name}. Please choose one of #{$breakpoint-names}";
+  }
+
+  @return map.get($breakpoints, $breakpoint-name);
+}
+
+@mixin rules-above($min, $max: null) {
+  @if not is-valid-breakpoint-name($min) {
+    @error "Invalid breakpoint name #{$min}. Please choose one of #{$breakpoint-names}";
+  }
+
+  @media (min-width: get($min)) {
+    @if ($max == null) {
+      @content;
+    } @else if (is-valid-breakpoint-name($max)) {
+      @media (max-width: get($max) - 1px) {
+        @content;
+      }
+    } @else {
+      @error "Invalid breakpoint name #{$max}. Please choose one of #{$breakpoint-names}";
+    }
+  }
+}
+
+@mixin rules-below($max, $min: null) {
+  @if not is-valid-breakpoint-name($max) {
+    @error "Invalid breakpoint name #{$max}. Please choose one of #{$breakpoint-names}";
+  }
+
+  @media (max-width: get($max)) {
+    @if ($min == null) {
+      @content;
+    } @else if (is-valid-breakpoint-name($min)) {
+      @media (min-width: get($min) + 1px) {
+        @content;
+      }
+    } @else {
+      @error "Invalid breakpoint name #{$min}. Please choose one of #{$breakpoint-names}";
+    }
+  }
+}
