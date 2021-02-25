@@ -79,10 +79,24 @@ export {
  * Data Entry
  */
 export {
+  FormControl,
+  FormControlContext,
+  FormFieldProps,
+  FormField,
+  FormLabelProps,
+  FormLabel,
+  FormMessageProps,
+  FormMessage,
+} from './Form';
+export {
   InputSize,
   InputProps,
   default as Input,
 } from './Input';
+export {
+  SwitchSize,
+  default as Switch,
+} from './Switch';
 export {
   TextareaSize,
   TextareaProps,
@@ -93,10 +107,6 @@ export {
   TextFieldProps,
   default as TextField,
 } from './TextField';
-export {
-  SwitchSize,
-  default as Switch,
-} from './Switch';
 export {
   UploadButtonProps,
   UploadButton,
