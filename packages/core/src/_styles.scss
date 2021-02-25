@@ -22,8 +22,8 @@
   @include _load-styles($options, button);
 
   // Utility
-  @include _load-styles($options, popover);
   @include _load-styles($options, overlay);
+  @include _load-styles($options, popover);
 
   // Navigation
   @include _load-styles($options, menu);
@@ -49,5 +49,6 @@
   // Feedback
   @include _load-styles($options, alert);
   @include _load-styles($options, message);
+  @include _load-styles($options, modal);
   @include _load-styles($options, popconfirm);
 }

@@ -1,0 +1,202 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/breakpoint';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/z-index';
+@use '../button';
+@use './modal' as *;
+
+$window-gap: 24px !default;
+$padding-x: 32px !default;
+$padding-y: 16px !default;
+$close-icon-size: 24px !default;
+$title-gap: 4px !default;
+$title-icon-size: 32px !default;
+$action-min-width: 100px !default;
+
+$sm-md-width-small: 552px !default;
+$sm-md-width-medium: 552px !default;
+$sm-md-width-large: 576px !default;
+$sm-md-width-extra-large: 576px !default;
+
+$md-lg-width-small: 368px !default;
+$md-lg-width-medium: 460px !default;
+$md-lg-width-large: 648px !default;
+$md-lg-width-extra-large: 736px !default;
+
+$lg-xl-width-small: 320px !default;
+$lg-xl-width-medium: 480px !default;
+$lg-xl-width-large: 716px !default;
+$lg-xl-width-extra-large: 936px !default;
+
+$xl-width-small: 384px !default;
+$xl-width-medium: 576px !default;
+$xl-width-large: 864px !default;
+$xl-width-extra-large: 1104px !default;
+
+$width-map: (
+  (
+    from: sm,
+    to: md,
+    values: (
+      small: $sm-md-width-small,
+      medium: $sm-md-width-medium,
+      large: $sm-md-width-large,
+      extra-large: $sm-md-width-extra-large,
+    ),
+  ),
+  (
+    from: md,
+    to: lg,
+    values: (
+      small: $md-lg-width-small,
+      medium: $md-lg-width-medium,
+      large: $md-lg-width-large,
+      extra-large: $md-lg-width-extra-large,
+    ),
+  ),
+  (
+    from: lg,
+    to: xl,
+    values: (
+      small: $lg-xl-width-small,
+      medium: $lg-xl-width-medium,
+      large: $lg-xl-width-large,
+      extra-large: $lg-xl-width-extra-large,
+    ),
+  ),
+  (
+    from: xl,
+    values: (
+      small: $xl-width-small,
+      medium: $xl-width-medium,
+      large: $xl-width-large,
+      extra-large: $xl-width-extra-large,
+    ),
+  )
+);
+
+.#{$prefix} {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: palette.color(surface);
+  box-sizing: border-box;
+
+  @include breakpoint.below(sm) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  @include breakpoint.above(sm) {
+    margin: $window-gap;
+    max-height: calc(100% - #{$window-gap} * 2);
+  }
+
+  &__overlay {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: z-index.get(modal);
+  }
+
+  &__close-icon {
+    position: absolute;
+    top: $padding-y;
+    right: $padding-x;
+    font-size: typography.px-to-rem($close-icon-size);
+    color: palette.color(action-inactive);
+    cursor: pointer;
+    box-sizing: border-box;
+
+    &:hover {
+      color: palette.color(action-active);
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    flex: 0 0;
+    padding: $padding-y $padding-x $padding-y - 1px $padding-x;
+    border-bottom: 1px solid palette.color(border);
+    box-sizing: border-box;
+
+    @include breakpoint.below(xl) {
+      .#{$prefix}--close-icon & {
+        padding-right: $close-icon-size + $title-gap + $padding-x;
+      }
+    }
+
+    @include breakpoint.above(xl) {
+      padding-right: 24%;
+    }
+  }
+
+  &__title-icon {
+    font-size: typography.px-to-rem($title-icon-size);
+    color: palette.color(primary);
+    margin-right: $title-gap;
+
+    .#{$prefix}--danger & {
+      color: palette.color(error);
+    }
+  }
+
+  &__title {
+    margin: 0;
+
+    @include typography.overflow-ellipsis();
+    @include typography.variant(h3);
+
+    &--large {
+      @include typography.variant(h1);
+    }
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    padding: $padding-y $padding-x;
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    @include typography.variant(body1);
+
+    &:not(:last-child) {
+      padding-bottom: $padding-y + $padding-x;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 0 0;
+    padding: $padding-y - 1px $padding-x $padding-y $padding-x;
+    border-top: 1px solid palette.color(border);
+    box-sizing: border-box;
+  }
+
+  &__actions {
+    .#{button.$prefix} {
+      min-width: $action-min-width;
+    }
+  }
+
+  @each $config in $width-map {
+    $from: map.get($config, from);
+    $to: map.get($config, to);
+    $values: map.get($config, values);
+
+    @include breakpoint.between($from, $to) {
+      @each $size in $sizes {
+        &--#{$size} {
+          width: map.get($values, $size);
+        }
+      }
+    }
+  }
+}
