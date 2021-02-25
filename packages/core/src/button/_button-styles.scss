@@ -75,7 +75,7 @@ $outlined-border-width: 1px !default;
   }
 
   @each $name in $colors-and-danger {
-    $color: if($name == "danger", "error", $name);
+    $color: _get-colors($name);
 
     &.#{$prefix}--#{$name} {
       --#{$prefix}-color: #{palette.color(on-#{$color})};

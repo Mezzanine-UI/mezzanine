@@ -40,12 +40,12 @@ describe('button', () => {
       });
     });
 
-    it('prop:disabled', () => {
-      expect(classes.disabled).toBe('mzn-button--disabled');
+    it('prop:danger', () => {
+      expect(classes.danger).toBe('mzn-button--danger');
     });
 
-    it('prop:error', () => {
-      expect(classes.error).toBe('mzn-button--error');
+    it('prop:disabled', () => {
+      expect(classes.disabled).toBe('mzn-button--disabled');
     });
 
     it('prop:size', () => {
