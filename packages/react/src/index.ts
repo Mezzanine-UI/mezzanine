@@ -125,10 +125,24 @@ export {
   default as Alert,
 } from './Alert';
 export {
+  ConfirmActionsProps,
+  default as ConfirmActions,
+} from './ConfirmActions';
+export {
   MessageData,
   MessageSeverity,
   default as Message,
 } from './Message';
+export {
+  ModalFooter,
+  ModalHeaderProps,
+  ModalHeader,
+  ModalBodyProps,
+  ModalBody,
+  ModalFooterProps,
+  ModalProps,
+  default as Modal,
+} from './Modal';
 export {
   PopconfirmProps,
   default as Popconfirm,
