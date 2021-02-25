@@ -153,3 +153,7 @@ export {
   PortalProps,
   default as Portal,
 } from './Portal';
+export {
+  OverlayProps,
+  default as Overlay,
+} from './Overlay';
