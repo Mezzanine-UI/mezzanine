@@ -23,6 +23,7 @@
 
   // Utility
   @include _load-styles($options, popover);
+  @include _load-styles($options, overlay);
 
   // Navigation
   @include _load-styles($options, menu);
