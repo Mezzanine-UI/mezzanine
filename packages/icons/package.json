@@ -9,10 +9,10 @@
     "directory": "packages/icons"
   },
   "license": "MIT",
-  "sideEffects": [
-    "**/*.scss",
-    "**/*.css"
-  ],
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "sideEffects": false,
   "publishConfig": {
     "access": "public"
   },
