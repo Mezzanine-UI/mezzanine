@@ -1,0 +1,12 @@
+{
+  "name": "@mezzanine-ui/ng/tag",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/icons": "mezzanine-ui.icons",
+        "@mezzanine-ui/core/tag": "mezzanine-ui.core.tag"
+      }
+    }
+  }
+}

@@ -7,14 +7,14 @@
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "importHelpers": true,
-    "target": "es2017",
+    "target": "es2018",
     "module": "esnext",
     "moduleResolution": "node",
     "noEmitHelpers": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "lib": ["dom", "dom.iterable", "esnext"]
   },
   "exclude": ["node_modules", "**/node_modules"]

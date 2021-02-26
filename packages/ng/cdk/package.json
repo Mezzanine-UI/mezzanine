@@ -1,0 +1,8 @@
+{
+  "name": "@mezzanine-ui/ng/cdk",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts"
+    }
+  }
+}

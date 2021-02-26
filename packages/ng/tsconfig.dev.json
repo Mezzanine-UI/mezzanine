@@ -4,6 +4,6 @@
     "outDir": "./out-tsc/lib",
     "types": []
   },
-  "include": ["src"],
-  "exclude": ["**/*.spec.*"]
+  "include": ["."],
+  "exclude": ["**/*.spec.*", ".storybook", "node_modules", "dist"]
 }

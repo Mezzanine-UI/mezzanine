@@ -1,0 +1,9 @@
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
+  "deleteDestPath": false,
+  "dest": "./dist",
+  "lib": {
+    "entryFile": "index.ts"
+  },
+  "whitelistedNonPeerDependencies": ["."]
+}

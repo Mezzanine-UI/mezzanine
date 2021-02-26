@@ -1,11 +1,19 @@
 {
-  "packages": ["packages/*"],
+  "packages": [
+    "packages/core",
+    "packages/icons",
+    "packages/ng",
+    "packages/react",
+    "packages/system"
+  ],
   "npmClient": "yarn",
   "npmClientArgs": ["--no-lockfile"],
   "useWorkspaces": true,
   "version": "independent",
   "command": {
     "version": {
+      "allowBranch": "main",
+      "conventionalCommits": true,
       "ignoreChanges": [
         "**/__test-utils__",
         "**/*.spec.*",
@@ -13,8 +21,7 @@
         "**/*.md",
         "**/*.mdx"
       ],
-      "message": "chore(release): %s",
-      "conventionalCommits": true,
+      "message": "chore: release",
       "yes": true
     },
     "publish": {

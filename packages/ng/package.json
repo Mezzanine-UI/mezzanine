@@ -14,8 +14,10 @@
     "access": "public"
   },
   "scripts": {
-    "test": "jest",
-    "test:coverage": "jest --coverage",
+    "test": "ng test",
+    "test:coverage": "ng test --coverage",
+    "build": "node ../../scripts/prepareBuild.js && ng build",
+    "build:clean": "node ../../scripts/cleanBuild.js",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d . --disableLifeCycleHooks --disablePrivate --disableProtected",
     "storybook": "yarn docs:json && start-storybook -p 6006",
     "storybook:build": "yarn docs:json && build-storybook"
@@ -55,8 +57,8 @@
     "@compodoc/compodoc": "^1.1.11",
     "@storybook/angular": "^6.1.15",
     "@testing-library/angular": "^10.3.1",
-    "ng-packagr": "^11.1.2",
     "jest-preset-angular": "^8.3.2",
+    "ng-packagr": "^11.1.2",
     "rxjs": "~6.6.3",
     "zone.js": "~0.11.3"
   }

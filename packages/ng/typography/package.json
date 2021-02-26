@@ -1,0 +1,11 @@
+{
+  "name": "@mezzanine-ui/ng/typography",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/core/typography": "mezzanine-ui.core.typography"
+      }
+    }
+  }
+}

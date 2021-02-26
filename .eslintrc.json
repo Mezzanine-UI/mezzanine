@@ -188,6 +188,14 @@
       }
     },
     {
+      "files": ["./scripts/*.js"],
+      "rules": {
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "@typescript-eslint/no-var-requires": "off"
+      }
+    },
+    {
       "files": ["*.ts", "*.tsx"],
       "rules": {
         "consistent-return": "off",

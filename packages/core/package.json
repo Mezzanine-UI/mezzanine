@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build": "node ../../scripts/build.js",
+    "build:clean": "node ../../scripts/cleanBuild.js"
   },
   "dependencies": {
     "@mezzanine-ui/icons": "^0.0.0",

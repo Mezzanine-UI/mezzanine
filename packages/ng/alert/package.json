@@ -1,0 +1,12 @@
+{
+  "name": "@mezzanine-ui/ng/alert",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/icons": "mezzanine-ui.icons",
+        "@mezzanine-ui/core/alert": "mezzanine-ui.core.alert"
+      }
+    }
+  }
+}

@@ -18,7 +18,9 @@
   },
   "scripts": {
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build": "node ../../scripts/build.js",
+    "build:clean": "node ../../scripts/cleanBuild.js"
   },
   "dependencies": {
     "tslib": "^2.1.0"

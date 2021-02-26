@@ -7,7 +7,7 @@ const CORE_PATH = path.resolve(PACKAGES_PATH, 'core');
 
 module.exports = {
   stories: [
-    '../src/**/*.stories.@(mdx|ts)'
+    '../**/*.stories.@(mdx|ts)'
   ],
   addons: [
     '@storybook/addon-essentials',

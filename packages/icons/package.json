@@ -15,5 +15,9 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "build:clean": "node ../../scripts/cleanBuild.js"
   }
 }

@@ -2,26 +2,37 @@
   "$schema": "../../node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "cli": {
+    "analytics": false,
     "packageManager": "yarn"
   },
   "newProjectRoot": "projects",
   "projects": {
-    "ng": {
-      "projectType": "library",
-      "schematics": {
-        "@schematics/angular:library": {
-          "strict": true
-        }
-      },
+    "storybook": {
+      "projectType": "application",
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "",
       "prefix": "mzn",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:dev-browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "tsConfig": "tsconfig.dev.json",
             "styles": ["../../.storybook/global.scss"]
+          }
+        }
+      }
+    },
+    "mzn": {
+      "projectType": "library",
+      "root": "",
+      "sourceRoot": "",
+      "prefix": "mzn",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "tsConfig": "tsconfig.lib.json",
+            "project": "ng-package.json"
           }
         },
         "test": {
@@ -30,5 +41,5 @@
       }
     }
   },
-  "defaultProject": "ng"
+  "defaultProject": "mzn"
 }

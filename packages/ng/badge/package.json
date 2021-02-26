@@ -1,0 +1,11 @@
+{
+  "name": "@mezzanine-ui/ng/badge",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/core/badge": "mezzanine-ui.core.badge"
+      }
+    }
+  }
+}

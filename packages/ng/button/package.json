@@ -1,0 +1,12 @@
+{
+  "name": "@mezzanine-ui/ng/button",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/icons": "mezzanine-ui.icons",
+        "@mezzanine-ui/core/button": "mezzanine-ui.core.button"
+      }
+    }
+  }
+}
