@@ -5,17 +5,19 @@ import {
   CheckCircleFilledIcon,
   ChevronUpIcon,
   ChevronDownIcon,
+  DownloadIcon,
   ExclamationCircleFilledIcon,
   EyeIcon,
   EyeSlashIcon,
+  FolderOpenIcon,
   InfoCircleFilledIcon,
+  MinusCircleFilledIcon,
   PlusIcon,
   SearchIcon,
   SpinnerIcon,
   TimesIcon,
   TimesCircleFilledIcon,
-  FolderOpenIcon,
-  MinusCircleFilledIcon,
+  UploadIcon,
 } from '@mezzanine-ui/icons';
 import { IconColor, MznIconComponent, MznIconModule } from '.';
 
@@ -72,17 +74,19 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
     CheckCircleFilledIcon,
     ChevronUpIcon,
     ChevronDownIcon,
+    DownloadIcon,
     ExclamationCircleFilledIcon,
     EyeIcon,
     EyeSlashIcon,
+    FolderOpenIcon,
     InfoCircleFilledIcon,
+    MinusCircleFilledIcon,
     PlusIcon,
     SearchIcon,
     SpinnerIcon,
     TimesIcon,
     TimesCircleFilledIcon,
-    FolderOpenIcon,
-    MinusCircleFilledIcon,
+    UploadIcon,
   ].filter((icon) => !search || icon.name.includes(search));
 
   return {

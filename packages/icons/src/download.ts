@@ -1,7 +1,7 @@
 import { IconDefinition } from './typings';
 
 export const DownloadIcon: IconDefinition = {
-  name: 'upload',
+  name: 'download',
   definition: {
     svg: {
       viewBox: '0 0 24 24',
