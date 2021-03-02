@@ -118,11 +118,15 @@ $default-dark-palette: utils-map.assign(
     primary-light: #92a7ff,
     primary-dark: #3440b2,
     on-primary: #fff,
+  ),
+  _get-main-color-transformed-palette(primary),
+  (
     secondary: #6a6a6a,
     secondary-light: #b2b2b2,
     secondary-dark: #383838,
     on-secondary: #fff,
   ),
+  _get-main-color-transformed-palette(secondary),
   $default-semantic-palette,
   (
     text-primary: #fff,
