@@ -55,6 +55,15 @@ export {
   MenuProps,
   default as Menu,
 } from './Menu';
+export {
+  TabProps,
+  Tab,
+  TabPaneProps,
+  TabPane,
+  TabsChild,
+  TabsProps,
+  default as Tabs,
+} from './Tabs';
 
 /**
  * Data Display
