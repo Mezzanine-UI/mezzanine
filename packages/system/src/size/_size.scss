@@ -1,1 +1,4 @@
+@use 'sass:list';
+
 $sizes: (small, medium, large);
+$sizes-with-extra-large: list.append($sizes, extra-large);
