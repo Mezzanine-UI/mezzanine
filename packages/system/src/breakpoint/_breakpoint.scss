@@ -17,13 +17,7 @@ $breakpoints: (
   xxl: $xxl,
 );
 
-$breakpoint-names: (
-  sm,
-  md,
-  lg,
-  xl,
-  xxl,
-);
+$breakpoint-names: (sm, md, lg, xl, xxl);
 
 @function is-valid-breakpoint-name($breakpoint-name) {
   @return utils-list.includes($breakpoint-names, $breakpoint-name);
@@ -37,38 +31,44 @@ $breakpoint-names: (
   @return map.get($breakpoints, $breakpoint-name);
 }
 
-@mixin rules-above($min, $max: null) {
+@mixin above($min) {
   @if not is-valid-breakpoint-name($min) {
     @error "Invalid breakpoint name #{$min}. Please choose one of #{$breakpoint-names}";
   }
 
   @media (min-width: get($min)) {
-    @if ($max == null) {
-      @content;
-    } @else if (is-valid-breakpoint-name($max)) {
-      @media (max-width: get($max) - 1px) {
-        @content;
-      }
-    } @else {
-      @error "Invalid breakpoint name #{$max}. Please choose one of #{$breakpoint-names}";
-    }
+    @content;
   }
 }
 
-@mixin rules-below($max, $min: null) {
+@mixin below($max) {
   @if not is-valid-breakpoint-name($max) {
     @error "Invalid breakpoint name #{$max}. Please choose one of #{$breakpoint-names}";
   }
 
-  @media (max-width: get($max)) {
-    @if ($min == null) {
+  @media (max-width: get($max) - 1px) {
+    @content;
+  }
+}
+
+@mixin between($min: null, $max: null) {
+  @if $min == null and $max == null {
+    @error "Should provide at least one breakpoint";
+  }
+
+  @if $min == null {
+    @include below($max) {
       @content;
-    } @else if (is-valid-breakpoint-name($min)) {
-      @media (min-width: get($min) + 1px) {
+    }
+  } @else if $max == null {
+    @include above($min) {
+      @content;
+    }
+  } @else {
+    @include above($min) {
+      @include below($max) {
         @content;
       }
-    } @else {
-      @error "Invalid breakpoint name #{$min}. Please choose one of #{$breakpoint-names}";
     }
   }
 }
