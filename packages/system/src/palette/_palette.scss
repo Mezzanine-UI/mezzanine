@@ -109,6 +109,13 @@ $default-light-palette: utils-map.assign(
     surface: #fff,
     border: #d9d9d9,
     divider: #e5e5e5,
+    overlay-bg: (
+      from: action-active,
+      transformer: meta.get-function("rgba"),
+      args: (
+        0.5,
+      ),
+    ),
   )
 );
 
@@ -140,6 +147,13 @@ $default-dark-palette: utils-map.assign(
     surface: #242424,
     border: #7c7c7c,
     divider: #494949,
+    overlay-bg: (
+      from: action-active,
+      transformer: meta.get-function("rgba"),
+      args: (
+        0.5,
+      ),
+    ),
   )
 );
 
