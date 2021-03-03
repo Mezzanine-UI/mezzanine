@@ -1,0 +1,21 @@
+@use 'sass:list';
+@use '../utils/list' as utils-list;
+
+$prefix: mzn-z-index;
+$orders: (modal, popover, feedback);
+
+@mixin variables($base: 1000) {
+  @for $index from 1 through list.length($orders) {
+    $name: list.nth($orders, $index);
+
+    --#{$prefix}-#{$name}: #{$base + $index};
+  }
+}
+
+@function get($name) {
+  @if not utils-list.includes($orders, $name) {
+    @error "Only accept #{$orders} for z-index";
+  }
+
+  @return var(--#{$prefix}-#{$name});
+}
