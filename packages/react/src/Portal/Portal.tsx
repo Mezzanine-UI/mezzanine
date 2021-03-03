@@ -17,32 +17,33 @@ export interface PortalProps {
    */
   container?: ElementGetter;
   /**
-   * Control whether or not to disable the portal functionality.
+   * Whether to disable portal.
    * If true, it will be a normal component.
+   * @default false
    */
-  disabled?: boolean;
+  disablePortal?: boolean;
 }
 
 const Portal: FC<PortalProps> = (props) => {
   const {
     children,
     container,
-    disabled,
+    disablePortal = false,
   } = props;
 
   const [portalElement, setPortalElement] = useState(() => (
-    disabled
+    disablePortal
       ? null
       : getElement(container) || document.body
   ));
 
   useEffect(() => {
-    if (!disabled) {
+    if (!disablePortal) {
       setPortalElement(getElement(container) || document.body);
     }
-  }, [container, disabled]);
+  }, [container, disablePortal]);
 
-  if (disabled || !portalElement) {
+  if (disablePortal || !portalElement) {
     return <>{children}</>;
   }
 

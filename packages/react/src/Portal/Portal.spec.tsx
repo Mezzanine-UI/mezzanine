@@ -36,10 +36,9 @@ describe('<Portal />', () => {
       </Portal>,
     );
 
-    const { body } = document;
-    const targetNode = document.querySelector('body > #portal-test');
+    const targetNode = document.body.querySelector('#portal-test');
 
-    expectParentNode(targetNode, body);
+    expectParentNode(targetNode, document.body);
     expectTargetNode(targetNode);
   });
 
@@ -126,10 +125,10 @@ describe('<Portal />', () => {
     });
   });
 
-  describe('prop: disabled', () => {
-    it('should not portal and return original element if disabled=true', () => {
+  describe('prop: disablePortal', () => {
+    it('should not portal and return original element if disablePortal=true', () => {
       const { getHostHTMLElement } = render(
-        <Portal disabled>
+        <Portal disablePortal>
           <div data-testid="portal-test">
             hello
           </div>
@@ -142,7 +141,7 @@ describe('<Portal />', () => {
       expect(element.textContent).toBe('hello');
     });
 
-    it('should not portal and return original element if disabled=true and when a container is provided', () => {
+    it('should not portal and return original element if disablePortal=true and when a container is provided', () => {
       const { body } = document;
       const containerNode = document.createElement('div');
 
@@ -151,7 +150,7 @@ describe('<Portal />', () => {
       body.appendChild(containerNode);
 
       const { getHostHTMLElement } = render(
-        <Portal disabled container={containerNode}>
+        <Portal container={containerNode} disablePortal>
           <div data-testid="portal-test">
             hello
           </div>

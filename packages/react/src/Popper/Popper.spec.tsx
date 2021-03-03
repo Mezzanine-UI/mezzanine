@@ -56,7 +56,7 @@ describe('<Popper />', () => {
     const portalInstance = testInstance.findByType(Portal);
 
     expect(portalInstance.props.container).toBe(container);
-    expect(portalInstance.props.disabled).toBe(true);
+    expect(portalInstance.props.disablePortal).toBe(true);
   });
 
   describe('prop: open', () => {
