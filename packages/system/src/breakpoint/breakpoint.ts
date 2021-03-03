@@ -1,17 +1,9 @@
-export type Breakpoints = 'small' | 'medium' | 'large' | 'extraLarge' | 'extraExtraLarge';
+export type Breakpoint = 'sm' | 'md' | 'lg' | 'xl' | 'xxl';
 
-export type BreakpointsObject = {
-  [k in Breakpoints]: number;
+export const breakpoints: Record<Breakpoint, number> = {
+  sm: 576,
+  md: 768,
+  lg: 992,
+  xl: 1200,
+  xxl: 1400,
 };
-
-export const breakpoints: BreakpointsObject = {
-  small: 576,
-  medium: 768,
-  large: 992,
-  extraLarge: 1200,
-  extraExtraLarge: 1400,
-};
-
-export function getBreakpoint(name: Breakpoints) {
-  return breakpoints[name];
-}
