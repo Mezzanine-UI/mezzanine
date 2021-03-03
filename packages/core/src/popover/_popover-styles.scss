@@ -1,5 +1,6 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/z-index';
 @use './popover' as *;
 
 $min-width: 160px !default;
@@ -11,6 +12,7 @@ $title-margin-bottom: 4px !default;
   border: 1px solid palette.color(border);
   color: palette.color(text-primary);
   min-width: $min-width;
+  z-index: z-index.get(popover);
   box-sizing: border-box;
 
   &__title {

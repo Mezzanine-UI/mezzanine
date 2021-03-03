@@ -2,6 +2,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/z-index';
 @use './message' as *;
 
 $height: 40px !default;
@@ -21,6 +22,7 @@ $icon-gap: 12px !default;
   background-color: palette.color(surface);
   border: 1px solid var(--#{$prefix}-color);
   flex-shrink: 0;
+  z-index: z-index.get(feedback);
   box-sizing: border-box;
 
   &__icon {
