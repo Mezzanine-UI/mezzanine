@@ -1,0 +1,54 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '../button';
+@use './tabs' as *;
+
+$gap: 32px !default;
+$margin-bottom: 32px !default;
+$tab-height: 48px !default;
+$tab-min-width: 32px !default;
+$tab-padding: 8px 0 !default;
+
+.#{$prefix} {
+  color: palette.color(text-primary);
+  box-sizing: border-box;
+
+  &__tab-bar {
+    display: flex;
+    gap: $gap;
+    border-bottom: 1px solid palette.color(border);
+    margin-bottom: $margin-bottom;
+  }
+
+  &__tab {
+    @include button.reset();
+    @include typography.variant(button2, (text-decoration, text-transform));
+
+    min-width: $tab-min-width;
+    height: $tab-height;
+    background-color: palette.color(bg);
+    color: palette.color(action-inactive);
+    padding: $tab-padding;
+    box-sizing: border-box;
+
+    &--active {
+      color: palette.color(primary);
+      border-bottom: 2px solid palette.color(primary);
+    }
+
+    &:hover:enabled {
+      color: palette.color(primary);
+    }
+
+    &:disabled {
+      border: none;
+      color: palette.color(action-disabled);
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
+  &__pane {
+    box-sizing: border-box;
+  }
+}
