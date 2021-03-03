@@ -21,16 +21,12 @@ export type PopperOptions<Modifiers> = Omit<Partial<_PopperOptions>, 'modifiers'
 
 export interface PopperProps
   extends
-  Pick<PortalProps, 'container'>,
+  Pick<PortalProps, 'container' | 'disablePortal'>,
   DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   /**
    * The ref of trigger Element.
    */
   anchor?: ElementGetter;
-  /**
-   * Whether to disable portal.
-   */
-  disablePortal?: PortalProps['disabled'];
   /**
    * The portal element will show if open=true
    * @default false
@@ -62,7 +58,10 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(function Popper(props, re
   }
 
   return (
-    <Portal container={container} disabled={disablePortal}>
+    <Portal
+      container={container}
+      disablePortal={disablePortal}
+    >
       <div
         {...rest}
         ref={composedRef}
