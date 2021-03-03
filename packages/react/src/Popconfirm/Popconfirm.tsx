@@ -1,44 +1,27 @@
-import React, {
-  forwardRef,
-  MouseEventHandler,
-  ReactNode,
-} from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { ExclamationCircleFilledIcon, IconDefinition } from '@mezzanine-ui/icons';
 import { popConfirmClasses as classes } from '@mezzanine-ui/core/popconfirm';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import Button, { ButtonGroup, ButtonProps } from '../Button';
 import Popover, { PopoverProps } from '../Popover';
+import ConfirmActions, { ConfirmActionsProps } from '../ConfirmActions';
 
-export interface PopconfirmProps extends PopoverProps {
-  /**
-   * the cancel button props
-   */
-  cancelButtonProps?: ButtonProps;
-  /**
-   * the text of the Cancel button
-   */
-  cancelText?: string;
-  /**
-   * the confirm button props
-   */
-  confirmButtonProps?: ButtonProps;
-  /**
-   * the text of the confirm button
-   */
-  confirmText?: string;
+export interface PopconfirmProps
+  extends
+  PopoverProps,
+  Pick<
+  ConfirmActionsProps,
+  | 'cancelButtonProps'
+  | 'cancelText'
+  | 'confirmButtonProps'
+  | 'confirmText'
+  | 'onCancel'
+  | 'onConfirm'
+  > {
   /**
    * Customize the icon on the popconfirm
    */
   icon?: IconDefinition;
-  /**
-   * A callback of cancel
-   */
-  onCancel?: MouseEventHandler;
-  /**
-   * A callback of confirmation
-   */
-  onConfirm?: MouseEventHandler;
   /**
    * the title of the confirmation box
    */
@@ -75,25 +58,15 @@ const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function Popconfi
         </>
       )}
     >
-      <ButtonGroup
-        color="primary"
+      <ConfirmActions
+        cancelButtonProps={cancelButtonProps}
+        cancelText={cancelText}
+        confirmButtonProps={confirmButtonProps}
+        confirmText={confirmText}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
         size="small"
-      >
-        <Button
-          variant="outlined"
-          {...cancelButtonProps}
-          onClick={onCancel}
-        >
-          {cancelText}
-        </Button>
-        <Button
-          variant="contained"
-          {...confirmButtonProps}
-          onClick={onConfirm}
-        >
-          {confirmText}
-        </Button>
-      </ButtonGroup>
+      />
     </Popover>
   );
 });

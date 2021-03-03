@@ -8,6 +8,7 @@ import {
 } from '@testing-library/react';
 
 export {
+  ReactTestRenderer,
   default as TestRenderer,
 } from 'react-test-renderer';
 export * from '@testing-library/react';
