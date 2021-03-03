@@ -1,14 +1,10 @@
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system';
 @use '~@mezzanine-ui/core';
 
 :root {
+  @include system.common-variables();
   @include palette.variables("light");
-  @include spacing.variables();
-  @include typography.variables();
-  @include z-index.variables();
 }
 
 .theme-dark {

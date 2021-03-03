@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use './spacing';
+@use './typography';
+@use './z-index';
+
+@mixin common-variables($options: ()) {
+  $spacing: map.get($options, spacing);
+  $typography: map.get($options, typography);
+  $z-index: map.get($options, z-index);
+
+  @if $spacing == null {
+    @include spacing.variables();
+  } @else {
+    @include spacing.variables($spacing);
+  }
+
+  @if $typography == null {
+    @include typography.variables();
+  } @else {
+    @include typography.variables($typography);
+  }
+
+  @if $z-index == null {
+    @include z-index.variables();
+  } @else {
+    @include z-index.variables($z-index);
+  }
+}
