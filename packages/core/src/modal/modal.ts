@@ -10,6 +10,7 @@ export const modalClasses = {
   closeIcon: `${modalPrefix}__close-icon`,
   size: (size: ModalSize) => `${modalPrefix}--${size === 'extraLarge' ? 'extra-large' : size}`,
   danger: `${modalPrefix}--danger`,
+  fullScreen: `${modalPrefix}--full-screen`,
   withCloseIcon: `${modalPrefix}--close-icon`,
 
   /** Header */

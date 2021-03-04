@@ -76,6 +76,31 @@ $width-map: (
   )
 );
 
+@mixin _full-screen() {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+}
+
+@mixin _not-full-screen-width-on-breakpoint() {
+  @each $config in $width-map {
+    $from: map.get($config, from);
+    $to: map.get($config, to);
+    $values: map.get($config, values);
+
+    @include breakpoint.between($from, $to) {
+      @each $size in $sizes {
+        &--#{$size} {
+          width: map.get($values, $size);
+        }
+      }
+    }
+  }
+}
+
 .#{$prefix} {
   position: relative;
   display: flex;
@@ -83,17 +108,21 @@ $width-map: (
   background-color: palette.color(surface);
   box-sizing: border-box;
 
+  @include _not-full-screen-width-on-breakpoint();
+
   @include breakpoint.below(sm) {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    @include _full-screen();
   }
 
-  @include breakpoint.above(sm) {
-    margin: $window-gap;
-    max-height: calc(100% - #{$window-gap} * 2);
+  &--full-screen {
+    @include _full-screen();
+  }
+
+  &:not(.#{$prefix}--full-screen) {
+    @include breakpoint.above(sm) {
+      margin: $window-gap;
+      max-height: calc(100% - #{$window-gap} * 2);
+    }
   }
 
   &__overlay {
@@ -183,20 +212,6 @@ $width-map: (
   &__actions {
     .#{button.$prefix} {
       min-width: $action-min-width;
-    }
-  }
-
-  @each $config in $width-map {
-    $from: map.get($config, from);
-    $to: map.get($config, to);
-    $values: map.get($config, values);
-
-    @include breakpoint.between($from, $to) {
-      @each $size in $sizes {
-        &--#{$size} {
-          width: map.get($values, $size);
-        }
-      }
     }
   }
 }
