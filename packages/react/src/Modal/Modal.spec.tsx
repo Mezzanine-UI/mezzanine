@@ -120,6 +120,32 @@ describe('<Modal />', () => {
     });
   });
 
+  describe('prop: fullScreen', () => {
+    function testBindFullScreenClass(fullScreen: boolean) {
+      const modalElement = getModalElement()!;
+
+      expect(modalElement.classList.contains('mzn-modal--full-screen')).toBe(fullScreen);
+    }
+
+    it('should render fullScreen=false by default', () => {
+      render(<Modal open />);
+
+      testBindFullScreenClass(false);
+    });
+
+    [false, true].forEach((fullScreen) => {
+      const message = fullScreen
+        ? 'should bind full screen class'
+        : 'should not bind full screen class';
+
+      it(message, () => {
+        render(<Modal open fullScreen={fullScreen} />);
+
+        testBindFullScreenClass(fullScreen);
+      });
+    });
+  });
+
   describe('prop: open', () => {
     it('should not render modal if open=false', () => {
       render(<Modal open={false} />);

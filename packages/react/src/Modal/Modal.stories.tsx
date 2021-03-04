@@ -14,23 +14,21 @@ export default {
   title: 'Feedback/Modal',
 } as Meta;
 
-type PlaygroundArgs =
-Required<Pick<
-ModalProps,
-'danger' | 'disableCloseOnBackdropClick' | 'disableCloseOnEscapeKeyDown' | 'hideCloseIcon' | 'loading' | 'size'
->>
-& Required<Pick<ModalHeaderProps, 'showTitleIcon' | 'titleLarge'>>
-& Required<Pick<ModalActionsProps, 'cancelText' | 'confirmText'>>
-& {
+interface PlaygroundArgs
+  extends
+  Omit<ModalProps, 'title'>,
+  Required<Pick<ModalHeaderProps, 'showTitleIcon' | 'titleLarge'>>,
+  Required<Pick<ModalActionsProps, 'cancelText' | 'confirmText'>> {
   title: ReactNode;
   body: ReactNode;
   footer: ReactNode;
-};
+}
 
 export const Playground: Story<PlaygroundArgs> = ({
   danger,
   disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown,
+  fullScreen,
   hideCloseIcon,
   loading,
   size,
@@ -52,6 +50,7 @@ export const Playground: Story<PlaygroundArgs> = ({
         danger={danger}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+        fullScreen={fullScreen}
         hideCloseIcon={hideCloseIcon}
         loading={loading}
         onClose={onClose}
@@ -84,6 +83,7 @@ Playground.args = {
   danger: false,
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
+  fullScreen: false,
   hideCloseIcon: false,
   loading: false,
   size: 'medium',

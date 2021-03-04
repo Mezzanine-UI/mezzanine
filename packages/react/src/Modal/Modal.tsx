@@ -32,10 +32,18 @@ export interface ModalProps
    */
   disableCloseOnEscapeKeyDown?: boolean;
   /**
+   *
+   */
+  fullScreen?: boolean;
+  /**
    * Controls whether or not to hide close button at top-end.
    * @default false
    */
   hideCloseIcon?: boolean;
+  /**
+   * Whether the modal is loading.
+   * Controls the loading prop of confirm button in modal actions.
+   */
   loading?: boolean;
   /**
    * Close handler.
@@ -64,6 +72,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
     disablePortal,
+    fullScreen = false,
     hideBackdrop,
     hideCloseIcon = false,
     loading = false,
@@ -128,6 +137,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
           classes.size(size),
           {
             [classes.danger]: danger,
+            [classes.fullScreen]: fullScreen,
             [classes.withCloseIcon]: !hideCloseIcon,
           },
           className,
