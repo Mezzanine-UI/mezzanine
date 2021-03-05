@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.1...@mezzanine-ui/core@0.0.2) (2021-03-05)
+
+### Bug Fixes
+
+- **core:** add missing z-index on message and popover ([bfd34fc](https://github.com/Mezzanine-UI/mezzanine/commit/bfd34fcdf3538b4fb76b091998009dd9f32324df))
+
+### Features
+
+- **core/modal:** add full screen mode ([2274aff](https://github.com/Mezzanine-UI/mezzanine/commit/2274aff9942041a74615cd114d909799696f9746))
+- **core/modal:** implement via design draft ([1c01998](https://github.com/Mezzanine-UI/mezzanine/commit/1c019981bfbf09edda436d9b4fe8730f1d4ff655))
+- **core/overlay:** implement via design draft ([c8bf106](https://github.com/Mezzanine-UI/mezzanine/commit/c8bf10620c4d45ec1d90ab1918b38f4e2c85c4f3))
+- **core/tabs:** implement via design draft ([ee557dc](https://github.com/Mezzanine-UI/mezzanine/commit/ee557dc99febd45541b26a14f748c6c7018de88e))
+
 ## 0.0.1 (2021-02-26)
 
 ### Bug Fixes
