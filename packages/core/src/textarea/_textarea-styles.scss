@@ -41,6 +41,8 @@ $count-gap: 4px !default;
     right: 0;
     color: palette.color(text-secondary);
 
+    @include typography.variant(caption);
+
     .#{$prefix}--upper-limit & {
       color: palette.color(primary);
     }
