@@ -120,9 +120,7 @@ $max-height: calc(var(--#{$item-prefix}-item-height) * var(--#{$prefix}-items-in
       --#{$item-prefix}-item-height: #{typography.prop($typography-variant, line-height)};
 
       .#{$item-prefix} {
-        @include typography.variant($typography-variant, (line-height));
-
-        line-height: var(--#{$item-prefix}-item-height);
+        @include typography.variant($typography-variant);
       }
     }
   }
