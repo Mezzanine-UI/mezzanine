@@ -13,7 +13,6 @@ import {
   TimesIcon,
 } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
-import Typography from '../Typography';
 import { cx } from '../utils/cx';
 
 export interface AlertProps
@@ -55,21 +54,14 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) 
       {...rest}
     >
       <Icon
-        icon={targetIcon}
-        color={severity}
         className={classes.icon}
+        icon={targetIcon}
       />
-      <Typography
-        component="p"
-        variant="body1"
-        className={classes.message}
-      >
-        {children}
-      </Typography>
+      <p className={classes.message}>{children}</p>
       <Icon
+        className={classes.closeIcon}
         icon={TimesIcon}
         onClick={onClose}
-        className={classes.closeIcon}
         role="button"
       />
     </div>
