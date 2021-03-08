@@ -22,7 +22,7 @@ $tab-padding: 8px 0 !default;
 
   &__tab {
     @include button.reset();
-    @include typography.variant(button2, (text-decoration, text-transform));
+    @include typography.variant(button2);
 
     min-width: $tab-min-width;
     height: $tab-height;

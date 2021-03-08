@@ -21,7 +21,7 @@ $icon-label-gap-x: 4px !default;
   color: palette.color(text-primary);
   box-sizing: border-box;
 
-  @include typography.variant(input2, (text-decoration, text-transform));
+  @include typography.variant(input2);
 
   a {
     color: inherit;
@@ -72,6 +72,6 @@ $icon-label-gap-x: 4px !default;
     --#{$prefix}-label-min-width: #{$label-min-width-small};
     --#{$prefix}-close-icon-size: #{typography.px-to-rem($icon-size-small)};
 
-    @include typography.variant(caption, (text-decoration, text-transform));
+    @include typography.variant(caption);
   }
 }
