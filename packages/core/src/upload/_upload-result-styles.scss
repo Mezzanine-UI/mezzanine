@@ -90,16 +90,18 @@ $name-icon-gap: 4px !default;
         padding: 0 $padding-right-small 0 $padding-left-small;
       }
 
-      @include typography.variant(
-        map.get(
-          (
-            small: input3,
-            medium: input2,
-            large: input1,
-          ),
-          $size
-        )
+      $typography-variant: map.get(
+        (
+          small: input3,
+          medium: input2,
+          large: input1,
+        ),
+        $size
       );
+
+      @include typography.variant($typography-variant);
+
+      height: typography.prop($typography-variant, line-height);
     }
   }
 }
