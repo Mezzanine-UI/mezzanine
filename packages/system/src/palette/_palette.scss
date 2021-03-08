@@ -1,8 +1,6 @@
-@use 'sass:map';
 @use 'sass:meta';
-@use '../utils/list' as utils-list;
-@use '../utils/map' as utils-map;
-@use '../utils/string' as utils-string;
+@use '../utils/list';
+@use '../utils/map';
 
 $prefix: mzn-color;
 
@@ -40,8 +38,8 @@ $prefix: mzn-color;
 }
 
 $main-color-names: (primary, secondary, error, warning, success);
-$color-names: utils-list.flat-push(
-  utils-list.flat-map($main-color-names, meta.get-function("_get-main-related-color-names")),
+$color-names: list.flat-push(
+  list.flat-map($main-color-names, meta.get-function("_get-main-related-color-names")),
   (
     text-primary,
     text-secondary,
@@ -58,7 +56,7 @@ $color-names: utils-list.flat-push(
   )
 );
 
-$default-semantic-palette: utils-map.assign(
+$default-semantic-palette: map.assign(
   (
     error: #db2b1d,
     error-light: #f75142,
@@ -82,7 +80,7 @@ $default-semantic-palette: utils-map.assign(
   _get-main-color-transformed-palette(success)
 );
 
-$default-light-palette: utils-map.assign(
+$default-light-palette: map.assign(
   (
     primary: #465bc7,
     primary-light: #778de8,
@@ -120,7 +118,7 @@ $default-light-palette: utils-map.assign(
   )
 );
 
-$default-dark-palette: utils-map.assign(
+$default-dark-palette: map.assign(
   (
     primary: #667cd8,
     primary-light: #92a7ff,
@@ -164,7 +162,7 @@ $default-palette: (
 );
 
 @function is-color-name-valid($color-name) {
-  @return utils-list.includes($color-names, $color-name);
+  @return list.includes($color-names, $color-name);
 }
 
 @mixin variables($mode, $palette: ()) {

@@ -1,5 +1,7 @@
 @use 'sass:string';
 
+@forward 'sass:string';
+
 @function includes($string, $substring) {
   @return string.index($string, $substring) != null;
 }

@@ -1,5 +1,5 @@
 @use 'sass:map';
-@use '../utils/list' as utils-list;
+@use '../utils/list';
 
 $prefix: mzn-bp;
 
@@ -20,7 +20,7 @@ $breakpoints: (
 $breakpoint-names: (sm, md, lg, xl, xxl);
 
 @function is-valid-breakpoint-name($breakpoint-name) {
-  @return utils-list.includes($breakpoint-names, $breakpoint-name);
+  @return list.includes($breakpoint-names, $breakpoint-name);
 }
 
 @function get($breakpoint-name) {

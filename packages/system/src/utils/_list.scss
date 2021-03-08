@@ -1,6 +1,8 @@
 @use 'sass:list';
 @use 'sass:meta';
 
+@forward 'sass:list';
+
 @function flat-map($list, $mapFn) {
   $list: map($list, $mapFn);
   $list: flat-push((), $list...);

@@ -1,5 +1,7 @@
 @use 'sass:map';
 
+@forward 'sass:map';
+
 @function assign($map, $maps...) {
   @each $m in $maps {
     $map: map.merge($map, $m);

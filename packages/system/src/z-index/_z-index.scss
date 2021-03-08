@@ -1,5 +1,4 @@
-@use 'sass:list';
-@use '../utils/list' as utils-list;
+@use '../utils/list';
 
 $prefix: mzn-z-index;
 $orders: (modal, popover, feedback);
@@ -13,7 +12,7 @@ $orders: (modal, popover, feedback);
 }
 
 @function get($name) {
-  @if not utils-list.includes($orders, $name) {
+  @if not list.includes($orders, $name) {
     @error "Only accept #{$orders} for z-index";
   }
 
