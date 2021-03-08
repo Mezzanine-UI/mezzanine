@@ -35,7 +35,7 @@ describe('<Popconfirm />', () => {
   });
 
   describe('prop: icon', () => {
-    it('should render the popconfirm icon', async () => {
+    it('should render the popconfirm icon and bind icon class', async () => {
       await act(async () => {
         await render(
           <Popconfirm
@@ -50,6 +50,7 @@ describe('<Popconfirm />', () => {
       const iconElement = element!.getElementsByTagName('i')[0];
 
       expect(iconElement!.getAttribute('data-icon-name')).toBe('plus');
+      expect(iconElement!.classList.contains('mzn-popconfirm__icon')).toBeTruthy();
     });
   });
 

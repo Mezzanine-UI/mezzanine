@@ -53,7 +53,7 @@ const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function Popconfi
       )}
       title={(
         <>
-          <Icon color="primary" icon={icon} />
+          <Icon className={classes.icon} icon={icon} />
           {title}
         </>
       )}
