@@ -143,12 +143,14 @@ export {
   default as Message,
 } from './Message';
 export {
-  ModalFooter,
   ModalHeaderProps,
   ModalHeader,
   ModalBodyProps,
   ModalBody,
   ModalFooterProps,
+  ModalFooter,
+  ModalActionsProps,
+  ModalActions,
   ModalProps,
   default as Modal,
 } from './Modal';
