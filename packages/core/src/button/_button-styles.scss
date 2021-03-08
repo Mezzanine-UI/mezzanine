@@ -88,6 +88,7 @@ $outlined-border-width: 1px !default;
 
 @mixin _size() {
   padding: 0 $padding-x;
+  height: var(--#{$prefix}-height);
 
   @each $size in $sizes {
     $typography-variant: map.get(
@@ -102,9 +103,7 @@ $outlined-border-width: 1px !default;
     &--#{$size} {
       --#{$prefix}-height: #{typography.prop($typography-variant, line-height)};
 
-      height: var(--#{$prefix}-height);
-
-      @include typography.variant($typography-variant);
+      @include typography.variant($typography-variant, (line-height));
 
       @if $size == small {
         padding: 0 $padding-x-small;
@@ -180,6 +179,8 @@ $outlined-border-width: 1px !default;
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  text-decoration: none;
+  text-transform: uppercase;
 
   &--disabled,
   &--loading {
