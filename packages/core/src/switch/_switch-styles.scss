@@ -63,7 +63,7 @@ $icon-size-large: $height-large - ($control-gap * 2);
     }
 
     .#{$prefix}__control {
-      left: calc(100% - calc(var(--#{$prefix}-icon-size) + #{$control-gap}));
+      left: calc(100% - (var(--#{$prefix}-icon-size) + #{$control-gap}));
     }
   }
 
