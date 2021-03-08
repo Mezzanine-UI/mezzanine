@@ -71,7 +71,7 @@ describe('<Popconfirm />', () => {
         firstElementChild: titleElement,
       } = element!;
 
-      expect(titleElement!.tagName.toLowerCase()).toBe('h6');
+      expect(titleElement!.tagName.toLowerCase()).toBe('div');
       expect(titleElement!.textContent).toBe('title');
     });
   });

@@ -37,24 +37,42 @@ describe('<Popper />', () => {
     expect(element?.classList.contains('mzn-popover')).toBeTruthy();
   });
 
-  it('should wrap children by content <div />', async () => {
-    await act(async () => {
-      await render(
-        <Popover
-          anchor={document.body}
-          open
-        >
-          content
-        </Popover>,
-      );
+  describe('prop: children', () => {
+    it('should wrap children by content <div />', async () => {
+      await act(async () => {
+        await render(
+          <Popover
+            anchor={document.body}
+            open
+          >
+            content
+          </Popover>,
+        );
+      });
+
+      const element = getPopperContainer();
+      const {
+        lastElementChild: contentElement,
+      } = element!;
+
+      expect(contentElement!.textContent).toBe('content');
     });
 
-    const element = getPopperContainer();
-    const {
-      lastElementChild: contentElement,
-    } = element!;
+    it('should not render content <div /> if children not passed', async () => {
+      await act(async () => {
+        await render(
+          <Popover
+            anchor={document.body}
+            open
+          />,
+        );
+      });
 
-    expect(contentElement!.textContent).toBe('content');
+      const element = getPopperContainer();
+      const { childElementCount } = element!;
+
+      expect(childElementCount).toBe(0);
+    });
   });
 
   describe('prop: onClose', () => {
@@ -131,7 +149,7 @@ describe('<Popper />', () => {
   });
 
   describe('prop: title', () => {
-    it('should wrap title by <h6 />', async () => {
+    it('should wrap title by <div />', async () => {
       await act(async () => {
         await render(
           <Popover
@@ -149,8 +167,24 @@ describe('<Popper />', () => {
         firstElementChild: titleElement,
       } = element!;
 
-      expect(titleElement!.tagName.toLowerCase()).toBe('h6');
+      expect(titleElement!.tagName.toLowerCase()).toBe('div');
       expect(titleElement!.textContent).toBe('title');
     });
+  });
+
+  it('should not render title <div /> if title not passed', async () => {
+    await act(async () => {
+      await render(
+        <Popover
+          anchor={document.body}
+          open
+        />,
+      );
+    });
+
+    const element = getPopperContainer();
+    const { childElementCount } = element!;
+
+    expect(childElementCount).toBe(0);
   });
 });

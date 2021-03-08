@@ -82,8 +82,8 @@ const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover(props,
         modifiers: [...modifiers, offsetModifier],
       }}
     >
-      {title && <h6 className={classes.title}>{title}</h6>}
-      <div className={classes.content}>{children}</div>
+      {title && <div className={classes.title}>{title}</div>}
+      {children && <div className={classes.content}>{children}</div>}
     </Popper>
   );
 });
