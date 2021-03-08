@@ -37,6 +37,7 @@ describe('<Empty />', () => {
     expect(element.textContent).toBe('No Data');
     expect(descriptionElement.textContent).toBe('No Data');
     expect(descriptionElement.tagName.toLowerCase()).toBe('div');
+    expect(descriptionElement.classList.contains('mzn-empty__description')).toBeTruthy();
   });
 
   describe('prop: fullHeight', () => {

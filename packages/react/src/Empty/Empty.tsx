@@ -10,7 +10,6 @@ import {
 import { FolderOpenIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import Typography from '../Typography';
 
 export interface EmptyProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'title'> {
   /**
@@ -28,19 +27,11 @@ export interface EmptyProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLDi
 }
 
 const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) {
-  const defaultIcon = (
-    <Icon
-      className={classes.icon}
-      icon={FolderOpenIcon}
-      color="disabled"
-    />
-  );
-
   const {
     children,
     className,
     fullHeight,
-    image = defaultIcon,
+    image = <Icon className={classes.icon} icon={FolderOpenIcon} />,
     title,
     ...rest
   } = props;
@@ -48,6 +39,7 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) 
   return (
     <div
       ref={ref}
+      {...rest}
       className={cx(
         classes.host,
         {
@@ -55,26 +47,10 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) 
         },
         className,
       )}
-      {...rest}
     >
       {image}
-      {title && (
-        <Typography
-          component="div"
-          variant="h3"
-          className={classes.title}
-          color="text-secondary"
-        >
-          {title}
-        </Typography>
-      )}
-      <Typography
-        component="div"
-        variant="body1"
-        color="text-secondary"
-      >
-        {children}
-      </Typography>
+      {title && <div className={classes.title}>{title}</div>}
+      {children && <div className={classes.description}>{children}</div>}
     </div>
   );
 });
