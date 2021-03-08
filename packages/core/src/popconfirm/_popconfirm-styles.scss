@@ -1,5 +1,5 @@
+@use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
-@use '../icon';
 @use '../popover';
 @use './popconfirm' as *;
 
@@ -11,14 +11,15 @@ $content-margin-top: 16px !default;
 .#{$prefix} {
   min-width: $min-width;
 
+  &__icon {
+    color: palette.color(primary);
+    font-size: typography.px-to-rem($title-icon-size);
+    margin-right: $title-icon-gap;
+  }
+
   .#{popover.$prefix}__title {
     display: flex;
     align-items: center;
-
-    .#{icon.$prefix} {
-      font-size: typography.px-to-rem($title-icon-size);
-      margin-right: $title-icon-gap;
-    }
   }
 
   .#{popover.$prefix}__content {
