@@ -11,7 +11,6 @@ import {
 } from '@mezzanine-ui/core/textarea';
 import { cx } from '../utils/cx';
 import TextField, { TextFieldProps } from '../TextField';
-import Typography from '../Typography';
 import { useInputControl, useInputFormControl } from '../Input';
 
 export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'prefix' | 'suffix'> {
@@ -152,15 +151,11 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
         value={value}
       />
       {typeof maxLength === 'number' && (
-        <Typography
-          className={classes.count}
-          component="span"
-          variant="caption"
-        >
+        <span className={classes.count}>
           {value.length}
           /
           {maxLength}
-        </Typography>
+        </span>
       )}
     </TextField>
   );
