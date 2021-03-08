@@ -26,22 +26,28 @@ $close-icon-width: $icon-size + 12px;
   &__close-icon {
     padding: 8px 8px 8px 4px;
     font-size: typography.px-to-rem($icon-size);
-    color: palette.color(action-disabled);
+    color: palette.color(action-inactive);
     cursor: pointer;
 
-    &:hover {
+    &:hover,
+    &:active {
       color: palette.color(action-active);
     }
   }
 
   &__message {
+    color: palette.color(text-primary);
+    margin: 0;
     padding: calc((#{$box-height} - #{$line-height}) / 2) 0;
     word-wrap: break-word;
+
+    @include typography.variant(body1);
   }
 
   @each $severity in $severities {
     &--#{$severity} {
       background-color: palette.color(#{$severity}-hover-bg);
+      color: palette.color($severity);
     }
   }
 }
