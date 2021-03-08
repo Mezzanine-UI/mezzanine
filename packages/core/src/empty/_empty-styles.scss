@@ -1,3 +1,4 @@
+@use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use './empty' as *;
 
@@ -12,14 +13,22 @@ $title-gap: 4px !default;
   align-items: center;
   width: 100%;
   padding: $padding;
+  color: palette.color(text-secondary);
   box-sizing: border-box;
 
   &__icon {
     font-size: typography.px-to-rem($icon-size);
+    color: palette.color(action-inactive);
   }
 
   &__title {
+    @include typography.variant(h3);
+
     margin-bottom: $title-gap;
+  }
+
+  &__description {
+    @include typography.variant(body1);
   }
 
   &--full-height {
