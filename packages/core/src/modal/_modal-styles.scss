@@ -108,6 +108,7 @@ $width-map: (
   background-color: palette.color(surface);
   box-sizing: border-box;
 
+  @include typography.variant(body1);
   @include _not-full-screen-width-on-breakpoint();
 
   @include breakpoint.below(sm) {
@@ -191,8 +192,6 @@ $width-map: (
     padding: $padding-y $padding-x;
     overflow-y: auto;
     box-sizing: border-box;
-
-    @include typography.variant(body1);
 
     &:not(:last-child) {
       padding-bottom: $padding-y + $padding-x;
