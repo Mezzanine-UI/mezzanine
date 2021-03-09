@@ -52,7 +52,7 @@ const variants: TypographyVariant[] = [
   'caption',
 ];
 
-export const Playgroud: Story<TypographyProps> = ({ children, ...props }) => (
+export const Playgroud: Story<TypographyProps<any>> = ({ children, ...props }) => (
   <Typography {...props}>{children}</Typography>
 );
 

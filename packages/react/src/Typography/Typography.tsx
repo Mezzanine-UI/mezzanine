@@ -1,8 +1,4 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef, JSXElementConstructor } from 'react';
 import {
   toTypographyCssVars,
   TypographyAlign,
@@ -12,8 +8,17 @@ import {
   TypographyVariant,
 } from '@mezzanine-ui/core/typography';
 import { cx } from '../utils/cx';
+import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 
-export type TypographyComponent = `h${1 | 2 | 3 | 4 | 5 | 6}` | 'p' | 'span' | 'label' | 'div' | 'caption';
+export type TypographyComponent =
+  | `h${1 | 2 | 3 | 4 | 5 | 6}`
+  | 'p'
+  | 'span'
+  | 'label'
+  | 'div'
+  | 'caption'
+  | 'a'
+  | JSXElementConstructor<any>;
 
 function getComponentFromVariant(variant: TypographyVariant): TypographyComponent {
   if (variant.startsWith('h')) {
@@ -27,7 +32,7 @@ function getComponentFromVariant(variant: TypographyVariant): TypographyComponen
   return 'span';
 }
 
-export interface TypographyProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'> {
+interface TypographyPropsBase {
   /**
    * The css variable for `text-align`.
    */
@@ -36,11 +41,6 @@ export interface TypographyProps extends Omit<DetailedHTMLProps<HTMLAttributes<H
    * The color name provided by palette.
    */
   color?: TypographyColor;
-  /**
-   * Override the componoent used to render.
-   * If no passed, will use the component corresponding to variant.
-   */
-  component?: TypographyComponent;
   /**
    * The css variable for `display`.
    */
@@ -64,23 +64,27 @@ export interface TypographyProps extends Omit<DetailedHTMLProps<HTMLAttributes<H
   variant?: TypographyVariant;
 }
 
+export type TypographyProps<C extends TypographyComponent = 'p'> =
+  ComponentOverridableForwardRefComponentPropsFactory<TypographyComponent, C, TypographyPropsBase>;
+
 /**
  * The react component for `mezzanine` typography.
  */
-const Typography = forwardRef<HTMLElement, TypographyProps>(function Typography(props, ref) {
+const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(function Typography(props, ref) {
   const {
     align,
     children,
     className,
     color,
+    component,
     display,
     ellipsis = false,
     noWrap = false,
     variant = 'body1',
-    component: Component = getComponentFromVariant(variant),
     style: styleProp,
     ...rest
   } = props;
+  const Component = component || getComponentFromVariant(variant) as any;
   const cssVars = toTypographyCssVars({ align, color, display });
   const style = {
     ...cssVars,
@@ -92,8 +96,8 @@ const Typography = forwardRef<HTMLElement, TypographyProps>(function Typography(
 
   return (
     <Component
-      ref={ref as any}
       {...rest}
+      ref={ref}
       className={cx(
         classes.variant(variant),
         {
