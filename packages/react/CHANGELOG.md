@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.3...@mezzanine-ui/react@0.0.4) (2021-03-09)
+
+### Features
+
+- **react/button:** make button generic ([7f16335](https://github.com/Mezzanine-UI/mezzanine/commit/7f16335f1f270fddcb685ba7ec0ac56c31927252))
+- **react/typography:** make typography generic ([843ae31](https://github.com/Mezzanine-UI/mezzanine/commit/843ae3192b245b1ac2542f10a3a98bffd8662aa7))
+
 ## [0.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.2...@mezzanine-ui/react@0.0.3) (2021-03-09)
 
 ### Bug Fixes
