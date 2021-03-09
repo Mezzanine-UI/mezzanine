@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.0.2...@mezzanine-ui/system@0.0.3) (2021-03-09)
+
+### Bug Fixes
+
+- **system:** forward corresponding module of sass from utils ([7c41286](https://github.com/Mezzanine-UI/mezzanine/commit/7c41286177475af7024e2be8f0de630480448461))
+
 ## [0.0.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.0.1...@mezzanine-ui/system@0.0.2) (2021-03-05)
 
 ### Bug Fixes

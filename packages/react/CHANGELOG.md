@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.2...@mezzanine-ui/react@0.0.3) (2021-03-09)
+
+### Bug Fixes
+
+- **react/alert:** not depend on Typography ([382815c](https://github.com/Mezzanine-UI/mezzanine/commit/382815cadaeb96670645610c3145876bcbfcf53c))
+- **react/empty:** not depend on Typography ([7d64162](https://github.com/Mezzanine-UI/mezzanine/commit/7d64162ba9ddc6a563dbd80c1ca794744b5b72e1))
+- **react/modal:** export ModalActions to root ([c9d10f6](https://github.com/Mezzanine-UI/mezzanine/commit/c9d10f633e07b6730c1aa2d0dc5dd8c29baddc78))
+- **react/popconfirm:** bind icon class ([eb798a6](https://github.com/Mezzanine-UI/mezzanine/commit/eb798a6637475dec20a31d85d441471983a7ab71))
+- **react/popover:** use div to render title and not render content if children not passed ([ce50243](https://github.com/Mezzanine-UI/mezzanine/commit/ce5024324f9c007dca2e02e8cd148bc340eb2563))
+- **react/textarea:** not depend on Typography ([70bf083](https://github.com/Mezzanine-UI/mezzanine/commit/70bf083962f57932b6b473784236de2f548cd6d7))
+
+### Features
+
+- **react/utils:** add type utilities for jsx ([6125570](https://github.com/Mezzanine-UI/mezzanine/commit/6125570e670dd37572c8f17adfadf1386e1ad7fe))
+
 ## [0.0.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.1...@mezzanine-ui/react@0.0.2) (2021-03-05)
 
 ### Features

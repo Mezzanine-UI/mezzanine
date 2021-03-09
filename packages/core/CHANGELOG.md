@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.2...@mezzanine-ui/core@0.0.3) (2021-03-09)
+
+### Bug Fixes
+
+- **core/alert:** set correctly color ([fc376eb](https://github.com/Mezzanine-UI/mezzanine/commit/fc376eb9468826bb2a908cc8ccebd9796adb2316))
+- **core/button:** remove redundant height property ([20b4ae7](https://github.com/Mezzanine-UI/mezzanine/commit/20b4ae78cec39413fd9072aef7a219c13253f9f9))
+- **core/empty:** add missing color and typography ([3985fca](https://github.com/Mezzanine-UI/mezzanine/commit/3985fca53c873f46fa279824bbbdd6c1243ff445))
+- **core/menu:** no need to separate line-height from typography.variant() ([044dba8](https://github.com/Mezzanine-UI/mezzanine/commit/044dba814d9e6eeec2b8613629c0c8939eb3425f))
+- **core/modal:** move typography to host of modal for provided to both body and footer ([57844b3](https://github.com/Mezzanine-UI/mezzanine/commit/57844b32e67cd8b7367d940890679fce34126381))
+- **core/popconfirm:** provide icon class instead of nested ([ddf1fd7](https://github.com/Mezzanine-UI/mezzanine/commit/ddf1fd79cc194986cd3a4ed31ade8341dc2c1eb1))
+- **core/switch:** remove redundant calc() ([818995f](https://github.com/Mezzanine-UI/mezzanine/commit/818995f4076514601a024c173e1a76669fc25d78))
+- **core/text-field:** no need to separate line-height from typography.variant() ([58551ca](https://github.com/Mezzanine-UI/mezzanine/commit/58551ca6add21fd98ed81d68c9ba0585dcf18ebb))
+- **core/textarea:** add missing typography ([0070baf](https://github.com/Mezzanine-UI/mezzanine/commit/0070bafd26cee015cb457b5dc73cd1502966d048))
+- **core/upload:** fix height of upload result ([28091f1](https://github.com/Mezzanine-UI/mezzanine/commit/28091f187a06ea9c115a2ef2c54f31d54a14959c))
+
 ## [0.0.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.1...@mezzanine-ui/core@0.0.2) (2021-03-05)
 
 ### Bug Fixes
