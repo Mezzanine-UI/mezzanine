@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react';
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import Button from '../Button';
 import { PopperPlacement } from '../Popper';
 import Popconfirm from './Popconfirm';
@@ -14,7 +14,7 @@ export const Placement = () => {
   const onClose = () => setAnchor(null);
   const renderButton = (placement: PopperPlacement) => (
     <Button
-      onClick={(event) => {
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
         event.stopPropagation();
         setCurrentPlacement(placement);
         setAnchor(anchor === event.currentTarget ? null : event.currentTarget);

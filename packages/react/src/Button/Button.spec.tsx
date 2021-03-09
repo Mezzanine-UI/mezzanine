@@ -1,6 +1,5 @@
 import { PlusIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
-import { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 import {
   cleanup,
   fireEvent,
@@ -288,30 +287,6 @@ describe('<Button />', () => {
       expect(labelElement?.tagName.toLowerCase()).toBe('span');
       expect(suffixdElement?.tagName.toLowerCase()).toBe('i');
       expect(suffixdElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-    });
-  });
-
-  describe('prop: type', () => {
-    it('should set type="button" by default', () => {
-      const { getHostHTMLElement } = render(<Button />);
-      const element = getHostHTMLElement();
-
-      expect(element.getAttribute('type')).toBe('button');
-    });
-
-    const types: DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>['type'][] = [
-      'button',
-      'reset',
-      'submit',
-    ];
-
-    types.forEach((type) => {
-      it(`should set type attribute to "${type}"`, () => {
-        const { getHostHTMLElement } = render(<Button type={type} />);
-        const element = getHostHTMLElement();
-
-        expect(element.getAttribute('type')).toBe(type);
-      });
     });
   });
 

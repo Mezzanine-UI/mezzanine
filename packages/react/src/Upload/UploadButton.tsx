@@ -1,8 +1,8 @@
-import { forwardRef, useRef } from 'react';
+import { forwardRef, MouseEvent, useRef } from 'react';
 import { UploadIcon } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
 import Button, { ButtonProps } from '../Button';
 import UploadInput, { UploadInputProps } from './UploadInput';
-import Icon from '../Icon';
 
 export interface UploadButtonProps
   extends
@@ -30,7 +30,7 @@ const UploadButton = forwardRef<HTMLButtonElement, UploadButtonProps>(function U
       {...rest}
       ref={ref}
       disabled={disabled}
-      onClick={(event) => {
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
         inputRef.current?.click();
 
         if (onClick) {

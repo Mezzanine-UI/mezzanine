@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { Meta } from '@storybook/react';
 import Button from '../Button';
 import Typography from '../Typography';
@@ -44,14 +44,16 @@ export const Basic = () => {
       </Popper>
       <Button
         variant="contained"
-        onMouseEnter={(event) => setAnchorRef(event.currentTarget)}
+        onMouseEnter={(event: MouseEvent<HTMLButtonElement>) => setAnchorRef(event.currentTarget)}
         onMouseLeave={() => setAnchorRef(null)}
       >
         Hover me
       </Button>
       <Button
         variant="contained"
-        onClick={(event) => setAnchorRef(anchorRef === event.currentTarget ? null : event.currentTarget)}
+        onClick={(event: MouseEvent<HTMLButtonElement>) => setAnchorRef(
+          anchorRef === event.currentTarget ? null : event.currentTarget,
+        )}
       >
         Click me
       </Button>
@@ -64,7 +66,7 @@ export const Placement = () => {
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const renderButton = (placement: PopperPlacement) => (
     <Button
-      onClick={(event) => {
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
         setPopperPlacement(placement);
         setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
       }}

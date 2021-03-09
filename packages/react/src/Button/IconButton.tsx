@@ -1,23 +1,26 @@
 import { forwardRef, ReactNode } from 'react';
-import Button, { ButtonProps } from './Button';
+import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
+import { ButtonComponent, ButtonPropsBase } from './typings';
+import Button from './Button';
 
-export interface IconButtonProps extends Omit<ButtonProps, 'prefix' | 'suffix'> {
-  /**
-   * The icon element.
-   */
-  children: ReactNode;
-}
+export type IconButtonProps<C extends ButtonComponent = 'button'> =
+  ComponentOverridableForwardRefComponentPropsFactory<ButtonComponent, C, Omit<ButtonPropsBase, 'prefix' | 'suffix'> & {
+    /**
+     * The icon element.
+     */
+    children?: ReactNode;
+  }>;
 
 /**
  * The react component for `mezzanine` button only has icon.
  */
-const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(props, ref) {
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps<'button'>>(function IconButton(props, ref) {
   const { children, ...rest } = props;
 
   return (
     <Button
-      ref={ref as any}
       {...rest}
+      ref={ref}
       prefix={children}
     />
   );

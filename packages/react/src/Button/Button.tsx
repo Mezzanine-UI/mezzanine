@@ -1,62 +1,13 @@
-import {
-  ComponentType,
-  forwardRef,
-  ReactNode,
-} from 'react';
+import { forwardRef, MouseEvent, ReactNode } from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
-import {
-  buttonClasses as classes,
-  ButtonColor,
-  ButtonSize,
-  ButtonVariant,
-} from '@mezzanine-ui/core/button';
+import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
+import { ButtonComponent, ButtonPropsBase } from './typings';
 
-export type ButtonComponent = 'button' | 'a' | ComponentType<ButtonProps>;
-
-export interface ButtonProps extends Omit<NativeElementPropsWithoutKeyAndRef<'button'>, 'prefix'> {
-  /**
-   * The color name provided by palette.
-   * @default 'primary'
-   */
-  color?: ButtonColor;
-  /**
-   * Override the component used to render.
-   * @default 'button'
-   */
-  component?: ButtonComponent;
-  /**
-   * If true, will use error color instead of color from props.
-   * @default false
-   */
-  danger?: boolean;
-  /**
-   * If true, replace the original icon.
-   * Replace suffix if only suffix provided, or prefix.
-   * @default false
-   */
-  loading?: boolean;
-  /**
-   * The element placed on the start of button.
-   */
-  prefix?: ReactNode;
-  /**
-   * The size of button.
-   * @default 'medium'
-   */
-  size?: ButtonSize;
-  /**
-   * The element placed on the end of button.
-   */
-  suffix?: ReactNode;
-  /**
-   * The variant of button.
-   * @default 'text'
-   */
-  variant?: ButtonVariant;
-}
+export type ButtonProps<C extends ButtonComponent = 'button'> =
+  ComponentOverridableForwardRefComponentPropsFactory<ButtonComponent, C, ButtonPropsBase>;
 
 /**
  * The react component for `mezzanine` button.
@@ -66,7 +17,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     children,
     className,
     color = 'primary',
-    component = 'button',
+    component: Component = 'button',
     danger = false,
     disabled = false,
     loading = false,
@@ -74,11 +25,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     prefix: prefixProp,
     size = 'medium',
     suffix: suffixProp,
-    type = 'button',
     variant = 'text',
     ...rest
   } = props;
-  const Component = component as 'button';
 
   let prefix: ReactNode = prefixProp;
   let suffix: ReactNode = suffixProp;
@@ -97,8 +46,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
 
   return (
     <Component
-      ref={ref as any}
       {...rest}
+      ref={ref}
       aria-disabled={disabled}
       className={cx(
         classes.host,
@@ -114,12 +63,11 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
         className,
       )}
       disabled={disabled}
-      onClick={(event) => {
+      onClick={(event: MouseEvent<HTMLButtonElement>) => {
         if (!disabled && !loading && onClick) {
           onClick(event);
         }
       }}
-      type={type}
     >
       {prefix}
       {children && <span className={classes.label}>{children}</span>}
