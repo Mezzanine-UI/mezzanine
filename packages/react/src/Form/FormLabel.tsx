@@ -1,17 +1,14 @@
 import {
-  DetailedHTMLProps,
   forwardRef,
-  LabelHTMLAttributes,
   ReactNode,
   useContext,
 } from 'react';
 import { formFieldClasses as classes } from '@mezzanine-ui/core/form';
-// import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
-// import Icon from '../Icon';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { FormControlContext } from './FormControlContext';
 
-export interface FormLabelProps extends DetailedHTMLProps<LabelHTMLAttributes<HTMLLabelElement>, HTMLLabelElement> {
+export interface FormLabelProps extends NativeElementPropsWithoutKeyAndRef<'label'> {
   remark?: ReactNode;
   remarkIcon?: ReactNode;
 }

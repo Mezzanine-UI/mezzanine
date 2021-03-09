@@ -1,16 +1,13 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  LiHTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import {
   menuItemClasses as classes,
 } from '@mezzanine-ui/core/menu';
 import { CheckIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
-export interface MenuItemProps extends Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, 'ref'> {
+export interface MenuItemProps extends NativeElementPropsWithoutKeyAndRef<'li'> {
   /**
    * Whether the menu item is active.
    * @default false

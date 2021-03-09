@@ -1,16 +1,11 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  LiHTMLAttributes,
-  ReactNode,
-} from 'react';
+import { forwardRef, ReactNode } from 'react';
 import {
   menuItemGroupClasses as classes,
 } from '@mezzanine-ui/core/menu';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface MenuItemGroupProps
-  extends Omit<DetailedHTMLProps<LiHTMLAttributes<HTMLLIElement>, HTMLLIElement>, 'ref'> {
+export interface MenuItemGroupProps extends NativeElementPropsWithoutKeyAndRef<'li'> {
   /**
    * The label of menu item group
    */

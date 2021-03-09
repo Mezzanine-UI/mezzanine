@@ -2,14 +2,13 @@ import {
   forwardRef,
   ChangeEventHandler,
   Ref,
-  DetailedHTMLProps,
-  TextareaHTMLAttributes,
 } from 'react';
 import {
   textareaClasses as classes,
   TextareaSize,
 } from '@mezzanine-ui/core/textarea';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import TextField, { TextFieldProps } from '../TextField';
 import { useInputControl, useInputFormControl } from '../Input';
 
@@ -57,10 +56,9 @@ export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children
    * The other native props for textarea element.
    */
   textareaProps?: Omit<
-  DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>,
+  NativeElementPropsWithoutKeyAndRef<'textarea'>,
   | Exclude<keyof TextareaProps, 'className'>
   | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
-  | 'ref'
   >;
   /**
    * The value of textarea.

@@ -1,12 +1,9 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface TabProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'ref'> {
+export interface TabProps extends NativeElementPropsWithoutKeyAndRef<'button'> {
   /**
    * Whether the tab is active.
    * Controlled by tabs.

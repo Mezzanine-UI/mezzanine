@@ -1,9 +1,7 @@
 import {
   Children,
   cloneElement,
-  DetailedHTMLProps,
   forwardRef,
-  HTMLAttributes,
   ReactElement,
 } from 'react';
 import {
@@ -16,13 +14,13 @@ import {
   toButtonGroupCssVars,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { ButtonProps } from './Button';
 import { IconButtonProps } from './IconButton';
 
 export type ButtonGroupChild = ReactElement<ButtonProps | IconButtonProps> | null | undefined | false;
 
-export interface ButtonGroupProps extends
-  Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref'> {
+export interface ButtonGroupProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * If `true`, all buttons will not have spacing between each others.
    * @default false

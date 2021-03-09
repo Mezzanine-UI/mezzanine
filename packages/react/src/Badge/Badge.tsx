@@ -1,14 +1,9 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  ReactNode,
-} from 'react';
+import { forwardRef, ReactNode } from 'react';
 import { badgeClasses as classes } from '@mezzanine-ui/core/badge';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface BadgeProps
-  extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>, 'color'> {
+export interface BadgeProps extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'color'> {
   /**
    * It `true`, ignore passed children and display as a dot.
    * @default false

@@ -1,16 +1,13 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import {
   MenuSize,
   menuClasses as classes,
   toMenuCssVars,
 } from '@mezzanine-ui/core/menu';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface MenuProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLUListElement>, HTMLUListElement>, 'ref'> {
+export interface MenuProps extends NativeElementPropsWithoutKeyAndRef<'ul'> {
   /**
    * The minimum items count in scroll container.
    * @default 4;

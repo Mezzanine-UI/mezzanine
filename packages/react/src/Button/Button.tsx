@@ -1,7 +1,5 @@
 import {
-  ButtonHTMLAttributes,
   ComponentType,
-  DetailedHTMLProps,
   forwardRef,
   ReactNode,
 } from 'react';
@@ -13,12 +11,12 @@ import {
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
 export type ButtonComponent = 'button' | 'a' | ComponentType<ButtonProps>;
 
-export interface ButtonProps extends
-  Omit<DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, 'prefix' | 'ref'> {
+export interface ButtonProps extends Omit<NativeElementPropsWithoutKeyAndRef<'button'>, 'prefix'> {
   /**
    * The color name provided by palette.
    * @default 'primary'

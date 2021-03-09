@@ -1,3 +1,4 @@
+import { forwardRef, useContext } from 'react';
 import {
   modalClasses as classes,
 } from '@mezzanine-ui/core/modal';
@@ -5,17 +6,12 @@ import {
   InfoCircleFilledIcon,
   MinusCircleFilledIcon,
 } from '@mezzanine-ui/icons';
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  useContext,
-} from 'react';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { ModalControlContext } from './ModalControl';
 
-export interface ModalHeaderProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface ModalHeaderProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Whether to show title icon.
    * @default false

@@ -1,8 +1,4 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import {
   iconClasses as classes,
@@ -10,8 +6,9 @@ import {
   toIconCssVars,
 } from '@mezzanine-ui/core/icon';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface IconProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'ref'> {
+export interface IconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
   /**
    * Color name provided by palette.
    */

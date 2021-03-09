@@ -1,10 +1,11 @@
-import { DetailedHTMLProps, forwardRef, HTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import { Severity } from '@mezzanine-ui/system/severity';
 import { formFieldClasses as classes } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { FormControl, FormControlContext } from './FormControlContext';
 
-export interface FormFieldProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface FormFieldProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * To control the field passed from children whether should be disabled.
    * The form message won't appear if disabled.

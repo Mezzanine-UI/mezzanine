@@ -1,17 +1,13 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  ReactNode,
-} from 'react';
+import { forwardRef, ReactNode } from 'react';
 import {
   emptyClasses as classes,
 } from '@mezzanine-ui/core/empty';
 import { FolderOpenIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
-export interface EmptyProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'title'> {
+export interface EmptyProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'> {
   /**
    * if true, the empty component will be 100% height of it's parent
    */

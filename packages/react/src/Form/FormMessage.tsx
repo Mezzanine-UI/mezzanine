@@ -1,15 +1,11 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  useContext,
-} from 'react';
+import { forwardRef, useContext } from 'react';
 import { formFieldClasses as classes, formMessageIcons } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { FormControlContext } from './FormControlContext';
 
-export type FormMessageProps = DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+export type FormMessageProps = NativeElementPropsWithoutKeyAndRef<'span'>;
 
 /**
  * The react component for `mezzanine` form message.

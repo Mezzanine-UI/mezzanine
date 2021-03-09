@@ -1,14 +1,10 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  ReactElement,
-} from 'react';
+import { forwardRef, ReactElement } from 'react';
 import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TabProps } from './Tab';
 
-export interface TabPaneProps extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref'> {
+export interface TabPaneProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Only for tabs to control the tab pane.
    */

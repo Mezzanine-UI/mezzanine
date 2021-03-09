@@ -1,20 +1,15 @@
-import {
-  ChangeEventHandler,
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { ChangeEventHandler, forwardRef } from 'react';
 import {
   switchClasses as classes,
   SwitchSize,
   SwitchSpinnerIcon,
 } from '@mezzanine-ui/core/switch';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { useSwitchControl } from './useSwitchControl';
 
-export interface SwitchProps
-  extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>, 'ref' | 'onChange'> {
+export interface SwitchProps extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'onChange'> {
   /**
    * Whether the switch is checked.
    */

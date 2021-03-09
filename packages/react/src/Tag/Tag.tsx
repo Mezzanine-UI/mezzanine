@@ -1,15 +1,11 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  MouseEventHandler,
-} from 'react';
+import { forwardRef, MouseEventHandler } from 'react';
 import { tagClasses as classes, TagSize } from '@mezzanine-ui/core/tag';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
-export interface TagProps extends DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
+export interface TagProps extends NativeElementPropsWithoutKeyAndRef<'span'> {
   /**
    * Whether the tag can be closed.
    * @default false

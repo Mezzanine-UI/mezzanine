@@ -1,12 +1,8 @@
 import { Options as _PopperOptions } from '@popperjs/core';
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  useState,
-} from 'react';
+import { forwardRef, useState } from 'react';
 import { Modifier, usePopper } from 'react-popper';
 import { ElementGetter, getElement } from '../utils/getElement';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Portal, { PortalProps } from '../Portal';
 
@@ -22,7 +18,7 @@ export type PopperOptions<Modifiers> = Omit<Partial<_PopperOptions>, 'modifiers'
 export interface PopperProps
   extends
   Pick<PortalProps, 'container' | 'disablePortal'>,
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * The ref of trigger Element.
    */

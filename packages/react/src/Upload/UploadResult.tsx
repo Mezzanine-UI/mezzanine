@@ -1,9 +1,4 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  MouseEventHandler,
-} from 'react';
+import { forwardRef, MouseEventHandler } from 'react';
 import {
   toUploadResultCssVars,
   uploadResultClasses as classes,
@@ -12,9 +7,10 @@ import {
 } from '@mezzanine-ui/core/upload';
 import { DownloadIcon, TimesIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
-export interface UploadResultProps extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface UploadResultProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   name: string;
   onDelete?: MouseEventHandler;
   onDownload?: MouseEventHandler;

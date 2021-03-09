@@ -1,9 +1,4 @@
-import {
-  DetailedHTMLProps,
-  HTMLAttributes,
-  forwardRef,
-  MouseEventHandler,
-} from 'react';
+import { forwardRef, MouseEventHandler } from 'react';
 import {
   alertClasses as classes,
   alertIcons,
@@ -12,11 +7,11 @@ import {
 import {
   TimesIcon,
 } from '@mezzanine-ui/icons';
-import Icon from '../Icon';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import Icon from '../Icon';
 
-export interface AlertProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+export interface AlertProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Close handler.
    */

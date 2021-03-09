@@ -1,17 +1,13 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  MouseEventHandler,
-} from 'react';
+import { forwardRef, MouseEventHandler } from 'react';
 import { overlayClasses as classes } from '@mezzanine-ui/core/overlay';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
 
 export interface OverlayProps
   extends
   Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
-  DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+  NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Whether to hide backdrop.
    * @default false

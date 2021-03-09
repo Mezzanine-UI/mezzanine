@@ -1,14 +1,11 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import {
   badgeClasses as classes,
 } from '@mezzanine-ui/core/badge';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export type BadgeContainerProps = DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+export type BadgeContainerProps = NativeElementPropsWithoutKeyAndRef<'span'>;
 
 /**
  * The react component for `mezzanine` badge container.

@@ -1,12 +1,9 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export type ModalBodyProps = DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+export type ModalBodyProps = NativeElementPropsWithoutKeyAndRef<'div'>;
 
 /**
  * The react component for `mezzanine` modal body.

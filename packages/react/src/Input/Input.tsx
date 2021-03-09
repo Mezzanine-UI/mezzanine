@@ -2,8 +2,6 @@ import {
   forwardRef,
   ChangeEventHandler,
   Ref,
-  DetailedHTMLProps,
-  InputHTMLAttributes,
 } from 'react';
 import {
   inputClasses as classes,
@@ -13,6 +11,7 @@ import { cx } from '../utils/cx';
 import TextField, { TextFieldProps } from '../TextField';
 import { useInputControl } from './useInputControl';
 import { useInputFormControl } from './useInputFormControl';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear'> {
   /**
@@ -27,10 +26,9 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
    * The other native props for input element.
    */
   inputProps?: Omit<
-  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+  NativeElementPropsWithoutKeyAndRef<'input'>,
   | Exclude<keyof InputProps, 'className'>
   | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
-  | 'ref'
   >;
   /**
    * The change event handler of input element.

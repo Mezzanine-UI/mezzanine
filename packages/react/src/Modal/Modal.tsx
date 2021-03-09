@@ -1,12 +1,9 @@
 
 import { modalClasses as classes, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import Overlay, { OverlayProps } from '../Overlay';
 import Icon from '../Icon';
@@ -14,7 +11,7 @@ import { useIsTopModal } from './useIsTopModal';
 import { ModalControl, ModalControlContext } from './ModalControl';
 
 export interface ModalProps
-  extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+  extends NativeElementPropsWithoutKeyAndRef<'div'>,
   Pick<OverlayProps, 'container' | 'disablePortal' | 'hideBackdrop' | 'onBackdropClick'> {
   /**
    * Controlls whether or not to display status icon before title. <br />

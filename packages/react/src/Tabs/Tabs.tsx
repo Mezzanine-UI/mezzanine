@@ -1,9 +1,7 @@
 import {
   Children,
   cloneElement,
-  DetailedHTMLProps,
   forwardRef,
-  HTMLAttributes,
   Key,
   MouseEvent,
   ReactElement,
@@ -13,13 +11,14 @@ import {
 } from 'react';
 import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TabProps } from './Tab';
 import { TabPaneProps } from './TabPane';
 
 export type TabsChild = ReactElement<TabPaneProps>;
 
 export interface TabsProps extends
-  Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref' | 'onChange' | 'children'> {
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange' | 'children'> {
   /**
    * Current TabPane's index
    */

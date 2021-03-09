@@ -1,6 +1,7 @@
 export * from './utils/composeRefs';
 export * from './utils/cx';
 export * from './utils/getElement';
+export * from './utils/jsx-types';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';

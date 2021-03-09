@@ -1,14 +1,11 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-} from 'react';
+import { forwardRef } from 'react';
 import {
   menuDividerClasses as classes,
 } from '@mezzanine-ui/core/menu';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export type MenuDividerProps = Omit<DetailedHTMLProps<HTMLAttributes<HTMLHRElement>, HTMLHRElement>, 'ref'>;
+export type MenuDividerProps = NativeElementPropsWithoutKeyAndRef<'hr'>;
 
 /**
  * The react component for `mezzanine` menu divider.
