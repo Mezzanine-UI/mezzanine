@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/breakpoint';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/z-index';
 @use '../button';
@@ -139,6 +140,8 @@ $width-map: (
     right: $padding-x;
     font-size: typography.px-to-rem($close-icon-size);
     color: palette.color(action-inactive);
+    transition: transition.standard(color);
+    will-change: color;
     cursor: pointer;
     box-sizing: border-box;
 
