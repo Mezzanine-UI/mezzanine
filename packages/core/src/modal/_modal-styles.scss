@@ -203,7 +203,6 @@ $width-map: (
 
   &__footer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     flex: 0 0;
     padding: $padding-y - 1px $padding-x $padding-y $padding-x;
@@ -212,6 +211,8 @@ $width-map: (
   }
 
   &__actions {
+    margin-left: auto;
+
     .#{button.$prefix} {
       min-width: $action-min-width;
     }
