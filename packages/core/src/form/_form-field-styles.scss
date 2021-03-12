@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use '../text-field';
@@ -64,6 +65,8 @@ $message-gap: 4px !default;
     top: 100%;
     margin-top: $message-gap;
     color: var(--#{$prefix}-severity-color, palette.color(action-inactive));
+    transition: transition.standard(color);
+    will-change: color;
   }
 
   &__severity-icon {
