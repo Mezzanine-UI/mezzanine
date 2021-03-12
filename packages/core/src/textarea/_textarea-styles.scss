@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '../text-field';
 @use './textarea' as *;
@@ -40,6 +41,8 @@ $count-gap: 4px !default;
     top: calc(100% + #{$count-gap});
     right: 0;
     color: palette.color(text-secondary);
+    transition: transition.standard(color);
+    will-change: color;
 
     @include typography.variant(caption);
 
