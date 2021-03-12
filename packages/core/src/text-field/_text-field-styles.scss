@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/size';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use '../form';
@@ -29,8 +30,10 @@ $prefix-suffix-gap: 4px !default;
   height: var(--#{$prefix}-height);
   background-color: palette.color(surface);
   border: 1px solid var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color, palette.color(border)));
-  color: palette.color(text-secondary);
+  color: palette.color(text-primary);
   caret-color: palette.color(text-primary);
+  transition: transition.standard(background-color), transition.standard(border), transition.standard(color);
+  will-change: background-color, border-color, color;
   box-sizing: border-box;
 
   input,
@@ -47,8 +50,9 @@ $prefix-suffix-gap: 4px !default;
     box-sizing: border-box;
   }
 
-  ::placeholder {
-    color: inherit;
+  ::placeholder,
+  &__placeholder {
+    color: palette.color(text-secondary);
   }
 
   &__prefix,
@@ -79,15 +83,15 @@ $prefix-suffix-gap: 4px !default;
     border: none;
     color: var(--#{$prefix}-interact-icon-color);
     padding: 0;
-    line-height: 0;
     outline: none;
     cursor: pointer;
-    visibility: hidden;
     opacity: 0;
   }
 
   .#{icon.$prefix} {
     font-size: var(--#{$prefix}-icon-size);
+    transition: transition.standard(color), transition.standard(opacity);
+    will-change: color, opacity;
   }
 
   &:not(.#{$prefix}--disabled) {
@@ -99,13 +103,10 @@ $prefix-suffix-gap: 4px !default;
   }
 
   &--active {
-    color: palette.color(text-primary);
-
     &:hover,
     &:focus-within {
       &:not(.#{$prefix}--disabled) {
         .#{$prefix}__clear-icon {
-          visibility: visible;
           opacity: 1;
         }
       }

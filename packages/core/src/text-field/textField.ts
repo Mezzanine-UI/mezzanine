@@ -14,6 +14,7 @@ export const textFieldClasses = {
   size: (size: TextFieldSize) => `${textFieldPrefix}--${size}`,
   withPrefix: `${textFieldPrefix}--prefix`,
   withSuffix: `${textFieldPrefix}--suffix`,
+  placeholder: `${textFieldPrefix}__placeholder`,
   prefix: `${textFieldPrefix}__prefix`,
   suffix: `${textFieldPrefix}__suffix`,
   clearIcon: `${textFieldPrefix}__clear-icon`,
