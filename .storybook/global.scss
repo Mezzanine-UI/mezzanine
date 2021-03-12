@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system';
 @use '~@mezzanine-ui/core';
 
@@ -14,8 +15,8 @@
 .sb-show-main {
   background-color: palette.color(bg);
   color: palette.color(text-primary);
-  // @todo use animation system
-  transition: background-color 0.3s ease-in-out;
+  transition: transition.standard(background-color), transition.standard(color);
+  will-change: background-color, color;
 }
 
 @include core.styles();
