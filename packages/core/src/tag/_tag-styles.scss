@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use './tag' as *;
 
@@ -49,8 +50,15 @@ $icon-label-gap-x: 4px !default;
     font-size: var(--#{$prefix}-close-icon-size, typography.px-to-rem($icon-size));
     margin-right: -#{$icon-label-gap-x};
     margin-left: $icon-label-gap-x;
+    color: palette.color(action-inactive);
+    transition: transition.standard(color);
+    will-change: color;
     outline: 0;
     cursor: pointer;
+
+    &:hover {
+      color: palette.color(action-active);
+    }
   }
 
   &--disabled {
@@ -58,6 +66,7 @@ $icon-label-gap-x: 4px !default;
     color: palette.color(action-disabled);
 
     .#{$prefix}__close-icon {
+      color: palette.color(action-disabled);
       cursor: default;
       pointer-events: none;
     }
