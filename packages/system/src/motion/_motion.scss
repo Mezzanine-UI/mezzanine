@@ -1,0 +1,64 @@
+@use 'sass:map';
+@use '../utils/list';
+
+$prefix: mzn-motion;
+
+$duration-names: (shortest, shorter, short, standard, long);
+$default-durations: (
+  shortest: 150ms,
+  shorter: 200ms,
+  short: 250ms,
+  standard: 300ms,
+  long: 375ms,
+);
+
+$easing-names: (standard, emphasized, decelerated, accelerated);
+$default-easings: (
+  standard: cubic-bezier(0.58, 0.01, 0.29, 1.01),
+  emphasized: cubic-bezier(0.83, 0, 0.17, 1),
+  decelerated: cubic-bezier(0, 0, 0.3, 1),
+  accelerated: cubic-bezier(0.32, 0, 0.67, 0),
+);
+
+$default-options: (
+  durations: $default-durations,
+  easings: $default-easings,
+);
+
+@function is-duration-name-valid($duration-name) {
+  @return list.includes($duration-names, $duration-name);
+}
+
+@function is-easing-name-valid($easing-name) {
+  @return list.includes($easing-names, $easing-name);
+}
+
+@function duration($duration-name) {
+  @if not is-duration-name-valid($duration-name) {
+    @error "Invalid duration name #{$duration-name}. Please choose one of #{$duration-names}";
+  }
+
+  @return var(--#{$prefix}-duration-#{$duration-name});
+}
+
+@function easing($easing-name) {
+  @if not is-easing-name-valid($easing-name) {
+    @error "Invalid easing name #{$easing-name}. Please choose one of #{$easing-names}";
+  }
+
+  @return var(--#{$prefix}-easing-#{$easing-name});
+}
+
+@mixin variables($options: ()) {
+  $options: map.deep-merge($default-options, $options);
+  $durations: map.get($options, durations);
+  $easings: map.get($options, easings);
+
+  @each $name, $value in $durations {
+    --#{$prefix}-duration-#{$name}: #{$value};
+  }
+
+  @each $name, $value in $easings {
+    --#{$prefix}-easing-#{$name}: #{$value};
+  }
+}
