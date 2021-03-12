@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use './alert' as *;
 
@@ -27,6 +28,8 @@ $close-icon-width: $icon-size + 12px;
     padding: 8px 8px 8px 4px;
     font-size: typography.px-to-rem($icon-size);
     color: palette.color(action-inactive);
+    transition: transition.standard(color);
+    will-change: color;
     cursor: pointer;
 
     &:hover,
