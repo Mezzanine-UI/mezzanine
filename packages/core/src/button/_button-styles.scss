@@ -2,6 +2,7 @@
 @use '~@mezzanine-ui/system/utils/list';
 @use '~@mezzanine-ui/system/orientation';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use './utils';
@@ -181,6 +182,8 @@ $outlined-border-width: 1px !default;
   align-items: center;
   text-decoration: none;
   text-transform: uppercase;
+  transition: transition.standard(background-color), transition.standard(border), transition.standard(color);
+  will-change: background-color, border-color, color;
 
   &--disabled,
   &--loading {
