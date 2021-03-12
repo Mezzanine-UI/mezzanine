@@ -1,12 +1,20 @@
 @use 'sass:map';
+@use './motion';
 @use './spacing';
 @use './typography';
 @use './z-index';
 
 @mixin common-variables($options: ()) {
+  $motion: map.get($options, motion);
   $spacing: map.get($options, spacing);
   $typography: map.get($options, typography);
   $z-index: map.get($options, z-index);
+
+  @if $motion == null {
+    @include motion.variables();
+  } @else {
+    @include motion.variables($motion);
+  }
 
   @if $spacing == null {
     @include spacing.variables();
