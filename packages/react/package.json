@@ -32,8 +32,10 @@
     "@mezzanine-ui/icons": "^0.0.1",
     "@mezzanine-ui/system": "^0.0.3",
     "@popperjs/core": "^2.7.0",
+    "@types/react-transition-group": "4.4.1",
     "clsx": "^1.1.1",
     "react-popper": "^2.2.4",
+    "react-transition-group": "4.4.1",
     "tslib": "^2.1.0"
   },
   "devDependencies": {
