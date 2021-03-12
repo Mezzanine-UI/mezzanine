@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use '../icon';
 @use './upload-result' as *;
@@ -23,6 +24,8 @@ $name-icon-gap: 4px !default;
   min-width: $min-width;
   padding: 0 $padding-right 0 $padding-left;
   overflow: hidden;
+  transition: transition.standard(border), transition.standard(color);
+  will-change: border-color, color;
   box-sizing: border-box;
 
   .#{icon.$prefix} {
@@ -43,6 +46,8 @@ $name-icon-gap: 4px !default;
     flex-shrink: 0;
     font-size: var(--#{$prefix}-icon-size, typography.px-to-rem($icon-size));
     color: var(--#{$prefix}-action-color, palette.color(action-inactive));
+    transition: transition.standard(color);
+    will-change: color;
     margin-left: $name-icon-gap;
   }
 
