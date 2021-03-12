@@ -165,6 +165,10 @@ export {
  */
 export * from './Notifier';
 export {
+  OverlayProps,
+  default as Overlay,
+} from './Overlay';
+export {
   PopoverProps,
   default as Popover,
 } from './Popover';
@@ -180,6 +184,17 @@ export {
   default as Portal,
 } from './Portal';
 export {
-  OverlayProps,
-  default as Overlay,
-} from './Overlay';
+  TransitionProps,
+  default as Transition,
+  CollapseProps,
+  Collapse,
+  FadeProps,
+  Fade,
+  GrowProps,
+  Grow,
+  SlideFadeDirection,
+  SlideFadeProps,
+  SlideFade,
+  ZoomProps,
+  Zoom,
+} from './Transition';
