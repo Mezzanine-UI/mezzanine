@@ -4,9 +4,9 @@ import {
   InfoCircleFilledIcon,
   MinusCircleFilledIcon,
 } from '@mezzanine-ui/icons';
-import { SeverityForFeedback } from '@mezzanine-ui/system/severity';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
-export type MessageSeverity = SeverityForFeedback;
+export type MessageSeverity = SeverityWithInfo;
 
 export const messagePrefix = 'mzn-message';
 

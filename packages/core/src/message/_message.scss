@@ -1,4 +1,4 @@
 @use '~@mezzanine-ui/system/severity';
 
 $prefix: mzn-message;
-$severities: severity.$severities-for-feedback;
+$severities: severity.$severities-with-info;
