@@ -177,14 +177,30 @@ describe('<Modal />', () => {
   });
 
   describe('overlay', () => {
-    it('should pass container,disablePortal,hideBackdrop to overlay', () => {
+    const propsShouldPassed = [
+      'container',
+      'disableCloseOnBackdropClick',
+      'disablePortal',
+      'hideBackdrop',
+      'onBackdropClick',
+      'onClose',
+      'open',
+    ];
+
+    it(`should pass ${propsShouldPassed.join(',')} to overlay`, () => {
       const container = () => document.createElement('div');
+      const onBackdropClick = () => {};
+
+      const onClose = () => {};
 
       const testInstance = TestRenderer.create(
         <Modal
           container={container}
           disablePortal
+          disableCloseOnBackdropClick
           hideBackdrop
+          onBackdropClick={onBackdropClick}
+          onClose={onClose}
           open
         />,
       );
@@ -192,7 +208,11 @@ describe('<Modal />', () => {
 
       expect(overlayInstance.props.container).toBe(container);
       expect(overlayInstance.props.disablePortal).toBe(true);
+      expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(true);
       expect(overlayInstance.props.hideBackdrop).toBe(true);
+      expect(overlayInstance.props.onBackdropClick).toBe(onBackdropClick);
+      expect(overlayInstance.props.onClose).toBe(onClose);
+      expect(overlayInstance.props.open).toBe(true);
     });
   });
 

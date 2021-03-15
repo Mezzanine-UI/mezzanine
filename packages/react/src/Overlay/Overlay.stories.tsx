@@ -7,11 +7,12 @@ export default {
   title: 'Utility/Overlay',
 } as Meta;
 
-type PlaygroundArgs = Required<Pick<OverlayProps, 'disablePortal' | 'hideBackdrop'>>;
+type PlaygroundArgs = Required<Pick<OverlayProps, 'disablePortal' | 'hideBackdrop' | 'open'>>;
 
 export const Playground: Story<PlaygroundArgs> = ({
   disablePortal,
   hideBackdrop,
+  open,
 }) => (
   <div
     style={{
@@ -24,6 +25,7 @@ export const Playground: Story<PlaygroundArgs> = ({
     <Overlay
       disablePortal={disablePortal}
       hideBackdrop={hideBackdrop}
+      open={open}
       style={{
         display: 'flex',
         justifyContent: 'center',
@@ -39,4 +41,5 @@ export const Playground: Story<PlaygroundArgs> = ({
 Playground.args = {
   disablePortal: false,
   hideBackdrop: false,
+  open: true,
 };

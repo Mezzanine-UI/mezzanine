@@ -1,35 +1,42 @@
 
 import { modalClasses as classes, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import Overlay, { OverlayProps } from '../Overlay';
 import Icon from '../Icon';
+import { SlideFade } from '../Transition';
 import { useIsTopModal } from './useIsTopModal';
 import { ModalControl, ModalControlContext } from './ModalControl';
 
 export interface ModalProps
-  extends NativeElementPropsWithoutKeyAndRef<'div'>,
-  Pick<OverlayProps, 'container' | 'disablePortal' | 'hideBackdrop' | 'onBackdropClick'> {
+  extends
+  NativeElementPropsWithoutKeyAndRef<'div'>,
+  Pick<
+  OverlayProps,
+  | 'container'
+  | 'disableCloseOnBackdropClick'
+  | 'disablePortal'
+  | 'hideBackdrop'
+  | 'onBackdropClick'
+  | 'onClose'
+  | 'open'
+  > {
   /**
    * Controlls whether or not to display status icon before title. <br />
    * Notice that giving a status will only display the regular title.
    */
   danger?: boolean;
   /**
-   * Controls whether to disable closing modal while backdrop clicked.
-   * @default false
-   */
-  disableCloseOnBackdropClick?: boolean;
-  /**
    * Controls whether to disable closing modal while escape key down.
    * @default false
    */
   disableCloseOnEscapeKeyDown?: boolean;
   /**
-   *
+   * Whether to force full screen on any breakpoint.
+   * @default false
    */
   fullScreen?: boolean;
   /**
@@ -42,14 +49,6 @@ export interface ModalProps
    * Controls the loading prop of confirm button in modal actions.
    */
   loading?: boolean;
-  /**
-   * Close handler.
-   */
-  onClose?: VoidFunction;
-  /**
-   * Controls whether or not to show the modal.
-   */
-  open?: boolean;
   /**
    * Controls the size of the modal.
    * @default "medium"
@@ -83,7 +82,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     danger,
     loading,
   };
-
+  const [exited, setExited] = useState(true);
   /**
    * Escape keydown close: escape will only close the top modal
    */
@@ -106,7 +105,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     onClose,
   ]);
 
-  if (!open) {
+  if (!open && exited) {
     return null;
   }
 
@@ -114,43 +113,45 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     <Overlay
       className={classes.overlay}
       container={container}
+      disableCloseOnBackdropClick={disableCloseOnBackdropClick}
       disablePortal={disablePortal}
       hideBackdrop={hideBackdrop}
-      onBackdropClick={(event) => {
-        if (!disableCloseOnBackdropClick && onClose) {
-          onClose();
-        }
-
-        if (onBackdropClick) {
-          onBackdropClick(event);
-        }
-      }}
+      onBackdropClick={onBackdropClick}
+      onClose={onClose}
+      open={open}
     >
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          classes.size(size),
-          {
-            [classes.danger]: danger,
-            [classes.fullScreen]: fullScreen,
-            [classes.withCloseIcon]: !hideCloseIcon,
-          },
-          className,
-        )}
-      >
-        <ModalControlContext.Provider value={modalControl}>
-          {children}
-        </ModalControlContext.Provider>
-        {!hideCloseIcon && (
-          <Icon
-            className={classes.closeIcon}
-            icon={TimesIcon}
-            onClick={onClose}
-          />
-        )}
-      </div>
+      <ModalControlContext.Provider value={modalControl}>
+        <SlideFade
+          ref={ref}
+          in={open}
+          direction="down"
+          onEntered={() => setExited(false)}
+          onExited={() => setExited(true)}
+        >
+          <div
+            {...rest}
+            className={cx(
+              classes.host,
+              classes.size(size),
+              {
+                [classes.danger]: danger,
+                [classes.fullScreen]: fullScreen,
+                [classes.withCloseIcon]: !hideCloseIcon,
+              },
+              className,
+            )}
+          >
+            {children}
+            {!hideCloseIcon && (
+              <Icon
+                className={classes.closeIcon}
+                icon={TimesIcon}
+                onClick={onClose}
+              />
+            )}
+          </div>
+        </SlideFade>
+      </ModalControlContext.Provider>
     </Overlay>
   );
 });

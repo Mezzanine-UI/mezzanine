@@ -3,11 +3,17 @@ import { overlayClasses as classes } from '@mezzanine-ui/core/overlay';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
+import { Fade } from '../Transition';
 
 export interface OverlayProps
   extends
   Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
   NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * Controls whether to disable closing element while backdrop clicked.
+   * @default false
+   */
+  disableCloseOnBackdropClick?: boolean;
   /**
    * Whether to hide backdrop.
    * @default false
@@ -17,21 +23,31 @@ export interface OverlayProps
    * Click handler for backdrop.
    */
   onBackdropClick?: MouseEventHandler;
+  /**
+   * Callback fired while the element will be closed.
+   */
+  onClose?: VoidFunction;
+  /**
+   * Controls whether to show the element.
+   * @default false
+   */
+  open?: boolean;
 }
 
 /**
  * The react component for `mezzanine` overlay.
- *
- * Use for portal components that need a backdrop.
  */
 const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props, ref) {
   const {
-    disablePortal,
     children,
     className,
     container,
+    disableCloseOnBackdropClick = false,
+    disablePortal,
     hideBackdrop = false,
     onBackdropClick,
+    onClose,
+    open = false,
     ...rest
   } = props;
 
@@ -49,11 +65,21 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
         )}
       >
         {hideBackdrop ? null : (
-          <div
-            aria-hidden
-            className={classes.backdrop}
-            onClick={onBackdropClick}
-          />
+          <Fade in={open}>
+            <div
+              aria-hidden
+              className={classes.backdrop}
+              onClick={(event) => {
+                if (!disableCloseOnBackdropClick && onClose) {
+                  onClose();
+                }
+
+                if (onBackdropClick) {
+                  onBackdropClick(event);
+                }
+              }}
+            />
+          </Fade>
         )}
         {children}
       </div>
