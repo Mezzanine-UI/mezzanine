@@ -3,6 +3,31 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.3...@mezzanine-ui/core@0.0.5) (2021-03-15)
+
+### Bug Fixes
+
+- **core/alert:** add transition to close icon of alert ([67211bf](https://github.com/Mezzanine-UI/mezzanine/commit/67211bfd48b4f102498bb2b49aefc31b1d72e9bb))
+- **core/badge:** set badge to scale(0) instead of display none while hidden ([8bf9ca1](https://github.com/Mezzanine-UI/mezzanine/commit/8bf9ca1b0335ba5368853891689ee1527c661296))
+- **core/button:** add transition to button ([b75a328](https://github.com/Mezzanine-UI/mezzanine/commit/b75a3281eada8b3491a8d3cd39bdd2a9632aea47))
+- **core/form:** add transition to form message ([8af1869](https://github.com/Mezzanine-UI/mezzanine/commit/8af186923ed91bc3a1fd596a495429729ad38e6d))
+- **core/message:** use SeverityWithInfo instead of SeverityForFeedback ([1ec07a6](https://github.com/Mezzanine-UI/mezzanine/commit/1ec07a615296c4612678f92acbb93af2ad1dca15))
+- **core/modal:** add transition to close icon of modal ([6c13f5d](https://github.com/Mezzanine-UI/mezzanine/commit/6c13f5dae4065b394eef19f8b842224f3cf4608d))
+- **core/modal:** correctly place action buttons of modal actions on the right side ([a7ea8f5](https://github.com/Mezzanine-UI/mezzanine/commit/a7ea8f54a54850879467597fdc30905537f110e6))
+- **core/switch:** add transition to switch ([363790d](https://github.com/Mezzanine-UI/mezzanine/commit/363790d7a7193520f9128e0b777aaff0b944ba24))
+- **core/tag:** add transition to tag and fix color of close icon ([37c8b4e](https://github.com/Mezzanine-UI/mezzanine/commit/37c8b4e2e327c1d3f4711c2318fd448f16c47ce7))
+- **core/text-field:** add transition to text field ([50e96b5](https://github.com/Mezzanine-UI/mezzanine/commit/50e96b56c77b0078560ee468648a51eead051276))
+- **core/textarea:** add transition to count of textarea ([ce31858](https://github.com/Mezzanine-UI/mezzanine/commit/ce318584663b1f334a71c97b341d5cd25f304578))
+- **core/upload:** add transition to upload result ([25525a5](https://github.com/Mezzanine-UI/mezzanine/commit/25525a57138d39190d59757d6026ddacc7b4c92a))
+
+### Code Refactoring
+
+- **core/modal:** add severity to modal ([523d486](https://github.com/Mezzanine-UI/mezzanine/commit/523d48600daf02c77b1d1b362f26ff043760ba30))
+
+### BREAKING CHANGES
+
+- **core/modal:** use severity instead of danger
+
 ## [0.0.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.2...@mezzanine-ui/core@0.0.3) (2021-03-09)
 
 ### Bug Fixes

@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.4...@mezzanine-ui/react@0.0.5) (2021-03-15)
+
+### Bug Fixes
+
+- **react/modal:** add role to overlay and modal ([b20d119](https://github.com/Mezzanine-UI/mezzanine/commit/b20d1193235bf04ab8b561b1706f9c1829ad95da))
+- **react/modal:** add transition to modal ([495473d](https://github.com/Mezzanine-UI/mezzanine/commit/495473def9f1cbdd9e31cb4f6cca92c8057e7430))
+
+### Code Refactoring
+
+- **react/modal:** add severity to modal ([e7c78d6](https://github.com/Mezzanine-UI/mezzanine/commit/e7c78d68dc8f60245a25eac74aa54eb027b05de0))
+
+### Features
+
+- **react/transition:** implement ([684cb11](https://github.com/Mezzanine-UI/mezzanine/commit/684cb11a2ec3d5e6a1c626541262db97814634fb))
+
+### BREAKING CHANGES
+
+- **react/modal:** use severity instead of danger
+
 ## [0.0.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.3...@mezzanine-ui/react@0.0.4) (2021-03-09)
 
 ### Features
