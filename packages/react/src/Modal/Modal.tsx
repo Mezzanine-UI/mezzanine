@@ -94,8 +94,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
       return;
     }
 
-    return () => {
+    return (event) => {
       if (isTopModal()) {
+        event.stopPropagation();
+
         onClose();
       }
     };
@@ -120,6 +122,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
       onBackdropClick={onBackdropClick}
       onClose={onClose}
       open={open}
+      role="presentation"
     >
       <ModalControlContext.Provider value={modalControl}>
         <SlideFade
@@ -141,6 +144,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
               },
               className,
             )}
+            role="dialog"
           >
             {children}
             {!hideCloseIcon && (
