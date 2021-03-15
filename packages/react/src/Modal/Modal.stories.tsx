@@ -1,6 +1,8 @@
 import { Story, Meta } from '@storybook/react';
 import { ReactNode, useCallback, useState } from 'react';
 import Modal, {
+  ModalSeverity,
+  ModalSize,
   ModalProps,
   ModalHeaderProps,
   ModalHeader,
@@ -14,10 +16,24 @@ export default {
   title: 'Feedback/Modal',
 } as Meta;
 
+const severities: ModalSeverity[] = [
+  'info',
+  'error',
+  'warning',
+  'success',
+];
+
+const sizes: ModalSize[] = [
+  'small',
+  'medium',
+  'large',
+  'extraLarge',
+];
+
 interface PlaygroundArgs
   extends
   Omit<ModalProps, 'title'>,
-  Required<Pick<ModalHeaderProps, 'showTitleIcon' | 'titleLarge'>>,
+  Required<Pick<ModalHeaderProps, 'showSeverityIcon' | 'titleLarge'>>,
   Required<Pick<ModalActionsProps, 'cancelText' | 'confirmText'>> {
   title: ReactNode;
   body: ReactNode;
@@ -25,15 +41,15 @@ interface PlaygroundArgs
 }
 
 export const Playground: Story<PlaygroundArgs> = ({
-  danger,
   disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown,
   fullScreen,
   hideCloseIcon,
   loading,
+  severity,
   size,
   title,
-  showTitleIcon,
+  showSeverityIcon,
   titleLarge,
   body,
   footer,
@@ -47,7 +63,6 @@ export const Playground: Story<PlaygroundArgs> = ({
     <>
       <Button onClick={() => setOpen(true)} variant="contained">open</Button>
       <Modal
-        danger={danger}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
         fullScreen={fullScreen}
@@ -55,10 +70,11 @@ export const Playground: Story<PlaygroundArgs> = ({
         loading={loading}
         onClose={onClose}
         open={open}
+        severity={severity}
         size={size}
       >
         <ModalHeader
-          showTitleIcon={showTitleIcon}
+          showSeverityIcon={showSeverityIcon}
           titleLarge={titleLarge}
         >
           {title}
@@ -80,15 +96,15 @@ export const Playground: Story<PlaygroundArgs> = ({
 };
 
 Playground.args = {
-  danger: false,
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   fullScreen: false,
   hideCloseIcon: false,
   loading: false,
+  severity: 'info',
   size: 'medium',
   title: 'Title',
-  showTitleIcon: false,
+  showSeverityIcon: false,
   titleLarge: false,
   // eslint-disable-next-line max-len
   body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum illum neque soluta atque. Eum dolores placeat unde, molestias exercitationem tempore perspiciatis quia porro sapiente vero impedit consequatur recusandae excepturi cumque.Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum illum neque soluta atque. Eum dolores placeat unde, molestias exercitationem tempore perspiciatis quia porro sapiente vero impedit consequatur recusandae excepturi cumque.Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum illum neque soluta atque. Eum dolores placeat unde, molestias exercitationem tempore perspiciatis quia porro sapiente vero impedit consequatur recusandae excepturi cumque.',
@@ -101,12 +117,13 @@ Playground.argTypes = {
   size: {
     control: {
       type: 'select',
-      options: [
-        'small',
-        'medium',
-        'large',
-        'extraLarge',
-      ],
+      options: sizes,
+    },
+  },
+  severity: {
+    control: {
+      type: 'select',
+      options: severities,
     },
   },
 };

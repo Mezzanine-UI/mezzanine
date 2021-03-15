@@ -7,7 +7,7 @@ import {
   describeForwardRefToHTMLElement,
 } from '../../__test-utils__/common';
 import ConfirmActions from '../ConfirmActions';
-import Modal, { ModalActions } from '.';
+import Modal, { ModalActions, ModalSeverity } from '.';
 
 describe('<ModalActions />', () => {
   afterEach(cleanup);
@@ -25,19 +25,44 @@ describe('<ModalActions />', () => {
   });
 
   describe('modal control', () => {
-    it('should pass danger and loading of modal to confirm actions', () => {
+    it('should passloading of modal to confirm actions', () => {
       /**
        * TestRenderer not support React.createPortal
        */
       const testInstance = TestRenderer.create(
-        <Modal danger disablePortal loading open>
+        <Modal disablePortal loading open>
+          <ModalActions />
+        </Modal>,
+      );
+      const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+
+      expect(confirmActionsInstance.props.loading).toBeTruthy();
+    });
+
+    it('should not pass danger to confirm actions if severity!=="error"', () => {
+      const severities: ModalSeverity[] = ['info', 'success', 'warning'];
+
+      severities.forEach((severity) => {
+        const testInstance = TestRenderer.create(
+          <Modal disablePortal loading open severity={severity}>
+            <ModalActions />
+          </Modal>,
+        );
+        const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+
+        expect(confirmActionsInstance.props.danger).toBeFalsy();
+      });
+    });
+
+    it('should pass danger to confirm actions if severity="error"', () => {
+      const testInstance = TestRenderer.create(
+        <Modal disablePortal loading open severity="error">
           <ModalActions />
         </Modal>,
       );
       const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
 
       expect(confirmActionsInstance.props.danger).toBeTruthy();
-      expect(confirmActionsInstance.props.loading).toBeTruthy();
     });
   });
 

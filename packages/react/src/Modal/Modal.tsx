@@ -1,5 +1,5 @@
 
-import { modalClasses as classes, ModalSize } from '@mezzanine-ui/core/modal';
+import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import { forwardRef, useState } from 'react';
 import { cx } from '../utils/cx';
@@ -25,11 +25,6 @@ export interface ModalProps
   | 'open'
   > {
   /**
-   * Controlls whether or not to display status icon before title. <br />
-   * Notice that giving a status will only display the regular title.
-   */
-  danger?: boolean;
-  /**
    * Controls whether to disable closing modal while escape key down.
    * @default false
    */
@@ -50,6 +45,12 @@ export interface ModalProps
    */
   loading?: boolean;
   /**
+   * Controlls whether or not to display status icon before title. <br />
+   * Notice that giving a status will only display the regular title.
+   * @default 'info'
+   */
+  severity?: ModalSeverity;
+  /**
    * Controls the size of the modal.
    * @default "medium"
    */
@@ -64,7 +65,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     children,
     className,
     container,
-    danger = false,
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
     disablePortal,
@@ -75,12 +75,13 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     onBackdropClick,
     onClose,
     open,
+    severity = 'info',
     size = 'medium',
     ...rest
   } = props;
   const modalControl: ModalControl = {
-    danger,
     loading,
+    severity,
   };
   const [exited, setExited] = useState(true);
   /**
@@ -132,9 +133,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
             {...rest}
             className={cx(
               classes.host,
+              classes.severity(severity),
               classes.size(size),
               {
-                [classes.danger]: danger,
                 [classes.fullScreen]: fullScreen,
                 [classes.withCloseIcon]: !hideCloseIcon,
               },

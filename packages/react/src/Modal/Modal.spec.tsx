@@ -17,7 +17,7 @@ import {
 } from '../../__test-utils__/common';
 import Overlay from '../Overlay';
 import { ModalControl, ModalControlContext } from './ModalControl';
-import Modal, { ModalProps } from '.';
+import Modal, { ModalProps, ModalSeverity } from '.';
 
 function getOverlayElement(container: HTMLElement = document.body) {
   return container?.querySelector('.mzn-overlay');
@@ -44,8 +44,8 @@ describe('<Modal />', () => {
 
   it('should provide modal control', () => {
     let modalControl: ModalControl = {
-      danger: true,
       loading: true,
+      severity: 'error',
     };
     let props: ModalProps = {
       ...modalControl,
@@ -60,8 +60,8 @@ describe('<Modal />', () => {
     expect(result.current).toEqual(modalControl);
 
     modalControl = {
-      danger: false,
       loading: false,
+      severity: 'success',
     };
     props = { ...props, ...modalControl };
     rerender(props);
@@ -92,32 +92,6 @@ describe('<Modal />', () => {
     const modalElement = getModalElement()!;
 
     expect(modalElement.classList.contains(className)).toBeTruthy();
-  });
-
-  describe('prop: danger', () => {
-    function testBindDangerClass(danger: boolean) {
-      const modalElement = getModalElement()!;
-
-      expect(modalElement.classList.contains('mzn-modal--danger')).toBe(danger);
-    }
-
-    it('should render danger=false by default', () => {
-      render(<Modal open />);
-
-      testBindDangerClass(false);
-    });
-
-    [false, true].forEach((danger) => {
-      const message = danger
-        ? 'should bind danger class'
-        : 'should not bind danger class';
-
-      it(message, () => {
-        render(<Modal open danger={danger} />);
-
-        testBindDangerClass(danger);
-      });
-    });
   });
 
   describe('prop: fullScreen', () => {
@@ -153,6 +127,30 @@ describe('<Modal />', () => {
       const overlayElement = getOverlayElement();
 
       expect(overlayElement).toBe(null);
+    });
+  });
+
+  describe('prop: severity', () => {
+    function testBindSeverityClass(severity: ModalSeverity) {
+      const modalElement = getModalElement()!;
+
+      expect(modalElement.classList.contains(`mzn-modal--${severity}`)).toBeTruthy();
+    }
+
+    it('should render severity="info" by default', () => {
+      render(<Modal open />);
+
+      testBindSeverityClass('info');
+    });
+
+    const severities: ModalSeverity[] = ['info', 'success', 'warning'];
+
+    severities.forEach((severity) => {
+      it(`should bind ${severity} class`, () => {
+        render(<Modal open severity={severity} />);
+
+        testBindSeverityClass(severity);
+      });
     });
   });
 

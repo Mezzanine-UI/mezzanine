@@ -1,11 +1,12 @@
+import { ModalSeverity } from '@mezzanine-ui/core/modal';
 import { createContext } from 'react';
 
 export interface ModalControl {
-  danger: boolean;
   loading: boolean;
+  severity: ModalSeverity;
 }
 
 export const ModalControlContext = createContext<ModalControl>({
-  danger: false,
   loading: false,
+  severity: 'info',
 });

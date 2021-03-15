@@ -1,11 +1,8 @@
 import { forwardRef, useContext } from 'react';
 import {
   modalClasses as classes,
+  modalSeverityIcons,
 } from '@mezzanine-ui/core/modal';
-import {
-  InfoCircleFilledIcon,
-  MinusCircleFilledIcon,
-} from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
@@ -13,10 +10,10 @@ import { ModalControlContext } from './ModalControl';
 
 export interface ModalHeaderProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * Whether to show title icon.
+   * Whether to show severity icon.
    * @default false
    */
-  showTitleIcon?: boolean;
+  showSeverityIcon?: boolean;
   /**
    * Controlls the title styles.
    * Use large title if the modal body has section/block titles.
@@ -32,13 +29,11 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(function ModalH
   const {
     children,
     className,
-    showTitleIcon = false,
+    showSeverityIcon = false,
     titleLarge = false,
     ...rest
   } = props;
-  const {
-    danger,
-  } = useContext(ModalControlContext);
+  const { severity } = useContext(ModalControlContext);
 
   return (
     <div
@@ -49,10 +44,10 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(function ModalH
         className,
       )}
     >
-      {showTitleIcon && (
+      {showSeverityIcon && (
         <Icon
-          className={classes.titleIcon}
-          icon={danger ? MinusCircleFilledIcon : InfoCircleFilledIcon}
+          className={classes.severityIcon}
+          icon={modalSeverityIcons[severity]}
         />
       )}
       <h3

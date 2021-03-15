@@ -144,6 +144,8 @@ export {
   default as Message,
 } from './Message';
 export {
+  ModalSeverity,
+  ModalSize,
   ModalHeaderProps,
   ModalHeader,
   ModalBodyProps,

@@ -1,4 +1,4 @@
-import { InfoCircleFilledIcon, MinusCircleFilledIcon } from '@mezzanine-ui/icons';
+import { modalSeverityIcons } from '@mezzanine-ui/core/modal';
 import {
   cleanup,
   render,
@@ -7,8 +7,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { ModalHeader } from '.';
-import Modal from './Modal';
+import Modal, { ModalHeader, ModalSeverity } from '.';
 
 describe('<ModalHeader />', () => {
   afterEach(cleanup);
@@ -78,26 +77,31 @@ describe('<ModalHeader />', () => {
     });
   });
 
-  describe('title icon', () => {
-    it('should render title icon if showTitleIcon=true and bind title icon class', () => {
-      const { getHostHTMLElement } = render(<ModalHeader showTitleIcon />);
+  describe('severity icon', () => {
+    it('should render severity icon if showSeverityIcon=true and bind severity icon class', () => {
+      const { getHostHTMLElement } = render(<ModalHeader showSeverityIcon />);
       const element = getHostHTMLElement();
       const { firstElementChild: iconElement } = element;
 
-      expect(iconElement!.getAttribute('data-icon-name')).toBe(InfoCircleFilledIcon.name);
-      expect(iconElement!.classList.contains('mzn-modal__title-icon'));
+      expect(iconElement!.getAttribute('data-icon-name')).toBe(modalSeverityIcons.info.name);
+      expect(iconElement!.classList.contains('mzn-modal__severity-icon'));
     });
 
-    it('should render danger title icon', () => {
-      render(
-        <Modal danger open>
-          <ModalHeader showTitleIcon />
-        </Modal>,
-      );
+    const severities: ModalSeverity[] = ['info', 'success', 'warning'];
 
-      const iconElement = document.body.querySelector('.mzn-modal__title-icon')!;
+    severities.forEach((severity) => {
+      it(`should render ${severity} icon`, () => {
+        render(
+          <Modal open severity={severity}>
+            <ModalHeader showSeverityIcon />
+          </Modal>,
+        );
 
-      expect(iconElement!.getAttribute('data-icon-name')).toBe(MinusCircleFilledIcon.name);
+        const iconElement = document.body.querySelector('.mzn-modal__severity-icon')!;
+        const icon = modalSeverityIcons[severity];
+
+        expect(iconElement!.getAttribute('data-icon-name')).toBe(icon.name);
+      });
     });
   });
 });

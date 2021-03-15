@@ -36,9 +36,10 @@ const ModalActions = forwardRef<HTMLDivElement, ModalActionsProps>(function Moda
     ...rest
   } = props;
   const {
-    danger,
     loading,
+    severity,
   } = useContext(ModalControlContext);
+  const danger = severity === 'error';
 
   return (
     <ModalFooter
