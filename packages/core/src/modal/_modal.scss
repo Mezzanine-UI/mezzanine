@@ -1,4 +1,6 @@
+@use '~@mezzanine-ui/system/severity';
 @use '~@mezzanine-ui/system/size';
 
 $prefix: mzn-modal;
+$severities: severity.$severities;
 $sizes: size.$sizes-with-extra-large;

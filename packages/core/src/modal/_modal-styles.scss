@@ -12,7 +12,7 @@ $padding-x: 32px !default;
 $padding-y: 16px !default;
 $close-icon-size: 24px !default;
 $title-gap: 4px !default;
-$title-icon-size: 32px !default;
+$severity-icon-size: 32px !default;
 $action-min-width: 100px !default;
 
 $sm-md-width-small: 552px !default;
@@ -169,13 +169,15 @@ $width-map: (
     }
   }
 
-  &__title-icon {
-    font-size: typography.px-to-rem($title-icon-size);
+  &__severity-icon {
+    font-size: typography.px-to-rem($severity-icon-size);
     color: palette.color(primary);
     margin-right: $title-gap;
 
-    .#{$prefix}--danger & {
-      color: palette.color(error);
+    @each $severity in $severities {
+      .#{$prefix}--#{$severity} & {
+        color: palette.color($severity);
+      }
     }
   }
 
