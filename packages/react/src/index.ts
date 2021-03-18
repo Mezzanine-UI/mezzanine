@@ -117,6 +117,15 @@ export {
   default as Input,
 } from './Input';
 export {
+  RadioSize,
+  RadioGroupOrientation,
+  RadioGroupOption,
+  RadioGroupProps,
+  RadioGroup,
+  RadioProps,
+  default as Radio,
+} from './Radio';
+export {
   SwitchSize,
   default as Switch,
 } from './Switch';
