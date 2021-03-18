@@ -14,7 +14,7 @@ export function useControlValueState<V>(
     equalityFn = (a, b) => a === b,
     value: valueProp,
   } = props;
-  const [value, setValue] = useState(() => valueProp ?? defaultValue);
+  const [value, setValue] = useState(() => (typeof valueProp !== 'undefined' ? valueProp : defaultValue));
 
   /**
    * To sync value while changed from uncontrolled to controlled.
