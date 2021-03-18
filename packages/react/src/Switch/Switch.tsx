@@ -1,4 +1,4 @@
-import { ChangeEventHandler, forwardRef } from 'react';
+import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import {
   switchClasses as classes,
   SwitchSize,
@@ -6,8 +6,9 @@ import {
 } from '@mezzanine-ui/core/switch';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { useSwitchControlValue } from '../Form/useSwitchControlValue';
 import Icon from '../Icon';
-import { useSwitchControl } from './useSwitchControl';
+import { FormControlContext } from '../Form';
 
 export interface SwitchProps extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'onChange'> {
   /**
@@ -45,21 +46,24 @@ export interface SwitchProps extends Omit<NativeElementPropsWithoutKeyAndRef<'sp
  */
 const Switch = forwardRef<HTMLSpanElement, SwitchProps>(function Switch(props, ref) {
   const {
+    disabled: disabledFromFormControl,
+  } = useContext(FormControlContext) || {};
+  const {
     checked: checkedProp,
     className,
     defaultChecked,
-    disabled: disabledProp = false,
+    disabled: disabledProp = disabledFromFormControl,
     loading = false,
     onChange: onChangeProp,
     size = 'medium',
     ...rest
   } = props;
-  const disabled = disabledProp || loading;
-  const { checked, onChange } = useSwitchControl({
+  const [checked, onChange] = useSwitchControlValue({
     checked: checkedProp,
     defaultChecked,
     onChange: onChangeProp,
   });
+  const disabled = loading || disabledProp;
 
   return (
     <span
