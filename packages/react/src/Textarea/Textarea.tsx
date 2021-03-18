@@ -1,7 +1,9 @@
 import {
   forwardRef,
-  ChangeEventHandler,
   Ref,
+  useContext,
+  ChangeEventHandler,
+  useRef,
 } from 'react';
 import {
   textareaClasses as classes,
@@ -9,8 +11,10 @@ import {
 } from '@mezzanine-ui/core/textarea';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { useComposeRefs } from '../hooks/useComposeRefs';
+import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
+import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
-import { useInputControl, useInputFormControl } from '../Input';
 
 export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'prefix' | 'suffix'> {
   /**
@@ -71,46 +75,42 @@ export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children
  */
 const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(props, ref) {
   const {
+    disabled: disabledFromFormControl,
+    fullWidth: fullWidthFromFormControl,
+    required: requiredFromFormControl,
+    severity,
+  } = useContext(FormControlContext) || {};
+  const {
     className,
     clearable = false,
     defaultValue,
-    disabled: disabledProp = false,
-    error: errorProp = false,
-    fullWidth: fullWidthProp = false,
+    disabled = disabledFromFormControl || false,
+    error = severity === 'error' || false,
+    fullWidth = fullWidthFromFormControl || false,
     maxLength,
     onChange: onChangeProp,
     placeholder,
     readOnly = false,
-    required: requiredProp = false,
+    required = requiredFromFormControl || false,
     rows,
     size = 'medium',
     textareaRef: textareaRefProp,
     textareaProps,
     value: valueProp,
   } = props;
-  const {
-    active,
-    composedRef,
-    onClear,
-    onChange,
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [
     value,
-  } = useInputControl({
-    ref: textareaRefProp,
+    onChange,
+    onClear,
+  ] = useInputWithClearControlValue({
     defaultValue,
     onChange: onChangeProp,
+    ref: textareaRef,
     value: valueProp,
   });
-  const {
-    disabled,
-    error,
-    fullWidth,
-    required,
-  } = useInputFormControl({
-    disabled: disabledProp,
-    error: errorProp,
-    fullWidth: fullWidthProp,
-    required: requiredProp,
-  });
+  const composedTextareaRef = useComposeRefs([textareaRefProp, textareaRef]);
+  const active = !!value;
   const currentLength = value.length;
   const upperLimit = typeof maxLength === 'number' && currentLength >= maxLength;
 
@@ -134,7 +134,7 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
     >
       <textarea
         {...textareaProps}
-        ref={composedRef}
+        ref={composedTextareaRef}
         aria-disabled={disabled}
         aria-multiline
         aria-readonly={readOnly}
