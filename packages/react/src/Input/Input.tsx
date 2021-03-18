@@ -1,17 +1,20 @@
 import {
   forwardRef,
-  ChangeEventHandler,
   Ref,
+  useContext,
+  ChangeEventHandler,
+  useRef,
 } from 'react';
 import {
   inputClasses as classes,
   InputSize,
 } from '@mezzanine-ui/core/input';
 import { cx } from '../utils/cx';
-import TextField, { TextFieldProps } from '../TextField';
-import { useInputControl } from './useInputControl';
-import { useInputFormControl } from './useInputFormControl';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { useComposeRefs } from '../hooks/useComposeRefs';
+import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
+import { FormControlContext } from '../Form';
+import TextField, { TextFieldProps } from '../TextField';
 
 export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear'> {
   /**
@@ -64,46 +67,42 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
  */
 const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) {
   const {
+    disabled: disabledFromFormControl,
+    fullWidth: fullWidthFromFormControl,
+    required: requiredFromFormControl,
+    severity,
+  } = useContext(FormControlContext) || {};
+  const {
     className,
     clearable = false,
     defaultValue,
-    disabled: disabledProp = false,
-    error: errorProp = false,
-    fullWidth: fullWidthProp = false,
+    disabled = disabledFromFormControl || false,
+    error = severity === 'error' || false,
+    fullWidth = fullWidthFromFormControl || false,
     inputRef: inputRefProp,
     inputProps,
     onChange: onChangeProp,
     placeholder,
     prefix,
     readOnly = false,
-    required: requiredProp = false,
+    required = requiredFromFormControl || false,
     size = 'medium',
     suffix,
     value: valueProp,
   } = props;
-  const {
-    active,
-    composedRef,
-    onClear,
-    onChange,
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [
     value,
-  } = useInputControl({
-    ref: inputRefProp,
+    onChange,
+    onClear,
+  ] = useInputWithClearControlValue({
     defaultValue,
     onChange: onChangeProp,
+    ref: inputRef,
     value: valueProp,
   });
-  const {
-    disabled,
-    error,
-    fullWidth,
-    required,
-  } = useInputFormControl({
-    disabled: disabledProp,
-    error: errorProp,
-    fullWidth: fullWidthProp,
-    required: requiredProp,
-  });
+  const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
+  const active = !!value;
 
   return (
     <TextField
@@ -124,7 +123,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
     >
       <input
         {...inputProps}
-        ref={composedRef}
+        ref={composedInputRef}
         aria-disabled={disabled}
         aria-multiline={false}
         aria-readonly={readOnly}

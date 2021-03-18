@@ -18,6 +18,7 @@ export * from './Form/useCheckboxControlValue';
 export * from './Form/useControlValueState';
 export * from './Form/useCustomControlValue';
 export * from './Form/useInputControlValue';
+export * from './Form/useInputWithClearControlValue';
 export * from './Form/useRadioControlValue';
 export * from './Form/useSwitchControlValue';
 
