@@ -20,12 +20,14 @@ $message-gap: 4px !default;
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
+  align-items: flex-start;
   margin-bottom: $preserve-margin-bottom;
 
   &__label {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
+    width: 100%;
     margin-bottom: $label-gap;
     color: palette.color(action-inactive);
 
