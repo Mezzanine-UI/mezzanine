@@ -1,0 +1,55 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
+@use '../_internal/input-check';
+@use './radio' as *;
+
+$dot-size: 8px !default;
+$dot-size-small: 6px !default;
+
+.#{$prefix} {
+  --#{$prefix}-dot-size: #{$dot-size};
+  --#{$prefix}-dot-top: calc((100% - var(--#{$prefix}-dot-size)) / 2);
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 1px solid palette.color(text-secondary);
+  transition: transition.standard(border-color);
+  will-change: border-color;
+  box-sizing: border-box;
+
+  &::before {
+    display: block;
+    position: absolute;
+    content: "";
+    top: var(--#{$prefix}-dot-top);
+    left: var(--#{$prefix}-dot-top);
+    width: var(--#{$prefix}-dot-size);
+    height: var(--#{$prefix}-dot-size);
+    border-radius: 50%;
+    transition: transition.standard(background-color);
+    will-change: background-color;
+  }
+
+  &--checked {
+    &::before {
+      background-color: var(--#{input-check.$prefix}-color);
+    }
+  }
+
+  &:hover,
+  .#{input-check.$prefix}:hover &,
+  &--checked,
+  .#{input-check.$prefix}--disabled & {
+    border-color: var(--#{input-check.$prefix}-color);
+  }
+}
+
+.#{input-check.$prefix} {
+  &--small {
+    .#{$prefix} {
+      --#{$prefix}-dot-size: #{$dot-size-small};
+    }
+  }
+}
