@@ -35,10 +35,12 @@
   @include _load-styles($options, tag);
 
   // Data Entry Common
+  @include _load-styles($options, _internal/input-check, input-check);
   @include _load-styles($options, text-field);
 
   // Data Entry
   @include _load-styles($options, input);
+  @include _load-styles($options, radio);
   @include _load-styles($options, switch);
   @include _load-styles($options, textarea);
   @include _load-styles($options, upload);

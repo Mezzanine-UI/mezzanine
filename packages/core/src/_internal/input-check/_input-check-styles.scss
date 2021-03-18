@@ -1,0 +1,134 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
+@use './input-check' as *;
+
+$control-size: 24px !default;
+$control-size-small: 16px !default;
+$control-padding: 4px !default;
+$control-padding-small: 2px !default;
+$with-label-min-width: 56px !default;
+$with-label-min-width-small: 44px !default;
+$with-label-padding-start: 4px !default;
+$with-label-padding-end: 8px !default;
+$label-gap: 4px !default;
+
+.#{$prefix} {
+  --#{$prefix}-control-size: #{$control-size};
+  --#{$prefix}-color: #{palette.color(primary)};
+  --#{$prefix}-on-color: #{palette.color(on-primary)};
+  --#{$prefix}-hover-bg: #{palette.color(primary-hover-bg)};
+  --#{$prefix}-active-bg: #{palette.color(primary-active-bg)};
+
+  display: inline-flex;
+  align-items: center;
+  transition: transition.standard(background-color), transition.standard(color);
+  will-change: background-color, color;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: inherit;
+    z-index: 1;
+  }
+
+  &__control {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    width: var(--#{$prefix}-control-size);
+    height: var(--#{$prefix}-control-size);
+    padding: $control-padding;
+    box-sizing: border-box;
+
+    .#{$prefix}--small & {
+      --#{$prefix}-control-size: #{$control-size-small};
+
+      padding: $control-padding-small;
+    }
+  }
+
+  &__label {
+    margin-left: $label-gap;
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &--with-label {
+    padding: 0 $with-label-padding-end 0 $with-label-padding-start;
+    min-width: $with-label-min-width;
+
+    &.#{$prefix}--small {
+      min-width: $with-label-min-width-small;
+    }
+
+    &:not(.#{$prefix}--disabled) {
+      &:hover {
+        background-color: var(--#{$prefix}-hover-bg);
+      }
+
+      &:active,
+      &:focus-within {
+        background-color: var(--#{$prefix}-active-bg);
+      }
+    }
+  }
+
+  &--error {
+    --#{$prefix}-color: #{palette.color(error)};
+    --#{$prefix}-on-color: #{palette.color(on-error)};
+    --#{$prefix}-hover-bg: #{palette.color(error-hover-bg)};
+    --#{$prefix}-active-bg: #{palette.color(error-active-bg)};
+  }
+
+  &--disabled {
+    --#{$prefix}-color: #{palette.color(action-disabled)};
+
+    background-color: transparent;
+    color: palette.color(text-disabled);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  @each $size in $sizes {
+    $typography-variant: map.get(
+      (
+        small: input3,
+        medium: input2,
+        large: input1,
+      ),
+      $size
+    );
+
+    &--#{$size} {
+      height: typography.prop($typography-variant, line-height);
+
+      @include typography.variant($typography-variant);
+    }
+  }
+}
+
+.#{$group-prefix} {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: spacing.level(1);
+
+  &--vertical {
+    grid-auto-flow: row;
+    gap: 0;
+  }
+}
