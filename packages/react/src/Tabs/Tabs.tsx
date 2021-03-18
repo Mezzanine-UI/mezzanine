@@ -6,12 +6,11 @@ import {
   MouseEvent,
   ReactElement,
   ReactNode,
-  useEffect,
-  useState,
 } from 'react';
 import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { useCustomControlValue } from '../Form/useCustomControlValue';
 import { TabProps } from './Tab';
 import { TabPaneProps } from './TabPane';
 
@@ -53,13 +52,17 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProp
     activeKey: activeKeyProp,
     children,
     className,
-    defaultActiveKey,
+    defaultActiveKey = 0,
     onChange,
     onTabClick,
     tabBarClassName,
     ...rest
   } = props;
-  const [activeKey, setActiveKey] = useState(() => activeKeyProp ?? defaultActiveKey ?? 0);
+  const [activeKey, setActiveKey] = useCustomControlValue({
+    defaultValue: defaultActiveKey,
+    onChange,
+    value: activeKeyProp,
+  });
   let pane: ReactNode | undefined;
   const tabs = Children.map(children, (tabPane, index) => {
     const key = tabPane.key ?? index;
@@ -75,13 +78,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProp
       active,
       onClick: (event) => {
         if (!active) {
-          if (activeKey !== key) {
-            setActiveKey(key);
-
-            if (onChange) {
-              onChange(key);
-            }
-          }
+          setActiveKey(key);
         }
 
         if (onTabClick) {
@@ -90,12 +87,6 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProp
       },
     });
   });
-
-  useEffect(() => {
-    if (typeof activeKeyProp !== 'undefined' && activeKeyProp !== activeKey) {
-      setActiveKey(activeKeyProp);
-    }
-  }, [activeKey, activeKeyProp]);
 
   return (
     <div
