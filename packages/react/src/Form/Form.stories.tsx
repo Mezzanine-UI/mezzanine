@@ -1,8 +1,9 @@
 import { Story, Meta } from '@storybook/react';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import Icon from '../Icon';
+import Checkbox, { CheckboxGroup, CheckAll } from '../Checkbox';
 import Input from '../Input';
 import Radio, { RadioGroup } from '../Radio';
 import Switch from '../Switch';
@@ -63,6 +64,30 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
       <FormMessage>{message}</FormMessage>
     </FormField>
   );
+  const CheckAllExample = () => {
+    const [value, setValue] = useState(['2']);
+    const options = [
+      {
+        label: 'Option 1',
+        value: '1',
+      },
+      {
+        label: 'Option 2',
+        value: '2',
+      },
+      {
+        disabled: true,
+        label: 'Option 3',
+        value: '3',
+      },
+    ];
+
+    return renderField(
+      <CheckAll label="Check All">
+        <CheckboxGroup onChange={setValue} options={options} value={value} />
+      </CheckAll>,
+    );
+  };
 
   return (
     <>
@@ -95,6 +120,18 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
           <Radio disabled value="3">Option 3</Radio>
         </RadioGroup>,
       )}
+      <br />
+      <br />
+      {renderField(
+        <CheckboxGroup>
+          <Checkbox value="1">Option 1</Checkbox>
+          <Checkbox value="2">Option 2</Checkbox>
+          <Checkbox disabled value="3">Option 3</Checkbox>
+        </CheckboxGroup>,
+      )}
+      <br />
+      <br />
+      <CheckAllExample />
     </>
   );
 };

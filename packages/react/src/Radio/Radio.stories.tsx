@@ -34,13 +34,13 @@ export const Standalone = () => (
 
 export const Sizes = () => (
   <>
-    <Radio size="small">預設文字</Radio>
+    <Radio size="small">Small</Radio>
     <br />
     <br />
-    <Radio size="medium">預設文字</Radio>
+    <Radio size="medium">Medium</Radio>
     <br />
     <br />
-    <Radio size="large">預設文字</Radio>
+    <Radio size="large">Large</Radio>
   </>
 );
 
