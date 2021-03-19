@@ -12,6 +12,7 @@ import {
 } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import TextField from '../TextField';
+import { FormField } from '../Form';
 import Input from '.';
 
 function getInputElement(element: HTMLElement) {
@@ -61,11 +62,13 @@ describe('<Input />', () => {
         prefix={prefix}
         size="large"
         suffix={suffix}
+        value="foo"
       />,
     );
     const testInstance = testRenderer.root;
     const textFieldInstance = testInstance.findByType(TextField);
 
+    expect(textFieldInstance.props.active).toBe(true);
     expect(textFieldInstance.props.clearable).toBe(true);
     expect(textFieldInstance.props.disabled).toBe(true);
     expect(textFieldInstance.props.error).toBe(true);
@@ -140,6 +143,68 @@ describe('<Input />', () => {
 
         testClearable(element);
       });
+    });
+  });
+
+  describe('prop: disabled', () => {
+    it('should use disabled from form control if disabled not passed', () => {
+      const { getHostHTMLElement } = render(
+        <FormField disabled>
+          <Input />
+          <Input disabled={false} />
+        </FormField>,
+      );
+      const element = getHostHTMLElement();
+      const [input1, input2] = element.getElementsByTagName('input');
+
+      expect(input1.disabled).toBeTruthy();
+      expect(input2.disabled).toBeFalsy();
+    });
+  });
+
+  describe('prop: error', () => {
+    it('should use severity from form control if error not passed', () => {
+      const testInstance = TestRenderer.create(
+        <FormField severity="error">
+          <Input />
+          <Input error={false} />
+        </FormField>,
+      );
+      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+
+      expect(textField1.props.error).toBe(true);
+      expect(textField2.props.error).toBe(false);
+    });
+  });
+
+  describe('prop: fullWidth', () => {
+    it('should use fullWidth from form control if fullWidth not passed', () => {
+      const testInstance = TestRenderer.create(
+        <FormField fullWidth>
+          <Input />
+          <Input fullWidth={false} />
+        </FormField>,
+      );
+      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+
+      expect(textField1.props.fullWidth).toBeTruthy();
+      expect(textField2.props.fullWidth).toBeFalsy();
+    });
+  });
+
+  describe('prop: required', () => {
+    it('should use required from form control if required not passed', () => {
+      const { getHostHTMLElement } = render(
+        <FormField required>
+          <Input />
+          <Input required={false} />
+        </FormField>,
+      );
+      const element = getHostHTMLElement();
+      const [input1, input2] = element.getElementsByTagName('input');
+
+      expect(input1.required).toBeTruthy();
+      expect(input2.required).toBeFalsy();
     });
   });
 
