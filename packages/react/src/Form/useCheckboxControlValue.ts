@@ -2,16 +2,12 @@ import { ChangeEventHandler } from 'react';
 import { useSwitchControlValue, UseSwitchControlValueProps } from './useSwitchControlValue';
 
 export interface CheckboxGroupControlContextValue {
-  disabled?: boolean;
-  name?: string;
   onChange?: ChangeEventHandler<HTMLInputElement>;
   value?: string[];
 }
 
 export interface UseCheckboxControlValueProps extends UseSwitchControlValueProps {
   checkboxGroup?: CheckboxGroupControlContextValue;
-  disabled?: boolean;
-  name?: string;
   value?: string;
 }
 
@@ -20,19 +16,13 @@ export function useCheckboxControlValue(props: UseCheckboxControlValueProps) {
     checkboxGroup,
     checked: checkedProp,
     defaultChecked,
-    disabled,
-    name,
     onChange: onChangeProp,
     value,
   } = props;
-  const {
-    disabled: disabledFromGroup,
-    name: nameFromGroup,
-    onChange: onChangeFromGroup,
-  } = checkboxGroup || {};
+  const { onChange: onChangeFromGroup } = checkboxGroup || {};
   const [checked, setChecked] = useSwitchControlValue({
     /**
-     * To ensure radio inside radio group, not use destructure here
+     * To ensure checkbox inside checkbox group, not use destructure here
      */
     // eslint-disable-next-line no-nested-ternary
     checked: checkboxGroup
@@ -52,12 +42,5 @@ export function useCheckboxControlValue(props: UseCheckboxControlValueProps) {
     },
   });
 
-  return [
-    checked,
-    setChecked,
-    {
-      disabled: disabled ?? disabledFromGroup,
-      name: name || nameFromGroup,
-    },
-  ] as const;
+  return [checked, setChecked] as const;
 }

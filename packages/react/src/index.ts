@@ -102,6 +102,17 @@ export {
  * Data Entry
  */
 export {
+  CheckboxSize,
+  CheckboxGroupOrientation,
+  CheckboxGroupOption,
+  CheckboxGroupProps,
+  CheckboxGroup,
+  CheckAllProps,
+  CheckAll,
+  CheckboxProps,
+  default as Checkbox,
+} from './Checkbox';
+export {
   FormControl,
   FormControlContext,
   FormFieldProps,
