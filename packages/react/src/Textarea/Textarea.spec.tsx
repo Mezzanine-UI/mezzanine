@@ -10,6 +10,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import TextField from '../TextField';
+import { FormField } from '../Form';
 import Textarea from '.';
 
 function getTextareaElement(element: HTMLElement) {
@@ -55,11 +56,13 @@ describe('<Textarea />', () => {
         error
         fullWidth
         size="large"
+        value="foo"
       />,
     );
     const testInstance = testRenderer.root;
     const textFieldInstance = testInstance.findByType(TextField);
 
+    expect(textFieldInstance.props.active).toBe(true);
     expect(textFieldInstance.props.clearable).toBe(true);
     expect(textFieldInstance.props.disabled).toBe(true);
     expect(textFieldInstance.props.error).toBe(true);
@@ -137,6 +140,68 @@ describe('<Textarea />', () => {
     });
   });
 
+  describe('prop: disabled', () => {
+    it('should use disabled from form control if disabled not passed', () => {
+      const { getHostHTMLElement } = render(
+        <FormField disabled>
+          <Textarea />
+          <Textarea disabled={false} />
+        </FormField>,
+      );
+      const element = getHostHTMLElement();
+      const [textarea1, textarea2] = element.getElementsByTagName('textarea');
+
+      expect(textarea1.disabled).toBeTruthy();
+      expect(textarea2.disabled).toBeFalsy();
+    });
+  });
+
+  describe('prop: error', () => {
+    it('should use severity from form control if error not passed', () => {
+      const testInstance = TestRenderer.create(
+        <FormField severity="error">
+          <Textarea />
+          <Textarea error={false} />
+        </FormField>,
+      );
+      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+
+      expect(textField1.props.error).toBe(true);
+      expect(textField2.props.error).toBe(false);
+    });
+  });
+
+  describe('prop: fullWidth', () => {
+    it('should use fullWidth from form control if fullWidth not passed', () => {
+      const testInstance = TestRenderer.create(
+        <FormField fullWidth>
+          <Textarea />
+          <Textarea fullWidth={false} />
+        </FormField>,
+      );
+      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+
+      expect(textField1.props.fullWidth).toBeTruthy();
+      expect(textField2.props.fullWidth).toBeFalsy();
+    });
+  });
+
+  describe('prop: required', () => {
+    it('should use required from form control if required not passed', () => {
+      const { getHostHTMLElement } = render(
+        <FormField required>
+          <Textarea />
+          <Textarea required={false} />
+        </FormField>,
+      );
+      const element = getHostHTMLElement();
+      const [textarea1, textarea2] = element.getElementsByTagName('textarea');
+
+      expect(textarea1.required).toBeTruthy();
+      expect(textarea2.required).toBeFalsy();
+    });
+  });
+
   describe('control', () => {
     it('uncontrolled', () => {
       const { getHostHTMLElement } = render(<Textarea defaultValue="foo" />);
@@ -183,7 +248,7 @@ describe('<Textarea />', () => {
   });
 
   describe('prop: maxLength', () => {
-    it('should apply attribute maxLength to input and render count element', () => {
+    it('should apply attribute maxLength to textarea and render count element', () => {
       const { getHostHTMLElement } = render(<Textarea maxLength={8} value="hello" />);
       const element = getHostHTMLElement();
       const {
