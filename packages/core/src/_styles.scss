@@ -39,6 +39,7 @@
   @include _load-styles($options, text-field);
 
   // Data Entry
+  @include _load-styles($options, checkbox);
   @include _load-styles($options, input);
   @include _load-styles($options, radio);
   @include _load-styles($options, switch);
