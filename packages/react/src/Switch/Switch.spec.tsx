@@ -9,10 +9,17 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Switch from '.';
+import { FormField } from '../Form';
 
 function testChecked(element: HTMLElement, inputElement: HTMLInputElement, checked: boolean) {
   expect(element.classList.contains('mzn-switch--checked')).toBe(checked);
   expect(inputElement.getAttribute('aria-checked')).toBe(`${checked}`);
+}
+
+function testInputDisabled(input: HTMLInputElement, disabled: boolean) {
+  expect(input.disabled).toBe(disabled);
+  expect(input.hasAttribute('disabled')).toBe(disabled);
+  expect(input.getAttribute('aria-disabled')).toBe(`${disabled}`);
 }
 
 describe('<Switch />', () => {
@@ -69,27 +76,29 @@ describe('<Switch />', () => {
   });
 
   describe('prop: disabled', () => {
-    it('should has disabled and aria-disabled attributes', () => {
+    it('should bind disabled class and has disabled and aria-disabled attributes', () => {
       [false, true].forEach((disabled) => {
         const { getHostHTMLElement } = render(<Switch disabled={disabled} />);
         const element = getHostHTMLElement();
-        const inputElement = element.getElementsByTagName('input')[0];
+        const [inputElement] = element.getElementsByTagName('input');
 
-        expect(inputElement.hasAttribute('disabled')).toBe(disabled);
-        expect(inputElement.getAttribute('aria-disabled')).toBe(`${disabled}`);
+        expect(element.classList.contains('mzn-switch--disabled')).toBe(disabled);
+        testInputDisabled(inputElement, disabled);
       });
     });
 
-    it('aria-disable from props should not override', () => {
+    it('should use disabled from form control if disabled not passed', () => {
       const { getHostHTMLElement } = render(
-        <Switch
-          aria-disabled={false}
-          disabled
-        />,
+        <FormField disabled>
+          <Switch />
+          <Switch disabled={false} />
+        </FormField>,
       );
       const element = getHostHTMLElement();
+      const [input1, input2] = element.getElementsByTagName('input');
 
-      expect(element.getAttribute('aria-disabled')).toBeTruthy();
+      testInputDisabled(input1, true);
+      testInputDisabled(input2, false);
     });
   });
 
@@ -108,13 +117,13 @@ describe('<Switch />', () => {
       });
     });
 
-    it('should has disabled and aria-disabled attributes if loading=true', () => {
+    it('should be disabled if loading=true', () => {
       const { getHostHTMLElement } = render(<Switch loading />);
       const element = getHostHTMLElement();
       const inputElement = element.getElementsByTagName('input')[0];
 
-      expect(inputElement.hasAttribute('disabled')).toBeTruthy();
-      expect(inputElement.getAttribute('aria-disabled')).toBeTruthy();
+      expect(element.classList.contains('mzn-switch--disabled')).toBeTruthy();
+      testInputDisabled(inputElement, true);
     });
   });
 
@@ -131,8 +140,8 @@ describe('<Switch />', () => {
     });
 
     /**
-    * @see {@link https://github.com/testing-library/dom-testing-library/issues/92}
-    */
+     * @see {@link https://github.com/testing-library/dom-testing-library/issues/92}
+     */
     // it('should not be triggered if disabled=true', () => {
     //   const onChange = jest.fn();
     //   const { getHostHTMLElement } = render(<Switch disabled onChange={onChange} />);
