@@ -115,8 +115,6 @@ $label-gap: 4px !default;
     );
 
     &--#{$size} {
-      height: typography.prop($typography-variant, line-height);
-
       @include typography.variant($typography-variant);
     }
   }

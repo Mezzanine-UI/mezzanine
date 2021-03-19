@@ -1,0 +1,109 @@
+@use 'sass:math';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
+@use '../_internal/input-check';
+@use './checkbox' as *;
+
+$checkmark-line-width: 1px !default;
+
+$checkmark-short-line-size: 6px !default;
+$checkmark-long-line-size: 10px !default;
+$checkmark-top: 1px !default;
+$checkmark-left: 4px !default;
+$checkmark-short-line-size-small: 4px !default;
+$checkmark-long-line-size-small: 7px !default;
+$checkmark-top-small: 1px !default;
+$checkmark-left-small: 3px !default;
+
+$indeterminate-line-width: 8px !default;
+$indeterminate-line-width-small: 5px !default;
+
+.#{$prefix} {
+  --#{$prefix}-color: #{palette.color(primary)};
+  --#{$prefix}-on-color: #{palette.color(on-primary)};
+  --#{$prefix}-checkmark-top: #{$checkmark-top};
+  --#{$prefix}-checkmark-left: #{$checkmark-left};
+  --#{$prefix}-short-line-size: #{$checkmark-short-line-size};
+  --#{$prefix}-long-line-size: #{$checkmark-long-line-size};
+  --#{$prefix}-indeterminate-line-width: #{$indeterminate-line-width};
+
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid palette.color(text-secondary);
+  transition: transition.standard(background-color), transition.standard(border-color);
+  will-change: background-color, border-color;
+  box-sizing: border-box;
+
+  &::before,
+  &::after {
+    display: block;
+    position: absolute;
+    content: "";
+    opacity: 0;
+    transition: transition.standard(opacity);
+    will-change: opacity;
+    box-sizing: border-box;
+  }
+
+  &--checked,
+  &--indeterminate {
+    background-color: var(--#{input-check.$prefix}-color);
+  }
+
+  &--checked::before,
+  &--indeterminate::after {
+    border: $checkmark-line-width solid var(--#{$prefix}-on-color);
+    border-top: 0;
+    border-left: 0;
+    opacity: 1;
+  }
+
+  &--checked {
+    &::before {
+      top: var(--#{$prefix}-checkmark-top);
+      left: var(--#{$prefix}-checkmark-left);
+      width: var(--#{$prefix}-short-line-size);
+      height: var(--#{$prefix}-long-line-size);
+      transform: rotate(45deg);
+      transform-origin: center;
+    }
+  }
+
+  &--indeterminate {
+    &::after {
+      top: 50%;
+      left: 50%;
+      width: var(--#{$prefix}-indeterminate-line-width);
+      height: 0;
+      border-right: 0;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &:hover,
+  .#{input-check.$prefix}:hover &,
+  &--checked,
+  .#{input-check.$prefix}--disabled & {
+    border-color: var(--#{input-check.$prefix}-color);
+  }
+
+  &__all {
+    .#{input-check.$group-prefix} {
+      margin: spacing.level(1) 0 0 spacing.level(5);
+    }
+  }
+}
+
+.#{input-check.$prefix} {
+  &--small {
+    .#{$prefix} {
+      --#{$prefix}-checkmark-top: #{$checkmark-top-small};
+      --#{$prefix}-checkmark-left: #{$checkmark-left-small};
+      --#{$prefix}-short-line-size: #{$checkmark-short-line-size-small};
+      --#{$prefix}-long-line-size: #{$checkmark-long-line-size-small};
+      --#{$prefix}-indeterminate-line-width: #{$indeterminate-line-width-small};
+    }
+  }
+}
