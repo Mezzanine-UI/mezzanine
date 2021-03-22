@@ -1,0 +1,202 @@
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './navigation' as *;
+@use '../icon';
+@use './utils';
+
+$horizontal-max-height: 64px !default;
+$vertical-max-width: 256px !default;
+
+$horizontal-item-height: 64px !default;
+$horizontal-group-item-height: 40px !default;
+$vertical-item-height: 32px !default;
+
+$icon-size: 24px !default;
+
+.#{$prefix} {
+  @include utils.reset();
+  @include typography.variant(button2);
+
+  overflow: hidden;
+  background-color: palette.color(surface);
+  color: palette.color(action-inactive);
+  display: grid;
+
+  &--horizontal {
+    max-height: $horizontal-max-height;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+
+    &__collapse-icon {
+      margin-left: spacing.level(1);
+    }
+
+    .#{$item-prefix} {
+      padding: 0 spacing.level(4);
+      height: $horizontal-item-height;
+      grid-auto-flow: column;
+      align-items: center;
+      border-bottom: 2px solid transparent;
+
+      &--active {
+        color: palette.color(primary);
+        border-bottom: 2px solid palette.color(primary);
+      }
+
+      &__icon {
+        margin-right: spacing.level(1);
+      }
+
+      &:hover {
+        color: palette.color(primary);
+      }
+    }
+
+    .#{$sub-menu-prefix} {
+      border-bottom: 2px solid transparent;
+      height: $horizontal-item-height;
+
+      &__icon {
+        margin-right: spacing.level(1);
+      }
+
+      &__group {
+        overflow: hidden;
+        background-color: palette.color(surface);
+        border-color: palette.color(border);
+        border-width: 0 1px 1px 1px;
+        border-style: solid;
+        .#{$item-prefix} {
+          @include typography.variant(input1);
+
+          height: $horizontal-group-item-height;
+          color: palette.color(text-primary);
+          border-bottom: none;
+
+          &--active,
+          &:hover {
+            background-color: palette.color(primary-hover-bg);
+          }
+        }
+      }
+
+      &--open,
+      &--active {
+        color: palette.color(primary);
+        border-bottom: 2px solid palette.color(primary);
+      }
+    }
+  }
+
+  &--vertical {
+    width: $vertical-max-width;
+    grid-auto-flow: row;
+    grid-auto-rows: max-content;
+    padding: spacing.level(5);
+    height: 100%;
+
+    .#{$item-prefix} {
+      align-items: center;
+      height: $vertical-item-height;
+      grid-auto-flow: column;
+      padding: 0 spacing.level(2);
+      overflow: hidden;
+      max-width: 100%;
+
+      &__icon {
+        margin-right: spacing.level(2);
+      }
+
+      &--active,
+      &:hover {
+        background-color: palette.color(primary-hover-bg);
+        color: palette.color(primary);
+      }
+    }
+
+    .#{$sub-menu-prefix} {
+      flex-direction: column;
+      height: unset;
+      padding: 0;
+      min-height: $vertical-item-height;
+
+      &__icon {
+        margin-right: spacing.level(2);
+      }
+
+      &__title {
+        padding: 0 spacing.level(2);
+        width: 100%;
+
+        &:hover {
+          background-color: palette.color(primary-hover-bg);
+          color: palette.color(primary);
+        }
+      }
+
+      &__group {
+        padding-left: spacing.level(6);
+
+        .#{$item-prefix} {
+          height: $vertical-item-height;
+          padding: 0 spacing.level(2);
+
+          &--active,
+          &:hover {
+            background-color: palette.color(primary-hover-bg);
+            color: palette.color(primary);
+          }
+        }
+      }
+
+      &__collapse-icon {
+        margin-left: auto;
+      }
+
+      &--active {
+        .#{$sub-menu-prefix}__title {
+          background-color: palette.color(primary-hover-bg);
+          color: palette.color(primary);
+        }
+      }
+
+      &--open {
+        .#{$sub-menu-prefix}__title {
+          color: palette.color(primary);
+        }
+      }
+
+      &:hover {
+        color: unset;
+        background-color: unset;
+      }
+    }
+  }
+}
+
+.#{$item-prefix} {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+
+  .#{icon.$prefix} {
+    width: $icon-size;
+    height: $icon-size;
+  }
+}
+
+.#{$sub-menu-prefix} {
+  box-sizing: border-box;
+
+  &__title {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+  }
+
+  &__group {
+    @include utils.reset();
+  }
+}
