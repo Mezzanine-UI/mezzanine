@@ -55,7 +55,7 @@ describe('MznEmptyComponent', () => {
     });
 
     it('should add class if fullHeight=true', async () => {
-      let result: RenderResult<MznEmptyComponent> | undefined;
+      let result: RenderResult<MznEmptyComponent, Pick<MznEmptyComponent, 'fullHeight'>> | undefined;
 
       for await (const fullHeight of [false, true]) {
         if (result) {

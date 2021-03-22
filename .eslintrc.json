@@ -247,7 +247,8 @@
             "prefix": "mzn",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "import/no-extraneous-dependencies": "off"
       }
     },
     {

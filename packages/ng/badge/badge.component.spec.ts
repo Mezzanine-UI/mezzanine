@@ -124,7 +124,7 @@ describe('MznBadgeComponent', () => {
     });
 
     it('should bind dot class if dot=true', async () => {
-      let result: RenderResult<MznBadgeComponent> | undefined;
+      let result: RenderResult<MznBadgeComponent, Pick<MznBadgeComponent, 'dot'>> | undefined;
 
       for await (const dot of [false, true]) {
         if (result) {

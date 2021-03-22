@@ -79,7 +79,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should sync class after changed', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'color'>> | undefined;
 
       for await (const color of colors) {
         if (result) {
@@ -117,7 +117,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should add class if danger=true', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'danger'>> | undefined;
 
       for await (const danger of [false, true]) {
         if (result) {
@@ -161,7 +161,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should has disabled and aria-disabled attributes if need', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'disabled'>> | undefined;
 
       for await (const disabled of [false, true]) {
         if (result) {
@@ -199,7 +199,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should add class if loading=false', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'loading'>> | undefined;
 
       for await (const loading of [false, true]) {
         if (result) {
@@ -259,7 +259,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should sync class after changed', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'size'>> | undefined;
 
       for await (const size of sizes) {
         if (result) {
@@ -319,7 +319,7 @@ describe('MznButtonMixin', () => {
     });
 
     it('should sync class after changed', async () => {
-      let result: RenderResult<TestingButtonComponent> | undefined;
+      let result: RenderResult<TestingButtonComponent, Pick<TestingButtonComponent, 'variant'>> | undefined;
 
       for await (const variant of variants) {
         if (result) {

@@ -80,7 +80,7 @@ describe('MznButtonGroupComponent', () => {
     });
 
     it('should add class if need', async () => {
-      let result: RenderResult<MznButtonGroupComponent> | undefined;
+      let result: RenderResult<MznButtonGroupComponent, Pick<MznButtonGroupComponent, 'attached'>> | undefined;
 
       for await (const attached of [false, true]) {
         if (result) {
@@ -126,7 +126,7 @@ describe('MznButtonGroupComponent', () => {
     });
 
     it('should add class if need', async () => {
-      let result: RenderResult<MznButtonGroupComponent> | undefined;
+      let result: RenderResult<MznButtonGroupComponent, Pick<MznButtonGroupComponent, 'fullWidth'>> | undefined;
 
       for await (const fullWidth of [false, true]) {
         if (result) {
@@ -177,7 +177,7 @@ describe('MznButtonGroupComponent', () => {
         'horizontal',
         'vertical',
       ];
-      let result: RenderResult<MznButtonGroupComponent> | undefined;
+      let result: RenderResult<MznButtonGroupComponent, Pick<MznButtonGroupComponent, 'orientation'>> | undefined;
 
       for await (const orientation of orientations) {
         if (result) {
@@ -239,7 +239,7 @@ describe('MznButtonGroupComponent', () => {
         ['medium', 4],
         ['small', 3],
       ];
-      let result: RenderResult<MznButtonGroupComponent> | undefined;
+      let result: RenderResult<MznButtonGroupComponent, Pick<MznButtonGroupComponent, 'size'>> | undefined;
 
       for await (const [size, spacing] of sizeSpacingMaps) {
         if (result) {

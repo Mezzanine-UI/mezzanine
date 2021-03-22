@@ -1,11 +1,4 @@
 {
-  "packages": [
-    "packages/core",
-    "packages/icons",
-    "packages/ng",
-    "packages/react",
-    "packages/system"
-  ],
   "npmClient": "yarn",
   "npmClientArgs": ["--no-lockfile"],
   "useWorkspaces": true,

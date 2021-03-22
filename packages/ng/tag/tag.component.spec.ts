@@ -67,7 +67,7 @@ describe('MznTagComponent', () => {
     });
 
     it('should add close icon if closable=true, or not', async () => {
-      let result: RenderResult<MznTagComponent> | undefined;
+      let result: RenderResult<MznTagComponent, Pick<MznTagComponent, 'closable'>> | undefined;
 
       for await (const closable of [false, true]) {
         if (result) {
@@ -103,7 +103,7 @@ describe('MznTagComponent', () => {
     });
 
     it('should has aria-disabled attributes', async () => {
-      let result: RenderResult<MznTagComponent> | undefined;
+      let result: RenderResult<MznTagComponent, Pick<MznTagComponent, 'disabled'>> | undefined;
 
       for await (const disabled of [false, true]) {
         if (result) {
