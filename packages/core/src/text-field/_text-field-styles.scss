@@ -27,7 +27,8 @@ $prefix-suffix-gap: 4px !default;
   position: relative;
   display: inline-flex;
   min-width: $min-width;
-  height: var(--#{$prefix}-height);
+  height: auto;
+  min-height: var(--#{$prefix}-height);
   background-color: palette.color(surface);
   border: 1px solid var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color, palette.color(border)));
   color: palette.color(text-primary);
@@ -57,7 +58,8 @@ $prefix-suffix-gap: 4px !default;
 
   &__prefix,
   &__suffix,
-  &__clear-icon {
+  &__clear-icon,
+  &__action-icon {
     position: absolute;
     top: calc((var(--#{$prefix}-height) - var(--#{$prefix}-icon-size) - 2px) / 2);
   }
@@ -74,18 +76,28 @@ $prefix-suffix-gap: 4px !default;
   }
 
   &__suffix,
-  &__clear-icon {
+  &__clear-icon,
+  &__action-icon {
     right: var(--#{$prefix}-prefix-x-gap);
   }
 
-  &__clear-icon {
+  &__clear-icon,
+  &__action-icon {
     background-color: inherit;
     border: none;
     color: var(--#{$prefix}-interact-icon-color);
     padding: 0;
     outline: none;
     cursor: pointer;
+  }
+
+  &__clear-icon {
     opacity: 0;
+    pointer-events: none;
+  }
+
+  &__action-icon {
+    opacity: 1;
   }
 
   .#{icon.$prefix} {
@@ -96,7 +108,8 @@ $prefix-suffix-gap: 4px !default;
 
   &:not(.#{$prefix}--disabled) {
     .#{icon.$prefix} {
-      &:not(.#{$prefix}__clear-icon) {
+      &:not(.#{$prefix}__clear-icon)
+      &:not(.#{$prefix}__action-icon) {
         color: palette.color(action-inactive);
       }
     }
@@ -108,6 +121,7 @@ $prefix-suffix-gap: 4px !default;
       &:not(.#{$prefix}--disabled) {
         .#{$prefix}__clear-icon {
           opacity: 1;
+          pointer-events: auto;
         }
       }
     }
