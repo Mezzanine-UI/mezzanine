@@ -20,6 +20,11 @@ export interface OverlayProps
    */
   hideBackdrop?: boolean;
   /**
+   * Whether to set backdrop invisible
+   * @default false
+   */
+  invisibleBackdrop?: boolean;
+  /**
    * Click handler for backdrop.
    */
   onBackdropClick?: MouseEventHandler;
@@ -45,6 +50,7 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
     disableCloseOnBackdropClick = false,
     disablePortal,
     hideBackdrop = false,
+    invisibleBackdrop = false,
     onBackdropClick,
     onClose,
     open = false,
@@ -68,7 +74,12 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
           <Fade in={open}>
             <div
               aria-hidden
-              className={classes.backdrop}
+              className={cx(
+                classes.backdrop,
+                {
+                  [classes.invisible]: invisibleBackdrop,
+                },
+              )}
               onClick={(event) => {
                 if (!disableCloseOnBackdropClick && onClose) {
                   onClose();
