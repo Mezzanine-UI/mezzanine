@@ -1,7 +1,10 @@
 import {
   forwardRef,
   MouseEventHandler,
+  KeyboardEventHandler,
   ReactNode,
+  cloneElement,
+  ReactElement,
 } from 'react';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
@@ -9,6 +12,7 @@ import {
   TextFieldSize,
 } from '@mezzanine-ui/core/text-field';
 import { cx } from '../utils/cx';
+import { useTextFieldControl } from './useTextFieldControl';
 import Icon from '../Icon';
 
 export interface TextFieldProps {
@@ -43,6 +47,14 @@ export interface TextFieldProps {
    */
   onClear?: MouseEventHandler;
   /**
+   * The callback will be fired when mouse clicked.
+   */
+  onClick?: MouseEventHandler;
+  /**
+   * The callback will be fired when keyboard key down
+   */
+  onKeyDown?: KeyboardEventHandler;
+  /**
    * The prefix addon of the field.
    */
   prefix?: ReactNode;
@@ -55,6 +67,7 @@ export interface TextFieldProps {
    * The suffix addon of the field.
    */
   suffix?: ReactNode;
+  suffixActionIcon?: ReactElement;
 }
 
 /**
@@ -70,14 +83,30 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
     error = false,
     fullWidth,
     onClear,
+    onClick: onClickProps,
+    onKeyDown: onKeyDownProps,
     prefix,
     size = 'medium',
     suffix,
+    suffixActionIcon,
   } = props;
 
+  const {
+    role,
+    onClick,
+    onKeyDown,
+  } = useTextFieldControl({
+    onClick: onClickProps,
+    onKeyDown: onKeyDownProps,
+  });
+
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
       ref={ref}
+      role={role}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
       className={cx(
         classes.host,
         classes.size(size),
@@ -96,6 +125,11 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
       {prefix && <div className={classes.prefix}>{prefix}</div>}
       {children}
       {suffix && <div className={classes.suffix}>{suffix}</div>}
+      {suffixActionIcon && cloneElement(suffixActionIcon, {
+        className: classes.actionIcon,
+        role: 'button',
+        tabIndex: -1,
+      })}
       {clearable && (
         <Icon
           className={classes.clearIcon}
