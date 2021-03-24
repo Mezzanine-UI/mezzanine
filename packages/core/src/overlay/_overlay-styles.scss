@@ -18,4 +18,8 @@
     background-color: palette.color(overlay-bg);
     -webkit-tap-highlight-color: transparent;
   }
+
+  &__backdrop--invisible {
+    background-color: transparent;
+  }
 }
