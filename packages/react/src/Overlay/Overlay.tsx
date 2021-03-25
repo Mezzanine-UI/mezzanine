@@ -57,6 +57,8 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
     ...rest
   } = props;
 
+  const fixedAtBody = Boolean(!container);
+
   return (
     <Portal
       container={container}
@@ -67,6 +69,9 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
         ref={ref}
         className={cx(
           classes.host,
+          {
+            [classes.hostFixed]: fixedAtBody,
+          },
           className,
         )}
       >
@@ -77,6 +82,7 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
               className={cx(
                 classes.backdrop,
                 {
+                  [classes.backdropFixed]: fixedAtBody,
                   [classes.invisible]: invisibleBackdrop,
                 },
               )}
