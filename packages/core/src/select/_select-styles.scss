@@ -1,0 +1,59 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
+@use '../text-field';
+@use './select' as *;
+
+$popper-vertical-padding: 4px !default;
+$popper-horizontal-padding: 0 !default;
+$tags-container-padding: 4px !default;
+$tags-gap: 4px !default;
+
+.#{$prefix} {
+  position: relative;
+
+  &__text-field {
+    input {
+      padding-left: var(--#{text-field.$prefix}-padding-left);
+      padding-right: var(--#{text-field.$prefix}-padding-right);
+
+      &:read-only {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &__text-field__tags {
+    padding-top: $tags-container-padding;
+    padding-left: $tags-container-padding;
+    width: 100%;
+    max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-self: flex-start;
+
+    > span {
+      margin-right: $tags-gap;
+      margin-bottom: $tags-gap;
+    }
+  }
+
+  &__text-field__suffix-icon--active {
+    transform: rotate(180deg);
+  }
+
+  &__overlay {
+    z-index: z-index.get(modal);
+  }
+
+  &__popper {
+    width: 100%;
+    padding: $popper-vertical-padding $popper-horizontal-padding;
+    background-color: palette.color(surface);
+    border: 1px solid palette.color(border);
+    color: palette.color(text-primary);
+    box-sizing: border-box;
+    z-index: z-index.get(popover);
+  }
+}

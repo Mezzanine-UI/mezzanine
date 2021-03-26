@@ -137,6 +137,14 @@ export {
   default as Radio,
 } from './Radio';
 export {
+  SelectProps,
+  OptionProps,
+  Option,
+  OptionGroupProps,
+  OptionGroup,
+  default as Select,
+} from './Select';
+export {
   SwitchSize,
   default as Switch,
 } from './Switch';

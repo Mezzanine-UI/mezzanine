@@ -1,10 +1,11 @@
 
 import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
-import { forwardRef, useState } from 'react';
+import { forwardRef, useState, useLayoutEffect } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
+import { allowBodyScroll, lockBodyScroll } from '../utils/scroll-lock';
 import Overlay, { OverlayProps } from '../Overlay';
 import Icon from '../Icon';
 import { SlideFade } from '../Transition';
@@ -107,6 +108,20 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     open,
     onClose,
   ]);
+
+  useLayoutEffect(() => {
+    if (open) {
+      lockBodyScroll();
+    }
+
+    return () => {
+      const allModals = document.querySelectorAll('.mzn-modal');
+
+      if (!allModals.length) {
+        allowBodyScroll();
+      }
+    };
+  }, [open, exited]);
 
   if (!open && exited) {
     return null;

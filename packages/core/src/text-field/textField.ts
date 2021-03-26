@@ -18,4 +18,5 @@ export const textFieldClasses = {
   prefix: `${textFieldPrefix}__prefix`,
   suffix: `${textFieldPrefix}__suffix`,
   clearIcon: `${textFieldPrefix}__clear-icon`,
+  actionIcon: `${textFieldPrefix}__action-icon`,
 } as const;
