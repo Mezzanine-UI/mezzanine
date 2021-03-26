@@ -1,0 +1,11 @@
+{
+  "name": "@mezzanine-ui/ng/menu",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/core/menu": "mezzanine-ui.core.menu"
+      }
+    }
+  }
+}
