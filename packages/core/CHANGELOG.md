@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.6...@mezzanine-ui/core@0.0.7) (2021-03-26)
+
+### Bug Fixes
+
+- **core/overlay:** add fixed position styling to fix scrollable container bug ([926d4fb](https://github.com/Mezzanine-UI/mezzanine/commit/926d4fb6dc7a54cf756c7ab000b8b24bcfe4b1d8)), closes [#33](https://github.com/Mezzanine-UI/mezzanine/issues/33) [#33](https://github.com/Mezzanine-UI/mezzanine/issues/33)
+
+### Features
+
+- **core/overlay:** add invisible backdrop styling class ([2272a62](https://github.com/Mezzanine-UI/mezzanine/commit/2272a629fe805127d3123ac7a498275862677ea0))
+- **core/select:** first implementation ([e9449a1](https://github.com/Mezzanine-UI/mezzanine/commit/e9449a113d4bda79b27b425e33a3b5e6744c7a8f))
+- **core/text-field:** add action-icon slot for text field and allow container height growing ([37af8c4](https://github.com/Mezzanine-UI/mezzanine/commit/37af8c4140cbfcfe9a78ccc8501f8871472d097e))
+
 ## [0.0.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.5...@mezzanine-ui/core@0.0.6) (2021-03-19)
 
 ### Bug Fixes

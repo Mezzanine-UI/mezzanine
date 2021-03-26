@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.6...@mezzanine-ui/react@0.0.7) (2021-03-26)
+
+### Bug Fixes
+
+- **react/modal:** lock body scroll effect when modal is opened ([46cfbc9](https://github.com/Mezzanine-UI/mezzanine/commit/46cfbc90065e6f11d45b24e56578fa6a370b5916))
+- **react/overlay:** add fixed position className when container is not given ([2fecad6](https://github.com/Mezzanine-UI/mezzanine/commit/2fecad6015de4203aa2000ada6c669071b5176e2)), closes [#33](https://github.com/Mezzanine-UI/mezzanine/issues/33) [#33](https://github.com/Mezzanine-UI/mezzanine/issues/33)
+
+### Features
+
+- **react/overlay:** implement invisibleBackdrop feature on react overlay ([3c8588e](https://github.com/Mezzanine-UI/mezzanine/commit/3c8588eabe1b4b5e9716c8eb59f063c94b33161d))
+- **react/select:** first implementation ([b4ab86a](https://github.com/Mezzanine-UI/mezzanine/commit/b4ab86a521105babea9d265a163f58c10bcd593c))
+- **react/textfield:** implement textField clickable feature and add sufficActionIcon prop ([8058c4b](https://github.com/Mezzanine-UI/mezzanine/commit/8058c4b0c26698551f68ce9ee9882fe00e975ff5))
+- **react/utils:** add rename multiple types utils for types renaming ([e23b0ad](https://github.com/Mezzanine-UI/mezzanine/commit/e23b0adc676163a0155dafd7a11ae943561e7934))
+
 ## [0.0.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.5...@mezzanine-ui/react@0.0.6) (2021-03-19)
 
 ### Features
