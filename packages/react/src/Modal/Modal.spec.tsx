@@ -31,10 +31,16 @@ function getModalElement(container: HTMLElement = document.body) {
   return getOverlayElement(container)?.querySelector('.mzn-modal');
 }
 
+window.scrollTo = jest.fn();
+
 describe('<Modal />', () => {
   afterEach(() => {
     cleanup();
     cleanupHook();
+  });
+
+  afterAll(() => {
+    jest.clearAllMocks();
   });
 
   describeForwardRefToHTMLElement(
