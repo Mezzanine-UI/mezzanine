@@ -241,3 +241,7 @@ export {
   ZoomProps,
   Zoom,
 } from './Transition';
+export {
+  TooltipProps,
+  default as Tooltip,
+} from './Tooltip';

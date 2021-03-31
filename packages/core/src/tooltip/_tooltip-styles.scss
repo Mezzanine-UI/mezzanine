@@ -1,0 +1,21 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './tooltip' as *;
+
+$max-width: 160px !default;
+$min-height: 24px !default;
+$vertical-padding: 4px !default;
+$horizontal-padding: 8px !default;
+
+.#{$prefix} {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: $vertical-padding $horizontal-padding;
+  background-color: palette.color(action-inactive);
+  color: palette.color(on-secondary);
+  max-width: $max-width;
+  min-height: $min-height;
+
+  @include typography.variant(caption);
+}
