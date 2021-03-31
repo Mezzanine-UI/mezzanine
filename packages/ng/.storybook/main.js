@@ -12,6 +12,7 @@ module.exports = {
     '../button/**/*.stories.@(mdx|ts)',
     '../empty/**/*.stories.@(mdx|ts)',
     '../icon/**/*.stories.@(mdx|ts)',
+    '../tabs/**/*.stories.@(mdx|ts)',
     '../tag/**/*.stories.@(mdx|ts)',
     '../typography/**/*.stories.@(mdx|ts)',
     '../upload/**/*.stories.@(mdx|ts)',
