@@ -1,4 +1,5 @@
 import Select, { Option, OptionGroup } from '.';
+import Modal, { ModalHeader, ModalBody } from '../Modal';
 
 export default {
   title: 'Data Entry/Select',
@@ -19,7 +20,7 @@ export const Basic = () => (
       required
       placeholder="預設文字"
     >
-      <Option value="1">item1</Option>
+      <Option value="1">item1 has very long description</Option>
       <Option value="2">item2</Option>
       <Option value="3">item3</Option>
     </Select>
@@ -213,4 +214,26 @@ export const Group = () => (
       </OptionGroup>
     </Select>
   </div>
+);
+
+export const OnModal = () => (
+  <Modal
+    fullScreen
+    open
+  >
+    <ModalHeader>
+      Hi
+    </ModalHeader>
+    <ModalBody>
+      <Select
+        clearable
+        required
+        placeholder="預設文字"
+      >
+        <Option value="1">item1</Option>
+        <Option value="2">item2</Option>
+        <Option value="3">item3</Option>
+      </Select>
+    </ModalBody>
+  </Modal>
 );
