@@ -12,10 +12,13 @@ import {
   TextFieldSize,
 } from '@mezzanine-ui/core/text-field';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
 import Icon from '../Icon';
 
-export interface TextFieldProps {
+export interface TextFieldProps
+  extends
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'defaultValue' | 'onChange' | 'prefix'> {
   /**
    * Whether the field is active.
    */
@@ -86,9 +89,11 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
     onClick: onClickProps,
     onKeyDown: onKeyDownProps,
     prefix,
+    role: roleProp,
     size = 'medium',
     suffix,
     suffixActionIcon,
+    ...rest
   } = props;
 
   const {
@@ -103,8 +108,9 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions
     <div
+      {...rest}
       ref={ref}
-      role={role}
+      role={roleProp || role}
       onClick={onClick}
       onKeyDown={onKeyDown}
       className={cx(
