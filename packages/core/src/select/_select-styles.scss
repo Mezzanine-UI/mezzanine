@@ -43,12 +43,8 @@ $tags-gap: 4px !default;
     transform: rotate(180deg);
   }
 
-  &__overlay {
-    z-index: z-index.get(modal);
-  }
-
   &__popper {
-    width: 100%;
+    width: auto;
     padding: $popper-vertical-padding $popper-horizontal-padding;
     background-color: palette.color(surface);
     border: 1px solid palette.color(border);
