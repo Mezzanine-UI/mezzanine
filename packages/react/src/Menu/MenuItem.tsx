@@ -35,6 +35,7 @@ const MenuItem = forwardRef<HTMLLIElement, MenuItemProps>(function MenuItem(prop
     className,
     disabled = false,
     onClick,
+    onKeyDown = () => {},
     role = 'menuitem',
     ...rest
   } = props;
@@ -58,7 +59,7 @@ const MenuItem = forwardRef<HTMLLIElement, MenuItemProps>(function MenuItem(prop
           onClick(event);
         }
       }}
-      onKeyDown={() => {}}
+      onKeyDown={onKeyDown}
       role={role}
     >
       <div className={classes.label}>{children}</div>

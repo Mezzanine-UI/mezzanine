@@ -1,4 +1,8 @@
-import { forwardRef, useContext } from 'react';
+import {
+  forwardRef,
+  useContext,
+  KeyboardEvent,
+} from 'react';
 import { MenuItem, MenuItemProps } from '../Menu';
 import { SelectControlContext } from './SelectControlContext';
 
@@ -36,22 +40,42 @@ const Option = forwardRef<HTMLLIElement, OptionProps>(function Option(props, ref
 
   const active = Boolean(activeProp || (selectedValue ?? []).find((sv) => sv.id === value));
 
+  const onSelect = () => {
+    if (typeof onChange === 'function' && value) {
+      onChange({
+        id: value,
+        name: children,
+      });
+    }
+  };
+
+  const onKeyDown = (evt: KeyboardEvent<Element>) => {
+    switch (evt.code) {
+      case 'Enter':
+        onSelect();
+
+        break;
+
+      default:
+        break;
+    }
+  };
+
   return (
     <MenuItem
       {...rest}
       ref={ref}
       active={active}
+      aria-selected={active}
+      id={value}
       onClick={(evt) => {
         evt.stopPropagation();
 
-        if (typeof onChange === 'function' && value) {
-          onChange({
-            id: value,
-            name: children,
-          });
-        }
+        onSelect();
       }}
+      onKeyDown={onKeyDown}
       role={role}
+      tabIndex={0}
     >
       {children}
     </MenuItem>

@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  KeyboardEvent,
   useRef,
   useState,
   useContext,
@@ -11,26 +12,44 @@ import {
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon, SearchIcon } from '@mezzanine-ui/icons';
-import { StrictModifiers } from '@popperjs/core';
 import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
-import Overlay from '../Overlay';
-import Popper, { PopperProps } from '../Popper';
+import Popper, { PopperProps, PopperOptions } from '../Popper';
 import { SelectControlContext, SelectValue } from './SelectControlContext';
 import Tag from '../Tag';
 import TextField, { TextFieldProps } from '../TextField';
 import Icon from '../Icon';
 import { useSelectValueControl } from '../Form/useSelectValueControl';
+import { useClickAway } from '../hooks/useClickAway';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { PickRenameMulti } from '../utils/rename-types';
 
-const offsetModifier: StrictModifiers = {
-  name: 'offset',
-  options: {
-    offset: [0, 4],
-  },
+const popperDefaultOptions: PopperOptions<any> = {
+  modifiers: [{
+    name: 'offset',
+    options: {
+      offset: [0, 4],
+    },
+  }, {
+    name: 'sameWidth',
+    enabled: true,
+    phase: 'beforeWrite',
+    requires: ['computeStyles'],
+    fn: ({ state }) => {
+      const reassignState = state;
+
+      reassignState.styles.popper.minWidth = `${state.rects.reference.width}px`;
+    },
+    effect: ({ state }) => {
+      const reassignState = state;
+
+      reassignState.elements.popper.style.minWidth = `${
+        state.elements.reference.getBoundingClientRect().width
+      }px`;
+    },
+  }],
 };
 
 type SelectMode = 'single' | 'multiple';
@@ -98,6 +117,8 @@ export interface SelectProps
   value?: SelectValue[];
 }
 
+const MENU_ID = 'mzn-select-menu-id';
+
 const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, ref) {
   const {
     disabled: disabledFromFormControl,
@@ -117,7 +138,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     inputProps,
     itemsInView = 4,
     menuMaxHeight,
-    menuRole = 'menu',
+    menuRole = 'listbox',
     menuSize = 'medium',
     mode = 'single',
     onChange: onChangeProp,
@@ -147,7 +168,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     value: valueProp,
   });
 
+  const nodeRef = useRef<HTMLDivElement>(null);
   const controlRef = useRef<HTMLElement>(null);
+  const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
 
   const searchable = typeof onSearch === 'function';
@@ -174,6 +197,23 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     }
   }, [focused, onSearch]);
 
+  useClickAway(
+    () => {
+      if (!open || focused) return;
+
+      return () => {
+        toggleOpen((prev) => !prev);
+      };
+    },
+    nodeRef,
+    [
+      focused,
+      nodeRef,
+      open,
+      toggleOpen,
+    ],
+  );
+
   const getSuffixActionIcon = () => {
     if (suffixActionIcon) return suffixActionIcon;
 
@@ -193,6 +233,47 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     );
   };
 
+  const onClickTextField = () => {
+    /** when searchable, should open menu when focus */
+    if (!searchable && !disabled) {
+      toggleOpen((prev) => !prev);
+    }
+  };
+
+  /**
+   * keyboard events for a11y
+   * (@todo keyboard event map into option selection when menu is opened)
+   */
+  const onKeyDownTextField = (evt: KeyboardEvent<Element>) => {
+    /** for a11y to open menu via keyboard */
+    switch (evt.code) {
+      case 'Enter':
+        onClickTextField();
+
+        break;
+      case 'ArrowUp':
+      case 'ArrowRight':
+      case 'ArrowLeft':
+      case 'ArrowDown': {
+        if (!open) {
+          onClickTextField();
+        }
+
+        break;
+      }
+      case 'Tab': {
+        if (open) {
+          onClickTextField();
+        }
+
+        break;
+      }
+
+      default:
+        break;
+    }
+  };
+
   /** Popper customizable options */
   const { modifiers = [] } = popperOptions;
 
@@ -203,7 +284,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
         onChange,
       }}
     >
-      <div className={classes.host}>
+      <div ref={nodeRef} className={classes.host}>
         <TextField
           ref={composedRef}
           active={Boolean(value.length)}
@@ -213,7 +294,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           error={error}
           fullWidth={fullWidth}
           onClear={onClear}
-          onClick={() => toggleOpen((prev) => !prev)}
+          onClick={onClickTextField}
+          onKeyDown={onKeyDownTextField}
           prefix={prefix}
           size={size}
           suffixActionIcon={getSuffixActionIcon()}
@@ -240,13 +322,17 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
             <input
               {...inputProps}
               ref={inputRef}
+              autoComplete="false"
+              aria-autocomplete="list"
+              aria-controls={MENU_ID}
               aria-disabled={disabled}
-              aria-multiline={false}
+              aria-expanded={open}
+              aria-haspopup="listbox"
+              aria-owns={MENU_ID}
               aria-readonly={!searchable}
               aria-required={required}
               disabled={disabled}
               onBlur={() => setFocused(false)}
-              onFocus={() => setFocused(true)}
               onChange={(e) => {
                 changeSearchText(e.target.value);
 
@@ -254,24 +340,39 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
                   onSearch(e.target.value);
                 }
               }}
+              onFocus={(e) => {
+                e.stopPropagation();
+
+                if (searchable) toggleOpen((prev) => !prev);
+
+                setFocused(true);
+              }}
               placeholder={focused && searchable ? renderValue() : placeholder}
               readOnly={!searchable}
               required={required}
+              role="combobox"
+              type="search"
               value={focused && searchable ? searchText : renderValue()}
             />
           )}
         </TextField>
         <Popper
+          ref={popperRef}
           anchor={controlRef}
-          container={controlRef}
           className={classes.popper}
           open={open}
           options={{
+            ...popperDefaultOptions,
             ...popperOptions,
-            modifiers: [...modifiers, offsetModifier],
+            modifiers: [
+              ...(popperDefaultOptions.modifiers || []),
+              ...modifiers,
+            ],
           }}
         >
           <Menu
+            id={MENU_ID}
+            aria-activedescendant={value?.[0]?.id ?? ''}
             itemsInView={itemsInView}
             maxHeight={menuMaxHeight}
             role={menuRole}
@@ -281,14 +382,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
             {children}
           </Menu>
         </Popper>
-        {open ? (
-          <Overlay
-            className={classes.overlay}
-            invisibleBackdrop
-            open={open}
-            onBackdropClick={() => toggleOpen(false)}
-          />
-        ) : null}
       </div>
     </SelectControlContext.Provider>
   );

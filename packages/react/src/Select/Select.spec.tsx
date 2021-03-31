@@ -86,11 +86,12 @@ describe('<Select />', () => {
     const inputElement = getSelectInputElement(element);
 
     expect(inputElement.getAttribute('aria-disabled')).toBe('true');
-    expect(inputElement.getAttribute('aria-multiline')).toBe('false');
     expect(inputElement.getAttribute('aria-readonly')).toBe('true');
+    expect(inputElement.getAttribute('aria-haspopup')).toBe('listbox');
     expect(inputElement.hasAttribute('disabled')).toBe(true);
     expect(inputElement.getAttribute('placeholder')).toBe('placeholder');
     expect(inputElement.hasAttribute('readonly')).toBe(true);
+    expect(inputElement.getAttribute('role')).toBe('combobox');
     expect(inputElement.getAttribute('value')).toBe('');
   });
 
@@ -100,31 +101,12 @@ describe('<Select />', () => {
     );
     const element = getHostHTMLElement();
 
-    expect(element.querySelector('.mzn-select__popper')).toBeNull();
+    expect(document.querySelector('.mzn-select__popper')).toBeNull();
 
     await testTextFieldClicked(element);
 
-    expect(element.querySelector('.mzn-select__popper')).toBeInstanceOf(HTMLDivElement);
-    expect(element.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-  });
-
-  it('should popper being closed when backdrop clicked', async () => {
-    const { getHostHTMLElement } = render(
-      <Select />,
-    );
-    const element = getHostHTMLElement();
-
-    await testTextFieldClicked(element);
-
-    expect(element.querySelector('.mzn-select__popper')).toBeInstanceOf(HTMLDivElement);
-
-    const backdropElement = document.querySelector('.mzn-overlay__backdrop');
-
-    await act(async () => {
-      fireEvent.click(backdropElement!);
-    });
-
-    expect(element.querySelector('.mzn-select__popper')).toBeNull();
+    expect(document.querySelector('.mzn-select__popper')).toBeInstanceOf(HTMLDivElement);
+    expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
   });
 
   describe('prop: suffixActionIcon', () => {
@@ -232,13 +214,13 @@ describe('<Select />', () => {
       it('should close popper when option clicked', async () => {
         await testTextFieldClicked(element);
 
-        const options = element.querySelectorAll('.mzn-menu-item');
+        const options = document.querySelectorAll('.mzn-menu-item');
 
         await act(async () => {
           fireEvent.click(options[0]);
         });
 
-        expect(element.querySelector('.mzn-select__popper')).toBeNull();
+        expect(document.querySelector('.mzn-select__popper')).toBeNull();
       });
     });
 
@@ -296,7 +278,7 @@ describe('<Select />', () => {
       it('should push new selection into state when unselected option clicked', async () => {
         await testTextFieldClicked(element);
 
-        const options = element.querySelectorAll('.mzn-menu-item');
+        const options = document.querySelectorAll('.mzn-menu-item');
 
         await act(async () => {
           fireEvent.click(options[2]);
