@@ -1,0 +1,38 @@
+@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/palette';
+@use './drawer' as *;
+
+$drawer-size: 256px !default;
+$positions: top, right, bottom, left;
+
+.#{$prefix} {
+  background-color: palette.color(on-primary);
+  position: absolute;
+  overflow: auto;
+
+  &__overlay {
+    display: relative;
+    overflow: hidden;
+    z-index: z-index.get(drawer);
+  }
+
+  &--top,
+  &--bottom {
+    right: 0;
+    left: 0;
+    height: $drawer-size;
+  }
+
+  &--left,
+  &--right {
+    bottom: 0;
+    top: 0;
+    width: $drawer-size;
+  }
+
+  @each $position in $positions {
+    &--#{$position} {
+      #{$position}: 0;
+    }
+  }
+}
