@@ -78,6 +78,11 @@ export {
   TabsProps,
   default as Tabs,
 } from './Tabs';
+export {
+  DrawerPlacement,
+  DrawerProps,
+  default as Drawer,
+} from './Drawer';
 
 /**
  * Data Display
