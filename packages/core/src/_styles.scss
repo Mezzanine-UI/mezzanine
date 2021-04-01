@@ -30,6 +30,7 @@
   @include _load-styles($options, menu);
   @include _load-styles($options, tabs);
   @include _load-styles($options, pagination);
+  @include _load-styles($options, drawer);
 
   // Data Display
   @include _load-styles($options, badge);
