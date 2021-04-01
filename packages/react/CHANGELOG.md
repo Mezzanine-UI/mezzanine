@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.7...@mezzanine-ui/react@0.0.8) (2021-04-01)
+
+### Bug Fixes
+
+- **react/menu:** bind keydown event from props on MenuItem instead of empty function ([1d8f76a](https://github.com/Mezzanine-UI/mezzanine/commit/1d8f76a6398a5eb486d83d3cf4cf3149517e9828))
+
+### Features
+
+- **react/select:** bind keyboard events for a11y in <Select> & <Option> / remove overlay ([71629fd](https://github.com/Mezzanine-UI/mezzanine/commit/71629fd1d5922a2e5edcdf9bac19c098fdf9a14a))
+- **react/text-field:** extend div element types and allow div element original properties binding ([7d69ee0](https://github.com/Mezzanine-UI/mezzanine/commit/7d69ee0299933ce0975c69ec67d71d7cb05734a6))
+- **react/tooltip:** first implement ([bd6cee7](https://github.com/Mezzanine-UI/mezzanine/commit/bd6cee73d8ae718353a7b0cf5d35954c8d1a4179))
+
 ## [0.0.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.6...@mezzanine-ui/react@0.0.7) (2021-03-26)
 
 ### Bug Fixes

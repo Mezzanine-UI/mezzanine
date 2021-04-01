@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.7...@mezzanine-ui/core@0.0.8) (2021-04-01)
+
+### Bug Fixes
+
+- **core/select:** remove overlay styles in select and set menu width to auto (control by popper) ([b15b66d](https://github.com/Mezzanine-UI/mezzanine/commit/b15b66d95b650d5827b811d336a982bd8abd0796))
+
+### Features
+
+- **core/tooltip:** first implement ([bf0fd67](https://github.com/Mezzanine-UI/mezzanine/commit/bf0fd6718cf7d677e96bb7d50830739166532065))
+
 ## [0.0.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.6...@mezzanine-ui/core@0.0.7) (2021-03-26)
 
 ### Bug Fixes
