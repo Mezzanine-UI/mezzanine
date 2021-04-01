@@ -1,7 +1,7 @@
 @use '../utils/list';
 
 $prefix: mzn-z-index;
-$orders: (modal, popover, feedback);
+$orders: (modal, drawer, popover, feedback);
 
 @mixin variables($base: 1000) {
   @for $index from 1 through list.length($orders) {
