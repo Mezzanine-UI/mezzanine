@@ -7,6 +7,8 @@ export { CheckIcon } from './check';
 export { CheckCircleFilledIcon } from './check-circle-filled';
 export { ChevronUpIcon } from './chevron-up';
 export { ChevronDownIcon } from './chevron-down';
+export { ChevronRightIcon } from './chevron-right';
+export { ChevronLeftIcon } from './chevron-left';
 export { DownloadIcon } from './download';
 export { ExclamationCircleFilledIcon } from './exclamation-circle-filled';
 export { EyeIcon } from './eye';

@@ -97,6 +97,16 @@ export {
   TagProps,
   default as Tag,
 } from './Tag';
+export {
+  usePagination,
+  PaginationItemProps,
+  PaginationItemType,
+  PaginationItem,
+  PaginationJumperProps,
+  PaginationJumper,
+  PaginationProps,
+  default as Pagination,
+} from './Pagination';
 
 /**
  * Data Entry

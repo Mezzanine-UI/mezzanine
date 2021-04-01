@@ -1,0 +1,119 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/core/button/utils';
+@use '../icon';
+@use '../text-field';
+@use './pagination' as *;
+
+$item-width: 32px !default;
+$item-height: 32px !default;
+$item-gap: 8px !default;
+$item-icon-size: 24px !default;
+
+$jumper-margin-left: 24px !default;
+$jumper-item-gap: 16px 8px !default;
+$jumper-item-columns: 32px 64px 66px !default;
+
+.#{$prefix} {
+  &__container {
+    display: grid;
+    grid-auto-flow: column;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: left;
+    column-gap: $item-gap;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__jumper {
+    margin-left: $jumper-margin-left - $item-gap;
+  }
+}
+
+.#{$item-prefix} {
+  min-width: $item-width;
+  height: $item-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__button {
+    @include utils.reset();
+
+    color: palette.color(text-primary);
+    background-color: transparent;
+
+    &:hover {
+      background-color: palette.color(primary-hover-bg);
+    }
+
+    &:focus,
+    &:active {
+      background-color: palette.color(primary-active-bg);
+    }
+
+    .#{icon.$prefix} {
+      font-size: typography.px-to-rem($item-icon-size);
+    }
+
+    &.#{$item-prefix}--active {
+      background-color: palette.color(primary);
+      color: palette.color(on-primary);
+    }
+
+    &.#{$item-prefix}--disabled {
+      color: palette.color(text-disabled);
+      cursor: default;
+      pointer-events: none;
+
+      &.#{$item-prefix}--active {
+        background-color: palette.color(action-disabled-bg);
+        color: palette.color(text-disabled);
+      }
+    }
+  }
+
+  &__ellipsis {
+    width: $item-width;
+    height: $item-height;
+    color: palette.color(text-primary);
+    cursor: default;
+    pointer-events: none;
+    user-select: none;
+
+    &.#{$item-prefix}--disabled {
+      color: palette.color(text-disabled);
+    }
+  }
+}
+
+.#{$jumper-prefix} {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: $jumper-item-gap;
+  grid-template-columns: $jumper-item-columns;
+
+  .#{text-field.$prefix} {
+    min-width: unset;
+  }
+
+  &__input {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &[type=number] {
+      appearance: textfield;
+    }
+  }
+}

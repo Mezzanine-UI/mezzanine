@@ -29,6 +29,7 @@
   // Navigation
   @include _load-styles($options, menu);
   @include _load-styles($options, tabs);
+  @include _load-styles($options, pagination);
 
   // Data Display
   @include _load-styles($options, badge);
