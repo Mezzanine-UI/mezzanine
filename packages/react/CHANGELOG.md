@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.8...@mezzanine-ui/react@0.0.9) (2021-04-01)
+
+### Bug Fixes
+
+- **react/input:** omit text-field onKeyDown types ([0558290](https://github.com/Mezzanine-UI/mezzanine/commit/0558290c176ac41bbef577b1084a195fed5c7077))
+
+### Features
+
+- **icons:** add chevron right and chevron left icon ([e95c847](https://github.com/Mezzanine-UI/mezzanine/commit/e95c8474c15fadb6f461fa0550d538376bed725e))
+- **react/drawer:** implement ([193aaa8](https://github.com/Mezzanine-UI/mezzanine/commit/193aaa82a7dc0de3ba8c20f31056a461da77ca77))
+- **react/pagination:** implement ([d13820e](https://github.com/Mezzanine-UI/mezzanine/commit/d13820e64e8c3317f695986cbfe1c22b61b4d17c))
+
 ## [0.0.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.7...@mezzanine-ui/react@0.0.8) (2021-04-01)
 
 ### Bug Fixes

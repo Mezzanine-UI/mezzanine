@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.0.1...@mezzanine-ui/icons@0.0.9) (2021-04-01)
+
+### Features
+
+- **icons:** add chevron right and chevron left icon ([e95c847](https://github.com/Mezzanine-UI/mezzanine/commit/e95c8474c15fadb6f461fa0550d538376bed725e))
+
 ## 0.0.1 (2021-02-26)
 
 ### Features

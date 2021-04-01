@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.8...@mezzanine-ui/core@0.0.9) (2021-04-01)
+
+### Features
+
+- **core/drawer:** implement ([d7e0d61](https://github.com/Mezzanine-UI/mezzanine/commit/d7e0d617adb15a498d639f077a129b836b09cabb))
+- **core/pagination:** implement ([1bcd39f](https://github.com/Mezzanine-UI/mezzanine/commit/1bcd39f683d422404a137bda38c8c9ce40ae728a))
+
 ## [0.0.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.0.7...@mezzanine-ui/core@0.0.8) (2021-04-01)
 
 ### Bug Fixes
