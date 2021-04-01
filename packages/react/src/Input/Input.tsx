@@ -16,7 +16,7 @@ import { useInputWithClearControlValue } from '../Form/useInputWithClearControlV
 import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
 
-export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear'> {
+export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'onKeyDown'> {
   /**
    * The default value of input.
    */
