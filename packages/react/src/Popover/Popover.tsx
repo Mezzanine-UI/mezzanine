@@ -79,7 +79,7 @@ const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover(props,
       open={open}
       options={{
         ...options,
-        modifiers: [...modifiers, offsetModifier],
+        modifiers: [offsetModifier, ...modifiers],
       }}
     >
       {title && <div className={classes.title}>{title}</div>}
