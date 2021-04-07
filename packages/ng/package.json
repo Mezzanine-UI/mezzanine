@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/ng",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Angular components for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -32,7 +32,7 @@
     "zone.js": "^0.11.3"
   },
   "dependencies": {
-    "@mezzanine-ui/core": "^0.0.9",
+    "@mezzanine-ui/core": "^0.0.10",
     "@mezzanine-ui/icons": "^0.0.9",
     "@mezzanine-ui/system": "^0.0.9",
     "tslib": "^2.1.0"

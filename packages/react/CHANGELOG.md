@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.9...@mezzanine-ui/react@0.0.10) (2021-04-07)
+
+### Bug Fixes
+
+- **react/modal:** unlock body scroll after element unmount (under useEffect not useLayoutEffect) ([ec94310](https://github.com/Mezzanine-UI/mezzanine/commit/ec943109eda409aa30553d7764089a424c873443)), closes [#41](https://github.com/Mezzanine-UI/mezzanine/issues/41) [#41](https://github.com/Mezzanine-UI/mezzanine/issues/41)
+
+### Features
+
+- **react/navigation:** implement ([431ab37](https://github.com/Mezzanine-UI/mezzanine/commit/431ab371a06054f483d7d106dc734d40d85f9df9))
+
 ## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.8...@mezzanine-ui/react@0.0.9) (2021-04-01)
 
 ### Bug Fixes
