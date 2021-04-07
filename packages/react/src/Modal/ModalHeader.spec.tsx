@@ -9,8 +9,14 @@ import {
 } from '../../__test-utils__/common';
 import Modal, { ModalHeader, ModalSeverity } from '.';
 
+window.scrollTo = jest.fn();
+
 describe('<ModalHeader />', () => {
   afterEach(cleanup);
+
+  afterAll(() => {
+    jest.clearAllMocks();
+  });
 
   describeForwardRefToHTMLElement(
     HTMLDivElement,

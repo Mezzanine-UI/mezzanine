@@ -1,7 +1,12 @@
 
 import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
-import { forwardRef, useState, useLayoutEffect } from 'react';
+import {
+  forwardRef,
+  useState,
+  useLayoutEffect,
+  useEffect,
+} from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
@@ -109,19 +114,22 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     onClose,
   ]);
 
+  /** lock body scroll */
   useLayoutEffect(() => {
     if (open) {
       lockBodyScroll();
     }
+  }, [open]);
 
-    return () => {
-      const allModals = document.querySelectorAll('.mzn-modal');
+  /** unlock body scroll */
+  useEffect(() => () => {
+    // wait until dom element unmount, and check if other modal existed
+    const allModals = document.querySelectorAll('.mzn-modal');
 
-      if (!allModals.length) {
-        allowBodyScroll();
-      }
-    };
-  }, [open, exited]);
+    if (!allModals.length) {
+      allowBodyScroll();
+    }
+  }, []);
 
   if (!open && exited) {
     return null;
