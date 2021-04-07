@@ -1,0 +1,101 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '../navigation';
+@use './app-bar' as *;
+
+$horizontal-height: 65px !default;
+$horizontal-brand-max-width: 208px !default;
+$horizontal-support-max-width: 280px !default;
+
+$vertical-width: 256px !default;
+$vertical-brand-max-height: 48px !default;
+$vertical-support-max-height: 96px !default;
+
+@mixin item-gap($direction) {
+  > :not(:last-child) {
+    margin-#{$direction}: spacing.level(2);
+  }
+}
+
+.#{$prefix} {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  background-color: palette.color(on-primary);
+  box-sizing: border-box;
+
+  &--horizontal {
+    height: $horizontal-height;
+    max-height: $horizontal-height;
+    flex-direction: row;
+    border-bottom: 1px solid palette.color(border);
+    padding: 0 spacing.level(4);
+
+    .#{$brand-prefix} {
+      max-height: $horizontal-height;
+      max-width: $horizontal-brand-max-width;
+      @include item-gap(right);
+    }
+
+    .#{$main-prefix} {
+      max-height: $horizontal-height;
+      padding: 0 spacing.level(4);
+      @include item-gap(right);
+    }
+
+    .#{$support-prefix} {
+      max-height: $horizontal-height;
+      max-width: $horizontal-support-max-width;
+      @include item-gap(right);
+    }
+  }
+
+  &--vertical {
+    width: $vertical-width;
+    height: 100%;
+    flex-direction: column;
+    border-right: 1px solid palette.color(border);
+    padding: spacing.level(5);
+
+    .#{navigation.$prefix} {
+      padding: 0;
+      width: 100%;
+    }
+
+    .#{$brand-prefix} {
+      width: 100%;
+      max-height: $vertical-brand-max-height;
+      @include item-gap(right);
+    }
+
+    .#{$main-prefix} {
+      width: 100%;
+      flex-direction: column;
+      padding: spacing.level(5) 0;
+      @include item-gap(bottom);
+    }
+
+    .#{$support-prefix} {
+      width: 100%;
+      flex-direction: column;
+      align-items: unset;
+      max-height: $vertical-support-max-height;
+      @include item-gap(bottom);
+    }
+  }
+}
+
+$child-prefixes: $brand-prefix, $main-prefix, $support-prefix;
+
+@each $child in $child-prefixes {
+  .#{$child} {
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    box-sizing: border-box;
+
+    @if $child == $main-prefix {
+      flex: 1 0 0;
+    }
+  }
+}

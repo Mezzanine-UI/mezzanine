@@ -32,6 +32,7 @@
   @include _load-styles($options, pagination);
   @include _load-styles($options, drawer);
   @include _load-styles($options, navigation);
+  @include _load-styles($options, app-bar);
 
   // Data Display
   @include _load-styles($options, badge);
