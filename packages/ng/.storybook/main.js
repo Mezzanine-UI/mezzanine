@@ -7,7 +7,14 @@ const CORE_PATH = path.resolve(PACKAGES_PATH, 'core');
 
 module.exports = {
   stories: [
-    '../**/*.stories.@(mdx|ts)'
+    '../alert/**/*.stories.@(mdx|ts)',
+    '../badge/**/*.stories.@(mdx|ts)',
+    '../button/**/*.stories.@(mdx|ts)',
+    '../empty/**/*.stories.@(mdx|ts)',
+    '../icon/**/*.stories.@(mdx|ts)',
+    '../tag/**/*.stories.@(mdx|ts)',
+    '../typography/**/*.stories.@(mdx|ts)',
+    // '../!(node_modules|dist|cdk)/**/*.stories.@(mdx|ts)' // this glob match should fix compile loop
   ],
   addons: [
     '@storybook/addon-essentials',
