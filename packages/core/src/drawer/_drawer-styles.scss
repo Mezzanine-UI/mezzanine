@@ -1,5 +1,6 @@
 @use '~@mezzanine-ui/system/z-index';
 @use '~@mezzanine-ui/system/palette';
+@use '../app-bar';
 @use './drawer' as *;
 
 $drawer-size: 256px !default;
@@ -8,7 +9,10 @@ $positions: top, right, bottom, left;
 .#{$prefix} {
   background-color: palette.color(on-primary);
   position: absolute;
-  overflow: auto;
+
+  .#{app-bar.$prefix} {
+    border: none;
+  }
 
   &__overlay {
     display: relative;
