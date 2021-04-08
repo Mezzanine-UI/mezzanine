@@ -247,3 +247,9 @@ $default-options: (
 
   @include partial-variables($options);
 }
+
+@mixin inherit {
+  @each $prop in $props {
+    #{$prop}: inherit;
+  }
+}
