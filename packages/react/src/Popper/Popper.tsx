@@ -41,6 +41,7 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(function Popper(props, re
     container,
     disablePortal,
     open = false,
+    style,
     options,
     ...rest
   } = props;
@@ -61,7 +62,10 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(function Popper(props, re
       <div
         {...rest}
         ref={composedRef}
-        style={styles.popper}
+        style={{
+          ...style,
+          ...styles.popper,
+        }}
         {...attributes.popper}
       >
         {children}
