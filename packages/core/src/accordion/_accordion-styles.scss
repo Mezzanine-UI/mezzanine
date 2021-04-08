@@ -1,0 +1,76 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './accordion' as *;
+
+$accordion-horizontal-padding: 16px !default;
+$accordion-vertical-padding: 10px !default;
+$summary-grid-gap: 32px !default;
+$summary-icon-size: 32px !default;
+$details-vertical-padding: 16px !default;
+$details-right-padding: $accordion-horizontal-padding + $summary-icon-size + $summary-grid-gap;
+
+.#{$prefix} {
+  width: 100%;
+}
+
+.#{$prefix}__summary {
+  width: 100%;
+  padding: $accordion-vertical-padding $accordion-horizontal-padding;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: $summary-grid-gap;
+  align-items: center;
+  border-bottom: 1px solid palette.color(border);
+  background-color: palette.color(surface);
+  color: palette.color(text-primary);
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+
+  @include typography.variant(input2);
+
+  &--disabled {
+    pointer-events: none;
+    color: palette.color(text-disabled);
+  }
+
+  &:hover {
+    &:not(.#{$prefix}__summary--disabled) {
+      background-color: palette.color(primary-hover-bg);
+    }
+  }
+
+  &__icon {
+    cursor: pointer;
+    font-size: $summary-icon-size;
+
+    &:hover {
+      background-color: palette.color(primary-active-bg);
+    }
+
+    &--expanded {
+      transform: rotate(180deg);
+    }
+
+    &--disabled {
+      pointer-events: none;
+    }
+  }
+}
+
+.#{$prefix}__details {
+  width: 100%;
+  padding: $details-vertical-padding $details-right-padding $details-vertical-padding $accordion-horizontal-padding;
+  height: auto;
+  min-height: 0;
+  border-bottom: 0;
+  color: palette.color(text-primary);
+  background-color: palette.color(divider);
+  box-sizing: border-box;
+
+  @include typography.variant(body1);
+
+  &--expanded {
+    border-bottom: 1px solid palette.color(border);
+  }
+}
