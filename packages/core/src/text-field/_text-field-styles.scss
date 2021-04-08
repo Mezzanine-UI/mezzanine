@@ -85,7 +85,7 @@ $prefix-suffix-gap: 4px !default;
   &__action-icon {
     background-color: inherit;
     border: none;
-    color: var(--#{$prefix}-interact-icon-color);
+    color: var(--#{$prefix}-interact-icon-color, #{palette.color(action-inactive)});
     padding: 0;
     outline: none;
     cursor: pointer;
