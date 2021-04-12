@@ -101,6 +101,14 @@ export {
  * Data Display
  */
 export {
+  AccordionProps,
+  AccordionSummaryProps,
+  AccordionSummary,
+  AccordionDetailsProps,
+  AccordionDetails,
+  default as Accordion,
+} from './Accordion';
+export {
   BadgeContainerProps,
   BadgeContainer,
   BadgeProps,
