@@ -1,0 +1,138 @@
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
+@use '../button/utils' as btn-utils;
+@use './calendar' as *;
+
+.#{$prefix} {
+  width: 224px;
+  padding: 16px;
+  background-color: palette.color(surface);
+}
+
+.#{$board-prefix} {
+  width: 100%;
+}
+
+.#{$button-prefix} {
+  @include btn-utils.reset();
+
+  transition: transition.standard(background-color);
+
+  @include typography.inherit;
+
+  &[aria-disabled=true] {
+    cursor: default;
+  }
+
+  &:hover:not(.#{$button-prefix}--disabled):not(.#{$button-prefix}--active) {
+    background-color: palette.color(primary-hover-bg);
+  }
+
+  &--inRange {
+    background-color: palette.color(primary-hover-bg);
+  }
+
+  &--active {
+    color: palette.color(on-primary);
+    background-color: palette.color(primary);
+  }
+
+  &--disabled {
+    color: palette.color(text-disabled);
+    background-color: transparent;
+    cursor: default;
+  }
+
+  &--inactive {
+    color: palette.color(text-disabled);
+  }
+}
+
+.#{$row-prefix} {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+}
+
+.#{$cell-prefix} {
+  --#{$cell-prefix}-text-color: #{palette.color(text-primary)};
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  color: var(--#{$cell-prefix}-text-color);
+  user-select: none;
+
+  @include typography.variant(input3);
+
+  button {
+    width: 100%;
+    height: 100%;
+  }
+
+  &--today {
+    --#{$cell-prefix}-text-color: #{palette.color(primary)};
+
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 2px;
+      height: 2px;
+      border-radius: 50%;
+      bottom: 6px;
+      background-color: var(--#{$cell-prefix}-text-color);
+    }
+  }
+
+  &--active {
+    --#{$cell-prefix}-text-color: #{palette.color(on-primary)};
+  }
+
+  &--disabled {
+    --#{$cell-prefix}-text-color: #{palette.color(text-disabled)};
+  }
+}
+
+.#{$twelve-grid-prefix} {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 32px;
+  grid-row-gap: 16px;
+  width: 100%;
+
+  @include typography.variant(input3);
+}
+
+.#{$controls-prefix} {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  margin: 0 0 12px 0;
+
+  &__icon-button {
+    position: absolute;
+    top: 0;
+    font-size: 24px;
+    line-height: 0;
+  }
+
+  &__button {
+    padding: 0 8px;
+
+    @include typography.variant(button3);
+  }
+
+  &__prev {
+    left: 0;
+  }
+
+  &__next {
+    right: 0;
+  }
+}

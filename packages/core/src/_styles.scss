@@ -25,6 +25,7 @@
   @include _load-styles($options, overlay);
   @include _load-styles($options, popover);
   @include _load-styles($options, tooltip);
+  @include _load-styles($options, calendar);
 
   // Navigation
   @include _load-styles($options, menu);
