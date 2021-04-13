@@ -1,5 +1,5 @@
 import { Story, Meta } from '@storybook/react';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { CalendarMethodsMoment, CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 import CalendarDays from './CalendarDays';
@@ -18,10 +18,6 @@ import { useCalendarControls } from './useCalendarControls';
 export default {
   title: 'Utility/Calendar',
 } as Meta;
-
-declare module '@mezzanine-ui/core/calendar' {
-  export type DateType = Moment;
-}
 
 const InnerCalendarPlayground = ({
   mode = 'day',
