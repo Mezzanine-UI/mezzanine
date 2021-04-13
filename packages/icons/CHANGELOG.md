@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.0.9...@mezzanine-ui/icons@0.1.0) (2021-04-13)
+
+### Features
+
+- **icons:** add arrow-right and calendar icon ([b4d4cc9](https://github.com/Mezzanine-UI/mezzanine/commit/b4d4cc9ec68ba97b5b3439447588ce3f5ab425bf))
+- **react/dropdown:** implement ([fa34a18](https://github.com/Mezzanine-UI/mezzanine/commit/fa34a18335aab42932a1f1e1ce8cfa0a8f02dc9a))
+
 ## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.0.1...@mezzanine-ui/icons@0.0.9) (2021-04-01)
 
 ### Features

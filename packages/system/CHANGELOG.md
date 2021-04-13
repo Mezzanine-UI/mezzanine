@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.0.9...@mezzanine-ui/system@0.1.0) (2021-04-13)
+
+### Features
+
+- **system/typography:** add a mixin for inherit styles ([2b1fb4a](https://github.com/Mezzanine-UI/mezzanine/commit/2b1fb4ad007a4a15d35b8ba34b41f059dc974911))
+
 ## [0.0.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.0.5...@mezzanine-ui/system@0.0.9) (2021-04-01)
 
 ### Features

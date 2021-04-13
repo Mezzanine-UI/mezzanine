@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.0.10...@mezzanine-ui/ng@0.1.0) (2021-04-13)
+
+### Features
+
+- **icons:** add arrow-right and calendar icon ([b4d4cc9](https://github.com/Mezzanine-UI/mezzanine/commit/b4d4cc9ec68ba97b5b3439447588ce3f5ab425bf))
+
 ## [0.0.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.0.9...@mezzanine-ui/ng@0.0.10) (2021-04-07)
 
 **Note:** Version bump only for package @mezzanine-ui/ng
