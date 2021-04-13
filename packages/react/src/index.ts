@@ -206,6 +206,15 @@ export {
   DatePickerProps,
   default as DatePicker,
 } from './DatePicker';
+export {
+  useDateRangeCalendarControls,
+  DateRangePickerCalendarProps,
+  DateRangePickerCalendar,
+  DateRangePickerTriggerProps,
+  DateRangePickerTrigger,
+  DateRangePickerProps,
+  default as DateRangePicker,
+} from './DateRangePicker';
 
 /**
  * Feedback
