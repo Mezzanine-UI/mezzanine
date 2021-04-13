@@ -1,5 +1,13 @@
+import { Moment } from 'moment';
+
 /** Types */
 export type CalendarMode = 'year' | 'month' | 'week' | 'day';
+/**
+ * @NOTE 2021/04/13
+ * we want `DateType` is given from user, but it will cause compile error now,
+ * so we set to Moment as default to fix this problem. (If you have any idea, let me know)
+*/
+export type DateType = Moment;
 
 /** Classes */
 export const calendarPrefix = 'mzn-calendar';
