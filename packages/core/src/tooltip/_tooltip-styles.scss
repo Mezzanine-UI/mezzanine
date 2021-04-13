@@ -1,5 +1,6 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/z-index';
 @use './tooltip' as *;
 
 $max-width: 160px !default;
@@ -16,6 +17,7 @@ $horizontal-padding: 8px !default;
   color: palette.color(on-secondary);
   max-width: $max-width;
   min-height: $min-height;
+  z-index: z-index.get(popover);
 
   @include typography.variant(caption);
 }
