@@ -52,6 +52,7 @@
   @include _load-styles($options, textarea);
   @include _load-styles($options, upload);
   @include _load-styles($options, upload, upload-result);
+  @include _load-styles($options, date-picker);
 
   // Data Entry Form
   @include _load-styles($options, form, form-field);

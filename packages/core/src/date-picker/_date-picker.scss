@@ -1,0 +1,5 @@
+@use '../text-field';
+
+$prefix: mzn-date-picker;
+$calendar-prefix: #{$prefix}-calendar;
+$sizes: text-field.$sizes;
