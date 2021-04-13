@@ -195,6 +195,17 @@ export {
   UploadResultStatus,
   UploadResult,
 } from './Upload';
+export {
+  useTabKeyClose,
+  useTriggerInputHandlers,
+  useSyncTriggerInputValue,
+  DatePickerCalendarProps,
+  DatePickerCalendar,
+  DatePickerTriggerProps,
+  DatePickerTrigger,
+  DatePickerProps,
+  default as DatePicker,
+} from './DatePicker';
 
 /**
  * Feedback
