@@ -19,6 +19,8 @@ const externals = [
     ...packageJson.dependencies,
     ...packageJson.peerDependencies,
   }),
+  'lodash',
+  'moment',
 ];
 
 function getFilesByGlob(globPath) {
