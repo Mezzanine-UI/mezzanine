@@ -5,7 +5,7 @@ import {
   KeyboardEvent,
   RefObject,
 } from 'react';
-import { useCalendarContext } from '../Calendar';
+import { useCalendarContext } from '../Calendar/CalendarContext';
 
 export type UseTriggerInputHandlersProps = {
   formats: string[];

@@ -2,7 +2,7 @@ import { DateType } from '@mezzanine-ui/core/calendar';
 import {
   ChangeEvent, RefObject, useEffect, useState,
 } from 'react';
-import { useCalendarContext } from '../Calendar';
+import { useCalendarContext } from '../Calendar/CalendarContext';
 import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
 
 export type UseTriggerInputValueProps = {
