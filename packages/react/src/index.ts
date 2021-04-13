@@ -101,6 +101,17 @@ export {
   NavigationProps,
   default as Navigation,
 } from './Navigation';
+export {
+  AppBarChild,
+  AppBarChildren,
+  AppBarBrand,
+  AppBarBrandProps,
+  AppBarMain,
+  AppBarMainProps,
+  AppBarSupport,
+  AppBarSupportProps,
+  default as AppBar,
+} from './AppBar';
 
 /**
  * Data Display
