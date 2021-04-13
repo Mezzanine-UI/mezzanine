@@ -1,0 +1,43 @@
+import { Meta, ArgsTable, Description } from '@storybook/addon-docs/blocks';
+import DatePicker from './DatePicker';
+import DatePickerTrigger from './DatePickerTrigger';
+import DatePickerCalendar from './DatePickerCalendar';
+
+<Meta title="Data Entry/DatePicker/Doc" />
+
+# DatePicker
+
+<Description of={DatePicker} />
+
+### For typescript users
+
+When using date-picker, you should declare an exported `DateType` with your desired date library.
+For example, having below code in your `index.d.ts`:
+
+```ts
+import { Moment } from 'moment';
+
+declare module '@mezzanine-ui/core/calendar' {
+  export type DateType = Moment;
+}
+```
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/DatePicker/DatePicker.tsx)
+
+<ArgsTable of={DatePicker} />
+
+# DatePickerTrigger
+
+<Description of={DatePickerTrigger} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/DatePicker/DatePickerTrigger.tsx)
+
+<ArgsTable of={DatePickerTrigger} />
+
+# DatePickerCalendar
+
+<Description of={DatePickerCalendar} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/DatePicker/DatePickerCalendar.tsx)
+
+<ArgsTable of={DatePickerCalendar} />

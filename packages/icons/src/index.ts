@@ -3,12 +3,14 @@ export type { IconDefinition } from './typings';
 /**
  * icons
  */
-export { CheckIcon } from './check';
+export { ArrowRightIcon } from './arrow-right';
+export { CalendarIcon } from './calendar';
 export { CheckCircleFilledIcon } from './check-circle-filled';
-export { ChevronUpIcon } from './chevron-up';
+export { CheckIcon } from './check';
 export { ChevronDownIcon } from './chevron-down';
 export { ChevronRightIcon } from './chevron-right';
 export { ChevronLeftIcon } from './chevron-left';
+export { ChevronUpIcon } from './chevron-up';
 export { DownloadIcon } from './download';
 export { ExclamationCircleFilledIcon } from './exclamation-circle-filled';
 export { EyeIcon } from './eye';
@@ -19,6 +21,6 @@ export { MinusCircleFilledIcon } from './minus-circle-filled';
 export { PlusIcon } from './plus';
 export { SearchIcon } from './search';
 export { SpinnerIcon } from './spinner';
-export { TimesIcon } from './times';
 export { TimesCircleFilledIcon } from './times-circle-filled';
+export { TimesIcon } from './times';
 export { UploadIcon } from './upload';

@@ -123,7 +123,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
           [classes.error]: error,
           [classes.fullWidth]: fullWidth,
           [classes.withPrefix]: prefix,
-          [classes.withSuffix]: suffix,
+          [classes.withSuffix]: suffix || suffixActionIcon,
         },
         className,
       )}

@@ -1,11 +1,13 @@
 import { Story, Meta } from '@storybook/react';
 import {
-  CheckIcon,
+  ArrowRightIcon,
+  CalendarIcon,
   CheckCircleFilledIcon,
-  ChevronUpIcon,
+  CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ChevronUpIcon,
   DownloadIcon,
   ExclamationCircleFilledIcon,
   EyeIcon,
@@ -16,8 +18,8 @@ import {
   PlusIcon,
   SearchIcon,
   SpinnerIcon,
-  TimesIcon,
   TimesCircleFilledIcon,
+  TimesIcon,
   UploadIcon,
 } from '@mezzanine-ui/icons';
 import Icon, { IconColor, IconProps } from '.';
@@ -59,6 +61,8 @@ interface AllStoryArgs {
 
 export const All: Story<AllStoryArgs> = ({ search }) => {
   const icons = [
+    ArrowRightIcon,
+    CalendarIcon,
     CheckIcon,
     CheckCircleFilledIcon,
     ChevronUpIcon,

@@ -1,10 +1,12 @@
 import { moduleMetadata } from '@storybook/angular';
 import { Story, Meta } from '@storybook/angular/types-6-0';
 import {
-  CheckIcon,
+  ArrowRightIcon,
+  CalendarIcon,
   CheckCircleFilledIcon,
-  ChevronUpIcon,
+  CheckIcon,
   ChevronDownIcon,
+  ChevronUpIcon,
   DownloadIcon,
   ExclamationCircleFilledIcon,
   EyeIcon,
@@ -15,8 +17,8 @@ import {
   PlusIcon,
   SearchIcon,
   SpinnerIcon,
-  TimesIcon,
   TimesCircleFilledIcon,
+  TimesIcon,
   UploadIcon,
 } from '@mezzanine-ui/icons';
 import { IconColor, MznIconComponent, MznIconModule } from '.';
@@ -70,10 +72,11 @@ interface AllStoryArgs {
 
 export const All: Story<AllStoryArgs> = ({ search }) => {
   const icons = [
-    CheckIcon,
+    ArrowRightIcon,
     CheckCircleFilledIcon,
-    ChevronUpIcon,
+    CheckIcon,
     ChevronDownIcon,
+    ChevronUpIcon,
     DownloadIcon,
     ExclamationCircleFilledIcon,
     EyeIcon,
@@ -84,9 +87,10 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
     PlusIcon,
     SearchIcon,
     SpinnerIcon,
-    TimesIcon,
     TimesCircleFilledIcon,
+    TimesIcon,
     UploadIcon,
+    CalendarIcon,
   ].filter((icon) => !search || icon.name.includes(search));
 
   return {

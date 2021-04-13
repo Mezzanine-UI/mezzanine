@@ -1,0 +1,14 @@
+@use '~@mezzanine-ui/system/palette';
+@use '../text-field';
+@use './date-picker' as *;
+
+.#{$prefix} {
+  input {
+    padding-left: var(--#{text-field.$prefix}-padding-left);
+    padding-right: var(--#{text-field.$prefix}-padding-right);
+  }
+}
+
+.#{$calendar-prefix} {
+  border: 1px solid palette.color(border);
+}

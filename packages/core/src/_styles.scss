@@ -25,6 +25,7 @@
   @include _load-styles($options, overlay);
   @include _load-styles($options, popover);
   @include _load-styles($options, tooltip);
+  @include _load-styles($options, calendar);
 
   // Navigation
   @include _load-styles($options, menu);
@@ -51,6 +52,8 @@
   @include _load-styles($options, textarea);
   @include _load-styles($options, upload);
   @include _load-styles($options, upload, upload-result);
+  @include _load-styles($options, date-picker);
+  @include _load-styles($options, date-range-picker);
 
   // Data Entry Form
   @include _load-styles($options, form, form-field);

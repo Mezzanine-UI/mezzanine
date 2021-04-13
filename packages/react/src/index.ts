@@ -11,6 +11,7 @@ export * from './hooks/useDocumentEvents';
 export * from './hooks/useIsomorphicLayoutEffect';
 export * from './hooks/useLastCallback';
 export * from './hooks/useLastValue';
+export * from './hooks/useDocumentTabKeyDown';
 
 /**
  * Form hooks
@@ -194,6 +195,26 @@ export {
   UploadResultStatus,
   UploadResult,
 } from './Upload';
+export {
+  useTabKeyClose,
+  useTriggerInputHandlers,
+  useSyncTriggerInputValue,
+  DatePickerCalendarProps,
+  DatePickerCalendar,
+  DatePickerTriggerProps,
+  DatePickerTrigger,
+  DatePickerProps,
+  default as DatePicker,
+} from './DatePicker';
+export {
+  useDateRangeCalendarControls,
+  DateRangePickerCalendarProps,
+  DateRangePickerCalendar,
+  DateRangePickerTriggerProps,
+  DateRangePickerTrigger,
+  DateRangePickerProps,
+  default as DateRangePicker,
+} from './DateRangePicker';
 
 /**
  * Feedback
@@ -273,3 +294,29 @@ export {
   TooltipProps,
   default as Tooltip,
 } from './Tooltip';
+export {
+  useCalendarControlModifiers,
+  useCalendarModeStack,
+  useCalendarControls,
+  CalendarConfigs,
+  CalendarConfigProviderProps,
+  CalendarContext,
+  useCalendarContext,
+  CalendarConfigProvider,
+  CalendarYearsProps,
+  CalendarYears,
+  CalendarWeeksProps,
+  CalendarWeeks,
+  CalendarMonthsProps,
+  CalendarMonths,
+  CalendarDaysProps,
+  CalendarDays,
+  CalendarDayOfWeekProps,
+  CalendarDayOfWeek,
+  CalendarControlsProps,
+  CalendarControls,
+  CalendarCellProps,
+  CalendarCell,
+  CalendarProps,
+  default as Calendar,
+} from './Calendar';
