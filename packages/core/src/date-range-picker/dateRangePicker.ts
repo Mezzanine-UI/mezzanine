@@ -1,4 +1,4 @@
-import { DateType } from '@mezzanine-ui/core/calendar';
+import { DateType } from '../calendar';
 
 /** Classes */
 export const dateRangePickerPrefix = 'mzn-date-range-picker';
