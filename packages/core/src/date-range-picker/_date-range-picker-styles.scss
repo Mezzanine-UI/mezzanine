@@ -1,0 +1,46 @@
+@use '~@mezzanine-ui/system/palette';
+@use '../text-field';
+@use './date-range-picker' as *;
+
+.#{$prefix} {
+  display: inline-flex;
+  align-items: center;
+
+  input {
+    &:first-of-type {
+      padding-left: var(--#{text-field.$prefix}-padding-left);
+    }
+
+    &:last-of-type {
+      padding-right: var(--#{text-field.$prefix}-padding-right);
+    }
+  }
+
+  &__arrow-icon {
+    display: flex;
+    align-items: center;
+    margin: 0 4px;
+    color: palette.color(action-inactive);
+  }
+}
+
+.#{$calendar-group-prefix} {
+  display: flex;
+  border: 1px solid palette.color(border);
+}
+
+.#{$calendar} {
+  position: relative;
+
+  &--inactive {
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: palette.color(overlay-bg);
+    }
+  }
+}
