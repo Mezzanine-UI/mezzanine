@@ -11,6 +11,7 @@ export * from './hooks/useDocumentEvents';
 export * from './hooks/useIsomorphicLayoutEffect';
 export * from './hooks/useLastCallback';
 export * from './hooks/useLastValue';
+export * from './hooks/useDocumentTabKeyDown';
 
 /**
  * Form hooks
