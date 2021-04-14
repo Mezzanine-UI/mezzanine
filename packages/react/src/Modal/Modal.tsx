@@ -122,14 +122,24 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
   }, [open]);
 
   /** unlock body scroll */
-  useEffect(() => () => {
-    // wait until dom element unmount, and check if other modal existed
-    const allModals = document.querySelectorAll('.mzn-modal');
+  useEffect(() => {
+    function checkAndAllowScroll() {
+      // wait until dom element unmount, and check if other modal existed
+      const allModals = document.querySelectorAll('.mzn-modal');
 
-    if (!allModals.length) {
-      allowBodyScroll();
+      if (!allModals.length) {
+        allowBodyScroll();
+      }
     }
-  }, []);
+
+    if (!open && exited) {
+      checkAndAllowScroll();
+    }
+
+    return (() => {
+      requestAnimationFrame(checkAndAllowScroll);
+    });
+  }, [open, exited]);
 
   if (!open && exited) {
     return null;
