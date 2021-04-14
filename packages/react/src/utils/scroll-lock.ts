@@ -9,7 +9,7 @@ export function lockBodyScroll() {
 }
 
 export function allowBodyScroll() {
-  const scrollY = Number(document.body.style.top);
+  const scrollY = Number((document.body.style?.top ?? '0').replace(/px/gi, ''));
 
   if (document.body.style.position === 'fixed') {
     document.body.style.position = '';

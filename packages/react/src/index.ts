@@ -3,6 +3,8 @@ export * from './utils/composeRefs';
 export * from './utils/cx';
 export * from './utils/getElement';
 export * from './utils/jsx-types';
+export * from './utils/rename-types';
+export * from './utils/scroll-lock';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
