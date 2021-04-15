@@ -1,0 +1,51 @@
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
+@use './loading' as *;
+
+$icon-size: 48px !default;
+$spin-padding: 8px !default;
+$tip-bottom-padding: 4px !default;
+
+@mixin _full-container() {
+  width: 100%;
+  height: 100%;
+}
+
+.#{$prefix} {
+  position: relative;
+  overflow: hidden;
+
+  &--stretch {
+    @include _full-container();
+  }
+
+  div.#{$prefix}__spin {
+    position: relative;
+    // z-index must larger than overlay
+    z-index: z-index.get(popover);
+
+    @include _full-container();
+  }
+}
+
+.#{$prefix}__spin {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  padding: $spin-padding;
+
+  &__icon {
+    font-size: $icon-size;
+  }
+
+  &__tip {
+    box-sizing: border-box;
+    padding-bottom: $tip-bottom-padding;
+    color: palette.color(text-secondary);
+
+    @include typography.variant(body1);
+  }
+}
