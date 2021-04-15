@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
 @use '../text-field';
 @use './date-range-picker' as *;
 
@@ -21,6 +22,10 @@
     align-items: center;
     margin: 0 4px;
     color: palette.color(action-inactive);
+  }
+
+  &__popper {
+    z-index: z-index.get(popover);
   }
 }
 
