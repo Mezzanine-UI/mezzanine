@@ -11,6 +11,7 @@ export { ChevronDownIcon } from './chevron-down';
 export { ChevronRightIcon } from './chevron-right';
 export { ChevronLeftIcon } from './chevron-left';
 export { ChevronUpIcon } from './chevron-up';
+export { ClockIcon } from './clock';
 export { DollarIcon } from './dollar';
 export { DownloadIcon } from './download';
 export { ExclamationCircleFilledIcon } from './exclamation-circle-filled';
