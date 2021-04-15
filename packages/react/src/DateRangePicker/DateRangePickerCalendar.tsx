@@ -240,6 +240,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
           {...restPopperProps}
           open
           anchor={anchor}
+          className={classes.popper}
           options={popperOptions}
         >
           <div className={classes.calendarGroup}>
