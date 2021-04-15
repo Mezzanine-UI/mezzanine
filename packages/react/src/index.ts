@@ -254,6 +254,10 @@ export {
   default as ConfirmActions,
 } from './ConfirmActions';
 export {
+  LoadingProps,
+  default as Loading,
+} from './Loading';
+export {
   MessageData,
   MessageSeverity,
   default as Message,
