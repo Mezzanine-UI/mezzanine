@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.1.0...@mezzanine-ui/icons@0.1.1) (2021-04-15)
+
+### Features
+
+- **icons:** add dollar icon ([895c205](https://github.com/Mezzanine-UI/mezzanine/commit/895c205064a8c8b371c085ea093602c91b40ea12)), closes [#48](https://github.com/Mezzanine-UI/mezzanine/issues/48) [#48](https://github.com/Mezzanine-UI/mezzanine/issues/48)
+
 # [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.0.9...@mezzanine-ui/icons@0.1.0) (2021-04-13)
 
 ### Features

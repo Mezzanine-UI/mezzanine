@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.1.0...@mezzanine-ui/system@0.1.1) (2021-04-15)
+
+### Features
+
+- **system/palette:** add overlay-surface-bg color ([48a43ab](https://github.com/Mezzanine-UI/mezzanine/commit/48a43aba565be8fd279c01fcdbe40c29e98bb67d))
+
 # [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.0.9...@mezzanine-ui/system@0.1.0) (2021-04-13)
 
 ### Features

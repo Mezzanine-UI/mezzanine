@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.0...@mezzanine-ui/react@0.1.1) (2021-04-15)
+
+### Bug Fixes
+
+- **react/date-picker:** add popper className and prevent propagation when icon clicked ([0f5bcd9](https://github.com/Mezzanine-UI/mezzanine/commit/0f5bcd9512df7e922aa9a214b7097d547f3b8252)), closes [#50](https://github.com/Mezzanine-UI/mezzanine/issues/50) [#50](https://github.com/Mezzanine-UI/mezzanine/issues/50)
+- **react/date-range-picker:** add popper className and prevent propagation when icon clicked ([19283b1](https://github.com/Mezzanine-UI/mezzanine/commit/19283b1c8fcc6a921e6505738682208044e85055)), closes [#50](https://github.com/Mezzanine-UI/mezzanine/issues/50) [#50](https://github.com/Mezzanine-UI/mezzanine/issues/50)
+- **react/modal:** fix modal not allowBodyScroll when closed modal bug ([f827713](https://github.com/Mezzanine-UI/mezzanine/commit/f827713048b219b0f7758725b0ff0e8542c95af4))
+- **react/utils:** fix allowBodyScroll wrong top calculation type bug ([6bc9886](https://github.com/Mezzanine-UI/mezzanine/commit/6bc9886a39d80c3846f8da9e1a029d3d7da3164a))
+
+### Features
+
+- **react/loading:** first implement ([b0fbb13](https://github.com/Mezzanine-UI/mezzanine/commit/b0fbb132c6a078d0ddb764669c916dcbdb8695f9))
+- **react/overlay:** add onSurface prop to implement different background-color ([00563d2](https://github.com/Mezzanine-UI/mezzanine/commit/00563d26389d9db768241448b2cb2008d316428d))
+
 # [0.1.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.0.10...@mezzanine-ui/react@0.1.0) (2021-04-13)
 
 ### Bug Fixes
