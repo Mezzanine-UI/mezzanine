@@ -526,7 +526,10 @@ function DateRangePicker(props: DateRangePickerProps) {
         inputToValue={inputToValue}
         onClear={onClear}
         onClick={onTriggerClick}
-        onIconClick={() => { setOpen(!open); }}
+        onIconClick={(e) => {
+          e.stopPropagation();
+          setOpen(!open);
+        }}
         onInputFromChange={inputFromOnChange}
         onInputToChange={inputToOnChange}
         prefix={prefix}

@@ -52,7 +52,8 @@ $color-names: list.flat-push(
     surface,
     border,
     divider,
-    overlay-bg
+    overlay-bg,
+    overlay-surface-bg
   )
 );
 
@@ -115,6 +116,13 @@ $default-light-palette: map.assign(
         0.5,
       ),
     ),
+    overlay-surface-bg: (
+      from: surface,
+      transformer: meta.get-function("rgba"),
+      args: (
+        0.9,
+      ),
+    ),
   )
 );
 
@@ -151,6 +159,13 @@ $default-dark-palette: map.assign(
       transformer: meta.get-function("rgba"),
       args: (
         0.5,
+      ),
+    ),
+    overlay-surface-bg: (
+      from: surface,
+      transformer: meta.get-function("rgba"),
+      args: (
+        0.9,
       ),
     ),
   )

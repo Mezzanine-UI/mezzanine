@@ -33,6 +33,11 @@ export interface OverlayProps
    */
   onClose?: VoidFunction;
   /**
+   * Overlay is use on top of a component(surface)
+   * @default false
+   */
+  onSurface?: boolean;
+  /**
    * Controls whether to show the element.
    * @default false
    */
@@ -53,6 +58,7 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
     invisibleBackdrop = false,
     onBackdropClick,
     onClose,
+    onSurface,
     open = false,
     ...rest
   } = props;
@@ -84,6 +90,7 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
                 {
                   [classes.backdropFixed]: fixedAtBody,
                   [classes.invisible]: invisibleBackdrop,
+                  [classes.backdropOnSurface]: onSurface,
                 },
               )}
               onClick={(event) => {

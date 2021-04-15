@@ -236,7 +236,10 @@ function DatePicker(props: DatePickerProps) {
         onChange={onInputChange}
         onClear={onClear}
         onClick={onTriggerClick}
-        onIconClick={() => { setOpen(!open); }}
+        onIconClick={(e) => {
+          e.stopPropagation();
+          setOpen(!open);
+        }}
         placeholder={placeholder}
         prefix={prefix}
         readOnly={readOnly}

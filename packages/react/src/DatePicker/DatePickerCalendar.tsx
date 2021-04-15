@@ -187,6 +187,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
           {...restPopperProps}
           open
           anchor={anchor}
+          className={classes.popper}
           options={{
             placement: 'bottom-start',
             ...restPopperOptions,

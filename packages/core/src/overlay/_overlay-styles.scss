@@ -19,6 +19,10 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  &__backdrop--on-surface {
+    background-color: palette.color(overlay-surface-bg);
+  }
+
   &__backdrop--invisible {
     background-color: transparent;
   }

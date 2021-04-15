@@ -8,6 +8,7 @@ export const dateRangePickerCalendarPrefix = `${dateRangePickerPrefix}-calendar`
 export const dateRangePickerClasses = {
   host: dateRangePickerPrefix,
   arrowIcon: `${dateRangePickerPrefix}__arrow-icon`,
+  popper: `${dateRangePickerPrefix}__popper`,
 
   /** Calendar Group */
   calendarGroup: dateRangePickerCalendarGroupPrefix,

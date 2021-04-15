@@ -235,7 +235,7 @@ export const CustomDisable = () => {
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Months: 
+          {`Disabled Months:
           ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}`}
         </Typography>
         <DateRangePicker
@@ -250,7 +250,7 @@ export const CustomDisable = () => {
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Years: 
+          {`Disabled Years:
           ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}`}
         </Typography>
         <DateRangePicker
