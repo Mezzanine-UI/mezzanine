@@ -14,6 +14,7 @@ module.exports = {
     '../icon/**/*.stories.@(mdx|ts)',
     '../tag/**/*.stories.@(mdx|ts)',
     '../typography/**/*.stories.@(mdx|ts)',
+    '../upload/**/*.stories.@(mdx|ts)',
     // '../!(node_modules|dist|cdk)/**/*.stories.@(mdx|ts)' // this glob match should fix compile loop
   ],
   addons: [
