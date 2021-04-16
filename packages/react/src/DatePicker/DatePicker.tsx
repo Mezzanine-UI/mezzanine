@@ -193,7 +193,7 @@ function DatePicker(props: DatePickerProps) {
   useClickAway(
     () => {
       if (!open) {
-        return () => {};
+        return;
       }
 
       return (event) => {
