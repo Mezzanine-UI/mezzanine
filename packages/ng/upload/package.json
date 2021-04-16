@@ -1,0 +1,12 @@
+{
+  "name": "@mezzanine-ui/ng/upload",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/icons": "mezzanine-ui.icons",
+        "@mezzanine-ui/core/upload-result": "mezzanine-ui.core.upload-result"
+      }
+    }
+  }
+}
