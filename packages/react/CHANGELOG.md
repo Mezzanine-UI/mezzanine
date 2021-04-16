@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.1...@mezzanine-ui/react@0.1.2) (2021-04-16)
+
+### Bug Fixes
+
+- **react/date-picker:** useClickAway should not return anything when calendar not open ([e658ae0](https://github.com/Mezzanine-UI/mezzanine/commit/e658ae07d586f11c8b738ed498724119a29cf74c))
+- **react/date-range-picker:** useClickAway should not return anything when calendar not open ([f252139](https://github.com/Mezzanine-UI/mezzanine/commit/f252139184fddf74b08ce8557e92e33285f1d0d8))
+
 ## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.0...@mezzanine-ui/react@0.1.1) (2021-04-15)
 
 ### Bug Fixes
