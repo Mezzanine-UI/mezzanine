@@ -472,7 +472,7 @@ function DateRangePicker(props: DateRangePickerProps) {
   useClickAway(
     () => {
       if (!open) {
-        return () => {};
+        return;
       }
 
       return (event) => {
