@@ -24,6 +24,7 @@ export * from './Form/useCustomControlValue';
 export * from './Form/useInputControlValue';
 export * from './Form/useInputWithClearControlValue';
 export * from './Form/useRadioControlValue';
+export * from './Form/useSelectValueControl';
 export * from './Form/useSwitchControlValue';
 
 /**
