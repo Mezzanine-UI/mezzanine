@@ -6,6 +6,7 @@ $accordion-horizontal-padding: 16px !default;
 $accordion-vertical-padding: 10px !default;
 $summary-grid-gap: 32px !default;
 $summary-icon-size: 32px !default;
+$summary-prefix-right-margin: 4px !default;
 $details-vertical-padding: 16px !default;
 $details-right-padding: $accordion-horizontal-padding + $summary-icon-size + $summary-grid-gap;
 
@@ -37,6 +38,17 @@ $details-right-padding: $accordion-horizontal-padding + $summary-icon-size + $su
   &:hover {
     &:not(.#{$prefix}__summary--disabled) {
       background-color: palette.color(primary-hover-bg);
+    }
+  }
+
+  &__mainPart {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    &__prefix {
+      margin-right: $summary-prefix-right-margin;
     }
   }
 
