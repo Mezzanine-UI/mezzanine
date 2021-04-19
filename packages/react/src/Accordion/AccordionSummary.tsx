@@ -4,6 +4,7 @@ import {
   KeyboardEvent,
   useContext,
   useMemo,
+  ReactNode,
 } from 'react';
 import { IconDefinition, ChevronDownIcon } from '@mezzanine-ui/icons';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
@@ -16,16 +17,26 @@ export interface AccordionSummaryProps
   extends
   NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * custom expandIcon
+   * custom chevronDown icon className
    */
-  expandIcon?: IconDefinition;
+  iconClassName?: string;
+  /**
+   * custom prefix icon when `suffixActions` prop is given
+   */
+  prefixIcon?: IconDefinition;
+  /**
+   * custom suffix actions
+   */
+  suffixActions?: ReactNode;
 }
 
 const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(function AccordionSummary(props, ref) {
   const {
     className,
     children,
-    expandIcon,
+    iconClassName: iconClassNameProp,
+    prefixIcon,
+    suffixActions,
     ...rest
   } = props;
 
@@ -71,6 +82,29 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(funct
     return result;
   }, [detailsId, expanded]);
 
+  const DefaultIcon = (iconProps: { className?: string }) => {
+    const { className: iconClassNames = '' } = iconProps;
+
+    return (
+      <Icon
+        color={disabled ? 'disabled' : 'primary'}
+        className={cx(
+          classes.summaryIcon,
+          {
+            [classes.summaryIconExpanded]: expanded,
+            [classes.summaryIconDisabled]: disabled,
+          },
+          iconClassNames,
+          iconClassNameProp,
+        )}
+        icon={ChevronDownIcon}
+        onClick={onToggle}
+        onMouseDown={(evt) => evt.preventDefault()}
+        role="button"
+      />
+    );
+  };
+
   return (
     <div
       {...rest}
@@ -88,22 +122,14 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(funct
       role="button"
       tabIndex={0}
     >
-      {children}
-      {expandIcon || (
-        <Icon
-          color={disabled ? 'disabled' : 'primary'}
-          className={cx(
-            classes.summaryIcon,
-            {
-              [classes.summaryIconExpanded]: expanded,
-              [classes.summaryIconDisabled]: disabled,
-            },
-          )}
-          icon={ChevronDownIcon}
-          onClick={onToggle}
-          onMouseDown={(evt) => evt.preventDefault()}
-          role="button"
-        />
+      <div className={classes.summaryMainPart}>
+        {suffixActions ? (prefixIcon || (
+          <DefaultIcon className={classes.summaryMainPartPrefix} />
+        )) : null}
+        {children}
+      </div>
+      {suffixActions || (
+        <DefaultIcon />
       )}
     </div>
   );
