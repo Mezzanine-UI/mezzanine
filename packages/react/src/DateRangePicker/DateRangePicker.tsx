@@ -57,6 +57,10 @@ export interface DateRangePickerProps
    */
   format?: string;
   /**
+   * A function that fires when calendar toggle. Receive open status in boolean format as props.
+   */
+  onCalendarToggle?: (open: boolean) => void;
+  /**
    * Change handler. Takes an array of your declared `DateType` which represents from and to in order.
    */
   onChange?: (target?: DateRangePickerValue) => void;
@@ -111,6 +115,7 @@ function DateRangePicker(props: DateRangePickerProps) {
     isMonthDisabled,
     isYearDisabled,
     mode = 'day',
+    onCalendarToggle: onCalendarToggleProp,
     onChange,
     popperProps,
     prefix,
@@ -166,6 +171,13 @@ function DateRangePicker(props: DateRangePickerProps) {
 
   /** Calendar panel toggle */
   const [open, setOpen] = useState(false);
+  const onCalendarToggle = useCallback((currentOpen: boolean) => {
+    setOpen(currentOpen);
+
+    if (onCalendarToggleProp) {
+      onCalendarToggleProp(currentOpen);
+    }
+  }, [onCalendarToggleProp]);
 
   const onFromFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
     if (onFromFocusProp) {
@@ -173,9 +185,9 @@ function DateRangePicker(props: DateRangePickerProps) {
     }
 
     if (!readOnly) {
-      setOpen(true);
+      onCalendarToggle(true);
     }
-  }, [onFromFocusProp, readOnly]);
+  }, [onCalendarToggle, onFromFocusProp, readOnly]);
 
   const onToFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
     if (onToFocusProp) {
@@ -183,9 +195,9 @@ function DateRangePicker(props: DateRangePickerProps) {
     }
 
     if (!readOnly) {
-      setOpen(true);
+      onCalendarToggle(true);
     }
-  }, [onToFocusProp, readOnly]);
+  }, [onCalendarToggle, onToFocusProp, readOnly]);
 
   /** Values and onChange */
   const [range, setRange] = useState(() => sortValues(value || []));
@@ -239,7 +251,7 @@ function DateRangePicker(props: DateRangePickerProps) {
 
     if (!val) {
       clear();
-      setOpen(false);
+      onCalendarToggle(false);
 
       return;
     }
@@ -261,8 +273,8 @@ function DateRangePicker(props: DateRangePickerProps) {
       }
     }
 
-    setOpen(false);
-  }, [format, formatToString, from, onChange, sortValues, to, value, valueLocale]);
+    onCalendarToggle(false);
+  }, [format, formatToString, from, onCalendarToggle, onChange, sortValues, to, value, valueLocale]);
 
   const onCalendarChange = useCallback((val: DateType) => {
     const firstVal = from || to;
@@ -464,7 +476,7 @@ function DateRangePicker(props: DateRangePickerProps) {
   /** Trigger click handler for closing calendar */
   const onTriggerClick = () => {
     if (!open && !readOnly) {
-      setOpen(false);
+      onCalendarToggle(false);
     }
   };
 
@@ -496,7 +508,7 @@ function DateRangePicker(props: DateRangePickerProps) {
   /** Close calendar when escape key down */
   useDocumentEscapeKeyDown(() => () => {
     if (open) {
-      setOpen(false);
+      onCalendarToggle(false);
 
       commitChange(value || []);
     }
@@ -504,7 +516,7 @@ function DateRangePicker(props: DateRangePickerProps) {
 
   /** Close calendar when tab key down */
   useTabKeyClose(
-    () => { setOpen(false); },
+    () => { onCalendarToggle(false); },
     inputToRef,
     [],
   );
@@ -528,7 +540,7 @@ function DateRangePicker(props: DateRangePickerProps) {
         onClick={onTriggerClick}
         onIconClick={(e) => {
           e.stopPropagation();
-          setOpen(!open);
+          onCalendarToggle(!open);
         }}
         onInputFromChange={inputFromOnChange}
         onInputToChange={inputToOnChange}

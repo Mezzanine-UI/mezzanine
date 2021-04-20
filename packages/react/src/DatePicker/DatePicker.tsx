@@ -41,6 +41,10 @@ export interface DatePickerProps
    */
   format?: string;
   /**
+   * A function that fires when calendar toggle. Receive open status in boolean format as props.
+   */
+  onCalendarToggle?: (open: boolean) => void;
+  /**
    * Change handler. Takes your declared `DateType` as argument.
    */
   onChange?: (target?: DateType) => void;
@@ -86,6 +90,7 @@ function DatePicker(props: DatePickerProps) {
     isMonthDisabled,
     isYearDisabled,
     mode = 'day',
+    onCalendarToggle: onCalendarToggleProp,
     onChange,
     placeholder,
     popperProps,
@@ -142,6 +147,13 @@ function DatePicker(props: DatePickerProps) {
 
   /** Calender display control */
   const [open, setOpen] = useState(false);
+  const onCalendarToggle = (currentOpen: boolean) => {
+    setOpen(currentOpen);
+
+    if (onCalendarToggleProp) {
+      onCalendarToggleProp(currentOpen);
+    }
+  };
 
   /** Popper positioning */
   const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
@@ -153,7 +165,7 @@ function DatePicker(props: DatePickerProps) {
   const onCalendarChange = (val: DateType) => {
     resolvedChangeHandler(val);
 
-    setOpen(false);
+    onCalendarToggle(false);
   };
 
   /** Trigger input handlers */
@@ -170,13 +182,13 @@ function DatePicker(props: DatePickerProps) {
     onInputChange,
     onKeyDown: onKeyDownProp,
     readOnly,
-    setOpen,
+    setOpen: onCalendarToggle,
   });
 
   /** Trigger click handler for closing calendar */
   const onTriggerClick = () => {
     if (!open && !readOnly) {
-      setOpen(false);
+      onCalendarToggle(false);
     }
   };
 
@@ -198,7 +210,7 @@ function DatePicker(props: DatePickerProps) {
 
       return (event) => {
         if (!calendarRef.current?.contains(event.target as HTMLElement)) {
-          setOpen(false);
+          onCalendarToggle(false);
         }
       };
     },
@@ -209,7 +221,7 @@ function DatePicker(props: DatePickerProps) {
   /** Close calendar when escape key down */
   useDocumentEscapeKeyDown(() => () => {
     if (open) {
-      setOpen(false);
+      onCalendarToggle(false);
 
       htmlInputRef.current?.blur();
     }
@@ -217,7 +229,7 @@ function DatePicker(props: DatePickerProps) {
 
   /** Close calendar when tab key down */
   useTabKeyClose(
-    () => { setOpen(false); },
+    () => { onCalendarToggle(false); },
     htmlInputRef,
     [],
   );
@@ -238,7 +250,7 @@ function DatePicker(props: DatePickerProps) {
         onClick={onTriggerClick}
         onIconClick={(e) => {
           e.stopPropagation();
-          setOpen(!open);
+          onCalendarToggle(!open);
         }}
         placeholder={placeholder}
         prefix={prefix}
