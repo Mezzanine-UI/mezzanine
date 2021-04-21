@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.2...@mezzanine-ui/react@0.1.3) (2021-04-21)
+
+### Features
+
+- **react/accordion:** add suffixActions prop and refactor component structure ([12f60cb](https://github.com/Mezzanine-UI/mezzanine/commit/12f60cb8f1e6f48316d19b2c8d07273257e3b180))
+- **react/date-picker:** add on-calendar-toggle prop ([509bec0](https://github.com/Mezzanine-UI/mezzanine/commit/509bec04b0034d64739f456599dcc5d7bc6f7586)), closes [#53](https://github.com/Mezzanine-UI/mezzanine/issues/53)
+
 ## [0.1.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.1...@mezzanine-ui/react@0.1.2) (2021-04-16)
 
 ### Bug Fixes

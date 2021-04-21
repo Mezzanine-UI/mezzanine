@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.1.1...@mezzanine-ui/ng@0.1.3) (2021-04-21)
+
+### Features
+
+- **ng/upload-result:** implement ([326c41d](https://github.com/Mezzanine-UI/mezzanine/commit/326c41d4fbd9b11333a3ab957c18923b708aa0ca))
+
 ## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.1.0...@mezzanine-ui/ng@0.1.1) (2021-04-15)
 
 **Note:** Version bump only for package @mezzanine-ui/ng
