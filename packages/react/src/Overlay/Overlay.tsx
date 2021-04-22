@@ -77,6 +77,7 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props,
           classes.host,
           {
             [classes.hostFixed]: fixedAtBody,
+            [classes.hostOpen]: open,
           },
           className,
         )}
