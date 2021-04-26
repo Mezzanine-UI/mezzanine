@@ -26,12 +26,11 @@ describe('<Checkbox />', () => {
     (className) => render(<Checkbox className={className} />),
   );
 
-  it('should pass children,disabled,error,htmlFor,size to InputCheck', () => {
+  it('should pass children,disabled,error,size to InputCheck', () => {
     const testInstance = TestRenderer.create(
       <Checkbox
         disabled
         error
-        htmlFor="bar"
         size="large"
       >
         foo
@@ -42,7 +41,6 @@ describe('<Checkbox />', () => {
     expect(inputCheckInstance.props.children).toBe('foo');
     expect(inputCheckInstance.props.disabled).toBe(true);
     expect(inputCheckInstance.props.error).toBe(true);
-    expect(inputCheckInstance.props.htmlFor).toBe('bar');
     expect(inputCheckInstance.props.size).toBe('large');
   });
 
@@ -150,17 +148,6 @@ describe('<Checkbox />', () => {
     });
   });
 
-  describe('prop: htmlFor', () => {
-    it('should be passed to both htmlFor of label and id of input', () => {
-      const { getHostHTMLElement } = render(<Checkbox htmlFor="foo" />);
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      expect(element.getAttribute('for')).toBe('foo');
-      expect(inputElement.getAttribute('id')).toBe('foo');
-    });
-  });
-
   describe('prop: indeterminate', () => {
     function testIndeterminateAriaChecked(element: HTMLElement, ariaChecked: string) {
       const [inputElement] = element.getElementsByTagName('input');
@@ -207,10 +194,21 @@ describe('<Checkbox />', () => {
     });
   });
 
-  describe('prop: name', () => {
-    it('should be bound to input', () => {
+  describe('prop: inputProps', () => {
+    it('should pass inputProps.id to InputCheck.htmlFor', () => {
+      const testId = 'foo';
+
+      const { getHostHTMLElement } = render(<Checkbox inputProps={{ id: testId }} />);
+      const element = getHostHTMLElement();
+      const [inputElement] = element.getElementsByTagName('input');
+
+      expect(element.getAttribute('for')).toBe(testId);
+      expect(inputElement.getAttribute('id')).toBe(testId);
+    });
+
+    it('should inputProps.name be bound to input', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox name="foo" />,
+        <Checkbox inputProps={{ name: 'foo' }} />,
       );
       const element = getHostHTMLElement();
       const [input] = element.getElementsByTagName('input');
@@ -218,11 +216,11 @@ describe('<Checkbox />', () => {
       expect(input.name).toBe('foo');
     });
 
-    it('should use name from checkbox group if name not passed', () => {
+    it('should use name from checkbox group if inputProps.name not passed', () => {
       const { getHostHTMLElement } = render(
         <CheckboxGroup name="foo">
           <Checkbox />
-          <Checkbox name="bar" />
+          <Checkbox inputProps={{ name: 'bar' }} />
         </CheckboxGroup>,
       );
       const element = getHostHTMLElement();

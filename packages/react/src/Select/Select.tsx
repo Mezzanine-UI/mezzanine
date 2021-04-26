@@ -76,8 +76,29 @@ export interface SelectProps
    */
   inputProps?: Omit<
   NativeElementPropsWithoutKeyAndRef<'input'>,
-  | Exclude<keyof SelectProps, 'className'>
-  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
+  | 'autoComplete'
+  | 'defaultValue'
+  | 'disabled'
+  | 'onBlur'
+  | 'onChange'
+  | 'onFocus'
+  | 'placeholder'
+  | 'readOnly'
+  | 'required'
+  | 'role'
+  | 'type'
+  | 'value'
+  | `aria-${
+    | 'disabled'
+    | 'multiline'
+    | 'readonly'
+    | 'required'
+    | 'controls'
+    | 'autocomplete'
+    | 'expanded'
+    | 'haspopup'
+    | 'owns'
+    }`
   >;
   /**
    * The mode of selector

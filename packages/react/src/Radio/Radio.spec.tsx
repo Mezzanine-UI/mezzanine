@@ -26,12 +26,11 @@ describe('<Radio />', () => {
     (className) => render(<Radio className={className} />),
   );
 
-  it('should pass children,disabled,error,htmlFor,size to InputCheck', () => {
+  it('should pass children, disabled, error, size to InputCheck', () => {
     const testInstance = TestRenderer.create(
       <Radio
         disabled
         error
-        htmlFor="bar"
         size="large"
       >
         foo
@@ -42,7 +41,6 @@ describe('<Radio />', () => {
     expect(inputCheckInstance.props.children).toBe('foo');
     expect(inputCheckInstance.props.disabled).toBe(true);
     expect(inputCheckInstance.props.error).toBe(true);
-    expect(inputCheckInstance.props.htmlFor).toBe('bar');
     expect(inputCheckInstance.props.size).toBe('large');
   });
 
@@ -150,21 +148,21 @@ describe('<Radio />', () => {
     });
   });
 
-  describe('prop: htmlFor', () => {
-    it('should be passed to both htmlFor of label and id of input', () => {
-      const { getHostHTMLElement } = render(<Radio htmlFor="foo" />);
+  describe('prop: inputProps', () => {
+    it('should pass inputProps.id to InputCheck.htmlFor', () => {
+      const testId = 'foo';
+
+      const { getHostHTMLElement } = render(<Radio inputProps={{ id: testId }} />);
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
-      expect(element.getAttribute('for')).toBe('foo');
-      expect(inputElement.getAttribute('id')).toBe('foo');
+      expect(element.getAttribute('for')).toBe(testId);
+      expect(inputElement.getAttribute('id')).toBe(testId);
     });
-  });
 
-  describe('prop: name', () => {
-    it('should be bound to input', () => {
+    it('should inputProps.name be bound to input', () => {
       const { getHostHTMLElement } = render(
-        <Radio name="foo" />,
+        <Radio inputProps={{ name: 'foo' }} />,
       );
       const element = getHostHTMLElement();
       const [input] = element.getElementsByTagName('input');
@@ -172,11 +170,11 @@ describe('<Radio />', () => {
       expect(input.name).toBe('foo');
     });
 
-    it('should use name from radio group if name not passed', () => {
+    it('should use name from Radio group if inputProps.name not passed', () => {
       const { getHostHTMLElement } = render(
         <RadioGroup name="foo">
           <Radio />
-          <Radio name="bar" />
+          <Radio inputProps={{ name: 'bar' }} />
         </RadioGroup>,
       );
       const element = getHostHTMLElement();

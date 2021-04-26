@@ -26,6 +26,21 @@ export interface SwitchProps extends Omit<NativeElementPropsWithoutKeyAndRef<'sp
    */
   disabled?: boolean;
   /**
+   * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
+   *  If you need direct control to the input element, use this prop to provide to it.
+   */
+  inputProps?: Omit<
+  NativeElementPropsWithoutKeyAndRef<'input'>,
+  | 'checked'
+  | 'defaultChecked'
+  | 'disabled'
+  | 'onChange'
+  | 'placeholder'
+  | 'type'
+  | 'value'
+  | `aria-${'disabled' | 'checked'}`
+  >;
+  /**
    * Whether the switch is loading.
    * @default false
    */
@@ -53,6 +68,7 @@ const Switch = forwardRef<HTMLSpanElement, SwitchProps>(function Switch(props, r
     className,
     defaultChecked,
     disabled: disabledProp = disabledFromFormControl,
+    inputProps,
     loading = false,
     onChange: onChangeProp,
     size = 'medium',
@@ -83,6 +99,7 @@ const Switch = forwardRef<HTMLSpanElement, SwitchProps>(function Switch(props, r
         {loading && <Icon icon={SwitchSpinnerIcon} spin />}
       </span>
       <input
+        {...inputProps}
         aria-checked={checked}
         aria-disabled={disabled}
         checked={checked}
