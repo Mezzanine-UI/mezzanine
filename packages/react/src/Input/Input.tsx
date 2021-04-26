@@ -30,7 +30,13 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
    */
   inputProps?: Omit<
   NativeElementPropsWithoutKeyAndRef<'input'>,
-  | Exclude<keyof InputProps, 'className'>
+  | 'defaultValue'
+  | 'disabled'
+  | 'onChange'
+  | 'placeholder'
+  | 'readOnly'
+  | 'required'
+  | 'value'
   | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
   /**

@@ -5,8 +5,14 @@ import { cx } from '../utils/cx';
 import { useRadioControlValue } from '../Form/useRadioControlValue';
 import { FormControlContext } from '../Form';
 import { RadioGroupContext } from './RadioGroupContext';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface RadioProps extends Omit<InputCheckProps, 'control'> {
+export interface RadioProps
+  extends
+  Omit<InputCheckProps,
+  | 'control'
+  | 'htmlFor'
+  > {
   /**
    * Whether the radio is checked.
    */
@@ -17,9 +23,25 @@ export interface RadioProps extends Omit<InputCheckProps, 'control'> {
    */
   defaultChecked?: boolean;
   /**
-   * The name of input in radio.
+   * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
+   *  If you need direct control to the input element, use this prop to provide to it.
+   *
+   * Noticed that if you pass an id within this prop,
+   *  the rendered label element will have `htmlFor` sync with passed in id.
    */
-  name?: string;
+  inputProps?: Omit<
+  NativeElementPropsWithoutKeyAndRef<'input'>,
+  | 'checked'
+  | 'defaultChecked'
+  | 'disabled'
+  | 'onChange'
+  | 'placeholder'
+  | 'readOnly'
+  | 'required'
+  | 'type'
+  | 'value'
+  | `aria-${'disabled' | 'checked'}`
+  >;
   /**
    * The change event handler of input in radio.
    */
@@ -55,13 +77,17 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref
     defaultChecked,
     disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
     error = severity === 'error' || false,
-    htmlFor,
-    name = nameFromGroup,
+    inputProps,
     onChange: onChangeProp,
     size = sizeFromGroup || 'medium',
     value,
     ...rest
   } = props;
+  const {
+    id: inputId,
+    name = nameFromGroup,
+    ...restInputProps
+  } = inputProps || {};
   const [checked, onChange] = useRadioControlValue({
     checked: checkedProp,
     defaultChecked,
@@ -84,11 +110,12 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref
           )}
         >
           <input
+            {...restInputProps}
             aria-checked={checked}
             aria-disabled={disabled}
             checked={checked}
             disabled={disabled}
-            id={htmlFor}
+            id={inputId}
             onChange={onChange}
             name={name}
             type="radio"
@@ -98,7 +125,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref
       )}
       disabled={disabled}
       error={error}
-      htmlFor={htmlFor}
+      htmlFor={inputId}
       size={size}
     >
       {children}

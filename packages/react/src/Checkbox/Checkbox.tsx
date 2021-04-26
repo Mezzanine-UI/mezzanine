@@ -5,8 +5,14 @@ import InputCheck, { InputCheckProps } from '../_internal/InputCheck';
 import { useCheckboxControlValue } from '../Form/useCheckboxControlValue';
 import { FormControlContext } from '../Form';
 import { CheckboxGroupContext } from './CheckboxGroupContext';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface CheckboxProps extends Omit<InputCheckProps, 'control'> {
+export interface CheckboxProps
+  extends
+  Omit<InputCheckProps,
+  | 'control'
+  | 'htmlFor'
+  > {
   /**
    * Whether the checkbox is checked.
    */
@@ -22,9 +28,25 @@ export interface CheckboxProps extends Omit<InputCheckProps, 'control'> {
    */
   indeterminate?: boolean;
   /**
-   * The name of input in checkbox.
+   * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
+   *  If you need direct control to the input element, use this prop to provide to it.
+   *
+   * Noticed that if you pass in an id within this prop,
+   *  the rendered label element will have `htmlFor` sync with passed in id.
    */
-  name?: string;
+  inputProps?: Omit<
+  NativeElementPropsWithoutKeyAndRef<'input'>,
+  | 'checked'
+  | 'defaultChecked'
+  | 'disabled'
+  | 'onChange'
+  | 'placeholder'
+  | 'readOnly'
+  | 'required'
+  | 'type'
+  | 'value'
+  | `aria-${'disabled' | 'checked'}`
+  >;
   /**
    * The change event handler of input in checkbox.
    */
@@ -60,14 +82,18 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(p
     defaultChecked,
     disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
     error = severity === 'error' || false,
-    htmlFor,
     indeterminate: indeterminateProp = false,
-    name = nameFromGroup,
     onChange: onChangeProp,
     size = sizeFromGroup || 'medium',
     value,
+    inputProps,
     ...rest
   } = props;
+  const {
+    id: inputId,
+    name = nameFromGroup,
+    ...restInputProps
+  } = inputProps || {};
   const [checked, onChange] = useCheckboxControlValue({
     checkboxGroup,
     checked: checkedProp,
@@ -92,11 +118,12 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(p
           )}
         >
           <input
+            {...restInputProps}
             aria-checked={indeterminate ? 'mixed' : checked}
             aria-disabled={disabled}
             checked={checked}
             disabled={disabled}
-            id={htmlFor}
+            id={inputId}
             onChange={onChange}
             name={name}
             type="checkbox"
@@ -106,7 +133,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(p
       )}
       disabled={disabled}
       error={error}
-      htmlFor={htmlFor}
+      htmlFor={inputId}
       size={size}
     >
       {children}

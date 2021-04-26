@@ -61,7 +61,15 @@ export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children
    */
   textareaProps?: Omit<
   NativeElementPropsWithoutKeyAndRef<'textarea'>,
-  | Exclude<keyof TextareaProps, 'className'>
+  | 'defaultValue'
+  | 'disabled'
+  | 'maxLength'
+  | 'onChange'
+  | 'placeholder'
+  | 'readOnly'
+  | 'required'
+  | 'rows'
+  | 'value'
   | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
   /**

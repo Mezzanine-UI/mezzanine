@@ -62,7 +62,7 @@ describe('<CheckAll />', () => {
 
       function testPassProps() {
         expect(checkboxForAll.props.disabled).toBe(expectProps.disabled);
-        expect(checkboxForAll.props.name).toBe(expectProps.name);
+        expect(checkboxForAll.props.inputProps?.name).toBe(expectProps.name);
         expect(checkboxForAll.props.size).toBe(expectProps.size);
       }
 

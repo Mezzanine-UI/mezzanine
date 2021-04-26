@@ -1,7 +1,6 @@
 import {
   forwardRef,
   MouseEventHandler,
-  KeyboardEventHandler,
   ReactNode,
   cloneElement,
   ReactElement,
@@ -49,14 +48,6 @@ export interface TextFieldProps
    * The callback will be fired after clear icon clicked.
    */
   onClear?: MouseEventHandler;
-  /**
-   * The callback will be fired when mouse clicked.
-   */
-  onClick?: MouseEventHandler;
-  /**
-   * The callback will be fired when keyboard key down
-   */
-  onKeyDown?: KeyboardEventHandler;
   /**
    * The prefix addon of the field.
    */

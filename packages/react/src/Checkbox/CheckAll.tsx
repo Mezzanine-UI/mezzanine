@@ -56,7 +56,9 @@ const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(function CheckAll(pro
           checked={allChecked}
           disabled={disabled}
           indeterminate={indeterminate}
-          name={name}
+          inputProps={{
+            name,
+          }}
           onChange={(event) => {
             if (onChange) {
               if (!event.target.checked) {
