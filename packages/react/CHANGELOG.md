@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.3...@mezzanine-ui/react@0.1.4) (2021-04-26)
+
+### Code Refactoring
+
+- **react/input:** input props are passing via `inputProps` except value and onChange
+- **react/textarea:** input props are passing via `inputProps` except value and onChange
+- **react/radio:** input props are passing via `inputProps` except value and onChange
+- **react/checkbox:** input props are passing via `inputProps` except value and onChange
+- **react/select:** input props are passing via `inputProps` except value and onChange
+- **react/switch:** input props are passing via `inputProps` except value and onChange
+
 ## [0.1.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.2...@mezzanine-ui/react@0.1.3) (2021-04-21)
 
 ### Features
