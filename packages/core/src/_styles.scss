@@ -34,6 +34,7 @@
   @include _load-styles($options, drawer);
   @include _load-styles($options, navigation);
   @include _load-styles($options, app-bar);
+  @include _load-styles($options, page-footer);
 
   // Data Display
   @include _load-styles($options, badge);
