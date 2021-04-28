@@ -115,6 +115,10 @@ export {
   AppBarSupportProps,
   default as AppBar,
 } from './AppBar';
+export {
+  PageFooterProps,
+  default as PageFooter,
+} from './PageFooter';
 
 /**
  * Data Display
