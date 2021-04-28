@@ -102,6 +102,7 @@ $icon-size: 24px !default;
     grid-auto-rows: max-content;
     padding: spacing.level(5);
     height: 100%;
+    gap: spacing.level(2);
 
     .#{$item-prefix} {
       align-items: center;
