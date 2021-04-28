@@ -80,7 +80,7 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>((props, ref) =>
               (
                 groupChild,
               ) => {
-                const active = activeKey === groupChild.key;
+                const active = activeKey === groupChild.key || groupChild.props.active;
 
                 if (active) {
                   subMenuActive = true;
@@ -89,7 +89,7 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>((props, ref) =>
                 return cloneElement(
                   groupChild,
                   {
-                    active: groupChild.props.active || active,
+                    active,
                     eventKey: groupChild.key,
                     onClick: groupChild.props.onClick || onClick,
                   },
