@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.3...@mezzanine-ui/react@0.1.5) (2021-04-28)
+
+### Bug Fixes
+
+- **react/navigation:** fix navigation submenu active status ([6c0b967](https://github.com/Mezzanine-UI/mezzanine/commit/6c0b967e837018f82fcd7711e1a5abe09d50b4c2))
+
+### Features
+
+- **react/page-footer:** implement ([fef2421](https://github.com/Mezzanine-UI/mezzanine/commit/fef2421c5300e618b89be62b8ad2199f0c18ffe7))
+
 ## [0.1.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.3...@mezzanine-ui/react@0.1.4) (2021-04-26)
 
 ### Code Refactoring

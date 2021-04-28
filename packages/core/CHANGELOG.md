@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.1.3...@mezzanine-ui/core@0.1.5) (2021-04-28)
+
+### Bug Fixes
+
+- **core/navigation:** fix missing gap when navigation vertical ([9854a01](https://github.com/Mezzanine-UI/mezzanine/commit/9854a01e03ce0d8673dba6b31836f65ec1845944))
+- **core/text-field:** prefix suffix positioning ([bbf977a](https://github.com/Mezzanine-UI/mezzanine/commit/bbf977a111d94ffe2ef45392867b86ab944d6df3)), closes [#56](https://github.com/Mezzanine-UI/mezzanine/issues/56)
+
+### Features
+
+- **core/page-footer:** implement ([2980583](https://github.com/Mezzanine-UI/mezzanine/commit/2980583cdad4d2daf6f967ab3ed15d5152b099a7))
+
 ## [0.1.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.1.1...@mezzanine-ui/core@0.1.3) (2021-04-21)
 
 **Note:** Version bump only for package @mezzanine-ui/core
