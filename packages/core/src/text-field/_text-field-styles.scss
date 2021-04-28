@@ -61,7 +61,7 @@ $prefix-suffix-gap: 4px !default;
   &__clear-icon,
   &__action-icon {
     position: absolute;
-    top: calc((var(--#{$prefix}-height) - var(--#{$prefix}-icon-size) - 2px) / 2);
+    top: calc((var(--#{$prefix}-height) - var(--#{$prefix}-icon-size)) / 2);
   }
 
   &__prefix,
