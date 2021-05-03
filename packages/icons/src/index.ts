@@ -22,6 +22,7 @@ export { MinusCircleFilledIcon } from './minus-circle-filled';
 export { MoreHorizontalIcon } from './more-horizontal';
 export { MoreVerticalIcon } from './more-vertical';
 export { PlusIcon } from './plus';
+export { ResetIcon } from './reset';
 export { SearchIcon } from './search';
 export { SpinnerIcon } from './spinner';
 export { TimesCircleFilledIcon } from './times-circle-filled';
