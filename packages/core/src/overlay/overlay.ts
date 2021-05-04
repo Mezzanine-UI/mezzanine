@@ -2,6 +2,7 @@ export const overlayPrefix = 'mzn-overlay';
 
 export const overlayClasses = {
   host: overlayPrefix,
+  hostOpen: `${overlayPrefix}--open`,
   hostFixed: `${overlayPrefix}--fixed`,
   backdrop: `${overlayPrefix}__backdrop`,
   backdropOnSurface: `${overlayPrefix}__backdrop--on-surface`,
