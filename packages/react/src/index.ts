@@ -142,6 +142,12 @@ export {
   default as Empty,
 } from './Empty';
 export {
+  TableProps,
+  TableRefreshProps,
+  TableRefresh,
+  default as Table,
+} from './Table';
+export {
   TagSize,
   TagProps,
   default as Tag,

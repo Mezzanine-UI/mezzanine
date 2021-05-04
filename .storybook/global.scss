@@ -19,4 +19,15 @@
   will-change: background-color, color;
 }
 
+.custom-table-header {
+  height: 100%;
+  background-color: palette.color(primary);
+  display: flex;
+  align-items: center;
+}
+
+.custom-table-body {
+  color: palette.color(primary);
+}
+
 @include core.styles();
