@@ -1,0 +1,7 @@
+@use '~@mezzanine-ui/system/size';
+
+$prefix: mzn-table;
+$header-prefix: mzn-table__header;
+$body-prefix: mzn-table__body;
+$cell-prefix: mzn-table__cell;
+$sizes: size.$sizes;

@@ -1,0 +1,187 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use './table' as *;
+
+$table-header-height: 40px !default;
+$table-cell-horizontal-gap: 16px !default;
+$table-selections-horizontal-gap: 16px !default;
+$table-icon-size: 24px !default;
+$table-collapsible-icon-horizontal-gap: 16px !default;
+$table-fetch-more-vertical-padding: 12px !default;
+$table-pagination-height: 52px !default;
+$table-refresh-vertical-padding: 8px !default;
+
+@mixin row($min-height) {
+  width: 100%;
+  height: auto;
+  min-height: $min-height;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid palette.color(border);
+}
+
+@mixin text_color {
+  color: palette.color(text-primary);
+}
+
+@mixin header_content {
+  @include typography.variant(h6);
+}
+
+@mixin body_content {
+  @include typography.variant(input2);
+}
+
+@mixin action_highlight_bg {
+  background-color: palette.color(primary-hover-bg);
+}
+
+@mixin flexible {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+@mixin body_bg {
+  background-color: palette.color(surface);
+}
+
+@mixin icon_size($size) {
+  width: $size;
+  height: $size;
+  font-size: typography.px-to-rem($size);
+}
+
+.#{$prefix} {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  box-sizing: border-box;
+
+  @include text_color;
+}
+
+.#{$header-prefix} {
+  @include row(40px);
+  @include header_content;
+
+  background-color: palette.color(divider);
+
+  &__cellWrapper {
+    @include flexible;
+  }
+}
+
+.#{$body-prefix} {
+  position: relative;
+  width: 100%;
+  flex: 1 0 0;
+  overflow: auto;
+  scrollbar-width: none; /* Firefox specific */
+
+  &::-webkit-scrollbar {
+    display: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__row {
+    @include row(52px);
+    @include body_content;
+    @include body_bg;
+
+    &:hover,
+    &--highlight {
+      @include action_highlight_bg;
+    }
+
+    &__cellWrapper {
+      @include flexible;
+    }
+  }
+
+  &__empty {
+    @include body_bg;
+  }
+
+  &__fetchMore {
+    @include row(auto);
+    @include body_bg;
+
+    padding: $table-fetch-more-vertical-padding 0;
+    border-bottom: none;
+  }
+}
+
+.#{$cell-prefix} {
+  width: 100%;
+  padding: 0 $table-cell-horizontal-gap;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  &__ellipsis {
+    width: auto;
+    max-width: 100%;
+    min-width: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+  }
+}
+
+.#{$prefix}__selections {
+  padding: 0 $table-selections-horizontal-gap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.#{$prefix}__icon {
+  @include icon_size($table-icon-size);
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      @include action_highlight_bg;
+    }
+  }
+}
+
+.#{$prefix}__collapseAction {
+  padding: 0 0 0 $table-selections-horizontal-gap;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.#{$prefix}__pagination {
+  width: 100%;
+  height: auto;
+  min-height: $table-pagination-height;
+  padding: 0 $table-cell-horizontal-gap;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: palette.color(divider);
+  box-sizing: border-box;
+
+  &__indicator {
+    @include body_content;
+  }
+
+  &__actions {
+    width: auto;
+  }
+}
+
+.#{$prefix}__refresh {
+  padding: $table-refresh-vertical-padding 0;
+}
