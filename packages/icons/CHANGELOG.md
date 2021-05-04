@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.1.1...@mezzanine-ui/icons@0.2.0) (2021-05-04)
+
+### Features
+
+- **icons:** add reset icon ([e98ddfa](https://github.com/Mezzanine-UI/mezzanine/commit/e98ddfa8d262afa97268a82cd95dd24eaa555a39))
+
 ## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.1.0...@mezzanine-ui/icons@0.1.1) (2021-04-15)
 
 ### Features

@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.5...@mezzanine-ui/react@0.2.0) (2021-05-04)
+
+### Bug Fixes
+
+- **react/overlay:** implement disable pointer-events when overlay closed on react <Overlay> ([9e2c4f2](https://github.com/Mezzanine-UI/mezzanine/commit/9e2c4f2857f8a1417db42a67b32b42397e7de5e5))
+
+### Features
+
+- **react/table:** first implement ([a4af479](https://github.com/Mezzanine-UI/mezzanine/commit/a4af479e32f32d0809879c20ccda208b1d20682d))
+
 ## [0.1.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.3...@mezzanine-ui/react@0.1.5) (2021-04-28)
 
 ### Bug Fixes

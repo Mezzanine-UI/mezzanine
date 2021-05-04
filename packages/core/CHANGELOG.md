@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.1.5...@mezzanine-ui/core@0.2.0) (2021-05-04)
+
+### Bug Fixes
+
+- **core/overlay:** disable pointer-events when overlay is not open ([8336169](https://github.com/Mezzanine-UI/mezzanine/commit/833616907c2f4d679db1be02942c24fe09aa49e5))
+
+### Features
+
+- **core/table:** first implement ([d493eb2](https://github.com/Mezzanine-UI/mezzanine/commit/d493eb2c211d77ff02d0110112d3b061f22842d9))
+
 ## [0.1.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.1.3...@mezzanine-ui/core@0.1.5) (2021-04-28)
 
 ### Bug Fixes
