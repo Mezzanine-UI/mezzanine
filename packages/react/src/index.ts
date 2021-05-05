@@ -138,6 +138,10 @@ export {
   default as Badge,
 } from './Badge';
 export {
+  CardProps,
+  default as Card,
+} from './Card';
+export {
   EmptyProps,
   default as Empty,
 } from './Empty';
