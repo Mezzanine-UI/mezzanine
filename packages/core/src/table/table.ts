@@ -27,14 +27,14 @@ export const tableClasses = {
 
 export type TableRecord = Record<string, unknown>;
 
-export interface TableDataSource extends Record<string, unknown> {
+export interface TableDataSource extends TableRecord {
   key: string;
 }
 
 export type TableColumn = {
   dataIndex: string;
   title?: string;
-  render?(text: string, record: TableRecord, index: number): any;
+  render?(column: TableColumn, source: TableDataSource, index: number): any;
   renderTitle?(classes: typeof tableClasses): any;
   // == Custom column style ==
   align?: 'start' | 'center' | 'end';
@@ -46,7 +46,7 @@ export type TableColumn = {
   onSorted?(sortedDataSource: TableDataSource[]): void;
   // == Feature editing ==
   editable?: boolean;
-  setCellProps?(record: TableRecord): Record<string, unknown>;
+  setCellProps?(record: TableDataSource): Record<string, unknown>;
   // == Feature ellipsis ==
   /** @default true */
   ellipsis?: boolean;
@@ -100,4 +100,11 @@ export interface TablePagination {
 export interface TableRefresh {
   show?: boolean;
   onClick?(): void;
+}
+
+/** === Feature edit */
+export interface TableComponents {
+  body?: {
+    cell?: any;
+  }
 }
