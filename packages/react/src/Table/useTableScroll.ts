@@ -31,11 +31,10 @@ const SCROLL_BAR_MAX_END_SPACING = 16; // px
 const FETCH_MORE_TRIGGER_AT_BOTTOM = 46; // px
 const SCROLL_BAR_DISPLAY_TIMES = 1000; // ms
 
-let scrollBarDisplayTimer: NodeJS.Timeout;
-
 export default function useTableScroll() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
+  const scrollBarDisplayTimer = useRef<NodeJS.Timeout>();
 
   const {
     fetchMore,
@@ -74,12 +73,14 @@ export default function useTableScroll() {
   const onDisplayScrollBar = useCallback(() => {
     if (!scrollBarRef.current || !bodyRef.current) return;
 
-    clearTimeout(scrollBarDisplayTimer);
+    if (scrollBarDisplayTimer.current) {
+      clearTimeout(scrollBarDisplayTimer.current);
+    }
 
     scrollBarRef.current.style.opacity = '1';
     scrollBarRef.current.style.pointerEvents = 'auto';
 
-    scrollBarDisplayTimer = setTimeout(() => onHideScrollBar(), SCROLL_BAR_DISPLAY_TIMES);
+    scrollBarDisplayTimer.current = setTimeout(() => onHideScrollBar(), SCROLL_BAR_DISPLAY_TIMES);
   }, []);
 
   /** reset scroll bar height when sources changed */

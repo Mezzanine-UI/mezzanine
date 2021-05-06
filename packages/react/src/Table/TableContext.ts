@@ -51,3 +51,9 @@ export interface TableDataContextProps {
 }
 
 export const TableDataContext = createContext<TableDataContextProps | null>(null);
+
+export interface TableComponentContextProps {
+  bodyCell?: any;
+}
+
+export const TableComponentContext = createContext<TableComponentContextProps | null>(null);

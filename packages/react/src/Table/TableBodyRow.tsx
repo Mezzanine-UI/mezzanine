@@ -4,12 +4,12 @@ import {
   useState,
   useMemo,
   useCallback,
+  Fragment,
 } from 'react';
 import {
   tableClasses as classes,
   TableDataSource,
   TableColumn,
-  TableRecord,
 } from '@mezzanine-ui/core/table';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
@@ -17,6 +17,7 @@ import { TableContext, TableDataContext } from './TableContext';
 import TableCell from './TableCell';
 import TableRowSelection from './rowSelection/TableRowSelection';
 import TableExpandable from './expandable/TableExpandable';
+import TableEditRenderWrapper from './editable/TableEditRenderWrapper';
 import AccordionDetails from '../Accordion/AccordionDetails';
 
 export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
@@ -84,7 +85,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(function Tabl
   }, []);
 
   return (
-    <>
+    <Fragment>
       <div
         {...rest}
         ref={ref}
@@ -121,17 +122,22 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(function Tabl
             )}
             style={getColumnStyle(column)}
           >
-            <TableCell
-              ellipsis={!!(rowData?.[column?.dataIndex]) && (column?.ellipsis ?? true)}
-              style={getCellStyle(column)}
-              tooltipTitle={(rowData?.[column?.dataIndex]) as (string | number)}
+            <TableEditRenderWrapper
+              {...column}
+              rowData={rowData}
             >
-              {column?.render?.(
-                column?.title as string,
-                rowData?.[column?.dataIndex] as TableRecord,
-                index,
-              ) || rowData?.[column?.dataIndex]}
-            </TableCell>
+              <TableCell
+                ellipsis={!!(rowData?.[column?.dataIndex]) && (column?.ellipsis ?? true)}
+                style={getCellStyle(column)}
+                tooltipTitle={(rowData?.[column?.dataIndex]) as (string | number)}
+              >
+                {column?.render?.(
+                  column,
+                  rowData,
+                  index,
+                ) || rowData?.[column?.dataIndex]}
+              </TableCell>
+            </TableEditRenderWrapper>
           </div>
         ))}
       </div>
@@ -143,7 +149,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(function Tabl
           {renderedExpandedContent}
         </AccordionDetails>
       ) : null}
-    </>
+    </Fragment>
   );
 });
 
