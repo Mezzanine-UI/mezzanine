@@ -233,6 +233,21 @@ export {
 } from './Upload';
 export {
   useTabKeyClose,
+  UsePickerDocumentEventCloseProps,
+  usePickerDocumentEventClose,
+  UsePickerValueProps,
+  usePickerValue,
+  UseRangePickerValueProps,
+  useRangePickerValue,
+  PickerTriggerProps,
+  PickerTrigger,
+  RangePickerTriggerProps,
+  RangePickerTrigger,
+  PickerPopperProps,
+  PickerPopper,
+} from './Picker';
+export {
+  useTabKeyClose as _depUseTabKeyClose,
   useTriggerInputHandlers,
   useSyncTriggerInputValue,
   DatePickerCalendarProps,
