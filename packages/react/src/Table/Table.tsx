@@ -6,6 +6,7 @@ import {
 import {
   tableClasses as classes,
   TableColumn,
+  TableComponents,
   TableDataSource,
   TableRowSelection,
   TableExpandable,
@@ -13,7 +14,7 @@ import {
   TablePagination as TablePaginationType,
   TableRefresh as TableRefreshType,
 } from '@mezzanine-ui/core/table';
-import { TableContext, TableDataContext } from './TableContext';
+import { TableContext, TableDataContext, TableComponentContext } from './TableContext';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import TablePagination from './pagination/TablePagination';
@@ -41,6 +42,10 @@ export interface TableProps
    * `column.onSorted` is the callback triggered whenever sort icon clicked.
    */
   columns: TableColumn[];
+  /**
+   * Custom table components <br />
+   */
+  components?: TableComponents;
   /**
    * Data record array to be displayed. <br />
    * Notice that each source should contain `key` prop as data primary key.
@@ -95,6 +100,7 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
     bodyClassName,
     className,
     columns,
+    components,
     dataSource: dataSourceProp,
     expandable: expandableProp,
     fetchMore: fetchMoreProp,
@@ -189,6 +195,15 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
     paginationProp,
   ]);
 
+  const tableDataContextValue = {
+    columns,
+    dataSource,
+  };
+
+  const tableComponentContextValue = {
+    bodyCell: components?.body?.cell,
+  };
+
   return (
     <Loading
       loading={loading}
@@ -202,15 +217,17 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
         role="grid"
       >
         <TableContext.Provider value={tableContextValue}>
-          <TableDataContext.Provider value={{ columns, dataSource }}>
-            {isRefreshShow ? (
-              <TableRefresh onClick={refreshProp?.onClick} />
-            ) : null}
-            <TableHeader className={headerClassName} />
-            <TableBody ref={bodyRef} className={bodyClassName} />
-            {paginationProp?.show ? (
-              <TablePagination bodyRef={bodyRef} />
-            ) : null}
+          <TableDataContext.Provider value={tableDataContextValue}>
+            <TableComponentContext.Provider value={tableComponentContextValue}>
+              {isRefreshShow ? (
+                <TableRefresh onClick={refreshProp?.onClick} />
+              ) : null}
+              <TableHeader className={headerClassName} />
+              <TableBody ref={bodyRef} className={bodyClassName} />
+              {paginationProp?.show ? (
+                <TablePagination bodyRef={bodyRef} />
+              ) : null}
+            </TableComponentContext.Provider>
           </TableDataContext.Provider>
         </TableContext.Provider>
       </div>

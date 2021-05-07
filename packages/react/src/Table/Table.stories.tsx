@@ -3,15 +3,24 @@ import {
   useMemo,
   RefObject,
   MouseEvent,
+  Fragment,
+  FC,
+  ReactElement,
 } from 'react';
 import { MoreVerticalIcon, InfoCircleFilledIcon } from '@mezzanine-ui/icons';
-import { tableClasses, TableDataSource, TableColumn } from '@mezzanine-ui/core/table';
-import Table, { TableRefresh } from '.';
+import {
+  tableClasses,
+  TableDataSource,
+  TableColumn,
+} from '@mezzanine-ui/core/table';
+import Table, { TableRefresh, EditableBodyCellProps } from '.';
 import Button from '../Button';
 import Icon from '../Icon';
 import Menu, { MenuItem, MenuSize, MenuDivider } from '../Menu';
 import Dropdown from '../Dropdown';
 import Switch from '../Switch';
+import Input from '../Input';
+import Select, { Option } from '../Select';
 import { cx } from '../utils/cx';
 
 export default {
@@ -266,10 +275,10 @@ export const WithActions = () => {
         justifyContent: 'flex-end',
       }}
     >
-      <Button size="small">
+      <Button>
         編輯
       </Button>
-      <Button danger size="small">
+      <Button danger>
         刪除
       </Button>
     </div>
@@ -431,3 +440,149 @@ export const Styling = () => (
     />
   </div>
 );
+
+const editableColumns: TableColumn[] = [{
+  title: 'Name',
+  dataIndex: 'name',
+  editable: false,
+  width: 160,
+}, {
+  title: 'Address',
+  dataIndex: 'address',
+  editable: true,
+}, {
+  title: 'Age',
+  dataIndex: 'age',
+  editable: true,
+  width: 200,
+}, {
+  title: 'Tel',
+  dataIndex: 'tel',
+  ellipsis: false,
+  editable: true,
+}, {
+  dataIndex: '',
+  title: '',
+  // styling
+  width: 160,
+}];
+
+interface EditableCellProps extends EditableBodyCellProps {
+  /** some extra props come from `setCellProps` */
+  isEditing: boolean;
+}
+
+export const Editable = () => {
+  const [editingKey, setEditingKey] = useState<string>('');
+  /** Customize body cell */
+  const EditableCell: FC<EditableCellProps> = ({
+    children,
+    dataIndex,
+    editable,
+    isEditing,
+    rowData,
+  }) => {
+    const elementType = dataIndex === 'tel' ? 'select' : 'input';
+    const inputType = dataIndex === 'age' ? 'number' : 'text';
+
+    return (editable && isEditing ? (
+      <div className={tableClasses.cell}>
+        {elementType === 'select' ? (
+          <Select
+            defaultValue={[{ id: '0912345678', name: '0912345678' }]}
+            fullWidth
+          >
+            <Option value="0912345678">0912345678</Option>
+            <Option value="0987654432">0987654432</Option>
+          </Select>
+        ) : (
+          <Input
+            defaultValue={rowData?.[dataIndex] as string}
+            fullWidth
+            inputProps={{
+              type: inputType,
+            }}
+          />
+        )}
+      </div>
+    ) : children) as ReactElement;
+  };
+
+  const renderRowActions: TableColumn['render'] = (_, source) => (
+    <div
+      style={{
+        width: '100%',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+      }}
+    >
+      {editingKey === source.key ? (
+        <Button
+          onClick={() => {
+            setEditingKey('');
+          }}
+        >
+          完成
+        </Button>
+      ) : (
+        <Fragment>
+          <Button
+            disabled={!!editingKey}
+            onClick={() => {
+              setEditingKey(source.key);
+            }}
+          >
+            編輯
+          </Button>
+          <Button
+            danger
+            disabled={!!editingKey}
+          >
+            刪除
+          </Button>
+        </Fragment>
+      )}
+    </div>
+  );
+
+  const mergeColumnWithCustomProps: typeof editableColumns = editableColumns.map((column) => {
+    if (!column.dataIndex) {
+      /**  actions column */
+      return {
+        ...column,
+        render: renderRowActions,
+      };
+    }
+
+    if (!column.editable) return column;
+
+    return {
+      ...column,
+      /** inject some custom props to your custom cell */
+      setCellProps: (source: TableDataSource) => ({
+        isEditing: editingKey === source.key,
+      }),
+    };
+  });
+
+  return (
+    <div
+      style={{
+        width: '90%',
+        height: 460,
+      }}
+    >
+      <Table
+        components={{
+          body: {
+            cell: EditableCell,
+          },
+        }}
+        columns={mergeColumnWithCustomProps}
+        dataSource={dataSource}
+      />
+    </div>
+  );
+};
