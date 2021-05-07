@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.2.0...@mezzanine-ui/react@0.2.1) (2021-05-07)
+
+### Features
+
+- **react/table:** implement table editable feature ([f05ada8](https://github.com/Mezzanine-UI/mezzanine/commit/f05ada857951b021d1e589f183ced355991557d8))
+
 # [0.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.1.5...@mezzanine-ui/react@0.2.0) (2021-05-04)
 
 ### Bug Fixes
