@@ -247,22 +247,17 @@ export {
   PickerPopper,
 } from './Picker';
 export {
-  useTabKeyClose as _depUseTabKeyClose,
-  useTriggerInputHandlers,
-  useSyncTriggerInputValue,
   DatePickerCalendarProps,
   DatePickerCalendar,
-  DatePickerTriggerProps,
-  DatePickerTrigger,
   DatePickerProps,
   default as DatePicker,
 } from './DatePicker';
 export {
   useDateRangeCalendarControls,
+  UseDateRangePickerValueProps,
+  useDateRangePickerValue,
   DateRangePickerCalendarProps,
   DateRangePickerCalendar,
-  DateRangePickerTriggerProps,
-  DateRangePickerTrigger,
   DateRangePickerProps,
   default as DateRangePicker,
 } from './DateRangePicker';
@@ -350,6 +345,8 @@ export {
   default as Tooltip,
 } from './Tooltip';
 export {
+  CalendarControlModifier,
+  UseCalendarControlModifiersResult,
   useCalendarControlModifiers,
   useCalendarModeStack,
   useCalendarControls,

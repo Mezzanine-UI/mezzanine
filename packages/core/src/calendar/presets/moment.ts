@@ -127,6 +127,6 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
       }
     }
 
-    return null;
+    return undefined;
   },
 };

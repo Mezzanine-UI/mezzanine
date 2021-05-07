@@ -36,5 +36,5 @@ export type CalendarMethods<DateType> = {
   formatToString: (locale: string, date: DateType, format: string) => string;
 
   /** Parse */
-  parse: (locale: string, text: string, formats: string[]) => DateType | null;
+  parse: (locale: string, text: string, formats: string[]) => DateType | undefined;
 };

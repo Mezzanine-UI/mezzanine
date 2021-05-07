@@ -20,14 +20,14 @@ import CalendarYears, { CalendarYearsProps } from './CalendarYears';
 
 export interface CalendarProps
   extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange'>,
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange' | 'children'>,
   Pick<CalendarDaysProps,
-  |'isDateDisabled'
+  | 'isDateDisabled'
   | 'isDateInRange'
   | 'onDateHover'
   | 'displayWeekDayLocale'>,
   Pick<CalendarMonthsProps, 'isMonthDisabled' | 'isMonthInRange' | 'onMonthHover' | 'displayMonthLocale'>,
-  Pick<CalendarWeeksProps, 'isWeekInRange' | 'onWeekHover'>,
+  Pick<CalendarWeeksProps, 'isWeekDisabled' | 'isWeekInRange' | 'onWeekHover'>,
   Pick<CalendarYearsProps, 'isYearDisabled' | 'isYearInRange' | 'onYearHover'>,
   Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'> {
   /**
@@ -61,7 +61,7 @@ export interface CalendarProps
   | 'referenceDate'
   | 'value'
   | 'displayWeekDayLocale'
-  | 'isDateDisabled'
+  | 'isWeekDisabled'
   | 'isWeekInRange'
   | 'onWeekHover'>;
   /**
@@ -73,8 +73,7 @@ export interface CalendarProps
   | 'value'
   | 'isYearDisabled'
   | 'isYearInRange'
-  | 'onYearHover'
-  | 'updateReferenceDate'>;
+  | 'onYearHover'>;
   /**
    * Use this prop to switch calendars.
    * @default 'day'
@@ -140,6 +139,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     isDateInRange,
     isMonthDisabled,
     isMonthInRange,
+    isWeekDisabled,
     isWeekInRange,
     isYearDisabled,
     isYearInRange,
@@ -180,7 +180,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarWeeks
         {...calendarWeeksProps}
-        isDateDisabled={isDateDisabled}
+        isWeekDisabled={isWeekDisabled}
         isWeekInRange={isWeekInRange}
         onClick={onChange}
         onWeekHover={onWeekHover}
@@ -255,6 +255,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
         type="button"
         className={cx(classes.button, classes.controlsButton, classes.buttonDisabled)}
         disabled
+        aria-disabled
       >
         {displayYearRange}
       </button>

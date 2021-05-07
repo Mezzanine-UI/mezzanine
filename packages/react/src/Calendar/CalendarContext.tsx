@@ -2,19 +2,21 @@ import { createContext, ReactNode, useContext } from 'react';
 import { CalendarMethods, DateType } from '@mezzanine-ui/core/calendar';
 
 export interface CalendarConfigs extends CalendarMethods<DateType> {
+  defaultDateFormat: string;
+  defaultTimeFormat: string;
   displayMonthLocale: string;
   displayWeekDayLocale: string;
   valueLocale: string;
-  format: string;
 }
 
 export type CalendarConfigProviderProps = {
   children?: ReactNode;
-  methods: CalendarMethods<DateType>;
+  defaultDateFormat?: string;
+  defaultTimeFormat?: string;
   displayMonthLocale?: string;
   displayWeekDayLocale?: string;
+  methods: CalendarMethods<DateType>;
   valueLocale?: string;
-  format?: string;
 };
 
 export const CalendarContext = createContext<CalendarConfigs | undefined>(undefined);
@@ -36,20 +38,22 @@ export function useCalendarContext() {
 function CalendarConfigProvider(props: CalendarConfigProviderProps) {
   const {
     children,
-    methods,
+    defaultDateFormat = 'YYYY-MM-DD',
+    defaultTimeFormat = 'HH:mm:ss',
     displayMonthLocale = 'en-us',
     displayWeekDayLocale = 'en-us',
+    methods,
     valueLocale = 'en-us',
-    format = 'YYYY-MM-DD',
   } = props;
 
   return (
     <CalendarContext.Provider value={{
       ...methods,
+      defaultDateFormat,
+      defaultTimeFormat,
       displayMonthLocale,
       displayWeekDayLocale,
       valueLocale,
-      format,
     }}
     >
       {children}

@@ -12,7 +12,7 @@ import { useCalendarContext } from './CalendarContext';
 export interface CalendarDaysProps
   extends
   Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick'> {
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic. The method takes the date object as its parameter.
    */
@@ -58,6 +58,7 @@ function CalendarDays(props: CalendarDaysProps) {
     setMonth,
   } = useCalendarContext();
   const {
+    className,
     displayWeekDayLocale = displayWeekDayLocaleFromConfig,
     isDateDisabled,
     isDateInRange,
@@ -65,12 +66,19 @@ function CalendarDays(props: CalendarDaysProps) {
     onDateHover,
     referenceDate,
     value,
+    ...rest
   } = props;
 
   const daysGrid = useMemo(() => getCalendarGrid(referenceDate), [getCalendarGrid, referenceDate]);
 
   return (
-    <div className={classes.board}>
+    <div
+      {...rest}
+      className={cx(
+        classes.board,
+        className,
+      )}
+    >
       <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
       {
         daysGrid.map((week, index) => (
