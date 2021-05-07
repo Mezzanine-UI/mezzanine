@@ -1,0 +1,31 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
+@use '../text-field';
+@use './picker' as *;
+
+.#{$prefix} {
+  display: inline-flex;
+  align-items: center;
+
+  input {
+    &:first-of-type {
+      padding-left: var(--#{text-field.$prefix}-padding-left);
+    }
+
+    &:last-of-type {
+      padding-right: var(--#{text-field.$prefix}-padding-right);
+    }
+  }
+
+  &__arrow-icon {
+    display: flex;
+    align-items: center;
+    margin: 0 4px;
+    color: palette.color(action-inactive);
+  }
+}
+
+.#{$popper-prefix} {
+  border: 1px solid palette.color(border);
+  z-index: z-index.get(popover);
+}
