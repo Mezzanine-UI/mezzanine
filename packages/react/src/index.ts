@@ -372,3 +372,11 @@ export {
   CalendarProps,
   default as Calendar,
 } from './Calendar';
+export {
+  TimePanelActionProps,
+  TimePanelAction,
+  TimePanelColumnProps,
+  TimePanelColumn,
+  TimePanelProps,
+  default as TimePanel,
+} from './TimePanel';
