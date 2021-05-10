@@ -1,0 +1,15 @@
+@use '~@mezzanine-ui/system/palette';
+@use './date-time-picker' as *;
+
+.#{$panel} {
+  position: relative;
+  background-color: palette.color(surface);
+
+  &__selectors {
+    display: flex;
+  }
+
+  &__calendar {
+    border-right: 1px solid palette.color(border);
+  }
+}
