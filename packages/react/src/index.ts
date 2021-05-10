@@ -261,6 +261,12 @@ export {
   DateRangePickerProps,
   default as DateRangePicker,
 } from './DateRangePicker';
+export {
+  TimePickerPanelProps,
+  TimePickerPanel,
+  TimePickerProps,
+  default as TimePicker,
+} from './TimePicker';
 
 /**
  * Feedback
