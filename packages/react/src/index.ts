@@ -267,6 +267,12 @@ export {
   TimePickerProps,
   default as TimePicker,
 } from './TimePicker';
+export {
+  DateTimePickerPanelProps,
+  DateTimePickerPanel,
+  DateTimePickerProps,
+  default as DateTimePicker,
+} from './DateTimePicker';
 
 /**
  * Feedback
