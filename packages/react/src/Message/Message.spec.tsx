@@ -84,6 +84,26 @@ describe('<Message />', () => {
       });
     });
   });
+
+  describe('prop: onExited', () => {
+    it('should be invoked when transition ended', () => {
+      jest.useFakeTimers();
+
+      const onExited = jest.fn();
+
+      render(<Message onExited={onExited} duration={3000} />);
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(onExited).toBeCalledTimes(1);
+    });
+  });
 });
 
 describe('Message API', () => {
@@ -150,6 +170,12 @@ describe('Message API', () => {
 
         expect(rootElement?.childElementCount).toBe(1);
 
+        // wait until effect triggered
+        act(() => {
+          jest.runAllTimers();
+        });
+
+        // wait until transition ends
         act(() => {
           jest.runAllTimers();
         });
