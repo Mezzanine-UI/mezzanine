@@ -8,7 +8,14 @@ import {
 } from './typings';
 import NotifierManager, { NotifierController } from './NotifierManager';
 
-export interface CreateNotifierProps<N extends NotifierData> extends NotifierConfig {
+export interface CreateNotifierProps<
+  N extends NotifierData,
+  C extends NotifierConfig,
+> extends NotifierConfig {
+  /**
+   * Customizable config for notifier. The given values should be retrivable from your notification carrier.
+   */
+  config?: C;
   /**
    * The render props for notification carrier(UI component).
    */
@@ -24,15 +31,24 @@ export interface CreateNotifierProps<N extends NotifierData> extends NotifierCon
  *
  * When APIs are called, Notifier will dynamically render a new react instance by `ReactDOM.render` method.
  */
-export function createNotifier<N extends NotifierData>(props: CreateNotifierProps<N>): Notifier<N> {
+export function createNotifier<N extends NotifierData, C extends NotifierConfig = NotifierConfig>(
+  props: CreateNotifierProps<N, C>,
+): Notifier<N, C> {
   const {
+    config: configProp,
     render: renderNotifier,
     setRoot,
-    ...initialConfig
+    duration,
+    maxCount,
+    ...restNotifierProps
   } = props;
   const root = document.createElement('div');
   const controllerRef = createRef<NotifierController<N>>();
-  let currentConfig: NotifierConfig = { ...initialConfig };
+  let currentConfig = {
+    duration,
+    maxCount,
+    ...configProp,
+  };
 
   if (setRoot) {
     setRoot(root);
@@ -42,10 +58,15 @@ export function createNotifier<N extends NotifierData>(props: CreateNotifierProp
     add(notifier) {
       document.body.appendChild(root);
 
+      const key = notifier.key ?? Date.now();
+
       const resolvedNotifier = {
+        ...restNotifierProps,
         ...notifier,
+        ...currentConfig,
         duration: notifier.duration ?? currentConfig.duration,
-        key: notifier.key ?? Date.now(),
+        key,
+        instanceKey: key,
       };
 
       if (controllerRef.current) {
@@ -72,12 +93,10 @@ export function createNotifier<N extends NotifierData>(props: CreateNotifierProp
       }
     },
     destroy() {
-      if (root) {
-        unmountComponentAtNode(root);
+      unmountComponentAtNode(root);
 
-        if (root.parentNode) {
-          root.parentNode.removeChild(root);
-        }
+      if (root.parentNode) {
+        root.parentNode.removeChild(root);
       }
     },
     config(config) {
@@ -85,6 +104,9 @@ export function createNotifier<N extends NotifierData>(props: CreateNotifierProp
         ...currentConfig,
         ...config,
       };
+    },
+    getConfig() {
+      return currentConfig as C;
     },
   };
 }

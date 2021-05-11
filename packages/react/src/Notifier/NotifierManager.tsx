@@ -10,7 +10,6 @@ import {
   NotifierConfig,
   RenderNotifier,
 } from './typings';
-import Notifier from './Notifier';
 
 export interface NotifierController<N extends NotifierData> {
   add: (notifier: N & { key: Key; }) => void;
@@ -57,15 +56,7 @@ function NotifierManager<N extends NotifierData>(props: NotifierManagerProps<N>)
 
   return (
     <>
-      {notifiersShouldRendered.map((notifier) => (
-        <Notifier<N>
-          key={notifier.key}
-          notifier={notifier}
-          notifierKey={notifier.key}
-          remove={controller.remove}
-          render={render}
-        />
-      ))}
+      {notifiersShouldRendered.map((notifier) => render(notifier))}
     </>
   );
 }

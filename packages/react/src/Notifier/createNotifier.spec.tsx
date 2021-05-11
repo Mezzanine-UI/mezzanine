@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react';
 import { Key } from 'react';
 import {
-  cleanup,
+  cleanup, cleanupHook,
 } from '../../__test-utils__';
 import {
   createNotifier,
@@ -12,6 +12,7 @@ import {
 
 interface MockRendererProps extends NotifierData {
   testString?: string;
+  reference?: Key;
 }
 
 const testRenderId = 'mock-render';
@@ -20,8 +21,10 @@ const mockRender: RenderNotifier<MockRendererProps> = ({
   children,
   duration,
   testString,
+  reference,
 }) => (
   <div
+    key={reference}
     id={testRenderId}
     data-test-duration={duration}
     data-test-extensible={testString}
@@ -31,8 +34,10 @@ const mockRender: RenderNotifier<MockRendererProps> = ({
 );
 
 function expectCommonBehavior(notifier: Notifier<NotifierData>) {
-  beforeEach(() => {
-    notifier.destroy();
+  afterEach(() => {
+    act(() => {
+      notifier.destroy();
+    });
   });
 
   it('should return methods', () => {
@@ -41,12 +46,14 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
       remove,
       destroy,
       config,
+      getConfig,
     } = notifier;
 
     expect(add).toBeInstanceOf(Function);
     expect(remove).toBeInstanceOf(Function);
     expect(destroy).toBeInstanceOf(Function);
     expect(config).toBeInstanceOf(Function);
+    expect(getConfig).toBeInstanceOf(Function);
   });
 
   it('should be able to add and remove notifications from a div of the last child of body', () => {
@@ -181,6 +188,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
       act(() => {
         add({
           children: 'foo',
+          key: `${i}`,
         });
       });
 
@@ -193,6 +201,14 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
       });
 
       expect(document.body.childNodes.item(0)).toBe(null);
+
+      act(() => {
+        add({
+          children: 'foo',
+        });
+      });
+
+      expect(notifierRootElement?.childNodes.item(0).textContent).toBe('foo');
     }
   });
 
@@ -201,7 +217,6 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
 
     const {
       add,
-      destroy,
       config,
     } = notifier;
 
@@ -213,6 +228,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
       act(() => {
         add({
           children: 'foo',
+          key: `${i}`,
         });
       });
     }
@@ -220,22 +236,63 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
     const notifierRootElement = document.body.lastElementChild;
 
     expect(notifierRootElement?.childElementCount).toBe(maxCount);
+  });
 
-    act(() => {
-      destroy();
+  it('should be able to get configurations', () => {
+    const maxCount = 3;
+    const duration = 2;
+
+    const {
+      config,
+      getConfig,
+    } = notifier;
+
+    config({
+      maxCount,
+      duration,
     });
+
+    const {
+      maxCount: returnedMaxCount,
+      duration: returnedDuration,
+    } = getConfig();
+
+    expect(returnedMaxCount).toEqual(maxCount);
+    expect(returnedDuration).toEqual(duration);
   });
 }
 
 describe('createNotifier()', () => {
-  beforeEach(() => {
+  afterEach(() => {
+    cleanup();
+    cleanupHook();
     document.body.innerHTML = '';
   });
-  afterEach(cleanup);
+
+  it('should be safe to invoke remove before add is called', () => {
+    const notifier = createNotifier<MockRendererProps>({
+      render: mockRender,
+    });
+
+    const removeSpy = jest.spyOn(notifier, 'remove');
+
+    act(() => {
+      notifier.remove('foo');
+    });
+
+    expect(removeSpy).toBeCalledWith('foo');
+
+    act(() => {
+      notifier.destroy();
+    });
+  });
 
   describe('without configs', () => {
-    const notifier = createNotifier({
-      render: ({ children }) => <div>{children}</div>,
+    type TestNotifierData = NotifierData & {
+      reference?: Key;
+    };
+    const notifier = createNotifier<TestNotifierData>({
+      render: mockRender,
     });
 
     expectCommonBehavior(notifier);
@@ -327,7 +384,7 @@ describe('createNotifier()', () => {
       const testClass = 'bar';
 
       const notifier = createNotifier({
-        render: ({ children }) => <div>{children}</div>,
+        render: mockRender,
         setRoot: (root) => {
           root.setAttribute('id', testId);
           root.setAttribute('class', testClass);
@@ -351,7 +408,7 @@ describe('createNotifier()', () => {
       const testClass = 'bar';
 
       const notifier = createNotifier({
-        render: ({ children }) => <div>{children}</div>,
+        render: mockRender,
         setRoot: (root) => {
           root.setAttribute('id', testId);
           root.setAttribute('class', testClass);
@@ -375,6 +432,7 @@ describe('createNotifier()', () => {
         act(() => {
           notifier.add({
             children: 'foo',
+            key: `${i}`,
           });
         });
       }
