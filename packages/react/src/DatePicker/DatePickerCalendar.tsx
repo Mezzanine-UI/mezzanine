@@ -1,19 +1,15 @@
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import { datePickerClasses as classes } from '@mezzanine-ui/core/date-picker';
 import {
   forwardRef,
   RefObject,
   useMemo,
 } from 'react';
-import Calendar, { CalendarProps, useCalendarControls } from '../Calendar';
-import { useCalendarContext } from '../Calendar/CalendarContext';
-import Popper, { PopperProps } from '../Popper';
-import { Fade, FadeProps } from '../Transition';
-import { cx } from '../utils/cx';
+import Calendar, { CalendarProps, useCalendarControls, useCalendarContext } from '../Calendar';
+import { PickerPopper, PickerPopperProps } from '../Picker';
 
 export interface DatePickerCalendarProps
   extends
-  Pick<PopperProps, 'anchor' | 'open'>,
+  Omit<PickerPopperProps, 'children'>,
   Pick<CalendarProps,
   | 'disableOnNext'
   | 'disableOnPrev'
@@ -44,14 +40,6 @@ export interface DatePickerCalendarProps
   | 'updateReferenceDate'
   | 'value'>;
   /**
-   * Other fade props you may provide to `Fade`.
-   */
-  fadeProps?: Omit<FadeProps, 'children' | 'in'>;
-  /**
-   * Other popper props you may provide to `Popper`.
-   */
-  popperProps?: Omit<PopperProps, 'anchor' | 'open'>;
-  /**
    * React ref for calendar component.
    */
   calendarRef?: RefObject<HTMLDivElement>;
@@ -73,10 +61,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
   function DatePickerCalendar(props, ref) {
     const {
       displayMonthLocale: displayMonthLocaleFromConfig,
-      getDate,
       getMonth,
       getYear,
-      setDate,
       setMonth,
       setYear,
     } = useCalendarContext();
@@ -100,15 +86,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
     } = props;
     const {
       className: calendarClassName,
+      ...restCalendarProps
     } = calendarProps || {};
-    const {
-      options,
-      ...restPopperProps
-    } = popperProps || {};
-    const {
-      modifiers = [],
-      ...restPopperOptions
-    } = options || {};
     const {
       currentMode,
       onMonthControlClick,
@@ -123,14 +102,12 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
     const onChange = useMemo(() => {
       if (currentMode === 'day' || currentMode === 'week') {
         return (target: DateType) => {
-          const result = currentMode === mode ? target : setDate(referenceDate, getDate(target));
-
-          updateReferenceDate(result);
+          updateReferenceDate(target);
 
           popModeStack();
 
-          if (currentMode === mode && onChangeProp) {
-            onChangeProp(result);
+          if (onChangeProp) {
+            onChangeProp(target);
           }
         };
       }
@@ -164,9 +141,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       }
     }, [
       currentMode,
-      setDate,
       referenceDate,
-      getDate,
       updateReferenceDate,
       popModeStack,
       mode,
@@ -178,54 +153,33 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
     ]);
 
     return (
-      <Fade
-        {...fadeProps}
-        in={open}
+      <PickerPopper
         ref={ref}
+        anchor={anchor}
+        open={open}
+        fadeProps={fadeProps}
+        popperProps={popperProps}
       >
-        <Popper
-          {...restPopperProps}
-          open
-          anchor={anchor}
-          className={classes.popper}
-          options={{
-            placement: 'bottom-start',
-            ...restPopperOptions,
-            modifiers: [
-              {
-                name: 'offset',
-                options: {
-                  offset: [0, 4],
-                },
-              },
-              ...modifiers,
-            ],
-          }}
-        >
-          <Calendar
-            {...calendarProps}
-            ref={calendarRef}
-            className={cx(
-              classes.calendar,
-              calendarClassName,
-            )}
-            disableOnNext={disableOnNext}
-            disableOnPrev={disableOnPrev}
-            displayMonthLocale={displayMonthLocale}
-            isDateDisabled={isDateDisabled}
-            isMonthDisabled={isMonthDisabled}
-            isYearDisabled={isYearDisabled}
-            mode={currentMode}
-            onChange={onChange}
-            onMonthControlClick={onMonthControlClick}
-            onNext={onNext}
-            onPrev={onPrev}
-            onYearControlClick={onYearControlClick}
-            referenceDate={referenceDate}
-            value={value}
-          />
-        </Popper>
-      </Fade>
+        <Calendar
+          {...restCalendarProps}
+          ref={calendarRef}
+          className={calendarClassName}
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          displayMonthLocale={displayMonthLocale}
+          isDateDisabled={isDateDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isYearDisabled={isYearDisabled}
+          mode={currentMode}
+          onChange={onChange}
+          onMonthControlClick={onMonthControlClick}
+          onNext={onNext}
+          onPrev={onPrev}
+          onYearControlClick={onYearControlClick}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      </PickerPopper>
     );
   },
 );

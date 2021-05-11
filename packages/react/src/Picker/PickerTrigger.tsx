@@ -1,19 +1,21 @@
-import { CalendarIcon } from '@mezzanine-ui/icons';
-import { datePickerClasses as classes } from '@mezzanine-ui/core/date-picker';
+import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import {
   ChangeEventHandler,
   forwardRef,
-  MouseEventHandler,
   RefObject,
 } from 'react';
 import TextField, { TextFieldProps } from '../TextField';
-import Icon from '../Icon';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 
-export interface DatePickerTriggerProps
+export interface PickerTriggerProps
   extends
-  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'suffixActionIcon' | 'defualtChecked'> {
+  Omit<TextFieldProps,
+  | 'active'
+  | 'children'
+  | 'suffix'
+  | 'defualtChecked'
+  > {
   /**
    * React ref for the input element.
    */
@@ -22,10 +24,6 @@ export interface DatePickerTriggerProps
    * Change handler for the input element.
    */
   onChange?: ChangeEventHandler;
-  /**
-   * Click Handler for the calendar icon.
-   */
-  onIconClick?: MouseEventHandler;
   /**
    * Placeholder for the input element.
    */
@@ -61,20 +59,19 @@ export interface DatePickerTriggerProps
 }
 
 /**
- * The react component for `mezzanine` date picker trigger.
+ * The react component for `mezzanine` picker trigger.
  */
-const DatePickerTrigger = forwardRef<HTMLDivElement, DatePickerTriggerProps>(
-  function DatePickerTrigger(props, ref) {
+const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
+  function PickerTrigger(props, ref) {
     const {
       className,
       disabled,
       inputProps,
       inputRef,
       onChange,
+      placeholder,
       readOnly,
       required,
-      onIconClick,
-      placeholder,
       value,
       ...restTextFieldProps
     } = props;
@@ -89,12 +86,6 @@ const DatePickerTrigger = forwardRef<HTMLDivElement, DatePickerTriggerProps>(
           className,
         )}
         disabled={disabled}
-        suffixActionIcon={(
-          <Icon
-            icon={CalendarIcon}
-            onClick={onIconClick}
-          />
-        )}
       >
         <input
           {...inputProps}
@@ -115,4 +106,4 @@ const DatePickerTrigger = forwardRef<HTMLDivElement, DatePickerTriggerProps>(
   },
 );
 
-export default DatePickerTrigger;
+export default PickerTrigger;

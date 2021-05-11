@@ -1,0 +1,8 @@
+@use '../text-field';
+
+$prefix: mzn-time-panel;
+$columns-prefix: #{$prefix}-columns;
+$action-prefix: #{$prefix}-action;
+$button-prefix: #{$prefix}-button;
+$column-prefix: #{$prefix}-column;
+$sizes: text-field.$sizes;

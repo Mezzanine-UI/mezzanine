@@ -5,33 +5,51 @@ import {
   useContext,
   useMemo,
   useEffect,
+  MouseEventHandler,
+  KeyboardEventHandler,
+  FocusEventHandler,
+  forwardRef,
 } from 'react';
-import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
-import { useSyncTriggerInputValue } from './useSyncTriggerInputValue';
-import { useCalendarContext } from '../Calendar/CalendarContext';
-import { useClickAway } from '../hooks/useClickAway';
-import DatePickerTrigger, { DatePickerTriggerProps } from './DatePickerTrigger';
-import DatePickerCalendar, { DatePickerCalendarProps } from './DatePickerCalendar';
-import { useComposeRefs } from '../hooks/useComposeRefs';
+import {
+  DateType,
+  getDefaultModeFormat,
+} from '@mezzanine-ui/core/calendar';
+import { CalendarIcon } from '@mezzanine-ui/icons';
+import { useCalendarContext } from '../Calendar';
+import DatePickerCalendar, {
+  DatePickerCalendarProps,
+} from './DatePickerCalendar';
 import { FormControlContext } from '../Form';
-import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
-import { useTriggerInputHandlers } from './useTriggerInputHandlers';
-import { useTabKeyClose } from './useTabKeyClose';
+import {
+  PickerTrigger,
+  PickerTriggerProps,
+  usePickerDocumentEventClose,
+  usePickerValue,
+} from '../Picker';
+import Icon from '../Icon';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface DatePickerProps
   extends
   Omit<DatePickerCalendarProps,
   | 'anchor'
-  | 'onChange'
-  | 'updateReferenceDate'
   | 'calendarRef'
+  | 'onChange'
+  | 'open'
   | 'referenceDate'
-  | 'open'>,
-  Omit<DatePickerTriggerProps,
-  | 'value'
+  | 'updateReferenceDate'
+  >,
+  Omit<PickerTriggerProps,
+  | 'defaultValue'
+  | 'inputRef'
   | 'onChange'
   | 'onClear'
-  | 'defaultValue'> {
+  | 'onClick'
+  | 'onIconClick'
+  | 'onKeyDown'
+  | 'suffixActionIcon'
+  | 'value'
+  > {
   /**
    * Default value for date picker.
    */
@@ -58,234 +76,246 @@ export interface DatePickerProps
  * The react component for `mezzanine` date picker.
  * Notice that any component related to date-picker should be used along with `CalendarContext`. <br />
  */
-function DatePicker(props: DatePickerProps) {
-  const {
-    disabled: disabledFromFormControl,
-    fullWidth: fullWidthFromFormControl,
-    required: requiredFromFormControl,
-    severity,
-  } = useContext(FormControlContext) || {};
-  const {
-    format: formatFromCalendarConfig,
-    formatToString,
-    getNow,
-    parse,
-    valueLocale,
-  } = useCalendarContext();
-  const {
-    calendarProps,
-    className,
-    clearable,
-    defaultValue,
-    disableOnNext,
-    disableOnPrev,
-    disabled = disabledFromFormControl || false,
-    displayMonthLocale,
-    error = severity === 'error' || false,
-    fadeProps,
-    format = formatFromCalendarConfig,
-    fullWidth = fullWidthFromFormControl || false,
-    inputProps,
-    isDateDisabled,
-    isMonthDisabled,
-    isYearDisabled,
-    mode = 'day',
-    onCalendarToggle: onCalendarToggleProp,
-    onChange,
-    placeholder,
-    popperProps,
-    prefix,
-    readOnly,
-    referenceDate: referenceDateProp,
-    required = requiredFromFormControl || false,
-    size,
-    value,
-    ...restTriggerProps
-  } = props;
-  const {
-    onBlur: onBlurProp,
-    onKeyDown: onKeyDownProp,
-    onFocus: onFocusProp,
-    ...restInputProp
-  } = inputProps || {};
+const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
+  function DatePicker(props, ref) {
+    const {
+      disabled: disabledFromFormControl,
+      fullWidth: fullWidthFromFormControl,
+      required: requiredFromFormControl,
+      severity,
+    } = useContext(FormControlContext) || {};
+    const {
+      defaultDateFormat,
+      getNow,
+    } = useCalendarContext();
+    const {
+      calendarProps,
+      className,
+      clearable,
+      defaultValue,
+      disableOnNext,
+      disableOnPrev,
+      disabled = disabledFromFormControl || false,
+      displayMonthLocale,
+      error = severity === 'error' || false,
+      fadeProps,
+      format = defaultDateFormat,
+      fullWidth = fullWidthFromFormControl || false,
+      inputProps,
+      isDateDisabled,
+      isMonthDisabled,
+      isYearDisabled,
+      mode = 'day',
+      onCalendarToggle: onCalendarToggleProp,
+      onChange: onChangeProp,
+      placeholder,
+      popperProps,
+      prefix,
+      readOnly,
+      referenceDate: referenceDateProp,
+      required = requiredFromFormControl || false,
+      size,
+      value: valueProp,
+      ...restTriggerProps
+    } = props;
+    const {
+      onBlur: onBlurProp,
+      onKeyDown: onKeyDownProp,
+      onFocus: onFocusProp,
+      size: inputSize = format.length + 2,
+      ...restInputProp
+    } = inputProps || {};
 
-  const formats = useMemo(() => [
-    format,
-    formatFromCalendarConfig,
-    getDefaultModeFormat(mode),
-  ], [format, formatFromCalendarConfig, mode]);
+    const formats = useMemo(() => [
+      format,
+      defaultDateFormat,
+      getDefaultModeFormat(mode),
+    ], [defaultDateFormat, format, mode]);
 
-  /** Syncing value */
-  const inputDefaultValue = defaultValue ? formatToString(valueLocale, defaultValue, format) : '';
-  const htmlInputRef = useRef<HTMLInputElement>(null);
+    /** Calender display control */
+    const [open, setOpen] = useState(false);
+    const preventOpen = readOnly;
+    const onCalendarToggle = useCallback((currentOpen: boolean) => {
+      if (!preventOpen) {
+        if (onCalendarToggleProp) {
+          onCalendarToggleProp(currentOpen);
+        }
 
-  const {
-    inputValue,
-    onChange: resolvedChangeHandler,
-    onInputChange,
-    onInputClear,
-  } = useSyncTriggerInputValue({
-    format,
-    inputDefaultValue,
-    inputRef: htmlInputRef,
-    onChange,
-    value,
-  });
+        setOpen(currentOpen);
+      }
+    }, [onCalendarToggleProp, preventOpen]);
 
-  const internalValue = useMemo(() => (
-    parse(valueLocale, inputValue, formats) || undefined
-  ), [formats, inputValue, parse, valueLocale]);
-
-  /** using internal reference date */
-  const [referenceDate, setReferenceDate] = useState(referenceDateProp || defaultValue || getNow());
-
-  useEffect(() => {
-    if (internalValue) {
-      setReferenceDate(internalValue);
-    }
-  }, [internalValue]);
-
-  /** Calender display control */
-  const [open, setOpen] = useState(false);
-  const onCalendarToggle = (currentOpen: boolean) => {
-    setOpen(currentOpen);
-
-    if (onCalendarToggleProp) {
-      onCalendarToggleProp(currentOpen);
-    }
-  };
-
-  /** Popper positioning */
-  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const anchorComposedRef = useComposeRefs([setAnchor, anchorRef]);
-  const calendarRef = useRef<HTMLDivElement>(null);
-
-  /** Calendar change handler */
-  const onCalendarChange = (val: DateType) => {
-    resolvedChangeHandler(val);
-
-    onCalendarToggle(false);
-  };
-
-  /** Trigger input handlers */
-  const {
-    onBlur,
-    onFocus,
-    onKeyDown,
-  } = useTriggerInputHandlers({
-    formats,
-    inputRef: htmlInputRef,
-    onBlur: onBlurProp,
-    onChange,
-    onFocus: onFocusProp,
-    onInputChange,
-    onKeyDown: onKeyDownProp,
-    readOnly,
-    setOpen: onCalendarToggle,
-  });
-
-  /** Trigger click handler for closing calendar */
-  const onTriggerClick = () => {
-    if (!open && !readOnly) {
-      onCalendarToggle(false);
-    }
-  };
-
-  /** Bind input clear control */
-  const onClear = useCallback((e) => {
-    onInputClear(e);
-
-    if (onChange) {
-      onChange(undefined);
-    }
-  }, [onInputClear, onChange]);
-
-  /** Close calendar when clicked outside */
-  useClickAway(
-    () => {
-      if (!open) {
-        return;
+    const onFocus = useMemo<FocusEventHandler<HTMLInputElement> | undefined>(() => {
+      if (readOnly) {
+        return undefined;
       }
 
       return (event) => {
-        if (!calendarRef.current?.contains(event.target as HTMLElement)) {
-          onCalendarToggle(false);
+        if (onFocusProp) {
+          onFocusProp(event);
         }
+
+        onCalendarToggle(true);
       };
-    },
-    anchorRef,
-    [open],
-  );
+    }, [onCalendarToggle, onFocusProp, readOnly]);
 
-  /** Close calendar when escape key down */
-  useDocumentEscapeKeyDown(() => () => {
-    if (open) {
+    /** Value and change handlers */
+    const inputRef = useRef<HTMLInputElement>(null);
+    const {
+      inputValue,
+      onBlur,
+      onChange,
+      onInputChange,
+      onKeyDown,
+      value: internalValue,
+    } = usePickerValue({
+      defaultValue,
+      format,
+      formats,
+      inputRef,
+      value: valueProp,
+    });
+
+    /** Bind close control to handlers */
+    const onCalendarChange = (val: DateType) => {
+      onChange(val);
+      onChangeProp?.(val);
       onCalendarToggle(false);
+    };
 
-      htmlInputRef.current?.blur();
-    }
-  }, [open]);
+    const onKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
+      onKeyDown(event);
 
-  /** Close calendar when tab key down */
-  useTabKeyClose(
-    () => { onCalendarToggle(false); },
-    htmlInputRef,
-    [],
-  );
+      if (onKeyDownProp) {
+        onKeyDownProp(event);
+      }
 
-  return (
-    <>
-      <DatePickerTrigger
-        {...restTriggerProps}
-        ref={anchorComposedRef}
-        className={className}
-        clearable={clearable}
-        disabled={disabled}
-        error={error}
-        fullWidth={fullWidth}
-        inputRef={htmlInputRef}
-        onChange={onInputChange}
-        onClear={onClear}
-        onClick={onTriggerClick}
-        onIconClick={(e) => {
-          e.stopPropagation();
-          onCalendarToggle(!open);
-        }}
-        placeholder={placeholder}
-        prefix={prefix}
-        readOnly={readOnly}
-        required={required}
-        size={size}
-        value={inputValue}
-        inputProps={{
-          ...restInputProp,
-          size: format.length + 2,
-          onFocus,
-          onKeyDown,
-          onBlur,
-        }}
+      if (event.key === 'Enter') {
+        onChangeProp?.(internalValue);
+        onCalendarToggle(false);
+      }
+    }, [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp]);
+
+    /** using internal reference date */
+    const [referenceDate, setReferenceDate] = useState(referenceDateProp || defaultValue || getNow());
+
+    useEffect(() => {
+      if (internalValue) {
+        setReferenceDate(internalValue);
+      }
+    }, [internalValue]);
+
+    /** Resolve input props */
+    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
+      if (onBlurProp) {
+        onBlurProp(event);
+      }
+
+      onBlur(event);
+    }, [onBlur, onBlurProp]);
+
+    const resolvedInputProps = {
+      ...restInputProp,
+      size: inputSize,
+      onFocus,
+      onKeyDown: onKeyDownWithCloseControl,
+      onBlur: onResolvedBlur,
+    };
+
+    /** Popper positioning */
+    const anchorRef = useRef<HTMLDivElement>(null);
+    const triggerComposedRef = useComposeRefs([ref, anchorRef]);
+    const calendarRef = useRef<HTMLDivElement>(null);
+
+    /** Clear handler */
+    const onClear = useCallback<MouseEventHandler<HTMLInputElement>>(() => {
+      onChange(undefined);
+      onChangeProp?.(undefined);
+    }, [onChange, onChangeProp]);
+
+    /** Blur, click away and key down close */
+    const onClose = () => {
+      onChange(valueProp);
+
+      onCalendarToggle(false);
+    };
+
+    const onChangeClose = () => {
+      onChangeProp?.(internalValue);
+
+      onCalendarToggle(false);
+    };
+
+    usePickerDocumentEventClose({
+      open,
+      anchorRef,
+      popperRef: calendarRef,
+      lastElementRefInFlow: inputRef,
+      onClose,
+      onChangeClose,
+    });
+
+    /** Icon */
+    const onIconClick: MouseEventHandler<HTMLElement> = (e) => {
+      e.stopPropagation();
+
+      if (open) {
+        onChange(valueProp);
+      }
+
+      onCalendarToggle(!open);
+    };
+
+    const suffixActionIcon = (
+      <Icon
+        icon={CalendarIcon}
+        onClick={onIconClick}
       />
-      <DatePickerCalendar
-        anchor={anchor}
-        calendarProps={calendarProps}
-        calendarRef={calendarRef}
-        disableOnNext={disableOnNext}
-        disableOnPrev={disableOnPrev}
-        displayMonthLocale={displayMonthLocale}
-        fadeProps={fadeProps}
-        isDateDisabled={isDateDisabled}
-        isMonthDisabled={isMonthDisabled}
-        isYearDisabled={isYearDisabled}
-        mode={mode}
-        onChange={onCalendarChange}
-        open={open}
-        popperProps={popperProps}
-        referenceDate={referenceDate}
-        value={internalValue}
-      />
-    </>
-  );
-}
+    );
+
+    return (
+      <>
+        <PickerTrigger
+          {...restTriggerProps}
+          ref={triggerComposedRef}
+          className={className}
+          clearable={clearable}
+          disabled={disabled}
+          error={error}
+          fullWidth={fullWidth}
+          inputProps={resolvedInputProps}
+          inputRef={inputRef}
+          onChange={onInputChange}
+          onClear={onClear}
+          placeholder={placeholder}
+          prefix={prefix}
+          readOnly={readOnly}
+          required={required}
+          size={size}
+          suffixActionIcon={suffixActionIcon}
+          value={inputValue}
+        />
+        <DatePickerCalendar
+          ref={calendarRef}
+          anchor={anchorRef}
+          calendarProps={calendarProps}
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          displayMonthLocale={displayMonthLocale}
+          fadeProps={fadeProps}
+          isDateDisabled={isDateDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isYearDisabled={isYearDisabled}
+          mode={mode}
+          onChange={onCalendarChange}
+          open={open}
+          popperProps={popperProps}
+          referenceDate={referenceDate}
+          value={internalValue}
+        />
+      </>
+    );
+  },
+);
 
 export default DatePicker;

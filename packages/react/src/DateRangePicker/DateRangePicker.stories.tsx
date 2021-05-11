@@ -2,7 +2,7 @@ import { Story, Meta } from '@storybook/react';
 import { CalendarMethodsMoment, DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 import moment from 'moment';
-import { DateRangePickerValue } from '@mezzanine-ui/core/date-range-picker';
+import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import DateRangePicker from '.';
 import { DateRangePickerProps } from './DateRangePicker';
 import Typography from '../Typography';
@@ -13,8 +13,8 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateRangePickerValue>();
-  const onChange = (v?: DateRangePickerValue) => { setVal(v); };
+  const [val, setVal] = useState<RangePickerValue>();
+  const onChange = (v?: RangePickerValue) => { setVal(v); };
 
   return [val, onChange] as const;
 }

@@ -1,5 +1,7 @@
 
 export {
+  CalendarControlModifier,
+  UseCalendarControlModifiersResult,
   useCalendarControlModifiers,
 } from './useCalendarControlModifiers';
 export {

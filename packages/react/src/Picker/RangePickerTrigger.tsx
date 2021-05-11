@@ -1,5 +1,5 @@
-import { ArrowRightIcon, CalendarIcon } from '@mezzanine-ui/icons';
-import { dateRangePickerClasses as classes } from '@mezzanine-ui/core/date-range-picker';
+import { ArrowRightIcon } from '@mezzanine-ui/icons';
+import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import {
   ChangeEventHandler,
   forwardRef,
@@ -11,9 +11,9 @@ import Icon from '../Icon';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 
-export interface DateRangePickerTriggerProps
+export interface RangePickerTriggerProps
   extends
-  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'suffixActionIcon' | 'defualtChecked'> {
+  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'defualtChecked' | 'placeholder'> {
   /**
    * Placeholder for the 'from' input element.
    */
@@ -93,7 +93,7 @@ export interface DateRangePickerTriggerProps
 /**
  * The react component for `mezzanine` date range picker trigger.
  */
-const DateRangePickerTrigger = forwardRef<HTMLDivElement, DateRangePickerTriggerProps>(
+const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
   function DateRangePickerTrigger(props, ref) {
     const {
       className,
@@ -124,12 +124,6 @@ const DateRangePickerTrigger = forwardRef<HTMLDivElement, DateRangePickerTrigger
           className,
         )}
         disabled={disabled}
-        suffixActionIcon={(
-          <Icon
-            icon={CalendarIcon}
-            onClick={onIconClick}
-          />
-        )}
       >
         <input
           {...inputFromProps}
@@ -165,4 +159,4 @@ const DateRangePickerTrigger = forwardRef<HTMLDivElement, DateRangePickerTrigger
   },
 );
 
-export default DateRangePickerTrigger;
+export default RangePickerTrigger;

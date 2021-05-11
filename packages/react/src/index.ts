@@ -233,24 +233,46 @@ export {
 } from './Upload';
 export {
   useTabKeyClose,
-  useTriggerInputHandlers,
-  useSyncTriggerInputValue,
+  UsePickerDocumentEventCloseProps,
+  usePickerDocumentEventClose,
+  UsePickerValueProps,
+  usePickerValue,
+  UseRangePickerValueProps,
+  useRangePickerValue,
+  PickerTriggerProps,
+  PickerTrigger,
+  RangePickerTriggerProps,
+  RangePickerTrigger,
+  PickerPopperProps,
+  PickerPopper,
+} from './Picker';
+export {
   DatePickerCalendarProps,
   DatePickerCalendar,
-  DatePickerTriggerProps,
-  DatePickerTrigger,
   DatePickerProps,
   default as DatePicker,
 } from './DatePicker';
 export {
   useDateRangeCalendarControls,
+  UseDateRangePickerValueProps,
+  useDateRangePickerValue,
   DateRangePickerCalendarProps,
   DateRangePickerCalendar,
-  DateRangePickerTriggerProps,
-  DateRangePickerTrigger,
   DateRangePickerProps,
   default as DateRangePicker,
 } from './DateRangePicker';
+export {
+  TimePickerPanelProps,
+  TimePickerPanel,
+  TimePickerProps,
+  default as TimePicker,
+} from './TimePicker';
+export {
+  DateTimePickerPanelProps,
+  DateTimePickerPanel,
+  DateTimePickerProps,
+  default as DateTimePicker,
+} from './DateTimePicker';
 
 /**
  * Feedback
@@ -335,6 +357,8 @@ export {
   default as Tooltip,
 } from './Tooltip';
 export {
+  CalendarControlModifier,
+  UseCalendarControlModifiersResult,
   useCalendarControlModifiers,
   useCalendarModeStack,
   useCalendarControls,
@@ -360,3 +384,11 @@ export {
   CalendarProps,
   default as Calendar,
 } from './Calendar';
+export {
+  TimePanelActionProps,
+  TimePanelAction,
+  TimePanelColumnProps,
+  TimePanelColumn,
+  TimePanelProps,
+  default as TimePanel,
+} from './TimePanel';

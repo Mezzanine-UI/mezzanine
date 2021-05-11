@@ -1,7 +1,7 @@
 import { Story, Meta } from '@storybook/react';
 import moment from 'moment';
 import { CalendarMethodsMoment, CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import CalendarDays from './CalendarDays';
 import CalendarCell, {
   CalendarCellProps,
@@ -30,7 +30,7 @@ const InnerCalendarPlayground = ({
     month: 'YYYY-MM',
     year: 'YYYY',
   };
-  const initialReferenceDate = moment();
+  const initialReferenceDate = useMemo(() => moment(), []);
   const [val, setVal] = useState<DateType>();
   const {
     currentMode,

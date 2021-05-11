@@ -3,23 +3,24 @@ import {
   useRef,
   useCallback,
   FocusEvent,
-  ChangeEvent,
-  KeyboardEvent,
   useContext,
   useMemo,
   useEffect,
+  FocusEventHandler,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  forwardRef,
 } from 'react';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
-import { DateRangePickerPickingValue, DateRangePickerValue } from '@mezzanine-ui/core/date-range-picker';
-import { useCalendarContext } from '../Calendar/CalendarContext';
-import { useClickAway } from '../hooks/useClickAway';
-import DateRangePickerTrigger, { DateRangePickerTriggerProps } from './DateRangePickerTrigger';
+import { RangePickerValue } from '@mezzanine-ui/core/picker';
+import { CalendarIcon } from '@mezzanine-ui/icons';
+import { useCalendarContext } from '../Calendar';
 import DateRangePickerCalendar, { DateRangePickerCalendarProps } from './DateRangePickerCalendar';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
-import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
-import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
-import { useTabKeyClose } from '../DatePicker/useTabKeyClose';
+import { useDateRangePickerValue } from './useDateRangePickerValue';
+import { RangePickerTrigger, RangePickerTriggerProps, usePickerDocumentEventClose } from '../Picker';
+import Icon from '../Icon';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface DateRangePickerProps
   extends
@@ -33,7 +34,7 @@ export interface DateRangePickerProps
   | 'isMonthDisabled'
   | 'isYearDisabled'
   >,
-  Pick<DateRangePickerTriggerProps,
+  Pick<RangePickerTriggerProps,
   | 'className'
   | 'clearable'
   | 'disabled'
@@ -63,7 +64,7 @@ export interface DateRangePickerProps
   /**
    * Change handler. Takes an array of your declared `DateType` which represents from and to in order.
    */
-  onChange?: (target?: DateRangePickerValue) => void;
+  onChange?: (target?: RangePickerValue) => void;
   /**
    * The reference date for getting calendars. Default to current time.
    */
@@ -72,524 +73,350 @@ export interface DateRangePickerProps
    * Value of the range picker.
    * It is an array of your declared `DateType` which represents from and to in order.
    */
-  value?: DateRangePickerValue;
+  value?: RangePickerValue;
 }
 
 /**
  * The react component for `mezzanine` date range picker.
  * Notice that any component related to date-range-picker should be used along with `CalendarContext`. <br />
  */
-function DateRangePicker(props: DateRangePickerProps) {
-  const {
-    disabled: disabledFromFormControl,
-    fullWidth: fullWidthFromFormControl,
-    required: requiredFromFormControl,
-    severity,
-  } = useContext(FormControlContext) || {};
-  const {
-    addMonth,
-    format: formatFromCalendarConfig,
-    formatToString,
-    getNow,
-    isBefore,
-    isBetween,
-    parse,
-    valueLocale,
-  } = useCalendarContext();
-  const {
-    calendarProps,
-    className,
-    clearable,
-    defaultValue,
-    disabled = disabledFromFormControl || false,
-    displayMonthLocale,
-    error = severity === 'error' || false,
-    fadeProps,
-    format = formatFromCalendarConfig,
-    fullWidth = fullWidthFromFormControl || false,
-    inputFromPlaceholder,
-    inputFromProps,
-    inputToPlaceholder,
-    inputToProps,
-    isDateDisabled,
-    isMonthDisabled,
-    isYearDisabled,
-    mode = 'day',
-    onCalendarToggle: onCalendarToggleProp,
-    onChange,
-    popperProps,
-    prefix,
-    readOnly,
-    referenceDate: referenceDateProp,
-    required = requiredFromFormControl || false,
-    size,
-    value,
-  } = props;
-  const {
-    onBlur: onFromBlurProp,
-    onKeyDown: onFromKeyDownProp,
-    onFocus: onFromFocusProp,
-    ...restInputFromProps
-  } = inputFromProps || {};
-  const {
-    onBlur: onToBlurProp,
-    onKeyDown: onToKeyDownProp,
-    onFocus: onToFocusProp,
-    ...restInputToProps
-  } = inputToProps || {};
-  const formats = useMemo(() => [
-    format,
-    formatFromCalendarConfig,
-    getDefaultModeFormat(mode),
-  ], [format, formatFromCalendarConfig, mode]);
+const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
+  function DateRangePicker(props, ref) {
+    const {
+      disabled: disabledFromFormControl,
+      fullWidth: fullWidthFromFormControl,
+      required: requiredFromFormControl,
+      severity,
+    } = useContext(FormControlContext) || {};
+    const {
+      defaultDateFormat,
+      getNow,
+      isBetween,
+    } = useCalendarContext();
+    const {
+      calendarProps,
+      className,
+      clearable,
+      defaultValue,
+      disabled = disabledFromFormControl || false,
+      displayMonthLocale,
+      error = severity === 'error' || false,
+      fadeProps,
+      format = defaultDateFormat,
+      fullWidth = fullWidthFromFormControl || false,
+      inputFromPlaceholder,
+      inputFromProps,
+      inputToPlaceholder,
+      inputToProps,
+      isDateDisabled,
+      isMonthDisabled,
+      isYearDisabled,
+      mode = 'day',
+      onCalendarToggle: onCalendarToggleProp,
+      onChange: onChangeProp,
+      popperProps,
+      prefix,
+      readOnly,
+      referenceDate: referenceDateProp,
+      required = requiredFromFormControl || false,
+      size,
+      value: valueProp,
+    } = props;
+    const {
+      onBlur: onFromBlurProp,
+      onKeyDown: onFromKeyDownProp,
+      onFocus: onFromFocusProp,
+      ...restInputFromProps
+    } = inputFromProps || {};
+    const {
+      onBlur: onToBlurProp,
+      onKeyDown: onToKeyDownProp,
+      onFocus: onToFocusProp,
+      ...restInputToProps
+    } = inputToProps || {};
+    const formats = useMemo(() => [
+      format,
+      defaultDateFormat,
+      getDefaultModeFormat(mode),
+    ], [defaultDateFormat, format, mode]);
 
-  const sortValues = useCallback((valueToSort: DateRangePickerPickingValue): DateRangePickerPickingValue => {
-    const [v1, v2] = valueToSort;
-
-    if (v1 && v2) {
-      return isBefore(v1, v2) ? [v1, v2] : [v2, v1];
+    function isBetweenRange(
+      valueToCheck: DateType,
+      t1: DateType,
+      t2: DateType,
+      granularity: string,
+    ) {
+      return isBetween(valueToCheck, t1, t2, granularity) || isBetween(valueToCheck, t2, t1, granularity);
     }
 
-    if (!v1 && !v2) {
-      return [undefined, undefined];
-    }
+    /** Using internal reference date */
+    const [referenceDate, updateReferenceDate] = useState(referenceDateProp || defaultValue?.[0] || getNow());
 
-    return [v1 || v2, undefined] as DateRangePickerPickingValue;
-  }, [isBefore]);
+    /** Calendar panel toggle */
+    const [open, setOpen] = useState(false);
+    const preventOpen = readOnly;
+    const onCalendarToggle = useCallback((currentOpen: boolean) => {
+      if (!preventOpen) {
+        setOpen(currentOpen);
 
-  function isBetweenRange(
-    valueToCheck: DateType,
-    t1: DateType,
-    t2: DateType,
-    granularity: string,
-  ) {
-    return isBetween(valueToCheck, t1, t2, granularity) || isBetween(valueToCheck, t2, t1, granularity);
-  }
-
-  /** Using internal reference date */
-  const [referenceDate, updateReferenceDate] = useState(referenceDateProp || defaultValue?.[0] || getNow());
-
-  /** Calendar panel toggle */
-  const [open, setOpen] = useState(false);
-  const onCalendarToggle = useCallback((currentOpen: boolean) => {
-    setOpen(currentOpen);
-
-    if (onCalendarToggleProp) {
-      onCalendarToggleProp(currentOpen);
-    }
-  }, [onCalendarToggleProp]);
-
-  const onFromFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
-    if (onFromFocusProp) {
-      onFromFocusProp(event);
-    }
-
-    if (!readOnly) {
-      onCalendarToggle(true);
-    }
-  }, [onCalendarToggle, onFromFocusProp, readOnly]);
-
-  const onToFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
-    if (onToFocusProp) {
-      onToFocusProp(event);
-    }
-
-    if (!readOnly) {
-      onCalendarToggle(true);
-    }
-  }, [onCalendarToggle, onToFocusProp, readOnly]);
-
-  /** Values and onChange */
-  const [range, setRange] = useState(() => sortValues(value || []));
-  const [from, to] = range;
-  const [internalFrom, setInternalFrom] = useState(() => (
-    value?.[0] ? formatToString(valueLocale, value[0], format) : ''
-  ));
-  const [internalTo, setInternalTo] = useState(() => (
-    value?.[1] ? formatToString(valueLocale, value[1], format) : ''
-  ));
-
-  useEffect(() => {
-    setRange(value || []);
-    setInternalFrom(
-      value?.[0] ? formatToString(valueLocale, value[0], format) : '',
-    );
-    setInternalTo(
-      value?.[1] ? formatToString(valueLocale, value[1], format) : '',
-    );
-  }, [format, formatToString, value, valueLocale]);
-
-  useEffect(() => {
-    if (internalFrom) {
-      const newRef = parse(valueLocale, internalFrom, formats);
-
-      if (newRef) {
-        updateReferenceDate(newRef);
-      }
-    } else if (internalTo) {
-      const newRef = parse(valueLocale, internalTo, formats);
-
-      if (newRef) {
-        updateReferenceDate(newRef);
-      }
-    }
-  }, [addMonth, formats, internalFrom, internalTo, parse, valueLocale]);
-
-  const [hoverValue, setHoverValue] = useState<DateType | undefined>(undefined);
-
-  const commitChange = useCallback((val?: DateRangePickerPickingValue) => {
-    function clear() {
-      setInternalFrom('');
-      setInternalTo('');
-      setRange([]);
-      setHoverValue(undefined);
-
-      if (onChange) {
-        onChange(undefined);
-      }
-    }
-
-    if (!val) {
-      clear();
-      onCalendarToggle(false);
-
-      return;
-    }
-
-    const valFrom = val[0] || from || value?.[0];
-    const valTo = val[1] || to || value?.[1] || valFrom;
-    const sortedVal = sortValues([valFrom, valTo] as DateRangePickerPickingValue);
-
-    if (sortedVal.some((v) => !v)) {
-      clear();
-    } else {
-      setInternalFrom(formatToString(valueLocale, sortedVal[0] as DateType, format));
-      setInternalTo(formatToString(valueLocale, sortedVal[1] as DateType, format));
-      setRange(sortedVal);
-      setHoverValue(undefined);
-
-      if (onChange) {
-        onChange(sortedVal as DateRangePickerValue);
-      }
-    }
-
-    onCalendarToggle(false);
-  }, [format, formatToString, from, onCalendarToggle, onChange, sortValues, to, value, valueLocale]);
-
-  const onCalendarChange = useCallback((val: DateType) => {
-    const firstVal = from || to;
-
-    if (from && to) {
-      setInternalFrom(formatToString(valueLocale, val, format));
-      setInternalTo('');
-      setRange([val]);
-    } else if (firstVal) {
-      const sortedVal = sortValues([firstVal, val]);
-
-      commitChange(sortedVal as DateRangePickerPickingValue);
-      setRange(sortedVal);
-    } else {
-      setInternalFrom(formatToString(valueLocale, val, format));
-      setRange([val]);
-    }
-  }, [commitChange, format, formatToString, from, sortValues, to, valueLocale]);
-
-  const onFromInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const val = event.target.value;
-
-    setInternalFrom(val);
-
-    const valDateType = parse(valueLocale, val, formats);
-    const toValDateType = parse(valueLocale, internalTo, formats);
-
-    if (valDateType) {
-      if (toValDateType) {
-        if (isBefore(toValDateType, valDateType)) {
-          setInternalTo('');
-          setHoverValue(undefined);
-          setRange([valDateType]);
-        } else {
-          setRange([valDateType, toValDateType]);
+        if (onCalendarToggleProp) {
+          onCalendarToggleProp(currentOpen);
         }
+      }
+    }, [onCalendarToggleProp, preventOpen]);
+
+    const onFromFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
+      if (onFromFocusProp) {
+        onFromFocusProp(event);
+      }
+
+      onCalendarToggle(true);
+    }, [onCalendarToggle, onFromFocusProp]);
+
+    const onToFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
+      if (onToFocusProp) {
+        onToFocusProp(event);
+      }
+
+      onCalendarToggle(true);
+    }, [onCalendarToggle, onToFocusProp]);
+
+    /** Values and onChange */
+    const inputToRef = useRef<HTMLInputElement>(null);
+    const inputFromRef = useRef<HTMLInputElement>(null);
+
+    const {
+      calendarValue,
+      inputFromValue,
+      inputToValue,
+      onCalendarChange,
+      onCalendarHover,
+      onChange,
+      onClear,
+      onFromBlur,
+      onFromKeyDown,
+      onInputFromChange,
+      onInputToChange,
+      onToBlur,
+      onToKeyDown,
+      value: internalValue,
+    } = useDateRangePickerValue({
+      format,
+      formats,
+      value: valueProp,
+      inputFromRef,
+      inputToRef,
+      onChange: onChangeProp,
+    });
+
+    useEffect(() => {
+      const [from, to] = internalValue;
+
+      if (from) {
+        updateReferenceDate(from);
+      } else if (to) {
+        updateReferenceDate(to);
+      }
+    }, [internalValue]);
+
+    /** Bind calendar open control to handlers */
+    const onCalendarChangeWithCloseControl = useCallback((val: DateType) => {
+      onCalendarChange(val);
+
+      const [from, to] = internalValue;
+      const hasFirstValue = (from && !to) || (to && !from);
+
+      if (hasFirstValue && val) {
+        onCalendarToggle(false);
+      }
+    }, [internalValue, onCalendarChange, onCalendarToggle]);
+
+    const onFromKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
+      onFromKeyDown(event);
+
+      const [from, to] = internalValue;
+
+      if (event.key === 'Enter' && from && to) {
+        onCalendarToggle(false);
+      }
+    }, [internalValue, onCalendarToggle, onFromKeyDown]);
+
+    const onToKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
+      onToKeyDown(event);
+
+      const [from, to] = internalValue;
+
+      if (event.key === 'Enter' && from && to) {
+        onCalendarToggle(false);
+      }
+    }, [internalValue, onCalendarToggle, onToKeyDown]);
+
+    /** Calendar cell in range checker */
+    const getIsInRangeHandler = (granularity: string) => {
+      const [anchor1, anchor2] = calendarValue || [];
+
+      return (
+        anchor1 && anchor2
+          ? (date: DateType) => isBetweenRange(date, anchor1, anchor2, granularity)
+          : undefined
+      );
+    };
+
+    /** Popper settings */
+    const anchorRef = useRef<HTMLDivElement>(null);
+    const calendarRef = useRef<HTMLDivElement>(null);
+    const triggerComposedRef = useComposeRefs([anchorRef, ref]);
+
+    /** Resolve input props */
+    const onResolvedFromBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
+      if (onFromBlurProp) {
+        onFromBlurProp(event);
+      }
+
+      onFromBlur(event);
+    }, [onFromBlur, onFromBlurProp]);
+
+    const onResolvedToBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
+      if (onToBlurProp) {
+        onToBlurProp(event);
+      }
+
+      onToBlur(event);
+    }, [onToBlur, onToBlurProp]);
+
+    const onResolvedFromKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
+      if (onFromKeyDownProp) {
+        onFromKeyDownProp(event);
+      }
+
+      onFromKeyDownWithCloseControl(event);
+    }, [onFromKeyDownProp, onFromKeyDownWithCloseControl]);
+
+    const onResolvedToKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
+      if (onToKeyDownProp) {
+        onToKeyDownProp(event);
+      }
+
+      onToKeyDownWithCloseControl(event);
+    }, [onToKeyDownProp, onToKeyDownWithCloseControl]);
+
+    const resolvedInputFromProps = {
+      ...restInputFromProps,
+      onFocus: onFromFocus,
+      onKeyDown: onResolvedFromKeyDown,
+      onBlur: onResolvedFromBlur,
+      size: format.length + 2,
+    };
+
+    const resolvedInputToProps = {
+      ...restInputToProps,
+      onFocus: onToFocus,
+      onKeyDown: onResolvedToKeyDown,
+      onBlur: onResolvedToBlur,
+      size: format.length + 2,
+    };
+
+    /** Blur, click away and key down close */
+    const onClose = () => {
+      onChange(valueProp);
+
+      onCalendarToggle(false);
+    };
+
+    const onChangeClose = () => {
+      const [from, to] = internalValue;
+
+      if (from && to) {
+        const newValue = onChange([from, to]) as [DateType, DateType];
+
+        onChangeProp?.(newValue);
       } else {
-        setRange([valDateType]);
+        onChange(valueProp);
       }
-    } else if (toValDateType) {
-      setHoverValue(undefined);
-      setRange([undefined, toValDateType]);
-    } else {
-      setHoverValue(undefined);
-      setRange([]);
-    }
-  }, [formats, internalTo, isBefore, parse, valueLocale]);
 
-  const onToInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const val = event.target.value;
-
-    setInternalTo(val);
-
-    const valDateType = parse(valueLocale, val, formats);
-    const fromValDateType = parse(valueLocale, internalFrom, formats);
-
-    if (valDateType) {
-      if (fromValDateType) {
-        if (isBefore(valDateType, fromValDateType)) {
-          setInternalFrom('');
-          setHoverValue(undefined);
-          setRange([undefined, valDateType]);
-        } else {
-          setRange([fromValDateType, valDateType]);
-        }
-      }
-    } else if (fromValDateType) {
-      setHoverValue(undefined);
-      setRange([fromValDateType]);
-    } else {
-      setHoverValue(undefined);
-      setRange([]);
-    }
-  }, [formats, internalFrom, isBefore, parse, valueLocale]);
-
-  const onFromBlur = useCallback((event: FocusEvent<HTMLInputElement>) => {
-    if (onFromBlurProp) {
-      onFromBlurProp(event);
-    }
-
-    const val = event.target.value;
-    const valDateType = parse(valueLocale, val, formats);
-
-    if (valDateType) {
-      setInternalFrom(val);
-    } else {
-      setInternalFrom('');
-    }
-  }, [formats, onFromBlurProp, parse, valueLocale]);
-
-  const onToBlur = useCallback((event: FocusEvent<HTMLInputElement>) => {
-    if (onToBlurProp) {
-      onToBlurProp(event);
-    }
-
-    const val = event.target.value;
-    const valDateType = parse(valueLocale, val, formats) || undefined;
-
-    if (valDateType) {
-      setInternalTo(val);
-    } else {
-      setInternalTo('');
-    }
-  }, [formats, onToBlurProp, parse, valueLocale]);
-
-  const inputToRef = useRef<HTMLInputElement>(null);
-  const inputFromRef = useRef<HTMLInputElement>(null);
-  const onFromKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
-    if (onFromKeyDownProp) {
-      onFromKeyDownProp(event);
-    }
-
-    if (event.key === 'Enter') {
-      inputFromRef.current?.blur();
-
-      const values = [
-        parse(valueLocale, internalFrom, formats) || undefined,
-        parse(valueLocale, internalTo, formats) || undefined,
-      ] as DateRangePickerPickingValue;
-
-      commitChange(values);
-    }
-  }, [commitChange, formats, internalFrom, internalTo, onFromKeyDownProp, parse, valueLocale]);
-
-  const onToKeyDown = useCallback((event: KeyboardEvent<HTMLInputElement>) => {
-    if (onToKeyDownProp) {
-      onToKeyDownProp(event);
-    }
-
-    if (event.key === 'Enter') {
-      inputToRef.current?.blur();
-
-      const values = [
-        parse(valueLocale, internalFrom, formats) || undefined,
-        parse(valueLocale, internalTo, formats) || undefined,
-      ] as DateRangePickerPickingValue;
-
-      commitChange(values);
-    }
-  }, [commitChange, formats, internalFrom, internalTo, onToKeyDownProp, parse, valueLocale]);
-
-  /** Hover settings */
-  const anchor1 = from || to;
-  const anchor2 = from && to ? to : hoverValue;
-  const calendarValue = useMemo(() => {
-    if (anchor1 && anchor2) {
-      return [anchor1, anchor2];
-    }
-
-    if (anchor1) {
-      return [anchor1];
-    }
-
-    return undefined;
-  }, [anchor1, anchor2]);
-  const getIsInRangeHandler = (granularity: string) => (
-    anchor1 && anchor2
-      ? (date: DateType) => isBetweenRange(date, anchor1, anchor2, granularity)
-      : undefined
-  );
-  const onHover = anchor1 ? setHoverValue : undefined;
-
-  const [anchor, setAnchor] = useState<HTMLDivElement | null>(null);
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const anchorComposedRef = useComposeRefs([setAnchor, anchorRef]);
-  const firstCalendarRef = useRef<HTMLDivElement>(null);
-  const secondCalendarRef = useRef<HTMLDivElement>(null);
-
-  /** Bind input clear control */
-  const [
-    inputFromValue,
-    inputFromOnChange,
-    inputFromOnClear,
-  ] = useInputWithClearControlValue({
-    defaultValue: defaultValue ? formatToString(valueLocale, defaultValue[0], format) : '',
-    onChange: onFromInputChange,
-    ref: inputFromRef,
-    value: internalFrom,
-  });
-
-  const [
-    inputToValue,
-    inputToOnChange,
-    inputToOnClear,
-  ] = useInputWithClearControlValue({
-    defaultValue: defaultValue ? formatToString(valueLocale, defaultValue[1], format) : '',
-    onChange: onToInputChange,
-    ref: inputToRef,
-    value: internalTo,
-  });
-
-  const onClear = useCallback((e) => {
-    inputFromOnClear(e);
-    inputToOnClear(e);
-
-    commitChange();
-  }, [commitChange, inputFromOnClear, inputToOnClear]);
-
-  /** Trigger click handler for closing calendar */
-  const onTriggerClick = () => {
-    if (!open && !readOnly) {
       onCalendarToggle(false);
-    }
-  };
+    };
 
-  /** Close calendar when clicked outside */
-  useClickAway(
-    () => {
-      if (!open) {
-        return;
+    usePickerDocumentEventClose({
+      open,
+      anchorRef,
+      popperRef: calendarRef,
+      lastElementRefInFlow: inputToRef,
+      onClose,
+      onChangeClose,
+    });
+
+    /** Icon */
+    const onIconClick: MouseEventHandler<HTMLElement> = (e) => {
+      e.stopPropagation();
+
+      if (open) {
+        onChange(valueProp);
       }
 
-      return (event) => {
-        if (
-          !firstCalendarRef.current?.contains(event.target as HTMLElement) &&
-          !secondCalendarRef.current?.contains(event.target as HTMLElement)
-        ) {
-          const values = [
-            parse(valueLocale, internalFrom, formats) || undefined,
-            parse(valueLocale, internalTo, formats) || undefined,
-          ] as DateRangePickerPickingValue;
+      onCalendarToggle(!open);
+    };
 
-          commitChange(values);
-        }
-      };
-    },
-    anchorRef,
-    [open, internalFrom, internalTo, valueLocale, formats],
-  );
-
-  /** Close calendar when escape key down */
-  useDocumentEscapeKeyDown(() => () => {
-    if (open) {
-      onCalendarToggle(false);
-
-      commitChange(value || []);
-    }
-  }, [open]);
-
-  /** Close calendar when tab key down */
-  useTabKeyClose(
-    () => { onCalendarToggle(false); },
-    inputToRef,
-    [],
-  );
-
-  return (
-    <>
-      <DateRangePickerTrigger
-        ref={anchorComposedRef}
-        className={className}
-        clearable={clearable}
-        disabled={disabled}
-        error={error}
-        fullWidth={fullWidth}
-        inputFromPlaceholder={inputFromPlaceholder}
-        inputFromRef={inputFromRef}
-        inputFromValue={inputFromValue}
-        inputToPlaceholder={inputToPlaceholder}
-        inputToRef={inputToRef}
-        inputToValue={inputToValue}
-        onClear={onClear}
-        onClick={onTriggerClick}
-        onIconClick={(e) => {
-          e.stopPropagation();
-          onCalendarToggle(!open);
-        }}
-        onInputFromChange={inputFromOnChange}
-        onInputToChange={inputToOnChange}
-        prefix={prefix}
-        readOnly={readOnly}
-        required={required}
-        size={size}
-        inputFromProps={{
-          ...restInputFromProps,
-          onFocus: onFromFocus,
-          onKeyDown: onFromKeyDown,
-          onBlur: onFromBlur,
-          size: format.length + 2,
-        }}
-        inputToProps={{
-          ...restInputToProps,
-          onFocus: onToFocus,
-          onKeyDown: onToKeyDown,
-          onBlur: onToBlur,
-          size: format.length + 2,
-        }}
+    const suffixActionIcon = (
+      <Icon
+        icon={CalendarIcon}
+        onClick={onIconClick}
       />
-      <DateRangePickerCalendar
-        open={open}
-        anchor={anchor}
-        calendarProps={calendarProps}
-        displayMonthLocale={displayMonthLocale}
-        fadeProps={fadeProps}
-        firstCalendarRef={firstCalendarRef}
-        isDateDisabled={isDateDisabled}
-        isDateInRange={getIsInRangeHandler('date')}
-        isMonthDisabled={isMonthDisabled}
-        isMonthInRange={getIsInRangeHandler('month')}
-        isWeekInRange={getIsInRangeHandler('week')}
-        isYearDisabled={isYearDisabled}
-        isYearInRange={getIsInRangeHandler('year')}
-        mode={mode}
-        onChange={onCalendarChange}
-        onDateHover={onHover}
-        onWeekHover={onHover}
-        onMonthHover={onHover}
-        onYearHover={onHover}
-        popperProps={popperProps}
-        referenceDate={referenceDate}
-        secondCalendarRef={secondCalendarRef}
-        value={calendarValue}
-      />
-    </>
-  );
-}
+    );
+
+    return (
+      <>
+        <RangePickerTrigger
+          ref={triggerComposedRef}
+          className={className}
+          clearable={clearable}
+          disabled={disabled}
+          error={error}
+          fullWidth={fullWidth}
+          inputFromPlaceholder={inputFromPlaceholder}
+          inputFromProps={resolvedInputFromProps}
+          inputFromRef={inputFromRef}
+          inputFromValue={inputFromValue}
+          inputToPlaceholder={inputToPlaceholder}
+          inputToProps={resolvedInputToProps}
+          inputToRef={inputToRef}
+          inputToValue={inputToValue}
+          onClear={onClear}
+          onInputFromChange={onInputFromChange}
+          onInputToChange={onInputToChange}
+          prefix={prefix}
+          readOnly={readOnly}
+          required={required}
+          size={size}
+          suffixActionIcon={suffixActionIcon}
+        />
+        <DateRangePickerCalendar
+          ref={calendarRef}
+          open={open}
+          anchor={anchorRef}
+          calendarProps={calendarProps}
+          displayMonthLocale={displayMonthLocale}
+          fadeProps={fadeProps}
+          isDateDisabled={isDateDisabled}
+          isDateInRange={getIsInRangeHandler('date')}
+          isMonthDisabled={isMonthDisabled}
+          isMonthInRange={getIsInRangeHandler('month')}
+          isWeekInRange={getIsInRangeHandler('week')}
+          isYearDisabled={isYearDisabled}
+          isYearInRange={getIsInRangeHandler('year')}
+          mode={mode}
+          onChange={onCalendarChangeWithCloseControl}
+          onDateHover={onCalendarHover}
+          onWeekHover={onCalendarHover}
+          onMonthHover={onCalendarHover}
+          onYearHover={onCalendarHover}
+          popperProps={popperProps}
+          referenceDate={referenceDate}
+          value={calendarValue}
+        />
+      </>
+    );
+  },
+);
 
 export default DateRangePicker;

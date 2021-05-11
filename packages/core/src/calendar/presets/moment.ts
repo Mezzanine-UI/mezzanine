@@ -6,6 +6,9 @@ import { CalendarMethods as CalendarMethodsType } from './typings';
 export const CalendarMethods: CalendarMethodsType<Moment> = {
   /** Get date infos */
   getNow: () => moment(),
+  getSecond: (date) => date.second(),
+  getMinute: (date) => date.minute(),
+  getHour: (date) => date.hour(),
   getDate: (date) => date.date(),
   getWeekDay: (date) => {
     const clone = date.clone().locale('en_US');
@@ -46,6 +49,21 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
 
     return clone.add(diff, 'month');
   },
+  setSecond: (date, second) => {
+    const clone = date.clone();
+
+    return clone.second(second);
+  },
+  setMinute: (date, minute) => {
+    const clone = date.clone();
+
+    return clone.minute(minute);
+  },
+  setHour: (date, hour) => {
+    const clone = date.clone();
+
+    return clone.hour(hour);
+  },
   setMonth: (date, month) => {
     const clone = date.clone();
 
@@ -61,6 +79,7 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
 
     return clone.date(target);
   },
+  startOf: (target, granularity: unitOfTime.StartOf) => target.startOf(granularity),
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
@@ -127,6 +146,6 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
       }
     }
 
-    return null;
+    return undefined;
   },
 };

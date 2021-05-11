@@ -2,13 +2,13 @@ export {
   useDateRangeCalendarControls,
 } from './useDateRangeCalendarControls';
 export {
+  UseDateRangePickerValueProps,
+  useDateRangePickerValue,
+} from './useDateRangePickerValue';
+export {
   DateRangePickerCalendarProps,
   default as DateRangePickerCalendar,
 } from './DateRangePickerCalendar';
-export {
-  DateRangePickerTriggerProps,
-  default as DateRangePickerTrigger,
-} from './DateRangePickerTrigger';
 export {
   DateRangePickerProps,
   default,

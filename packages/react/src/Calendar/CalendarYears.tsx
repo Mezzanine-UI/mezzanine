@@ -37,10 +37,6 @@ export interface CalendarYearsProps
    */
   referenceDate: DateType;
   /**
-   * Click handler for years that are not in range. This method should update the reference date for switing calendars.
-   */
-  updateReferenceDate?: (date: DateType) => void;
-  /**
    * The year will be marked as active if it matches the same year of any value in the array.
    */
   value?: DateType[];

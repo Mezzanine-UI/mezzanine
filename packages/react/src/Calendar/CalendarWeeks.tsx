@@ -12,12 +12,12 @@ import { useCalendarContext } from './CalendarContext';
 export interface CalendarWeeksProps
   extends
   Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick'> {
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic.
    * The method takes the date object of first date in week as its parameter.
    */
-  isDateDisabled?: (date: DateType) => boolean;
+  isWeekDisabled?: (date: DateType) => boolean;
   /**
    * Provide if you have a custom logic for checking if the week is in range.
    * The method takes the date object of first date in week as its parameter.
@@ -64,9 +64,9 @@ function CalendarWeeks(props: CalendarWeeksProps) {
   const {
     className,
     displayWeekDayLocale = displayWeekDayLocaleFromConfig,
-    isDateDisabled,
+    isWeekDisabled,
     isWeekInRange,
-    onClick,
+    onClick: onClickProp,
     onWeekHover,
     referenceDate,
     value,
@@ -86,7 +86,6 @@ function CalendarWeeks(props: CalendarWeeksProps) {
       <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
       {
         daysGrid.map((week, index) => {
-          let disabled: boolean | undefined;
           const dates: DateType[] = [];
           const weekStartInPrevMonth = index === 0 && week[0] > 7;
           const weekStartInNextMonth = index > 3 && week[0] <= 14;
@@ -103,16 +102,20 @@ function CalendarWeeks(props: CalendarWeeksProps) {
                 : thisMonth;
             const date = setDate(setMonth(referenceDate, month), dateNum);
 
-            disabled = disabled || (isDateDisabled && isDateDisabled(date));
             dates.push(date);
           });
 
+          const disabled = isWeekDisabled && isWeekDisabled(dates[0]);
           const inactive = !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
           const active = !disabled && !inactive && value && isWeekIncluded(dates[0], value);
           const inRange = !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
 
           const onMouseEnter = onWeekHover ? () => {
             onWeekHover(dates[0]);
+          } : undefined;
+
+          const onClick = onClickProp ? () => {
+            onClickProp(dates[0]);
           } : undefined;
 
           return (
@@ -126,20 +129,19 @@ function CalendarWeeks(props: CalendarWeeksProps) {
                 {
                   [classes.buttonActive]: active,
                   [classes.buttonInRange]: inRange,
+                  [classes.buttonDisabled]: disabled,
                 },
               )}
-              onClick={() => {
-                if (onClick) {
-                  onClick(dates[0]);
-                }
-              }}
+              disabled={disabled}
+              aria-disabled={disabled}
+              onClick={onClick}
               onMouseEnter={onMouseEnter}
             >
               {week.map((dateNum, dateIndex) => (
                 <CalendarCell
                   key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
                   today={isSameDate(dates[dateIndex], getNow())}
-                  disabled={!isInMonth(dates[dateIndex], getMonth(referenceDate))}
+                  disabled={disabled || !isInMonth(dates[dateIndex], getMonth(referenceDate))}
                   active={active}
                 >
                   {dateNum}
