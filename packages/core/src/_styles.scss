@@ -69,5 +69,6 @@
   @include _load-styles($options, loading);
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
+  @include _load-styles($options, notification);
   @include _load-styles($options, popconfirm);
 }
