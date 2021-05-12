@@ -40,6 +40,8 @@ $table-refresh-vertical-padding: 8px !default;
 @mixin flexible {
   flex: 1 1 0;
   min-width: 0;
+  display: inline-flex;
+  align-items: center;
 }
 
 @mixin body_bg {
