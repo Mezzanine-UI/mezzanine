@@ -2,13 +2,18 @@ import { Meta } from '@storybook/react';
 import { Key, useEffect, useState } from 'react';
 import Button, { ButtonGroup } from '../Button';
 import { createNotifier } from '.';
+import { NotifierData } from './typings';
 
 export default {
   title: 'Utility/Notifier',
 } as Meta;
 
-const Notifier = createNotifier({
-  render: ({ children }) => <div>{children}</div>,
+type TestNotifierData = NotifierData & {
+  reference?: Key;
+};
+
+const Notifier = createNotifier<TestNotifierData>({
+  render: ({ children, reference }) => <div key={reference}>{children}</div>,
 });
 
 export const Common = () => {

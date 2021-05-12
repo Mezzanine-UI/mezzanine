@@ -313,6 +313,11 @@ export {
   PopconfirmProps,
   default as Popconfirm,
 } from './Popconfirm';
+export {
+  NotificationData,
+  NotificationSeverity,
+  default as Notification,
+} from './Notification';
 
 /**
  * Utility

@@ -16,14 +16,15 @@ export interface NotifierData extends Pick<NotifierConfig, 'duration'> {
   /**
    * Close Handler
    */
-  onClose?: VoidFunction;
+  onClose?: (key: Key) => void;
 }
 
 export type RenderNotifier<N extends NotifierData> = (notifier: N) => ReactNode;
 
-export interface Notifier<N extends NotifierData> {
+export interface Notifier<N extends NotifierData, C extends NotifierConfig = NotifierConfig> {
   add: (notifier: N & { key?: Key; }) => Key;
-  config: (configs: NotifierConfig) => void
+  config: (configs: C) => void
   destroy: VoidFunction;
   remove: (key: Key) => void;
+  getConfig: () => C;
 }
