@@ -1,53 +1,37 @@
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/palette';
 @use './card' as *;
 
 .#{$prefix} {
-  width: 100%;
+  width: auto;
   display: grid;
-  border: 1px;
-  border-style: solid;
-  border-color: #e0e0e0;
-  align-content: center;
+  border: 1px solid palette.color(border);
 
-  &__media > * {
-    width: 100%;
-    vertical-align: middle;
-    border-style: none;
-    padding-bottom: 0;
-  }
-
-  &__cardSpace {
+  &__meta {
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: spacing.level(4);
+    row-gap: spacing.level(6);
   }
 
-  &__title {
-    @include typography.variant(h3);
+  &__metaContent {
+    width: auto;
+    display: grid;
+    row-gap: spacing.level(4);
   }
 
-  &__header {
-    width: 100%;
+  &__metaContentHeader {
+    width: auto;
     display: grid;
     row-gap: spacing.level(1);
   }
 
-  &__subhead {
-    width: 100%;
-    @include typography.variant(body1);
-  }
-
-  &__content {
-    width: 100%;
-    padding-top: spacing.level(4);
-    @include typography.variant(body1);
-  }
-
-  &__footer {
-    width: 100%;
-    padding-top: spacing.level(6);
-  }
-
-  &__footer > * {
-    float: right;
+  &__metaActions {
+    width: auto;
+    display: flex;
+    justify-content: space-between;
   }
 }
