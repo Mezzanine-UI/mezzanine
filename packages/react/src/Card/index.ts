@@ -1,6 +1,7 @@
-// export {
-//   ,
-// } from '@mezzanine-ui/core/card';
+export {
+  CardActionsProps,
+  default as CardActions,
+} from './CardActions';
 export {
   CardProps,
   default,
