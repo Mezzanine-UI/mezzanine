@@ -20,6 +20,8 @@ export interface PageFooterProps
   | 'confirmText'
   | 'danger'
   | 'loading'
+  | 'hideCancelButton'
+  | 'hideConfirmButton'
   | 'onCancel'
   | 'onConfirm'
   > {
@@ -44,6 +46,8 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(function PageFooter(
     loading,
     confirmButtonProps,
     confirmText,
+    hideCancelButton,
+    hideConfirmButton,
     onCancel,
     onConfirm,
     ...rest
@@ -64,7 +68,11 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(function PageFooter(
       <ConfirmActions
         cancelText={cancelText}
         confirmText={confirmText}
+        cancelButtonProps={cancelButtonProps}
+        confirmButtonProps={confirmButtonProps}
         danger={danger}
+        hideCancelButton={hideCancelButton}
+        hideConfirmButton={hideConfirmButton}
         loading={loading}
         onCancel={onCancel}
         onConfirm={onConfirm}
