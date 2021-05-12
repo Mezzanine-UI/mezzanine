@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.2.0...@mezzanine-ui/icons@0.3.0) (2021-05-12)
+
+### Features
+
+- **icons:** add clock icon ([d8ff505](https://github.com/Mezzanine-UI/mezzanine/commit/d8ff505e46fbf84fbdf4a3a24f850e824142d7f1))
+
 # [0.2.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.1.1...@mezzanine-ui/icons@0.2.0) (2021-05-04)
 
 ### Features
