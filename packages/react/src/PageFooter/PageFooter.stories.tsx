@@ -37,6 +37,9 @@ export const Basic: Story<PageFooterProps> = ({
   <PageFooter
     cancelText={cancelText}
     confirmText={confirmText}
+    confirmButtonProps={{
+      type: 'submit',
+    }}
     danger={danger}
     loading={loading}
     onCancel={onCancel}

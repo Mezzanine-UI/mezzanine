@@ -56,6 +56,7 @@ const ConfirmActions = forwardRef<HTMLDivElement, ConfirmActionsProps>(function 
     onConfirm,
     ...rest
   } = props;
+
   const {
     disabled: cancelButtonDisabled = loading,
   } = cancelButtonProps || {};
