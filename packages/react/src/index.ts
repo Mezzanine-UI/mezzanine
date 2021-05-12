@@ -139,6 +139,8 @@ export {
 } from './Badge';
 export {
   CardProps,
+  CardActionsProps,
+  CardActions,
   default as Card,
 } from './Card';
 export {
