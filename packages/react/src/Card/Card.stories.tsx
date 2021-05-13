@@ -177,15 +177,15 @@ export const Playground: Story<PlaygroundArgs> = ({
   cover, style, title, titleProps, subtitle, subtitleProps, description, descriptionProps, actions, ...args
 }) => (
   <Card
+    actions={actions}
     cover={cover}
-    style={style}
-    title={title}
-    titleProps={titleProps}
-    subtitle={subtitle}
-    subtitleProps={subtitleProps}
     description={description}
     descriptionProps={descriptionProps}
-    actions={actions}
+    title={title}
+    titleProps={titleProps}
+    style={style}
+    subtitle={subtitle}
+    subtitleProps={subtitleProps}
     {...args}
   />
 );

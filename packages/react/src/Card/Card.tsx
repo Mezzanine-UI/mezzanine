@@ -6,15 +6,23 @@ import Typography, { TypographyProps } from '../Typography';
 
 export interface CardProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title' | 'children'> {
   /**
-   * Inline style to apply to the card.
+   * Card footer
    */
-  style?: CSSProperties;
+  actions?: ReactNode;
   /**
    * Card cover.
   */
   cover?: ReactNode;
   /**
-   * Card title, hiding if the text is empty.
+   * Description under the subtitle. visible if value is not empty.
+   */
+  description?: string;
+  /**
+   * Description props
+   */
+  descriptionProps?: Omit<TypographyProps, 'children'>;
+  /**
+   * Card title, visible if value is not empty.
    */
   title?: ReactNode;
   /**
@@ -23,25 +31,17 @@ export interface CardProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'
    */
   titleProps?: Omit<TypographyProps, 'children'>;
   /**
-   * Subtitle under the title
+   * Inline style to apply to the card.
+   */
+  style?: CSSProperties;
+  /**
+   * Subtitle under the title. visible if value is not empty.
    */
   subtitle?: ReactNode;
   /**
    * Subtitle props
    */
   subtitleProps?: Omit<TypographyProps, 'children'>;
-  /**
-   * Description under the subtitle
-   */
-  description?: string;
-  /**
-   * Description props
-   */
-  descriptionProps?: Omit<TypographyProps, 'children'>;
-  /**
-   * Card footer
-   */
-  actions?: ReactNode;
 }
 
 /**
@@ -49,15 +49,15 @@ export interface CardProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'
  */
 const Card = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref) {
   const {
+    actions,
     className,
     cover,
+    description,
+    descriptionProps,
     title,
     titleProps,
     subtitle,
     subtitleProps,
-    description,
-    descriptionProps,
-    actions,
     ...rest
   } = props;
 

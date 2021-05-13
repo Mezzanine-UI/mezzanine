@@ -5,7 +5,6 @@ import { ButtonProps } from '../Button';
 import ConfirmActions from '../ConfirmActions';
 
 export interface CardActionsProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
-  children?: ReactNode;
   /**
    * Content of cancel button.
    */
@@ -19,7 +18,7 @@ export interface CardActionsProps extends NativeElementPropsWithoutKeyAndRef<'di
    */
   style?: CSSProperties;
   /**
-   * The action bottom
+   * The action bottom on the left.
    */
   otherActions?: ReactNode;
   /**
@@ -36,11 +35,11 @@ export interface CardActionsProps extends NativeElementPropsWithoutKeyAndRef<'di
  */
 const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(function CardActions(props, ref) {
   const {
-    className,
-    children,
-    otherActions,
     cancelText,
     confirmText,
+    style,
+    className,
+    otherActions,
     onCancel,
     onConfirm,
     ...rest
@@ -51,6 +50,7 @@ const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(function CardAc
       <div
         ref={ref}
         className={classes.actions}
+        style={style}
         {...rest}
       >
         { otherActions || (<div />) }
