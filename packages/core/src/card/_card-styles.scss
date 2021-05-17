@@ -1,0 +1,38 @@
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/palette';
+@use './card' as *;
+
+.#{$prefix} {
+  width: auto;
+  display: grid;
+  border: 1px solid palette.color(border);
+
+  &__meta {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: spacing.level(4);
+    row-gap: spacing.level(6);
+  }
+
+  &__metaContent {
+    width: 100%;
+    display: grid;
+    row-gap: spacing.level(4);
+  }
+
+  &__metaContentHeader {
+    width: 100%;
+    display: grid;
+    row-gap: spacing.level(1);
+  }
+}
+
+.#{$prefix-Actions} {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
