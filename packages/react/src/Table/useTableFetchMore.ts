@@ -7,18 +7,18 @@ import { usePreviousValue } from '../hooks/usePreviousValue';
 const equalityFn = (a: boolean, b: boolean) => a === b;
 
 export interface UseTableFetchMore extends TableFetchMore {
-  dataSource?: TableDataSource[];
+  dataSource: TableDataSource[];
   disabled?: boolean;
 }
 
-export function useTableFetchMore(props?: UseTableFetchMore) {
+export function useTableFetchMore(props: UseTableFetchMore) {
   const {
     callback: callbackProp,
     dataSource,
     disabled = false,
     isReachEnd: isReachEndProp,
     isFetching: isFetchingProp,
-  } = props || {};
+  } = props;
 
   /** reach end indicator */
   const [isReachEnd] = useControlValueState({
@@ -41,7 +41,7 @@ export function useTableFetchMore(props?: UseTableFetchMore) {
   /** fetchMore called */
   const onFetchMore = useLastCallback<() => void>(() => {
     if (!isFetching && !isReachEnd) {
-      callbackProp?.();
+      (callbackProp as (() => any))();
       onFetching(true);
     }
 
@@ -51,8 +51,8 @@ export function useTableFetchMore(props?: UseTableFetchMore) {
   const fetchMore = (callbackProp && !disabled ? onFetchMore : undefined);
 
   /** check source length and reset states */
-  const prevSourceLength = usePreviousValue(dataSource?.length ?? 0);
-  const currentSourceLength = useMemo(() => dataSource?.length ?? 0, [dataSource?.length]);
+  const prevSourceLength = usePreviousValue(dataSource.length);
+  const currentSourceLength = useMemo(() => dataSource.length, [dataSource.length]);
 
   useEffect(() => {
     if (prevSourceLength !== currentSourceLength) {
@@ -60,9 +60,9 @@ export function useTableFetchMore(props?: UseTableFetchMore) {
     }
   }, [prevSourceLength, currentSourceLength]);
 
-  return [
+  return {
     fetchMore,
     isFetching,
     isReachEnd,
-  ] as const;
+  } as const;
 }

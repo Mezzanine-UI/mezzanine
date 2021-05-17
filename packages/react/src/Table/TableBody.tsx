@@ -22,7 +22,7 @@ const TableBody = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<
   } = props;
 
   const {
-    dataSource,
+    dataSource = [],
   } = useContext(TableDataContext) || {};
 
   const {
@@ -44,9 +44,9 @@ const TableBody = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<
       onScroll={tableBody.onScroll}
       role="rowgroup"
     >
-      {dataSource?.length ? dataSource.map((rowData: TableDataSource) => (
+      {dataSource.length ? dataSource.map((rowData: TableDataSource) => (
         <TableBodyRow
-          key={rowData.key}
+          key={(rowData.key || rowData.id) as string}
           rowData={rowData}
         />
       )) : (

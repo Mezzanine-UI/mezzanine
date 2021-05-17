@@ -6,6 +6,7 @@ import {
 import {
   tableClasses as classes,
   TableColumn,
+  TableRecord,
 } from '@mezzanine-ui/core/table';
 import { TableContext, TableDataContext } from './TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -33,10 +34,10 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
     } = useContext(TableDataContext) || {};
 
     /** styling */
-    const getColumnStyle = useCallback((column: TableColumn) => {
+    const getColumnStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
       let style = {};
 
-      if (column?.width) {
+      if (column.width) {
         style = {
           ...style,
           width: column.width,
@@ -47,10 +48,10 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
       return style;
     }, []);
 
-    const getCellStyle = useCallback((column: TableColumn) => {
+    const getCellStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
       let style = {};
 
-      if (column?.align) {
+      if (column.align) {
         style = {
           ...style,
           justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
@@ -77,12 +78,12 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
         {expanding && !rowSelection ? (
           <TableExpandable showIcon={false} />
         ) : null}
-        {columns.map((column: TableColumn) => (
+        {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => (
           <div
-            key={`${column.dataIndex}-${column?.title}`}
+            key={`${column.dataIndex}-${column.title}`}
             className={cx(
               classes.headerCellWrapper,
-              column?.headerClassName,
+              column.headerClassName,
             )}
             style={getColumnStyle(column)}
           >
@@ -91,8 +92,8 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
               role="columnheader"
               style={getCellStyle(column)}
             >
-              {column?.renderTitle?.(classes) || column.title}
-              {typeof column?.sorter === 'function' ? (
+              {column.renderTitle?.(classes) || column.title}
+              {typeof column.sorter === 'function' ? (
                 <TableSortingIcon
                   column={column}
                 />

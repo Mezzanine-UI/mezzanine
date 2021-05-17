@@ -6,6 +6,7 @@ import {
 import {
   tableClasses as classes,
   TableColumn,
+  TableRecord,
 } from '@mezzanine-ui/core/table';
 import { IconColor } from '@mezzanine-ui/core/icon';
 import { ArrowRightIcon } from '@mezzanine-ui/icons';
@@ -19,7 +20,7 @@ export interface TableSortingIconProps extends NativeElementPropsWithoutKeyAndRe
   /**
    * current table column
    */
-  column: TableColumn;
+  column: TableColumn<TableRecord<unknown>>;
 }
 
 const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
@@ -36,10 +37,10 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
 
     const {
       dataIndex,
-    } = column || {};
+    } = column;
 
     /** styling */
-    const currentType = dataIndex === sorting?.sortedOn ? sorting?.sortedType : 'none' as SortedType;
+    const currentType = (dataIndex === sorting?.sortedOn ? sorting.sortedType : 'none') as SortedType;
     const currentIconStyle: { color: IconColor, style: { transform: string } } = useMemo(() => ({
       color: currentType === 'none' ? 'secondary' : 'primary',
       style: {
@@ -61,9 +62,7 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
         onClick={(evt) => {
           evt.stopPropagation();
 
-          if (typeof sorting?.onSort === 'function') {
-            sorting.onSort(column);
-          }
+          sorting?.onSort?.(column);
         }}
         style={currentIconStyle.style}
       />

@@ -53,7 +53,7 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
               ref={ellipsisRef}
               className={classes.cellEllipsis}
               onMouseEnter={(e) => {
-                if (ellipsisRef?.current) {
+                if (ellipsisRef.current) {
                   const { current: el } = ellipsisRef;
 
                   const isOverflow = el.scrollWidth > el.offsetWidth;

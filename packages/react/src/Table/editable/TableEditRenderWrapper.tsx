@@ -2,14 +2,14 @@ import {
   useContext,
   Fragment,
 } from 'react';
-import { TableColumn, TableDataSource } from '@mezzanine-ui/core/table';
+import { TableColumn, TableDataSource, TableRecord } from '@mezzanine-ui/core/table';
 import { TableComponentContext } from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 
 export interface EditableBodyCellProps
   extends
   NativeElementPropsWithoutKeyAndRef<'div'>,
-  TableColumn {
+  TableColumn<TableRecord<unknown>> {
   rowData: TableDataSource;
 }
 

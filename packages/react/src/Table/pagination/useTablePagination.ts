@@ -22,8 +22,8 @@ export function useTablePagination(props: UseTablePagination) {
     dataSource,
     onChange: onChangeProp,
     options: optionsProp,
-    total: totalProp = 1,
-  } = props || {};
+    total: totalProp,
+  } = props;
 
   const {
     boundaryCount = 1,
@@ -46,15 +46,24 @@ export function useTablePagination(props: UseTablePagination) {
   });
 
   const onChange = useLastCallback<(c: number) => void>((newCurrent) => {
-    if (!equalityFn(current, newCurrent)) setCurrent(newCurrent);
-
-    /** reset body scroll position when page changed */
-    bodyRef?.current?.scrollTo(0, 0);
-    /** reset sorting status */
-    sorting?.onResetAll?.();
+    if (!equalityFn(current, newCurrent)) {
+      setCurrent(newCurrent);
+      /** reset body scroll position when page changed */
+      bodyRef.current?.scrollTo(0, 0);
+      /** reset sorting status */
+      sorting?.onResetAll?.();
+    }
 
     onChangeProp?.(newCurrent);
   });
+
+  const pageSize = useMemo(() => (
+    pageSizeProp ?? dataSource.length
+  ), [pageSizeProp, dataSource.length]);
+
+  const total = useMemo(() => (
+    totalProp ?? (dataSource.length / pageSize)
+  ), [totalProp, dataSource.length, pageSize]);
 
   const defaultOptions = useMemo(() => ({
     boundaryCount,
@@ -62,19 +71,16 @@ export function useTablePagination(props: UseTablePagination) {
     disabled,
     hideNextButton,
     hidePreviousButton,
-    pageSize: pageSizeProp ?? dataSource?.length,
+    pageSize,
     siblingCount,
-    total: totalProp ?? dataSource?.length,
+    total,
   }), [
     boundaryCount,
     className,
     disabled,
-    dataSource,
     hideNextButton,
     hidePreviousButton,
-    pageSizeProp,
     siblingCount,
-    totalProp,
   ]);
 
   return [current, onChange, defaultOptions] as const;
