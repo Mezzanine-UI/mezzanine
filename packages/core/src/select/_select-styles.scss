@@ -1,6 +1,5 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/z-index';
 @use '../text-field';
 @use './select' as *;
 
@@ -47,9 +46,7 @@ $tags-gap: 4px !default;
     width: auto;
     padding: $popper-vertical-padding $popper-horizontal-padding;
     background-color: palette.color(surface);
-    border: 1px solid palette.color(border);
     color: palette.color(text-primary);
     box-sizing: border-box;
-    z-index: z-index.get(popover);
   }
 }
