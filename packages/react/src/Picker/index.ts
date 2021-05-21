@@ -26,7 +26,3 @@ export {
   RangePickerTriggerProps,
   default as RangePickerTrigger,
 } from './RangePickerTrigger';
-export {
-  PickerPopperProps,
-  default as PickerPopper,
-} from './PickerPopper';

@@ -280,8 +280,6 @@ export {
   PickerTrigger,
   RangePickerTriggerProps,
   RangePickerTrigger,
-  PickerPopperProps,
-  PickerPopper,
 } from './Picker';
 export {
   DatePickerCalendarProps,
