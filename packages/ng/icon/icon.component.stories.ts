@@ -3,6 +3,7 @@ import { Story, Meta } from '@storybook/angular/types-6-0';
 import {
   ArrowRightIcon,
   CalendarIcon,
+  CaretRightIcon,
   CheckCircleFilledIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -74,6 +75,7 @@ interface AllStoryArgs {
 export const All: Story<AllStoryArgs> = ({ search }) => {
   const icons = [
     ArrowRightIcon,
+    CaretRightIcon,
     CheckCircleFilledIcon,
     CheckIcon,
     ChevronDownIcon,

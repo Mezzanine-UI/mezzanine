@@ -2,6 +2,7 @@ import { Story, Meta } from '@storybook/react';
 import {
   ArrowRightIcon,
   CalendarIcon,
+  CaretRightIcon,
   CheckCircleFilledIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -68,6 +69,7 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
   const icons = [
     ArrowRightIcon,
     CalendarIcon,
+    CaretRightIcon,
     CheckIcon,
     CheckCircleFilledIcon,
     ChevronUpIcon,
