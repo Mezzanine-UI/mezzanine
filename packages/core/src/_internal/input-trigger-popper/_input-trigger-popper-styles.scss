@@ -1,0 +1,8 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
+@use './input-trigger-popper' as *;
+
+.#{$prefix} {
+  border: 1px solid palette.color(border);
+  z-index: z-index.get(popover);
+}
