@@ -10,6 +10,8 @@ import {
   tableClasses as classes,
   TableDataSource,
   TableColumn,
+  TableRecord,
+  TableExpandable as TableExpandableType,
 } from '@mezzanine-ui/core/table';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
@@ -27,130 +29,132 @@ export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'d
   rowData: TableDataSource
 }
 
-const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(function TableBodyRow(props, ref) {
-  const {
-    rowData,
-    ...rest
-  } = props;
+const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
+  function TableBodyRow(props, ref) {
+    const {
+      rowData,
+      ...rest
+    } = props;
 
-  const {
-    rowSelection,
-    expanding,
-  } = useContext(TableContext) || {};
+    const {
+      rowSelection,
+      expanding,
+    } = useContext(TableContext) || {};
 
-  const {
-    columns,
-  } = useContext(TableDataContext) || {};
+    const {
+      columns,
+    } = useContext(TableDataContext) || {};
 
-  /** Feature rowSelection */
-  const [selected, setSelected] = useState<boolean>(false);
+    /** Feature rowSelection */
+    const [selected, setSelected] = useState<boolean>(false);
 
-  /** Feature expandable */
-  const [expanded, setExpanded] = useState<boolean>(false);
+    /** Feature expandable */
+    const [expanded, setExpanded] = useState<boolean>(false);
 
-  const isExpandable = useMemo(() => (
-    expanding?.rowExpandable?.(rowData) ?? false
-  ), [expanding, rowData]);
+    const isExpandable = useMemo(() => (
+      expanding?.rowExpandable?.(rowData) ?? false
+    ), [expanding, rowData]);
 
-  const renderedExpandedContent = useMemo(() => (
-    expanding?.expandedRowRender?.(rowData) ?? null
-  ), [expanding, rowData]);
+    const renderedExpandedContent = useMemo(() => (
+      expanding?.expandedRowRender?.(rowData) ?? null
+    ), [expanding, rowData]);
 
-  /** styling */
-  const getColumnStyle = useCallback((column: TableColumn) => {
-    let style = {};
+    /** styling */
+    const getColumnStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
+      let style = {};
 
-    if (column?.width) {
-      style = {
-        ...style,
-        width: column.width,
-        maxWidth: column.width,
-      };
-    }
+      if (column.width) {
+        style = {
+          ...style,
+          width: column.width,
+          maxWidth: column.width,
+        };
+      }
 
-    return style;
-  }, []);
+      return style;
+    }, []);
 
-  const getCellStyle = useCallback((column: TableColumn) => {
-    let style = {};
+    const getCellStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
+      let style = {};
 
-    if (column?.align) {
-      style = {
-        ...style,
-        justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
-      };
-    }
+      if (column.align) {
+        style = {
+          ...style,
+          justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
+        };
+      }
 
-    return style;
-  }, []);
+      return style;
+    }, []);
 
-  return (
-    <Fragment>
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.bodyRow,
-          {
-            [classes.bodyRowHighlight]: selected || expanded,
-          },
-        )}
-        role="row"
-      >
-        {rowSelection ? (
-          <TableRowSelection
-            role="gridcell"
-            rowKey={rowData.key}
-            setChecked={(status) => setSelected(status)}
-            showDropdownIcon={false}
-          />
-        ) : null}
-        {expanding ? (
-          <TableExpandable
-            expandable={isExpandable}
-            expanded={expanded}
-            role="gridcell"
-            setExpanded={setExpanded}
-          />
-        ) : null}
-        {columns.map((column: TableColumn, index: number) => (
-          <div
-            key={`${column.dataIndex}-${column?.title}`}
-            className={cx(
-              classes.bodyRowCellWrapper,
-              column?.bodyClassName,
-            )}
-            style={getColumnStyle(column)}
-          >
-            <TableEditRenderWrapper
-              {...column}
-              rowData={rowData}
-            >
-              <TableCell
-                ellipsis={!!(rowData?.[column?.dataIndex]) && (column?.ellipsis ?? true)}
-                style={getCellStyle(column)}
-                tooltipTitle={(rowData?.[column?.dataIndex]) as (string | number)}
-              >
-                {column?.render?.(
-                  column,
-                  rowData,
-                  index,
-                ) || rowData?.[column?.dataIndex]}
-              </TableCell>
-            </TableEditRenderWrapper>
-          </div>
-        ))}
-      </div>
-      {renderedExpandedContent ? (
-        <AccordionDetails
-          className={expanding?.className}
-          expanded={expanded}
+    return (
+      <Fragment>
+        <div
+          {...rest}
+          ref={ref}
+          className={cx(
+            classes.bodyRow,
+            {
+              [classes.bodyRowHighlight]: selected || expanded,
+            },
+          )}
+          role="row"
         >
-          {renderedExpandedContent}
-        </AccordionDetails>
-      ) : null}
-    </Fragment>
-  );
-});
+          {rowSelection ? (
+            <TableRowSelection
+              role="gridcell"
+              rowKey={(rowData.key || rowData.id) as string}
+              setChecked={(status) => setSelected(status)}
+              showDropdownIcon={false}
+            />
+          ) : null}
+          {expanding ? (
+            <TableExpandable
+              expandable={isExpandable}
+              expanded={expanded}
+              role="gridcell"
+              setExpanded={setExpanded}
+            />
+          ) : null}
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => (
+            <div
+              key={`${column.dataIndex}-${column.title}`}
+              className={cx(
+                classes.bodyRowCellWrapper,
+                column.bodyClassName,
+              )}
+              style={getColumnStyle(column)}
+            >
+              <TableEditRenderWrapper
+                {...column}
+                rowData={rowData}
+              >
+                <TableCell
+                  ellipsis={!!(rowData[column.dataIndex]) && (column.ellipsis ?? true)}
+                  style={getCellStyle(column)}
+                  tooltipTitle={(rowData[column.dataIndex]) as unknown as (string | number)}
+                >
+                  {column.render?.(
+                    column,
+                    rowData,
+                    index,
+                  ) || rowData[column.dataIndex]}
+                </TableCell>
+              </TableEditRenderWrapper>
+            </div>
+          ))}
+        </div>
+        {renderedExpandedContent ? (
+          <AccordionDetails
+            className={(expanding as TableExpandableType<TableRecord<unknown>>).className}
+            expanded={expanded}
+          >
+            {renderedExpandedContent}
+          </AccordionDetails>
+        ) : null}
+      </Fragment>
+    );
+  },
+);
 
 export default TableBodyRow;

@@ -27,7 +27,7 @@ import { useTableSorting } from './sorting/useTableSorting';
 import { useTableLoading } from './useTableLoading';
 import { useTableFetchMore } from './useTableFetchMore';
 
-export interface TableProps
+export interface TableProps<T>
   extends
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'role'> {
   /**
@@ -41,21 +41,21 @@ export interface TableProps
    * `column.sorter` is the sorting method that you want to apply to your column. <br />
    * `column.onSorted` is the callback triggered whenever sort icon clicked.
    */
-  columns: TableColumn[];
+  columns: TableColumn<T>[];
   /**
    * Custom table components <br />
    */
   components?: TableComponents;
   /**
    * Data record array to be displayed. <br />
-   * Notice that each source should contain `key` prop as data primary key.
+   * Notice that each source should contain `key` or `id` prop as data primary key.
    */
   dataSource: TableDataSource[];
   /**
    * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
    * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
    */
-  expandable?: TableExpandable;
+  expandable?: TableExpandable<T>;
   /**
    * If `fetchMore.callback` is given, table will automatically trigger it when scrolling position reach end. <br />
    * If `fetchMore.isReachEnd` is true, table will stop triggering callback. <br />
@@ -95,7 +95,7 @@ export interface TableProps
   rowSelection?: TableRowSelection;
 }
 
-const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) {
+const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(function Table(props, ref) {
   const {
     bodyClassName,
     className,
@@ -124,7 +124,7 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
   const rowSelection = useMemo(() => (rowSelectionProp ? {
     selectedRowKeys,
     onChange: setSelectedRowKey,
-    actions: rowSelectionProp?.actions,
+    actions: rowSelectionProp.actions,
   } : undefined), [
     rowSelectionProp,
     selectedRowKeys,
@@ -142,11 +142,11 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
   });
 
   /** Feature fetchMore */
-  const [
-    onFetchMore,
+  const {
+    fetchMore: onFetchMore,
     isFetching,
     isReachEnd,
-  ] = useTableFetchMore({
+  } = useTableFetchMore({
     callback: fetchMoreProp?.callback,
     dataSource,
     /** when pagination is given, fetchMore feature should be disabled */
@@ -220,7 +220,7 @@ const Table = forwardRef<HTMLDivElement, TableProps>(function Table(props, ref) 
           <TableDataContext.Provider value={tableDataContextValue}>
             <TableComponentContext.Provider value={tableComponentContextValue}>
               {isRefreshShow ? (
-                <TableRefresh onClick={refreshProp?.onClick} />
+                <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
               ) : null}
               <TableHeader className={headerClassName} />
               <TableBody ref={bodyRef} className={bodyClassName} />

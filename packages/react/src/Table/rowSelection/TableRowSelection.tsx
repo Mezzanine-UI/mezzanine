@@ -12,7 +12,7 @@ import {
   TableRowAction,
 } from '@mezzanine-ui/core/table';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
-import { TableContext, TableDataContext } from '../TableContext';
+import { TableContext, TableDataContext, RowSelectionContext } from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import { cx } from '../../utils/cx';
 import { SELECTED_ALL_KEY } from './useTableRowSelection';
@@ -25,7 +25,7 @@ export interface TableRowSelectionProps extends NativeElementPropsWithoutKeyAndR
   /**
    * row key to control checkbox
    */
-  rowKey?: string;
+  rowKey: string;
   /**
    * show dropdown icon or not
    * @default false
@@ -52,24 +52,22 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
     } = useContext(TableContext) || {};
 
     const {
-      dataSource,
+      dataSource = [],
     } = useContext(TableDataContext) || {};
 
     /** checkbox methods/state */
     const onSelected = useCallback(() => {
-      if (typeof rowSelection?.onChange === 'function' && rowKey) {
-        rowSelection.onChange(rowKey);
-      }
+      rowSelection?.onChange(rowKey);
     }, [rowSelection, rowKey]);
 
     const checkboxStatus = useMemo(() => {
       const selectedRowKeys = rowSelection?.selectedRowKeys ?? [];
 
       if (!selectedRowKeys.length) return 'none';
-      if (selectedRowKeys.length === dataSource?.length) return 'all';
+      if (selectedRowKeys.length === dataSource.length) return 'all';
 
       return 'indeterminate';
-    }, [rowSelection?.selectedRowKeys, dataSource?.length]);
+    }, [rowSelection?.selectedRowKeys, dataSource.length]);
 
     const selfChecked = useMemo(() => (
       (rowSelection?.selectedRowKeys ?? []).some((key) => key === rowKey)
@@ -83,9 +81,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
 
     /** parent callbacks */
     useEffect(() => {
-      if (typeof setChecked === 'function') {
-        setChecked(checked);
-      }
+      setChecked?.(checked);
     }, [checked, setChecked]);
 
     /** If expandable icon existed, it will affect row selection styling (only when dropdown icon is hidden) */
@@ -114,9 +110,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
     const onMenuItemClicked = (evt: MouseEvent, action: TableRowAction) => {
       evt.stopPropagation();
 
-      if (typeof action?.onClick === 'function') {
-        action.onClick(rowSelection?.selectedRowKeys ?? []);
-      }
+      action.onClick?.((rowSelection as RowSelectionContext).selectedRowKeys);
 
       toggleOpen(false);
     };
@@ -126,7 +120,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
         {(rowSelection?.actions ?? []).map(((action) => (
           <MenuItem
             key={action.key}
-            className={action?.className}
+            className={action.className}
             onClick={(evt) => onMenuItemClicked(evt, action)}
           >
             {action.text}
@@ -140,7 +134,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
         ref={ref}
         {...rest}
         className={classes.selections}
-        style={hiddenIconWithExpandableStyle?.host}
+        style={hiddenIconWithExpandableStyle.host}
       >
         <Checkbox
           checked={checked}
@@ -154,7 +148,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
         />
         <div
           className={classes.icon}
-          style={hiddenIconWithExpandableStyle?.icon}
+          style={hiddenIconWithExpandableStyle.icon}
         >
           {showDropdownIcon ? (
             <Dropdown

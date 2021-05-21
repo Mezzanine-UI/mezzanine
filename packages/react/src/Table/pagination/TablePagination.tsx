@@ -32,7 +32,7 @@ const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(
     } = useContext(TableContext) || {};
 
     const {
-      dataSource,
+      dataSource = [],
     } = useContext(TableDataContext) || {};
 
     const [currentPage, setCurrentPage, options] = useTablePagination({

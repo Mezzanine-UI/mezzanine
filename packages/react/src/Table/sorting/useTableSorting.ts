@@ -1,11 +1,11 @@
 import { useState, useCallback } from 'react';
-import { TableDataSource, TableColumn } from '@mezzanine-ui/core/table';
+import { TableDataSource, TableColumn, TableRecord } from '@mezzanine-ui/core/table';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
 
 const equalityFn = (a: TableDataSource[], b: TableDataSource[]) => {
-  const sortedA = a.map((s) => s.key).sort();
-  const sortedB = b.map((s) => s.key).sort();
+  const sortedA = a.map((s) => (s.key || s.id)).sort();
+  const sortedB = b.map((s) => (s.key || s.id)).sort();
 
   return sortedA.length === sortedB.length && sortedA.every((v, idx) => v === sortedB[idx]);
 };
@@ -19,7 +19,7 @@ export type SortedType = 'desc' | 'asc' | 'none';
 export function useTableSorting(props: UseTableSorting) {
   const {
     dataSource: dataSourceProp,
-  } = props || {};
+  } = props;
 
   const [sortedOn, setSortedOn] = useState<string>('');
   const [sortedType, setSortedType] = useState<SortedType>('none');
@@ -43,14 +43,17 @@ export function useTableSorting(props: UseTableSorting) {
     setSortedType('none');
   }, []);
 
-  const onChange = useLastCallback<(v: Pick<TableColumn, 'dataIndex' | 'sorter' | 'onSorted'>) => void>(
+  const onChange = useLastCallback<(
+  v: Pick<TableColumn<TableRecord<unknown>>,
+  'dataIndex' | 'sorter' | 'onSorted'>
+  ) => void>(
     (opts) => {
-      const { dataIndex, sorter, onSorted } = opts || {};
+      const { dataIndex, sorter, onSorted } = opts;
 
       const onMappingSources = (sources: TableDataSource[]) => {
         setDataSource(sources);
 
-        if (typeof onSorted === 'function') onSorted(sources);
+        onSorted?.(sources);
       };
 
       // only apply changes when column sorter is given
@@ -62,13 +65,6 @@ export function useTableSorting(props: UseTableSorting) {
         setSortedType(nextSortedType);
 
         switch (nextSortedType) {
-          case 'none': {
-            onReset();
-            onMappingSources(dataSourceProp);
-
-            break;
-          }
-
           case 'desc':
           case 'asc': {
             // update current working dataIndex
@@ -80,7 +76,7 @@ export function useTableSorting(props: UseTableSorting) {
             // sort by given sorter
             newSource = newSource.sort((a, b) => (
               // reverse result when sorted type is ascending
-              (sorter(a?.[dataIndex], b?.[dataIndex])) * (nextSortedType === 'asc' ? -1 : 1)
+              (sorter(a[dataIndex], b[dataIndex])) * (nextSortedType === 'asc' ? -1 : 1)
             ));
 
             // map back the data source
@@ -89,11 +85,17 @@ export function useTableSorting(props: UseTableSorting) {
             break;
           }
 
-          default:
+          case 'none':
+          default: {
+            onReset();
+            onMappingSources(dataSourceProp);
+
             break;
+          }
         }
       }
-    });
+    },
+    );
 
   return [dataSource, onChange, { sortedOn, sortedType, onResetAll }] as const;
 }

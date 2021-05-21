@@ -25,16 +25,22 @@ export const tableClasses = {
   refresh: `${tablePrefix}__refresh`,
 } as const;
 
-export type TableRecord = Record<string, unknown>;
+export type TableRecord<T> = Record<string, T>;
 
-export interface TableDataSource extends TableRecord {
-  key: string;
+export interface TableDataSourceWithKey extends TableRecord<unknown> {
+  key: string | number;
 }
 
-export type TableColumn = {
+export interface TableDataSourceWithID extends TableRecord<unknown> {
+  id: string | number;
+}
+
+export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithID;
+
+export type TableColumn<SourceType> = {
   dataIndex: string;
   title?: string;
-  render?(column: TableColumn, source: TableDataSource, index: number): any;
+  render?(column: TableColumn<SourceType>, source: SourceType, index: number): any;
   renderTitle?(classes: typeof tableClasses): any;
   // == Custom column style ==
   align?: 'start' | 'center' | 'end';
@@ -43,10 +49,10 @@ export type TableColumn = {
   width?: number;
   // == Feature sorting ==
   sorter?(a: any, b: any): number;
-  onSorted?(sortedDataSource: TableDataSource[]): void;
+  onSorted?(sortedDataSource: SourceType[]): void;
   // == Feature editing ==
   editable?: boolean;
-  setCellProps?(record: TableDataSource): Record<string, unknown>;
+  setCellProps?(record: SourceType): TableRecord<unknown>;
   // == Feature ellipsis ==
   /** @default true */
   ellipsis?: boolean;
@@ -73,10 +79,10 @@ export interface TableRowSelection {
 }
 
 /** === Feature Expandable */
-export interface TableExpandable {
+export interface TableExpandable<SourceType> {
   className?: string;
-  expandedRowRender(record: TableDataSource): any;
-  rowExpandable?(record: TableDataSource): boolean;
+  expandedRowRender(record: SourceType): any;
+  rowExpandable?(record: SourceType): boolean;
 }
 
 /** === Feature Pagination */

@@ -34,7 +34,7 @@ const SCROLL_BAR_DISPLAY_TIMES = 1000; // ms
 export default function useTableScroll() {
   const bodyRef = useRef<HTMLDivElement>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
-  const scrollBarDisplayTimer = useRef<NodeJS.Timeout>();
+  const scrollBarDisplayTimer = useRef<number>();
 
   const {
     fetchMore,
@@ -51,7 +51,7 @@ export default function useTableScroll() {
 
     const {
       scrollHeight,
-      offsetHeight: tableHeight,
+      clientHeight: tableHeight,
     } = bodyRef.current;
 
     const nextHeight = Math.max(
@@ -74,47 +74,43 @@ export default function useTableScroll() {
     if (!scrollBarRef.current || !bodyRef.current) return;
 
     if (scrollBarDisplayTimer.current) {
-      clearTimeout(scrollBarDisplayTimer.current);
+      window.clearTimeout(scrollBarDisplayTimer.current);
     }
 
     scrollBarRef.current.style.opacity = '1';
     scrollBarRef.current.style.pointerEvents = 'auto';
 
-    scrollBarDisplayTimer.current = setTimeout(() => onHideScrollBar(), SCROLL_BAR_DISPLAY_TIMES);
+    scrollBarDisplayTimer.current = window.setTimeout(() => onHideScrollBar(), SCROLL_BAR_DISPLAY_TIMES);
   }, []);
 
   /** reset scroll bar height when sources changed */
   useEffect(() => {
-    if (!loading || !fetchMore?.isFetching) onSetScrollBarHeight();
+    if (loading || fetchMore?.isFetching) return;
+
+    onSetScrollBarHeight();
   }, [loading, onSetScrollBarHeight, fetchMore?.isFetching]);
 
   /** determine that table should be overflow */
   useEffect(() => {
-    if (!scrollBarRef.current || !bodyRef.current) return () => {};
+    if (!scrollBarRef.current || !bodyRef.current) return;
 
     scrollBarRef.current.style.top = `${SCROLL_BAR_MIN_START_AT}px`;
 
     function setTableOverflow() {
-      if (!bodyRef.current) return;
-
-      bodyRef.current.style.overflow = 'auto';
+      (bodyRef.current as HTMLDivElement).style.overflow = 'auto';
       onSetScrollBarHeight();
     }
 
     function setTableInitial() {
-      if (!bodyRef.current) return;
-
-      bodyRef.current.style.overflow = 'initial';
+      (bodyRef.current as HTMLDivElement).style.overflow = 'initial';
       onHideScrollBar();
     }
 
     function onWindowResize() {
-      if (!bodyRef.current) return;
-
       const {
         scrollHeight,
-        offsetHeight: tableHeight,
-      } = bodyRef.current;
+        clientHeight: tableHeight,
+      } = (bodyRef.current as HTMLDivElement);
 
       if (scrollHeight === tableHeight) {
         setTableInitial();
@@ -135,13 +131,13 @@ export default function useTableScroll() {
     const { current: body } = bodyRef;
     const { current: scrollBar } = scrollBarRef;
 
-    if (!body || !scrollBar) return () => {};
+    if (!body || !scrollBar) return;
 
     function onMouseMove({ clientY }: { clientY: number }) {
       const {
         scrollTop,
         scrollHeight,
-        offsetHeight: tableHeight,
+        clientHeight: tableHeight,
       } = body as HTMLDivElement;
 
       if (!pointerOffset) return;
@@ -151,7 +147,7 @@ export default function useTableScroll() {
 
       const {
         top: tableTop,
-      } = (body?.getBoundingClientRect() ?? {}) as DOMRect;
+      } = (body as HTMLDivElement).getBoundingClientRect();
 
       const nextScrollBarTop = (clientY - tableTop - pointerOffset) + scrollTop;
       const maxScrollBarTop = scrollHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING;
@@ -160,14 +156,12 @@ export default function useTableScroll() {
         maxScrollBarTop, // max boundary
       );
 
-      scrollBar?.style.setProperty('top', `${clampScrollBarTop}px`);
+      (scrollBar as HTMLDivElement).style.setProperty('top', `${clampScrollBarTop}px`);
 
-      if (body) {
-        body.scrollTop = (
-          ((scrollHeight - tableHeight) * (clampScrollBarTop)) /
-          (scrollHeight - scrollBarHeight)
-        );
-      }
+      (body as HTMLDivElement).scrollTop = (
+        ((scrollHeight - tableHeight) * (clampScrollBarTop)) /
+        (scrollHeight - scrollBarHeight)
+      );
     }
 
     scrollBar.addEventListener('mousemove', onMouseMove, false);
@@ -210,9 +204,9 @@ export default function useTableScroll() {
   const setScrollBarTop = useCallback(() => {
     if (bodyRef.current) {
       const {
+        clientHeight: tableHeight,
         scrollTop,
         scrollHeight,
-        offsetHeight: tableHeight,
       } = bodyRef.current;
 
       /** @NOTE don't apply scroll change when use pointer dragging */
@@ -235,7 +229,6 @@ export default function useTableScroll() {
         clientHeight,
         scrollTop,
         scrollHeight,
-        offsetHeight,
       } = bodyRef.current;
 
       /** @Note safari specific bug fix for scroll bouncing */
@@ -246,8 +239,8 @@ export default function useTableScroll() {
       window.requestAnimationFrame(setScrollBarTop);
 
       /** trigger fetchMore when scrolling */
-      if ((scrollHeight - (scrollTop + offsetHeight)) < FETCH_MORE_TRIGGER_AT_BOTTOM) {
-        fetchMore?.onFetchMore?.();
+      if ((scrollHeight - (scrollTop + clientHeight)) < FETCH_MORE_TRIGGER_AT_BOTTOM) {
+        fetchMore?.onFetchMore();
       }
     }
   }, [loading, setScrollBarTop, onDisplayScrollBar, fetchMore]);

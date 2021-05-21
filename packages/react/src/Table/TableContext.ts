@@ -4,6 +4,8 @@ import {
   TableColumn,
   TableExpandable,
   TablePagination,
+  TableDataSource,
+  TableRecord,
 } from '@mezzanine-ui/core/table';
 
 /** typeof rowSelection */
@@ -14,7 +16,7 @@ export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> 
 
 /** typeof sorting */
 export interface SortingContext {
-  onSort(v: Pick<TableColumn, 'dataIndex' | 'sorter' | 'onSorted'>): void;
+  onSort(v: Pick<TableColumn<TableRecord<unknown>>, 'dataIndex' | 'sorter' | 'onSorted'>): void;
   onResetAll(): void;
   sortedOn: string;
   sortedType: string;
@@ -36,9 +38,9 @@ export interface TableContextProps {
   scrollBarSize?: number;
   rowSelection?: RowSelectionContext;
   sorting?: SortingContext;
-  loading: boolean;
-  setLoading(l: boolean): void;
-  expanding?: TableExpandable;
+  loading?: boolean;
+  setLoading?(l: boolean): void;
+  expanding?: TableExpandable<TableRecord<unknown>>;
   fetchMore?: FetchMoreContext;
   pagination?: TablePagination;
 }
@@ -46,8 +48,8 @@ export interface TableContextProps {
 export const TableContext = createContext<TableContextProps | null>(null);
 
 export interface TableDataContextProps {
-  columns: any;
-  dataSource: any;
+  columns: TableColumn<TableRecord<unknown>>[];
+  dataSource: TableDataSource[];
 }
 
 export const TableDataContext = createContext<TableDataContextProps | null>(null);

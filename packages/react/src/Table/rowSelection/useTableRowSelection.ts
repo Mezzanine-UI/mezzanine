@@ -20,7 +20,7 @@ export function useTableRowSelection(props: UseTableRowSelection) {
     selectedRowKey: selectedRowKeyProp,
     onChange: onChangeProp,
     dataSource,
-  } = props || {};
+  } = props;
 
   const [selectedRowKey, setSelectedRowKey] = useControlValueState({
     defaultValue: [],
@@ -29,9 +29,9 @@ export function useTableRowSelection(props: UseTableRowSelection) {
   });
 
   const onChange = useLastCallback<(v: string) => void>((rowKey) => {
-    if (!dataSource?.length) return;
+    if (!dataSource.length) return;
 
-    const allSourceKeys = dataSource.map((source) => source.key);
+    const allSourceKeys = dataSource.map((source) => (source.key || source.id) as string);
     let nextSelectedRowKey = selectedRowKey;
 
     if (rowKey === SELECTED_ALL_KEY) {

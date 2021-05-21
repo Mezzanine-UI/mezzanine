@@ -10,8 +10,8 @@ import {
 import { MoreVerticalIcon, InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import {
   tableClasses,
-  TableDataSource,
   TableColumn,
+  TableExpandable,
 } from '@mezzanine-ui/core/table';
 import Table, { TableRefresh, EditableBodyCellProps } from '.';
 import Button from '../Button';
@@ -27,7 +27,19 @@ export default {
   title: 'Data Display/Table',
 };
 
-const columns = [{
+type DataType = {
+  key: string;
+  name: string;
+  address: string;
+  age: number;
+  description: string;
+  tel: string;
+  foo: {
+    bar: string;
+  };
+};
+
+const columns: TableColumn<DataType>[] = [{
   title: 'Name',
   dataIndex: 'name',
   sorter: (a: string, b: string) => {
@@ -43,7 +55,7 @@ const columns = [{
   dataIndex: 'age',
   sorter: (a: number, b: number) => b - a,
   // eslint-disable-next-line no-console
-  onSorted: (newSources: TableDataSource[]) => { console.log(newSources); },
+  onSorted: (newSources) => { console.log(newSources); },
   width: 80,
 }, {
   title: 'Tel',
@@ -51,7 +63,7 @@ const columns = [{
   ellipsis: false,
 }];
 
-const dataSource = Array.from(Array(10)).map((_, idx) => ({
+const dataSource: DataType[] = Array.from(Array(10)).map((_, idx) => ({
   key: `source-${idx + 1}`,
   name: `${String.fromCharCode(97 + idx)} John Brown`,
   address: `New York No. ${idx + 1} Lake Park`,
@@ -60,6 +72,9 @@ const dataSource = Array.from(Array(10)).map((_, idx) => ({
   ipsa sunt molestias culpa saepe! Minima odio repellendus officiis! Assumenda,
   consequuntur sit blanditiis culpa vel repellendus dolorum non minus doloribus.` : '',
   tel: '0912345678(no ellipsis)',
+  foo: {
+    bar: 'test',
+  },
 }));
 
 export const Basic = () => {
@@ -144,6 +159,11 @@ export const Selections = () => {
     className: '',
   }]), []);
 
+  const expandable: TableExpandable<DataType> = {
+    expandedRowRender: (record) => record.description,
+    rowExpandable: (record) => !!record.description,
+  };
+
   return (
     <div style={{ display: 'grid', gap: 40 }}>
       <div
@@ -161,10 +181,7 @@ export const Selections = () => {
           <Table
             columns={columns}
             dataSource={dataSource}
-            expandable={{
-              expandedRowRender: (record: TableDataSource) => record.description,
-              rowExpandable: (record: TableDataSource) => !!record.description,
-            }}
+            expandable={expandable}
             rowSelection={{
               actions: selectedActions,
             }}
@@ -186,10 +203,7 @@ export const Selections = () => {
           <Table
             columns={columns}
             dataSource={dataSource}
-            expandable={{
-              expandedRowRender: (record: TableDataSource) => record.description,
-              rowExpandable: (record: TableDataSource) => !!record.description,
-            }}
+            expandable={expandable}
             rowSelection={{
               selectedRowKey: selectedRowKeys,
               onChange: (keys) => setSelectedRowKeys(keys),
@@ -214,7 +228,7 @@ const demoMenu = (size?: MenuSize) => (
 export const WithActions = () => {
   const [open, toggleOpen] = useState<boolean>(false);
 
-  const renderHeaderActions = (classes: typeof tableClasses) => (
+  const renderHeaderActions: TableColumn<DataType>['renderTitle'] = (classes) => (
     <div
       style={{
         width: '100%',
@@ -284,7 +298,7 @@ export const WithActions = () => {
     </div>
   );
 
-  const withActionColumns = [{
+  const withActionColumns: TableColumn<DataType>[] = [{
     title: 'Name',
     dataIndex: 'name',
   }, {
@@ -398,7 +412,7 @@ export const WithRefresh = () => {
   );
 };
 
-const customizedColumns: TableColumn[] = [{
+const customizedColumns: TableColumn<DataType>[] = [{
   title: 'Name',
   dataIndex: 'name',
 }, {
@@ -436,12 +450,12 @@ export const Styling = () => (
         className: '',
         expandedRowRender: (record) => record.description,
         rowExpandable: (record) => !!record.description,
-      }}
+      } as TableExpandable<DataType>}
     />
   </div>
 );
 
-const editableColumns: TableColumn[] = [{
+const editableColumns: TableColumn<DataType>[] = [{
   title: 'Name',
   dataIndex: 'name',
   editable: false,
@@ -508,7 +522,7 @@ export const Editable = () => {
     ) : children) as ReactElement;
   };
 
-  const renderRowActions: TableColumn['render'] = (_, source) => (
+  const renderRowActions: TableColumn<DataType>['render'] = (_, source) => (
     <div
       style={{
         width: '100%',
@@ -531,7 +545,7 @@ export const Editable = () => {
           <Button
             disabled={!!editingKey}
             onClick={() => {
-              setEditingKey(source.key);
+              setEditingKey(source.foo.bar);
             }}
           >
             編輯
@@ -561,7 +575,7 @@ export const Editable = () => {
     return {
       ...column,
       /** inject some custom props to your custom cell */
-      setCellProps: (source: TableDataSource) => ({
+      setCellProps: (source) => ({
         isEditing: editingKey === source.key,
       }),
     };

@@ -11,7 +11,7 @@ import Icon from '../../Icon';
 
 export interface TableExpandableProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * whehter is expandable or not
+   * whether is expandable or not
    * @default true
    */
   expandable?: boolean;
