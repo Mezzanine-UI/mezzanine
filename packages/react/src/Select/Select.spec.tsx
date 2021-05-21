@@ -212,12 +212,18 @@ describe('<Select />', () => {
       });
 
       it('should close popper when option clicked', async () => {
+        jest.useFakeTimers();
+
         await testTextFieldClicked(element);
 
         const options = document.querySelectorAll('.mzn-menu-item');
 
         await act(async () => {
           fireEvent.click(options[0]);
+        });
+
+        await act(async () => {
+          jest.runAllTimers();
         });
 
         expect(document.querySelector('.mzn-select__popper')).toBeNull();

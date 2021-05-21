@@ -16,7 +16,7 @@ import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
-import Popper, { PopperProps, PopperOptions } from '../Popper';
+import { PopperProps } from '../Popper';
 import { SelectControlContext, SelectValue } from './SelectControlContext';
 import Tag from '../Tag';
 import TextField, { TextFieldProps } from '../TextField';
@@ -25,32 +25,7 @@ import { useSelectValueControl } from '../Form/useSelectValueControl';
 import { useClickAway } from '../hooks/useClickAway';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { PickRenameMulti } from '../utils/rename-types';
-
-const popperDefaultOptions: PopperOptions<any> = {
-  modifiers: [{
-    name: 'offset',
-    options: {
-      offset: [0, 4],
-    },
-  }, {
-    name: 'sameWidth',
-    enabled: true,
-    phase: 'beforeWrite',
-    requires: ['computeStyles'],
-    fn: ({ state }) => {
-      const reassignState = state;
-
-      reassignState.styles.popper.minWidth = `${state.rects.reference.width}px`;
-    },
-    effect: ({ state }) => {
-      const reassignState = state;
-
-      reassignState.elements.popper.style.minWidth = `${
-        state.elements.reference.getBoundingClientRect().width
-      }px`;
-    },
-  }],
-};
+import InputTriggerPopper from '../_internal/InputTriggerPopper';
 
 type SelectMode = 'single' | 'multiple';
 
@@ -295,9 +270,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     }
   };
 
-  /** Popper customizable options */
-  const { modifiers = [] } = popperOptions;
-
   return (
     <SelectControlContext.Provider
       value={{
@@ -377,19 +349,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
             />
           )}
         </TextField>
-        <Popper
+        <InputTriggerPopper
           ref={popperRef}
           anchor={controlRef}
           className={classes.popper}
           open={open}
-          options={{
-            ...popperDefaultOptions,
-            ...popperOptions,
-            modifiers: [
-              ...(popperDefaultOptions.modifiers || []),
-              ...modifiers,
-            ],
-          }}
+          sameWidth
+          options={popperOptions}
         >
           <Menu
             id={MENU_ID}
@@ -402,7 +368,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           >
             {children}
           </Menu>
-        </Popper>
+        </InputTriggerPopper>
       </div>
     </SelectControlContext.Provider>
   );
