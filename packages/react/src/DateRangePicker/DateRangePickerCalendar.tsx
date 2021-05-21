@@ -7,13 +7,17 @@ import {
   useState,
 } from 'react';
 import Calendar, { CalendarProps, useCalendarContext } from '../Calendar';
-import { PickerPopper, PickerPopperProps } from '../Picker';
 import { cx } from '../utils/cx';
+import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
 import { useDateRangeCalendarControls } from './useDateRangeCalendarControls';
 
 export interface DateRangePickerCalendarProps
   extends
-  Omit<PickerPopperProps, 'children'>,
+  Pick<InputTriggerPopperProps,
+  | 'anchor'
+  | 'fadeProps'
+  | 'open'
+  >,
   Pick<CalendarProps,
   | 'value'
   | 'onChange'
@@ -40,6 +44,15 @@ export interface DateRangePickerCalendarProps
    * React Ref for the first(on the left side) calendar
    */
   firstCalendarRef?: RefObject<HTMLDivElement>;
+  /**
+   * Other props you may provide to `Popper` component
+   */
+  popperProps?: Omit<InputTriggerPopperProps,
+  | 'anchor'
+  | 'children'
+  | 'fadeProps'
+  | 'open'
+  >
   /**
    * React Ref for the second(on the right side) calendar
    */
@@ -193,12 +206,12 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
     const isSettingSecondCalendar = currentMode !== mode && !controlPanelOnLeft;
 
     return (
-      <PickerPopper
+      <InputTriggerPopper
+        {...popperProps}
         ref={ref}
         anchor={anchor}
         open={open}
         fadeProps={fadeProps}
-        popperProps={popperProps}
       >
         <div className={classes.calendarGroup}>
           <Calendar
@@ -264,7 +277,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
             value={isSettingSecondCalendar ? referenceDates[1] : value}
           />
         </div>
-      </PickerPopper>
+      </InputTriggerPopper>
     );
   },
 );
