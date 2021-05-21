@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.0...@mezzanine-ui/core@0.3.1) (2021-05-21)
+
+### Features
+
+- **core/card:** implement ([d461ee4](https://github.com/Mezzanine-UI/mezzanine/commit/d461ee4e9465e77c9933e9640e10ca57b9370d9f))
+
 # [0.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.2.1...@mezzanine-ui/core@0.3.0) (2021-05-12)
 
 ### Bug Fixes
