@@ -5,11 +5,15 @@ import {
   useMemo,
 } from 'react';
 import Calendar, { CalendarProps, useCalendarControls, useCalendarContext } from '../Calendar';
-import { PickerPopper, PickerPopperProps } from '../Picker';
+import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
 
 export interface DatePickerCalendarProps
   extends
-  Omit<PickerPopperProps, 'children'>,
+  Pick<InputTriggerPopperProps,
+  | 'anchor'
+  | 'fadeProps'
+  | 'open'
+  >,
   Pick<CalendarProps,
   | 'disableOnNext'
   | 'disableOnPrev'
@@ -48,6 +52,15 @@ export interface DatePickerCalendarProps
    * The `onChange` function will only fired if the calendar mode meets this prop.
    */
   mode?: CalendarMode;
+  /**
+   * Other props you may provide to `Popper` component
+   */
+  popperProps?: Omit<InputTriggerPopperProps,
+  | 'anchor'
+  | 'children'
+  | 'fadeProps'
+  | 'open'
+  >
   /**
    * The calendar cell will be marked as active if it matches the same date of given value.
    */
@@ -153,12 +166,12 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
     ]);
 
     return (
-      <PickerPopper
+      <InputTriggerPopper
+        {...popperProps}
         ref={ref}
         anchor={anchor}
         open={open}
         fadeProps={fadeProps}
-        popperProps={popperProps}
       >
         <Calendar
           {...restCalendarProps}
@@ -179,7 +192,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
           referenceDate={referenceDate}
           value={value}
         />
-      </PickerPopper>
+      </InputTriggerPopper>
     );
   },
 );
