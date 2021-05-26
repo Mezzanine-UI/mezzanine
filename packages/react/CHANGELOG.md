@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.1...@mezzanine-ui/react@0.3.2) (2021-05-26)
+
+### Bug Fixes
+
+- **react/table:** fix table can't scroll bug when sources are async injected ([18dab68](https://github.com/Mezzanine-UI/mezzanine/commit/18dab687b441961f93e9258c1bfec1045bfaba79)), closes [#74](https://github.com/Mezzanine-UI/mezzanine/issues/74) [#74](https://github.com/Mezzanine-UI/mezzanine/issues/74)
+- **react/transition/collapse:** remove height description in getStyle method ([d62c6bb](https://github.com/Mezzanine-UI/mezzanine/commit/d62c6bb9ea832d05ab065210d3d2d94360b9ff47))
+
+### Features
+
+- **icons:** add caret-right icon ([800369e](https://github.com/Mezzanine-UI/mezzanine/commit/800369e11fc89a0b2051c7fd345b4735963dd216))
+- **react/tree:** implement ([93b5677](https://github.com/Mezzanine-UI/mezzanine/commit/93b5677b6c33cd9f1e9666dbb4789ae3ae618087))
+
 ## [0.3.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.0...@mezzanine-ui/react@0.3.1) (2021-05-21)
 
 ### Features

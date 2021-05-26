@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.3.0...@mezzanine-ui/icons@0.3.2) (2021-05-26)
+
+### Features
+
+- **icons:** add caret-right icon ([800369e](https://github.com/Mezzanine-UI/mezzanine/commit/800369e11fc89a0b2051c7fd345b4735963dd216))
+
 # [0.3.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.2.0...@mezzanine-ui/icons@0.3.0) (2021-05-12)
 
 ### Features
