@@ -11,12 +11,10 @@ import { useSetNodeTransition } from './useSetNodeTransition';
 function getStyle(state: TransitionState, inProp: boolean, collapsedHeight: string): CSSProperties {
   const style: CSSProperties = {
     minHeight: collapsedHeight,
-    height: 0,
     overflow: 'hidden',
   };
 
   if (state === 'entered') {
-    style.height = 'auto';
     style.overflow = 'visible';
   } else if (state === 'exited' && !inProp && collapsedHeight === '0px') {
     style.visibility = 'hidden';
@@ -120,6 +118,7 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(function Collapse(props,
     },
     onExit(node) {
       node.style.height = `${getWrapperHeight()}px`;
+
       reflow(node);
 
       if (onExit) {

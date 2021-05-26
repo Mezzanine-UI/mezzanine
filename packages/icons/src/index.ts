@@ -5,6 +5,7 @@ export type { IconDefinition } from './typings';
  */
 export { ArrowRightIcon } from './arrow-right';
 export { CalendarIcon } from './calendar';
+export { CaretRightIcon } from './caret-right';
 export { CheckCircleFilledIcon } from './check-circle-filled';
 export { CheckIcon } from './check';
 export { ChevronDownIcon } from './chevron-down';

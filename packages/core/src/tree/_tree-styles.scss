@@ -1,0 +1,105 @@
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/motion';
+@use '~@mezzanine-ui/system/transition';
+@use './tree' as *;
+
+$icon-size-small: 16px !default;
+$icon-size-medium: 24px !default;
+$layer-indent-small: 12px !default;
+$layer-indent-medium: 16px !default;
+
+.#{$prefix} {
+  width: 100%;
+}
+
+.#{$node-list-prefix} {
+  margin: 0;
+  list-style: none;
+  padding: 0;
+
+  &--small {
+    --#{$node-list-prefix}-indent: #{$layer-indent-small};
+  }
+
+  &--medium {
+    --#{$node-list-prefix}-indent: #{$layer-indent-medium};
+  }
+
+  &--large {
+    --#{$node-list-prefix}-indent: #{$layer-indent-medium};
+  }
+
+  .#{$node-list-prefix} {
+    padding: 0 0 0 var(--#{$node-list-prefix}-indent);
+  }
+}
+
+.#{$node-prefix} {
+  list-style: none;
+  background-color: transparent;
+
+  &--small {
+    --#{$node-prefix}-height: #{typography.prop(input3, line-height)};
+    --#{$node-prefix}-icon-size: #{$icon-size-small};
+  }
+
+  &--medium {
+    --#{$node-prefix}-height: #{typography.prop(input2, line-height)};
+    --#{$node-prefix}-icon-size: #{$icon-size-medium};
+  }
+
+  &--large {
+    --#{$node-prefix}-height: #{typography.prop(input1, line-height)};
+    --#{$node-prefix}-icon-size: #{$icon-size-medium};
+  }
+
+  &__stem {
+    display: grid;
+    grid-template-columns: var(--#{$node-prefix}-icon-size) minmax(0, max-content);
+    position: relative;
+    height: var(--#{$node-prefix}-height);
+  }
+
+  &__caret {
+    position: relative;
+    font-size: var(--#{$node-prefix}-icon-size);
+    top: calc((var(--#{$node-prefix}-height) - var(--#{$node-prefix}-icon-size)) / 2);
+    color: palette.color(action-inactive);
+    cursor: pointer;
+    transition: transition.standard(transform, motion.duration(shortest));
+    transform-origin: center center;
+  }
+
+  &__caretExpanded {
+    transform: rotate(90deg);
+  }
+
+  &__label {
+    padding: 0 8px;
+    cursor: default;
+    transition: transition.standard(background-color, motion.duration(shortest));
+  }
+
+  &__label--selectable {
+    cursor: pointer;
+
+    &:hover:not(.#{$node-prefix}__label--active):not(.#{$node-prefix}__label--disabled) {
+      background-color: palette.color(primary-hover-bg);
+    }
+  }
+
+  &__label--indeterminate {
+    color: palette.color(primary);
+  }
+
+  &__label--active {
+    background-color: palette.color(primary-active-bg);
+  }
+
+  &__label--disabled {
+    color: palette.color(text-disabled);
+    background-color: initial;
+    cursor: default;
+  }
+}

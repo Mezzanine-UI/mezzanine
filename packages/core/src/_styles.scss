@@ -43,6 +43,7 @@
   @include _load-styles($options, empty);
   @include _load-styles($options, tag);
   @include _load-styles($options, accordion);
+  @include _load-styles($options, tree);
   @include _load-styles($options, table);
 
   // Data Entry Common
