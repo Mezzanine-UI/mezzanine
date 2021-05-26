@@ -149,7 +149,14 @@ describe('<TableBody />', () => {
             scrollBarSize,
           }}
         >
-          <TableBody />
+          <TableDataContext.Provider
+            value={{
+              columns: [],
+              dataSource: defaultSources,
+            }}
+          >
+            <TableBody />
+          </TableDataContext.Provider>
         </TableContext.Provider>,
       );
     });
@@ -268,6 +275,15 @@ describe('<TableBody />', () => {
       });
 
       expect(fetchMoreTriggered).toBe(true);
+    });
+
+    it('should set scroll bar height when sources given', () => {
+      const host = getTableBody();
+      const currentScrollBarStyle = getTableBodyScrollBar(host)?.getAttribute('style');
+      const styleMatch = new RegExp(/height: 46px/, 'g');
+
+      expect(currentScrollBarStyle).not.toBeUndefined();
+      expect(currentScrollBarStyle?.match(styleMatch)).not.toBeNull();
     });
 
     describe('exceptions handle', () => {

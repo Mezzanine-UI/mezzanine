@@ -19,6 +19,10 @@ const defaultMockingContextValue = {
   },
 };
 
+type DataType = {
+  key: string;
+};
+
 const dataIndex = 'foo';
 
 describe('<TableSortingIcon />', () => {
@@ -74,7 +78,7 @@ describe('<TableSortingIcon />', () => {
     it('onSort function should be called when icon clicked', async () => {
       let valueGetFromOnSort;
 
-      const onSort = jest.fn<void, [TableColumn]>((value) => {
+      const onSort = jest.fn<void, [TableColumn<DataType>]>((value) => {
         valueGetFromOnSort = value;
       });
 

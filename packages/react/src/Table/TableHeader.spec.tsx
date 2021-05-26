@@ -15,6 +15,10 @@ function getCellWrappers(element: HTMLElement) {
   return element.querySelectorAll('.mzn-table__header__cellWrapper');
 }
 
+type DataType = {
+  key: string;
+};
+
 describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 
@@ -31,7 +35,7 @@ describe('<TableHeader />', () => {
   });
 
   describe('columns are given', () => {
-    const columns: TableColumn[] = [{
+    const columns: TableColumn<DataType>[] = [{
       dataIndex: 'foo',
       title: 'foo',
       headerClassName: undefined,
@@ -145,7 +149,7 @@ describe('<TableHeader />', () => {
 
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
-      const columns: TableColumn[] = [{
+      const columns: TableColumn<DataType>[] = [{
         dataIndex: 'foo',
         title: 'foo',
       }];

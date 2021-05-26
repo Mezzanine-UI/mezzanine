@@ -15,7 +15,12 @@ import { TableDataContext, TableContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
 import TableCell from './TableCell';
 
-const rowData = {
+type DataType = {
+  key: string;
+  name: string;
+};
+
+const rowData: DataType = {
   key: 'foo',
   name: 'foo',
 };
@@ -55,7 +60,7 @@ describe('<TableBodyRow />', () => {
   });
 
   it('ellipsis control should set to true by default, and false when no data/disabled', () => {
-    const columns: TableColumn[] = [{
+    const columns: TableColumn<DataType>[] = [{
       dataIndex: 'name',
       title: 'name',
     }, {
@@ -86,7 +91,7 @@ describe('<TableBodyRow />', () => {
   });
 
   describe('columns are given', () => {
-    const columns: TableColumn[] = [{
+    const columns: TableColumn<DataType>[] = [{
       dataIndex: 'name',
       title: 'foo',
       headerClassName: undefined,
@@ -220,7 +225,7 @@ describe('<TableBodyRow />', () => {
 
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
-      const columns: TableColumn[] = [{
+      const columns: TableColumn<DataType>[] = [{
         dataIndex: 'foo',
         title: 'foo',
       }];

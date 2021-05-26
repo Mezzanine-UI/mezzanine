@@ -6,6 +6,7 @@ import {
   Fragment,
   FC,
   ReactElement,
+  useEffect,
 } from 'react';
 import { MoreVerticalIcon, InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import {
@@ -79,9 +80,19 @@ const dataSource: DataType[] = Array.from(Array(10)).map((_, idx) => ({
 
 export const Basic = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [sources, setSources] = useState<typeof dataSource>(dataSource);
+  const [sources, setSources] = useState<typeof dataSource>([]);
   const [isReachEnd, setReachEnd] = useState<boolean>(false);
   // const [isFetching, setFetching] = useState<boolean>(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setSources(dataSource);
+    }, 2000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
 
   return (
     <div style={{ width: '100%' }}>
@@ -344,7 +355,7 @@ export const WithPagination = () => {
     <div
       style={{
         width: '80%',
-        height: 460,
+        height: 'auto',
       }}
     >
       <Table
@@ -355,7 +366,7 @@ export const WithPagination = () => {
           current: currentPage,
           onChange: (page) => {
             setCurrentPage(page);
-            setSources(() => (dataSource.map((data) => ({
+            setSources(() => (dataSource.slice(0, parseInt(`${Math.random() * 1000}`, 10) % 8).map((data) => ({
               ...data,
               key: `Page${page} - ${data.key}`,
               name: `Page${page} - ${data.name}`,
@@ -363,6 +374,7 @@ export const WithPagination = () => {
           },
           total: 100,
         }}
+        style={{ display: 'block' }}
       />
     </div>
   );
@@ -545,7 +557,7 @@ export const Editable = () => {
           <Button
             disabled={!!editingKey}
             onClick={() => {
-              setEditingKey(source.foo.bar);
+              setEditingKey(source.key);
             }}
           >
             編輯

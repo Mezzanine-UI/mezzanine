@@ -8,7 +8,8 @@ import {
   DetailedHTMLProps,
   HTMLAttributes,
 } from 'react';
-import { TableContext } from './TableContext';
+import { TableContext, TableDataContext } from './TableContext';
+import { usePreviousValue } from '../hooks/usePreviousValue';
 
 const defaultScrollBarStyle = {
   display: 'flex',
@@ -41,6 +42,10 @@ export default function useTableScroll() {
     loading,
     scrollBarSize = 4,
   } = useContext(TableContext) || {};
+
+  const {
+    dataSource = [],
+  } = useContext(TableDataContext) || {};
 
   const [scrollBarHeight, setScrollBarHeight] = useState<number>(0);
   const [pointerOffset, setPointerOffset] = useState<number>(0);
@@ -84,48 +89,26 @@ export default function useTableScroll() {
   }, []);
 
   /** reset scroll bar height when sources changed */
+  const prevSourceLength = usePreviousValue(dataSource.length);
+  const currentSourceLength = useMemo(() => dataSource.length, [dataSource.length]);
+
   useEffect(() => {
-    if (loading || fetchMore?.isFetching) return;
-
+    // first initial render
     onSetScrollBarHeight();
-  }, [loading, onSetScrollBarHeight, fetchMore?.isFetching]);
+  }, []);
 
-  /** determine that table should be overflow */
+  useEffect(() => {
+    if (prevSourceLength !== currentSourceLength) {
+      onSetScrollBarHeight();
+    }
+  }, [prevSourceLength, currentSourceLength]);
+
+  /** set the scroll bar default position */
   useEffect(() => {
     if (!scrollBarRef.current || !bodyRef.current) return;
 
     scrollBarRef.current.style.top = `${SCROLL_BAR_MIN_START_AT}px`;
-
-    function setTableOverflow() {
-      (bodyRef.current as HTMLDivElement).style.overflow = 'auto';
-      onSetScrollBarHeight();
-    }
-
-    function setTableInitial() {
-      (bodyRef.current as HTMLDivElement).style.overflow = 'initial';
-      onHideScrollBar();
-    }
-
-    function onWindowResize() {
-      const {
-        scrollHeight,
-        clientHeight: tableHeight,
-      } = (bodyRef.current as HTMLDivElement);
-
-      if (scrollHeight === tableHeight) {
-        setTableInitial();
-      } else {
-        setTableOverflow();
-      }
-    }
-
-    window.addEventListener('resize', onWindowResize, false);
-    onWindowResize();
-
-    return () => {
-      window.removeEventListener('resize', onWindowResize, false);
-    };
-  }, [onHideScrollBar, onSetScrollBarHeight, scrollBarHeight]);
+  }, []);
 
   useEffect(() => {
     const { current: body } = bodyRef;
