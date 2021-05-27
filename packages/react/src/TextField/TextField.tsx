@@ -123,7 +123,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
       {children}
       {suffix && <div className={classes.suffix}>{suffix}</div>}
       {suffixActionIcon && cloneElement(suffixActionIcon, {
-        className: classes.actionIcon,
+        className: cx(classes.actionIcon, suffixActionIcon.props.className),
         role: 'button',
         tabIndex: -1,
       })}
