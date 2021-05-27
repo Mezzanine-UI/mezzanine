@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
 @use '../text-field';
 @use './select' as *;
 
@@ -11,6 +12,7 @@ $tags-gap: 4px !default;
 .#{$prefix} {
   position: relative;
 
+  /** below to be deprecated */
   &__text-field {
     input {
       padding-left: var(--#{text-field.$prefix}-padding-left);
@@ -49,4 +51,69 @@ $tags-gap: 4px !default;
     color: palette.color(text-primary);
     box-sizing: border-box;
   }
+
+  /** deprecated block code ends */
+}
+
+.#{$trigger-prefix} {
+  input {
+    padding-left: var(--#{text-field.$prefix}-padding-left);
+    padding-right: var(--#{text-field.$prefix}-padding-right);
+
+    &:read-only {
+      cursor: pointer;
+    }
+
+    /* clears the 'X' from Internet Explorer */
+    &[type=search]::-ms-clear,
+    &[type=search]::-ms-reveal {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* clears the 'X' from Chrome */
+    &[type="search"]::-webkit-search-decoration,
+    &[type="search"]::-webkit-search-cancel-button,
+    &[type="search"]::-webkit-search-results-button,
+    &[type="search"]::-webkit-search-results-decoration {
+      display: none;
+    }
+  }
+
+  &__tags {
+    padding-top: $tags-container-padding;
+    padding-left: $tags-container-padding;
+    width: 100%;
+    max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-self: flex-start;
+
+    > span {
+      margin-right: $tags-gap;
+      margin-bottom: $tags-gap;
+    }
+  }
+
+  & &__suffix-action-icon {
+    transition:
+      transition.standard(transform),
+      transition.standard(color),
+      transition.standard(opacity);
+    will-change: transform, color, opacity;
+
+    &--active {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.#{$popper-prefix} {
+  width: auto;
+  padding: $popper-vertical-padding $popper-horizontal-padding;
+  background-color: palette.color(surface);
+  color: palette.color(text-primary);
+  box-sizing: border-box;
 }

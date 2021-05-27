@@ -1,4 +1,3 @@
-@use '../text-field';
-
 $prefix: mzn-select;
-$sizes: text-field.$sizes;
+$trigger-prefix: #{$prefix}-trigger;
+$popper-prefix: #{$prefix}-popper;
