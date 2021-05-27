@@ -17,12 +17,5 @@ export const selectClasses = {
   triggerSuffixActionIconActive: `${selectTriggerPrefix}__suffix-action-icon--active`,
 
   /** Popper classes */
-  _popper: selectPopperPrefix,
-
-  /** below to be deprecated */
-  popper: `${selectPrefix}__popper`,
-  suffixIconActive: `${selectPrefix}__text-field__suffix-icon--active`,
-  tags: `${selectPrefix}__text-field__tags`,
-  textField: `${selectPrefix}__text-field`,
-  /** deprecated block code ends */
+  popper: selectPopperPrefix,
 } as const;

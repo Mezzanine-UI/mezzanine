@@ -11,48 +11,6 @@ $tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
-
-  /** below to be deprecated */
-  &__text-field {
-    input {
-      padding-left: var(--#{text-field.$prefix}-padding-left);
-      padding-right: var(--#{text-field.$prefix}-padding-right);
-
-      &:read-only {
-        cursor: pointer;
-      }
-    }
-  }
-
-  &__text-field__tags {
-    padding-top: $tags-container-padding;
-    padding-left: $tags-container-padding;
-    width: 100%;
-    max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    justify-self: flex-start;
-
-    > span {
-      margin-right: $tags-gap;
-      margin-bottom: $tags-gap;
-    }
-  }
-
-  &__text-field__suffix-icon--active {
-    transform: rotate(180deg);
-  }
-
-  &__popper {
-    width: auto;
-    padding: $popper-vertical-padding $popper-horizontal-padding;
-    background-color: palette.color(surface);
-    color: palette.color(text-primary);
-    box-sizing: border-box;
-  }
-
-  /** deprecated block code ends */
 }
 
 .#{$trigger-prefix} {
