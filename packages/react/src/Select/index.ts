@@ -1,3 +1,11 @@
+export * from './typings';
+export {
+  SelectControlContext,
+} from './SelectControlContext';
+export {
+  SelectTriggerProps,
+  default as SelectTrigger,
+} from './SelectTrigger';
 export {
   SelectProps,
   default,

@@ -5,81 +5,66 @@ import {
   useState,
   useContext,
   useLayoutEffect,
-  Ref,
+  ChangeEventHandler,
+  FocusEventHandler,
 } from 'react';
 import {
   selectClasses as classes,
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
-import { ChevronDownIcon, SearchIcon } from '@mezzanine-ui/icons';
-import { cx } from '../utils/cx';
+import { SearchIcon } from '@mezzanine-ui/icons';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { PopperProps } from '../Popper';
-import { SelectControlContext, SelectValue } from './SelectControlContext';
-import Tag from '../Tag';
-import TextField, { TextFieldProps } from '../TextField';
+import { SelectControlContext } from './SelectControlContext';
+import { SelectValue } from './typings';
 import Icon from '../Icon';
 import { useSelectValueControl } from '../Form/useSelectValueControl';
 import { useClickAway } from '../hooks/useClickAway';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { PickRenameMulti } from '../utils/rename-types';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
-
-type SelectMode = 'single' | 'multiple';
+import SelectTrigger, { SelectTriggerProps } from './SelectTrigger';
 
 export interface SelectProps
   extends
-  Omit<TextFieldProps, 'active' | 'onClick' | 'onKeyDown'>,
+  Omit<SelectTriggerProps,
+  | 'active'
+  | 'onClick'
+  | 'onKeyDown'
+  | 'onChange'
+  | 'inputProps'
+  >,
   PickRenameMulti<Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>, {
     maxHeight: 'menuMaxHeight';
     role: 'menuRole';
     size: 'menuSize';
   }>,
-  PickRenameMulti<Pick<PopperProps, 'options'>, { options: 'popperOptions'; }> {
+  PickRenameMulti<Pick<PopperProps, 'options'>, {
+    options: 'popperOptions';
+  }>,
+  Pick<MenuProps, 'children'> {
   /**
    * The default selection
    */
   defaultValue?: SelectValue[];
   /**
-   * The react ref passed to input element.
-   */
-  inputRef?: Ref<HTMLInputElement>;
-  /**
    * The other native props for input element.
    */
   inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'autoComplete'
-  | 'defaultValue'
-  | 'disabled'
+  SelectTriggerProps['inputProps'],
   | 'onBlur'
   | 'onChange'
   | 'onFocus'
   | 'placeholder'
-  | 'readOnly'
-  | 'required'
   | 'role'
-  | 'type'
   | 'value'
   | `aria-${
-    | 'disabled'
-    | 'multiline'
-    | 'readonly'
-    | 'required'
     | 'controls'
-    | 'autocomplete'
     | 'expanded'
-    | 'haspopup'
     | 'owns'
     }`
   >;
-  /**
-   * The mode of selector
-   * @default 'single''
-   */
-  mode?: SelectMode;
   /**
    * The change event handler of input element.
    */
@@ -146,15 +131,15 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     renderValue: renderValueProp,
     required = requiredFromFormControl || false,
     size = 'medium',
-    suffixActionIcon,
+    suffixActionIcon: suffixActionIconProp,
     value: valueProp,
   } = props;
 
   const [open, toggleOpen] = useState(false);
   const {
-    value,
     onChange,
     onClear,
+    value,
   } = useSelectValueControl({
     defaultValue,
     mode,
@@ -172,16 +157,15 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   const searchable = typeof onSearch === 'function';
   const [searchText, changeSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
+  const renderValue = focused && searchable ? () => searchText : renderValueProp;
 
-  const renderValue = () => {
-    if (typeof renderValueProp === 'function') {
-      return renderValueProp(value);
+  function getPlaceholder() {
+    if (focused && searchable) {
+      return renderValueProp?.(value) ?? value.map(({ name }) => name).join(', ');
     }
 
-    if (value.length) return value.map((v) => v.name).join(', ');
-
-    return searchable ? searchText : '';
-  };
+    return placeholder;
+  }
 
   useLayoutEffect(() => {
     if (!focused) {
@@ -210,24 +194,11 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     ],
   );
 
-  const getSuffixActionIcon = () => {
-    if (suffixActionIcon) return suffixActionIcon;
-
-    if (searchable && open) {
-      return (
-        <Icon icon={SearchIcon} />
-      );
-    }
-
-    return (
-      <Icon
-        icon={ChevronDownIcon}
-        style={open ? {
-          transform: 'rotate(180deg)',
-        } : undefined}
-      />
-    );
-  };
+  const suffixActionIcon = suffixActionIconProp || (
+    searchable && open ? (
+      <Icon icon={SearchIcon} />
+    ) : undefined
+  );
 
   const onClickTextField = () => {
     /** when searchable, should open menu when focus */
@@ -270,85 +241,67 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     }
   };
 
+  /** Trigger input props */
+  const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    changeSearchText(e.target.value);
+
+    if (typeof onSearch === 'function') {
+      onSearch(e.target.value);
+    }
+  };
+
+  const onSearchInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
+    e.stopPropagation();
+
+    if (searchable) toggleOpen((prev) => !prev);
+
+    setFocused(true);
+  };
+
+  const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = () => setFocused(false);
+  const resolvedInputProps: SelectTriggerProps['inputProps'] = {
+    ...inputProps,
+    'aria-controls': MENU_ID,
+    'aria-expanded': open,
+    'aria-owns': MENU_ID,
+    onBlur: onSearchInputBlur,
+    onChange: onSearchInputChange,
+    onFocus: onSearchInputFocus,
+    placeholder: getPlaceholder(),
+    role: 'combobox',
+  };
+
   return (
     <SelectControlContext.Provider
       value={{
-        value,
         onChange,
+        value,
       }}
     >
       <div ref={nodeRef} className={classes.host}>
-        <TextField
+        <SelectTrigger
           ref={composedRef}
-          active={Boolean(value.length)}
-          className={cx(classes.textField, className)}
+          active={open}
+          className={className}
           clearable={clearable}
           disabled={disabled}
           error={error}
           fullWidth={fullWidth}
+          inputRef={inputRef}
+          mode={mode}
+          onTagClose={onChange}
           onClear={onClear}
           onClick={onClickTextField}
           onKeyDown={onKeyDownTextField}
           prefix={prefix}
+          readOnly={!searchable}
+          required={required}
+          inputProps={resolvedInputProps}
           size={size}
-          suffixActionIcon={getSuffixActionIcon()}
-        >
-          {mode === 'multiple' && value.length ? (
-            <div className={classes.tags}>
-              {value.map((selection) => (
-                <Tag
-                  key={selection.id}
-                  closable
-                  disabled={disabled}
-                  onClose={(evt) => {
-                    evt.stopPropagation();
-
-                    onChange(selection);
-                  }}
-                  size={size}
-                >
-                  {selection.name}
-                </Tag>
-              ))}
-            </div>
-          ) : (
-            <input
-              {...inputProps}
-              ref={inputRef}
-              autoComplete="false"
-              aria-autocomplete="list"
-              aria-controls={MENU_ID}
-              aria-disabled={disabled}
-              aria-expanded={open}
-              aria-haspopup="listbox"
-              aria-owns={MENU_ID}
-              aria-readonly={!searchable}
-              aria-required={required}
-              disabled={disabled}
-              onBlur={() => setFocused(false)}
-              onChange={(e) => {
-                changeSearchText(e.target.value);
-
-                if (typeof onSearch === 'function') {
-                  onSearch(e.target.value);
-                }
-              }}
-              onFocus={(e) => {
-                e.stopPropagation();
-
-                if (searchable) toggleOpen((prev) => !prev);
-
-                setFocused(true);
-              }}
-              placeholder={focused && searchable ? renderValue() : placeholder}
-              readOnly={!searchable}
-              required={required}
-              role="combobox"
-              type="search"
-              value={focused && searchable ? searchText : renderValue()}
-            />
-          )}
-        </TextField>
+          suffixActionIcon={suffixActionIcon}
+          value={value}
+          renderValue={renderValue}
+        />
         <InputTriggerPopper
           ref={popperRef}
           anchor={controlRef}

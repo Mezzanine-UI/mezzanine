@@ -239,6 +239,9 @@ export {
   default as Radio,
 } from './Radio';
 export {
+  SelectControlContext,
+  SelectTriggerProps,
+  SelectTrigger,
   SelectProps,
   OptionProps,
   Option,

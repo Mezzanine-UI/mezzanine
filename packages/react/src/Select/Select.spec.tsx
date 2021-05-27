@@ -12,8 +12,7 @@ import {
 } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import TextField from '../TextField';
-import Select, { Option } from '.';
-import { SelectValue } from './SelectControlContext';
+import Select, { Option, SelectValue } from '.';
 
 function getSelectInputElement(element: HTMLElement) {
   return element.getElementsByTagName('input')[0];
@@ -101,11 +100,11 @@ describe('<Select />', () => {
     );
     const element = getHostHTMLElement();
 
-    expect(document.querySelector('.mzn-select__popper')).toBeNull();
+    expect(document.querySelector('.mzn-select-popper')).toBeNull();
 
     await testTextFieldClicked(element);
 
-    expect(document.querySelector('.mzn-select__popper')).toBeInstanceOf(HTMLDivElement);
+    expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
     expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
   });
 
@@ -154,7 +153,9 @@ describe('<Select />', () => {
         fireEvent.focus(inputRef.current!);
       });
 
-      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+      await act(async () => {
+        fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+      });
     });
 
     it('should display searchIcon when is searchable and modal is open', () => {
@@ -226,7 +227,7 @@ describe('<Select />', () => {
           jest.runAllTimers();
         });
 
-        expect(document.querySelector('.mzn-select__popper')).toBeNull();
+        expect(document.querySelector('.mzn-select-popper')).toBeNull();
       });
     });
 
@@ -257,7 +258,7 @@ describe('<Select />', () => {
       });
 
       it('should tags children length equal to its value length', () => {
-        const tags = element.querySelector('.mzn-select__text-field__tags');
+        const tags = element.querySelector('.mzn-select-trigger__tags');
 
         expect(tags?.children.length).toEqual(defaultValue.length);
       });

@@ -1,4 +1,7 @@
-import Select, { Option, OptionGroup } from '.';
+import Select, {
+  Option,
+  OptionGroup,
+} from '.';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
 
 export default {

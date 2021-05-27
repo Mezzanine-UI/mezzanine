@@ -2,7 +2,7 @@ import {
   useState,
   MouseEvent,
 } from 'react';
-import { SelectValue, SelectOnChange } from '../Select/SelectControlContext';
+import { SelectValue } from '../Select/typings';
 
 export interface UseSelectValueControl {
   defaultValue?: SelectValue[];
@@ -13,9 +13,10 @@ export interface UseSelectValueControl {
   value?: SelectValue[];
 }
 
-export interface SelectValueControl extends SelectOnChange {
-  value: SelectValue[];
+export interface SelectValueControl {
+  onChange: (v: SelectValue | null) => SelectValue[];
   onClear(e: MouseEvent<Element>): void;
+  value: SelectValue[];
 }
 
 export function useSelectValueControl(
