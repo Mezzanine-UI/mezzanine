@@ -1,0 +1,80 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
+@use './stepper' as *;
+
+$icon-size: 24px !default;
+$stepper-padding: spacing.level(4) !default;
+$step-items-margin-right: spacing.level(2) !default;
+
+.#{$prefix} {
+  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  margin: $stepper-padding;
+}
+
+.#{$prefix-step} {
+  --#{$prefix-step}-color: #{palette.color(text-primary)};
+
+  align-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  color: var(--#{$prefix-step}-color);
+  display: flex;
+  flex-grow: 1;
+  position: relative;
+  white-space: nowrap;
+
+  // display step number or icon
+  &__icon-background {
+    --#{$prefix-step}-icon-background-color: #{palette.color(on-primary)};
+    --#{$prefix-step}-icon-background-background: #{palette.color(primary)};
+
+    align-content: center;
+    align-items: center;
+    background-color: var(--#{$prefix-step}-icon-background-background);
+    border-radius: 50%;
+    color: var(--#{$prefix-step}-icon-background-color);
+    display: flex;
+    height: $icon-size;
+    justify-content: center;
+    margin-right: $step-items-margin-right;
+    width: $icon-size;
+  }
+
+  &--disabled {
+    --#{$prefix-step}-color: #{palette.color(text-disabled)};
+    --#{$prefix-step}-icon-color: #{palette.color(on-primary)};
+  }
+
+  &--disabled > &__icon-background {
+    --#{$prefix-step}-icon-background-color: #{palette.color(text-disabled)};
+    --#{$prefix-step}-icon-background-background: #{palette.color(action-disabled-bg)};
+  }
+
+  &__completed-icon {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__title {
+    margin-right: $step-items-margin-right;
+  }
+
+  // connector
+  &:not(:last-child)::after {
+    background: palette.color(border);
+    content: '';
+    display: block;
+    flex-grow: 1;
+    height: 1px;
+    margin-right: $step-items-margin-right;
+    width: auto;
+  }
+
+  &:last-child {
+    flex-grow: 0;
+  }
+}
