@@ -119,6 +119,14 @@ export {
   PageFooterProps,
   default as PageFooter,
 } from './PageFooter';
+export {
+  StepProps,
+  default as Step,
+} from './Stepper';
+export {
+  StepperProps,
+  default as Stepper,
+} from './Stepper';
 
 /**
  * Data Display
