@@ -144,7 +144,10 @@ $icon-size: 24px !default;
       }
 
       &__group {
+        display: grid;
         padding-left: $vertical-group-indent;
+        gap: spacing.level(2);
+        margin-top: spacing.level(2);
 
         .#{$item-prefix} {
           height: $vertical-item-height;
