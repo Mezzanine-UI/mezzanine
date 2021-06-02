@@ -188,6 +188,8 @@ export {
   toggleValue,
   toggleValueWithStatusControl,
   traverseTree,
+  UseTreeExpandedValueProps,
+  useTreeExpandedValue,
   GetTreeNodeEntitiesProps,
   getTreeNodeEntities,
   TreeNodeElementProps,

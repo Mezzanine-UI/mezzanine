@@ -113,7 +113,7 @@ describe('getTreeNodeEntities()', () => {
   it('while selectedValue is provided, the node whose direct sibling values are all marked as selected should be selected as well', () => {
     const selectedValues: TreeNodeValue[] = ['1-1-1-1', '1-1-1-2', '1-1-1-3'];
 
-    const entities = getTreeNodeEntities({ nodes, selectedValues });
+    const entities = getTreeNodeEntities({ nodes, selectedValues, multiple: true });
     const targetEntity = entities.get('1-1-1')!;
 
     expect(targetEntity.node.selected).toBe(true);
@@ -123,7 +123,7 @@ describe('getTreeNodeEntities()', () => {
   it('while selectedValue is provided, the node whose leaf values are all marked as selected should be selected as well', () => {
     const selectedValues: TreeNodeValue[] = ['1-1-1-1', '1-1-1-2', '1-1-1-3', '1-1-2', '1-1-3'];
 
-    const entities = getTreeNodeEntities({ nodes, selectedValues });
+    const entities = getTreeNodeEntities({ nodes, selectedValues, multiple: true });
     const targetEntity = entities.get('1-1')!;
 
     expect(targetEntity.node.selected).toBe(true);

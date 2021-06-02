@@ -3,19 +3,21 @@ import xor from 'lodash/xor';
 import { TreeNodeData, TreeNodeEntities, TreeNodeEntity } from './typings';
 
 export interface GetTreeNodeEntitiesProps {
+  disabledValues?: TreeNodeValue[];
   expandedValues?: TreeNodeValue[];
   includeNodeValue?: boolean;
+  multiple?: boolean;
   nodes: TreeNodeData[];
   selectedValues?: TreeNodeValue[];
-  disabledValues?: TreeNodeValue[];
 }
 
 export function getTreeNodeEntities({
+  disabledValues,
   expandedValues,
   includeNodeValue = false,
+  multiple,
   nodes,
   selectedValues,
-  disabledValues,
 }: GetTreeNodeEntitiesProps): TreeNodeEntities {
   const entities: TreeNodeEntities = new Map();
   const selectedValueMap = selectedValues?.length
@@ -118,7 +120,10 @@ export function getTreeNodeEntities({
       entity.node.disabled = true;
     }
 
-    if (anyIndeterminate && !disabled && !shouldDisabled) {
+    if (
+      (anyIndeterminate && !disabled && !shouldDisabled) ||
+        (!multiple && siblingSelectedValues.length)
+    ) {
       entity.node.selected = false;
       entity.node.indeterminate = true;
 
