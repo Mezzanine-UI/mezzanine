@@ -13,6 +13,10 @@ $tags-gap: 4px !default;
   position: relative;
 }
 
+.#{$tree-select-prefix} {
+  position: relative;
+}
+
 .#{$trigger-prefix} {
   input {
     padding-left: var(--#{text-field.$prefix}-padding-left);
@@ -74,4 +78,9 @@ $tags-gap: 4px !default;
   background-color: palette.color(surface);
   color: palette.color(text-primary);
   box-sizing: border-box;
+}
+
+.#{$tree-prefix} {
+  box-sizing: border-box;
+  padding: 0 8px;
 }

@@ -4,8 +4,10 @@ export type SelectInputSize = Size;
 export type SelectMode = 'single' | 'multiple';
 
 export const selectPrefix = 'mzn-select';
+export const treeSelectPrefix = 'mzn-tree-select';
 export const selectTriggerPrefix = `${selectPrefix}-trigger`;
 export const selectPopperPrefix = `${selectPrefix}-popper`;
+export const selectTreePrefix = `${selectPrefix}-tree`;
 
 export const selectClasses = {
   host: selectPrefix,
@@ -18,4 +20,8 @@ export const selectClasses = {
 
   /** Popper classes */
   popper: selectPopperPrefix,
+
+  /** Tree select classes */
+  treeSelect: treeSelectPrefix,
+  tree: selectTreePrefix,
 } as const;
