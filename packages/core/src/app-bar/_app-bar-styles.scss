@@ -46,6 +46,7 @@ $vertical-support-max-height: 96px !default;
     .#{$support-prefix} {
       max-height: $horizontal-height;
       max-width: $horizontal-support-max-width;
+      margin-left: auto;
       @include item-gap(right);
     }
   }
