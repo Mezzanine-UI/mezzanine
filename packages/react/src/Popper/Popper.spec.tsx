@@ -1,4 +1,5 @@
 import { Placement } from '@popperjs/core';
+import { RefObject } from 'react';
 import {
   act,
   cleanup,
@@ -8,6 +9,7 @@ import {
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Portal from '../Portal';
 import Popper from '.';
+import { PopperController } from './Popper';
 
 function getPopperContainer(container: Element | null = document.body) {
   return container!.querySelector('div[data-popper-placement]');
@@ -92,6 +94,26 @@ describe('<Popper />', () => {
 
         expect(!!popperContainer).toBe(open);
       });
+    });
+  });
+
+  describe('prop: controllerRef', () => {
+    it('should get hook results', async () => {
+      const controllerRef = { current: null } as RefObject<PopperController>;
+
+      await act(async () => {
+        await render(
+          <Popper anchor={document.body} open controllerRef={controllerRef}>
+            <div />
+          </Popper>,
+        );
+      });
+
+      expect(controllerRef?.current?.attributes).toBeInstanceOf(Object);
+      expect(controllerRef?.current?.styles).toBeInstanceOf(Object);
+      expect(controllerRef?.current?.state).toBeInstanceOf(Object);
+      expect(controllerRef?.current?.update).toBeInstanceOf(Function);
+      expect(controllerRef?.current?.forceUpdate).toBeInstanceOf(Function);
     });
   });
 

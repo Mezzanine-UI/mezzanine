@@ -374,6 +374,7 @@ export {
 export {
   PopperPlacement,
   PopperPositionStrategy,
+  PopperController,
   PopperOptions,
   PopperProps,
   default as Popper,
