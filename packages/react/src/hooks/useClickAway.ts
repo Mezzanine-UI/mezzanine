@@ -22,7 +22,6 @@ export function useClickAway(
       const container = containerRef.current;
 
       if (!(container?.contains(target) || !document.contains(target))) {
-        event.preventDefault();
         clickAwayHandler(event);
       }
     };
