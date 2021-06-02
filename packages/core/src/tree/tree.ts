@@ -51,7 +51,7 @@ export const treeClasses = {
   nodeSize: (size: TreeSize) => `${treeNodePrefix}--${size}`,
   nodeStem: `${treeNodePrefix}__stem`,
   nodeCaret: `${treeNodePrefix}__caret`,
-  nodeCaretExpanded: `${treeNodePrefix}__caretExpanded`,
+  nodeCaretExpanded: `${treeNodePrefix}__caret-expanded`,
   nodeLabel: `${treeNodePrefix}__label`,
   nodeLabelSelectable: `${treeNodePrefix}__label--selectable`,
   nodeLabelIndeterminate: `${treeNodePrefix}__label--indeterminate`,
