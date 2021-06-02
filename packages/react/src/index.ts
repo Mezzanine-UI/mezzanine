@@ -241,6 +241,9 @@ export {
   default as Radio,
 } from './Radio';
 export {
+  SelectValue,
+  TreeSelectOption,
+  SelectControl,
   SelectControlContext,
   SelectTriggerProps,
   SelectTrigger,
@@ -249,6 +252,8 @@ export {
   Option,
   OptionGroupProps,
   OptionGroup,
+  TreeSelect,
+  TreeSelectProps,
   default as Select,
 } from './Select';
 export {

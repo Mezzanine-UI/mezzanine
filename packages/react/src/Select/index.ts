@@ -18,3 +18,7 @@ export {
   MenuItemGroupProps as OptionGroupProps,
   default as OptionGroup,
 } from '../Menu/MenuItemGroup';
+export {
+  TreeSelectProps,
+  default as TreeSelect,
+} from './TreeSelect';
