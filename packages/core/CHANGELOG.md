@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.2...@mezzanine-ui/core@0.3.3) (2021-06-03)
+
+### Bug Fixes
+
+- **core/app-bar:** app bar main section padding multiple condition ([33cbb9c](https://github.com/Mezzanine-UI/mezzanine/commit/33cbb9cd707b7cc84e40d510a10adc7d152470fc))
+- **core/app-bar:** when using independent support section not fixed at the end of right ([6c8785d](https://github.com/Mezzanine-UI/mezzanine/commit/6c8785df03c654ba74a30af5b419ea35d526a33c))
+- **core/navigation:** fix navigation missing gap in submenu group items ([d703f5b](https://github.com/Mezzanine-UI/mezzanine/commit/d703f5b9e06b1b35893b0963260947c8995b532c))
+
+### Features
+
+- **core/stepper:** implement ([3ebfa9c](https://github.com/Mezzanine-UI/mezzanine/commit/3ebfa9c5ce6debcba74836f11dbf7cc1f4747683))
+
 ## [0.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.1...@mezzanine-ui/core@0.3.2) (2021-05-26)
 
 ### Features

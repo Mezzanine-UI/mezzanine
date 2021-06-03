@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.2...@mezzanine-ui/react@0.3.3) (2021-06-03)
+
+### Features
+
+- **react/icon:** add percent icon in storybook ([a2bdd37](https://github.com/Mezzanine-UI/mezzanine/commit/a2bdd379da97594eb0702946dcb55b8922e07c84))
+- **react/stepper:** implement ([a22e7e8](https://github.com/Mezzanine-UI/mezzanine/commit/a22e7e87c93eae299305b51d764b7e5e3872ead1))
+
 ## [0.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.1...@mezzanine-ui/react@0.3.2) (2021-05-26)
 
 ### Bug Fixes

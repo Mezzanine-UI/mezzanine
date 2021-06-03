@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.3.2...@mezzanine-ui/icons@0.3.3) (2021-06-03)
+
+### Features
+
+- **icons:** add percent icon ([fc95b1e](https://github.com/Mezzanine-UI/mezzanine/commit/fc95b1e907e55d5cb44d66a56bd8afb416e9ab5d))
+
 ## [0.3.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.3.0...@mezzanine-ui/icons@0.3.2) (2021-05-26)
 
 ### Features
