@@ -23,6 +23,7 @@ export { InfoCircleFilledIcon } from './info-circle-filled';
 export { MinusCircleFilledIcon } from './minus-circle-filled';
 export { MoreHorizontalIcon } from './more-horizontal';
 export { MoreVerticalIcon } from './more-vertical';
+export { PercentIcon } from './percent';
 export { PlusIcon } from './plus';
 export { ResetIcon } from './reset';
 export { SearchIcon } from './search';
