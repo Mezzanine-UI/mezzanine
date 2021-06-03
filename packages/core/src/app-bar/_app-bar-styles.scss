@@ -39,13 +39,25 @@ $vertical-support-max-height: 96px !default;
 
     .#{$main-prefix} {
       max-height: $horizontal-height;
-      padding: 0 spacing.level(4);
       @include item-gap(right);
+
+      &:not(:first-child) {
+        padding-left: spacing.level(4);
+      }
+
+      &:not(:last-child) {
+        padding-right: spacing.level(4);
+      }
+
+      &:not(:first-child):not(:last-child) {
+        padding: 0 spacing.level(4);
+      }
     }
 
     .#{$support-prefix} {
       max-height: $horizontal-height;
       max-width: $horizontal-support-max-width;
+      margin-left: auto;
       @include item-gap(right);
     }
   }
@@ -71,8 +83,19 @@ $vertical-support-max-height: 96px !default;
     .#{$main-prefix} {
       width: 100%;
       flex-direction: column;
-      padding: spacing.level(5) 0;
       @include item-gap(bottom);
+
+      &:not(:first-child) {
+        padding-top: spacing.level(5);
+      }
+
+      &:not(:last-child) {
+        padding-bottom: spacing.level(5);
+      }
+
+      &:not(:first-child):not(:last-child) {
+        padding: spacing.level(5) 0;
+      }
     }
 
     .#{$support-prefix} {
@@ -80,6 +103,7 @@ $vertical-support-max-height: 96px !default;
       flex-direction: column;
       align-items: unset;
       max-height: $vertical-support-max-height;
+      margin-top: auto;
       @include item-gap(bottom);
     }
   }
