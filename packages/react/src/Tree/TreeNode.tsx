@@ -124,6 +124,7 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
                   indeterminate={indeterminate}
                   onChange={onSelect}
                   size={size}
+                  value={`${value}`}
                 >
                   {label}
                 </Checkbox>

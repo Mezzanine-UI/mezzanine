@@ -203,6 +203,16 @@ describe('<Tree />', () => {
   });
 
   describe('prop: expandControllerRef', () => {
+    it('should not get handlers if `expandedValues` prop is provided', () => {
+      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+
+      render(
+        <Tree nodes={nodes} expandControllerRef={expandControllerRef} expandedValues={[]} />,
+      );
+
+      expect(expandControllerRef.current).toBe(null);
+    });
+
     it('should get controllers if expandControllerRef is provided', () => {
       const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
 

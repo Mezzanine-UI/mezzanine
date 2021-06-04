@@ -8,13 +8,12 @@ import {
   Ref,
   useImperativeHandle,
   useMemo,
-  useState,
 } from 'react';
 import castArray from 'lodash/castArray';
 import without from 'lodash/without';
 import uniq from 'lodash/uniq';
 import { getTreeNodeEntities, GetTreeNodeEntitiesProps } from './getTreeNodeEntities';
-import { toggleValue, toggleValueWithStatusControl } from './toggleValue';
+import { toggleValueWithStatusControl } from './toggleValue';
 import { traverseTree } from './traverseTree';
 import TreeNodeList, {
   TreeNodeListElementProps,
@@ -26,6 +25,7 @@ import {
 } from './typings';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
+import { useTreeExpandedValue } from './useTreeExpandedValue';
 
 export interface TreeProps
   extends
@@ -35,12 +35,14 @@ export interface TreeProps
   | 'size'
   | 'treeNodeProps'
   | 'treeNodeRefs'
+  | 'onExpand'
   >,
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
   | 'children'
-  | 'onSelect'
   | 'defaultChecked'
   | 'defaultValue'
+  | 'onChange'
+  | 'onSelect'
   > {
   /**
    * Controls whether to expand all at first render.
@@ -56,7 +58,14 @@ export interface TreeProps
   /**
    * Provide if access to expand control is needed.
    */
-  expandControllerRef?: Ref<TreeExpandControl>;
+  expandControllerRef?: Ref<TreeExpandControl | null>;
+  /**
+   * By default expanded values of `Tree` is uncontrolled.
+   * However, you may specify `expandedValues` to gain full control.
+   * If that's the case, you should provide `onExpand` as well.
+   * Notices that if `expandedValues` is provided, `expandControllerRef` will not get the control methods.
+   */
+  expandedValues?: TreeNodeValue[];
   /**
    * By default Tree only passes the leaf values to the select handler.
    * If you want to include all the node values, set `includeNodeValue` to `true`.
@@ -66,6 +75,12 @@ export interface TreeProps
    * The nodes to be rendered in `Tree`
    */
   nodes: TreeNodeProp[];
+  /**
+   * By default expanded values of `Tree` is uncontrolled, where `onExpand` is not needed.
+   * However, you may specify `expandedValues` to gain full control
+   * and that's where you should provide `onExpand` together.
+   */
+  onExpand?: TreeNodeListProps['onExpand'];
   /**
    * Select handler for `Tree`. Receives all the current selected values as its argument.
    */
@@ -98,9 +113,11 @@ const Tree = forwardRef<HTMLDivElement, TreeProps>(
       defaultExpandAll,
       disabledValues,
       expandControllerRef,
+      expandedValues: expandedValuesProp,
       includeNodeValue,
       multiple,
       nodes,
+      onExpand: onExpandProp,
       onSelect: onSelectProp,
       selectMethod = 'toggle',
       selectable,
@@ -112,42 +129,35 @@ const Tree = forwardRef<HTMLDivElement, TreeProps>(
       ...restRootProp
     } = props;
     const selectedValues: TreeNodeValue[] | undefined = values ? castArray(values) : undefined;
-    const [expandedValues, setExpandedValues] = useState(() => {
-      const currentExpandedValues: TreeNodeValue[] = [];
-
-      if (defaultExpandAll) {
-        traverseTree(nodes, (node) => {
-          if (node.nodes) {
-            currentExpandedValues.push(node.value);
-          }
-        });
-      }
-
-      return currentExpandedValues;
+    const {
+      expandedValues,
+      onExpand,
+      setExpandedValues,
+    } = useTreeExpandedValue({
+      nodes,
+      defaultExpandAll,
+      expandedValues: expandedValuesProp,
+      onExpand: onExpandProp,
     });
 
     const treeEntities = useMemo(() => getTreeNodeEntities({
       disabledValues,
       expandedValues,
       includeNodeValue,
+      multiple,
       nodes,
       selectedValues,
     }), [
       disabledValues,
       expandedValues,
       includeNodeValue,
+      multiple,
       nodes,
       selectedValues,
     ]);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const displayNodes = nodes.map((node) => treeEntities.get(node.value)!.node);
-
-    const onExpand: TreeNodeListProps['onExpand'] = (value) => {
-      const newExpandedValues = toggleValue(value, expandedValues);
-
-      setExpandedValues(newExpandedValues);
-    };
 
     const getAllExpandSiblingValues = (value: TreeNodeValue) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -215,14 +225,20 @@ const Tree = forwardRef<HTMLDivElement, TreeProps>(
       setExpandedValues(newExpandedValues);
     };
 
-    useImperativeHandle(expandControllerRef, () => ({
-      collapse,
-      collapseAll,
-      collapseAllFrom,
-      expand,
-      expandAll,
-      expandAllFrom,
-    }));
+    useImperativeHandle(expandControllerRef, () => {
+      if (expandedValuesProp) {
+        return null;
+      }
+
+      return {
+        collapse,
+        collapseAll,
+        collapseAllFrom,
+        expand,
+        expandAll,
+        expandAllFrom,
+      };
+    });
 
     const onMultipleSelect: TreeNodeListProps['onSelect'] = onSelectProp
       ? (value) => {

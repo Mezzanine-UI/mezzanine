@@ -8,6 +8,10 @@ export {
   traverseTree,
 } from './traverseTree';
 export {
+  UseTreeExpandedValueProps,
+  useTreeExpandedValue,
+} from './useTreeExpandedValue';
+export {
   GetTreeNodeEntitiesProps,
   getTreeNodeEntities,
 } from './getTreeNodeEntities';

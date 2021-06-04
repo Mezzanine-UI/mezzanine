@@ -1,6 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/transition';
 @use '../text-field';
 @use './select' as *;
 
@@ -11,19 +11,39 @@ $tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
+}
 
-  &__text-field {
-    input {
-      padding-left: var(--#{text-field.$prefix}-padding-left);
-      padding-right: var(--#{text-field.$prefix}-padding-right);
+.#{$tree-select-prefix} {
+  position: relative;
+}
 
-      &:read-only {
-        cursor: pointer;
-      }
+.#{$trigger-prefix} {
+  input {
+    padding-left: var(--#{text-field.$prefix}-padding-left);
+    padding-right: var(--#{text-field.$prefix}-padding-right);
+
+    &:read-only {
+      cursor: pointer;
+    }
+
+    /* clears the 'X' from Internet Explorer */
+    &[type=search]::-ms-clear,
+    &[type=search]::-ms-reveal {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    /* clears the 'X' from Chrome */
+    &[type="search"]::-webkit-search-decoration,
+    &[type="search"]::-webkit-search-cancel-button,
+    &[type="search"]::-webkit-search-results-button,
+    &[type="search"]::-webkit-search-results-decoration {
+      display: none;
     }
   }
 
-  &__text-field__tags {
+  &__tags {
     padding-top: $tags-container-padding;
     padding-left: $tags-container-padding;
     width: 100%;
@@ -39,17 +59,28 @@ $tags-gap: 4px !default;
     }
   }
 
-  &__text-field__suffix-icon--active {
-    transform: rotate(180deg);
-  }
+  & &__suffix-action-icon {
+    transition:
+      transition.standard(transform),
+      transition.standard(color),
+      transition.standard(opacity);
+    will-change: transform, color, opacity;
 
-  &__popper {
-    width: auto;
-    padding: $popper-vertical-padding $popper-horizontal-padding;
-    background-color: palette.color(surface);
-    border: 1px solid palette.color(border);
-    color: palette.color(text-primary);
-    box-sizing: border-box;
-    z-index: z-index.get(popover);
+    &--active {
+      transform: rotate(180deg);
+    }
   }
+}
+
+.#{$popper-prefix} {
+  width: auto;
+  padding: $popper-vertical-padding $popper-horizontal-padding;
+  background-color: palette.color(surface);
+  color: palette.color(text-primary);
+  box-sizing: border-box;
+}
+
+.#{$tree-prefix} {
+  box-sizing: border-box;
+  padding: 0 8px;
 }

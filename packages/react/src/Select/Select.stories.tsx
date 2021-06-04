@@ -1,4 +1,14 @@
-import Select, { Option, OptionGroup } from '.';
+import { Story } from '@storybook/react';
+import { useState } from 'react';
+import Select, {
+  Option,
+  OptionGroup,
+  TreeSelectOption,
+  SelectValue,
+  TreeSelect,
+  TreeSelectProps,
+} from '.';
+import Typography from '../Typography';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
 
 export default {
@@ -215,6 +225,130 @@ export const Group = () => (
     </Select>
   </div>
 );
+
+const treeSelectOptions: TreeSelectOption[] = [
+  {
+    id: '1',
+    name: 'label 1',
+    siblings: [
+      {
+        id: '1-1',
+        name: 'label 1-1',
+        siblings: [
+          {
+            id: '1-1-1',
+            name: 'label 1-1-1',
+          },
+          {
+            id: '1-1-2',
+            name: 'label 1-1-2',
+          },
+        ],
+      },
+      {
+        id: '1-2',
+        name: 'label 1-2',
+      },
+    ],
+  },
+  {
+    id: '2',
+    name: 'label 2',
+  },
+];
+
+type TreeSelectPlaygroundArgs = Pick<TreeSelectProps,
+| 'clearable'
+| 'disabled'
+| 'error'
+| 'fullWidth'
+| 'itemsInView'
+| 'menuSize'
+| 'mode'
+| 'placeholder'
+| 'sameWidth'
+| 'size'
+>;
+
+export const TreeSelectPlayground: Story<TreeSelectPlaygroundArgs> = ({
+  clearable,
+  disabled,
+  error,
+  fullWidth,
+  itemsInView,
+  menuSize,
+  mode,
+  placeholder,
+  sameWidth,
+  size,
+}) => {
+  const [value, setValue] = useState<SelectValue[]>([]);
+
+  function mapValues() {
+    return value.reduce((acc, current) => {
+      if (!acc.length) { return current.id; }
+
+      return `${acc}, ${current.id}`;
+    }, '');
+  }
+
+  return (
+    <>
+      <Typography component="p" variant="input2" style={{ marginBottom: '12px' }}>
+        {`current value: [${mapValues()}]`}
+      </Typography>
+      <TreeSelect
+        options={treeSelectOptions}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        fullWidth={fullWidth}
+        mode={mode}
+        size={size}
+        itemsInView={itemsInView}
+        menuSize={menuSize}
+        placeholder={placeholder}
+        sameWidth={sameWidth}
+        onChange={setValue}
+        value={value}
+      />
+    </>
+  );
+};
+
+TreeSelectPlayground.argTypes = {
+  menuSize: {
+    control: {
+      type: 'select',
+      options: ['small', 'medium', 'large'],
+    },
+  },
+  mode: {
+    control: {
+      type: 'select',
+      options: ['single', 'multiple'],
+    },
+  },
+  size: {
+    control: {
+      type: 'select',
+      options: ['small', 'medium', 'large'],
+    },
+  },
+};
+
+TreeSelectPlayground.args = {
+  clearable: false,
+  disabled: false,
+  error: false,
+  fullWidth: false,
+  itemsInView: 4,
+  menuSize: 'medium',
+  mode: 'single',
+  placeholder: 'Choose option',
+  sameWidth: false,
+  size: 'medium',
+};
 
 export const OnModal = () => (
   <Modal

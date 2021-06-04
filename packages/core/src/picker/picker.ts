@@ -2,14 +2,10 @@ import { DateType } from '../calendar';
 
 /** Classes */
 export const pickerPrefix = 'mzn-picker';
-export const pickerPopperPrefix = `${pickerPrefix}-popper`;
 
 export const pickerClasses = {
   host: pickerPrefix,
   arrowIcon: `${pickerPrefix}__arrow-icon`,
-
-  /** Popper classes */
-  popper: pickerPopperPrefix,
 } as const;
 
 /** Types */

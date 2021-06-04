@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';
-import { PickerPopper, PickerPopperProps } from '../Picker';
 import TimePanel, { TimePanelProps } from '../TimePanel';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
 
 export interface TimePickerPanelProps
   extends
@@ -12,13 +12,24 @@ export interface TimePickerPanelProps
   | 'onChange'
   | 'value'
   >,
-  Omit<PickerPopperProps,
-  | 'children'
+  Pick<InputTriggerPopperProps,
+  | 'anchor'
+  | 'fadeProps'
+  | 'open'
   > {
   /**
    * Change Handler. Receive `DateType` as props.
    */
   onChange?: (value?: DateType) => void;
+  /**
+   * Other props you may provide to `Popper` component
+   */
+  popperProps?: Omit<InputTriggerPopperProps,
+  | 'anchor'
+  | 'children'
+  | 'fadeProps'
+  | 'open'
+  >
   /**
    * Display value of the panel.
    */
@@ -52,12 +63,12 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
     } = props;
 
     return (
-      <PickerPopper
+      <InputTriggerPopper
+        {...popperProps}
         ref={ref}
         anchor={anchor}
         open={open}
         fadeProps={fadeProps}
-        popperProps={popperProps}
       >
         <TimePanel
           {...restHostProps}
@@ -75,7 +86,7 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
           onConfirm={onConfirm}
           confirmText={confirmText}
         />
-      </PickerPopper>
+      </InputTriggerPopper>
     );
   },
 );

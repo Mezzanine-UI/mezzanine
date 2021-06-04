@@ -188,6 +188,8 @@ export {
   toggleValue,
   toggleValueWithStatusControl,
   traverseTree,
+  UseTreeExpandedValueProps,
+  useTreeExpandedValue,
   GetTreeNodeEntitiesProps,
   getTreeNodeEntities,
   TreeNodeElementProps,
@@ -239,11 +241,19 @@ export {
   default as Radio,
 } from './Radio';
 export {
+  SelectValue,
+  TreeSelectOption,
+  SelectControl,
+  SelectControlContext,
+  SelectTriggerProps,
+  SelectTrigger,
   SelectProps,
   OptionProps,
   Option,
   OptionGroupProps,
   OptionGroup,
+  TreeSelect,
+  TreeSelectProps,
   default as Select,
 } from './Select';
 export {
@@ -280,8 +290,6 @@ export {
   PickerTrigger,
   RangePickerTriggerProps,
   RangePickerTrigger,
-  PickerPopperProps,
-  PickerPopper,
 } from './Picker';
 export {
   DatePickerCalendarProps,
@@ -371,6 +379,7 @@ export {
 export {
   PopperPlacement,
   PopperPositionStrategy,
+  PopperController,
   PopperOptions,
   PopperProps,
   default as Popper,
