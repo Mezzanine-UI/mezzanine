@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.3...@mezzanine-ui/core@0.4.0) (2021-06-04)
+
+### Bug Fixes
+
+- **core/tree:** class name to dash-base ([682d18e](https://github.com/Mezzanine-UI/mezzanine/commit/682d18e4b2a843c8780bf7bcfa37078bec89fd0b))
+
+### Features
+
+- **core/input-trigger-popper:** implement common input trigger popper UIs ([169de04](https://github.com/Mezzanine-UI/mezzanine/commit/169de04e9f6b465e7f50b924c31059762b61218c))
+- **core/select:** implement tree-select via design draft ([17b35ff](https://github.com/Mezzanine-UI/mezzanine/commit/17b35fff99d5ff048936fd3f75d49ff56c915d82))
+
 ## [0.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.2...@mezzanine-ui/core@0.3.3) (2021-06-03)
 
 ### Bug Fixes
