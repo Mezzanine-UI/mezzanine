@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.3...@mezzanine-ui/react@0.4.0) (2021-06-04)
+
+### Bug Fixes
+
+- **react/hooks/use-click-away:** remove preventDefault method ([123ca74](https://github.com/Mezzanine-UI/mezzanine/commit/123ca744f25c5e019843e09d52d486728867ef43))
+- **react/text-field:** make suffix-action-icon classname extensible ([f5fb21a](https://github.com/Mezzanine-UI/mezzanine/commit/f5fb21a8f2c914a4e0c242b1209f0bdb70443378))
+
+### Features
+
+- **react/input-trigger-popper:** implement common input trigger popper ([0cb47ef](https://github.com/Mezzanine-UI/mezzanine/commit/0cb47ef5904fcf437505237fb297ff50eabe17fc))
+- **react/popper:** have access to usePopper hook results ([77f4ec4](https://github.com/Mezzanine-UI/mezzanine/commit/77f4ec4cb61bb24a7bbe0e28b6b807f1eafcbae4))
+- **react/select:** implement tree-select ([eb31647](https://github.com/Mezzanine-UI/mezzanine/commit/eb31647ccf936ec68b4084d4acbe00ccd5d75496))
+- **react/tree:** enabled controlled expanded values ([650a340](https://github.com/Mezzanine-UI/mezzanine/commit/650a34079600bd67d239f56b229563c5719dc386))
+
 ## [0.3.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.2...@mezzanine-ui/react@0.3.3) (2021-06-03)
 
 ### Features
