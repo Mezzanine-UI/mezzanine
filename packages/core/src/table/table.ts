@@ -42,6 +42,7 @@ export type TableColumn<SourceType> = {
   title?: string;
   render?(column: TableColumn<SourceType>, source: SourceType, index: number): any;
   renderTitle?(classes: typeof tableClasses): any;
+  renderTooltipTitle?(source: SourceType): string;
   // == Custom column style ==
   align?: 'start' | 'center' | 'end';
   bodyClassName?: string;
@@ -56,6 +57,8 @@ export type TableColumn<SourceType> = {
   // == Feature ellipsis ==
   /** @default true */
   ellipsis?: boolean;
+  /** force display tooltip whenever content is hovered */
+  forceShownTooltipWhenHovered?: boolean;
 };
 
 export type TableFetchMore = {
