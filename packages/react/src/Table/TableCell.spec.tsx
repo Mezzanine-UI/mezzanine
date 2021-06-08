@@ -98,5 +98,17 @@ describe('<TableCell />', () => {
 
       expect(element.innerHTML).toBe('foo');
     });
+
+    it('when forceShownTooltipWhenHovered=true, should not apply ellipsis', () => {
+      const { getHostHTMLElement } = render(
+        <TableCell ellipsis={false} forceShownTooltipWhenHovered>
+          foo
+        </TableCell>,
+      );
+
+      const element = getHostHTMLElement();
+
+      expect(element.querySelector('.mzn-table__cell__ellipsis')).toBe(null);
+    });
   });
 });

@@ -96,6 +96,7 @@ describe('<TableBodyRow />', () => {
       title: 'foo',
       headerClassName: undefined,
       renderTitle: undefined,
+      renderTooltipTitle: (s) => s.name,
       sorter: undefined,
       width: 80,
       align: 'center',

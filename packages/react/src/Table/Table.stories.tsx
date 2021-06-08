@@ -54,6 +54,8 @@ const columns: TableColumn<DataType>[] = [{
 }, {
   title: 'Age',
   dataIndex: 'age',
+  renderTooltipTitle: (source) => `${source.name} is age ${source.age}.`,
+  forceShownTooltipWhenHovered: true,
   sorter: (a: number, b: number) => b - a,
   // eslint-disable-next-line no-console
   onSorted: (newSources) => { console.log(newSources); },
@@ -62,6 +64,7 @@ const columns: TableColumn<DataType>[] = [{
   title: 'Tel',
   dataIndex: 'tel',
   ellipsis: false,
+  forceShownTooltipWhenHovered: true,
 }];
 
 const dataSource: DataType[] = Array.from(Array(10)).map((_, idx) => ({

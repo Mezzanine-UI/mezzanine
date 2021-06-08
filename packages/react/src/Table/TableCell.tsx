@@ -14,6 +14,11 @@ export interface TableCellProps extends NativeElementPropsWithoutKeyAndRef<'div'
    */
   ellipsis?: boolean;
   /**
+   * whether tooltip is force to shown when hovered
+   * @default false
+   */
+  forceShownTooltipWhenHovered?: boolean;
+  /**
    * tooltip title that you want to display
    */
   tooltipTitle?: string | number;
@@ -24,6 +29,7 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
     children,
     className,
     ellipsis = true,
+    forceShownTooltipWhenHovered = false,
     role = 'gridcell',
     tooltipTitle,
     ...rest
@@ -41,7 +47,7 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
       )}
       role={role}
     >
-      {ellipsis ? (
+      {ellipsis || forceShownTooltipWhenHovered ? (
         <Tooltip
           title={`${tooltipTitle}`}
           options={{
@@ -51,12 +57,12 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
           {({ onMouseEnter, onMouseLeave }) => (
             <div
               ref={ellipsisRef}
-              className={classes.cellEllipsis}
+              className={ellipsis ? classes.cellEllipsis : ''}
               onMouseEnter={(e) => {
                 if (ellipsisRef.current) {
                   const { current: el } = ellipsisRef;
 
-                  const isOverflow = el.scrollWidth > el.offsetWidth;
+                  const isOverflow = forceShownTooltipWhenHovered || (el.scrollWidth > el.offsetWidth);
 
                   /** display tooltip only when content is overflow */
                   if (isOverflow) onMouseEnter(e);

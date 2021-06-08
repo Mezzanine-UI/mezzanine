@@ -116,33 +116,41 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
               setExpanded={setExpanded}
             />
           ) : null}
-          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => (
-            <div
-              key={`${column.dataIndex}-${column.title}`}
-              className={cx(
-                classes.bodyRowCellWrapper,
-                column.bodyClassName,
-              )}
-              style={getColumnStyle(column)}
-            >
-              <TableEditRenderWrapper
-                {...column}
-                rowData={rowData}
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => {
+            const ellipsis = !!(rowData[column.dataIndex]) && (column.ellipsis ?? true);
+            const tooltipTitle = (
+              column.renderTooltipTitle?.(rowData) ?? rowData[column.dataIndex]
+            ) as (string | number);
+
+            return (
+              <div
+                key={`${column.dataIndex}-${column.title}`}
+                className={cx(
+                  classes.bodyRowCellWrapper,
+                  column.bodyClassName,
+                )}
+                style={getColumnStyle(column)}
               >
-                <TableCell
-                  ellipsis={!!(rowData[column.dataIndex]) && (column.ellipsis ?? true)}
-                  style={getCellStyle(column)}
-                  tooltipTitle={(rowData[column.dataIndex]) as unknown as (string | number)}
+                <TableEditRenderWrapper
+                  {...column}
+                  rowData={rowData}
                 >
-                  {column.render?.(
-                    column,
-                    rowData,
-                    index,
-                  ) || rowData[column.dataIndex]}
-                </TableCell>
-              </TableEditRenderWrapper>
-            </div>
-          ))}
+                  <TableCell
+                    ellipsis={ellipsis}
+                    forceShownTooltipWhenHovered={column.forceShownTooltipWhenHovered}
+                    style={getCellStyle(column)}
+                    tooltipTitle={tooltipTitle}
+                  >
+                    {column.render?.(
+                      column,
+                      rowData,
+                      index,
+                    ) || rowData[column.dataIndex]}
+                  </TableCell>
+                </TableEditRenderWrapper>
+              </div>
+            );
+          })}
         </div>
         {renderedExpandedContent ? (
           <AccordionDetails
