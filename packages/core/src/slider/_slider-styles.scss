@@ -1,0 +1,121 @@
+@use '~@mezzanine-ui/system/palette';
+@use './slider' as *;
+
+$rail-height: 4px !default;
+$handler-size: 16px !default;
+$handler-scale-size: 24px !default;
+
+.#{$prefix} {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+
+  &--disabled {
+    .#{$rail-prefix} {
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .#{$track-prefix} {
+      background-color: palette.color(action-disabled);
+    }
+
+    .#{$handler-prefix} {
+      pointer-events: none;
+      background-color: palette.color(action-disabled);
+    }
+  }
+
+  &__input {
+    flex: 0 0 auto;
+    min-width: unset;
+
+    &:first-of-type {
+      margin-right: 16px;
+    }
+
+    &:last-of-type {
+      margin-left: 16px;
+    }
+
+    input {
+      box-sizing: content-box;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        appearance: none;
+        margin: 0;
+      }
+
+      &[type=number] {
+        appearance: textfield;
+      }
+    }
+  }
+
+  &__controls {
+    flex: 1 1 auto;
+    position: relative;
+    height: $rail-height;
+  }
+}
+
+.#{$rail-prefix} {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: palette.color(border);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.#{$track-prefix} {
+  position: absolute;
+  background-color: palette.color(primary);
+  width: var(--#{$prefix}-track-width);
+  left: var(--#{$prefix}-track-position);
+  height: 100%;
+  cursor: pointer;
+}
+
+.#{$handler-prefix} {
+  background-color: palette.color(primary);
+  height: $handler-size;
+  width: $handler-size;
+  border-radius: 50%;
+  cursor: pointer;
+  user-select: none;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: scale($handler-scale-size / $handler-size);
+    background-color: palette.color(primary-light);
+  }
+
+  &--active {
+    z-index: 1;
+    transform: scale($handler-scale-size / $handler-size);
+    background-color: palette.color(primary-dark);
+
+    &:hover {
+      background-color: palette.color(primary-dark);
+    }
+  }
+}
+
+.#{$handler-position-prefix} {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: var(--#{$prefix}-handler-position);
+
+  &--start {
+    left: var(--#{$prefix}-handler-start-position);
+  }
+
+  &--end {
+    left: var(--#{$prefix}-handler-end-position);
+  }
+}
