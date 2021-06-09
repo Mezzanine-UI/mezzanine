@@ -4,6 +4,7 @@ export {
 } from './SelectControlContext';
 export {
   SelectTriggerProps,
+  SelectTriggerInputProps,
   default as SelectTrigger,
 } from './SelectTrigger';
 export {
@@ -22,3 +23,7 @@ export {
   TreeSelectProps,
   default as TreeSelect,
 } from './TreeSelect';
+export {
+  AutoCompleteProps,
+  default as AutoComplete,
+} from './AutoComplete';
