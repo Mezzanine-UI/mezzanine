@@ -20,6 +20,7 @@ import { PickRenameMulti } from '../utils/rename-types';
 import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
 import SelectTrigger, {
   SelectTriggerProps,
+  SelectTriggerInputProps,
 } from './SelectTrigger';
 import { SelectValue, TreeSelectOption } from './typings';
 import Tree, {
@@ -68,7 +69,7 @@ export interface TreeSelectProps
    * The other native props for input element.
    */
   inputProps?: Omit<
-  SelectTriggerProps['inputProps'],
+  SelectTriggerInputProps,
   | 'onBlur'
   | 'onChange'
   | 'onFocus'
@@ -318,7 +319,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
     );
 
     /** Trigger input props */
-    const resolvedInputProps: SelectTriggerProps['inputProps'] = {
+    const resolvedInputProps: SelectTriggerInputProps = {
       ...inputProps,
       'aria-expanded': open,
       placeholder,

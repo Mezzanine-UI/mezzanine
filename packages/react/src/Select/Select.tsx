@@ -24,7 +24,7 @@ import { useSelectValueControl } from '../Form/useSelectValueControl';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/rename-types';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
-import SelectTrigger, { SelectTriggerProps } from './SelectTrigger';
+import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';
 
 export interface SelectProps
   extends
@@ -55,7 +55,7 @@ export interface SelectProps
    * The other native props for input element.
    */
   inputProps?: Omit<
-  SelectTriggerProps['inputProps'],
+  SelectTriggerInputProps,
   | 'onBlur'
   | 'onChange'
   | 'onFocus'
@@ -283,7 +283,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   } : undefined;
 
   const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = () => setFocused(false);
-  const resolvedInputProps: SelectTriggerProps['inputProps'] = {
+  const resolvedInputProps: SelectTriggerInputProps = {
     ...inputProps,
     'aria-controls': MENU_ID,
     'aria-expanded': open,

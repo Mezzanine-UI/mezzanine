@@ -11,6 +11,26 @@ import Tag from '../Tag';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
+export type SelectTriggerInputProps = Omit<
+NativeElementPropsWithoutKeyAndRef<'input'>,
+| 'autoComplete'
+| 'children'
+| 'defaultValue'
+| 'disabled'
+| 'readOnly'
+| 'required'
+| 'type'
+| 'value'
+| `aria-${
+  | 'autocomplete'
+  | 'disabled'
+  | 'haspopup'
+  | 'multiline'
+  | 'readonly'
+  | 'required'
+  }`
+>;
+
 export interface SelectTriggerProps
   extends
   Omit<TextFieldProps,
@@ -24,27 +44,13 @@ export interface SelectTriggerProps
    */
   active?: boolean;
   /**
+   * force hide suffixAction icons
+   */
+  forceHideSuffixActionIcon?: boolean;
+  /**
    * Other props you may provide to input element.
    */
-  inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'autoComplete'
-  | 'children'
-  | 'defaultValue'
-  | 'disabled'
-  | 'readOnly'
-  | 'required'
-  | 'type'
-  | 'value'
-  | `aria-${
-    | 'autocomplete'
-    | 'disabled'
-    | 'haspopup'
-    | 'multiline'
-    | 'readonly'
-    | 'required'
-    }`
-  >;
+  inputProps?: SelectTriggerInputProps;
   /**
    * The ref object for input element.
    */
@@ -85,6 +91,7 @@ const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
       active,
       className,
       disabled,
+      forceHideSuffixActionIcon,
       inputProps,
       inputRef,
       mode,
@@ -126,7 +133,7 @@ const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
         className={cx(classes.trigger, className)}
         disabled={disabled}
         size={size}
-        suffixActionIcon={suffixActionIcon}
+        suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
       >
         {mode === 'multiple' && value?.length ? (
           <div className={classes.triggerTags}>
