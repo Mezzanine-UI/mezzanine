@@ -589,6 +589,164 @@ describe('<TreeSelect />', () => {
     });
   });
 
+  describe('focus handlers', () => {
+    it('should invoke onFocus or onBlur when toggling via text-field click', () => {
+      jest.useFakeTimers();
+
+      const onFocus = jest.fn();
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onFocus={onFocus} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+
+      expect(onFocus).toBeCalledTimes(1);
+      expect(onBlur).toBeCalledTimes(0);
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+
+      expect(onFocus).toBeCalledTimes(1);
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via click-away from text-field', () => {
+      jest.useFakeTimers();
+
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+
+      fireEvent.click(document.body);
+      jest.runAllTimers();
+
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via click-away from text-field', () => {
+      jest.useFakeTimers();
+
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+      fireEvent.click(document.body);
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via text-field tab key down', () => {
+      jest.useFakeTimers();
+
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+      fireEvent.keyDown(textFieldElement, { code: 'Tab' });
+      jest.runAllTimers();
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should not invoke onBlur when text-field tab key down but is not open', () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.keyDown(textFieldElement, { code: 'Tab' });
+      expect(onBlur).toBeCalledTimes(0);
+    });
+
+    it('should invoke onBlur when closing via text-field enter key down', () => {
+      jest.useFakeTimers();
+
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.click(textFieldElement);
+      jest.runAllTimers();
+      fireEvent.keyDown(textFieldElement, { code: 'Enter' });
+      jest.runAllTimers();
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    const arrowKeyCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+    arrowKeyCodes.forEach((arrowKeyCode) => {
+      it(`should invoke onFocus when opening via text-field ${arrowKeyCode} key down`, () => {
+        const onFocus = jest.fn();
+        const { getHostHTMLElement } = render(
+          <TreeSelect options={options} onFocus={onFocus} />,
+        );
+        const element = getHostHTMLElement();
+        const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+        fireEvent.keyDown(textFieldElement, { code: arrowKeyCode });
+        expect(onFocus).toBeCalledTimes(1);
+      });
+    });
+
+    arrowKeyCodes.forEach((arrowKeyCode) => {
+      it(`should not invoke onFocus when text-field ${arrowKeyCode} key down but is opened`, () => {
+        const onFocus = jest.fn();
+        const { getHostHTMLElement } = render(
+          <TreeSelect options={options} onFocus={onFocus} />,
+        );
+        const element = getHostHTMLElement();
+        const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+        fireEvent.click(textFieldElement);
+        onFocus.mockClear();
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+        expect(onFocus).toBeCalledTimes(0);
+      });
+    });
+
+    it('should not invoke onFocus or onBlur when other keys down', async () => {
+      const onFocus = jest.fn();
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TreeSelect options={options} onFocus={onFocus} />,
+      );
+      const element = getHostHTMLElement();
+      const textFieldElement = element.querySelector('.mzn-text-field')!;
+
+      fireEvent.keyDown(textFieldElement, { code: '0' });
+
+      expect(onFocus).toBeCalledTimes(0);
+
+      fireEvent.click(textFieldElement);
+      fireEvent.keyDown(textFieldElement, { code: '0' });
+
+      expect(onBlur).toBeCalledTimes(0);
+    });
+  });
+
   describe('select method', () => {
     it('should onChange get resolved selection', () => {
       jest.useFakeTimers();
