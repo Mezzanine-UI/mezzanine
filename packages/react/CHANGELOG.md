@@ -3,6 +3,24 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.3...@mezzanine-ui/react@0.5.0) (2021-06-10)
+
+### Bug Fixes
+
+- **react/hooks/use-click-away:** remove preventDefault method ([123ca74](https://github.com/Mezzanine-UI/mezzanine/commit/123ca744f25c5e019843e09d52d486728867ef43))
+- **react/notifier:** add missing element key inside array map ([eeba2eb](https://github.com/Mezzanine-UI/mezzanine/commit/eeba2ebcdd1a57f2c96c70fe02c6f2bcaac13d6f))
+- **react/text-field:** make suffix-action-icon classname extensible ([f5fb21a](https://github.com/Mezzanine-UI/mezzanine/commit/f5fb21a8f2c914a4e0c242b1209f0bdb70443378))
+
+### Features
+
+- **react/input-trigger-popper:** implement common input trigger popper ([0cb47ef](https://github.com/Mezzanine-UI/mezzanine/commit/0cb47ef5904fcf437505237fb297ff50eabe17fc))
+- **react/popper:** have access to usePopper hook results ([77f4ec4](https://github.com/Mezzanine-UI/mezzanine/commit/77f4ec4cb61bb24a7bbe0e28b6b807f1eafcbae4))
+- **react/progress:** implement ([4e5c114](https://github.com/Mezzanine-UI/mezzanine/commit/4e5c1147da3e66539070de78b33c95e8b3792b36))
+- **react/select:** implement tree-select ([eb31647](https://github.com/Mezzanine-UI/mezzanine/commit/eb31647ccf936ec68b4084d4acbe00ccd5d75496))
+- **react/slider:** implement ([5ebad9f](https://github.com/Mezzanine-UI/mezzanine/commit/5ebad9fa7649c1afcf26d486041adcc1aa64abf0))
+- **react/table:** implement renderTooltipTitle/forceShownTooltipWhenHovered props ([d0ea36f](https://github.com/Mezzanine-UI/mezzanine/commit/d0ea36f32065d84715f35b2b0978551e2ee2af07)), closes [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78) [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78)
+- **react/tree:** enabled controlled expanded values ([650a340](https://github.com/Mezzanine-UI/mezzanine/commit/650a34079600bd67d239f56b229563c5719dc386))
+
 # [0.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.3...@mezzanine-ui/react@0.4.0) (2021-06-04)
 
 ### Bug Fixes

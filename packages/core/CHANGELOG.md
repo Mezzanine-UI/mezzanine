@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.3...@mezzanine-ui/core@0.5.0) (2021-06-10)
+
+### Bug Fixes
+
+- **core/tree:** class name to dash-base ([682d18e](https://github.com/Mezzanine-UI/mezzanine/commit/682d18e4b2a843c8780bf7bcfa37078bec89fd0b))
+
+### Features
+
+- **core/input-trigger-popper:** implement common input trigger popper UIs ([169de04](https://github.com/Mezzanine-UI/mezzanine/commit/169de04e9f6b465e7f50b924c31059762b61218c))
+- **core/progress:** implement ([92b1795](https://github.com/Mezzanine-UI/mezzanine/commit/92b1795bb3db7a6ef5380456595c990f6e18a9e5))
+- **core/select:** implement tree-select via design draft ([17b35ff](https://github.com/Mezzanine-UI/mezzanine/commit/17b35fff99d5ff048936fd3f75d49ff56c915d82))
+- **core/slider:** implement via design draft ([dedd9fd](https://github.com/Mezzanine-UI/mezzanine/commit/dedd9fd36f288969895e3b58a5d1a06c51ba104b))
+- **core/table:** add renderTooltipTitle/forceShownTooltipWhenHovered props in table column ([524fb10](https://github.com/Mezzanine-UI/mezzanine/commit/524fb101597d775db393e74a507e769ed1c53688)), closes [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78) [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78)
+
 # [0.4.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.3...@mezzanine-ui/core@0.4.0) (2021-06-04)
 
 ### Bug Fixes
