@@ -4,6 +4,7 @@ import {
   Key,
   useMemo,
   RefObject,
+  Fragment,
 } from 'react';
 import {
   NotifierData,
@@ -56,7 +57,11 @@ function NotifierManager<N extends NotifierData>(props: NotifierManagerProps<N>)
 
   return (
     <>
-      {notifiersShouldRendered.map((notifier) => render(notifier))}
+      {notifiersShouldRendered.map((notifier) => (
+        <Fragment key={notifier.key}>
+          {render(notifier)}
+        </Fragment>
+      ))}
     </>
   );
 }
