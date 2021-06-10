@@ -64,6 +64,7 @@
   @include _load-styles($options, picker);
   @include _load-styles($options, date-range-picker);
   @include _load-styles($options, date-time-picker);
+  @include _load-styles($options, slider);
 
   // Data Entry Form
   @include _load-styles($options, form, form-field);

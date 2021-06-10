@@ -318,6 +318,24 @@ export {
   DateTimePickerProps,
   default as DateTimePicker,
 } from './DateTimePicker';
+export {
+  SingleSliderValue,
+  RangeSliderValue,
+  SliderValue,
+  SliderRect,
+  UseSliderCommonProps,
+  UseSingleSliderProps,
+  UseRangeSliderProps,
+  UseSliderProps,
+  UseSliderResult,
+  useSlider,
+  SliderBaseProps,
+  SingleSliderProps,
+  RangeSliderProps,
+  SliderComponentProps,
+  SliderProps,
+  default as Slider,
+} from './Slider';
 
 /**
  * Feedback
