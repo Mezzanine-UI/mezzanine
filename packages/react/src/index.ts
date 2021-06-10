@@ -355,6 +355,14 @@ export {
   NotificationSeverity,
   default as Notification,
 } from './Notification';
+export {
+  ProgressProps,
+  ProgressType,
+  ProgressStatus,
+  ProgressTypes,
+  ProgressStatuses,
+  default as Progress,
+} from './Progress';
 
 /**
  * Utility
