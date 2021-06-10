@@ -75,4 +75,5 @@
   @include _load-styles($options, modal);
   @include _load-styles($options, notification);
   @include _load-styles($options, popconfirm);
+  @include _load-styles($options, progress);
 }
