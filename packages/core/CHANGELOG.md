@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.5.0...@mezzanine-ui/core@0.5.1) (2021-06-11)
+
+### Features
+
+- **core/autocomplete:** first implement ([4d20dc2](https://github.com/Mezzanine-UI/mezzanine/commit/4d20dc289859725165b42825c4c378dceca814ec))
+- **core/tabs:** implement overflow and actions ([9655c69](https://github.com/Mezzanine-UI/mezzanine/commit/9655c69a570dbf1c2191e2fbd10d7163fcb34f51))
+
 # [0.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.3...@mezzanine-ui/core@0.5.0) (2021-06-10)
 
 ### Bug Fixes

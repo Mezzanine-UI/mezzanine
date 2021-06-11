@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.0...@mezzanine-ui/react@0.5.1) (2021-06-11)
+
+### Bug Fixes
+
+- **react/select-trigger:** export inputProps type as independent type def to fix undefined type bugs ([ff67c5e](https://github.com/Mezzanine-UI/mezzanine/commit/ff67c5e7eb894b0599512a5035748c3c8e9e53f5))
+
+### Features
+
+- **react/autocomplete:** first implement ([09f9b35](https://github.com/Mezzanine-UI/mezzanine/commit/09f9b356ba9ff6702bf2ad884d9eb93a290d9f6c))
+- **react/form:** add focus event handler type ([dec39d3](https://github.com/Mezzanine-UI/mezzanine/commit/dec39d35f8dd5d0ac18f96ee3b7e21abbe733f20))
+- **react/hooks:** implement useWindowWidth ([d0dcf6a](https://github.com/Mezzanine-UI/mezzanine/commit/d0dcf6a2ea4a569707a4f0ce45c1f1569f301df8))
+- **react/select:** add onFocus and onBlur handler ([0013224](https://github.com/Mezzanine-UI/mezzanine/commit/00132246ace65f96bac4f6c8fd209e59aeebc481)), closes [#63](https://github.com/Mezzanine-UI/mezzanine/issues/63)
+- **react/tabs:** implement overflow and actions ([b700b8e](https://github.com/Mezzanine-UI/mezzanine/commit/b700b8eca3665ac410e685277ce7180d44c9291e))
+
 # [0.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.3...@mezzanine-ui/react@0.5.0) (2021-06-10)
 
 ### Bug Fixes
