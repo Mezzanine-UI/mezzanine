@@ -18,6 +18,7 @@ export * from './hooks/useDocumentTabKeyDown';
 /**
  * Form hooks
  */
+export * from './Form/useAutoCompleteValueControl';
 export * from './Form/useCheckboxControlValue';
 export * from './Form/useControlValueState';
 export * from './Form/useCustomControlValue';
@@ -241,10 +242,13 @@ export {
   default as Radio,
 } from './Radio';
 export {
+  AutoComplete,
+  AutoCompleteProps,
   SelectValue,
   TreeSelectOption,
   SelectControl,
   SelectControlContext,
+  SelectTriggerInputProps,
   SelectTriggerProps,
   SelectTrigger,
   SelectProps,

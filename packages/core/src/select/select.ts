@@ -8,6 +8,7 @@ export const treeSelectPrefix = 'mzn-tree-select';
 export const selectTriggerPrefix = `${selectPrefix}-trigger`;
 export const selectPopperPrefix = `${selectPrefix}-popper`;
 export const selectTreePrefix = `${selectPrefix}-tree`;
+export const autoCompletePrefix = `${selectPrefix}-autocomplete`;
 
 export const selectClasses = {
   host: selectPrefix,
@@ -24,4 +25,9 @@ export const selectClasses = {
   /** Tree select classes */
   treeSelect: treeSelectPrefix,
   tree: selectTreePrefix,
+
+  /** AutoComplete classes */
+  autoComplete: autoCompletePrefix,
+  autoCompleteIcon: `${autoCompletePrefix}__icon`,
+  autoCompleteIconActive: `${autoCompletePrefix}__icon--active`,
 } as const;
