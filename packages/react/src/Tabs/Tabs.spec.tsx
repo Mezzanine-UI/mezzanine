@@ -4,6 +4,7 @@ import {
   fireEvent,
   render,
   TestRenderer,
+  act,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -49,27 +50,6 @@ describe('<Tabs />', () => {
     expect(element.classList.contains('mzn-tabs')).toBeTruthy();
   });
 
-  describe('prop: onTabClick', () => {
-    it('should be fired w/ key while some tab clicked', () => {
-      const onTabClick = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Tabs onTabClick={onTabClick}>
-          <TabPane key="foo" tab={(<Tab>tab1</Tab>)}>
-            tabPane1
-          </TabPane>
-        </Tabs>,
-      );
-      const element = getHostHTMLElement();
-      const { firstElementChild: tabBarElement } = element;
-      const { firstElementChild: tabElement } = tabBarElement!;
-
-      fireEvent.click(tabElement!);
-
-      expect(onTabClick).toBeCalledTimes(1);
-      expect(onTabClick.mock.calls[0][0]).toBe('foo');
-    });
-  });
-
   describe('element structure', () => {
     it('should extract tabs of tab panes to tab bar and render active pane', () => {
       const { getHostHTMLElement } = render(
@@ -84,11 +64,13 @@ describe('<Tabs />', () => {
         lastElementChild: tabPaneElement,
         childElementCount,
       } = element;
+      const { firstElementChild: tabsOverflowElement } = tabBarElement!;
+      const { firstElementChild: tabsElement } = tabsOverflowElement!;
 
       expect(childElementCount).toBe(2);
-      expect(tabBarElement!.classList.contains('mzn-tabs__tab-bar')).toBeTruthy();
+      expect(tabsElement!.classList.contains('mzn-tabs__tabs')).toBeTruthy();
 
-      [...tabBarElement!.children].forEach((child, index) => {
+      [...tabsElement!.children].forEach((child, index) => {
         expect(child.classList.contains('mzn-tabs__tab')).toBeTruthy();
         expect(child.textContent).toBe(`tab${index}`);
         expect(child.textContent).toBe(`tab${index}`);
@@ -98,22 +80,9 @@ describe('<Tabs />', () => {
       expect(tabPaneElement!.textContent).toBe('tabPane0');
     });
 
-    it('should provide active to tab', () => {
-      const testInstance = TestRenderer.create(
-        <Tabs defaultActiveKey="bar">
-          <TabPane key="foo" tab={(<Tab>foo</Tab>)}>foo</TabPane>
-          <TabPane key="bar" tab={(<Tab>bar</Tab>)}>bar</TabPane>
-        </Tabs>,
-      );
-
-      testInstance.root.findAllByType(Tab).forEach((tab, index) => {
-        expect(tab.props.active).toBe(index === 1);
-      });
-    });
-
     describe('tab bar', () => {
       describe('prop: tabBarClassName', () => {
-        it('should bind tab bar class', () => {
+        it('should wrapped tab bar by overflow wrapper', () => {
           const { getHostHTMLElement } = render(
             <Tabs>
               <TabPane tab={(<Tab>tab</Tab>)}>
@@ -123,8 +92,9 @@ describe('<Tabs />', () => {
           );
           const element = getHostHTMLElement();
           const { firstElementChild: tabBarElement } = element;
+          const { firstElementChild: tabsOverflowElement } = tabBarElement!;
 
-          expect(tabBarElement!.classList.contains('mzn-tabs__tab-bar')).toBeTruthy();
+          expect(tabsOverflowElement!.classList.contains('mzn-tabs--overflow')).toBeTruthy();
         });
 
         it('should append tabBarClassName to className of tab bar', () => {
@@ -141,6 +111,199 @@ describe('<Tabs />', () => {
           expect(tabBarElement!.classList.contains('foo')).toBeTruthy();
         });
       });
+    });
+  });
+
+  describe('overflow', () => {
+    Object.defineProperty(HTMLDivElement.prototype, 'scrollWidth', { configurable: true, value: 400 });
+    Object.defineProperty(HTMLDivElement.prototype, 'clientWidth', { configurable: true, value: 200 });
+
+    it('should render button on the right when overflow', () => {
+      const { getHostHTMLElement } = render(
+        <div style={{ width: 200 }}>
+          <Tabs>
+            {Array.from('ABCDEFG').map((tab) => (
+              <TabPane
+                key={tab}
+                tab={(<Tab>{tab}</Tab>)}
+              >
+                {tab}
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>,
+      );
+
+      const element = getHostHTMLElement();
+      const tabsOverflowElement = element.querySelector('.mzn-tabs--overflow');
+      const { lastElementChild: rightBtnElement } = tabsOverflowElement!;
+
+      expect(rightBtnElement!.tagName.toLowerCase()).toBe('button');
+      expect(rightBtnElement!.getAttribute('aria-label')).toBe('scrollToRight');
+      expect(rightBtnElement!.classList.contains('mzn-tabs__scroll-btn')).toBeTruthy();
+    });
+
+    it('should render button on the left if scroll the tabs', () => {
+      const { getHostHTMLElement } = render(
+        <div style={{ width: 200 }}>
+          <Tabs>
+            {Array.from('ABCD').map((tab) => (
+              <TabPane
+                key={tab}
+                tab={(<Tab>{tab}</Tab>)}
+              >
+                {tab}
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>,
+      );
+
+      const element = getHostHTMLElement();
+      const tabsOverflowElement = element.querySelector('.mzn-tabs--overflow');
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+
+      act(() => {
+        tabsElement!.scrollLeft = 10;
+        tabsElement!.dispatchEvent(new window.Event('scroll'));
+      });
+
+      const { firstElementChild } = tabsOverflowElement!;
+
+      expect(firstElementChild!.tagName.toLowerCase()).toBe('button');
+      expect(firstElementChild!.getAttribute('aria-label')).toBe('scrollToLeft');
+      expect(firstElementChild!.classList.contains('mzn-tabs__scroll-btn')).toBeTruthy();
+    });
+
+    it('should scroll tabs to right when click', () => {
+      const { getHostHTMLElement } = render(
+        <div style={{ width: 200 }}>
+          <Tabs>
+            {Array.from('ABCDEFG').map((tab) => (
+              <TabPane
+                key={tab}
+                tab={(<Tab>{tab}</Tab>)}
+              >
+                {tab}
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>,
+      );
+
+      const element = getHostHTMLElement();
+      const tabsOverflowElement = element.querySelector('.mzn-tabs--overflow');
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+      const { lastElementChild: rightBtnElement } = tabsOverflowElement!;
+      const scrollEnd = tabsElement!.scrollWidth - tabsElement!.clientWidth;
+
+      tabsElement!.scrollTo = jest.fn();
+
+      fireEvent.click(rightBtnElement!);
+
+      act(() => {
+        tabsElement!.scrollLeft = scrollEnd;
+        tabsElement!.dispatchEvent(new window.Event('scroll'));
+      });
+
+      expect(tabsElement!.scrollTo).toBeCalled();
+      expect(tabsElement!.scrollLeft).toBe(scrollEnd);
+    });
+
+    it('should scroll tabs to left when click', () => {
+      const { getHostHTMLElement } = render(
+        <div style={{ width: 200 }}>
+          <Tabs>
+            {Array.from('ABCD').map((tab) => (
+              <TabPane
+                key={tab}
+                tab={(<Tab>{tab}</Tab>)}
+              >
+                {tab}
+              </TabPane>
+            ))}
+          </Tabs>
+        </div>,
+      );
+
+      const element = getHostHTMLElement();
+      const tabsOverflowElement = element.querySelector('.mzn-tabs--overflow');
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+
+      tabsElement!.scrollTo = jest.fn();
+
+      act(() => {
+        tabsElement!.scrollLeft = 10;
+        tabsElement!.dispatchEvent(new window.Event('scroll'));
+      });
+
+      const { firstElementChild: leftBtnElement } = tabsOverflowElement!;
+
+      fireEvent.click(leftBtnElement!);
+
+      act(() => {
+        tabsElement!.scrollLeft = 0;
+        tabsElement!.dispatchEvent(new window.Event('scroll'));
+      });
+
+      expect(tabsElement!.scrollTo).toBeCalled();
+      expect(tabsElement!.scrollLeft).toBe(0);
+    });
+  });
+
+  describe('prop: onTabClick', () => {
+    it('should be fired w/ key while some tab clicked', () => {
+      const onTabClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Tabs onTabClick={onTabClick}>
+          <TabPane key="foo" tab={(<Tab>tab1</Tab>)}>
+            tabPane1
+          </TabPane>
+        </Tabs>,
+      );
+      const element = getHostHTMLElement();
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+      const { firstElementChild: tabElement } = tabsElement!;
+
+      fireEvent.click(tabElement!);
+
+      expect(onTabClick).toBeCalledTimes(1);
+      expect(onTabClick.mock.calls[0][0]).toBe('foo');
+    });
+  });
+
+  describe('prop: actions', () => {
+    it('should render actions on the right side of tab bar', () => {
+      const { getHostHTMLElement } = render(
+        <Tabs actions={(
+          <button type="button">action</button>
+        )}
+        >
+          <TabPane key="foo" tab={(<Tab>tab1</Tab>)}>
+            tabPane1
+          </TabPane>
+        </Tabs>,
+      );
+
+      const element = getHostHTMLElement();
+      const { firstElementChild: tabBarElement } = element;
+      const { lastElementChild: actionElement } = tabBarElement!;
+
+      expect(actionElement!.tagName.toLowerCase()).toBe('button');
+      expect(actionElement!.textContent).toBe('action');
+    });
+  });
+
+  it('should provide active to tab', () => {
+    const testInstance = TestRenderer.create(
+      <Tabs defaultActiveKey="bar">
+        <TabPane key="foo" tab={(<Tab>foo</Tab>)}>foo</TabPane>
+        <TabPane key="bar" tab={(<Tab>bar</Tab>)}>bar</TabPane>
+      </Tabs>,
+    );
+
+    testInstance.root.findAllByType(Tab).forEach((tab, index) => {
+      expect(tab.props.active).toBe(index === 1);
     });
   });
 
@@ -192,8 +355,8 @@ describe('<Tabs />', () => {
         </Tabs>,
       );
       const element = getHostHTMLElement();
-      const { firstElementChild: tabBarElement } = element;
-      const { lastElementChild: inactiveTabElement } = tabBarElement!;
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+      const { lastElementChild: inactiveTabElement } = tabsElement!;
 
       fireEvent.click(inactiveTabElement!);
 
@@ -204,8 +367,8 @@ describe('<Tabs />', () => {
     function testControlled(ui: JSX.Element) {
       const { getHostHTMLElement } = render(ui);
       const element = getHostHTMLElement();
-      const { firstElementChild: tabBarElement } = element;
-      const { firstElementChild: activeTabElement, lastElementChild: inactiveTabElement } = tabBarElement!;
+      const tabsElement = element.querySelector('.mzn-tabs__tabs');
+      const { firstElementChild: activeTabElement, lastElementChild: inactiveTabElement } = tabsElement!;
       let tabPaneElement = element.lastElementChild!;
 
       expect(activeTabElement!.classList.contains('mzn-tabs__tab--active')).toBeTruthy();

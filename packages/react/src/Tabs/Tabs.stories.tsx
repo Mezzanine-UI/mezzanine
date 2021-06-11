@@ -1,6 +1,7 @@
 import { Meta } from '@storybook/react';
 import { Key, useState } from 'react';
 import Badge, { BadgeContainer } from '../Badge';
+import Button from '../Button';
 import Tabs, { Tab, TabPane } from '.';
 
 export default {
@@ -65,7 +66,7 @@ export const WithBadge = () => (
         </Tab>
       )}
     >
-      TabPane 1
+      TabPane 2
     </TabPane>
     <TabPane
       tab={(
@@ -79,5 +80,50 @@ export const WithBadge = () => (
     >
       TabPane 3
     </TabPane>
+  </Tabs>
+);
+
+export const WithActions = () => (
+  <Tabs actions={(
+    <Button
+      variant="outlined"
+    >
+      Action
+    </Button>
+  )}
+  >
+    {Array.from('012').map((tab) => (
+      <TabPane
+        key={tab}
+        tab={(
+          <Tab>
+            Tab
+            {tab}
+          </Tab>
+        )}
+      >
+        TabPane
+        {tab}
+      </TabPane>
+    ))}
+  </Tabs>
+);
+
+export const Overflow = () => (
+  <Tabs>
+    {Array.from('0123456789ABCDEFGHIJK').map((tab) => (
+      <TabPane
+        key={tab}
+        tab={(
+          <Tab>
+            Tab
+            {tab}
+          </Tab>
+        )}
+      >
+        TabPane
+        {tab}
+      </TabPane>
+    ))}
   </Tabs>
 );
