@@ -13,7 +13,7 @@ import {
 } from '@mezzanine-ui/core/select';
 import { TreeNodeValue } from '@mezzanine-ui/core/tree';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import { FormControlContext } from '../Form';
+import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/rename-types';
@@ -36,13 +36,16 @@ export interface TreeSelectProps
   extends
   Omit<SelectTriggerProps,
   | 'active'
+  | 'onBlur'
   | 'onChange'
   | 'onClear'
   | 'onClick'
+  | 'onFocus'
   | 'onKeyDown'
-  | 'searchInputProps'
   | 'readOnly'
+  | 'searchInputProps'
   >,
+  FormElementFocusHandlers,
   Pick<TreeProps,
   | 'defaultExpandAll'
   | 'disabledValues'
@@ -160,7 +163,9 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
       menuRole = 'listbox',
       menuSize = 'medium',
       mode = 'single',
+      onBlur,
       onChange: onChangeProp,
+      onFocus,
       options,
       placeholder = '',
       popperOptions,
@@ -235,10 +240,30 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
 
     /** Open control */
     const [open, toggleOpen] = useState(false);
+    const onOpen = () => {
+      onFocus?.();
+
+      toggleOpen(true);
+    };
+
+    const onClose = () => {
+      onBlur?.();
+
+      toggleOpen(false);
+    };
+
+    const onToggleOpen = () => {
+      if (open) {
+        onClose();
+      } else {
+        onOpen();
+      }
+    };
+
     const onTextFieldClick = disabled
       ? undefined
       : () => {
-        toggleOpen((prev) => !prev);
+        onToggleOpen();
       };
 
     const onTextFieldKeydown: KeyboardEventHandler<HTMLElement> | undefined = disabled
@@ -281,7 +306,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
 
         return (event) => {
           if (!popperRef.current?.contains(event.target as HTMLElement)) {
-            toggleOpen(false);
+            onClose();
           }
         };
       },

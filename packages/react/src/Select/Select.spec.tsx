@@ -108,6 +108,199 @@ describe('<Select />', () => {
     expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
   });
 
+  it('searchable input placeholder should be previous selected values separated by comma by default', async () => {
+    const value: SelectValue[] = [{
+      id: '1',
+      name: '1',
+    }];
+    const onSearch = jest.fn();
+    const { getHostHTMLElement } = render(
+      <Select value={value} onSearch={onSearch} />,
+    );
+
+    const element = getHostHTMLElement();
+    const inputElement = element.getElementsByTagName('input')[0]!;
+
+    await act(async () => {
+      fireEvent.focus(inputElement);
+    });
+
+    expect(inputElement.placeholder).toBe('1');
+  });
+
+  describe('focus handlers', () => {
+    it('should invoke onFocus or onBlur when toggling via text-field click', async () => {
+      jest.useFakeTimers();
+
+      const onFocus = jest.fn();
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onFocus={onFocus} onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      expect(onFocus).toBeCalledTimes(1);
+      expect(onBlur).toBeCalledTimes(0);
+
+      await testTextFieldClicked(element);
+
+      expect(onFocus).toBeCalledTimes(1);
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via click-away from text-field', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await act(async () => {
+        fireEvent.click(document.body);
+      });
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onFocus when input focus', async () => {
+      jest.useFakeTimers();
+
+      const onFocus = jest.fn();
+      const onSearch = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onFocus={onFocus} onSearch={onSearch} />,
+      );
+      const element = getHostHTMLElement();
+      const inputElement = element.getElementsByTagName('input')[0]!;
+
+      await act(async () => {
+        fireEvent.focus(inputElement);
+      });
+
+      expect(onFocus).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via click-away from text-field', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await act(async () => {
+        fireEvent.click(document.body);
+      });
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should invoke onBlur when closing via text-field tab key down', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await act(async () => {
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Tab' });
+      });
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    it('should not invoke onBlur when text-field tab key down but is not open', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Tab' });
+      });
+      expect(onBlur).toBeCalledTimes(0);
+    });
+
+    it('should invoke onBlur when closing via text-field enter key down', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await act(async () => {
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Enter' });
+      });
+      expect(onBlur).toBeCalledTimes(1);
+    });
+
+    const arrowKeyCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+
+    arrowKeyCodes.forEach((arrowKeyCode) => {
+      it(`should invoke onFocus when opening via text-field ${arrowKeyCode} key down`, async () => {
+        const onFocus = jest.fn();
+        const { getHostHTMLElement } = render(
+          <Select onFocus={onFocus} />,
+        );
+        const element = getHostHTMLElement();
+
+        await act(async () => {
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+        });
+        expect(onFocus).toBeCalledTimes(1);
+      });
+    });
+
+    arrowKeyCodes.forEach((arrowKeyCode) => {
+      it(`should not invoke onFocus when text-field ${arrowKeyCode} key down but is opened`, async () => {
+        const onFocus = jest.fn();
+        const { getHostHTMLElement } = render(
+          <Select onFocus={onFocus} />,
+        );
+        const element = getHostHTMLElement();
+
+        await testTextFieldClicked(element);
+
+        onFocus.mockClear();
+
+        await act(async () => {
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+        });
+        expect(onFocus).toBeCalledTimes(0);
+      });
+    });
+
+    it('should not invoke onFocus or onBlur when other keys down', async () => {
+      const onFocus = jest.fn();
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select onBlur={onBlur} onFocus={onFocus} />,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: '0' });
+      });
+
+      expect(onFocus).toBeCalledTimes(0);
+
+      await testTextFieldClicked(element);
+
+      await act(async () => {
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: '0' });
+      });
+
+      expect(onBlur).toBeCalledTimes(0);
+    });
+  });
+
   describe('prop: suffixActionIcon', () => {
     const { getHostHTMLElement } = render(
       <Select suffixActionIcon={<Icon icon={PlusIcon} />} />,
@@ -173,11 +366,12 @@ describe('<Select />', () => {
       expect(valueGetFromOnSearch).toEqual('foo');
     });
 
-    it('should render current selection in placeholder when search input is empty', () => {
-      fireEvent.change(inputRef.current!, { target: { value: '' } });
+    it('should render current selection with pass-in renderValue method in placeholder when search input is empty',
+      () => {
+        fireEvent.change(inputRef.current!, { target: { value: '' } });
 
-      expect(inputRef.current!.placeholder).toEqual(defaultValue[0].name);
-    });
+        expect(inputRef.current!.placeholder).toEqual(defaultValue[0].name);
+      });
 
     it('should search text been cleared when input onBlur triggered', async () => {
       await act(async () => {

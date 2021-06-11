@@ -14,7 +14,7 @@ import {
 } from '@mezzanine-ui/core/select';
 import { SearchIcon } from '@mezzanine-ui/icons';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import { FormControlContext } from '../Form';
+import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
@@ -30,11 +30,14 @@ export interface SelectProps
   extends
   Omit<SelectTriggerProps,
   | 'active'
-  | 'onClick'
-  | 'onKeyDown'
-  | 'onChange'
   | 'inputProps'
+  | 'onBlur'
+  | 'onChange'
+  | 'onClick'
+  | 'onFocus'
+  | 'onKeyDown'
   >,
+  FormElementFocusHandlers,
   PickRenameMulti<Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>, {
     maxHeight: 'menuMaxHeight';
     role: 'menuRole';
@@ -111,22 +114,24 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     children,
     className,
     clearable = false,
-    disabled = disabledFromFormControl || false,
     defaultValue,
+    disabled = disabledFromFormControl || false,
     error = severity === 'error' || false,
     fullWidth = fullWidthFromFormControl || false,
-    inputRef,
     inputProps,
+    inputRef,
     itemsInView = 4,
     menuMaxHeight,
     menuRole = 'listbox',
     menuSize = 'medium',
     mode = 'single',
+    onBlur,
     onChange: onChangeProp,
     onClear: onClearProp,
+    onFocus,
     onSearch,
-    popperOptions = {},
     placeholder = '',
+    popperOptions = {},
     prefix,
     renderValue: renderValueProp,
     required = requiredFromFormControl || false,
@@ -136,6 +141,26 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   } = props;
 
   const [open, toggleOpen] = useState(false);
+  const onOpen = () => {
+    onFocus?.();
+
+    toggleOpen(true);
+  };
+
+  const onClose = () => {
+    onBlur?.();
+
+    toggleOpen(false);
+  };
+
+  const onToggleOpen = () => {
+    if (open) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  };
+
   const {
     onChange,
     onClear,
@@ -145,7 +170,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     mode,
     onChange: onChangeProp,
     onClear: onClearProp,
-    onClose: () => toggleOpen(false),
+    onClose,
     value: valueProp,
   });
 
@@ -182,7 +207,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
       if (!open || focused) return;
 
       return () => {
-        toggleOpen((prev) => !prev);
+        onClose();
       };
     },
     nodeRef,
@@ -203,7 +228,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   const onClickTextField = () => {
     /** when searchable, should open menu when focus */
     if (!searchable && !disabled) {
-      toggleOpen((prev) => !prev);
+      onToggleOpen();
     }
   };
 
@@ -215,7 +240,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     /** for a11y to open menu via keyboard */
     switch (evt.code) {
       case 'Enter':
-        onClickTextField();
+        onClose();
 
         break;
       case 'ArrowUp':
@@ -223,14 +248,14 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
       case 'ArrowLeft':
       case 'ArrowDown': {
         if (!open) {
-          onClickTextField();
+          onOpen();
         }
 
         break;
       }
       case 'Tab': {
         if (open) {
-          onClickTextField();
+          onClose();
         }
 
         break;
@@ -242,21 +267,20 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   };
 
   /** Trigger input props */
-  const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+  const onSearchInputChange: ChangeEventHandler<HTMLInputElement> | undefined = searchable ? (e) => {
     changeSearchText(e.target.value);
 
-    if (typeof onSearch === 'function') {
-      onSearch(e.target.value);
-    }
-  };
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    onSearch!(e.target.value);
+  } : undefined;
 
-  const onSearchInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
+  const onSearchInputFocus: FocusEventHandler<HTMLInputElement> | undefined = searchable ? (e) => {
     e.stopPropagation();
 
-    if (searchable) toggleOpen((prev) => !prev);
+    onToggleOpen();
 
     setFocused(true);
-  };
+  } : undefined;
 
   const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = () => setFocused(false);
   const resolvedInputProps: SelectTriggerProps['inputProps'] = {
