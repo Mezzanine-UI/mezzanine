@@ -14,10 +14,58 @@ $tab-padding: 8px 0 !default;
   box-sizing: border-box;
 
   &__tab-bar {
-    display: flex;
-    gap: $gap;
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid palette.color(border);
     margin-bottom: $margin-bottom;
+  }
+
+  &--overflow {
+    display: grid;
+    grid-auto-flow: column;
+    align-items: center;
+  }
+
+  &__tabs {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    align-items: center;
+    justify-content: left;
+    column-gap: $gap;
+    overflow-x: scroll;
+    scrollbar-width: none; /* Firefox specific */
+
+    &::-webkit-scrollbar {
+      display: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    &:last-child {
+      padding-right: 20px;
+    }
+  }
+
+  &__scroll-btn {
+    @include button.reset();
+
+    color: palette.color(action-inactive);
+    background-color: transparent;
+    font-size: 40px;
+    width: 40px;
+    height: 44px;
+
+    &:hover {
+      background-color: palette.color(primary-hover-bg);
+      color: palette.color(primary);
+    }
+
+    &:focus,
+    &:active {
+      background-color: palette.color(primary-active-bg);
+    }
   }
 
   &__tab {
