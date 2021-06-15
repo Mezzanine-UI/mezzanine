@@ -108,7 +108,7 @@ $default-light-palette: map.assign(
     bg: #f4f4f4,
     surface: #fff,
     border: #d9d9d9,
-    divider: #e5e5e5,
+    divider: #f2f2f2,
     overlay-bg: (
       from: action-active,
       transformer: meta.get-function("rgba"),
