@@ -1,13 +1,35 @@
 import { useState, useCallback } from 'react';
 import { TableDataSource, TableColumn, TableRecord } from '@mezzanine-ui/core/table';
+import isEqual from 'lodash/isEqual';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
 
-const equalityFn = (a: TableDataSource[], b: TableDataSource[]) => {
-  const sortedA = a.map((s) => (s.key || s.id)).sort();
-  const sortedB = b.map((s) => (s.key || s.id)).sort();
+const sortSource = (prev: TableDataSource, cur: TableDataSource) => {
+  const prevKey = (prev.key || prev.id) as string;
+  const curKey = (cur.key || cur.id) as string;
 
-  return sortedA.length === sortedB.length && sortedA.every((v, idx) => v === sortedB[idx]);
+  if (prevKey < curKey) return -1;
+  if (prevKey > curKey) return 1;
+
+  return 0;
+};
+
+const equalityFn = (a: TableDataSource[], b: TableDataSource[]) => {
+  const sortedA = a.slice(0).sort(sortSource);
+  const sortedB = b.slice(0).sort(sortSource);
+  const mappedAKeys = sortedA.map((s) => (s.key || s.id) as string);
+  const mappedBKeys = sortedB.map((s) => (s.key || s.id) as string);
+
+  const isShallowEqual = mappedAKeys.length === mappedBKeys.length &&
+    mappedAKeys.every((v, idx) => v === mappedBKeys[idx]);
+
+  if (isShallowEqual) {
+    // we need to do deep compare to sync dataSources
+    return sortedA.every((v, idx) => isEqual(v, sortedB[idx]));
+  }
+
+  // since shallow equal checked that array is different, so we don't need do deep compare
+  return false;
 };
 
 export interface UseTableSorting {
