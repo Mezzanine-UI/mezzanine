@@ -1,0 +1,31 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/motion';
+@use './skeleton' as *;
+
+$animation-back: palette.color(divider) !default;
+$animation-duration: motion.duration(short) !default;
+$animation-front: palette.color(action-disabled-bg) !default;
+$circle-default-size: 40px !default;
+$line-default-height: typography.prop(body1, font-size) !default;
+
+.#{$prefix} {
+  animation: transition.standard(active-animation, calc(#{$animation-duration} * 10)) infinite;
+  background: linear-gradient(90deg, #{$animation-back 25%}, #{$animation-front}, #{$animation-back} 75%);
+  background-size: 400% 100%;
+  box-sizing: border-box;
+  height: $line-default-height;
+
+  @keyframes active-animation {
+    0% { background-position: 100%; }
+    33% { background-position: 0%; }
+    100% { background-position: 0%; }
+  }
+
+  &--circle {
+    width: $circle-default-size;
+    height: $circle-default-size;
+    border-radius: 50%;
+  }
+}

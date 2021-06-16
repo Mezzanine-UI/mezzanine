@@ -394,6 +394,10 @@ export {
   ProgressStatuses,
   default as Progress,
 } from './Progress';
+export {
+  SkeletonProps,
+  default as Skeleton,
+} from './Skeleton';
 
 /**
  * Utility
