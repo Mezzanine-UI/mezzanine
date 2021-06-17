@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.1...@mezzanine-ui/react@0.5.2) (2021-06-17)
+
+### Bug Fixes
+
+- **react/table:** fix sorting equality function to do deep comparison if shallow compare return true ([d088758](https://github.com/Mezzanine-UI/mezzanine/commit/d08875842181d9fc55805dd17134805a7eb30596)), closes [#85](https://github.com/Mezzanine-UI/mezzanine/issues/85) [#85](https://github.com/Mezzanine-UI/mezzanine/issues/85)
+
+### Features
+
+- **react/skeleton:** implement ([f0a92fd](https://github.com/Mezzanine-UI/mezzanine/commit/f0a92fdf695be1c80881bc6c87e3da7c98601301))
+
 ## [0.5.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.0...@mezzanine-ui/react@0.5.1) (2021-06-11)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.1.1...@mezzanine-ui/system@0.5.2) (2021-06-17)
+
+### Bug Fixes
+
+- **system/palette:** change divider color from #e5e5e5 to #f2f2f2 ([e3c327d](https://github.com/Mezzanine-UI/mezzanine/commit/e3c327d8aaa7a7633b9017c4506d3d5a05cafb3a)), closes [#e5e5e5](https://github.com/Mezzanine-UI/mezzanine/issues/e5e5e5) [#f2f2f2](https://github.com/Mezzanine-UI/mezzanine/issues/f2f2f2)
+
 ## [0.1.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.1.0...@mezzanine-ui/system@0.1.1) (2021-04-15)
 
 ### Features
