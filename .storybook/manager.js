@@ -10,5 +10,7 @@ const theme = create({
 addons.setConfig({
   theme,
   panelPosition: 'bottom',
-  showRoots: true
+  sidebar: {
+    showRoots: true,
+  },
 });

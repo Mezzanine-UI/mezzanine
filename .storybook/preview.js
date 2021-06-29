@@ -1,4 +1,4 @@
-import { DocsPage } from '@storybook/addon-docs/blocks';
+import { DocsPage } from '@storybook/addon-docs';
 import './global.scss';
 
 export function createPreview(options) {
@@ -13,6 +13,9 @@ export function createPreview(options) {
           disable: false,
         },
       },
+      controls: {
+        sort: 'requiredFirst',
+      },
       options: {
         storySort: {
           order: [
@@ -23,7 +26,7 @@ export function createPreview(options) {
             'Feedback'
           ]
         }
-      }
+      },
     },
     globalTypes: {
       theme: {
