@@ -4,7 +4,7 @@ import {
   ReactElement,
   RefAttributes,
 } from 'react';
-import { ButtonComponent } from './typings';
+import { ButtonComponent, ButtonPropsBase } from './typings';
 import Button, { ButtonProps } from './Button';
 import _IconButton, { IconButtonProps } from './IconButton';
 
@@ -20,6 +20,7 @@ export { ButtonGroupChild, ButtonGroupProps, default as ButtonGroup } from './Bu
 export type {
   ButtonComponent,
   ButtonProps,
+  ButtonPropsBase,
   IconButtonProps,
 };
 

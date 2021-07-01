@@ -38,6 +38,7 @@ export {
   ButtonSize,
   ButtonVariant,
   ButtonProps,
+  ButtonPropsBase,
   default as Button,
   IconButtonProps,
   IconButton,

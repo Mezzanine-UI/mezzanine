@@ -4,11 +4,10 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export type ButtonComponent = 'button' | 'a' | JSXElementConstructor<any>;
 
-export interface ButtonPropsBase extends Pick<NativeElementPropsWithoutKeyAndRef<'button'>, 'disabled'> {
+export interface ButtonPropsBase {
   /**
    * The color name provided by palette.
    * @default 'primary'
@@ -19,6 +18,11 @@ export interface ButtonPropsBase extends Pick<NativeElementPropsWithoutKeyAndRef
    * @default false
    */
   danger?: boolean;
+  /**
+   * If true, button will be disabled
+   * @default false
+   */
+  disabled?: boolean;
   /**
    * If true, replace the original icon.
    * Replace suffix if only suffix provided, or prefix.
