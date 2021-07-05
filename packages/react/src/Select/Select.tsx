@@ -14,6 +14,7 @@ import {
 } from '@mezzanine-ui/core/select';
 import { SearchIcon } from '@mezzanine-ui/icons';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import { cx } from '../utils/cx';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { PopperProps } from '../Popper';
@@ -302,7 +303,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
         value,
       }}
     >
-      <div ref={nodeRef} className={classes.host}>
+      <div
+        ref={nodeRef}
+        className={cx(
+          classes.host,
+          fullWidth && classes.hostFullWidth,
+        )}
+      >
         <SelectTrigger
           ref={composedRef}
           active={open}
