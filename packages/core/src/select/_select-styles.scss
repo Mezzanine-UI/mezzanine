@@ -12,6 +12,10 @@ $tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
+
+  &--full-width {
+    width: 100%;
+  }
 }
 
 .#{$tree-select-prefix} {

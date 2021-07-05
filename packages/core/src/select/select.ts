@@ -12,6 +12,7 @@ export const autoCompletePrefix = `${selectPrefix}-autocomplete`;
 
 export const selectClasses = {
   host: selectPrefix,
+  hostFullWidth: `${selectPrefix}--full-width`,
 
   /** Trigger classes */
   trigger: selectTriggerPrefix,
