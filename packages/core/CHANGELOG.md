@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.5.2...@mezzanine-ui/core@0.5.3) (2021-07-05)
+
+### Bug Fixes
+
+- **core/select:** add host full width class to fix flexbox layout bug ([806dd3b](https://github.com/Mezzanine-UI/mezzanine/commit/806dd3b02a9abbeb3695ca5fca678fd91f5bccaf)), closes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86) [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)
+
 ## [0.5.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.5.1...@mezzanine-ui/core@0.5.2) (2021-06-17)
 
 ### Features

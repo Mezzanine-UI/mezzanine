@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.2...@mezzanine-ui/react@0.5.3) (2021-07-05)
+
+### Bug Fixes
+
+- **react/button:** export ButtonBaseProps type from index and rewrite disabled type ([8edf21d](https://github.com/Mezzanine-UI/mezzanine/commit/8edf21dc854d110593d2688475b7a3708d96b34c))
+- **react/select:** implement full width className on Select host element when props.fullWidth=true ([9701c3c](https://github.com/Mezzanine-UI/mezzanine/commit/9701c3cf0906a6e97f4ae28da73ccf517f91ffc9)), closes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86) [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)
+
 ## [0.5.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.1...@mezzanine-ui/react@0.5.2) (2021-06-17)
 
 ### Bug Fixes
