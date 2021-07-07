@@ -16,6 +16,7 @@ export interface DrawerProps
   | 'disableCloseOnBackdropClick'
   | 'disablePortal'
   | 'hideBackdrop'
+  | 'invisibleBackdrop'
   | 'onBackdropClick'
   | 'onClose'
   | 'open'
@@ -41,6 +42,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     disableCloseOnEscapeKeyDown = false,
     disablePortal,
     hideBackdrop,
+    invisibleBackdrop,
     onBackdropClick,
     onClose,
     open,
@@ -80,6 +82,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
       disableCloseOnBackdropClick={disableCloseOnBackdropClick}
       disablePortal={disablePortal}
       hideBackdrop={hideBackdrop}
+      invisibleBackdrop={invisibleBackdrop}
       onBackdropClick={onBackdropClick}
       onClose={onClose}
       open={open}
