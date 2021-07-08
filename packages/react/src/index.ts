@@ -264,6 +264,7 @@ export {
 } from './Select';
 export {
   SwitchSize,
+  SwitchProps,
   default as Switch,
 } from './Switch';
 export {
