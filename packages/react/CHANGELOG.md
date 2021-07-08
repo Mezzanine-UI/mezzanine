@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.5.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.3...@mezzanine-ui/react@0.5.4) (2021-07-08)
+
+### Bug Fixes
+
+- **react/drawer:** implement missing <Overlay> props.invisibleBackdrop on <Drawer> ([4dcda7e](https://github.com/Mezzanine-UI/mezzanine/commit/4dcda7e0b61282542e7bb76632c8e1489957a766))
+- **react/switch:** export missing SwitchProps typing ([0a7e78a](https://github.com/Mezzanine-UI/mezzanine/commit/0a7e78af4f3b6077c5e995ec7ea645c93be9bdc3))
+
+### Features
+
+- **react/table:** allow customizing bodyRowClassName and Empty component props bypass ([58ecaa5](https://github.com/Mezzanine-UI/mezzanine/commit/58ecaa5ce7095c75aa4443bfc7a66dbefcf7f24c))
+
 ## [0.5.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.2...@mezzanine-ui/react@0.5.3) (2021-07-05)
 
 ### Bug Fixes
