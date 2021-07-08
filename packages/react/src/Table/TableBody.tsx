@@ -15,9 +15,17 @@ import TableBodyRow from './TableBodyRow';
 import Empty from '../Empty';
 import Loading from '../Loading/Loading';
 
-const TableBody = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<'div'>>(function TableBody(props, ref) {
+export interface TableBodyProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * customize row className
+   */
+  rowClassName?: string;
+}
+
+const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(props, ref) {
   const {
     className,
+    rowClassName,
     ...rest
   } = props;
 
@@ -26,12 +34,21 @@ const TableBody = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<
   } = useContext(TableDataContext) || {};
 
   const {
+    emptyProps,
     scrollBarSize,
     fetchMore,
   } = useContext(TableContext) || {};
 
   const [tableBody, scrollElement] = useTableScroll();
   const composedRefs = useComposeRefs([ref, tableBody.ref]);
+
+  /** customizing empty */
+  const {
+    className: emptyComponentClassName = '',
+    children: emptyComponentChildren = '查無資料',
+    fullHeight: emptyComponentFullHeight = true,
+    ...restEmptyProps
+  } = emptyProps || {};
 
   return (
     <div
@@ -47,14 +64,16 @@ const TableBody = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<
       {dataSource.length ? dataSource.map((rowData: TableDataSource) => (
         <TableBodyRow
           key={(rowData.key || rowData.id) as string}
+          className={rowClassName}
           rowData={rowData}
         />
       )) : (
         <Empty
-          className={classes.bodyEmpty}
-          fullHeight
+          {...restEmptyProps}
+          className={cx(classes.bodyEmpty, emptyComponentClassName)}
+          fullHeight={emptyComponentFullHeight}
         >
-          查無資料
+          {emptyComponentChildren}
         </Empty>
       )}
       {fetchMore?.isFetching ? (

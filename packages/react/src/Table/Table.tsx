@@ -14,6 +14,7 @@ import {
   TablePagination as TablePaginationType,
   TableRefresh as TableRefreshType,
 } from '@mezzanine-ui/core/table';
+import { EmptyProps } from '../Empty';
 import { TableContext, TableDataContext, TableComponentContext } from './TableContext';
 import TableHeader from './TableHeader';
 import TableBody from './TableBody';
@@ -35,6 +36,10 @@ export interface TableProps<T>
    */
   bodyClassName?: string;
   /**
+   * customized body row className
+   */
+  bodyRowClassName?: string;
+  /**
    * Columns of table <br />
    * `column.render` allowed customizing the column body cell rendering. <br />
    * `column.renderTitle` allowed customizing the column header cell rendering. <br />
@@ -51,6 +56,10 @@ export interface TableProps<T>
    * Notice that each source should contain `key` or `id` prop as data primary key.
    */
   dataSource: TableDataSource[];
+  /**
+   * props exported from `<Empty />` component.
+   */
+  emptyProps?: EmptyProps;
   /**
    * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
    * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
@@ -98,10 +107,12 @@ export interface TableProps<T>
 const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(function Table(props, ref) {
   const {
     bodyClassName,
+    bodyRowClassName,
     className,
     columns,
     components,
     dataSource: dataSourceProp,
+    emptyProps,
     expandable: expandableProp,
     fetchMore: fetchMoreProp,
     headerClassName,
@@ -164,6 +175,7 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
   /** context */
   const tableContextValue = useMemo(() => ({
     scrollBarSize: 4,
+    emptyProps,
     rowSelection,
     sorting: {
       onSort,
@@ -181,6 +193,7 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
     } : undefined,
     pagination: paginationProp,
   }), [
+    emptyProps,
     expandableProp,
     rowSelection,
     onSort,
@@ -223,7 +236,11 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
                 <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
               ) : null}
               <TableHeader className={headerClassName} />
-              <TableBody ref={bodyRef} className={bodyClassName} />
+              <TableBody
+                ref={bodyRef}
+                className={bodyClassName}
+                rowClassName={bodyRowClassName}
+              />
               {paginationProp?.show ? (
                 <TablePagination bodyRef={bodyRef} />
               ) : null}

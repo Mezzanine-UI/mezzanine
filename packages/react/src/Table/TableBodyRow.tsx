@@ -32,6 +32,7 @@ export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'d
 const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
   function TableBodyRow(props, ref) {
     const {
+      className,
       rowData,
       ...rest
     } = props;
@@ -97,6 +98,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
             {
               [classes.bodyRowHighlight]: selected || expanded,
             },
+            className,
           )}
           role="row"
         >

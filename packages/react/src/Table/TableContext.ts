@@ -7,6 +7,7 @@ import {
   TableDataSource,
   TableRecord,
 } from '@mezzanine-ui/core/table';
+import { EmptyProps } from '../Empty';
 
 /** typeof rowSelection */
 export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> {
@@ -36,6 +37,7 @@ export interface FetchMoreContext {
 
 export interface TableContextProps {
   scrollBarSize?: number;
+  emptyProps?: EmptyProps;
   rowSelection?: RowSelectionContext;
   sorting?: SortingContext;
   loading?: boolean;
