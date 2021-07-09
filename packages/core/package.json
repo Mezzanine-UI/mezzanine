@@ -23,7 +23,7 @@
     "build:clean": "node ../../scripts/cleanBuild.js"
   },
   "dependencies": {
-    "@mezzanine-ui/icons": "^0.3.3",
+    "@mezzanine-ui/icons": "^0.5.0",
     "@mezzanine-ui/system": "^0.5.2",
     "tslib": "^2.1.0"
   }

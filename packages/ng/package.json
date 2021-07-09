@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@mezzanine-ui/core": "^0.5.3",
-    "@mezzanine-ui/icons": "^0.3.3",
+    "@mezzanine-ui/icons": "^0.5.0",
     "@mezzanine-ui/system": "^0.5.2",
     "tslib": "^2.1.0"
   },
@@ -55,7 +55,7 @@
     "@angular/platform-browser-dynamic": "~11.2.6",
     "@angular/router": "~11.2.6",
     "@compodoc/compodoc": "^1.1.11",
-    "@storybook/angular": "^6.2.9",
+    "@storybook/angular": "^6.3.4",
     "@testing-library/angular": "^10.4.1",
     "jest-preset-angular": "^8.4.0",
     "ng-packagr": "^11.2.4",
