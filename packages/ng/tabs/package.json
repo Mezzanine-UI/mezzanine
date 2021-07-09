@@ -1,0 +1,11 @@
+{
+  "name": "@mezzanine-ui/ng/tabs",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@mezzanine-ui/core/tabs": "mezzanine-ui.core.tabs"
+      }
+    }
+  }
+}
