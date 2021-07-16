@@ -90,6 +90,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       onChange: onChangeProp,
       onPanelToggle: onPanelToggleProp,
       placeholder,
+      popperProps,
       prefix,
       readOnly,
       required = requiredFromFormControl,
@@ -265,6 +266,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
           onChange={onChange}
           onConfirm={onConfirm}
           open={open}
+          popperProps={popperProps}
           secondPrefix={secondPrefix}
           secondStep={secondStep}
           value={internalValue}
