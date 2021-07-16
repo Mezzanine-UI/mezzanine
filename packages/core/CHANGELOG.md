@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.0...@mezzanine-ui/core@0.6.1) (2021-07-16)
+
+### Bug Fixes
+
+- **react/tabs:** remove incorrect bg color in tab ([e8ee073](https://github.com/Mezzanine-UI/mezzanine/commit/e8ee07395adc9206949dce90d30348ef6f0ce17b))
+
 # [0.6.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.5.3...@mezzanine-ui/core@0.6.0) (2021-07-09)
 
 **Note:** Version bump only for package @mezzanine-ui/core

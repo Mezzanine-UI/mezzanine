@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.0...@mezzanine-ui/react@0.6.1) (2021-07-16)
+
+### Bug Fixes
+
+- **react/time-picker:** popperProps should pass down to TimePickerPanel (currently missing) ([a5e650e](https://github.com/Mezzanine-UI/mezzanine/commit/a5e650e2cd5cf55ac92568e95973ec2a68d49dc8))
+
 # [0.6.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.5.4...@mezzanine-ui/react@0.6.0) (2021-07-09)
 
 **Note:** Version bump only for package @mezzanine-ui/react
