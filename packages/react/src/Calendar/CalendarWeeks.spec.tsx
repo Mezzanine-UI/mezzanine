@@ -75,7 +75,7 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const cellElement = getByText(`${testDate}`);
+      const cellElement = getByText(`${testDate}`).parentElement!;
       const buttonElement = cellElement.parentElement;
 
       expect(buttonElement?.classList.contains('mzn-calendar-button--disabled')).toBe(true);
@@ -104,7 +104,7 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const target = getByText(`${testTargetDate}`).parentElement;
+      const target = getByText(`${testTargetDate}`).parentElement?.parentElement;
 
       expect(target?.classList.contains('mzn-calendar-button--inRange')).toBe(true);
     });
@@ -215,7 +215,7 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
       const dateElement = getByText(`${testDate}`);
-      const buttonElement = dateElement.parentElement;
+      const buttonElement = dateElement.parentElement?.parentElement;
 
       expect(buttonElement?.classList.contains('mzn-calendar-button--active')).toBe(true);
     });

@@ -45,7 +45,9 @@ function CalendarCell(props:CalendarCellProps) {
       )}
       {...restCalendarCellProps}
     >
-      {children}
+      <span className={classes.cellInner}>
+        {children}
+      </span>
     </div>
   );
 }
