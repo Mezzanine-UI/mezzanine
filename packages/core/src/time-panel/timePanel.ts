@@ -32,6 +32,7 @@ export const timePanelClasses = {
   columnButton: `${timePanelColumnPrefix}__button`,
   columnControlButton: `${timePanelColumnPrefix}__control-button`,
   columnCells: `${timePanelColumnPrefix}__cells`,
+  columnRatioBoxInner: `${timePanelColumnPrefix}__ratio-box-inner`,
 };
 
 /** Helpers */
