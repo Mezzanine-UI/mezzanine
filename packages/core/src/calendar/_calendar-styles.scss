@@ -59,17 +59,25 @@
   --#{$cell-prefix}-text-color: #{palette.color(text-primary)};
 
   position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  padding-top: 100%;
   color: var(--#{$cell-prefix}-text-color);
   user-select: none;
 
   @include typography.variant(input3);
 
   button {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
   }

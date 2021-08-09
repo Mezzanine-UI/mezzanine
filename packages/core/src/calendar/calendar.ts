@@ -36,6 +36,7 @@ export const calendarClasses = {
 
   /** Cell classes */
   cell: calendarCellPrefix,
+  cellInner: `${calendarCellPrefix}__inner`,
   cellToday: `${calendarCellPrefix}--today`,
   cellActive: `${calendarCellPrefix}--active`,
   cellDisabled: `${calendarCellPrefix}--disabled`,
