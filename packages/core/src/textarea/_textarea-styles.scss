@@ -16,7 +16,6 @@ $count-gap: 4px !default;
   padding: #{$padding-y} 0;
 
   textarea {
-    height: 100%;
     margin: 0;
     padding-left: var(--#{text-field.$prefix}-padding-left);
     padding-right: var(--#{text-field.$prefix}-padding-right);
