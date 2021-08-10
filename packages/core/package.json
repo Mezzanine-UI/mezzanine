@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/core",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Core for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -23,8 +23,8 @@
     "build:clean": "node ../../scripts/cleanBuild.js"
   },
   "dependencies": {
-    "@mezzanine-ui/icons": "^0.5.0",
-    "@mezzanine-ui/system": "^0.5.2",
+    "@mezzanine-ui/icons": "^0.6.0",
+    "@mezzanine-ui/system": "^0.5.3",
     "tslib": "^2.1.0"
   }
 }

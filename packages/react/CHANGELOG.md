@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.3.2...@mezzanine-ui/react@0.7.0) (2021-08-10)
+
+### Bug Fixes
+
+- **react/button:** export ButtonBaseProps type from index and rewrite disabled type ([8edf21d](https://github.com/Mezzanine-UI/mezzanine/commit/8edf21dc854d110593d2688475b7a3708d96b34c))
+- **react/calendar:** change html structure due to calendar styles implementation hasbenn changed ([1fc7c24](https://github.com/Mezzanine-UI/mezzanine/commit/1fc7c2401221cd8154929d3a6158f4c6d1c2b4af)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+- **react/drawer:** implement missing <Overlay> props.invisibleBackdrop on <Drawer> ([4dcda7e](https://github.com/Mezzanine-UI/mezzanine/commit/4dcda7e0b61282542e7bb76632c8e1489957a766))
+- **react/hooks/use-click-away:** remove preventDefault method ([123ca74](https://github.com/Mezzanine-UI/mezzanine/commit/123ca744f25c5e019843e09d52d486728867ef43))
+- **react/notifier:** add missing element key inside array map ([eeba2eb](https://github.com/Mezzanine-UI/mezzanine/commit/eeba2ebcdd1a57f2c96c70fe02c6f2bcaac13d6f))
+- **react/select:** implement full width className on Select host element when props.fullWidth=true ([9701c3c](https://github.com/Mezzanine-UI/mezzanine/commit/9701c3cf0906a6e97f4ae28da73ccf517f91ffc9)), closes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86) [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)
+- **react/select-trigger:** export inputProps type as independent type def to fix undefined type bugs ([ff67c5e](https://github.com/Mezzanine-UI/mezzanine/commit/ff67c5e7eb894b0599512a5035748c3c8e9e53f5))
+- **react/switch:** export missing SwitchProps typing ([0a7e78a](https://github.com/Mezzanine-UI/mezzanine/commit/0a7e78af4f3b6077c5e995ec7ea645c93be9bdc3))
+- **react/table:** fix sorting equality function to do deep comparison if shallow compare return true ([d088758](https://github.com/Mezzanine-UI/mezzanine/commit/d08875842181d9fc55805dd17134805a7eb30596)), closes [#85](https://github.com/Mezzanine-UI/mezzanine/issues/85) [#85](https://github.com/Mezzanine-UI/mezzanine/issues/85)
+- **react/text-field:** make suffix-action-icon classname extensible ([f5fb21a](https://github.com/Mezzanine-UI/mezzanine/commit/f5fb21a8f2c914a4e0c242b1209f0bdb70443378))
+- **react/time-picker:** popperProps should pass down to TimePickerPanel (currently missing) ([a5e650e](https://github.com/Mezzanine-UI/mezzanine/commit/a5e650e2cd5cf55ac92568e95973ec2a68d49dc8))
+
+### Features
+
+- **react/autocomplete:** first implement ([09f9b35](https://github.com/Mezzanine-UI/mezzanine/commit/09f9b356ba9ff6702bf2ad884d9eb93a290d9f6c))
+- **react/form:** add focus event handler type ([dec39d3](https://github.com/Mezzanine-UI/mezzanine/commit/dec39d35f8dd5d0ac18f96ee3b7e21abbe733f20))
+- **react/hooks:** implement useWindowWidth ([d0dcf6a](https://github.com/Mezzanine-UI/mezzanine/commit/d0dcf6a2ea4a569707a4f0ce45c1f1569f301df8))
+- **react/icon:** add percent icon in storybook ([a2bdd37](https://github.com/Mezzanine-UI/mezzanine/commit/a2bdd379da97594eb0702946dcb55b8922e07c84))
+- **react/input-trigger-popper:** implement common input trigger popper ([0cb47ef](https://github.com/Mezzanine-UI/mezzanine/commit/0cb47ef5904fcf437505237fb297ff50eabe17fc))
+- **react/popper:** have access to usePopper hook results ([77f4ec4](https://github.com/Mezzanine-UI/mezzanine/commit/77f4ec4cb61bb24a7bbe0e28b6b807f1eafcbae4))
+- **react/progress:** implement ([4e5c114](https://github.com/Mezzanine-UI/mezzanine/commit/4e5c1147da3e66539070de78b33c95e8b3792b36))
+- **react/select:** add onFocus and onBlur handler ([0013224](https://github.com/Mezzanine-UI/mezzanine/commit/00132246ace65f96bac4f6c8fd209e59aeebc481)), closes [#63](https://github.com/Mezzanine-UI/mezzanine/issues/63)
+- **react/select:** implement tree-select ([eb31647](https://github.com/Mezzanine-UI/mezzanine/commit/eb31647ccf936ec68b4084d4acbe00ccd5d75496))
+- **react/skeleton:** implement ([f0a92fd](https://github.com/Mezzanine-UI/mezzanine/commit/f0a92fdf695be1c80881bc6c87e3da7c98601301))
+- **react/slider:** implement ([5ebad9f](https://github.com/Mezzanine-UI/mezzanine/commit/5ebad9fa7649c1afcf26d486041adcc1aa64abf0))
+- **react/stepper:** implement ([a22e7e8](https://github.com/Mezzanine-UI/mezzanine/commit/a22e7e87c93eae299305b51d764b7e5e3872ead1))
+- **react/table:** allow customizing bodyRowClassName and Empty component props bypass ([58ecaa5](https://github.com/Mezzanine-UI/mezzanine/commit/58ecaa5ce7095c75aa4443bfc7a66dbefcf7f24c))
+- **react/table:** implement renderTooltipTitle/forceShownTooltipWhenHovered props ([d0ea36f](https://github.com/Mezzanine-UI/mezzanine/commit/d0ea36f32065d84715f35b2b0978551e2ee2af07)), closes [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78) [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78)
+- **react/tabs:** implement overflow and actions ([b700b8e](https://github.com/Mezzanine-UI/mezzanine/commit/b700b8eca3665ac410e685277ce7180d44c9291e))
+- **react/tree:** enabled controlled expanded values ([650a340](https://github.com/Mezzanine-UI/mezzanine/commit/650a34079600bd67d239f56b229563c5719dc386))
+
 ## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.0...@mezzanine-ui/react@0.6.1) (2021-07-16)
 
 ### Bug Fixes

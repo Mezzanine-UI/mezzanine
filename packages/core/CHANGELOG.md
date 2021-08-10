@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.3.2...@mezzanine-ui/core@0.7.0) (2021-08-10)
+
+### Bug Fixes
+
+- **core/app-bar:** app bar main section padding multiple condition ([33cbb9c](https://github.com/Mezzanine-UI/mezzanine/commit/33cbb9cd707b7cc84e40d510a10adc7d152470fc))
+- **core/app-bar:** when using independent support section not fixed at the end of right ([6c8785d](https://github.com/Mezzanine-UI/mezzanine/commit/6c8785df03c654ba74a30af5b419ea35d526a33c))
+- **core/calendar:** refactor implementation of aspect-ratio ([31dfb22](https://github.com/Mezzanine-UI/mezzanine/commit/31dfb22a6635d667e34e83838f458dcb58d8f572)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+- **core/input:** browser clear icon for input type=search ([226836e](https://github.com/Mezzanine-UI/mezzanine/commit/226836e544ada17db2437069ddbd68d32e2dfe9e)), closes [#92](https://github.com/Mezzanine-UI/mezzanine/issues/92)
+- **core/navigation:** fix navigation missing gap in submenu group items ([d703f5b](https://github.com/Mezzanine-UI/mezzanine/commit/d703f5b9e06b1b35893b0963260947c8995b532c))
+- **core/select:** add host full width class to fix flexbox layout bug ([806dd3b](https://github.com/Mezzanine-UI/mezzanine/commit/806dd3b02a9abbeb3695ca5fca678fd91f5bccaf)), closes [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86) [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)
+- **core/select:** wrong attribute selector ([971909d](https://github.com/Mezzanine-UI/mezzanine/commit/971909d397f61b09116c37628c89394587d50167))
+- **core/text-area:** textarea under flex box ([350590f](https://github.com/Mezzanine-UI/mezzanine/commit/350590f547e62c05eb760b19d5302a8a54f54409)), closes [#87](https://github.com/Mezzanine-UI/mezzanine/issues/87)
+- **core/time-panel:** refactor implementation of aspect-ratio ([c15bc62](https://github.com/Mezzanine-UI/mezzanine/commit/c15bc62c86fbc1b2c955816c8c127c2681499658)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+- **core/tree:** class name to dash-base ([682d18e](https://github.com/Mezzanine-UI/mezzanine/commit/682d18e4b2a843c8780bf7bcfa37078bec89fd0b))
+- **react/tabs:** remove incorrect bg color in tab ([e8ee073](https://github.com/Mezzanine-UI/mezzanine/commit/e8ee07395adc9206949dce90d30348ef6f0ce17b))
+
+### Features
+
+- **core/autocomplete:** first implement ([4d20dc2](https://github.com/Mezzanine-UI/mezzanine/commit/4d20dc289859725165b42825c4c378dceca814ec))
+- **core/input-trigger-popper:** implement common input trigger popper UIs ([169de04](https://github.com/Mezzanine-UI/mezzanine/commit/169de04e9f6b465e7f50b924c31059762b61218c))
+- **core/progress:** implement ([92b1795](https://github.com/Mezzanine-UI/mezzanine/commit/92b1795bb3db7a6ef5380456595c990f6e18a9e5))
+- **core/select:** implement tree-select via design draft ([17b35ff](https://github.com/Mezzanine-UI/mezzanine/commit/17b35fff99d5ff048936fd3f75d49ff56c915d82))
+- **core/skeleton:** implement ([7f39d4d](https://github.com/Mezzanine-UI/mezzanine/commit/7f39d4dee2eb2a5d193da046bd90a327818a110b))
+- **core/slider:** implement via design draft ([dedd9fd](https://github.com/Mezzanine-UI/mezzanine/commit/dedd9fd36f288969895e3b58a5d1a06c51ba104b))
+- **core/stepper:** implement ([3ebfa9c](https://github.com/Mezzanine-UI/mezzanine/commit/3ebfa9c5ce6debcba74836f11dbf7cc1f4747683))
+- **core/table:** add renderTooltipTitle/forceShownTooltipWhenHovered props in table column ([524fb10](https://github.com/Mezzanine-UI/mezzanine/commit/524fb101597d775db393e74a507e769ed1c53688)), closes [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78) [#78](https://github.com/Mezzanine-UI/mezzanine/issues/78)
+- **core/tabs:** implement overflow and actions ([9655c69](https://github.com/Mezzanine-UI/mezzanine/commit/9655c69a570dbf1c2191e2fbd10d7163fcb34f51))
+
 ## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.0...@mezzanine-ui/core@0.6.1) (2021-07-16)
 
 ### Bug Fixes
