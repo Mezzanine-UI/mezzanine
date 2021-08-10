@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.1...@mezzanine-ui/core@0.6.2) (2021-08-10)
+
+### Bug Fixes
+
+- **core/calendar:** refactor implementation of aspect-ratio ([31dfb22](https://github.com/Mezzanine-UI/mezzanine/commit/31dfb22a6635d667e34e83838f458dcb58d8f572)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+- **core/input:** browser clear icon for input type=search ([e5f7ff0](https://github.com/Mezzanine-UI/mezzanine/commit/e5f7ff076009a80205658a3fdc60b9837b05921a)), closes [#92](https://github.com/Mezzanine-UI/mezzanine/issues/92)
+- **core/select:** wrong attribute selector ([e73aa57](https://github.com/Mezzanine-UI/mezzanine/commit/e73aa57280ac39b437b699da25793d8c33948f19))
+- **core/text-area:** textarea under flex box ([da9db97](https://github.com/Mezzanine-UI/mezzanine/commit/da9db9783773810de7e68fdcd84c6aef403d3070)), closes [#87](https://github.com/Mezzanine-UI/mezzanine/issues/87)
+- **core/time-panel:** refactor implementation of aspect-ratio ([132715b](https://github.com/Mezzanine-UI/mezzanine/commit/132715bae4498d3ce9e55843ed8a2a809aa3e438)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+
 ## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.0...@mezzanine-ui/core@0.6.1) (2021-07-16)
 
 ### Bug Fixes

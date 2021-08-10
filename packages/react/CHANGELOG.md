@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.1...@mezzanine-ui/react@0.6.2) (2021-08-10)
+
+### Bug Fixes
+
+- **react/calendar:** change html structure due to calendar styles implementation has been changed ([17d379f](https://github.com/Mezzanine-UI/mezzanine/commit/17d379fb68a8e28b9e0e9aed766b3cb4d7aa1140)), closes [#94](https://github.com/Mezzanine-UI/mezzanine/issues/94)
+
 ## [0.6.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.0...@mezzanine-ui/react@0.6.1) (2021-07-16)
 
 ### Bug Fixes
