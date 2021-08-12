@@ -86,11 +86,14 @@
     --#{$cell-prefix}-text-color: #{palette.color(primary)};
 
     &::after {
+      $dot-width: 2px;
+
       content: '';
       position: absolute;
+      left: calc(50% - #{$dot-width / 2});
       display: block;
-      width: 2px;
-      height: 2px;
+      width: $dot-width;
+      height: $dot-width;
       border-radius: 50%;
       bottom: 6px;
       background-color: var(--#{$cell-prefix}-text-color);
