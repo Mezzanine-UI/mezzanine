@@ -8,7 +8,7 @@ import {
 import ReactTransition, {
   TransitionStatus as TransitionState,
   TransitionChildren,
-} from 'react-transition-group/transition';
+} from 'react-transition-group/Transition';
 import { NativeElementTag } from '../utils/jsx-types';
 
 export { TransitionState };
