@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.2...@mezzanine-ui/core@0.6.3) (2021-08-24)
+
+### Bug Fixes
+
+- **core/calendar:** position of mark of today ([68c46c8](https://github.com/Mezzanine-UI/mezzanine/commit/68c46c8ea07bae85877821f074a7207001932898))
+
 ## [0.6.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.1...@mezzanine-ui/core@0.6.2) (2021-08-10)
 
 ### Bug Fixes

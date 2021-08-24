@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.2...@mezzanine-ui/react@0.6.3) (2021-08-24)
+
+### Bug Fixes
+
+- **deps:** correct react-transition-group import pathname for case-sensitive system ([f79821b](https://github.com/Mezzanine-UI/mezzanine/commit/f79821bd78181a6965e5fc60c4cf7607253f68df))
+
 ## [0.6.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.1...@mezzanine-ui/react@0.6.2) (2021-08-10)
 
 ### Bug Fixes
