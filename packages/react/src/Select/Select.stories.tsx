@@ -8,11 +8,42 @@ import Select, {
   TreeSelect,
   TreeSelectProps,
 } from '.';
+import Button from '../Button';
 import Typography from '../Typography';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
 
 export default {
   title: 'Data Entry/Select',
+};
+
+export const FormControl = () => {
+  const [value, setValue] = useState<SelectValue[]>([{ id: '1', name: '1' }]);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: '150px repeat(2, 100px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <Select
+        clearable
+        fullWidth
+        required
+        value={value}
+        onChange={setValue}
+        placeholder="預設文字"
+      >
+        <Option value="1">item1 has very long description</Option>
+        <Option value="2">item2</Option>
+        <Option value="3">item3</Option>
+      </Select>
+      <Button variant="contained" onClick={() => setValue([{ id: '2', name: 'item2' }])}>set 2</Button>
+      <Button variant="contained" onClick={() => setValue([])}>reset</Button>
+    </div>
+  );
 };
 
 export const Basic = () => (

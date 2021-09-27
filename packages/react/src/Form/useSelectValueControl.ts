@@ -1,6 +1,7 @@
 import {
   useState,
   MouseEvent,
+  useEffect,
 } from 'react';
 import { SelectValue } from '../Select/typings';
 
@@ -32,6 +33,10 @@ export function useSelectValueControl(
   } = props;
 
   const [value, setValue] = useState<SelectValue[]>((valueProp ?? defaultValue) || []);
+
+  useEffect(() => {
+    setValue(valueProp ?? []);
+  }, [valueProp]);
 
   return {
     value,
