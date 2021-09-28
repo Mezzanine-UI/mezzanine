@@ -1,8 +1,9 @@
 import {
-  useState,
   MouseEvent,
 } from 'react';
+import intersectionBy from 'lodash/intersectionBy';
 import { SelectValue } from '../Select/typings';
+import { useControlValueState } from './useControlValueState';
 
 export interface UseSelectValueControl {
   defaultValue?: SelectValue[];
@@ -19,6 +20,10 @@ export interface SelectValueControl {
   value: SelectValue[];
 }
 
+const equalityFn = (a: SelectValue[], b: SelectValue[]) => (
+  a.length === b.length && intersectionBy(a, b, 'id').length === a.length
+);
+
 export function useSelectValueControl(
   props: UseSelectValueControl,
 ): SelectValueControl {
@@ -31,7 +36,11 @@ export function useSelectValueControl(
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useState<SelectValue[]>((valueProp ?? defaultValue) || []);
+  const [value, setValue] = useControlValueState<SelectValue[]>({
+    defaultValue: defaultValue || [],
+    equalityFn,
+    value: valueProp,
+  });
 
   return {
     value,
