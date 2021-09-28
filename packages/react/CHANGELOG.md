@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.6.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.3...@mezzanine-ui/react@0.6.4) (2021-09-28)
+
+### Bug Fixes
+
+- **react/select:** fix selector value not sync from props issue ([143a43d](https://github.com/Mezzanine-UI/mezzanine/commit/143a43d7f43126716e9b27a3847e5beb4ee86cf5))
+
 ## [0.6.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.2...@mezzanine-ui/react@0.6.3) (2021-08-24)
 
 ### Bug Fixes
