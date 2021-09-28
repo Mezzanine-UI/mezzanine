@@ -362,7 +362,7 @@ describe('<DatePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const testButtonElement = getByText('15').parentNode;
+        const testButtonElement = getByText('15').parentNode?.parentNode;
 
         expect(testButtonElement).toBeInstanceOf(HTMLButtonElement);
 
