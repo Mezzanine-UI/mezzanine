@@ -350,7 +350,7 @@ describe('<DateRangePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const testButtonElement = getAllByText('15')[0].parentNode;
+        const testButtonElement = getAllByText('15')[0].parentNode?.parentNode;
 
         expect(testButtonElement).toBeInstanceOf(HTMLButtonElement);
 
