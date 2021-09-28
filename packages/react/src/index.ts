@@ -13,8 +13,10 @@ export * from './hooks/useDocumentEvents';
 export * from './hooks/useIsomorphicLayoutEffect';
 export * from './hooks/useLastCallback';
 export * from './hooks/useLastValue';
+export * from './hooks/usePreviousValue';
 export * from './hooks/useDocumentTabKeyDown';
 export * from './hooks/useWindowWidth';
+export * from './Tooltip/useDelayMouseEnterLeave';
 
 /**
  * Form hooks
