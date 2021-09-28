@@ -191,8 +191,23 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
       isFetching,
       isReachEnd,
     } : undefined,
-    pagination: paginationProp,
+    pagination: paginationProp ? {
+      current: paginationProp.current,
+      disableAutoSlicing: paginationProp.disableAutoSlicing ?? false,
+      onChange: paginationProp.onChange,
+      total: paginationProp.total ?? dataSource.length,
+      options: {
+        boundaryCount: paginationProp.options?.boundaryCount ?? 1,
+        className: paginationProp.options?.className,
+        disabled: paginationProp.options?.disabled ?? false,
+        hideNextButton: paginationProp.options?.hideNextButton ?? false,
+        hidePreviousButton: paginationProp.options?.hidePreviousButton ?? false,
+        pageSize: paginationProp.options?.pageSize ?? 10,
+        siblingCount: paginationProp.options?.siblingCount ?? 1,
+      },
+    } : undefined,
   }), [
+    dataSource,
     emptyProps,
     expandableProp,
     rowSelection,
@@ -241,7 +256,7 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
                 className={bodyClassName}
                 rowClassName={bodyRowClassName}
               />
-              {paginationProp?.show ? (
+              {paginationProp ? (
                 <TablePagination bodyRef={bodyRef} />
               ) : null}
             </TableComponentContext.Provider>

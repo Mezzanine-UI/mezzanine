@@ -67,7 +67,7 @@ const columns: TableColumn<DataType>[] = [{
   forceShownTooltipWhenHovered: true,
 }];
 
-const dataSource: DataType[] = Array.from(Array(10)).map((_, idx) => ({
+const dataSource: DataType[] = Array.from(Array(35)).map((_, idx) => ({
   key: `source-${idx + 1}`,
   name: `${String.fromCharCode(97 + idx)} John Brown`,
   address: `New York No. ${idx + 1} Lake Park`,
@@ -352,7 +352,11 @@ export const WithActions = () => {
 
 export const WithPagination = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [sources, setSources] = useState<typeof dataSource>(dataSource);
+  const [sources, setSources] = useState<typeof dataSource>([]);
+
+  useEffect(() => {
+    setSources(dataSource);
+  }, []);
 
   return (
     <div
@@ -365,17 +369,8 @@ export const WithPagination = () => {
         columns={columns}
         dataSource={sources}
         pagination={{
-          show: true,
           current: currentPage,
-          onChange: (page) => {
-            setCurrentPage(page);
-            setSources(() => (dataSource.slice(0, parseInt(`${Math.random() * 1000}`, 10) % 8).map((data) => ({
-              ...data,
-              key: `Page${page} - ${data.key}`,
-              name: `Page${page} - ${data.name}`,
-            }))));
-          },
-          total: 100,
+          onChange: (page) => setCurrentPage(page),
         }}
         style={{ display: 'block' }}
       />

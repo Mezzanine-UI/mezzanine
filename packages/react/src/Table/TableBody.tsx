@@ -35,8 +35,9 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
 
   const {
     emptyProps,
-    scrollBarSize,
     fetchMore,
+    scrollBarSize,
+    pagination,
   } = useContext(TableContext) || {};
 
   const [tableBody, scrollElement] = useTableScroll();
@@ -50,6 +51,26 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
     ...restEmptyProps
   } = emptyProps || {};
 
+  /** pagination feature */
+  const {
+    current: currentPage,
+    disableAutoSlicing,
+    total,
+    options: paginationOptions,
+  } = pagination || {};
+
+  const currentStartCount: number = paginationOptions?.pageSize && currentPage ? (
+    (paginationOptions.pageSize) * (currentPage - 1)
+  ) : 0;
+
+  const currentEndCount: number = paginationOptions?.pageSize && currentPage && total ? (
+    Math.min(((paginationOptions.pageSize) * currentPage), total)
+  ) : 0;
+
+  const currentDataSource = pagination && !disableAutoSlicing ? (
+    dataSource.slice(currentStartCount, currentEndCount)
+  ) : dataSource;
+
   return (
     <div
       {...rest}
@@ -61,7 +82,7 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
       onScroll={tableBody.onScroll}
       role="rowgroup"
     >
-      {dataSource.length ? dataSource.map((rowData: TableDataSource) => (
+      {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource) => (
         <TableBodyRow
           key={(rowData.key || rowData.id) as string}
           className={rowClassName}
