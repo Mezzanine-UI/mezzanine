@@ -14,12 +14,14 @@ import TablePagination from './TablePagination';
 import Pagination from '../../Pagination';
 
 const defaultPaginationContext = {
-  show: true,
   current: 1,
   onChange: () => {},
   total: 100,
   options: {
     boundaryCount: 1,
+    disabled: false,
+    hideNextButton: false,
+    hidePreviousButton: false,
     pageSize: 1,
     siblingCount: 1,
   },
@@ -178,78 +180,14 @@ describe('<TablePagination />', () => {
       });
     });
 
-    describe('uncontrolled', () => {
-      let element: HTMLDivElement;
-
-      beforeEach(() => {
-        const { getHostHTMLElement } = render(
-          <TableContext.Provider
-            value={{
-              pagination: {
-                show: defaultPaginationContext.show,
-                total: defaultPaginationContext.total,
-              },
-            }}
-          >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
-              <TablePagination bodyRef={bodyRef} />
-            </TableDataContext.Provider>
-          </TableContext.Provider>,
-        );
-
-        element = getHostHTMLElement();
-      });
-
-      it('should page clicked still worked', async () => {
-        const buttonList = [...element.querySelectorAll('.mzn-pagination-item__button')];
-        const page1Btn = buttonList.find((dom) => dom.innerHTML === '1');
-        const page2Btn = buttonList.find((dom) => dom.innerHTML === '2');
-
-        expect(page1Btn?.getAttribute('aria-current')).toBe('true');
-
-        await act(async () => {
-          fireEvent.click(page2Btn!);
-        });
-
-        expect(page2Btn?.getAttribute('aria-current')).toBe('true');
-      });
-    });
-
     describe('options mapping', () => {
-      it('default options', () => {
-        const testInstance = TestRenderer.create(
-          <TableContext.Provider
-            value={{
-              pagination: {},
-            }}
-          >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
-              <TablePagination bodyRef={bodyRef} />
-            </TableDataContext.Provider>
-          </TableContext.Provider>,
-        );
-
-        const paginationInstance = testInstance.root.findByType(Pagination);
-
-        expect(paginationInstance.props.boundaryCount).toBe(1);
-        expect(paginationInstance.props.className).toBe(undefined);
-        expect(paginationInstance.props.disabled).toBe(false);
-        expect(paginationInstance.props.hideNextButton).toBe(false);
-        expect(paginationInstance.props.hidePreviousButton).toBe(false);
-        expect(paginationInstance.props.pageSize).toBe(dataLength);
-        expect(paginationInstance.props.siblingCount).toBe(1);
-        expect(paginationInstance.props.total).toBe(1);
-      });
-
       it('given options', () => {
         const testInstance = TestRenderer.create(
           <TableContext.Provider
             value={{
               pagination: {
+                current: defaultPaginationContext.current,
+                onChange: defaultPaginationContext.onChange,
                 total: 100,
                 options: {
                   boundaryCount: 2,
@@ -281,32 +219,6 @@ describe('<TablePagination />', () => {
         expect(paginationInstance.props.pageSize).toBe(2);
         expect(paginationInstance.props.siblingCount).toBe(2);
         expect(paginationInstance.props.total).toBe(100);
-      });
-
-      it('total should be (source.length / pageSize) when is not given', () => {
-        const pageSize = 2;
-
-        const testInstance = TestRenderer.create(
-          <TableContext.Provider
-            value={{
-              pagination: {
-                options: {
-                  pageSize,
-                },
-              },
-            }}
-          >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
-              <TablePagination bodyRef={bodyRef} />
-            </TableDataContext.Provider>
-          </TableContext.Provider>,
-        );
-
-        const paginationInstance = testInstance.root.findByType(Pagination);
-
-        expect(paginationInstance.props.total).toBe(dataLength / pageSize);
       });
     });
 

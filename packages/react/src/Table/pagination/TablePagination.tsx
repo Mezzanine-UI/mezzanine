@@ -6,7 +6,7 @@ import {
 import {
   tableClasses as classes,
 } from '@mezzanine-ui/core/table';
-import { TableContext, TableDataContext } from '../TableContext';
+import { TableContext } from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import { cx } from '../../utils/cx';
 import Pagination from '../../Pagination';
@@ -32,20 +32,30 @@ const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(
     } = useContext(TableContext) || {};
 
     const {
-      dataSource = [],
-    } = useContext(TableDataContext) || {};
+      current: currentPageProp,
+      onChange: onChangePageProp,
+      total,
+      options: paginationOptions = {},
+    } = pagination || {};
 
-    const [currentPage, setCurrentPage, options] = useTablePagination({
+    const [currentPage, setCurrentPage] = useTablePagination({
       bodyRef,
-      current: pagination?.current,
-      dataSource,
-      onChange: pagination?.onChange,
-      options: pagination?.options,
-      total: pagination?.total,
+      current: currentPageProp,
+      onChange: onChangePageProp,
     });
 
-    const currentStartCount: number = (options.pageSize * (currentPage - 1)) + 1;
-    const currentEndCount: number = Math.min(options.pageSize * currentPage, options.total);
+    const {
+      boundaryCount,
+      className: paginationClassName,
+      disabled,
+      hideNextButton,
+      hidePreviousButton,
+      pageSize: pageSizeProp,
+      siblingCount,
+    } = paginationOptions;
+
+    const currentStartCount: number = ((pageSizeProp as number) * (currentPage - 1)) + 1;
+    const currentEndCount: number = Math.min((pageSizeProp as number) * currentPage, (total as number));
 
     return (
       <div
@@ -57,20 +67,20 @@ const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(
         )}
       >
         <span className={classes.paginationIndicator}>
-          {`目前顯示 ${currentStartCount} - ${currentEndCount} 筆，共 ${options.total} 筆資料`}
+          {`目前顯示 ${currentStartCount} - ${currentEndCount} 筆，共 ${total} 筆資料`}
         </span>
         <div className={classes.paginationActions}>
           <Pagination
-            boundaryCount={options.boundaryCount}
-            className={options.className}
+            boundaryCount={boundaryCount}
+            className={paginationClassName}
             current={currentPage}
-            disabled={options.disabled}
-            hideNextButton={options.hideNextButton}
-            hidePreviousButton={options.hidePreviousButton}
+            disabled={disabled}
+            hideNextButton={hideNextButton}
+            hidePreviousButton={hidePreviousButton}
             onChange={setCurrentPage}
-            pageSize={options.pageSize}
-            siblingCount={options.siblingCount}
-            total={options.total}
+            pageSize={pageSizeProp}
+            siblingCount={siblingCount}
+            total={total}
           />
         </div>
       </div>

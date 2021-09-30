@@ -1,3 +1,4 @@
+@use 'sass:math';
 @use '~@mezzanine-ui/system/palette';
 @use './slider' as *;
 
@@ -90,13 +91,13 @@ $handler-scale-size: 24px !default;
   box-sizing: border-box;
 
   &:hover {
-    transform: scale($handler-scale-size / $handler-size);
+    transform: scale(math.div($handler-scale-size, $handler-size));
     background-color: palette.color(primary-light);
   }
 
   &--active {
     z-index: 1;
-    transform: scale($handler-scale-size / $handler-size);
+    transform: scale(math.div($handler-scale-size, $handler-size));
     background-color: palette.color(primary-dark);
 
     &:hover {

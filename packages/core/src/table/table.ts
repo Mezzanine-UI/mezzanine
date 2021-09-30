@@ -90,9 +90,10 @@ export interface TableExpandable<SourceType> {
 
 /** === Feature Pagination */
 export interface TablePagination {
-  show?: boolean;
-  current?: number;
-  onChange?(page: number): void;
+  current: number;
+  /** @NOTE set this to true, should control pageSize properly to make layout correct */
+  disableAutoSlicing?: boolean;
+  onChange(page: number): void;
   total?: number;
   options?: {
     boundaryCount?: number;

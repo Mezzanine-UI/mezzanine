@@ -17,6 +17,7 @@ import Table from './Table';
 import TableRefresh from './refresh/TableRefresh';
 import TableHeader from './TableHeader';
 import Loading from '../Loading';
+import Pagination from '../Pagination';
 
 type DataType = {
   key: string;
@@ -55,6 +56,10 @@ function getTablePaginationHost(element: HTMLElement) {
 
 function getTableRowSelectionHost(element: HTMLElement) {
   return element.querySelector('.mzn-table__selections') as HTMLElement;
+}
+
+function getTableRows(element: HTMLElement) {
+  return element.querySelectorAll('.mzn-table__body__row');
 }
 
 describe('<Table />', () => {
@@ -181,7 +186,10 @@ describe('<Table />', () => {
           fetchMore={{
             callback: onFetchMore,
           }}
-          pagination={{}}
+          pagination={{
+            current: 0,
+            onChange: () => {},
+          }}
         />,
       );
       const host = getHostHTMLElement();
@@ -228,18 +236,119 @@ describe('<Table />', () => {
   });
 
   describe('pagination feature', () => {
-    it('should display pagination when show=true', () => {
+    it('should display pagination when given pagination required fields', () => {
       const { getHostHTMLElement } = render(
         <Table
           {...defaultProps}
           pagination={{
-            show: true,
+            current: 0,
+            onChange: () => {},
           }}
         />,
       );
       const host = getHostHTMLElement();
 
       expect(getTablePaginationHost(host)).not.toBeNull();
+    });
+
+    it('should apply correct default pagination options when not given options', () => {
+      const testInstance = TestRenderer.create(
+        <Table
+          {...defaultProps}
+          pagination={{
+            current: 0,
+            onChange: () => {},
+          }}
+        />,
+      );
+
+      const paginationInstance = testInstance.root.findByType(Pagination);
+
+      expect(paginationInstance.props.boundaryCount).toBe(1);
+      expect(paginationInstance.props.className).toBe(undefined);
+      expect(paginationInstance.props.disabled).toBe(false);
+      expect(paginationInstance.props.hideNextButton).toBe(false);
+      expect(paginationInstance.props.hidePreviousButton).toBe(false);
+      expect(paginationInstance.props.pageSize).toBe(10);
+      expect(paginationInstance.props.siblingCount).toBe(1);
+      expect(paginationInstance.props.total).toBe(defaultProps.dataSource.length);
+    });
+
+    it('should map options into context when given custom options', () => {
+      const testInstance = TestRenderer.create(
+        <Table
+          {...defaultProps}
+          pagination={{
+            current: 0,
+            disableAutoSlicing: true,
+            onChange: () => {},
+            total: 100,
+            options: {
+              boundaryCount: 2,
+              className: 'foo',
+              disabled: true,
+              hideNextButton: true,
+              hidePreviousButton: true,
+              pageSize: 5,
+              siblingCount: 2,
+            },
+          }}
+        />,
+      );
+
+      const paginationInstance = testInstance.root.findByType(Pagination);
+
+      expect(paginationInstance.props.boundaryCount).toBe(2);
+      expect(paginationInstance.props.className).toBe('foo');
+      expect(paginationInstance.props.disabled).toBe(true);
+      expect(paginationInstance.props.hideNextButton).toBe(true);
+      expect(paginationInstance.props.hidePreviousButton).toBe(true);
+      expect(paginationInstance.props.pageSize).toBe(5);
+      expect(paginationInstance.props.siblingCount).toBe(2);
+      expect(paginationInstance.props.total).toBe(100);
+    });
+
+    it('should auto slice data when pagination enabled and disableAutoSlicing is false as default', () => {
+      const pageSize = 1;
+
+      const { getHostHTMLElement } = render(
+        <Table
+          {...defaultProps}
+          pagination={{
+            current: 1,
+            onChange: () => {},
+            options: {
+              pageSize,
+            },
+          }}
+        />,
+      );
+      const host = getHostHTMLElement();
+      const rows = getTableRows(host);
+
+      expect(rows.length).toBe(pageSize);
+    });
+
+    it('should not auto slice data when disableAutoSlicing set to true', () => {
+      const pageSize = 1;
+
+      const { getHostHTMLElement } = render(
+        <Table
+          {...defaultProps}
+          pagination={{
+            current: 1,
+            disableAutoSlicing: true,
+            onChange: () => {},
+            options: {
+              pageSize,
+            },
+          }}
+        />,
+      );
+      const host = getHostHTMLElement();
+      const rows = getTableRows(host);
+
+      expect(rows.length).toBe(defaultSources.length);
     });
   });
 
