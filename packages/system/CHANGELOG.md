@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.5.2...@mezzanine-ui/system@0.7.0) (2021-10-20)
+
+**Note:** Version bump only for package @mezzanine-ui/system
+
 ## [0.5.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.1.1...@mezzanine-ui/system@0.5.2) (2021-06-17)
 
 ### Bug Fixes
