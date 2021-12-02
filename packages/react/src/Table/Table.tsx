@@ -28,7 +28,7 @@ import { useTableSorting } from './sorting/useTableSorting';
 import { useTableLoading } from './useTableLoading';
 import { useTableFetchMore } from './useTableFetchMore';
 
-export interface TableProps<T>
+export interface TableBaseProps<T>
   extends
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'role'> {
   /**
@@ -36,35 +36,58 @@ export interface TableProps<T>
    */
   bodyClassName?: string;
   /**
-   * customized body row className
-   */
+    * customized body row className
+    */
   bodyRowClassName?: string;
   /**
-   * Columns of table <br />
-   * `column.render` allowed customizing the column body cell rendering. <br />
-   * `column.renderTitle` allowed customizing the column header cell rendering. <br />
-   * `column.sorter` is the sorting method that you want to apply to your column. <br />
-   * `column.onSorted` is the callback triggered whenever sort icon clicked.
-   */
+    * Columns of table <br />
+    * `column.render` allowed customizing the column body cell rendering. <br />
+    * `column.renderTitle` allowed customizing the column header cell rendering. <br />
+    * `column.sorter` is the sorting method that you want to apply to your column. <br />
+    * `column.onSorted` is the callback triggered whenever sort icon clicked.
+    */
   columns: TableColumn<T>[];
   /**
-   * Custom table components <br />
-   */
+    * Custom table components <br />
+    */
   components?: TableComponents;
   /**
-   * Data record array to be displayed. <br />
-   * Notice that each source should contain `key` or `id` prop as data primary key.
-   */
+    * Data record array to be displayed. <br />
+    * Notice that each source should contain `key` or `id` prop as data primary key.
+    */
   dataSource: TableDataSource[];
   /**
-   * props exported from `<Empty />` component.
-   */
+    * props exported from `<Empty />` component.
+    */
   emptyProps?: EmptyProps;
   /**
-   * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
-   * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
-   */
+    * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
+    * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
+    */
   expandable?: TableExpandable<T>;
+  /**
+   * customized header className
+   */
+  headerClassName?: string;
+  /**
+    * Whether table is loading or not
+    */
+  loading?: boolean;
+  /**
+   * `refresh.show` is true, refresh button will display at the top-start of table. <br />
+   * `refresh.onClick` is the callback of the refresh button.
+   */
+  refresh?: TableRefreshType;
+  /**
+    * Enable row selection feature <br />
+    * `rowSelection.selectedRowKey` is the dataSource keys that are currently selected. <br />
+    * `rowSelection.onChange` is the callback when selection changed. <br />
+    * `rowSelection.actions` are the actions that you want to do for selected data.
+    */
+  rowSelection?: TableRowSelection;
+}
+
+export interface TableWithFetchMore<T> extends TableBaseProps<T> {
   /**
    * If `fetchMore.callback` is given, table will automatically trigger it when scrolling position reach end. <br />
    * If `fetchMore.isReachEnd` is true, table will stop triggering callback. <br />
@@ -73,14 +96,10 @@ export interface TableProps<T>
    * Notice that when `fetchMore.isFetching` is `undefined`, table will take control of it when source length changed.
    */
   fetchMore?: TableFetchMore;
-  /**
-   * customized header className
-   */
-  headerClassName?: string;
-  /**
-   * Whether table is loading or not
-   */
-  loading?: boolean;
+  pagination?: undefined;
+}
+
+export interface TableWithPagination<T> extends TableBaseProps<T> {
   /**
    * `pagination.current` is the current page number. (required) <br />
    * `pagination.onChange` is the callback when page number changed. (required) <br />
@@ -90,19 +109,10 @@ export interface TableProps<T>
    * Notice that if `pagination` object is given, table will disable fetchMore and use pagination instead.
    */
   pagination?: TablePaginationType;
-  /**
-   * `refresh.show` is true, refresh button will display at the top-start of table. <br />
-   * `refresh.onClick` is the callback of the refresh button.
-   */
-  refresh?: TableRefreshType;
-  /**
-   * Enable row selection feature <br />
-   * `rowSelection.selectedRowKey` is the dataSource keys that are currently selected. <br />
-   * `rowSelection.onChange` is the callback when selection changed. <br />
-   * `rowSelection.actions` are the actions that you want to do for selected data.
-   */
-  rowSelection?: TableRowSelection;
+  fetchMore?: undefined;
 }
+
+export type TableProps<T> = TableWithFetchMore<T> | TableWithPagination<T>;
 
 const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(function Table(props, ref) {
   const {

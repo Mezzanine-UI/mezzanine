@@ -178,29 +178,6 @@ describe('<Table />', () => {
 
       expect(fetchMoreTriggered).toBe(false);
     });
-
-    it('should not called callback when pagination is given (disabled automatically)', async () => {
-      const { getHostHTMLElement } = render(
-        <Table
-          {...defaultProps}
-          fetchMore={{
-            callback: onFetchMore,
-          }}
-          pagination={{
-            current: 0,
-            onChange: () => {},
-          }}
-        />,
-      );
-      const host = getHostHTMLElement();
-      const body = getTableBody(host);
-
-      await act(async () => {
-        fireEvent.scroll(body);
-      });
-
-      expect(fetchMoreTriggered).toBe(false);
-    });
   });
 
   describe('refresh feature', () => {
