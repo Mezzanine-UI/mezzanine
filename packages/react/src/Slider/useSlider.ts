@@ -6,6 +6,8 @@ import {
   getValueFromClientX,
   isRangeSlider,
   roundToStep,
+  fixSingleSliderValue,
+  fixRangeSliderValue,
   sortSliderValue,
   toSliderCssVars,
   SingleSliderValue,
@@ -71,29 +73,32 @@ export function useSlider(props: UseSliderProps) {
     return isRangeSlider(value) ? Math.abs(1 - value.indexOf(anchorValue)) : undefined;
   }
 
+  const fixedValue = isRangeSlider(value) ? fixRangeSliderValue(value, min, max)
+    : fixSingleSliderValue(value, min, max);
+
   const cssVars = toSliderCssVars({
     trackWidth: getPercentage(
-      isRangeSlider(value) ? Math.abs(value[0] - value[1]) : value,
+      isRangeSlider(fixedValue) ? Math.abs(fixedValue[0] - fixedValue[1]) : fixedValue - min,
       min,
       max,
     ),
     trackPosition: getPercentage(
-      isRangeSlider(value) ? Math.abs(Math.min(...value) - min) : 0,
+      isRangeSlider(fixedValue) ? Math.abs(Math.min(...fixedValue) - min) : 0,
       min,
       max,
     ),
     handlerPosition: getPercentage(
-      isRangeSlider(value) ? 0 : value,
+      isRangeSlider(fixedValue) ? 0 : fixedValue - min,
       min,
       max,
     ),
     handlerStartPosition: getPercentage(
-      isRangeSlider(value) ? Math.abs(Math.min(...value) - min) : value,
+      isRangeSlider(fixedValue) ? Math.abs(Math.min(...fixedValue) - min) : fixedValue,
       min,
       max,
     ),
     handlerEndPosition: getPercentage(
-      isRangeSlider(value) ? Math.abs(Math.max(...value) - min) : value,
+      isRangeSlider(fixedValue) ? Math.abs(Math.max(...fixedValue) - min) : fixedValue,
       min,
       max,
     ),

@@ -14,6 +14,8 @@ import {
   sliderClasses as classes,
   sortSliderValue,
   roundToStep,
+  fixSingleSliderValue,
+  fixRangeSliderValue,
 } from '@mezzanine-ui/core/slider';
 import {
   NativeElementPropsWithoutKeyAndRef,
@@ -173,6 +175,27 @@ function SliderComponent(props: SliderComponentProps) {
 
     return `${value[1]}`;
   });
+
+  useEffect(() => {
+    if (max > min) {
+      if (isRangeSlider(value)) {
+        if (
+          (value[0] > max && value[1] > max) ||
+          (value[0] < min && value[1] < min) ||
+          value[0] < min ||
+          value[1] > max
+        ) {
+          (onChange as UseRangeSliderProps['onChange'])(fixRangeSliderValue(value, min, max));
+        }
+
+        return;
+      }
+
+      if (value < min || value > max) {
+        (onChange as UseSingleSliderProps['onChange'])(fixSingleSliderValue(value, min, max));
+      }
+    }
+  }, [min, max, onChange, value]);
 
   useEffect(() => {
     if (withInput) {

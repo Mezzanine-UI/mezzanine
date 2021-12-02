@@ -113,6 +113,8 @@ export function getPercentage(
   min: number,
   max: number,
 ) {
+  if (min > max) return 0;
+
   return Math.max(
     0,
     Math.min(
@@ -122,8 +124,61 @@ export function getPercentage(
   );
 }
 
+export function getPrecision(
+  step: number,
+) {
+  const stepString = step.toString();
+  let precision = 0;
+
+  if (stepString.indexOf('.') >= 0) {
+    precision = stepString.length - stepString.indexOf('.') - 1;
+  }
+
+  return precision;
+}
+
+export function fixSingleSliderValue(
+  value: SingleSliderValue,
+  min: number,
+  max: number,
+): SingleSliderValue {
+  if (value < min) {
+    return min;
+  }
+
+  if (value > max) {
+    return max;
+  }
+
+  return value;
+}
+
+export function fixRangeSliderValue(
+  value: RangeSliderValue,
+  min: number,
+  max: number,
+): RangeSliderValue {
+  if (value[0] > max && value[1] > max) {
+    return [max, max];
+  }
+
+  if (value[0] < min && value[1] < min) {
+    return [min, min];
+  }
+
+  if (value[0] < min) {
+    return [min, value[1]];
+  }
+
+  if (value[1] > max) {
+    return [value[0], max];
+  }
+
+  return value;
+}
+
 export function roundToStep(
-  value:number,
+  value: number,
   step: number,
   min: number,
   max: number,
@@ -138,10 +193,10 @@ export function roundToStep(
   right = Math.min(left + step, max);
 
   if (value - left < right - value) {
-    return left;
+    return parseFloat(left.toFixed(getPrecision(step)));
   }
 
-  return right;
+  return parseFloat(right.toFixed(getPrecision(step)));
 }
 
 export function findClosetValueIndex(
