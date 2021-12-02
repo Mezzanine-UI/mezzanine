@@ -82,6 +82,117 @@ describe('<Slider />', () => {
     });
   });
 
+  describe('checking value is in range', () => {
+    describe('case: min > max', () => {
+      const onChange = jest.fn();
+
+      render(
+        <Slider
+          onChange={onChange}
+          value={0}
+          min={100}
+          max={50}
+        />,
+      );
+
+      expect(onChange).not.toBeCalled();
+    });
+
+    describe('case: single', () => {
+      it('should init correct value when value < min', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={0}
+            min={10}
+            max={100}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith(10);
+      });
+
+      it('should init correct value when value > max', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={60}
+            min={0}
+            max={50}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith(50);
+      });
+    });
+
+    describe('case: range', () => {
+      it('should init correct range value when left value < min', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={[0, 50]}
+            min={10}
+            max={100}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith([10, 50]);
+      });
+
+      it('should init correct range value when both of left value and right value < min', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={[0, 50]}
+            min={60}
+            max={100}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith([60, 60]);
+      });
+
+      it('should init correct range value when right value > max', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={[10, 60]}
+            min={0}
+            max={50}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith([10, 50]);
+      });
+
+      it('should init correct range value when both of left value and right value > max', () => {
+        const onChange = jest.fn();
+
+        render(
+          <Slider
+            onChange={onChange}
+            value={[60, 70]}
+            min={0}
+            max={50}
+          />,
+        );
+
+        expect(onChange).toBeCalledWith([50, 50]);
+      });
+    });
+  });
+
   describe('changing value', () => {
     describe('case: single', () => {
       it('should change value when rail mouse-down', () => {
