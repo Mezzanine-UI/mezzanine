@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.0...@mezzanine-ui/react@0.7.1) (2021-12-03)
+
+### Bug Fixes
+
+- **react/slider:** fix slider behavior ([89c8a8f](https://github.com/Mezzanine-UI/mezzanine/commit/89c8a8f5d19d82e054979a1802db30ae840db02e)), closes [#104](https://github.com/Mezzanine-UI/mezzanine/issues/104) [#105](https://github.com/Mezzanine-UI/mezzanine/issues/105) [#106](https://github.com/Mezzanine-UI/mezzanine/issues/106)
+
 # [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.6.4...@mezzanine-ui/react@0.7.0) (2021-10-20)
 
 **Note:** Version bump only for package @mezzanine-ui/react

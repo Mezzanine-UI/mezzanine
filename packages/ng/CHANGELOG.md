@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.7.0...@mezzanine-ui/ng@0.7.1) (2021-12-03)
+
+**Note:** Version bump only for package @mezzanine-ui/ng
+
 # [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/ng@0.6.3...@mezzanine-ui/ng@0.7.0) (2021-10-20)
 
 **Note:** Version bump only for package @mezzanine-ui/ng

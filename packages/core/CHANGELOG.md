@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.0...@mezzanine-ui/core@0.7.1) (2021-12-03)
+
+### Bug Fixes
+
+- **core/message:** fix message icon and content horizontal gap to correct layout display ([18d7fe9](https://github.com/Mezzanine-UI/mezzanine/commit/18d7fe9429a932e41434fd345d006f365f7dc7ba))
+- **core/slider:** create some functions to fix slider behavior ([8530ccb](https://github.com/Mezzanine-UI/mezzanine/commit/8530ccb89587f8d8ab6a501a7c9a756a4fc98be6)), closes [#104](https://github.com/Mezzanine-UI/mezzanine/issues/104) [#105](https://github.com/Mezzanine-UI/mezzanine/issues/105) [#106](https://github.com/Mezzanine-UI/mezzanine/issues/106)
+
 # [0.7.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.6.3...@mezzanine-ui/core@0.7.0) (2021-10-20)
 
 **Note:** Version bump only for package @mezzanine-ui/core
