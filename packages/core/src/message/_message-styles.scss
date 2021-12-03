@@ -7,9 +7,9 @@
 
 $height: 40px !default;
 $padding-left: 12px !default;
-$padding-right: 24px !default;
+$padding-right: 12px !default;
+$content-padding: 12px !default;
 $icon-size: 24px !default;
-$icon-gap: 12px !default;
 
 .#{$prefix} {
   display: flex;
@@ -28,12 +28,13 @@ $icon-gap: 12px !default;
   &__icon {
     color: var(--#{$prefix}-color);
     font-size: typography.px-to-rem($icon-size);
-    margin-right: $icon-gap;
   }
 
   &__content {
     @include typography.variant(body1);
     @include typography.overflow-ellipsis();
+
+    padding: 0 $content-padding;
   }
 
   @each $severity in $severities {
