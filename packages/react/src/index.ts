@@ -3,7 +3,7 @@ export * from './utils/composeRefs';
 export * from './utils/cx';
 export * from './utils/getElement';
 export * from './utils/jsx-types';
-export * from './utils/rename-types';
+export * from './utils/general';
 export * from './utils/scroll-lock';
 
 export * from './hooks/useClickAway';
@@ -365,6 +365,7 @@ export {
 export {
   MessageData,
   MessageSeverity,
+  MessageType,
   default as Message,
 } from './Message';
 export {

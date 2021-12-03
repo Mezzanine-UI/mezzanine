@@ -21,7 +21,7 @@ import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
 import { useAutoCompleteValueControl } from '../Form/useAutoCompleteValueControl';
 import { useClickAway } from '../hooks/useClickAway';
-import { PickRenameMulti } from '../utils/rename-types';
+import { PickRenameMulti } from '../utils/general';
 import { cx } from '../utils/cx';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
 import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';

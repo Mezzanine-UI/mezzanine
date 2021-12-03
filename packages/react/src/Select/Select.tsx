@@ -23,7 +23,7 @@ import { SelectValue } from './typings';
 import Icon from '../Icon';
 import { useSelectValueControl } from '../Form/useSelectValueControl';
 import { useClickAway } from '../hooks/useClickAway';
-import { PickRenameMulti } from '../utils/rename-types';
+import { PickRenameMulti } from '../utils/general';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
 import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';
 

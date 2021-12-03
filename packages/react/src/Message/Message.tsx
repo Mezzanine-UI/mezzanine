@@ -3,8 +3,12 @@ import {
   messageIcons,
   MessageSeverity,
 } from '@mezzanine-ui/core/message';
-import React, {
-  FC, Key, useEffect, useState,
+import { IconDefinition } from '@mezzanine-ui/icons';
+import {
+  FC,
+  Key,
+  useEffect,
+  useState,
 } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
@@ -41,46 +45,41 @@ export interface MessageData
    */
   duration?: NotifierData['duration'];
   /**
+   * message icon prefix
+   */
+  icon?: IconDefinition;
+  /**
    * The key of message.
    */
   reference?: Key;
   /**
    * The severity of the message.
-   * @default info
    */
   severity?: MessageSeverity;
 }
 
-export interface Message
-  extends
-  FC<MessageData>,
-  Notifier<MessageData, MessageConfigProps>,
-  Record<
-  MessageSeverity,
-  (
-    message: MessageData['children'],
-    props?: Omit<MessageData, 'children' | 'severity'>,
-  ) => Key
-  > {
-}
+export type MessageType = FC<MessageData>
+& Notifier<MessageData, MessageConfigProps>
+& (Record<
+string,
+(message: MessageData['children'], props?: Omit<MessageData, 'children' | 'severity' | 'icon'>) => Key>);
 
 /**
  * The react component for `mezzanine` message.
  *
- * Use the API from the Message instance such as `Message.success` and `Message.error`
+ * Use the API from the Message instance such as `Message.add` and `Message.success`
  * to display a notification message globally.
  */
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-const Message: Message = ((props) => {
+const Message: MessageType = ((props) => {
   const {
     children,
     duration,
+    icon,
     reference,
-    severity = 'info',
+    severity,
     onExited: onExitedProp,
     ...restTransitionProps
   } = props;
-  const icon = messageIcons[severity];
 
   const [open, setOpen] = useState(true);
 
@@ -101,8 +100,7 @@ const Message: Message = ((props) => {
       onExitedProp(node);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    Message.remove(reference!);
+    if (reference) Message.remove(reference);
   };
 
   return (
@@ -115,21 +113,22 @@ const Message: Message = ((props) => {
       <div
         className={cx(
           classes.host,
-          classes.severity(severity),
+          severity ? classes.severity(severity) : '',
         )}
       >
-        <Icon
-          className={classes.icon}
-          icon={icon}
-        />
+        {icon ? (
+          <Icon
+            className={classes.icon}
+            icon={icon}
+          />
+        ) : null}
         <span className={classes.content}>
           {children}
         </span>
       </div>
     </SlideFade>
-
   );
-}) as Message;
+}) as MessageType;
 
 const {
   add,
@@ -149,11 +148,30 @@ Message.config = config;
 Message.destroy = destroy;
 Message.remove = remove;
 
-(['success', 'warning', 'error', 'info'] as const).forEach((severity) => {
-  Message[severity] = (message, props) => Message.add({
+const severities = [{
+  key: 'success',
+  icon: messageIcons.success,
+}, {
+  key: 'warning',
+  icon: messageIcons.warning,
+}, {
+  key: 'error',
+  icon: messageIcons.error,
+}, {
+  key: 'info',
+  icon: messageIcons.info,
+}];
+
+const validSeverities: MessageSeverity[] = ['success', 'warning', 'error', 'info'];
+
+(severities).forEach((severity) => {
+  Message[severity.key] = (message, props) => Message.add({
     ...props,
     children: message,
-    severity,
+    severity: validSeverities.includes((severity.key as MessageSeverity))
+      ? (severity.key as MessageSeverity)
+      : undefined,
+    icon: severity.icon,
   });
 });
 

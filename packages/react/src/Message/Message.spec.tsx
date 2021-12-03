@@ -4,15 +4,16 @@ import {
   MinusCircleFilledIcon,
   InfoCircleFilledIcon,
 } from '@mezzanine-ui/icons';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { ReactText } from 'react';
 import {
   act,
   cleanup,
   render,
 } from '../../__test-utils__';
-import Message, { MessageSeverity } from '.';
+import Message from '.';
 
-const severities: MessageSeverity[] = [
+const severities: SeverityWithInfo[] = [
   'success',
   'warning',
   'error',
@@ -37,13 +38,6 @@ describe('<Message />', () => {
   });
 
   describe('prop: severity', () => {
-    it('should render severity="info" by default', () => {
-      const { getHostHTMLElement } = render(<Message />);
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-message--info')).toBeTruthy();
-    });
-
     const icons = {
       success: {
         color: 'success',
@@ -61,6 +55,10 @@ describe('<Message />', () => {
         color: 'primary',
         icon: InfoCircleFilledIcon,
       },
+      custom: {
+        color: 'custom',
+        icon: undefined,
+      },
     };
 
     severities.forEach((severity) => {
@@ -73,14 +71,20 @@ describe('<Message />', () => {
 
       const targetIcon = icons[severity].icon;
 
-      it(`should render "${targetIcon.name}" icon if severity="${severity}"`, () => {
-        const { getHostHTMLElement } = render(<Message severity={severity} />);
+      it(`should render "${targetIcon?.name}" icon if severity="${severity}"`, () => {
+        const { getHostHTMLElement } = render(
+          <Message
+            icon={targetIcon}
+            severity={severity}
+          />,
+        );
+
         const element = getHostHTMLElement();
         const {
           firstElementChild: iconElement,
         } = element;
 
-        expect(iconElement?.getAttribute('data-icon-name')).toBe(targetIcon.name);
+        expect(iconElement?.getAttribute('data-icon-name')).toBe(targetIcon?.name);
       });
     });
   });

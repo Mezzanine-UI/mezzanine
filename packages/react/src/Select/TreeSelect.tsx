@@ -16,7 +16,7 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { useClickAway } from '../hooks/useClickAway';
-import { PickRenameMulti } from '../utils/rename-types';
+import { PickRenameMulti } from '../utils/general';
 import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
 import SelectTrigger, {
   SelectTriggerProps,
