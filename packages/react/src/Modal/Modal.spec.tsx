@@ -10,12 +10,10 @@ import {
   fireEvent,
   render,
   renderHook,
-  TestRenderer,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
 } from '../../__test-utils__/common';
-import Overlay from '../Overlay';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import Modal, { ModalProps, ModalSeverity } from '.';
 
@@ -23,15 +21,9 @@ function getOverlayElement(container: HTMLElement = document.body) {
   return container?.querySelector('.mzn-overlay');
 }
 
-function getBackdropElement(container: HTMLElement = document.body) {
-  return getOverlayElement(container)?.querySelector('.mzn-overlay__backdrop');
-}
-
 function getModalElement(container: HTMLElement = document.body) {
   return getOverlayElement(container)?.querySelector('.mzn-modal');
 }
-
-window.scrollTo = jest.fn();
 
 describe('<Modal />', () => {
   afterEach(() => {
@@ -126,16 +118,6 @@ describe('<Modal />', () => {
     });
   });
 
-  describe('prop: open', () => {
-    it('should not render modal if open=false', () => {
-      render(<Modal open={false} />);
-
-      const overlayElement = getOverlayElement();
-
-      expect(overlayElement).toBe(null);
-    });
-  });
-
   describe('prop: severity', () => {
     function testBindSeverityClass(severity: ModalSeverity) {
       const modalElement = getModalElement()!;
@@ -180,84 +162,6 @@ describe('<Modal />', () => {
     });
   });
 
-  describe('overlay', () => {
-    const propsShouldPassed = [
-      'container',
-      'disableCloseOnBackdropClick',
-      'disablePortal',
-      'hideBackdrop',
-      'onBackdropClick',
-      'onClose',
-      'open',
-    ];
-
-    it(`should pass ${propsShouldPassed.join(',')} to overlay`, () => {
-      const container = () => document.createElement('div');
-      const onBackdropClick = () => {};
-
-      const onClose = () => {};
-
-      const testInstance = TestRenderer.create(
-        <Modal
-          container={container}
-          disablePortal
-          disableCloseOnBackdropClick
-          hideBackdrop
-          onBackdropClick={onBackdropClick}
-          onClose={onClose}
-          open
-        />,
-      );
-      const overlayInstance = testInstance.root.findByType(Overlay);
-
-      expect(overlayInstance.props.container).toBe(container);
-      expect(overlayInstance.props.disablePortal).toBe(true);
-      expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(true);
-      expect(overlayInstance.props.hideBackdrop).toBe(true);
-      expect(overlayInstance.props.onBackdropClick).toBe(onBackdropClick);
-      expect(overlayInstance.props.onClose).toBe(onClose);
-      expect(overlayInstance.props.open).toBe(true);
-    });
-  });
-
-  describe('backdrop', () => {
-    it('should fire onBackdropClick while backdrop clicked', () => {
-      const onBackdropClick = jest.fn();
-
-      render(<Modal onBackdropClick={onBackdropClick} open />);
-
-      const backdropElement = getBackdropElement()!;
-
-      fireEvent.click(backdropElement);
-
-      expect(onBackdropClick).toBeCalledTimes(1);
-    });
-
-    it('should fire onClose while backdrop clicked', () => {
-      const onClose = jest.fn();
-
-      render(<Modal onClose={onClose} open />);
-
-      const backdropElement = getBackdropElement()!;
-
-      fireEvent.click(backdropElement);
-
-      expect(onClose).toBeCalledTimes(1);
-    });
-
-    it('should not fire onClose while backdrop clicked if disableCloseOnBackdropClick=true', () => {
-      const onClose = jest.fn();
-
-      render(<Modal disableCloseOnBackdropClick onClose={onClose} open />);
-
-      const backdropElement = getBackdropElement()!;
-
-      fireEvent.click(backdropElement);
-
-      expect(onClose).not.toBeCalled();
-    });
-  });
-
   describe('close icon', () => {
     it('should bind close icon class', () => {
       render(<Modal open />);
@@ -291,53 +195,6 @@ describe('<Modal />', () => {
 
       expect(modalElement.classList.contains('mzn-modal--close-icon')).toBeFalsy();
       expect(closeIconElement).toBe(null);
-    });
-  });
-
-  describe('escape key down', () => {
-    it('should fire onClose while escape key pressed', () => {
-      const onClose = jest.fn();
-
-      render(<Modal onClose={onClose} open />);
-
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      expect(onClose).toBeCalledTimes(1);
-    });
-
-    it('should not fire onClose while escape key pressed if disableCloseOnEscapeKeyDown=true', () => {
-      const onClose = jest.fn();
-
-      render(<Modal disableCloseOnEscapeKeyDown onClose={onClose} open />);
-
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      expect(onClose).not.toBeCalled();
-    });
-
-    it('should close only the top modal while escape key pressed', () => {
-      const onClose = jest.fn();
-
-      render(
-        <>
-          <Modal
-            open
-            onClose={onClose}
-          />
-          <Modal
-            open
-            onClose={onClose}
-          />
-          <Modal
-            open
-            onClose={onClose}
-          />
-        </>,
-      );
-
-      fireEvent.keyDown(document, { key: 'Escape' });
-
-      expect(onClose).toBeCalledTimes(1);
     });
   });
 });

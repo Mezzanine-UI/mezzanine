@@ -3,38 +3,18 @@ import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   forwardRef,
-  useState,
-  useLayoutEffect,
-  useEffect,
 } from 'react';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
-import { allowBodyScroll, lockBodyScroll } from '../utils/scroll-lock';
-import Overlay, { OverlayProps } from '../Overlay';
 import Icon from '../Icon';
-import { SlideFade } from '../Transition';
-import { useIsTopModal } from './useIsTopModal';
 import { ModalControl, ModalControlContext } from './ModalControl';
+import { SlideFadeOverlayProps } from '../_internal/SlideFadeOverlay';
+import useModalContainer from './useModalContainer';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface ModalProps
   extends
-  NativeElementPropsWithoutKeyAndRef<'div'>,
-  Pick<
-  OverlayProps,
-  | 'container'
-  | 'disableCloseOnBackdropClick'
-  | 'disablePortal'
-  | 'hideBackdrop'
-  | 'onBackdropClick'
-  | 'onClose'
-  | 'open'
-  > {
-  /**
-   * Controls whether to disable closing modal while escape key down.
-   * @default false
-   */
-  disableCloseOnEscapeKeyDown?: boolean;
+  Omit<SlideFadeOverlayProps, 'children'>,
+  Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Whether to force full screen on any breakpoint.
    * @default false
@@ -73,10 +53,11 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     container,
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
-    disablePortal,
+    disablePortal = false,
     fullScreen = false,
-    hideBackdrop,
+    hideBackdrop = false,
     hideCloseIcon = false,
+    invisibleBackdrop = false,
     loading = false,
     onBackdropClick,
     onClose,
@@ -89,108 +70,50 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     loading,
     severity,
   };
-  const [exited, setExited] = useState(true);
-  /**
-   * Escape keydown close: escape will only close the top modal
-   */
-  const isTopModal = useIsTopModal(open);
 
-  useDocumentEscapeKeyDown(() => {
-    if (!open || disableCloseOnEscapeKeyDown || !onClose) {
-      return;
-    }
-
-    return (event) => {
-      if (isTopModal()) {
-        event.stopPropagation();
-
-        onClose();
-      }
-    };
-  }, [
-    disableCloseOnEscapeKeyDown,
-    isTopModal,
-    open,
-    onClose,
-  ]);
-
-  /** lock body scroll */
-  useLayoutEffect(() => {
-    if (open) {
-      lockBodyScroll();
-    }
-  }, [open]);
-
-  /** unlock body scroll */
-  useEffect(() => {
-    function checkAndAllowScroll() {
-      // wait until dom element unmount, and check if other modal existed
-      const allModals = document.querySelectorAll('.mzn-modal');
-
-      if (!allModals.length) {
-        allowBodyScroll();
-      }
-    }
-
-    if (!open && exited) {
-      checkAndAllowScroll();
-    }
-
-    return (() => {
-      requestAnimationFrame(checkAndAllowScroll);
-    });
-  }, [open, exited]);
-
-  if (!open && exited) {
-    return null;
-  }
+  const { Container: ModalContainer } = useModalContainer();
 
   return (
-    <Overlay
-      className={classes.overlay}
-      container={container}
-      disableCloseOnBackdropClick={disableCloseOnBackdropClick}
-      disablePortal={disablePortal}
-      hideBackdrop={hideBackdrop}
-      onBackdropClick={onBackdropClick}
-      onClose={onClose}
-      open={open}
-      role="presentation"
-    >
-      <ModalControlContext.Provider value={modalControl}>
-        <SlideFade
-          ref={ref}
-          in={open}
-          direction="down"
-          onEntered={() => setExited(false)}
-          onExited={() => setExited(true)}
+    <ModalControlContext.Provider value={modalControl}>
+      <ModalContainer
+        className={classes.overlay}
+        container={container}
+        direction="down"
+        disableCloseOnBackdropClick={disableCloseOnBackdropClick}
+        disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+        disablePortal={disablePortal}
+        hideBackdrop={hideBackdrop}
+        invisibleBackdrop={invisibleBackdrop}
+        onBackdropClick={onBackdropClick}
+        onClose={onClose}
+        open={open}
+        ref={ref}
+      >
+        <div
+          {...rest}
+          className={cx(
+            classes.host,
+            classes.severity(severity),
+            classes.size(size),
+            {
+              [classes.fullScreen]: fullScreen,
+              [classes.withCloseIcon]: !hideCloseIcon,
+            },
+            className,
+          )}
+          role="dialog"
         >
-          <div
-            {...rest}
-            className={cx(
-              classes.host,
-              classes.severity(severity),
-              classes.size(size),
-              {
-                [classes.fullScreen]: fullScreen,
-                [classes.withCloseIcon]: !hideCloseIcon,
-              },
-              className,
-            )}
-            role="dialog"
-          >
-            {children}
-            {!hideCloseIcon && (
-              <Icon
-                className={classes.closeIcon}
-                icon={TimesIcon}
-                onClick={onClose}
-              />
-            )}
-          </div>
-        </SlideFade>
-      </ModalControlContext.Provider>
-    </Overlay>
+          {children}
+          {!hideCloseIcon && (
+            <Icon
+              className={classes.closeIcon}
+              icon={TimesIcon}
+              onClick={onClose}
+            />
+          )}
+        </div>
+      </ModalContainer>
+    </ModalControlContext.Provider>
   );
 });
 
