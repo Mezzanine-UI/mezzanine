@@ -1,0 +1,7 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/z-index';
+@use './overlay-with-slide-fade' as *;
+
+.#{$prefix} {
+  overflow: hidden;
+}
