@@ -380,6 +380,7 @@ export {
   ModalActionsProps,
   ModalActions,
   ModalProps,
+  useModalContainer,
   default as Modal,
 } from './Modal';
 export {
