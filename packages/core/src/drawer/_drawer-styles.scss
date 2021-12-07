@@ -15,8 +15,6 @@ $positions: top, right, bottom, left;
   }
 
   &__overlay {
-    display: relative;
-    overflow: hidden;
     z-index: z-index.get(drawer);
   }
 

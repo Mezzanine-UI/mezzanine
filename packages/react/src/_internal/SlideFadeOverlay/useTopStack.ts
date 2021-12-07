@@ -8,7 +8,7 @@ let seedStack: number[] = [];
 
 let seed = 1;
 
-export function useIsTopModal(open?: boolean) {
+export default function useTopStack(open?: boolean) {
   const modalSeed = useMemo(() => {
     seed += 1;
 

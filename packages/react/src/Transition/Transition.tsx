@@ -37,7 +37,7 @@ export interface TransitionImplementationChildProps {
 
 export interface TransitionImplementationProps
   extends Omit<TransitionProps, 'addEndListener' | 'children' | 'nodeRef'> {
-  children?: ReactElement<
+  children: ReactElement<
   TransitionImplementationChildProps,
   NativeElementTag | JSXElementConstructor<TransitionImplementationChildProps>
   >;
