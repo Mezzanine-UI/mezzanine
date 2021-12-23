@@ -25,4 +25,8 @@ $spin-keyframes-name: #{$prefix}-spin !default;
   &--spin {
     animation: #{$spin-keyframes-name} 500ms infinite linear;
   }
+
+  &--size {
+    font-size: var(--#{$prefix}-size);
+  }
 }

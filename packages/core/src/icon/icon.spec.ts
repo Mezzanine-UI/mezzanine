@@ -15,9 +15,22 @@ describe('icon', () => {
     it('prop:spin', () => {
       expect(classes.spin).toBe('mzn-icon--spin');
     });
+
+    it('prop:size', () => {
+      expect(classes.size).toBe('mzn-icon--size');
+    });
   });
 
   describe('toIconCssVars', () => {
+    describe('prop:size', () => {
+      it('should has size var if size given', () => {
+        const size = 48;
+        const cssVars = toIconCssVars({ size });
+
+        expect(cssVars['--mzn-icon-size']).toBe(`${size}px`);
+      });
+    });
+
     describe('prop:color', () => {
       const colorMaps: ([IconColor, Color] | IconColor | undefined)[] = [
         undefined,

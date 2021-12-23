@@ -8,6 +8,7 @@ export type IconColor =
 
 export interface IconCssVars {
   color?: IconColor;
+  size?: number;
 }
 
 export const iconPrefix = 'mzn-icon';
@@ -16,31 +17,44 @@ export const iconClasses = {
   host: iconPrefix,
   color: `${iconPrefix}--color`,
   spin: `${iconPrefix}--spin`,
+  size: `${iconPrefix}--size`,
 } as const;
 
 export function toIconCssVars(variables: IconCssVars): CssVarInterpolations {
-  const { color } = variables;
+  const { color, size } = variables;
 
-  if (!color) {
-    return {};
+  let result = {};
+
+  /** color mapping */
+  if (color) {
+    let colorValue: string;
+
+    if (color === 'inherit') {
+      colorValue = color;
+    } else {
+      /**
+       * Use `action-disabled` color of palette as `disabled` color of icon.
+       */
+      const colorName: Color = color === 'disabled'
+        ? 'action-disabled'
+        : color;
+
+      colorValue = toCssVar(`${palettePrefix}-${colorName}`);
+    }
+
+    result = {
+      ...result,
+      [`--${iconPrefix}-color`]: colorValue,
+    };
   }
 
-  let colorValue: string;
-
-  if (color === 'inherit') {
-    colorValue = color;
-  } else {
-    /**
-     * Use `action-disabled` color of palette as `disabled` color of icon.
-     */
-    const colorName: Color = color === 'disabled'
-      ? 'action-disabled'
-      : color;
-
-    colorValue = toCssVar(`${palettePrefix}-${colorName}`);
+  /** size mapping */
+  if (typeof size !== 'undefined') {
+    result = {
+      ...result,
+      [`--${iconPrefix}-size`]: `${size}px`,
+    };
   }
 
-  return {
-    [`--${iconPrefix}-color`]: colorValue,
-  };
+  return result;
 }
