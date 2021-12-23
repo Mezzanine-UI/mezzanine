@@ -60,6 +60,11 @@ Playgroud.argTypes = {
       options: [undefined, ...colors],
     },
   },
+  size: {
+    control: {
+      type: 'number',
+    },
+  },
 };
 
 interface AllStoryArgs {
@@ -105,13 +110,12 @@ export const All: Story<AllStoryArgs> = ({ search }) => {
         gridTemplateColumns: 'repeat(4, 1fr)',
         rowGap: '16px',
         color: 'var(--mzn-color-action-inactive)',
-        fontSize: 48,
         textAlign: 'center',
       }}
     >
       {icons.map((icon) => (
         <div key={icon.name}>
-          <Icon icon={icon} />
+          <Icon icon={icon} size={48} />
           <div style={{ fontSize: 20 }}>{icon.name}</div>
         </div>
       ))}
@@ -127,7 +131,6 @@ export const Colors = () => (
   <div
     style={{
       color: 'var(--mzn-color-action-inactive)',
-      fontSize: 48,
     }}
   >
     {colors.map((color) => (
@@ -135,6 +138,7 @@ export const Colors = () => (
         key={color}
         icon={CheckIcon}
         color={color}
+        size={48}
       />
     ))}
   </div>

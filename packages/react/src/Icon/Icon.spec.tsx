@@ -45,6 +45,17 @@ describe('<Icon />', () => {
     });
   });
 
+  describe('prop: size', () => {
+    it('should apply size className when size is given', () => {
+      const fontSize = 36;
+      const { getHostHTMLElement } = render(<Icon icon={PlusIcon} size={fontSize} />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-icon--size')).toBe(true);
+      expect(element.style.getPropertyValue('--mzn-icon-size')).toBe(`${fontSize}px`);
+    });
+  });
+
   describe('prop: color', () => {
     const colorMaps: ([IconColor, Color] | IconColor | undefined)[] = [
       undefined,

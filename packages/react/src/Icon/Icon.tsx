@@ -18,6 +18,10 @@ export interface IconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
    */
   icon: IconDefinition;
   /**
+   * Icon size in px
+   */
+  size?: number;
+  /**
    * Whether to spin the icon or not.
    * @default false
    */
@@ -32,12 +36,13 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
     className,
     color,
     icon,
+    size,
     spin = false,
     style: styleProp,
     ...rest
   } = props;
   const { definition } = icon;
-  const cssVars = toIconCssVars({ color });
+  const cssVars = toIconCssVars({ color, size });
   const style = {
     ...cssVars,
     ...styleProp,
@@ -53,6 +58,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
         {
           [classes.color]: color,
           [classes.spin]: spin,
+          [classes.size]: size,
         },
         className,
       )}
