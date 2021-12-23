@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.1...@mezzanine-ui/react@0.7.2) (2021-12-23)
+
+### Bug Fixes
+
+- **react/transition:** children type should be required ([ea77d07](https://github.com/Mezzanine-UI/mezzanine/commit/ea77d07278d603b5d3fafea5d1a8942ea4e86644))
+
+### Features
+
+- **react/\_internal:** implement SlideFadeOverlay to unify Drawer/Modal api ([146fbff](https://github.com/Mezzanine-UI/mezzanine/commit/146fbff9e89b841aae89d21e05f9617508fb9712))
+- **react/icon:** implement size props on Icon component ([a7a1bb3](https://github.com/Mezzanine-UI/mezzanine/commit/a7a1bb343b78da764952426767a3e69969b0af55)), closes [#91](https://github.com/Mezzanine-UI/mezzanine/issues/91) [#91](https://github.com/Mezzanine-UI/mezzanine/issues/91)
+- **react/modal:** export useModalContainer to allow using `<SlideFadeOverlay />` with default opts ([dca8244](https://github.com/Mezzanine-UI/mezzanine/commit/dca82441bbc185cc6ed8c84407ed07b77b045e49))
+
 ## [0.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.0...@mezzanine-ui/react@0.7.1) (2021-12-03)
 
 ### Bug Fixes

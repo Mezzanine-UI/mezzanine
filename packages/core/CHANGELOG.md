@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.1...@mezzanine-ui/core@0.7.2) (2021-12-23)
+
+### Bug Fixes
+
+- **core/drawer:** remove wrong typo css and overflow property ([36bf815](https://github.com/Mezzanine-UI/mezzanine/commit/36bf8156f97cdaf842c3755629daf47c5ff6e274))
+
+### Features
+
+- **core/\_internal:** implement overlay-with-slide-fade styling ([4e8365c](https://github.com/Mezzanine-UI/mezzanine/commit/4e8365c79dcc783ee348edee170819440d219fca))
+- **core/icon:** implement icon size props and apply size css variables ([8e478b7](https://github.com/Mezzanine-UI/mezzanine/commit/8e478b7faa8e759de313d92f1666ea351ae46bc8)), closes [#91](https://github.com/Mezzanine-UI/mezzanine/issues/91) [#91](https://github.com/Mezzanine-UI/mezzanine/issues/91)
+
 ## [0.7.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.0...@mezzanine-ui/core@0.7.1) (2021-12-03)
 
 ### Bug Fixes
