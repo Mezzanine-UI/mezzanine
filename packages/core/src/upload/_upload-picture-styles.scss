@@ -1,0 +1,121 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
+@use '../icon';
+@use './upload-picture' as *;
+
+$width: 128px !default;
+$height: 128px !default;
+$icon-size: 32px !default;
+
+.#{$prefix} {
+  --#{$prefix}-status-color: #{palette.color(text-primary)};
+  --#{$prefix}-icon-color: #{palette.color(primary)};
+  --#{$prefix}-preview-opacity: 1;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: palette.color(surface);
+  width: $width;
+  height: $height;
+  padding: 0;
+  border: 1px solid palette.color(border);
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: transition.standard(border-color);
+  will-change: border-color;
+
+  .#{icon.$prefix} {
+    width: $icon-size;
+    height: $icon-size;
+    color: var(--#{$prefix}-icon-color);
+  }
+
+  &__preview {
+    width: 100%;
+    height: 100%;
+    opacity: var(--#{$prefix}-preview-opacity);
+  }
+
+  &__status {
+    @include typography.variant(input2);
+
+    color: var(--#{$prefix}-status-color);
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    padding: spacing.level(2);
+  }
+
+  &__delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    pointer-events: none;
+    background-color: transparent;
+    opacity: 0;
+    transition: transition.standard(background-color), transition.standard(opacity);
+    will-change: background-color, opacity;
+  }
+
+  &:hover {
+    &:not(.#{$prefix}--loading):not(.#{$prefix}--disabled) {
+      .#{$prefix}__delete {
+        background-color: palette.color(surface);
+        opacity: 0.9;
+      }
+    }
+
+    &:not(.#{$prefix}--disabled):not(.#{$prefix}--error) {
+      border-color: palette.color(primary);
+    }
+  }
+
+  &--loading {
+    --#{$prefix}-preview-opacity: 0.15;
+
+    cursor: default;
+    pointer-events: none;
+
+    &::before {
+      position: absolute;
+      content: "";
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: palette.color(primary-hover-bg);
+      transform-origin: left;
+      transform: scaleX(calc(var(--#{$prefix}-percentage, 0) / 100));
+    }
+  }
+
+  &--error {
+    --#{$prefix}-status-color: #{palette.color(error)};
+    --#{$prefix}-icon-color: #{palette.color(error)};
+
+    border-color: palette.color(error);
+  }
+
+  &--disabled {
+    --#{$prefix}-status-color: #{palette.color(text-disabled)};
+    --#{$prefix}-icon-color: #{palette.color(action-disabled)};
+
+    background-color: palette.color(action-disabled-bg);
+    border-color: palette.color(action-disabled-bg);
+    cursor: default;
+  }
+}
