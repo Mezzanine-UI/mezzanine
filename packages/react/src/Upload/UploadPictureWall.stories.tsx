@@ -15,11 +15,15 @@ export const Basic: Story<BasicStoryArgs> = ({
   accept,
   disabled,
   multiple,
+  onUpload,
+  onDelete,
 }) => (
   <UploadPictureWall
     accept={accept}
     disabled={disabled}
     multiple={multiple}
+    onUpload={onUpload}
+    onDelete={onDelete}
   />
 );
 
