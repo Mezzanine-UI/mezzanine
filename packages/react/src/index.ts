@@ -282,6 +282,8 @@ export {
 export {
   UploadButtonProps,
   UploadButton,
+  UploadPictureProps,
+  UploadPicture,
   UploadResultProps,
   UploadResultSize,
   UploadResultStatus,
