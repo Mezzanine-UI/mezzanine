@@ -7,23 +7,26 @@ export default {
   title: 'Data Entry/Upload/UploadPictureWall',
 } as Meta;
 
-interface BasicStoryArgs extends Omit<UploadInputProps, 'multiple'> {
+interface BasicStoryArgs extends UploadInputProps {
   onDelete: VoidFunction;
 }
 
 export const Basic: Story<BasicStoryArgs> = ({
   accept,
   disabled,
+  multiple,
 }) => (
   <UploadPictureWall
     accept={accept}
     disabled={disabled}
+    multiple={multiple}
   />
 );
 
 Basic.args = {
   accept: 'image/*',
   disabled: false,
+  multiple: true,
   onUpload: action('onUpload'),
   onDelete: action('onDelete'),
 };
