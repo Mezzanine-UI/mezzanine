@@ -11,8 +11,14 @@ interface BasicStoryArgs extends Omit<UploadInputProps, 'multiple'> {
   onDelete: VoidFunction;
 }
 
-export const Basic: Story<BasicStoryArgs> = () => (
-  <UploadPictureWall />
+export const Basic: Story<BasicStoryArgs> = ({
+  accept,
+  disabled,
+}) => (
+  <UploadPictureWall
+    accept={accept}
+    disabled={disabled}
+  />
 );
 
 Basic.args = {
