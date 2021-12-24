@@ -8,6 +8,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import { UploadInputProps } from './UploadInput';
 import UploadPicture from './UploadPicture';
+import UploadPictureWallItem from './UploadPictureWallItem';
 
 export interface UploadPictureWallProps
   extends
@@ -27,20 +28,12 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     onDelete,
     style,
   } = props;
-  const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewFiles, setPreviewFiles] = useState<File[]>([]);
 
   const onImagesUpload = useCallback(
     (files) => {
       if (files.length) {
-        files.forEach((currentFile: File) => {
-          const reader = new FileReader();
-
-          reader.addEventListener('load', () => {
-            setPreviewImages((p) => [...p, reader.result as string]);
-          });
-
-          reader.readAsDataURL(currentFile);
-        });
+        setPreviewFiles(files);
 
         if (onUpload) {
           onUpload(files);
@@ -51,7 +44,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
   );
 
   const onImagesDelete = useCallback((event: MouseEvent<HTMLButtonElement>, index: number) => {
-    setPreviewImages((p) => [
+    setPreviewFiles((p) => [
       ...p.slice(0, index),
       ...p.slice(index + 1),
     ]);
@@ -69,14 +62,14 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
       )}
       style={style}
     >
-      {previewImages.map((previewImage, index) => (
-        <UploadPicture
+      {previewFiles.map((previewFile, index) => (
+        <UploadPictureWallItem
           // eslint-disable-next-line react/no-array-index-key
           key={index}
           accept={accept}
           disabled={disabled}
           multiple={multiple}
-          value={previewImage}
+          previewFile={previewFile}
           onDelete={(event: MouseEvent<HTMLButtonElement>) => onImagesDelete(event, index)}
         />
       ))}
