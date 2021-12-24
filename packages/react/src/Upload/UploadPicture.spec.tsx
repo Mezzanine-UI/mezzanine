@@ -117,6 +117,18 @@ describe('<UploadPicture />', () => {
     });
   });
 
+  describe('prop: multiple', () => {
+    it('should has multiple attribute', () => {
+      [false, true].forEach((multiple) => {
+        const { getHostHTMLElement } = render(<UploadPicture multiple={multiple} />);
+        const element = getHostHTMLElement();
+        const inputElement = element.querySelector('input');
+
+        expect(inputElement!.hasAttribute('multiple')).toBe(multiple);
+      });
+    });
+  });
+
   describe('prop: onDelete', () => {
     it('should be fired while click trash button', () => {
       const onDelete = jest.fn();
