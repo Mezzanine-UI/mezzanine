@@ -8,11 +8,12 @@ export default {
   title: 'Data Entry/Upload/UploadPicture',
 } as Meta;
 
-type PlaygroundStoryArgs = Omit<UploadInputProps, 'multiple'>;
+type PlaygroundStoryArgs = UploadInputProps;
 
 export const Playground: Story<PlaygroundStoryArgs> = ({
   accept,
   disabled,
+  multiple,
 }) => {
   const [value, setValue] = useState<string>('');
   const [percentage, setPercentage] = useState<number>(0);
@@ -23,6 +24,7 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
     <UploadPicture
       accept={accept}
       disabled={disabled}
+      multiple={multiple}
       value={value}
       loading={loading}
       percentage={percentage}
@@ -56,15 +58,17 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
 Playground.args = {
   accept: 'image/*',
   disabled: false,
+  multiple: false,
 };
 
-interface BasicStoryArgs extends Omit<UploadInputProps, 'multiple'> {
+interface BasicStoryArgs extends UploadInputProps {
   onDelete: VoidFunction;
 }
 
 export const Basic: Story<BasicStoryArgs> = ({
   accept,
   disabled,
+  multiple,
   onUpload,
   onDelete,
 }) => (
@@ -78,12 +82,14 @@ export const Basic: Story<BasicStoryArgs> = ({
     <UploadPicture
       accept={accept}
       disabled={disabled}
+      multiple={multiple}
       onUpload={onUpload}
       onDelete={onDelete}
     />
     <UploadPicture
       accept={accept}
       disabled={disabled}
+      multiple={multiple}
       value="https://rytass.com/logo.png"
       loading
       percentage={55}
@@ -93,6 +99,7 @@ export const Basic: Story<BasicStoryArgs> = ({
     <UploadPicture
       accept={accept}
       disabled={disabled}
+      multiple={multiple}
       value="https://rytass.com/logo.png"
       onUpload={onUpload}
       onDelete={onDelete}
@@ -100,6 +107,7 @@ export const Basic: Story<BasicStoryArgs> = ({
     <UploadPicture
       accept={accept}
       disabled={disabled}
+      multiple={multiple}
       error
       onDelete={onDelete}
     />
@@ -109,6 +117,7 @@ export const Basic: Story<BasicStoryArgs> = ({
 Basic.args = {
   accept: 'image/*',
   disabled: false,
+  multiple: false,
   onUpload: action('onUpload'),
   onDelete: action('onDelete'),
 };

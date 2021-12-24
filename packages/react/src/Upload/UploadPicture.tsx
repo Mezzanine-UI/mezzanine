@@ -25,7 +25,7 @@ import UploadInput, { UploadInputProps } from './UploadInput';
 
 export interface UploadPictureProps
   extends
-  Omit<UploadInputProps, 'multiple'>,
+  UploadInputProps,
   NativeElementPropsWithoutKeyAndRef<'button'> {
   /**
    * Whether the input is error.
@@ -59,6 +59,7 @@ const UploadPicture = forwardRef<HTMLButtonElement, UploadPictureProps>(function
     disabled,
     error = false,
     loading = false,
+    multiple = false,
     onDelete,
     onUpload,
     percentage,
@@ -146,6 +147,7 @@ const UploadPicture = forwardRef<HTMLButtonElement, UploadPictureProps>(function
         ref={inputRef}
         accept={accept}
         disabled={disabled}
+        multiple={multiple}
         onUpload={onImageUpload}
       />
       {error ? (
