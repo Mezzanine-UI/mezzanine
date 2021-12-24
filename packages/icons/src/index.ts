@@ -30,4 +30,5 @@ export { SearchIcon } from './search';
 export { SpinnerIcon } from './spinner';
 export { TimesCircleFilledIcon } from './times-circle-filled';
 export { TimesIcon } from './times';
+export { TrashIcon } from './trash';
 export { UploadIcon } from './upload';
