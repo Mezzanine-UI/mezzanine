@@ -27,6 +27,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     onUpload,
     onDelete,
     style,
+    // value,
   } = props;
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
 
