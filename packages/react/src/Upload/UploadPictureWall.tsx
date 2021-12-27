@@ -14,6 +14,7 @@ export interface UploadPictureWallProps
   extends
   UploadInputProps,
   NativeElementPropsWithoutKeyAndRef<'div'> {
+  loadingIndex?: number,
   onDelete?(event: MouseEvent<HTMLButtonElement>, index: number): void;
   value?: string[] ;
 }
@@ -23,6 +24,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     accept,
     className,
     disabled,
+    loadingIndex,
     multiple,
     onUpload,
     onDelete,
@@ -69,6 +71,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
           key={index}
           accept={accept}
           disabled={disabled}
+          loading={loadingIndex === index}
           multiple={multiple}
           previewFile={previewFile}
           onDelete={(event: MouseEvent<HTMLButtonElement>) => onImagesDelete(event, index)}
