@@ -12,8 +12,10 @@ export interface UploadPictureWallItemProps
   extends
   UploadInputProps,
   NativeElementPropsWithoutKeyAndRef<'div'> {
+  error: boolean,
   loading: boolean,
   onDelete?: MouseEventHandler;
+  percentage?: number,
   previewFile?: File;
 }
 
@@ -22,10 +24,12 @@ const UploadPictureWallItem = (props: UploadPictureWallItemProps) => {
     accept,
     className,
     disabled,
+    error,
     loading,
     multiple,
-    previewFile,
     onDelete,
+    percentage,
+    previewFile,
     style,
   } = props;
   const [previewImage, setPreviewImage] = useState<string>('');
@@ -52,9 +56,11 @@ const UploadPictureWallItem = (props: UploadPictureWallItemProps) => {
       <UploadPicture
         accept={accept}
         disabled={disabled}
+        error={error}
         loading={loading}
         multiple={multiple}
         onDelete={onDelete}
+        percentage={percentage}
         value={previewImage}
       />
     </div>

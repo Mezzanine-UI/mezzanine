@@ -11,6 +11,20 @@ interface BasicStoryArgs extends UploadInputProps {
   onDelete: VoidFunction;
 }
 
+// function uploadImage(file: File) {
+//   const random = Math.floor(Math.random() * 2);
+
+//   return new Promise<string>((resolve, reject) => {
+//     setTimeout(() => {
+//       if (random > 0) {
+//         resolve(URL.createObjectURL(file));
+//       } else {
+//         reject();
+//       }
+//     }, 1000);
+//   });
+// }
+
 export const Basic: Story<BasicStoryArgs> = ({
   accept,
   disabled,
