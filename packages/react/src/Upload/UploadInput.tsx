@@ -39,6 +39,8 @@ const UploadInput = forwardRef<HTMLInputElement, UploadInputProps>((props, ref) 
       disabled={disabled}
       multiple={multiple}
       onClick={(event) => {
+        // eslint-disable-next-line no-param-reassign
+        event.currentTarget.value = '';
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
       }}
