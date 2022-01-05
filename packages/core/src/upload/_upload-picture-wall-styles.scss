@@ -1,0 +1,20 @@
+@use '~@mezzanine-ui/system/spacing';
+@use './upload-picture-wall' as *;
+
+$width: 128px !default;
+$height: 128px !default;
+$row-gap: spacing.level(3) !default;
+$column-gap: spacing.level(3) !default;
+$repeat: 3;
+
+.#{$prefix} {
+  display: grid;
+  grid-template-columns: repeat($repeat, minmax(0, $width));
+  row-gap: $row-gap;
+  column-gap: $column-gap;
+
+  &__item {
+    width: $width;
+    height: $height;
+  }
+}
