@@ -21,6 +21,7 @@ const externals = [
   }),
   'lodash',
   'moment',
+  'events',
 ];
 
 function getFilesByGlob(globPath) {
