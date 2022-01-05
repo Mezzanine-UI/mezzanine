@@ -61,6 +61,9 @@
   @include _load-styles($options, textarea);
   @include _load-styles($options, upload);
   @include _load-styles($options, upload, upload-result);
+  @include _load-styles($options, upload, upload-picture);
+  @include _load-styles($options, upload, upload-picture-block);
+  @include _load-styles($options, upload, upload-picture-wall);
   @include _load-styles($options, picker);
   @include _load-styles($options, date-range-picker);
   @include _load-styles($options, date-time-picker);
