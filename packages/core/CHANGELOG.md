@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.2...@mezzanine-ui/core@0.7.3) (2022-01-05)
+
+### Features
+
+- **core/upload:** core of UploadPicture and UploadPictureWall ([2f9fa26](https://github.com/Mezzanine-UI/mezzanine/commit/2f9fa26627a024519d3b2bdc3f6bd6c213d6baa2))
+
 ## [0.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.1...@mezzanine-ui/core@0.7.2) (2021-12-23)
 
 ### Bug Fixes

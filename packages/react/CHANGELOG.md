@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.2...@mezzanine-ui/react@0.7.3) (2022-01-05)
+
+### Bug Fixes
+
+- **react/upload:** fix input issue of uploading same file ([7eef66f](https://github.com/Mezzanine-UI/mezzanine/commit/7eef66fdb80eca5dc840c608dc4b728b67331bc4))
+
+### Features
+
+- **icons:** add trash icon ([232815b](https://github.com/Mezzanine-UI/mezzanine/commit/232815b58cc68f19150c678937818fb85b340867))
+- **react/upload:** create UploadPicture and UploadPictureWall components ([4207a61](https://github.com/Mezzanine-UI/mezzanine/commit/4207a613a1ad573e04380bb826adcb9bd7dce435))
+
 ## [0.7.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.1...@mezzanine-ui/react@0.7.2) (2021-12-23)
 
 ### Bug Fixes

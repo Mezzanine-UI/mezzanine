@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.5.0...@mezzanine-ui/icons@0.7.3) (2022-01-05)
+
+### Features
+
+- **icons:** add trash icon ([232815b](https://github.com/Mezzanine-UI/mezzanine/commit/232815b58cc68f19150c678937818fb85b340867))
+
 # [0.5.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.4.0...@mezzanine-ui/icons@0.5.0) (2021-06-10)
 
 **Note:** Version bump only for package @mezzanine-ui/icons
