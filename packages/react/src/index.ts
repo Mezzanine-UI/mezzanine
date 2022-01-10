@@ -126,10 +126,8 @@ export {
 } from './PageFooter';
 export {
   StepProps,
-  default as Step,
-} from './Stepper';
-export {
   StepperProps,
+  Step,
   default as Stepper,
 } from './Stepper';
 
