@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.7.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.3...@mezzanine-ui/react@0.7.4) (2022-01-10)
+
+### Bug Fixes
+
+- **react/index:** fix stepper export wrong component bug ([564803b](https://github.com/Mezzanine-UI/mezzanine/commit/564803b03ed35be6a4aa22d137b22ef1c8f60c0b))
+
 ## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.2...@mezzanine-ui/react@0.7.3) (2022-01-05)
 
 ### Bug Fixes
