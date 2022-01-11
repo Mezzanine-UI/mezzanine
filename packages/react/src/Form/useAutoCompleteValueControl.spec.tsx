@@ -53,7 +53,7 @@ describe('useAutoCompleteValueControl()', () => {
       value,
     } = result.current;
 
-    expect(value[0].name).toBe('foo');
+    expect(value!.name).toBe('foo');
   });
 
   it('should do nothing when onChange given null', () => {
@@ -76,7 +76,7 @@ describe('useAutoCompleteValueControl()', () => {
       value,
     } = result.current;
 
-    expect(value.length).toBe(0);
+    expect(value).toBe(null);
   });
 
   it('when disabledOptionsFilter is true, return options directly', () => {

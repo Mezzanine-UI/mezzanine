@@ -279,7 +279,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
         >
           <Menu
             id={MENU_ID}
-            aria-activedescendant={value[0]?.id ?? ''}
+            aria-activedescendant={value?.id ?? ''}
             itemsInView={itemsInView}
             maxHeight={menuMaxHeight}
             role={menuRole}

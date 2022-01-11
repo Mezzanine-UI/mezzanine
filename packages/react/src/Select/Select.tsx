@@ -21,22 +21,29 @@ import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
 import { SelectValue } from './typings';
 import Icon from '../Icon';
-import { useSelectValueControl } from '../Form/useSelectValueControl';
+import {
+  useSelectValueControl,
+  UseSelectMultipleValueControl,
+  UseSelectSingleValueControl,
+} from '../Form/useSelectValueControl';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
 import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';
 
-export interface SelectProps
+export interface SelectBaseProps
   extends
   Omit<SelectTriggerProps,
   | 'active'
   | 'inputProps'
+  | 'mode'
   | 'onBlur'
   | 'onChange'
   | 'onClick'
   | 'onFocus'
   | 'onKeyDown'
+  | 'renderValue'
+  | 'value'
   >,
   FormElementFocusHandlers,
   PickRenameMulti<Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>, {
@@ -48,10 +55,6 @@ export interface SelectProps
     options: 'popperOptions';
   }>,
   Pick<MenuProps, 'children'> {
-  /**
-   * The default selection
-   */
-  defaultValue?: SelectValue[];
   /**
    * The other native props for input element.
    */
@@ -70,10 +73,6 @@ export interface SelectProps
     }`
   >;
   /**
-   * The change event handler of input element.
-   */
-  onChange?(newOptions: SelectValue[]): any;
-  /**
    * The search event handler, this prop won't work when mode is `multiple`
    */
   onSearch?(input: string): any;
@@ -84,7 +83,7 @@ export interface SelectProps
   /**
    * To customize rendering select input value
    */
-  renderValue?(values: SelectValue[]): string;
+  renderValue?(values: SelectValue[] | SelectValue | null): string;
   /**
    * Whether the selection is required.
    * @default false
@@ -95,12 +94,57 @@ export interface SelectProps
    * @default 'medium'
    */
   size?: SelectInputSize;
+}
+
+export type SelectMultipleProps = SelectBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue[];
+  /**
+   * Controls the layout of trigger.
+   */
+  mode: 'multiple';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue[]): any;
+  /**
+   * To customize rendering select input value
+   */
+  renderValue?(values: SelectValue[]): string;
   /**
    * The value of selection.
    * @default undefined
    */
   value?: SelectValue[];
-}
+};
+
+export type SelectSingleProps = SelectBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue;
+  /**
+   * Controls the layout of trigger.
+   */
+  mode?: 'single';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue): any;
+  /**
+   * To customize rendering select input value
+   */
+  renderValue?(values: SelectValue | null): string;
+  /**
+   * The value of selection.
+   * @default undefined
+   */
+  value?: SelectValue | null;
+};
+
+export type SelectProps = SelectMultipleProps | SelectSingleProps;
 
 const MENU_ID = 'mzn-select-menu-id';
 
@@ -173,7 +217,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     onClear: onClearProp,
     onClose,
     value: valueProp,
-  });
+  } as UseSelectMultipleValueControl | UseSelectSingleValueControl);
 
   const nodeRef = useRef<HTMLDivElement>(null);
   const controlRef = useRef<HTMLElement>(null);
@@ -187,7 +231,15 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
 
   function getPlaceholder() {
     if (focused && searchable) {
-      return renderValueProp?.(value) ?? value.map(({ name }) => name).join(', ');
+      if (typeof renderValueProp === 'function') {
+        return renderValueProp(value);
+      }
+
+      if (value) {
+        return (value as SelectValue).name;
+      }
+
+      return placeholder;
     }
 
     return placeholder;
@@ -343,7 +395,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
         >
           <Menu
             id={MENU_ID}
-            aria-activedescendant={value?.[0]?.id ?? ''}
+            aria-activedescendant={
+              Array.isArray(value) ? value?.[0]?.id ?? '' : value?.id
+            }
             itemsInView={itemsInView}
             maxHeight={menuMaxHeight}
             role={menuRole}

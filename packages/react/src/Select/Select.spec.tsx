@@ -108,11 +108,11 @@ describe('<Select />', () => {
     expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
   });
 
-  it('searchable input placeholder should be previous selected values separated by comma by default', async () => {
-    const value: SelectValue[] = [{
+  it('searchable input placeholder should be previous selected values separated by default', async () => {
+    const value: SelectValue = {
       id: '1',
       name: '1',
-    }];
+    };
     const onSearch = jest.fn();
     const { getHostHTMLElement } = render(
       <Select value={value} onSearch={onSearch} />,
@@ -315,10 +315,10 @@ describe('<Select />', () => {
   describe('props: defaultValue/inputRef/onSearch/renderValue', () => {
     let valueGetFromOnSearch: string;
     let inputRef: RefObject<HTMLInputElement>;
-    const defaultValue: SelectValue[] = [{
+    const defaultValue: SelectValue = {
       id: '1',
       name: 'bar',
-    }];
+    };
 
     beforeEach(async () => {
       inputRef = createRef<HTMLInputElement>();
@@ -327,8 +327,8 @@ describe('<Select />', () => {
         valueGetFromOnSearch = value;
       });
 
-      const renderValue = jest.fn<string, [SelectValue[]]>((value) => (
-        value.map((v) => v.name).join('')
+      const renderValue = jest.fn<string, [SelectValue]>((value) => (
+        value.name
       ));
 
       await act(async () => {
@@ -370,7 +370,7 @@ describe('<Select />', () => {
       () => {
         fireEvent.change(inputRef.current!, { target: { value: '' } });
 
-        expect(inputRef.current!.placeholder).toEqual(defaultValue[0].name);
+        expect(inputRef.current!.placeholder).toEqual(defaultValue.name);
       });
 
     it('should search text been cleared when input onBlur triggered', async () => {
@@ -382,23 +382,26 @@ describe('<Select />', () => {
     });
   });
 
-  describe('props: mode', () => {
+  describe('props: mode and onChange', () => {
     describe('mode: single', () => {
-      const defaultValue: SelectValue[] = [{
+      const defaultValue: SelectValue = {
         id: '1',
         name: 'foo',
-      }];
+      };
 
       let element: HTMLElement;
+
+      const onChange = jest.fn();
 
       beforeEach(() => {
         const { getHostHTMLElement } = render(
           <Select
             defaultValue={defaultValue}
             mode="single"
+            onChange={onChange}
           >
-            <Option value={defaultValue[0].id}>
-              {defaultValue[0].name}
+            <Option value={defaultValue.id}>
+              {defaultValue.name}
             </Option>
           </Select>,
         );
@@ -421,7 +424,10 @@ describe('<Select />', () => {
           jest.runAllTimers();
         });
 
+        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toBeCalledWith({ id: defaultValue.id, name: defaultValue.name });
         expect(document.querySelector('.mzn-select-popper')).toBeNull();
+        expect(options[0].classList.contains('mzn-menu-item--active')).toBeTruthy();
       });
     });
 
@@ -436,11 +442,14 @@ describe('<Select />', () => {
 
       let element: HTMLElement;
 
+      const onChange = jest.fn();
+
       beforeEach(() => {
         const { getHostHTMLElement } = render(
           <Select
             defaultValue={defaultValue}
             mode="multiple"
+            onChange={onChange}
           >
             <Option value="1">foo</Option>
             <Option value="2">bar</Option>
@@ -473,6 +482,7 @@ describe('<Select />', () => {
 
         const tagLabels = element.querySelectorAll('.mzn-tag__label');
 
+        expect(onChange).toBeCalledWith([{ id: defaultValue[1].id, name: defaultValue[1].name }]);
         expect(tagLabels[0]?.innerHTML).toBe(defaultValue[1].name);
       });
 
@@ -487,13 +497,57 @@ describe('<Select />', () => {
 
         const tagLabels = element.querySelectorAll('.mzn-tag__label');
 
+        expect(onChange).toBeCalledWith([
+          { id: defaultValue[0].id, name: defaultValue[0].name },
+          { id: defaultValue[1].id, name: defaultValue[1].name },
+          { id: '3', name: 'Alice' },
+        ]);
         expect(tagLabels[2]?.innerHTML).toBe('Alice');
+        expect(options[0].classList.contains('mzn-menu-item--active')).toBeTruthy();
+        expect(options[1].classList.contains('mzn-menu-item--active')).toBeTruthy();
+        expect(options[2].classList.contains('mzn-menu-item--active')).toBeTruthy();
       });
     });
   });
 
   describe('prop: onClear', () => {
-    it('when clear icon clicked, value should be an empty array', async () => {
+    it('when clear icon clicked, value should be undefined', async () => {
+      let defaultValue: SelectValue | undefined = {
+        id: '1',
+        name: 'foo',
+      };
+
+      const onClear = jest.fn<any, any>(() => {
+        defaultValue = undefined;
+      });
+
+      const { getHostHTMLElement } = render(
+        <Select
+          clearable
+          defaultValue={defaultValue}
+          mode="single"
+          onClear={onClear}
+        />,
+      );
+
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.focus(element);
+      });
+
+      const clearIcon = element.querySelector('.mzn-text-field__clear-icon');
+
+      expect(clearIcon?.getAttribute('data-icon-name')).toBe(TimesIcon.name);
+
+      await act(async () => {
+        fireEvent.click(clearIcon!);
+      });
+
+      expect(defaultValue).toEqual(undefined);
+    });
+
+    it('when clear icon clicked, value should be be an empty array', async () => {
       let defaultValue: SelectValue[] = [{
         id: '1',
         name: 'foo',
@@ -507,7 +561,7 @@ describe('<Select />', () => {
         <Select
           clearable
           defaultValue={defaultValue}
-          mode="single"
+          mode="multiple"
           onClear={onClear}
         />,
       );

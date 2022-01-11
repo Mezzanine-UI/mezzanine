@@ -1,32 +1,53 @@
 import {
   MouseEvent,
 } from 'react';
-import intersectionBy from 'lodash/intersectionBy';
+import isEqual from 'lodash/isEqual';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
-export interface UseSelectValueControl {
-  defaultValue?: SelectValue[];
-  mode: string;
-  onChange?(newOptions: SelectValue[]): any;
+export interface UseSelectBaseValueControl {
   onClear?(e: MouseEvent<Element>): void;
+  onChange?(newOptions: SelectValue[] | SelectValue): any;
   onClose?(): void;
+}
+
+export type UseSelectMultipleValueControl = UseSelectBaseValueControl & {
+  defaultValue?: SelectValue[];
+  mode: 'multiple';
+  onChange?(newOptions: SelectValue[]): any;
   value?: SelectValue[];
-}
+};
 
-export interface SelectValueControl {
-  onChange: (v: SelectValue | null) => SelectValue[];
+export type UseSelectSingleValueControl = UseSelectBaseValueControl & {
+  defaultValue?: SelectValue;
+  mode: 'single';
+  onChange?(newOption: SelectValue): any;
+  value?: SelectValue | null;
+};
+
+export type UseSelectValueControl = UseSelectMultipleValueControl | UseSelectSingleValueControl;
+
+export interface SelectBaseValueControl {
   onClear(e: MouseEvent<Element>): void;
-  value: SelectValue[];
 }
 
-const equalityFn = (a: SelectValue[], b: SelectValue[]) => (
-  a.length === b.length && intersectionBy(a, b, 'id').length === a.length
-);
+export type SelectMultipleValueControl = SelectBaseValueControl & {
+  onChange: (v: SelectValue | null) => SelectValue[];
+  value: SelectValue[];
+};
 
-export function useSelectValueControl(
-  props: UseSelectValueControl,
-): SelectValueControl {
+export type SelectSingleValueControl = SelectBaseValueControl & {
+  onChange: (v: SelectValue | null) => SelectValue | null;
+  value: SelectValue | null;
+};
+
+export type SelectValueControl = SelectMultipleValueControl | SelectSingleValueControl;
+
+const equalityFn = (a: SelectValue[] | SelectValue | null, b: SelectValue[] | SelectValue | null) => isEqual(a, b);
+
+function useSelectBaseValueControl(props: UseSelectMultipleValueControl): SelectMultipleValueControl;
+function useSelectBaseValueControl(props: UseSelectSingleValueControl): SelectSingleValueControl;
+function useSelectBaseValueControl(props: UseSelectValueControl) {
   const {
     defaultValue,
     mode,
@@ -36,8 +57,8 @@ export function useSelectValueControl(
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useControlValueState<SelectValue[]>({
-    defaultValue: defaultValue || [],
+  const [value, setValue] = useControlValueState<SelectValue[] | SelectValue | null>({
+    defaultValue: defaultValue || (mode === 'multiple' ? [] : null),
     equalityFn,
     value: valueProp,
   });
@@ -45,54 +66,65 @@ export function useSelectValueControl(
   return {
     value,
     onChange: (chooseOption: SelectValue | null) => {
-      if (!chooseOption) return [];
+      if (!chooseOption) {
+        if (mode === 'multiple') {
+          return [];
+        }
 
-      let newValue: SelectValue[] = [];
+        return null;
+      }
+
+      let newValue: SelectValue[] | SelectValue | null = mode === 'multiple' ? [] : null;
 
       switch (mode) {
-        case 'single': {
-          newValue = [chooseOption];
+        case 'multiple': {
+          const existedValueIdx = (value as SelectValue[] ?? []).findIndex(
+            (v: SelectValue) => v.id === chooseOption.id,
+          );
+
+          if (~existedValueIdx) {
+            newValue = [
+              ...(value as SelectValue[]).slice(0, existedValueIdx),
+              ...(value as SelectValue[]).slice(existedValueIdx + 1),
+            ];
+          } else {
+            newValue = [
+              ...value as SelectValue[],
+              chooseOption,
+            ];
+          }
+
+          if (typeof onChange === 'function') onChange(newValue);
+
+          break;
+        }
+
+        default: {
+          newValue = chooseOption;
 
           if (typeof onClose === 'function') {
             /** single selection should close modal when clicked */
             onClose();
           }
 
-          break;
-        }
-
-        case 'multiple': {
-          const existedValueIdx = (value ?? []).findIndex((v) => v.id === chooseOption.id);
-
-          if (~existedValueIdx) {
-            newValue = [
-              ...value.slice(0, existedValueIdx),
-              ...value.slice(existedValueIdx + 1),
-            ];
-          } else {
-            newValue = [
-              ...value,
-              chooseOption,
-            ];
-          }
+          if (typeof onChange === 'function') onChange(newValue);
 
           break;
         }
-
-        default:
-          break;
       }
 
       setValue(newValue);
-
-      if (typeof onChange === 'function') onChange(newValue);
 
       return newValue;
     },
     onClear: (e: MouseEvent<Element>) => {
       e.stopPropagation();
 
-      setValue([]);
+      if (mode === 'multiple') {
+        setValue([]);
+      } else {
+        setValue(null);
+      }
 
       if (typeof onClearProp === 'function') {
         onClearProp(e);
@@ -100,3 +132,11 @@ export function useSelectValueControl(
     },
   };
 }
+
+export const useSelectValueControl = (props: UseSelectValueControl) => {
+  if (props.mode === 'multiple') {
+    return useSelectBaseValueControl(props as UseSelectMultipleValueControl) as SelectMultipleValueControl;
+  }
+
+  return useSelectBaseValueControl(props as UseSelectSingleValueControl) as SelectSingleValueControl;
+};
