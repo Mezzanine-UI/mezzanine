@@ -104,7 +104,7 @@ export const Basic = () => (
       // eslint-disable-next-line no-console
       onSearch={(searchText) => { console.log('searchText you typed: ', searchText); }}
       placeholder="我可搜尋(custom render)"
-      renderValue={(value) => value.map((v) => v.id).join('、')}
+      renderValue={(value: SelectValue | null) => value?.id || ''}
     >
       <Option value="1">item123</Option>
       <Option value="2">item26666</Option>
@@ -190,10 +190,10 @@ export const Group = () => (
       </OptionGroup>
     </Select>
     <Select
-      defaultValue={[{
+      defaultValue={{
         id: '1',
         name: 'item 1',
-      }]}
+      }}
       fullWidth
       placeholder="預設"
     >
@@ -208,10 +208,10 @@ export const Group = () => (
     </Select>
     <Select
       disabled
-      defaultValue={[{
+      defaultValue={{
         id: '1',
         name: 'item 1',
-      }]}
+      }}
       fullWidth
       placeholder="預設"
     >
@@ -352,7 +352,7 @@ TreeSelectPlayground.args = {
 };
 
 export const FullControl = () => {
-  const [value, setValue] = useState<SelectValue[]>([{ id: '1', name: 'item1' }]);
+  const [value, setValue] = useState<SelectValue | null>({ id: '1', name: 'item1' });
 
   return (
     <div
@@ -368,16 +368,16 @@ export const FullControl = () => {
         fullWidth
         required
         value={value}
-        onChange={setValue}
-        onClear={() => setValue([])}
+        onChange={(newOption: SelectValue) => setValue(newOption)}
+        onClear={() => setValue(null)}
         placeholder="預設文字"
       >
         <Option value="1">item1</Option>
         <Option value="2">item2</Option>
         <Option value="3">item3</Option>
       </Select>
-      <Button variant="contained" onClick={() => setValue([{ id: '2', name: 'item2' }])}>set 2</Button>
-      <Button variant="contained" onClick={() => setValue([])}>reset</Button>
+      <Button variant="contained" onClick={() => setValue({ id: '2', name: 'item2' })}>set 2</Button>
+      <Button variant="contained" onClick={() => setValue(null)}>reset</Button>
     </div>
   );
 };

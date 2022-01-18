@@ -8,6 +8,6 @@ export interface TreeSelectOption extends SelectValue {
 }
 
 export interface SelectControl {
-  value: SelectValue[];
-  onChange: (v: SelectValue | null) => SelectValue[];
+  value: SelectValue[] | SelectValue | null;
+  onChange: (v: SelectValue | null) => SelectValue[] | SelectValue | null;
 }

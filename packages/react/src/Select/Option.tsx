@@ -38,7 +38,23 @@ const Option = forwardRef<HTMLLIElement, OptionProps>(function Option(props, ref
     value: selectedValue,
   } = selectControl || {};
 
-  const active = Boolean(activeProp || (selectedValue ?? []).find((sv) => sv.id === value));
+  const getActive = () => {
+    if (activeProp) {
+      return activeProp;
+    }
+
+    if (selectedValue) {
+      if (Array.isArray(selectedValue)) {
+        return selectedValue.find((sv) => sv.id === value);
+      }
+
+      return selectedValue.id === value;
+    }
+
+    return false;
+  };
+
+  const active = Boolean(getActive());
 
   const onSelect = () => {
     if (typeof onChange === 'function' && value) {

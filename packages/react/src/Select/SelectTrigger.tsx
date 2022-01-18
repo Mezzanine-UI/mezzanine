@@ -1,7 +1,6 @@
 import { forwardRef, Ref } from 'react';
 import {
   selectClasses as classes,
-  SelectMode,
 } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import TextField, { TextFieldProps } from '../TextField';
@@ -31,7 +30,7 @@ NativeElementPropsWithoutKeyAndRef<'input'>,
   }`
 >;
 
-export interface SelectTriggerProps
+export interface SelectTriggerBaseProps
   extends
   Omit<TextFieldProps,
   | 'active'
@@ -48,6 +47,10 @@ export interface SelectTriggerProps
    */
   forceHideSuffixActionIcon?: boolean;
   /**
+   * The ref for SelectTrigger root.
+   */
+  innerRef?: Ref<HTMLDivElement>;
+  /**
    * Other props you may provide to input element.
    */
   inputProps?: SelectTriggerInputProps;
@@ -55,10 +58,6 @@ export interface SelectTriggerProps
    * The ref object for input element.
    */
   inputRef?: Ref<HTMLInputElement>;
-  /**
-   * Controls the layout of trigger.
-   */
-  mode?: SelectMode;
   /**
    * The click handler for the cross icon on tags
    */
@@ -72,106 +71,173 @@ export interface SelectTriggerProps
    * Provide if you have a customize value rendering logic.
    * By default will have a comma between values.
    */
-  renderValue?: (value: SelectValue[]) => string;
+  renderValue?: (value: SelectValue[] | SelectValue | null) => string;
   /**
    * Whether the input is required.
    * @default false
    */
   required?: boolean;
+}
+
+export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
+  /**
+   * Controls the layout of trigger.
+   */
+  mode: 'multiple';
   /**
    * The value of selection.
    * @default undefined
    */
   value?: SelectValue[];
+  /**
+   * Provide if you have a customize value rendering logic.
+   * By default will have a comma between values.
+   */
+  renderValue?: (value: SelectValue[]) => string;
+};
+
+export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
+  /**
+   * Controls the layout of trigger.
+   */
+  mode?: 'single';
+  /**
+   * The value of selection.
+   * @default undefined
+   */
+  value?: SelectValue | null;
+  /**
+   * Provide if you have a customize value rendering logic.
+   * By default will have a comma between values.
+   */
+  renderValue?: (value: SelectValue | null) => string;
+};
+
+export type SelectTriggerComponentProps = SelectTriggerMultipleProps | SelectTriggerSingleProps;
+export type SelectTriggerProps = Omit<SelectTriggerComponentProps, 'innerRef'>;
+
+function SelectTriggerComponent(props: SelectTriggerMultipleProps): JSX.Element;
+function SelectTriggerComponent(props: SelectTriggerSingleProps): JSX.Element;
+function SelectTriggerComponent(props: SelectTriggerComponentProps) {
+  const {
+    active,
+    className,
+    disabled,
+    forceHideSuffixActionIcon,
+    inputProps,
+    innerRef,
+    inputRef,
+    mode,
+    onTagClose,
+    readOnly,
+    renderValue: renderValueProp,
+    required,
+    size,
+    suffixActionIcon: suffixActionIconProp,
+    value,
+    ...restTextFieldProps
+  } = props;
+
+  /** Render value to string for input */
+  const renderValue = () => {
+    if (typeof renderValueProp === 'function') {
+      return renderValueProp(value || (mode === 'multiple' ? [] : null));
+    }
+
+    if (value) {
+      if (Array.isArray(value)) {
+        return value.map((v) => v.name).join(', ');
+      }
+
+      return value.name;
+    }
+
+    return '';
+  };
+
+  /** Compute suffix action icon */
+  const suffixActionIcon = suffixActionIconProp || (
+    <Icon
+      icon={ChevronDownIcon}
+      className={cx(
+        classes.triggerSuffixActionIcon,
+        {
+          [classes.triggerSuffixActionIconActive]: active,
+        },
+      )}
+    />
+  );
+
+  const getTextFieldActive = () => {
+    if (value) {
+      if (Array.isArray(value)) {
+        return !!value?.length;
+      }
+
+      return !!value;
+    }
+
+    return false;
+  };
+
+  return (
+    <TextField
+      ref={innerRef}
+      {...restTextFieldProps}
+      active={getTextFieldActive()}
+      className={cx(classes.trigger, className)}
+      disabled={disabled}
+      size={size}
+      suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
+    >
+      {mode === 'multiple' && (value as SelectValue[])?.length ? (
+        <div className={classes.triggerTags}>
+          {(value as SelectValue[]).map((selection) => (
+            <Tag
+              key={selection.id}
+              closable
+              disabled={disabled}
+              onClose={(e) => {
+                e.stopPropagation();
+                onTagClose?.(selection);
+              }}
+              size={size}
+            >
+              {selection.name}
+            </Tag>
+          ))}
+        </div>
+      ) : (
+        <input
+          {...inputProps}
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-disabled={disabled}
+          aria-haspopup="listbox"
+          aria-readonly={readOnly}
+          aria-required={required}
+          autoComplete="false"
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+          type="search"
+          value={renderValue()}
+        />
+      )}
+    </TextField>
+  );
 }
 
-const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
-  function SelectTrigger(props, ref) {
-    const {
-      active,
-      className,
-      disabled,
-      forceHideSuffixActionIcon,
-      inputProps,
-      inputRef,
-      mode,
-      onTagClose,
-      readOnly,
-      renderValue: renderValueProp,
-      required,
-      size,
-      suffixActionIcon: suffixActionIconProp,
-      value,
-      ...restTextFieldProps
-    } = props;
-
-    /** Render value to string for input */
-    const renderValue = () => (
-      renderValueProp?.(value || []) ??
-      value?.map((v) => v.name).join(', ') ??
-      ''
-    );
-
-    /** Compute suffix action icon */
-    const suffixActionIcon = suffixActionIconProp || (
-      <Icon
-        icon={ChevronDownIcon}
-        className={cx(
-          classes.triggerSuffixActionIcon,
-          {
-            [classes.triggerSuffixActionIconActive]: active,
-          },
-        )}
-      />
-    );
-
+const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>((props, ref) => {
+  if (props.mode === 'multiple') {
     return (
-      <TextField
-        ref={ref}
-        {...restTextFieldProps}
-        active={!!value?.length}
-        className={cx(classes.trigger, className)}
-        disabled={disabled}
-        size={size}
-        suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
-      >
-        {mode === 'multiple' && value?.length ? (
-          <div className={classes.triggerTags}>
-            {value.map((selection) => (
-              <Tag
-                key={selection.id}
-                closable
-                disabled={disabled}
-                onClose={(e) => {
-                  e.stopPropagation();
-                  onTagClose?.(selection);
-                }}
-                size={size}
-              >
-                {selection.name}
-              </Tag>
-            ))}
-          </div>
-        ) : (
-          <input
-            {...inputProps}
-            ref={inputRef}
-            aria-autocomplete="list"
-            aria-disabled={disabled}
-            aria-haspopup="listbox"
-            aria-readonly={readOnly}
-            aria-required={required}
-            autoComplete="false"
-            disabled={disabled}
-            readOnly={readOnly}
-            required={required}
-            type="search"
-            value={renderValue()}
-          />
-        )}
-      </TextField>
+      <SelectTriggerComponent {...(props as SelectTriggerMultipleProps)} innerRef={ref} />
     );
-  },
-);
+  }
+
+  return (
+    <SelectTriggerComponent {...(props as SelectTriggerSingleProps)} innerRef={ref} />
+  );
+});
 
 export default SelectTrigger;

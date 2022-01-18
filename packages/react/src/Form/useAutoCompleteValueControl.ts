@@ -27,7 +27,7 @@ export interface AutoCompleteValueControl {
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
   setValue: Dispatch<SetStateAction<string>>;
-  value: SelectValue[];
+  value: SelectValue | null;
 }
 
 const equalityFn = (a: string, b: string) => a === b;
@@ -67,10 +67,10 @@ export function useAutoCompleteValueControl(
   ]);
 
   const getCurrentInputValue = () => (
-    value ? [{
+    value ? {
       id: value,
       name: value,
-    }] : []
+    } : null
   );
 
   const options = disabledOptionsFilter
