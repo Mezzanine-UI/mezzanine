@@ -513,7 +513,7 @@ export const Editable = () => {
       <div className={tableClasses.cell}>
         {elementType === 'select' ? (
           <Select
-            defaultValue={[{ id: '0912345678', name: '0912345678' }]}
+            defaultValue={{ id: '0912345678', name: '0912345678' }}
             fullWidth
           >
             <Option value="0912345678">0912345678</Option>
