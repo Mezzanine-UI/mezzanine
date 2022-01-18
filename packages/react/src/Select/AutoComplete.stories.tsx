@@ -43,7 +43,7 @@ export const Basic = () => (
 );
 
 export const FullyControlled = () => {
-  const [selection, setSelection] = useState<string>('');
+  const [selection, setSelection] = useState<string>(originOptions[0]);
   const [options, setOptions] = useState<string[]>(originOptions);
   const onSearch = useCallback((search: string) => {
     setOptions(originOptions.filter((opt) => ~opt.search(search)));
@@ -67,8 +67,10 @@ export const FullyControlled = () => {
         fullWidth
         required
         options={options}
+        value={selection}
         onChange={onChange}
         onSearch={onSearch}
+        onClear={() => onChange('')}
         placeholder="預設文字"
       />
       <span>

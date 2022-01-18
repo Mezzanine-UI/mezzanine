@@ -198,7 +198,7 @@ describe('<AutoComplete />', () => {
     });
 
     expect(inputRef.current!.value).toBe('foobar');
-    expect(onChange).toBeCalledTimes(1);
+    expect(onChange).toBeCalledTimes(2);
   });
 
   it('should display options that matched user typings by default', async () => {

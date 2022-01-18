@@ -247,7 +247,15 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
         value,
       }}
     >
-      <div ref={nodeRef} className={classes.host}>
+      <div
+        ref={nodeRef}
+        className={cx(
+          classes.host,
+          {
+            [classes.hostFullWidth]: fullWidth,
+          },
+        )}
+      >
         <SelectTrigger
           ref={composedRef}
           active={open}
