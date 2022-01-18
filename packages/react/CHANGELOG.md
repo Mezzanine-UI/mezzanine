@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.8.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.4...@mezzanine-ui/react@0.8.0) (2022-01-18)
+
+### Bug Fixes
+
+- **react/autocomplete:** fix autocomplete control mode value not sync correctly bug / fullWidth bug ([3cc6d57](https://github.com/Mezzanine-UI/mezzanine/commit/3cc6d57edc7223fbef8e7c530fe51d652fdf9283))
+
+### Features
+
+- **react/select:** change type of value from Array to Object when mode is single ([72d6a9c](https://github.com/Mezzanine-UI/mezzanine/commit/72d6a9c62117e3e228c6865b3dba316e2303bf89)), closes [#93](https://github.com/Mezzanine-UI/mezzanine/issues/93)
+
+### BREAKING CHANGES
+
+- **react/select:** type change
+
 ## [0.7.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.3...@mezzanine-ui/react@0.7.4) (2022-01-10)
 
 ### Bug Fixes
