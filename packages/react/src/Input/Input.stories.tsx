@@ -146,13 +146,22 @@ export const PrefixSuffix = () => (
 export const TagsMode = () => (
   <>
     <ul>
-      <li>Default Max Tags Length is 3</li>
-      <li>Default Input Max Length is 8</li>
+      <li>
+        Default Max Tags Length is
+        <b> 3</b>
+      </li>
+      <li>
+        Default Input Max Length is
+        <b> 8</b>
+      </li>
       <li>
         Default Position of tags-mode-input field is
         <b> bottom</b>
       </li>
-      <li>Tags will be stored in a set (unique value)</li>
+      <li>
+        Tags will be stored in a set
+        <b> (unique value)</b>
+      </li>
     </ul>
     <div style={{ height: '20px' }} />
     <div
@@ -188,12 +197,13 @@ export const TagsMode = () => (
         />
       </section>
       <section>
-        <Typography>with clearable</Typography>
+        <Typography>with clearable, type: number</Typography>
         <Input
           clearable
           error
           mode="tags"
-          placeholder="with clearable"
+          placeholder="with clearable;"
+          inputProps={{ type: 'number' }}
           tagsProps={{
             onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
           }}
@@ -250,12 +260,47 @@ export const TagsMode = () => (
         <Input
           clearable
           mode="tags"
-          placeholder="Input Field on Top Position"
+          placeholder="Input Field with prefix"
           prefix={<Icon icon={SearchIcon} />}
           tagsProps={{
             inputPosition: 'top',
             maxTagsLength: 5,
             initialTagsValue: ['With', 'Prefix', '!', '!'],
+            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
+          }}
+        />
+      </section>
+      <section>
+        <Typography>
+          Large Input Size (Origin Input Prop Combination)
+        </Typography>
+        <Input
+          clearable
+          mode="tags"
+          size="large"
+          placeholder="Input Field with large size"
+          prefix={<Icon icon={SearchIcon} />}
+          tagsProps={{
+            inputPosition: 'top',
+            maxTagsLength: 5,
+            initialTagsValue: ['Large', 'Size', '!', '!'],
+            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
+          }}
+        />
+      </section>
+      <section>
+        <Typography>
+          Small Input Size (Origin Input Prop Combination)
+        </Typography>
+        <Input
+          mode="tags"
+          size="small"
+          placeholder="Input Field with small size"
+          prefix={<Icon icon={SearchIcon} />}
+          tagsProps={{
+            inputPosition: 'top',
+            maxTagsLength: 5,
+            initialTagsValue: ['Small', 'Size', '!', '!'],
             onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
           }}
         />
