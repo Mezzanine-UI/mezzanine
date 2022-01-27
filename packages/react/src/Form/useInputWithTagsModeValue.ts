@@ -10,30 +10,33 @@ import { useInputControlValue, UseInputControlValueProps } from './useInputContr
 
 export interface UseInputWithMultipleSplitValueProps<E extends HTMLInputElement | HTMLTextAreaElement>
   extends UseInputControlValueProps<E> {
-  ref: RefObject<E>;
   /**
    * The value of initial tags
    */
   initialTagsValue?: string[];
   /**
-   * Maximum permissible amount of the tag
+   * Maximum permitted length of the tags
    * @default 3
    */
   maxTagsLength?: number;
+  /**
+   * The change event handler of tags
+   */
+  onTagsChange?: (tags: string[]) => void,
+  /**
+   * The ref object of input element
+   */
+  ref: RefObject<E>;
+  /**
+   * Will skip `onKeyDown` calling if `true`
+   * @default false
+   */
+  skip?: boolean;
   /**
    * Maximum length of value on each tag
    * @default 8
    */
   tagValueMaxLength?: number;
-  /**
-   * Whether skip the life-cycle methods of this hook
-   * @default false
-   */
-  skip?: boolean;
-  /**
-   * The change event handler of tags
-   */
-  onTagsChange?: (tags: string[]) => void,
 }
 
 export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextAreaElement>(
@@ -50,7 +53,6 @@ export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextA
   } = props;
   const canActive = !skip;
   const activeMaxTagsLength = maxTagsLength || Math.max(3, initialTagsValue.length);
-  const tagsElementRef = useRef<HTMLDivElement | null>(null);
   const tagsSetRef = useRef<Set<string>>(new Set(initialTagsValue));
 
   const generateUniqueTags = () => Array.from(tagsSetRef.current.values());
@@ -130,7 +132,6 @@ export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextA
   return [
     {
       tags,
-      tagsRef: tagsElementRef,
       typingValue: value,
       tagsReachedMax: tagsWillOverflow(),
     },

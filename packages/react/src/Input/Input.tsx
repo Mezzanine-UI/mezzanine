@@ -43,6 +43,11 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
   | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
   /**
+   * The input value mode
+   * @default 'default'
+   */
+  mode?: 'default' | 'tags';
+  /**
    * The change event handler of input element.
    */
   onChange?: ChangeEventHandler<HTMLInputElement>;
@@ -66,36 +71,31 @@ export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' |
    */
   size?: InputSize;
   /**
-   * The value of input.
-   */
-  value?: string;
-  /**
-   * The input value mode
-   * @default 'default'
-   */
-  mode?: 'default' | 'tags';
-  /**
-   * The props for input element with tags mode.
-   */
+    * The props for input element with tags mode.
+    */
   tagsProps?: {
     /**
      * The initial value of tags
      */
     initialTagsValue?: string[];
     /**
-     * Maximum permissible amount of the tag
-     */
-    maxTagsLength?: number;
-    /**
      * The position of input field on tags mode
      * @default 'bottom''
      */
     inputPosition?: 'top' | 'bottom';
     /**
+     * Maximum permitted length of the tags
+     */
+    maxTagsLength?: number;
+    /**
     * The change event handler of input tags value.
     */
     onTagsChange?: (tags: string[]) => void;
   };
+  /**
+   * The value of input.
+   */
+  value?: string;
 }
 
 /**
@@ -151,7 +151,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
   const [
     {
       tags,
-      tagsRef,
       tagsReachedMax,
     },
     tagsModeOnChange,
@@ -197,10 +196,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
       size={size}
     >
       {tagsMode && (
-        <div
-          ref={tagsRef}
-          className={selectClasses.triggerTags}
-        >
+        <div className={selectClasses.triggerTags}>
           {tags.map((tag) => (
             <Tag
               key={tag}
