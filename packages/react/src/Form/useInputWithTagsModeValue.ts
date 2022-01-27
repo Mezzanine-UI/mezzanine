@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { useInputControlValue, UseInputControlValueProps } from './useInputControlValue';
 
-export interface UseInputWithMultipleSplitValueProps<E extends HTMLInputElement | HTMLTextAreaElement>
+export interface UseInputWithTagsModeValueProps<E extends HTMLInputElement | HTMLTextAreaElement>
   extends UseInputControlValueProps<E> {
   /**
    * The value of initial tags
@@ -40,7 +40,7 @@ export interface UseInputWithMultipleSplitValueProps<E extends HTMLInputElement 
 }
 
 export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextAreaElement>(
-  props: Omit<UseInputWithMultipleSplitValueProps<E>, 'onChange'>,
+  props: Omit<UseInputWithTagsModeValueProps<E>, 'onChange'>,
 ) {
   const {
     defaultValue,
