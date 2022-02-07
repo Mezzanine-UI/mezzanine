@@ -27,7 +27,7 @@ const variants: ButtonVariant[] = [
   'text',
 ];
 
-export const Playground: Story<ButtonProps<any>> = ({
+export const Playground: Story<ButtonProps> = ({
   children,
   prefix,
   suffix,
