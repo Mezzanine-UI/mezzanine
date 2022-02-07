@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { TableDataSource, TableColumn, TableRecord } from '@mezzanine-ui/core/table';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
 
@@ -98,7 +99,7 @@ export function useTableSorting(props: UseTableSorting) {
             // sort by given sorter
             newSource = newSource.sort((a, b) => (
               // reverse result when sorted type is ascending
-              (sorter(a[dataIndex], b[dataIndex])) * (nextSortedType === 'asc' ? -1 : 1)
+              (sorter(get(a, dataIndex), get(b, dataIndex))) * (nextSortedType === 'asc' ? -1 : 1)
             ));
 
             // map back the data source

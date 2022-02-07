@@ -14,6 +14,7 @@ import {
   TableColumn,
   TableExpandable,
 } from '@mezzanine-ui/core/table';
+import get from 'lodash/get';
 import Table, { TableRefresh, EditableBodyCellProps } from '.';
 import Button from '../Button';
 import Icon from '../Icon';
@@ -521,7 +522,7 @@ export const Editable = () => {
           </Select>
         ) : (
           <Input
-            defaultValue={rowData?.[dataIndex] as string}
+            defaultValue={get(rowData, dataIndex) as string}
             fullWidth
             inputProps={{
               type: inputType,
