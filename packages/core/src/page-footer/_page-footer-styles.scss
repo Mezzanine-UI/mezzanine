@@ -3,7 +3,6 @@
 @use './page-footer' as *;
 
 .#{$prefix} {
-  height: 32px;
   padding: spacing.level(4) spacing.level(5);
   border-top: 1px solid palette.color(border);
   background-color: palette.color(surface);
