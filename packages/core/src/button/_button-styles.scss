@@ -181,7 +181,6 @@ $outlined-border-width: 1px !default;
   justify-content: center;
   align-items: center;
   text-decoration: none;
-  text-transform: uppercase;
   transition: transition.standard(background-color), transition.standard(border), transition.standard(color);
   will-change: background-color, border-color, color;
 
