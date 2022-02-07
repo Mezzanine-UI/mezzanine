@@ -1,11 +1,79 @@
 import { Story, Meta } from '@storybook/react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
-import Button from '.';
+import Button, {
+  ButtonColor,
+  ButtonSize,
+  ButtonVariant,
+  ButtonProps,
+} from '.';
 
 export default {
   title: 'General/Button',
 } as Meta;
+
+const colors: ButtonColor[] = [
+  'primary',
+  'secondary',
+];
+const sizes: ButtonSize[] = [
+  'small',
+  'medium',
+  'large',
+];
+const variants: ButtonVariant[] = [
+  'contained',
+  'outlined',
+  'text',
+];
+
+export const Playground: Story<ButtonProps<any>> = ({
+  children,
+  prefix,
+  suffix,
+  ...props
+}) => (
+  <Button
+    prefix={prefix ? <Icon icon={PlusIcon} /> : null}
+    suffix={suffix ? <Icon icon={SearchIcon} /> : null}
+    {...props}
+  >
+    {children}
+  </Button>
+);
+
+Playground.args = {
+  children: 'BUTTON',
+  danger: false,
+  disabled: false,
+  loading: false,
+  color: 'primary',
+  size: 'medium',
+  variant: 'contained',
+  prefix: false,
+  suffix: false,
+};
+
+Playground.argTypes = {
+  color: {
+    control: {
+      type: 'select',
+      options: colors,
+    },
+  },
+  size: {
+    control: {
+      type: 'select',
+      options: sizes,
+    },
+  },
+  variant: {
+    control: {
+      type: 'select',
+      options: variants,
+    },
+  },
+};
 
 export const Variants = () => (
   <div
