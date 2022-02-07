@@ -1,8 +1,34 @@
 @use 'sass:map';
 @use '../text-field';
+@use '../select';
 @use './input' as *;
 
 .#{$prefix} {
+  &__tags-mode {
+    display: flex;
+    flex-wrap: wrap;
+
+    .#{select.$prefix}-trigger__tags {
+      width: unset;
+    }
+
+    input {
+      width: unset;
+      flex: 1;
+    }
+
+    &__input-on-top {
+      flex-direction: column-reverse;
+    }
+
+    &:hover {
+      .#{text-field.$prefix}__clear-icon {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
   input {
     padding-left: var(--#{text-field.$prefix}-padding-left);
     padding-right: var(--#{text-field.$prefix}-padding-right);
