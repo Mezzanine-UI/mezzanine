@@ -6,4 +6,6 @@ export const inputPrefix = 'mzn-input';
 
 export const inputClasses = {
   host: inputPrefix,
+  tagsMode: `${inputPrefix}__tags-mode`,
+  tagsModeInputOnTop: `${inputPrefix}__tags-mode__input-on-top`,
 } as const;
