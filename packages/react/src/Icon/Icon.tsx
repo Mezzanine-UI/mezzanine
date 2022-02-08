@@ -44,6 +44,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
   const { definition } = icon;
   const cssVars = toIconCssVars({ color, size });
   const style = {
+    '--mzn-icon-cursor': props.onClick || props.onMouseOver ? 'pointer' : 'inherit',
     ...cssVars,
     ...styleProp,
   };

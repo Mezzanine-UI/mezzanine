@@ -1,7 +1,9 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { toCssVar } from '@mezzanine-ui/system/css';
 import { Color } from '@mezzanine-ui/system/palette';
-import { cleanup, render } from '../../__test-utils__';
+import {
+  cleanup, fireEvent, render, waitFor,
+} from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -107,6 +109,43 @@ describe('<Icon />', () => {
         const element = getHostHTMLElement();
 
         expect(element.classList.contains('mzn-icon--spin')).toBe(spin);
+      });
+    });
+  });
+
+  describe('prop: onClick, onMouseOver', () => {
+    let hasClick = false;
+    const setClick = () => { hasClick = true; };
+
+    [
+      { onClick: setClick, onMouseOver: undefined },
+      { onClick: undefined, onMouseOver: setClick },
+      { onClick: setClick, onMouseOver: setClick },
+      { onClick: undefined, onMouseOver: undefined },
+    ].forEach((handler) => {
+      const message = handler.onClick || handler.onMouseOver
+        ? 'cursor should be changed to pointer'
+        : 'should not change cursor';
+
+      const cursorStyle = handler.onClick || handler.onMouseOver
+        ? 'pointer'
+        : 'inherit';
+
+      const { getHostHTMLElement } = render(
+        <Icon
+          icon={PlusIcon}
+          onClick={handler?.onClick}
+          onMouseOver={handler?.onMouseOver}
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      fireEvent.click(element);
+
+      it(message, async () => {
+        await waitFor(() => !handler || hasClick);
+        expect(element.style.getPropertyValue('--mzn-icon-cursor')).toBe(cursorStyle);
+        hasClick = false;
       });
     });
   });
