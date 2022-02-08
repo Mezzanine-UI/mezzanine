@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.3...@mezzanine-ui/core@0.8.1) (2022-02-08)
+
+### Bug Fixes
+
+- **core/button:** remove text-transform style ([76ecfa6](https://github.com/Mezzanine-UI/mezzanine/commit/76ecfa6728d89d240cda367b9f7a0282ffb84ef8))
+- **core/message:** change error icon ([4015bf7](https://github.com/Mezzanine-UI/mezzanine/commit/4015bf7269d5700b82d3c754193923c83b4eb078))
+- **core/page-footer:** remove useless height style ([a026215](https://github.com/Mezzanine-UI/mezzanine/commit/a026215fcce6e951727b3b9327c9c86b94b16c5b))
+
+### Features
+
+- **core/icon:** add cursor style ([779b528](https://github.com/Mezzanine-UI/mezzanine/commit/779b528a1adf35d1d944f1be5e00bedb99c8a3bf))
+- **core/input:** append tags-mode style directive feature on core/input ([23f7606](https://github.com/Mezzanine-UI/mezzanine/commit/23f7606ec76d8586ec706756c62ebc86df1b3a77))
+
 ## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.7.2...@mezzanine-ui/core@0.7.3) (2022-01-05)
 
 ### Features

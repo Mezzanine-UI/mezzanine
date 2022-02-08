@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.8.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.8.0...@mezzanine-ui/react@0.8.1) (2022-02-08)
+
+### Features
+
+- **react/button:** add playground arguments of button ([2225ee1](https://github.com/Mezzanine-UI/mezzanine/commit/2225ee15ef2df4dcf70c45a498d4094b0c3d5ec7))
+- **react/icon:** set pointer cursor if onClick or onMouseMove is defined ([d2f83e7](https://github.com/Mezzanine-UI/mezzanine/commit/d2f83e77476d68e05e353d00985aaab2c752a735))
+- **react/input:** add tags mode extension on input component ([0ae9643](https://github.com/Mezzanine-UI/mezzanine/commit/0ae964370b2c06d8fd9ca9bb77d3db4f86778ca8))
+
 # [0.8.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.7.4...@mezzanine-ui/react@0.8.0) (2022-01-18)
 
 ### Bug Fixes
