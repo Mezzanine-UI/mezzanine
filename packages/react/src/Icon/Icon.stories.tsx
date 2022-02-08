@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Story, Meta } from '@storybook/react';
 import {
   ArrowRightIcon,
@@ -30,6 +31,7 @@ import {
   TrashIcon,
   UploadIcon,
 } from '@mezzanine-ui/icons';
+import { MainColor } from '@mezzanine-ui/system/palette/typings';
 import Icon, { IconColor, IconProps } from '.';
 
 const colors: IconColor[] = [
@@ -145,3 +147,31 @@ export const Colors = () => (
     ))}
   </div>
 );
+
+const clickableColors: MainColor[] = ['primary', 'secondary'];
+
+export const Clickable = () => {
+  const [colorIndex, setColorIndex] = useState(0);
+
+  return (
+    <>
+      <section style={{ display: 'flex', alignItems: 'center' }}>
+        <Icon
+          icon={ResetIcon}
+          color={clickableColors[colorIndex % 2]}
+          onClick={() => setColorIndex(colorIndex + 1)}
+          size={60}
+        />
+        with onClick event
+      </section>
+      <section style={{ display: 'flex', alignItems: 'center' }}>
+        <Icon
+          icon={colorIndex % 2 ? EyeSlashIcon : EyeIcon}
+          color={clickableColors[colorIndex % 2]}
+          size={60}
+        />
+        without onClick event
+      </section>
+    </>
+  );
+};

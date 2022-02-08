@@ -2,7 +2,7 @@ import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
   InfoCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
@@ -13,7 +13,7 @@ export const messagePrefix = 'mzn-message';
 export const messageIcons = {
   success: CheckCircleFilledIcon,
   warning: ExclamationCircleFilledIcon,
-  error: MinusCircleFilledIcon,
+  error: TimesCircleFilledIcon,
   info: InfoCircleFilledIcon,
 } as const;
 

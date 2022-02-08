@@ -9,6 +9,7 @@ $spin-keyframes-name: #{$prefix}-spin !default;
 }
 
 .#{$prefix} {
+  cursor: var(--#{$prefix}-cursor);
   display: inline-block;
   width: 1em;
   height: 1em;
