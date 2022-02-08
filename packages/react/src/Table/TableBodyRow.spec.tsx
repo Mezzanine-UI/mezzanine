@@ -18,11 +18,17 @@ import TableCell from './TableCell';
 type DataType = {
   key: string;
   name: string;
+  foo: {
+    bar: string;
+  };
 };
 
 const rowData: DataType = {
   key: 'foo',
   name: 'foo',
+  foo: {
+    bar: 'test',
+  },
 };
 
 function getCellWrappers(element: HTMLElement) {
@@ -105,6 +111,9 @@ describe('<TableBodyRow />', () => {
       title: 'bar',
       align: 'start',
       render: () => 'bar-render',
+    }, {
+      dataIndex: 'foo.bar',
+      title: 'foo',
     }];
 
     let element: HTMLElement;
@@ -149,6 +158,12 @@ describe('<TableBodyRow />', () => {
       const secondColumnCell = getCellWrappers(element)[1].querySelector('.mzn-table__cell');
 
       expect(secondColumnCell?.textContent).toBe('bar-render');
+    });
+
+    it('should render content with nested dataIndex', () => {
+      const secondColumnCell = getCellWrappers(element)[2].querySelector('.mzn-table__cell');
+
+      expect(secondColumnCell?.textContent).toBe('test');
     });
   });
 
@@ -227,8 +242,8 @@ describe('<TableBodyRow />', () => {
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
       const columns: TableColumn<DataType>[] = [{
-        dataIndex: 'foo',
-        title: 'foo',
+        dataIndex: 'name',
+        title: 'name',
       }];
 
       const { getHostHTMLElement } = render(

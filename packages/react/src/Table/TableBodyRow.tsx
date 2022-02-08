@@ -13,6 +13,7 @@ import {
   TableRecord,
   TableExpandable as TableExpandableType,
 } from '@mezzanine-ui/core/table';
+import get from 'lodash/get';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import { TableContext, TableDataContext } from './TableContext';
@@ -119,9 +120,9 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
             />
           ) : null}
           {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => {
-            const ellipsis = !!(rowData[column.dataIndex]) && (column.ellipsis ?? true);
+            const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
             const tooltipTitle = (
-              column.renderTooltipTitle?.(rowData) ?? rowData[column.dataIndex]
+              column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
             ) as (string | number);
 
             return (
@@ -147,7 +148,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
                       column,
                       rowData,
                       index,
-                    ) || rowData[column.dataIndex]}
+                    ) || get(rowData, column.dataIndex)}
                   </TableCell>
                 </TableEditRenderWrapper>
               </div>
