@@ -14,33 +14,58 @@ export default {
   title: 'Data Entry/Input',
 };
 
-export const Basic = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(2, 200px)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <Input
-      placeholder="please enter text"
-    />
-    <Input
-      placeholder="please enter text"
-      disabled
-    />
-    <Input
-      placeholder="please enter text"
-      error
-    />
-    <Input
-      placeholder="please enter text"
-      value="Example"
-      readOnly
-    />
-  </div>
-);
+export const Basic = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 200px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <section style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          Normal
+        </Typography>
+        <Input
+          placeholder="please enter text"
+        />
+      </section>
+      <section style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          Disabled
+        </Typography>
+        <Input
+          placeholder="please enter text"
+          disabled
+        />
+      </section>
+      <section style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          Error
+        </Typography>
+        <Input
+          placeholder="please enter text"
+          error
+        />
+      </section>
+      <section style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          Read Only
+        </Typography>
+        <Input
+          placeholder="please enter text"
+          value="Example"
+          readOnly
+        />
+      </section>
+    </div>
+  );
+};
 
 export const Sizes = () => (
   <div
@@ -51,6 +76,15 @@ export const Sizes = () => (
       alignItems: 'center',
     }}
   >
+    <Typography variant="h5">
+      Small
+    </Typography>
+    <Typography variant="h5">
+      Medium
+    </Typography>
+    <Typography variant="h5">
+      Large
+    </Typography>
     <Input
       placeholder="please enter text"
       size="small"
