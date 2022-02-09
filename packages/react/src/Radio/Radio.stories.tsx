@@ -33,15 +33,18 @@ export const Standalone = () => (
 );
 
 export const Sizes = () => (
-  <>
+  <div style={{
+    width: 'fit-content',
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }}
+  >
     <Radio size="small">Small</Radio>
-    <br />
-    <br />
     <Radio size="medium">Medium</Radio>
-    <br />
-    <br />
     <Radio size="large">Large</Radio>
-  </>
+  </div>
 );
 
 export const Group: Story<RadioGroupProps> = ({
@@ -67,7 +70,7 @@ export const Group: Story<RadioGroupProps> = ({
 
   return (
     <>
-      <Typography>From children</Typography>
+      <Typography variant="h5">From children</Typography>
       <RadioGroup
         disabled={disabled}
         orientation={orientation}
@@ -85,7 +88,7 @@ export const Group: Story<RadioGroupProps> = ({
       </RadioGroup>
       <br />
       <br />
-      <Typography>From options</Typography>
+      <Typography variant="h5">From options</Typography>
       <RadioGroup
         disabled={disabled}
         options={options}
