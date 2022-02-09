@@ -2,6 +2,7 @@ import { Story } from '@storybook/react';
 import Typography from '../Typography';
 import Radio, {
   RadioSize,
+  RadioProps,
   RadioGroup,
   RadioGroupProps,
   RadioGroupOption,
@@ -22,6 +23,32 @@ const sizes: RadioSize[] = [
   'medium',
   'large',
 ];
+
+export const Playground : Story<RadioProps> = ({
+  children,
+  ...props
+}) => (
+  <Radio {...props}>
+    {children}
+  </Radio>
+);
+
+Playground.args = {
+  children: 'label',
+  error: false,
+  disabled: false,
+  defaultChecked: false,
+  size: 'medium',
+};
+
+Playground.argTypes = {
+  size: {
+    control: {
+      type: 'select',
+      options: sizes,
+    },
+  },
+};
 
 export const Standalone = () => (
   <>
