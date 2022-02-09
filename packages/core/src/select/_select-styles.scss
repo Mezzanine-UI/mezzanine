@@ -23,9 +23,12 @@ $tags-gap: 4px !default;
 }
 
 .#{$trigger-prefix} {
+  cursor: pointer;
+
   input {
     padding-left: var(--#{text-field.$prefix}-padding-left);
     padding-right: var(--#{text-field.$prefix}-padding-right);
+    pointer-events: none;
 
     &:read-only {
       cursor: pointer;

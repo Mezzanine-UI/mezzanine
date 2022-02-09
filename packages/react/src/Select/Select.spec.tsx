@@ -1,4 +1,4 @@
-import { PlusIcon, SearchIcon, TimesIcon } from '@mezzanine-ui/icons';
+import { PlusIcon, TimesIcon } from '@mezzanine-ui/icons';
 import { createRef, RefObject } from 'react';
 import {
   act,
@@ -16,10 +16,6 @@ import Select, { Option, SelectValue } from '.';
 
 function getSelectInputElement(element: HTMLElement) {
   return element.getElementsByTagName('input')[0];
-}
-
-function getHostContainer(container: HTMLElement | null = document.body) {
-  return container!.querySelector('.mzn-select');
 }
 
 async function testTextFieldClicked(element: HTMLElement | Element) {
@@ -108,26 +104,6 @@ describe('<Select />', () => {
     expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
   });
 
-  it('searchable input placeholder should be previous selected values separated by default', async () => {
-    const value: SelectValue = {
-      id: '1',
-      name: '1',
-    };
-    const onSearch = jest.fn();
-    const { getHostHTMLElement } = render(
-      <Select value={value} onSearch={onSearch} />,
-    );
-
-    const element = getHostHTMLElement();
-    const inputElement = element.getElementsByTagName('input')[0]!;
-
-    await act(async () => {
-      fireEvent.focus(inputElement);
-    });
-
-    expect(inputElement.placeholder).toBe('1');
-  });
-
   describe('focus handlers', () => {
     it('should invoke onFocus or onBlur when toggling via text-field click', async () => {
       jest.useFakeTimers();
@@ -169,9 +145,8 @@ describe('<Select />', () => {
       jest.useFakeTimers();
 
       const onFocus = jest.fn();
-      const onSearch = jest.fn();
       const { getHostHTMLElement } = render(
-        <Select onFocus={onFocus} onSearch={onSearch} />,
+        <Select onFocus={onFocus} />,
       );
       const element = getHostHTMLElement();
       const inputElement = element.getElementsByTagName('input')[0]!;
@@ -312,8 +287,7 @@ describe('<Select />', () => {
     expect(actionIcon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
   });
 
-  describe('props: defaultValue/inputRef/onSearch/renderValue', () => {
-    let valueGetFromOnSearch: string;
+  describe('props: defaultValue/inputRef/renderValue', () => {
     let inputRef: RefObject<HTMLInputElement>;
     const defaultValue: SelectValue = {
       id: '1',
@@ -322,10 +296,6 @@ describe('<Select />', () => {
 
     beforeEach(async () => {
       inputRef = createRef<HTMLInputElement>();
-
-      const onSearch = jest.fn<void, [string]>((value) => {
-        valueGetFromOnSearch = value;
-      });
 
       const renderValue = jest.fn<string, [SelectValue]>((value) => (
         value.name
@@ -336,7 +306,6 @@ describe('<Select />', () => {
           <Select
             defaultValue={defaultValue}
             inputRef={inputRef}
-            onSearch={onSearch}
             renderValue={renderValue}
           />,
         );
@@ -351,34 +320,8 @@ describe('<Select />', () => {
       });
     });
 
-    it('should display searchIcon when is searchable and modal is open', () => {
-      const hostContainer = getHostContainer();
-
-      testTextFieldClicked(hostContainer!);
-
-      const actionIcon = hostContainer?.querySelector('.mzn-text-field__action-icon');
-
-      expect(actionIcon?.getAttribute('data-icon-name')).toBe(SearchIcon.name);
-    });
-
     it('should select input changeable', () => {
       expect(inputRef.current!.value).toEqual('foo');
-      expect(valueGetFromOnSearch).toEqual('foo');
-    });
-
-    it('should render current selection with pass-in renderValue method in placeholder when search input is empty',
-      () => {
-        fireEvent.change(inputRef.current!, { target: { value: '' } });
-
-        expect(inputRef.current!.placeholder).toEqual(defaultValue.name);
-      });
-
-    it('should search text been cleared when input onBlur triggered', async () => {
-      await act(async () => {
-        fireEvent.blur(inputRef.current!);
-      });
-
-      expect(valueGetFromOnSearch).toEqual('');
     });
   });
 
