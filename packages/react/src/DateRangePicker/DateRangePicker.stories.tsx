@@ -1,5 +1,10 @@
 import { Story, Meta } from '@storybook/react';
-import { CalendarMethodsMoment, DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarMethodsMoment,
+  CalendarMode,
+  DateType,
+  getDefaultModeFormat,
+} from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
@@ -18,6 +23,89 @@ function usePickerChange() {
 
   return [val, onChange] as const;
 }
+
+const getUpperCase = (mode: CalendarMode) => mode.charAt(0).toUpperCase() + mode.slice(1);
+
+type PlaygroundArgs = DateRangePickerProps;
+
+export const Playground: Story<PlaygroundArgs> = ({
+  clearable,
+  disabled,
+  error,
+  fullWidth,
+  inputFromPlaceholder,
+  inputToPlaceholder,
+  mode,
+  readOnly,
+  size,
+}) => {
+  const typoStyle = { margin: '0 0 8px 0' };
+  const [val, onChange] = usePickerChange();
+
+  return (
+    <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <Typography variant="h5" style={typoStyle}>
+        {getUpperCase(mode || 'day')}
+      </Typography>
+      <Typography variant="body1" style={typoStyle}>
+        {`current value: [
+            ${val?.[0]?.format(getDefaultModeFormat(mode || 'day'))},
+            ${val?.[1]?.format(getDefaultModeFormat(mode || 'day'))}
+          ]`}
+      </Typography>
+      <DateRangePicker
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        format={getDefaultModeFormat(mode || 'day')}
+        fullWidth={fullWidth}
+        inputFromPlaceholder={inputFromPlaceholder}
+        inputToPlaceholder={inputToPlaceholder}
+        mode={mode}
+        onChange={onChange}
+        readOnly={readOnly}
+        size={size}
+        value={val}
+      />
+    </CalendarConfigProvider>
+  );
+};
+
+Playground.argTypes = {
+  mode: {
+    control: {
+      type: 'select',
+      options: [
+        'day',
+        'week',
+        'month',
+        'year',
+      ],
+    },
+  },
+  size: {
+    control: {
+      type: 'select',
+      options: [
+        'small',
+        'medium',
+        'large',
+      ],
+    },
+  },
+};
+
+Playground.args = {
+  clearable: false,
+  disabled: false,
+  error: false,
+  fullWidth: false,
+  inputFromPlaceholder: '',
+  inputToPlaceholder: '',
+  mode: 'day',
+  readOnly: false,
+  size: 'medium',
+};
 
 export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
@@ -265,87 +353,4 @@ export const CustomDisable = () => {
       </div>
     </CalendarConfigProvider>
   );
-};
-
-type PlaygroundArgs = DateRangePickerProps;
-
-export const Playground: Story<PlaygroundArgs> = ({
-  clearable,
-  disabled,
-  error,
-  format,
-  fullWidth,
-  inputFromPlaceholder,
-  inputToPlaceholder,
-  mode,
-  readOnly,
-  required,
-  size,
-}) => {
-  const typoStyle = { margin: '0 0 8px 0' };
-  const [val, onChange] = usePickerChange();
-
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="body1" style={typoStyle}>
-        {`current value: [
-            ${val?.[0]?.format(getDefaultModeFormat(mode || 'day'))},
-            ${val?.[1]?.format(getDefaultModeFormat(mode || 'day'))}
-          ]`}
-      </Typography>
-      <DateRangePicker
-        clearable={clearable}
-        disabled={disabled}
-        error={error}
-        format={format}
-        fullWidth={fullWidth}
-        inputFromPlaceholder={inputFromPlaceholder}
-        inputToPlaceholder={inputToPlaceholder}
-        mode={mode}
-        onChange={onChange}
-        readOnly={readOnly}
-        required={required}
-        size={size}
-        value={val}
-      />
-    </CalendarConfigProvider>
-  );
-};
-
-Playground.argTypes = {
-  mode: {
-    control: {
-      type: 'select',
-      options: [
-        'day',
-        'week',
-        'month',
-        'year',
-      ],
-    },
-  },
-  size: {
-    control: {
-      type: 'select',
-      options: [
-        'small',
-        'medium',
-        'large',
-      ],
-    },
-  },
-};
-
-Playground.args = {
-  clearable: false,
-  disabled: false,
-  error: false,
-  format: 'YYYY-MM-DD',
-  fullWidth: false,
-  inputFromPlaceholder: '',
-  inputToPlaceholder: '',
-  mode: 'day',
-  readOnly: false,
-  required: false,
-  size: 'medium',
 };
