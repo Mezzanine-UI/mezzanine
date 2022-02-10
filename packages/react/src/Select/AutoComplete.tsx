@@ -240,6 +240,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     role: 'combobox',
   };
 
+  const searchTextExist: boolean = !!searchText && options.find((option) => searchText === option) === undefined;
+
   return (
     <SelectControlContext.Provider
       value={{
@@ -294,9 +296,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
             size={menuSize}
             style={{ border: 0 }}
           >
-            <Option value={searchText}>
-              {searchText}
-            </Option>
             {options.length ? options.map((option) => (
               <Option key={option} value={option}>
                 {option}
@@ -307,14 +306,20 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
               </Empty>
             )}
           </Menu>
-          {addable ? (
+          {searchTextExist && addable ? (
             <div className={classes.autoComplete}>
               <input
                 type="text"
                 onChange={(e) => setInsertText(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+
+                  if (!insertText) {
+                    setInsertText(searchText);
+                  }
+                }}
                 onFocus={(e) => e.stopPropagation()}
-                placeholder="新增選項"
+                placeholder={`新增 ${searchText} 或其他選項`}
                 value={insertText}
               />
               <Icon
