@@ -17,6 +17,96 @@ function usePickerChange() {
   return [val, onChange] as const;
 }
 
+type PlaygroundArgs = TimePickerProps;
+
+export const Playground: Story<PlaygroundArgs> = ({
+  clearable,
+  disabled,
+  error,
+  format,
+  fullWidth,
+  hideHour,
+  hideMinute,
+  hideSecond,
+  hourPrefix,
+  hourStep = 1,
+  minutePrefix,
+  minuteStep = 1,
+  placeholder,
+  readOnly,
+  required,
+  secondPrefix,
+  secondStep = 1,
+  size,
+}) => {
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [val, onChange] = usePickerChange();
+
+  return (
+    <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <Typography variant="h5" style={typoStyle}>
+        {`current value: ${val?.format(format)}`}
+      </Typography>
+      <TimePicker
+        value={val}
+        onChange={onChange}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        format={format}
+        fullWidth={fullWidth}
+        hideHour={hideHour}
+        hideMinute={hideMinute}
+        hideSecond={hideSecond}
+        hourPrefix={hourPrefix}
+        hourStep={hourStep}
+        minutePrefix={minutePrefix}
+        minuteStep={minuteStep}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        required={required}
+        secondPrefix={secondPrefix}
+        secondStep={secondStep}
+        size={size}
+      />
+    </CalendarConfigProvider>
+  );
+};
+
+Playground.argTypes = {
+  size: {
+    control: {
+      type: 'select',
+      options: [
+        'small',
+        'medium',
+        'large',
+      ],
+    },
+  },
+};
+
+Playground.args = {
+  clearable: false,
+  disabled: false,
+  error: false,
+  format: 'HH:mm:ss',
+  fullWidth: false,
+  hideHour: false,
+  hideMinute: false,
+  hideSecond: false,
+  hourPrefix: 'Hrs',
+  hourStep: 1,
+  minutePrefix: 'Min',
+  minuteStep: 1,
+  placeholder: '',
+  readOnly: false,
+  required: false,
+  secondPrefix: 'Sec',
+  secondStep: 1,
+  size: 'medium',
+};
+
 export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
@@ -140,94 +230,4 @@ export const DisplayColumn = () => {
       </div>
     </CalendarConfigProvider>
   );
-};
-
-type PlaygroundArgs = TimePickerProps;
-
-export const Playground: Story<PlaygroundArgs> = ({
-  clearable,
-  disabled,
-  error,
-  format,
-  fullWidth,
-  hideHour,
-  hideMinute,
-  hideSecond,
-  hourPrefix,
-  hourStep = 1,
-  minutePrefix,
-  minuteStep = 1,
-  placeholder,
-  readOnly,
-  required,
-  secondPrefix,
-  secondStep = 1,
-  size,
-}) => {
-  const typoStyle = { margin: '0 0 12px 0' };
-  const [val, onChange] = usePickerChange();
-
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
-        {`current value: ${val?.format(format)}`}
-      </Typography>
-      <TimePicker
-        value={val}
-        onChange={onChange}
-        clearable={clearable}
-        disabled={disabled}
-        error={error}
-        format={format}
-        fullWidth={fullWidth}
-        hideHour={hideHour}
-        hideMinute={hideMinute}
-        hideSecond={hideSecond}
-        hourPrefix={hourPrefix}
-        hourStep={hourStep}
-        minutePrefix={minutePrefix}
-        minuteStep={minuteStep}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        required={required}
-        secondPrefix={secondPrefix}
-        secondStep={secondStep}
-        size={size}
-      />
-    </CalendarConfigProvider>
-  );
-};
-
-Playground.argTypes = {
-  size: {
-    control: {
-      type: 'select',
-      options: [
-        'small',
-        'medium',
-        'large',
-      ],
-    },
-  },
-};
-
-Playground.args = {
-  clearable: false,
-  disabled: false,
-  error: false,
-  format: 'HH:mm:ss',
-  fullWidth: false,
-  hideHour: false,
-  hideMinute: false,
-  hideSecond: false,
-  hourPrefix: 'Hrs',
-  hourStep: 1,
-  minutePrefix: 'Min',
-  minuteStep: 1,
-  placeholder: '',
-  readOnly: false,
-  required: false,
-  secondPrefix: 'Sec',
-  secondStep: 1,
-  size: 'medium',
 };
