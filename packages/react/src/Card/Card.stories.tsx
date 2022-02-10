@@ -60,6 +60,75 @@ const exampleActionsOkClose = (
   />
 );
 
+const playgroundDefaultStyle = {
+  width: '375px',
+};
+
+export const Playground: Story<PlaygroundArgs> = ({
+  coverUri, title, titleVariant, subtitle, description, actionsTemplate, ...args
+}) => {
+  const playgroundDefaultCover = (
+    <img
+      alt=""
+      style={{ width: '100%' }}
+      src={coverUri}
+    />
+  );
+
+  const exampleTitleProps : TypographyProps = {
+    variant: titleVariant,
+  };
+
+  const exampleActions : { [template:string] : JSX.Element } = {
+    Confirm: exampleActionsConfirm,
+    OkClose: exampleActionsOkClose,
+    OkCloseAndIcon: exampleActionsWithIcon,
+  };
+
+  return (
+    <Card
+      actions={exampleActions[actionsTemplate]}
+      cover={playgroundDefaultCover}
+      description={description}
+      title={title}
+      titleProps={exampleTitleProps}
+      style={playgroundDefaultStyle}
+      subtitle={subtitle}
+      {...args}
+    />
+  );
+};
+
+Playground.args = {
+  coverUri: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
+  title: 'Card title',
+  titleVariant: 'h3',
+  subtitle: 'subtitle~',
+  // eslint-disable-next-line max-len
+  description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. In nisi temporibus eligendi voluptatem eum necessitatibus illum sint id earum et, quis sunt soluta, esse, autem minima ipsam libero eveniet molestiae?',
+  actionsTemplate: 'Confirm',
+};
+
+Playground.argTypes = {
+  coverUri: {
+    control: {
+      type: 'text',
+    },
+  },
+  titleVariant: {
+    control: {
+      type: 'inline-radio',
+      options: ['h3', 'h2', 'body1'],
+    },
+  },
+  actionsTemplate: {
+    control: {
+      type: 'inline-radio',
+      options: ['Confirm', 'OkClose', 'OkCloseAndIcon'],
+    },
+  },
+};
+
 export const Basic = () => {
   const style = { width: '375px' };
   const title = 'title1';
@@ -170,73 +239,4 @@ export const Group = () => {
       />
     </div>
   );
-};
-
-const playgroundDefaultStyle = {
-  width: '375px',
-};
-
-export const Playground: Story<PlaygroundArgs> = ({
-  coverUri, title, titleVariant, subtitle, description, actionsTemplate, ...args
-}) => {
-  const playgroundDefaultCover = (
-    <img
-      alt=""
-      style={{ width: '100%' }}
-      src={coverUri}
-    />
-  );
-
-  const exampleTitleProps : TypographyProps = {
-    variant: titleVariant,
-  };
-
-  const exampleActions : { [template:string] : JSX.Element } = {
-    Confirm: exampleActionsConfirm,
-    OkClose: exampleActionsOkClose,
-    OkCloseAndIcon: exampleActionsWithIcon,
-  };
-
-  return (
-    <Card
-      actions={exampleActions[actionsTemplate]}
-      cover={playgroundDefaultCover}
-      description={description}
-      title={title}
-      titleProps={exampleTitleProps}
-      style={playgroundDefaultStyle}
-      subtitle={subtitle}
-      {...args}
-    />
-  );
-};
-
-Playground.args = {
-  coverUri: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
-  title: 'Card title',
-  titleVariant: 'h3',
-  subtitle: 'subtitle~',
-  // eslint-disable-next-line max-len
-  description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. In nisi temporibus eligendi voluptatem eum necessitatibus illum sint id earum et, quis sunt soluta, esse, autem minima ipsam libero eveniet molestiae?',
-  actionsTemplate: 'Confirm',
-};
-
-Playground.argTypes = {
-  coverUri: {
-    control: {
-      type: 'text',
-    },
-  },
-  titleVariant: {
-    control: {
-      type: 'inline-radio',
-      options: ['h3', 'h2', 'body1'],
-    },
-  },
-  actionsTemplate: {
-    control: {
-      type: 'inline-radio',
-      options: ['Confirm', 'OkClose', 'OkCloseAndIcon'],
-    },
-  },
 };
