@@ -2,6 +2,7 @@ import { Story } from '@storybook/react';
 import Typography from '../Typography';
 import Radio, {
   RadioSize,
+  RadioProps,
   RadioGroup,
   RadioGroupProps,
   RadioGroupOption,
@@ -23,6 +24,32 @@ const sizes: RadioSize[] = [
   'large',
 ];
 
+export const Playground : Story<RadioProps> = ({
+  children,
+  ...props
+}) => (
+  <Radio {...props}>
+    {children}
+  </Radio>
+);
+
+Playground.args = {
+  children: 'label',
+  error: false,
+  disabled: false,
+  defaultChecked: false,
+  size: 'medium',
+};
+
+Playground.argTypes = {
+  size: {
+    control: {
+      type: 'select',
+      options: sizes,
+    },
+  },
+};
+
 export const Standalone = () => (
   <>
     <Radio />
@@ -33,15 +60,18 @@ export const Standalone = () => (
 );
 
 export const Sizes = () => (
-  <>
+  <div style={{
+    width: 'fit-content',
+    display: 'flex',
+    flexFlow: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  }}
+  >
     <Radio size="small">Small</Radio>
-    <br />
-    <br />
     <Radio size="medium">Medium</Radio>
-    <br />
-    <br />
     <Radio size="large">Large</Radio>
-  </>
+  </div>
 );
 
 export const Group: Story<RadioGroupProps> = ({
@@ -67,7 +97,7 @@ export const Group: Story<RadioGroupProps> = ({
 
   return (
     <>
-      <Typography>From children</Typography>
+      <Typography variant="h5">From children</Typography>
       <RadioGroup
         disabled={disabled}
         orientation={orientation}
@@ -85,7 +115,7 @@ export const Group: Story<RadioGroupProps> = ({
       </RadioGroup>
       <br />
       <br />
-      <Typography>From options</Typography>
+      <Typography variant="h5">From options</Typography>
       <RadioGroup
         disabled={disabled}
         options={options}

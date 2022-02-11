@@ -68,7 +68,7 @@ export const Playground:Story<NavigationProps> = ({
   const [active, setActive] = useState<Key | null | undefined>();
 
   return (
-    <div style={{ height: '20vh' }}>
+    <div style={{ height: '30vh' }}>
       <Navigation
         orientation={orientation}
         onClick={setActive}
