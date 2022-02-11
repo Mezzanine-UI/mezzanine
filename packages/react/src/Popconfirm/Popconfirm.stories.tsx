@@ -1,5 +1,6 @@
-import { Meta } from '@storybook/react';
+import { Story, Meta } from '@storybook/react';
 import { MouseEvent, useState } from 'react';
+import { NotificationData } from '..';
 import Button from '../Button';
 import { PopperPlacement } from '../Popper';
 import Popconfirm from './Popconfirm';
@@ -8,7 +9,7 @@ export default {
   title: 'Feedback/Popconfirm',
 } as Meta;
 
-export const Placement = () => {
+export const Playground :Story<NotificationData> = ({ ...props }) => {
   const [currentPlacement, setCurrentPlacement] = useState<PopperPlacement>('top');
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchor(null);
@@ -38,17 +39,15 @@ export const Placement = () => {
       }}
     >
       <Popconfirm
+        {...props}
         anchor={anchor}
-        cancelText="No"
-        confirmText="Yes"
+        open={Boolean(anchor)}
         onCancel={onClose}
         onConfirm={onClose}
         onClose={onClose}
-        open={Boolean(anchor)}
         options={{
           placement: currentPlacement,
         }}
-        title="Are you sure to delete this task?"
       />
       <div />
       {renderButton('top-start')}
@@ -79,3 +78,8 @@ export const Placement = () => {
   );
 };
 
+Playground.args = {
+  cancelText: 'No',
+  confirmText: 'Yes',
+  title: 'Are you sure to delete this task?',
+};
