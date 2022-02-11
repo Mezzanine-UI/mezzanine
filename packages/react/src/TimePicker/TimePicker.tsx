@@ -72,7 +72,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     } = useCalendarContext();
     const {
       className,
-      clearable,
+      clearable = true,
       confirmText,
       defaultValue,
       disabled = disabledFromFormControl,
