@@ -1,5 +1,4 @@
 import { RefObject, useEffect, useState } from 'react';
-import { useWindowWidth } from '../hooks/useWindowWidth';
 
 type ScrollState = 'begin' | 'middle' | 'end';
 
@@ -8,22 +7,6 @@ export default function useTabsOverflow(tabsRef: RefObject<HTMLElement>) {
   const [scrollState, setScrollState] = useState<ScrollState>('begin');
   const isScrollToBegin = scrollState === 'begin';
   const isScrollToEnd = scrollState === 'end';
-
-  const windowWidth = useWindowWidth();
-
-  function handleScrollState() {
-    if (tabsRef.current) {
-      const offsetRight = tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
-
-      if (tabsRef.current.scrollLeft === 0) {
-        setScrollState('begin');
-      } else if (tabsRef.current.scrollLeft >= offsetRight) {
-        setScrollState('end');
-      } else {
-        setScrollState('middle');
-      }
-    }
-  }
 
   function scrollToLeft() {
     if (tabsRef.current) {
@@ -41,19 +24,38 @@ export default function useTabsOverflow(tabsRef: RefObject<HTMLElement>) {
 
   useEffect(() => {
     if (tabsRef.current) {
-      const isXOverflowing = tabsRef.current.scrollWidth > tabsRef.current.clientWidth;
+      const handleOverflowingState = () => {
+        if (tabsRef.current) {
+          setIsOverflowing(tabsRef.current.scrollWidth > tabsRef.current.clientWidth);
+        }
+      };
 
-      if (isOverflowing !== isXOverflowing) {
-        setIsOverflowing(isXOverflowing);
-      }
-    }
-  }, [isOverflowing, windowWidth]);
+      const handleScrollState = () => {
+        if (tabsRef.current) {
+          const offsetRight = tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
 
-  useEffect(() => {
-    if (tabsRef.current) {
+          if (tabsRef.current.scrollLeft === 0) {
+            setScrollState('begin');
+          } else if (tabsRef.current.scrollLeft >= offsetRight) {
+            setScrollState('end');
+          } else {
+            setScrollState('middle');
+          }
+        }
+      };
+
+      // init isOverflowing when mounting
+      handleOverflowingState();
+
+      window.addEventListener('resize', handleOverflowingState);
       tabsRef.current.addEventListener('scroll', handleScrollState);
 
-      return () => tabsRef.current?.removeEventListener('scroll', handleScrollState);
+      return () => {
+        if (tabsRef.current) {
+          window.removeEventListener('resize', handleOverflowingState);
+          tabsRef.current.removeEventListener('scroll', handleScrollState);
+        }
+      };
     }
   }, [tabsRef.current]);
 
