@@ -33,16 +33,7 @@ describe('useTableSorting()', () => {
     count: 250,
   }];
 
-  let afterSources: typeof originSources;
-
   const numberSorter = (a: number, b: number) => b - a;
-  const onAgeSorted = jest.fn<void, [TableDataSource[]]>((sources) => {
-    afterSources = sources;
-  });
-
-  beforeEach(() => {
-    afterSources = [];
-  });
 
   it('should sorted order be `none -> desc -> asc -> none`', () => {
     const { result } = renderHook(
@@ -141,7 +132,15 @@ describe('useTableSorting()', () => {
     expect(result.current[0][2].id).toBe(originSources[1].id);
   });
 
-  it('should notify parent for sources changing when onSorted given', () => {
+  it('should notify parent for dataIndex and sortedType changing when onSorted given', () => {
+    let afterSortedType = 'none';
+    let currentSortedIndex = '';
+
+    const onAgeSorted = jest.fn((dataIndex, sortedType) => {
+      currentSortedIndex = dataIndex;
+      afterSortedType = sortedType;
+    });
+
     const { result } = renderHook(
       () => useTableSorting({
         dataSource: originSources,
@@ -162,9 +161,8 @@ describe('useTableSorting()', () => {
     });
 
     /** current should be 'desc' */
-    expect(afterSources.length).toBe(originSources.length);
-    expect(afterSources[0].id).toBe(maxAgeId);
-    expect(afterSources[2].id).toBe(minAgeId);
+    expect(currentSortedIndex).toBe('age');
+    expect(afterSortedType).toBe('desc');
   });
 
   it('should `resetAll` reset all the current status', () => {

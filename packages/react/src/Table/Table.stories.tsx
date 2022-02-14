@@ -49,6 +49,8 @@ const columns: TableColumn<DataType>[] = [{
 
     return -1;
   },
+  // eslint-disable-next-line no-console
+  onSorted: (dataIndex, sortedType) => { console.log(dataIndex, sortedType); },
 }, {
   title: 'Address',
   dataIndex: 'address',
@@ -59,7 +61,7 @@ const columns: TableColumn<DataType>[] = [{
   forceShownTooltipWhenHovered: true,
   sorter: (a: number, b: number) => b - a,
   // eslint-disable-next-line no-console
-  onSorted: (newSources) => { console.log(newSources); },
+  onSorted: (dataIndex, sortedType) => { console.log(dataIndex, sortedType); },
   width: 80,
 }, {
   title: 'Tel',

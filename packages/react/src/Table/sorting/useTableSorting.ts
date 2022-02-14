@@ -72,18 +72,18 @@ export function useTableSorting(props: UseTableSorting) {
   ) => void>(
     (opts) => {
       const { dataIndex, sorter, onSorted } = opts;
+      const isChosenFromOneToAnother = sortedOn && dataIndex !== sortedOn;
+      const nextSortedType = getNextSortedType(isChosenFromOneToAnother ? 'none' : sortedType);
 
       const onMappingSources = (sources: TableDataSource[]) => {
         setDataSource(sources);
 
-        onSorted?.(sources);
+        onSorted?.(dataIndex, nextSortedType);
       };
 
       // only apply changes when column sorter is given
-      if (typeof sorter === 'function') {
+      if (typeof sorter === 'function' || typeof onSorted === 'function') {
         // should update next sorted type first
-        const isChosenFromOneToAnother = sortedOn && dataIndex !== sortedOn;
-        const nextSortedType = getNextSortedType(isChosenFromOneToAnother ? 'none' : sortedType);
 
         setSortedType(nextSortedType);
 
@@ -96,11 +96,13 @@ export function useTableSorting(props: UseTableSorting) {
             // getting new source instance (when switch between sorter, should use origin dataSource)
             let newSource = (isChosenFromOneToAnother ? dataSourceProp : dataSource).slice(0);
 
-            // sort by given sorter
-            newSource = newSource.sort((a, b) => (
-              // reverse result when sorted type is ascending
-              (sorter(get(a, dataIndex), get(b, dataIndex))) * (nextSortedType === 'asc' ? -1 : 1)
-            ));
+            if (typeof sorter === 'function') {
+              // sort by given sorter
+              newSource = newSource.sort((a, b) => (
+                // reverse result when sorted type is ascending
+                (sorter(get(a, dataIndex), get(b, dataIndex))) * (nextSortedType === 'asc' ? -1 : 1)
+              ));
+            }
 
             // map back the data source
             onMappingSources(newSource);
