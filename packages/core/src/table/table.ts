@@ -50,7 +50,7 @@ export type TableColumn<SourceType> = {
   width?: number;
   // == Feature sorting ==
   sorter?(a: any, b: any): number;
-  onSorted?(sortedDataSource: SourceType[]): void;
+  onSorted?(dataIndex: string, sortedType: string): void;
   // == Feature editing ==
   editable?: boolean;
   setCellProps?(record: SourceType): TableRecord<unknown>;
