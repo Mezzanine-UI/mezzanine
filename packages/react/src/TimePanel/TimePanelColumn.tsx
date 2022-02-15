@@ -67,10 +67,12 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
     useEffect(() => {
       const activeIndex = units.findIndex(({ value }) => value === activeUnit);
 
-      cellsRef.current?.scrollTo({
-        top: activeIndex * cellHeight,
-        behavior: prevetSmoothScrollTo.current ? 'auto' : 'smooth',
-      });
+      if (cellsRef.current) {
+        cellsRef.current.scrollTo({
+          top: activeIndex * cellHeight,
+          behavior: prevetSmoothScrollTo.current ? 'auto' : 'smooth',
+        });
+      }
 
       prevetSmoothScrollTo.current = false;
     }, [activeUnit, cellHeight, units]);

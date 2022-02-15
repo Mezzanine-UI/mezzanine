@@ -96,7 +96,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const {
       calendarProps,
       className,
-      clearable,
+      clearable = true,
       defaultValue,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
@@ -329,7 +329,9 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       if (from && to) {
         const newValue = onChange([from, to]) as [DateType, DateType];
 
-        onChangeProp?.(newValue);
+        if (onChangeProp) {
+          onChangeProp(newValue);
+        }
       } else {
         onChange(valueProp);
       }

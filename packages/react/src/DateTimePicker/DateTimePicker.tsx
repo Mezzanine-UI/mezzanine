@@ -83,7 +83,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
     const {
       calendarProps,
       className,
-      clearable,
+      clearable = true,
       confirmText,
       defaultValue,
       disableOnNext,
