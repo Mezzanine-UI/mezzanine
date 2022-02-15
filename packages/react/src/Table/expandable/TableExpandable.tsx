@@ -20,6 +20,10 @@ export interface TableExpandableProps extends NativeElementPropsWithoutKeyAndRef
    */
   expanded?: boolean;
   /**
+   * Invoked by expanded status changed.
+   */
+  onExpand?(status: boolean): void;
+  /**
    * toggle expanded
    */
   setExpanded?(e: boolean): void;
@@ -36,10 +40,23 @@ const TableExpandable = forwardRef<HTMLDivElement, TableExpandableProps>(
       className,
       expandable = true,
       expanded,
+      onExpand,
       setExpanded,
       showIcon = true,
       ...rest
     } = props;
+
+    const onClick = () => {
+      if (expandable) {
+        const nextStatus = !expanded;
+
+        setExpanded?.(nextStatus);
+
+        if (onExpand) {
+          onExpand(nextStatus);
+        }
+      }
+    };
 
     return (
       <div
@@ -61,7 +78,7 @@ const TableExpandable = forwardRef<HTMLDivElement, TableExpandableProps>(
               )}
               color={expandable ? 'primary' : 'disabled'}
               icon={ChevronDownIcon}
-              onClick={() => expandable && setExpanded?.(!expanded)}
+              onClick={onClick}
               style={{ transform: `rotate(${expanded ? '180deg' : '0'})` }}
             />
           ) : null}

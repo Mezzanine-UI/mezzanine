@@ -3,7 +3,6 @@ import {
   useContext,
   useState,
   useMemo,
-  useCallback,
   Fragment,
 } from 'react';
 import {
@@ -12,12 +11,15 @@ import {
   TableColumn,
   TableRecord,
   TableExpandable as TableExpandableType,
+  getColumnStyle,
+  getCellStyle,
 } from '@mezzanine-ui/core/table';
 import get from 'lodash/get';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import { TableContext, TableDataContext } from './TableContext';
 import TableCell from './TableCell';
+import TableExpandedTable from './TableExpandedTable';
 import TableRowSelection from './rowSelection/TableRowSelection';
 import TableExpandable from './expandable/TableExpandable';
 import TableEditRenderWrapper from './editable/TableEditRenderWrapper';
@@ -61,34 +63,6 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
       expanding?.expandedRowRender?.(rowData) ?? null
     ), [expanding, rowData]);
 
-    /** styling */
-    const getColumnStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
-      let style = {};
-
-      if (column.width) {
-        style = {
-          ...style,
-          width: column.width,
-          maxWidth: column.width,
-        };
-      }
-
-      return style;
-    }, []);
-
-    const getCellStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
-      let style = {};
-
-      if (column.align) {
-        style = {
-          ...style,
-          justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
-        };
-      }
-
-      return style;
-    }, []);
-
     return (
       <Fragment>
         <div
@@ -117,6 +91,9 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
               expanded={expanded}
               role="gridcell"
               setExpanded={setExpanded}
+              onExpand={
+                (status: boolean) => expanding.onExpand?.(rowData, status)
+              }
             />
           ) : null}
           {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => {
@@ -156,12 +133,30 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
           })}
         </div>
         {renderedExpandedContent ? (
-          <AccordionDetails
-            className={(expanding as TableExpandableType<TableRecord<unknown>>).className}
-            expanded={expanded}
-          >
-            {renderedExpandedContent}
-          </AccordionDetails>
+          <>
+            {typeof renderedExpandedContent === 'string' ? (
+              <AccordionDetails
+                className={(expanding as TableExpandableType<TableRecord<unknown>>).className}
+                expanded={expanded}
+              >
+                {renderedExpandedContent}
+              </AccordionDetails>
+            ) : (
+              <>
+                {renderedExpandedContent.dataSource.length > 0 ? (
+                  <AccordionDetails
+                    className={cx(
+                      (expanding as TableExpandableType<TableRecord<unknown>>).className,
+                      classes.bodyRowExpandedTableWrapper,
+                    )}
+                    expanded={expanded}
+                  >
+                    <TableExpandedTable renderedExpandedContent={renderedExpandedContent} />
+                  </AccordionDetails>
+                ) : null}
+              </>
+            )}
+          </>
         ) : null}
       </Fragment>
     );
