@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.9.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.8.1...@mezzanine-ui/react@0.9.0) (2022-02-15)
+
+### Bug Fixes
+
+- **react/date-picker:** remove unused props of date-picker stories ([e1de4ab](https://github.com/Mezzanine-UI/mezzanine/commit/e1de4abb64b6430408c98fae984d27342f7e72c7))
+- **react/date-picker:** remove unused props of date-time-picker stories ([46fb58a](https://github.com/Mezzanine-UI/mezzanine/commit/46fb58a420211b6b49ff1d6406ab6a76d3782b96))
+- **react/tabs:** avoid unnecessary re-render when window resize ([56b89e0](https://github.com/Mezzanine-UI/mezzanine/commit/56b89e01909262b6eff785d670123276c4c79e62))
+
+### Features
+
+- **react/date-picker:** adjust mode relative props in playground of date-range-picker stories ([e8ba872](https://github.com/Mezzanine-UI/mezzanine/commit/e8ba8724d78f9371346e8ce771596c7a8562703f))
+- **react/date-picker:** default enable the clearable prop ([e40463e](https://github.com/Mezzanine-UI/mezzanine/commit/e40463e6b41b0bc27f2840f19d3aaf009fe446a5))
+- **react/loading:** adjust on-modal, playground examples ([8c74893](https://github.com/Mezzanine-UI/mezzanine/commit/8c74893a25a95e8ae481b42c2f6260b5b5eb9450))
+- **react/pop-confirm:** add controls on stories playground ([6e9f1c7](https://github.com/Mezzanine-UI/mezzanine/commit/6e9f1c720980d03ee8e3acf9b70d84dea96a2a8b))
+- **react/radio:** complete playground of radio stories ([866f4e8](https://github.com/Mezzanine-UI/mezzanine/commit/866f4e80b1388078955cc8d978c0e14af33fe31d))
+- **react/text-area:** add playground of text-area ([cedfe35](https://github.com/Mezzanine-UI/mezzanine/commit/cedfe35fb9eb3cdebccedaa859cc77bad7c710e4))
+
 ## [0.8.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.8.0...@mezzanine-ui/react@0.8.1) (2022-02-08)
 
 ### Features
