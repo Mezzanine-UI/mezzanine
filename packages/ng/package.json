@@ -16,7 +16,7 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "ng test --coverage",
-    "build": "node ../../scripts/prepareBuild.js && ng build",
+    "build(deprecated)": "node ../../scripts/prepareBuild.js && ng build",
     "build:clean": "node ../../scripts/cleanBuild.js",
     "docs:json": "compodoc -p ./tsconfig.json -e json -d . --disableLifeCycleHooks --disablePrivate --disableProtected",
     "storybook": "yarn docs:json && start-storybook -p 6006",

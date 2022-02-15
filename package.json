@@ -19,7 +19,6 @@
   "workspaces": [
     "packages/core",
     "packages/icons",
-    "packages/ng",
     "packages/react",
     "packages/system"
   ],
