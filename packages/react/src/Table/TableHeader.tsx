@@ -93,7 +93,7 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
               style={getCellStyle(column)}
             >
               {column.renderTitle?.(classes) || column.title}
-              {typeof column.sorter === 'function' ? (
+              {typeof column.sorter === 'function' || typeof column.onSorted === 'function' ? (
                 <TableSortingIcon
                   column={column}
                 />
