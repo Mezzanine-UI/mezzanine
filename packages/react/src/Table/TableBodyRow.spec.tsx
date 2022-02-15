@@ -201,40 +201,139 @@ describe('<TableBodyRow />', () => {
 
   describe('integrate with expanding', () => {
     describe('display custom render content', () => {
-      it('should render expandedRowRender fallback', async () => {
-        const { getHostHTMLElement } = render(
-          <TableDataContext.Provider
-            value={{
-              columns: [],
-              dataSource: [rowData],
-            }}
-          >
-            <TableContext.Provider
+      describe('should render expandedRowRender fallback', () => {
+        const onExpand = jest.fn();
+
+        it('string case', async () => {
+          const { getHostHTMLElement } = render(
+            <TableDataContext.Provider
               value={{
-                expanding: {
-                  className: 'foo',
-                  expandedRowRender: (r) => r.name,
-                  rowExpandable: () => true,
-                },
+                columns: [],
+                dataSource: [rowData],
               }}
             >
-              <TableBodyRow rowData={rowData} />
-            </TableContext.Provider>
-          </TableDataContext.Provider>,
-        );
+              <TableContext.Provider
+                value={{
+                  expanding: {
+                    className: 'foo',
+                    expandedRowRender: (r) => r.name as string,
+                    rowExpandable: () => true,
+                    onExpand,
+                  },
+                }}
+              >
+                <TableBodyRow rowData={rowData} />
+              </TableContext.Provider>
+            </TableDataContext.Provider>,
+          );
 
-        const element = getHostHTMLElement();
-        const expandingHost = getExpandingHost(element);
-        const icon = expandingHost?.querySelector('.mzn-icon');
+          const element = getHostHTMLElement();
+          const expandingHost = getExpandingHost(element);
+          const icon = expandingHost?.querySelector('.mzn-icon');
 
-        await act(async () => {
-          fireEvent.click(icon!);
+          await act(async () => {
+            fireEvent.click(icon!);
+          });
+
+          const expandedContentHost = getExpandedContentHost();
+
+          expect(expandedContentHost?.textContent).toBe('foo');
+          expect(expandedContentHost?.classList.contains('foo')).toBe(true);
+          expect(onExpand).toBeCalledWith(rowData, true);
         });
 
-        const expandedContentHost = getExpandedContentHost();
+        it('dataSource case', async () => {
+          const { getHostHTMLElement } = render(
+            <TableDataContext.Provider
+              value={{
+                columns: [],
+                dataSource: [rowData],
+              }}
+            >
+              <TableContext.Provider
+                value={{
+                  expanding: {
+                    className: 'foo',
+                    expandedRowRender: () => ({
+                      dataSource: [{
+                        key: 'foo',
+                        name: 'foo',
+                      }, {
+                        key: 'bar',
+                        name: 'bar',
+                      }],
+                      columns: [{
+                        dataIndex: 'name',
+                      }, {
+                        dataIndex: 'name',
+                      }],
+                    }),
+                    rowExpandable: () => true,
+                    onExpand,
+                  },
+                }}
+              >
+                <TableBodyRow rowData={rowData} />
+              </TableContext.Provider>
+            </TableDataContext.Provider>,
+          );
 
-        expect(expandedContentHost?.textContent).toBe('foo');
-        expect(expandedContentHost?.classList.contains('foo')).toBe(true);
+          const element = getHostHTMLElement();
+          const expandingHost = getExpandingHost(element);
+          const icon = expandingHost?.querySelector('.mzn-icon');
+
+          await act(async () => {
+            fireEvent.click(icon!);
+          });
+
+          const expandedContentHost = getExpandedContentHost();
+          const rows = expandedContentHost?.querySelectorAll('.mzn-table__body__row__expandedTableRow');
+
+          expect(rows?.length).toBe(2);
+        });
+
+        it('empty dataSource case', async () => {
+          const { getHostHTMLElement } = render(
+            <TableDataContext.Provider
+              value={{
+                columns: [],
+                dataSource: [rowData],
+              }}
+            >
+              <TableContext.Provider
+                value={{
+                  expanding: {
+                    className: 'foo',
+                    expandedRowRender: () => ({
+                      dataSource: [],
+                      columns: [{
+                        dataIndex: 'name',
+                      }, {
+                        dataIndex: 'name',
+                      }],
+                    }),
+                    rowExpandable: () => true,
+                    onExpand,
+                  },
+                }}
+              >
+                <TableBodyRow rowData={rowData} />
+              </TableContext.Provider>
+            </TableDataContext.Provider>,
+          );
+
+          const element = getHostHTMLElement();
+          const expandingHost = getExpandingHost(element);
+          const icon = expandingHost?.querySelector('.mzn-icon');
+
+          await act(async () => {
+            fireEvent.click(icon!);
+          });
+
+          const expandedContentHost = getExpandedContentHost();
+
+          expect(expandedContentHost).toBe(null);
+        });
       });
     });
   });

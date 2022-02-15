@@ -425,48 +425,119 @@ export const WithRefresh = () => {
   );
 };
 
-const customizedColumns: TableColumn<DataType>[] = [{
-  title: 'Name',
-  dataIndex: 'name',
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-  /** styling */
-  align: 'center',
-  headerClassName: 'custom-table-header',
-  bodyClassName: 'custom-table-body',
-}, {
-  title: 'Age',
-  dataIndex: 'age',
-  /** styling */
-  width: 80,
-  align: 'center',
-}, {
-  title: 'Tel',
-  dataIndex: 'tel',
-  ellipsis: false,
-  /** styling */
-  align: 'end',
-}];
+export const ExpandedWithString = () => {
+  const customizedColumns: TableColumn<DataType>[] = [{
+    title: 'Name',
+    dataIndex: 'name',
+  }, {
+    title: 'Address',
+    dataIndex: 'address',
+    /** styling */
+    align: 'center',
+    headerClassName: 'custom-table-header',
+    bodyClassName: 'custom-table-body',
+  }, {
+    title: 'Age',
+    dataIndex: 'age',
+    /** styling */
+    width: 80,
+    align: 'center',
+  }, {
+    title: 'Tel',
+    dataIndex: 'tel',
+    ellipsis: false,
+    /** styling */
+    align: 'end',
+  }];
 
-export const Styling = () => (
-  <div
-    style={{
-      width: '80%',
-      height: 460,
-    }}
-  >
-    <Table
-      columns={customizedColumns}
-      dataSource={dataSource}
-      expandable={{
-        className: '',
-        expandedRowRender: (record) => record.description,
-        rowExpandable: (record) => !!record.description,
-      } as TableExpandable<DataType>}
-    />
-  </div>
-);
+  return (
+    <div
+      style={{
+        width: '80%',
+        height: 460,
+      }}
+    >
+      <Table
+        columns={customizedColumns}
+        dataSource={dataSource}
+        expandable={{
+          className: '',
+          expandedRowRender: (record) => record.description,
+          rowExpandable: (record) => !!record.description,
+        } as TableExpandable<DataType>}
+      />
+    </div>
+  );
+};
+
+export const ExpandedWithDataSource = () => {
+  const customizedColumns: TableColumn<DataType>[] = [{
+    title: 'Name',
+    dataIndex: 'name',
+  }, {
+    title: 'Address',
+    dataIndex: 'address',
+    /** styling */
+    align: 'center',
+    headerClassName: 'custom-table-header',
+    bodyClassName: 'custom-table-body',
+  }, {
+    title: 'Age',
+    dataIndex: 'age',
+    /** styling */
+    width: 80,
+    align: 'center',
+  }, {
+    title: 'Tel',
+    dataIndex: 'tel',
+    ellipsis: false,
+    /** styling */
+    align: 'end',
+  }];
+
+  const [sourceData, setSource] = useState<{ [key: string]: DataType[] }>({});
+
+  return (
+    <div
+      style={{
+        width: '80%',
+        height: 460,
+      }}
+    >
+      <Table
+        columns={customizedColumns}
+        dataSource={dataSource}
+        expandable={{
+          className: '',
+          expandedRowRender: (record) => ({
+            dataSource: sourceData[record.key as string] || [],
+            columns: [{
+              dataIndex: 'name',
+            }, {
+              dataIndex: 'address',
+            }, {
+              dataIndex: 'age',
+            }, {
+              dataIndex: 'tel',
+            }],
+          }),
+          rowExpandable: () => true,
+          // eslint-disable-next-line no-console
+          onExpand: (record, status) => {
+            if (status) {
+              setTimeout(() => {
+                setSource((p) => ({
+                  ...p,
+                  [record.key]: dataSource.slice(0, 5),
+                }));
+              }, 500);
+            }
+          },
+        } as TableExpandable<DataType>}
+      />
+    </div>
+  );
+};
 
 const editableColumns: TableColumn<DataType>[] = [{
   title: 'Name',

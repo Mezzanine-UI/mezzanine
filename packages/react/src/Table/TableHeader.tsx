@@ -1,12 +1,13 @@
 import {
   forwardRef,
   useContext,
-  useCallback,
 } from 'react';
 import {
   tableClasses as classes,
   TableColumn,
   TableRecord,
+  getColumnStyle,
+  getCellStyle,
 } from '@mezzanine-ui/core/table';
 import { TableContext, TableDataContext } from './TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -32,34 +33,6 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
     const {
       columns,
     } = useContext(TableDataContext) || {};
-
-    /** styling */
-    const getColumnStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
-      let style = {};
-
-      if (column.width) {
-        style = {
-          ...style,
-          width: column.width,
-          maxWidth: column.width,
-        };
-      }
-
-      return style;
-    }, []);
-
-    const getCellStyle = useCallback((column: TableColumn<TableRecord<unknown>>) => {
-      let style = {};
-
-      if (column.align) {
-        style = {
-          ...style,
-          justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
-        };
-      }
-
-      return style;
-    }, []);
 
     return (
       <div

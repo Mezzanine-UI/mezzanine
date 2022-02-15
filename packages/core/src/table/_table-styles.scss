@@ -103,6 +103,18 @@ $table-refresh-vertical-padding: 8px !default;
     &__cellWrapper {
       @include flexible;
     }
+
+    &__expandedTableWrapper {
+      padding: 0;
+    }
+
+    &__expandedTableRow {
+      background-color: palette.color(divider);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 
   &__empty {

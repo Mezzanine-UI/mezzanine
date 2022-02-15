@@ -13,6 +13,9 @@ export const tableClasses = {
   bodyRow: `${tableBodyPrefix}__row`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowCellWrapper: `${tableBodyPrefix}__row__cellWrapper`,
+  bodyRowExpandedTableWrapper: `${tableBodyPrefix}__row__expandedTableWrapper`,
+  bodyRowExpandedTable: `${tableBodyPrefix}__row__expandedTable`,
+  bodyRowExpandedTableRow: `${tableBodyPrefix}__row__expandedTableRow`,
   cell: tableCellPrefix,
   cellEllipsis: `${tableCellPrefix}__ellipsis`,
   selections: `${tablePrefix}__selections`,
@@ -61,6 +64,18 @@ export type TableColumn<SourceType> = {
   forceShownTooltipWhenHovered?: boolean;
 };
 
+export type ExpandedTableColumn = Omit<TableColumn<TableRecord<unknown>>,
+'title' |
+'renderTitle' |
+'align' |
+'headerClassName' |
+'width' |
+'sorter' |
+'onSorted' |
+'editable' |
+'setCellProps'
+>;
+
 export type TableFetchMore = {
   callback?(): any;
   isReachEnd?: boolean;
@@ -84,8 +99,12 @@ export interface TableRowSelection {
 /** === Feature Expandable */
 export interface TableExpandable<SourceType> {
   className?: string;
-  expandedRowRender(record: SourceType): any;
+  expandedRowRender(record: SourceType): string | {
+    dataSource: TableDataSource[];
+    columns?: ExpandedTableColumn[];
+  };
   rowExpandable?(record: SourceType): boolean;
+  onExpand?(record: SourceType, status: boolean): void;
 }
 
 /** === Feature Pagination */
@@ -117,4 +136,36 @@ export interface TableComponents {
   body?: {
     cell?: any;
   }
+}
+
+/** styling */
+export function getColumnStyle(column: TableColumn<TableRecord<unknown>>) {
+  if (!column) return {};
+
+  let style = {};
+
+  if (column.width) {
+    style = {
+      ...style,
+      width: column.width,
+      maxWidth: column.width,
+    };
+  }
+
+  return style;
+}
+
+export function getCellStyle(column: TableColumn<TableRecord<unknown>>) {
+  if (!column) return {};
+
+  let style = {};
+
+  if (column.align) {
+    style = {
+      ...style,
+      justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
+    };
+  }
+
+  return style;
 }
