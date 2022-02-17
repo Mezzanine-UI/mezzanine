@@ -63,7 +63,8 @@ describe('<CalendarMonths />', () => {
       const testMonth = 9;
       const testMonthName = monthNames[testMonth];
       const disableMonth = moment().month(testMonth);
-      const isMonthDisabled: CalendarMonthsProps['isMonthDisabled'] = (date) => date.isSame(disableMonth, 'month');
+      const isMonthDisabled: CalendarMonthsProps['isMonthDisabled'] = (date) => (
+        moment(date).isSame(disableMonth, 'month'));
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -90,7 +91,7 @@ describe('<CalendarMonths />', () => {
       const rangeStart = moment().month(testRangeStart);
       const rangeEnd = moment().month(testRangeEnd);
       const isMonthInRange: CalendarMonthsProps['isMonthInRange'] = (date) => (
-        date.isBetween(rangeStart, rangeEnd, undefined, '[]')
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
       );
 
       const { getByText } = render(

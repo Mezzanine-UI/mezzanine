@@ -43,7 +43,7 @@ describe('<CalendarYears />', () => {
   describe('prop: isYearDisabled', () => {
     it('should disable year when matching the condition', () => {
       const today = moment();
-      const isYearDisabled: CalendarYearsProps['isYearDisabled'] = (date) => date.isSame(today, 'year');
+      const isYearDisabled: CalendarYearsProps['isYearDisabled'] = (date) => today.isSame(date, 'year');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -67,7 +67,7 @@ describe('<CalendarYears />', () => {
       const lastYear = moment().year(today.year() - 1);
       const nextYear = moment().year(today.year() + 1);
       const isYearInRange: CalendarYearsProps['isYearInRange'] = (date) => (
-        date.isBetween(lastYear, nextYear, undefined, '[]')
+        moment(date).isBetween(lastYear, nextYear, undefined, '[]')
       );
 
       const { getByText } = render(

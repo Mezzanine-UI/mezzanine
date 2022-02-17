@@ -1,5 +1,7 @@
 import { Story, Meta } from '@storybook/react';
-import { CalendarMethodsMoment, DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
+import {
+  DateType, getDefaultModeFormat, CalendarMethodsMoment,
+} from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
@@ -10,9 +12,9 @@ export default {
   title: 'Data Entry/DatePicker',
 } as Meta;
 
-function usePickerChange() {
-  const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+function usePickerChange<T = string>() {
+  const [val, setVal] = useState<T>();
+  const onChange = (v?: T) => { setVal(v); };
 
   return [val, onChange] as const;
 }
@@ -33,11 +35,14 @@ export const Playground: Story<PlaygroundArgs> = ({
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, onChange] = usePickerChange();
 
+  // const formatString = CalendarMethodsMomentIsoString.formatToString('', val ?? '', format ?? 'YYYY-MM-DD');
+
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h5" style={typoStyle}>
-        {`current value: ${val?.format(format)}`}
+        {/* {`current value: ${formatString}`} */}
       </Typography>
+      <Typography>{val}</Typography>
       <DatePicker
         value={val}
         onChange={onChange}
@@ -109,19 +114,19 @@ export const Basic = () => {
         <Typography variant="h5" style={typoStyle}>
           Disabled
         </Typography>
-        <DatePicker value={moment()} disabled />
+        <DatePicker value={new Date().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Error
         </Typography>
-        <DatePicker value={moment()} error />
+        <DatePicker value={new Date().toISOString()} error />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Read only
         </Typography>
-        <DatePicker value={moment()} readOnly />
+        <DatePicker value={new Date().toISOString()} readOnly />
       </div>
     </CalendarConfigProvider>
   );
@@ -173,7 +178,7 @@ export const Modes = () => {
           Day
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${valD?.format(getDefaultModeFormat('day'))}`}
+          {`current value: ${moment(valD).format(getDefaultModeFormat('day'))}`}
         </Typography>
         <DatePicker
           value={valD}
@@ -188,7 +193,7 @@ export const Modes = () => {
           Week
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${valW?.format(getDefaultModeFormat('week'))}`}
+          {`current value: ${moment(valW).format(getDefaultModeFormat('week'))}`}
         </Typography>
         <DatePicker
           value={valW}
@@ -203,7 +208,7 @@ export const Modes = () => {
           Month
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${valM?.format(getDefaultModeFormat('month'))}`}
+          {`current value: ${moment(valM).format(getDefaultModeFormat('month'))}`}
         </Typography>
         <DatePicker
           value={valM}
@@ -218,7 +223,7 @@ export const Modes = () => {
           Year
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${valY?.format(getDefaultModeFormat('year'))}`}
+          {`current value: ${moment(valY).format(getDefaultModeFormat('year'))}`}
         </Typography>
         <DatePicker
           value={valY}
@@ -248,7 +253,7 @@ export const CustomDisable = () => {
   const disabledYearsEnd = moment().year(moment().year() + 2);
 
   const isDateDisabled = (target: DateType) => (
-    target.isBetween(
+    moment(target).isBetween(
       disabledDatesStart,
       disabledDatesEnd,
       'day',
@@ -257,7 +262,7 @@ export const CustomDisable = () => {
   );
 
   const isMonthDisabled = (target: DateType) => (
-    target.isBetween(
+    moment(target).isBetween(
       disabledMonthsStart,
       disabledMonthsEnd,
       'month',
@@ -266,7 +271,7 @@ export const CustomDisable = () => {
   );
 
   const isYearDisabled = (target: DateType) => (
-    target.isBetween(
+    moment(target).isBetween(
       disabledYearsStart,
       disabledYearsEnd,
       'year',

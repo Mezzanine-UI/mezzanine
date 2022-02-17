@@ -64,7 +64,7 @@ describe('<CalendarDays />', () => {
     it('should disable Date when matching the condition', () => {
       const testDate = 15;
       const today = moment().date(testDate);
-      const isDateDisabled: CalendarDaysProps['isDateDisabled'] = (date) => date.isSame(today, 'date');
+      const isDateDisabled: CalendarDaysProps['isDateDisabled'] = (date) => moment(date).isSame(today, 'date');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -89,7 +89,7 @@ describe('<CalendarDays />', () => {
       const rangeStart = moment().date(testRangeStart);
       const rangeEnd = moment().date(testRangeEnd);
       const isDateInRange: CalendarDaysProps['isDateInRange'] = (date) => (
-        date.isBetween(rangeStart, rangeEnd, undefined, '[]')
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
       );
 
       const { getByText } = render(

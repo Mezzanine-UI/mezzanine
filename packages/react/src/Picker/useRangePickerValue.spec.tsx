@@ -204,13 +204,13 @@ describe('useRangePickerValue', () => {
         result.current.onInputFromChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe('2021-10-20');
 
       TestRenderer.act(() => {
         result.current.onInputToChange({ target: { value: '2021-10-17' } } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-10-17');
+      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe('2021-10-17');
       expect(result.current.value[0]).toBe(undefined);
     });
 
@@ -235,13 +235,13 @@ describe('useRangePickerValue', () => {
         result.current.onInputToChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe('2021-10-20');
 
       TestRenderer.act(() => {
         result.current.onInputFromChange({ target: { value: '2021-10-21' } } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-10-21');
+      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe('2021-10-21');
       expect(result.current.value[1]).toBe(undefined);
     });
   });

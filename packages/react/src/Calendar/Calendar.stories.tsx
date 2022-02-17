@@ -30,7 +30,7 @@ const InnerCalendarPlayground = ({
     month: 'YYYY-MM',
     year: 'YYYY',
   };
-  const initialReferenceDate = useMemo(() => moment(), []);
+  const initialReferenceDate = useMemo(() => moment().toISOString(), []);
   const [val, setVal] = useState<DateType>();
   const {
     currentMode,
@@ -56,7 +56,7 @@ const InnerCalendarPlayground = ({
   return (
     <>
       <Typography style={{ margin: '0 0 12px 0' }}>
-        {`current value: ${val?.format(formats[mode])}`}
+        {`current value: ${moment(val).format(formats[mode])}`}
       </Typography>
       <div style={{ width: '224px' }}>
         <Calendar
@@ -110,28 +110,28 @@ export const Calendars = () => {
     margin: '0 0 12px 0',
   };
 
-  const startDate = moment().date(17);
-  const endDate = moment().date(26);
-  const isDateInRange = (date: DateType) => date.isBetween(startDate, endDate);
+  const startDate = moment().date(17).toISOString();
+  const endDate = moment().date(26).toISOString();
+  const isDateInRange = (date: string) => moment(date).isBetween(startDate, endDate);
 
-  const startWeek = moment().date(7);
-  const endWeek = moment().date(21);
-  const isWeekInRange = (date: DateType) => date.isBetween(startWeek, endWeek, 'date', '[]');
+  const startWeek = moment().date(7).toISOString();
+  const endWeek = moment().date(21).toISOString();
+  const isWeekInRange = (date: string) => moment(date).isBetween(startWeek, endWeek, 'date', '[]');
 
-  const startMonth = moment().month(2);
-  const endMonth = moment().month(5);
-  const isMonthInRange = (date: DateType) => date.isBetween(startMonth, endMonth, 'month', '[]');
+  const startMonth = moment().month(2).toISOString();
+  const endMonth = moment().month(5).toISOString();
+  const isMonthInRange = (date: string) => moment(date).isBetween(startMonth, endMonth, 'month', '[]');
 
-  const startYear = moment().year(2021);
-  const endYear = moment().year(2025);
-  const isYearInRange = (date: DateType) => date.isBetween(startYear, endYear, 'year', '[]');
+  const startYear = moment().year(2021).toISOString();
+  const endYear = moment().year(2025).toISOString();
+  const isYearInRange = (date: string) => moment(date).isBetween(startYear, endYear, 'year', '[]');
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h4" style={titleStyles}>Days Calendar</Typography>
       <div style={calendarStyles}>
         <CalendarDays
-          referenceDate={moment()}
+          referenceDate={moment().toISOString()}
           isDateInRange={isDateInRange}
           value={[startDate, endDate]}
         />

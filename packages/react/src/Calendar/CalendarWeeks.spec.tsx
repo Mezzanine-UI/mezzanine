@@ -64,7 +64,7 @@ describe('<CalendarWeeks />', () => {
     it('should disable week when matching the condition', () => {
       const testDate = 15;
       const today = moment().date(testDate);
-      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) => date.isSame(today, 'week');
+      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) => moment(date).isSame(today, 'week');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -92,7 +92,7 @@ describe('<CalendarWeeks />', () => {
       const rangeStart = moment().date(testRangeStart);
       const rangeEnd = moment().date(testRangeEnd);
       const isWeekInRange: CalendarWeeksProps['isWeekInRange'] = (date) => (
-        date.isBetween(rangeStart, rangeEnd, undefined, '[]')
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
       );
 
       const { getByText } = render(

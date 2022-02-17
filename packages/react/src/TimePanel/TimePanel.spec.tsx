@@ -148,7 +148,7 @@ describe('<TimePanel />', () => {
       // eslint-disable-next-line max-len
       it('controls should fire onChange with `DateType` that indicates start of day as its argument if no value', () => {
         function isStartOfDay(val: Moment) {
-          const valTimeString = val.format('HH:mm:ss');
+          const valTimeString = moment(val).format('HH:mm:ss');
 
           return valTimeString === moment().startOf('day').format('HH:mm:ss');
         }
@@ -191,7 +191,7 @@ describe('<TimePanel />', () => {
             const expectHour = moment().startOf('day').hour(prevHour);
 
             function isSameTime(val: Moment) {
-              const valTimeString = val.format('HH:mm:ss');
+              const valTimeString = moment(val).format('HH:mm:ss');
 
               return valTimeString === expectHour.format('HH:mm:ss');
             }
@@ -216,7 +216,7 @@ describe('<TimePanel />', () => {
             const expectHour = moment().startOf('day').hour(nextHour);
 
             function isSameTime(val: Moment) {
-              const valTimeString = val.format('HH:mm:ss');
+              const valTimeString = moment(val).format('HH:mm:ss');
 
               return valTimeString === expectHour.format('HH:mm:ss');
             }
@@ -263,7 +263,7 @@ describe('<TimePanel />', () => {
 
         it(`should get ${getUnitLabel(i, 2)}:00:00`, () => {
           function isSameTime(val: Moment) {
-            const valTimeString = val.format('HH:mm:ss');
+            const valTimeString = moment(val).format('HH:mm:ss');
 
             return valTimeString === expectHour.format('HH:mm:ss');
           }
