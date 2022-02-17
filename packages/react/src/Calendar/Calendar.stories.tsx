@@ -112,19 +112,19 @@ export const Calendars = () => {
 
   const startDate = moment().date(17).toISOString();
   const endDate = moment().date(26).toISOString();
-  const isDateInRange = (date: string) => moment(date).isBetween(startDate, endDate);
+  const isDateInRange = (date: DateType) => moment(date).isBetween(startDate, endDate);
 
   const startWeek = moment().date(7).toISOString();
   const endWeek = moment().date(21).toISOString();
-  const isWeekInRange = (date: string) => moment(date).isBetween(startWeek, endWeek, 'date', '[]');
+  const isWeekInRange = (date: DateType) => moment(date).isBetween(startWeek, endWeek, 'date', '[]');
 
   const startMonth = moment().month(2).toISOString();
   const endMonth = moment().month(5).toISOString();
-  const isMonthInRange = (date: string) => moment(date).isBetween(startMonth, endMonth, 'month', '[]');
+  const isMonthInRange = (date: DateType) => moment(date).isBetween(startMonth, endMonth, 'month', '[]');
 
   const startYear = moment().year(2021).toISOString();
   const endYear = moment().year(2025).toISOString();
-  const isYearInRange = (date: string) => moment(date).isBetween(startYear, endYear, 'year', '[]');
+  const isYearInRange = (date: DateType) => moment(date).isBetween(startYear, endYear, 'year', '[]');
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>

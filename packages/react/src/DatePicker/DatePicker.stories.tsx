@@ -12,9 +12,9 @@ export default {
   title: 'Data Entry/DatePicker',
 } as Meta;
 
-function usePickerChange<T = string>() {
-  const [val, setVal] = useState<T>();
-  const onChange = (v?: T) => { setVal(v); };
+function usePickerChange() {
+  const [val, setVal] = useState<DateType>();
+  const onChange = (v?: DateType) => { setVal(v); };
 
   return [val, onChange] as const;
 }

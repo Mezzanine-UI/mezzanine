@@ -9,9 +9,9 @@ export const pickerClasses = {
 } as const;
 
 /** Types */
-export type RangePickerValue = undefined[] | [DateType, DateType];
-export type RangePickerPickingValue =
+export type RangePickerValue<T = DateType> = undefined[] | [T, T];
+export type RangePickerPickingValue<T = DateType> =
  | RangePickerValue
- | [DateType]
- | [undefined, DateType]
- | [DateType, undefined];
+ | [T]
+ | [undefined, T]
+ | [T, undefined];
