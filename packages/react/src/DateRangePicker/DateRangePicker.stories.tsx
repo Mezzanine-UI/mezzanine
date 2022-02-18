@@ -1,5 +1,6 @@
 import { Story, Meta } from '@storybook/react';
 import {
+  CalendarMethodsDayjs,
   CalendarMethodsMoment,
   CalendarMode,
   DateType,
@@ -139,6 +140,33 @@ export const Basic = () => {
         <DateRangePicker value={[moment().toISOString(), moment().toISOString()]} readOnly />
       </div>
     </CalendarConfigProvider>
+  );
+};
+
+export const Method = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [val, onChange] = usePickerChange();
+
+  return (
+    <>
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsMoment
+          </Typography>
+          <DateRangePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+      <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+          CalendarMethodsDayjs
+          </Typography>
+          <DateRangePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+    </>
   );
 };
 

@@ -1,6 +1,6 @@
 import { Story, Meta } from '@storybook/react';
 import {
-  DateType, getDefaultModeFormat, CalendarMethodsMoment,
+  DateType, getDefaultModeFormat, CalendarMethodsMoment, CalendarMethodsDayjs,
 } from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 import moment from 'moment';
@@ -129,6 +129,34 @@ export const Basic = () => {
         <DatePicker value={new Date().toISOString()} readOnly />
       </div>
     </CalendarConfigProvider>
+  );
+};
+
+export const Method = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [val, setVal] = useState<DateType>();
+  const onChange = (v?: DateType) => { setVal(v); };
+
+  return (
+    <>
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsMoment
+          </Typography>
+          <DatePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+      <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsDayjs
+          </Typography>
+          <DatePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+    </>
   );
 };
 
