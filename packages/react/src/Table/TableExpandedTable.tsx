@@ -36,7 +36,7 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
 
   return (
     <div className={classes.bodyRowExpandedTable}>
-      {renderedExpandedContent.dataSource.map((source: TableDataSource) => (
+      {renderedExpandedContent.dataSource.map((source: TableDataSource, sourceIndex: number) => (
         <div
           ref={ref}
           key={(source.key || source.id) as (string | number)}
@@ -73,7 +73,7 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
                     {column.render?.(
                       column,
                       source,
-                      index,
+                      sourceIndex,
                     ) || get(source, column.dataIndex)}
                   </TableCell>
                 </div>

@@ -52,13 +52,14 @@ describe('<TableBodyRow />', () => {
       <TableBodyRow
         ref={ref}
         rowData={rowData}
+        rowIndex={0}
       />,
     ),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <TableBodyRow rowData={rowData} />,
+      <TableBodyRow rowData={rowData} rowIndex={0} />,
     );
     const element = getHostHTMLElement();
 
@@ -86,7 +87,7 @@ describe('<TableBodyRow />', () => {
           dataSource: [rowData],
         }}
       >
-        <TableBodyRow rowData={rowData} />
+        <TableBodyRow rowData={rowData} rowIndex={0} />
       </TableDataContext.Provider>,
     );
     const cellInstance = testInstance.root.findAllByType(TableCell);
@@ -126,7 +127,7 @@ describe('<TableBodyRow />', () => {
             dataSource: [rowData],
           }}
         >
-          <TableBodyRow rowData={rowData} />
+          <TableBodyRow rowData={rowData} rowIndex={0} />
         </TableDataContext.Provider>,
       );
 
@@ -186,7 +187,7 @@ describe('<TableBodyRow />', () => {
               },
             }}
           >
-            <TableBodyRow rowData={rowData} />
+            <TableBodyRow rowData={rowData} rowIndex={0} />
           </TableContext.Provider>
         </TableDataContext.Provider>,
       );
@@ -222,7 +223,7 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} />
+                <TableBodyRow rowData={rowData} rowIndex={0} />
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -273,7 +274,7 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} />
+                <TableBodyRow rowData={rowData} rowIndex={0} />
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -317,7 +318,7 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} />
+                <TableBodyRow rowData={rowData} rowIndex={0} />
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -352,7 +353,7 @@ describe('<TableBodyRow />', () => {
             dataSource: [],
           }}
         >
-          <TableBodyRow rowData={rowData} />
+          <TableBodyRow rowData={rowData} rowIndex={0} />
         </TableDataContext.Provider>,
       );
 

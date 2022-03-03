@@ -82,11 +82,12 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
       onScroll={tableBody.onScroll}
       role="rowgroup"
     >
-      {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource) => (
+      {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource, index: number) => (
         <TableBodyRow
           key={(rowData.key || rowData.id) as string}
           className={rowClassName}
           rowData={rowData}
+          rowIndex={index}
         />
       )) : (
         <Empty
