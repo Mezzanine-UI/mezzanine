@@ -511,6 +511,7 @@ export const ExpandedWithDataSource = () => {
           className: '',
           expandedRowRender: (record) => ({
             dataSource: sourceData[record.key as string] || [],
+            className: 'expanded-table-row',
             columns: [{
               dataIndex: 'name',
             }, {

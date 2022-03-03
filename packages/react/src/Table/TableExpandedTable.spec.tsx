@@ -78,6 +78,8 @@ describe('<TableExpandedTable />', () => {
   );
 
   describe('render TableExpandedTable', () => {
+    const customExpandedRowClass = 'expanded-row';
+
     const { getHostHTMLElement } = render(
       <TableDataContext.Provider
         value={{
@@ -85,7 +87,9 @@ describe('<TableExpandedTable />', () => {
           dataSource,
         }}
       >
-        <TableExpandedTable renderedExpandedContent={renderedExpandedContent} />
+        <TableExpandedTable
+          renderedExpandedContent={{ ...renderedExpandedContent, className: customExpandedRowClass }}
+        />
       </TableDataContext.Provider>,
     );
 
@@ -98,6 +102,13 @@ describe('<TableExpandedTable />', () => {
     expect(expandedTableElements.length).toBe(2);
 
     const firstRow = expandedTableElements[0];
+
+    it('should have custom class name when rowClassName in renderedExpandedContent is given', () => {
+      const rowClassRegex = new RegExp(customExpandedRowClass, 'g');
+
+      expect(firstRow?.getAttribute('class')?.match(rowClassRegex)).not.toBeNull();
+    });
+
     const rowColumns = firstRow.querySelectorAll(
       '.mzn-table__body__row__cellWrapper',
     );

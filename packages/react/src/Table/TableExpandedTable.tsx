@@ -22,6 +22,7 @@ export interface TableExpandedTableProps extends NativeElementPropsWithoutKeyAnd
   renderedExpandedContent: {
     dataSource: TableDataSource[];
     columns?: ExpandedTableColumn[];
+    className?: string;
   }
 }
 
@@ -43,6 +44,7 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
           className={cx(
             classes.bodyRow,
             classes.bodyRowExpandedTableRow,
+            renderedExpandedContent.className,
           )}
           role="row"
         >
