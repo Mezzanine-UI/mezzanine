@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.9.0...@mezzanine-ui/react@0.9.1) (2022-03-03)
+
+### Bug Fixes
+
+- **react/table:** index args in render function of columns is row index not column index ([221fb01](https://github.com/Mezzanine-UI/mezzanine/commit/221fb0138d5a3b6601f63b47652cb0f0fd3e5d55))
+
 # [0.9.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.8.1...@mezzanine-ui/react@0.9.0) (2022-02-15)
 
 ### Bug Fixes
