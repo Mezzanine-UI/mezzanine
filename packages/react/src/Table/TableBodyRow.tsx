@@ -29,7 +29,8 @@ export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'d
   /**
    * table body row dataSource
    */
-  rowData: TableDataSource
+  rowData: TableDataSource;
+  rowIndex: number;
 }
 
 const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
@@ -37,6 +38,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
     const {
       className,
       rowData,
+      rowIndex,
       ...rest
     } = props;
 
@@ -96,7 +98,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
               }
             />
           ) : null}
-          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, index: number) => {
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => {
             const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
             const tooltipTitle = (
               column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
@@ -124,7 +126,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
                     {column.render?.(
                       column,
                       rowData,
-                      index,
+                      rowIndex,
                     ) || get(rowData, column.dataIndex)}
                   </TableCell>
                 </TableEditRenderWrapper>
