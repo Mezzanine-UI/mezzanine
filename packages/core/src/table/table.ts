@@ -102,6 +102,7 @@ export interface TableExpandable<SourceType> {
   expandedRowRender(record: SourceType): string | {
     dataSource: TableDataSource[];
     columns?: ExpandedTableColumn[];
+    className?: string;
   };
   rowExpandable?(record: SourceType): boolean;
   onExpand?(record: SourceType, status: boolean): void;
