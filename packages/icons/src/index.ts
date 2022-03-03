@@ -3,7 +3,9 @@ export type { IconDefinition } from './typings';
 /**
  * icons
  */
+export { ArrowDownIcon } from './arrow-down';
 export { ArrowRightIcon } from './arrow-right';
+export { ArrowUpIcon } from './arrow-up';
 export { CalendarIcon } from './calendar';
 export { CaretRightIcon } from './caret-right';
 export { CheckCircleFilledIcon } from './check-circle-filled';
