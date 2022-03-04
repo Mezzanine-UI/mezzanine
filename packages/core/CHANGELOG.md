@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.9.0...@mezzanine-ui/core@0.9.2) (2022-03-04)
+
+### Features
+
+- **core/table:** add className props in expandedRowRender ([0a218c0](https://github.com/Mezzanine-UI/mezzanine/commit/0a218c083a9dee6fca1d4b04bd73e461654b3f85))
+
 # [0.9.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.8.1...@mezzanine-ui/core@0.9.0) (2022-02-15)
 
 **Note:** Version bump only for package @mezzanine-ui/core

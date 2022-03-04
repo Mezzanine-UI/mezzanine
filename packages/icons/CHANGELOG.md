@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.9.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.7.3...@mezzanine-ui/icons@0.9.2) (2022-03-04)
+
+### Features
+
+- **icons:** add arrow-up and arrow-down icons ([5f554c2](https://github.com/Mezzanine-UI/mezzanine/commit/5f554c2f54c421f3b28587f276bdda23431931c1))
+
 ## [0.7.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.5.0...@mezzanine-ui/icons@0.7.3) (2022-01-05)
 
 ### Features
