@@ -24,7 +24,7 @@ describe('<CalendarDays />', () => {
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarDays
-          referenceDate={moment()}
+          referenceDate={moment().format('YYYY-MM-DD')}
           className={className}
         />
       </CalendarConfigProvider>,
@@ -34,7 +34,7 @@ describe('<CalendarDays />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <CalendarDays referenceDate={moment()} />
+        <CalendarDays referenceDate={moment().format('YYYY-MM-DD')} />
       </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
@@ -47,7 +47,7 @@ describe('<CalendarDays />', () => {
       const testInstance = TestRenderer.create(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             displayWeekDayLocale="zh-TW"
           />
           ,
@@ -69,7 +69,7 @@ describe('<CalendarDays />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isDateDisabled={isDateDisabled}
           />
         </CalendarConfigProvider>,
@@ -95,7 +95,7 @@ describe('<CalendarDays />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isDateInRange={isDateInRange}
           />
         </CalendarConfigProvider>,
@@ -111,7 +111,7 @@ describe('<CalendarDays />', () => {
     it('should have no click handler if onClick is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarDays referenceDate={moment()} />
+          <CalendarDays referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -127,7 +127,7 @@ describe('<CalendarDays />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onClick={onClick}
           />
         </CalendarConfigProvider>,
@@ -149,7 +149,7 @@ describe('<CalendarDays />', () => {
     it('should have no mouseenter handler if onDateHover is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarDays referenceDate={moment()} />
+          <CalendarDays referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -165,7 +165,7 @@ describe('<CalendarDays />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onDateHover={onDateHover}
           />
         </CalendarConfigProvider>,
@@ -185,7 +185,7 @@ describe('<CalendarDays />', () => {
 
   describe('prop: referenceDate', () => {
     it('should pass to getCalendarGrid method', () => {
-      const referenceDate = moment();
+      const referenceDate = moment().format('YYYY-MM-DD');
       const getCalendarGridSpy = jest.spyOn(CalendarMethodsMoment, 'getCalendarGrid');
 
       render(
@@ -201,12 +201,12 @@ describe('<CalendarDays />', () => {
   describe('prop: value', () => {
     it('should have the date matches the value have active class', () => {
       const testDate = 15;
-      const value = [moment().date(testDate)];
+      const value = [moment().date(testDate).format('YYYY-MM-DD')];
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarDays
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             value={value}
           />
         </CalendarConfigProvider>,

@@ -22,7 +22,7 @@ describe('<CalendarMonths />', () => {
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarMonths
-          referenceDate={moment()}
+          referenceDate={moment().format('YYYY-MM-DD')}
           className={className}
         />
       </CalendarConfigProvider>,
@@ -32,7 +32,7 @@ describe('<CalendarMonths />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <CalendarMonths referenceDate={moment()} />
+        <CalendarMonths referenceDate={moment().format('YYYY-MM-DD')} />
       </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
@@ -47,7 +47,7 @@ describe('<CalendarMonths />', () => {
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             displayMonthLocale="zh-TW"
           />
         </CalendarConfigProvider>,
@@ -69,7 +69,7 @@ describe('<CalendarMonths />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isMonthDisabled={isMonthDisabled}
           />
         </CalendarConfigProvider>,
@@ -97,7 +97,7 @@ describe('<CalendarMonths />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isMonthInRange={isMonthInRange}
           />
         </CalendarConfigProvider>,
@@ -113,7 +113,7 @@ describe('<CalendarMonths />', () => {
     it('should have no click handler if onClick is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarMonths referenceDate={moment()} />
+          <CalendarMonths referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -129,7 +129,7 @@ describe('<CalendarMonths />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onClick={onClick}
           />
         </CalendarConfigProvider>,
@@ -151,7 +151,7 @@ describe('<CalendarMonths />', () => {
     it('should have no mouseenter handler if onMonthHover is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarMonths referenceDate={moment()} />
+          <CalendarMonths referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -167,7 +167,7 @@ describe('<CalendarMonths />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onMonthHover={onMonthHover}
           />
         </CalendarConfigProvider>,
@@ -190,12 +190,12 @@ describe('<CalendarMonths />', () => {
       const monthNames = CalendarMethodsMoment.getMonthShortNames('en-US');
       const testMonth = 9;
       const testMonthName = monthNames[testMonth];
-      const value = [moment().month(testMonth)];
+      const value = [moment().month(testMonth).format('YYYY-MM-DD')];
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarMonths
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             value={value}
           />
         </CalendarConfigProvider>,

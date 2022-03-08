@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
 import { CalendarMethodsMoment, DateType } from '@mezzanine-ui/core/calendar';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import { getUnitLabel } from '@mezzanine-ui/core/time-panel';
 import {
   cleanup,
@@ -147,7 +147,7 @@ describe('<TimePanel />', () => {
     describe('column controls', () => {
       // eslint-disable-next-line max-len
       it('controls should fire onChange with `DateType` that indicates start of day as its argument if no value', () => {
-        function isStartOfDay(val: Moment) {
+        function isStartOfDay(val: string) {
           const valTimeString = moment(val).format('HH:mm:ss');
 
           return valTimeString === moment().startOf('day').format('HH:mm:ss');
@@ -186,14 +186,14 @@ describe('<TimePanel />', () => {
 
         for (let i = 0; i < 24; i += 1) {
           it(`prev control at ${getUnitLabel(i, 2)}:00:00`, () => {
-            const displayHour = moment().startOf('day').hour(i);
+            const displayHour = moment().startOf('day').hour(i).format('YYYY-MM-DD HH:mm:ss');
             const prevHour = (i - 1 >= 0 ? i - 1 : 24 + i - 1) % 24;
-            const expectHour = moment().startOf('day').hour(prevHour);
+            const expectHour = moment().startOf('day').hour(prevHour).format('YYYY-MM-DD HH:mm:ss');
 
-            function isSameTime(val: Moment) {
-              const valTimeString = moment(val).format('HH:mm:ss');
+            function isSameTime(val: string) {
+              const valTimeString = moment(val).format('YYYY-MM-DD HH:mm:ss');
 
-              return valTimeString === expectHour.format('HH:mm:ss');
+              return valTimeString === expectHour;
             }
 
             const onChange = jest.fn(isSameTime);
@@ -211,14 +211,14 @@ describe('<TimePanel />', () => {
           });
 
           it(`next control at ${getUnitLabel(i, 2)}:00:00`, () => {
-            const displayHour = moment().startOf('day').hour(i);
+            const displayHour = moment().startOf('day').hour(i).format('YYYY-MM-DD HH:mm:ss');
             const nextHour = (i + 1 >= 0 ? i + 1 : 24 + i + 1) % 24;
-            const expectHour = moment().startOf('day').hour(nextHour);
+            const expectHour = moment().startOf('day').hour(nextHour).format('YYYY-MM-DD HH:mm:ss');
 
-            function isSameTime(val: Moment) {
-              const valTimeString = moment(val).format('HH:mm:ss');
+            function isSameTime(val: string) {
+              const valTimeString = moment(val).format('YYYY-MM-DD HH:mm:ss');
 
-              return valTimeString === expectHour.format('HH:mm:ss');
+              return valTimeString === expectHour;
             }
 
             const onChange = jest.fn(isSameTime);
@@ -262,7 +262,7 @@ describe('<TimePanel />', () => {
         const expectHour = moment().startOf('day').hour(i);
 
         it(`should get ${getUnitLabel(i, 2)}:00:00`, () => {
-          function isSameTime(val: Moment) {
+          function isSameTime(val: string) {
             const valTimeString = moment(val).format('HH:mm:ss');
 
             return valTimeString === expectHour.format('HH:mm:ss');

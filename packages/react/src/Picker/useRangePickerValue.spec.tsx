@@ -24,8 +24,8 @@ describe('useRangePickerValue', () => {
 
   describe('onChange', () => {
     it('case: valid value should be returned', () => {
-      const from = moment('2021-10-20');
-      const to = moment('2021-10-21');
+      const from = '2021-10-20';
+      const to = '2021-10-21';
       const inputFromRef = {
         current: document.createElement('input'),
       };
@@ -45,14 +45,14 @@ describe('useRangePickerValue', () => {
       TestRenderer.act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
-        expect(sortedValue?.[0]?.isSame(from, 'day'));
-        expect(sortedValue?.[1]?.isSame(to, 'day'));
+        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
+        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
       });
     });
 
     it('case: wrong ordered value should be sorted in returned value', () => {
-      const from = moment('2021-10-21');
-      const to = moment('2021-10-20');
+      const from = '2021-10-21';
+      const to = '2021-10-20';
       const inputFromRef = {
         current: document.createElement('input'),
       };
@@ -72,13 +72,13 @@ describe('useRangePickerValue', () => {
       TestRenderer.act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
-        expect(sortedValue?.[0]?.isSame(to, 'day'));
-        expect(sortedValue?.[1]?.isSame(from, 'day'));
+        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
+        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
       });
     });
 
     it('case: value with only from should be returned with [from, undefind]', () => {
-      const from = moment('2021-10-20');
+      const from = '2021-10-20';
       const inputFromRef = {
         current: document.createElement('input'),
       };
@@ -99,13 +99,13 @@ describe('useRangePickerValue', () => {
         const sortedValue = result.current.onChange([from, undefined]);
 
         expect(sortedValue).toBeInstanceOf(Array);
-        expect(sortedValue?.[0]?.isSame(from, 'day'));
+        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
         expect(sortedValue?.[1]).toBe(undefined);
       });
     });
 
     it('case: value with only to should be returned with [undefined, to]', () => {
-      const to = moment('2021-10-20');
+      const to = '2021-10-20';
       const inputFromRef = {
         current: document.createElement('input'),
       };
@@ -127,7 +127,7 @@ describe('useRangePickerValue', () => {
 
         expect(sortedValue).toBeInstanceOf(Array);
         expect(sortedValue?.[0]).toBe(undefined);
-        expect(sortedValue?.[1]?.isSame(to, 'day'));
+        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
       });
     });
 

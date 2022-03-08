@@ -13,7 +13,7 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType>();
+  const [val, setVal] = useState<DateType | undefined>('2022-01-05');
   const onChange = (v?: DateType) => { setVal(v); };
 
   return [val, onChange] as const;
@@ -99,7 +99,7 @@ Playground.args = {
 export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType>();
+  const [val, setVal] = useState<DateType | undefined>('2022-01-05');
   const onChange = (v?: DateType) => { setVal(v); };
 
   return (

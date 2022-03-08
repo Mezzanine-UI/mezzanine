@@ -22,7 +22,7 @@ describe('<CalendarYears />', () => {
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarYears
-          referenceDate={moment()}
+          referenceDate={moment().format('YYYY-MM-DD')}
           className={className}
         />
       </CalendarConfigProvider>,
@@ -32,7 +32,7 @@ describe('<CalendarYears />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <CalendarYears referenceDate={moment()} />
+        <CalendarYears referenceDate={moment().format('YYYY-MM-DD')} />
       </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
@@ -48,7 +48,7 @@ describe('<CalendarYears />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarYears
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isYearDisabled={isYearDisabled}
           />
         </CalendarConfigProvider>,
@@ -73,7 +73,7 @@ describe('<CalendarYears />', () => {
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarYears
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isYearInRange={isYearInRange}
           />
         </CalendarConfigProvider>,
@@ -89,7 +89,7 @@ describe('<CalendarYears />', () => {
     it('should have no click handler if onClick is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarYears referenceDate={moment()} />
+          <CalendarYears referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -105,7 +105,7 @@ describe('<CalendarYears />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarYears
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onClick={onClick}
           />
         </CalendarConfigProvider>,
@@ -127,7 +127,7 @@ describe('<CalendarYears />', () => {
     it('should have no mouseenter handler if onWeekHover is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarYears referenceDate={moment()} />
+          <CalendarYears referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -143,7 +143,7 @@ describe('<CalendarYears />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarYears
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onYearHover={onYearHover}
           />
         </CalendarConfigProvider>,
@@ -163,17 +163,17 @@ describe('<CalendarYears />', () => {
 
   describe('prop: value', () => {
     it('should have the date matches the value have active class', () => {
-      const value = [moment()];
+      const value = [moment().format('YYYY-MM-DD')];
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarYears
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             value={value}
           />
         </CalendarConfigProvider>,
       );
-      const buttonElement = getByText(`${value[0].year()}`);
+      const buttonElement = getByText(`${moment(value[0]).year()}`);
 
       expect(buttonElement?.classList.contains('mzn-calendar-button--active')).toBe(true);
     });
