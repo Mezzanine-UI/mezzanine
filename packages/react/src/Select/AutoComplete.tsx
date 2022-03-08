@@ -240,7 +240,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     role: 'combobox',
   };
 
-  const searchTextExist: boolean = !!searchText && options.find((option) => searchText === option) === undefined;
+  const searchTextExistWithoutOption: boolean = !!searchText && options.find((op) => searchText === op) === undefined;
 
   return (
     <SelectControlContext.Provider
@@ -306,7 +306,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
               </Empty>
             )}
           </Menu>
-          {searchTextExist && addable ? (
+          {searchTextExistWithoutOption && addable ? (
             <div className={classes.autoComplete}>
               <input
                 type="text"
