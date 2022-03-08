@@ -96,7 +96,7 @@ export const FullyControlled = () => {
         placeholder="預設文字"
       />
       <span>
-        {`current value: ${selection}`}
+        {`current value: ${selection?.name || ''}`}
       </span>
     </div>
   );

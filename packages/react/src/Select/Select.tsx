@@ -215,11 +215,9 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
 
-  const renderValue = renderValueProp;
-
   function getPlaceholder() {
-    if (typeof renderValue === 'function') {
-      return renderValue(value);
+    if (typeof renderValueProp === 'function') {
+      return renderValueProp(value);
     }
 
     if (value) {
@@ -326,7 +324,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           onKeyDown={onKeyDownTextField}
           prefix={prefix}
           readOnly
-          renderValue={renderValue}
+          renderValue={renderValueProp}
           required={required}
           inputProps={resolvedInputProps}
           size={size}
