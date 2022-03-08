@@ -14,7 +14,6 @@ import { PlusIcon } from '@mezzanine-ui/icons';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
-import Empty from '../Empty';
 import Option from './Option';
 import Icon from '../Icon';
 import { PopperProps } from '../Popper';
@@ -287,25 +286,23 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           sameWidth
           options={popperOptions}
         >
-          <Menu
-            id={MENU_ID}
-            aria-activedescendant={value?.id ?? ''}
-            itemsInView={itemsInView}
-            maxHeight={menuMaxHeight}
-            role={menuRole}
-            size={menuSize}
-            style={{ border: 0 }}
-          >
-            {options.length ? options.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            )) : (
-              <Empty>
-                查無資料
-              </Empty>
-            )}
-          </Menu>
+          {options.length ? (
+            <Menu
+              id={MENU_ID}
+              aria-activedescendant={value?.id ?? ''}
+              itemsInView={itemsInView}
+              maxHeight={menuMaxHeight}
+              role={menuRole}
+              size={menuSize}
+              style={{ border: 0 }}
+            >
+              {options.map((option) => (
+                <Option key={option} value={option}>
+                  {option}
+                </Option>
+              ))}
+            </Menu>
+          ) : null}
           {searchTextExistWithoutOption && addable ? (
             <div className={classes.autoComplete}>
               <input
