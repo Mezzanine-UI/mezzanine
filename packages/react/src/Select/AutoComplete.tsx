@@ -166,7 +166,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     options,
     searchText,
     setSearchText,
-    // setValue,
     value,
   } = useAutoCompleteValueControl({
     defaultValue,

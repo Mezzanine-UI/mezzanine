@@ -28,7 +28,6 @@ export interface AutoCompleteValueControl {
   options: SelectValue[];
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
-  setValue: (option: SelectValue) => void;
   value: SelectValue | null;
 }
 
@@ -56,11 +55,6 @@ export function useAutoCompleteValueControl(
 
   const [searchText, setSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
-
-  const onChangeValue = useCallback((option: SelectValue) => {
-    setValue(option);
-    onChange?.(option);
-  }, [setValue, onChange]);
 
   const onFocus = useCallback((focus: boolean) => {
     setFocused(focus);
@@ -94,6 +88,7 @@ export function useAutoCompleteValueControl(
       e.stopPropagation();
 
       setValue(null);
+      onChange?.(null);
       setSearchText('');
 
       if (typeof onClearProp === 'function') {
@@ -108,7 +103,6 @@ export function useAutoCompleteValueControl(
     options,
     searchText,
     setSearchText,
-    setValue: onChangeValue,
     value,
   };
 }
