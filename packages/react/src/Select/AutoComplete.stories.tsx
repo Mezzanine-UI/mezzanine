@@ -3,12 +3,34 @@ import { useState, useCallback } from 'react';
 import {
   AutoComplete,
 } from '.';
+import { SelectValue } from './typings';
 
 export default {
   title: 'Data Entry/AutoComplete',
 };
 
-const originOptions: string[] = ['item1', 'item2', 'item3', 'foo', 'bar', 'bob', 'apple'];
+const originOptions: SelectValue[] = [{
+  id: 'item1',
+  name: 'item1',
+}, {
+  id: 'item2',
+  name: 'item2',
+}, {
+  id: 'item3',
+  name: 'item3',
+}, {
+  id: 'foo',
+  name: 'foo',
+}, {
+  id: 'bar',
+  name: 'bar',
+}, {
+  id: 'bob',
+  name: 'bob',
+}, {
+  id: 'apple',
+  name: 'apple',
+}];
 
 export const Basic = () => (
   <div
@@ -43,14 +65,14 @@ export const Basic = () => (
 );
 
 export const FullyControlled = () => {
-  const [selection, setSelection] = useState<string>(originOptions[0]);
-  const [options, setOptions] = useState<string[]>(originOptions);
+  const [selection, setSelection] = useState<SelectValue | null>(originOptions[0]);
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
   const onSearch = useCallback((search: string) => {
-    setOptions(originOptions.filter((opt) => ~opt.search(search)));
+    setOptions(originOptions.filter((opt) => ~opt.name.search(search)));
   }, []);
 
-  const onChange = useCallback((s: string) => {
-    setSelection(s);
+  const onChange = useCallback((option: SelectValue | null) => {
+    setSelection(option);
   }, []);
 
   return (
@@ -70,7 +92,7 @@ export const FullyControlled = () => {
         value={selection}
         onChange={onChange}
         onSearch={onSearch}
-        onClear={() => onChange('')}
+        onClear={() => onChange(null)}
         placeholder="預設文字"
       />
       <span>
@@ -81,11 +103,14 @@ export const FullyControlled = () => {
 };
 
 export const Addable = () => {
-  const [options, setOptions] = useState<string[]>(originOptions);
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
   const onInsert = useCallback((newOption: string) => {
     setOptions((prevOptions) => ([
       ...prevOptions,
-      newOption,
+      {
+        id: newOption,
+        name: newOption,
+      },
     ]));
 
     return true;

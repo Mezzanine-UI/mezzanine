@@ -5,17 +5,18 @@ import {
   SetStateAction,
   useCallback,
 } from 'react';
+import isEqual from 'lodash/isEqual';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
 export interface UseAutoCompleteValueControl {
-  defaultValue?: string;
+  defaultValue?: SelectValue | null;
   disabledOptionsFilter: boolean;
-  onChange?(newOption: string): any;
+  onChange?(newOption: SelectValue | null): any;
   onClear?(e: MouseEvent<Element>): void;
   onClose?(): void;
-  options: string[];
-  value?: string;
+  options: SelectValue[];
+  value?: SelectValue | null;
 }
 
 export interface AutoCompleteValueControl {
@@ -23,20 +24,20 @@ export interface AutoCompleteValueControl {
   onChange: (v: SelectValue | null) => SelectValue[];
   onClear(e: MouseEvent<Element>): void;
   onFocus: (f: boolean) => void;
-  options: string[];
+  options: SelectValue[];
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
-  setValue: (text: string) => void;
+  setValue: (option: SelectValue) => void;
   value: SelectValue | null;
 }
 
-const equalityFn = (a: string, b: string) => a === b;
+const equalityFn = (a: SelectValue | null, b: SelectValue | null) => isEqual(a, b);
 
 export function useAutoCompleteValueControl(
   props: UseAutoCompleteValueControl,
 ): AutoCompleteValueControl {
   const {
-    defaultValue = '',
+    defaultValue = null,
     disabledOptionsFilter,
     onChange,
     onClear: onClearProp,
@@ -45,7 +46,7 @@ export function useAutoCompleteValueControl(
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useControlValueState({
+  const [value, setValue] = useControlValueState<SelectValue | null>({
     defaultValue,
     equalityFn,
     value: valueProp,
@@ -54,9 +55,9 @@ export function useAutoCompleteValueControl(
   const [searchText, setSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
 
-  const onChangeValue = useCallback((text: string) => {
-    setValue(text);
-    onChange?.(text);
+  const onChangeValue = useCallback((option: SelectValue) => {
+    setValue(option);
+    onChange?.(option);
   }, [setValue, onChange]);
 
   const onFocus = useCallback((focus: boolean) => {
@@ -71,16 +72,9 @@ export function useAutoCompleteValueControl(
     onChange,
   ]);
 
-  const getCurrentInputValue = () => (
-    value ? {
-      id: value,
-      name: value,
-    } : null
-  );
-
   const options = disabledOptionsFilter
     ? optionsProp
-    : optionsProp.filter((option) => !!option.includes(searchText));
+    : optionsProp.filter((option) => !!option.name.includes(searchText));
 
   return {
     focused,
@@ -88,15 +82,15 @@ export function useAutoCompleteValueControl(
       if (!chooseOption) return [];
 
       onClose?.();
-      setValue(chooseOption.name);
-      onChange?.(chooseOption.name);
+      setValue(chooseOption);
+      onChange?.(chooseOption);
 
       return [chooseOption];
     },
     onClear: (e: MouseEvent<Element>) => {
       e.stopPropagation();
 
-      setValue('');
+      setValue(null);
       setSearchText('');
 
       if (typeof onClearProp === 'function') {
@@ -108,6 +102,6 @@ export function useAutoCompleteValueControl(
     searchText,
     setSearchText,
     setValue: onChangeValue,
-    value: getCurrentInputValue(),
+    value,
   };
 }

@@ -11,6 +11,7 @@ import {
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import { PlusIcon } from '@mezzanine-ui/icons';
+import { SelectValue } from './typings';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
@@ -56,7 +57,7 @@ export interface AutoCompleteProps
   /**
    * The default selection
    */
-  defaultValue?: string;
+  defaultValue?: SelectValue | null;
   /**
    * Should the filter rules be disabled (If you need to control options filter by yourself)
    * @default false
@@ -80,7 +81,7 @@ export interface AutoCompleteProps
   /**
    * The change event handler of input element.
    */
-  onChange?(text: string): any;
+  onChange?(option: SelectValue): any;
   /**
    * insert callback whenever insert icon is clicked
    * return `true` when insert is successfully
@@ -93,7 +94,7 @@ export interface AutoCompleteProps
   /**
    * The options that mapped autocomplete options
    */
-  options: string[];
+  options: SelectValue[];
   /**
    * select input placeholder
    */
@@ -112,7 +113,7 @@ export interface AutoCompleteProps
    * The value of selection.
    * @default undefined
    */
-  value?: string;
+  value?: SelectValue | null;
 }
 
 const MENU_ID = 'mzn-select-autocomplete-menu-id';
@@ -165,7 +166,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     options,
     searchText,
     setSearchText,
-    setValue,
+    // setValue,
     value,
   } = useAutoCompleteValueControl({
     defaultValue,
@@ -207,7 +208,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     /** should sync both search input and value */
     setSearchText(e.target.value);
     setInsertText(e.target.value);
-    setValue(e.target.value);
 
     /** return current value to onSearch */
     onSearch?.(e.target.value);
@@ -240,7 +240,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     role: 'combobox',
   };
 
-  const searchTextExistWithoutOption: boolean = !!searchText && options.find((op) => searchText === op) === undefined;
+  const searchTextExistWithoutOption: boolean =
+    !!searchText && options.find((option) => option.name === searchText) === undefined;
 
   return (
     <SelectControlContext.Provider
@@ -298,8 +299,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
               style={{ border: 0 }}
             >
               {options.map((option) => (
-                <Option key={option} value={option}>
-                  {option}
+                <Option key={option.id} value={option.id}>
+                  {option.name}
                 </Option>
               ))}
             </Menu>
