@@ -68,7 +68,7 @@ export const FullyControlled = () => {
   const [selection, setSelection] = useState<SelectValue | null>(originOptions[0]);
   const [options, setOptions] = useState<SelectValue[]>(originOptions);
   const onSearch = useCallback((search: string) => {
-    setOptions(originOptions.filter((opt) => ~opt.name.search(search)));
+    setOptions(originOptions.filter((opt) => !!opt.name.includes(search)));
   }, []);
 
   const onChange = useCallback((option: SelectValue | null) => {

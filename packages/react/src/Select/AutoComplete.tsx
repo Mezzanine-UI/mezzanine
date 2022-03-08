@@ -174,6 +174,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onChange: onChangeProp,
     onClear: onClearProp,
     onClose: () => toggleOpen(false),
+    onSearch,
     options: optionsProp,
     value: valueProp,
   });

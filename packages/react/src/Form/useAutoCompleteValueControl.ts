@@ -15,6 +15,7 @@ export interface UseAutoCompleteValueControl {
   onChange?(newOption: SelectValue | null): any;
   onClear?(e: MouseEvent<Element>): void;
   onClose?(): void;
+  onSearch?(input: string): any;
   options: SelectValue[];
   value?: SelectValue | null;
 }
@@ -42,6 +43,7 @@ export function useAutoCompleteValueControl(
     onChange,
     onClear: onClearProp,
     onClose,
+    onSearch,
     options: optionsProp,
     value: valueProp,
   } = props;
@@ -96,6 +98,10 @@ export function useAutoCompleteValueControl(
 
       if (typeof onClearProp === 'function') {
         onClearProp(e);
+      }
+
+      if (typeof onSearch === 'function') {
+        onSearch('');
       }
     },
     onFocus,
