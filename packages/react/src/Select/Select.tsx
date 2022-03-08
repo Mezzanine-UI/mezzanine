@@ -37,6 +37,7 @@ export interface SelectBaseProps
   | 'onClick'
   | 'onFocus'
   | 'onKeyDown'
+  | 'readOnly'
   | 'renderValue'
   | 'value'
   >,
@@ -168,7 +169,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     placeholder = '',
     popperOptions = {},
     prefix,
-    readOnly = false,
     renderValue: renderValueProp,
     required = requiredFromFormControl || false,
     size = 'medium',
@@ -325,7 +325,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           onClick={onClickTextField}
           onKeyDown={onKeyDownTextField}
           prefix={prefix}
-          readOnly={readOnly}
+          readOnly
           renderValue={renderValue}
           required={required}
           inputProps={resolvedInputProps}
