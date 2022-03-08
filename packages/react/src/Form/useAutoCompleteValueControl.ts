@@ -80,7 +80,7 @@ export function useAutoCompleteValueControl(
 
   const options = disabledOptionsFilter
     ? optionsProp
-    : optionsProp.filter((option) => ~option.search(searchText));
+    : optionsProp.filter((option) => !!option.includes(searchText));
 
   return {
     focused,
