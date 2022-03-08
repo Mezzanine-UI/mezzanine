@@ -305,31 +305,27 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
             </Menu>
           ) : null}
           {searchTextExistWithoutOption && addable ? (
-            <div className={classes.autoComplete}>
-              <input
-                type="text"
-                onChange={(e) => setInsertText(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                onFocus={(e) => e.stopPropagation()}
-                placeholder={insertText}
-                value={insertText}
-              />
+            <button
+              type="button"
+              className={classes.autoComplete}
+              onClick={(e) => {
+                e.stopPropagation();
+
+                if (insertText) {
+                  const insertSuccess = onInsert?.(insertText) ?? false;
+
+                  if (insertSuccess) {
+                    setInsertText('');
+                  }
+                }
+              }}
+            >
+              <p>{insertText}</p>
               <Icon
                 className={classes.autoCompleteIcon}
                 icon={PlusIcon}
-                onClick={(e) => {
-                  e.stopPropagation();
-
-                  if (insertText) {
-                    const insertSuccess = onInsert?.(insertText) ?? false;
-
-                    if (insertSuccess) {
-                      setInsertText('');
-                    }
-                  }
-                }}
               />
-            </div>
+            </button>
           ) : null}
         </InputTriggerPopper>
       </div>

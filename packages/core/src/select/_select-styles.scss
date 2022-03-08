@@ -93,20 +93,20 @@ $tags-gap: 4px !default;
 .#{$autocomplete-prefix} {
   width: 100%;
   height: 32px;
-  padding: 0 16px;
+  padding: 0 12px 0 16px;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background-color: palette.color(bg);
   box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
 
-  input {
+  p {
     flex: 1;
-    border: 0;
-    padding: 0;
-    outline: none;
+    margin: 0;
     color: palette.color(text-primary);
-    background-color: transparent;
 
     @include typography.variant(input2);
   }
@@ -114,6 +114,5 @@ $tags-gap: 4px !default;
   &__icon {
     font-size: 24px;
     color: palette.color(text-secondary);
-    cursor: pointer;
   }
 }
