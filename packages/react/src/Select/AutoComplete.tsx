@@ -267,7 +267,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           clearable
           disabled={disabled}
           error={error}
-          forceHideSuffixActionIcon
           fullWidth={fullWidth}
           inputRef={inputRef}
           mode="single"
@@ -278,7 +277,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           required={required}
           inputProps={resolvedInputProps}
           size={size}
-          suffixActionIcon={undefined}
           value={value}
           renderValue={renderValue}
         />
