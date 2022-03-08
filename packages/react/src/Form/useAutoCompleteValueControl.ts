@@ -21,7 +21,7 @@ export interface UseAutoCompleteValueControl {
 
 export interface AutoCompleteValueControl {
   focused: boolean;
-  onChange: (v: SelectValue | null) => SelectValue[];
+  onChange: (v: SelectValue | null) => SelectValue | null;
   onClear(e: MouseEvent<Element>): void;
   onFocus: (f: boolean) => void;
   options: SelectValue[];
@@ -79,13 +79,14 @@ export function useAutoCompleteValueControl(
   return {
     focused,
     onChange: (chooseOption: SelectValue | null) => {
-      if (!chooseOption) return [];
+      if (!chooseOption) return null;
 
       onClose?.();
       setValue(chooseOption);
       onChange?.(chooseOption);
+      setSearchText('');
 
-      return [chooseOption];
+      return chooseOption;
     },
     onClear: (e: MouseEvent<Element>) => {
       e.stopPropagation();

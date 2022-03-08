@@ -86,7 +86,7 @@ export interface AutoCompleteProps
    * insert callback whenever insert icon is clicked
    * return `true` when insert is successfully
    */
-  onInsert?(text: string): boolean;
+  onInsert?(text: string): SelectValue;
   /**
    * The search event handler
    */
@@ -185,6 +185,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
   const controlRef = useRef<HTMLElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
+  const renderValue = focused ? () => searchText : undefined;
 
   useClickAway(
     () => {
@@ -236,7 +237,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onBlur: onSearchInputBlur,
     onChange: onSearchInputChange,
     onFocus: onSearchInputFocus,
-    placeholder,
+    placeholder: focused && value ? value.name : placeholder,
     role: 'combobox',
   };
 
@@ -279,6 +280,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           size={size}
           suffixActionIcon={undefined}
           value={value}
+          renderValue={renderValue}
         />
         <InputTriggerPopper
           ref={popperRef}
@@ -313,10 +315,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
                 e.stopPropagation();
 
                 if (insertText) {
-                  const insertSuccess = onInsert?.(insertText) ?? false;
+                  const newOption = onInsert?.(insertText) ?? null;
 
-                  if (insertSuccess) {
+                  if (newOption) {
                     setInsertText('');
+                    onChange(newOption);
                   }
                 }
               }}

@@ -104,16 +104,18 @@ export const FullyControlled = () => {
 
 export const Addable = () => {
   const [options, setOptions] = useState<SelectValue[]>(originOptions);
-  const onInsert = useCallback((newOption: string) => {
+  const onInsert = useCallback((text: string) => {
+    const newOption = {
+      id: text,
+      name: text,
+    };
+
     setOptions((prevOptions) => ([
       ...prevOptions,
-      {
-        id: newOption,
-        name: newOption,
-      },
+      newOption,
     ]));
 
-    return true;
+    return newOption;
   }, []);
 
   return (
