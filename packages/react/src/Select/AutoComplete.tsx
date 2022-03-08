@@ -32,7 +32,6 @@ export interface AutoCompleteProps
   | 'active'
   | 'clearable'
   | 'forceHideSuffixActionIcon'
-  | 'mode'
   | 'onClick'
   | 'onKeyDown'
   | 'onChange'
@@ -144,6 +143,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     menuMaxHeight,
     menuRole = 'listbox',
     menuSize = 'medium',
+    mode = 'single',
     onChange: onChangeProp,
     onClear: onClearProp,
     onInsert,
@@ -269,7 +269,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           error={error}
           fullWidth={fullWidth}
           inputRef={inputRef}
-          mode="single"
+          mode={mode}
           onTagClose={onChange}
           onClear={onClear}
           prefix={prefix}
