@@ -30,5 +30,4 @@ export const selectClasses = {
   /** AutoComplete classes */
   autoComplete: autoCompletePrefix,
   autoCompleteIcon: `${autoCompletePrefix}__icon`,
-  autoCompleteIconActive: `${autoCompletePrefix}__icon--active`,
 } as const;

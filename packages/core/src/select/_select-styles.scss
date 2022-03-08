@@ -109,20 +109,11 @@ $tags-gap: 4px !default;
     background-color: transparent;
 
     @include typography.variant(input2);
-
-    &::placeholder {
-      color: palette.color(action-inactive);
-    }
   }
 
   &__icon {
     font-size: 24px;
-    color: palette.color(action-inactive);
-    cursor: default;
-
-    &--active {
-      color: palette.color(primary);
-      cursor: pointer;
-    }
+    color: palette.color(text-secondary);
+    cursor: pointer;
   }
 }

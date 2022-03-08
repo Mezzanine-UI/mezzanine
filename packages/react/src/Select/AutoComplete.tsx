@@ -206,6 +206,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     /** should sync both search input and value */
     setSearchText(e.target.value);
+    setInsertText(e.target.value);
     setValue(e.target.value);
 
     /** return current value to onSearch */
@@ -308,24 +309,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
               <input
                 type="text"
                 onChange={(e) => setInsertText(e.target.value)}
-                onClick={(e) => {
-                  e.stopPropagation();
-
-                  if (!insertText) {
-                    setInsertText(searchText);
-                  }
-                }}
+                onClick={(e) => e.stopPropagation()}
                 onFocus={(e) => e.stopPropagation()}
-                placeholder={`新增 ${searchText} 或其他選項`}
+                placeholder={insertText}
                 value={insertText}
               />
               <Icon
-                className={cx(
-                  classes.autoCompleteIcon,
-                  {
-                    [classes.autoCompleteIconActive]: !!insertText,
-                  },
-                )}
+                className={classes.autoCompleteIcon}
                 icon={PlusIcon}
                 onClick={(e) => {
                   e.stopPropagation();
