@@ -44,7 +44,7 @@ export const Playground: Story<PlaygroundArgs> = ({
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h5" style={typoStyle}>
-        {`current value: ${val?.format(format)}`}
+        {`current value: ${moment(val).format(format)}`}
       </Typography>
       <DateTimePicker
         value={val}
@@ -122,19 +122,19 @@ export const Basic = () => {
         <Typography variant="h5" style={typoStyle}>
           Disabled
         </Typography>
-        <DateTimePicker value={moment()} disabled />
+        <DateTimePicker value={moment().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Error
         </Typography>
-        <DateTimePicker value={moment()} error />
+        <DateTimePicker value={moment().toISOString()} error />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Read only
         </Typography>
-        <DateTimePicker value={moment()} readOnly />
+        <DateTimePicker value={moment().toISOString()} readOnly />
       </div>
     </CalendarConfigProvider>
   );
@@ -188,7 +188,7 @@ export const DisplayColumn = () => {
           Hours, minutes, seconds
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val1?.format(fullFormat)}`}
+          {`current value: ${moment(val1).format(fullFormat)}`}
         </Typography>
         <DateTimePicker
           value={val1}
@@ -202,7 +202,7 @@ export const DisplayColumn = () => {
           Hours, minutes
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val2?.format(withoutSecondFormat)}`}
+          {`current value: ${moment(val2).format(withoutSecondFormat)}`}
         </Typography>
         <DateTimePicker
           value={val2}
@@ -217,7 +217,7 @@ export const DisplayColumn = () => {
           Hours
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val3?.format(onlyHourFormat)}`}
+          {`current value: ${moment(val3).format(onlyHourFormat)}`}
         </Typography>
         <DateTimePicker
           value={val3}
@@ -243,7 +243,7 @@ export const CustomDisable = () => {
   const format = 'YYYY-MM-DD HH:mm:ss';
 
   const isDateDisabled = (target: DateType) => (
-    target.isBetween(
+    moment(target).isBetween(
       disabledDatesStart,
       disabledDatesEnd,
       'day',

@@ -10,9 +10,9 @@ export default {
   title: 'Data Entry/TimePicker',
 } as Meta;
 
-function usePickerChange() {
-  const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+function usePickerChange<T = DateType>() {
+  const [val, setVal] = useState<T>();
+  const onChange = (v?: T) => { setVal(v); };
 
   return [val, onChange] as const;
 }
@@ -45,7 +45,7 @@ export const Playground: Story<PlaygroundArgs> = ({
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h5" style={typoStyle}>
-        {`current value: ${val?.format(format)}`}
+        {`current value: ${moment(val).format(format)}`}
       </Typography>
       <TimePicker
         value={val}
@@ -125,19 +125,19 @@ export const Basic = () => {
         <Typography variant="h5" style={typoStyle}>
           Disabled
         </Typography>
-        <TimePicker value={moment()} disabled />
+        <TimePicker value={moment().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Error
         </Typography>
-        <TimePicker value={moment()} error />
+        <TimePicker value={moment().toISOString()} error />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Read only
         </Typography>
-        <TimePicker value={moment()} readOnly />
+        <TimePicker value={moment().toISOString()} readOnly />
       </div>
     </CalendarConfigProvider>
   );
@@ -188,7 +188,7 @@ export const DisplayColumn = () => {
           Hours, minutes, seconds
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val1?.format('HH:mm:ss')}`}
+          {`current value: ${moment(val1).format('HH:mm:ss')}`}
         </Typography>
         <TimePicker
           value={val1}
@@ -202,7 +202,7 @@ export const DisplayColumn = () => {
           Hours, minutes
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val2?.format('HH:mm')}`}
+          {`current value: ${moment(val2).format('HH:mm')}`}
         </Typography>
         <TimePicker
           value={val2}
@@ -217,7 +217,7 @@ export const DisplayColumn = () => {
           Hours
         </Typography>
         <Typography variant="body1" style={typoStyle}>
-          {`current value: ${val3?.format('HH')}`}
+          {`current value: ${moment(val3).format('HH')}`}
         </Typography>
         <TimePicker
           value={val3}

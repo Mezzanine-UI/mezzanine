@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext } from 'react';
-import { CalendarMethods, DateType } from '@mezzanine-ui/core/calendar';
+import { CalendarMethods } from '@mezzanine-ui/core/calendar';
 
-export interface CalendarConfigs extends CalendarMethods<DateType> {
+export interface CalendarConfigs extends CalendarMethods {
   defaultDateFormat: string;
   defaultTimeFormat: string;
   displayMonthLocale: string;
@@ -15,7 +15,7 @@ export type CalendarConfigProviderProps = {
   defaultTimeFormat?: string;
   displayMonthLocale?: string;
   displayWeekDayLocale?: string;
-  methods: CalendarMethods<DateType>;
+  methods: CalendarMethods;
   valueLocale?: string;
 };
 

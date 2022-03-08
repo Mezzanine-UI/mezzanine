@@ -24,7 +24,7 @@ describe('<CalendarWeeks />', () => {
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarWeeks
-          referenceDate={moment()}
+          referenceDate={moment().format('YYYY-MM-DD')}
           className={className}
         />
       </CalendarConfigProvider>,
@@ -34,7 +34,7 @@ describe('<CalendarWeeks />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <CalendarWeeks referenceDate={moment()} />
+        <CalendarWeeks referenceDate={moment().format('YYYY-MM-DD')} />
       </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
@@ -47,7 +47,7 @@ describe('<CalendarWeeks />', () => {
       const testInstance = TestRenderer.create(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             displayWeekDayLocale="zh-TW"
           />
           ,
@@ -64,12 +64,12 @@ describe('<CalendarWeeks />', () => {
     it('should disable week when matching the condition', () => {
       const testDate = 15;
       const today = moment().date(testDate);
-      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) => date.isSame(today, 'week');
+      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) => moment(date).isSame(today, 'week');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isWeekDisabled={isWeekDisabled}
           />
         </CalendarConfigProvider>,
@@ -92,13 +92,13 @@ describe('<CalendarWeeks />', () => {
       const rangeStart = moment().date(testRangeStart);
       const rangeEnd = moment().date(testRangeEnd);
       const isWeekInRange: CalendarWeeksProps['isWeekInRange'] = (date) => (
-        date.isBetween(rangeStart, rangeEnd, undefined, '[]')
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
       );
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             isWeekInRange={isWeekInRange}
           />
         </CalendarConfigProvider>,
@@ -114,7 +114,7 @@ describe('<CalendarWeeks />', () => {
     it('should have no click handler if onClick is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarWeeks referenceDate={moment()} />
+          <CalendarWeeks referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -130,7 +130,7 @@ describe('<CalendarWeeks />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onClick={onClick}
           />
         </CalendarConfigProvider>,
@@ -152,7 +152,7 @@ describe('<CalendarWeeks />', () => {
     it('should have no mouseenter handler if onWeekHover is not provided', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <CalendarWeeks referenceDate={moment()} />
+          <CalendarWeeks referenceDate={moment().format('YYYY-MM-DD')} />
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
@@ -168,7 +168,7 @@ describe('<CalendarWeeks />', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             onWeekHover={onWeekHover}
           />
         </CalendarConfigProvider>,
@@ -188,7 +188,7 @@ describe('<CalendarWeeks />', () => {
 
   describe('prop: referenceDate', () => {
     it('should pass to getCalendarGrid method', () => {
-      const referenceDate = moment();
+      const referenceDate = moment().format('YYYY-MM-DD');
       const getCalendarGridSpy = jest.spyOn(CalendarMethodsMoment, 'getCalendarGrid');
 
       render(
@@ -204,12 +204,12 @@ describe('<CalendarWeeks />', () => {
   describe('prop: value', () => {
     it('should have the date matches the value have active class', () => {
       const testDate = 15;
-      const value = [moment().date(testDate)];
+      const value = [moment().date(testDate).format('YYYY-MM-DD')];
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
-            referenceDate={moment()}
+            referenceDate={moment().format('YYYY-MM-DD')}
             value={value}
           />
         </CalendarConfigProvider>,

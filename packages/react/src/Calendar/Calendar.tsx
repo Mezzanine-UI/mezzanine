@@ -158,7 +158,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     ...restCalendarProps
   } = props;
 
-  const value = valueProp && castArray(valueProp);
+  const value = valueProp ? castArray(valueProp) : undefined;
 
   /** Compute which calendar to use */
   let displayCalendar;

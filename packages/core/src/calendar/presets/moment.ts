@@ -1,22 +1,22 @@
-import moment, { Moment, unitOfTime } from 'moment';
+import moment, { unitOfTime } from 'moment';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from './typings';
 
-export const CalendarMethods: CalendarMethodsType<Moment> = {
+export const CalendarMethods: CalendarMethodsType = {
   /** Get date infos */
-  getNow: () => moment(),
-  getSecond: (date) => date.second(),
-  getMinute: (date) => date.minute(),
-  getHour: (date) => date.hour(),
-  getDate: (date) => date.date(),
+  getNow: () => moment().toISOString(),
+  getSecond: (date) => moment(date).second(),
+  getMinute: (date) => moment(date).minute(),
+  getHour: (date) => moment(date).hour(),
+  getDate: (date) => moment(date).date(),
   getWeekDay: (date) => {
-    const clone = date.clone().locale('en_US');
+    const clone = moment(date).locale('en_US');
 
     return clone.weekday() + clone.localeData().firstDayOfWeek();
   },
-  getMonth: (date) => date.month(),
-  getYear: (date) => date.year(),
+  getMonth: (date) => moment(date).month(),
+  getYear: (date) => moment(date).year(),
   getWeekDayNames: (locale) => {
     const date = moment().locale(locale);
 
@@ -35,57 +35,58 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
 
   /** Manipulate */
   addDay: (date, diff) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.add(diff, 'day');
+    return clone.add(diff, 'day').toISOString();
   },
   addYear: (date, diff) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.add(diff, 'year');
+    return clone.add(diff, 'year').toISOString();
   },
   addMonth: (date, diff) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.add(diff, 'month');
+    return clone.add(diff, 'month').toISOString();
   },
   setSecond: (date, second) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.second(second);
+    return clone.second(second).toISOString();
   },
   setMinute: (date, minute) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.minute(minute);
+    return clone.minute(minute).toISOString();
   },
   setHour: (date, hour) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.hour(hour);
+    return clone.hour(hour).toISOString();
   },
   setMonth: (date, month) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.month(month);
+    return clone.month(month).toISOString();
   },
   setYear: (date, year) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.year(year);
+    return clone.year(year).toISOString();
   },
   setDate: (date, target) => {
-    const clone = date.clone();
+    const clone = moment(date);
 
-    return clone.date(target);
+    return clone.date(target).toISOString();
   },
-  startOf: (target, granularity: unitOfTime.StartOf) => target.startOf(granularity),
+  startOf: (target, granularity: unitOfTime.StartOf) => moment(target).startOf(granularity).toISOString(),
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
-    const lastDateOfPrevMonth = target.clone().subtract(1, 'month').endOf('month').date();
-    const firstDayOfCurrentMonth = target.clone().date(1).day();
-    const lastDateOfCurrentMonth = target.clone().endOf('month').date();
+    const lastDateOfPrevMonth = moment(target).subtract(1, 'month').endOf('month')
+      .date();
+    const firstDayOfCurrentMonth = moment(target).date(1).day();
+    const lastDateOfCurrentMonth = moment(target).endOf('month').date();
 
     return chunk(
       [
@@ -98,24 +99,26 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
   },
 
   /** Compares */
-  isBefore: (target, comparison) => target.isBefore(comparison),
+  isBefore: (target, comparison) => moment(target).isBefore(comparison),
   isBetween: (
     value,
     target1,
     target2,
     granularity: unitOfTime.StartOf,
-  ) => value.isBetween(target1, target2, granularity),
-  isSameDate: (dateOne, dateTwo) => dateOne.isSame(dateTwo, 'date'),
-  isSameWeek: (dateOne, dateTwo) => dateOne.isSame(dateTwo, 'week'),
-  isInMonth: (target, month) => target.month() === month,
-  isDateIncluded: (date, targets) => targets.some((target) => date.isSame(target, 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) => targets.some((target) => firstDateOfWeek.isSame(target, 'week')),
-  isMonthIncluded: (date, targets) => targets.some((target) => date.isSame(target, 'month')),
-  isYearIncluded: (date, targets) => targets.some((target) => date.isSame(target, 'year')),
+  ) => moment(value).isBetween(target1, target2, granularity),
+  isSameDate: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'date'),
+  isSameWeek: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'week'),
+  isInMonth: (target, month) => moment(target).month() === month,
+  isDateIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'day')),
+  isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
+    (target) => moment(firstDateOfWeek).isSame(moment(target), 'week'),
+  ),
+  isMonthIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'month')),
+  isYearIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'year')),
 
   /** Format */
   formatToString: (locale, date, format) => {
-    const clone = date.clone();
+    const clone = moment(date);
     const result = clone.locale(locale);
 
     return result.format(format);
@@ -142,7 +145,7 @@ export const CalendarMethods: CalendarMethodsType<Moment> = {
       const date = moment(formatText, format, locale, true);
 
       if (date.isValid()) {
-        return date;
+        return date.toISOString();
       }
     }
 

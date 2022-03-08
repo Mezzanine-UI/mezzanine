@@ -39,7 +39,7 @@ describe('<Calendar />', () => {
     HTMLDivElement,
     (ref) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <Calendar ref={ref} referenceDate={moment()} />
+        <Calendar ref={ref} referenceDate={moment().toISOString()} />
       </CalendarConfigProvider>,
     ),
   );
@@ -49,7 +49,7 @@ describe('<Calendar />', () => {
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <Calendar
-          referenceDate={moment()}
+          referenceDate={moment().toISOString()}
           className={className}
         />
       </CalendarConfigProvider>,
@@ -59,7 +59,7 @@ describe('<Calendar />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <Calendar referenceDate={moment()} />
+        <Calendar referenceDate={moment().toISOString()} />
       </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
@@ -71,7 +71,7 @@ describe('<Calendar />', () => {
     it('default to "day"', () => {
       const testInstance = TestRenderer.create(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment()} />
+          <Calendar referenceDate={moment().toISOString()} />
         </CalendarConfigProvider>,
       );
 
@@ -87,7 +87,7 @@ describe('<Calendar />', () => {
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
-              referenceDate={moment()}
+              referenceDate={moment().toISOString()}
               mode={mode}
             />
           </CalendarConfigProvider>,
@@ -105,7 +105,7 @@ describe('<Calendar />', () => {
         const isDateInRange = jest.fn();
         const onChange = jest.fn();
         const onDateHover = jest.fn();
-        const referenceDate = moment();
+        const referenceDate = moment().toISOString();
         const displayWeekDayLocale = 'zh-TW';
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -135,7 +135,7 @@ describe('<Calendar />', () => {
         const isWeekInRange = jest.fn();
         const onChange = jest.fn();
         const onWeekHover = jest.fn();
-        const referenceDate = moment();
+        const referenceDate = moment().toISOString();
         const displayWeekDayLocale = 'zh-TW';
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -165,7 +165,7 @@ describe('<Calendar />', () => {
         const isMonthInRange = jest.fn();
         const onChange = jest.fn();
         const onMonthHover = jest.fn();
-        const referenceDate = moment();
+        const referenceDate = moment().toISOString();
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
@@ -192,7 +192,7 @@ describe('<Calendar />', () => {
         const isYearInRange = jest.fn();
         const onChange = jest.fn();
         const onYearHover = jest.fn();
-        const referenceDate = moment();
+        const referenceDate = moment().toISOString();
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
@@ -218,9 +218,11 @@ describe('<Calendar />', () => {
     describe('should have relevant control buttons', () => {
       (['day', 'week'] as CalendarMode[]).forEach((mode) => {
         it(`should have month and year button if mode="${mode}", and receiving event handlers`, () => {
-          const referenceDate = moment();
+          const referenceDate = moment().toISOString();
           const displayMonthLocale = 'en-US';
-          const displayMonthName = CalendarMethodsMoment.getMonthShortName(referenceDate.month(), displayMonthLocale);
+          const displayMonthName = CalendarMethodsMoment.getMonthShortName(
+            moment(referenceDate).month(), displayMonthLocale,
+          );
           const onMonthControlClick = jest.fn();
           const onYearControlClick = jest.fn();
           const { getByText } = render(
@@ -235,7 +237,7 @@ describe('<Calendar />', () => {
           );
 
           const monthControlButton = getByText(displayMonthName);
-          const yearControlButton = getByText(referenceDate.year());
+          const yearControlButton = getByText(moment(referenceDate).year());
 
           expect(monthControlButton).toBeInstanceOf(HTMLButtonElement);
           expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
@@ -249,7 +251,7 @@ describe('<Calendar />', () => {
       });
 
       it('should have year button if mode="month", and receiving event handlers', () => {
-        const referenceDate = moment();
+        const referenceDate = moment().toISOString();
         const onYearControlClick = jest.fn();
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -261,7 +263,7 @@ describe('<Calendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const yearControlButton = getByText(referenceDate.year());
+        const yearControlButton = getByText(moment(referenceDate).year());
 
         expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
 
@@ -270,8 +272,8 @@ describe('<Calendar />', () => {
       });
 
       it('should have a disabled year range button if mode="year"', () => {
-        const referenceDate = moment();
-        const [start, end] = getYearRange(referenceDate.year(), calendarYearModuler);
+        const referenceDate = moment().toISOString();
+        const [start, end] = getYearRange(moment(referenceDate).year(), calendarYearModuler);
         const displayYearRange = `${start} - ${end}`;
         const onYearControlClick = jest.fn();
         const { getByText } = render(
@@ -297,7 +299,7 @@ describe('<Calendar />', () => {
     it('CalendarControls should reveive undefined on onNext if prop not provided', () => {
       const testInstance = TestRenderer.create(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment()} />
+          <Calendar referenceDate={moment().toISOString()} />
         </CalendarConfigProvider>,
       );
 
@@ -310,7 +312,7 @@ describe('<Calendar />', () => {
       const onNext = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment()} onNext={onNext} />
+          <Calendar referenceDate={moment().toISOString()} onNext={onNext} />
         </CalendarConfigProvider>,
       );
       const hostElement = getHostHTMLElement();
@@ -328,7 +330,7 @@ describe('<Calendar />', () => {
     it('CalendarControls should reveive undefined on onPrev if this prop not provided', () => {
       const testInstance = TestRenderer.create(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment()} />
+          <Calendar referenceDate={moment().toISOString()} />
         </CalendarConfigProvider>,
       );
 
@@ -341,7 +343,7 @@ describe('<Calendar />', () => {
       const onPrev = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment()} onPrev={onPrev} />
+          <Calendar referenceDate={moment().toISOString()} onPrev={onPrev} />
         </CalendarConfigProvider>,
       );
       const hostElement = getHostHTMLElement();
@@ -357,14 +359,14 @@ describe('<Calendar />', () => {
 
   describe('prop: value', () => {
     it('should be casted to array and pass to calendars', () => {
-      const value = moment();
+      const value = moment().toISOString();
 
       modes.forEach((mode) => {
         const calendar = calendars[mode];
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
-              referenceDate={moment()}
+              referenceDate={moment().toISOString()}
               mode={mode}
               value={value}
             />
