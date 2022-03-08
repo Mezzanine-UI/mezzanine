@@ -221,41 +221,41 @@
         "max-len": "off"
       }
     },
-    {
-      "files": ["./packages/ng/**/*.ts"],
-      "parserOptions": {
-        "project": "./packages/ng/tsconfig.*?.json"
-      },
-      "plugins": ["@angular-eslint"],
-      "extends": [
-        "plugin:@angular-eslint/recommended",
-        "plugin:@angular-eslint/template/process-inline-templates"
-      ],
-      "rules": {
-        "@angular-eslint/directive-selector": [
-          "error",
-          {
-            "type": "attribute",
-            "prefix": "mzn",
-            "style": "camelCase"
-          }
-        ],
-        "@angular-eslint/component-selector": [
-          "error",
-          {
-            "type": ["element", "attribute"],
-            "prefix": "mzn",
-            "style": "kebab-case"
-          }
-        ],
-        "import/no-extraneous-dependencies": "off"
-      }
-    },
-    {
-      "files": ["./packages/ng/**/*.html"],
-      "plugins": ["@angular-eslint/template"],
-      "extends": ["plugin:@angular-eslint/template/recommended"]
-    },
+    // {
+    //   "files": ["./packages/ng/**/*.ts"],
+    //   "parserOptions": {
+    //     "project": "./packages/ng/tsconfig.*?.json"
+    //   },
+    //   "plugins": ["@angular-eslint"],
+    //   "extends": [
+    //     "plugin:@angular-eslint/recommended",
+    //     "plugin:@angular-eslint/template/process-inline-templates"
+    //   ],
+    //   "rules": {
+    //     "@angular-eslint/directive-selector": [
+    //       "error",
+    //       {
+    //         "type": "attribute",
+    //         "prefix": "mzn",
+    //         "style": "camelCase"
+    //       }
+    //     ],
+    //     "@angular-eslint/component-selector": [
+    //       "error",
+    //       {
+    //         "type": ["element", "attribute"],
+    //         "prefix": "mzn",
+    //         "style": "kebab-case"
+    //       }
+    //     ],
+    //     "import/no-extraneous-dependencies": "off"
+    //   }
+    // },
+    // {
+    //   "files": ["./packages/ng/**/*.html"],
+    //   "plugins": ["@angular-eslint/template"],
+    //   "extends": ["plugin:@angular-eslint/template/recommended"]
+    // },
     {
       "files": ["*.tsx", "*.mdx"],
       "parserOptions": {
