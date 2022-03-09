@@ -11,7 +11,7 @@ import { useControlValueState } from './useControlValueState';
 
 export interface UseAutoCompleteBaseValueControl {
   disabledOptionsFilter: boolean;
-  onChange?(newOptions: SelectValue[] | SelectValue): any;
+  onChange?(newOptions: SelectValue[] | SelectValue | null): any;
   onClear?(e: MouseEvent<Element>): void;
   onClose?(): void;
   onSearch?(input: string): any;
@@ -28,7 +28,7 @@ export type UseAutoCompleteMultipleValueControl = UseAutoCompleteBaseValueContro
 export type UseAutoCompleteSingleValueControl = UseAutoCompleteBaseValueControl & {
   defaultValue?: SelectValue;
   mode: 'single';
-  onChange?(newOption: SelectValue): any;
+  onChange?(newOption: SelectValue | null): any;
   value?: SelectValue | null;
 };
 
@@ -80,15 +80,7 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
 
   const onFocus = useCallback((focus: boolean) => {
     setFocused(focus);
-
-    /** sync current value */
-    if (!focus) {
-      onChange?.(value);
-    }
-  }, [
-    value,
-    onChange,
-  ]);
+  }, []);
 
   const options = disabledOptionsFilter
     ? optionsProp
@@ -97,20 +89,65 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   return {
     focused,
     onChange: (chooseOption: SelectValue | null) => {
-      if (!chooseOption) return null;
+      if (!chooseOption) {
+        if (mode === 'multiple') {
+          return [];
+        }
+
+        return null;
+      }
+
+      let newValue: SelectValue[] | SelectValue | null = mode === 'multiple' ? [] : null;
+
+      switch (mode) {
+        case 'multiple': {
+          const existedValueIdx = (value as SelectValue[] ?? []).findIndex(
+            (v: SelectValue) => v.id === chooseOption.id,
+          );
+
+          if (~existedValueIdx) {
+            newValue = [
+              ...(value as SelectValue[]).slice(0, existedValueIdx),
+              ...(value as SelectValue[]).slice(existedValueIdx + 1),
+            ];
+          } else {
+            newValue = [
+              ...value as SelectValue[],
+              chooseOption,
+            ];
+          }
+
+          if (typeof onChange === 'function') onChange(newValue);
+
+          break;
+        }
+
+        default: {
+          newValue = chooseOption;
+
+          if (typeof onChange === 'function') onChange(newValue);
+
+          break;
+        }
+      }
 
       onClose?.();
-      setValue(chooseOption);
-      onChange?.(chooseOption);
+      setValue(newValue);
       setSearchText('');
 
-      return chooseOption;
+      return newValue;
     },
     onClear: (e: MouseEvent<Element>) => {
       e.stopPropagation();
 
-      setValue(null);
-      onChange?.(null);
+      if (mode === 'multiple') {
+        setValue([]);
+        onChange?.([]);
+      } else {
+        setValue(null);
+        onChange?.(null);
+      }
+
       setSearchText('');
 
       if (typeof onClearProp === 'function') {
