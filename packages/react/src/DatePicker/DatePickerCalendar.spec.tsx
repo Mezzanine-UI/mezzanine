@@ -1,12 +1,13 @@
+/* global document */
 import { createRef } from 'react';
 import moment from 'moment';
 import {
-  CalendarMethodsMoment,
   CalendarMode,
   calendarYearModuler,
   DateType,
   getYearRange,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { act } from 'react-dom/test-utils';
 import {
   cleanup,
@@ -28,14 +29,14 @@ describe('<DatePickerCalendar />', () => {
     HTMLDivElement,
     (ref) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DatePickerCalendar ref={ref} referenceDate={moment()} open />
+        <DatePickerCalendar ref={ref} referenceDate="2022-01-02" open />
       </CalendarConfigProvider>,
     ),
   );
 
   describe('should update referenceDate when switching calendars', () => {
     it('case: switching months', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DatePickerCalendar referenceDate={referenceDate} open />
@@ -55,7 +56,7 @@ describe('<DatePickerCalendar />', () => {
     });
 
     it('case: switching years', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DatePickerCalendar referenceDate={referenceDate} open />
@@ -81,7 +82,7 @@ describe('<DatePickerCalendar />', () => {
 
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePickerCalendar calendarRef={ref} referenceDate={moment()} open />
+          <DatePickerCalendar calendarRef={ref} referenceDate="2022-01-02" open />
         </CalendarConfigProvider>,
       );
 
@@ -95,7 +96,7 @@ describe('<DatePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-01');
+          const referenceDate = '2021-12-01';
           const onChange = jest.fn();
           const { getByText } = render(
             <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -131,7 +132,7 @@ describe('<DatePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-01');
+          const referenceDate = '2021-12-01';
           const onChange = jest.fn();
           const { getByText } = render(
             <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -167,7 +168,7 @@ describe('<DatePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-15');
+          const referenceDate = '2021-12-15';
           const onChange = jest.fn();
 
           render(
@@ -199,7 +200,7 @@ describe('<DatePickerCalendar />', () => {
   describe('prop: mode', () => {
     describe('should update referenceDate when cell clicked', () => {
       it('case: mode="day"', () => {
-        const referenceDate = moment('2021-10-20');
+        const referenceDate = '2021-10-20';
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DatePickerCalendar
@@ -225,7 +226,7 @@ describe('<DatePickerCalendar />', () => {
       });
 
       it('case: mode="week"', () => {
-        const referenceDate = moment('2021-10-20');
+        const referenceDate = '2021-10-20';
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DatePickerCalendar
@@ -251,7 +252,7 @@ describe('<DatePickerCalendar />', () => {
       });
 
       it('case: mode="month"', () => {
-        const referenceDate = moment('2021-10-20');
+        const referenceDate = '2021-10-20';
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DatePickerCalendar
@@ -277,7 +278,7 @@ describe('<DatePickerCalendar />', () => {
       });
 
       it('case: mode="year"', () => {
-        const referenceDate = moment('2021-10-20');
+        const referenceDate = '2021-10-20';
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DatePickerCalendar
@@ -308,7 +309,7 @@ describe('<DatePickerCalendar />', () => {
 
     describe('mode="day"', () => {
       it('should onChange argument meet the granularity of day', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
         function isSameDate(val: DateType) {
@@ -342,7 +343,7 @@ describe('<DatePickerCalendar />', () => {
 
     describe('mode="week"', () => {
       it('should onChange argument meet the granularity of week', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
         function isSameWeek(val: DateType) {
@@ -376,7 +377,7 @@ describe('<DatePickerCalendar />', () => {
 
     describe('mode="month"', () => {
       it('should onChange argument meet the granularity of month', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-11-15');
 
         function isSameMonth(val: DateType) {
@@ -410,7 +411,7 @@ describe('<DatePickerCalendar />', () => {
 
     describe('mode="month"', () => {
       it('should onChange argument meet the granularity of year', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2020-12-15');
 
         function isSameYear(val: DateType) {
