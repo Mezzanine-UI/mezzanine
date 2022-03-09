@@ -323,6 +323,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           searchText={searchText}
           size={size}
           showTextInputAfterTags
+          suffixAction={() => toggleOpen((prev) => !prev)}
           value={value}
           renderValue={renderValue}
         />

@@ -79,6 +79,7 @@ export interface SelectTriggerBaseProps
   required?: boolean;
   searchText?: string;
   showTextInputAfterTags?: boolean;
+  suffixAction?: VoidFunction;
 }
 
 export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
@@ -137,6 +138,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     searchText,
     size,
     showTextInputAfterTags = false,
+    suffixAction,
     suffixActionIcon: suffixActionIconProp,
     value,
     ...restTextFieldProps
@@ -163,6 +165,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const suffixActionIcon = suffixActionIconProp || (
     <Icon
       icon={ChevronDownIcon}
+      onClick={suffixAction}
       className={cx(
         classes.triggerSuffixActionIcon,
         {
