@@ -130,15 +130,17 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
         default: {
           newValue = chooseOption;
 
+          if (typeof onClose === 'function') onClose();
+
           if (typeof onChange === 'function') onChange(newValue);
+
+          setSearchText('');
 
           break;
         }
       }
 
-      onClose?.();
       setValue(newValue);
-      setSearchText('');
 
       return newValue;
     },
