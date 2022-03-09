@@ -1,5 +1,6 @@
+/* global document */
 import moment from 'moment';
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ChangeEvent, ReactNode, KeyboardEvent } from 'react';
 import {
   TestRenderer,
