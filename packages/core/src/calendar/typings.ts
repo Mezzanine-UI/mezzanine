@@ -1,4 +1,4 @@
-import { DateType } from '../calendar';
+import { DateType } from './calendar';
 
 /** Method Types */
 export type CalendarMethods<TDateType = DateType> = {

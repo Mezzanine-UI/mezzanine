@@ -1,17 +1,19 @@
-import dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import isBetween from 'dayjs/plugin/isBetween';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
-import { CalendarMethods as CalendarMethodsType } from './typings';
+import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
 
-const _localeMapping: Record<string, string> = {
+const localeMappingTable: Record<string, string> = {
   'en-us': 'en',
-}
-const localeMapping = (locale: string) => _localeMapping[locale] ?? locale;
+};
 
-let hasInit = false;
+const localeMapping = (locale: string) => localeMappingTable[locale] ?? locale;
+
+const hasInit = false;
+
 function init() {
   dayjs.extend(weekday);
   dayjs.extend(localeData);
@@ -20,7 +22,7 @@ function init() {
   return true;
 }
 
-const _CalendarMethods: CalendarMethodsType = {
+const CalendarMethodsDayjs: CalendarMethodsType = {
   /** Get date infos */
   getNow: () => dayjs().toISOString(),
   getSecond: (date) => dayjs(date).second(),
@@ -38,7 +40,7 @@ const _CalendarMethods: CalendarMethodsType = {
     return dayjs().locale(localeMapping(locale)).localeData().weekdaysMin();
   },
   getMonthShortName: (month, locale) => {
-    const names = CalendarMethods.getMonthShortNames(localeMapping(locale));
+    const names = CalendarMethodsDayjs.getMonthShortNames(localeMapping(locale));
 
     return names[month];
   },
@@ -130,8 +132,11 @@ const _CalendarMethods: CalendarMethodsType = {
   },
 };
 
-export const CalendarMethods: CalendarMethodsType = hasInit
-? _CalendarMethods : (() => {
-  init();
-  return _CalendarMethods;
-})();
+const CalendarMethods: CalendarMethodsType = hasInit
+  ? CalendarMethodsDayjs : (() => {
+    init();
+
+    return CalendarMethodsDayjs;
+  })();
+
+export default CalendarMethods;

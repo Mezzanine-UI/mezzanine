@@ -1,9 +1,9 @@
 import moment, { unitOfTime } from 'moment';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
-import { CalendarMethods as CalendarMethodsType } from './typings';
+import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
 
-export const CalendarMethods: CalendarMethodsType = {
+const CalendarMethodsMoment: CalendarMethodsType = {
   /** Get date infos */
   getNow: () => moment().toISOString(),
   getSecond: (date) => moment(date).second(),
@@ -23,7 +23,7 @@ export const CalendarMethods: CalendarMethodsType = {
     return date.localeData().weekdaysMin();
   },
   getMonthShortName: (month, locale) => {
-    const names = CalendarMethods.getMonthShortNames(locale);
+    const names = CalendarMethodsMoment.getMonthShortNames(locale);
 
     return names[month];
   },
@@ -152,3 +152,5 @@ export const CalendarMethods: CalendarMethodsType = {
     return undefined;
   },
 };
+
+export default CalendarMethodsMoment;
