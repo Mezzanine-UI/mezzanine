@@ -1,5 +1,7 @@
+/* global document */
 import moment from 'moment';
-import { CalendarMethodsMoment, DateType } from '@mezzanine-ui/core/calendar';
+import { DateType } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   cleanup,
   cleanupHook,
@@ -297,7 +299,7 @@ describe('<DateRangePicker />', () => {
     it('should close calendar on a case when inputTo has value and calendar clicked to have valid value', async () => {
       jest.useFakeTimers();
 
-      const referenceDate = moment('2021-10-01');
+      const referenceDate = '2021-10-01';
       const { getHostHTMLElement, getAllByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateRangePicker referenceDate={referenceDate} />
@@ -332,7 +334,7 @@ describe('<DateRangePicker />', () => {
     it('should close calendar on a case when inputFrom has value and calendar clicked to have valid value', async () => {
       jest.useFakeTimers();
 
-      const referenceDate = moment('2021-10-01');
+      const referenceDate = '2021-10-01';
       const { getHostHTMLElement, getAllByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateRangePicker referenceDate={referenceDate} />
@@ -393,7 +395,7 @@ describe('<DateRangePicker />', () => {
         const onCalendarToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DateRangePicker referenceDate={moment()} onCalendarToggle={onCalendarToggle} readOnly />
+            <DateRangePicker referenceDate="2022-01-02" onCalendarToggle={onCalendarToggle} readOnly />
           </CalendarConfigProvider>,
         );
 
@@ -411,7 +413,7 @@ describe('<DateRangePicker />', () => {
 
   describe('calendar picking', () => {
     it('should update input value', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const {
         getHostHTMLElement,
         getAllByText: getAllByTextWithHostElement,
@@ -444,7 +446,7 @@ describe('<DateRangePicker />', () => {
     });
 
     it('should select both from and to if re-opening the calendar', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const {
         getHostHTMLElement,
         getAllByText: getAllByTextWithHostElement,
@@ -830,7 +832,7 @@ describe('<DateRangePicker />', () => {
 
   describe('prop: referenceDate', () => {
     it('should use pass-in referenceDate as initial referenceDate', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -855,7 +857,7 @@ describe('<DateRangePicker />', () => {
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
-      const defaultValue: [DateType, DateType] = [moment('2021-10-20'), moment('2021-11-20')];
+      const defaultValue: [DateType, DateType] = ['2021-10-20', '2021-11-20'];
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -900,14 +902,14 @@ describe('<DateRangePicker />', () => {
         getByText(leftCalendarElement as HTMLElement, getMonthShortName(moment().month(), 'en-US')),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(leftCalendarElement as HTMLElement, getYear(moment())),
+        getByText(leftCalendarElement as HTMLElement, getYear(moment().toISOString())),
       ).toBeInstanceOf(HTMLButtonElement);
 
       expect(
         getByText(rightCalendarElement as HTMLElement, getMonthShortName(moment().add(1, 'month').month(), 'en-US')),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(rightCalendarElement as HTMLElement, getYear(moment().add(1, 'month'))),
+        getByText(rightCalendarElement as HTMLElement, getYear(moment().add(1, 'month').toISOString())),
       ).toBeInstanceOf(HTMLButtonElement);
     });
   });

@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode } from 'react';
 import {
   TestRenderer,
@@ -24,7 +24,7 @@ describe('useDateRangeCalendarControls', () => {
 
   describe('onNext/onPrev', () => {
     it('should onPrev of the first calendar minus one month on referenceDates when mode="day"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -44,12 +44,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(0);
     });
 
     it('should onNext of the first calendar add one month on referenceDates when mode="day"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -69,12 +69,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(-2);
     });
 
     it('should onPrev of the second calendar minus one month on referenceDates when mode="day"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -94,12 +94,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(0);
     });
 
     it('should onNext of the second calendar add one month on referenceDates when mode="day"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -119,12 +119,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(-2);
     });
 
     it('should onPrev of the first calendar minus one month on referenceDates when mode="week"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -144,12 +144,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(0);
     });
 
     it('should onNext of the first calendar add one month on referenceDates when mode="week"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -169,12 +169,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(-2);
     });
 
     it('should onPrev of the second calendar minus one month on referenceDates when mode="week"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -194,12 +194,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(0);
     });
 
     it('should onNext of the second calendar add one month on referenceDates when mode="week"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -219,12 +219,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'month')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'month')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'month')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'month')).toBe(-2);
     });
 
     it('should onPrev of the first calendar minus one year on referenceDates when mode="month"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -244,12 +244,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(0);
     });
 
     it('should onNext of the first calendar add one year on referenceDates when mode="month"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -269,12 +269,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-2);
     });
 
     it('should onPrev of the second calendar minus one year on referenceDates when mode="month"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -294,12 +294,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(0);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(0);
     });
 
     it('should onNext of the second calendar add one year on referenceDates when mode="month"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -319,12 +319,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(-1);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(-2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-1);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-2);
     });
 
     it('should onPrev of the first calendar minus 10 years on referenceDates when mode="year"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -344,12 +344,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(12);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(2);
     });
 
     it('should onNext of the first calendar add 10 years on referenceDates when mode="year"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -369,12 +369,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(-12);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(-22);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-22);
     });
 
     it('should onPrev of the second calendar minus 10 years on referenceDates when mode="year"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -394,12 +394,12 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(12);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(2);
     });
 
     it('should onNext of the second calendar add 10 years on referenceDates when mode="year"', () => {
-      const initialReferenceDate = moment('2021-10-20');
+      const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(
           initialReferenceDate,
@@ -419,13 +419,13 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(-12);
-      expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(-22);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-22);
     });
 
     describe('should guard months and years when switching calendars', () => {
       it('case: first calendar switching month with onNext when mode="day"', () => {
-        const initialReferenceDate = moment('2021-10-20');
+        const initialReferenceDate = '2021-10-20';
         const { result } = renderHook(
           () => useDateRangeCalendarControls(
             initialReferenceDate,
@@ -444,11 +444,11 @@ describe('useDateRangeCalendarControls', () => {
           result.current.onFirstNext();
         });
 
-        expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(-1);
+        expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-1);
       });
 
       it('case: first calendar switching month with onPrev when mode="day"', () => {
-        const initialReferenceDate = moment('2021-10-20');
+        const initialReferenceDate = '2021-10-20';
         const { result } = renderHook(
           () => useDateRangeCalendarControls(
             initialReferenceDate,
@@ -467,11 +467,11 @@ describe('useDateRangeCalendarControls', () => {
           result.current.onFirstPrev();
         });
 
-        expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(1);
+        expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(1);
       });
 
       it('case: second calendar switching month with onNext when mode="day"', () => {
-        const initialReferenceDate = moment('2021-10-20');
+        const initialReferenceDate = '2021-10-20';
         const { result } = renderHook(
           () => useDateRangeCalendarControls(
             initialReferenceDate,
@@ -490,11 +490,11 @@ describe('useDateRangeCalendarControls', () => {
           result.current.onSecondNext();
         });
 
-        expect(initialReferenceDate.diff(result.current.referenceDates[1], 'year')).toBe(-1);
+        expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-1);
       });
 
       it('case: second calendar switching month with onPrev when mode="day"', () => {
-        const initialReferenceDate = moment('2021-10-20');
+        const initialReferenceDate = '2021-10-20';
         const { result } = renderHook(
           () => useDateRangeCalendarControls(
             initialReferenceDate,
@@ -513,7 +513,7 @@ describe('useDateRangeCalendarControls', () => {
           result.current.onSecondPrev();
         });
 
-        expect(initialReferenceDate.diff(result.current.referenceDates[0], 'year')).toBe(0);
+        expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(0);
       });
     });
   });
