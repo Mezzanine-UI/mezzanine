@@ -79,7 +79,6 @@ export const Multiple = () => {
       <AutoComplete
         fullWidth
         required
-        addable
         mode="multiple"
         options={originOptions}
         onChange={(newOptions) => setSelections(newOptions)}
@@ -153,14 +152,29 @@ export const Addable = () => {
         alignItems: 'center',
       }}
     >
-      <AutoComplete
-        addable
-        fullWidth
-        required
-        options={options}
-        onInsert={onInsert}
-        placeholder="預設文字"
-      />
+      <div>
+        <p>Single</p>
+        <AutoComplete
+          addable
+          fullWidth
+          required
+          options={options}
+          onInsert={onInsert}
+          placeholder="預設文字"
+        />
+      </div>
+      <div>
+        <p>Multiple</p>
+        <AutoComplete
+          addable
+          fullWidth
+          required
+          mode="multiple"
+          options={options}
+          onInsert={onInsert}
+          placeholder="新增關鍵字"
+        />
+      </div>
     </div>
   );
 };

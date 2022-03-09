@@ -89,7 +89,7 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     : optionsProp.filter((option) => !!option.name.includes(searchText));
 
   const optionsAfterOrder = mode === 'multiple'
-    ? orderBy(options, (option) => !!valueProp?.find((vp) => vp.id === option.id), 'desc') : options;
+    ? orderBy(options, (option) => !!(value as SelectValue[]).find((vp) => vp.id === option.id), 'desc') : options;
 
   return {
     focused,
