@@ -170,10 +170,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     placeholder = '',
     popperOptions = {},
     prefix,
-    renderValue: renderValueProp,
+    renderValue,
     required = requiredFromFormControl || false,
     size = 'medium',
-    suffixActionIcon: suffixActionIconProp,
+    suffixActionIcon,
     value: valueProp,
   } = props;
 
@@ -217,8 +217,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   const composedRef = useComposeRefs([ref, controlRef]);
 
   function getPlaceholder() {
-    if (typeof renderValueProp === 'function') {
-      return renderValueProp(value);
+    if (typeof renderValue === 'function') {
+      return renderValue(value);
     }
 
     if (value && !isArray(value)) {
@@ -243,8 +243,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
       toggleOpen,
     ],
   );
-
-  const suffixActionIcon = suffixActionIconProp;
 
   const onClickTextField = () => {
     if (!disabled) {
@@ -325,7 +323,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           onKeyDown={onKeyDownTextField}
           prefix={prefix}
           readOnly
-          renderValue={renderValueProp}
+          renderValue={renderValue}
           required={required}
           inputProps={resolvedInputProps}
           size={size}

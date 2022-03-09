@@ -77,6 +77,8 @@ export interface SelectTriggerBaseProps
    * @default false
    */
   required?: boolean;
+  searchText?: string;
+  showTextInputAfterTags?: boolean;
 }
 
 export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
@@ -132,7 +134,9 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     readOnly,
     renderValue: renderValueProp,
     required,
+    searchText,
     size,
+    showTextInputAfterTags = false,
     suffixActionIcon: suffixActionIconProp,
     value,
     ...restTextFieldProps
@@ -191,21 +195,47 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
-        <div className={classes.triggerTags}>
-          {(value as SelectValue[]).map((selection) => (
-            <Tag
-              key={selection.id}
-              closable
+        <div style={{
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          flexWrap: 'wrap',
+        }}
+        >
+          <div className={classes.triggerTags}>
+            {(value as SelectValue[]).map((selection) => (
+              <Tag
+                key={selection.id}
+                closable
+                disabled={disabled}
+                onClose={(e) => {
+                  e.stopPropagation();
+                  onTagClose?.(selection);
+                }}
+                size={size}
+              >
+                {selection.name}
+              </Tag>
+            ))}
+          </div>
+          {showTextInputAfterTags ? (
+            <input
+              {...inputProps}
+              ref={inputRef}
+              aria-autocomplete="list"
+              aria-disabled={disabled}
+              aria-haspopup="listbox"
+              aria-readonly={readOnly}
+              aria-required={required}
+              autoComplete="false"
               disabled={disabled}
-              onClose={(e) => {
-                e.stopPropagation();
-                onTagClose?.(selection);
-              }}
-              size={size}
-            >
-              {selection.name}
-            </Tag>
-          ))}
+              readOnly={readOnly}
+              required={required}
+              type="search"
+              value={searchText}
+            />
+          ) : null}
         </div>
       ) : (
         <input

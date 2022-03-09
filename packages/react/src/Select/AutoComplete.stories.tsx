@@ -79,6 +79,7 @@ export const Multiple = () => {
       <AutoComplete
         fullWidth
         required
+        addable
         mode="multiple"
         options={originOptions}
         onChange={(newOptions) => setSelections(newOptions)}

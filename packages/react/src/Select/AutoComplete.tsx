@@ -320,7 +320,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           readOnly={false}
           required={required}
           inputProps={resolvedInputProps}
+          searchText={searchText}
           size={size}
+          showTextInputAfterTags
           value={value}
           renderValue={renderValue}
         />
