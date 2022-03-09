@@ -9,36 +9,58 @@ import isEqual from 'lodash/isEqual';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
-export interface UseAutoCompleteValueControl {
-  defaultValue?: SelectValue | null;
+export interface UseAutoCompleteBaseValueControl {
   disabledOptionsFilter: boolean;
-  onChange?(newOption: SelectValue | null): any;
+  onChange?(newOptions: SelectValue[] | SelectValue): any;
   onClear?(e: MouseEvent<Element>): void;
   onClose?(): void;
   onSearch?(input: string): any;
   options: SelectValue[];
-  value?: SelectValue | null;
 }
 
-export interface AutoCompleteValueControl {
+export type UseAutoCompleteMultipleValueControl = UseAutoCompleteBaseValueControl & {
+  defaultValue?: SelectValue[];
+  mode: 'multiple';
+  onChange?(newOptions: SelectValue[]): any;
+  value?: SelectValue[];
+};
+
+export type UseAutoCompleteSingleValueControl = UseAutoCompleteBaseValueControl & {
+  defaultValue?: SelectValue;
+  mode: 'single';
+  onChange?(newOption: SelectValue): any;
+  value?: SelectValue | null;
+};
+
+export type UseAutoCompleteValueControl = UseAutoCompleteMultipleValueControl | UseAutoCompleteSingleValueControl;
+export interface AutoCompleteBaseValueControl {
   focused: boolean;
-  onChange: (v: SelectValue | null) => SelectValue | null;
   onClear(e: MouseEvent<Element>): void;
   onFocus: (f: boolean) => void;
   options: SelectValue[];
   searchText: string;
   setSearchText: Dispatch<SetStateAction<string>>;
-  value: SelectValue | null;
 }
 
-const equalityFn = (a: SelectValue | null, b: SelectValue | null) => isEqual(a, b);
+export type AutoCompleteMultipleValueControl = AutoCompleteBaseValueControl & {
+  onChange: (v: SelectValue | null) => SelectValue[];
+  value: SelectValue[];
+};
 
-export function useAutoCompleteValueControl(
-  props: UseAutoCompleteValueControl,
-): AutoCompleteValueControl {
+export type AutoCompleteSingleValueControl = AutoCompleteBaseValueControl & {
+  onChange: (v: SelectValue | null) => SelectValue | null;
+  value: SelectValue | null;
+};
+
+const equalityFn = (a: SelectValue[] | SelectValue | null, b: SelectValue[] | SelectValue | null) => isEqual(a, b);
+
+function useAutoCompleteBaseValueControl(props: UseAutoCompleteMultipleValueControl): AutoCompleteMultipleValueControl;
+function useAutoCompleteBaseValueControl(props: UseAutoCompleteSingleValueControl): AutoCompleteSingleValueControl;
+function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const {
-    defaultValue = null,
+    defaultValue,
     disabledOptionsFilter,
+    mode,
     onChange,
     onClear: onClearProp,
     onClose,
@@ -47,8 +69,8 @@ export function useAutoCompleteValueControl(
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useControlValueState<SelectValue | null>({
-    defaultValue,
+  const [value, setValue] = useControlValueState<SelectValue[] | SelectValue | null>({
+    defaultValue: defaultValue || (mode === 'multiple' ? [] : null),
     equalityFn,
     value: valueProp,
   });
@@ -106,3 +128,13 @@ export function useAutoCompleteValueControl(
     value,
   };
 }
+
+export const useAutoCompleteValueControl = (props: UseAutoCompleteValueControl) => {
+  if (props.mode === 'multiple') {
+    return useAutoCompleteBaseValueControl(
+      props as UseAutoCompleteMultipleValueControl,
+    ) as AutoCompleteMultipleValueControl;
+  }
+
+  return useAutoCompleteBaseValueControl(props as UseAutoCompleteSingleValueControl) as AutoCompleteSingleValueControl;
+};

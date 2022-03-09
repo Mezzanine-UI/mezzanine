@@ -64,6 +64,30 @@ export const Basic = () => (
   </div>
 );
 
+export const Multiple = () => {
+  const [selections] = useState<SelectValue[]>(originOptions.slice(0, 2));
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 150px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <AutoComplete
+        fullWidth
+        required
+        mode="multiple"
+        options={originOptions}
+        value={selections}
+        placeholder="新增關鍵字"
+      />
+    </div>
+  );
+};
+
 export const FullyControlled = () => {
   const [selection, setSelection] = useState<SelectValue | null>(originOptions[0]);
   const [options, setOptions] = useState<SelectValue[]>(originOptions);

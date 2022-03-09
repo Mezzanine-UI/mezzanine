@@ -26,7 +26,7 @@ import { cx } from '../utils/cx';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
 import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';
 
-export interface AutoCompleteProps
+export interface AutoCompleteBaseProps
   extends
   Omit<SelectTriggerProps,
   | 'active'
@@ -54,10 +54,6 @@ export interface AutoCompleteProps
    */
   addable?: boolean;
   /**
-   * The default selection
-   */
-  defaultValue?: SelectValue | null;
-  /**
    * Should the filter rules be disabled (If you need to control options filter by yourself)
    * @default false
    */
@@ -77,10 +73,6 @@ export interface AutoCompleteProps
     | 'owns'
     }`
   >;
-  /**
-   * The change event handler of input element.
-   */
-  onChange?(option: SelectValue): any;
   /**
    * insert callback whenever insert icon is clicked
    * return `true` when insert is successfully
@@ -112,8 +104,50 @@ export interface AutoCompleteProps
    * The value of selection.
    * @default undefined
    */
-  value?: SelectValue | null;
+  value?: SelectValue[] | SelectValue | null;
 }
+
+export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue[];
+  /**
+   * Controls the layout of trigger.
+   */
+  mode: 'multiple';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue[]): any;
+  /**
+   * The value of selection.
+   * @default undefined
+   */
+  value?: SelectValue[];
+};
+
+export type AutoCompleteSingleProps = AutoCompleteBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue;
+  /**
+   * Controls the layout of trigger.
+   */
+  mode?: 'single';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue): any;
+  /**
+   * The value of selection.
+   * @default undefined
+   */
+  value?: SelectValue | null;
+};
+
+export type AutoCompleteProps = AutoCompleteMultipleProps | AutoCompleteSingleProps;
 
 const MENU_ID = 'mzn-select-autocomplete-menu-id';
 
@@ -170,6 +204,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
   } = useAutoCompleteValueControl({
     defaultValue,
     disabledOptionsFilter,
+    mode,
     onChange: onChangeProp,
     onClear: onClearProp,
     onClose: () => toggleOpen(false),
