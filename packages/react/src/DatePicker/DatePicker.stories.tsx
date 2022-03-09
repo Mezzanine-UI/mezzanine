@@ -1,7 +1,10 @@
 import { Story, Meta } from '@storybook/react';
 import {
-  DateType, getDefaultModeFormat, CalendarMethodsMoment, CalendarMethodsDayjs,
+  DateType,
+  getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useState } from 'react';
 import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
@@ -35,14 +38,9 @@ export const Playground: Story<PlaygroundArgs> = ({
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, onChange] = usePickerChange();
 
-  // const formatString = CalendarMethodsMomentIsoString.formatToString('', val ?? '', format ?? 'YYYY-MM-DD');
-
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
-        {/* {`current value: ${formatString}`} */}
-      </Typography>
-      <Typography>{val}</Typography>
+      <Typography variant="h5" style={typoStyle}>{val}</Typography>
       <DatePicker
         value={val}
         onChange={onChange}

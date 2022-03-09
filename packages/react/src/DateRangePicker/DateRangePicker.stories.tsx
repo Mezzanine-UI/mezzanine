@@ -1,11 +1,11 @@
 import { Story, Meta } from '@storybook/react';
 import {
-  CalendarMethodsDayjs,
-  CalendarMethodsMoment,
   CalendarMode,
   DateType,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useState } from 'react';
 import moment from 'moment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
@@ -161,7 +161,7 @@ export const Method = () => {
       <CalendarConfigProvider methods={CalendarMethodsDayjs}>
         <div style={containerStyle}>
           <Typography variant="h5" style={typoStyle}>
-          CalendarMethodsDayjs
+            CalendarMethodsDayjs
           </Typography>
           <DateRangePicker value={val} onChange={onChange} />
         </div>
