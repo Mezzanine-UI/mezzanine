@@ -198,14 +198,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
-        <div style={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          flexWrap: 'wrap',
-        }}
-        >
+        <div className={classes.triggerTagsInputWrapper}>
           <div className={classes.triggerTags}>
             {(value as SelectValue[]).map((selection) => (
               <Tag
@@ -223,21 +216,23 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
             ))}
           </div>
           {showTextInputAfterTags ? (
-            <input
-              {...inputProps}
-              ref={inputRef}
-              aria-autocomplete="list"
-              aria-disabled={disabled}
-              aria-haspopup="listbox"
-              aria-readonly={readOnly}
-              aria-required={required}
-              autoComplete="false"
-              disabled={disabled}
-              readOnly={readOnly}
-              required={required}
-              type="search"
-              value={searchText}
-            />
+            <div className={classes.triggerTagsInput}>
+              <input
+                {...inputProps}
+                ref={inputRef}
+                aria-autocomplete="list"
+                aria-disabled={disabled}
+                aria-haspopup="listbox"
+                aria-readonly={readOnly}
+                aria-required={required}
+                autoComplete="false"
+                disabled={disabled}
+                readOnly={readOnly}
+                required={required}
+                type="search"
+                value={searchText}
+              />
+            </div>
           ) : null}
         </div>
       ) : (

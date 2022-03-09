@@ -48,10 +48,21 @@ $tags-gap: 4px !default;
     }
   }
 
+  &__tags-input-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__tags-input {
+    flex: 1;
+  }
+
   &__tags {
     padding-top: $tags-container-padding;
     padding-left: $tags-container-padding;
-    width: 100%;
+    width: auto;
     max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
     display: flex;
     flex-flow: row wrap;
