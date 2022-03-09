@@ -263,7 +263,7 @@
           "jsx": true
         }
       },
-      "extends": ["airbnb/hooks", "plugin:react/recommended"],
+      "extends": ["airbnb", "airbnb/hooks", "plugin:react/recommended"],
       "plugins": ["react", "react-hooks"],
       "settings": {
         "react": {
@@ -273,6 +273,13 @@
       },
       "rules": {
         "jsx-a11y/label-has-for": "off",
+        "import/no-unresolved": "off",
+        "import/extensions": "off",
+        "max-len": "off",
+        "prefer-arrow-callback": "off",
+        "import/no-extraneous-dependencies": "off",
+        "react/function-component-definition": "off",
+        "react/require-default-props": "off",
         "react/display-name": "off",
         "react/jsx-closing-bracket-location": [
           "error",
