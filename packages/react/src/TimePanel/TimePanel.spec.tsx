@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 
-import { CalendarMethodsMoment, DateType } from '@mezzanine-ui/core/calendar';
+import { DateType } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
 import { getUnitLabel } from '@mezzanine-ui/core/time-panel';
 import {
