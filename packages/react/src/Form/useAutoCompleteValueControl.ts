@@ -33,6 +33,7 @@ export type UseAutoCompleteSingleValueControl = UseAutoCompleteBaseValueControl 
 };
 
 export type UseAutoCompleteValueControl = UseAutoCompleteMultipleValueControl | UseAutoCompleteSingleValueControl;
+
 export interface AutoCompleteBaseValueControl {
   focused: boolean;
   onClear(e: MouseEvent<Element>): void;

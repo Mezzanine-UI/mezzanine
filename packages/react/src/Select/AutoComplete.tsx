@@ -20,7 +20,11 @@ import Option from './Option';
 import Icon from '../Icon';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
-import { useAutoCompleteValueControl } from '../Form/useAutoCompleteValueControl';
+import {
+  useAutoCompleteValueControl,
+  UseAutoCompleteMultipleValueControl,
+  UseAutoCompleteSingleValueControl,
+} from '../Form/useAutoCompleteValueControl';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
 import { cx } from '../utils/cx';
@@ -33,6 +37,7 @@ export interface AutoCompleteBaseProps
   | 'active'
   | 'clearable'
   | 'forceHideSuffixActionIcon'
+  | 'mode'
   | 'onClick'
   | 'onKeyDown'
   | 'onChange'
@@ -101,11 +106,6 @@ export interface AutoCompleteBaseProps
    * @default 'medium'
    */
   size?: SelectInputSize;
-  /**
-   * The value of selection.
-   * @default undefined
-   */
-  value?: SelectValue[] | SelectValue | null;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -212,7 +212,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onSearch,
     options: optionsProp,
     value: valueProp,
-  });
+  } as UseAutoCompleteMultipleValueControl | UseAutoCompleteSingleValueControl);
 
   /** insert feature */
   const [insertText, setInsertText] = useState<string>('');

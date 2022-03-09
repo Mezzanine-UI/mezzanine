@@ -65,7 +65,7 @@ export const Basic = () => (
 );
 
 export const Multiple = () => {
-  const [selections] = useState<SelectValue[]>(originOptions.slice(0, 2));
+  const [selections, setSelections] = useState<SelectValue[]>([]);
 
   return (
     <div
@@ -81,6 +81,7 @@ export const Multiple = () => {
         required
         mode="multiple"
         options={originOptions}
+        onChange={(newOptions) => setSelections(newOptions)}
         value={selections}
         placeholder="新增關鍵字"
       />
