@@ -134,8 +134,6 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
 
           if (typeof onChange === 'function') onChange(newValue);
 
-          setSearchText('');
-
           break;
         }
       }
