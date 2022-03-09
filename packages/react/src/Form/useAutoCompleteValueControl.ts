@@ -5,6 +5,7 @@ import {
   SetStateAction,
   useCallback,
 } from 'react';
+import orderBy from 'lodash/orderBy';
 import isEqual from 'lodash/isEqual';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
@@ -87,6 +88,9 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     ? optionsProp
     : optionsProp.filter((option) => !!option.name.includes(searchText));
 
+  const optionsAfterOrder = mode === 'multiple'
+    ? orderBy(options, (option) => !!valueProp?.find((vp) => vp.id === option.id), 'desc') : options;
+
   return {
     focused,
     onChange: (chooseOption: SelectValue | null) => {
@@ -160,7 +164,7 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
       }
     },
     onFocus,
-    options,
+    options: optionsAfterOrder,
     searchText,
     setSearchText,
     value,

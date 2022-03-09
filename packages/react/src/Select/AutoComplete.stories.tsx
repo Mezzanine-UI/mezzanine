@@ -71,7 +71,7 @@ export const Multiple = () => {
     <div
       style={{
         display: 'inline-grid',
-        gridTemplateColumns: 'repeat(2, 150px)',
+        gridTemplateColumns: 'repeat(2, 300px)',
         gap: '16px',
         alignItems: 'center',
       }}
