@@ -9,6 +9,7 @@ import {
   selectClasses as classes,
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
+import isArray from 'lodash/isArray';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
@@ -220,7 +221,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
       return renderValueProp(value);
     }
 
-    if (value) {
+    if (value && !isArray(value)) {
       return (value as SelectValue).name;
     }
 

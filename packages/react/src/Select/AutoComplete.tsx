@@ -11,6 +11,7 @@ import {
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import { PlusIcon } from '@mezzanine-ui/icons';
+import isArray from 'lodash/isArray';
 import { SelectValue } from './typings';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
@@ -239,6 +240,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     ],
   );
 
+  function getPlaceholder() {
+    if (focused && value && !isArray(value)) {
+      return (value as SelectValue).name;
+    }
+
+    return placeholder;
+  }
+
   /** Trigger input props */
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     /** should sync both search input and value */
@@ -272,7 +281,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onBlur: onSearchInputBlur,
     onChange: onSearchInputChange,
     onFocus: onSearchInputFocus,
-    placeholder: focused && value ? value.name : placeholder,
+    placeholder: getPlaceholder(),
     role: 'combobox',
   };
 
@@ -326,7 +335,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           {options.length ? (
             <Menu
               id={MENU_ID}
-              aria-activedescendant={value?.id ?? ''}
+              aria-activedescendant={
+                Array.isArray(value) ? value?.[0]?.id ?? '' : value?.id
+              }
               itemsInView={itemsInView}
               maxHeight={menuMaxHeight}
               role={menuRole}
