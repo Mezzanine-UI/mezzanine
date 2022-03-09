@@ -1,10 +1,10 @@
 import moment from 'moment';
 import {
-  CalendarMethodsMoment,
   CalendarMode,
   calendarYearModuler,
   getYearRange,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   cleanup,
   fireEvent,
@@ -220,9 +220,7 @@ describe('<Calendar />', () => {
         it(`should have month and year button if mode="${mode}", and receiving event handlers`, () => {
           const referenceDate = moment().toISOString();
           const displayMonthLocale = 'en-US';
-          const displayMonthName = CalendarMethodsMoment.getMonthShortName(
-            moment(referenceDate).month(), displayMonthLocale,
-          );
+          const displayMonthName = CalendarMethodsMoment.getMonthShortName(moment(referenceDate).month(), displayMonthLocale);
           const onMonthControlClick = jest.fn();
           const onYearControlClick = jest.fn();
           const { getByText } = render(
