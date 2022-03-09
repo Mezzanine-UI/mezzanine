@@ -6,9 +6,9 @@ import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import TextField, { TextFieldProps } from '../TextField';
 import { SelectValue } from './typings';
 import { cx } from '../utils/cx';
-import Tag from '../Tag';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
+import SelectTriggerTags from './SelectTriggerTags';
 
 export type SelectTriggerInputProps = Omit<
 NativeElementPropsWithoutKeyAndRef<'input'>,
@@ -199,22 +199,12 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
         <div className={classes.triggerTagsInputWrapper}>
-          <div className={classes.triggerTags}>
-            {(value as SelectValue[]).map((selection) => (
-              <Tag
-                key={selection.id}
-                closable
-                disabled={disabled}
-                onClose={(e) => {
-                  e.stopPropagation();
-                  onTagClose?.(selection);
-                }}
-                size={size}
-              >
-                {selection.name}
-              </Tag>
-            ))}
-          </div>
+          <SelectTriggerTags
+            disabled={disabled}
+            onTagClose={onTagClose}
+            size={size}
+            value={value}
+          />
           {showTextInputAfterTags ? (
             <div className={classes.triggerTagsInput}>
               <input

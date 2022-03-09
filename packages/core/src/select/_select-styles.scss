@@ -57,6 +57,7 @@ $tags-gap: 4px !default;
 
   &__tags-input {
     flex: 1;
+    min-width: 130px;
   }
 
   &__tags {
