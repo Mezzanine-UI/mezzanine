@@ -1,5 +1,6 @@
+/* global document */
 import moment from 'moment';
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   cleanup,
   cleanupHook,
@@ -228,7 +229,7 @@ describe('<DatePicker />', () => {
         const onCalendarToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePicker referenceDate={moment()} onCalendarToggle={onCalendarToggle} readOnly />
+            <DatePicker referenceDate={moment().format('YYYY-MM-DD')} onCalendarToggle={onCalendarToggle} readOnly />
           </CalendarConfigProvider>,
         );
 
@@ -246,7 +247,7 @@ describe('<DatePicker />', () => {
 
   describe('calendar picking', () => {
     it('should update input value', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const {
         getHostHTMLElement,
         getByText: getByTextWithHostElement,
@@ -513,7 +514,7 @@ describe('<DatePicker />', () => {
 
   describe('prop: referenceDate', () => {
     it('should use pass-in referenceDate as initial referenceDate', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -535,7 +536,7 @@ describe('<DatePicker />', () => {
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
-      const defaultValue = moment('2021-10-20');
+      const defaultValue = '2021-10-20';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -577,7 +578,7 @@ describe('<DatePicker />', () => {
         getByText(calendarElementt as HTMLElement, getMonthShortName(moment().month(), 'en-US')),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(calendarElementt as HTMLElement, getYear(moment())),
+        getByText(calendarElementt as HTMLElement, getYear(moment().format('YYYY-MM-DD'))),
       ).toBeInstanceOf(HTMLButtonElement);
     });
   });

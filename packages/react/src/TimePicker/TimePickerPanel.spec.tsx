@@ -1,4 +1,4 @@
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   cleanup,
   render,

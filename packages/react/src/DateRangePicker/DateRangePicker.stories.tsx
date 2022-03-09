@@ -1,10 +1,11 @@
 import { Story, Meta } from '@storybook/react';
 import {
-  CalendarMethodsMoment,
   CalendarMode,
   DateType,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useState } from 'react';
 import moment from 'moment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
@@ -139,6 +140,33 @@ export const Basic = () => {
         <DateRangePicker value={[moment().toISOString(), moment().toISOString()]} readOnly />
       </div>
     </CalendarConfigProvider>
+  );
+};
+
+export const Method = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [val, onChange] = usePickerChange();
+
+  return (
+    <>
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsMoment
+          </Typography>
+          <DateRangePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+      <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsDayjs
+          </Typography>
+          <DateRangePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+    </>
   );
 };
 

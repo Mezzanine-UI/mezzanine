@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode } from 'react';
 import {
   renderHook,
@@ -21,34 +21,34 @@ describe('useCalendarControlModifiers', () => {
   } = renderResult.result.current;
 
   it('should add or remove 12 years for year modifier', () => {
-    const current = moment();
+    const current = '2022-01-02';
     const [minus, add] = year;
 
-    expect(current.diff(add(current), 'year')).toBe(-12);
-    expect(current.diff(minus(current), 'year')).toBe(12);
+    expect(moment(current).diff(add(current), 'year')).toBe(-12);
+    expect(moment(current).diff(minus(current), 'year')).toBe(12);
   });
 
   it('should add or remove 1 year for month modifier', () => {
-    const current = moment();
+    const current = '2022-01-02';
     const [minus, add] = month;
 
-    expect(current.diff(add(current), 'year')).toBe(-1);
-    expect(current.diff(minus(current), 'year')).toBe(1);
+    expect(moment(current).diff(add(current), 'year')).toBe(-1);
+    expect(moment(current).diff(minus(current), 'year')).toBe(1);
   });
 
   it('should add or remove 1 month for week modifier', () => {
-    const current = moment();
+    const current = '2022-01-02';
     const [minus, add] = week;
 
-    expect(current.diff(add(current), 'month')).toBe(-1);
-    expect(current.diff(minus(current), 'month')).toBe(1);
+    expect(moment(current).diff(add(current), 'month')).toBe(-1);
+    expect(moment(current).diff(minus(current), 'month')).toBe(1);
   });
 
   it('should add or remove 1 month for day modifier', () => {
-    const current = moment();
+    const current = '2022-01-02';
     const [minus, add] = day;
 
-    expect(current.diff(add(current), 'month')).toBe(-1);
-    expect(current.diff(minus(current), 'month')).toBe(1);
+    expect(moment(current).diff(add(current), 'month')).toBe(-1);
+    expect(moment(current).diff(minus(current), 'month')).toBe(1);
   });
 });

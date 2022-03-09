@@ -24,10 +24,14 @@
   },
   "peerDependencies": {
     "lodash": "^4.17.21",
+    "dayjs": "^1.10.7",
     "moment": "^2.29.1"
   },
   "peerDependenciesMeta": {
     "moment": {
+      "optional": true
+    },
+    "dayjs": {
       "optional": true
     }
   },

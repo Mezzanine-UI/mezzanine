@@ -1,5 +1,2 @@
-export {
-  CalendarMethods as CalendarMethodsMoment,
-} from './presets/moment';
-export * from './presets/typings';
+export * from './typings';
 export * from './calendar';

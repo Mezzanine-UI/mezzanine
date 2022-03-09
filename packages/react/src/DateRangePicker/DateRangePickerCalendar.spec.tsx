@@ -1,5 +1,7 @@
+/* global document */
 import moment from 'moment';
-import { CalendarMethodsMoment, CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { act } from 'react-dom/test-utils';
 import {
   cleanup,
@@ -21,14 +23,14 @@ describe('<DateRangePickerCalendar />', () => {
     HTMLDivElement,
     (ref) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateRangePickerCalendar ref={ref} referenceDate={moment()} open />
+        <DateRangePickerCalendar ref={ref} referenceDate="2022-01-02" open />
       </CalendarConfigProvider>,
     ),
   );
 
   describe('switching calendar', () => {
     it('should right calendar has an overlay to block interacting when left calendar month control clicked', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -49,7 +51,7 @@ describe('<DateRangePickerCalendar />', () => {
     });
 
     it('should left calendar has an overlay to block interacting when right calendar month control clicked', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -70,7 +72,7 @@ describe('<DateRangePickerCalendar />', () => {
     });
 
     it('should right calendar has an overlay to block interacting when left calendar year control clicked', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -91,7 +93,7 @@ describe('<DateRangePickerCalendar />', () => {
     });
 
     it('should left calendar has an overlay to block interacting when right calendar year control clicked', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -115,7 +117,7 @@ describe('<DateRangePickerCalendar />', () => {
 
   describe('should update referenceDate when switching calendars', () => {
     it('case: switching months', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getAllByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateRangePickerCalendar referenceDate={referenceDate} open />
@@ -135,7 +137,7 @@ describe('<DateRangePickerCalendar />', () => {
     });
 
     it('case: switching years', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getAllByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateRangePickerCalendar referenceDate={referenceDate} open />
@@ -161,7 +163,7 @@ describe('<DateRangePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-01');
+          const referenceDate = '2021-12-01';
           const onChange = jest.fn();
           const { getAllByText } = render(
             <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -214,7 +216,7 @@ describe('<DateRangePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-01');
+          const referenceDate = '2021-12-01';
           const onChange = jest.fn();
           const { getAllByText } = render(
             <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -250,7 +252,7 @@ describe('<DateRangePickerCalendar />', () => {
 
       modes.forEach((mode) => {
         it(`case: mode="${mode}"`, () => {
-          const referenceDate = moment('2021-12-15');
+          const referenceDate = '2021-12-15';
           const onChange = jest.fn();
 
           render(
@@ -296,7 +298,7 @@ describe('<DateRangePickerCalendar />', () => {
   describe('prop: mode', () => {
     describe('mode="day"', () => {
       it('should onChange argument meet the granularity of day', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
         function isSameDate(val: DateType) {
@@ -330,7 +332,7 @@ describe('<DateRangePickerCalendar />', () => {
 
     describe('mode="week"', () => {
       it('should onChange argument meet the granularity of week', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
         function isSameWeek(val: DateType) {
@@ -364,7 +366,7 @@ describe('<DateRangePickerCalendar />', () => {
 
     describe('mode="month"', () => {
       it('should onChange argument meet the granularity of month', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2021-11-15');
 
         function isSameMonth(val: DateType) {
@@ -398,7 +400,7 @@ describe('<DateRangePickerCalendar />', () => {
 
     describe('mode="month"', () => {
       it('should onChange argument meet the granularity of year', () => {
-        const referenceDate = moment('2021-12-15');
+        const referenceDate = '2021-12-15';
         const targetDate = moment('2020-12-15');
 
         function isSameYear(val: DateType) {

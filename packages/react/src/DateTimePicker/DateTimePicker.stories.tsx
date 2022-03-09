@@ -1,5 +1,9 @@
 import { Story, Meta } from '@storybook/react';
-import { CalendarMethodsMoment, DateType } from '@mezzanine-ui/core/calendar';
+import {
+  DateType,
+} from '@mezzanine-ui/core/calendar';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useState } from 'react';
 import moment from 'moment';
 import { CalendarConfigProvider } from '../Calendar';
@@ -137,6 +141,34 @@ export const Basic = () => {
         <DateTimePicker value={moment().toISOString()} readOnly />
       </div>
     </CalendarConfigProvider>
+  );
+};
+
+export const Method = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [val, setVal] = useState<DateType>();
+  const onChange = (v?: DateType) => { setVal(v); };
+
+  return (
+    <>
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsMoment
+          </Typography>
+          <DateTimePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+      <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsDayjs
+          </Typography>
+          <DateTimePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+    </>
   );
 };
 

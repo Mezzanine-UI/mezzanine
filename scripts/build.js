@@ -21,6 +21,7 @@ const externals = [
   }),
   'lodash',
   'moment',
+  'dayjs',
   'events',
 ];
 

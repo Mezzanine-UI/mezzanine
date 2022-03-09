@@ -1,5 +1,6 @@
+/* global document */
 import moment from 'moment';
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   ChangeEvent, ReactNode, KeyboardEvent, FocusEvent,
 } from 'react';
@@ -39,10 +40,10 @@ describe('usePickerValue', () => {
       );
 
       TestRenderer.act(() => {
-        result.current.onChange(moment('2021-10-20'));
+        result.current.onChange('2021-10-20');
       });
 
-      expect(result.current.value?.format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe('2021-10-20');
       expect(result.current.inputValue).toBe('2021-10-20');
     });
 
@@ -72,7 +73,7 @@ describe('usePickerValue', () => {
     it('case: valid value', () => {
       jest.useFakeTimers();
 
-      const value = moment('2021-10-20');
+      const value = '2021-10-20';
       const inputRef = {
         current: document.createElement('input'),
       };
@@ -93,14 +94,14 @@ describe('usePickerValue', () => {
         inputRef,
         format: 'YYYY-MM-DD',
         formats: ['YYYY-MM-DD'],
-        value: value.add(1, 'month'),
+        value: moment(value).add(1, 'month').toISOString(),
       });
 
-      expect(result.current.value?.format('YYYY-MM-DD')).toBe('2021-11-20');
+      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe('2021-11-20');
     });
 
     it('case: undefined', () => {
-      const value = moment('2021-10-20');
+      const value = '2021-10-20';
       const inputRef = {
         current: document.createElement('input'),
       };

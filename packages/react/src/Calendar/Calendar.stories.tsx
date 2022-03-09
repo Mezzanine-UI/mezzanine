@@ -1,6 +1,7 @@
 import { Story, Meta } from '@storybook/react';
 import moment from 'moment';
-import { CalendarMethodsMoment, CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarDays from './CalendarDays';
 import CalendarCell, {

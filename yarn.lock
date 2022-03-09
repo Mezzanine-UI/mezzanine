@@ -7329,6 +7329,11 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
+dayjs@^1.10.7:
+  version "1.10.8"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.10.8.tgz#267df4bc6276fcb33c04a6735287e3f429abec41"
+  integrity sha512-wbNwDfBHHur9UOzNUjeKUOJ0fCb0a52Wx0xInmQ7Y8FstyajiV1NmK1e00cxsr9YrE9r7yAChE0VvpuY5Rnlow==
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -8092,6 +8097,15 @@ eslint-config-airbnb-typescript@^16.1.0:
   integrity sha512-W5Cq20KpEx5ZLC54bnVrC37zq2+WD956Kp/Ma3nYFRjT1v9KM63v+DPkrrmmrVqrlDKaD0ivm/qeYmyHV6qKlw==
   dependencies:
     eslint-config-airbnb-base "^15.0.0"
+
+eslint-config-airbnb@^19.0.4:
+  version "19.0.4"
+  resolved "https://registry.yarnpkg.com/eslint-config-airbnb/-/eslint-config-airbnb-19.0.4.tgz#84d4c3490ad70a0ffa571138ebcdea6ab085fdc3"
+  integrity sha512-T75QYQVQX57jiNgpF9r1KegMICE94VYwoFQyMGhrvc+lB8YF2E/M/PYDaQe1AJcWaEgqLE+ErXV1Og/+6Vyzew==
+  dependencies:
+    eslint-config-airbnb-base "^15.0.0"
+    object.assign "^4.1.2"
+    object.entries "^1.1.5"
 
 eslint-import-resolver-node@^0.3.6:
   version "0.3.6"

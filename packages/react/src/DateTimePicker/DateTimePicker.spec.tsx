@@ -1,4 +1,5 @@
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
+/* global document */
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
 import {
   cleanup,
@@ -24,7 +25,7 @@ describe('<DateTimePickerPanel />', () => {
     HTMLDivElement,
     (ref) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateTimePicker ref={ref} open referenceDate={moment()} />
+        <DateTimePicker ref={ref} open referenceDate="2022-01-02" />
       </CalendarConfigProvider>,
     ),
   );
@@ -33,7 +34,7 @@ describe('<DateTimePickerPanel />', () => {
     'foo',
     (className) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateTimePicker referenceDate={moment()} className={className} />
+        <DateTimePicker referenceDate="2022-01-02" className={className} />
       </CalendarConfigProvider>,
     ),
   );
@@ -215,7 +216,7 @@ describe('<DateTimePickerPanel />', () => {
 
   describe('panel picking', () => {
     it('should update input value', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const {
         getHostHTMLElement,
       } = render(
@@ -432,7 +433,7 @@ describe('<DateTimePickerPanel />', () => {
 
   describe('prop: referenceDate', () => {
     it('should use pass-in referenceDate as initial referenceDate', async () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -454,7 +455,7 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
-      const defaultValue = moment('2021-10-20');
+      const defaultValue = '2021-10-20';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -496,14 +497,14 @@ describe('<DateTimePickerPanel />', () => {
         getByText(calendarElementt as HTMLElement, getMonthShortName(moment().month(), 'en-US')),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(calendarElementt as HTMLElement, getYear(moment())),
+        getByText(calendarElementt as HTMLElement, getYear(moment().toISOString())),
       ).toBeInstanceOf(HTMLButtonElement);
     });
 
     it('should update referenceDate after value changed', async () => {
       jest.useFakeTimers();
 
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePicker referenceDate={referenceDate} />

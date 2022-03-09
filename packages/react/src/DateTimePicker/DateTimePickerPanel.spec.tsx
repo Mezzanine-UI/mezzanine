@@ -1,5 +1,5 @@
-import { CalendarMethodsMoment } from '@mezzanine-ui/core/calendar';
-import moment from 'moment';
+/* global document */
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import {
   cleanup,
   render,
@@ -22,13 +22,13 @@ describe('<DateTimePickerPanel />', () => {
     HTMLDivElement,
     (ref) => render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateTimePickerPanel ref={ref} open referenceDate={moment()} />
+        <DateTimePickerPanel ref={ref} open referenceDate="2022-01-02" />
       </CalendarConfigProvider>,
     ),
   );
 
   it('should update referenceDate when cells clicked', () => {
-    const referenceDate = moment('2021-10-20');
+    const referenceDate = '2021-10-20';
     const { getByText: getByTextWithHost } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateTimePickerPanel referenceDate={referenceDate} open />
@@ -49,7 +49,7 @@ describe('<DateTimePickerPanel />', () => {
   });
 
   it('should update referenceDate when units clicked', () => {
-    const referenceDate = moment('2021-10-20');
+    const referenceDate = '2021-10-20';
 
     render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -68,7 +68,7 @@ describe('<DateTimePickerPanel />', () => {
 
   describe('should update referenceDate when switching calendars', () => {
     it('case: switching months', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getByText: getByTextWithHost } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePickerPanel referenceDate={referenceDate} open />
@@ -88,7 +88,7 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('case: switching years', () => {
-      const referenceDate = moment('2021-10-20');
+      const referenceDate = '2021-10-20';
       const { getByText: getByTextWithHost } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePickerPanel referenceDate={referenceDate} open />
@@ -110,7 +110,7 @@ describe('<DateTimePickerPanel />', () => {
 
   describe('prop: onChange', () => {
     it('should not invoke onChange when switching months', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText: getByTextWithHost } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -139,7 +139,7 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('should not invoke onChange when switching years', () => {
-      const referenceDate = moment('2021-12-01');
+      const referenceDate = '2021-12-01';
       const onChange = jest.fn();
       const { getByText: getByTextWithHost } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -168,7 +168,7 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('should invoke onChange when not swithing years or months on both calendar and time panel', () => {
-      const referenceDate = moment('2021-12-15');
+      const referenceDate = '2021-12-15';
       const onChange = jest.fn();
 
       const { getAllByText } = render(

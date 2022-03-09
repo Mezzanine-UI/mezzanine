@@ -1,4 +1,6 @@
-import { CalendarMethodsMoment, DateType } from '@mezzanine-ui/core/calendar';
+/* global document */
+import { DateType } from '@mezzanine-ui/core/calendar';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode, KeyboardEvent } from 'react';
 import moment from 'moment';
 import {
@@ -23,7 +25,7 @@ describe('useDateRangePickerValue', () => {
   );
 
   it('onClear should clear picking value', () => {
-    const value = [moment('2021-10-20'), moment('2021-11-20')] as [DateType, DateType];
+    const value = ['2021-10-20', '2021-11-20'] as [DateType, DateType];
     const inputFromElement = document.createElement('input');
     const inputToElement = document.createElement('input');
     const inputFromRef = {
@@ -47,8 +49,8 @@ describe('useDateRangePickerValue', () => {
       },
     );
 
-    expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
 
     TestRenderer.act(() => {
       result.current.onClear();
@@ -59,7 +61,7 @@ describe('useDateRangePickerValue', () => {
   });
 
   it('onFromKeyDown should clear picking value when excape key down', () => {
-    const value = [moment('2021-10-20'), moment('2021-11-20')] as [DateType, DateType];
+    const value = ['2021-10-20', '2021-11-20'] as [DateType, DateType];
     const inputFromElement = document.createElement('input');
     const inputToElement = document.createElement('input');
     const inputFromRef = {
@@ -84,22 +86,22 @@ describe('useDateRangePickerValue', () => {
     );
 
     TestRenderer.act(() => {
-      result.current.onChange([moment('2021-11-20'), moment('2021-12-20')]);
+      result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
-    expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-11-20');
-    expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-12-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-12-20');
 
     TestRenderer.act(() => {
       result.current.onFromKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
     });
 
-    expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
   });
 
   it('onToKeyDown should clear picking value when excape key down', () => {
-    const value = [moment('2021-10-20'), moment('2021-11-20')] as [DateType, DateType];
+    const value = ['2021-10-20', '2021-11-20'] as [DateType, DateType];
     const inputFromElement = document.createElement('input');
     const inputToElement = document.createElement('input');
     const inputFromRef = {
@@ -124,23 +126,23 @@ describe('useDateRangePickerValue', () => {
     );
 
     TestRenderer.act(() => {
-      result.current.onChange([moment('2021-11-20'), moment('2021-12-20')]);
+      result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
-    expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-11-20');
-    expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-12-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-12-20');
 
     TestRenderer.act(() => {
       result.current.onToKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
     });
 
-    expect(result.current.value[0]?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(result.current.value[1]?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
   });
 
   describe('prop: onChange', () => {
     it('should be invoked when inputFrom keydown and has both value', () => {
-      const value = [moment('2021-10-20'), moment('2021-11-20')] as [DateType, DateType];
+      const value = ['2021-10-20', '2021-11-20'] as [DateType, DateType];
       const onChange = jest.fn();
       const inputFromElement = document.createElement('input');
       const inputToElement = document.createElement('input');
@@ -174,7 +176,7 @@ describe('useDateRangePickerValue', () => {
     });
 
     it('should be invoked when inputTo keydown and has both value', () => {
-      const value = [moment('2021-10-20'), moment('2021-11-20')] as [DateType, DateType];
+      const value = ['2021-10-20', '2021-11-20'] as [DateType, DateType];
       const onChange = jest.fn();
       const inputFromElement = document.createElement('input');
       const inputToElement = document.createElement('input');
