@@ -11,7 +11,6 @@ import {
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
 import { cx } from '../utils/cx';
-import { usePreviousValue } from '../hooks/usePreviousValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { SelectValue } from './typings';
@@ -67,7 +66,6 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   const [tagsWidths, setTagsWidths] = useState<number[]>([]);
   const [maxWidth, setMaxWidth] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
-  const prevTagsWidths = usePreviousValue(tagsWidths);
   const controlRef = useRef<HTMLDivElement>();
   const composedRef = useComposeRefs([ref, controlRef]);
 
@@ -84,13 +82,14 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   }, [value]);
 
   useEffect(() => {
-    const prevTagsTotal = prevTagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
     const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
 
-    if (prevTagsTotal < maxWidth && tagsTotal > maxWidth) {
-      setCount(prevTagsWidths.length);
+    if (tagsTotal > maxWidth) {
+      setCount(tagsWidths.length - 1);
+    } else {
+      // setCount(0);
     }
-  }, [tagsWidths, prevTagsWidths, maxWidth]);
+  }, [tagsWidths, maxWidth]);
 
   return (
     <div
