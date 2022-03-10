@@ -109,30 +109,34 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
     calcTakeCount();
   }, [tagsWidths, maxWidth, ellipsisTagWidth]);
 
-  const renderFakeTags = () => (
-    <div
-      style={{
-        position: 'absolute',
-        pointerEvents: 'none',
-        opacity: 0,
-      }}
-    >
-      {value?.map((selection) => (
-        <Tag
-          key={selection.id}
-          className="fake-tag"
-          closable
-          disabled
-          size={size}
-        >
-          {selection.name}
+  const renderFakeTags = () => {
+    if (value && value.length === tagsWidths.length) return null;
+
+    return (
+      <div
+        style={{
+          position: 'absolute',
+          pointerEvents: 'none',
+          opacity: 0,
+        }}
+      >
+        {value?.map((selection) => (
+          <Tag
+            key={selection.id}
+            className="fake-tag"
+            closable
+            disabled
+            size={size}
+          >
+            {selection.name}
+          </Tag>
+        ))}
+        <Tag disabled className="fake-ellipsis-tag" size={size}>
+          +99...
         </Tag>
-      ))}
-      <Tag disabled className="fake-ellipsis-tag" size={size}>
-        +99...
-      </Tag>
-    </div>
-  );
+      </div>
+    );
+  };
 
   return (
     <div
