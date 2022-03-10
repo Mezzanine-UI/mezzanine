@@ -116,6 +116,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
       <div
         style={{
           position: 'absolute',
+          visibility: 'hidden',
           pointerEvents: 'none',
           opacity: 0,
         }}
