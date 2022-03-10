@@ -309,6 +309,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           active={open}
           className={className}
           clearable
+          ellipsis
           disabled={disabled}
           error={error}
           fullWidth={fullWidth}

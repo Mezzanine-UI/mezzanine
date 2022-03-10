@@ -53,6 +53,11 @@ $tags-gap: 4px !default;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    flex-wrap: wrap;
+
+    &--ellipsis {
+      flex-wrap: unset;
+    }
   }
 
   &__tags-input {
@@ -66,9 +71,13 @@ $tags-gap: 4px !default;
     width: auto;
     max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     align-items: center;
     justify-self: flex-start;
+
+    &--ellipsis {
+      flex-wrap: unset;
+    }
 
     > span {
       margin-right: $tags-gap;

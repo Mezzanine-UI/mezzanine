@@ -43,6 +43,10 @@ export interface SelectTriggerBaseProps
    */
   active?: boolean;
   /**
+   * Tags arg ellipsis or not.
+   */
+  ellipsis?: boolean;
+  /**
    * force hide suffixAction icons
    */
   forceHideSuffixActionIcon?: boolean;
@@ -126,6 +130,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     active,
     className,
     disabled,
+    ellipsis = false,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
@@ -200,6 +205,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
         <SelectTriggerTags
           disabled={disabled}
+          ellipsis={ellipsis}
           inputProps={inputProps}
           inputRef={inputRef}
           onTagClose={onTagClose}

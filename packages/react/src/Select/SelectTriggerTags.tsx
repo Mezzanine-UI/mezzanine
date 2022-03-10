@@ -10,6 +10,7 @@ import {
 } from '@mezzanine-ui/core/select';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
+import { cx } from '../utils/cx';
 import { usePreviousValue } from '../hooks/usePreviousValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -18,6 +19,7 @@ import Tag from '../Tag';
 
 export interface SelectTriggerTagsProps {
   disabled?: boolean;
+  ellipsis: boolean;
   inputProps?: Omit<
   NativeElementPropsWithoutKeyAndRef<'input'>,
   | 'autoComplete'
@@ -50,6 +52,7 @@ export interface SelectTriggerTagsProps {
 const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(function SelectTriggerTags(props, ref) {
   const {
     disabled,
+    ellipsis,
     inputProps,
     inputRef,
     onTagClose,
@@ -90,28 +93,55 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   }, [tagsWidths, prevTagsWidths, maxWidth]);
 
   return (
-    <div ref={composedRef} className={classes.triggerTagsInputWrapper}>
-      <div className={classes.triggerTags}>
-        {take(value, count > 0 ? count : value?.length).map((selection) => (
-          <Tag
-            key={selection.id}
-            closable
-            disabled={disabled}
-            onClose={(e) => {
-              e.stopPropagation();
-              onTagClose?.(selection);
-            }}
-            size={size}
-          >
-            {selection.name}
-          </Tag>
-        ))}
-        {value && count > 0 && value.length > count ? (
-          <Tag size={size}>
-            {`+${value.length - count}...`}
-          </Tag>
-        ) : null}
-      </div>
+    <div
+      ref={composedRef}
+      className={cx(
+        classes.triggerTagsInputWrapper,
+        {
+          [classes.triggerTagsInputWrapperEllipsis]: ellipsis,
+        },
+      )}
+    >
+      {ellipsis ? (
+        <div className={cx(classes.triggerTags, classes.triggerTagsEllipsis)}>
+          {take(value, count > 0 ? count : value?.length).map((selection) => (
+            <Tag
+              key={selection.id}
+              closable
+              disabled={disabled}
+              onClose={(e) => {
+                e.stopPropagation();
+                onTagClose?.(selection);
+              }}
+              size={size}
+            >
+              {selection.name}
+            </Tag>
+          ))}
+          {value && count > 0 && value.length > count ? (
+            <Tag size={size}>
+              {`+${value.length - count}...`}
+            </Tag>
+          ) : null}
+        </div>
+      ) : (
+        <div className={classes.triggerTags}>
+          {value?.map((selection) => (
+            <Tag
+              key={selection.id}
+              closable
+              disabled={disabled}
+              onClose={(e) => {
+                e.stopPropagation();
+                onTagClose?.(selection);
+              }}
+              size={size}
+            >
+              {selection.name}
+            </Tag>
+          ))}
+        </div>
+      )}
       {showTextInputAfterTags ? (
         <div className={classes.triggerTagsInput}>
           <input

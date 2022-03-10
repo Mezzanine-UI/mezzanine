@@ -17,8 +17,10 @@ export const selectClasses = {
   /** Trigger classes */
   trigger: selectTriggerPrefix,
   triggerTagsInputWrapper: `${selectTriggerPrefix}__tags-input-wrapper`,
+  triggerTagsInputWrapperEllipsis: `${selectTriggerPrefix}__tags-input-wrapper-ellipsis`,
   triggerTagsInput: `${selectTriggerPrefix}__tags-input`,
   triggerTags: `${selectTriggerPrefix}__tags`,
+  triggerTagsEllipsis: `${selectTriggerPrefix}__tags--ellipsis`,
   triggerSuffixActionIcon: `${selectTriggerPrefix}__suffix-action-icon`,
   triggerSuffixActionIconActive: `${selectTriggerPrefix}__suffix-action-icon--active`,
 
