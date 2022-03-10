@@ -102,46 +102,55 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
         },
       )}
     >
-      {ellipsis ? (
-        <div className={cx(classes.triggerTags, classes.triggerTagsEllipsis)}>
-          {take(value, count > 0 ? count : value?.length).map((selection) => (
-            <Tag
-              key={selection.id}
-              closable
-              disabled={disabled}
-              onClose={(e) => {
-                e.stopPropagation();
-                onTagClose?.(selection);
-              }}
-              size={size}
-            >
-              {selection.name}
-            </Tag>
-          ))}
-          {value && count > 0 && value.length > count ? (
-            <Tag size={size}>
-              {`+${value.length - count}...`}
-            </Tag>
-          ) : null}
-        </div>
-      ) : (
-        <div className={classes.triggerTags}>
-          {value?.map((selection) => (
-            <Tag
-              key={selection.id}
-              closable
-              disabled={disabled}
-              onClose={(e) => {
-                e.stopPropagation();
-                onTagClose?.(selection);
-              }}
-              size={size}
-            >
-              {selection.name}
-            </Tag>
-          ))}
-        </div>
-      )}
+      <div
+        className={cx(
+          classes.triggerTags,
+          {
+            [classes.triggerTagsEllipsis]: ellipsis,
+          },
+        )}
+      >
+        {ellipsis ? (
+          <>
+            {take(value, count > 0 ? count : value?.length).map((selection) => (
+              <Tag
+                key={selection.id}
+                closable
+                disabled={disabled}
+                onClose={(e) => {
+                  e.stopPropagation();
+                  onTagClose?.(selection);
+                }}
+                size={size}
+              >
+                {selection.name}
+              </Tag>
+            ))}
+            {value && count > 0 && value.length > count ? (
+              <Tag size={size}>
+                {`+${value.length - count}...`}
+              </Tag>
+            ) : null}
+          </>
+        ) : (
+          <>
+            {value?.map((selection) => (
+              <Tag
+                key={selection.id}
+                closable
+                disabled={disabled}
+                onClose={(e) => {
+                  e.stopPropagation();
+                  onTagClose?.(selection);
+                }}
+                size={size}
+              >
+                {selection.name}
+              </Tag>
+            ))}
+          </>
+        )}
+      </div>
       {showTextInputAfterTags ? (
         <div className={classes.triggerTagsInput}>
           <input
