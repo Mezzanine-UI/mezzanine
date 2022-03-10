@@ -198,33 +198,18 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
-        <div className={classes.triggerTagsInputWrapper}>
-          <SelectTriggerTags
-            disabled={disabled}
-            onTagClose={onTagClose}
-            size={size}
-            value={value}
-          />
-          {showTextInputAfterTags ? (
-            <div className={classes.triggerTagsInput}>
-              <input
-                {...inputProps}
-                ref={inputRef}
-                aria-autocomplete="list"
-                aria-disabled={disabled}
-                aria-haspopup="listbox"
-                aria-readonly={readOnly}
-                aria-required={required}
-                autoComplete="false"
-                disabled={disabled}
-                readOnly={readOnly}
-                required={required}
-                type="search"
-                value={searchText}
-              />
-            </div>
-          ) : null}
-        </div>
+        <SelectTriggerTags
+          disabled={disabled}
+          inputProps={inputProps}
+          inputRef={inputRef}
+          onTagClose={onTagClose}
+          readOnly={readOnly}
+          required={required}
+          searchText={searchText}
+          size={size}
+          showTextInputAfterTags={showTextInputAfterTags}
+          value={value}
+        />
       ) : (
         <input
           {...inputProps}
