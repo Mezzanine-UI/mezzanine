@@ -30,6 +30,9 @@ const originOptions: SelectValue[] = [{
 }, {
   id: 'apple',
   name: 'apple',
+}, {
+  id: 'very very very long',
+  name: 'very very very long',
 }];
 
 export const Basic = () => (

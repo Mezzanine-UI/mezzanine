@@ -62,10 +62,9 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   } = props;
 
   const [tagsWidths, setTagsWidths] = useState<number[]>([]);
-  const [wrapperWidth, setWrapperWidth] = useState<number>(0);
+  const [maxWidth, setMaxWidth] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
   const prevTagsWidths = usePreviousValue(tagsWidths);
-  const prevWrapperWidth = usePreviousValue(wrapperWidth);
   const controlRef = useRef<HTMLDivElement>();
   const composedRef = useComposeRefs([ref, controlRef]);
 
@@ -77,7 +76,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
       const parentWidth = controlRef.current?.clientWidth || 0;
 
       setTagsWidths(lengthArray);
-      setWrapperWidth(parentWidth);
+      setMaxWidth(parentWidth * 0.8 - 60);
     }
   }, [value]);
 
@@ -85,10 +84,10 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
     const prevTagsTotal = prevTagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
     const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
 
-    if (prevTagsTotal < prevWrapperWidth && tagsTotal > wrapperWidth) {
+    if (prevTagsTotal < maxWidth && tagsTotal > maxWidth) {
       setCount(prevTagsWidths.length);
     }
-  }, [tagsWidths, prevTagsWidths, wrapperWidth, prevWrapperWidth]);
+  }, [tagsWidths, prevTagsWidths, maxWidth]);
 
   return (
     <div ref={composedRef} className={classes.triggerTagsInputWrapper}>
