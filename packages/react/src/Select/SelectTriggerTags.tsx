@@ -11,7 +11,6 @@ import {
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
 import { cx } from '../utils/cx';
-import { usePreviousValue } from '../hooks/usePreviousValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { SelectValue } from './typings';
@@ -65,44 +64,75 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   } = props;
 
   const [tagsWidths, setTagsWidths] = useState<number[]>([]);
+  const [ellipsisTagWidth, setEllipsisTagWidth] = useState<number>(0);
   const [maxWidth, setMaxWidth] = useState<number>(0);
-  const [count, setCount] = useState<number>(0);
+  const [takeCount, setTakeCount] = useState<number>(0);
   const controlRef = useRef<HTMLDivElement>();
   const composedRef = useComposeRefs([ref, controlRef]);
-  const prevCount = usePreviousValue(count);
-  const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
 
   useEffect(() => {
-    const elements = controlRef.current?.getElementsByClassName('mzn-tag');
+    const elements = controlRef.current?.getElementsByClassName('fake-tag');
+    const ellipsisTagElement = controlRef.current?.getElementsByClassName('fake-ellipsis-tag')[0];
 
-    if (elements?.length) {
+    if (elements?.length && ellipsisTagElement) {
       const lengthArray = Array.from(elements).map((e) => e.clientWidth);
       const parentWidth = controlRef.current?.clientWidth || 0;
 
       setTagsWidths(lengthArray);
-      setMaxWidth(parentWidth * 0.8);
+      setMaxWidth(parentWidth * 0.7);
+      setEllipsisTagWidth(ellipsisTagElement.clientWidth);
     }
   }, [value]);
 
   useEffect(() => {
-    if (tagsTotal > maxWidth) {
-      if (count > 0) {
-        setCount(tagsWidths.length - 2);
-      } else {
-        setCount(tagsWidths.length - 1);
+    function calcTakeCount() {
+      let targetCount = 0;
+
+      for (let count = 0; count <= tagsWidths.length; count += 1) {
+        const prevTotal = take(tagsWidths, count).reduce((prev, curr) => prev + curr, 0);
+        const nowTotal = take(tagsWidths, count + 1).reduce((prev, curr) => prev + curr, 0);
+
+        targetCount = count;
+
+        if (prevTotal < maxWidth && nowTotal > maxWidth) {
+          if (prevTotal + ellipsisTagWidth > maxWidth) {
+            targetCount -= 1;
+          }
+
+          break;
+        }
       }
+
+      setTakeCount(targetCount);
     }
-  }, [tagsTotal, tagsWidths, maxWidth, count]);
 
-  useEffect(() => {
-    const elements = controlRef.current?.getElementsByClassName('mzn-tag');
+    calcTakeCount();
+  }, [tagsWidths, maxWidth, ellipsisTagWidth]);
 
-    if (elements?.length) {
-      const lengthArray = Array.from(elements).map((e) => e.clientWidth);
-
-      setTagsWidths(lengthArray);
-    }
-  }, [prevCount, count]);
+  const renderFakeTags = () => (
+    <div
+      style={{
+        position: 'absolute',
+        pointerEvents: 'none',
+        opacity: 0,
+      }}
+    >
+      {value?.map((selection) => (
+        <Tag
+          key={selection.id}
+          className="fake-tag"
+          closable
+          disabled
+          size={size}
+        >
+          {selection.name}
+        </Tag>
+      ))}
+      <Tag disabled className="fake-ellipsis-tag" size={size}>
+        +99...
+      </Tag>
+    </div>
+  );
 
   return (
     <div
@@ -122,9 +152,10 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
           },
         )}
       >
+        {renderFakeTags()}
         {ellipsis ? (
           <>
-            {take(value, count > 0 ? count : value?.length).map((selection) => (
+            {take(value, takeCount > 0 ? takeCount : value?.length).map((selection) => (
               <Tag
                 key={selection.id}
                 closable
@@ -138,9 +169,9 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
                 {selection.name}
               </Tag>
             ))}
-            {value && count > 0 && value.length > count ? (
+            {value && takeCount > 0 && value.length > takeCount ? (
               <Tag size={size}>
-                {`+${value.length - count}...`}
+                {`+${value.length - takeCount}...`}
               </Tag>
             ) : null}
           </>
