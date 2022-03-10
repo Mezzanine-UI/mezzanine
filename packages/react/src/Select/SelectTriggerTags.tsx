@@ -9,6 +9,7 @@ import {
 } from '@mezzanine-ui/core/select';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
+import { usePreviousValue } from '../hooks/usePreviousValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { SelectValue } from './typings';
 import Tag from '../Tag';
@@ -31,6 +32,8 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   const [tagsWidths, setTagsWidths] = useState<number[]>([]);
   const [wrapperWidth, setWrapperWidth] = useState<number>(0);
   const [count, setCount] = useState<number>(0);
+  const prevTagsWidths = usePreviousValue(tagsWidths);
+  const prevWrapperWidth = usePreviousValue(wrapperWidth);
   const controlRef = useRef<HTMLDivElement>();
   const composedRef = useComposeRefs([ref, controlRef]);
 
@@ -47,16 +50,19 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   }, [value]);
 
   useEffect(() => {
+    const prevTagsTotal = prevTagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
     const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
 
-    if (tagsTotal > wrapperWidth) {
-      setCount((c) => c + 1);
+    if (prevTagsTotal < prevWrapperWidth && tagsTotal > wrapperWidth) {
+      setCount(prevTagsWidths.length);
+    } else if (prevTagsTotal > prevWrapperWidth && tagsTotal < wrapperWidth) {
+      // setCount(tagsWidths.length);
     }
-  }, [tagsWidths, wrapperWidth]);
+  }, [tagsWidths, prevTagsWidths, wrapperWidth, prevWrapperWidth]);
 
   return (
     <div ref={composedRef} className={classes.triggerTags}>
-      {take(value, (value?.length || 0) - count).map((selection) => (
+      {take(value, count > 0 ? count : value?.length).map((selection) => (
         <Tag
           key={selection.id}
           closable
@@ -70,9 +76,9 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
           {selection.name}
         </Tag>
       ))}
-      {count > 0 ? (
+      {value && count > 0 && value.length > count ? (
         <Tag size={size}>
-          {`+${count}...`}
+          {`+${value.length - count}...`}
         </Tag>
       ) : null}
     </div>
