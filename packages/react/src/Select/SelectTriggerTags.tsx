@@ -11,6 +11,7 @@ import {
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
 import { cx } from '../utils/cx';
+import { usePreviousValue } from '../hooks/usePreviousValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { SelectValue } from './typings';
@@ -68,6 +69,8 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
   const [count, setCount] = useState<number>(0);
   const controlRef = useRef<HTMLDivElement>();
   const composedRef = useComposeRefs([ref, controlRef]);
+  const prevCount = usePreviousValue(count);
+  const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
 
   useEffect(() => {
     const elements = controlRef.current?.getElementsByClassName('mzn-tag');
@@ -77,19 +80,29 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
       const parentWidth = controlRef.current?.clientWidth || 0;
 
       setTagsWidths(lengthArray);
-      setMaxWidth(parentWidth * 0.8 - 60);
+      setMaxWidth(parentWidth * 0.8);
     }
   }, [value]);
 
   useEffect(() => {
-    const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
-
     if (tagsTotal > maxWidth) {
-      setCount(tagsWidths.length - 1);
-    } else {
-      // setCount(0);
+      if (count > 0) {
+        setCount(tagsWidths.length - 2);
+      } else {
+        setCount(tagsWidths.length - 1);
+      }
     }
-  }, [tagsWidths, maxWidth]);
+  }, [tagsTotal, tagsWidths, maxWidth, count]);
+
+  useEffect(() => {
+    const elements = controlRef.current?.getElementsByClassName('mzn-tag');
+
+    if (elements?.length) {
+      const lengthArray = Array.from(elements).map((e) => e.clientWidth);
+
+      setTagsWidths(lengthArray);
+    }
+  }, [prevCount, count]);
 
   return (
     <div
