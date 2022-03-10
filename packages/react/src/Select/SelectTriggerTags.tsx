@@ -1,10 +1,15 @@
 import {
   forwardRef,
+  useState,
+  useEffect,
+  useRef,
 } from 'react';
 import {
   selectClasses as classes,
 } from '@mezzanine-ui/core/select';
 import { TagSize } from '@mezzanine-ui/core/tag';
+import take from 'lodash/take';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { SelectValue } from './typings';
 import Tag from '../Tag';
 
@@ -23,9 +28,35 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
     value,
   } = props;
 
+  const [tagsWidths, setTagsWidths] = useState<number[]>([]);
+  const [wrapperWidth, setWrapperWidth] = useState<number>(0);
+  const [count, setCount] = useState<number>(0);
+  const controlRef = useRef<HTMLDivElement>();
+  const composedRef = useComposeRefs([ref, controlRef]);
+
+  useEffect(() => {
+    const elements = controlRef.current?.getElementsByClassName('mzn-tag');
+
+    if (elements?.length) {
+      const lengthArray = Array.from(elements).map((e) => e.clientWidth);
+      const parentWidth = controlRef.current?.clientWidth || 0;
+
+      setTagsWidths(lengthArray);
+      setWrapperWidth(parentWidth);
+    }
+  }, [value]);
+
+  useEffect(() => {
+    const tagsTotal = tagsWidths.reduce((prev, curr) => prev + curr + 4, 0);
+
+    if (tagsTotal > wrapperWidth) {
+      setCount((c) => c + 1);
+    }
+  }, [tagsWidths, wrapperWidth]);
+
   return (
-    <div ref={ref} className={classes.triggerTags}>
-      {(value as SelectValue[]).map((selection) => (
+    <div ref={composedRef} className={classes.triggerTags}>
+      {take(value, (value?.length || 0) - count).map((selection) => (
         <Tag
           key={selection.id}
           closable
@@ -39,6 +70,11 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
           {selection.name}
         </Tag>
       ))}
+      {count > 0 ? (
+        <Tag size={size}>
+          {`+${count}...`}
+        </Tag>
+      ) : null}
     </div>
   );
 });
