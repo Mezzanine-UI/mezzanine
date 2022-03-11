@@ -141,23 +141,6 @@ describe('<Select />', () => {
       expect(onBlur).toBeCalledTimes(1);
     });
 
-    it('should invoke onFocus when input focus', async () => {
-      jest.useFakeTimers();
-
-      const onFocus = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onFocus={onFocus} />,
-      );
-      const element = getHostHTMLElement();
-      const inputElement = element.getElementsByTagName('input')[0]!;
-
-      await act(async () => {
-        fireEvent.focus(inputElement);
-      });
-
-      expect(onFocus).toBeCalledTimes(1);
-    });
-
     it('should invoke onBlur when closing via click-away from text-field', async () => {
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
@@ -310,18 +293,10 @@ describe('<Select />', () => {
           />,
         );
       });
-
-      await act(async () => {
-        fireEvent.focus(inputRef.current!);
-      });
-
-      await act(async () => {
-        fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
-      });
     });
 
     it('should select input changeable', () => {
-      expect(inputRef.current!.value).toEqual('foo');
+      expect(inputRef.current!.value).toEqual('bar');
     });
   });
 
