@@ -48,67 +48,132 @@ describe('useAutoCompleteValueControl()', () => {
   });
 
   describe('prop: onChange', () => {
-    it('single mode', () => {
-      const { result } = renderHook(
-        () => useAutoCompleteValueControl({
-          disabledOptionsFilter: false,
-          mode: 'single',
-          options: [{
-            id: 'foo',
-            name: 'foo',
-          }, {
-            id: 'bar',
-            name: 'bar',
-          }],
-        }),
-      );
+    describe('single mode', () => {
+      it('should set option value when changed', () => {
+        const { result } = renderHook(
+          () => useAutoCompleteValueControl({
+            disabledOptionsFilter: false,
+            mode: 'single',
+            options: [{
+              id: 'foo',
+              name: 'foo',
+            }, {
+              id: 'bar',
+              name: 'bar',
+            }],
+          }),
+        );
 
-      const {
-        onChange,
-      } = result.current;
+        const {
+          onChange,
+        } = result.current;
 
-      TestRenderer.act(() => {
-        onChange({ id: 'foo', name: 'foo' });
+        TestRenderer.act(() => {
+          onChange({ id: 'foo', name: 'foo' });
+        });
+
+        const {
+          value,
+        } = result.current;
+
+        expect(((value as SelectValue))!.id).toBe('foo');
+        expect(((value as SelectValue))!.name).toBe('foo');
       });
 
-      const {
-        value,
-      } = result.current;
+      it('should do nothing when onChange given null', () => {
+        const { result } = renderHook(
+          () => useAutoCompleteValueControl({
+            disabledOptionsFilter: false,
+            mode: 'single',
+            options: [{
+              id: 'foo',
+              name: 'foo',
+            }, {
+              id: 'bar',
+              name: 'bar',
+            }],
+          }),
+        );
 
-      expect(((value as SelectValue))!.id).toBe('foo');
-      expect(((value as SelectValue))!.name).toBe('foo');
+        const {
+          onChange,
+        } = result.current;
+
+        TestRenderer.act(() => {
+          onChange(null);
+        });
+
+        const {
+          value,
+        } = result.current;
+
+        expect(value).toBe(null);
+      });
+    });
+
+    describe('multiple mode', () => {
+      it('should set option value when changed', () => {
+        const { result } = renderHook(
+          () => useAutoCompleteValueControl({
+            disabledOptionsFilter: false,
+            mode: 'multiple',
+            options: [{
+              id: 'foo',
+              name: 'foo',
+            }, {
+              id: 'bar',
+              name: 'bar',
+            }],
+          }),
+        );
+
+        const {
+          onChange,
+        } = result.current;
+
+        TestRenderer.act(() => {
+          onChange({ id: 'foo', name: 'foo' });
+        });
+
+        const {
+          value,
+        } = result.current;
+
+        expect(((value as SelectValue[]))!.length).toBe(1);
+        expect(((value as SelectValue[]))[0]!.id).toBe('foo');
+      });
+
+      it('should do nothing when onChange given null', () => {
+        const { result } = renderHook(
+          () => useAutoCompleteValueControl({
+            disabledOptionsFilter: false,
+            mode: 'multiple',
+            options: [{
+              id: 'foo',
+              name: 'foo',
+            }, {
+              id: 'bar',
+              name: 'bar',
+            }],
+          }),
+        );
+
+        const {
+          onChange,
+        } = result.current;
+
+        TestRenderer.act(() => {
+          onChange(null);
+        });
+
+        const {
+          value,
+        } = result.current;
+
+        expect((value as SelectValue[]).length).toBe(0);
+      });
     });
   });
-
-  // it('should do nothing when onChange given null', () => {
-  //   const { result } = renderHook(
-  //     () => useAutoCompleteValueControl({
-  //       disabledOptionsFilter: false,
-  //       mode: 'single',
-  //       options: [{
-  //         id: 'foo',
-  //         name: 'foo',
-  //       }, {
-  //         id: 'bar',
-  //         name: 'bar',
-  //       }],
-  //     }),
-  //   );
-
-  //   const {
-  //     onChange,
-  //   } = result.current;
-
-  //   TestRenderer.act(() => {
-  //     onChange(null);
-  //   });
-
-  //   const {
-  //     value,
-  //   } = result.current;
-
-  //   expect(value).toBe(null);
-  // });
 
   // it('when disabledOptionsFilter is true, return options directly', () => {
   //   const originOptions = [{
