@@ -175,28 +175,28 @@ describe('useAutoCompleteValueControl()', () => {
     });
   });
 
-  // it('when disabledOptionsFilter is true, return options directly', () => {
-  //   const originOptions = [{
-  //     id: 'foo',
-  //     name: 'foo',
-  //   }, {
-  //     id: 'bar',
-  //     name: 'bar',
-  //   }];
-  //   const { result } = renderHook(
-  //     () => useAutoCompleteValueControl({
-  //       disabledOptionsFilter: true,
-  //       mode: 'single',
-  //       options: originOptions,
-  //     }),
-  //   );
+  it('when disabledOptionsFilter is true, return options directly', () => {
+    const originOptions = [{
+      id: 'foo',
+      name: 'foo',
+    }, {
+      id: 'bar',
+      name: 'bar',
+    }];
+    const { result } = renderHook(
+      () => useAutoCompleteValueControl({
+        disabledOptionsFilter: true,
+        mode: 'single',
+        options: originOptions,
+      }),
+    );
 
-  //   const {
-  //     options,
-  //   } = result.current;
+    const {
+      options,
+    } = result.current;
 
-  //   expect(options.length).toBe(originOptions.length);
-  // });
+    expect(options.length).toBe(originOptions.length);
+  });
 
   // it('when props onChange is given, should called whenever change event invoked', () => {
   //   let myOption = '';
