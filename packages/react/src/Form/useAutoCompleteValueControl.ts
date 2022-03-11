@@ -5,6 +5,7 @@ import {
   SetStateAction,
   useCallback,
 } from 'react';
+import compact from 'lodash/compact';
 import isEqual from 'lodash/isEqual';
 import differenceBy from 'lodash/differenceBy';
 import { SelectValue } from '../Select/typings';
@@ -86,14 +87,14 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     setFocused(focus);
   }, []);
 
-  const options = disabledOptionsFilter
+  const options: SelectValue[] = disabledOptionsFilter
     ? optionsProp
     : optionsProp.filter((option) => !!option.name.includes(searchText));
 
-  const selectedOptions = mode === 'multiple'
-    ? options.filter((option) => !!(value as SelectValue[]).find((vp) => vp.id === option.id)) : [value];
+  const selectedOptions: SelectValue[] = mode === 'multiple'
+    ? (value as SelectValue[]) : compact([(value as SelectValue | null)]);
 
-  const unselectedOptions = differenceBy(options, selectedOptions, 'id');
+  const unselectedOptions: SelectValue[] = differenceBy(options, selectedOptions, 'id');
 
   return {
     focused,
