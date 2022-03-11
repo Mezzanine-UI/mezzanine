@@ -12,32 +12,38 @@ describe('useAutoCompleteValueControl()', () => {
     cleanupHook();
   });
 
-  it('should onClose called when changed', () => {
-    const onClose = jest.fn<void, [void]>(() => {});
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
-        disabledOptionsFilter: false,
-        mode: 'single',
-        onClose,
-        options: [{
-          id: 'foo',
-          name: 'foo',
-        }, {
-          id: 'bar',
-          name: 'bar',
-        }],
-      }),
-    );
+  describe('prop: onClose', () => {
+    (['single', 'multiple'] as ('single' | 'multiple')[]).forEach((mode) => {
+      it(`onClose behavior on mode="${mode}"`, () => {
+        const onClose = jest.fn<void, [void]>(() => {});
+        const { result } = renderHook(
+          () => useAutoCompleteValueControl({
+            disabledOptionsFilter: false,
+            mode,
+            onClose,
+            options: [{
+              id: 'foo',
+              name: 'foo',
+            }, {
+              id: 'bar',
+              name: 'bar',
+            }],
+          }),
+        );
 
-    const {
-      onChange,
-    } = result.current;
+        const {
+          onChange,
+        } = result.current;
 
-    TestRenderer.act(() => {
-      onChange({ id: 'foo', name: 'foo' });
+        TestRenderer.act(() => {
+          onChange({ id: 'foo', name: 'foo' });
+        });
+
+        const calledTimes = mode === 'single' ? 1 : 0;
+
+        expect(onClose).toBeCalledTimes(calledTimes);
+      });
     });
-
-    expect(onClose).toBeCalledTimes(1);
   });
 
   // it('should set option name when changed', () => {
