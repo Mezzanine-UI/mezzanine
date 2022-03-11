@@ -198,36 +198,36 @@ describe('useAutoCompleteValueControl()', () => {
     expect(options.length).toBe(originOptions.length);
   });
 
-  // it('when props onChange is given, should called whenever change event invoked', () => {
-  //   let myOption = '';
+  it('when props onChange is given, should called whenever change event invoked', () => {
+    let myOption: SelectValue | null = null;
 
-  //   const onChangeProp = jest.fn<void, [string]>((name) => {
-  //     myOption = name;
-  //   });
+    const onChangeProp = jest.fn<void, [SelectValue]>((newOption) => {
+      myOption = newOption;
+    });
 
-  //   const { result } = renderHook(
-  //     () => useAutoCompleteValueControl({
-  //       disabledOptionsFilter: false,
-  //       onChange: onChangeProp,
-  //       mode: 'single',
-  //       options: [{
-  //         id: 'foo',
-  //         name: 'foo',
-  //       }, {
-  //         id: 'bar',
-  //         name: 'bar',
-  //       }],
-  //     }),
-  //   );
+    const { result } = renderHook(
+      () => useAutoCompleteValueControl({
+        disabledOptionsFilter: false,
+        onChange: onChangeProp,
+        mode: 'single',
+        options: [{
+          id: 'foo',
+          name: 'foo',
+        }, {
+          id: 'bar',
+          name: 'bar',
+        }],
+      }),
+    );
 
-  //   const {
-  //     onChange,
-  //   } = result.current;
+    const {
+      onChange,
+    } = result.current;
 
-  //   TestRenderer.act(() => {
-  //     onChange({ id: 'foo', name: 'foo' });
-  //   });
+    TestRenderer.act(() => {
+      onChange({ id: 'foo', name: 'foo' });
+    });
 
-  //   expect(myOption).toBe('foo');
-  // });
+    expect(myOption!.id).toBe('foo');
+  });
 });
