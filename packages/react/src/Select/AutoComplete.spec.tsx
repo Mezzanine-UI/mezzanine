@@ -148,30 +148,30 @@ describe('<AutoComplete />', () => {
     expect(getPopper()).toBe(null);
   });
 
-  // it('should clear input text when clear action clicked', async () => {
-  //   jest.useFakeTimers();
+  it('should clear input text when clear action clicked', async () => {
+    jest.useFakeTimers();
 
-  //   const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        options={defaultOptions}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
-  //   });
+    await act(async () => {
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+    });
 
-  //   const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
+    const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
 
-  //   await act(async () => {
-  //     fireEvent.click(clearIcon!);
-  //   });
+    await act(async () => {
+      fireEvent.click(clearIcon!);
+    });
 
-  //   expect(inputRef.current!.value).toBe('');
-  // });
+    expect(inputRef.current!.value).toBe('');
+  });
 
   // it('props: onClear', async () => {
   //   jest.useFakeTimers();
