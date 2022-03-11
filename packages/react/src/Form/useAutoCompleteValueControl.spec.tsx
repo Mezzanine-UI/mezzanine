@@ -1,3 +1,4 @@
+import { MouseEvent } from 'react';
 import {
   TestRenderer,
   cleanup,
@@ -229,5 +230,77 @@ describe('useAutoCompleteValueControl()', () => {
     });
 
     expect(myOption!.id).toBe('foo');
+  });
+
+  describe('onChangeProp will return null when trig onClear on single mode', () => {
+    let myValue: SelectValue | null = null;
+
+    const onChangeProp = jest.fn<void, [SelectValue | null]>((newOption) => {
+      myValue = newOption;
+    });
+    const stopPropagation = jest.fn();
+
+    const { result } = renderHook(
+      () => useAutoCompleteValueControl({
+        disabledOptionsFilter: false,
+        onChange: onChangeProp,
+        mode: 'single',
+        options: [{
+          id: 'foo',
+          name: 'foo',
+        }, {
+          id: 'bar',
+          name: 'bar',
+        }],
+      }),
+    );
+
+    const {
+      onClear,
+    } = result.current;
+
+    TestRenderer.act(() => {
+      onClear({
+        stopPropagation,
+      } as unknown as MouseEvent<Element>);
+    });
+
+    expect(myValue).toBe(null);
+  });
+
+  describe('onChangeProp will return empty array when trig onClear on multiple mode', () => {
+    let myValue: SelectValue[] = [];
+
+    const onChangeProp = jest.fn<void, [SelectValue[]]>((newOption) => {
+      myValue = newOption;
+    });
+    const stopPropagation = jest.fn();
+
+    const { result } = renderHook(
+      () => useAutoCompleteValueControl({
+        disabledOptionsFilter: false,
+        onChange: onChangeProp,
+        mode: 'multiple',
+        options: [{
+          id: 'foo',
+          name: 'foo',
+        }, {
+          id: 'bar',
+          name: 'bar',
+        }],
+      }),
+    );
+
+    const {
+      onClear,
+    } = result.current;
+
+    TestRenderer.act(() => {
+      onClear({
+        stopPropagation,
+      } as unknown as MouseEvent<Element>);
+    });
+
+    expect(myValue.length).toBe(0);
   });
 });
