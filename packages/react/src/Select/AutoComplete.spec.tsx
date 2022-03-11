@@ -14,7 +14,7 @@ import {
 import {
   describeForwardRefToHTMLElement,
 } from '../../__test-utils__/common';
-import { AutoComplete } from '.';
+import { AutoComplete, SelectValue } from '.';
 
 // function getInputElement(element: HTMLElement) {
 //   return element.getElementsByTagName('input')[0];
@@ -32,7 +32,7 @@ function getOptions() {
   return document.querySelectorAll('.mzn-menu-item');
 }
 
-const defaultOptions = [{
+const defaultOptions: SelectValue[] = [{
   id: 'foo',
   name: 'foo',
 }, {
@@ -189,32 +189,35 @@ describe('<AutoComplete />', () => {
     });
   });
 
-  // it('should keep user typings when blur', async () => {
-  //   jest.useFakeTimers();
+  it('should reduce value from options when blur', async () => {
+    jest.useFakeTimers();
 
-  //   const onChange = jest.fn<void, [string]>(() => {});
-  //   const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       onChange={onChange}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        options={defaultOptions}
+        value={defaultOptions[0]}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //     fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+    });
 
-  //   await act(async () => {
-  //     fireEvent.blur(inputRef.current!);
-  //   });
+    expect(inputRef.current!.getAttribute('placeholder')).toBe('foo');
 
-  //   expect(inputRef.current!.value).toBe('foobar');
-  //   expect(onChange).toBeCalledTimes(2);
-  // });
+    await act(async () => {
+      fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
+    });
+
+    await act(async () => {
+      fireEvent.blur(inputRef.current!);
+    });
+
+    expect(inputRef.current!.value).toBe('foo');
+  });
 
   // it('should display options that matched user typings by default', async () => {
   //   jest.useFakeTimers();
