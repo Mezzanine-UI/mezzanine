@@ -219,53 +219,54 @@ describe('<AutoComplete />', () => {
     expect(inputRef.current!.value).toBe('foo');
   });
 
-  // it('should display options that matched user typings by default', async () => {
-  //   jest.useFakeTimers();
+  it('should display options that matched user typings by default', async () => {
+    jest.useFakeTimers();
 
-  //   const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        options={defaultOptions}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //     fireEvent.change(inputRef.current!, { target: { value: 'fo' } });
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'fo' } });
+    });
 
-  //   expect(getOptions().length).toBe(2);
+    expect(getOptions().length).toBe(1);
 
-  //   await act(async () => {
-  //     fireEvent.change(inputRef.current!, { target: { value: 'foo123' } });
-  //   });
+    await act(async () => {
+      fireEvent.change(inputRef.current!, { target: { value: 'foo123' } });
+    });
 
-  //   expect(getOptions().length).toBe(1);
-  // });
+    expect(getOptions().length).toBe(0);
+  });
 
-  // it('prop: onSearch, should triggered when input changed', async () => {
-  //   jest.useFakeTimers();
+  it('prop: onSearch, should triggered when input changed', async () => {
+    jest.useFakeTimers();
 
-  //   const onSearch = jest.fn<void, [string]>(() => {});
-  //   const inputRef = createRef<HTMLInputElement>();
+    const onSearch = jest.fn<void, [string]>(() => {});
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       onSearch={onSearch}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        onSearch={onSearch}
+        options={defaultOptions}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //     fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+    });
 
-  //   expect(onSearch).toBeCalledTimes(1);
-  // });
+    expect(onSearch).toBeCalledTimes(1);
+    expect(onSearch).toBeCalledWith('foo');
+  });
 
   // it('prop: inputProps.onBlur, should triggered when input blur', async () => {
   //   jest.useFakeTimers();
