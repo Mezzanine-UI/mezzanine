@@ -12,6 +12,7 @@ $tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
+  overflow: hidden;
 
   &--full-width {
     width: 100%;

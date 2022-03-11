@@ -160,7 +160,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
         {renderFakeTags()}
         {ellipsis ? (
           <>
-            {take(value, takeCount > 0 ? takeCount : value?.length).map((selection) => (
+            {take(value, takeCount).map((selection) => (
               <Tag
                 key={selection.id}
                 closable
@@ -174,7 +174,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
                 {selection.name}
               </Tag>
             ))}
-            {value && takeCount > 0 && value.length > takeCount ? (
+            {value && value.length > takeCount ? (
               <Tag size={size}>
                 {`+${value.length - takeCount}...`}
               </Tag>
