@@ -47,35 +47,37 @@ describe('useAutoCompleteValueControl()', () => {
     });
   });
 
-  it('should set option name when changed on single mode', () => {
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
-        disabledOptionsFilter: false,
-        mode: 'single',
-        options: [{
-          id: 'foo',
-          name: 'foo',
-        }, {
-          id: 'bar',
-          name: 'bar',
-        }],
-      }),
-    );
+  describe('prop: onChange', () => {
+    it('single mode', () => {
+      const { result } = renderHook(
+        () => useAutoCompleteValueControl({
+          disabledOptionsFilter: false,
+          mode: 'single',
+          options: [{
+            id: 'foo',
+            name: 'foo',
+          }, {
+            id: 'bar',
+            name: 'bar',
+          }],
+        }),
+      );
 
-    const {
-      onChange,
-    } = result.current;
+      const {
+        onChange,
+      } = result.current;
 
-    TestRenderer.act(() => {
-      onChange({ id: 'foo', name: 'foo' });
+      TestRenderer.act(() => {
+        onChange({ id: 'foo', name: 'foo' });
+      });
+
+      const {
+        value,
+      } = result.current;
+
+      expect(((value as SelectValue))!.id).toBe('foo');
+      expect(((value as SelectValue))!.name).toBe('foo');
     });
-
-    const {
-      value,
-    } = result.current;
-
-    expect(((value as SelectValue))!.id).toBe('foo');
-    expect(((value as SelectValue))!.name).toBe('foo');
   });
 
   // it('should do nothing when onChange given null', () => {
