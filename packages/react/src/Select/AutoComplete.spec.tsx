@@ -91,51 +91,33 @@ describe('<AutoComplete />', () => {
     expect(getPopper()).toBe(null);
   });
 
-  // it('should close menu when clickaway', async () => {
-  //   jest.useFakeTimers();
+  it('should close menu when clickaway', async () => {
+    jest.useFakeTimers();
 
-  //   const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete inputRef={inputRef} options={defaultOptions} />,
-  //   );
+    render(
+      <AutoComplete inputRef={inputRef} options={defaultOptions} />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+    });
 
-  //   await act(async () => {
-  //     fireEvent.blur(inputRef.current!);
-  //   });
+    await act(async () => {
+      fireEvent.blur(inputRef.current!);
+    });
 
-  //   await act(async () => {
-  //     fireEvent.click(document);
-  //   });
+    await act(async () => {
+      fireEvent.click(document);
+    });
 
-  //   await act(async () => {
-  //     jest.runAllTimers();
-  //   });
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
-  //   expect(getPopper()).toBe(null);
-  // });
-
-  // it('should render Empty when no options', async () => {
-  //   jest.useFakeTimers();
-
-  //   const inputRef = createRef<HTMLInputElement>();
-
-  //   render(
-  //     <AutoComplete inputRef={inputRef} options={[]} />,
-  //   );
-
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //   });
-
-  //   const empty = document.querySelector('.mzn-empty');
-
-  //   expect(empty).toBeInstanceOf(HTMLDivElement);
-  // });
+    expect(getPopper()).toBe(null);
+  });
 
   // it('should clear input text when clear action clicked', async () => {
   //   jest.useFakeTimers();
