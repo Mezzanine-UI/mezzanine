@@ -39,7 +39,7 @@ export const Basic = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: 'repeat(2, 150px)',
+      gridTemplateColumns: 'repeat(2, 160px)',
       gap: '16px',
       alignItems: 'center',
     }}
