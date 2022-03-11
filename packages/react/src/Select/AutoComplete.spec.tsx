@@ -1,7 +1,7 @@
 import {
   createRef,
   // FocusEvent,
-  // MouseEvent,
+  MouseEvent,
 } from 'react';
 // import { PlusIcon } from '@mezzanine-ui/icons';
 import {
@@ -148,58 +148,46 @@ describe('<AutoComplete />', () => {
     expect(getPopper()).toBe(null);
   });
 
-  it('should clear input text when clear action clicked', async () => {
-    jest.useFakeTimers();
+  describe('when clear action clicked', () => {
+    (['single', 'multiple'] as ('single' | 'multiple')[]).forEach((mode) => {
+      it(`should clear input text and trig onClear, onChange and onSearch on mode="${mode}"`, async () => {
+        jest.useFakeTimers();
 
-    const inputRef = createRef<HTMLInputElement>();
+        const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
+        const inputRef = createRef<HTMLInputElement>();
+        const onChange = jest.fn();
+        const onSearch = jest.fn();
 
-    render(
-      <AutoComplete
-        inputRef={inputRef}
-        options={defaultOptions}
-      />,
-    );
+        render(
+          <AutoComplete
+            inputRef={inputRef}
+            mode={mode}
+            onClear={onClear}
+            onChange={onChange}
+            onSearch={onSearch}
+            options={defaultOptions}
+          />,
+        );
 
-    await act(async () => {
-      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+        await act(async () => {
+          fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+        });
+
+        const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
+
+        await act(async () => {
+          fireEvent.click(clearIcon!);
+        });
+
+        const valueAfterClear = mode === 'single' ? null : [];
+
+        expect(inputRef.current!.value).toBe('');
+        expect(onClear).toBeCalledTimes(1);
+        expect(onChange).toBeCalledWith(valueAfterClear);
+        expect(onSearch).toBeCalledWith('');
+      });
     });
-
-    const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
-
-    await act(async () => {
-      fireEvent.click(clearIcon!);
-    });
-
-    expect(inputRef.current!.value).toBe('');
   });
-
-  // it('props: onClear', async () => {
-  //   jest.useFakeTimers();
-
-  //   const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
-  //   const inputRef = createRef<HTMLInputElement>();
-
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       onClear={onClear}
-  //       options={defaultOptions}
-  //     />,
-  //   );
-
-  //   await act(async () => {
-  //     fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
-  //   });
-
-  //   const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
-
-  //   await act(async () => {
-  //     fireEvent.click(clearIcon!);
-  //   });
-
-  //   expect(inputRef.current!.value).toBe('');
-  //   expect(onClear).toBeCalledTimes(1);
-  // });
 
   // it('should keep user typings when blur', async () => {
   //   jest.useFakeTimers();
