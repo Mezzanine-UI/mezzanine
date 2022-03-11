@@ -62,13 +62,13 @@ describe('<AutoComplete />', () => {
     (ref) => render(<AutoComplete inputRef={ref} options={defaultOptions} />),
   );
 
-  it('should close menu when onChange triggered', async () => {
+  it('should close menu when onChange triggered on single mode', async () => {
     jest.useFakeTimers();
 
     const inputRef = createRef<HTMLInputElement>();
 
     render(
-      <AutoComplete inputRef={inputRef} options={defaultOptions} />,
+      <AutoComplete inputRef={inputRef} mode="single" options={defaultOptions} />,
     );
 
     await act(async () => {
@@ -89,6 +89,35 @@ describe('<AutoComplete />', () => {
     });
 
     expect(getPopper()).toBe(null);
+  });
+
+  it('should not close menu when onChange triggered on multiple mode', async () => {
+    jest.useFakeTimers();
+
+    const inputRef = createRef<HTMLInputElement>();
+
+    render(
+      <AutoComplete inputRef={inputRef} mode="multiple" options={defaultOptions} />,
+    );
+
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+    });
+
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
+
+    const options = getOptions();
+
+    await act(async () => {
+      fireEvent.click(options[0]);
+    });
+
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
   });
 
   it('should close menu when clickaway', async () => {
