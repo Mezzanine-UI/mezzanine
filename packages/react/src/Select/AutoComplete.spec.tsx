@@ -28,7 +28,19 @@ function getOptions() {
   return document.querySelectorAll('.mzn-menu-item');
 }
 
-const defaultOptions = ['foo', 'bar', 'item1'];
+const defaultOptions = [{
+  id: 'foo',
+  name: 'foo',
+}, {
+  id: 'bar',
+  name: 'bar',
+}, {
+  id: 'item1',
+  name: 'item1',
+}, {
+  id: 'very very very very long',
+  name: 'very very very very long',
+}];
 
 describe('<AutoComplete />', () => {
   afterEach(() => {
