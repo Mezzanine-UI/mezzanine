@@ -200,7 +200,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onClear,
     options,
     searchText,
+    selectedOptions,
     setSearchText,
+    unselectedOptions,
     value,
   } = useAutoCompleteValueControl({
     defaultValue,
@@ -348,11 +350,28 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
               size={menuSize}
               style={{ border: 0 }}
             >
-              {options.map((option) => (
-                <Option key={option.id} value={option.id}>
-                  {option.name}
-                </Option>
-              ))}
+              {mode === 'single' ? (
+                <>
+                  {options.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {selectedOptions.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                  {unselectedOptions.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                </>
+              )}
             </Menu>
           ) : null}
           {searchTextExistWithoutOption && addable ? (

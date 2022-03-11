@@ -5,8 +5,8 @@ import {
   SetStateAction,
   useCallback,
 } from 'react';
-import orderBy from 'lodash/orderBy';
 import isEqual from 'lodash/isEqual';
+import differenceBy from 'lodash/differenceBy';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
@@ -41,7 +41,9 @@ export interface AutoCompleteBaseValueControl {
   onFocus: (f: boolean) => void;
   options: SelectValue[];
   searchText: string;
+  selectedOptions: SelectValue[];
   setSearchText: Dispatch<SetStateAction<string>>;
+  unselectedOptions: SelectValue[];
 }
 
 export type AutoCompleteMultipleValueControl = AutoCompleteBaseValueControl & {
@@ -88,8 +90,10 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     ? optionsProp
     : optionsProp.filter((option) => !!option.name.includes(searchText));
 
-  const optionsAfterOrder = mode === 'multiple'
-    ? orderBy(options, (option) => !!(value as SelectValue[]).find((vp) => vp.id === option.id), 'desc') : options;
+  const selectedOptions = mode === 'multiple'
+    ? options.filter((option) => !!(value as SelectValue[]).find((vp) => vp.id === option.id)) : [value];
+
+  const unselectedOptions = differenceBy(options, selectedOptions, 'id');
 
   return {
     focused,
@@ -164,9 +168,11 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
       }
     },
     onFocus,
-    options: optionsAfterOrder,
+    options,
     searchText,
+    selectedOptions,
     setSearchText,
+    unselectedOptions,
     value,
   };
 }
