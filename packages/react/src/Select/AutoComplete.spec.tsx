@@ -349,17 +349,16 @@ describe('<AutoComplete />', () => {
     expect(options.length).toBe(defaultOptions.length);
   });
 
-  describe('prop: addable', () => {
-    let newOption: SelectValue | null;
+  describe('prop: addable/onInsert/onChange', () => {
     const onInsert = jest.fn<SelectValue, [string]>((insert) => {
-      newOption = { id: insert, name: insert };
+      const newOption = { id: insert, name: insert };
 
       return newOption;
     });
 
-    beforeEach(async () => {
-      newOption = null;
+    const onChange = jest.fn();
 
+    beforeEach(async () => {
       jest.useFakeTimers();
 
       const inputRef = createRef<HTMLInputElement>();
@@ -369,6 +368,7 @@ describe('<AutoComplete />', () => {
           addable
           inputRef={inputRef}
           onInsert={onInsert}
+          onChange={onChange}
           options={defaultOptions}
         />,
       );
@@ -400,8 +400,38 @@ describe('<AutoComplete />', () => {
       });
 
       expect(onInsert).toBeCalledTimes(1);
-      expect(newOption!.id).toBe('rytass');
-      expect(newOption!.name).toBe('rytass');
+      expect(onChange).toBeCalledWith({
+        id: 'rytass',
+        name: 'rytass',
+      });
     });
+  });
+
+  it('should not invoke onChange if onInsert is not given in addable mode', async () => {
+    const onChange = jest.fn();
+
+    const inputRef = createRef<HTMLInputElement>();
+
+    render(
+      <AutoComplete
+        addable
+        inputRef={inputRef}
+        onChange={onChange}
+        options={defaultOptions}
+      />,
+    );
+
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'rytass' } });
+    });
+
+    const addableContainer = getAddingContainer();
+
+    await act(async () => {
+      fireEvent.click(addableContainer);
+    });
+
+    expect(onChange).toBeCalledTimes(0);
   });
 });
