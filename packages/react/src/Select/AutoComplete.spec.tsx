@@ -1,6 +1,6 @@
 import {
   createRef,
-  // FocusEvent,
+  FocusEvent,
   MouseEvent,
 } from 'react';
 // import { PlusIcon } from '@mezzanine-ui/icons';
@@ -268,51 +268,51 @@ describe('<AutoComplete />', () => {
     expect(onSearch).toBeCalledWith('foo');
   });
 
-  // it('prop: inputProps.onBlur, should triggered when input blur', async () => {
-  //   jest.useFakeTimers();
+  it('prop: inputProps.onBlur, should triggered when input blur', async () => {
+    jest.useFakeTimers();
 
-  //   const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
-  //   const inputRef = createRef<HTMLInputElement>();
+    const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       inputProps={{
-  //         onBlur,
-  //       }}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        inputProps={{
+          onBlur,
+        }}
+        options={defaultOptions}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.blur(inputRef.current!);
-  //   });
+    await act(async () => {
+      fireEvent.blur(inputRef.current!);
+    });
 
-  //   expect(onBlur).toBeCalledTimes(1);
-  // });
+    expect(onBlur).toBeCalledTimes(1);
+  });
 
-  // it('prop: inputProps.onFocus, should triggered when input focus', async () => {
-  //   jest.useFakeTimers();
+  it('prop: inputProps.onFocus, should triggered when input focus', async () => {
+    jest.useFakeTimers();
 
-  //   const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
-  //   const inputRef = createRef<HTMLInputElement>();
+    const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete
-  //       inputRef={inputRef}
-  //       inputProps={{
-  //         onFocus,
-  //       }}
-  //       options={defaultOptions}
-  //     />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        inputProps={{
+          onFocus,
+        }}
+        options={defaultOptions}
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+    });
 
-  //   expect(onFocus).toBeCalledTimes(1);
-  // });
+    expect(onFocus).toBeCalledTimes(1);
+  });
 
   // it('prop: disabledOptionsFilter, should disabled options filtering', async () => {
   //   jest.useFakeTimers();
