@@ -183,7 +183,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const getTextFieldActive = () => {
     if (value) {
       if (Array.isArray(value)) {
-        return !!value?.length;
+        return !!value.length;
       }
 
       return !!value;
