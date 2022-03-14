@@ -3,7 +3,7 @@ import {
   FocusEvent,
   MouseEvent,
 } from 'react';
-// import { PlusIcon } from '@mezzanine-ui/icons';
+import { PlusIcon } from '@mezzanine-ui/icons';
 import {
   act,
   cleanupHook,
@@ -367,30 +367,18 @@ describe('<AutoComplete />', () => {
       });
     });
 
-    it('should input text equals to user typing', async () => {
+    it('value of addable option is equals to user typing', async () => {
       const addableContainer = getAddingContainer();
 
       expect(addableContainer.getElementsByTagName('p')[0].childNodes[0].textContent).toBe('rytass');
     });
 
-    // it('should avoid click/focus events bubbling (avoid invoke click away)', async () => {
-    //   const addableContainer = getAddingContainer();
-    //   const input = getInputElement(addableContainer);
+    it('should use PlusIcon as action button', () => {
+      const addableContainer = getAddingContainer();
+      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
 
-    //   await act(async () => {
-    //     fireEvent.click(input);
-    //     fireEvent.focus(input);
-    //   });
-
-    //   expect(getPopper()).toBeInstanceOf(HTMLDivElement);
-    // });
-
-    // it('should use PlusIcon as action button', () => {
-    //   const addableContainer = getAddingContainer();
-    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-    //   expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-    // });
+      expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+    });
 
     // it('should not invoke insert action when no input', async () => {
     //   const addableContainer = getAddingContainer();
