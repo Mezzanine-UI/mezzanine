@@ -148,6 +148,22 @@ describe('<AutoComplete />', () => {
     expect(getPopper()).toBe(null);
   });
 
+  it('open menu when click chevron down icon', async () => {
+    const { getHostHTMLElement } = render(
+      <AutoComplete
+        options={defaultOptions}
+      />,
+    );
+
+    const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
+
+    await act(async () => {
+      fireEvent.click(icon!);
+    });
+
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
+  });
+
   describe('when clear action clicked', () => {
     (['single', 'multiple'] as ('single' | 'multiple')[]).forEach((mode) => {
       it(`should clear input text and trig onClear, onChange and onSearch on mode="${mode}"`, async () => {
