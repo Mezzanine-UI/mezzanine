@@ -380,41 +380,17 @@ describe('<AutoComplete />', () => {
       expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
 
-    // it('should not invoke insert action when no input', async () => {
-    //   const addableContainer = getAddingContainer();
-    //   const input = getInputElement(addableContainer);
+    it('should invoke onInsert when click addable option', async () => {
+      const addableContainer = getAddingContainer();
 
-    //   await act(async () => {
-    //     fireEvent.change(input, { target: { value: '' } });
-    //   });
+      await act(async () => {
+        fireEvent.click(addableContainer);
+      });
 
-    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-    //   await act(async () => {
-    //     fireEvent.click(icon!);
-    //   });
-
-    //   expect(onInsert).toBeCalledTimes(0);
-    // });
-
-    // it('should invoke insert action when input has value and should clear input if success', async () => {
-    //   const addableContainer = getAddingContainer();
-    //   const input = getInputElement(addableContainer);
-
-    //   await act(async () => {
-    //     fireEvent.change(input, { target: { value: 'new option' } });
-    //   });
-
-    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-    //   await act(async () => {
-    //     fireEvent.click(icon!);
-    //   });
-
-    //   expect(onInsert).toBeCalledTimes(1);
-    //   expect(newOption).toBe('new option');
-    //   expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('');
-    // });
+      expect(onInsert).toBeCalledTimes(1);
+      expect(newOption!.id).toBe('rytass');
+      expect(newOption!.name).toBe('rytass');
+    });
   });
 
   // describe('exception handlers', () => {
