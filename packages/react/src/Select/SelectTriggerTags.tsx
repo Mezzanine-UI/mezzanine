@@ -110,7 +110,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
             ))}
             {value && value.length > takeCount ? (
               <Tag disabled={disabled} size={size}>
-                {`+${value.length - takeCount}...`}
+                {`+${value.length - takeCount <= 99 ? value.length - takeCount : 99}...`}
               </Tag>
             ) : null}
           </>
