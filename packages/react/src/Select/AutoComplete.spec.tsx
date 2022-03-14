@@ -20,9 +20,9 @@ import { AutoComplete, SelectValue } from '.';
 //   return element.getElementsByTagName('input')[0];
 // }
 
-// function getAddingContainer(container: HTMLElement | null = document.body) {
-//   return container!.querySelector('.mzn-select-autocomplete') as HTMLElement;
-// }
+function getAddingContainer(container: HTMLElement | null = document.body) {
+  return container!.querySelector('.mzn-select-autocomplete') as HTMLElement;
+}
 
 function getPopper() {
   return document.querySelector('.mzn-select-popper');
@@ -337,101 +337,97 @@ describe('<AutoComplete />', () => {
     expect(options.length).toBe(defaultOptions.length);
   });
 
-  // describe('prop: addable', () => {
-  //   let newOption: string;
-  //   const onInsert = jest.fn<boolean, [string]>((insert) => {
-  //     newOption = insert;
+  describe('prop: addable', () => {
+    let newOption: SelectValue | null;
+    const onInsert = jest.fn<SelectValue, [string]>((insert) => {
+      newOption = { id: insert, name: insert };
 
-  //     return true;
-  //   });
+      return newOption;
+    });
 
-  //   beforeEach(async () => {
-  //     newOption = '';
+    beforeEach(async () => {
+      newOption = null;
 
-  //     jest.useFakeTimers();
+      jest.useFakeTimers();
 
-  //     const inputRef = createRef<HTMLInputElement>();
+      const inputRef = createRef<HTMLInputElement>();
 
-  //     render(
-  //       <AutoComplete
-  //         addable
-  //         inputRef={inputRef}
-  //         onInsert={onInsert}
-  //         options={defaultOptions}
-  //       />,
-  //     );
+      render(
+        <AutoComplete
+          addable
+          inputRef={inputRef}
+          onInsert={onInsert}
+          options={defaultOptions}
+        />,
+      );
 
-  //     await act(async () => {
-  //       fireEvent.focus(inputRef.current!);
-  //     });
-  //   });
+      await act(async () => {
+        fireEvent.focus(inputRef.current!);
+        fireEvent.change(inputRef.current!, { target: { value: 'rytass' } });
+      });
+    });
 
-  //   it('should input text equals to user typing', async () => {
-  //     const addableContainer = getAddingContainer();
-  //     const input = getInputElement(addableContainer);
+    it('should input text equals to user typing', async () => {
+      const addableContainer = getAddingContainer();
 
-  //     await act(async () => {
-  //       fireEvent.change(input, { target: { value: 'new option' } });
-  //     });
+      expect(addableContainer.getElementsByTagName('p')[0].childNodes[0].textContent).toBe('rytass');
+    });
 
-  //     expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('new option');
-  //   });
+    // it('should avoid click/focus events bubbling (avoid invoke click away)', async () => {
+    //   const addableContainer = getAddingContainer();
+    //   const input = getInputElement(addableContainer);
 
-  //   it('should avoid click/focus events bubbling (avoid invoke click away)', async () => {
-  //     const addableContainer = getAddingContainer();
-  //     const input = getInputElement(addableContainer);
+    //   await act(async () => {
+    //     fireEvent.click(input);
+    //     fireEvent.focus(input);
+    //   });
 
-  //     await act(async () => {
-  //       fireEvent.click(input);
-  //       fireEvent.focus(input);
-  //     });
+    //   expect(getPopper()).toBeInstanceOf(HTMLDivElement);
+    // });
 
-  //     expect(getPopper()).toBeInstanceOf(HTMLDivElement);
-  //   });
+    // it('should use PlusIcon as action button', () => {
+    //   const addableContainer = getAddingContainer();
+    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
 
-  //   it('should use PlusIcon as action button', () => {
-  //     const addableContainer = getAddingContainer();
-  //     const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
+    //   expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+    // });
 
-  //     expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-  //   });
+    // it('should not invoke insert action when no input', async () => {
+    //   const addableContainer = getAddingContainer();
+    //   const input = getInputElement(addableContainer);
 
-  //   it('should not invoke insert action when no input', async () => {
-  //     const addableContainer = getAddingContainer();
-  //     const input = getInputElement(addableContainer);
+    //   await act(async () => {
+    //     fireEvent.change(input, { target: { value: '' } });
+    //   });
 
-  //     await act(async () => {
-  //       fireEvent.change(input, { target: { value: '' } });
-  //     });
+    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
 
-  //     const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
+    //   await act(async () => {
+    //     fireEvent.click(icon!);
+    //   });
 
-  //     await act(async () => {
-  //       fireEvent.click(icon!);
-  //     });
+    //   expect(onInsert).toBeCalledTimes(0);
+    // });
 
-  //     expect(onInsert).toBeCalledTimes(0);
-  //   });
+    // it('should invoke insert action when input has value and should clear input if success', async () => {
+    //   const addableContainer = getAddingContainer();
+    //   const input = getInputElement(addableContainer);
 
-  //   it('should invoke insert action when input has value and should clear input if success', async () => {
-  //     const addableContainer = getAddingContainer();
-  //     const input = getInputElement(addableContainer);
+    //   await act(async () => {
+    //     fireEvent.change(input, { target: { value: 'new option' } });
+    //   });
 
-  //     await act(async () => {
-  //       fireEvent.change(input, { target: { value: 'new option' } });
-  //     });
+    //   const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
 
-  //     const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
+    //   await act(async () => {
+    //     fireEvent.click(icon!);
+    //   });
 
-  //     await act(async () => {
-  //       fireEvent.click(icon!);
-  //     });
-
-  //     expect(onInsert).toBeCalledTimes(1);
-  //     expect(newOption).toBe('new option');
-  //     expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('');
-  //   });
-  // });
+    //   expect(onInsert).toBeCalledTimes(1);
+    //   expect(newOption).toBe('new option');
+    //   expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('');
+    // });
+  });
 
   // describe('exception handlers', () => {
   //   it('addable true, but not giving onInsert, then should remain input text', async () => {
