@@ -314,23 +314,28 @@ describe('<AutoComplete />', () => {
     expect(onFocus).toBeCalledTimes(1);
   });
 
-  // it('prop: disabledOptionsFilter, should disabled options filtering', async () => {
-  //   jest.useFakeTimers();
+  it('prop: disabledOptionsFilter, should disabled options filtering', async () => {
+    jest.useFakeTimers();
 
-  //   const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-  //   render(
-  //     <AutoComplete inputRef={inputRef} options={defaultOptions} />,
-  //   );
+    render(
+      <AutoComplete
+        inputRef={inputRef}
+        options={defaultOptions}
+        disabledOptionsFilter
+      />,
+    );
 
-  //   await act(async () => {
-  //     fireEvent.focus(inputRef.current!);
-  //   });
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+    });
 
-  //   const options = getOptions();
+    const options = getOptions();
 
-  //   expect(options.length).toBe(defaultOptions.length + 1);
-  // });
+    expect(options.length).toBe(defaultOptions.length);
+  });
 
   // describe('prop: addable', () => {
   //   let newOption: string;
