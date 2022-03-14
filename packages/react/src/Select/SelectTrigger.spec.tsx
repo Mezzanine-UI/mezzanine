@@ -44,4 +44,17 @@ describe('<SelectTrigger />', () => {
       expect(renderValue).toBeCalledWith([]);
     });
   });
+
+  it('should not show suffix-action-icon if forceHideSuffixActionIcon is true', () => {
+    const { getHostHTMLElement } = render(
+      <SelectTrigger
+        forceHideSuffixActionIcon
+        readOnly
+      />,
+    );
+
+    const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
+
+    expect(icon).toBe(null);
+  });
 });
