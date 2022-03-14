@@ -16,10 +16,6 @@ import {
 } from '../../__test-utils__/common';
 import { AutoComplete, SelectValue } from '.';
 
-// function getInputElement(element: HTMLElement) {
-//   return element.getElementsByTagName('input')[0];
-// }
-
 function getAddingContainer(container: HTMLElement | null = document.body) {
   return container!.querySelector('.mzn-select-autocomplete') as HTMLElement;
 }

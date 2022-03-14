@@ -91,7 +91,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
           },
         )}
       >
-        {renderFakeTags()}
+        {ellipsis ? renderFakeTags() : null}
         {ellipsis ? (
           <>
             {take(value, takeCount).map((selection) => (
