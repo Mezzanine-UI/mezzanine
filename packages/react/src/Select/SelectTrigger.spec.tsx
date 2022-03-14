@@ -1,6 +1,8 @@
 import {
+  act,
   cleanupHook,
   render,
+  fireEvent,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -56,5 +58,24 @@ describe('<SelectTrigger />', () => {
     const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
 
     expect(icon).toBe(null);
+  });
+
+  it('should invoke suffixAction if suffixAction given', async () => {
+    const suffixAction = jest.fn();
+
+    const { getHostHTMLElement } = render(
+      <SelectTrigger
+        suffixAction={suffixAction}
+        readOnly
+      />,
+    );
+
+    const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
+
+    await act(async () => {
+      fireEvent.click(icon!);
+    });
+
+    expect(suffixAction).toBeCalledTimes(1);
   });
 });
