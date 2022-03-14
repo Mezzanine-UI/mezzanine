@@ -275,6 +275,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     inputProps?.onBlur?.(e);
   };
 
+  const onClickSuffixActionIcon = () => {
+    toggleOpen((prev) => !prev);
+  };
+
   const resolvedInputProps: SelectTriggerInputProps = {
     ...inputProps,
     'aria-controls': MENU_ID,
@@ -326,7 +330,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           searchText={searchText}
           size={size}
           showTextInputAfterTags
-          suffixAction={() => toggleOpen((prev) => !prev)}
+          suffixAction={onClickSuffixActionIcon}
           value={value}
           renderValue={renderValue}
         />
