@@ -1,3 +1,5 @@
+/* eslint-disable no-redeclare */
+/* global JSX */
 import { forwardRef, Ref } from 'react';
 import {
   selectClasses as classes,
@@ -6,9 +8,9 @@ import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import TextField, { TextFieldProps } from '../TextField';
 import { SelectValue } from './typings';
 import { cx } from '../utils/cx';
-import Tag from '../Tag';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
+import SelectTriggerTags from './SelectTriggerTags';
 
 export type SelectTriggerInputProps = Omit<
 NativeElementPropsWithoutKeyAndRef<'input'>,
@@ -42,6 +44,10 @@ export interface SelectTriggerBaseProps
    * Controls the chevron icon layout.
    */
   active?: boolean;
+  /**
+   * Tags arg ellipsis or not.
+   */
+  ellipsis?: boolean;
   /**
    * force hide suffixAction icons
    */
@@ -77,6 +83,9 @@ export interface SelectTriggerBaseProps
    * @default false
    */
   required?: boolean;
+  searchText?: string;
+  showTextInputAfterTags?: boolean;
+  suffixAction?: VoidFunction;
 }
 
 export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
@@ -123,6 +132,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     active,
     className,
     disabled,
+    ellipsis = false,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
@@ -132,7 +142,10 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     readOnly,
     renderValue: renderValueProp,
     required,
+    searchText,
     size,
+    showTextInputAfterTags = false,
+    suffixAction,
     suffixActionIcon: suffixActionIconProp,
     value,
     ...restTextFieldProps
@@ -159,6 +172,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const suffixActionIcon = suffixActionIconProp || (
     <Icon
       icon={ChevronDownIcon}
+      onClick={suffixAction}
       className={cx(
         classes.triggerSuffixActionIcon,
         {
@@ -171,7 +185,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const getTextFieldActive = () => {
     if (value) {
       if (Array.isArray(value)) {
-        return !!value?.length;
+        return !!value.length;
       }
 
       return !!value;
@@ -191,22 +205,19 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
-        <div className={classes.triggerTags}>
-          {(value as SelectValue[]).map((selection) => (
-            <Tag
-              key={selection.id}
-              closable
-              disabled={disabled}
-              onClose={(e) => {
-                e.stopPropagation();
-                onTagClose?.(selection);
-              }}
-              size={size}
-            >
-              {selection.name}
-            </Tag>
-          ))}
-        </div>
+        <SelectTriggerTags
+          disabled={disabled}
+          ellipsis={ellipsis}
+          inputProps={inputProps}
+          inputRef={inputRef}
+          onTagClose={onTagClose}
+          readOnly={readOnly}
+          required={required}
+          searchText={searchText}
+          size={size}
+          showTextInputAfterTags={showTextInputAfterTags}
+          value={value}
+        />
       ) : (
         <input
           {...inputProps}

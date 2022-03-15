@@ -1,4 +1,9 @@
-import { createRef, FocusEvent, MouseEvent } from 'react';
+/* global document */
+import {
+  createRef,
+  FocusEvent,
+  MouseEvent,
+} from 'react';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import {
   act,
@@ -10,11 +15,7 @@ import {
 import {
   describeForwardRefToHTMLElement,
 } from '../../__test-utils__/common';
-import { AutoComplete } from '.';
-
-function getInputElement(element: HTMLElement) {
-  return element.getElementsByTagName('input')[0];
-}
+import { AutoComplete, SelectValue } from '.';
 
 function getAddingContainer(container: HTMLElement | null = document.body) {
   return container!.querySelector('.mzn-select-autocomplete') as HTMLElement;
@@ -28,7 +29,19 @@ function getOptions() {
   return document.querySelectorAll('.mzn-menu-item');
 }
 
-const defaultOptions = ['foo', 'bar', 'item1'];
+const defaultOptions: SelectValue[] = [{
+  id: 'foo',
+  name: 'foo',
+}, {
+  id: 'bar',
+  name: 'bar',
+}, {
+  id: 'item1',
+  name: 'item1',
+}, {
+  id: 'very very very very long',
+  name: 'very very very very long',
+}];
 
 describe('<AutoComplete />', () => {
   afterEach(() => {
@@ -46,18 +59,18 @@ describe('<AutoComplete />', () => {
     (ref) => render(<AutoComplete inputRef={ref} options={defaultOptions} />),
   );
 
-  it('should close menu when onChange triggered', async () => {
+  it('should close menu when onChange triggered on single mode', async () => {
     jest.useFakeTimers();
 
     const inputRef = createRef<HTMLInputElement>();
 
     render(
-      <AutoComplete inputRef={inputRef} options={defaultOptions} />,
+      <AutoComplete inputRef={inputRef} mode="single" options={defaultOptions} />,
     );
 
     await act(async () => {
       fireEvent.focus(inputRef.current!);
-      fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
     });
 
     expect(getPopper()).toBeInstanceOf(HTMLDivElement);
@@ -73,6 +86,35 @@ describe('<AutoComplete />', () => {
     });
 
     expect(getPopper()).toBe(null);
+  });
+
+  it('should not close menu when onChange triggered on multiple mode', async () => {
+    jest.useFakeTimers();
+
+    const inputRef = createRef<HTMLInputElement>();
+
+    render(
+      <AutoComplete inputRef={inputRef} mode="multiple" options={defaultOptions} />,
+    );
+
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+    });
+
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
+
+    const options = getOptions();
+
+    await act(async () => {
+      fireEvent.click(options[0]);
+    });
+
+    await act(async () => {
+      jest.runAllTimers();
+    });
+
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
   });
 
   it('should close menu when clickaway', async () => {
@@ -103,93 +145,83 @@ describe('<AutoComplete />', () => {
     expect(getPopper()).toBe(null);
   });
 
-  it('should render Empty when no options', async () => {
-    jest.useFakeTimers();
-
-    const inputRef = createRef<HTMLInputElement>();
-
-    render(
-      <AutoComplete inputRef={inputRef} options={[]} />,
-    );
-
-    await act(async () => {
-      fireEvent.focus(inputRef.current!);
-    });
-
-    const empty = document.querySelector('.mzn-empty');
-
-    expect(empty).toBeInstanceOf(HTMLDivElement);
-  });
-
-  it('should clear input text when clear action clicked', async () => {
-    jest.useFakeTimers();
-
-    const inputRef = createRef<HTMLInputElement>();
-
-    render(
+  it('open menu when click chevron down icon', async () => {
+    const { getHostHTMLElement } = render(
       <AutoComplete
-        inputRef={inputRef}
         options={defaultOptions}
       />,
     );
 
-    await act(async () => {
-      fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
-    });
-
-    const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
+    const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
 
     await act(async () => {
-      fireEvent.click(clearIcon!);
+      fireEvent.click(icon!);
     });
 
-    expect(inputRef.current!.value).toBe('');
+    expect(getPopper()).toBeInstanceOf(HTMLDivElement);
   });
 
-  it('props: onClear', async () => {
+  describe('when clear action clicked', () => {
+    (['single', 'multiple'] as ('single' | 'multiple')[]).forEach((mode) => {
+      it(`should clear input text and trig onClear, onChange and onSearch on mode="${mode}"`, async () => {
+        jest.useFakeTimers();
+
+        const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
+        const inputRef = createRef<HTMLInputElement>();
+        const onChange = jest.fn();
+        const onSearch = jest.fn();
+
+        render(
+          <AutoComplete
+            inputRef={inputRef}
+            mode={mode}
+            onClear={onClear}
+            onChange={onChange}
+            onSearch={onSearch}
+            options={defaultOptions}
+          />,
+        );
+
+        await act(async () => {
+          fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
+        });
+
+        const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
+
+        await act(async () => {
+          fireEvent.click(clearIcon!);
+        });
+
+        const valueAfterClear = mode === 'single' ? null : [];
+
+        expect(inputRef.current!.value).toBe('');
+        expect(onClear).toBeCalledTimes(1);
+        expect(onChange).toBeCalledWith(valueAfterClear);
+        expect(onSearch).toBeCalledWith('');
+      });
+    });
+  });
+
+  it('should reduce value from options when blur', async () => {
     jest.useFakeTimers();
 
-    const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
     const inputRef = createRef<HTMLInputElement>();
 
     render(
       <AutoComplete
         inputRef={inputRef}
-        onClear={onClear}
         options={defaultOptions}
-      />,
-    );
-
-    await act(async () => {
-      fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
-    });
-
-    const clearIcon = document.querySelector('.mzn-text-field__clear-icon');
-
-    await act(async () => {
-      fireEvent.click(clearIcon!);
-    });
-
-    expect(inputRef.current!.value).toBe('');
-    expect(onClear).toBeCalledTimes(1);
-  });
-
-  it('should keep user typings when blur', async () => {
-    jest.useFakeTimers();
-
-    const onChange = jest.fn<void, [string]>(() => {});
-    const inputRef = createRef<HTMLInputElement>();
-
-    render(
-      <AutoComplete
-        inputRef={inputRef}
-        onChange={onChange}
-        options={defaultOptions}
+        value={defaultOptions[0]}
       />,
     );
 
     await act(async () => {
       fireEvent.focus(inputRef.current!);
+    });
+
+    expect(inputRef.current!.getAttribute('placeholder')).toBe('foo');
+
+    await act(async () => {
       fireEvent.change(inputRef.current!, { target: { value: 'foobar' } });
     });
 
@@ -197,8 +229,7 @@ describe('<AutoComplete />', () => {
       fireEvent.blur(inputRef.current!);
     });
 
-    expect(inputRef.current!.value).toBe('foobar');
-    expect(onChange).toBeCalledTimes(2);
+    expect(inputRef.current!.value).toBe('foo');
   });
 
   it('should display options that matched user typings by default', async () => {
@@ -218,13 +249,13 @@ describe('<AutoComplete />', () => {
       fireEvent.change(inputRef.current!, { target: { value: 'fo' } });
     });
 
-    expect(getOptions().length).toBe(2);
+    expect(getOptions().length).toBe(1);
 
     await act(async () => {
       fireEvent.change(inputRef.current!, { target: { value: 'foo123' } });
     });
 
-    expect(getOptions().length).toBe(1);
+    expect(getOptions().length).toBe(0);
   });
 
   it('prop: onSearch, should triggered when input changed', async () => {
@@ -247,6 +278,7 @@ describe('<AutoComplete />', () => {
     });
 
     expect(onSearch).toBeCalledTimes(1);
+    expect(onSearch).toBeCalledWith('foo');
   });
 
   it('prop: inputProps.onBlur, should triggered when input blur', async () => {
@@ -301,29 +333,33 @@ describe('<AutoComplete />', () => {
     const inputRef = createRef<HTMLInputElement>();
 
     render(
-      <AutoComplete inputRef={inputRef} options={defaultOptions} />,
+      <AutoComplete
+        inputRef={inputRef}
+        options={defaultOptions}
+        disabledOptionsFilter
+      />,
     );
 
     await act(async () => {
       fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
     });
 
     const options = getOptions();
 
-    expect(options.length).toBe(defaultOptions.length + 1);
+    expect(options.length).toBe(defaultOptions.length);
   });
 
-  describe('prop: addable', () => {
-    let newOption: string;
-    const onInsert = jest.fn<boolean, [string]>((insert) => {
-      newOption = insert;
+  describe('prop: addable/onInsert/onChange', () => {
+    const onInsert = jest.fn<SelectValue, [string]>((insert) => {
+      const newOption = { id: insert, name: insert };
 
-      return true;
+      return newOption;
     });
 
-    beforeEach(async () => {
-      newOption = '';
+    const onChange = jest.fn();
 
+    beforeEach(async () => {
       jest.useFakeTimers();
 
       const inputRef = createRef<HTMLInputElement>();
@@ -333,36 +369,21 @@ describe('<AutoComplete />', () => {
           addable
           inputRef={inputRef}
           onInsert={onInsert}
+          onChange={onChange}
           options={defaultOptions}
         />,
       );
 
       await act(async () => {
         fireEvent.focus(inputRef.current!);
+        fireEvent.change(inputRef.current!, { target: { value: 'rytass' } });
       });
     });
 
-    it('should input text equals to user typing', async () => {
+    it('value of addable option is equals to user typing', async () => {
       const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
 
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'new option' } });
-      });
-
-      expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('new option');
-    });
-
-    it('should avoid click/focus events bubbling (avoid invoke click away)', async () => {
-      const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
-
-      await act(async () => {
-        fireEvent.click(input);
-        fireEvent.focus(input);
-      });
-
-      expect(getPopper()).toBeInstanceOf(HTMLDivElement);
+      expect(addableContainer.getElementsByTagName('p')[0].childNodes[0].textContent).toBe('rytass');
     });
 
     it('should use PlusIcon as action button', () => {
@@ -372,111 +393,75 @@ describe('<AutoComplete />', () => {
       expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
 
-    it('should not invoke insert action when no input', async () => {
+    it('should invoke onInsert when click addable option', async () => {
       const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
 
       await act(async () => {
-        fireEvent.change(input, { target: { value: '' } });
-      });
-
-      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-      await act(async () => {
-        fireEvent.click(icon!);
-      });
-
-      expect(onInsert).toBeCalledTimes(0);
-    });
-
-    it('should invoke insert action when input has value and should clear input if success', async () => {
-      const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'new option' } });
-      });
-
-      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-      await act(async () => {
-        fireEvent.click(icon!);
+        fireEvent.click(addableContainer);
       });
 
       expect(onInsert).toBeCalledTimes(1);
-      expect(newOption).toBe('new option');
-      expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('');
+      expect(onChange).toBeCalledWith({
+        id: 'rytass',
+        name: 'rytass',
+      });
     });
   });
 
-  describe('exception handlers', () => {
-    it('addable true, but not giving onInsert, then should remain input text', async () => {
-      jest.useFakeTimers();
+  it('should not invoke onChange if onInsert is not given in addable mode', async () => {
+    const onChange = jest.fn();
 
-      const inputRef = createRef<HTMLInputElement>();
+    const inputRef = createRef<HTMLInputElement>();
 
-      render(
-        <AutoComplete
-          addable
-          inputRef={inputRef}
-          onInsert={undefined}
-          options={defaultOptions}
-        />,
-      );
+    render(
+      <AutoComplete
+        addable
+        inputRef={inputRef}
+        onChange={onChange}
+        options={defaultOptions}
+      />,
+    );
 
-      await act(async () => {
-        fireEvent.focus(inputRef.current!);
-      });
-
-      const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'new option' } });
-      });
-
-      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-      await act(async () => {
-        fireEvent.click(icon!);
-      });
-
-      expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('new option');
+    await act(async () => {
+      fireEvent.focus(inputRef.current!);
+      fireEvent.change(inputRef.current!, { target: { value: 'rytass' } });
     });
 
-    it('addable true, but onInsert return false, then should remain input text', async () => {
-      jest.useFakeTimers();
+    const addableContainer = getAddingContainer();
 
-      const inputRef = createRef<HTMLInputElement>();
-      const onInsert = jest.fn<boolean, [string]>(() => false);
+    await act(async () => {
+      fireEvent.click(addableContainer);
+    });
 
-      render(
-        <AutoComplete
-          addable
-          inputRef={inputRef}
-          onInsert={onInsert}
-          options={defaultOptions}
-        />,
+    expect(onChange).toBeCalledTimes(0);
+  });
+
+  it('should show ellipsis tag if total width of tags is too long', async () => {
+    const largeOptions = Array.from(Array(110)).map((_, index) => ({
+      id: `${index}`,
+      name: `${index}`,
+    }));
+
+    await act(async () => {
+      const { getHostHTMLElement } = render(
+        <div
+          style={{
+            width: '200px',
+          }}
+        >
+          <AutoComplete
+            fullWidth
+            mode="multiple"
+            options={largeOptions}
+            value={largeOptions}
+            placeholder="新增關鍵字"
+          />
+        </div>,
       );
 
-      await act(async () => {
-        fireEvent.focus(inputRef.current!);
-      });
+      const tags = getHostHTMLElement().getElementsByClassName('mzn-tag');
 
-      const addableContainer = getAddingContainer();
-      const input = getInputElement(addableContainer);
-
-      await act(async () => {
-        fireEvent.change(input, { target: { value: 'new option' } });
-      });
-
-      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
-
-      await act(async () => {
-        fireEvent.click(icon!);
-      });
-
-      expect(getInputElement(getAddingContainer()).getAttribute('value')).toBe('new option');
+      expect(tags[0].getElementsByClassName('mzn-tag__label')[0].childNodes[0].textContent).toBe('+99...');
     });
   });
 });

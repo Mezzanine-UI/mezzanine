@@ -8,6 +8,10 @@ export {
   default as SelectTrigger,
 } from './SelectTrigger';
 export {
+  SelectTriggerTagsProps,
+  default as SelectTriggerTags,
+} from './SelectTriggerTags';
+export {
   SelectProps,
   default,
 } from './Select';

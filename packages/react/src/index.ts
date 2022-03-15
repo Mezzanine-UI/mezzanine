@@ -253,6 +253,8 @@ export {
   SelectTriggerInputProps,
   SelectTriggerProps,
   SelectTrigger,
+  SelectTriggerTagsProps,
+  SelectTriggerTags,
   SelectProps,
   OptionProps,
   Option,
