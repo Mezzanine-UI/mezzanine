@@ -9,6 +9,10 @@ Please consider the possibility of api changes if you want to use it in producti
 
 If you are interested about this project, please see: [Storybook](https://www.chromatic.com/library?appId=6088f509c9dfa500212770cf)
 
+## Migrations
+
+If you are an existing mezzanine users and looking for migration guides, please see [Migrations](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations).
+
 ## 開發指引
 
 ### 架構
