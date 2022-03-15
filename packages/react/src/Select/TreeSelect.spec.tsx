@@ -1,3 +1,4 @@
+/* global document */
 import { PlusIcon } from '@mezzanine-ui/icons';
 import {
   act,

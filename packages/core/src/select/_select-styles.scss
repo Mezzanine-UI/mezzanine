@@ -12,6 +12,7 @@ $tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
+  overflow: hidden;
 
   &--full-width {
     width: 100%;
@@ -48,15 +49,36 @@ $tags-gap: 4px !default;
     }
   }
 
+  &__tags-input-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    &--ellipsis {
+      flex-wrap: unset;
+    }
+  }
+
+  &__tags-input {
+    flex: 1;
+    min-width: 30%;
+  }
+
   &__tags {
     padding-top: $tags-container-padding;
     padding-left: $tags-container-padding;
-    width: 100%;
+    width: auto;
     max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-self: flex-start;
+
+    &--ellipsis {
+      flex-wrap: unset;
+    }
 
     > span {
       margin-right: $tags-gap;
@@ -93,37 +115,26 @@ $tags-gap: 4px !default;
 .#{$autocomplete-prefix} {
   width: 100%;
   height: 32px;
-  margin: 4px 0 0;
-  padding: 0 16px;
+  padding: 0 12px 0 16px;
+  border: none;
   display: flex;
   align-items: center;
   justify-content: flex-start;
   background-color: palette.color(bg);
   box-sizing: border-box;
+  text-align: left;
+  cursor: pointer;
 
-  input {
+  p {
     flex: 1;
-    border: 0;
-    padding: 0;
-    outline: none;
+    margin: 0;
     color: palette.color(text-primary);
-    background-color: transparent;
 
     @include typography.variant(input2);
-
-    &::placeholder {
-      color: palette.color(action-inactive);
-    }
   }
 
   &__icon {
     font-size: 24px;
-    color: palette.color(action-inactive);
-    cursor: default;
-
-    &--active {
-      color: palette.color(primary);
-      cursor: pointer;
-    }
+    color: palette.color(text-secondary);
   }
 }

@@ -1,18 +1,17 @@
+/* eslint-disable consistent-return */
 import {
   forwardRef,
   KeyboardEvent,
   useRef,
   useState,
   useContext,
-  useLayoutEffect,
-  ChangeEventHandler,
-  FocusEventHandler,
+  useMemo,
 } from 'react';
 import {
   selectClasses as classes,
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
-import { SearchIcon } from '@mezzanine-ui/icons';
+import isArray from 'lodash/isArray';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
@@ -20,7 +19,6 @@ import Menu, { MenuProps } from '../Menu';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
 import { SelectValue } from './typings';
-import Icon from '../Icon';
 import {
   useSelectValueControl,
   UseSelectMultipleValueControl,
@@ -42,6 +40,7 @@ export interface SelectBaseProps
   | 'onClick'
   | 'onFocus'
   | 'onKeyDown'
+  | 'readOnly'
   | 'renderValue'
   | 'value'
   >,
@@ -72,10 +71,6 @@ export interface SelectBaseProps
     | 'owns'
     }`
   >;
-  /**
-   * The search event handler, this prop won't work when mode is `multiple`
-   */
-  onSearch?(input: string): any;
   /**
    * select input placeholder
    */
@@ -174,14 +169,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     onChange: onChangeProp,
     onClear: onClearProp,
     onFocus,
-    onSearch,
     placeholder = '',
     popperOptions = {},
     prefix,
-    renderValue: renderValueProp,
+    renderValue,
     required = requiredFromFormControl || false,
     size = 'medium',
-    suffixActionIcon: suffixActionIconProp,
+    suffixActionIcon,
     value: valueProp,
   } = props;
 
@@ -224,40 +218,21 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
   const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
 
-  const searchable = typeof onSearch === 'function';
-  const [searchText, changeSearchText] = useState<string>('');
-  const [focused, setFocused] = useState<boolean>(false);
-  const renderValue = focused && searchable ? () => searchText : renderValueProp;
-
   function getPlaceholder() {
-    if (focused && searchable) {
-      if (typeof renderValueProp === 'function') {
-        return renderValueProp(value);
-      }
+    if (typeof renderValue === 'function') {
+      return renderValue(value);
+    }
 
-      if (value) {
-        return (value as SelectValue).name;
-      }
-
-      return placeholder;
+    if (value && !isArray(value)) {
+      return (value as SelectValue).name;
     }
 
     return placeholder;
   }
 
-  useLayoutEffect(() => {
-    if (!focused) {
-      changeSearchText('');
-
-      if (typeof onSearch === 'function') {
-        onSearch('');
-      }
-    }
-  }, [focused, onSearch]);
-
   useClickAway(
     () => {
-      if (!open || focused) return;
+      if (!open) return;
 
       return () => {
         onClose();
@@ -265,22 +240,14 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     },
     nodeRef,
     [
-      focused,
       nodeRef,
       open,
       toggleOpen,
     ],
   );
 
-  const suffixActionIcon = suffixActionIconProp || (
-    searchable && open ? (
-      <Icon icon={SearchIcon} />
-    ) : undefined
-  );
-
   const onClickTextField = () => {
-    /** when searchable, should open menu when focus */
-    if (!searchable && !disabled) {
+    if (!disabled) {
       onToggleOpen();
     }
   };
@@ -319,41 +286,23 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     }
   };
 
-  /** Trigger input props */
-  const onSearchInputChange: ChangeEventHandler<HTMLInputElement> | undefined = searchable ? (e) => {
-    changeSearchText(e.target.value);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    onSearch!(e.target.value);
-  } : undefined;
-
-  const onSearchInputFocus: FocusEventHandler<HTMLInputElement> | undefined = searchable ? (e) => {
-    e.stopPropagation();
-
-    onToggleOpen();
-
-    setFocused(true);
-  } : undefined;
-
-  const onSearchInputBlur: FocusEventHandler<HTMLInputElement> = () => setFocused(false);
   const resolvedInputProps: SelectTriggerInputProps = {
     ...inputProps,
     'aria-controls': MENU_ID,
     'aria-expanded': open,
     'aria-owns': MENU_ID,
-    onBlur: onSearchInputBlur,
-    onChange: onSearchInputChange,
-    onFocus: onSearchInputFocus,
     placeholder: getPlaceholder(),
     role: 'combobox',
   };
 
+  const context = useMemo(() => ({
+    onChange,
+    value,
+  }), [onChange, value]);
+
   return (
     <SelectControlContext.Provider
-      value={{
-        onChange,
-        value,
-      }}
+      value={context}
     >
       <div
         ref={nodeRef}
@@ -377,13 +326,13 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           onClick={onClickTextField}
           onKeyDown={onKeyDownTextField}
           prefix={prefix}
-          readOnly={!searchable}
+          readOnly
+          renderValue={renderValue}
           required={required}
           inputProps={resolvedInputProps}
           size={size}
           suffixActionIcon={suffixActionIcon}
           value={value}
-          renderValue={renderValue}
         />
         <InputTriggerPopper
           ref={popperRef}

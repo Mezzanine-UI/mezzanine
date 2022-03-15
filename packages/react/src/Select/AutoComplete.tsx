@@ -1,8 +1,10 @@
+/* eslint-disable consistent-return */
 import {
   forwardRef,
   useRef,
   useState,
   useContext,
+  useMemo,
   ChangeEventHandler,
   FocusEventHandler,
 } from 'react';
@@ -11,22 +13,27 @@ import {
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import { PlusIcon } from '@mezzanine-ui/icons';
+import isArray from 'lodash/isArray';
+import { SelectValue } from './typings';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { FormControlContext } from '../Form';
 import Menu, { MenuProps } from '../Menu';
-import Empty from '../Empty';
 import Option from './Option';
 import Icon from '../Icon';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
-import { useAutoCompleteValueControl } from '../Form/useAutoCompleteValueControl';
+import {
+  useAutoCompleteValueControl,
+  UseAutoCompleteMultipleValueControl,
+  UseAutoCompleteSingleValueControl,
+} from '../Form/useAutoCompleteValueControl';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
 import { cx } from '../utils/cx';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
 import SelectTrigger, { SelectTriggerProps, SelectTriggerInputProps } from './SelectTrigger';
 
-export interface AutoCompleteProps
+export interface AutoCompleteBaseProps
   extends
   Omit<SelectTriggerProps,
   | 'active'
@@ -55,10 +62,6 @@ export interface AutoCompleteProps
    */
   addable?: boolean;
   /**
-   * The default selection
-   */
-  defaultValue?: string;
-  /**
    * Should the filter rules be disabled (If you need to control options filter by yourself)
    * @default false
    */
@@ -79,14 +82,10 @@ export interface AutoCompleteProps
     }`
   >;
   /**
-   * The change event handler of input element.
-   */
-  onChange?(text: string): any;
-  /**
    * insert callback whenever insert icon is clicked
    * return `true` when insert is successfully
    */
-  onInsert?(text: string): boolean;
+  onInsert?(text: string): SelectValue;
   /**
    * The search event handler
    */
@@ -94,7 +93,7 @@ export interface AutoCompleteProps
   /**
    * The options that mapped autocomplete options
    */
-  options: string[];
+  options: SelectValue[];
   /**
    * select input placeholder
    */
@@ -109,12 +108,49 @@ export interface AutoCompleteProps
    * @default 'medium'
    */
   size?: SelectInputSize;
+}
+
+export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue[];
+  /**
+   * Controls the layout of trigger.
+   */
+  mode: 'multiple';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue[]): any;
   /**
    * The value of selection.
    * @default undefined
    */
-  value?: string;
-}
+  value?: SelectValue[];
+};
+
+export type AutoCompleteSingleProps = AutoCompleteBaseProps & {
+  /**
+   * The default selection
+   */
+  defaultValue?: SelectValue;
+  /**
+   * Controls the layout of trigger.
+   */
+  mode?: 'single';
+  /**
+   * The change event handler of input element.
+   */
+  onChange?(newOptions: SelectValue): any;
+  /**
+   * The value of selection.
+   * @default undefined
+   */
+  value?: SelectValue | null;
+};
+
+export type AutoCompleteProps = AutoCompleteMultipleProps | AutoCompleteSingleProps;
 
 const MENU_ID = 'mzn-select-autocomplete-menu-id';
 
@@ -144,6 +180,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     menuMaxHeight,
     menuRole = 'listbox',
     menuSize = 'medium',
+    mode = 'single',
     onChange: onChangeProp,
     onClear: onClearProp,
     onInsert,
@@ -165,18 +202,21 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onClear,
     options,
     searchText,
+    selectedOptions,
     setSearchText,
-    setValue,
+    unselectedOptions,
     value,
   } = useAutoCompleteValueControl({
     defaultValue,
     disabledOptionsFilter,
+    mode,
     onChange: onChangeProp,
     onClear: onClearProp,
     onClose: () => toggleOpen(false),
+    onSearch,
     options: optionsProp,
     value: valueProp,
-  });
+  } as UseAutoCompleteMultipleValueControl | UseAutoCompleteSingleValueControl);
 
   /** insert feature */
   const [insertText, setInsertText] = useState<string>('');
@@ -185,6 +225,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
   const controlRef = useRef<HTMLElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
+  const renderValue = focused ? () => searchText : undefined;
 
   useClickAway(
     () => {
@@ -203,11 +244,19 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     ],
   );
 
+  function getPlaceholder() {
+    if (focused && value && !isArray(value)) {
+      return (value as SelectValue).name;
+    }
+
+    return placeholder;
+  }
+
   /** Trigger input props */
   const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     /** should sync both search input and value */
     setSearchText(e.target.value);
-    setValue(e.target.value);
+    setInsertText(e.target.value);
 
     /** return current value to onSearch */
     onSearch?.(e.target.value);
@@ -228,6 +277,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     inputProps?.onBlur?.(e);
   };
 
+  const onClickSuffixActionIcon = () => {
+    toggleOpen((prev) => !prev);
+  };
+
   const resolvedInputProps: SelectTriggerInputProps = {
     ...inputProps,
     'aria-controls': MENU_ID,
@@ -236,16 +289,20 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     onBlur: onSearchInputBlur,
     onChange: onSearchInputChange,
     onFocus: onSearchInputFocus,
-    placeholder,
+    placeholder: getPlaceholder(),
     role: 'combobox',
   };
 
+  const searchTextExistWithoutOption: boolean = !!searchText && options.find((option) => option.name === searchText) === undefined;
+
+  const context = useMemo(() => ({
+    onChange,
+    value,
+  }), [onChange, value]);
+
   return (
     <SelectControlContext.Provider
-      value={{
-        onChange,
-        value,
-      }}
+      value={context}
     >
       <div
         ref={nodeRef}
@@ -262,20 +319,23 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           className={className}
           clearable
           disabled={disabled}
+          ellipsis
           error={error}
-          forceHideSuffixActionIcon
           fullWidth={fullWidth}
           inputRef={inputRef}
-          mode="single"
+          mode={mode}
           onTagClose={onChange}
           onClear={onClear}
           prefix={prefix}
           readOnly={false}
           required={required}
           inputProps={resolvedInputProps}
+          searchText={searchText}
           size={size}
-          suffixActionIcon={undefined}
+          showTextInputAfterTags
+          suffixAction={onClickSuffixActionIcon}
           value={value}
+          renderValue={renderValue}
         />
         <InputTriggerPopper
           ref={popperRef}
@@ -285,59 +345,65 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
           sameWidth
           options={popperOptions}
         >
-          <Menu
-            id={MENU_ID}
-            aria-activedescendant={value?.id ?? ''}
-            itemsInView={itemsInView}
-            maxHeight={menuMaxHeight}
-            role={menuRole}
-            size={menuSize}
-            style={{ border: 0 }}
-          >
-            <Option value={searchText}>
-              {searchText}
-            </Option>
-            {options.length ? options.map((option) => (
-              <Option key={option} value={option}>
-                {option}
-              </Option>
-            )) : (
-              <Empty>
-                查無資料
-              </Empty>
-            )}
-          </Menu>
-          {addable ? (
-            <div className={classes.autoComplete}>
-              <input
-                type="text"
-                onChange={(e) => setInsertText(e.target.value)}
-                onClick={(e) => e.stopPropagation()}
-                onFocus={(e) => e.stopPropagation()}
-                placeholder="新增選項"
-                value={insertText}
-              />
-              <Icon
-                className={cx(
-                  classes.autoCompleteIcon,
-                  {
-                    [classes.autoCompleteIconActive]: !!insertText,
-                  },
-                )}
-                icon={PlusIcon}
-                onClick={(e) => {
-                  e.stopPropagation();
+          {options.length ? (
+            <Menu
+              id={MENU_ID}
+              aria-activedescendant={
+                Array.isArray(value) ? value?.[0]?.id ?? '' : value?.id
+              }
+              itemsInView={itemsInView}
+              maxHeight={menuMaxHeight}
+              role={menuRole}
+              size={menuSize}
+              style={{ border: 0 }}
+            >
+              {mode === 'single' ? (
+                <>
+                  {options.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {selectedOptions.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                  {unselectedOptions.map((option) => (
+                    <Option key={option.id} value={option.id}>
+                      {option.name}
+                    </Option>
+                  ))}
+                </>
+              )}
+            </Menu>
+          ) : null}
+          {searchTextExistWithoutOption && addable ? (
+            <button
+              type="button"
+              className={classes.autoComplete}
+              onClick={(e) => {
+                e.stopPropagation();
 
-                  if (insertText) {
-                    const insertSuccess = onInsert?.(insertText) ?? false;
+                if (insertText) {
+                  const newOption = onInsert?.(insertText) ?? null;
 
-                    if (insertSuccess) {
-                      setInsertText('');
-                    }
+                  if (newOption) {
+                    setInsertText('');
+                    onChange(newOption);
                   }
-                }}
+                }
+              }}
+            >
+              <p>{insertText}</p>
+              <Icon
+                className={classes.autoCompleteIcon}
+                icon={PlusIcon}
               />
-            </div>
+            </button>
           ) : null}
         </InputTriggerPopper>
       </div>

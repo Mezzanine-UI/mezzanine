@@ -88,39 +88,6 @@ export const Basic = () => (
       <Option value="2">item26666</Option>
       <Option value="3">item3</Option>
     </Select>
-    <Select
-      clearable
-      fullWidth
-      onSearch={() => {}}
-      placeholder="我可搜尋"
-    >
-      <Option value="1">item123</Option>
-      <Option value="2">item26666</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      clearable
-      fullWidth
-      // eslint-disable-next-line no-console
-      onSearch={(searchText) => { console.log('searchText you typed: ', searchText); }}
-      placeholder="我可搜尋(custom render)"
-      renderValue={(value: SelectValue | null) => value?.id || ''}
-    >
-      <Option value="1">item123</Option>
-      <Option value="2">item26666</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      clearable
-      disabled
-      fullWidth
-      onSearch={() => {}}
-      placeholder="我可搜尋"
-    >
-      <Option value="1">item123</Option>
-      <Option value="2">item26666</Option>
-      <Option value="3">item3</Option>
-    </Select>
   </div>
 );
 
