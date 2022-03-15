@@ -25,6 +25,9 @@
     "selector-pseudo-class-no-unknown": true,
     "value-no-vendor-prefix": true,
     "order/order": ["custom-properties", "declarations"],
-    "scss/selector-no-redundant-nesting-selector": true
+    "scss/selector-no-redundant-nesting-selector": true,
+    "custom-property-pattern": null,
+    "string-quotes": "single",
+    "function-no-unknown": false
   }
 }
