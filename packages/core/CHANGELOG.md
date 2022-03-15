@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.9.2...@mezzanine-ui/core@0.10.0) (2022-03-15)
+
+### Bug Fixes
+
+- **core/calendar:** change base date type to string ([43fe1dd](https://github.com/Mezzanine-UI/mezzanine/commit/43fe1dd3641b124d835bcb96489990a60448130d))
+
+### Features
+
+- **core/calendar:** add dayjs preset ([e7e11cb](https://github.com/Mezzanine-UI/mezzanine/commit/e7e11cb9dc6a62fdabcf8cc557a18027a6c3600c))
+- **core/select:** css for AutoComplete and Tags components ([c9b9f3d](https://github.com/Mezzanine-UI/mezzanine/commit/c9b9f3d3a2e0dc9773a837485a4dc3651c90aab2))
+- **react/DatePicker:** add dayjs method stories ([8c7cf8b](https://github.com/Mezzanine-UI/mezzanine/commit/8c7cf8b8e01189846ba9c4d06514039789f2c2bb))
+
 ## [0.9.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.9.0...@mezzanine-ui/core@0.9.2) (2022-03-04)
 
 ### Features

@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.10.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.9.2...@mezzanine-ui/react@0.10.0) (2022-03-15)
+
+### Bug Fixes
+
+- **core/calendar:** change base date type to string ([43fe1dd](https://github.com/Mezzanine-UI/mezzanine/commit/43fe1dd3641b124d835bcb96489990a60448130d))
+- **react/calendar:** change base date type to string ([e6fb50d](https://github.com/Mezzanine-UI/mezzanine/commit/e6fb50d2600ff2a70221cd3cdf04c2f177e532d8))
+- **react/calendar:** memorize context value and correct coding style ([a2c0cdf](https://github.com/Mezzanine-UI/mezzanine/commit/a2c0cdf6bc64dd8ff7ed41cbdc13f4e3a131a1bb))
+
+### Features
+
+- **react/DatePicker:** add dayjs method stories ([8c7cf8b](https://github.com/Mezzanine-UI/mezzanine/commit/8c7cf8b8e01189846ba9c4d06514039789f2c2bb))
+- **react/select:** refactor AutoComplete component, and create multiple mode ([18569c1](https://github.com/Mezzanine-UI/mezzanine/commit/18569c1cf4b6565298cfa1352bb8632d76178eae))
+- **react/select:** remove onSearch props from Select component ([bc259e5](https://github.com/Mezzanine-UI/mezzanine/commit/bc259e573d467e48100530f8e05c65b6bb50725e))
+
 ## [0.9.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.9.1...@mezzanine-ui/react@0.9.2) (2022-03-04)
 
 ### Features
