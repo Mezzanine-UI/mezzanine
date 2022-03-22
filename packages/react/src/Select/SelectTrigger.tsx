@@ -227,7 +227,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
           aria-haspopup="listbox"
           aria-readonly={readOnly}
           aria-required={required}
-          autoComplete="false"
+          autoComplete="off"
           disabled={disabled}
           readOnly={readOnly}
           required={required}
