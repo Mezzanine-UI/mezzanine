@@ -39,7 +39,7 @@ export const Basic = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateRows: 'repeat(4, 102px)',
+      gridTemplateRows: 'repeat(4, auto)',
       gridTemplateColumns: '500px',
       gap: '24px',
     }}
@@ -48,6 +48,7 @@ export const Basic = () => (
       clearable
       placeholder="輸入文字..."
       maxLength={100}
+      rows={4}
     />
     <Textarea
       placeholder="輸入文字..."

@@ -16,7 +16,15 @@ import { useInputWithClearControlValue } from '../Form/useInputWithClearControlV
 import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
 
-export interface TextareaProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'prefix' | 'suffix'> {
+export interface TextareaProps
+  extends Omit<
+  TextFieldProps,
+  | 'active'
+  | 'children'
+  | 'onClear'
+  | 'prefix'
+  | 'suffix'
+  | 'suffixActionIcon'> {
   /**
    * The default value of textarea.
    */
