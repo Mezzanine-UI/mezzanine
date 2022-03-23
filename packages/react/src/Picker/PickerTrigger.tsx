@@ -14,7 +14,7 @@ export interface PickerTriggerProps
   | 'active'
   | 'children'
   | 'suffix'
-  | 'defualtChecked'
+  | 'defaultChecked'
   > {
   /**
    * React ref for the input element.

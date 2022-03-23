@@ -13,7 +13,7 @@ import { cx } from '../utils/cx';
 
 export interface RangePickerTriggerProps
   extends
-  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'defualtChecked' | 'placeholder'> {
+  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'defaultChecked' | 'placeholder'> {
   /**
    * Placeholder for the 'from' input element.
    */
