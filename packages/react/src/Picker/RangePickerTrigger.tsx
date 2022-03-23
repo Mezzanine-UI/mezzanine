@@ -97,6 +97,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
   function DateRangePickerTrigger(props, ref) {
     const {
       className,
+      clearable,
       disabled,
       inputFromPlaceholder,
       inputFromProps,
@@ -123,6 +124,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
           classes.host,
           className,
         )}
+        clearable={!readOnly && clearable}
         disabled={disabled}
       >
         <input

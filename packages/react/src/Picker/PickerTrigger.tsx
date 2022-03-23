@@ -65,6 +65,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
   function PickerTrigger(props, ref) {
     const {
       className,
+      clearable,
       disabled,
       inputProps,
       inputRef,
@@ -85,6 +86,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
           classes.host,
           className,
         )}
+        clearable={!readOnly && clearable}
         disabled={disabled}
       >
         <input
