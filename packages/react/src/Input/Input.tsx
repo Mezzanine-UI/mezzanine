@@ -20,7 +20,14 @@ import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
 import Tag from '../Tag';
 
-export interface InputProps extends Omit<TextFieldProps, 'active' | 'children' | 'onClear' | 'onKeyDown'> {
+export interface InputProps
+  extends Omit<
+  TextFieldProps,
+  | 'active'
+  | 'children'
+  | 'onClear'
+  | 'onKeyDown'
+  | 'suffixActionIcon'> {
   /**
    * The default value of input.
    */
