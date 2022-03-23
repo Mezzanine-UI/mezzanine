@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.0...@mezzanine-ui/react@0.10.1) (2022-03-23)
+
+### Bug Fixes
+
+- **react/input:** remove sufficActionIcon typing from props (unused) ([d21a3f7](https://github.com/Mezzanine-UI/mezzanine/commit/d21a3f78e1feb9e2c7054ab4aa25f7a1cb43fbd4))
+- **react/picker:** picker should not clearable when readonly is enabled ([ca4ec61](https://github.com/Mezzanine-UI/mezzanine/commit/ca4ec61279297fb5666c03d8f16a3364e1fa7ebe)), closes [#146](https://github.com/Mezzanine-UI/mezzanine/issues/146) [#146](https://github.com/Mezzanine-UI/mezzanine/issues/146)
+- **react/select:** correct value of autocomplete attributes in AutoComplete ([6425b84](https://github.com/Mezzanine-UI/mezzanine/commit/6425b84420285267fe192d33de6573571b3c4c28))
+- **react/textarea:** correct textarea typings ([1ab5a0a](https://github.com/Mezzanine-UI/mezzanine/commit/1ab5a0ab2a99d09d9ab7f80a2da5e654014d43e7)), closes [#152](https://github.com/Mezzanine-UI/mezzanine/issues/152) [#152](https://github.com/Mezzanine-UI/mezzanine/issues/152)
+
 # [0.10.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.9.2...@mezzanine-ui/react@0.10.0) (2022-03-15)
 
 ### Bug Fixes
