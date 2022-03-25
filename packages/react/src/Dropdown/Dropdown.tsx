@@ -12,7 +12,7 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface DropdownProps extends
   Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref' | 'children'> {
-  children: (ref: Ref<HTMLElement>) => ReactNode;
+  children: (ref: Ref<any>) => ReactNode;
   /**
    * Whether to disable triggering onClose while clicked away.
    * @default false
