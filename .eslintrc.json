@@ -276,6 +276,8 @@
         "import/no-unresolved": "off",
         "import/extensions": "off",
         "max-len": "off",
+        "no-undef": "off",
+        "consistent-return": "off",
         "prefer-arrow-callback": "off",
         "import/no-extraneous-dependencies": "off",
         "react/function-component-definition": "off",
