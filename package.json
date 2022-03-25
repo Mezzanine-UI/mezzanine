@@ -9,11 +9,9 @@
   ],
   "license": "MIT",
   "keywords": [
-    "meaaznine",
+    "mezzanine",
     "ui",
-    "react",
-    "angular",
-    "ng"
+    "react"
   ],
   "private": true,
   "workspaces": [
@@ -54,11 +52,11 @@
     "@babel/core": "^7.13.10",
     "@commitlint/cli": "^16.2.1",
     "@commitlint/config-conventional": "^16.2.1",
-    "@storybook/addon-actions": "^6.3.8",
-    "@storybook/addon-essentials": "^6.3.8",
-    "@storybook/addon-links": "^6.3.8",
-    "@storybook/addon-storysource": "^6.3.8",
-    "@storybook/cli": "^6.3.8",
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/addon-storysource": "^6.4.19",
+    "@storybook/cli": "^6.4.19",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/storybook-deployer": "^2.8.10",
     "@testing-library/dom": "^7.30.0",
