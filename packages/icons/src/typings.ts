@@ -4,6 +4,7 @@ export interface IconDefinition {
     svg?: {
       viewBox?: string;
     };
+    title?: string;
     path?: {
       d?: string;
       fill?: string;
