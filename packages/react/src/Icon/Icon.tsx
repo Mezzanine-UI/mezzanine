@@ -26,6 +26,10 @@ export interface IconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
    * @default false
    */
   spin?: boolean;
+  /**
+   * Icon accessible title
+   */
+  title?: string;
 }
 
 /**
@@ -39,6 +43,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
     size,
     spin = false,
     style: styleProp,
+    title,
     ...rest
   } = props;
   const { definition } = icon;
@@ -53,7 +58,6 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
     <i
       {...rest}
       ref={ref}
-      aria-hidden
       className={cx(
         classes.host,
         {
@@ -70,6 +74,9 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
         {...definition.svg}
         focusable={false}
       >
+        {title || definition.title ? (
+          <title>{title || definition.title}</title>
+        ) : null}
         <path {...definition.path} />
       </svg>
     </i>

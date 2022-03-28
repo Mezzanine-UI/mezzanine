@@ -24,13 +24,6 @@ describe('<Icon />', () => {
   );
 
   describe('attrs, aria-*, data-*', () => {
-    it('should set aria-hidden to true', () => {
-      const { getHostHTMLElement } = render(<Icon icon={PlusIcon} />);
-      const element = getHostHTMLElement();
-
-      expect(element.getAttribute('aria-hidden')).toBe('true');
-    });
-
     it('should set data-icon-name to name of icon', () => {
       const { getHostHTMLElement } = render(<Icon icon={PlusIcon} />);
       const element = getHostHTMLElement();
@@ -110,6 +103,33 @@ describe('<Icon />', () => {
 
         expect(element.classList.contains('mzn-icon--spin')).toBe(spin);
       });
+    });
+  });
+
+  describe('prop: title', () => {
+    it('should render title when props.title is given.', () => {
+      const customTitle = 'foo';
+      const { getHostHTMLElement } = render(<Icon icon={PlusIcon} title={customTitle} />);
+      const element = getHostHTMLElement();
+      const titleElements = element.getElementsByTagName('title');
+
+      expect(titleElements[0].textContent).toBe(customTitle);
+    });
+
+    it('should render definition.title when given', () => {
+      const OverridePlusIcon = {
+        ...PlusIcon,
+        definition: {
+          ...PlusIcon.definition,
+          title: 'foo',
+        },
+      };
+
+      const { getHostHTMLElement } = render(<Icon icon={OverridePlusIcon} />);
+      const element = getHostHTMLElement();
+      const titleElements = element.getElementsByTagName('title');
+
+      expect(titleElements[0].textContent).toBe(OverridePlusIcon.definition.title);
     });
   });
 
