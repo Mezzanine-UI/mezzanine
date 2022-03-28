@@ -278,6 +278,7 @@
         "max-len": "off",
         "no-undef": "off",
         "consistent-return": "off",
+        "indent": "off",
         "prefer-arrow-callback": "off",
         "import/no-extraneous-dependencies": "off",
         "react/function-component-definition": "off",
