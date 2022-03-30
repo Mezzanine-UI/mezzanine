@@ -1,5 +1,6 @@
 import { Story } from '@storybook/react';
 import Textarea, { TextareaProps, TextareaSize } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Textarea',
@@ -88,9 +89,10 @@ export const Sizes = () => (
     <Textarea
       placeholder="輸入文字..."
     />
-    <Textarea
-      placeholder="輸入文字..."
-      size="large"
-    />
+    <ConfigProvider size="large">
+      <Textarea
+        placeholder="輸入文字..."
+      />
+    </ConfigProvider>
   </div>
 );

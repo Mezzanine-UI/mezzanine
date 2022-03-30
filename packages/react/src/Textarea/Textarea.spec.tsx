@@ -12,6 +12,7 @@ import {
 import TextField from '../TextField';
 import { FormField } from '../Form';
 import Textarea from '.';
+import ConfigProvider from '../Provider';
 
 function getTextareaElement(element: HTMLElement) {
   return element.getElementsByTagName('textarea')[0];
@@ -68,6 +69,18 @@ describe('<Textarea />', () => {
     expect(textFieldInstance.props.error).toBe(true);
     expect(textFieldInstance.props.fullWidth).toBe(true);
     expect(textFieldInstance.props.size).toBe('large');
+  });
+
+  it('should accept ConfigProvider context changes', () => {
+    const testRenderer = TestRenderer.create(
+      <ConfigProvider size="small">
+        <Textarea />
+      </ConfigProvider>,
+    );
+    const testInstance = testRenderer.root;
+    const textFieldInstance = testInstance.findByType(TextField);
+
+    expect(textFieldInstance.props.size).toBe('small');
   });
 
   it('props should directly pass to native textarea element', () => {

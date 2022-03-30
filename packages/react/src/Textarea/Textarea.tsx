@@ -15,6 +15,7 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
 import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface TextareaProps
   extends Omit<
@@ -91,6 +92,9 @@ export interface TextareaProps
  */
 const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     disabled: disabledFromFormControl,
     fullWidth: fullWidthFromFormControl,
     required: requiredFromFormControl,
@@ -109,7 +113,7 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(function Textarea(pro
     readOnly = false,
     required = requiredFromFormControl || false,
     rows,
-    size = 'medium',
+    size = globalSize,
     textareaRef: textareaRefProp,
     textareaProps,
     value: valueProp,
