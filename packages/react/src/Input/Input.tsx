@@ -19,6 +19,7 @@ import type { TagsType } from '../Form/useInputWithTagsModeValue';
 import { FormControlContext } from '../Form';
 import TextField, { TextFieldProps } from '../TextField';
 import Tag from '../Tag';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface InputProps
   extends Omit<
@@ -111,6 +112,9 @@ export interface InputProps
  */
 const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     disabled: disabledFromFormControl,
     fullWidth: fullWidthFromFormControl,
     required: requiredFromFormControl,
@@ -131,7 +135,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
     prefix,
     readOnly = false,
     required = requiredFromFormControl || false,
-    size = 'medium',
+    size = globalSize,
     suffix,
     tagsProps,
     value: valueProp,

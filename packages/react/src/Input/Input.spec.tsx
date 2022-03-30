@@ -16,6 +16,7 @@ import Icon from '../Icon';
 import TextField from '../TextField';
 import { FormField } from '../Form';
 import Input from '.';
+import ConfigProvider from '../Provider';
 import { TagsType } from '../Form/useInputWithTagsModeValue';
 
 function getInputElement(element: HTMLElement) {
@@ -79,6 +80,18 @@ describe('<Input />', () => {
     expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
     expect(textFieldInstance.props.size).toBe('large');
     expect(textFieldInstance.props.suffix).toStrictEqual(suffix);
+  });
+
+  it('should accept ConfigProvider context changes', () => {
+    const testRenderer = TestRenderer.create(
+      <ConfigProvider size="small">
+        <Input />
+      </ConfigProvider>,
+    );
+    const testInstance = testRenderer.root;
+    const textFieldInstance = testInstance.findByType(TextField);
+
+    expect(textFieldInstance.props.size).toBe('small');
   });
 
   it('props should directly pass to native input element', () => {

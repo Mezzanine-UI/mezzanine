@@ -8,6 +8,7 @@ import {
 import Icon from '../Icon';
 import Input from '.';
 import { Message } from '..';
+import ConfigProvider from '../Provider';
 import Typography from '../Typography/Typography';
 
 export default {
@@ -112,21 +113,24 @@ export const Sizes = () => (
       size="large"
       disabled
     />
-    <Input
-      placeholder="please enter text"
-      size="small"
-      error
-    />
-    <Input
-      placeholder="please enter text"
-      size="medium"
-      error
-    />
-    <Input
-      placeholder="please enter text"
-      size="large"
-      error
-    />
+    <ConfigProvider size="small">
+      <Input
+        placeholder="please enter text"
+        error
+      />
+    </ConfigProvider>
+    <ConfigProvider size="medium">
+      <Input
+        placeholder="please enter text"
+        error
+      />
+    </ConfigProvider>
+    <ConfigProvider size="large">
+      <Input
+        placeholder="please enter text"
+        error
+      />
+    </ConfigProvider>
   </div>
 );
 
