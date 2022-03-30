@@ -9,6 +9,7 @@ import Checkbox, {
   CheckboxGroup,
   CheckAll,
 } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Checkbox',
@@ -44,7 +45,9 @@ export const Sizes = () => (
     <Checkbox size="medium">Medium</Checkbox>
     <br />
     <br />
-    <Checkbox size="large">Large</Checkbox>
+    <ConfigProvider size="large">
+      <Checkbox>Large</Checkbox>
+    </ConfigProvider>
   </>
 );
 

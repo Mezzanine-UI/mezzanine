@@ -6,6 +6,7 @@ import { useCheckboxControlValue } from '../Form/useCheckboxControlValue';
 import { FormControlContext } from '../Form';
 import { CheckboxGroupContext } from './CheckboxGroupContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface CheckboxProps
   extends
@@ -67,6 +68,9 @@ export interface CheckboxProps
  */
 const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     disabled: disabledFromFormControl,
     severity,
   } = useContext(FormControlContext) || {};
@@ -84,7 +88,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(p
     error = severity === 'error' || false,
     indeterminate: indeterminateProp = false,
     onChange: onChangeProp,
-    size = sizeFromGroup || 'medium',
+    size = sizeFromGroup || globalSize,
     value,
     inputProps,
     ...rest

@@ -12,6 +12,7 @@ import {
 import InputCheck from '../_internal/InputCheck';
 import { FormField } from '../Form';
 import Checkbox, { CheckboxGroup } from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Checkbox />', () => {
   afterEach(cleanup);
@@ -42,6 +43,17 @@ describe('<Checkbox />', () => {
     expect(inputCheckInstance.props.disabled).toBe(true);
     expect(inputCheckInstance.props.error).toBe(true);
     expect(inputCheckInstance.props.size).toBe('large');
+  });
+
+  it('should accept ConfigProvider context changes', () => {
+    const testRenderer = TestRenderer.create(
+      <ConfigProvider size="small">
+        <Checkbox />
+      </ConfigProvider>,
+    );
+    const inputCheckInstance = testRenderer.root.findByType(InputCheck);
+
+    expect(inputCheckInstance.props.size).toBe('small');
   });
 
   it('should bind host class', () => {

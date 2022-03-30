@@ -1,5 +1,7 @@
 import { CheckboxGroupOption, CheckboxSize } from '@mezzanine-ui/core/checkbox';
-import { ChangeEvent, forwardRef, ReactNode } from 'react';
+import {
+  ChangeEvent, forwardRef, ReactNode, useMemo,
+} from 'react';
 import { InputCheckGroup, InputCheckGroupProps } from '../_internal/InputCheck';
 import { useControlValueState } from '../Form/useControlValueState';
 import {
@@ -79,7 +81,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(function Ch
     defaultValue,
     value: valueProp,
   });
-  const context: CheckboxGroupContextValue = {
+  const context: CheckboxGroupContextValue = useMemo(() => ({
     disabled,
     name,
     onChange(event) {
@@ -94,7 +96,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(function Ch
     },
     size,
     value,
-  };
+  }), [disabled, name, value, size, onChange, setValue]);
   const children = childrenProp || options.map(renderOption);
 
   return (
