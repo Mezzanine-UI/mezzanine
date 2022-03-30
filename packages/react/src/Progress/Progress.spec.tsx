@@ -9,6 +9,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Progress from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Progress />', () => {
   afterEach(cleanup);
@@ -55,6 +56,7 @@ describe('<Progress />', () => {
       expect(element.querySelector('.mzn-progress__info')).toBeNull();
     });
   });
+
   describe('circle type progress', () => {
     it('should render circle type progress', () => {
       const { getHostHTMLElement } = render(testProgress('circle'));
@@ -62,6 +64,26 @@ describe('<Progress />', () => {
 
       expect(element.querySelector('.mzn-progress__circle-bg')).toBeTruthy();
       expect(element.querySelector('.mzn-progress__info')).toBeTruthy();
+    });
+  });
+
+  describe('prop: size', () => {
+    it('should render size="medium" by default', () => {
+      const { getHostHTMLElement } = render(<Progress />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-progress--medium')).toBeTruthy();
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const { getHostHTMLElement } = render(
+        <ConfigProvider size="large">
+          <Progress />
+        </ConfigProvider>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-progress--large')).toBeTruthy();
     });
   });
 });

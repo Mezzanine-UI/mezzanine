@@ -7,6 +7,7 @@ import { ExclamationCircleFilledIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
 import Button from '../Button';
 import Progress from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Feedback/Progress',
@@ -24,6 +25,10 @@ export const Line = () => {
       <Progress percent={percent} />
       <Typography>Small</Typography>
       <Progress percent={percent} size="small" />
+      <Typography>Large</Typography>
+      <ConfigProvider size="large">
+        <Progress percent={percent} />
+      </ConfigProvider>
       <Typography>Error</Typography>
       <Progress percent={percent} status="error" />
       <Typography>Success</Typography>

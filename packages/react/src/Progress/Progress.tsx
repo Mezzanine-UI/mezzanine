@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useContext,
 } from 'react';
 import {
   progressClasses as classes,
@@ -16,6 +17,7 @@ import Typography, { TypographyProps, TypographyVariant } from '../Typography';
 import Icon, { IconProps } from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface ProgressProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title' | 'children'> {
   /**
@@ -68,13 +70,16 @@ export interface ProgressProps extends Omit<NativeElementPropsWithoutKeyAndRef<'
  */
 const Progress = forwardRef<HTMLDivElement, ProgressProps>(function Progress(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     circleProps,
     className,
     errorIconProps,
     percent = 0,
     percentProps,
     showInfo = true,
-    size = 'medium',
+    size = globalSize,
     status = percent < 100 ? ProgressStatuses.normal : ProgressStatuses.success,
     successIconProps,
     type = ProgressTypes.line,
