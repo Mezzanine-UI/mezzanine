@@ -6,6 +6,7 @@ import moment from 'moment';
 import { CalendarConfigProvider } from '../Calendar';
 import TimePicker, { TimePickerProps } from './TimePicker';
 import Typography from '../Typography';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/TimePicker',
@@ -169,7 +170,9 @@ export const Sizes = () => {
         <Typography variant="h5" style={typoStyle}>
           Large
         </Typography>
-        <TimePicker value={val3} onChange={onChange3} size="large" />
+        <ConfigProvider size="large">
+          <TimePicker value={val3} onChange={onChange3} />
+        </ConfigProvider>
       </div>
     </CalendarConfigProvider>
   );

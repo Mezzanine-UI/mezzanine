@@ -10,6 +10,7 @@ import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
 import Typography from '../Typography';
 import { CalendarConfigProvider } from '../Calendar';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DatePicker',
@@ -183,7 +184,9 @@ export const Sizes = () => {
         <Typography variant="h5" style={typoStyle}>
           Large
         </Typography>
-        <DatePicker value={valLg} onChange={onChangeLg} size="large" />
+        <ConfigProvider size="large">
+          <DatePicker value={valLg} onChange={onChangeLg} />
+        </ConfigProvider>
       </div>
     </CalendarConfigProvider>
   );

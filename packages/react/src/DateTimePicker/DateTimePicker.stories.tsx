@@ -9,6 +9,7 @@ import moment from 'moment';
 import { CalendarConfigProvider } from '../Calendar';
 import DateTimePicker, { DateTimePickerProps } from './DateTimePicker';
 import Typography from '../Typography';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DateTimePicker',
@@ -197,7 +198,9 @@ export const Sizes = () => {
         <Typography variant="h5" style={typoStyle}>
           Large
         </Typography>
-        <DateTimePicker value={val3} onChange={onChange3} size="large" />
+        <ConfigProvider size="large">
+          <DateTimePicker value={val3} onChange={onChange3} />
+        </ConfigProvider>
       </div>
     </CalendarConfigProvider>
   );

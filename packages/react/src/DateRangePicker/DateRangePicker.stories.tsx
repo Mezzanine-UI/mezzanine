@@ -13,6 +13,7 @@ import DateRangePicker from '.';
 import { DateRangePickerProps } from './DateRangePicker';
 import Typography from '../Typography';
 import { CalendarConfigProvider } from '../Calendar';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DateRangePicker',
@@ -195,7 +196,9 @@ export const Sizes = () => {
         <Typography variant="h5" style={typoStyle}>
           Large
         </Typography>
-        <DateRangePicker value={valLg} onChange={onChangeLg} size="large" />
+        <ConfigProvider size="large">
+          <DateRangePicker value={valLg} onChange={onChangeLg} />
+        </ConfigProvider>
       </div>
     </CalendarConfigProvider>
   );
