@@ -33,7 +33,7 @@ export const State = () => (
   }}
   >
     {Array.from(Array(5)).map((_, idx) => (
-      <Stepper key={idx.toString()} activeStep={idx - 1}>
+      <Stepper key={`${idx.toString()}`} activeStep={idx - 1}>
         {exampleSteps.map((label) => (
           <Step key={label} title={label} />
         ))}
