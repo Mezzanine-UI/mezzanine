@@ -10,6 +10,7 @@ import {
 } from '../../__test-utils__/common';
 import Button, { ButtonGroup } from '.';
 import { ButtonProps } from './Button';
+import ConfigProvider from '../Provider';
 
 describe('<ButtonGroup />', () => {
   afterEach(cleanup);
@@ -264,6 +265,33 @@ describe('<ButtonGroup />', () => {
         >
           <Button />
         </ButtonGroup>,
+      );
+      const testInstance = testRenderer.root;
+
+      testOverrideProps(
+        testInstance,
+        {
+          color: 'secondary',
+          danger: true,
+          disabled: true,
+          size: 'small',
+          variant: 'contained',
+        },
+      );
+    });
+
+    it('provided by context', () => {
+      const testRenderer = TestRenderer.create(
+        <ConfigProvider size="small">
+          <ButtonGroup
+            color="secondary"
+            danger
+            disabled
+            variant="contained"
+          >
+            <Button />
+          </ButtonGroup>
+        </ConfigProvider>,
       );
       const testInstance = testRenderer.root;
 

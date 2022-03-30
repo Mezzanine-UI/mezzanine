@@ -3,6 +3,7 @@ import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import { Icon } from '..';
 import Button, { ButtonGroup, ButtonGroupProps, IconButton } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'General/Button/ButtonGroup',
@@ -13,19 +14,20 @@ const orientations: ButtonGroupOrientation[] = [
   'vertical',
 ];
 
-export const Playgroud: Story<ButtonGroupProps> = ({ attached, orientation }) => (
+export const Playground: Story<ButtonGroupProps> = ({ attached, orientation }) => (
   <>
-    <ButtonGroup
-      attached={attached}
-      color="primary"
-      variant="contained"
-      size="large"
-      orientation={orientation}
-    >
-      <Button>one</Button>
-      <Button>two</Button>
-      <Button>three</Button>
-    </ButtonGroup>
+    <ConfigProvider size="large">
+      <ButtonGroup
+        attached={attached}
+        color="primary"
+        variant="contained"
+        orientation={orientation}
+      >
+        <Button>one</Button>
+        <Button>two</Button>
+        <Button>three</Button>
+      </ButtonGroup>
+    </ConfigProvider>
     <br />
     <br />
     <ButtonGroup
@@ -55,11 +57,11 @@ export const Playgroud: Story<ButtonGroupProps> = ({ attached, orientation }) =>
   </>
 );
 
-Playgroud.args = {
+Playground.args = {
   attached: false,
   orientation: 'horizontal',
 };
-Playgroud.argTypes = {
+Playground.argTypes = {
   orientation: {
     control: {
       type: 'select',

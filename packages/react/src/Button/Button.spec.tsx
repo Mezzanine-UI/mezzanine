@@ -11,6 +11,7 @@ import {
 } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import Button, { ButtonColor, ButtonComponent } from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Button />', () => {
   afterEach(cleanup);
@@ -250,6 +251,17 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-button--medium')).toBeTruthy();
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const { getHostHTMLElement } = render(
+        <ConfigProvider size="large">
+          <Button />
+        </ConfigProvider>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button--large')).toBeTruthy();
     });
 
     const sizes: ButtonSize[] = [

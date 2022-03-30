@@ -3,6 +3,7 @@ import {
   cloneElement,
   forwardRef,
   ReactElement,
+  useContext,
 } from 'react';
 import {
   ButtonColor,
@@ -17,6 +18,7 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { ButtonProps } from './Button';
 import { IconButtonProps } from './IconButton';
+import { MezzanineConfig } from '../Provider/context';
 
 export type ButtonGroupChild = ReactElement<ButtonProps | IconButtonProps> | null | undefined | false;
 
@@ -78,6 +80,9 @@ export interface ButtonGroupProps extends NativeElementPropsWithoutKeyAndRef<'di
  */
 const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function ButtonGroup(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     attached = false,
     children,
     className,
@@ -87,7 +92,7 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(function Button
     fullWidth = false,
     orientation = 'horizontal',
     role = 'group',
-    size = 'medium',
+    size = globalSize,
     spacing,
     style: styleProp,
     variant = 'text',

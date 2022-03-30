@@ -1,10 +1,13 @@
-import { forwardRef, MouseEvent, ReactNode } from 'react';
+import {
+  forwardRef, MouseEvent, ReactNode, useContext,
+} from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { ButtonComponent, ButtonPropsBase } from './typings';
+import { MezzanineConfig } from '../Provider/context';
 
 export type ButtonProps<C extends ButtonComponent = 'button'> =
   ComponentOverridableForwardRefComponentPropsFactory<ButtonComponent, C, ButtonPropsBase>;
@@ -13,6 +16,9 @@ export type ButtonProps<C extends ButtonComponent = 'button'> =
  * The react component for `mezzanine` button.
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
+  const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
   const {
     children,
     className,
@@ -23,7 +29,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props,
     loading = false,
     onClick,
     prefix: prefixProp,
-    size = 'medium',
+    size = globalSize,
     suffix: suffixProp,
     variant = 'text',
     ...rest

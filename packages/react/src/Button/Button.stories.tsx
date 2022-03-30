@@ -7,6 +7,7 @@ import Button, {
   ButtonVariant,
   ButtonProps,
 } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'General/Button',
@@ -113,9 +114,13 @@ export const Sizes = () => (
     <Button variant="outlined" size="small">ok</Button>
     <Button variant="outlined">ok</Button>
     <Button variant="outlined" size="large">ok</Button>
-    <Button variant="contained" size="small">ok</Button>
+    <ConfigProvider size="small">
+      <Button variant="contained">ok</Button>
+    </ConfigProvider>
     <Button variant="contained">ok</Button>
-    <Button variant="contained" size="large">ok</Button>
+    <ConfigProvider size="large">
+      <Button variant="contained">ok</Button>
+    </ConfigProvider>
   </div>
 );
 
