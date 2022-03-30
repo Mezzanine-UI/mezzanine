@@ -4,7 +4,7 @@ import {
   TreeSize,
 } from '@mezzanine-ui/core/tree';
 import { CaretRightIcon } from '@mezzanine-ui/icons';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef, useMemo, useContext } from 'react';
 import Checkbox from '../Checkbox';
 import Icon from '../Icon';
 import { Collapse, CollapseProps } from '../Transition';
@@ -12,6 +12,7 @@ import Typography, { TypographyVariant } from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TreeNodeData } from './typings';
+import { MezzanineConfig } from '../Provider/context';
 
 export type TreeNodeElementProps = Omit<NativeElementPropsWithoutKeyAndRef<'li'>,
 | 'children'
@@ -56,6 +57,9 @@ export interface TreeNodeProps extends TreeNodeData, TreeNodeElementProps {
 const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
   function TreeNode(props, ref) {
     const {
+      size: globalSize,
+    } = useContext(MezzanineConfig);
+    const {
       children,
       className,
       disabled,
@@ -67,7 +71,7 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       onSelect: onSelectProp,
       selectable = false,
       selected,
-      size = 'medium',
+      size = globalSize,
       value,
       ...restRootProps
     } = props;

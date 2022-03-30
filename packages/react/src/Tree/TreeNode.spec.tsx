@@ -1,4 +1,3 @@
-
 import { TreeSize } from '@mezzanine-ui/core/tree';
 import {
   cleanup,
@@ -15,6 +14,7 @@ import {
 } from '.';
 import Typography, { TypographyVariant } from '../Typography';
 import Checkbox from '../Checkbox';
+import ConfigProvider from '../Provider';
 
 describe('<TreeNode />', () => {
   afterEach(cleanup);
@@ -313,6 +313,21 @@ describe('<TreeNode />', () => {
       const typographyInstance = testInstance.root.findByType(Typography);
 
       expect(typographyInstance.props.variant).toEqual('input2');
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const testInstance = TestRenderer.create(
+        <ConfigProvider size="large">
+          <TreeNode
+            value="foo"
+            label="bar"
+          />
+        </ConfigProvider>,
+      );
+
+      const typographyInstance = testInstance.root.findByType(Typography);
+
+      expect(typographyInstance.props.variant).toEqual('input1');
     });
 
     const sizes: TreeSize[] = ['small', 'medium', 'large'];
