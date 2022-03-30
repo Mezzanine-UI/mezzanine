@@ -10,6 +10,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { UploadResult, UploadResultSize } from '.';
+import ConfigProvider from '../Provider';
 
 function createQueryIcon(name: string) {
   return (element: HTMLElement) => element.querySelector(`.mzn-icon[data-icon-name="${name}"]`);
@@ -134,6 +135,17 @@ describe('<UploadResult />', () => {
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-upload-result--medium')).toBeTruthy();
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const { getHostHTMLElement } = render(
+        <ConfigProvider size="large">
+          <UploadResult name="hello.png" status="done" />
+        </ConfigProvider>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-upload-result--large')).toBeTruthy();
     });
 
     const sizes: UploadResultSize[] = [

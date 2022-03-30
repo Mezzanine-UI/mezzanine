@@ -1,4 +1,4 @@
-import { forwardRef, MouseEventHandler } from 'react';
+import { forwardRef, MouseEventHandler, useContext } from 'react';
 import {
   toUploadResultCssVars,
   uploadResultClasses as classes,
@@ -9,13 +9,33 @@ import { DownloadIcon, TimesIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface UploadResultProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * The name to display
+   */
   name: string;
+  /**
+   * When 'x' icon is clicked, this callback will be fired.
+   */
   onDelete?: MouseEventHandler;
+  /**
+   * When 'download' icon is clicked, this callback will be fired.
+   */
   onDownload?: MouseEventHandler;
+  /**
+   * The progress percentage
+   */
   percentage?: number;
+  /**
+   * The result sizing
+   * @default 'medium'
+   */
   size?: UploadResultSize;
+  /**
+   * Indicate current result status
+   */
   status: UploadResultStatus;
 }
 
@@ -24,12 +44,15 @@ export interface UploadResultProps extends NativeElementPropsWithoutKeyAndRef<'d
  */
 const UploadResult = forwardRef<HTMLDivElement, UploadResultProps>(function UploadResult(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     className,
     name,
     onDelete,
     onDownload,
     percentage,
-    size = 'medium',
+    size = globalSize,
     status,
     style: styleProp,
     ...rest

@@ -2,6 +2,7 @@ import { Meta, Story } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { useState } from 'react';
 import { UploadButton, UploadResult, UploadResultProps } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Upload/UploadResult',
@@ -53,17 +54,19 @@ Basic.args = {
 };
 
 export const Sizes: Story = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridAutoFlow: 'row',
-    gap: '16px',
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridAutoFlow: 'row',
+      gap: '16px',
+    }}
   >
-    <UploadResult
-      name="123.jpg"
-      size="large"
-      status="done"
-    />
+    <ConfigProvider size="large">
+      <UploadResult
+        name="123.jpg"
+        status="done"
+      />
+    </ConfigProvider>
     <UploadResult
       name="123.jpg"
       status="done"
