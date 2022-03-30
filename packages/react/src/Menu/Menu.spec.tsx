@@ -8,6 +8,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Menu from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Menu />', () => {
   afterEach(cleanup);
@@ -79,6 +80,17 @@ describe('<Menu />', () => {
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-menu--medium')).toBeTruthy();
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const { getHostHTMLElement } = render(
+        <ConfigProvider size="large">
+          <Menu />
+        </ConfigProvider>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-menu--large')).toBeTruthy();
     });
 
     const sizes: MenuSize[] = [

@@ -1,5 +1,6 @@
 import { Meta } from '@storybook/react';
 import Menu, { MenuDivider, MenuItem, MenuItemGroup } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Navigation/Menu',
@@ -12,12 +13,14 @@ export const Sizes = () => (
     gap: 60,
   }}
   >
-    <Menu size="large">
-      <MenuItem>item 1</MenuItem>
-      <MenuItem active>item 2</MenuItem>
-      <MenuItem disabled>item 3</MenuItem>
-      <MenuItem>item 4</MenuItem>
-    </Menu>
+    <ConfigProvider size="large">
+      <Menu>
+        <MenuItem>item 1</MenuItem>
+        <MenuItem active>item 2</MenuItem>
+        <MenuItem disabled>item 3</MenuItem>
+        <MenuItem>item 4</MenuItem>
+      </Menu>
+    </ConfigProvider>
     <Menu size="medium">
       <MenuItem>item 1</MenuItem>
       <MenuItem active>item 2</MenuItem>

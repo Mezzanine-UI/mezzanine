@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, useContext } from 'react';
 import {
   MenuSize,
   menuClasses as classes,
@@ -6,6 +6,7 @@ import {
 } from '@mezzanine-ui/core/menu';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface MenuProps extends NativeElementPropsWithoutKeyAndRef<'ul'> {
   /**
@@ -34,12 +35,15 @@ export interface MenuProps extends NativeElementPropsWithoutKeyAndRef<'ul'> {
  */
 const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     children,
     className,
     itemsInView = 4,
     maxHeight,
     role = 'menu',
-    size = 'medium',
+    size = globalSize,
     style: styleProp,
     ...rest
   } = props;
