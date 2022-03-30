@@ -4,6 +4,7 @@ import {
   ReactNode,
   cloneElement,
   ReactElement,
+  useContext,
 } from 'react';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
@@ -14,6 +15,7 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
 import Icon from '../Icon';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface TextFieldProps
   extends
@@ -69,6 +71,9 @@ export interface TextFieldProps
  */
 const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     active = false,
     children,
     className,
@@ -81,7 +86,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
     onKeyDown: onKeyDownProps,
     prefix,
     role: roleProp,
-    size = 'medium',
+    size = globalSize,
     suffix,
     suffixActionIcon,
     ...rest
