@@ -8,6 +8,7 @@ import Radio, {
   RadioGroupOption,
   RadioGroupOrientation,
 } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Radio',
@@ -70,7 +71,9 @@ export const Sizes = () => (
   >
     <Radio size="small">Small</Radio>
     <Radio size="medium">Medium</Radio>
-    <Radio size="large">Large</Radio>
+    <ConfigProvider size="large">
+      <Radio>Large</Radio>
+    </ConfigProvider>
   </div>
 );
 

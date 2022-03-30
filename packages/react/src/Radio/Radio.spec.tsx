@@ -12,6 +12,7 @@ import {
 import InputCheck from '../_internal/InputCheck';
 import { FormField } from '../Form';
 import Radio, { RadioGroup } from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Radio />', () => {
   afterEach(cleanup);
@@ -42,6 +43,17 @@ describe('<Radio />', () => {
     expect(inputCheckInstance.props.disabled).toBe(true);
     expect(inputCheckInstance.props.error).toBe(true);
     expect(inputCheckInstance.props.size).toBe('large');
+  });
+
+  it('should accept ConfigProvider context changes', () => {
+    const testInstance = TestRenderer.create(
+      <ConfigProvider size="small">
+        <Radio>foo</Radio>
+      </ConfigProvider>,
+    );
+    const inputCheckInstance = testInstance.root.findByType(InputCheck);
+
+    expect(inputCheckInstance.props.size).toBe('small');
   });
 
   it('should bind host class', () => {

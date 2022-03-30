@@ -6,6 +6,7 @@ import { useRadioControlValue } from '../Form/useRadioControlValue';
 import { FormControlContext } from '../Form';
 import { RadioGroupContext } from './RadioGroupContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface RadioProps
   extends
@@ -62,6 +63,9 @@ export interface RadioProps
  */
 const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     disabled: disabledFromFormControl,
     severity,
   } = useContext(FormControlContext) || {};
@@ -79,7 +83,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref
     error = severity === 'error' || false,
     inputProps,
     onChange: onChangeProp,
-    size = sizeFromGroup || 'medium',
+    size = sizeFromGroup || globalSize,
     value,
     ...rest
   } = props;

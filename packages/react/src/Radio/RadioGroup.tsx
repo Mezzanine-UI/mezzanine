@@ -1,5 +1,7 @@
 import { RadioGroupOption, RadioSize } from '@mezzanine-ui/core/radio';
-import { ChangeEventHandler, forwardRef, ReactNode } from 'react';
+import {
+  ChangeEventHandler, forwardRef, ReactNode, useMemo,
+} from 'react';
 import { InputCheckGroup, InputCheckGroupProps } from '../_internal/InputCheck';
 import { useInputControlValue } from '../Form/useInputControlValue';
 import {
@@ -68,13 +70,14 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(function RadioGro
     onChange: onChangeProp,
     value: valueProp,
   });
-  const context: RadioGroupContextValue = {
+  const context: RadioGroupContextValue = useMemo(() => ({
     disabled,
     name,
     onChange,
     size,
     value,
-  };
+  }), [disabled, name, onChange, size, value]);
+
   const children = childrenProp || options.map((option) => (
     <Radio
       key={option.value}
