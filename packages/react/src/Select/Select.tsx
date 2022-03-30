@@ -86,7 +86,6 @@ export interface SelectBaseProps
   required?: boolean;
   /**
    * The size of input.
-   * @default 'medium'
    */
   size?: SelectInputSize;
 }
@@ -163,7 +162,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     itemsInView = 4,
     menuMaxHeight,
     menuRole = 'listbox',
-    menuSize = 'medium',
+    menuSize,
     mode = 'single',
     onBlur,
     onChange: onChangeProp,
@@ -174,7 +173,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     prefix,
     renderValue,
     required = requiredFromFormControl || false,
-    size = 'medium',
+    size,
     suffixActionIcon,
     value: valueProp,
   } = props;

@@ -105,7 +105,6 @@ export interface AutoCompleteBaseProps
   required?: boolean;
   /**
    * The size of input.
-   * @default 'medium'
    */
   size?: SelectInputSize;
 }
@@ -179,7 +178,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     itemsInView = 4,
     menuMaxHeight,
     menuRole = 'listbox',
-    menuSize = 'medium',
+    menuSize,
     mode = 'single',
     onChange: onChangeProp,
     onClear: onClearProp,
@@ -190,7 +189,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
     placeholder = '',
     prefix,
     required = requiredFromFormControl || false,
-    size = 'medium',
+    size,
     value: valueProp,
   } = props;
 

@@ -57,7 +57,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(fun
     readOnly,
     required,
     searchText,
-    size = 'medium',
+    size,
     showTextInputAfterTags,
     value,
   } = props;

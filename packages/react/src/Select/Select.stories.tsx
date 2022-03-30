@@ -11,6 +11,7 @@ import Select, {
 import Typography from '../Typography';
 import Button from '../Button';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Select',
@@ -98,21 +99,21 @@ export const Group = () => (
     gap: 60,
   }}
   >
-    <Select
-      fullWidth
-      menuSize="large"
-      placeholder="預設"
-      size="large"
-    >
-      <OptionGroup label="Group A">
-        <Option value="1">item 1</Option>
-        <Option value="2">item 2</Option>
-      </OptionGroup>
-      <OptionGroup label="Group B">
-        <Option value="3">item 1</Option>
-        <Option value="4">item 2</Option>
-      </OptionGroup>
-    </Select>
+    <ConfigProvider size="large">
+      <Select
+        fullWidth
+        placeholder="預設"
+      >
+        <OptionGroup label="Group A">
+          <Option value="1">item 1</Option>
+          <Option value="2">item 2</Option>
+        </OptionGroup>
+        <OptionGroup label="Group B">
+          <Option value="3">item 1</Option>
+          <Option value="4">item 2</Option>
+        </OptionGroup>
+      </Select>
+    </ConfigProvider>
     <Select
       fullWidth
       menuSize="medium"
