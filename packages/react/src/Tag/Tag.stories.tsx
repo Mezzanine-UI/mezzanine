@@ -1,6 +1,7 @@
 import { Story, Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import Tag, { TagProps, TagSize } from '.';
+import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Display/Tag',
@@ -75,6 +76,8 @@ export const Sizes: Story = () => (
   >
     <Tag size="small">small</Tag>
     <Tag>medium</Tag>
-    <Tag size="large">large</Tag>
+    <ConfigProvider size="large">
+      <Tag>large</Tag>
+    </ConfigProvider>
   </div>
 );

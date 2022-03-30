@@ -9,6 +9,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Tag, { TagSize } from '.';
+import ConfigProvider from '../Provider';
 
 describe('<Tag />', () => {
   afterEach(cleanup);
@@ -130,6 +131,17 @@ describe('<Tag />', () => {
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-tag--medium')).toBeTruthy();
+    });
+
+    it('should accept ConfigProvider context size changes', () => {
+      const { getHostHTMLElement } = render(
+        <ConfigProvider size="large">
+          <Tag />
+        </ConfigProvider>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-tag--large')).toBeTruthy();
     });
 
     const sizes: TagSize[] = [

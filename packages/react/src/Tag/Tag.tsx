@@ -1,9 +1,10 @@
-import { forwardRef, MouseEventHandler } from 'react';
+import { forwardRef, MouseEventHandler, useContext } from 'react';
 import { tagClasses as classes, TagSize } from '@mezzanine-ui/core/tag';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
+import { MezzanineConfig } from '../Provider/context';
 
 export interface TagProps extends NativeElementPropsWithoutKeyAndRef<'span'> {
   /**
@@ -32,12 +33,15 @@ export interface TagProps extends NativeElementPropsWithoutKeyAndRef<'span'> {
  */
 const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(props, ref) {
   const {
+    size: globalSize,
+  } = useContext(MezzanineConfig);
+  const {
     children,
     className,
     closable = false,
     disabled = false,
     onClose,
-    size = 'medium',
+    size = globalSize,
     ...rest
   } = props;
 
