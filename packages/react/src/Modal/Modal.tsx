@@ -1,8 +1,8 @@
-
 import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   forwardRef,
+  useMemo,
 } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
@@ -66,10 +66,10 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     size = 'medium',
     ...rest
   } = props;
-  const modalControl: ModalControl = {
+  const modalControl: ModalControl = useMemo(() => ({
     loading,
     severity,
-  };
+  }), [loading, severity]);
 
   const { Container: ModalContainer } = useModalContainer();
 
