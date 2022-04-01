@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.9.2...@mezzanine-ui/icons@0.10.2) (2022-04-01)
+
+### Features
+
+- **icons/typings:** add title in definition (optional) ([93fc8fa](https://github.com/Mezzanine-UI/mezzanine/commit/93fc8fab97f75b7b1e118fbd8ca848521dba35ab)), closes [#167](https://github.com/Mezzanine-UI/mezzanine/issues/167)
+
 ## [0.9.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.7.3...@mezzanine-ui/icons@0.9.2) (2022-03-04)
 
 ### Features

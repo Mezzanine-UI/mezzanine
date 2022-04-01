@@ -3,6 +3,30 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.1...@mezzanine-ui/react@0.10.2) (2022-04-01)
+
+### Bug Fixes
+
+- **react/dropdown:** fix dropdown children ref type ([ad8948d](https://github.com/Mezzanine-UI/mezzanine/commit/ad8948dc2cc68ba99de47ca82dc8bdcfc9622c0f))
+- **react/modal:** context value should wrap in useMemo ([7582d1b](https://github.com/Mezzanine-UI/mezzanine/commit/7582d1bdb964528180b86f8ca98c189ade0df613))
+
+### Features
+
+- **react/button:** apply global config context on Button/ButtonGroup ([924ca1f](https://github.com/Mezzanine-UI/mezzanine/commit/924ca1f722494cac0e66d1256ff8f51315c44a0d)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/checkbox:** apply global config context on Checkbox ([4b5bf90](https://github.com/Mezzanine-UI/mezzanine/commit/4b5bf904e936745fa1de1db6fd0e0d1cc88ea90a)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/icon:** improve icon accessibility by adding title element ([f1d612c](https://github.com/Mezzanine-UI/mezzanine/commit/f1d612c08165ab5c020271b94570d644ae8599ae)), closes [#167](https://github.com/Mezzanine-UI/mezzanine/issues/167) [#167](https://github.com/Mezzanine-UI/mezzanine/issues/167)
+- **react/input:** apply global config context on Input ([9455710](https://github.com/Mezzanine-UI/mezzanine/commit/94557101dec30539d2f39f8ed467fffd8877a7ec)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/menu:** apply global config context on Menu ([461ab68](https://github.com/Mezzanine-UI/mezzanine/commit/461ab684a800fe8882be6c6609a5557ab31bd0ca)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/progress:** apply global config context on Progress ([b0982a8](https://github.com/Mezzanine-UI/mezzanine/commit/b0982a81dc00368b4875cd15ad84994d22b88261)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/provider:** implement mezzanine config provider to facilitate the modifications ([c89769b](https://github.com/Mezzanine-UI/mezzanine/commit/c89769b7731f2c068de17fda853fff163e7cb7ec)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/radio:** apply global config context on Radio/RadioGroup ([48b1d3f](https://github.com/Mezzanine-UI/mezzanine/commit/48b1d3f81728bdff2b2fab06ad72a89cf076d0d8)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/select:** apply global config context on Select/TreeSelect/Autocomplete & correct size map ([aa839bf](https://github.com/Mezzanine-UI/mezzanine/commit/aa839bf271b2920f082570cf5fea8ecf5f4d28f5)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/tag:** apply global config context on Tag ([89da8ac](https://github.com/Mezzanine-UI/mezzanine/commit/89da8ac01f250676d0aea9ce4a21144266cea412)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/text-field:** apply global config context on TextField ([d9dcf7f](https://github.com/Mezzanine-UI/mezzanine/commit/d9dcf7ff6efd86105d8fd4f18759670e80491ea4)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/textarea:** apply global config context on Textarea ([bb21bff](https://github.com/Mezzanine-UI/mezzanine/commit/bb21bff9191ea80863db21a30d790b9a603be0cd)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/tree:** apply global config context on TreeNode ([3d4750f](https://github.com/Mezzanine-UI/mezzanine/commit/3d4750f016257cb6a7e2446942c09e6d7ea1342d)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+- **react/upload:** apply global config context on UploadResult ([dce22a7](https://github.com/Mezzanine-UI/mezzanine/commit/dce22a74f02fecae70cd986daf96f04c19c1505e)), closes [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166) [#166](https://github.com/Mezzanine-UI/mezzanine/issues/166)
+
 ## [0.10.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.0...@mezzanine-ui/react@0.10.1) (2022-03-23)
 
 ### Bug Fixes
