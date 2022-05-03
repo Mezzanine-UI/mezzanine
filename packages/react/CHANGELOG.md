@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.2...@mezzanine-ui/react@0.10.3) (2022-05-03)
+
+### Features
+
+- **react/upload:** upload picture wall add `prop.maxLength` to limit maximum file length ([dbe6594](https://github.com/Mezzanine-UI/mezzanine/commit/dbe6594f16be91c1172e0db17e888d2b6a535566)), closes [#172](https://github.com/Mezzanine-UI/mezzanine/issues/172) [#172](https://github.com/Mezzanine-UI/mezzanine/issues/172)
+
 ## [0.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.1...@mezzanine-ui/react@0.10.2) (2022-04-01)
 
 ### Bug Fixes
