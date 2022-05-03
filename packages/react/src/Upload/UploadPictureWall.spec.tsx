@@ -95,6 +95,33 @@ describe('<UploadPictureWall />', () => {
     });
   });
 
+  describe('prop: maxLength', () => {
+    it('should not show uploader when reach maxLength', () => {
+      const { getHostHTMLElement } = render(
+        <UploadPictureWall
+          defaultValues={['https://rytass.com/logo.png']}
+          maxLength={1}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const uploader = element.querySelectorAll('.mzn-upload-picture-block');
+
+      expect(uploader.length).toBe(1);
+    });
+
+    it('should remain uploader shown when maxLength not set', () => {
+      const { getHostHTMLElement } = render(
+        <UploadPictureWall
+          defaultValues={['https://rytass.com/logo.png']}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const uploader = element.querySelectorAll('.mzn-upload-picture-block');
+
+      expect(uploader.length).toBe(2);
+    });
+  });
+
   describe('prop: multiple', () => {
     it('should has multiple attributes', () => {
       [false, true].forEach((multiple) => {

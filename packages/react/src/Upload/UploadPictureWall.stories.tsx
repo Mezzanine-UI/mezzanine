@@ -7,7 +7,7 @@ export default {
 } as Meta;
 
 function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => { setTimeout(resolve, ms); });
 }
 
 function upload(file: File) {
@@ -67,6 +67,7 @@ export const Single: Story<SingleStoryArgs> = ({
         accept={accept}
         defaultValues={defaultValues}
         disabled={disabled}
+        maxLength={3}
         multiple={multiple}
         onChange={onChange}
         onDelete={onDelete}

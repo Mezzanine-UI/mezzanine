@@ -50,6 +50,10 @@ export interface UploadPictureWallBaseProps
    */
   disabled?: boolean;
   /**
+   * maximum file lengths
+   */
+  maxLength?: number;
+  /**
    * Whether the input which is multiple.
    * @default true
    */
@@ -105,6 +109,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     controllerRef,
     defaultValues,
     disabled = false,
+    maxLength,
     multiple = true,
     onChange,
     onDelete,
@@ -134,8 +139,8 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
   }, [onChange, prevValues, values]);
 
   useEffect(() => {
-    if (prevNeedUploadImageLoadersLength > needUploadImageLoaders.length ||
-      prevNeedUploadImageLoaderSetsLength > needUploadImageLoaderSets.length
+    if (prevNeedUploadImageLoadersLength > needUploadImageLoaders.length
+      || prevNeedUploadImageLoaderSetsLength > needUploadImageLoaderSets.length
     ) {
       setValues(compact(uploadPictureImageLoaders.map((loader) => loader.getUrl())));
     }
@@ -226,7 +231,9 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
   const onImagesUpload = useCallback(
     (files) => {
       if (files.length) {
-        const imageLoaders = files.map((file: File) => new ImageUploader(file));
+        const imageLoaders = files
+          .map((file: File) => new ImageUploader(file))
+          .slice(0, Math.max(0, (maxLength ?? 999999) - loaderList.length));
 
         setUploadPictureImageLoader((ups) => [...ups, ...imageLoaders]);
 
@@ -272,7 +279,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
         }
       }
     },
-    [onError, onMultiUpload, onUpload, onUploadSuccess, parallel],
+    [onError, onMultiUpload, onUpload, onUploadSuccess, parallel, maxLength, loaderList],
   );
 
   const onImageDelete = useCallback((uid: string) => {
@@ -312,13 +319,15 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
           onDelete={() => onImageDelete(up.getUid())}
         />
       ))}
-      <UploadPictureWallItem
-        accept={accept}
-        disabled={disabled}
-        imageLoader={new ImageUploader()}
-        multiple={multiple}
-        onUpload={onImagesUpload}
-      />
+      {maxLength && loaderList.length >= maxLength ? null : (
+        <UploadPictureWallItem
+          accept={accept}
+          disabled={disabled}
+          imageLoader={new ImageUploader()}
+          multiple={multiple}
+          onUpload={onImagesUpload}
+        />
+      )}
     </div>
   );
 });
