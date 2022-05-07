@@ -139,7 +139,7 @@ const {
   duration: 3000,
   render: (message) => <Message {...message} />,
   setRoot: (root) => {
-    root.setAttribute('class', classes.root);
+    root?.setAttribute('class', classes.root);
   },
 });
 
