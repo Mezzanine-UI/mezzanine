@@ -37,6 +37,7 @@
     "@popperjs/core": "^2.9.2",
     "@types/react-transition-group": "4.4.1",
     "clsx": "^1.1.1",
+    "lodash": "^4.17.21",
     "react-popper": "^2.2.5",
     "react-transition-group": "4.4.1",
     "tslib": "^2.1.0"

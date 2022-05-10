@@ -38,6 +38,7 @@
   "dependencies": {
     "@mezzanine-ui/icons": "^0.10.2",
     "@mezzanine-ui/system": "^0.7.0",
+    "lodash": "^4.17.21",
     "tslib": "^2.1.0"
   }
 }
