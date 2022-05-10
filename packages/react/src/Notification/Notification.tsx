@@ -95,7 +95,7 @@ export interface Notification
  * to display a notification globally.
  */
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-const Notification: Notification = ((
+const NotificationElement: Notification = ((
   props: PropsWithChildren<NotificationData> & { reference: Key },
 ) => {
   const {
@@ -155,7 +155,7 @@ const Notification: Notification = ((
       onExitedProp(node);
     }
 
-    Notification.remove(reference);
+    NotificationElement.remove(reference);
   };
 
   return (
@@ -220,23 +220,22 @@ const {
   remove,
 } = createNotifier<NotificationData, NotificationConfigProps>({
   duration: false,
-  render: (notif) => <Notification {...notif} />,
+  render: (notif) => <NotificationElement {...notif} />,
   setRoot: (root) => {
-    root.setAttribute('class', classes.root);
+    root?.setAttribute('class', classes.root);
   },
 });
 
-Notification.add = add;
-Notification.config = config;
-Notification.destroy = destroy;
-Notification.remove = remove;
+NotificationElement.add = add;
+NotificationElement.config = config;
+NotificationElement.destroy = destroy;
+NotificationElement.remove = remove;
 
 (['success', 'warning', 'error', 'info'] as const).forEach((severity) => {
-  Notification[severity] = (props) => Notification.add({
+  NotificationElement[severity] = (props) => NotificationElement.add({
     ...props,
     severity,
   });
 });
 
-export default Notification;
-
+export default NotificationElement;
