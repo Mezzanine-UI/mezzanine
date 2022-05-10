@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.3...@mezzanine-ui/react@0.10.4) (2022-05-10)
+
+### Bug Fixes
+
+- add @types/react @types/react-dom resolution to prevent use react 18 typings ([2ece1a6](https://github.com/Mezzanine-UI/mezzanine/commit/2ece1a69cf9b7f72f4c47b2d07ddc8c58542a723))
+- add lodash deps ([ef5250d](https://github.com/Mezzanine-UI/mezzanine/commit/ef5250dbac176604e3e182020be15e21ef256be1)), closes [#174](https://github.com/Mezzanine-UI/mezzanine/issues/174) [#174](https://github.com/Mezzanine-UI/mezzanine/issues/174)
+- **react/notifier:** ssr support ([f4d496c](https://github.com/Mezzanine-UI/mezzanine/commit/f4d496ca1c2a7e9746598721b9d33ca26f4d38e6))
+
 ## [0.10.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.2...@mezzanine-ui/react@0.10.3) (2022-05-03)
 
 ### Features

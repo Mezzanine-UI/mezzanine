@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.2...@mezzanine-ui/core@0.10.4) (2022-05-10)
+
+### Bug Fixes
+
+- add lodash deps ([ef5250d](https://github.com/Mezzanine-UI/mezzanine/commit/ef5250dbac176604e3e182020be15e21ef256be1)), closes [#174](https://github.com/Mezzanine-UI/mezzanine/issues/174) [#174](https://github.com/Mezzanine-UI/mezzanine/issues/174)
+
 ## [0.10.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.0...@mezzanine-ui/core@0.10.2) (2022-04-01)
 
 **Note:** Version bump only for package @mezzanine-ui/core
