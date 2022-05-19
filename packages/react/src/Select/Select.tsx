@@ -50,8 +50,9 @@ export interface SelectBaseProps
     role: 'menuRole';
     size: 'menuSize';
   }>,
-  PickRenameMulti<Pick<PopperProps, 'options'>, {
+  PickRenameMulti<Pick<PopperProps, 'options' | 'disablePortal'>, {
     options: 'popperOptions';
+    disablePortal: 'disablePortal'
   }>,
   Pick<MenuProps, 'children'> {
   /**
@@ -155,6 +156,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     clearable = false,
     defaultValue,
     disabled = disabledFromFormControl || false,
+    disablePortal = false,
     error = severity === 'error' || false,
     fullWidth = fullWidthFromFormControl || false,
     inputProps,
@@ -337,9 +339,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           ref={popperRef}
           anchor={controlRef}
           className={classes.popper}
+          disablePortal={disablePortal}
           open={open}
-          sameWidth
           options={popperOptions}
+          sameWidth
         >
           <Menu
             id={MENU_ID}
