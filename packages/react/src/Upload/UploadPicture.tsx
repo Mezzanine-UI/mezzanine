@@ -84,7 +84,7 @@ const UploadPicture = forwardRef<HTMLDivElement, UploadPictureProps>(function Up
   const uploadPictureImageLoader = useRef(defaultImageUploader);
 
   const onImageUpload = useCallback(
-    (files) => {
+    (files: File[]) => {
       if (files.length) {
         const currentFile = files[0];
 

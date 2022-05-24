@@ -229,7 +229,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
   }, [needUploadImageLoaders, onError, onUpload, onUploadSuccess]);
 
   const onImagesUpload = useCallback(
-    (files) => {
+    (files: File[]) => {
       if (files.length) {
         const imageLoaders = files
           .map((file: File) => new ImageUploader(file))
@@ -238,7 +238,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
         setUploadPictureImageLoader((ups) => [...ups, ...imageLoaders]);
 
         if (onMultiUpload) {
-          const uploadFiles = imageLoaders.map((loader: ImageUploader) => loader.getFile());
+          const uploadFiles = imageLoaders.map((loader: ImageUploader) => loader.getFile()) as File[];
 
           const setProgress = (progress: number) => imageLoaders.forEach(
             (loader: ImageUploader) => loader.setPercentage(progress),
