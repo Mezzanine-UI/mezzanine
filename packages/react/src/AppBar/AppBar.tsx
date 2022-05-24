@@ -3,8 +3,8 @@ import {
   Children,
   ReactElement,
   NamedExoticComponent,
-  ReactChild,
-  ReactFragment,
+  ForwardRefExoticComponent,
+  RefAttributes,
 } from 'react';
 import {
   appBarClasses as classes,
@@ -38,7 +38,7 @@ export interface AppBarProps extends
   children?: AppBarChildren;
 }
 
-const componentOrders = (type: ReactChild | ReactFragment) => {
+const componentOrders = (type: ForwardRefExoticComponent<(AppBarBrandProps | AppBarMainProps | AppBarSupportProps) & RefAttributes<HTMLDivElement>>) => {
   switch (type) {
     case AppBarBrand:
       return 1;
