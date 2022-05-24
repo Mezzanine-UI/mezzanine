@@ -1,5 +1,5 @@
 import { useState, MouseEvent, RefObject } from 'react';
-import { MoreVerticalIcon } from '@mezzanine-ui/icons';
+import { MoreVerticalIcon, PlusIcon } from '@mezzanine-ui/icons';
 import Accordion, { AccordionSummary, AccordionDetails } from '.';
 import Button from '../Button';
 import Menu, { MenuItem, MenuSize, MenuDivider } from '../Menu';
@@ -163,7 +163,16 @@ export const WithSuffixActions = () => {
         </AccordionDetails>
       </Accordion>
       <Accordion>
-        <AccordionSummary id="accordion-3" suffixActions={suffixDropdown}>
+        <AccordionSummary
+          prefixIcon={(
+            <Icon
+              icon={PlusIcon}
+              style={{ fontSize: 24, marginRight: '12px' }}
+            />
+          )}
+          id="accordion-3"
+          suffixActions={suffixDropdown}
+        >
           Accordion3
         </AccordionSummary>
         <AccordionDetails>
