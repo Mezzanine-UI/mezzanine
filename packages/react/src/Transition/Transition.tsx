@@ -35,22 +35,6 @@ export interface TransitionImplementationChildProps {
   style?: CSSProperties;
 }
 
-export interface TransitionImplementationProps
-  extends Omit<TransitionProps, 'addEndListener' | 'children' | 'nodeRef'> {
-  children: ReactElement<
-  TransitionImplementationChildProps,
-  NativeElementTag | JSXElementConstructor<TransitionImplementationChildProps>
-  >;
-  /**
-   * The delay of the transition, in milliseconds
-   */
-  delay?: TransitionDelay;
-  /**
-   * The timing function of the transition
-   */
-  easing?: TransitionEasing;
-}
-
 export interface TransitionProps {
   /**
    * A custom callback for adding custom transition end handler
@@ -112,6 +96,22 @@ export interface TransitionProps {
    * Callback fired after the `exited` state applied.
    */
   onExited?: TransitionExitHandler;
+}
+
+export interface TransitionImplementationProps
+  extends Omit<TransitionProps, 'addEndListener' | 'children' | 'nodeRef'> {
+  children: ReactElement<
+  TransitionImplementationChildProps,
+  NativeElementTag | JSXElementConstructor<TransitionImplementationChildProps>
+  >;
+  /**
+   * The delay of the transition, in milliseconds
+   */
+  delay?: TransitionDelay;
+  /**
+   * The timing function of the transition
+   */
+  easing?: TransitionEasing;
 }
 
 /**
