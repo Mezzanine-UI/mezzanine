@@ -4,9 +4,10 @@ import {
   KeyboardEvent,
   useContext,
   useMemo,
+  useCallback,
   ReactNode,
 } from 'react';
-import { IconDefinition, ChevronDownIcon } from '@mezzanine-ui/icons';
+import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -21,9 +22,9 @@ export interface AccordionSummaryProps
    */
   iconClassName?: string;
   /**
-   * custom prefix icon when `suffixActions` prop is given
+   * custom prefix icon element when `suffixActions` prop is given
    */
-  prefixIcon?: IconDefinition;
+  prefixIcon?: JSX.Element;
   /**
    * custom suffix actions
    */
@@ -47,13 +48,13 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(funct
     toggleExpanded,
   } = useContext(AccordionControlContext) || {};
 
-  const onToggle = (e: MouseEvent | KeyboardEvent) => {
+  const onToggle = useCallback((e: MouseEvent | KeyboardEvent) => {
     e.stopPropagation();
 
     if (typeof toggleExpanded === 'function' && !disabled) {
       toggleExpanded(!expanded);
     }
-  };
+  }, [disabled, expanded, toggleExpanded]);
 
   const onKeyDown = (e: KeyboardEvent<Element>) => {
     switch (e.code) {
@@ -82,7 +83,7 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(funct
     return result;
   }, [detailsId, expanded]);
 
-  const DefaultIcon = (iconProps: { className?: string }) => {
+  const DefaultIcon = useCallback((iconProps: { className?: string }) => {
     const { className: iconClassNames = '' } = iconProps;
 
     return (
@@ -103,7 +104,7 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(funct
         role="button"
       />
     );
-  };
+  }, [disabled, expanded, iconClassNameProp, onToggle]);
 
   return (
     <div
