@@ -7,6 +7,7 @@ import {
   useContext,
   DetailedHTMLProps,
   HTMLAttributes,
+  MouseEvent,
 } from 'react';
 import { TableContext, TableDataContext } from './TableContext';
 import { usePreviousValue } from '../hooks/usePreviousValue';
@@ -173,10 +174,10 @@ export default function useTableScroll() {
   }, []);
 
   /** when use mouse to drag scroll bar, get cursor position */
-  const onScrollBarMouseDown = useCallback(({ target, clientY }) => {
+  const onScrollBarMouseDown = useCallback(({ target, clientY } : MouseEvent<HTMLDivElement>) => {
     if (!target) return;
 
-    const { top: initScrollBarTop } = target.getBoundingClientRect();
+    const { top: initScrollBarTop } = (target as HTMLElement).getBoundingClientRect();
 
     setPointerOffset(clientY - initScrollBarTop);
   }, []);

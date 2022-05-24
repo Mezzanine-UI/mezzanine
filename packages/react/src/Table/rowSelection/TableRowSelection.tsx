@@ -101,7 +101,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
     /** menu */
     const [open, toggleOpen] = useState<boolean>(false);
     const isMenuAllowOpen = checked || indeterminate;
-    const onIconClicked = useCallback((evt) => {
+    const onIconClicked = useCallback((evt: MouseEvent<HTMLElement>) => {
       evt.stopPropagation();
 
       if (isMenuAllowOpen) toggleOpen((prev) => !prev);
