@@ -19,7 +19,9 @@ const Notifier = createNotifier<TestNotifierData>({
 export const Common = () => {
   const [messageKeys, setMessageKeys] = useState<Key[]>([]);
 
-  useEffect(() => () => Notifier.destroy(), []);
+  useEffect(() => () => {
+    Notifier.destroy();
+  }, []);
 
   return (
     <ButtonGroup style={{ marginBottom: 16 }}>
