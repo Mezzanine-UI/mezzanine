@@ -39,7 +39,7 @@ export function calcTakeCount({
 
     targetCount = count;
 
-    if (prevTotal < maxWidth && nowTotal > maxWidth) {
+    if (prevTotal <= maxWidth && nowTotal >= maxWidth && maxWidth > 0) {
       if (prevTotal + ellipsisTagWidth > maxWidth) {
         targetCount -= 1;
       }

@@ -40,5 +40,20 @@ describe('calcTakeCount', () => {
 
       expect(setTakeCount).toBeCalledWith(1);
     });
+
+    it('large options case', async () => {
+      const setTakeCount = jest.fn();
+
+      const largeOptions = Array.from(Array(110)).map(() => 150);
+
+      calcTakeCount({
+        tagsWidths: largeOptions,
+        maxWidth: 200,
+        ellipsisTagWidth: 60,
+        setTakeCount,
+      });
+
+      expect(setTakeCount).toBeCalledWith(0);
+    });
   });
 });

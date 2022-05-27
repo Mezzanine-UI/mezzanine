@@ -15,7 +15,11 @@ import {
 } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import TextField from '../TextField';
-import { TreeSelect, SelectValue, TreeSelectOption } from '.';
+import {
+  TreeSelect,
+  SelectValue,
+  TreeSelectOption,
+} from '.';
 
 const options: TreeSelectOption[] = [
   {
@@ -139,39 +143,25 @@ describe('<TreeSelect />', () => {
     expect(onChange).toBeCalledWith(expect.not.arrayContaining([value[0]]));
   });
 
-  it('popper should be dynamically positioned when value changes', () => {
-    jest.useFakeTimers();
-
+  it('popper should be dynamically positioned when value changes', async () => {
     const value: SelectValue[] = [
       { id: '1-1-1', name: 'label 1-1-1' },
       { id: '1-1-2', name: 'label 1-1-2' },
     ];
-    const { getHostHTMLElement, rerender } = render(
+    const { getHostHTMLElement } = render(
       <TreeSelect options={options} value={value} />,
     );
 
     const element = getHostHTMLElement();
     const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-    fireEvent.click(textFieldElement);
-
     act(() => {
-      jest.runAllTimers();
+      fireEvent.click(textFieldElement);
     });
 
     // Something about popper is causing error, even though tests fulfilled. Below line makes the error goes away
-    waitFor(() => {});
-
-    rerender(
-      <TreeSelect
-        options={options}
-        value={[
-          ...value,
-          { id: '1-2', name: 'label 1-2' },
-          { id: '2', name: 'label 2' },
-        ]}
-      />,
-    );
+    // ref: https://github.com/floating-ui/react-popper/issues/368
+    await waitFor(() => {});
 
     const menuElement = document.querySelector('.mzn-menu');
 
@@ -179,9 +169,7 @@ describe('<TreeSelect />', () => {
   });
 
   describe('panel width calculation', () => {
-    it('should be width from style of "menuProps" styles if available', () => {
-      jest.useFakeTimers();
-
+    it('should be width from style of "menuProps" styles if available', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect
           options={options}
@@ -196,20 +184,18 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
+
+      await waitFor(() => {});
 
       const menuElement = document.querySelector('.mzn-menu');
 
       expect((menuElement as HTMLElement).style.width).toBe('100px');
     });
 
-    it('else if prop "depth" is provided, should calculate base on depth', () => {
-      jest.useFakeTimers();
-
+    it('else if prop "depth" is provided, should calculate base on depth', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect
           options={options}
@@ -220,30 +206,28 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
+
+      await waitFor(() => {});
 
       const menuElement = document.querySelector('.mzn-menu');
 
       expect((menuElement as HTMLElement).style.width).toBeTruthy();
     });
 
-    it('else should calculate by options structure', () => {
-      jest.useFakeTimers();
-
+    it('else should calculate by options structure', async () => {
       const { getHostHTMLElement } = render(<TreeSelect options={options} />);
 
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
+
+      await waitFor(() => {});
 
       const menuElement = document.querySelector('.mzn-menu');
 
@@ -252,9 +236,7 @@ describe('<TreeSelect />', () => {
   });
 
   describe('open control', () => {
-    it('should toggle panel when text-field clicked', () => {
-      jest.useFakeTimers();
-
+    it('should toggle panel when text-field clicked', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -268,26 +250,22 @@ describe('<TreeSelect />', () => {
         fireEvent.click(textFieldElement!);
       });
 
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
     });
 
-    it('should not close panel when panel clicked', () => {
-      jest.useFakeTimers();
-
+    it('should not close panel when panel clicked', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -297,28 +275,26 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(document.querySelector('.mzn-menu')!);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      act(() => {
+        fireEvent.click(document.querySelector('.mzn-menu')!);
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
     });
 
-    it('should close panel when opened and clicked away', () => {
-      jest.useFakeTimers();
-
+    it('should close panel when opened and clicked away', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -328,28 +304,26 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(document.body);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
+      act(() => {
+        fireEvent.click(document.body);
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
     });
 
-    it('should close panel when opened and text-field enter key pressed', () => {
-      jest.useFakeTimers();
-
+    it('should close panel when opened and text-field enter key pressed', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -359,28 +333,26 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'Enter' });
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'Enter' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
     });
 
-    it('should close panel when opened and text-field tab key pressed', () => {
-      jest.useFakeTimers();
-
+    it('should close panel when opened and text-field tab key pressed', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -390,37 +362,35 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.keyDown(textFieldElement, { code: 'Tab' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.keyDown(textFieldElement, { code: 'Tab' });
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
-
-      fireEvent.click(textFieldElement);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement, { code: 'Tab' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement, { code: 'Tab' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
     });
 
-    it('should not close panel when opened and text-field other keys pressed', () => {
-      jest.useFakeTimers();
-
+    it('should not close panel when opened and text-field other keys pressed', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -430,28 +400,26 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.click(textFieldElement!);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'A' });
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'A' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
     });
 
-    it('should open panel when text-field arrow keys pressed', () => {
-      jest.useFakeTimers();
-
+    it('should open panel when text-field arrow keys pressed', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -461,82 +429,80 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field');
 
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowUp' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowUp' });
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(textFieldElement!);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowDown' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(textFieldElement!);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowLeft' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowDown' });
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(textFieldElement!);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowRight' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement!);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.click(textFieldElement!);
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBe(null);
-      expect(document.querySelector('.mzn-menu')).toBe(null);
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowLeft' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
+
+      act(() => {
+        fireEvent.click(textFieldElement!);
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowRight' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
+
+      act(() => {
+        fireEvent.click(textFieldElement!);
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBe(null);
+        expect(document.querySelector('.mzn-menu')).toBe(null);
+      });
     });
 
-    it('should not close panel when text-field arrow keys pressed and is opened', () => {
-      jest.useFakeTimers();
-
+    it('should not close panel when text-field arrow keys pressed and is opened', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -546,54 +512,50 @@ describe('<TreeSelect />', () => {
 
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement);
       });
 
-      fireEvent.keyDown(textFieldElement, { code: 'ArrowUp' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.keyDown(textFieldElement, { code: 'ArrowUp' });
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowDown' });
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowLeft' });
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowDown' });
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
-
-      fireEvent.keyDown(textFieldElement!, { code: 'ArrowRight' });
-
-      act(() => {
-        jest.runAllTimers();
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
       });
 
-      expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-      expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowLeft' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement!, { code: 'ArrowRight' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+      });
     });
   });
 
   describe('focus handlers', () => {
-    it('should invoke onFocus or onBlur when toggling via text-field click', () => {
-      jest.useFakeTimers();
-
+    it('should invoke onFocus or onBlur when toggling via text-field click', async () => {
       const onFocus = jest.fn();
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
@@ -602,22 +564,26 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      await waitFor(() => {});
 
       expect(onFocus).toBeCalledTimes(1);
       expect(onBlur).toBeCalledTimes(0);
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      await waitFor(() => {});
 
       expect(onFocus).toBeCalledTimes(1);
       expect(onBlur).toBeCalledTimes(1);
     });
 
-    it('should invoke onBlur when closing via click-away from text-field', () => {
-      jest.useFakeTimers();
-
+    it('should invoke onBlur when closing via click-away from text-field', async () => {
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} onBlur={onBlur} />,
@@ -625,18 +591,20 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
 
-      fireEvent.click(document.body);
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(document.body);
+      });
+
+      await waitFor(() => {});
 
       expect(onBlur).toBeCalledTimes(1);
     });
 
-    it('should invoke onBlur when closing via click-away from text-field', () => {
-      jest.useFakeTimers();
-
+    it('should invoke onBlur when closing via click-away from text-field', async () => {
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} onBlur={onBlur} />,
@@ -644,15 +612,20 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
-      fireEvent.click(document.body);
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      act(() => {
+        fireEvent.click(document.body);
+      });
+
+      await waitFor(() => {});
+
       expect(onBlur).toBeCalledTimes(1);
     });
 
-    it('should invoke onBlur when closing via text-field tab key down', () => {
-      jest.useFakeTimers();
-
+    it('should invoke onBlur when closing via text-field tab key down', async () => {
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} onBlur={onBlur} />,
@@ -660,10 +633,16 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
-      fireEvent.keyDown(textFieldElement, { code: 'Tab' });
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement, { code: 'Tab' });
+      });
+
+      await waitFor(() => {});
+
       expect(onBlur).toBeCalledTimes(1);
     });
 
@@ -679,9 +658,7 @@ describe('<TreeSelect />', () => {
       expect(onBlur).toBeCalledTimes(0);
     });
 
-    it('should invoke onBlur when closing via text-field enter key down', () => {
-      jest.useFakeTimers();
-
+    it('should invoke onBlur when closing via text-field enter key down', async () => {
       const onBlur = jest.fn();
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} onBlur={onBlur} />,
@@ -689,17 +666,23 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-      jest.runAllTimers();
-      fireEvent.keyDown(textFieldElement, { code: 'Enter' });
-      jest.runAllTimers();
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement, { code: 'Enter' });
+      });
+
+      await waitFor(() => {});
+
       expect(onBlur).toBeCalledTimes(1);
     });
 
     const arrowKeyCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
     arrowKeyCodes.forEach((arrowKeyCode) => {
-      it(`should invoke onFocus when opening via text-field ${arrowKeyCode} key down`, () => {
+      it(`should invoke onFocus when opening via text-field ${arrowKeyCode} key down`, async () => {
         const onFocus = jest.fn();
         const { getHostHTMLElement } = render(
           <TreeSelect options={options} onFocus={onFocus} />,
@@ -707,13 +690,18 @@ describe('<TreeSelect />', () => {
         const element = getHostHTMLElement();
         const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-        fireEvent.keyDown(textFieldElement, { code: arrowKeyCode });
+        act(() => {
+          fireEvent.keyDown(textFieldElement, { code: arrowKeyCode });
+        });
+
+        await waitFor(() => {});
+
         expect(onFocus).toBeCalledTimes(1);
       });
     });
 
     arrowKeyCodes.forEach((arrowKeyCode) => {
-      it(`should not invoke onFocus when text-field ${arrowKeyCode} key down but is opened`, () => {
+      it(`should not invoke onFocus when text-field ${arrowKeyCode} key down but is opened`, async () => {
         const onFocus = jest.fn();
         const { getHostHTMLElement } = render(
           <TreeSelect options={options} onFocus={onFocus} />,
@@ -721,9 +709,18 @@ describe('<TreeSelect />', () => {
         const element = getHostHTMLElement();
         const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-        fireEvent.click(textFieldElement);
+        act(() => {
+          fireEvent.click(textFieldElement);
+        });
+
         onFocus.mockClear();
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+
+        act(() => {
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+        });
+
+        await waitFor(() => {});
+
         expect(onFocus).toBeCalledTimes(0);
       });
     });
@@ -737,21 +734,30 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.keyDown(textFieldElement, { code: '0' });
+      act(() => {
+        fireEvent.keyDown(textFieldElement, { code: '0' });
+      });
+
+      await waitFor(() => {});
 
       expect(onFocus).toBeCalledTimes(0);
 
-      fireEvent.click(textFieldElement);
-      fireEvent.keyDown(textFieldElement, { code: '0' });
+      act(() => {
+        fireEvent.click(textFieldElement);
+      });
+
+      act(() => {
+        fireEvent.keyDown(textFieldElement, { code: '0' });
+      });
+
+      await waitFor(() => {});
 
       expect(onBlur).toBeCalledTimes(0);
     });
   });
 
   describe('select method', () => {
-    it('should onChange get resolved selection', () => {
-      jest.useFakeTimers();
-
+    it('should onChange get resolved selection', async () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} onChange={onChange} mode="multiple" />,
@@ -760,15 +766,17 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement);
       });
+
+      await waitFor(() => {});
 
       const testLabelElement = document.querySelector('.mzn-input-check')!;
 
-      fireEvent.click(testLabelElement);
+      act(() => {
+        fireEvent.click(testLabelElement);
+      });
 
       expect(onChange).toBeCalledWith(
         expect.arrayContaining([
@@ -780,9 +788,7 @@ describe('<TreeSelect />', () => {
   });
 
   describe('expand functionality', () => {
-    it('should have options expanded when caret icon clicked', () => {
-      jest.useFakeTimers();
-
+    it('should have options expanded when caret icon clicked', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} />,
       );
@@ -790,27 +796,27 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement);
       });
+
+      await waitFor(() => {});
 
       const menuElement = document.querySelector('.mzn-menu')! as HTMLUListElement;
       const caretIconElement = menuElement.querySelector('.mzn-tree-node__caret')!;
 
-      fireEvent.click(caretIconElement);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(caretIconElement);
       });
+
+      await waitFor(() => {});
 
       expect(getByTextWithContainer(menuElement, 'label 1-1')).toBeInstanceOf(HTMLElement);
     });
   });
 
   describe('prop: clearable', () => {
-    it('should clear value if clear icon clicked when clearable=true', () => {
+    it('should clear value if clear icon clicked when clearable=true', async () => {
       const onChange = jest.fn();
       const value: SelectValue[] = [
         { id: '1-1-1', name: 'label 1-1-1' },
@@ -826,20 +832,24 @@ describe('<TreeSelect />', () => {
       );
       const element = getHostHTMLElement();
 
-      fireEvent.mouseOver(element);
+      act(() => {
+        fireEvent.mouseOver(element);
+      });
 
       const clearIcon = element.querySelector('.mzn-text-field__clear-icon')!;
 
-      fireEvent.click(clearIcon);
+      act(() => {
+        fireEvent.click(clearIcon);
+      });
+
+      await waitFor(() => {});
 
       expect(onChange).toBeCalledWith(expect.not.arrayContaining([expect.anything()]));
     });
   });
 
   describe('prop: defaultExpandAll', () => {
-    it('should expand all options if defaultExpandAll=true', () => {
-      jest.useFakeTimers();
-
+    it('should expand all options if defaultExpandAll=true', async () => {
       const { getHostHTMLElement } = render(
         <TreeSelect options={options} defaultExpandAll />,
       );
@@ -847,11 +857,11 @@ describe('<TreeSelect />', () => {
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
-      fireEvent.click(textFieldElement);
-
       act(() => {
-        jest.runAllTimers();
+        fireEvent.click(textFieldElement);
       });
+
+      await waitFor(() => {});
 
       const menuElement = document.querySelector('.mzn-menu')! as HTMLUListElement;
 
