@@ -333,9 +333,11 @@ describe('createNotifier()', () => {
       });
 
       it('should have render result under root after message added', () => {
-        notifier.add({
-          children: 'foo',
-          duration: testDuration,
+        act(() => {
+          notifier.add({
+            children: 'foo',
+            duration: testDuration,
+          });
         });
 
         const notifierRootElement = document.body.lastElementChild;
@@ -354,9 +356,11 @@ describe('createNotifier()', () => {
       });
 
       it('passing extended message to renderer', () => {
-        notifier.add({
-          children: 'foo',
-          testString: testExtensibleString,
+        act(() => {
+          notifier.add({
+            children: 'foo',
+            testString: testExtensibleString,
+          });
         });
 
         const notifierRootElement = document.body.lastElementChild;
@@ -392,8 +396,10 @@ describe('createNotifier()', () => {
       });
 
       it('should find attributes at root', () => {
-        notifier.add({
-          children: 'foo',
+        act(() => {
+          notifier.add({
+            children: 'foo',
+          });
         });
 
         const notifierRootElement = document.body.lastElementChild;

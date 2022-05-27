@@ -1,5 +1,5 @@
 import { createRef } from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
+import { createRoot, Root } from 'react-dom/client';
 import {
   Notifier,
   NotifierConfig,
@@ -42,7 +42,8 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
     maxCount,
     ...restNotifierProps
   } = props;
-  const root = typeof document === 'undefined' ? null : document.createElement('div');
+  const container = typeof document === 'undefined' ? null : document.createElement('div');
+  let root: Root | null = container ? createRoot(container) : null;
   const controllerRef = createRef<NotifierController<N>>();
   let currentConfig = {
     duration,
@@ -50,15 +51,15 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
     ...configProp,
   };
 
-  if (setRoot && root) {
-    setRoot(root);
+  if (setRoot && container) {
+    setRoot(container);
   }
 
   return {
     add(notifier) {
-      if (root === null) return 'NOT_SET';
+      if (container === null) return 'NOT_SET';
 
-      document.body.appendChild(root as HTMLDivElement);
+      document.body.appendChild(container as HTMLDivElement);
 
       const key = notifier.key ?? Date.now();
 
@@ -74,16 +75,13 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
       if (controllerRef.current) {
         controllerRef.current.add(resolvedNotifier);
       } else {
-        render(
-          (
-            <NotifierManager<N>
-              controllerRef={controllerRef}
-              defaultNotifiers={[resolvedNotifier]}
-              maxCount={currentConfig.maxCount}
-              render={renderNotifier}
-            />
-          ),
-          root,
+        root?.render(
+          <NotifierManager<N>
+            controllerRef={controllerRef}
+            defaultNotifiers={[resolvedNotifier]}
+            maxCount={currentConfig.maxCount}
+            render={renderNotifier}
+          />,
         );
       }
 
@@ -95,12 +93,14 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
       }
     },
     destroy() {
-      if (root === null) return;
+      if (container === null) return;
 
-      unmountComponentAtNode(root);
+      root?.unmount();
 
-      if (root.parentNode) {
-        root.parentNode.removeChild(root);
+      root = createRoot(container);
+
+      if (container.parentNode) {
+        container.parentNode.removeChild(container);
       }
     },
     config(config) {
