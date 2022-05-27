@@ -52,7 +52,7 @@ export function useTableSorting(props: UseTableSorting) {
     value: dataSourceProp,
   });
 
-  const getNextSortedType = useCallback((currentType) => {
+  const getNextSortedType = useCallback((currentType: SortedType) => {
     // none -> desc -> asc -> none
     if (currentType === 'none') return 'desc';
     if (currentType === 'desc') return 'asc';
