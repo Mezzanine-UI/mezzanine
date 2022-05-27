@@ -18,7 +18,7 @@ const offsetModifier: StrictModifiers = {
   },
 };
 
-export interface TooltipProps extends PopperProps {
+export interface TooltipProps extends Omit<PopperProps, 'children'> {
   /**
    * child function that can receive events
    */
