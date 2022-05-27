@@ -10,6 +10,7 @@ import {
   cleanup,
   fireEvent,
   render,
+  waitFor,
 } from '../../__test-utils__';
 import Notification, { NotificationSeverity } from '.';
 
@@ -136,9 +137,7 @@ describe('<Notification />', () => {
   });
 
   describe('prop: onClose', () => {
-    it('should be able to close if `onClose` is not provided', () => {
-      jest.useFakeTimers();
-
+    it('should be able to close if `onClose` is not provided', async () => {
       const cancelText = 'foo';
       const closeSpy = jest.spyOn(Notification, 'remove');
       const { getByText } = render(
@@ -153,12 +152,14 @@ describe('<Notification />', () => {
       } = getByText(cancelText);
 
       if (buttonElement) {
-        fireEvent.click(buttonElement);
+        act(() => {
+          fireEvent.click(buttonElement);
+        });
       }
 
-      jest.runAllTimers();
-
-      expect(closeSpy).toBeCalledTimes(1);
+      await waitFor(() => {
+        expect(closeSpy).toBeCalledTimes(1);
+      });
     });
   });
 
