@@ -502,8 +502,6 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('should update referenceDate after value changed', async () => {
-      jest.useFakeTimers();
-
       const referenceDate = '2021-10-20';
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -514,17 +512,15 @@ describe('<DateTimePickerPanel />', () => {
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
-      await waitFor(() => {
+      act(() => {
         fireEvent.focus(inputElement);
       });
 
-      await waitFor(() => {
+      act(() => {
         fireEvent.change(inputElement, { target: { value: '2031-11-20 12:00:00' } });
       });
 
       await waitFor(() => {
-        jest.runAllTimers();
-
         const [calendarElement] = document.getElementsByClassName('mzn-calendar');
 
         expect(getByText(calendarElement as HTMLElement, 'Nov')).toBeInstanceOf(HTMLButtonElement);
