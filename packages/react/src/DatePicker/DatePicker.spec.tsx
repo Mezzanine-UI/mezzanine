@@ -170,8 +170,6 @@ describe('<DatePicker />', () => {
     });
 
     it('should close calendar when tab key down', async () => {
-      jest.useFakeTimers();
-
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DatePicker />
@@ -181,22 +179,25 @@ describe('<DatePicker />', () => {
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
-      await waitFor(() => {
+      act(() => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
-
       await waitFor(() => {
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+      });
+
+      act(() => {
         inputElement.focus();
+      });
+
+      act(() => {
         fireEvent.keyDown(document, { key: 'Tab' });
       });
 
       await waitFor(() => {
-        jest.runAllTimers();
+        expect(document.querySelector('.mzn-calendar')).toBe(null);
       });
-
-      expect(document.querySelector('.mzn-calendar')).toBe(null);
     });
 
     describe('prop: onCalendarToggle', () => {
