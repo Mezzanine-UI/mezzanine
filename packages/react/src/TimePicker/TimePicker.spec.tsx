@@ -171,8 +171,6 @@ describe('<TimePicker />', () => {
     });
 
     it('should close panel when tab key down', async () => {
-      jest.useFakeTimers();
-
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <TimePicker />
@@ -182,22 +180,25 @@ describe('<TimePicker />', () => {
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
-      await waitFor(() => {
+      act(() => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
-
       await waitFor(() => {
+        expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+      });
+
+      act(() => {
         inputElement.focus();
+      });
+
+      act(() => {
         fireEvent.keyDown(document, { key: 'Tab' });
       });
 
       await waitFor(() => {
-        jest.runAllTimers();
+        expect(document.querySelector('.mzn-time-panel')).toBe(null);
       });
-
-      expect(document.querySelector('.mzn-time-panel')).toBe(null);
     });
 
     describe('prop: onPanelToggle', () => {
