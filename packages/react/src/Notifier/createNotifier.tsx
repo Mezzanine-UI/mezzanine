@@ -43,7 +43,7 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
     ...restNotifierProps
   } = props;
   const container = typeof document === 'undefined' ? null : document.createElement('div');
-  let root: Root | null = container ? createRoot(container) : null;
+  const root: Root | null = container ? createRoot(container) : null;
   const controllerRef = createRef<NotifierController<N>>();
   let currentConfig = {
     duration,
@@ -95,9 +95,8 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
     destroy() {
       if (container === null) return;
 
-      root?.unmount();
-
-      root = createRoot(container);
+      // when useEffect(() => () => { root.unmount() }, []), will be show "Rendered more hooks than during the previous render." issue.
+      root?.render(null);
 
       if (container.parentNode) {
         container.parentNode.removeChild(container);
