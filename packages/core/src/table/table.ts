@@ -150,6 +150,7 @@ export function getColumnStyle(column: TableColumn<TableRecord<unknown>>) {
       ...style,
       width: column.width,
       maxWidth: column.width,
+      flex: 'auto',
     };
   }
 
