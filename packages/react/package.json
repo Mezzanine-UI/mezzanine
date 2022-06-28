@@ -27,15 +27,15 @@
   },
   "peerDependencies": {
     "lodash": "^4.17.21",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "dependencies": {
     "@mezzanine-ui/core": "^0.10.5",
     "@mezzanine-ui/icons": "^0.10.2",
     "@mezzanine-ui/system": "^0.7.0",
     "@popperjs/core": "^2.11.5",
-    "@types/react-transition-group": "^4.4.4",
+    "@types/react-transition-group": "^4.4.5",
     "clsx": "^1.1.1",
     "lodash": "^4.17.21",
     "react-popper": "^2.3.0",
@@ -43,20 +43,20 @@
     "tslib": "^2.1.0"
   },
   "devDependencies": {
-    "@storybook/react": "^6.4.19",
+    "@storybook/react": "^6.5.9",
     "@testing-library/react": "^13.2.0",
     "@testing-library/react-hooks": "^8.0.0",
-    "@types/lodash": "^4.14.168",
+    "@types/lodash": "^4.14.182",
     "@types/moment": "^2.13.0",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react": "^18.0.14",
+    "@types/react-dom": "^18.0.5",
     "@types/react-test-renderer": "^18.0.0",
-    "chromatic": "^5.10.1",
-    "dayjs": "^1.10.7",
+    "chromatic": "^6.6.4",
+    "dayjs": "^1.11.3",
     "lodash": "^4.17.21",
-    "moment": "^2.29.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "react-test-renderer": "^18.1.0"
+    "moment": "^2.29.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-test-renderer": "^18.2.0"
   }
 }

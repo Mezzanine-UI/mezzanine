@@ -15,20 +15,20 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-storysource',
     {
-      name: '@storybook/preset-scss',
+      name: 'storybook-addon-sass-postcss',
       options: {
         sassLoaderOptions: {
           implementation: require('sass'),
-          sourceMap: false,
-        }
-      }
+        },
+      },
     },
   ],
+  features: {
+    storyStoreV7: true,
+  },
   typescript: {
-    check: true,
-    checkOptions: {
-      tsconfig: TS_CONFIG,
-    },
+    check: false, // this will run fork-ts-checker-webpack-plugin which only available in webpack4
+    checkOptions: {},
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {
       tsconfigPath: TS_CONFIG,
@@ -55,33 +55,33 @@ module.exports = {
   reactOptions: {
     fastRefresh: true,
   },
+  core: {
+    builder: 'webpack5',
+  },
   webpackFinal: config => {
     config.resolve.alias = {
       ...config.resolve.alias,
       '@mezzanine-ui/system': path.resolve(SYSTEM_PATH, 'src'),
       '@mezzanine-ui/core': path.resolve(CORE_PATH, 'src'),
     };
-    config.resolve.plugins.push(
+    config.resolve.plugins = [
+      ...(config.resolve.plugins || []),
       new TsconfigPathsPlugin({
         configFile: TS_CONFIG,
-      })
-    );
-    config.devServer = {
-      ...config.devServer,
-      stats: {
-        ...config.devServer?.stats,
-        assets: false,
-        children: false,
-        chunks: false,
-        chunkModules: false,
-        colors: true,
-        entrypoints: false,
-        hash: false,
-        modules: false,
-        timings: false,
-        version: false,
-        warnings: false,
-      },
+      }),
+    ];
+    config.stats = {
+      ...config.stats,
+      assets: false,
+      children: false,
+      chunks: false,
+      chunkModules: false,
+      colors: true,
+      entrypoints: false,
+      hash: false,
+      modules: false,
+      timings: false,
+      version: false,
     };
 
     return config;
