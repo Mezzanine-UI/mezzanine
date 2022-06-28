@@ -3,7 +3,6 @@
 @use '~@mezzanine-ui/system/z-index';
 @use './tooltip' as *;
 
-$max-width: 160px !default;
 $min-height: 24px !default;
 $vertical-padding: 4px !default;
 $horizontal-padding: 8px !default;
@@ -15,9 +14,9 @@ $horizontal-padding: 8px !default;
   padding: $vertical-padding $horizontal-padding;
   background-color: palette.color(action-inactive);
   color: palette.color(on-secondary);
-  max-width: $max-width;
   min-height: $min-height;
   z-index: z-index.get(popover);
+  white-space: pre-line;
 
   @include typography.variant(caption);
 }
