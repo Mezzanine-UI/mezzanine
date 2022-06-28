@@ -80,7 +80,7 @@ describe('usePickerValue', () => {
       const { result, rerender } = renderHook<UsePickerValueProps, ReturnType<typeof usePickerValue>>(
         usePickerValue,
         {
-          wrapper,
+          wrapper: wrapper as any,
           initialProps: {
             inputRef,
             format: 'YYYY-MM-DD',
@@ -108,7 +108,7 @@ describe('usePickerValue', () => {
       const { result, rerender } = renderHook<UsePickerValueProps, ReturnType<typeof usePickerValue>>(
         usePickerValue,
         {
-          wrapper,
+          wrapper: wrapper as any,
           initialProps: {
             inputRef,
             format: 'YYYY-MM-DD',
