@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.4...@mezzanine-ui/core@0.10.5) (2022-06-28)
+
+### Bug Fixes
+
+- **core/table:** if given width on table cell, reset flex to auto ([49d95c0](https://github.com/Mezzanine-UI/mezzanine/commit/49d95c03e9f63cb62cdb43ca5a77ea0e1b030e47))
+- **core/tooltip:** add white-space: pre-line property and remove max-width ([e2f7698](https://github.com/Mezzanine-UI/mezzanine/commit/e2f7698dfbf13930e7b1083b37264cf541429bda)), closes [#171](https://github.com/Mezzanine-UI/mezzanine/issues/171) [#171](https://github.com/Mezzanine-UI/mezzanine/issues/171)
+
 ## [0.10.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.2...@mezzanine-ui/core@0.10.4) (2022-05-10)
 
 ### Bug Fixes

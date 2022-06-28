@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.10.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.4...@mezzanine-ui/react@0.10.5) (2022-06-28)
+
+### Bug Fixes
+
+- **react/notification:** correct severity icon typing ([6fb0cff](https://github.com/Mezzanine-UI/mezzanine/commit/6fb0cffe98d69bfe6a58c832e233ebb4d9ecfffe))
+- **react/select:** add missing `disablePortal` property for `<Select />` props ([3d17074](https://github.com/Mezzanine-UI/mezzanine/commit/3d17074d32ed8dd9f61c04b95b5a884dcf2c0a78))
+
 ## [0.10.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.3...@mezzanine-ui/react@0.10.4) (2022-05-10)
 
 ### Bug Fixes
