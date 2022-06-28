@@ -28,6 +28,6 @@
     "scss/selector-no-redundant-nesting-selector": true,
     "custom-property-pattern": null,
     "string-quotes": "single",
-    "function-no-unknown": false
+    "function-no-unknown": null
   }
 }
