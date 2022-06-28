@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.11.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.5...@mezzanine-ui/react@0.11.0) (2022-06-28)
+
+### Bug Fixes
+
+- **react/accordion:** fix type of prefixIcon props ([c8ef470](https://github.com/Mezzanine-UI/mezzanine/commit/c8ef47013f07ec062e529957d1946436e8dc3e6c))
+- **react/appbar:** fix typing ([96c360b](https://github.com/Mezzanine-UI/mezzanine/commit/96c360bf6bc311b14c110fa5a74dbbb0e2b29170))
+- **react/date_picker:** fix testing code after react 18 ([78ea6b6](https://github.com/Mezzanine-UI/mezzanine/commit/78ea6b607d8d36c1178d01c7cd4e9c75cd3bc069))
+- **react/date_range_picker:** fix testing code after react 18 ([69490af](https://github.com/Mezzanine-UI/mezzanine/commit/69490af6cc691735aacb15a8f831f1f2e9dae45b))
+- **react/date_time_picker:** fix testing code after react 18 ([fb5cade](https://github.com/Mezzanine-UI/mezzanine/commit/fb5cadecc18d828f1fabef09b41c528c4ccd45ad))
+- **react/notification:** fix testing code after react 18 ([4f0f802](https://github.com/Mezzanine-UI/mezzanine/commit/4f0f802628fd3daf90c232873d9403b4055ff040))
+- **react/notifier:** fix root api of destory api ([7d4808c](https://github.com/Mezzanine-UI/mezzanine/commit/7d4808cd3583b244c524fc844554a2cd1bc8cd83))
+- **react/select:** fix testing code after react 18 ([fa5a161](https://github.com/Mezzanine-UI/mezzanine/commit/fa5a161d965216e0282e77f7e12f0bd9a4bd26ce))
+- **react/table:** fix types ([09d1918](https://github.com/Mezzanine-UI/mezzanine/commit/09d1918a2e7c3baac85934efb43dc8d4d859a674))
+- **react/table:** give type to onScrollBarMouseDown ([3955ddf](https://github.com/Mezzanine-UI/mezzanine/commit/3955ddf9adc1873f85d1d9e53d5fb32f85eb6e11))
+- **react/time_picker:** fix testing code after react 18 ([ee31355](https://github.com/Mezzanine-UI/mezzanine/commit/ee3135517bb168b59c25da7ad621dba0ad9d69b7))
+- **react/tooltip:** fix types ([c2e9447](https://github.com/Mezzanine-UI/mezzanine/commit/c2e94474c8b1903db4c30c2298d85c5548f31333))
+- **react/transition:** correct coding of defining types ([779dac3](https://github.com/Mezzanine-UI/mezzanine/commit/779dac3b56b7213691ee6bcfa3edea859ec0efaa))
+- **react/upload:** give type on upload function ([ea88efb](https://github.com/Mezzanine-UI/mezzanine/commit/ea88efb0a5598e04d4e09ce382e4ae3d21f6e898))
+
 ## [0.10.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.4...@mezzanine-ui/react@0.10.5) (2022-06-28)
 
 ### Bug Fixes
