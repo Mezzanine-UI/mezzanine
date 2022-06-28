@@ -114,7 +114,7 @@ const NotificationElement: Notification = ((
     ...restTransitionProps
   } = props;
 
-  const targetIcon = severity ? notificationIcons[severity] : severity;
+  const targetIcon = severity ? (notificationIcons[severity]) : undefined;
 
   const [open, setOpen] = useState(true);
 
