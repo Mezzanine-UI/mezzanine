@@ -435,33 +435,4 @@ describe('<AutoComplete />', () => {
 
     expect(onChange).toBeCalledTimes(0);
   });
-
-  it('should show ellipsis tag if total width of tags is too long', async () => {
-    const largeOptions = Array.from(Array(110)).map((_, index) => ({
-      id: `${index}`,
-      name: `${index}`,
-    }));
-
-    await act(async () => {
-      const { getHostHTMLElement } = render(
-        <div
-          style={{
-            width: '200px',
-          }}
-        >
-          <AutoComplete
-            fullWidth
-            mode="multiple"
-            options={largeOptions}
-            value={largeOptions}
-            placeholder="新增關鍵字"
-          />
-        </div>,
-      );
-
-      const tags = getHostHTMLElement().getElementsByClassName('mzn-tag');
-
-      expect(tags[0].getElementsByClassName('mzn-tag__label')[0].childNodes[0].textContent).toBe('+99...');
-    });
-  });
 });

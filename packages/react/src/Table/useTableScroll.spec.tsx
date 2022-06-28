@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, MouseEvent } from 'react';
 import {
   TestRenderer,
   cleanup,
@@ -32,7 +32,7 @@ describe('useTableScroll()', () => {
     expect(scrollElement.style.height).toBe('0px');
 
     TestRenderer.act(() => {
-      scrollElement.onMouseDown({ target: null });
+      scrollElement.onMouseDown({ target: null } as unknown as MouseEvent<HTMLDivElement>);
     });
 
     TestRenderer.act(() => {

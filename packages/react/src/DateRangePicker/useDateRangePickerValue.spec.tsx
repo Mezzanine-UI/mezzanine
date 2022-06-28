@@ -38,7 +38,7 @@ describe('useDateRangePickerValue', () => {
     const { result } = renderHook(
       useDateRangePickerValue,
       {
-        wrapper,
+        wrapper: wrapper as any,
         initialProps: {
           inputFromRef,
           inputToRef,
@@ -74,7 +74,7 @@ describe('useDateRangePickerValue', () => {
     const { result } = renderHook(
       useDateRangePickerValue,
       {
-        wrapper,
+        wrapper: wrapper as any,
         initialProps: {
           inputFromRef,
           inputToRef,
@@ -114,7 +114,7 @@ describe('useDateRangePickerValue', () => {
     const { result } = renderHook(
       useDateRangePickerValue,
       {
-        wrapper,
+        wrapper: wrapper as any,
         initialProps: {
           inputFromRef,
           inputToRef,
@@ -156,7 +156,7 @@ describe('useDateRangePickerValue', () => {
       const { result } = renderHook(
         useDateRangePickerValue,
         {
-          wrapper,
+          wrapper: wrapper as any,
           initialProps: {
             inputFromRef,
             inputToRef,
@@ -190,7 +190,7 @@ describe('useDateRangePickerValue', () => {
       const { result } = renderHook(
         useDateRangePickerValue,
         {
-          wrapper,
+          wrapper: wrapper as any,
           initialProps: {
             inputFromRef,
             inputToRef,

@@ -164,6 +164,7 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
             <span className={classes.status}>上傳錯誤</span>
           </div>
         ) : (
+          // eslint-disable-next-line react/jsx-no-useless-fragment
           <>
             {showImage ? (
               <>

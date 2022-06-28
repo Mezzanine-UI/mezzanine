@@ -307,6 +307,7 @@
       },
       "rules": {
         "max-classes-per-file": "off",
+        "react/jsx-no-constructed-context-values": "off",
         "@typescript-eslint/no-non-null-assertion": "off",
         "@typescript-eslint/no-useless-constructor": "off"
       }
