@@ -26,6 +26,7 @@
     "value-no-vendor-prefix": true,
     "order/order": ["custom-properties", "declarations"],
     "scss/selector-no-redundant-nesting-selector": true,
+    "custom-property-no-missing-var-function": null,
     "custom-property-pattern": null,
     "string-quotes": "single",
     "function-no-unknown": null
