@@ -38,6 +38,6 @@
 // of defaulting to the container bottom when text is empty.
 @mixin zero-width-prefix() {
   &::before {
-    content: "\200b";
+    content: '\200b';
   }
 }

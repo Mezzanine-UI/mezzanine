@@ -13,7 +13,7 @@ $orders: (modal, drawer, popover, feedback);
 
 @function get($name) {
   @if not list.includes($orders, $name) {
-    @error "Only accept #{$orders} for z-index";
+    @error 'Only accept #{$orders} for z-index';
   }
 
   @return var(--#{$prefix}-#{$name});

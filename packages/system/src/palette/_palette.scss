@@ -9,7 +9,7 @@ $prefix: mzn-color;
 }
 
 @function _get-main-color-transformed-palette($color) {
-  $rgba: meta.get-function("rgba");
+  $rgba: meta.get-function('rgba');
 
   @return (
     #{$color}-hover-bg: (
@@ -39,7 +39,7 @@ $prefix: mzn-color;
 
 $main-color-names: (primary, secondary, error, warning, success);
 $color-names: list.flat-push(
-  list.flat-map($main-color-names, meta.get-function("_get-main-related-color-names")),
+  list.flat-map($main-color-names, meta.get-function('_get-main-related-color-names')),
   (
     text-primary,
     text-secondary,
@@ -111,14 +111,14 @@ $default-light-palette: map.assign(
     divider: #f2f2f2,
     overlay-bg: (
       from: action-active,
-      transformer: meta.get-function("rgba"),
+      transformer: meta.get-function('rgba'),
       args: (
         0.5,
       ),
     ),
     overlay-surface-bg: (
       from: surface,
-      transformer: meta.get-function("rgba"),
+      transformer: meta.get-function('rgba'),
       args: (
         0.9,
       ),
@@ -156,14 +156,14 @@ $default-dark-palette: map.assign(
     divider: #494949,
     overlay-bg: (
       from: action-active,
-      transformer: meta.get-function("rgba"),
+      transformer: meta.get-function('rgba'),
       args: (
         0.5,
       ),
     ),
     overlay-surface-bg: (
       from: surface,
-      transformer: meta.get-function("rgba"),
+      transformer: meta.get-function('rgba'),
       args: (
         0.9,
       ),
@@ -186,10 +186,10 @@ $default-palette: (
 
   @each $color-name, $color in $palette {
     @if not is-color-name-valid($color-name) {
-      @error "Invalid color name #{$color-name}. Please choose one of #{$color-names}";
+      @error 'Invalid color name #{$color-name}. Please choose one of #{$color-names}';
     }
 
-    @if meta.type-of($color) != "color" {
+    @if meta.type-of($color) != 'color' {
       $color: _transform-color-from-palette($palette, $color);
     }
 
@@ -199,7 +199,7 @@ $default-palette: (
 
 @function color($color-name) {
   @if not is-color-name-valid($color-name) {
-    @error "Invalid color name #{$color-name}. Please choose one of #{$color-names}";
+    @error 'Invalid color name #{$color-name}. Please choose one of #{$color-names}';
   }
 
   @return var(--#{$prefix}-#{$color-name});

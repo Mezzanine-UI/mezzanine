@@ -3,6 +3,7 @@
 @use './spacing';
 @use './typography';
 @use './z-index';
+@use './palette' as system-palette;
 
 @mixin common-variables($options: ()) {
   $motion: map.get($options, motion);
@@ -10,27 +11,31 @@
   $typography: map.get($options, typography);
   $z-index: map.get($options, z-index);
 
-  @if $motion == null {
+  @if not $motion {
     @include motion.variables();
   } @else {
     @include motion.variables($motion);
   }
 
-  @if $spacing == null {
+  @if not $spacing {
     @include spacing.variables();
   } @else {
     @include spacing.variables($spacing);
   }
 
-  @if $typography == null {
+  @if not $typography {
     @include typography.variables();
   } @else {
     @include typography.variables($typography);
   }
 
-  @if $z-index == null {
+  @if not $z-index {
     @include z-index.variables();
   } @else {
     @include z-index.variables($z-index);
   }
+}
+
+@mixin palette($mode: 'light', $palette: ()) {
+  @include system-palette.variables($mode, $palette);
 }

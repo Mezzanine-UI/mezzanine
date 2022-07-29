@@ -35,7 +35,7 @@ $default-options: (
 
 @function duration($duration-name) {
   @if not is-duration-name-valid($duration-name) {
-    @error "Invalid duration name #{$duration-name}. Please choose one of #{$duration-names}";
+    @error 'Invalid duration name #{$duration-name}. Please choose one of #{$duration-names}';
   }
 
   @return var(--#{$prefix}-duration-#{$duration-name});
@@ -43,7 +43,7 @@ $default-options: (
 
 @function easing($easing-name) {
   @if not is-easing-name-valid($easing-name) {
-    @error "Invalid easing name #{$easing-name}. Please choose one of #{$easing-names}";
+    @error 'Invalid easing name #{$easing-name}. Please choose one of #{$easing-names}';
   }
 
   @return var(--#{$prefix}-easing-#{$easing-name});
