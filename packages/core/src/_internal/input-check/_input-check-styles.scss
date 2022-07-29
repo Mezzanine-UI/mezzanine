@@ -19,8 +19,8 @@ $label-gap: 4px !default;
   --#{$prefix}-control-size: #{$control-size};
   --#{$prefix}-color: #{palette.color(primary)};
   --#{$prefix}-on-color: #{palette.color(on-primary)};
-  --#{$prefix}-hover-bg: #{palette.color(primary-hover-bg)};
-  --#{$prefix}-active-bg: #{palette.color(primary-active-bg)};
+  --#{$prefix}-hover-bg: transparent;
+  --#{$prefix}-active-bg: transparent;
 
   display: inline-flex;
   align-items: center;
