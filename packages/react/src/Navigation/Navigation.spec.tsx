@@ -15,8 +15,7 @@ import NavigationSubMenu from './NavigationSubMenu';
 describe('<Navigation />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLUListElement,
-    (ref) => render(<Navigation ref={ref} />));
+  describeForwardRefToHTMLElement(HTMLUListElement, (ref) => render(<Navigation ref={ref} />));
 
   describeHostElementClassNameAppendable(
     'foo',
@@ -78,6 +77,36 @@ describe('<Navigation />', () => {
 
       expect(subMenu).toBeTruthy();
       expect(subMenu.props.active).toBeTruthy();
+    });
+
+    it('should allow null/Fragment rendering and render NavigationItem correctly', () => {
+      const onClick = jest.fn();
+      const itemKey = '1';
+      const itemChildren = 'foo';
+      const testRenderer = TestRenderer.create(
+        <Navigation
+          activeKey={itemKey}
+          onClick={onClick}
+        >
+          {null}
+          <>
+            <NavigationItem
+              key={itemKey}
+            >
+              {itemChildren}
+            </NavigationItem>
+            test
+          </>
+        </Navigation>,
+      );
+
+      const testInstance = testRenderer.root;
+
+      const item = testInstance.findByType(NavigationItem);
+
+      expect(item).toBeTruthy();
+      expect(item.props.eventKey).toBe(itemKey);
+      expect(item.props.active).toBeTruthy();
     });
   });
 });
