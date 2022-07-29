@@ -5,11 +5,11 @@
   $options: map.get($all-options, $name);
 
   @if $options != false {
-    @if $options != null and meta.type-of($options) != "map" {
-      @error "Invalid options of #{$name}. Only accept false, null or map";
+    @if $options != null and meta.type-of($options) != 'map' {
+      @error 'Invalid options of #{$name}. Only accept false, null or map';
     }
 
-    $url: #{"~@mezzanine-ui/core/"}#{$namespace}#{"/"}#{$name}#{"-styles"};
+    $url: #{'~@mezzanine-ui/core/'}#{$namespace}#{'/'}#{$name}#{'-styles'};
 
     @include meta.load-css($url, $options);
   }
