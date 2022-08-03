@@ -1,6 +1,6 @@
-# mezzanine
+# Mezzanine UI
 
-## IMPORTANT!!!
+## BEFORE YOU STARTED
 
 This project is in beta version, and currently being used by rytass internal projects. <br />
 Please consider the possibility of api changes if you want to use it in production mode.
@@ -12,6 +12,239 @@ If you are interested about this project, please see: [Storybook](https://www.ch
 ## Migrations
 
 If you are an existing mezzanine users and looking for migration guides, please see [Migrations](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations).
+
+---
+
+## Installation
+
+For fully installation:
+
+```
+yarn add @mezzanine-ui/core @mezzanine-ui/react @mezzanine-ui/system @mezzanine-ui/icons
+```
+
+## Setup
+
+### Quickly Setup
+
+All you need is to create a `main.scss` file (or your favorite filename), and add:
+
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+@use '~@mezzanine-ui/core' as mzn-core;
+
+:root {
+  @include mzn-system.common-variables();
+  @include mzn-system.palette();
+}
+
+@include mzn-core.styles();
+```
+
+then import this file at your root
+
+```jsx
+import './main.scss';
+
+function App() {}
+```
+
+### Customize palette
+
+Here are default palette.
+
+```scss
+$custom-palette: (
+  light: (
+    primary: #465bc7,
+    primary-light: #778de8,
+    primary-dark: #2d2d9e,
+    on-primary: #fff,
+    secondary: #383838,
+    secondary-light: #6a6a6a,
+    secondary-dark: #161616,
+    on-secondary: #fff,
+    error: #db2b1d,
+    error-light: #f75142,
+    error-dark: #c00f03,
+    on-error: #fff,
+    warning: #f7ac38,
+    warning-light: #fdd948,
+    warning-dark: #f1842b,
+    on-warning: #fff,
+    success: #2e8d36,
+    success-light: #42ae4a,
+    success-dark: #0c5d19,
+    on-success: #fff,
+    text-primary: #161616,
+    text-secondary: #8f8f8f,
+    text-disabled: #bcbcbc,
+    action-active: #161616,
+    action-inactive: #8f8f8f,
+    action-disabled: #bcbcbc,
+    action-disabled-bg: #e5e5e5,
+    bg: #f4f4f4,
+    surface: #fff,
+    border: #d9d9d9,
+    divider: #f2f2f2,
+  ),
+);
+
+:root {
+  @include mzn-system.palette('light', $custom-palette);
+}
+```
+
+### Customize common system variables
+
+**System common variables** contains `typography`, `motion`, `spacing`, `z-index`
+
+- **typography**: `base` contains `font-family` and each tag contains `font-size`, `font-weight`, `letter-spacing`, `line-height`. We recommend
+  to use our `px-to-rem` or `px-to-em` to convert pixel into `rem` or `em`.
+- **motion**: motion contains `duration` and `easing` which used by `Transition`, `Collapse`...etc
+- **spacing**: spacings used by mezzanine internally, we **RECOMMEND NOT** to modify these values only if you fully understand mezzanine design system.
+- **z-index**: z-index start from 1000 as default.
+
+Default values are listed as below.
+
+```scss
+@use 'sass:string';
+@use '~@mezzanine-ui/system' as mzn-system;
+@use '~@mezzanine-ui/system/typography' as mzn-typography;
+
+$custom-variables: (
+  typography: (
+    base: (
+      font-family: string.unquote('PingFang TC, Microsoft JhengHei'),
+    ),
+    h1: (
+      font-size: mzn-typography.px-to-rem(32px),
+      font-weight: 600,
+      letter-spacing: mzn-typography.px-to-em(4px),
+      line-height: mzn-typography.px-to-rem(48px),
+    ),
+    h2: (
+      font-size: mzn-typography.px-to-rem(24px),
+      font-weight: 600,
+      letter-spacing: mzn-typography.px-to-em(2px),
+      line-height: mzn-typography.px-to-rem(36px),
+    ),
+    h3: (
+      font-size: mzn-typography.px-to-rem(22px),
+      font-weight: 500,
+      letter-spacing: mzn-typography.px-to-em(2px),
+      line-height: mzn-typography.px-to-rem(32px),
+    ),
+    h4: (
+      font-size: mzn-typography.px-to-rem(18px),
+      font-weight: 500,
+      letter-spacing: mzn-typography.px-to-em(1px),
+      line-height: mzn-typography.px-to-rem(28px),
+    ),
+    h5: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 500,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(24px),
+    ),
+    h6: (
+      font-size: mzn-typography.px-to-rem(13px),
+      font-weight: 500,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(20px),
+    ),
+    button1: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 500,
+      letter-spacing: mzn-typography.px-to-em(2px),
+      line-height: mzn-typography.px-to-rem(40px),
+    ),
+    button2: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 500,
+      letter-spacing: mzn-typography.px-to-em(2px),
+      line-height: mzn-typography.px-to-rem(32px),
+    ),
+    button3: (
+      font-size: mzn-typography.px-to-rem(13px),
+      font-weight: 500,
+      letter-spacing: mzn-typography.px-to-em(1px),
+      line-height: mzn-typography.px-to-rem(24px),
+    ),
+    input1: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 400,
+      letter-spacing: mzn-typography.px-to-em(1px),
+      line-height: mzn-typography.px-to-rem(40px),
+    ),
+    input2: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 400,
+      letter-spacing: mzn-typography.px-to-em(1px),
+      line-height: mzn-typography.px-to-rem(32px),
+    ),
+    input3: (
+      font-size: mzn-typography.px-to-rem(13px),
+      font-weight: 400,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(24px),
+    ),
+    body1: (
+      font-size: mzn-typography.px-to-rem(15px),
+      font-weight: 400,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(24px),
+    ),
+    body2: (
+      font-size: mzn-typography.px-to-rem(13px),
+      font-weight: 400,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(20px),
+    ),
+    caption: (
+      font-size: mzn-typography.px-to-rem(12px),
+      font-weight: 400,
+      letter-spacing: 0,
+      line-height: mzn-typography.px-to-rem(16px),
+    ),
+  ),
+  motion: (
+    durations: (
+      shortest: 150ms,
+      shorter: 200ms,
+      short: 250ms,
+      standard: 300ms,
+      long: 375ms,
+    ),
+    easings: (
+      standard: cubic-bezier(0.58, 0.01, 0.29, 1.01),
+      emphasized: cubic-bezier(0.83, 0, 0.17, 1),
+      decelerated: cubic-bezier(0, 0, 0.3, 1),
+      accelerated: cubic-bezier(0.32, 0, 0.67, 0),
+    ),
+  ),
+  spacing: (
+    4px,
+    8px,
+    12px,
+    16px,
+    24px,
+    32px,
+    40px,
+    48px,
+    64px,
+    96px,
+    160px,
+  ),
+  z-index: 1000,
+);
+
+:root {
+  @include mzn-system.common-variables($custom-variables);
+}
+```
+
+---
 
 ## 開發指引
 
