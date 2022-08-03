@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.0...@mezzanine-ui/react@0.11.1) (2022-08-03)
+
+### Bug Fixes
+
+- **react/navigation:** allow null/fragment rendering ([64d6fad](https://github.com/Mezzanine-UI/mezzanine/commit/64d6fade20e048eadb803fdfe2b577a0e6bd65b1)), closes [#179](https://github.com/Mezzanine-UI/mezzanine/issues/179) [#179](https://github.com/Mezzanine-UI/mezzanine/issues/179)
+
 # [0.11.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.10.5...@mezzanine-ui/react@0.11.0) (2022-06-28)
 
 ### Bug Fixes

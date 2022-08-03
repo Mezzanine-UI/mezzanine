@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.5...@mezzanine-ui/core@0.11.1) (2022-08-03)
+
+### Bug Fixes
+
+- **core/input-check:** remove background-color hover/active effect ([33ccf9a](https://github.com/Mezzanine-UI/mezzanine/commit/33ccf9a3bc1f20447037fac3c45ec3c9943c041a)), closes [#116](https://github.com/Mezzanine-UI/mezzanine/issues/116) [#116](https://github.com/Mezzanine-UI/mezzanine/issues/116)
+
 ## [0.10.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.4...@mezzanine-ui/core@0.10.5) (2022-06-28)
 
 ### Bug Fixes
