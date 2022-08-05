@@ -244,6 +244,151 @@ $custom-variables: (
 }
 ```
 
+and in your component level
+
+#### Use mezzanine typography
+
+If `h1` typography is needed, apply it like this:
+
+```scss
+@use '~@mezzanine-ui/system/typography';
+
+.text {
+  @include typography.variant(h1);
+}
+```
+
+#### Use mezzanine transition (motion)
+
+If `standard` transition is needed, apply it like this:
+
+```scss
+@use '~@mezzanine-ui/system/transition';
+
+.text {
+  transition: transition.standard(color);
+}
+```
+
+#### Use mezzanine z-index
+
+If `modal` z-index is needed, apply it like this:
+
+```scss
+@use '~@mezzanine-ui/system/z-index';
+
+.text {
+  z-index: z-index.get(modal);
+}
+```
+
+Notice that mezzanine z-index only includes `modal`, `drawer`, `popover`, `feedback`.<br />
+If you need more z-index orders, please add extra z-index scss file by yourself since mezzanine isn't support adding custom order name currently.
+
+---
+
+### Usage
+
+Mezzanine components are listed in [storybook](https://6088f509c9dfa500212770cf-lugitucazl.chromatic.com/) and props description can find in `docs` section. <br />
+
+For example:
+
+```tsx
+import { Button } from '@mezzanine-ui/react';
+
+function App() {
+  return <Button>Click me!</Button>;
+}
+```
+
+#### React Hooks (not listed in storybook)
+
+Some useful hooks you may needed:
+
+- **useComposeRefs**
+
+Composing react refs, for example:
+
+```jsx
+import { forwardRef, useRef } from 'react';
+import { useComposeRefs } from '@mezzanine-ui/react';
+
+const Component = forwardRef((props, ref) => {
+  const myRef = useRef();
+  const composedRef = useComposeRefs([ref, myRef]);
+
+  return <div ref={composedRef} />;
+});
+```
+
+- **useClickAway**
+
+Detect whether the user click event is triggered outside the target element.
+This may be useful when you have modal/message/pop-up...etc over your container, for example:
+
+```jsx
+import { useClickAway } from '@mezzanine-ui/react';
+
+function App() {
+  useClickAway(
+    () => {
+      if (disabled) {
+        /** Conditions when not willing to triggered */
+        return;
+      }
+
+      return (event) => {
+        /** Conditions when willing to triggered */
+        if (onClose) {
+          onClose(event);
+        }
+      };
+    },
+    popperRef, // your target element (check whether click event is outside this element)
+    [
+      disabled,
+      onClose,
+      // ...dependencies
+    ]
+  );
+}
+```
+
+- **usePreviousValue**
+
+Store previous render cycle value, for example:
+
+```jsx
+import { useState } from 'react';
+import { usePreviousValue } from '@mezzanine-ui/react';
+
+function App() {
+  const [value] = useState('');
+  const previousValue = usePreviousValue(value);
+}
+```
+
+- **useWindowWidth**
+
+Add `resize` event on window and return `window.innerWidth`
+
+```jsx
+import { useWindowWidth } from '@mezzanine-ui/react';
+
+function App() {
+  const windowWidth = useWindowWidth();
+}
+```
+
+And some other hooks used by mezzanine components are also exported if you need:
+
+- **useDocumentEscapeKeyDown**
+- **useDocumentEvents**
+- **useIsomorphicLayoutEffect**
+- **useLastCallback**
+- **useDocumentTabKeyDown**
+- **useDelayMouseEnterLeave**
+
 ---
 
 ## 開發指引
