@@ -1,7 +1,7 @@
 import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
 import { formPrefix } from './form';
@@ -11,7 +11,7 @@ export const formFieldPrefix = `${formPrefix}-field`;
 export const formMessageIcons = {
   success: CheckCircleFilledIcon,
   warning: ExclamationCircleFilledIcon,
-  error: MinusCircleFilledIcon,
+  error: TimesCircleFilledIcon,
 } as const;
 
 export const formFieldClasses = {
@@ -23,5 +23,5 @@ export const formFieldClasses = {
   severityIcon: `${formFieldPrefix}__severity-icon`,
   disabled: `${formFieldPrefix}--disabled`,
   fullWidth: `${formFieldPrefix}--full-width`,
-  severity: (severity:Severity) => `${formFieldPrefix}--${severity}`,
+  severity: (severity: Severity) => `${formFieldPrefix}--${severity}`,
 } as const;
