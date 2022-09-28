@@ -107,7 +107,11 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(
       {...rest}
       ref={ref}
       role={roleProp || role}
-      onClick={onClick}
+      onClick={(evt) => {
+        evt.stopPropagation();
+
+        onClick?.(evt);
+      }}
       onKeyDown={onKeyDown}
       className={cx(
         classes.host,
