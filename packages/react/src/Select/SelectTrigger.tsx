@@ -172,7 +172,11 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const suffixActionIcon = suffixActionIconProp || (
     <Icon
       icon={ChevronDownIcon}
-      onClick={suffixAction}
+      onClick={(e) => {
+        e.stopPropagation();
+
+        suffixAction?.();
+      }}
       className={cx(
         classes.triggerSuffixActionIcon,
         {
