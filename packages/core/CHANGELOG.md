@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.11.1...@mezzanine-ui/core@0.11.2) (2022-09-28)
+
+### Bug Fixes
+
+- **core/form:** change error icon ([ca21473](https://github.com/Mezzanine-UI/mezzanine/commit/ca21473c07de119c8b2b2ba56c4689ed19f33d55))
+
 ## [0.11.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.10.5...@mezzanine-ui/core@0.11.1) (2022-08-03)
 
 ### Bug Fixes
