@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.2...@mezzanine-ui/react@0.11.3) (2022-11-08)
+
+### Bug Fixes
+
+- **react/select:** stop propagation when select trigger clicked ([509b71c](https://github.com/Mezzanine-UI/mezzanine/commit/509b71c65a115e091b8a3fd0b7ecb9f1fc595cdc))
+- **react/text-field:** stop propagation when TextField clicked ([c59898e](https://github.com/Mezzanine-UI/mezzanine/commit/c59898eb341e4b431f11dfd40eec8f34d3f4a16f))
+
+### Features
+
+- **react/navigation:** add `defaultOpen` for NavigationSubMenu component ([3c2c478](https://github.com/Mezzanine-UI/mezzanine/commit/3c2c478c96c848cb6afeca000fea5435fdbe7ed8)), closes [#182](https://github.com/Mezzanine-UI/mezzanine/issues/182) [#182](https://github.com/Mezzanine-UI/mezzanine/issues/182)
+- **react/upload-picture-wall:** add `fileHost` for UploadPictureWall to render correct file url ([c322a1e](https://github.com/Mezzanine-UI/mezzanine/commit/c322a1e4d42d5c5994516b9888034dcf048cdd9b)), closes [#173](https://github.com/Mezzanine-UI/mezzanine/issues/173) [#173](https://github.com/Mezzanine-UI/mezzanine/issues/173)
+
 ## [0.11.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.1...@mezzanine-ui/react@0.11.2) (2022-09-28)
 
 **Note:** Version bump only for package @mezzanine-ui/react

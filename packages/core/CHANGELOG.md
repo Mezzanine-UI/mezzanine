@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.11.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.11.2...@mezzanine-ui/core@0.11.3) (2022-11-08)
+
+### Bug Fixes
+
+- **core/upload:** image should fit container size ([0390ab0](https://github.com/Mezzanine-UI/mezzanine/commit/0390ab00ed87eb18ecb185175973724b41055097))
+
 ## [0.11.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.11.1...@mezzanine-ui/core@0.11.2) (2022-09-28)
 
 ### Bug Fixes
