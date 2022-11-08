@@ -18,8 +18,10 @@ import { Collapse } from '../Transition';
 describe('<NavigationSubMenu />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLLIElement,
-    (ref) => render(<NavigationSubMenu ref={ref} />));
+  describeForwardRefToHTMLElement(
+    HTMLLIElement,
+    (ref) => render(<NavigationSubMenu ref={ref} />),
+  );
 
   describeHostElementClassNameAppendable(
     'foo',
@@ -84,6 +86,15 @@ describe('<NavigationSubMenu />', () => {
       const element = getHostHTMLElement();
 
       expect(element.classList).toContain('mzn-navigation-sub-menu--active');
+    });
+  });
+
+  describe('prop: defaultOpen', () => {
+    it('should bind open class', () => {
+      const { getHostHTMLElement } = render(<NavigationSubMenu defaultOpen />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList).toContain('mzn-navigation-sub-menu--open');
     });
   });
 

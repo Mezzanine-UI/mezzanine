@@ -35,6 +35,11 @@ export interface NavigationSubMenuProps extends Omit<NavigationItemProps, 'onCli
    * Set display title for sub-menu item.
    */
   title?: string;
+  /**
+   * Open menu as default
+   * @default false
+   */
+  defaultOpen?: boolean;
 }
 /* istanbul ignore next */
 const popperOptions: PopperOptions<any> = {
@@ -68,15 +73,16 @@ const popperOptions: PopperOptions<any> = {
 
 const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>((props, ref) => {
   const {
+    active,
     className,
     children = [],
-    active,
+    defaultOpen = false,
     icon,
     title,
     ...rest
   } = props;
 
-  const [open, setOpen] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(defaultOpen);
   const nodeRef = useRef<HTMLLIElement>(null);
   const composedNodeRef = useComposeRefs([ref, nodeRef]);
   const {
