@@ -33,6 +33,7 @@ export interface UploadPictureBlockProps
   | 'value'
   > {
   accept?: string;
+  fileHost?: string;
   imageLoader: ImageUploader;
   multiple?: boolean;
   onDelete?: MouseEventHandler;
@@ -50,6 +51,7 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
       onDelete,
       onUpload,
       onValueChange,
+      fileHost,
     } = props;
     const [previewImage, setPreviewImage] = useState<string>(imageLoader.getPreview() || '');
     const [value, setValue] = useState<string>(imageLoader.getUrl() || '');
@@ -168,7 +170,11 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
           <>
             {showImage ? (
               <>
-                <img alt="" src={(value || previewImage) as string} className={classes.preview} />
+                <img
+                  alt=""
+                  src={(value ? `${fileHost || ''}${value}` : previewImage) as string}
+                  className={classes.preview}
+                />
                 {isLoading ? (
                   <div className={classes.group}>
                     <Icon

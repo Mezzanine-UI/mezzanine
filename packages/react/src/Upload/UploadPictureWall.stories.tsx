@@ -28,6 +28,7 @@ interface SingleStoryArgs {
   accept: string;
   defaultValues: string[];
   disabled: boolean;
+  fileHost: string;
   multiple: boolean;
   onChange: VoidFunction;
   onDelete: VoidFunction;
@@ -40,6 +41,7 @@ export const Single: Story<SingleStoryArgs> = ({
   accept,
   defaultValues,
   disabled,
+  fileHost,
   multiple,
   onChange,
   onDelete,
@@ -67,6 +69,7 @@ export const Single: Story<SingleStoryArgs> = ({
         accept={accept}
         defaultValues={defaultValues}
         disabled={disabled}
+        fileHost={fileHost}
         maxLength={3}
         multiple={multiple}
         onChange={onChange}
@@ -84,6 +87,7 @@ Single.args = {
   accept: 'image/*',
   defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
   disabled: false,
+  fileHost: '',
   multiple: true,
   onChange: action('onChange'),
   onDelete: action('onDelete'),
@@ -96,6 +100,7 @@ interface MultipleStoryArgs {
   accept: string;
   defaultValues: string[];
   disabled: boolean;
+  fileHost: string;
   multiple: boolean;
   onChange: VoidFunction;
   onDelete: VoidFunction;
@@ -107,6 +112,7 @@ export const Multiple: Story<MultipleStoryArgs> = ({
   accept,
   defaultValues,
   disabled,
+  fileHost,
   multiple,
   onChange,
   onDelete,
@@ -133,6 +139,7 @@ export const Multiple: Story<MultipleStoryArgs> = ({
         accept={accept}
         defaultValues={defaultValues}
         disabled={disabled}
+        fileHost={fileHost}
         multiple={multiple}
         onChange={onChange}
         onDelete={onDelete}
@@ -148,6 +155,7 @@ Multiple.args = {
   accept: 'image/*',
   defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
   disabled: false,
+  fileHost: '',
   multiple: true,
   onChange: action('onChange'),
   onDelete: action('onDelete'),

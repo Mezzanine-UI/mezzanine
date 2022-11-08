@@ -20,6 +20,7 @@ export interface UploadPictureWallItemProps
   > {
   accept?: string;
   disabled?: boolean;
+  fileHost?: string;
   imageLoader: ImageUploader;
   multiple?: boolean;
   onDelete?: MouseEventHandler;
@@ -34,6 +35,7 @@ const UploadPictureWallItem = (props: UploadPictureWallItemProps) => {
     multiple,
     onDelete,
     onUpload,
+    fileHost,
   } = props;
   const loader = useRef(imageLoader);
 
@@ -56,6 +58,7 @@ const UploadPictureWallItem = (props: UploadPictureWallItemProps) => {
         multiple={multiple}
         onDelete={onDelete}
         onUpload={onUpload}
+        fileHost={fileHost}
       />
     </div>
   );

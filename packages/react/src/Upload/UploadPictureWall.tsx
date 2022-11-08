@@ -50,6 +50,11 @@ export interface UploadPictureWallBaseProps
    */
   disabled?: boolean;
   /**
+   * File hostname such as http://xxxx.xxxx/
+   * @default ''
+   */
+  fileHost?: string;
+  /**
    * maximum file lengths
    */
   maxLength?: number;
@@ -109,6 +114,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     controllerRef,
     defaultValues,
     disabled = false,
+    fileHost = '',
     maxLength,
     multiple = true,
     onChange,
@@ -317,6 +323,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
           imageLoader={up}
           multiple={multiple}
           onDelete={() => onImageDelete(up.getUid())}
+          fileHost={fileHost}
         />
       ))}
       {maxLength && loaderList.length >= maxLength ? null : (
@@ -326,6 +333,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
           imageLoader={new ImageUploader()}
           multiple={multiple}
           onUpload={onImagesUpload}
+          fileHost={fileHost}
         />
       )}
     </div>
