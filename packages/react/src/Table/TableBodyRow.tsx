@@ -13,6 +13,7 @@ import {
   TableExpandable as TableExpandableType,
   getColumnStyle,
   getCellStyle,
+  ExpandRowBySources,
 } from '@mezzanine-ui/core/table';
 import get from 'lodash/get';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -124,9 +125,9 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
                     tooltipTitle={tooltipTitle}
                   >
                     {column.render?.(
-                      column,
                       rowData,
                       rowIndex,
+                      column,
                     ) || get(rowData, column.dataIndex)}
                   </TableCell>
                 </TableEditRenderWrapper>
@@ -135,30 +136,21 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
           })}
         </div>
         {renderedExpandedContent ? (
-          <>
-            {typeof renderedExpandedContent === 'string' ? (
-              <AccordionDetails
-                className={(expanding as TableExpandableType<TableRecord<unknown>>).className}
-                expanded={expanded}
-              >
-                {renderedExpandedContent}
-              </AccordionDetails>
-            ) : (
-              <>
-                {renderedExpandedContent.dataSource.length > 0 ? (
-                  <AccordionDetails
-                    className={cx(
-                      (expanding as TableExpandableType<TableRecord<unknown>>).className,
-                      classes.bodyRowExpandedTableWrapper,
-                    )}
-                    expanded={expanded}
-                  >
-                    <TableExpandedTable renderedExpandedContent={renderedExpandedContent} />
-                  </AccordionDetails>
-                ) : null}
-              </>
+          <AccordionDetails
+            className={cx(
+              (expanding as TableExpandableType<TableRecord<unknown>>).className,
+              classes.bodyRowExpandedTableWrapper,
             )}
-          </>
+            expanded={expanded}
+          >
+            {(renderedExpandedContent as ExpandRowBySources)?.dataSource ? (
+              <TableExpandedTable
+                renderedExpandedContent={renderedExpandedContent as ExpandRowBySources}
+              />
+            ) : (
+              renderedExpandedContent as any
+            )}
+          </AccordionDetails>
         ) : null}
       </Fragment>
     );

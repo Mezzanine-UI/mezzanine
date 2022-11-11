@@ -41,8 +41,8 @@ describe('<TableCell />', () => {
   describe('ellipsis: true', () => {
     let ellipsisElement: HTMLElement;
 
-    const originalScrollWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollWidth');
-    const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth');
+    const originalScrollWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollWidth') || { configurable: true, value: 0 };
+    const originalOffsetWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth') || { configurable: true, value: 0 };
 
     beforeEach(() => {
       const { getHostHTMLElement } = render(
@@ -56,8 +56,8 @@ describe('<TableCell />', () => {
     });
 
     afterAll(() => {
-      Object.defineProperty(HTMLElement.prototype, 'scrollWidth', !originalScrollWidth);
-      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', !originalOffsetWidth);
+      Object.defineProperty(HTMLElement.prototype, 'scrollWidth', originalScrollWidth);
+      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', originalOffsetWidth);
     });
 
     it('should tooltip hidden when content is not overflow', async () => {
@@ -94,6 +94,7 @@ describe('<TableCell />', () => {
           foo
         </TableCell>,
       );
+
       const element = getHostHTMLElement();
 
       expect(element.innerHTML).toBe('foo');

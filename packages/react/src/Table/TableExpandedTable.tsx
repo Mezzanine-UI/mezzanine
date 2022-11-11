@@ -73,9 +73,9 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
                     tooltipTitle={tooltipTitle || ''}
                   >
                     {column.render?.(
-                      column,
                       source,
                       sourceIndex,
+                      column,
                     ) || get(source, column.dataIndex)}
                   </TableCell>
                 </div>
