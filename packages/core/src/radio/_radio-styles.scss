@@ -22,7 +22,7 @@ $dot-size-small: 6px !default;
   &::before {
     display: block;
     position: absolute;
-    content: "";
+    content: '';
     top: var(--#{$prefix}-dot-top);
     left: var(--#{$prefix}-dot-top);
     width: var(--#{$prefix}-dot-size);

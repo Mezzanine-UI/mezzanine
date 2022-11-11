@@ -49,7 +49,7 @@ $vertical-support-max-height: 96px !default;
         padding-right: spacing.level(4);
       }
 
-      &:not(:first-child):not(:last-child) {
+      &:not(:first-child, :last-child) {
         padding: 0 spacing.level(4);
       }
     }
@@ -93,7 +93,7 @@ $vertical-support-max-height: 96px !default;
         padding-bottom: spacing.level(5);
       }
 
-      &:not(:first-child):not(:last-child) {
+      &:not(:first-child, :last-child) {
         padding: spacing.level(5) 0;
       }
     }

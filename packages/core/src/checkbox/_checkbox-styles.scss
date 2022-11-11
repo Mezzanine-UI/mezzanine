@@ -40,7 +40,7 @@ $indeterminate-line-width-small: 5px !default;
   &::after {
     display: block;
     position: absolute;
-    content: "";
+    content: '';
     opacity: 0;
     transition: transition.standard(opacity);
     will-change: opacity;

@@ -164,7 +164,11 @@ $prefix-suffix-gap: 4px !default;
   &:hover,
   &:focus-within {
     &:not(.#{$prefix}--disabled) {
-      &:not(.#{$prefix}--error, .#{form.$field-prefix}--success, .#{form.$field-prefix}--error, .#{form.$field-prefix}--warning) {
+      &:not(
+      .#{$prefix}--error,
+      .#{form.$field-prefix}--success,
+      .#{form.$field-prefix}--error,
+      .#{form.$field-prefix}--warning) {
         --#{$prefix}-status-color: #{palette.color(primary)};
       }
     }

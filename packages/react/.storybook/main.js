@@ -32,7 +32,7 @@ module.exports = {
     reactDocgen: 'react-docgen-typescript',
     reactDocgenTypescriptOptions: {
       tsconfigPath: TS_CONFIG,
-      shouldRemoveUndefinedFromOptional: true,
+      shouldExtractLiteralValuesFromEnum: true,
       propFilter: (prop) => {
         const { parent } = prop;
 

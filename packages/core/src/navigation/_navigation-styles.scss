@@ -72,7 +72,7 @@ $icon-size: 24px !default;
         overflow: hidden;
         background-color: palette.color(surface);
         border-color: palette.color(border);
-        border-width: 0 1px 1px 1px;
+        border-width: 0 1px 1px;
         border-style: solid;
         .#{$item-prefix} {
           @include typography.variant(input1);

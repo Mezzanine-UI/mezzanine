@@ -1,5 +1,6 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -72,7 +73,9 @@ describe('<NavigationSubMenu />', () => {
 
       const subMenuElement = element.querySelector('.mzn-navigation-sub-menu');
 
-      fireEvent.click(subMenuElement!);
+      act(() => {
+        fireEvent.click(subMenuElement!);
+      });
 
       const subMenuGroupElement = subMenuElement?.querySelector('.mzn-navigation-sub-menu__group');
 
