@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.3...@mezzanine-ui/react@0.12.0) (2022-11-16)
+
+### Features
+
+- **react/pagination:** implement pagination page size selections feature ([669455f](https://github.com/Mezzanine-UI/mezzanine/commit/669455f72033f67df19958ff2d7531b1a196f312))
+- **react/table:** implement all Pagination props under Table.pagination.options ([b9ea2f2](https://github.com/Mezzanine-UI/mezzanine/commit/b9ea2f2a27717690493e30ddeb0085087f6cae08))
+- **react/table:** table expandableRender allow render custom component / render api changed ([c6e54a4](https://github.com/Mezzanine-UI/mezzanine/commit/c6e54a4041358f92f6ceb55d9df884a4a508d1c0))
+
+### BREAKING CHANGES
+
+- **react/table:** TableColumn.render((rowData, index, column) => /_ return_/);
+
 ## [0.11.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.2...@mezzanine-ui/react@0.11.3) (2022-11-08)
 
 ### Bug Fixes

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.12.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.11.3...@mezzanine-ui/core@0.12.0) (2022-11-16)
+
+### Bug Fixes
+
+- **core/index:** correct core style export sequence ([29d2990](https://github.com/Mezzanine-UI/mezzanine/commit/29d2990ad137c9b846791d2405b84fc1e9b7ebeb))
+
+### Features
+
+- **core/pagination:** implement pagination page size options section style ([c748629](https://github.com/Mezzanine-UI/mezzanine/commit/c74862942583583c0e5124d12fc8c606af61e91a))
+- **react/table:** implement all Pagination props under Table.pagination.options ([b9ea2f2](https://github.com/Mezzanine-UI/mezzanine/commit/b9ea2f2a27717690493e30ddeb0085087f6cae08))
+
 ## [0.11.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.11.2...@mezzanine-ui/core@0.11.3) (2022-11-08)
 
 ### Bug Fixes
