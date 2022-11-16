@@ -355,6 +355,7 @@ export const WithActions = () => {
 
 export const WithPagination = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState(10);
   const [sources, setSources] = useState<typeof dataSource>([]);
 
   useEffect(() => {
@@ -364,7 +365,7 @@ export const WithPagination = () => {
   return (
     <div
       style={{
-        width: '80%',
+        width: '100%',
         height: 'auto',
       }}
     >
@@ -374,6 +375,18 @@ export const WithPagination = () => {
         pagination={{
           current: currentPage,
           onChange: (page) => setCurrentPage(page),
+          options: {
+            pageSize,
+            pageSizeLabel: '每頁顯示：',
+            pageSizeUnit: '筆',
+            onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
+            renderPageSizeOptionName: (p) => `${p}`,
+            renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
+            showPageSizeOptions: true, // 開啟每頁顯示 N 筆
+            showJumper: true, // 開啟跳頁功能
+            jumperButtonText: '前往',
+            jumperHintText: '跳至',
+          },
         }}
         style={{ display: 'block' }}
       />

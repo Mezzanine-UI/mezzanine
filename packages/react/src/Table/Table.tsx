@@ -207,11 +207,8 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
       onChange: paginationProp.onChange,
       total: paginationProp.total ?? dataSource.length,
       options: {
+        ...(paginationProp.options ?? {}),
         boundaryCount: paginationProp.options?.boundaryCount ?? 1,
-        className: paginationProp.options?.className,
-        disabled: paginationProp.options?.disabled ?? false,
-        hideNextButton: paginationProp.options?.hideNextButton ?? false,
-        hidePreviousButton: paginationProp.options?.hidePreviousButton ?? false,
         pageSize: paginationProp.options?.pageSize ?? 10,
         siblingCount: paginationProp.options?.siblingCount ?? 1,
       },
@@ -233,14 +230,14 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
     paginationProp,
   ]);
 
-  const tableDataContextValue = {
+  const tableDataContextValue = useMemo(() => ({
     columns,
     dataSource,
-  };
+  }), [columns, dataSource]);
 
-  const tableComponentContextValue = {
+  const tableComponentContextValue = useMemo(() => ({
     bodyCell: components?.body?.cell,
-  };
+  }), [components?.body?.cell]);
 
   return (
     <Loading

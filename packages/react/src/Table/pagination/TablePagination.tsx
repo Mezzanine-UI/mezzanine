@@ -50,7 +50,18 @@ const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(
       disabled,
       hideNextButton,
       hidePreviousButton,
+      jumperButtonText,
+      jumperHintText,
+      jumperInputPlaceholder,
+      onChangePageSize,
       pageSize: pageSizeProp,
+      pageSizeLabel,
+      pageSizeOptions,
+      pageSizeUnit,
+      renderPageSizeOptionName,
+      renderPaginationSummary,
+      showJumper,
+      showPageSizeOptions,
       siblingCount,
     } = paginationOptions;
 
@@ -67,18 +78,28 @@ const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(
         )}
       >
         <span className={classes.paginationIndicator}>
-          {`目前顯示 ${currentStartCount} - ${currentEndCount} 筆，共 ${total} 筆資料`}
+          {renderPaginationSummary?.(currentStartCount, currentEndCount) ?? `目前顯示 ${currentStartCount} - ${currentEndCount} 筆，共 ${total} 筆資料`}
         </span>
         <div className={classes.paginationActions}>
           <Pagination
             boundaryCount={boundaryCount}
+            buttonText={jumperButtonText}
             className={paginationClassName}
             current={currentPage}
             disabled={disabled}
             hideNextButton={hideNextButton}
             hidePreviousButton={hidePreviousButton}
+            hintText={jumperHintText}
+            inputPlaceholder={jumperInputPlaceholder}
             onChange={setCurrentPage}
+            onChangePageSize={onChangePageSize}
             pageSize={pageSizeProp}
+            pageSizeLabel={pageSizeLabel}
+            pageSizeOptions={pageSizeOptions}
+            pageSizeUnit={pageSizeUnit}
+            renderPageSizeOptionName={renderPageSizeOptionName}
+            showJumper={showJumper}
+            showPageSizeOptions={showPageSizeOptions}
             siblingCount={siblingCount}
             total={total}
           />

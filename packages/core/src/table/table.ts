@@ -121,7 +121,18 @@ export interface TablePagination {
     disabled?: boolean;
     hideNextButton?: boolean;
     hidePreviousButton?: boolean;
+    jumperButtonText?: string;
+    jumperHintText?: string;
+    jumperInputPlaceholder?: string;
+    onChangePageSize?: (pageSize: number) => void;
     pageSize?: number;
+    pageSizeLabel?: string;
+    pageSizeOptions?: number[];
+    pageSizeUnit?: string;
+    renderPageSizeOptionName?: (pageSize: number) => string;
+    renderPaginationSummary?: (start: number, end: number) => string;
+    showJumper?: boolean;
+    showPageSizeOptions?: boolean;
     siblingCount?: number;
   };
 }

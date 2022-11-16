@@ -243,9 +243,6 @@ describe('<Table />', () => {
 
       expect(paginationInstance.props.boundaryCount).toBe(1);
       expect(paginationInstance.props.className).toBe(undefined);
-      expect(paginationInstance.props.disabled).toBe(false);
-      expect(paginationInstance.props.hideNextButton).toBe(false);
-      expect(paginationInstance.props.hidePreviousButton).toBe(false);
       expect(paginationInstance.props.pageSize).toBe(10);
       expect(paginationInstance.props.siblingCount).toBe(1);
       expect(paginationInstance.props.total).toBe(defaultProps.dataSource.length);
