@@ -28,6 +28,11 @@
   @include _load-styles($options, calendar);
   @include _load-styles($options, time-panel);
 
+  // Data Entry Common
+  @include _load-styles($options, _internal/input-check, input-check);
+  @include _load-styles($options, _internal/input-trigger-popper, input-trigger-popper);
+  @include _load-styles($options, text-field);
+
   // Navigation
   @include _load-styles($options, menu);
   @include _load-styles($options, tabs);
@@ -46,11 +51,6 @@
   @include _load-styles($options, accordion);
   @include _load-styles($options, tree);
   @include _load-styles($options, table);
-
-  // Data Entry Common
-  @include _load-styles($options, _internal/input-check, input-check);
-  @include _load-styles($options, _internal/input-trigger-popper, input-trigger-popper);
-  @include _load-styles($options, text-field);
 
   // Data Entry
   @include _load-styles($options, checkbox);
