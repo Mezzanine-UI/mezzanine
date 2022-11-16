@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, ReactNode } from 'react';
 import {
   TableRowSelection,
   TableColumn,
@@ -6,6 +6,7 @@ import {
   TablePagination,
   TableDataSource,
   TableRecord,
+  ExpandRowBySources,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 
@@ -42,7 +43,9 @@ export interface TableContextProps {
   sorting?: SortingContext;
   loading?: boolean;
   setLoading?(l: boolean): void;
-  expanding?: TableExpandable<TableRecord<unknown>>;
+  expanding?: Omit<TableExpandable<TableRecord<unknown>>, 'expandedRowRender'> & {
+    expandedRowRender(record: TableRecord<unknown>): ReactNode | ExpandRowBySources;
+  };
   fetchMore?: FetchMoreContext;
   pagination?: TablePagination;
 }

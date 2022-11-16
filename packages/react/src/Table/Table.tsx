@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  ReactNode,
   useMemo,
   useRef,
 } from 'react';
@@ -13,6 +14,7 @@ import {
   TableFetchMore,
   TablePagination as TablePaginationType,
   TableRefresh as TableRefreshType,
+  ExpandRowBySources,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 import { TableContext, TableDataContext, TableComponentContext } from './TableContext';
@@ -64,7 +66,9 @@ export interface TableBaseProps<T>
     * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
     * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
     */
-  expandable?: TableExpandable<T>;
+  expandable?: Omit<TableExpandable<T>, 'expandedRowRender'> & {
+    expandedRowRender(record: T): ReactNode | ExpandRowBySources;
+  };
   /**
    * customized header className
    */

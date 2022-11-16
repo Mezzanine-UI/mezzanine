@@ -43,7 +43,7 @@ export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithID;
 export type TableColumn<SourceType> = {
   dataIndex: string;
   title?: string;
-  render?(column: TableColumn<SourceType>, source: SourceType, index: number): any;
+  render?(source: SourceType, index: number, column: TableColumn<SourceType>): any;
   renderTitle?(classes: typeof tableClasses): any;
   renderTooltipTitle?(source: SourceType): string;
   // == Custom column style ==
@@ -97,13 +97,14 @@ export interface TableRowSelection {
 }
 
 /** === Feature Expandable */
+export type ExpandRowBySources = {
+  dataSource: TableDataSource[];
+  columns?: ExpandedTableColumn[];
+  className?: string;
+};
 export interface TableExpandable<SourceType> {
   className?: string;
-  expandedRowRender(record: SourceType): string | {
-    dataSource: TableDataSource[];
-    columns?: ExpandedTableColumn[];
-    className?: string;
-  };
+  expandedRowRender(record: SourceType): string | ExpandRowBySources;
   rowExpandable?(record: SourceType): boolean;
   onExpand?(record: SourceType, status: boolean): void;
 }

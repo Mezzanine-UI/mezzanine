@@ -39,7 +39,7 @@ $icon-size: 24px !default;
 
   @each $severity in $severities {
     &--#{$severity} {
-      --#{$prefix}-color: #{palette.color(if($severity == "info", primary, $severity))};
+      --#{$prefix}-color: #{palette.color(if($severity == 'info', primary, $severity))};
     }
   }
 

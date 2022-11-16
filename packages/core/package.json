@@ -28,10 +28,10 @@
     "moment": "^2.29.1"
   },
   "peerDependenciesMeta": {
-    "moment": {
+    "dayjs": {
       "optional": true
     },
-    "dayjs": {
+    "moment": {
       "optional": true
     }
   },
@@ -39,6 +39,6 @@
     "@mezzanine-ui/icons": "^0.11.3",
     "@mezzanine-ui/system": "^0.11.3",
     "lodash": "^4.17.21",
-    "tslib": "^2.1.0"
+    "tslib": "^2.4.1"
   }
 }

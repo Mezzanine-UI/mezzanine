@@ -24,7 +24,7 @@ $icon-gap: 12px !default;
 
   @each $severity in $severities {
     &--#{$severity} {
-      --#{$prefix}-color: #{palette.color(if($severity == "info", primary, $severity))};
+      --#{$prefix}-color: #{palette.color(if($severity == 'info', primary, $severity))};
 
       border: 1px solid var(--#{$prefix}-color);
     }
@@ -41,7 +41,7 @@ $icon-gap: 12px !default;
 
   &__title {
     padding-right: 48px;
-    margin: 0 0 8px 0;
+    margin: 0 0 8px;
 
     @include typography.variant(h4);
   }

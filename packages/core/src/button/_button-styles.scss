@@ -11,7 +11,7 @@
 $colors-and-danger: list.push($colors, danger);
 
 @function _get-colors($name) {
-  @return if($name == "danger", "error", $name);
+  @return if($name == 'danger', 'error', $name);
 }
 
 $label-min-width: 32px !default;

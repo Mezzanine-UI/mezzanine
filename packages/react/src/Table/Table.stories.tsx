@@ -15,7 +15,7 @@ import {
   TableExpandable,
 } from '@mezzanine-ui/core/table';
 import get from 'lodash/get';
-import Table, { TableRefresh, EditableBodyCellProps } from '.';
+import Table, { TableRefresh, EditableBodyCellProps, TableProps } from '.';
 import Button from '../Button';
 import Icon from '../Icon';
 import Menu, { MenuItem, MenuSize, MenuDivider } from '../Menu';
@@ -176,7 +176,7 @@ export const Selections = () => {
     className: '',
   }]), []);
 
-  const expandable: TableExpandable<DataType> = {
+  const expandable: TableProps<DataType>['expandable'] = {
     expandedRowRender: (record) => record.description,
     rowExpandable: (record) => !!record.description,
   };
@@ -463,6 +463,17 @@ export const ExpandedWithString = () => {
     align: 'end',
   }];
 
+  const expandable: TableProps<DataType>['expandable'] = useMemo(() => ({
+    className: '',
+    // eslint-disable-next-line react/no-unstable-nested-components
+    expandedRowRender: (record) => (
+      <div style={{ padding: '40px' }}>
+        {record.description}
+      </div>
+    ),
+    rowExpandable: (record) => !!record.description,
+  }), []);
+
   return (
     <div
       style={{
@@ -473,11 +484,7 @@ export const ExpandedWithString = () => {
       <Table
         columns={customizedColumns}
         dataSource={dataSource}
-        expandable={{
-          className: '',
-          expandedRowRender: (record) => record.description,
-          rowExpandable: (record) => !!record.description,
-        } as TableExpandable<DataType>}
+        expandable={expandable}
       />
     </div>
   );
@@ -620,7 +627,7 @@ export const Editable = () => {
     ) : children) as ReactElement;
   };
 
-  const renderRowActions: TableColumn<DataType>['render'] = (_, source) => (
+  const renderRowActions: TableColumn<DataType>['render'] = (source) => (
     <div
       style={{
         width: '100%',

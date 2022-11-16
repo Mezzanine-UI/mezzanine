@@ -50,7 +50,7 @@ $handler-scale-size: 24px !default;
         margin: 0;
       }
 
-      &[type=number] {
+      &[type='number'] {
         appearance: textfield;
       }
     }

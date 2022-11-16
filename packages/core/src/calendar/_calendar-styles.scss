@@ -22,7 +22,7 @@
 
   @include typography.inherit;
 
-  &[aria-disabled=true] {
+  &[aria-disabled='true'] {
     cursor: default;
   }
 
@@ -125,7 +125,7 @@
   justify-content: center;
   position: relative;
   width: 100%;
-  margin: 0 0 12px 0;
+  margin: 0 0 12px;
 
   &__icon-button {
     position: absolute;

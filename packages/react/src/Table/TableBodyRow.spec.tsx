@@ -333,7 +333,7 @@ describe('<TableBodyRow />', () => {
 
           const expandedContentHost = getExpandedContentHost();
 
-          expect(expandedContentHost).toBe(null);
+          expect(expandedContentHost).toBeDefined();
         });
       });
     });

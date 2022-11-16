@@ -36,7 +36,7 @@ $icon-size-large: $height-large - ($control-gap * 2);
 
   &__control {
     position: absolute;
-    content: "";
+    content: '';
     top: $control-gap;
     left: $control-gap;
     font-size: var(--#{$prefix}-icon-size);
