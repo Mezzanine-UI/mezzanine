@@ -8,6 +8,7 @@ import {
 import { paginationClasses as classes } from '@mezzanine-ui/core/pagination';
 import PaginationItem, { PaginationItemProps } from './PaginationItem';
 import PaginationJumper from './PaginationJumper';
+import PaginationPageSize, { PaginationPageSizeProps } from './PaginationPageSize';
 import { usePagination } from './usePagination';
 import { cx } from '../utils/cx';
 
@@ -64,14 +65,40 @@ export interface PaginationProps
    */
   onChange?: (page: number) => void;
   /**
-   * Number of data per page
-   * @default 5
+   * Callback fired when the page size is changed
+   *
+   * @param {number} pageSize
    */
-  pageSize?: number;
+  onChangePageSize?: PaginationPageSizeProps['onChange'];
+  /**
+   * Number of data per page
+   * @default 10
+   */
+  pageSize?: PaginationPageSizeProps['value'];
+  /**
+   * Label display before page size selector
+   */
+  pageSizeLabel?: PaginationPageSizeProps['label'];
+  /**
+   * Page size options to render
+   */
+  pageSizeOptions?: PaginationPageSizeProps['options'];
+  /**
+   * Page size unit after `select`
+   */
+  pageSizeUnit?: PaginationPageSizeProps['unit'];
+  /**
+   * Render custom page size option name
+   */
+  renderPageSizeOptionName?: PaginationPageSizeProps['renderOptionName'];
   /**
    * Show jumper or not.
    */
   showJumper?: boolean;
+  /**
+   * Ship page size or not
+   */
+  showPageSizeOptions?: boolean;
   /**
    * Number of always visible pages before and after the current page.
    * @default 1
@@ -100,8 +127,14 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     inputPlaceholder,
     itemRender = (item) => <PaginationItem {...item} />,
     onChange,
-    pageSize = 5,
+    onChangePageSize,
+    pageSize = 10,
+    pageSizeLabel,
+    pageSizeOptions,
+    pageSizeUnit,
+    renderPageSizeOptionName,
     showJumper = false,
+    showPageSizeOptions = false,
     siblingCount = 1,
     total = 0,
     ...rest
@@ -132,6 +165,19 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       <ul
         className={classes.container}
       >
+        {showPageSizeOptions && (
+          <li className={classes.pageSize}>
+            <PaginationPageSize
+              disabled={disabled}
+              label={pageSizeLabel}
+              onChange={onChangePageSize}
+              options={pageSizeOptions}
+              renderOptionName={renderPageSizeOptionName}
+              unit={pageSizeUnit}
+              value={pageSize}
+            />
+          </li>
+        )}
         {
           items.map((item, index) => (
             <li

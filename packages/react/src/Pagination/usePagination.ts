@@ -26,7 +26,7 @@ export function usePagination(props: UsePaginationParams = {}) {
     disabled = false,
     hideNextButton = false,
     hidePreviousButton = false,
-    pageSize = 5,
+    pageSize = 10,
     onChange: handleChange,
     siblingCount = 1,
     total = 0,

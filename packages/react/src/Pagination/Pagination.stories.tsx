@@ -56,6 +56,26 @@ export const WithJumper: Story = () => {
   );
 };
 
+export const WithPageSize: Story = () => {
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
+  return (
+    <Pagination
+      showPageSizeOptions
+      current={current}
+      onChange={setCurrent}
+      onChangePageSize={(p) => setPageSize(p)}
+      pageSize={pageSize}
+      pageSizeOptions={[10, 20, 50, 100]}
+      pageSizeLabel="每頁顯示："
+      pageSizeUnit="筆"
+      renderPageSizeOptionName={(p) => `${p}/page`}
+      total={100}
+    />
+  );
+};
+
 Playground.args = {
   boundaryCount: 1,
   buttonText: '確認',
