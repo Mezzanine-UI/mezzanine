@@ -176,6 +176,8 @@ export {
   PaginationItem,
   PaginationJumperProps,
   PaginationJumper,
+  PaginationPageSizeProps,
+  PaginationPageSize,
   PaginationProps,
   default as Pagination,
 } from './Pagination';

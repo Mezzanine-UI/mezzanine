@@ -1,4 +1,3 @@
-
 import {
   cleanup,
   render,
@@ -103,16 +102,21 @@ describe('<PaginationJumper />', () => {
       const element = getHostHTMLElement();
       const input = element.querySelector('input');
 
-      fireEvent.change(input!, {
-        target: {
-          value: '2',
+      fireEvent.change(
+        input!,
+        {
+          target: {
+            value: '2',
+          },
         },
-      });
+      );
 
-      fireEvent.keyDown(input!,
+      fireEvent.keyDown(
+        input!,
         {
           key: 'Enter',
-        });
+        },
+      );
 
       expect(onChange).toBeCalled();
     });

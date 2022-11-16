@@ -3,6 +3,7 @@ import {
   render,
   TestRenderer,
   fireEvent,
+  act,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -63,10 +64,13 @@ describe('<Pagination />', () => {
 
   it('fires onChange when a different page is clicked', () => {
     const onChange = jest.fn();
-    const { getAllByRole } = render(<Pagination current={1} onChange={onChange} total={10} />);
+    const { getAllByRole } = render(<Pagination current={1} onChange={onChange} total={20} />);
+
     const [, , page2] = getAllByRole('button');
 
-    fireEvent.click(page2);
+    act(() => {
+      fireEvent.click(page2);
+    });
 
     expect(onChange).toBeCalledTimes(1);
   });
