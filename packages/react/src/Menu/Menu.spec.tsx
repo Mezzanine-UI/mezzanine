@@ -1,4 +1,4 @@
-import { MenuSize } from '@mezzanine-ui/core/Menu';
+import { MenuSize } from '@mezzanine-ui/core/menu';
 import {
   cleanup,
   render,
