@@ -344,8 +344,8 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(12);
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(10);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(0);
     });
 
     it('should onNext of the first calendar add 10 years on referenceDates when mode="year"', () => {
@@ -369,8 +369,8 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-12);
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-22);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-10);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-20);
     });
 
     it('should onPrev of the second calendar minus 10 years on referenceDates when mode="year"', () => {
@@ -394,8 +394,8 @@ describe('useDateRangeCalendarControls', () => {
         onFirstPrev();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(12);
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(2);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(10);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(0);
     });
 
     it('should onNext of the second calendar add 10 years on referenceDates when mode="year"', () => {
@@ -419,8 +419,8 @@ describe('useDateRangeCalendarControls', () => {
         onFirstNext();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-12);
-      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-22);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[0], 'year')).toBe(-10);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDates[1], 'year')).toBe(-20);
     });
 
     describe('should guard months and years when switching calendars', () => {
