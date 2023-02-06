@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.0...@mezzanine-ui/react@0.12.1) (2023-02-06)
+
+### Bug Fixes
+
+- **react/calendar:** correct year offset of calendar in year mode ([77fbd75](https://github.com/Mezzanine-UI/mezzanine/commit/77fbd75b876c4286c9c4a972c4e55e468c59f094))
+- **testing:** correct letter case for case-sensitive system ([f39f08f](https://github.com/Mezzanine-UI/mezzanine/commit/f39f08fbdff8e210a3deac023208ddaaade2a680))
+
 # [0.12.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.11.3...@mezzanine-ui/react@0.12.0) (2022-11-16)
 
 ### Features
