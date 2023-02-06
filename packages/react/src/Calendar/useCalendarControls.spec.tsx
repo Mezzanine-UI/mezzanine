@@ -185,7 +185,7 @@ describe('useCalendarControls', () => {
       expect(moment(initialReferenceDate).diff(result.current.referenceDate, 'year')).toBe(-1);
     });
 
-    it('should minus 12 year on referenceDate when mode="year"', () => {
+    it('should minus 10 year on referenceDate when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useCalendarControls(
@@ -206,10 +206,10 @@ describe('useCalendarControls', () => {
         onPrev();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDate, 'year')).toBe(12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDate, 'year')).toBe(10);
     });
 
-    it('should add 12 year on referenceDate when mode="year"', () => {
+    it('should add 10 year on referenceDate when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useCalendarControls(
@@ -230,7 +230,7 @@ describe('useCalendarControls', () => {
         onNext();
       });
 
-      expect(moment(initialReferenceDate).diff(result.current.referenceDate, 'year')).toBe(-12);
+      expect(moment(initialReferenceDate).diff(result.current.referenceDate, 'year')).toBe(-10);
     });
   });
 });

@@ -1,4 +1,8 @@
-import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarMode,
+  DateType,
+  calendarYearModuler,
+} from '@mezzanine-ui/core/calendar';
 import { useMemo } from 'react';
 import { useCalendarContext } from './CalendarContext';
 
@@ -17,8 +21,8 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
 
   return useMemo(() => ({
     year: [
-      (date) => addYear(date, -12),
-      (date) => addYear(date, 12),
+      (date) => addYear(date, -calendarYearModuler),
+      (date) => addYear(date, calendarYearModuler),
     ],
     month: [
       (date) => addYear(date, -1),

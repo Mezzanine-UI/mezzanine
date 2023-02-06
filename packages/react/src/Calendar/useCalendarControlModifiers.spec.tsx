@@ -20,12 +20,12 @@ describe('useCalendarControlModifiers', () => {
     day,
   } = renderResult.result.current;
 
-  it('should add or remove 12 years for year modifier', () => {
+  it('should add or remove 10 years for year modifier', () => {
     const current = '2022-01-02';
     const [minus, add] = year;
 
-    expect(moment(current).diff(add(current), 'year')).toBe(-12);
-    expect(moment(current).diff(minus(current), 'year')).toBe(12);
+    expect(moment(current).diff(add(current), 'year')).toBe(-10);
+    expect(moment(current).diff(minus(current), 'year')).toBe(10);
   });
 
   it('should add or remove 1 year for month modifier', () => {
