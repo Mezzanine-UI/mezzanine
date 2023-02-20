@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.1...@mezzanine-ui/react@0.12.2) (2023-02-20)
+
+### Bug Fixes
+
+- **react/utils:** add body scroll lock layout broken workaround, closed [#184](https://github.com/Mezzanine-UI/mezzanine/issues/184) ([5868dbd](https://github.com/Mezzanine-UI/mezzanine/commit/5868dbd513e499f5b97b85f7d11035f4e0f913ef))
+
+### Features
+
+- **react/icon:** add icons ([9294bd9](https://github.com/Mezzanine-UI/mezzanine/commit/9294bd9fca41129e3b1f0e0198cfe4a40a514769))
+
 ## [0.12.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.0...@mezzanine-ui/react@0.12.1) (2023-02-06)
 
 ### Bug Fixes
