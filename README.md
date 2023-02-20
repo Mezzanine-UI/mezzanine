@@ -7,7 +7,7 @@ Please consider the possibility of api changes if you want to use it in producti
 
 ## Storybook preview
 
-If you are interested about this project, please see: [Storybook](https://www.chromatic.com/library?appId=6088f509c9dfa500212770cf)
+If you are interested about this project, please see: [Storybook](https://storybook.mezzanine-ui.org)
 
 ## Migrations
 
@@ -289,7 +289,7 @@ If you need more z-index orders, please add extra z-index scss file by yourself 
 
 ### Usage
 
-Mezzanine components are listed in [storybook](https://6088f509c9dfa500212770cf-lugitucazl.chromatic.com/) and props description can find in `docs` section. <br />
+Mezzanine components are listed in [storybook](https://storybook.mezzanine-ui.org) and props description can find in `docs` section. <br />
 
 For example:
 
