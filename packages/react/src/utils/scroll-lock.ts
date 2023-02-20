@@ -6,6 +6,8 @@ export function lockBodyScroll() {
   document.body.style.position = 'fixed';
   document.body.style.top = `-${scrollY}px`;
   document.body.style.overflow = 'hidden';
+  /** @NOTE workaround for layout breaking (need refactor) */
+  document.body.style.width = '100vw';
 }
 
 export function allowBodyScroll() {
