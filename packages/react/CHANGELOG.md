@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.2...@mezzanine-ui/react@0.12.3) (2023-03-02)
+
+### Bug Fixes
+
+- **react/form:** useing uppercase or lowercase to search all options of auto complete component ([7858900](https://github.com/Mezzanine-UI/mezzanine/commit/785890078e87518c8c03651c60e89ddf3ed00da4))
+
 ## [0.12.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.1...@mezzanine-ui/react@0.12.2) (2023-02-20)
 
 ### Bug Fixes
