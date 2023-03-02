@@ -83,13 +83,15 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const [searchText, setSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
 
+  const searchTextReg = new RegExp(searchText.replace(/\\/g, '\\\\'), 'i' );
+
   const onFocus = useCallback((focus: boolean) => {
     setFocused(focus);
   }, []);
 
   const options: SelectValue[] = disabledOptionsFilter
     ? optionsProp
-    : optionsProp.filter((option) => !!option.name.includes(searchText));
+    : optionsProp.filter((option) => !!option.name.match(searchTextReg));
 
   const selectedOptions: SelectValue[] = mode === 'multiple'
     ? (value as SelectValue[]) : compact([(value as SelectValue | null)]);
