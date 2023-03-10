@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.3...@mezzanine-ui/core@0.12.4) (2023-03-10)
+
+### Bug Fixes
+
+- **core/select:** remove default overflow hidden to fix disablePortal display bug ([96ba3a9](https://github.com/Mezzanine-UI/mezzanine/commit/96ba3a9000ddfda74e2c0817b3bfce51d4164c46))
+
 ## [0.12.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.2...@mezzanine-ui/core@0.12.3) (2023-03-02)
 
 **Note:** Version bump only for package @mezzanine-ui/core
