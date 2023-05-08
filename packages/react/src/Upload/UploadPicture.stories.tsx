@@ -9,6 +9,9 @@ export default {
 type PlaygroundStoryArgs = {
   accept: string;
   defaultValue: string;
+  defaultUploadLabel: string;
+  defaultUploadingLabel: string;
+  defaultUploadErrorLabel: string;
   disabled: boolean;
   onChange: VoidFunction;
   onDelete: VoidFunction;
@@ -17,12 +20,15 @@ type PlaygroundStoryArgs = {
 };
 
 function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => { setTimeout(resolve, ms); });
 }
 
 export const Playground: Story<PlaygroundStoryArgs> = ({
   accept,
   defaultValue,
+  defaultUploadLabel,
+  defaultUploadingLabel,
+  defaultUploadErrorLabel,
   disabled,
   onChange,
   onDelete,
@@ -61,6 +67,9 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
     >
       <UploadPicture
         accept={accept}
+        defaultUploadLabel={defaultUploadLabel}
+        defaultUploadingLabel={defaultUploadingLabel}
+        defaultUploadErrorLabel={defaultUploadErrorLabel}
         disabled={disabled}
         onChange={onChange}
         onDelete={onDelete}
@@ -71,6 +80,9 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
       <UploadPicture
         accept={accept}
         disabled={disabled}
+        defaultUploadLabel={defaultUploadLabel}
+        defaultUploadingLabel={defaultUploadingLabel}
+        defaultUploadErrorLabel={defaultUploadErrorLabel}
         defaultValue={defaultValue}
         onChange={onChange}
         onDelete={onDelete}
@@ -82,6 +94,9 @@ export const Playground: Story<PlaygroundStoryArgs> = ({
 Playground.args = {
   accept: 'image/*',
   defaultValue: 'https://rytass.com/logo.png',
+  defaultUploadLabel: 'Upload',
+  defaultUploadingLabel: 'Uploading...',
+  defaultUploadErrorLabel: 'Upload Failed',
   disabled: false,
   onChange: action('onChange'),
   onDelete: action('onDelete'),

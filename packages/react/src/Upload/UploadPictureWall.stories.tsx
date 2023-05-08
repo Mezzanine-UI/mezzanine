@@ -27,6 +27,9 @@ function upload(file: File) {
 interface SingleStoryArgs {
   accept: string;
   defaultValues: string[];
+  defaultUploadLabel: string;
+  defaultUploadingLabel: string;
+  defaultUploadErrorLabel: string;
   disabled: boolean;
   fileHost: string;
   multiple: boolean;
@@ -40,6 +43,9 @@ interface SingleStoryArgs {
 export const Single: Story<SingleStoryArgs> = ({
   accept,
   defaultValues,
+  defaultUploadLabel,
+  defaultUploadingLabel,
+  defaultUploadErrorLabel,
   disabled,
   fileHost,
   multiple,
@@ -68,6 +74,9 @@ export const Single: Story<SingleStoryArgs> = ({
       <UploadPictureWall
         accept={accept}
         defaultValues={defaultValues}
+        defaultUploadLabel={defaultUploadLabel}
+        defaultUploadingLabel={defaultUploadingLabel}
+        defaultUploadErrorLabel={defaultUploadErrorLabel}
         disabled={disabled}
         fileHost={fileHost}
         maxLength={3}
@@ -86,6 +95,9 @@ export const Single: Story<SingleStoryArgs> = ({
 Single.args = {
   accept: 'image/*',
   defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
+  defaultUploadLabel: 'Upload',
+  defaultUploadingLabel: 'Uploading...',
+  defaultUploadErrorLabel: 'Upload Failed',
   disabled: false,
   fileHost: '',
   multiple: true,
@@ -99,6 +111,9 @@ Single.args = {
 interface MultipleStoryArgs {
   accept: string;
   defaultValues: string[];
+  defaultUploadLabel: string;
+  defaultUploadingLabel: string;
+  defaultUploadErrorLabel: string;
   disabled: boolean;
   fileHost: string;
   multiple: boolean;
@@ -111,6 +126,9 @@ interface MultipleStoryArgs {
 export const Multiple: Story<MultipleStoryArgs> = ({
   accept,
   defaultValues,
+  defaultUploadLabel,
+  defaultUploadingLabel,
+  defaultUploadErrorLabel,
   disabled,
   fileHost,
   multiple,
@@ -138,6 +156,9 @@ export const Multiple: Story<MultipleStoryArgs> = ({
       <UploadPictureWall
         accept={accept}
         defaultValues={defaultValues}
+        defaultUploadLabel={defaultUploadLabel}
+        defaultUploadingLabel={defaultUploadingLabel}
+        defaultUploadErrorLabel={defaultUploadErrorLabel}
         disabled={disabled}
         fileHost={fileHost}
         multiple={multiple}
@@ -154,6 +175,9 @@ export const Multiple: Story<MultipleStoryArgs> = ({
 Multiple.args = {
   accept: 'image/*',
   defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
+  defaultUploadLabel: 'Upload',
+  defaultUploadingLabel: 'Uploading...',
+  defaultUploadErrorLabel: 'Upload Failed',
   disabled: false,
   fileHost: '',
   multiple: true,

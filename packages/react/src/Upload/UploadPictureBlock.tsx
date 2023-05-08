@@ -33,6 +33,12 @@ export interface UploadPictureBlockProps
   | 'value'
   > {
   accept?: string;
+  /** @default '上傳錯誤' */
+  defaultUploadErrorLabel?: string;
+  /** @default '上傳中...' */
+  defaultUploadingLabel?: string;
+  /** @default '上傳影像' */
+  defaultUploadLabel?: string;
   fileHost?: string;
   imageLoader: ImageUploader;
   multiple?: boolean;
@@ -45,6 +51,9 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
   function UploadPictureBlock(props, ref) {
     const {
       accept = 'image/*',
+      defaultUploadErrorLabel = '上傳錯誤',
+      defaultUploadingLabel = '上傳中...',
+      defaultUploadLabel = '上傳影像',
       disabled = false,
       imageLoader,
       multiple = false,
@@ -163,7 +172,7 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
         {isError ? (
           <div className={classes.group}>
             <Icon icon={TimesIcon} />
-            <span className={classes.status}>上傳錯誤</span>
+            <span className={classes.status}>{defaultUploadErrorLabel}</span>
           </div>
         ) : (
           // eslint-disable-next-line react/jsx-no-useless-fragment
@@ -181,14 +190,14 @@ const UploadPictureBlock = forwardRef<HTMLButtonElement, UploadPictureBlockProps
                       icon={SpinnerIcon}
                       spin
                     />
-                    <span className={classes.status}>上傳中...</span>
+                    <span className={classes.status}>{defaultUploadingLabel}</span>
                   </div>
                 ) : null}
               </>
             ) : (
               <div className={classes.group}>
                 <Icon icon={UploadIcon} />
-                <span className={classes.status}>上傳影像</span>
+                <span className={classes.status}>{defaultUploadLabel}</span>
               </div>
             )}
           </>

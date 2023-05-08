@@ -11,7 +11,7 @@ import {
 } from '@mezzanine-ui/core/upload';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import UploadPictureBlock from './UploadPictureBlock';
+import UploadPictureBlock, { UploadPictureBlockProps } from './UploadPictureBlock';
 
 export type UploadPictureControl = {
   getData: () => void;
@@ -19,6 +19,7 @@ export type UploadPictureControl = {
 
 export interface UploadPictureProps
   extends
+  Pick<UploadPictureBlockProps, 'defaultUploadErrorLabel' | 'defaultUploadingLabel' | 'defaultUploadLabel'>,
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
   | 'children'
   | 'onChange'
@@ -72,6 +73,9 @@ const UploadPicture = forwardRef<HTMLDivElement, UploadPictureProps>(function Up
     className,
     controllerRef,
     defaultValue,
+    defaultUploadErrorLabel,
+    defaultUploadingLabel,
+    defaultUploadLabel,
     disabled = false,
     onChange,
     onDelete,
@@ -144,6 +148,9 @@ const UploadPicture = forwardRef<HTMLDivElement, UploadPictureProps>(function Up
     >
       <UploadPictureBlock
         accept={accept}
+        defaultUploadErrorLabel={defaultUploadErrorLabel}
+        defaultUploadingLabel={defaultUploadingLabel}
+        defaultUploadLabel={defaultUploadLabel}
         disabled={disabled}
         imageLoader={uploadPictureImageLoader.current}
         multiple={false}

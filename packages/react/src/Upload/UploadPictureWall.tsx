@@ -17,7 +17,7 @@ import isEqual from 'lodash/isEqual';
 import { usePreviousValue } from '../hooks/usePreviousValue';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
-import UploadPictureWallItem from './UploadPictureWallItem';
+import UploadPictureWallItem, { UploadPictureWallItemProps } from './UploadPictureWallItem';
 
 export type UploadPictureWallControl = {
   getAllData: () => void;
@@ -25,6 +25,7 @@ export type UploadPictureWallControl = {
 
 export interface UploadPictureWallBaseProps
   extends
+  Pick<UploadPictureWallItemProps, 'defaultUploadErrorLabel' | 'defaultUploadingLabel' | 'defaultUploadLabel'>,
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
   | 'children'
   | 'onChange'
@@ -113,6 +114,9 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
     className,
     controllerRef,
     defaultValues,
+    defaultUploadErrorLabel,
+    defaultUploadingLabel,
+    defaultUploadLabel,
     disabled = false,
     fileHost = '',
     maxLength,
@@ -319,6 +323,9 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
         <UploadPictureWallItem
           key={up.getUid()}
           accept={accept}
+          defaultUploadErrorLabel={defaultUploadErrorLabel}
+          defaultUploadingLabel={defaultUploadingLabel}
+          defaultUploadLabel={defaultUploadLabel}
           disabled={disabled}
           imageLoader={up}
           multiple={multiple}
@@ -329,6 +336,9 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(fun
       {maxLength && loaderList.length >= maxLength ? null : (
         <UploadPictureWallItem
           accept={accept}
+          defaultUploadErrorLabel={defaultUploadErrorLabel}
+          defaultUploadingLabel={defaultUploadingLabel}
+          defaultUploadLabel={defaultUploadLabel}
           disabled={disabled}
           imageLoader={new ImageUploader()}
           multiple={multiple}
