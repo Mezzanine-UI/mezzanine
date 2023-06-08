@@ -36,6 +36,10 @@ const ModalActions = forwardRef<HTMLDivElement, ModalActionsProps>(function Moda
     ...rest
   } = props;
   const {
+    loading: confirmButtonLoading,
+    ...restConfirmButtonProps
+  } = confirmButtonProps || {};
+  const {
     loading,
     severity,
   } = useContext(ModalControlContext);
@@ -51,12 +55,12 @@ const ModalActions = forwardRef<HTMLDivElement, ModalActionsProps>(function Moda
         cancelButtonProps={cancelButtonProps}
         cancelText={cancelText}
         className={classes.actions}
-        confirmButtonProps={confirmButtonProps}
+        confirmButtonProps={restConfirmButtonProps}
         confirmText={confirmText}
         danger={danger}
         hideCancelButton={hideCancelButton}
         hideConfirmButton={hideConfirmButton}
-        loading={loading}
+        loading={confirmButtonLoading ?? loading}
         onCancel={onCancel}
         onConfirm={onConfirm}
       />
