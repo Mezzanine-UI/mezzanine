@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.5...@mezzanine-ui/react@0.12.6) (2023-06-08)
+
+### Bug Fixes
+
+- **react/modal-actions:** modal-actions loading priority, closed [#190](https://github.com/Mezzanine-UI/mezzanine/issues/190) ([3cfbfe5](https://github.com/Mezzanine-UI/mezzanine/commit/3cfbfe566623622b953076c108172bb13035c3d2))
+
 ## [0.12.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.4...@mezzanine-ui/react@0.12.5) (2023-05-08)
 
 ### Features
