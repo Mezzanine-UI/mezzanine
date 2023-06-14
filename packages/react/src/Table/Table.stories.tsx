@@ -220,11 +220,9 @@ export const Selections = () => {
           <Table
             columns={columns}
             dataSource={dataSource}
-            expandable={expandable}
             rowSelection={{
               selectedRowKey: selectedRowKeys,
               onChange: (keys) => setSelectedRowKeys(keys),
-              actions: selectedActions,
             }}
           />
         </div>

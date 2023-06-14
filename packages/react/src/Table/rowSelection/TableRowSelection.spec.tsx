@@ -392,6 +392,10 @@ describe('<TableRowSelection />', () => {
               rowSelection: {
                 selectedRowKeys,
                 onChange,
+                actions: [{
+                  key: 'key',
+                  text: 'key',
+                }],
               },
             }}
           >
@@ -434,10 +438,21 @@ describe('<TableRowSelection />', () => {
         />,
       );
       const element = getHostHTMLElement();
-      const icon = element.querySelector('.mzn-table__icon');
 
       expect(element?.getAttribute('style')).toBeNull();
-      expect(icon?.getAttribute('style')).toBeNull();
+    });
+
+    it('should not render menu icon when rowSelection.actions is not defined', () => {
+      const { getHostHTMLElement } = render(
+        <TableRowSelection
+          rowKey={myKey}
+          showDropdownIcon
+        />,
+      );
+      const element = getHostHTMLElement();
+      const icon = element.querySelector('.mzn-table__icon');
+
+      expect(icon).toBeNull();
     });
   });
 });

@@ -146,38 +146,40 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
           onChange={onSelected}
           size="medium"
         />
-        <div
-          className={classes.icon}
-          style={hiddenIconWithExpandableStyle.icon}
-        >
-          {showDropdownIcon ? (
-            <Dropdown
-              menu={actionMenu}
-              onClose={() => toggleOpen(false)}
-              popperProps={{
-                open,
-                options: {
-                  placement: 'bottom-start',
-                },
-              }}
-            >
-              {(dropdownRef) => (
-                <Icon
-                  ref={dropdownRef}
-                  className={cx(
-                    classes.icon,
-                    {
-                      [classes.iconClickable]: isMenuAllowOpen,
-                    },
-                  )}
-                  color={isMenuAllowOpen ? 'primary' : 'disabled'}
-                  icon={MoreVerticalIcon}
-                  onClick={onIconClicked}
-                />
-              )}
-            </Dropdown>
-          ) : null}
-        </div>
+        {rowSelection?.actions?.length ? (
+          <div
+            className={classes.icon}
+            style={hiddenIconWithExpandableStyle.icon}
+          >
+            {showDropdownIcon ? (
+              <Dropdown
+                menu={actionMenu}
+                onClose={() => toggleOpen(false)}
+                popperProps={{
+                  open,
+                  options: {
+                    placement: 'bottom-start',
+                  },
+                }}
+              >
+                {(dropdownRef) => (
+                  <Icon
+                    ref={dropdownRef}
+                    className={cx(
+                      classes.icon,
+                      {
+                        [classes.iconClickable]: isMenuAllowOpen,
+                      },
+                    )}
+                    color={isMenuAllowOpen ? 'primary' : 'disabled'}
+                    icon={MoreVerticalIcon}
+                    onClick={onIconClicked}
+                  />
+                )}
+              </Dropdown>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     );
   },
