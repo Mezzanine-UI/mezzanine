@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.6...@mezzanine-ui/react@0.12.7) (2023-06-14)
+
+### Bug Fixes
+
+- **react/table:** hide table dropdown action when rowSelection.actions is not given ([51813c6](https://github.com/Mezzanine-UI/mezzanine/commit/51813c6aea79ca8043fbc61e89fd6c3ada319f5e))
+
 ## [0.12.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.5...@mezzanine-ui/react@0.12.6) (2023-06-08)
 
 ### Bug Fixes
