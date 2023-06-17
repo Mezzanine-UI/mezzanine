@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.7...@mezzanine-ui/react@0.12.8) (2023-06-17)
+
+### Bug Fixes
+
+- **react/table:** fix table source changed but not rendered correctly bug, closed [#195](https://github.com/Mezzanine-UI/mezzanine/issues/195) ([ee7abeb](https://github.com/Mezzanine-UI/mezzanine/commit/ee7abebd0af5f46089e59a389d6e6ecd55bf5832))
+
 ## [0.12.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.6...@mezzanine-ui/react@0.12.7) (2023-06-14)
 
 ### Bug Fixes
