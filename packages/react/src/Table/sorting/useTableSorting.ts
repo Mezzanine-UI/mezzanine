@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { TableDataSource, TableColumn, TableRecord } from '@mezzanine-ui/core/table';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
+import { usePreviousValue } from '../../hooks/usePreviousValue';
 
 const sortSource = (prev: TableDataSource, cur: TableDataSource) => {
   const prevKey = (prev.key || prev.id) as string;
@@ -15,9 +16,17 @@ const sortSource = (prev: TableDataSource, cur: TableDataSource) => {
   return 0;
 };
 
-const equalityFn = (a: TableDataSource[], b: TableDataSource[]) => {
-  const sortedA = a.slice(0).sort(sortSource);
-  const sortedB = b.slice(0).sort(sortSource);
+/**
+ * @NOTE deepCompare = true 時，會深度比較 dataSource 順序是否有不同
+ * @NOTE deepCompare = false（預設），則是為了內部排序可以讓 useControlValueState 認為是一樣的 dataSource
+ * useControlValueState 會強制把 return value 和傳入的 value 做同步，當有不一樣時就會自動 sync
+ * 所以無論如何用 setDataSource 都不會有改變
+ */
+const equalityFn = (a: TableDataSource[], b: TableDataSource[], deepCompare = false) => {
+  const aTemp = a.slice(0);
+  const bTemp = b.slice(0);
+  const sortedA = deepCompare ? aTemp : aTemp.sort(sortSource);
+  const sortedB = deepCompare ? bTemp : bTemp.sort(sortSource);
   const mappedAKeys = sortedA.map((s) => (s.key || s.id) as string);
   const mappedBKeys = sortedB.map((s) => (s.key || s.id) as string);
 
@@ -49,8 +58,21 @@ export function useTableSorting(props: UseTableSorting) {
   const [dataSource, setDataSource] = useControlValueState({
     defaultValue: [],
     equalityFn,
-    value: dataSourceProp,
+    /** @NOTE 只有當 dataSource 傳入時，並且使用了 table 提供的 sorting，才需要完全同步 dataSource */
+    value: dataSourceProp.length && sortedOn ? dataSourceProp : undefined,
   });
+
+  const prevDataSourceProps = usePreviousValue(dataSourceProp);
+
+  useEffect(() => {
+    /**
+     * @NOTE 條件1: 如果一開始就有傳入值，則直接同步 dataSource
+     * @NOTE 條件2: 深度比較舊 dataSourceProp 跟新的是否有不同，如果有則同步
+     */
+    if (!dataSource.length || !equalityFn(prevDataSourceProps, dataSourceProp, true)) {
+      setDataSource(dataSourceProp);
+    }
+  }, [prevDataSourceProps, dataSourceProp]);
 
   const getNextSortedType = useCallback((currentType: SortedType) => {
     // none -> desc -> asc -> none

@@ -92,11 +92,16 @@ export const Basic = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSources(dataSource);
+      setSources(() => dataSource);
     }, 2000);
+
+    const timer2 = setTimeout(() => {
+      setSources(() => dataSource.slice(0).reverse());
+    }, 3000);
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(timer2);
     };
   }, []);
 
