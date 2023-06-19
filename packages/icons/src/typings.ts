@@ -3,6 +3,7 @@ export interface IconDefinition {
   definition: {
     svg?: {
       viewBox?: string;
+      fill?: string;
     };
     title?: string;
     path?: {
@@ -11,6 +12,8 @@ export interface IconDefinition {
       fillRule?: 'nonzero' | 'evenodd' | 'inherit';
       stroke?: string;
       strokeWidth?: string | number;
+      strokeLinecap?: 'inherit' | 'round' | 'butt' | 'square' | undefined;
+      strokeLinejoin?: 'inherit' | 'round' | 'bevel' | 'miter' | undefined;
       transform?: string;
     };
   };
