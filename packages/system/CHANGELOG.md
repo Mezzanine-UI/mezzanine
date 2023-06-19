@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.12.8...@mezzanine-ui/system@0.12.9) (2023-06-19)
+
+**Note:** Version bump only for package @mezzanine-ui/system
+
 ## [0.12.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.12.7...@mezzanine-ui/system@0.12.8) (2023-06-17)
 
 **Note:** Version bump only for package @mezzanine-ui/system

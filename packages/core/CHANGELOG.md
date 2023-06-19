@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.8...@mezzanine-ui/core@0.12.9) (2023-06-19)
+
+### Bug Fixes
+
+- **core/message:** correct message root position from absolute to fixed ([93b02ad](https://github.com/Mezzanine-UI/mezzanine/commit/93b02adcac90b6d08a5eba98aec771e11bcc99be))
+- **core/tabs:** tabs border-bottom line should use pseudo element to render correctly ([0e3e74a](https://github.com/Mezzanine-UI/mezzanine/commit/0e3e74a9b02d950543e23dd5e079a5181f2b7d30))
+
 ## [0.12.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.7...@mezzanine-ui/core@0.12.8) (2023-06-17)
 
 **Note:** Version bump only for package @mezzanine-ui/core
