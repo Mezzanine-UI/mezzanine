@@ -18,8 +18,19 @@ $tab-padding: 8px 0 !default;
     grid-auto-flow: column;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid palette.color(border);
     margin-bottom: $margin-bottom;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      z-index: 0;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      background-color: palette.color(border);
+    }
   }
 
   &--overflow {
@@ -80,7 +91,17 @@ $tab-padding: 8px 0 !default;
 
     &--active {
       color: palette.color(primary);
-      border-bottom: 2px solid palette.color(primary);
+
+      &::after {
+        content: '';
+        position: absolute;
+        z-index: 1;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: palette.color(primary);
+      }
     }
 
     &:hover:enabled {
