@@ -12,6 +12,17 @@ import {
 import { TableContext, TableDataContext } from './TableContext';
 import { usePreviousValue } from '../hooks/usePreviousValue';
 
+const defaultScrollBarTrackStyle = {
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  width: 12,
+  height: 0,
+  opacity: '0',
+  transition: '0.1s opacity ease-in',
+  backgroundColor: '#F2F2F2',
+} as DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
+
 const defaultScrollBarStyle = {
   display: 'flex',
   justifyContent: 'center',
@@ -31,10 +42,11 @@ const defaultScrollBarStyle = {
 const SCROLL_BAR_MIN_START_AT = 4; // px
 const SCROLL_BAR_MAX_END_SPACING = 16; // px
 const FETCH_MORE_TRIGGER_AT_BOTTOM = 46; // px
-const SCROLL_BAR_DISPLAY_TIMES = 1000; // ms
+const SCROLL_BAR_DISPLAY_TIMES = 1500; // ms
 
 export default function useTableScroll() {
   const bodyRef = useRef<HTMLDivElement>(null);
+  const scrollBarTrackRef = useRef<HTMLDivElement>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
   const scrollBarDisplayTimer = useRef<number>();
 
@@ -72,21 +84,34 @@ export default function useTableScroll() {
   const onHideScrollBar = useCallback(() => {
     if (!scrollBarRef.current) return;
 
-    scrollBarRef.current.style.opacity = '0';
-    scrollBarRef.current.style.pointerEvents = 'none';
-  }, []);
-
-  const onDisplayScrollBar = useCallback(() => {
-    if (!scrollBarRef.current || !bodyRef.current) return;
-
     if (scrollBarDisplayTimer.current) {
       window.clearTimeout(scrollBarDisplayTimer.current);
     }
 
+    scrollBarDisplayTimer.current = window.setTimeout(() => {
+      if (scrollBarRef.current) {
+        scrollBarRef.current.style.opacity = '0';
+        scrollBarRef.current.style.pointerEvents = 'none';
+      }
+
+      if (scrollBarTrackRef.current) {
+        scrollBarTrackRef.current.style.opacity = '0';
+        scrollBarTrackRef.current.style.pointerEvents = 'none';
+      }
+    }, SCROLL_BAR_DISPLAY_TIMES);
+  }, []);
+
+  const onDisplayScrollBar = useCallback(() => {
+    if (!scrollBarRef.current || !bodyRef.current || !scrollBarTrackRef.current) return;
+
     scrollBarRef.current.style.opacity = '1';
     scrollBarRef.current.style.pointerEvents = 'auto';
+    scrollBarTrackRef.current.style.opacity = '1';
+    scrollBarTrackRef.current.style.pointerEvents = 'auto';
 
-    scrollBarDisplayTimer.current = window.setTimeout(() => onHideScrollBar(), SCROLL_BAR_DISPLAY_TIMES);
+    if (scrollBarDisplayTimer.current) {
+      window.clearTimeout(scrollBarDisplayTimer.current);
+    }
   }, []);
 
   /** reset scroll bar height when sources changed */
@@ -114,8 +139,9 @@ export default function useTableScroll() {
   useEffect(() => {
     const { current: body } = bodyRef;
     const { current: scrollBar } = scrollBarRef;
+    const { current: scrollBarTrack } = scrollBarTrackRef;
 
-    if (!body || !scrollBar) return;
+    if (!body || !scrollBar || !scrollBarTrack) return;
 
     function onMouseMove({ clientY }: { clientY: number }) {
       const {
@@ -148,12 +174,30 @@ export default function useTableScroll() {
       );
     }
 
+    function onMouseOver() {
+      onDisplayScrollBar();
+    }
+
+    function onMouseLeave() {
+      onHideScrollBar();
+    }
+
     scrollBar.addEventListener('mousemove', onMouseMove, false);
+    scrollBar.addEventListener('mouseover', onMouseOver, false);
+    scrollBar.addEventListener('mouseleave', onMouseLeave, false);
+    scrollBarTrack.addEventListener('mousemove', onMouseMove, false);
+    scrollBarTrack.addEventListener('mouseover', onMouseOver, false);
+    scrollBarTrack.addEventListener('mouseleave', onMouseLeave, false);
 
     return () => {
       scrollBar.removeEventListener('mousemove', onMouseMove, false);
+      scrollBar.removeEventListener('mouseover', onMouseOver, false);
+      scrollBar.removeEventListener('mouseleave', onMouseLeave, false);
+      scrollBarTrack.removeEventListener('mousemove', onMouseMove, false);
+      scrollBarTrack.removeEventListener('mouseover', onMouseOver, false);
+      scrollBarTrack.removeEventListener('mouseleave', onMouseLeave, false);
     };
-  }, [scrollBarHeight, pointerOffset, onDisplayScrollBar]);
+  }, [scrollBarHeight, pointerOffset, onDisplayScrollBar, onHideScrollBar]);
 
   const resetPointerOffset = useCallback(() => setPointerOffset(0), []);
 
@@ -174,10 +218,12 @@ export default function useTableScroll() {
   }, []);
 
   /** when use mouse to drag scroll bar, get cursor position */
-  const onScrollBarMouseDown = useCallback(({ target, clientY } : MouseEvent<HTMLDivElement>) => {
-    if (!target) return;
+  const onScrollBarMouseDown = useCallback(({ clientY } : MouseEvent<HTMLDivElement>) => {
+    const { current: scrollBar } = scrollBarRef;
 
-    const { top: initScrollBarTop } = (target as HTMLElement).getBoundingClientRect();
+    if (!scrollBar) return;
+
+    const { top: initScrollBarTop } = scrollBar.getBoundingClientRect();
 
     setPointerOffset(clientY - initScrollBarTop);
   }, []);
@@ -199,6 +245,10 @@ export default function useTableScroll() {
           (scrollTop * (tableHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING)) /
           (scrollHeight - tableHeight) + scrollTop + SCROLL_BAR_MIN_START_AT
         }px`;
+      }
+
+      if (scrollBarTrackRef.current) {
+        scrollBarTrackRef.current.style.height = `${scrollHeight}px`;
       }
     }
   }, [scrollBarHeight, pointerOffset]);
@@ -227,11 +277,18 @@ export default function useTableScroll() {
         fetchMore?.onFetchMore();
       }
     }
-  }, [loading, setScrollBarTop, onDisplayScrollBar, fetchMore]);
+
+    window.requestAnimationFrame(onHideScrollBar);
+  }, [loading, setScrollBarTop, onDisplayScrollBar, fetchMore, onHideScrollBar]);
 
   const scrollBarStyle = useMemo(() => ({
     ...defaultScrollBarStyle,
     height: `${scrollBarHeight}px`,
+  }), [scrollBarHeight]);
+
+  const scrollBarTrackStyle = useMemo(() => ({
+    ...defaultScrollBarTrackStyle,
+    height: `${bodyRef.current?.scrollHeight ?? 0}px`,
   }), [scrollBarHeight]);
 
   /** composing result */
@@ -242,11 +299,13 @@ export default function useTableScroll() {
 
   const scrollElement = {
     ref: scrollBarRef,
+    trackRef: scrollBarTrackRef,
     onMouseDown: onScrollBarMouseDown,
     onMouseUp: onScrollBarMouseUp,
     onMouseEnter: onScrollBarEnter,
     onMouseLeave: onScrollBarLeave,
     style: scrollBarStyle,
+    trackStyle: scrollBarTrackStyle,
   };
 
   return [tableBody, scrollElement] as const;

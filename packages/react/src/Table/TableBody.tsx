@@ -104,24 +104,41 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
         </div>
       ) : null}
       <div
-        ref={scrollElement.ref}
+        ref={scrollElement.trackRef}
+        style={scrollElement.trackStyle}
         onMouseDown={scrollElement.onMouseDown}
         onMouseUp={scrollElement.onMouseUp}
-        onMouseEnter={scrollElement.onMouseEnter}
-        onMouseLeave={scrollElement.onMouseLeave}
         role="button"
-        style={scrollElement.style}
         tabIndex={-1}
       >
         <div
           style={{
-            width: `${scrollBarSize}px`,
+            width: '100%',
             height: '100%',
-            borderRadius: '10px',
-            backgroundColor: '#7d7d7d',
-            transition: '0.1s',
+            position: 'relative',
           }}
-        />
+        >
+          <div
+            ref={scrollElement.ref}
+            onMouseDown={scrollElement.onMouseDown}
+            onMouseUp={scrollElement.onMouseUp}
+            onMouseEnter={scrollElement.onMouseEnter}
+            onMouseLeave={scrollElement.onMouseLeave}
+            role="button"
+            style={scrollElement.style}
+            tabIndex={-1}
+          >
+            <div
+              style={{
+                width: `${scrollBarSize}px`,
+                height: '100%',
+                borderRadius: '10px',
+                backgroundColor: '#7d7d7d',
+                transition: '0.1s',
+              }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
