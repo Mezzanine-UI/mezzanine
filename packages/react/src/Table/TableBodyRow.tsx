@@ -34,7 +34,7 @@ export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'d
   rowIndex: number;
 }
 
-const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
+const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
   function TableBodyRow(props, ref) {
     const {
       className,
@@ -68,7 +68,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
 
     return (
       <Fragment>
-        <div
+        <tr
           {...rest}
           ref={ref}
           className={cx(
@@ -78,7 +78,6 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
             },
             className,
           )}
-          role="row"
         >
           {rowSelection ? (
             <TableRowSelection
@@ -106,7 +105,7 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
             ) as (string | number);
 
             return (
-              <div
+              <td
                 key={`${column.dataIndex}-${column.title}`}
                 className={cx(
                   classes.bodyRowCellWrapper,
@@ -131,10 +130,10 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
                     ) || get(rowData, column.dataIndex)}
                   </TableCell>
                 </TableEditRenderWrapper>
-              </div>
+              </td>
             );
           })}
-        </div>
+        </tr>
         {renderedExpandedContent ? (
           <AccordionDetails
             className={cx(

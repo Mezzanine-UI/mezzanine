@@ -18,7 +18,7 @@ import TableRowSelection from './rowSelection/TableRowSelection';
 import TableSortingIcon from './sorting/TableSortingIcon';
 import TableExpandable from './expandable/TableExpandable';
 
-const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<'div'>>(
+const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKeyAndRef<'div'>>(
   function TableHeader(props, ref) {
     const {
       className,
@@ -35,46 +35,47 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
     } = useContext(TableDataContext) || {};
 
     return (
-      <div
-        ref={ref}
-        {...rest}
-        className={cx(classes.header, className)}
-        role="rowgroup"
-      >
-        {rowSelection ? (
-          <TableRowSelection
-            rowKey={SELECTED_ALL_KEY}
-            showDropdownIcon
-          />
-        ) : null}
-        {/** only display expanding placeholder when rowSelection not enabled */}
-        {expanding && !rowSelection ? (
-          <TableExpandable showIcon={false} />
-        ) : null}
-        {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => (
-          <div
-            key={`${column.dataIndex}-${column.title}`}
-            className={cx(
-              classes.headerCellWrapper,
-              column.headerClassName,
-            )}
-            style={getColumnStyle(column)}
-          >
-            <TableCell
-              ellipsis={false}
-              role="columnheader"
-              style={getCellStyle(column)}
+      <thead style={{ width: '100%' }}>
+        <tr
+          ref={ref}
+          {...rest}
+          className={cx(classes.header, className)}
+        >
+          {rowSelection ? (
+            <TableRowSelection
+              rowKey={SELECTED_ALL_KEY}
+              showDropdownIcon
+            />
+          ) : null}
+          {/** only display expanding placeholder when rowSelection not enabled */}
+          {expanding && !rowSelection ? (
+            <TableExpandable showIcon={false} />
+          ) : null}
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => (
+            <th
+              key={`${column.dataIndex}-${column.title}`}
+              className={cx(
+                classes.headerCellWrapper,
+                column.headerClassName,
+              )}
+              style={getColumnStyle(column)}
             >
-              {column.renderTitle?.(classes) || column.title}
-              {typeof column.sorter === 'function' || typeof column.onSorted === 'function' ? (
-                <TableSortingIcon
-                  column={column}
-                />
-              ) : null}
-            </TableCell>
-          </div>
-        ))}
-      </div>
+              <TableCell
+                ellipsis={false}
+                role="columnheader"
+                style={getCellStyle(column)}
+              >
+                {column.renderTitle?.(classes) || column.title}
+                {typeof column.sorter === 'function' || typeof column.onSorted === 'function' ? (
+                  <TableSortingIcon
+                    column={column}
+                  />
+                ) : null}
+              </TableCell>
+            </th>
+          ))}
+        </tr>
+      </thead>
     );
   },
 );

@@ -118,7 +118,7 @@ export interface TableWithPagination<T> extends TableBaseProps<T> {
 
 export type TableProps<T> = TableWithFetchMore<T> | TableWithPagination<T>;
 
-const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(function Table(props, ref) {
+const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(function Table(props, ref) {
   const {
     bodyClassName,
     bodyRowClassName,
@@ -137,7 +137,7 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
     ...rest
   } = props;
 
-  const bodyRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLTableSectionElement>(null);
 
   /** Feature rowSelection */
   const [selectedRowKeys, setSelectedRowKey] = useTableRowSelection({
@@ -249,11 +249,10 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
       stretch
       tip="資料載入中..."
     >
-      <div
+      <table
         ref={ref}
         {...rest}
         className={cx(classes.host, className)}
-        role="grid"
       >
         <TableContext.Provider value={tableContextValue}>
           <TableDataContext.Provider value={tableDataContextValue}>
@@ -273,7 +272,7 @@ const Table = forwardRef<HTMLDivElement, TableProps<Record<string, unknown>>>(fu
             </TableComponentContext.Provider>
           </TableDataContext.Provider>
         </TableContext.Provider>
-      </div>
+      </table>
     </Loading>
   );
 });

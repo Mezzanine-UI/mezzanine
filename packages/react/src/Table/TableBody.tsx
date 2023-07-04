@@ -22,7 +22,7 @@ export interface TableBodyProps extends NativeElementPropsWithoutKeyAndRef<'div'
   rowClassName?: string;
 }
 
-const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(props, ref) {
+const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function TableBody(props, ref) {
   const {
     className,
     rowClassName,
@@ -72,7 +72,7 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
   ) : dataSource;
 
   return (
-    <div
+    <tbody
       {...rest}
       ref={composedRefs}
       className={cx(
@@ -80,7 +80,6 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
         className,
       )}
       onScroll={tableBody.onScroll}
-      role="rowgroup"
     >
       {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource, index: number) => (
         <TableBodyRow
@@ -140,7 +139,7 @@ const TableBody = forwardRef<HTMLDivElement, TableBodyProps>(function TableBody(
           </div>
         </div>
       </div>
-    </div>
+    </tbody>
   );
 });
 

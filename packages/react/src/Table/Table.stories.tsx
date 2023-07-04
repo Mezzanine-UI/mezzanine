@@ -116,62 +116,6 @@ export const Basic = () => {
 
   return (
     <div style={{ width: '100%' }}>
-      <div style={{
-        width: '100%', maxHeight: '200px', overflow: 'auto',
-      }}
-      >
-        <table
-          style={{
-            width: '100%',
-            borderRadius: '8px',
-            tableLayout: 'fixed',
-            borderCollapse: 'separate',
-            borderSpacing: 0,
-            border: '1px solid #ccc',
-            textAlign: 'left',
-          }}
-        >
-          <colgroup>
-            <col style={{ width: '100px' }} />
-            <col style={{ width: '1900px' }} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th style={{
-                ...stickyStyle,
-                top: 0,
-                zIndex: 3,
-              }}
-              >
-                Name
-              </th>
-              <th style={belowSticky}>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td style={stickyStyle}>Name 1</td>
-              <td style={{ padding: '12px' }}>Desc 1</td>
-            </tr>
-            <tr>
-              <td style={stickyStyle}>Name 2</td>
-              <td style={{ padding: '12px' }}>Desc 2</td>
-            </tr>
-            <tr>
-              <td style={stickyStyle}>Name 3</td>
-              <td style={{ padding: '12px' }}>Desc 3</td>
-            </tr>
-            <tr>
-              <td style={stickyStyle}>Name 4</td>
-              <td style={{ padding: '12px' }}>Desc 4</td>
-            </tr>
-            <tr>
-              <td style={stickyStyle}>Name 5</td>
-              <td style={{ padding: '12px' }}>Desc 5</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
       <div
         style={{
           width: '100%',
@@ -229,6 +173,78 @@ export const Basic = () => {
     </div>
   );
 };
+
+export const FixedColumn = () => (
+  <div style={{ width: '100%' }}>
+    <div style={{
+      width: '100%', maxHeight: '200px', overflow: 'auto',
+    }}
+    >
+      <table
+        style={{
+          width: '100%',
+          borderRadius: '8px',
+          tableLayout: 'fixed',
+          borderCollapse: 'separate',
+          borderSpacing: 0,
+          border: '1px solid #ccc',
+          textAlign: 'left',
+        }}
+      >
+        <colgroup>
+          <col style={{ width: '100px' }} />
+          <col style={{ width: '1900px' }} />
+        </colgroup>
+        <thead>
+          <tr>
+            <th style={{
+              ...stickyStyle,
+              top: 0,
+              zIndex: 3,
+            }}
+            >
+              Name
+            </th>
+            <th style={belowSticky}>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style={stickyStyle}>Name 1</td>
+            <td style={{ padding: '12px' }}>Desc 1</td>
+          </tr>
+          <tr>
+            <td style={stickyStyle}>Name 2</td>
+            <td style={{ padding: '12px' }}>Desc 2</td>
+          </tr>
+          <tr>
+            <td style={stickyStyle}>Name 3</td>
+            <td style={{ padding: '12px' }}>Desc 3</td>
+          </tr>
+          <tr>
+            <td style={stickyStyle}>Name 4</td>
+            <td style={{ padding: '12px' }}>Desc 4</td>
+          </tr>
+          <tr>
+            <td style={stickyStyle}>Name 5</td>
+            <td style={{ padding: '12px' }}>Desc 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      style={{
+        width: '80%',
+        height: 400,
+      }}
+    >
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+      />
+    </div>
+  </div>
+);
 
 export const Selections = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
