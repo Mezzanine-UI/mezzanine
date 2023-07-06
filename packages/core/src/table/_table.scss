@@ -1,6 +1,9 @@
 @use '~@mezzanine-ui/system/size';
 
+$loading-prefix: mzn-table-loading;
+$container-prefix: mzn-table-scroll-area;
 $prefix: mzn-table;
+$header-fixed-prefix: mzn-table__header-fixed;
 $header-prefix: mzn-table__header;
 $body-prefix: mzn-table__body;
 $cell-prefix: mzn-table__cell;

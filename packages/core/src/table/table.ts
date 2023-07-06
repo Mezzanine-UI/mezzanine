@@ -1,18 +1,28 @@
+export const tableScrollContainerPrefix = 'mzn-table-scroll-area';
+export const tableLoadingPrefix = 'mzn-table-loading';
 export const tablePrefix = 'mzn-table';
+export const tableHeaderFixedPrefix = `${tablePrefix}__header-fixed`;
 export const tableHeaderPrefix = `${tablePrefix}__header`;
 export const tableBodyPrefix = `${tablePrefix}__body`;
 export const tableCellPrefix = `${tablePrefix}__cell`;
 
 export const tableClasses = {
+  loading: tableLoadingPrefix,
+  scrollContainer: tableScrollContainerPrefix,
   host: tablePrefix,
+  headerFixed: tableHeaderFixedPrefix,
   header: tableHeaderPrefix,
   headerCellWrapper: `${tableHeaderPrefix}__cellWrapper`,
+  headerCellWrapperFixed: `${tableHeaderPrefix}__cellWrapper--fixed`,
+  headerCellWrapperFixedStuck: `${tableHeaderPrefix}__cellWrapper--fixed--stuck`,
   body: tableBodyPrefix,
   bodyEmpty: `${tableBodyPrefix}__empty`,
   bodyFetchMore: `${tableBodyPrefix}__fetchMore`,
   bodyRow: `${tableBodyPrefix}__row`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowCellWrapper: `${tableBodyPrefix}__row__cellWrapper`,
+  bodyRowCellWrapperFixed: `${tableBodyPrefix}__row__cellWrapper--fixed`,
+  bodyRowCellWrapperFixedStuck: `${tableBodyPrefix}__row__cellWrapper--fixed--stuck`,
   bodyRowExpandedTableWrapper: `${tableBodyPrefix}__row__expandedTableWrapper`,
   bodyRowExpandedTable: `${tableBodyPrefix}__row__expandedTable`,
   bodyRowExpandedTableRow: `${tableBodyPrefix}__row__expandedTableRow`,
@@ -149,6 +159,14 @@ export interface TableComponents {
   body?: {
     cell?: any;
   }
+}
+
+/** === Feature scrolling */
+export interface TableScrolling {
+  x?: number;
+  y?: number;
+  /** Only available when horizontal scrolling is enabled */
+  fixedFirstColumn?: boolean;
 }
 
 /** styling */
