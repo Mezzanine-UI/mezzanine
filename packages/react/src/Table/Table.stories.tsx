@@ -198,6 +198,7 @@ export const ScrollableAndFixedColumn = () => {
         <Table
           columns={columns}
           dataSource={dataSource}
+          scrollContainerClassName="foo"
           scroll={{
             x: 1500,
             y: 300,

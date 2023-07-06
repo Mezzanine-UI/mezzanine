@@ -100,6 +100,10 @@ export interface TableBaseProps<T>
    * `scroll.fixedFirstColumn` set first column fixed when horizontal scrolling.
    */
   scroll?: TableScrolling;
+  /**
+   * customize scroll container className
+   */
+  scrollContainerClassName?: string;
 }
 
 export interface TableWithFetchMore<T> extends TableBaseProps<T> {
@@ -146,6 +150,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     refresh: refreshProp,
     rowSelection: rowSelectionProp,
     scroll: scrollProp,
+    scrollContainerClassName,
     ...rest
   } = props;
 
@@ -281,7 +286,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
           >
             <div
               ref={scrollBody.ref}
-              className={classes.scrollContainer}
+              className={cx(classes.scrollContainer, scrollContainerClassName)}
               onScroll={scrollBody.onScroll}
               style={tableContextValue.scroll ? {
                 '--table-scroll-x': tableContextValue.scroll.x
