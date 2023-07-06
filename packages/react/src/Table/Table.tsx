@@ -82,6 +82,11 @@ export interface TableBaseProps<T>
     */
   loading?: boolean;
   /**
+   * When loading is true, show specific loadingTip
+   * @default '資料載入中...'
+   */
+  loadingTip?: string;
+  /**
    * `refresh.show` is true, refresh button will display at the top-start of table. <br />
    * `refresh.onClick` is the callback of the refresh button.
    */
@@ -146,6 +151,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     fetchMore: fetchMoreProp,
     headerClassName,
     loading: loadingProp,
+    loadingTip = '資料載入中...',
     pagination: paginationProp,
     refresh: refreshProp,
     rowSelection: rowSelectionProp,
@@ -279,7 +285,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
           <Loading
             loading={loading}
             stretch
-            tip="資料載入中..."
+            tip={loadingTip}
             overlayProps={{
               className: classes.loading,
             }}
