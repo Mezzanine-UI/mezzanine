@@ -1,3 +1,4 @@
+/* stylelint-disable declaration-no-important */
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system';
@@ -20,10 +21,7 @@
 }
 
 .custom-table-header {
-  height: 100%;
-  background-color: palette.color(primary);
-  display: flex;
-  align-items: center;
+  background-color: palette.color(primary) !important;
 }
 
 .custom-table-body {

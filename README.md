@@ -13,6 +13,12 @@ If you are interested about this project, please see: [Storybook](https://storyb
 
 If you are an existing mezzanine users and looking for migration guides, please see [Migrations](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations).
 
+## Browser Support
+`Google Chrome` 64 or newer (2018) <br />
+`Edge` 79 or newer (2020) <br />
+`Safari` 13.1 or newer (2020) <br />
+`Firefox` 69 or newer (2019) <br />
+
 ---
 
 ## Installation
