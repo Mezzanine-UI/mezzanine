@@ -1,4 +1,5 @@
 import {
+  CSSProperties,
   forwardRef,
   ReactNode,
   useMemo,
@@ -15,6 +16,7 @@ import {
   TablePagination as TablePaginationType,
   TableRefresh as TableRefreshType,
   ExpandRowBySources,
+  TableScrolling,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 import { TableContext, TableDataContext, TableComponentContext } from './TableContext';
@@ -29,6 +31,8 @@ import { useTableRowSelection } from './rowSelection/useTableRowSelection';
 import { useTableSorting } from './sorting/useTableSorting';
 import { useTableLoading } from './useTableLoading';
 import { useTableFetchMore } from './useTableFetchMore';
+import useTableScroll from './useTableScroll';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface TableBaseProps<T>
   extends
@@ -89,6 +93,13 @@ export interface TableBaseProps<T>
     * `rowSelection.actions` are the actions that you want to do for selected data.
     */
   rowSelection?: TableRowSelection;
+  /**
+   * Enable table scroll feature <br />
+   * `scroll.x` set horizontal scrolling, can also be used to specify the width of the scroll area <br />
+   * `scroll.y` Set vertical scrolling, can also be used to specify the height of the scroll area <br />
+   * `scroll.fixedFirstColumn` set first column fixed when horizontal scrolling.
+   */
+  scroll?: TableScrolling;
 }
 
 export interface TableWithFetchMore<T> extends TableBaseProps<T> {
@@ -134,6 +145,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     pagination: paginationProp,
     refresh: refreshProp,
     rowSelection: rowSelectionProp,
+    scroll: scrollProp,
     ...rest
   } = props;
 
@@ -186,11 +198,18 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     refreshProp?.show ?? false
   ), [refreshProp?.show]);
 
+  /** Feature Scrolling */
+  const [scrollBody, scrollElement, isHorizontalScrolling] = useTableScroll({
+    onFetchMore,
+    loading,
+    scrollBarSize: 4,
+  });
+
   /** context */
   const tableContextValue = useMemo(() => ({
-    scrollBarSize: 4,
     emptyProps,
     rowSelection,
+    isHorizontalScrolling,
     sorting: {
       onSort,
       onResetAll,
@@ -217,6 +236,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
         siblingCount: paginationProp.options?.siblingCount ?? 1,
       },
     } : undefined,
+    scroll: scrollProp,
   }), [
     dataSource,
     emptyProps,
@@ -232,6 +252,8 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     isFetching,
     isReachEnd,
     paginationProp,
+    isHorizontalScrolling,
+    scrollProp,
   ]);
 
   const tableDataContextValue = useMemo(() => ({
@@ -243,37 +265,99 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     bodyCell: components?.body?.cell,
   }), [components?.body?.cell]);
 
+  const tableRefs = useComposeRefs([ref, scrollBody.target]);
+
   return (
-    <Loading
-      loading={loading}
-      stretch
-      tip="資料載入中..."
-    >
-      <table
-        ref={ref}
-        {...rest}
-        className={cx(classes.host, className)}
-      >
-        <TableContext.Provider value={tableContextValue}>
-          <TableDataContext.Provider value={tableDataContextValue}>
-            <TableComponentContext.Provider value={tableComponentContextValue}>
-              {isRefreshShow ? (
-                <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
-              ) : null}
-              <TableHeader className={headerClassName} />
-              <TableBody
-                ref={bodyRef}
-                className={bodyClassName}
-                rowClassName={bodyRowClassName}
-              />
-              {paginationProp ? (
-                <TablePagination bodyRef={bodyRef} />
-              ) : null}
-            </TableComponentContext.Provider>
-          </TableDataContext.Provider>
-        </TableContext.Provider>
-      </table>
-    </Loading>
+    <TableContext.Provider value={tableContextValue}>
+      <TableDataContext.Provider value={tableDataContextValue}>
+        <TableComponentContext.Provider value={tableComponentContextValue}>
+          <Loading
+            loading={loading}
+            stretch
+            tip="資料載入中..."
+            overlayProps={{
+              className: classes.loading,
+            }}
+          >
+            <div
+              ref={scrollBody.ref}
+              className={classes.scrollContainer}
+              onScroll={scrollBody.onScroll}
+              style={tableContextValue.scroll ? {
+                '--table-scroll-x': tableContextValue.scroll.x
+                  ? `${tableContextValue.scroll.x}px`
+                  : '100%',
+                '--table-scroll-y': tableContextValue.scroll.y
+                  ? `${tableContextValue.scroll.y}px`
+                  : 'unset',
+              } as CSSProperties : undefined}
+            >
+              <table
+                ref={tableRefs}
+                {...rest}
+                className={cx(classes.host, className)}
+              >
+                {isRefreshShow ? (
+                  <tbody>
+                    <tr>
+                      <td>
+                        <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
+                      </td>
+                    </tr>
+                  </tbody>
+                ) : null}
+                <TableHeader className={headerClassName} />
+                <TableBody
+                  ref={bodyRef}
+                  className={bodyClassName}
+                  rowClassName={bodyRowClassName}
+                />
+              </table>
+            </div>
+            {paginationProp ? (
+              <TablePagination bodyRef={bodyRef} />
+            ) : null}
+            <div
+              ref={scrollElement.trackRef}
+              style={scrollElement.trackStyle}
+              onMouseDown={scrollElement.onMouseDown}
+              onMouseUp={scrollElement.onMouseUp}
+              role="button"
+              tabIndex={-1}
+            >
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'relative',
+                }}
+              >
+                <div
+                  ref={scrollElement.ref}
+                  onMouseDown={scrollElement.onMouseDown}
+                  onMouseUp={scrollElement.onMouseUp}
+                  onMouseEnter={scrollElement.onMouseEnter}
+                  onMouseLeave={scrollElement.onMouseLeave}
+                  role="button"
+                  style={scrollElement.style}
+                  tabIndex={-1}
+                >
+                  <div
+                    style={{
+                      width: `${scrollElement.scrollBarSize}px`,
+                      height: '100%',
+                      borderRadius: '10px',
+                      backgroundColor: '#7d7d7d',
+                      transition: '0.1s',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </Loading>
+        </TableComponentContext.Provider>
+      </TableDataContext.Provider>
+    </TableContext.Provider>
   );
 });
 

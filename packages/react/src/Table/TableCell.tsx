@@ -30,7 +30,6 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
     className,
     ellipsis = true,
     forceShownTooltipWhenHovered = false,
-    role = 'gridcell',
     tooltipTitle,
     ...rest
   } = props;
@@ -45,7 +44,6 @@ const TableCell = forwardRef<HTMLDivElement, TableCellProps>(function TableCell(
         classes.cell,
         className,
       )}
-      role={role}
     >
       {ellipsis || forceShownTooltipWhenHovered ? (
         <Tooltip

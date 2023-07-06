@@ -8,8 +8,6 @@ import {
 } from '@mezzanine-ui/core/table';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
-import { useComposeRefs } from '../hooks/useComposeRefs';
-import useTableScroll from './useTableScroll';
 import { TableContext, TableDataContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
 import Empty from '../Empty';
@@ -36,12 +34,8 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
   const {
     emptyProps,
     fetchMore,
-    scrollBarSize,
     pagination,
   } = useContext(TableContext) || {};
-
-  const [tableBody, scrollElement] = useTableScroll();
-  const composedRefs = useComposeRefs([ref, tableBody.ref]);
 
   /** customizing empty */
   const {
@@ -74,12 +68,11 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
   return (
     <tbody
       {...rest}
-      ref={composedRefs}
+      ref={ref}
       className={cx(
         classes.body,
         className,
       )}
-      onScroll={tableBody.onScroll}
     >
       {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource, index: number) => (
         <TableBodyRow
@@ -89,56 +82,25 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
           rowIndex={index}
         />
       )) : (
-        <Empty
-          {...restEmptyProps}
-          className={cx(classes.bodyEmpty, emptyComponentClassName)}
-          fullHeight={emptyComponentFullHeight}
-        >
-          {emptyComponentChildren}
-        </Empty>
+        <tr>
+          <td>
+            <Empty
+              {...restEmptyProps}
+              className={cx(classes.bodyEmpty, emptyComponentClassName)}
+              fullHeight={emptyComponentFullHeight}
+            >
+              {emptyComponentChildren}
+            </Empty>
+          </td>
+        </tr>
       )}
       {fetchMore?.isFetching ? (
-        <div className={classes.bodyFetchMore}>
-          <Loading loading />
-        </div>
+        <tr className={classes.bodyFetchMore}>
+          <td>
+            <Loading loading />
+          </td>
+        </tr>
       ) : null}
-      <div
-        ref={scrollElement.trackRef}
-        style={scrollElement.trackStyle}
-        onMouseDown={scrollElement.onMouseDown}
-        onMouseUp={scrollElement.onMouseUp}
-        role="button"
-        tabIndex={-1}
-      >
-        <div
-          style={{
-            width: '100%',
-            height: '100%',
-            position: 'relative',
-          }}
-        >
-          <div
-            ref={scrollElement.ref}
-            onMouseDown={scrollElement.onMouseDown}
-            onMouseUp={scrollElement.onMouseUp}
-            onMouseEnter={scrollElement.onMouseEnter}
-            onMouseLeave={scrollElement.onMouseLeave}
-            role="button"
-            style={scrollElement.style}
-            tabIndex={-1}
-          >
-            <div
-              style={{
-                width: `${scrollBarSize}px`,
-                height: '100%',
-                borderRadius: '10px',
-                backgroundColor: '#7d7d7d',
-                transition: '0.1s',
-              }}
-            />
-          </div>
-        </div>
-      </div>
     </tbody>
   );
 });

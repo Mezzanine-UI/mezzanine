@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useContext,
+  useMemo,
 } from 'react';
 import {
   tableClasses as classes,
@@ -27,6 +28,8 @@ const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKey
 
     const {
       rowSelection,
+      isHorizontalScrolling,
+      scroll,
       expanding,
     } = useContext(TableContext) || {};
 
@@ -34,35 +37,51 @@ const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKey
       columns,
     } = useContext(TableDataContext) || {};
 
+    const isFirstColumnShouldSticky = useMemo(() => {
+      /** 前面有 action 時不可 sticky */
+      if (rowSelection || expanding) return false;
+
+      return (scroll?.fixedFirstColumn ?? false);
+    }, [
+      rowSelection,
+      expanding,
+      scroll?.fixedFirstColumn,
+    ]);
+
     return (
-      <thead style={{ width: '100%' }}>
+      <thead className={classes.headerFixed}>
         <tr
           ref={ref}
           {...rest}
           className={cx(classes.header, className)}
         >
           {rowSelection ? (
-            <TableRowSelection
-              rowKey={SELECTED_ALL_KEY}
-              showDropdownIcon
-            />
+            <th style={{ display: 'flex' }}>
+              <TableRowSelection
+                rowKey={SELECTED_ALL_KEY}
+                showDropdownIcon
+              />
+            </th>
           ) : null}
           {/** only display expanding placeholder when rowSelection not enabled */}
           {expanding && !rowSelection ? (
-            <TableExpandable showIcon={false} />
+            <th style={{ display: 'flex' }}>
+              <TableExpandable showIcon={false} />
+            </th>
           ) : null}
-          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => (
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => (
             <th
               key={`${column.dataIndex}-${column.title}`}
               className={cx(
                 classes.headerCellWrapper,
+                isFirstColumnShouldSticky && idx === 0 && classes.headerCellWrapperFixed,
+                isFirstColumnShouldSticky && idx === 0 && isHorizontalScrolling && classes.headerCellWrapperFixedStuck,
                 column.headerClassName,
               )}
               style={getColumnStyle(column)}
             >
               <TableCell
                 ellipsis={false}
-                role="columnheader"
                 style={getCellStyle(column)}
               >
                 {column.renderTitle?.(classes) || column.title}

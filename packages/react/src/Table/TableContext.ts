@@ -7,6 +7,7 @@ import {
   TableDataSource,
   TableRecord,
   ExpandRowBySources,
+  TableScrolling,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 
@@ -37,7 +38,7 @@ export interface FetchMoreContext {
 }
 
 export interface TableContextProps {
-  scrollBarSize?: number;
+  isHorizontalScrolling?: boolean;
   emptyProps?: EmptyProps;
   rowSelection?: RowSelectionContext;
   sorting?: SortingContext;
@@ -48,6 +49,7 @@ export interface TableContextProps {
   };
   fetchMore?: FetchMoreContext;
   pagination?: TablePagination;
+  scroll?: TableScrolling;
 }
 
 export const TableContext = createContext<TableContextProps | null>(null);
