@@ -105,6 +105,7 @@ $table-refresh-vertical-padding: 8px !default;
   max-height: var(--table-scroll-y, 'unset');
   position: relative;
   overflow: auto;
+  scrollbar-width: thin; /* firefox specific (firefox 只能先用原生的) */
 
   &::-webkit-scrollbar {
     height: 8px;
