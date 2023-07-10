@@ -47,7 +47,7 @@ describe('<TableBodyRow />', () => {
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(
-    HTMLDivElement,
+    HTMLTableRowElement,
     (ref) => render(
       <TableBodyRow
         ref={ref}
