@@ -34,7 +34,7 @@ export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'d
   rowIndex: number;
 }
 
-const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
+const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
   function TableBodyRow(props, ref) {
     const {
       className,
@@ -46,6 +46,8 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
     const {
       rowSelection,
       expanding,
+      isHorizontalScrolling,
+      scroll,
     } = useContext(TableContext) || {};
 
     const {
@@ -66,9 +68,21 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
       expanding?.expandedRowRender?.(rowData) ?? null
     ), [expanding, rowData]);
 
+    /** Feature scrolling */
+    const isFirstColumnShouldSticky = useMemo(() => {
+      /** 前面有 action 時不可 sticky */
+      if (rowSelection || expanding) return false;
+
+      return (scroll?.fixedFirstColumn ?? false);
+    }, [
+      rowSelection,
+      expanding,
+      scroll?.fixedFirstColumn,
+    ]);
+
     return (
       <Fragment>
-        <div
+        <tr
           {...rest}
           ref={ref}
           className={cx(
@@ -78,38 +92,53 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
             },
             className,
           )}
-          role="row"
         >
           {rowSelection ? (
-            <TableRowSelection
-              role="gridcell"
-              rowKey={(rowData.key || rowData.id) as string}
-              setChecked={(status) => setSelected(status)}
-              showDropdownIcon={false}
-            />
+            <td
+              className={classes.bodyRowCellWrapper}
+              style={{
+                flex: 'unset',
+                minWidth: 'unset',
+              }}
+            >
+              <TableRowSelection
+                rowKey={(rowData.key || rowData.id) as string}
+                setChecked={(status) => setSelected(status)}
+                showDropdownIcon={false}
+              />
+            </td>
           ) : null}
           {expanding ? (
-            <TableExpandable
-              expandable={isExpandable}
-              expanded={expanded}
-              role="gridcell"
-              setExpanded={setExpanded}
-              onExpand={
-                (status: boolean) => expanding.onExpand?.(rowData, status)
-              }
-            />
+            <td
+              className={classes.bodyRowCellWrapper}
+              style={{
+                flex: 'unset',
+                minWidth: 'unset',
+              }}
+            >
+              <TableExpandable
+                expandable={isExpandable}
+                expanded={expanded}
+                setExpanded={setExpanded}
+                onExpand={
+                  (status: boolean) => expanding.onExpand?.(rowData, status)
+                }
+              />
+            </td>
           ) : null}
-          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => {
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => {
             const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
             const tooltipTitle = (
               column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
             ) as (string | number);
 
             return (
-              <div
+              <td
                 key={`${column.dataIndex}-${column.title}`}
                 className={cx(
                   classes.bodyRowCellWrapper,
+                  isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,
+                  isFirstColumnShouldSticky && idx === 0 && isHorizontalScrolling && classes.bodyRowCellWrapperFixedStuck,
                   column.bodyClassName,
                 )}
                 style={getColumnStyle(column)}
@@ -131,26 +160,30 @@ const TableBodyRow = forwardRef<HTMLDivElement, TableBodyRowProps>(
                     ) || get(rowData, column.dataIndex)}
                   </TableCell>
                 </TableEditRenderWrapper>
-              </div>
+              </td>
             );
           })}
-        </div>
+        </tr>
         {renderedExpandedContent ? (
-          <AccordionDetails
-            className={cx(
-              (expanding as TableExpandableType<TableRecord<unknown>>).className,
-              classes.bodyRowExpandedTableWrapper,
-            )}
-            expanded={expanded}
-          >
-            {(renderedExpandedContent as ExpandRowBySources)?.dataSource ? (
-              <TableExpandedTable
-                renderedExpandedContent={renderedExpandedContent as ExpandRowBySources}
-              />
-            ) : (
-              renderedExpandedContent as any
-            )}
-          </AccordionDetails>
+          <tr>
+            <td style={{ padding: 0 }}>
+              <AccordionDetails
+                className={cx(
+                  (expanding as TableExpandableType<TableRecord<unknown>>).className,
+                  classes.bodyRowExpandedTableWrapper,
+                )}
+                expanded={expanded}
+              >
+                {(renderedExpandedContent as ExpandRowBySources)?.dataSource ? (
+                  <TableExpandedTable
+                    renderedExpandedContent={renderedExpandedContent as ExpandRowBySources}
+                  />
+                ) : (
+                  renderedExpandedContent as any
+                )}
+              </AccordionDetails>
+            </td>
+          </tr>
         ) : null}
       </Fragment>
     );

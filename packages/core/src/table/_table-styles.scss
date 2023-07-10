@@ -1,5 +1,8 @@
+/* stylelint-disable color-function-notation */
+/* stylelint-disable alpha-value-notation */
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/transition';
 @use './table' as *;
 
 $table-header-height: 40px !default;
@@ -16,7 +19,7 @@ $table-refresh-vertical-padding: 8px !default;
   height: auto;
   min-height: $min-height;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
   border-bottom: 1px solid palette.color(border);
 }
@@ -54,17 +57,95 @@ $table-refresh-vertical-padding: 8px !default;
   font-size: typography.px-to-rem($size);
 }
 
-.#{$prefix} {
-  position: relative;
+@mixin with-scroll-box-shadow($colorName) {
+  &--fixed {
+    &:first-child {
+      position: sticky;
+      z-index: 2;
+      left: 0;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background-color: palette.color(#{$colorName});
+    }
+
+    &::after {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: -1px;
+      width: 10px;
+      transform: translateX(100%);
+      transition: transition.standard(box-shadow);
+      content: '';
+      pointer-events: none;
+    }
+
+    &--stuck {
+      &::after {
+        box-shadow: inset 8px 0 8px -8px rgba(0, 0, 0, 0.25);
+      }
+    }
+  }
+}
+
+.#{$loading-prefix} {
+  z-index: 4;
+}
+
+.#{$container-prefix} {
   width: 100%;
-  height: 100%;
-  display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  justify-content: flex-start;
+  max-height: var(--table-scroll-y, 'unset');
+  position: relative;
+  overflow: auto;
+  scrollbar-width: thin; /* firefox specific (firefox 只能先用原生的) */
+
+  &::-webkit-scrollbar {
+    height: 8px;
+    width: 0;
+
+    /* smartphones, touchscreens */
+    @media (hover: none) and (pointer: coarse) {
+      display: none;
+      height: 0;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    background: #6a6a6a;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+}
+
+.#{$prefix} {
+  width: 100%;
+  min-width: var(--table-scroll-x, '100%');
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-spacing: 0;
   box-sizing: border-box;
 
   @include text_color;
+  @include body_bg();
+}
+
+.#{$header-fixed-prefix} {
+  width: 100%;
+  min-width: var(--table-scroll-x, '100%');
+  position: sticky;
+  z-index: 3;
+  top: 0;
 }
 
 .#{$header-prefix} {
@@ -75,33 +156,48 @@ $table-refresh-vertical-padding: 8px !default;
 
   &__cellWrapper {
     @include flexible;
+
+    background-color: palette.color(divider);
+
+    @include with-scroll-box-shadow(divider);
   }
 }
 
 .#{$body-prefix} {
   position: relative;
   width: 100%;
-  flex: 1 0 0;
-  overflow: auto;
-  scrollbar-width: none; /* Firefox specific */
-
-  &::-webkit-scrollbar {
-    display: none;
-    -webkit-overflow-scrolling: touch;
-  }
+  min-width: var(--table-scroll-x, '100%');
 
   &__row {
     @include row(52px);
     @include body_content;
     @include body_bg;
 
+    position: relative;
+
     &:hover,
     &--highlight {
-      @include action_highlight_bg;
+      .#{$body-prefix} {
+        &__row {
+          &__cellWrapper {
+            @include action_highlight_bg;
+
+            &--fixed {
+              @include body_bg;
+
+              &::before {
+                @include action_highlight_bg;
+              }
+            }
+          }
+        }
+      }
     }
 
     &__cellWrapper {
       @include flexible;
+      @include body_bg;
+      @include with-scroll-box-shadow(surface);
     }
 
     &__expandedTableWrapper {
@@ -119,12 +215,15 @@ $table-refresh-vertical-padding: 8px !default;
 
   &__empty {
     @include body_bg;
+
+    min-height: calc(var(--table-scroll-y, '130px') - 12px - #{$table-header-height});
   }
 
   &__fetchMore {
     @include row(auto);
     @include body_bg;
 
+    justify-content: center;
     padding: $table-fetch-more-vertical-padding 0;
     border-bottom: none;
   }

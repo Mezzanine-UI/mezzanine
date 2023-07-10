@@ -42,6 +42,18 @@ const defaultProps = {
   dataSource: defaultSources,
 };
 
+function getTableBodyScrollBarTrack(element: HTMLElement) {
+  return element.querySelector('.mzn-table-scroll-bar-track') as HTMLDivElement;
+}
+
+function getTableBodyScrollBar(element: HTMLElement) {
+  return element.querySelector('.mzn-table-scroll-bar') as HTMLDivElement;
+}
+
+function getTableScrollContainer(element: HTMLElement) {
+  return element.querySelector('.mzn-table-scroll-area') as HTMLDivElement;
+}
+
 function getTableRefreshHost(element: HTMLElement) {
   return element.querySelector('.mzn-table__refresh');
 }
@@ -62,6 +74,14 @@ function getTableRows(element: HTMLElement) {
   return element.querySelectorAll('.mzn-table__body__row');
 }
 
+const observeCallback = jest.fn();
+
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: observeCallback,
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 describe('<Table />', () => {
   afterEach(cleanupHook);
 
@@ -70,7 +90,7 @@ describe('<Table />', () => {
   });
 
   describeForwardRefToHTMLElement(
-    HTMLDivElement,
+    HTMLTableElement,
     (ref) => render(
       <Table
         {...defaultProps}
@@ -124,16 +144,17 @@ describe('<Table />', () => {
       const { getHostHTMLElement } = render(
         <Table
           {...defaultProps}
+          scroll={{ y: 200 }}
           fetchMore={{
             callback: onFetchMore,
           }}
         />,
       );
       const host = getHostHTMLElement();
-      const body = getTableBody(host);
+      const scrollContainer = getTableScrollContainer(host);
 
       await act(async () => {
-        fireEvent.scroll(body);
+        fireEvent.scroll(scrollContainer);
       });
 
       expect(fetchMoreTriggered).toBe(true);
@@ -377,6 +398,269 @@ describe('<Table />', () => {
       });
 
       expect(selectedRowKeys[0]).toBe(defaultSources[0].key);
+    });
+  });
+
+  describe('useTableScroll', () => {
+    const scrollBarSize = 4;
+    const scrollBarTop = 20;
+    const scrollHeight = 800;
+    const tableTop = 80;
+    const tableHeight = 200;
+    const mouseDownFrom = 120;
+    const mouseMoveTo = 252;
+    let fetchMoreTriggered = false;
+    let host: HTMLElement;
+
+    const onFetchMore = jest.fn<void, [void]>(() => {
+      fetchMoreTriggered = true;
+    });
+
+    beforeEach(() => {
+      fetchMoreTriggered = false;
+
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: scrollHeight });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: tableHeight });
+
+      jest.useFakeTimers();
+      jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+        cb(0);
+
+        return 0;
+      });
+
+      const { getHostHTMLElement } = render(
+        <Table
+          columns={[]}
+          dataSource={defaultSources}
+          scroll={{ y: tableHeight }}
+          fetchMore={{
+            isFetching: false,
+            isReachEnd: false,
+            callback: onFetchMore,
+          }}
+        />,
+      );
+
+      host = getHostHTMLElement();
+    });
+
+    afterEach(() => {
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: scrollHeight });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: tableHeight });
+    });
+
+    it('should scroll bar / scroll bar track existed', () => {
+      const scrollBarTrack = getTableBodyScrollBarTrack(host);
+      const scrollBar = getTableBodyScrollBar(host);
+      const scrollBarChildStyle = scrollBar.firstElementChild?.getAttribute('style');
+      const widthMatch = new RegExp(`width: ${scrollBarSize}px`, 'g');
+
+      expect(scrollBarTrack).not.toBeNull();
+      expect(scrollBar).not.toBeNull();
+      expect(scrollBarChildStyle?.match(widthMatch)).not.toBeNull();
+    });
+
+    it('should scroll bar stretching when mouse enter/leave', async () => {
+      let currentScrollBar = getTableBodyScrollBar(host);
+      let currentScrollBarChildStyle;
+
+      await act(async () => {
+        fireEvent.mouseEnter(currentScrollBar);
+      });
+
+      currentScrollBar = getTableBodyScrollBar(host);
+      currentScrollBarChildStyle = currentScrollBar.firstElementChild?.getAttribute('style');
+
+      const widthMatch = new RegExp(`width: ${scrollBarSize + 6}px`, 'g');
+
+      expect(currentScrollBarChildStyle?.match(widthMatch)).not.toBeNull();
+
+      await act(async () => {
+        fireEvent.mouseLeave(getTableBodyScrollBar(host));
+      });
+
+      currentScrollBar = getTableBodyScrollBar(host);
+      currentScrollBarChildStyle = currentScrollBar.firstElementChild?.getAttribute('style');
+
+      const widthMatch2 = new RegExp(`width: ${scrollBarSize}px`, 'g');
+
+      expect(currentScrollBarChildStyle?.match(widthMatch2)).not.toBeNull();
+    });
+
+    it('should update scroll bar position when use mouse to drag', async () => {
+      const currentScrollBar = getTableBodyScrollBar(host);
+      let newScrollBarTop;
+
+      await act(async () => {
+        fireEvent.mouseDown(currentScrollBar, {
+          clientY: mouseDownFrom,
+          target: {
+            getBoundingClientRect: () => ({
+              top: scrollBarTop,
+            }),
+          },
+        });
+      });
+
+      const originDOMRect = host.getBoundingClientRect();
+
+      host.getBoundingClientRect = () => ({
+        ...originDOMRect,
+        top: tableTop,
+      });
+
+      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>((position, style) => {
+        newScrollBarTop = `${position}: ${style}`;
+      });
+
+      await act(async () => {
+        fireEvent.mouseMove(currentScrollBar, {
+          clientY: mouseMoveTo,
+        });
+      });
+
+      expect(newScrollBarTop).toBe('transform: translate3d(0, 112px, 0)');
+    });
+
+    it('should display/hide scroll bar when scrolling', async () => {
+      const scrollContainer = getTableScrollContainer(host);
+
+      await act(async () => {
+        // scroll twice to trigger clearTimeout
+        fireEvent.scroll(scrollContainer);
+        fireEvent.scroll(scrollContainer);
+      });
+
+      const currentScrollBarStyle = getTableBodyScrollBar(host)?.getAttribute('style');
+
+      expect(currentScrollBarStyle).not.toBeUndefined();
+      expect(currentScrollBarStyle?.match(/opacity: 1/g)).not.toBeNull();
+
+      jest.runAllTimers();
+
+      const nextScrollBarStyle = getTableBodyScrollBar(host)?.getAttribute('style');
+
+      expect(nextScrollBarStyle).not.toBeUndefined();
+      expect(nextScrollBarStyle?.match(/opacity: 0/g)).not.toBeNull();
+    });
+
+    it('should trigger fetchMore when scrolling position near table bottom', async () => {
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+
+      const scrollContainer = getTableScrollContainer(host);
+
+      await act(async () => {
+        fireEvent.scroll(scrollContainer);
+      });
+
+      expect(fetchMoreTriggered).toBe(true);
+    });
+
+    it('should update scroll bar position when clicked on scroll track', async () => {
+      const currentScrollBar = getTableBodyScrollBar(host);
+      const currentScrollBarTrack = getTableBodyScrollBarTrack(host);
+      let newScrollBarTop;
+
+      const originDOMRect = host.getBoundingClientRect();
+
+      host.getBoundingClientRect = () => ({
+        ...originDOMRect,
+        top: tableTop,
+      });
+
+      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>((position, style) => {
+        newScrollBarTop = `${position}: ${style}`;
+      });
+
+      await act(async () => {
+        fireEvent.click(currentScrollBarTrack, {
+          clientY: mouseMoveTo,
+          target: {
+            getBoundingClientRect: () => ({
+              top: scrollBarTop,
+            }),
+          },
+        });
+      });
+
+      expect(newScrollBarTop).toBe('transform: translate3d(0, 144px, 0)');
+    });
+
+    it('should called ResizeObserver.observe when table existed', () => {
+      expect(observeCallback).toBeCalled();
+    });
+
+    describe('exceptions handle', () => {
+      it('when fetchMore callback is not given', async () => {
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+
+        const { getHostHTMLElement } = render(
+          <Table
+            columns={[]}
+            dataSource={defaultSources}
+          />,
+        );
+
+        const tableHost = getHostHTMLElement();
+
+        await act(async () => {
+          fireEvent.scroll(tableHost);
+        });
+
+        expect(true);
+      });
+
+      it('should not trigger fetchMore when is scroll below bottom (safari specific bug)', async () => {
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 199 });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+
+        const { getHostHTMLElement } = render(
+          <Table
+            columns={[]}
+            dataSource={defaultSources}
+            fetchMore={{
+              isFetching: false,
+              isReachEnd: false,
+              callback: onFetchMore,
+            }}
+          />,
+        );
+
+        const tableHost = getHostHTMLElement();
+
+        await act(async () => {
+          fireEvent.scroll(tableHost);
+        });
+
+        expect(fetchMoreTriggered).toBe(false);
+      });
+
+      it('should not trigger scrolling event changes when loading', async () => {
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+
+        const { getHostHTMLElement } = render(
+          <Table
+            columns={[]}
+            dataSource={defaultSources}
+            fetchMore={{
+              isFetching: false,
+              isReachEnd: false,
+              callback: onFetchMore,
+            }}
+          />,
+        );
+        const tableHost = getHostHTMLElement();
+
+        await act(async () => {
+          fireEvent.scroll(tableHost);
+        });
+
+        expect(fetchMoreTriggered).toBe(false);
+      });
     });
   });
 });

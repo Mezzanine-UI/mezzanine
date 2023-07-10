@@ -1,6 +1,7 @@
 import {
   forwardRef,
   useContext,
+  useMemo,
 } from 'react';
 import {
   tableClasses as classes,
@@ -18,7 +19,7 @@ import TableRowSelection from './rowSelection/TableRowSelection';
 import TableSortingIcon from './sorting/TableSortingIcon';
 import TableExpandable from './expandable/TableExpandable';
 
-const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRef<'div'>>(
+const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKeyAndRef<'div'>>(
   function TableHeader(props, ref) {
     const {
       className,
@@ -27,6 +28,8 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
 
     const {
       rowSelection,
+      isHorizontalScrolling,
+      scroll,
       expanding,
     } = useContext(TableContext) || {};
 
@@ -34,47 +37,64 @@ const TableHeader = forwardRef<HTMLDivElement, NativeElementPropsWithoutKeyAndRe
       columns,
     } = useContext(TableDataContext) || {};
 
+    const isFirstColumnShouldSticky = useMemo(() => {
+      /** 前面有 action 時不可 sticky */
+      if (rowSelection || expanding) return false;
+
+      return (scroll?.fixedFirstColumn ?? false);
+    }, [
+      rowSelection,
+      expanding,
+      scroll?.fixedFirstColumn,
+    ]);
+
     return (
-      <div
-        ref={ref}
-        {...rest}
-        className={cx(classes.header, className)}
-        role="rowgroup"
-      >
-        {rowSelection ? (
-          <TableRowSelection
-            rowKey={SELECTED_ALL_KEY}
-            showDropdownIcon
-          />
-        ) : null}
-        {/** only display expanding placeholder when rowSelection not enabled */}
-        {expanding && !rowSelection ? (
-          <TableExpandable showIcon={false} />
-        ) : null}
-        {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>) => (
-          <div
-            key={`${column.dataIndex}-${column.title}`}
-            className={cx(
-              classes.headerCellWrapper,
-              column.headerClassName,
-            )}
-            style={getColumnStyle(column)}
-          >
-            <TableCell
-              ellipsis={false}
-              role="columnheader"
-              style={getCellStyle(column)}
+      <thead className={classes.headerFixed}>
+        <tr
+          ref={ref}
+          {...rest}
+          className={cx(classes.header, className)}
+        >
+          {rowSelection ? (
+            <th style={{ display: 'flex' }}>
+              <TableRowSelection
+                rowKey={SELECTED_ALL_KEY}
+                showDropdownIcon
+              />
+            </th>
+          ) : null}
+          {/** only display expanding placeholder when rowSelection not enabled */}
+          {expanding && !rowSelection ? (
+            <th style={{ display: 'flex' }}>
+              <TableExpandable showIcon={false} />
+            </th>
+          ) : null}
+          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => (
+            <th
+              key={`${column.dataIndex}-${column.title}`}
+              className={cx(
+                classes.headerCellWrapper,
+                isFirstColumnShouldSticky && idx === 0 && classes.headerCellWrapperFixed,
+                isFirstColumnShouldSticky && idx === 0 && isHorizontalScrolling && classes.headerCellWrapperFixedStuck,
+                column.headerClassName,
+              )}
+              style={getColumnStyle(column)}
             >
-              {column.renderTitle?.(classes) || column.title}
-              {typeof column.sorter === 'function' || typeof column.onSorted === 'function' ? (
-                <TableSortingIcon
-                  column={column}
-                />
-              ) : null}
-            </TableCell>
-          </div>
-        ))}
-      </div>
+              <TableCell
+                ellipsis={false}
+                style={getCellStyle(column)}
+              >
+                {column.renderTitle?.(classes) || column.title}
+                {typeof column.sorter === 'function' || typeof column.onSorted === 'function' ? (
+                  <TableSortingIcon
+                    column={column}
+                  />
+                ) : null}
+              </TableCell>
+            </th>
+          ))}
+        </tr>
+      </thead>
     );
   },
 );

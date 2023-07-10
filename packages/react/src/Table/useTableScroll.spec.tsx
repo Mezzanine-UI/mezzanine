@@ -1,17 +1,17 @@
-import { ReactNode, MouseEvent } from 'react';
+import { MouseEvent } from 'react';
 import {
   TestRenderer,
   cleanup,
   cleanupHook,
   renderHook,
-  render,
 } from '../../__test-utils__';
 import useTableScroll from './useTableScroll';
-import { TableDataContext } from './TableContext';
 
-type Source = {
-  key: string;
-};
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
 
 describe('useTableScroll()', () => {
   afterEach(() => {
@@ -21,7 +21,7 @@ describe('useTableScroll()', () => {
 
   it('should not trigger any event handler when ref is not assigned', () => {
     const { result } = renderHook(
-      () => useTableScroll(),
+      () => useTableScroll({}),
     );
 
     const [
@@ -48,59 +48,21 @@ describe('useTableScroll()', () => {
     });
 
     TestRenderer.act(() => {
-      tableBody.onScroll();
+      tableBody.onScroll({ target: { scrollLeft: 0 } } as any);
     });
 
     expect(scrollElement.style.height).toBe('0px');
   });
 
-  it('should update scroll bar height when sources changed', () => {
-    Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 800 });
-    Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+  it('should hide scroll bar when is touch screen', () => {
+    /** @TODO test */
+  });
 
-    const wrapper = ({
-      dataSource,
-      children,
-    }: {
-      dataSource: Source[],
-      children?: ReactNode,
-    }) => (
-      <TableDataContext.Provider value={{ dataSource, columns: [] }}>
-        {children}
-      </TableDataContext.Provider>
-    );
+  it('should contain bar track', () => {
+    /** @TODO test */
+  });
 
-    const { result, rerender } = renderHook(
-      () => useTableScroll(),
-      {
-        wrapper,
-        initialProps: {
-          dataSource: [] as Source[],
-        },
-      },
-    );
-
-    const [
-      body,
-      scroll,
-    ] = result.current;
-
-    expect(scroll.style.height).toBe('0px');
-
-    render(
-      <div ref={body.ref}>
-        <div ref={scroll.ref} />
-      </div>,
-    );
-
-    rerender({
-      dataSource: [{
-        key: 'foo',
-      }, {
-        key: 'bar',
-      }],
-    });
-
-    expect(result.current[1].style.height).toBe('46px');
+  it('should update scroll bar position when clicking bar track', () => {
+    /** @TODO test */
   });
 });

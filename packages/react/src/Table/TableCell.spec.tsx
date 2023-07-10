@@ -35,7 +35,7 @@ describe('<TableCell />', () => {
 
     expect(element.getAttribute('id')).toBe('foo');
     expect(element.getAttribute('aria-disabled')).toBe('true');
-    expect(element.getAttribute('role')).toBe('gridcell');
+    expect(element.getAttribute('role')).toBe(null);
   });
 
   describe('ellipsis: true', () => {

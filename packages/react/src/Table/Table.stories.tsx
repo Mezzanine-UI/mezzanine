@@ -44,6 +44,7 @@ type DataType = {
 const columns: TableColumn<DataType>[] = [{
   title: 'Name',
   dataIndex: 'name',
+  width: 150,
   sorter: (a: string, b: string) => {
     if (a < b) return 1;
 
@@ -70,7 +71,7 @@ const columns: TableColumn<DataType>[] = [{
   forceShownTooltipWhenHovered: true,
 }];
 
-const dataSource: DataType[] = Array.from(Array(35)).map((_, idx) => ({
+const dataSource: DataType[] = Array.from(Array(15)).map((_, idx) => ({
   key: `source-${idx + 1}`,
   name: `${String.fromCharCode(97 + idx)} John Brown`,
   address: `New York No. ${idx + 1} Lake Park`,
@@ -92,11 +93,11 @@ export const Basic = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSources(() => dataSource);
+      setSources(() => dataSource.slice(0, 8));
     }, 2000);
 
     const timer2 = setTimeout(() => {
-      setSources(() => dataSource.slice(0).reverse());
+      setSources(() => dataSource.slice(0, 8).reverse());
     }, 3000);
 
     return () => {
@@ -132,20 +133,25 @@ export const Basic = () => {
           })}
         />
       </div>
+      <h3>
+        Basic overflow table
+      </h3>
       <div
         style={{
           width: '80%',
-          height: 400,
         }}
       >
         <Table
           columns={columns}
           dataSource={sources}
           loading={loading}
+          scroll={{
+            y: 400,
+          }}
           fetchMore={{
             callback: () => {
               // your custom reach end condition
-              if (sources.length >= 30) {
+              if (sources.length >= 15) {
                 setReachEnd(true);
               } else {
                 setTimeout(() => {
@@ -159,6 +165,90 @@ export const Basic = () => {
             isReachEnd,
             // isFetching,
           }}
+        />
+      </div>
+      <h3>
+        Basic auto height table
+      </h3>
+      <div
+        style={{
+          width: '80%',
+        }}
+      >
+        <Table
+          columns={columns}
+          dataSource={sources}
+          loading={loading}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const ScrollableAndFixedColumn = () => {
+  const expandable: TableProps<DataType>['expandable'] = {
+    expandedRowRender: (record) => record.description,
+    rowExpandable: (record) => !!record.description,
+  };
+
+  return (
+    <div style={{ width: '100%' }}>
+      <h3>Scrollable X & Y / Fixed first column</h3>
+      <div style={{ width: '80%' }}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          scrollContainerClassName="foo"
+          scroll={{
+            x: 1500,
+            y: 300,
+            fixedFirstColumn: true,
+          }}
+        />
+      </div>
+      <h3>Scrollable X & Y</h3>
+      <div style={{ width: '80%' }}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{
+            x: 1500,
+            y: 300,
+          }}
+        />
+      </div>
+      <h3>Scrollable X only</h3>
+      <div style={{ width: '80%' }}>
+        <Table
+          columns={columns}
+          dataSource={dataSource.slice(0, 8)}
+          scroll={{
+            x: 1500,
+          }}
+        />
+      </div>
+      <h3>Scrollable Y only</h3>
+      <div style={{ width: '80%' }}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{
+            y: 300,
+          }}
+        />
+      </div>
+      <h3>When actions existed, fixed column will disabled</h3>
+      <div style={{ width: '80%' }}>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{
+            x: 1500,
+            y: 300,
+            /** 因為 expandable 有給，所以 fixedFirstColumn 沒有作用 */
+            fixedFirstColumn: true,
+          }}
+          expandable={expandable}
         />
       </div>
     </div>
@@ -188,49 +278,37 @@ export const Selections = () => {
 
   return (
     <div style={{ display: 'grid', gap: 40 }}>
-      <div
-        style={{
-          width: '80%',
-          height: 350,
-          display: 'flex',
-          flexFlow: 'column',
-        }}
-      >
+      <div style={{ width: '95%' }}>
         <h3>
           UnControlled
         </h3>
-        <div style={{ flex: '1 0 0' }}>
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            expandable={expandable}
-            rowSelection={{
-              actions: selectedActions,
-            }}
-          />
-        </div>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          expandable={expandable}
+          scroll={{
+            y: 400,
+          }}
+          rowSelection={{
+            actions: selectedActions,
+          }}
+        />
       </div>
-      <div
-        style={{
-          width: '80%',
-          height: 350,
-          display: 'flex',
-          flexFlow: 'column',
-        }}
-      >
+      <div style={{ width: '95%' }}>
         <h3>
           Controlled
         </h3>
-        <div style={{ flex: '1 0 0' }}>
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowSelection={{
-              selectedRowKey: selectedRowKeys,
-              onChange: (keys) => setSelectedRowKeys(keys),
-            }}
-          />
-        </div>
+        <Table
+          columns={columns}
+          dataSource={dataSource}
+          scroll={{
+            y: 400,
+          }}
+          rowSelection={{
+            selectedRowKey: selectedRowKeys,
+            onChange: (keys) => setSelectedRowKeys(keys),
+          }}
+        />
       </div>
     </div>
   );
@@ -339,18 +417,13 @@ export const WithActions = () => {
     <div style={{ display: 'grid', gap: 40 }}>
       <div
         style={{
-          width: '80%',
-          height: 350,
-          display: 'flex',
-          flexFlow: 'column',
+          width: '95%',
         }}
       >
-        <div style={{ flex: '1 0 0' }}>
-          <Table
-            columns={withActionColumns}
-            dataSource={dataSource}
-          />
-        </div>
+        <Table
+          columns={withActionColumns}
+          dataSource={dataSource}
+        />
       </div>
     </div>
   );
@@ -365,6 +438,11 @@ export const WithPagination = () => {
     setSources(dataSource);
   }, []);
 
+  const slicedSources = useMemo(() => sources.slice(
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize,
+  ), [sources, pageSize, currentPage]);
+
   return (
     <div
       style={{
@@ -372,27 +450,59 @@ export const WithPagination = () => {
         height: 'auto',
       }}
     >
-      <Table
-        columns={columns}
-        dataSource={sources}
-        pagination={{
-          current: currentPage,
-          onChange: (page) => setCurrentPage(page),
-          options: {
-            pageSize,
-            pageSizeLabel: '每頁顯示：',
-            pageSizeUnit: '筆',
-            onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
-            renderPageSizeOptionName: (p) => `${p}`,
-            renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
-            showPageSizeOptions: true, // 開啟每頁顯示 N 筆
-            showJumper: true, // 開啟跳頁功能
-            jumperButtonText: '前往',
-            jumperHintText: '跳至',
-          },
-        }}
-        style={{ display: 'block' }}
-      />
+      <h3>
+        Scrollable Pagination Table
+      </h3>
+      <div style={{ width: '100%' }}>
+        <Table
+          columns={columns}
+          dataSource={slicedSources}
+          scroll={{ y: 350, x: 1024 }}
+          pagination={{
+            disableAutoSlicing: true,
+            current: currentPage,
+            onChange: (page) => setCurrentPage(page),
+            total: sources.length,
+            options: {
+              pageSize,
+              pageSizeLabel: '每頁顯示：',
+              pageSizeUnit: '筆',
+              onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
+              renderPageSizeOptionName: (p) => `${p}`,
+              renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
+              showPageSizeOptions: true, // 開啟每頁顯示 N 筆
+              showJumper: true, // 開啟跳頁功能
+              jumperButtonText: '前往',
+              jumperHintText: '跳至',
+            },
+          }}
+        />
+      </div>
+      <h3>
+        Auto Height Pagination Table
+      </h3>
+      <div style={{ width: '100%' }}>
+        <Table
+          columns={columns}
+          dataSource={sources}
+          pagination={{
+            current: currentPage,
+            onChange: (page) => setCurrentPage(page),
+            options: {
+              pageSize,
+              pageSizeLabel: '每頁顯示：',
+              pageSizeUnit: '筆',
+              onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
+              renderPageSizeOptionName: (p) => `${p}`,
+              renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
+              showPageSizeOptions: true, // 開啟每頁顯示 N 筆
+              showJumper: true, // 開啟跳頁功能
+              jumperButtonText: '前往',
+              jumperHintText: '跳至',
+            },
+          }}
+        />
+      </div>
     </div>
   );
 };
@@ -404,16 +514,13 @@ export const WithRefresh = () => {
     <div style={{ display: 'grid', gap: 40 }}>
       <div
         style={{
-          width: '80%',
-          height: 400,
-          display: 'flex',
-          flexDirection: 'column',
+          width: '90%',
         }}
       >
         <h3>refresh button inside Table</h3>
         <Table
           columns={columns}
-          dataSource={dataSource}
+          dataSource={dataSource.slice(0, 5)}
           refresh={{
             show: true,
             // eslint-disable-next-line no-console
@@ -423,17 +530,14 @@ export const WithRefresh = () => {
       </div>
       <div
         style={{
-          width: '80%',
-          height: 400,
-          display: 'flex',
-          flexDirection: 'column',
+          width: '90%',
         }}
       >
         <h3>refresh button outside Table</h3>
         <TableRefresh onClick={() => setRefreshing(true)} />
         <Table
           columns={columns}
-          dataSource={dataSource}
+          dataSource={dataSource.slice(0, 5)}
           loading={refreshing}
         />
       </div>
@@ -480,8 +584,7 @@ export const ExpandedWithString = () => {
   return (
     <div
       style={{
-        width: '80%',
-        height: 460,
+        width: '90%',
       }}
     >
       <Table
@@ -523,13 +626,13 @@ export const ExpandedWithDataSource = () => {
   return (
     <div
       style={{
-        width: '80%',
-        height: 460,
+        width: '90%',
       }}
     >
       <Table
         columns={customizedColumns}
         dataSource={dataSource}
+        scroll={{ y: 400 }}
         expandable={{
           className: '',
           expandedRowRender: (record) => ({
@@ -552,7 +655,7 @@ export const ExpandedWithDataSource = () => {
               setTimeout(() => {
                 setSource((p) => ({
                   ...p,
-                  [record.key]: dataSource.slice(0, 5),
+                  [record.key]: dataSource.slice(0, 3),
                 }));
               }, 500);
             }
@@ -567,7 +670,7 @@ const editableColumns: TableColumn<DataType>[] = [{
   title: 'Name',
   dataIndex: 'name',
   editable: false,
-  width: 160,
+  width: 120,
 }, {
   title: 'Address',
   dataIndex: 'address',
@@ -580,7 +683,7 @@ const editableColumns: TableColumn<DataType>[] = [{
 }, {
   title: 'Tel',
   dataIndex: 'tel',
-  ellipsis: false,
+  ellipsis: true,
   editable: true,
 }, {
   dataIndex: '',
@@ -690,21 +793,36 @@ export const Editable = () => {
   });
 
   return (
-    <div
-      style={{
-        width: '90%',
-        height: 460,
-      }}
-    >
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        columns={mergeColumnWithCustomProps}
-        dataSource={dataSource}
-      />
+    <div style={{ width: '100%' }}>
+      <div style={{ width: '95%' }}>
+        <h3>
+          Default
+        </h3>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          columns={mergeColumnWithCustomProps}
+          dataSource={dataSource.slice(0, 6)}
+        />
+      </div>
+      <div style={{ width: '95%' }}>
+        <h3>
+          Scrollable with fixed column and editable
+        </h3>
+        <Table
+          components={{
+            body: {
+              cell: EditableCell,
+            },
+          }}
+          columns={mergeColumnWithCustomProps}
+          dataSource={dataSource.slice(0, 6)}
+          scroll={{ x: 1024, fixedFirstColumn: true }}
+        />
+      </div>
     </div>
   );
 };

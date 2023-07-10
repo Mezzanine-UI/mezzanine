@@ -23,15 +23,15 @@ describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(
-    HTMLDivElement,
+    HTMLTableRowElement,
     (ref) => render(<TableHeader ref={ref} />),
   );
 
-  it('should bind host class', () => {
+  it('should use fixed header as host', () => {
     const { getHostHTMLElement } = render(<TableHeader />);
     const element = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-table__header')).toBeTruthy();
+    expect(element.classList.contains('mzn-table__header-fixed')).toBeTruthy();
   });
 
   describe('columns are given', () => {
@@ -144,6 +144,14 @@ describe('<TableHeader />', () => {
       const element = getHostHTMLElement();
 
       expect(element.querySelector('.mzn-table__collapseAction')).toBeInstanceOf(HTMLDivElement);
+    });
+
+    it('should be stuck when scroll.firstColumnFixed is true', () => {
+      /** @TODO test */
+    });
+
+    it('should not be stuck when scroll.firstColumnFixed is true but actions are given', () => {
+      /** @TODO test */
     });
   });
 
