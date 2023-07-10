@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.9...@mezzanine-ui/core@0.13.0) (2023-07-10)
+
+### Features
+
+- **core/table:** add table specific style ([5b4a3bf](https://github.com/Mezzanine-UI/mezzanine/commit/5b4a3bf4b8d41e0a742fa26f7e7ea89cda8dbaae))
+- **core/table:** set scroll bar width to thin in firefox ([0fb8845](https://github.com/Mezzanine-UI/mezzanine/commit/0fb88458f7453c45577d1146dcc7c41c04a50396))
+- **core/table:** table style refactor to fit new structure ([5a1b883](https://github.com/Mezzanine-UI/mezzanine/commit/5a1b883d39757cd99748f47fc5f9cfc363555fd2))
+
 ## [0.12.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.8...@mezzanine-ui/core@0.12.9) (2023-06-19)
 
 ### Bug Fixes

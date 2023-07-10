@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.13.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.9...@mezzanine-ui/react@0.13.0) (2023-07-10)
+
+### Features
+
+- **react/table:** add className for scroll bar to allow custom control ([1516f4e](https://github.com/Mezzanine-UI/mezzanine/commit/1516f4ecaff73c68ce9a8550c7f8e5ad3993719a))
+- **react/table:** add props.loadingTip for customizing loading tip ([ccf0441](https://github.com/Mezzanine-UI/mezzanine/commit/ccf0441c359c78d24cbde45a65fd243d36fd6350))
+- **react/table:** add scroll bar track and adjust scroll bar behavior ([976e259](https://github.com/Mezzanine-UI/mezzanine/commit/976e25956ccf7870ca9217037c2cab9356e92bb5))
+- **react/table:** add scrollContainerClassName for table container ([f043be4](https://github.com/Mezzanine-UI/mezzanine/commit/f043be4b497922fa4ce52fe05274f47eaf33aead))
+- **react/table:** hide custom scroll bar when browser is firefox ([1a29eca](https://github.com/Mezzanine-UI/mezzanine/commit/1a29eca35e96afec7d936b4c8d60a3db79527921))
+- **react/table:** refactor table element tag for clearer semantic ([8bd62f3](https://github.com/Mezzanine-UI/mezzanine/commit/8bd62f35bf2a648e7ec9c59838113f274431f2d3))
+- **react/table:** refactor whole table structure and add scroll feature ([10090fc](https://github.com/Mezzanine-UI/mezzanine/commit/10090fc56166c67fe712a33548b65133cf12f9df))
+
+### BREAKING CHANGES
+
+- **react/table:** Table element structure fully refactor by using table,thead,tbody..etc for clearer
+  semantic
+
 ## [0.12.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.8...@mezzanine-ui/react@0.12.9) (2023-06-19)
 
 **Note:** Version bump only for package @mezzanine-ui/react

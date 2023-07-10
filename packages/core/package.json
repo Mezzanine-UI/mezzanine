@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/core",
-  "version": "0.12.9",
+  "version": "0.13.0",
   "description": "Core for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -36,8 +36,8 @@
     }
   },
   "dependencies": {
-    "@mezzanine-ui/icons": "^0.12.9",
-    "@mezzanine-ui/system": "^0.12.9",
+    "@mezzanine-ui/icons": "^0.13.0",
+    "@mezzanine-ui/system": "^0.13.0",
     "lodash": "^4.17.21",
     "tslib": "^2.4.1"
   }
