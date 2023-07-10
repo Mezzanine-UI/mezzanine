@@ -335,6 +335,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
               onMouseUp={scrollElement.onMouseUp}
               role="button"
               tabIndex={-1}
+              className="mzn-table-scroll-bar-track"
             >
               <div
                 style={{
@@ -352,6 +353,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                   role="button"
                   style={scrollElement.style}
                   tabIndex={-1}
+                  className="mzn-table-scroll-bar"
                 >
                   <div
                     style={{
