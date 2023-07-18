@@ -1,17 +1,24 @@
 import {
   forwardRef,
+  useCallback,
   useContext,
+  useEffect,
+  useState,
 } from 'react';
 import {
   tableClasses as classes,
   TableDataSource,
 } from '@mezzanine-ui/core/table';
+import isEqual from 'lodash/isEqual';
+import { useDrop } from 'react-dnd';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import { TableContext, TableDataContext } from './TableContext';
-import TableBodyRow from './TableBodyRow';
+import TableBodyRow, { MZN_TABLE_DRAGGABLE_KEY } from './TableBodyRow';
 import Empty from '../Empty';
 import Loading from '../Loading/Loading';
+import { useComposeRefs } from '../hooks/useComposeRefs';
+import { usePreviousValue } from '../hooks/usePreviousValue';
 
 export interface TableBodyProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
@@ -35,6 +42,7 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
     emptyProps,
     fetchMore,
     pagination,
+    draggable,
   } = useContext(TableContext) || {};
 
   /** customizing empty */
@@ -65,10 +73,29 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
     dataSource.slice(currentStartCount, currentEndCount)
   ) : dataSource;
 
+  /** Feature Dragging */
+  const prevDataSource = usePreviousValue(currentDataSource);
+  const [draggingSource, setDraggingSource] = useState<typeof dataSource>(currentDataSource);
+  const onResetDragging = useCallback(() => setDraggingSource(currentDataSource), [currentDataSource]);
+  const onDragEnd = useCallback(() => {
+    if (draggable?.onDragEnd) {
+      draggable.onDragEnd(draggingSource);
+    }
+  }, [draggable, draggingSource]);
+
+  useEffect(() => {
+    if (!isEqual(currentDataSource, prevDataSource)) {
+      setDraggingSource(currentDataSource);
+    }
+  }, [currentDataSource, prevDataSource]);
+
+  const [, dropRef] = useDrop(() => ({ accept: MZN_TABLE_DRAGGABLE_KEY }));
+  const composedRef = useComposeRefs([ref, dropRef]);
+
   return (
     <tbody
       {...rest}
-      ref={ref}
+      ref={composedRef}
       className={cx(
         classes.body,
         className,
@@ -80,6 +107,10 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
           className={rowClassName}
           rowData={rowData}
           rowIndex={index}
+          draggingData={draggingSource}
+          setDraggingData={setDraggingSource}
+          onDragEnd={draggable?.onDragEnd ? onDragEnd : undefined}
+          onResetDragging={onResetDragging}
         />
       )) : (
         <tr>

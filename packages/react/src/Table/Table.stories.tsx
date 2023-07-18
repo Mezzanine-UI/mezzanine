@@ -24,6 +24,7 @@ import Switch from '../Switch';
 import Input from '../Input';
 import Select, { Option } from '../Select';
 import { cx } from '../utils/cx';
+import Message from '../Message/Message';
 
 export default {
   title: 'Data Display/Table',
@@ -255,6 +256,46 @@ export const ScrollableAndFixedColumn = () => {
   );
 };
 
+export const Draggable = () => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [source, setSource] = useState<DataType[]>(dataSource);
+
+  return (
+    <div style={{ width: '100%' }}>
+      <h3>
+        Draggable
+      </h3>
+      <div
+        style={{
+          width: '80%',
+        }}
+      >
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={source}
+          draggable={{
+            enabled: true,
+            onDragEnd: async (nextSources) => {
+              setLoading(true);
+              Message.info('更新排序中...');
+
+              setTimeout(() => {
+                setSource(nextSources);
+                setLoading(false);
+                Message.success('已成功更新排序');
+              }, 1000);
+            },
+          }}
+          scroll={{
+            y: 400,
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 export const Selections = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
@@ -423,6 +464,9 @@ export const WithActions = () => {
         <Table
           columns={withActionColumns}
           dataSource={dataSource}
+          draggable={{
+            enabled: true,
+          }}
         />
       </div>
     </div>

@@ -106,6 +106,12 @@ export interface TableRowSelection {
   actions?: TableRowAction[];
 }
 
+/** === Feature draggable */
+export interface TableDraggable {
+  enabled: boolean;
+  onDragEnd?: (nextDataSource: any[]) => void;
+}
+
 /** === Feature Expandable */
 export type ExpandRowBySources = {
   dataSource: TableDataSource[];
