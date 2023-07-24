@@ -19,6 +19,7 @@ export const tableClasses = {
   bodyEmpty: `${tableBodyPrefix}__empty`,
   bodyFetchMore: `${tableBodyPrefix}__fetchMore`,
   bodyRow: `${tableBodyPrefix}__row`,
+  bodyRowDragging: `${tableBodyPrefix}__row--drag`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowCellWrapper: `${tableBodyPrefix}__row__cellWrapper`,
   bodyRowCellWrapperFixed: `${tableBodyPrefix}__row__cellWrapper--fixed`,
@@ -104,6 +105,12 @@ export interface TableRowSelection {
   selectedRowKey?: string[];
   onChange?(keys: string[]): void;
   actions?: TableRowAction[];
+}
+
+/** === Feature draggable */
+export interface TableDraggable {
+  enabled: boolean;
+  onDragEnd?: (nextDataSource: any[]) => void;
 }
 
 /** === Feature Expandable */
