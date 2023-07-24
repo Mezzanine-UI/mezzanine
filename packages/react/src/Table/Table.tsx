@@ -71,7 +71,7 @@ export interface TableBaseProps<T>
     */
   dataSource: TableDataSource[];
   /**
-   * Draggable table row. This feature allows sort items easily. Not supported when `fetchMore` is enabled.
+   * Draggable table row. This feature allows sort items by mouse dragging. Not supported when `fetchMore` is enabled and also buggy when use finger touch (mobile device).
    * When `draggable.enabled` is true, draggable will be enabled.
    * `draggable.onDragEnd` return new dataSource for you
    */
