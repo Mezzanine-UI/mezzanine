@@ -1,6 +1,7 @@
 import {
   TableColumn,
 } from '@mezzanine-ui/core/table';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {
   act,
   cleanupHook,
@@ -49,17 +50,29 @@ describe('<TableBodyRow />', () => {
   describeForwardRefToHTMLElement(
     HTMLTableRowElement,
     (ref) => render(
-      <TableBodyRow
-        ref={ref}
-        rowData={rowData}
-        rowIndex={0}
-      />,
+      <DragDropContext onDragEnd={() => {}}>
+        <Droppable droppableId="mzn-table-dnd">
+          {() => (
+            <TableBodyRow
+              ref={ref}
+              rowData={rowData}
+              rowIndex={0}
+            />
+          )}
+        </Droppable>
+      </DragDropContext>,
     ),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <TableBodyRow rowData={rowData} rowIndex={0} />,
+      <DragDropContext onDragEnd={() => {}}>
+        <Droppable droppableId="mzn-table-dnd">
+          {() => (
+            <TableBodyRow rowData={rowData} rowIndex={0} />
+          )}
+        </Droppable>
+      </DragDropContext>,
     );
     const element = getHostHTMLElement();
 
@@ -87,7 +100,13 @@ describe('<TableBodyRow />', () => {
           dataSource: [rowData],
         }}
       >
-        <TableBodyRow rowData={rowData} rowIndex={0} />
+        <DragDropContext onDragEnd={() => {}}>
+          <Droppable droppableId="mzn-table-dnd">
+            {() => (
+              <TableBodyRow rowData={rowData} rowIndex={0} />
+            )}
+          </Droppable>
+        </DragDropContext>
       </TableDataContext.Provider>,
     );
     const cellInstance = testInstance.root.findAllByType(TableCell);
@@ -127,7 +146,13 @@ describe('<TableBodyRow />', () => {
             dataSource: [rowData],
           }}
         >
-          <TableBodyRow rowData={rowData} rowIndex={0} />
+          <DragDropContext onDragEnd={() => {}}>
+            <Droppable droppableId="mzn-table-dnd">
+              {() => (
+                <TableBodyRow rowData={rowData} rowIndex={0} />
+              )}
+            </Droppable>
+          </DragDropContext>
         </TableDataContext.Provider>,
       );
 
@@ -187,7 +212,13 @@ describe('<TableBodyRow />', () => {
               },
             }}
           >
-            <TableBodyRow rowData={rowData} rowIndex={0} />
+            <DragDropContext onDragEnd={() => {}}>
+              <Droppable droppableId="mzn-table-dnd">
+                {() => (
+                  <TableBodyRow rowData={rowData} rowIndex={0} />
+                )}
+              </Droppable>
+            </DragDropContext>
           </TableContext.Provider>
         </TableDataContext.Provider>,
       );
@@ -223,7 +254,13 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} rowIndex={0} />
+                <DragDropContext onDragEnd={() => {}}>
+                  <Droppable droppableId="mzn-table-dnd">
+                    {() => (
+                      <TableBodyRow rowData={rowData} rowIndex={0} />
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -274,7 +311,13 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} rowIndex={0} />
+                <DragDropContext onDragEnd={() => {}}>
+                  <Droppable droppableId="mzn-table-dnd">
+                    {() => (
+                      <TableBodyRow rowData={rowData} rowIndex={0} />
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -318,7 +361,13 @@ describe('<TableBodyRow />', () => {
                   },
                 }}
               >
-                <TableBodyRow rowData={rowData} rowIndex={0} />
+                <DragDropContext onDragEnd={() => {}}>
+                  <Droppable droppableId="mzn-table-dnd">
+                    {() => (
+                      <TableBodyRow rowData={rowData} rowIndex={0} />
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
           );
@@ -353,7 +402,13 @@ describe('<TableBodyRow />', () => {
             dataSource: [],
           }}
         >
-          <TableBodyRow rowData={rowData} rowIndex={0} />
+          <DragDropContext onDragEnd={() => {}}>
+            <Droppable droppableId="mzn-table-dnd">
+              {() => (
+                <TableBodyRow rowData={rowData} rowIndex={0} />
+              )}
+            </Droppable>
+          </DragDropContext>
         </TableDataContext.Provider>,
       );
 
