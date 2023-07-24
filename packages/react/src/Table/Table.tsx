@@ -1,10 +1,15 @@
 import {
   CSSProperties,
   forwardRef,
+  Fragment,
   ReactNode,
   useMemo,
   useRef,
 } from 'react';
+import {
+  DragDropContext,
+  Droppable,
+} from 'react-beautiful-dnd';
 import {
   tableClasses as classes,
   TableColumn,
@@ -17,6 +22,7 @@ import {
   TableRefresh as TableRefreshType,
   ExpandRowBySources,
   TableScrolling,
+  TableDraggable,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 import { TableContext, TableDataContext, TableComponentContext } from './TableContext';
@@ -31,12 +37,14 @@ import { useTableRowSelection } from './rowSelection/useTableRowSelection';
 import { useTableSorting } from './sorting/useTableSorting';
 import { useTableLoading } from './useTableLoading';
 import { useTableFetchMore } from './useTableFetchMore';
+import { useTableDraggable } from './draggable/useTableDraggable';
 import useTableScroll from './useTableScroll';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import { composeRefs } from '../utils/composeRefs';
 
 export interface TableBaseProps<T>
   extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'role'> {
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'role' | 'draggable'> {
   /**
    * customized body className
    */
@@ -62,6 +70,12 @@ export interface TableBaseProps<T>
     * Notice that each source should contain `key` or `id` prop as data primary key.
     */
   dataSource: TableDataSource[];
+  /**
+   * Draggable table row. This feature allows sort items easily. Not supported when `fetchMore` is enabled.
+   * When `draggable.enabled` is true, draggable will be enabled.
+   * `draggable.onDragEnd` return new dataSource for you
+   */
+  draggable?: TableDraggable;
   /**
     * props exported from `<Empty />` component.
     */
@@ -146,6 +160,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     columns,
     components,
     dataSource: dataSourceProp,
+    draggable: draggableProp,
     emptyProps,
     expandable: expandableProp,
     fetchMore: fetchMoreProp,
@@ -180,7 +195,12 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
   ]);
 
   /** Feature sorting */
-  const [dataSource, onSort, { sortedOn, sortedType, onResetAll }] = useTableSorting({
+  const [dataSource, onSort, {
+    sortedOn,
+    sortedType,
+    onResetAll,
+    setDataSource,
+  }] = useTableSorting({
     dataSource: dataSourceProp,
   });
 
@@ -216,6 +236,17 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     scrollBarSize: 4,
   });
 
+  /** Feature drag and drop */
+  const {
+    draggingId,
+    onBeforeDragStart,
+    onDragEnd,
+  } = useTableDraggable({
+    dataSource,
+    setDataSource,
+    draggable: draggableProp,
+  });
+
   /** context */
   const tableContextValue = useMemo(() => ({
     emptyProps,
@@ -248,6 +279,10 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
       },
     } : undefined,
     scroll: scrollProp,
+    draggable: draggableProp ? {
+      ...draggableProp,
+      draggingId,
+    } : undefined,
   }), [
     dataSource,
     emptyProps,
@@ -265,6 +300,8 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     paginationProp,
     isHorizontalScrolling,
     scrollProp,
+    draggableProp,
+    draggingId,
   ]);
 
   const tableDataContextValue = useMemo(() => ({
@@ -282,92 +319,110 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     <TableContext.Provider value={tableContextValue}>
       <TableDataContext.Provider value={tableDataContextValue}>
         <TableComponentContext.Provider value={tableComponentContextValue}>
-          <Loading
-            loading={loading}
-            stretch
-            tip={loadingTip}
-            overlayProps={{
-              className: classes.loading,
-            }}
+          <DragDropContext
+            onBeforeDragStart={onBeforeDragStart}
+            onDragEnd={onDragEnd}
           >
-            <div
-              ref={scrollBody.ref}
-              className={cx(classes.scrollContainer, scrollContainerClassName)}
-              onScroll={scrollBody.onScroll}
-              style={tableContextValue.scroll ? {
-                '--table-scroll-x': tableContextValue.scroll.x
-                  ? `${tableContextValue.scroll.x}px`
-                  : '100%',
-                '--table-scroll-y': tableContextValue.scroll.y
-                  ? `${tableContextValue.scroll.y}px`
-                  : 'unset',
-              } as CSSProperties : undefined}
+            <Loading
+              loading={loading}
+              stretch
+              tip={loadingTip}
+              overlayProps={{
+                className: classes.loading,
+              }}
             >
-              <table
-                ref={tableRefs}
-                {...rest}
-                className={cx(classes.host, className)}
+              <Droppable
+                droppableId="mzn-table-dnd"
+                isDropDisabled={!draggableProp?.enabled}
               >
-                {isRefreshShow ? (
-                  <tbody>
-                    <tr>
-                      <td>
-                        <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
-                      </td>
-                    </tr>
-                  </tbody>
-                ) : null}
-                <TableHeader className={headerClassName} />
-                <TableBody
-                  ref={bodyRef}
-                  className={bodyClassName}
-                  rowClassName={bodyRowClassName}
-                />
-              </table>
-            </div>
-            {paginationProp ? (
-              <TablePagination bodyRef={bodyRef} />
-            ) : null}
-            <div
-              ref={scrollElement.trackRef}
-              style={scrollElement.trackStyle}
-              onMouseDown={scrollElement.onMouseDown}
-              onMouseUp={scrollElement.onMouseUp}
-              role="button"
-              tabIndex={-1}
-              className="mzn-table-scroll-bar-track"
-            >
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'relative',
-                }}
-              >
-                <div
-                  ref={scrollElement.ref}
-                  onMouseDown={scrollElement.onMouseDown}
-                  onMouseUp={scrollElement.onMouseUp}
-                  onMouseEnter={scrollElement.onMouseEnter}
-                  onMouseLeave={scrollElement.onMouseLeave}
-                  role="button"
-                  style={scrollElement.style}
-                  tabIndex={-1}
-                  className="mzn-table-scroll-bar"
-                >
-                  <div
-                    style={{
-                      width: `${scrollElement.scrollBarSize}px`,
-                      height: '100%',
-                      borderRadius: '10px',
-                      backgroundColor: '#7d7d7d',
-                      transition: '0.1s',
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-          </Loading>
+                {(provided) => (
+                  <Fragment>
+                    <div
+                      {...provided.droppableProps}
+                      ref={composeRefs([scrollBody.ref, provided.innerRef])}
+                      className={cx(classes.scrollContainer, scrollContainerClassName)}
+                      onScroll={scrollBody.onScroll}
+                      style={tableContextValue.scroll ? {
+                        '--table-scroll-x': tableContextValue.scroll.x
+                          ? `${tableContextValue.scroll.x}px`
+                          : '100%',
+                        '--table-scroll-y': tableContextValue.scroll.y
+                          ? `${tableContextValue.scroll.y}px`
+                          : 'unset',
+                      } as CSSProperties : undefined}
+                    >
+                      <table
+                        ref={tableRefs}
+                        {...rest}
+                        className={cx(classes.host, className)}
+                      >
+                        {isRefreshShow ? (
+                          <tbody>
+                            <tr>
+                              <td>
+                                <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
+                              </td>
+                            </tr>
+                          </tbody>
+                        ) : null}
+                        <TableHeader className={headerClassName} />
+                        <TableBody
+                          ref={bodyRef}
+                          className={bodyClassName}
+                          rowClassName={bodyRowClassName}
+                        />
+                        <tbody>
+                          {provided.placeholder}
+                        </tbody>
+                      </table>
+                    </div>
+                    {paginationProp ? (
+                      <TablePagination bodyRef={bodyRef} />
+                    ) : null}
+                    <div
+                      ref={scrollElement.trackRef}
+                      style={scrollElement.trackStyle}
+                      onMouseDown={scrollElement.onMouseDown}
+                      onMouseUp={scrollElement.onMouseUp}
+                      role="button"
+                      tabIndex={-1}
+                      className="mzn-table-scroll-bar-track"
+                    >
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          position: 'relative',
+                        }}
+                      >
+                        <div
+                          ref={scrollElement.ref}
+                          onMouseDown={scrollElement.onMouseDown}
+                          onMouseUp={scrollElement.onMouseUp}
+                          onMouseEnter={scrollElement.onMouseEnter}
+                          onMouseLeave={scrollElement.onMouseLeave}
+                          role="button"
+                          style={scrollElement.style}
+                          tabIndex={-1}
+                          className="mzn-table-scroll-bar"
+                        >
+                          <div
+                            style={{
+                              width: `${scrollElement.scrollBarSize}px`,
+                              height: '100%',
+                              borderRadius: '10px',
+                              backgroundColor: '#7d7d7d',
+                              transition: '0.1s',
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </Fragment>
+                )}
+              </Droppable>
+            </Loading>
+          </DragDropContext>
         </TableComponentContext.Provider>
       </TableDataContext.Provider>
     </TableContext.Provider>

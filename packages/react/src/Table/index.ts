@@ -13,3 +13,9 @@ export {
 export {
   EditableBodyCellProps,
 } from './editable/TableEditRenderWrapper';
+export {
+  useTableDraggable,
+} from './draggable/useTableDraggable';
+export {
+  default as useTableScroll,
+} from './useTableScroll';
