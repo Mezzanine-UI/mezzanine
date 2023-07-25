@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.0...@mezzanine-ui/core@0.13.1) (2023-07-25)
+
+### Features
+
+- **core/table:** add draggable table typings and dragging styles ([a21cbd8](https://github.com/Mezzanine-UI/mezzanine/commit/a21cbd860ef132d75aae08ac84c09b7fd1d24919))
+
 # [0.13.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.12.9...@mezzanine-ui/core@0.13.0) (2023-07-10)
 
 ### Features

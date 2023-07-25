@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.0...@mezzanine-ui/react@0.13.1) (2023-07-25)
+
+### Features
+
+- **react/table:** implement table draggable feature ([60ea08f](https://github.com/Mezzanine-UI/mezzanine/commit/60ea08fbd58ca10b9fd8e02f2d5f2c39b846c1d4))
+- **react/utils:** add array-move utils ([d15e79f](https://github.com/Mezzanine-UI/mezzanine/commit/d15e79ffca08465a6552a236b6fce65aee8082da))
+
 # [0.13.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.9...@mezzanine-ui/react@0.13.0) (2023-07-10)
 
 ### Features
