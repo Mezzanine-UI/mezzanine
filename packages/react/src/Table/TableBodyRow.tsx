@@ -15,6 +15,7 @@ import {
   getCellStyle,
   ExpandRowBySources,
 } from '@mezzanine-ui/core/table';
+import { Draggable } from 'react-beautiful-dnd';
 import get from 'lodash/get';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
@@ -25,6 +26,7 @@ import TableRowSelection from './rowSelection/TableRowSelection';
 import TableExpandable from './expandable/TableExpandable';
 import TableEditRenderWrapper from './editable/TableEditRenderWrapper';
 import AccordionDetails from '../Accordion/AccordionDetails';
+import { composeRefs } from '../utils/composeRefs';
 
 export interface TableBodyRowProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
@@ -48,6 +50,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
       expanding,
       isHorizontalScrolling,
       scroll,
+      draggable,
     } = useContext(TableContext) || {};
 
     const {
@@ -82,88 +85,101 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
 
     return (
       <Fragment>
-        <tr
-          {...rest}
-          ref={ref}
-          className={cx(
-            classes.bodyRow,
-            {
-              [classes.bodyRowHighlight]: selected || expanded,
-            },
-            className,
-          )}
+        <Draggable
+          key={(rowData.key as string) || (rowData.id as string)}
+          index={rowIndex}
+          draggableId={(rowData.key as string) || (rowData.id as string)}
+          isDragDisabled={!draggable?.enabled}
         >
-          {rowSelection ? (
-            <td
-              className={classes.bodyRowCellWrapper}
-              style={{
-                flex: 'unset',
-                minWidth: 'unset',
-              }}
+          {(draggableProvided) => (
+            <tr
+              {...rest}
+              {...draggableProvided.draggableProps}
+              {...draggableProvided.dragHandleProps}
+              ref={composeRefs([ref, draggableProvided.innerRef])}
+              className={cx(
+                classes.bodyRow,
+                {
+                  [classes.bodyRowHighlight]: selected || expanded,
+                  [classes.bodyRowDragging]: draggable?.draggingId
+                    && draggable.draggingId === ((rowData.key as string) || (rowData.id as string)),
+                },
+                className,
+              )}
             >
-              <TableRowSelection
-                rowKey={(rowData.key || rowData.id) as string}
-                setChecked={(status) => setSelected(status)}
-                showDropdownIcon={false}
-              />
-            </td>
-          ) : null}
-          {expanding ? (
-            <td
-              className={classes.bodyRowCellWrapper}
-              style={{
-                flex: 'unset',
-                minWidth: 'unset',
-              }}
-            >
-              <TableExpandable
-                expandable={isExpandable}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                onExpand={
-                  (status: boolean) => expanding.onExpand?.(rowData, status)
-                }
-              />
-            </td>
-          ) : null}
-          {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => {
-            const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
-            const tooltipTitle = (
-              column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
-            ) as (string | number);
-
-            return (
-              <td
-                key={`${column.dataIndex}-${column.title}`}
-                className={cx(
-                  classes.bodyRowCellWrapper,
-                  isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,
-                  isFirstColumnShouldSticky && idx === 0 && isHorizontalScrolling && classes.bodyRowCellWrapperFixedStuck,
-                  column.bodyClassName,
-                )}
-                style={getColumnStyle(column)}
-              >
-                <TableEditRenderWrapper
-                  {...column}
-                  rowData={rowData}
+              {rowSelection ? (
+                <td
+                  className={classes.bodyRowCellWrapper}
+                  style={{
+                    flex: 'unset',
+                    minWidth: 'unset',
+                  }}
                 >
-                  <TableCell
-                    ellipsis={ellipsis}
-                    forceShownTooltipWhenHovered={column.forceShownTooltipWhenHovered}
-                    style={getCellStyle(column)}
-                    tooltipTitle={tooltipTitle}
+                  <TableRowSelection
+                    rowKey={(rowData.key || rowData.id) as string}
+                    setChecked={(status) => setSelected(status)}
+                    showDropdownIcon={false}
+                  />
+                </td>
+              ) : null}
+              {expanding ? (
+                <td
+                  className={classes.bodyRowCellWrapper}
+                  style={{
+                    flex: 'unset',
+                    minWidth: 'unset',
+                  }}
+                >
+                  <TableExpandable
+                    expandable={isExpandable}
+                    expanded={expanded}
+                    setExpanded={setExpanded}
+                    onExpand={
+                      (status: boolean) => expanding.onExpand?.(rowData, status)
+                    }
+                  />
+                </td>
+              ) : null}
+              {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => {
+                const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
+                const tooltipTitle = (
+                  column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
+                ) as (string | number);
+
+                return (
+                  <td
+                    key={`${column.dataIndex}-${column.title}`}
+                    className={cx(
+                      classes.bodyRowCellWrapper,
+                      isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,
+                      isFirstColumnShouldSticky && idx === 0 && isHorizontalScrolling && classes.bodyRowCellWrapperFixedStuck,
+                      column.bodyClassName,
+                    )}
+                    style={getColumnStyle(column)}
                   >
-                    {column.render?.(
-                      rowData,
-                      rowIndex,
-                      column,
-                    ) || get(rowData, column.dataIndex)}
-                  </TableCell>
-                </TableEditRenderWrapper>
-              </td>
-            );
-          })}
-        </tr>
+                    <TableEditRenderWrapper
+                      {...column}
+                      rowData={rowData}
+                    >
+                      <TableCell
+                        ellipsis={ellipsis}
+                        forceShownTooltipWhenHovered={column.forceShownTooltipWhenHovered}
+                        style={getCellStyle(column)}
+                        tooltipTitle={tooltipTitle}
+                      >
+                        {column.render?.(
+                          rowData,
+                          rowIndex,
+                          column,
+                        ) || get(rowData, column.dataIndex)}
+                      </TableCell>
+                    </TableEditRenderWrapper>
+                  </td>
+                );
+              })}
+            </tr>
+          )}
+        </Draggable>
         {renderedExpandedContent ? (
           <tr>
             <td style={{ padding: 0 }}>

@@ -5,6 +5,7 @@ export * from './utils/getElement';
 export * from './utils/jsx-types';
 export * from './utils/general';
 export * from './utils/scroll-lock';
+export * from './utils/array-move';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
@@ -162,6 +163,8 @@ export {
   TableProps,
   TableRefreshProps,
   TableRefresh,
+  useTableDraggable,
+  useTableScroll,
   default as Table,
 } from './Table';
 export {

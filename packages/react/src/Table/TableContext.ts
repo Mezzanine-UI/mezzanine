@@ -8,6 +8,7 @@ import {
   TableRecord,
   ExpandRowBySources,
   TableScrolling,
+  TableDraggable,
 } from '@mezzanine-ui/core/table';
 import { EmptyProps } from '../Empty';
 
@@ -50,6 +51,7 @@ export interface TableContextProps {
   fetchMore?: FetchMoreContext;
   pagination?: TablePagination;
   scroll?: TableScrolling;
+  draggable?: TableDraggable & { draggingId: string };
 }
 
 export const TableContext = createContext<TableContextProps | null>(null);

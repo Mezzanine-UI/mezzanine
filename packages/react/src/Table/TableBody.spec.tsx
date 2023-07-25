@@ -1,6 +1,7 @@
 import {
   TableColumn,
 } from '@mezzanine-ui/core/table';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import {
   cleanupHook,
   render,
@@ -49,7 +50,13 @@ describe('<TableBody />', () => {
           dataSource: defaultSources,
         }}
       >
-        <TableBody />
+        <DragDropContext onDragEnd={() => {}}>
+          <Droppable droppableId="mzn-table-dnd">
+            {() => (
+              <TableBody />
+            )}
+          </Droppable>
+        </DragDropContext>
       </TableDataContext.Provider>,
     );
     const host = getHostHTMLElement();
@@ -65,7 +72,13 @@ describe('<TableBody />', () => {
           dataSource: [],
         }}
       >
-        <TableBody />
+        <DragDropContext onDragEnd={() => {}}>
+          <Droppable droppableId="mzn-table-dnd">
+            {() => (
+              <TableBody />
+            )}
+          </Droppable>
+        </DragDropContext>
       </TableDataContext.Provider>,
     );
     const host = getHostHTMLElement();
@@ -91,7 +104,13 @@ describe('<TableBody />', () => {
               },
             }}
           >
-            <TableBody />
+            <DragDropContext onDragEnd={() => {}}>
+              <Droppable droppableId="mzn-table-dnd">
+                {() => (
+                  <TableBody />
+                )}
+              </Droppable>
+            </DragDropContext>
           </TableContext.Provider>
         </TableDataContext.Provider>,
       );

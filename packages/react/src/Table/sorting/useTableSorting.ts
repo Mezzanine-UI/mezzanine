@@ -144,5 +144,5 @@ export function useTableSorting(props: UseTableSorting) {
     },
     );
 
-  return [dataSource, onChange, { sortedOn, sortedType, onResetAll }] as const;
+  return [dataSource, onChange, { sortedOn, sortedType, onResetAll, setDataSource }] as const;
 }
