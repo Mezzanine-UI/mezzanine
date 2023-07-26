@@ -6,6 +6,8 @@ import {
   useState,
   useContext,
   useMemo,
+  UIEventHandler,
+  useCallback,
 } from 'react';
 import {
   selectClasses as classes,
@@ -40,6 +42,7 @@ export interface SelectBaseProps
   | 'onClick'
   | 'onFocus'
   | 'onKeyDown'
+  | 'onScroll'
   | 'readOnly'
   | 'renderValue'
   | 'value'
@@ -72,6 +75,10 @@ export interface SelectBaseProps
     | 'owns'
     }`
   >;
+  /**
+   * Popup menu scroll listener
+   */
+  onMenuScroll?: (computed: { scrollTop: number; maxScrollTop: number }, target: HTMLUListElement) => void;
   /**
    * select input placeholder
    */
@@ -170,6 +177,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     onChange: onChangeProp,
     onClear: onClearProp,
     onFocus,
+    onMenuScroll,
     placeholder = '',
     popperOptions = {},
     prefix,
@@ -287,6 +295,19 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
     }
   };
 
+  /** menu onScroll listener */
+  const onMenuScrollCallback: UIEventHandler<HTMLUListElement> = useCallback(async (evt) => {
+    if (onMenuScroll) {
+      const target = evt.target as HTMLUListElement;
+      const maxScrollTop = target.scrollHeight - target.getBoundingClientRect().height;
+
+      onMenuScroll({
+        scrollTop: target.scrollTop,
+        maxScrollTop,
+      }, target);
+    }
+  }, [onMenuScroll]);
+
   const resolvedInputProps: SelectTriggerInputProps = {
     ...inputProps,
     'aria-controls': MENU_ID,
@@ -351,6 +372,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
             }
             itemsInView={itemsInView}
             maxHeight={menuMaxHeight}
+            onScroll={onMenuScrollCallback}
             role={menuRole}
             size={menuSize}
             style={{ border: 0 }}

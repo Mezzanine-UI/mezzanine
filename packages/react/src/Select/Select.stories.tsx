@@ -1,5 +1,5 @@
 import { Story } from '@storybook/react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Select, {
   Option,
   OptionGroup,
@@ -12,85 +12,164 @@ import Typography from '../Typography';
 import Button from '../Button';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
 import ConfigProvider from '../Provider';
+import Loading from '../Loading/Loading';
 
 export default {
   title: 'Data Entry/Select',
 };
 
-export const Basic = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(2, 300px)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <Select
-      clearable
-      fullWidth
-      required
-      placeholder="預設文字"
+const defaultOpts = [{
+  value: '1',
+  label: 'item1 has very long description',
+}, {
+  value: '2',
+  label: 'item2 has very long description',
+}, {
+  value: '3',
+  label: 'item3 has very long description',
+}, {
+  value: '4',
+  label: 'item4 has very long description',
+}, {
+  value: '5',
+  label: 'item5 has very long description',
+}];
+
+export const Basic = () => {
+  const [options] = useState(defaultOpts);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 300px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
     >
-      <Option value="1">item1 has very long description</Option>
-      <Option value="2">item2</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      disabled
-      fullWidth
-      placeholder="預設文字"
+      <Select
+        clearable
+        fullWidth
+        required
+        placeholder="預設文字"
+      >
+        {options.map((opt) => (
+          <Option key={opt.value} value={opt.value}>
+            {opt.label}
+          </Option>
+        ))}
+      </Select>
+      <Select
+        disabled
+        fullWidth
+        placeholder="預設文字"
+      >
+        <Option value="1">item1</Option>
+        <Option value="2">item2</Option>
+        <Option value="3">item3</Option>
+      </Select>
+      <Select
+        error
+        fullWidth
+        placeholder="預設文字"
+      >
+        <Option value="1">item1</Option>
+        <Option value="2">item2</Option>
+        <Option value="3">item3</Option>
+      </Select>
+      <Select
+        clearable
+        defaultValue={[{
+          id: '1',
+          name: 'item123',
+        }, {
+          id: '2',
+          name: 'item26666',
+        }]}
+        fullWidth
+        mode="multiple"
+        placeholder="我是多選"
+      >
+        <Option value="1">item123</Option>
+        <Option value="2">item26666</Option>
+        <Option value="3">item3</Option>
+      </Select>
+      <Select
+        clearable
+        defaultValue={[{
+          id: '1',
+          name: 'item123',
+        }, {
+          id: '2',
+          name: 'item26666',
+        }]}
+        disabled
+        fullWidth
+        mode="multiple"
+        placeholder="我是多選"
+      >
+        <Option value="1">item123</Option>
+        <Option value="2">item26666</Option>
+        <Option value="3">item3</Option>
+      </Select>
+    </div>
+  );
+};
+
+export const DynamicFetching = () => {
+  const [options, setOptions] = useState(defaultOpts);
+  const isFetchingSnapshot = useRef<boolean>(false);
+  const [isLoading, toggleLoading] = useState(false);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 300px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
     >
-      <Option value="1">item1</Option>
-      <Option value="2">item2</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      error
-      fullWidth
-      placeholder="預設文字"
-    >
-      <Option value="1">item1</Option>
-      <Option value="2">item2</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      clearable
-      defaultValue={[{
-        id: '1',
-        name: 'item123',
-      }, {
-        id: '2',
-        name: 'item26666',
-      }]}
-      fullWidth
-      mode="multiple"
-      placeholder="我是多選"
-    >
-      <Option value="1">item123</Option>
-      <Option value="2">item26666</Option>
-      <Option value="3">item3</Option>
-    </Select>
-    <Select
-      clearable
-      defaultValue={[{
-        id: '1',
-        name: 'item123',
-      }, {
-        id: '2',
-        name: 'item26666',
-      }]}
-      disabled
-      fullWidth
-      mode="multiple"
-      placeholder="我是多選"
-    >
-      <Option value="1">item123</Option>
-      <Option value="2">item26666</Option>
-      <Option value="3">item3</Option>
-    </Select>
-  </div>
-);
+      <Select
+        clearable
+        fullWidth
+        required
+        onMenuScroll={({ scrollTop, maxScrollTop }) => {
+          /** your custom fetch more logic */
+          const { current: isFetching } = isFetchingSnapshot;
+
+          if (scrollTop + 40 >= maxScrollTop && !isFetching) {
+            toggleLoading(true);
+            isFetchingSnapshot.current = true;
+
+            setTimeout(() => {
+              setOptions((prev) => ([
+                ...prev,
+                ...(Array.from(Array(10))).map((_, idx) => ({
+                  value: `${(idx + 1) * 10 * Math.random()}`,
+                  label: `${(idx + 1) * 10 * Math.random()} item`,
+                })),
+              ]));
+
+              toggleLoading(false);
+              isFetchingSnapshot.current = false;
+            }, 2000);
+          }
+        }}
+        placeholder="預設文字"
+      >
+        {options.map((opt) => (
+          <Option key={opt.value} value={opt.value}>
+            {opt.label}
+          </Option>
+        ))}
+        {isLoading ? (
+          <Loading loading iconProps={{ size: 24 }} />
+        ) : null}
+      </Select>
+    </div>
+  );
+};
 
 export const Group = () => (
   <div style={{
