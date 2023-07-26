@@ -52,6 +52,8 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(function Loading(props,
   const {
     className: iconClassName,
     color: iconColor,
+    size: iconSize,
+    style: iconStyle,
     ...iconPropsRest
   } = iconProps;
 
@@ -77,6 +79,10 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(function Loading(props,
         color={iconColor || 'primary'}
         icon={SpinnerIcon}
         spin
+        style={{
+          ...(iconSize ? { fontSize: `${iconSize}px` } : {}),
+          ...(iconStyle || {}),
+        }}
       />
       {tip ? (
         <span className={cx(classes.tip, tipClassName)}>

@@ -64,7 +64,7 @@ export const Nested = () => (
     <Loading
       loading
       iconProps={{
-        style: { fontSize: 24 },
+        size: 24,
       }}
     >
       <Alert severity="success">
