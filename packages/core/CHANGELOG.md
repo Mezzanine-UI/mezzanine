@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.1...@mezzanine-ui/core@0.13.2) (2023-07-28)
+
+### Features
+
+- **core/tree:** add dynamicNodesFetching for tree typings ([73e804c](https://github.com/Mezzanine-UI/mezzanine/commit/73e804c4d962766fc619b3b9a31dec2330f70d63))
+
 ## [0.13.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.0...@mezzanine-ui/core@0.13.1) (2023-07-25)
 
 ### Features

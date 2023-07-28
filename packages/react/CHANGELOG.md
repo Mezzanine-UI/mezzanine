@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.1...@mezzanine-ui/react@0.13.2) (2023-07-28)
+
+### Bug Fixes
+
+- **react/loading:** correct loading component icon.size mapping ([1052770](https://github.com/Mezzanine-UI/mezzanine/commit/1052770a5e3b59783827a6d40aa0343352137275))
+
+### Features
+
+- **react/select:** add onMenuScroll to allow select options dynamic fetching ([aed9777](https://github.com/Mezzanine-UI/mezzanine/commit/aed977724ab633a2fb0fc335c70a31bfed61713e)), closes [#192](https://github.com/Mezzanine-UI/mezzanine/issues/192)
+- **react/tree-select:** add onExpand to implement dynamic fetching ([bdd3d55](https://github.com/Mezzanine-UI/mezzanine/commit/bdd3d55c7173a3a159d8d7180d671a2b9dd6f23c)), closes [#193](https://github.com/Mezzanine-UI/mezzanine/issues/193) [#193](https://github.com/Mezzanine-UI/mezzanine/issues/193)
+- **react/tree:** update onExpand logic to allow dynamicFetching ([19c0bcc](https://github.com/Mezzanine-UI/mezzanine/commit/19c0bcc0615a28496fb811a93185f5885f98c3bf)), closes [#193](https://github.com/Mezzanine-UI/mezzanine/issues/193)
+
 ## [0.13.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.0...@mezzanine-ui/react@0.13.1) (2023-07-25)
 
 ### Features
