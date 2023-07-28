@@ -17,6 +17,7 @@ export type TreeNodeState = {
 
 export interface TreeNodePropShape<L> {
   label: L;
+  dynamicNodesFetching?: boolean;
   nodes?: TreeNodePropShape<L>[];
   value: TreeNodeValue;
 }
