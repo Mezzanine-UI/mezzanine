@@ -21,20 +21,6 @@ const nodes: TreeNodeData[] = [{
         {
           label: 'label 1-1-1',
           value: '1-1-1',
-          nodes: [
-            {
-              label: 'label 1-1-1-1',
-              value: '1-1-1-1',
-            },
-            {
-              label: 'label 1-1-1-2',
-              value: '1-1-1-2',
-            },
-            {
-              label: 'label 1-1-1-3',
-              value: '1-1-1-3',
-            },
-          ],
         },
         {
           label: 'label 1-1-2',
@@ -77,6 +63,68 @@ export const Selectable = () => {
           (v: TreeNodeValue[]) => { setSelectedValues(v); }
         }
         selectable
+      />
+    </>
+  );
+};
+
+export const DynamicLoading = () => {
+  const [dynamicNodes, setDynamicNodes] = useState<TreeNodeData[]>([{
+    label: 'label 1',
+    value: '1',
+    dynamicNodesFetching: true,
+  }, {
+    label: 'label 2',
+    value: '2',
+    dynamicNodesFetching: true,
+  }]);
+
+  const [selectedValues, setSelectedValues] = useState<TreeNodeValue[]>([]);
+  const typoStyle = {
+    margin: '0 0 16px 0',
+  };
+
+  return (
+    <>
+      <Typography style={typoStyle}>
+        {
+          `current selected values: ${selectedValues[0]}`
+        }
+      </Typography>
+      <Tree
+        nodes={dynamicNodes}
+        values={selectedValues}
+        onSelect={
+          (v: TreeNodeValue[]) => { setSelectedValues(v); }
+        }
+        selectable
+        onExpand={(value) => {
+          setTimeout(() => {
+            setDynamicNodes((prev) => {
+              const targetNodeIdx = prev.findIndex((n) => n.value === value);
+
+              if (~targetNodeIdx) {
+                return [
+                  ...prev.slice(0, targetNodeIdx),
+                  prev[targetNodeIdx].dynamicNodesFetching ? {
+                    ...prev[targetNodeIdx],
+                    dynamicNodesFetching: false,
+                    nodes: [{
+                      label: 'Static Nodes',
+                      value: `${Math.random() * 1000}`,
+                    }, {
+                      label: 'Static Nodes 2',
+                      value: `${Math.random() * 1005}`,
+                    }],
+                  } : prev[targetNodeIdx],
+                  ...prev.slice(targetNodeIdx + 1),
+                ];
+              }
+
+              return prev;
+            });
+          }, 2000);
+        }}
       />
     </>
   );
@@ -182,75 +230,72 @@ export const Controller = () => {
   };
 
   return (
-    <>
+    <div style={{
+      display: 'flex',
+      width: '100%',
+      flexWrap: 'wrap',
+    }}
+    >
       <div style={{
         display: 'flex',
-        width: '100%',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
+        marginRight: '24px',
       }}
       >
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          marginRight: '24px',
-        }}
-        >
-          <Button
-            variant="contained"
-            onClick={() => {
-              expandControllerRef.current?.collapse('1-1-1');
-            }}
-            style={btnStyle}
-          >
-            collapse 1-1-1
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => { expandControllerRef.current?.collapseAll(); }}
-            style={btnStyle}
-          >
-            collapse all
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => { expandControllerRef.current?.collapseAllFrom('1'); }}
-            style={btnStyle}
-          >
-            collapse all from 1
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => { expandControllerRef.current?.expand('1-1-1'); }}
-            style={btnStyle}
-          >
-            expand 1-1-1
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => { expandControllerRef.current?.expandAll(); }}
-            style={btnStyle}
-          >
-            expand all
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => { expandControllerRef.current?.expandAllFrom('1'); }}
-            style={btnStyle}
-          >
-            expand all from 1
-          </Button>
-        </div>
-        <Tree
-          style={{
-            flex: '1 1',
+        <Button
+          variant="contained"
+          onClick={() => {
+            expandControllerRef.current?.collapse('1-1-1');
           }}
-          nodes={nodes}
-          expandControllerRef={expandControllerRef}
-          defaultExpandAll
-        />
+          style={btnStyle}
+        >
+          collapse 1-1-1
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => { expandControllerRef.current?.collapseAll(); }}
+          style={btnStyle}
+        >
+          collapse all
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => { expandControllerRef.current?.collapseAllFrom('1'); }}
+          style={btnStyle}
+        >
+          collapse all from 1
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => { expandControllerRef.current?.expand('1-1-1'); }}
+          style={btnStyle}
+        >
+          expand 1-1-1
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => { expandControllerRef.current?.expandAll(); }}
+          style={btnStyle}
+        >
+          expand all
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => { expandControllerRef.current?.expandAllFrom('1'); }}
+          style={btnStyle}
+        >
+          expand all from 1
+        </Button>
       </div>
-
-    </>
+      <Tree
+        style={{
+          flex: '1 1',
+        }}
+        nodes={nodes}
+        expandControllerRef={expandControllerRef}
+        defaultExpandAll
+      />
+    </div>
   );
 };
 

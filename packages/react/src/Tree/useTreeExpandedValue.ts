@@ -42,11 +42,12 @@ export function useTreeExpandedValue(props: UseTreeExpandedValueProps) {
     const newExpandedValues = toggleValue(value, expandedValues);
 
     setExpandedValues(newExpandedValues);
+    onExpandProp?.(value);
   };
 
   return {
     expandedValues: expandedValuesProp || expandedValues,
-    onExpand: (expandedValuesProp && onExpandProp) ? onExpandProp : onExpand,
+    onExpand: expandedValuesProp ? onExpandProp : onExpand,
     setExpandedValues,
   };
 }

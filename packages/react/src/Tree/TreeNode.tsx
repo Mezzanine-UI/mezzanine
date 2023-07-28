@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-curly-brace-presence */
 import {
   treeClasses as classes,
   TreeNodeValue,
@@ -13,6 +14,7 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TreeNodeData } from './typings';
 import { MezzanineConfig } from '../Provider/context';
+import Loading from '../Loading/Loading';
 
 export type TreeNodeElementProps = Omit<NativeElementPropsWithoutKeyAndRef<'li'>,
 | 'children'
@@ -63,6 +65,7 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       children,
       className,
       disabled,
+      dynamicNodesFetching,
       expanded,
       indeterminate,
       label,
@@ -91,6 +94,8 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
     const onExpand = onExpandProp ? () => { onExpandProp(value); } : undefined;
     const onSelect = selectable && onSelectProp && !disabled ? () => { onSelectProp(value); } : undefined;
 
+    const mayHaveChildren = children || dynamicNodesFetching;
+
     return (
       <li
         ref={ref}
@@ -103,7 +108,7 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       >
         <div className={classes.nodeStem}>
           {
-            children ? (
+            mayHaveChildren ? (
               <Icon
                 icon={CaretRightIcon}
                 className={cx(
@@ -153,12 +158,12 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
               )
           }
         </div>
-        {children && (
+        {mayHaveChildren && (
           <Collapse
             in={expanded}
             appear={false}
           >
-            {children}
+            {children || <Loading loading iconProps={{ size: 16 }} />}
           </Collapse>
         )}
       </li>
