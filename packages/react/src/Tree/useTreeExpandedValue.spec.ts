@@ -37,13 +37,13 @@ describe('usePickerInputValue', () => {
       expect(result.current.expandedValues).toBeInstanceOf(Array);
 
       TestRenderer.act(() => {
-        result.current.onExpand('1');
+        result.current.onExpand?.('1');
       });
 
       expect(result.current.expandedValues).toContain('1');
 
       TestRenderer.act(() => {
-        result.current.onExpand('1');
+        result.current.onExpand?.('1');
       });
 
       expect(result.current.expandedValues.length).toBe(0);
