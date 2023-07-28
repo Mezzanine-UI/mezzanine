@@ -52,6 +52,7 @@ export interface TreeSelectProps
   | 'defaultExpandAll'
   | 'disabledValues'
   | 'expandControllerRef'
+  | 'onExpand'
   >,
   PickRenameMulti<Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>, {
     maxHeight: 'menuMaxHeight';
@@ -167,6 +168,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
       mode = 'single',
       onBlur,
       onChange: onChangeProp,
+      onExpand: onExpandProp,
       onFocus,
       options,
       placeholder = '',
@@ -346,6 +348,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
       return {
         label: option.name,
         value: option.id,
+        dynamicNodesFetching: option.dynamicChildrenFetching,
         nodes: option.siblings?.map((sibling) => mapOptionToNode(sibling)),
       };
     }
@@ -406,6 +409,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
       const newExpandedValues = toggleValue(value, expandedValues);
 
       setExpandedValues(newExpandedValues);
+      onExpandProp?.(value);
     };
 
     return (

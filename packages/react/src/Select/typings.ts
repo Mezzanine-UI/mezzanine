@@ -4,6 +4,7 @@ export interface SelectValue {
 }
 
 export interface TreeSelectOption extends SelectValue {
+  dynamicChildrenFetching?: boolean;
   siblings?: TreeSelectOption[]
 }
 
