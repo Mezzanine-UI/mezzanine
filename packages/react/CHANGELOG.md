@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.2...@mezzanine-ui/react@0.13.3) (2023-08-07)
+
+### Bug Fixes
+
+- **react/modal:** correct modal slide direction props drilling, closed [#200](https://github.com/Mezzanine-UI/mezzanine/issues/200) ([581cd5e](https://github.com/Mezzanine-UI/mezzanine/commit/581cd5e9885d799bcb1d68aa9e3e14bdfe5ae073))
+
 ## [0.13.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.1...@mezzanine-ui/react@0.13.2) (2023-07-28)
 
 ### Bug Fixes
