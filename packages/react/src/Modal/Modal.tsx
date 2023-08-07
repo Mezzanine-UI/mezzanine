@@ -51,6 +51,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
     children,
     className,
     container,
+    direction = 'down',
     disableCloseOnBackdropClick = false,
     disableCloseOnEscapeKeyDown = false,
     disablePortal = false,
@@ -78,7 +79,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
       <ModalContainer
         className={classes.overlay}
         container={container}
-        direction="down"
+        direction={direction}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
         disablePortal={disablePortal}
