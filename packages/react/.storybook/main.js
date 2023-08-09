@@ -14,6 +14,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-links',
     '@storybook/addon-storysource',
+    '@react-theming/storybook-addon',
     {
       name: 'storybook-addon-sass-postcss',
       options: {
