@@ -6,11 +6,6 @@
 
 :root {
   @include system.common-variables();
-  @include palette.variables("light");
-}
-
-.theme-dark {
-  @include palette.variables("dark");
 }
 
 .sb-show-main {
