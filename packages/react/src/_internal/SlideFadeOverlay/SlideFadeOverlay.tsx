@@ -2,7 +2,6 @@ import { overlayWithSlideFadeClasses as classes } from '@mezzanine-ui/core/_inte
 import {
   forwardRef,
   useState,
-  useLayoutEffect,
   useEffect,
 } from 'react';
 import { cx } from '../../utils/cx';
@@ -90,7 +89,7 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
     ]);
 
     /** lock body scroll */
-    useLayoutEffect(() => {
+    useEffect(() => {
       if (open) {
         lockBodyScroll();
       }
