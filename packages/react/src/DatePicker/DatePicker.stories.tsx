@@ -5,6 +5,7 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
+import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import { useState } from 'react';
 import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
@@ -134,7 +135,7 @@ export const Basic = () => {
 export const Method = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType>();
+  const [val, setVal] = useState<DateType>(new Date());
   const onChange = (v?: DateType) => { setVal(v); };
 
   return (
@@ -151,6 +152,14 @@ export const Method = () => {
         <div style={containerStyle}>
           <Typography variant="h5" style={typoStyle}>
             CalendarMethodsDayjs
+          </Typography>
+          <DatePicker value={val} onChange={onChange} />
+        </div>
+      </CalendarConfigProvider>
+      <CalendarConfigProvider methods={CalendarMethodsLuxon}>
+        <div style={containerStyle}>
+          <Typography variant="h5" style={typoStyle}>
+            CalendarMethodsLuxon
           </Typography>
           <DatePicker value={val} onChange={onChange} />
         </div>
