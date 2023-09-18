@@ -22,6 +22,7 @@ const externals = [
   'lodash',
   'moment',
   'dayjs',
+  'luxon',
   'events',
 ];
 

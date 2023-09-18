@@ -25,6 +25,7 @@
   "peerDependencies": {
     "dayjs": "^1.10.7",
     "lodash": "^4.17.21",
+    "luxon": "^3.4.3",
     "moment": "^2.29.1"
   },
   "peerDependenciesMeta": {
@@ -33,6 +34,9 @@
     },
     "moment": {
       "optional": true
+    },
+    "luxon": {
+      "optional": true
     }
   },
   "dependencies": {
@@ -40,5 +44,8 @@
     "@mezzanine-ui/system": "^0.13.3",
     "lodash": "^4.17.21",
     "tslib": "^2.4.1"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.3.2"
   }
 }
