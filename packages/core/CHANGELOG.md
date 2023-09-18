@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.3...@mezzanine-ui/core@0.13.4) (2023-09-18)
+
+### Features
+
+- **core:** add luxon date library support ([43e9958](https://github.com/Mezzanine-UI/mezzanine/commit/43e99586a5ea0ddb6b2d6f0afeba6c6dbd02fe4b))
+
 ## [0.13.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.2...@mezzanine-ui/core@0.13.3) (2023-08-07)
 
 **Note:** Version bump only for package @mezzanine-ui/core

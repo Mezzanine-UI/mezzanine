@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.3...@mezzanine-ui/react@0.13.4) (2023-09-18)
+
+### Bug Fixes
+
+- internal slide fade overlay remove useLayoutEffect for better SSR support ([f72ed8d](https://github.com/Mezzanine-UI/mezzanine/commit/f72ed8de8adc434631c218a429d9edcc44dbc655))
+
+### Features
+
+- **core:** add luxon date library support ([43e9958](https://github.com/Mezzanine-UI/mezzanine/commit/43e99586a5ea0ddb6b2d6f0afeba6c6dbd02fe4b))
+
 ## [0.13.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.2...@mezzanine-ui/react@0.13.3) (2023-08-07)
 
 ### Bug Fixes
