@@ -1,10 +1,10 @@
 import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
   InfoCircleFilledIcon,
 } from '@mezzanine-ui/icons';
-import { ReactText } from 'react';
+import { Key } from 'react';
 import {
   act,
   cleanup,
@@ -267,7 +267,7 @@ describe('<Notification />', () => {
       },
       error: {
         color: 'error',
-        icon: MinusCircleFilledIcon,
+        icon: TimesCircleFilledIcon,
       },
       info: {
         color: 'primary',
@@ -347,7 +347,7 @@ describe('Notification API', () => {
       });
 
       it(`should find ${severity} message and be able to remove it`, () => {
-        let reference: ReactText;
+        let reference: Key;
 
         act(() => {
           reference = handler({
