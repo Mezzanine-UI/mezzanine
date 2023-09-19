@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.4...@mezzanine-ui/core@0.13.5) (2023-09-19)
+
+### Bug Fixes
+
+- **core/alert:** change severity error icon ([da2840f](https://github.com/Mezzanine-UI/mezzanine/commit/da2840f7ef152e9025a2f48cde25645fa81eca59))
+- **core/modal:** change severity error icon ([b7f85e6](https://github.com/Mezzanine-UI/mezzanine/commit/b7f85e61b1fb5446917c9efc9c485c50730f7d85))
+- **core/notification:** change severity error icon ([356471d](https://github.com/Mezzanine-UI/mezzanine/commit/356471d1e29505149198be00eaa47f9a860f5423))
+
 ## [0.13.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.3...@mezzanine-ui/core@0.13.4) (2023-09-18)
 
 ### Features
