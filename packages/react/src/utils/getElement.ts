@@ -7,7 +7,7 @@ export type ElementGetter =
   | null;
 
 export function getElement(elementGetter?: ElementGetter): HTMLElement | null {
-  if (elementGetter) {
+  if (elementGetter && typeof window !== 'undefined') {
     if (elementGetter instanceof HTMLElement) {
       return elementGetter;
     }
