@@ -1,7 +1,7 @@
 import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
   InfoCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
@@ -14,7 +14,7 @@ export const notificationRootPrefix = `${notificationPrefix}-root`;
 export const notificationIcons = {
   success: CheckCircleFilledIcon,
   warning: ExclamationCircleFilledIcon,
-  error: MinusCircleFilledIcon,
+  error: TimesCircleFilledIcon,
   info: InfoCircleFilledIcon,
 } as const;
 
