@@ -2,7 +2,7 @@ import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
   InfoCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { Size } from '@mezzanine-ui/system/size';
@@ -16,7 +16,7 @@ export const modalPrefix = 'mzn-modal';
 export const modalSeverityIcons = {
   success: CheckCircleFilledIcon,
   warning: ExclamationCircleFilledIcon,
-  error: MinusCircleFilledIcon,
+  error: TimesCircleFilledIcon,
   info: InfoCircleFilledIcon,
 } as const;
 
