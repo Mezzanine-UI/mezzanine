@@ -1,7 +1,7 @@
 import {
   CheckCircleFilledIcon,
   ExclamationCircleFilledIcon,
-  MinusCircleFilledIcon,
+  TimesCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
 
@@ -11,7 +11,7 @@ export const alertPrefix = 'mzn-alert';
 export const alertIcons = {
   success: CheckCircleFilledIcon,
   warning: ExclamationCircleFilledIcon,
-  error: MinusCircleFilledIcon,
+  error: TimesCircleFilledIcon,
 } as const;
 
 export const alertClasses = {
