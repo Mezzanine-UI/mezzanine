@@ -5,7 +5,6 @@ import {
   useState,
   useContext,
   KeyboardEventHandler,
-  useLayoutEffect,
   useMemo,
 } from 'react';
 import {
@@ -33,6 +32,7 @@ import Tree, {
 } from '../Tree';
 import { cx } from '../utils/cx';
 import { PopperController } from '../Popper';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 
 export interface TreeSelectProps
   extends
@@ -238,7 +238,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
     /** Make popper positioning dynamically by computing styles every time value prop changes */
     const controllerRef = useRef<PopperController>(null);
 
-    useLayoutEffect(() => {
+    useIsomorphicLayoutEffect(() => {
       controllerRef.current?.forceUpdate?.();
     }, [valueProp]);
 
