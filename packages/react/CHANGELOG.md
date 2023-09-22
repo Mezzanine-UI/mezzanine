@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.5...@mezzanine-ui/react@0.13.6) (2023-09-22)
+
+### Bug Fixes
+
+- **react/tree-select:** use useIsomorphicLayoutEffect hook instead of useLayoutEffect ([80fd27d](https://github.com/Mezzanine-UI/mezzanine/commit/80fd27dcf261b4aa002ff081a04ea5c6f62225fe))
+- **react/utils:** fix getElement HTMLElement undefined error when in SSR mode ([0def3a8](https://github.com/Mezzanine-UI/mezzanine/commit/0def3a85effc5d59fa486a48927f469ee89029b6))
+
 ## [0.13.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.4...@mezzanine-ui/react@0.13.5) (2023-09-19)
 
 **Note:** Version bump only for package @mezzanine-ui/react
