@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.6...@mezzanine-ui/react@0.13.7) (2023-10-11)
+
+### Bug Fixes
+
+- **react/input:** it's no reason force maxlength under 8 on tag mode ([880c0be](https://github.com/Mezzanine-UI/mezzanine/commit/880c0be7e3e9e5dfeb35f950de459eeef9929057))
+
 ## [0.13.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.5...@mezzanine-ui/react@0.13.6) (2023-09-22)
 
 ### Bug Fixes
