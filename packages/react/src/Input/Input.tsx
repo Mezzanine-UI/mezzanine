@@ -184,12 +184,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
 
   const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
 
-  const maxLength = () => (
-    tagsMode
-      ? Math.min(inputProps?.maxLength || 8, 8)
-      : inputProps?.maxLength
-  );
-
   const active = !!value;
   const mountInput = !tagsMode || !tagsReachedMax;
 
@@ -239,7 +233,6 @@ const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) 
           aria-readonly={readOnly}
           aria-required={required}
           disabled={disabled}
-          maxLength={maxLength()}
           onChange={tagsMode ? tagsModeOnChange : onChange}
           onKeyDown={tagsMode ? onKeyDown : inputProps?.onKeyDown}
           placeholder={placeholder}
