@@ -62,6 +62,11 @@ export interface AutoCompleteBaseProps
    */
   addable?: boolean;
   /**
+   * Clear search text after insert option when clearSearchTextAfterInsert is true
+   * @default false
+   */
+  clearSearchTextAfterInsert?: boolean;
+  /**
    * Should the filter rules be disabled (If you need to control options filter by yourself)
    * @default false
    */
@@ -168,6 +173,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
   const {
     addable = false,
     className,
+    clearSearchTextAfterInsert = false,
     disabled = disabledFromFormControl || false,
     disabledOptionsFilter = false,
     defaultValue,
@@ -393,6 +399,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
                   if (newOption) {
                     setInsertText('');
                     onChange(newOption);
+
+                    if (clearSearchTextAfterInsert) {
+                      setSearchText('');
+                    }
                   }
                 }
               }}
