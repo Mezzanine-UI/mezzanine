@@ -392,6 +392,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(function Sele
 
                   if (newOption) {
                     setInsertText('');
+                    setSearchText('');
                     onChange(newOption);
                   }
                 }
