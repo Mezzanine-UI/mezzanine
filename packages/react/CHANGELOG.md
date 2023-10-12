@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.7...@mezzanine-ui/react@0.13.8) (2023-10-12)
+
+### Features
+
+- **react/select/autocomplete:** clear search text after insert option ([a8b2090](https://github.com/Mezzanine-UI/mezzanine/commit/a8b2090fe831b236b25bc83ef165244cb5a403e8))
+
 ## [0.13.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.6...@mezzanine-ui/react@0.13.7) (2023-10-11)
 
 ### Bug Fixes
