@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.8...@mezzanine-ui/react@0.13.9) (2023-10-18)
+
+### Features
+
+- **react/select:** allow generic on SelectValue id type ([40f5e88](https://github.com/Mezzanine-UI/mezzanine/commit/40f5e880645a3f52c8d66110d6147beb7e282815))
+
 ## [0.13.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.7...@mezzanine-ui/react@0.13.8) (2023-10-12)
 
 ### Features
