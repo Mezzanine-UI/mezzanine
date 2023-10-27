@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.12.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.9...@mezzanine-ui/react@0.12.10) (2023-10-27)
+
+### Bug Fixes
+
+- **react/select:** trigger onClose as default on suffix icon ([5ba224d](https://github.com/Mezzanine-UI/mezzanine/commit/5ba224dfc1ac05c4269a5300c0a301460f5ea3e4))
+
 ## [0.12.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.12.8...@mezzanine-ui/react@0.12.9) (2023-06-19)
 
 **Note:** Version bump only for package @mezzanine-ui/react
