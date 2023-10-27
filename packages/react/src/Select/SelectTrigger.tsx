@@ -1,6 +1,6 @@
 /* eslint-disable no-redeclare */
 /* global JSX */
-import { forwardRef, Ref } from 'react';
+import { forwardRef, Ref, MouseEventHandler } from 'react';
 import {
   selectClasses as classes,
 } from '@mezzanine-ui/core/select';
@@ -148,6 +148,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     suffixAction,
     suffixActionIcon: suffixActionIconProp,
     value,
+    onClick,
     ...restTextFieldProps
   } = props;
 
@@ -175,7 +176,11 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       onClick={(e) => {
         e.stopPropagation();
 
-        suffixAction?.();
+        if (suffixAction) {
+          suffixAction();
+        } else {
+          (onClick as MouseEventHandler)?.(e);
+        }
       }}
       className={cx(
         classes.triggerSuffixActionIcon,
@@ -202,6 +207,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     <TextField
       ref={innerRef}
       {...restTextFieldProps}
+      onClick={onClick}
       active={getTextFieldActive()}
       className={cx(classes.trigger, className)}
       disabled={disabled}
