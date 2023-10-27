@@ -5,7 +5,7 @@
   "version": "independent",
   "command": {
     "version": {
-      "allowBranch": "main",
+      "allowBranch": "v0.12.x",
       "conventionalCommits": true,
       "ignoreChanges": [
         "**/__test-utils__",
