@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.13.9...@mezzanine-ui/icons@0.13.10) (2023-10-31)
+
+**Note:** Version bump only for package @mezzanine-ui/icons
+
 ## [0.13.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.13.8...@mezzanine-ui/icons@0.13.9) (2023-10-18)
 
 **Note:** Version bump only for package @mezzanine-ui/icons
