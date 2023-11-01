@@ -6,6 +6,7 @@
 
 :root {
   @include system.common-variables();
+  @include system.palette();
 }
 
 .sb-show-main {

@@ -5,7 +5,7 @@ import {
 } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Meta, Story } from '@storybook/react';
-import { MoreVerticalIcon } from 'icons/src/more-vertical';
+import { MoreVerticalIcon } from '@mezzanine-ui/icons';
 import AppBar, { AppBarBrand, AppBarMain, AppBarSupport } from '../AppBar';
 import Button from '../Button/Button';
 import Dropdown from '../Dropdown';
