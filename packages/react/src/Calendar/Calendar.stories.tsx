@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import moment from 'moment';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
@@ -76,7 +76,7 @@ const InnerCalendarPlayground = ({
 };
 
 type CalendarPlaygroundArgs = Pick<CalendarProps, 'mode'>;
-export const CalendarPlayground: Story<CalendarPlaygroundArgs> = ({
+export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
   mode = 'day',
 }) => (
   <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -167,7 +167,7 @@ export const Calendars = () => {
 };
 
 type CellPlaygroundArgs = CalendarCellProps;
-export const CellPlayground: Story<CellPlaygroundArgs> = ({
+export const CellPlayground: StoryFn<CellPlaygroundArgs> = ({
   today,
   active,
   disabled,
@@ -190,7 +190,7 @@ CellPlayground.args = {
 };
 
 type ControlPlaygroundArgs = Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'>;
-export const ControlPlayground: Story<ControlPlaygroundArgs> = ({
+export const ControlPlayground: StoryFn<ControlPlaygroundArgs> = ({
   disableOnNext,
   disableOnPrev,
 }) => (

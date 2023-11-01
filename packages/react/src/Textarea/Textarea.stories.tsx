@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import Textarea, { TextareaProps, TextareaSize } from '.';
 import ConfigProvider from '../Provider';
 
@@ -12,7 +12,7 @@ const sizes: TextareaSize[] = [
   'large',
 ];
 
-export const Playground: Story<TextareaProps> = ({ ...props }) => (
+export const Playground: StoryFn<TextareaProps> = ({ ...props }) => (
   <Textarea {...props} />
 );
 

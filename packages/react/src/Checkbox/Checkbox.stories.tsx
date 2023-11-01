@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import Typography from '../Typography';
 import Checkbox, {
   CheckboxSize,
@@ -51,7 +51,7 @@ export const Sizes = () => (
   </>
 );
 
-export const Group: Story<CheckboxGroupProps> = ({
+export const Group: StoryFn<CheckboxGroupProps> = ({
   disabled,
   orientation,
   size,
@@ -123,7 +123,7 @@ Group.argTypes = {
   },
 };
 
-export const CheckAllStory: Story<CheckboxGroupProps> = ({
+export const CheckAllStory: StoryFn<CheckboxGroupProps> = ({
   disabled,
   orientation,
   size,

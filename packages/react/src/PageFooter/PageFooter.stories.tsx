@@ -4,7 +4,7 @@ import {
   useState,
 } from 'react';
 import { action } from '@storybook/addon-actions';
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
 import AppBar, { AppBarBrand, AppBarMain, AppBarSupport } from '../AppBar';
 import Button from '../Button/Button';
@@ -26,7 +26,7 @@ const pageFooterArgs = {
   onConfirm: action('onConfirm'),
 };
 
-export const Basic: Story<PageFooterProps> = ({
+export const Basic: StoryFn<PageFooterProps> = ({
   cancelText,
   confirmText,
   danger,
@@ -49,7 +49,7 @@ export const Basic: Story<PageFooterProps> = ({
 
 Basic.args = pageFooterArgs;
 
-export const WithDropdown: Story<PageFooterProps> = ({
+export const WithDropdown: StoryFn<PageFooterProps> = ({
   cancelText,
   confirmText,
   danger,
@@ -108,7 +108,7 @@ export const WithDropdown: Story<PageFooterProps> = ({
 
 WithDropdown.args = pageFooterArgs;
 
-export const WithAppBar: Story<PageFooterProps> = ({
+export const WithAppBar: StoryFn<PageFooterProps> = ({
   cancelText,
   confirmText,
   danger,
@@ -147,7 +147,7 @@ export const WithAppBar: Story<PageFooterProps> = ({
 
 WithAppBar.args = pageFooterArgs;
 
-export const WithMenuNavigation: Story<PageFooterProps> = ({
+export const WithMenuNavigation: StoryFn<PageFooterProps> = ({
   cancelText,
   confirmText,
   danger,

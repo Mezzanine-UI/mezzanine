@@ -1,6 +1,5 @@
 import type { Preview } from '@storybook/react';
 import { DocsPage } from '@storybook/addon-docs';
-// import { withThemes } from '@react-theming/storybook-addon';
 // import { lightTheme, darkTheme } from './theme';
 import './global.scss';
 

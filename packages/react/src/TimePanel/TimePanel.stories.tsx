@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { getUnits, TimePanelUnit } from '@mezzanine-ui/core/time-panel';
@@ -20,7 +20,7 @@ type PlaygroundArgs = Pick<TimePanelProps,
 | 'hideMinute'
 | 'hideSecond'>;
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   hourStep,
   minuteStep,
   secondStep,

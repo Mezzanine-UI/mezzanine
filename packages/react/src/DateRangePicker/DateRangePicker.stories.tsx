@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   CalendarMode,
   DateType,
@@ -30,7 +30,7 @@ const getUpperCase = (mode: CalendarMode) => mode.charAt(0).toUpperCase() + mode
 
 type PlaygroundArgs = DateRangePickerProps;
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   clearable,
   disabled,
   error,

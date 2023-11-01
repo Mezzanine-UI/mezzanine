@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import Badge, { BadgeContainer, BadgeProps } from '.';
 
 export default {
@@ -18,7 +18,7 @@ interface PlaygroundArgs extends Required<Pick<BadgeProps, 'dot' | 'overflowCoun
   content: number;
 }
 
-export const Playgroud: Story<PlaygroundArgs> = ({
+export const Playgroud: StoryFn<PlaygroundArgs> = ({
   content,
   dot,
   overflowCount,

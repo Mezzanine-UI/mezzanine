@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useState } from 'react';
 import Pagination, { PaginationProps } from './Pagination';
 
@@ -6,7 +6,7 @@ export default {
   title: 'Navigation/Pagination',
 } as Meta;
 
-export const Playground: Story<PaginationProps> = ({
+export const Playground: StoryFn<PaginationProps> = ({
   boundaryCount,
   buttonText,
   disabled,
@@ -40,7 +40,7 @@ export const Playground: Story<PaginationProps> = ({
   );
 };
 
-export const WithJumper: Story = () => {
+export const WithJumper: StoryFn = () => {
   const [current, setCurrent] = useState(1);
 
   return (
@@ -56,7 +56,7 @@ export const WithJumper: Story = () => {
   );
 };
 
-export const WithPageSize: Story = () => {
+export const WithPageSize: StoryFn = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 

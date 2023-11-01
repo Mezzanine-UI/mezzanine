@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import { Icon } from '..';
@@ -14,7 +14,7 @@ const orientations: ButtonGroupOrientation[] = [
   'vertical',
 ];
 
-export const Playground: Story<ButtonGroupProps> = ({ attached, orientation }) => (
+export const Playground: StoryFn<ButtonGroupProps> = ({ attached, orientation }) => (
   <>
     <ConfigProvider size="large">
       <ButtonGroup

@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import Switch, { SwitchProps, SwitchSize } from '.';
 
 export default {
@@ -10,7 +10,7 @@ const sizes: SwitchSize[] = [
   'large',
 ];
 
-export const Playground: Story<SwitchProps> = (args) => (
+export const Playground: StoryFn<SwitchProps> = (args) => (
   <Switch {...args} />
 );
 

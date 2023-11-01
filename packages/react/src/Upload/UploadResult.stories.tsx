@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { useState } from 'react';
 import { UploadButton, UploadResult, UploadResultProps } from '.';
@@ -13,7 +13,7 @@ interface BasicStoryArgs {
   onDownload: VoidFunction;
 }
 
-export const Basic: Story<BasicStoryArgs> = ({ onDelete, onDownload }) => (
+export const Basic: StoryFn<BasicStoryArgs> = ({ onDelete, onDownload }) => (
   <div
     style={{
       display: 'inline-grid',
@@ -53,7 +53,7 @@ Basic.args = {
   onDownload: action('onDownload'),
 };
 
-export const Sizes: Story = () => (
+export const Sizes: StoryFn = () => (
   <div
     style={{
       display: 'inline-grid',
@@ -83,7 +83,7 @@ interface ListStoryArgs {
   onDownload: NonNullable<UploadResultProps['onDownload']>;
 }
 
-export const List: Story<ListStoryArgs> = ({ onDownload }) => {
+export const List: StoryFn<ListStoryArgs> = ({ onDownload }) => {
   const [files, setFiles] = useState<File[]>([]);
 
   return (

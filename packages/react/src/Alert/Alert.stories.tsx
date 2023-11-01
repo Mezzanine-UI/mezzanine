@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import Alert, { AlertProps } from './Alert';
 
 export default {
@@ -7,7 +7,7 @@ export default {
 
 type PlaygroundArgs = Required<Pick<AlertProps, 'children' | 'severity'>>;
 
-export const Playground: Story<PlaygroundArgs> = ({ children, severity, ...args }) => (
+export const Playground: StoryFn<PlaygroundArgs> = ({ children, severity, ...args }) => (
   <Alert severity={severity} {...args}>
     {children}
   </Alert>

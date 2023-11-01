@@ -1,5 +1,5 @@
 import { Key, useState } from 'react';
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import {
   DownloadIcon,
   EyeIcon,
@@ -61,7 +61,7 @@ const dataset = [
   },
 ];
 
-export const Playground:Story<NavigationProps> = ({
+export const Playground:StoryFn<NavigationProps> = ({
   orientation,
 }) => {
   const [active, setActive] = useState<Key | null | undefined>();

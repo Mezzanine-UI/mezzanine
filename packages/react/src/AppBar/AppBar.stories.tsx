@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   EyeIcon,
   DownloadIcon,
@@ -72,7 +72,7 @@ const dataset = [
   },
 ];
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   orientation,
 }) => (
   <div style={{

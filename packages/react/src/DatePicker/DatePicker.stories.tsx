@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   DateType,
   getDefaultModeFormat,
@@ -26,7 +26,7 @@ function usePickerChange() {
 
 type PlaygroundArgs = DatePickerProps;
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   clearable,
   disabled,
   error,

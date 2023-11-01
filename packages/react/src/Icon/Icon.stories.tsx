@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   ArrowDownIcon,
   ArrowRightIcon,
@@ -69,7 +69,7 @@ export default {
   title: 'General/Icon',
 } as Meta;
 
-export const Playgroud: Story<IconProps> = ({ children, ...props }) => (
+export const Playgroud: StoryFn<IconProps> = ({ children, ...props }) => (
   <Icon {...props} icon={PlusIcon} />
 );
 
@@ -95,7 +95,7 @@ interface AllStoryArgs {
   search: string;
 }
 
-export const All: Story<AllStoryArgs> = ({ search }) => {
+export const All: StoryFn<AllStoryArgs> = ({ search }) => {
   const icons = [
     ArrowDownIcon,
     ArrowRightIcon,

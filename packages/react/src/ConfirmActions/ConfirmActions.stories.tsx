@@ -1,5 +1,5 @@
 import { action } from '@storybook/addon-actions';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { ButtonSize } from '../Button';
 import ConfirmActions, { ConfirmActionsProps } from '.';
 
@@ -15,7 +15,7 @@ const sizes: ButtonSize[] = [
 
 type PlaygroundStoryArgs = ConfirmActionsProps;
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   cancelText,
   confirmText,
   danger,
