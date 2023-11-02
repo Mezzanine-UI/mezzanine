@@ -37,19 +37,14 @@
     "system:test:coverage": "yarn system:test --coverage",
     "core:test": "yarn workspace @mezzanine-ui/core test",
     "core:test:coverage": "yarn core:test --coverage",
-    "ng:test": "yarn workspace @mezzanine-ui/ng test",
-    "ng:test:coverage": "yarn ng:test --coverage",
-    "ng:build": "yarn workspace @mezzanine-ui/ng build",
-    "ng:build:all": "yarn build:base --scope @mezzanine-ui/ng",
-    "ng:storybook": "yarn workspace @mezzanine-ui/ng storybook",
     "react:test": "yarn workspace @mezzanine-ui/react test",
     "react:test:coverage": "yarn react:test --coverage",
     "react:build": "storybook build",
     "react:build:all": "storybook build",
-    "react:storybook": "storybook dev -p 6006 --debug-webpack"
+    "react:storybook": "storybook dev -p 6006"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.2",
+    "@babel/core": "^7.23.2",
     "@babel/preset-env": "^7.23.2",
     "@babel/preset-react": "^7.22.15",
     "@babel/preset-typescript": "^7.23.2",
@@ -98,7 +93,6 @@
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
     "storybook": "^7.5.2",
-    "storybook-addon-sass-postcss": "^0.1.3",
     "style-loader": "^3.3.1",
     "stylelint": "^14.14.1",
     "stylelint-config-recommended-scss": "^8.0.0",
@@ -106,7 +100,6 @@
     "stylelint-order": "^5.0.0",
     "stylelint-scss": "^4.3.0",
     "ts-jest": "^29.0.3",
-    "tsconfig-paths-webpack-plugin": "^4.0.0",
     "typescript": "^4.8.4"
   },
   "resolutions": {
