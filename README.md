@@ -2,16 +2,15 @@
 
 ## BEFORE YOU STARTED
 
-This project is in beta version, and currently being used by rytass internal projects. <br />
-Please consider the possibility of api changes if you want to use it in production mode.
+Please note that the current project is still in the "Beta stage" but has been widely utilized across various Rytass projects. If you intend to use it in a production environment, be aware that API changes may still occur.
 
 ## Storybook preview
 
-If you are interested about this project, please see: [Storybook](https://storybook.mezzanine-ui.org)
+If you're interested in this project, please refer to the [Storybook](https://storybook.mezzanine-ui.org) for more information.
 
 ## Migrations
 
-If you are an existing mezzanine users and looking for migration guides, please see [Migrations](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations).
+If you've previously used this project and wish to update to the latest version, please consult the [Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations) for detailed instructions.
 
 ## Browser Support
 `Google Chrome` 64 or newer (2018) <br />
@@ -33,7 +32,7 @@ yarn add @mezzanine-ui/core @mezzanine-ui/react @mezzanine-ui/system @mezzanine-
 
 ### Quickly Setup
 
-All you need is to create a `main.scss` file (or your favorite filename), and add:
+All you need to do is create a `main.scss` file and paste the following code into it.
 
 ```scss
 @use '~@mezzanine-ui/system' as mzn-system;
@@ -47,7 +46,7 @@ All you need is to create a `main.scss` file (or your favorite filename), and ad
 @include mzn-core.styles();
 ```
 
-then import this file at your root
+Then, import it at the root node.
 
 ```jsx
 import './main.scss';
@@ -295,7 +294,7 @@ If you need more z-index orders, please add extra z-index scss file by yourself 
 
 ### Usage
 
-Mezzanine components are listed in [storybook](https://storybook.mezzanine-ui.org) and props description can find in `docs` section. <br />
+Mezzanine components are listed in [storybook](https://storybook.mezzanine-ui.org) and props descriptions are in `docs` section. <br />
 
 For example:
 
@@ -304,6 +303,22 @@ import { Button } from '@mezzanine-ui/react';
 
 function App() {
   return <Button>Click me!</Button>;
+}
+```
+
+Also, we provide a `<ConfigProvider />` that makes it convenient to control the size of all components.
+
+```tsx
+import { ConfigProvider, Button } from '@mezzanine-ui/react';
+
+function App() {
+  return (
+    <ConfigProvider size="large">
+      <Button>
+        Large Button
+      </Button>
+    </ConfigProvider>
+  );
 }
 ```
 
