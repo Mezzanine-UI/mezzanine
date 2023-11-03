@@ -17,19 +17,14 @@ const config: StorybookConfig = {
     '@storybook/addon-onboarding',
     '@storybook/addon-storysource',
   ],
-  core: {
-    builder: {
-      name: '@storybook/builder-webpack5',
-      options: {
-        fsCache: true,
-        lazyCompilation: true,
-      },
-    },
-  },
   framework: {
     name: '@storybook/react-webpack5',
     options: {
       fastRefresh: true,
+      builder: {
+        fsCache: true,
+        lazyCompilation: true,
+      },
     },
   },
   docs: {
