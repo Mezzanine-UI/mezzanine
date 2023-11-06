@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { UploadInputProps } from './UploadInput';
 import { UploadButton } from '.';
@@ -9,7 +9,7 @@ export default {
 
 type PlaygroundStoryArgs = Required<UploadInputProps>;
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   accept,
   disabled,
   multiple,

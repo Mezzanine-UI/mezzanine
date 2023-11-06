@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { UploadPicture } from '.';
 
@@ -23,7 +23,7 @@ function delay(ms: number) {
   return new Promise((resolve) => { setTimeout(resolve, ms); });
 }
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   accept,
   defaultValue,
   defaultUploadLabel,

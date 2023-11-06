@@ -1,7 +1,6 @@
 {
   "npmClient": "yarn",
   "npmClientArgs": ["--no-lockfile"],
-  "useWorkspaces": true,
   "version": "independent",
   "command": {
     "version": {
@@ -20,5 +19,6 @@
     "publish": {
       "contents": "dist"
     }
-  }
+  },
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json"
 }

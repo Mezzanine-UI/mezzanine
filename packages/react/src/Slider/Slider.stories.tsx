@@ -1,5 +1,5 @@
 import { RangeSliderValue, SingleSliderValue } from '@mezzanine-ui/core/slider';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useRef, useState } from 'react';
 import Slider, { SliderProps } from '.';
 import Typography from '../Typography';
@@ -15,7 +15,7 @@ type PlaygroundArgs = Pick<SliderProps,
 | 'disabled'
 >;
 
-export const Single: Story<PlaygroundArgs> = ({
+export const Single: StoryFn<PlaygroundArgs> = ({
   min,
   max,
   step,
@@ -58,7 +58,7 @@ Single.args = {
   disabled: false,
 };
 
-export const Range: Story<PlaygroundArgs> = ({
+export const Range: StoryFn<PlaygroundArgs> = ({
   min,
   max,
   step,

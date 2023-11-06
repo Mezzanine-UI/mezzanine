@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import { useRef, useState } from 'react';
 import Select, {
   Option,
@@ -373,7 +373,7 @@ type TreeSelectPlaygroundArgs = Pick<TreeSelectProps,
 | 'size'
 >;
 
-export const TreeSelectPlayground: Story<TreeSelectPlaygroundArgs> = ({
+export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
   clearable,
   disabled,
   error,

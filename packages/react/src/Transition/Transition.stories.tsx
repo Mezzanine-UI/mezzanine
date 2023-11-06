@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useState } from 'react';
 import {
   MotionDurationType,
@@ -42,7 +42,7 @@ interface TransitionStoryArgs {
   easingExit: MotionEasingType;
 }
 
-type TransitionStory<Args = Record<string, any>> = Story<TransitionStoryArgs & Args>;
+type TransitionStory<Args = Record<string, any>> = StoryFn<TransitionStoryArgs & Args>;
 
 const args = {
   durationEnter: 'standard',

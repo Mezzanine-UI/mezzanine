@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { UploadPictureWall } from '.';
 
@@ -40,7 +40,7 @@ interface SingleStoryArgs {
   parallel: boolean;
 }
 
-export const Single: Story<SingleStoryArgs> = ({
+export const Single: StoryFn<SingleStoryArgs> = ({
   accept,
   defaultValues,
   defaultUploadLabel,
@@ -123,7 +123,7 @@ interface MultipleStoryArgs {
   onUploadSuccess: VoidFunction;
 }
 
-export const Multiple: Story<MultipleStoryArgs> = ({
+export const Multiple: StoryFn<MultipleStoryArgs> = ({
   accept,
   defaultValues,
   defaultUploadLabel,

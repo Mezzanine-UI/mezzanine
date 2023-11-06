@@ -234,26 +234,6 @@ export const All = () => {
         gap: '16px',
       }}
     >
-      <h3 style={{ fontSize: '18px', color: '#ff4343', margin: 0 }}>
-        注意事項：
-      </h3>
-      <ol style={{ margin: 0 }}>
-        <li>
-          使用左邊的 Select 可以預覽不同元件。
-        </li>
-        <li>
-          點擊畫面下方「Theming」Tab 可以設定不同顏色，直接點擊色碼即可修改。
-        </li>
-        <li>
-          顏色名稱對應到 Mezzanine 的 color system，比如 primary.main, primary.light..etc，請注意 hoverBackground 及 selectedBackground 為程式運算出來的結果，不可修改。
-        </li>
-        <li>
-          若需要其他種配色的可能性，請先與工程師確認可行性。
-        </li>
-        <li>
-          修改後「請一直留在目前頁面」且「不要重新整理網頁」，不然顏色會重置。
-        </li>
-      </ol>
       <Select
         mode="single"
         value={currentComponent}

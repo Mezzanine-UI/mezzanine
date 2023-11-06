@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import Tag, { TagProps, TagSize } from '.';
 import ConfigProvider from '../Provider';
@@ -18,7 +18,7 @@ interface PlaygroudStoryArgs extends Required<Pick<TagProps, 'closable' | 'disab
   onClose: VoidFunction;
 }
 
-export const Playgroud: Story<PlaygroudStoryArgs> = ({ label, ...args }) => (
+export const Playgroud: StoryFn<PlaygroudStoryArgs> = ({ label, ...args }) => (
   <Tag {...args}>{label}</Tag>
 );
 
@@ -42,7 +42,7 @@ interface CommonStoryArgs {
   onClose: VoidFunction;
 }
 
-export const Common: Story<CommonStoryArgs> = ({ onClose }) => (
+export const Common: StoryFn<CommonStoryArgs> = ({ onClose }) => (
   <div
     style={{
       display: 'inline-grid',
@@ -65,7 +65,7 @@ Common.args = {
   onClose: action('onClose'),
 };
 
-export const Sizes: Story = () => (
+export const Sizes: StoryFn = () => (
   <div
     style={{
       display: 'inline-grid',

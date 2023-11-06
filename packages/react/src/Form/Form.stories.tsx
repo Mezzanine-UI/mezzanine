@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
 import { ReactNode, useState } from 'react';
@@ -36,7 +36,7 @@ interface PlaygroundStoryArgs {
   showRemarkIcon: boolean;
 }
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   clearable,
   disabled,
   fullWidth,

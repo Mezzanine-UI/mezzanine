@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import Typography from '../Typography';
 import Empty, { EmptyProps } from './Empty';
 
@@ -19,7 +19,7 @@ const demoImage = (
   />
 );
 
-export const Playgroud: Story<PlaygroundArgs> = ({ children, title, ...args }) => (
+export const Playgroud: StoryFn<PlaygroundArgs> = ({ children, title, ...args }) => (
   <>
     <Typography variant="h4">
       預設 Icon

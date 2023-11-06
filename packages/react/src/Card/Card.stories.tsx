@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { EyeIcon, MoreVerticalIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Card, { CardProps } from './Card';
@@ -64,7 +64,7 @@ const playgroundDefaultStyle = {
   width: '375px',
 };
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   coverUri, title, titleVariant, subtitle, description, actionsTemplate, ...args
 }) => {
   const playgroundDefaultCover = (

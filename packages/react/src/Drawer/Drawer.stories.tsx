@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import Drawer, { DrawerProps, DrawerPlacement } from '.';
 import Button from '../Button';
 
@@ -11,7 +11,7 @@ type PlaygroundStoryArgs = DrawerProps;
 
 const placements: DrawerPlacement[] = ['top', 'right', 'bottom', 'left'];
 
-export const Playground: Story<PlaygroundStoryArgs> = ({
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown,
   placement,

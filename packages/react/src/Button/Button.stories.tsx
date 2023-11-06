@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Button, {
@@ -28,7 +28,7 @@ const variants: ButtonVariant[] = [
   'text',
 ];
 
-export const Playground: Story<ButtonProps> = ({
+export const Playground: StoryFn<ButtonProps> = ({
   children,
   prefix,
   suffix,
@@ -174,7 +174,7 @@ interface LoadingStoryArgs {
   loading: boolean;
 }
 
-export const Loading: Story<LoadingStoryArgs> = ({ loading }) => (
+export const Loading: StoryFn<LoadingStoryArgs> = ({ loading }) => (
   <Button loading={loading} variant="contained">ok</Button>
 );
 

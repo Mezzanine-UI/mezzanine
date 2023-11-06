@@ -1,5 +1,5 @@
 import { TreeNodeValue } from '@mezzanine-ui/core/tree';
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useRef, useState } from 'react';
 import Button from '../Button';
 import Typography from '../Typography';
@@ -134,7 +134,7 @@ type DisabledPlaygroundArgs = {
   disabledDemoType: 'parent disabled' | 'sibling disabled',
 };
 
-export const Disabled: Story<DisabledPlaygroundArgs> = ({
+export const Disabled: StoryFn<DisabledPlaygroundArgs> = ({
   disabledDemoType,
 }) => {
   const [selectedValues, setSelectedValues] = useState<TreeNodeValue[]>([]);
@@ -299,7 +299,7 @@ export const Controller = () => {
   );
 };
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   multiple,
   selectMethod,
   selectable,

@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { useState } from 'react';
 import Loading, { LoadingProps } from '.';
 import Alert from '../Alert';
@@ -12,7 +12,7 @@ export default {
 
 type PlaygroundArgs = LoadingProps;
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   stretch,
   loading,
   tip,

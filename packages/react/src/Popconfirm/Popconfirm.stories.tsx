@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { MouseEvent, useState } from 'react';
 import { NotificationData } from '..';
 import Button from '../Button';
@@ -9,7 +9,7 @@ export default {
   title: 'Feedback/Popconfirm',
 } as Meta;
 
-export const Playground :Story<NotificationData> = ({ ...props }) => {
+export const Playground :StoryFn<NotificationData> = ({ ...props }) => {
   const [currentPlacement, setCurrentPlacement] = useState<PopperPlacement>('top');
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const onClose = () => setAnchor(null);

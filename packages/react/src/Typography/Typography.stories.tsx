@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import Typography, {
   TypographyAlign,
   TypographyColor,
@@ -52,7 +52,7 @@ const variants: TypographyVariant[] = [
   'caption',
 ];
 
-export const Playgroud: Story<TypographyProps<any>> = ({ children, ...props }) => (
+export const Playgroud: StoryFn<TypographyProps<any>> = ({ children, ...props }) => (
   <Typography {...props}>{children}</Typography>
 );
 

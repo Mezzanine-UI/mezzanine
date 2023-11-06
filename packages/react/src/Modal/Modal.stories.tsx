@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import { ReactNode, useCallback, useState } from 'react';
 import Modal, {
   ModalSeverity,
@@ -40,7 +40,7 @@ interface PlaygroundArgs
   footer: ReactNode;
 }
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown,
   fullScreen,

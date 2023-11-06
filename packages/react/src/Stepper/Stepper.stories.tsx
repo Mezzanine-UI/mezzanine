@@ -1,4 +1,4 @@
-import { Meta, Story } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
 import { useState } from 'react';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { IconProps } from '../Icon';
@@ -47,7 +47,7 @@ interface PlaygroundArgs {
   titleVariant: any,
 }
 
-export const Playground : Story<PlaygroundArgs> = ({
+export const Playground : StoryFn<PlaygroundArgs> = ({
   stepCount, titleVariant,
 }) => {
   const [current, setCurrent] = useState(-1);

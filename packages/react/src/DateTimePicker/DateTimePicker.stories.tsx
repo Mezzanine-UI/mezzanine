@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 import {
   DateType,
 } from '@mezzanine-ui/core/calendar';
@@ -24,7 +24,7 @@ function usePickerChange() {
 
 type PlaygroundArgs = DateTimePickerProps;
 
-export const Playground: Story<PlaygroundArgs> = ({
+export const Playground: StoryFn<PlaygroundArgs> = ({
   clearable,
   disabled,
   error,

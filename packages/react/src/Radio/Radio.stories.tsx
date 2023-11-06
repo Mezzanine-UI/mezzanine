@@ -1,4 +1,4 @@
-import { Story } from '@storybook/react';
+import { StoryFn } from '@storybook/react';
 import Typography from '../Typography';
 import Radio, {
   RadioSize,
@@ -25,7 +25,7 @@ const sizes: RadioSize[] = [
   'large',
 ];
 
-export const Playground : Story<RadioProps> = ({
+export const Playground : StoryFn<RadioProps> = ({
   children,
   ...props
 }) => (
@@ -77,7 +77,7 @@ export const Sizes = () => (
   </div>
 );
 
-export const Group: Story<RadioGroupProps> = ({
+export const Group: StoryFn<RadioGroupProps> = ({
   disabled,
   orientation,
   size,
