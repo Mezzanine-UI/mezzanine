@@ -13912,6 +13912,11 @@ store2@^2.14.2:
   resolved "https://registry.yarnpkg.com/store2/-/store2-2.14.2.tgz#56138d200f9fe5f582ad63bc2704dbc0e4a45068"
   integrity sha512-siT1RiqlfQnGqgT/YzXVUNsom9S0H1OX+dpdGN1xkyYATo4I6sep5NmsRD/40s3IIOvlCq6akxkqG82urIZW1w==
 
+storybook-rytass-palette@^0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/storybook-rytass-palette/-/storybook-rytass-palette-0.0.6.tgz#9d6de251a09b70aa1f0a41a06bde587568a91cf4"
+  integrity sha512-nmqlI4suAyEYJHpYVoke94GfJ1HafIYFaw4AWBClYuzxr/RV3tOzEFKFgFJk5FFUFDHB9d9DABbtsIypGHMd/A==
+
 storybook@^7.5.2:
   version "7.5.2"
   resolved "https://registry.yarnpkg.com/storybook/-/storybook-7.5.2.tgz#73cb6e4f607be09e5000a8d4c7d21d9ed42dcacb"

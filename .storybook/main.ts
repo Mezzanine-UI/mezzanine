@@ -16,6 +16,7 @@ const config: StorybookConfig = {
     '@storybook/addon-essentials',
     '@storybook/addon-onboarding',
     '@storybook/addon-storysource',
+    'storybook-rytass-palette',
   ],
   framework: {
     name: '@storybook/react-webpack5',

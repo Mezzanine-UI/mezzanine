@@ -91,6 +91,7 @@
     "sass": "^1.69.5",
     "sass-loader": "^13.3.2",
     "storybook": "^7.5.2",
+    "storybook-rytass-palette": "^0.0.6",
     "style-loader": "^3.3.3",
     "stylelint": "^14.14.1",
     "stylelint-config-recommended-scss": "^8.0.0",
