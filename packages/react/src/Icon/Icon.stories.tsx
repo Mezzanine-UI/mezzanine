@@ -71,15 +71,15 @@ export default {
   title: 'General/Icon',
 } as Meta;
 
-export const Playgroud: StoryFn<IconProps> = ({ children, ...props }) => (
+export const Playground: StoryFn<IconProps> = ({ children, ...props }) => (
   <Icon {...props} icon={PlusIcon} />
 );
 
-Playgroud.args = {
+Playground.args = {
   icon: PlusIcon,
   spin: false,
 };
-Playgroud.argTypes = {
+Playground.argTypes = {
   color: {
     control: {
       type: 'select',
