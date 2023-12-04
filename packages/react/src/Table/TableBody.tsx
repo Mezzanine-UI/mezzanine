@@ -96,7 +96,7 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
       )}
       {fetchMore?.isFetching ? (
         <tr className={classes.bodyFetchMore}>
-          <td>
+          <td aria-label="Loading">
             <Loading loading />
           </td>
         </tr>
