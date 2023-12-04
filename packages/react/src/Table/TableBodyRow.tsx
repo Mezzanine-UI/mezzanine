@@ -150,7 +150,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
 
                 return (
                   <td
-                    key={`${column.dataIndex}-${column.title}`}
+                    key={`${column.dataIndex}-${column.title}-${(rowData.key || rowData.id)}`}
                     className={cx(
                       classes.bodyRowCellWrapper,
                       isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,
