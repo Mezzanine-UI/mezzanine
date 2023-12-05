@@ -56,7 +56,7 @@ const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKey
           className={cx(classes.header, className)}
         >
           {rowSelection ? (
-            <th style={{ display: 'flex' }}>
+            <th aria-label="Row Selection" style={{ display: 'flex' }}>
               <TableRowSelection
                 rowKey={SELECTED_ALL_KEY}
                 showDropdownIcon
@@ -65,7 +65,7 @@ const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKey
           ) : null}
           {/** only display expanding placeholder when rowSelection not enabled */}
           {expanding && !rowSelection ? (
-            <th style={{ display: 'flex' }}>
+            <th aria-label="Row Expansion" style={{ display: 'flex' }}>
               <TableExpandable showIcon={false} />
             </th>
           ) : null}

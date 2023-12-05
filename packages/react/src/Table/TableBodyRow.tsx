@@ -109,6 +109,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
             >
               {rowSelection ? (
                 <td
+                  aria-label="Selection"
                   className={classes.bodyRowCellWrapper}
                   style={{
                     flex: 'unset',
@@ -124,6 +125,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
               ) : null}
               {expanding ? (
                 <td
+                  aria-label="Expand"
                   className={classes.bodyRowCellWrapper}
                   style={{
                     flex: 'unset',
@@ -148,7 +150,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
 
                 return (
                   <td
-                    key={`${column.dataIndex}-${column.title}`}
+                    key={`${column.dataIndex}-${column.title}-${(rowData.key || rowData.id)}`}
                     className={cx(
                       classes.bodyRowCellWrapper,
                       isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,

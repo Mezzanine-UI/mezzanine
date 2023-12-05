@@ -10,6 +10,7 @@ export interface IconDefinition {
       d?: string;
       fill?: string;
       fillRule?: 'nonzero' | 'evenodd' | 'inherit';
+      clipRule?: 'nonzero' | 'evenodd' | 'inherit';
       stroke?: string;
       strokeWidth?: string | number;
       strokeLinecap?: 'inherit' | 'round' | 'butt' | 'square' | undefined;

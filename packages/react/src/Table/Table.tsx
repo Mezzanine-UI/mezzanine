@@ -359,7 +359,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                         {isRefreshShow ? (
                           <tbody>
                             <tr>
-                              <td>
+                              <td aria-label="Refresh">
                                 <TableRefresh onClick={(refreshProp as TableRefreshType).onClick} />
                               </td>
                             </tr>
@@ -381,6 +381,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                     ) : null}
                     <div
                       ref={scrollElement.trackRef}
+                      aria-label="Scroll Track"
                       style={scrollElement.trackStyle}
                       onMouseDown={scrollElement.onMouseDown}
                       onMouseUp={scrollElement.onMouseUp}
@@ -397,6 +398,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                       >
                         <div
                           ref={scrollElement.ref}
+                          aria-label="Scroll Bar"
                           onMouseDown={scrollElement.onMouseDown}
                           onMouseUp={scrollElement.onMouseUp}
                           onMouseEnter={scrollElement.onMouseEnter}

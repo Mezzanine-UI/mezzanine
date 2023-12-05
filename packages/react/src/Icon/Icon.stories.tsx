@@ -4,6 +4,7 @@ import {
   ArrowDownIcon,
   ArrowRightIcon,
   ArrowUpIcon,
+  ArrowLeftIcon,
   BellIcon,
   CalendarIcon,
   CancelIcon,
@@ -20,6 +21,7 @@ import {
   DocIcon,
   DollarIcon,
   DownloadIcon,
+  EditIcon,
   ExclamationCircleFilledIcon,
   EyeCloseIcon,
   EyeIcon,
@@ -69,15 +71,15 @@ export default {
   title: 'General/Icon',
 } as Meta;
 
-export const Playgroud: StoryFn<IconProps> = ({ children, ...props }) => (
+export const Playground: StoryFn<IconProps> = ({ children, ...props }) => (
   <Icon {...props} icon={PlusIcon} />
 );
 
-Playgroud.args = {
+Playground.args = {
   icon: PlusIcon,
   spin: false,
 };
-Playgroud.argTypes = {
+Playground.argTypes = {
   color: {
     control: {
       type: 'select',
@@ -100,6 +102,7 @@ export const All: StoryFn<AllStoryArgs> = ({ search }) => {
     ArrowDownIcon,
     ArrowRightIcon,
     ArrowUpIcon,
+    ArrowLeftIcon,
     BellIcon,
     CalendarIcon,
     CancelIcon,
@@ -116,6 +119,7 @@ export const All: StoryFn<AllStoryArgs> = ({ search }) => {
     DocIcon,
     DollarIcon,
     DownloadIcon,
+    EditIcon,
     ExclamationCircleFilledIcon,
     EyeCloseIcon,
     EyeIcon,
