@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.10...@mezzanine-ui/react@0.13.11) (2023-12-05)
+
+### Bug Fixes
+
+- **react/table:** enhance aria control label for table ([142a78e](https://github.com/Mezzanine-UI/mezzanine/commit/142a78eae3feaf94514f1b95731b898123c9d000))
+- **react/table:** table body row key should based on row data key ([859180c](https://github.com/Mezzanine-UI/mezzanine/commit/859180ce57ea341ecb6706301f20940967aab350))
+
 ## [0.13.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.9...@mezzanine-ui/react@0.13.10) (2023-10-31)
 
 ### Bug Fixes
