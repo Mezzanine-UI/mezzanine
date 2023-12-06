@@ -52,18 +52,19 @@ const columns: TableColumn<DataType>[] = [{
     return -1;
   },
   // eslint-disable-next-line no-console
-  onSorted: (dataIndex, sortedType) => { console.log(dataIndex, sortedType); },
+  onSorted: (key, sortedType) => { console.log(key, sortedType); },
 }, {
   title: 'Address',
   dataIndex: 'address',
 }, {
+  key: 'age-column',
   title: 'Age',
   dataIndex: 'age',
   renderTooltipTitle: (source) => `${source.name} is age ${source.age}.`,
   forceShownTooltipWhenHovered: true,
   sorter: (a: number, b: number) => b - a,
   // eslint-disable-next-line no-console
-  onSorted: (dataIndex, sortedType) => { console.log(dataIndex, sortedType); },
+  onSorted: (key, sortedType) => { console.log(key, sortedType); },
   width: 80,
 }, {
   title: 'Tel',
@@ -474,7 +475,6 @@ export const WithActions = () => {
     title: 'Age',
     dataIndex: 'age',
   }, {
-    dataIndex: '',
     renderTitle: renderHeaderActions,
     render: renderRowActions,
     // styling
@@ -616,7 +616,7 @@ export const WithRefresh = () => {
 export const ExpandedWithString = () => {
   const customizedColumns: TableColumn<DataType>[] = [{
     title: 'Name',
-    dataIndex: 'name',
+    render: (source) => source.key,
   }, {
     title: 'Address',
     dataIndex: 'address',
@@ -790,7 +790,7 @@ export const Editable = () => {
           </Select>
         ) : (
           <Input
-            defaultValue={get(rowData, dataIndex) as string}
+            defaultValue={dataIndex ? get(rowData, dataIndex) as string : ''}
             fullWidth
             inputProps={{
               type: inputType,
@@ -845,6 +845,7 @@ export const Editable = () => {
       /**  actions column */
       return {
         ...column,
+        dataIndex: undefined,
         render: renderRowActions,
       };
     }
