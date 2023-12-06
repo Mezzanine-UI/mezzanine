@@ -19,6 +19,8 @@ type DataType = {
   key: string;
 };
 
+global.crypto.randomUUID = jest.fn().mockImplementation(() => 'UUID-UUID-UUID-UUID-UUID');
+
 describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 
@@ -36,6 +38,7 @@ describe('<TableHeader />', () => {
 
   describe('columns are given', () => {
     const columns: TableColumn<DataType>[] = [{
+      key: 'foo',
       dataIndex: 'foo',
       title: 'foo',
       headerClassName: undefined,
@@ -44,8 +47,8 @@ describe('<TableHeader />', () => {
       width: 80,
       align: 'center',
     }, {
+      key: 'bar',
       dataIndex: 'bar',
-      title: 'bar',
       align: 'start',
       renderTitle: () => 'bar',
       sorter: () => 1,
@@ -158,6 +161,7 @@ describe('<TableHeader />', () => {
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
       const columns: TableColumn<DataType>[] = [{
+        key: 'foo',
         dataIndex: 'foo',
         title: 'foo',
       }];

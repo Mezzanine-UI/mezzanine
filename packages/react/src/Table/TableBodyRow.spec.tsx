@@ -81,13 +81,16 @@ describe('<TableBodyRow />', () => {
 
   it('ellipsis control should set to true by default, and false when no data/disabled', () => {
     const columns: TableColumn<DataType>[] = [{
+      key: 'name',
       dataIndex: 'name',
       title: 'name',
     }, {
+      key: 'not-existed',
       dataIndex: 'not-existed',
       title: 'bar',
       ellipsis: true,
     }, {
+      key: 'name',
       dataIndex: 'name',
       title: 'foo',
       ellipsis: false,
@@ -118,6 +121,7 @@ describe('<TableBodyRow />', () => {
 
   describe('columns are given', () => {
     const columns: TableColumn<DataType>[] = [{
+      key: 'name',
       dataIndex: 'name',
       title: 'foo',
       headerClassName: undefined,
@@ -127,11 +131,12 @@ describe('<TableBodyRow />', () => {
       width: 80,
       align: 'center',
     }, {
-      dataIndex: 'bar',
+      key: 'bar',
       title: 'bar',
       align: 'start',
       render: () => 'bar-render',
     }, {
+      key: 'foo.bar',
       dataIndex: 'foo.bar',
       title: 'foo',
     }];
@@ -301,8 +306,10 @@ describe('<TableBodyRow />', () => {
                         name: 'bar',
                       }],
                       columns: [{
+                        key: 'name',
                         dataIndex: 'name',
                       }, {
+                        key: 'name2',
                         dataIndex: 'name',
                       }],
                     }),
@@ -351,8 +358,10 @@ describe('<TableBodyRow />', () => {
                     expandedRowRender: () => ({
                       dataSource: [],
                       columns: [{
+                        key: 'name',
                         dataIndex: 'name',
                       }, {
+                        key: 'name2',
                         dataIndex: 'name',
                       }],
                     }),
@@ -391,6 +400,7 @@ describe('<TableBodyRow />', () => {
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
       const columns: TableColumn<DataType>[] = [{
+        key: 'name',
         dataIndex: 'name',
         title: 'name',
       }];
