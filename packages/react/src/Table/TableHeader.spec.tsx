@@ -19,8 +19,6 @@ type DataType = {
   key: string;
 };
 
-global.crypto.randomUUID = jest.fn().mockImplementation(() => 'UUID-UUID-UUID-UUID-UUID');
-
 describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 

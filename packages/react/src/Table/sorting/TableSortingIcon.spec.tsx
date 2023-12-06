@@ -26,8 +26,6 @@ type DataType = {
 const key = 'foo';
 const defaultColumn = { key: 'foo', title: '', dataIndex: '' };
 
-global.crypto.randomUUID = jest.fn().mockImplementation(() => 'UUID-UUID-UUID-UUID-UUID');
-
 describe('<TableSortingIcon />', () => {
   afterEach(cleanupHook);
 
