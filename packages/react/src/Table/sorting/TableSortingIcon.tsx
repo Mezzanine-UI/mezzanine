@@ -31,7 +31,7 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
       ...rest
     } = props;
 
-    const uniqueId = useMemo(() => crypto.randomUUID(), []);
+    const uniqueId = useMemo(() => `${crypto.getRandomValues(new Uint32Array(5))[0]}`, []);
 
     const {
       sorting,
