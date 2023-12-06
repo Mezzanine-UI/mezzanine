@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.11...@mezzanine-ui/react@0.14.0) (2023-12-06)
+
+### Features
+
+- **react/table:** implementing new table columns typings, resolve [#203](https://github.com/Mezzanine-UI/mezzanine/issues/203), resolve [#136](https://github.com/Mezzanine-UI/mezzanine/issues/136) ([60515a2](https://github.com/Mezzanine-UI/mezzanine/commit/60515a2a65992428f4e3ad97949abcf4b6a78072))
+- **react/table:** use crypto.getRandomValues to gen id for better browser support ([0854361](https://github.com/Mezzanine-UI/mezzanine/commit/0854361084dd346a44ecac58dff3ac2b67914904))
+
 ## [0.13.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.10...@mezzanine-ui/react@0.13.11) (2023-12-05)
 
 ### Bug Fixes

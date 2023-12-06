@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.14.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.11...@mezzanine-ui/core@0.14.0) (2023-12-06)
+
+### Features
+
+- **core/table:** refactor table column typings, re [#203](https://github.com/Mezzanine-UI/mezzanine/issues/203), re [#136](https://github.com/Mezzanine-UI/mezzanine/issues/136) ([fda7116](https://github.com/Mezzanine-UI/mezzanine/commit/fda7116106e98b1cbc67e2f1ecdb5f226726fad1))
+
 ## [0.13.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.10...@mezzanine-ui/core@0.13.11) (2023-12-05)
 
 **Note:** Version bump only for package @mezzanine-ui/core
