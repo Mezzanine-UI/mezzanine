@@ -28,11 +28,13 @@ const dataSource: DataType[] = [{
 }];
 
 const columns: TableColumn<DataType>[] = [{
+  key: 'name',
   dataIndex: 'name',
   title: 'name',
   width: 80,
   align: 'center',
 }, {
+  key: 'age',
   dataIndex: 'age',
   title: 'foo',
   ellipsis: false,
@@ -49,9 +51,12 @@ const expandedSources: DataType[] = [{
 }];
 
 const expandedColumns: TableColumn<DataType>[] = [{
+  key: 'name',
   dataIndex: 'name',
+  title: '',
 }, {
-  dataIndex: 'name',
+  key: 'name',
+  title: '',
   render: () => 'render name',
 }];
 

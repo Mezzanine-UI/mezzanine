@@ -71,7 +71,7 @@ const TableHeader = forwardRef<HTMLTableRowElement, NativeElementPropsWithoutKey
           ) : null}
           {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => (
             <th
-              key={`${column.dataIndex}-${column.title}`}
+              key={`${idx + 1}`}
               className={cx(
                 classes.headerCellWrapper,
                 isFirstColumnShouldSticky && idx === 0 && classes.headerCellWrapperFixed,

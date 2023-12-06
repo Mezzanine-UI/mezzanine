@@ -42,6 +42,7 @@ describe('<TableEditRenderWrapper />', () => {
         }}
       >
         <TableEditRenderWrapper
+          key="edit"
           dataIndex={defaultDataIndex}
           rowData={defaultRowData}
           setCellProps={setCellProps}

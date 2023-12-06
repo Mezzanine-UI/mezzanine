@@ -23,6 +23,7 @@ const defaultSources: DataType[] = [{
 }];
 
 const defaultColumns: TableColumn<DataType>[] = [{
+  key: 'foo',
   dataIndex: 'foo',
   title: 'foo',
 }];

@@ -23,13 +23,14 @@ type DataType = {
   key: string;
 };
 
-const dataIndex = 'foo';
+const key = 'foo';
+const defaultColumn = { key: 'foo', title: '', dataIndex: '' };
 
 describe('<TableSortingIcon />', () => {
   afterEach(cleanupHook);
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<TableSortingIcon column={{ dataIndex: 'foo' }} />);
+    const { getHostHTMLElement } = render(<TableSortingIcon column={defaultColumn} />);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-table__icon')).toBeTruthy();
@@ -47,12 +48,12 @@ describe('<TableSortingIcon />', () => {
                 ...defaultMockingContextValue,
                 sorting: {
                   ...defaultMockingContextValue.sorting,
-                  sortedOn: dataIndex,
+                  sortedOn: key,
                   sortedType: mode,
                 },
               }}
             >
-              <TableSortingIcon column={{ dataIndex }} />
+              <TableSortingIcon column={defaultColumn} />
             </TableContext.Provider>,
           );
           const element = getHostHTMLElement();
@@ -89,12 +90,12 @@ describe('<TableSortingIcon />', () => {
             sorting: {
               ...defaultMockingContextValue.sorting,
               onSort,
-              sortedOn: dataIndex,
+              sortedOn: key,
               sortedType: 'none',
             },
           }}
         >
-          <TableSortingIcon column={{ dataIndex }} />
+          <TableSortingIcon column={defaultColumn} />
         </TableContext.Provider>,
       );
       const element = getHostHTMLElement();
@@ -103,7 +104,7 @@ describe('<TableSortingIcon />', () => {
         fireEvent.click(element);
       });
 
-      expect(valueGetFromOnSort).toStrictEqual({ dataIndex });
+      expect(valueGetFromOnSort).toStrictEqual(defaultColumn);
     });
 
     it('should icon remain default state when is not sorting on its column', () => {
@@ -113,12 +114,12 @@ describe('<TableSortingIcon />', () => {
             ...defaultMockingContextValue,
             sorting: {
               ...defaultMockingContextValue.sorting,
-              sortedOn: `${dataIndex}-bar`,
+              sortedOn: `${key}-bar`,
               sortedType: 'asc',
             },
           }}
         >
-          <TableSortingIcon column={{ dataIndex }} />
+          <TableSortingIcon column={defaultColumn} />
         </TableContext.Provider>,
       );
       const element = getHostHTMLElement();
@@ -137,7 +138,7 @@ describe('<TableSortingIcon />', () => {
     beforeEach(() => {
       const { getHostHTMLElement } = render(
         <TableContext.Provider value={{}}>
-          <TableSortingIcon column={{ dataIndex: 'foo' }} />
+          <TableSortingIcon column={defaultColumn} />
         </TableContext.Provider>,
       );
       const element = getHostHTMLElement();

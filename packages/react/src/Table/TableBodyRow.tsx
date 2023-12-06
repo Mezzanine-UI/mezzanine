@@ -143,14 +143,15 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
                 </td>
               ) : null}
               {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => {
-                const ellipsis = !!(get(rowData, column.dataIndex)) && (column.ellipsis ?? true);
+                const autoGrabData = column.dataIndex ? get(rowData, column.dataIndex) : '';
+                const ellipsis = !!(autoGrabData) && (column.ellipsis ?? true);
                 const tooltipTitle = (
-                  column.renderTooltipTitle?.(rowData) ?? get(rowData, column.dataIndex)
+                  column.renderTooltipTitle?.(rowData) ?? autoGrabData
                 ) as (string | number);
 
                 return (
                   <td
-                    key={`${column.dataIndex}-${column.title}-${(rowData.key || rowData.id)}`}
+                    key={`${idx + 1}-${(rowData.key || rowData.id)}`}
                     className={cx(
                       classes.bodyRowCellWrapper,
                       isFirstColumnShouldSticky && idx === 0 && classes.bodyRowCellWrapperFixed,
@@ -173,7 +174,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
                           rowData,
                           rowIndex,
                           column,
-                        ) || get(rowData, column.dataIndex)}
+                        ) || autoGrabData}
                       </TableCell>
                     </TableEditRenderWrapper>
                   </td>

@@ -90,17 +90,17 @@ export function useTableSorting(props: UseTableSorting) {
 
   const onChange = useLastCallback<(
   v: Pick<TableColumn<TableRecord<unknown>>,
-  'dataIndex' | 'sorter' | 'onSorted'>
+  'key' | 'dataIndex' | 'sorter' | 'onSorted'>
   ) => void>(
     (opts) => {
-      const { dataIndex, sorter, onSorted } = opts;
-      const isChosenFromOneToAnother = sortedOn && dataIndex !== sortedOn;
+      const { key = '', dataIndex, sorter, onSorted } = opts;
+      const isChosenFromOneToAnother = sortedOn && key !== sortedOn;
       const nextSortedType = getNextSortedType(isChosenFromOneToAnother ? 'none' : sortedType);
 
       const onMappingSources = (sources: TableDataSource[]) => {
         setDataSource(sources);
 
-        onSorted?.(dataIndex, nextSortedType);
+        onSorted?.(key, nextSortedType);
       };
 
       // only apply changes when column sorter is given
@@ -112,17 +112,20 @@ export function useTableSorting(props: UseTableSorting) {
         switch (nextSortedType) {
           case 'desc':
           case 'asc': {
-            // update current working dataIndex
-            setSortedOn(dataIndex);
+            // update current working key
+            setSortedOn(key);
 
             // getting new source instance (when switch between sorter, should use origin dataSource)
             let newSource = (isChosenFromOneToAnother ? dataSourceProp : dataSource).slice(0);
 
             if (typeof sorter === 'function') {
+              console.warn(
+                'When using a `sorter` function, please provide the `dataIndex` to make sure it worked as expected.',
+              );
               // sort by given sorter
               newSource = newSource.sort((a, b) => (
                 // reverse result when sorted type is ascending
-                (sorter(get(a, dataIndex), get(b, dataIndex))) * (nextSortedType === 'asc' ? -1 : 1)
+                (sorter(get(a, dataIndex || ''), get(b, dataIndex || ''))) * (nextSortedType === 'asc' ? -1 : 1)
               ));
             }
 

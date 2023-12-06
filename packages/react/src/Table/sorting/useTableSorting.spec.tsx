@@ -57,6 +57,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
         sorter: numberSorter,
       });
@@ -70,6 +71,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
         sorter: numberSorter,
       });
@@ -83,6 +85,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
         sorter: numberSorter,
       });
@@ -109,6 +112,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
         sorter: numberSorter,
       });
@@ -121,6 +125,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'count',
         dataIndex: 'count',
         sorter: numberSorter,
       });
@@ -154,6 +159,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
         sorter: numberSorter,
         onSorted: onAgeSorted,
@@ -208,6 +214,7 @@ describe('useTableSorting()', () => {
 
     TestRenderer.act(() => {
       onChange({
+        key: 'age',
         dataIndex: 'age',
       });
     });

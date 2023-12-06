@@ -20,7 +20,7 @@ export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> 
 
 /** typeof sorting */
 export interface SortingContext {
-  onSort(v: Pick<TableColumn<TableRecord<unknown>>, 'dataIndex' | 'sorter' | 'onSorted'>): void;
+  onSort(v: Pick<TableColumn<TableRecord<unknown>>, 'key' | 'dataIndex' | 'sorter' | 'onSorted'>): void;
   onResetAll(): void;
   sortedOn: string;
   sortedType: string;

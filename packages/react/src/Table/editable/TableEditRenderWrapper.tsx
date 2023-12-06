@@ -1,15 +1,15 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import {
   useContext,
-  Fragment,
 } from 'react';
-import { TableColumn, TableDataSource, TableRecord } from '@mezzanine-ui/core/table';
+import { TableColumnBase, TableDataSource, TableRecord } from '@mezzanine-ui/core/table';
 import { TableComponentContext } from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 
 export interface EditableBodyCellProps
   extends
   NativeElementPropsWithoutKeyAndRef<'div'>,
-  TableColumn<TableRecord<unknown>> {
+  TableColumnBase<TableRecord<unknown>> {
   rowData: TableDataSource;
 }
 
@@ -42,9 +42,9 @@ function TableEditRenderWrapper({
   }
 
   return (
-    <Fragment>
+    <>
       {children}
-    </Fragment>
+    </>
   );
 }
 
