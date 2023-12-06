@@ -5,9 +5,7 @@ import {
 import {
   tableClasses as classes,
   TableDataSource,
-  TableColumn,
   ExpandedTableColumn,
-  TableRecord,
   getColumnStyle,
   getCellStyle,
 } from '@mezzanine-ui/core/table';
@@ -50,16 +48,16 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
         >
           <TableExpandable showIcon={false} />
           {((renderedExpandedContent.columns || columns) ?? [])
-            .map((column: TableColumn<TableRecord<unknown>>, index: number) => {
-              const ellipsis = !!(get(source, column.dataIndex)) && (column.ellipsis ?? true);
+            .map((column: ExpandedTableColumn, index: number) => {
+              const autoGrabData = column.dataIndex ? get(source, column.dataIndex) : '';
+              const ellipsis = !!(autoGrabData) && (column.ellipsis ?? true);
               const tooltipTitle = (
-                column.renderTooltipTitle?.(source) ?? get(source, column.dataIndex)
+                column.renderTooltipTitle?.(source) ?? autoGrabData
               ) as (string | number);
 
               return (
                 <div
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={`${column.dataIndex}-${index}`}
+                  key={`${index + 1}`}
                   className={cx(
                     classes.bodyRowCellWrapper,
                     column.bodyClassName,
@@ -76,7 +74,7 @@ const TableExpandedTable = forwardRef<HTMLDivElement, TableExpandedTableProps>(f
                       source,
                       sourceIndex,
                       column,
-                    ) || get(source, column.dataIndex)}
+                    ) || autoGrabData}
                   </TableCell>
                 </div>
               );

@@ -31,16 +31,18 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
       ...rest
     } = props;
 
+    const uniqueId = useMemo(() => crypto.randomUUID(), []);
+
     const {
       sorting,
     } = useContext(TableContext) || {};
 
     const {
-      dataIndex,
+      key = uniqueId,
     } = column;
 
     /** styling */
-    const currentType = (dataIndex === sorting?.sortedOn ? sorting.sortedType : 'none') as SortedType;
+    const currentType = (key === sorting?.sortedOn ? sorting.sortedType : 'none') as SortedType;
     const currentIconStyle: { color: IconColor, style: { transform: string } } = useMemo(() => ({
       color: currentType === 'none' ? 'secondary' : 'primary',
       style: {
@@ -62,7 +64,10 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
         onClick={(evt) => {
           evt.stopPropagation();
 
-          sorting?.onSort?.(column);
+          sorting?.onSort?.({
+            ...column,
+            key,
+          });
         }}
         style={currentIconStyle.style}
       />
