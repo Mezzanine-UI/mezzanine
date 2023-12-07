@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import {
   FC,
   ReactNode,
@@ -34,7 +35,7 @@ const Portal: FC<PortalProps> = (props) => {
   const [portalElement, setPortalElement] = useState(() => (
     disablePortal
       ? null
-      : getElement(container) || document.body
+      : getElement(container)
   ));
 
   useEffect(() => {
@@ -42,6 +43,9 @@ const Portal: FC<PortalProps> = (props) => {
       setPortalElement(getElement(container) || document.body);
     }
   }, [container, disablePortal]);
+
+  /** This element is fully client side, so `return null` on server side */
+  if (typeof window === 'undefined') return null;
 
   if (disablePortal || !portalElement) {
     return <>{children}</>;
