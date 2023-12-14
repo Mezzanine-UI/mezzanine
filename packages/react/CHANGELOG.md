@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.0...@mezzanine-ui/react@0.14.1) (2023-12-14)
+
+### Bug Fixes
+
+- **react/portal:** fix portal error when in SSR mode ([dddfa3a](https://github.com/Mezzanine-UI/mezzanine/commit/dddfa3a15a32b9ec1c0c08ae97e534df3e76e6a0))
+
 # [0.14.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.11...@mezzanine-ui/react@0.14.0) (2023-12-06)
 
 ### Features

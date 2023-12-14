@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.0...@mezzanine-ui/core@0.14.1) (2023-12-14)
+
+### Bug Fixes
+
+- **core/icon:** extend all colors for icon color ([e1b9fef](https://github.com/Mezzanine-UI/mezzanine/commit/e1b9fefa45d55261628709a870aba088a79701bd))
+
 # [0.14.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.13.11...@mezzanine-ui/core@0.14.0) (2023-12-06)
 
 ### Features
