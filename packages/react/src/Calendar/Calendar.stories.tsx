@@ -86,14 +86,14 @@ export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
 
 CalendarPlayground.argTypes = {
   mode: {
+    options: [
+      'day',
+      'week',
+      'month',
+      'year',
+    ],
     control: {
       type: 'select',
-      options: [
-        'day',
-        'week',
-        'month',
-        'year',
-      ],
     },
   },
 };

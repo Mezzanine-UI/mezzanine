@@ -149,12 +149,12 @@ Playground.args = {
 };
 Playground.argTypes = {
   severity: {
+    options: [
+      undefined,
+      ...severities,
+    ],
     control: {
       type: 'select',
-      options: [
-        undefined,
-        ...severities,
-      ],
     },
   },
 };

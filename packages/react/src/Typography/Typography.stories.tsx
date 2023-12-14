@@ -64,27 +64,27 @@ Playgroud.args = {
 };
 Playgroud.argTypes = {
   align: {
+    options: [undefined, ...aligns],
     control: {
       type: 'select',
-      options: [undefined, ...aligns],
     },
   },
   color: {
+    options: [undefined, ...colors],
     control: {
       type: 'select',
-      options: [undefined, ...colors],
     },
   },
   display: {
+    options: [undefined, ...displays],
     control: {
       type: 'select',
-      options: [undefined, ...displays],
     },
   },
   variant: {
+    options: variants,
     control: {
       type: 'select',
-      options: variants,
     },
   },
 };

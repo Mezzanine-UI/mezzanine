@@ -115,15 +115,15 @@ Playground.args = {
 
 Playground.argTypes = {
   size: {
+    options: sizes,
     control: {
       type: 'select',
-      options: sizes,
     },
   },
   severity: {
+    options: severities,
     control: {
       type: 'select',
-      options: severities,
     },
   },
 };

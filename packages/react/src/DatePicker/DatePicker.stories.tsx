@@ -62,24 +62,24 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   mode: {
+    options: [
+      'day',
+      'week',
+      'month',
+      'year',
+    ],
     control: {
       type: 'select',
-      options: [
-        'day',
-        'week',
-        'month',
-        'year',
-      ],
     },
   },
   size: {
+    options: [
+      'small',
+      'medium',
+      'large',
+    ],
     control: {
       type: 'select',
-      options: [
-        'small',
-        'medium',
-        'large',
-      ],
     },
   },
 };

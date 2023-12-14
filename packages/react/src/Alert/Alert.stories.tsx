@@ -19,13 +19,13 @@ Playground.args = {
 
 Playground.argTypes = {
   severity: {
+    options: [
+      'success',
+      'warning',
+      'error',
+    ],
     control: {
       type: 'select',
-      options: [
-        'success',
-        'warning',
-        'error',
-      ],
     },
   },
 };

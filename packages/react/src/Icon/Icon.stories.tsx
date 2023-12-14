@@ -60,9 +60,16 @@ import Icon, { IconColor, IconProps } from '.';
 const colors: IconColor[] = [
   'inherit',
   'primary',
+  'primary-dark',
+  'primary-light',
   'secondary',
+  'secondary-dark',
+  'secondary-light',
   'error',
   'warning',
+  'text-primary',
+  'text-secondary',
+  'text-disabled',
   'success',
   'disabled',
 ];
@@ -76,14 +83,16 @@ export const Playground: StoryFn<IconProps> = ({ children, ...props }) => (
 );
 
 Playground.args = {
+  color: 'primary',
   icon: PlusIcon,
   spin: false,
+  size: 16,
 };
 Playground.argTypes = {
   color: {
+    options: [undefined, ...colors],
     control: {
       type: 'select',
-      options: [undefined, ...colors],
     },
   },
   size: {

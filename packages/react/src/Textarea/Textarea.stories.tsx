@@ -29,9 +29,9 @@ Playground.args = {
 
 Playground.argTypes = {
   size: {
+    options: sizes,
     control: {
       type: 'select',
-      options: sizes,
     },
   },
 };

@@ -172,9 +172,9 @@ export const Disabled: StoryFn<DisabledPlaygroundArgs> = ({
 
 Disabled.argTypes = {
   disabledDemoType: {
+    options: ['parent disabled', 'sibling disabled'],
     control: {
       type: 'select',
-      options: ['parent disabled', 'sibling disabled'],
     },
   },
 };
@@ -342,15 +342,15 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   selectMethod: {
+    options: ['target', 'toggle'],
     control: {
       type: 'select',
-      options: ['target', 'toggle'],
     },
   },
   size: {
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
-      options: ['small', 'medium', 'large'],
     },
   },
 };

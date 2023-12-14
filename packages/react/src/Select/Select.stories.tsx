@@ -452,21 +452,21 @@ export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
 
 TreeSelectPlayground.argTypes = {
   menuSize: {
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
-      options: ['small', 'medium', 'large'],
     },
   },
   mode: {
+    options: ['single', 'multiple'],
     control: {
       type: 'select',
-      options: ['single', 'multiple'],
     },
   },
   size: {
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
-      options: ['small', 'medium', 'large'],
     },
   },
 };

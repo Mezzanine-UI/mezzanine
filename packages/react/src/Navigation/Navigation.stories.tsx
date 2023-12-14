@@ -110,12 +110,12 @@ Playground.args = {
 
 Playground.argTypes = {
   orientation: {
+    options: [
+      'horizontal',
+      'vertical',
+    ],
     control: {
       type: 'select',
-      options: [
-        'horizontal',
-        'vertical',
-      ],
     },
   },
 };

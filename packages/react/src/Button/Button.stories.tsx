@@ -57,21 +57,21 @@ Playground.args = {
 
 Playground.argTypes = {
   color: {
+    options: colors,
     control: {
       type: 'select',
-      options: colors,
     },
   },
   size: {
+    options: sizes,
     control: {
       type: 'select',
-      options: sizes,
     },
   },
   variant: {
+    options: variants,
     control: {
       type: 'select',
-      options: variants,
     },
   },
 };

@@ -63,9 +63,9 @@ Playground.args = {
 };
 Playground.argTypes = {
   orientation: {
+    options: orientations,
     control: {
       type: 'select',
-      options: orientations,
     },
   },
 };

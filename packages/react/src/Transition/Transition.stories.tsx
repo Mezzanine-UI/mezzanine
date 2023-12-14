@@ -52,27 +52,27 @@ const args = {
 } as const;
 const argTypes = {
   durationEnter: {
+    options: durations,
     control: {
       type: 'select',
-      options: durations,
     },
   },
   durationExit: {
+    options: durations,
     control: {
       type: 'select',
-      options: durations,
     },
   },
   easingEnter: {
+    options: easings,
     control: {
       type: 'select',
-      options: easings,
     },
   },
   easingExit: {
+    options: easings,
     control: {
       type: 'select',
-      options: easings,
     },
   },
 } as const;
@@ -253,9 +253,9 @@ SlideFadeStory.args = {
 SlideFadeStory.argTypes = {
   ...argTypes,
   direction: {
+    options: slideFadeDirections,
     control: {
       type: 'select',
-      options: slideFadeDirections,
     },
   },
 };
