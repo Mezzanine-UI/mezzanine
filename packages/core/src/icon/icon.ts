@@ -1,9 +1,9 @@
 import { CssVarInterpolations, toCssVar } from '@mezzanine-ui/system/css';
-import { Color, MainColor, palettePrefix } from '@mezzanine-ui/system/palette';
+import { Color, palettePrefix } from '@mezzanine-ui/system/palette';
 
 export type IconColor =
   | 'inherit'
-  | MainColor
+  | Color
   | 'disabled';
 
 export interface IconCssVars {
