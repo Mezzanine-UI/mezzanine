@@ -353,6 +353,27 @@ export const CustomDisable = () => {
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
+          {`(mode='day')
+          disabledMonthSwitch = true
+          disabledYearSwitch = true
+          disableOnNext = true
+          disableOnPrev = true`}
+        </Typography>
+        <DateRangePicker
+          value={valD}
+          onChange={onChangeD}
+          mode="day"
+          format="YYYY-MM-DD"
+          inputFromPlaceholder="Start Date"
+          inputToPlaceholder="End Date"
+          disabledMonthSwitch
+          disabledYearSwitch
+          disableOnNext
+          disableOnPrev
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
           {`(mode='day') Disabled
             Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
             Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
