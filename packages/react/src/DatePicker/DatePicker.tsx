@@ -104,6 +104,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       inputProps,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       mode = 'day',
       onCalendarToggle: onCalendarToggleProp,
@@ -305,6 +306,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           fadeProps={fadeProps}
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
           isYearDisabled={isYearDisabled}
           mode={mode}
           onChange={onCalendarChange}

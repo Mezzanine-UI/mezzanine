@@ -20,6 +20,7 @@ export interface DatePickerCalendarProps
   | 'displayMonthLocale'
   | 'isDateDisabled'
   | 'isMonthDisabled'
+  | 'isWeekDisabled'
   | 'isYearDisabled'
   | 'onChange'
   | 'referenceDate'> {
@@ -89,6 +90,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       fadeProps,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       mode = 'day',
       onChange: onChangeProp,
@@ -182,6 +184,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
           displayMonthLocale={displayMonthLocale}
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
           isYearDisabled={isYearDisabled}
           mode={currentMode}
           onChange={onChange}
