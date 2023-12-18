@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.1...@mezzanine-ui/react@0.14.2) (2023-12-18)
+
+### Bug Fixes
+
+- **react/calendar:** implement isYearDisabled isMonthDisabled on mode day & week ([9d66a8a](https://github.com/Mezzanine-UI/mezzanine/commit/9d66a8a5090838c72b2ac19349c24e5652ff998e)), closes [#213](https://github.com/Mezzanine-UI/mezzanine/issues/213) [#213](https://github.com/Mezzanine-UI/mezzanine/issues/213)
+- **react/date-picker:** implement missing isWeekDisabled ([10f5969](https://github.com/Mezzanine-UI/mezzanine/commit/10f5969cbb68b86ae111c71ca31bfce3aeddd66e))
+- **react/date-range-picker:** implement missing isWeekDisabled ([c399b53](https://github.com/Mezzanine-UI/mezzanine/commit/c399b53ec14ac11946f4b18f387643609bcfd853))
+- **react/date-time-picker:** implement missing isWeekDisabled ([e569ae2](https://github.com/Mezzanine-UI/mezzanine/commit/e569ae2ab9f255a1a6c5af5cc1c61fcb62487438))
+
+### Features
+
+- **react/calendar:** implement disabledMonthSwitch, disabledYearSwitch on calendar ([7b6525f](https://github.com/Mezzanine-UI/mezzanine/commit/7b6525fdf6aaa77453427704c5e7dc4b1eb699d0))
+- **react/date-picker:** disabledMonthSwitch disabledYearSwitch props drilling ([6da04d1](https://github.com/Mezzanine-UI/mezzanine/commit/6da04d15570d5c3ab8ad1913ee78a702407a9c06))
+- **react/date-range-picker:** disabledMonthSwitch disabledYearSwitch props drilling ([882ac8c](https://github.com/Mezzanine-UI/mezzanine/commit/882ac8ce06e0d0b3a853052e6ebe1a908e9d3410))
+- **react/date-time-picker:** disabledMonthSwitch disabledYearSwitch props drilling ([8944313](https://github.com/Mezzanine-UI/mezzanine/commit/8944313501caf0d3e08a072bbdcd5cf794602de1))
+
 ## [0.14.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.0...@mezzanine-ui/react@0.14.1) (2023-12-14)
 
 ### Bug Fixes
