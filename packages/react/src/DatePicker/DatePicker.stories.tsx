@@ -6,7 +6,7 @@ import {
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
 import Typography from '../Typography';
@@ -18,7 +18,7 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType | undefined>('2022-01-05');
+  const [val, setVal] = useState<DateType | undefined>(new Date().toISOString());
   const onChange = (v?: DateType) => { setVal(v); };
 
   return [val, onChange] as const;
@@ -135,7 +135,7 @@ export const Basic = () => {
 export const Method = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType>(new Date());
+  const [val, setVal] = useState<DateType | undefined>(new Date().toISOString());
   const onChange = (v?: DateType) => { setVal(v); };
 
   return (
@@ -277,24 +277,36 @@ export const Modes = () => {
 
 export const CustomDisable = () => {
   const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0' };
+  const typoStyle = { margin: '0 0 12px 0', whiteSpace: 'pre-line' } as CSSProperties;
   const [valD, onChangeD] = usePickerChange();
+  const [valW, onChangeW] = usePickerChange();
   const [valM, onChangeM] = usePickerChange();
   const [valY, onChangeY] = usePickerChange();
 
   // We use moment.date  instead of moment.add is because storybook currently has internal conflict with the method.
-  const disabledDatesStart = moment().date(moment().date() - 7);
+  const disabledDatesStart = moment().date(moment().date() + 3);
   const disabledDatesEnd = moment().date(moment().date() + 7);
-  const disabledMonthsStart = moment().month(moment().month() - 2);
-  const disabledMonthsEnd = moment().month(moment().month() + 2);
-  const disabledYearsStart = moment().year(moment().year() - 2);
-  const disabledYearsEnd = moment().year(moment().year() + 2);
+  const disabledWeeksStart = moment().week(moment().week() - 5);
+  const disabledWeeksEnd = moment().week(moment().week() - 2);
+  const disabledMonthsStart = moment().month(moment().month() - 5);
+  const disabledMonthsEnd = moment().month(moment().month() - 1);
+  const disabledYearsStart = moment().year(moment().year() - 20);
+  const disabledYearsEnd = moment().year(moment().year() - 1);
 
   const isDateDisabled = (target: DateType) => (
     moment(target).isBetween(
       disabledDatesStart,
       disabledDatesEnd,
       'day',
+      '[]',
+    )
+  );
+
+  const isWeekDisabled = (target: DateType) => (
+    moment(target).isBetween(
+      disabledWeeksStart,
+      disabledWeeksEnd,
+      'week',
       '[]',
     )
   );
@@ -321,7 +333,31 @@ export const CustomDisable = () => {
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Dates: ${disabledDatesStart.format('YYYY-MM-DD')} ~ ${disabledDatesEnd.format('YYYY-MM-DD')}`}
+          {`(mode='day')
+          disabledMonthSwitch = true
+          disabledYearSwitch = true
+          disableOnNext = true
+          disableOnPrev = true`}
+        </Typography>
+        <DatePicker
+          value={valD}
+          onChange={onChangeD}
+          mode="day"
+          format="YYYY-MM-DD"
+          placeholder="YYYY-MM-DD"
+          disabledMonthSwitch
+          disabledYearSwitch
+          disableOnNext
+          disableOnPrev
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          {`(mode='day') Disabled
+            Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
+            Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
+            Dates: ${disabledDatesStart.format('YYYY-MM-DD')} ~ ${disabledDatesEnd.format('YYYY-MM-DD')}
+          `}
         </Typography>
         <DatePicker
           value={valD}
@@ -330,33 +366,67 @@ export const CustomDisable = () => {
           format="YYYY-MM-DD"
           placeholder="YYYY-MM-DD"
           isDateDisabled={isDateDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isYearDisabled={isYearDisabled}
         />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Months:
-          ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}`}
+          {`(mode='week') Disabled
+          Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
+          Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
+          Weeks: ${disabledWeeksStart.format(getDefaultModeFormat('week'))} ~ ${disabledWeeksEnd.format(getDefaultModeFormat('week'))}`}
+        </Typography>
+        <DatePicker
+          value={valW}
+          onChange={onChangeW}
+          mode="week"
+          format={getDefaultModeFormat('week')}
+          placeholder={getDefaultModeFormat('week')}
+          isYearDisabled={isYearDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          {`(mode='day') Disabled Dates:
+          ${disabledDatesStart.format(getDefaultModeFormat('day'))} ~ ${disabledDatesEnd.format(getDefaultModeFormat('day'))}`}
+        </Typography>
+        <DatePicker
+          value={valD}
+          onChange={onChangeD}
+          mode="day"
+          format={getDefaultModeFormat('day')}
+          placeholder={getDefaultModeFormat('day')}
+          isDateDisabled={isDateDisabled}
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h5" style={typoStyle}>
+          {`(mode='month') Disabled Months:
+          ${disabledMonthsStart.format(getDefaultModeFormat('month'))} ~ ${disabledMonthsEnd.format(getDefaultModeFormat('month'))}`}
         </Typography>
         <DatePicker
           value={valM}
           onChange={onChangeM}
           mode="month"
-          format="YYYY-MM"
-          placeholder="YYYY-MM"
+          format={getDefaultModeFormat('month')}
+          placeholder={getDefaultModeFormat('month')}
           isMonthDisabled={isMonthDisabled}
         />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Years:
-          ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}`}
+          {`(mode='year') Disabled Years:
+          ${disabledYearsStart.format(getDefaultModeFormat('year'))} ~ ${disabledYearsEnd.format(getDefaultModeFormat('year'))}`}
         </Typography>
         <DatePicker
           value={valY}
           onChange={onChangeY}
           mode="year"
-          format="YYYY"
-          placeholder="YYYY"
+          format={getDefaultModeFormat('year')}
+          placeholder={getDefaultModeFormat('year')}
           isYearDisabled={isYearDisabled}
         />
       </div>

@@ -26,11 +26,16 @@ export interface DateRangePickerProps
   extends
   Pick<DateRangePickerCalendarProps,
   | 'calendarProps'
+  | 'disabledMonthSwitch'
+  | 'disableOnNext'
+  | 'disableOnPrev'
+  | 'disabledYearSwitch'
   | 'displayMonthLocale'
   | 'fadeProps'
   | 'mode'
   | 'popperProps'
   | 'isDateDisabled'
+  | 'isWeekDisabled'
   | 'isMonthDisabled'
   | 'isYearDisabled'
   >,
@@ -98,6 +103,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       className,
       clearable = true,
       defaultValue,
+      disabledMonthSwitch = false,
+      disableOnNext,
+      disableOnPrev,
+      disabledYearSwitch = false,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
       error = severity === 'error' || false,
@@ -109,6 +118,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       inputToPlaceholder,
       inputToProps,
       isDateDisabled,
+      isWeekDisabled,
       isMonthDisabled,
       isYearDisabled,
       mode = 'day',
@@ -397,12 +407,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           open={open}
           anchor={anchorRef}
           calendarProps={calendarProps}
+          disabledMonthSwitch={disabledMonthSwitch}
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           fadeProps={fadeProps}
           isDateDisabled={isDateDisabled}
           isDateInRange={getIsInRangeHandler('date')}
           isMonthDisabled={isMonthDisabled}
           isMonthInRange={getIsInRangeHandler('month')}
+          isWeekDisabled={isWeekDisabled}
           isWeekInRange={getIsInRangeHandler('week')}
           isYearDisabled={isYearDisabled}
           isYearInRange={getIsInRangeHandler('year')}

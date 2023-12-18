@@ -93,8 +93,10 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       className,
       clearable = true,
       defaultValue,
+      disabledMonthSwitch = false,
       disableOnNext,
       disableOnPrev,
+      disabledYearSwitch = false,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
       error = severity === 'error' || false,
@@ -104,6 +106,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       inputProps,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       mode = 'day',
       onCalendarToggle: onCalendarToggleProp,
@@ -299,12 +302,15 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           ref={calendarRef}
           anchor={anchorRef}
           calendarProps={calendarProps}
+          disabledMonthSwitch={disabledMonthSwitch}
           disableOnNext={disableOnNext}
           disableOnPrev={disableOnPrev}
+          disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           fadeProps={fadeProps}
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
           isYearDisabled={isYearDisabled}
           mode={mode}
           onChange={onCalendarChange}

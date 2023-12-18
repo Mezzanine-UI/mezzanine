@@ -75,6 +75,16 @@ export interface CalendarProps
   | 'isYearInRange'
   | 'onYearHover'>;
   /**
+   * Disabled `Month` calendar button click
+   * @default false
+   */
+  disabledMonthSwitch?: boolean;
+  /**
+   * Disabled `Year` calendar button click
+   * @default false
+   */
+  disabledYearSwitch?: boolean;
+  /**
    * Use this prop to switch calendars.
    * @default 'day'
    */
@@ -131,8 +141,10 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     calendarWeeksProps,
     calendarYearsProps,
     className,
+    disabledMonthSwitch,
     disableOnNext,
     disableOnPrev,
+    disabledYearSwitch,
     displayMonthLocale = displayMonthLocaleFromConfig,
     displayWeekDayLocale,
     isDateDisabled,
@@ -167,6 +179,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarDays
         {...calendarDaysProps}
+        isYearDisabled={isYearDisabled}
+        isMonthDisabled={isMonthDisabled}
         isDateDisabled={isDateDisabled}
         isDateInRange={isDateInRange}
         onClick={onChange}
@@ -180,6 +194,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarWeeks
         {...calendarWeeksProps}
+        isYearDisabled={isYearDisabled}
+        isMonthDisabled={isMonthDisabled}
         isWeekDisabled={isWeekDisabled}
         isWeekInRange={isWeekInRange}
         onClick={onChange}
@@ -193,6 +209,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarMonths
         {...calendarMonthsProps}
+        isYearDisabled={isYearDisabled}
         isMonthDisabled={isMonthDisabled}
         isMonthInRange={isMonthInRange}
         onClick={onChange}
@@ -225,14 +242,26 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
       <>
         <button
           type="button"
-          className={cx(classes.button, classes.controlsButton)}
+          className={cx(
+            classes.button,
+            classes.controlsButton,
+            disabledMonthSwitch && classes.buttonDisabled,
+          )}
+          disabled={disabledMonthSwitch}
+          aria-disabled={disabledMonthSwitch}
           onClick={onMonthControlClick}
         >
           {getMonthShortName(getMonth(referenceDate), displayMonthLocale)}
         </button>
         <button
           type="button"
-          className={cx(classes.button, classes.controlsButton)}
+          className={cx(
+            classes.button,
+            classes.controlsButton,
+            disabledYearSwitch && classes.buttonDisabled,
+          )}
+          disabled={disabledYearSwitch}
+          aria-disabled={disabledYearSwitch}
           onClick={onYearControlClick}
         >
           {getYear(referenceDate)}
@@ -243,7 +272,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     controls = (
       <button
         type="button"
-        className={cx(classes.button, classes.controlsButton)}
+        className={cx(
+          classes.button,
+          classes.controlsButton,
+          disabledYearSwitch && classes.buttonDisabled,
+        )}
+        disabled={disabledYearSwitch}
+        aria-disabled={disabledYearSwitch}
         onClick={onYearControlClick}
       >
         {getYear(referenceDate)}

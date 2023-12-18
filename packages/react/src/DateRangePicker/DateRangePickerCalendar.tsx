@@ -21,12 +21,17 @@ export interface DateRangePickerCalendarProps
   Pick<CalendarProps,
   | 'value'
   | 'onChange'
+  | 'disabledMonthSwitch'
+  | 'disabledYearSwitch'
+  | 'disableOnNext'
+  | 'disableOnPrev'
   | 'displayMonthLocale'
   | 'mode'
   | 'isDateInRange'
   | 'isDateDisabled'
   | 'isMonthDisabled'
   | 'isMonthInRange'
+  | 'isWeekDisabled'
   | 'isWeekInRange'
   | 'isYearDisabled'
   | 'isYearInRange'
@@ -74,6 +79,10 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
     const {
       anchor,
       calendarProps,
+      disabledMonthSwitch,
+      disableOnNext,
+      disableOnPrev,
+      disabledYearSwitch,
       displayMonthLocale = displayMonthLocaleFromConfig,
       fadeProps,
       firstCalendarRef,
@@ -81,6 +90,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
       isDateInRange,
       isMonthDisabled,
       isMonthInRange,
+      isWeekDisabled,
       isWeekInRange,
       isYearDisabled,
       isYearInRange,
@@ -223,11 +233,16 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
               },
               className,
             )}
+            disabledMonthSwitch={disabledMonthSwitch}
+            disableOnNext={disableOnNext}
+            disableOnPrev={disableOnPrev}
+            disabledYearSwitch={disabledYearSwitch}
             displayMonthLocale={displayMonthLocale}
             isDateDisabled={isDateDisabled}
             isDateInRange={isDateInRange}
             isMonthDisabled={isMonthDisabled}
             isMonthInRange={isMonthInRange}
+            isWeekDisabled={isWeekDisabled}
             isWeekInRange={isWeekInRange}
             isYearDisabled={isYearDisabled}
             isYearInRange={isYearInRange}
@@ -254,11 +269,16 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
               },
               className,
             )}
+            disabledMonthSwitch={disabledMonthSwitch}
+            disableOnNext={disableOnNext}
+            disableOnPrev={disableOnPrev}
+            disabledYearSwitch={disabledYearSwitch}
             displayMonthLocale={displayMonthLocale}
             isDateDisabled={isDateDisabled}
             isDateInRange={isDateInRange}
             isMonthDisabled={isMonthDisabled}
             isMonthInRange={isMonthInRange}
+            isWeekDisabled={isWeekDisabled}
             isWeekInRange={isWeekInRange}
             isYearDisabled={isYearDisabled}
             isYearInRange={isYearInRange}

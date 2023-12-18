@@ -22,11 +22,14 @@ export interface DateTimePickerPanelProps
   | 'open'
   >,
   Pick<CalendarProps,
+  | 'disabledMonthSwitch'
   | 'disableOnNext'
   | 'disableOnPrev'
+  | 'disabledYearSwitch'
   | 'displayMonthLocale'
   | 'isDateDisabled'
   | 'isMonthDisabled'
+  | 'isWeekDisabled'
   | 'isYearDisabled'
   | 'onChange'
   | 'referenceDate'
@@ -35,8 +38,10 @@ export interface DateTimePickerPanelProps
    * Other calendar props you may provide to `Calendar`.
    */
   calendarProps?: Omit<CalendarProps,
+  | 'disabledMonthSwitch'
   | 'disableOnNext'
   | 'disableOnPrev'
+  | 'disabledYearSwitch'
   | 'displayMonthLocale'
   | 'isDateDisabled'
   | 'isMonthDisabled'
@@ -93,8 +98,10 @@ const DateTimePickerPanel = forwardRef<HTMLDivElement, DateTimePickerPanelProps>
       calendarProps,
       className,
       confirmText,
+      disabledMonthSwitch,
       disableOnNext,
       disableOnPrev,
+      disabledYearSwitch,
       displayMonthLocale = displayMonthLocaleFromConfig,
       fadeProps,
       hideHour,
@@ -104,6 +111,7 @@ const DateTimePickerPanel = forwardRef<HTMLDivElement, DateTimePickerPanelProps>
       hourStep,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       minutePrefix,
       minuteStep,
@@ -194,11 +202,14 @@ const DateTimePickerPanel = forwardRef<HTMLDivElement, DateTimePickerPanelProps>
           <div className={classes.panelSelectors}>
             <Calendar
               {...calendarProps}
+              disabledMonthSwitch={disabledMonthSwitch}
               disableOnNext={disableOnNext}
               disableOnPrev={disableOnPrev}
+              disabledYearSwitch={disabledYearSwitch}
               displayMonthLocale={displayMonthLocale}
               isDateDisabled={isDateDisabled}
               isMonthDisabled={isMonthDisabled}
+              isWeekDisabled={isWeekDisabled}
               isYearDisabled={isYearDisabled}
               mode={currentMode}
               onChange={onCalendarChange}
