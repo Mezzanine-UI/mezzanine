@@ -8,10 +8,14 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import CalendarDayOfWeek, { CalendarDayOfWeekProps } from './CalendarDayOfWeek';
 import { useCalendarContext } from './CalendarContext';
+import type { CalendarYearsProps } from './CalendarYears';
+import type { CalendarMonthsProps } from './CalendarMonths';
 
 export interface CalendarWeeksProps
   extends
   Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
+  Pick<CalendarYearsProps, 'isYearDisabled'>,
+  Pick<CalendarMonthsProps, 'isMonthDisabled'>,
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic.
@@ -64,6 +68,8 @@ function CalendarWeeks(props: CalendarWeeksProps) {
   const {
     className,
     displayWeekDayLocale = displayWeekDayLocaleFromConfig,
+    isYearDisabled,
+    isMonthDisabled,
     isWeekDisabled,
     isWeekInRange,
     onClick: onClickProp,
@@ -105,7 +111,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
             dates.push(date);
           });
 
-          const disabled = isWeekDisabled && isWeekDisabled(dates[0]);
+          const disabled = (isYearDisabled?.(dates[0]) || isMonthDisabled?.(dates[0]) || isWeekDisabled?.(dates[0])) || false;
           const inactive = !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
           const active = !disabled && !inactive && value && isWeekIncluded(dates[0], value);
           const inRange = !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);

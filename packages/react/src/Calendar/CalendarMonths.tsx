@@ -3,13 +3,15 @@ import {
   DateType,
   calendarMonths,
 } from '@mezzanine-ui/core/calendar';
+import type { CalendarYearsProps } from './CalendarYears';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
 
 export interface CalendarMonthsProps
   extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'>,
+  Pick<CalendarYearsProps, 'isYearDisabled'> {
   /**
    * The locale you want to use when rendering the names of month.
    * If none provided, it will use the `displayMonthLocale` from calendar context.
@@ -59,6 +61,7 @@ function CalendarMonths(props: CalendarMonthsProps) {
     displayMonthLocale = displayMonthLocaleFromConfig,
     isMonthDisabled,
     isMonthInRange,
+    isYearDisabled,
     onClick: onClickProp,
     onMonthHover,
     referenceDate,
@@ -80,7 +83,8 @@ function CalendarMonths(props: CalendarMonthsProps) {
         {calendarMonths.map((month) => {
           const monthDateType = setMonth(referenceDate, month);
           const active = value && isMonthIncluded(monthDateType, value);
-          const disabled = isMonthDisabled && isMonthDisabled(monthDateType);
+          /** @NOTE Current month should be disabled when current year is disabled */
+          const disabled = (isYearDisabled?.(monthDateType) || isMonthDisabled?.(monthDateType)) || false;
           const inRange = isMonthInRange && isMonthInRange(monthDateType);
 
           const onClick = onClickProp ? () => { onClickProp(monthDateType); } : undefined;

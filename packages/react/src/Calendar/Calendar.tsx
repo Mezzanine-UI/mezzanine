@@ -167,6 +167,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarDays
         {...calendarDaysProps}
+        isYearDisabled={isYearDisabled}
+        isMonthDisabled={isMonthDisabled}
         isDateDisabled={isDateDisabled}
         isDateInRange={isDateInRange}
         onClick={onChange}
@@ -180,6 +182,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarWeeks
         {...calendarWeeksProps}
+        isYearDisabled={isYearDisabled}
+        isMonthDisabled={isMonthDisabled}
         isWeekDisabled={isWeekDisabled}
         isWeekInRange={isWeekInRange}
         onClick={onChange}
@@ -193,6 +197,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
     displayCalendar = (
       <CalendarMonths
         {...calendarMonthsProps}
+        isYearDisabled={isYearDisabled}
         isMonthDisabled={isMonthDisabled}
         isMonthInRange={isMonthInRange}
         onClick={onChange}

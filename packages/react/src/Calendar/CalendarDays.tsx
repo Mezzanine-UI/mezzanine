@@ -8,10 +8,14 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import CalendarDayOfWeek, { CalendarDayOfWeekProps } from './CalendarDayOfWeek';
 import { useCalendarContext } from './CalendarContext';
+import type { CalendarYearsProps } from './CalendarYears';
+import type { CalendarMonthsProps } from './CalendarMonths';
 
 export interface CalendarDaysProps
   extends
   Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
+  Pick<CalendarYearsProps, 'isYearDisabled'>,
+  Pick<CalendarMonthsProps, 'isMonthDisabled'>,
   Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic. The method takes the date object as its parameter.
@@ -60,6 +64,8 @@ function CalendarDays(props: CalendarDaysProps) {
   const {
     className,
     displayWeekDayLocale = displayWeekDayLocaleFromConfig,
+    isYearDisabled,
+    isMonthDisabled,
     isDateDisabled,
     isDateInRange,
     onClick: onClickProp,
@@ -98,7 +104,7 @@ function CalendarDays(props: CalendarDaysProps) {
                   ? thisMonth + 1
                   : thisMonth;
               const date = setDate(setMonth(referenceDate, month), dateNum);
-              const disabled = isDateDisabled && isDateDisabled(date);
+              const disabled = (isYearDisabled?.(date) || isMonthDisabled?.(date) || isDateDisabled?.(date)) || false;
               const inactive = !disabled && (isPrevMonth || isNextMonth);
               const inRange = !inactive && isDateInRange && isDateInRange(date);
               const active = !disabled && !inactive && value && isDateIncluded(date, value);
