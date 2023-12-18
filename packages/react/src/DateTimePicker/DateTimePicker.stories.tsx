@@ -4,7 +4,7 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import { useState } from 'react';
+import { CSSProperties, useState } from 'react';
 import moment from 'moment';
 import { CalendarConfigProvider } from '../Calendar';
 import DateTimePicker, { DateTimePickerProps } from './DateTimePicker';
@@ -269,12 +269,16 @@ export const DisplayColumn = () => {
 
 export const CustomDisable = () => {
   const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0' };
+  const typoStyle = { margin: '0 0 12px 0', whiteSpace: 'pre-line' } as CSSProperties;
   const [valD, onChangeD] = usePickerChange();
 
   // We use moment.date  instead of moment.add is because storybook currently has internal conflict with the method.
-  const disabledDatesStart = moment().date(moment().date() - 7);
+  const disabledDatesStart = moment().date(moment().date() + 3);
   const disabledDatesEnd = moment().date(moment().date() + 7);
+  const disabledMonthsStart = moment().month(moment().month() - 5);
+  const disabledMonthsEnd = moment().month(moment().month() - 1);
+  const disabledYearsStart = moment().year(moment().year() - 20);
+  const disabledYearsEnd = moment().year(moment().year() - 1);
   const format = 'YYYY-MM-DD HH:mm:ss';
 
   const isDateDisabled = (target: DateType) => (
@@ -286,17 +290,41 @@ export const CustomDisable = () => {
     )
   );
 
+  const isMonthDisabled = (target: DateType) => (
+    moment(target).isBetween(
+      disabledMonthsStart,
+      disabledMonthsEnd,
+      'month',
+      '[]',
+    )
+  );
+
+  const isYearDisabled = (target: DateType) => (
+    moment(target).isBetween(
+      disabledYearsStart,
+      disabledYearsEnd,
+      'year',
+      '[]',
+    )
+  );
+
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
-          {`Disabled Dates: ${disabledDatesStart.format(format)} ~ ${disabledDatesEnd.format(format)}`}
+          {`(mode='day') Disabled
+            Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
+            Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
+            Dates: ${disabledDatesStart.format(format)} ~ ${disabledDatesEnd.format(format)}
+          `}
         </Typography>
         <DateTimePicker
           value={valD}
           onChange={onChangeD}
           format={format}
           placeholder={format}
+          isYearDisabled={isYearDisabled}
+          isMonthDisabled={isMonthDisabled}
           isDateDisabled={isDateDisabled}
         />
       </div>
