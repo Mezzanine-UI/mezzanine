@@ -102,6 +102,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       inputProps,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       minutePrefix,
       minuteStep,
@@ -301,6 +302,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           hourStep={hourStep}
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
           isYearDisabled={isYearDisabled}
           minutePrefix={minutePrefix}
           minuteStep={minuteStep}

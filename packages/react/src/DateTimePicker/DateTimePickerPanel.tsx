@@ -27,6 +27,7 @@ export interface DateTimePickerPanelProps
   | 'displayMonthLocale'
   | 'isDateDisabled'
   | 'isMonthDisabled'
+  | 'isWeekDisabled'
   | 'isYearDisabled'
   | 'onChange'
   | 'referenceDate'
@@ -104,6 +105,7 @@ const DateTimePickerPanel = forwardRef<HTMLDivElement, DateTimePickerPanelProps>
       hourStep,
       isDateDisabled,
       isMonthDisabled,
+      isWeekDisabled,
       isYearDisabled,
       minutePrefix,
       minuteStep,
@@ -199,6 +201,7 @@ const DateTimePickerPanel = forwardRef<HTMLDivElement, DateTimePickerPanelProps>
               displayMonthLocale={displayMonthLocale}
               isDateDisabled={isDateDisabled}
               isMonthDisabled={isMonthDisabled}
+              isWeekDisabled={isWeekDisabled}
               isYearDisabled={isYearDisabled}
               mode={currentMode}
               onChange={onCalendarChange}
