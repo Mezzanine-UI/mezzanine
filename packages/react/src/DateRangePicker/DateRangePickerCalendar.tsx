@@ -27,6 +27,7 @@ export interface DateRangePickerCalendarProps
   | 'isDateDisabled'
   | 'isMonthDisabled'
   | 'isMonthInRange'
+  | 'isWeekDisabled'
   | 'isWeekInRange'
   | 'isYearDisabled'
   | 'isYearInRange'
@@ -81,6 +82,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
       isDateInRange,
       isMonthDisabled,
       isMonthInRange,
+      isWeekDisabled,
       isWeekInRange,
       isYearDisabled,
       isYearInRange,
@@ -228,6 +230,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
             isDateInRange={isDateInRange}
             isMonthDisabled={isMonthDisabled}
             isMonthInRange={isMonthInRange}
+            isWeekDisabled={isWeekDisabled}
             isWeekInRange={isWeekInRange}
             isYearDisabled={isYearDisabled}
             isYearInRange={isYearInRange}
@@ -259,6 +262,7 @@ const DateRangePickerCalendar = forwardRef<HTMLDivElement, DateRangePickerCalend
             isDateInRange={isDateInRange}
             isMonthDisabled={isMonthDisabled}
             isMonthInRange={isMonthInRange}
+            isWeekDisabled={isWeekDisabled}
             isWeekInRange={isWeekInRange}
             isYearDisabled={isYearDisabled}
             isYearInRange={isYearInRange}

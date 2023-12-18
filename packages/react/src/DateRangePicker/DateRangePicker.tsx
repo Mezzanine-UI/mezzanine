@@ -31,6 +31,7 @@ export interface DateRangePickerProps
   | 'mode'
   | 'popperProps'
   | 'isDateDisabled'
+  | 'isWeekDisabled'
   | 'isMonthDisabled'
   | 'isYearDisabled'
   >,
@@ -109,6 +110,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       inputToPlaceholder,
       inputToProps,
       isDateDisabled,
+      isWeekDisabled,
       isMonthDisabled,
       isYearDisabled,
       mode = 'day',
@@ -403,6 +405,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           isDateInRange={getIsInRangeHandler('date')}
           isMonthDisabled={isMonthDisabled}
           isMonthInRange={getIsInRangeHandler('month')}
+          isWeekDisabled={isWeekDisabled}
           isWeekInRange={getIsInRangeHandler('week')}
           isYearDisabled={isYearDisabled}
           isYearInRange={getIsInRangeHandler('year')}
