@@ -86,8 +86,10 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       clearable = true,
       confirmText,
       defaultValue,
+      disabledMonthSwitch = false,
       disableOnNext,
       disableOnPrev,
+      disabledYearSwitch = false,
       disabled = disabledFromFormControl,
       displayMonthLocale,
       error = severity === 'error' || false,
@@ -291,8 +293,10 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           anchor={anchorRef}
           calendarProps={calendarProps}
           confirmText={confirmText}
+          disabledMonthSwitch={disabledMonthSwitch}
           disableOnNext={disableOnNext}
           disableOnPrev={disableOnPrev}
+          disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           fadeProps={fadeProps}
           hideHour={hideHour}
