@@ -12,5 +12,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: ['src/**/*', '!**/index.ts', '!src/**/*stories*'],
+  coverageReporters: ['text', 'html'],
+  coverageDirectory: '../../coverage',
   coveragePathIgnorePatterns: ['/node_modules/'],
 };
