@@ -144,7 +144,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
               ) : null}
               {(columns ?? []).map((column: TableColumn<TableRecord<unknown>>, idx) => {
                 const autoGrabData = column.dataIndex ? get(rowData, column.dataIndex) : '';
-                const ellipsis = !!(autoGrabData) && (column.ellipsis ?? true);
+                const ellipsis = (column.ellipsis ?? true);
                 const tooltipTitle = (
                   column.renderTooltipTitle?.(rowData) ?? autoGrabData
                 ) as (string | number);
