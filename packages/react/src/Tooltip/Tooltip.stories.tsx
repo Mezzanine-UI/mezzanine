@@ -37,6 +37,26 @@ export const Basic = () => (
       )}
     </Tooltip>
     <Tooltip
+      title={(
+        <div style={{ display: 'flex', flexFlow: 'column' }}>
+          <span>Custom Element</span>
+          <Icon icon={InfoCircleFilledIcon} size={14} />
+        </div>
+      )}
+      options={{
+        placement: 'top-start',
+      }}
+    >
+      {({ onMouseEnter, onMouseLeave }) => (
+        <Icon
+          color="primary"
+          icon={InfoCircleFilledIcon}
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+        />
+      )}
+    </Tooltip>
+    <Tooltip
       title="預設文字"
       options={{
         placement: 'bottom-start',
@@ -115,4 +135,3 @@ export const Placement = () => {
     </div>
   );
 };
-

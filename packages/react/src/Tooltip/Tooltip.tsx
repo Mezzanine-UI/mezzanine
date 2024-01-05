@@ -3,6 +3,7 @@ import {
   ReactElement,
   MouseEventHandler,
   useRef,
+  ReactNode,
 } from 'react';
 import { tooltipClasses as classes } from '@mezzanine-ui/core/tooltip';
 import { StrictModifiers } from '@popperjs/core';
@@ -18,7 +19,7 @@ const offsetModifier: StrictModifiers = {
   },
 };
 
-export interface TooltipProps extends Omit<PopperProps, 'children'> {
+export interface TooltipProps extends Omit<PopperProps, 'children' | 'title'> {
   /**
    * child function that can receive events
    */
@@ -34,7 +35,7 @@ export interface TooltipProps extends Omit<PopperProps, 'children'> {
   /**
    * title of tooltip
   */
-  title?: string;
+  title?: ReactNode;
 }
 
 /**
