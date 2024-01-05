@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.2...@mezzanine-ui/react@0.14.3) (2024-01-05)
+
+### Bug Fixes
+
+- **react/table:** should apply ellipsis true as default whenever use dataIndex or render ([4515e08](https://github.com/Mezzanine-UI/mezzanine/commit/4515e087ae47c5fe87cac4d70be86374857feb63))
+
+### Features
+
+- **react/tooltip:** allow tooltip title to render custom element ([7d3c0bb](https://github.com/Mezzanine-UI/mezzanine/commit/7d3c0bb3574cd5e7f4fb81e50ca374f5b1b3f0a8)), closes [#216](https://github.com/Mezzanine-UI/mezzanine/issues/216) [#216](https://github.com/Mezzanine-UI/mezzanine/issues/216)
+
 ## [0.14.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.1...@mezzanine-ui/react@0.14.2) (2023-12-18)
 
 ### Bug Fixes
