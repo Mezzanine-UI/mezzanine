@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.3...@mezzanine-ui/react@0.14.4) (2024-01-10)
+
+### Bug Fixes
+
+- **react/autocomplete:** escape all special characters for search text, closed [#217](https://github.com/Mezzanine-UI/mezzanine/issues/217) ([8285356](https://github.com/Mezzanine-UI/mezzanine/commit/8285356d29cecc0435818528233710c8f6db7a38))
+
 ## [0.14.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.2...@mezzanine-ui/react@0.14.3) (2024-01-05)
 
 ### Bug Fixes
