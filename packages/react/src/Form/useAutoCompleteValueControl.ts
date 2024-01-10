@@ -83,7 +83,10 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const [searchText, setSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
 
-  const searchTextReg = new RegExp(searchText.replace(/\\/g, '\\\\'), 'i' );
+  /** escape all special characters */
+  const searchTextReg = new RegExp(searchText
+    .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+    .replace(/-/g, '\\x2d'));
 
   const onFocus = useCallback((focus: boolean) => {
     setFocused(focus);

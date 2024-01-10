@@ -32,6 +32,9 @@ const originOptions: SelectValue[] = [{
 }, {
   id: 'very very very long',
   name: 'very very very long',
+}, {
+  id: '?><!@#$^$&^&',
+  name: '?><!@#$^$&^&',
 }];
 
 export const Basic = () => (
