@@ -69,6 +69,11 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
             classes.host,
             className,
           )}
+          /** Prevent event bubble (Because popper may use portal, then click away function would be buggy) */
+          onClick={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+          onTouchEnd={(e) => e.stopPropagation()}
           options={{
             placement: 'bottom-start',
             ...restPopperOptions,
