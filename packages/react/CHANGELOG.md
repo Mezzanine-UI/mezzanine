@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.4...@mezzanine-ui/react@0.14.5) (2024-01-29)
+
+### Bug Fixes
+
+- **react/input-trigger:** disabled event bubble inside popper portal to correct click away ([62e67a1](https://github.com/Mezzanine-UI/mezzanine/commit/62e67a1cb653f3d316938e8955dc08610a6db946)), closes [#215](https://github.com/Mezzanine-UI/mezzanine/issues/215) [#215](https://github.com/Mezzanine-UI/mezzanine/issues/215)
+- **react/select:** remove unused ref and prevent event bubble when scrolling ([b699ea0](https://github.com/Mezzanine-UI/mezzanine/commit/b699ea0ee97c172644e57ccafae5fdb08a4fecf4)), closes [#215](https://github.com/Mezzanine-UI/mezzanine/issues/215) [#215](https://github.com/Mezzanine-UI/mezzanine/issues/215)
+
+### Features
+
+- **react/typography:** implement allow custom font-weight for typography ([07f890b](https://github.com/Mezzanine-UI/mezzanine/commit/07f890b8edbe4d986db3e17cbabb1efc9c8616a5))
+
 ## [0.14.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.3...@mezzanine-ui/react@0.14.4) (2024-01-10)
 
 ### Bug Fixes

@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.4...@mezzanine-ui/core@0.14.5) (2024-01-29)
+
+### Features
+
+- **core/typography:** custom font-weight for typography ([1a8b69f](https://github.com/Mezzanine-UI/mezzanine/commit/1a8b69ffa9fcd9044c9756dbcb9b7108919ef32a))
+
 ## [0.14.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.3...@mezzanine-ui/core@0.14.4) (2024-01-10)
 
 **Note:** Version bump only for package @mezzanine-ui/core
