@@ -224,7 +224,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
 
   const nodeRef = useRef<HTMLDivElement>(null);
   const controlRef = useRef<HTMLElement>(null);
-  const popperRef = useRef<HTMLDivElement>(null);
   const composedRef = useComposeRefs([ref, controlRef]);
 
   function getPlaceholder() {
@@ -297,6 +296,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
 
   /** menu onScroll listener */
   const onMenuScrollCallback: UIEventHandler<HTMLUListElement> = useCallback(async (evt) => {
+    evt.stopPropagation();
+
     if (onMenuScroll) {
       const target = evt.target as HTMLUListElement;
       const maxScrollTop = target.scrollHeight - target.getBoundingClientRect().height;
@@ -357,7 +358,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(function Select(props, re
           value={value}
         />
         <InputTriggerPopper
-          ref={popperRef}
           anchor={controlRef}
           className={classes.popper}
           disablePortal={disablePortal}
