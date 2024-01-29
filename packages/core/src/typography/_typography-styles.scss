@@ -35,4 +35,8 @@
   &--nowrap {
     @include nowrap();
   }
+
+  &--weight {
+    font-weight: var(--#{$prefix}-weight);
+  }
 }

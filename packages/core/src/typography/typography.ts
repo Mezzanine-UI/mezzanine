@@ -18,10 +18,13 @@ export type TypographyColor =
 type TypographyDisplayBase = 'block' | 'flex';
 export type TypographyDisplay = TypographyDisplayBase | `inline-${TypographyDisplayBase}`;
 
+export type TypographyWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+
 export interface TypographyCssVars {
   align?: TypographyAlign;
   color?: TypographyColor;
   display?: TypographyDisplay;
+  weight?: TypographyWeight;
 }
 
 export const typographyClasses = {
@@ -31,6 +34,7 @@ export const typographyClasses = {
   display: `${typographyPrefix}--display`,
   ellipsis: `${typographyPrefix}--ellipsis`,
   noWrap: `${typographyPrefix}--nowrap`,
+  weight: `${typographyPrefix}--weight`,
 } as const;
 
 export function toTypographyCssVars(variables: TypographyCssVars): CssVarInterpolations {
@@ -38,6 +42,7 @@ export function toTypographyCssVars(variables: TypographyCssVars): CssVarInterpo
     align,
     color,
     display,
+    weight,
   } = variables;
 
   return {
@@ -46,6 +51,7 @@ export function toTypographyCssVars(variables: TypographyCssVars): CssVarInterpo
       ? color
       : toCssVar(`${palettePrefix}-${color}`),
     [`--${typographyPrefix}-display`]: display,
+    [`--${typographyPrefix}-weight`]: weight,
   };
 }
 
