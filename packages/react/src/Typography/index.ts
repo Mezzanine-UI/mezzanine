@@ -11,6 +11,7 @@ export type {
   TypographyColor,
   TypographyDisplay,
   TypographyVariant,
+  TypographyWeight,
 } from '@mezzanine-ui/core/typography';
 
 export type {

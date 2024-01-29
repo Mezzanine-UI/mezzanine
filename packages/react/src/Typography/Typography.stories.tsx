@@ -5,6 +5,7 @@ import Typography, {
   TypographyDisplay,
   TypographyProps,
   TypographyVariant,
+  TypographyWeight,
 } from '.';
 
 export default {
@@ -51,6 +52,17 @@ const variants: TypographyVariant[] = [
   'input3',
   'caption',
 ];
+const weights: TypographyWeight[] = [
+  100,
+  200,
+  300,
+  400,
+  500,
+  600,
+  700,
+  800,
+  900,
+];
 
 export const Playgroud: StoryFn<TypographyProps<any>> = ({ children, ...props }) => (
   <Typography {...props}>{children}</Typography>
@@ -83,6 +95,12 @@ Playgroud.argTypes = {
   },
   variant: {
     options: variants,
+    control: {
+      type: 'select',
+    },
+  },
+  weight: {
+    options: [undefined, ...weights],
     control: {
       type: 'select',
     },
@@ -126,6 +144,16 @@ export const Colors = () => (
     {colors.map((color) => (
       <Typography key={color} color={color}>
         {color}
+      </Typography>
+    ))}
+  </>
+);
+
+export const Weights = () => (
+  <>
+    {weights.map((weight) => (
+      <Typography key={weight} weight={weight}>
+        {`Font Weight: ${weight}`}
       </Typography>
     ))}
   </>

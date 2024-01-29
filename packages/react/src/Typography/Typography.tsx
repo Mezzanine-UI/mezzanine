@@ -6,6 +6,7 @@ import {
   TypographyColor,
   TypographyDisplay,
   TypographyVariant,
+  TypographyWeight,
 } from '@mezzanine-ui/core/typography';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
@@ -62,6 +63,10 @@ interface TypographyPropsBase {
    * @default 'body1'
    */
   variant?: TypographyVariant;
+  /**
+   * The css variable for customizing `font-weight`.
+   */
+  weight?: TypographyWeight;
 }
 
 export type TypographyProps<C extends TypographyComponent = 'p'> =
@@ -82,10 +87,16 @@ const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(functi
     noWrap = false,
     variant = 'body1',
     style: styleProp,
+    weight,
     ...rest
   } = props;
   const Component = component || getComponentFromVariant(variant) as any;
-  const cssVars = toTypographyCssVars({ align, color, display });
+  const cssVars = toTypographyCssVars({
+    align,
+    color,
+    display,
+    weight,
+  });
   const style = {
     ...cssVars,
     ...styleProp,
@@ -106,6 +117,7 @@ const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(functi
           [classes.display]: display,
           [classes.ellipsis]: ellipsis,
           [classes.noWrap]: noWrap,
+          [classes.weight]: weight,
         },
         className,
       )}
