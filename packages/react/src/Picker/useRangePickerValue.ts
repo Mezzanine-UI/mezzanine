@@ -14,7 +14,7 @@ import {
   UsePickerValueProps,
 } from './usePickerValue';
 
-export interface UseRangePickerValueProps extends Pick<UsePickerValueProps, 'format' | 'formats'>{
+export interface UseRangePickerValueProps extends Pick<UsePickerValueProps, 'format' | 'formats'> {
   inputFromRef: RefObject<HTMLInputElement>;
   inputToRef: RefObject<HTMLInputElement>;
   value?: RangePickerValue;
@@ -73,20 +73,27 @@ export function useRangePickerValue({
 
   const value = [from, to] as RangePickerPickingValue;
 
-  const onChange = (target?: RangePickerPickingValue): RangePickerPickingValue | undefined => {
+  const onChange = (
+    target?: RangePickerPickingValue,
+    callback = {
+      from: (date?: string) => date,
+      to: (date?: string) => date,
+    }): RangePickerPickingValue | undefined => {
     const [newFrom, newTo] = target || [];
 
     if (newFrom && newTo) {
       const sortedVal = sortValues([newFrom, newTo]);
+      const resolvedFrom = callback.from(sortedVal[0])!;
+      const resolvedTo = callback.to(sortedVal[1])!;
 
-      onFromChange(sortedVal[0]);
-      onToChange(sortedVal[1]);
+      onFromChange(resolvedFrom);
+      onToChange(resolvedTo);
 
-      return sortedVal;
+      return [resolvedFrom, resolvedTo];
     }
 
-    onFromChange(target?.[0]);
-    onToChange(target?.[1]);
+    onFromChange(callback.from(target?.[0]));
+    onToChange(callback.to(target?.[1]));
 
     return target;
   };
