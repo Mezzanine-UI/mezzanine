@@ -55,6 +55,12 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
             ${moment(val?.[1]).format(getDefaultModeFormat(mode || 'day'))}
           ]`}
       </Typography>
+      <Typography variant="body1" style={typoStyle}>
+        {`format in YYYY-MM-DD: [
+            ${moment(val?.[0]).format(getDefaultModeFormat('day'))},
+            ${moment(val?.[1]).format(getDefaultModeFormat('day'))}
+          ]`}
+      </Typography>
       <DateRangePicker
         clearable={clearable}
         disabled={disabled}
