@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.5...@mezzanine-ui/react@0.14.6) (2024-02-19)
+
+### Bug Fixes
+
+- **react/date-range-picker:** add date offset to apply last day of week when mode='week' ([a2c2461](https://github.com/Mezzanine-UI/mezzanine/commit/a2c24612d2a485fd17f2dd9c03effd823e11dfca))
+
+### Features
+
+- **react/picker:** useRangePickerValue add callback for onChange to allow customize result ([b52ace6](https://github.com/Mezzanine-UI/mezzanine/commit/b52ace65d09940ba633c610c69c5bd53ff531892))
+
 ## [0.14.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.4...@mezzanine-ui/react@0.14.5) (2024-01-29)
 
 ### Bug Fixes
