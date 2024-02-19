@@ -4,9 +4,12 @@ import {
   ChangeEventHandler, KeyboardEventHandler, useMemo, useState,
 } from 'react';
 import { useRangePickerValue, UseRangePickerValueProps } from '../Picker/useRangePickerValue';
+import { DateRangePickerCalendarProps } from './DateRangePickerCalendar';
+import { useCalendarContext } from '../Calendar';
 
 export interface UseDateRangePickerValueProps extends Omit<UseRangePickerValueProps, 'onChange'> {
-  onChange?: (value?: RangePickerValue) => void
+  mode?: DateRangePickerCalendarProps['mode'];
+  onChange?: (value?: RangePickerValue) => void;
 }
 
 export function useDateRangePickerValue({
@@ -14,9 +17,13 @@ export function useDateRangePickerValue({
   formats,
   inputFromRef,
   inputToRef,
+  mode,
   onChange: onChangeProp,
   value: valueProp,
 }: UseDateRangePickerValueProps) {
+  const {
+    addDay,
+  } = useCalendarContext();
   const {
     inputFromValue,
     inputToValue,
@@ -59,7 +66,15 @@ export function useDateRangePickerValue({
       : [firstVal, val] as RangePickerPickingValue;
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const [sortedFrom, sortedTo] = onChange(newValue)!;
+    const [sortedFrom, sortedTo] = onChange(newValue, {
+      from: (nextFrom) => nextFrom,
+      to: (nextTo) => {
+        if (!nextTo) return nextTo;
+
+        /** week mode should use the last day of the week (default is the first day) */
+        return mode === 'week' ? addDay(nextTo, 6) : nextTo;
+      },
+    })!;
 
     if (sortedFrom && sortedTo) {
       onChangeProp?.([sortedFrom, sortedTo]);

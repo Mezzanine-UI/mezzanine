@@ -216,6 +216,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       value: valueProp,
       inputFromRef,
       inputToRef,
+      mode,
       onChange: onChangeProp,
     });
 
