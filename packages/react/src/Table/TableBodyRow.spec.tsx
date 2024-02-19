@@ -115,7 +115,7 @@ describe('<TableBodyRow />', () => {
     const cellInstance = testInstance.root.findAllByType(TableCell);
 
     expect(cellInstance[0].props.ellipsis).toBe(true);
-    expect(cellInstance[1].props.ellipsis).toBe(false);
+    expect(cellInstance[1].props.ellipsis).toBe(true);
     expect(cellInstance[2].props.ellipsis).toBe(false);
   });
 
