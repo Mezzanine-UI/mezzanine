@@ -52,7 +52,7 @@ export interface TableBaseProps<T>
   /**
     * customized body row className
     */
-  bodyRowClassName?: string;
+  bodyRowClassName?: string | ((source: TableDataSource) => string);
   /**
     * Columns of table <br />
     * `column.render` allowed customizing the column body cell rendering. <br />
@@ -315,6 +315,18 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
 
   const tableRefs = useComposeRefs([ref, scrollBody.target]);
 
+  const rowClassName = useMemo(() => {
+    if (bodyRowClassName) {
+      if (typeof bodyRowClassName === 'string') {
+        return (() => bodyRowClassName);
+      }
+
+      return ((source: TableDataSource) => bodyRowClassName?.(source));
+    }
+
+    return undefined;
+  }, [bodyRowClassName]);
+
   return (
     <TableContext.Provider value={tableContextValue}>
       <TableDataContext.Provider value={tableDataContextValue}>
@@ -369,7 +381,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                         <TableBody
                           ref={bodyRef}
                           className={bodyClassName}
-                          rowClassName={bodyRowClassName}
+                          rowClassName={rowClassName}
                         />
                         <tbody>
                           {provided.placeholder}
