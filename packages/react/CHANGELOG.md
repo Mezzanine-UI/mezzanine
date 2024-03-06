@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.6...@mezzanine-ui/react@0.14.7) (2024-03-06)
+
+### Features
+
+- **react/table:** bodyRowClassName props also can use '(source) => string' ([76c6f85](https://github.com/Mezzanine-UI/mezzanine/commit/76c6f8571b88c112aeb915eb304ce2928a391364))
+
 ## [0.14.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.5...@mezzanine-ui/react@0.14.6) (2024-02-19)
 
 ### Bug Fixes
