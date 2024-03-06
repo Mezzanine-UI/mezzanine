@@ -17,7 +17,7 @@ export interface TableBodyProps extends NativeElementPropsWithoutKeyAndRef<'div'
   /**
    * customize row className
    */
-  rowClassName?: string;
+  rowClassName?: (source: TableDataSource) => string;
 }
 
 const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function TableBody(props, ref) {
@@ -77,7 +77,7 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(function T
       {currentDataSource.length ? currentDataSource.map((rowData: TableDataSource, index: number) => (
         <TableBodyRow
           key={(rowData.key || rowData.id) as string}
-          className={rowClassName}
+          className={rowClassName?.(rowData)}
           rowData={rowData}
           rowIndex={index}
         />
