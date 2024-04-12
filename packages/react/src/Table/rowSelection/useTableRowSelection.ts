@@ -1,4 +1,5 @@
 import { TableRowSelection, TableDataSource } from '@mezzanine-ui/core/table';
+import xor from 'lodash/xor';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
 
@@ -19,6 +20,7 @@ export function useTableRowSelection(props: UseTableRowSelection) {
   const {
     selectedRowKey: selectedRowKeyProp,
     onChange: onChangeProp,
+    disabledRowKeys = [],
     dataSource,
   } = props;
 
@@ -32,13 +34,14 @@ export function useTableRowSelection(props: UseTableRowSelection) {
     if (!dataSource.length) return;
 
     const allSourceKeys = dataSource.map((source) => (source.key || source.id) as string);
+    const validSourceKeys = xor(disabledRowKeys, allSourceKeys);
     let nextSelectedRowKey = selectedRowKey;
 
     if (rowKey === SELECTED_ALL_KEY) {
-      if (equalityFn(selectedRowKey, allSourceKeys)) {
+      if (equalityFn(selectedRowKey, validSourceKeys)) {
         nextSelectedRowKey = [];
       } else {
-        nextSelectedRowKey = allSourceKeys;
+        nextSelectedRowKey = validSourceKeys;
       }
     } else {
       const existedRowKeyIdx = selectedRowKey.findIndex((key) => key === rowKey);

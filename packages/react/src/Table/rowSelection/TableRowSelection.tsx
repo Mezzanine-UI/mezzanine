@@ -11,6 +11,7 @@ import {
   tableClasses as classes,
   TableRowAction,
 } from '@mezzanine-ui/core/table';
+import xor from 'lodash/xor';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
 import { TableContext, TableDataContext, RowSelectionContext } from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
@@ -64,10 +65,16 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
       const selectedRowKeys = rowSelection?.selectedRowKeys ?? [];
 
       if (!selectedRowKeys.length) return 'none';
-      if (selectedRowKeys.length === dataSource.length) return 'all';
+
+      const validDataSource = xor(
+        rowSelection?.disabledRowKeys ?? [],
+        dataSource.map((d) => (d.id || d.key) as string),
+      );
+
+      if (selectedRowKeys.length === validDataSource.length) return 'all';
 
       return 'indeterminate';
-    }, [rowSelection?.selectedRowKeys, dataSource.length]);
+    }, [rowSelection?.selectedRowKeys, rowSelection?.disabledRowKeys, dataSource]);
 
     const selfChecked = useMemo(() => (
       (rowSelection?.selectedRowKeys ?? []).some((key) => key === rowKey)
@@ -138,7 +145,9 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
       >
         <Checkbox
           checked={checked}
-          disabled={false}
+          disabled={rowSelection?.disabledRowKeys?.length
+            ? rowSelection.disabledRowKeys.includes(rowKey)
+            : false}
           indeterminate={indeterminate}
           inputProps={{
             name,
