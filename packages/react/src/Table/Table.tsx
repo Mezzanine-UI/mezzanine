@@ -52,7 +52,7 @@ export interface TableBaseProps<T>
   /**
     * customized body row className
     */
-  bodyRowClassName?: string | ((source: TableDataSource) => string);
+  bodyRowClassName?: string | ((source: T) => string);
   /**
     * Columns of table <br />
     * `column.render` allowed customizing the column body cell rendering. <br />
