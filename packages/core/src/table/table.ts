@@ -144,6 +144,7 @@ export interface TableRowSelection {
   selectedRowKey?: string[];
   onChange?(keys: string[]): void;
   actions?: TableRowAction[];
+  disabledRowKeys?: string[];
 }
 
 /** === Feature draggable */

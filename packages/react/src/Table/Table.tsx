@@ -182,12 +182,14 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
     selectedRowKey: rowSelectionProp?.selectedRowKey,
     onChange: rowSelectionProp?.onChange,
     dataSource: dataSourceProp,
+    disabledRowKeys: rowSelectionProp?.disabledRowKeys,
   });
 
   const rowSelection = useMemo(() => (rowSelectionProp ? {
     selectedRowKeys,
     onChange: setSelectedRowKey,
     actions: rowSelectionProp.actions,
+    disabledRowKeys: rowSelectionProp.disabledRowKeys,
   } : undefined), [
     rowSelectionProp,
     selectedRowKeys,

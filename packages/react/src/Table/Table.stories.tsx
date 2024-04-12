@@ -376,6 +376,11 @@ export const Selections = () => {
           rowSelection={{
             selectedRowKey: selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
+            disabledRowKeys: dataSource.map((d) => {
+              if (d.age >= 25) return d.key;
+
+              return null;
+            }).filter((k) => k),
           }}
         />
       </div>

@@ -16,6 +16,7 @@ import { EmptyProps } from '../Empty';
 export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> {
   selectedRowKeys: string[];
   onChange(v: string): void;
+  disabledRowKeys?: string[];
 }
 
 /** typeof sorting */
