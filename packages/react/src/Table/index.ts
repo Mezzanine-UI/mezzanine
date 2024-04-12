@@ -17,5 +17,9 @@ export {
   useTableDraggable,
 } from './draggable/useTableDraggable';
 export {
+  useTableRowSelection,
+  SELECTED_ALL_KEY,
+} from './rowSelection/useTableRowSelection';
+export {
   default as useTableScroll,
 } from './useTableScroll';

@@ -165,6 +165,8 @@ export {
   TableRefresh,
   useTableDraggable,
   useTableScroll,
+  useTableRowSelection,
+  SELECTED_ALL_KEY,
   default as Table,
 } from './Table';
 export {
