@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.7...@mezzanine-ui/core@0.14.8) (2024-04-12)
+
+### Features
+
+- **core/table:** add disabledRowKeys typing for rowSelection ([b35ea68](https://github.com/Mezzanine-UI/mezzanine/commit/b35ea68e8c6791b5f04958b4ce1cb47371384390))
+
 ## [0.14.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.6...@mezzanine-ui/core@0.14.7) (2024-03-06)
 
 **Note:** Version bump only for package @mezzanine-ui/core

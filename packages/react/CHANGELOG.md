@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.7...@mezzanine-ui/react@0.14.8) (2024-04-12)
+
+### Bug Fixes
+
+- **react/table:** fix type of bodyRowClassName ([28fd407](https://github.com/Mezzanine-UI/mezzanine/commit/28fd40764ef9d6b2ff4289a827265db10c7124f9))
+
+### Features
+
+- **react/table:** export useTableRowSelection & SELECTED_ALL_KEY ([b09ae73](https://github.com/Mezzanine-UI/mezzanine/commit/b09ae735243ce073e0af68277ce976d8736feff1))
+- **react/table:** implement rowSelection.disabledRowKeys for table ([f00560e](https://github.com/Mezzanine-UI/mezzanine/commit/f00560eb1bbfc42f8a98cff6ca30e66018e9b289))
+
 ## [0.14.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.6...@mezzanine-ui/react@0.14.7) (2024-03-06)
 
 ### Features
