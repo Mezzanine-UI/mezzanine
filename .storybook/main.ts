@@ -8,9 +8,7 @@ const CORE_PATH = resolve(PACKAGES_PATH, 'core');
 const ICONS_PATH = resolve(PACKAGES_PATH, 'icons');
 
 const config: StorybookConfig = {
-  stories: [
-    '../packages/react/src/**/*.stories.@(mjs|ts|tsx|mdx)',
-  ],
+  stories: ['../packages/react/src/**/*.@(mdx|stories.@(mjs|ts|tsx))'],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
