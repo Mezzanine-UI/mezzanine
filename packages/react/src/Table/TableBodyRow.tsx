@@ -15,7 +15,7 @@ import {
   getCellStyle,
   ExpandRowBySources,
 } from '@mezzanine-ui/core/table';
-import { Draggable } from 'react-beautiful-dnd';
+import { Draggable } from '@hello-pangea/dnd';
 import get from 'lodash/get';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
@@ -162,6 +162,7 @@ const TableBodyRow = forwardRef<HTMLTableRowElement, TableBodyRowProps>(
                   >
                     <TableEditRenderWrapper
                       {...column}
+                      key={rowData.key || rowData.id}
                       rowData={rowData}
                     >
                       <TableCell

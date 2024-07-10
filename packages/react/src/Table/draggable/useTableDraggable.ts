@@ -6,7 +6,7 @@ import {
   DragDropContextProps,
   DropResult,
   ResponderProvided,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
 import { arrayMove } from '../../utils/array-move';
 import { usePreviousValue } from '../../hooks/usePreviousValue';
 
