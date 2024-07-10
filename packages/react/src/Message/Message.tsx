@@ -137,7 +137,7 @@ const {
   remove,
 } = createNotifier<MessageData, MessageConfigProps>({
   duration: 3000,
-  render: (message) => <Message {...message} />,
+  render: (message) => <Message {...message} key={undefined} />,
   setRoot: (root) => {
     root?.setAttribute('class', classes.root);
   },
