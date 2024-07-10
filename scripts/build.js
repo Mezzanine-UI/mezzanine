@@ -1,8 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const fse = require('fs-extra');
 const glob = require('glob');
 const { rollup } = require('rollup');
-const ts = require('rollup-plugin-typescript2');
+const ts = require('@rollup/plugin-typescript');
 
 const { PWD } = process.env;
 const packagePath = PWD;
@@ -84,13 +85,10 @@ async function run() {
         preserveModulesRoot: packageSrcPath,
       },
     ],
-    plugins: [
-      ts({
-        check: true,
-        cacheRoot: tsPluginCachePath,
-        tsconfig: tsconfigPath,
-      }),
-    ],
+    plugins: [ts({
+      cacheDir: tsPluginCachePath,
+      tsconfig: tsconfigPath,
+    })],
     treeshake: {
       moduleSideEffects: false,
     },
