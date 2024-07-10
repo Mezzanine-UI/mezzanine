@@ -1,7 +1,7 @@
 import {
   TableColumn,
 } from '@mezzanine-ui/core/table';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import {
   act,
   cleanupHook,

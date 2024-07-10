@@ -32,10 +32,10 @@
     "dayjs": {
       "optional": true
     },
-    "moment": {
+    "luxon": {
       "optional": true
     },
-    "luxon": {
+    "moment": {
       "optional": true
     }
   },

@@ -23,6 +23,7 @@ export { ClockIcon } from './clock';
 export { DocIcon } from './doc';
 export { DollarIcon } from './dollar';
 export { DownloadIcon } from './download';
+export { DragIcon } from './drag';
 export { EditIcon } from './edit';
 export { ExclamationCircleFilledIcon } from './exclamation-circle-filled';
 export { EyeCloseIcon } from './eye-close';

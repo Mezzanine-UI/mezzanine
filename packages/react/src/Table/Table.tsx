@@ -9,7 +9,7 @@ import {
 import {
   DragDropContext,
   Droppable,
-} from 'react-beautiful-dnd';
+} from '@hello-pangea/dnd';
 import {
   tableClasses as classes,
   TableColumn,
