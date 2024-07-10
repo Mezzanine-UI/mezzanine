@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.8...@mezzanine-ui/react@0.14.9) (2024-07-10)
+
+### Bug Fixes
+
+- **react/message:** assign undefined key when create notifier rendering to fix warning ([080ca75](https://github.com/Mezzanine-UI/mezzanine/commit/080ca75824b1635b4819861a065e57279d175d62))
+
+### Features
+
+- **react/table:** use @hello-pangea/dnd package to implement drag-n-drop ([77a94ab](https://github.com/Mezzanine-UI/mezzanine/commit/77a94abb0e545d04f5a608defc43dd43442ce466))
+
 ## [0.14.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.7...@mezzanine-ui/react@0.14.8) (2024-04-12)
 
 ### Bug Fixes

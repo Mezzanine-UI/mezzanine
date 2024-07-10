@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.14.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.14.8...@mezzanine-ui/icons@0.14.9) (2024-07-10)
+
+### Features
+
+- **icons:** add drag icon ([fed3ca3](https://github.com/Mezzanine-UI/mezzanine/commit/fed3ca3d75dcef12020b2db92f802408cbd4cb85))
+
 ## [0.14.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.14.7...@mezzanine-ui/icons@0.14.8) (2024-04-12)
 
 **Note:** Version bump only for package @mezzanine-ui/icons
