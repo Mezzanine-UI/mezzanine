@@ -6,6 +6,7 @@ export * from './utils/jsx-types';
 export * from './utils/general';
 export * from './utils/scroll-lock';
 export * from './utils/array-move';
+export * from './utils/get-scrollbar-width';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';

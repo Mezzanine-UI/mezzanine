@@ -1,3 +1,5 @@
+import getScrollbarWidth from './get-scrollbar-width';
+
 export function lockBodyScroll() {
   const {
     scrollY,
@@ -5,9 +7,12 @@ export function lockBodyScroll() {
 
   document.body.style.position = 'fixed';
   document.body.style.top = `-${scrollY}px`;
+
+  // Calculate scroll bar width and use padding-right to remain layout width.
+  const scrollbarWidth = getScrollbarWidth();
+
+  document.body.style.paddingRight = `${scrollbarWidth}px`;
   document.body.style.overflow = 'hidden';
-  /** @NOTE workaround for layout breaking (need refactor) */
-  document.body.style.width = '100vw';
 }
 
 export function allowBodyScroll() {
@@ -16,6 +21,7 @@ export function allowBodyScroll() {
   if (document.body.style.position === 'fixed') {
     document.body.style.position = '';
     document.body.style.top = '';
+    document.body.style.paddingRight = '';
     document.body.style.overflow = '';
     window.scrollTo(0, (scrollY || 0) * -1);
   }
