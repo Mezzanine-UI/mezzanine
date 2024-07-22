@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.13.13](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.12...@mezzanine-ui/react@0.13.13) (2024-07-22)
+
+### Bug Fixes
+
+- **react/utils:** fix scroll lock layout shifting bug and export getScrollbarWidth function ([262d746](https://github.com/Mezzanine-UI/mezzanine/commit/262d7460d3f06470e5875efdb56033f226c7beb8))
+
 ## [0.13.12](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.13.11...@mezzanine-ui/react@0.13.12) (2024-01-10)
 
 ### Bug Fixes
