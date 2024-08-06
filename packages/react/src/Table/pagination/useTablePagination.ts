@@ -1,7 +1,4 @@
-import {
-  RefObject,
-  useContext,
-} from 'react';
+import { RefObject, useContext } from 'react';
 import { TablePagination } from '@mezzanine-ui/core/table';
 import { useControlValueState } from '../../Form/useControlValueState';
 import { useLastCallback } from '../../hooks/useLastCallback';
@@ -16,15 +13,9 @@ export interface UseTablePagination {
 }
 
 export function useTablePagination(props: UseTablePagination) {
-  const {
-    bodyRef,
-    current: currentProp,
-    onChange: onChangeProp,
-  } = props;
+  const { bodyRef, current: currentProp, onChange: onChangeProp } = props;
 
-  const {
-    sorting,
-  } = useContext(TableContext) || {};
+  const { sorting } = useContext(TableContext) || {};
 
   const [current, setCurrent] = useControlValueState({
     defaultValue: 1,

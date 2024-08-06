@@ -8,9 +8,7 @@ import {
   TestRenderer,
   fireEvent,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import TextField from '../TextField';
 import Select, { Option, SelectValue } from '.';
@@ -30,14 +28,12 @@ async function testTextFieldClicked(element: HTMLElement | Element) {
 describe('<Select />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Select ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Select ref={ref} />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<Select inputRef={ref} />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<Select inputRef={ref} />),
   );
 
   it('should bind host class', () => {
@@ -72,11 +68,7 @@ describe('<Select />', () => {
 
   it('props should directly pass to native input element', () => {
     const { getHostHTMLElement } = render(
-      <Select
-        disabled
-        placeholder="placeholder"
-        required
-      />,
+      <Select disabled placeholder="placeholder" required />,
     );
     const element = getHostHTMLElement();
     const inputElement = getSelectInputElement(element);
@@ -92,17 +84,19 @@ describe('<Select />', () => {
   });
 
   it('should TextField be clickable and open popper & menu after clicked', async () => {
-    const { getHostHTMLElement } = render(
-      <Select />,
-    );
+    const { getHostHTMLElement } = render(<Select />);
     const element = getHostHTMLElement();
 
     expect(document.querySelector('.mzn-select-popper')).toBeNull();
 
     await testTextFieldClicked(element);
 
-    expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-    expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+    expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+      HTMLDivElement,
+    );
+    expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+      HTMLUListElement,
+    );
   });
 
   describe('focus handlers', () => {
@@ -129,9 +123,7 @@ describe('<Select />', () => {
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
       const onBlur = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onBlur={onBlur} />,
-      );
+      const { getHostHTMLElement } = render(<Select onBlur={onBlur} />);
       const element = getHostHTMLElement();
 
       await testTextFieldClicked(element);
@@ -144,9 +136,7 @@ describe('<Select />', () => {
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
       const onBlur = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onBlur={onBlur} />,
-      );
+      const { getHostHTMLElement } = render(<Select onBlur={onBlur} />);
       const element = getHostHTMLElement();
 
       await testTextFieldClicked(element);
@@ -159,43 +149,43 @@ describe('<Select />', () => {
 
     it('should invoke onBlur when closing via text-field tab key down', async () => {
       const onBlur = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onBlur={onBlur} />,
-      );
+      const { getHostHTMLElement } = render(<Select onBlur={onBlur} />);
       const element = getHostHTMLElement();
 
       await testTextFieldClicked(element);
 
       await act(async () => {
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Tab' });
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+          code: 'Tab',
+        });
       });
       expect(onBlur).toBeCalledTimes(1);
     });
 
     it('should not invoke onBlur when text-field tab key down but is not open', async () => {
       const onBlur = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onBlur={onBlur} />,
-      );
+      const { getHostHTMLElement } = render(<Select onBlur={onBlur} />);
       const element = getHostHTMLElement();
 
       await act(async () => {
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Tab' });
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+          code: 'Tab',
+        });
       });
       expect(onBlur).toBeCalledTimes(0);
     });
 
     it('should invoke onBlur when closing via text-field enter key down', async () => {
       const onBlur = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Select onBlur={onBlur} />,
-      );
+      const { getHostHTMLElement } = render(<Select onBlur={onBlur} />);
       const element = getHostHTMLElement();
 
       await testTextFieldClicked(element);
 
       await act(async () => {
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: 'Enter' });
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+          code: 'Enter',
+        });
       });
       expect(onBlur).toBeCalledTimes(1);
     });
@@ -205,13 +195,13 @@ describe('<Select />', () => {
     arrowKeyCodes.forEach((arrowKeyCode) => {
       it(`should invoke onFocus when opening via text-field ${arrowKeyCode} key down`, async () => {
         const onFocus = jest.fn();
-        const { getHostHTMLElement } = render(
-          <Select onFocus={onFocus} />,
-        );
+        const { getHostHTMLElement } = render(<Select onFocus={onFocus} />);
         const element = getHostHTMLElement();
 
         await act(async () => {
-          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+            code: arrowKeyCode,
+          });
         });
         expect(onFocus).toBeCalledTimes(1);
       });
@@ -220,9 +210,7 @@ describe('<Select />', () => {
     arrowKeyCodes.forEach((arrowKeyCode) => {
       it(`should not invoke onFocus when text-field ${arrowKeyCode} key down but is opened`, async () => {
         const onFocus = jest.fn();
-        const { getHostHTMLElement } = render(
-          <Select onFocus={onFocus} />,
-        );
+        const { getHostHTMLElement } = render(<Select onFocus={onFocus} />);
         const element = getHostHTMLElement();
 
         await testTextFieldClicked(element);
@@ -230,7 +218,9 @@ describe('<Select />', () => {
         onFocus.mockClear();
 
         await act(async () => {
-          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+            code: arrowKeyCode,
+          });
         });
         expect(onFocus).toBeCalledTimes(0);
       });
@@ -245,7 +235,9 @@ describe('<Select />', () => {
       const element = getHostHTMLElement();
 
       await act(async () => {
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: '0' });
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+          code: '0',
+        });
       });
 
       expect(onFocus).toBeCalledTimes(0);
@@ -253,7 +245,9 @@ describe('<Select />', () => {
       await testTextFieldClicked(element);
 
       await act(async () => {
-        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: '0' });
+        fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+          code: '0',
+        });
       });
 
       expect(onBlur).toBeCalledTimes(0);
@@ -281,9 +275,7 @@ describe('<Select />', () => {
     beforeEach(async () => {
       inputRef = createRef<HTMLInputElement>();
 
-      const renderValue = jest.fn<string, [SelectValue]>((value) => (
-        value.name
-      ));
+      const renderValue = jest.fn<string, [SelectValue]>((value) => value.name);
 
       await act(async () => {
         render(
@@ -314,14 +306,8 @@ describe('<Select />', () => {
 
       beforeEach(() => {
         const { getHostHTMLElement } = render(
-          <Select
-            defaultValue={defaultValue}
-            mode="single"
-            onChange={onChange}
-          >
-            <Option value={defaultValue.id}>
-              {defaultValue.name}
-            </Option>
+          <Select defaultValue={defaultValue} mode="single" onChange={onChange}>
+            <Option value={defaultValue.id}>{defaultValue.name}</Option>
           </Select>,
         );
 
@@ -344,20 +330,28 @@ describe('<Select />', () => {
         });
 
         expect(onChange).toBeCalledTimes(1);
-        expect(onChange).toBeCalledWith({ id: defaultValue.id, name: defaultValue.name });
+        expect(onChange).toBeCalledWith({
+          id: defaultValue.id,
+          name: defaultValue.name,
+        });
         expect(document.querySelector('.mzn-select-popper')).toBeNull();
-        expect(options[0].classList.contains('mzn-menu-item--active')).toBeTruthy();
+        expect(
+          options[0].classList.contains('mzn-menu-item--active'),
+        ).toBeTruthy();
       });
     });
 
     describe('mode: multiple', () => {
-      const defaultValue: SelectValue[] = [{
-        id: '1',
-        name: 'foo',
-      }, {
-        id: '2',
-        name: 'bar',
-      }];
+      const defaultValue: SelectValue[] = [
+        {
+          id: '1',
+          name: 'foo',
+        },
+        {
+          id: '2',
+          name: 'bar',
+        },
+      ];
 
       let element: HTMLElement;
 
@@ -401,7 +395,9 @@ describe('<Select />', () => {
 
         const tagLabels = element.querySelectorAll('.mzn-tag__label');
 
-        expect(onChange).toBeCalledWith([{ id: defaultValue[1].id, name: defaultValue[1].name }]);
+        expect(onChange).toBeCalledWith([
+          { id: defaultValue[1].id, name: defaultValue[1].name },
+        ]);
         expect(tagLabels[0]?.innerHTML).toBe(defaultValue[1].name);
       });
 
@@ -422,9 +418,15 @@ describe('<Select />', () => {
           { id: '3', name: 'Alice' },
         ]);
         expect(tagLabels[2]?.innerHTML).toBe('Alice');
-        expect(options[0].classList.contains('mzn-menu-item--active')).toBeTruthy();
-        expect(options[1].classList.contains('mzn-menu-item--active')).toBeTruthy();
-        expect(options[2].classList.contains('mzn-menu-item--active')).toBeTruthy();
+        expect(
+          options[0].classList.contains('mzn-menu-item--active'),
+        ).toBeTruthy();
+        expect(
+          options[1].classList.contains('mzn-menu-item--active'),
+        ).toBeTruthy();
+        expect(
+          options[2].classList.contains('mzn-menu-item--active'),
+        ).toBeTruthy();
       });
     });
   });
@@ -467,10 +469,12 @@ describe('<Select />', () => {
     });
 
     it('when clear icon clicked, value should be be an empty array', async () => {
-      let defaultValue: SelectValue[] = [{
-        id: '1',
-        name: 'foo',
-      }];
+      let defaultValue: SelectValue[] = [
+        {
+          id: '1',
+          name: 'foo',
+        },
+      ];
 
       const onClear = jest.fn<any, any>(() => {
         defaultValue = [];

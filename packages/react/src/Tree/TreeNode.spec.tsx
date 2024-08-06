@@ -1,17 +1,10 @@
 import { TreeSize } from '@mezzanine-ui/core/tree';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import {
-  TreeNode,
-} from '.';
+import { TreeNode } from '.';
 import Typography, { TypographyVariant } from '../Typography';
 import Checkbox from '../Checkbox';
 import ConfigProvider from '../Provider';
@@ -19,14 +12,12 @@ import ConfigProvider from '../Provider';
 describe('<TreeNode />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLLIElement,
-    (ref) => render(<TreeNode ref={ref} value="foo" label="bar" />),
+  describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
+    render(<TreeNode ref={ref} value="foo" label="bar" />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<TreeNode className={className} value="foo" label="bar" />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<TreeNode className={className} value="foo" label="bar" />),
   );
 
   it('should bind host class', () => {
@@ -52,44 +43,35 @@ describe('<TreeNode />', () => {
   describe('prop: disabled', () => {
     it('should apply disable layout if disabled=true', () => {
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          disabled
-        />,
+        <TreeNode value="foo" label="bar" disabled />,
       );
 
       const element = getHostHTMLElement();
       const labelElement = element.querySelector('.mzn-tree-node__label');
 
-      expect(labelElement?.classList.contains('mzn-tree-node__label--disabled'));
+      expect(
+        labelElement?.classList.contains('mzn-tree-node__label--disabled'),
+      );
     });
   });
 
   describe('prop: indeterminate', () => {
     it('should apply indeterminate layout if indeterminate=true', () => {
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          indeterminate
-        />,
+        <TreeNode value="foo" label="bar" indeterminate />,
       );
 
       const element = getHostHTMLElement();
       const labelElement = element.querySelector('.mzn-tree-node__label');
 
-      expect(labelElement?.classList.contains('mzn-tree-node__label--indeterminate'));
+      expect(
+        labelElement?.classList.contains('mzn-tree-node__label--indeterminate'),
+      );
     });
 
     it('should pass indeterminate to Checkbox on multiple mode if indeterminate=true', () => {
       const testInstance = TestRenderer.create(
-        <TreeNode
-          value="foo"
-          label="bar"
-          multiple
-          indeterminate
-        />,
+        <TreeNode value="foo" label="bar" multiple indeterminate />,
       );
 
       const checkboxInstance = testInstance.root.findByType(Checkbox);
@@ -101,11 +83,7 @@ describe('<TreeNode />', () => {
   describe('prop: label', () => {
     it('should label be rendered under Typography', () => {
       const testInstance = TestRenderer.create(
-        <TreeNode
-          value="foo"
-          label="bar"
-          selected
-        />,
+        <TreeNode value="foo" label="bar" selected />,
       );
 
       const typographyInstance = testInstance.root.findByType(Typography);
@@ -115,12 +93,7 @@ describe('<TreeNode />', () => {
 
     it('should label be rendered under Checkbox if multiple=true', () => {
       const testInstance = TestRenderer.create(
-        <TreeNode
-          value="foo"
-          label="bar"
-          multiple
-          selected
-        />,
+        <TreeNode value="foo" label="bar" multiple selected />,
       );
 
       const checkboxInstance = testInstance.root.findByType(Checkbox);
@@ -136,7 +109,8 @@ describe('<TreeNode />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [checkboxElement] = element.getElementsByClassName('mzn-input-check');
+      const [checkboxElement] =
+        element.getElementsByClassName('mzn-input-check');
 
       expect(checkboxElement).toBeInstanceOf(HTMLLabelElement);
       expect(checkboxElement.textContent).toBe('bar');
@@ -189,12 +163,7 @@ describe('<TreeNode />', () => {
     it('onSelect should bind to label and receives value as its argument', () => {
       const onSelect = jest.fn();
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          selectable
-          onSelect={onSelect}
-        />,
+        <TreeNode value="foo" label="bar" selectable onSelect={onSelect} />,
       );
 
       const element = getHostHTMLElement();
@@ -228,10 +197,7 @@ describe('<TreeNode />', () => {
   describe('prop: selectable', () => {
     it('default to false and label should not have click handler', () => {
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-        />,
+        <TreeNode value="foo" label="bar" />,
       );
       const element = getHostHTMLElement();
       const labelElement = element.querySelector('.mzn-tree-node__label');
@@ -241,26 +207,20 @@ describe('<TreeNode />', () => {
 
     it('should apply selectable layouts if no children and selectable=true', () => {
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          selectable
-        />,
+        <TreeNode value="foo" label="bar" selectable />,
       );
       const element = getHostHTMLElement();
       const labelElement = element.querySelector('.mzn-tree-node__label');
 
-      expect(labelElement?.classList.contains('mzn-tree-node__label--selectable'));
+      expect(
+        labelElement?.classList.contains('mzn-tree-node__label--selectable'),
+      );
     });
 
     it('should not bind onSelect handler if selectable is falsy', () => {
       const onSelect = jest.fn();
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          onSelect={onSelect}
-        />,
+        <TreeNode value="foo" label="bar" onSelect={onSelect} />,
       );
       const element = getHostHTMLElement();
       const labelElement = element.querySelector('.mzn-tree-node__label');
@@ -272,11 +232,7 @@ describe('<TreeNode />', () => {
   describe('prop: selected', () => {
     it('should apply selected layout if selected=true', () => {
       const { getHostHTMLElement } = render(
-        <TreeNode
-          value="foo"
-          label="bar"
-          selected
-        />,
+        <TreeNode value="foo" label="bar" selected />,
       );
 
       const element = getHostHTMLElement();
@@ -287,12 +243,7 @@ describe('<TreeNode />', () => {
 
     it('should set checked on checkbox in multiple mode if selected=true', () => {
       const testInstance = TestRenderer.create(
-        <TreeNode
-          value="foo"
-          label="bar"
-          multiple
-          selected
-        />,
+        <TreeNode value="foo" label="bar" multiple selected />,
       );
 
       const checkboxInstance = testInstance.root.findByType(Checkbox);
@@ -304,10 +255,7 @@ describe('<TreeNode />', () => {
   describe('prop: size', () => {
     it('default to "medium"', () => {
       const testInstance = TestRenderer.create(
-        <TreeNode
-          value="foo"
-          label="bar"
-        />,
+        <TreeNode value="foo" label="bar" />,
       );
 
       const typographyInstance = testInstance.root.findByType(Typography);
@@ -318,10 +266,7 @@ describe('<TreeNode />', () => {
     it('should accept ConfigProvider context size changes', () => {
       const testInstance = TestRenderer.create(
         <ConfigProvider size="large">
-          <TreeNode
-            value="foo"
-            label="bar"
-          />
+          <TreeNode value="foo" label="bar" />
         </ConfigProvider>,
       );
 
@@ -338,11 +283,7 @@ describe('<TreeNode />', () => {
 
       it(`should render label with variant:${textVariant} if size="${size}"`, () => {
         const testInstance = TestRenderer.create(
-          <TreeNode
-            value="foo"
-            label="bar"
-            size={size}
-          />,
+          <TreeNode value="foo" label="bar" size={size} />,
         );
 
         const typographyInstance = testInstance.root.findByType(Typography);

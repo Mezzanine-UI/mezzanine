@@ -4,14 +4,18 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Typography, { TypographyProps } from '../Typography';
 
-export interface CardProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title' | 'children'> {
+export interface CardProps
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'title' | 'children'
+  > {
   /**
    * Card footer actions.
    */
   actions?: ReactNode;
   /**
    * Card cover.
-  */
+   */
   cover?: ReactNode;
   /**
    * The container of the text content(title, subtitle and description).
@@ -67,55 +71,32 @@ const Card = forwardRef<HTMLDivElement, CardProps>(function Card(props, ref) {
     ...rest
   } = props;
 
-  const {
-    variant = 'h3',
-  } = titleProps || {};
+  const { variant = 'h3' } = titleProps || {};
 
-  const titleTypography = (
-    title ? (
-      <Typography
-        variant={variant}
-        {...titleProps}
-      >
-        {title}
-      </Typography>
-    ) : null
-  );
+  const titleTypography = title ? (
+    <Typography variant={variant} {...titleProps}>
+      {title}
+    </Typography>
+  ) : null;
 
-  const subtitleTypography = (
-    subtitle ? (
-      <Typography {...subtitleProps}>
-        {subtitle}
-      </Typography>
-    ) : null
-  );
+  const subtitleTypography = subtitle ? (
+    <Typography {...subtitleProps}>{subtitle}</Typography>
+  ) : null;
 
-  const contentHeader = (
+  const contentHeader =
     titleTypography || subtitleTypography ? (
       <div className={classes.metaContentsHeader}>
         {titleTypography}
         {subtitleTypography}
       </div>
-    ) : null
-  );
+    ) : null;
 
-  const descriptionTypography = (
-    description ? (
-      <Typography {...descriptionProps}>
-        {description}
-      </Typography>
-    ) : null
-  );
+  const descriptionTypography = description ? (
+    <Typography {...descriptionProps}>{description}</Typography>
+  ) : null;
 
   return (
-    <div
-      ref={ref}
-      className={cx(
-        classes.host,
-        className,
-      )}
-      {...rest}
-    >
+    <div ref={ref} className={cx(classes.host, className)} {...rest}>
       {cover}
       <div className={classes.meta} {...metaProps}>
         <div className={classes.metaContents} {...contentProps}>

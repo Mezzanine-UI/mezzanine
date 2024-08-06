@@ -13,7 +13,8 @@ import {
 import { EmptyProps } from '../Empty';
 
 /** typeof rowSelection */
-export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> {
+export interface RowSelectionContext
+  extends Pick<TableRowSelection, 'actions'> {
   selectedRowKeys: string[];
   onChange(v: string): void;
   disabledRowKeys?: string[];
@@ -21,7 +22,12 @@ export interface RowSelectionContext extends Pick<TableRowSelection, 'actions'> 
 
 /** typeof sorting */
 export interface SortingContext {
-  onSort(v: Pick<TableColumn<TableRecord<unknown>>, 'key' | 'dataIndex' | 'sorter' | 'onSorted'>): void;
+  onSort(
+    v: Pick<
+      TableColumn<TableRecord<unknown>>,
+      'key' | 'dataIndex' | 'sorter' | 'onSorted'
+    >,
+  ): void;
   onResetAll(): void;
   sortedOn: string;
   sortedType: string;
@@ -46,8 +52,13 @@ export interface TableContextProps {
   sorting?: SortingContext;
   loading?: boolean;
   setLoading?(l: boolean): void;
-  expanding?: Omit<TableExpandable<TableRecord<unknown>>, 'expandedRowRender'> & {
-    expandedRowRender(record: TableRecord<unknown>): ReactNode | ExpandRowBySources;
+  expanding?: Omit<
+    TableExpandable<TableRecord<unknown>>,
+    'expandedRowRender'
+  > & {
+    expandedRowRender(
+      record: TableRecord<unknown>,
+    ): ReactNode | ExpandRowBySources;
   };
   fetchMore?: FetchMoreContext;
   pagination?: TablePagination;
@@ -62,10 +73,13 @@ export interface TableDataContextProps {
   dataSource: TableDataSource[];
 }
 
-export const TableDataContext = createContext<TableDataContextProps | null>(null);
+export const TableDataContext = createContext<TableDataContextProps | null>(
+  null,
+);
 
 export interface TableComponentContextProps {
   bodyCell?: any;
 }
 
-export const TableComponentContext = createContext<TableComponentContextProps | null>(null);
+export const TableComponentContext =
+  createContext<TableComponentContextProps | null>(null);

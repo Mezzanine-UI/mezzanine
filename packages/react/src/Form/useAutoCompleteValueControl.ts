@@ -20,21 +20,25 @@ export interface UseAutoCompleteBaseValueControl {
   options: SelectValue[];
 }
 
-export type UseAutoCompleteMultipleValueControl = UseAutoCompleteBaseValueControl & {
-  defaultValue?: SelectValue[];
-  mode: 'multiple';
-  onChange?(newOptions: SelectValue[]): any;
-  value?: SelectValue[];
-};
+export type UseAutoCompleteMultipleValueControl =
+  UseAutoCompleteBaseValueControl & {
+    defaultValue?: SelectValue[];
+    mode: 'multiple';
+    onChange?(newOptions: SelectValue[]): any;
+    value?: SelectValue[];
+  };
 
-export type UseAutoCompleteSingleValueControl = UseAutoCompleteBaseValueControl & {
-  defaultValue?: SelectValue;
-  mode: 'single';
-  onChange?(newOption: SelectValue | null): any;
-  value?: SelectValue | null;
-};
+export type UseAutoCompleteSingleValueControl =
+  UseAutoCompleteBaseValueControl & {
+    defaultValue?: SelectValue;
+    mode: 'single';
+    onChange?(newOption: SelectValue | null): any;
+    value?: SelectValue | null;
+  };
 
-export type UseAutoCompleteValueControl = UseAutoCompleteMultipleValueControl | UseAutoCompleteSingleValueControl;
+export type UseAutoCompleteValueControl =
+  | UseAutoCompleteMultipleValueControl
+  | UseAutoCompleteSingleValueControl;
 
 export interface AutoCompleteBaseValueControl {
   focused: boolean;
@@ -57,10 +61,17 @@ export type AutoCompleteSingleValueControl = AutoCompleteBaseValueControl & {
   value: SelectValue | null;
 };
 
-const equalityFn = (a: SelectValue[] | SelectValue | null, b: SelectValue[] | SelectValue | null) => isEqual(a, b);
+const equalityFn = (
+  a: SelectValue[] | SelectValue | null,
+  b: SelectValue[] | SelectValue | null,
+) => isEqual(a, b);
 
-function useAutoCompleteBaseValueControl(props: UseAutoCompleteMultipleValueControl): AutoCompleteMultipleValueControl;
-function useAutoCompleteBaseValueControl(props: UseAutoCompleteSingleValueControl): AutoCompleteSingleValueControl;
+function useAutoCompleteBaseValueControl(
+  props: UseAutoCompleteMultipleValueControl,
+): AutoCompleteMultipleValueControl;
+function useAutoCompleteBaseValueControl(
+  props: UseAutoCompleteSingleValueControl,
+): AutoCompleteSingleValueControl;
 function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const {
     defaultValue,
@@ -74,7 +85,9 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useControlValueState<SelectValue[] | SelectValue | null>({
+  const [value, setValue] = useControlValueState<
+    SelectValue[] | SelectValue | null
+  >({
     defaultValue: defaultValue || (mode === 'multiple' ? [] : null),
     equalityFn,
     value: valueProp,
@@ -84,9 +97,9 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const [focused, setFocused] = useState<boolean>(false);
 
   /** escape all special characters */
-  const searchTextReg = new RegExp(searchText
-    .replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
-    .replace(/-/g, '\\x2d'));
+  const searchTextReg = new RegExp(
+    searchText.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d'),
+  );
 
   const onFocus = useCallback((focus: boolean) => {
     setFocused(focus);
@@ -96,10 +109,16 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
     ? optionsProp
     : optionsProp.filter((option) => !!option.name.match(searchTextReg));
 
-  const selectedOptions: SelectValue[] = mode === 'multiple'
-    ? (value as SelectValue[]) : compact([(value as SelectValue | null)]);
+  const selectedOptions: SelectValue[] =
+    mode === 'multiple'
+      ? (value as SelectValue[])
+      : compact([value as SelectValue | null]);
 
-  const unselectedOptions: SelectValue[] = differenceBy(options, selectedOptions, 'id');
+  const unselectedOptions: SelectValue[] = differenceBy(
+    options,
+    selectedOptions,
+    'id',
+  );
 
   return {
     focused,
@@ -112,11 +131,12 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
         return null;
       }
 
-      let newValue: SelectValue[] | SelectValue | null = mode === 'multiple' ? [] : null;
+      let newValue: SelectValue[] | SelectValue | null =
+        mode === 'multiple' ? [] : null;
 
       switch (mode) {
         case 'multiple': {
-          const existedValueIdx = (value as SelectValue[] ?? []).findIndex(
+          const existedValueIdx = ((value as SelectValue[]) ?? []).findIndex(
             (v: SelectValue) => v.id === chooseOption.id,
           );
 
@@ -126,10 +146,7 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
               ...(value as SelectValue[]).slice(existedValueIdx + 1),
             ];
           } else {
-            newValue = [
-              ...value as SelectValue[],
-              chooseOption,
-            ];
+            newValue = [...(value as SelectValue[]), chooseOption];
           }
 
           if (typeof onChange === 'function') onChange(newValue);
@@ -183,12 +200,16 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   };
 }
 
-export const useAutoCompleteValueControl = (props: UseAutoCompleteValueControl) => {
+export const useAutoCompleteValueControl = (
+  props: UseAutoCompleteValueControl,
+) => {
   if (props.mode === 'multiple') {
     return useAutoCompleteBaseValueControl(
       props as UseAutoCompleteMultipleValueControl,
     ) as AutoCompleteMultipleValueControl;
   }
 
-  return useAutoCompleteBaseValueControl(props as UseAutoCompleteSingleValueControl) as AutoCompleteSingleValueControl;
+  return useAutoCompleteBaseValueControl(
+    props as UseAutoCompleteSingleValueControl,
+  ) as AutoCompleteSingleValueControl;
 };

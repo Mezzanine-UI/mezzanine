@@ -12,10 +12,10 @@ export interface DelayMouseEnterLeave {
   visible: boolean;
 }
 
-export function useDelayMouseEnterLeave(opt: UseDelayMouseEnterLeave): DelayMouseEnterLeave {
-  const {
-    mouseLeaveDelay = 0.1,
-  } = opt || {};
+export function useDelayMouseEnterLeave(
+  opt: UseDelayMouseEnterLeave,
+): DelayMouseEnterLeave {
+  const { mouseLeaveDelay = 0.1 } = opt || {};
 
   /** state that control tooltip visible/invisible */
   const [visible, setVisible] = useState<boolean>(false);
@@ -42,13 +42,16 @@ export function useDelayMouseEnterLeave(opt: UseDelayMouseEnterLeave): DelayMous
     setVisible(true);
   }, []);
 
-  const onTargetEnter = useCallback((event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    event.stopPropagation();
+  const onTargetEnter = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
 
-    setAnchor(event.currentTarget);
-    clearVisibilityDelayTimeout();
-    setVisible(true);
-  }, []);
+      setAnchor(event.currentTarget);
+      clearVisibilityDelayTimeout();
+      setVisible(true);
+    },
+    [],
+  );
 
   return {
     anchor,

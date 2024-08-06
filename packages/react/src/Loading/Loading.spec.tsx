@@ -1,26 +1,18 @@
 import { SpinnerIcon } from '@mezzanine-ui/icons';
-import {
-  cleanupHook,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanupHook, render, TestRenderer } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Loading from '.';
 import Icon from '../Icon';
 
 describe('<Loading />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Loading ref={ref} loading />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Loading ref={ref} loading />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <Loading ref={ref} loading>
         test
       </Loading>,

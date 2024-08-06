@@ -6,9 +6,7 @@ export function traverseTree(
   parent?: TreeNodeData,
 ) {
   nodes.forEach((node) => {
-    const {
-      nodes: siblingNodes,
-    } = node;
+    const { nodes: siblingNodes } = node;
 
     callback(node, parent);
 

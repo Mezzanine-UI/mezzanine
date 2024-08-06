@@ -1,9 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Button, { ButtonProps } from '../Button';
 import ConfirmActions from '.';
@@ -11,9 +6,8 @@ import ConfirmActions from '.';
 describe('<ConfirmActions />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<ConfirmActions ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<ConfirmActions ref={ref} />),
   );
 
   describe('cancel button', () => {
@@ -32,13 +26,21 @@ describe('<ConfirmActions />', () => {
           loading: true,
           variant: 'contained',
         };
-        const testRenderer = TestRenderer.create(<ConfirmActions cancelButtonProps={cancelButtonProps} />);
+        const testRenderer = TestRenderer.create(
+          <ConfirmActions cancelButtonProps={cancelButtonProps} />,
+        );
         const testInstance = testRenderer.root;
         const [cancelButtonInstance] = testInstance.findAllByType(Button);
 
-        expect(cancelButtonInstance.props.disabled).toBe(cancelButtonProps.disabled);
-        expect(cancelButtonInstance.props.loading).toBe(cancelButtonProps.loading);
-        expect(cancelButtonInstance.props.variant).toBe(cancelButtonProps.variant);
+        expect(cancelButtonInstance.props.disabled).toBe(
+          cancelButtonProps.disabled,
+        );
+        expect(cancelButtonInstance.props.loading).toBe(
+          cancelButtonProps.loading,
+        );
+        expect(cancelButtonInstance.props.variant).toBe(
+          cancelButtonProps.variant,
+        );
       });
 
       it('should consider loading as disabled of cancel button if disabled of cancelButtonProps not passed', () => {
@@ -52,7 +54,9 @@ describe('<ConfirmActions />', () => {
 
     describe('prop: cancelText', () => {
       it('should render the text of the cancel button', () => {
-        const { getHostHTMLElement } = render(<ConfirmActions cancelText="foo" />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions cancelText="foo" />,
+        );
         const element = getHostHTMLElement();
         const [cancelButtonElement] = element.getElementsByTagName('button');
 
@@ -63,7 +67,9 @@ describe('<ConfirmActions />', () => {
     describe('prop: hideCancelButton', () => {
       it('should not render cancel button', () => {
         const onCancel = jest.fn();
-        const { getHostHTMLElement } = render(<ConfirmActions hideCancelButton onCancel={onCancel} />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions hideCancelButton onCancel={onCancel} />,
+        );
         const element = getHostHTMLElement();
         const [confirmButtonElement] = element.getElementsByTagName('button');
 
@@ -77,7 +83,9 @@ describe('<ConfirmActions />', () => {
     describe('prop: onCancel', () => {
       it('should be fired while cancel button clicked', () => {
         const onCancel = jest.fn();
-        const { getHostHTMLElement } = render(<ConfirmActions onCancel={onCancel} />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions onCancel={onCancel} />,
+        );
         const element = getHostHTMLElement();
         const [cancelButtonElement] = element.getElementsByTagName('button');
 
@@ -103,16 +111,24 @@ describe('<ConfirmActions />', () => {
           disabled: true,
           variant: 'outlined',
         };
-        const testRenderer = TestRenderer.create(<ConfirmActions confirmButtonProps={confirmButtonProps} />);
+        const testRenderer = TestRenderer.create(
+          <ConfirmActions confirmButtonProps={confirmButtonProps} />,
+        );
         const testInstance = testRenderer.root;
         const [, confirmButtonInstance] = testInstance.findAllByType(Button);
 
-        expect(confirmButtonInstance.props.disabled).toBe(confirmButtonProps.disabled);
-        expect(confirmButtonInstance.props.variant).toBe(confirmButtonProps.variant);
+        expect(confirmButtonInstance.props.disabled).toBe(
+          confirmButtonProps.disabled,
+        );
+        expect(confirmButtonInstance.props.variant).toBe(
+          confirmButtonProps.variant,
+        );
       });
 
       it('should pass loading prop to confirm button', () => {
-        const testRenderer = TestRenderer.create(<ConfirmActions confirmButtonProps={{ loading: false }} loading />);
+        const testRenderer = TestRenderer.create(
+          <ConfirmActions confirmButtonProps={{ loading: false }} loading />,
+        );
         const testInstance = testRenderer.root;
         const [, confirmButtonInstance] = testInstance.findAllByType(Button);
 
@@ -122,7 +138,9 @@ describe('<ConfirmActions />', () => {
 
     describe('prop: confirmText', () => {
       it('should render the text of the confirm button', () => {
-        const { getHostHTMLElement } = render(<ConfirmActions confirmText="foo" />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions confirmText="foo" />,
+        );
         const element = getHostHTMLElement();
         const { lastElementChild: confirmButtonElement } = element;
 
@@ -133,9 +151,12 @@ describe('<ConfirmActions />', () => {
     describe('prop: hideConfirmButton', () => {
       it('should not render cancel button', () => {
         const onConfirm = jest.fn();
-        const { getHostHTMLElement } = render(<ConfirmActions hideConfirmButton onConfirm={onConfirm} />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions hideConfirmButton onConfirm={onConfirm} />,
+        );
         const element = getHostHTMLElement();
-        const { firstElementChild: cancelButtonElement, childElementCount } = element;
+        const { firstElementChild: cancelButtonElement, childElementCount } =
+          element;
 
         fireEvent.click(cancelButtonElement!);
 
@@ -147,7 +168,9 @@ describe('<ConfirmActions />', () => {
     describe('prop: onConfirm', () => {
       it('should be fired while confirm button clicked', () => {
         const onConfirm = jest.fn();
-        const { getHostHTMLElement } = render(<ConfirmActions onConfirm={onConfirm} />);
+        const { getHostHTMLElement } = render(
+          <ConfirmActions onConfirm={onConfirm} />,
+        );
         const element = getHostHTMLElement();
         const { lastElementChild: confirmButtonElement } = element;
 

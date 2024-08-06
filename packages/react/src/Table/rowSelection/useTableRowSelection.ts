@@ -7,12 +7,16 @@ const equalityFn = (a: string[], b: string[]) => {
   const sortedA = a.sort();
   const sortedB = b.sort();
 
-  return sortedA.length === sortedB.length && sortedA.every((v, idx) => v === sortedB[idx]);
+  return (
+    sortedA.length === sortedB.length &&
+    sortedA.every((v, idx) => v === sortedB[idx])
+  );
 };
 
 export const SELECTED_ALL_KEY = 'MZN-TABLE-ROW-SELECTION-ALL';
 
-export interface UseTableRowSelection extends Omit<TableRowSelection, 'actions'> {
+export interface UseTableRowSelection
+  extends Omit<TableRowSelection, 'actions'> {
   dataSource: TableDataSource[];
 }
 
@@ -33,7 +37,9 @@ export function useTableRowSelection(props: UseTableRowSelection) {
   const onChange = useLastCallback<(v: string) => void>((rowKey) => {
     if (!dataSource.length) return;
 
-    const allSourceKeys = dataSource.map((source) => (source.key || source.id) as string);
+    const allSourceKeys = dataSource.map(
+      (source) => (source.key || source.id) as string,
+    );
     const validSourceKeys = xor(disabledRowKeys, allSourceKeys);
     let nextSelectedRowKey = selectedRowKey;
 
@@ -44,7 +50,9 @@ export function useTableRowSelection(props: UseTableRowSelection) {
         nextSelectedRowKey = validSourceKeys;
       }
     } else {
-      const existedRowKeyIdx = selectedRowKey.findIndex((key) => key === rowKey);
+      const existedRowKeyIdx = selectedRowKey.findIndex(
+        (key) => key === rowKey,
+      );
 
       if (~existedRowKeyIdx) {
         nextSelectedRowKey = [
@@ -52,10 +60,7 @@ export function useTableRowSelection(props: UseTableRowSelection) {
           ...selectedRowKey.slice(existedRowKeyIdx + 1),
         ];
       } else {
-        nextSelectedRowKey = [
-          ...selectedRowKey,
-          rowKey,
-        ];
+        nextSelectedRowKey = [...selectedRowKey, rowKey];
       }
     }
 

@@ -1,4 +1,1 @@
-export {
-  ConfirmActionsProps,
-  default,
-} from './ConfirmActions';
+export { ConfirmActionsProps, default } from './ConfirmActions';

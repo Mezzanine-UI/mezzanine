@@ -1,14 +1,5 @@
-import {
-  forwardRef,
-  Ref,
-  useContext,
-  ChangeEventHandler,
-  useRef,
-} from 'react';
-import {
-  inputClasses as classes,
-  InputSize,
-} from '@mezzanine-ui/core/input';
+import { forwardRef, Ref, useContext, ChangeEventHandler, useRef } from 'react';
+import { inputClasses as classes, InputSize } from '@mezzanine-ui/core/input';
 import { selectClasses } from '@mezzanine-ui/core/select';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -23,12 +14,9 @@ import { MezzanineConfig } from '../Provider/context';
 
 export interface InputProps
   extends Omit<
-  TextFieldProps,
-  | 'active'
-  | 'children'
-  | 'onClear'
-  | 'onKeyDown'
-  | 'suffixActionIcon'> {
+    TextFieldProps,
+    'active' | 'children' | 'onClear' | 'onKeyDown' | 'suffixActionIcon'
+  > {
   /**
    * The default value of input.
    */
@@ -41,15 +29,15 @@ export interface InputProps
    * The other native props for input element.
    */
   inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'defaultValue'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'value'
-  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'defaultValue'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'value'
+    | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
   /**
    * The input value mode
@@ -80,8 +68,8 @@ export interface InputProps
    */
   size?: InputSize;
   /**
-    * The props for input element with tags mode.
-    */
+   * The props for input element with tags mode.
+   */
   tagsProps?: {
     /**
      * The initial value of tags
@@ -97,8 +85,8 @@ export interface InputProps
      */
     maxTagsLength?: number;
     /**
-    * The change event handler of input tags value.
-    */
+     * The change event handler of input tags value.
+     */
     onTagsChange?: (tags: TagsType) => void;
   };
   /**
@@ -110,140 +98,133 @@ export interface InputProps
 /**
  * The react component for `mezzanine` input.
  */
-const Input = forwardRef<HTMLDivElement, InputProps>(function Input(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
-  const {
-    disabled: disabledFromFormControl,
-    fullWidth: fullWidthFromFormControl,
-    required: requiredFromFormControl,
-    severity,
-  } = useContext(FormControlContext) || {};
-  const {
-    className,
-    clearable = false,
-    defaultValue,
-    disabled = disabledFromFormControl || false,
-    error = severity === 'error' || false,
-    fullWidth = fullWidthFromFormControl || false,
-    inputProps,
-    inputRef: inputRefProp,
-    mode = 'default',
-    onChange: onChangeProp,
-    placeholder,
-    prefix,
-    readOnly = false,
-    required = requiredFromFormControl || false,
-    size = globalSize,
-    suffix,
-    tagsProps,
-    value: valueProp,
-  } = props;
+const Input = forwardRef<HTMLDivElement, InputProps>(
+  function Input(props, ref) {
+    const { size: globalSize } = useContext(MezzanineConfig);
+    const {
+      disabled: disabledFromFormControl,
+      fullWidth: fullWidthFromFormControl,
+      required: requiredFromFormControl,
+      severity,
+    } = useContext(FormControlContext) || {};
+    const {
+      className,
+      clearable = false,
+      defaultValue,
+      disabled = disabledFromFormControl || false,
+      error = severity === 'error' || false,
+      fullWidth = fullWidthFromFormControl || false,
+      inputProps,
+      inputRef: inputRefProp,
+      mode = 'default',
+      onChange: onChangeProp,
+      placeholder,
+      prefix,
+      readOnly = false,
+      required = requiredFromFormControl || false,
+      size = globalSize,
+      suffix,
+      tagsProps,
+      value: valueProp,
+    } = props;
 
-  const {
-    initialTagsValue,
-    inputPosition = 'bottom',
-    maxTagsLength,
-    onTagsChange,
-  } = tagsProps || {};
+    const {
+      initialTagsValue,
+      inputPosition = 'bottom',
+      maxTagsLength,
+      onTagsChange,
+    } = tagsProps || {};
 
-  const tagsMode = mode === 'tags';
-  const inputRef = useRef<HTMLInputElement>(null);
+    const tagsMode = mode === 'tags';
+    const inputRef = useRef<HTMLInputElement>(null);
 
-  const [
-    value,
-    onChange,
-    onClear,
-  ] = useInputWithClearControlValue({
-    defaultValue,
-    onChange: onChangeProp,
-    ref: inputRef,
-    value: valueProp,
-  });
+    const [value, onChange, onClear] = useInputWithClearControlValue({
+      defaultValue,
+      onChange: onChangeProp,
+      ref: inputRef,
+      value: valueProp,
+    });
 
-  const [
-    {
-      tags,
-      tagsReachedMax,
-    },
-    tagsModeOnChange,
-    tagsModeOnClear,
-    tagsModeOnRemove,
-    onKeyDown,
-  ] = useInputWithTagsModeValue({
-    defaultValue,
-    initialTagsValue,
-    maxTagsLength,
-    onTagsChange,
-    ref: inputRef,
-    skip: !tagsMode,
-    tagValueMaxLength: inputProps?.maxLength,
-    value: valueProp,
-  });
+    const [
+      { tags, tagsReachedMax },
+      tagsModeOnChange,
+      tagsModeOnClear,
+      tagsModeOnRemove,
+      onKeyDown,
+    ] = useInputWithTagsModeValue({
+      defaultValue,
+      initialTagsValue,
+      maxTagsLength,
+      onTagsChange,
+      ref: inputRef,
+      skip: !tagsMode,
+      tagValueMaxLength: inputProps?.maxLength,
+      value: valueProp,
+    });
 
-  const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
+    const composedInputRef = useComposeRefs([inputRefProp, inputRef]);
 
-  const active = !!value;
-  const mountInput = !tagsMode || !tagsReachedMax;
+    const active = !!value;
+    const mountInput = !tagsMode || !tagsReachedMax;
 
-  return (
-    <TextField
-      ref={ref}
-      active={active}
-      className={cx(
-        classes.host,
-        tagsMode && classes.tagsMode,
-        inputPosition === 'top' && classes.tagsModeInputOnTop,
-        className,
-      )}
-      clearable={clearable}
-      disabled={disabled}
-      error={error}
-      fullWidth={fullWidth}
-      onClear={tagsMode ? tagsModeOnClear : onClear}
-      prefix={mountInput ? prefix : undefined}
-      suffix={mountInput ? suffix : undefined}
-      size={size}
-    >
-      {tagsMode && (
-        <div className={selectClasses.triggerTags}>
-          {tags.map((tag) => (
-            <Tag
-              key={tag}
-              closable
-              disabled={disabled}
-              size={size}
-              onClose={(e) => {
-                e.stopPropagation();
-                tagsModeOnRemove(tag);
-              }}
-            >
-              {tag}
-            </Tag>
-          ))}
-        </div>
-      )}
+    return (
+      <TextField
+        ref={ref}
+        active={active}
+        className={cx(
+          classes.host,
+          tagsMode && classes.tagsMode,
+          inputPosition === 'top' && classes.tagsModeInputOnTop,
+          className,
+        )}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        fullWidth={fullWidth}
+        onClear={tagsMode ? tagsModeOnClear : onClear}
+        prefix={mountInput ? prefix : undefined}
+        suffix={mountInput ? suffix : undefined}
+        size={size}
+      >
+        {tagsMode && (
+          <div className={selectClasses.triggerTags}>
+            {tags.map((tag) => (
+              <Tag
+                key={tag}
+                closable
+                disabled={disabled}
+                size={size}
+                onClose={(e) => {
+                  e.stopPropagation();
+                  tagsModeOnRemove(tag);
+                }}
+              >
+                {tag}
+              </Tag>
+            ))}
+          </div>
+        )}
 
-      {mountInput && (
-        <input
-          {...inputProps}
-          aria-disabled={disabled}
-          aria-multiline={false}
-          aria-readonly={readOnly}
-          aria-required={required}
-          disabled={disabled}
-          onChange={tagsMode ? tagsModeOnChange : onChange}
-          onKeyDown={tagsMode ? onKeyDown : inputProps?.onKeyDown}
-          placeholder={placeholder}
-          readOnly={readOnly}
-          ref={composedInputRef}
-          required={required}
-          value={tagsMode ? undefined : value}
-        />
-      )}
-    </TextField>
-  );
-});
+        {mountInput && (
+          <input
+            {...inputProps}
+            aria-disabled={disabled}
+            aria-multiline={false}
+            aria-readonly={readOnly}
+            aria-required={required}
+            disabled={disabled}
+            onChange={tagsMode ? tagsModeOnChange : onChange}
+            onKeyDown={tagsMode ? onKeyDown : inputProps?.onKeyDown}
+            placeholder={placeholder}
+            readOnly={readOnly}
+            ref={composedInputRef}
+            required={required}
+            value={tagsMode ? undefined : value}
+          />
+        )}
+      </TextField>
+    );
+  },
+);
 
 export default Input;

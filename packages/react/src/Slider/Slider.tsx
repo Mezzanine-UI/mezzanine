@@ -17,9 +17,7 @@ import {
   fixSingleSliderValue,
   fixRangeSliderValue,
 } from '@mezzanine-ui/core/slider';
-import {
-  NativeElementPropsWithoutKeyAndRef,
-} from '../utils/jsx-types';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import {
   UseRangeSliderProps,
@@ -29,11 +27,10 @@ import {
 import Tooltip from '../Tooltip';
 import Input, { InputProps } from '../Input';
 
-export interface SliderBaseProps extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
-  | 'defaultChecked'
-  | 'defaultValue'
-  | 'onChange'
+export interface SliderBaseProps
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'defaultChecked' | 'defaultValue' | 'onChange'
   > {
   /**
    * Whether the slider is disabled.
@@ -114,10 +111,7 @@ function SliderComponent(props: SliderComponentProps) {
 
   const shouldHaveInputHandlers = withInput && onChange && !disabled;
 
-  const getHandle = (
-    handlerValue: number,
-    index: number,
-  ) => (
+  const getHandle = (handlerValue: number, index: number) => (
     <div
       className={cx(
         classes.handlerPosition,
@@ -134,12 +128,10 @@ function SliderComponent(props: SliderComponentProps) {
       >
         {({ onMouseEnter, onMouseLeave }) => (
           <div
-            className={
-              cx(
-                classes.handler,
-                index === activeHandleIndex && classes.handlerActive,
-              )
-            }
+            className={cx(
+              classes.handler,
+              index === activeHandleIndex && classes.handlerActive,
+            )}
             aria-disabled={disabled}
             aria-label={`Slider Handler ${index}`}
             aria-valuemax={max}
@@ -185,14 +177,18 @@ function SliderComponent(props: SliderComponentProps) {
           value[0] < min ||
           value[1] > max
         ) {
-          (onChange as UseRangeSliderProps['onChange'])(fixRangeSliderValue(value, min, max));
+          (onChange as UseRangeSliderProps['onChange'])(
+            fixRangeSliderValue(value, min, max),
+          );
         }
 
         return;
       }
 
       if (value < min || value > max) {
-        (onChange as UseSingleSliderProps['onChange'])(fixSingleSliderValue(value, min, max));
+        (onChange as UseSingleSliderProps['onChange'])(
+          fixSingleSliderValue(value, min, max),
+        );
       }
     }
   }, [min, max, onChange, value]);
@@ -222,116 +218,128 @@ function SliderComponent(props: SliderComponentProps) {
     return roundToStep(target, step, min, max);
   }
 
-  const onStartInputChange: ChangeEventHandler<HTMLInputElement> | undefined = shouldHaveInputHandlers ? (e) => {
-    setStartInputValue(e.target.value);
-  } : undefined;
+  const onStartInputChange: ChangeEventHandler<HTMLInputElement> | undefined =
+    shouldHaveInputHandlers
+      ? (e) => {
+          setStartInputValue(e.target.value);
+        }
+      : undefined;
 
-  const onEndInputChange: ChangeEventHandler<HTMLInputElement> | undefined = shouldHaveInputHandlers ? (e) => {
-    setEndInputValue(e.target.value);
-  } : undefined;
+  const onEndInputChange: ChangeEventHandler<HTMLInputElement> | undefined =
+    shouldHaveInputHandlers
+      ? (e) => {
+          setEndInputValue(e.target.value);
+        }
+      : undefined;
 
   const onStartInputBlur: FocusEventHandler<HTMLInputElement> | undefined =
-  shouldHaveInputHandlers && isRangeSlider(value)
-    ? () => {
-      const result = sortSliderValue([
-        value[1],
-        preventValueOverflow(Number(startInputValue)),
-      ]);
-
-      (onChange as UseRangeSliderProps['onChange'])(result);
-    }
-    : undefined;
-
-  const onEndInputBlur: FocusEventHandler<HTMLInputElement> | undefined = shouldHaveInputHandlers
-    ? () => {
-      if (isRangeSlider(value)) {
-        const result = sortSliderValue([
-          value[0],
-          preventValueOverflow(Number(endInputValue)),
-        ]);
-
-        (onChange as UseRangeSliderProps['onChange'])(result);
-
-        return;
-      }
-
-      (onChange as UseSingleSliderProps['onChange'])(preventValueOverflow(Number(endInputValue)));
-    }
-    : undefined;
-
-  const onStartInputKeydown: KeyboardEventHandler<HTMLInputElement> | undefined =
-  shouldHaveInputHandlers && isRangeSlider(value)
-    ? (e) => {
-      switch (e.code) {
-        case 'Enter': {
+    shouldHaveInputHandlers && isRangeSlider(value)
+      ? () => {
           const result = sortSliderValue([
             value[1],
             preventValueOverflow(Number(startInputValue)),
           ]);
 
-          setStartInputValue(result[0].toString());
-          setEndInputValue(result[1].toString());
           (onChange as UseRangeSliderProps['onChange'])(result);
-
-          break;
         }
+      : undefined;
 
-        case 'Escape': {
-          setStartInputValue(value[0].toString());
-          setEndInputValue(value[1].toString());
-
-          break;
-        }
-
-        default:
-          break;
-      }
-    }
-    : undefined;
-
-  const onEndInputKeydown: KeyboardEventHandler<HTMLInputElement> | undefined = shouldHaveInputHandlers
-    ? (e) => {
-      switch (e.code) {
-        case 'Enter': {
+  const onEndInputBlur: FocusEventHandler<HTMLInputElement> | undefined =
+    shouldHaveInputHandlers
+      ? () => {
           if (isRangeSlider(value)) {
             const result = sortSliderValue([
               value[0],
               preventValueOverflow(Number(endInputValue)),
             ]);
 
-            setStartInputValue(result[0].toString());
-            setEndInputValue(result[1].toString());
             (onChange as UseRangeSliderProps['onChange'])(result);
 
             return;
           }
 
-          const result = preventValueOverflow(Number(endInputValue));
-
-          setEndInputValue(result.toString());
-          (onChange as UseSingleSliderProps['onChange'])(result);
-
-          break;
+          (onChange as UseSingleSliderProps['onChange'])(
+            preventValueOverflow(Number(endInputValue)),
+          );
         }
+      : undefined;
 
-        case 'Escape': {
-          if (isRangeSlider(value)) {
-            setStartInputValue(value[0].toString());
-            setEndInputValue(value[1].toString());
+  const onStartInputKeydown:
+    | KeyboardEventHandler<HTMLInputElement>
+    | undefined =
+    shouldHaveInputHandlers && isRangeSlider(value)
+      ? (e) => {
+          switch (e.code) {
+            case 'Enter': {
+              const result = sortSliderValue([
+                value[1],
+                preventValueOverflow(Number(startInputValue)),
+              ]);
 
-            return;
+              setStartInputValue(result[0].toString());
+              setEndInputValue(result[1].toString());
+              (onChange as UseRangeSliderProps['onChange'])(result);
+
+              break;
+            }
+
+            case 'Escape': {
+              setStartInputValue(value[0].toString());
+              setEndInputValue(value[1].toString());
+
+              break;
+            }
+
+            default:
+              break;
           }
-
-          setEndInputValue(value.toString());
-
-          break;
         }
+      : undefined;
 
-        default:
-          break;
-      }
-    }
-    : undefined;
+  const onEndInputKeydown: KeyboardEventHandler<HTMLInputElement> | undefined =
+    shouldHaveInputHandlers
+      ? (e) => {
+          switch (e.code) {
+            case 'Enter': {
+              if (isRangeSlider(value)) {
+                const result = sortSliderValue([
+                  value[0],
+                  preventValueOverflow(Number(endInputValue)),
+                ]);
+
+                setStartInputValue(result[0].toString());
+                setEndInputValue(result[1].toString());
+                (onChange as UseRangeSliderProps['onChange'])(result);
+
+                return;
+              }
+
+              const result = preventValueOverflow(Number(endInputValue));
+
+              setEndInputValue(result.toString());
+              (onChange as UseSingleSliderProps['onChange'])(result);
+
+              break;
+            }
+
+            case 'Escape': {
+              if (isRangeSlider(value)) {
+                setStartInputValue(value[0].toString());
+                setEndInputValue(value[1].toString());
+
+                return;
+              }
+
+              setEndInputValue(value.toString());
+
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      : undefined;
 
   const inputProps: InputProps['inputProps'] = {
     max,
@@ -346,13 +354,7 @@ function SliderComponent(props: SliderComponentProps) {
     <div
       {...rest}
       ref={innerRef}
-      className={
-        cx(
-          classes.host,
-          disabled && classes.disabled,
-          className,
-        )
-      }
+      className={cx(classes.host, disabled && classes.disabled, className)}
       style={style}
     >
       {withInput && isRangeSlider(value) ? (
@@ -371,9 +373,7 @@ function SliderComponent(props: SliderComponentProps) {
       <div className={classes.controls}>
         <div
           ref={railRef}
-          className={
-            classes.rail
-          }
+          className={classes.rail}
           role="presentation"
           onMouseDown={handleClickTrackOrRail}
         />
@@ -382,14 +382,14 @@ function SliderComponent(props: SliderComponentProps) {
           role="presentation"
           onMouseDown={handleClickTrackOrRail}
         />
-        {
-          isRangeSlider(value) ? (
-            <>
-              {getHandle(value[0], 0)}
-              {getHandle(value[1], 1)}
-            </>
-          ) : getHandle(value, -1)
-        }
+        {isRangeSlider(value) ? (
+          <>
+            {getHandle(value[0], 0)}
+            {getHandle(value[1], 1)}
+          </>
+        ) : (
+          getHandle(value, -1)
+        )}
       </div>
       {withInput ? (
         <Input
@@ -415,14 +415,10 @@ function SliderComponent(props: SliderComponentProps) {
  */
 const Slider = forwardRef<HTMLDivElement, SliderProps>((props, ref) => {
   if (isRangeSlider(props.value)) {
-    return (
-      <SliderComponent {...(props as RangeSliderProps)} innerRef={ref} />
-    );
+    return <SliderComponent {...(props as RangeSliderProps)} innerRef={ref} />;
   }
 
-  return (
-    <SliderComponent {...(props as SingleSliderProps)} innerRef={ref} />
-  );
+  return <SliderComponent {...(props as SingleSliderProps)} innerRef={ref} />;
 });
 
 export default Slider;

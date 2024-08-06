@@ -1,10 +1,5 @@
 /* eslint-disable react/jsx-no-useless-fragment */
-import {
-  FC,
-  ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import { FC, ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ElementGetter, getElement } from '../utils/getElement';
 
@@ -26,17 +21,11 @@ export interface PortalProps {
 }
 
 const Portal: FC<PortalProps> = (props) => {
-  const {
-    children,
-    container,
-    disablePortal = false,
-  } = props;
+  const { children, container, disablePortal = false } = props;
 
-  const [portalElement, setPortalElement] = useState(() => (
-    disablePortal
-      ? null
-      : getElement(container)
-  ));
+  const [portalElement, setPortalElement] = useState(() =>
+    disablePortal ? null : getElement(container),
+  );
 
   useEffect(() => {
     if (!disablePortal) {

@@ -35,22 +35,23 @@ describe('useDateRangePickerValue', () => {
       current: inputToElement,
     };
 
-    const { result } = renderHook(
-      useDateRangePickerValue,
-      {
-        wrapper: wrapper as any,
-        initialProps: {
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-          value,
-        },
+    const { result } = renderHook(useDateRangePickerValue, {
+      wrapper: wrapper as any,
+      initialProps: {
+        inputFromRef,
+        inputToRef,
+        format: 'YYYY-MM-DD',
+        formats: ['YYYY-MM-DD'],
+        value,
       },
-    );
+    });
 
-    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe(
+      '2021-10-20',
+    );
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe(
+      '2021-11-20',
+    );
 
     TestRenderer.act(() => {
       result.current.onClear();
@@ -71,33 +72,40 @@ describe('useDateRangePickerValue', () => {
       current: inputToElement,
     };
 
-    const { result } = renderHook(
-      useDateRangePickerValue,
-      {
-        wrapper: wrapper as any,
-        initialProps: {
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-          value,
-        },
+    const { result } = renderHook(useDateRangePickerValue, {
+      wrapper: wrapper as any,
+      initialProps: {
+        inputFromRef,
+        inputToRef,
+        format: 'YYYY-MM-DD',
+        formats: ['YYYY-MM-DD'],
+        value,
       },
-    );
+    });
 
     TestRenderer.act(() => {
       result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
-    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-11-20');
-    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-12-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe(
+      '2021-11-20',
+    );
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe(
+      '2021-12-20',
+    );
 
     TestRenderer.act(() => {
-      result.current.onFromKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
+      result.current.onFromKeyDown({
+        key: 'Escape',
+      } as KeyboardEvent<HTMLInputElement>);
     });
 
-    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe(
+      '2021-10-20',
+    );
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe(
+      '2021-11-20',
+    );
   });
 
   it('onToKeyDown should clear picking value when excape key down', () => {
@@ -111,33 +119,40 @@ describe('useDateRangePickerValue', () => {
       current: inputToElement,
     };
 
-    const { result } = renderHook(
-      useDateRangePickerValue,
-      {
-        wrapper: wrapper as any,
-        initialProps: {
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-          value,
-        },
+    const { result } = renderHook(useDateRangePickerValue, {
+      wrapper: wrapper as any,
+      initialProps: {
+        inputFromRef,
+        inputToRef,
+        format: 'YYYY-MM-DD',
+        formats: ['YYYY-MM-DD'],
+        value,
       },
-    );
+    });
 
     TestRenderer.act(() => {
       result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
-    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-11-20');
-    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-12-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe(
+      '2021-11-20',
+    );
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe(
+      '2021-12-20',
+    );
 
     TestRenderer.act(() => {
-      result.current.onToKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
+      result.current.onToKeyDown({
+        key: 'Escape',
+      } as KeyboardEvent<HTMLInputElement>);
     });
 
-    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe('2021-10-20');
-    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe('2021-11-20');
+    expect(moment(result.current.value[0])?.format('YYYY-MM-DD')).toBe(
+      '2021-10-20',
+    );
+    expect(moment(result.current.value[1])?.format('YYYY-MM-DD')).toBe(
+      '2021-11-20',
+    );
   });
 
   describe('prop: onChange', () => {
@@ -153,23 +168,22 @@ describe('useDateRangePickerValue', () => {
         current: inputToElement,
       };
 
-      const { result } = renderHook(
-        useDateRangePickerValue,
-        {
-          wrapper: wrapper as any,
-          initialProps: {
-            inputFromRef,
-            inputToRef,
-            format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
-            value,
-            onChange,
-          },
+      const { result } = renderHook(useDateRangePickerValue, {
+        wrapper: wrapper as any,
+        initialProps: {
+          inputFromRef,
+          inputToRef,
+          format: 'YYYY-MM-DD',
+          formats: ['YYYY-MM-DD'],
+          value,
+          onChange,
         },
-      );
+      });
 
       TestRenderer.act(() => {
-        result.current.onFromKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onFromKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(onChange).toBeCalledTimes(1);
@@ -187,23 +201,22 @@ describe('useDateRangePickerValue', () => {
         current: inputToElement,
       };
 
-      const { result } = renderHook(
-        useDateRangePickerValue,
-        {
-          wrapper: wrapper as any,
-          initialProps: {
-            inputFromRef,
-            inputToRef,
-            format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
-            value,
-            onChange,
-          },
+      const { result } = renderHook(useDateRangePickerValue, {
+        wrapper: wrapper as any,
+        initialProps: {
+          inputFromRef,
+          inputToRef,
+          format: 'YYYY-MM-DD',
+          formats: ['YYYY-MM-DD'],
+          value,
+          onChange,
         },
-      );
+      });
 
       TestRenderer.act(() => {
-        result.current.onToKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onToKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(onChange).toBeCalledTimes(1);

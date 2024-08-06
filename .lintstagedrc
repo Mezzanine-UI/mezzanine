@@ -1,0 +1,4 @@
+{
+  '*.@(js|jsx|ts|tsx|html|mdx|json|md)': ['prettier --write'],
+  '*.@(css|sass|scss)': ['stylelint --fix']
+}

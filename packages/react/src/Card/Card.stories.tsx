@@ -10,9 +10,9 @@ export default {
 } as Meta;
 
 interface PlaygroundArgs extends CardProps {
-  coverUri: string,
-  titleVariant: any,
-  actionsTemplate: any,
+  coverUri: string;
+  titleVariant: any;
+  actionsTemplate: any;
 }
 
 const exampleCover = (
@@ -50,14 +50,9 @@ const exampleActionsWithIcon = (
   />
 );
 
-const exampleActionsConfirm = (
-  <CardActions confirmText="Confirm" />
-);
+const exampleActionsConfirm = <CardActions confirmText="Confirm" />;
 const exampleActionsOkClose = (
-  <CardActions
-    confirmText="OK"
-    cancelText="Close"
-  />
+  <CardActions confirmText="OK" cancelText="Close" />
 );
 
 const playgroundDefaultStyle = {
@@ -65,21 +60,23 @@ const playgroundDefaultStyle = {
 };
 
 export const Playground: StoryFn<PlaygroundArgs> = ({
-  coverUri, title, titleVariant, subtitle, description, actionsTemplate, ...args
+  coverUri,
+  title,
+  titleVariant,
+  subtitle,
+  description,
+  actionsTemplate,
+  ...args
 }) => {
   const playgroundDefaultCover = (
-    <img
-      alt=""
-      style={{ width: '100%' }}
-      src={coverUri}
-    />
+    <img alt="" style={{ width: '100%' }} src={coverUri} />
   );
 
-  const exampleTitleProps : TypographyProps = {
+  const exampleTitleProps: TypographyProps = {
     variant: titleVariant,
   };
 
-  const exampleActions : { [template:string] : JSX.Element } = {
+  const exampleActions: { [template: string]: JSX.Element } = {
     Confirm: exampleActionsConfirm,
     OkClose: exampleActionsOkClose,
     OkCloseAndIcon: exampleActionsWithIcon,
@@ -100,12 +97,14 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 };
 
 Playground.args = {
-  coverUri: 'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
+  coverUri:
+    'https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png',
   title: 'Card title',
   titleVariant: 'h3',
   subtitle: 'subtitle~',
   // eslint-disable-next-line max-len
-  description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. In nisi temporibus eligendi voluptatem eum necessitatibus illum sint id earum et, quis sunt soluta, esse, autem minima ipsam libero eveniet molestiae?',
+  description:
+    'Lorem ipsum dolor sit amet consectetur adipisicing elit. In nisi temporibus eligendi voluptatem eum necessitatibus illum sint id earum et, quis sunt soluta, esse, autem minima ipsam libero eveniet molestiae?',
   actionsTemplate: 'Confirm',
 };
 
@@ -134,7 +133,8 @@ export const Basic = () => {
   const title = 'title1';
   const subtitle = 'subtitle';
   // eslint-disable-next-line max-len
-  const text = 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
+  const text =
+    'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
 
   return (
     <div
@@ -143,20 +143,9 @@ export const Basic = () => {
         gap: '16px',
       }}
     >
-      <Card
-        style={style}
-        title={title}
-      />
-      <Card
-        style={style}
-        title={title}
-        subtitle={subtitle}
-      />
-      <Card
-        style={style}
-        description={text}
-        actions={exampleActionsWithIcon}
-      />
+      <Card style={style} title={title} />
+      <Card style={style} title={title} subtitle={subtitle} />
+      <Card style={style} description={text} actions={exampleActionsWithIcon} />
       <Card
         style={style}
         title={title}
@@ -164,11 +153,7 @@ export const Basic = () => {
         description={text}
         actions={exampleActionsOkClose}
       />
-      <Card
-        cover={exampleCover}
-        title={title}
-        subtitle={subtitle}
-      />
+      <Card cover={exampleCover} title={title} subtitle={subtitle} />
     </div>
   );
 };
@@ -178,9 +163,11 @@ export const Group = () => {
   const title = 'card title';
   const subtitle = 'subtitle';
   // eslint-disable-next-line max-len
-  const textLong = 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
+  const textLong =
+    'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
   // eslint-disable-next-line max-len
-  const textShort = 'Lorem ipsum dolor sit amet consectetur. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
+  const textShort =
+    'Lorem ipsum dolor sit amet consectetur. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
 
   return (
     <div
@@ -198,11 +185,7 @@ export const Group = () => {
         description={textShort}
         actions={exampleActionsWithIcon}
       />
-      <Card
-        style={style}
-        title={title}
-        subtitle={subtitle}
-      />
+      <Card style={style} title={title} subtitle={subtitle} />
       <Card
         style={style}
         title={title}
@@ -210,10 +193,7 @@ export const Group = () => {
         description={textLong}
         actions={exampleActionsOkClose}
       />
-      <Card
-        style={style}
-        description={textShort}
-      />
+      <Card style={style} description={textShort} />
       <Card
         cover={exampleCover}
         style={style}
@@ -221,10 +201,7 @@ export const Group = () => {
         description={textShort}
         actions={exampleActionsOkClose}
       />
-      <Card
-        style={style}
-        title={title}
-      />
+      <Card style={style} title={title} />
       <Card
         style={style}
         title={title}

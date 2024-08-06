@@ -1,7 +1,4 @@
-export {
-  AccordionProps,
-  default,
-} from './Accordion';
+export { AccordionProps, default } from './Accordion';
 export {
   AccordionSummaryProps,
   default as AccordionSummary,

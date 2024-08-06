@@ -1,7 +1,9 @@
+import { useCallback, useEffect, useState } from 'react';
 import {
-  useCallback, useEffect, useState,
-} from 'react';
-import { DateType, CalendarMode, calendarYearModuler } from '@mezzanine-ui/core/calendar';
+  DateType,
+  CalendarMode,
+  calendarYearModuler,
+} from '@mezzanine-ui/core/calendar';
 import { useCalendarControlModifiers } from '../Calendar/useCalendarControlModifiers';
 import { useCalendarContext } from '../Calendar/CalendarContext';
 import { useCalendarModeStack } from '../Calendar';
@@ -10,69 +12,62 @@ export function useDateRangeCalendarControls(
   referenceDate: DateType,
   mode: CalendarMode,
 ) {
-  const {
-    addMonth,
-    addYear,
-  } = useCalendarContext();
+  const { addMonth, addYear } = useCalendarContext();
   const modifierGroup = useCalendarControlModifiers();
 
-  const {
-    currentMode,
-    popModeStack,
-    pushModeStack,
-  } = useCalendarModeStack(mode);
+  const { currentMode, popModeStack, pushModeStack } =
+    useCalendarModeStack(mode);
 
-  const getAdder = useCallback((calendar: 0 | 1) => {
-    if (mode === 'year') {
-      return (target: DateType) => addYear(target, calendar ? -calendarYearModuler : calendarYearModuler);
-    }
+  const getAdder = useCallback(
+    (calendar: 0 | 1) => {
+      if (mode === 'year') {
+        return (target: DateType) =>
+          addYear(
+            target,
+            calendar ? -calendarYearModuler : calendarYearModuler,
+          );
+      }
 
-    if (mode === 'month') {
-      return (target: DateType) => addYear(target, calendar ? -1 : 1);
-    }
+      if (mode === 'month') {
+        return (target: DateType) => addYear(target, calendar ? -1 : 1);
+      }
 
-    return (target: DateType) => addMonth(target, calendar ? -1 : 1);
-  }, [addYear, addMonth, currentMode]);
-
-  const [referenceDates, setReferenceDates] = useState(
-    () => {
-      const adder = getAdder(0);
-
-      return [
-        referenceDate,
-        adder(referenceDate),
-      ];
+      return (target: DateType) => addMonth(target, calendar ? -1 : 1);
     },
+    [addYear, addMonth, currentMode],
   );
+
+  const [referenceDates, setReferenceDates] = useState(() => {
+    const adder = getAdder(0);
+
+    return [referenceDate, adder(referenceDate)];
+  });
 
   useEffect(() => {
     setReferenceDates(() => {
       const adder = getAdder(0);
 
-      return [
-        referenceDate,
-        adder(referenceDate),
-      ];
+      return [referenceDate, adder(referenceDate)];
     });
   }, [referenceDate]);
 
-  const updateFirstReferenceDate = useCallback((date: DateType) => {
-    const adder = getAdder(0);
+  const updateFirstReferenceDate = useCallback(
+    (date: DateType) => {
+      const adder = getAdder(0);
 
-    setReferenceDates([
-      date,
-      adder(date),
-    ]);
-  }, [addMonth]);
+      setReferenceDates([date, adder(date)]);
+    },
+    [addMonth],
+  );
 
-  const updateSecondReferenceDate = useCallback((date: DateType) => {
-    const adder = getAdder(1);
+  const updateSecondReferenceDate = useCallback(
+    (date: DateType) => {
+      const adder = getAdder(1);
 
-    setReferenceDates([
-      adder(date),
-      date,
-    ]);
-  }, [addMonth]);
+      setReferenceDates([adder(date), date]);
+    },
+    [addMonth],
+  );
 
   const onPrevFactory = (target: 0 | 1) => () => {
     const [handleMinus] = modifierGroup[currentMode];

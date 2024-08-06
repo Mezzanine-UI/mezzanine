@@ -5,12 +5,7 @@ import {
   getYearRange,
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -35,18 +30,16 @@ const calendars = {
 describe('<Calendar />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <Calendar ref={ref} referenceDate={moment().toISOString()} />
       </CalendarConfigProvider>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <Calendar
           referenceDate={moment().toISOString()}
@@ -86,10 +79,7 @@ describe('<Calendar />', () => {
       it(`should render ${calendars[mode].name} when mode=${mode}`, () => {
         const testInstance = TestRenderer.create(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <Calendar
-              referenceDate={moment().toISOString()}
-              mode={mode}
-            />
+            <Calendar referenceDate={moment().toISOString()} mode={mode} />
           </CalendarConfigProvider>,
         );
 
@@ -127,7 +117,9 @@ describe('<Calendar />', () => {
         expect(calendarInstance.props.onClick).toBe(onChange);
         expect(calendarInstance.props.onDateHover).toBe(onDateHover);
         expect(calendarInstance.props.referenceDate).toBe(referenceDate);
-        expect(calendarInstance.props.displayWeekDayLocale).toBe(displayWeekDayLocale);
+        expect(calendarInstance.props.displayWeekDayLocale).toBe(
+          displayWeekDayLocale,
+        );
       });
 
       it('case: mode="week"', () => {
@@ -157,7 +149,9 @@ describe('<Calendar />', () => {
         expect(calendarInstance.props.onClick).toBe(onChange);
         expect(calendarInstance.props.onWeekHover).toBe(onWeekHover);
         expect(calendarInstance.props.referenceDate).toBe(referenceDate);
-        expect(calendarInstance.props.displayWeekDayLocale).toBe(displayWeekDayLocale);
+        expect(calendarInstance.props.displayWeekDayLocale).toBe(
+          displayWeekDayLocale,
+        );
       });
 
       it('case: mode="month"', () => {
@@ -220,7 +214,10 @@ describe('<Calendar />', () => {
         it(`should have month and year button if mode="${mode}", and receiving event handlers`, () => {
           const referenceDate = moment().toISOString();
           const displayMonthLocale = 'en-US';
-          const displayMonthName = CalendarMethodsMoment.getMonthShortName(moment(referenceDate).month(), displayMonthLocale);
+          const displayMonthName = CalendarMethodsMoment.getMonthShortName(
+            moment(referenceDate).month(),
+            displayMonthLocale,
+          );
           const onMonthControlClick = jest.fn();
           const onYearControlClick = jest.fn();
           const { getByText } = render(
@@ -271,7 +268,10 @@ describe('<Calendar />', () => {
 
       it('should have a disabled year range button if mode="year"', () => {
         const referenceDate = moment().toISOString();
-        const [start, end] = getYearRange(moment(referenceDate).year(), calendarYearModuler);
+        const [start, end] = getYearRange(
+          moment(referenceDate).year(),
+          calendarYearModuler,
+        );
         const displayYearRange = `${start} - ${end}`;
         const onYearControlClick = jest.fn();
         const { getByText } = render(
@@ -314,7 +314,9 @@ describe('<Calendar />', () => {
         </CalendarConfigProvider>,
       );
       const hostElement = getHostHTMLElement();
-      const nextButtonElement = hostElement.querySelector('.mzn-calendar-controls__next');
+      const nextButtonElement = hostElement.querySelector(
+        '.mzn-calendar-controls__next',
+      );
 
       expect(nextButtonElement).toBeInstanceOf(HTMLButtonElement);
 
@@ -345,7 +347,9 @@ describe('<Calendar />', () => {
         </CalendarConfigProvider>,
       );
       const hostElement = getHostHTMLElement();
-      const prevButtonElement = hostElement.querySelector('.mzn-calendar-controls__prev');
+      const prevButtonElement = hostElement.querySelector(
+        '.mzn-calendar-controls__prev',
+      );
 
       expect(prevButtonElement).toBeInstanceOf(HTMLButtonElement);
 

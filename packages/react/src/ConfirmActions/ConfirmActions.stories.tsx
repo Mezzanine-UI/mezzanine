@@ -7,11 +7,7 @@ export default {
   title: 'Feedback/ConfirmActions',
 } as Meta;
 
-const sizes: ButtonSize[] = [
-  'small',
-  'medium',
-  'large',
-];
+const sizes: ButtonSize[] = ['small', 'medium', 'large'];
 
 type PlaygroundStoryArgs = ConfirmActionsProps;
 

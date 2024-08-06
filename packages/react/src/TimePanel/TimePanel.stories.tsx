@@ -12,13 +12,15 @@ export default {
   title: 'Utility/Time Panel',
 } as Meta;
 
-type PlaygroundArgs = Pick<TimePanelProps,
-| 'hourStep'
-| 'minuteStep'
-| 'secondStep'
-| 'hideHour'
-| 'hideMinute'
-| 'hideSecond'>;
+type PlaygroundArgs = Pick<
+  TimePanelProps,
+  | 'hourStep'
+  | 'minuteStep'
+  | 'secondStep'
+  | 'hideHour'
+  | 'hideMinute'
+  | 'hideSecond'
+>;
 
 export const Playground: StoryFn<PlaygroundArgs> = ({
   hourStep,
@@ -64,7 +66,9 @@ export const Column = () => {
       setActiveValue(units[0].value);
     }
 
-    const currentActiveIndex = units.findIndex(({ value }) => value === activeValue);
+    const currentActiveIndex = units.findIndex(
+      ({ value }) => value === activeValue,
+    );
     const nextActiveIndex = (currentActiveIndex + 1) % units.length;
 
     setActiveValue(units[nextActiveIndex].value);
@@ -75,7 +79,9 @@ export const Column = () => {
       setActiveValue(units[0].value);
     }
 
-    const currentActiveIndex = units.findIndex(({ value }) => value === activeValue);
+    const currentActiveIndex = units.findIndex(
+      ({ value }) => value === activeValue,
+    );
     const nextActiveIndex = (currentActiveIndex - 1) % units.length;
 
     setActiveValue(units[nextActiveIndex].value);
@@ -86,7 +92,9 @@ export const Column = () => {
       <TimePanelColumn
         units={units}
         activeUnit={activeValue}
-        onChange={(v) => { setActiveValue(v.value); }}
+        onChange={(v) => {
+          setActiveValue(v.value);
+        }}
         onNext={onNext}
         onPrev={onPrev}
       />

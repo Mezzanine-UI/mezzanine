@@ -18,22 +18,28 @@ export default {
   title: 'Data Entry/Select',
 };
 
-const defaultOpts = [{
-  value: '1',
-  label: 'item1 has very long description',
-}, {
-  value: '2',
-  label: 'item2 has very long description',
-}, {
-  value: '3',
-  label: 'item3 has very long description',
-}, {
-  value: '4',
-  label: 'item4 has very long description',
-}, {
-  value: '5',
-  label: 'item5 has very long description',
-}];
+const defaultOpts = [
+  {
+    value: '1',
+    label: 'item1 has very long description',
+  },
+  {
+    value: '2',
+    label: 'item2 has very long description',
+  },
+  {
+    value: '3',
+    label: 'item3 has very long description',
+  },
+  {
+    value: '4',
+    label: 'item4 has very long description',
+  },
+  {
+    value: '5',
+    label: 'item5 has very long description',
+  },
+];
 
 export const Basic = () => {
   const [options] = useState(defaultOpts);
@@ -47,45 +53,35 @@ export const Basic = () => {
         alignItems: 'center',
       }}
     >
-      <Select
-        clearable
-        fullWidth
-        required
-        placeholder="預設文字"
-      >
+      <Select clearable fullWidth required placeholder="預設文字">
         {options.map((opt) => (
           <Option key={opt.value} value={opt.value}>
             {opt.label}
           </Option>
         ))}
       </Select>
-      <Select
-        disabled
-        fullWidth
-        placeholder="預設文字"
-      >
+      <Select disabled fullWidth placeholder="預設文字">
         <Option value="1">item1</Option>
         <Option value="2">item2</Option>
         <Option value="3">item3</Option>
       </Select>
-      <Select
-        error
-        fullWidth
-        placeholder="預設文字"
-      >
+      <Select error fullWidth placeholder="預設文字">
         <Option value="1">item1</Option>
         <Option value="2">item2</Option>
         <Option value="3">item3</Option>
       </Select>
       <Select
         clearable
-        defaultValue={[{
-          id: '1',
-          name: 'item123',
-        }, {
-          id: '2',
-          name: 'item26666',
-        }]}
+        defaultValue={[
+          {
+            id: '1',
+            name: 'item123',
+          },
+          {
+            id: '2',
+            name: 'item26666',
+          },
+        ]}
         fullWidth
         mode="multiple"
         placeholder="我是多選"
@@ -96,13 +92,16 @@ export const Basic = () => {
       </Select>
       <Select
         clearable
-        defaultValue={[{
-          id: '1',
-          name: 'item123',
-        }, {
-          id: '2',
-          name: 'item26666',
-        }]}
+        defaultValue={[
+          {
+            id: '1',
+            name: 'item123',
+          },
+          {
+            id: '2',
+            name: 'item26666',
+          },
+        ]}
         disabled
         fullWidth
         mode="multiple"
@@ -143,13 +142,13 @@ export const DynamicFetching = () => {
             isFetchingSnapshot.current = true;
 
             setTimeout(() => {
-              setOptions((prev) => ([
+              setOptions((prev) => [
                 ...prev,
-                ...(Array.from(Array(10))).map((_, idx) => ({
+                ...Array.from(Array(10)).map((_, idx) => ({
                   value: `${(idx + 1) * 10 * Math.random()}`,
                   label: `${(idx + 1) * 10 * Math.random()} item`,
                 })),
-              ]));
+              ]);
 
               toggleLoading(false);
               isFetchingSnapshot.current = false;
@@ -163,26 +162,22 @@ export const DynamicFetching = () => {
             {opt.label}
           </Option>
         ))}
-        {isLoading ? (
-          <Loading loading iconProps={{ size: 24 }} />
-        ) : null}
+        {isLoading ? <Loading loading iconProps={{ size: 24 }} /> : null}
       </Select>
     </div>
   );
 };
 
 export const Group = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateColumns: 'repeat(3, 160px)',
-    gap: 60,
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateColumns: 'repeat(3, 160px)',
+      gap: 60,
+    }}
   >
     <ConfigProvider size="large">
-      <Select
-        fullWidth
-        placeholder="預設"
-      >
+      <Select fullWidth placeholder="預設">
         <OptionGroup label="Group A">
           <Option value="1">item 1</Option>
           <Option value="2">item 2</Option>
@@ -193,12 +188,7 @@ export const Group = () => (
         </OptionGroup>
       </Select>
     </ConfigProvider>
-    <Select
-      fullWidth
-      menuSize="medium"
-      placeholder="預設"
-      size="medium"
-    >
+    <Select fullWidth menuSize="medium" placeholder="預設" size="medium">
       <OptionGroup label="Group A">
         <Option value="1">item 1</Option>
         <Option value="2">item 2</Option>
@@ -208,12 +198,7 @@ export const Group = () => (
         <Option value="4">item 2</Option>
       </OptionGroup>
     </Select>
-    <Select
-      fullWidth
-      menuSize="small"
-      placeholder="預設"
-      size="small"
-    >
+    <Select fullWidth menuSize="small" placeholder="預設" size="small">
       <OptionGroup label="Group A">
         <Option value="1">item 1</Option>
         <Option value="2">item 2</Option>
@@ -223,10 +208,7 @@ export const Group = () => (
         <Option value="4">item 2</Option>
       </OptionGroup>
     </Select>
-    <Select
-      fullWidth
-      placeholder="預設"
-    >
+    <Select fullWidth placeholder="預設">
       <OptionGroup label="Group A">
         <Option value="1">item 1</Option>
         <Option value="2">item 2</Option>
@@ -292,7 +274,9 @@ export const TreeSelectDynamicLoading = () => {
 
   function mapValues() {
     return value.reduce((acc, current) => {
-      if (!acc.length) { return current.id; }
+      if (!acc.length) {
+        return current.id;
+      }
 
       return `${acc}, ${current.id}`;
     }, '');
@@ -300,7 +284,11 @@ export const TreeSelectDynamicLoading = () => {
 
   return (
     <>
-      <Typography component="p" variant="input2" style={{ marginBottom: '12px' }}>
+      <Typography
+        component="p"
+        variant="input2"
+        style={{ marginBottom: '12px' }}
+      >
         {`current value: [${mapValues()}]`}
       </Typography>
       <TreeSelect
@@ -310,7 +298,11 @@ export const TreeSelectDynamicLoading = () => {
         placeholder="Dynamic loading options"
         onChange={setValue}
         onExpand={(nodeValue) => {
-          const deepFindTarget = (targetNodes: TreeSelectOption[], v: string, children: TreeSelectOption[]) => {
+          const deepFindTarget = (
+            targetNodes: TreeSelectOption[],
+            v: string,
+            children: TreeSelectOption[],
+          ) => {
             const target = targetNodes.find((n) => n.id === v);
 
             /** 確認找到的目標是需要動態抓取的 */
@@ -340,14 +332,17 @@ export const TreeSelectDynamicLoading = () => {
                 prevCopy,
                 `${nodeValue}`,
                 /** 假設 API response 如下 */
-                [{
-                  dynamicChildrenFetching: true,
-                  name: 'Dynamic Nodes',
-                  id: `${Math.random() * 1000}`,
-                }, {
-                  name: 'Static Node',
-                  id: `${Math.random() * 1005}`,
-                }],
+                [
+                  {
+                    dynamicChildrenFetching: true,
+                    name: 'Dynamic Nodes',
+                    id: `${Math.random() * 1000}`,
+                  },
+                  {
+                    name: 'Static Node',
+                    id: `${Math.random() * 1005}`,
+                  },
+                ],
               );
 
               return prevCopy;
@@ -360,17 +355,18 @@ export const TreeSelectDynamicLoading = () => {
   );
 };
 
-type TreeSelectPlaygroundArgs = Pick<TreeSelectProps,
-| 'clearable'
-| 'disabled'
-| 'error'
-| 'fullWidth'
-| 'itemsInView'
-| 'menuSize'
-| 'mode'
-| 'placeholder'
-| 'sameWidth'
-| 'size'
+type TreeSelectPlaygroundArgs = Pick<
+  TreeSelectProps,
+  | 'clearable'
+  | 'disabled'
+  | 'error'
+  | 'fullWidth'
+  | 'itemsInView'
+  | 'menuSize'
+  | 'mode'
+  | 'placeholder'
+  | 'sameWidth'
+  | 'size'
 >;
 
 export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
@@ -420,7 +416,9 @@ export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
 
   function mapValues() {
     return value.reduce((acc, current) => {
-      if (!acc.length) { return current.id; }
+      if (!acc.length) {
+        return current.id;
+      }
 
       return `${acc}, ${current.id}`;
     }, '');
@@ -428,7 +426,11 @@ export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
 
   return (
     <>
-      <Typography component="p" variant="input2" style={{ marginBottom: '12px' }}>
+      <Typography
+        component="p"
+        variant="input2"
+        style={{ marginBottom: '12px' }}
+      >
         {`current value: [${mapValues()}]`}
       </Typography>
       <TreeSelect
@@ -485,7 +487,10 @@ TreeSelectPlayground.args = {
 };
 
 export const FullControl = () => {
-  const [value, setValue] = useState<SelectValue | null>({ id: '1', name: 'item1' });
+  const [value, setValue] = useState<SelectValue | null>({
+    id: '1',
+    name: 'item1',
+  });
 
   return (
     <div
@@ -509,26 +514,24 @@ export const FullControl = () => {
         <Option value="2">item2</Option>
         <Option value="3">item3</Option>
       </Select>
-      <Button variant="contained" onClick={() => setValue({ id: '2', name: 'item2' })}>set 2</Button>
-      <Button variant="contained" onClick={() => setValue(null)}>reset</Button>
+      <Button
+        variant="contained"
+        onClick={() => setValue({ id: '2', name: 'item2' })}
+      >
+        set 2
+      </Button>
+      <Button variant="contained" onClick={() => setValue(null)}>
+        reset
+      </Button>
     </div>
   );
 };
 
 export const OnModal = () => (
-  <Modal
-    fullScreen
-    open
-  >
-    <ModalHeader>
-      Hi
-    </ModalHeader>
+  <Modal fullScreen open>
+    <ModalHeader>Hi</ModalHeader>
     <ModalBody>
-      <Select
-        clearable
-        required
-        placeholder="預設文字"
-      >
+      <Select clearable required placeholder="預設文字">
         <Option value="1">item1</Option>
         <Option value="2">item2</Option>
         <Option value="3">item3</Option>

@@ -1,8 +1,5 @@
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,14 +10,12 @@ import { FormField, FormLabel } from '.';
 describe('<FormLabel />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLLabelElement,
-    (ref) => render(<FormLabel ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
+    render(<FormLabel ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<FormLabel className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<FormLabel className={className} />),
   );
 
   it('should bind host class', () => {
@@ -43,29 +38,31 @@ describe('<FormLabel />', () => {
     it('should not render span if both remark and remarkIcon not passed', () => {
       const { getHostHTMLElement } = render(<FormLabel>Hello</FormLabel>);
       const element = getHostHTMLElement();
-      const {
-        lastElementChild: notRemarkElement,
-      } = element;
+      const { lastElementChild: notRemarkElement } = element;
 
-      expect(notRemarkElement!.classList.contains('mzn-form-field__remark')).toBeFalsy();
+      expect(
+        notRemarkElement!.classList.contains('mzn-form-field__remark'),
+      ).toBeFalsy();
     });
 
     it('should render remark by span at first child of remark span', () => {
-      const { getHostHTMLElement } = render(<FormLabel remark="remark">Hello</FormLabel>);
+      const { getHostHTMLElement } = render(
+        <FormLabel remark="remark">Hello</FormLabel>,
+      );
       const element = getHostHTMLElement();
       const { lastElementChild: remarkElement } = element;
       const { firstElementChild: remarkSpanElement } = remarkElement!;
 
-      expect(remarkElement!.classList.contains('mzn-form-field__remark')).toBeTruthy();
+      expect(
+        remarkElement!.classList.contains('mzn-form-field__remark'),
+      ).toBeTruthy();
       expect(remarkSpanElement!.tagName.toLowerCase()).toBe('span');
       expect(remarkSpanElement!.textContent).toBe('remark');
     });
 
     it('should render remark icon at last child of remark span', () => {
       const { getHostHTMLElement } = render(
-        <FormLabel
-          remarkIcon={<Icon icon={InfoCircleFilledIcon} />}
-        >
+        <FormLabel remarkIcon={<Icon icon={InfoCircleFilledIcon} />}>
           Hello
         </FormLabel>,
       );
@@ -73,9 +70,13 @@ describe('<FormLabel />', () => {
       const { lastElementChild: remarkElement } = element;
       const { lastElementChild: remarkIconElement } = remarkElement!;
 
-      expect(remarkElement!.classList.contains('mzn-form-field__remark')).toBeTruthy();
+      expect(
+        remarkElement!.classList.contains('mzn-form-field__remark'),
+      ).toBeTruthy();
       expect(remarkIconElement!.tagName.toLowerCase()).toBe('i');
-      expect(remarkIconElement!.getAttribute('data-icon-name')).toBe(InfoCircleFilledIcon.name);
+      expect(remarkIconElement!.getAttribute('data-icon-name')).toBe(
+        InfoCircleFilledIcon.name,
+      );
     });
   });
 
@@ -93,12 +94,15 @@ describe('<FormLabel />', () => {
         );
         const element = getHostHTMLElement();
         const labelElement = element.querySelector('.mzn-form-field__label')!;
-        const asteriskElement = labelElement.firstElementChild!.lastElementChild;
+        const asteriskElement =
+          labelElement.firstElementChild!.lastElementChild;
 
         if (required) {
           expect(asteriskElement!.tagName.toLowerCase()).toBe('span');
           expect(asteriskElement!.textContent).toBe('*');
-          expect(asteriskElement!.classList.contains('mzn-form-field__asterisk')).toBeTruthy();
+          expect(
+            asteriskElement!.classList.contains('mzn-form-field__asterisk'),
+          ).toBeTruthy();
         } else {
           expect(asteriskElement).toBeNull();
         }

@@ -8,4 +8,6 @@ export interface FormControl {
   severity?: Severity;
 }
 
-export const FormControlContext = createContext<FormControl | undefined>(undefined);
+export const FormControlContext = createContext<FormControl | undefined>(
+  undefined,
+);

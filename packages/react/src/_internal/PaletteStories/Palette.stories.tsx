@@ -1,8 +1,5 @@
 import { useState } from 'react';
-import {
-  Select,
-  Option,
-} from '../..';
+import { Select, Option } from '../..';
 import { Variants as ButtonVariants } from '../../Button/Button.stories';
 import { Colors as IconColors } from '../../Icon/Icon.stories';
 import { Colors as TypographyColors } from '../../Typography/Typography.stories';
@@ -255,13 +252,17 @@ export const All = () => {
         {currentComponent.id === 'DROPDOWN' ? <Dropdown /> : null}
         {currentComponent.id === 'MENU' ? <Menu /> : null}
         {currentComponent.id === 'NAVIGATION' ? <Navigation /> : null}
-        {currentComponent.id === 'PAGE_FOOTER' ? <PageFooter confirmText="確認" cancelText="取消" /> : null}
+        {currentComponent.id === 'PAGE_FOOTER' ? (
+          <PageFooter confirmText="確認" cancelText="取消" />
+        ) : null}
         {currentComponent.id === 'PAGINATION' ? <Pagination /> : null}
         {currentComponent.id === 'STEPPER' ? <Stepper /> : null}
         {currentComponent.id === 'TABS' ? <Tabs /> : null}
         {currentComponent.id === 'CHECKBOX' ? <Checkbox /> : null}
         {currentComponent.id === 'DATE_PICKER' ? <DatePicker /> : null}
-        {currentComponent.id === 'DATE_RANGE_PICKER' ? <DateRangePicker /> : null}
+        {currentComponent.id === 'DATE_RANGE_PICKER' ? (
+          <DateRangePicker />
+        ) : null}
         {currentComponent.id === 'FORM' ? (
           <Form
             clearable
@@ -300,11 +301,19 @@ export const All = () => {
         {currentComponent.id === 'ACCORDION' ? <Accordion /> : null}
         {currentComponent.id === 'BADGE' ? <Badge /> : null}
         {currentComponent.id === 'CARD' ? <Card /> : null}
-        {currentComponent.id === 'EMPTY' ? <Empty title="查無資料" fullHeight={false}>找不到符合條件的資料</Empty> : null}
+        {currentComponent.id === 'EMPTY' ? (
+          <Empty title="查無資料" fullHeight={false}>
+            找不到符合條件的資料
+          </Empty>
+        ) : null}
         {currentComponent.id === 'TABLE' ? <Table /> : null}
         {currentComponent.id === 'TAG' ? <Tag onClose={() => ''} /> : null}
-        {currentComponent.id === 'ALERT' ? <Alert severity="success">message</Alert> : null}
-        {currentComponent.id === 'CONFIRM_ACTIONS' ? <ConfirmActions confirmText="確認" cancelText="取消" /> : null}
+        {currentComponent.id === 'ALERT' ? (
+          <Alert severity="success">message</Alert>
+        ) : null}
+        {currentComponent.id === 'CONFIRM_ACTIONS' ? (
+          <ConfirmActions confirmText="確認" cancelText="取消" />
+        ) : null}
         {currentComponent.id === 'LOADING' ? <Loading /> : null}
         {currentComponent.id === 'MESSAGE' ? <Message /> : null}
         {currentComponent.id === 'MODAL' ? <Modal /> : null}

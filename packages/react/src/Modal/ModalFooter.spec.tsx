@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,20 +8,16 @@ import { ModalFooter } from '.';
 describe('<ModalFooter />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<ModalFooter ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<ModalFooter ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<ModalFooter className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<ModalFooter className={className} />),
   );
 
   it('should bind footer class and render children', () => {
-    const { getHostHTMLElement } = render(
-      <ModalFooter>foo</ModalFooter>,
-    );
+    const { getHostHTMLElement } = render(<ModalFooter>foo</ModalFooter>);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-modal__footer')).toBeTruthy();

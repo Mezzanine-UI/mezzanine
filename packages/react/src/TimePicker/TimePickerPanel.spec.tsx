@@ -1,11 +1,6 @@
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
 import { TimePickerPanel } from '.';
 
@@ -14,9 +9,8 @@ describe('<TimePickerPanel />', () => {
 
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <TimePickerPanel ref={ref} open />
       </CalendarConfigProvider>,

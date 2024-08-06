@@ -1,9 +1,7 @@
 /* global document */
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  ChangeEvent, ReactNode, KeyboardEvent, FocusEvent,
-} from 'react';
+import { ChangeEvent, ReactNode, KeyboardEvent, FocusEvent } from 'react';
 import {
   TestRenderer,
   cleanup,
@@ -31,11 +29,12 @@ describe('usePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -43,7 +42,9 @@ describe('usePickerValue', () => {
         result.current.onChange('2021-10-20');
       });
 
-      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe(
+        '2021-10-20',
+      );
       expect(result.current.inputValue).toBe('2021-10-20');
     });
 
@@ -52,11 +53,12 @@ describe('usePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -77,18 +79,18 @@ describe('usePickerValue', () => {
       const inputRef = {
         current: document.createElement('input'),
       };
-      const { result, rerender } = renderHook<UsePickerValueProps, ReturnType<typeof usePickerValue>>(
-        usePickerValue,
-        {
-          wrapper: wrapper as any,
-          initialProps: {
-            inputRef,
-            format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
-            value,
-          },
+      const { result, rerender } = renderHook<
+        UsePickerValueProps,
+        ReturnType<typeof usePickerValue>
+      >(usePickerValue, {
+        wrapper: wrapper as any,
+        initialProps: {
+          inputRef,
+          format: 'YYYY-MM-DD',
+          formats: ['YYYY-MM-DD'],
+          value,
         },
-      );
+      });
 
       rerender({
         inputRef,
@@ -97,7 +99,9 @@ describe('usePickerValue', () => {
         value: moment(value).add(1, 'month').toISOString(),
       });
 
-      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe('2021-11-20');
+      expect(moment(result.current.value)?.format('YYYY-MM-DD')).toBe(
+        '2021-11-20',
+      );
     });
 
     it('case: undefined', () => {
@@ -105,18 +109,18 @@ describe('usePickerValue', () => {
       const inputRef = {
         current: document.createElement('input'),
       };
-      const { result, rerender } = renderHook<UsePickerValueProps, ReturnType<typeof usePickerValue>>(
-        usePickerValue,
-        {
-          wrapper: wrapper as any,
-          initialProps: {
-            inputRef,
-            format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
-            value,
-          },
+      const { result, rerender } = renderHook<
+        UsePickerValueProps,
+        ReturnType<typeof usePickerValue>
+      >(usePickerValue, {
+        wrapper: wrapper as any,
+        initialProps: {
+          inputRef,
+          format: 'YYYY-MM-DD',
+          formats: ['YYYY-MM-DD'],
+          value,
         },
-      );
+      });
 
       rerender({
         inputRef,
@@ -135,16 +139,19 @@ describe('usePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputChange({ target: { value: 'foo' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputChange({
+          target: { value: 'foo' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
@@ -159,32 +166,41 @@ describe('usePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputChange({ target: { value: 'foo' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputChange({
+          target: { value: 'foo' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(result.current.inputValue).toBe('');
 
       TestRenderer.act(() => {
-        result.current.onInputChange({ target: { value: 'foo' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputChange({
+          target: { value: 'foo' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       expect(result.current.inputValue).toBe('foo');
 
       TestRenderer.act(() => {
-        result.current.onKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onKeyDown({
+          key: 'Escape',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(result.current.inputValue).toBe('');
@@ -201,11 +217,12 @@ describe('usePickerValue', () => {
         current: inputElement,
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -214,7 +231,9 @@ describe('usePickerValue', () => {
       expect(document.activeElement).toBe(inputElement);
 
       TestRenderer.act(() => {
-        result.current.onKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(document.activeElement).not.toBe(inputElement);
@@ -229,11 +248,12 @@ describe('usePickerValue', () => {
         current: inputElement,
       };
       const { result } = renderHook(
-        () => usePickerValue({
-          inputRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          usePickerValue({
+            inputRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -242,7 +262,9 @@ describe('usePickerValue', () => {
       expect(document.activeElement).toBe(inputElement);
 
       TestRenderer.act(() => {
-        result.current.onKeyDown({ key: 'Escape' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onKeyDown({
+          key: 'Escape',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(document.activeElement).not.toBe(inputElement);

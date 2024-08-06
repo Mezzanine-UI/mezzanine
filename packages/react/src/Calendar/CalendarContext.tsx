@@ -1,9 +1,4 @@
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useMemo,
-} from 'react';
+import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { CalendarMethods } from '@mezzanine-ui/core/calendar';
 
 export interface CalendarConfigs extends CalendarMethods {
@@ -24,16 +19,18 @@ export type CalendarConfigProviderProps = {
   valueLocale?: string;
 };
 
-export const CalendarContext = createContext<CalendarConfigs | undefined>(undefined);
+export const CalendarContext = createContext<CalendarConfigs | undefined>(
+  undefined,
+);
 
 export function useCalendarContext() {
   const configs = useContext(CalendarContext);
 
   if (!configs) {
     throw new Error(
-      'Cannot find values in your context. '
-      + 'Make sure you use `CalendarConfigProvider` in your app '
-      + 'and pass in one of the following as methods: `CalendarMethodsMoment`.',
+      'Cannot find values in your context. ' +
+        'Make sure you use `CalendarConfigProvider` in your app ' +
+        'and pass in one of the following as methods: `CalendarMethodsMoment`.',
     );
   }
 
@@ -51,21 +48,24 @@ function CalendarConfigProvider(props: CalendarConfigProviderProps) {
     valueLocale = 'en-us',
   } = props;
 
-  const context = useMemo(() => ({
-    ...methods,
-    defaultDateFormat,
-    defaultTimeFormat,
-    displayMonthLocale,
-    displayWeekDayLocale,
-    valueLocale,
-  }), [
-    methods,
-    defaultDateFormat,
-    defaultTimeFormat,
-    displayMonthLocale,
-    displayWeekDayLocale,
-    valueLocale,
-  ]);
+  const context = useMemo(
+    () => ({
+      ...methods,
+      defaultDateFormat,
+      defaultTimeFormat,
+      displayMonthLocale,
+      displayWeekDayLocale,
+      valueLocale,
+    }),
+    [
+      methods,
+      defaultDateFormat,
+      defaultTimeFormat,
+      displayMonthLocale,
+      displayWeekDayLocale,
+      valueLocale,
+    ],
+  );
 
   return (
     <CalendarContext.Provider value={context}>

@@ -1,4 +1,1 @@
-export {
-  EmptyProps,
-  default,
-} from './Empty';
+export { EmptyProps, default } from './Empty';

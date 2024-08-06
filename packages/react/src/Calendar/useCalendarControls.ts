@@ -13,11 +13,9 @@ export function useCalendarControls(
     setReferenceDate(referenceDateProp);
   }, [referenceDateProp]);
 
-  const {
-    currentMode,
-    pushModeStack,
-    popModeStack,
-  } = useCalendarModeStack(mode || 'day');
+  const { currentMode, pushModeStack, popModeStack } = useCalendarModeStack(
+    mode || 'day',
+  );
 
   const modifierGroup = useCalendarControlModifiers();
 

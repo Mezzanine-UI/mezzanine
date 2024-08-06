@@ -1,8 +1,4 @@
-import {
-  cleanup,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -15,11 +11,12 @@ import NavigationSubMenu from './NavigationSubMenu';
 describe('<Navigation />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLUListElement, (ref) => render(<Navigation ref={ref} />));
+  describeForwardRefToHTMLElement(HTMLUListElement, (ref) =>
+    render(<Navigation ref={ref} />),
+  );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Navigation className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Navigation className={className} />),
   );
 
   it('should bind host class', () => {
@@ -35,15 +32,8 @@ describe('<Navigation />', () => {
       const itemKey = '1';
       const itemChildren = 'foo';
       const testRenderer = TestRenderer.create(
-        <Navigation
-          activeKey={itemKey}
-          onClick={onClick}
-        >
-          <NavigationItem
-            key={itemKey}
-          >
-            {itemChildren}
-          </NavigationItem>
+        <Navigation activeKey={itemKey} onClick={onClick}>
+          <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
         </Navigation>,
       );
 
@@ -64,9 +54,7 @@ describe('<Navigation />', () => {
       const testRenderer = TestRenderer.create(
         <Navigation activeKey={itemKey}>
           <NavigationSubMenu>
-            <NavigationItem key={itemKey}>
-              {itemChildren}
-            </NavigationItem>
+            <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
           </NavigationSubMenu>
         </Navigation>,
       );
@@ -84,17 +72,10 @@ describe('<Navigation />', () => {
       const itemKey = '1';
       const itemChildren = 'foo';
       const testRenderer = TestRenderer.create(
-        <Navigation
-          activeKey={itemKey}
-          onClick={onClick}
-        >
+        <Navigation activeKey={itemKey} onClick={onClick}>
           {null}
           <>
-            <NavigationItem
-              key={itemKey}
-            >
-              {itemChildren}
-            </NavigationItem>
+            <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
             test
           </>
         </Navigation>,

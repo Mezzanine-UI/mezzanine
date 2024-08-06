@@ -1,11 +1,6 @@
 import { Placement } from '@popperjs/core';
 import { RefObject } from 'react';
-import {
-  act,
-  cleanup,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { act, cleanup, render, TestRenderer } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Portal from '../Portal';
 import Popper from '.';
@@ -18,9 +13,8 @@ function getPopperContainer(container: Element | null = document.body) {
 describe('<Popper />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Popper ref={ref} open />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Popper ref={ref} open />),
   );
 
   it('should wrap children by popper container', async () => {
@@ -46,11 +40,7 @@ describe('<Popper />', () => {
     document.body.appendChild(container);
 
     const testRenderer = TestRenderer.create(
-      <Popper
-        container={container}
-        disablePortal
-        open
-      >
+      <Popper container={container} disablePortal open>
         <div />
       </Popper>,
     );
@@ -71,7 +61,9 @@ describe('<Popper />', () => {
         );
       });
 
-      const popperContainer = document.body.querySelector('div[data-popper-placement]');
+      const popperContainer = document.body.querySelector(
+        'div[data-popper-placement]',
+      );
 
       expect(popperContainer).toBeNull();
     });
@@ -126,10 +118,12 @@ describe('<Popper />', () => {
               anchor={document.body}
               open
               options={{
-                modifiers: [{
-                  name: 'hide',
-                  enabled: false,
-                }],
+                modifiers: [
+                  {
+                    name: 'hide',
+                    enabled: false,
+                  },
+                ],
               }}
             >
               <div />
@@ -139,8 +133,12 @@ describe('<Popper />', () => {
 
         const popperContainer = getPopperContainer();
 
-        expect(popperContainer?.hasAttribute('data-popper-reference-hidden')).toBeFalsy();
-        expect(popperContainer?.hasAttribute('data-popper-reference-escaped')).toBeFalsy();
+        expect(
+          popperContainer?.hasAttribute('data-popper-reference-hidden'),
+        ).toBeFalsy();
+        expect(
+          popperContainer?.hasAttribute('data-popper-reference-escaped'),
+        ).toBeFalsy();
       });
     });
 
@@ -178,7 +176,9 @@ describe('<Popper />', () => {
 
           const popperContainer = getPopperContainer();
 
-          expect(popperContainer!.getAttribute('data-popper-placement')).toBe(placement);
+          expect(popperContainer!.getAttribute('data-popper-placement')).toBe(
+            placement,
+          );
         });
       });
     });

@@ -1,9 +1,6 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { IconProps } from '../Icon';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -14,29 +11,28 @@ import ConfigProvider from '../Provider';
 describe('<Progress />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
-      <Progress ref={ref} />,
-    ),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Progress ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
-      <Progress className={className} />,
-    ),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Progress className={className} />),
   );
 
-  const testProgress = (progressType : 'line' | 'circle') => {
-    const icon : IconProps = { icon: PlusIcon };
+  const testProgress = (progressType: 'line' | 'circle') => {
+    const icon: IconProps = { icon: PlusIcon };
 
     return (
       <>
         <Progress type={progressType} percent={0} />
         <Progress type={progressType} percent={100} />
         <Progress type={progressType} status="error" />
-        <Progress type={progressType} status="success" successIconProps={icon} errorIconProps={icon} />
+        <Progress
+          type={progressType}
+          status="success"
+          successIconProps={icon}
+          errorIconProps={icon}
+        />
       </>
     );
   };

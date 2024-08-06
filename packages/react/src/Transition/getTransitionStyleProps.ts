@@ -21,11 +21,17 @@ export function getTransitionDuration(
   return resolveAuto ?? 0;
 }
 
-export function getTransitionTimingFunction(mode: TransitionMode, easing: TransitionEasing): string {
+export function getTransitionTimingFunction(
+  mode: TransitionMode,
+  easing: TransitionEasing,
+): string {
   return typeof easing === 'string' ? easing : easing[mode] || 'ease';
 }
 
-export function getTransitionDelay(mode: TransitionMode, delay: TransitionDelay): number {
+export function getTransitionDelay(
+  mode: TransitionMode,
+  delay: TransitionDelay,
+): number {
   return typeof delay === 'number' ? delay : delay[mode] || 0;
 }
 
@@ -42,13 +48,11 @@ export interface TransitionStyleProps {
   timingFunction: string;
 }
 
-export function getTransitionStyleProps(mode: TransitionMode, props: GetTransitionStyleProps): TransitionStyleProps {
-  const {
-    delay,
-    duration,
-    easing,
-    resolveAutoDuration,
-  } = props;
+export function getTransitionStyleProps(
+  mode: TransitionMode,
+  props: GetTransitionStyleProps,
+): TransitionStyleProps {
+  const { delay, duration, easing, resolveAutoDuration } = props;
 
   return {
     delay: getTransitionDelay(mode, delay),

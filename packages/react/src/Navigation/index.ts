@@ -14,7 +14,4 @@ export {
   NavigationItemProps,
   default as NavigationItem,
 } from './NavigationItem';
-export {
-  NavigationContext,
-  NavigationContextValue,
-} from './NavigationContext';
+export { NavigationContext, NavigationContextValue } from './NavigationContext';

@@ -14,7 +14,9 @@ export default {
 
 function usePickerChange<T = DateType>() {
   const [val, setVal] = useState<T>();
-  const onChange = (v?: T) => { setVal(v); };
+  const onChange = (v?: T) => {
+    setVal(v);
+  };
 
   return [val, onChange] as const;
 }
@@ -77,11 +79,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   size: {
-    options: [
-      'small',
-      'medium',
-      'large',
-    ],
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
     },
@@ -113,7 +111,9 @@ export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>

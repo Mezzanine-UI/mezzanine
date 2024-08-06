@@ -34,9 +34,7 @@ export interface MenuProps extends NativeElementPropsWithoutKeyAndRef<'ul'> {
  * The react component for `mezzanine` menu.
  */
 const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
+  const { size: globalSize } = useContext(MezzanineConfig);
   const {
     children,
     className,
@@ -60,11 +58,7 @@ const Menu = forwardRef<HTMLUListElement, MenuProps>(function Menu(props, ref) {
     <ul
       {...rest}
       ref={ref}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        className,
-      )}
+      className={cx(classes.host, classes.size(size), className)}
       role={role}
       style={style}
     >

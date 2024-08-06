@@ -6,11 +6,7 @@ export default {
   title: 'Data Entry/Textarea',
 };
 
-const sizes: TextareaSize[] = [
-  'small',
-  'medium',
-  'large',
-];
+const sizes: TextareaSize[] = ['small', 'medium', 'large'];
 
 export const Playground: StoryFn<TextareaProps> = ({ ...props }) => (
   <Textarea {...props} />
@@ -45,23 +41,9 @@ export const Basic = () => (
       gap: '24px',
     }}
   >
-    <Textarea
-      clearable
-      placeholder="輸入文字..."
-      maxLength={100}
-      rows={4}
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      maxLength={50}
-      disabled
-    />
-    <Textarea
-      placeholder="輸入文字..."
-      maxLength={50}
-      error
-      clearable
-    />
+    <Textarea clearable placeholder="輸入文字..." maxLength={100} rows={4} />
+    <Textarea placeholder="輸入文字..." maxLength={50} disabled />
+    <Textarea placeholder="輸入文字..." maxLength={50} error clearable />
     <Textarea
       placeholder="輸入文字..."
       maxLength={50}
@@ -81,18 +63,10 @@ export const Sizes = () => (
       justifyItems: 'center',
     }}
   >
-    <Textarea
-      placeholder="輸入文字..."
-      size="small"
-      maxLength={20}
-    />
-    <Textarea
-      placeholder="輸入文字..."
-    />
+    <Textarea placeholder="輸入文字..." size="small" maxLength={20} />
+    <Textarea placeholder="輸入文字..." />
     <ConfigProvider size="large">
-      <Textarea
-        placeholder="輸入文字..."
-      />
+      <Textarea placeholder="輸入文字..." />
     </ConfigProvider>
   </div>
 );

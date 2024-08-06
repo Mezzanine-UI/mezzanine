@@ -59,26 +59,28 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
 
   /** icon and step number */
   const iconRender = (
-    <Typography
-      className={classes.iconBackground}
-      variant="button3"
-    >
-      {completed ? (<Icon className={classes.completedIcon} icon={CheckIcon} {...completedIconProps} />) : index + 1}
+    <Typography className={classes.iconBackground} variant="button3">
+      {completed ? (
+        <Icon
+          className={classes.completedIcon}
+          icon={CheckIcon}
+          {...completedIconProps}
+        />
+      ) : (
+        index + 1
+      )}
     </Typography>
   );
 
   return (
     <div
-      className={cx(
-        classes.host,
-        disabled && classes.disabled,
-        className,
-      )}
+      className={cx(classes.host, disabled && classes.disabled, className)}
       ref={ref}
       {...rest}
     >
       {iconRender}
-      {/** title (optional) */
+      {
+        /** title (optional) */
         title && (
           <Typography
             className={classes.title}

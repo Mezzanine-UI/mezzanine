@@ -5,13 +5,7 @@ import {
   InfoCircleFilledIcon,
 } from '@mezzanine-ui/icons';
 import { Key } from 'react';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  waitFor,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import Notification, { NotificationSeverity } from '.';
 
 const severities: NotificationSeverity[] = [
@@ -43,9 +37,7 @@ describe('<Notification />', () => {
   it('should auto close if duration is provided', () => {
     jest.useFakeTimers();
 
-    const { container } = render(
-      <Notification duration={3000} />,
-    );
+    const { container } = render(<Notification duration={3000} />);
 
     act(() => {
       jest.runAllTimers();
@@ -62,15 +54,14 @@ describe('<Notification />', () => {
     it('should render cancel button with text wrapped by span under action element', () => {
       const cancelText = 'foo';
       const { getByText } = render(
-        <Notification
-          cancelText={cancelText}
-          onConfirm={() => {}}
-        />,
+        <Notification cancelText={cancelText} onConfirm={() => {}} />,
       );
       const textElement = getByText(cancelText);
 
       expect(textElement.textContent).toBe(cancelText);
-      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(true);
+      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(
+        true,
+      );
     });
   });
 
@@ -78,15 +69,14 @@ describe('<Notification />', () => {
     it('should render confirm button with text wrapped by span under action element', () => {
       const confirmText = 'foo';
       const { getByText } = render(
-        <Notification
-          confirmText={confirmText}
-          onConfirm={() => {}}
-        />,
+        <Notification confirmText={confirmText} onConfirm={() => {}} />,
       );
       const textElement = getByText(confirmText);
 
       expect(textElement.textContent).toBe(confirmText);
-      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(true);
+      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(
+        true,
+      );
     });
   });
 
@@ -102,9 +92,7 @@ describe('<Notification />', () => {
         />,
       );
 
-      const {
-        parentElement: buttonElement,
-      } = getByText(cancelText);
+      const { parentElement: buttonElement } = getByText(cancelText);
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -124,9 +112,7 @@ describe('<Notification />', () => {
         />,
       );
 
-      const {
-        parentElement: buttonElement,
-      } = getByText(cancelText);
+      const { parentElement: buttonElement } = getByText(cancelText);
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -141,15 +127,10 @@ describe('<Notification />', () => {
       const cancelText = 'foo';
       const closeSpy = jest.spyOn(Notification, 'remove');
       const { getByText } = render(
-        <Notification
-          onConfirm={() => {}}
-          cancelText={cancelText}
-        />,
+        <Notification onConfirm={() => {}} cancelText={cancelText} />,
       );
 
-      const {
-        parentElement: buttonElement,
-      } = getByText(cancelText);
+      const { parentElement: buttonElement } = getByText(cancelText);
 
       if (buttonElement) {
         act(() => {
@@ -166,9 +147,7 @@ describe('<Notification />', () => {
   describe('prop: onConfirm', () => {
     it('should render action element if onConfirm is provided', () => {
       const { getHostHTMLElement } = render(
-        <Notification
-          onConfirm={() => {}}
-        />,
+        <Notification onConfirm={() => {}} />,
       );
 
       const element = getHostHTMLElement();
@@ -181,15 +160,10 @@ describe('<Notification />', () => {
       const confirmText = 'foo';
       const onConfirm = jest.fn();
       const { getByText } = render(
-        <Notification
-          onConfirm={onConfirm}
-          confirmText={confirmText}
-        />,
+        <Notification onConfirm={onConfirm} confirmText={confirmText} />,
       );
 
-      const {
-        parentElement: buttonElement,
-      } = getByText(confirmText);
+      const { parentElement: buttonElement } = getByText(confirmText);
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -216,9 +190,7 @@ describe('<Notification />', () => {
         />,
       );
 
-      const {
-        parentElement: buttonElement,
-      } = getByText(cancelText);
+      const { parentElement: buttonElement } = getByText(cancelText);
 
       fireEvent.click(buttonElement!);
 
@@ -242,9 +214,7 @@ describe('<Notification />', () => {
         />,
       );
 
-      const {
-        lastElementChild: closeIconElement,
-      } = getHostHTMLElement();
+      const { lastElementChild: closeIconElement } = getHostHTMLElement();
 
       if (closeIconElement) {
         fireEvent.click(closeIconElement);
@@ -277,23 +247,33 @@ describe('<Notification />', () => {
 
     severities.forEach((severity) => {
       it(`should add class if severity="${severity}"`, () => {
-        const { getHostHTMLElement } = render(<Notification severity={severity} />);
+        const { getHostHTMLElement } = render(
+          <Notification severity={severity} />,
+        );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-notif--${severity}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-notif--${severity}`),
+        ).toBeTruthy();
       });
 
       const targetIcon = icons[severity].icon;
 
       it(`should render "${targetIcon.name}" icon under icon-container element if severity="${severity}"`, () => {
-        const { getHostHTMLElement } = render(<Notification severity={severity} />);
+        const { getHostHTMLElement } = render(
+          <Notification severity={severity} />,
+        );
         const element = getHostHTMLElement();
-        const containerElement = element.querySelector('.mzn-notif__icon-container');
+        const containerElement = element.querySelector(
+          '.mzn-notif__icon-container',
+        );
 
         const iconElement = containerElement?.firstElementChild;
 
         expect(containerElement).toBeInstanceOf(Element);
-        expect(iconElement?.getAttribute('data-icon-name')).toBe(targetIcon.name);
+        expect(iconElement?.getAttribute('data-icon-name')).toBe(
+          targetIcon.name,
+        );
       });
     });
   });
@@ -301,11 +281,7 @@ describe('<Notification />', () => {
   describe('prop: title', () => {
     it('should render title under title element', () => {
       const title = 'foo';
-      const {
-        getHostHTMLElement,
-      } = render(
-        <Notification title={title} />,
-      );
+      const { getHostHTMLElement } = render(<Notification title={title} />);
 
       const element = getHostHTMLElement();
       const titleElement = element.querySelector('.mzn-notif__title');
@@ -339,9 +315,7 @@ describe('Notification API', () => {
           });
         });
 
-        const {
-          lastElementChild: rootElement,
-        } = document.body;
+        const { lastElementChild: rootElement } = document.body;
 
         expect(rootElement?.classList.contains('mzn-notif-root')).toBeTruthy();
       });
@@ -355,13 +329,13 @@ describe('Notification API', () => {
           });
         });
 
-        const {
-          lastElementChild: rootElement,
-        } = document.body;
+        const { lastElementChild: rootElement } = document.body;
 
         const notificationElement = rootElement?.firstElementChild;
 
-        expect(notificationElement?.classList.contains(`mzn-notif--${severity}`)).toBeTruthy();
+        expect(
+          notificationElement?.classList.contains(`mzn-notif--${severity}`),
+        ).toBeTruthy();
         expect(notificationElement?.textContent).toBe(children);
 
         act(() => {

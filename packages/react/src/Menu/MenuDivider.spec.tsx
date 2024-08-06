@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,14 +8,12 @@ import { MenuDivider } from '.';
 describe('<MenuDivider />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLHRElement,
-    (ref) => render(<MenuDivider ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLHRElement, (ref) =>
+    render(<MenuDivider ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<MenuDivider className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<MenuDivider className={className} />),
   );
 
   it('should be rendered by <hr />', () => {

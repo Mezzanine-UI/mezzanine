@@ -6,7 +6,4 @@ export {
   TimePanelColumnProps,
   default as TimePanelColumn,
 } from './TimePanelColumn';
-export {
-  TimePanelProps,
-  default,
-} from './TimePanel';
+export { TimePanelProps, default } from './TimePanel';

@@ -5,9 +5,7 @@ import {
   ButtonSize,
 } from '@mezzanine-ui/core/button';
 import { cleanup, render, TestRenderer } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Button, { ButtonGroup } from '.';
 import { ButtonProps } from './Button';
 import ConfigProvider from '../Provider';
@@ -15,9 +13,8 @@ import ConfigProvider from '../Provider';
 describe('<ButtonGroup />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <ButtonGroup ref={ref}>
         <Button />
       </ButtonGroup>,
@@ -33,10 +30,7 @@ describe('<ButtonGroup />', () => {
       </ButtonGroup>,
     );
     const element = getHostHTMLElement();
-    const {
-      childElementCount,
-      children,
-    } = element;
+    const { childElementCount, children } = element;
 
     for (let i = 0; i < children.length; i += 1) {
       const child = children[i];
@@ -49,7 +43,9 @@ describe('<ButtonGroup />', () => {
 
   describe('prop:attached', () => {
     function testAttached(element: HTMLElement, attached: boolean) {
-      expect(element.classList.contains('mzn-button-group--attached')).toBe(attached);
+      expect(element.classList.contains('mzn-button-group--attached')).toBe(
+        attached,
+      );
     }
 
     it('should render attached=false by default', () => {
@@ -79,7 +75,9 @@ describe('<ButtonGroup />', () => {
 
   describe('prop:fullWidth', () => {
     function testFullWidth(element: HTMLElement, fullWidth: boolean) {
-      expect(element.classList.contains('mzn-button-group--full-width')).toBe(fullWidth);
+      expect(element.classList.contains('mzn-button-group--full-width')).toBe(
+        fullWidth,
+      );
     }
 
     it('should render fullWidth=false by default', () => {
@@ -108,9 +106,14 @@ describe('<ButtonGroup />', () => {
   });
 
   describe('prop:orientation', () => {
-    function testOrientation(element: HTMLElement, orientation: ButtonGroupOrientation) {
+    function testOrientation(
+      element: HTMLElement,
+      orientation: ButtonGroupOrientation,
+    ) {
       expect(element.getAttribute('aria-orientation')).toBe(orientation);
-      expect(element.classList.contains(`mzn-button-group--${orientation}`)).toBeTruthy();
+      expect(
+        element.classList.contains(`mzn-button-group--${orientation}`),
+      ).toBeTruthy();
     }
 
     it('should render orientation="horizontal" by default', () => {
@@ -124,10 +127,7 @@ describe('<ButtonGroup />', () => {
       testOrientation(element, 'horizontal');
     });
 
-    const orientations: ButtonGroupOrientation[] = [
-      'horizontal',
-      'vertical',
-    ];
+    const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
 
     orientations.forEach((orientation) => {
       it(`should add 'aria-orientation' attribute and class if orientation=${orientation}`, () => {
@@ -144,10 +144,7 @@ describe('<ButtonGroup />', () => {
 
     it('aria-orientation from props should not override', () => {
       const { getHostHTMLElement } = render(
-        <ButtonGroup
-          aria-orientation="vertical"
-          orientation="horizontal"
-        >
+        <ButtonGroup aria-orientation="vertical" orientation="horizontal">
           <Button />
         </ButtonGroup>,
       );
@@ -179,7 +176,9 @@ describe('<ButtonGroup />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(toCssVar('mzn-spacing-4'));
+      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(
+        toCssVar('mzn-spacing-4'),
+      );
     });
 
     const sizeSpacingMaps: [ButtonSize, ButtonGroupSpacing][] = [
@@ -197,7 +196,9 @@ describe('<ButtonGroup />', () => {
         );
         const element = getHostHTMLElement();
 
-        expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(toCssVar(`mzn-spacing-${spacing}`));
+        expect(
+          element.style.getPropertyValue('--mzn-button-group-spacing'),
+        ).toBe(toCssVar(`mzn-spacing-${spacing}`));
       });
     });
 
@@ -210,7 +211,9 @@ describe('<ButtonGroup />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(toCssVar(`mzn-spacing-${spacing}`));
+      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(
+        toCssVar(`mzn-spacing-${spacing}`),
+      );
     });
   });
 
@@ -223,7 +226,9 @@ describe('<ButtonGroup />', () => {
         disabled,
         size,
         variant,
-      }: Required<Pick<ButtonProps, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>>,
+      }: Required<
+        Pick<ButtonProps, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>
+      >,
     ) {
       const buttonInstance = testInstance.findByType(Button);
 
@@ -242,16 +247,13 @@ describe('<ButtonGroup />', () => {
       );
       const testInstance = testRenderer.root;
 
-      testOverrideProps(
-        testInstance,
-        {
-          color: 'primary',
-          danger: false,
-          disabled: false,
-          size: 'medium',
-          variant: 'text',
-        },
-      );
+      testOverrideProps(testInstance, {
+        color: 'primary',
+        danger: false,
+        disabled: false,
+        size: 'medium',
+        variant: 'text',
+      });
     });
 
     it('provided by group', () => {
@@ -268,43 +270,32 @@ describe('<ButtonGroup />', () => {
       );
       const testInstance = testRenderer.root;
 
-      testOverrideProps(
-        testInstance,
-        {
-          color: 'secondary',
-          danger: true,
-          disabled: true,
-          size: 'small',
-          variant: 'contained',
-        },
-      );
+      testOverrideProps(testInstance, {
+        color: 'secondary',
+        danger: true,
+        disabled: true,
+        size: 'small',
+        variant: 'contained',
+      });
     });
 
     it('provided by context', () => {
       const testRenderer = TestRenderer.create(
         <ConfigProvider size="small">
-          <ButtonGroup
-            color="secondary"
-            danger
-            disabled
-            variant="contained"
-          >
+          <ButtonGroup color="secondary" danger disabled variant="contained">
             <Button />
           </ButtonGroup>
         </ConfigProvider>,
       );
       const testInstance = testRenderer.root;
 
-      testOverrideProps(
-        testInstance,
-        {
-          color: 'secondary',
-          danger: true,
-          disabled: true,
-          size: 'small',
-          variant: 'contained',
-        },
-      );
+      testOverrideProps(testInstance, {
+        color: 'secondary',
+        danger: true,
+        disabled: true,
+        size: 'small',
+        variant: 'contained',
+      });
     });
 
     it('should not override if child explicitly provided props', () => {
@@ -327,16 +318,13 @@ describe('<ButtonGroup />', () => {
       );
       const testInstance = testRenderer.root;
 
-      testOverrideProps(
-        testInstance,
-        {
-          color: 'secondary',
-          danger: false,
-          disabled: false,
-          size: 'large',
-          variant: 'outlined',
-        },
-      );
+      testOverrideProps(testInstance, {
+        color: 'secondary',
+        danger: false,
+        disabled: false,
+        size: 'large',
+        variant: 'outlined',
+      });
     });
   });
 });

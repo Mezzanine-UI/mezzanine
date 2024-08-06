@@ -1,14 +1,17 @@
-
 import { forwardRef, useMemo } from 'react';
-import { drawerClasses as classes, DrawerPlacement } from '@mezzanine-ui/core/drawer';
+import {
+  drawerClasses as classes,
+  DrawerPlacement,
+} from '@mezzanine-ui/core/drawer';
 import { cx } from '../utils/cx';
-import SlideFadeOverlay, { SlideFadeOverlayProps } from '../_internal/SlideFadeOverlay';
+import SlideFadeOverlay, {
+  SlideFadeOverlayProps,
+} from '../_internal/SlideFadeOverlay';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface DrawerProps
-  extends
-  Omit<SlideFadeOverlayProps, 'children'>,
-  Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
+  extends Omit<SlideFadeOverlayProps, 'children'>,
+    Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Whether the drawer placement.
    * @default 'left'
@@ -33,12 +36,17 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     ...rest
   } = props;
 
-  const slideFadeDirection: { [index: string]: SlideFadeOverlayProps['direction'] } = useMemo(() => ({
-    top: 'down',
-    left: 'right',
-    right: 'left',
-    bottom: 'up',
-  }), []);
+  const slideFadeDirection: {
+    [index: string]: SlideFadeOverlayProps['direction'];
+  } = useMemo(
+    () => ({
+      top: 'down',
+      left: 'right',
+      right: 'left',
+      bottom: 'up',
+    }),
+    [],
+  );
 
   return (
     <SlideFadeOverlay
@@ -57,11 +65,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     >
       <div
         {...rest}
-        className={cx(
-          classes.host,
-          classes[placement],
-          className,
-        )}
+        className={cx(classes.host, classes[placement], className)}
       >
         {children}
       </div>

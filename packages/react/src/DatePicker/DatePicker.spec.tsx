@@ -11,7 +11,8 @@ import {
   getByText,
 } from '../../__test-utils__';
 import {
-  describeForwardRefToHTMLElement, describeHostElementClassNameAppendable,
+  describeForwardRefToHTMLElement,
+  describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
 import DatePicker, { DatePickerProps } from '.';
@@ -22,18 +23,16 @@ describe('<DatePicker />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DatePicker ref={ref} />
       </CalendarConfigProvider>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DatePicker className={className} />
       </CalendarConfigProvider>,
@@ -58,7 +57,9 @@ describe('<DatePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+        HTMLDivElement,
+      );
     });
 
     it('should not open calendar if readOnly', () => {
@@ -98,7 +99,9 @@ describe('<DatePicker />', () => {
         fireEvent.click(iconElement!);
       });
 
-      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.click(iconElement!);
@@ -127,7 +130,9 @@ describe('<DatePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputElement, { key: 'Enter' });
@@ -156,7 +161,9 @@ describe('<DatePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(document, { key: 'Escape' });
@@ -184,7 +191,9 @@ describe('<DatePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
+        );
       });
 
       act(() => {
@@ -230,7 +239,11 @@ describe('<DatePicker />', () => {
         const onCalendarToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePicker referenceDate={moment().format('YYYY-MM-DD')} onCalendarToggle={onCalendarToggle} readOnly />
+            <DatePicker
+              referenceDate={moment().format('YYYY-MM-DD')}
+              onCalendarToggle={onCalendarToggle}
+              readOnly
+            />
           </CalendarConfigProvider>,
         );
 
@@ -249,14 +262,12 @@ describe('<DatePicker />', () => {
   describe('calendar picking', () => {
     it('should update input value', async () => {
       const referenceDate = '2021-10-20';
-      const {
-        getHostHTMLElement,
-        getByText: getByTextWithHostElement,
-      } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker referenceDate={referenceDate} />
-        </CalendarConfigProvider>,
-      );
+      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DatePicker referenceDate={referenceDate} />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
@@ -349,14 +360,12 @@ describe('<DatePicker />', () => {
 
     it('should be invoked when calendar cell clicked', async () => {
       const onChange = jest.fn();
-      const {
-        getHostHTMLElement,
-        getByText: getByTextWithHostElement,
-      } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker onChange={onChange} />
-        </CalendarConfigProvider>,
-      );
+      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DatePicker onChange={onChange} />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
@@ -423,7 +432,9 @@ describe('<DatePicker />', () => {
       await waitFor(() => {
         inputElement.focus();
 
-        const clearIconElement = element.querySelector('[data-icon-name="times"]');
+        const clearIconElement = element.querySelector(
+          '[data-icon-name="times"]',
+        );
 
         fireEvent.click(clearIconElement!);
       });
@@ -455,7 +466,9 @@ describe('<DatePicker />', () => {
       });
 
       await waitFor(() => {
-        const clearIconElement = element.querySelector('[data-icon-name="times"]');
+        const clearIconElement = element.querySelector(
+          '[data-icon-name="times"]',
+        );
 
         fireEvent.click(clearIconElement!);
       });
@@ -489,27 +502,33 @@ describe('<DatePicker />', () => {
       });
 
       expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onFocus).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputElement!);
       });
 
       expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onKeyDown).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.blur(inputElement!);
       });
 
       expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onBlur).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
     });
   });
 
@@ -532,8 +551,12 @@ describe('<DatePicker />', () => {
 
       const [calendarElement] = document.getElementsByClassName('mzn-calendar');
 
-      expect(getByText(calendarElement as HTMLElement, 'Oct')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(calendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(getByText(calendarElement as HTMLElement, 'Oct')).toBeInstanceOf(
+        HTMLButtonElement,
+      );
+      expect(getByText(calendarElement as HTMLElement, '2021')).toBeInstanceOf(
+        HTMLButtonElement,
+      );
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
@@ -554,8 +577,12 @@ describe('<DatePicker />', () => {
 
       const [calendarElement] = document.getElementsByClassName('mzn-calendar');
 
-      expect(getByText(calendarElement as HTMLElement, 'Oct')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(calendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(getByText(calendarElement as HTMLElement, 'Oct')).toBeInstanceOf(
+        HTMLButtonElement,
+      );
+      expect(getByText(calendarElement as HTMLElement, '2021')).toBeInstanceOf(
+        HTMLButtonElement,
+      );
     });
 
     it('should by default set to today', async () => {
@@ -573,13 +600,20 @@ describe('<DatePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      const [calendarElementt] = document.getElementsByClassName('mzn-calendar');
+      const [calendarElementt] =
+        document.getElementsByClassName('mzn-calendar');
 
       expect(
-        getByText(calendarElementt as HTMLElement, getMonthShortName(moment().month(), 'en-US')),
+        getByText(
+          calendarElementt as HTMLElement,
+          getMonthShortName(moment().month(), 'en-US'),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(calendarElementt as HTMLElement, getYear(moment().format('YYYY-MM-DD'))),
+        getByText(
+          calendarElementt as HTMLElement,
+          getYear(moment().format('YYYY-MM-DD')),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
     });
   });

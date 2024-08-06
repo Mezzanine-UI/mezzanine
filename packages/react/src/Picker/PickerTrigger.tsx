@@ -1,20 +1,13 @@
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
-import {
-  ChangeEventHandler,
-  forwardRef,
-  RefObject,
-} from 'react';
+import { ChangeEventHandler, forwardRef, RefObject } from 'react';
 import TextField, { TextFieldProps } from '../TextField';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 
 export interface PickerTriggerProps
-  extends
-  Omit<TextFieldProps,
-  | 'active'
-  | 'children'
-  | 'suffix'
-  | 'defaultChecked'
+  extends Omit<
+    TextFieldProps,
+    'active' | 'children' | 'suffix' | 'defaultChecked'
   > {
   /**
    * React ref for the input element.
@@ -34,9 +27,9 @@ export interface PickerTriggerProps
    */
   readOnly?: boolean;
   /**
-    * Whether the input is required.
-    * @default false
-    */
+   * Whether the input is required.
+   * @default false
+   */
   required?: boolean;
   /**
    * The value of the input element.
@@ -46,15 +39,15 @@ export interface PickerTriggerProps
    * Other input props you may provide to input element.
    */
   inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'defaultValue'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'value'
-  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'defaultValue'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'value'
+    | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
 }
 
@@ -82,10 +75,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
         {...restTextFieldProps}
         ref={ref}
         active={!!value}
-        className={cx(
-          classes.host,
-          className,
-        )}
+        className={cx(classes.host, className)}
         clearable={!readOnly && clearable}
         disabled={disabled}
       >

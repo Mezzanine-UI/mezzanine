@@ -1,10 +1,6 @@
 import { PlusIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -16,14 +12,12 @@ import ConfigProvider from '../Provider';
 describe('<Button />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLButtonElement,
-    (ref) => render(<Button ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
+    render(<Button ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Button className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Button className={className} />),
   );
 
   it('should render the text and wrap it by button label rendered by span', () => {
@@ -52,10 +46,7 @@ describe('<Button />', () => {
       expect(element.classList.contains('mzn-button--primary')).toBeTruthy();
     });
 
-    const colors: ButtonColor[] = [
-      'primary',
-      'secondary',
-    ];
+    const colors: ButtonColor[] = ['primary', 'secondary'];
 
     colors.forEach((color) => {
       it(`should add class if color="${color}"`, () => {
@@ -75,10 +66,7 @@ describe('<Button />', () => {
       expect(element.tagName.toLowerCase()).toBe('button');
     });
 
-    const components: ButtonComponent[] = [
-      'button',
-      'a',
-    ];
+    const components: ButtonComponent[] = ['button', 'a'];
 
     components.forEach((component) => {
       it(`should render by overriding component="${component}"`, () => {
@@ -105,7 +93,9 @@ describe('<Button />', () => {
         const { getHostHTMLElement } = render(<Button disabled={disabled} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-button--disabled')).toBe(disabled);
+        expect(element.classList.contains('mzn-button--disabled')).toBe(
+          disabled,
+        );
         expect(element.hasAttribute('disabled')).toBe(disabled);
         expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
       });
@@ -113,10 +103,7 @@ describe('<Button />', () => {
 
     it('aria-disabled from props should not override', () => {
       const { getHostHTMLElement } = render(
-        <Button
-          aria-disabled={false}
-          disabled
-        />,
+        <Button aria-disabled={false} disabled />,
       );
       const element = getHostHTMLElement();
 
@@ -143,7 +130,9 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
       const { firstElementChild: loadingIconElement } = element;
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+        SpinnerIcon.name,
+      );
     });
 
     it('should replace prefix w/ loading icon if only prefix provided', () => {
@@ -155,7 +144,9 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
       const { firstElementChild: loadingIconElement } = element;
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+        SpinnerIcon.name,
+      );
     });
 
     it('should replace suffix w/ loading icon if only suffix provided', () => {
@@ -167,7 +158,9 @@ describe('<Button />', () => {
       const element = getHostHTMLElement();
       const { lastElementChild: loadingIconElement } = element;
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+        SpinnerIcon.name,
+      );
     });
 
     it('should replace prefix w/ loading icon if both prefix and suffix provided', () => {
@@ -186,7 +179,9 @@ describe('<Button />', () => {
         lastElementChild: suffixElement,
       } = element;
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+        SpinnerIcon.name,
+      );
       expect(suffixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
@@ -204,7 +199,9 @@ describe('<Button />', () => {
 
     it('should not be fired if disabled=true', () => {
       const onClick = jest.fn();
-      const { getHostHTMLElement } = render(<Button disabled onClick={onClick} />);
+      const { getHostHTMLElement } = render(
+        <Button disabled onClick={onClick} />,
+      );
       const element = getHostHTMLElement();
 
       fireEvent.click(element);
@@ -214,7 +211,9 @@ describe('<Button />', () => {
 
     it('should not be fired if loading=true', () => {
       const onClick = jest.fn();
-      const { getHostHTMLElement } = render(<Button loading onClick={onClick} />);
+      const { getHostHTMLElement } = render(
+        <Button loading onClick={onClick} />,
+      );
       const element = getHostHTMLElement();
 
       fireEvent.click(element);
@@ -226,9 +225,7 @@ describe('<Button />', () => {
   describe('prop: prefix', () => {
     it('should render icon before button label', () => {
       const { getHostHTMLElement } = render(
-        <Button prefix={<Icon icon={PlusIcon} />}>
-          Hello
-        </Button>,
+        <Button prefix={<Icon icon={PlusIcon} />}>Hello</Button>,
       );
       const element = getHostHTMLElement();
       const {
@@ -264,11 +261,7 @@ describe('<Button />', () => {
       expect(element.classList.contains('mzn-button--large')).toBeTruthy();
     });
 
-    const sizes: ButtonSize[] = [
-      'small',
-      'medium',
-      'large',
-    ];
+    const sizes: ButtonSize[] = ['small', 'medium', 'large'];
 
     sizes.forEach((size) => {
       it(`should add class if size="${size}"`, () => {
@@ -283,9 +276,7 @@ describe('<Button />', () => {
   describe('prop: suffix', () => {
     it('should render icon after button label', () => {
       const { getHostHTMLElement } = render(
-        <Button suffix={<Icon icon={PlusIcon} />}>
-          Hello
-        </Button>,
+        <Button suffix={<Icon icon={PlusIcon} />}>Hello</Button>,
       );
       const element = getHostHTMLElement();
       const {
@@ -298,7 +289,9 @@ describe('<Button />', () => {
       expect(labelElement?.textContent).toBe('Hello');
       expect(labelElement?.tagName.toLowerCase()).toBe('span');
       expect(suffixdElement?.tagName.toLowerCase()).toBe('i');
-      expect(suffixdElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
+      expect(suffixdElement?.getAttribute('data-icon-name')).toBe(
+        PlusIcon.name,
+      );
     });
   });
 
@@ -310,18 +303,16 @@ describe('<Button />', () => {
       expect(element.classList.contains('mzn-button')).toBeTruthy();
     });
 
-    const variants: ButtonVariant[] = [
-      'text',
-      'outlined',
-      'contained',
-    ];
+    const variants: ButtonVariant[] = ['text', 'outlined', 'contained'];
 
     variants.forEach((variant) => {
       it(`should add class as need if variant="${variant}"`, () => {
         const { getHostHTMLElement } = render(<Button variant={variant} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-button--${variant}`)).toBe(variant !== 'text');
+        expect(element.classList.contains(`mzn-button--${variant}`)).toBe(
+          variant !== 'text',
+        );
       });
     });
   });

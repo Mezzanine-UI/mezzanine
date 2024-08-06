@@ -1,14 +1,7 @@
-import {
-  TableColumn,
-} from '@mezzanine-ui/core/table';
+import { TableColumn } from '@mezzanine-ui/core/table';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import {
-  cleanupHook,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanupHook, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { TableDataContext, TableContext } from './TableContext';
 import TableBody from './TableBody';
 
@@ -17,23 +10,26 @@ type DataType = {
   name: string;
 };
 
-const defaultSources: DataType[] = [{
-  key: 'foo',
-  name: 'foo',
-}];
+const defaultSources: DataType[] = [
+  {
+    key: 'foo',
+    name: 'foo',
+  },
+];
 
-const defaultColumns: TableColumn<DataType>[] = [{
-  key: 'foo',
-  dataIndex: 'foo',
-  title: 'foo',
-}];
+const defaultColumns: TableColumn<DataType>[] = [
+  {
+    key: 'foo',
+    dataIndex: 'foo',
+    title: 'foo',
+  },
+];
 
 describe('<TableBody />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLTableSectionElement,
-    (ref) => render(<TableBody ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLTableSectionElement, (ref) =>
+    render(<TableBody ref={ref} />),
   );
 
   it('should bind host class', () => {
@@ -53,16 +49,16 @@ describe('<TableBody />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => (
-              <TableBody />
-            )}
+            {() => <TableBody />}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
     );
     const host = getHostHTMLElement();
 
-    expect(host.querySelectorAll('.mzn-table__body__row').length).toBe(defaultSources.length);
+    expect(host.querySelectorAll('.mzn-table__body__row').length).toBe(
+      defaultSources.length,
+    );
   });
 
   it('should display <Empty /> when no data', () => {
@@ -75,16 +71,16 @@ describe('<TableBody />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => (
-              <TableBody />
-            )}
+            {() => <TableBody />}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
     );
     const host = getHostHTMLElement();
 
-    expect(host.querySelector('.mzn-table__body__empty')).toBeInstanceOf(HTMLDivElement);
+    expect(host.querySelector('.mzn-table__body__empty')).toBeInstanceOf(
+      HTMLDivElement,
+    );
   });
 
   describe('integrate with fetchMore', () => {
@@ -107,9 +103,7 @@ describe('<TableBody />', () => {
           >
             <DragDropContext onDragEnd={() => {}}>
               <Droppable droppableId="mzn-table-dnd">
-                {() => (
-                  <TableBody />
-                )}
+                {() => <TableBody />}
               </Droppable>
             </DragDropContext>
           </TableContext.Provider>
@@ -117,7 +111,9 @@ describe('<TableBody />', () => {
       );
       const host = getHostHTMLElement();
 
-      expect(host.querySelector('.mzn-table__body__fetchMore')).toBeInstanceOf(HTMLTableRowElement);
+      expect(host.querySelector('.mzn-table__body__fetchMore')).toBeInstanceOf(
+        HTMLTableRowElement,
+      );
     });
   });
 });

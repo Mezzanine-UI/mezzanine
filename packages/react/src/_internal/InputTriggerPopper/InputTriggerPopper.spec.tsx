@@ -1,18 +1,12 @@
-import {
-  cleanup,
-  render,
-} from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { cleanup, render } from '../../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import InputTriggerPopper from '.';
 
 describe('<InputTriggerPopper />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<InputTriggerPopper ref={ref} open />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<InputTriggerPopper ref={ref} open />),
   );
 
   it('should bind host class', () => {

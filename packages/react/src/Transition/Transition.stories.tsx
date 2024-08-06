@@ -7,14 +7,7 @@ import {
   MOTION_EASING,
 } from '@mezzanine-ui/system/motion';
 import Switch from '../Switch';
-import {
-  Collapse,
-  Fade,
-  Grow,
-  SlideFadeDirection,
-  SlideFade,
-  Zoom,
-} from '.';
+import { Collapse, Fade, Grow, SlideFadeDirection, SlideFade, Zoom } from '.';
 
 export default {
   title: 'Utility/Transition',
@@ -42,7 +35,9 @@ interface TransitionStoryArgs {
   easingExit: MotionEasingType;
 }
 
-type TransitionStory<Args = Record<string, any>> = StoryFn<TransitionStoryArgs & Args>;
+type TransitionStory<Args = Record<string, any>> = StoryFn<
+  TransitionStoryArgs & Args
+>;
 
 const args = {
   durationEnter: 'standard',
@@ -88,7 +83,11 @@ export const CollapseStory: TransitionStory<{ collapsedHeight: number }> = ({
 
   return (
     <>
-      <Switch checked={checked} onChange={() => setChecked((prev) => !prev)} size="large" />
+      <Switch
+        checked={checked}
+        onChange={() => setChecked((prev) => !prev)}
+        size="large"
+      />
       <Collapse
         in={checked}
         collapsedHeight={collapsedHeight}
@@ -130,7 +129,11 @@ export const FadeStory: TransitionStory = ({
 
   return (
     <>
-      <Switch checked={checked} onChange={() => setChecked((prev) => !prev)} size="large" />
+      <Switch
+        checked={checked}
+        onChange={() => setChecked((prev) => !prev)}
+        size="large"
+      />
       <Fade
         in={checked}
         duration={{
@@ -169,7 +172,11 @@ export const GrowStory: TransitionStory<{ transformOrigin: string }> = ({
 
   return (
     <>
-      <Switch checked={checked} onChange={() => setChecked((prev) => !prev)} size="large" />
+      <Switch
+        checked={checked}
+        onChange={() => setChecked((prev) => !prev)}
+        size="large"
+      />
       <Grow
         in={checked}
         keepMount
@@ -209,18 +216,18 @@ const slideFadeDirections: SlideFadeDirection[] = [
   'right',
 ];
 
-export const SlideFadeStory: TransitionStory<{ direction: SlideFadeDirection }> = ({
-  direction,
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-}) => {
+export const SlideFadeStory: TransitionStory<{
+  direction: SlideFadeDirection;
+}> = ({ direction, durationEnter, durationExit, easingEnter, easingExit }) => {
   const [checked, setChecked] = useState(false);
 
   return (
     <>
-      <Switch checked={checked} onChange={() => setChecked((prev) => !prev)} size="large" />
+      <Switch
+        checked={checked}
+        onChange={() => setChecked((prev) => !prev)}
+        size="large"
+      />
       <SlideFade
         in={checked}
         direction={direction}
@@ -270,7 +277,11 @@ export const ZoomStory: TransitionStory = ({
 
   return (
     <>
-      <Switch checked={checked} onChange={() => setChecked((prev) => !prev)} size="large" />
+      <Switch
+        checked={checked}
+        onChange={() => setChecked((prev) => !prev)}
+        size="large"
+      />
       <Zoom
         in={checked}
         duration={{

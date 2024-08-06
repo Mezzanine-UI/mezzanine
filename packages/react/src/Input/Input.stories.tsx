@@ -32,37 +32,25 @@ export const Basic = () => {
         <Typography variant="h5" style={typoStyle}>
           Normal
         </Typography>
-        <Input
-          placeholder="please enter text"
-        />
+        <Input placeholder="please enter text" />
       </section>
       <section style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Disabled
         </Typography>
-        <Input
-          placeholder="please enter text"
-          disabled
-        />
+        <Input placeholder="please enter text" disabled />
       </section>
       <section style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Error
         </Typography>
-        <Input
-          placeholder="please enter text"
-          error
-        />
+        <Input placeholder="please enter text" error />
       </section>
       <section style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Read Only
         </Typography>
-        <Input
-          placeholder="please enter text"
-          value="Example"
-          readOnly
-        />
+        <Input placeholder="please enter text" value="Example" readOnly />
       </section>
     </div>
   );
@@ -77,59 +65,23 @@ export const Sizes = () => (
       alignItems: 'center',
     }}
   >
-    <Typography variant="h5">
-      Small
-    </Typography>
-    <Typography variant="h5">
-      Medium
-    </Typography>
-    <Typography variant="h5">
-      Large
-    </Typography>
-    <Input
-      placeholder="please enter text"
-      size="small"
-    />
-    <Input
-      placeholder="please enter text"
-      size="medium"
-    />
-    <Input
-      placeholder="please enter text"
-      size="large"
-    />
-    <Input
-      placeholder="please enter text"
-      size="small"
-      disabled
-    />
-    <Input
-      placeholder="please enter text"
-      size="medium"
-      disabled
-    />
-    <Input
-      placeholder="please enter text"
-      size="large"
-      disabled
-    />
+    <Typography variant="h5">Small</Typography>
+    <Typography variant="h5">Medium</Typography>
+    <Typography variant="h5">Large</Typography>
+    <Input placeholder="please enter text" size="small" />
+    <Input placeholder="please enter text" size="medium" />
+    <Input placeholder="please enter text" size="large" />
+    <Input placeholder="please enter text" size="small" disabled />
+    <Input placeholder="please enter text" size="medium" disabled />
+    <Input placeholder="please enter text" size="large" disabled />
     <ConfigProvider size="small">
-      <Input
-        placeholder="please enter text"
-        error
-      />
+      <Input placeholder="please enter text" error />
     </ConfigProvider>
     <ConfigProvider size="medium">
-      <Input
-        placeholder="please enter text"
-        error
-      />
+      <Input placeholder="please enter text" error />
     </ConfigProvider>
     <ConfigProvider size="large">
-      <Input
-        placeholder="please enter text"
-        error
-      />
+      <Input placeholder="please enter text" error />
     </ConfigProvider>
   </div>
 );
@@ -143,14 +95,8 @@ export const PrefixSuffix = () => (
       alignItems: 'center',
     }}
   >
-    <Input
-      placeholder="please enter text"
-      prefix={<Icon icon={PlusIcon} />}
-    />
-    <Input
-      placeholder="please enter text"
-      suffix={<Icon icon={PlusIcon} />}
-    />
+    <Input placeholder="please enter text" prefix={<Icon icon={PlusIcon} />} />
+    <Input placeholder="please enter text" suffix={<Icon icon={PlusIcon} />} />
     <Input
       placeholder="please enter text"
       suffix={<Icon icon={PlusIcon} />}
@@ -162,22 +108,14 @@ export const PrefixSuffix = () => (
       size="small"
       clearable
     />
-    <Input
-      placeholder="search"
-      prefix={<Icon icon={SearchIcon} />}
-      clearable
-    />
+    <Input placeholder="search" prefix={<Icon icon={SearchIcon} />} clearable />
     <Input
       placeholder="search"
       prefix={<Icon icon={SearchIcon} />}
       size="large"
       clearable
     />
-    <Input
-      placeholder="search"
-      prefix={<Icon icon={SearchIcon} />}
-      clearable
-    />
+    <Input placeholder="search" prefix={<Icon icon={SearchIcon} />} clearable />
     <Input
       placeholder="please enter text"
       prefix={<Icon icon={PlusIcon} />}
@@ -286,9 +224,7 @@ export const TagsMode = () => (
         />
       </section>
       <section>
-        <Typography>
-          Input Field on Top Position
-        </Typography>
+        <Typography>Input Field on Top Position</Typography>
         <Input
           clearable
           mode="tags"
@@ -302,9 +238,7 @@ export const TagsMode = () => (
         />
       </section>
       <section>
-        <Typography>
-          With Prefix (Origin Input Prop Combination)
-        </Typography>
+        <Typography>With Prefix (Origin Input Prop Combination)</Typography>
         <Input
           clearable
           mode="tags"

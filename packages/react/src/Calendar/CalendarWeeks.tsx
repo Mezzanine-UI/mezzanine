@@ -12,11 +12,10 @@ import type { CalendarYearsProps } from './CalendarYears';
 import type { CalendarMonthsProps } from './CalendarMonths';
 
 export interface CalendarWeeksProps
-  extends
-  Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
-  Pick<CalendarYearsProps, 'isYearDisabled'>,
-  Pick<CalendarMonthsProps, 'isMonthDisabled'>,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
+  extends Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
+    Pick<CalendarYearsProps, 'isYearDisabled'>,
+    Pick<CalendarMonthsProps, 'isMonthDisabled'>,
+    Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic.
    * The method takes the date object of first date in week as its parameter.
@@ -79,84 +78,89 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     ...rest
   } = props;
 
-  const daysGrid = useMemo(() => getCalendarGrid(referenceDate), [getCalendarGrid, referenceDate]);
+  const daysGrid = useMemo(
+    () => getCalendarGrid(referenceDate),
+    [getCalendarGrid, referenceDate],
+  );
 
   return (
-    <div
-      {...rest}
-      className={cx(
-        classes.board,
-        className,
-      )}
-    >
+    <div {...rest} className={cx(classes.board, className)}>
       <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
-      {
-        daysGrid.map((week, index) => {
-          const dates: DateType[] = [];
-          const weekStartInPrevMonth = index === 0 && week[0] > 7;
-          const weekStartInNextMonth = index > 3 && week[0] <= 14;
+      {daysGrid.map((week, index) => {
+        const dates: DateType[] = [];
+        const weekStartInPrevMonth = index === 0 && week[0] > 7;
+        const weekStartInNextMonth = index > 3 && week[0] <= 14;
 
-          week.forEach((dateNum) => {
-            const isPrevMonth = index === 0 && dateNum > 7;
-            const isNextMonth = index > 3 && dateNum <= 14;
-            const thisMonth = getMonth(referenceDate);
-            // eslint-disable-next-line no-nested-ternary
-            const month = isPrevMonth
-              ? thisMonth - 1
-              : isNextMonth
-                ? thisMonth + 1
-                : thisMonth;
-            const date = setDate(setMonth(referenceDate, month), dateNum);
+        week.forEach((dateNum) => {
+          const isPrevMonth = index === 0 && dateNum > 7;
+          const isNextMonth = index > 3 && dateNum <= 14;
+          const thisMonth = getMonth(referenceDate);
+          // eslint-disable-next-line no-nested-ternary
+          const month = isPrevMonth
+            ? thisMonth - 1
+            : isNextMonth
+              ? thisMonth + 1
+              : thisMonth;
+          const date = setDate(setMonth(referenceDate, month), dateNum);
 
-            dates.push(date);
-          });
+          dates.push(date);
+        });
 
-          const disabled = (isYearDisabled?.(dates[0]) || isMonthDisabled?.(dates[0]) || isWeekDisabled?.(dates[0])) || false;
-          const inactive = !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
-          const active = !disabled && !inactive && value && isWeekIncluded(dates[0], value);
-          const inRange = !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
+        const disabled =
+          isYearDisabled?.(dates[0]) ||
+          isMonthDisabled?.(dates[0]) ||
+          isWeekDisabled?.(dates[0]) ||
+          false;
+        const inactive =
+          !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
+        const active =
+          !disabled && !inactive && value && isWeekIncluded(dates[0], value);
+        const inRange =
+          !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
 
-          const onMouseEnter = onWeekHover ? () => {
-            onWeekHover(dates[0]);
-          } : undefined;
+        const onMouseEnter = onWeekHover
+          ? () => {
+              onWeekHover(dates[0]);
+            }
+          : undefined;
 
-          const onClick = onClickProp ? () => {
-            onClickProp(dates[0]);
-          } : undefined;
+        const onClick = onClickProp
+          ? () => {
+              onClickProp(dates[0]);
+            }
+          : undefined;
 
-          return (
-            <button
-              // eslint-disable-next-line react/no-array-index-key
-              key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
-              type="button"
-              className={cx(
-                classes.button,
-                classes.row,
-                {
-                  [classes.buttonActive]: active,
-                  [classes.buttonInRange]: inRange,
-                  [classes.buttonDisabled]: disabled,
-                },
-              )}
-              disabled={disabled}
-              aria-disabled={disabled}
-              onClick={onClick}
-              onMouseEnter={onMouseEnter}
-            >
-              {week.map((dateNum, dateIndex) => (
-                <CalendarCell
-                  key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
-                  today={isSameDate(dates[dateIndex], getNow())}
-                  disabled={disabled || !isInMonth(dates[dateIndex], getMonth(referenceDate))}
-                  active={active}
-                >
-                  {dateNum}
-                </CalendarCell>
-              ))}
-            </button>
-          );
-        })
-      }
+        return (
+          <button
+            // eslint-disable-next-line react/no-array-index-key
+            key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
+            type="button"
+            className={cx(classes.button, classes.row, {
+              [classes.buttonActive]: active,
+              [classes.buttonInRange]: inRange,
+              [classes.buttonDisabled]: disabled,
+            })}
+            disabled={disabled}
+            aria-disabled={disabled}
+            onClick={onClick}
+            onMouseEnter={onMouseEnter}
+          >
+            {week.map((dateNum, dateIndex) => (
+              <CalendarCell
+                key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
+                today={isSameDate(dates[dateIndex], getNow())}
+                disabled={
+                  disabled ||
+                  !isInMonth(dates[dateIndex], getMonth(referenceDate))
+                }
+                active={active}
+              >
+                {dateNum}
+              </CalendarCell>
+            ))}
+          </button>
+        );
+      })}
     </div>
   );
 }

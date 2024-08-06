@@ -9,7 +9,8 @@ export default {
 } as Meta;
 
 export const Placement = () => {
-  const [currentPlacement, setCurrentPlacement] = useState<PopperPlacement>('top');
+  const [currentPlacement, setCurrentPlacement] =
+    useState<PopperPlacement>('top');
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const renderButton = (placement: PopperPlacement) => (
     <Button

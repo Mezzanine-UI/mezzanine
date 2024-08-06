@@ -1,10 +1,9 @@
 import { FC, ReactElement } from 'react';
-import {
-  cleanupHook,
-  render,
-} from '../../../__test-utils__';
+import { cleanupHook, render } from '../../../__test-utils__';
 import { TableComponentContext } from '../TableContext';
-import TableEditRenderWrapper, { EditableBodyCellProps } from './TableEditRenderWrapper';
+import TableEditRenderWrapper, {
+  EditableBodyCellProps,
+} from './TableEditRenderWrapper';
 
 const defaultDataIndex = 'foo-index';
 const childContent = 'foo';
@@ -18,22 +17,23 @@ describe('<TableEditRenderWrapper />', () => {
   let host: HTMLElement;
   let receivedRowData: EditableBodyCellProps['rowData'];
 
-  const setCellProps = jest.fn<Record<string, unknown>, [EditableBodyCellProps['rowData']]>((data) => {
+  const setCellProps = jest.fn<
+    Record<string, unknown>,
+    [EditableBodyCellProps['rowData']]
+  >((data) => {
     receivedRowData = data;
 
     return data;
   });
 
   beforeEach(() => {
-    const EditableCell: FC<EditableBodyCellProps> = ({
-      children,
-      dataIndex,
-    }) => (
-      <div>
-        {dataIndex}
-        {children}
-      </div>
-    ) as ReactElement;
+    const EditableCell: FC<EditableBodyCellProps> = ({ children, dataIndex }) =>
+      (
+        <div>
+          {dataIndex}
+          {children}
+        </div>
+      ) as ReactElement;
 
     const { getHostHTMLElement } = render(
       <TableComponentContext.Provider

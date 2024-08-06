@@ -24,18 +24,16 @@ describe('<DateRangePicker />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateRangePicker ref={ref} />
       </CalendarConfigProvider>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateRangePicker className={className} />
       </CalendarConfigProvider>,
@@ -51,19 +49,24 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       expect(inputFromElement).toBeInstanceOf(HTMLInputElement);
       expect(inputToElement).toBeInstanceOf(HTMLInputElement);
 
-      expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+      expect(
+        document.querySelector('.mzn-date-range-picker-calendar-group'),
+      ).toBe(null);
 
       act(() => {
         fireEvent.focus(inputFromElement);
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -71,7 +74,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
 
       act(() => {
@@ -79,7 +84,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
     });
 
@@ -91,7 +98,8 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       expect(inputFromElement).toBeInstanceOf(HTMLInputElement);
 
@@ -99,13 +107,17 @@ describe('<DateRangePicker />', () => {
         fireEvent.click(inputFromElement);
       });
 
-      expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+      expect(
+        document.querySelector('.mzn-date-range-picker-calendar-group'),
+      ).toBe(null);
 
       await waitFor(() => {
         fireEvent.click(inputToElement);
       });
 
-      expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+      expect(
+        document.querySelector('.mzn-date-range-picker-calendar-group'),
+      ).toBe(null);
     });
 
     it('should toggle calendar when icon clicked', async () => {
@@ -125,7 +137,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -133,7 +147,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -147,14 +163,17 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       act(() => {
         fireEvent.focus(inputFromElement!);
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -168,7 +187,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -180,14 +201,17 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       act(() => {
         fireEvent.focus(inputToElement!);
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -201,7 +225,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -220,7 +246,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -228,7 +256,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -247,7 +277,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -255,7 +287,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -274,7 +308,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBeInstanceOf(HTMLDivElement);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBeInstanceOf(HTMLDivElement);
       });
 
       act(() => {
@@ -286,7 +322,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -316,7 +354,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -337,7 +377,9 @@ describe('<DateRangePicker />', () => {
       });
 
       act(() => {
-        fireEvent.change(inputFromElement!, { target: { value: '2021-10-20' } });
+        fireEvent.change(inputFromElement!, {
+          target: { value: '2021-10-20' },
+        });
       });
 
       const testCalendarCellElement = getAllByText('21')[0];
@@ -347,7 +389,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-date-range-picker-calendar-group')).toBe(null);
+        expect(
+          document.querySelector('.mzn-date-range-picker-calendar-group'),
+        ).toBe(null);
       });
     });
 
@@ -381,7 +425,11 @@ describe('<DateRangePicker />', () => {
         const onCalendarToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DateRangePicker referenceDate="2022-01-02" onCalendarToggle={onCalendarToggle} readOnly />
+            <DateRangePicker
+              referenceDate="2022-01-02"
+              onCalendarToggle={onCalendarToggle}
+              readOnly
+            />
           </CalendarConfigProvider>,
         );
 
@@ -400,17 +448,16 @@ describe('<DateRangePicker />', () => {
   describe('calendar picking', () => {
     it('should update input value', async () => {
       const referenceDate = '2021-10-20';
-      const {
-        getHostHTMLElement,
-        getAllByText: getAllByTextWithHostElement,
-      } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker referenceDate={referenceDate} />
-        </CalendarConfigProvider>,
-      );
+      const { getHostHTMLElement, getAllByText: getAllByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DateRangePicker referenceDate={referenceDate} />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.focus(inputFromElement);
@@ -433,16 +480,15 @@ describe('<DateRangePicker />', () => {
 
     it('should select both from and to if re-opening the calendar', async () => {
       const referenceDate = '2021-10-20';
-      const {
-        getHostHTMLElement,
-        getAllByText: getAllByTextWithHostElement,
-      } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker referenceDate={referenceDate} />
-        </CalendarConfigProvider>,
-      );
+      const { getHostHTMLElement, getAllByText: getAllByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DateRangePicker referenceDate={referenceDate} />
+          </CalendarConfigProvider>,
+        );
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.focus(inputFromElement);
@@ -492,14 +538,17 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.change(inputToElement!, { target: { value: '2020-10-20' } });
       });
 
       await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: '2020-10-21' } });
+        fireEvent.change(inputFromElement!, {
+          target: { value: '2020-10-21' },
+        });
       });
 
       expect(inputToElement.value).toBe('');
@@ -513,10 +562,13 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: '2020-10-21' } });
+        fireEvent.change(inputFromElement!, {
+          target: { value: '2020-10-21' },
+        });
       });
 
       await waitFor(() => {
@@ -536,7 +588,8 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.change(inputFromElement!, { target: { value: 'foo' } });
@@ -567,7 +620,8 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.change(inputFromElement!, { target: { value: 'foo' } });
@@ -616,7 +670,9 @@ describe('<DateRangePicker />', () => {
       });
 
       await waitFor(() => {
-        const clearIconElement = element.querySelector('[data-icon-name="times"]');
+        const clearIconElement = element.querySelector(
+          '[data-icon-name="times"]',
+        );
 
         fireEvent.click(clearIconElement!);
       });
@@ -650,27 +706,33 @@ describe('<DateRangePicker />', () => {
       });
 
       expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(expect.objectContaining({
-        target: inputFromElement,
-      }));
+      expect(onFocus).toBeCalledWith(
+        expect.objectContaining({
+          target: inputFromElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputFromElement!);
       });
 
       expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(expect.objectContaining({
-        target: inputFromElement,
-      }));
+      expect(onKeyDown).toBeCalledWith(
+        expect.objectContaining({
+          target: inputFromElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.blur(inputFromElement!);
       });
 
       expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(expect.objectContaining({
-        target: inputFromElement,
-      }));
+      expect(onBlur).toBeCalledWith(
+        expect.objectContaining({
+          target: inputFromElement,
+        }),
+      );
     });
 
     it('should bind focus, blur, keydown events to inputTo element', async () => {
@@ -697,27 +759,33 @@ describe('<DateRangePicker />', () => {
       });
 
       expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(expect.objectContaining({
-        target: inputToElement,
-      }));
+      expect(onFocus).toBeCalledWith(
+        expect.objectContaining({
+          target: inputToElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputToElement!);
       });
 
       expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(expect.objectContaining({
-        target: inputToElement,
-      }));
+      expect(onKeyDown).toBeCalledWith(
+        expect.objectContaining({
+          target: inputToElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.blur(inputToElement!);
       });
 
       expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(expect.objectContaining({
-        target: inputToElement,
-      }));
+      expect(onBlur).toBeCalledWith(
+        expect.objectContaining({
+          target: inputToElement,
+        }),
+      );
     });
   });
 
@@ -731,14 +799,17 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.focus(inputFromElement!);
       });
 
       await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: '2021-10-20' } });
+        fireEvent.change(inputFromElement!, {
+          target: { value: '2021-10-20' },
+        });
       });
 
       await waitFor(() => {
@@ -793,14 +864,17 @@ describe('<DateRangePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+      const [inputFromElement, inputToElement] =
+        element.getElementsByTagName('input');
 
       await waitFor(() => {
         fireEvent.focus(inputToElement!);
       });
 
       await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: '2021-10-20' } });
+        fireEvent.change(inputFromElement!, {
+          target: { value: '2021-10-20' },
+        });
       });
 
       await waitFor(() => {
@@ -833,13 +907,22 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      const [leftCalendarElement, rightCalendarElement] = document.getElementsByClassName('mzn-calendar');
+      const [leftCalendarElement, rightCalendarElement] =
+        document.getElementsByClassName('mzn-calendar');
 
-      expect(getByText(leftCalendarElement as HTMLElement, 'Oct')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(leftCalendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(leftCalendarElement as HTMLElement, 'Oct'),
+      ).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(leftCalendarElement as HTMLElement, '2021'),
+      ).toBeInstanceOf(HTMLButtonElement);
 
-      expect(getByText(rightCalendarElement as HTMLElement, 'Nov')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(rightCalendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(rightCalendarElement as HTMLElement, 'Nov'),
+      ).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(rightCalendarElement as HTMLElement, '2021'),
+      ).toBeInstanceOf(HTMLButtonElement);
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
@@ -858,13 +941,22 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      const [leftCalendarElement, rightCalendarElement] = document.getElementsByClassName('mzn-calendar');
+      const [leftCalendarElement, rightCalendarElement] =
+        document.getElementsByClassName('mzn-calendar');
 
-      expect(getByText(leftCalendarElement as HTMLElement, 'Oct')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(leftCalendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(leftCalendarElement as HTMLElement, 'Oct'),
+      ).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(leftCalendarElement as HTMLElement, '2021'),
+      ).toBeInstanceOf(HTMLButtonElement);
 
-      expect(getByText(rightCalendarElement as HTMLElement, 'Nov')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText(rightCalendarElement as HTMLElement, '2021')).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(rightCalendarElement as HTMLElement, 'Nov'),
+      ).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        getByText(rightCalendarElement as HTMLElement, '2021'),
+      ).toBeInstanceOf(HTMLButtonElement);
     });
 
     it('should by default set to today', async () => {
@@ -882,20 +974,33 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      const [leftCalendarElement, rightCalendarElement] = document.getElementsByClassName('mzn-calendar');
+      const [leftCalendarElement, rightCalendarElement] =
+        document.getElementsByClassName('mzn-calendar');
 
       expect(
-        getByText(leftCalendarElement as HTMLElement, getMonthShortName(moment().month(), 'en-US')),
+        getByText(
+          leftCalendarElement as HTMLElement,
+          getMonthShortName(moment().month(), 'en-US'),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(leftCalendarElement as HTMLElement, getYear(moment().toISOString())),
+        getByText(
+          leftCalendarElement as HTMLElement,
+          getYear(moment().toISOString()),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
 
       expect(
-        getByText(rightCalendarElement as HTMLElement, getMonthShortName(moment().add(1, 'month').month(), 'en-US')),
+        getByText(
+          rightCalendarElement as HTMLElement,
+          getMonthShortName(moment().add(1, 'month').month(), 'en-US'),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
-        getByText(rightCalendarElement as HTMLElement, getYear(moment().add(1, 'month').toISOString())),
+        getByText(
+          rightCalendarElement as HTMLElement,
+          getYear(moment().add(1, 'month').toISOString()),
+        ),
       ).toBeInstanceOf(HTMLButtonElement);
     });
   });

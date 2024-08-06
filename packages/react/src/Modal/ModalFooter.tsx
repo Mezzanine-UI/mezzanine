@@ -8,25 +8,16 @@ export type ModalFooterProps = NativeElementPropsWithoutKeyAndRef<'div'>;
 /**
  * The react component for `mezzanine` modal footer.
  */
-const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(function ModalFooter(props, ref) {
-  const {
-    children,
-    className,
-    ...rest
-  } = props;
+const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
+  function ModalFooter(props, ref) {
+    const { children, className, ...rest } = props;
 
-  return (
-    <div
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.footer,
-        className,
-      )}
-    >
-      {children}
-    </div>
-  );
-});
+    return (
+      <div {...rest} ref={ref} className={cx(classes.footer, className)}>
+        {children}
+      </div>
+    );
+  },
+);
 
 export default ModalFooter;

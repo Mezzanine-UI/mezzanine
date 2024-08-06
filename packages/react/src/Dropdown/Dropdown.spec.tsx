@@ -1,10 +1,5 @@
 import { RefObject, useState } from 'react';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import Dropdown from '.';
 import Menu, { MenuItem } from '../Menu';
 
@@ -39,18 +34,16 @@ describe('<Dropdown />', () => {
       await act(async () => {
         await render(
           <Dropdown
-            menu={(
+            menu={
               <Menu>
                 <MenuItem>item 1</MenuItem>
               </Menu>
-            )}
+            }
             popperProps={{
               open: true,
             }}
           >
-            {(ref) => (
-              <div ref={ref as RefObject<HTMLDivElement>}>foo</div>
-            )}
+            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
           </Dropdown>,
         );
       });
@@ -70,19 +63,17 @@ describe('<Dropdown />', () => {
 
           return (
             <Dropdown
-              menu={(
+              menu={
                 <Menu>
                   <MenuItem>item 1</MenuItem>
                 </Menu>
-              )}
+              }
               onClose={() => setOpen(false)}
               popperProps={{
                 open,
               }}
             >
-              {(ref) => (
-                <div ref={ref as RefObject<HTMLDivElement>}>foo</div>
-              )}
+              {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
             </Dropdown>
           );
         };
@@ -105,19 +96,17 @@ describe('<Dropdown />', () => {
         const TestComponent = () => (
           <Dropdown
             disableClickAway
-            menu={(
+            menu={
               <Menu>
                 <MenuItem>item 1</MenuItem>
               </Menu>
-            )}
+            }
             onClose={onClose}
             popperProps={{
               open: true,
             }}
           >
-            {(ref) => (
-              <div ref={ref as RefObject<HTMLDivElement>}>foo</div>
-            )}
+            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
           </Dropdown>
         );
 
@@ -145,9 +134,7 @@ describe('<Dropdown />', () => {
               open: true,
             }}
           >
-            {(ref) => (
-              <div ref={ref as RefObject<HTMLDivElement>}>foo</div>
-            )}
+            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
           </Dropdown>,
         );
       });

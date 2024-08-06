@@ -1,7 +1,9 @@
 import { DependencyList } from 'react';
 import { useDocumentEvents } from './useDocumentEvents';
 
-export type DocumentEscapeKeyDownHandlerFactory = () => ((event: KeyboardEvent) => void) | undefined;
+export type DocumentEscapeKeyDownHandlerFactory = () =>
+  | ((event: KeyboardEvent) => void)
+  | undefined;
 
 export function useDocumentEscapeKeyDown(
   factory: DocumentEscapeKeyDownHandlerFactory,

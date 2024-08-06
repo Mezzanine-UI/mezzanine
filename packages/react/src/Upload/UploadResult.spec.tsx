@@ -1,10 +1,6 @@
 import { TimesIcon, DownloadIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { UploadResultStatus } from '@mezzanine-ui/core/upload';
-import {
-  cleanup,
-  render,
-  fireEvent,
-} from '../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,7 +9,8 @@ import { UploadResult, UploadResultSize } from '.';
 import ConfigProvider from '../Provider';
 
 function createQueryIcon(name: string) {
-  return (element: HTMLElement) => element.querySelector(`.mzn-icon[data-icon-name="${name}"]`);
+  return (element: HTMLElement) =>
+    element.querySelector(`.mzn-icon[data-icon-name="${name}"]`);
 }
 
 const queryDeleteIcon = createQueryIcon(TimesIcon.name);
@@ -23,34 +20,19 @@ const querySpinnerIcon = createQueryIcon(SpinnerIcon.name);
 describe('<UploadResult />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
-      <UploadResult
-        ref={ref}
-        name="hello.png"
-        status="done"
-      />,
-    ),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<UploadResult ref={ref} name="hello.png" status="done" />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
-      <UploadResult
-        className={className}
-        name="hello.png"
-        status="done"
-      />,
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
+      <UploadResult className={className} name="hello.png" status="done" />,
     ),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <UploadResult
-        name="hello.png"
-        status="done"
-      />,
+      <UploadResult name="hello.png" status="done" />,
     );
     const element = getHostHTMLElement();
 
@@ -60,10 +42,7 @@ describe('<UploadResult />', () => {
   describe('prop: name', () => {
     it('should render name by span', () => {
       const { getHostHTMLElement } = render(
-        <UploadResult
-          name="hello.png"
-          status="done"
-        />,
+        <UploadResult name="hello.png" status="done" />,
       );
       const element = getHostHTMLElement();
       const { firstElementChild: fileNameElement } = element;
@@ -78,11 +57,7 @@ describe('<UploadResult />', () => {
       it(`should be fired on status="${status}"`, () => {
         const onDelete = jest.fn();
         const { getHostHTMLElement } = render(
-          <UploadResult
-            name="hello.png"
-            onDelete={onDelete}
-            status={status}
-          />,
+          <UploadResult name="hello.png" onDelete={onDelete} status={status} />,
         );
         const element = getHostHTMLElement();
         const deleteIcon = queryDeleteIcon(element);
@@ -98,11 +73,7 @@ describe('<UploadResult />', () => {
     it('should be fired on status="done"', () => {
       const onDownload = jest.fn();
       const { getHostHTMLElement } = render(
-        <UploadResult
-          name="hello.png"
-          onDownload={onDownload}
-          status="done"
-        />,
+        <UploadResult name="hello.png" onDownload={onDownload} status="done" />,
       );
       const element = getHostHTMLElement();
       const downloadIcon = queryDownloadIcon(element);
@@ -125,16 +96,22 @@ describe('<UploadResult />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-upload-result-percentage')).toBe(`${percentage}`);
+      expect(
+        element.style.getPropertyValue('--mzn-upload-result-percentage'),
+      ).toBe(`${percentage}`);
     });
   });
 
   describe('prop: size', () => {
     it('should render size="medium" by default', () => {
-      const { getHostHTMLElement } = render(<UploadResult name="hello.png" status="done" />);
+      const { getHostHTMLElement } = render(
+        <UploadResult name="hello.png" status="done" />,
+      );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-upload-result--medium')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-result--medium'),
+      ).toBeTruthy();
     });
 
     it('should accept ConfigProvider context size changes', () => {
@@ -145,21 +122,23 @@ describe('<UploadResult />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-upload-result--large')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-result--large'),
+      ).toBeTruthy();
     });
 
-    const sizes: UploadResultSize[] = [
-      'small',
-      'medium',
-      'large',
-    ];
+    const sizes: UploadResultSize[] = ['small', 'medium', 'large'];
 
     sizes.forEach((size) => {
       it(`should add class if size="${size}"`, () => {
-        const { getHostHTMLElement } = render(<UploadResult name="hello.png" size={size} status="done" />);
+        const { getHostHTMLElement } = render(
+          <UploadResult name="hello.png" size={size} status="done" />,
+        );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-upload-result--${size}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-upload-result--${size}`),
+        ).toBeTruthy();
       });
     });
   });
@@ -168,15 +147,14 @@ describe('<UploadResult />', () => {
     describe('loading', () => {
       it('should bind loading class and render spinner icon', () => {
         const { getHostHTMLElement } = render(
-          <UploadResult
-            name="hello.png"
-            status="loading"
-          />,
+          <UploadResult name="hello.png" status="loading" />,
         );
         const element = getHostHTMLElement();
         const spinnerIconElement = querySpinnerIcon(element);
 
-        expect(element.classList.contains('mzn-upload-result--loading')).toBeTruthy();
+        expect(
+          element.classList.contains('mzn-upload-result--loading'),
+        ).toBeTruthy();
         expect(spinnerIconElement).toBeInstanceOf(HTMLElement);
       });
     });
@@ -185,10 +163,7 @@ describe('<UploadResult />', () => {
   describe('done', () => {
     it('should render download and delete icon', () => {
       const { getHostHTMLElement } = render(
-        <UploadResult
-          name="hello.png"
-          status="done"
-        />,
+        <UploadResult name="hello.png" status="done" />,
       );
       const element = getHostHTMLElement();
       const downloadIconElement = queryDownloadIcon(element);
@@ -202,15 +177,14 @@ describe('<UploadResult />', () => {
   describe('error', () => {
     it('should add error class and render delete icon', () => {
       const { getHostHTMLElement } = render(
-        <UploadResult
-          name="hello.png"
-          status="error"
-        />,
+        <UploadResult name="hello.png" status="error" />,
       );
       const element = getHostHTMLElement();
       const deleteIconElement = queryDeleteIcon(element);
 
-      expect(element.classList.contains('mzn-upload-result--error')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-result--error'),
+      ).toBeTruthy();
       expect(deleteIconElement).toBeInstanceOf(HTMLElement);
     });
   });

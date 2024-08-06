@@ -32,11 +32,14 @@ export function usePagination(props: UsePaginationParams = {}) {
     total = 0,
   } = props;
 
-  const totalPages = (total ? Math.ceil(total / pageSize) : 1);
+  const totalPages = total ? Math.ceil(total / pageSize) : 1;
 
   const itemList: (number | string)[] = useMemo(() => {
     const startPages = range(1, Math.min(boundaryCount, totalPages));
-    const endPages = range(Math.max(totalPages - boundaryCount + 1, boundaryCount + 1), totalPages);
+    const endPages = range(
+      Math.max(totalPages - boundaryCount + 1, boundaryCount + 1),
+      totalPages,
+    );
 
     const siblingsStart = Math.max(
       Math.min(
@@ -47,10 +50,7 @@ export function usePagination(props: UsePaginationParams = {}) {
     );
 
     const siblingsEnd = Math.min(
-      Math.max(
-        current + siblingCount,
-        boundaryCount + siblingCount * 2 + 2,
-      ),
+      Math.max(current + siblingCount, boundaryCount + siblingCount * 2 + 2),
       endPages.length > 0 ? endPages[0] - 2 : totalPages - 1,
     );
 
@@ -77,7 +77,14 @@ export function usePagination(props: UsePaginationParams = {}) {
 
       ...(hideNextButton ? [] : ['next']),
     ];
-  }, [boundaryCount, current, hideNextButton, hidePreviousButton, siblingCount, totalPages]);
+  }, [
+    boundaryCount,
+    current,
+    hideNextButton,
+    hidePreviousButton,
+    siblingCount,
+    totalPages,
+  ]);
 
   const handleClick = (page: number) => {
     if (handleChange) {
@@ -86,41 +93,49 @@ export function usePagination(props: UsePaginationParams = {}) {
   };
 
   const items: PaginationItemProps[] = useMemo(
-    () => itemList.map((item: string | number) => {
-      if (typeof item === 'number') {
-        return {
-          active: item === current,
-          'aria-current': item === current ? true : undefined,
-          'aria-disabled': disabled ? true : undefined,
-          'aria-label': `Go to ${item} page`,
-          disabled,
-          onClick: () => { handleClick(item); },
-          page: item,
-          type: 'page',
+    () =>
+      itemList.map((item: string | number) => {
+        if (typeof item === 'number') {
+          return {
+            active: item === current,
+            'aria-current': item === current ? true : undefined,
+            'aria-disabled': disabled ? true : undefined,
+            'aria-label': `Go to ${item} page`,
+            disabled,
+            onClick: () => {
+              handleClick(item);
+            },
+            page: item,
+            type: 'page',
+          };
+        }
+
+        const restItemProps: { [key: string]: PaginationItemProps } = {
+          previous: {
+            'aria-label': 'Go to previous Page',
+            disabled: disabled || current - 1 < 1,
+            onClick: () => {
+              handleClick(current - 1);
+            },
+            type: item,
+          },
+          next: {
+            'aria-label': 'Go to next Page',
+            disabled: disabled || current + 1 > totalPages,
+            onClick: () => {
+              handleClick(current + 1);
+            },
+            type: item,
+          },
+          ellipsis: {
+            disabled,
+            type: item,
+          },
         };
-      }
 
-      const restItemProps: { [key: string]: PaginationItemProps } = {
-        previous: {
-          'aria-label': 'Go to previous Page',
-          disabled: disabled || (current - 1 < 1),
-          onClick: () => { handleClick(current - 1); },
-          type: item,
-        },
-        next: {
-          'aria-label': 'Go to next Page',
-          disabled: disabled || (current + 1 > totalPages),
-          onClick: () => { handleClick(current + 1); },
-          type: item,
-        },
-        ellipsis: {
-          disabled,
-          type: item,
-        },
-      };
-
-      return restItemProps[item] || { type: item };
-    }), [current, disabled, itemList, totalPages],
+        return restItemProps[item] || { type: item };
+      }),
+    [current, disabled, itemList, totalPages],
   );
 
   return {

@@ -4,12 +4,7 @@ import {
   MessageSeverity,
 } from '@mezzanine-ui/core/message';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import {
-  FC,
-  Key,
-  useEffect,
-  useState,
-} from 'react';
+import { FC, Key, useEffect, useState } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import {
@@ -21,23 +16,22 @@ import {
 import { SlideFade, SlideFadeProps } from '../Transition';
 
 export interface MessageConfigProps
-  extends
-  Pick<NotifierConfig, 'duration'>,
-  Pick<SlideFadeProps,
-  | 'onEnter'
-  | 'onEntering'
-  | 'onEntered'
-  | 'onExit'
-  | 'onExiting'
-  | 'onExited'
-  | 'easing'
-  | 'direction'
-  > {}
+  extends Pick<NotifierConfig, 'duration'>,
+    Pick<
+      SlideFadeProps,
+      | 'onEnter'
+      | 'onEntering'
+      | 'onEntered'
+      | 'onExit'
+      | 'onExiting'
+      | 'onExited'
+      | 'easing'
+      | 'direction'
+    > {}
 
 export interface MessageData
-  extends
-  Omit<NotifierData, 'onClose'>,
-  MessageConfigProps {
+  extends Omit<NotifierData, 'onClose'>,
+    MessageConfigProps {
   /**
    * If given, the message will be closed after the amount of time.
    * You can use `Message.config` to overwrite.
@@ -58,11 +52,15 @@ export interface MessageData
   severity?: MessageSeverity;
 }
 
-export type MessageType = FC<MessageData>
-& Notifier<MessageData, MessageConfigProps>
-& (Record<
-string,
-(message: MessageData['children'], props?: Omit<MessageData, 'children' | 'severity' | 'icon'>) => Key>);
+export type MessageType = FC<MessageData> &
+  Notifier<MessageData, MessageConfigProps> &
+  Record<
+    string,
+    (
+      message: MessageData['children'],
+      props?: Omit<MessageData, 'children' | 'severity' | 'icon'>,
+    ) => Key
+  >;
 
 /**
  * The react component for `mezzanine` message.
@@ -104,38 +102,21 @@ const Message: MessageType = ((props) => {
   };
 
   return (
-    <SlideFade
-      in={open}
-      appear
-      onExited={onExited}
-      {...restTransitionProps}
-    >
+    <SlideFade in={open} appear onExited={onExited} {...restTransitionProps}>
       <div
-        className={cx(
-          classes.host,
-          severity ? classes.severity(severity) : '',
-        )}
+        className={cx(classes.host, severity ? classes.severity(severity) : '')}
       >
-        {icon ? (
-          <Icon
-            className={classes.icon}
-            icon={icon}
-          />
-        ) : null}
-        <span className={classes.content}>
-          {children}
-        </span>
+        {icon ? <Icon className={classes.icon} icon={icon} /> : null}
+        <span className={classes.content}>{children}</span>
       </div>
     </SlideFade>
   );
 }) as MessageType;
 
-const {
-  add,
-  config,
-  destroy,
-  remove,
-} = createNotifier<MessageData, MessageConfigProps>({
+const { add, config, destroy, remove } = createNotifier<
+  MessageData,
+  MessageConfigProps
+>({
   duration: 3000,
   render: (message) => <Message {...message} key={undefined} />,
   setRoot: (root) => {
@@ -148,31 +129,42 @@ Message.config = config;
 Message.destroy = destroy;
 Message.remove = remove;
 
-const severities = [{
-  key: 'success',
-  icon: messageIcons.success,
-}, {
-  key: 'warning',
-  icon: messageIcons.warning,
-}, {
-  key: 'error',
-  icon: messageIcons.error,
-}, {
-  key: 'info',
-  icon: messageIcons.info,
-}];
+const severities = [
+  {
+    key: 'success',
+    icon: messageIcons.success,
+  },
+  {
+    key: 'warning',
+    icon: messageIcons.warning,
+  },
+  {
+    key: 'error',
+    icon: messageIcons.error,
+  },
+  {
+    key: 'info',
+    icon: messageIcons.info,
+  },
+];
 
-const validSeverities: MessageSeverity[] = ['success', 'warning', 'error', 'info'];
+const validSeverities: MessageSeverity[] = [
+  'success',
+  'warning',
+  'error',
+  'info',
+];
 
-(severities).forEach((severity) => {
-  Message[severity.key] = (message, props) => Message.add({
-    ...props,
-    children: message,
-    severity: validSeverities.includes((severity.key as MessageSeverity))
-      ? (severity.key as MessageSeverity)
-      : undefined,
-    icon: severity.icon,
-  });
+severities.forEach((severity) => {
+  Message[severity.key] = (message, props) =>
+    Message.add({
+      ...props,
+      children: message,
+      severity: validSeverities.includes(severity.key as MessageSeverity)
+        ? (severity.key as MessageSeverity)
+        : undefined,
+      icon: severity.icon,
+    });
 });
 
 export default Message;

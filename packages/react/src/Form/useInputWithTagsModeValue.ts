@@ -6,12 +6,16 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useInputControlValue, UseInputControlValueProps } from './useInputControlValue';
+import {
+  useInputControlValue,
+  UseInputControlValueProps,
+} from './useInputControlValue';
 
 export type TagsType = string[] | number[];
 
-export interface UseInputWithTagsModeValueProps<E extends HTMLInputElement | HTMLTextAreaElement>
-  extends UseInputControlValueProps<E> {
+export interface UseInputWithTagsModeValueProps<
+  E extends HTMLInputElement | HTMLTextAreaElement,
+> extends UseInputControlValueProps<E> {
   /**
    * The value of initial tags
    */
@@ -24,7 +28,7 @@ export interface UseInputWithTagsModeValueProps<E extends HTMLInputElement | HTM
   /**
    * The change event handler of tags
    */
-  onTagsChange?: (tags: TagsType) => void,
+  onTagsChange?: (tags: TagsType) => void;
   /**
    * The ref object of input element
    */
@@ -41,9 +45,9 @@ export interface UseInputWithTagsModeValueProps<E extends HTMLInputElement | HTM
   tagValueMaxLength?: number;
 }
 
-export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextAreaElement>(
-  props: Omit<UseInputWithTagsModeValueProps<E>, 'onChange'>,
-) {
+export function useInputWithTagsModeValue<
+  E extends HTMLInputElement | HTMLTextAreaElement,
+>(props: Omit<UseInputWithTagsModeValueProps<E>, 'onChange'>) {
   const {
     defaultValue,
     initialTagsValue = [],
@@ -54,40 +58,38 @@ export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextA
     tagValueMaxLength = 8,
   } = props;
   const canActive = !skip;
-  const activeMaxTagsLength = maxTagsLength || Math.max(3, initialTagsValue.length);
+  const activeMaxTagsLength =
+    maxTagsLength || Math.max(3, initialTagsValue.length);
 
-  const tagsSetRef = useRef<Set<string>>(new Set(
-    initialTagsValue.map((initialTag) => initialTag.trim()),
-  ));
+  const tagsSetRef = useRef<Set<string>>(
+    new Set(initialTagsValue.map((initialTag) => initialTag.trim())),
+  );
 
   const inputTypeIsNumber = useRef(ref.current?.type === 'number');
 
-  const tagValueTransform = (tag: string) => (
-    tag.slice(0, tagValueMaxLength).trim()
-  );
+  const tagValueTransform = (tag: string) =>
+    tag.slice(0, tagValueMaxLength).trim();
 
-  const transformNumberTags = (tags: string[]) => (
-    tags.map((tag) => Number(tag))
-  );
+  const transformNumberTags = (tags: string[]) =>
+    tags.map((tag) => Number(tag));
 
-  const generateUniqueTags = () => (
-    Array
-      .from(tagsSetRef.current.values())
-      .map((initialTag) => tagValueTransform(initialTag))
-  );
+  const generateUniqueTags = () =>
+    Array.from(tagsSetRef.current.values()).map((initialTag) =>
+      tagValueTransform(initialTag),
+    );
 
   const [value, setValue] = useInputControlValue({
     defaultValue: canActive ? defaultValue : undefined,
   });
 
   const [tags, setTags] = useState<string[]>(
-    generateUniqueTags()
-      .slice(0, activeMaxTagsLength),
+    generateUniqueTags().slice(0, activeMaxTagsLength),
   );
 
-  const tagsWillOverflow = useCallback(() => (
-    tagsSetRef.current.size === activeMaxTagsLength
-  ), []);
+  const tagsWillOverflow = useCallback(
+    () => tagsSetRef.current.size === activeMaxTagsLength,
+    [],
+  );
 
   const clearTypingFieldValue = () => {
     if (!canActive) return;
@@ -128,33 +130,36 @@ export function useInputWithTagsModeValue<E extends HTMLInputElement | HTMLTextA
     onChangeProp?.(numberTag ? transformNumberTags(newTags) : newTags);
   };
 
-  const onKeyDown = useCallback((e: KeyboardEvent) => {
-    if (!canActive) return;
-    const element = ref.current;
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (!canActive) return;
+      const element = ref.current;
 
-    if (
-      element &&
-      element?.value &&
-      (e.key === 'Enter' || e.code === 'Enter') &&
-      !e.nativeEvent.isComposing &&
-      !tagsWillOverflow()
-    ) {
-      e.preventDefault();
-      inputTypeIsNumber.current = ref.current?.type === 'number';
+      if (
+        element &&
+        element?.value &&
+        (e.key === 'Enter' || e.code === 'Enter') &&
+        !e.nativeEvent.isComposing &&
+        !tagsWillOverflow()
+      ) {
+        e.preventDefault();
+        inputTypeIsNumber.current = ref.current?.type === 'number';
 
-      const tagsSet = tagsSetRef.current;
-      const isNumber = inputTypeIsNumber.current;
-      const newTagValue = tagValueTransform(element.value);
+        const tagsSet = tagsSetRef.current;
+        const isNumber = inputTypeIsNumber.current;
+        const newTagValue = tagValueTransform(element.value);
 
-      tagsSet.add(newTagValue);
+        tagsSet.add(newTagValue);
 
-      const newTags = generateUniqueTags();
+        const newTags = generateUniqueTags();
 
-      setTags(newTags);
-      onChangeProp?.(isNumber ? transformNumberTags(newTags) : newTags);
-      clearTypingFieldValue();
-    }
-  }, [tagsWillOverflow]);
+        setTags(newTags);
+        onChangeProp?.(isNumber ? transformNumberTags(newTags) : newTags);
+        clearTypingFieldValue();
+      }
+    },
+    [tagsWillOverflow],
+  );
 
   return [
     {

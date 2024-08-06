@@ -1,26 +1,19 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import {
-  TimePanelAction,
-} from '.';
+import { TimePanelAction } from '.';
 
 describe('<TimePanelAction />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<TimePanelAction ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TimePanelAction ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<TimePanelAction className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<TimePanelAction className={className} />),
   );
 
   it('should bind host class', () => {
@@ -40,7 +33,9 @@ describe('<TimePanelAction />', () => {
     });
 
     it('should pass to button element', () => {
-      const { getHostHTMLElement } = render(<TimePanelAction confirmText="foo" />);
+      const { getHostHTMLElement } = render(
+        <TimePanelAction confirmText="foo" />,
+      );
       const element = getHostHTMLElement();
       const buttonElement = element.querySelector('.mzn-button');
 

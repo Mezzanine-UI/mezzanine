@@ -13,11 +13,7 @@ import {
   SingleSliderValue,
 } from '@mezzanine-ui/core/slider';
 import { CssVarInterpolation } from '@mezzanine-ui/system/css';
-import {
-  RefObject,
-  useRef,
-  useState,
-} from 'react';
+import { RefObject, useRef, useState } from 'react';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 
 export interface UseSliderCommonProps {
@@ -54,13 +50,7 @@ export interface UseSliderResult {
 export function useSlider(props: UseRangeSliderProps): UseSliderResult;
 export function useSlider(props: UseSingleSliderProps): UseSliderResult;
 export function useSlider(props: UseSliderProps) {
-  const {
-    max,
-    min,
-    onChange,
-    step,
-    value,
-  } = props;
+  const { max, min, onChange, step, value } = props;
   const railRef = useRef<HTMLDivElement>(null);
   const [anchorValue, setAnchorValue] = useState<number | undefined>(undefined);
   const [dragging, setDragging] = useState<boolean>(false);
@@ -70,15 +60,20 @@ export function useSlider(props: UseSliderProps) {
       return undefined;
     }
 
-    return isRangeSlider(value) ? Math.abs(1 - value.indexOf(anchorValue)) : undefined;
+    return isRangeSlider(value)
+      ? Math.abs(1 - value.indexOf(anchorValue))
+      : undefined;
   }
 
-  const fixedValue = isRangeSlider(value) ? fixRangeSliderValue(value, min, max)
+  const fixedValue = isRangeSlider(value)
+    ? fixRangeSliderValue(value, min, max)
     : fixSingleSliderValue(value, min, max);
 
   const cssVars = toSliderCssVars({
     trackWidth: getPercentage(
-      isRangeSlider(fixedValue) ? Math.abs(fixedValue[0] - fixedValue[1]) : fixedValue - min,
+      isRangeSlider(fixedValue)
+        ? Math.abs(fixedValue[0] - fixedValue[1])
+        : fixedValue - min,
       min,
       max,
     ),
@@ -93,12 +88,16 @@ export function useSlider(props: UseSliderProps) {
       max,
     ),
     handlerStartPosition: getPercentage(
-      isRangeSlider(fixedValue) ? Math.abs(Math.min(...fixedValue) - min) : fixedValue,
+      isRangeSlider(fixedValue)
+        ? Math.abs(Math.min(...fixedValue) - min)
+        : fixedValue,
       min,
       max,
     ),
     handlerEndPosition: getPercentage(
-      isRangeSlider(fixedValue) ? Math.abs(Math.max(...fixedValue) - min) : fixedValue,
+      isRangeSlider(fixedValue)
+        ? Math.abs(Math.max(...fixedValue) - min)
+        : fixedValue,
       min,
       max,
     ),
@@ -123,31 +122,33 @@ export function useSlider(props: UseSliderProps) {
     setAnchorValue(isRangeSlider(value) ? value[Math.abs(1 - index!)] : value);
   };
 
-  const handleDrag = onChange ? (e: any) => {
-    e.preventDefault();
+  const handleDrag = onChange
+    ? (e: any) => {
+        e.preventDefault();
 
-    const { current: railElement } = railRef;
+        const { current: railElement } = railRef;
 
-    if (!railElement) return;
+        if (!railElement) return;
 
-    const roundedNewValue = getRoundedNewValue(e, railElement);
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const activeIndex = getActiveIndex()!;
+        const roundedNewValue = getRoundedNewValue(e, railElement);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const activeIndex = getActiveIndex()!;
 
-    if (isRangeSlider(value)) {
-      const newValue: RangeSliderValue = [
-        ...value.slice(0, activeIndex),
-        roundedNewValue,
-        ...value.slice(activeIndex + 1),
-      ] as RangeSliderValue;
+        if (isRangeSlider(value)) {
+          const newValue: RangeSliderValue = [
+            ...value.slice(0, activeIndex),
+            roundedNewValue,
+            ...value.slice(activeIndex + 1),
+          ] as RangeSliderValue;
 
-      onChange(sortSliderValue(newValue));
+          onChange(sortSliderValue(newValue));
 
-      return;
-    }
+          return;
+        }
 
-    onChange(roundedNewValue);
-  } : undefined;
+        onChange(roundedNewValue);
+      }
+    : undefined;
 
   const handleDragEnd = (e: any) => {
     e.preventDefault();
@@ -156,53 +157,49 @@ export function useSlider(props: UseSliderProps) {
     setAnchorValue(undefined);
   };
 
-  const handleClickTrackOrRail = onChange ? (e: any) => {
-    setDragging(true);
+  const handleClickTrackOrRail = onChange
+    ? (e: any) => {
+        setDragging(true);
 
-    const { current: railElement } = railRef;
+        const { current: railElement } = railRef;
 
-    if (!railElement) return;
+        if (!railElement) return;
 
-    const roundedNewValue = getRoundedNewValue(e, railElement);
-    const closetHandlerIndex = findClosetValueIndex(value, roundedNewValue);
+        const roundedNewValue = getRoundedNewValue(e, railElement);
+        const closetHandlerIndex = findClosetValueIndex(value, roundedNewValue);
 
-    if (isRangeSlider(value)) {
-      setAnchorValue(value[Math.abs(1 - closetHandlerIndex)]);
+        if (isRangeSlider(value)) {
+          setAnchorValue(value[Math.abs(1 - closetHandlerIndex)]);
 
-      const newValue: RangeSliderValue = [
-        ...value.slice(0, closetHandlerIndex),
-        roundedNewValue,
-        ...value.slice(closetHandlerIndex + 1),
-      ] as RangeSliderValue;
+          const newValue: RangeSliderValue = [
+            ...value.slice(0, closetHandlerIndex),
+            roundedNewValue,
+            ...value.slice(closetHandlerIndex + 1),
+          ] as RangeSliderValue;
 
-      onChange(
-        sortSliderValue(newValue),
-      );
+          onChange(sortSliderValue(newValue));
 
-      return;
-    }
+          return;
+        }
 
-    onChange(roundedNewValue);
-  } : undefined;
-
-  useDocumentEvents(() => (
-    dragging
-      ? {
-        mousemove: handleDrag,
-        touchmove: handleDrag,
-        mouseleave: handleDragEnd,
-        mouseup: handleDragEnd,
-        touchend: handleDragEnd,
-        touchcancel: handleDragEnd,
+        onChange(roundedNewValue);
       }
-      : undefined),
-  [
-    dragging,
-    min,
-    max,
-    step,
-    onChange,
-  ]);
+    : undefined;
+
+  useDocumentEvents(
+    () =>
+      dragging
+        ? {
+            mousemove: handleDrag,
+            touchmove: handleDrag,
+            mouseleave: handleDragEnd,
+            mouseup: handleDragEnd,
+            touchend: handleDragEnd,
+            touchcancel: handleDragEnd,
+          }
+        : undefined,
+    [dragging, min, max, step, onChange],
+  );
 
   return {
     activeHandleIndex: getActiveIndex(),

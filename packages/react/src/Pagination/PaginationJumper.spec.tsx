@@ -1,9 +1,4 @@
-import {
-  cleanup,
-  render,
-  TestRenderer,
-  fireEvent,
-} from '../../__test-utils__';
+import { cleanup, render, TestRenderer, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -17,14 +12,12 @@ import { PaginationJumper } from '.';
 describe('<PaginationJumper />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<PaginationJumper ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<PaginationJumper ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<PaginationJumper className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<PaginationJumper className={className} />),
   );
 
   it('should bind host class', () => {
@@ -37,7 +30,9 @@ describe('<PaginationJumper />', () => {
   describe('prop: onChange', () => {
     it('should trigger onChange', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<PaginationJumper onChange={onChange} total={10} />);
+      const { getHostHTMLElement } = render(
+        <PaginationJumper onChange={onChange} total={10} />,
+      );
       const element = getHostHTMLElement();
       const button = element.querySelector('button');
       const input = element.querySelector('input');
@@ -54,7 +49,9 @@ describe('<PaginationJumper />', () => {
     });
     it('should not trigger onChange when input over range', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<PaginationJumper onChange={onChange} total={10} />);
+      const { getHostHTMLElement } = render(
+        <PaginationJumper onChange={onChange} total={10} />,
+      );
       const element = getHostHTMLElement();
       const button = element.querySelector('button');
       const input = element.querySelector('input');
@@ -80,7 +77,9 @@ describe('<PaginationJumper />', () => {
 
     it('should not trigger onChange when input string', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<PaginationJumper onChange={onChange} total={10} />);
+      const { getHostHTMLElement } = render(
+        <PaginationJumper onChange={onChange} total={10} />,
+      );
       const element = getHostHTMLElement();
       const button = element.querySelector('button');
       const input = element.querySelector('input');
@@ -98,25 +97,21 @@ describe('<PaginationJumper />', () => {
 
     it('should trigger onChange when trigger input keyDown event: Enter', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<PaginationJumper onChange={onChange} total={100} />);
+      const { getHostHTMLElement } = render(
+        <PaginationJumper onChange={onChange} total={100} />,
+      );
       const element = getHostHTMLElement();
       const input = element.querySelector('input');
 
-      fireEvent.change(
-        input!,
-        {
-          target: {
-            value: '2',
-          },
+      fireEvent.change(input!, {
+        target: {
+          value: '2',
         },
-      );
+      });
 
-      fireEvent.keyDown(
-        input!,
-        {
-          key: 'Enter',
-        },
-      );
+      fireEvent.keyDown(input!, {
+        key: 'Enter',
+      });
 
       expect(onChange).toBeCalled();
     });
@@ -154,11 +149,7 @@ describe('<PaginationJumper />', () => {
 
   describe('prop: disabled', () => {
     it('should pass disabled props to children', () => {
-      const testRenderer = TestRenderer.create(
-        <PaginationJumper
-          disabled
-        />,
-      );
+      const testRenderer = TestRenderer.create(<PaginationJumper disabled />);
       const testInstance = testRenderer.root;
       const typographyInstance = testInstance.findByType(Typography);
       const buttonInstance = testInstance.findByType(Button);

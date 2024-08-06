@@ -1,52 +1,53 @@
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
-import {
-  forwardRef,
-  RefObject,
-  useMemo,
-} from 'react';
-import Calendar, { CalendarProps, useCalendarControls, useCalendarContext } from '../Calendar';
-import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
+import { forwardRef, RefObject, useMemo } from 'react';
+import Calendar, {
+  CalendarProps,
+  useCalendarControls,
+  useCalendarContext,
+} from '../Calendar';
+import InputTriggerPopper, {
+  InputTriggerPopperProps,
+} from '../_internal/InputTriggerPopper';
 
 export interface DatePickerCalendarProps
-  extends
-  Pick<InputTriggerPopperProps,
-  | 'anchor'
-  | 'fadeProps'
-  | 'open'
-  >,
-  Pick<CalendarProps,
-  | 'disabledMonthSwitch'
-  | 'disableOnNext'
-  | 'disableOnPrev'
-  | 'disabledYearSwitch'
-  | 'displayMonthLocale'
-  | 'isDateDisabled'
-  | 'isMonthDisabled'
-  | 'isWeekDisabled'
-  | 'isYearDisabled'
-  | 'onChange'
-  | 'referenceDate'> {
+  extends Pick<InputTriggerPopperProps, 'anchor' | 'fadeProps' | 'open'>,
+    Pick<
+      CalendarProps,
+      | 'disabledMonthSwitch'
+      | 'disableOnNext'
+      | 'disableOnPrev'
+      | 'disabledYearSwitch'
+      | 'displayMonthLocale'
+      | 'isDateDisabled'
+      | 'isMonthDisabled'
+      | 'isWeekDisabled'
+      | 'isYearDisabled'
+      | 'onChange'
+      | 'referenceDate'
+    > {
   /**
    * Other calendar props you may provide to `Calendar`.
    */
-  calendarProps?: Omit<CalendarProps,
-  | 'disableOnNext'
-  | 'disableOnPrev'
-  | 'displayMonthLocale'
-  | 'isDateDisabled'
-  | 'isMonthDisabled'
-  | 'isWeekDisabled'
-  | 'isYearDisabled'
-  | 'locale'
-  | 'mode'
-  | 'onChange'
-  | 'onMonthControlClick'
-  | 'onNext'
-  | 'onPrev'
-  | 'onYearControlClick'
-  | 'referenceDate'
-  | 'updateReferenceDate'
-  | 'value'>;
+  calendarProps?: Omit<
+    CalendarProps,
+    | 'disableOnNext'
+    | 'disableOnPrev'
+    | 'displayMonthLocale'
+    | 'isDateDisabled'
+    | 'isMonthDisabled'
+    | 'isWeekDisabled'
+    | 'isYearDisabled'
+    | 'locale'
+    | 'mode'
+    | 'onChange'
+    | 'onMonthControlClick'
+    | 'onNext'
+    | 'onPrev'
+    | 'onYearControlClick'
+    | 'referenceDate'
+    | 'updateReferenceDate'
+    | 'value'
+  >;
   /**
    * React ref for calendar component.
    */
@@ -59,12 +60,10 @@ export interface DatePickerCalendarProps
   /**
    * Other props you may provide to `Popper` component
    */
-  popperProps?: Omit<InputTriggerPopperProps,
-  | 'anchor'
-  | 'children'
-  | 'fadeProps'
-  | 'open'
-  >
+  popperProps?: Omit<
+    InputTriggerPopperProps,
+    'anchor' | 'children' | 'fadeProps' | 'open'
+  >;
   /**
    * The calendar cell will be marked as active if it matches the same date of given value.
    */
@@ -104,10 +103,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       referenceDate: referenceDateProp,
       value,
     } = props;
-    const {
-      className: calendarClassName,
-      ...restCalendarProps
-    } = calendarProps || {};
+    const { className: calendarClassName, ...restCalendarProps } =
+      calendarProps || {};
     const {
       currentMode,
       onMonthControlClick,
@@ -134,7 +131,10 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
 
       if (currentMode === 'month') {
         return (target: DateType) => {
-          const result = currentMode === mode ? target : setMonth(referenceDate, getMonth(target));
+          const result =
+            currentMode === mode
+              ? target
+              : setMonth(referenceDate, getMonth(target));
 
           updateReferenceDate(result);
 
@@ -148,7 +148,10 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
 
       if (currentMode === 'year') {
         return (target: DateType) => {
-          const result = currentMode === mode ? target : setYear(referenceDate, getYear(target));
+          const result =
+            currentMode === mode
+              ? target
+              : setYear(referenceDate, getYear(target));
 
           updateReferenceDate(result);
 

@@ -1,12 +1,11 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import {
-  cloneElement,
-  CSSProperties,
-  forwardRef,
-  useRef,
-} from 'react';
+import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import Transition, { TransitionState, TransitionImplementationProps, TransitionProps } from './Transition';
+import Transition, {
+  TransitionState,
+  TransitionImplementationProps,
+  TransitionProps,
+} from './Transition';
 import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
@@ -39,7 +38,10 @@ export type ZoomProps = TransitionImplementationProps;
 /**
  * The react component for `mezzanine` transition zoom.
  */
-const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(props: ZoomProps, ref) {
+const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(
+  props: ZoomProps,
+  ref,
+) {
   const {
     children,
     delay = 0,
@@ -55,12 +57,15 @@ const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(props: ZoomProps, 
   const duration = durationProp === 'auto' ? defaultDuration : durationProp;
   const nodeRef = useRef<HTMLElement>(null);
   const composedNodeRef = useComposeRefs([ref, nodeRef]);
-  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition({
-    delay,
-    duration,
-    easing,
-    properties: ['transform'],
-  }, children?.props.style);
+  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
+    {
+      delay,
+      duration,
+      easing,
+      properties: ['transform'],
+    },
+    children?.props.style,
+  );
   const transitionProps: TransitionProps = {
     ...rest,
     duration,
@@ -99,14 +104,16 @@ const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(props: ZoomProps, 
 
   return (
     <Transition {...transitionProps}>
-      {children && ((state) => cloneElement(children, {
-        ...children.props,
-        ref: composedNodeRef,
-        style: {
-          ...getStyle(state, inProp),
-          ...children.props.style,
-        },
-      }))}
+      {children &&
+        ((state) =>
+          cloneElement(children, {
+            ...children.props,
+            ref: composedNodeRef,
+            style: {
+              ...getStyle(state, inProp),
+              ...children.props.style,
+            },
+          }))}
     </Transition>
   );
 });

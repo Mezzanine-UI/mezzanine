@@ -1,8 +1,5 @@
 import { useContext } from 'react';
-import {
-  ModalSize,
-  modalClasses as classes,
-} from '@mezzanine-ui/core/modal';
+import { ModalSize, modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   cleanup,
@@ -11,9 +8,7 @@ import {
   render,
   renderHook,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import Modal, { ModalProps, ModalSeverity } from '.';
 
@@ -35,9 +30,8 @@ describe('<Modal />', () => {
     jest.clearAllMocks();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Modal ref={ref} open />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Modal ref={ref} open />),
   );
 
   it('should provide modal control', () => {
@@ -50,10 +44,13 @@ describe('<Modal />', () => {
       disablePortal: true,
       open: true,
     };
-    const { result, rerender } = renderHook(() => useContext(ModalControlContext), {
-      wrapper: Modal as any,
-      initialProps: props,
-    });
+    const { result, rerender } = renderHook(
+      () => useContext(ModalControlContext),
+      {
+        wrapper: Modal as any,
+        initialProps: props,
+      },
+    );
 
     expect(result.current).toEqual(modalControl);
 
@@ -79,10 +76,7 @@ describe('<Modal />', () => {
     const className = 'foo';
 
     render(
-      <Modal
-        className={className}
-        open
-      >
+      <Modal className={className} open>
         foo
       </Modal>,
     );
@@ -96,7 +90,9 @@ describe('<Modal />', () => {
     function testBindFullScreenClass(fullScreen: boolean) {
       const modalElement = getModalElement()!;
 
-      expect(modalElement.classList.contains('mzn-modal--full-screen')).toBe(fullScreen);
+      expect(modalElement.classList.contains('mzn-modal--full-screen')).toBe(
+        fullScreen,
+      );
     }
 
     it('should render fullScreen=false by default', () => {
@@ -122,7 +118,9 @@ describe('<Modal />', () => {
     function testBindSeverityClass(severity: ModalSeverity) {
       const modalElement = getModalElement()!;
 
-      expect(modalElement.classList.contains(`mzn-modal--${severity}`)).toBeTruthy();
+      expect(
+        modalElement.classList.contains(`mzn-modal--${severity}`),
+      ).toBeTruthy();
     }
 
     it('should render severity="info" by default', () => {
@@ -143,12 +141,7 @@ describe('<Modal />', () => {
   });
 
   describe('prop: size', () => {
-    const sizes: ModalSize[] = [
-      'small',
-      'medium',
-      'large',
-      'extraLarge',
-    ];
+    const sizes: ModalSize[] = ['small', 'medium', 'large', 'extraLarge'];
 
     sizes.forEach((size) => {
       it(`should bind ${size} class if size="${size}"`, () => {
@@ -169,8 +162,12 @@ describe('<Modal />', () => {
       const modalElement = getModalElement()!;
       const { lastElementChild: closeIconElement } = modalElement;
 
-      expect(modalElement.classList.contains('mzn-modal--close-icon')).toBeTruthy();
-      expect(closeIconElement!.getAttribute('data-icon-name')).toBe(TimesIcon.name);
+      expect(
+        modalElement.classList.contains('mzn-modal--close-icon'),
+      ).toBeTruthy();
+      expect(closeIconElement!.getAttribute('data-icon-name')).toBe(
+        TimesIcon.name,
+      );
       expect(closeIconElement!.classList.contains('mzn-modal__close-icon'));
     });
 
@@ -193,7 +190,9 @@ describe('<Modal />', () => {
       const modalElement = getModalElement()!;
       const { lastElementChild: closeIconElement } = modalElement;
 
-      expect(modalElement.classList.contains('mzn-modal--close-icon')).toBeFalsy();
+      expect(
+        modalElement.classList.contains('mzn-modal--close-icon'),
+      ).toBeFalsy();
       expect(closeIconElement).toBe(null);
     });
   });

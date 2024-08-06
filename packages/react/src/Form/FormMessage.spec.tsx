@@ -1,9 +1,6 @@
 import { Severity } from '@mezzanine-ui/system/severity';
 import { formMessageIcons } from '@mezzanine-ui/core/form';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,14 +10,12 @@ import { FormField, FormMessage } from '.';
 describe('<FormMessage />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLSpanElement,
-    (ref) => render(<FormMessage ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
+    render(<FormMessage ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<FormMessage className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<FormMessage className={className} />),
   );
 
   it('should render by span and bind host class', () => {
@@ -33,15 +28,22 @@ describe('<FormMessage />', () => {
   });
 
   describe('form: severity', () => {
-    function testSeverityIcon(element: HTMLElement, severity: Severity | undefined) {
+    function testSeverityIcon(
+      element: HTMLElement,
+      severity: Severity | undefined,
+    ) {
       const messageElement = element.querySelector('.mzn-form-field__message');
-      const severityIconElement = messageElement!.querySelector('.mzn-form-field__severity-icon');
+      const severityIconElement = messageElement!.querySelector(
+        '.mzn-form-field__severity-icon',
+      );
 
       if (severity) {
         const icon = formMessageIcons[severity];
 
         expect(severityIconElement!.tagName.toLowerCase()).toBe('i');
-        expect(severityIconElement!.getAttribute('data-icon-name')).toBe(icon.name);
+        expect(severityIconElement!.getAttribute('data-icon-name')).toBe(
+          icon.name,
+        );
       } else {
         expect(severityIconElement).toBeNull();
       }
@@ -58,11 +60,7 @@ describe('<FormMessage />', () => {
       testSeverityIcon(element, undefined);
     });
 
-    const severities: Severity[] = [
-      'success',
-      'warning',
-      'error',
-    ];
+    const severities: Severity[] = ['success', 'warning', 'error'];
 
     severities.forEach((severity) => {
       it(`should render ${formMessageIcons[severity].name} icon if severity=${severity}`, () => {

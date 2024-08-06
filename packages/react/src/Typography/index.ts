@@ -14,17 +14,14 @@ export type {
   TypographyWeight,
 } from '@mezzanine-ui/core/typography';
 
-export type {
-  TypographyComponent,
-  TypographyProps,
-};
+export type { TypographyComponent, TypographyProps };
 
 /**
  * @remark
  * Add type alias here for parsable to react docgen typescript.
  */
 type GenericTypography = <C extends TypographyComponent = 'p'>(
-  props: PropsWithoutRef<TypographyProps<C>> & RefAttributes<ElementRef<C>>
+  props: PropsWithoutRef<TypographyProps<C>> & RefAttributes<ElementRef<C>>,
 ) => ReactElement;
 
 export default Typography as GenericTypography;

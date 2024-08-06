@@ -1,9 +1,7 @@
 /* eslint-disable no-redeclare */
 /* global JSX */
 import { forwardRef, Ref, MouseEventHandler } from 'react';
-import {
-  selectClasses as classes,
-} from '@mezzanine-ui/core/select';
+import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import TextField, { TextFieldProps } from '../TextField';
 import { SelectValue } from './typings';
@@ -13,32 +11,28 @@ import Icon from '../Icon';
 import SelectTriggerTags from './SelectTriggerTags';
 
 export type SelectTriggerInputProps = Omit<
-NativeElementPropsWithoutKeyAndRef<'input'>,
-| 'autoComplete'
-| 'children'
-| 'defaultValue'
-| 'disabled'
-| 'readOnly'
-| 'required'
-| 'type'
-| 'value'
-| `aria-${
-  | 'autocomplete'
+  NativeElementPropsWithoutKeyAndRef<'input'>,
+  | 'autoComplete'
+  | 'children'
+  | 'defaultValue'
   | 'disabled'
-  | 'haspopup'
-  | 'multiline'
-  | 'readonly'
+  | 'readOnly'
   | 'required'
-  }`
+  | 'type'
+  | 'value'
+  | `aria-${
+      | 'autocomplete'
+      | 'disabled'
+      | 'haspopup'
+      | 'multiline'
+      | 'readonly'
+      | 'required'}`
 >;
 
 export interface SelectTriggerBaseProps
-  extends
-  Omit<TextFieldProps,
-  | 'active'
-  | 'children'
-  | 'defaultChecked'
-  | 'suffix'
+  extends Omit<
+    TextFieldProps,
+    'active' | 'children' | 'defaultChecked' | 'suffix'
   > {
   /**
    * Controls the chevron icon layout.
@@ -122,7 +116,9 @@ export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
   renderValue?: (value: SelectValue | null) => string;
 };
 
-export type SelectTriggerComponentProps = SelectTriggerMultipleProps | SelectTriggerSingleProps;
+export type SelectTriggerComponentProps =
+  | SelectTriggerMultipleProps
+  | SelectTriggerSingleProps;
 export type SelectTriggerProps = Omit<SelectTriggerComponentProps, 'innerRef'>;
 
 function SelectTriggerComponent(props: SelectTriggerMultipleProps): JSX.Element;
@@ -182,12 +178,9 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
           (onClick as MouseEventHandler)?.(e);
         }
       }}
-      className={cx(
-        classes.triggerSuffixActionIcon,
-        {
-          [classes.triggerSuffixActionIconActive]: active,
-        },
-      )}
+      className={cx(classes.triggerSuffixActionIcon, {
+        [classes.triggerSuffixActionIconActive]: active,
+      })}
     />
   );
 
@@ -212,7 +205,9 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       className={cx(classes.trigger, className)}
       disabled={disabled}
       size={size}
-      suffixActionIcon={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
+      suffixActionIcon={
+        forceHideSuffixActionIcon ? undefined : suffixActionIcon
+      }
     >
       {mode === 'multiple' && (value as SelectValue[])?.length ? (
         <SelectTriggerTags
@@ -249,16 +244,24 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   );
 }
 
-const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>((props, ref) => {
-  if (props.mode === 'multiple') {
-    return (
-      <SelectTriggerComponent {...(props as SelectTriggerMultipleProps)} innerRef={ref} />
-    );
-  }
+const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
+  (props, ref) => {
+    if (props.mode === 'multiple') {
+      return (
+        <SelectTriggerComponent
+          {...(props as SelectTriggerMultipleProps)}
+          innerRef={ref}
+        />
+      );
+    }
 
-  return (
-    <SelectTriggerComponent {...(props as SelectTriggerSingleProps)} innerRef={ref} />
-  );
-});
+    return (
+      <SelectTriggerComponent
+        {...(props as SelectTriggerSingleProps)}
+        innerRef={ref}
+      />
+    );
+  },
+);
 
 export default SelectTrigger;

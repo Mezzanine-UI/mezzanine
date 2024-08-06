@@ -14,24 +14,12 @@ export default {
   title: 'Data Entry/Radio',
 };
 
-const orientations: RadioGroupOrientation[] = [
-  'horizontal',
-  'vertical',
-];
+const orientations: RadioGroupOrientation[] = ['horizontal', 'vertical'];
 
-const sizes: RadioSize[] = [
-  'small',
-  'medium',
-  'large',
-];
+const sizes: RadioSize[] = ['small', 'medium', 'large'];
 
-export const Playground : StoryFn<RadioProps> = ({
-  children,
-  ...props
-}) => (
-  <Radio {...props}>
-    {children}
-  </Radio>
+export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => (
+  <Radio {...props}>{children}</Radio>
 );
 
 Playground.args = {
@@ -61,13 +49,14 @@ export const Standalone = () => (
 );
 
 export const Sizes = () => (
-  <div style={{
-    width: 'fit-content',
-    display: 'flex',
-    flexFlow: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  }}
+  <div
+    style={{
+      width: 'fit-content',
+      display: 'flex',
+      flexFlow: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+    }}
   >
     <Radio size="small">Small</Radio>
     <Radio size="medium">Medium</Radio>
@@ -101,17 +90,9 @@ export const Group: StoryFn<RadioGroupProps> = ({
   return (
     <>
       <Typography variant="h5">From children</Typography>
-      <RadioGroup
-        disabled={disabled}
-        orientation={orientation}
-        size={size}
-      >
+      <RadioGroup disabled={disabled} orientation={orientation} size={size}>
         {options.map(({ disabled: optionDisabled, label, value }) => (
-          <Radio
-            key={value}
-            disabled={optionDisabled}
-            value={value}
-          >
+          <Radio key={value} disabled={optionDisabled} value={value}>
             {label}
           </Radio>
         ))}

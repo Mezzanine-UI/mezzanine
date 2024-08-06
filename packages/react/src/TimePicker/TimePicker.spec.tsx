@@ -23,18 +23,16 @@ describe('<TimePicker />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <TimePicker ref={ref} />
       </CalendarConfigProvider>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <TimePicker className={className} />
       </CalendarConfigProvider>,
@@ -59,7 +57,9 @@ describe('<TimePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
+      );
     });
 
     it('should not open panel if readOnly', () => {
@@ -99,7 +99,9 @@ describe('<TimePicker />', () => {
         fireEvent.click(iconElement!);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.click(iconElement!);
@@ -128,7 +130,9 @@ describe('<TimePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputElement, { key: 'Enter' });
@@ -157,7 +161,9 @@ describe('<TimePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(document, { key: 'Escape' });
@@ -185,7 +191,9 @@ describe('<TimePicker />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(HTMLDivElement);
+        expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+          HTMLDivElement,
+        );
       });
 
       act(() => {
@@ -288,7 +296,9 @@ describe('<TimePicker />', () => {
       await waitFor(() => {
         inputElement.focus();
 
-        const clearIconElement = element.querySelector('[data-icon-name="times"]');
+        const clearIconElement = element.querySelector(
+          '[data-icon-name="times"]',
+        );
 
         fireEvent.click(clearIconElement!);
       });
@@ -326,7 +336,9 @@ describe('<TimePicker />', () => {
       });
 
       await waitFor(() => {
-        const clearIconElement = element.querySelector('[data-icon-name="times"]');
+        const clearIconElement = element.querySelector(
+          '[data-icon-name="times"]',
+        );
 
         fireEvent.click(clearIconElement!);
       });
@@ -360,27 +372,33 @@ describe('<TimePicker />', () => {
       });
 
       expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onFocus).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.keyDown(inputElement!);
       });
 
       expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onKeyDown).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
 
       await waitFor(() => {
         fireEvent.blur(inputElement!);
       });
 
       expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(expect.objectContaining({
-        target: inputElement,
-      }));
+      expect(onBlur).toBeCalledWith(
+        expect.objectContaining({
+          target: inputElement,
+        }),
+      );
     });
   });
 

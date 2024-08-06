@@ -1,14 +1,12 @@
-import {
-  Children,
-  forwardRef, ReactElement, ReactNode, useMemo,
-} from 'react';
+import { Children, forwardRef, ReactElement, ReactNode, useMemo } from 'react';
 import { checkboxClasses as classes } from '@mezzanine-ui/core/checkbox';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Checkbox from './Checkbox';
 import { CheckboxGroupProps } from './CheckboxGroup';
 
-export interface CheckAllProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface CheckAllProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   children?: ReactElement<CheckboxGroupProps>;
   label?: ReactNode;
 }
@@ -17,23 +15,18 @@ export interface CheckAllProps extends NativeElementPropsWithoutKeyAndRef<'div'>
  * The react component for `mezzanine` check all.
  * Only support controlled.
  */
-const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(function CheckAll(props: CheckAllProps, ref) {
-  const {
-    children,
-    className,
-    label,
-    ...rest
-  } = props;
+const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(function CheckAll(
+  props: CheckAllProps,
+  ref,
+) {
+  const { children, className, label, ...rest } = props;
   const checkboxGroup = children && Children.only(children);
-  const {
-    disabled,
-    name,
-    onChange,
-    options,
-    size,
-    value,
-  } = checkboxGroup?.props || {};
-  const enabledOptions = useMemo(() => options?.filter((option) => !option.disabled), [options]);
+  const { disabled, name, onChange, options, size, value } =
+    checkboxGroup?.props || {};
+  const enabledOptions = useMemo(
+    () => options?.filter((option) => !option.disabled),
+    [options],
+  );
   let allChecked = false;
   let indeterminate = false;
 
@@ -43,14 +36,7 @@ const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(function CheckAll(pro
   }
 
   return (
-    <div
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.all,
-        className,
-      )}
-    >
+    <div {...rest} ref={ref} className={cx(classes.all, className)}>
       <div>
         <Checkbox
           checked={allChecked}
@@ -64,7 +50,10 @@ const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(function CheckAll(pro
               if (!event.target.checked) {
                 onChange([], event);
               } else if (enabledOptions) {
-                onChange(enabledOptions.map((option) => option.value), event);
+                onChange(
+                  enabledOptions.map((option) => option.value),
+                  event,
+                );
               }
             }
           }}

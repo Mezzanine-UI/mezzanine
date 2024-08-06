@@ -10,24 +10,29 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
+import {
+  CheckboxGroupContext,
+  CheckboxGroupContextValue,
+} from './CheckboxGroupContext';
 import Checkbox, { CheckboxGroup, CheckboxGroupOption } from '.';
 
 describe('<CheckboxGroup />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<CheckboxGroup ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<CheckboxGroup ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<CheckboxGroup className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<CheckboxGroup className={className} />),
   );
 
   it('should wrap children', () => {
-    const { getHostHTMLElement } = render(<CheckboxGroup><div data-test="foo" /></CheckboxGroup>);
+    const { getHostHTMLElement } = render(
+      <CheckboxGroup>
+        <div data-test="foo" />
+      </CheckboxGroup>,
+    );
     const element = getHostHTMLElement();
     const { firstElementChild } = element;
 
@@ -41,19 +46,19 @@ describe('<CheckboxGroup />', () => {
       size: 'small',
       value: ['bar'],
     };
-    const { result, rerender } = renderHook(() => useContext(CheckboxGroupContext), {
-      wrapper: CheckboxGroup as any,
-      initialProps: expectProps,
-    });
+    const { result, rerender } = renderHook(
+      () => useContext(CheckboxGroupContext),
+      {
+        wrapper: CheckboxGroup as any,
+        initialProps: expectProps,
+      },
+    );
 
     /**
      * Ignore onChange since it will be transformed by CheckboxGroup
      */
     function testCheckboxGroupContextValue() {
-      const {
-        onChange,
-        ...other
-      } = result.current!;
+      const { onChange, ...other } = result.current!;
 
       expect(other).toEqual(expectProps);
       expect(typeof onChange).toBe('function');
@@ -124,7 +129,8 @@ describe('<CheckboxGroup />', () => {
         </CheckboxGroup>,
       );
       const element = getHostHTMLElement();
-      const [fooCheckboxElement, barCheckboxElement] = element.getElementsByTagName('input');
+      const [fooCheckboxElement, barCheckboxElement] =
+        element.getElementsByTagName('input');
 
       expect(fooCheckboxElement.checked).toBeFalsy();
       expect(barCheckboxElement.checked).toBeTruthy();
@@ -166,7 +172,8 @@ describe('<CheckboxGroup />', () => {
 
       const { getHostHTMLElement } = render(<TestingComponent />);
       const element = getHostHTMLElement();
-      const [fooCheckboxElement, barCheckboxElement] = element.getElementsByTagName('input');
+      const [fooCheckboxElement, barCheckboxElement] =
+        element.getElementsByTagName('input');
 
       expect(fooCheckboxElement.checked).toBeFalsy();
       expect(barCheckboxElement.checked).toBeTruthy();

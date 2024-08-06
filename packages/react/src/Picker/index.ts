@@ -1,7 +1,4 @@
-
-export {
-  useTabKeyClose,
-} from './useTabKeyClose';
+export { useTabKeyClose } from './useTabKeyClose';
 export {
   UsePickerDocumentEventCloseProps,
   usePickerDocumentEventClose,
@@ -10,18 +7,12 @@ export {
   UsePickerInputValueProps,
   usePickerInputValue,
 } from './usePickerInputValue';
-export {
-  UsePickerValueProps,
-  usePickerValue,
-} from './usePickerValue';
+export { UsePickerValueProps, usePickerValue } from './usePickerValue';
 export {
   UseRangePickerValueProps,
   useRangePickerValue,
 } from './useRangePickerValue';
-export {
-  PickerTriggerProps,
-  default as PickerTrigger,
-} from './PickerTrigger';
+export { PickerTriggerProps, default as PickerTrigger } from './PickerTrigger';
 export {
   RangePickerTriggerProps,
   default as RangePickerTrigger,

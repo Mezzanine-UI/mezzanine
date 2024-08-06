@@ -1,8 +1,4 @@
-import {
-  forwardRef,
-  useContext,
-  useMemo,
-} from 'react';
+import { forwardRef, useContext, useMemo } from 'react';
 import {
   tableClasses as classes,
   TableColumn,
@@ -16,7 +12,8 @@ import { cx } from '../../utils/cx';
 import { SortedType } from './useTableSorting';
 import Icon from '../../Icon';
 
-export interface TableSortingIconProps extends NativeElementPropsWithoutKeyAndRef<'i'> {
+export interface TableSortingIconProps
+  extends NativeElementPropsWithoutKeyAndRef<'i'> {
   /**
    * current table column
    */
@@ -25,40 +22,37 @@ export interface TableSortingIconProps extends NativeElementPropsWithoutKeyAndRe
 
 const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
   function TableSortingIcon(props, ref) {
-    const {
-      className,
-      column,
-      ...rest
-    } = props;
+    const { className, column, ...rest } = props;
 
-    const uniqueId = useMemo(() => `${crypto.getRandomValues(new Uint32Array(5))[0]}`, []);
+    const uniqueId = useMemo(
+      () => `${crypto.getRandomValues(new Uint32Array(5))[0]}`,
+      [],
+    );
 
-    const {
-      sorting,
-    } = useContext(TableContext) || {};
+    const { sorting } = useContext(TableContext) || {};
 
-    const {
-      key = uniqueId,
-    } = column;
+    const { key = uniqueId } = column;
 
     /** styling */
-    const currentType = (key === sorting?.sortedOn ? sorting.sortedType : 'none') as SortedType;
-    const currentIconStyle: { color: IconColor, style: { transform: string } } = useMemo(() => ({
-      color: currentType === 'none' ? 'secondary' : 'primary',
-      style: {
-        transform: `rotate(${90 * (currentType === 'asc' ? -1 : 1)}deg)`,
-      },
-    }), [currentType]);
+    const currentType = (
+      key === sorting?.sortedOn ? sorting.sortedType : 'none'
+    ) as SortedType;
+    const currentIconStyle: { color: IconColor; style: { transform: string } } =
+      useMemo(
+        () => ({
+          color: currentType === 'none' ? 'secondary' : 'primary',
+          style: {
+            transform: `rotate(${90 * (currentType === 'asc' ? -1 : 1)}deg)`,
+          },
+        }),
+        [currentType],
+      );
 
     return (
       <Icon
         {...rest}
         ref={ref}
-        className={cx(
-          classes.icon,
-          classes.iconClickable,
-          className,
-        )}
+        className={cx(classes.icon, classes.iconClickable, className)}
         color={currentIconStyle.color}
         icon={ArrowRightIcon}
         onClick={(evt) => {

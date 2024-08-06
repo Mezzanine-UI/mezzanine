@@ -1,9 +1,11 @@
-import {
-  cloneElement, CSSProperties, forwardRef, useRef,
-} from 'react';
+import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import Transition, { TransitionImplementationProps, TransitionProps, TransitionState } from './Transition';
+import Transition, {
+  TransitionImplementationProps,
+  TransitionProps,
+  TransitionState,
+} from './Transition';
 import { getAutoSizeDuration } from './getAutoSizeDuration';
 import { reflow } from './reflow';
 import { useAutoTransitionDuration } from './useAutoTransitionDuration';
@@ -49,7 +51,10 @@ export interface GrowProps extends TransitionImplementationProps {
 /**
  * The react component for `mezzanine` transition grow.
  */
-const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(props: GrowProps, ref) {
+const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
+  props: GrowProps,
+  ref,
+) {
   const {
     appear,
     children,
@@ -64,32 +69,43 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(props: GrowProps, 
     transformOrigin,
     ...rest
   } = props;
-  const { autoTransitionDuration, addEndListener } = useAutoTransitionDuration(duration);
+  const { autoTransitionDuration, addEndListener } =
+    useAutoTransitionDuration(duration);
   const nodeRef = useRef<HTMLElement>(null);
-  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition({
-    delay,
-    duration,
-    easing,
-    properties: [
-      'opacity',
-      ['transform', (transitionProps, mode) => {
-        const { delay: delayProp, duration: durationProp } = transitionProps;
+  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
+    {
+      delay,
+      duration,
+      easing,
+      properties: [
+        'opacity',
+        [
+          'transform',
+          (transitionProps, mode) => {
+            const { delay: delayProp, duration: durationProp } =
+              transitionProps;
 
-        return {
-          ...transitionProps,
-          delay: mode === 'exit' ? delayProp || durationProp * 0.333 : delayProp,
-          duration: durationProp * 0.666,
-        };
-      }],
-    ],
-    resolveAutoDuration: () => {
-      const autoSizeDuration = getAutoSizeDuration(nodeRef.current?.clientHeight ?? 0);
+            return {
+              ...transitionProps,
+              delay:
+                mode === 'exit' ? delayProp || durationProp * 0.333 : delayProp,
+              duration: durationProp * 0.666,
+            };
+          },
+        ],
+      ],
+      resolveAutoDuration: () => {
+        const autoSizeDuration = getAutoSizeDuration(
+          nodeRef.current?.clientHeight ?? 0,
+        );
 
-      autoTransitionDuration.current = autoSizeDuration;
+        autoTransitionDuration.current = autoSizeDuration;
 
-      return autoSizeDuration;
+        return autoSizeDuration;
+      },
     },
-  }, children?.props.style);
+    children?.props.style,
+  );
   const composedNodeRef = useComposeRefs([ref, nodeRef]);
   const transitionProps: TransitionProps = {
     ...rest,
@@ -133,16 +149,18 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(props: GrowProps, 
 
   return (
     <Transition {...transitionProps}>
-      {children && ((state) => cloneElement(children, {
-        ...children.props,
-        ref: composedNodeRef,
-        style: {
-          visibility: state === 'exited' && !inProp ? 'hidden' : undefined,
-          ...getStyle(state),
-          transformOrigin,
-          ...children.props.style,
-        },
-      }))}
+      {children &&
+        ((state) =>
+          cloneElement(children, {
+            ...children.props,
+            ref: composedNodeRef,
+            style: {
+              visibility: state === 'exited' && !inProp ? 'hidden' : undefined,
+              ...getStyle(state),
+              transformOrigin,
+              ...children.props.style,
+            },
+          }))}
     </Transition>
   );
 });

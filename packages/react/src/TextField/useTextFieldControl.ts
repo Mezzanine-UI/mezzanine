@@ -1,7 +1,4 @@
-import {
-  MouseEventHandler,
-  KeyboardEventHandler,
-} from 'react';
+import { MouseEventHandler, KeyboardEventHandler } from 'react';
 
 export interface UseTextFieldControlProps {
   onClick?: MouseEventHandler;
@@ -9,10 +6,7 @@ export interface UseTextFieldControlProps {
 }
 
 export function useTextFieldControl(props: UseTextFieldControlProps) {
-  const {
-    onClick = undefined,
-    onKeyDown = undefined,
-  } = props || {};
+  const { onClick = undefined, onKeyDown = undefined } = props || {};
 
   const getRole = () => {
     if (typeof onClick !== 'undefined') return 'button';

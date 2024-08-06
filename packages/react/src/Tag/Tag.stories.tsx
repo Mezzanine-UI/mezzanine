@@ -7,13 +7,10 @@ export default {
   title: 'Data Display/Tag',
 } as Meta;
 
-const sizes: TagSize[] = [
-  'small',
-  'medium',
-  'large',
-];
+const sizes: TagSize[] = ['small', 'medium', 'large'];
 
-interface PlaygroudStoryArgs extends Required<Pick<TagProps, 'closable' | 'disabled' | 'size'>> {
+interface PlaygroudStoryArgs
+  extends Required<Pick<TagProps, 'closable' | 'disabled' | 'size'>> {
   label: string;
   onClose: VoidFunction;
 }
@@ -53,11 +50,17 @@ export const Common: StoryFn<CommonStoryArgs> = ({ onClose }) => (
   >
     <Tag>Tag</Tag>
     <Tag>
-      <a href="https://www.google.com" target="_blank">Link</a>
+      <a href="https://www.google.com" target="_blank">
+        Link
+      </a>
     </Tag>
     <Tag disabled>Disabled</Tag>
-    <Tag closable onClose={onClose}>Closable</Tag>
-    <Tag closable disabled onClose={onClose}>Disabled</Tag>
+    <Tag closable onClose={onClose}>
+      Closable
+    </Tag>
+    <Tag closable disabled onClose={onClose}>
+      Disabled
+    </Tag>
   </div>
 );
 

@@ -1,12 +1,5 @@
-import {
-  cleanupHook,
-  render,
-  fireEvent,
-  act,
-} from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { cleanupHook, render, fireEvent, act } from '../../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import { TableContext, TableDataContext } from '../TableContext';
 import TableRowSelection from './TableRowSelection';
 import { SELECTED_ALL_KEY } from './useTableRowSelection';
@@ -22,9 +15,8 @@ const defaultDataContext = {
 describe('<TableRowSelection />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<TableRowSelection ref={ref} rowKey="any" />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TableRowSelection ref={ref} rowKey="any" />),
   );
 
   it('should bind host class', () => {
@@ -40,12 +32,7 @@ describe('<TableRowSelection />', () => {
       checkState = check;
     });
 
-    render(
-      <TableRowSelection
-        rowKey="any"
-        setChecked={setChecked}
-      />,
-    );
+    render(<TableRowSelection rowKey="any" setChecked={setChecked} />);
 
     expect(setChecked).toHaveBeenCalledTimes(1);
     expect(checkState).toBe(false);
@@ -59,10 +46,7 @@ describe('<TableRowSelection />', () => {
       if (selectedRowKeys.includes(myKey)) {
         selectedRowKeys = [];
       } else {
-        selectedRowKeys = [
-          ...selectedRowKeys,
-          key,
-        ];
+        selectedRowKeys = [...selectedRowKeys, key];
       }
     });
 
@@ -80,12 +64,8 @@ describe('<TableRowSelection />', () => {
             },
           }}
         >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
-            <TableRowSelection
-              rowKey={myKey}
-            />
+          <TableDataContext.Provider value={defaultDataContext}>
+            <TableRowSelection rowKey={myKey} />
           </TableDataContext.Provider>
         </TableContext.Provider>,
       );
@@ -102,12 +82,8 @@ describe('<TableRowSelection />', () => {
 
     it('should nothing happened when clicked if rowSelection is not given', async () => {
       const { getHostHTMLElement } = render(
-        <TableContext.Provider
-          value={{}}
-        >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
+        <TableContext.Provider value={{}}>
+          <TableDataContext.Provider value={defaultDataContext}>
             <TableRowSelection rowKey={myKey} />
           </TableDataContext.Provider>
         </TableContext.Provider>,
@@ -135,9 +111,7 @@ describe('<TableRowSelection />', () => {
             },
           }}
         >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
+          <TableDataContext.Provider value={defaultDataContext}>
             <TableRowSelection rowKey={myKey} />
           </TableDataContext.Provider>
         </TableContext.Provider>,
@@ -165,9 +139,7 @@ describe('<TableRowSelection />', () => {
               },
             }}
           >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
+            <TableDataContext.Provider value={defaultDataContext}>
               <TableRowSelection rowKey={myKey} />
             </TableDataContext.Provider>
           </TableContext.Provider>,
@@ -201,10 +173,7 @@ describe('<TableRowSelection />', () => {
       if (selectedRowKeys.includes(myKey)) {
         selectedRowKeys = [];
       } else {
-        selectedRowKeys = [
-          ...selectedRowKeys,
-          key,
-        ];
+        selectedRowKeys = [...selectedRowKeys, key];
       }
     });
 
@@ -213,7 +182,9 @@ describe('<TableRowSelection />', () => {
     });
 
     it('should checked when all sources checked', () => {
-      selectedRowKeys = defaultDataContext.dataSource.map((source) => source.key);
+      selectedRowKeys = defaultDataContext.dataSource.map(
+        (source) => source.key,
+      );
 
       const { getHostHTMLElement } = render(
         <TableContext.Provider
@@ -224,9 +195,7 @@ describe('<TableRowSelection />', () => {
             },
           }}
         >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
+          <TableDataContext.Provider value={defaultDataContext}>
             <TableRowSelection rowKey={myKey} />
           </TableDataContext.Provider>
         </TableContext.Provider>,
@@ -252,9 +221,7 @@ describe('<TableRowSelection />', () => {
             },
           }}
         >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
+          <TableDataContext.Provider value={defaultDataContext}>
             <TableRowSelection rowKey={myKey} />
           </TableDataContext.Provider>
         </TableContext.Provider>,
@@ -279,15 +246,18 @@ describe('<TableRowSelection />', () => {
         actionRowKeys = rowKeys;
       });
 
-      const actions = [{
-        key: 'Mark as read',
-        text: 'mark as read',
-        onClick: onActionClick,
-      }, {
-        key: 'delete',
-        text: 'delete',
-        className: 'foo',
-      }];
+      const actions = [
+        {
+          key: 'Mark as read',
+          text: 'mark as read',
+          onClick: onActionClick,
+        },
+        {
+          key: 'delete',
+          text: 'delete',
+          className: 'foo',
+        },
+      ];
 
       beforeEach(() => {
         actionRowKeys = [];
@@ -303,19 +273,16 @@ describe('<TableRowSelection />', () => {
               },
             }}
           >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
-              <TableRowSelection
-                rowKey={myKey}
-                showDropdownIcon
-              />
+            <TableDataContext.Provider value={defaultDataContext}>
+              <TableRowSelection rowKey={myKey} showDropdownIcon />
             </TableDataContext.Provider>
           </TableContext.Provider>,
         );
 
         element = getHostHTMLElement();
-        icon = (element.querySelector('.mzn-table__icon--clickable') as HTMLElement);
+        icon = element.querySelector(
+          '.mzn-table__icon--clickable',
+        ) as HTMLElement;
       });
 
       it('should icon existed', () => {
@@ -327,7 +294,9 @@ describe('<TableRowSelection />', () => {
           fireEvent.click(icon);
         });
 
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
 
         await act(async () => {
           fireEvent.click(document);
@@ -392,30 +361,31 @@ describe('<TableRowSelection />', () => {
               rowSelection: {
                 selectedRowKeys,
                 onChange,
-                actions: [{
-                  key: 'key',
-                  text: 'key',
-                }],
+                actions: [
+                  {
+                    key: 'key',
+                    text: 'key',
+                  },
+                ],
               },
             }}
           >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
-              <TableRowSelection
-                rowKey={myKey}
-                showDropdownIcon
-              />
+            <TableDataContext.Provider value={defaultDataContext}>
+              <TableRowSelection rowKey={myKey} showDropdownIcon />
             </TableDataContext.Provider>
           </TableContext.Provider>,
         );
 
         element = getHostHTMLElement();
-        icon = (element.getElementsByClassName('mzn-icon mzn-table__icon')[0] as HTMLElement);
+        icon = element.getElementsByClassName(
+          'mzn-icon mzn-table__icon',
+        )[0] as HTMLElement;
       });
 
       it('should use disabled color for icon', () => {
-        const styleMatch = icon?.getAttribute('style')?.match(/--mzn-color-action-disabled/);
+        const styleMatch = icon
+          ?.getAttribute('style')
+          ?.match(/--mzn-color-action-disabled/);
 
         expect(styleMatch).not.toBeUndefined();
         expect(styleMatch).not.toBeNull();
@@ -432,10 +402,7 @@ describe('<TableRowSelection />', () => {
 
     it('should not apply custom styles', () => {
       const { getHostHTMLElement } = render(
-        <TableRowSelection
-          rowKey={myKey}
-          showDropdownIcon
-        />,
+        <TableRowSelection rowKey={myKey} showDropdownIcon />,
       );
       const element = getHostHTMLElement();
 
@@ -444,10 +411,7 @@ describe('<TableRowSelection />', () => {
 
     it('should not render menu icon when rowSelection.actions is not defined', () => {
       const { getHostHTMLElement } = render(
-        <TableRowSelection
-          rowKey={myKey}
-          showDropdownIcon
-        />,
+        <TableRowSelection rowKey={myKey} showDropdownIcon />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-table__icon');

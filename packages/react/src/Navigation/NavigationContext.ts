@@ -1,9 +1,5 @@
-import {
-  createContext,
-} from 'react';
-import {
-  NavigationOrientation,
-} from '@mezzanine-ui/core/navigation';
+import { createContext } from 'react';
+import { NavigationOrientation } from '@mezzanine-ui/core/navigation';
 
 export interface NavigationContextValue {
   orientation: NavigationOrientation;

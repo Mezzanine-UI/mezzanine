@@ -1,8 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -12,14 +8,12 @@ import Alert, { AlertSeverity } from '.';
 describe('<Alert />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Alert ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Alert ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Alert className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Alert className={className} />),
   );
 
   it('should render the text and wrap it under a p element', () => {
@@ -30,14 +24,18 @@ describe('<Alert />', () => {
     expect(element.textContent).toBe('Hello');
     expect(messageElement.textContent).toBe('Hello');
     expect(messageElement.tagName.toLowerCase()).toBe('p');
-    expect(messageElement.classList.contains('mzn-alert__message')).toBeTruthy();
+    expect(
+      messageElement.classList.contains('mzn-alert__message'),
+    ).toBeTruthy();
   });
 
   it('should not render the message if no children', () => {
     const { getHostHTMLElement } = render(<Alert />);
     const element = getHostHTMLElement();
 
-    expect(element.querySelector('.mzn-alert_message')?.textContent).toBe(undefined);
+    expect(element.querySelector('.mzn-alert_message')?.textContent).toBe(
+      undefined,
+    );
   });
 
   describe('prop: onClose', () => {
@@ -61,18 +59,16 @@ describe('<Alert />', () => {
       expect(element.classList.contains('mzn-alert--success')).toBeTruthy();
     });
 
-    const severities: AlertSeverity[] = [
-      'success',
-      'warning',
-      'error',
-    ];
+    const severities: AlertSeverity[] = ['success', 'warning', 'error'];
 
     severities.forEach((severity) => {
       it(`should add class if type="${severity}"`, () => {
         const { getHostHTMLElement } = render(<Alert severity={severity} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-alert--${severity}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-alert--${severity}`),
+        ).toBeTruthy();
       });
     });
   });

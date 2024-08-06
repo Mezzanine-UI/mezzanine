@@ -8,12 +8,7 @@ export default {
   title: 'Data Entry/Slider',
 } as Meta;
 
-type PlaygroundArgs = Pick<SliderProps,
-| 'min'
-| 'max'
-| 'step'
-| 'disabled'
->;
+type PlaygroundArgs = Pick<SliderProps, 'min' | 'max' | 'step' | 'disabled'>;
 
 export const Single: StoryFn<PlaygroundArgs> = ({
   min,
@@ -90,7 +85,6 @@ export const Range: StoryFn<PlaygroundArgs> = ({
           marginTop: '2rem',
         }}
       >
-
         <span>{value[0]}</span>
         <span>,</span>
         <span>{value[1]}</span>

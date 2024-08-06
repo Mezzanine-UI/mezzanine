@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../../__test-utils__';
+import { cleanup, render } from '../../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,19 +8,19 @@ import { InputCheckGroup, InputCheckGroupOrientation } from '.';
 describe('<InputCheckGroup />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<InputCheckGroup ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<InputCheckGroup ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<InputCheckGroup className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<InputCheckGroup className={className} />),
   );
 
   it('should bind host class and wrap children', () => {
     const { getHostHTMLElement } = render(
-      <InputCheckGroup><div data-test="foo" /></InputCheckGroup>,
+      <InputCheckGroup>
+        <div data-test="foo" />
+      </InputCheckGroup>,
     );
     const element = getHostHTMLElement();
     const { firstElementChild } = element;
@@ -33,8 +30,13 @@ describe('<InputCheckGroup />', () => {
   });
 
   describe('prop: orientation', () => {
-    function testOrientation(element: HTMLElement, orientation: InputCheckGroupOrientation) {
-      expect(element.classList.contains(`mzn-input-check-group--${orientation}`)).toBeTruthy();
+    function testOrientation(
+      element: HTMLElement,
+      orientation: InputCheckGroupOrientation,
+    ) {
+      expect(
+        element.classList.contains(`mzn-input-check-group--${orientation}`),
+      ).toBeTruthy();
       expect(element.getAttribute('aria-orientation')).toBe(orientation);
     }
 
@@ -52,7 +54,9 @@ describe('<InputCheckGroup />', () => {
 
     orientations.forEach((orientation) => {
       it(`should add class if orientation="${orientation}"`, () => {
-        const { getHostHTMLElement } = render(<InputCheckGroup orientation={orientation} />);
+        const { getHostHTMLElement } = render(
+          <InputCheckGroup orientation={orientation} />,
+        );
         const element = getHostHTMLElement();
 
         testOrientation(element, orientation);

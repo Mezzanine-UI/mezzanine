@@ -11,7 +11,8 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { MezzanineConfig } from '../Provider/context';
 
-export interface UploadResultProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface UploadResultProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * The name to display
    */
@@ -42,70 +43,57 @@ export interface UploadResultProps extends NativeElementPropsWithoutKeyAndRef<'d
 /**
  * The react component for `mezzanine` upload result.
  */
-const UploadResult = forwardRef<HTMLDivElement, UploadResultProps>(function UploadResult(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
-  const {
-    className,
-    name,
-    onDelete,
-    onDownload,
-    percentage,
-    size = globalSize,
-    status,
-    style: styleProp,
-    ...rest
-  } = props;
-  const done = status === 'done';
-  const error = status === 'error';
-  const loading = status === 'loading';
-  const cssVars = toUploadResultCssVars({ percentage });
-  const style = {
-    ...cssVars,
-    ...styleProp,
-  };
+const UploadResult = forwardRef<HTMLDivElement, UploadResultProps>(
+  function UploadResult(props, ref) {
+    const { size: globalSize } = useContext(MezzanineConfig);
+    const {
+      className,
+      name,
+      onDelete,
+      onDownload,
+      percentage,
+      size = globalSize,
+      status,
+      style: styleProp,
+      ...rest
+    } = props;
+    const done = status === 'done';
+    const error = status === 'error';
+    const loading = status === 'loading';
+    const cssVars = toUploadResultCssVars({ percentage });
+    const style = {
+      ...cssVars,
+      ...styleProp,
+    };
 
-  return (
-    <div
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        {
-          [classes.error]: error,
-          [classes.loading]: loading,
-        },
-        className,
-      )}
-      style={style}
-    >
-      <span className={classes.name}>{name}</span>
-      <div className={classes.actions}>
-        {loading && (
-          <Icon
-            icon={SpinnerIcon}
-            spin
-          />
+    return (
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.host,
+          classes.size(size),
+          {
+            [classes.error]: error,
+            [classes.loading]: loading,
+          },
+          className,
         )}
-        {done && (
-          <Icon
-            icon={DownloadIcon}
-            onClick={onDownload}
-            role="button"
-          />
-        )}
-        {(done || error) && (
-          <Icon
-            icon={TimesIcon}
-            onClick={onDelete}
-            role="button"
-          />
-        )}
+        style={style}
+      >
+        <span className={classes.name}>{name}</span>
+        <div className={classes.actions}>
+          {loading && <Icon icon={SpinnerIcon} spin />}
+          {done && (
+            <Icon icon={DownloadIcon} onClick={onDownload} role="button" />
+          )}
+          {(done || error) && (
+            <Icon icon={TimesIcon} onClick={onDelete} role="button" />
+          )}
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  },
+);
 
 export default UploadResult;

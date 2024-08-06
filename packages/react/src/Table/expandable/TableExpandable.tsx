@@ -1,15 +1,12 @@
-import {
-  forwardRef,
-} from 'react';
-import {
-  tableClasses as classes,
-} from '@mezzanine-ui/core/table';
+import { forwardRef } from 'react';
+import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import { cx } from '../../utils/cx';
 import Icon from '../../Icon';
 
-export interface TableExpandableProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface TableExpandableProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * whether is expandable or not
    * @default true
@@ -62,20 +59,14 @@ const TableExpandable = forwardRef<HTMLDivElement, TableExpandableProps>(
       <div
         {...rest}
         ref={ref}
-        className={cx(
-          classes.collapseAction,
-          className,
-        )}
+        className={cx(classes.collapseAction, className)}
       >
         <div className={classes.icon}>
           {showIcon ? (
             <Icon
-              className={cx(
-                classes.icon,
-                {
-                  [classes.iconClickable]: expandable,
-                },
-              )}
+              className={cx(classes.icon, {
+                [classes.iconClickable]: expandable,
+              })}
               color={expandable ? 'primary' : 'disabled'}
               icon={ChevronDownIcon}
               onClick={onClick}

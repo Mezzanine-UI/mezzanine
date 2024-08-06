@@ -1,4 +1,11 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { TableDataSource, TableDraggable } from '@mezzanine-ui/core/table';
 import isEqual from 'lodash/isEqual';
 import debounce from 'lodash/debounce';
@@ -30,24 +37,30 @@ export function useTableDraggable(props: UseTableDraggable) {
     }
   }, [prevDataSource, dataSource]);
 
-  const onBeforeDragStart = useCallback((e: { draggableId: SetStateAction<string>; }) => {
-    isDragging.current = true;
-    setDraggingId(e.draggableId);
-  }, []);
+  const onBeforeDragStart = useCallback(
+    (e: { draggableId: SetStateAction<string> }) => {
+      isDragging.current = true;
+      setDraggingId(e.draggableId);
+    },
+    [],
+  );
 
-  const onDragEnd: DragDropContextProps['onDragEnd'] = useCallback(async (result, id) => {
-    resultSnapshot.current = [result, id];
-    isDragging.current = false;
-    setDraggingId('');
+  const onDragEnd: DragDropContextProps['onDragEnd'] = useCallback(
+    async (result, id) => {
+      resultSnapshot.current = [result, id];
+      isDragging.current = false;
+      setDraggingId('');
 
-    const temp = [...dataSnapShot.current];
-    const from = result.source.index;
-    const to = result.destination?.index ?? from;
-    const newData = arrayMove(temp, from, to);
+      const temp = [...dataSnapShot.current];
+      const from = result.source.index;
+      const to = result.destination?.index ?? from;
+      const newData = arrayMove(temp, from, to);
 
-    dataSnapShot.current = newData;
-    setDataSource(newData);
-  }, [setDataSource]);
+      dataSnapShot.current = newData;
+      setDataSource(newData);
+    },
+    [setDataSource],
+  );
 
   useEffect(() => {
     if (!draggable?.enabled) return () => {};
@@ -58,7 +71,11 @@ export function useTableDraggable(props: UseTableDraggable) {
 
       resultSnapshot.current = null;
 
-      if (!args?.[0] || args?.[0]?.source.index === args?.[0]?.destination?.index) return;
+      if (
+        !args?.[0] ||
+        args?.[0]?.source.index === args?.[0]?.destination?.index
+      )
+        return;
 
       if (draggable?.onDragEnd && args) {
         draggable.onDragEnd(Array.from(dataSnapShot.current));

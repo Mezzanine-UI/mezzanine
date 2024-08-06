@@ -4,11 +4,7 @@ import {
   ChevronRightIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
-import {
-  cleanup,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -20,24 +16,20 @@ import { PaginationItem } from '.';
 describe('<PaginationItem />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLButtonElement,
-    (ref) => render(<PaginationItem ref={ref} type="page" />),
+  describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
+    render(<PaginationItem ref={ref} type="page" />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLButtonElement,
-    (ref) => render(<PaginationItem ref={ref} type="next" />),
+  describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
+    render(<PaginationItem ref={ref} type="next" />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<PaginationItem ref={ref} type="ellipsis" />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<PaginationItem ref={ref} type="ellipsis" />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<PaginationItem className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<PaginationItem className={className} />),
   );
 
   it('should bind host class', () => {
@@ -59,7 +51,9 @@ describe('<PaginationItem />', () => {
   describe('prop: page', () => {
     it('should render page number', () => {
       const page = 2;
-      const { getHostHTMLElement } = render(<PaginationItem type="page" page={page} />);
+      const { getHostHTMLElement } = render(
+        <PaginationItem type="page" page={page} />,
+      );
       const element = getHostHTMLElement();
 
       expect(element.textContent).toBe(page.toString());
@@ -83,7 +77,9 @@ describe('<PaginationItem />', () => {
       const element = getHostHTMLElement();
 
       expect(element).toBeInstanceOf(HTMLButtonElement);
-      expect(element.classList.contains('mzn-pagination-item__button')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-pagination-item__button'),
+      ).toBeTruthy();
       expect(element.textContent).toBe(page.toString());
     });
 
@@ -92,11 +88,13 @@ describe('<PaginationItem />', () => {
       const element = getHostHTMLElement();
 
       expect(element).toBeInstanceOf(HTMLDivElement);
-      expect(element.classList.contains('mzn-pagination-item__ellipsis')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-pagination-item__ellipsis'),
+      ).toBeTruthy();
     });
 
     const iconTypes: PaginationItemType[] = ['previous', 'next'];
-    const icons: {[index: string]: IconDefinition;} = {
+    const icons: { [index: string]: IconDefinition } = {
       previous: ChevronLeftIcon,
       next: ChevronRightIcon,
     };
@@ -105,7 +103,9 @@ describe('<PaginationItem />', () => {
       const ItemIcon = icons[iconType];
 
       it(`should render ${iconType} button element if type={${iconType}}`, () => {
-        const { getHostHTMLElement } = render(<PaginationItem type={iconType} />);
+        const { getHostHTMLElement } = render(
+          <PaginationItem type={iconType} />,
+        );
         const element = getHostHTMLElement();
         const testRenderer = TestRenderer.create(
           <PaginationItem type={iconType} />,

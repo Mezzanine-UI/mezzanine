@@ -1,11 +1,6 @@
 import { Severity } from '@mezzanine-ui/system/severity';
 import { useContext } from 'react';
-import {
-  cleanup,
-  cleanupHook,
-  render,
-  renderHook,
-} from '../../__test-utils__';
+import { cleanup, cleanupHook, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -18,14 +13,12 @@ describe('<FormField />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<FormField ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<FormField ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<FormField className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<FormField className={className} />),
   );
 
   it('should bind host class', () => {
@@ -42,10 +35,13 @@ describe('<FormField />', () => {
       required: true,
       severity: 'warning',
     };
-    const { result, rerender } = renderHook(() => useContext(FormControlContext), {
-      wrapper: FormField as any,
-      initialProps: expectProps,
-    });
+    const { result, rerender } = renderHook(
+      () => useContext(FormControlContext),
+      {
+        wrapper: FormField as any,
+        initialProps: expectProps,
+      },
+    );
 
     expect(result.current).toEqual(expectProps);
 
@@ -61,7 +57,9 @@ describe('<FormField />', () => {
 
   describe('prop: disabled', () => {
     function testDisabled(element: HTMLElement, disabled: boolean) {
-      expect(element.classList.contains('mzn-form-field--disabled')).toBe(disabled);
+      expect(element.classList.contains('mzn-form-field--disabled')).toBe(
+        disabled,
+      );
     }
 
     it('should render disabled by default', () => {
@@ -77,7 +75,9 @@ describe('<FormField />', () => {
         : 'should not add disabled class if disabled=false';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<FormField disabled={disabled} />);
+        const { getHostHTMLElement } = render(
+          <FormField disabled={disabled} />,
+        );
         const element = getHostHTMLElement();
 
         testDisabled(element, disabled);
@@ -87,7 +87,9 @@ describe('<FormField />', () => {
 
   describe('prop: fullWidth', () => {
     function testFullWidth(element: HTMLElement, fullWidth: boolean) {
-      expect(element.classList.contains('mzn-form-field--full-width')).toBe(fullWidth);
+      expect(element.classList.contains('mzn-form-field--full-width')).toBe(
+        fullWidth,
+      );
     }
 
     it('should render fullWidth by default', () => {
@@ -103,7 +105,9 @@ describe('<FormField />', () => {
         : 'should not add fullWidth class if fullWidth=false';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<FormField fullWidth={fullWidth} />);
+        const { getHostHTMLElement } = render(
+          <FormField fullWidth={fullWidth} />,
+        );
         const element = getHostHTMLElement();
 
         testFullWidth(element, fullWidth);
@@ -112,18 +116,18 @@ describe('<FormField />', () => {
   });
 
   describe('prop: severity', () => {
-    const severities: Severity[] = [
-      'success',
-      'warning',
-      'error',
-    ];
+    const severities: Severity[] = ['success', 'warning', 'error'];
 
     severities.forEach((severity) => {
       it(`should add ${severity} class if severity=${severity}`, () => {
-        const { getHostHTMLElement } = render(<FormField severity={severity} />);
+        const { getHostHTMLElement } = render(
+          <FormField severity={severity} />,
+        );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-form-field--${severity}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-form-field--${severity}`),
+        ).toBeTruthy();
       });
     });
   });

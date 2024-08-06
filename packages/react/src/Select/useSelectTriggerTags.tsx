@@ -1,9 +1,5 @@
 /* global JSX */
-import {
-  MutableRefObject,
-  useState,
-  useEffect,
-} from 'react';
+import { MutableRefObject, useState, useEffect } from 'react';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
 import { SelectValue } from './typings';
@@ -25,17 +21,23 @@ export function calcTakeCount({
   maxWidth,
   ellipsisTagWidth,
   setTakeCount,
-} : {
-  tagsWidths: number[],
-  maxWidth: number,
-  ellipsisTagWidth: number,
-  setTakeCount: (count: number) => void,
+}: {
+  tagsWidths: number[];
+  maxWidth: number;
+  ellipsisTagWidth: number;
+  setTakeCount: (count: number) => void;
 }) {
   let targetCount = 0;
 
   for (let count = 0; count <= tagsWidths.length; count += 1) {
-    const prevTotal = take(tagsWidths, count).reduce((prev, curr) => prev + curr, 0);
-    const nowTotal = take(tagsWidths, count + 1).reduce((prev, curr) => prev + curr, 0);
+    const prevTotal = take(tagsWidths, count).reduce(
+      (prev, curr) => prev + curr,
+      0,
+    );
+    const nowTotal = take(tagsWidths, count + 1).reduce(
+      (prev, curr) => prev + curr,
+      0,
+    );
 
     targetCount = count;
 
@@ -51,12 +53,10 @@ export function calcTakeCount({
   setTakeCount(targetCount);
 }
 
-export function useSelectTriggerTags(props: UseSelectTriggerTagsProps): UseSelectTriggerTagsValue {
-  const {
-    controlRef,
-    value,
-    size,
-  } = props;
+export function useSelectTriggerTags(
+  props: UseSelectTriggerTagsProps,
+): UseSelectTriggerTagsValue {
+  const { controlRef, value, size } = props;
 
   const [tagsWidths, setTagsWidths] = useState<number[]>([]);
   const [takeCount, setTakeCount] = useState<number>(0);
@@ -64,8 +64,11 @@ export function useSelectTriggerTags(props: UseSelectTriggerTagsProps): UseSelec
   const mznFakeEllipsisTagClassName = 'mzn-fake-ellipsis-tag';
 
   useEffect(() => {
-    const elements = controlRef.current?.getElementsByClassName(mznFakeTagClassName);
-    const ellipsisTagElement = controlRef.current?.getElementsByClassName(mznFakeEllipsisTagClassName)[0];
+    const elements =
+      controlRef.current?.getElementsByClassName(mznFakeTagClassName);
+    const ellipsisTagElement = controlRef.current?.getElementsByClassName(
+      mznFakeEllipsisTagClassName,
+    )[0];
 
     if (elements?.length && ellipsisTagElement) {
       const tagsWidthsArray = Array.from(elements).map((e) => e.clientWidth);

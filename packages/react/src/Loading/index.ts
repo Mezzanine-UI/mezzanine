@@ -1,4 +1,1 @@
-export {
-  LoadingProps,
-  default,
-} from './Loading';
+export { LoadingProps, default } from './Loading';

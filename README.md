@@ -13,6 +13,7 @@ If you're interested in this project, please refer to the [Storybook](https://st
 If you've previously used this project and wish to update to the latest version, please consult the [Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations) for detailed instructions.
 
 ## Browser Support
+
 `Google Chrome` 64 or newer (2018) <br />
 `Edge` 79 or newer (2020) <br />
 `Safari` 13.1 or newer (2020) <br />
@@ -314,9 +315,7 @@ import { ConfigProvider, Button } from '@mezzanine-ui/react';
 function App() {
   return (
     <ConfigProvider size="large">
-      <Button>
-        Large Button
-      </Button>
+      <Button>Large Button</Button>
     </ConfigProvider>
   );
 }
@@ -370,7 +369,7 @@ function App() {
       disabled,
       onClose,
       // ...dependencies
-    ]
+    ],
   );
 }
 ```
@@ -420,7 +419,6 @@ And some other hooks used by mezzanine components are also exported if you need:
 - core: component styles (writen in scss)
 - icons: export svg specific definition icons
 - react: react components implementation
-- ng: angular components implementation (deprecated)
 - system: shared config (typography, palette, transition...etc)
 
 ### 規範

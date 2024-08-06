@@ -6,15 +6,15 @@ export interface UseControlValueStateProps<V> {
   value?: V;
 }
 
-export function useControlValueState<V>(
-  props: UseControlValueStateProps<V>,
-) {
+export function useControlValueState<V>(props: UseControlValueStateProps<V>) {
   const {
     defaultValue,
     equalityFn = (a, b) => a === b,
     value: valueProp,
   } = props;
-  const [value, setValue] = useState(() => (typeof valueProp !== 'undefined' ? valueProp : defaultValue));
+  const [value, setValue] = useState(() =>
+    typeof valueProp !== 'undefined' ? valueProp : defaultValue,
+  );
 
   /**
    * To sync value while changed from uncontrolled to controlled.

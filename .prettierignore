@@ -4,7 +4,5 @@
 **/dist
 /coverage
 **/coverage
-**/*.ts
-**/*.tsx
 **/*.css
 **/*.scss

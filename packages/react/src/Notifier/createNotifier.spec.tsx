@@ -1,14 +1,7 @@
 import { act } from '@testing-library/react';
 import { Key } from 'react';
-import {
-  cleanup, cleanupHook,
-} from '../../__test-utils__';
-import {
-  createNotifier,
-  Notifier,
-  NotifierData,
-  RenderNotifier,
-} from '.';
+import { cleanup, cleanupHook } from '../../__test-utils__';
+import { createNotifier, Notifier, NotifierData, RenderNotifier } from '.';
 
 interface MockRendererProps extends NotifierData {
   testString?: string;
@@ -41,13 +34,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   });
 
   it('should return methods', () => {
-    const {
-      add,
-      remove,
-      destroy,
-      config,
-      getConfig,
-    } = notifier;
+    const { add, remove, destroy, config, getConfig } = notifier;
 
     expect(add).toBeInstanceOf(Function);
     expect(remove).toBeInstanceOf(Function);
@@ -57,10 +44,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   });
 
   it('should be able to add and remove notifications from a div of the last child of body', () => {
-    const {
-      add,
-      remove,
-    } = notifier;
+    const { add, remove } = notifier;
 
     let key: Key;
 
@@ -84,9 +68,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   });
 
   it('should be able to stack notifications', () => {
-    const {
-      add,
-    } = notifier;
+    const { add } = notifier;
 
     const testCount = 99;
 
@@ -110,17 +92,11 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
 
   it('should replace old message with newer one at the same index if both having the same key', () => {
     const beforeKey = 'foo';
-    const mockMessages = [
-      '1',
-      beforeKey,
-      '2',
-    ];
+    const mockMessages = ['1', beforeKey, '2'];
 
     const targetIndex = mockMessages.indexOf(beforeKey);
 
-    const {
-      add,
-    } = notifier;
+    const { add } = notifier;
 
     mockMessages.forEach((key) => {
       act(() => {
@@ -154,10 +130,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   });
 
   it('should be able to destory the notifier root', () => {
-    const {
-      add,
-      destroy,
-    } = notifier;
+    const { add, destroy } = notifier;
 
     act(() => {
       add({
@@ -177,10 +150,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   });
 
   it('should be able to add again after destroying the notifier', () => {
-    const {
-      add,
-      destroy,
-    } = notifier;
+    const { add, destroy } = notifier;
 
     const testTimes = 5;
 
@@ -215,10 +185,7 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
   it('should be able to configure', () => {
     const maxCount = 3;
 
-    const {
-      add,
-      config,
-    } = notifier;
+    const { add, config } = notifier;
 
     config({
       maxCount,
@@ -242,20 +209,15 @@ function expectCommonBehavior(notifier: Notifier<NotifierData>) {
     const maxCount = 3;
     const duration = 2;
 
-    const {
-      config,
-      getConfig,
-    } = notifier;
+    const { config, getConfig } = notifier;
 
     config({
       maxCount,
       duration,
     });
 
-    const {
-      maxCount: returnedMaxCount,
-      duration: returnedDuration,
-    } = getConfig();
+    const { maxCount: returnedMaxCount, duration: returnedDuration } =
+      getConfig();
 
     expect(returnedMaxCount).toEqual(maxCount);
     expect(returnedDuration).toEqual(duration);
@@ -319,7 +281,9 @@ describe('createNotifier()', () => {
       expect(messageElement?.tagName.toLowerCase()).toBe('div');
       expect(messageElement?.textContent).toBe('foo');
       expect(messageElement?.getAttribute('id')).toBe(testRenderId);
-      expect(messageElement?.getAttribute('data-test-duration')).toBe(`${testDuration}`);
+      expect(messageElement?.getAttribute('data-test-duration')).toBe(
+        `${testDuration}`,
+      );
     });
   });
 
@@ -346,7 +310,9 @@ describe('createNotifier()', () => {
         expect(messageElement?.tagName.toLowerCase()).toBe('div');
         expect(messageElement?.textContent).toBe('foo');
         expect(messageElement?.getAttribute('id')).toBe(testRenderId);
-        expect(messageElement?.getAttribute('data-test-duration')).toBe(`${testDuration}`);
+        expect(messageElement?.getAttribute('data-test-duration')).toBe(
+          `${testDuration}`,
+        );
       });
     });
 
@@ -369,7 +335,9 @@ describe('createNotifier()', () => {
         expect(messageElement?.tagName.toLowerCase()).toBe('div');
         expect(messageElement?.textContent).toBe('foo');
         expect(messageElement?.getAttribute('id')).toBe(testRenderId);
-        expect(messageElement?.getAttribute('data-test-extensible')).toBe(testExtensibleString);
+        expect(messageElement?.getAttribute('data-test-extensible')).toBe(
+          testExtensibleString,
+        );
       });
     });
 

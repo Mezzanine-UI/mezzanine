@@ -2,21 +2,22 @@ import { forwardRef } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import TimePanel, { TimePanelProps } from '../TimePanel';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
+import InputTriggerPopper, {
+  InputTriggerPopperProps,
+} from '../_internal/InputTriggerPopper';
 
 export interface TimePickerPanelProps
-  extends
-  Omit<TimePanelProps,
-  | Exclude<keyof NativeElementPropsWithoutKeyAndRef<'div'>, | 'className' | 'style' | 'id' >
-  | 'withoutAction'
-  | 'onChange'
-  | 'value'
-  >,
-  Pick<InputTriggerPopperProps,
-  | 'anchor'
-  | 'fadeProps'
-  | 'open'
-  > {
+  extends Omit<
+      TimePanelProps,
+      | Exclude<
+          keyof NativeElementPropsWithoutKeyAndRef<'div'>,
+          'className' | 'style' | 'id'
+        >
+      | 'withoutAction'
+      | 'onChange'
+      | 'value'
+    >,
+    Pick<InputTriggerPopperProps, 'anchor' | 'fadeProps' | 'open'> {
   /**
    * Change Handler. Receive `DateType` as props.
    */
@@ -24,12 +25,10 @@ export interface TimePickerPanelProps
   /**
    * Other props you may provide to `Popper` component
    */
-  popperProps?: Omit<InputTriggerPopperProps,
-  | 'anchor'
-  | 'children'
-  | 'fadeProps'
-  | 'open'
-  >
+  popperProps?: Omit<
+    InputTriggerPopperProps,
+    'anchor' | 'children' | 'fadeProps' | 'open'
+  >;
   /**
    * Display value of the panel.
    */

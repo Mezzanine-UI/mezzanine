@@ -10,25 +10,16 @@
       }
     ],
     "at-rule-no-vendor-prefix": true,
-    "block-closing-brace-newline-after": [
-      "always",
-      {
-        "ignoreAtRules": ["if", "else"]
-      }
-    ],
-    "color-hex-case": "lower",
     "declaration-no-important": true,
-    "indentation": 2,
     "media-feature-name-no-vendor-prefix": true,
     "property-no-vendor-prefix": true,
     "selector-no-vendor-prefix": true,
     "selector-pseudo-class-no-unknown": true,
     "value-no-vendor-prefix": true,
     "order/order": ["custom-properties", "declarations"],
-    "scss/selector-no-redundant-nesting-selector": true,
+    "scss/selector-no-redundant-nesting-selector": null,
     "custom-property-no-missing-var-function": null,
     "custom-property-pattern": null,
-    "string-quotes": "single",
     "function-no-unknown": null
   }
 }

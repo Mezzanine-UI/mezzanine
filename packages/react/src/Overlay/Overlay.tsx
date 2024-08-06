@@ -6,9 +6,8 @@ import Portal, { PortalProps } from '../Portal';
 import { Fade } from '../Transition';
 
 export interface OverlayProps
-  extends
-  Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
-  NativeElementPropsWithoutKeyAndRef<'div'> {
+  extends Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
+    NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Controls whether to disable closing element while backdrop clicked.
    * @default false
@@ -47,70 +46,65 @@ export interface OverlayProps
 /**
  * The react component for `mezzanine` overlay.
  */
-const Overlay = forwardRef<HTMLDivElement, OverlayProps>(function Overlay(props, ref) {
-  const {
-    children,
-    className,
-    container,
-    disableCloseOnBackdropClick = false,
-    disablePortal,
-    hideBackdrop = false,
-    invisibleBackdrop = false,
-    onBackdropClick,
-    onClose,
-    onSurface,
-    open = false,
-    ...rest
-  } = props;
+const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
+  function Overlay(props, ref) {
+    const {
+      children,
+      className,
+      container,
+      disableCloseOnBackdropClick = false,
+      disablePortal,
+      hideBackdrop = false,
+      invisibleBackdrop = false,
+      onBackdropClick,
+      onClose,
+      onSurface,
+      open = false,
+      ...rest
+    } = props;
 
-  const fixedAtBody = Boolean(!container);
+    const fixedAtBody = Boolean(!container);
 
-  return (
-    <Portal
-      container={container}
-      disablePortal={disablePortal}
-    >
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          {
-            [classes.hostFixed]: fixedAtBody,
-            [classes.hostOpen]: open,
-          },
-          className,
-        )}
-      >
-        {hideBackdrop ? null : (
-          <Fade in={open}>
-            <div
-              aria-hidden
-              className={cx(
-                classes.backdrop,
-                {
+    return (
+      <Portal container={container} disablePortal={disablePortal}>
+        <div
+          {...rest}
+          ref={ref}
+          className={cx(
+            classes.host,
+            {
+              [classes.hostFixed]: fixedAtBody,
+              [classes.hostOpen]: open,
+            },
+            className,
+          )}
+        >
+          {hideBackdrop ? null : (
+            <Fade in={open}>
+              <div
+                aria-hidden
+                className={cx(classes.backdrop, {
                   [classes.backdropFixed]: fixedAtBody,
                   [classes.invisible]: invisibleBackdrop,
                   [classes.backdropOnSurface]: onSurface,
-                },
-              )}
-              onClick={(event) => {
-                if (!disableCloseOnBackdropClick && onClose) {
-                  onClose();
-                }
+                })}
+                onClick={(event) => {
+                  if (!disableCloseOnBackdropClick && onClose) {
+                    onClose();
+                  }
 
-                if (onBackdropClick) {
-                  onBackdropClick(event);
-                }
-              }}
-            />
-          </Fade>
-        )}
-        {children}
-      </div>
-    </Portal>
-  );
-});
+                  if (onBackdropClick) {
+                    onBackdropClick(event);
+                  }
+                }}
+              />
+            </Fade>
+          )}
+          {children}
+        </div>
+      </Portal>
+    );
+  },
+);
 
 export default Overlay;
-

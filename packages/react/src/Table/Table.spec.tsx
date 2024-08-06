@@ -1,8 +1,6 @@
 import { ReactPortal } from 'react';
 import ReactDOM from 'react-dom';
-import {
-  TableColumn,
-} from '@mezzanine-ui/core/table';
+import { TableColumn } from '@mezzanine-ui/core/table';
 import {
   act,
   cleanupHook,
@@ -10,9 +8,7 @@ import {
   render,
   TestRenderer,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Table from './Table';
 import TableRefresh from './refresh/TableRefresh';
 import TableHeader from './TableHeader';
@@ -24,19 +20,24 @@ type DataType = {
   name: string;
 };
 
-const defaultSources: DataType[] = [{
-  key: 'foo',
-  name: 'foo',
-}, {
-  key: 'bar',
-  name: 'bar',
-}];
+const defaultSources: DataType[] = [
+  {
+    key: 'foo',
+    name: 'foo',
+  },
+  {
+    key: 'bar',
+    name: 'bar',
+  },
+];
 
-const defaultColumns: TableColumn<DataType>[] = [{
-  key: 'foo',
-  dataIndex: 'foo',
-  title: 'foo',
-}];
+const defaultColumns: TableColumn<DataType>[] = [
+  {
+    key: 'foo',
+    dataIndex: 'foo',
+    title: 'foo',
+  },
+];
 
 const defaultProps = {
   columns: defaultColumns,
@@ -90,22 +91,13 @@ describe('<Table />', () => {
     ReactDOM.createPortal = (node) => node as ReactPortal;
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLTableElement,
-    (ref) => render(
-      <Table
-        {...defaultProps}
-        ref={ref}
-      />,
-    ),
+  describeForwardRefToHTMLElement(HTMLTableElement, (ref) =>
+    render(<Table {...defaultProps} ref={ref} />),
   );
 
   it('prop: headerClassName', () => {
     const testInstance = TestRenderer.create(
-      <Table
-        {...defaultProps}
-        headerClassName="foo"
-      />,
+      <Table {...defaultProps} headerClassName="foo" />,
     );
     const headerInstance = testInstance.root.findByType(TableHeader);
 
@@ -114,10 +106,7 @@ describe('<Table />', () => {
 
   it('prop: loading', () => {
     const testInstance = TestRenderer.create(
-      <Table
-        {...defaultProps}
-        loading
-      />,
+      <Table {...defaultProps} loading />,
     );
     const loadingInstance = testInstance.root.findByType(Loading);
 
@@ -133,8 +122,14 @@ describe('<Table />', () => {
     });
 
     beforeAll(() => {
-      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
-      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: 230,
+      });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: 200,
+      });
     });
 
     beforeEach(() => {
@@ -267,7 +262,9 @@ describe('<Table />', () => {
       expect(paginationInstance.props.className).toBe(undefined);
       expect(paginationInstance.props.pageSize).toBe(10);
       expect(paginationInstance.props.siblingCount).toBe(1);
-      expect(paginationInstance.props.total).toBe(defaultProps.dataSource.length);
+      expect(paginationInstance.props.total).toBe(
+        defaultProps.dataSource.length,
+      );
     });
 
     it('should map options into context when given custom options', () => {
@@ -350,11 +347,7 @@ describe('<Table />', () => {
 
   describe('customize table components feature', () => {
     it('should render custom cell when given', () => {
-      const CustomCell = () => (
-        <div className="foo-cell">
-          foo
-        </div>
-      );
+      const CustomCell = () => <div className="foo-cell">foo</div>;
 
       const { getHostHTMLElement } = render(
         <Table
@@ -420,8 +413,14 @@ describe('<Table />', () => {
     beforeEach(() => {
       fetchMoreTriggered = false;
 
-      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: scrollHeight });
-      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: tableHeight });
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: scrollHeight,
+      });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: tableHeight,
+      });
 
       jest.useFakeTimers();
       jest.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
@@ -447,14 +446,21 @@ describe('<Table />', () => {
     });
 
     afterEach(() => {
-      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: scrollHeight });
-      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: tableHeight });
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: scrollHeight,
+      });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: tableHeight,
+      });
     });
 
     it('should scroll bar / scroll bar track existed', () => {
       const scrollBarTrack = getTableBodyScrollBarTrack(host);
       const scrollBar = getTableBodyScrollBar(host);
-      const scrollBarChildStyle = scrollBar.firstElementChild?.getAttribute('style');
+      const scrollBarChildStyle =
+        scrollBar.firstElementChild?.getAttribute('style');
       const widthMatch = new RegExp(`width: ${scrollBarSize}px`, 'g');
 
       expect(scrollBarTrack).not.toBeNull();
@@ -471,7 +477,8 @@ describe('<Table />', () => {
       });
 
       currentScrollBar = getTableBodyScrollBar(host);
-      currentScrollBarChildStyle = currentScrollBar.firstElementChild?.getAttribute('style');
+      currentScrollBarChildStyle =
+        currentScrollBar.firstElementChild?.getAttribute('style');
 
       const widthMatch = new RegExp(`width: ${scrollBarSize + 6}px`, 'g');
 
@@ -482,7 +489,8 @@ describe('<Table />', () => {
       });
 
       currentScrollBar = getTableBodyScrollBar(host);
-      currentScrollBarChildStyle = currentScrollBar.firstElementChild?.getAttribute('style');
+      currentScrollBarChildStyle =
+        currentScrollBar.firstElementChild?.getAttribute('style');
 
       const widthMatch2 = new RegExp(`width: ${scrollBarSize}px`, 'g');
 
@@ -511,9 +519,11 @@ describe('<Table />', () => {
         top: tableTop,
       });
 
-      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>((position, style) => {
-        newScrollBarTop = `${position}: ${style}`;
-      });
+      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>(
+        (position, style) => {
+          newScrollBarTop = `${position}: ${style}`;
+        },
+      );
 
       await act(async () => {
         fireEvent.mouseMove(currentScrollBar, {
@@ -533,22 +543,30 @@ describe('<Table />', () => {
         fireEvent.scroll(scrollContainer);
       });
 
-      const currentScrollBarStyle = getTableBodyScrollBar(host)?.getAttribute('style');
+      const currentScrollBarStyle =
+        getTableBodyScrollBar(host)?.getAttribute('style');
 
       expect(currentScrollBarStyle).not.toBeUndefined();
       expect(currentScrollBarStyle?.match(/opacity: 1/g)).not.toBeNull();
 
       jest.runAllTimers();
 
-      const nextScrollBarStyle = getTableBodyScrollBar(host)?.getAttribute('style');
+      const nextScrollBarStyle =
+        getTableBodyScrollBar(host)?.getAttribute('style');
 
       expect(nextScrollBarStyle).not.toBeUndefined();
       expect(nextScrollBarStyle?.match(/opacity: 0/g)).not.toBeNull();
     });
 
     it('should trigger fetchMore when scrolling position near table bottom', async () => {
-      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
-      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+      Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+        configurable: true,
+        value: 230,
+      });
+      Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+        configurable: true,
+        value: 200,
+      });
 
       const scrollContainer = getTableScrollContainer(host);
 
@@ -571,9 +589,11 @@ describe('<Table />', () => {
         top: tableTop,
       });
 
-      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>((position, style) => {
-        newScrollBarTop = `${position}: ${style}`;
-      });
+      currentScrollBar.style.setProperty = jest.fn<void, [string, string]>(
+        (position, style) => {
+          newScrollBarTop = `${position}: ${style}`;
+        },
+      );
 
       await act(async () => {
         fireEvent.click(currentScrollBarTrack, {
@@ -595,14 +615,17 @@ describe('<Table />', () => {
 
     describe('exceptions handle', () => {
       it('when fetchMore callback is not given', async () => {
-        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
-        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 230,
+        });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 200,
+        });
 
         const { getHostHTMLElement } = render(
-          <Table
-            columns={[]}
-            dataSource={defaultSources}
-          />,
+          <Table columns={[]} dataSource={defaultSources} />,
         );
 
         const tableHost = getHostHTMLElement();
@@ -615,8 +638,14 @@ describe('<Table />', () => {
       });
 
       it('should not trigger fetchMore when is scroll below bottom (safari specific bug)', async () => {
-        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 199 });
-        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 199,
+        });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 200,
+        });
 
         const { getHostHTMLElement } = render(
           <Table
@@ -640,8 +669,14 @@ describe('<Table />', () => {
       });
 
       it('should not trigger scrolling event changes when loading', async () => {
-        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', { configurable: true, value: 230 });
-        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', { configurable: true, value: 200 });
+        Object.defineProperty(HTMLDivElement.prototype, 'scrollHeight', {
+          configurable: true,
+          value: 230,
+        });
+        Object.defineProperty(HTMLDivElement.prototype, 'clientHeight', {
+          configurable: true,
+          value: 200,
+        });
 
         const { getHostHTMLElement } = render(
           <Table

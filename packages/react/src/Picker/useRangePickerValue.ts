@@ -3,18 +3,12 @@ import {
   RangePickerPickingValue,
   RangePickerValue,
 } from '@mezzanine-ui/core/picker';
-import {
-  ChangeEventHandler,
-  KeyboardEventHandler,
-  RefObject,
-} from 'react';
+import { ChangeEventHandler, KeyboardEventHandler, RefObject } from 'react';
 import { useCalendarContext } from '../Calendar';
-import {
-  usePickerValue,
-  UsePickerValueProps,
-} from './usePickerValue';
+import { usePickerValue, UsePickerValueProps } from './usePickerValue';
 
-export interface UseRangePickerValueProps extends Pick<UsePickerValueProps, 'format' | 'formats'> {
+export interface UseRangePickerValueProps
+  extends Pick<UsePickerValueProps, 'format' | 'formats'> {
   inputFromRef: RefObject<HTMLInputElement>;
   inputToRef: RefObject<HTMLInputElement>;
   value?: RangePickerValue;
@@ -78,7 +72,8 @@ export function useRangePickerValue({
     callback = {
       from: (date?: string) => date,
       to: (date?: string) => date,
-    }): RangePickerPickingValue | undefined => {
+    },
+  ): RangePickerPickingValue | undefined => {
     const [newFrom, newTo] = target || [];
 
     if (newFrom && newTo) {
@@ -98,7 +93,9 @@ export function useRangePickerValue({
     return target;
   };
 
-  const onOrderGuardedInputFromChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onOrderGuardedInputFromChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onInputFromChange(event);
 
     const currentVal = parse(event.target.value);
@@ -110,7 +107,9 @@ export function useRangePickerValue({
     }
   };
 
-  const onOrderGuardedInputToChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onOrderGuardedInputToChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onInputToChange(event);
 
     const currentVal = parse(event.target.value);
@@ -122,7 +121,9 @@ export function useRangePickerValue({
     }
   };
 
-  const guardValidValueOnFromKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const guardValidValueOnFromKeyDown: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onFromKeyDown(event);
 
     if (event.key === 'Enter') {
@@ -134,7 +135,9 @@ export function useRangePickerValue({
     }
   };
 
-  const guardValidValueOnToKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const guardValidValueOnToKeyDown: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onToKeyDown(event);
 
     if (event.key === 'Enter') {

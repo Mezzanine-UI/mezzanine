@@ -13,16 +13,19 @@ describe('useTableFetchMore()', () => {
   });
 
   it('isFetching status should changed', () => {
-    const defaultSources = [{
-      id: 'foo',
-      name: 'foo',
-    }];
+    const defaultSources = [
+      {
+        id: 'foo',
+        name: 'foo',
+      },
+    ];
 
     const { result, rerender } = renderHook(
-      ({ callback, dataSource }) => useTableFetchMore({
-        callback,
-        dataSource,
-      }),
+      ({ callback, dataSource }) =>
+        useTableFetchMore({
+          callback,
+          dataSource,
+        }),
       {
         initialProps: {
           dataSource: defaultSources,
@@ -31,9 +34,7 @@ describe('useTableFetchMore()', () => {
       },
     );
 
-    const {
-      fetchMore,
-    } = result.current;
+    const { fetchMore } = result.current;
 
     TestRenderer.act(() => {
       fetchMore?.();
@@ -41,13 +42,16 @@ describe('useTableFetchMore()', () => {
 
     expect(result.current.isFetching).toBe(true);
 
-    const newSources = [{
-      id: 'foo',
-      name: 'foo',
-    }, {
-      id: 'bar',
-      name: 'bar',
-    }];
+    const newSources = [
+      {
+        id: 'foo',
+        name: 'foo',
+      },
+      {
+        id: 'bar',
+        name: 'bar',
+      },
+    ];
 
     rerender({
       dataSource: newSources,

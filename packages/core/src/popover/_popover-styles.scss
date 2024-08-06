@@ -16,7 +16,7 @@ $title-margin-bottom: 4px !default;
   box-sizing: border-box;
 
   &__title {
-    margin: 0 0 $title-margin-bottom 0;
+    margin: 0 0 $title-margin-bottom;
 
     @include typography.variant(h5);
   }

@@ -1,9 +1,7 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode } from 'react';
-import {
-  renderHook,
-} from '../../__test-utils__';
+import { renderHook } from '../../__test-utils__';
 import { useCalendarControlModifiers, CalendarConfigProvider } from '.';
 
 describe('useCalendarControlModifiers', () => {
@@ -13,12 +11,7 @@ describe('useCalendarControlModifiers', () => {
     </CalendarConfigProvider>
   );
   const renderResult = renderHook(useCalendarControlModifiers, { wrapper });
-  const {
-    year,
-    month,
-    week,
-    day,
-  } = renderResult.result.current;
+  const { year, month, week, day } = renderResult.result.current;
 
   it('should add or remove 10 years for year modifier', () => {
     const current = '2022-01-02';

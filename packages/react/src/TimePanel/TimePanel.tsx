@@ -13,16 +13,11 @@ import TimePanelAction, { TimePanelActionProps } from './TimePanelAction';
 import TimePanelColumn from './TimePanelColumn';
 
 export interface TimePanelProps
-  extends
-  Pick<TimePanelActionProps,
-  | 'confirmText'
-  | 'onConfirm'
-  >,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
-  | 'value'
-  | 'onChange'
-  | 'children'
-  > {
+  extends Pick<TimePanelActionProps, 'confirmText' | 'onConfirm'>,
+    Omit<
+      NativeElementPropsWithoutKeyAndRef<'div'>,
+      'value' | 'onChange' | 'children'
+    > {
   /**
    * Controls whether or not to hide hours column.
    */
@@ -123,9 +118,18 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
       minute: getMinute,
       second: getSecond,
     };
-    const hourUnits = useMemo(() => (hideHour ? undefined : getUnits(0, 23, hourStep)), [hideHour, hourStep]);
-    const minuteUnits = useMemo(() => (hideMinute ? undefined : getUnits(0, 59, minuteStep)), [hideMinute, minuteStep]);
-    const secondUnits = useMemo(() => (hideSecond ? undefined : getUnits(0, 59, secondStep)), [hideSecond, secondStep]);
+    const hourUnits = useMemo(
+      () => (hideHour ? undefined : getUnits(0, 23, hourStep)),
+      [hideHour, hourStep],
+    );
+    const minuteUnits = useMemo(
+      () => (hideMinute ? undefined : getUnits(0, 59, minuteStep)),
+      [hideMinute, minuteStep],
+    );
+    const secondUnits = useMemo(
+      () => (hideSecond ? undefined : getUnits(0, 59, secondStep)),
+      [hideSecond, secondStep],
+    );
     const activeHour = value ? getHour(value) : undefined;
     const activeMinute = value ? getMinute(value) : undefined;
     const activeSecond = value ? getSecond(value) : undefined;
@@ -150,7 +154,8 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
         }
 
         const nextIndex = (getter(value) + steps) / Math.abs(steps);
-        const guardedNextIndex = nextIndex >= 0 ? nextIndex : units.length + nextIndex;
+        const guardedNextIndex =
+          nextIndex >= 0 ? nextIndex : units.length + nextIndex;
         const newUnitIndex = guardedNextIndex % units.length;
         const newUnit = units[newUnitIndex].value;
         const target = setter(value, newUnit);
@@ -174,14 +179,7 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
     }
 
     return (
-      <div
-        {...restHostProps}
-        ref={ref}
-        className={cx(
-          classes.host,
-          className,
-        )}
-      >
+      <div {...restHostProps} ref={ref} className={cx(classes.host, className)}>
         <div className={classes.columns}>
           {!hideHour && hourUnits && (
             <TimePanelColumn
@@ -189,16 +187,8 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
               units={hourUnits}
               activeUnit={activeHour}
               onChange={getChangeHandle('hour')}
-              onNext={getControlHandle(
-                'hour',
-                hourUnits,
-                hourStep,
-              )}
-              onPrev={getControlHandle(
-                'hour',
-                hourUnits,
-                -hourStep,
-              )}
+              onNext={getControlHandle('hour', hourUnits, hourStep)}
+              onPrev={getControlHandle('hour', hourUnits, -hourStep)}
             />
           )}
           {!hideMinute && minuteUnits && (
@@ -207,16 +197,8 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
               units={minuteUnits}
               activeUnit={activeMinute}
               onChange={getChangeHandle('minute')}
-              onNext={getControlHandle(
-                'minute',
-                minuteUnits,
-                minuteStep,
-              )}
-              onPrev={getControlHandle(
-                'minute',
-                minuteUnits,
-                -minuteStep,
-              )}
+              onNext={getControlHandle('minute', minuteUnits, minuteStep)}
+              onPrev={getControlHandle('minute', minuteUnits, -minuteStep)}
             />
           )}
           {!hideSecond && secondUnits && (
@@ -225,24 +207,13 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
               units={secondUnits}
               activeUnit={activeSecond}
               onChange={getChangeHandle('second')}
-              onNext={getControlHandle(
-                'second',
-                secondUnits,
-                secondStep,
-              )}
-              onPrev={getControlHandle(
-                'second',
-                secondUnits,
-                -secondStep,
-              )}
+              onNext={getControlHandle('second', secondUnits, secondStep)}
+              onPrev={getControlHandle('second', secondUnits, -secondStep)}
             />
           )}
         </div>
         {!withoutAction && (
-          <TimePanelAction
-            onConfirm={onConfirm}
-            confirmText={confirmText}
-          />
+          <TimePanelAction onConfirm={onConfirm} confirmText={confirmText} />
         )}
       </div>
     );

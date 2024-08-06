@@ -13,7 +13,11 @@ import {
 } from '@mezzanine-ui/core/table';
 import xor from 'lodash/xor';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
-import { TableContext, TableDataContext, RowSelectionContext } from '../TableContext';
+import {
+  TableContext,
+  TableDataContext,
+  RowSelectionContext,
+} from '../TableContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import { cx } from '../../utils/cx';
 import { SELECTED_ALL_KEY } from './useTableRowSelection';
@@ -22,7 +26,8 @@ import Icon from '../../Icon';
 import Dropdown from '../../Dropdown';
 import Menu, { MenuItem } from '../../Menu';
 
-export interface TableRowSelectionProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface TableRowSelectionProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * row key to control checkbox
    */
@@ -40,21 +45,11 @@ export interface TableRowSelectionProps extends NativeElementPropsWithoutKeyAndR
 
 const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
   function TableRowSelection(props, ref) {
-    const {
-      rowKey,
-      setChecked,
-      showDropdownIcon,
-      ...rest
-    } = props;
+    const { rowKey, setChecked, showDropdownIcon, ...rest } = props;
 
-    const {
-      rowSelection,
-      expanding,
-    } = useContext(TableContext) || {};
+    const { rowSelection, expanding } = useContext(TableContext) || {};
 
-    const {
-      dataSource = [],
-    } = useContext(TableDataContext) || {};
+    const { dataSource = [] } = useContext(TableDataContext) || {};
 
     /** checkbox methods/state */
     const onSelected = useCallback(() => {
@@ -74,16 +69,23 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
       if (selectedRowKeys.length === validDataSource.length) return 'all';
 
       return 'indeterminate';
-    }, [rowSelection?.selectedRowKeys, rowSelection?.disabledRowKeys, dataSource]);
+    }, [
+      rowSelection?.selectedRowKeys,
+      rowSelection?.disabledRowKeys,
+      dataSource,
+    ]);
 
-    const selfChecked = useMemo(() => (
-      (rowSelection?.selectedRowKeys ?? []).some((key) => key === rowKey)
-    ), [rowSelection?.selectedRowKeys, rowKey]);
+    const selfChecked = useMemo(
+      () => (rowSelection?.selectedRowKeys ?? []).some((key) => key === rowKey),
+      [rowSelection?.selectedRowKeys, rowKey],
+    );
 
     /** checkbox props */
     const isHeaderCheckbox = rowKey === SELECTED_ALL_KEY;
     const checked = isHeaderCheckbox ? checkboxStatus === 'all' : selfChecked;
-    const indeterminate = isHeaderCheckbox ? checkboxStatus === 'indeterminate' : false;
+    const indeterminate = isHeaderCheckbox
+      ? checkboxStatus === 'indeterminate'
+      : false;
     const name = isHeaderCheckbox ? '選擇全部' : '選擇';
 
     /** parent callbacks */
@@ -108,11 +110,14 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
     /** menu */
     const [open, toggleOpen] = useState<boolean>(false);
     const isMenuAllowOpen = checked || indeterminate;
-    const onIconClicked = useCallback((evt: MouseEvent<HTMLElement>) => {
-      evt.stopPropagation();
+    const onIconClicked = useCallback(
+      (evt: MouseEvent<HTMLElement>) => {
+        evt.stopPropagation();
 
-      if (isMenuAllowOpen) toggleOpen((prev) => !prev);
-    }, [isMenuAllowOpen]);
+        if (isMenuAllowOpen) toggleOpen((prev) => !prev);
+      },
+      [isMenuAllowOpen],
+    );
 
     const onMenuItemClicked = (evt: MouseEvent, action: TableRowAction) => {
       evt.stopPropagation();
@@ -124,7 +129,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
 
     const actionMenu = (
       <Menu size="medium">
-        {(rowSelection?.actions ?? []).map(((action) => (
+        {(rowSelection?.actions ?? []).map((action) => (
           <MenuItem
             key={action.key}
             className={action.className}
@@ -132,7 +137,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
           >
             {action.text}
           </MenuItem>
-        )))}
+        ))}
       </Menu>
     );
 
@@ -145,9 +150,11 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
       >
         <Checkbox
           checked={checked}
-          disabled={rowSelection?.disabledRowKeys?.length
-            ? rowSelection.disabledRowKeys.includes(rowKey)
-            : false}
+          disabled={
+            rowSelection?.disabledRowKeys?.length
+              ? rowSelection.disabledRowKeys.includes(rowKey)
+              : false
+          }
           indeterminate={indeterminate}
           inputProps={{
             name,
@@ -174,12 +181,9 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
                 {(dropdownRef) => (
                   <Icon
                     ref={dropdownRef}
-                    className={cx(
-                      classes.icon,
-                      {
-                        [classes.iconClickable]: isMenuAllowOpen,
-                      },
-                    )}
+                    className={cx(classes.icon, {
+                      [classes.iconClickable]: isMenuAllowOpen,
+                    })}
                     color={isMenuAllowOpen ? 'primary' : 'disabled'}
                     icon={MoreVerticalIcon}
                     onClick={onIconClicked}

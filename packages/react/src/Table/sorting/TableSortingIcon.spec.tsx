@@ -1,11 +1,6 @@
 import { ArrowRightIcon } from '@mezzanine-ui/icons';
 import { TableColumn } from '@mezzanine-ui/core/table';
-import {
-  cleanupHook,
-  render,
-  fireEvent,
-  act,
-} from '../../../__test-utils__';
+import { cleanupHook, render, fireEvent, act } from '../../../__test-utils__';
 import TableSortingIcon from './TableSortingIcon';
 import { TableContext } from '../TableContext';
 import { SortedType } from './useTableSorting';
@@ -30,7 +25,9 @@ describe('<TableSortingIcon />', () => {
   afterEach(cleanupHook);
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<TableSortingIcon column={defaultColumn} />);
+    const { getHostHTMLElement } = render(
+      <TableSortingIcon column={defaultColumn} />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-table__icon')).toBeTruthy();
@@ -58,16 +55,18 @@ describe('<TableSortingIcon />', () => {
           );
           const element = getHostHTMLElement();
 
-          icon = (element as HTMLElement);
+          icon = element as HTMLElement;
         });
 
         it('should styling correct', () => {
-          const colorMatch = icon.getAttribute('style')?.match(mode === 'none'
-            ? /--mzn-color-secondary/
-            : /--mzn-color-primary/);
-          const transformMatch = icon.getAttribute('style')?.match(mode === 'asc'
-            ? /rotate\(-90deg\)/
-            : /rotate\(90deg\)/);
+          const colorMatch = icon
+            .getAttribute('style')
+            ?.match(
+              mode === 'none' ? /--mzn-color-secondary/ : /--mzn-color-primary/,
+            );
+          const transformMatch = icon
+            .getAttribute('style')
+            ?.match(mode === 'asc' ? /rotate\(-90deg\)/ : /rotate\(90deg\)/);
 
           expect(icon.getAttribute('data-icon-name')).toBe(ArrowRightIcon.name);
           expect(colorMatch).not.toBe(null);
@@ -124,8 +123,12 @@ describe('<TableSortingIcon />', () => {
       );
       const element = getHostHTMLElement();
 
-      const colorMatch = element.getAttribute('style')?.match(/--mzn-color-secondary/);
-      const transformMatch = element.getAttribute('style')?.match(/rotate\(90deg\)/);
+      const colorMatch = element
+        .getAttribute('style')
+        ?.match(/--mzn-color-secondary/);
+      const transformMatch = element
+        .getAttribute('style')
+        ?.match(/rotate\(90deg\)/);
 
       expect(colorMatch).not.toBe(null);
       expect(transformMatch).not.toBe(null);
@@ -143,12 +146,16 @@ describe('<TableSortingIcon />', () => {
       );
       const element = getHostHTMLElement();
 
-      icon = (element as HTMLElement);
+      icon = element as HTMLElement;
     });
 
     it('should apply default state when sorting methods is not given', () => {
-      const colorMatch = icon.getAttribute('style')?.match(/--mzn-color-secondary/);
-      const transformMatch = icon.getAttribute('style')?.match(/rotate\(90deg\)/);
+      const colorMatch = icon
+        .getAttribute('style')
+        ?.match(/--mzn-color-secondary/);
+      const transformMatch = icon
+        .getAttribute('style')
+        ?.match(/rotate\(90deg\)/);
 
       expect(colorMatch).not.toBe(null);
       expect(transformMatch).not.toBe(null);

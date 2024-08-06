@@ -1,9 +1,0 @@
-{
-  "extends": "../tsconfig.dev.json",
-  "compilerOptions": {
-    "types": ["node"]
-  },
-  "include": ["../src"],
-  "exclude": ["../src/test.ts", "../src/**/*.spec.*"],
-  "files": ["./typings.d.ts"]
-}

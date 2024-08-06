@@ -1,8 +1,4 @@
-import {
-  RefObject,
-  MouseEvent,
-  useState,
-} from 'react';
+import { RefObject, MouseEvent, useState } from 'react';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -65,10 +61,18 @@ export const Basic = () => {
             ref={ref as RefObject<HTMLButtonElement>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
-              setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
+              setAnchor(
+                anchor === event.currentTarget ? null : event.currentTarget,
+              );
               setCurrent('basic');
             }}
-            suffix={<Icon icon={open && current === 'basic' ? ChevronUpIcon : ChevronDownIcon} />}
+            suffix={
+              <Icon
+                icon={
+                  open && current === 'basic' ? ChevronUpIcon : ChevronDownIcon
+                }
+              />
+            }
             variant="text"
           >
             Basic
@@ -93,7 +97,9 @@ export const Basic = () => {
             ref={ref as RefObject<HTMLButtonElement>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
-              setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
+              setAnchor(
+                anchor === event.currentTarget ? null : event.currentTarget,
+              );
               setCurrent('button');
             }}
             suffix={<Icon icon={MoreHorizontalIcon} />}
@@ -143,15 +149,19 @@ export const Sizes = () => {
               ref={ref as RefObject<HTMLButtonElement>}
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
-                setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
+                setAnchor(
+                  anchor === event.currentTarget ? null : event.currentTarget,
+                );
                 setCurrent(size);
               }}
               size={size}
-              suffix={(
+              suffix={
                 <Icon
-                  icon={open && current === size ? ChevronUpIcon : ChevronDownIcon}
+                  icon={
+                    open && current === size ? ChevronUpIcon : ChevronDownIcon
+                  }
                 />
-              )}
+              }
               variant="outlined"
             >
               {size}

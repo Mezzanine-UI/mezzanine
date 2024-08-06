@@ -1,27 +1,21 @@
-import {
-  treeClasses as classes, TreeNodeValue,
-} from '@mezzanine-ui/core/tree';
+import { treeClasses as classes, TreeNodeValue } from '@mezzanine-ui/core/tree';
 import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import TreeNode, { TreeNodeElementProps, TreeNodeProps } from './TreeNode';
 import { TreeNodeData, TreeNodeRefs } from './typings';
 
-export type TreeNodeListElementProps = Omit<NativeElementPropsWithoutKeyAndRef<'ul'>,
-| 'children'
-| 'onSelect'
+export type TreeNodeListElementProps = Omit<
+  NativeElementPropsWithoutKeyAndRef<'ul'>,
+  'children' | 'onSelect'
 >;
 
 export interface TreeNodeListProps
-  extends
-  TreeNodeListElementProps,
-  Pick<TreeNodeProps,
-  | 'multiple'
-  | 'onExpand'
-  | 'onSelect'
-  | 'selectable'
-  | 'size'
-  > {
+  extends TreeNodeListElementProps,
+    Pick<
+      TreeNodeProps,
+      'multiple' | 'onExpand' | 'onSelect' | 'selectable' | 'size'
+    > {
   /**
    * Given nodes will be passed to `TreeNode` component orderly.
    */
@@ -57,11 +51,11 @@ const TreeNodeList = forwardRef<HTMLUListElement, TreeNodeListProps>(
 
     const getNodeRefHandler = treeNodeRefs
       ? (value: TreeNodeValue) => (node: HTMLLIElement) => {
-        treeNodeRefs.current = {
-          ...treeNodeRefs.current,
-          [value]: node,
-        };
-      }
+          treeNodeRefs.current = {
+            ...treeNodeRefs.current,
+            [value]: node,
+          };
+        }
       : undefined;
 
     if (!nodes?.length) return null;
@@ -70,18 +64,10 @@ const TreeNodeList = forwardRef<HTMLUListElement, TreeNodeListProps>(
       <ul
         {...restRootProp}
         ref={ref}
-        className={cx(
-          classes.nodeList,
-          classes.nodeListSize(size),
-          className,
-        )}
+        className={cx(classes.nodeList, classes.nodeListSize(size), className)}
       >
         {nodes.map((node) => {
-          const {
-            value,
-            nodes: siblingNodes,
-            ...restNodeProps
-          } = node;
+          const { value, nodes: siblingNodes, ...restNodeProps } = node;
 
           return (
             <TreeNode
@@ -96,21 +82,19 @@ const TreeNodeList = forwardRef<HTMLUListElement, TreeNodeListProps>(
               value={value}
               {...restNodeProps}
             >
-              {siblingNodes?.length
-                ? (
-                  <TreeNodeList
-                    {...restRootProp}
-                    className={className}
-                    multiple={multiple}
-                    nodes={siblingNodes}
-                    onExpand={onExpand}
-                    onSelect={onSelect}
-                    selectable={selectable}
-                    size={size}
-                    treeNodeRefs={treeNodeRefs}
-                  />
-                )
-                : undefined}
+              {siblingNodes?.length ? (
+                <TreeNodeList
+                  {...restRootProp}
+                  className={className}
+                  multiple={multiple}
+                  nodes={siblingNodes}
+                  onExpand={onExpand}
+                  onSelect={onSelect}
+                  selectable={selectable}
+                  size={size}
+                  treeNodeRefs={treeNodeRefs}
+                />
+              ) : undefined}
             </TreeNode>
           );
         })}

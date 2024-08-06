@@ -21,9 +21,12 @@ export interface NotifierData extends Pick<NotifierConfig, 'duration'> {
 
 export type RenderNotifier<N extends NotifierData> = (notifier: N) => ReactNode;
 
-export interface Notifier<N extends NotifierData, C extends NotifierConfig = NotifierConfig> {
-  add: (notifier: N & { key?: Key; }) => Key;
-  config: (configs: C) => void
+export interface Notifier<
+  N extends NotifierData,
+  C extends NotifierConfig = NotifierConfig,
+> {
+  add: (notifier: N & { key?: Key }) => Key;
+  config: (configs: C) => void;
   destroy: VoidFunction;
   remove: (key: Key) => void;
   getConfig: () => C;

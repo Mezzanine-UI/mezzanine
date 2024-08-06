@@ -1,9 +1,5 @@
 import { createRef } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import Overlay from '.';
 
 describe('<Overlay />', () => {
@@ -13,9 +9,7 @@ describe('<Overlay />', () => {
     it('should forward ref to modal element', () => {
       const ref = createRef<HTMLDivElement>();
 
-      render(
-        <Overlay ref={ref} />,
-      );
+      render(<Overlay ref={ref} />);
 
       const rootElement = document.body.querySelector('.mzn-overlay');
 
@@ -28,11 +22,7 @@ describe('<Overlay />', () => {
     it('should render children', () => {
       const testChildren = 'foo';
 
-      render(
-        <Overlay>
-          {testChildren}
-        </Overlay>,
-      );
+      render(<Overlay>{testChildren}</Overlay>);
 
       const rootElement = document.body.querySelector('.mzn-overlay');
 
@@ -44,9 +34,7 @@ describe('<Overlay />', () => {
     it('should append class name on overlay element', () => {
       const className = 'foo';
 
-      render(
-        <Overlay className={className} />,
-      );
+      render(<Overlay className={className} />);
 
       const rootElement = document.body.querySelector('.mzn-overlay');
 
@@ -61,15 +49,15 @@ describe('<Overlay />', () => {
         : 'should not render backdrop if open=false';
 
       it(message, () => {
-        render(
-          <Overlay open={open} />,
-        );
+        render(<Overlay open={open} />);
 
         const overlayElement = document.body.querySelector('.mzn-overlay')!;
         const { firstElementChild: backdropElement } = overlayElement;
 
         if (open) {
-          expect(backdropElement!.classList.contains('mzn-overlay__backdrop')).toBeTruthy();
+          expect(
+            backdropElement!.classList.contains('mzn-overlay__backdrop'),
+          ).toBeTruthy();
         } else {
           expect(backdropElement).toBe(null);
         }
@@ -77,9 +65,7 @@ describe('<Overlay />', () => {
     });
 
     it('should not render backdrop if hideBackdrop=true', () => {
-      render(
-        <Overlay hideBackdrop open />,
-      );
+      render(<Overlay hideBackdrop open />);
 
       const overlayElement = document.body.querySelector('.mzn-overlay')!;
       const { firstElementChild: backdropElement } = overlayElement;
@@ -91,11 +77,11 @@ describe('<Overlay />', () => {
     it('should fire onBackdropClick while backdrop clicked', () => {
       const onBackdropClick = jest.fn();
 
-      render(
-        <Overlay onBackdropClick={onBackdropClick} open />,
-      );
+      render(<Overlay onBackdropClick={onBackdropClick} open />);
 
-      const backdropElement = document.body.querySelector('.mzn-overlay .mzn-overlay__backdrop')!;
+      const backdropElement = document.body.querySelector(
+        '.mzn-overlay .mzn-overlay__backdrop',
+      )!;
 
       fireEvent.click(backdropElement!);
 
@@ -105,11 +91,11 @@ describe('<Overlay />', () => {
     it('should fire onClose while backdrop clicked', () => {
       const onClose = jest.fn();
 
-      render(
-        <Overlay onClose={onClose} open />,
-      );
+      render(<Overlay onClose={onClose} open />);
 
-      const backdropElement = document.body.querySelector('.mzn-overlay .mzn-overlay__backdrop')!;
+      const backdropElement = document.body.querySelector(
+        '.mzn-overlay .mzn-overlay__backdrop',
+      )!;
 
       fireEvent.click(backdropElement);
 
@@ -119,11 +105,11 @@ describe('<Overlay />', () => {
     it('should not fire onClose while backdrop clicked if disableCloseOnBackdropClick=true', () => {
       const onClose = jest.fn();
 
-      render(
-        <Overlay disableCloseOnBackdropClick onClose={onClose} open />,
-      );
+      render(<Overlay disableCloseOnBackdropClick onClose={onClose} open />);
 
-      const backdropElement = document.body.querySelector('.mzn-overlay .mzn-overlay__backdrop')!;
+      const backdropElement = document.body.querySelector(
+        '.mzn-overlay .mzn-overlay__backdrop',
+      )!;
 
       fireEvent.click(backdropElement);
 

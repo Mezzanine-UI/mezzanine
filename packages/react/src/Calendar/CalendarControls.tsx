@@ -1,15 +1,11 @@
-import {
-  calendarClasses as classes,
-} from '@mezzanine-ui/core/calendar';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@mezzanine-ui/icons';
+import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
+import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface CalendarControlsProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick'> {
+export interface CalendarControlsProps
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick'> {
   /**
    * Disable the next controller if true.
    */
@@ -44,13 +40,7 @@ function CalendarControls(props: CalendarControlsProps) {
   } = props;
 
   return (
-    <div
-      {...restElementProps}
-      className={cx(
-        classes.controls,
-        className,
-      )}
-    >
+    <div {...restElementProps} className={cx(classes.controls, className)}>
       {onPrev && (
         <button
           type="button"

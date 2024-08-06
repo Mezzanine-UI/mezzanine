@@ -4,9 +4,7 @@ import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarDays from './CalendarDays';
-import CalendarCell, {
-  CalendarCellProps,
-} from './CalendarCell';
+import CalendarCell, { CalendarCellProps } from './CalendarCell';
 import CalendarWeeks from './CalendarWeeks';
 import CalendarMonths from './CalendarMonths';
 import CalendarYears from './CalendarYears';
@@ -20,11 +18,7 @@ export default {
   title: 'Utility/Calendar',
 } as Meta;
 
-const InnerCalendarPlayground = ({
-  mode = 'day',
-}: {
-  mode: CalendarMode
-}) => {
+const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
   const formats = {
     day: 'YYYY-MM-DD',
     week: 'gggg-wo',
@@ -86,12 +80,7 @@ export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
 
 CalendarPlayground.argTypes = {
   mode: {
-    options: [
-      'day',
-      'week',
-      'month',
-      'year',
-    ],
+    options: ['day', 'week', 'month', 'year'],
     control: {
       type: 'select',
     },
@@ -113,23 +102,29 @@ export const Calendars = () => {
 
   const startDate = moment().date(17).toISOString();
   const endDate = moment().date(26).toISOString();
-  const isDateInRange = (date: DateType) => moment(date).isBetween(startDate, endDate);
+  const isDateInRange = (date: DateType) =>
+    moment(date).isBetween(startDate, endDate);
 
   const startWeek = moment().date(7).toISOString();
   const endWeek = moment().date(21).toISOString();
-  const isWeekInRange = (date: DateType) => moment(date).isBetween(startWeek, endWeek, 'date', '[]');
+  const isWeekInRange = (date: DateType) =>
+    moment(date).isBetween(startWeek, endWeek, 'date', '[]');
 
   const startMonth = moment().month(2).toISOString();
   const endMonth = moment().month(5).toISOString();
-  const isMonthInRange = (date: DateType) => moment(date).isBetween(startMonth, endMonth, 'month', '[]');
+  const isMonthInRange = (date: DateType) =>
+    moment(date).isBetween(startMonth, endMonth, 'month', '[]');
 
   const startYear = moment().year(2021).toISOString();
   const endYear = moment().year(2025).toISOString();
-  const isYearInRange = (date: DateType) => moment(date).isBetween(startYear, endYear, 'year', '[]');
+  const isYearInRange = (date: DateType) =>
+    moment(date).isBetween(startYear, endYear, 'year', '[]');
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h4" style={titleStyles}>Days Calendar</Typography>
+      <Typography variant="h4" style={titleStyles}>
+        Days Calendar
+      </Typography>
       <div style={calendarStyles}>
         <CalendarDays
           referenceDate={moment().toISOString()}
@@ -137,7 +132,9 @@ export const Calendars = () => {
           value={[startDate, endDate]}
         />
       </div>
-      <Typography variant="h4" style={titleStyles}>Weeks Calendar</Typography>
+      <Typography variant="h4" style={titleStyles}>
+        Weeks Calendar
+      </Typography>
       <div style={calendarStyles}>
         <CalendarWeeks
           referenceDate={startWeek}
@@ -145,7 +142,9 @@ export const Calendars = () => {
           value={[startWeek, endWeek]}
         />
       </div>
-      <Typography variant="h4" style={titleStyles}>Months Calendar</Typography>
+      <Typography variant="h4" style={titleStyles}>
+        Months Calendar
+      </Typography>
       <div style={calendarStyles}>
         <CalendarMonths
           referenceDate={startMonth}
@@ -153,7 +152,9 @@ export const Calendars = () => {
           value={[startMonth, endMonth]}
         />
       </div>
-      <Typography variant="h4" style={titleStyles}>Years Calendar</Typography>
+      <Typography variant="h4" style={titleStyles}>
+        Years Calendar
+      </Typography>
       <div style={calendarStyles}>
         <CalendarYears
           referenceDate={startYear}
@@ -162,7 +163,6 @@ export const Calendars = () => {
         />
       </div>
     </CalendarConfigProvider>
-
   );
 };
 
@@ -173,11 +173,7 @@ export const CellPlayground: StoryFn<CellPlaygroundArgs> = ({
   disabled,
 }) => (
   <div style={{ width: 32 }}>
-    <CalendarCell
-      today={today}
-      active={active}
-      disabled={disabled}
-    >
+    <CalendarCell today={today} active={active} disabled={disabled}>
       {moment().date()}
     </CalendarCell>
   </div>
@@ -189,7 +185,10 @@ CellPlayground.args = {
   disabled: false,
 };
 
-type ControlPlaygroundArgs = Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'>;
+type ControlPlaygroundArgs = Pick<
+  CalendarControlsProps,
+  'disableOnNext' | 'disableOnPrev'
+>;
 export const ControlPlayground: StoryFn<ControlPlaygroundArgs> = ({
   disableOnNext,
   disableOnPrev,

@@ -3,7 +3,7 @@ import { ChangeEventHandler, useState } from 'react';
 export interface UsePickerInputValueProps {
   defaultValue?: string;
   initialValue?: string;
-  onChange?: (val: string) => void
+  onChange?: (val: string) => void;
 }
 
 export function usePickerInputValue(props?: UsePickerInputValueProps) {

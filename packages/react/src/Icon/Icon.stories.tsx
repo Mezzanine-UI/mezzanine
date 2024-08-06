@@ -195,12 +195,7 @@ export const Colors = () => (
     }}
   >
     {colors.map((color) => (
-      <Icon
-        key={color}
-        icon={CheckIcon}
-        color={color}
-        size={48}
-      />
+      <Icon key={color} icon={CheckIcon} color={color} size={48} />
     ))}
   </div>
 );

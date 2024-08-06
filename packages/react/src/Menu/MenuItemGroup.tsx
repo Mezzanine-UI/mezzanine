@@ -1,11 +1,10 @@
 import { forwardRef, ReactNode } from 'react';
-import {
-  menuItemGroupClasses as classes,
-} from '@mezzanine-ui/core/menu';
+import { menuItemGroupClasses as classes } from '@mezzanine-ui/core/menu';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface MenuItemGroupProps extends NativeElementPropsWithoutKeyAndRef<'li'> {
+export interface MenuItemGroupProps
+  extends NativeElementPropsWithoutKeyAndRef<'li'> {
   /**
    * The label of menu item group
    */
@@ -15,27 +14,17 @@ export interface MenuItemGroupProps extends NativeElementPropsWithoutKeyAndRef<'
 /**
  * The react component for `mezzanine` menu item group.
  */
-const MenuItemGroup = forwardRef<HTMLLIElement, MenuItemGroupProps>(function MenuItemGroup(props, ref) {
-  const {
-    children,
-    className,
-    label,
-    ...rest
-  } = props;
+const MenuItemGroup = forwardRef<HTMLLIElement, MenuItemGroupProps>(
+  function MenuItemGroup(props, ref) {
+    const { children, className, label, ...rest } = props;
 
-  return (
-    <li
-      ref={ref}
-      {...rest}
-      className={cx(
-        classes.host,
-        className,
-      )}
-    >
-      <span className={classes.label}>{label}</span>
-      <ul className={classes.items}>{children}</ul>
-    </li>
-  );
-});
+    return (
+      <li ref={ref} {...rest} className={cx(classes.host, className)}>
+        <span className={classes.label}>{label}</span>
+        <ul className={classes.items}>{children}</ul>
+      </li>
+    );
+  },
+);
 
 export default MenuItemGroup;

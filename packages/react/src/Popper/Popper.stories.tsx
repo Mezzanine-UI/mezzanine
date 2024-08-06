@@ -20,9 +20,7 @@ const demoPopperContent = (
       borderRadius: 5,
     }}
   >
-    <Typography color="text-primary">
-      Content
-    </Typography>
+    <Typography color="text-primary">Content</Typography>
   </div>
 );
 
@@ -36,24 +34,25 @@ export const Basic = () => {
         gap: 10,
       }}
     >
-      <Popper
-        anchor={anchorRef}
-        open={Boolean(anchorRef)}
-      >
+      <Popper anchor={anchorRef} open={Boolean(anchorRef)}>
         {demoPopperContent}
       </Popper>
       <Button
         variant="contained"
-        onMouseEnter={(event: MouseEvent<HTMLButtonElement>) => setAnchorRef(event.currentTarget)}
+        onMouseEnter={(event: MouseEvent<HTMLButtonElement>) =>
+          setAnchorRef(event.currentTarget)
+        }
         onMouseLeave={() => setAnchorRef(null)}
       >
         Hover me
       </Button>
       <Button
         variant="contained"
-        onClick={(event: MouseEvent<HTMLButtonElement>) => setAnchorRef(
-          anchorRef === event.currentTarget ? null : event.currentTarget,
-        )}
+        onClick={(event: MouseEvent<HTMLButtonElement>) =>
+          setAnchorRef(
+            anchorRef === event.currentTarget ? null : event.currentTarget,
+          )
+        }
       >
         Click me
       </Button>
@@ -62,7 +61,8 @@ export const Basic = () => {
 };
 
 export const Placement = () => {
-  const [popperPlacement, setPopperPlacement] = useState<PopperPlacement>('top');
+  const [popperPlacement, setPopperPlacement] =
+    useState<PopperPlacement>('top');
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   const renderButton = (placement: PopperPlacement) => (
     <Button

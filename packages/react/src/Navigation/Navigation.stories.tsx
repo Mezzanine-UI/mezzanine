@@ -61,9 +61,7 @@ const dataset = [
   },
 ];
 
-export const Playground:StoryFn<NavigationProps> = ({
-  orientation,
-}) => {
+export const Playground: StoryFn<NavigationProps> = ({ orientation }) => {
   const [active, setActive] = useState<Key | null | undefined>();
 
   return (
@@ -73,32 +71,25 @@ export const Playground:StoryFn<NavigationProps> = ({
         onClick={setActive}
         activeKey={active}
       >
-        {
-          dataset.map((data) => (
-            data.subMenu ? (
-              <NavigationSubMenu
-                title={data.text}
-                icon={data.icon}
-                key={data.text}
-              >
-                {data.subMenu.map((subMenuItem) => (
-                  <NavigationItem
-                    icon={subMenuItem.icon}
-                    key={subMenuItem.text}
-                  >
-                    {subMenuItem.text}
-                  </NavigationItem>
-                ))}
-              </NavigationSubMenu>
-            ) : (
-              <NavigationItem
-                key={data.text}
-                icon={data.icon}
-              >
-                {data.text}
-              </NavigationItem>
-            )))
-        }
+        {dataset.map((data) =>
+          data.subMenu ? (
+            <NavigationSubMenu
+              title={data.text}
+              icon={data.icon}
+              key={data.text}
+            >
+              {data.subMenu.map((subMenuItem) => (
+                <NavigationItem icon={subMenuItem.icon} key={subMenuItem.text}>
+                  {subMenuItem.text}
+                </NavigationItem>
+              ))}
+            </NavigationSubMenu>
+          ) : (
+            <NavigationItem key={data.text} icon={data.icon}>
+              {data.text}
+            </NavigationItem>
+          ),
+        )}
       </Navigation>
     </div>
   );
@@ -110,10 +101,7 @@ Playground.args = {
 
 Playground.argTypes = {
   orientation: {
-    options: [
-      'horizontal',
-      'vertical',
-    ],
+    options: ['horizontal', 'vertical'],
     control: {
       type: 'select',
     },

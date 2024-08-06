@@ -1,20 +1,12 @@
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Accordion, { AccordionSummary, AccordionDetails } from '.';
 
 describe('<AccordionDetails />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<AccordionDetails ref={ref} expanded />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<AccordionDetails ref={ref} expanded />),
   );
 
   it('should applied expanded className when prop expanded is true', () => {
@@ -22,7 +14,9 @@ describe('<AccordionDetails />', () => {
 
     const host = getHostHTMLElement();
 
-    expect(host.querySelector('.mzn-accordion__details--expanded')).toBeInstanceOf(HTMLDivElement);
+    expect(
+      host.querySelector('.mzn-accordion__details--expanded'),
+    ).toBeInstanceOf(HTMLDivElement);
   });
 
   describe('with Accordion', () => {
@@ -31,12 +25,8 @@ describe('<AccordionDetails />', () => {
     beforeEach(async () => {
       const { getHostHTMLElement } = render(
         <Accordion>
-          <AccordionSummary id="accordion-1">
-            foo
-          </AccordionSummary>
-          <AccordionDetails>
-            bar
-          </AccordionDetails>
+          <AccordionSummary id="accordion-1">foo</AccordionSummary>
+          <AccordionDetails>bar</AccordionDetails>
         </Accordion>,
       );
 
@@ -50,7 +40,9 @@ describe('<AccordionDetails />', () => {
     });
 
     it('should be expanded when context `expanded` is true', () => {
-      expect(accordionHost.querySelector('.mzn-accordion__details--expanded')).toBeInstanceOf(HTMLDivElement);
+      expect(
+        accordionHost.querySelector('.mzn-accordion__details--expanded'),
+      ).toBeInstanceOf(HTMLDivElement);
     });
 
     it('should aria- props applied', () => {

@@ -1,8 +1,9 @@
-import { TimePanelUnit, timePanelClasses as classes } from '@mezzanine-ui/core/time-panel';
-import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
 import {
-  forwardRef, ReactNode, useEffect, useRef,
-} from 'react';
+  TimePanelUnit,
+  timePanelClasses as classes,
+} from '@mezzanine-ui/core/time-panel';
+import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
+import { forwardRef, ReactNode, useEffect, useRef } from 'react';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 
@@ -78,36 +79,23 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
     }, [activeUnit, cellHeight, units]);
 
     return (
-      <div
-        ref={ref}
-        className={classes.column}
-      >
+      <div ref={ref} className={classes.column}>
         {prefix && <div className={classes.columnPrefix}>{prefix}</div>}
         <button
           type="button"
-          className={cx(
-            classes.button,
-            classes.columnControlButton,
-          )}
+          className={cx(classes.button, classes.columnControlButton)}
           onClick={onPrev}
         >
           <Icon icon={ChevronUpIcon} />
         </button>
-        <div
-          ref={cellsRef}
-          className={classes.columnCells}
-        >
+        <div ref={cellsRef} className={classes.columnCells}>
           {units.map((unit) => (
             <button
               key={unit.value}
               type="button"
-              className={cx(
-                classes.button,
-                classes.columnButton,
-                {
-                  [classes.buttonActive]: unit.value === activeUnit,
-                },
-              )}
+              className={cx(classes.button, classes.columnButton, {
+                [classes.buttonActive]: unit.value === activeUnit,
+              })}
               onClick={getChangeHandler(unit)}
             >
               {unit.label}
@@ -116,10 +104,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
         </div>
         <button
           type="button"
-          className={cx(
-            classes.button,
-            classes.columnControlButton,
-          )}
+          className={cx(classes.button, classes.columnControlButton)}
           onClick={onNext}
         >
           <Icon icon={ChevronDownIcon} />

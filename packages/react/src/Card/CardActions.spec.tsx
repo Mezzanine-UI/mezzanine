@@ -1,9 +1,6 @@
 import { EyeIcon, MoreVerticalIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -32,14 +29,12 @@ describe('<CardActions />', () => {
     </div>
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<CardActions ref={ref} otherActions={otherActions} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<CardActions ref={ref} otherActions={otherActions} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CardActions
         className={className}
         confirmText="OK"

@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,14 +8,12 @@ import PageFooter from '.';
 describe('<PageFooter />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLElement,
-    (ref) => render(<PageFooter ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLElement, (ref) =>
+    render(<PageFooter ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<PageFooter className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<PageFooter className={className} />),
   );
 
   it('should bind host class', () => {
@@ -43,7 +38,9 @@ describe('<PageFooter />', () => {
     it('should bind class to the div wrapped children', () => {
       const className = 'foo';
 
-      const { getHostHTMLElement } = render(<PageFooter actionClassName={className} />);
+      const { getHostHTMLElement } = render(
+        <PageFooter actionClassName={className} />,
+      );
       const element = getHostHTMLElement();
       const { firstElementChild: actionWrapperElement } = element;
 

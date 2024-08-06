@@ -9,10 +9,7 @@ import {
   useRef,
 } from 'react';
 import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from '@mezzanine-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -23,8 +20,11 @@ import useTabsOverflow from './useTabsOverflow';
 
 export type TabsChild = ReactElement<TabPaneProps>;
 
-export interface TabsProps extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange' | 'children'> {
+export interface TabsProps
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'onChange' | 'children'
+  > {
   /**
    * Current TabPane's index
    */
@@ -58,7 +58,10 @@ export interface TabsProps extends
 /**
  * The react component for `mezzanine` tabs.
  */
-const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProps, ref) {
+const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
+  props: TabsProps,
+  ref,
+) {
   const {
     activeKey: activeKeyProp,
     actions,
@@ -111,19 +114,8 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProp
   } = useTabsOverflow(tabsRef);
 
   return (
-    <div
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.host,
-        className,
-      )}
-    >
-      <div className={cx(
-        classes.tabBar,
-        tabBarClassName,
-      )}
-      >
+    <div {...rest} ref={ref} className={cx(classes.host, className)}>
+      <div className={cx(classes.tabBar, tabBarClassName)}>
         <div className={classes.overflow}>
           {isOverflowing && !isScrollToBegin && (
             <button
@@ -135,10 +127,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(props: TabsProp
               <Icon icon={ChevronLeftIcon} />
             </button>
           )}
-          <div
-            ref={tabsRef}
-            className={classes.tabs}
-          >
+          <div ref={tabsRef} className={classes.tabs}>
             {tabs}
           </div>
           {isOverflowing && !isScrollToEnd && (

@@ -1,9 +1,5 @@
 import { CheckIcon } from '@mezzanine-ui/icons';
-import {
-  cleanup,
-  render,
-  fireEvent,
-} from '../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,38 +9,36 @@ import { MenuItem } from '.';
 describe('<MenuItem />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLLIElement,
-    (ref) => render(<MenuItem ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
+    render(<MenuItem ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<MenuItem className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<MenuItem className={className} />),
   );
 
   it('should wrap children by label which rendered by div', () => {
     const { getHostHTMLElement } = render(<MenuItem>foo</MenuItem>);
     const element = getHostHTMLElement();
-    const {
-      firstElementChild: labelElement,
-    } = element;
+    const { firstElementChild: labelElement } = element;
 
-    expect(labelElement?.classList.contains('mzn-menu-item__label')).toBeTruthy();
+    expect(
+      labelElement?.classList.contains('mzn-menu-item__label'),
+    ).toBeTruthy();
     expect(labelElement?.tagName.toLowerCase()).toBe('div');
   });
 
   describe('prop: active', () => {
     function testActive(element: HTMLElement, active: boolean) {
-      const {
-        lastElementChild: activeIconElement,
-      } = element;
+      const { lastElementChild: activeIconElement } = element;
 
       expect(element.classList.contains('mzn-menu-item--active')).toBe(active);
 
       if (active) {
         expect(activeIconElement?.tagName.toLowerCase()).toBe('i');
-        expect(activeIconElement?.getAttribute('data-icon-name')).toBe(CheckIcon.name);
+        expect(activeIconElement?.getAttribute('data-icon-name')).toBe(
+          CheckIcon.name,
+        );
       } else {
         expect(activeIconElement?.tagName.toLowerCase()).not.toBe('i');
       }
@@ -63,7 +57,9 @@ describe('<MenuItem />', () => {
         : 'should not add active class and not render active icon';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<MenuItem active={active}>foo</MenuItem>);
+        const { getHostHTMLElement } = render(
+          <MenuItem active={active}>foo</MenuItem>,
+        );
         const element = getHostHTMLElement();
 
         testActive(element, active);
@@ -74,7 +70,9 @@ describe('<MenuItem />', () => {
   describe('prop: disabled', () => {
     function testDisabled(element: HTMLElement, disabled: boolean) {
       expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
-      expect(element.classList.contains('mzn-menu-item--disabled')).toBe(disabled);
+      expect(element.classList.contains('mzn-menu-item--disabled')).toBe(
+        disabled,
+      );
     }
 
     it('should render disabled=false by default', () => {
@@ -90,7 +88,9 @@ describe('<MenuItem />', () => {
         : 'should not add disabled class and aria-disabled attribute';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<MenuItem disabled={disabled}>foo</MenuItem>);
+        const { getHostHTMLElement } = render(
+          <MenuItem disabled={disabled}>foo</MenuItem>,
+        );
         const element = getHostHTMLElement();
 
         testDisabled(element, disabled);
@@ -101,7 +101,9 @@ describe('<MenuItem />', () => {
   describe('prop: onClick', () => {
     it('should be fired on click event', () => {
       const onClick = jest.fn();
-      const { getHostHTMLElement } = render(<MenuItem onClick={onClick}>foo</MenuItem>);
+      const { getHostHTMLElement } = render(
+        <MenuItem onClick={onClick}>foo</MenuItem>,
+      );
       const element = getHostHTMLElement();
 
       fireEvent.click(element);
@@ -111,7 +113,11 @@ describe('<MenuItem />', () => {
 
     it('should not be fired if disabled=true', () => {
       const onClick = jest.fn();
-      const { getHostHTMLElement } = render(<MenuItem disabled onClick={onClick}>foo</MenuItem>);
+      const { getHostHTMLElement } = render(
+        <MenuItem disabled onClick={onClick}>
+          foo
+        </MenuItem>,
+      );
 
       const element = getHostHTMLElement();
 

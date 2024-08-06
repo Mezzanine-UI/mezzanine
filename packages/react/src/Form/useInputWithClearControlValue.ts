@@ -1,24 +1,19 @@
+import { ChangeEvent, MouseEvent, RefObject } from 'react';
 import {
-  ChangeEvent,
-  MouseEvent,
-  RefObject,
-} from 'react';
-import { useInputControlValue, UseInputControlValueProps } from './useInputControlValue';
+  useInputControlValue,
+  UseInputControlValueProps,
+} from './useInputControlValue';
 
-export interface UseInputWithClearControlValueProps<E extends HTMLInputElement | HTMLTextAreaElement>
-  extends UseInputControlValueProps<E> {
+export interface UseInputWithClearControlValueProps<
+  E extends HTMLInputElement | HTMLTextAreaElement,
+> extends UseInputControlValueProps<E> {
   ref: RefObject<E>;
 }
 
-export function useInputWithClearControlValue<E extends HTMLInputElement | HTMLTextAreaElement>(
-  props: UseInputWithClearControlValueProps<E>,
-) {
-  const {
-    defaultValue,
-    onChange: onChangeProp,
-    ref,
-    value: valueProp,
-  } = props;
+export function useInputWithClearControlValue<
+  E extends HTMLInputElement | HTMLTextAreaElement,
+>(props: UseInputWithClearControlValueProps<E>) {
+  const { defaultValue, onChange: onChangeProp, ref, value: valueProp } = props;
   const [value, onChange] = useInputControlValue({
     defaultValue,
     onChange: onChangeProp,
@@ -44,9 +39,5 @@ export function useInputWithClearControlValue<E extends HTMLInputElement | HTMLT
     }
   };
 
-  return [
-    value,
-    onChange,
-    onClear,
-  ] as const;
+  return [value, onChange, onClear] as const;
 }

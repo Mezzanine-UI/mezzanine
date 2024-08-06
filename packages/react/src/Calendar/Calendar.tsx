@@ -6,9 +6,7 @@ import {
   calendarYearModuler,
 } from '@mezzanine-ui/core/calendar';
 import castArray from 'lodash/castArray';
-import {
-  forwardRef,
-} from 'react';
+import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
@@ -19,61 +17,85 @@ import CalendarWeeks, { CalendarWeeksProps } from './CalendarWeeks';
 import CalendarYears, { CalendarYearsProps } from './CalendarYears';
 
 export interface CalendarProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange' | 'children'>,
-  Pick<CalendarDaysProps,
-  | 'isDateDisabled'
-  | 'isDateInRange'
-  | 'onDateHover'
-  | 'displayWeekDayLocale'>,
-  Pick<CalendarMonthsProps, 'isMonthDisabled' | 'isMonthInRange' | 'onMonthHover' | 'displayMonthLocale'>,
-  Pick<CalendarWeeksProps, 'isWeekDisabled' | 'isWeekInRange' | 'onWeekHover'>,
-  Pick<CalendarYearsProps, 'isYearDisabled' | 'isYearInRange' | 'onYearHover'>,
-  Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'> {
+  extends Omit<
+      NativeElementPropsWithoutKeyAndRef<'div'>,
+      'onChange' | 'children'
+    >,
+    Pick<
+      CalendarDaysProps,
+      | 'isDateDisabled'
+      | 'isDateInRange'
+      | 'onDateHover'
+      | 'displayWeekDayLocale'
+    >,
+    Pick<
+      CalendarMonthsProps,
+      | 'isMonthDisabled'
+      | 'isMonthInRange'
+      | 'onMonthHover'
+      | 'displayMonthLocale'
+    >,
+    Pick<
+      CalendarWeeksProps,
+      'isWeekDisabled' | 'isWeekInRange' | 'onWeekHover'
+    >,
+    Pick<
+      CalendarYearsProps,
+      'isYearDisabled' | 'isYearInRange' | 'onYearHover'
+    >,
+    Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'> {
   /**
    * Other props you may provide to `CalendarDays`
    */
-  calendarDaysProps?: Omit<CalendarDaysProps,
-  | 'onClick'
-  | 'referenceDate'
-  | 'value'
-  | 'displayWeekDayLocale'
-  | 'isDateDisabled'
-  | 'isDateInRange'
-  | 'onDateHover'
-  | 'updateReferenceDate'>;
+  calendarDaysProps?: Omit<
+    CalendarDaysProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'displayWeekDayLocale'
+    | 'isDateDisabled'
+    | 'isDateInRange'
+    | 'onDateHover'
+    | 'updateReferenceDate'
+  >;
   /**
    * Other props you may provide to `CalendarMonths`
    */
-  calendarMonthsProps?: Omit<CalendarMonthsProps,
-  | 'onClick'
-  | 'referenceDate'
-  | 'value'
-  | 'isMonthDisabled'
-  | 'isMonthInRange'
-  | 'onMonthHover'
-  | 'displayMonthLocale'>;
+  calendarMonthsProps?: Omit<
+    CalendarMonthsProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'isMonthDisabled'
+    | 'isMonthInRange'
+    | 'onMonthHover'
+    | 'displayMonthLocale'
+  >;
   /**
    * Other props you may provide to `CalendarWeeks`
    */
-  calendarWeeksProps?: Omit<CalendarWeeksProps,
-  | 'onClick'
-  | 'referenceDate'
-  | 'value'
-  | 'displayWeekDayLocale'
-  | 'isWeekDisabled'
-  | 'isWeekInRange'
-  | 'onWeekHover'>;
+  calendarWeeksProps?: Omit<
+    CalendarWeeksProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'displayWeekDayLocale'
+    | 'isWeekDisabled'
+    | 'isWeekInRange'
+    | 'onWeekHover'
+  >;
   /**
    * Other props you may provide to `CalendarYears`
    */
-  calendarYearsProps?: Omit<CalendarYearsProps,
-  | 'onClick'
-  | 'referenceDate'
-  | 'value'
-  | 'isYearDisabled'
-  | 'isYearInRange'
-  | 'onYearHover'>;
+  calendarYearsProps?: Omit<
+    CalendarYearsProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'isYearDisabled'
+    | 'isYearInRange'
+    | 'onYearHover'
+  >;
   /**
    * Disabled `Month` calendar button click
    * @default false
@@ -127,132 +149,153 @@ export interface CalendarProps
  * Notice that any component related to calendar should be used along with `CalendarContext`. <br />
  * You may use the handlers provided by `useCalendarControls` hook or your own customizd methods.
  */
-const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(props, ref) {
-  const {
-    displayMonthLocale: displayMonthLocaleFromConfig,
-    getMonth,
-    getMonthShortName,
-    getYear,
-  } = useCalendarContext();
+const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
+  function Calendar(props, ref) {
+    const {
+      displayMonthLocale: displayMonthLocaleFromConfig,
+      getMonth,
+      getMonthShortName,
+      getYear,
+    } = useCalendarContext();
 
-  const {
-    calendarDaysProps,
-    calendarMonthsProps,
-    calendarWeeksProps,
-    calendarYearsProps,
-    className,
-    disabledMonthSwitch,
-    disableOnNext,
-    disableOnPrev,
-    disabledYearSwitch,
-    displayMonthLocale = displayMonthLocaleFromConfig,
-    displayWeekDayLocale,
-    isDateDisabled,
-    isDateInRange,
-    isMonthDisabled,
-    isMonthInRange,
-    isWeekDisabled,
-    isWeekInRange,
-    isYearDisabled,
-    isYearInRange,
-    mode = 'day',
-    onChange,
-    onDateHover,
-    onMonthControlClick,
-    onMonthHover,
-    onNext,
-    onPrev,
-    onWeekHover,
-    onYearControlClick,
-    onYearHover,
-    referenceDate,
-    value: valueProp,
-    ...restCalendarProps
-  } = props;
+    const {
+      calendarDaysProps,
+      calendarMonthsProps,
+      calendarWeeksProps,
+      calendarYearsProps,
+      className,
+      disabledMonthSwitch,
+      disableOnNext,
+      disableOnPrev,
+      disabledYearSwitch,
+      displayMonthLocale = displayMonthLocaleFromConfig,
+      displayWeekDayLocale,
+      isDateDisabled,
+      isDateInRange,
+      isMonthDisabled,
+      isMonthInRange,
+      isWeekDisabled,
+      isWeekInRange,
+      isYearDisabled,
+      isYearInRange,
+      mode = 'day',
+      onChange,
+      onDateHover,
+      onMonthControlClick,
+      onMonthHover,
+      onNext,
+      onPrev,
+      onWeekHover,
+      onYearControlClick,
+      onYearHover,
+      referenceDate,
+      value: valueProp,
+      ...restCalendarProps
+    } = props;
 
-  const value = valueProp ? castArray(valueProp) : undefined;
+    const value = valueProp ? castArray(valueProp) : undefined;
 
-  /** Compute which calendar to use */
-  let displayCalendar;
+    /** Compute which calendar to use */
+    let displayCalendar;
 
-  if (mode === 'day') {
-    displayCalendar = (
-      <CalendarDays
-        {...calendarDaysProps}
-        isYearDisabled={isYearDisabled}
-        isMonthDisabled={isMonthDisabled}
-        isDateDisabled={isDateDisabled}
-        isDateInRange={isDateInRange}
-        onClick={onChange}
-        onDateHover={onDateHover}
-        referenceDate={referenceDate}
-        displayWeekDayLocale={displayWeekDayLocale}
-        value={value}
-      />
+    if (mode === 'day') {
+      displayCalendar = (
+        <CalendarDays
+          {...calendarDaysProps}
+          isYearDisabled={isYearDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isDateDisabled={isDateDisabled}
+          isDateInRange={isDateInRange}
+          onClick={onChange}
+          onDateHover={onDateHover}
+          referenceDate={referenceDate}
+          displayWeekDayLocale={displayWeekDayLocale}
+          value={value}
+        />
+      );
+    } else if (mode === 'week') {
+      displayCalendar = (
+        <CalendarWeeks
+          {...calendarWeeksProps}
+          isYearDisabled={isYearDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isWeekDisabled={isWeekDisabled}
+          isWeekInRange={isWeekInRange}
+          onClick={onChange}
+          onWeekHover={onWeekHover}
+          referenceDate={referenceDate}
+          displayWeekDayLocale={displayWeekDayLocale}
+          value={value}
+        />
+      );
+    } else if (mode === 'month') {
+      displayCalendar = (
+        <CalendarMonths
+          {...calendarMonthsProps}
+          isYearDisabled={isYearDisabled}
+          isMonthDisabled={isMonthDisabled}
+          isMonthInRange={isMonthInRange}
+          onClick={onChange}
+          onMonthHover={onMonthHover}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      );
+    } else if (mode === 'year') {
+      displayCalendar = (
+        <CalendarYears
+          {...calendarYearsProps}
+          isYearDisabled={isYearDisabled}
+          isYearInRange={isYearInRange}
+          onClick={onChange}
+          onYearHover={onYearHover}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      );
+    }
+
+    /** Compute controls outcome */
+    const [start, end] = getYearRange(
+      getYear(referenceDate),
+      calendarYearModuler,
     );
-  } else if (mode === 'week') {
-    displayCalendar = (
-      <CalendarWeeks
-        {...calendarWeeksProps}
-        isYearDisabled={isYearDisabled}
-        isMonthDisabled={isMonthDisabled}
-        isWeekDisabled={isWeekDisabled}
-        isWeekInRange={isWeekInRange}
-        onClick={onChange}
-        onWeekHover={onWeekHover}
-        referenceDate={referenceDate}
-        displayWeekDayLocale={displayWeekDayLocale}
-        value={value}
-      />
-    );
-  } else if (mode === 'month') {
-    displayCalendar = (
-      <CalendarMonths
-        {...calendarMonthsProps}
-        isYearDisabled={isYearDisabled}
-        isMonthDisabled={isMonthDisabled}
-        isMonthInRange={isMonthInRange}
-        onClick={onChange}
-        onMonthHover={onMonthHover}
-        referenceDate={referenceDate}
-        value={value}
-      />
-    );
-  } else if (mode === 'year') {
-    displayCalendar = (
-      <CalendarYears
-        {...calendarYearsProps}
-        isYearDisabled={isYearDisabled}
-        isYearInRange={isYearInRange}
-        onClick={onChange}
-        onYearHover={onYearHover}
-        referenceDate={referenceDate}
-        value={value}
-      />
-    );
-  }
+    const displayYearRange = `${start} - ${end}`;
+    let controls;
 
-  /** Compute controls outcome */
-  const [start, end] = getYearRange(getYear(referenceDate), calendarYearModuler);
-  const displayYearRange = `${start} - ${end}`;
-  let controls;
-
-  if (mode === 'day' || mode === 'week') {
-    controls = (
-      <>
-        <button
-          type="button"
-          className={cx(
-            classes.button,
-            classes.controlsButton,
-            disabledMonthSwitch && classes.buttonDisabled,
-          )}
-          disabled={disabledMonthSwitch}
-          aria-disabled={disabledMonthSwitch}
-          onClick={onMonthControlClick}
-        >
-          {getMonthShortName(getMonth(referenceDate), displayMonthLocale)}
-        </button>
+    if (mode === 'day' || mode === 'week') {
+      controls = (
+        <>
+          <button
+            type="button"
+            className={cx(
+              classes.button,
+              classes.controlsButton,
+              disabledMonthSwitch && classes.buttonDisabled,
+            )}
+            disabled={disabledMonthSwitch}
+            aria-disabled={disabledMonthSwitch}
+            onClick={onMonthControlClick}
+          >
+            {getMonthShortName(getMonth(referenceDate), displayMonthLocale)}
+          </button>
+          <button
+            type="button"
+            className={cx(
+              classes.button,
+              classes.controlsButton,
+              disabledYearSwitch && classes.buttonDisabled,
+            )}
+            disabled={disabledYearSwitch}
+            aria-disabled={disabledYearSwitch}
+            onClick={onYearControlClick}
+          >
+            {getYear(referenceDate)}
+          </button>
+        </>
+      );
+    } else if (mode === 'month') {
+      controls = (
         <button
           type="button"
           className={cx(
@@ -266,57 +309,54 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(function Calendar(pro
         >
           {getYear(referenceDate)}
         </button>
-      </>
-    );
-  } else if (mode === 'month') {
-    controls = (
-      <button
-        type="button"
-        className={cx(
-          classes.button,
-          classes.controlsButton,
-          disabledYearSwitch && classes.buttonDisabled,
-        )}
-        disabled={disabledYearSwitch}
-        aria-disabled={disabledYearSwitch}
-        onClick={onYearControlClick}
-      >
-        {getYear(referenceDate)}
-      </button>
-    );
-  } else if (mode === 'year') {
-    controls = (
-      <button
-        type="button"
-        className={cx(classes.button, classes.controlsButton, classes.buttonDisabled)}
-        disabled
-        aria-disabled
-      >
-        {displayYearRange}
-      </button>
-    );
-  }
+      );
+    } else if (mode === 'year') {
+      controls = (
+        <button
+          type="button"
+          className={cx(
+            classes.button,
+            classes.controlsButton,
+            classes.buttonDisabled,
+          )}
+          disabled
+          aria-disabled
+        >
+          {displayYearRange}
+        </button>
+      );
+    }
 
-  return (
-    <div
-      {...restCalendarProps}
-      ref={ref}
-      className={cx(
-        classes.host,
-        className,
-      )}
-    >
-      <CalendarControls
-        disableOnNext={disableOnNext}
-        disableOnPrev={disableOnPrev}
-        onNext={onNext ? () => { onNext(mode); } : undefined}
-        onPrev={onPrev ? () => { onPrev(mode); } : undefined}
+    return (
+      <div
+        {...restCalendarProps}
+        ref={ref}
+        className={cx(classes.host, className)}
       >
-        {controls}
-      </CalendarControls>
-      {displayCalendar}
-    </div>
-  );
-});
+        <CalendarControls
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          onNext={
+            onNext
+              ? () => {
+                  onNext(mode);
+                }
+              : undefined
+          }
+          onPrev={
+            onPrev
+              ? () => {
+                  onPrev(mode);
+                }
+              : undefined
+          }
+        >
+          {controls}
+        </CalendarControls>
+        {displayCalendar}
+      </div>
+    );
+  },
+);
 
 export default Calendar;

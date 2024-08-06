@@ -1,9 +1,7 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { toCssVar } from '@mezzanine-ui/system/css';
 import { Color } from '@mezzanine-ui/system/palette';
-import {
-  cleanup, fireEvent, render, waitFor,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,14 +11,12 @@ import Icon, { IconColor } from '.';
 describe('<Icon />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLElement,
-    (ref) => render(<Icon ref={ref} icon={PlusIcon} />),
+  describeForwardRefToHTMLElement(HTMLElement, (ref) =>
+    render(<Icon ref={ref} icon={PlusIcon} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Icon className={className} icon={PlusIcon} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Icon className={className} icon={PlusIcon} />),
   );
 
   describe('attrs, aria-*, data-*', () => {
@@ -43,11 +39,15 @@ describe('<Icon />', () => {
   describe('prop: size', () => {
     it('should apply size className when size is given', () => {
       const fontSize = 36;
-      const { getHostHTMLElement } = render(<Icon icon={PlusIcon} size={fontSize} />);
+      const { getHostHTMLElement } = render(
+        <Icon icon={PlusIcon} size={fontSize} />,
+      );
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-icon--size')).toBe(true);
-      expect(element.style.getPropertyValue('--mzn-icon-size')).toBe(`${fontSize}px`);
+      expect(element.style.getPropertyValue('--mzn-icon-size')).toBe(
+        `${fontSize}px`,
+      );
     });
   });
 
@@ -82,11 +82,15 @@ describe('<Icon />', () => {
         : 'should not add class and style if color=undefined';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<Icon icon={PlusIcon} color={color} />);
+        const { getHostHTMLElement } = render(
+          <Icon icon={PlusIcon} color={color} />,
+        );
         const element = getHostHTMLElement();
 
         expect(element.classList.contains('mzn-icon--color')).toBe(!!color);
-        expect(element.style.getPropertyValue('--mzn-icon-color')).toBe(expected);
+        expect(element.style.getPropertyValue('--mzn-icon-color')).toBe(
+          expected,
+        );
       });
     });
   });
@@ -98,7 +102,9 @@ describe('<Icon />', () => {
         : 'should not add class if spin=false';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<Icon icon={PlusIcon} spin={spin} />);
+        const { getHostHTMLElement } = render(
+          <Icon icon={PlusIcon} spin={spin} />,
+        );
         const element = getHostHTMLElement();
 
         expect(element.classList.contains('mzn-icon--spin')).toBe(spin);
@@ -109,7 +115,9 @@ describe('<Icon />', () => {
   describe('prop: title', () => {
     it('should render title when props.title is given.', () => {
       const customTitle = 'foo';
-      const { getHostHTMLElement } = render(<Icon icon={PlusIcon} title={customTitle} />);
+      const { getHostHTMLElement } = render(
+        <Icon icon={PlusIcon} title={customTitle} />,
+      );
       const element = getHostHTMLElement();
       const titleElements = element.getElementsByTagName('title');
 
@@ -129,13 +137,17 @@ describe('<Icon />', () => {
       const element = getHostHTMLElement();
       const titleElements = element.getElementsByTagName('title');
 
-      expect(titleElements[0].textContent).toBe(OverridePlusIcon.definition.title);
+      expect(titleElements[0].textContent).toBe(
+        OverridePlusIcon.definition.title,
+      );
     });
   });
 
   describe('prop: onClick, onMouseOver', () => {
     let hasClick = false;
-    const setClick = () => { hasClick = true; };
+    const setClick = () => {
+      hasClick = true;
+    };
 
     [
       { onClick: setClick, onMouseOver: undefined },
@@ -143,13 +155,13 @@ describe('<Icon />', () => {
       { onClick: setClick, onMouseOver: setClick },
       { onClick: undefined, onMouseOver: undefined },
     ].forEach((handler) => {
-      const message = handler.onClick || handler.onMouseOver
-        ? 'cursor should be changed to pointer'
-        : 'should not change cursor';
+      const message =
+        handler.onClick || handler.onMouseOver
+          ? 'cursor should be changed to pointer'
+          : 'should not change cursor';
 
-      const cursorStyle = handler.onClick || handler.onMouseOver
-        ? 'pointer'
-        : 'inherit';
+      const cursorStyle =
+        handler.onClick || handler.onMouseOver ? 'pointer' : 'inherit';
 
       const { getHostHTMLElement } = render(
         <Icon
@@ -164,7 +176,9 @@ describe('<Icon />', () => {
 
       it(message, async () => {
         await waitFor(() => !handler || hasClick);
-        expect(element.style.getPropertyValue('--mzn-icon-cursor')).toBe(cursorStyle);
+        expect(element.style.getPropertyValue('--mzn-icon-cursor')).toBe(
+          cursorStyle,
+        );
         hasClick = false;
       });
     });

@@ -9,12 +9,12 @@ export default {
   title: 'General/Button/ButtonGroup',
 } as Meta;
 
-const orientations: ButtonGroupOrientation[] = [
-  'horizontal',
-  'vertical',
-];
+const orientations: ButtonGroupOrientation[] = ['horizontal', 'vertical'];
 
-export const Playground: StoryFn<ButtonGroupProps> = ({ attached, orientation }) => (
+export const Playground: StoryFn<ButtonGroupProps> = ({
+  attached,
+  orientation,
+}) => (
   <>
     <ConfigProvider size="large">
       <ButtonGroup
@@ -72,11 +72,7 @@ Playground.argTypes = {
 
 export const DropdownLike = () => (
   <>
-    <ButtonGroup
-      attached
-      color="primary"
-      variant="contained"
-    >
+    <ButtonGroup attached color="primary" variant="contained">
       <Button>click</Button>
       <IconButton>
         <Icon icon={ChevronDownIcon} />
@@ -84,11 +80,7 @@ export const DropdownLike = () => (
     </ButtonGroup>
     <br />
     <br />
-    <ButtonGroup
-      attached
-      color="primary"
-      variant="outlined"
-    >
+    <ButtonGroup attached color="primary" variant="outlined">
       <Button>click</Button>
       <IconButton>
         <Icon icon={ChevronDownIcon} />

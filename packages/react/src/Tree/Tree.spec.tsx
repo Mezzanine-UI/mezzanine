@@ -1,4 +1,3 @@
-
 import { TreeNodeValue, TreeSize } from '@mezzanine-ui/core/tree';
 import { RefObject } from 'react';
 import {
@@ -22,49 +21,49 @@ import Tree, {
 } from '.';
 
 describe('<Tree />', () => {
-  const nodes: TreeNodeProp[] = [{
-    label: 'label 1',
-    value: '1',
-    nodes: [
-      {
-        label: 'label 1-1',
-        value: '1-1',
-        nodes: [
-          {
-            label: 'label 1-1-1',
-            value: '1-1-1',
-          },
-          {
-            label: 'label 1-1-2',
-            value: '1-1-2',
-          },
-          {
-            label: 'label 1-1-3',
-            value: '1-1-3',
-          },
-        ],
-      },
-      {
-        label: 'label 1-2',
-        value: '1-2',
-      },
-    ],
-  },
-  {
-    label: 'label 2',
-    value: '2',
-  }];
+  const nodes: TreeNodeProp[] = [
+    {
+      label: 'label 1',
+      value: '1',
+      nodes: [
+        {
+          label: 'label 1-1',
+          value: '1-1',
+          nodes: [
+            {
+              label: 'label 1-1-1',
+              value: '1-1-1',
+            },
+            {
+              label: 'label 1-1-2',
+              value: '1-1-2',
+            },
+            {
+              label: 'label 1-1-3',
+              value: '1-1-3',
+            },
+          ],
+        },
+        {
+          label: 'label 1-2',
+          value: '1-2',
+        },
+      ],
+    },
+    {
+      label: 'label 2',
+      value: '2',
+    },
+  ];
 
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Tree ref={ref} nodes={nodes} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Tree ref={ref} nodes={nodes} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Tree className={className} nodes={nodes} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Tree className={className} nodes={nodes} />),
   );
 
   it('should bind host class', () => {
@@ -75,9 +74,7 @@ describe('<Tree />', () => {
   });
 
   it('should render nodes with TreeNodeList', () => {
-    const testInstance = TestRenderer.create(
-      <Tree nodes={nodes} />,
-    );
+    const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
     const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
 
     nodes.forEach((node, i) => {
@@ -89,13 +86,13 @@ describe('<Tree />', () => {
     it('should have expand handler on icon if node has siblings', () => {
       jest.useFakeTimers();
 
-      const { getHostHTMLElement } = render(
-        <Tree nodes={nodes} />,
-      );
+      const { getHostHTMLElement } = render(<Tree nodes={nodes} />);
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-icon');
 
-      expect(document.querySelector('.mzn-tree-node-list .mzn-tree-node-list')).toBe(null);
+      expect(
+        document.querySelector('.mzn-tree-node-list .mzn-tree-node-list'),
+      ).toBe(null);
 
       fireEvent.click(iconElement!);
 
@@ -103,19 +100,21 @@ describe('<Tree />', () => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.mzn-tree-node-list .mzn-tree-node-list')).toBeInstanceOf(HTMLElement);
+      expect(
+        document.querySelector('.mzn-tree-node-list .mzn-tree-node-list'),
+      ).toBeInstanceOf(HTMLElement);
     });
 
     it('should toggle sibling list', () => {
       jest.useFakeTimers();
 
-      const { getHostHTMLElement } = render(
-        <Tree nodes={nodes} />,
-      );
+      const { getHostHTMLElement } = render(<Tree nodes={nodes} />);
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-icon');
 
-      expect(document.querySelector('.mzn-tree-node-list .mzn-tree-node-list')).toBe(null);
+      expect(
+        document.querySelector('.mzn-tree-node-list .mzn-tree-node-list'),
+      ).toBe(null);
 
       fireEvent.click(iconElement!);
 
@@ -123,7 +122,9 @@ describe('<Tree />', () => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.mzn-tree-node-list .mzn-tree-node-list')).toBeInstanceOf(HTMLElement);
+      expect(
+        document.querySelector('.mzn-tree-node-list .mzn-tree-node-list'),
+      ).toBeInstanceOf(HTMLElement);
 
       fireEvent.click(iconElement!);
 
@@ -131,7 +132,9 @@ describe('<Tree />', () => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.mzn-tree-node-list .mzn-tree-node-list')).toBe(null);
+      expect(
+        document.querySelector('.mzn-tree-node-list .mzn-tree-node-list'),
+      ).toBe(null);
     });
   });
 
@@ -167,10 +170,9 @@ describe('<Tree />', () => {
 
   describe('prop: defaultExpandAll', () => {
     it('default collapse all', () => {
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} />,
-      );
-      const treeNodeListInstances = testInstance.root.findAllByType(TreeNodeList);
+      const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
+      const treeNodeListInstances =
+        testInstance.root.findAllByType(TreeNodeList);
 
       treeNodeListInstances.forEach((treeNodeListInstance) => {
         const treeNodeInstances = treeNodeListInstance.findAllByType(TreeNode);
@@ -204,34 +206,46 @@ describe('<Tree />', () => {
 
   describe('prop: expandControllerRef', () => {
     it('should not get handlers if `expandedValues` prop is provided', () => {
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       render(
-        <Tree nodes={nodes} expandControllerRef={expandControllerRef} expandedValues={[]} />,
+        <Tree
+          nodes={nodes}
+          expandControllerRef={expandControllerRef}
+          expandedValues={[]}
+        />,
       );
 
       expect(expandControllerRef.current).toBe(null);
     });
 
     it('should get controllers if expandControllerRef is provided', () => {
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
-      render(
-        <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
-      );
+      render(<Tree nodes={nodes} expandControllerRef={expandControllerRef} />);
 
       expect(expandControllerRef.current?.collapse).toBeInstanceOf(Function);
       expect(expandControllerRef.current?.collapseAll).toBeInstanceOf(Function);
-      expect(expandControllerRef.current?.collapseAllFrom).toBeInstanceOf(Function);
+      expect(expandControllerRef.current?.collapseAllFrom).toBeInstanceOf(
+        Function,
+      );
       expect(expandControllerRef.current?.expand).toBeInstanceOf(Function);
       expect(expandControllerRef.current?.expandAll).toBeInstanceOf(Function);
-      expect(expandControllerRef.current?.expandAllFrom).toBeInstanceOf(Function);
+      expect(expandControllerRef.current?.expandAllFrom).toBeInstanceOf(
+        Function,
+      );
     });
 
     it('control collapse: should collapse target', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
         <Tree
@@ -258,7 +272,9 @@ describe('<Tree />', () => {
     it('control collapseAll: should collapse all node', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
         <Tree
@@ -285,7 +301,9 @@ describe('<Tree />', () => {
     it('control collapseAllFrom: should collapse all sibling node from target', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
         <Tree
@@ -312,13 +330,12 @@ describe('<Tree />', () => {
     it('control expand: should expand target', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
-        <Tree
-          nodes={nodes}
-          expandControllerRef={expandControllerRef}
-        />,
+        <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
       );
       const targetElement = getByText('label 1').parentElement?.parentElement;
 
@@ -338,13 +355,12 @@ describe('<Tree />', () => {
     it('control expandAll: should expand all node', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
-        <Tree
-          nodes={nodes}
-          expandControllerRef={expandControllerRef}
-        />,
+        <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
       );
       const targetElement = getByText('label 1').parentElement?.parentElement;
 
@@ -364,13 +380,12 @@ describe('<Tree />', () => {
     it('control expandAllFrom: should expand all sibling node from target', () => {
       jest.useFakeTimers();
 
-      const expandControllerRef = { current: null } as RefObject<TreeExpandControl>;
+      const expandControllerRef = {
+        current: null,
+      } as RefObject<TreeExpandControl>;
 
       const { getByText } = render(
-        <Tree
-          nodes={nodes}
-          expandControllerRef={expandControllerRef}
-        />,
+        <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
       );
       const targetElement = getByText('label 1').parentElement?.parentElement;
 
@@ -429,7 +444,13 @@ describe('<Tree />', () => {
     it('prop onSelect should receive multiple value in the returned array if multiple=true', () => {
       const onSelect = jest.fn();
       const { getByText } = render(
-        <Tree nodes={nodes} defaultExpandAll onSelect={onSelect} selectable multiple />,
+        <Tree
+          nodes={nodes}
+          defaultExpandAll
+          onSelect={onSelect}
+          selectable
+          multiple
+        />,
       );
       const targetLabelElement = getByText('label 1-1-1');
 
@@ -451,7 +472,13 @@ describe('<Tree />', () => {
     it('default to "toggle" which toggles the target value', () => {
       const onSelect = jest.fn();
       const { getByText } = render(
-        <Tree nodes={nodes} defaultExpandAll onSelect={onSelect} selectable values={['1-1-1']} />,
+        <Tree
+          nodes={nodes}
+          defaultExpandAll
+          onSelect={onSelect}
+          selectable
+          values={['1-1-1']}
+        />,
       );
       const targetLabelElement = getByText('label 1-1-1');
 
@@ -484,9 +511,7 @@ describe('<Tree />', () => {
 
   describe('prop: selectable', () => {
     it('default to falsy', () => {
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} />,
-      );
+      const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
       const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
 
       expect(treeNodeListInstance.props.onSelect).toBe(undefined);
@@ -539,10 +564,7 @@ describe('<Tree />', () => {
         className: 'foo',
       };
       const testInstance = TestRenderer.create(
-        <Tree
-          nodes={nodes}
-          treeNodeProps={treeNodeProps}
-        />,
+        <Tree nodes={nodes} treeNodeProps={treeNodeProps} />,
       );
       const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
 
@@ -554,10 +576,7 @@ describe('<Tree />', () => {
     it('should pass to TreeNodeList', () => {
       const treeNodeRefs = { current: undefined } as TreeNodeRefs;
       const testInstance = TestRenderer.create(
-        <Tree
-          nodes={nodes}
-          treeNodeRefs={treeNodeRefs}
-        />,
+        <Tree nodes={nodes} treeNodeRefs={treeNodeRefs} />,
       );
       const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
 

@@ -15,24 +15,18 @@ import Tabs, { Tab, TabPane } from '.';
 describe('<Tabs />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <Tabs ref={ref}>
-        <TabPane tab={(<Tab>tab</Tab>)}>
-          tabPane
-        </TabPane>
+        <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
       </Tabs>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <Tabs className={className}>
-        <TabPane tab={(<Tab>tab</Tab>)}>
-          tabPane
-        </TabPane>
+        <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
       </Tabs>,
     ),
   );
@@ -40,9 +34,7 @@ describe('<Tabs />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <Tabs>
-        <TabPane tab={(<Tab>tab</Tab>)}>
-          tabPane
-        </TabPane>
+        <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
       </Tabs>,
     );
     const element = getHostHTMLElement();
@@ -54,8 +46,8 @@ describe('<Tabs />', () => {
     it('should extract tabs of tab panes to tab bar and render active pane', () => {
       const { getHostHTMLElement } = render(
         <Tabs>
-          <TabPane tab={(<Tab>tab0</Tab>)}>tabPane0</TabPane>
-          <TabPane tab={(<Tab>tab1</Tab>)}>tabPane1</TabPane>
+          <TabPane tab={<Tab>tab0</Tab>}>tabPane0</TabPane>
+          <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
         </Tabs>,
       );
       const element = getHostHTMLElement();
@@ -85,24 +77,22 @@ describe('<Tabs />', () => {
         it('should wrapped tab bar by overflow wrapper', () => {
           const { getHostHTMLElement } = render(
             <Tabs>
-              <TabPane tab={(<Tab>tab</Tab>)}>
-                tabPane
-              </TabPane>
+              <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
             </Tabs>,
           );
           const element = getHostHTMLElement();
           const { firstElementChild: tabBarElement } = element;
           const { firstElementChild: tabsOverflowElement } = tabBarElement!;
 
-          expect(tabsOverflowElement!.classList.contains('mzn-tabs--overflow')).toBeTruthy();
+          expect(
+            tabsOverflowElement!.classList.contains('mzn-tabs--overflow'),
+          ).toBeTruthy();
         });
 
         it('should append tabBarClassName to className of tab bar', () => {
           const { getHostHTMLElement } = render(
             <Tabs tabBarClassName="foo">
-              <TabPane tab={(<Tab>tab</Tab>)}>
-                tabPane
-              </TabPane>
+              <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
             </Tabs>,
           );
           const element = getHostHTMLElement();
@@ -115,18 +105,21 @@ describe('<Tabs />', () => {
   });
 
   describe('overflow', () => {
-    Object.defineProperty(HTMLDivElement.prototype, 'scrollWidth', { configurable: true, value: 400 });
-    Object.defineProperty(HTMLDivElement.prototype, 'clientWidth', { configurable: true, value: 200 });
+    Object.defineProperty(HTMLDivElement.prototype, 'scrollWidth', {
+      configurable: true,
+      value: 400,
+    });
+    Object.defineProperty(HTMLDivElement.prototype, 'clientWidth', {
+      configurable: true,
+      value: 200,
+    });
 
     it('should render button on the right when overflow', () => {
       const { getHostHTMLElement } = render(
         <div style={{ width: 200 }}>
           <Tabs>
             {Array.from('ABCDEFG').map((tab) => (
-              <TabPane
-                key={tab}
-                tab={(<Tab>{tab}</Tab>)}
-              >
+              <TabPane key={tab} tab={<Tab>{tab}</Tab>}>
                 {tab}
               </TabPane>
             ))}
@@ -140,7 +133,9 @@ describe('<Tabs />', () => {
 
       expect(rightBtnElement!.tagName.toLowerCase()).toBe('button');
       expect(rightBtnElement!.getAttribute('aria-label')).toBe('scrollToRight');
-      expect(rightBtnElement!.classList.contains('mzn-tabs__scroll-btn')).toBeTruthy();
+      expect(
+        rightBtnElement!.classList.contains('mzn-tabs__scroll-btn'),
+      ).toBeTruthy();
     });
 
     it('should render button on the left if scroll the tabs', () => {
@@ -148,10 +143,7 @@ describe('<Tabs />', () => {
         <div style={{ width: 200 }}>
           <Tabs>
             {Array.from('ABCD').map((tab) => (
-              <TabPane
-                key={tab}
-                tab={(<Tab>{tab}</Tab>)}
-              >
+              <TabPane key={tab} tab={<Tab>{tab}</Tab>}>
                 {tab}
               </TabPane>
             ))}
@@ -171,8 +163,12 @@ describe('<Tabs />', () => {
       const { firstElementChild } = tabsOverflowElement!;
 
       expect(firstElementChild!.tagName.toLowerCase()).toBe('button');
-      expect(firstElementChild!.getAttribute('aria-label')).toBe('scrollToLeft');
-      expect(firstElementChild!.classList.contains('mzn-tabs__scroll-btn')).toBeTruthy();
+      expect(firstElementChild!.getAttribute('aria-label')).toBe(
+        'scrollToLeft',
+      );
+      expect(
+        firstElementChild!.classList.contains('mzn-tabs__scroll-btn'),
+      ).toBeTruthy();
     });
 
     it('should scroll tabs to right when click', () => {
@@ -180,10 +176,7 @@ describe('<Tabs />', () => {
         <div style={{ width: 200 }}>
           <Tabs>
             {Array.from('ABCDEFG').map((tab) => (
-              <TabPane
-                key={tab}
-                tab={(<Tab>{tab}</Tab>)}
-              >
+              <TabPane key={tab} tab={<Tab>{tab}</Tab>}>
                 {tab}
               </TabPane>
             ))}
@@ -215,10 +208,7 @@ describe('<Tabs />', () => {
         <div style={{ width: 200 }}>
           <Tabs>
             {Array.from('ABCD').map((tab) => (
-              <TabPane
-                key={tab}
-                tab={(<Tab>{tab}</Tab>)}
-              >
+              <TabPane key={tab} tab={<Tab>{tab}</Tab>}>
                 {tab}
               </TabPane>
             ))}
@@ -256,7 +246,7 @@ describe('<Tabs />', () => {
       const onTabClick = jest.fn();
       const { getHostHTMLElement } = render(
         <Tabs onTabClick={onTabClick}>
-          <TabPane key="foo" tab={(<Tab>tab1</Tab>)}>
+          <TabPane key="foo" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
         </Tabs>,
@@ -275,11 +265,8 @@ describe('<Tabs />', () => {
   describe('prop: actions', () => {
     it('should render actions on the right side of tab bar', () => {
       const { getHostHTMLElement } = render(
-        <Tabs actions={(
-          <button type="button">action</button>
-        )}
-        >
-          <TabPane key="foo" tab={(<Tab>tab1</Tab>)}>
+        <Tabs actions={<button type="button">action</button>}>
+          <TabPane key="foo" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
         </Tabs>,
@@ -297,8 +284,12 @@ describe('<Tabs />', () => {
   it('should provide active to tab', () => {
     const testInstance = TestRenderer.create(
       <Tabs defaultActiveKey="bar">
-        <TabPane key="foo" tab={(<Tab>foo</Tab>)}>foo</TabPane>
-        <TabPane key="bar" tab={(<Tab>bar</Tab>)}>bar</TabPane>
+        <TabPane key="foo" tab={<Tab>foo</Tab>}>
+          foo
+        </TabPane>
+        <TabPane key="bar" tab={<Tab>bar</Tab>}>
+          bar
+        </TabPane>
       </Tabs>,
     );
 
@@ -310,7 +301,8 @@ describe('<Tabs />', () => {
   describe('control', () => {
     function testActiveKey(ui: JSX.Element) {
       const testInstance = TestRenderer.create(ui);
-      const [inactiveTabInstance, activeTabInstance] = testInstance.root.findAllByType(Tab);
+      const [inactiveTabInstance, activeTabInstance] =
+        testInstance.root.findAllByType(Tab);
 
       expect(inactiveTabInstance.props.active).toBeFalsy();
       expect(activeTabInstance.props.active).toBeTruthy();
@@ -319,10 +311,10 @@ describe('<Tabs />', () => {
     it('should activate the tab which activeKey=key of its parent tab pane', () => {
       testActiveKey(
         <Tabs activeKey="1">
-          <TabPane key="0" tab={(<Tab>tab1</Tab>)}>
+          <TabPane key="0" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
-          <TabPane key="1" tab={(<Tab>tab2</Tab>)}>
+          <TabPane key="1" tab={<Tab>tab2</Tab>}>
             tabPane2
           </TabPane>
         </Tabs>,
@@ -332,10 +324,10 @@ describe('<Tabs />', () => {
     it('should activate the tab which defaultActiveKey=key of its parent tab pane if activeKey not passed', () => {
       testActiveKey(
         <Tabs defaultActiveKey="1">
-          <TabPane key="0" tab={(<Tab>tab1</Tab>)}>
+          <TabPane key="0" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
-          <TabPane key="1" tab={(<Tab>tab2</Tab>)}>
+          <TabPane key="1" tab={<Tab>tab2</Tab>}>
             tabPane2
           </TabPane>
         </Tabs>,
@@ -346,12 +338,8 @@ describe('<Tabs />', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
         <Tabs onChange={onChange}>
-          <TabPane tab={(<Tab>tab1</Tab>)}>
-            tabPane1
-          </TabPane>
-          <TabPane tab={(<Tab>tab2</Tab>)}>
-            tabPane2
-          </TabPane>
+          <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
+          <TabPane tab={<Tab>tab2</Tab>}>tabPane2</TabPane>
         </Tabs>,
       );
       const element = getHostHTMLElement();
@@ -368,30 +356,37 @@ describe('<Tabs />', () => {
       const { getHostHTMLElement } = render(ui);
       const element = getHostHTMLElement();
       const tabsElement = element.querySelector('.mzn-tabs__tabs');
-      const { firstElementChild: activeTabElement, lastElementChild: inactiveTabElement } = tabsElement!;
+      const {
+        firstElementChild: activeTabElement,
+        lastElementChild: inactiveTabElement,
+      } = tabsElement!;
       let tabPaneElement = element.lastElementChild!;
 
-      expect(activeTabElement!.classList.contains('mzn-tabs__tab--active')).toBeTruthy();
-      expect(inactiveTabElement!.classList.contains('mzn-tabs__tab--active')).toBeFalsy();
+      expect(
+        activeTabElement!.classList.contains('mzn-tabs__tab--active'),
+      ).toBeTruthy();
+      expect(
+        inactiveTabElement!.classList.contains('mzn-tabs__tab--active'),
+      ).toBeFalsy();
       expect(tabPaneElement.textContent).toBe('tabPane1');
 
       fireEvent.click(inactiveTabElement!);
       tabPaneElement = element.lastElementChild!;
 
-      expect(activeTabElement!.classList.contains('mzn-tabs__tab--active')).toBeFalsy();
-      expect(inactiveTabElement!.classList.contains('mzn-tabs__tab--active')).toBeTruthy();
+      expect(
+        activeTabElement!.classList.contains('mzn-tabs__tab--active'),
+      ).toBeFalsy();
+      expect(
+        inactiveTabElement!.classList.contains('mzn-tabs__tab--active'),
+      ).toBeTruthy();
       expect(tabPaneElement.textContent).toBe('tabPane2');
     }
 
     it('uncontrolled', () => {
       testControlled(
         <Tabs>
-          <TabPane tab={(<Tab>tab1</Tab>)}>
-            tabPane1
-          </TabPane>
-          <TabPane tab={(<Tab>tab2</Tab>)}>
-            tabPane2
-          </TabPane>
+          <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
+          <TabPane tab={<Tab>tab2</Tab>}>tabPane2</TabPane>
         </Tabs>,
       );
     });
@@ -401,14 +396,11 @@ describe('<Tabs />', () => {
         const [tabKey, setTabKey] = useState<Key>('1');
 
         return (
-          <Tabs
-            activeKey={tabKey}
-            onChange={setTabKey}
-          >
-            <TabPane key="1" tab={(<Tab>tab1</Tab>)}>
+          <Tabs activeKey={tabKey} onChange={setTabKey}>
+            <TabPane key="1" tab={<Tab>tab1</Tab>}>
               tabPane1
             </TabPane>
-            <TabPane key="2" tab={(<Tab>tab2</Tab>)}>
+            <TabPane key="2" tab={<Tab>tab2</Tab>}>
               tabPane2
             </TabPane>
           </Tabs>

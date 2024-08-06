@@ -72,7 +72,8 @@ $details-right-padding: $accordion-horizontal-padding + $summary-icon-size + $su
 
 .#{$prefix}__details {
   width: 100%;
-  padding: $details-vertical-padding $details-right-padding $details-vertical-padding $accordion-horizontal-padding;
+  padding: $details-vertical-padding $details-right-padding
+    $details-vertical-padding $accordion-horizontal-padding;
   height: auto;
   min-height: 0;
   border-bottom: 0;

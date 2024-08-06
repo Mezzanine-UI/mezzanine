@@ -27,12 +27,10 @@ export function usePickerValue({
   inputRef,
   value: valueProp,
 }: UsePickerValueProps) {
-  const {
-    formatToString,
-    parse,
-    valueLocale,
-  } = useCalendarContext();
-  const inputDefaultValue = defaultValue ? formatToString(valueLocale, defaultValue, format) : '';
+  const { formatToString, parse, valueLocale } = useCalendarContext();
+  const inputDefaultValue = defaultValue
+    ? formatToString(valueLocale, defaultValue, format)
+    : '';
 
   const [value, setValue] = useState<DateType | undefined>(valueProp);
 
@@ -56,7 +54,9 @@ export function usePickerValue({
   });
 
   useEffect(() => {
-    const valString = valueProp ? formatToString(valueLocale, valueProp, format) : '';
+    const valString = valueProp
+      ? formatToString(valueLocale, valueProp, format)
+      : '';
 
     setInputValue(valString);
     onChange(valueProp);
@@ -75,7 +75,9 @@ export function usePickerValue({
     }
   };
 
-  const guardValidDateTypeOnKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const guardValidDateTypeOnKeyDown: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     if (event.key === 'Enter' || event.key === 'Escape') {
       inputRef.current?.blur();
 

@@ -21,7 +21,9 @@ export type TypographyComponent =
   | 'a'
   | JSXElementConstructor<any>;
 
-function getComponentFromVariant(variant: TypographyVariant): TypographyComponent {
+function getComponentFromVariant(
+  variant: TypographyVariant,
+): TypographyComponent {
   if (variant.startsWith('h')) {
     return variant as TypographyComponent;
   }
@@ -70,63 +72,68 @@ interface TypographyPropsBase {
 }
 
 export type TypographyProps<C extends TypographyComponent = 'p'> =
-  ComponentOverridableForwardRefComponentPropsFactory<TypographyComponent, C, TypographyPropsBase>;
+  ComponentOverridableForwardRefComponentPropsFactory<
+    TypographyComponent,
+    C,
+    TypographyPropsBase
+  >;
 
 /**
  * The react component for `mezzanine` typography.
  */
-const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(function Typography(props, ref) {
-  const {
-    align,
-    children,
-    className,
-    color,
-    component,
-    display,
-    ellipsis = false,
-    noWrap = false,
-    variant = 'body1',
-    style: styleProp,
-    weight,
-    ...rest
-  } = props;
-  const Component = component || getComponentFromVariant(variant) as any;
-  const cssVars = toTypographyCssVars({
-    align,
-    color,
-    display,
-    weight,
-  });
-  const style = {
-    ...cssVars,
-    ...styleProp,
-  };
-  const title = ellipsis && typeof children === 'string'
-    ? children
-    : undefined;
+const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(
+  function Typography(props, ref) {
+    const {
+      align,
+      children,
+      className,
+      color,
+      component,
+      display,
+      ellipsis = false,
+      noWrap = false,
+      variant = 'body1',
+      style: styleProp,
+      weight,
+      ...rest
+    } = props;
+    const Component = component || (getComponentFromVariant(variant) as any);
+    const cssVars = toTypographyCssVars({
+      align,
+      color,
+      display,
+      weight,
+    });
+    const style = {
+      ...cssVars,
+      ...styleProp,
+    };
+    const title =
+      ellipsis && typeof children === 'string' ? children : undefined;
 
-  return (
-    <Component
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.variant(variant),
-        {
-          [classes.align]: align,
-          [classes.color]: color,
-          [classes.display]: display,
-          [classes.ellipsis]: ellipsis,
-          [classes.noWrap]: noWrap,
-          [classes.weight]: weight,
-        },
-        className,
-      )}
-      style={style}
-      title={title}
-    >
-      {children}
-    </Component>
-  );
-});
+    return (
+      <Component
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.variant(variant),
+          {
+            [classes.align]: align,
+            [classes.color]: color,
+            [classes.display]: display,
+            [classes.ellipsis]: ellipsis,
+            [classes.noWrap]: noWrap,
+            [classes.weight]: weight,
+          },
+          className,
+        )}
+        style={style}
+        title={title}
+      >
+        {children}
+      </Component>
+    );
+  },
+);
 
 export default Typography;

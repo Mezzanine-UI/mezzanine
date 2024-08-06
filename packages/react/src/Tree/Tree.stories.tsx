@@ -10,38 +10,40 @@ export default {
   title: 'Data Display/Tree',
 } as Meta;
 
-const nodes: TreeNodeData[] = [{
-  label: 'label 1',
-  value: '1',
-  nodes: [
-    {
-      label: 'label 1-1',
-      value: '1-1',
-      nodes: [
-        {
-          label: 'label 1-1-1',
-          value: '1-1-1',
-        },
-        {
-          label: 'label 1-1-2',
-          value: '1-1-2',
-        },
-        {
-          label: 'label 1-1-3',
-          value: '1-1-3',
-        },
-      ],
-    },
-    {
-      label: 'label 1-2',
-      value: '1-2',
-    },
-  ],
-},
-{
-  label: 'label 2',
-  value: '2',
-}];
+const nodes: TreeNodeData[] = [
+  {
+    label: 'label 1',
+    value: '1',
+    nodes: [
+      {
+        label: 'label 1-1',
+        value: '1-1',
+        nodes: [
+          {
+            label: 'label 1-1-1',
+            value: '1-1-1',
+          },
+          {
+            label: 'label 1-1-2',
+            value: '1-1-2',
+          },
+          {
+            label: 'label 1-1-3',
+            value: '1-1-3',
+          },
+        ],
+      },
+      {
+        label: 'label 1-2',
+        value: '1-2',
+      },
+    ],
+  },
+  {
+    label: 'label 2',
+    value: '2',
+  },
+];
 
 export const Selectable = () => {
   const [selectedValues, setSelectedValues] = useState<TreeNodeValue[]>([]);
@@ -52,16 +54,14 @@ export const Selectable = () => {
   return (
     <>
       <Typography style={typoStyle}>
-        {
-          `current selected values: ${selectedValues[0]}`
-        }
+        {`current selected values: ${selectedValues[0]}`}
       </Typography>
       <Tree
         nodes={nodes}
         values={selectedValues}
-        onSelect={
-          (v: TreeNodeValue[]) => { setSelectedValues(v); }
-        }
+        onSelect={(v: TreeNodeValue[]) => {
+          setSelectedValues(v);
+        }}
         selectable
       />
     </>
@@ -69,15 +69,18 @@ export const Selectable = () => {
 };
 
 export const DynamicLoading = () => {
-  const [dynamicNodes, setDynamicNodes] = useState<TreeNodeData[]>([{
-    label: 'label 1',
-    value: '1',
-    dynamicNodesFetching: true,
-  }, {
-    label: 'label 2',
-    value: '2',
-    dynamicNodesFetching: true,
-  }]);
+  const [dynamicNodes, setDynamicNodes] = useState<TreeNodeData[]>([
+    {
+      label: 'label 1',
+      value: '1',
+      dynamicNodesFetching: true,
+    },
+    {
+      label: 'label 2',
+      value: '2',
+      dynamicNodesFetching: true,
+    },
+  ]);
 
   const [selectedValues, setSelectedValues] = useState<TreeNodeValue[]>([]);
   const typoStyle = {
@@ -87,16 +90,14 @@ export const DynamicLoading = () => {
   return (
     <>
       <Typography style={typoStyle}>
-        {
-          `current selected values: ${selectedValues[0]}`
-        }
+        {`current selected values: ${selectedValues[0]}`}
       </Typography>
       <Tree
         nodes={dynamicNodes}
         values={selectedValues}
-        onSelect={
-          (v: TreeNodeValue[]) => { setSelectedValues(v); }
-        }
+        onSelect={(v: TreeNodeValue[]) => {
+          setSelectedValues(v);
+        }}
         selectable
         onExpand={(value) => {
           setTimeout(() => {
@@ -106,17 +107,22 @@ export const DynamicLoading = () => {
               if (~targetNodeIdx) {
                 return [
                   ...prev.slice(0, targetNodeIdx),
-                  prev[targetNodeIdx].dynamicNodesFetching ? {
-                    ...prev[targetNodeIdx],
-                    dynamicNodesFetching: false,
-                    nodes: [{
-                      label: 'Static Nodes',
-                      value: `${Math.random() * 1000}`,
-                    }, {
-                      label: 'Static Nodes 2',
-                      value: `${Math.random() * 1005}`,
-                    }],
-                  } : prev[targetNodeIdx],
+                  prev[targetNodeIdx].dynamicNodesFetching
+                    ? {
+                        ...prev[targetNodeIdx],
+                        dynamicNodesFetching: false,
+                        nodes: [
+                          {
+                            label: 'Static Nodes',
+                            value: `${Math.random() * 1000}`,
+                          },
+                          {
+                            label: 'Static Nodes 2',
+                            value: `${Math.random() * 1005}`,
+                          },
+                        ],
+                      }
+                    : prev[targetNodeIdx],
                   ...prev.slice(targetNodeIdx + 1),
                 ];
               }
@@ -131,16 +137,17 @@ export const DynamicLoading = () => {
 };
 
 type DisabledPlaygroundArgs = {
-  disabledDemoType: 'parent disabled' | 'sibling disabled',
+  disabledDemoType: 'parent disabled' | 'sibling disabled';
 };
 
 export const Disabled: StoryFn<DisabledPlaygroundArgs> = ({
   disabledDemoType,
 }) => {
   const [selectedValues, setSelectedValues] = useState<TreeNodeValue[]>([]);
-  const disabledValues = disabledDemoType === 'parent disabled'
-    ? ['1-1']
-    : ['1-1-1-1', '1-1-1-2', '1-1-1-3'];
+  const disabledValues =
+    disabledDemoType === 'parent disabled'
+      ? ['1-1']
+      : ['1-1-1-1', '1-1-1-2', '1-1-1-3'];
   const typoStyle = {
     margin: '0 0 16px 0',
   };
@@ -148,21 +155,17 @@ export const Disabled: StoryFn<DisabledPlaygroundArgs> = ({
   return (
     <>
       <Typography component="p" style={typoStyle}>
-        {
-          `disabled values: ${disabledValues.join(', ')}`
-        }
+        {`disabled values: ${disabledValues.join(', ')}`}
       </Typography>
       <Typography component="p" style={typoStyle}>
-        {
-          `current selected values: ${selectedValues[0]}`
-        }
+        {`current selected values: ${selectedValues[0]}`}
       </Typography>
       <Tree
         nodes={nodes}
         values={selectedValues}
-        onSelect={
-          (v: TreeNodeValue[]) => { setSelectedValues(v); }
-        }
+        onSelect={(v: TreeNodeValue[]) => {
+          setSelectedValues(v);
+        }}
         selectable
         disabledValues={disabledValues}
       />
@@ -192,20 +195,21 @@ export const Multiple = () => {
   return (
     <>
       <Typography style={typoStyle}>
-        {
-          `current selected values: ${selectedValues.reduce<string>((acc, current) => {
+        {`current selected values: ${selectedValues.reduce<string>(
+          (acc, current) => {
             if (!acc.length) return `${current}`;
 
             return `${acc}, ${current}`;
-          }, '')}`
-        }
+          },
+          '',
+        )}`}
       </Typography>
       <Tree
         nodes={nodes}
         values={selectedValues}
-        onSelect={
-          (v: TreeNodeValue[]) => { setSelectedValues(v); }
-        }
+        onSelect={(v: TreeNodeValue[]) => {
+          setSelectedValues(v);
+        }}
         selectable
         multiple
       />
@@ -213,13 +217,14 @@ export const Multiple = () => {
   );
 };
 
-type PlaygroundArgs = Pick<TreeProps,
-| 'multiple'
-| 'selectable'
-| 'includeNodeValue'
-| 'size'
-| 'defaultExpandAll'
-| 'selectMethod'
+type PlaygroundArgs = Pick<
+  TreeProps,
+  | 'multiple'
+  | 'selectable'
+  | 'includeNodeValue'
+  | 'size'
+  | 'defaultExpandAll'
+  | 'selectMethod'
 >;
 
 export const Controller = () => {
@@ -230,17 +235,19 @@ export const Controller = () => {
   };
 
   return (
-    <div style={{
-      display: 'flex',
-      width: '100%',
-      flexWrap: 'wrap',
-    }}
-    >
-      <div style={{
+    <div
+      style={{
         display: 'flex',
-        flexDirection: 'column',
-        marginRight: '24px',
+        width: '100%',
+        flexWrap: 'wrap',
       }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          marginRight: '24px',
+        }}
       >
         <Button
           variant="contained"
@@ -253,35 +260,45 @@ export const Controller = () => {
         </Button>
         <Button
           variant="contained"
-          onClick={() => { expandControllerRef.current?.collapseAll(); }}
+          onClick={() => {
+            expandControllerRef.current?.collapseAll();
+          }}
           style={btnStyle}
         >
           collapse all
         </Button>
         <Button
           variant="contained"
-          onClick={() => { expandControllerRef.current?.collapseAllFrom('1'); }}
+          onClick={() => {
+            expandControllerRef.current?.collapseAllFrom('1');
+          }}
           style={btnStyle}
         >
           collapse all from 1
         </Button>
         <Button
           variant="contained"
-          onClick={() => { expandControllerRef.current?.expand('1-1-1'); }}
+          onClick={() => {
+            expandControllerRef.current?.expand('1-1-1');
+          }}
           style={btnStyle}
         >
           expand 1-1-1
         </Button>
         <Button
           variant="contained"
-          onClick={() => { expandControllerRef.current?.expandAll(); }}
+          onClick={() => {
+            expandControllerRef.current?.expandAll();
+          }}
           style={btnStyle}
         >
           expand all
         </Button>
         <Button
           variant="contained"
-          onClick={() => { expandControllerRef.current?.expandAllFrom('1'); }}
+          onClick={() => {
+            expandControllerRef.current?.expandAllFrom('1');
+          }}
           style={btnStyle}
         >
           expand all from 1
@@ -315,20 +332,21 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
   return (
     <>
       <Typography style={typoStyle}>
-        {
-          `current selected values: ${selectedValues.reduce<string>((acc, current) => {
+        {`current selected values: ${selectedValues.reduce<string>(
+          (acc, current) => {
             if (!acc.length) return `${current}`;
 
             return `${acc}, ${current}`;
-          }, '')}`
-        }
+          },
+          '',
+        )}`}
       </Typography>
       <Tree
         nodes={nodes}
         values={selectedValues}
-        onSelect={
-          (v: TreeNodeValue[]) => { setSelectedValues(v); }
-        }
+        onSelect={(v: TreeNodeValue[]) => {
+          setSelectedValues(v);
+        }}
         selectable={selectable}
         multiple={multiple}
         selectMethod={selectMethod}

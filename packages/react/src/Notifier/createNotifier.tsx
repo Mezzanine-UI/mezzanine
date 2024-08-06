@@ -31,9 +31,10 @@ export interface CreateNotifierProps<
  *
  * When APIs are called, Notifier will dynamically render a new react instance by `ReactDOM.render` method.
  */
-export function createNotifier<N extends NotifierData, C extends NotifierConfig = NotifierConfig>(
-  props: CreateNotifierProps<N, C>,
-): Notifier<N, C> {
+export function createNotifier<
+  N extends NotifierData,
+  C extends NotifierConfig = NotifierConfig,
+>(props: CreateNotifierProps<N, C>): Notifier<N, C> {
   const {
     config: configProp,
     render: renderNotifier,
@@ -42,7 +43,8 @@ export function createNotifier<N extends NotifierData, C extends NotifierConfig 
     maxCount,
     ...restNotifierProps
   } = props;
-  const container = typeof document === 'undefined' ? null : document.createElement('div');
+  const container =
+    typeof document === 'undefined' ? null : document.createElement('div');
   const root: Root | null = container ? createRoot(container) : null;
   const controllerRef = createRef<NotifierController<N>>();
   let currentConfig = {

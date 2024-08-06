@@ -1,20 +1,14 @@
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+import { cleanup, render } from '../../__test-utils__';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
 import { CalendarDayOfWeek } from '.';
 import CalendarConfigProvider from './CalendarContext';
 
 describe('<CalendarDayOfWeek />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarDayOfWeek className={className} />
       </CalendarConfigProvider>,
@@ -34,7 +28,10 @@ describe('<CalendarDayOfWeek />', () => {
 
   describe('prop: displayWeekDayLocale', () => {
     it('should pass to getWeekDayNames function', () => {
-      const getWeekDayNamesSpy = jest.spyOn(CalendarMethodsMoment, 'getWeekDayNames');
+      const getWeekDayNamesSpy = jest.spyOn(
+        CalendarMethodsMoment,
+        'getWeekDayNames',
+      );
 
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>

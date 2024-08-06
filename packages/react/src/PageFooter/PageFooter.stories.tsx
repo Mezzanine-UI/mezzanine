@@ -1,8 +1,4 @@
-import {
-  RefObject,
-  MouseEvent,
-  useState,
-} from 'react';
+import { RefObject, MouseEvent, useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Meta, StoryFn } from '@storybook/react';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
@@ -75,14 +71,14 @@ export const WithDropdown: StoryFn<PageFooterProps> = ({
       onConfirm={onConfirm}
     >
       <Dropdown
-        menu={(
+        menu={
           <Menu style={{ border: 0 }}>
             <MenuItem>item 1</MenuItem>
             <MenuItem>item 2</MenuItem>
             <MenuItem>item 3</MenuItem>
             <MenuItem>item 4</MenuItem>
           </Menu>
-        )}
+        }
         onClose={onClose}
         popperProps={{
           open,
@@ -93,7 +89,9 @@ export const WithDropdown: StoryFn<PageFooterProps> = ({
             ref={ref as RefObject<HTMLButtonElement>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
-              setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
+              setAnchor(
+                anchor === event.currentTarget ? null : event.currentTarget,
+              );
             }}
             suffix={<Icon icon={MoreVerticalIcon} />}
             variant="text"
@@ -116,23 +114,18 @@ export const WithAppBar: StoryFn<PageFooterProps> = ({
   onCancel,
   onConfirm,
 }) => (
-  <div style={{
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  }}
+  <div
+    style={{
+      height: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    }}
   >
     <AppBar orientation="horizontal">
-      <AppBarSupport>
-        Support
-      </AppBarSupport>
-      <AppBarMain>
-        Main
-      </AppBarMain>
-      <AppBarBrand>
-        Brand
-      </AppBarBrand>
+      <AppBarSupport>Support</AppBarSupport>
+      <AppBarMain>Main</AppBarMain>
+      <AppBarBrand>Brand</AppBarBrand>
     </AppBar>
     <PageFooter
       cancelText={cancelText}
@@ -163,40 +156,35 @@ export const WithMenuNavigation: StoryFn<PageFooterProps> = ({
     }}
   >
     <AppBar orientation="horizontal">
-      <AppBarSupport>
-        Support
-      </AppBarSupport>
-      <AppBarMain>
-        Main
-      </AppBarMain>
-      <AppBarBrand>
-        Brand
-      </AppBarBrand>
+      <AppBarSupport>Support</AppBarSupport>
+      <AppBarMain>Main</AppBarMain>
+      <AppBarBrand>Brand</AppBarBrand>
     </AppBar>
-    <div style={{
-      height: '100%',
-      display: 'flex',
-      flexDirection: 'row',
-    }}
-    >
-      <div style={{
-        width: 200,
-        backgroundColor: '#fff',
-        border: 'solid 1px #d9d9d9',
+    <div
+      style={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'row',
       }}
+    >
+      <div
+        style={{
+          width: 200,
+          backgroundColor: '#fff',
+          border: 'solid 1px #d9d9d9',
+        }}
       >
         MenuNavigation
       </div>
-      <div style={{
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-      }}
+      <div
+        style={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+        }}
       >
-        <div>
-          CONTENT
-        </div>
+        <div>CONTENT</div>
         <PageFooter
           cancelText={cancelText}
           confirmText={confirmText}

@@ -1,9 +1,5 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,12 +9,12 @@ import NavigationItem from './NavigationItem';
 describe('<NavigationItem />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLLIElement,
-    (ref) => render(<NavigationItem ref={ref} />));
+  describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
+    render(<NavigationItem ref={ref} />),
+  );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<NavigationItem className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<NavigationItem className={className} />),
   );
 
   it('should bind host class', () => {
@@ -33,9 +29,7 @@ describe('<NavigationItem />', () => {
       const testChildren = 'foo';
 
       const { getHostHTMLElement } = render(
-        <NavigationItem>
-          {testChildren}
-        </NavigationItem>,
+        <NavigationItem>{testChildren}</NavigationItem>,
       );
 
       const element = getHostHTMLElement();
@@ -59,10 +53,7 @@ describe('<NavigationItem />', () => {
       const onClick = jest.fn();
 
       const { getHostHTMLElement } = render(
-        <NavigationItem
-          onClick={onClick}
-          eventKey={eventKey}
-        />,
+        <NavigationItem onClick={onClick} eventKey={eventKey} />,
       );
       const element = getHostHTMLElement();
 
@@ -77,9 +68,7 @@ describe('<NavigationItem />', () => {
     it('should render suffix icon', () => {
       const itemChildren = 'foo';
       const { getHostHTMLElement } = render(
-        <NavigationItem icon={PlusIcon}>
-          {itemChildren}
-        </NavigationItem>,
+        <NavigationItem icon={PlusIcon}>{itemChildren}</NavigationItem>,
       );
       const element = getHostHTMLElement();
       const { firstElementChild: iconElement } = element;

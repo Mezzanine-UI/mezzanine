@@ -7,7 +7,11 @@ export default {
 
 type PlaygroundArgs = Required<Pick<AlertProps, 'children' | 'severity'>>;
 
-export const Playground: StoryFn<PlaygroundArgs> = ({ children, severity, ...args }) => (
+export const Playground: StoryFn<PlaygroundArgs> = ({
+  children,
+  severity,
+  ...args
+}) => (
   <Alert severity={severity} {...args}>
     {children}
   </Alert>
@@ -19,11 +23,7 @@ Playground.args = {
 
 Playground.argTypes = {
   severity: {
-    options: [
-      'success',
-      'warning',
-      'error',
-    ],
+    options: ['success', 'warning', 'error'],
     control: {
       type: 'select',
     },

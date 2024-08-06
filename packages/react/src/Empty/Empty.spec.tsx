@@ -1,8 +1,5 @@
 import { createElement } from 'react';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -12,14 +9,12 @@ import Empty from '.';
 describe('<Empty />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Empty ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Empty ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Empty className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Empty className={className} />),
   );
 
   it('should bind host class', () => {
@@ -37,7 +32,9 @@ describe('<Empty />', () => {
     expect(element.textContent).toBe('No Data');
     expect(descriptionElement.textContent).toBe('No Data');
     expect(descriptionElement.tagName.toLowerCase()).toBe('div');
-    expect(descriptionElement.classList.contains('mzn-empty__description')).toBeTruthy();
+    expect(
+      descriptionElement.classList.contains('mzn-empty__description'),
+    ).toBeTruthy();
   });
 
   describe('prop: fullHeight', () => {
@@ -58,14 +55,13 @@ describe('<Empty />', () => {
     });
 
     it('should render passed in image if provided', () => {
-      const image = createElement(
-        'div',
-        {
-          id: 'empty-test-image-prop',
-        },
-      );
+      const image = createElement('div', {
+        id: 'empty-test-image-prop',
+      });
 
-      const { getHostHTMLElement } = render(<Empty image={image}>No Data</Empty>);
+      const { getHostHTMLElement } = render(
+        <Empty image={image}>No Data</Empty>,
+      );
       const element = getHostHTMLElement();
       const imageNode = element.querySelector('#empty-test-image-prop');
 
