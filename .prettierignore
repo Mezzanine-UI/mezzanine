@@ -6,3 +6,4 @@
 **/coverage
 **/*.css
 **/*.scss
+/.nx/workspace-data
