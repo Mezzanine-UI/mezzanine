@@ -9,29 +9,20 @@ const ICONS_PATH = resolve(PACKAGES_PATH, 'icons');
 
 const config: StorybookConfig = {
   stories: ['../packages/react/src/**/*.@(mdx|stories.@(mjs|ts|tsx))'],
+
   addons: [
+    '@storybook/addon-webpack5-compiler-babel',
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-storysource',
-    'storybook-rytass-palette',
+    // getAbsolutePath('storybook-rytass-palette'),
   ],
-  framework: {
-    name: '@storybook/react-webpack5',
-    options: {
-      fastRefresh: true,
-      builder: {
-        fsCache: true,
-        lazyCompilation: true,
-      },
-    },
-  },
-  docs: {
-    autodocs: 'tag',
-  },
-  webpackFinal: config => {
+
+  framework: '@storybook/react-webpack5',
+
+  webpackFinal: (config) => {
     if (config.resolve) {
       config.resolve.alias = {
-        ...config.resolve.alias,
         '@mezzanine-ui/system': resolve(SYSTEM_PATH, 'src'),
         '@mezzanine-ui/core': resolve(CORE_PATH, 'src'),
         '@mezzanine-ui/icons': resolve(ICONS_PATH, 'src'),
@@ -46,6 +37,11 @@ const config: StorybookConfig = {
     }
 
     return config;
-  }
+  },
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
+  },
 };
+
 export default config;
