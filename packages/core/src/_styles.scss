@@ -81,4 +81,7 @@
   @include _load-styles($options, popconfirm);
   @include _load-styles($options, progress);
   @include _load-styles($options, skeleton);
+
+  // Others
+  @include _load-styles($options, anchor);
 }
