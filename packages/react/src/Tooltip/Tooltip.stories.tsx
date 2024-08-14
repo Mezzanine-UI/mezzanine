@@ -37,12 +37,12 @@ export const Basic = () => (
       )}
     </Tooltip>
     <Tooltip
-      title={(
+      title={
         <div style={{ display: 'flex', flexFlow: 'column' }}>
           <span>Custom Element</span>
           <Icon icon={InfoCircleFilledIcon} size={14} />
         </div>
-      )}
+      }
       options={{
         placement: 'top-start',
       }}

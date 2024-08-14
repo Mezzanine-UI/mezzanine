@@ -5,14 +5,9 @@ export default {
   title: 'Data Entry/Switch',
 } as Meta;
 
-const sizes: SwitchSize[] = [
-  'medium',
-  'large',
-];
+const sizes: SwitchSize[] = ['medium', 'large'];
 
-export const Playground: StoryFn<SwitchProps> = (args) => (
-  <Switch {...args} />
-);
+export const Playground: StoryFn<SwitchProps> = (args) => <Switch {...args} />;
 
 Playground.args = {
   checked: true,
@@ -30,13 +25,14 @@ Playground.argTypes = {
 };
 
 export const All = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateRows: 'repeat(2, min-content)',
-    gridTemplateColumns: 'repeat(5, min-content)',
-    gap: 16,
-    alignItems: 'center',
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateRows: 'repeat(2, min-content)',
+      gridTemplateColumns: 'repeat(5, min-content)',
+      gap: 16,
+      alignItems: 'center',
+    }}
   >
     <Switch defaultChecked />
     <Switch defaultChecked disabled />

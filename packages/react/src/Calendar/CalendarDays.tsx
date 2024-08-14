@@ -12,11 +12,10 @@ import type { CalendarYearsProps } from './CalendarYears';
 import type { CalendarMonthsProps } from './CalendarMonths';
 
 export interface CalendarDaysProps
-  extends
-  Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
-  Pick<CalendarYearsProps, 'isYearDisabled'>,
-  Pick<CalendarMonthsProps, 'isMonthDisabled'>,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
+  extends Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
+    Pick<CalendarYearsProps, 'isYearDisabled'>,
+    Pick<CalendarMonthsProps, 'isMonthDisabled'>,
+    Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
   /**
    * Provide if you have a custom disabling logic. The method takes the date object as its parameter.
    */
@@ -75,78 +74,79 @@ function CalendarDays(props: CalendarDaysProps) {
     ...rest
   } = props;
 
-  const daysGrid = useMemo(() => getCalendarGrid(referenceDate), [getCalendarGrid, referenceDate]);
+  const daysGrid = useMemo(
+    () => getCalendarGrid(referenceDate),
+    [getCalendarGrid, referenceDate],
+  );
 
   return (
-    <div
-      {...rest}
-      className={cx(
-        classes.board,
-        className,
-      )}
-    >
+    <div {...rest} className={cx(classes.board, className)}>
       <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
-      {
-        daysGrid.map((week, index) => (
-          <div
-            // eslint-disable-next-line react/no-array-index-key
-            key={`CALENDAR_DAYS/WEEK_OF/${index}`}
-            className={classes.row}
-          >
-            {week.map((dateNum) => {
-              const isPrevMonth = index === 0 && dateNum > 7;
-              const isNextMonth = index > 3 && dateNum <= 14;
-              const thisMonth = getMonth(referenceDate);
-              // eslint-disable-next-line no-nested-ternary
-              const month = isPrevMonth
-                ? thisMonth - 1
-                : isNextMonth
-                  ? thisMonth + 1
-                  : thisMonth;
-              const date = setDate(setMonth(referenceDate, month), dateNum);
-              const disabled = (isYearDisabled?.(date) || isMonthDisabled?.(date) || isDateDisabled?.(date)) || false;
-              const inactive = !disabled && (isPrevMonth || isNextMonth);
-              const inRange = !inactive && isDateInRange && isDateInRange(date);
-              const active = !disabled && !inactive && value && isDateIncluded(date, value);
+      {daysGrid.map((week, index) => (
+        <div
+          // eslint-disable-next-line react/no-array-index-key
+          key={`CALENDAR_DAYS/WEEK_OF/${index}`}
+          className={classes.row}
+        >
+          {week.map((dateNum) => {
+            const isPrevMonth = index === 0 && dateNum > 7;
+            const isNextMonth = index > 3 && dateNum <= 14;
+            const thisMonth = getMonth(referenceDate);
+            // eslint-disable-next-line no-nested-ternary
+            const month = isPrevMonth
+              ? thisMonth - 1
+              : isNextMonth
+                ? thisMonth + 1
+                : thisMonth;
+            const date = setDate(setMonth(referenceDate, month), dateNum);
+            const disabled =
+              isYearDisabled?.(date) ||
+              isMonthDisabled?.(date) ||
+              isDateDisabled?.(date) ||
+              false;
+            const inactive = !disabled && (isPrevMonth || isNextMonth);
+            const inRange = !inactive && isDateInRange && isDateInRange(date);
+            const active =
+              !disabled && !inactive && value && isDateIncluded(date, value);
 
-              const onMouseEnter = onDateHover ? () => {
-                onDateHover(date);
-              } : undefined;
+            const onMouseEnter = onDateHover
+              ? () => {
+                  onDateHover(date);
+                }
+              : undefined;
 
-              const onClick = onClickProp
-                ? () => { onClickProp(date); }
-                : undefined;
+            const onClick = onClickProp
+              ? () => {
+                  onClickProp(date);
+                }
+              : undefined;
 
-              return (
-                <CalendarCell
-                  key={`${getMonth(date)}/${getDate(date)}`}
-                  today={isSameDate(date, getNow())}
-                  active={active}
-                  disabled={isPrevMonth || isNextMonth}
+            return (
+              <CalendarCell
+                key={`${getMonth(date)}/${getDate(date)}`}
+                today={isSameDate(date, getNow())}
+                active={active}
+                disabled={isPrevMonth || isNextMonth}
+              >
+                <button
+                  type="button"
+                  aria-disabled={disabled}
+                  disabled={disabled}
+                  onMouseEnter={onMouseEnter}
+                  className={cx(classes.button, {
+                    [classes.buttonInRange]: inRange,
+                    [classes.buttonActive]: active,
+                    [classes.buttonDisabled]: disabled,
+                  })}
+                  onClick={onClick}
                 >
-                  <button
-                    type="button"
-                    aria-disabled={disabled}
-                    disabled={disabled}
-                    onMouseEnter={onMouseEnter}
-                    className={cx(
-                      classes.button,
-                      {
-                        [classes.buttonInRange]: inRange,
-                        [classes.buttonActive]: active,
-                        [classes.buttonDisabled]: disabled,
-                      },
-                    )}
-                    onClick={onClick}
-                  >
-                    {dateNum}
-                  </button>
-                </CalendarCell>
-              );
-            })}
-          </div>
-        ))
-      }
+                  {dateNum}
+                </button>
+              </CalendarCell>
+            );
+          })}
+        </div>
+      ))}
     </div>
   );
 }

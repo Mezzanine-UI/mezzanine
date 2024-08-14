@@ -1,27 +1,15 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
-import {
-  CalendarConfigProvider,
-  CalendarDayOfWeek,
-  CalendarWeeks,
-} from '.';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
+import { CalendarConfigProvider, CalendarDayOfWeek, CalendarWeeks } from '.';
 import { CalendarWeeksProps } from './CalendarWeeks';
 
 describe('<CalendarWeeks />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarWeeks
           referenceDate={moment().format('YYYY-MM-DD')}
@@ -54,9 +42,12 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const calendarDayOfWeekInstance = testInstance.root.findByType(CalendarDayOfWeek);
+      const calendarDayOfWeekInstance =
+        testInstance.root.findByType(CalendarDayOfWeek);
 
-      expect(calendarDayOfWeekInstance.props.displayWeekDayLocale).toBe('zh-TW');
+      expect(calendarDayOfWeekInstance.props.displayWeekDayLocale).toBe(
+        'zh-TW',
+      );
     });
   });
 
@@ -64,7 +55,8 @@ describe('<CalendarWeeks />', () => {
     it('should disable week when matching the condition', () => {
       const testDate = 15;
       const today = moment().date(testDate);
-      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) => moment(date).isSame(today, 'week');
+      const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) =>
+        moment(date).isSame(today, 'week');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -78,9 +70,13 @@ describe('<CalendarWeeks />', () => {
       const cellElement = getByText(`${testDate}`).parentElement!;
       const buttonElement = cellElement.parentElement;
 
-      expect(buttonElement?.classList.contains('mzn-calendar-button--disabled')).toBe(true);
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--disabled'),
+      ).toBe(true);
       expect(buttonElement?.getAttribute('aria-disabled')).toBe('true');
-      expect(cellElement.classList.contains('mzn-calendar-cell--disabled')).toBe(true);
+      expect(
+        cellElement.classList.contains('mzn-calendar-cell--disabled'),
+      ).toBe(true);
     });
   });
 
@@ -91,9 +87,8 @@ describe('<CalendarWeeks />', () => {
       const testRangeEnd = 21;
       const rangeStart = moment().date(testRangeStart);
       const rangeEnd = moment().date(testRangeEnd);
-      const isWeekInRange: CalendarWeeksProps['isWeekInRange'] = (date) => (
-        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
-      );
+      const isWeekInRange: CalendarWeeksProps['isWeekInRange'] = (date) =>
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -104,9 +99,12 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const target = getByText(`${testTargetDate}`).parentElement?.parentElement;
+      const target = getByText(`${testTargetDate}`).parentElement
+        ?.parentElement;
 
-      expect(target?.classList.contains('mzn-calendar-button--inRange')).toBe(true);
+      expect(target?.classList.contains('mzn-calendar-button--inRange')).toBe(
+        true,
+      );
     });
   });
 
@@ -118,7 +116,9 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onclick).toBe(null);
@@ -156,7 +156,9 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onmouseenter).toBe(null);
@@ -189,7 +191,10 @@ describe('<CalendarWeeks />', () => {
   describe('prop: referenceDate', () => {
     it('should pass to getCalendarGrid method', () => {
       const referenceDate = moment().format('YYYY-MM-DD');
-      const getCalendarGridSpy = jest.spyOn(CalendarMethodsMoment, 'getCalendarGrid');
+      const getCalendarGridSpy = jest.spyOn(
+        CalendarMethodsMoment,
+        'getCalendarGrid',
+      );
 
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -217,7 +222,9 @@ describe('<CalendarWeeks />', () => {
       const dateElement = getByText(`${testDate}`);
       const buttonElement = dateElement.parentElement?.parentElement;
 
-      expect(buttonElement?.classList.contains('mzn-calendar-button--active')).toBe(true);
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--active'),
+      ).toBe(true);
     });
   });
 });

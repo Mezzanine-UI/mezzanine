@@ -17,7 +17,9 @@ import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
-import InputTriggerPopper, { InputTriggerPopperProps } from '../_internal/InputTriggerPopper';
+import InputTriggerPopper, {
+  InputTriggerPopperProps,
+} from '../_internal/InputTriggerPopper';
 import SelectTrigger, {
   SelectTriggerProps,
   SelectTriggerInputProps,
@@ -35,33 +37,37 @@ import { PopperController } from '../Popper';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 
 export interface TreeSelectProps
-  extends
-  Omit<SelectTriggerProps,
-  | 'active'
-  | 'onBlur'
-  | 'onChange'
-  | 'onClear'
-  | 'onClick'
-  | 'onFocus'
-  | 'onKeyDown'
-  | 'readOnly'
-  | 'searchInputProps'
-  >,
-  FormElementFocusHandlers,
-  Pick<TreeProps,
-  | 'defaultExpandAll'
-  | 'disabledValues'
-  | 'expandControllerRef'
-  | 'onExpand'
-  >,
-  PickRenameMulti<Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>, {
-    maxHeight: 'menuMaxHeight';
-    role: 'menuRole';
-    size: 'menuSize';
-  }>,
-  PickRenameMulti<Pick<InputTriggerPopperProps, 'options'>, {
-    options: 'popperOptions'; }
-  > {
+  extends Omit<
+      SelectTriggerProps,
+      | 'active'
+      | 'onBlur'
+      | 'onChange'
+      | 'onClear'
+      | 'onClick'
+      | 'onFocus'
+      | 'onKeyDown'
+      | 'readOnly'
+      | 'searchInputProps'
+    >,
+    FormElementFocusHandlers,
+    Pick<
+      TreeProps,
+      'defaultExpandAll' | 'disabledValues' | 'expandControllerRef' | 'onExpand'
+    >,
+    PickRenameMulti<
+      Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>,
+      {
+        maxHeight: 'menuMaxHeight';
+        role: 'menuRole';
+        size: 'menuSize';
+      }
+    >,
+    PickRenameMulti<
+      Pick<InputTriggerPopperProps, 'options'>,
+      {
+        options: 'popperOptions';
+      }
+    > {
   /**
    * The width of options panel will be calculated based on the depth of your options.
    * If you know how many layers in your object, pass it via this prop will have better performance.
@@ -71,26 +77,19 @@ export interface TreeSelectProps
    * The other native props for input element.
    */
   inputProps?: Omit<
-  SelectTriggerInputProps,
-  | 'onBlur'
-  | 'onChange'
-  | 'onFocus'
-  | 'placeholder'
-  | 'role'
-  | 'value'
-  | `aria-${
-    | 'expanded'
-    }`
+    SelectTriggerInputProps,
+    | 'onBlur'
+    | 'onChange'
+    | 'onFocus'
+    | 'placeholder'
+    | 'role'
+    | 'value'
+    | `aria-${'expanded'}`
   >;
   /**
    * Other props you may provide to `Menu`.
    */
-  menuProps?: Omit<MenuProps,
-  | 'itemsInView'
-  | 'maxHeight'
-  | 'role'
-  | 'size'
-  >
+  menuProps?: Omit<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>;
   /**
    * The change event handler of input element.
    */
@@ -121,18 +120,19 @@ export interface TreeSelectProps
   /**
    * Other props you may provide to `Tree`
    */
-  treeProps?: Omit<TreeProps,
-  | 'defaultExpandAll'
-  | 'disabledValues'
-  | 'expandControllerRef'
-  | 'expandedValues'
-  | 'nodes'
-  | 'onExpand'
-  | 'onSelect'
-  | 'selectMethod'
-  | 'selectable'
-  | 'values'
-  >
+  treeProps?: Omit<
+    TreeProps,
+    | 'defaultExpandAll'
+    | 'disabledValues'
+    | 'expandControllerRef'
+    | 'expandedValues'
+    | 'nodes'
+    | 'onExpand'
+    | 'onSelect'
+    | 'selectMethod'
+    | 'selectable'
+    | 'values'
+  >;
   /**
    * The value of selection.
    * @default undefined
@@ -140,343 +140,336 @@ export interface TreeSelectProps
   value?: SelectValue[];
 }
 
-const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>(
-  (props, ref) => {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
-    const {
-      className,
-      clearable = false,
-      defaultExpandAll,
-      depth,
-      disabled = disabledFromFormControl || false,
-      disabledValues,
-      error = severity === 'error' || false,
-      expandControllerRef,
-      fullWidth = fullWidthFromFormControl || false,
-      inputProps,
-      inputRef,
-      itemsInView = 4,
-      menuMaxHeight,
-      menuProps,
-      menuRole = 'listbox',
-      menuSize,
-      mode = 'single',
-      onBlur,
-      onChange: onChangeProp,
-      onExpand: onExpandProp,
-      onFocus,
-      options,
-      placeholder = '',
-      popperOptions,
-      prefix,
-      renderValue,
-      required = requiredFromFormControl || false,
-      sameWidth = false,
-      size,
-      suffixActionIcon,
-      treeProps,
-      value: valueProp,
-    } = props;
-    const {
-      className: treeClassName,
-      ...restTreeProps
-    } = treeProps || {};
-    const {
-      width,
-      border,
-      ...restStyle
-    } = menuProps?.style || {};
-    const multiple = mode === 'multiple';
+const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
+  const {
+    disabled: disabledFromFormControl,
+    fullWidth: fullWidthFromFormControl,
+    required: requiredFromFormControl,
+    severity,
+  } = useContext(FormControlContext) || {};
+  const {
+    className,
+    clearable = false,
+    defaultExpandAll,
+    depth,
+    disabled = disabledFromFormControl || false,
+    disabledValues,
+    error = severity === 'error' || false,
+    expandControllerRef,
+    fullWidth = fullWidthFromFormControl || false,
+    inputProps,
+    inputRef,
+    itemsInView = 4,
+    menuMaxHeight,
+    menuProps,
+    menuRole = 'listbox',
+    menuSize,
+    mode = 'single',
+    onBlur,
+    onChange: onChangeProp,
+    onExpand: onExpandProp,
+    onFocus,
+    options,
+    placeholder = '',
+    popperOptions,
+    prefix,
+    renderValue,
+    required = requiredFromFormControl || false,
+    sameWidth = false,
+    size,
+    suffixActionIcon,
+    treeProps,
+    value: valueProp,
+  } = props;
+  const { className: treeClassName, ...restTreeProps } = treeProps || {};
+  const { width, border, ...restStyle } = menuProps?.style || {};
+  const multiple = mode === 'multiple';
 
-    /** Compute panel width */
-    const panelWidth = useMemo(() => {
-      if (width) {
-        return;
+  /** Compute panel width */
+  const panelWidth = useMemo(() => {
+    if (width) {
+      return;
+    }
+
+    const base = multiple ? 224 : 208;
+    const indent = 16;
+
+    function getWidth(resultDepth: number) {
+      return (resultDepth - 1) * indent + base;
+    }
+
+    if (depth) {
+      return getWidth(depth);
+    }
+
+    function maxDepth(object: TreeSelectOption, counter = 1): number {
+      if (object.siblings) {
+        return Math.max(
+          ...object.siblings.map((sibling) => maxDepth(sibling, counter + 1)),
+        );
       }
 
-      const base = multiple ? 224 : 208;
-      const indent = 16;
+      return counter;
+    }
 
-      function getWidth(resultDepth: number) {
-        return (resultDepth - 1) * indent + base;
-      }
+    const computedMaxDepth = options.reduce<number>((acc, current) => {
+      const currentDepth = maxDepth(current);
 
-      if (depth) {
-        return getWidth(depth);
-      }
+      return currentDepth > acc ? currentDepth : acc;
+    }, 0);
 
-      function maxDepth(object: TreeSelectOption, counter = 1): number {
-        if (object.siblings) {
-          return Math.max(
-            ...object.siblings.map((sibling) => maxDepth(sibling, counter + 1)),
-          );
-        }
+    return getWidth(computedMaxDepth);
+  }, [depth, multiple, options, width]);
 
-        return counter;
-      }
+  /** Popper positioning */
+  const nodeRef = useRef<HTMLDivElement>(null);
+  const controlRef = useRef<HTMLElement>(null);
+  const popperRef = useRef<HTMLDivElement>(null);
+  const composedRef = useComposeRefs([ref, controlRef]);
 
-      const computedMaxDepth = options.reduce<number>((acc, current) => {
-        const currentDepth = maxDepth(current);
+  /** Make popper positioning dynamically by computing styles every time value prop changes */
+  const controllerRef = useRef<PopperController>(null);
 
-        return currentDepth > acc ? currentDepth : acc;
-      }, 0);
+  useIsomorphicLayoutEffect(() => {
+    controllerRef.current?.forceUpdate?.();
+  }, [valueProp]);
 
-      return getWidth(computedMaxDepth);
-    }, [depth, multiple, options, width]);
+  /** Open control */
+  const [open, toggleOpen] = useState(false);
+  const onOpen = () => {
+    onFocus?.();
 
-    /** Popper positioning */
-    const nodeRef = useRef<HTMLDivElement>(null);
-    const controlRef = useRef<HTMLElement>(null);
-    const popperRef = useRef<HTMLDivElement>(null);
-    const composedRef = useComposeRefs([ref, controlRef]);
+    toggleOpen(true);
+  };
 
-    /** Make popper positioning dynamically by computing styles every time value prop changes */
-    const controllerRef = useRef<PopperController>(null);
+  const onClose = () => {
+    onBlur?.();
 
-    useIsomorphicLayoutEffect(() => {
-      controllerRef.current?.forceUpdate?.();
-    }, [valueProp]);
+    toggleOpen(false);
+  };
 
-    /** Open control */
-    const [open, toggleOpen] = useState(false);
-    const onOpen = () => {
-      onFocus?.();
+  const onToggleOpen = () => {
+    if (open) {
+      onClose();
+    } else {
+      onOpen();
+    }
+  };
 
-      toggleOpen(true);
-    };
-
-    const onClose = () => {
-      onBlur?.();
-
-      toggleOpen(false);
-    };
-
-    const onToggleOpen = () => {
-      if (open) {
-        onClose();
-      } else {
-        onOpen();
-      }
-    };
-
-    const onTextFieldClick = disabled
-      ? undefined
-      : () => {
+  const onTextFieldClick = disabled
+    ? undefined
+    : () => {
         onToggleOpen();
       };
 
-    const onTextFieldKeydown: KeyboardEventHandler<HTMLElement> | undefined = disabled
+  const onTextFieldKeydown: KeyboardEventHandler<HTMLElement> | undefined =
+    disabled
       ? undefined
       : (event) => {
-        switch (event.code) {
-          case 'Enter':
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            onTextFieldClick!();
-
-            break;
-          case 'ArrowUp':
-          case 'ArrowRight':
-          case 'ArrowLeft':
-          case 'ArrowDown': {
-            if (!open) {
+          switch (event.code) {
+            case 'Enter':
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               onTextFieldClick!();
+
+              break;
+            case 'ArrowUp':
+            case 'ArrowRight':
+            case 'ArrowLeft':
+            case 'ArrowDown': {
+              if (!open) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                onTextFieldClick!();
+              }
+
+              break;
+            }
+            case 'Tab': {
+              if (open) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                onTextFieldClick!();
+              }
+
+              break;
             }
 
-            break;
-          }
-          case 'Tab': {
-            if (open) {
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              onTextFieldClick!();
-            }
-
-            break;
-          }
-
-          default:
-            break;
-        }
-      };
-
-    useClickAway(
-      () => {
-        if (!open) return;
-
-        return (event) => {
-          if (!popperRef.current?.contains(event.target as HTMLElement)) {
-            onClose();
+            default:
+              break;
           }
         };
-      },
-      controlRef,
-      [
-        open,
-        toggleOpen,
-      ],
-    );
 
-    /** Trigger input props */
-    const resolvedInputProps: SelectTriggerInputProps = {
-      ...inputProps,
-      'aria-expanded': open,
-      placeholder,
-      role: 'combobox',
-    };
+  useClickAway(
+    () => {
+      if (!open) return;
 
-    /** Tags close handler */
-    const onTagClose: SelectTriggerProps['onTagClose'] = onChangeProp && valueProp
-      ? (target) => {
-        onChangeProp(valueProp.filter((v) => v.id !== target.id));
-      }
-      : undefined;
-
-    /** Clear method */
-    const onClear: SelectTriggerProps['onClear'] = clearable && onChangeProp
-      ? () => {
-        onChangeProp([]);
-      }
-      : undefined;
-
-    /** Map options to tree nodes */
-    function mapOptionToNode(option: TreeSelectOption): TreeNodeProp {
-      return {
-        label: option.name,
-        value: option.id,
-        dynamicNodesFetching: option.dynamicChildrenFetching,
-        nodes: option.siblings?.map((sibling) => mapOptionToNode(sibling)),
+      return (event) => {
+        if (!popperRef.current?.contains(event.target as HTMLElement)) {
+          onClose();
+        }
       };
+    },
+    controlRef,
+    [open, toggleOpen],
+  );
+
+  /** Trigger input props */
+  const resolvedInputProps: SelectTriggerInputProps = {
+    ...inputProps,
+    'aria-expanded': open,
+    placeholder,
+    role: 'combobox',
+  };
+
+  /** Tags close handler */
+  const onTagClose: SelectTriggerProps['onTagClose'] =
+    onChangeProp && valueProp
+      ? (target) => {
+          onChangeProp(valueProp.filter((v) => v.id !== target.id));
+        }
+      : undefined;
+
+  /** Clear method */
+  const onClear: SelectTriggerProps['onClear'] =
+    clearable && onChangeProp
+      ? () => {
+          onChangeProp([]);
+        }
+      : undefined;
+
+  /** Map options to tree nodes */
+  function mapOptionToNode(option: TreeSelectOption): TreeNodeProp {
+    return {
+      label: option.name,
+      value: option.id,
+      dynamicNodesFetching: option.dynamicChildrenFetching,
+      nodes: option.siblings?.map((sibling) => mapOptionToNode(sibling)),
+    };
+  }
+
+  type TreeSelectOptionMap = Record<TreeNodeValue, SelectValue>;
+  function flattenOptions(targets: TreeSelectOption[]): TreeSelectOptionMap {
+    const optionsMap = {} as TreeSelectOptionMap;
+
+    function mapOptionsToSelectValue(optionsToMap: TreeSelectOption[]) {
+      optionsToMap.forEach((optionToMap) => {
+        optionsMap[optionToMap.id as TreeNodeValue] = {
+          id: optionToMap.id,
+          name: optionToMap.name,
+        };
+
+        if (optionToMap.siblings) {
+          mapOptionsToSelectValue(optionToMap.siblings);
+        }
+      });
     }
 
-    type TreeSelectOptionMap = Record<TreeNodeValue, SelectValue>;
-    function flattenOptions(targets: TreeSelectOption[]): TreeSelectOptionMap {
-      const optionsMap = {} as TreeSelectOptionMap;
+    mapOptionsToSelectValue(targets);
 
-      function mapOptionsToSelectValue(optionsToMap: TreeSelectOption[]) {
-        optionsToMap.forEach((optionToMap) => {
-          optionsMap[optionToMap.id as TreeNodeValue] = {
-            id: optionToMap.id,
-            name: optionToMap.name,
-          };
+    return optionsMap;
+  }
 
-          if (optionToMap.siblings) {
-            mapOptionsToSelectValue(optionToMap.siblings);
-          }
-        });
-      }
+  const optionMap = flattenOptions(options);
 
-      mapOptionsToSelectValue(targets);
+  const nodes = options.map((option) => mapOptionToNode(option));
 
-      return optionsMap;
-    }
+  /** Map selected values */
+  const selectedValues = valueProp?.map((v) => mapOptionToNode(v).value);
 
-    const optionMap = flattenOptions(options);
-
-    const nodes = options.map((option) => mapOptionToNode(option));
-
-    /** Map selected values */
-    const selectedValues = valueProp?.map((v) => mapOptionToNode(v).value);
-
-    const onSelect: TreeProps['onSelect'] = onChangeProp
-      ? (values) => {
-        const selectValues = values.map((currentValue) => optionMap[currentValue]);
+  const onSelect: TreeProps['onSelect'] = onChangeProp
+    ? (values) => {
+        const selectValues = values.map(
+          (currentValue) => optionMap[currentValue],
+        );
 
         onChangeProp(selectValues);
       }
-      : undefined;
+    : undefined;
 
-    /** Controlled expanded value to avoid expanded values cleanup after panel toggled */
-    const [expandedValues, setExpandedValues] = useState(() => {
-      const currentExpandedValues: TreeNodeValue[] = [];
+  /** Controlled expanded value to avoid expanded values cleanup after panel toggled */
+  const [expandedValues, setExpandedValues] = useState(() => {
+    const currentExpandedValues: TreeNodeValue[] = [];
 
-      if (defaultExpandAll) {
-        traverseTree(nodes, (node) => {
-          if (node.nodes) {
-            currentExpandedValues.push(node.value);
-          }
-        });
-      }
+    if (defaultExpandAll) {
+      traverseTree(nodes, (node) => {
+        if (node.nodes) {
+          currentExpandedValues.push(node.value);
+        }
+      });
+    }
 
-      return currentExpandedValues;
-    });
+    return currentExpandedValues;
+  });
 
-    const onExpand: TreeNodeListProps['onExpand'] = (value) => {
-      const newExpandedValues = toggleValue(value, expandedValues);
+  const onExpand: TreeNodeListProps['onExpand'] = (value) => {
+    const newExpandedValues = toggleValue(value, expandedValues);
 
-      setExpandedValues(newExpandedValues);
-      onExpandProp?.(value);
-    };
+    setExpandedValues(newExpandedValues);
+    onExpandProp?.(value);
+  };
 
-    return (
-      <div ref={nodeRef} className={classes.treeSelect}>
-        <SelectTrigger
-          ref={composedRef}
-          active={open}
-          className={className}
-          clearable={clearable}
-          disabled={disabled}
-          error={error}
-          fullWidth={fullWidth}
-          inputProps={resolvedInputProps}
-          inputRef={inputRef}
-          mode={mode}
-          onClear={onClear}
-          onClick={onTextFieldClick}
-          onKeyDown={onTextFieldKeydown}
-          onTagClose={onTagClose}
-          prefix={prefix}
-          readOnly
-          renderValue={renderValue}
-          required={required}
-          size={size}
-          suffixActionIcon={suffixActionIcon}
-          value={valueProp}
-        />
-        <InputTriggerPopper
-          ref={popperRef}
-          anchor={controlRef}
-          className={classes.popper}
-          controllerRef={controllerRef}
-          open={open}
-          options={popperOptions}
-          sameWidth={sameWidth}
+  return (
+    <div ref={nodeRef} className={classes.treeSelect}>
+      <SelectTrigger
+        ref={composedRef}
+        active={open}
+        className={className}
+        clearable={clearable}
+        disabled={disabled}
+        error={error}
+        fullWidth={fullWidth}
+        inputProps={resolvedInputProps}
+        inputRef={inputRef}
+        mode={mode}
+        onClear={onClear}
+        onClick={onTextFieldClick}
+        onKeyDown={onTextFieldKeydown}
+        onTagClose={onTagClose}
+        prefix={prefix}
+        readOnly
+        renderValue={renderValue}
+        required={required}
+        size={size}
+        suffixActionIcon={suffixActionIcon}
+        value={valueProp}
+      />
+      <InputTriggerPopper
+        ref={popperRef}
+        anchor={controlRef}
+        className={classes.popper}
+        controllerRef={controllerRef}
+        open={open}
+        options={popperOptions}
+        sameWidth={sameWidth}
+      >
+        <Menu
+          itemsInView={itemsInView}
+          maxHeight={menuMaxHeight}
+          role={menuRole}
+          size={menuSize}
+          style={{
+            ...restStyle,
+            border: border || 0,
+            width: width || `${panelWidth}px`,
+          }}
         >
-          <Menu
-            itemsInView={itemsInView}
-            maxHeight={menuMaxHeight}
-            role={menuRole}
-            size={menuSize}
-            style={{
-              ...restStyle,
-              border: border || 0,
-              width: width || `${panelWidth}px`,
-            }}
-          >
-            <Tree
-              {...restTreeProps}
-              ref={ref}
-              className={cx(classes.tree, treeClassName)}
-              disabledValues={disabledValues}
-              expandControllerRef={expandControllerRef}
-              expandedValues={expandedValues}
-              multiple={multiple}
-              nodes={nodes}
-              onExpand={onExpand}
-              onSelect={onSelect}
-              selectMethod="target"
-              selectable
-              values={selectedValues}
-            />
-          </Menu>
-        </InputTriggerPopper>
-      </div>
-    );
-  },
-);
+          <Tree
+            {...restTreeProps}
+            ref={ref}
+            className={cx(classes.tree, treeClassName)}
+            disabledValues={disabledValues}
+            expandControllerRef={expandControllerRef}
+            expandedValues={expandedValues}
+            multiple={multiple}
+            nodes={nodes}
+            onExpand={onExpand}
+            onSelect={onSelect}
+            selectMethod="target"
+            selectable
+            values={selectedValues}
+          />
+        </Menu>
+      </InputTriggerPopper>
+    </div>
+  );
+});
 
 export default TreeSelect;

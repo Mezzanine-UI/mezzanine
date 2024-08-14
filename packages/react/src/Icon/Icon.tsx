@@ -49,7 +49,8 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
   const { definition } = icon;
   const cssVars = toIconCssVars({ color, size });
   const style = {
-    '--mzn-icon-cursor': props.onClick || props.onMouseOver ? 'pointer' : 'inherit',
+    '--mzn-icon-cursor':
+      props.onClick || props.onMouseOver ? 'pointer' : 'inherit',
     ...cssVars,
     ...styleProp,
   };
@@ -70,10 +71,7 @@ const Icon = forwardRef<HTMLElement, IconProps>(function Icon(props, ref) {
       data-icon-name={icon.name}
       style={style}
     >
-      <svg
-        {...definition.svg}
-        focusable={false}
-      >
+      <svg {...definition.svg} focusable={false}>
         {title || definition.title ? (
           <title>{title || definition.title}</title>
         ) : null}

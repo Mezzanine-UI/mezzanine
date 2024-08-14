@@ -1,8 +1,5 @@
 import { MenuSize } from '@mezzanine-ui/core/menu';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,14 +10,12 @@ import ConfigProvider from '../Provider';
 describe('<Menu />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLUListElement,
-    (ref) => render(<Menu ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLUListElement, (ref) =>
+    render(<Menu ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Menu className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Menu className={className} />),
   );
 
   it('should bind host class', () => {
@@ -35,7 +30,9 @@ describe('<Menu />', () => {
       const { getHostHTMLElement } = render(<Menu />);
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-menu-items-in-view')).toBe('4');
+      expect(element.style.getPropertyValue('--mzn-menu-items-in-view')).toBe(
+        '4',
+      );
     });
 
     it('should bind css variable from props', () => {
@@ -43,7 +40,9 @@ describe('<Menu />', () => {
       const { getHostHTMLElement } = render(<Menu itemsInView={itemsInView} />);
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-menu-items-in-view')).toBe(`${itemsInView}`);
+      expect(element.style.getPropertyValue('--mzn-menu-items-in-view')).toBe(
+        `${itemsInView}`,
+      );
     });
   });
 
@@ -53,7 +52,9 @@ describe('<Menu />', () => {
       const { getHostHTMLElement } = render(<Menu maxHeight={maxHeight} />);
       const element = getHostHTMLElement();
 
-      expect(element.style.getPropertyValue('--mzn-menu-max-height')).toBe(`${maxHeight}px`);
+      expect(element.style.getPropertyValue('--mzn-menu-max-height')).toBe(
+        `${maxHeight}px`,
+      );
     });
   });
 
@@ -93,11 +94,7 @@ describe('<Menu />', () => {
       expect(element.classList.contains('mzn-menu--large')).toBeTruthy();
     });
 
-    const sizes: MenuSize[] = [
-      'small',
-      'medium',
-      'large',
-    ];
+    const sizes: MenuSize[] = ['small', 'medium', 'large'];
 
     sizes.forEach((size) => {
       it(`should add class if size=${size}`, () => {

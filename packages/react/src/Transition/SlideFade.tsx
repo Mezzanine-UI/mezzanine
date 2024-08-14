@@ -1,16 +1,19 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import {
-  cloneElement,
-  CSSProperties,
-  forwardRef,
-  useRef,
-} from 'react';
+import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import Transition, { TransitionState, TransitionImplementationProps, TransitionProps } from './Transition';
+import Transition, {
+  TransitionState,
+  TransitionImplementationProps,
+  TransitionProps,
+} from './Transition';
 import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
-function getStyle(state: TransitionState, inProp: boolean, direction: SlideFadeDirection): CSSProperties {
+function getStyle(
+  state: TransitionState,
+  inProp: boolean,
+  direction: SlideFadeDirection,
+): CSSProperties {
   if (state === 'entering' || state === 'entered') {
     return {
       opacity: 1,
@@ -58,7 +61,10 @@ export interface SlideFadeProps extends TransitionImplementationProps {
 /**
  * The react component for `mezzanine` transition slide fade.
  */
-const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(props: SlideFadeProps, ref) {
+const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
+  props: SlideFadeProps,
+  ref,
+) {
   const {
     children,
     direction = 'down',
@@ -75,12 +81,15 @@ const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(pro
   const duration = durationProp === 'auto' ? defaultDuration : durationProp;
   const nodeRef = useRef<HTMLElement>(null);
   const composedNodeRef = useComposeRefs([ref, nodeRef]);
-  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition({
-    delay,
-    duration,
-    easing,
-    properties: ['opacity', 'transform'],
-  }, children?.props.style);
+  const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
+    {
+      delay,
+      duration,
+      easing,
+      properties: ['opacity', 'transform'],
+    },
+    children?.props.style,
+  );
   const transitionProps: TransitionProps = {
     ...rest,
     duration,
@@ -119,14 +128,16 @@ const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(pro
 
   return (
     <Transition {...transitionProps}>
-      {children && ((state) => cloneElement(children, {
-        ...children.props,
-        ref: composedNodeRef,
-        style: {
-          ...getStyle(state, inProp, direction),
-          ...children.props.style,
-        },
-      }))}
+      {children &&
+        ((state) =>
+          cloneElement(children, {
+            ...children.props,
+            ref: composedNodeRef,
+            style: {
+              ...getStyle(state, inProp, direction),
+              ...children.props.style,
+            },
+          }))}
     </Transition>
   );
 });

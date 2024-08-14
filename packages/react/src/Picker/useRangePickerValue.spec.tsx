@@ -34,20 +34,25 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
-        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
-        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
+        expect(
+          sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false,
+        );
+        expect(
+          sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false,
+        );
       });
     });
 
@@ -61,20 +66,25 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
-        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
-        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
+        expect(
+          sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false,
+        );
+        expect(
+          sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false,
+        );
       });
     });
 
@@ -87,12 +97,13 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -100,7 +111,9 @@ describe('useRangePickerValue', () => {
         const sortedValue = result.current.onChange([from, undefined]);
 
         expect(sortedValue).toBeInstanceOf(Array);
-        expect(sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false);
+        expect(
+          sortedValue?.[0] ? moment(sortedValue[0]).isSame(from, 'day') : false,
+        );
         expect(sortedValue?.[1]).toBe(undefined);
       });
     });
@@ -114,12 +127,13 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -128,7 +142,9 @@ describe('useRangePickerValue', () => {
 
         expect(sortedValue).toBeInstanceOf(Array);
         expect(sortedValue?.[0]).toBe(undefined);
-        expect(sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false);
+        expect(
+          sortedValue?.[1] ? moment(sortedValue[1]).isSame(to, 'day') : false,
+        );
       });
     });
 
@@ -140,12 +156,13 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -166,12 +183,13 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
@@ -192,26 +210,35 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputFromChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputFromChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe(
+        '2021-10-20',
+      );
 
       TestRenderer.act(() => {
-        result.current.onInputToChange({ target: { value: '2021-10-17' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputToChange({
+          target: { value: '2021-10-17' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe('2021-10-17');
+      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe(
+        '2021-10-17',
+      );
       expect(result.current.value[0]).toBe(undefined);
     });
 
@@ -223,26 +250,35 @@ describe('useRangePickerValue', () => {
         current: document.createElement('input'),
       };
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputToChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputToChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe('2021-10-20');
+      expect(moment(result.current.value[1]).format('YYYY-MM-DD')).toBe(
+        '2021-10-20',
+      );
 
       TestRenderer.act(() => {
-        result.current.onInputFromChange({ target: { value: '2021-10-21' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputFromChange({
+          target: { value: '2021-10-21' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
-      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe('2021-10-21');
+      expect(moment(result.current.value[0]).format('YYYY-MM-DD')).toBe(
+        '2021-10-21',
+      );
       expect(result.current.value[1]).toBe(undefined);
     });
   });
@@ -260,25 +296,32 @@ describe('useRangePickerValue', () => {
       document.body.appendChild(inputToRef.current);
 
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputToChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputToChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onInputFromChange({ target: { value: 'foo' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputFromChange({
+          target: { value: 'foo' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onFromKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onFromKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(inputFromRef.current).toEqual(document.activeElement);
@@ -296,25 +339,32 @@ describe('useRangePickerValue', () => {
       document.body.appendChild(inputToRef.current);
 
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputFromChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputFromChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onInputToChange({ target: { value: 'foo' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputToChange({
+          target: { value: 'foo' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onToKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onToKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(inputToRef.current).toEqual(document.activeElement);
@@ -332,21 +382,26 @@ describe('useRangePickerValue', () => {
       document.body.appendChild(inputToRef.current);
 
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputToChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputToChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onToKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onToKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(inputFromRef.current).toEqual(document.activeElement);
@@ -364,21 +419,26 @@ describe('useRangePickerValue', () => {
       document.body.appendChild(inputToRef.current);
 
       const { result } = renderHook(
-        () => useRangePickerValue({
-          inputFromRef,
-          inputToRef,
-          format: 'YYYY-MM-DD',
-          formats: ['YYYY-MM-DD'],
-        }),
+        () =>
+          useRangePickerValue({
+            inputFromRef,
+            inputToRef,
+            format: 'YYYY-MM-DD',
+            formats: ['YYYY-MM-DD'],
+          }),
         { wrapper },
       );
 
       TestRenderer.act(() => {
-        result.current.onInputFromChange({ target: { value: '2021-10-20' } } as ChangeEvent<HTMLInputElement>);
+        result.current.onInputFromChange({
+          target: { value: '2021-10-20' },
+        } as ChangeEvent<HTMLInputElement>);
       });
 
       TestRenderer.act(() => {
-        result.current.onFromKeyDown({ key: 'Enter' } as KeyboardEvent<HTMLInputElement>);
+        result.current.onFromKeyDown({
+          key: 'Enter',
+        } as KeyboardEvent<HTMLInputElement>);
       });
 
       expect(inputToRef.current).toEqual(document.activeElement);

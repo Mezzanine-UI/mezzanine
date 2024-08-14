@@ -6,7 +6,10 @@ export function useAutoTransitionDuration(duration?: TransitionDuration) {
   const autoTransitionDuration = useRef(NaN);
   const addEndListener: TransitionProps['addEndListener'] = (_, next) => {
     if (duration === 'auto') {
-      timer.current = window.setTimeout(() => next(), autoTransitionDuration.current || 0);
+      timer.current = window.setTimeout(
+        () => next(),
+        autoTransitionDuration.current || 0,
+      );
     }
   };
 

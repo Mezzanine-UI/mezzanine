@@ -1,4 +1,1 @@
-export {
-  OverlayProps,
-  default,
-} from './Overlay';
+export { OverlayProps, default } from './Overlay';

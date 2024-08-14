@@ -1,7 +1,5 @@
 import { Options as _PopperOptions } from '@popperjs/core';
-import {
-  forwardRef, Ref, useImperativeHandle, useState,
-} from 'react';
+import { forwardRef, Ref, useImperativeHandle, useState } from 'react';
 import { Modifier, usePopper } from 'react-popper';
 import { ElementGetter, getElement } from '../utils/getElement';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -13,16 +11,18 @@ export type {
   PositioningStrategy as PopperPositionStrategy,
 } from '@popperjs/core';
 
-export type PopperOptions<Modifiers> = Omit<Partial<_PopperOptions>, 'modifiers'> & {
+export type PopperOptions<Modifiers> = Omit<
+  Partial<_PopperOptions>,
+  'modifiers'
+> & {
   modifiers?: ReadonlyArray<Modifier<Modifiers>>;
 };
 
 export type PopperController = ReturnType<typeof usePopper>;
 
 export interface PopperProps
-  extends
-  Pick<PortalProps, 'container' | 'disablePortal'>,
-  NativeElementPropsWithoutKeyAndRef<'div'> {
+  extends Pick<PortalProps, 'container' | 'disablePortal'>,
+    NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * The ref of trigger Element.
    */
@@ -42,59 +42,56 @@ export interface PopperProps
   options?: PopperOptions<any>;
 }
 
-const Popper = forwardRef<HTMLDivElement, PopperProps>(function Popper(props, ref) {
-  const {
-    anchor,
-    children,
-    container,
-    controllerRef,
-    disablePortal,
-    open = false,
-    options,
-    style,
-    ...rest
-  } = props;
-  const [popperEl, setPopperEl] = useState<HTMLElement | null>(null);
-  const composedRef = useComposeRefs([ref, setPopperEl]);
-  const anchorEl = getElement(anchor);
-  const {
-    attributes,
-    forceUpdate,
-    state,
-    styles,
-    update,
-  } = usePopper(anchorEl, popperEl, options);
+const Popper = forwardRef<HTMLDivElement, PopperProps>(
+  function Popper(props, ref) {
+    const {
+      anchor,
+      children,
+      container,
+      controllerRef,
+      disablePortal,
+      open = false,
+      options,
+      style,
+      ...rest
+    } = props;
+    const [popperEl, setPopperEl] = useState<HTMLElement | null>(null);
+    const composedRef = useComposeRefs([ref, setPopperEl]);
+    const anchorEl = getElement(anchor);
+    const { attributes, forceUpdate, state, styles, update } = usePopper(
+      anchorEl,
+      popperEl,
+      options,
+    );
 
-  useImperativeHandle(controllerRef, () => ({
-    attributes,
-    forceUpdate,
-    state,
-    styles,
-    update,
-  }));
+    useImperativeHandle(controllerRef, () => ({
+      attributes,
+      forceUpdate,
+      state,
+      styles,
+      update,
+    }));
 
-  if (!open) {
-    return null;
-  }
+    if (!open) {
+      return null;
+    }
 
-  return (
-    <Portal
-      container={container}
-      disablePortal={disablePortal}
-    >
-      <div
-        {...rest}
-        ref={composedRef}
-        style={{
-          ...style,
-          ...styles.popper,
-        }}
-        {...attributes.popper}
-      >
-        {children}
-      </div>
-    </Portal>
-  );
-});
+    return (
+      <Portal container={container} disablePortal={disablePortal}>
+        <div
+          {...rest}
+          ref={composedRef}
+          style={{
+            ...style,
+            ...styles.popper,
+          }}
+          {...attributes.popper}
+        >
+          {children}
+        </div>
+      </Portal>
+    );
+  },
+);
 
 export default Popper;

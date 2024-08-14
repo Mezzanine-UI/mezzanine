@@ -22,19 +22,16 @@ describe('useTabKeyClose', () => {
       current: inputElement,
     };
 
-    renderHook(
-      () => useTabKeyClose(
-        onClose,
-        inputRef,
-      ),
-    );
+    renderHook(() => useTabKeyClose(onClose, inputRef));
 
     inputElement.focus();
 
     TestRenderer.act(() => {
-      document.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'Tab',
-      }));
+      document.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Tab',
+        }),
+      );
     });
 
     expect(onClose).toBeCalledTimes(1);
@@ -50,17 +47,14 @@ describe('useTabKeyClose', () => {
       current: inputElement,
     };
 
-    renderHook(
-      () => useTabKeyClose(
-        onClose,
-        inputRef,
-      ),
-    );
+    renderHook(() => useTabKeyClose(onClose, inputRef));
 
     TestRenderer.act(() => {
-      document.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'Tab',
-      }));
+      document.dispatchEvent(
+        new KeyboardEvent('keydown', {
+          key: 'Tab',
+        }),
+      );
     });
 
     expect(onClose).toBeCalledTimes(0);

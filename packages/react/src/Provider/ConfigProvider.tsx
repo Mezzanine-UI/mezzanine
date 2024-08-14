@@ -7,14 +7,14 @@ export interface ConfigProviderProps {
 }
 
 function ConfigProvider(props: ConfigProviderProps): JSX.Element {
-  const {
-    children,
-    size,
-  } = props;
+  const { children, size } = props;
 
-  const context: MezzanineConfigContext = useMemo(() => ({
-    size: size || 'medium',
-  }), [size]);
+  const context: MezzanineConfigContext = useMemo(
+    () => ({
+      size: size || 'medium',
+    }),
+    [size],
+  );
 
   return (
     <MezzanineConfig.Provider value={context}>

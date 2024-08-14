@@ -17,29 +17,25 @@ export const Basic = () => (
         <span>Accordion1</span>
       </AccordionSummary>
       <AccordionDetails>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Proin auctor, velit non fringilla mollis,
-        lacus lacus tempor arcu, quis varius ligula velit a diam.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+        velit non fringilla mollis, lacus lacus tempor arcu, quis varius ligula
+        velit a diam.
       </AccordionDetails>
     </Accordion>
     <Accordion defaultExpanded>
-      <AccordionSummary id="accordion-2">
-        Accordion2
-      </AccordionSummary>
+      <AccordionSummary id="accordion-2">Accordion2</AccordionSummary>
       <AccordionDetails>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Proin auctor, velit non fringilla mollis,
-        lacus lacus tempor arcu, quis varius ligula velit a diam.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+        velit non fringilla mollis, lacus lacus tempor arcu, quis varius ligula
+        velit a diam.
       </AccordionDetails>
     </Accordion>
     <Accordion>
-      <AccordionSummary id="accordion-3">
-        Accordion3
-      </AccordionSummary>
+      <AccordionSummary id="accordion-3">Accordion3</AccordionSummary>
       <AccordionDetails>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Proin auctor, velit non fringilla mollis,
-        lacus lacus tempor arcu, quis varius ligula velit a diam.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+        velit non fringilla mollis, lacus lacus tempor arcu, quis varius ligula
+        velit a diam.
       </AccordionDetails>
     </Accordion>
   </div>
@@ -50,34 +46,39 @@ export const Controlled = () => {
 
   return (
     <div style={{ width: '100%', maxWidth: '680px' }}>
-      <Accordion expanded={activeAccordion === 0} onChange={(open) => setActiveAccordion(open ? 0 : -1)}>
+      <Accordion
+        expanded={activeAccordion === 0}
+        onChange={(open) => setActiveAccordion(open ? 0 : -1)}
+      >
         <AccordionSummary id="accordion-1">
           <span>Accordion1</span>
         </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
-      <Accordion expanded={activeAccordion === 1} onChange={(open) => setActiveAccordion(open ? 1 : -1)}>
-        <AccordionSummary id="accordion-2">
-          Accordion2
-        </AccordionSummary>
+      <Accordion
+        expanded={activeAccordion === 1}
+        onChange={(open) => setActiveAccordion(open ? 1 : -1)}
+      >
+        <AccordionSummary id="accordion-2">Accordion2</AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
-      <Accordion expanded={activeAccordion === 2} onChange={(open) => setActiveAccordion(open ? 2 : -1)}>
-        <AccordionSummary id="accordion-3">
-          Accordion3
-        </AccordionSummary>
+      <Accordion
+        expanded={activeAccordion === 2}
+        onChange={(open) => setActiveAccordion(open ? 2 : -1)}
+      >
+        <AccordionSummary id="accordion-3">Accordion3</AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
     </div>
@@ -119,7 +120,9 @@ export const WithSuffixActions = () => {
           icon={MoreVerticalIcon}
           onClick={(event: MouseEvent<HTMLButtonElement>) => {
             event.stopPropagation();
-            setAnchor(anchor === event.currentTarget ? null : event.currentTarget);
+            setAnchor(
+              anchor === event.currentTarget ? null : event.currentTarget,
+            );
             toggleOpen(true);
           }}
           style={{ fontSize: 24 }}
@@ -133,52 +136,59 @@ export const WithSuffixActions = () => {
       <Accordion>
         <AccordionSummary
           id="accordion-1"
-          suffixActions={(
+          suffixActions={
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}>
+              <Button
+                onClick={(e: MouseEvent<HTMLButtonElement>) =>
+                  e.stopPropagation()
+                }
+              >
                 編輯
               </Button>
-              <Button danger onClick={(e: MouseEvent<HTMLButtonElement>) => e.stopPropagation()}>
+              <Button
+                danger
+                onClick={(e: MouseEvent<HTMLButtonElement>) =>
+                  e.stopPropagation()
+                }
+              >
                 刪除
               </Button>
             </div>
-          )}
+          }
         >
           <span>Accordion1</span>
         </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
       <Accordion defaultExpanded>
-        <AccordionSummary id="accordion-2">
-          Accordion2
-        </AccordionSummary>
+        <AccordionSummary id="accordion-2">Accordion2</AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary
-          prefixIcon={(
+          prefixIcon={
             <Icon
               icon={PlusIcon}
               style={{ fontSize: 24, marginRight: '12px' }}
             />
-          )}
+          }
           id="accordion-3"
           suffixActions={suffixDropdown}
         >
           Accordion3
         </AccordionSummary>
         <AccordionDetails>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Proin auctor, velit non fringilla mollis,
-          lacus lacus tempor arcu, quis varius ligula velit a diam.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin auctor,
+          velit non fringilla mollis, lacus lacus tempor arcu, quis varius
+          ligula velit a diam.
         </AccordionDetails>
       </Accordion>
     </div>

@@ -1,8 +1,5 @@
 import { Meta } from '@storybook/react';
-import {
-  CSSProperties,
-  useState,
-} from 'react';
+import { CSSProperties, useState } from 'react';
 import { ExclamationCircleFilledIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
 import Button from '../Button';
@@ -52,7 +49,10 @@ export const Circle = () => {
     setPercent((percent + 10) % 110);
   };
 
-  const style : CSSProperties = { display: 'flex', justifyContent: 'space-between' };
+  const style: CSSProperties = {
+    display: 'flex',
+    justifyContent: 'space-between',
+  };
 
   return (
     <>
@@ -74,11 +74,19 @@ export const Circle = () => {
       <div style={style}>
         <div>
           <Typography>Size: 60</Typography>
-          <Progress percent={percent} type="circle" circleProps={{ size: 60, strokeWidth: 4 }} />
+          <Progress
+            percent={percent}
+            type="circle"
+            circleProps={{ size: 60, strokeWidth: 4 }}
+          />
         </div>
         <div>
           <Typography>Variant: h4</Typography>
-          <Progress percent={percent} type="circle" percentProps={{ variant: 'h4' }} />
+          <Progress
+            percent={percent}
+            type="circle"
+            percentProps={{ variant: 'h4' }}
+          />
         </div>
         <div>
           <Typography>Icon: ExclamationCircleFilled</Typography>

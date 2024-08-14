@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useMemo,
-  useCallback,
-} from 'react';
+import { useEffect, useMemo, useCallback } from 'react';
 
 let seedStack: number[] = [];
 
@@ -27,5 +23,8 @@ export default function useTopStack(open?: boolean) {
     };
   }, [open, modalSeed]);
 
-  return useCallback(() => seedStack[seedStack.length - 1] === modalSeed, [modalSeed]);
+  return useCallback(
+    () => seedStack[seedStack.length - 1] === modalSeed,
+    [modalSeed],
+  );
 }

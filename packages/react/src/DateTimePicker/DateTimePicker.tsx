@@ -22,27 +22,26 @@ import {
   usePickerDocumentEventClose,
   usePickerValue,
 } from '../Picker';
-import DateTimePickerPanel, { DateTimePickerPanelProps } from './DateTimePickerPanel';
+import DateTimePickerPanel, {
+  DateTimePickerPanelProps,
+} from './DateTimePickerPanel';
 
 export interface DateTimePickerProps
-  extends
-  Omit<DateTimePickerPanelProps,
-  | 'onConfirm'
-  | 'referenceDate'
-  >,
-  Omit<PickerTriggerProps,
-  | 'anchor'
-  | 'defaultValue'
-  | 'inputRef'
-  | 'onChange'
-  | 'onClear'
-  | 'onClick'
-  | 'onIconClick'
-  | 'onKeyDown'
-  | 'open'
-  | 'suffixActionIcon'
-  | 'value'
-  > {
+  extends Omit<DateTimePickerPanelProps, 'onConfirm' | 'referenceDate'>,
+    Omit<
+      PickerTriggerProps,
+      | 'anchor'
+      | 'defaultValue'
+      | 'inputRef'
+      | 'onChange'
+      | 'onClear'
+      | 'onClick'
+      | 'onIconClick'
+      | 'onKeyDown'
+      | 'open'
+      | 'suffixActionIcon'
+      | 'value'
+    > {
   /**
    * Default value for time picker.
    */
@@ -73,12 +72,8 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       required: requiredFromFormControl,
       severity,
     } = useContext(FormControlContext) || {};
-    const {
-      defaultDateFormat,
-      defaultTimeFormat,
-      getNow,
-      startOf,
-    } = useCalendarContext();
+    const { defaultDateFormat, defaultTimeFormat, getNow, startOf } =
+      useCalendarContext();
     const defaultFormat = `${defaultDateFormat} ${defaultTimeFormat}`;
     const {
       calendarProps,
@@ -129,28 +124,37 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       ...restInputProp
     } = inputProps || {};
 
-    const formats = useMemo(() => [format, defaultFormat], [defaultFormat, format]);
+    const formats = useMemo(
+      () => [format, defaultFormat],
+      [defaultFormat, format],
+    );
 
     /** Panel open control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
-    const onPanelToggle = useCallback((nextOpen: boolean) => {
-      if (!preventOpen) {
-        setOpen(nextOpen);
+    const onPanelToggle = useCallback(
+      (nextOpen: boolean) => {
+        if (!preventOpen) {
+          setOpen(nextOpen);
 
-        if (onPanelToggleProp) {
-          onPanelToggleProp(nextOpen);
+          if (onPanelToggleProp) {
+            onPanelToggleProp(nextOpen);
+          }
         }
-      }
-    }, [onPanelToggleProp, preventOpen]);
+      },
+      [onPanelToggleProp, preventOpen],
+    );
 
-    const onFocus = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onFocusProp) {
-        onFocusProp(event);
-      }
+    const onFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onFocusProp) {
+          onFocusProp(event);
+        }
 
-      onPanelToggle(true);
-    }, [onFocusProp, onPanelToggle]);
+        onPanelToggle(true);
+      },
+      [onFocusProp, onPanelToggle],
+    );
 
     /** Controlling input value and bind change handler */
     const inputRef = useRef<HTMLInputElement>(null);
@@ -180,10 +184,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
 
     /** using internal reference date */
     const [referenceDate, setReferenceDate] = useState(
-      startOf(
-        referenceDateProp || defaultValue || getNow(),
-        'hour',
-      ),
+      startOf(referenceDateProp || defaultValue || getNow(), 'hour'),
     );
 
     useEffect(() => {
@@ -193,25 +194,33 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
     }, [internalValue]);
 
     /** Bind input props */
-    const onResolvedKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      if (onKeyDownProp) {
-        onKeyDownProp(event);
-      }
+    const onResolvedKeyDown = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        if (onKeyDownProp) {
+          onKeyDownProp(event);
+        }
 
-      onKeyDown(event);
+        onKeyDown(event);
 
-      if (event.key === 'Enter') {
-        onConfirm();
-      }
-    }, [onConfirm, onKeyDown, onKeyDownProp]);
+        if (event.key === 'Enter') {
+          onConfirm();
+        }
+      },
+      [onConfirm, onKeyDown, onKeyDownProp],
+    );
 
-    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onBlurProp) {
-        onBlurProp(event);
-      }
+    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onBlurProp) {
+          onBlurProp(event);
+        }
 
-      onBlur(event);
-    }, [onBlur, onBlurProp]);
+        onBlur(event);
+      },
+      [onBlur, onBlurProp],
+    );
 
     const resolvedInputProps = {
       ...restInputProp,
@@ -260,12 +269,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       onPanelToggle(!open);
     };
 
-    const suffixActionIcon = (
-      <Icon
-        icon={ClockIcon}
-        onClick={onIconClick}
-      />
-    );
+    const suffixActionIcon = <Icon icon={ClockIcon} onClick={onIconClick} />;
 
     return (
       <>

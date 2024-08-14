@@ -14,9 +14,10 @@ describe('useTableRowSelection()', () => {
 
   it('should nothing happen when dataSource is empty', () => {
     const { result } = renderHook(
-      ({ dataSource }) => useTableRowSelection({
-        dataSource,
-      }),
+      ({ dataSource }) =>
+        useTableRowSelection({
+          dataSource,
+        }),
       {
         initialProps: {
           dataSource: [],
@@ -24,9 +25,7 @@ describe('useTableRowSelection()', () => {
       },
     );
 
-    const [,
-      onChange,
-    ] = result.current;
+    const [, onChange] = result.current;
 
     TestRenderer.act(() => {
       onChange('foo');
@@ -37,18 +36,22 @@ describe('useTableRowSelection()', () => {
 
   describe('Group Controller', () => {
     it('should select all/clear all when clicked', () => {
-      const sources = [{
-        id: 'foo',
-        name: 'foo',
-      }, {
-        id: 'bar',
-        name: 'bar',
-      }];
+      const sources = [
+        {
+          id: 'foo',
+          name: 'foo',
+        },
+        {
+          id: 'bar',
+          name: 'bar',
+        },
+      ];
 
       const { result } = renderHook(
-        ({ dataSource }) => useTableRowSelection({
-          dataSource,
-        }),
+        ({ dataSource }) =>
+          useTableRowSelection({
+            dataSource,
+          }),
         {
           initialProps: {
             dataSource: sources,
@@ -56,10 +59,7 @@ describe('useTableRowSelection()', () => {
         },
       );
 
-      const [
-        selectedRowKey,
-        onChange,
-      ] = result.current;
+      const [selectedRowKey, onChange] = result.current;
 
       expect(selectedRowKey.length).toBe(0);
 
@@ -79,18 +79,22 @@ describe('useTableRowSelection()', () => {
 
   describe('One Item Controller', () => {
     it('should checked/unchecked self when clicked', () => {
-      const sources = [{
-        id: 'foo',
-        name: 'foo',
-      }, {
-        id: 'bar',
-        name: 'bar',
-      }];
+      const sources = [
+        {
+          id: 'foo',
+          name: 'foo',
+        },
+        {
+          id: 'bar',
+          name: 'bar',
+        },
+      ];
 
       const { result } = renderHook(
-        ({ dataSource }) => useTableRowSelection({
-          dataSource,
-        }),
+        ({ dataSource }) =>
+          useTableRowSelection({
+            dataSource,
+          }),
         {
           initialProps: {
             dataSource: sources,
@@ -98,10 +102,7 @@ describe('useTableRowSelection()', () => {
         },
       );
 
-      const [
-        selectedRowKey,
-        onChange,
-      ] = result.current;
+      const [selectedRowKey, onChange] = result.current;
 
       expect(selectedRowKey.length).toBe(0);
 

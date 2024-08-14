@@ -1,9 +1,4 @@
-import {
-  act,
-  cleanup,
-  render,
-  fireEvent,
-} from '../../__test-utils__';
+import { act, cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -14,14 +9,12 @@ import { PaginationPageSize } from '.';
 describe('<PaginationPageSize />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<PaginationPageSize ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<PaginationPageSize ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<PaginationPageSize className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<PaginationPageSize className={className} />),
   );
 
   it('should bind host class', () => {

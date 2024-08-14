@@ -1,27 +1,22 @@
-import {
-  cleanup,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, render, TestRenderer } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import ConfirmActions from '../ConfirmActions';
 import Modal, { ModalActions, ModalSeverity } from '.';
 
 describe('<ModalActions />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<ModalActions ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<ModalActions ref={ref} />),
   );
 
   it('should bind actions class to confirm actions', () => {
     const testInstance = TestRenderer.create(<ModalActions />);
     const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
 
-    expect(confirmActionsInstance.props.className).toContain('mzn-modal__actions');
+    expect(confirmActionsInstance.props.className).toContain(
+      'mzn-modal__actions',
+    );
   });
 
   describe('modal control', () => {
@@ -34,7 +29,8 @@ describe('<ModalActions />', () => {
           <ModalActions />
         </Modal>,
       );
-      const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+      const confirmActionsInstance =
+        testInstance.root.findByType(ConfirmActions);
 
       expect(confirmActionsInstance.props.loading).toBeTruthy();
     });
@@ -48,7 +44,8 @@ describe('<ModalActions />', () => {
             <ModalActions />
           </Modal>,
         );
-        const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+        const confirmActionsInstance =
+          testInstance.root.findByType(ConfirmActions);
 
         expect(confirmActionsInstance.props.danger).toBeFalsy();
       });
@@ -60,7 +57,8 @@ describe('<ModalActions />', () => {
           <ModalActions />
         </Modal>,
       );
-      const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+      const confirmActionsInstance =
+        testInstance.root.findByType(ConfirmActions);
 
       expect(confirmActionsInstance.props.danger).toBeTruthy();
     });

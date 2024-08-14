@@ -17,11 +17,12 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
   loading,
   tip,
 }) => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateColumns: 'repeat(3, 140px)',
-    gap: 60,
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateColumns: 'repeat(3, 140px)',
+      gap: 60,
+    }}
   >
     <div style={{ width: '100%', height: '100%' }}>
       <Loading stretch={stretch} loading={loading} tip={tip} />
@@ -44,11 +45,12 @@ Playground.args = {
 };
 
 export const Basic = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateColumns: 'repeat(3, 140px)',
-    gap: 60,
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateColumns: 'repeat(3, 140px)',
+      gap: 60,
+    }}
   >
     <Loading loading />
     <Loading loading tip="Loading..." />
@@ -56,10 +58,11 @@ export const Basic = () => (
 );
 
 export const Nested = () => (
-  <div style={{
-    display: 'grid',
-    gap: 16,
-  }}
+  <div
+    style={{
+      display: 'grid',
+      gap: 16,
+    }}
   >
     <Loading
       loading
@@ -67,9 +70,7 @@ export const Nested = () => (
         size: 24,
       }}
     >
-      <Alert severity="success">
-        成功送出
-      </Alert>
+      <Alert severity="success">成功送出</Alert>
     </Loading>
     <Loading loading tip="Loading...">
       <Menu size="medium">
@@ -87,21 +88,17 @@ export const OnModal = () => {
 
   return (
     <>
-      <Button
-        variant="contained"
-        onClick={() => setOpen(true)}
-      >
+      <Button variant="contained" onClick={() => setOpen(true)}>
         OPEN
       </Button>
       <Modal onClose={() => setOpen(false)} open={open}>
         <Loading stretch loading tip="元件加載中...">
-          <ModalHeader>
-            Hi
-          </ModalHeader>
+          <ModalHeader>Hi</ModalHeader>
           <ModalBody>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-            Adipisci pariatur aliquid voluptate, totam voluptatum numquam cupiditate provident
-            sed sint harum delectus nihil quod sequi vero porro excepturi eos facilis quos.
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
+            pariatur aliquid voluptate, totam voluptatum numquam cupiditate
+            provident sed sint harum delectus nihil quod sequi vero porro
+            excepturi eos facilis quos.
           </ModalBody>
         </Loading>
       </Modal>

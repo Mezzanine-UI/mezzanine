@@ -8,4 +8,6 @@ export interface AccordionControlContextValue {
   toggleExpanded(e: boolean): void;
 }
 
-export const AccordionControlContext = createContext<AccordionControlContextValue | undefined>(undefined);
+export const AccordionControlContext = createContext<
+  AccordionControlContextValue | undefined
+>(undefined);

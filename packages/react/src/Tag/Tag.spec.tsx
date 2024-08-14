@@ -1,9 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-  RenderResult,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, RenderResult } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -14,14 +9,12 @@ import ConfigProvider from '../Provider';
 describe('<Tag />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLSpanElement,
-    (ref) => render(<Tag ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
+    render(<Tag ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Tag className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Tag className={className} />),
   );
 
   it('should bind host class', () => {
@@ -49,10 +42,14 @@ describe('<Tag />', () => {
 
       if (closable) {
         expect(lastElementChild!.tagName.toLowerCase()).toBe('i');
-        expect(lastElementChild!.classList.contains('mzn-tag__close-icon')).toBeTruthy();
+        expect(
+          lastElementChild!.classList.contains('mzn-tag__close-icon'),
+        ).toBeTruthy();
       } else {
         expect(lastElementChild!.tagName.toLowerCase()).toBe('span');
-        expect(lastElementChild!.classList.contains('mzn-tag__label')).toBeTruthy();
+        expect(
+          lastElementChild!.classList.contains('mzn-tag__label'),
+        ).toBeTruthy();
       }
     }
 
@@ -90,10 +87,7 @@ describe('<Tag />', () => {
 
     it('aria-disabled from props should not override', () => {
       const { getHostHTMLElement } = render(
-        <Tag
-          aria-disabled={false}
-          disabled
-        />,
+        <Tag aria-disabled={false} disabled />,
       );
       const element = getHostHTMLElement();
 
@@ -115,7 +109,9 @@ describe('<Tag />', () => {
 
     it('should be fired if disabled=true', () => {
       const onClose = jest.fn();
-      const { getHostHTMLElement } = render(<Tag closable disabled onClose={onClose} />);
+      const { getHostHTMLElement } = render(
+        <Tag closable disabled onClose={onClose} />,
+      );
       const element = getHostHTMLElement();
       const { lastElementChild: closeIconElement } = element;
 
@@ -144,11 +140,7 @@ describe('<Tag />', () => {
       expect(element.classList.contains('mzn-tag--large')).toBeTruthy();
     });
 
-    const sizes: TagSize[] = [
-      'small',
-      'medium',
-      'large',
-    ];
+    const sizes: TagSize[] = ['small', 'medium', 'large'];
 
     sizes.forEach((size) => {
       it(`should add class if size="${size}"`, () => {

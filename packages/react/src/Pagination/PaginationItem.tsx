@@ -1,9 +1,4 @@
-import {
-  DetailedHTMLProps,
-  forwardRef,
-  HTMLAttributes,
-  Ref,
-} from 'react';
+import { DetailedHTMLProps, forwardRef, HTMLAttributes, Ref } from 'react';
 import {
   PaginationItemType,
   paginationItemClasses as classes,
@@ -22,7 +17,13 @@ import { cx } from '../utils/cx';
 export type PaginationItemElement = HTMLButtonElement | HTMLDivElement;
 
 export interface PaginationItemProps
-  extends Omit<DetailedHTMLProps<HTMLAttributes<PaginationItemElement>, PaginationItemElement>, 'ref'> {
+  extends Omit<
+    DetailedHTMLProps<
+      HTMLAttributes<PaginationItemElement>,
+      PaginationItemElement
+    >,
+    'ref'
+  > {
   /**
    * If `true`, the pagination item is active.
    * @default false
@@ -45,59 +46,61 @@ export interface PaginationItemProps
   type?: PaginationItemType;
 }
 
-const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>((props, ref) => {
-  const {
-    active = false,
-    className,
-    disabled = false,
-    page = 1,
-    type = 'page',
-    ...rest
-  } = props;
+const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
+  (props, ref) => {
+    const {
+      active = false,
+      className,
+      disabled = false,
+      page = 1,
+      type = 'page',
+      ...rest
+    } = props;
 
-  const icons: { [index: string]: IconDefinition } = {
-    next: ChevronRightIcon,
-    previous: ChevronLeftIcon,
-  };
+    const icons: { [index: string]: IconDefinition } = {
+      next: ChevronRightIcon,
+      previous: ChevronLeftIcon,
+    };
 
-  const ButtonIcon = icons[type];
+    const ButtonIcon = icons[type];
 
-  return type === 'ellipsis' ? (
-    <div
-      {...rest}
-      ref={ref as Ref<HTMLDivElement>}
-      className={cx(
-        classes.host,
-        classes.ellipsis,
-        {
-          [classes.disabled]: disabled,
-        },
-        className,
-      )}
-    >
-      ...
-    </div>
-  ) : (
-    <button
-      {...rest}
-      ref={ref as Ref<HTMLButtonElement>}
-      key={page}
-      disabled={disabled}
-      className={cx(
-        classes.host,
-        classes.button,
-        {
-          [classes.active]: active,
-          [classes.disabled]: disabled,
-        },
-        className,
-      )}
-      type="button"
-    >
-      {ButtonIcon && <Icon icon={ButtonIcon} />}
-      {type === 'page' && page}
-    </button>
-  );
-});
+    return type === 'ellipsis' ? (
+      <div
+        {...rest}
+        ref={ref as Ref<HTMLDivElement>}
+        className={cx(
+          classes.host,
+          classes.ellipsis,
+          {
+            [classes.disabled]: disabled,
+          },
+          className,
+        )}
+      >
+        ...
+      </div>
+    ) : (
+      <button
+        {...rest}
+        ref={ref as Ref<HTMLButtonElement>}
+        key={page}
+        disabled={disabled}
+        className={cx(
+          classes.host,
+          classes.button,
+          {
+            [classes.active]: active,
+            [classes.disabled]: disabled,
+          },
+          className,
+        )}
+        type="button"
+      >
+        {ButtonIcon && <Icon icon={ButtonIcon} />}
+        {type === 'page' && page}
+      </button>
+    );
+  },
+);
 
 export default PaginationItem;

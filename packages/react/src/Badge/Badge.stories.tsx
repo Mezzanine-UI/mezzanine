@@ -6,15 +6,17 @@ export default {
 } as Meta;
 
 const DemoChildren = () => (
-  <div style={{
-    width: '100px',
-    height: '100px',
-    backgroundColor: '#E5E5E5',
-  }}
+  <div
+    style={{
+      width: '100px',
+      height: '100px',
+      backgroundColor: '#E5E5E5',
+    }}
   />
 );
 
-interface PlaygroundArgs extends Required<Pick<BadgeProps, 'dot' | 'overflowCount'>> {
+interface PlaygroundArgs
+  extends Required<Pick<BadgeProps, 'dot' | 'overflowCount'>> {
   content: number;
 }
 
@@ -25,7 +27,9 @@ export const Playgroud: StoryFn<PlaygroundArgs> = ({
 }) => (
   <>
     <BadgeContainer>
-      <Badge dot={dot} overflowCount={overflowCount}>{content}</Badge>
+      <Badge dot={dot} overflowCount={overflowCount}>
+        {content}
+      </Badge>
       <DemoChildren />
     </BadgeContainer>
   </>

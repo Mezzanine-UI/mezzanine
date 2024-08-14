@@ -8,12 +8,17 @@ import {
 import { paginationClasses as classes } from '@mezzanine-ui/core/pagination';
 import PaginationItem, { PaginationItemProps } from './PaginationItem';
 import PaginationJumper from './PaginationJumper';
-import PaginationPageSize, { PaginationPageSizeProps } from './PaginationPageSize';
+import PaginationPageSize, {
+  PaginationPageSizeProps,
+} from './PaginationPageSize';
 import { usePagination } from './usePagination';
 import { cx } from '../utils/cx';
 
 export interface PaginationProps
-  extends Omit<DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>, 'onChange'> {
+  extends Omit<
+    DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement>,
+    'onChange'
+  > {
   /**
    * Number of always visible pages at the beginning and end.
    * @default 1
@@ -48,8 +53,8 @@ export interface PaginationProps
    */
   hintText?: string;
   /**
-  * The hint displayed in the jumper `input` before the user enters a value.
-  */
+   * The hint displayed in the jumper `input` before the user enters a value.
+   */
   inputPlaceholder?: string;
   /**
    * Render the item.
@@ -157,14 +162,9 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       {...rest}
       ref={ref}
       aria-label="pagination navigation"
-      className={cx(
-        classes.host,
-        className,
-      )}
+      className={cx(classes.host, className)}
     >
-      <ul
-        className={classes.container}
-      >
+      <ul className={classes.container}>
         {showPageSizeOptions && (
           <li className={classes.pageSize}>
             <PaginationPageSize
@@ -178,34 +178,28 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
             />
           </li>
         )}
-        {
-          items.map((item, index) => (
-            <li
-              className={classes.item}
-              // eslint-disable-next-line react/no-array-index-key
-              key={index}
-            >
-              {itemRender(item)}
-            </li>
-          ))
-        }
-        {
-          showJumper && (
-            <li
-              className={classes.jumper}
-            >
-              <PaginationJumper
-                buttonText={buttonText}
-                disabled={disabled}
-                hintText={hintText}
-                inputPlaceholder={inputPlaceholder}
-                onChange={onChange}
-                pageSize={pageSize}
-                total={total}
-              />
-            </li>
-          )
-        }
+        {items.map((item, index) => (
+          <li
+            className={classes.item}
+            // eslint-disable-next-line react/no-array-index-key
+            key={index}
+          >
+            {itemRender(item)}
+          </li>
+        ))}
+        {showJumper && (
+          <li className={classes.jumper}>
+            <PaginationJumper
+              buttonText={buttonText}
+              disabled={disabled}
+              hintText={hintText}
+              inputPlaceholder={inputPlaceholder}
+              onChange={onChange}
+              pageSize={pageSize}
+              total={total}
+            />
+          </li>
+        )}
       </ul>
     </nav>
   );

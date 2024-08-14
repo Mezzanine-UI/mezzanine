@@ -10,35 +10,31 @@ import {
   appBarClasses as classes,
   AppBarOrientation,
 } from '@mezzanine-ui/core/app-bar';
-import {
-  cx,
-} from '../utils/cx';
-import {
-  NativeElementPropsWithoutKeyAndRef,
-} from '../utils/jsx-types';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-import AppBarBrand, {
-  AppBarBrandProps,
-} from './AppBarBrand';
-import AppBarMain, {
-  AppBarMainProps,
-} from './AppBarMain';
-import AppBarSupport, {
-  AppBarSupportProps,
-} from './AppBarSupport';
+import AppBarBrand, { AppBarBrandProps } from './AppBarBrand';
+import AppBarMain, { AppBarMainProps } from './AppBarMain';
+import AppBarSupport, { AppBarSupportProps } from './AppBarSupport';
 
 export type AppBarChild = ReactElement<
-AppBarBrandProps | AppBarMainProps | AppBarSupportProps,
-NamedExoticComponent>;
+  AppBarBrandProps | AppBarMainProps | AppBarSupportProps,
+  NamedExoticComponent
+>;
 export type AppBarChildren = AppBarChild | AppBarChild[];
 
-export interface AppBarProps extends
-  NativeElementPropsWithoutKeyAndRef<'header'> {
+export interface AppBarProps
+  extends NativeElementPropsWithoutKeyAndRef<'header'> {
   orientation?: AppBarOrientation;
   children?: AppBarChildren;
 }
 
-const componentOrders = (type: ForwardRefExoticComponent<(AppBarBrandProps | AppBarMainProps | AppBarSupportProps) & RefAttributes<HTMLDivElement>>) => {
+const componentOrders = (
+  type: ForwardRefExoticComponent<
+    (AppBarBrandProps | AppBarMainProps | AppBarSupportProps) &
+      RefAttributes<HTMLDivElement>
+  >,
+) => {
   switch (type) {
     case AppBarBrand:
       return 1;
@@ -51,16 +47,10 @@ const componentOrders = (type: ForwardRefExoticComponent<(AppBarBrandProps | App
 };
 
 const AppBar = forwardRef<HTMLElement, AppBarProps>((props, ref) => {
-  const {
-    orientation = 'horizontal',
-    className,
-    children,
-    ...rest
-  } = props;
+  const { orientation = 'horizontal', className, children, ...rest } = props;
 
-  const SortedChildren = Children
-    .toArray(children)
-    .sort((unknownBefore, unknownAfter) => {
+  const SortedChildren = Children.toArray(children).sort(
+    (unknownBefore, unknownAfter) => {
       const { type: beforeType } = unknownBefore as AppBarChild;
       const { type: afterType } = unknownAfter as AppBarChild;
 
@@ -70,17 +60,14 @@ const AppBar = forwardRef<HTMLElement, AppBarProps>((props, ref) => {
       if (!beforeOrder || !afterOrder) return 0;
 
       return beforeOrder - afterOrder;
-    });
+    },
+  );
 
   return (
     <header
       {...rest}
       ref={ref}
-      className={cx(
-        classes.host,
-        classes[orientation],
-        className,
-      )}
+      className={cx(classes.host, classes[orientation], className)}
     >
       {SortedChildren}
     </header>

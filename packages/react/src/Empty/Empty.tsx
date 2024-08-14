@@ -1,13 +1,12 @@
 import { forwardRef, ReactNode } from 'react';
-import {
-  emptyClasses as classes,
-} from '@mezzanine-ui/core/empty';
+import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import { FolderOpenIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Icon from '../Icon';
 
-export interface EmptyProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'> {
+export interface EmptyProps
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'> {
   /**
    * if true, the empty component will be 100% height of it's parent
    */
@@ -22,33 +21,35 @@ export interface EmptyProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div
   title?: ReactNode;
 }
 
-const Empty = forwardRef<HTMLDivElement, EmptyProps>(function Empty(props, ref) {
-  const {
-    children,
-    className,
-    fullHeight,
-    image = <Icon className={classes.icon} icon={FolderOpenIcon} />,
-    title,
-    ...rest
-  } = props;
+const Empty = forwardRef<HTMLDivElement, EmptyProps>(
+  function Empty(props, ref) {
+    const {
+      children,
+      className,
+      fullHeight,
+      image = <Icon className={classes.icon} icon={FolderOpenIcon} />,
+      title,
+      ...rest
+    } = props;
 
-  return (
-    <div
-      ref={ref}
-      {...rest}
-      className={cx(
-        classes.host,
-        {
-          [classes.fullHeight]: fullHeight,
-        },
-        className,
-      )}
-    >
-      {image}
-      {title && <div className={classes.title}>{title}</div>}
-      {children && <div className={classes.description}>{children}</div>}
-    </div>
-  );
-});
+    return (
+      <div
+        ref={ref}
+        {...rest}
+        className={cx(
+          classes.host,
+          {
+            [classes.fullHeight]: fullHeight,
+          },
+          className,
+        )}
+      >
+        {image}
+        {title && <div className={classes.title}>{title}</div>}
+        {children && <div className={classes.description}>{children}</div>}
+      </div>
+    );
+  },
+);
 
 export default Empty;

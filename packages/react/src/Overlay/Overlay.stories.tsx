@@ -1,13 +1,13 @@
 import { StoryFn, Meta } from '@storybook/react';
-import Overlay, {
-  OverlayProps,
-} from './Overlay';
+import Overlay, { OverlayProps } from './Overlay';
 
 export default {
   title: 'Utility/Overlay',
 } as Meta;
 
-type PlaygroundArgs = Required<Pick<OverlayProps, 'disablePortal' | 'hideBackdrop' | 'open'>>;
+type PlaygroundArgs = Required<
+  Pick<OverlayProps, 'disablePortal' | 'hideBackdrop' | 'open'>
+>;
 
 export const Playground: StoryFn<PlaygroundArgs> = ({
   disablePortal,

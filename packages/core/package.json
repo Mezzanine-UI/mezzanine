@@ -23,10 +23,10 @@
     "build:clean": "node ../../scripts/cleanBuild.js"
   },
   "peerDependencies": {
-    "dayjs": "^1.10.7",
-    "lodash": "^4.17.21",
-    "luxon": "^3.4.3",
-    "moment": "^2.29.1"
+    "dayjs": ">=1",
+    "lodash": ">=4",
+    "luxon": ">=3",
+    "moment": ">=2"
   },
   "peerDependenciesMeta": {
     "dayjs": {

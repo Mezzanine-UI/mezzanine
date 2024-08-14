@@ -7,7 +7,9 @@ describe('uniqueArray()', () => {
 
     const resultArray = uniqueArray(targetArray);
 
-    expect(resultArray.every((v, i) => resultArray.indexOf(v) === i)).toBe(true);
+    expect(resultArray.every((v, i) => resultArray.indexOf(v) === i)).toBe(
+      true,
+    );
   });
 });
 

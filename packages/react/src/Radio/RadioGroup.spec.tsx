@@ -16,14 +16,12 @@ import Radio, { RadioGroup, RadioGroupOption } from '.';
 describe('<RadioGroup />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<RadioGroup ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<RadioGroup ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<RadioGroup className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<RadioGroup className={className} />),
   );
 
   it('should bind role="radiogroup" and not overridable', () => {
@@ -34,7 +32,11 @@ describe('<RadioGroup />', () => {
   });
 
   it('should wrap children', () => {
-    const { getHostHTMLElement } = render(<RadioGroup><div data-test="foo" /></RadioGroup>);
+    const { getHostHTMLElement } = render(
+      <RadioGroup>
+        <div data-test="foo" />
+      </RadioGroup>,
+    );
     const element = getHostHTMLElement();
     const { firstElementChild } = element;
 
@@ -48,19 +50,19 @@ describe('<RadioGroup />', () => {
       size: 'small',
       value: 'bar',
     };
-    const { result, rerender } = renderHook(() => useContext(RadioGroupContext), {
-      wrapper: RadioGroup,
-      initialProps: expectProps,
-    });
+    const { result, rerender } = renderHook(
+      () => useContext(RadioGroupContext),
+      {
+        wrapper: RadioGroup,
+        initialProps: expectProps,
+      },
+    );
 
     /**
      * Ignore onChange since it will be transformed by RadioGroup
      */
     function testRadioGroupContextValue() {
-      const {
-        onChange,
-        ...other
-      } = result.current!;
+      const { onChange, ...other } = result.current!;
 
       expect(other).toEqual(expectProps);
       expect(typeof onChange).toBe('function');
@@ -125,13 +127,17 @@ describe('<RadioGroup />', () => {
     it('uncontrolled', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <RadioGroup defaultValue="bar" onChange={(event) => onChange(event.target.value)}>
+        <RadioGroup
+          defaultValue="bar"
+          onChange={(event) => onChange(event.target.value)}
+        >
           <Radio value="foo">foo</Radio>
           <Radio value="bar">bar</Radio>
         </RadioGroup>,
       );
       const element = getHostHTMLElement();
-      const [fooRadioElement, barRadioElement] = element.getElementsByTagName('input');
+      const [fooRadioElement, barRadioElement] =
+        element.getElementsByTagName('input');
 
       expect(fooRadioElement.checked).toBeFalsy();
       expect(barRadioElement.checked).toBeTruthy();
@@ -164,7 +170,8 @@ describe('<RadioGroup />', () => {
 
       const { getHostHTMLElement } = render(<TestingComponent />);
       const element = getHostHTMLElement();
-      const [fooRadioElement, barRadioElement] = element.getElementsByTagName('input');
+      const [fooRadioElement, barRadioElement] =
+        element.getElementsByTagName('input');
 
       expect(fooRadioElement.checked).toBeFalsy();
       expect(barRadioElement.checked).toBeTruthy();

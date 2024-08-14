@@ -12,8 +12,10 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 
 export interface RangePickerTriggerProps
-  extends
-  Omit<TextFieldProps, 'active' | 'children' | 'suffix' | 'defaultChecked' | 'placeholder'> {
+  extends Omit<
+    TextFieldProps,
+    'active' | 'children' | 'suffix' | 'defaultChecked' | 'placeholder'
+  > {
   /**
    * Placeholder for the 'from' input element.
    */
@@ -64,29 +66,29 @@ export interface RangePickerTriggerProps
    * Other input props you may provide to the 'from' input element.
    */
   inputFromProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'defaultValue'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'value'
-  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'defaultValue'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'value'
+    | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
   /**
    * Other input props you may provide to the 'to' input element.
    */
   inputToProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'defaultValue'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'value'
-  | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'defaultValue'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'value'
+    | `aria-${'disabled' | 'multiline' | 'readonly' | 'required'}`
   >;
 }
 
@@ -120,10 +122,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
         {...restTextFieldProps}
         ref={ref}
         active={!!inputFromValue || !!inputToValue}
-        className={cx(
-          classes.host,
-          className,
-        )}
+        className={cx(classes.host, className)}
         clearable={!readOnly && clearable}
         disabled={disabled}
       >

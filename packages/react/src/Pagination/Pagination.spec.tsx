@@ -16,14 +16,12 @@ import PaginationJumper from './PaginationJumper';
 describe('<Pagination />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLElement,
-    (ref) => render(<Pagination ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLElement, (ref) =>
+    render(<Pagination ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Pagination className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Pagination className={className} />),
   );
 
   it('should bind host class', () => {
@@ -64,7 +62,9 @@ describe('<Pagination />', () => {
 
   it('fires onChange when a different page is clicked', () => {
     const onChange = jest.fn();
-    const { getAllByRole } = render(<Pagination current={1} onChange={onChange} total={20} />);
+    const { getAllByRole } = render(
+      <Pagination current={1} onChange={onChange} total={20} />,
+    );
 
     const [, , page2] = getAllByRole('button');
 
@@ -77,7 +77,13 @@ describe('<Pagination />', () => {
 
   it('renders correct amount of buttons', () => {
     const { getAllByRole, getAllByText } = render(
-      <Pagination current={50} total={100} pageSize={1} siblingCount={2} boundaryCount={2} />,
+      <Pagination
+        current={50}
+        total={100}
+        pageSize={1}
+        siblingCount={2}
+        boundaryCount={2}
+      />,
     );
 
     const buttons = getAllByRole('button');
@@ -102,7 +108,14 @@ describe('<Pagination />', () => {
   it('trigger correct event of buttons', () => {
     const onChange = jest.fn();
     const { getAllByRole } = render(
-      <Pagination current={50} total={100} pageSize={1} siblingCount={2} boundaryCount={2} onChange={onChange} />,
+      <Pagination
+        current={50}
+        total={100}
+        pageSize={1}
+        siblingCount={2}
+        boundaryCount={2}
+        onChange={onChange}
+      />,
     );
 
     //  [previous, 1, 2, ..., 48, 49, 50, 51, 52, ..., 99, 100, next]
@@ -125,15 +138,13 @@ describe('<Pagination />', () => {
     it('should show jumper if showJumper={true}', () => {
       const { container } = render(<Pagination showJumper />);
 
-      expect(container.querySelector('.mzn-pagination__jumper')).toBeInstanceOf(HTMLLIElement);
+      expect(container.querySelector('.mzn-pagination__jumper')).toBeInstanceOf(
+        HTMLLIElement,
+      );
     });
 
     it('should not show jumper if showJumper={false}', () => {
-      const testRenderer = TestRenderer.create(
-        <Pagination
-          showJumper
-        />,
-      );
+      const testRenderer = TestRenderer.create(<Pagination showJumper />);
       const testInstance = testRenderer.root;
       const jumperInstance = testInstance.findByType(PaginationJumper);
 

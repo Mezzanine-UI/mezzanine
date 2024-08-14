@@ -3,25 +3,16 @@ import moment from 'moment';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { act } from 'react-dom/test-utils';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
-import {
-  DateRangePickerCalendar,
-} from '.';
+import { DateRangePickerCalendar } from '.';
 
 describe('<DateRangePickerCalendar />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateRangePickerCalendar ref={ref} referenceDate="2022-01-02" open />
       </CalendarConfigProvider>,
@@ -47,7 +38,11 @@ describe('<DateRangePickerCalendar />', () => {
 
       const [, rightCalendar] = document.querySelectorAll('.mzn-calendar');
 
-      expect(rightCalendar.classList.contains('mzn-date-range-picker-calendar--inactive'));
+      expect(
+        rightCalendar.classList.contains(
+          'mzn-date-range-picker-calendar--inactive',
+        ),
+      );
     });
 
     it('should left calendar has an overlay to block interacting when right calendar month control clicked', () => {
@@ -68,7 +63,11 @@ describe('<DateRangePickerCalendar />', () => {
 
       const [leftCalendar] = document.querySelectorAll('.mzn-calendar');
 
-      expect(leftCalendar.classList.contains('mzn-date-range-picker-calendar--inactive'));
+      expect(
+        leftCalendar.classList.contains(
+          'mzn-date-range-picker-calendar--inactive',
+        ),
+      );
     });
 
     it('should right calendar has an overlay to block interacting when left calendar year control clicked', () => {
@@ -89,7 +88,11 @@ describe('<DateRangePickerCalendar />', () => {
 
       const [, rightCalendar] = document.querySelectorAll('.mzn-calendar');
 
-      expect(rightCalendar.classList.contains('mzn-date-range-picker-calendar--inactive'));
+      expect(
+        rightCalendar.classList.contains(
+          'mzn-date-range-picker-calendar--inactive',
+        ),
+      );
     });
 
     it('should left calendar has an overlay to block interacting when right calendar year control clicked', () => {
@@ -111,7 +114,11 @@ describe('<DateRangePickerCalendar />', () => {
 
       const [leftCalendar] = document.querySelectorAll('.mzn-calendar');
 
-      expect(leftCalendar.classList.contains('mzn-date-range-picker-calendar--inactive'));
+      expect(
+        leftCalendar.classList.contains(
+          'mzn-date-range-picker-calendar--inactive',
+        ),
+      );
     });
   });
 
@@ -133,7 +140,11 @@ describe('<DateRangePickerCalendar />', () => {
       fireEvent.click(testMonthElement);
 
       expect(getAllByText('Nov')[0]).toBeInstanceOf(HTMLButtonElement);
-      expect(getAllByText('Nov')[0].parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getAllByText('Nov')[0].parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
 
     it('case: switching years', () => {
@@ -153,7 +164,11 @@ describe('<DateRangePickerCalendar />', () => {
       fireEvent.click(testYearElement);
 
       expect(getAllByText('2022')[0]).toBeInstanceOf(HTMLButtonElement);
-      expect(getAllByText('2022')[0].parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getAllByText('2022')[0].parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
   });
 
@@ -267,8 +282,11 @@ describe('<DateRangePickerCalendar />', () => {
           );
 
           const firstCalendarElement = document.querySelector('.mzn-calendar');
-          const firstButtonElements = firstCalendarElement!.querySelectorAll('.mzn-calendar-button');
-          const firstTestButtonElement = firstButtonElements?.[firstButtonElements.length - 1];
+          const firstButtonElements = firstCalendarElement!.querySelectorAll(
+            '.mzn-calendar-button',
+          );
+          const firstTestButtonElement =
+            firstButtonElements?.[firstButtonElements.length - 1];
 
           expect(firstTestButtonElement).toBeInstanceOf(HTMLButtonElement);
 
@@ -279,9 +297,13 @@ describe('<DateRangePickerCalendar />', () => {
           expect(onChange).toBeCalledTimes(1);
           onChange.mockClear();
 
-          const [, secondCalendarElement] = document.querySelectorAll('.mzn-calendar');
-          const secondButtonElements = secondCalendarElement!.querySelectorAll('.mzn-calendar-button');
-          const secondTestButtonElement = secondButtonElements?.[secondButtonElements.length - 1];
+          const [, secondCalendarElement] =
+            document.querySelectorAll('.mzn-calendar');
+          const secondButtonElements = secondCalendarElement!.querySelectorAll(
+            '.mzn-calendar-button',
+          );
+          const secondTestButtonElement =
+            secondButtonElements?.[secondButtonElements.length - 1];
 
           expect(secondTestButtonElement).toBeInstanceOf(HTMLButtonElement);
 

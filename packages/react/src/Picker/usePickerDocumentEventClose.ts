@@ -37,16 +37,15 @@ export function usePickerDocumentEventClose({
   );
 
   /** Close popper when escape key down */
-  useDocumentEscapeKeyDown(() => () => {
-    if (open) {
-      onClose();
-    }
-  }, [open, onClose]);
+  useDocumentEscapeKeyDown(
+    () => () => {
+      if (open) {
+        onClose();
+      }
+    },
+    [open, onClose],
+  );
 
   /** Close popper when tab key down */
-  useTabKeyClose(
-    onChangeClose,
-    lastElementRefInFlow,
-    [onChangeClose],
-  );
+  useTabKeyClose(onChangeClose, lastElementRefInFlow, [onChangeClose]);
 }

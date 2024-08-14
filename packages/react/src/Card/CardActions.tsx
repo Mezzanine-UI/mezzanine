@@ -8,11 +8,11 @@ export interface CardActionsProps extends ConfirmActionsProps {
   /**
    * Content of cancel button. not render if value is empty.
    */
-  cancelText?: string,
+  cancelText?: string;
   /**
    * Content of confirm button. not render if value is empty.
    */
-  confirmText?: string,
+  confirmText?: string;
   /**
    * Click handler for cancel button.
    */
@@ -33,43 +33,38 @@ export interface CardActionsProps extends ConfirmActionsProps {
 /**
  * The react component for `mezzanine` cardActions.
  */
-const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(function CardActions(props, ref) {
-  const {
-    cancelText,
-    cancelButtonProps,
-    className,
-    confirmText,
-    confirmButtonProps,
-    hideCancelButton,
-    hideConfirmButton,
-    loading,
-    onCancel,
-    onConfirm,
-    otherActions,
-    ...rest
-  } = props;
+const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(
+  function CardActions(props, ref) {
+    const {
+      cancelText,
+      cancelButtonProps,
+      className,
+      confirmText,
+      confirmButtonProps,
+      hideCancelButton,
+      hideConfirmButton,
+      loading,
+      onCancel,
+      onConfirm,
+      otherActions,
+      ...rest
+    } = props;
 
-  return (
-    <div
-      ref={ref}
-      className={cx(
-        classes.host,
-        className,
-      )}
-      {...rest}
-    >
-      { otherActions || (<div />) }
-      <ConfirmActions
-        cancelText={cancelText}
-        confirmText={confirmText}
-        cancelButtonProps={cancelButtonProps}
-        confirmButtonProps={confirmButtonProps}
-        hideCancelButton={hideCancelButton || !cancelText}
-        hideConfirmButton={hideConfirmButton || !confirmText}
-        loading={loading}
-      />
-    </div>
-  );
-});
+    return (
+      <div ref={ref} className={cx(classes.host, className)} {...rest}>
+        {otherActions || <div />}
+        <ConfirmActions
+          cancelText={cancelText}
+          confirmText={confirmText}
+          cancelButtonProps={cancelButtonProps}
+          confirmButtonProps={confirmButtonProps}
+          hideCancelButton={hideCancelButton || !cancelText}
+          hideConfirmButton={hideConfirmButton || !confirmText}
+          loading={loading}
+        />
+      </div>
+    );
+  },
+);
 
 export default CardActions;

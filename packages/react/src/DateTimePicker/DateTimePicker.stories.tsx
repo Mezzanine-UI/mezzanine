@@ -1,7 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  DateType,
-} from '@mezzanine-ui/core/calendar';
+import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { CSSProperties, useState } from 'react';
@@ -17,7 +15,9 @@ export default {
 
 function usePickerChange() {
   const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return [val, onChange] as const;
 }
@@ -78,11 +78,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   size: {
-    options: [
-      'small',
-      'medium',
-      'large',
-    ],
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
     },
@@ -113,7 +109,9 @@ export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -149,7 +147,9 @@ export const Method = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => { setVal(v); };
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return (
     <>
@@ -269,7 +269,10 @@ export const DisplayColumn = () => {
 
 export const CustomDisable = () => {
   const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0', whiteSpace: 'pre-line' } as CSSProperties;
+  const typoStyle = {
+    margin: '0 0 12px 0',
+    whiteSpace: 'pre-line',
+  } as CSSProperties;
   const [valD, onChangeD] = usePickerChange();
 
   // We use moment.date  instead of moment.add is because storybook currently has internal conflict with the method.
@@ -281,32 +284,24 @@ export const CustomDisable = () => {
   const disabledYearsEnd = moment().year(moment().year() - 1);
   const format = 'YYYY-MM-DD HH:mm:ss';
 
-  const isDateDisabled = (target: DateType) => (
-    moment(target).isBetween(
-      disabledDatesStart,
-      disabledDatesEnd,
-      'day',
-      '[]',
-    )
-  );
+  const isDateDisabled = (target: DateType) =>
+    moment(target).isBetween(disabledDatesStart, disabledDatesEnd, 'day', '[]');
 
-  const isMonthDisabled = (target: DateType) => (
+  const isMonthDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledMonthsStart,
       disabledMonthsEnd,
       'month',
       '[]',
-    )
-  );
+    );
 
-  const isYearDisabled = (target: DateType) => (
+  const isYearDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledYearsStart,
       disabledYearsEnd,
       'year',
       '[]',
-    )
-  );
+    );
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>

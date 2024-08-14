@@ -1,8 +1,5 @@
 import { modalSeverityIcons } from '@mezzanine-ui/core/modal';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -18,14 +15,12 @@ describe('<ModalHeader />', () => {
     jest.clearAllMocks();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<ModalHeader ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<ModalHeader ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<ModalHeader className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<ModalHeader className={className} />),
   );
 
   describe('prop: children', () => {
@@ -33,9 +28,7 @@ describe('<ModalHeader />', () => {
       const testChildren = 'foo';
 
       const { getHostHTMLElement, getByText } = render(
-        <ModalHeader>
-          {testChildren}
-        </ModalHeader>,
+        <ModalHeader>{testChildren}</ModalHeader>,
       );
 
       const element = getHostHTMLElement();
@@ -48,9 +41,7 @@ describe('<ModalHeader />', () => {
   });
 
   it('should bind header class and render children as title', () => {
-    const { getHostHTMLElement } = render(
-      <ModalHeader>foo</ModalHeader>,
-    );
+    const { getHostHTMLElement } = render(<ModalHeader>foo</ModalHeader>);
     const element = getHostHTMLElement();
     const { lastElementChild: titleElement } = element;
 
@@ -65,7 +56,9 @@ describe('<ModalHeader />', () => {
       const element = getHostHTMLElement();
       const { lastElementChild: titleElement } = element;
 
-      expect(titleElement!.classList.contains('mzn-modal__title--large')).toBe(titleLarge);
+      expect(titleElement!.classList.contains('mzn-modal__title--large')).toBe(
+        titleLarge,
+      );
     }
 
     it('should render titleLarge=false by default', () => {
@@ -89,7 +82,9 @@ describe('<ModalHeader />', () => {
       const element = getHostHTMLElement();
       const { firstElementChild: iconElement } = element;
 
-      expect(iconElement!.getAttribute('data-icon-name')).toBe(modalSeverityIcons.info.name);
+      expect(iconElement!.getAttribute('data-icon-name')).toBe(
+        modalSeverityIcons.info.name,
+      );
       expect(iconElement!.classList.contains('mzn-modal__severity-icon'));
     });
 
@@ -103,7 +98,9 @@ describe('<ModalHeader />', () => {
           </Modal>,
         );
 
-        const iconElement = document.body.querySelector('.mzn-modal__severity-icon')!;
+        const iconElement = document.body.querySelector(
+          '.mzn-modal__severity-icon',
+        )!;
         const icon = modalSeverityIcons[severity];
 
         expect(iconElement!.getAttribute('data-icon-name')).toBe(icon.name);

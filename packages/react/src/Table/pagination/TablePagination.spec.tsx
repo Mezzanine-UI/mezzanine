@@ -6,9 +6,7 @@ import {
   act,
   TestRenderer,
 } from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import { TableContext, TableDataContext } from '../TableContext';
 import TablePagination from './TablePagination';
 import Pagination from '../../Pagination';
@@ -39,11 +37,8 @@ describe('<TablePagination />', () => {
 
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
-      <TablePagination ref={ref} bodyRef={bodyRef} />,
-    ),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TablePagination ref={ref} bodyRef={bodyRef} />),
   );
 
   it('should bind host class', () => {
@@ -78,9 +73,7 @@ describe('<TablePagination />', () => {
                 },
               }}
             >
-              <TableDataContext.Provider
-                value={defaultDataContext}
-              >
+              <TableDataContext.Provider value={defaultDataContext}>
                 <TablePagination bodyRef={bodyRef} />
               </TableDataContext.Provider>
             </TableContext.Provider>,
@@ -90,7 +83,9 @@ describe('<TablePagination />', () => {
         });
 
         it('should apply changes when select on different page number', async () => {
-          const buttonList = [...element.querySelectorAll('.mzn-pagination-item__button')];
+          const buttonList = [
+            ...element.querySelectorAll('.mzn-pagination-item__button'),
+          ];
           const page2Btn = buttonList.find((dom) => dom.innerHTML === '2');
 
           await act(async () => {
@@ -101,7 +96,9 @@ describe('<TablePagination />', () => {
         });
 
         it('should not apply changes when click on same page number', async () => {
-          const buttonList = [...element.querySelectorAll('.mzn-pagination-item__button')];
+          const buttonList = [
+            ...element.querySelectorAll('.mzn-pagination-item__button'),
+          ];
           const page1Btn = buttonList.find((dom) => dom.innerHTML === '1');
 
           await act(async () => {
@@ -145,9 +142,7 @@ describe('<TablePagination />', () => {
                 },
               }}
             >
-              <TableDataContext.Provider
-                value={defaultDataContext}
-              >
+              <TableDataContext.Provider value={defaultDataContext}>
                 <TablePagination bodyRef={bodyRef} />
               </TableDataContext.Provider>
             </TableContext.Provider>,
@@ -157,7 +152,9 @@ describe('<TablePagination />', () => {
         });
 
         it('should apply changes when select on different page number', async () => {
-          const buttonList = [...element.querySelectorAll('.mzn-pagination-item__button')];
+          const buttonList = [
+            ...element.querySelectorAll('.mzn-pagination-item__button'),
+          ];
           const page2Btn = buttonList.find((dom) => dom.innerHTML === '2');
 
           await act(async () => {
@@ -168,7 +165,9 @@ describe('<TablePagination />', () => {
         });
 
         it('should not apply changes when click on same page number', async () => {
-          const buttonList = [...element.querySelectorAll('.mzn-pagination-item__button')];
+          const buttonList = [
+            ...element.querySelectorAll('.mzn-pagination-item__button'),
+          ];
           const page1Btn = buttonList.find((dom) => dom.innerHTML === '1');
 
           await act(async () => {
@@ -201,9 +200,7 @@ describe('<TablePagination />', () => {
               },
             }}
           >
-            <TableDataContext.Provider
-              value={defaultDataContext}
-            >
+            <TableDataContext.Provider value={defaultDataContext}>
               <TablePagination bodyRef={bodyRef} />
             </TableDataContext.Provider>
           </TableContext.Provider>,
@@ -231,9 +228,7 @@ describe('<TablePagination />', () => {
             pagination: defaultPaginationContext,
           }}
         >
-          <TableDataContext.Provider
-            value={defaultDataContext}
-          >
+          <TableDataContext.Provider value={defaultDataContext}>
             <div ref={scrollBodyRef}>
               <TablePagination bodyRef={scrollBodyRef} />
             </div>
@@ -245,7 +240,9 @@ describe('<TablePagination />', () => {
 
       body.scrollTo = jest.fn();
 
-      const buttonList = [...body.querySelectorAll('.mzn-pagination-item__button')];
+      const buttonList = [
+        ...body.querySelectorAll('.mzn-pagination-item__button'),
+      ];
       const page2Btn = buttonList.find((dom) => dom.innerHTML === '2');
 
       await act(async () => {

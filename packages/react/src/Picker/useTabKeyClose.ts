@@ -6,11 +6,14 @@ export function useTabKeyClose(
   lastElementRefInFlow: RefObject<HTMLElement>,
   deps?: DependencyList,
 ) {
-  useDocumentTabKeyDown(() => () => {
-    const { activeElement } = document;
+  useDocumentTabKeyDown(
+    () => () => {
+      const { activeElement } = document;
 
-    if (activeElement === lastElementRefInFlow.current) {
-      onClose();
-    }
-  }, deps);
+      if (activeElement === lastElementRefInFlow.current) {
+        onClose();
+      }
+    },
+    deps,
+  );
 }

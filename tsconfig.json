@@ -6,8 +6,7 @@
     "paths": {
       "@mezzanine-ui/icons": ["icons/src"],
       "@mezzanine-ui/system/*": ["system/src/*"],
-      "@mezzanine-ui/core/*": ["core/src/*"],
-      "@mezzanine-ui/ng/*": ["ng/*"]
+      "@mezzanine-ui/core/*": ["core/src/*"]
     }
   }
 }

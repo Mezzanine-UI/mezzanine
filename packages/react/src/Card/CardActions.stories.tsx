@@ -40,17 +40,10 @@ export const Basic = () => {
         confirmText="OK"
         cancelText="Close"
       />
-      <CardActions
-        otherActions={otherActions}
-      />
-      <CardActions
-        confirmText="OK"
-      />
-      <CardActions
-        cancelText="Close"
-      />
+      <CardActions otherActions={otherActions} />
+      <CardActions confirmText="OK" />
+      <CardActions cancelText="Close" />
       <CardActions />
     </div>
   );
 };
-

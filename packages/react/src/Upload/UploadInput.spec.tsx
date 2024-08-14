@@ -1,19 +1,12 @@
-import {
-  cleanup,
-  render,
-  fireEvent,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import UploadInput from './UploadInput';
 
 describe('<UploadInput />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<UploadInput ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<UploadInput ref={ref} />),
   );
 
   it('should bind host class', () => {
@@ -35,7 +28,9 @@ describe('<UploadInput />', () => {
   describe('prop: multiple', () => {
     it('should has multiple attribute', () => {
       [false, true].forEach((multiple) => {
-        const { getHostHTMLElement } = render(<UploadInput multiple={multiple} />);
+        const { getHostHTMLElement } = render(
+          <UploadInput multiple={multiple} />,
+        );
         const element = getHostHTMLElement();
 
         expect(element.hasAttribute('multiple'));

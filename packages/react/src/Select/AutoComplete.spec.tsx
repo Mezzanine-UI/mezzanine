@@ -1,9 +1,5 @@
 /* global document */
-import {
-  createRef,
-  FocusEvent,
-  MouseEvent,
-} from 'react';
+import { createRef, FocusEvent, MouseEvent } from 'react';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import {
   act,
@@ -12,9 +8,7 @@ import {
   render,
   fireEvent,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { AutoComplete, SelectValue } from '.';
 
 function getAddingContainer(container: HTMLElement | null = document.body) {
@@ -29,19 +23,24 @@ function getOptions() {
   return document.querySelectorAll('.mzn-menu-item');
 }
 
-const defaultOptions: SelectValue[] = [{
-  id: 'foo',
-  name: 'foo',
-}, {
-  id: 'bar',
-  name: 'bar',
-}, {
-  id: 'item1',
-  name: 'item1',
-}, {
-  id: 'very very very very long',
-  name: 'very very very very long',
-}];
+const defaultOptions: SelectValue[] = [
+  {
+    id: 'foo',
+    name: 'foo',
+  },
+  {
+    id: 'bar',
+    name: 'bar',
+  },
+  {
+    id: 'item1',
+    name: 'item1',
+  },
+  {
+    id: 'very very very very long',
+    name: 'very very very very long',
+  },
+];
 
 describe('<AutoComplete />', () => {
   afterEach(() => {
@@ -49,14 +48,12 @@ describe('<AutoComplete />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<AutoComplete ref={ref} options={defaultOptions} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<AutoComplete ref={ref} options={defaultOptions} />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<AutoComplete inputRef={ref} options={defaultOptions} />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<AutoComplete inputRef={ref} options={defaultOptions} />),
   );
 
   it('should close menu when onChange triggered on single mode', async () => {
@@ -65,7 +62,11 @@ describe('<AutoComplete />', () => {
     const inputRef = createRef<HTMLInputElement>();
 
     render(
-      <AutoComplete inputRef={inputRef} mode="single" options={defaultOptions} />,
+      <AutoComplete
+        inputRef={inputRef}
+        mode="single"
+        options={defaultOptions}
+      />,
     );
 
     await act(async () => {
@@ -94,7 +95,11 @@ describe('<AutoComplete />', () => {
     const inputRef = createRef<HTMLInputElement>();
 
     render(
-      <AutoComplete inputRef={inputRef} mode="multiple" options={defaultOptions} />,
+      <AutoComplete
+        inputRef={inputRef}
+        mode="multiple"
+        options={defaultOptions}
+      />,
     );
 
     await act(async () => {
@@ -122,9 +127,7 @@ describe('<AutoComplete />', () => {
 
     const inputRef = createRef<HTMLInputElement>();
 
-    render(
-      <AutoComplete inputRef={inputRef} options={defaultOptions} />,
-    );
+    render(<AutoComplete inputRef={inputRef} options={defaultOptions} />);
 
     await act(async () => {
       fireEvent.focus(inputRef.current!);
@@ -147,12 +150,12 @@ describe('<AutoComplete />', () => {
 
   it('open menu when click chevron down icon', async () => {
     const { getHostHTMLElement } = render(
-      <AutoComplete
-        options={defaultOptions}
-      />,
+      <AutoComplete options={defaultOptions} />,
     );
 
-    const icon = getHostHTMLElement().querySelector('.mzn-select-trigger__suffix-action-icon');
+    const icon = getHostHTMLElement().querySelector(
+      '.mzn-select-trigger__suffix-action-icon',
+    );
 
     await act(async () => {
       fireEvent.click(icon!);
@@ -237,12 +240,7 @@ describe('<AutoComplete />', () => {
 
     const inputRef = createRef<HTMLInputElement>();
 
-    render(
-      <AutoComplete
-        inputRef={inputRef}
-        options={defaultOptions}
-      />,
-    );
+    render(<AutoComplete inputRef={inputRef} options={defaultOptions} />);
 
     await act(async () => {
       fireEvent.focus(inputRef.current!);
@@ -383,12 +381,16 @@ describe('<AutoComplete />', () => {
     it('value of addable option is equals to user typing', async () => {
       const addableContainer = getAddingContainer();
 
-      expect(addableContainer.getElementsByTagName('p')[0].childNodes[0].textContent).toBe('rytass');
+      expect(
+        addableContainer.getElementsByTagName('p')[0].childNodes[0].textContent,
+      ).toBe('rytass');
     });
 
     it('should use PlusIcon as action button', () => {
       const addableContainer = getAddingContainer();
-      const icon = addableContainer.querySelector('.mzn-select-autocomplete__icon');
+      const icon = addableContainer.querySelector(
+        '.mzn-select-autocomplete__icon',
+      );
 
       expect(icon?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });

@@ -1,7 +1,9 @@
 import { DependencyList } from 'react';
 import { useDocumentEvents } from './useDocumentEvents';
 
-export type DocumentTabKeyDownHandlerFactory = () => ((event: KeyboardEvent) => void) | undefined;
+export type DocumentTabKeyDownHandlerFactory = () =>
+  | ((event: KeyboardEvent) => void)
+  | undefined;
 
 export function useDocumentTabKeyDown(
   factory: DocumentTabKeyDownHandlerFactory,

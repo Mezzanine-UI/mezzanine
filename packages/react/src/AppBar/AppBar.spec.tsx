@@ -1,11 +1,5 @@
-import {
-  cleanup,
-  cleanupHook,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, cleanupHook, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import AppBar from './AppBar';
 import AppBarBrand from './AppBarBrand';
 import AppBarMain from './AppBarMain';
@@ -17,9 +11,8 @@ describe('<AppBar />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLElement,
-    (ref) => render(<AppBar ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLElement, (ref) =>
+    render(<AppBar ref={ref} />),
   );
 
   describe('prop: children', () => {
@@ -30,15 +23,9 @@ describe('<AppBar />', () => {
 
       const { getHostHTMLElement } = await render(
         <AppBar>
-          <AppBarSupport>
-            {supportChildren}
-          </AppBarSupport>
-          <AppBarMain>
-            {mainChildren}
-          </AppBarMain>
-          <AppBarBrand>
-            {brandChildren}
-          </AppBarBrand>
+          <AppBarSupport>{supportChildren}</AppBarSupport>
+          <AppBarMain>{mainChildren}</AppBarMain>
+          <AppBarBrand>{brandChildren}</AppBarBrand>
         </AppBar>,
       );
       const element = getHostHTMLElement();

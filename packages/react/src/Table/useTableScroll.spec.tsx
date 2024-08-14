@@ -20,19 +20,16 @@ describe('useTableScroll()', () => {
   });
 
   it('should not trigger any event handler when ref is not assigned', () => {
-    const { result } = renderHook(
-      () => useTableScroll({}),
-    );
+    const { result } = renderHook(() => useTableScroll({}));
 
-    const [
-      tableBody,
-      scrollElement,
-    ] = result.current;
+    const [tableBody, scrollElement] = result.current;
 
     expect(scrollElement.style.height).toBe('0px');
 
     TestRenderer.act(() => {
-      scrollElement.onMouseDown({ target: null } as unknown as MouseEvent<HTMLDivElement>);
+      scrollElement.onMouseDown({
+        target: null,
+      } as unknown as MouseEvent<HTMLDivElement>);
     });
 
     TestRenderer.act(() => {

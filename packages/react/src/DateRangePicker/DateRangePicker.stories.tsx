@@ -21,12 +21,15 @@ export default {
 
 function usePickerChange() {
   const [val, setVal] = useState<RangePickerValue>();
-  const onChange = (v?: RangePickerValue) => { setVal(v); };
+  const onChange = (v?: RangePickerValue) => {
+    setVal(v);
+  };
 
   return [val, onChange] as const;
 }
 
-const getUpperCase = (mode: CalendarMode) => mode.charAt(0).toUpperCase() + mode.slice(1);
+const getUpperCase = (mode: CalendarMode) =>
+  mode.charAt(0).toUpperCase() + mode.slice(1);
 
 type PlaygroundArgs = DateRangePickerProps;
 
@@ -81,22 +84,13 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   mode: {
-    options: [
-      'day',
-      'week',
-      'month',
-      'year',
-    ],
+    options: ['day', 'week', 'month', 'year'],
     control: {
       type: 'select',
     },
   },
   size: {
-    options: [
-      'small',
-      'medium',
-      'large',
-    ],
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
     },
@@ -132,19 +126,28 @@ export const Basic = () => {
         <Typography variant="h5" style={typoStyle}>
           Disabled
         </Typography>
-        <DateRangePicker value={[moment().toISOString(), moment().toISOString()]} disabled />
+        <DateRangePicker
+          value={[moment().toISOString(), moment().toISOString()]}
+          disabled
+        />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Error
         </Typography>
-        <DateRangePicker value={[moment().toISOString(), moment().toISOString()]} error />
+        <DateRangePicker
+          value={[moment().toISOString(), moment().toISOString()]}
+          error
+        />
       </div>
       <div style={containerStyle}>
         <Typography variant="h5" style={typoStyle}>
           Read only
         </Typography>
-        <DateRangePicker value={[moment().toISOString(), moment().toISOString()]} readOnly />
+        <DateRangePicker
+          value={[moment().toISOString(), moment().toISOString()]}
+          readOnly
+        />
       </div>
     </CalendarConfigProvider>
   );
@@ -302,7 +305,10 @@ export const Modes = () => {
 
 export const CustomDisable = () => {
   const containerStyle = { margin: '0 0 36px 0' };
-  const typoStyle = { margin: '0 0 8px 0', whiteSpace: 'pre-line' } as CSSProperties;
+  const typoStyle = {
+    margin: '0 0 8px 0',
+    whiteSpace: 'pre-line',
+  } as CSSProperties;
   const [valMix, onChangeMix] = usePickerChange();
   const [valD, onChangeD] = usePickerChange();
   const [valW, onChangeW] = usePickerChange();
@@ -319,41 +325,32 @@ export const CustomDisable = () => {
   const disabledYearsStart = moment().year(moment().year() - 20);
   const disabledYearsEnd = moment().year(moment().year() - 1);
 
-  const isDateDisabled = (target: DateType) => (
-    moment(target).isBetween(
-      disabledDatesStart,
-      disabledDatesEnd,
-      'day',
-      '[]',
-    )
-  );
+  const isDateDisabled = (target: DateType) =>
+    moment(target).isBetween(disabledDatesStart, disabledDatesEnd, 'day', '[]');
 
-  const isWeekDisabled = (target: DateType) => (
+  const isWeekDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledWeeksStart,
       disabledWeeksEnd,
       'week',
       '[]',
-    )
-  );
+    );
 
-  const isMonthDisabled = (target: DateType) => (
+  const isMonthDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledMonthsStart,
       disabledMonthsEnd,
       'month',
       '[]',
-    )
-  );
+    );
 
-  const isYearDisabled = (target: DateType) => (
+  const isYearDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledYearsStart,
       disabledYearsEnd,
       'year',
       '[]',
-    )
-  );
+    );
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>

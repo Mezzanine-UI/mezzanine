@@ -1,35 +1,31 @@
 import { overlayWithSlideFadeClasses as classes } from '@mezzanine-ui/core/_internal/overlay-with-slide-fade';
-import {
-  forwardRef,
-  useState,
-  useEffect,
-} from 'react';
+import { forwardRef, useState, useEffect } from 'react';
 import { cx } from '../../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import Overlay, { OverlayProps } from '../../Overlay';
-import { SlideFade, SlideFadeProps, SlideFadeDirection } from '../../Transition';
+import {
+  SlideFade,
+  SlideFadeProps,
+  SlideFadeDirection,
+} from '../../Transition';
 import { useDocumentEscapeKeyDown } from '../../hooks/useDocumentEscapeKeyDown';
 import { allowBodyScroll, lockBodyScroll } from '../../utils/scroll-lock';
 import useTopStack from './useTopStack';
 
 export interface SlideFadeOverlayProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
-  Pick<
-  OverlayProps,
-  | 'container'
-  | 'disableCloseOnBackdropClick'
-  | 'disablePortal'
-  | 'invisibleBackdrop'
-  | 'hideBackdrop'
-  | 'onBackdropClick'
-  | 'onClose'
-  | 'open'
-  >,
-  Pick<
-  SlideFadeProps,
-  'children'
-  > {
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
+    Pick<
+      OverlayProps,
+      | 'container'
+      | 'disableCloseOnBackdropClick'
+      | 'disablePortal'
+      | 'invisibleBackdrop'
+      | 'hideBackdrop'
+      | 'onBackdropClick'
+      | 'onClose'
+      | 'open'
+    >,
+    Pick<SlideFadeProps, 'children'> {
   /**
    * Control slide fade in direction
    * @default 'down'
@@ -81,12 +77,7 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
           onClose();
         }
       };
-    }, [
-      disableCloseOnEscapeKeyDown,
-      checkIsOnTheTop,
-      open,
-      onClose,
-    ]);
+    }, [disableCloseOnEscapeKeyDown, checkIsOnTheTop, open, onClose]);
 
     /** lock body scroll */
     useEffect(() => {
@@ -99,7 +90,9 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
     useEffect(() => {
       function checkAndAllowScroll() {
         // wait until dom element unmount, and check if other modal existed
-        const allStacks = document.querySelectorAll('.mzn-overlay-with-slide-fade');
+        const allStacks = document.querySelectorAll(
+          '.mzn-overlay-with-slide-fade',
+        );
 
         if (!allStacks.length) {
           allowBodyScroll();
@@ -110,9 +103,9 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
         checkAndAllowScroll();
       }
 
-      return (() => {
+      return () => {
         requestAnimationFrame(checkAndAllowScroll);
-      });
+      };
     }, [open, exited]);
 
     if (!open && exited) {

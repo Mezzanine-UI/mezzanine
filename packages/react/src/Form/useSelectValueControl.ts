@@ -1,6 +1,4 @@
-import {
-  MouseEvent,
-} from 'react';
+import { MouseEvent } from 'react';
 import isEqual from 'lodash/isEqual';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
@@ -25,7 +23,9 @@ export type UseSelectSingleValueControl = UseSelectBaseValueControl & {
   value?: SelectValue | null;
 };
 
-export type UseSelectValueControl = UseSelectMultipleValueControl | UseSelectSingleValueControl;
+export type UseSelectValueControl =
+  | UseSelectMultipleValueControl
+  | UseSelectSingleValueControl;
 
 export interface SelectBaseValueControl {
   onClear(e: MouseEvent<Element>): void;
@@ -41,12 +41,21 @@ export type SelectSingleValueControl = SelectBaseValueControl & {
   value: SelectValue | null;
 };
 
-export type SelectValueControl = SelectMultipleValueControl | SelectSingleValueControl;
+export type SelectValueControl =
+  | SelectMultipleValueControl
+  | SelectSingleValueControl;
 
-const equalityFn = (a: SelectValue[] | SelectValue | null, b: SelectValue[] | SelectValue | null) => isEqual(a, b);
+const equalityFn = (
+  a: SelectValue[] | SelectValue | null,
+  b: SelectValue[] | SelectValue | null,
+) => isEqual(a, b);
 
-function useSelectBaseValueControl(props: UseSelectMultipleValueControl): SelectMultipleValueControl;
-function useSelectBaseValueControl(props: UseSelectSingleValueControl): SelectSingleValueControl;
+function useSelectBaseValueControl(
+  props: UseSelectMultipleValueControl,
+): SelectMultipleValueControl;
+function useSelectBaseValueControl(
+  props: UseSelectSingleValueControl,
+): SelectSingleValueControl;
 function useSelectBaseValueControl(props: UseSelectValueControl) {
   const {
     defaultValue,
@@ -57,7 +66,9 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
     value: valueProp,
   } = props;
 
-  const [value, setValue] = useControlValueState<SelectValue[] | SelectValue | null>({
+  const [value, setValue] = useControlValueState<
+    SelectValue[] | SelectValue | null
+  >({
     defaultValue: defaultValue || (mode === 'multiple' ? [] : null),
     equalityFn,
     value: valueProp,
@@ -74,11 +85,12 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
         return null;
       }
 
-      let newValue: SelectValue[] | SelectValue | null = mode === 'multiple' ? [] : null;
+      let newValue: SelectValue[] | SelectValue | null =
+        mode === 'multiple' ? [] : null;
 
       switch (mode) {
         case 'multiple': {
-          const existedValueIdx = (value as SelectValue[] ?? []).findIndex(
+          const existedValueIdx = ((value as SelectValue[]) ?? []).findIndex(
             (v: SelectValue) => v.id === chooseOption.id,
           );
 
@@ -88,10 +100,7 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
               ...(value as SelectValue[]).slice(existedValueIdx + 1),
             ];
           } else {
-            newValue = [
-              ...value as SelectValue[],
-              chooseOption,
-            ];
+            newValue = [...(value as SelectValue[]), chooseOption];
           }
 
           if (typeof onChange === 'function') onChange(newValue);
@@ -135,8 +144,12 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
 
 export const useSelectValueControl = (props: UseSelectValueControl) => {
   if (props.mode === 'multiple') {
-    return useSelectBaseValueControl(props as UseSelectMultipleValueControl) as SelectMultipleValueControl;
+    return useSelectBaseValueControl(
+      props as UseSelectMultipleValueControl,
+    ) as SelectMultipleValueControl;
   }
 
-  return useSelectBaseValueControl(props as UseSelectSingleValueControl) as SelectSingleValueControl;
+  return useSelectBaseValueControl(
+    props as UseSelectSingleValueControl,
+  ) as SelectSingleValueControl;
 };

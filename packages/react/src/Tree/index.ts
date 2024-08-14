@@ -4,9 +4,7 @@ export {
   toggleValue,
   toggleValueWithStatusControl,
 } from './toggleValue';
-export {
-  traverseTree,
-} from './traverseTree';
+export { traverseTree } from './traverseTree';
 export {
   UseTreeExpandedValueProps,
   useTreeExpandedValue,
@@ -25,7 +23,4 @@ export {
   TreeNodeListProps,
   default as TreeNodeList,
 } from './TreeNodeList';
-export {
-  TreeProps,
-  default,
-} from './Tree';
+export { TreeProps, default } from './Tree';

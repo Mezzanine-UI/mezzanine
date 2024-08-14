@@ -1,5 +1,8 @@
 import { forwardRef, ReactNode } from 'react';
-import { ExclamationCircleFilledIcon, IconDefinition } from '@mezzanine-ui/icons';
+import {
+  ExclamationCircleFilledIcon,
+  IconDefinition,
+} from '@mezzanine-ui/icons';
 import { popConfirmClasses as classes } from '@mezzanine-ui/core/popconfirm';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
@@ -7,17 +10,16 @@ import Popover, { PopoverProps } from '../Popover';
 import ConfirmActions, { ConfirmActionsProps } from '../ConfirmActions';
 
 export interface PopconfirmProps
-  extends
-  PopoverProps,
-  Pick<
-  ConfirmActionsProps,
-  | 'cancelButtonProps'
-  | 'cancelText'
-  | 'confirmButtonProps'
-  | 'confirmText'
-  | 'onCancel'
-  | 'onConfirm'
-  > {
+  extends PopoverProps,
+    Pick<
+      ConfirmActionsProps,
+      | 'cancelButtonProps'
+      | 'cancelText'
+      | 'confirmButtonProps'
+      | 'confirmText'
+      | 'onCancel'
+      | 'onConfirm'
+    > {
   /**
    * Customize the icon on the popconfirm
    */
@@ -28,47 +30,46 @@ export interface PopconfirmProps
   title?: ReactNode;
 }
 
-const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(function Popconfirm(props, ref) {
-  const {
-    className,
-    container,
-    cancelButtonProps,
-    cancelText,
-    confirmButtonProps,
-    confirmText,
-    icon = ExclamationCircleFilledIcon,
-    onCancel,
-    onConfirm,
-    title,
-    ...rest
-  } = props;
+const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(
+  function Popconfirm(props, ref) {
+    const {
+      className,
+      container,
+      cancelButtonProps,
+      cancelText,
+      confirmButtonProps,
+      confirmText,
+      icon = ExclamationCircleFilledIcon,
+      onCancel,
+      onConfirm,
+      title,
+      ...rest
+    } = props;
 
-  return (
-    <Popover
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.host,
-        className,
-      )}
-      title={(
-        <>
-          <Icon className={classes.icon} icon={icon} />
-          {title}
-        </>
-      )}
-    >
-      <ConfirmActions
-        cancelButtonProps={cancelButtonProps}
-        cancelText={cancelText}
-        confirmButtonProps={confirmButtonProps}
-        confirmText={confirmText}
-        onCancel={onCancel}
-        onConfirm={onConfirm}
-        size="small"
-      />
-    </Popover>
-  );
-});
+    return (
+      <Popover
+        {...rest}
+        ref={ref}
+        className={cx(classes.host, className)}
+        title={
+          <>
+            <Icon className={classes.icon} icon={icon} />
+            {title}
+          </>
+        }
+      >
+        <ConfirmActions
+          cancelButtonProps={cancelButtonProps}
+          cancelText={cancelText}
+          confirmButtonProps={confirmButtonProps}
+          confirmText={confirmText}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
+          size="small"
+        />
+      </Popover>
+    );
+  },
+);
 
 export default Popconfirm;

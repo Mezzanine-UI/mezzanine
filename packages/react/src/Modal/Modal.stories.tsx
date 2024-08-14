@@ -16,25 +16,14 @@ export default {
   title: 'Feedback/Modal',
 } as Meta;
 
-const severities: ModalSeverity[] = [
-  'info',
-  'error',
-  'warning',
-  'success',
-];
+const severities: ModalSeverity[] = ['info', 'error', 'warning', 'success'];
 
-const sizes: ModalSize[] = [
-  'small',
-  'medium',
-  'large',
-  'extraLarge',
-];
+const sizes: ModalSize[] = ['small', 'medium', 'large', 'extraLarge'];
 
 interface PlaygroundArgs
-  extends
-  Omit<ModalProps, 'title'>,
-  Required<Pick<ModalHeaderProps, 'showSeverityIcon' | 'titleLarge'>>,
-  Required<Pick<ModalActionsProps, 'cancelText' | 'confirmText'>> {
+  extends Omit<ModalProps, 'title'>,
+    Required<Pick<ModalHeaderProps, 'showSeverityIcon' | 'titleLarge'>>,
+    Required<Pick<ModalActionsProps, 'cancelText' | 'confirmText'>> {
   title: ReactNode;
   body: ReactNode;
   footer: ReactNode;
@@ -61,7 +50,9 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} variant="contained">open</Button>
+      <Button onClick={() => setOpen(true)} variant="contained">
+        open
+      </Button>
       <Modal
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
@@ -79,9 +70,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
         >
           {title}
         </ModalHeader>
-        <ModalBody>
-          {body}
-        </ModalBody>
+        <ModalBody>{body}</ModalBody>
         <ModalActions
           cancelText={cancelText}
           confirmText={confirmText}
@@ -158,12 +147,8 @@ export const Layers = () => {
             open={layers !== null && layers >= index}
             onClose={onClose}
           >
-            <ModalHeader>
-              {title}
-            </ModalHeader>
-            <ModalBody>
-              content
-            </ModalBody>
+            <ModalHeader>{title}</ModalHeader>
+            <ModalBody>content</ModalBody>
             <ModalActions
               onCancel={onClose}
               onConfirm={() => {}}
@@ -171,7 +156,6 @@ export const Layers = () => {
               confirmText="OK"
             />
           </Modal>
-
         );
       })}
     </>

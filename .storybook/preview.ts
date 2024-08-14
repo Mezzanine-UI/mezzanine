@@ -22,9 +22,9 @@ const preview: Preview = {
           'Navigation',
           'Data Entry',
           'Data Display',
-          'Feedback'
-        ]
-      }
+          'Feedback',
+        ],
+      },
     },
   },
 };

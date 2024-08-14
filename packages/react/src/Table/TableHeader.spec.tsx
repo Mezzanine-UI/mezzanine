@@ -1,13 +1,6 @@
-import {
-  TableColumn,
-} from '@mezzanine-ui/core/table';
-import {
-  cleanupHook,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { TableColumn } from '@mezzanine-ui/core/table';
+import { cleanupHook, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import TableHeader from './TableHeader';
 import { TableContext, TableDataContext } from './TableContext';
 
@@ -22,9 +15,8 @@ type DataType = {
 describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLTableRowElement,
-    (ref) => render(<TableHeader ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLTableRowElement, (ref) =>
+    render(<TableHeader ref={ref} />),
   );
 
   it('should use fixed header as host', () => {
@@ -35,22 +27,25 @@ describe('<TableHeader />', () => {
   });
 
   describe('columns are given', () => {
-    const columns: TableColumn<DataType>[] = [{
-      key: 'foo',
-      dataIndex: 'foo',
-      title: 'foo',
-      headerClassName: undefined,
-      renderTitle: undefined,
-      sorter: undefined,
-      width: 80,
-      align: 'center',
-    }, {
-      key: 'bar',
-      dataIndex: 'bar',
-      align: 'start',
-      renderTitle: () => 'bar',
-      sorter: () => 1,
-    }];
+    const columns: TableColumn<DataType>[] = [
+      {
+        key: 'foo',
+        dataIndex: 'foo',
+        title: 'foo',
+        headerClassName: undefined,
+        renderTitle: undefined,
+        sorter: undefined,
+        width: 80,
+        align: 'center',
+      },
+      {
+        key: 'bar',
+        dataIndex: 'bar',
+        align: 'start',
+        renderTitle: () => 'bar',
+        sorter: () => 1,
+      },
+    ];
 
     let element: HTMLElement;
 
@@ -82,30 +77,51 @@ describe('<TableHeader />', () => {
       const firstColumnCell = firstColumn.querySelector('.mzn-table__cell');
 
       const columnStyleRegex = new RegExp(`width: ${columns[0].width}px`, 'g');
-      const cellStyleRegex = new RegExp(`justify-content: ${columns[0].align}`, 'g');
+      const cellStyleRegex = new RegExp(
+        `justify-content: ${columns[0].align}`,
+        'g',
+      );
 
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeUndefined();
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeNull();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeUndefined();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeNull();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeNull();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeNull();
     });
 
     it('should apply prefix for align start/end', () => {
-      const secondColumnCell = getCellWrappers(element)[1].querySelector('.mzn-table__cell');
-      const cellStyleRegex = new RegExp(`justify-content: flex-${columns[1].align}`, 'g');
+      const secondColumnCell =
+        getCellWrappers(element)[1].querySelector('.mzn-table__cell');
+      const cellStyleRegex = new RegExp(
+        `justify-content: flex-${columns[1].align}`,
+        'g',
+      );
 
-      expect(secondColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeUndefined();
-      expect(secondColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeNull();
+      expect(
+        secondColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        secondColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeNull();
     });
 
     it('should custom renderTitle render function callback(string)', () => {
-      const secondColumnCell = getCellWrappers(element)[1].querySelector('.mzn-table__cell');
+      const secondColumnCell =
+        getCellWrappers(element)[1].querySelector('.mzn-table__cell');
 
       expect(secondColumnCell?.textContent).toBe('bar');
     });
 
     it('should render sorter icon when sorter given', () => {
-      const secondColumnSortingIcon = getCellWrappers(element)[1].querySelector('.mzn-table__icon');
+      const secondColumnSortingIcon =
+        getCellWrappers(element)[1].querySelector('.mzn-table__icon');
 
       expect(secondColumnSortingIcon).not.toBeNull();
     });
@@ -127,7 +143,9 @@ describe('<TableHeader />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.querySelector('.mzn-table__selections')).toBeInstanceOf(HTMLDivElement);
+      expect(element.querySelector('.mzn-table__selections')).toBeInstanceOf(
+        HTMLDivElement,
+      );
     });
 
     it('should render TableExpandable for placeholder when expanding defined', () => {
@@ -144,7 +162,9 @@ describe('<TableHeader />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.querySelector('.mzn-table__collapseAction')).toBeInstanceOf(HTMLDivElement);
+      expect(
+        element.querySelector('.mzn-table__collapseAction'),
+      ).toBeInstanceOf(HTMLDivElement);
     });
 
     it('should be stuck when scroll.firstColumnFixed is true', () => {
@@ -158,11 +178,13 @@ describe('<TableHeader />', () => {
 
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
-      const columns: TableColumn<DataType>[] = [{
-        key: 'foo',
-        dataIndex: 'foo',
-        title: 'foo',
-      }];
+      const columns: TableColumn<DataType>[] = [
+        {
+          key: 'foo',
+          dataIndex: 'foo',
+          title: 'foo',
+        },
+      ];
 
       const { getHostHTMLElement } = render(
         <TableDataContext.Provider

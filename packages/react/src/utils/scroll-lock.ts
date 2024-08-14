@@ -1,9 +1,7 @@
-import getScrollbarWidth from './get-scrollbar-width';
+import { getScrollbarWidth } from './get-scrollbar-width';
 
 export function lockBodyScroll() {
-  const {
-    scrollY,
-  } = window;
+  const { scrollY } = window;
 
   document.body.style.position = 'fixed';
   document.body.style.top = `-${scrollY}px`;

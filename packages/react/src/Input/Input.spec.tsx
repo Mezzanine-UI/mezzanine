@@ -32,19 +32,16 @@ function testValue(element: HTMLElement, value: string) {
 describe('<Input />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Input ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Input ref={ref} />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<Input inputRef={ref} />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<Input inputRef={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Input className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Input className={className} />),
   );
 
   it('should bind host class', () => {
@@ -96,11 +93,7 @@ describe('<Input />', () => {
 
   it('props should directly pass to native input element', () => {
     const { getHostHTMLElement } = render(
-      <Input
-        disabled
-        placeholder="placeholder"
-        readOnly
-      />,
+      <Input disabled placeholder="placeholder" readOnly />,
     );
     const element = getHostHTMLElement();
     const inputElement = getInputElement(element);
@@ -115,7 +108,9 @@ describe('<Input />', () => {
 
   describe('prop: clearable', () => {
     function testClearable(element: HTMLElement) {
-      const clearIconElement = element.querySelector('.mzn-text-field__clear-icon');
+      const clearIconElement = element.querySelector(
+        '.mzn-text-field__clear-icon',
+      );
 
       fireEvent.click(clearIconElement!);
 
@@ -125,15 +120,13 @@ describe('<Input />', () => {
     describe('should clear value when click the clear icon', () => {
       it('uncontrolled', () => {
         let valueAfterClear = 'not empty';
-        const onChange = jest.fn<void, [ChangeEvent<HTMLInputElement>]>((event) => {
-          valueAfterClear = event.target.value;
-        });
+        const onChange = jest.fn<void, [ChangeEvent<HTMLInputElement>]>(
+          (event) => {
+            valueAfterClear = event.target.value;
+          },
+        );
         const { getHostHTMLElement } = render(
-          <Input
-            clearable
-            defaultValue="default value"
-            onChange={onChange}
-          />,
+          <Input clearable defaultValue="default value" onChange={onChange} />,
         );
         const element = getHostHTMLElement();
 
@@ -186,7 +179,8 @@ describe('<Input />', () => {
           <Input error={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.error).toBe(true);
       expect(textField2.props.error).toBe(false);
@@ -201,7 +195,8 @@ describe('<Input />', () => {
           <Input fullWidth={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.fullWidth).toBeTruthy();
       expect(textField2.props.fullWidth).toBeFalsy();
@@ -273,19 +268,16 @@ describe('<Input />', () => {
 describe('<Input tags="default" />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Input ref={ref} mode="default" />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Input ref={ref} mode="default" />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<Input inputRef={ref} mode="default" />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<Input inputRef={ref} mode="default" />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Input mode="default" className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Input mode="default" className={className} />),
   );
 
   it('should bind host class', () => {
@@ -326,12 +318,7 @@ describe('<Input tags="default" />', () => {
 
   it('props should directly pass to native input element', () => {
     const { getHostHTMLElement } = render(
-      <Input
-        disabled
-        mode="default"
-        placeholder="placeholder"
-        readOnly
-      />,
+      <Input disabled mode="default" placeholder="placeholder" readOnly />,
     );
     const element = getHostHTMLElement();
     const inputElement = getInputElement(element);
@@ -346,7 +333,9 @@ describe('<Input tags="default" />', () => {
 
   describe('prop: clearable', () => {
     function testClearable(element: HTMLElement) {
-      const clearIconElement = element.querySelector('.mzn-text-field__clear-icon');
+      const clearIconElement = element.querySelector(
+        '.mzn-text-field__clear-icon',
+      );
 
       fireEvent.click(clearIconElement!);
 
@@ -356,9 +345,11 @@ describe('<Input tags="default" />', () => {
     describe('should clear value when click the clear icon', () => {
       it('uncontrolled', () => {
         let valueAfterClear = 'not empty';
-        const onChange = jest.fn<void, [ChangeEvent<HTMLInputElement>]>((event) => {
-          valueAfterClear = event.target.value;
-        });
+        const onChange = jest.fn<void, [ChangeEvent<HTMLInputElement>]>(
+          (event) => {
+            valueAfterClear = event.target.value;
+          },
+        );
         const { getHostHTMLElement } = render(
           <Input
             clearable
@@ -419,7 +410,8 @@ describe('<Input tags="default" />', () => {
           <Input mode="default" error={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.error).toBe(true);
       expect(textField2.props.error).toBe(false);
@@ -434,7 +426,8 @@ describe('<Input tags="default" />', () => {
           <Input mode="default" fullWidth={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.fullWidth).toBeTruthy();
       expect(textField2.props.fullWidth).toBeFalsy();
@@ -445,15 +438,27 @@ describe('<Input tags="default" />', () => {
     it('should called onKeyDown as key down event emit', () => {
       jest.useFakeTimers();
 
-      const onKeyDown = jest.fn<void, [KeyboardEvent<HTMLInputElement>]>(() => {});
+      const onKeyDown = jest.fn<void, [KeyboardEvent<HTMLInputElement>]>(
+        () => {},
+      );
 
-      const { getHostHTMLElement } = render(<Input mode="default" inputProps={{ onKeyDown }} />);
+      const { getHostHTMLElement } = render(
+        <Input mode="default" inputProps={{ onKeyDown }} />,
+      );
       const element = getHostHTMLElement();
       const inputElement = getInputElement(element);
 
       act(() => {
-        fireEvent.keyDown(inputElement, { key: '1', code: 'Digit1', keyCode: 49 });
-        fireEvent.keyDown(inputElement, { key: '2', code: 'Digit2', keyCode: 50 });
+        fireEvent.keyDown(inputElement, {
+          key: '1',
+          code: 'Digit1',
+          keyCode: 49,
+        });
+        fireEvent.keyDown(inputElement, {
+          key: '2',
+          code: 'Digit2',
+          keyCode: 50,
+        });
 
         jest.runAllTimers();
       });
@@ -481,7 +486,9 @@ describe('<Input tags="default" />', () => {
 
   describe('control', () => {
     it('uncontrolled', () => {
-      const { getHostHTMLElement } = render(<Input mode="default" defaultValue="foo" />);
+      const { getHostHTMLElement } = render(
+        <Input mode="default" defaultValue="foo" />,
+      );
       const element = getHostHTMLElement();
       const inputElement = getInputElement(element);
 
@@ -532,26 +539,23 @@ describe('<Input mode="tags" />', () => {
     cleanupHook();
   });
 
-  const stringifyTags = (element: Element) => JSON.stringify(
-    Array
-      .from(element.querySelectorAll('.mzn-tag__label'))
-      .filter((tag) => tag)
-      .map((tag) => tag.textContent) as string[],
+  const stringifyTags = (element: Element) =>
+    JSON.stringify(
+      Array.from(element.querySelectorAll('.mzn-tag__label'))
+        .filter((tag) => tag)
+        .map((tag) => tag.textContent) as string[],
+    );
+
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Input ref={ref} mode="tags" />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Input ref={ref} mode="tags" />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<Input inputRef={ref} mode="tags" />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<Input inputRef={ref} mode="tags" />),
-  );
-
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Input className={className} mode="tags" />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Input className={className} mode="tags" />),
   );
 
   it('should bind tagsMode class', () => {
@@ -562,10 +566,14 @@ describe('<Input mode="tags" />', () => {
   });
 
   it('should bind tagsModeInputOnTop class', () => {
-    const { getHostHTMLElement } = render(<Input mode="tags" tagsProps={{ inputPosition: 'top' }} />);
+    const { getHostHTMLElement } = render(
+      <Input mode="tags" tagsProps={{ inputPosition: 'top' }} />,
+    );
     const element = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-input__tags-mode__input-on-top')).toBeTruthy();
+    expect(
+      element.classList.contains('mzn-input__tags-mode__input-on-top'),
+    ).toBeTruthy();
   });
 
   it('props should pass to TextField', () => {
@@ -599,7 +607,9 @@ describe('<Input mode="tags" />', () => {
 
   describe('prop: initialTagsValue', () => {
     function testClearable(element: HTMLElement) {
-      const clearIconElement = element.querySelector('.mzn-text-field__clear-icon');
+      const clearIconElement = element.querySelector(
+        '.mzn-text-field__clear-icon',
+      );
 
       fireEvent.click(clearIconElement!);
 
@@ -767,11 +777,7 @@ describe('<Input mode="tags" />', () => {
     });
 
     const { getHostHTMLElement } = render(
-      <Input
-        clearable
-        mode="tags"
-        tagsProps={{ onTagsChange }}
-      />,
+      <Input clearable mode="tags" tagsProps={{ onTagsChange }} />,
     );
 
     const element = getHostHTMLElement();
@@ -816,8 +822,9 @@ describe('<Input mode="tags" />', () => {
       />,
     );
 
-    const closeButtonElements = Array.from(document
-      .documentElement.getElementsByClassName('mzn-tag__close-icon'));
+    const closeButtonElements = Array.from(
+      document.documentElement.getElementsByClassName('mzn-tag__close-icon'),
+    );
 
     act(() => {
       fireEvent.click(closeButtonElements[0]);

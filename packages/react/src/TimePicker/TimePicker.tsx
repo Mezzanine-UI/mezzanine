@@ -24,23 +24,21 @@ import {
 import TimePickerPanel, { TimePickerPanelProps } from './TimePickerPanel';
 
 export interface TimePickerProps
-  extends
-  Omit<TimePickerPanelProps,
-  | 'onConfirm'
-  >,
-  Omit<PickerTriggerProps,
-  | 'anchor'
-  | 'defaultValue'
-  | 'inputRef'
-  | 'onChange'
-  | 'onClear'
-  | 'onClick'
-  | 'onIconClick'
-  | 'onKeyDown'
-  | 'open'
-  | 'suffixActionIcon'
-  | 'value'
-  > {
+  extends Omit<TimePickerPanelProps, 'onConfirm'>,
+    Omit<
+      PickerTriggerProps,
+      | 'anchor'
+      | 'defaultValue'
+      | 'inputRef'
+      | 'onChange'
+      | 'onClear'
+      | 'onClick'
+      | 'onIconClick'
+      | 'onKeyDown'
+      | 'open'
+      | 'suffixActionIcon'
+      | 'value'
+    > {
   /**
    * Default value for time picker.
    */
@@ -52,7 +50,7 @@ export interface TimePickerProps
   /**
    * A function that fires when panel toggled. Receive open status in boolean format as props.
    */
-  onPanelToggle?: (open: boolean) => void
+  onPanelToggle?: (open: boolean) => void;
 }
 
 /**
@@ -67,9 +65,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       required: requiredFromFormControl,
       severity,
     } = useContext(FormControlContext) || {};
-    const {
-      defaultTimeFormat,
-    } = useCalendarContext();
+    const { defaultTimeFormat } = useCalendarContext();
     const {
       className,
       clearable = true,
@@ -112,23 +108,29 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     /** Panel open control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
-    const onPanelToggle = useCallback((nextOpen: boolean) => {
-      if (!preventOpen) {
-        setOpen(nextOpen);
+    const onPanelToggle = useCallback(
+      (nextOpen: boolean) => {
+        if (!preventOpen) {
+          setOpen(nextOpen);
 
-        if (onPanelToggleProp) {
-          onPanelToggleProp(nextOpen);
+          if (onPanelToggleProp) {
+            onPanelToggleProp(nextOpen);
+          }
         }
-      }
-    }, [onPanelToggleProp, preventOpen]);
+      },
+      [onPanelToggleProp, preventOpen],
+    );
 
-    const onFocus = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onFocusProp) {
-        onFocusProp(event);
-      }
+    const onFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onFocusProp) {
+          onFocusProp(event);
+        }
 
-      onPanelToggle(true);
-    }, [onFocusProp, onPanelToggle]);
+        onPanelToggle(true);
+      },
+      [onFocusProp, onPanelToggle],
+    );
 
     /** Controlling input value and bind change handler */
     const inputRef = useRef<HTMLInputElement>(null);
@@ -157,25 +159,33 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     }, [internalValue, onChangeProp, onPanelToggle]);
 
     /** Bind input props */
-    const onResolvedKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      if (onKeyDownProp) {
-        onKeyDownProp(event);
-      }
+    const onResolvedKeyDown = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        if (onKeyDownProp) {
+          onKeyDownProp(event);
+        }
 
-      onKeyDown(event);
+        onKeyDown(event);
 
-      if (event.key === 'Enter') {
-        onConfirm();
-      }
-    }, [onConfirm, onKeyDown, onKeyDownProp]);
+        if (event.key === 'Enter') {
+          onConfirm();
+        }
+      },
+      [onConfirm, onKeyDown, onKeyDownProp],
+    );
 
-    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onBlurProp) {
-        onBlurProp(event);
-      }
+    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onBlurProp) {
+          onBlurProp(event);
+        }
 
-      onBlur(event);
-    }, [onBlur, onBlurProp]);
+        onBlur(event);
+      },
+      [onBlur, onBlurProp],
+    );
 
     const resolvedInputProps = {
       ...restInputProp,
@@ -224,12 +234,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       onPanelToggle(!open);
     };
 
-    const suffixActionIcon = (
-      <Icon
-        icon={ClockIcon}
-        onClick={onIconClick}
-      />
-    );
+    const suffixActionIcon = <Icon icon={ClockIcon} onClick={onIconClick} />;
 
     return (
       <>

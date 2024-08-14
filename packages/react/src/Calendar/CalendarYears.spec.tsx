@@ -1,25 +1,14 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
-import {
-  CalendarConfigProvider,
-  CalendarYears,
-  CalendarYearsProps,
-} from '.';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
+import { CalendarConfigProvider, CalendarYears, CalendarYearsProps } from '.';
 
 describe('<CalendarYears />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarYears
           referenceDate={moment().format('YYYY-MM-DD')}
@@ -43,7 +32,8 @@ describe('<CalendarYears />', () => {
   describe('prop: isYearDisabled', () => {
     it('should disable year when matching the condition', () => {
       const today = moment();
-      const isYearDisabled: CalendarYearsProps['isYearDisabled'] = (date) => today.isSame(date, 'year');
+      const isYearDisabled: CalendarYearsProps['isYearDisabled'] = (date) =>
+        today.isSame(date, 'year');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -56,7 +46,9 @@ describe('<CalendarYears />', () => {
 
       const buttonElement = getByText(`${today.year()}`);
 
-      expect(buttonElement?.classList.contains('mzn-calendar-button--disabled')).toBe(true);
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--disabled'),
+      ).toBe(true);
       expect(buttonElement?.getAttribute('aria-disabled')).toBe('true');
     });
   });
@@ -66,9 +58,8 @@ describe('<CalendarYears />', () => {
       const today = moment();
       const lastYear = moment().year(today.year() - 1);
       const nextYear = moment().year(today.year() + 1);
-      const isYearInRange: CalendarYearsProps['isYearInRange'] = (date) => (
-        moment(date).isBetween(lastYear, nextYear, undefined, '[]')
-      );
+      const isYearInRange: CalendarYearsProps['isYearInRange'] = (date) =>
+        moment(date).isBetween(lastYear, nextYear, undefined, '[]');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -81,7 +72,9 @@ describe('<CalendarYears />', () => {
 
       const buttonElement = getByText(`${today.year()}`);
 
-      expect(buttonElement?.classList.contains('mzn-calendar-button--inRange')).toBe(true);
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--inRange'),
+      ).toBe(true);
     });
   });
 
@@ -93,7 +86,9 @@ describe('<CalendarYears />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onclick).toBe(null);
@@ -131,7 +126,9 @@ describe('<CalendarYears />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onmouseenter).toBe(null);
@@ -175,7 +172,9 @@ describe('<CalendarYears />', () => {
       );
       const buttonElement = getByText(`${moment(value[0]).year()}`);
 
-      expect(buttonElement?.classList.contains('mzn-calendar-button--active')).toBe(true);
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--active'),
+      ).toBe(true);
     });
   });
 });

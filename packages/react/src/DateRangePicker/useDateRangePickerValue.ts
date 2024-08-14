@@ -1,13 +1,23 @@
 import { DateType } from '@mezzanine-ui/core/calendar';
-import { RangePickerPickingValue, RangePickerValue } from '@mezzanine-ui/core/picker';
 import {
-  ChangeEventHandler, KeyboardEventHandler, useMemo, useState,
+  RangePickerPickingValue,
+  RangePickerValue,
+} from '@mezzanine-ui/core/picker';
+import {
+  ChangeEventHandler,
+  KeyboardEventHandler,
+  useMemo,
+  useState,
 } from 'react';
-import { useRangePickerValue, UseRangePickerValueProps } from '../Picker/useRangePickerValue';
+import {
+  useRangePickerValue,
+  UseRangePickerValueProps,
+} from '../Picker/useRangePickerValue';
 import { DateRangePickerCalendarProps } from './DateRangePickerCalendar';
 import { useCalendarContext } from '../Calendar';
 
-export interface UseDateRangePickerValueProps extends Omit<UseRangePickerValueProps, 'onChange'> {
+export interface UseDateRangePickerValueProps
+  extends Omit<UseRangePickerValueProps, 'onChange'> {
   mode?: DateRangePickerCalendarProps['mode'];
   onChange?: (value?: RangePickerValue) => void;
 }
@@ -21,9 +31,7 @@ export function useDateRangePickerValue({
   onChange: onChangeProp,
   value: valueProp,
 }: UseDateRangePickerValueProps) {
-  const {
-    addDay,
-  } = useCalendarContext();
+  const { addDay } = useCalendarContext();
   const {
     inputFromValue,
     inputToValue,
@@ -47,13 +55,17 @@ export function useDateRangePickerValue({
 
   const [hoverValue, setHoverValue] = useState<DateType | undefined>(undefined);
 
-  const onSyncHoverValueInputFromChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onSyncHoverValueInputFromChange: ChangeEventHandler<
+    HTMLInputElement
+  > = (event) => {
     onInputFromChange(event);
 
     setHoverValue(undefined);
   };
 
-  const onSyncHoverValueInputToChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const onSyncHoverValueInputToChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onInputToChange(event);
 
     setHoverValue(undefined);
@@ -61,9 +73,10 @@ export function useDateRangePickerValue({
 
   const onCalendarChange = (val?: DateType) => {
     const firstVal = from || to;
-    const newValue = (from && to) || (!from && !to)
-      ? [val, undefined] as RangePickerPickingValue
-      : [firstVal, val] as RangePickerPickingValue;
+    const newValue =
+      (from && to) || (!from && !to)
+        ? ([val, undefined] as RangePickerPickingValue)
+        : ([firstVal, val] as RangePickerPickingValue);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const [sortedFrom, sortedTo] = onChange(newValue, {
@@ -106,7 +119,9 @@ export function useDateRangePickerValue({
     onChangeProp?.(undefined);
   };
 
-  const onFromKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const onFromKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onFromKeyDown(event);
 
     if (event.key === 'Enter' && from && to) {
@@ -118,7 +133,9 @@ export function useDateRangePickerValue({
     }
   };
 
-  const onToKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (event) => {
+  const onToKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     onToKeyDown(event);
 
     if (event.key === 'Enter' && from && to) {

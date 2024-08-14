@@ -1,15 +1,28 @@
 import { CSSProperties } from 'react';
 import { TransitionMode } from './Transition';
-import { GetTransitionStyleProps, getTransitionStyleProps, TransitionStyleProps } from './getTransitionStyleProps';
+import {
+  GetTransitionStyleProps,
+  getTransitionStyleProps,
+  TransitionStyleProps,
+} from './getTransitionStyleProps';
 
 export interface UseSetNodeTransitionProps extends GetTransitionStyleProps {
   properties: (
     | string
-    | [ string, (props: TransitionStyleProps, mode: TransitionMode) => TransitionStyleProps]
+    | [
+        string,
+        (
+          props: TransitionStyleProps,
+          mode: TransitionMode,
+        ) => TransitionStyleProps,
+      ]
   )[];
 }
 
-export function useSetNodeTransition(props: UseSetNodeTransitionProps, style?: CSSProperties) {
+export function useSetNodeTransition(
+  props: UseSetNodeTransitionProps,
+  style?: CSSProperties,
+) {
   /* eslint-disable no-param-reassign */
   const setNodeTransition = (node: HTMLElement, mode: TransitionMode) => {
     const transitionProps = getTransitionStyleProps(mode, props);
@@ -26,14 +39,13 @@ export function useSetNodeTransition(props: UseSetNodeTransitionProps, style?: C
           const [, overrideTransitionProps] = propertyOrConfig;
 
           [property] = propertyOrConfig;
-          resolvedTransitionProps = overrideTransitionProps(resolvedTransitionProps, mode);
+          resolvedTransitionProps = overrideTransitionProps(
+            resolvedTransitionProps,
+            mode,
+          );
         }
 
-        const {
-          delay,
-          duration,
-          timingFunction,
-        } = resolvedTransitionProps;
+        const { delay, duration, timingFunction } = resolvedTransitionProps;
 
         return `${property} ${duration}ms ${timingFunction} ${delay}ms`;
       })

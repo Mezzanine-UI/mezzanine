@@ -1,13 +1,6 @@
-import {
-  TableColumn,
-} from '@mezzanine-ui/core/table';
-import {
-  cleanupHook,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { TableColumn } from '@mezzanine-ui/core/table';
+import { cleanupHook, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { TableDataContext } from './TableContext';
 import TableExpandedTable from './TableExpandedTable';
 
@@ -17,48 +10,60 @@ type DataType = {
   age: number;
 };
 
-const dataSource: DataType[] = [{
-  key: 'foo',
-  name: 'foo',
-  age: 15,
-}, {
-  key: 'bar',
-  name: 'bar',
-  age: 16,
-}];
+const dataSource: DataType[] = [
+  {
+    key: 'foo',
+    name: 'foo',
+    age: 15,
+  },
+  {
+    key: 'bar',
+    name: 'bar',
+    age: 16,
+  },
+];
 
-const columns: TableColumn<DataType>[] = [{
-  key: 'name',
-  dataIndex: 'name',
-  title: 'name',
-  width: 80,
-  align: 'center',
-}, {
-  key: 'age',
-  dataIndex: 'age',
-  title: 'foo',
-  ellipsis: false,
-}];
+const columns: TableColumn<DataType>[] = [
+  {
+    key: 'name',
+    dataIndex: 'name',
+    title: 'name',
+    width: 80,
+    align: 'center',
+  },
+  {
+    key: 'age',
+    dataIndex: 'age',
+    title: 'foo',
+    ellipsis: false,
+  },
+];
 
-const expandedSources: DataType[] = [{
-  key: 'foo expanded',
-  name: 'foo expanded',
-  age: 14,
-}, {
-  key: 'bar expanded',
-  name: 'bar expanded',
-  age: 17,
-}];
+const expandedSources: DataType[] = [
+  {
+    key: 'foo expanded',
+    name: 'foo expanded',
+    age: 14,
+  },
+  {
+    key: 'bar expanded',
+    name: 'bar expanded',
+    age: 17,
+  },
+];
 
-const expandedColumns: TableColumn<DataType>[] = [{
-  key: 'name',
-  dataIndex: 'name',
-  title: '',
-}, {
-  key: 'name',
-  title: '',
-  render: () => 'render name',
-}];
+const expandedColumns: TableColumn<DataType>[] = [
+  {
+    key: 'name',
+    dataIndex: 'name',
+    title: '',
+  },
+  {
+    key: 'name',
+    title: '',
+    render: () => 'render name',
+  },
+];
 
 const renderedExpandedContent = {
   columns: expandedColumns,
@@ -68,16 +73,18 @@ const renderedExpandedContent = {
 describe('<TableExpandedTable />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <TableDataContext.Provider
         value={{
           columns,
           dataSource,
         }}
       >
-        <TableExpandedTable ref={ref} renderedExpandedContent={renderedExpandedContent} />
+        <TableExpandedTable
+          ref={ref}
+          renderedExpandedContent={renderedExpandedContent}
+        />
       </TableDataContext.Provider>,
     ),
   );
@@ -93,7 +100,10 @@ describe('<TableExpandedTable />', () => {
         }}
       >
         <TableExpandedTable
-          renderedExpandedContent={{ ...renderedExpandedContent, className: customExpandedRowClass }}
+          renderedExpandedContent={{
+            ...renderedExpandedContent,
+            className: customExpandedRowClass,
+          }}
         />
       </TableDataContext.Provider>,
     );
@@ -111,7 +121,9 @@ describe('<TableExpandedTable />', () => {
     it('should have custom class name when rowClassName in renderedExpandedContent is given', () => {
       const rowClassRegex = new RegExp(customExpandedRowClass, 'g');
 
-      expect(firstRow?.getAttribute('class')?.match(rowClassRegex)).not.toBeNull();
+      expect(
+        firstRow?.getAttribute('class')?.match(rowClassRegex),
+      ).not.toBeNull();
     });
 
     const rowColumns = firstRow.querySelectorAll(
@@ -125,12 +137,23 @@ describe('<TableExpandedTable />', () => {
       const firstColumnCell = firstColumn.querySelector('.mzn-table__cell');
 
       const columnStyleRegex = new RegExp(`width: ${columns[0].width}px`, 'g');
-      const cellStyleRegex = new RegExp(`justify-content: ${columns[0].align}`, 'g');
+      const cellStyleRegex = new RegExp(
+        `justify-content: ${columns[0].align}`,
+        'g',
+      );
 
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeUndefined();
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeNull();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeUndefined();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeNull();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeNull();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeNull();
     });
 
     it('should render custom content when render given', () => {
@@ -149,7 +172,9 @@ describe('<TableExpandedTable />', () => {
           dataSource,
         }}
       >
-        <TableExpandedTable renderedExpandedContent={{ dataSource: expandedSources }} />
+        <TableExpandedTable
+          renderedExpandedContent={{ dataSource: expandedSources }}
+        />
       </TableDataContext.Provider>,
     );
 
@@ -190,9 +215,16 @@ describe('<TableExpandedTable />', () => {
     const firstColumnCell = firstColumn.querySelector('.mzn-table__cell');
 
     const columnStyleRegex = new RegExp(`width: ${columns[0].width}px`, 'g');
-    const cellStyleRegex = new RegExp(`justify-content: ${columns[0].align}`, 'g');
+    const cellStyleRegex = new RegExp(
+      `justify-content: ${columns[0].align}`,
+      'g',
+    );
 
-    expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).toBeUndefined();
-    expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).toBeUndefined();
+    expect(
+      firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+    ).toBeUndefined();
+    expect(
+      firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+    ).toBeUndefined();
   });
 });

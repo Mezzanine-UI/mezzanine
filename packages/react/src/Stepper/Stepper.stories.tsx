@@ -14,23 +14,29 @@ export default {
 const exampleSteps = ['步驟一', '步驟二', '步驟三'];
 
 export const Basic = () => {
-  const completedIconProps : IconProps = { icon: PlusIcon };
+  const completedIconProps: IconProps = { icon: PlusIcon };
 
   return (
     <Stepper activeStep={1}>
       <Step key="step1" title="step1" />
       <Step key="step2" title="step2" />
       <Step key="step3" title="step3" />
-      <Step key="step4" title="step4" completedIconProps={completedIconProps} completed />
+      <Step
+        key="step4"
+        title="step4"
+        completedIconProps={completedIconProps}
+        completed
+      />
     </Stepper>
   );
 };
 
 export const State = () => (
-  <div style={{
-    boxSizing: 'border-box',
-    width: '100%',
-  }}
+  <div
+    style={{
+      boxSizing: 'border-box',
+      width: '100%',
+    }}
   >
     {Array.from(Array(5)).map((_, idx) => (
       <Stepper key={`${idx.toString()}`} activeStep={idx - 1}>
@@ -43,12 +49,13 @@ export const State = () => (
 );
 
 interface PlaygroundArgs {
-  stepCount: number,
-  titleVariant: any,
+  stepCount: number;
+  titleVariant: any;
 }
 
-export const Playground : StoryFn<PlaygroundArgs> = ({
-  stepCount, titleVariant,
+export const Playground: StoryFn<PlaygroundArgs> = ({
+  stepCount,
+  titleVariant,
 }) => {
   const [current, setCurrent] = useState(-1);
 
@@ -77,11 +84,7 @@ export const Playground : StoryFn<PlaygroundArgs> = ({
         activeStepIndex:
         {current}
       </Typography>
-      <ButtonGroup
-        color="primary"
-        variant="contained"
-        size="medium"
-      >
+      <ButtonGroup color="primary" variant="contained" size="medium">
         <Button onClick={prev}>Prev</Button>
         <Button onClick={next}>Next</Button>
       </ButtonGroup>

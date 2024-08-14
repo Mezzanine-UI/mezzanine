@@ -1,12 +1,11 @@
-import {
-  timePanelClasses as classes,
-} from '@mezzanine-ui/core/time-panel';
+import { timePanelClasses as classes } from '@mezzanine-ui/core/time-panel';
 import { forwardRef, ReactNode } from 'react';
 import Button from '../Button';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface TimePanelActionProps extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>{
+export interface TimePanelActionProps
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Display name of the confirm button.
    * @default 'OK'
@@ -23,22 +22,10 @@ export interface TimePanelActionProps extends Omit<NativeElementPropsWithoutKeyA
  */
 const TimePanelAction = forwardRef<HTMLDivElement, TimePanelActionProps>(
   function TimePanelAction(props, ref) {
-    const {
-      className,
-      confirmText = 'OK',
-      onConfirm,
-      ...rest
-    } = props;
+    const { className, confirmText = 'OK', onConfirm, ...rest } = props;
 
     return (
-      <div
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.action,
-          className,
-        )}
-      >
+      <div {...rest} ref={ref} className={cx(classes.action, className)}>
         <Button variant="contained" size="small" onClick={onConfirm}>
           {confirmText}
         </Button>

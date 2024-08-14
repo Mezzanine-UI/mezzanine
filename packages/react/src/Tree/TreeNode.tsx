@@ -16,10 +16,9 @@ import { TreeNodeData } from './typings';
 import { MezzanineConfig } from '../Provider/context';
 import Loading from '../Loading/Loading';
 
-export type TreeNodeElementProps = Omit<NativeElementPropsWithoutKeyAndRef<'li'>,
-| 'children'
-| 'value'
-| 'onSelect'
+export type TreeNodeElementProps = Omit<
+  NativeElementPropsWithoutKeyAndRef<'li'>,
+  'children' | 'value' | 'onSelect'
 >;
 
 export interface TreeNodeProps extends TreeNodeData, TreeNodeElementProps {
@@ -58,9 +57,7 @@ export interface TreeNodeProps extends TreeNodeData, TreeNodeElementProps {
  */
 const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
   function TreeNode(props, ref) {
-    const {
-      size: globalSize,
-    } = useContext(MezzanineConfig);
+    const { size: globalSize } = useContext(MezzanineConfig);
     const {
       children,
       className,
@@ -91,8 +88,17 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       return 'input2';
     }, [size]);
 
-    const onExpand = onExpandProp ? () => { onExpandProp(value); } : undefined;
-    const onSelect = selectable && onSelectProp && !disabled ? () => { onSelectProp(value); } : undefined;
+    const onExpand = onExpandProp
+      ? () => {
+          onExpandProp(value);
+        }
+      : undefined;
+    const onSelect =
+      selectable && onSelectProp && !disabled
+        ? () => {
+            onSelectProp(value);
+          }
+        : undefined;
 
     const mayHaveChildren = children || dynamicNodesFetching;
 
@@ -100,69 +106,50 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       <li
         ref={ref}
         {...restRootProps}
-        className={cx(
-          classes.node,
-          classes.nodeSize(size),
-          className,
-        )}
+        className={cx(classes.node, classes.nodeSize(size), className)}
       >
         <div className={classes.nodeStem}>
-          {
-            mayHaveChildren ? (
-              <Icon
-                icon={CaretRightIcon}
-                className={cx(
-                  classes.nodeCaret,
-                  {
-                    [classes.nodeCaretExpanded]: expanded,
-                  },
-                )}
-                role="button"
-                onClick={onExpand}
-              />
-            ) : (
-              <div />
-            )
-          }
-          {
-            multiple
-              ? (
-                <Checkbox
-                  checked={!!selected}
-                  disabled={disabled}
-                  indeterminate={indeterminate}
-                  onChange={onSelect}
-                  size={size}
-                  value={`${value}`}
-                >
-                  {label}
-                </Checkbox>
-              )
-              : (
-                <Typography
-                  component="span"
-                  variant={variant}
-                  onClick={onSelect}
-                  className={cx(
-                    classes.nodeLabel,
-                    {
-                      [classes.nodeLabelSelectable]: !children && selectable,
-                      [classes.nodeLabelIndeterminate]: indeterminate,
-                      [classes.nodeLabelActive]: selected,
-                      [classes.nodeLabelDisabled]: disabled,
-                    },
-                  )}
-                >
-                  {label}
-                </Typography>
-              )
-          }
+          {mayHaveChildren ? (
+            <Icon
+              icon={CaretRightIcon}
+              className={cx(classes.nodeCaret, {
+                [classes.nodeCaretExpanded]: expanded,
+              })}
+              role="button"
+              onClick={onExpand}
+            />
+          ) : (
+            <div />
+          )}
+          {multiple ? (
+            <Checkbox
+              checked={!!selected}
+              disabled={disabled}
+              indeterminate={indeterminate}
+              onChange={onSelect}
+              size={size}
+              value={`${value}`}
+            >
+              {label}
+            </Checkbox>
+          ) : (
+            <Typography
+              component="span"
+              variant={variant}
+              onClick={onSelect}
+              className={cx(classes.nodeLabel, {
+                [classes.nodeLabelSelectable]: !children && selectable,
+                [classes.nodeLabelIndeterminate]: indeterminate,
+                [classes.nodeLabelActive]: selected,
+                [classes.nodeLabelDisabled]: disabled,
+              })}
+            >
+              {label}
+            </Typography>
+          )}
         </div>
         {mayHaveChildren && (
-          <Collapse
-            in={expanded}
-            appear={false}
-          >
+          <Collapse in={expanded} appear={false}>
             {children || <Loading loading iconProps={{ size: 16 }} />}
           </Collapse>
         )}

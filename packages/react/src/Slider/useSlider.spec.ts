@@ -134,15 +134,18 @@ describe('useSlider()', () => {
       });
 
       const onChange = jest.fn();
-      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(useSlider, {
-        initialProps: {
-          max: 100,
-          min: 0,
-          step: 1,
-          value: [0, 100] as RangeSliderValue,
-          onChange,
-        } as unknown as UseRangeSliderProps,
-      });
+      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(
+        useSlider,
+        {
+          initialProps: {
+            max: 100,
+            min: 0,
+            step: 1,
+            value: [0, 100] as RangeSliderValue,
+            onChange,
+          } as unknown as UseRangeSliderProps,
+        },
+      );
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 
@@ -166,15 +169,18 @@ describe('useSlider()', () => {
 
     it('should not invoke onChange if railRef is not binding to HTMLElement', () => {
       const onChange = jest.fn();
-      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(useSlider, {
-        initialProps: {
-          max: 100,
-          min: 0,
-          step: 1,
-          value: [0, 100] as RangeSliderValue,
-          onChange,
-        } as unknown as UseRangeSliderProps,
-      });
+      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(
+        useSlider,
+        {
+          initialProps: {
+            max: 100,
+            min: 0,
+            step: 1,
+            value: [0, 100] as RangeSliderValue,
+            onChange,
+          } as unknown as UseRangeSliderProps,
+        },
+      );
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 

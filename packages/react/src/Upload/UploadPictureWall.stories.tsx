@@ -7,7 +7,9 @@ export default {
 } as Meta;
 
 function delay(ms: number) {
-  return new Promise((resolve) => { setTimeout(resolve, ms); });
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 function upload(file: File) {
@@ -55,7 +57,10 @@ export const Single: StoryFn<SingleStoryArgs> = ({
   onUploadSuccess,
   parallel,
 }) => {
-  const uploadImage = async (file: File, setProgress: (progress: number) => void) => {
+  const uploadImage = async (
+    file: File,
+    setProgress: (progress: number) => void,
+  ) => {
     setProgress(35);
 
     await delay(1000);
@@ -94,7 +99,11 @@ export const Single: StoryFn<SingleStoryArgs> = ({
 
 Single.args = {
   accept: 'image/*',
-  defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
+  defaultValues: [
+    'https://rytass.com/logo.png',
+    'https://rytass.com/logo.png',
+    'https://rytass.com/logo.png',
+  ],
   defaultUploadLabel: 'Upload',
   defaultUploadingLabel: 'Uploading...',
   defaultUploadErrorLabel: 'Upload Failed',
@@ -137,7 +146,10 @@ export const Multiple: StoryFn<MultipleStoryArgs> = ({
   onError,
   onUploadSuccess,
 }) => {
-  const uploadImages = async (files: File[], setProgress: (progress: number) => void) => {
+  const uploadImages = async (
+    files: File[],
+    setProgress: (progress: number) => void,
+  ) => {
     setProgress(25);
 
     await delay(1000);
@@ -174,7 +186,11 @@ export const Multiple: StoryFn<MultipleStoryArgs> = ({
 
 Multiple.args = {
   accept: 'image/*',
-  defaultValues: ['https://rytass.com/logo.png', 'https://rytass.com/logo.png', 'https://rytass.com/logo.png'],
+  defaultValues: [
+    'https://rytass.com/logo.png',
+    'https://rytass.com/logo.png',
+    'https://rytass.com/logo.png',
+  ],
   defaultUploadLabel: 'Upload',
   defaultUploadingLabel: 'Uploading...',
   defaultUploadErrorLabel: 'Upload Failed',

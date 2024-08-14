@@ -32,9 +32,7 @@ export interface TagProps extends NativeElementPropsWithoutKeyAndRef<'span'> {
  * The react component for `mezzanine` tag.
  */
 const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
+  const { size: globalSize } = useContext(MezzanineConfig);
   const {
     children,
     className,

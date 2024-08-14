@@ -1,9 +1,5 @@
 import { useState } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,7 +7,11 @@ import {
 import Switch from '.';
 import { FormField } from '../Form';
 
-function testChecked(element: HTMLElement, inputElement: HTMLInputElement, checked: boolean) {
+function testChecked(
+  element: HTMLElement,
+  inputElement: HTMLInputElement,
+  checked: boolean,
+) {
   expect(element.classList.contains('mzn-switch--checked')).toBe(checked);
   expect(inputElement.getAttribute('aria-checked')).toBe(`${checked}`);
 }
@@ -25,14 +25,12 @@ function testInputDisabled(input: HTMLInputElement, disabled: boolean) {
 describe('<Switch />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLSpanElement,
-    (ref) => render(<Switch ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
+    render(<Switch ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Switch className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Switch className={className} />),
   );
 
   describe('prop: checked', () => {
@@ -56,7 +54,9 @@ describe('<Switch />', () => {
         : 'should override defaultChecked=true if checked=false';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<Switch checked={checked} defaultChecked={!checked} />);
+        const { getHostHTMLElement } = render(
+          <Switch checked={checked} defaultChecked={!checked} />,
+        );
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
 
@@ -82,7 +82,9 @@ describe('<Switch />', () => {
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
 
-        expect(element.classList.contains('mzn-switch--disabled')).toBe(disabled);
+        expect(element.classList.contains('mzn-switch--disabled')).toBe(
+          disabled,
+        );
         testInputDisabled(inputElement, disabled);
       });
     });
@@ -222,7 +224,7 @@ describe('<Switch />', () => {
     });
 
     it('sync between uncontrolled and controlled', () => {
-      function TestingContainer({ controlled } : { controlled: boolean; }) {
+      function TestingContainer({ controlled }: { controlled: boolean }) {
         const [checked, setChecked] = useState(false);
 
         return (
@@ -234,7 +236,9 @@ describe('<Switch />', () => {
         );
       }
 
-      const { getHostHTMLElement, rerender } = render(<TestingContainer controlled={false} />);
+      const { getHostHTMLElement, rerender } = render(
+        <TestingContainer controlled={false} />,
+      );
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 

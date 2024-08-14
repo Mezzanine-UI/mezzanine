@@ -4,7 +4,6 @@
 **/dist
 /coverage
 **/coverage
-**/*.ts
-**/*.tsx
 **/*.css
 **/*.scss
+/.nx/workspace-data

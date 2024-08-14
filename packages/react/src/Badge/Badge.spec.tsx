@@ -1,18 +1,12 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+import { cleanup, render } from '../../__test-utils__';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
 import Badge from '.';
 
 describe('<Badge />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Badge className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Badge className={className} />),
   );
 
   it('should bind content class', () => {
@@ -41,7 +35,9 @@ describe('<Badge />', () => {
     it('should render overflowCount with a "+" sign if count > overflowCount', () => {
       const count = 999;
       const overflowCount = 99;
-      const { getHostHTMLElement } = render(<Badge overflowCount={overflowCount}>{count}</Badge>);
+      const { getHostHTMLElement } = render(
+        <Badge overflowCount={overflowCount}>{count}</Badge>,
+      );
       const element = getHostHTMLElement();
 
       expect(element.textContent).toBe(`${overflowCount}+`);
@@ -50,14 +46,20 @@ describe('<Badge />', () => {
     it('should render count if count <= overflowCount', () => {
       const count = 5;
       const overflowCount = 99;
-      const { getHostHTMLElement } = render(<Badge overflowCount={overflowCount}>{count}</Badge>);
+      const { getHostHTMLElement } = render(
+        <Badge overflowCount={overflowCount}>{count}</Badge>,
+      );
       const element = getHostHTMLElement();
 
       expect(element.textContent).toBe(`${count}`);
     });
 
     it('should just wrap children', () => {
-      const { getHostHTMLElement } = render(<Badge><div className="foo">foo</div></Badge>);
+      const { getHostHTMLElement } = render(
+        <Badge>
+          <div className="foo">foo</div>
+        </Badge>,
+      );
       const element = getHostHTMLElement();
       const fooElement = element.querySelector('.foo');
 
@@ -83,10 +85,7 @@ describe('<Badge />', () => {
     it('should append dot class and render no children if dot=true', () => {
       const { getHostHTMLElement } = render(<Badge dot>0</Badge>);
       const element = getHostHTMLElement();
-      const {
-        firstElementChild,
-        childElementCount,
-      } = element;
+      const { firstElementChild, childElementCount } = element;
 
       expect(firstElementChild).toBe(null);
       expect(childElementCount).toBe(0);

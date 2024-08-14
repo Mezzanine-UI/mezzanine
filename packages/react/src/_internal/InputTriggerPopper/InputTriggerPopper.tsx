@@ -31,10 +31,7 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
       sameWidth,
       ...restPopperProps
     } = props;
-    const {
-      modifiers = [],
-      ...restPopperOptions
-    } = options || {};
+    const { modifiers = [], ...restPopperOptions } = options || {};
 
     const sameWidthModifier: Modifier<'sameWidth', Record<string, any>> = {
       name: 'sameWidth',
@@ -56,19 +53,12 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
     };
 
     return (
-      <Fade
-        {...fadeProps}
-        in={open}
-        ref={ref}
-      >
+      <Fade {...fadeProps} in={open} ref={ref}>
         <Popper
           {...restPopperProps}
           open
           anchor={anchor}
-          className={cx(
-            classes.host,
-            className,
-          )}
+          className={cx(classes.host, className)}
           /** Prevent event bubble (Because popper may use portal, then click away function would be buggy) */
           onClick={(e) => e.stopPropagation()}
           onTouchStart={(e) => e.stopPropagation()}

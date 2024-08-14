@@ -72,56 +72,41 @@ const dataset = [
   },
 ];
 
-export const Playground: StoryFn<PlaygroundStoryArgs> = ({
-  orientation,
-}) => (
-  <div style={{
-    height: '100vh',
-  }}
+export const Playground: StoryFn<PlaygroundStoryArgs> = ({ orientation }) => (
+  <div
+    style={{
+      height: '100vh',
+    }}
   >
     <AppBar orientation={orientation}>
       <AppBarSupport>
-        <Button
-          variant="contained"
-        >
-          Login
-        </Button>
-        <Button
-          variant="outlined"
-        >
-          Button
-        </Button>
+        <Button variant="contained">Login</Button>
+        <Button variant="outlined">Button</Button>
       </AppBarSupport>
       <AppBarMain>
-        <Navigation
-          orientation={orientation}
-        >
-          {
-            dataset.map((data) => (
-              data.subMenu ? (
-                <NavigationSubMenu
-                  title={data.text}
-                  icon={data.icon}
-                  key={data.text}
-                >
-                  {data.subMenu.map((subMenuItem) => (
-                    <NavigationItem
-                      icon={subMenuItem.icon}
-                      key={subMenuItem.text}
-                    >
-                      {subMenuItem.text}
-                    </NavigationItem>
-                  ))}
-                </NavigationSubMenu>
-              ) : (
-                <NavigationItem
-                  key={data.text}
-                  icon={data.icon}
-                >
-                  {data.text}
-                </NavigationItem>
-              )))
-          }
+        <Navigation orientation={orientation}>
+          {dataset.map((data) =>
+            data.subMenu ? (
+              <NavigationSubMenu
+                title={data.text}
+                icon={data.icon}
+                key={data.text}
+              >
+                {data.subMenu.map((subMenuItem) => (
+                  <NavigationItem
+                    icon={subMenuItem.icon}
+                    key={subMenuItem.text}
+                  >
+                    {subMenuItem.text}
+                  </NavigationItem>
+                ))}
+              </NavigationSubMenu>
+            ) : (
+              <NavigationItem key={data.text} icon={data.icon}>
+                {data.text}
+              </NavigationItem>
+            ),
+          )}
         </Navigation>
         <div
           style={{
@@ -144,14 +129,10 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
           }}
           icon={EyeIcon}
         />
-        <Typography
-          color="primary"
-          variant="h2"
-        >
+        <Typography color="primary" variant="h2">
           Eyes
         </Typography>
       </AppBarBrand>
-
     </AppBar>
   </div>
 );
@@ -167,29 +148,14 @@ export const WithDrawer = () => {
 
   return (
     <>
-      <Button
-        onClick={() => handleClick()}
-        variant="contained"
-      >
+      <Button onClick={() => handleClick()} variant="contained">
         OPEN
       </Button>
-      <Drawer
-        onClose={handleClose}
-        open={open}
-        placement="right"
-      >
+      <Drawer onClose={handleClose} open={open} placement="right">
         <AppBar orientation="vertical">
           <AppBarSupport>
-            <Button
-              variant="contained"
-            >
-              Login
-            </Button>
-            <Button
-              variant="outlined"
-            >
-              Button
-            </Button>
+            <Button variant="contained">Login</Button>
+            <Button variant="outlined">Button</Button>
           </AppBarSupport>
           <AppBarMain>
             <Input
@@ -197,35 +163,29 @@ export const WithDrawer = () => {
               prefix={<Icon icon={SearchIcon} />}
               clearable
             />
-            <Navigation
-              orientation="vertical"
-            >
-              {
-                dataset.map((data) => (
-                  data.subMenu ? (
-                    <NavigationSubMenu
-                      title={data.text}
-                      icon={data.icon}
-                      key={data.text}
-                    >
-                      {data.subMenu.map((subMenuItem) => (
-                        <NavigationItem
-                          icon={subMenuItem.icon}
-                          key={subMenuItem.text}
-                        >
-                          {subMenuItem.text}
-                        </NavigationItem>
-                      ))}
-                    </NavigationSubMenu>
-                  ) : (
-                    <NavigationItem
-                      key={data.text}
-                      icon={data.icon}
-                    >
-                      {data.text}
-                    </NavigationItem>
-                  )))
-              }
+            <Navigation orientation="vertical">
+              {dataset.map((data) =>
+                data.subMenu ? (
+                  <NavigationSubMenu
+                    title={data.text}
+                    icon={data.icon}
+                    key={data.text}
+                  >
+                    {data.subMenu.map((subMenuItem) => (
+                      <NavigationItem
+                        icon={subMenuItem.icon}
+                        key={subMenuItem.text}
+                      >
+                        {subMenuItem.text}
+                      </NavigationItem>
+                    ))}
+                  </NavigationSubMenu>
+                ) : (
+                  <NavigationItem key={data.text} icon={data.icon}>
+                    {data.text}
+                  </NavigationItem>
+                ),
+              )}
             </Navigation>
           </AppBarMain>
           <AppBarBrand>
@@ -241,7 +201,6 @@ export const WithDrawer = () => {
               icon={TimesIcon}
             />
           </AppBarBrand>
-
         </AppBar>
       </Drawer>
     </>
@@ -254,10 +213,7 @@ Playground.args = {
 
 Playground.argTypes = {
   orientation: {
-    options: [
-      'horizontal',
-      'vertical',
-    ],
+    options: ['horizontal', 'vertical'],
     control: {
       type: 'select',
     },

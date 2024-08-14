@@ -4,9 +4,7 @@ import {
   fireEvent,
   TestRenderer,
 } from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import Overlay from '../../Overlay';
 import SlideFadeOverlay from '.';
 
@@ -23,13 +21,20 @@ window.scrollTo = jest.fn();
 describe('<SlideFadeOverlay />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<SlideFadeOverlay ref={ref} open><div /></SlideFadeOverlay>),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
+      <SlideFadeOverlay ref={ref} open>
+        <div />
+      </SlideFadeOverlay>,
+    ),
   );
 
   it('should bind host class', () => {
-    render(<SlideFadeOverlay open><div /></SlideFadeOverlay>);
+    render(
+      <SlideFadeOverlay open>
+        <div />
+      </SlideFadeOverlay>,
+    );
 
     const element = document.querySelector('.mzn-overlay-with-slide-fade');
 
@@ -37,7 +42,11 @@ describe('<SlideFadeOverlay />', () => {
   });
 
   it('should render children', () => {
-    render(<SlideFadeOverlay open><div className="foo">bar</div></SlideFadeOverlay>);
+    render(
+      <SlideFadeOverlay open>
+        <div className="foo">bar</div>
+      </SlideFadeOverlay>,
+    );
 
     const element = document.querySelector('.foo');
 
@@ -46,7 +55,11 @@ describe('<SlideFadeOverlay />', () => {
 
   describe('prop: open', () => {
     it('should not render container if open=false', () => {
-      render(<SlideFadeOverlay open={false}><div /></SlideFadeOverlay>);
+      render(
+        <SlideFadeOverlay open={false}>
+          <div />
+        </SlideFadeOverlay>,
+      );
 
       const overlayElement = getOverlayElement();
 
@@ -139,11 +152,7 @@ describe('<SlideFadeOverlay />', () => {
       const onClose = jest.fn();
 
       render(
-        <SlideFadeOverlay
-          disableCloseOnBackdropClick
-          onClose={onClose}
-          open
-        >
+        <SlideFadeOverlay disableCloseOnBackdropClick onClose={onClose} open>
           <div />
         </SlideFadeOverlay>,
       );
@@ -175,11 +184,7 @@ describe('<SlideFadeOverlay />', () => {
       const onClose = jest.fn();
 
       render(
-        <SlideFadeOverlay
-          disableCloseOnEscapeKeyDown
-          onClose={onClose}
-          open
-        >
+        <SlideFadeOverlay disableCloseOnEscapeKeyDown onClose={onClose} open>
           <div />
         </SlideFadeOverlay>,
       );
@@ -194,22 +199,13 @@ describe('<SlideFadeOverlay />', () => {
 
       render(
         <>
-          <SlideFadeOverlay
-            open
-            onClose={onClose}
-          >
+          <SlideFadeOverlay open onClose={onClose}>
             <div />
           </SlideFadeOverlay>
-          <SlideFadeOverlay
-            open
-            onClose={onClose}
-          >
+          <SlideFadeOverlay open onClose={onClose}>
             <div />
           </SlideFadeOverlay>
-          <SlideFadeOverlay
-            open
-            onClose={onClose}
-          >
+          <SlideFadeOverlay open onClose={onClose}>
             <div />
           </SlideFadeOverlay>
         </>,

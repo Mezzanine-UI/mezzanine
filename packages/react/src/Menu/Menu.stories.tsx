@@ -7,11 +7,12 @@ export default {
 } as Meta;
 
 export const Sizes = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateColumns: 'repeat(3, 160px)',
-    gap: 60,
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateColumns: 'repeat(3, 160px)',
+      gap: 60,
+    }}
   >
     <ConfigProvider size="large">
       <Menu>
@@ -37,10 +38,7 @@ export const Sizes = () => (
 );
 
 export const WithDivider = () => (
-  <Menu
-    maxHeight={139}
-    style={{ width: 160 }}
-  >
+  <Menu maxHeight={139} style={{ width: 160 }}>
     <MenuItem>item 1</MenuItem>
     <MenuItem>item 2</MenuItem>
     <MenuItem>item 3</MenuItem>
@@ -50,11 +48,12 @@ export const WithDivider = () => (
 );
 
 export const Group = () => (
-  <div style={{
-    display: 'inline-grid',
-    gridTemplateColumns: 'repeat(3, 160px)',
-    gap: 60,
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gridTemplateColumns: 'repeat(3, 160px)',
+      gap: 60,
+    }}
   >
     <Menu size="large">
       <MenuItemGroup label="Group A">

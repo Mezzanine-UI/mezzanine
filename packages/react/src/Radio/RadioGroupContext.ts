@@ -8,4 +8,6 @@ export interface RadioGroupContextValue extends RadioGroupControlContextValue {
   size?: RadioSize;
 }
 
-export const RadioGroupContext = createContext<RadioGroupContextValue | undefined>(undefined);
+export const RadioGroupContext = createContext<
+  RadioGroupContextValue | undefined
+>(undefined);

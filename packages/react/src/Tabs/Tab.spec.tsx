@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,14 +8,12 @@ import { Tab } from '.';
 describe('<Tab />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLButtonElement,
-    (ref) => render(<Tab ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
+    render(<Tab ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Tab className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Tab className={className} />),
   );
 
   it('should wrap children by button', () => {
@@ -46,7 +41,9 @@ describe('<Tab />', () => {
         const { getHostHTMLElement } = render(<Tab active={active}>tab</Tab>);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains('mzn-tabs__tab--active')).toBe(active);
+        expect(element.classList.contains('mzn-tabs__tab--active')).toBe(
+          active,
+        );
       });
     });
   });
@@ -66,7 +63,9 @@ describe('<Tab />', () => {
 
     it('aria-disabled from props should not override', () => {
       const { getHostHTMLElement } = render(
-        <Tab aria-disabled={false} disabled>tab</Tab>,
+        <Tab aria-disabled={false} disabled>
+          tab
+        </Tab>,
       );
       const element = getHostHTMLElement();
 

@@ -16,7 +16,10 @@ export type NativeElement<T extends NativeElementTag> =
       ? E
       : unknown;
 
-export type ComponentPropsWithoutKeyAndRef<T extends ElementType> = Omit<ComponentPropsWithoutRef<T>, 'key'>;
+export type ComponentPropsWithoutKeyAndRef<T extends ElementType> = Omit<
+  ComponentPropsWithoutRef<T>,
+  'key'
+>;
 
 export type ComponentOverridableForwardRefComponentPropsFactory<
   VC extends NativeElementTag | JSXElementConstructor<any>,

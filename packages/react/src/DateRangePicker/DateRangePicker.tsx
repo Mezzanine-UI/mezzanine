@@ -15,45 +15,52 @@ import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
-import DateRangePickerCalendar, { DateRangePickerCalendarProps } from './DateRangePickerCalendar';
+import DateRangePickerCalendar, {
+  DateRangePickerCalendarProps,
+} from './DateRangePickerCalendar';
 import { FormControlContext } from '../Form';
 import { useDateRangePickerValue } from './useDateRangePickerValue';
-import { RangePickerTrigger, RangePickerTriggerProps, usePickerDocumentEventClose } from '../Picker';
+import {
+  RangePickerTrigger,
+  RangePickerTriggerProps,
+  usePickerDocumentEventClose,
+} from '../Picker';
 import Icon from '../Icon';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface DateRangePickerProps
-  extends
-  Pick<DateRangePickerCalendarProps,
-  | 'calendarProps'
-  | 'disabledMonthSwitch'
-  | 'disableOnNext'
-  | 'disableOnPrev'
-  | 'disabledYearSwitch'
-  | 'displayMonthLocale'
-  | 'fadeProps'
-  | 'mode'
-  | 'popperProps'
-  | 'isDateDisabled'
-  | 'isWeekDisabled'
-  | 'isMonthDisabled'
-  | 'isYearDisabled'
-  >,
-  Pick<RangePickerTriggerProps,
-  | 'className'
-  | 'clearable'
-  | 'disabled'
-  | 'error'
-  | 'fullWidth'
-  | 'inputFromPlaceholder'
-  | 'inputFromProps'
-  | 'inputToPlaceholder'
-  | 'inputToProps'
-  | 'prefix'
-  | 'readOnly'
-  | 'required'
-  | 'size'
-  > {
+  extends Pick<
+      DateRangePickerCalendarProps,
+      | 'calendarProps'
+      | 'disabledMonthSwitch'
+      | 'disableOnNext'
+      | 'disableOnPrev'
+      | 'disabledYearSwitch'
+      | 'displayMonthLocale'
+      | 'fadeProps'
+      | 'mode'
+      | 'popperProps'
+      | 'isDateDisabled'
+      | 'isWeekDisabled'
+      | 'isMonthDisabled'
+      | 'isYearDisabled'
+    >,
+    Pick<
+      RangePickerTriggerProps,
+      | 'className'
+      | 'clearable'
+      | 'disabled'
+      | 'error'
+      | 'fullWidth'
+      | 'inputFromPlaceholder'
+      | 'inputFromProps'
+      | 'inputToPlaceholder'
+      | 'inputToProps'
+      | 'prefix'
+      | 'readOnly'
+      | 'required'
+      | 'size'
+    > {
   /**
    * Default value for date range picker.
    */
@@ -93,11 +100,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       required: requiredFromFormControl,
       severity,
     } = useContext(FormControlContext) || {};
-    const {
-      defaultDateFormat,
-      getNow,
-      isBetween,
-    } = useCalendarContext();
+    const { defaultDateFormat, getNow, isBetween } = useCalendarContext();
     const {
       calendarProps,
       className,
@@ -144,11 +147,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       onFocus: onToFocusProp,
       ...restInputToProps
     } = inputToProps || {};
-    const formats = useMemo(() => [
-      format,
-      defaultDateFormat,
-      getDefaultModeFormat(mode),
-    ], [defaultDateFormat, format, mode]);
+    const formats = useMemo(
+      () => [format, defaultDateFormat, getDefaultModeFormat(mode)],
+      [defaultDateFormat, format, mode],
+    );
 
     function isBetweenRange(
       valueToCheck: DateType,
@@ -156,40 +158,54 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       t2: DateType,
       granularity: string,
     ) {
-      return isBetween(valueToCheck, t1, t2, granularity) || isBetween(valueToCheck, t2, t1, granularity);
+      return (
+        isBetween(valueToCheck, t1, t2, granularity) ||
+        isBetween(valueToCheck, t2, t1, granularity)
+      );
     }
 
     /** Using internal reference date */
-    const [referenceDate, updateReferenceDate] = useState(referenceDateProp || defaultValue?.[0] || getNow());
+    const [referenceDate, updateReferenceDate] = useState(
+      referenceDateProp || defaultValue?.[0] || getNow(),
+    );
 
     /** Calendar panel toggle */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
-    const onCalendarToggle = useCallback((currentOpen: boolean) => {
-      if (!preventOpen) {
-        setOpen(currentOpen);
+    const onCalendarToggle = useCallback(
+      (currentOpen: boolean) => {
+        if (!preventOpen) {
+          setOpen(currentOpen);
 
-        if (onCalendarToggleProp) {
-          onCalendarToggleProp(currentOpen);
+          if (onCalendarToggleProp) {
+            onCalendarToggleProp(currentOpen);
+          }
         }
-      }
-    }, [onCalendarToggleProp, preventOpen]);
+      },
+      [onCalendarToggleProp, preventOpen],
+    );
 
-    const onFromFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
-      if (onFromFocusProp) {
-        onFromFocusProp(event);
-      }
+    const onFromFocus = useCallback(
+      (event: FocusEvent<HTMLInputElement>) => {
+        if (onFromFocusProp) {
+          onFromFocusProp(event);
+        }
 
-      onCalendarToggle(true);
-    }, [onCalendarToggle, onFromFocusProp]);
+        onCalendarToggle(true);
+      },
+      [onCalendarToggle, onFromFocusProp],
+    );
 
-    const onToFocus = useCallback((event: FocusEvent<HTMLInputElement>) => {
-      if (onToFocusProp) {
-        onToFocusProp(event);
-      }
+    const onToFocus = useCallback(
+      (event: FocusEvent<HTMLInputElement>) => {
+        if (onToFocusProp) {
+          onToFocusProp(event);
+        }
 
-      onCalendarToggle(true);
-    }, [onCalendarToggle, onToFocusProp]);
+        onCalendarToggle(true);
+      },
+      [onCalendarToggle, onToFocusProp],
+    );
 
     /** Values and onChange */
     const inputToRef = useRef<HTMLInputElement>(null);
@@ -231,46 +247,58 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     }, [internalValue]);
 
     /** Bind calendar open control to handlers */
-    const onCalendarChangeWithCloseControl = useCallback((val: DateType) => {
-      onCalendarChange(val);
+    const onCalendarChangeWithCloseControl = useCallback(
+      (val: DateType) => {
+        onCalendarChange(val);
 
-      const [from, to] = internalValue;
-      const hasFirstValue = (from && !to) || (to && !from);
+        const [from, to] = internalValue;
+        const hasFirstValue = (from && !to) || (to && !from);
 
-      if (hasFirstValue && val) {
-        onCalendarToggle(false);
-      }
-    }, [internalValue, onCalendarChange, onCalendarToggle]);
+        if (hasFirstValue && val) {
+          onCalendarToggle(false);
+        }
+      },
+      [internalValue, onCalendarChange, onCalendarToggle],
+    );
 
-    const onFromKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      onFromKeyDown(event);
+    const onFromKeyDownWithCloseControl = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        onFromKeyDown(event);
 
-      const [from, to] = internalValue;
+        const [from, to] = internalValue;
 
-      if (event.key === 'Enter' && from && to) {
-        onCalendarToggle(false);
-      }
-    }, [internalValue, onCalendarToggle, onFromKeyDown]);
+        if (event.key === 'Enter' && from && to) {
+          onCalendarToggle(false);
+        }
+      },
+      [internalValue, onCalendarToggle, onFromKeyDown],
+    );
 
-    const onToKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      onToKeyDown(event);
+    const onToKeyDownWithCloseControl = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        onToKeyDown(event);
 
-      const [from, to] = internalValue;
+        const [from, to] = internalValue;
 
-      if (event.key === 'Enter' && from && to) {
-        onCalendarToggle(false);
-      }
-    }, [internalValue, onCalendarToggle, onToKeyDown]);
+        if (event.key === 'Enter' && from && to) {
+          onCalendarToggle(false);
+        }
+      },
+      [internalValue, onCalendarToggle, onToKeyDown],
+    );
 
     /** Calendar cell in range checker */
     const getIsInRangeHandler = (granularity: string) => {
       const [anchor1, anchor2] = calendarValue || [];
 
-      return (
-        anchor1 && anchor2
-          ? (date: DateType) => isBetweenRange(date, anchor1, anchor2, granularity)
-          : undefined
-      );
+      return anchor1 && anchor2
+        ? (date: DateType) =>
+            isBetweenRange(date, anchor1, anchor2, granularity)
+        : undefined;
     };
 
     /** Popper settings */
@@ -279,37 +307,53 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const triggerComposedRef = useComposeRefs([anchorRef, ref]);
 
     /** Resolve input props */
-    const onResolvedFromBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onFromBlurProp) {
-        onFromBlurProp(event);
-      }
+    const onResolvedFromBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onFromBlurProp) {
+          onFromBlurProp(event);
+        }
 
-      onFromBlur(event);
-    }, [onFromBlur, onFromBlurProp]);
+        onFromBlur(event);
+      },
+      [onFromBlur, onFromBlurProp],
+    );
 
-    const onResolvedToBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onToBlurProp) {
-        onToBlurProp(event);
-      }
+    const onResolvedToBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onToBlurProp) {
+          onToBlurProp(event);
+        }
 
-      onToBlur(event);
-    }, [onToBlur, onToBlurProp]);
+        onToBlur(event);
+      },
+      [onToBlur, onToBlurProp],
+    );
 
-    const onResolvedFromKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      if (onFromKeyDownProp) {
-        onFromKeyDownProp(event);
-      }
+    const onResolvedFromKeyDown = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        if (onFromKeyDownProp) {
+          onFromKeyDownProp(event);
+        }
 
-      onFromKeyDownWithCloseControl(event);
-    }, [onFromKeyDownProp, onFromKeyDownWithCloseControl]);
+        onFromKeyDownWithCloseControl(event);
+      },
+      [onFromKeyDownProp, onFromKeyDownWithCloseControl],
+    );
 
-    const onResolvedToKeyDown = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      if (onToKeyDownProp) {
-        onToKeyDownProp(event);
-      }
+    const onResolvedToKeyDown = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        if (onToKeyDownProp) {
+          onToKeyDownProp(event);
+        }
 
-      onToKeyDownWithCloseControl(event);
-    }, [onToKeyDownProp, onToKeyDownWithCloseControl]);
+        onToKeyDownWithCloseControl(event);
+      },
+      [onToKeyDownProp, onToKeyDownWithCloseControl],
+    );
 
     const resolvedInputFromProps = {
       ...restInputFromProps,
@@ -370,12 +414,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       onCalendarToggle(!open);
     };
 
-    const suffixActionIcon = (
-      <Icon
-        icon={CalendarIcon}
-        onClick={onIconClick}
-      />
-    );
+    const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
 
     return (
       <>

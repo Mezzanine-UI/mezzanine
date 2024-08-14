@@ -1,10 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import {
-  cleanup,
-  render,
-  TestRenderer,
-  fireEvent,
-} from '../../__test-utils__';
+import { cleanup, render, TestRenderer, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -27,19 +22,16 @@ function testValue(element: HTMLElement, value: string) {
 describe('<Textarea />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Textarea ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Textarea ref={ref} />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLTextAreaElement,
-    (ref) => render(<Textarea textareaRef={ref} />),
+  describeForwardRefToHTMLElement(HTMLTextAreaElement, (ref) =>
+    render(<Textarea textareaRef={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Textarea className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Textarea className={className} />),
   );
 
   it('should bind host class', () => {
@@ -51,14 +43,7 @@ describe('<Textarea />', () => {
 
   it('props should pass to TextField', () => {
     const testRenderer = TestRenderer.create(
-      <Textarea
-        clearable
-        disabled
-        error
-        fullWidth
-        size="large"
-        value="foo"
-      />,
+      <Textarea clearable disabled error fullWidth size="large" value="foo" />,
     );
     const testInstance = testRenderer.root;
     const textFieldInstance = testInstance.findByType(TextField);
@@ -85,12 +70,7 @@ describe('<Textarea />', () => {
 
   it('props should directly pass to native textarea element', () => {
     const { getHostHTMLElement } = render(
-      <Textarea
-        disabled
-        placeholder="placeholder"
-        readOnly
-        rows={4}
-      />,
+      <Textarea disabled placeholder="placeholder" readOnly rows={4} />,
     );
     const element = getHostHTMLElement();
     const textareaElement = getTextareaElement(element);
@@ -106,7 +86,9 @@ describe('<Textarea />', () => {
 
   describe('prop: clearable', () => {
     function testClearable(element: HTMLElement) {
-      const clearIconElement = element.querySelector('.mzn-text-field__clear-icon');
+      const clearIconElement = element.querySelector(
+        '.mzn-text-field__clear-icon',
+      );
 
       fireEvent.click(clearIconElement!);
 
@@ -116,9 +98,11 @@ describe('<Textarea />', () => {
     describe('should clear value when click the clear icon', () => {
       it('uncontrolled', () => {
         let valueAfterClear = 'not empty';
-        const onChange = jest.fn<void, [ChangeEvent<HTMLTextAreaElement>]>((event) => {
-          valueAfterClear = event.target.value;
-        });
+        const onChange = jest.fn<void, [ChangeEvent<HTMLTextAreaElement>]>(
+          (event) => {
+            valueAfterClear = event.target.value;
+          },
+        );
         const { getHostHTMLElement } = render(
           <Textarea
             clearable
@@ -177,7 +161,8 @@ describe('<Textarea />', () => {
           <Textarea error={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.error).toBe(true);
       expect(textField2.props.error).toBe(false);
@@ -192,7 +177,8 @@ describe('<Textarea />', () => {
           <Textarea fullWidth={false} />
         </FormField>,
       );
-      const [textField1, textField2] = testInstance.root.findAllByType(TextField);
+      const [textField1, textField2] =
+        testInstance.root.findAllByType(TextField);
 
       expect(textField1.props.fullWidth).toBeTruthy();
       expect(textField2.props.fullWidth).toBeFalsy();
@@ -262,24 +248,29 @@ describe('<Textarea />', () => {
 
   describe('prop: maxLength', () => {
     it('should apply attribute maxLength to textarea and render count element', () => {
-      const { getHostHTMLElement } = render(<Textarea maxLength={8} value="hello" />);
+      const { getHostHTMLElement } = render(
+        <Textarea maxLength={8} value="hello" />,
+      );
       const element = getHostHTMLElement();
-      const {
-        lastElementChild: countElement,
-        childElementCount,
-      } = element;
+      const { lastElementChild: countElement, childElementCount } = element;
 
       expect(childElementCount).toBe(2);
       expect(countElement?.tagName.toLowerCase()).toBe('span');
-      expect(countElement?.classList.contains('mzn-textarea__count')).toBeTruthy();
+      expect(
+        countElement?.classList.contains('mzn-textarea__count'),
+      ).toBeTruthy();
       expect(countElement?.innerHTML).toBe('5/8');
     });
 
     it('should bind upper limit class if ', () => {
-      const { getHostHTMLElement } = render(<Textarea maxLength={5} value="hello" />);
+      const { getHostHTMLElement } = render(
+        <Textarea maxLength={5} value="hello" />,
+      );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-textarea--upper-limit')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-textarea--upper-limit'),
+      ).toBeTruthy();
     });
   });
 });

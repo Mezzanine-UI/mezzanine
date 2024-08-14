@@ -1,8 +1,4 @@
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -12,16 +8,12 @@ import { UploadButton } from '.';
 describe('<UploadButton />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLButtonElement,
-    (ref) => render(
-      <UploadButton ref={ref} />,
-    ),
+  describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
+    render(<UploadButton ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<UploadButton className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<UploadButton className={className} />),
   );
 
   it('should click input while button clicked', () => {

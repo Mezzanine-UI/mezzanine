@@ -6,3 +6,4 @@
 *.mdx
 
 prebuilts/
+dist/

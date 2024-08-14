@@ -1,6 +1,4 @@
-import {
-  TableColumn,
-} from '@mezzanine-ui/core/table';
+import { TableColumn } from '@mezzanine-ui/core/table';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import {
   act,
@@ -9,9 +7,7 @@ import {
   render,
   TestRenderer,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { TableDataContext, TableContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
 import TableCell from './TableCell';
@@ -47,18 +43,11 @@ function getExpandedContentHost() {
 describe('<TableBodyRow />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLTableRowElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLTableRowElement, (ref) =>
+    render(
       <DragDropContext onDragEnd={() => {}}>
         <Droppable droppableId="mzn-table-dnd">
-          {() => (
-            <TableBodyRow
-              ref={ref}
-              rowData={rowData}
-              rowIndex={0}
-            />
-          )}
+          {() => <TableBodyRow ref={ref} rowData={rowData} rowIndex={0} />}
         </Droppable>
       </DragDropContext>,
     ),
@@ -68,9 +57,7 @@ describe('<TableBodyRow />', () => {
     const { getHostHTMLElement } = render(
       <DragDropContext onDragEnd={() => {}}>
         <Droppable droppableId="mzn-table-dnd">
-          {() => (
-            <TableBodyRow rowData={rowData} rowIndex={0} />
-          )}
+          {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
         </Droppable>
       </DragDropContext>,
     );
@@ -80,21 +67,25 @@ describe('<TableBodyRow />', () => {
   });
 
   it('ellipsis control should set to true by default, and false when no data/disabled', () => {
-    const columns: TableColumn<DataType>[] = [{
-      key: 'name',
-      dataIndex: 'name',
-      title: 'name',
-    }, {
-      key: 'not-existed',
-      dataIndex: 'not-existed',
-      title: 'bar',
-      ellipsis: true,
-    }, {
-      key: 'name',
-      dataIndex: 'name',
-      title: 'foo',
-      ellipsis: false,
-    }];
+    const columns: TableColumn<DataType>[] = [
+      {
+        key: 'name',
+        dataIndex: 'name',
+        title: 'name',
+      },
+      {
+        key: 'not-existed',
+        dataIndex: 'not-existed',
+        title: 'bar',
+        ellipsis: true,
+      },
+      {
+        key: 'name',
+        dataIndex: 'name',
+        title: 'foo',
+        ellipsis: false,
+      },
+    ];
 
     const testInstance = TestRenderer.create(
       <TableDataContext.Provider
@@ -105,9 +96,7 @@ describe('<TableBodyRow />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => (
-              <TableBodyRow rowData={rowData} rowIndex={0} />
-            )}
+            {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
@@ -120,26 +109,30 @@ describe('<TableBodyRow />', () => {
   });
 
   describe('columns are given', () => {
-    const columns: TableColumn<DataType>[] = [{
-      key: 'name',
-      dataIndex: 'name',
-      title: 'foo',
-      headerClassName: undefined,
-      renderTitle: undefined,
-      renderTooltipTitle: (s) => s.name,
-      sorter: undefined,
-      width: 80,
-      align: 'center',
-    }, {
-      key: 'bar',
-      title: 'bar',
-      align: 'start',
-      render: () => 'bar-render',
-    }, {
-      key: 'foo.bar',
-      dataIndex: 'foo.bar',
-      title: 'foo',
-    }];
+    const columns: TableColumn<DataType>[] = [
+      {
+        key: 'name',
+        dataIndex: 'name',
+        title: 'foo',
+        headerClassName: undefined,
+        renderTitle: undefined,
+        renderTooltipTitle: (s) => s.name,
+        sorter: undefined,
+        width: 80,
+        align: 'center',
+      },
+      {
+        key: 'bar',
+        title: 'bar',
+        align: 'start',
+        render: () => 'bar-render',
+      },
+      {
+        key: 'foo.bar',
+        dataIndex: 'foo.bar',
+        title: 'foo',
+      },
+    ];
 
     let element: HTMLElement;
 
@@ -153,9 +146,7 @@ describe('<TableBodyRow />', () => {
         >
           <DragDropContext onDragEnd={() => {}}>
             <Droppable droppableId="mzn-table-dnd">
-              {() => (
-                <TableBodyRow rowData={rowData} rowIndex={0} />
-              )}
+              {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
             </Droppable>
           </DragDropContext>
         </TableDataContext.Provider>,
@@ -169,30 +160,51 @@ describe('<TableBodyRow />', () => {
       const firstColumnCell = firstColumn.querySelector('.mzn-table__cell');
 
       const columnStyleRegex = new RegExp(`width: ${columns[0].width}px`, 'g');
-      const cellStyleRegex = new RegExp(`justify-content: ${columns[0].align}`, 'g');
+      const cellStyleRegex = new RegExp(
+        `justify-content: ${columns[0].align}`,
+        'g',
+      );
 
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeUndefined();
-      expect(firstColumn?.getAttribute('style')?.match(columnStyleRegex)).not.toBeNull();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeUndefined();
-      expect(firstColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeNull();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumn?.getAttribute('style')?.match(columnStyleRegex),
+      ).not.toBeNull();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        firstColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeNull();
     });
 
     it('should apply prefix for align start/end', () => {
-      const secondColumnCell = getCellWrappers(element)[1].querySelector('.mzn-table__cell');
-      const cellStyleRegex = new RegExp(`justify-content: flex-${columns[1].align}`, 'g');
+      const secondColumnCell =
+        getCellWrappers(element)[1].querySelector('.mzn-table__cell');
+      const cellStyleRegex = new RegExp(
+        `justify-content: flex-${columns[1].align}`,
+        'g',
+      );
 
-      expect(secondColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeUndefined();
-      expect(secondColumnCell?.getAttribute('style')?.match(cellStyleRegex)).not.toBeNull();
+      expect(
+        secondColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeUndefined();
+      expect(
+        secondColumnCell?.getAttribute('style')?.match(cellStyleRegex),
+      ).not.toBeNull();
     });
 
     it('should render custom content when render given', () => {
-      const secondColumnCell = getCellWrappers(element)[1].querySelector('.mzn-table__cell');
+      const secondColumnCell =
+        getCellWrappers(element)[1].querySelector('.mzn-table__cell');
 
       expect(secondColumnCell?.textContent).toBe('bar-render');
     });
 
     it('should render content with nested dataIndex', () => {
-      const secondColumnCell = getCellWrappers(element)[2].querySelector('.mzn-table__cell');
+      const secondColumnCell =
+        getCellWrappers(element)[2].querySelector('.mzn-table__cell');
 
       expect(secondColumnCell?.textContent).toBe('test');
     });
@@ -219,9 +231,7 @@ describe('<TableBodyRow />', () => {
           >
             <DragDropContext onDragEnd={() => {}}>
               <Droppable droppableId="mzn-table-dnd">
-                {() => (
-                  <TableBodyRow rowData={rowData} rowIndex={0} />
-                )}
+                {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
               </Droppable>
             </DragDropContext>
           </TableContext.Provider>
@@ -232,7 +242,9 @@ describe('<TableBodyRow />', () => {
     });
 
     it('should highlight row background when checked', async () => {
-      expect(element.classList.contains('mzn-table__body__row--highlight')).toBe(true);
+      expect(
+        element.classList.contains('mzn-table__body__row--highlight'),
+      ).toBe(true);
     });
   });
 
@@ -261,9 +273,7 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => (
-                      <TableBodyRow rowData={rowData} rowIndex={0} />
-                    )}
+                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
@@ -298,20 +308,26 @@ describe('<TableBodyRow />', () => {
                   expanding: {
                     className: 'foo',
                     expandedRowRender: () => ({
-                      dataSource: [{
-                        key: 'foo',
-                        name: 'foo',
-                      }, {
-                        key: 'bar',
-                        name: 'bar',
-                      }],
-                      columns: [{
-                        key: 'name',
-                        dataIndex: 'name',
-                      }, {
-                        key: 'name2',
-                        dataIndex: 'name',
-                      }],
+                      dataSource: [
+                        {
+                          key: 'foo',
+                          name: 'foo',
+                        },
+                        {
+                          key: 'bar',
+                          name: 'bar',
+                        },
+                      ],
+                      columns: [
+                        {
+                          key: 'name',
+                          dataIndex: 'name',
+                        },
+                        {
+                          key: 'name2',
+                          dataIndex: 'name',
+                        },
+                      ],
                     }),
                     rowExpandable: () => true,
                     onExpand,
@@ -320,9 +336,7 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => (
-                      <TableBodyRow rowData={rowData} rowIndex={0} />
-                    )}
+                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
@@ -338,7 +352,9 @@ describe('<TableBodyRow />', () => {
           });
 
           const expandedContentHost = getExpandedContentHost();
-          const rows = expandedContentHost?.querySelectorAll('.mzn-table__body__row__expandedTableRow');
+          const rows = expandedContentHost?.querySelectorAll(
+            '.mzn-table__body__row__expandedTableRow',
+          );
 
           expect(rows?.length).toBe(2);
         });
@@ -357,13 +373,16 @@ describe('<TableBodyRow />', () => {
                     className: 'foo',
                     expandedRowRender: () => ({
                       dataSource: [],
-                      columns: [{
-                        key: 'name',
-                        dataIndex: 'name',
-                      }, {
-                        key: 'name2',
-                        dataIndex: 'name',
-                      }],
+                      columns: [
+                        {
+                          key: 'name',
+                          dataIndex: 'name',
+                        },
+                        {
+                          key: 'name2',
+                          dataIndex: 'name',
+                        },
+                      ],
                     }),
                     rowExpandable: () => true,
                     onExpand,
@@ -372,9 +391,7 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => (
-                      <TableBodyRow rowData={rowData} rowIndex={0} />
-                    )}
+                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
@@ -399,11 +416,13 @@ describe('<TableBodyRow />', () => {
 
   describe('exceptions handle', () => {
     it('column.width/column.align not given', () => {
-      const columns: TableColumn<DataType>[] = [{
-        key: 'name',
-        dataIndex: 'name',
-        title: 'name',
-      }];
+      const columns: TableColumn<DataType>[] = [
+        {
+          key: 'name',
+          dataIndex: 'name',
+          title: 'name',
+        },
+      ];
 
       const { getHostHTMLElement } = render(
         <TableDataContext.Provider
@@ -414,9 +433,7 @@ describe('<TableBodyRow />', () => {
         >
           <DragDropContext onDragEnd={() => {}}>
             <Droppable droppableId="mzn-table-dnd">
-              {() => (
-                <TableBodyRow rowData={rowData} rowIndex={0} />
-              )}
+              {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
             </Droppable>
           </DragDropContext>
         </TableDataContext.Provider>,

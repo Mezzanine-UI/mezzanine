@@ -1,7 +1,8 @@
 import { forwardRef, ReactNode } from 'react';
 import Button, { ButtonGroup, ButtonGroupProps, ButtonProps } from '../Button';
 
-export interface ConfirmActionsProps extends Omit<ButtonGroupProps, 'children'> {
+export interface ConfirmActionsProps
+  extends Omit<ButtonGroupProps, 'children'> {
   /**
    * Other props of cancel button.
    */
@@ -43,51 +44,49 @@ export interface ConfirmActionsProps extends Omit<ButtonGroupProps, 'children'> 
 /**
  * The react component for `mezzanine` confirm actions.
  */
-const ConfirmActions = forwardRef<HTMLDivElement, ConfirmActionsProps>(function ConfirmActions(props, ref) {
-  const {
-    cancelButtonProps,
-    cancelText,
-    confirmButtonProps,
-    confirmText,
-    hideCancelButton,
-    hideConfirmButton,
-    loading,
-    onCancel,
-    onConfirm,
-    ...rest
-  } = props;
+const ConfirmActions = forwardRef<HTMLDivElement, ConfirmActionsProps>(
+  function ConfirmActions(props, ref) {
+    const {
+      cancelButtonProps,
+      cancelText,
+      confirmButtonProps,
+      confirmText,
+      hideCancelButton,
+      hideConfirmButton,
+      loading,
+      onCancel,
+      onConfirm,
+      ...rest
+    } = props;
 
-  const {
-    disabled: cancelButtonDisabled = loading,
-  } = cancelButtonProps || {};
+    const { disabled: cancelButtonDisabled = loading } =
+      cancelButtonProps || {};
 
-  return (
-    <ButtonGroup
-      {...rest}
-      ref={ref}
-    >
-      {!hideCancelButton && (
-        <Button
-          variant="outlined"
-          {...cancelButtonProps}
-          disabled={cancelButtonDisabled}
-          onClick={onCancel}
-        >
-          {cancelText}
-        </Button>
-      )}
-      {!hideConfirmButton && (
-        <Button
-          variant="contained"
-          {...confirmButtonProps}
-          loading={loading}
-          onClick={onConfirm}
-        >
-          {confirmText}
-        </Button>
-      )}
-    </ButtonGroup>
-  );
-});
+    return (
+      <ButtonGroup {...rest} ref={ref}>
+        {!hideCancelButton && (
+          <Button
+            variant="outlined"
+            {...cancelButtonProps}
+            disabled={cancelButtonDisabled}
+            onClick={onCancel}
+          >
+            {cancelText}
+          </Button>
+        )}
+        {!hideConfirmButton && (
+          <Button
+            variant="contained"
+            {...confirmButtonProps}
+            loading={loading}
+            onClick={onConfirm}
+          >
+            {confirmText}
+          </Button>
+        )}
+      </ButtonGroup>
+    );
+  },
+);
 
 export default ConfirmActions;

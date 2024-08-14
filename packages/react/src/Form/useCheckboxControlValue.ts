@@ -1,12 +1,16 @@
 import { ChangeEventHandler } from 'react';
-import { useSwitchControlValue, UseSwitchControlValueProps } from './useSwitchControlValue';
+import {
+  useSwitchControlValue,
+  UseSwitchControlValueProps,
+} from './useSwitchControlValue';
 
 export interface CheckboxGroupControlContextValue {
   onChange?: ChangeEventHandler<HTMLInputElement>;
   value?: string[];
 }
 
-export interface UseCheckboxControlValueProps extends UseSwitchControlValueProps {
+export interface UseCheckboxControlValueProps
+  extends UseSwitchControlValueProps {
   checkboxGroup?: CheckboxGroupControlContextValue;
   value?: string;
 }

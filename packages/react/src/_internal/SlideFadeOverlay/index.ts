@@ -1,4 +1,1 @@
-export {
-  SlideFadeOverlayProps,
-  default,
-} from './SlideFadeOverlay';
+export { SlideFadeOverlayProps, default } from './SlideFadeOverlay';

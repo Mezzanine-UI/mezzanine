@@ -18,24 +18,25 @@ describe('useAutoCompleteValueControl()', () => {
     (['single', 'multiple'] as ('single' | 'multiple')[]).forEach((mode) => {
       it(`onClose behavior on mode="${mode}"`, () => {
         const onClose = jest.fn<void, [void]>(() => {});
-        const { result } = renderHook(
-          () => useAutoCompleteValueControl({
+        const { result } = renderHook(() =>
+          useAutoCompleteValueControl({
             disabledOptionsFilter: false,
             mode,
             onClose,
-            options: [{
-              id: 'foo',
-              name: 'foo',
-            }, {
-              id: 'bar',
-              name: 'bar',
-            }],
+            options: [
+              {
+                id: 'foo',
+                name: 'foo',
+              },
+              {
+                id: 'bar',
+                name: 'bar',
+              },
+            ],
           }),
         );
 
-        const {
-          onChange,
-        } = result.current;
+        const { onChange } = result.current;
 
         TestRenderer.act(() => {
           onChange({ id: 'foo', name: 'foo' });
@@ -51,62 +52,60 @@ describe('useAutoCompleteValueControl()', () => {
   describe('prop: onChange', () => {
     describe('single mode', () => {
       it('should set option value when changed', () => {
-        const { result } = renderHook(
-          () => useAutoCompleteValueControl({
+        const { result } = renderHook(() =>
+          useAutoCompleteValueControl({
             disabledOptionsFilter: false,
             mode: 'single',
-            options: [{
-              id: 'foo',
-              name: 'foo',
-            }, {
-              id: 'bar',
-              name: 'bar',
-            }],
+            options: [
+              {
+                id: 'foo',
+                name: 'foo',
+              },
+              {
+                id: 'bar',
+                name: 'bar',
+              },
+            ],
           }),
         );
 
-        const {
-          onChange,
-        } = result.current;
+        const { onChange } = result.current;
 
         TestRenderer.act(() => {
           onChange({ id: 'foo', name: 'foo' });
         });
 
-        const {
-          value,
-        } = result.current;
+        const { value } = result.current;
 
-        expect(((value as SelectValue))!.id).toBe('foo');
-        expect(((value as SelectValue))!.name).toBe('foo');
+        expect((value as SelectValue)!.id).toBe('foo');
+        expect((value as SelectValue)!.name).toBe('foo');
       });
 
       it('should do nothing when onChange given null', () => {
-        const { result } = renderHook(
-          () => useAutoCompleteValueControl({
+        const { result } = renderHook(() =>
+          useAutoCompleteValueControl({
             disabledOptionsFilter: false,
             mode: 'single',
-            options: [{
-              id: 'foo',
-              name: 'foo',
-            }, {
-              id: 'bar',
-              name: 'bar',
-            }],
+            options: [
+              {
+                id: 'foo',
+                name: 'foo',
+              },
+              {
+                id: 'bar',
+                name: 'bar',
+              },
+            ],
           }),
         );
 
-        const {
-          onChange,
-        } = result.current;
+        const { onChange } = result.current;
 
         TestRenderer.act(() => {
           onChange(null);
         });
 
-        const {
-          value,
-        } = result.current;
+        const { value } = result.current;
 
         expect(value).toBe(null);
       });
@@ -114,62 +113,60 @@ describe('useAutoCompleteValueControl()', () => {
 
     describe('multiple mode', () => {
       it('should set option value when changed', () => {
-        const { result } = renderHook(
-          () => useAutoCompleteValueControl({
+        const { result } = renderHook(() =>
+          useAutoCompleteValueControl({
             disabledOptionsFilter: false,
             mode: 'multiple',
-            options: [{
-              id: 'foo',
-              name: 'foo',
-            }, {
-              id: 'bar',
-              name: 'bar',
-            }],
+            options: [
+              {
+                id: 'foo',
+                name: 'foo',
+              },
+              {
+                id: 'bar',
+                name: 'bar',
+              },
+            ],
           }),
         );
 
-        const {
-          onChange,
-        } = result.current;
+        const { onChange } = result.current;
 
         TestRenderer.act(() => {
           onChange({ id: 'foo', name: 'foo' });
         });
 
-        const {
-          value,
-        } = result.current;
+        const { value } = result.current;
 
-        expect(((value as SelectValue[]))!.length).toBe(1);
-        expect(((value as SelectValue[]))[0]!.id).toBe('foo');
+        expect((value as SelectValue[])!.length).toBe(1);
+        expect((value as SelectValue[])[0]!.id).toBe('foo');
       });
 
       it('should do nothing when onChange given null', () => {
-        const { result } = renderHook(
-          () => useAutoCompleteValueControl({
+        const { result } = renderHook(() =>
+          useAutoCompleteValueControl({
             disabledOptionsFilter: false,
             mode: 'multiple',
-            options: [{
-              id: 'foo',
-              name: 'foo',
-            }, {
-              id: 'bar',
-              name: 'bar',
-            }],
+            options: [
+              {
+                id: 'foo',
+                name: 'foo',
+              },
+              {
+                id: 'bar',
+                name: 'bar',
+              },
+            ],
           }),
         );
 
-        const {
-          onChange,
-        } = result.current;
+        const { onChange } = result.current;
 
         TestRenderer.act(() => {
           onChange(null);
         });
 
-        const {
-          value,
-        } = result.current;
+        const { value } = result.current;
 
         expect((value as SelectValue[]).length).toBe(0);
       });
@@ -177,24 +174,25 @@ describe('useAutoCompleteValueControl()', () => {
   });
 
   it('when disabledOptionsFilter is true, return options directly', () => {
-    const originOptions = [{
-      id: 'foo',
-      name: 'foo',
-    }, {
-      id: 'bar',
-      name: 'bar',
-    }];
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
+    const originOptions = [
+      {
+        id: 'foo',
+        name: 'foo',
+      },
+      {
+        id: 'bar',
+        name: 'bar',
+      },
+    ];
+    const { result } = renderHook(() =>
+      useAutoCompleteValueControl({
         disabledOptionsFilter: true,
         mode: 'single',
         options: originOptions,
       }),
     );
 
-    const {
-      options,
-    } = result.current;
+    const { options } = result.current;
 
     expect(options.length).toBe(originOptions.length);
   });
@@ -206,24 +204,25 @@ describe('useAutoCompleteValueControl()', () => {
       myOption = newOption;
     });
 
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
+    const { result } = renderHook(() =>
+      useAutoCompleteValueControl({
         disabledOptionsFilter: false,
         onChange: onChangeProp,
         mode: 'single',
-        options: [{
-          id: 'foo',
-          name: 'foo',
-        }, {
-          id: 'bar',
-          name: 'bar',
-        }],
+        options: [
+          {
+            id: 'foo',
+            name: 'foo',
+          },
+          {
+            id: 'bar',
+            name: 'bar',
+          },
+        ],
       }),
     );
 
-    const {
-      onChange,
-    } = result.current;
+    const { onChange } = result.current;
 
     TestRenderer.act(() => {
       onChange({ id: 'foo', name: 'foo' });
@@ -240,24 +239,25 @@ describe('useAutoCompleteValueControl()', () => {
     });
     const stopPropagation = jest.fn();
 
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
+    const { result } = renderHook(() =>
+      useAutoCompleteValueControl({
         disabledOptionsFilter: false,
         onChange: onChangeProp,
         mode: 'single',
-        options: [{
-          id: 'foo',
-          name: 'foo',
-        }, {
-          id: 'bar',
-          name: 'bar',
-        }],
+        options: [
+          {
+            id: 'foo',
+            name: 'foo',
+          },
+          {
+            id: 'bar',
+            name: 'bar',
+          },
+        ],
       }),
     );
 
-    const {
-      onClear,
-    } = result.current;
+    const { onClear } = result.current;
 
     TestRenderer.act(() => {
       onClear({
@@ -276,24 +276,25 @@ describe('useAutoCompleteValueControl()', () => {
     });
     const stopPropagation = jest.fn();
 
-    const { result } = renderHook(
-      () => useAutoCompleteValueControl({
+    const { result } = renderHook(() =>
+      useAutoCompleteValueControl({
         disabledOptionsFilter: false,
         onChange: onChangeProp,
         mode: 'multiple',
-        options: [{
-          id: 'foo',
-          name: 'foo',
-        }, {
-          id: 'bar',
-          name: 'bar',
-        }],
+        options: [
+          {
+            id: 'foo',
+            name: 'foo',
+          },
+          {
+            id: 'bar',
+            name: 'bar',
+          },
+        ],
       }),
     );
 
-    const {
-      onClear,
-    } = result.current;
+    const { onClear } = result.current;
 
     TestRenderer.act(() => {
       onClear({

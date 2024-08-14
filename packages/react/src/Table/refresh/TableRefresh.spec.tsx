@@ -1,22 +1,14 @@
 import { MouseEvent } from 'react';
-import {
-  act,
-  cleanupHook,
-  fireEvent,
-  render,
-} from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { act, cleanupHook, fireEvent, render } from '../../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import TableRefresh, { TableRefreshProps } from './TableRefresh';
 import { TableContext } from '../TableContext';
 
 describe('<TableRefresh />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<TableRefresh ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TableRefresh ref={ref} />),
   );
 
   it('should bind host class', () => {
@@ -58,7 +50,10 @@ describe('<TableRefresh />', () => {
     it('should `onClick` prop been called when given', async () => {
       let loading = false;
 
-      const setLoading: TableRefreshProps['onClick'] = jest.fn<void, [MouseEvent]>(() => {
+      const setLoading: TableRefreshProps['onClick'] = jest.fn<
+        void,
+        [MouseEvent]
+      >(() => {
         loading = true;
       });
 

@@ -41,18 +41,21 @@ export function useTableFetchMore(props: UseTableFetchMore) {
   /** fetchMore called */
   const onFetchMore = useLastCallback<() => void>(() => {
     if (!isFetching && !isReachEnd) {
-      (callbackProp as (() => any))();
+      (callbackProp as () => any)();
       onFetching(true);
     }
 
     if (isReachEnd) onFetching(false);
   });
 
-  const fetchMore = (callbackProp && !disabled ? onFetchMore : undefined);
+  const fetchMore = callbackProp && !disabled ? onFetchMore : undefined;
 
   /** check source length and reset states */
   const prevSourceLength = usePreviousValue(dataSource.length);
-  const currentSourceLength = useMemo(() => dataSource.length, [dataSource.length]);
+  const currentSourceLength = useMemo(
+    () => dataSource.length,
+    [dataSource.length],
+  );
 
   useEffect(() => {
     if (prevSourceLength !== currentSourceLength) {

@@ -7,7 +7,8 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface LoadingProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface LoadingProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * When set stretch=true, host container will stretch to width & height 100%
    * @default false
@@ -25,7 +26,7 @@ export interface LoadingProps extends NativeElementPropsWithoutKeyAndRef<'div'> 
   /**
    * Custom overlay props (only display when nested children)
    */
-  overlayProps?: Omit<OverlayProps, 'container' | 'open'>
+  overlayProps?: Omit<OverlayProps, 'container' | 'open'>;
   /**
    * Customize description content
    */
@@ -36,88 +37,82 @@ export interface LoadingProps extends NativeElementPropsWithoutKeyAndRef<'div'> 
   tipClassName?: string;
 }
 
-const Loading = forwardRef<HTMLDivElement, LoadingProps>(function Loading(props, ref) {
-  const hostRef = useRef<HTMLDivElement>(null);
-  const {
-    children,
-    className,
-    stretch = false,
-    iconProps = {},
-    loading = false,
-    overlayProps = {},
-    tip,
-    tipClassName,
-  } = props;
+const Loading = forwardRef<HTMLDivElement, LoadingProps>(
+  function Loading(props, ref) {
+    const hostRef = useRef<HTMLDivElement>(null);
+    const {
+      children,
+      className,
+      stretch = false,
+      iconProps = {},
+      loading = false,
+      overlayProps = {},
+      tip,
+      tipClassName,
+    } = props;
 
-  const {
-    className: iconClassName,
-    color: iconColor,
-    size: iconSize,
-    style: iconStyle,
-    ...iconPropsRest
-  } = iconProps;
+    const {
+      className: iconClassName,
+      color: iconColor,
+      size: iconSize,
+      style: iconStyle,
+      ...iconPropsRest
+    } = iconProps;
 
-  const isNestedPattern = typeof children !== 'undefined';
-  const composedHostRef = useComposeRefs([ref, hostRef]);
+    const isNestedPattern = typeof children !== 'undefined';
+    const composedHostRef = useComposeRefs([ref, hostRef]);
 
-  const spinElement = loading ? (
-    <div
-      ref={isNestedPattern ? null : ref}
-      className={cx(
-        classes.spin,
-        {
-          [classes.stretch]: stretch,
-        },
-      )}
-    >
-      <Icon
-        {...iconPropsRest}
-        className={cx(
-          classes.icon,
-          iconClassName,
-        )}
-        color={iconColor || 'primary'}
-        icon={SpinnerIcon}
-        spin
-        style={{
-          ...(iconSize ? { fontSize: `${iconSize}px` } : {}),
-          ...(iconStyle || {}),
-        }}
-      />
-      {tip ? (
-        <span className={cx(classes.tip, tipClassName)}>
-          {tip}
-        </span>
-      ) : null}
-    </div>
-  ) : null;
-
-  if (isNestedPattern) {
-    return (
+    const spinElement = loading ? (
       <div
-        ref={composedHostRef}
-        className={cx(
-          classes.host,
-          {
-            [classes.stretch]: stretch,
-          },
-          className,
-        )}
+        ref={isNestedPattern ? null : ref}
+        className={cx(classes.spin, {
+          [classes.stretch]: stretch,
+        })}
       >
-        <Overlay
-          {...overlayProps}
-          container={hostRef}
-          onSurface
-          open={loading}
-        >
-          {spinElement}
-        </Overlay>
-        {children}
+        <Icon
+          {...iconPropsRest}
+          className={cx(classes.icon, iconClassName)}
+          color={iconColor || 'primary'}
+          icon={SpinnerIcon}
+          spin
+          style={{
+            ...(iconSize ? { fontSize: `${iconSize}px` } : {}),
+            ...(iconStyle || {}),
+          }}
+        />
+        {tip ? (
+          <span className={cx(classes.tip, tipClassName)}>{tip}</span>
+        ) : null}
       </div>
-    );
-  }
+    ) : null;
 
-  return spinElement;
-});
+    if (isNestedPattern) {
+      return (
+        <div
+          ref={composedHostRef}
+          className={cx(
+            classes.host,
+            {
+              [classes.stretch]: stretch,
+            },
+            className,
+          )}
+        >
+          <Overlay
+            {...overlayProps}
+            container={hostRef}
+            onSurface
+            open={loading}
+          >
+            {spinElement}
+          </Overlay>
+          {children}
+        </div>
+      );
+    }
+
+    return spinElement;
+  },
+);
 
 export default Loading;

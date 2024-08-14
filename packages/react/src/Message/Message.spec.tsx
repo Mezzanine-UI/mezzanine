@@ -6,19 +6,10 @@ import {
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { Key } from 'react';
-import {
-  act,
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { act, cleanup, render } from '../../__test-utils__';
 import Message from '.';
 
-const severities: SeverityWithInfo[] = [
-  'success',
-  'warning',
-  'error',
-  'info',
-];
+const severities: SeverityWithInfo[] = ['success', 'warning', 'error', 'info'];
 
 describe('<Message />', () => {
   afterEach(cleanup);
@@ -66,25 +57,24 @@ describe('<Message />', () => {
         const { getHostHTMLElement } = render(<Message severity={severity} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-message--${severity}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-message--${severity}`),
+        ).toBeTruthy();
       });
 
       const targetIcon = icons[severity].icon;
 
       it(`should render "${targetIcon?.name}" icon if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <Message
-            icon={targetIcon}
-            severity={severity}
-          />,
+          <Message icon={targetIcon} severity={severity} />,
         );
 
         const element = getHostHTMLElement();
-        const {
-          firstElementChild: iconElement,
-        } = element;
+        const { firstElementChild: iconElement } = element;
 
-        expect(iconElement?.getAttribute('data-icon-name')).toBe(targetIcon?.name);
+        expect(iconElement?.getAttribute('data-icon-name')).toBe(
+          targetIcon?.name,
+        );
       });
     });
   });
@@ -131,11 +121,11 @@ describe('Message API', () => {
           handler(testMessage);
         });
 
-        const {
-          lastElementChild: rootElement,
-        } = document.body;
+        const { lastElementChild: rootElement } = document.body;
 
-        expect(rootElement?.classList.contains('mzn-message__root')).toBeTruthy();
+        expect(
+          rootElement?.classList.contains('mzn-message__root'),
+        ).toBeTruthy();
       });
 
       it(`should find ${severity} message and be able to remove it`, () => {
@@ -145,13 +135,13 @@ describe('Message API', () => {
           reference = handler(testMessage);
         });
 
-        const {
-          lastElementChild: rootElement,
-        } = document.body;
+        const { lastElementChild: rootElement } = document.body;
 
         const messageElement = rootElement?.firstElementChild;
 
-        expect(messageElement?.classList.contains(`mzn-message--${severity}`)).toBeTruthy();
+        expect(
+          messageElement?.classList.contains(`mzn-message--${severity}`),
+        ).toBeTruthy();
         expect(messageElement?.textContent).toBe(testMessage);
 
         act(() => {
@@ -168,9 +158,7 @@ describe('Message API', () => {
           handler(testMessage);
         });
 
-        const {
-          lastElementChild: rootElement,
-        } = document.body;
+        const { lastElementChild: rootElement } = document.body;
 
         expect(rootElement?.childElementCount).toBe(1);
 

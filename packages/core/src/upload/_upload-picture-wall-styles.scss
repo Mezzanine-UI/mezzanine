@@ -10,8 +10,7 @@ $repeat: 3;
 .#{$prefix} {
   display: grid;
   grid-template-columns: repeat($repeat, minmax(0, $width));
-  row-gap: $row-gap;
-  column-gap: $column-gap;
+  gap: $row-gap $column-gap;
 
   &__item {
     width: $width;

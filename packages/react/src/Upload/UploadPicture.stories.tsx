@@ -20,7 +20,9 @@ type PlaygroundStoryArgs = {
 };
 
 function delay(ms: number) {
-  return new Promise((resolve) => { setTimeout(resolve, ms); });
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
 }
 
 export const Playground: StoryFn<PlaygroundStoryArgs> = ({
@@ -35,7 +37,10 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   onError,
   onUploadSuccess,
 }) => {
-  const onUpload = async (file: File, setProgress: (progress: number) => void) => {
+  const onUpload = async (
+    file: File,
+    setProgress: (progress: number) => void,
+  ) => {
     const random = Math.floor(Math.random() * 2);
 
     setProgress(35);

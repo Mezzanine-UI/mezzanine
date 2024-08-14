@@ -1,41 +1,49 @@
 import { useState, useCallback } from 'react';
-import {
-  AutoComplete,
-} from '.';
+import { AutoComplete } from '.';
 import { SelectValue } from './typings';
 
 export default {
   title: 'Data Entry/AutoComplete',
 };
 
-const originOptions: SelectValue[] = [{
-  id: 'item1',
-  name: 'item1',
-}, {
-  id: 'item2',
-  name: 'item2',
-}, {
-  id: 'item3',
-  name: 'item3',
-}, {
-  id: 'foo',
-  name: 'foo',
-}, {
-  id: 'bar',
-  name: 'bar',
-}, {
-  id: 'bob',
-  name: 'bob',
-}, {
-  id: 'apple',
-  name: 'apple',
-}, {
-  id: 'very very very long',
-  name: 'very very very long',
-}, {
-  id: '?><!@#$^$&^&',
-  name: '?><!@#$^$&^&',
-}];
+const originOptions: SelectValue[] = [
+  {
+    id: 'item1',
+    name: 'item1',
+  },
+  {
+    id: 'item2',
+    name: 'item2',
+  },
+  {
+    id: 'item3',
+    name: 'item3',
+  },
+  {
+    id: 'foo',
+    name: 'foo',
+  },
+  {
+    id: 'bar',
+    name: 'bar',
+  },
+  {
+    id: 'bob',
+    name: 'bob',
+  },
+  {
+    id: 'apple',
+    name: 'apple',
+  },
+  {
+    id: 'very very very long',
+    name: 'very very very long',
+  },
+  {
+    id: '?><!@#$^$&^&',
+    name: '?><!@#$^$&^&',
+  },
+];
 
 export const Basic = () => (
   <div
@@ -95,7 +103,9 @@ export const Multiple = () => {
 };
 
 export const FullyControlled = () => {
-  const [selection, setSelection] = useState<SelectValue | null>(originOptions[0]);
+  const [selection, setSelection] = useState<SelectValue | null>(
+    originOptions[0],
+  );
   const [options, setOptions] = useState<SelectValue[]>(originOptions);
   const onSearch = useCallback((search: string) => {
     setOptions(originOptions.filter((opt) => !!opt.name.includes(search)));
@@ -125,9 +135,7 @@ export const FullyControlled = () => {
         onClear={() => onChange(null)}
         placeholder="預設文字"
       />
-      <span>
-        {`current value: ${selection?.name || ''}`}
-      </span>
+      <span>{`current value: ${selection?.name || ''}`}</span>
     </div>
   );
 };
@@ -140,10 +148,7 @@ export const Addable = () => {
       name: text,
     };
 
-    setOptions((prevOptions) => ([
-      ...prevOptions,
-      newOption,
-    ]));
+    setOptions((prevOptions) => [...prevOptions, newOption]);
 
     return newOption;
   }, []);

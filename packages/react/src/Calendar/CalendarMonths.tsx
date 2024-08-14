@@ -9,9 +9,11 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
 
 export interface CalendarMonthsProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'>,
-  Pick<CalendarYearsProps, 'isYearDisabled'> {
+  extends Omit<
+      NativeElementPropsWithoutKeyAndRef<'div'>,
+      'onClick' | 'children'
+    >,
+    Pick<CalendarYearsProps, 'isYearDisabled'> {
   /**
    * The locale you want to use when rendering the names of month.
    * If none provided, it will use the `displayMonthLocale` from calendar context.
@@ -72,23 +74,28 @@ function CalendarMonths(props: CalendarMonthsProps) {
   const monthNames = getMonthShortNames(displayMonthLocale);
 
   return (
-    <div
-      className={cx(
-        classes.board,
-        className,
-      )}
-      {...rest}
-    >
+    <div className={cx(classes.board, className)} {...rest}>
       <div className={classes.twelveGrid}>
         {calendarMonths.map((month) => {
           const monthDateType = setMonth(referenceDate, month);
           const active = value && isMonthIncluded(monthDateType, value);
           /** @NOTE Current month should be disabled when current year is disabled */
-          const disabled = (isYearDisabled?.(monthDateType) || isMonthDisabled?.(monthDateType)) || false;
+          const disabled =
+            isYearDisabled?.(monthDateType) ||
+            isMonthDisabled?.(monthDateType) ||
+            false;
           const inRange = isMonthInRange && isMonthInRange(monthDateType);
 
-          const onClick = onClickProp ? () => { onClickProp(monthDateType); } : undefined;
-          const onMouseEnter = onMonthHover ? () => { onMonthHover(monthDateType); } : undefined;
+          const onClick = onClickProp
+            ? () => {
+                onClickProp(monthDateType);
+              }
+            : undefined;
+          const onMouseEnter = onMonthHover
+            ? () => {
+                onMonthHover(monthDateType);
+              }
+            : undefined;
 
           return (
             <button
@@ -96,14 +103,11 @@ function CalendarMonths(props: CalendarMonthsProps) {
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
-              className={cx(
-                classes.button,
-                {
-                  [classes.buttonActive]: active,
-                  [classes.buttonInRange]: inRange,
-                  [classes.buttonDisabled]: disabled,
-                },
-              )}
+              className={cx(classes.button, {
+                [classes.buttonActive]: active,
+                [classes.buttonInRange]: inRange,
+                [classes.buttonDisabled]: disabled,
+              })}
               onClick={onClick}
               onMouseEnter={onMouseEnter}
             >

@@ -2,12 +2,17 @@ import { DependencyList } from 'react';
 import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
 
 export type DocumentEventHandlersFactory = () =>
-| {
-  [event in keyof DocumentEventMap]?: (event: DocumentEventMap[event]) => void;
-}
-| undefined;
+  | {
+      [event in keyof DocumentEventMap]?: (
+        event: DocumentEventMap[event],
+      ) => void;
+    }
+  | undefined;
 
-export function useDocumentEvents(factory: DocumentEventHandlersFactory, deps?: DependencyList) {
+export function useDocumentEvents(
+  factory: DocumentEventHandlersFactory,
+  deps?: DependencyList,
+) {
   useIsomorphicLayoutEffect(() => {
     const handlers = factory();
 

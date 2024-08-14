@@ -15,16 +15,9 @@ export default {
   title: 'Data Entry/Checkbox',
 };
 
-const orientations: CheckboxGroupOrientation[] = [
-  'horizontal',
-  'vertical',
-];
+const orientations: CheckboxGroupOrientation[] = ['horizontal', 'vertical'];
 
-const sizes: CheckboxSize[] = [
-  'small',
-  'medium',
-  'large',
-];
+const sizes: CheckboxSize[] = ['small', 'medium', 'large'];
 
 export const Standalone = () => (
   <>
@@ -56,36 +49,31 @@ export const Group: StoryFn<CheckboxGroupProps> = ({
   orientation,
   size,
 }) => {
-  const options: CheckboxGroupOption[] = useMemo(() => [
-    {
-      value: 'option-1',
-      label: 'Option 1',
-    },
-    {
-      value: 'option-2',
-      label: 'Option 2',
-    },
-    {
-      value: 'option-disabled',
-      label: 'Option 3',
-      disabled: true,
-    },
-  ], []);
+  const options: CheckboxGroupOption[] = useMemo(
+    () => [
+      {
+        value: 'option-1',
+        label: 'Option 1',
+      },
+      {
+        value: 'option-2',
+        label: 'Option 2',
+      },
+      {
+        value: 'option-disabled',
+        label: 'Option 3',
+        disabled: true,
+      },
+    ],
+    [],
+  );
 
   return (
     <>
       <Typography>From children</Typography>
-      <CheckboxGroup
-        disabled={disabled}
-        orientation={orientation}
-        size={size}
-      >
+      <CheckboxGroup disabled={disabled} orientation={orientation} size={size}>
         {options.map(({ disabled: optionDisabled, label, value }) => (
-          <Checkbox
-            key={value}
-            disabled={optionDisabled}
-            value={value}
-          >
+          <Checkbox key={value} disabled={optionDisabled} value={value}>
             {label}
           </Checkbox>
         ))}
@@ -128,27 +116,28 @@ export const CheckAllStory: StoryFn<CheckboxGroupProps> = ({
   orientation,
   size,
 }) => {
-  const options: CheckboxGroupOption[] = useMemo(() => [
-    {
-      value: 'option-1',
-      label: 'Option 1',
-    },
-    {
-      value: 'option-2',
-      label: 'Option 2',
-    },
-    {
-      value: 'option-disabled',
-      label: 'Option 3',
-      disabled: true,
-    },
-  ], []);
+  const options: CheckboxGroupOption[] = useMemo(
+    () => [
+      {
+        value: 'option-1',
+        label: 'Option 1',
+      },
+      {
+        value: 'option-2',
+        label: 'Option 2',
+      },
+      {
+        value: 'option-disabled',
+        label: 'Option 3',
+        disabled: true,
+      },
+    ],
+    [],
+  );
   const [value, setValue] = useState([options[0].value]);
 
   return (
-    <CheckAll
-      label="Check All"
-    >
+    <CheckAll label="Check All">
       <CheckboxGroup
         disabled={disabled}
         options={options}

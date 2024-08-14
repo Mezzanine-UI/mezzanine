@@ -1,5 +1,9 @@
 import {
-  forwardRef, ReactElement, cloneElement, Children, ReactNode,
+  forwardRef,
+  ReactElement,
+  cloneElement,
+  Children,
+  ReactNode,
 } from 'react';
 import { stepperClasses as classes } from '@mezzanine-ui/core/stepper';
 import { cx } from '../utils/cx';
@@ -22,48 +26,38 @@ export interface StepperProps
 /**
  * The react component for `mezzanine` stepper.
  */
-const Stepper = forwardRef<HTMLDivElement, StepperProps>(function Stepper(props, ref) {
-  const {
-    activeStep = -1,
-    children,
-    className,
-    ...rest
-  } = props;
+const Stepper = forwardRef<HTMLDivElement, StepperProps>(
+  function Stepper(props, ref) {
+    const { activeStep = -1, children, className, ...rest } = props;
 
-  const childrenArray = Children.toArray(children);
-  const stepsWithState = childrenArray.map((element, index) => {
-    const step = element as ReactElement;
-    const state = {
-      index,
-      active: activeStep === index,
-      completed: activeStep > index,
-      disabled: activeStep < index,
-    };
+    const childrenArray = Children.toArray(children);
+    const stepsWithState = childrenArray.map((element, index) => {
+      const step = element as ReactElement;
+      const state = {
+        index,
+        active: activeStep === index,
+        completed: activeStep > index,
+        disabled: activeStep < index,
+      };
 
-    if (step.props.active || step.props.disabled || step.props.completed) {
-      state.active = false;
-      state.completed = false;
-      state.disabled = false;
-    }
+      if (step.props.active || step.props.disabled || step.props.completed) {
+        state.active = false;
+        state.completed = false;
+        state.disabled = false;
+      }
 
-    return cloneElement(step, {
-      ...state,
-      ...step.props,
+      return cloneElement(step, {
+        ...state,
+        ...step.props,
+      });
     });
-  });
 
-  return (
-    <div
-      className={cx(
-        classes.host,
-        className,
-      )}
-      ref={ref}
-      {...rest}
-    >
-      {stepsWithState}
-    </div>
-  );
-});
+    return (
+      <div className={cx(classes.host, className)} ref={ref} {...rest}>
+        {stepsWithState}
+      </div>
+    );
+  },
+);
 
 export default Stepper;

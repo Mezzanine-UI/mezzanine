@@ -14,14 +14,9 @@ describe('useTableFetchMore()', () => {
   });
 
   it('should apply Modal default props', () => {
-    const { result } = renderHook(
-      () => useModalContainer(),
-    );
+    const { result } = renderHook(() => useModalContainer());
 
-    const {
-      Container,
-      defaultOptions,
-    } = result.current;
+    const { Container, defaultOptions } = result.current;
 
     const testInstance = TestRenderer.create(
       <Container>
@@ -34,28 +29,32 @@ describe('useTableFetchMore()', () => {
     expect(overlayInstance.props.className).toContain(defaultOptions.className);
     expect(overlayInstance.props.container).toBe(undefined);
     expect(overlayInstance.props.direction).toBe(defaultOptions.direction);
-    expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(defaultOptions.disableCloseOnBackdropClick);
-    expect(overlayInstance.props.disablePortal).toBe(defaultOptions.disableCloseOnEscapeKeyDown);
-    expect(overlayInstance.props.hideBackdrop).toBe(defaultOptions.hideBackdrop);
-    expect(overlayInstance.props.invisibleBackdrop).toBe(defaultOptions.invisibleBackdrop);
+    expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(
+      defaultOptions.disableCloseOnBackdropClick,
+    );
+    expect(overlayInstance.props.disablePortal).toBe(
+      defaultOptions.disableCloseOnEscapeKeyDown,
+    );
+    expect(overlayInstance.props.hideBackdrop).toBe(
+      defaultOptions.hideBackdrop,
+    );
+    expect(overlayInstance.props.invisibleBackdrop).toBe(
+      defaultOptions.invisibleBackdrop,
+    );
     expect(overlayInstance.props.onBackdropClick).toBe(undefined);
     expect(overlayInstance.props.onClose).toBe(undefined);
     expect(overlayInstance.props.open).toBe(defaultOptions.open);
   });
 
   it('should override default props when custom props given', () => {
-    const { result } = renderHook(
-      () => useModalContainer(),
-    );
+    const { result } = renderHook(() => useModalContainer());
 
     const container = () => document.createElement('div');
     const onBackdropClick = () => {};
 
     const onClose = () => {};
 
-    const {
-      Container,
-    } = result.current;
+    const { Container } = result.current;
 
     const testInstance = TestRenderer.create(
       <Container

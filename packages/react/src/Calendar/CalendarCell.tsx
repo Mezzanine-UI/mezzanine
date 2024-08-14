@@ -2,7 +2,8 @@ import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface CalendarCellProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface CalendarCellProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * Apply active styles if true.
    */
@@ -21,7 +22,7 @@ export interface CalendarCellProps extends NativeElementPropsWithoutKeyAndRef<'d
  * The react component for `mezzanine` calendar cell.
  * You may use it to compose your own calendar.
  */
-function CalendarCell(props:CalendarCellProps) {
+function CalendarCell(props: CalendarCellProps) {
   const {
     active,
     children,
@@ -45,9 +46,7 @@ function CalendarCell(props:CalendarCellProps) {
       )}
       {...restCalendarCellProps}
     >
-      <span className={classes.cellInner}>
-        {children}
-      </span>
+      <span className={classes.cellInner}>{children}</span>
     </div>
   );
 }

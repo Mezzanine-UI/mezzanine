@@ -1,10 +1,5 @@
 import { createRef, useState } from 'react';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Popover from '.';
 
@@ -15,18 +10,14 @@ function getPopperContainer(container: Element | null = document.body) {
 describe('<Popper />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Popover ref={ref} open />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Popover ref={ref} open />),
   );
 
   it('should bind host class', async () => {
     await act(async () => {
       await render(
-        <Popover
-          anchor={document.body}
-          open
-        >
+        <Popover anchor={document.body} open>
           content
         </Popover>,
       );
@@ -41,31 +32,21 @@ describe('<Popper />', () => {
     it('should wrap children by content <div />', async () => {
       await act(async () => {
         await render(
-          <Popover
-            anchor={document.body}
-            open
-          >
+          <Popover anchor={document.body} open>
             content
           </Popover>,
         );
       });
 
       const element = getPopperContainer();
-      const {
-        lastElementChild: contentElement,
-      } = element!;
+      const { lastElementChild: contentElement } = element!;
 
       expect(contentElement!.textContent).toBe('content');
     });
 
     it('should not render content <div /> if children not passed', async () => {
       await act(async () => {
-        await render(
-          <Popover
-            anchor={document.body}
-            open
-          />,
-        );
+        await render(<Popover anchor={document.body} open />);
       });
 
       const element = getPopperContainer();
@@ -152,20 +133,14 @@ describe('<Popper />', () => {
     it('should wrap title by <div />', async () => {
       await act(async () => {
         await render(
-          <Popover
-            anchor={document.body}
-            title="title"
-            open
-          >
+          <Popover anchor={document.body} title="title" open>
             content
           </Popover>,
         );
       });
 
       const element = getPopperContainer();
-      const {
-        firstElementChild: titleElement,
-      } = element!;
+      const { firstElementChild: titleElement } = element!;
 
       expect(titleElement!.tagName.toLowerCase()).toBe('div');
       expect(titleElement!.textContent).toBe('title');
@@ -174,12 +149,7 @@ describe('<Popper />', () => {
 
   it('should not render title <div /> if title not passed', async () => {
     await act(async () => {
-      await render(
-        <Popover
-          anchor={document.body}
-          open
-        />,
-      );
+      await render(<Popover anchor={document.body} open />);
     });
 
     const element = getPopperContainer();

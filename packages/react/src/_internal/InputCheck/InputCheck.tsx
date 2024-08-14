@@ -7,8 +7,7 @@ import { cx } from '../../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 
 export interface InputCheckProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'> {
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'> {
   /**
    * The label of input check.
    */
@@ -37,44 +36,40 @@ export interface InputCheckProps
 /**
  * The react component for `mezzanine` input check.
  */
-const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(function InputCheck(props, ref) {
-  const {
-    children,
-    className,
-    control,
-    disabled,
-    error,
-    htmlFor,
-    size = 'medium',
-    ...rest
-  } = props;
+const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
+  function InputCheck(props, ref) {
+    const {
+      children,
+      className,
+      control,
+      disabled,
+      error,
+      htmlFor,
+      size = 'medium',
+      ...rest
+    } = props;
 
-  return (
-    <label
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        {
-          [classes.disabled]: disabled,
-          [classes.error]: error,
-          [classes.withLabel]: !!children,
-        },
-        className,
-      )}
-      htmlFor={htmlFor}
-    >
-      <span className={classes.control}>
-        {control}
-      </span>
-      {children && (
-        <span className={classes.label}>
-          {children}
-        </span>
-      )}
-    </label>
-  );
-});
+    return (
+      <label
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.host,
+          classes.size(size),
+          {
+            [classes.disabled]: disabled,
+            [classes.error]: error,
+            [classes.withLabel]: !!children,
+          },
+          className,
+        )}
+        htmlFor={htmlFor}
+      >
+        <span className={classes.control}>{control}</span>
+        {children && <span className={classes.label}>{children}</span>}
+      </label>
+    );
+  },
+);
 
 export default InputCheck;

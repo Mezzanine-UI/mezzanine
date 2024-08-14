@@ -17,10 +17,11 @@ export const Severity = () => {
   ];
 
   return (
-    <div style={{
-      display: 'grid',
-      gridGap: 16,
-    }}
+    <div
+      style={{
+        display: 'grid',
+        gridGap: 16,
+      }}
     >
       {severities.map((severity) => (
         <Notification
@@ -32,7 +33,6 @@ export const Severity = () => {
         </Notification>
       ))}
     </div>
-
   );
 };
 

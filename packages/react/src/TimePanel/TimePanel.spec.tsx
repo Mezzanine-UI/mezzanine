@@ -4,12 +4,7 @@ import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
 import { getUnitLabel } from '@mezzanine-ui/core/time-panel';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -23,18 +18,16 @@ describe('<TimePanel />', () => {
 
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <TimePanel ref={ref} />
       </CalendarConfigProvider>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <TimePanel className={className} />
       </CalendarConfigProvider>,
@@ -67,9 +60,15 @@ describe('<TimePanel />', () => {
         expect(instance.children).not.toBe(null);
       });
 
-      const shouldHaveHourPrefix = columnInstances.some((instance) => instance.props.prefix === 'Hrs');
-      const shouldHaveMinutePrefix = columnInstances.some((instance) => instance.props.prefix === 'Min');
-      const shouldHaveSecondPrefix = columnInstances.some((instance) => instance.props.prefix === 'Sec');
+      const shouldHaveHourPrefix = columnInstances.some(
+        (instance) => instance.props.prefix === 'Hrs',
+      );
+      const shouldHaveMinutePrefix = columnInstances.some(
+        (instance) => instance.props.prefix === 'Min',
+      );
+      const shouldHaveSecondPrefix = columnInstances.some(
+        (instance) => instance.props.prefix === 'Sec',
+      );
 
       expect(shouldHaveHourPrefix).toBe(true);
       expect(shouldHaveMinutePrefix).toBe(true);
@@ -121,7 +120,9 @@ describe('<TimePanel />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const controlElements = element.querySelectorAll('.mzn-time-panel-column__control-button');
+      const controlElements = element.querySelectorAll(
+        '.mzn-time-panel-column__control-button',
+      );
 
       controlElements.forEach((controlElement) => {
         expect((controlElement as HTMLButtonElement).onclick).toBe(null);
@@ -136,7 +137,9 @@ describe('<TimePanel />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const controlElements = element.querySelectorAll('.mzn-time-panel-column__control-button');
+      const controlElements = element.querySelectorAll(
+        '.mzn-time-panel-column__control-button',
+      );
 
       controlElements.forEach((controlElement) => {
         fireEvent.click(controlElement);
@@ -161,7 +164,9 @@ describe('<TimePanel />', () => {
           </CalendarConfigProvider>,
         );
         const element = getHostHTMLElement();
-        const controlElements = element.querySelectorAll('.mzn-time-panel-column__control-button');
+        const controlElements = element.querySelectorAll(
+          '.mzn-time-panel-column__control-button',
+        );
 
         controlElements.forEach((controlElement) => {
           fireEvent.click(controlElement);
@@ -175,8 +180,8 @@ describe('<TimePanel />', () => {
           value,
           onChange,
         }: {
-          value: DateType,
-          onChange: TimePanelProps['onChange']
+          value: DateType;
+          onChange: TimePanelProps['onChange'];
         }) {
           return (
             <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -187,9 +192,15 @@ describe('<TimePanel />', () => {
 
         for (let i = 0; i < 24; i += 1) {
           it(`prev control at ${getUnitLabel(i, 2)}:00:00`, () => {
-            const displayHour = moment().startOf('day').hour(i).format('YYYY-MM-DD HH:mm:ss');
+            const displayHour = moment()
+              .startOf('day')
+              .hour(i)
+              .format('YYYY-MM-DD HH:mm:ss');
             const prevHour = (i - 1 >= 0 ? i - 1 : 24 + i - 1) % 24;
-            const expectHour = moment().startOf('day').hour(prevHour).format('YYYY-MM-DD HH:mm:ss');
+            const expectHour = moment()
+              .startOf('day')
+              .hour(prevHour)
+              .format('YYYY-MM-DD HH:mm:ss');
 
             function isSameTime(val: string) {
               const valTimeString = moment(val).format('YYYY-MM-DD HH:mm:ss');
@@ -202,9 +213,10 @@ describe('<TimePanel />', () => {
               <TestTimePanel value={displayHour} onChange={onChange} />,
             );
             const hourColumnElement = getByText('Hrs').parentNode;
-            const [
-              prevButtonElement,
-            ] = hourColumnElement?.querySelectorAll('.mzn-time-panel-column__control-button') || [];
+            const [prevButtonElement] =
+              hourColumnElement?.querySelectorAll(
+                '.mzn-time-panel-column__control-button',
+              ) || [];
 
             expect(prevButtonElement).toBeInstanceOf(HTMLButtonElement);
             fireEvent.click(prevButtonElement);
@@ -212,9 +224,15 @@ describe('<TimePanel />', () => {
           });
 
           it(`next control at ${getUnitLabel(i, 2)}:00:00`, () => {
-            const displayHour = moment().startOf('day').hour(i).format('YYYY-MM-DD HH:mm:ss');
+            const displayHour = moment()
+              .startOf('day')
+              .hour(i)
+              .format('YYYY-MM-DD HH:mm:ss');
             const nextHour = (i + 1 >= 0 ? i + 1 : 24 + i + 1) % 24;
-            const expectHour = moment().startOf('day').hour(nextHour).format('YYYY-MM-DD HH:mm:ss');
+            const expectHour = moment()
+              .startOf('day')
+              .hour(nextHour)
+              .format('YYYY-MM-DD HH:mm:ss');
 
             function isSameTime(val: string) {
               const valTimeString = moment(val).format('YYYY-MM-DD HH:mm:ss');
@@ -227,9 +245,10 @@ describe('<TimePanel />', () => {
               <TestTimePanel value={displayHour} onChange={onChange} />,
             );
             const hourColumnElement = getByText('Hrs').parentNode;
-            const [, nextButtonElement] = hourColumnElement?.querySelectorAll(
-              '.mzn-time-panel-column__control-button',
-            ) || [];
+            const [, nextButtonElement] =
+              hourColumnElement?.querySelectorAll(
+                '.mzn-time-panel-column__control-button',
+              ) || [];
 
             expect(nextButtonElement).toBeInstanceOf(HTMLButtonElement);
             fireEvent.click(nextButtonElement);
@@ -276,7 +295,9 @@ describe('<TimePanel />', () => {
             </CalendarConfigProvider>,
           );
           const hourColumnElement = getByText('Hrs').parentNode;
-          const unitElements = hourColumnElement?.querySelectorAll('.mzn-time-panel-column__button');
+          const unitElements = hourColumnElement?.querySelectorAll(
+            '.mzn-time-panel-column__button',
+          );
 
           expect(unitElements).not.toBe(undefined);
           expect(unitElements?.length).not.toBe(0);

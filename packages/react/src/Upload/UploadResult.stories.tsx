@@ -29,16 +29,8 @@ export const Basic: StoryFn<BasicStoryArgs> = ({ onDelete, onDownload }) => (
       percentage={100}
       status="done"
     />
-    <UploadResult
-      name="456.jpg"
-      percentage={40}
-      status="loading"
-    />
-    <UploadResult
-      name="789.jpg"
-      percentage={60}
-      status="loading"
-    />
+    <UploadResult name="456.jpg" percentage={40} status="loading" />
+    <UploadResult name="789.jpg" percentage={60} status="loading" />
     <UploadResult
       name="long_file_name_long_long_long_long_long_long_long.jpg"
       onDelete={onDelete}
@@ -62,20 +54,10 @@ export const Sizes: StoryFn = () => (
     }}
   >
     <ConfigProvider size="large">
-      <UploadResult
-        name="123.jpg"
-        status="done"
-      />
+      <UploadResult name="123.jpg" status="done" />
     </ConfigProvider>
-    <UploadResult
-      name="123.jpg"
-      status="done"
-    />
-    <UploadResult
-      name="123.jpg"
-      size="small"
-      status="done"
-    />
+    <UploadResult name="123.jpg" status="done" />
+    <UploadResult name="123.jpg" size="small" status="done" />
   </div>
 );
 
@@ -99,7 +81,9 @@ export const List: StoryFn<ListStoryArgs> = ({ onDownload }) => {
           multiple
           variant="outlined"
           accept="image/*"
-          onUpload={((uploadFiles) => setFiles((prev) => [...prev, ...uploadFiles]))}
+          onUpload={(uploadFiles) =>
+            setFiles((prev) => [...prev, ...uploadFiles])
+          }
         >
           upload
         </UploadButton>
@@ -109,7 +93,7 @@ export const List: StoryFn<ListStoryArgs> = ({ onDownload }) => {
           key={file.name}
           name={file.name}
           onDownload={onDownload}
-          onDelete={() => setFiles(files.filter((f) => (f !== file)))}
+          onDelete={() => setFiles(files.filter((f) => f !== file))}
           status="done"
         />
       ))}

@@ -12,12 +12,7 @@ export default {
   title: 'General/Typography',
 } as Meta;
 
-const aligns: TypographyAlign[] = [
-  'left',
-  'center',
-  'right',
-  'justify',
-];
+const aligns: TypographyAlign[] = ['left', 'center', 'right', 'justify'];
 const colors: TypographyColor[] = [
   'inherit',
   'primary',
@@ -53,20 +48,13 @@ const variants: TypographyVariant[] = [
   'caption',
 ];
 const weights: TypographyWeight[] = [
-  100,
-  200,
-  300,
-  400,
-  500,
-  600,
-  700,
-  800,
-  900,
+  100, 200, 300, 400, 500, 600, 700, 800, 900,
 ];
 
-export const Playgroud: StoryFn<TypographyProps<any>> = ({ children, ...props }) => (
-  <Typography {...props}>{children}</Typography>
-);
+export const Playgroud: StoryFn<TypographyProps<any>> = ({
+  children,
+  ...props
+}) => <Typography {...props}>{children}</Typography>;
 
 Playgroud.args = {
   children: 'Hello World!',
@@ -117,25 +105,39 @@ export const Variants = () => (
     <Typography variant="h6">h6. Heading</Typography>
     <br />
     <Typography variant="body1">
-      body1. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Neque, asperiores fuga porro officiis mollitia qui,
-      consectetur sed provident suscipit voluptate quae
-      similique minima itaque officia non impedit perferendis quis consequatur?
+      body1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
+      asperiores fuga porro officiis mollitia qui, consectetur sed provident
+      suscipit voluptate quae similique minima itaque officia non impedit
+      perferendis quis consequatur?
     </Typography>
     <Typography variant="body2">
-      body2. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Neque, asperiores fuga porro officiis mollitia qui,
-      consectetur sed provident suscipit voluptate quae
-      similique minima itaque officia non impedit perferendis quis consequatur?
+      body2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
+      asperiores fuga porro officiis mollitia qui, consectetur sed provident
+      suscipit voluptate quae similique minima itaque officia non impedit
+      perferendis quis consequatur?
     </Typography>
     <br />
-    <Typography variant="button1" display="block">button 1</Typography>
-    <Typography variant="button2" display="block">button 2</Typography>
-    <Typography variant="button3" display="block">button 3</Typography>
-    <Typography variant="input1" display="block">input 1</Typography>
-    <Typography variant="input2" display="block">input 2</Typography>
-    <Typography variant="input3" display="block">input 3</Typography>
-    <Typography variant="caption" display="block">caption text</Typography>
+    <Typography variant="button1" display="block">
+      button 1
+    </Typography>
+    <Typography variant="button2" display="block">
+      button 2
+    </Typography>
+    <Typography variant="button3" display="block">
+      button 3
+    </Typography>
+    <Typography variant="input1" display="block">
+      input 1
+    </Typography>
+    <Typography variant="input2" display="block">
+      input 2
+    </Typography>
+    <Typography variant="input3" display="block">
+      input 3
+    </Typography>
+    <Typography variant="caption" display="block">
+      caption text
+    </Typography>
   </>
 );
 

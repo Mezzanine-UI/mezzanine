@@ -10,8 +10,10 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
 
 export interface CalendarYearsProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick' | 'children'> {
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'onClick' | 'children'
+  > {
   /**
    * Provide if you have a custom disabling logic.
    * The method takes the date object as its parameter.
@@ -48,12 +50,7 @@ export interface CalendarYearsProps
  * You may use it to compose your own calendar.
  */
 function CalendarYears(props: CalendarYearsProps) {
-  const {
-    getNow,
-    getYear,
-    isYearIncluded,
-    setYear,
-  } = useCalendarContext();
+  const { getNow, getYear, isYearIncluded, setYear } = useCalendarContext();
   const {
     className,
     isYearDisabled,
@@ -65,27 +62,36 @@ function CalendarYears(props: CalendarYearsProps) {
     ...rest
   } = props;
 
-  const [start] = useMemo(() => getCalendarYearRange(getYear(referenceDate)), [getYear, referenceDate]);
+  const [start] = useMemo(
+    () => getCalendarYearRange(getYear(referenceDate)),
+    [getYear, referenceDate],
+  );
 
   return (
-    <div
-      className={cx(
-        classes.board,
-        className,
-      )}
-      {...rest}
-    >
+    <div className={cx(classes.board, className)} {...rest}>
       <div className={classes.twelveGrid}>
         {calendarYearsBase.map((base) => {
           const thisYear = base + start;
           const yearDateType = setYear(getNow(), thisYear);
           const disabled = isYearDisabled && isYearDisabled(yearDateType);
           const inactive = !disabled && (base === 0 || base === 11);
-          const active = !disabled && !inactive && value && isYearIncluded(yearDateType, value);
+          const active =
+            !disabled &&
+            !inactive &&
+            value &&
+            isYearIncluded(yearDateType, value);
           const inRange = isYearInRange && isYearInRange(yearDateType);
 
-          const onClick = onClickProp ? () => { onClickProp(yearDateType); } : undefined;
-          const onMouseEnter = onYearHover ? () => { onYearHover(yearDateType); } : undefined;
+          const onClick = onClickProp
+            ? () => {
+                onClickProp(yearDateType);
+              }
+            : undefined;
+          const onMouseEnter = onYearHover
+            ? () => {
+                onYearHover(yearDateType);
+              }
+            : undefined;
 
           return (
             <button
@@ -93,15 +99,12 @@ function CalendarYears(props: CalendarYearsProps) {
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
-              className={cx(
-                classes.button,
-                {
-                  [classes.buttonActive]: active,
-                  [classes.buttonInRange]: inRange,
-                  [classes.buttonDisabled]: disabled,
-                  [classes.buttonInactive]: inactive,
-                },
-              )}
+              className={cx(classes.button, {
+                [classes.buttonActive]: active,
+                [classes.buttonInRange]: inRange,
+                [classes.buttonDisabled]: disabled,
+                [classes.buttonInactive]: inactive,
+              })}
               onClick={onClick}
               onMouseEnter={onMouseEnter}
             >

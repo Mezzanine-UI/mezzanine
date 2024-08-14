@@ -21,17 +21,19 @@ export function useSwitchControlValue(props: UseSwitchControlValueProps) {
     equalityFn,
     value: checkedProp,
   });
-  const onChange = useLastCallback<ChangeEventHandler<HTMLInputElement>>((event) => {
-    const nextChecked = event.target.checked;
+  const onChange = useLastCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const nextChecked = event.target.checked;
 
-    if (!equalityFn(checked, nextChecked)) {
-      setChecked(nextChecked);
+      if (!equalityFn(checked, nextChecked)) {
+        setChecked(nextChecked);
 
-      if (onChangeProp) {
-        onChangeProp(event);
+        if (onChangeProp) {
+          onChangeProp(event);
+        }
       }
-    }
-  });
+    },
+  );
 
   return [checked, onChange] as const;
 }

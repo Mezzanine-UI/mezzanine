@@ -19,14 +19,12 @@ import { Collapse } from '../Transition';
 describe('<NavigationSubMenu />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLLIElement,
-    (ref) => render(<NavigationSubMenu ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
+    render(<NavigationSubMenu ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<NavigationSubMenu className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<NavigationSubMenu className={className} />),
   );
 
   it('should bind host class', () => {
@@ -77,7 +75,9 @@ describe('<NavigationSubMenu />', () => {
         fireEvent.click(subMenuElement!);
       });
 
-      const subMenuGroupElement = subMenuElement?.querySelector('.mzn-navigation-sub-menu__group');
+      const subMenuGroupElement = subMenuElement?.querySelector(
+        '.mzn-navigation-sub-menu__group',
+      );
 
       expect(subMenuGroupElement).toBeTruthy();
     });

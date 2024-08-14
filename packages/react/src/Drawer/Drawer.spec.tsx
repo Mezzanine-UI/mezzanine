@@ -4,9 +4,7 @@ import {
   render,
   TestRenderer,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { SlideFade, SlideFadeDirection } from '../Transition';
 import Drawer, { DrawerPlacement } from '.';
 
@@ -26,19 +24,15 @@ describe('<Drawer />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Drawer ref={ref} open />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Drawer ref={ref} open />),
   );
 
   it('should bind host class and append className from prop to drawer element', () => {
     const className = 'foo';
 
     render(
-      <Drawer
-        className={className}
-        open
-      >
+      <Drawer className={className} open>
         foo
       </Drawer>,
     );
@@ -73,7 +67,9 @@ describe('<Drawer />', () => {
 
         const drawerElement = getDrawerElement()!;
 
-        expect(drawerElement.classList.contains(`mzn-drawer--${placement}`)).toBeTruthy();
+        expect(
+          drawerElement.classList.contains(`mzn-drawer--${placement}`),
+        ).toBeTruthy();
       });
 
       const slideFadeDirection: { [index: string]: SlideFadeDirection } = {
@@ -84,10 +80,14 @@ describe('<Drawer />', () => {
       };
 
       it(`should bind correct direction to SlideFade component direction="${slideFadeDirection[placement]}"`, () => {
-        const testRender = TestRenderer.create(<Drawer placement={placement} open disablePortal />);
+        const testRender = TestRenderer.create(
+          <Drawer placement={placement} open disablePortal />,
+        );
         const slideFadeInstance = testRender.root.findByType(SlideFade);
 
-        expect(slideFadeInstance.props.direction).toBe(slideFadeDirection[placement]);
+        expect(slideFadeInstance.props.direction).toBe(
+          slideFadeDirection[placement],
+        );
       });
     });
   });

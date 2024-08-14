@@ -1,16 +1,12 @@
 import { RadioGroupOption, RadioSize } from '@mezzanine-ui/core/radio';
-import {
-  ChangeEventHandler, forwardRef, ReactNode, useMemo,
-} from 'react';
+import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
 import { InputCheckGroup, InputCheckGroupProps } from '../_internal/InputCheck';
 import { useInputControlValue } from '../Form/useInputControlValue';
-import {
-  RadioGroupContext,
-  RadioGroupContextValue,
-} from './RadioGroupContext';
+import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
 import Radio from './Radio';
 
-export interface RadioGroupProps extends Omit<InputCheckGroupProps, 'onChange'> {
+export interface RadioGroupProps
+  extends Omit<InputCheckGroupProps, 'onChange'> {
   /**
    * The radios in radio group.
    */
@@ -53,52 +49,55 @@ export interface RadioGroupProps extends Omit<InputCheckGroupProps, 'onChange'> 
 /**
  * The react component for `mezzanine` radio group.
  */
-const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(function RadioGroup(props, ref) {
-  const {
-    children: childrenProp,
-    defaultValue,
-    disabled,
-    name,
-    options = [],
-    onChange: onChangeProp,
-    size,
-    value: valueProp,
-    ...rest
-  } = props;
-  const [value, onChange] = useInputControlValue({
-    defaultValue,
-    onChange: onChangeProp,
-    value: valueProp,
-  });
-  const context: RadioGroupContextValue = useMemo(() => ({
-    disabled,
-    name,
-    onChange,
-    size,
-    value,
-  }), [disabled, name, onChange, size, value]);
+const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
+  function RadioGroup(props, ref) {
+    const {
+      children: childrenProp,
+      defaultValue,
+      disabled,
+      name,
+      options = [],
+      onChange: onChangeProp,
+      size,
+      value: valueProp,
+      ...rest
+    } = props;
+    const [value, onChange] = useInputControlValue({
+      defaultValue,
+      onChange: onChangeProp,
+      value: valueProp,
+    });
+    const context: RadioGroupContextValue = useMemo(
+      () => ({
+        disabled,
+        name,
+        onChange,
+        size,
+        value,
+      }),
+      [disabled, name, onChange, size, value],
+    );
 
-  const children = childrenProp || options.map((option) => (
-    <Radio
-      key={option.value}
-      disabled={option.disabled}
-      value={option.value}
-    >
-      {option.label}
-    </Radio>
-  ));
+    const children =
+      childrenProp ||
+      options.map((option) => (
+        <Radio
+          key={option.value}
+          disabled={option.disabled}
+          value={option.value}
+        >
+          {option.label}
+        </Radio>
+      ));
 
-  return (
-    <RadioGroupContext.Provider value={context}>
-      <InputCheckGroup
-        {...rest}
-        ref={ref}
-        role="radiogroup"
-      >
-        {children}
-      </InputCheckGroup>
-    </RadioGroupContext.Provider>
-  );
-});
+    return (
+      <RadioGroupContext.Provider value={context}>
+        <InputCheckGroup {...rest} ref={ref} role="radiogroup">
+          {children}
+        </InputCheckGroup>
+      </RadioGroupContext.Provider>
+    );
+  },
+);
 
 export default RadioGroup;

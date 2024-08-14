@@ -10,10 +10,7 @@ import {
   FocusEventHandler,
   forwardRef,
 } from 'react';
-import {
-  DateType,
-  getDefaultModeFormat,
-} from '@mezzanine-ui/core/calendar';
+import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import DatePickerCalendar, {
@@ -30,26 +27,27 @@ import Icon from '../Icon';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface DatePickerProps
-  extends
-  Omit<DatePickerCalendarProps,
-  | 'anchor'
-  | 'calendarRef'
-  | 'onChange'
-  | 'open'
-  | 'referenceDate'
-  | 'updateReferenceDate'
-  >,
-  Omit<PickerTriggerProps,
-  | 'defaultValue'
-  | 'inputRef'
-  | 'onChange'
-  | 'onClear'
-  | 'onClick'
-  | 'onIconClick'
-  | 'onKeyDown'
-  | 'suffixActionIcon'
-  | 'value'
-  > {
+  extends Omit<
+      DatePickerCalendarProps,
+      | 'anchor'
+      | 'calendarRef'
+      | 'onChange'
+      | 'open'
+      | 'referenceDate'
+      | 'updateReferenceDate'
+    >,
+    Omit<
+      PickerTriggerProps,
+      | 'defaultValue'
+      | 'inputRef'
+      | 'onChange'
+      | 'onClear'
+      | 'onClick'
+      | 'onIconClick'
+      | 'onKeyDown'
+      | 'suffixActionIcon'
+      | 'value'
+    > {
   /**
    * Default value for date picker.
    */
@@ -84,10 +82,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       required: requiredFromFormControl,
       severity,
     } = useContext(FormControlContext) || {};
-    const {
-      defaultDateFormat,
-      getNow,
-    } = useCalendarContext();
+    const { defaultDateFormat, getNow } = useCalendarContext();
     const {
       calendarProps,
       className,
@@ -129,26 +124,30 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       ...restInputProp
     } = inputProps || {};
 
-    const formats = useMemo(() => [
-      format,
-      defaultDateFormat,
-      getDefaultModeFormat(mode),
-    ], [defaultDateFormat, format, mode]);
+    const formats = useMemo(
+      () => [format, defaultDateFormat, getDefaultModeFormat(mode)],
+      [defaultDateFormat, format, mode],
+    );
 
     /** Calender display control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
-    const onCalendarToggle = useCallback((currentOpen: boolean) => {
-      if (!preventOpen) {
-        if (onCalendarToggleProp) {
-          onCalendarToggleProp(currentOpen);
+    const onCalendarToggle = useCallback(
+      (currentOpen: boolean) => {
+        if (!preventOpen) {
+          if (onCalendarToggleProp) {
+            onCalendarToggleProp(currentOpen);
+          }
+
+          setOpen(currentOpen);
         }
+      },
+      [onCalendarToggleProp, preventOpen],
+    );
 
-        setOpen(currentOpen);
-      }
-    }, [onCalendarToggleProp, preventOpen]);
-
-    const onFocus = useMemo<FocusEventHandler<HTMLInputElement> | undefined>(() => {
+    const onFocus = useMemo<
+      FocusEventHandler<HTMLInputElement> | undefined
+    >(() => {
       if (readOnly) {
         return undefined;
       }
@@ -186,21 +185,28 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       onCalendarToggle(false);
     };
 
-    const onKeyDownWithCloseControl = useCallback<KeyboardEventHandler<HTMLInputElement>>((event) => {
-      onKeyDown(event);
+    const onKeyDownWithCloseControl = useCallback<
+      KeyboardEventHandler<HTMLInputElement>
+    >(
+      (event) => {
+        onKeyDown(event);
 
-      if (onKeyDownProp) {
-        onKeyDownProp(event);
-      }
+        if (onKeyDownProp) {
+          onKeyDownProp(event);
+        }
 
-      if (event.key === 'Enter') {
-        onChangeProp?.(internalValue);
-        onCalendarToggle(false);
-      }
-    }, [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp]);
+        if (event.key === 'Enter') {
+          onChangeProp?.(internalValue);
+          onCalendarToggle(false);
+        }
+      },
+      [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp],
+    );
 
     /** using internal reference date */
-    const [referenceDate, setReferenceDate] = useState(referenceDateProp || defaultValue || getNow());
+    const [referenceDate, setReferenceDate] = useState(
+      referenceDateProp || defaultValue || getNow(),
+    );
 
     useEffect(() => {
       if (internalValue) {
@@ -209,13 +215,16 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     }, [internalValue]);
 
     /** Resolve input props */
-    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>((event) => {
-      if (onBlurProp) {
-        onBlurProp(event);
-      }
+    const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (event) => {
+        if (onBlurProp) {
+          onBlurProp(event);
+        }
 
-      onBlur(event);
-    }, [onBlur, onBlurProp]);
+        onBlur(event);
+      },
+      [onBlur, onBlurProp],
+    );
 
     const resolvedInputProps = {
       ...restInputProp,
@@ -269,12 +278,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       onCalendarToggle(!open);
     };
 
-    const suffixActionIcon = (
-      <Icon
-        icon={CalendarIcon}
-        onClick={onIconClick}
-      />
-    );
+    const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
 
     return (
       <>

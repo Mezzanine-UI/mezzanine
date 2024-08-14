@@ -1,7 +1,11 @@
 import { useLastCallback } from '../hooks/useLastCallback';
-import { useControlValueState, UseControlValueStateProps } from './useControlValueState';
+import {
+  useControlValueState,
+  UseControlValueStateProps,
+} from './useControlValueState';
 
-export interface UseCustomControlValueProps<V> extends UseControlValueStateProps<V> {
+export interface UseCustomControlValueProps<V>
+  extends UseControlValueStateProps<V> {
   onChange?: (value: V) => void;
 }
 

@@ -1,24 +1,23 @@
-import {
-  MouseEventHandler,
-  useEffect,
-  useRef,
-} from 'react';
+import { MouseEventHandler, useEffect, useRef } from 'react';
 import {
   ImageUploader,
   uploadPictureWallClasses as classes,
 } from '@mezzanine-ui/core/upload';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
-import UploadPictureBlock, { UploadPictureBlockProps } from './UploadPictureBlock';
+import UploadPictureBlock, {
+  UploadPictureBlockProps,
+} from './UploadPictureBlock';
 
 export interface UploadPictureWallItemProps
-  extends
-  Pick<UploadPictureBlockProps, 'defaultUploadErrorLabel' | 'defaultUploadingLabel' | 'defaultUploadLabel'>,
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>,
-  | 'value'
-  | 'onChange'
-  | 'children'
-  > {
+  extends Pick<
+      UploadPictureBlockProps,
+      'defaultUploadErrorLabel' | 'defaultUploadingLabel' | 'defaultUploadLabel'
+    >,
+    Omit<
+      NativeElementPropsWithoutKeyAndRef<'div'>,
+      'value' | 'onChange' | 'children'
+    > {
   accept?: string;
   disabled?: boolean;
   fileHost?: string;
@@ -50,11 +49,7 @@ const UploadPictureWallItem = (props: UploadPictureWallItemProps) => {
   }, []);
 
   return (
-    <div
-      className={cx(
-        classes.item,
-      )}
-    >
+    <div className={cx(classes.item)}>
       <UploadPictureBlock
         accept={accept}
         defaultUploadErrorLabel={defaultUploadErrorLabel}

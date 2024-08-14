@@ -1,4 +1,1 @@
-export {
-  InputTriggerPopperProps,
-  default,
-} from './InputTriggerPopper';
+export { InputTriggerPopperProps, default } from './InputTriggerPopper';

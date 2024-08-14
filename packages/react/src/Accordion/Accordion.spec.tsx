@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -20,26 +15,20 @@ function testExpanded(element: HTMLElement) {
 describe('<Accordion />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Accordion ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Accordion ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Accordion className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Accordion className={className} />),
   );
 
   describe('Controll', () => {
     it('uncontrolled', () => {
       const { getHostHTMLElement } = render(
         <Accordion defaultExpanded>
-          <AccordionSummary>
-            foo
-          </AccordionSummary>
-          <AccordionDetails>
-            bar
-          </AccordionDetails>
+          <AccordionSummary>foo</AccordionSummary>
+          <AccordionDetails>bar</AccordionDetails>
         </Accordion>,
       );
 
@@ -54,12 +43,8 @@ describe('<Accordion />', () => {
 
         return (
           <Accordion expanded={expanded} onChange={(exp) => setExpanded(exp)}>
-            <AccordionSummary>
-              foo
-            </AccordionSummary>
-            <AccordionDetails>
-              bar
-            </AccordionDetails>
+            <AccordionSummary>foo</AccordionSummary>
+            <AccordionDetails>bar</AccordionDetails>
           </Accordion>
         );
       };

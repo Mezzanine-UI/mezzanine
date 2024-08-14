@@ -16,7 +16,8 @@ export default function useTabsOverflow(tabsRef: RefObject<HTMLElement>) {
 
   function scrollToRight() {
     if (tabsRef.current) {
-      const offsetRight = tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
+      const offsetRight =
+        tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
 
       tabsRef.current.scrollTo(offsetRight, 0);
     }
@@ -26,13 +27,16 @@ export default function useTabsOverflow(tabsRef: RefObject<HTMLElement>) {
     if (tabsRef.current) {
       const handleOverflowingState = () => {
         if (tabsRef.current) {
-          setIsOverflowing(tabsRef.current.scrollWidth > tabsRef.current.clientWidth);
+          setIsOverflowing(
+            tabsRef.current.scrollWidth > tabsRef.current.clientWidth,
+          );
         }
       };
 
       const handleScrollState = () => {
         if (tabsRef.current) {
-          const offsetRight = tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
+          const offsetRight =
+            tabsRef.current.scrollWidth - tabsRef.current.clientWidth;
 
           if (tabsRef.current.scrollLeft === 0) {
             setScrollState('begin');

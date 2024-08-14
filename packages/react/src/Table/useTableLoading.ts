@@ -10,9 +10,7 @@ export interface UseTableLoading {
 }
 
 export function useTableLoading(props: UseTableLoading) {
-  const {
-    loading: loadingProp,
-  } = props;
+  const { loading: loadingProp } = props;
 
   const [loading, setLoading] = useControlValueState({
     defaultValue: false,

@@ -1,9 +1,6 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { IconProps } from '../Icon';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -13,18 +10,16 @@ import Stepper, { Step } from '.';
 describe('<Stepper />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <Stepper ref={ref}>
         <Step />
       </Stepper>,
     ),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <Stepper className={className}>
         <Step />
       </Stepper>,
@@ -32,14 +27,19 @@ describe('<Stepper />', () => {
   );
 
   const testStepper = () => {
-    const completedIconProps : IconProps = { icon: PlusIcon };
+    const completedIconProps: IconProps = { icon: PlusIcon };
 
     return (
       <Stepper activeStep={1}>
         <Step key="step1" title="step1" />
         <Step key="step2" title="step2" />
         <Step key="step3" title="step3" />
-        <Step key="step4" title="step4" completedIconProps={completedIconProps} completed />
+        <Step
+          key="step4"
+          title="step4"
+          completedIconProps={completedIconProps}
+          completed
+        />
       </Stepper>
     );
   };
@@ -57,7 +57,9 @@ describe('<Stepper />', () => {
       const { getHostHTMLElement } = render(testStepper());
       const element = getHostHTMLElement();
 
-      expect(element.querySelector('.mzn-stepper-step__completed-icon')).toBeTruthy();
+      expect(
+        element.querySelector('.mzn-stepper-step__completed-icon'),
+      ).toBeTruthy();
     });
   });
 });

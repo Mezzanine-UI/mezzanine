@@ -1,27 +1,20 @@
 import { createRef } from 'react';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import {
-  RangePickerTrigger,
-} from '.';
+import { RangePickerTrigger } from '.';
 
 describe('<RangePickerTrigger />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<RangePickerTrigger ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<RangePickerTrigger ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<RangePickerTrigger className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<RangePickerTrigger className={className} />),
   );
 
   it('should bind host class', () => {
@@ -65,13 +58,16 @@ describe('<RangePickerTrigger />', () => {
       />,
     );
     const element = getHostHTMLElement();
-    const [inputFromElement, inputToElement] = element.getElementsByTagName('input');
+    const [inputFromElement, inputToElement] =
+      element.getElementsByTagName('input');
 
     expect(inputFromElement.getAttribute('aria-disabled')).toBe('true');
     expect(inputFromElement.getAttribute('aria-multiline')).toBe('false');
     expect(inputFromElement.getAttribute('aria-readonly')).toBe('true');
     expect(inputFromElement.hasAttribute('disabled')).toBe(true);
-    expect(inputFromElement.getAttribute('placeholder')).toBe(inputFromPlaceholder);
+    expect(inputFromElement.getAttribute('placeholder')).toBe(
+      inputFromPlaceholder,
+    );
     expect(inputFromElement.hasAttribute('readonly')).toBe(true);
 
     expect(inputToElement.getAttribute('aria-disabled')).toBe('true');

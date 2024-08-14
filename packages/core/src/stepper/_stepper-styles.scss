@@ -32,14 +32,13 @@ $step-items-margin-right: spacing.level(2) !default;
     --#{$prefix-step}-icon-background-color: #{palette.color(on-primary)};
     --#{$prefix-step}-icon-background-background: #{palette.color(primary)};
 
-    align-content: center;
     align-items: center;
     background-color: var(--#{$prefix-step}-icon-background-background);
     border-radius: 50%;
     color: var(--#{$prefix-step}-icon-background-color);
     display: flex;
     height: $icon-size;
-    justify-content: center;
+    place-content: center;
     margin-right: $step-items-margin-right;
     width: $icon-size;
   }

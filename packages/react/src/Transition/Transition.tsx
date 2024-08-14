@@ -15,19 +15,29 @@ export { TransitionState };
 
 export type TransitionMode = 'enter' | 'exit';
 
-export type TransitionDuration = 'auto' | number | {
-  [mode in TransitionMode]?: number;
-};
+export type TransitionDuration =
+  | 'auto'
+  | number
+  | {
+      [mode in TransitionMode]?: number;
+    };
 
-export type TransitionEasing = string | {
-  [mode in TransitionMode]?: string;
-};
+export type TransitionEasing =
+  | string
+  | {
+      [mode in TransitionMode]?: string;
+    };
 
-export type TransitionDelay = number | {
-  [mode in TransitionMode]?: number;
-};
+export type TransitionDelay =
+  | number
+  | {
+      [mode in TransitionMode]?: number;
+    };
 
-export type TransitionEnterHandler = (node: HTMLElement, isAppearing: boolean) => void;
+export type TransitionEnterHandler = (
+  node: HTMLElement,
+  isAppearing: boolean,
+) => void;
 export type TransitionExitHandler = (node: HTMLElement) => void;
 
 export interface TransitionImplementationChildProps {
@@ -101,8 +111,8 @@ export interface TransitionProps {
 export interface TransitionImplementationProps
   extends Omit<TransitionProps, 'addEndListener' | 'children' | 'nodeRef'> {
   children: ReactElement<
-  TransitionImplementationChildProps,
-  NativeElementTag | JSXElementConstructor<TransitionImplementationChildProps>
+    TransitionImplementationChildProps,
+    NativeElementTag | JSXElementConstructor<TransitionImplementationChildProps>
   >;
   /**
    * The delay of the transition, in milliseconds
@@ -134,12 +144,18 @@ function Transition(props: TransitionProps) {
     onExiting,
     onExited,
   } = props;
-  const addNodeToCallback = <F extends (node: HTMLElement, ...args: any[]) => void>(callback?: F) => {
+  const addNodeToCallback = <
+    F extends (node: HTMLElement, ...args: any[]) => void,
+  >(
+    callback?: F,
+  ) => {
     if (!callback) {
       return;
     }
 
-    return (...args: F extends (node: HTMLElement, ...a: infer A) => void ? A : never) => {
+    return (
+      ...args: F extends (node: HTMLElement, ...a: infer A) => void ? A : never
+    ) => {
       const node = nodeRef.current;
 
       if (node) {

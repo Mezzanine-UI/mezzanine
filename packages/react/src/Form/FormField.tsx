@@ -5,7 +5,8 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { FormControl, FormControlContext } from './FormControlContext';
 
-export interface FormFieldProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+export interface FormFieldProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
    * To control the field passed from children whether should be disabled.
    * The form message won't appear if disabled.
@@ -28,42 +29,44 @@ export interface FormFieldProps extends NativeElementPropsWithoutKeyAndRef<'div'
 /**
  * The react component for `mezzanine` form field.
  */
-const FormField = forwardRef<HTMLDivElement, FormFieldProps>(function FormField(props, ref) {
-  const {
-    children,
-    className,
-    disabled = false,
-    fullWidth = false,
-    required = false,
-    severity,
-    ...rest
-  } = props;
-  const formControl: FormControl = {
-    disabled,
-    fullWidth,
-    required,
-    severity,
-  };
+const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
+  function FormField(props, ref) {
+    const {
+      children,
+      className,
+      disabled = false,
+      fullWidth = false,
+      required = false,
+      severity,
+      ...rest
+    } = props;
+    const formControl: FormControl = {
+      disabled,
+      fullWidth,
+      required,
+      severity,
+    };
 
-  return (
-    <div
-      {...rest}
-      ref={ref}
-      className={cx(
-        classes.host,
-        severity && classes.severity(severity),
-        {
-          [classes.disabled]: disabled,
-          [classes.fullWidth]: fullWidth,
-        },
-        className,
-      )}
-    >
-      <FormControlContext.Provider value={formControl}>
-        {children}
-      </FormControlContext.Provider>
-    </div>
-  );
-});
+    return (
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.host,
+          severity && classes.severity(severity),
+          {
+            [classes.disabled]: disabled,
+            [classes.fullWidth]: fullWidth,
+          },
+          className,
+        )}
+      >
+        <FormControlContext.Provider value={formControl}>
+          {children}
+        </FormControlContext.Provider>
+      </div>
+    );
+  },
+);
 
 export default FormField;

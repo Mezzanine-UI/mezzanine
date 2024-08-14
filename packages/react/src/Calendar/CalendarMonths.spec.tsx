@@ -1,25 +1,14 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
-import {
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
-import {
-  CalendarConfigProvider,
-  CalendarMonths,
-  CalendarMonthsProps,
-} from '.';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
+import { CalendarConfigProvider, CalendarMonths, CalendarMonthsProps } from '.';
 
 describe('<CalendarMonths />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <CalendarMonths
           referenceDate={moment().format('YYYY-MM-DD')}
@@ -42,7 +31,10 @@ describe('<CalendarMonths />', () => {
 
   describe('prop: displayMonthLocale', () => {
     it('should pass to getMonthShortNames method', () => {
-      const getMonthShortNamesSpy = jest.spyOn(CalendarMethodsMoment, 'getMonthShortNames');
+      const getMonthShortNamesSpy = jest.spyOn(
+        CalendarMethodsMoment,
+        'getMonthShortNames',
+      );
 
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -63,8 +55,8 @@ describe('<CalendarMonths />', () => {
       const testMonth = 9;
       const testMonthName = monthNames[testMonth];
       const disableMonth = moment().month(testMonth);
-      const isMonthDisabled: CalendarMonthsProps['isMonthDisabled'] = (date) => (
-        moment(date).isSame(disableMonth, 'month'));
+      const isMonthDisabled: CalendarMonthsProps['isMonthDisabled'] = (date) =>
+        moment(date).isSame(disableMonth, 'month');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -77,7 +69,9 @@ describe('<CalendarMonths />', () => {
 
       const target = getByText(testMonthName);
 
-      expect(target.classList.contains('mzn-calendar-button--disabled')).toBe(true);
+      expect(target.classList.contains('mzn-calendar-button--disabled')).toBe(
+        true,
+      );
     });
   });
 
@@ -90,9 +84,8 @@ describe('<CalendarMonths />', () => {
       const testTargetName = monthNames[testTargetMonth];
       const rangeStart = moment().month(testRangeStart);
       const rangeEnd = moment().month(testRangeEnd);
-      const isMonthInRange: CalendarMonthsProps['isMonthInRange'] = (date) => (
-        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]')
-      );
+      const isMonthInRange: CalendarMonthsProps['isMonthInRange'] = (date) =>
+        moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]');
 
       const { getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -105,7 +98,9 @@ describe('<CalendarMonths />', () => {
 
       const target = getByText(testTargetName);
 
-      expect(target.classList.contains('mzn-calendar-button--inRange')).toBe(true);
+      expect(target.classList.contains('mzn-calendar-button--inRange')).toBe(
+        true,
+      );
     });
   });
 
@@ -117,7 +112,9 @@ describe('<CalendarMonths />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onclick).toBe(null);
@@ -155,7 +152,9 @@ describe('<CalendarMonths />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const buttons = element.querySelectorAll<HTMLButtonElement>('.mzn-calendar-button');
+      const buttons = element.querySelectorAll<HTMLButtonElement>(
+        '.mzn-calendar-button',
+      );
 
       buttons.forEach((btn) => {
         expect(btn.onmouseenter).toBe(null);
@@ -201,7 +200,9 @@ describe('<CalendarMonths />', () => {
         </CalendarConfigProvider>,
       );
       const element = getHostHTMLElement();
-      const activeElements = element.querySelectorAll('mzn-calendar-button--active');
+      const activeElements = element.querySelectorAll(
+        'mzn-calendar-button--active',
+      );
 
       activeElements.forEach((activeElement) => {
         expect(activeElement.textContent).toBe(testMonthName);

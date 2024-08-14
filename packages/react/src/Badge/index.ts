@@ -1,7 +1,4 @@
-export {
-  BadgeProps,
-  default,
-} from './Badge';
+export { BadgeProps, default } from './Badge';
 export {
   BadgeContainerProps,
   default as BadgeContainer,

@@ -16,40 +16,38 @@ describe('useTableSorting()', () => {
   const minAgeId = 'foo';
   const maxAgeId = 'bar';
 
-  const originSources: TableDataSource[] = [{
-    id: minAgeId,
-    name: 'foo',
-    age: 10,
-    count: 300,
-  }, {
-    id: maxAgeId,
-    name: 'bar',
-    age: 15,
-    count: 200,
-  }, {
-    id: 'bob',
-    name: 'bob',
-    age: 13,
-    count: 250,
-  }];
+  const originSources: TableDataSource[] = [
+    {
+      id: minAgeId,
+      name: 'foo',
+      age: 10,
+      count: 300,
+    },
+    {
+      id: maxAgeId,
+      name: 'bar',
+      age: 15,
+      count: 200,
+    },
+    {
+      id: 'bob',
+      name: 'bob',
+      age: 13,
+      count: 250,
+    },
+  ];
 
   const numberSorter = (a: number, b: number) => b - a;
 
   it('should sorted order be `none -> desc -> asc -> none`', () => {
-    const { result } = renderHook(
-      () => useTableSorting({
+    const { result } = renderHook(() =>
+      useTableSorting({
         dataSource: originSources,
       }),
     );
 
     /** current should be 'none' */
-    const [
-      dataSource,
-      onChange,
-      {
-        sortedType,
-      },
-    ] = result.current;
+    const [dataSource, onChange, { sortedType }] = result.current;
 
     expect(dataSource[0].id).toBe(originSources[0].id);
     expect(dataSource[2].id).toBe(originSources[2].id);
@@ -100,15 +98,13 @@ describe('useTableSorting()', () => {
 
   it('should set to `desc` when sortedOn switch from another', () => {
     /** ex: sortedOn: 'age' -> sortedOn: 'name' */
-    const { result } = renderHook(
-      () => useTableSorting({
+    const { result } = renderHook(() =>
+      useTableSorting({
         dataSource: originSources,
       }),
     );
 
-    const [,
-      onChange,
-    ] = result.current;
+    const [, onChange] = result.current;
 
     TestRenderer.act(() => {
       onChange({
@@ -146,16 +142,14 @@ describe('useTableSorting()', () => {
       afterSortedType = sortedType;
     });
 
-    const { result } = renderHook(
-      () => useTableSorting({
+    const { result } = renderHook(() =>
+      useTableSorting({
         dataSource: originSources,
       }),
     );
 
     /** current should be 'none' */
-    const [,
-      onChange,
-    ] = result.current;
+    const [, onChange] = result.current;
 
     TestRenderer.act(() => {
       onChange({
@@ -172,45 +166,34 @@ describe('useTableSorting()', () => {
   });
 
   it('should `resetAll` reset all the current status', () => {
-    const { result } = renderHook(
-      () => useTableSorting({
+    const { result } = renderHook(() =>
+      useTableSorting({
         dataSource: originSources,
       }),
     );
 
     /** current should be 'none' */
-    const [,,
-      {
-        onResetAll,
-      },
-    ] = result.current;
+    const [, , { onResetAll }] = result.current;
 
     TestRenderer.act(() => {
       onResetAll();
     });
 
-    const [,,
-      {
-        sortedOn,
-        sortedType,
-      },
-    ] = result.current;
+    const [, , { sortedOn, sortedType }] = result.current;
 
     expect(sortedOn).toBe('');
     expect(sortedType).toBe('none');
   });
 
   it('should nothing happen when sorter is not given', () => {
-    const { result } = renderHook(
-      () => useTableSorting({
+    const { result } = renderHook(() =>
+      useTableSorting({
         dataSource: originSources,
       }),
     );
 
     /** current should be 'none' */
-    const [,
-      onChange,
-    ] = result.current;
+    const [, onChange] = result.current;
 
     TestRenderer.act(() => {
       onChange({
@@ -219,12 +202,7 @@ describe('useTableSorting()', () => {
       });
     });
 
-    const [
-      dataSource,,
-      {
-        sortedType,
-      },
-    ] = result.current;
+    const [dataSource, , { sortedType }] = result.current;
 
     expect(dataSource[0].id).toBe(originSources[0].id);
     expect(dataSource[2].id).toBe(originSources[2].id);

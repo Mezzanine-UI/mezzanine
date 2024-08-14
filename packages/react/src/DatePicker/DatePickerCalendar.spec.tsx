@@ -9,25 +9,16 @@ import {
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { act } from 'react-dom/test-utils';
-import {
-  cleanup,
-  fireEvent,
-  render,
-} from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
-import {
-  DatePickerCalendar,
-} from '.';
+import { DatePickerCalendar } from '.';
 
 describe('<DatePickerCalendar />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DatePickerCalendar ref={ref} referenceDate="2022-01-02" open />
       </CalendarConfigProvider>,
@@ -52,7 +43,11 @@ describe('<DatePickerCalendar />', () => {
       fireEvent.click(testMonthElement);
 
       expect(getByText('Nov')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText('Nov').parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getByText('Nov').parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
 
     it('case: switching years', () => {
@@ -72,7 +67,11 @@ describe('<DatePickerCalendar />', () => {
       fireEvent.click(testYearElement);
 
       expect(getByText('2022')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText('2022').parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getByText('2022').parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
   });
 
@@ -82,7 +81,11 @@ describe('<DatePickerCalendar />', () => {
 
       render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePickerCalendar calendarRef={ref} referenceDate="2022-01-02" open />
+          <DatePickerCalendar
+            calendarRef={ref}
+            referenceDate="2022-01-02"
+            open
+          />
         </CalendarConfigProvider>,
       );
 
@@ -182,7 +185,9 @@ describe('<DatePickerCalendar />', () => {
             </CalendarConfigProvider>,
           );
 
-          const buttonElements = document.querySelectorAll('.mzn-calendar-button');
+          const buttonElements = document.querySelectorAll(
+            '.mzn-calendar-button',
+          );
           const testButtonElement = buttonElements?.[buttonElements.length - 1];
 
           expect(testButtonElement).toBeInstanceOf(HTMLButtonElement);
@@ -203,15 +208,13 @@ describe('<DatePickerCalendar />', () => {
         const referenceDate = '2021-10-20';
         const { getByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePickerCalendar
-              open
-              referenceDate={referenceDate}
-              mode="day"
-            />
+            <DatePickerCalendar open referenceDate={referenceDate} mode="day" />
           </CalendarConfigProvider>,
         );
 
-        const nextControlButton = document.querySelector('.mzn-calendar-controls__next');
+        const nextControlButton = document.querySelector(
+          '.mzn-calendar-controls__next',
+        );
 
         fireEvent.click(nextControlButton!);
 
@@ -222,7 +225,11 @@ describe('<DatePickerCalendar />', () => {
         const monthControlButton = getByText('Nov');
 
         expect(monthControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(monthControlButton.classList.contains('mzn-calendar-controls__button')).toBe(true);
+        expect(
+          monthControlButton.classList.contains(
+            'mzn-calendar-controls__button',
+          ),
+        ).toBe(true);
       });
 
       it('case: mode="week"', () => {
@@ -237,7 +244,9 @@ describe('<DatePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const nextControlButton = document.querySelector('.mzn-calendar-controls__next');
+        const nextControlButton = document.querySelector(
+          '.mzn-calendar-controls__next',
+        );
 
         fireEvent.click(nextControlButton!);
 
@@ -248,7 +257,11 @@ describe('<DatePickerCalendar />', () => {
         const monthControlButton = getByText('Nov');
 
         expect(monthControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(monthControlButton.classList.contains('mzn-calendar-controls__button')).toBe(true);
+        expect(
+          monthControlButton.classList.contains(
+            'mzn-calendar-controls__button',
+          ),
+        ).toBe(true);
       });
 
       it('case: mode="month"', () => {
@@ -263,7 +276,9 @@ describe('<DatePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const nextControlButton = document.querySelector('.mzn-calendar-controls__next');
+        const nextControlButton = document.querySelector(
+          '.mzn-calendar-controls__next',
+        );
 
         fireEvent.click(nextControlButton!);
 
@@ -274,7 +289,9 @@ describe('<DatePickerCalendar />', () => {
         const yearControlButton = getByText('2022');
 
         expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(yearControlButton.classList.contains('mzn-calendar-controls__button')).toBe(true);
+        expect(
+          yearControlButton.classList.contains('mzn-calendar-controls__button'),
+        ).toBe(true);
       });
 
       it('case: mode="year"', () => {
@@ -289,7 +306,9 @@ describe('<DatePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const nextControlButton = document.querySelector('.mzn-calendar-controls__next');
+        const nextControlButton = document.querySelector(
+          '.mzn-calendar-controls__next',
+        );
 
         fireEvent.click(nextControlButton!);
 
@@ -303,7 +322,9 @@ describe('<DatePickerCalendar />', () => {
         const yearControlButton = getByText(displayYearRange);
 
         expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(yearControlButton.classList.contains('mzn-calendar-controls__button')).toBe(true);
+        expect(
+          yearControlButton.classList.contains('mzn-calendar-controls__button'),
+        ).toBe(true);
       });
     });
 

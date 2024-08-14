@@ -1,8 +1,5 @@
 import { useContext } from 'react';
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import ConfigProvider, { MezzanineConfigContext, MezzanineConfig } from '.';
 
 const defaultConfig: MezzanineConfigContext = {
@@ -14,9 +11,7 @@ describe('<ConfigProvider />', () => {
 
   it('should assign default configurations when props not given', () => {
     const TestComponent = () => {
-      const {
-        size,
-      } = useContext(MezzanineConfig) || {};
+      const { size } = useContext(MezzanineConfig) || {};
 
       return (
         <div>
@@ -42,9 +37,7 @@ describe('<ConfigProvider />', () => {
     };
 
     const TestComponent = () => {
-      const {
-        size,
-      } = useContext(MezzanineConfig) || {};
+      const { size } = useContext(MezzanineConfig) || {};
 
       return (
         <div>

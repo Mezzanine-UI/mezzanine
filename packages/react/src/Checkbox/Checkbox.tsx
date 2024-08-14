@@ -1,5 +1,8 @@
 import { ChangeEventHandler, forwardRef, useContext } from 'react';
-import { checkboxClasses as classes, CheckboxSize } from '@mezzanine-ui/core/checkbox';
+import {
+  checkboxClasses as classes,
+  CheckboxSize,
+} from '@mezzanine-ui/core/checkbox';
 import { cx } from '../utils/cx';
 import InputCheck, { InputCheckProps } from '../_internal/InputCheck';
 import { useCheckboxControlValue } from '../Form/useCheckboxControlValue';
@@ -9,11 +12,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { MezzanineConfig } from '../Provider/context';
 
 export interface CheckboxProps
-  extends
-  Omit<InputCheckProps,
-  | 'control'
-  | 'htmlFor'
-  > {
+  extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
   /**
    * Whether the checkbox is checked.
    */
@@ -36,17 +35,17 @@ export interface CheckboxProps
    *  the rendered label element will have `htmlFor` sync with passed in id.
    */
   inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'checked'
-  | 'defaultChecked'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'type'
-  | 'value'
-  | `aria-${'disabled' | 'checked'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'checked'
+    | 'defaultChecked'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'type'
+    | 'value'
+    | `aria-${'disabled' | 'checked'}`
   >;
   /**
    * The change event handler of input in checkbox.
@@ -66,83 +65,78 @@ export interface CheckboxProps
 /**
  * The react component for `mezzanine` checkbox.
  */
-const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(function Checkbox(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
-  const {
-    disabled: disabledFromFormControl,
-    severity,
-  } = useContext(FormControlContext) || {};
-  const checkboxGroup = useContext(CheckboxGroupContext);
-  const {
-    disabled: disabledFromGroup,
-    name: nameFromGroup,
-    size: sizeFromGroup,
-  } = checkboxGroup || {};
-  const {
-    checked: checkedProp,
-    children,
-    defaultChecked,
-    disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
-    error = severity === 'error' || false,
-    indeterminate: indeterminateProp = false,
-    onChange: onChangeProp,
-    size = sizeFromGroup || globalSize,
-    value,
-    inputProps,
-    ...rest
-  } = props;
-  const {
-    id: inputId,
-    name = nameFromGroup,
-    ...restInputProps
-  } = inputProps || {};
-  const [checked, onChange] = useCheckboxControlValue({
-    checkboxGroup,
-    checked: checkedProp,
-    defaultChecked,
-    onChange: onChangeProp,
-    value,
-  });
-  const indeterminate = !checked && indeterminateProp;
+const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
+  function Checkbox(props, ref) {
+    const { size: globalSize } = useContext(MezzanineConfig);
+    const { disabled: disabledFromFormControl, severity } =
+      useContext(FormControlContext) || {};
+    const checkboxGroup = useContext(CheckboxGroupContext);
+    const {
+      disabled: disabledFromGroup,
+      name: nameFromGroup,
+      size: sizeFromGroup,
+    } = checkboxGroup || {};
+    const {
+      checked: checkedProp,
+      children,
+      defaultChecked,
+      disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
+      error = severity === 'error' || false,
+      indeterminate: indeterminateProp = false,
+      onChange: onChangeProp,
+      size = sizeFromGroup || globalSize,
+      value,
+      inputProps,
+      ...rest
+    } = props;
+    const {
+      id: inputId,
+      name = nameFromGroup,
+      ...restInputProps
+    } = inputProps || {};
+    const [checked, onChange] = useCheckboxControlValue({
+      checkboxGroup,
+      checked: checkedProp,
+      defaultChecked,
+      onChange: onChangeProp,
+      value,
+    });
+    const indeterminate = !checked && indeterminateProp;
 
-  return (
-    <InputCheck
-      {...rest}
-      ref={ref}
-      control={(
-        <span
-          className={cx(
-            classes.host,
-            {
+    return (
+      <InputCheck
+        {...rest}
+        ref={ref}
+        control={
+          <span
+            className={cx(classes.host, {
               [classes.checked]: checked,
               [classes.indeterminate]: indeterminate,
-            },
-          )}
-        >
-          <input
-            {...restInputProps}
-            aria-checked={indeterminate ? 'mixed' : checked}
-            aria-disabled={disabled}
-            checked={checked}
-            disabled={disabled}
-            id={inputId}
-            onChange={onChange}
-            name={name}
-            type="checkbox"
-            value={value}
-          />
-        </span>
-      )}
-      disabled={disabled}
-      error={error}
-      htmlFor={inputId}
-      size={size}
-    >
-      {children}
-    </InputCheck>
-  );
-});
+            })}
+          >
+            <input
+              {...restInputProps}
+              aria-checked={indeterminate ? 'mixed' : checked}
+              aria-disabled={disabled}
+              checked={checked}
+              disabled={disabled}
+              id={inputId}
+              onChange={onChange}
+              name={name}
+              type="checkbox"
+              value={value}
+            />
+          </span>
+        }
+        disabled={disabled}
+        error={error}
+        htmlFor={inputId}
+        size={size}
+      >
+        {children}
+      </InputCheck>
+    );
+  },
+);
 
 export default Checkbox;

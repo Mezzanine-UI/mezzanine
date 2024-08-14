@@ -1,8 +1,4 @@
-export function arrayMove(
-  arr: any[],
-  old_index: number,
-  new_index: number,
-) {
+export function arrayMove(arr: any[], old_index: number, new_index: number) {
   const temp = arr.slice(0);
 
   if (new_index >= temp.length) {

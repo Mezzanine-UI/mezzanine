@@ -1,5 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
-import { TableDataSource, TableColumn, TableRecord } from '@mezzanine-ui/core/table';
+import {
+  TableDataSource,
+  TableColumn,
+  TableRecord,
+} from '@mezzanine-ui/core/table';
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import { useControlValueState } from '../../Form/useControlValueState';
@@ -22,7 +26,11 @@ const sortSource = (prev: TableDataSource, cur: TableDataSource) => {
  * useControlValueState 會強制把 return value 和傳入的 value 做同步，當有不一樣時就會自動 sync
  * 所以無論如何用 setDataSource 都不會有改變
  */
-const equalityFn = (a: TableDataSource[], b: TableDataSource[], deepCompare = false) => {
+const equalityFn = (
+  a: TableDataSource[],
+  b: TableDataSource[],
+  deepCompare = false,
+) => {
   const aTemp = a.slice(0);
   const bTemp = b.slice(0);
   const sortedA = deepCompare ? aTemp : aTemp.sort(sortSource);
@@ -30,7 +38,8 @@ const equalityFn = (a: TableDataSource[], b: TableDataSource[], deepCompare = fa
   const mappedAKeys = sortedA.map((s) => (s.key || s.id) as string);
   const mappedBKeys = sortedB.map((s) => (s.key || s.id) as string);
 
-  const isShallowEqual = mappedAKeys.length === mappedBKeys.length &&
+  const isShallowEqual =
+    mappedAKeys.length === mappedBKeys.length &&
     mappedAKeys.every((v, idx) => v === mappedBKeys[idx]);
 
   if (isShallowEqual) {
@@ -49,9 +58,7 @@ export interface UseTableSorting {
 export type SortedType = 'desc' | 'asc' | 'none';
 
 export function useTableSorting(props: UseTableSorting) {
-  const {
-    dataSource: dataSourceProp,
-  } = props;
+  const { dataSource: dataSourceProp } = props;
 
   const [sortedOn, setSortedOn] = useState<string>('');
   const [sortedType, setSortedType] = useState<SortedType>('none');
@@ -69,7 +76,10 @@ export function useTableSorting(props: UseTableSorting) {
      * @NOTE 條件1: 如果一開始就有傳入值，則直接同步 dataSource
      * @NOTE 條件2: 深度比較舊 dataSourceProp 跟新的是否有不同，如果有則同步
      */
-    if (!dataSource.length || !equalityFn(prevDataSourceProps, dataSourceProp, true)) {
+    if (
+      !dataSource.length ||
+      !equalityFn(prevDataSourceProps, dataSourceProp, true)
+    ) {
       setDataSource(dataSourceProp);
     }
   }, [prevDataSourceProps, dataSourceProp]);
@@ -88,64 +98,76 @@ export function useTableSorting(props: UseTableSorting) {
     setSortedType('none');
   }, []);
 
-  const onChange = useLastCallback<(
-  v: Pick<TableColumn<TableRecord<unknown>>,
-  'key' | 'dataIndex' | 'sorter' | 'onSorted'>
-  ) => void>(
-    (opts) => {
-      const { key = '', dataIndex, sorter, onSorted } = opts;
-      const isChosenFromOneToAnother = sortedOn && key !== sortedOn;
-      const nextSortedType = getNextSortedType(isChosenFromOneToAnother ? 'none' : sortedType);
-
-      const onMappingSources = (sources: TableDataSource[]) => {
-        setDataSource(sources);
-
-        onSorted?.(key, nextSortedType);
-      };
-
-      // only apply changes when column sorter is given
-      if (typeof sorter === 'function' || typeof onSorted === 'function') {
-        // should update next sorted type first
-
-        setSortedType(nextSortedType);
-
-        switch (nextSortedType) {
-          case 'desc':
-          case 'asc': {
-            // update current working key
-            setSortedOn(key);
-
-            // getting new source instance (when switch between sorter, should use origin dataSource)
-            let newSource = (isChosenFromOneToAnother ? dataSourceProp : dataSource).slice(0);
-
-            if (typeof sorter === 'function') {
-              console.warn(
-                'When using a `sorter` function, please provide the `dataIndex` to make sure it worked as expected.',
-              );
-              // sort by given sorter
-              newSource = newSource.sort((a, b) => (
-                // reverse result when sorted type is ascending
-                (sorter(get(a, dataIndex || ''), get(b, dataIndex || ''))) * (nextSortedType === 'asc' ? -1 : 1)
-              ));
-            }
-
-            // map back the data source
-            onMappingSources(newSource);
-
-            break;
-          }
-
-          case 'none':
-          default: {
-            onReset();
-            onMappingSources(dataSourceProp);
-
-            break;
-          }
-        }
-      }
-    },
+  const onChange = useLastCallback<
+    (
+      v: Pick<
+        TableColumn<TableRecord<unknown>>,
+        'key' | 'dataIndex' | 'sorter' | 'onSorted'
+      >,
+    ) => void
+  >((opts) => {
+    const { key = '', dataIndex, sorter, onSorted } = opts;
+    const isChosenFromOneToAnother = sortedOn && key !== sortedOn;
+    const nextSortedType = getNextSortedType(
+      isChosenFromOneToAnother ? 'none' : sortedType,
     );
 
-  return [dataSource, onChange, { sortedOn, sortedType, onResetAll, setDataSource }] as const;
+    const onMappingSources = (sources: TableDataSource[]) => {
+      setDataSource(sources);
+
+      onSorted?.(key, nextSortedType);
+    };
+
+    // only apply changes when column sorter is given
+    if (typeof sorter === 'function' || typeof onSorted === 'function') {
+      // should update next sorted type first
+
+      setSortedType(nextSortedType);
+
+      switch (nextSortedType) {
+        case 'desc':
+        case 'asc': {
+          // update current working key
+          setSortedOn(key);
+
+          // getting new source instance (when switch between sorter, should use origin dataSource)
+          let newSource = (
+            isChosenFromOneToAnother ? dataSourceProp : dataSource
+          ).slice(0);
+
+          if (typeof sorter === 'function') {
+            console.warn(
+              'When using a `sorter` function, please provide the `dataIndex` to make sure it worked as expected.',
+            );
+            // sort by given sorter
+            newSource = newSource.sort(
+              (a, b) =>
+                // reverse result when sorted type is ascending
+                sorter(get(a, dataIndex || ''), get(b, dataIndex || '')) *
+                (nextSortedType === 'asc' ? -1 : 1),
+            );
+          }
+
+          // map back the data source
+          onMappingSources(newSource);
+
+          break;
+        }
+
+        case 'none':
+        default: {
+          onReset();
+          onMappingSources(dataSourceProp);
+
+          break;
+        }
+      }
+    }
+  });
+
+  return [
+    dataSource,
+    onChange,
+    { sortedOn, sortedType, onResetAll, setDataSource },
+  ] as const;
 }

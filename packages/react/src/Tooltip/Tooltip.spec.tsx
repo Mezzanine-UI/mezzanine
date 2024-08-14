@@ -1,10 +1,5 @@
 import { createRef } from 'react';
-import {
-  act,
-  cleanupHook,
-  render,
-  fireEvent,
-} from '../../__test-utils__';
+import { act, cleanupHook, render, fireEvent } from '../../__test-utils__';
 import Tooltip from '.';
 
 function getPopperContainer(container: Element | null = document.body) {

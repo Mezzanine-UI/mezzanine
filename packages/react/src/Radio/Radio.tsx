@@ -9,11 +9,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { MezzanineConfig } from '../Provider/context';
 
 export interface RadioProps
-  extends
-  Omit<InputCheckProps,
-  | 'control'
-  | 'htmlFor'
-  > {
+  extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
   /**
    * Whether the radio is checked.
    */
@@ -31,17 +27,17 @@ export interface RadioProps
    *  the rendered label element will have `htmlFor` sync with passed in id.
    */
   inputProps?: Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'checked'
-  | 'defaultChecked'
-  | 'disabled'
-  | 'onChange'
-  | 'placeholder'
-  | 'readOnly'
-  | 'required'
-  | 'type'
-  | 'value'
-  | `aria-${'disabled' | 'checked'}`
+    NativeElementPropsWithoutKeyAndRef<'input'>,
+    | 'checked'
+    | 'defaultChecked'
+    | 'disabled'
+    | 'onChange'
+    | 'placeholder'
+    | 'readOnly'
+    | 'required'
+    | 'type'
+    | 'value'
+    | `aria-${'disabled' | 'checked'}`
   >;
   /**
    * The change event handler of input in radio.
@@ -61,80 +57,75 @@ export interface RadioProps
 /**
  * The react component for `mezzanine` radio.
  */
-const Radio = forwardRef<HTMLLabelElement, RadioProps>(function Radio(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
-  const {
-    disabled: disabledFromFormControl,
-    severity,
-  } = useContext(FormControlContext) || {};
-  const radioGroup = useContext(RadioGroupContext);
-  const {
-    disabled: disabledFromGroup,
-    name: nameFromGroup,
-    size: sizeFromGroup,
-  } = radioGroup || {};
-  const {
-    checked: checkedProp,
-    children,
-    defaultChecked,
-    disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
-    error = severity === 'error' || false,
-    inputProps,
-    onChange: onChangeProp,
-    size = sizeFromGroup || globalSize,
-    value,
-    ...rest
-  } = props;
-  const {
-    id: inputId,
-    name = nameFromGroup,
-    ...restInputProps
-  } = inputProps || {};
-  const [checked, onChange] = useRadioControlValue({
-    checked: checkedProp,
-    defaultChecked,
-    onChange: onChangeProp,
-    radioGroup,
-    value,
-  });
+const Radio = forwardRef<HTMLLabelElement, RadioProps>(
+  function Radio(props, ref) {
+    const { size: globalSize } = useContext(MezzanineConfig);
+    const { disabled: disabledFromFormControl, severity } =
+      useContext(FormControlContext) || {};
+    const radioGroup = useContext(RadioGroupContext);
+    const {
+      disabled: disabledFromGroup,
+      name: nameFromGroup,
+      size: sizeFromGroup,
+    } = radioGroup || {};
+    const {
+      checked: checkedProp,
+      children,
+      defaultChecked,
+      disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
+      error = severity === 'error' || false,
+      inputProps,
+      onChange: onChangeProp,
+      size = sizeFromGroup || globalSize,
+      value,
+      ...rest
+    } = props;
+    const {
+      id: inputId,
+      name = nameFromGroup,
+      ...restInputProps
+    } = inputProps || {};
+    const [checked, onChange] = useRadioControlValue({
+      checked: checkedProp,
+      defaultChecked,
+      onChange: onChangeProp,
+      radioGroup,
+      value,
+    });
 
-  return (
-    <InputCheck
-      {...rest}
-      ref={ref}
-      control={(
-        <span
-          className={cx(
-            classes.host,
-            {
+    return (
+      <InputCheck
+        {...rest}
+        ref={ref}
+        control={
+          <span
+            className={cx(classes.host, {
               [classes.checked]: checked,
-            },
-          )}
-        >
-          <input
-            {...restInputProps}
-            aria-checked={checked}
-            aria-disabled={disabled}
-            checked={checked}
-            disabled={disabled}
-            id={inputId}
-            onChange={onChange}
-            name={name}
-            type="radio"
-            value={value}
-          />
-        </span>
-      )}
-      disabled={disabled}
-      error={error}
-      htmlFor={inputId}
-      size={size}
-    >
-      {children}
-    </InputCheck>
-  );
-});
+            })}
+          >
+            <input
+              {...restInputProps}
+              aria-checked={checked}
+              aria-disabled={disabled}
+              checked={checked}
+              disabled={disabled}
+              id={inputId}
+              onChange={onChange}
+              name={name}
+              type="radio"
+              value={value}
+            />
+          </span>
+        }
+        disabled={disabled}
+        error={error}
+        htmlFor={inputId}
+        size={size}
+      >
+        {children}
+      </InputCheck>
+    );
+  },
+);
 
 export default Radio;

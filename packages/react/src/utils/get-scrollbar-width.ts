@@ -1,4 +1,10 @@
-export default function getScrollbarWidth(): number {
+export function getScrollbarWidth(): number {
+  if (typeof window === 'undefined') return 0;
+
+  if (document.documentElement.scrollHeight <= window.innerHeight) {
+    return 0;
+  }
+
   // Create a temporary div container and append it into the body
   const container = document.createElement('div');
 

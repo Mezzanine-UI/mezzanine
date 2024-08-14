@@ -7,9 +7,7 @@ import {
   fireEvent,
   getByText,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
 import { DateTimePickerPanel } from '.';
 
@@ -18,9 +16,8 @@ describe('<DateTimePickerPanel />', () => {
 
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateTimePickerPanel ref={ref} open referenceDate="2022-01-02" />
       </CalendarConfigProvider>,
@@ -35,7 +32,9 @@ describe('<DateTimePickerPanel />', () => {
       </CalendarConfigProvider>,
     );
 
-    const nextControlElement = document.querySelector('.mzn-calendar-controls__next');
+    const nextControlElement = document.querySelector(
+      '.mzn-calendar-controls__next',
+    );
 
     fireEvent.click(nextControlElement!);
 
@@ -45,7 +44,11 @@ describe('<DateTimePickerPanel />', () => {
     fireEvent.click(testDateElement);
 
     expect(getByTextWithHost('Nov')).toBeInstanceOf(HTMLButtonElement);
-    expect(getByTextWithHost('Nov').parentElement?.classList.contains('mzn-calendar-controls'));
+    expect(
+      getByTextWithHost('Nov').parentElement?.classList.contains(
+        'mzn-calendar-controls',
+      ),
+    );
   });
 
   it('should update referenceDate when units clicked', () => {
@@ -58,12 +61,16 @@ describe('<DateTimePickerPanel />', () => {
     );
 
     const timePanelElement = document.querySelector('.mzn-time-panel');
-    const columnElement = timePanelElement!.querySelector('.mzn-time-panel-column');
+    const columnElement = timePanelElement!.querySelector(
+      '.mzn-time-panel-column',
+    );
     const testTimeElement = getByText(columnElement as HTMLElement, '00');
 
     fireEvent.click(testTimeElement);
 
-    expect((testTimeElement as HTMLButtonElement).onclick).toBeInstanceOf(Function);
+    expect((testTimeElement as HTMLButtonElement).onclick).toBeInstanceOf(
+      Function,
+    );
   });
 
   describe('should update referenceDate when switching calendars', () => {
@@ -84,7 +91,11 @@ describe('<DateTimePickerPanel />', () => {
       fireEvent.click(testMonthElement);
 
       expect(getByTextWithHost('Nov')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByTextWithHost('Nov').parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getByTextWithHost('Nov').parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
 
     it('case: switching years', () => {
@@ -104,7 +115,11 @@ describe('<DateTimePickerPanel />', () => {
       fireEvent.click(testYearElement);
 
       expect(getByTextWithHost('2022')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByTextWithHost('2022').parentElement?.classList.contains('mzn-calendar-controls'));
+      expect(
+        getByTextWithHost('2022').parentElement?.classList.contains(
+          'mzn-calendar-controls',
+        ),
+      );
     });
   });
 
@@ -182,7 +197,8 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const buttonElements = document.querySelectorAll('.mzn-calendar-button');
-      const testCalendarButtonElement = buttonElements?.[buttonElements.length - 1];
+      const testCalendarButtonElement =
+        buttonElements?.[buttonElements.length - 1];
       const [testTimeButtonElement] = getAllByText('00');
 
       expect(testCalendarButtonElement).toBeInstanceOf(HTMLButtonElement);

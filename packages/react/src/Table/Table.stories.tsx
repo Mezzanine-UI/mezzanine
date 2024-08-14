@@ -42,45 +42,57 @@ type DataType = {
   };
 };
 
-const columns: TableColumn<DataType>[] = [{
-  title: 'Name',
-  dataIndex: 'name',
-  width: 150,
-  sorter: (a: string, b: string) => {
-    if (a < b) return 1;
+const columns: TableColumn<DataType>[] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    width: 150,
+    sorter: (a: string, b: string) => {
+      if (a < b) return 1;
 
-    return -1;
+      return -1;
+    },
+    // eslint-disable-next-line no-console
+    onSorted: (key, sortedType) => {
+      console.log(key, sortedType);
+    },
   },
-  // eslint-disable-next-line no-console
-  onSorted: (key, sortedType) => { console.log(key, sortedType); },
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-}, {
-  key: 'age-column',
-  title: 'Age',
-  dataIndex: 'age',
-  renderTooltipTitle: (source) => `${source.name} is age ${source.age}.`,
-  forceShownTooltipWhenHovered: true,
-  sorter: (a: number, b: number) => b - a,
-  // eslint-disable-next-line no-console
-  onSorted: (key, sortedType) => { console.log(key, sortedType); },
-  width: 80,
-}, {
-  title: 'Tel',
-  dataIndex: 'tel',
-  ellipsis: false,
-  forceShownTooltipWhenHovered: true,
-}];
+  {
+    title: 'Address',
+    dataIndex: 'address',
+  },
+  {
+    key: 'age-column',
+    title: 'Age',
+    dataIndex: 'age',
+    renderTooltipTitle: (source) => `${source.name} is age ${source.age}.`,
+    forceShownTooltipWhenHovered: true,
+    sorter: (a: number, b: number) => b - a,
+    // eslint-disable-next-line no-console
+    onSorted: (key, sortedType) => {
+      console.log(key, sortedType);
+    },
+    width: 80,
+  },
+  {
+    title: 'Tel',
+    dataIndex: 'tel',
+    ellipsis: false,
+    forceShownTooltipWhenHovered: true,
+  },
+];
 
 const dataSource: DataType[] = Array.from(Array(15)).map((_, idx) => ({
   key: `source-${idx + 1}`,
   name: `${String.fromCharCode(97 + idx)} John Brown`,
   address: `New York No. ${idx + 1} Lake Park`,
-  age: (12 + parseInt(`${((Math.random()) * 100) % 12}`, 10)) + idx,
-  description: idx % 2 === 0 ? `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure illo,
+  age: 12 + parseInt(`${(Math.random() * 100) % 12}`, 10) + idx,
+  description:
+    idx % 2 === 0
+      ? `Lorem ipsum dolor sit amet consectetur adipisicing elit. Iure illo,
   ipsa sunt molestias culpa saepe! Minima odio repellendus officiis! Assumenda,
-  consequuntur sit blanditiis culpa vel repellendus dolorum non minus doloribus.` : '',
+  consequuntur sit blanditiis culpa vel repellendus dolorum non minus doloribus.`
+      : '',
   tel: '0912345678(no ellipsis)',
   foo: {
     bar: 'test',
@@ -128,16 +140,16 @@ export const Basic = () => {
         Empty
         <Switch
           checked={!sources.length}
-          onChange={() => setSources((prev) => {
-            if (prev.length) return [];
+          onChange={() =>
+            setSources((prev) => {
+              if (prev.length) return [];
 
-            return dataSource;
-          })}
+              return dataSource;
+            })
+          }
         />
       </div>
-      <h3>
-        Basic overflow table
-      </h3>
+      <h3>Basic overflow table</h3>
       <div
         style={{
           width: '80%',
@@ -159,7 +171,10 @@ export const Basic = () => {
                 setTimeout(() => {
                   setSources([
                     ...sources,
-                    ...dataSource.map((source, idx) => ({ ...source, key: `${Math.random() * (1000 + idx)}` })),
+                    ...dataSource.map((source, idx) => ({
+                      ...source,
+                      key: `${Math.random() * (1000 + idx)}`,
+                    })),
                   ]);
                 }, 2000);
               }
@@ -169,19 +184,13 @@ export const Basic = () => {
           }}
         />
       </div>
-      <h3>
-        Basic auto height table
-      </h3>
+      <h3>Basic auto height table</h3>
       <div
         style={{
           width: '80%',
         }}
       >
-        <Table
-          columns={columns}
-          dataSource={sources}
-          loading={loading}
-        />
+        <Table columns={columns} dataSource={sources} loading={loading} />
       </div>
     </div>
   );
@@ -263,9 +272,7 @@ export const Draggable = () => {
 
   return (
     <div style={{ width: '100%' }}>
-      <h3>
-        Draggable + Scrollable
-      </h3>
+      <h3>Draggable + Scrollable</h3>
       <div
         style={{
           width: '80%',
@@ -293,9 +300,7 @@ export const Draggable = () => {
           }}
         />
       </div>
-      <h3>
-        Draggable + Auto Height
-      </h3>
+      <h3>Draggable + Auto Height</h3>
       <div
         style={{
           width: '80%',
@@ -327,18 +332,28 @@ export const Draggable = () => {
 export const Selections = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
-  const selectedActions = useMemo(() => ([{
-    key: 'mark-as-read',
-    text: 'Mark as read',
-    // eslint-disable-next-line no-console
-    onClick: (keys: string[]) => { console.log('mark ', keys, ' as read'); },
-  }, {
-    key: 'delete',
-    text: 'Delete',
-    // eslint-disable-next-line no-console
-    onClick: (keys: string[]) => { console.log('Delete ', keys); },
-    className: '',
-  }]), []);
+  const selectedActions = useMemo(
+    () => [
+      {
+        key: 'mark-as-read',
+        text: 'Mark as read',
+        // eslint-disable-next-line no-console
+        onClick: (keys: string[]) => {
+          console.log('mark ', keys, ' as read');
+        },
+      },
+      {
+        key: 'delete',
+        text: 'Delete',
+        // eslint-disable-next-line no-console
+        onClick: (keys: string[]) => {
+          console.log('Delete ', keys);
+        },
+        className: '',
+      },
+    ],
+    [],
+  );
 
   const expandable: TableProps<DataType>['expandable'] = {
     expandedRowRender: (record) => record.description,
@@ -348,9 +363,7 @@ export const Selections = () => {
   return (
     <div style={{ display: 'grid', gap: 40 }}>
       <div style={{ width: '95%' }}>
-        <h3>
-          UnControlled
-        </h3>
+        <h3>UnControlled</h3>
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -364,9 +377,7 @@ export const Selections = () => {
         />
       </div>
       <div style={{ width: '95%' }}>
-        <h3>
-          Controlled
-        </h3>
+        <h3>Controlled</h3>
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -376,11 +387,13 @@ export const Selections = () => {
           rowSelection={{
             selectedRowKey: selectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
-            disabledRowKeys: dataSource.map((d) => {
-              if (d.age >= 25) return d.key;
+            disabledRowKeys: dataSource
+              .map((d) => {
+                if (d.age >= 25) return d.key;
 
-              return null;
-            }).filter((k) => k),
+                return null;
+              })
+              .filter((k) => k),
           }}
         />
       </div>
@@ -400,7 +413,9 @@ const demoMenu = (size?: MenuSize) => (
 export const WithActions = () => {
   const [open, toggleOpen] = useState<boolean>(false);
 
-  const renderHeaderActions: TableColumn<DataType>['renderTitle'] = (classes) => (
+  const renderHeaderActions: TableColumn<DataType>['renderTitle'] = (
+    classes,
+  ) => (
     <div
       style={{
         width: '100%',
@@ -412,10 +427,7 @@ export const WithActions = () => {
       }}
     >
       <Icon
-        className={cx(
-          classes.icon,
-          classes.iconClickable,
-        )}
+        className={cx(classes.icon, classes.iconClickable)}
         color="primary"
         icon={InfoCircleFilledIcon}
         onClick={(event: MouseEvent<HTMLButtonElement>) => {
@@ -435,10 +447,7 @@ export const WithActions = () => {
         {(ref) => (
           <Icon
             ref={ref as RefObject<HTMLButtonElement>}
-            className={cx(
-              classes.icon,
-              classes.iconClickable,
-            )}
+            className={cx(classes.icon, classes.iconClickable)}
             color="primary"
             icon={MoreVerticalIcon}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
@@ -461,30 +470,31 @@ export const WithActions = () => {
         justifyContent: 'flex-end',
       }}
     >
-      <Button>
-        編輯
-      </Button>
-      <Button danger>
-        刪除
-      </Button>
+      <Button>編輯</Button>
+      <Button danger>刪除</Button>
     </div>
   );
 
-  const withActionColumns: TableColumn<DataType>[] = [{
-    title: 'Name',
-    dataIndex: 'name',
-  }, {
-    title: 'Address',
-    dataIndex: 'address',
-  }, {
-    title: 'Age',
-    dataIndex: 'age',
-  }, {
-    renderTitle: renderHeaderActions,
-    render: renderRowActions,
-    // styling
-    width: 160,
-  }];
+  const withActionColumns: TableColumn<DataType>[] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+    },
+    {
+      renderTitle: renderHeaderActions,
+      render: renderRowActions,
+      // styling
+      width: 160,
+    },
+  ];
 
   return (
     <div style={{ display: 'grid', gap: 40 }}>
@@ -493,10 +503,7 @@ export const WithActions = () => {
           width: '95%',
         }}
       >
-        <Table
-          columns={withActionColumns}
-          dataSource={dataSource}
-        />
+        <Table columns={withActionColumns} dataSource={dataSource} />
       </div>
     </div>
   );
@@ -511,10 +518,10 @@ export const WithPagination = () => {
     setSources(dataSource);
   }, []);
 
-  const slicedSources = useMemo(() => sources.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
-  ), [sources, pageSize, currentPage]);
+  const slicedSources = useMemo(
+    () => sources.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [sources, pageSize, currentPage],
+  );
 
   return (
     <div
@@ -523,9 +530,7 @@ export const WithPagination = () => {
         height: 'auto',
       }}
     >
-      <h3>
-        Scrollable Pagination Table
-      </h3>
+      <h3>Scrollable Pagination Table</h3>
       <div style={{ width: '100%' }}>
         <Table
           columns={columns}
@@ -542,7 +547,8 @@ export const WithPagination = () => {
               pageSizeUnit: '筆',
               onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
               renderPageSizeOptionName: (p) => `${p}`,
-              renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
+              renderPaginationSummary: (start, end) =>
+                `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
               showPageSizeOptions: true, // 開啟每頁顯示 N 筆
               showJumper: true, // 開啟跳頁功能
               jumperButtonText: '前往',
@@ -551,9 +557,7 @@ export const WithPagination = () => {
           }}
         />
       </div>
-      <h3>
-        Auto Height Pagination Table
-      </h3>
+      <h3>Auto Height Pagination Table</h3>
       <div style={{ width: '100%' }}>
         <Table
           columns={columns}
@@ -567,7 +571,8 @@ export const WithPagination = () => {
               pageSizeUnit: '筆',
               onChangePageSize: (nextPageSize) => setPageSize(nextPageSize),
               renderPageSizeOptionName: (p) => `${p}`,
-              renderPaginationSummary: (start, end) => `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
+              renderPaginationSummary: (start, end) =>
+                `目前顯示 ${start} - ${end} 筆，共 ${sources.length} 筆資料`,
               showPageSizeOptions: true, // 開啟每頁顯示 N 筆
               showJumper: true, // 開啟跳頁功能
               jumperButtonText: '前往',
@@ -597,7 +602,9 @@ export const WithRefresh = () => {
           refresh={{
             show: true,
             // eslint-disable-next-line no-console
-            onClick: () => { console.log('refresh clicked!'); },
+            onClick: () => {
+              console.log('refresh clicked!');
+            },
           }}
         />
       </div>
@@ -619,40 +626,46 @@ export const WithRefresh = () => {
 };
 
 export const ExpandedWithString = () => {
-  const customizedColumns: TableColumn<DataType>[] = [{
-    title: 'Name',
-    render: (source) => source.key,
-  }, {
-    title: 'Address',
-    dataIndex: 'address',
-    /** styling */
-    align: 'center',
-    headerClassName: 'custom-table-header',
-    bodyClassName: 'custom-table-body',
-  }, {
-    title: 'Age',
-    dataIndex: 'age',
-    /** styling */
-    width: 80,
-    align: 'center',
-  }, {
-    title: 'Tel',
-    dataIndex: 'tel',
-    ellipsis: false,
-    /** styling */
-    align: 'end',
-  }];
+  const customizedColumns: TableColumn<DataType>[] = [
+    {
+      title: 'Name',
+      render: (source) => source.key,
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      /** styling */
+      align: 'center',
+      headerClassName: 'custom-table-header',
+      bodyClassName: 'custom-table-body',
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      /** styling */
+      width: 80,
+      align: 'center',
+    },
+    {
+      title: 'Tel',
+      dataIndex: 'tel',
+      ellipsis: false,
+      /** styling */
+      align: 'end',
+    },
+  ];
 
-  const expandable: TableProps<DataType>['expandable'] = useMemo(() => ({
-    className: '',
-    // eslint-disable-next-line react/no-unstable-nested-components
-    expandedRowRender: (record) => (
-      <div style={{ padding: '40px' }}>
-        {record.description}
-      </div>
-    ),
-    rowExpandable: (record) => !!record.description,
-  }), []);
+  const expandable: TableProps<DataType>['expandable'] = useMemo(
+    () => ({
+      className: '',
+      // eslint-disable-next-line react/no-unstable-nested-components
+      expandedRowRender: (record) => (
+        <div style={{ padding: '40px' }}>{record.description}</div>
+      ),
+      rowExpandable: (record) => !!record.description,
+    }),
+    [],
+  );
 
   return (
     <div
@@ -670,29 +683,34 @@ export const ExpandedWithString = () => {
 };
 
 export const ExpandedWithDataSource = () => {
-  const customizedColumns: TableColumn<DataType>[] = [{
-    title: 'Name',
-    dataIndex: 'name',
-  }, {
-    title: 'Address',
-    dataIndex: 'address',
-    /** styling */
-    align: 'center',
-    headerClassName: 'custom-table-header',
-    bodyClassName: 'custom-table-body',
-  }, {
-    title: 'Age',
-    dataIndex: 'age',
-    /** styling */
-    width: 80,
-    align: 'center',
-  }, {
-    title: 'Tel',
-    dataIndex: 'tel',
-    ellipsis: false,
-    /** styling */
-    align: 'end',
-  }];
+  const customizedColumns: TableColumn<DataType>[] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
+      /** styling */
+      align: 'center',
+      headerClassName: 'custom-table-header',
+      bodyClassName: 'custom-table-body',
+    },
+    {
+      title: 'Age',
+      dataIndex: 'age',
+      /** styling */
+      width: 80,
+      align: 'center',
+    },
+    {
+      title: 'Tel',
+      dataIndex: 'tel',
+      ellipsis: false,
+      /** styling */
+      align: 'end',
+    },
+  ];
 
   const [sourceData, setSource] = useState<{ [key: string]: DataType[] }>({});
 
@@ -706,64 +724,77 @@ export const ExpandedWithDataSource = () => {
         columns={customizedColumns}
         dataSource={dataSource}
         scroll={{ y: 400 }}
-        expandable={{
-          className: '',
-          expandedRowRender: (record) => ({
-            dataSource: sourceData[record.key as string] || [],
-            className: 'expanded-table-row',
-            columns: [{
-              dataIndex: 'name',
-            }, {
-              dataIndex: 'address',
-            }, {
-              dataIndex: 'age',
-            }, {
-              dataIndex: 'tel',
-            }],
-          }),
-          rowExpandable: () => true,
-          // eslint-disable-next-line no-console
-          onExpand: (record, status) => {
-            if (status) {
-              setTimeout(() => {
-                setSource((p) => ({
-                  ...p,
-                  [record.key]: dataSource.slice(0, 3),
-                }));
-              }, 500);
-            }
-          },
-        } as TableExpandable<DataType>}
+        expandable={
+          {
+            className: '',
+            expandedRowRender: (record) => ({
+              dataSource: sourceData[record.key as string] || [],
+              className: 'expanded-table-row',
+              columns: [
+                {
+                  dataIndex: 'name',
+                },
+                {
+                  dataIndex: 'address',
+                },
+                {
+                  dataIndex: 'age',
+                },
+                {
+                  dataIndex: 'tel',
+                },
+              ],
+            }),
+            rowExpandable: () => true,
+            // eslint-disable-next-line no-console
+            onExpand: (record, status) => {
+              if (status) {
+                setTimeout(() => {
+                  setSource((p) => ({
+                    ...p,
+                    [record.key]: dataSource.slice(0, 3),
+                  }));
+                }, 500);
+              }
+            },
+          } as TableExpandable<DataType>
+        }
       />
     </div>
   );
 };
 
-const editableColumns: TableColumn<DataType>[] = [{
-  title: 'Name',
-  dataIndex: 'name',
-  editable: false,
-  width: 120,
-}, {
-  title: 'Address',
-  dataIndex: 'address',
-  editable: true,
-}, {
-  title: 'Age',
-  dataIndex: 'age',
-  editable: true,
-  width: 200,
-}, {
-  title: 'Tel',
-  dataIndex: 'tel',
-  ellipsis: true,
-  editable: true,
-}, {
-  dataIndex: '',
-  title: '',
-  // styling
-  width: 160,
-}];
+const editableColumns: TableColumn<DataType>[] = [
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    editable: false,
+    width: 120,
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    editable: true,
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    editable: true,
+    width: 200,
+  },
+  {
+    title: 'Tel',
+    dataIndex: 'tel',
+    ellipsis: true,
+    editable: true,
+  },
+  {
+    dataIndex: '',
+    title: '',
+    // styling
+    width: 160,
+  },
+];
 
 interface EditableCellProps extends EditableBodyCellProps {
   /** some extra props come from `setCellProps` */
@@ -783,27 +814,33 @@ export const Editable = () => {
     const elementType = dataIndex === 'tel' ? 'select' : 'input';
     const inputType = dataIndex === 'age' ? 'number' : 'text';
 
-    return (editable && isEditing ? (
-      <div className={tableClasses.cell}>
-        {elementType === 'select' ? (
-          <Select
-            defaultValue={{ id: '0912345678', name: '0912345678' }}
-            fullWidth
-          >
-            <Option value="0912345678">0912345678</Option>
-            <Option value="0987654432">0987654432</Option>
-          </Select>
-        ) : (
-          <Input
-            defaultValue={dataIndex ? get(rowData, dataIndex) as string : ''}
-            fullWidth
-            inputProps={{
-              type: inputType,
-            }}
-          />
-        )}
-      </div>
-    ) : children) as ReactElement;
+    return (
+      editable && isEditing ? (
+        <div className={tableClasses.cell}>
+          {elementType === 'select' ? (
+            <Select
+              defaultValue={{ id: '0912345678', name: '0912345678' }}
+              fullWidth
+            >
+              <Option value="0912345678">0912345678</Option>
+              <Option value="0987654432">0987654432</Option>
+            </Select>
+          ) : (
+            <Input
+              defaultValue={
+                dataIndex ? (get(rowData, dataIndex) as string) : ''
+              }
+              fullWidth
+              inputProps={{
+                type: inputType,
+              }}
+            />
+          )}
+        </div>
+      ) : (
+        children
+      )
+    ) as ReactElement;
   };
 
   const renderRowActions: TableColumn<DataType>['render'] = (source) => (
@@ -834,10 +871,7 @@ export const Editable = () => {
           >
             編輯
           </Button>
-          <Button
-            danger
-            disabled={!!editingKey}
-          >
+          <Button danger disabled={!!editingKey}>
             刪除
           </Button>
         </Fragment>
@@ -845,33 +879,32 @@ export const Editable = () => {
     </div>
   );
 
-  const mergeColumnWithCustomProps: typeof editableColumns = editableColumns.map((column) => {
-    if (!column.dataIndex) {
-      /**  actions column */
+  const mergeColumnWithCustomProps: typeof editableColumns =
+    editableColumns.map((column) => {
+      if (!column.dataIndex) {
+        /**  actions column */
+        return {
+          ...column,
+          dataIndex: undefined,
+          render: renderRowActions,
+        };
+      }
+
+      if (!column.editable) return column;
+
       return {
         ...column,
-        dataIndex: undefined,
-        render: renderRowActions,
+        /** inject some custom props to your custom cell */
+        setCellProps: (source) => ({
+          isEditing: editingKey === source.key,
+        }),
       };
-    }
-
-    if (!column.editable) return column;
-
-    return {
-      ...column,
-      /** inject some custom props to your custom cell */
-      setCellProps: (source) => ({
-        isEditing: editingKey === source.key,
-      }),
-    };
-  });
+    });
 
   return (
     <div style={{ width: '100%' }}>
       <div style={{ width: '95%' }}>
-        <h3>
-          Default
-        </h3>
+        <h3>Default</h3>
         <Table
           components={{
             body: {
@@ -883,9 +916,7 @@ export const Editable = () => {
         />
       </div>
       <div style={{ width: '95%' }}>
-        <h3>
-          Scrollable with fixed column and editable
-        </h3>
+        <h3>Scrollable with fixed column and editable</h3>
         <Table
           components={{
             body: {

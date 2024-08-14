@@ -6,12 +6,13 @@ export default {
 } as Meta;
 
 export const Basic = () => (
-  <div style={{
-    display: 'inline-grid',
-    gap: 16,
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-  }}
+  <div
+    style={{
+      display: 'inline-grid',
+      gap: 16,
+      alignItems: 'center',
+      backgroundColor: '#ffffff',
+    }}
   >
     <Skeleton type="circle" />
     <Skeleton width={300} />

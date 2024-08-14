@@ -1,28 +1,22 @@
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
-import {
-  cleanupHook,
-  render,
-  fireEvent,
-  act,
-} from '../../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../../__test-utils__/common';
+import { cleanupHook, render, fireEvent, act } from '../../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import TableExpandable from './TableExpandable';
 
 describe('<TableExpandable />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<TableExpandable ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TableExpandable ref={ref} />),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(<TableExpandable />);
     const element = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-table__collapseAction')).toBeTruthy();
+    expect(
+      element.classList.contains('mzn-table__collapseAction'),
+    ).toBeTruthy();
   });
 
   it('should display toggle icon as default', () => {
@@ -36,9 +30,7 @@ describe('<TableExpandable />', () => {
   describe('prop: showIcon', () => {
     it('should not display icon when falsy', () => {
       const { getHostHTMLElement } = render(
-        <TableExpandable
-          showIcon={false}
-        />,
+        <TableExpandable showIcon={false} />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
@@ -56,10 +48,7 @@ describe('<TableExpandable />', () => {
       });
 
       const { getHostHTMLElement } = render(
-        <TableExpandable
-          expanded={expanded}
-          setExpanded={setExpanded}
-        />,
+        <TableExpandable expanded={expanded} setExpanded={setExpanded} />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
@@ -75,9 +64,7 @@ describe('<TableExpandable />', () => {
       const expanded = false;
 
       const { getHostHTMLElement } = render(
-        <TableExpandable
-          expanded={expanded}
-        />,
+        <TableExpandable expanded={expanded} />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
@@ -90,13 +77,13 @@ describe('<TableExpandable />', () => {
     });
 
     it('should rotate icon when expanded', () => {
-      const { getHostHTMLElement } = render(
-        <TableExpandable expanded />,
-      );
+      const { getHostHTMLElement } = render(<TableExpandable expanded />);
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
 
-      const transformMatch = icon?.getAttribute('style')?.match(/rotate\(180deg\)/);
+      const transformMatch = icon
+        ?.getAttribute('style')
+        ?.match(/rotate\(180deg\)/);
 
       expect(transformMatch).not.toBe(null);
     });
@@ -122,11 +109,13 @@ describe('<TableExpandable />', () => {
       );
       const element = getHostHTMLElement();
 
-      icon = (element.querySelector('.mzn-icon') as HTMLElement);
+      icon = element.querySelector('.mzn-icon') as HTMLElement;
     });
 
     it('should use disabled style when falsy', () => {
-      const colorMatch = icon?.getAttribute('style')?.match(/--mzn-color-action-disabled/);
+      const colorMatch = icon
+        ?.getAttribute('style')
+        ?.match(/--mzn-color-action-disabled/);
 
       expect(colorMatch).not.toBe(null);
     });

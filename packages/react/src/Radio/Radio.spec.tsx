@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -17,23 +12,17 @@ import ConfigProvider from '../Provider';
 describe('<Radio />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLLabelElement,
-    (ref) => render(<Radio ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
+    render(<Radio ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Radio className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Radio className={className} />),
   );
 
   it('should pass children, disabled, error, size to InputCheck', () => {
     const testInstance = TestRenderer.create(
-      <Radio
-        disabled
-        error
-        size="large"
-      >
+      <Radio disabled error size="large">
         foo
       </Radio>,
     );
@@ -80,7 +69,9 @@ describe('<Radio />', () => {
         const { firstElementChild } = element.firstElementChild!;
         const [input] = element.getElementsByTagName('input');
 
-        expect(firstElementChild!.classList.contains('mzn-radio--checked')).toBe(checked);
+        expect(
+          firstElementChild!.classList.contains('mzn-radio--checked'),
+        ).toBe(checked);
         expect(input.getAttribute('aria-checked')).toBe(`${checked}`);
         expect(input.checked).toBe(checked);
       });
@@ -153,7 +144,8 @@ describe('<Radio />', () => {
           <Radio error={false} />
         </FormField>,
       );
-      const [inputCheck1, inputCheck2] = testInstance.root.findAllByType(InputCheck);
+      const [inputCheck1, inputCheck2] =
+        testInstance.root.findAllByType(InputCheck);
 
       expect(inputCheck1.props.error).toBe(true);
       expect(inputCheck2.props.error).toBe(false);
@@ -164,7 +156,9 @@ describe('<Radio />', () => {
     it('should pass inputProps.id to InputCheck.htmlFor', () => {
       const testId = 'foo';
 
-      const { getHostHTMLElement } = render(<Radio inputProps={{ id: testId }} />);
+      const { getHostHTMLElement } = render(
+        <Radio inputProps={{ id: testId }} />,
+      );
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
@@ -205,7 +199,8 @@ describe('<Radio />', () => {
           <Radio size="small" />
         </RadioGroup>,
       );
-      const [inputCheck1, inputCheck2] = testInstance.root.findAllByType(InputCheck);
+      const [inputCheck1, inputCheck2] =
+        testInstance.root.findAllByType(InputCheck);
 
       expect(inputCheck1.props.size).toBe('large');
       expect(inputCheck2.props.size).toBe('small');

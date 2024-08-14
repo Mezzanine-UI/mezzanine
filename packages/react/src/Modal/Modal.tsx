@@ -1,9 +1,10 @@
-import { modalClasses as classes, ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
-import { TimesIcon } from '@mezzanine-ui/icons';
 import {
-  forwardRef,
-  useMemo,
-} from 'react';
+  modalClasses as classes,
+  ModalSeverity,
+  ModalSize,
+} from '@mezzanine-ui/core/modal';
+import { TimesIcon } from '@mezzanine-ui/icons';
+import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import { ModalControl, ModalControlContext } from './ModalControl';
@@ -12,9 +13,8 @@ import useModalContainer from './useModalContainer';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface ModalProps
-  extends
-  Omit<SlideFadeOverlayProps, 'children'>,
-  Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
+  extends Omit<SlideFadeOverlayProps, 'children'>,
+    Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Whether to force full screen on any breakpoint.
    * @default false
@@ -46,76 +46,81 @@ export interface ModalProps
 /**
  * The react component for `mezzanine` modal.
  */
-const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) {
-  const {
-    children,
-    className,
-    container,
-    direction = 'down',
-    disableCloseOnBackdropClick = false,
-    disableCloseOnEscapeKeyDown = false,
-    disablePortal = false,
-    fullScreen = false,
-    hideBackdrop = false,
-    hideCloseIcon = false,
-    invisibleBackdrop = false,
-    loading = false,
-    onBackdropClick,
-    onClose,
-    open,
-    severity = 'info',
-    size = 'medium',
-    ...rest
-  } = props;
-  const modalControl: ModalControl = useMemo(() => ({
-    loading,
-    severity,
-  }), [loading, severity]);
+const Modal = forwardRef<HTMLDivElement, ModalProps>(
+  function Modal(props, ref) {
+    const {
+      children,
+      className,
+      container,
+      direction = 'down',
+      disableCloseOnBackdropClick = false,
+      disableCloseOnEscapeKeyDown = false,
+      disablePortal = false,
+      fullScreen = false,
+      hideBackdrop = false,
+      hideCloseIcon = false,
+      invisibleBackdrop = false,
+      loading = false,
+      onBackdropClick,
+      onClose,
+      open,
+      severity = 'info',
+      size = 'medium',
+      ...rest
+    } = props;
+    const modalControl: ModalControl = useMemo(
+      () => ({
+        loading,
+        severity,
+      }),
+      [loading, severity],
+    );
 
-  const { Container: ModalContainer } = useModalContainer();
+    const { Container: ModalContainer } = useModalContainer();
 
-  return (
-    <ModalControlContext.Provider value={modalControl}>
-      <ModalContainer
-        className={classes.overlay}
-        container={container}
-        direction={direction}
-        disableCloseOnBackdropClick={disableCloseOnBackdropClick}
-        disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
-        disablePortal={disablePortal}
-        hideBackdrop={hideBackdrop}
-        invisibleBackdrop={invisibleBackdrop}
-        onBackdropClick={onBackdropClick}
-        onClose={onClose}
-        open={open}
-        ref={ref}
-      >
-        <div
-          {...rest}
-          className={cx(
-            classes.host,
-            classes.severity(severity),
-            classes.size(size),
-            {
-              [classes.fullScreen]: fullScreen,
-              [classes.withCloseIcon]: !hideCloseIcon,
-            },
-            className,
-          )}
-          role="dialog"
+    return (
+      <ModalControlContext.Provider value={modalControl}>
+        <ModalContainer
+          className={classes.overlay}
+          container={container}
+          direction={direction}
+          disableCloseOnBackdropClick={disableCloseOnBackdropClick}
+          disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+          disablePortal={disablePortal}
+          hideBackdrop={hideBackdrop}
+          invisibleBackdrop={invisibleBackdrop}
+          onBackdropClick={onBackdropClick}
+          onClose={onClose}
+          open={open}
+          ref={ref}
         >
-          {children}
-          {!hideCloseIcon && (
-            <Icon
-              className={classes.closeIcon}
-              icon={TimesIcon}
-              onClick={onClose}
-            />
-          )}
-        </div>
-      </ModalContainer>
-    </ModalControlContext.Provider>
-  );
-});
+          <div
+            {...rest}
+            className={cx(
+              classes.host,
+              classes.severity(severity),
+              classes.size(size),
+              {
+                [classes.fullScreen]: fullScreen,
+                [classes.withCloseIcon]: !hideCloseIcon,
+              },
+              className,
+            )}
+            role="dialog"
+          >
+            {children}
+            {!hideCloseIcon && (
+              <Icon
+                className={classes.closeIcon}
+                icon={TimesIcon}
+                onClick={onClose}
+              />
+            )}
+          </div>
+        </ModalContainer>
+      </ModalControlContext.Provider>
+    );
+  },
+);
 
 export default Modal;

@@ -1,5 +1,8 @@
 import { ChangeEventHandler } from 'react';
-import { useSwitchControlValue, UseSwitchControlValueProps } from './useSwitchControlValue';
+import {
+  useSwitchControlValue,
+  UseSwitchControlValueProps,
+} from './useSwitchControlValue';
 
 export interface RadioGroupControlContextValue {
   onChange?: ChangeEventHandler<HTMLInputElement>;

@@ -10,16 +10,10 @@ import {
   getByText as getByTextWithContainer,
   waitFor,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-} from '../../__test-utils__/common';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
 import TextField from '../TextField';
-import {
-  TreeSelect,
-  SelectValue,
-  TreeSelectOption,
-} from '.';
+import { TreeSelect, SelectValue, TreeSelectOption } from '.';
 
 const options: TreeSelectOption[] = [
   {
@@ -58,14 +52,12 @@ describe('<TreeSelect />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<TreeSelect ref={ref} options={options} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<TreeSelect ref={ref} options={options} />),
   );
 
-  describeForwardRefToHTMLElement(
-    HTMLInputElement,
-    (ref) => render(<TreeSelect inputRef={ref} options={options} />),
+  describeForwardRefToHTMLElement(HTMLInputElement, (ref) =>
+    render(<TreeSelect inputRef={ref} options={options} />),
   );
 
   it('should bind host class', () => {
@@ -197,10 +189,7 @@ describe('<TreeSelect />', () => {
 
     it('else if prop "depth" is provided, should calculate base on depth', async () => {
       const { getHostHTMLElement } = render(
-        <TreeSelect
-          options={options}
-          depth={3}
-        />,
+        <TreeSelect options={options} depth={3} />,
       );
 
       const element = getHostHTMLElement();
@@ -237,9 +226,7 @@ describe('<TreeSelect />', () => {
 
   describe('open control', () => {
     it('should toggle panel when text-field clicked', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -251,8 +238,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -266,9 +257,7 @@ describe('<TreeSelect />', () => {
     });
 
     it('should not close panel when panel clicked', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -280,8 +269,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -289,15 +282,17 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
     });
 
     it('should close panel when opened and clicked away', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -309,8 +304,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -324,9 +323,7 @@ describe('<TreeSelect />', () => {
     });
 
     it('should close panel when opened and text-field enter key pressed', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -338,8 +335,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -353,9 +354,7 @@ describe('<TreeSelect />', () => {
     });
 
     it('should close panel when opened and text-field tab key pressed', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -376,8 +375,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -391,9 +394,7 @@ describe('<TreeSelect />', () => {
     });
 
     it('should not close panel when opened and text-field other keys pressed', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -405,8 +406,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -414,15 +419,17 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
     });
 
     it('should open panel when text-field arrow keys pressed', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -434,8 +441,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -452,8 +463,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -470,8 +485,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -488,8 +507,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -503,9 +526,7 @@ describe('<TreeSelect />', () => {
     });
 
     it('should not close panel when text-field arrow keys pressed and is opened', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
       const element = getHostHTMLElement();
 
       expect(document.querySelector('.mzn-select-popper')).toBeNull();
@@ -521,8 +542,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -530,8 +555,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -539,8 +568,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
 
       act(() => {
@@ -548,8 +581,12 @@ describe('<TreeSelect />', () => {
       });
 
       await waitFor(() => {
-        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(HTMLDivElement);
-        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(HTMLUListElement);
+        expect(document.querySelector('.mzn-select-popper')).toBeInstanceOf(
+          HTMLDivElement,
+        );
+        expect(document.querySelector('.mzn-menu')).toBeInstanceOf(
+          HTMLUListElement,
+        );
       });
     });
   });
@@ -716,7 +753,9 @@ describe('<TreeSelect />', () => {
         onFocus.mockClear();
 
         act(() => {
-          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, { code: arrowKeyCode });
+          fireEvent.keyDown(element.querySelector('.mzn-text-field')!, {
+            code: arrowKeyCode,
+          });
         });
 
         await waitFor(() => {});
@@ -789,9 +828,7 @@ describe('<TreeSelect />', () => {
 
   describe('expand functionality', () => {
     it('should have options expanded when caret icon clicked', async () => {
-      const { getHostHTMLElement } = render(
-        <TreeSelect options={options} />,
-      );
+      const { getHostHTMLElement } = render(<TreeSelect options={options} />);
 
       const element = getHostHTMLElement();
       const textFieldElement = element.querySelector('.mzn-text-field')!;
@@ -802,8 +839,12 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      const menuElement = document.querySelector('.mzn-menu')! as HTMLUListElement;
-      const caretIconElement = menuElement.querySelector('.mzn-tree-node__caret')!;
+      const menuElement = document.querySelector(
+        '.mzn-menu',
+      )! as HTMLUListElement;
+      const caretIconElement = menuElement.querySelector(
+        '.mzn-tree-node__caret',
+      )!;
 
       act(() => {
         fireEvent.click(caretIconElement);
@@ -811,7 +852,9 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(getByTextWithContainer(menuElement, 'label 1-1')).toBeInstanceOf(HTMLElement);
+      expect(getByTextWithContainer(menuElement, 'label 1-1')).toBeInstanceOf(
+        HTMLElement,
+      );
     });
   });
 
@@ -844,7 +887,9 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onChange).toBeCalledWith(expect.not.arrayContaining([expect.anything()]));
+      expect(onChange).toBeCalledWith(
+        expect.not.arrayContaining([expect.anything()]),
+      );
     });
   });
 
@@ -863,7 +908,9 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      const menuElement = document.querySelector('.mzn-menu')! as HTMLUListElement;
+      const menuElement = document.querySelector(
+        '.mzn-menu',
+      )! as HTMLUListElement;
 
       function expectOptionsElement(currentOptions: TreeSelectOption[]) {
         currentOptions.forEach((option) => {
@@ -881,7 +928,10 @@ describe('<TreeSelect />', () => {
 
   describe('prop: suffixActionIcon', () => {
     const { getHostHTMLElement } = render(
-      <TreeSelect options={options} suffixActionIcon={<Icon icon={PlusIcon} />} />,
+      <TreeSelect
+        options={options}
+        suffixActionIcon={<Icon icon={PlusIcon} />}
+      />,
     );
     const element = getHostHTMLElement();
 

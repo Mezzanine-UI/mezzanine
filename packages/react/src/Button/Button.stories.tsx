@@ -1,32 +1,16 @@
 import { StoryFn, Meta } from '@storybook/react';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
-import Button, {
-  ButtonColor,
-  ButtonSize,
-  ButtonVariant,
-  ButtonProps,
-} from '.';
+import Button, { ButtonColor, ButtonSize, ButtonVariant, ButtonProps } from '.';
 import ConfigProvider from '../Provider';
 
 export default {
   title: 'General/Button',
 } as Meta;
 
-const colors: ButtonColor[] = [
-  'primary',
-  'secondary',
-];
-const sizes: ButtonSize[] = [
-  'small',
-  'medium',
-  'large',
-];
-const variants: ButtonVariant[] = [
-  'contained',
-  'outlined',
-  'text',
-];
+const colors: ButtonColor[] = ['primary', 'secondary'];
+const sizes: ButtonSize[] = ['small', 'medium', 'large'];
+const variants: ButtonVariant[] = ['contained', 'outlined', 'text'];
 
 export const Playground: StoryFn<ButtonProps> = ({
   children,
@@ -85,13 +69,25 @@ export const Variants = () => (
     }}
   >
     <Button variant="contained">primary</Button>
-    <Button variant="contained" color="secondary">secondary</Button>
-    <Button variant="contained" danger>danger</Button>
-    <Button variant="contained" disabled>disabled</Button>
+    <Button variant="contained" color="secondary">
+      secondary
+    </Button>
+    <Button variant="contained" danger>
+      danger
+    </Button>
+    <Button variant="contained" disabled>
+      disabled
+    </Button>
     <Button variant="outlined">primary</Button>
-    <Button variant="outlined" color="secondary">secondary</Button>
-    <Button variant="outlined" danger>danger</Button>
-    <Button variant="outlined" disabled>disabled</Button>
+    <Button variant="outlined" color="secondary">
+      secondary
+    </Button>
+    <Button variant="outlined" danger>
+      danger
+    </Button>
+    <Button variant="outlined" disabled>
+      disabled
+    </Button>
     <Button>primary</Button>
     <Button color="secondary">secondary</Button>
     <Button danger>danger</Button>
@@ -111,9 +107,13 @@ export const Sizes = () => (
     <Button size="small">ok</Button>
     <Button>ok</Button>
     <Button size="large">ok</Button>
-    <Button variant="outlined" size="small">ok</Button>
+    <Button variant="outlined" size="small">
+      ok
+    </Button>
     <Button variant="outlined">ok</Button>
-    <Button variant="outlined" size="large">ok</Button>
+    <Button variant="outlined" size="large">
+      ok
+    </Button>
     <ConfigProvider size="small">
       <Button variant="contained">ok</Button>
     </ConfigProvider>
@@ -140,17 +140,10 @@ export const WithIcons = () => (
     >
       plus
     </Button>
-    <Button
-      suffix={<Icon icon={SearchIcon} />}
-      variant="contained"
-    >
+    <Button suffix={<Icon icon={SearchIcon} />} variant="contained">
       search
     </Button>
-    <Button
-      suffix={<Icon icon={SearchIcon} />}
-      disabled
-      variant="contained"
-    >
+    <Button suffix={<Icon icon={SearchIcon} />} disabled variant="contained">
       search
     </Button>
     <Button
@@ -175,7 +168,9 @@ interface LoadingStoryArgs {
 }
 
 export const Loading: StoryFn<LoadingStoryArgs> = ({ loading }) => (
-  <Button loading={loading} variant="contained">ok</Button>
+  <Button loading={loading} variant="contained">
+    ok
+  </Button>
 );
 
 Loading.args = {

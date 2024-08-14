@@ -1,9 +1,4 @@
-import {
-  cleanupHook,
-  render,
-  fireEvent,
-  cleanup,
-} from '../../__test-utils__';
+import { cleanupHook, render, fireEvent, cleanup } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -32,14 +27,12 @@ describe('<Slider />', () => {
     jest.clearAllMocks();
   });
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<Slider ref={ref} value={0} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Slider ref={ref} value={0} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<Slider className={className} value={0} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<Slider className={className} value={0} />),
   );
 
   it('should bind host class', () => {
@@ -53,8 +46,12 @@ describe('<Slider />', () => {
     it('case: single', () => {
       const { getHostHTMLElement } = render(<Slider value={0} withInput />);
       const element = getHostHTMLElement();
-      const railElement = element.querySelector('.mzn-slider__rail')! as HTMLDivElement;
-      const trackElement = element.querySelector('.mzn-slider__track')! as HTMLDivElement;
+      const railElement = element.querySelector(
+        '.mzn-slider__rail',
+      )! as HTMLDivElement;
+      const trackElement = element.querySelector(
+        '.mzn-slider__track',
+      )! as HTMLDivElement;
       const inputElement = element.getElementsByTagName('input')[0];
 
       expect(railElement.onmousedown).toBe(null);
@@ -65,11 +62,18 @@ describe('<Slider />', () => {
     });
 
     it('case: range', () => {
-      const { getHostHTMLElement } = render(<Slider value={[0, 100]} withInput />);
+      const { getHostHTMLElement } = render(
+        <Slider value={[0, 100]} withInput />,
+      );
       const element = getHostHTMLElement();
-      const railElement = element.querySelector('.mzn-slider__rail')! as HTMLDivElement;
-      const trackElement = element.querySelector('.mzn-slider__track')! as HTMLDivElement;
-      const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+      const railElement = element.querySelector(
+        '.mzn-slider__rail',
+      )! as HTMLDivElement;
+      const trackElement = element.querySelector(
+        '.mzn-slider__track',
+      )! as HTMLDivElement;
+      const [firstInputElement, secondInputElement] =
+        element.getElementsByTagName('input');
 
       expect(railElement.onmousedown).toBe(null);
       expect(trackElement.onmousedown).toBe(null);
@@ -86,14 +90,7 @@ describe('<Slider />', () => {
     describe('case: min > max', () => {
       const onChange = jest.fn();
 
-      render(
-        <Slider
-          onChange={onChange}
-          value={0}
-          min={100}
-          max={50}
-        />,
-      );
+      render(<Slider onChange={onChange} value={0} min={100} max={50} />);
 
       expect(onChange).not.toBeCalled();
     });
@@ -102,14 +99,7 @@ describe('<Slider />', () => {
       it('should init correct value when value < min', () => {
         const onChange = jest.fn();
 
-        render(
-          <Slider
-            onChange={onChange}
-            value={0}
-            min={10}
-            max={100}
-          />,
-        );
+        render(<Slider onChange={onChange} value={0} min={10} max={100} />);
 
         expect(onChange).toBeCalledWith(10);
       });
@@ -117,14 +107,7 @@ describe('<Slider />', () => {
       it('should init correct value when value > max', () => {
         const onChange = jest.fn();
 
-        render(
-          <Slider
-            onChange={onChange}
-            value={60}
-            min={0}
-            max={50}
-          />,
-        );
+        render(<Slider onChange={onChange} value={60} min={0} max={50} />);
 
         expect(onChange).toBeCalledWith(50);
       });
@@ -135,12 +118,7 @@ describe('<Slider />', () => {
         const onChange = jest.fn();
 
         render(
-          <Slider
-            onChange={onChange}
-            value={[0, 50]}
-            min={10}
-            max={100}
-          />,
+          <Slider onChange={onChange} value={[0, 50]} min={10} max={100} />,
         );
 
         expect(onChange).toBeCalledWith([10, 50]);
@@ -150,12 +128,7 @@ describe('<Slider />', () => {
         const onChange = jest.fn();
 
         render(
-          <Slider
-            onChange={onChange}
-            value={[0, 50]}
-            min={60}
-            max={100}
-          />,
+          <Slider onChange={onChange} value={[0, 50]} min={60} max={100} />,
         );
 
         expect(onChange).toBeCalledWith([60, 60]);
@@ -165,12 +138,7 @@ describe('<Slider />', () => {
         const onChange = jest.fn();
 
         render(
-          <Slider
-            onChange={onChange}
-            value={[10, 60]}
-            min={0}
-            max={50}
-          />,
+          <Slider onChange={onChange} value={[10, 60]} min={0} max={50} />,
         );
 
         expect(onChange).toBeCalledWith([10, 50]);
@@ -180,12 +148,7 @@ describe('<Slider />', () => {
         const onChange = jest.fn();
 
         render(
-          <Slider
-            onChange={onChange}
-            value={[60, 70]}
-            min={0}
-            max={50}
-          />,
+          <Slider onChange={onChange} value={[60, 70]} min={0} max={50} />,
         );
 
         expect(onChange).toBeCalledWith([50, 50]);
@@ -197,7 +160,9 @@ describe('<Slider />', () => {
     describe('case: single', () => {
       it('should change value when rail mouse-down', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} />,
+        );
         const element = getHostHTMLElement();
         const railElement = element.querySelector('.mzn-slider__rail')!;
 
@@ -210,7 +175,9 @@ describe('<Slider />', () => {
 
       it('should change value when track mouse-down', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={50} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={50} />,
+        );
         const element = getHostHTMLElement();
         const trackElement = element.querySelector('.mzn-slider__track')!;
 
@@ -237,7 +204,9 @@ describe('<Slider />', () => {
         } as DOMRect);
 
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} />,
+        );
         const element = getHostHTMLElement();
         const handler = element.querySelector('.mzn-slider__handler')!;
 
@@ -261,7 +230,9 @@ describe('<Slider />', () => {
 
       it('should change value when withInput=true and the input enter key pressed or blur', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} withInput />,
+        );
         const element = getHostHTMLElement();
         const inputElement = element.getElementsByTagName('input')[0];
 
@@ -281,13 +252,7 @@ describe('<Slider />', () => {
       it('should prevent overflow when input value submitted', () => {
         const onChange = jest.fn();
         const { getHostHTMLElement } = render(
-          <Slider
-            onChange={onChange}
-            value={0}
-            min={0}
-            max={100}
-            withInput
-          />,
+          <Slider onChange={onChange} value={0} min={0} max={100} withInput />,
         );
         const element = getHostHTMLElement();
         const inputElement = element.getElementsByTagName('input')[0];
@@ -307,7 +272,9 @@ describe('<Slider />', () => {
 
       it('input should restore to current value when escape key down', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} withInput />,
+        );
         const element = getHostHTMLElement();
         const inputElement = element.getElementsByTagName('input')[0];
 
@@ -322,7 +289,9 @@ describe('<Slider />', () => {
     describe('case: range', () => {
       it('should change value when rail mouse-down', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[20, 30]} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[20, 30]} />,
+        );
         const element = getHostHTMLElement();
         const railElement = element.querySelector('.mzn-slider__rail')!;
 
@@ -335,7 +304,9 @@ describe('<Slider />', () => {
 
       it('should change value when track mouse-down', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[0, 100]} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[0, 100]} />,
+        );
         const element = getHostHTMLElement();
         const trackElement = element.querySelector('.mzn-slider__track')!;
 
@@ -348,9 +319,12 @@ describe('<Slider />', () => {
 
       it('should change value while handles are being dragged', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[0, 100]} />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[0, 100]} />,
+        );
         const element = getHostHTMLElement();
-        const [firstHandleElement, SecondHandleElement] = element.querySelectorAll('.mzn-slider__handler')!;
+        const [firstHandleElement, SecondHandleElement] =
+          element.querySelectorAll('.mzn-slider__handler')!;
 
         expect(firstHandleElement).toBeInstanceOf(HTMLElement);
         expect(SecondHandleElement).toBeInstanceOf(HTMLElement);
@@ -367,9 +341,12 @@ describe('<Slider />', () => {
 
       it('should change value when withInput=true and the inputs enter key pressed or blur', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[0, 100]} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[0, 100]} withInput />,
+        );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
         fireEvent.change(firstInputElement, { target: { value: 50 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
@@ -407,7 +384,8 @@ describe('<Slider />', () => {
           />,
         );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
         fireEvent.change(firstInputElement, { target: { value: 1000 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
@@ -433,7 +411,8 @@ describe('<Slider />', () => {
           />,
         );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
         fireEvent.change(firstInputElement, { target: { value: 40 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
@@ -459,7 +438,8 @@ describe('<Slider />', () => {
           />,
         );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
         fireEvent.change(firstInputElement, { target: { value: 40 } });
         fireEvent.keyDown(firstInputElement, { code: 'Escape' });
@@ -478,9 +458,7 @@ describe('<Slider />', () => {
 
   describe('prop: disabled', () => {
     it('should append disabled classname', () => {
-      const { getHostHTMLElement } = render(
-        <Slider value={0} disabled />,
-      );
+      const { getHostHTMLElement } = render(<Slider value={0} disabled />);
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('mzn-slider--disabled')).toBe(true);
@@ -491,7 +469,9 @@ describe('<Slider />', () => {
     describe('case: single', () => {
       it('should find input at the end of root', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} withInput />,
+        );
         const element = getHostHTMLElement();
         const inputElement = element.getElementsByTagName('input')[0];
 
@@ -500,7 +480,9 @@ describe('<Slider />', () => {
 
       it('should be able to type', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={0} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={0} withInput />,
+        );
         const element = getHostHTMLElement();
         const inputElement = element.getElementsByTagName('input')[0];
 
@@ -514,19 +496,29 @@ describe('<Slider />', () => {
     describe('case: range', () => {
       it('should find inputs at the begin and end of root', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[0, 100]} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[0, 100]} withInput />,
+        );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
-        expect(element.lastElementChild).toEqual(secondInputElement.parentElement);
-        expect(element.firstElementChild).toEqual(firstInputElement.parentElement);
+        expect(element.lastElementChild).toEqual(
+          secondInputElement.parentElement,
+        );
+        expect(element.firstElementChild).toEqual(
+          firstInputElement.parentElement,
+        );
       });
 
       it('should be able to type', () => {
         const onChange = jest.fn();
-        const { getHostHTMLElement } = render(<Slider onChange={onChange} value={[0, 100]} withInput />);
+        const { getHostHTMLElement } = render(
+          <Slider onChange={onChange} value={[0, 100]} withInput />,
+        );
         const element = getHostHTMLElement();
-        const [firstInputElement, secondInputElement] = element.getElementsByTagName('input');
+        const [firstInputElement, secondInputElement] =
+          element.getElementsByTagName('input');
 
         fireEvent.keyDown(firstInputElement, { code: '0' });
         fireEvent.change(firstInputElement, { target: { value: '00' } });

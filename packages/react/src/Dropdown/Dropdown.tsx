@@ -10,8 +10,11 @@ import Popper, { PopperOptions, PopperProps } from '../Popper';
 import { ClickAwayEvent, useClickAway } from '../hooks/useClickAway';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
-export interface DropdownProps extends
-  Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, 'ref' | 'children'> {
+export interface DropdownProps
+  extends Omit<
+    DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>,
+    'ref' | 'children'
+  > {
   children: (ref: Ref<any>) => ReactNode;
   /**
    * Whether to disable triggering onClose while clicked away.
@@ -55,65 +58,59 @@ const popperOptions: PopperOptions<any> = {
   ],
 };
 
-const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(function Dropdown(props, ref) {
-  const {
-    children,
-    disableClickAway = false,
-    menu,
-    onClose,
-    popperProps,
-    ...rest
-  } = props;
-  const anchor = useRef<HTMLDivElement>(null);
-  const popperRef = useRef<HTMLDivElement>(null);
-  const composedRef = useComposeRefs([ref, popperRef]);
-
-  const open = popperProps?.open;
-
-  const modifiers = popperProps?.options?.modifiers || [];
-
-  useClickAway(
-    () => {
-      if (!open || disableClickAway || !onClose) {
-        return;
-      }
-
-      return (event) => {
-        if (onClose) {
-          onClose(event);
-        }
-      };
-    },
-    popperRef,
-    [
-      disableClickAway,
+const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
+  function Dropdown(props, ref) {
+    const {
+      children,
+      disableClickAway = false,
+      menu,
       onClose,
-      open,
-      popperRef,
-    ],
-  );
+      popperProps,
+      ...rest
+    } = props;
+    const anchor = useRef<HTMLDivElement>(null);
+    const popperRef = useRef<HTMLDivElement>(null);
+    const composedRef = useComposeRefs([ref, popperRef]);
 
-  return (
-    <>
-      {children(anchor)}
-      <Popper
-        {...popperProps}
-        ref={composedRef}
-        {...rest}
-        anchor={anchor}
-        options={{
-          placement: 'top-start',
-          ...popperProps?.options,
-          modifiers: [
-            ...(popperOptions.modifiers || []),
-            ...modifiers,
-          ],
-        }}
-      >
-        {menu}
-      </Popper>
-    </>
-  );
-});
+    const open = popperProps?.open;
+
+    const modifiers = popperProps?.options?.modifiers || [];
+
+    useClickAway(
+      () => {
+        if (!open || disableClickAway || !onClose) {
+          return;
+        }
+
+        return (event) => {
+          if (onClose) {
+            onClose(event);
+          }
+        };
+      },
+      popperRef,
+      [disableClickAway, onClose, open, popperRef],
+    );
+
+    return (
+      <>
+        {children(anchor)}
+        <Popper
+          {...popperProps}
+          ref={composedRef}
+          {...rest}
+          anchor={anchor}
+          options={{
+            placement: 'top-start',
+            ...popperProps?.options,
+            modifiers: [...(popperOptions.modifiers || []), ...modifiers],
+          }}
+        >
+          {menu}
+        </Popper>
+      </>
+    );
+  },
+);
 
 export default Dropdown;

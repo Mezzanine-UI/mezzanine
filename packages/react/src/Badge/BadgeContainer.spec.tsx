@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,14 +8,12 @@ import { BadgeContainer } from '.';
 describe('<BadgeContainer />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLSpanElement,
-    (ref) => render(<BadgeContainer ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
+    render(<BadgeContainer ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<BadgeContainer className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<BadgeContainer className={className} />),
   );
 
   it('should bind host class', () => {

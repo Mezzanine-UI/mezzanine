@@ -24,20 +24,22 @@ import { SlideFade, SlideFadeProps } from '../Transition';
 import { cx } from '../utils/cx';
 
 export interface NotificationConfigProps
-  extends
-  Pick<NotifierConfig, 'duration'>,
-  Pick<SlideFadeProps,
-  | 'onEnter'
-  | 'onEntering'
-  | 'onEntered'
-  | 'onExit'
-  | 'onExiting'
-  | 'onExited'
-  | 'easing'
-  | 'direction'
-  > {}
+  extends Pick<NotifierConfig, 'duration'>,
+    Pick<
+      SlideFadeProps,
+      | 'onEnter'
+      | 'onEntering'
+      | 'onEntered'
+      | 'onExit'
+      | 'onExiting'
+      | 'onExited'
+      | 'easing'
+      | 'direction'
+    > {}
 
-export interface NotificationData extends NotifierData, NotificationConfigProps {
+export interface NotificationData
+  extends NotifierData,
+    NotificationConfigProps {
   /**
    * Cancel button text;
    */
@@ -77,16 +79,12 @@ export interface NotificationData extends NotifierData, NotificationConfigProps 
 }
 
 export interface Notification
-  extends
-  FC<NotificationData>,
-  Notifier<NotificationData, NotificationConfigProps>,
-  Record<
-  NotificationSeverity,
-  (
-    props?: Omit<NotificationData, 'severity'>,
-  ) => Key
-  > {
-}
+  extends FC<NotificationData>,
+    Notifier<NotificationData, NotificationConfigProps>,
+    Record<
+      NotificationSeverity,
+      (props?: Omit<NotificationData, 'severity'>) => Key
+    > {}
 
 /**
  * The react component for `mezzanine` notification.
@@ -114,7 +112,7 @@ const NotificationElement: Notification = ((
     ...restTransitionProps
   } = props;
 
-  const targetIcon = severity ? (notificationIcons[severity]) : undefined;
+  const targetIcon = severity ? notificationIcons[severity] : undefined;
 
   const [open, setOpen] = useState(true);
 
@@ -138,17 +136,21 @@ const NotificationElement: Notification = ((
     }
   };
 
-  const onConfirm = onConfirmProp ? () => {
-    setOpen(false);
+  const onConfirm = onConfirmProp
+    ? () => {
+        setOpen(false);
 
-    onConfirmProp();
-  } : undefined;
+        onConfirmProp();
+      }
+    : undefined;
 
-  const onCancel = onCancelProp ? () => {
-    setOpen(false);
+  const onCancel = onCancelProp
+    ? () => {
+        setOpen(false);
 
-    onCancelProp();
-  } : undefined;
+        onCancelProp();
+      }
+    : undefined;
 
   const onExited: SlideFadeProps['onExited'] = (node) => {
     if (onExitedProp) {
@@ -166,38 +168,26 @@ const NotificationElement: Notification = ((
       direction={direction}
       {...restTransitionProps}
     >
-      <div className={cx(
-        classes.host,
-        severity ? classes.severity(severity) : undefined,
-      )}
+      <div
+        className={cx(
+          classes.host,
+          severity ? classes.severity(severity) : undefined,
+        )}
       >
         {targetIcon ? (
           <div className={classes.iconContainer}>
-            <Icon
-              icon={targetIcon}
-              className={classes.severityIcon}
-            />
+            <Icon icon={targetIcon} className={classes.severityIcon} />
           </div>
         ) : null}
         <div className={classes.body}>
-          <h4 className={classes.title}>
-            {title}
-          </h4>
-          <div className={classes.content}>
-            {children}
-          </div>
+          <h4 className={classes.title}>{title}</h4>
+          <div className={classes.content}>{children}</div>
           {onConfirm && !severity ? (
             <ButtonGroup className={classes.action}>
-              <Button
-                variant="contained"
-                onClick={onConfirm}
-              >
+              <Button variant="contained" onClick={onConfirm}>
                 {confirmText}
               </Button>
-              <Button
-                variant="outlined"
-                onClick={onCancel || onClose}
-              >
+              <Button variant="outlined" onClick={onCancel || onClose}>
                 {cancelText}
               </Button>
             </ButtonGroup>
@@ -213,12 +203,10 @@ const NotificationElement: Notification = ((
   );
 }) as Notification;
 
-const {
-  add,
-  config,
-  destroy,
-  remove,
-} = createNotifier<NotificationData, NotificationConfigProps>({
+const { add, config, destroy, remove } = createNotifier<
+  NotificationData,
+  NotificationConfigProps
+>({
   duration: false,
   render: (notif) => <NotificationElement {...notif} />,
   setRoot: (root) => {
@@ -232,10 +220,11 @@ NotificationElement.destroy = destroy;
 NotificationElement.remove = remove;
 
 (['success', 'warning', 'error', 'info'] as const).forEach((severity) => {
-  NotificationElement[severity] = (props) => NotificationElement.add({
-    ...props,
-    severity,
-  });
+  NotificationElement[severity] = (props) =>
+    NotificationElement.add({
+      ...props,
+      severity,
+    });
 });
 
 export default NotificationElement;

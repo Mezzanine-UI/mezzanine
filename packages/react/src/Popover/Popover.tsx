@@ -32,60 +32,54 @@ export interface PopoverProps extends Omit<PopperProps, 'title'> {
 /**
  * The react component for `mezzanine` popover.
  */
-const Popover = forwardRef<HTMLDivElement, PopoverProps>(function Popover(props, ref) {
-  const {
-    children,
-    className,
-    disableClickAway = false,
-    onClose,
-    open,
-    options = {},
-    title,
-    ...rest
-  } = props;
-  const { modifiers = [] } = options;
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const composedRef = useComposeRefs([ref, popoverRef]);
-
-  useClickAway(
-    () => {
-      if (!open || disableClickAway || !onClose) {
-        return;
-      }
-
-      return (event) => {
-        if (onClose) {
-          onClose(event);
-        }
-      };
-    },
-    popoverRef,
-    [
-      open,
-      disableClickAway,
+const Popover = forwardRef<HTMLDivElement, PopoverProps>(
+  function Popover(props, ref) {
+    const {
+      children,
+      className,
+      disableClickAway = false,
       onClose,
-      popoverRef,
-    ],
-  );
+      open,
+      options = {},
+      title,
+      ...rest
+    } = props;
+    const { modifiers = [] } = options;
+    const popoverRef = useRef<HTMLDivElement>(null);
+    const composedRef = useComposeRefs([ref, popoverRef]);
 
-  return (
-    <Popper
-      {...rest}
-      ref={composedRef}
-      className={cx(
-        classes.host,
-        className,
-      )}
-      open={open}
-      options={{
-        ...options,
-        modifiers: [offsetModifier, ...modifiers],
-      }}
-    >
-      {title && <div className={classes.title}>{title}</div>}
-      {children && <div className={classes.content}>{children}</div>}
-    </Popper>
-  );
-});
+    useClickAway(
+      () => {
+        if (!open || disableClickAway || !onClose) {
+          return;
+        }
+
+        return (event) => {
+          if (onClose) {
+            onClose(event);
+          }
+        };
+      },
+      popoverRef,
+      [open, disableClickAway, onClose, popoverRef],
+    );
+
+    return (
+      <Popper
+        {...rest}
+        ref={composedRef}
+        className={cx(classes.host, className)}
+        open={open}
+        options={{
+          ...options,
+          modifiers: [offsetModifier, ...modifiers],
+        }}
+      >
+        {title && <div className={classes.title}>{title}</div>}
+        {children && <div className={classes.content}>{children}</div>}
+      </Popper>
+    );
+  },
+);
 
 export default Popover;

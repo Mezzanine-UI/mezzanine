@@ -26,10 +26,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
 
   return (
     <>
-      <Button
-        onClick={() => handleClick()}
-        variant="contained"
-      >
+      <Button onClick={() => handleClick()} variant="contained">
         OPEN
       </Button>
 

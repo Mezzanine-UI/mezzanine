@@ -13,14 +13,9 @@ describe('useTableLoading()', () => {
   });
 
   it('should change loading status when onChange triggered', () => {
-    const { result } = renderHook(
-      () => useTableLoading({}),
-    );
+    const { result } = renderHook(() => useTableLoading({}));
 
-    const [
-      loading,
-      setLoading,
-    ] = result.current;
+    const [loading, setLoading] = result.current;
 
     expect(loading).toBe(false);
 

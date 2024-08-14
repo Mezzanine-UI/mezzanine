@@ -3,56 +3,67 @@ import intersection from 'lodash/intersection';
 import { getTreeNodeEntities, traverseTree, TreeNodeData } from '.';
 
 describe('getTreeNodeEntities()', () => {
-  const nodes: TreeNodeData[] = [{
-    label: 'label 1',
-    value: '1',
-    nodes: [
-      {
-        label: 'label 1-1',
-        value: '1-1',
-        nodes: [
-          {
-            label: 'label 1-1-1',
-            value: '1-1-1',
-            nodes: [
-              {
-                label: 'label 1-1-1-1',
-                value: '1-1-1-1',
-              },
-              {
-                label: 'label 1-1-1-2',
-                value: '1-1-1-2',
-              },
-              {
-                label: 'label 1-1-1-3',
-                value: '1-1-1-3',
-              },
-            ],
-          },
-          {
-            label: 'label 1-1-2',
-            value: '1-1-2',
-          },
-          {
-            label: 'label 1-1-3',
-            value: '1-1-3',
-          },
-        ],
-      },
-      {
-        label: 'label 1-2',
-        value: '1-2',
-      },
-    ],
-  },
-  {
-    label: 'label 2',
-    value: '2',
-  }];
+  const nodes: TreeNodeData[] = [
+    {
+      label: 'label 1',
+      value: '1',
+      nodes: [
+        {
+          label: 'label 1-1',
+          value: '1-1',
+          nodes: [
+            {
+              label: 'label 1-1-1',
+              value: '1-1-1',
+              nodes: [
+                {
+                  label: 'label 1-1-1-1',
+                  value: '1-1-1-1',
+                },
+                {
+                  label: 'label 1-1-1-2',
+                  value: '1-1-1-2',
+                },
+                {
+                  label: 'label 1-1-1-3',
+                  value: '1-1-1-3',
+                },
+              ],
+            },
+            {
+              label: 'label 1-1-2',
+              value: '1-1-2',
+            },
+            {
+              label: 'label 1-1-3',
+              value: '1-1-3',
+            },
+          ],
+        },
+        {
+          label: 'label 1-2',
+          value: '1-2',
+        },
+      ],
+    },
+    {
+      label: 'label 2',
+      value: '2',
+    },
+  ];
 
   it('should get all entities', () => {
     const allNodeValues: TreeNodeValue[] = [
-      '1', '1-1', '1-2', '1-1-1', '1-1-2', '1-1-3', '1-1-1-1', '1-1-1-2', '1-1-1-3', '2',
+      '1',
+      '1-1',
+      '1-2',
+      '1-1-1',
+      '1-1-2',
+      '1-1-3',
+      '1-1-1-1',
+      '1-1-1-2',
+      '1-1-1-3',
+      '2',
     ];
 
     const entities = getTreeNodeEntities({ nodes });
@@ -113,7 +124,11 @@ describe('getTreeNodeEntities()', () => {
   it('while selectedValue is provided, the node whose direct sibling values are all marked as selected should be selected as well', () => {
     const selectedValues: TreeNodeValue[] = ['1-1-1-1', '1-1-1-2', '1-1-1-3'];
 
-    const entities = getTreeNodeEntities({ nodes, selectedValues, multiple: true });
+    const entities = getTreeNodeEntities({
+      nodes,
+      selectedValues,
+      multiple: true,
+    });
     const targetEntity = entities.get('1-1-1')!;
 
     expect(targetEntity.node.selected).toBe(true);
@@ -121,9 +136,19 @@ describe('getTreeNodeEntities()', () => {
 
   // eslint-disable-next-line max-len
   it('while selectedValue is provided, the node whose leaf values are all marked as selected should be selected as well', () => {
-    const selectedValues: TreeNodeValue[] = ['1-1-1-1', '1-1-1-2', '1-1-1-3', '1-1-2', '1-1-3'];
+    const selectedValues: TreeNodeValue[] = [
+      '1-1-1-1',
+      '1-1-1-2',
+      '1-1-1-3',
+      '1-1-2',
+      '1-1-3',
+    ];
 
-    const entities = getTreeNodeEntities({ nodes, selectedValues, multiple: true });
+    const entities = getTreeNodeEntities({
+      nodes,
+      selectedValues,
+      multiple: true,
+    });
     const targetEntity = entities.get('1-1')!;
 
     expect(targetEntity.node.selected).toBe(true);

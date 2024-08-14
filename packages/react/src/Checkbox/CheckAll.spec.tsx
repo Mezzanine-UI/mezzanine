@@ -1,10 +1,5 @@
 import { useState } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -19,14 +14,12 @@ import Checkbox, {
 describe('<CheckAll />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<CheckAll ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<CheckAll ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<CheckAll className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<CheckAll className={className} />),
   );
 
   it('should bind all class', () => {
@@ -40,18 +33,24 @@ describe('<CheckAll />', () => {
     it('should be wrapped by <div />', () => {
       const { getHostHTMLElement } = render(<CheckAll />);
       const element = getHostHTMLElement();
-      const { firstElementChild: checkAllCheckboxElement } = element.firstElementChild!;
+      const { firstElementChild: checkAllCheckboxElement } =
+        element.firstElementChild!;
 
-      expect(checkAllCheckboxElement!.classList.contains('mzn-input-check')).toBeTruthy();
-      expect(checkAllCheckboxElement!.querySelector('.mzn-checkbox')).toBeInstanceOf(HTMLElement);
+      expect(
+        checkAllCheckboxElement!.classList.contains('mzn-input-check'),
+      ).toBeTruthy();
+      expect(
+        checkAllCheckboxElement!.querySelector('.mzn-checkbox'),
+      ).toBeInstanceOf(HTMLElement);
     });
 
     it('should pass disabled,name,size from CheckboxGroup to Checkbox controlling whether checked all or not', () => {
-      let expectProps: Pick<CheckboxGroupProps, 'disabled' | 'name' | 'size'> = {
-        disabled: true,
-        name: 'foo',
-        size: 'small',
-      };
+      let expectProps: Pick<CheckboxGroupProps, 'disabled' | 'name' | 'size'> =
+        {
+          disabled: true,
+          name: 'foo',
+          size: 'small',
+        };
 
       const testInstance = TestRenderer.create(
         <CheckAll>
@@ -83,7 +82,10 @@ describe('<CheckAll />', () => {
   });
 
   describe('control', () => {
-    function testCheckAllCheckbox(element: HTMLInputElement, checked: boolean | 'mixed') {
+    function testCheckAllCheckbox(
+      element: HTMLInputElement,
+      checked: boolean | 'mixed',
+    ) {
       expect(element.getAttribute('aria-checked')).toBe(`${checked}`);
     }
 
@@ -114,11 +116,8 @@ describe('<CheckAll />', () => {
 
       const { getHostHTMLElement } = render(<TestingComponent />);
       const element = getHostHTMLElement();
-      const [
-        checkAllCheckboxElement,
-        fooCheckboxElement,
-        barCheckboxElement,
-      ] = element.getElementsByTagName('input');
+      const [checkAllCheckboxElement, fooCheckboxElement, barCheckboxElement] =
+        element.getElementsByTagName('input');
 
       /**
        * test clicking on checkboxes from options.

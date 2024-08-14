@@ -18,8 +18,10 @@ import Icon from '../Icon';
 import { MezzanineConfig } from '../Provider/context';
 
 export interface TextFieldProps
-  extends
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'defaultValue' | 'onChange' | 'prefix'> {
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'div'>,
+    'defaultValue' | 'onChange' | 'prefix'
+  > {
   /**
    * Whether the field is active.
    */
@@ -69,89 +71,86 @@ export interface TextFieldProps
 /**
  * The react component for `mezzanine` input.
  */
-const TextField = forwardRef<HTMLDivElement, TextFieldProps>(function TextField(props, ref) {
-  const {
-    size: globalSize,
-  } = useContext(MezzanineConfig);
-  const {
-    active = false,
-    children,
-    className,
-    clearable = false,
-    disabled = false,
-    error = false,
-    fullWidth,
-    onClear,
-    onClick: onClickProps,
-    onKeyDown: onKeyDownProps,
-    prefix,
-    role: roleProp,
-    size = globalSize,
-    suffix,
-    suffixActionIcon,
-    ...rest
-  } = props;
+const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
+  function TextField(props, ref) {
+    const { size: globalSize } = useContext(MezzanineConfig);
+    const {
+      active = false,
+      children,
+      className,
+      clearable = false,
+      disabled = false,
+      error = false,
+      fullWidth,
+      onClear,
+      onClick: onClickProps,
+      onKeyDown: onKeyDownProps,
+      prefix,
+      role: roleProp,
+      size = globalSize,
+      suffix,
+      suffixActionIcon,
+      ...rest
+    } = props;
 
-  const {
-    role,
-    onClick,
-    onKeyDown,
-  } = useTextFieldControl({
-    onClick: onClickProps,
-    onKeyDown: onKeyDownProps,
-  });
+    const { role, onClick, onKeyDown } = useTextFieldControl({
+      onClick: onClickProps,
+      onKeyDown: onKeyDownProps,
+    });
 
-  return (
-    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
-    <div
-      {...rest}
-      ref={ref}
-      role={roleProp || role}
-      onClick={(evt) => {
-        evt.stopPropagation();
+    return (
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      <div
+        {...rest}
+        ref={ref}
+        role={roleProp || role}
+        onClick={(evt) => {
+          evt.stopPropagation();
 
-        onClick?.(evt);
-      }}
-      onKeyDown={onKeyDown}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        {
-          [classes.active]: active,
-          [classes.clearable]: clearable,
-          [classes.disabled]: disabled,
-          [classes.error]: error,
-          [classes.fullWidth]: fullWidth,
-          [classes.withPrefix]: prefix,
-          [classes.withSuffix]: suffix || suffixActionIcon,
-        },
-        className,
-      )}
-    >
-      {prefix && <div className={classes.prefix}>{prefix}</div>}
-      {children}
-      {suffix && <div className={classes.suffix}>{suffix}</div>}
-      {suffixActionIcon && cloneElement(suffixActionIcon, {
-        className: cx(classes.actionIcon, suffixActionIcon.props.className),
-        role: 'button',
-        tabIndex: -1,
-      })}
-      {clearable && (
-        <Icon
-          className={classes.clearIcon}
-          icon={TimesIcon}
-          onClick={(event) => {
-            if (!disabled && onClear) {
-              onClear(event);
-            }
-          }}
-          onMouseDown={(event) => event.preventDefault()}
-          role="button"
-          tabIndex={-1}
-        />
-      )}
-    </div>
-  );
-});
+          onClick?.(evt);
+        }}
+        onKeyDown={onKeyDown}
+        className={cx(
+          classes.host,
+          classes.size(size),
+          {
+            [classes.active]: active,
+            [classes.clearable]: clearable,
+            [classes.disabled]: disabled,
+            [classes.error]: error,
+            [classes.fullWidth]: fullWidth,
+            [classes.withPrefix]: prefix,
+            [classes.withSuffix]: suffix || suffixActionIcon,
+          },
+          className,
+        )}
+      >
+        {prefix && <div className={classes.prefix}>{prefix}</div>}
+        {children}
+        {suffix && <div className={classes.suffix}>{suffix}</div>}
+        {suffixActionIcon &&
+          cloneElement(suffixActionIcon, {
+            className: cx(classes.actionIcon, suffixActionIcon.props.className),
+            role: 'button',
+            tabIndex: -1,
+          })}
+        {clearable && (
+          <Icon
+            className={classes.clearIcon}
+            icon={TimesIcon}
+            onClick={(event) => {
+              if (!disabled && onClear) {
+                onClear(event);
+              }
+            }}
+            onMouseDown={(event) => event.preventDefault()}
+            role="button"
+            tabIndex={-1}
+          />
+        )}
+      </div>
+    );
+  },
+);
 
 export default TextField;

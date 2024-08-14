@@ -50,11 +50,7 @@ interface TableScrollProps {
 }
 
 export default function useTableScroll(props: TableScrollProps) {
-  const {
-    onFetchMore,
-    loading,
-    scrollBarSize = 4,
-  } = props;
+  const { onFetchMore, loading, scrollBarSize = 4 } = props;
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
@@ -64,23 +60,22 @@ export default function useTableScroll(props: TableScrollProps) {
 
   const [scrollBarHeight, setScrollBarHeight] = useState<number>(0);
   const [pointerOffset, setPointerOffset] = useState<number>(0);
-  const [isHorizontalScrolling, toggleIsHorizontalScrolling] = useState<boolean>(false);
+  const [isHorizontalScrolling, toggleIsHorizontalScrolling] =
+    useState<boolean>(false);
 
   /** set scroll bar callback */
   const onSetScrollBarHeight = useCallback(() => {
     /** @NOTE Scroll bar 高度為可視區域的百分比 */
     if (!scrollRef.current) return;
 
-    const {
-      scrollHeight,
-      clientHeight: tableHeight,
-    } = scrollRef.current;
+    const { scrollHeight, clientHeight: tableHeight } = scrollRef.current;
 
     const bodyHeight = scrollHeight - HEADER_DEFAULT_HEIGHT;
     const viewAreaHeight = tableHeight - HEADER_DEFAULT_HEIGHT;
 
     const nextHeight = Math.max(
-      (viewAreaHeight - (SCROLL_BAR_MAX_END_SPACING * 2)) * (viewAreaHeight / bodyHeight),
+      (viewAreaHeight - SCROLL_BAR_MAX_END_SPACING * 2) *
+        (viewAreaHeight / bodyHeight),
       tableHeight / 10, // height should not less than this
     );
 
@@ -109,10 +104,16 @@ export default function useTableScroll(props: TableScrollProps) {
   }, []);
 
   const onDisplayScrollBar = useCallback(() => {
-    if (!scrollBarRef.current || !scrollRef.current || !scrollBarTrackRef.current) return;
+    if (
+      !scrollBarRef.current ||
+      !scrollRef.current ||
+      !scrollBarTrackRef.current
+    )
+      return;
 
     /** 觸控螢幕不需要 scroll bar */
-    const isTouchEnabled = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isTouchEnabled =
+      'ontouchstart' in window || navigator.maxTouchPoints > 0;
     /** firefox 的滾軸只能同時顯示 or 取消，所以乾脆就用原生的（除非能單獨關掉直向的滾軸，只顯示橫向的才行） */
     const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
@@ -133,22 +134,26 @@ export default function useTableScroll(props: TableScrollProps) {
   /** scroll bar style reset when mouse leave */
   const onScrollBarLeave = useCallback(() => {
     if (scrollBarRef.current) {
-      (scrollBarRef.current.childNodes[0] as HTMLDivElement).style.width = `${scrollBarSize}px`;
+      (scrollBarRef.current.childNodes[0] as HTMLDivElement).style.width =
+        `${scrollBarSize}px`;
     }
 
     resetPointerOffset();
   }, []);
 
   /** when use mouse to drag scroll bar, get cursor position */
-  const onScrollBarMouseDown = useCallback(({ clientY } : { clientY: number }) => {
-    const { current: scrollBar } = scrollBarRef;
+  const onScrollBarMouseDown = useCallback(
+    ({ clientY }: { clientY: number }) => {
+      const { current: scrollBar } = scrollBarRef;
 
-    if (!scrollBar) return;
+      if (!scrollBar) return;
 
-    const { top: initScrollBarTop } = scrollBar.getBoundingClientRect();
+      const { top: initScrollBarTop } = scrollBar.getBoundingClientRect();
 
-    setPointerOffset(clientY - initScrollBarTop);
-  }, []);
+      setPointerOffset(clientY - initScrollBarTop);
+    },
+    [],
+  );
 
   const onScrollBarMouseUp = useCallback(() => resetPointerOffset(), []);
 
@@ -182,76 +187,80 @@ export default function useTableScroll(props: TableScrollProps) {
 
     /** 游標在滾軸上長按並移動 */
     function onMouseMove({ clientY }: { clientY: number }) {
-      const {
-        scrollHeight,
-        clientHeight: tableHeight,
-      } = body as HTMLDivElement;
+      const { scrollHeight, clientHeight: tableHeight } =
+        body as HTMLDivElement;
 
       if (!pointerOffset) return;
 
       // keep scroll bar display when moving
       window.requestAnimationFrame(onDisplayScrollBar);
 
-      const {
-        top: tableTop,
-      } = (body as HTMLDivElement).getBoundingClientRect();
+      const { top: tableTop } = (
+        body as HTMLDivElement
+      ).getBoundingClientRect();
 
       /** Table 最大滾動距離 */
       const maxScrollDistance = scrollHeight - tableHeight;
       /** 游標在 scroll bar 上的位置 */
-      const scrollBarCurrentPosition = clientY - (tableTop + HEADER_DEFAULT_HEIGHT) - pointerOffset;
+      const scrollBarCurrentPosition =
+        clientY - (tableTop + HEADER_DEFAULT_HEIGHT) - pointerOffset;
       /** 可視區域高度 */
       const viewAreaHeight = tableHeight - HEADER_DEFAULT_HEIGHT;
       /** 最大滑動距離 */
-      const maxScrollBarDistance = viewAreaHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING;
+      const maxScrollBarDistance =
+        viewAreaHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING;
       /** 計算出來的距離 */
       const clampScrollBarTop = Math.min(
         Math.max(scrollBarCurrentPosition, 0), // min boundary
         maxScrollBarDistance, // max boundary
       );
 
-      (scrollBar as HTMLDivElement).style.setProperty('transform', `translate3d(0, ${clampScrollBarTop}px, 0)`);
-
-      (body as HTMLDivElement).scrollTop = (
-        (clampScrollBarTop * maxScrollDistance) / maxScrollBarDistance
+      (scrollBar as HTMLDivElement).style.setProperty(
+        'transform',
+        `translate3d(0, ${clampScrollBarTop}px, 0)`,
       );
+
+      (body as HTMLDivElement).scrollTop =
+        (clampScrollBarTop * maxScrollDistance) / maxScrollBarDistance;
     }
 
     /** 在滾軸滑軌上點擊，直接滾動到指定位置上 */
     function onMouseClick({ clientY }: { clientY: number }) {
       if (!scrollBar) return;
 
-      const {
-        scrollHeight,
-        clientHeight: tableHeight,
-      } = body as HTMLDivElement;
+      const { scrollHeight, clientHeight: tableHeight } =
+        body as HTMLDivElement;
 
       // keep scroll bar display when moving
       window.requestAnimationFrame(onDisplayScrollBar);
 
-      const {
-        top: tableTop,
-      } = (body as HTMLDivElement).getBoundingClientRect();
+      const { top: tableTop } = (
+        body as HTMLDivElement
+      ).getBoundingClientRect();
 
       /** Table 最大滾動距離 */
       const maxScrollDistance = scrollHeight - tableHeight;
       /** 游標在 Track 上的位置 */
-      const scrollBarCurrentPosition = clientY - (tableTop + HEADER_DEFAULT_HEIGHT) - (scrollBarHeight / 2);
+      const scrollBarCurrentPosition =
+        clientY - (tableTop + HEADER_DEFAULT_HEIGHT) - scrollBarHeight / 2;
       /** 可視區域高度 */
       const viewAreaHeight = tableHeight - HEADER_DEFAULT_HEIGHT;
       /** 最大滑動距離 */
-      const maxScrollBarDistance = viewAreaHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING;
+      const maxScrollBarDistance =
+        viewAreaHeight - scrollBarHeight - SCROLL_BAR_MAX_END_SPACING;
       /** 計算出來的距離 */
       const clampScrollBarTop = Math.min(
         Math.max(scrollBarCurrentPosition, 0), // min boundary
         maxScrollBarDistance, // max boundary
       );
 
-      (scrollBar as HTMLDivElement).style.setProperty('transform', `translate3d(0, ${clampScrollBarTop}px, 0)`);
-
-      (body as HTMLDivElement).scrollTop = (
-        (clampScrollBarTop * maxScrollDistance) / maxScrollBarDistance
+      (scrollBar as HTMLDivElement).style.setProperty(
+        'transform',
+        `translate3d(0, ${clampScrollBarTop}px, 0)`,
       );
+
+      (body as HTMLDivElement).scrollTop =
+        (clampScrollBarTop * maxScrollDistance) / maxScrollBarDistance;
     }
 
     /** 游標移動到滾軸/滑軌上方時 */
@@ -288,7 +297,8 @@ export default function useTableScroll(props: TableScrollProps) {
   /** scroll bar fatter when mouse enter */
   const onScrollBarEnter = useCallback(() => {
     if (scrollBarRef.current) {
-      (scrollBarRef.current.childNodes[0] as HTMLDivElement).style.width = `${scrollBarSize + 6}px`;
+      (scrollBarRef.current.childNodes[0] as HTMLDivElement).style.width =
+        `${scrollBarSize + 6}px`;
     }
   }, []);
 
@@ -306,7 +316,7 @@ export default function useTableScroll(props: TableScrollProps) {
         const bodyHeight = scrollHeight - HEADER_DEFAULT_HEIGHT;
         const viewAreaHeight = tableHeight - HEADER_DEFAULT_HEIGHT;
         const distance = Math.max(
-          (viewAreaHeight * Math.max((scrollTop / bodyHeight), 0)),
+          viewAreaHeight * Math.max(scrollTop / bodyHeight, 0),
           0,
         );
 
@@ -319,53 +329,67 @@ export default function useTableScroll(props: TableScrollProps) {
     }
   }, [scrollBarHeight, pointerOffset]);
 
-  const onScroll: UIEventHandler<HTMLDivElement> = useCallback((scrollTarget) => {
-    /** 使用者開始橫向滾動 */
-    if ((scrollTarget.target as HTMLDivElement).scrollLeft) {
-      toggleIsHorizontalScrolling(true);
-    } else {
-      toggleIsHorizontalScrolling(false);
-    }
-
-    if (loading) return;
-
-    if (scrollRef.current) {
-      const {
-        clientHeight,
-        scrollTop,
-        scrollHeight,
-      } = scrollRef.current;
-
-      /** 如果不需要滾動，則不需要觸發 */
-      if (clientHeight >= scrollHeight) return;
-
-      window.requestAnimationFrame(onDisplayScrollBar);
-
-      /** @Note safari specific bug fix for scroll bouncing */
-      const belowBottom = scrollTop > (scrollHeight - clientHeight);
-
-      if (belowBottom) return;
-
-      window.requestAnimationFrame(setScrollBarTop);
-
-      /** trigger fetchMore when scrolling */
-      if ((scrollHeight - (scrollTop + clientHeight)) < FETCH_MORE_TRIGGER_AT_BOTTOM) {
-        onFetchMore?.();
+  const onScroll: UIEventHandler<HTMLDivElement> = useCallback(
+    (scrollTarget) => {
+      /** 使用者開始橫向滾動 */
+      if ((scrollTarget.target as HTMLDivElement).scrollLeft) {
+        toggleIsHorizontalScrolling(true);
+      } else {
+        toggleIsHorizontalScrolling(false);
       }
-    }
 
-    window.requestAnimationFrame(onHideScrollBar);
-  }, [loading, setScrollBarTop, onDisplayScrollBar, onFetchMore, onHideScrollBar]);
+      if (loading) return;
 
-  const scrollBarStyle = useMemo(() => ({
-    ...defaultScrollBarStyle,
-    height: `${scrollBarHeight}px`,
-  }), [scrollBarHeight]);
+      if (scrollRef.current) {
+        const { clientHeight, scrollTop, scrollHeight } = scrollRef.current;
 
-  const scrollBarTrackStyle = useMemo(() => ({
-    ...defaultScrollBarTrackStyle,
-    height: `${scrollRef.current?.scrollHeight ?? 0}px`,
-  }), [scrollBarHeight]);
+        /** 如果不需要滾動，則不需要觸發 */
+        if (clientHeight >= scrollHeight) return;
+
+        window.requestAnimationFrame(onDisplayScrollBar);
+
+        /** @Note safari specific bug fix for scroll bouncing */
+        const belowBottom = scrollTop > scrollHeight - clientHeight;
+
+        if (belowBottom) return;
+
+        window.requestAnimationFrame(setScrollBarTop);
+
+        /** trigger fetchMore when scrolling */
+        if (
+          scrollHeight - (scrollTop + clientHeight) <
+          FETCH_MORE_TRIGGER_AT_BOTTOM
+        ) {
+          onFetchMore?.();
+        }
+      }
+
+      window.requestAnimationFrame(onHideScrollBar);
+    },
+    [
+      loading,
+      setScrollBarTop,
+      onDisplayScrollBar,
+      onFetchMore,
+      onHideScrollBar,
+    ],
+  );
+
+  const scrollBarStyle = useMemo(
+    () => ({
+      ...defaultScrollBarStyle,
+      height: `${scrollBarHeight}px`,
+    }),
+    [scrollBarHeight],
+  );
+
+  const scrollBarTrackStyle = useMemo(
+    () => ({
+      ...defaultScrollBarTrackStyle,
+      height: `${scrollRef.current?.scrollHeight ?? 0}px`,
+    }),
+    [scrollBarHeight],
+  );
 
   /** composing result */
   const tableScrollContainer = {

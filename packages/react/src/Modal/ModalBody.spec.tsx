@@ -1,7 +1,4 @@
-import {
-  cleanup,
-  render,
-} from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,20 +8,16 @@ import { ModalBody } from '.';
 describe('<ModalBody />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(
-    HTMLDivElement,
-    (ref) => render(<ModalBody ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<ModalBody ref={ref} />),
   );
 
-  describeHostElementClassNameAppendable(
-    'foo',
-    (className) => render(<ModalBody className={className} />),
+  describeHostElementClassNameAppendable('foo', (className) =>
+    render(<ModalBody className={className} />),
   );
 
   it('should bind body class and render children', () => {
-    const { getHostHTMLElement } = render(
-      <ModalBody>foo</ModalBody>,
-    );
+    const { getHostHTMLElement } = render(<ModalBody>foo</ModalBody>);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-modal__body')).toBeTruthy();

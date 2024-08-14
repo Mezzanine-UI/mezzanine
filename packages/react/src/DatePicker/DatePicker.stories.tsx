@@ -1,8 +1,5 @@
 import { StoryFn, Meta } from '@storybook/react';
-import {
-  DateType,
-  getDefaultModeFormat,
-} from '@mezzanine-ui/core/calendar';
+import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
@@ -18,8 +15,12 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType | undefined>(new Date().toISOString());
-  const onChange = (v?: DateType) => { setVal(v); };
+  const [val, setVal] = useState<DateType | undefined>(
+    new Date().toISOString(),
+  );
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return [val, onChange] as const;
 }
@@ -42,7 +43,9 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>{val}</Typography>
+      <Typography variant="h5" style={typoStyle}>
+        {val}
+      </Typography>
       <DatePicker
         value={val}
         onChange={onChange}
@@ -62,22 +65,13 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   mode: {
-    options: [
-      'day',
-      'week',
-      'month',
-      'year',
-    ],
+    options: ['day', 'week', 'month', 'year'],
     control: {
       type: 'select',
     },
   },
   size: {
-    options: [
-      'small',
-      'medium',
-      'large',
-    ],
+    options: ['small', 'medium', 'large'],
     control: {
       type: 'select',
     },
@@ -100,7 +94,9 @@ export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, setVal] = useState<DateType | undefined>('2022-01-05');
-  const onChange = (v?: DateType) => { setVal(v); };
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -135,8 +131,12 @@ export const Basic = () => {
 export const Method = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType | undefined>(new Date().toISOString());
-  const onChange = (v?: DateType) => { setVal(v); };
+  const [val, setVal] = useState<DateType | undefined>(
+    new Date().toISOString(),
+  );
+  const onChange = (v?: DateType) => {
+    setVal(v);
+  };
 
   return (
     <>
@@ -277,7 +277,10 @@ export const Modes = () => {
 
 export const CustomDisable = () => {
   const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0', whiteSpace: 'pre-line' } as CSSProperties;
+  const typoStyle = {
+    margin: '0 0 12px 0',
+    whiteSpace: 'pre-line',
+  } as CSSProperties;
   const [valD, onChangeD] = usePickerChange();
   const [valW, onChangeW] = usePickerChange();
   const [valM, onChangeM] = usePickerChange();
@@ -293,41 +296,32 @@ export const CustomDisable = () => {
   const disabledYearsStart = moment().year(moment().year() - 20);
   const disabledYearsEnd = moment().year(moment().year() - 1);
 
-  const isDateDisabled = (target: DateType) => (
-    moment(target).isBetween(
-      disabledDatesStart,
-      disabledDatesEnd,
-      'day',
-      '[]',
-    )
-  );
+  const isDateDisabled = (target: DateType) =>
+    moment(target).isBetween(disabledDatesStart, disabledDatesEnd, 'day', '[]');
 
-  const isWeekDisabled = (target: DateType) => (
+  const isWeekDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledWeeksStart,
       disabledWeeksEnd,
       'week',
       '[]',
-    )
-  );
+    );
 
-  const isMonthDisabled = (target: DateType) => (
+  const isMonthDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledMonthsStart,
       disabledMonthsEnd,
       'month',
       '[]',
-    )
-  );
+    );
 
-  const isYearDisabled = (target: DateType) => (
+  const isYearDisabled = (target: DateType) =>
     moment(target).isBetween(
       disabledYearsStart,
       disabledYearsEnd,
       'year',
       '[]',
-    )
-  );
+    );
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
