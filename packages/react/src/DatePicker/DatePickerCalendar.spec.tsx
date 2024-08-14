@@ -1,5 +1,5 @@
 /* global document */
-import { createRef } from 'react';
+import { createRef, act } from 'react';
 import moment from 'moment';
 import {
   CalendarMode,
@@ -8,7 +8,6 @@ import {
   getYearRange,
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import { act } from 'react-dom/test-utils';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
