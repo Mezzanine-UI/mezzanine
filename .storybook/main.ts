@@ -15,7 +15,7 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-storysource',
-    // getAbsolutePath('storybook-rytass-palette'),
+    'storybook-rytass-palette',
   ],
 
   framework: '@storybook/react-webpack5',
