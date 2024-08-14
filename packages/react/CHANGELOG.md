@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.15.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.10...@mezzanine-ui/react@0.15.0) (2024-08-14)
+
+### Bug Fixes
+
+- **react/utils:** get scrollbar width return 0 when is not scrollable ([ca5615e](https://github.com/Mezzanine-UI/mezzanine/commit/ca5615ee302765860518f86075dc99bccc68402e))
+- remove storybook deprecated ArgsTable and use ArgTypes instead ([0d9df92](https://github.com/Mezzanine-UI/mezzanine/commit/0d9df925d16daf7609c3abb3e116b6d49fd92abd))
+
 ## [0.14.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.9...@mezzanine-ui/react@0.14.10) (2024-07-22)
 
 ### Bug Fixes
