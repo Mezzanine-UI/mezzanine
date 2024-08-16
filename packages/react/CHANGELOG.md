@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.0...@mezzanine-ui/react@0.15.1) (2024-08-16)
+
+### Bug Fixes
+
+- **react/utils:** get scrollbar width should called before body locked ([6cbda2f](https://github.com/Mezzanine-UI/mezzanine/commit/6cbda2fe2a57b26bd93572a735c425d884a4a445))
+
+### Features
+
+- **react/anchor:** implement react anchor component ([dacbd4f](https://github.com/Mezzanine-UI/mezzanine/commit/dacbd4f8d66c0920c7bbdab8641c8bd2c7530e5b))
+
 # [0.15.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.14.10...@mezzanine-ui/react@0.15.0) (2024-08-14)
 
 ### Bug Fixes

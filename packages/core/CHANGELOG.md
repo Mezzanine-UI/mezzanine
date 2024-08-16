@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.15.0...@mezzanine-ui/core@0.15.1) (2024-08-16)
+
+### Features
+
+- **core/anchor:** implement anchor styles ([86c558f](https://github.com/Mezzanine-UI/mezzanine/commit/86c558f3fd09c8905b3934fa7799dda1b7076a9c))
+
 # [0.15.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.14.10...@mezzanine-ui/core@0.15.0) (2024-08-14)
 
 **Note:** Version bump only for package @mezzanine-ui/core
