@@ -1,5 +1,4 @@
-import { act } from '@testing-library/react';
-import { Key } from 'react';
+import { Key, act } from 'react';
 import { cleanup, cleanupHook } from '../../__test-utils__';
 import { createNotifier, Notifier, NotifierData, RenderNotifier } from '.';
 

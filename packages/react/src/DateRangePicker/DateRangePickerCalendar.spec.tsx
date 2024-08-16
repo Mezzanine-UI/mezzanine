@@ -1,8 +1,8 @@
 /* global document */
 import moment from 'moment';
+import { act } from 'react';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import { act } from 'react-dom/test-utils';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';

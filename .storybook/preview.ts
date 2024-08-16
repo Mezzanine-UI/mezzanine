@@ -23,6 +23,7 @@ const preview: Preview = {
           'Data Entry',
           'Data Display',
           'Feedback',
+          'Others',
         ],
       },
     },

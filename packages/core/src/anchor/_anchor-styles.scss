@@ -1,0 +1,48 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
+@use '../button/utils' as btn-utils;
+@use './anchor' as *;
+
+$bar-width: 1px !default;
+$anchor-left-padding: 12px !default;
+
+.#{$prefix} {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  position: relative;
+
+  &__bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 0;
+    width: $bar-width;
+    height: 100%;
+    background-color: palette.color(border);
+  }
+
+  &__anchor {
+    @include btn-utils.reset();
+
+    display: inline-grid;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    border-left: $bar-width solid palette.color(border);
+    padding-left: $anchor-left-padding;
+    text-align: left;
+    color: palette.color(action-inactive);
+    transition: transition.standard(border-left), transition.standard(color);
+
+    &:hover {
+      color: palette.color(primary);
+    }
+
+    &--active {
+      color: palette.color(primary);
+      border-left: $bar-width solid palette.color(primary);
+    }
+  }
+}

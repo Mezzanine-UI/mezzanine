@@ -368,6 +368,11 @@ export {
 export { SkeletonProps, default as Skeleton } from './Skeleton';
 
 /**
+ * Others
+ */
+export { AnchorProps, default as Anchor } from './Anchor';
+
+/**
  * Utility
  */
 export * from './Notifier';
