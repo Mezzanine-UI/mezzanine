@@ -11,10 +11,10 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   getHour: (date) => DateTime.fromISO(date).hour,
   getDate: (date) => DateTime.fromISO(date).day,
   getWeekDay: (date) => DateTime.fromISO(date).weekday,
-  getMonth: (date) => DateTime.fromISO(date).month,
+  getMonth: (date) => DateTime.fromISO(date).month - 1,
   getYear: (date) => DateTime.fromISO(date).year,
   getWeekDayNames: (locale) => Info.weekdays('narrow', { locale }),
-  getMonthShortName: (month, locale) => DateTime.now().set({ month }).toFormat('MMM', { locale }),
+  getMonthShortName: (month, locale) => DateTime.now().set({ month: month + 1 }).toFormat('MMM', { locale }),
   getMonthShortNames: (locale) => Info.months('short', { locale }),
 
   /** Manipulate */
@@ -24,7 +24,7 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   setSecond: (date, second) => DateTime.fromISO(date).set({ second }).toISO() as string,
   setMinute: (date, minute) => DateTime.fromISO(date).set({ minute }).toISO() as string,
   setHour: (date, hour) => DateTime.fromISO(date).set({ hour }).toISO() as string,
-  setMonth: (date, month) => DateTime.fromISO(date).set({ month }).toISO() as string,
+  setMonth: (date, month) => DateTime.fromISO(date).set({ month: month + 1 }).toISO() as string,
   setYear: (date, year) => DateTime.fromISO(date).set({ year }).toISO() as string,
   setDate: (date, target) => DateTime.fromISO(date).set({ day: target }).toISO() as string,
   startOf: (target, granularity) => DateTime.fromISO(target).startOf(granularity).toISO() as string,
@@ -54,7 +54,7 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   ) => Interval.fromDateTimes(DateTime.fromISO(target1), DateTime.fromISO(target2)).contains(DateTime.fromISO(value)),
   isSameDate: (dateOne, dateTwo) => DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'day'),
   isSameWeek: (dateOne, dateTwo) => DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'week'),
-  isInMonth: (target, month) => DateTime.fromISO(target).month === month,
+  isInMonth: (target, month) => DateTime.fromISO(target).month === month + 1,
   isDateIncluded: (date, targets) => targets
     .some((target) => DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'day')),
   isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
