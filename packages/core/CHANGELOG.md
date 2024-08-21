@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.15.1...@mezzanine-ui/core@0.15.2) (2024-08-21)
+
+### Bug Fixes
+
+- **core:** luxon calendar methods month correction ([1416b77](https://github.com/Mezzanine-UI/mezzanine/commit/1416b77359ff74521ad2af10dfc573d4ba6c29c1))
+
 ## [0.15.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.15.0...@mezzanine-ui/core@0.15.1) (2024-08-16)
 
 ### Features

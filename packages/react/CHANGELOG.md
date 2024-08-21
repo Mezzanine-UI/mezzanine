@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.15.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.1...@mezzanine-ui/react@0.15.2) (2024-08-21)
+
+**Note:** Version bump only for package @mezzanine-ui/react
+
 ## [0.15.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.0...@mezzanine-ui/react@0.15.1) (2024-08-16)
 
 ### Bug Fixes
