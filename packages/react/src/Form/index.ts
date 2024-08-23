@@ -1,5 +1,8 @@
 export * from './typings';
 export * from './FormControlContext';
-export { FormFieldProps, default as FormField } from './FormField';
-export { FormLabelProps, default as FormLabel } from './FormLabel';
-export { FormMessageProps, default as FormMessage } from './FormMessage';
+export type { FormFieldProps } from './FormField';
+export type { FormLabelProps } from './FormLabel';
+export type { FormMessageProps } from './FormMessage';
+export { default as FormField } from './FormField';
+export { default as FormLabel } from './FormLabel';
+export { default as FormMessage } from './FormMessage';

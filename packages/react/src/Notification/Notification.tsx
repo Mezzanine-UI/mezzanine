@@ -208,7 +208,7 @@ const { add, config, destroy, remove } = createNotifier<
   NotificationConfigProps
 >({
   duration: false,
-  render: (notif) => <NotificationElement {...notif} />,
+  render: (notif) => <NotificationElement {...notif} key={undefined} />,
   setRoot: (root) => {
     root?.setAttribute('class', classes.root);
   },
