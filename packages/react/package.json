@@ -41,19 +41,19 @@
     "tslib": "^2.4.1"
   },
   "devDependencies": {
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^16.0.0",
     "@testing-library/react-hooks": "^8.0.1",
-    "@types/lodash": "^4.14.200",
+    "@types/lodash": "^4.17.7",
     "@types/moment": "^2.13.0",
-    "@types/react": "^18.3.3",
+    "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
-    "@types/react-test-renderer": "^18.0.5",
-    "dayjs": "^1.11.10",
+    "@types/react-test-renderer": "^18.3.0",
+    "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
-    "luxon": "^3.4.4",
+    "luxon": "^3.5.0",
     "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-test-renderer": "^18.3.0"
+    "react-test-renderer": "^18.3.1"
   }
 }
