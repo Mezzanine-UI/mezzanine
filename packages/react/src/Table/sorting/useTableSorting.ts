@@ -136,9 +136,11 @@ export function useTableSorting(props: UseTableSorting) {
           ).slice(0);
 
           if (typeof sorter === 'function') {
-            console.warn(
-              'When using a `sorter` function, please provide the `dataIndex` to make sure it worked as expected.',
-            );
+            if (typeof dataIndex === 'undefined') {
+              console.error(
+                'When using a `sorter` function, please provide the `dataIndex` to make sure it worked as expected.',
+              );
+            }
             // sort by given sorter
             newSource = newSource.sort(
               (a, b) =>

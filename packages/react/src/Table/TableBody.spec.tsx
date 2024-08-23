@@ -29,11 +29,15 @@ describe('<TableBody />', () => {
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(HTMLTableSectionElement, (ref) =>
-    render(<TableBody ref={ref} />),
+    render(<TableBody ref={ref} />, {
+      container: document.body.appendChild(document.createElement('table')),
+    }),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<TableBody />);
+    const { getHostHTMLElement } = render(<TableBody />, {
+      container: document.body.appendChild(document.createElement('table')),
+    });
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-table__body')).toBeTruthy();
@@ -49,10 +53,13 @@ describe('<TableBody />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => <TableBody />}
+            {(provided) => <TableBody ref={provided.innerRef} />}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
+      {
+        container: document.body.appendChild(document.createElement('table')),
+      },
     );
     const host = getHostHTMLElement();
 
@@ -71,10 +78,13 @@ describe('<TableBody />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => <TableBody />}
+            {(provided) => <TableBody ref={provided.innerRef} />}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
+      {
+        container: document.body.appendChild(document.createElement('table')),
+      },
     );
     const host = getHostHTMLElement();
 
@@ -103,11 +113,14 @@ describe('<TableBody />', () => {
           >
             <DragDropContext onDragEnd={() => {}}>
               <Droppable droppableId="mzn-table-dnd">
-                {() => <TableBody />}
+                {(provided) => <TableBody ref={provided.innerRef} />}
               </Droppable>
             </DragDropContext>
           </TableContext.Provider>
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('table')),
+        },
       );
       const host = getHostHTMLElement();
 

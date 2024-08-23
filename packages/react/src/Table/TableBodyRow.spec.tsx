@@ -43,23 +43,22 @@ function getExpandedContentHost() {
 describe('<TableBodyRow />', () => {
   afterEach(cleanupHook);
 
-  describeForwardRefToHTMLElement(HTMLTableRowElement, (ref) =>
-    render(
-      <DragDropContext onDragEnd={() => {}}>
-        <Droppable droppableId="mzn-table-dnd">
-          {() => <TableBodyRow ref={ref} rowData={rowData} rowIndex={0} />}
-        </Droppable>
-      </DragDropContext>,
-    ),
-  );
-
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <DragDropContext onDragEnd={() => {}}>
         <Droppable droppableId="mzn-table-dnd">
-          {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+          {(provided) => (
+            <TableBodyRow
+              ref={provided.innerRef}
+              rowData={rowData}
+              rowIndex={0}
+            />
+          )}
         </Droppable>
       </DragDropContext>,
+      {
+        container: document.body.appendChild(document.createElement('tbody')),
+      },
     );
     const element = getHostHTMLElement();
 
@@ -96,7 +95,13 @@ describe('<TableBodyRow />', () => {
       >
         <DragDropContext onDragEnd={() => {}}>
           <Droppable droppableId="mzn-table-dnd">
-            {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+            {(provided) => (
+              <TableBodyRow
+                ref={provided.innerRef}
+                rowData={rowData}
+                rowIndex={0}
+              />
+            )}
           </Droppable>
         </DragDropContext>
       </TableDataContext.Provider>,
@@ -146,10 +151,19 @@ describe('<TableBodyRow />', () => {
         >
           <DragDropContext onDragEnd={() => {}}>
             <Droppable droppableId="mzn-table-dnd">
-              {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+              {(provided) => (
+                <TableBodyRow
+                  ref={provided.innerRef}
+                  rowData={rowData}
+                  rowIndex={0}
+                />
+              )}
             </Droppable>
           </DragDropContext>
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('tbody')),
+        },
       );
 
       element = getHostHTMLElement();
@@ -231,11 +245,20 @@ describe('<TableBodyRow />', () => {
           >
             <DragDropContext onDragEnd={() => {}}>
               <Droppable droppableId="mzn-table-dnd">
-                {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+                {(provided) => (
+                  <TableBodyRow
+                    ref={provided.innerRef}
+                    rowData={rowData}
+                    rowIndex={0}
+                  />
+                )}
               </Droppable>
             </DragDropContext>
           </TableContext.Provider>
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('tbody')),
+        },
       );
 
       element = getHostHTMLElement();
@@ -273,11 +296,22 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+                    {(provided) => (
+                      <TableBodyRow
+                        ref={provided.innerRef}
+                        rowData={rowData}
+                        rowIndex={0}
+                      />
+                    )}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
+            {
+              container: document.body.appendChild(
+                document.createElement('tbody'),
+              ),
+            },
           );
 
           const element = getHostHTMLElement();
@@ -336,11 +370,22 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+                    {(provided) => (
+                      <TableBodyRow
+                        ref={provided.innerRef}
+                        rowData={rowData}
+                        rowIndex={0}
+                      />
+                    )}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
+            {
+              container: document.body.appendChild(
+                document.createElement('tbody'),
+              ),
+            },
           );
 
           const element = getHostHTMLElement();
@@ -391,11 +436,22 @@ describe('<TableBodyRow />', () => {
               >
                 <DragDropContext onDragEnd={() => {}}>
                   <Droppable droppableId="mzn-table-dnd">
-                    {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+                    {(provided) => (
+                      <TableBodyRow
+                        ref={provided.innerRef}
+                        rowData={rowData}
+                        rowIndex={0}
+                      />
+                    )}
                   </Droppable>
                 </DragDropContext>
               </TableContext.Provider>
             </TableDataContext.Provider>,
+            {
+              container: document.body.appendChild(
+                document.createElement('tbody'),
+              ),
+            },
           );
 
           const element = getHostHTMLElement();
@@ -433,10 +489,19 @@ describe('<TableBodyRow />', () => {
         >
           <DragDropContext onDragEnd={() => {}}>
             <Droppable droppableId="mzn-table-dnd">
-              {() => <TableBodyRow rowData={rowData} rowIndex={0} />}
+              {(provided) => (
+                <TableBodyRow
+                  ref={provided.innerRef}
+                  rowData={rowData}
+                  rowIndex={0}
+                />
+              )}
             </Droppable>
           </DragDropContext>
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('tbody')),
+        },
       );
 
       const element = getHostHTMLElement();

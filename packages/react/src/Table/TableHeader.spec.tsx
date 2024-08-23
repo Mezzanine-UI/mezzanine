@@ -16,11 +16,15 @@ describe('<TableHeader />', () => {
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(HTMLTableRowElement, (ref) =>
-    render(<TableHeader ref={ref} />),
+    render(<TableHeader ref={ref} />, {
+      container: document.body.appendChild(document.createElement('table')),
+    }),
   );
 
   it('should use fixed header as host', () => {
-    const { getHostHTMLElement } = render(<TableHeader />);
+    const { getHostHTMLElement } = render(<TableHeader />, {
+      container: document.body.appendChild(document.createElement('table')),
+    });
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-table__header-fixed')).toBeTruthy();
@@ -59,6 +63,9 @@ describe('<TableHeader />', () => {
         >
           <TableHeader />
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('table')),
+        },
       );
 
       element = getHostHTMLElement();
@@ -140,6 +147,9 @@ describe('<TableHeader />', () => {
         >
           <TableHeader />
         </TableContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('table')),
+        },
       );
       const element = getHostHTMLElement();
 
@@ -159,6 +169,9 @@ describe('<TableHeader />', () => {
         >
           <TableHeader />
         </TableContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('table')),
+        },
       );
       const element = getHostHTMLElement();
 
@@ -195,6 +208,9 @@ describe('<TableHeader />', () => {
         >
           <TableHeader />
         </TableDataContext.Provider>,
+        {
+          container: document.body.appendChild(document.createElement('table')),
+        },
       );
 
       const element = getHostHTMLElement();

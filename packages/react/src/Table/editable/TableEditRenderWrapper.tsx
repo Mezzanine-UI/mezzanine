@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { useContext } from 'react';
 import {
   TableColumnBase,
@@ -31,6 +30,7 @@ function TableEditRenderWrapper({
       <BodyCell
         {...customProps}
         {...rest}
+        key={(rowData.key || rowData.id) as string}
         dataIndex={dataIndex}
         editable={editable}
         rowData={rowData}
