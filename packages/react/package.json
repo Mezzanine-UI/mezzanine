@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/react",
-  "version": "0.13.13",
+  "version": "0.13.14",
   "description": "React components for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -28,9 +28,9 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "@mezzanine-ui/core": "^0.13.13",
-    "@mezzanine-ui/icons": "^0.13.13",
-    "@mezzanine-ui/system": "^0.13.13",
+    "@mezzanine-ui/core": "^0.13.14",
+    "@mezzanine-ui/icons": "^0.13.14",
+    "@mezzanine-ui/system": "^0.13.14",
     "@popperjs/core": "^2.11.6",
     "@types/react-transition-group": "^4.4.8",
     "clsx": "^2.0.0",
