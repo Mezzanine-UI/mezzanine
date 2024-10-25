@@ -7,6 +7,10 @@ import {
   useMemo,
   ChangeEventHandler,
   FocusEventHandler,
+  useImperativeHandle,
+  Dispatch,
+  SetStateAction,
+  MutableRefObject,
 } from 'react';
 import {
   selectClasses as classes,
@@ -109,6 +113,12 @@ export interface AutoCompleteBaseProps
    */
   required?: boolean;
   /**
+   *
+   */
+  searchTextControlRef?: MutableRefObject<
+    { setSearchText: Dispatch<SetStateAction<string>> } | undefined
+  >;
+  /**
    * The size of input.
    */
   size?: SelectInputSize;
@@ -197,6 +207,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       placeholder = '',
       prefix,
       required = requiredFromFormControl || false,
+      searchTextControlRef,
       size,
       value: valueProp,
     } = props;
@@ -226,6 +237,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } as
       | UseAutoCompleteMultipleValueControl
       | UseAutoCompleteSingleValueControl);
+
+    /** export set search text action to props (allow user to customize search text) */
+    useImperativeHandle(searchTextControlRef, () => ({
+      setSearchText,
+    }));
 
     /** insert feature */
     const [insertText, setInsertText] = useState<string>('');
