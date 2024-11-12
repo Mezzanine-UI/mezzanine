@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const fse = require('fs-extra');
-const glob = require('glob');
+const { glob } = require('glob');
 const { rollup } = require('rollup');
 const ts = require('@rollup/plugin-typescript');
 
@@ -27,16 +27,8 @@ const externals = [
   'events',
 ];
 
-function getFilesByGlob(globPath) {
-  return new Promise((resolve, reject) => {
-    glob(globPath, (error, files) => {
-      if (error) {
-        reject(error);
-      }
-
-      resolve(files);
-    });
-  });
+async function getFilesByGlob(globPath) {
+  return await glob(globPath);
 }
 
 async function rollupBuild({ output, ...options }) {
@@ -58,7 +50,10 @@ async function run() {
   const scssFiles = await getFilesByGlob(`${packageSrcPath}/**/*.scss`);
 
   scssFiles.forEach((file) => {
-    const dist = path.resolve(packageDistPath, path.relative(packageSrcPath, file));
+    const dist = path.resolve(
+      packageDistPath,
+      path.relative(packageSrcPath, file),
+    );
     const distDir = dist.split('/').slice(0, -1).join('/');
 
     if (!fse.existsSync(distDir)) {
@@ -85,10 +80,12 @@ async function run() {
         preserveModulesRoot: packageSrcPath,
       },
     ],
-    plugins: [ts({
-      cacheDir: tsPluginCachePath,
-      tsconfig: tsconfigPath,
-    })],
+    plugins: [
+      ts({
+        cacheDir: tsPluginCachePath,
+        tsconfig: tsconfigPath,
+      }),
+    ],
     treeshake: {
       moduleSideEffects: false,
     },
