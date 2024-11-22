@@ -56,7 +56,7 @@ describe('<TimePanel />', () => {
       const columnInstances = root.findAllByType(TimePanelColumn);
 
       columnInstances.forEach((instance) => {
-        expect(instance).not.toBe(null || undefined);
+        expect(instance).not.toBe(undefined);
         expect(instance.children).not.toBe(null);
       });
 

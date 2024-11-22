@@ -43,9 +43,9 @@
     "@mezzanine-ui/icons": "^0.15.3",
     "@mezzanine-ui/system": "^0.15.3",
     "lodash": "^4.17.21",
-    "tslib": "^2.4.1"
+    "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@types/luxon": "^3.3.2"
+    "@types/luxon": "^3.4.2"
   }
 }
