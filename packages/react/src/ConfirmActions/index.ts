@@ -1,4 +1,4 @@
 export {
-  ConfirmActionsProps,
+  type ConfirmActionsProps,
   default,
 } from './ConfirmActions';

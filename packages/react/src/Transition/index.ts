@@ -1,33 +1,33 @@
 export {
-  TransitionState,
-  TransitionMode,
-  TransitionDelay,
-  TransitionDuration,
-  TransitionEasing,
-  TransitionImplementationChildProps,
-  TransitionImplementationProps,
-  TransitionProps,
+  type TransitionState,
+  type TransitionMode,
+  type TransitionDelay,
+  type TransitionDuration,
+  type TransitionEasing,
+  type TransitionImplementationChildProps,
+  type TransitionImplementationProps,
+  type TransitionProps,
   default,
 } from './Transition';
 
 export {
-  CollapseProps,
+  type CollapseProps,
   default as Collapse,
 } from './Collapse';
 export {
-  FadeProps,
+  type FadeProps,
   default as Fade,
 } from './Fade';
 export {
-  GrowProps,
+  type GrowProps,
   default as Grow,
 } from './Grow';
 export {
-  SlideFadeDirection,
-  SlideFadeProps,
+  type SlideFadeDirection,
+  type SlideFadeProps,
   default as SlideFade,
 } from './SlideFade';
 export {
-  ZoomProps,
+  type ZoomProps,
   default as Zoom,
 } from './Zoom';

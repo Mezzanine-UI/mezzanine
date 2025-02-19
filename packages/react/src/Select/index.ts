@@ -3,31 +3,31 @@ export {
   SelectControlContext,
 } from './SelectControlContext';
 export {
-  SelectTriggerProps,
-  SelectTriggerInputProps,
+  type SelectTriggerProps,
+  type SelectTriggerInputProps,
   default as SelectTrigger,
 } from './SelectTrigger';
 export {
-  SelectTriggerTagsProps,
+  type SelectTriggerTagsProps,
   default as SelectTriggerTags,
 } from './SelectTriggerTags';
 export {
-  SelectProps,
+  type SelectProps,
   default,
 } from './Select';
 export {
-  OptionProps,
+  type OptionProps,
   default as Option,
 } from './Option';
 export {
-  MenuItemGroupProps as OptionGroupProps,
+  type MenuItemGroupProps as OptionGroupProps,
   default as OptionGroup,
 } from '../Menu/MenuItemGroup';
 export {
-  TreeSelectProps,
+  type TreeSelectProps,
   default as TreeSelect,
 } from './TreeSelect';
 export {
-  AutoCompleteProps,
+  type AutoCompleteProps,
   default as AutoComplete,
 } from './AutoComplete';

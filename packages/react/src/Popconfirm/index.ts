@@ -1,4 +1,4 @@
 export {
-  PopconfirmProps,
+  type PopconfirmProps,
   default,
 } from './Popconfirm';

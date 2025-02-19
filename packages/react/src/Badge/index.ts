@@ -1,8 +1,8 @@
 export {
-  BadgeProps,
+  type BadgeProps,
   default,
 } from './Badge';
 export {
-  BadgeContainerProps,
+  type BadgeContainerProps,
   default as BadgeContainer,
 } from './BadgeContainer';

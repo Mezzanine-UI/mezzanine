@@ -1,7 +1,7 @@
 
 export {
-  CalendarControlModifier,
-  UseCalendarControlModifiersResult,
+  type CalendarControlModifier,
+  type UseCalendarControlModifiersResult,
   useCalendarControlModifiers,
 } from './useCalendarControlModifiers';
 export {
@@ -11,41 +11,41 @@ export {
   useCalendarControls,
 } from './useCalendarControls';
 export {
-  CalendarConfigs,
-  CalendarConfigProviderProps,
+  type CalendarConfigs,
+  type CalendarConfigProviderProps,
   CalendarContext,
   useCalendarContext,
   default as CalendarConfigProvider,
 } from './CalendarContext';
 export {
-  CalendarYearsProps,
+  type CalendarYearsProps,
   default as CalendarYears,
 } from './CalendarYears';
 export {
-  CalendarWeeksProps,
+  type CalendarWeeksProps,
   default as CalendarWeeks,
 } from './CalendarWeeks';
 export {
-  CalendarMonthsProps,
+  type CalendarMonthsProps,
   default as CalendarMonths,
 } from './CalendarMonths';
 export {
-  CalendarDaysProps,
+  type CalendarDaysProps,
   default as CalendarDays,
 } from './CalendarDays';
 export {
-  CalendarDayOfWeekProps,
+  type CalendarDayOfWeekProps,
   default as CalendarDayOfWeek,
 } from './CalendarDayOfWeek';
 export {
-  CalendarControlsProps,
+  type CalendarControlsProps,
   default as CalendarControls,
 } from './CalendarControls';
 export {
-  CalendarCellProps,
+  type CalendarCellProps,
   default as CalendarCell,
 } from './CalendarCell';
 export {
-  CalendarProps,
+  type CalendarProps,
   default,
 } from './Calendar';

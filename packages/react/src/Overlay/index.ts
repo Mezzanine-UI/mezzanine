@@ -1,4 +1,4 @@
 export {
-  OverlayProps,
+  type OverlayProps,
   default,
 } from './Overlay';

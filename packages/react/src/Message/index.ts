@@ -1,8 +1,8 @@
-export {
+export type {
   MessageSeverity,
 } from '@mezzanine-ui/core/message';
 export {
-  MessageData,
-  MessageType,
+  type MessageData,
+  type MessageType,
   default,
 } from './Message';

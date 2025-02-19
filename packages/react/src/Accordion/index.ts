@@ -1,12 +1,12 @@
 export {
-  AccordionProps,
+  type AccordionProps,
   default,
 } from './Accordion';
 export {
-  AccordionSummaryProps,
+  type AccordionSummaryProps,
   default as AccordionSummary,
 } from './AccordionSummary';
 export {
-  AccordionDetailsProps,
+  type AccordionDetailsProps,
   default as AccordionDetails,
 } from './AccordionDetails';

@@ -1,18 +1,18 @@
 const path = require('path');
 const fse = require('fs-extra');
-const glob = require('glob');
+const { glob } = require('glob');
 const { rollup } = require('rollup');
-const ts = require('rollup-plugin-typescript2');
+const { swc } = require('rollup-plugin-swc3');
 
 const { PWD } = process.env;
 const packagePath = PWD;
 const packageJson = require(path.resolve(packagePath, 'package.json'));
-const tsconfigPath = path.resolve(packagePath, 'tsconfig.build.json');
+// const tsconfigPath = path.resolve(packagePath, 'tsconfig.build.json');
 const packageSrcPath = path.resolve(packagePath, 'src');
 const packageDistPath = path.resolve(packagePath, 'dist');
 const repoPath = path.resolve(packagePath, '..', '..');
 const nodeModulesPath = path.resolve(repoPath, 'node_modules');
-const tsPluginCachePath = path.resolve(nodeModulesPath, '.cache', 'rts2');
+// const tsPluginCachePath = path.resolve(nodeModulesPath, '.cache', 'rts2');
 
 const externals = [
   ...Object.keys({
@@ -25,18 +25,6 @@ const externals = [
   'luxon',
   'events',
 ];
-
-function getFilesByGlob(globPath) {
-  return new Promise((resolve, reject) => {
-    glob(globPath, (error, files) => {
-      if (error) {
-        reject(error);
-      }
-
-      resolve(files);
-    });
-  });
-}
 
 async function rollupBuild({ output, ...options }) {
   const bundle = await rollup(options);
@@ -54,7 +42,7 @@ async function run() {
   /**
    * copy scss files
    */
-  const scssFiles = await getFilesByGlob(`${packageSrcPath}/**/*.scss`);
+  const scssFiles = await glob(`${packageSrcPath}/**/*.scss`);
 
   scssFiles.forEach((file) => {
     const dist = path.resolve(packageDistPath, path.relative(packageSrcPath, file));
@@ -70,7 +58,7 @@ async function run() {
   /**
    * build
    */
-  const input = await getFilesByGlob(`${packageSrcPath}/**/index.ts`);
+  const input = await glob(`${packageSrcPath}/**/index.ts`);
 
   await rollupBuild({
     input,
@@ -85,10 +73,8 @@ async function run() {
       },
     ],
     plugins: [
-      ts({
-        check: true,
-        cacheRoot: tsPluginCachePath,
-        tsconfig: tsconfigPath,
+      swc({
+        tsconfig: path.resolve(packagePath, 'tsconfig.build.json'),
       }),
     ],
     treeshake: {

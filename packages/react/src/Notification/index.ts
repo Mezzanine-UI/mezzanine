@@ -1,7 +1,7 @@
-export {
+export type {
   NotificationSeverity,
 } from '@mezzanine-ui/core/notification';
 export {
-  NotificationData,
+  type NotificationData,
   default,
 } from './Notification';

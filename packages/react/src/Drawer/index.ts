@@ -1,6 +1,6 @@
 export type { DrawerPlacement } from '@mezzanine-ui/core/drawer';
 
 export {
-  DrawerProps,
+  type DrawerProps,
   default,
 } from './Drawer';

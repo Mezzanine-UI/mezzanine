@@ -1,4 +1,4 @@
 export {
-  PortalProps,
+  type PortalProps,
   default,
 } from './Portal';

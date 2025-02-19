@@ -1,4 +1,4 @@
 export {
-  EmptyProps,
+  type EmptyProps,
   default,
 } from './Empty';

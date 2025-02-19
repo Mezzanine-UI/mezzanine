@@ -4,14 +4,14 @@ export type {
   CheckboxGroupOption,
 } from '@mezzanine-ui/core/checkbox';
 export {
-  CheckboxProps,
+  type CheckboxProps,
   default,
 } from './Checkbox';
 export {
-  CheckboxGroupProps,
+  type CheckboxGroupProps,
   default as CheckboxGroup,
 } from './CheckboxGroup';
 export {
-  CheckAllProps,
+  type CheckAllProps,
   default as CheckAll,
 } from './CheckAll';

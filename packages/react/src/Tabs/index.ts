@@ -1,13 +1,13 @@
 export {
-  TabProps,
+  type TabProps,
   default as Tab,
 } from './Tab';
 export {
-  TabPaneProps,
+  type TabPaneProps,
   default as TabPane,
 } from './TabPane';
 export {
-  TabsChild,
-  TabsProps,
+  type TabsChild,
+  type TabsProps,
   default,
 } from './Tabs';

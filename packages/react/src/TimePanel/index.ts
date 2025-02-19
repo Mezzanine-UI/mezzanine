@@ -1,12 +1,12 @@
 export {
-  TimePanelActionProps,
+  type TimePanelActionProps,
   default as TimePanelAction,
 } from './TimePanelAction';
 export {
-  TimePanelColumnProps,
+  type TimePanelColumnProps,
   default as TimePanelColumn,
 } from './TimePanelColumn';
 export {
-  TimePanelProps,
+  type TimePanelProps,
   default,
 } from './TimePanel';

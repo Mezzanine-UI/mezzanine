@@ -8,24 +8,24 @@ export {
   traverseTree,
 } from './traverseTree';
 export {
-  UseTreeExpandedValueProps,
+  type UseTreeExpandedValueProps,
   useTreeExpandedValue,
 } from './useTreeExpandedValue';
 export {
-  GetTreeNodeEntitiesProps,
+  type GetTreeNodeEntitiesProps,
   getTreeNodeEntities,
 } from './getTreeNodeEntities';
 export {
-  TreeNodeElementProps,
-  TreeNodeProps,
+  type TreeNodeElementProps,
+  type TreeNodeProps,
   default as TreeNode,
 } from './TreeNode';
 export {
-  TreeNodeListElementProps,
-  TreeNodeListProps,
+  type TreeNodeListElementProps,
+  type TreeNodeListProps,
   default as TreeNodeList,
 } from './TreeNodeList';
 export {
-  TreeProps,
+  type TreeProps,
   default,
 } from './Tree';

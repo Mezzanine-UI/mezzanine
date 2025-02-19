@@ -1,4 +1,4 @@
 export {
-  LoadingProps,
+  type LoadingProps,
   default,
 } from './Loading';

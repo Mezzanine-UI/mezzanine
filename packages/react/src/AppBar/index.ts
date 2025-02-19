@@ -1,18 +1,18 @@
 export {
-  AppBarBrandProps,
+  type AppBarBrandProps,
   default as AppBarBrand,
 } from './AppBarBrand';
 export {
-  AppBarMainProps,
+  type AppBarMainProps,
   default as AppBarMain,
 } from './AppBarMain';
 export {
-  AppBarSupportProps,
+  type AppBarSupportProps,
   default as AppBarSupport,
 } from './AppBarSupport';
 export {
-  AppBarChild,
-  AppBarChildren,
-  AppBarProps,
+  type AppBarChild,
+  type AppBarChildren,
+  type AppBarProps,
   default,
 } from './AppBar';

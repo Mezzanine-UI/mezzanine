@@ -1,7 +1,7 @@
-export {
+export type {
   AlertSeverity,
 } from '@mezzanine-ui/core/alert';
 export {
-  AlertProps,
+  type AlertProps,
   default,
 } from './Alert';

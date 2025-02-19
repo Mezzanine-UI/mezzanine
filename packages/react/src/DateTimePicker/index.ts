@@ -1,8 +1,8 @@
 export {
-  DateTimePickerPanelProps,
+  type DateTimePickerPanelProps,
   default as DateTimePickerPanel,
 } from './DateTimePickerPanel';
 export {
-  DateTimePickerProps,
+  type DateTimePickerProps,
   default,
 } from './DateTimePicker';

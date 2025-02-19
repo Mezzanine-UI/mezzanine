@@ -1,8 +1,8 @@
 export {
-  StepProps,
+  type StepProps,
   default as Step,
 } from './Step';
 export {
-  StepperProps,
+  type StepperProps,
   default,
 } from './Stepper';

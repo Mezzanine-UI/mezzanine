@@ -1,8 +1,8 @@
 export {
-  CardActionsProps,
+  type CardActionsProps,
   default as CardActions,
 } from './CardActions';
 export {
-  CardProps,
+  type CardProps,
   default,
 } from './Card';

@@ -1,22 +1,22 @@
-export {
+export type {
   SingleSliderValue,
   RangeSliderValue,
   SliderValue,
   SliderRect,
 } from '@mezzanine-ui/core/slider';
 export {
-  UseSliderCommonProps,
-  UseSingleSliderProps,
-  UseRangeSliderProps,
-  UseSliderProps,
-  UseSliderResult,
+  type UseSliderCommonProps,
+  type UseSingleSliderProps,
+  type UseRangeSliderProps,
+  type UseSliderProps,
+  type UseSliderResult,
   useSlider,
 } from './useSlider';
 export {
-  SliderBaseProps,
-  SingleSliderProps,
-  RangeSliderProps,
-  SliderComponentProps,
-  SliderProps,
+  type SliderBaseProps,
+  type SingleSliderProps,
+  type RangeSliderProps,
+  type SliderComponentProps,
+  type SliderProps,
   default,
 } from './Slider';

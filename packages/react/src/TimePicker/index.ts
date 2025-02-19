@@ -1,8 +1,8 @@
 export {
-  TimePickerPanelProps,
+  type TimePickerPanelProps,
   default as TimePickerPanel,
 } from './TimePickerPanel';
 export {
-  TimePickerProps,
+  type TimePickerProps,
   default,
 } from './TimePicker';

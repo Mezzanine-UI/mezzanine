@@ -1,8 +1,8 @@
 export {
-  PopperPlacement,
-  PopperPositionStrategy,
-  PopperOptions,
-  PopperController,
-  PopperProps,
+  type PopperPlacement,
+  type PopperPositionStrategy,
+  type PopperOptions,
+  type PopperController,
+  type PopperProps,
   default,
 } from './Popper';

@@ -1,1 +1,1 @@
-export { PageFooterProps, default } from './PageFooter';
+export { type PageFooterProps, default } from './PageFooter';

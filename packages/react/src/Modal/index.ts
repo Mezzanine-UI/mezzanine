@@ -3,25 +3,25 @@ export type {
   ModalSize,
 } from '@mezzanine-ui/core/modal';
 export {
-  ModalActionsProps,
+  type ModalActionsProps,
   default as ModalActions,
 } from './ModalActions';
 export {
-  ModalBodyProps,
+  type ModalBodyProps,
   default as ModalBody,
 } from './ModalBody';
 export {
-  ModalFooterProps,
+  type ModalFooterProps,
   default as ModalFooter,
 } from './ModalFooter';
 export {
-  ModalHeaderProps,
+  type ModalHeaderProps,
   default as ModalHeader,
 } from './ModalHeader';
 export {
   default as useModalContainer,
 } from './useModalContainer';
 export {
-  ModalProps,
+  type ModalProps,
   default,
 } from './Modal';

@@ -3,10 +3,10 @@ export type {
   InputCheckGroupOrientation,
 } from '@mezzanine-ui/core/_internal/input-check';
 export {
-  InputCheckProps,
+  type InputCheckProps,
   default,
 } from './InputCheck';
 export {
-  InputCheckGroupProps,
+  type InputCheckGroupProps,
   default as InputCheckGroup,
 } from './InputCheckGroup';

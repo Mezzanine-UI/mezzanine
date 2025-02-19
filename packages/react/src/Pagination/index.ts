@@ -1,8 +1,8 @@
 export type {
   PaginationItemType,
 } from '@mezzanine-ui/core/pagination';
-export { PaginationProps, default } from './Pagination';
-export { PaginationItemProps, default as PaginationItem } from './PaginationItem';
-export { PaginationJumperProps, default as PaginationJumper } from './PaginationJumper';
-export { PaginationPageSizeProps, default as PaginationPageSize } from './PaginationPageSize';
+export { type PaginationProps, default } from './Pagination';
+export { type PaginationItemProps, default as PaginationItem } from './PaginationItem';
+export { type PaginationJumperProps, default as PaginationJumper } from './PaginationJumper';
+export { type PaginationPageSizeProps, default as PaginationPageSize } from './PaginationPageSize';
 export { usePagination } from './usePagination';

@@ -4,10 +4,10 @@ export type {
   RadioGroupOrientation,
 } from '@mezzanine-ui/core/radio';
 export {
-  RadioProps,
+  type RadioProps,
   default,
 } from './Radio';
 export {
-  RadioGroupProps,
+  type RadioGroupProps,
   default as RadioGroup,
 } from './RadioGroup';
