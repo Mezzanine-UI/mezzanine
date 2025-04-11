@@ -393,7 +393,7 @@ export const Selections = () => {
 
                 return null;
               })
-              .filter((k) => k),
+              .filter((k) => k) as string[],
           }}
         />
       </div>
