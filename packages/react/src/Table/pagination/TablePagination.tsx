@@ -11,7 +11,7 @@ export interface TablePaginationProps
   /**
    * body scroll ref
    */
-  bodyRef: RefObject<HTMLDivElement>;
+  bodyRef: RefObject<HTMLDivElement | null>;
 }
 
 const TablePagination = forwardRef<HTMLDivElement, TablePaginationProps>(

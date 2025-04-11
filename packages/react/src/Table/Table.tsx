@@ -146,7 +146,7 @@ export interface TableWithPagination<T> extends TableBaseProps<T> {
    * `pagination.onChange` is the callback when page number changed. (required) <br />
    * `pagination.disableAutoSlicing` set this to true if you don't want auto data slicing. <br />
    * `pagination.total` is the total amount of your data. (default will be dataSource length) <br />
-   * `pagination.options` is the <Pagination /> component props. <br />
+   * `pagination.options` is the 'Pagination' component props. <br />
    * Notice that if `pagination` object is given, table will disable fetchMore and use pagination instead.
    */
   pagination?: TablePaginationType;

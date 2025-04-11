@@ -7,7 +7,7 @@ import { TableContext } from '../TableContext';
 const equalityFn = (a: number, b: number) => a === b;
 
 export interface UseTablePagination {
-  bodyRef: RefObject<HTMLDivElement>;
+  bodyRef: RefObject<HTMLDivElement | null>;
   current?: TablePagination['current'];
   onChange?: TablePagination['onChange'];
 }
