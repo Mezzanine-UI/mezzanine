@@ -1,4 +1,4 @@
-import { useMemo, ReactNode } from 'react';
+import { useMemo, ReactNode, type JSX } from 'react';
 import { MezzanineConfig, MezzanineConfigContext } from './context';
 
 export interface ConfigProviderProps {

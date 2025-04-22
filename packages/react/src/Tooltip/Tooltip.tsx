@@ -14,9 +14,7 @@ import { cx } from '../utils/cx';
 
 const offsetModifier: StrictModifiers = {
   name: 'offset',
-  options: {
-    offset: [0, 8],
-  },
+  options: { offset: [0, 8] },
 };
 
 export interface TooltipProps extends Omit<PopperProps, 'children' | 'title'> {
@@ -26,7 +24,7 @@ export interface TooltipProps extends Omit<PopperProps, 'children' | 'title'> {
   children(opt: {
     onMouseEnter: MouseEventHandler;
     onMouseLeave: MouseEventHandler;
-  }): ReactElement;
+  }): ReactElement<any>;
   /**
    * delay time to hide when mouse leave. unit: s.
    * @default 0.1
@@ -59,9 +57,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
     const composedRef = useComposeRefs([ref, tooltipRef]);
 
     const { anchor, onLeave, onPopperEnter, onTargetEnter, visible } =
-      useDelayMouseEnterLeave({
-        mouseLeaveDelay,
-      });
+      useDelayMouseEnterLeave({ mouseLeaveDelay });
 
     /** tooltip shown only when title existed && visible is true */
     const isTooltipVisible = open || (visible && Boolean(title));
@@ -76,18 +72,12 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
           onMouseEnter={onPopperEnter}
           onMouseLeave={onLeave}
           open={isTooltipVisible}
-          options={{
-            ...options,
-            modifiers: [...modifiers, offsetModifier],
-          }}
+          options={{ ...options, modifiers: [...modifiers, offsetModifier] }}
         >
           {title}
         </Popper>
         {typeof children === 'function' &&
-          children({
-            onMouseEnter: onTargetEnter,
-            onMouseLeave: onLeave,
-          })}
+          children({ onMouseEnter: onTargetEnter, onMouseLeave: onLeave })}
       </>
     );
   },

@@ -32,7 +32,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
 
     const childrenArray = Children.toArray(children);
     const stepsWithState = childrenArray.map((element, index) => {
-      const step = element as ReactElement;
+      const step = element as ReactElement<any>;
       const state = {
         index,
         active: activeStep === index,

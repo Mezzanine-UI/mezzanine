@@ -4,12 +4,12 @@ import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import { useTabKeyClose } from './useTabKeyClose';
 
 export interface UsePickerDocumentEventCloseProps {
-  anchorRef: RefObject<HTMLElement>;
-  lastElementRefInFlow: RefObject<HTMLElement>;
+  anchorRef: RefObject<HTMLElement | null>;
+  lastElementRefInFlow: RefObject<HTMLElement | null>;
   onClose: VoidFunction;
   onChangeClose: VoidFunction;
   open?: boolean;
-  popperRef: RefObject<HTMLElement>;
+  popperRef: RefObject<HTMLElement | null>;
 }
 
 export function usePickerDocumentEventClose({

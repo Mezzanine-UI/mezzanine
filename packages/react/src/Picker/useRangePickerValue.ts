@@ -9,8 +9,8 @@ import { usePickerValue, UsePickerValueProps } from './usePickerValue';
 
 export interface UseRangePickerValueProps
   extends Pick<UsePickerValueProps, 'format' | 'formats'> {
-  inputFromRef: RefObject<HTMLInputElement>;
-  inputToRef: RefObject<HTMLInputElement>;
+  inputFromRef: RefObject<HTMLInputElement | null>;
+  inputToRef: RefObject<HTMLInputElement | null>;
   value?: RangePickerValue;
 }
 

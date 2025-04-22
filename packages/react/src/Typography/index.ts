@@ -1,9 +1,4 @@
-import {
-  ElementRef,
-  PropsWithoutRef,
-  ReactElement,
-  RefAttributes,
-} from 'react';
+import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
 import Typography, { TypographyComponent, TypographyProps } from './Typography';
 
 export type {
@@ -21,7 +16,7 @@ export type { TypographyComponent, TypographyProps };
  * Add type alias here for parsable to react docgen typescript.
  */
 type GenericTypography = <C extends TypographyComponent = 'p'>(
-  props: PropsWithoutRef<TypographyProps<C>> & RefAttributes<ElementRef<C>>,
-) => ReactElement;
+  props: PropsWithoutRef<TypographyProps<C>> & RefAttributes<HTMLElement>,
+) => ReactElement<any>;
 
 export default Typography as GenericTypography;

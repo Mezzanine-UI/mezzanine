@@ -15,7 +15,7 @@ export interface NotifierController<N extends NotifierData> {
 
 export interface NotifierManagerProps<N extends NotifierData>
   extends Pick<NotifierConfig, 'maxCount'> {
-  controllerRef: RefObject<NotifierController<N>>;
+  controllerRef: RefObject<NotifierController<N> | null>;
   defaultNotifiers?: (N & { key: Key })[];
   render: RenderNotifier<N>;
 }

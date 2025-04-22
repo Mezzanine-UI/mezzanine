@@ -2,7 +2,9 @@ import { RefObject, useEffect, useState } from 'react';
 
 type ScrollState = 'begin' | 'middle' | 'end';
 
-export default function useTabsOverflow(tabsRef: RefObject<HTMLElement>) {
+export default function useTabsOverflow(
+  tabsRef: RefObject<HTMLElement | null>,
+) {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [scrollState, setScrollState] = useState<ScrollState>('begin');
   const isScrollToBegin = scrollState === 'begin';

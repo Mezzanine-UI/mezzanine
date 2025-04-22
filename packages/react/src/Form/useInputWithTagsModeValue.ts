@@ -32,7 +32,7 @@ export interface UseInputWithTagsModeValueProps<
   /**
    * The ref object of input element
    */
-  ref: RefObject<E>;
+  ref: RefObject<E | null>;
   /**
    * Will skip `onKeyDown` calling if `true`
    * @default false

@@ -44,7 +44,7 @@ export interface UseSliderResult {
   cssVars: Record<string, CssVarInterpolation>;
   handleClickTrackOrRail?: (e: any) => void;
   handlePress: (e: any, index?: number | undefined) => void;
-  railRef: RefObject<HTMLDivElement>;
+  railRef: RefObject<HTMLDivElement | null>;
 }
 
 export function useSlider(props: UseRangeSliderProps): UseSliderResult;

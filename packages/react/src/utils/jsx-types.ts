@@ -4,6 +4,7 @@ import {
   ElementType,
   JSXElementConstructor,
   SVGProps,
+  type JSX,
 } from 'react';
 
 export type NativeElementTag = keyof JSX.IntrinsicElements;

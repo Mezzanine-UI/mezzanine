@@ -23,7 +23,7 @@ export interface RangePickerTriggerProps
   /**
    * React Ref for the 'from' input element.
    */
-  inputFromRef?: RefObject<HTMLInputElement>;
+  inputFromRef?: RefObject<HTMLInputElement | null>;
   /**
    * Value of the 'from' input element.
    */
@@ -35,7 +35,7 @@ export interface RangePickerTriggerProps
   /**
    * React Ref for the 'to' input element.
    */
-  inputToRef?: RefObject<HTMLInputElement>;
+  inputToRef?: RefObject<HTMLInputElement | null>;
   /**
    * Value of the 'to' input element.
    */

@@ -7,7 +7,7 @@ import {
 export interface UseInputWithClearControlValueProps<
   E extends HTMLInputElement | HTMLTextAreaElement,
 > extends UseInputControlValueProps<E> {
-  ref: RefObject<E>;
+  ref: RefObject<E | null>;
 }
 
 export function useInputWithClearControlValue<

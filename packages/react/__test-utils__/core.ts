@@ -23,15 +23,15 @@ export type RenderResult<Q extends Queries = typeof queries> =
   };
 
 export function render(
-  ui: ReactElement,
+  ui: ReactElement<any>,
   options?: Omit<RenderOptions, 'queries'>,
 ): RenderResult;
 export function render<Q extends Queries>(
-  ui: ReactElement,
+  ui: ReactElement<any>,
   options: RenderOptions<Q>,
 ): RenderResult<Q>;
 
-export function render(ui: ReactElement, options?: RenderOptions): any {
+export function render(ui: ReactElement<any>, options?: RenderOptions): any {
   const coreResult = coreRender(ui, options);
   const result: RenderResult = {
     ...coreResult,

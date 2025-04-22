@@ -3,7 +3,7 @@ import { useDocumentTabKeyDown } from '../hooks/useDocumentTabKeyDown';
 
 export function useTabKeyClose(
   onClose: VoidFunction,
-  lastElementRefInFlow: RefObject<HTMLElement>,
+  lastElementRefInFlow: RefObject<HTMLElement | null>,
   deps?: DependencyList,
 ) {
   useDocumentTabKeyDown(

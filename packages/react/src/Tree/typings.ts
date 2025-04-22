@@ -1,4 +1,4 @@
-import { MutableRefObject, ReactNode } from 'react';
+import { RefObject, ReactNode } from 'react';
 import {
   TreeNodeDataShape,
   TreeNodeEntityShape,
@@ -12,7 +12,7 @@ export type TreeNodeEntity = TreeNodeEntityShape<ReactNode>;
 export type TreeNodeEntities = Map<TreeNodeValue, TreeNodeEntity>;
 
 export type TreeNodeRefsShape = Record<TreeNodeValue, HTMLLIElement>;
-export type TreeNodeRefs = MutableRefObject<TreeNodeRefsShape | undefined>;
+export type TreeNodeRefs = RefObject<TreeNodeRefsShape | undefined>;
 
 export type TreeExpandControl = {
   collapse: (value: TreeNodeValue) => void;

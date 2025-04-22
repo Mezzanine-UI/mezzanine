@@ -12,7 +12,7 @@ export interface PickerTriggerProps
   /**
    * React ref for the input element.
    */
-  inputRef?: RefObject<HTMLInputElement>;
+  inputRef?: RefObject<HTMLInputElement | null>;
   /**
    * Change handler for the input element.
    */

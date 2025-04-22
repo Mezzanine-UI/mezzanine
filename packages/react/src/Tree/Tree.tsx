@@ -228,20 +228,23 @@ const Tree = forwardRef<HTMLDivElement, TreeProps>(function Tree(props, ref) {
     setExpandedValues(newExpandedValues);
   };
 
-  useImperativeHandle(expandControllerRef, () => {
-    if (expandedValuesProp) {
-      return null;
-    }
+  useImperativeHandle<TreeExpandControl | null, TreeExpandControl | null>(
+    expandControllerRef,
+    () => {
+      if (expandedValuesProp) {
+        return null;
+      }
 
-    return {
-      collapse,
-      collapseAll,
-      collapseAllFrom,
-      expand,
-      expandAll,
-      expandAllFrom,
-    };
-  });
+      return {
+        collapse,
+        collapseAll,
+        collapseAllFrom,
+        expand,
+        expandAll,
+        expandAllFrom,
+      };
+    },
+  );
 
   const onMultipleSelect: TreeNodeListProps['onSelect'] = onSelectProp
     ? (value) => {

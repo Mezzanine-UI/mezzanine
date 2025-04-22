@@ -55,7 +55,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
       showTextInputAfterTags,
       value,
     } = props;
-    const controlRef = useRef<HTMLDivElement>();
+    const controlRef = useRef<HTMLDivElement>(undefined);
     const composedRef = useComposeRefs([ref, controlRef]);
 
     const { renderFakeTags, takeCount } = useSelectTriggerTags({

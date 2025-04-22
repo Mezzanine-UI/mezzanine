@@ -446,7 +446,7 @@ export const WithActions = () => {
       >
         {(ref) => (
           <Icon
-            ref={ref as RefObject<HTMLButtonElement>}
+            ref={ref as RefObject<HTMLButtonElement | null>}
             className={cx(classes.icon, classes.iconClickable)}
             color="primary"
             icon={MoreVerticalIcon}
@@ -840,7 +840,7 @@ export const Editable = () => {
       ) : (
         children
       )
-    ) as ReactElement;
+    ) as ReactElement<any>;
   };
 
   const renderRowActions: TableColumn<DataType>['render'] = (source) => (

@@ -208,7 +208,7 @@ describe('<Tree />', () => {
     it('should not get handlers if `expandedValues` prop is provided', () => {
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       render(
         <Tree
@@ -224,7 +224,7 @@ describe('<Tree />', () => {
     it('should get controllers if expandControllerRef is provided', () => {
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       render(<Tree nodes={nodes} expandControllerRef={expandControllerRef} />);
 
@@ -245,7 +245,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree
@@ -274,7 +274,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree
@@ -303,7 +303,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree
@@ -332,7 +332,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
@@ -357,7 +357,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,
@@ -382,7 +382,7 @@ describe('<Tree />', () => {
 
       const expandControllerRef = {
         current: null,
-      } as RefObject<TreeExpandControl>;
+      } as RefObject<TreeExpandControl | null>;
 
       const { getByText } = render(
         <Tree nodes={nodes} expandControllerRef={expandControllerRef} />,

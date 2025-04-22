@@ -56,7 +56,7 @@ export default function useTableScroll(props: TableScrollProps) {
   const tableRef = useRef<HTMLTableElement>(null);
   const scrollBarTrackRef = useRef<HTMLDivElement>(null);
   const scrollBarRef = useRef<HTMLDivElement>(null);
-  const scrollBarDisplayTimer = useRef<number>();
+  const scrollBarDisplayTimer = useRef<number>(undefined);
 
   const [scrollBarHeight, setScrollBarHeight] = useState<number>(0);
   const [pointerOffset, setPointerOffset] = useState<number>(0);
