@@ -51,3 +51,7 @@ Thumbs.db
 
 # Yarn
 .yarn/*
+
+# Docusaurus
+.docusaurus
+packages/document/build

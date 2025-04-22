@@ -1,0 +1,19 @@
+{
+  "name": "@mezzanine-ui/document",
+  "version": "0.0.1",
+  "description": "Document for mezzanine-ui",
+  "author": "Mezzanine",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mezzanine-UI/mezzanine.git",
+    "directory": "packages/document"
+  },
+  "license": "MIT",
+  "main": "index.js",
+  "module": "index.js",
+  "typings": "index.d.ts",
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public"
+  }
+}
