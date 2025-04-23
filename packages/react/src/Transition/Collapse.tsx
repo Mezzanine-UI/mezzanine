@@ -164,10 +164,7 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(
           <div
             {...rest}
             ref={composedNodeRef}
-            style={{
-              ...getStyle(state, inProp, collapsedHeight),
-              ...style,
-            }}
+            style={{ ...getStyle(state, inProp, collapsedHeight), ...style }}
           >
             <div ref={wrapperRef} style={{ display: 'flex', width: '100%' }}>
               <div style={{ width: '100%' }}>{children}</div>

@@ -91,7 +91,9 @@ describe('<Popper />', () => {
 
   describe('prop: controllerRef', () => {
     it('should get hook results', async () => {
-      const controllerRef = { current: null } as RefObject<PopperController>;
+      const controllerRef = {
+        current: null,
+      } as RefObject<PopperController | null>;
 
       await act(async () => {
         await render(

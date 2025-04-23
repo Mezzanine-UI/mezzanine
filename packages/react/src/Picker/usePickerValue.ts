@@ -13,7 +13,7 @@ export type UsePickerValueProps = {
   defaultValue?: DateType;
   format: string;
   formats: string[];
-  inputRef: RefObject<HTMLInputElement>;
+  inputRef: RefObject<HTMLInputElement | null>;
   value?: DateType;
 };
 

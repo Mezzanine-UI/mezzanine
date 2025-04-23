@@ -266,11 +266,8 @@ describe('<Select />', () => {
   });
 
   describe('props: defaultValue/inputRef/renderValue', () => {
-    let inputRef: RefObject<HTMLInputElement>;
-    const defaultValue: SelectValue = {
-      id: '1',
-      name: 'bar',
-    };
+    let inputRef: RefObject<HTMLInputElement | null>;
+    const defaultValue: SelectValue = { id: '1', name: 'bar' };
 
     beforeEach(async () => {
       inputRef = createRef<HTMLInputElement>();
@@ -295,10 +292,7 @@ describe('<Select />', () => {
 
   describe('props: mode and onChange', () => {
     describe('mode: single', () => {
-      const defaultValue: SelectValue = {
-        id: '1',
-        name: 'foo',
-      };
+      const defaultValue: SelectValue = { id: '1', name: 'foo' };
 
       let element: HTMLElement;
 
@@ -343,14 +337,8 @@ describe('<Select />', () => {
 
     describe('mode: multiple', () => {
       const defaultValue: SelectValue[] = [
-        {
-          id: '1',
-          name: 'foo',
-        },
-        {
-          id: '2',
-          name: 'bar',
-        },
+        { id: '1', name: 'foo' },
+        { id: '2', name: 'bar' },
       ];
 
       let element: HTMLElement;
@@ -433,10 +421,7 @@ describe('<Select />', () => {
 
   describe('prop: onClear', () => {
     it('when clear icon clicked, value should be undefined', async () => {
-      let defaultValue: SelectValue | undefined = {
-        id: '1',
-        name: 'foo',
-      };
+      let defaultValue: SelectValue | undefined = { id: '1', name: 'foo' };
 
       const onClear = jest.fn<any, any>(() => {
         defaultValue = undefined;
@@ -469,12 +454,7 @@ describe('<Select />', () => {
     });
 
     it('when clear icon clicked, value should be be an empty array', async () => {
-      let defaultValue: SelectValue[] = [
-        {
-          id: '1',
-          name: 'foo',
-        },
-      ];
+      let defaultValue: SelectValue[] = [{ id: '1', name: 'foo' }];
 
       const onClear = jest.fn<any, any>(() => {
         defaultValue = [];

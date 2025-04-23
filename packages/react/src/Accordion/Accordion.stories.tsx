@@ -116,7 +116,7 @@ export const WithSuffixActions = () => {
     >
       {(ref) => (
         <Icon
-          ref={ref as RefObject<HTMLButtonElement>}
+          ref={ref as RefObject<HTMLButtonElement | null>}
           icon={MoreVerticalIcon}
           onClick={(event: MouseEvent<HTMLButtonElement>) => {
             event.stopPropagation();

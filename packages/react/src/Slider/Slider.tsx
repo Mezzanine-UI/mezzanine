@@ -6,6 +6,7 @@ import {
   Ref,
   useEffect,
   useState,
+  type JSX,
 } from 'react';
 import {
   isRangeSlider,

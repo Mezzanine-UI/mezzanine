@@ -5,6 +5,8 @@ import Card, { CardProps } from './Card';
 import CardActions from './CardActions';
 import { TypographyProps } from '../Typography';
 
+import type { JSX } from 'react';
+
 export default {
   title: 'Data Display/Card',
 } as Meta;

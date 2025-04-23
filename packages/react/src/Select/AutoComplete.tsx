@@ -10,7 +10,7 @@ import {
   useImperativeHandle,
   Dispatch,
   SetStateAction,
-  MutableRefObject,
+  RefObject,
 } from 'react';
 import {
   selectClasses as classes,
@@ -57,17 +57,11 @@ export interface AutoCompleteBaseProps
     >,
     PickRenameMulti<
       Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>,
-      {
-        maxHeight: 'menuMaxHeight';
-        role: 'menuRole';
-        size: 'menuSize';
-      }
+      { maxHeight: 'menuMaxHeight'; role: 'menuRole'; size: 'menuSize' }
     >,
     PickRenameMulti<
       Pick<PopperProps, 'options'>,
-      {
-        options: 'popperOptions';
-      }
+      { options: 'popperOptions' }
     > {
   /**
    * Set to true when options can be added dynamically
@@ -115,7 +109,7 @@ export interface AutoCompleteBaseProps
   /**
    *
    */
-  searchTextControlRef?: MutableRefObject<
+  searchTextControlRef?: RefObject<
     { setSearchText: Dispatch<SetStateAction<string>> } | undefined
   >;
   /**
@@ -239,9 +233,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       | UseAutoCompleteSingleValueControl);
 
     /** export set search text action to props (allow user to customize search text) */
-    useImperativeHandle(searchTextControlRef, () => ({
-      setSearchText,
-    }));
+    useImperativeHandle(searchTextControlRef, () => ({ setSearchText }));
 
     /** insert feature */
     const [insertText, setInsertText] = useState<string>('');
@@ -317,21 +309,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       !!searchText &&
       options.find((option) => option.name === searchText) === undefined;
 
-    const context = useMemo(
-      () => ({
-        onChange,
-        value,
-      }),
-      [onChange, value],
-    );
+    const context = useMemo(() => ({ onChange, value }), [onChange, value]);
 
     return (
       <SelectControlContext.Provider value={context}>
         <div
           ref={nodeRef}
-          className={cx(classes.host, {
-            [classes.hostFullWidth]: fullWidth,
-          })}
+          className={cx(classes.host, { [classes.hostFullWidth]: fullWidth })}
         >
           <SelectTrigger
             ref={composedRef}

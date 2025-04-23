@@ -1,12 +1,12 @@
 /* global JSX */
-import { MutableRefObject, useState, useEffect } from 'react';
+import { RefObject, useState, useEffect, type JSX } from 'react';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';
 import { SelectValue } from './typings';
 import Tag from '../Tag';
 
 export interface UseSelectTriggerTagsProps {
-  controlRef: MutableRefObject<HTMLDivElement | undefined>;
+  controlRef: RefObject<HTMLDivElement | undefined>;
   size?: TagSize;
   value?: SelectValue[];
 }
@@ -117,8 +117,5 @@ export function useSelectTriggerTags(
     );
   };
 
-  return {
-    renderFakeTags,
-    takeCount,
-  };
+  return { renderFakeTags, takeCount };
 }

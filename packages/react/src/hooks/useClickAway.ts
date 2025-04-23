@@ -7,7 +7,7 @@ export type ClickAwayHandlerFactory = () => ClickAwayHandler | undefined;
 
 export function useClickAway(
   factory: ClickAwayHandlerFactory,
-  containerRef: RefObject<HTMLElement>,
+  containerRef: RefObject<HTMLElement | null>,
   deps?: DependencyList,
 ) {
   useDocumentEvents(() => {

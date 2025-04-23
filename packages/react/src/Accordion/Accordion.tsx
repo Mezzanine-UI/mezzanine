@@ -64,12 +64,12 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
 
     const contextValue = useMemo(
       () => ({
-        detailsId: (summary as ReactElement)?.props?.id
-          ? `${(summary as ReactElement).props.id}-details`
+        detailsId: (summary as ReactElement<any>)?.props?.id
+          ? `${(summary as ReactElement<any>).props.id}-details`
           : undefined,
         disabled,
         expanded: expandedProp || expanded,
-        summaryId: (summary as ReactElement)?.props?.id,
+        summaryId: (summary as ReactElement<any>)?.props?.id,
         toggleExpanded: onToggleExpanded,
       }),
       [disabled, expandedProp, expanded, onToggleExpanded, summary],

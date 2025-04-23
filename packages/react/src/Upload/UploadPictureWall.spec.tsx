@@ -40,7 +40,7 @@ describe('<UploadPictureWall />', () => {
     it('should get hook results', async () => {
       const controllerRef = {
         current: null,
-      } as RefObject<UploadPictureWallControl>;
+      } as RefObject<UploadPictureWallControl | null>;
 
       await act(async () => {
         await render(<UploadPictureWall controllerRef={controllerRef} />);

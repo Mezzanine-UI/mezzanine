@@ -26,7 +26,6 @@ export interface TextFieldProps
    * Whether the field is active.
    */
   active?: boolean;
-  children?: ReactNode;
   className?: string;
   /**
    * Whether to show the clear button.
@@ -65,7 +64,7 @@ export interface TextFieldProps
    * The suffix addon of the field.
    */
   suffix?: ReactNode;
-  suffixActionIcon?: ReactElement;
+  suffixActionIcon?: ReactElement<HTMLElement>;
 }
 
 /**

@@ -1,9 +1,4 @@
-import {
-  ElementRef,
-  PropsWithoutRef,
-  ReactElement,
-  RefAttributes,
-} from 'react';
+import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
 import { ButtonComponent, ButtonPropsBase } from './typings';
 import Button, { ButtonProps } from './Button';
 import _IconButton, { IconButtonProps } from './IconButton';
@@ -28,8 +23,8 @@ export type { ButtonComponent, ButtonProps, ButtonPropsBase, IconButtonProps };
  * Add type alias here for parsable to react docgen typescript.
  */
 type GenericIconButton = <C extends ButtonComponent = 'button'>(
-  props: PropsWithoutRef<IconButtonProps<C>> & RefAttributes<ElementRef<C>>,
-) => ReactElement;
+  props: PropsWithoutRef<IconButtonProps<C>> & RefAttributes<HTMLElement>,
+) => ReactElement<any>;
 export const IconButton = _IconButton as GenericIconButton;
 
 /**
@@ -37,7 +32,7 @@ export const IconButton = _IconButton as GenericIconButton;
  * Add type alias here for parsable to react docgen typescript.
  */
 type GenericButton = <C extends ButtonComponent = 'button'>(
-  props: PropsWithoutRef<ButtonProps<C>> & RefAttributes<ElementRef<C>>,
-) => ReactElement;
+  props: PropsWithoutRef<ButtonProps<C>> & RefAttributes<HTMLElement>,
+) => ReactElement<any>;
 
 export default Button as GenericButton;

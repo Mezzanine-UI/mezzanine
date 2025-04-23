@@ -41,7 +41,7 @@ export interface DateRangePickerCalendarProps
   /**
    * React Ref for the first(on the left side) calendar
    */
-  firstCalendarRef?: RefObject<HTMLDivElement>;
+  firstCalendarRef?: RefObject<HTMLDivElement | null>;
   /**
    * Other props you may provide to `Popper` component
    */
@@ -52,7 +52,7 @@ export interface DateRangePickerCalendarProps
   /**
    * React Ref for the second(on the right side) calendar
    */
-  secondCalendarRef?: RefObject<HTMLDivElement>;
+  secondCalendarRef?: RefObject<HTMLDivElement | null>;
 }
 
 /**

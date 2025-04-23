@@ -1,4 +1,4 @@
-import { Key, useState } from 'react';
+import { Key, useState, type JSX } from 'react';
 import {
   cleanup,
   fireEvent,

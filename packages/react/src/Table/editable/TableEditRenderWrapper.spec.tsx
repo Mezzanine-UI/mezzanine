@@ -33,7 +33,7 @@ describe('<TableEditRenderWrapper />', () => {
           {dataIndex}
           {children}
         </div>
-      ) as ReactElement;
+      ) as ReactElement<any>;
 
     const { getHostHTMLElement } = render(
       <TableComponentContext.Provider

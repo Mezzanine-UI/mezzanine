@@ -86,7 +86,7 @@ export const WithDropdown: StoryFn<PageFooterProps> = ({
       >
         {(ref) => (
           <Button
-            ref={ref as RefObject<HTMLButtonElement>}
+            ref={ref as RefObject<HTMLButtonElement | null>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
               setAnchor(

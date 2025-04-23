@@ -58,7 +58,7 @@ export const Basic = () => {
       >
         {(ref) => (
           <Button
-            ref={ref as RefObject<HTMLButtonElement>}
+            ref={ref as RefObject<HTMLButtonElement | null>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
               setAnchor(
@@ -94,7 +94,7 @@ export const Basic = () => {
       >
         {(ref) => (
           <Button
-            ref={ref as RefObject<HTMLButtonElement>}
+            ref={ref as RefObject<HTMLButtonElement | null>}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
               setAnchor(
@@ -146,7 +146,7 @@ export const Sizes = () => {
         >
           {(ref) => (
             <Button
-              ref={ref as RefObject<HTMLButtonElement>}
+              ref={ref as RefObject<HTMLButtonElement | null>}
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
                 setAnchor(

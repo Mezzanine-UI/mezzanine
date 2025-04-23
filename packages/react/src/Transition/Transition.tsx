@@ -18,21 +18,11 @@ export type TransitionMode = 'enter' | 'exit';
 export type TransitionDuration =
   | 'auto'
   | number
-  | {
-      [mode in TransitionMode]?: number;
-    };
+  | { [mode in TransitionMode]?: number };
 
-export type TransitionEasing =
-  | string
-  | {
-      [mode in TransitionMode]?: string;
-    };
+export type TransitionEasing = string | { [mode in TransitionMode]?: string };
 
-export type TransitionDelay =
-  | number
-  | {
-      [mode in TransitionMode]?: number;
-    };
+export type TransitionDelay = number | { [mode in TransitionMode]?: number };
 
 export type TransitionEnterHandler = (
   node: HTMLElement,
@@ -81,7 +71,7 @@ export interface TransitionProps {
   /**
    * A ref of DOM element need to transition
    */
-  nodeRef: RefObject<HTMLElement>;
+  nodeRef: RefObject<HTMLElement | null>;
   /**
    * Callback fired before the `entering` state applied
    */

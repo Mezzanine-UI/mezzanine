@@ -6,6 +6,7 @@ import {
   useMemo,
   useCallback,
   ReactNode,
+  type JSX,
 } from 'react';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';

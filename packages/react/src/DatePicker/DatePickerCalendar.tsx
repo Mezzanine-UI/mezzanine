@@ -51,7 +51,7 @@ export interface DatePickerCalendarProps
   /**
    * React ref for calendar component.
    */
-  calendarRef?: RefObject<HTMLDivElement>;
+  calendarRef?: RefObject<HTMLDivElement | null>;
   /**
    * The desired mode of calendar.<br />
    * The `onChange` function will only fired if the calendar mode meets this prop.

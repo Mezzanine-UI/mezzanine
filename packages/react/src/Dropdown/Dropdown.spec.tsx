@@ -15,7 +15,7 @@ describe('<Dropdown />', () => {
       const { getHostHTMLElement } = render(
         <Dropdown>
           {(ref) => (
-            <div id="bar" ref={ref as RefObject<HTMLDivElement>}>
+            <div id="bar" ref={ref as RefObject<HTMLDivElement | null>}>
               foo
             </div>
           )}
@@ -43,7 +43,9 @@ describe('<Dropdown />', () => {
               open: true,
             }}
           >
-            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
+            {(ref) => (
+              <div ref={ref as RefObject<HTMLDivElement | null>}>foo</div>
+            )}
           </Dropdown>,
         );
       });
@@ -73,7 +75,9 @@ describe('<Dropdown />', () => {
                 open,
               }}
             >
-              {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
+              {(ref) => (
+                <div ref={ref as RefObject<HTMLDivElement | null>}>foo</div>
+              )}
             </Dropdown>
           );
         };
@@ -106,7 +110,9 @@ describe('<Dropdown />', () => {
               open: true,
             }}
           >
-            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
+            {(ref) => (
+              <div ref={ref as RefObject<HTMLDivElement | null>}>foo</div>
+            )}
           </Dropdown>
         );
 
@@ -134,7 +140,9 @@ describe('<Dropdown />', () => {
               open: true,
             }}
           >
-            {(ref) => <div ref={ref as RefObject<HTMLDivElement>}>foo</div>}
+            {(ref) => (
+              <div ref={ref as RefObject<HTMLDivElement | null>}>foo</div>
+            )}
           </Dropdown>,
         );
       });
