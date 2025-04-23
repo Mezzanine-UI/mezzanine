@@ -4,11 +4,21 @@ import {
   ButtonGroupSpacing,
   ButtonSize,
 } from '@mezzanine-ui/core/button';
-import { cleanup, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Button, { ButtonGroup } from '.';
-import { ButtonProps } from './Button';
+import MockButton from './Button';
 import ConfigProvider from '../Provider';
+
+// Mock Button Component
+const mockButtonRender = jest.fn();
+
+jest.mock('./Button', () => {
+  return function MockButton(props: any) {
+    mockButtonRender(props);
+    return <button>{props.children}</button>;
+  };
+});
 
 describe('<ButtonGroup />', () => {
   afterEach(cleanup);
@@ -217,89 +227,80 @@ describe('<ButtonGroup />', () => {
     });
   });
 
-  describe('props: color,danger,disabled,size,variant that can override props of buttons inside group', () => {
-    function testOverrideProps(
-      testInstance: TestRenderer.ReactTestInstance,
-      {
-        color,
-        danger,
-        disabled,
-        size,
-        variant,
-      }: Required<
-        Pick<ButtonProps, 'color' | 'danger' | 'disabled' | 'size' | 'variant'>
-      >,
-    ) {
-      const buttonInstance = testInstance.findByType(Button);
-
-      expect(buttonInstance.props.color).toBe(color);
-      expect(buttonInstance.props.danger).toBe(danger);
-      expect(buttonInstance.props.disabled).toBe(disabled);
-      expect(buttonInstance.props.size).toBe(size);
-      expect(buttonInstance.props.variant).toBe(variant);
-    }
-
-    it('all by default', () => {
-      const testRenderer = TestRenderer.create(
-        <ButtonGroup>
-          <Button />
-        </ButtonGroup>,
-      );
-      const testInstance = testRenderer.root;
-
-      testOverrideProps(testInstance, {
-        color: 'primary',
-        danger: false,
-        disabled: false,
-        size: 'medium',
-        variant: 'text',
-      });
+  describe('ButtonGroup passes props to child Button (Composite Tests)', () => {
+    beforeEach(() => {
+      mockButtonRender.mockClear();
     });
 
-    it('provided by group', () => {
-      const testRenderer = TestRenderer.create(
+    it('passes default props', () => {
+      render(
+        <ButtonGroup>
+          <MockButton />
+        </ButtonGroup>,
+      );
+
+      // 驗證 Button 被呼叫過一次
+      expect(mockButtonRender).toHaveBeenCalledTimes(1);
+
+      // 驗證傳遞的 props 正確（根據 ButtonGroup 的預設邏輯）
+      expect(mockButtonRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'primary',
+          danger: false,
+          disabled: false,
+          size: 'medium',
+          variant: 'text',
+        }),
+      );
+    });
+
+    it('overrides props via ButtonGroup', () => {
+      render(
         <ButtonGroup
           color="secondary"
           danger
           disabled
-          size="small"
-          variant="contained"
+          size="large"
+          variant="outlined"
         >
-          <Button />
+          <MockButton />
         </ButtonGroup>,
       );
-      const testInstance = testRenderer.root;
 
-      testOverrideProps(testInstance, {
-        color: 'secondary',
-        danger: true,
-        disabled: true,
-        size: 'small',
-        variant: 'contained',
-      });
+      expect(mockButtonRender).toHaveBeenCalledTimes(1);
+      expect(mockButtonRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'secondary',
+          danger: true,
+          disabled: true,
+          size: 'large',
+          variant: 'outlined',
+        }),
+      );
     });
 
     it('provided by context', () => {
-      const testRenderer = TestRenderer.create(
+      render(
         <ConfigProvider size="small">
           <ButtonGroup color="secondary" danger disabled variant="contained">
-            <Button />
+            <MockButton />
           </ButtonGroup>
         </ConfigProvider>,
       );
-      const testInstance = testRenderer.root;
 
-      testOverrideProps(testInstance, {
-        color: 'secondary',
-        danger: true,
-        disabled: true,
-        size: 'small',
-        variant: 'contained',
-      });
+      expect(mockButtonRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'secondary',
+          danger: true,
+          disabled: true,
+          size: 'small',
+          variant: 'contained',
+        }),
+      );
     });
 
     it('should not override if child explicitly provided props', () => {
-      const testRenderer = TestRenderer.create(
+      render(
         <ButtonGroup
           color="primary"
           danger
@@ -307,7 +308,7 @@ describe('<ButtonGroup />', () => {
           size="small"
           variant="contained"
         >
-          <Button
+          <MockButton
             color="secondary"
             danger={false}
             disabled={false}
@@ -316,15 +317,16 @@ describe('<ButtonGroup />', () => {
           />
         </ButtonGroup>,
       );
-      const testInstance = testRenderer.root;
 
-      testOverrideProps(testInstance, {
-        color: 'secondary',
-        danger: false,
-        disabled: false,
-        size: 'large',
-        variant: 'outlined',
-      });
+      expect(mockButtonRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          color: 'secondary',
+          danger: false,
+          disabled: false,
+          size: 'large',
+          variant: 'outlined',
+        }),
+      );
     });
   });
 });
