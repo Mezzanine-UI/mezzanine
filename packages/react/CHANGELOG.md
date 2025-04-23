@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.16.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.3...@mezzanine-ui/react@0.16.0) (2025-04-23)
+
+### Bug Fixes
+
+- **react/table:** fix pagination bodyRef typings and warnings ([365f823](https://github.com/Mezzanine-UI/mezzanine/commit/365f82377d651399bec9cedd63414a400d2cff21))
+
+### Features
+
+- upgrade dependencies including react 19 types ([4702da6](https://github.com/Mezzanine-UI/mezzanine/commit/4702da66a3eca88036bc41b745cda6137a7ecdf1))
+
 ## [0.15.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.2...@mezzanine-ui/react@0.15.3) (2024-10-25)
 
 ### Features
