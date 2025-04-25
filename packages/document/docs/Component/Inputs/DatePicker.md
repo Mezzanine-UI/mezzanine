@@ -104,7 +104,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ![圖片](../img/DatePicker-customdisable2.svg)
 
-
     3. **mode** = `"week"`  
         >Disabled Years: 2005 ~ 2024\
         Disabled Months: 2024-11 ~ 2025-03\
@@ -184,13 +183,25 @@ The Datepicker is typically used for selecting either a single date or a date ra
 ## Integration
      <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 --> 
     ### Date Library
-        <!-- 元件底層使用哪個日期函式庫（Moment、Dayjs、Luxon 等）來處理時間格式、加減時間、判斷區間--> 
+        <!-- 元件底層使用哪個日期函式庫（Moment、Dayjs、Luxon 等）來處理時間格式、加減時間、判斷區間 --> 
         Different projects or teams may rely on different date libraries, such as **Moment.js**, **Dayjs**, or **Luxon**. These choices influence how the component processes dates and times. To accommodate this, the component design should remain flexible, allowing for easy integration with various libraries and ensuring smooth collaboration with engineering teams.
 
-     ### Formatting
+    ### Formatting
         <!-- 要控制 UI 顯示格式、要把資料送出給後端／儲存在資料庫，格式需要一致、多語系（不同 locale）時會有顯示差異 -->
         Date formats vary across regions and services—such as `YYYY/MM/DD` or `DD-MM-YYYY` —and may include preferences like displaying time in `AM` / `PM` format. These variations require a clear separation between the presentation layer and internal data storage to ensure consistency and adaptability.
+
+    ###
+
 
 ## Caution
     ### Pool/Range (min/max)
         In certain scenarios, the selectable date range may be restricted—for instance, a registration deadline that must not exceed a specific date, or allowing selection only from the current day onward. By configuring `minDate` and `maxDate` , users are guided to select within valid boundaries, reducing input errors and enhancing data integrity.
+
+## Props
+    | 分類名稱 | 判斷方式 | 常見Props |
+    |-------|-------|-------|
+    | 行為控制類 | 控制元件邏輯與互動 | onChange, disabled, readOnly |
+    | 視覺外觀類 | 控制樣式與尺寸 | size |
+    | 資料處理類 | 處理輸入輸出 | defaultValue |
+    | 驗證限制類 | 用於校驗、限制選擇 | required, disabled |
+    
