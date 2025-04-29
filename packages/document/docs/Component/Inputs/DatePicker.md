@@ -90,93 +90,79 @@ The Datepicker is typically used for selecting either a single date or a date ra
 	- Disallowing past dates (for future event planning)
 	- Dynamically restricting dates based on business logic (e.g., preventing duplicate bookings)
 
-    You can configure custom rules to disable specific dates based on various conditions. Below are some common examples:
+    You can configure custom rules to disable specific dates based on various conditions. Below are examples for different selection modes (**Basic, Time, Range**):
     ### Basic
     1. **mode** = `"day"`
         >**disabledMonthSwitch**, **disabledYearSwitch**, **disableOnNext**, **disableOnPrev** = `true`
     
-    ![圖片](../img/DatePicker-customdisable1.svg)
-
     2. **mode** = `"day"`  
         >Disabled Years: 2005 ~ 2024\
         Disabled Months: 2024-11 ~ 2025-03\
         Disabled Dates: 2025-04-27 ~ 2025-05-01
-
-    ![圖片](../img/DatePicker-customdisable2.svg)
 
     3. **mode** = `"week"`  
         >Disabled Years: 2005 ~ 2024\
         Disabled Months: 2024-11 ~ 2025-03\
         Disabled Weeks: 2025-12th ~ 2025-15th
 
-    ![圖片](../img/DatePicker-customdisable3.svg)
-
     4. **mode** = `"day"`  
         >Disabled Dates: 2025-04-27 ~ 2025-05-01
-
-    ![圖片](../img/DatePicker-customdisable4.svg)
 
     5. **mode** = `"month"`  
         >Disabled Months: 2024-11 ~ 2025-03
 
-    ![圖片](../img/DatePicker-customdisable5.svg)
-
     6. **mode** = `"year"`  
         >Disabled Years: 2005 ~ 2024
+    
+    ![圖片](../img/DatePicker-customdisable1.svg)
 
-    ![圖片](../img/DatePicker-customdisable6.svg)
 
     ### Time
     1. **mode** = `"day"`
         >**disabledMonthSwitch**, **disabledYearSwitch**, **disableOnNext**, **disableOnPrev** = `true`
     
-    ![圖片](../img/TimePicker-customdisable1.svg)
-
     2. **mode** = `"day"`  
         >Disabled Years: 2005 ~ 2024\
         Months: 2024-11 ~ 2025-03\ 
         Dates: 2025-04-27 17:51:23 ~ 2025-05-01 17:51:23
 
-    ![圖片](../img/TimePicker-customdisable2.svg)
+    ![圖片](../img/TimePicker-customdisable1.svg)
+
 
     ### Range
     1. **mode** = `"day"`
         >**disabledMonthSwitch**, **disabledYearSwitch**, **disableOnNext**, **disableOnPrev** = `true`
     
-    ![圖片](../img/Range-customdisable1.svg)
-
     2. **mode** = `"day"`  
         >Disabled Years: 2005 ~ 2024\
         Disabled Months: 2024-11 ~ 2025-03\
         Disabled Dates: 2025-04-27 ~ 2025-05-01
-
-    ![圖片](../img/Range-customdisable1.svg)
-
 
     3. **mode** = `"week"`  
         >Disabled Years: 2005 ~ 2024\
         Disabled Months: 2024-11 ~ 2025-03\
         Disabled Weeks: 2025-12th ~ 2025-15th
 
-    ![圖片](../img/Range-customdisable1.svg)
-
     4. **mode** = `"day"`  
         >Disabled Dates: 2025-04-27 ~ 2025-05-01
-
-    ![圖片](../img/Range-customdisable1.svg)
 
     5. **mode** = `"month"`  
         >Disabled Months: 2024-11 ~ 2025-03
 
-    ![圖片](../img/Range-customdisable1.svg)
-
     6. **mode** = `"year"`  
         >Disabled Years: 2005 ~ 2024
-
+    
     ![圖片](../img/Range-customdisable1.svg)
+
+
+
 
 
 ## Validation / Restrictions
+    To ensure the accuracy and stability of data entered through the component, it is essential to design and implement a comprehensive set of validation and restriction rules.\
+    These checks help prevent users from entering incorrect data, selecting invalid ranges, and ensure that submitted information adheres to the expected format and logical standards.\
+    \
+    The table below outlines common validation items for the **Datepicker**, along with their primary audience (Designer / Developer):
     | Item | Desctription | Designer | Developer |
     |-------|-------|-------|-------|
     | **Required** | Ensure input fields cannot be left blank. | Identify scenarios that require a "required: indicator (e.g., an asterish * or descriptive text.) | Implement field validation to ensure no input is left blank, and provide clear error messaging when validation fails. |
@@ -211,37 +197,61 @@ The Datepicker is typically used for selecting either a single date or a date ra
 ## Props Overview
      <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
+        Manages the visual presentation and layout of the component, including size, icons, the visibility of the clear button, and disabled states, ensuring alignment with the overarching design system standards.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
-        | **className** | 控制元件外觀樣式 | <font color="#BD3B3B">`string`</font> | - |
-        | **prefix** | 在輸入框前面加裝飾或圖示 | <font color="#BD3B3B">`string`</font> | - |
+        | **className** | Control the visual styling of the component. | <font color="#BD3B3B">`string`</font> | - |
+        | **prefix** | The prefix addon of the field. | <font color="#BD3B3B">`ReactNode`</font> | - |
         | **size** | The size of field. | <font color="#BD3B3B">`"small"` `"medium"` `"large"`</font> | `"medium"` |
         | **clearable** | Whether to show the clear button. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **error** | Whether the field is error. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **fullWidth** | If `true`, set width: 100%. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **placeholder** | Placeholder for the input element. | <font color="#BD3B3B">`string`</font> | - |
+        | **confirmText** (DateTimePicker) | Display name of the confirm button. | <font color="#BD3B3B">`ReactNode`</font> | `'OK'` |
+        | **hourPrefix** (DateTimePicker) | The hours column prefix. | <font color="#BD3B3B">`ReactNode`</font> | `'Hrs'` |
+        | **minutePrefix** (DateTimePicker) | The minutes column prefix. | <font color="#BD3B3B">`ReactNode`</font> | `'Min'` |
+        | **secondPrefix** (DateTimePicker) | The seconds column prefix. | <font color="#BD3B3B">`ReactNode`</font> | `'Sec'` |
+        | **inputFromPlaceholder** (DateRangePicker) | Placeholder for the 'from' input element. | <font color="#BD3B3B">`string`</font> | - |
+        | **inputToPlaceholder** (DateRangePicker) | Placeholder for the 'to' input element. | <font color="#BD3B3B">`string`</font> | - |
 
 
     ### Behavior
+        Controls the interactive behavior of the component, such as enabling rapid switching between months and years, or activating specific functional modes to accommodate various user scenarios.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **disabled** | Whether the field is disabled. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **readOnly** | Whether the input is readonly. | <font color="#BD3B3B">`boolean`</font> | `false` |
-        | **mode** | The desired mode of calendar. The `onChange` function will only fired if the calendar mode meets this prop. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | - |
+        | **mode** (DatePicker, DatePickerCalendar) | The desired mode of calendar. The `onChange` function will only fired if the calendar mode meets this prop. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | - |
+        | **mode**(DateRangePicker, DateRangePickerCalendar) | Use this prop to switch calendars. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | `"day"` |
         | **anchor** | The ref of trigger Element. | <font color="#BD3B3B">`ElementGetter`</font> | - |
         | **open** | The portal element will show if `open`=`true`. | <font color="#BD3B3B">`boolean`</font> | `false` |
+        | **hideHour** (DateTimePicker) | Controls whether or not to hide hours column. | <font color="#BD3B3B">`boolean`</font> | - |
+        | **hideMinute** (DateTimePicker) | Controls whether or not to hide minutes column. | <font color="#BD3B3B">`boolean`</font> | - |
+        | **hideSecond** (DateTimePicker) | Controls whether or not to hide seconds column. | <font color="#BD3B3B">`boolean`</font> | - |
+        | **inputFromProps** (DateRangePicker) | Other input props you may provide to the 'from' input element. | <font color="#BD3B3B">`Omit<NativeElementPropsWithoutKeyAndRef<"input">, "defaultValue" "aria-disabled" "aria-multiline" "aria-readonly" "aria-required" ... 5 more ... "required">`</font> | - |
+        | **inputToProps** (DateRangePicker) | Other input props you may provide to the 'to' input element. | <font color="#BD3B3B">`Omit<NativeElementPropsWithoutKeyAndRef<"input">, "defaultValue" "aria-disabled" "aria-multiline" "aria-readonly" "aria-required" ... 5 more ... "required">`</font> | - |
+        
 
 
     ### Data
+        Handles the management of data sources and output within the component, covering default values, data formatting, input handling, and data display, thereby ensuring a smooth and accurate data flow.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **defaultValue** | Default value for date picker. | <font color="#BD3B3B">`string`</font> | - |
-        | **value** | The calendar cell will be marked as active if it matches the same date of given value. | <font color="#BD3B3B">`string`</font> | - |
+        | **value** (DatePicker) | The calendar cell will be marked as active if it matches the same date of given value. | <font color="#BD3B3B">`string`</font> | - |
+        | **value** (DateRangePicker) | Value of the range picker. It is an array of your declared DateType which represents from and to in order. | <font color="#BD3B3B">`RangePickerValue`</font> | - |
+        | **value** (DateRangePickerCalendar) | The displaying cells will be marked as active if the single value of it matches any date object in the array. **The type of `value` should be the same as your declared `DateType`.** | <font color="#BD3B3B">`string, string[]`</font> | - |
         | **format** | The format for displaying date. | <font color="#BD3B3B">`string`</font> | - |
-        | **referenceDate** | The reference date for getting calendars. Default to current time. | <font color="#BD3B3B">`string`</font> | - |
+        | **referenceDate<font color="red">*</font>** | The reference date for getting calendars. Default to current time. | <font color="#BD3B3B">`string`</font> | - |
+        | **firstCalendarRef** (DateRangePickerCalendar) | React Ref for the first(on the left side) calendar. | <font color="#BD3B3B">`RefObject<HTMLDivElement, null>`</font> | - |
+        | **secondCalendarRef** (DateRangePickerCalendar) | React Ref for the second(on the right side) calendar. | <font color="#BD3B3B">`RefObject<HTMLDivElement, null>`</font> | - |
+        | **hourStep** (DateTimePicker) | The steps of hour. | <font color="#BD3B3B">`number`</font> | `1` |
+        | **minuteStep** (DateTimePicker) | The steps of minute. | <font color="#BD3B3B">`number`</font> | `1` |
+        | **secondStep** (DateTimePicker) | The steps of second. | <font color="#BD3B3B">`number`</font> | `1` |
 
 
     ### Validation
+        Defines the data validation rules for the component, including mandatory fields, format correctness, and selectable ranges, to prevent erroneous user input and uphold data integrity.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **disabledMonthSwitch** | Disabled `Month` calendar button click | <font color="#BD3B3B">`boolean`</font> | `false` |
@@ -255,8 +265,14 @@ The Datepicker is typically used for selecting either a single date or a date ra
         | **disabled** | Whether the field is disabled. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **error** | Whether the field is error. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **required** | Whether the input is required. | <font color="#BD3B3B">`boolean`</font> | `false` |
+        | **isMonthInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the month is in range. The method takes the date object as its parameter. | <font color="#BD3B3B">`((date: string) => boolean)`</font> | - |
+        | **isWeekInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the week is in range. The method takes the date object of first date in week as its parameter. | <font color="#BD3B3B">`((firstDateOfWeek: string) => boolean)`</font> | - |
+        | **isYearInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the year is in range. The method takes the date object as its parameter. | <font color="#BD3B3B">`((date: string) => boolean)`</font> | - |
+
+
 
     ### Events
+        Specifies event callbacks triggered by user interactions (e.g., onChange), enabling the transmission of user actions to external systems or facilitating subsequent processing.
         #### DatePicker
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -296,16 +312,15 @@ The Datepicker is typically used for selecting either a single date or a date ra
         | **onConfirm** | Click handler for the confirm button. | <font color="#BD3B3B">`VoidFunction`</font> | - |
 
         ### Integration
+        Provides configuration options for integration with external systems or third-party tools (such as date libraries or timezone converters), ensuring the component remains adaptable to diverse technical requirements.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **format** | The format for displaying date. | <font color="#BD3B3B">`string`</font> | - |
         | **displayMonthLocale** | The locale you want to use when rendering the names of month. If none provided, it will use the `displayMonthLocale` from calendar context. | <font color="#BD3B3B">`string`</font> | - |
         | **fadeProps** | Other fade props you may provide to `Fade`. | <font color="#BD3B3B">`Omit<InputTriggerPopperProps, "children" "in">`</font> | - |
         | **popperProps** | Other props you may provide to `Popper` component. | <font color="#BD3B3B">`Omit<InputTriggerPopperProps, "children"  "anchor" "fadeProps" "open">`</font> | - |
-        | **calendarProps** | Other calendar props you may provide to `Calendar`. | <font color="#BD3B3B">`Omit<CalendarProps, "onChange" "value" "mode" "referenceDate" "disableOnNext" "disableOnPrev" "displayMonthLocale" "isDateDisabled" "isMonthDisabled" ... 7 more ... "updateReferenceDate">`</font> | - |
+        | **calendarProps** (DatePicker, DatePickerCalendar) | Other calendar props you may provide to `Calendar`. | <font color="#BD3B3B">`Omit<CalendarProps, "onChange" "value" "mode" "referenceDate" "disableOnNext" "disableOnPrev" "displayMonthLocale" "isDateDisabled" "isMonthDisabled" ... 7 more ... "updateReferenceDate">`</font> | - |
+        | **calendarProps** (DateRangePicker, DateRangePickerCalendar) | Other props you may pass to calendar component. | <font color="#BD3B3B">`Omit<CalendarProps, keyof DateRangePickerCalendarProps>`</font> | - |
         | **calendarRef** | React ref for calendar component. | <font color="#BD3B3B">`RefObject<HTMLDivElement  null>`</font> | - |
         | **inputProps** | Other input props you may provide to input element. | <font color="#BD3B3B">`Omit<NativeElementPropsWithoutKeyAndRef<"input">, "defaultValue" "aria-disabled" "aria-multiline" "aria-readonly" "aria-required" ... 5 more ... "required">`</font> | - |
 
-
-   
-    
