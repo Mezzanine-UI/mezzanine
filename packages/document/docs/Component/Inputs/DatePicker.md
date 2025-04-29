@@ -1,25 +1,29 @@
 # DateTimePicker
 DatePicker allows users to select a date or a range of dates and times.
 
+
+
 ## Playground
 ![圖片](../img/Playground.svg)
+
+
 
 ## Usage Guide
 The Datepicker is typically used for selecting either a single date or a date range, such as choosing a scheduled event date or setting a date filter range.
 
-### Best Practices
+    ### Best Practices
     - Prioritize use in **time-sensitive scenarios** (e.g., behavior tracking, bookings, or scheduling).
 	- When selecting a range, enhance **clarity with visual cues** such as highlighting the selected span.
 	- Provide sensible **default values** (e.g., the current date/time) to minimize user effort.
 	- Use placeholders to indicate the **expected format**—especially important in multilingual environments.
 	- The greater the time precision required, the more clearly its **necessity should be communicated** (e.g., why is second-level accuracy needed?).
 
-### When not to use
+    ### When not to use
     - When only a simple date string input is needed (e.g., year-month-day) and interactive selection offers no added value—use a **text field** instead.
 	- For **filtering purposes**, relative range pickers (e.g., “Last 7 Days”) are often more intuitive.
 	- When the date is **static or purely informational**, use a non-interactive label rather than an input component.
 
-### Action
+    ### Action
 	1.	Click the input field.
 	2.	A calendar appears—navigate through months and years, select a date or time, or manually enter a date following the specified format.
 	3.	The selected date is displayed in the input field.
@@ -30,8 +34,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     #### Input Demo
     ![圖片](../img/inputdemo.svg)
-
-
 
 
 
@@ -51,15 +53,15 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
         ![圖片](../img/Range.svg)
      
-## Appearance
 
+
+## Appearance
     ### Anatomy
     1. **Date & Time Field:** A single entry point for date or time input, supporting both typing and clicking interactions.
     2. **Range Field:** Displays both **start** and **end** inputs, suitable for selecting time intervals such as leave periods or report queries.
     3. **DatePicker Calendar:** Visually presents selectable dates, with features like month/year navigation and a shortcut to today.
     4. **TimePicker Menu:** When time input is enabled, this dropdown offers options down to the hour, minute, and second.
     5. **Range Calendar:** Displays a dual-calendar view, allowing users to visualize the full time range in one glance, minimizing confusion.
-
 
     ### States
     DatePicker supports four distinct states, in addition to the **Normal** state:
@@ -156,8 +158,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
 
-
-
 ## Validation / Restrictions
     To ensure the accuracy and stability of data entered through the component, it is essential to design and implement a comprehensive set of validation and restriction rules.\
     These checks help prevent users from entering incorrect data, selecting invalid ranges, and ensure that submitted information adheres to the expected format and logical standards.\
@@ -171,8 +171,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
     | **Disabled Date Validation** | Disable specific dates or periods (e.g., Holidays, Past Dates). | Clearly indicate disabled dates in the UI through styling (e.g., greying out or disabling selection). | Implement backend logic to block invalid selections or inputs. |
     | **Timezone Handling** | Timezone considerations for global products. | Include clear timezone indicators according to target market needs. | Accurately convert between user timezone for both storage and display to prevent discrepancies. |
     | **Prevent Invalid Input** | Prohibit invalid date inputs (e.g., Disallowed months or years) | Design the interface to restrict invalid navigation or input actions. | Block illegal entries and provide explicit, user-friendly error feedback. |
-
-
 
 
     
@@ -232,7 +230,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
         | **inputToProps** (DateRangePicker) | Other input props you may provide to the 'to' input element. | <font color="#BD3B3B">`Omit<NativeElementPropsWithoutKeyAndRef<"input">, "defaultValue" "aria-disabled" "aria-multiline" "aria-readonly" "aria-required" ... 5 more ... "required">`</font> | - |
         
 
-
     ### Data
         Handles the management of data sources and output within the component, covering default values, data formatting, input handling, and data display, thereby ensuring a smooth and accurate data flow.
         | Property | Description | Type | Default |
@@ -268,7 +265,6 @@ The Datepicker is typically used for selecting either a single date or a date ra
         | **isMonthInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the month is in range. The method takes the date object as its parameter. | <font color="#BD3B3B">`((date: string) => boolean)`</font> | - |
         | **isWeekInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the week is in range. The method takes the date object of first date in week as its parameter. | <font color="#BD3B3B">`((firstDateOfWeek: string) => boolean)`</font> | - |
         | **isYearInRange** (DateRangePickerCalendar) | Provide if you have a custom logic for checking if the year is in range. The method takes the date object as its parameter. | <font color="#BD3B3B">`((date: string) => boolean)`</font> | - |
-
 
 
     ### Events
@@ -311,7 +307,8 @@ The Datepicker is typically used for selecting either a single date or a date ra
         | **onChange** | Change handler. Receive `DateType` as props. | <font color="#BD3B3B">`((value: string) => void)`</font> | - |
         | **onConfirm** | Click handler for the confirm button. | <font color="#BD3B3B">`VoidFunction`</font> | - |
 
-        ### Integration
+
+    ### Integration
         Provides configuration options for integration with external systems or third-party tools (such as date libraries or timezone converters), ensuring the component remains adaptable to diverse technical requirements.
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
