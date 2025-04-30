@@ -1,10 +1,10 @@
 # DateTimePicker
-DatePicker allows users to select a date or a range of dates and times.
+DatePickers enable users to select a specific date or a range of dates and times.
 
 
 
 ## Playground
-![圖片](../img/Playground.svg)
+![圖片](../img/DatePicker-Playground.svg)
 
 
 
@@ -18,6 +18,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 	- Use placeholders to indicate the **expected format**—especially important in multilingual environments.
 	- The greater the time precision required, the more clearly its **necessity should be communicated** (e.g., why is second-level accuracy needed?).
 
+
     ### When not to use
     - When only a simple date string input is needed (e.g., year-month-day) and interactive selection offers no added value—use a **text field** instead.
 	- For **filtering purposes**, relative range pickers (e.g., “Last 7 Days”) are often more intuitive.
@@ -30,10 +31,10 @@ The Datepicker is typically used for selecting either a single date or a date ra
     4. Click the close icon to clear the selected date.
 
     #### Select Demo
-    ![圖片](../img/selectdemo.svg)
+    ![圖片](../img/DatePicker-Demo-Select.svg)
 
     #### Input Demo
-    ![圖片](../img/inputdemo.svg)
+    ![圖片](../img/DatePicker-Demo-Input.svg)
 
 
 
@@ -41,17 +42,17 @@ The Datepicker is typically used for selecting either a single date or a date ra
     ### Basic
         Certain business scenarios call for date selection based on broader time units—day, week, month, or year. For instance, selecting a month for a report or defining annual goals often doesn’t require precision down to the exact day. In these cases, emphasizing higher-level time units enhances both operational efficiency and user accuracy.
 
-        ![圖片](../img/Basic.svg)
+        ![圖片](../img/DatePicker-Mode-Basic.svg)
 
     ### Time
         When users need to specify a precise point in time, different levels of granularity may be required. Setting an alarm may only need the hour, while scheduling meetings typically demands minute-level accuracy, and server tasks might require second-level precision. Adjusting time granularity to suit the context ensures flexibility without overcomplicating the user experience.
 
-        ![圖片](../img/Timepicker.svg)
+        ![圖片](../img/DatePicker-Mode-Time.svg)
 
     ### Range
         For use cases involving time spans—such as leave periods, event durations, or recurring reports—a range selection is essential. The appropriate unit (date, week, month, or year) should align with the specific context. Each range mode must also ensure logical consistency between start and end points, while maintaining intuitive user interactions.
 
-        ![圖片](../img/Range.svg)
+        ![圖片](../img/DatePicker-Mode-Range.svg)
      
 
 
@@ -69,7 +70,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 	- `error` : Clearly indicates a validation error within a form.
 	- `readOnly` : Viewable but not editable, such as in applications under review.
 
-    ![圖片](../img/DatePicker-state.svg)
+    ![圖片](../img/DatePicker-State.svg)
 
     ### Sizes
     Datepicker comes in three sizes:
@@ -77,7 +78,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 	- `"medium"` : The **default size** for forms and the most commonly used.
 	- `"large"` : Best suited for scenarios that require emphasis or advanced interactions, such as a calendar setup in a modal.
 
-    ![圖片](../img/DatePicker-size.svg)
+    ![圖片](../img/DatePicker-Size.svg)
     
 
 
@@ -116,7 +117,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
     6. **mode** = `"year"`  
         >Disabled Years: 2005 ~ 2024
     
-    ![圖片](../img/DatePicker-customdisable1.svg)
+    ![圖片](../img/DatePicker-CustomDisable.svg)
 
 
     ### Time
@@ -128,7 +129,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
         Months: 2024-11 ~ 2025-03\ 
         Dates: 2025-04-27 17:51:23 ~ 2025-05-01 17:51:23
 
-    ![圖片](../img/TimePicker-customdisable1.svg)
+    ![圖片](../img/DatePicker-CustomDisable-Time.svg)
 
 
     ### Range
@@ -154,7 +155,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
     6. **mode** = `"year"`  
         >Disabled Years: 2005 ~ 2024
     
-    ![圖片](../img/Range-customdisable1.svg)
+    ![圖片](../img/DatePicker-CustomDisable-Range.svg)
 
 
 
