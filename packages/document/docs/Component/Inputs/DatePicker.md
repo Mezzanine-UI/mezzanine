@@ -164,7 +164,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
     These checks help prevent users from entering incorrect data, selecting invalid ranges, and ensure that submitted information adheres to the expected format and logical standards.\
     \
     The table below outlines common validation items for the **Datepicker**, along with their primary audience (Designer / Developer):
-    | Item | Desctription | Designer | Developer |
+    | Item | Desctription | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Required** | Ensure input fields cannot be left blank. | Identify scenarios that require a "required: indicator (e.g., an asterish * or descriptive text.) | Implement field validation to ensure no input is left blank, and provide clear error messaging when validation fails. |
     | **Format Validation** | Enforce YYYY/MM/DD format compliance. Differentiate between UI display format and backend data format. | Design the display format to align with regional or product-specific standards. | Ensure consistent, correct formatting during submission, storage, and validation. |
@@ -197,6 +197,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
      <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
         Manages the visual presentation and layout of the component, including size, icons, the visibility of the clear button, and disabled states, ensuring alignment with the overarching design system standards.
+
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **className** | Control the visual styling of the component. | <font color="#BD3B3B">`string`</font> | - |
@@ -216,12 +217,13 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ### Behavior
         Controls the interactive behavior of the component, such as enabling rapid switching between months and years, or activating specific functional modes to accommodate various user scenarios.
+
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **disabled** | Whether the field is disabled. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **readOnly** | Whether the input is readonly. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **mode** (DatePicker, DatePickerCalendar) | The desired mode of calendar. The `onChange` function will only fired if the calendar mode meets this prop. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | - |
-        | **mode**(DateRangePicker, DateRangePickerCalendar) | Use this prop to switch calendars. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | `"day"` |
+        | **mode** (DateRangePicker, DateRangePickerCalendar) | Use this prop to switch calendars. | <font color="#BD3B3B">`"year"` `"month"` `"week"` `"day"`</font> | `"day"` |
         | **anchor** | The ref of trigger Element. | <font color="#BD3B3B">`ElementGetter`</font> | - |
         | **open** | The portal element will show if `open`=`true`. | <font color="#BD3B3B">`boolean`</font> | `false` |
         | **hideHour** (DateTimePicker) | Controls whether or not to hide hours column. | <font color="#BD3B3B">`boolean`</font> | - |
@@ -233,6 +235,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ### Data
         Handles the management of data sources and output within the component, covering default values, data formatting, input handling, and data display, thereby ensuring a smooth and accurate data flow.
+
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **defaultValue** | Default value for date picker. | <font color="#BD3B3B">`string`</font> | - |
@@ -250,6 +253,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ### Validation
         Defines the data validation rules for the component, including mandatory fields, format correctness, and selectable ranges, to prevent erroneous user input and uphold data integrity.
+
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **disabledMonthSwitch** | Disabled `Month` calendar button click | <font color="#BD3B3B">`boolean`</font> | `false` |
@@ -270,6 +274,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ### Events
         Specifies event callbacks triggered by user interactions (e.g., onChange), enabling the transmission of user actions to external systems or facilitating subsequent processing.
+
         #### DatePicker
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -311,6 +316,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     ### Integration
         Provides configuration options for integration with external systems or third-party tools (such as date libraries or timezone converters), ensuring the component remains adaptable to diverse technical requirements.
+
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
         | **format** | The format for displaying date. | <font color="#BD3B3B">`string`</font> | - |
