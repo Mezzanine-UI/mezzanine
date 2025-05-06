@@ -164,7 +164,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
     These checks help prevent users from entering incorrect data, selecting invalid ranges, and ensure that submitted information adheres to the expected format and logical standards.\
     \
     The table below outlines common validation items for the **Datepicker**, along with their primary audience (Designer / Developer):
-    | Item | Desctription | 🎨 Designer | 🛠️ Developer |
+    | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Required** | Ensure input fields cannot be left blank. | Identify scenarios that require a "required: indicator (e.g., an asterish * or descriptive text.) | Implement field validation to ensure no input is left blank, and provide clear error messaging when validation fails. |
     | **Format Validation** | Enforce YYYY/MM/DD format compliance. Differentiate between UI display format and backend data format. | Design the display format to align with regional or product-specific standards. | Ensure consistent, correct formatting during submission, storage, and validation. |
@@ -176,7 +176,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
     
 ## Integration
-     <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
+    <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
     ### Date Library
         <!-- 元件底層使用哪個日期函式庫（Moment、Dayjs、Luxon 等）來處理時間格式、加減時間、判斷區間 --> 
         Different projects or teams may rely on different date libraries, such as **Moment.js**, **Dayjs**, or **Luxon**. These choices influence how the component processes dates and times. To accommodate this, the component design should remain flexible, allowing for easy integration with various libraries and ensuring smooth collaboration with engineering teams.
@@ -194,7 +194,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
 ## Props Overview
-     <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
+    <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
         Manages the visual presentation and layout of the component, including size, icons, the visibility of the clear button, and disabled states, ensuring alignment with the overarching design system standards.
 

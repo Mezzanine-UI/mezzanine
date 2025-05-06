@@ -43,7 +43,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
 	    - **Trailing Icon:** Placed on the right, often used for secondary hints (e.g., Dropdown, More options).
 	    - **Icon Only:** Displays only the icon, frequently seen in toolbars, mobile interfaces, or repeated actions to conserve space.
 
-        **📌Note:** Icon-only buttons should always be paired with a **tooltip** to ensure clear affordance and accessibility.
+        **📌 Note:** Icon-only buttons should always be paired with a **tooltip** to ensure clear affordance and accessibility.
 
         ![圖片](../img/Button-Mode-Icon.svg)
 
@@ -120,7 +120,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
     These measures help prevent accidental operations, double submissions, and unauthorized access, thereby improving system stability and user confidence.\
     \
     The table below outlines common validation items for **Buttons**, along with their primary audience (Designer / Developer):
-    | Item | Desctription | 🎨 Designer | 🛠️ Developer |
+    | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Required Condition** | Only enable the button when predefined criteria are met (e.g, form validation). | Clearly indicate why the button is disabled, e.g., through tooltips or helper text. | Implement conditional logic to toggle `disabled` state based on form or process status. |
     | **Loading State** | Prevent interaction while an action is being processed (e.g., after clicking Submit). | Provide clear loading feedback such as a spinner or text label. | Block repeated clicks during loading and display visual feedback. |
@@ -131,7 +131,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
 
     
 ## Integration
-     <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
+    <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
     ### Loading and API Interaction Management
     Buttons are frequently used to trigger form submissions, API requests, or data updates. In such cases, it is essential to manage loading states, asynchronous behavior, and prevent duplicate actions.
 
@@ -170,7 +170,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
 
 
 ## Props Overview
-     <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
+    <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
         Manages the visual presentation and layout of the button, including size, variant, icon placement, and color schemes. These settings ensure consistency with the design system and maintain visual hierarchy across the interface.
 
@@ -212,13 +212,14 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
         | **children** (IconButton) | The icon element. | <font color="#BD3B3B">`ReactNode`</font> | - |
 
 
-    <!--### Validation
-         Defines the constraints or restrictions that ensure buttons are used correctly within their context—for example, requiring confirmation before enabling, or disabling buttons when preconditions are unmet. This helps prevent unintended actions and promotes form-level validation integrity. -->
+    ### Validation
+         <!--Defines the constraints or restrictions that ensure buttons are used correctly within their context—for example, requiring confirmation before enabling, or disabling buttons when preconditions are unmet. This helps prevent unintended actions and promotes form-level validation integrity. -->
+        *Button does not have built-in validation logic. Input validation is typically handled by form-related components (e.g., inputs, form handlers) and not by the button itself.*
 
+    ### Events
+        <!--Handles how the button responds to user actions such as clicks or form submissions. While not configured via dedicated props in most cases, these interactions are critical for triggering downstream logic like API calls, modal toggling, or form behaviors. -->
+        *While the onClick event is a core part of button functionality, it is considered a standard DOM interaction rather than a custom event prop defined by the component. Therefore, event handling is implemented externally and not exposed as a categorized custom prop.*
 
-    <!--### Events
-        Handles how the button responds to user actions such as clicks or form submissions. While not configured via dedicated props in most cases, these interactions are critical for triggering downstream logic like API calls, modal toggling, or form behaviors. -->
-
-
-    <!--### Integration
-        Covers how the button connects with broader application logic—such as routing, form libraries, or asynchronous workflows. These integrations ensure the button functions seamlessly within diverse frameworks and data flows. -->
+    ### Integration
+        <!--Covers how the button connects with broader application logic—such as routing, form libraries, or asynchronous workflows. These integrations ensure the button functions seamlessly within diverse frameworks and data flows. -->
+        *Button does not define integration-specific props. Instead, it can be flexibly composed with other UI elements (e.g., icons, tooltips, loaders) by nesting or wrapping, depending on the use case.*
