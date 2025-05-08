@@ -23,10 +23,10 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 	- **For interactive icons without clarification:** Avoid icons with click actions that lack supporting labels or feedback, which may lead to misunderstanding or missed interactions.
 
     ### Action Flow
-	1. When used interactively (e.g., a clear or edit icon), clicking the icon triggers a defined event—such as resetting an input field or enabling an editable state.
-	2. Icons may be accompanied by loading or disabled states to manage feedback and prevent duplicate actions.
-	3. Static icons (e.g., for success or warning) don’t have interaction, but should use color or shape to reinforce their semantic meaning—like a green checkmark or a warning icon inside a colored circle.
-	4. When embedded in other components (like a drag icon in a table), ensure interactive areas are clearly defined and distinguishable from static ones to prevent misclicks.
+	- When used interactively (e.g., a clear or edit icon), clicking the icon triggers a defined event—such as resetting an input field or enabling an editable state.
+	- Icons may be accompanied by loading or disabled states to manage feedback and prevent duplicate actions.
+	- Static icons (e.g., for success or warning) don’t have interaction, but should use color or shape to reinforce their semantic meaning—like a green checkmark or a warning icon inside a colored circle.
+	- When embedded in other components (like a drag icon in a table), ensure interactive areas are clearly defined and distinguishable from static ones to prevent misclicks.
 
 
 
