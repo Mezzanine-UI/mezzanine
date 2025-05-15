@@ -1,5 +1,6 @@
 # Button
-Buttons enable users to initiate an action or event upon being clicked.
+<!--Buttons enable users to initiate an action or event upon being clicked.-->
+Buttons trigger actions or events in response to user clicks, guiding interaction across the interface.
 
 
 
@@ -119,7 +120,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
     To ensure that button-triggered actions occur at the appropriate time, it’s essential to define clear conditions and restrictions around their usage.\
     These measures help prevent accidental operations, double submissions, and unauthorized access, thereby improving system stability and user confidence.\
     \
-    The table below outlines common validation items for **Buttons**, along with their primary audience (Designer / Developer):
+    The table below outlines common validation items for **Buttons**, along with the primary responsibility of Designers and Developers:
     | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Required Condition** | Only enable the button when predefined criteria are met (e.g, form validation). | Clearly indicate why the button is disabled, e.g., through tooltips or helper text. | Implement conditional logic to toggle `disabled` state based on form or process status. |
@@ -132,7 +133,19 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
     
 ## Integration
     <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
-    ### Loading and API Interaction Management
+    ### Behavior Delegation
+        The component does not include built-in logic for API calls or form validation. Please handle the following integration aspects externally:
+        | Action | Description |
+        |-------|-------|
+        | **Loading State** | Prevent duplicate submissions by externally managing the loading spinner and disabling interactions accordingly. |
+        | **API Integration** | In asynchronous flows, listen for success or failure responses to reset the button state and deliver relevant user feedback. |
+        | **Form Handling** | When used with type="submit", ensure it’s embedded within a parent form component. Control the disabled state as needed based on form validation. |
+        | **Routing Integration** | For navigational purposes, replace with a Link component and ensure seamless SPA transition behavior. |
+
+
+        
+
+    <!-- ### Loading and API Interaction Management
     Buttons are frequently used to trigger form submissions, API requests, or data updates. In such cases, it is essential to manage loading states, asynchronous behavior, and prevent duplicate actions.
 
         #### 🎨 Design Considerations:
@@ -165,7 +178,7 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
 
         #### 🛠️ Development Requirements:
 	    - Use framework-specific Link components (e.g., Next.js Link, React Router Link).
-	    - Ensure transitions preserve SPA behavior without full-page reloads.
+	    - Ensure transitions preserve SPA behavior without full-page reloads. -->
 
 
 

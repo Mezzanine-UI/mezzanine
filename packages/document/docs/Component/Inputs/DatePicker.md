@@ -163,7 +163,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
     To ensure the accuracy and stability of data entered through the component, it is essential to design and implement a comprehensive set of validation and restriction rules.\
     These checks help prevent users from entering incorrect data, selecting invalid ranges, and ensure that submitted information adheres to the expected format and logical standards.\
     \
-    The table below outlines common validation items for the **Datepicker**, along with their primary audience (Designer / Developer):
+    The table below outlines common validation items for **Datepicker**, along with the primary responsibility of Designers and Developers:
     | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Required** | Ensure input fields cannot be left blank. | Identify scenarios that require a "required: indicator (e.g., an asterish * or descriptive text.) | Implement field validation to ensure no input is left blank, and provide clear error messaging when validation fails. |
@@ -177,13 +177,18 @@ The Datepicker is typically used for selecting either a single date or a date ra
     
 ## Integration
     <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
-    ### Date Library
+    ### Library / Data Dependency
+        - While the component natively supports Date-based data handling, teams leveraging libraries such as Moment.js, Dayjs, or Luxon should define their own conversion strategy to align with project-specific practices.
+	    - It supports decoupled display and submission formats (e.g., the UI shows YYYY/MM/DD while the submitted value is YYYY-MM-DD). Ensure proper formatting and locale conversion when integrating with APIs.
+
+
+    <!--### Date Library
         <!-- 元件底層使用哪個日期函式庫（Moment、Dayjs、Luxon 等）來處理時間格式、加減時間、判斷區間 --> 
         Different projects or teams may rely on different date libraries, such as **Moment.js**, **Dayjs**, or **Luxon**. These choices influence how the component processes dates and times. To accommodate this, the component design should remain flexible, allowing for easy integration with various libraries and ensuring smooth collaboration with engineering teams.
 
     ### Formatting
         <!-- 要控制 UI 顯示格式、要把資料送出給後端／儲存在資料庫，格式需要一致、多語系（不同 locale）時會有顯示差異 -->
-        Date formats vary across regions and services—such as `YYYY/MM/DD` or `DD-MM-YYYY` —and may include preferences like displaying time in `AM` / `PM` format. These variations require a clear separation between the presentation layer and internal data storage to ensure consistency and adaptability.
+        Date formats vary across regions and services—such as `YYYY/MM/DD` or `DD-MM-YYYY` —and may include preferences like displaying time in `AM` / `PM` format. These variations require a clear separation between the presentation layer and internal data storage to ensure consistency and adaptability.-->
 
     <!-- ### Timezone Handling -->
         <!-- 如果要支援跨時區（例如伺服器是 UTC，使用者端是本地時間），需要說明怎麼處裏時差問題。 -->

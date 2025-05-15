@@ -1,6 +1,6 @@
 # Icon
-Icons visually represent actions, states, or content, enhancing comprehension and usability across the interface.
-
+<!--Icons visually represent actions, states, or content, enhancing comprehension and usability across the interface.-->
+Icons provide visual cues for actions, states, and content, improving clarity and aiding recognition across the interface.
 
 
 ## Playground
@@ -134,8 +134,8 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 ## Validation / Restrictions
     To ensure accurate semantic expression, consistent interactions, and accessibility across the interface, it is important to define validation and restriction rules for how icons are used.\
     These checks help prevent incorrect usage, maintain a coherent user experience, and support both design and engineering alignment.\
-
-    The table below outlines common validation items for **Icon**, along with their primary audience (Designer / Developer):
+    \
+    The table below outlines common validation items for **Icon**, along with the primary responsibility of Designers and Developers:
     | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Consistent Semantic Color Usage** | Icon colors should follow predefined semantic meanings (e.g., success, error, warning) and must not be arbitrarily applied to avoid user confusion. | Define color tokens and icon pairings for each semantic state (e.g., success toast with check icon). | Apply correct color props (e.g., `color="error"`), and avoid hard-coded color values. |
@@ -147,7 +147,31 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
     
 ## Integration
     <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
-    To ensure consistent and scalable use of icons across the product, this section outlines the source of icon assets and their integration within the design system. Whether used independently or in combination with other components, proper integration helps maintain visual harmony and simplifies development workflows.
+    ### Asset / Style Source
+        - All icons are sourced from the Mezzanine Icon Library and can be rendered via the icon prop as React components.
+	    - Avoid using non-standard or third-party icon sets unless explicitly approved by the design team for specific cases.
+
+    ### Component Integration Contexts
+        Icons are commonly paired with the following components. Please follow the parent component’s layout for size, spacing, and alignment. For interactive use cases (e.g., within buttons or input fields), states such as hover, focus, and active must be handled by the parent component.
+        | Component | Purpose |
+        |-------|-------|
+        | **Button** | Conveys intent (e.g., delete, share) |
+        | **Alert / Toast** | Delivers semantic cues (success / error / warning) |
+        | **Input** | Indicates state (e.g., password visibility) or triggers actions (e.g., clear input) |
+        | **Select / Dropdown** | Indicates expansion or collapse |
+        | **Table / Pagination** | Enables sorting or navigation |
+        | **Tooltip / Empty State** | Provides contextual guidance or no-data indicators |
+        | **Modal / Dialog** | Enhances semantic clarity with header icons (e.g., warning) |
+        | **Tabs** | Distinguishes categories or meanings for better recognition |
+        
+        #### 🔧 Integration Tips
+	    - Use icon sizes defined by the parent component (e.g., 16px for Buttons, 20–24px for Toasts).
+	    - Avoid vertical misalignment or inconsistent spacing with text—visual balance is essential.
+	    - Icons themselves are non-interactive; click behavior and state changes must be implemented externally.
+
+
+
+    <!-- To ensure consistent and scalable use of icons across the product, this section outlines the source of icon assets and their integration within the design system. Whether used independently or in combination with other components, proper integration helps maintain visual harmony and simplifies development workflows.
 
     ### Icon Source & Dependency
         Icons used in this component are sourced from the **Mezzanine icon library**, which provides a centralized and consistent collection of graphical assets across the design system. All icons are imported by name via the icon prop and rendered as React components.\
@@ -171,7 +195,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
         To ensure visual consistency:
 	    - Follow the size recommendations defined by the parent component (e.g., 16px for buttons, 20–24px for alerts).
 	    - Maintain proper alignment and spacing when placing icons alongside text or other elements.
-	    - When used as a clickable element, the parent component should manage interactivity and state styling (e.g., hover, focus, active).
+	    - When used as a clickable element, the parent component should manage interactivity and state styling (e.g., hover, focus, active).-->
 
 
 

@@ -157,7 +157,7 @@ Typography serves not only as a vessel for information but also as a foundationa
     To ensure semantic clarity, consistent text styling, and accessibility across the interface, it’s important to define validation and restriction guidelines for how Typography is used.\
     These rules help prevent misuse, support a cohesive visual experience, and maintain alignment between design and engineering.
 
-    The table below outlines common validation items for **Typography**, along with their primary audience (Designer / Developer):
+    The table below outlines common validation items for **Typography**, along with the primary responsibility of Designers and Developers:
     | Item | Description | 🎨 Designer | 🛠️ Developer |
     |-------|-------|-------|-------|
     | **Correct Semantic Style Mapping** | Heading and body text should match the intended content hierarchy using the appropriate variant (e.g., h1~h6, body1/2). Misuse can confuse users or distort visual structure. | Define which variant to use for each type of content (e.g., h1 for page title, body1 for paragraph text). | Apply the correct variant prop and avoid misusing heading styles for body content. |
@@ -171,7 +171,33 @@ Typography serves not only as a vessel for information but also as a foundationa
     
 ## Integration
      <!-- 元件「如何與其他應用層、框架、資料結構或函式庫協同工作」的方式 = 怎麼接進系統 -->
-     To ensure consistent and scalable usage across the product, Typography is designed to integrate seamlessly within the design system. While it functions as a standalone component for rendering text, it is also frequently embedded within other UI components to maintain clarity, hierarchy, and visual consistency across the interface.
+    ### Asset / Style Source
+        - All text styles follow design system specifications, including:
+	    - Font stack: "PingFang TC", "Noto Sans TC", Helvetica, Arial, sans-serif
+	    - Variants: h1–h6, body1–body2, button1–button3, input1–input3, caption
+	    - Each variant comes pre-configured with font size, line-height, letter spacing, and weight—no manual adjustment required.
+
+    ### Component Integration Contexts
+        Typography is frequently integrated with the following components. Choose appropriate variants based on the parent’s layout and purpose:
+        | Component | Default Variant |
+        |-------|-------|
+        | **Button** | `button1` for primary actions |
+        | **Input / Textarea** | `input1`~`input3` for labels, hints, and error messages |
+        | **Toast / Alert** | `h5` for titles, `body2` for descriptions |
+        | **Table / Card / List** | Use `body1`, `body2`, or `caption` based on information hierarchy |
+        | **Empty State / Result** | Typically combines `h5` + `body2` to convey key and secondary messages |
+
+        #### 📌 Additional Notes
+	    - Label-based components such as Tag, Label, or Chip generally use caption or button2, with layout handled internally—no need to compose Typography manually.
+	    - For multilingual UIs, font and spacing are automatically adjusted based on the language context (e.g., English-only vs. mixed Chinese-English). No manual overrides required.
+
+        #### 🔧 Integration Tips
+	    - Avoid setting padding or font-style externally around Typography to preserve design consistency.
+	    - For interactive features like expandable text or tooltips, wrap Typography with additional containers—Typography itself remains display-only. 
+
+
+
+     <!-- To ensure consistent and scalable usage across the product, Typography is designed to integrate seamlessly within the design system. While it functions as a standalone component for rendering text, it is also frequently embedded within other UI components to maintain clarity, hierarchy, and visual consistency across the interface.
     ### Font Source & Design Basis
         All Typography variants follow standardized design specifications, covering various levels of headers (h1–h6), body content (body1, body2), interactive text styles (button1–button3, input1–input3), and auxiliary text (caption). These ensure consistent visual hierarchy and typographic logic across different use cases.
 	    - The unified font stack is: "PingFang TC", "Noto Sans TC", Helvetica, Arial, sans-serif.
@@ -188,7 +214,7 @@ Typography serves not only as a vessel for information but also as a foundationa
 	    - Empty States / Informative Messages: Use h5 and body2 together to convey primary and secondary messages.
 	    - Multilingual Interfaces: For fully English paragraphs, the system automatically applies a dedicated English font style. In mixed-language cases, only the English portion switches fonts without affecting spacing or line height.
 
-        **📌 Note:**  Typography is a purely presentational component and should not handle interaction logic. If you require interactive behaviors such as tooltips or text truncation with hover feedback, these should be managed by a wrapper or container component.
+        **📌 Note:**  Typography is a purely presentational component and should not handle interaction logic. If you require interactive behaviors such as tooltips or text truncation with hover feedback, these should be managed by a wrapper or container component.-->
 
 
 ## Props Overview
@@ -205,7 +231,6 @@ Typography serves not only as a vessel for information but also as a foundationa
         | **weight** | The css variable for customizing `font-weight`. | <font color="#BD3B3B">`100` `200` `300` `400` `500` `600` `700` `800` `900`</font>  <font color="grey"> ... 8 more  </font> | - |
         | **display** | Override the component used to render. | <font color="#BD3B3B">`bTypographyComponent`</font> | - |
         
-
     ### Behavior
         Controls the interactive behavior of the button, such as handling loading states, disabling interactions, and toggling danger styles. These props define how the button responds under different user interactions and system states.
         
@@ -213,7 +238,6 @@ Typography serves not only as a vessel for information but also as a foundationa
         |-------|-------|-------|-------|
         | ellipsis | If `true`, the text will not wrap, but instead will truncate with a text overflow ellipsis. Note that text overflow can only happen with `block` or `inline-block` level elements | <font color="#BD3B3B">`boolean`</font> | `false` |
         | noWrap | If `true`, the text will not wrap. | <font color="#BD3B3B">`boolean`</font> | `false` |
-
         
     ### Data
         Typography is a static display component and does not handle dynamic data input or value-related props. This category is not applicable.
