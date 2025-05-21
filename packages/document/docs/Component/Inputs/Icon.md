@@ -131,6 +131,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
     - **Custom Interaction Blocking**\
         For clickable icons, developers can manually prevent interaction by conditioning the onClick logic and visually reflecting the disabled state through color changes.
 
+
 ## Validation / Restrictions
     To ensure accurate semantic expression, consistent interactions, and accessibility across the interface, it is important to define validation and restriction rules for how icons are used.\
     These checks help prevent incorrect usage, maintain a coherent user experience, and support both design and engineering alignment.\
@@ -202,7 +203,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 ## Props Overview
      <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
-        Manages the visual presentation and layout of the button, including size, variant, icon placement, and color schemes. These settings ensure consistency with the design system and maintain visual hierarchy across the interface.
+        Manages the visual presentation and layout of the component, including size, style variants, icon placement, spacing, and visibility states. These settings ensure consistency with the design system and help maintain visual hierarchy across the interface.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -212,7 +213,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
         
 
     ### Behavior
-        Controls the interactive behavior of the button, such as handling loading states, disabling interactions, and toggling danger styles. These props define how the button responds under different user interactions and system states.
+        Controls the interactive behavior of the component, such as handling user actions, managing component states (e.g., loading, toggling), and enabling mode switching to support different usage scenarios.
         
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -220,7 +221,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 
         
     ### Data
-        Handles data structure and content within the button, including icon components or children elements. Ensures that the button displays the correct content, and aligns with functional roles such as form submission or navigation.
+        Handles the structure, input, and display of data within the component, including content rendering, default values, and formatting. Ensures the component properly reflects and updates data as expected.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -236,7 +237,7 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 
 
     ### Integration
-        Covers how the button connects with broader application logic—such as routing, form libraries, or asynchronous workflows. These integrations ensure the button functions seamlessly within diverse frameworks and data flows.
+        Provides configuration options for integrating with external systems, utilities, or libraries, ensuring compatibility with project-specific requirements such as formatting, localization, or third-party tools.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|

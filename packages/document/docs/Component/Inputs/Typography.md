@@ -220,7 +220,7 @@ Typography serves not only as a vessel for information but also as a foundationa
 ## Props Overview
      <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
-        Manages the visual presentation and layout of the button, including size, variant, icon placement, and color schemes. These settings ensure consistency with the design system and maintain visual hierarchy across the interface.
+        Manages the visual presentation and layout of the component, including size, style variants, icon placement, spacing, and visibility states. These settings ensure consistency with the design system and help maintain visual hierarchy across the interface.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -232,7 +232,7 @@ Typography serves not only as a vessel for information but also as a foundationa
         | **display** | Override the component used to render. | <font color="#BD3B3B">`bTypographyComponent`</font> | - |
         
     ### Behavior
-        Controls the interactive behavior of the button, such as handling loading states, disabling interactions, and toggling danger styles. These props define how the button responds under different user interactions and system states.
+        Controls the interactive behavior of the component, such as handling user actions, managing component states (e.g., loading, toggling), and enabling mode switching to support different usage scenarios.
         
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|

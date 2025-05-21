@@ -24,7 +24,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 	- For **filtering purposes**, relative range pickers (e.g., “Last 7 Days”) are often more intuitive.
 	- When the date is **static or purely informational**, use a non-interactive label rather than an input component.
 
-    ### Action
+    ### Action Flow
 	1.	Click the input field.
 	2.	A calendar appears—navigate through months and years, select a date or time, or manually enter a date following the specified format.
 	3.	The selected date is displayed in the input field.
@@ -201,7 +201,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 ## Props Overview
     <!-- Appearance 控制外型、Behavior 控制互動行為、Data 資料處理、Validation 驗證相關、Events 事件回呼、Integration 整合支援 --> 
     ### Appearance
-        Manages the visual presentation and layout of the component, including size, icons, the visibility of the clear button, and disabled states, ensuring alignment with the overarching design system standards.
+        Manages the visual presentation and layout of the component, including size, style variants, icon placement, spacing, and visibility states. These settings ensure consistency with the design system and help maintain visual hierarchy across the interface.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -221,7 +221,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
     ### Behavior
-        Controls the interactive behavior of the component, such as enabling rapid switching between months and years, or activating specific functional modes to accommodate various user scenarios.
+        Controls the interactive behavior of the component, such as handling user actions, managing component states (e.g., loading, toggling), and enabling mode switching to support different usage scenarios.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -239,7 +239,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
         
 
     ### Data
-        Handles the management of data sources and output within the component, covering default values, data formatting, input handling, and data display, thereby ensuring a smooth and accurate data flow.
+        Handles the structure, input, and display of data within the component, including content rendering, default values, and formatting. Ensures the component properly reflects and updates data as expected.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -257,7 +257,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
     ### Validation
-        Defines the data validation rules for the component, including mandatory fields, format correctness, and selectable ranges, to prevent erroneous user input and uphold data integrity.
+        Defines validation rules for the component, such as required fields, input constraints, or allowed ranges, to ensure data accuracy and prevent user errors.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
@@ -278,7 +278,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
     ### Events
-        Specifies event callbacks triggered by user interactions (e.g., onChange), enabling the transmission of user actions to external systems or facilitating subsequent processing.
+        Specifies event callbacks triggered by user interactions (e.g., onChange), allowing the component to communicate with external systems or trigger further processing logic.
 
         #### DatePicker
         | Property | Description | Type | Default |
@@ -320,7 +320,7 @@ The Datepicker is typically used for selecting either a single date or a date ra
 
 
     ### Integration
-        Provides configuration options for integration with external systems or third-party tools (such as date libraries or timezone converters), ensuring the component remains adaptable to diverse technical requirements.
+        Provides configuration options for integrating with external systems, utilities, or libraries, ensuring compatibility with project-specific requirements such as formatting, localization, or third-party tools.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
