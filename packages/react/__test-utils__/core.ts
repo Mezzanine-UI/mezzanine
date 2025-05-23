@@ -12,10 +12,7 @@ export {
   default as TestRenderer,
 } from 'react-test-renderer';
 export * from '@testing-library/react';
-export {
-  renderHook,
-  cleanup as cleanupHook,
-} from '@testing-library/react-hooks';
+export { renderHook, cleanup as cleanupHook } from '@testing-library/react';
 
 export type RenderResult<Q extends Queries = typeof queries> =
   CoreRenderResult<Q> & {
