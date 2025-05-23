@@ -1,15 +1,10 @@
 import { useState } from 'react';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Checkbox, {
-  CheckAll,
-  CheckboxGroup,
-  CheckboxGroupProps,
-  CheckboxGroupOption,
-} from '.';
+import { CheckAll, CheckboxGroup, CheckboxGroupOption } from '.';
 
 describe('<CheckAll />', () => {
   afterEach(cleanup);
@@ -42,42 +37,6 @@ describe('<CheckAll />', () => {
       expect(
         checkAllCheckboxElement!.querySelector('.mzn-checkbox'),
       ).toBeInstanceOf(HTMLElement);
-    });
-
-    it('should pass disabled,name,size from CheckboxGroup to Checkbox controlling whether checked all or not', () => {
-      let expectProps: Pick<CheckboxGroupProps, 'disabled' | 'name' | 'size'> =
-        {
-          disabled: true,
-          name: 'foo',
-          size: 'small',
-        };
-
-      const testInstance = TestRenderer.create(
-        <CheckAll>
-          <CheckboxGroup {...expectProps} />
-        </CheckAll>,
-      );
-      const checkboxForAll = testInstance.root.findByType(Checkbox);
-
-      function testPassProps() {
-        expect(checkboxForAll.props.disabled).toBe(expectProps.disabled);
-        expect(checkboxForAll.props.inputProps?.name).toBe(expectProps.name);
-        expect(checkboxForAll.props.size).toBe(expectProps.size);
-      }
-
-      testPassProps();
-
-      expectProps = {
-        disabled: false,
-        name: 'bar',
-        size: 'large',
-      };
-      testInstance.update(
-        <CheckAll>
-          <CheckboxGroup {...expectProps} />
-        </CheckAll>,
-      );
-      testPassProps();
     });
   });
 

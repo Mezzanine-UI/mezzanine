@@ -1,5 +1,6 @@
 import { forwardRef, ReactNode } from 'react';
-import Button, { ButtonGroup, ButtonGroupProps, ButtonProps } from '../Button';
+import Button, { ButtonProps } from '../Button/Button';
+import ButtonGroup, { ButtonGroupProps } from '../Button/ButtonGroup';
 
 export interface ConfirmActionsProps
   extends Omit<ButtonGroupProps, 'children'> {
