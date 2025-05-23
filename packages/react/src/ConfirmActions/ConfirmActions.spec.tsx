@@ -1,9 +1,22 @@
 import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Button, { ButtonProps } from '../Button';
+import Button, { ButtonProps } from '../Button/Button';
 import ConfirmActions from '.';
 
+const renderMockButton = jest.fn();
+
+jest.mock('../Button/Button', () => {
+  return function MockButton(props: any) {
+    renderMockButton(props);
+    return <button {...props} />;
+  };
+});
+
 describe('<ConfirmActions />', () => {
+  beforeEach(() => {
+    renderMockButton.mockClear();
+  });
+
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
@@ -12,43 +25,42 @@ describe('<ConfirmActions />', () => {
 
   describe('cancel button', () => {
     it('should render variant="outlined" by default', () => {
-      const testRenderer = TestRenderer.create(<ConfirmActions />);
-      const testInstance = testRenderer.root;
-      const [cancelButtonInstance] = testInstance.findAllByType(Button);
+      render(<ConfirmActions />);
 
-      expect(cancelButtonInstance.props.variant).toBe('outlined');
+      expect(renderMockButton).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'outlined',
+        }),
+      );
     });
 
     describe('prop: cancelButtonProps', () => {
+      beforeEach(() => {
+        renderMockButton.mockClear();
+      });
+
       it('should be passed to the cancel button', () => {
         const cancelButtonProps: ButtonProps = {
           disabled: true,
           loading: true,
           variant: 'contained',
         };
-        const testRenderer = TestRenderer.create(
-          <ConfirmActions cancelButtonProps={cancelButtonProps} />,
-        );
-        const testInstance = testRenderer.root;
-        const [cancelButtonInstance] = testInstance.findAllByType(Button);
 
-        expect(cancelButtonInstance.props.disabled).toBe(
-          cancelButtonProps.disabled,
-        );
-        expect(cancelButtonInstance.props.loading).toBe(
-          cancelButtonProps.loading,
-        );
-        expect(cancelButtonInstance.props.variant).toBe(
-          cancelButtonProps.variant,
+        render(<ConfirmActions cancelButtonProps={cancelButtonProps} />);
+
+        expect(renderMockButton).toHaveBeenCalledWith(
+          expect.objectContaining(cancelButtonProps),
         );
       });
 
       it('should consider loading as disabled of cancel button if disabled of cancelButtonProps not passed', () => {
-        const testRenderer = TestRenderer.create(<ConfirmActions loading />);
-        const testInstance = testRenderer.root;
-        const [cancelButtonInstance] = testInstance.findAllByType(Button);
+        render(<ConfirmActions loading />);
 
-        expect(cancelButtonInstance.props.disabled).toBe(true);
+        expect(renderMockButton).toHaveBeenCalledWith(
+          expect.objectContaining({
+            disabled: true,
+          }),
+        );
       });
     });
 
@@ -98,11 +110,13 @@ describe('<ConfirmActions />', () => {
 
   describe('confirm button', () => {
     it('should render variant="contained" by default', () => {
-      const testRenderer = TestRenderer.create(<ConfirmActions />);
-      const testInstance = testRenderer.root;
-      const [, confirmButtonInstance] = testInstance.findAllByType(Button);
+      render(<ConfirmActions />);
 
-      expect(confirmButtonInstance.props.variant).toBe('contained');
+      expect(renderMockButton).toHaveBeenCalledWith(
+        expect.objectContaining({
+          variant: 'contained',
+        }),
+      );
     });
 
     describe('prop: confirmButtonProps', () => {
@@ -111,28 +125,23 @@ describe('<ConfirmActions />', () => {
           disabled: true,
           variant: 'outlined',
         };
-        const testRenderer = TestRenderer.create(
-          <ConfirmActions confirmButtonProps={confirmButtonProps} />,
-        );
-        const testInstance = testRenderer.root;
-        const [, confirmButtonInstance] = testInstance.findAllByType(Button);
+        render(<ConfirmActions confirmButtonProps={confirmButtonProps} />);
 
-        expect(confirmButtonInstance.props.disabled).toBe(
-          confirmButtonProps.disabled,
-        );
-        expect(confirmButtonInstance.props.variant).toBe(
-          confirmButtonProps.variant,
+        expect(renderMockButton).toHaveBeenCalledWith(
+          expect.objectContaining(confirmButtonProps),
         );
       });
 
       it('should pass loading prop to confirm button', () => {
-        const testRenderer = TestRenderer.create(
+        render(
           <ConfirmActions confirmButtonProps={{ loading: false }} loading />,
         );
-        const testInstance = testRenderer.root;
-        const [, confirmButtonInstance] = testInstance.findAllByType(Button);
 
-        expect(confirmButtonInstance.props.loading).toBe(true);
+        expect(renderMockButton).toHaveBeenCalledWith(
+          expect.objectContaining({
+            loading: true,
+          }),
+        );
       });
     });
 
