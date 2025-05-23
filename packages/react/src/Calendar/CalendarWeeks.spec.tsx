@@ -1,9 +1,18 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
-import { CalendarConfigProvider, CalendarDayOfWeek, CalendarWeeks } from '.';
+import { CalendarConfigProvider, CalendarWeeks } from '.';
 import { CalendarWeeksProps } from './CalendarWeeks';
+
+const mockCalendarDayOfWeekRender = jest.fn();
+
+jest.mock('./CalendarDayOfWeek', () => {
+  return function MockCalendarDayOfWeek(props: any) {
+    mockCalendarDayOfWeekRender(props);
+    return <div>Mock Child</div>;
+  };
+});
 
 describe('<CalendarWeeks />', () => {
   afterEach(cleanup);
@@ -32,21 +41,22 @@ describe('<CalendarWeeks />', () => {
 
   describe('prop: displayWeekDayLocale', () => {
     it('should pass to CalendarDayOfWeek', () => {
-      const testInstance = TestRenderer.create(
+      const displayWeekDayLocale = 'zh-TW';
+
+      render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
             referenceDate={moment().format('YYYY-MM-DD')}
-            displayWeekDayLocale="zh-TW"
+            displayWeekDayLocale={displayWeekDayLocale}
           />
           ,
         </CalendarConfigProvider>,
       );
 
-      const calendarDayOfWeekInstance =
-        testInstance.root.findByType(CalendarDayOfWeek);
-
-      expect(calendarDayOfWeekInstance.props.displayWeekDayLocale).toBe(
-        'zh-TW',
+      expect(mockCalendarDayOfWeekRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          displayWeekDayLocale,
+        }),
       );
     });
   });

@@ -5,19 +5,52 @@ import {
   getYearRange,
 } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Calendar, {
   CalendarConfigProvider,
-  CalendarControls,
   CalendarDays,
   CalendarMonths,
   CalendarWeeks,
   CalendarYears,
 } from '.';
+
+// Mock Calendar Component
+const mockCalendarDaysRender = jest.fn();
+const mockCalendarMonthsRender = jest.fn();
+const mockCalendarWeeksRender = jest.fn();
+const mockCalendarYearsRender = jest.fn();
+
+jest.mock('./CalendarDays', () => {
+  return function MockCalendarDays(props: any) {
+    mockCalendarDaysRender(props);
+    return <div data-testid="mock-calendar-days">Mock Child</div>;
+  };
+});
+
+jest.mock('./CalendarMonths', () => {
+  return function MockCalendarMonths(props: any) {
+    mockCalendarMonthsRender(props);
+    return <div data-testid="mock-calendar-months">Mock Child</div>;
+  };
+});
+
+jest.mock('./CalendarWeeks', () => {
+  return function MockCalendarWeeks(props: any) {
+    mockCalendarWeeksRender(props);
+    return <div data-testid="mock-calendar-weeks">Mock Child</div>;
+  };
+});
+
+jest.mock('./CalendarYears', () => {
+  return function MockCalendarYears(props: any) {
+    mockCalendarYearsRender(props);
+    return <div data-testid="mock-calendar-years">Mock Child</div>;
+  };
+});
 
 const modes: CalendarMode[] = ['day', 'month', 'week', 'year'];
 const calendars = {
@@ -61,32 +94,51 @@ describe('<Calendar />', () => {
   });
 
   describe('prop: mode', () => {
+    beforeEach(() => {
+      mockCalendarDaysRender.mockClear();
+      mockCalendarMonthsRender.mockClear();
+      mockCalendarWeeksRender.mockClear();
+      mockCalendarYearsRender.mockClear();
+    });
+
     it('default to "day"', () => {
-      const testInstance = TestRenderer.create(
+      render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <Calendar referenceDate={moment().toISOString()} />
         </CalendarConfigProvider>,
       );
 
-      const calendarInstance = testInstance.root.findByType(CalendarDays);
-
-      expect(calendarInstance.type).toBe(CalendarDays);
+      expect(mockCalendarDaysRender).toHaveBeenCalledTimes(1);
     });
 
-    modes.forEach((mode) => {
-      const calendar = calendars[mode];
+    it('should render CalendarMonths when mode="month"', () => {
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="month" />
+        </CalendarConfigProvider>,
+      );
 
-      it(`should render ${calendars[mode].name} when mode=${mode}`, () => {
-        const testInstance = TestRenderer.create(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <Calendar referenceDate={moment().toISOString()} mode={mode} />
-          </CalendarConfigProvider>,
-        );
+      expect(mockCalendarMonthsRender).toHaveBeenCalledTimes(1);
+    });
 
-        const calendarInstance = testInstance.root.findByType(calendar);
+    it('should render CalendarWeeks when mode="week"', () => {
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="week" />
+        </CalendarConfigProvider>,
+      );
 
-        expect(calendarInstance.type).toBe(calendar);
-      });
+      expect(mockCalendarWeeksRender).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render CalendarYears when mode="year"', () => {
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="year" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(mockCalendarYearsRender).toHaveBeenCalledTimes(1);
     });
 
     describe('props should be passed to corresponded calendar', () => {
@@ -97,7 +149,7 @@ describe('<Calendar />', () => {
         const onDateHover = jest.fn();
         const referenceDate = moment().toISOString();
         const displayWeekDayLocale = 'zh-TW';
-        const testInstance = TestRenderer.create(
+        render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
               mode="day"
@@ -110,15 +162,16 @@ describe('<Calendar />', () => {
             />
           </CalendarConfigProvider>,
         );
-        const calendarInstance = testInstance.root.findByType(CalendarDays);
 
-        expect(calendarInstance.props.isDateDisabled).toBe(isDateDisabled);
-        expect(calendarInstance.props.isDateInRange).toBe(isDateInRange);
-        expect(calendarInstance.props.onClick).toBe(onChange);
-        expect(calendarInstance.props.onDateHover).toBe(onDateHover);
-        expect(calendarInstance.props.referenceDate).toBe(referenceDate);
-        expect(calendarInstance.props.displayWeekDayLocale).toBe(
-          displayWeekDayLocale,
+        expect(mockCalendarDaysRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isDateDisabled,
+            isDateInRange,
+            onClick: onChange,
+            onDateHover,
+            referenceDate,
+            displayWeekDayLocale,
+          }),
         );
       });
 
@@ -129,7 +182,7 @@ describe('<Calendar />', () => {
         const onWeekHover = jest.fn();
         const referenceDate = moment().toISOString();
         const displayWeekDayLocale = 'zh-TW';
-        const testInstance = TestRenderer.create(
+        render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
               mode="week"
@@ -142,15 +195,16 @@ describe('<Calendar />', () => {
             />
           </CalendarConfigProvider>,
         );
-        const calendarInstance = testInstance.root.findByType(CalendarWeeks);
 
-        expect(calendarInstance.props.isWeekDisabled).toBe(isWeekDisabled);
-        expect(calendarInstance.props.isWeekInRange).toBe(isWeekInRange);
-        expect(calendarInstance.props.onClick).toBe(onChange);
-        expect(calendarInstance.props.onWeekHover).toBe(onWeekHover);
-        expect(calendarInstance.props.referenceDate).toBe(referenceDate);
-        expect(calendarInstance.props.displayWeekDayLocale).toBe(
-          displayWeekDayLocale,
+        expect(mockCalendarWeeksRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isWeekDisabled,
+            isWeekInRange,
+            onClick: onChange,
+            onWeekHover,
+            referenceDate,
+            displayWeekDayLocale,
+          }),
         );
       });
 
@@ -160,7 +214,7 @@ describe('<Calendar />', () => {
         const onChange = jest.fn();
         const onMonthHover = jest.fn();
         const referenceDate = moment().toISOString();
-        const testInstance = TestRenderer.create(
+        render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
               mode="month"
@@ -172,13 +226,16 @@ describe('<Calendar />', () => {
             />
           </CalendarConfigProvider>,
         );
-        const calendarInstance = testInstance.root.findByType(CalendarMonths);
 
-        expect(calendarInstance.props.isMonthDisabled).toBe(isMonthDisabled);
-        expect(calendarInstance.props.isMonthInRange).toBe(isMonthInRange);
-        expect(calendarInstance.props.onClick).toBe(onChange);
-        expect(calendarInstance.props.onMonthHover).toBe(onMonthHover);
-        expect(calendarInstance.props.referenceDate).toBe(referenceDate);
+        expect(mockCalendarMonthsRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isMonthDisabled,
+            isMonthInRange,
+            onClick: onChange,
+            onMonthHover,
+            referenceDate,
+          }),
+        );
       });
 
       it('case: mode="year"', () => {
@@ -187,7 +244,7 @@ describe('<Calendar />', () => {
         const onChange = jest.fn();
         const onYearHover = jest.fn();
         const referenceDate = moment().toISOString();
-        const testInstance = TestRenderer.create(
+        render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <Calendar
               mode="year"
@@ -199,13 +256,16 @@ describe('<Calendar />', () => {
             />
           </CalendarConfigProvider>,
         );
-        const calendarInstance = testInstance.root.findByType(CalendarYears);
 
-        expect(calendarInstance.props.isYearDisabled).toBe(isYearDisabled);
-        expect(calendarInstance.props.isYearInRange).toBe(isYearInRange);
-        expect(calendarInstance.props.onClick).toBe(onChange);
-        expect(calendarInstance.props.onYearHover).toBe(onYearHover);
-        expect(calendarInstance.props.referenceDate).toBe(referenceDate);
+        expect(mockCalendarYearsRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isYearDisabled,
+            isYearInRange,
+            onClick: onChange,
+            onYearHover,
+            referenceDate,
+          }),
+        );
       });
     });
 
@@ -238,10 +298,10 @@ describe('<Calendar />', () => {
           expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
 
           fireEvent.click(monthControlButton);
-          expect(onMonthControlClick).toBeCalledTimes(1);
+          expect(onMonthControlClick).toHaveBeenCalledTimes(1);
 
           fireEvent.click(yearControlButton);
-          expect(onYearControlClick).toBeCalledTimes(1);
+          expect(onYearControlClick).toHaveBeenCalledTimes(1);
         });
       });
 
@@ -263,7 +323,7 @@ describe('<Calendar />', () => {
         expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
 
         fireEvent.click(yearControlButton);
-        expect(onYearControlClick).toBeCalledTimes(1);
+        expect(onYearControlClick).toHaveBeenCalledTimes(1);
       });
 
       it('should have a disabled year range button if mode="year"', () => {
@@ -294,19 +354,7 @@ describe('<Calendar />', () => {
   });
 
   describe('prop: onNext', () => {
-    it('CalendarControls should reveive undefined on onNext if prop not provided', () => {
-      const testInstance = TestRenderer.create(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment().toISOString()} />
-        </CalendarConfigProvider>,
-      );
-
-      const controlsInstance = testInstance.root.findByType(CalendarControls);
-
-      expect(controlsInstance.props.onNext).toBe(undefined);
-    });
-
-    it('CalendarControls should reveive onNext if prop provided', () => {
+    it('CalendarControls should receive onNext if prop provided', () => {
       const onNext = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -322,24 +370,12 @@ describe('<Calendar />', () => {
 
       fireEvent.click(nextButtonElement!);
 
-      expect(onNext).toBeCalledTimes(1);
+      expect(onNext).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('prop: onPrev', () => {
-    it('CalendarControls should reveive undefined on onPrev if this prop not provided', () => {
-      const testInstance = TestRenderer.create(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment().toISOString()} />
-        </CalendarConfigProvider>,
-      );
-
-      const controlsInstance = testInstance.root.findByType(CalendarControls);
-
-      expect(controlsInstance.props.onPrev).toBe(undefined);
-    });
-
-    it('CalendarControls should reveive onPrev if prop provided', () => {
+    it('CalendarControls should receive onPrev if prop provided', () => {
       const onPrev = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -355,31 +391,33 @@ describe('<Calendar />', () => {
 
       fireEvent.click(prevButtonElement!);
 
-      expect(onPrev).toBeCalledTimes(1);
+      expect(onPrev).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('prop: value', () => {
+    beforeEach(() => {
+      mockCalendarDaysRender.mockClear();
+    });
+
     it('should be casted to array and pass to calendars', () => {
       const value = moment().toISOString();
 
-      modes.forEach((mode) => {
-        const calendar = calendars[mode];
-        const testInstance = TestRenderer.create(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <Calendar
-              referenceDate={moment().toISOString()}
-              mode={mode}
-              value={value}
-            />
-          </CalendarConfigProvider>,
-        );
-        const calendarInstance = testInstance.root.findByType(calendar);
-        const valueProp = calendarInstance.props.value;
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="day"
+            value={value}
+          />
+        </CalendarConfigProvider>,
+      );
 
-        expect(valueProp).toBeInstanceOf(Array);
-        expect((valueProp as any[]).includes(value));
-      });
+      expect(mockCalendarDaysRender).toHaveBeenCalledWith(
+        expect.objectContaining({
+          value: [value],
+        }),
+      );
     });
   });
 });

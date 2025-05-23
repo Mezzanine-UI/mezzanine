@@ -1,12 +1,7 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useCalendarControls, CalendarConfigProvider } from '.';
 
 describe('useCalendarControls', () => {
@@ -48,7 +43,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onPrev();
       });
 
@@ -71,7 +66,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onNext();
       });
 
@@ -94,7 +89,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onPrev();
       });
 
@@ -117,7 +112,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onNext();
       });
 
@@ -140,7 +135,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onPrev();
       });
 
@@ -160,7 +155,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onNext();
       });
 
@@ -180,7 +175,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onPrev();
       });
 
@@ -200,7 +195,7 @@ describe('useCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onNext();
       });
 
