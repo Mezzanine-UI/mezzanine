@@ -11,7 +11,7 @@ Steppers guide users through multi-step processes such as forms, tasks, or workf
 
 
 ## Usage Guide
-Stepper is best suited for task-oriented interfaces such as forms, registration flows, or guided setup processes, where users are expected to complete steps sequentially. Each step reflects its state—completed, active, or upcoming—through distinct visual styles. Currently, the component supports only horizontal layouts and does not include step descriptions or error indicators.
+<!--Stepper is best suited for task-oriented interfaces such as forms, registration flows, or guided setup processes, where users are expected to complete steps sequentially. Each step reflects its state—completed, active, or upcoming—through distinct visual styles. Currently, the component supports only horizontal layouts and does not include step descriptions or error indicators.
 
 
     ### Best Practices
@@ -32,7 +32,31 @@ Stepper is best suited for task-oriented interfaces such as forms, registration 
 	- **Delegate state control to container:** Integrate Stepper with parent logic—typically involving form state and validation—to determine eligibility for proceeding to the next step.
 	- **Step click behavior (anticipated):** While step nodes are not currently interactive, design with potential future enhancements in mind—especially for workflows that benefit from quick navigation or step reviews.
 	- **Form and validation integration:** Common use cases include registration flows, multi-page setup forms, and application processes, where validation gates each stage of progression.
-	- **Extendibility for messages and feedback:** The current design supports only visual status indicators (completed, active, future). If needed, consider allowing space for custom step descriptions or error messaging to enhance usability.
+	- **Extendibility for messages and feedback:** The current design supports only visual status indicators (completed, active, future). If needed, consider allowing space for custom step descriptions or error messaging to enhance usability.-->
+
+Steppers guide users through a predefined sequence of steps, often seen in multi-stage forms, onboarding flows, or setup processes. By clearly indicating progress, current position, and completed actions, steppers reduce ambiguity and enhance task completion rates. They support both controlled progression and optional navigation, depending on the context.
+
+### Best Practices
+- **Ideal for clearly defined linear flows:** Use Stepper for tasks that require sequential progression, such as multi-page forms, onboarding flows, or account setup.
+- **Integrate with form validation:** Step transitions should be gated by form validation to ensure users complete each step properly.
+- **External navigation control:** Use separate “Previous” and “Next” buttons to manage the current step. The component itself does not handle transitions.
+- **Future-proof with click support in mind:** While clicking on steps is not currently supported, design your layout with potential enhancements like step-jump functionality in mind.
+
+### When Not to Use
+- **Non-linear workflows:** Avoid using Stepper when the process doesn’t require strict order, as it may constrain flexibility.
+- **Minimal steps:** For processes with only one or two steps, Stepper may appear unnecessary and overengineered.
+- **Limited screen space:** Stepper's horizontal layout may not work well in compact interfaces like modals or on mobile.
+
+### Usage Patterns
+<!--- **Controlled component behavior:** Stepper relies on external state control via the `activeStep` prop; it does not manage its own state.
+- **Delegate logic to container:** Use form state and validation in the parent component to control transitions between steps.
+- **Anticipate future interaction needs:** While steps are currently not clickable, consider adding styles and layout accommodations for future step navigation.
+- **Common integration cases:** Multi-step registration, application forms, and setup flows where user input must be verified progressively.
+- **Extendibility for messages and feedback:** Although the component only supports step state indicators, consider adding descriptions or error messages in adjacent UI elements for richer guidance.-->
+- **Guided Navigation**: The Stepper guides users through a sequential process. Each step indicates its state—"completed", "current", or "upcoming".
+- **State Transitions**: Once a step is completed, its visual state updates (e.g., checkmark) and the flow proceeds to the next step.
+- **Controlled Interactions**: Steps can be clicked to jump between them (if allowed), or controlled via external validation and logic conditions.
+- **Form Integration**: Often used in multi-step forms to enforce validation at each step before proceeding.
 	
 
 

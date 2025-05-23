@@ -9,7 +9,7 @@ Icons provide visual cues for actions, states, and content, improving clarity an
 
 
 ## Usage Guide
-Icons can serve purely decorative purposes (such as a checkmark to indicate selection), or be interactive (like a clear button that resets an input field). They are often embedded within other components—such as input fields, tables, or dialogs—to enhance functionality and visual clarity.
+<!--Icons can serve purely decorative purposes (such as a checkmark to indicate selection), or be interactive (like a clear button that resets an input field). They are often embedded within other components—such as input fields, tables, or dialogs—to enhance functionality and visual clarity.
     ### Best Practices
     - **Use icons that clearly reflect their intended function:** Select icons that convey clear meaning (e.g., a checkmark for confirmation, a cross for clearing), and avoid ambiguous or misleading symbols.
 	- **Ensure consistency and recognizability:** Prioritize icons from your design system and maintain consistent styling (e.g., stroke weight, shape, fill).
@@ -26,7 +26,31 @@ Icons can serve purely decorative purposes (such as a checkmark to indicate sele
 	- When used interactively (e.g., a clear or edit icon), clicking the icon triggers a defined event—such as resetting an input field or enabling an editable state.
 	- Icons may be accompanied by loading or disabled states to manage feedback and prevent duplicate actions.
 	- Static icons (e.g., for success or warning) don’t have interaction, but should use color or shape to reinforce their semantic meaning—like a green checkmark or a warning icon inside a colored circle.
-	- When embedded in other components (like a drag icon in a table), ensure interactive areas are clearly defined and distinguishable from static ones to prevent misclicks.
+	- When embedded in other components (like a drag icon in a table), ensure interactive areas are clearly defined and distinguishable from static ones to prevent misclicks.-->
+
+Icons serve as compact visual cues to convey meaning, support recognition, and reduce cognitive load in interfaces. They can represent actions, statuses, or object categories, and are especially valuable in space-constrained layouts or repetitive UI patterns. Used consistently and with accessible labeling, icons help reinforce clarity and usability without relying on text alone.
+
+### Best Practices
+- **Use icons that clearly represent intent**: Choose symbols with obvious meaning (e.g., a checkmark for confirmation, a cross for closing) and avoid ambiguous shapes.
+- **Ensure consistency and recognizability**: Use icons from your design system and keep consistent styles (stroke weight, shape, fill).
+- **Add accessible labels for interactive icons**: Support actions with tooltips or titles to improve usability and accessibility.
+- **Size icons appropriately**: Match icon size to its container for layout balance and avoid visual clutter.
+- **Use animations purposefully**: Animated icons (e.g., spinning for loading) should reinforce status changes—not distract.
+
+### When Not to Use
+- **When the icon has no clear message or function**: Avoid using icons purely for decoration if they don’t communicate meaning.
+- **When an icon merely duplicates adjacent text**: If it doesn’t add value, remove it to reduce noise.
+- **For interactive icons without supporting cues**: Avoid clickable icons without tooltips or feedback—they can confuse or be missed by users.
+
+### Usage Patterns
+<!--1. When used interactively (e.g., for clearing or editing), clicking the icon triggers a specific event like resetting a field or entering an editable state.
+2. Icons can enter `loading` or `disabled` states to prevent repeated actions and provide visual feedback.
+3. Static icons (e.g., for success or warning) are non-interactive but should use shape and color to reinforce meaning (e.g., green checkmark, yellow alert icon).
+4. When embedded in components (like a drag icon in a table row), ensure interaction zones are clearly defined to avoid confusion with decorative icons.-->
+- **Interactive Use**: Clickable icons (e.g., for clearing or editing) should trigger specific events like resetting a field or entering edit mode.
+- **Feedback States**: Icons can enter `loading` or `disabled` states to prevent repeated actions and indicate processing.
+- **Conveying Meaning**: Static icons (e.g., success or warning) use color and shape to reinforce meaning—like green checkmarks or yellow alerts.
+- **Clear Interaction Zones**: When icons are embedded in components (like a drag icon), ensure the interactive area is distinguishable from decorative elements.
 
 
 

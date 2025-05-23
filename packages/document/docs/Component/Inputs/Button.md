@@ -10,7 +10,7 @@ Buttons trigger actions or events in response to user clicks, guiding interactio
 
 
 ## Usage Guide
-Buttons are primarily used to trigger actions, submit forms, or toggle between states. Depending on the specific context and user needs, buttons can appear in various modes—such as icon-only or split buttons—with different variants, including contained, outlined, or text-only, and states like enabled, disabled, or destructive, all to clearly communicate the intended interaction.
+<!--Buttons are primarily used to trigger actions, submit forms, or toggle between states. Depending on the specific context and user needs, buttons can appear in various modes—such as icon-only or split buttons—with different variants, including contained, outlined, or text-only, and states like enabled, disabled, or destructive, all to clearly communicate the intended interaction.
     ### Best Practices
 	- **Choose styles based on action priority:** use Primary for main actions, Secondary for secondary options, and Tertiary for less prominent or lightweight interactions.
 	- **Select the appropriate mode based on content:** utilize Icon Only, Leading Icon, Trailing Icon, or Split Button to improve clarity and flexibility.
@@ -23,13 +23,35 @@ Buttons are primarily used to trigger actions, submit forms, or toggle between s
 	- **When no real action is performed:** avoid using buttons merely for visual purposes to prevent misleading users.
 	- **When combining multiple actions without distinction:** if both primary and secondary actions are needed, use a Split Button or pair with a Dropdown to clearly differentiate them.
 
-    ### Action Flow
+    ### Usage Patterns
 	1. When a user clicks the button, it triggers the associated logic—such as submitting a form, navigating to another page, expanding a menu, or opening a dialog. The button’s style (e.g., Primary or Danger) helps convey the nature of the action.
 	2. After the interaction, the button may transition into different states (such as Loading or Disabled) and offer visual feedback like a press animation or color shift.
 	3. For **Split Buttons**, the main button executes the primary action, while the arrow on the right reveals a dropdown menu for selecting additional options.
-	4. If the button is in a `disabled` state, clicking it has no effect. In such cases, consider providing supplementary guidance—such as a tooltip explaining why the action is unavailable.
+	4. If the button is in a `disabled` state, clicking it has no effect. In such cases, consider providing supplementary guidance—such as a tooltip explaining why the action is unavailable.-->
 
+Buttons are essential interactive elements that trigger actions or navigate users through an interface. Whether used for submitting forms, opening dialogs, or toggling views, buttons offer a clear and immediate way for users to initiate interactions. Their visual styling—across variants, sizes, and states—reinforces hierarchy and intention, ensuring clarity and responsiveness across diverse UI scenarios.
 
+### Best Practices
+- **Choose styles based on task priority**: Use `Primary` for main actions, `Secondary` for secondary actions, and `Tertiary` for less prominent interactions.
+- **Select appropriate mode based on content**: Use `Icon Only`, `Leading Icon`, `Trailing Icon`, or `Split Button` for better clarity and flexibility.
+- **Keep labels concise and actionable**: Begin with a verb and clearly indicate the intended task (e.g., “Save,” “Delete,” “Add”).
+- **Provide clear state feedback**: Ensure consistent visual cues for hover, focus, active, and disabled states.
+- **Maintain size consistency**: Choose `Small`, `Medium`, or `Large` based on layout density for visual harmony.
+
+### When Not to Use
+- **For non-interactive content**: Use `Label` or `Text` components instead.
+- **When no real action is involved**: Avoid buttons used only for visual emphasis or placeholder content.
+- **When multiple actions are combined without distinction**: Use `Split Button` or pair with a `Dropdown` to clearly separate actions.
+
+### Usage Patterns
+<!--1. Clicking a button triggers its associated logic—such as submitting a form, navigating, or opening a dialog. The visual style (e.g., `Primary`, `Danger`) reinforces the action’s importance.
+2. After interaction, the button may transition to a `Loading` or `Disabled` state and offer visual feedback like color change or animation.
+3. In a `Split Button`, the main segment performs the primary action, while the arrow reveals a dropdown with additional options.
+4. A `Disabled` button has no effect when clicked. Consider using a `Tooltip` to explain why the action is unavailable.-->
+- **Interaction Trigger**: Clicking the button executes its intended action, such as submitting a form, navigating, or opening a dialog. Use styles (e.g., `Primary`, `Danger`) to indicate importance.
+- **State Transition**: After interaction, the button may switch to a `Loading` or `Disabled` state and provide feedback through color or animation.
+- **Split Button Usage**: The main segment performs the primary action, while the arrow reveals a dropdown with alternative options.
+- **Explaining Disabled State**: A `Disabled` button prevents interaction. Consider using a `Tooltip` to explain why the action is unavailable.
 
 
 ## Modes

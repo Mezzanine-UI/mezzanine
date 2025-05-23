@@ -10,7 +10,7 @@ Pagination divides large datasets into manageable pages, enabling efficient navi
 
 
 ## Usage Guide
-Pagination can consist of various sub-components, such as “Previous/Next” buttons, page numbers, ellipsis indicators (…), a quick-jump input (Jumper), and a page size selector. These elements can be shown or hidden depending on the context. Typically paired with data tables, Pagination serves as a navigation tool for browsing segmented datasets.
+<!--Pagination can consist of various sub-components, such as “Previous/Next” buttons, page numbers, ellipsis indicators (…), a quick-jump input (Jumper), and a page size selector. These elements can be shown or hidden depending on the context. Typically paired with data tables, Pagination serves as a navigation tool for browsing segmented datasets.
 
     ### Best Practices
     - **Preserve essential pagination controls:** Always include “Previous” and “Next” buttons alongside a limited number of visible page numbers to reduce visual clutter. Parameters like boundaryCount and siblingCount can be used to fine-tune visibility.
@@ -31,7 +31,33 @@ Pagination can consist of various sub-components, such as “Previous/Next” bu
 	2. If the Jumper is enabled, users can enter a specific page number and trigger navigation via a confirmation button.
 	3. When the Page Size Selector is visible, users can change the number of items per page. This triggers an `onChangePageSize` event and resets the current pagination state.
 	4. Conditional behaviors like `hideNextButton` or `disabled` allow customization of navigation controls based on context or permissions.
-	5. When integrated with a Table component, pagination state should be tightly coupled with the table’s data updates to ensure synchronization and coherence across the UI.
+	5. When integrated with a Table component, pagination state should be tightly coupled with the table’s data updates to ensure synchronization and coherence across the UI.-->
+
+Pagination organizes large datasets into manageable chunks, allowing users to navigate across multiple pages of content with control and clarity. It supports browsing, filtering, or reviewing scenarios where users need sequential access to data. Clear indicators, interactive controls, and accessibility affordances make pagination crucial for content-rich applications.
+
+### Best Practices
+- **Preserve essential pagination controls:** Always include “Previous” and “Next” buttons with a minimal number of visible page numbers to avoid clutter. Use `boundaryCount` and `siblingCount` to fine-tune visibility.
+- **Enable direct page access (Jumper):** For large datasets, allow users to enter a page number to jump directly to it.
+- **Maintain consistent layout and ordering:** When combining controls like page size selector, page numbers, and jumper, a recommended order is: *Page Size Selector > Page Numbers > Jumper*.
+- **Differentiate states clearly:** Ensure that disabled, selected, hovered, and active states are visually distinct to reduce errors and enhance usability.
+- **Align with associated table elements:** Match spacing and alignment with the Table component if used together to maintain visual coherence.
+
+### When Not to Use
+- **When the dataset is minimal:** If all data fits on a single page, remove Pagination to avoid unnecessary interaction.
+- **On limited screen space:** For compact interfaces like mobile devices, consider infinite scroll or progressive loading instead.
+- **When total page count is unknown or unsupported:** If your backend doesn’t provide pagination metadata, avoid using this component to prevent user confusion.
+
+### Usage Patterns
+<!--1. Users navigate using page numbers or “Previous/Next” buttons. This triggers an `onChange` event with the new page number.
+2. If the Jumper is enabled, users can type a page number and confirm to jump directly.
+3. If the Page Size Selector is visible, users can select a new page size. This triggers an `onChangePageSize` event and resets the current page state.
+4. Conditional behaviors (like `hideNextButton`, `disabled`) allow context-aware control of navigation elements.
+5. When used with a Table, pagination state must synchronize with the table's data updates to ensure seamless user experience.-->
+- **Page Switching Behavior**: Clicking a page number or navigation button triggers `onChange` with the new page number, letting the parent update content.
+- **Jump to Page**: If the Jumper is enabled, users can input a page number and jump directly after confirmation.
+- **Page Size Control**: If visible, the selector allows users to choose items per page. This triggers `onChangePageSize` and resets current page state.
+- **Conditional Logic**: Props like `hideNextButton` and `disabled` allow contextual control of navigation availability.
+- **Integration with Data Views**: When used with components like `Table`, pagination state should sync with content updates to ensure alignment.
 
 
 

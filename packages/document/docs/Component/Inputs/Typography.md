@@ -9,7 +9,7 @@ Typography enables users to read and understand content through consistent and s
 
 
 ## Usage Guide
-Typography serves not only as a vessel for information but also as a foundational element for establishing visual hierarchy and stylistic coherence. It is applicable in a wide range of scenarios including headings, paragraph texts, button labels, input hints, and helper messages. Through the use of various typographic styles (e.g., h1–h6, body1, caption) and properties (e.g., font weight, alignment, line wrapping), it supports clear and accessible layout design.
+<!--Typography serves not only as a vessel for information but also as a foundational element for establishing visual hierarchy and stylistic coherence. It is applicable in a wide range of scenarios including headings, paragraph texts, button labels, input hints, and helper messages. Through the use of various typographic styles (e.g., h1–h6, body1, caption) and properties (e.g., font weight, alignment, line wrapping), it supports clear and accessible layout design.
 
     ### Best Practices
     - **Match semantic intent with style (variant):** Use h1–h6 for hierarchical headings, body1 and body2 for body text, and caption, input1, etc., for supplementary information.
@@ -32,9 +32,35 @@ Typography serves not only as a vessel for information but also as a foundationa
 	- Typography may be embedded within other components (e.g., Button, Input), in which case the container component should determine the appropriate text style—such as button1 being the default for button labels—to ensure overall design consistency.
 	- The `noWrap` prop can be used to constrain text to a single line, preventing line breaks—ideal for buttons, table headers, or card titles where layout cleanliness is essential.
 	- When text exceeds the width of its container, `ellipsis` can be used to truncate the overflow and display an ellipsis (…). Ensure the container is set to `block` or `inline-block` for this feature to function correctly.
-	- In cases where text truncation is likely, consider pairing with a **Tooltip or similar component** to reveal the full content, thereby enhancing readability and accessibility.
+	- In cases where text truncation is likely, consider pairing with a **Tooltip or similar component** to reveal the full content, thereby enhancing readability and accessibility.-->
 
-	
+Typography is the foundation of readable, structured interfaces. It defines the tone, hierarchy, and rhythm of content across headings, paragraphs, labels, and helper texts. Through consistent use of font styles, weights, and spacing, typography establishes visual clarity and supports accessibility, ensuring that content is both legible and meaningful to users.
+
+### Best Practices
+- **Match semantic intent with style (variant)**: Use h1–h6 for hierarchical headings, body1 and body2 for paragraph content, and caption or input1 for supplementary text.
+- **Maintain visual and structural consistency**: Keep font size, weight, and line height consistent across similar elements to avoid visual clutter.
+- **Use color to reflect intent or hierarchy**: For instance, `text-primary` for core content, `text-disabled` for non-interactive text.
+- **Utilize** `ellipsis` **or** `noWrap` **to manage constrained layouts**: These props help preserve structure when space is limited.
+- **Adjust weight for emphasis**: Use the `weight` prop (e.g., bold, light) to emphasize meaning while avoiding excessive emphasis that may disrupt clarity.
+
+### When Not to Use
+- **When visuals or data speak better than text**: For image-heavy or data-centric content, prefer components like Icon or Chart.
+- **When layout and style are already defined by parent components**: Avoid applying Typography solely for styling within pre-styled containers like tables.
+- **When semantic role and visual style don't align**: Using body2 for a heading, or h1 for secondary notes, can mislead users and hinder maintainability.
+
+### Usage Patterns
+<!--1. Typography is primarily used for **static content display**, but when used in buttons, helper messages, or input hints, its color or styling may adapt based on component state (e.g., `disabled`, `error`).
+2. Typography styles are consistent across all screen sizes—no need for responsive font size or line height adjustments.
+3. In multilingual interfaces (e.g., mixing Chinese and English), Typography adapts font family automatically (e.g., English inside Chinese switches to **PingFang TC**) while maintaining spacing and alignment.
+4. When embedded in components like `Button` or `Input`, the parent component defines the correct variant (e.g., `button1` for button labels) to ensure design consistency.
+5. Use the `noWrap` prop to constrain content to a single line—ideal for compact UI elements like table headers, buttons, or card titles.
+6. Use `ellipsis` to truncate overflowing text with “…”—ensure the container is `block` or `inline-block` for this to work.
+7. If truncation is applied, pair with a **Tooltip or similar component** to surface full text and improve accessibility.-->
+- **Static Content Display**: Typography is primarily for static content but can adapt styles based on component states like `disabled` or `error`.
+- **Consistent Across Devices**: Styles are uniform across screen sizes—no need for responsive font adjustments.
+- **Multilingual Compatibility**: In multilingual contexts, fonts switch (e.g., English becomes PingFang TC in Chinese) while keeping layout consistent.
+- **Embedded Usage**: When used in components like `Button` or `Input`, styling is inherited (e.g., `button1` for labels).
+- **Wrapping and Truncation**: Use `noWrap` for single-line display; apply `ellipsis` and `Tooltip` for overflowing content to maintain readability.
 
 
 

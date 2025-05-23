@@ -9,7 +9,7 @@ Tabs allow users to switch between related views or content categories within th
 
 
 ## Usage Guide
-    The Tabs component is well-suited for scenarios involving information categorization, content segmentation, or multi-view toggling. Users can navigate between content panels by selecting different tab labels. The component supports both basic and grouped styles, enhanced with optional features such as numeric indicators, badges, auxiliary buttons, and horizontal scrolling. It also provides distinct visual cues for various interaction states, including disabled, hover, and selected.
+<!--The Tabs component is well-suited for scenarios involving information categorization, content segmentation, or multi-view toggling. Users can navigate between content panels by selecting different tab labels. The component supports both basic and grouped styles, enhanced with optional features such as numeric indicators, badges, auxiliary buttons, and horizontal scrolling. It also provides distinct visual cues for various interaction states, including disabled, hover, and selected.
 
     ### Best Practices
     - **Use for switching between related peer-level content:** Tabs are ideal when users need to navigate between parallel sections of information—such as form segments, filter options, or dashboard panels—offering a clear and unobtrusive way to switch views.
@@ -29,7 +29,31 @@ Tabs allow users to switch between related views or content categories within th
 	- **Support for disabled tabs:** Tabs can be configured as non-interactive (disabled), commonly used to indicate unavailable steps or restricted sections based on current user context.
 	- **No external state control by default:** The Tabs component currently does not expose a standardized external state control interface. Tab selection is managed internally, though activeKey can be used for manual overrides.
 	- **Integrate with loading or skeleton states:** For content that involves data fetching or complex rendering, use loading spinners or skeleton screens to provide visual feedback during transitions.
-	- **Simple foundation with flexible extension:** While Tabs are a fundamental component, they support enhanced UI elements such as badges, dots, and action buttons, allowing for contextual customization according to design needs.
+	- **Simple foundation with flexible extension:** While Tabs are a fundamental component, they support enhanced UI elements such as badges, dots, and action buttons, allowing for contextual customization according to design needs.-->
+
+Tabs organize peer-level content into separate panels that users can quickly switch between. They are ideal for categorizing data, settings, or workflows within a single view without cluttering the interface. Tabs improve usability by keeping context consistent while reducing the need for full page transitions or modal interruptions.
+
+### Best Practices
+- **Use for switching between related peer-level content:** Tabs are ideal when users need to toggle between sections such as form segments, filter options, or dashboard views without disrupting the page layout.
+- **Maintain page stability:** Tab interactions should update content within the same layout area without causing full-page reloads, ensuring seamless navigation.
+- **Provide contextual enhancements as needed:** Elements like counters, badges, or action buttons can be added to improve clarity or interactivity based on specific needs.
+- **Handle overflow gracefully:** When tab items exceed the available width, enable horizontal scrolling or use navigation arrows to maintain visual clarity and avoid layout breaks.
+
+### When Not to Use
+- **Low contextual relevance between content:** If the tabbed content has weak or no relation, using Tabs may confuse users and make the layout harder to interpret.
+- **Deeply nested layouts:** Avoid using Tabs within already complex navigational structures like accordions or multi-level sidebars, as it may increase cognitive overload.
+- **Excessive number of tabs:** More than 7–8 tabs can overwhelm users. Consider using dropdown menus or restructuring content for better usability and visual cleanliness.
+
+### Usage Patterns
+<!--- **Immediate content switching:** Tab clicks should instantly display the corresponding content without confirmation or delay to match user expectations.
+- **Support for disabled tabs:** Tabs can be marked as disabled to indicate unavailable or restricted content based on current user conditions or flow state.
+- **No external state control by default:** Tabs manage state internally. To control active tab externally, use the `activeKey` prop for manual selection.
+- **Integrate with loading or skeleton states:** When switching content involves fetching data or rendering delays, use visual feedback like spinners or skeleton screens to indicate loading.
+- **Simple foundation with flexible extension:** Tabs serve as a lightweight base component, with support for added UI elements like badges, dots, and action buttons to adapt to design or functional requirements.-->
+- **Switching Between Tabs**: Users switch content areas by clicking tab labels. By default, switching occurs on click, but hover activation is also supported.
+- **Supporting Elements**: Tabs can include badges, counters, or action buttons (e.g., Add) to indicate state or prompt interaction.
+- **State Indicators**: Tabs support states like `enabled`, `disabled`, `hover`, and `selected` to guide user interactions.
+- **Responsive Layout**: When tab count exceeds the available space, overflow handling allows scrolling or arrow navigation to access hidden tabs.
 	
 
 

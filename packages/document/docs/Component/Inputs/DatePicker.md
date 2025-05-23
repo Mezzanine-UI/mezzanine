@@ -9,7 +9,7 @@ DatePickers enable users to select a specific date or a range of dates and times
 
 
 ## Usage Guide
-The Datepicker is typically used for selecting either a single date or a date range, such as choosing a scheduled event date or setting a date filter range.
+<!--The Datepicker is typically used for selecting either a single date or a date range, such as choosing a scheduled event date or setting a date filter range.
 
     ### Best Practices
     - Prioritize use in **time-sensitive scenarios** (e.g., behavior tracking, bookings, or scheduling).
@@ -34,7 +34,28 @@ The Datepicker is typically used for selecting either a single date or a date ra
     ![圖片](../img/DatePicker-Demo-Select.svg)
 
     #### Input Demo
-    ![圖片](../img/DatePicker-Demo-Input.svg)
+    ![圖片](../img/DatePicker-Demo-Input.svg)-->
+
+
+The DatePicker allows users to select a single date or a date range, typically for scheduling, reporting, or data filtering scenarios. It presents a visual calendar to improve accuracy and reduce manual input errors.
+
+### Best Practices
+- **Use in time-sensitive scenarios:** Ideal for scheduling, booking, or analytics tasks where precise date input is crucial.
+- **Enhance range selection with visual cues:** When using date ranges, highlight the selected span or show hover feedback to clarify start and end points.
+- **Pre-fill values to reduce effort:** Consider using default values like today’s date or the last selected date to simplify user actions.
+- **Use placeholders to communicate expected format:** Especially useful in multilingual UIs to indicate valid input formats (e.g., `YYYY/MM/DD`).
+- **Clarify precision requirements:** If time selection is necessary (hours, minutes, seconds), clearly state why it’s needed to avoid user confusion or over-interaction.
+
+### When Not to Use
+- **When a plain date string is sufficient:** For simple inputs like birthdays or static records, a standard text field may be more efficient.
+- **When quick range presets are better suited:** For filtering needs (e.g., "Last 7 Days"), relative date pickers offer a faster and more intuitive experience.
+- **For non-interactive display values:** If the date is meant only for display, use a label or static text element to prevent the illusion of interactivity.
+
+### Usage Patterns
+- **Opening the Picker**: Clicking the input field opens the calendar panel for selection.
+- **Selecting Date and Time**: Users can pick a date from the calendar view or navigate through months and years. If time selection is enabled, users can also set hours and minutes.
+- **Manual Input**: Users can type the date directly if it matches the expected format (e.g., `YYYY-MM-DD`). Incorrect formats will be rejected.
+- **Clearing the Value**: Clicking the clear icon removes the selected date and resets the input field.
 
 
 
