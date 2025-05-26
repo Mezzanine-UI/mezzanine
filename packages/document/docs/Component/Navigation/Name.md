@@ -93,7 +93,7 @@
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
-        | **** |  | <font color="#BD3B3B">``</font> |  |
+        | **placement** | Whether the drawer placement. | <font color="#BD3B3B">`"left"` `"right"` `"top"` `"bottom"`</font> | `"'left'"` |
         | **** |  | <font color="#BD3B3B">``</font> |  |
         
 
@@ -114,7 +114,7 @@
 
 
     ### Validation
-         Defines validation rules for the component, such as required fields, input constraints, or allowed ranges, to ensure data accuracy and prevent user errors.
+        Defines validation rules for the component, such as required fields, input constraints, or allowed ranges, to ensure data accuracy and prevent user errors.
 
         | Property | Description | Type | Default |
         |-------|-------|-------|-------|
