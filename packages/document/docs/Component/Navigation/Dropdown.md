@@ -4,7 +4,7 @@ Dropdowns allow users to reveal a list of selectable options by clicking a trigg
 
 
 ## Playground
-![圖片](../img/Dropdown-Playground.svg)
+![Image](../img/Dropdown-Playground.svg)
 
 
 
@@ -39,28 +39,28 @@ Dropdown enables users to make a single selection from a predefined list, common
 
 📌 This is the most common dropdown style and serves as the foundation for extended formats.
 
-![圖片](../img/Dropdown-Mode-Basic.svg)
+![Image](../img/Dropdown-Mode-Basic.svg)
 
 
 ### Text + Trailing Icon
 - Combines label and trailing icon (typically a chevron) to indicate dropdown affordance.
 - Recommended For: Sort menus, toggle controls, or interface areas where clarity is critical.
 
-![圖片](../img/Dropdown-Mode-Text+Trailing.svg)
+![Image](../img/Dropdown-Mode-Text+Trailing.svg)
 
     
 ### Ellipsis Icon
 - Uses an ellipsis (or similar) icon as a trigger, ideal for minimal or space-constrained layouts.
 - Recommended For: Card actions, row-level menus in tables, or mobile-first designs.
 
-![圖片](../img/Dropdown-Mode-Ellipsis.svg)
+![Image](../img/Dropdown-Mode-Ellipsis.svg)
 
 
 ### Icon Group
 - Embeds icon-only dropdowns into a set of related icons for visual consistency.
 - Recommended For: Toolbars, editors, or densely packed UI areas with grouped controls.
 
-![圖片](../img/Dropdown-Mode-IconGroup.svg)
+![Image](../img/Dropdown-Mode-IconGroup.svg)
 
 
 

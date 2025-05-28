@@ -5,7 +5,7 @@ Buttons trigger actions or events in response to user clicks, guiding interactio
 
 
 ## Playground
-![圖片](../img/Button-Playground.svg)
+![Image](../img/Button-Playground.svg)
 
 
 
@@ -58,7 +58,7 @@ Buttons are essential interactive elements that trigger actions or navigate user
     ### Basic
         In scenarios where the purpose of the action is singular and clearly communicated, a text-only button offers the most straightforward solution. Commonly used for form submissions, confirmation actions, or navigation switches, this style helps maintain a clean interface and reduces cognitive load on the user.
 
-        ![圖片](../img/Button-Mode-Basic.svg)
+        ![Image](../img/Button-Mode-Basic.svg)
 
     ### Icon
         When visual cues are necessary to reinforce the intent of an action, buttons with icons can enhance recognition. Typical configurations include:
@@ -68,14 +68,14 @@ Buttons are essential interactive elements that trigger actions or navigate user
 
         **📌 Note:** Icon-only buttons should always be paired with a **tooltip** to ensure clear affordance and accessibility.
 
-        ![圖片](../img/Button-Mode-Icon.svg)
+        ![Image](../img/Button-Mode-Icon.svg)
 
     ### Composite
         For complex actions requiring multiple behaviors or grouped presentation, the following button types are recommended:
 	    - **Split Button:** Combines a primary action with a dropdown for alternate options—ideal when a default action is available, but flexibility is also needed.
 	    - **Button Group:** Aligns multiple buttons side-by-side, often used for view toggles (e.g., table/grid), filters, or multi-step actions.
 
-        ![圖片](../img/Button-Mode-Composite.svg)
+        ![Image](../img/Button-Mode-Composite.svg)
 
 
 ## Appearance
@@ -90,7 +90,7 @@ Buttons are essential interactive elements that trigger actions or navigate user
     - **Secondary** ( `outlined` ): Used for secondary actions, these buttons are visually less prominent than Primary but still interactive. Suitable for actions like Cancel, Back, or non-critical options.
     - **Tertiary** ( `text` ): The lightest visual style—no borders or background, just text with subtle hover effects. Best used in low-disruption contexts like cards, tables, or inline actions.
 
-    ![圖片](../img/Button-Variant.svg)
+    ![Image](../img/Button-Variant.svg)
 
     ### States
     We categorize button states into two major types: Interaction States and Visual Intents—enabling both designers and developers to maintain consistent semantics and styling.
@@ -107,7 +107,7 @@ Buttons are essential interactive elements that trigger actions or navigate user
         - **Hover:** Activated on mouseover, providing immediate visual feedback to improve discoverability.
         - **Focused:** Triggered when a button is focused via keyboard navigation (e.g., Tab), enhancing accessibility.
 
-        ![圖片](../img/Button-State.svg)
+        ![Image](../img/Button-State.svg)
 
     ### Sizes
     To accommodate varying interface densities and interaction requirements, three button sizes are available:
@@ -115,7 +115,7 @@ Buttons are essential interactive elements that trigger actions or navigate user
 	- `"medium"` : The default size, suited for forms, modals, and general UI actions. Balances clickability with spatial efficiency.
 	- `"large"` : Best for prominent actions—such as homepage CTAs, process navigation buttons, or full-width layouts. Offers greater visual emphasis and clearer directional guidance.
     
-    ![圖片](../img/Button-Size.svg)
+    ![Image](../img/Button-Size.svg)
     
 
 

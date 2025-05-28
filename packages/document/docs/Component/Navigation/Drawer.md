@@ -4,7 +4,7 @@ Drawers slide in from the edge of the screen to present additional content or se
 
 
 ## Playground
-![圖片](../img/Icon-Playground.svg)
+![Image](../img/Drawer-Playground.svg)
 
 
 
@@ -86,9 +86,6 @@ The Drawer provides a non-blocking way to present additional content or actions 
 
 
 
-
-    
-    
 
 
 ## Appearance
