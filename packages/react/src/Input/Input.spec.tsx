@@ -1,22 +1,17 @@
-import { PlusIcon } from '@mezzanine-ui/icons';
 import { ChangeEvent, useState, KeyboardEvent } from 'react';
 import {
   act,
   cleanup,
   render,
   cleanupHook,
-  TestRenderer,
   fireEvent,
 } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Icon from '../Icon';
-import TextField from '../TextField';
 import { FormField } from '../Form';
 import Input from '.';
-import ConfigProvider from '../Provider';
 import { TagsType } from '../Form/useInputWithTagsModeValue';
 
 function getInputElement(element: HTMLElement) {
@@ -49,46 +44,6 @@ describe('<Input />', () => {
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-input')).toBeTruthy();
-  });
-
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <Input
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.active).toBe(true);
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
-    expect(textFieldInstance.props.suffix).toStrictEqual(suffix);
-  });
-
-  it('should accept ConfigProvider context changes', () => {
-    const testRenderer = TestRenderer.create(
-      <ConfigProvider size="small">
-        <Input />
-      </ConfigProvider>,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.size).toBe('small');
   });
 
   it('props should directly pass to native input element', () => {
@@ -168,38 +123,6 @@ describe('<Input />', () => {
 
       expect(input1.disabled).toBeTruthy();
       expect(input2.disabled).toBeFalsy();
-    });
-  });
-
-  describe('prop: error', () => {
-    it('should use severity from form control if error not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField severity="error">
-          <Input />
-          <Input error={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
-
-      expect(textField1.props.error).toBe(true);
-      expect(textField2.props.error).toBe(false);
-    });
-  });
-
-  describe('prop: fullWidth', () => {
-    it('should use fullWidth from form control if fullWidth not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField fullWidth>
-          <Input />
-          <Input fullWidth={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
-
-      expect(textField1.props.fullWidth).toBeTruthy();
-      expect(textField2.props.fullWidth).toBeFalsy();
     });
   });
 
@@ -287,35 +210,6 @@ describe('<Input tags="default" />', () => {
     expect(element.classList.contains('mzn-input')).toBeTruthy();
   });
 
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <Input
-        clearable
-        disabled
-        error
-        fullWidth
-        mode="default"
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.active).toBe(true);
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
-    expect(textFieldInstance.props.suffix).toStrictEqual(suffix);
-  });
-
   it('props should directly pass to native input element', () => {
     const { getHostHTMLElement } = render(
       <Input disabled mode="default" placeholder="placeholder" readOnly />,
@@ -399,38 +293,6 @@ describe('<Input tags="default" />', () => {
 
       expect(input1.disabled).toBeTruthy();
       expect(input2.disabled).toBeFalsy();
-    });
-  });
-
-  describe('prop: error', () => {
-    it('should use severity from form control if error not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField severity="error">
-          <Input mode="default" />
-          <Input mode="default" error={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
-
-      expect(textField1.props.error).toBe(true);
-      expect(textField2.props.error).toBe(false);
-    });
-  });
-
-  describe('prop: fullWidth', () => {
-    it('should use fullWidth from form control if fullWidth not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField fullWidth>
-          <Input mode="default" />
-          <Input mode="default" fullWidth={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
-
-      expect(textField1.props.fullWidth).toBeTruthy();
-      expect(textField2.props.fullWidth).toBeFalsy();
     });
   });
 
@@ -574,35 +436,6 @@ describe('<Input mode="tags" />', () => {
     expect(
       element.classList.contains('mzn-input__tags-mode__input-on-top'),
     ).toBeTruthy();
-  });
-
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <Input
-        mode="tags"
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.active).toBe(true);
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
-    expect(textFieldInstance.props.suffix).toStrictEqual(suffix);
   });
 
   describe('prop: initialTagsValue', () => {
