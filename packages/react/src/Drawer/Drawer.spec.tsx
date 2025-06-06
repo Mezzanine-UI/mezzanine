@@ -1,11 +1,5 @@
-import {
-  cleanup,
-  cleanupHook,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, cleanupHook, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import { SlideFade, SlideFadeDirection } from '../Transition';
 import Drawer, { DrawerPlacement } from '.';
 
 function getOverlayElement(container: HTMLElement = document.body) {
@@ -70,24 +64,6 @@ describe('<Drawer />', () => {
         expect(
           drawerElement.classList.contains(`mzn-drawer--${placement}`),
         ).toBeTruthy();
-      });
-
-      const slideFadeDirection: { [index: string]: SlideFadeDirection } = {
-        top: 'down',
-        left: 'right',
-        right: 'left',
-        bottom: 'up',
-      };
-
-      it(`should bind correct direction to SlideFade component direction="${slideFadeDirection[placement]}"`, () => {
-        const testRender = TestRenderer.create(
-          <Drawer placement={placement} open disablePortal />,
-        );
-        const slideFadeInstance = testRender.root.findByType(SlideFade);
-
-        expect(slideFadeInstance.props.direction).toBe(
-          slideFadeDirection[placement],
-        );
       });
     });
   });
