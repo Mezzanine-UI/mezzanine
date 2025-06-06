@@ -1,5 +1,5 @@
 import { SpinnerIcon } from '@mezzanine-ui/icons';
-import { cleanupHook, render, TestRenderer } from '../../__test-utils__';
+import { cleanupHook, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Loading from '.';
 
