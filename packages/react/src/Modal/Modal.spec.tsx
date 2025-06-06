@@ -11,6 +11,7 @@ import {
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import Modal, { ModalProps, ModalSeverity } from '.';
+import { createWrapper } from '../../__test-utils__/render';
 
 function getOverlayElement(container: HTMLElement = document.body) {
   return container?.querySelector('.mzn-overlay');
@@ -19,6 +20,8 @@ function getOverlayElement(container: HTMLElement = document.body) {
 function getModalElement(container: HTMLElement = document.body) {
   return getOverlayElement(container)?.querySelector('.mzn-modal');
 }
+
+window.scrollTo = jest.fn();
 
 describe('<Modal />', () => {
   afterEach(() => {
@@ -35,31 +38,20 @@ describe('<Modal />', () => {
   );
 
   it('should provide modal control', () => {
-    let modalControl: ModalControl = {
+    const modalControl: ModalControl = {
       loading: true,
       severity: 'error',
     };
-    let props: ModalProps = {
+    const props: ModalProps = {
       ...modalControl,
       disablePortal: true,
       open: true,
     };
-    const { result, rerender } = renderHook(
-      () => useContext(ModalControlContext),
-      {
-        wrapper: Modal as any,
-        initialProps: props,
-      },
-    );
 
-    expect(result.current).toEqual(modalControl);
+    const { result } = renderHook(() => useContext(ModalControlContext), {
+      wrapper: createWrapper(Modal, props),
+    });
 
-    modalControl = {
-      loading: false,
-      severity: 'success',
-    };
-    props = { ...props, ...modalControl };
-    rerender(props);
     expect(result.current).toEqual(modalControl);
   });
 

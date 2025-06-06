@@ -1,9 +1,21 @@
-import { cleanup, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import ConfirmActions from '../ConfirmActions';
 import Modal, { ModalActions, ModalSeverity } from '.';
 
+const mockRenderConfirmActions = jest.fn();
+
+jest.mock('../ConfirmActions', () => {
+  return function MockRenderConfirmActions(props: any) {
+    mockRenderConfirmActions(props);
+    return <div data-testid="mock-modal-actions">Mock Actions</div>;
+  };
+});
+
 describe('<ModalActions />', () => {
+  beforeEach(() => {
+    mockRenderConfirmActions.mockClear();
+  });
+
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
@@ -11,56 +23,65 @@ describe('<ModalActions />', () => {
   );
 
   it('should bind actions class to confirm actions', () => {
-    const testInstance = TestRenderer.create(<ModalActions />);
-    const confirmActionsInstance = testInstance.root.findByType(ConfirmActions);
+    render(<ModalActions />);
 
-    expect(confirmActionsInstance.props.className).toContain(
-      'mzn-modal__actions',
+    expect(mockRenderConfirmActions).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: 'mzn-modal__actions',
+      }),
     );
   });
 
   describe('modal control', () => {
-    it('should passloading of modal to confirm actions', () => {
-      /**
-       * TestRenderer not support React.createPortal
-       */
-      const testInstance = TestRenderer.create(
+    beforeEach(() => {
+      mockRenderConfirmActions.mockClear();
+    });
+
+    it('should pass loading of modal to confirm actions', () => {
+      render(
         <Modal disablePortal loading open>
           <ModalActions />
         </Modal>,
       );
-      const confirmActionsInstance =
-        testInstance.root.findByType(ConfirmActions);
-
-      expect(confirmActionsInstance.props.loading).toBeTruthy();
+      expect(mockRenderConfirmActions).toHaveBeenCalledWith(
+        expect.objectContaining({
+          loading: true,
+        }),
+      );
     });
 
     it('should not pass danger to confirm actions if severity!=="error"', () => {
       const severities: ModalSeverity[] = ['info', 'success', 'warning'];
 
       severities.forEach((severity) => {
-        const testInstance = TestRenderer.create(
+        render(
           <Modal disablePortal loading open severity={severity}>
             <ModalActions />
           </Modal>,
         );
-        const confirmActionsInstance =
-          testInstance.root.findByType(ConfirmActions);
 
-        expect(confirmActionsInstance.props.danger).toBeFalsy();
+        expect(mockRenderConfirmActions).toHaveBeenCalledWith(
+          expect.objectContaining({
+            danger: false,
+          }),
+        );
+
+        mockRenderConfirmActions.mockClear();
       });
     });
 
     it('should pass danger to confirm actions if severity="error"', () => {
-      const testInstance = TestRenderer.create(
+      render(
         <Modal disablePortal loading open severity="error">
           <ModalActions />
         </Modal>,
       );
-      const confirmActionsInstance =
-        testInstance.root.findByType(ConfirmActions);
 
-      expect(confirmActionsInstance.props.danger).toBeTruthy();
+      expect(mockRenderConfirmActions).toHaveBeenCalledWith(
+        expect.objectContaining({
+          danger: true,
+        }),
+      );
     });
   });
 
