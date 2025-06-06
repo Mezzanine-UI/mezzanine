@@ -1,13 +1,20 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
-import SlideFadeOverlay from '../_internal/SlideFadeOverlay';
+import { cleanup, cleanupHook, renderHook, render } from '../../__test-utils__';
 import useModalContainer from './useModalContainer';
 
-describe('useTableFetchMore()', () => {
+const renderMockSliderFadeOverlay = jest.fn();
+
+jest.mock('../_internal/SlideFadeOverlay', () => {
+  return function MockRenderSlideFadeOverlay(props: any) {
+    renderMockSliderFadeOverlay(props);
+    return <div data-testid="mock-slide-fade-overlay">Mock Overlay</div>;
+  };
+});
+
+describe('useModalContainer()', () => {
+  beforeEach(() => {
+    renderMockSliderFadeOverlay.mockClear();
+  });
+
   afterEach(() => {
     cleanup();
     cleanupHook();
@@ -18,32 +25,26 @@ describe('useTableFetchMore()', () => {
 
     const { Container, defaultOptions } = result.current;
 
-    const testInstance = TestRenderer.create(
+    render(
       <Container>
         <div />
       </Container>,
     );
 
-    const overlayInstance = testInstance.root.findByType(SlideFadeOverlay);
-
-    expect(overlayInstance.props.className).toContain(defaultOptions.className);
-    expect(overlayInstance.props.container).toBe(undefined);
-    expect(overlayInstance.props.direction).toBe(defaultOptions.direction);
-    expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(
-      defaultOptions.disableCloseOnBackdropClick,
+    expect(renderMockSliderFadeOverlay).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: defaultOptions.className,
+        container: undefined,
+        direction: defaultOptions.direction,
+        disableCloseOnBackdropClick: defaultOptions.disableCloseOnBackdropClick,
+        disablePortal: defaultOptions.disableCloseOnEscapeKeyDown,
+        hideBackdrop: defaultOptions.hideBackdrop,
+        invisibleBackdrop: defaultOptions.invisibleBackdrop,
+        onBackdropClick: undefined,
+        onClose: undefined,
+        open: defaultOptions.open,
+      }),
     );
-    expect(overlayInstance.props.disablePortal).toBe(
-      defaultOptions.disableCloseOnEscapeKeyDown,
-    );
-    expect(overlayInstance.props.hideBackdrop).toBe(
-      defaultOptions.hideBackdrop,
-    );
-    expect(overlayInstance.props.invisibleBackdrop).toBe(
-      defaultOptions.invisibleBackdrop,
-    );
-    expect(overlayInstance.props.onBackdropClick).toBe(undefined);
-    expect(overlayInstance.props.onClose).toBe(undefined);
-    expect(overlayInstance.props.open).toBe(defaultOptions.open);
   });
 
   it('should override default props when custom props given', () => {
@@ -56,7 +57,7 @@ describe('useTableFetchMore()', () => {
 
     const { Container } = result.current;
 
-    const testInstance = TestRenderer.create(
+    render(
       <Container
         className="foo"
         container={container}
@@ -73,17 +74,19 @@ describe('useTableFetchMore()', () => {
       </Container>,
     );
 
-    const overlayInstance = testInstance.root.findByType(SlideFadeOverlay);
-
-    expect(overlayInstance.props.className).toContain('foo');
-    expect(overlayInstance.props.container).toBe(container);
-    expect(overlayInstance.props.direction).toBe('left');
-    expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(true);
-    expect(overlayInstance.props.disablePortal).toBe(true);
-    expect(overlayInstance.props.hideBackdrop).toBe(true);
-    expect(overlayInstance.props.invisibleBackdrop).toBe(true);
-    expect(overlayInstance.props.onBackdropClick).toBe(onBackdropClick);
-    expect(overlayInstance.props.onClose).toBe(onClose);
-    expect(overlayInstance.props.open).toBe(true);
+    expect(renderMockSliderFadeOverlay).toHaveBeenCalledWith(
+      expect.objectContaining({
+        className: 'foo',
+        container,
+        direction: 'left',
+        disableCloseOnBackdropClick: true,
+        disablePortal: true,
+        hideBackdrop: true,
+        invisibleBackdrop: true,
+        onBackdropClick,
+        onClose,
+        open: true,
+      }),
+    );
   });
 });
