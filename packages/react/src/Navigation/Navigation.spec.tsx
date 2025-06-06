@@ -1,4 +1,4 @@
-import { cleanup, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -7,6 +7,23 @@ import {
 import Navigation from './Navigation';
 import NavigationItem from './NavigationItem';
 import NavigationSubMenu from './NavigationSubMenu';
+
+const renderMockNavigationItem = jest.fn();
+const renderMockNavigationSubMenu = jest.fn();
+
+jest.mock('./NavigationItem', () => {
+  return function MockNavigationItem(props: any) {
+    renderMockNavigationItem(props);
+    return <div>{props.children}</div>;
+  };
+});
+
+jest.mock('./NavigationSubMenu', () => {
+  return function MockNavigationSubMenu(props: any) {
+    renderMockNavigationSubMenu(props);
+    return <div>{props.children}</div>;
+  };
+});
 
 describe('<Navigation />', () => {
   afterEach(cleanup);
@@ -31,19 +48,18 @@ describe('<Navigation />', () => {
       const onClick = jest.fn();
       const itemKey = '1';
       const itemChildren = 'foo';
-      const testRenderer = TestRenderer.create(
+      render(
         <Navigation activeKey={itemKey} onClick={onClick}>
           <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
         </Navigation>,
       );
 
-      const testInstance = testRenderer.root;
-
-      const item = testInstance.findByType(NavigationItem);
-
-      expect(item).toBeTruthy();
-      expect(item.props.eventKey).toBe(itemKey);
-      expect(item.props.active).toBeTruthy();
+      expect(renderMockNavigationItem).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventKey: itemKey,
+          active: true,
+        }),
+      );
     });
 
     it('should render `NavigationSubMenu` children', () => {
@@ -51,7 +67,7 @@ describe('<Navigation />', () => {
 
       const itemChildren = 'foo';
 
-      const testRenderer = TestRenderer.create(
+      render(
         <Navigation activeKey={itemKey}>
           <NavigationSubMenu>
             <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
@@ -59,19 +75,18 @@ describe('<Navigation />', () => {
         </Navigation>,
       );
 
-      const testInstance = testRenderer.root;
-
-      const subMenu = testInstance.findByType(NavigationSubMenu);
-
-      expect(subMenu).toBeTruthy();
-      expect(subMenu.props.active).toBeTruthy();
+      expect(renderMockNavigationSubMenu).toHaveBeenCalledWith(
+        expect.objectContaining({
+          active: true,
+        }),
+      );
     });
 
     it('should allow null/Fragment rendering and render NavigationItem correctly', () => {
       const onClick = jest.fn();
       const itemKey = '1';
       const itemChildren = 'foo';
-      const testRenderer = TestRenderer.create(
+      render(
         <Navigation activeKey={itemKey} onClick={onClick}>
           {null}
           <>
@@ -81,13 +96,12 @@ describe('<Navigation />', () => {
         </Navigation>,
       );
 
-      const testInstance = testRenderer.root;
-
-      const item = testInstance.findByType(NavigationItem);
-
-      expect(item).toBeTruthy();
-      expect(item.props.eventKey).toBe(itemKey);
-      expect(item.props.active).toBeTruthy();
+      expect(renderMockNavigationItem).toHaveBeenCalledWith(
+        expect.objectContaining({
+          eventKey: itemKey,
+          active: true,
+        }),
+      );
     });
   });
 });

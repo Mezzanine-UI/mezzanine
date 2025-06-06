@@ -1,5 +1,5 @@
-import { ReactNode, useContext, useState } from 'react';
-import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
+import { useContext } from 'react';
+import { cleanup, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -9,7 +9,7 @@ import {
   CheckboxGroupContext,
   CheckboxGroupContextValue,
 } from './CheckboxGroupContext';
-import Checkbox, { CheckboxGroup, CheckboxGroupOption } from '.';
+import { CheckboxGroup, CheckboxGroupOption } from '.';
 
 const renderMockCheckbox = jest.fn();
 

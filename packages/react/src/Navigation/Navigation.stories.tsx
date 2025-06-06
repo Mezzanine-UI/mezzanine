@@ -65,7 +65,7 @@ export const Playground: StoryFn<NavigationProps> = ({ orientation }) => {
   const [active, setActive] = useState<Key | null | undefined>();
 
   return (
-    <div style={{ height: '30vh' }}>
+    <div style={{ height: '60vh' }}>
       <Navigation
         orientation={orientation}
         onClick={setActive}
