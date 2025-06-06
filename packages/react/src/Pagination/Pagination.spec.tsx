@@ -13,7 +13,20 @@ import {
 import Pagination from '.';
 import PaginationJumper from './PaginationJumper';
 
+const renderMockPaginationJumper = jest.fn();
+
+jest.mock('./PaginationJumper', () => {
+  return function MockPaginationJumper(props: any) {
+    renderMockPaginationJumper(props);
+    return <div>{props.children}</div>;
+  };
+});
+
 describe('<Pagination />', () => {
+  beforeEach(() => {
+    renderMockPaginationJumper.mockClear();
+  });
+
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLElement, (ref) =>
@@ -37,7 +50,7 @@ describe('<Pagination />', () => {
     const buttonText = 'Go';
     const inputPlaceholder = 'Page';
 
-    const testRenderer = TestRenderer.create(
+    render(
       <PaginationJumper
         disabled
         onChange={handleChange}
@@ -48,16 +61,18 @@ describe('<Pagination />', () => {
         inputPlaceholder={inputPlaceholder}
       />,
     );
-    const testInstance = testRenderer.root;
-    const jumper = testInstance.findByType(PaginationJumper);
 
-    expect(jumper.props.disabled).toBe(true);
-    expect(jumper.props.onChange).toBe(handleChange);
-    expect(jumper.props.pageSize).toBe(10);
-    expect(jumper.props.total).toBe(1);
-    expect(jumper.props.hintText).toBe(hintText);
-    expect(jumper.props.buttonText).toBe(buttonText);
-    expect(jumper.props.inputPlaceholder).toBe(inputPlaceholder);
+    expect(renderMockPaginationJumper).toHaveBeenCalledWith(
+      expect.objectContaining({
+        disabled: true,
+        onChange: handleChange,
+        pageSize: 10,
+        total: 1,
+        hintText,
+        buttonText,
+        inputPlaceholder,
+      }),
+    );
   });
 
   it('fires onChange when a different page is clicked', () => {
@@ -72,7 +87,7 @@ describe('<Pagination />', () => {
       fireEvent.click(page2);
     });
 
-    expect(onChange).toBeCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
   });
 
   it('renders correct amount of buttons', () => {
@@ -135,6 +150,10 @@ describe('<Pagination />', () => {
     expect(onChange.mock.calls[2][0]).toBe(51);
   });
   describe('prop: showJumper', () => {
+    beforeEach(() => {
+      renderMockPaginationJumper.mockClear();
+    });
+
     it('should show jumper if showJumper={true}', () => {
       const { container } = render(<Pagination showJumper />);
 
@@ -144,11 +163,9 @@ describe('<Pagination />', () => {
     });
 
     it('should not show jumper if showJumper={false}', () => {
-      const testRenderer = TestRenderer.create(<Pagination showJumper />);
-      const testInstance = testRenderer.root;
-      const jumperInstance = testInstance.findByType(PaginationJumper);
+      render(<Pagination showJumper />);
 
-      expect(jumperInstance).not.toBeNull();
+      expect(renderMockPaginationJumper).toHaveBeenCalledTimes(1);
     });
   });
 });
