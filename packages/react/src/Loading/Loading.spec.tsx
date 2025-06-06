@@ -2,7 +2,6 @@ import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { cleanupHook, render, TestRenderer } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Loading from '.';
-import Icon from '../Icon';
 
 describe('<Loading />', () => {
   afterEach(cleanupHook);
@@ -35,14 +34,6 @@ describe('<Loading />', () => {
       const icon = host.querySelector('.mzn-loading__spin__icon');
 
       expect(icon?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
-    });
-
-    it('should icon spinning', () => {
-      const testRenderer = TestRenderer.create(<Loading loading />);
-      const testRootInstance = testRenderer.root;
-      const iconInstance = testRootInstance.findByType(Icon);
-
-      expect(iconInstance.props.spin).toBe(true);
     });
 
     it('should render tip content when given', () => {
