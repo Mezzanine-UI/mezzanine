@@ -194,7 +194,7 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).toBeCalledTimes(1);
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it('should not be fired if disabled=true', () => {
@@ -206,7 +206,7 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).not.toBeCalled();
+      expect(onClick).not.toHaveBeenCalled();
     });
 
     it('should not be fired if loading=true', () => {
@@ -218,7 +218,7 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).not.toBeCalled();
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 

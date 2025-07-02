@@ -82,11 +82,11 @@ describe('<RadioGroup />', () => {
       expect(barRadioElement.checked).toBeTruthy();
 
       fireEvent.click(barRadioElement);
-      expect(onChange).not.toBeCalled();
+      expect(onChange).not.toHaveBeenCalled();
 
       fireEvent.click(fooRadioElement);
-      expect(onChange).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith('foo');
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith('foo');
       expect(fooRadioElement.checked).toBeTruthy();
       expect(barRadioElement.checked).toBeFalsy();
     });

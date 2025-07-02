@@ -146,7 +146,7 @@ describe('<CalendarDays />', () => {
       cellButtons.forEach((btn) => {
         fireEvent.click(btn);
 
-        expect(onClick).toBeCalledTimes(1);
+        expect(onClick).toHaveBeenCalledTimes(1);
 
         onClick.mockClear();
       });
@@ -188,7 +188,7 @@ describe('<CalendarDays />', () => {
       cellButtons.forEach((btn) => {
         fireEvent.mouseEnter(btn);
 
-        expect(onDateHover).toBeCalledTimes(1);
+        expect(onDateHover).toHaveBeenCalledTimes(1);
 
         onDateHover.mockClear();
       });
@@ -209,7 +209,7 @@ describe('<CalendarDays />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getCalendarGridSpy).toBeCalledWith(referenceDate);
+      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate);
     });
   });
 

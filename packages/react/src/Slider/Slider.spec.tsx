@@ -92,7 +92,7 @@ describe('<Slider />', () => {
 
       render(<Slider onChange={onChange} value={0} min={100} max={50} />);
 
-      expect(onChange).not.toBeCalled();
+      expect(onChange).not.toHaveBeenCalled();
     });
 
     describe('case: single', () => {
@@ -101,7 +101,7 @@ describe('<Slider />', () => {
 
         render(<Slider onChange={onChange} value={0} min={10} max={100} />);
 
-        expect(onChange).toBeCalledWith(10);
+        expect(onChange).toHaveBeenCalledWith(10);
       });
 
       it('should init correct value when value > max', () => {
@@ -109,7 +109,7 @@ describe('<Slider />', () => {
 
         render(<Slider onChange={onChange} value={60} min={0} max={50} />);
 
-        expect(onChange).toBeCalledWith(50);
+        expect(onChange).toHaveBeenCalledWith(50);
       });
     });
 
@@ -121,7 +121,7 @@ describe('<Slider />', () => {
           <Slider onChange={onChange} value={[0, 50]} min={10} max={100} />,
         );
 
-        expect(onChange).toBeCalledWith([10, 50]);
+        expect(onChange).toHaveBeenCalledWith([10, 50]);
       });
 
       it('should init correct range value when both of left value and right value < min', () => {
@@ -131,7 +131,7 @@ describe('<Slider />', () => {
           <Slider onChange={onChange} value={[0, 50]} min={60} max={100} />,
         );
 
-        expect(onChange).toBeCalledWith([60, 60]);
+        expect(onChange).toHaveBeenCalledWith([60, 60]);
       });
 
       it('should init correct range value when right value > max', () => {
@@ -141,7 +141,7 @@ describe('<Slider />', () => {
           <Slider onChange={onChange} value={[10, 60]} min={0} max={50} />,
         );
 
-        expect(onChange).toBeCalledWith([10, 50]);
+        expect(onChange).toHaveBeenCalledWith([10, 50]);
       });
 
       it('should init correct range value when both of left value and right value > max', () => {
@@ -151,7 +151,7 @@ describe('<Slider />', () => {
           <Slider onChange={onChange} value={[60, 70]} min={0} max={50} />,
         );
 
-        expect(onChange).toBeCalledWith([50, 50]);
+        expect(onChange).toHaveBeenCalledWith([50, 50]);
       });
     });
   });
@@ -170,7 +170,7 @@ describe('<Slider />', () => {
 
         fireEvent.mouseDown(railElement);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
 
       it('should change value when track mouse-down', () => {
@@ -185,7 +185,7 @@ describe('<Slider />', () => {
 
         fireEvent.mouseDown(trackElement);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
 
       it('should change value while handle is being dragged', () => {
@@ -216,7 +216,7 @@ describe('<Slider />', () => {
         fireEvent.mouseMove(element);
         fireEvent.mouseUp(element);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         onChange.mockClear();
 
         fireEvent.touchStart(handler);
@@ -225,7 +225,7 @@ describe('<Slider />', () => {
         });
         fireEvent.touchEnd(element);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
 
       it('should change value when withInput=true and the input enter key pressed or blur', () => {
@@ -239,14 +239,14 @@ describe('<Slider />', () => {
         fireEvent.change(inputElement, { target: { value: 50 } });
         fireEvent.keyDown(inputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(50);
+        expect(onChange).toHaveBeenCalledWith(50);
 
         onChange.mockClear();
 
         fireEvent.change(inputElement, { target: { value: 70 } });
         fireEvent.blur(inputElement);
 
-        expect(onChange).toBeCalledWith(70);
+        expect(onChange).toHaveBeenCalledWith(70);
       });
 
       it('should prevent overflow when input value submitted', () => {
@@ -260,14 +260,14 @@ describe('<Slider />', () => {
         fireEvent.change(inputElement, { target: { value: 1000 } });
         fireEvent.keyDown(inputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(100);
+        expect(onChange).toHaveBeenCalledWith(100);
 
         onChange.mockClear();
 
         fireEvent.change(inputElement, { target: { value: -10000 } });
         fireEvent.blur(inputElement);
 
-        expect(onChange).toBeCalledWith(0);
+        expect(onChange).toHaveBeenCalledWith(0);
       });
 
       it('input should restore to current value when escape key down', () => {
@@ -281,7 +281,7 @@ describe('<Slider />', () => {
         fireEvent.change(inputElement, { target: { value: 50 } });
         fireEvent.keyDown(inputElement, { code: 'Escape' });
 
-        expect(onChange).not.toBeCalled();
+        expect(onChange).not.toHaveBeenCalled();
         expect(inputElement.value).toBe('0');
       });
     });
@@ -299,7 +299,7 @@ describe('<Slider />', () => {
 
         fireEvent.mouseDown(railElement);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
 
       it('should change value when track mouse-down', () => {
@@ -314,7 +314,7 @@ describe('<Slider />', () => {
 
         fireEvent.mouseDown(trackElement);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
       });
 
       it('should change value while handles are being dragged', () => {
@@ -332,7 +332,7 @@ describe('<Slider />', () => {
         fireEvent.mouseDown(firstHandleElement);
         fireEvent.mouseMove(element);
 
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         onChange.mockClear();
 
         fireEvent.mouseDown(SecondHandleElement);
@@ -351,25 +351,29 @@ describe('<Slider />', () => {
         fireEvent.change(firstInputElement, { target: { value: 50 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([50, 100]));
+        expect(onChange).toHaveBeenCalledWith(
+          expect.arrayContaining([50, 100]),
+        );
         onChange.mockClear();
 
         fireEvent.change(firstInputElement, { target: { value: 70 } });
         fireEvent.blur(firstInputElement);
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([70, 100]));
+        expect(onChange).toHaveBeenCalledWith(
+          expect.arrayContaining([70, 100]),
+        );
         onChange.mockClear();
 
         fireEvent.change(secondInputElement, { target: { value: 50 } });
         fireEvent.keyDown(secondInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([0, 50]));
+        expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([0, 50]));
         onChange.mockClear();
 
         fireEvent.change(secondInputElement, { target: { value: 70 } });
         fireEvent.blur(secondInputElement);
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([0, 70]));
+        expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([0, 70]));
       });
 
       it('should prevent overflow when input values submitted', () => {
@@ -390,13 +394,15 @@ describe('<Slider />', () => {
         fireEvent.change(firstInputElement, { target: { value: 1000 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([100, 100]));
+        expect(onChange).toHaveBeenCalledWith(
+          expect.arrayContaining([100, 100]),
+        );
         onChange.mockClear();
 
         fireEvent.change(secondInputElement, { target: { value: -1000 } });
         fireEvent.keyDown(secondInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([0, 0]));
+        expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([0, 0]));
       });
 
       it('should guard order when input values submitted', () => {
@@ -417,13 +423,13 @@ describe('<Slider />', () => {
         fireEvent.change(firstInputElement, { target: { value: 40 } });
         fireEvent.keyDown(firstInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([30, 40]));
+        expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([30, 40]));
         onChange.mockClear();
 
         fireEvent.change(secondInputElement, { target: { value: 10 } });
         fireEvent.keyDown(secondInputElement, { code: 'Enter' });
 
-        expect(onChange).toBeCalledWith(expect.arrayContaining([10, 20]));
+        expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([10, 20]));
       });
 
       it('inputs should restore to current value when escape key down', () => {
@@ -444,13 +450,13 @@ describe('<Slider />', () => {
         fireEvent.change(firstInputElement, { target: { value: 40 } });
         fireEvent.keyDown(firstInputElement, { code: 'Escape' });
 
-        expect(onChange).not.toBeCalled();
+        expect(onChange).not.toHaveBeenCalled();
         expect(firstInputElement.value).toBe('0');
 
         fireEvent.change(secondInputElement, { target: { value: 10 } });
         fireEvent.keyDown(secondInputElement, { code: 'Escape' });
 
-        expect(onChange).not.toBeCalled();
+        expect(onChange).not.toHaveBeenCalled();
         expect(secondInputElement.value).toBe('100');
       });
     });

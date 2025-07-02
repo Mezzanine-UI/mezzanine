@@ -77,7 +77,7 @@ describe('<UploadInput />', () => {
         },
       });
 
-      expect(onUpload).not.toBeCalled();
+      expect(onUpload).not.toHaveBeenCalled();
     });
   });
 });

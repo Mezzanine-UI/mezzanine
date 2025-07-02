@@ -425,7 +425,7 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(0);
+      expect(onSelect).toHaveBeenCalledTimes(0);
     });
 
     it('prop onSelect should receive target value in the returned array if multiple is falsy', () => {
@@ -437,8 +437,8 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
     });
 
     it('prop onSelect should receive multiple value in the returned array if multiple=true', () => {
@@ -456,15 +456,15 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
 
       const secondTargetLabelElement = getByText('label 1-1-2');
 
       fireEvent.click(secondTargetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(2);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-2']));
+      expect(onSelect).toHaveBeenCalledTimes(2);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-2']));
     });
   });
 
@@ -484,8 +484,10 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.not.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.not.arrayContaining(['1-1-1']),
+      );
     });
 
     it('should always include target if selectMode="target"', () => {
@@ -504,8 +506,8 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
     });
   });
 

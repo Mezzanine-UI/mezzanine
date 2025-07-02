@@ -98,7 +98,7 @@ describe('<Notification />', () => {
         fireEvent.click(buttonElement);
       }
 
-      expect(onCancel).toBeCalledTimes(1);
+      expect(onCancel).toHaveBeenCalledTimes(1);
     });
 
     it('if not provided, click event handler of cancel button will fallback to `onClose`', () => {
@@ -118,7 +118,7 @@ describe('<Notification />', () => {
         fireEvent.click(buttonElement);
       }
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -139,7 +139,7 @@ describe('<Notification />', () => {
       }
 
       await waitFor(() => {
-        expect(closeSpy).toBeCalledTimes(1);
+        expect(closeSpy).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -169,7 +169,7 @@ describe('<Notification />', () => {
         fireEvent.click(buttonElement);
       }
 
-      expect(onConfirm).toBeCalledTimes(1);
+      expect(onConfirm).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -198,7 +198,7 @@ describe('<Notification />', () => {
         jest.runAllTimers();
       });
 
-      expect(onExited).toBeCalledTimes(1);
+      expect(onExited).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -220,8 +220,8 @@ describe('<Notification />', () => {
         fireEvent.click(closeIconElement);
       }
 
-      expect(onClose).toBeCalledTimes(1);
-      expect(onClose).toBeCalledWith(reference);
+      expect(onClose).toHaveBeenCalledTimes(1);
+      expect(onClose).toHaveBeenCalledWith(reference);
     });
   });
 

@@ -170,8 +170,8 @@ describe('<Radio />', () => {
       expect(inputElement.checked).toBeFalsy();
 
       fireEvent.click(inputElement);
-      expect(onChange).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith(true);
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(true);
       expect(inputElement.checked).toBeTruthy();
     });
 

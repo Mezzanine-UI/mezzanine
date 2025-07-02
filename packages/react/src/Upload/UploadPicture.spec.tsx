@@ -119,8 +119,8 @@ describe('<UploadPicture />', () => {
 
       fireEvent.click(buttonElement!);
 
-      expect(onDelete).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith('');
+      expect(onDelete).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith('');
     });
 
     it('should not be fired if uploader have no image', () => {
@@ -135,7 +135,7 @@ describe('<UploadPicture />', () => {
 
       fireEvent.click(buttonElement!);
 
-      expect(onDelete).not.toBeCalled();
+      expect(onDelete).not.toHaveBeenCalled();
     });
   });
 
@@ -181,14 +181,14 @@ describe('<UploadPicture />', () => {
         const buttonElement = element.querySelector('button');
 
         await waitFor(() => {
-          expect(onUpload).toBeCalled();
-          expect(onUploadSuccess).toBeCalled();
-          expect(onUploadSuccess).toBeCalledWith(
+          expect(onUpload).toHaveBeenCalled();
+          expect(onUploadSuccess).toHaveBeenCalled();
+          expect(onUploadSuccess).toHaveBeenCalledWith(
             mockFiles[0],
             'https://rytass.com/logo.png',
           );
-          expect(onError).not.toBeCalled();
-          expect(onChange).toBeCalledWith('https://rytass.com/logo.png');
+          expect(onError).not.toHaveBeenCalled();
+          expect(onChange).toHaveBeenCalledWith('https://rytass.com/logo.png');
           expect(imgElement!.getAttribute('src')).toBe(
             'https://rytass.com/logo.png',
           );
@@ -240,11 +240,11 @@ describe('<UploadPicture />', () => {
         const buttonElement = element.querySelector('button');
 
         await waitFor(() => {
-          expect(onUpload).toBeCalled();
-          expect(onUploadSuccess).not.toBeCalled();
-          expect(onError).toBeCalled();
-          expect(onError).toBeCalledWith(mockFiles[0]);
-          expect(onChange).not.toBeCalled();
+          expect(onUpload).toHaveBeenCalled();
+          expect(onUploadSuccess).not.toHaveBeenCalled();
+          expect(onError).toHaveBeenCalled();
+          expect(onError).toHaveBeenCalledWith(mockFiles[0]);
+          expect(onChange).not.toHaveBeenCalled();
           expect(deleteIconElement).toBeInstanceOf(HTMLElement);
           expect(
             buttonElement!.style.getPropertyValue(
@@ -300,7 +300,7 @@ describe('<UploadPicture />', () => {
         },
       });
 
-      expect(onUpload).not.toBeCalled();
+      expect(onUpload).not.toHaveBeenCalled();
     });
   });
 });

@@ -81,14 +81,14 @@ describe('useSlider()', () => {
         fireEvent.mouseMove(railElement, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       onChange.mockClear();
 
       TestRenderer.act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onChange if railRef is not binding to HTMLElement', () => {
@@ -113,13 +113,13 @@ describe('useSlider()', () => {
         fireEvent.mouseMove(document.body, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
 
       TestRenderer.act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -157,14 +157,14 @@ describe('useSlider()', () => {
         fireEvent.mouseMove(railElement, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       onChange.mockClear();
 
       TestRenderer.act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onChange if railRef is not binding to HTMLElement', () => {
@@ -192,13 +192,13 @@ describe('useSlider()', () => {
         fireEvent.mouseMove(document.body, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
 
       TestRenderer.act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
     });
   });
 });

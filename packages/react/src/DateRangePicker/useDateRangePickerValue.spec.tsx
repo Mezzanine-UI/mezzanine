@@ -186,7 +186,7 @@ describe('useDateRangePickerValue', () => {
         } as KeyboardEvent<HTMLInputElement>);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when inputTo keydown and has both value', () => {
@@ -219,7 +219,7 @@ describe('useDateRangePickerValue', () => {
         } as KeyboardEvent<HTMLInputElement>);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 });

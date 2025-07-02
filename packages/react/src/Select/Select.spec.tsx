@@ -353,7 +353,7 @@ describe('<Select />', () => {
 
         const tagLabels = element.querySelectorAll('.mzn-tag__label');
 
-        expect(onChange).toBeCalledWith([
+        expect(onChange).toHaveBeenCalledWith([
           { id: defaultValue[1].id, name: defaultValue[1].name },
         ]);
         expect(tagLabels[0]?.innerHTML).toBe(defaultValue[1].name);
@@ -370,7 +370,7 @@ describe('<Select />', () => {
 
         const tagLabels = element.querySelectorAll('.mzn-tag__label');
 
-        expect(onChange).toBeCalledWith([
+        expect(onChange).toHaveBeenCalledWith([
           { id: defaultValue[0].id, name: defaultValue[0].name },
           { id: defaultValue[1].id, name: defaultValue[1].name },
           { id: '3', name: 'Alice' },

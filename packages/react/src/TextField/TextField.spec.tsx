@@ -158,7 +158,7 @@ describe('<TextField />', () => {
 
       fireEvent.click(clearIconElement!);
 
-      expect(onClear).toBeCalledTimes(1);
+      expect(onClear).toHaveBeenCalledTimes(1);
     });
 
     it('should not fired if disabled=true', () => {
@@ -173,7 +173,7 @@ describe('<TextField />', () => {
 
       fireEvent.click(clearIconElement!);
 
-      expect(onClear).not.toBeCalled();
+      expect(onClear).not.toHaveBeenCalled();
     });
   });
 

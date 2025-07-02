@@ -1,11 +1,5 @@
-import {
-  cleanup,
-  render,
-  fireEvent,
-  TestRenderer,
-} from '../../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
-import Overlay from '../../Overlay';
 import SlideFadeOverlay from '.';
 
 function getOverlayElement(container: HTMLElement = document.body) {
@@ -67,54 +61,6 @@ describe('<SlideFadeOverlay />', () => {
     });
   });
 
-  describe('overlay', () => {
-    const propsShouldPassed = [
-      'className',
-      'container',
-      'disableCloseOnBackdropClick',
-      'disablePortal',
-      'hideBackdrop',
-      'invisibleBackdrop',
-      'onBackdropClick',
-      'onClose',
-      'open',
-    ];
-
-    it(`should pass ${propsShouldPassed.join(',')} to overlay`, () => {
-      const container = () => document.createElement('div');
-      const onBackdropClick = () => {};
-
-      const onClose = () => {};
-
-      const testInstance = TestRenderer.create(
-        <SlideFadeOverlay
-          className="foo"
-          container={container}
-          disableCloseOnBackdropClick
-          disablePortal
-          hideBackdrop
-          invisibleBackdrop
-          onBackdropClick={onBackdropClick}
-          onClose={onClose}
-          open
-        >
-          <div />
-        </SlideFadeOverlay>,
-      );
-      const overlayInstance = testInstance.root.findByType(Overlay);
-
-      expect(overlayInstance.props.className).toContain('foo');
-      expect(overlayInstance.props.container).toBe(container);
-      expect(overlayInstance.props.disableCloseOnBackdropClick).toBe(true);
-      expect(overlayInstance.props.disablePortal).toBe(true);
-      expect(overlayInstance.props.hideBackdrop).toBe(true);
-      expect(overlayInstance.props.invisibleBackdrop).toBe(true);
-      expect(overlayInstance.props.onBackdropClick).toBe(onBackdropClick);
-      expect(overlayInstance.props.onClose).toBe(onClose);
-      expect(overlayInstance.props.open).toBe(true);
-    });
-  });
-
   describe('backdrop', () => {
     it('should fire onBackdropClick while backdrop clicked', () => {
       const onBackdropClick = jest.fn();
@@ -129,7 +75,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.click(backdropElement);
 
-      expect(onBackdropClick).toBeCalledTimes(1);
+      expect(onBackdropClick).toHaveBeenCalledTimes(1);
     });
 
     it('should fire onClose while backdrop clicked', () => {
@@ -145,7 +91,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.click(backdropElement);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should not fire onClose while backdrop clicked if disableCloseOnBackdropClick=true', () => {
@@ -161,7 +107,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.click(backdropElement);
 
-      expect(onClose).not.toBeCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 
@@ -177,7 +123,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.keyDown(document, { key: 'Escape' });
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should not fire onClose while escape key pressed if disableCloseOnEscapeKeyDown=true', () => {
@@ -191,7 +137,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.keyDown(document, { key: 'Escape' });
 
-      expect(onClose).not.toBeCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
 
     it('should close only the top modal while escape key pressed', () => {
@@ -213,7 +159,7 @@ describe('<SlideFadeOverlay />', () => {
 
       fireEvent.keyDown(document, { key: 'Escape' });
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -47,7 +47,7 @@ describe('<Alert />', () => {
 
       fireEvent.click(closeBtn);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
   });
 

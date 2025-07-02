@@ -610,7 +610,7 @@ describe('<Table />', () => {
     });
 
     it('should called ResizeObserver.observe when table existed', () => {
-      expect(observeCallback).toBeCalled();
+      expect(observeCallback).toHaveBeenCalled();
     });
 
     describe('exceptions handle', () => {

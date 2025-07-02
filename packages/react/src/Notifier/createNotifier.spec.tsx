@@ -241,7 +241,7 @@ describe('createNotifier()', () => {
       notifier.remove('foo');
     });
 
-    expect(removeSpy).toBeCalledWith('foo');
+    expect(removeSpy).toHaveBeenCalledWith('foo');
 
     act(() => {
       notifier.destroy();

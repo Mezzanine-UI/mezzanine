@@ -143,7 +143,7 @@ describe('<TimePanel />', () => {
 
       controlElements.forEach((controlElement) => {
         fireEvent.click(controlElement);
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
         onChange.mockClear();
       });
     });

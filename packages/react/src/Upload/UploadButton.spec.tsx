@@ -26,7 +26,7 @@ describe('<UploadButton />', () => {
     inputElement!.addEventListener('click', onInputClick);
     fireEvent.click(element);
 
-    expect(onInputClick).toBeCalledTimes(1);
-    expect(onClick).toBeCalledTimes(1);
+    expect(onInputClick).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

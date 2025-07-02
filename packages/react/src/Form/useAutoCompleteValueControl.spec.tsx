@@ -44,7 +44,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const calledTimes = mode === 'single' ? 1 : 0;
 
-        expect(onClose).toBeCalledTimes(calledTimes);
+        expect(onClose).toHaveBeenCalledTimes(calledTimes);
       });
     });
   });

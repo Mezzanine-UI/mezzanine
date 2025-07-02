@@ -138,7 +138,7 @@ describe('<Switch />', () => {
 
       fireEvent.click(inputElement);
 
-      expect(onChange).toBeCalled();
+      expect(onChange).toHaveBeenCalled();
     });
 
     /**
@@ -152,7 +152,7 @@ describe('<Switch />', () => {
 
     //   fireEvent.click(inputElement);
 
-    //   expect(onChange).not.toBeCalled();
+    //   expect(onChange).not.toHaveBeenCalled();
     // });
 
     // it('should not be triggered if loading=true', () => {
@@ -163,7 +163,7 @@ describe('<Switch />', () => {
 
     //   fireEvent.click(inputElement);
 
-    //   expect(onChange).not.toBeCalled();
+    //   expect(onChange).not.toHaveBeenCalled();
     // });
   });
 

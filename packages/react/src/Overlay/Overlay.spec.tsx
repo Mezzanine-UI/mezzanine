@@ -85,7 +85,7 @@ describe('<Overlay />', () => {
 
       fireEvent.click(backdropElement!);
 
-      expect(onBackdropClick).toBeCalledTimes(1);
+      expect(onBackdropClick).toHaveBeenCalledTimes(1);
     });
 
     it('should fire onClose while backdrop clicked', () => {
@@ -99,7 +99,7 @@ describe('<Overlay />', () => {
 
       fireEvent.click(backdropElement);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should not fire onClose while backdrop clicked if disableCloseOnBackdropClick=true', () => {
@@ -113,7 +113,7 @@ describe('<Overlay />', () => {
 
       fireEvent.click(backdropElement);
 
-      expect(onClose).not.toBeCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 });

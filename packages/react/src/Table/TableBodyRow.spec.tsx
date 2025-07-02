@@ -292,7 +292,7 @@ describe('<TableBodyRow />', () => {
 
           expect(expandedContentHost?.textContent).toBe('foo');
           expect(expandedContentHost?.classList.contains('foo')).toBe(true);
-          expect(onExpand).toBeCalledWith(rowData, true);
+          expect(onExpand).toHaveBeenCalledWith(rowData, true);
         });
 
         it('dataSource case', async () => {
