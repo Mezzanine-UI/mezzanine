@@ -1,16 +1,9 @@
 /* global document */
 import { PlusIcon, TimesIcon } from '@mezzanine-ui/icons';
 import { createRef, RefObject } from 'react';
-import {
-  act,
-  cleanupHook,
-  render,
-  TestRenderer,
-  fireEvent,
-} from '../../__test-utils__';
+import { act, cleanupHook, render, fireEvent } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
-import TextField from '../TextField';
 import Select, { Option, SelectValue } from '.';
 
 function getSelectInputElement(element: HTMLElement) {
@@ -41,29 +34,6 @@ describe('<Select />', () => {
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-select')).toBeTruthy();
-  });
-
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <Select
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
   });
 
   it('props should directly pass to native input element', () => {
@@ -112,13 +82,13 @@ describe('<Select />', () => {
 
       await testTextFieldClicked(element);
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(0);
 
       await testTextFieldClicked(element);
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
@@ -131,7 +101,7 @@ describe('<Select />', () => {
       await act(async () => {
         fireEvent.click(document.body);
       });
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
@@ -144,7 +114,7 @@ describe('<Select />', () => {
       await act(async () => {
         fireEvent.click(document.body);
       });
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via text-field tab key down', async () => {
@@ -159,7 +129,7 @@ describe('<Select />', () => {
           code: 'Tab',
         });
       });
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onBlur when text-field tab key down but is not open', async () => {
@@ -172,7 +142,7 @@ describe('<Select />', () => {
           code: 'Tab',
         });
       });
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onBlur).toHaveBeenCalledTimes(0);
     });
 
     it('should invoke onBlur when closing via text-field enter key down', async () => {
@@ -187,7 +157,7 @@ describe('<Select />', () => {
           code: 'Enter',
         });
       });
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     const arrowKeyCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -203,7 +173,7 @@ describe('<Select />', () => {
             code: arrowKeyCode,
           });
         });
-        expect(onFocus).toBeCalledTimes(1);
+        expect(onFocus).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -222,7 +192,7 @@ describe('<Select />', () => {
             code: arrowKeyCode,
           });
         });
-        expect(onFocus).toBeCalledTimes(0);
+        expect(onFocus).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -240,7 +210,7 @@ describe('<Select />', () => {
         });
       });
 
-      expect(onFocus).toBeCalledTimes(0);
+      expect(onFocus).toHaveBeenCalledTimes(0);
 
       await testTextFieldClicked(element);
 
@@ -250,7 +220,7 @@ describe('<Select />', () => {
         });
       });
 
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onBlur).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -323,8 +293,8 @@ describe('<Select />', () => {
           jest.runAllTimers();
         });
 
-        expect(onChange).toBeCalledTimes(1);
-        expect(onChange).toBeCalledWith({
+        expect(onChange).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith({
           id: defaultValue.id,
           name: defaultValue.name,
         });

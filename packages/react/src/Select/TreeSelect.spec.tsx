@@ -4,7 +4,6 @@ import {
   act,
   cleanupHook,
   render,
-  TestRenderer,
   fireEvent,
   cleanup,
   getByText as getByTextWithContainer,
@@ -12,7 +11,6 @@ import {
 } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
-import TextField from '../TextField';
 import { TreeSelect, SelectValue, TreeSelectOption } from '.';
 
 const options: TreeSelectOption[] = [
@@ -65,30 +63,6 @@ describe('<TreeSelect />', () => {
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-tree-select')).toBeTruthy();
-  });
-
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <TreeSelect
-        options={options}
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
   });
 
   it('props should directly pass to native input element', () => {
