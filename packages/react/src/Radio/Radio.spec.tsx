@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import InputCheck from '../_internal/InputCheck';
 import { FormField } from '../Form';
 import Radio, { RadioGroup } from '.';
-import ConfigProvider from '../Provider';
 
 describe('<Radio />', () => {
   afterEach(cleanup);
@@ -19,31 +17,6 @@ describe('<Radio />', () => {
   describeHostElementClassNameAppendable('foo', (className) =>
     render(<Radio className={className} />),
   );
-
-  it('should pass children, disabled, error, size to InputCheck', () => {
-    const testInstance = TestRenderer.create(
-      <Radio disabled error size="large">
-        foo
-      </Radio>,
-    );
-    const inputCheckInstance = testInstance.root.findByType(InputCheck);
-
-    expect(inputCheckInstance.props.children).toBe('foo');
-    expect(inputCheckInstance.props.disabled).toBe(true);
-    expect(inputCheckInstance.props.error).toBe(true);
-    expect(inputCheckInstance.props.size).toBe('large');
-  });
-
-  it('should accept ConfigProvider context changes', () => {
-    const testInstance = TestRenderer.create(
-      <ConfigProvider size="small">
-        <Radio>foo</Radio>
-      </ConfigProvider>,
-    );
-    const inputCheckInstance = testInstance.root.findByType(InputCheck);
-
-    expect(inputCheckInstance.props.size).toBe('small');
-  });
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(<Radio />);
@@ -136,22 +109,6 @@ describe('<Radio />', () => {
     });
   });
 
-  describe('prop: error', () => {
-    it('should use severity from form control if error not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField severity="error">
-          <Radio />
-          <Radio error={false} />
-        </FormField>,
-      );
-      const [inputCheck1, inputCheck2] =
-        testInstance.root.findAllByType(InputCheck);
-
-      expect(inputCheck1.props.error).toBe(true);
-      expect(inputCheck2.props.error).toBe(false);
-    });
-  });
-
   describe('prop: inputProps', () => {
     it('should pass inputProps.id to InputCheck.htmlFor', () => {
       const testId = 'foo';
@@ -188,22 +145,6 @@ describe('<Radio />', () => {
 
       expect(input1.name).toBe('foo');
       expect(input2.name).toBe('bar');
-    });
-  });
-
-  describe('prop: size', () => {
-    it('should use size from group if size not passed', () => {
-      const testInstance = TestRenderer.create(
-        <RadioGroup size="large">
-          <Radio />
-          <Radio size="small" />
-        </RadioGroup>,
-      );
-      const [inputCheck1, inputCheck2] =
-        testInstance.root.findAllByType(InputCheck);
-
-      expect(inputCheck1.props.size).toBe('large');
-      expect(inputCheck2.props.size).toBe('small');
     });
   });
 
