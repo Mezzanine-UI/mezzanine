@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Button, { ButtonProps } from '../Button/Button';
 import ConfirmActions from '.';

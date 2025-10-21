@@ -1,19 +1,29 @@
 import { Key, useState, type JSX } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-  act,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, act } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Tabs, { Tab, TabPane } from '.';
 
+// Mock Tab to track props while preserving structure
+const mockTabRender = jest.fn();
+const OriginalTab = jest.requireActual('./Tab').default;
+
+jest.mock('./Tab', () => {
+  return function MockTab(props: any) {
+    mockTabRender(props);
+    // Use the original Tab component to maintain proper structure
+    const React = require('react');
+    return React.createElement(OriginalTab, props);
+  };
+});
+
 describe('<Tabs />', () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    mockTabRender.mockClear();
+  });
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(
@@ -282,7 +292,7 @@ describe('<Tabs />', () => {
   });
 
   it('should provide active to tab', () => {
-    const testInstance = TestRenderer.create(
+    render(
       <Tabs defaultActiveKey="bar">
         <TabPane key="foo" tab={<Tab>foo</Tab>}>
           foo
@@ -293,19 +303,19 @@ describe('<Tabs />', () => {
       </Tabs>,
     );
 
-    testInstance.root.findAllByType(Tab).forEach((tab, index) => {
-      expect(tab.props.active).toBe(index === 1);
-    });
+    const calls = mockTabRender.mock.calls;
+    expect(calls[0][0].active).toBe(false);
+    expect(calls[1][0].active).toBe(true);
   });
 
   describe('control', () => {
     function testActiveKey(ui: JSX.Element) {
-      const testInstance = TestRenderer.create(ui);
-      const [inactiveTabInstance, activeTabInstance] =
-        testInstance.root.findAllByType(Tab);
+      mockTabRender.mockClear();
+      render(ui);
 
-      expect(inactiveTabInstance.props.active).toBeFalsy();
-      expect(activeTabInstance.props.active).toBeTruthy();
+      const calls = mockTabRender.mock.calls;
+      expect(calls[0][0].active).toBeFalsy();
+      expect(calls[1][0].active).toBeTruthy();
     }
 
     it('should activate the tab which activeKey=key of its parent tab pane', () => {

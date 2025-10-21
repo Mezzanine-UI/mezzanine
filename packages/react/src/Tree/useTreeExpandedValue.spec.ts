@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useTreeExpandedValue } from '.';
 import { TreeNodeProp } from './typings';
 
@@ -36,19 +31,19 @@ describe('usePickerInputValue', () => {
 
       expect(result.current.expandedValues).toBeInstanceOf(Array);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onExpand?.('1');
       });
 
       expect(result.current.expandedValues).toContain('1');
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onExpand?.('1');
       });
 
       expect(result.current.expandedValues.length).toBe(0);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.setExpandedValues(['1']);
       });
 

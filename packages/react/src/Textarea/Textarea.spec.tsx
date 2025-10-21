@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { cleanup, render, TestRenderer, fireEvent } from '../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -42,30 +42,31 @@ describe('<Textarea />', () => {
   });
 
   it('props should pass to TextField', () => {
-    const testRenderer = TestRenderer.create(
+    const { container } = render(
       <Textarea clearable disabled error fullWidth size="large" value="foo" />,
     );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
+    const textField = container.querySelector('.mzn-text-field');
 
-    expect(textFieldInstance.props.active).toBe(true);
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.size).toBe('large');
+    expect(textField).not.toBeNull();
+    expect(textField?.classList.contains('mzn-text-field--disabled')).toBe(
+      true,
+    );
+    expect(textField?.classList.contains('mzn-text-field--error')).toBe(true);
+    expect(textField?.classList.contains('mzn-text-field--full-width')).toBe(
+      true,
+    );
+    expect(textField?.classList.contains('mzn-text-field--large')).toBe(true);
   });
 
   it('should accept ConfigProvider context changes', () => {
-    const testRenderer = TestRenderer.create(
+    const { container } = render(
       <ConfigProvider size="small">
         <Textarea />
       </ConfigProvider>,
     );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
+    const textField = container.querySelector('.mzn-text-field');
 
-    expect(textFieldInstance.props.size).toBe('small');
+    expect(textField?.classList.contains('mzn-text-field--small')).toBe(true);
   });
 
   it('props should directly pass to native textarea element', () => {
@@ -155,33 +156,39 @@ describe('<Textarea />', () => {
 
   describe('prop: error', () => {
     it('should use severity from form control if error not passed', () => {
-      const testInstance = TestRenderer.create(
+      const { container } = render(
         <FormField severity="error">
           <Textarea />
           <Textarea error={false} />
         </FormField>,
       );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
 
-      expect(textField1.props.error).toBe(true);
-      expect(textField2.props.error).toBe(false);
+      const textFields = container.querySelectorAll('.mzn-text-field');
+      expect(textFields[0].classList.contains('mzn-text-field--error')).toBe(
+        true,
+      );
+      expect(textFields[1].classList.contains('mzn-text-field--error')).toBe(
+        false,
+      );
     });
   });
 
   describe('prop: fullWidth', () => {
     it('should use fullWidth from form control if fullWidth not passed', () => {
-      const testInstance = TestRenderer.create(
+      const { container } = render(
         <FormField fullWidth>
           <Textarea />
           <Textarea fullWidth={false} />
         </FormField>,
       );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
 
-      expect(textField1.props.fullWidth).toBeTruthy();
-      expect(textField2.props.fullWidth).toBeFalsy();
+      const textFields = container.querySelectorAll('.mzn-text-field');
+      expect(
+        textFields[0].classList.contains('mzn-text-field--full-width'),
+      ).toBeTruthy();
+      expect(
+        textFields[1].classList.contains('mzn-text-field--full-width'),
+      ).toBeFalsy();
     });
   });
 

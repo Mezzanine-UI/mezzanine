@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useTableFetchMore } from './useTableFetchMore';
 
 describe('useTableFetchMore()', () => {
@@ -36,7 +31,7 @@ describe('useTableFetchMore()', () => {
 
     const { fetchMore } = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       fetchMore?.();
     });
 

@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useTabKeyClose } from '.';
 
 describe('useTabKeyClose', () => {
@@ -26,7 +21,7 @@ describe('useTabKeyClose', () => {
 
     inputElement.focus();
 
-    TestRenderer.act(() => {
+    act(() => {
       document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'Tab',
@@ -49,7 +44,7 @@ describe('useTabKeyClose', () => {
 
     renderHook(() => useTabKeyClose(onClose, inputRef));
 
-    TestRenderer.act(() => {
+    act(() => {
       document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'Tab',

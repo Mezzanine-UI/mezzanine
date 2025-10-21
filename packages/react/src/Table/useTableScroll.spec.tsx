@@ -1,10 +1,5 @@
 import { MouseEvent } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import useTableScroll from './useTableScroll';
 
 global.ResizeObserver = jest.fn().mockImplementation(() => ({
@@ -26,25 +21,25 @@ describe('useTableScroll()', () => {
 
     expect(scrollElement.style.height).toBe('0px');
 
-    TestRenderer.act(() => {
+    act(() => {
       scrollElement.onMouseDown({
         target: null,
       } as unknown as MouseEvent<HTMLDivElement>);
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       scrollElement.onMouseUp();
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       scrollElement.onMouseEnter();
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       scrollElement.onMouseLeave();
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       tableBody.onScroll({ target: { scrollLeft: 0 } } as any);
     });
 

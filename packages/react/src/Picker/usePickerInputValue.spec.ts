@@ -1,10 +1,5 @@
 import { ChangeEvent } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { usePickerInputValue } from '.';
 
 describe('usePickerInputValue', () => {
@@ -16,7 +11,7 @@ describe('usePickerInputValue', () => {
   it('should set value via inputChangeHandler', () => {
     const { result } = renderHook(usePickerInputValue);
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.inputChangeHandler({
         target: { value: '2021-10-20' },
       } as ChangeEvent<HTMLInputElement>);
@@ -34,7 +29,7 @@ describe('usePickerInputValue', () => {
         },
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.inputChangeHandler({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);

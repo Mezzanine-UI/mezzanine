@@ -2,12 +2,7 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ChangeEvent, ReactNode, KeyboardEvent } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
 import { useRangePickerValue } from '.';
 
@@ -44,7 +39,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
         expect(
@@ -76,7 +71,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange([from, to]);
 
         expect(
@@ -107,7 +102,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange([from, undefined]);
 
         expect(sortedValue).toBeInstanceOf(Array);
@@ -137,7 +132,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange([undefined, to]);
 
         expect(sortedValue).toBeInstanceOf(Array);
@@ -166,7 +161,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange([undefined, undefined]);
 
         expect(sortedValue).toBeInstanceOf(Array);
@@ -193,7 +188,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         const sortedValue = result.current.onChange();
 
         expect(sortedValue).toBe(undefined);
@@ -220,7 +215,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputFromChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
@@ -230,7 +225,7 @@ describe('useRangePickerValue', () => {
         '2021-10-20',
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputToChange({
           target: { value: '2021-10-17' },
         } as ChangeEvent<HTMLInputElement>);
@@ -260,7 +255,7 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputToChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
@@ -270,7 +265,7 @@ describe('useRangePickerValue', () => {
         '2021-10-20',
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputFromChange({
           target: { value: '2021-10-21' },
         } as ChangeEvent<HTMLInputElement>);
@@ -306,19 +301,19 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputToChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputFromChange({
           target: { value: 'foo' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onFromKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);
@@ -349,19 +344,19 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputFromChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputToChange({
           target: { value: 'foo' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onToKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);
@@ -392,13 +387,13 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputToChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onToKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);
@@ -429,13 +424,13 @@ describe('useRangePickerValue', () => {
         { wrapper },
       );
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onInputFromChange({
           target: { value: '2021-10-20' },
         } as ChangeEvent<HTMLInputElement>);
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onFromKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);

@@ -4,7 +4,7 @@ import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
 import { getUnitLabel } from '@mezzanine-ui/core/time-panel';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -47,32 +47,21 @@ describe('<TimePanel />', () => {
 
   describe('display columns', () => {
     it('should by default display hours, minutes and seconds column with default prefixes', () => {
-      const { root } = TestRenderer.create(
+      const { container } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <TimePanel />
         </CalendarConfigProvider>,
       );
 
-      const columnInstances = root.findAllByType(TimePanelColumn);
+      const columns = container.querySelectorAll('.mzn-time-panel-column');
 
-      columnInstances.forEach((instance) => {
-        expect(instance).not.toBe(undefined);
-        expect(instance.children).not.toBe(null);
-      });
+      expect(columns.length).toBe(3);
 
-      const shouldHaveHourPrefix = columnInstances.some(
-        (instance) => instance.props.prefix === 'Hrs',
-      );
-      const shouldHaveMinutePrefix = columnInstances.some(
-        (instance) => instance.props.prefix === 'Min',
-      );
-      const shouldHaveSecondPrefix = columnInstances.some(
-        (instance) => instance.props.prefix === 'Sec',
-      );
-
-      expect(shouldHaveHourPrefix).toBe(true);
-      expect(shouldHaveMinutePrefix).toBe(true);
-      expect(shouldHaveSecondPrefix).toBe(true);
+      // Check for the presence of hour, minute, and second prefixes in the rendered content
+      const textContent = container.textContent || '';
+      expect(textContent).toContain('Hrs');
+      expect(textContent).toContain('Min');
+      expect(textContent).toContain('Sec');
     });
 
     it('should hide hour column if hideHour=true', () => {

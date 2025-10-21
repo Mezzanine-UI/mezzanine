@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useTableLoading } from './useTableLoading';
 
 describe('useTableLoading()', () => {
@@ -19,13 +14,13 @@ describe('useTableLoading()', () => {
 
     expect(loading).toBe(false);
 
-    TestRenderer.act(() => {
+    act(() => {
       setLoading(true);
     });
 
     expect(result.current[0]).toBe(true);
 
-    TestRenderer.act(() => {
+    act(() => {
       setLoading(true);
     });
 

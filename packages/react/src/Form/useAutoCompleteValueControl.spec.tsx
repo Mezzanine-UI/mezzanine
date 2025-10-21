@@ -1,10 +1,5 @@
 import { MouseEvent } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useAutoCompleteValueControl } from './useAutoCompleteValueControl';
 import { SelectValue } from '../Select/typings';
 
@@ -38,7 +33,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const { onChange } = result.current;
 
-        TestRenderer.act(() => {
+        act(() => {
           onChange({ id: 'foo', name: 'foo' });
         });
 
@@ -71,7 +66,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const { onChange } = result.current;
 
-        TestRenderer.act(() => {
+        act(() => {
           onChange({ id: 'foo', name: 'foo' });
         });
 
@@ -101,7 +96,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const { onChange } = result.current;
 
-        TestRenderer.act(() => {
+        act(() => {
           onChange(null);
         });
 
@@ -132,7 +127,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const { onChange } = result.current;
 
-        TestRenderer.act(() => {
+        act(() => {
           onChange({ id: 'foo', name: 'foo' });
         });
 
@@ -162,7 +157,7 @@ describe('useAutoCompleteValueControl()', () => {
 
         const { onChange } = result.current;
 
-        TestRenderer.act(() => {
+        act(() => {
           onChange(null);
         });
 
@@ -224,7 +219,7 @@ describe('useAutoCompleteValueControl()', () => {
 
     const { onChange } = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({ id: 'foo', name: 'foo' });
     });
 
@@ -259,7 +254,7 @@ describe('useAutoCompleteValueControl()', () => {
 
     const { onClear } = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onClear({
         stopPropagation,
       } as unknown as MouseEvent<Element>);
@@ -296,7 +291,7 @@ describe('useAutoCompleteValueControl()', () => {
 
     const { onClear } = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onClear({
         stopPropagation,
       } as unknown as MouseEvent<Element>);

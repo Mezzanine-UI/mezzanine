@@ -1,5 +1,5 @@
 import { TreeSize } from '@mezzanine-ui/core/tree';
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -8,6 +8,28 @@ import { TreeNode } from '.';
 import Typography, { TypographyVariant } from '../Typography';
 import Checkbox from '../Checkbox';
 import ConfigProvider from '../Provider';
+
+const mockTypographyRender = jest.fn();
+const OriginalTypography = jest.requireActual('../Typography').default;
+
+jest.mock('../Typography', () => {
+  return function MockTypography(props: any) {
+    mockTypographyRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTypography, props);
+  };
+});
+
+const mockCheckboxRender = jest.fn();
+const OriginalCheckbox = jest.requireActual('../Checkbox').default;
+
+jest.mock('../Checkbox', () => {
+  return function MockCheckbox(props: any) {
+    mockCheckboxRender(props);
+    const React = require('react');
+    return React.createElement(OriginalCheckbox, props);
+  };
+});
 
 describe('<TreeNode />', () => {
   afterEach(cleanup);
@@ -70,35 +92,35 @@ describe('<TreeNode />', () => {
     });
 
     it('should pass indeterminate to Checkbox on multiple mode if indeterminate=true', () => {
-      const testInstance = TestRenderer.create(
-        <TreeNode value="foo" label="bar" multiple indeterminate />,
-      );
+      mockCheckboxRender.mockClear();
+      render(<TreeNode value="foo" label="bar" multiple indeterminate />);
 
-      const checkboxInstance = testInstance.root.findByType(Checkbox);
+      const calls = mockCheckboxRender.mock.calls;
+      const checkboxProps = calls[calls.length - 1][0];
 
-      expect(checkboxInstance.props.indeterminate).toBe(true);
+      expect(checkboxProps.indeterminate).toBe(true);
     });
   });
 
   describe('prop: label', () => {
     it('should label be rendered under Typography', () => {
-      const testInstance = TestRenderer.create(
-        <TreeNode value="foo" label="bar" selected />,
-      );
+      mockTypographyRender.mockClear();
+      render(<TreeNode value="foo" label="bar" selected />);
 
-      const typographyInstance = testInstance.root.findByType(Typography);
+      const calls = mockTypographyRender.mock.calls;
+      const typographyProps = calls[calls.length - 1][0];
 
-      expect(typographyInstance.props.children).toEqual('bar');
+      expect(typographyProps.children).toEqual('bar');
     });
 
     it('should label be rendered under Checkbox if multiple=true', () => {
-      const testInstance = TestRenderer.create(
-        <TreeNode value="foo" label="bar" multiple selected />,
-      );
+      mockCheckboxRender.mockClear();
+      render(<TreeNode value="foo" label="bar" multiple selected />);
 
-      const checkboxInstance = testInstance.root.findByType(Checkbox);
+      const calls = mockCheckboxRender.mock.calls;
+      const checkboxProps = calls[calls.length - 1][0];
 
-      expect(checkboxInstance.props.children).toEqual('bar');
+      expect(checkboxProps.children).toEqual('bar');
     });
   });
 
@@ -242,37 +264,39 @@ describe('<TreeNode />', () => {
     });
 
     it('should set checked on checkbox in multiple mode if selected=true', () => {
-      const testInstance = TestRenderer.create(
-        <TreeNode value="foo" label="bar" multiple selected />,
-      );
+      mockCheckboxRender.mockClear();
+      render(<TreeNode value="foo" label="bar" multiple selected />);
 
-      const checkboxInstance = testInstance.root.findByType(Checkbox);
+      const calls = mockCheckboxRender.mock.calls;
+      const checkboxProps = calls[calls.length - 1][0];
 
-      expect(checkboxInstance.props.checked).toBe(true);
+      expect(checkboxProps.checked).toBe(true);
     });
   });
 
   describe('prop: size', () => {
     it('default to "medium"', () => {
-      const testInstance = TestRenderer.create(
-        <TreeNode value="foo" label="bar" />,
-      );
+      mockTypographyRender.mockClear();
+      render(<TreeNode value="foo" label="bar" />);
 
-      const typographyInstance = testInstance.root.findByType(Typography);
+      const calls = mockTypographyRender.mock.calls;
+      const typographyProps = calls[calls.length - 1][0];
 
-      expect(typographyInstance.props.variant).toEqual('input2');
+      expect(typographyProps.variant).toEqual('input2');
     });
 
     it('should accept ConfigProvider context size changes', () => {
-      const testInstance = TestRenderer.create(
+      mockTypographyRender.mockClear();
+      render(
         <ConfigProvider size="large">
           <TreeNode value="foo" label="bar" />
         </ConfigProvider>,
       );
 
-      const typographyInstance = testInstance.root.findByType(Typography);
+      const calls = mockTypographyRender.mock.calls;
+      const typographyProps = calls[calls.length - 1][0];
 
-      expect(typographyInstance.props.variant).toEqual('input1');
+      expect(typographyProps.variant).toEqual('input1');
     });
 
     const sizes: TreeSize[] = ['small', 'medium', 'large'];
@@ -282,13 +306,13 @@ describe('<TreeNode />', () => {
       const textVariant = textVariants[i];
 
       it(`should render label with variant:${textVariant} if size="${size}"`, () => {
-        const testInstance = TestRenderer.create(
-          <TreeNode value="foo" label="bar" size={size} />,
-        );
+        mockTypographyRender.mockClear();
+        render(<TreeNode value="foo" label="bar" size={size} />);
 
-        const typographyInstance = testInstance.root.findByType(Typography);
+        const calls = mockTypographyRender.mock.calls;
+        const typographyProps = calls[calls.length - 1][0];
 
-        expect(typographyInstance.props.variant).toEqual(textVariant);
+        expect(typographyProps.variant).toEqual(textVariant);
       });
     });
   });

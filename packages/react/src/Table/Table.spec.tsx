@@ -1,19 +1,59 @@
 import { ReactPortal } from 'react';
 import ReactDOM from 'react-dom';
 import { TableColumn } from '@mezzanine-ui/core/table';
-import {
-  act,
-  cleanupHook,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { act, cleanupHook, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Table from './Table';
 import TableRefresh from './refresh/TableRefresh';
 import TableHeader from './TableHeader';
 import Loading from '../Loading';
 import Pagination from '../Pagination';
+
+const mockTableHeaderRender = jest.fn();
+const OriginalTableHeader = jest.requireActual('./TableHeader').default;
+
+jest.mock('./TableHeader', () => {
+  return function MockTableHeader(props: any) {
+    mockTableHeaderRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTableHeader, props);
+  };
+});
+
+const mockLoadingRender = jest.fn();
+const OriginalLoading = jest.requireActual('../Loading').default;
+
+jest.mock('../Loading', () => {
+  return function MockLoading(props: any) {
+    mockLoadingRender(props);
+    const React = require('react');
+    return React.createElement(OriginalLoading, props);
+  };
+});
+
+const mockTableRefreshRender = jest.fn();
+const OriginalTableRefresh = jest.requireActual(
+  './refresh/TableRefresh',
+).default;
+
+jest.mock('./refresh/TableRefresh', () => {
+  return function MockTableRefresh(props: any) {
+    mockTableRefreshRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTableRefresh, props);
+  };
+});
+
+const mockPaginationRender = jest.fn();
+const OriginalPagination = jest.requireActual('../Pagination').default;
+
+jest.mock('../Pagination', () => {
+  return function MockPagination(props: any) {
+    mockPaginationRender(props);
+    const React = require('react');
+    return React.createElement(OriginalPagination, props);
+  };
+});
 
 type DataType = {
   key: string;
@@ -96,22 +136,20 @@ describe('<Table />', () => {
   );
 
   it('prop: headerClassName', () => {
-    const testInstance = TestRenderer.create(
-      <Table {...defaultProps} headerClassName="foo" />,
-    );
-    const headerInstance = testInstance.root.findByType(TableHeader);
+    mockTableHeaderRender.mockClear();
+    render(<Table {...defaultProps} headerClassName="foo" />);
+    const calls = mockTableHeaderRender.mock.calls;
 
-    expect(headerInstance.props.className).toBe('foo');
+    expect(calls[0][0].className).toBe('foo');
   });
 
   it('prop: loading', () => {
-    const testInstance = TestRenderer.create(
-      <Table {...defaultProps} loading />,
-    );
-    const loadingInstance = testInstance.root.findByType(Loading);
+    mockLoadingRender.mockClear();
+    render(<Table {...defaultProps} loading />);
+    const calls = mockLoadingRender.mock.calls;
 
-    expect(loadingInstance.props.loading).toBe(true);
-    expect(loadingInstance.props.stretch).toBe(true);
+    expect(calls[0][0].loading).toBe(true);
+    expect(calls[0][0].stretch).toBe(true);
   });
 
   describe('fetchMore feature', () => {
@@ -214,7 +252,8 @@ describe('<Table />', () => {
 
     it('should pass refresh needed props', () => {
       const onClick = jest.fn<void, []>(() => {});
-      const testInstance = TestRenderer.create(
+      mockTableRefreshRender.mockClear();
+      render(
         <Table
           {...defaultProps}
           refresh={{
@@ -223,9 +262,9 @@ describe('<Table />', () => {
           }}
         />,
       );
-      const refreshInstance = testInstance.root.findByType(TableRefresh);
+      const calls = mockTableRefreshRender.mock.calls;
 
-      expect(refreshInstance.props.onClick).toBe(onClick);
+      expect(calls[0][0].onClick).toBe(onClick);
     });
   });
 
@@ -246,7 +285,8 @@ describe('<Table />', () => {
     });
 
     it('should apply correct default pagination options when not given options', () => {
-      const testInstance = TestRenderer.create(
+      mockPaginationRender.mockClear();
+      render(
         <Table
           {...defaultProps}
           pagination={{
@@ -256,19 +296,19 @@ describe('<Table />', () => {
         />,
       );
 
-      const paginationInstance = testInstance.root.findByType(Pagination);
+      const calls = mockPaginationRender.mock.calls;
+      const lastCallProps = calls[calls.length - 1][0];
 
-      expect(paginationInstance.props.boundaryCount).toBe(1);
-      expect(paginationInstance.props.className).toBe(undefined);
-      expect(paginationInstance.props.pageSize).toBe(10);
-      expect(paginationInstance.props.siblingCount).toBe(1);
-      expect(paginationInstance.props.total).toBe(
-        defaultProps.dataSource.length,
-      );
+      expect(lastCallProps.boundaryCount).toBe(1);
+      expect(lastCallProps.className).toBe(undefined);
+      expect(lastCallProps.pageSize).toBe(10);
+      expect(lastCallProps.siblingCount).toBe(1);
+      expect(lastCallProps.total).toBe(defaultProps.dataSource.length);
     });
 
     it('should map options into context when given custom options', () => {
-      const testInstance = TestRenderer.create(
+      mockPaginationRender.mockClear();
+      render(
         <Table
           {...defaultProps}
           pagination={{
@@ -289,16 +329,17 @@ describe('<Table />', () => {
         />,
       );
 
-      const paginationInstance = testInstance.root.findByType(Pagination);
+      const calls = mockPaginationRender.mock.calls;
+      const lastCallProps = calls[calls.length - 1][0];
 
-      expect(paginationInstance.props.boundaryCount).toBe(2);
-      expect(paginationInstance.props.className).toBe('foo');
-      expect(paginationInstance.props.disabled).toBe(true);
-      expect(paginationInstance.props.hideNextButton).toBe(true);
-      expect(paginationInstance.props.hidePreviousButton).toBe(true);
-      expect(paginationInstance.props.pageSize).toBe(5);
-      expect(paginationInstance.props.siblingCount).toBe(2);
-      expect(paginationInstance.props.total).toBe(100);
+      expect(lastCallProps.boundaryCount).toBe(2);
+      expect(lastCallProps.className).toBe('foo');
+      expect(lastCallProps.disabled).toBe(true);
+      expect(lastCallProps.hideNextButton).toBe(true);
+      expect(lastCallProps.hidePreviousButton).toBe(true);
+      expect(lastCallProps.pageSize).toBe(5);
+      expect(lastCallProps.siblingCount).toBe(2);
+      expect(lastCallProps.total).toBe(100);
     });
 
     it('should auto slice data when pagination enabled and disableAutoSlicing is false as default', () => {

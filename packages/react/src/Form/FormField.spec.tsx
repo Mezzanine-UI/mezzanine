@@ -29,30 +29,42 @@ describe('<FormField />', () => {
   });
 
   it('should provide formControl', () => {
-    let expectProps: FormControl = {
+    const firstProps: FormControl = {
       disabled: true,
       fullWidth: true,
       required: true,
       severity: 'warning',
     };
+
     const { result, rerender } = renderHook(
       () => useContext(FormControlContext),
       {
-        wrapper: FormField as any,
-        initialProps: expectProps,
+        wrapper: ({ children }) => (
+          <FormField {...firstProps}>{children}</FormField>
+        ),
       },
     );
 
-    expect(result.current).toEqual(expectProps);
+    expect(result.current).toEqual(firstProps);
 
-    expectProps = {
+    const secondProps: FormControl = {
       disabled: false,
       fullWidth: false,
       required: false,
       severity: 'success',
     };
-    rerender(expectProps);
-    expect(result.current).toEqual(expectProps);
+
+    rerender();
+    // Need to re-render with new wrapper since props changed
+    const { result: result2 } = renderHook(
+      () => useContext(FormControlContext),
+      {
+        wrapper: ({ children }) => (
+          <FormField {...secondProps}>{children}</FormField>
+        ),
+      },
+    );
+    expect(result2.current).toEqual(secondProps);
   });
 
   describe('prop: disabled', () => {

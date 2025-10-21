@@ -13,4 +13,5 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/'],
   collectCoverageFrom: ['src/**/*', '!**/index.ts', '!src/**/*stories*'],
   coveragePathIgnorePatterns: ['/node_modules/'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };

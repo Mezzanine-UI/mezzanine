@@ -3,12 +3,7 @@ import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode, KeyboardEvent } from 'react';
 import moment from 'moment';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
 import { useDateRangePickerValue } from '.';
 
@@ -53,7 +48,7 @@ describe('useDateRangePickerValue', () => {
       '2021-11-20',
     );
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.onClear();
     });
 
@@ -83,7 +78,7 @@ describe('useDateRangePickerValue', () => {
       },
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
@@ -94,7 +89,7 @@ describe('useDateRangePickerValue', () => {
       '2021-12-20',
     );
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.onFromKeyDown({
         key: 'Escape',
       } as KeyboardEvent<HTMLInputElement>);
@@ -130,7 +125,7 @@ describe('useDateRangePickerValue', () => {
       },
     });
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.onChange(['2021-11-20', '2021-12-20']);
     });
 
@@ -141,7 +136,7 @@ describe('useDateRangePickerValue', () => {
       '2021-12-20',
     );
 
-    TestRenderer.act(() => {
+    act(() => {
       result.current.onToKeyDown({
         key: 'Escape',
       } as KeyboardEvent<HTMLInputElement>);
@@ -180,7 +175,7 @@ describe('useDateRangePickerValue', () => {
         },
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onFromKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);
@@ -213,7 +208,7 @@ describe('useDateRangePickerValue', () => {
         },
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.onToKeyDown({
           key: 'Enter',
         } as KeyboardEvent<HTMLInputElement>);
