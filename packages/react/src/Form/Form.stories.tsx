@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
 import { ReactNode, useState } from 'react';

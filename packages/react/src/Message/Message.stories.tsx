@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { useEffect } from 'react';
 import Button, { ButtonGroup } from '../Button';
 import Message from '.';

@@ -1,5 +1,5 @@
 import { RangeSliderValue, SingleSliderValue } from '@mezzanine-ui/core/slider';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { useRef, useState } from 'react';
 import Slider, { SliderProps } from '.';
 import Typography from '../Typography';

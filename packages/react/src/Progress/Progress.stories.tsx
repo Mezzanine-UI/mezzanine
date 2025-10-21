@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { CSSProperties, useState } from 'react';
 import { ExclamationCircleFilledIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';

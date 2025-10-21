@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import Button from '../Button';
 import Tooltip from '.';

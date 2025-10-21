@@ -1,5 +1,5 @@
-import { Meta, StoryFn } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
+import { action } from 'storybook/actions';
 import { useState } from 'react';
 import { UploadButton, UploadResult, UploadResultProps } from '.';
 import ConfigProvider from '../Provider';

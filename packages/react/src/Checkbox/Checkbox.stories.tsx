@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { StoryFn } from '@storybook/react';
+import { StoryFn } from '@storybook/react-webpack5';
 import Typography from '../Typography';
 import Checkbox, {
   CheckboxSize,

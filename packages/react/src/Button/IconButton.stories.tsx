@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { IconButton } from '.';

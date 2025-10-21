@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import {
   ArrowDownIcon,
   ArrowRightIcon,

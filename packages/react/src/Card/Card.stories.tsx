@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { EyeIcon, MoreVerticalIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Card, { CardProps } from './Card';

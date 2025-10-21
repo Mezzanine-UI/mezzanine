@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { useRef } from 'react';
 import Typography from '../Typography';
 import Portal from './Portal';

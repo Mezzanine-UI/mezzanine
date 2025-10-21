@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Button, { ButtonColor, ButtonSize, ButtonVariant, ButtonProps } from '.';

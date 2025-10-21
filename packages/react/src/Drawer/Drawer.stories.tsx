@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import Drawer, { DrawerProps, DrawerPlacement } from '.';
 import Button from '../Button';
 

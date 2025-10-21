@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import moment from 'moment';
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';

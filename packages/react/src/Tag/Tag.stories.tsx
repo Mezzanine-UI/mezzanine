@@ -1,5 +1,5 @@
-import { StoryFn, Meta } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { action } from 'storybook/actions';
 import Tag, { TagProps, TagSize } from '.';
 import ConfigProvider from '../Provider';
 

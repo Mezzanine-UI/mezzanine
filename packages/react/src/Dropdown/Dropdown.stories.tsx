@@ -5,7 +5,7 @@ import {
   MoreHorizontalIcon,
 } from '@mezzanine-ui/icons';
 import { Size } from '@mezzanine-ui/system/size';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import Dropdown from './Dropdown';
 import Menu, { MenuItem, MenuSize } from '../Menu';
 import Button from '../Button';

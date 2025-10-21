@@ -1,6 +1,6 @@
 import { RefObject, MouseEvent, useState } from 'react';
-import { action } from '@storybook/addon-actions';
-import { Meta, StoryFn } from '@storybook/react';
+import { action } from 'storybook/actions';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { MoreVerticalIcon } from '@mezzanine-ui/icons';
 import AppBar, { AppBarBrand, AppBarMain, AppBarSupport } from '../AppBar';
 import Button from '../Button/Button';

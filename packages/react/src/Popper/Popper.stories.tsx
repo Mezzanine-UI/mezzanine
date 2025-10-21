@@ -1,5 +1,5 @@
 import { MouseEvent, useState } from 'react';
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import Button from '../Button';
 import Typography from '../Typography';
 import Popper, { PopperPlacement } from '.';

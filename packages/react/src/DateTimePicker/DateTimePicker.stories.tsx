@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';

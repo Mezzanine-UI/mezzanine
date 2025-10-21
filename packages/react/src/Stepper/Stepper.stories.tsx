@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { useState } from 'react';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { IconProps } from '../Icon';

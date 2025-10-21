@@ -1,5 +1,5 @@
 import { TreeNodeValue } from '@mezzanine-ui/core/tree';
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { useRef, useState } from 'react';
 import Button from '../Button';
 import Typography from '../Typography';

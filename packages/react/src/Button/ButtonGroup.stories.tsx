@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import { Icon } from '..';
