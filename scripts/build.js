@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 const path = require('path');
 const fse = require('fs-extra');
 const { glob } = require('glob');
@@ -94,10 +93,17 @@ async function run() {
   /**
    * copy dist to node_modules
    */
-  fse.copySync(
-    packageDistPath,
-    path.resolve(nodeModulesPath, ...packageJson.name.split('/')),
+  const nodeModulesPackagePath = path.resolve(
+    nodeModulesPath,
+    ...packageJson.name.split('/'),
   );
+
+  // Remove existing file/symlink before copying
+  if (fse.existsSync(nodeModulesPackagePath)) {
+    fse.removeSync(nodeModulesPackagePath);
+  }
+
+  fse.copySync(packageDistPath, nodeModulesPackagePath);
 }
 
 run();
