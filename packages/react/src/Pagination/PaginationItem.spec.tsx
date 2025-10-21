@@ -4,14 +4,22 @@ import {
   ChevronRightIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
-import { cleanup, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Icon from '../Icon';
 
 import { PaginationItem } from '.';
+
+const renderMockIcon = jest.fn();
+
+jest.mock('../Icon', () => {
+  return function MockIcon(props: any) {
+    renderMockIcon(props);
+    return <div />;
+  };
+});
 
 describe('<PaginationItem />', () => {
   afterEach(cleanup);
@@ -107,14 +115,15 @@ describe('<PaginationItem />', () => {
           <PaginationItem type={iconType} />,
         );
         const element = getHostHTMLElement();
-        const testRenderer = TestRenderer.create(
-          <PaginationItem type={iconType} />,
-        );
-        const testInstance = testRenderer.root;
-        const iconInstance = testInstance.findByType(Icon);
 
         expect(element).toBeInstanceOf(HTMLButtonElement);
-        expect(iconInstance.props.icon).toBe(ItemIcon);
+        expect(renderMockIcon).toHaveBeenCalledWith(
+          expect.objectContaining({
+            icon: ItemIcon,
+          }),
+        );
+
+        renderMockIcon.mockClear();
       });
     });
   });

@@ -124,7 +124,7 @@ describe('<Popper />', () => {
 
         fireEvent.click(anchorRef.current!);
 
-        expect(onClose).not.toBeCalled();
+        expect(onClose).not.toHaveBeenCalled();
       });
     });
   });

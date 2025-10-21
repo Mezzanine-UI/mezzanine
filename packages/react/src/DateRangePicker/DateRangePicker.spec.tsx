@@ -411,14 +411,14 @@ describe('<DateRangePicker />', () => {
           fireEvent.focus(inputFromElement!);
         });
 
-        expect(onCalendarToggle).toBeCalledWith(true);
+        expect(onCalendarToggle).toHaveBeenCalledWith(true);
         onCalendarToggle.mockClear();
 
         await waitFor(() => {
           fireEvent.keyDown(document, { key: 'Escape' });
         });
 
-        expect(onCalendarToggle).toBeCalledWith(false);
+        expect(onCalendarToggle).toHaveBeenCalledWith(false);
       });
 
       it('should not be invoked if readOnly', () => {
@@ -440,7 +440,7 @@ describe('<DateRangePicker />', () => {
           fireEvent.click(inputElement!);
         });
 
-        expect(onCalendarToggle).toBeCalledTimes(0);
+        expect(onCalendarToggle).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -677,7 +677,7 @@ describe('<DateRangePicker />', () => {
         fireEvent.click(clearIconElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -705,8 +705,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputFromElement!);
       });
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputFromElement,
         }),
@@ -716,8 +716,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.keyDown(inputFromElement!);
       });
 
-      expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
+      expect(onKeyDown).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputFromElement,
         }),
@@ -727,8 +727,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.blur(inputFromElement!);
       });
 
-      expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(
+      expect(onBlur).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputFromElement,
         }),
@@ -758,8 +758,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputToElement!);
       });
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputToElement,
         }),
@@ -769,8 +769,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.keyDown(inputToElement!);
       });
 
-      expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
+      expect(onKeyDown).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputToElement,
         }),
@@ -780,8 +780,8 @@ describe('<DateRangePicker />', () => {
         fireEvent.blur(inputToElement!);
       });
 
-      expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(
+      expect(onBlur).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputToElement,
         }),
@@ -820,7 +820,7 @@ describe('<DateRangePicker />', () => {
         fireEvent.click(document.body);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when range selected via calendar', async () => {
@@ -849,7 +849,7 @@ describe('<DateRangePicker />', () => {
         fireEvent.click(testCellToElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when using tab to remove focus and has valid value', async () => {
@@ -886,7 +886,7 @@ describe('<DateRangePicker />', () => {
         fireEvent.keyDown(document, { key: 'Tab' });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 

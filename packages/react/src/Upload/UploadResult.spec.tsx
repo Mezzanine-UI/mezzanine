@@ -64,7 +64,7 @@ describe('<UploadResult />', () => {
 
         fireEvent.click(deleteIcon!);
 
-        expect(onDelete).toBeCalledTimes(1);
+        expect(onDelete).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -80,7 +80,7 @@ describe('<UploadResult />', () => {
 
       fireEvent.click(downloadIcon!);
 
-      expect(onDownload).toBeCalledTimes(1);
+      expect(onDownload).toHaveBeenCalledTimes(1);
     });
   });
 

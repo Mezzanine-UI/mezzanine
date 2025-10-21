@@ -225,14 +225,14 @@ describe('<DatePicker />', () => {
           fireEvent.focus(inputElement!);
         });
 
-        expect(onCalendarToggle).toBeCalledWith(true);
+        expect(onCalendarToggle).toHaveBeenCalledWith(true);
         onCalendarToggle.mockClear();
 
         await waitFor(() => {
           fireEvent.keyDown(document, { key: 'Escape' });
         });
 
-        expect(onCalendarToggle).toBeCalledWith(false);
+        expect(onCalendarToggle).toHaveBeenCalledWith(false);
       });
 
       it('should not be invoked if readOnly', () => {
@@ -254,7 +254,7 @@ describe('<DatePicker />', () => {
           fireEvent.click(inputElement!);
         });
 
-        expect(onCalendarToggle).toBeCalledTimes(0);
+        expect(onCalendarToggle).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -329,7 +329,7 @@ describe('<DatePicker />', () => {
         fireEvent.click(document.body);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when enter key down', async () => {
@@ -355,7 +355,7 @@ describe('<DatePicker />', () => {
         fireEvent.keyDown(inputElement, { key: 'Enter' });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when calendar cell clicked', async () => {
@@ -380,7 +380,7 @@ describe('<DatePicker />', () => {
         fireEvent.click(testCellElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when using tab to remove focus', async () => {
@@ -410,7 +410,7 @@ describe('<DatePicker />', () => {
         fireEvent.keyDown(document, { key: 'Tab' });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -473,7 +473,7 @@ describe('<DatePicker />', () => {
         fireEvent.click(clearIconElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -501,8 +501,8 @@ describe('<DatePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -512,8 +512,8 @@ describe('<DatePicker />', () => {
         fireEvent.keyDown(inputElement!);
       });
 
-      expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
+      expect(onKeyDown).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -523,8 +523,8 @@ describe('<DatePicker />', () => {
         fireEvent.blur(inputElement!);
       });
 
-      expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(
+      expect(onBlur).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),

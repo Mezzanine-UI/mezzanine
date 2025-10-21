@@ -294,7 +294,7 @@ describe('<DateRangePickerCalendar />', () => {
             fireEvent.click(firstTestButtonElement!);
           });
 
-          expect(onChange).toBeCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
           onChange.mockClear();
 
           const [, secondCalendarElement] =
@@ -311,7 +311,7 @@ describe('<DateRangePickerCalendar />', () => {
             fireEvent.click(secondTestButtonElement!);
           });
 
-          expect(onChange).toBeCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
         });
       });
     });

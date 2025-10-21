@@ -162,12 +162,12 @@ describe('<UploadPictureWall />', () => {
 
       fireEvent.click(firstButton!);
 
-      expect(onDelete).toBeCalledTimes(1);
-      expect(onDelete).toBeCalledWith([
+      expect(onDelete).toHaveBeenCalledTimes(1);
+      expect(onDelete).toHaveBeenCalledWith([
         'https://rytass.com/logo.png',
         'https://rytass.com/logo.png',
       ]);
-      expect(onChange).toBeCalledWith([
+      expect(onChange).toHaveBeenCalledWith([
         'https://rytass.com/logo.png',
         'https://rytass.com/logo.png',
       ]);
@@ -187,7 +187,7 @@ describe('<UploadPictureWall />', () => {
 
       fireEvent.click(firstButton!);
 
-      expect(onDelete).not.toBeCalled();
+      expect(onDelete).not.toHaveBeenCalled();
     });
   });
 
@@ -235,14 +235,14 @@ describe('<UploadPictureWall />', () => {
           });
 
           await waitFor(() => {
-            expect(onMultiUpload).toBeCalled();
-            expect(onUploadSuccess).toBeCalled();
-            expect(onUploadSuccess).toBeCalledWith(mockFiles, [
+            expect(onMultiUpload).toHaveBeenCalled();
+            expect(onUploadSuccess).toHaveBeenCalled();
+            expect(onUploadSuccess).toHaveBeenCalledWith(mockFiles, [
               'https://rytass.com/logo.png',
               'https://rytass.com/logo.png',
             ]);
-            expect(onError).not.toBeCalled();
-            expect(onChange).toBeCalledWith([
+            expect(onError).not.toHaveBeenCalled();
+            expect(onChange).toHaveBeenCalledWith([
               'https://rytass.com/logo.png',
               'https://rytass.com/logo.png',
             ]);
@@ -290,11 +290,11 @@ describe('<UploadPictureWall />', () => {
           });
 
           await waitFor(() => {
-            expect(onMultiUpload).toBeCalled();
-            expect(onUploadSuccess).not.toBeCalled();
-            expect(onError).toBeCalled();
-            expect(onError).toBeCalledWith(mockFiles);
-            expect(onChange).not.toBeCalled();
+            expect(onMultiUpload).toHaveBeenCalled();
+            expect(onUploadSuccess).not.toHaveBeenCalled();
+            expect(onError).toHaveBeenCalled();
+            expect(onError).toHaveBeenCalledWith(mockFiles);
+            expect(onChange).not.toHaveBeenCalled();
           });
         });
       });
@@ -340,11 +340,11 @@ describe('<UploadPictureWall />', () => {
             });
 
             await waitFor(() => {
-              expect(onUpload).toBeCalled();
-              expect(onUploadSuccess).toBeCalledTimes(2);
-              expect(onError).not.toBeCalled();
-              expect(onChange).toBeCalledTimes(1);
-              expect(onChange).toBeCalledWith([
+              expect(onUpload).toHaveBeenCalled();
+              expect(onUploadSuccess).toHaveBeenCalledTimes(2);
+              expect(onError).not.toHaveBeenCalled();
+              expect(onChange).toHaveBeenCalledTimes(1);
+              expect(onChange).toHaveBeenCalledWith([
                 'https://rytass.com/logo.png',
                 'https://rytass.com/logo.png',
               ]);
@@ -390,10 +390,10 @@ describe('<UploadPictureWall />', () => {
             });
 
             await waitFor(() => {
-              expect(onUpload).toBeCalled();
-              expect(onUploadSuccess).not.toBeCalled();
-              expect(onError).toBeCalledTimes(2);
-              expect(onChange).not.toBeCalled();
+              expect(onUpload).toHaveBeenCalled();
+              expect(onUploadSuccess).not.toHaveBeenCalled();
+              expect(onError).toHaveBeenCalledTimes(2);
+              expect(onChange).not.toHaveBeenCalled();
             });
           });
         });
@@ -438,10 +438,10 @@ describe('<UploadPictureWall />', () => {
             });
 
             await waitFor(() => {
-              expect(onUpload).toBeCalled();
-              expect(onUploadSuccess).toBeCalledTimes(2);
-              expect(onError).not.toBeCalled();
-              expect(onChange).toBeCalledTimes(2);
+              expect(onUpload).toHaveBeenCalled();
+              expect(onUploadSuccess).toHaveBeenCalledTimes(2);
+              expect(onError).not.toHaveBeenCalled();
+              expect(onChange).toHaveBeenCalledTimes(2);
             });
           });
 
@@ -484,10 +484,10 @@ describe('<UploadPictureWall />', () => {
             });
 
             await waitFor(() => {
-              expect(onUpload).toBeCalled();
-              expect(onUploadSuccess).not.toBeCalled();
-              expect(onError).toBeCalledTimes(2);
-              expect(onChange).not.toBeCalled();
+              expect(onUpload).toHaveBeenCalled();
+              expect(onUploadSuccess).not.toHaveBeenCalled();
+              expect(onError).toHaveBeenCalledTimes(2);
+              expect(onChange).not.toHaveBeenCalled();
             });
           });
         });
@@ -509,7 +509,7 @@ describe('<UploadPictureWall />', () => {
           },
         });
 
-        expect(onMultiUpload).not.toBeCalled();
+        expect(onMultiUpload).not.toHaveBeenCalled();
       });
 
       it('onUpload case', () => {
@@ -526,7 +526,7 @@ describe('<UploadPictureWall />', () => {
           },
         });
 
-        expect(onUpload).not.toBeCalled();
+        expect(onUpload).not.toHaveBeenCalled();
       });
     });
   });

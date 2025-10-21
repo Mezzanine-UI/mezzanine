@@ -143,8 +143,8 @@ describe('<TreeNode />', () => {
 
       fireEvent.click(caretElement);
 
-      expect(onExpand).toBeCalledTimes(1);
-      expect(onExpand).toBeCalledWith('foo');
+      expect(onExpand).toHaveBeenCalledTimes(1);
+      expect(onExpand).toHaveBeenCalledWith('foo');
     });
   });
 
@@ -170,8 +170,8 @@ describe('<TreeNode />', () => {
       const labelElement = element.querySelector('.mzn-tree-node__label');
 
       fireEvent.click(labelElement!);
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith('foo');
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith('foo');
     });
 
     it('onSelect should bind to checkbox and receives value as its argument when multiple=true', () => {
@@ -189,8 +189,8 @@ describe('<TreeNode />', () => {
       const checkboxElement = element.querySelector('.mzn-input-check');
 
       fireEvent.click(checkboxElement!);
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith('foo');
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith('foo');
     });
   });
 

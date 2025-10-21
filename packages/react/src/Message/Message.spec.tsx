@@ -95,7 +95,7 @@ describe('<Message />', () => {
         jest.runAllTimers();
       });
 
-      expect(onExited).toBeCalledTimes(1);
+      expect(onExited).toHaveBeenCalledTimes(1);
     });
   });
 });

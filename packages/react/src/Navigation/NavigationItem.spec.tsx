@@ -59,7 +59,7 @@ describe('<NavigationItem />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).toBeCalled();
+      expect(onClick).toHaveBeenCalled();
       expect(onClick.mock.calls[0][0]).toBe(eventKey);
     });
   });

@@ -34,7 +34,7 @@ describe('useTabKeyClose', () => {
       );
     });
 
-    expect(onClose).toBeCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should not invoke onClose when active element is not last-element-in-flow', () => {
@@ -57,6 +57,6 @@ describe('useTabKeyClose', () => {
       );
     });
 
-    expect(onClose).toBeCalledTimes(0);
+    expect(onClose).toHaveBeenCalledTimes(0);
   });
 });

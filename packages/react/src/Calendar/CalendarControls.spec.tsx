@@ -52,7 +52,7 @@ describe('<CalendarCell />', () => {
 
       fireEvent.click(buttonElement);
 
-      expect(onNext).toBeCalled();
+      expect(onNext).toHaveBeenCalled();
     });
   });
 
@@ -81,7 +81,7 @@ describe('<CalendarCell />', () => {
 
       fireEvent.click(buttonElement);
 
-      expect(onPrev).toBeCalled();
+      expect(onPrev).toHaveBeenCalled();
     });
   });
 
@@ -105,7 +105,7 @@ describe('<CalendarCell />', () => {
 
       fireEvent.click(buttonElement);
 
-      expect(onNext).not.toBeCalled();
+      expect(onNext).not.toHaveBeenCalled();
     });
   });
 
@@ -129,7 +129,7 @@ describe('<CalendarCell />', () => {
 
       fireEvent.click(buttonElement);
 
-      expect(onPrev).not.toBeCalled();
+      expect(onPrev).not.toHaveBeenCalled();
     });
   });
 });

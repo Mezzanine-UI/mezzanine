@@ -173,7 +173,7 @@ describe('<Modal />', () => {
 
       fireEvent.click(closeIconElement!);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should not render close icon and not bind close icon class if hideCloseIcon=true', () => {

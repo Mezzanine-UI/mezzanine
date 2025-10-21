@@ -81,6 +81,6 @@ describe('<SelectTriggerTags />', () => {
       fireEvent.click(firstTagCloseIcon!);
     });
 
-    expect(onTagClose).toBeCalledTimes(1);
+    expect(onTagClose).toHaveBeenCalledTimes(1);
   });
 });

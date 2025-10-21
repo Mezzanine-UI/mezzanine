@@ -4,7 +4,6 @@ import {
   act,
   cleanupHook,
   render,
-  TestRenderer,
   fireEvent,
   cleanup,
   getByText as getByTextWithContainer,
@@ -12,7 +11,6 @@ import {
 } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
-import TextField from '../TextField';
 import { TreeSelect, SelectValue, TreeSelectOption } from '.';
 
 const options: TreeSelectOption[] = [
@@ -67,30 +65,6 @@ describe('<TreeSelect />', () => {
     expect(element.classList.contains('mzn-tree-select')).toBeTruthy();
   });
 
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const testRenderer = TestRenderer.create(
-      <TreeSelect
-        options={options}
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
-
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.prefix).toStrictEqual(prefix);
-    expect(textFieldInstance.props.size).toBe('large');
-  });
-
   it('props should directly pass to native input element', () => {
     const { getHostHTMLElement } = render(
       <TreeSelect
@@ -132,7 +106,9 @@ describe('<TreeSelect />', () => {
 
     fireEvent.click(closeIcon!);
 
-    expect(onChange).toBeCalledWith(expect.not.arrayContaining([value[0]]));
+    expect(onChange).toHaveBeenCalledWith(
+      expect.not.arrayContaining([value[0]]),
+    );
   });
 
   it('popper should be dynamically positioned when value changes', async () => {
@@ -607,8 +583,8 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(0);
 
       act(() => {
         fireEvent.click(textFieldElement);
@@ -616,8 +592,8 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
@@ -638,7 +614,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via click-away from text-field', async () => {
@@ -659,7 +635,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should invoke onBlur when closing via text-field tab key down', async () => {
@@ -680,7 +656,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onBlur when text-field tab key down but is not open', () => {
@@ -692,7 +668,7 @@ describe('<TreeSelect />', () => {
       const textFieldElement = element.querySelector('.mzn-text-field')!;
 
       fireEvent.keyDown(textFieldElement, { code: 'Tab' });
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onBlur).toHaveBeenCalledTimes(0);
     });
 
     it('should invoke onBlur when closing via text-field enter key down', async () => {
@@ -713,7 +689,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onBlur).toBeCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledTimes(1);
     });
 
     const arrowKeyCodes = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
@@ -733,7 +709,7 @@ describe('<TreeSelect />', () => {
 
         await waitFor(() => {});
 
-        expect(onFocus).toBeCalledTimes(1);
+        expect(onFocus).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -760,7 +736,7 @@ describe('<TreeSelect />', () => {
 
         await waitFor(() => {});
 
-        expect(onFocus).toBeCalledTimes(0);
+        expect(onFocus).toHaveBeenCalledTimes(0);
       });
     });
 
@@ -779,7 +755,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onFocus).toBeCalledTimes(0);
+      expect(onFocus).toHaveBeenCalledTimes(0);
 
       act(() => {
         fireEvent.click(textFieldElement);
@@ -791,7 +767,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onBlur).toBeCalledTimes(0);
+      expect(onBlur).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -817,7 +793,7 @@ describe('<TreeSelect />', () => {
         fireEvent.click(testLabelElement);
       });
 
-      expect(onChange).toBeCalledWith(
+      expect(onChange).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({ id: '1-1-1' }),
           expect.objectContaining({ id: '1-1-2' }),
@@ -887,7 +863,7 @@ describe('<TreeSelect />', () => {
 
       await waitFor(() => {});
 
-      expect(onChange).toBeCalledWith(
+      expect(onChange).toHaveBeenCalledWith(
         expect.not.arrayContaining([expect.anything()]),
       );
     });

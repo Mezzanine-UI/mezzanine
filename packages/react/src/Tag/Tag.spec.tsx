@@ -104,7 +104,7 @@ describe('<Tag />', () => {
 
       fireEvent.click(closeIconElement!);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should be fired if disabled=true', () => {
@@ -117,7 +117,7 @@ describe('<Tag />', () => {
 
       fireEvent.click(closeIconElement!);
 
-      expect(onClose).not.toBeCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 

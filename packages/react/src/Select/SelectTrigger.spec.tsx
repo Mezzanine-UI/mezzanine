@@ -19,7 +19,7 @@ describe('<SelectTrigger />', () => {
         <SelectTrigger readOnly mode="single" renderValue={renderValue} />,
       );
 
-      expect(renderValue).toBeCalledWith(null);
+      expect(renderValue).toHaveBeenCalledWith(null);
     });
 
     it('multiple mode', () => {
@@ -27,7 +27,7 @@ describe('<SelectTrigger />', () => {
         <SelectTrigger readOnly mode="multiple" renderValue={renderValue} />,
       );
 
-      expect(renderValue).toBeCalledWith([]);
+      expect(renderValue).toHaveBeenCalledWith([]);
     });
   });
 
@@ -58,6 +58,6 @@ describe('<SelectTrigger />', () => {
       fireEvent.click(icon!);
     });
 
-    expect(suffixAction).toBeCalledTimes(1);
+    expect(suffixAction).toHaveBeenCalledTimes(1);
   });
 });

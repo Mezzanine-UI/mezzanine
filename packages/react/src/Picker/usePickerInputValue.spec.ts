@@ -41,7 +41,7 @@ describe('usePickerInputValue', () => {
       });
 
       expect(result.current.inputValue).toBe('2021-10-20');
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -47,8 +47,8 @@ describe('<PaginationPageSize />', () => {
         fireEvent.click(options[1]);
       });
 
-      expect(onChange).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith(20);
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(20);
     });
   });
 });

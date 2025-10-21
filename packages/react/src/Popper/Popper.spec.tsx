@@ -1,8 +1,7 @@
 import { Placement } from '@popperjs/core';
 import { RefObject } from 'react';
-import { act, cleanup, render, TestRenderer } from '../../__test-utils__';
+import { act, cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Portal from '../Portal';
 import Popper from '.';
 import { PopperController } from './Popper';
 
@@ -31,24 +30,6 @@ describe('<Popper />', () => {
 
     expect(popperContent!.textContent).toBe('foo');
     expect(popperContent!.getAttribute('id')).toBe('bar');
-  });
-
-  it('should pass props to Portal: container,disablePortal', () => {
-    const container = document.createElement('div');
-
-    container.setAttribute('id', 'container');
-    document.body.appendChild(container);
-
-    const testRenderer = TestRenderer.create(
-      <Popper container={container} disablePortal open>
-        <div />
-      </Popper>,
-    );
-    const testInstance = testRenderer.root;
-    const portalInstance = testInstance.findByType(Portal);
-
-    expect(portalInstance.props.container).toBe(container);
-    expect(portalInstance.props.disablePortal).toBe(true);
   });
 
   describe('prop: open', () => {

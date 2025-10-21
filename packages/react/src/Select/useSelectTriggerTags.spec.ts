@@ -11,7 +11,7 @@ describe('calcTakeCount', () => {
       setTakeCount,
     });
 
-    expect(setTakeCount).toBeCalledWith(2);
+    expect(setTakeCount).toHaveBeenCalledWith(2);
   });
 
   describe('total width of tags is longer than max width case', () => {
@@ -25,7 +25,7 @@ describe('calcTakeCount', () => {
         setTakeCount,
       });
 
-      expect(setTakeCount).toBeCalledWith(2);
+      expect(setTakeCount).toHaveBeenCalledWith(2);
     });
 
     it('total width of tags + width of ellipsis tag is longer than max width case', () => {
@@ -38,7 +38,7 @@ describe('calcTakeCount', () => {
         setTakeCount,
       });
 
-      expect(setTakeCount).toBeCalledWith(1);
+      expect(setTakeCount).toHaveBeenCalledWith(1);
     });
 
     it('large options case', async () => {
@@ -53,7 +53,7 @@ describe('calcTakeCount', () => {
         setTakeCount,
       });
 
-      expect(setTakeCount).toBeCalledWith(0);
+      expect(setTakeCount).toHaveBeenCalledWith(0);
     });
   });
 });

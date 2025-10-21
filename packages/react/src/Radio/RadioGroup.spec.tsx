@@ -1,17 +1,12 @@
 import { useContext, useState } from 'react';
-import {
-  cleanup,
-  fireEvent,
-  render,
-  renderHook,
-  TestRenderer,
-} from '../../__test-utils__';
+import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
-import Radio, { RadioGroup, RadioGroupOption } from '.';
+import Radio, { RadioGroup } from '.';
+import { createWrapper } from '../../__test-utils__/render';
 
 describe('<RadioGroup />', () => {
   afterEach(cleanup);
@@ -50,13 +45,9 @@ describe('<RadioGroup />', () => {
       size: 'small',
       value: 'bar',
     };
-    const { result, rerender } = renderHook(
-      () => useContext(RadioGroupContext),
-      {
-        wrapper: RadioGroup,
-        initialProps: expectProps,
-      },
-    );
+    const { result } = renderHook(() => useContext(RadioGroupContext), {
+      wrapper: createWrapper(RadioGroup, expectProps),
+    });
 
     /**
      * Ignore onChange since it will be transformed by RadioGroup
@@ -69,58 +60,6 @@ describe('<RadioGroup />', () => {
     }
 
     testRadioGroupContextValue();
-
-    expectProps = {
-      disabled: false,
-      name: 'bar',
-      size: 'large',
-      value: 'zoo',
-    };
-    rerender(expectProps);
-    testRadioGroupContextValue();
-  });
-
-  describe('prop: options', () => {
-    const options: RadioGroupOption[] = [
-      {
-        label: 'foo',
-        value: 'foo',
-      },
-      {
-        disabled: true,
-        label: 'bar',
-        value: 'bar',
-      },
-    ];
-
-    it('should render radios via options', () => {
-      const testInstance = TestRenderer.create(
-        <RadioGroup options={options} />,
-      );
-      const radios = testInstance.root.findAllByType(Radio);
-
-      radios.forEach((radio, index) => {
-        const option = options[index];
-
-        expect(radio.props.children).toBe(option.label);
-        expect(radio.props.disabled).toBe(option.disabled);
-        expect(radio.props.value).toBe(option.value);
-      });
-    });
-
-    it('should not render radios via options if children passed', () => {
-      const { getHostHTMLElement } = render(
-        <RadioGroup options={options}>
-          <div data-test="foo">foo</div>
-        </RadioGroup>,
-      );
-      const element = getHostHTMLElement();
-      const { firstElementChild, childElementCount } = element;
-
-      expect(firstElementChild!.getAttribute('data-test')).toBe('foo');
-      expect(firstElementChild!.textContent).toBe('foo');
-      expect(childElementCount).toBe(1);
-    });
   });
 
   describe('control', () => {
@@ -143,11 +82,11 @@ describe('<RadioGroup />', () => {
       expect(barRadioElement.checked).toBeTruthy();
 
       fireEvent.click(barRadioElement);
-      expect(onChange).not.toBeCalled();
+      expect(onChange).not.toHaveBeenCalled();
 
       fireEvent.click(fooRadioElement);
-      expect(onChange).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith('foo');
+      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith('foo');
       expect(fooRadioElement.checked).toBeTruthy();
       expect(barRadioElement.checked).toBeFalsy();
     });

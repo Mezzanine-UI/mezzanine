@@ -199,7 +199,7 @@ describe('<Tabs />', () => {
         tabsElement!.dispatchEvent(new window.Event('scroll'));
       });
 
-      expect(tabsElement!.scrollTo).toBeCalled();
+      expect(tabsElement!.scrollTo).toHaveBeenCalled();
       expect(tabsElement!.scrollLeft).toBe(scrollEnd);
     });
 
@@ -236,7 +236,7 @@ describe('<Tabs />', () => {
         tabsElement!.dispatchEvent(new window.Event('scroll'));
       });
 
-      expect(tabsElement!.scrollTo).toBeCalled();
+      expect(tabsElement!.scrollTo).toHaveBeenCalled();
       expect(tabsElement!.scrollLeft).toBe(0);
     });
   });
@@ -257,7 +257,7 @@ describe('<Tabs />', () => {
 
       fireEvent.click(tabElement!);
 
-      expect(onTabClick).toBeCalledTimes(1);
+      expect(onTabClick).toHaveBeenCalledTimes(1);
       expect(onTabClick.mock.calls[0][0]).toBe('foo');
     });
   });
@@ -348,7 +348,7 @@ describe('<Tabs />', () => {
 
       fireEvent.click(inactiveTabElement!);
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       expect(onChange.mock.calls[0][0]).toBe(1);
     });
 

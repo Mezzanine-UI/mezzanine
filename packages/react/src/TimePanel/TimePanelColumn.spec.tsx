@@ -33,7 +33,7 @@ describe('<TimePanelColumn />', () => {
       <TimePanelColumn units={testUnits} activeUnit={10} />,
     );
 
-    expect(scrollToSpy).toBeCalledWith(
+    expect(scrollToSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         behavior: 'auto',
       }),
@@ -41,7 +41,7 @@ describe('<TimePanelColumn />', () => {
 
     rerender(<TimePanelColumn units={testUnits} activeUnit={11} />);
 
-    expect(scrollToSpy).toBeCalledWith(
+    expect(scrollToSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         behavior: 'smooth',
       }),
@@ -76,7 +76,7 @@ describe('<TimePanelColumn />', () => {
 
       btnElements.forEach((btnElement) => {
         fireEvent.click(btnElement);
-        expect(onChange).toBeCalledTimes(1);
+        expect(onChange).toHaveBeenCalledTimes(1);
 
         onChange.mockClear();
       });

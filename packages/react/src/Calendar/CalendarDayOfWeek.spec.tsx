@@ -39,7 +39,7 @@ describe('<CalendarDayOfWeek />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getWeekDayNamesSpy).toBeCalledWith('zh-TW');
+      expect(getWeekDayNamesSpy).toHaveBeenCalledWith('zh-TW');
     });
   });
 });

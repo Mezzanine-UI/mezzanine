@@ -207,14 +207,14 @@ describe('<DateTimePickerPanel />', () => {
         fireEvent.click(testCalendarButtonElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       onChange.mockClear();
 
       act(() => {
         fireEvent.click(testTimeButtonElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 });

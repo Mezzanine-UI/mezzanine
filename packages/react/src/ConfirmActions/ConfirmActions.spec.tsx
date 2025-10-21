@@ -88,7 +88,7 @@ describe('<ConfirmActions />', () => {
         fireEvent.click(confirmButtonElement);
 
         expect(element.childElementCount).toBe(1);
-        expect(onCancel).not.toBeCalled();
+        expect(onCancel).not.toHaveBeenCalled();
       });
     });
 
@@ -103,7 +103,7 @@ describe('<ConfirmActions />', () => {
 
         fireEvent.click(cancelButtonElement);
 
-        expect(onCancel).toBeCalledTimes(1);
+        expect(onCancel).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -170,7 +170,7 @@ describe('<ConfirmActions />', () => {
         fireEvent.click(cancelButtonElement!);
 
         expect(childElementCount).toBe(1);
-        expect(onConfirm).not.toBeCalled();
+        expect(onConfirm).not.toHaveBeenCalled();
       });
     });
 
@@ -185,7 +185,7 @@ describe('<ConfirmActions />', () => {
 
         fireEvent.click(confirmButtonElement!);
 
-        expect(onConfirm).toBeCalledTimes(1);
+        expect(onConfirm).toHaveBeenCalledTimes(1);
       });
     });
   });
