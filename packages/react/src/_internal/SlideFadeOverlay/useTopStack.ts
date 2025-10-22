@@ -5,10 +5,11 @@ let seedStack: number[] = [];
 let seed = 1;
 
 export default function useTopStack(open?: boolean) {
-  const modalSeed = useMemo(() => seed, []);
-
-  useEffect(() => {
+  const modalSeed = useMemo(() => {
+    // eslint-disable-next-line react-hooks/globals
     seed += 1;
+
+    return seed;
   }, []);
 
   useEffect(() => {

@@ -158,25 +158,44 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(
     const [needUploadImageLoaderSets, setNeedUploadImageLoaderSets] = useState<
       ImageUploader[][]
     >([]);
+    const [values, setValues] = useState<string[]>(
+      compact(defaultValues) || [],
+    );
     const loaderList = useMemo(
       () => uploadPictureImageLoaders,
       [uploadPictureImageLoaders],
     );
 
-    // Derive values from uploadPictureImageLoaders instead of storing in state
-    const values = useMemo(
-      () => compact(uploadPictureImageLoaders.map((loader) => loader.getUrl())),
-      [uploadPictureImageLoaders],
+    const prevNeedUploadImageLoadersLength = usePreviousValue(
+      needUploadImageLoaders.length,
     );
-
+    const prevNeedUploadImageLoaderSetsLength = usePreviousValue(
+      needUploadImageLoaderSets.length,
+    );
     const prevValues = usePreviousValue(values);
 
-    // Notify onChange when values change
     useEffect(() => {
       if (onChange && !isEqual(prevValues, values)) {
         onChange(values);
       }
     }, [onChange, prevValues, values]);
+
+    useEffect(() => {
+      if (
+        prevNeedUploadImageLoadersLength > needUploadImageLoaders.length ||
+        prevNeedUploadImageLoaderSetsLength > needUploadImageLoaderSets.length
+      ) {
+        setValues(
+          compact(uploadPictureImageLoaders.map((loader) => loader.getUrl())),
+        );
+      }
+    }, [
+      uploadPictureImageLoaders,
+      needUploadImageLoaders,
+      prevNeedUploadImageLoadersLength,
+      needUploadImageLoaderSets,
+      prevNeedUploadImageLoaderSetsLength,
+    ]);
 
     useEffect(() => {
       if (needUploadImageLoaderSets.length && onUpload) {
@@ -292,6 +311,7 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(
                   loader.setLoadingStatus(false),
                 );
                 setProgress(100);
+                setValues((v) => [...v, ...urls]);
 
                 if (onUploadSuccess) {
                   onUploadSuccess(uploadFiles as File[], urls as string[]);
@@ -349,6 +369,8 @@ const UploadPictureWall = forwardRef<HTMLDivElement, UploadPictureWallProps>(
         const urls = compact(
           nowUploadPictureImageLoaders.map((loader) => loader.getUrl()),
         );
+
+        setValues(urls);
 
         if (onDelete) {
           onDelete(urls);
