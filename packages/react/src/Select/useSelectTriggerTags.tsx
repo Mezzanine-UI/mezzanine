@@ -1,4 +1,3 @@
-/* global JSX */
 import { RefObject, useState, useEffect, type JSX } from 'react';
 import { TagSize } from '@mezzanine-ui/core/tag';
 import take from 'lodash/take';

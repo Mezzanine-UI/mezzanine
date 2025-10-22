@@ -69,7 +69,7 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
     transformOrigin,
     ...rest
   } = props;
-  const { autoTransitionDuration, addEndListener } =
+  const { autoTransitionDurationRef, addEndListener } =
     useAutoTransitionDuration(duration);
   const nodeRef = useRef<HTMLElement>(null);
   const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
@@ -99,7 +99,7 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
           nodeRef.current?.clientHeight ?? 0,
         );
 
-        autoTransitionDuration.current = autoSizeDuration;
+        autoTransitionDurationRef.current = autoSizeDuration;
 
         return autoSizeDuration;
       },
@@ -114,7 +114,7 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
     duration,
     in: inProp,
     nodeRef,
-    /* eslint-disable no-param-reassign */
+
     onEnter(node, isAppearing) {
       setNodeTransition(node, 'enter');
       reflow(node);
@@ -144,7 +144,6 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
         onExited(node);
       }
     },
-    /* eslint-enable no-param-reassign */
   };
 
   return (

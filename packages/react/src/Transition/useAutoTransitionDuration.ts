@@ -3,17 +3,17 @@ import { TransitionDuration, TransitionProps } from './Transition';
 
 export function useAutoTransitionDuration(duration?: TransitionDuration) {
   const timer = useRef(NaN);
-  const autoTransitionDuration = useRef(NaN);
+  const autoTransitionDurationRef = useRef(NaN);
   const addEndListener: TransitionProps['addEndListener'] = (_, next) => {
     if (duration === 'auto') {
       timer.current = window.setTimeout(
         () => next(),
-        autoTransitionDuration.current || 0,
+        autoTransitionDurationRef.current || 0,
       );
     }
   };
 
   useEffect(() => () => window.clearTimeout(timer.current), []);
 
-  return { autoTransitionDuration, addEndListener };
+  return { autoTransitionDurationRef, addEndListener };
 }

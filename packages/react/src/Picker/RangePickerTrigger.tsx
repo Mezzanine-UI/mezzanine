@@ -109,7 +109,6 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
       inputToProps,
       inputToRef,
       inputToValue,
-      onIconClick,
       onInputFromChange,
       onInputToChange,
       readOnly,

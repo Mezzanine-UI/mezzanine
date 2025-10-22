@@ -55,9 +55,9 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
       ...rest
     } = props;
 
-    const renderItemChildren: (c: NavigationChildren) => any = useCallback(
-      (parsedChildren) =>
-        Children.map(parsedChildren, (child: NavigationChild) => {
+    const renderItemChildren = useCallback(
+      function renderItemChildrenImpl(parsedChildren: NavigationChildren): any {
+        return Children.map(parsedChildren, (child: NavigationChild) => {
           if (child) {
             switch (child.type) {
               case NavigationItem: {
@@ -106,14 +106,16 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
               }
 
               default:
-                return renderItemChildren(
+                // Keep finding children in case of React.Fragment
+                return renderItemChildrenImpl(
                   (child.props?.children ?? []) as NavigationChildren,
                 );
             }
           }
 
           return null;
-        }),
+        });
+      },
       [activeKey, onClick],
     );
 

@@ -26,7 +26,6 @@ export function composeRefs<T>(refs: ComposableRef<T>[]): ComposedRef<T> {
       if (typeof ref === 'function') {
         ref(element);
       } else if (ref) {
-        // eslint-disable-next-line no-param-reassign
         (ref as { current: T | null }).current = element;
       }
     });

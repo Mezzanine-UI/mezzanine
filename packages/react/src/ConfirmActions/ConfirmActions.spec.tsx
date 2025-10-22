@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Button, { ButtonProps } from '../Button/Button';
+import { ButtonProps } from '../Button/Button';
 import ConfirmActions from '.';
 
 const renderMockButton = jest.fn();

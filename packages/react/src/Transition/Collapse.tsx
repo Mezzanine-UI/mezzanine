@@ -70,7 +70,7 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(
       style,
       ...rest
     } = props;
-    const { autoTransitionDuration, addEndListener } =
+    const { autoTransitionDurationRef, addEndListener } =
       useAutoTransitionDuration(duration);
     const nodeRef = useRef<HTMLElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -88,7 +88,7 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(
         resolveAutoDuration: () => {
           const autoSizeDuration = getAutoSizeDuration(getWrapperHeight());
 
-          autoTransitionDuration.current = autoSizeDuration;
+          autoTransitionDurationRef.current = autoSizeDuration;
 
           return autoSizeDuration;
         },
@@ -104,7 +104,7 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(
       lazyMount,
       keepMount: collapsedHeight !== '0px' ? true : keepMount,
       nodeRef,
-      /* eslint-disable no-param-reassign */
+
       onEnter(node, isAppearing) {
         node.style.height = collapsedHeight;
         reflow(node);
@@ -155,7 +155,6 @@ const Collapse = forwardRef<HTMLElement, CollapseProps>(
           onExited(node);
         }
       },
-      /* eslint-enable no-param-reassign */
     };
 
     return (

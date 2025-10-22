@@ -10,13 +10,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Calendar, {
-  CalendarConfigProvider,
-  CalendarDays,
-  CalendarMonths,
-  CalendarWeeks,
-  CalendarYears,
-} from '.';
+import Calendar, { CalendarConfigProvider } from '.';
 
 // Mock Calendar Component
 const mockCalendarDaysRender = jest.fn();
@@ -51,14 +45,6 @@ jest.mock('./CalendarYears', () => {
     return <div data-testid="mock-calendar-years">Mock Child</div>;
   };
 });
-
-const modes: CalendarMode[] = ['day', 'month', 'week', 'year'];
-const calendars = {
-  day: CalendarDays,
-  month: CalendarMonths,
-  week: CalendarWeeks,
-  year: CalendarYears,
-};
 
 describe('<Calendar />', () => {
   afterEach(cleanup);

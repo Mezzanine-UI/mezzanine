@@ -92,7 +92,7 @@ export interface Notification
  * Use the API from the Notification instance such as `Notification.success` and `Notification.error`
  * to display a notification globally.
  */
-// eslint-disable-next-line @typescript-eslint/no-redeclare
+
 const NotificationElement: Notification = ((
   props: PropsWithChildren<NotificationData> & { reference: Key },
 ) => {

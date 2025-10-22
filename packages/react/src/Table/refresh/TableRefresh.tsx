@@ -1,4 +1,5 @@
 import { forwardRef, useContext, useCallback, MouseEvent } from 'react';
+import clsx from 'clsx';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { ResetIcon } from '@mezzanine-ui/icons';
 import { TableContext } from '../TableContext';
@@ -31,7 +32,7 @@ const TableRefresh = forwardRef<HTMLDivElement, TableRefreshProps>(
     );
 
     return (
-      <div ref={ref} className={classes.refresh} {...rest}>
+      <div ref={ref} className={clsx(classes.refresh, className)} {...rest}>
         <Button onClick={onRefreshClicked} prefix={<Icon icon={ResetIcon} />}>
           {children || '重新整理'}
         </Button>

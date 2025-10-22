@@ -1,5 +1,3 @@
-/* eslint-disable no-redeclare */
-/* global JSX */
 import { forwardRef, Ref, MouseEventHandler, type JSX } from 'react';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';

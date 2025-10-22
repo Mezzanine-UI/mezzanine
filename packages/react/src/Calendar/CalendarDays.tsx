@@ -83,16 +83,12 @@ function CalendarDays(props: CalendarDaysProps) {
     <div {...rest} className={cx(classes.board, className)}>
       <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
       {daysGrid.map((week, index) => (
-        <div
-          // eslint-disable-next-line react/no-array-index-key
-          key={`CALENDAR_DAYS/WEEK_OF/${index}`}
-          className={classes.row}
-        >
+        <div key={`CALENDAR_DAYS/WEEK_OF/${index}`} className={classes.row}>
           {week.map((dateNum) => {
             const isPrevMonth = index === 0 && dateNum > 7;
             const isNextMonth = index > 3 && dateNum <= 14;
             const thisMonth = getMonth(referenceDate);
-            // eslint-disable-next-line no-nested-ternary
+
             const month = isPrevMonth
               ? thisMonth - 1
               : isNextMonth

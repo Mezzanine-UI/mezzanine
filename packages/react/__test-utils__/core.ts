@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { queries } from '@testing-library/dom';
 import {
   render as coreRender,

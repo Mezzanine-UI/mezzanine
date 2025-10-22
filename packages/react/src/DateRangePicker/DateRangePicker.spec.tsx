@@ -360,7 +360,6 @@ describe('<DateRangePicker />', () => {
       });
     });
 
-    // eslint-disable-next-line max-len
     it('should close calendar on a case when inputFrom has value and calendar clicked to have valid value', async () => {
       const referenceDate = '2021-10-01';
       const { getHostHTMLElement, getAllByText } = render(

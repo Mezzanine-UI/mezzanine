@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
-
 import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
@@ -9,7 +7,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import TimePanel, { TimePanelColumn } from '.';
+import TimePanel from '.';
 import { CalendarConfigProvider } from '../Calendar';
 import { TimePanelProps } from './TimePanel';
 
@@ -138,7 +136,6 @@ describe('<TimePanel />', () => {
     });
 
     describe('column controls', () => {
-      // eslint-disable-next-line max-len
       it('controls should fire onChange with `DateType` that indicates start of day as its argument if no value', () => {
         function isStartOfDay(val: string) {
           const valTimeString = moment(val).format('HH:mm:ss');

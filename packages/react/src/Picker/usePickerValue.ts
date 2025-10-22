@@ -60,7 +60,7 @@ export function usePickerValue({
 
     setInputValue(valString);
     onChange(valueProp);
-  }, [valueProp]);
+  }, [valueProp, format, formatToString, setInputValue, valueLocale]);
 
   const onSyncInputAndStateChange = (val?: DateType) => {
     const valueString = val ? formatToString(valueLocale, val, format) : '';

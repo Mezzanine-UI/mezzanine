@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import { FC, ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ElementGetter, getElement } from '../utils/getElement';

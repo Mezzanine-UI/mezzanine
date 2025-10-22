@@ -9,8 +9,6 @@ import Tree, {
   TreeNodeRefs,
   TreeExpandControl,
   TreeNodeProp,
-  TreeNodeList,
-  TreeNode,
   traverseTree,
 } from '.';
 

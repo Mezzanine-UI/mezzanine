@@ -28,7 +28,6 @@ function CalendarCell(props: CalendarCellProps) {
     children,
     className,
     disabled,
-    onClick,
     today,
     ...restCalendarCellProps
   } = props;

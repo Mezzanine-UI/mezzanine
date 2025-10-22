@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-curly-brace-presence */
 import {
   treeClasses as classes,
   TreeNodeValue,

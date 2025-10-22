@@ -50,7 +50,7 @@ export const Common: StoryFn<CommonStoryArgs> = ({ onClose }) => (
   >
     <Tag>Tag</Tag>
     <Tag>
-      <a href="https://www.google.com" target="_blank">
+      <a href="https://www.google.com" target="_blank" rel="noreferrer">
         Link
       </a>
     </Tag>

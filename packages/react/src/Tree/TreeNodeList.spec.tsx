@@ -4,13 +4,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import {
-  TreeNode,
-  TreeNodeList,
-  TreeNodeRefs,
-  TreeNodeData,
-  traverseTree,
-} from '.';
+import { TreeNodeList, TreeNodeRefs, TreeNodeData, traverseTree } from '.';
 
 describe('<TreeNodeList />', () => {
   afterEach(cleanup);

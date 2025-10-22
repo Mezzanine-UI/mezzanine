@@ -10,7 +10,6 @@ import {
   useSlider,
   UseSingleSliderProps,
   UseRangeSliderProps,
-  UseSliderResult,
   RangeSliderValue,
 } from '.';
 

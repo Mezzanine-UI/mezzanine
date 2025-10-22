@@ -82,6 +82,7 @@ export function useTableSorting(props: UseTableSorting) {
     ) {
       setDataSource(dataSourceProp);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevDataSourceProps, dataSourceProp]);
 
   const getNextSortedType = useCallback((currentType: SortedType) => {

@@ -3,7 +3,6 @@ import { cleanupHook, render, fireEvent, act } from '../../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import { TableContext, TableDataContext } from '../TableContext';
 import TablePagination from './TablePagination';
-import Pagination from '../../Pagination';
 
 const mockPaginationRender = jest.fn();
 const OriginalPagination = jest.requireActual('../../Pagination').default;

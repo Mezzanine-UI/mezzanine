@@ -95,7 +95,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
           const isPrevMonth = index === 0 && dateNum > 7;
           const isNextMonth = index > 3 && dateNum <= 14;
           const thisMonth = getMonth(referenceDate);
-          // eslint-disable-next-line no-nested-ternary
+
           const month = isPrevMonth
             ? thisMonth - 1
             : isNextMonth
@@ -132,7 +132,6 @@ function CalendarWeeks(props: CalendarWeeksProps) {
 
         return (
           <button
-            // eslint-disable-next-line react/no-array-index-key
             key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
             type="button"
             className={cx(classes.button, classes.row, {

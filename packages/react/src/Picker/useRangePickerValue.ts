@@ -78,8 +78,8 @@ export function useRangePickerValue({
 
     if (newFrom && newTo) {
       const sortedVal = sortValues([newFrom, newTo]);
-      const resolvedFrom = callback.from(sortedVal[0])!;
-      const resolvedTo = callback.to(sortedVal[1])!;
+      const resolvedFrom = callback.from(sortedVal[0]) as string;
+      const resolvedTo = callback.to(sortedVal[1]) as string;
 
       onFromChange(resolvedFrom);
       onToChange(resolvedTo);

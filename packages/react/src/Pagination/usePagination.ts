@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { PaginationItemProps } from './PaginationItem';
 
 export interface UsePaginationParams {
@@ -59,14 +59,13 @@ export function usePagination(props: UsePaginationParams = {}) {
 
       ...startPages,
 
-      // eslint-disable-next-line no-nested-ternary
       ...(siblingsStart > boundaryCount + 2
         ? ['ellipsis']
         : boundaryCount + 1 < totalPages - boundaryCount
           ? [boundaryCount + 1]
           : []),
       ...range(siblingsStart, siblingsEnd),
-      // eslint-disable-next-line no-nested-ternary
+
       ...(siblingsEnd < totalPages - boundaryCount - 1
         ? ['ellipsis']
         : totalPages - boundaryCount > boundaryCount
@@ -86,11 +85,14 @@ export function usePagination(props: UsePaginationParams = {}) {
     totalPages,
   ]);
 
-  const handleClick = (page: number) => {
-    if (handleChange) {
-      handleChange(page);
-    }
-  };
+  const handleClick = useCallback(
+    (page: number) => {
+      if (handleChange) {
+        handleChange(page);
+      }
+    },
+    [handleChange],
+  );
 
   const items: PaginationItemProps[] = useMemo(
     () =>
@@ -135,7 +137,7 @@ export function usePagination(props: UsePaginationParams = {}) {
 
         return restItemProps[item] || { type: item };
       }),
-    [current, disabled, itemList, totalPages],
+    [current, disabled, itemList, totalPages, handleClick],
   );
 
   return {

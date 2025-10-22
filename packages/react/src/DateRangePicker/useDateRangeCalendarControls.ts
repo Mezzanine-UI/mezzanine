@@ -34,7 +34,7 @@ export function useDateRangeCalendarControls(
 
       return (target: DateType) => addMonth(target, calendar ? -1 : 1);
     },
-    [addYear, addMonth, currentMode],
+    [addYear, addMonth, mode],
   );
 
   const [referenceDates, setReferenceDates] = useState(() => {
@@ -49,7 +49,7 @@ export function useDateRangeCalendarControls(
 
       return [referenceDate, adder(referenceDate)];
     });
-  }, [referenceDate]);
+  }, [referenceDate, getAdder]);
 
   const updateFirstReferenceDate = useCallback(
     (date: DateType) => {
@@ -57,7 +57,7 @@ export function useDateRangeCalendarControls(
 
       setReferenceDates([date, adder(date)]);
     },
-    [addMonth],
+    [getAdder],
   );
 
   const updateSecondReferenceDate = useCallback(
@@ -66,7 +66,7 @@ export function useDateRangeCalendarControls(
 
       setReferenceDates([adder(date), date]);
     },
-    [addMonth],
+    [getAdder],
   );
 
   const onPrevFactory = (target: 0 | 1) => () => {

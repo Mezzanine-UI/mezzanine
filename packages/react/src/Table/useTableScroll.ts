@@ -139,7 +139,7 @@ export default function useTableScroll(props: TableScrollProps) {
     }
 
     resetPointerOffset();
-  }, []);
+  }, [resetPointerOffset, scrollBarSize]);
 
   /** when use mouse to drag scroll bar, get cursor position */
   const onScrollBarMouseDown = useCallback(
@@ -155,7 +155,10 @@ export default function useTableScroll(props: TableScrollProps) {
     [],
   );
 
-  const onScrollBarMouseUp = useCallback(() => resetPointerOffset(), []);
+  const onScrollBarMouseUp = useCallback(
+    () => resetPointerOffset(),
+    [resetPointerOffset],
+  );
 
   /** 偵測 table 高度是否發生變化，有的話就要重新計算 scroll bar 長度 */
   useEffect(() => {
@@ -176,7 +179,7 @@ export default function useTableScroll(props: TableScrollProps) {
     }
 
     return () => {};
-  }, []);
+  }, [onSetScrollBarHeight]);
 
   useEffect(() => {
     const { current: body } = scrollRef;
@@ -300,7 +303,7 @@ export default function useTableScroll(props: TableScrollProps) {
       (scrollBarRef.current.childNodes[0] as HTMLDivElement).style.width =
         `${scrollBarSize + 6}px`;
     }
-  }, []);
+  }, [scrollBarSize]);
 
   /** scroll table directly */
   const setScrollBarTop = useCallback(() => {
@@ -327,7 +330,7 @@ export default function useTableScroll(props: TableScrollProps) {
         scrollBarTrackRef.current.style.height = `${tableHeight - HEADER_DEFAULT_HEIGHT}px`;
       }
     }
-  }, [scrollBarHeight, pointerOffset]);
+  }, [pointerOffset]);
 
   const onScroll: UIEventHandler<HTMLDivElement> = useCallback(
     (scrollTarget) => {
@@ -388,6 +391,7 @@ export default function useTableScroll(props: TableScrollProps) {
       ...defaultScrollBarTrackStyle,
       height: `${scrollRef.current?.scrollHeight ?? 0}px`,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [scrollBarHeight],
   );
 

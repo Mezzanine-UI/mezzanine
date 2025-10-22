@@ -4,10 +4,6 @@ import { TableColumn } from '@mezzanine-ui/core/table';
 import { act, cleanupHook, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Table from './Table';
-import TableRefresh from './refresh/TableRefresh';
-import TableHeader from './TableHeader';
-import Loading from '../Loading';
-import Pagination from '../Pagination';
 
 const mockTableHeaderRender = jest.fn();
 const OriginalTableHeader = jest.requireActual('./TableHeader').default;

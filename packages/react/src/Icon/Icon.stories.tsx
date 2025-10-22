@@ -79,7 +79,7 @@ export default {
   title: 'General/Icon',
 } as Meta;
 
-export const Playground: StoryFn<IconProps> = ({ children, ...props }) => (
+export const Playground: StoryFn<IconProps> = ({ ...props }) => (
   <Icon {...props} icon={PlusIcon} />
 );
 

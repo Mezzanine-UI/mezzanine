@@ -179,7 +179,6 @@ const UploadPictureBlock = forwardRef<
           <span className={classes.status}>{defaultUploadErrorLabel}</span>
         </div>
       ) : (
-        // eslint-disable-next-line react/jsx-no-useless-fragment
         <>
           {showImage ? (
             <>

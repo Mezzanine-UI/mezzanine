@@ -80,15 +80,11 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
     onChange,
     value: activeKeyProp,
   });
-  let pane: ReactNode | undefined;
+
   const tabs = Children.map(children, (tabPane, index) => {
     const key = tabPane.key ?? index;
     const { tab } = tabPane.props;
     const active = activeKey.toString() === key.toString();
-
-    if (active) {
-      pane = tabPane;
-    }
 
     return cloneElement<TabProps>(tab, {
       key,
@@ -103,6 +99,16 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
         }
       },
     });
+  });
+
+  let pane: ReactNode | undefined;
+  Children.forEach(children, (tabPane, index) => {
+    const child = tabPane as TabsChild;
+    const key = child.key ?? index;
+
+    if (activeKey.toString() === key.toString()) {
+      pane = child;
+    }
   });
 
   const {

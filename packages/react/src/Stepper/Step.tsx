@@ -45,6 +45,7 @@ export interface StepProps
  */
 const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
   const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     active,
     children,
     className,

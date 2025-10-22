@@ -144,11 +144,13 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
 
 export const useSelectValueControl = (props: UseSelectValueControl) => {
   if (props.mode === 'multiple') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useSelectBaseValueControl(
       props as UseSelectMultipleValueControl,
     ) as SelectMultipleValueControl;
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useSelectBaseValueControl(
     props as UseSelectSingleValueControl,
   ) as SelectSingleValueControl;

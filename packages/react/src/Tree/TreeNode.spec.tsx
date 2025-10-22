@@ -5,8 +5,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { TreeNode } from '.';
-import Typography, { TypographyVariant } from '../Typography';
-import Checkbox from '../Checkbox';
+import { TypographyVariant } from '../Typography';
 import ConfigProvider from '../Provider';
 
 const mockTypographyRender = jest.fn();

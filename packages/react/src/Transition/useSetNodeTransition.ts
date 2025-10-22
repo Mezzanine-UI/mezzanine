@@ -23,7 +23,6 @@ export function useSetNodeTransition(
   props: UseSetNodeTransitionProps,
   style?: CSSProperties,
 ) {
-  /* eslint-disable no-param-reassign */
   const setNodeTransition = (node: HTMLElement, mode: TransitionMode) => {
     const transitionProps = getTransitionStyleProps(mode, props);
     const { properties } = props;
@@ -59,7 +58,6 @@ export function useSetNodeTransition(
       node.style.transition = transition;
     }
   };
-  /* eslint-enable no-param-reassign */
 
   return [setNodeTransition, resetNodeTransition] as const;
 }

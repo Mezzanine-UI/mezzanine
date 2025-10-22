@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   forwardRef,
   DetailedHTMLProps,
@@ -179,11 +178,7 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
           </li>
         )}
         {items.map((item, index) => (
-          <li
-            className={classes.item}
-            // eslint-disable-next-line react/no-array-index-key
-            key={index}
-          >
+          <li className={classes.item} key={index}>
             {itemRender(item)}
           </li>
         ))}

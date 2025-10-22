@@ -4,7 +4,6 @@ import { act, cleanupHook, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { TableDataContext, TableContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
-import TableCell from './TableCell';
 
 // Mock TableCell to track props
 const mockTableCellRender = jest.fn();

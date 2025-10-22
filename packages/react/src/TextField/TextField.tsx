@@ -98,7 +98,6 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
     });
 
     return (
-      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         {...rest}
         ref={ref}

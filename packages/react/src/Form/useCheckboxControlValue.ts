@@ -28,7 +28,7 @@ export function useCheckboxControlValue(props: UseCheckboxControlValueProps) {
     /**
      * To ensure checkbox inside checkbox group, not use destructure here
      */
-    // eslint-disable-next-line no-nested-ternary
+
     checked: checkboxGroup
       ? checkboxGroup.value && value != null
         ? checkboxGroup.value.includes(value)

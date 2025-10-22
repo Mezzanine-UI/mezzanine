@@ -34,7 +34,6 @@ const Popconfirm = forwardRef<HTMLDivElement, PopconfirmProps>(
   function Popconfirm(props, ref) {
     const {
       className,
-      container,
       cancelButtonProps,
       cancelText,
       confirmButtonProps,

@@ -4,7 +4,6 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import TextField from '../TextField';
 import { FormField } from '../Form';
 import Textarea from '.';
 import ConfigProvider from '../Provider';
