@@ -27,6 +27,9 @@ const config: StorybookConfig = {
         '@mezzanine-ui/system': resolve(SYSTEM_PATH, 'src'),
         '@mezzanine-ui/core': resolve(CORE_PATH, 'src'),
         '@mezzanine-ui/icons': resolve(ICONS_PATH, 'src'),
+        // Force single React instance
+        react: resolve(ROOT_PATH, 'node_modules/react'),
+        'react-dom': resolve(ROOT_PATH, 'node_modules/react-dom'),
       };
     }
 
