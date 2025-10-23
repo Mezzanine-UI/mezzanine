@@ -3,6 +3,9 @@ export type {
   CheckboxGroupOrientation,
   CheckboxGroupOption,
 } from '@mezzanine-ui/core/checkbox';
-export { CheckboxProps, default } from './Checkbox';
-export { CheckboxGroupProps, default as CheckboxGroup } from './CheckboxGroup';
-export { CheckAllProps, default as CheckAll } from './CheckAll';
+export type { CheckboxProps } from './Checkbox';
+export { default } from './Checkbox';
+export type { CheckboxGroupProps } from './CheckboxGroup';
+export { default as CheckboxGroup } from './CheckboxGroup';
+export type { CheckAllProps } from './CheckAll';
+export { default as CheckAll } from './CheckAll';

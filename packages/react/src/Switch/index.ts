@@ -1,2 +1,3 @@
 export type { SwitchSize } from '@mezzanine-ui/core/switch';
-export { SwitchProps, default } from './Switch';
+export type { SwitchProps } from './Switch';
+export { default } from './Switch';

@@ -1,1 +1,2 @@
-export { ConfirmActionsProps, default } from './ConfirmActions';
+export { default } from './ConfirmActions';
+export type { ConfirmActionsProps } from './ConfirmActions';

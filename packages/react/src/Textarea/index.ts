@@ -1,2 +1,3 @@
 export type { TextareaSize } from '@mezzanine-ui/core/textarea';
-export { TextareaProps, default } from './Textarea';
+export type { TextareaProps } from './Textarea';
+export { default } from './Textarea';

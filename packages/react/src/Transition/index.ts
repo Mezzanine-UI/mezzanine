@@ -1,4 +1,5 @@
-export {
+export { default } from './Transition';
+export type {
   TransitionState,
   TransitionMode,
   TransitionDelay,
@@ -7,15 +8,15 @@ export {
   TransitionImplementationChildProps,
   TransitionImplementationProps,
   TransitionProps,
-  default,
 } from './Transition';
 
-export { CollapseProps, default as Collapse } from './Collapse';
-export { FadeProps, default as Fade } from './Fade';
-export { GrowProps, default as Grow } from './Grow';
-export {
-  SlideFadeDirection,
-  SlideFadeProps,
-  default as SlideFade,
-} from './SlideFade';
-export { ZoomProps, default as Zoom } from './Zoom';
+export type { CollapseProps } from './Collapse';
+export { default as Collapse } from './Collapse';
+export type { FadeProps } from './Fade';
+export { default as Fade } from './Fade';
+export type { GrowProps } from './Grow';
+export { default as Grow } from './Grow';
+export { default as SlideFade } from './SlideFade';
+export type { SlideFadeDirection, SlideFadeProps } from './SlideFade';
+export type { ZoomProps } from './Zoom';
+export { default as Zoom } from './Zoom';

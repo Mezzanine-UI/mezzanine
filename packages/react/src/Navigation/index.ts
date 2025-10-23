@@ -1,17 +1,16 @@
-export {
+export { default } from './Navigation';
+export type {
   NavigationProps,
   NavigationChild,
   NavigationChildren,
-  default,
 } from './Navigation';
-export {
+export { default as NavigationSubMenu } from './NavigationSubMenu';
+export type {
   NavigationSubMenuProps,
   NavigationSubMenuChild,
   NavigationSubMenuChildren,
-  default as NavigationSubMenu,
 } from './NavigationSubMenu';
-export {
-  NavigationItemProps,
-  default as NavigationItem,
-} from './NavigationItem';
-export { NavigationContext, NavigationContextValue } from './NavigationContext';
+export { default as NavigationItem } from './NavigationItem';
+export type { NavigationItemProps } from './NavigationItem';
+export { NavigationContext } from './NavigationContext';
+export type { NavigationContextValue } from './NavigationContext';

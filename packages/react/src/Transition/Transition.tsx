@@ -5,7 +5,8 @@ import {
   JSXElementConstructor,
   Ref,
 } from 'react';
-import ReactTransition, {
+import ReactTransition from 'react-transition-group/Transition';
+import type {
   TransitionStatus as TransitionState,
   TransitionChildren,
 } from 'react-transition-group/Transition';

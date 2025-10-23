@@ -1,19 +1,13 @@
 export { useTabKeyClose } from './useTabKeyClose';
-export {
-  UsePickerDocumentEventCloseProps,
-  usePickerDocumentEventClose,
-} from './usePickerDocumentEventClose';
-export {
-  UsePickerInputValueProps,
-  usePickerInputValue,
-} from './usePickerInputValue';
-export { UsePickerValueProps, usePickerValue } from './usePickerValue';
-export {
-  UseRangePickerValueProps,
-  useRangePickerValue,
-} from './useRangePickerValue';
-export { PickerTriggerProps, default as PickerTrigger } from './PickerTrigger';
-export {
-  RangePickerTriggerProps,
-  default as RangePickerTrigger,
-} from './RangePickerTrigger';
+export { usePickerDocumentEventClose } from './usePickerDocumentEventClose';
+export type { UsePickerDocumentEventCloseProps } from './usePickerDocumentEventClose';
+export { usePickerInputValue } from './usePickerInputValue';
+export type { UsePickerInputValueProps } from './usePickerInputValue';
+export { usePickerValue } from './usePickerValue';
+export type { UsePickerValueProps } from './usePickerValue';
+export { useRangePickerValue } from './useRangePickerValue';
+export type { UseRangePickerValueProps } from './useRangePickerValue';
+export type { PickerTriggerProps } from './PickerTrigger';
+export { default as PickerTrigger } from './PickerTrigger';
+export { default as RangePickerTrigger } from './RangePickerTrigger';
+export type { RangePickerTriggerProps } from './RangePickerTrigger';

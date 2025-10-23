@@ -1,2 +1,3 @@
 export type { TagSize } from '@mezzanine-ui/core/tag';
-export { TagProps, default } from './Tag';
+export type { TagProps } from './Tag';
+export { default } from './Tag';

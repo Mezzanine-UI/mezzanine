@@ -10,11 +10,8 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
-export {
-  ButtonGroupChild,
-  ButtonGroupProps,
-  default as ButtonGroup,
-} from './ButtonGroup';
+export { default as ButtonGroup } from './ButtonGroup';
+export type { ButtonGroupChild, ButtonGroupProps } from './ButtonGroup';
 
 export type { ButtonComponent, ButtonProps, ButtonPropsBase, IconButtonProps };
 

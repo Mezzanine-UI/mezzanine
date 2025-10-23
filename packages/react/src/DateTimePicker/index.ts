@@ -1,5 +1,4 @@
-export {
-  DateTimePickerPanelProps,
-  default as DateTimePickerPanel,
-} from './DateTimePickerPanel';
-export { DateTimePickerProps, default } from './DateTimePicker';
+export { default as DateTimePickerPanel } from './DateTimePickerPanel';
+export type { DateTimePickerPanelProps } from './DateTimePickerPanel';
+export type { DateTimePickerProps } from './DateTimePicker';
+export { default } from './DateTimePicker';
