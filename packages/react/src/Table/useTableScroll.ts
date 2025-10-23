@@ -112,8 +112,7 @@ export default function useTableScroll(props: TableScrollProps) {
       return;
 
     /** 觸控螢幕不需要 scroll bar */
-    const isTouchEnabled =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const isTouchEnabled = navigator.maxTouchPoints > 0;
     /** firefox 的滾軸只能同時顯示 or 取消，所以乾脆就用原生的（除非能單獨關掉直向的滾軸，只顯示橫向的才行） */
     const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
