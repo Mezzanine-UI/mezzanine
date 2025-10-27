@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import {
   switchClasses as classes,

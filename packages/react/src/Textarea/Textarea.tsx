@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, Ref, useContext, ChangeEventHandler, useRef } from 'react';
 import {
   textareaClasses as classes,

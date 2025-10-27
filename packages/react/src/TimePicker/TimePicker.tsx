@@ -1,3 +1,5 @@
+'use client';
+
 import { DateType } from '@mezzanine-ui/core/calendar';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import {

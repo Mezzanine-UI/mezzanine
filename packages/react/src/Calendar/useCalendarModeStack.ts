@@ -1,3 +1,5 @@
+'use client';
+
 import { CalendarMode } from '@mezzanine-ui/core/calendar';
 import { useState } from 'react';
 

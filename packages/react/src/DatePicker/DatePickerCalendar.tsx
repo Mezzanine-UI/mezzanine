@@ -1,3 +1,5 @@
+'use client';
+
 import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import { forwardRef, RefObject, useMemo } from 'react';
 import Calendar, {

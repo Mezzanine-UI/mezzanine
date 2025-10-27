@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, useCallback, MouseEvent } from 'react';
 import clsx from 'clsx';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';

@@ -1,3 +1,5 @@
+'use client';
+
 import { CheckboxSize } from '@mezzanine-ui/core/checkbox';
 import { createContext } from 'react';
 import { CheckboxGroupControlContextValue } from '../Form/useCheckboxControlValue';

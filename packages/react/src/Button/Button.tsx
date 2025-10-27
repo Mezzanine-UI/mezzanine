@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, MouseEvent, ReactNode, useContext } from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';

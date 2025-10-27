@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, useState, useMemo, Fragment } from 'react';
 import {
   tableClasses as classes,

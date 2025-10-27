@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, ReactNode, useContext } from 'react';
 import { formFieldClasses as classes } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';

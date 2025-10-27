@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext } from 'react';
 import { NavigationOrientation } from '@mezzanine-ui/core/navigation';
 

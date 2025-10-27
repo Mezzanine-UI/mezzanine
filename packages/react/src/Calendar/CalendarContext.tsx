@@ -1,3 +1,5 @@
+'use client';
+
 import { createContext, ReactNode, useContext, useMemo } from 'react';
 import { CalendarMethods } from '@mezzanine-ui/core/calendar';
 

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   calendarClasses as classes,
   DateType,

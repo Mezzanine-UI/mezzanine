@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, MouseEventHandler, useContext } from 'react';
 import {
   toUploadResultCssVars,

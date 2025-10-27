@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, ReactElement, useContext, useRef, useState } from 'react';
 import { navigationSubMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronUpIcon, ChevronDownIcon } from '@mezzanine-ui/icons';

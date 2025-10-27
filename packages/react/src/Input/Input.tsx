@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, Ref, useContext, ChangeEventHandler, useRef } from 'react';
 import { inputClasses as classes, InputSize } from '@mezzanine-ui/core/input';
 import { selectClasses } from '@mezzanine-ui/core/select';

@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
 import InputCheck, {

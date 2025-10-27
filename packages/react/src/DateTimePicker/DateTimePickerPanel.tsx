@@ -1,3 +1,5 @@
+'use client';
+
 import { dateTimePickerClasses as classes } from '@mezzanine-ui/core/date-time-picker';
 import { forwardRef } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';

@@ -1,3 +1,5 @@
+'use client';
+
 import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';

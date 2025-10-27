@@ -4,6 +4,44 @@ const { glob } = require('glob');
 const { rollup } = require('rollup');
 const ts = require('@rollup/plugin-typescript');
 
+/**
+ * Rollup plugin to preserve 'use client' directives
+ */
+function preserveDirectives() {
+  return {
+    name: 'preserve-directives',
+    renderChunk(code, chunk) {
+      // 檢查原始文件是否有 'use client'
+      const modulePath = chunk.facadeModuleId;
+      if (!modulePath) return null;
+
+      try {
+        const originalCode = fse.readFileSync(modulePath, 'utf-8');
+        const hasUseClient = /^['"]use client['"];?\s*/m.test(originalCode);
+        const hasUseServer = /^['"]use server['"];?\s*/m.test(originalCode);
+
+        if (hasUseClient) {
+          return {
+            code: `'use client';\n${code}`,
+            map: null,
+          };
+        }
+
+        if (hasUseServer) {
+          return {
+            code: `'use server';\n${code}`,
+            map: null,
+          };
+        }
+      } catch {
+        // 如果讀取文件失敗，繼續處理
+      }
+
+      return null;
+    },
+  };
+}
+
 const { PWD } = process.env;
 const packagePath = PWD;
 const packageJson = require(path.resolve(packagePath, 'package.json'));
@@ -84,6 +122,7 @@ async function run() {
         cacheDir: tsPluginCachePath,
         tsconfig: tsconfigPath,
       }),
+      preserveDirectives(),
     ],
     treeshake: {
       moduleSideEffects: false,

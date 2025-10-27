@@ -1,3 +1,5 @@
+'use client';
+
 import { Severity } from '@mezzanine-ui/system/severity';
 import { createContext } from 'react';
 

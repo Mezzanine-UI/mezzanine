@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, MouseEventHandler, useContext } from 'react';
 import { tagClasses as classes, TagSize } from '@mezzanine-ui/core/tag';
 import { TimesIcon } from '@mezzanine-ui/icons';

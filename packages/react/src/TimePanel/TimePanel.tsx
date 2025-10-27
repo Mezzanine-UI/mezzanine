@@ -1,3 +1,5 @@
+'use client';
+
 import { DateType } from '@mezzanine-ui/core/calendar';
 import {
   getUnits,
