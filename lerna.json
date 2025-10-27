@@ -4,7 +4,7 @@
   "version": "independent",
   "command": {
     "version": {
-      "allowBranch": "main",
+      "allowBranch": ["main", "v2"],
       "conventionalCommits": true,
       "ignoreChanges": [
         "**/__test-utils__",
@@ -17,7 +17,8 @@
       "yes": true
     },
     "publish": {
-      "contents": "dist"
+      "contents": "dist",
+      "registry": "https://registry.npmjs.org/"
     }
   },
   "$schema": "node_modules/lerna/schemas/lerna-schema.json"
