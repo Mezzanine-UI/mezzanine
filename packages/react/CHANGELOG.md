@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.16.0...@mezzanine-ui/react@1.0.0-canary.0) (2025-10-27)
+
+### Bug Fixes
+
+- fix table scroll touch check and upgrade packages ([0283c83](https://github.com/Mezzanine-UI/mezzanine/commit/0283c831711762d10eee8f0ddbff70e0ae32c28f))
+
 # [0.16.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.15.3...@mezzanine-ui/react@0.16.0) (2025-04-23)
 
 ### Bug Fixes

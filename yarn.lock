@@ -2890,12 +2890,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mezzanine-ui/core@npm:^0.16.0, @mezzanine-ui/core@workspace:packages/core":
+"@mezzanine-ui/core@npm:^1.0.0-canary.0, @mezzanine-ui/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/core@workspace:packages/core"
   dependencies:
-    "@mezzanine-ui/icons": "npm:^0.16.0"
-    "@mezzanine-ui/system": "npm:^0.16.0"
+    "@mezzanine-ui/icons": "npm:^1.0.0-canary.0"
+    "@mezzanine-ui/system": "npm:^1.0.0-canary.0"
     "@types/luxon": "npm:^3.6.2"
     lodash: "npm:^4.17.21"
     tslib: "npm:^2.8.1"
@@ -2914,7 +2914,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mezzanine-ui/icons@npm:^0.16.0, @mezzanine-ui/icons@workspace:packages/icons":
+"@mezzanine-ui/icons@npm:^1.0.0-canary.0, @mezzanine-ui/icons@workspace:packages/icons":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/icons@workspace:packages/icons"
   languageName: unknown
@@ -2925,9 +2925,9 @@ __metadata:
   resolution: "@mezzanine-ui/react@workspace:packages/react"
   dependencies:
     "@hello-pangea/dnd": "npm:^18.0.1"
-    "@mezzanine-ui/core": "npm:^0.16.0"
-    "@mezzanine-ui/icons": "npm:^0.16.0"
-    "@mezzanine-ui/system": "npm:^0.16.0"
+    "@mezzanine-ui/core": "npm:^1.0.0-canary.0"
+    "@mezzanine-ui/icons": "npm:^1.0.0-canary.0"
+    "@mezzanine-ui/system": "npm:^1.0.0-canary.0"
     "@popperjs/core": "npm:^2.11.8"
     "@types/lodash": "npm:^4.17.20"
     "@types/moment": "npm:^2.13.0"
@@ -2951,7 +2951,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@mezzanine-ui/system@npm:^0.16.0, @mezzanine-ui/system@workspace:packages/system":
+"@mezzanine-ui/system@npm:^1.0.0-canary.0, @mezzanine-ui/system@workspace:packages/system":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/system@workspace:packages/system"
   dependencies:

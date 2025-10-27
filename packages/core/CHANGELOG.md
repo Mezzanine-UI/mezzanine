@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.16.0...@mezzanine-ui/core@1.0.0-canary.0) (2025-10-27)
+
+**Note:** Version bump only for package @mezzanine-ui/core
+
 # [0.16.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.15.3...@mezzanine-ui/core@0.16.0) (2025-04-23)
 
 ### Features
