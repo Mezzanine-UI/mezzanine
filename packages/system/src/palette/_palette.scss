@@ -9,32 +9,24 @@ $prefix: mzn-color;
 }
 
 @function _get-main-color-transformed-palette($color) {
-  $rgba: meta.get-function('rgba');
-
   @return (
     #{$color}-hover-bg: (
       from: #{$color}-light,
-      transformer: $rgba,
-      args: (
-        0.15,
-      )
+      alpha: 0.15,
     ),
     #{$color}-active-bg: (
       from: $color,
-      transformer: $rgba,
-      args: (
-        0.2,
-      )
+      alpha: 0.2,
     )
   );
 }
 
 @function _transform-color-from-palette($palette, $config) {
-  $transformer: map.get($config, transformer);
   $from: map.get($palette, map.get($config, from));
-  $args: map.get($config, args);
+  $alpha: map.get($config, alpha);
+  $percentage: $alpha * 100%;
 
-  @return meta.call($transformer, $from, $args...);
+  @return color-mix(in srgb, $from $percentage, transparent);
 }
 
 $main-color-names: (primary, secondary, error, warning, success);
@@ -111,17 +103,11 @@ $default-light-palette: map.assign(
     divider: #f2f2f2,
     overlay-bg: (
       from: action-active,
-      transformer: meta.get-function('rgba'),
-      args: (
-        0.5,
-      ),
+      alpha: 0.5,
     ),
     overlay-surface-bg: (
       from: surface,
-      transformer: meta.get-function('rgba'),
-      args: (
-        0.9,
-      ),
+      alpha: 0.9,
     ),
   )
 );
@@ -156,17 +142,11 @@ $default-dark-palette: map.assign(
     divider: #494949,
     overlay-bg: (
       from: action-active,
-      transformer: meta.get-function('rgba'),
-      args: (
-        0.5,
-      ),
+      alpha: 0.5,
     ),
     overlay-surface-bg: (
       from: surface,
-      transformer: meta.get-function('rgba'),
-      args: (
-        0.9,
-      ),
+      alpha: 0.9,
     ),
   )
 );
