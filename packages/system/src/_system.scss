@@ -36,6 +36,7 @@
   }
 }
 
-@mixin palette($mode: 'light', $palette: ()) {
-  @include system-palette.variables($mode, $palette);
+@mixin colors($mode: 'light', $semantic: (), $primitives: ()) {
+  @include system-palette.primitive-variables($primitives);
+  @include system-palette.semantic-variables($mode, $semantic);
 }

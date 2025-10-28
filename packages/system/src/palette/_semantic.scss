@@ -1,0 +1,520 @@
+@use '../utils/list';
+@use '../utils/map';
+@use './primitives' as primitive;
+
+$prefix: mzn-color;
+
+// 定義所有情境類型
+$semantic-contexts: (
+  layer,
+  background,
+  text,
+  icon,
+  border,
+  separator,
+  overlay,
+  surface,
+  shadow
+);
+
+$semantic-colors: (
+  layer: (
+    01: (
+      light: primitive.variable(gray, 100),
+      dark: primitive.variable(black-base, black),
+    ),
+    02: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(gray, 900),
+    ),
+    03: (
+      light: primitive.variable(gray, 50),
+      dark: primitive.variable(gray, 800),
+    ),
+  ),
+  background: (
+    base: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(gray, 900),
+    ),
+    menu: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(gray, 950),
+    ),
+    inverse: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(gray, 950),
+    ),
+    fixed-dark: (
+      light: primitive.variable(gray, 700),
+      dark: primitive.variable(gray, 950),
+    ),
+    neutral-ghost: (
+      light: primitive.variable(gray, 50),
+      dark: primitive.variable(gray, 950),
+    ),
+    neutral-faint: (
+      light: primitive.variable(gray, 100),
+      dark: primitive.variable(gray, 800),
+    ),
+    neutral-subtle: (
+      light: primitive.variable(gray, 200),
+      dark: primitive.variable(gray, 700),
+    ),
+    neutral: (
+      light: primitive.variable(gray, 400),
+      dark: primitive.variable(gray, 500),
+    ),
+    neutral-strong: (
+      light: primitive.variable(gray, 600),
+      dark: primitive.variable(gray, 400),
+    ),
+    neutral-solid: (
+      light: primitive.variable(gray, 700),
+      dark: primitive.variable(gray, 300),
+    ),
+    brand-ghost: (
+      light: primitive.variable(brand, 50),
+      dark: primitive.variable(brand, 950),
+    ),
+    brand-faint: (
+      light: primitive.variable(brand, 100),
+      dark: primitive.variable(brand, 900),
+    ),
+    brand-subtle: (
+      light: primitive.variable(brand, 200),
+      dark: primitive.variable(brand, 800),
+    ),
+    brand-light: (
+      light: primitive.variable(brand, 300),
+      dark: primitive.variable(brand, 700),
+    ),
+    brand: (
+      light: primitive.variable(brand, 500),
+      dark: primitive.variable(brand, 500),
+    ),
+    brand-strong: (
+      light: primitive.variable(brand, 700),
+      dark: primitive.variable(brand, 300),
+    ),
+    brand-solid: (
+      light: primitive.variable(brand, 800),
+      dark: primitive.variable(brand, 200),
+    ),
+    error-ghost: (
+      light: primitive.variable(red, 50),
+      dark: primitive.variable(red, 950),
+    ),
+    error-faint: (
+      light: primitive.variable(red, 100),
+      dark: primitive.variable(red, 900),
+    ),
+    error-subtle: (
+      light: primitive.variable(red, 200),
+      dark: primitive.variable(red, 800),
+    ),
+    error-light: (
+      light: primitive.variable(red, 300),
+      dark: primitive.variable(red, 700),
+    ),
+    error: (
+      light: primitive.variable(red, 500),
+      dark: primitive.variable(red, 500),
+    ),
+    error-strong: (
+      light: primitive.variable(red, 700),
+      dark: primitive.variable(red, 400),
+    ),
+    error-solid: (
+      light: primitive.variable(red, 800),
+      dark: primitive.variable(red, 300),
+    ),
+    warning-ghost: (
+      light: primitive.variable(yellow, 50),
+      dark: primitive.variable(yellow, 950),
+    ),
+    warning-faint: (
+      light: primitive.variable(yellow, 100),
+      dark: primitive.variable(yellow, 900),
+    ),
+    warning: (
+      light: primitive.variable(yellow, 500),
+      dark: primitive.variable(yellow, 500),
+    ),
+    success-ghost: (
+      light: primitive.variable(green, 50),
+      dark: primitive.variable(green, 950),
+    ),
+    success-faint: (
+      light: primitive.variable(green, 100),
+      dark: primitive.variable(green, 950),
+    ),
+    success: (
+      light: primitive.variable(green, 500),
+      dark: primitive.variable(green, 500),
+    ),
+    info-ghost: (
+      light: primitive.variable(blue, 50),
+      dark: primitive.variable(blue, 950),
+    ),
+    info-faint: (
+      light: primitive.variable(blue, 100),
+      dark: primitive.variable(blue, 900),
+    ),
+    info: (
+      light: primitive.variable(blue, 500),
+      dark: primitive.variable(blue, 500),
+    ),
+  ),
+  text: (
+    fixed-light: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(white-base, white),
+    ),
+    neutral-faint: (
+      light: primitive.variable(gray, 300),
+      dark: primitive.variable(gray, 600),
+    ),
+    neutral-light: (
+      light: primitive.variable(gray, 400),
+      dark: primitive.variable(gray, 500),
+    ),
+    neutral: (
+      light: primitive.variable(gray, 500),
+      dark: primitive.variable(gray, 400),
+    ),
+    neutral-strong: (
+      light: primitive.variable(gray, 700),
+      dark: primitive.variable(gray, 300),
+    ),
+    neutral-solid: (
+      light: primitive.variable(gray, 900),
+      dark: primitive.variable(white-base, white),
+    ),
+    brand: (
+      light: primitive.variable(brand, 500),
+      dark: primitive.variable(brand, 400),
+    ),
+    brand-strong: (
+      light: primitive.variable(brand, 700),
+      dark: primitive.variable(brand, 200),
+    ),
+    brand-solid: (
+      light: primitive.variable(brand, 800),
+      dark: primitive.variable(brand, 100),
+    ),
+    error: (
+      light: primitive.variable(red, 500),
+      dark: primitive.variable(red, 500),
+    ),
+    error-strong: (
+      light: primitive.variable(red, 700),
+      dark: primitive.variable(red, 300),
+    ),
+    error-solid: (
+      light: primitive.variable(red, 800),
+      dark: primitive.variable(red, 200),
+    ),
+    warning: (
+      light: primitive.variable(yellow, 500),
+      dark: primitive.variable(yellow, 500),
+    ),
+    warning-strong: (
+      light: primitive.variable(yellow, 700),
+      dark: primitive.variable(yellow, 400),
+    ),
+    success: (
+      light: primitive.variable(green, 500),
+      dark: primitive.variable(green, 400),
+    ),
+    info: (
+      light: primitive.variable(blue, 500),
+      dark: primitive.variable(blue, 400),
+    ),
+    info-strong: (
+      light: primitive.variable(blue, 700),
+      dark: primitive.variable(blue, 300),
+    ),
+  ),
+  icon: (
+    fixed-light: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(white-base, white),
+    ),
+    neutral-faint: (
+      light: primitive.variable(gray, 300),
+      dark: primitive.variable(gray, 600),
+    ),
+    neutral-light: (
+      light: primitive.variable(gray, 400),
+      dark: primitive.variable(gray, 500),
+    ),
+    neutral: (
+      light: primitive.variable(gray, 500),
+      dark: primitive.variable(gray, 400),
+    ),
+    neutral-strong: (
+      light: primitive.variable(gray, 700),
+      dark: primitive.variable(gray, 300),
+    ),
+    neutral-bold: (
+      light: primitive.variable(gray, 800),
+      dark: primitive.variable(gray, 100),
+    ),
+    neutral-solid: (
+      light: primitive.variable(gray, 900),
+      dark: primitive.variable(white-base, white),
+    ),
+    brand: (
+      light: primitive.variable(brand, 500),
+      dark: primitive.variable(brand, 400),
+    ),
+    brand-strong: (
+      light: primitive.variable(brand, 800),
+      dark: primitive.variable(brand, 200),
+    ),
+    brand-solid: (
+      light: primitive.variable(brand, 900),
+      dark: primitive.variable(brand, 100),
+    ),
+    error: (
+      light: primitive.variable(red, 500),
+      dark: primitive.variable(red, 500),
+    ),
+    error-strong: (
+      light: primitive.variable(red, 600),
+      dark: primitive.variable(red, 400),
+    ),
+    error-solid: (
+      light: primitive.variable(red, 700),
+      dark: primitive.variable(red, 300),
+    ),
+    warning: (
+      light: primitive.variable(yellow, 500),
+      dark: primitive.variable(yellow, 500),
+    ),
+    warning-strong: (
+      light: primitive.variable(yellow, 700),
+      dark: primitive.variable(yellow, 400),
+    ),
+    success: (
+      light: primitive.variable(green, 500),
+      dark: primitive.variable(green, 400),
+    ),
+    success-strong: (
+      light: primitive.variable(green, 700),
+      dark: primitive.variable(green, 300),
+    ),
+    info: (
+      light: primitive.variable(blue, 500),
+      dark: primitive.variable(blue, 500),
+    ),
+    info-strong: (
+      light: primitive.variable(blue, 700),
+      dark: primitive.variable(blue, 300),
+    ),
+  ),
+  border: (
+    fixed-light: (
+      light: primitive.variable(white-base, white),
+      dark: primitive.variable(white-base, white),
+    ),
+    fixed-light-alpha: (
+      light: primitive.variable(white-base, white-alpha-20),
+      dark: primitive.variable(white-base, white-alpha-20),
+    ),
+    neutral-faint: (
+      light: primitive.variable(gray, 200),
+      dark: primitive.variable(gray, 700),
+    ),
+    neutral-light: (
+      light: primitive.variable(gray, 300),
+      dark: primitive.variable(gray, 600),
+    ),
+    neutral: (
+      light: primitive.variable(gray, 400),
+      dark: primitive.variable(gray, 500),
+    ),
+    neutral-strong: (
+      light: primitive.variable(gray, 600),
+      dark: primitive.variable(gray, 300),
+    ),
+    brand: (
+      light: primitive.variable(brand, 500),
+      dark: primitive.variable(brand, 500),
+    ),
+    error-subtle: (
+      light: primitive.variable(red, 300),
+      dark: primitive.variable(red, 600),
+    ),
+    error: (
+      light: primitive.variable(red, 500),
+      dark: primitive.variable(red, 500),
+    ),
+    warning-subtle: (
+      light: primitive.variable(yellow, 300),
+      dark: primitive.variable(yellow, 600),
+    ),
+    warning: (
+      light: primitive.variable(yellow, 500),
+      dark: primitive.variable(yellow, 500),
+    ),
+  ),
+  separator: (
+    neutral-faint: (
+      light: primitive.variable(gray, 200),
+      dark: primitive.variable(gray, 700),
+    ),
+    neutral-light: (
+      light: primitive.variable(gray, 300),
+      dark: primitive.variable(gray, 600),
+    ),
+    neutral: (
+      light: primitive.variable(gray, 400),
+      dark: primitive.variable(gray, 500),
+    ),
+    brand: (
+      light: primitive.variable(brand, 500),
+      dark: primitive.variable(brand, 500),
+    ),
+  ),
+  overlay: (
+    strong: (
+      light: primitive.variable(black-base, black-alpha-60),
+      dark: primitive.variable(black-base, black-alpha-60),
+    ),
+    default: (
+      light: primitive.variable(black-base, black-alpha-40),
+      dark: primitive.variable(black-base, black-alpha-40),
+    ),
+    subtle: (
+      light: primitive.variable(black-base, black-alpha-30),
+      dark: primitive.variable(black-base, black-alpha-30),
+    ),
+  ),
+  surface: (
+    solid: (
+      light: primitive.variable(white-base, white-alpha-90),
+      dark: primitive.variable(black-base, black-alpha-80),
+    ),
+    strong: (
+      light: primitive.variable(white-base, white-alpha-60),
+      dark: primitive.variable(black-base, black-alpha-60),
+    ),
+    subtle: (
+      light: primitive.variable(white-base, white-alpha-30),
+      dark: primitive.variable(black-base, black-alpha-30),
+    ),
+    ghost: (
+      light: primitive.variable(white-base, white-alpha-10),
+      dark: primitive.variable(black-base, black-alpha-10),
+    ),
+  ),
+  shadow: (
+    dark: (
+      light: primitive.variable(black-base, black-alpha-10),
+      dark: primitive.variable(black-base, black-alpha-90),
+    ),
+    dark-light: (
+      light: primitive.variable(black-base, black-alpha-8),
+      dark: primitive.variable(black-base, black-alpha-20),
+    ),
+    dark-faint: (
+      light: primitive.variable(black-base, black-alpha-5),
+      dark: primitive.variable(black-base, black-alpha-20),
+    ),
+    dark-ghost: (
+      light: primitive.variable(black-base, black-alpha-3),
+      dark: primitive.variable(black-base, black-alpha-10),
+    ),
+    light-faint: (
+      light: primitive.variable(white-base, white-alpha-5),
+      dark: primitive.variable(white-base, white-alpha-5),
+    ),
+    brand: (
+      light: primitive.variable(brand-base, brand-alpha-30),
+      dark: primitive.variable(brand-base, brand-alpha-20),
+    ),
+  ),
+);
+
+// 驗證 context 是否有效
+@function is-valid-context($context) {
+  @return list.index($semantic-contexts, $context) != null;
+}
+
+// 驗證 tone 是否對該 context 有效
+@function is-valid-tone($context, $tone, $colors: $semantic-colors) {
+  @if not is-valid-context($context) {
+    @return false;
+  }
+
+  $context-map: map.get($colors, $context);
+
+  @if not $context-map {
+    @return false;
+  }
+
+  @return map.has-key($context-map, $tone);
+}
+
+// 取得特定 context 的所有 tones
+@function get-context-tones($context, $colors: $semantic-colors) {
+  @if not is-valid-context($context) {
+    @error 'Invalid context "#{$context}". Valid contexts are: #{$semantic-contexts}';
+  }
+
+  $context-map: map.get($colors, $context);
+
+  @if not $context-map {
+    @return ();
+  }
+
+  @return map.keys($context-map);
+}
+
+// 取得 CSS 變數名稱
+@function get-semantic-var-name($context, $tone) {
+  @return --#{$prefix}-#{$context}-#{$tone};
+}
+
+// 取得 semantic color 的 CSS 變數引用
+// 使用方式: semantic(background, default) => var(--mzn-color-background-default)
+@function variable($context, $tone) {
+  @if not is-valid-context($context) {
+    @error 'Invalid context "#{$context}". Valid contexts are: #{$semantic-contexts}';
+  }
+
+  @return var(#{get-semantic-var-name($context, $tone)});
+}
+
+// 檢查顏色值是否已定義（包括 CSS 變數）
+@function is-semantic-color-defined($value) {
+  @return $value != null;
+}
+
+// 生成所有 semantic color CSS 變數
+// mode: 'light' 或 'dark'
+@mixin variables($mode: light, $colors: ()) {
+  $colors: map.deep-merge($semantic-colors, $colors);
+
+  @each $context, $tones in $colors {
+    @if not is-valid-context($context) {
+      @error 'Invalid context "#{$context}" in semantic colors map. Valid contexts are: #{$semantic-contexts}';
+    }
+
+    @each $tone, $modes in $tones {
+      @if not is-valid-tone($context, $tone, $colors) {
+        $valid-tones: get-context-tones($context, $colors);
+
+        @error 'Invalid tone "#{$tone}" for context "#{$context}". Valid tones are: #{$valid-tones}';
+      }
+
+      $color: map.get($modes, $mode);
+
+      @if is-semantic-color-defined($color) {
+        #{get-semantic-var-name($context, $tone)}: #{$color};
+      }
+    }
+  }
+}

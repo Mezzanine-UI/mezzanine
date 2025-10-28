@@ -1,1 +1,1 @@
-export const palettePrefix = 'mzn-color';
+export const colorSemanticPrefix = 'mzn-color';

@@ -1,10 +1,7 @@
 import { CssVarInterpolations, toCssVar } from '@mezzanine-ui/system/css';
-import { Color, palettePrefix } from '@mezzanine-ui/system/palette';
+import { Color, colorSemanticPrefix } from '@mezzanine-ui/system/palette';
 
-export type IconColor =
-  | 'inherit'
-  | Color
-  | 'disabled';
+export type IconColor = 'inherit' | Color | 'disabled';
 
 export interface IconCssVars {
   color?: IconColor;
@@ -35,11 +32,9 @@ export function toIconCssVars(variables: IconCssVars): CssVarInterpolations {
       /**
        * Use `action-disabled` color of palette as `disabled` color of icon.
        */
-      const colorName: Color = color === 'disabled'
-        ? 'action-disabled'
-        : color;
+      const colorName: Color = color === 'disabled' ? 'action-disabled' : color;
 
-      colorValue = toCssVar(`${palettePrefix}-${colorName}`);
+      colorValue = toCssVar(`${colorSemanticPrefix}-${colorName}`);
     }
 
     result = {

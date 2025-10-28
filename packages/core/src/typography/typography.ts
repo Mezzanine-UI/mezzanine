@@ -2,10 +2,13 @@ import { CssVarInterpolations, toCssVar } from '@mezzanine-ui/system/css';
 import {
   GradualMainColor,
   MainColor,
-  palettePrefix,
+  colorSemanticPrefix,
   TextColor,
 } from '@mezzanine-ui/system/palette';
-import { typographyPrefix, TypographyVariant } from '@mezzanine-ui/system/typography';
+import {
+  typographyPrefix,
+  TypographyVariant,
+} from '@mezzanine-ui/system/typography';
 
 export type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
 
@@ -16,9 +19,20 @@ export type TypographyColor =
   | TextColor;
 
 type TypographyDisplayBase = 'block' | 'flex';
-export type TypographyDisplay = TypographyDisplayBase | `inline-${TypographyDisplayBase}`;
+export type TypographyDisplay =
+  | TypographyDisplayBase
+  | `inline-${TypographyDisplayBase}`;
 
-export type TypographyWeight = 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+export type TypographyWeight =
+  | 100
+  | 200
+  | 300
+  | 400
+  | 500
+  | 600
+  | 700
+  | 800
+  | 900;
 
 export interface TypographyCssVars {
   align?: TypographyAlign;
@@ -37,21 +51,18 @@ export const typographyClasses = {
   weight: `${typographyPrefix}--weight`,
 } as const;
 
-export function toTypographyCssVars(variables: TypographyCssVars): CssVarInterpolations {
-  const {
-    align,
-    color,
-    display,
-    weight,
-  } = variables;
+export function toTypographyCssVars(
+  variables: TypographyCssVars,
+): CssVarInterpolations {
+  const { align, color, display, weight } = variables;
 
   return {
     [`--${typographyPrefix}-align`]: align,
-    [`--${typographyPrefix}-color`]: !color || color === 'inherit'
-      ? color
-      : toCssVar(`${palettePrefix}-${color}`),
+    [`--${typographyPrefix}-color`]:
+      !color || color === 'inherit'
+        ? color
+        : toCssVar(`${colorSemanticPrefix}-${color}`),
     [`--${typographyPrefix}-display`]: display,
     [`--${typographyPrefix}-weight`]: weight,
   };
 }
-

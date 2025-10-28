@@ -1,6 +1,6 @@
-@use 'sass:map';
-@use 'sass:list';
 @use 'sass:meta';
+@use '../utils/list';
+@use '../utils/map';
 
 // 定義所有可用的級距
 $primitive-scales: (25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950);
@@ -12,7 +12,7 @@ $primitive-categories: (
   yellow,
   green,
   blue,
-  gray-base,
+  gray,
   white-base,
   black-base,
   brand-base
@@ -99,7 +99,7 @@ $default-primitives: (
     950: #102A56,
   ),
   // 中性灰階 - 數字級距: 25, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950
-  gray-base: (
+  gray: (
     25: #FBFBFC,
     50: #F9FAFB,
     100: #F3F4F6,
@@ -116,6 +116,7 @@ $default-primitives: (
   // 白色系 - 特殊級距: white, white-alpha-10/20/.../90
   white-base: (
     white: #FFF,
+    white-alpha-5: rgb(255 255 255 / 5%),
     white-alpha-10: rgb(255 255 255 / 10%),
     white-alpha-20: rgb(255 255 255 / 20%),
     white-alpha-30: rgb(255 255 255 / 30%),
@@ -226,7 +227,7 @@ $default-primitives: (
 }
 
 // 使用 CSS 變數引用顏色
-@function primitive($category, $scale) {
+@function variable($category, $scale) {
   @if not is-valid-category($category) {
     @error 'Invalid category "#{$category}". Valid categories are: #{$primitive-categories}';
   }
@@ -241,13 +242,21 @@ $default-primitives: (
 }
 
 // 生成所有 CSS 變數
-@mixin variables($primitives: $default-primitives, $skip-undefined: true) {
+@mixin variables($primitives: (), $skip-undefined: true) {
+  $primitives: map.deep-merge($default-primitives, $primitives);
+
   @each $category, $colors in $primitives {
     @if not is-valid-category($category) {
-      @error 'Invalid category "#{$category}" in primitives map';
+      @error 'Invalid category "#{$category}" in primitives map. Valid categories are: #{$primitive-categories}';
     }
 
     @each $scale, $color in $colors {
+      @if not is-valid-scale-for-category($category, $scale, $primitives) {
+        $valid-scales: get-valid-scales($category, $primitives);
+
+        @error 'Invalid scale "#{$scale}" for category "#{$category}". Valid scales are: #{$valid-scales}';
+      }
+
       @if is-color-defined($color) {
         #{get-var-name($category, $scale)}: #{$color};
       } @else if not $skip-undefined {
