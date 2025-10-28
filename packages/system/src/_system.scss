@@ -3,6 +3,7 @@
 @use './spacing';
 @use './typography';
 @use './z-index';
+@use './radius';
 @use './palette' as system-palette;
 
 @mixin common-variables($options: ()) {
@@ -10,6 +11,7 @@
   $spacing: map.get($options, spacing);
   $typography: map.get($options, typography);
   $z-index: map.get($options, z-index);
+  $radius: map.get($options, radius);
 
   @if not $motion {
     @include motion.variables();
@@ -33,6 +35,12 @@
     @include z-index.variables();
   } @else {
     @include z-index.variables($z-index);
+  }
+
+  @if not $radius {
+    @include radius.variables();
+  } @else {
+    @include radius.variables($radius);
   }
 }
 
