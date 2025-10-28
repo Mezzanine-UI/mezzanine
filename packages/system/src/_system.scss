@@ -6,7 +6,7 @@
 @use './radius';
 @use './palette' as system-palette;
 
-@mixin common-variables($options: ()) {
+@mixin common-variables($mode: default, $options: ()) {
   $motion: map.get($options, motion);
   $spacing: map.get($options, spacing);
   $typography: map.get($options, typography);
@@ -20,9 +20,9 @@
   }
 
   @if not $spacing {
-    @include spacing.variables();
+    @include spacing.semantic-variables($mode);
   } @else {
-    @include spacing.variables($spacing);
+    @include spacing.semantic-variables($mode, $spacing);
   }
 
   @if not $typography {

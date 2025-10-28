@@ -1,0 +1,131 @@
+@use '../typography/utils' as typography-utils;
+@use '../utils/list';
+@use '../utils/map';
+
+// CSS 變數前綴
+$prefix: mzn-spacing-primitive;
+
+// 定義所有可用的 spacing 級距（單位為 px）
+$primitive-scales: (
+  0,
+  1,
+  2,
+  4,
+  6,
+  8,
+  10,
+  12,
+  14,
+  16,
+  18,
+  20,
+  24,
+  28,
+  32,
+  36,
+  40,
+  48,
+  52,
+  56,
+  60,
+  64,
+  80,
+  160,
+  240,
+  320,
+  360,
+  400,
+  480,
+  560,
+  640,
+  720,
+  960,
+  1140
+);
+
+// 預設 spacing 值定義（px 會自動轉換為 rem）
+$default-primitives: (
+  0: 0,
+  1: 1px,
+  2: 2px,
+  4: 4px,
+  6: 6px,
+  8: 8px,
+  10: 10px,
+  12: 12px,
+  14: 14px,
+  16: 16px,
+  18: 18px,
+  20: 20px,
+  24: 24px,
+  28: 28px,
+  32: 32px,
+  36: 36px,
+  40: 40px,
+  48: 48px,
+  52: 52px,
+  56: 56px,
+  60: 60px,
+  64: 64px,
+  80: 80px,
+  160: 160px,
+  240: 240px,
+  320: 320px,
+  360: 360px,
+  400: 400px,
+  480: 480px,
+  560: 560px,
+  640: 640px,
+  720: 720px,
+  960: 960px,
+  1140: 1140px,
+);
+
+// 驗證 scale 是否有效
+@function is-valid-scale($scale) {
+  @return list.index($primitive-scales, $scale) != null;
+}
+
+// 驗證 spacing 值是否已定義
+@function is-spacing-defined($spacing) {
+  @return $spacing != null;
+}
+
+// 取得 CSS 變數名稱
+// 例如: --mzn-spacing-primitive-16
+@function get-var-name($scale) {
+  @if $prefix == '' {
+    @return --#{$scale};
+  }
+
+  @return --#{$prefix}-#{$scale};
+}
+
+// 使用 CSS 變數引用 spacing
+// 例如: variable(16) => var(--mzn-spacing-primitive-16)
+@function variable($scale) {
+  @if not is-valid-scale($scale) {
+    @error 'Invalid spacing scale "#{$scale}". Valid scales are: #{$primitive-scales}';
+  }
+
+  @return var(#{get-var-name($scale)});
+}
+
+// 生成所有 spacing primitive CSS 變數
+@mixin variables($primitives: ()) {
+  $primitives: map.deep-merge($default-primitives, $primitives);
+
+  @each $scale, $value in $primitives {
+    @if not is-valid-scale($scale) {
+      @error 'Invalid spacing scale "#{$scale}" in primitives map. Valid scales are: #{$primitive-scales}';
+    }
+
+    @if is-spacing-defined($value) {
+      @if $value == 0 {
+        #{get-var-name($scale)}: 0;
+      } @else {
+        #{get-var-name($scale)}: #{typography-utils.px-to-rem($value)};
+      }
+    }
+  }
+}

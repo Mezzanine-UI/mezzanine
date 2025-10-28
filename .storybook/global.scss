@@ -5,7 +5,7 @@
 @use '~@mezzanine-ui/core';
 
 :root {
-  @include system.common-variables();
+  @include system.common-variables("default");
   @include system.colors();
 }
 

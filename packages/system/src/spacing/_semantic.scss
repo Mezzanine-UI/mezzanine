@@ -1,0 +1,541 @@
+@use '../utils/list';
+@use '../utils/map';
+@use './primitives' as primitive;
+
+$prefix: mzn-spacing;
+
+// 定義所有情境類型
+$semantic-contexts: (size, gap, padding);
+
+// 定義 size 的子分類
+$size-categories: (element, container);
+
+// 定義 padding 的子分類
+$padding-categories: (horizontal, vertical);
+
+// 定義各個分類下的 tones
+$element-tones: (
+  hairline,
+  tiny,
+  tight,
+  compact,
+  slim,
+  narrow,
+  base,
+  base-fixed,
+  gentle,
+  relaxed,
+  airy,
+  roomy,
+  loose,
+  extra-wide,
+  extra-wide-condense,
+  expansive,
+  extra,
+  max
+);
+
+$container-tones: (
+  collapsed,
+  tiny,
+  tight,
+  slim,
+  narrow,
+  compact,
+  standard,
+  balanced,
+  broad,
+  wide,
+  expanded,
+  max
+);
+
+$horizontal-tones: (
+  none,
+  micro,
+  tiny,
+  tiny-fixed,
+  tight,
+  tight-fixed,
+  base,
+  base-fixed,
+  calm,
+  comfort,
+  comfort-fixed,
+  roomy,
+  spacious,
+  relaxed,
+  airy,
+  breath,
+  wide,
+  max
+);
+
+$vertical-tones: (
+  none,
+  micro,
+  tiny,
+  tight,
+  base,
+  calm,
+  comfort,
+  roomy,
+  spacious,
+  generous,
+  relaxed
+);
+
+$semantic-spacings: (
+  size: (
+    element: (
+      hairline: (
+        default: primitive.variable(1),
+        compact: primitive.variable(1),
+      ),
+      tiny: (
+        default: primitive.variable(4),
+        compact: primitive.variable(4),
+      ),
+      tight: (
+        default: primitive.variable(6),
+        compact: primitive.variable(6),
+      ),
+      compact: (
+        default: primitive.variable(8),
+        compact: primitive.variable(6),
+      ),
+      slim: (
+        default: primitive.variable(12),
+        compact: primitive.variable(8),
+      ),
+      narrow: (
+        default: primitive.variable(14),
+        compact: primitive.variable(12),
+      ),
+      base: (
+        default: primitive.variable(16),
+        compact: primitive.variable(12),
+      ),
+      base-fixed: (
+        default: primitive.variable(16),
+        compact: primitive.variable(16),
+      ),
+      gentle: (
+        default: primitive.variable(20),
+        compact: primitive.variable(18),
+      ),
+      relaxed: (
+        default: primitive.variable(24),
+        compact: primitive.variable(20),
+      ),
+      airy: (
+        default: primitive.variable(28),
+        compact: primitive.variable(24),
+      ),
+      roomy: (
+        default: primitive.variable(32),
+        compact: primitive.variable(28),
+      ),
+      loose: (
+        default: primitive.variable(36),
+        compact: primitive.variable(32),
+      ),
+      extra-wide: (
+        default: primitive.variable(40),
+        compact: primitive.variable(36),
+      ),
+      extra-wide-condense: (
+        default: primitive.variable(40),
+        compact: primitive.variable(24),
+      ),
+      expansive: (
+        default: primitive.variable(60),
+        compact: primitive.variable(24),
+      ),
+      extra: (
+        default: primitive.variable(64),
+        compact: primitive.variable(48),
+      ),
+      max: (
+        default: primitive.variable(80),
+        compact: primitive.variable(64),
+      ),
+    ),
+    container: (
+      collapsed: (
+        default: primitive.variable(52),
+        compact: primitive.variable(52),
+      ),
+      tiny: (
+        default: primitive.variable(80),
+        compact: primitive.variable(80),
+      ),
+      tight: (
+        default: primitive.variable(160),
+        compact: primitive.variable(160),
+      ),
+      slim: (
+        default: primitive.variable(240),
+        compact: primitive.variable(240),
+      ),
+      narrow: (
+        default: primitive.variable(320),
+        compact: primitive.variable(320),
+      ),
+      compact: (
+        default: primitive.variable(360),
+        compact: primitive.variable(360),
+      ),
+      standard: (
+        default: primitive.variable(400),
+        compact: primitive.variable(400),
+      ),
+      balanced: (
+        default: primitive.variable(480),
+        compact: primitive.variable(480),
+      ),
+      broad: (
+        default: primitive.variable(560),
+        compact: primitive.variable(560),
+      ),
+      wide: (
+        default: primitive.variable(640),
+        compact: primitive.variable(640),
+      ),
+      expanded: (
+        default: primitive.variable(720),
+        compact: primitive.variable(720),
+      ),
+      max: (
+        default: primitive.variable(960),
+        compact: primitive.variable(960),
+      ),
+    ),
+  ),
+  gap: (
+    none: (
+      default: primitive.variable(0),
+      compact: primitive.variable(0),
+    ),
+    tiny: (
+      default: primitive.variable(2),
+      compact: primitive.variable(2),
+      ),
+    tight: (
+      default: primitive.variable(4),
+      compact: primitive.variable(2),
+    ),
+    tight-fixed: (
+      default: primitive.variable(4),
+      compact: primitive.variable(4),
+    ),
+    slim: (
+      default: primitive.variable(6),
+      compact: primitive.variable(4),
+    ),
+    base: (
+      default: primitive.variable(8),
+      compact: primitive.variable(6),
+    ),
+    calm: (
+      default: primitive.variable(12),
+      compact: primitive.variable(10),
+    ),
+    comfort: (
+      default: primitive.variable(16),
+      compact: primitive.variable(14),
+    ),
+    roomy: (
+      default: primitive.variable(20),
+      compact: primitive.variable(16),
+    ),
+    spacious: (
+      default: primitive.variable(24),
+      compact: primitive.variable(20),
+    ),
+    loose: (
+      default: primitive.variable(40),
+      compact: primitive.variable(36),
+    ),
+  ),
+  padding: (
+    horizontal: (
+      none: (
+        default: primitive.variable(0),
+        compact: primitive.variable(0),
+      ),
+      micro: (
+        default: primitive.variable(2),
+        compact: primitive.variable(2),
+      ),
+      tiny: (
+        default: primitive.variable(4),
+        compact: primitive.variable(2),
+      ),
+      tiny-fixed: (
+        default: primitive.variable(4),
+        compact: primitive.variable(4),
+      ),
+      tight: (
+        default: primitive.variable(6),
+        compact: primitive.variable(4),
+      ),
+      tight-fixed: (
+        default: primitive.variable(6),
+        compact: primitive.variable(6),
+      ),
+      base: (
+        default: primitive.variable(8),
+        compact: primitive.variable(4),
+      ),
+      base-fixed: (
+        default: primitive.variable(8),
+        compact: primitive.variable(8),
+      ),
+      calm: (
+        default: primitive.variable(10),
+        compact: primitive.variable(8),
+      ),
+      comfort: (
+        default: primitive.variable(12),
+        compact: primitive.variable(10),
+      ),
+      comfort-fixed: (
+        default: primitive.variable(12),
+        compact: primitive.variable(12),
+      ),
+      roomy: (
+        default: primitive.variable(14),
+        compact: primitive.variable(12),
+      ),
+      spacious: (
+        default: primitive.variable(16),
+        compact: primitive.variable(14),
+      ),
+      relaxed: (
+        default: primitive.variable(24),
+        compact: primitive.variable(20),
+      ),
+      airy: (
+        default: primitive.variable(28),
+        compact: primitive.variable(24),
+      ),
+      breath: (
+        default: primitive.variable(32),
+        compact: primitive.variable(28),
+      ),
+      wide: (
+        default: primitive.variable(40),
+        compact: primitive.variable(36),
+      ),
+      max: (
+        default: primitive.variable(48),
+        compact: primitive.variable(40),
+      ),
+    ),
+    vertical: (
+      none: (
+        default: primitive.variable(0),
+        compact: primitive.variable(0),
+      ),
+      micro: (
+        default: primitive.variable(2),
+        compact: primitive.variable(2),
+      ),
+      tiny: (
+        default: primitive.variable(4),
+        compact: primitive.variable(2),
+      ),
+      tight: (
+        default: primitive.variable(6),
+        compact: primitive.variable(4),
+      ),
+      base: (
+        default: primitive.variable(8),
+        compact: primitive.variable(4),
+      ),
+      calm: (
+        default: primitive.variable(10),
+        compact: primitive.variable(6),
+      ),
+      comfort: (
+        default: primitive.variable(12),
+        compact: primitive.variable(8),
+      ),
+      roomy: (
+        default: primitive.variable(14),
+        compact: primitive.variable(10),
+      ),
+      spacious: (
+        default: primitive.variable(16),
+        compact: primitive.variable(12),
+      ),
+      generous: (
+        default: primitive.variable(20),
+        compact: primitive.variable(14),
+      ),
+      relaxed: (
+        default: primitive.variable(24),
+        compact: primitive.variable(16),
+      ),
+    ),
+  ),
+);
+
+// 驗證 context 是否有效
+@function is-valid-context($context) {
+  @return list.index($semantic-contexts, $context) != null;
+}
+
+// 驗證 category 是否對該 context 有效
+@function is-valid-category($context, $category) {
+  @if $context == size {
+    @return list.index($size-categories, $category) != null;
+  } @else if $context == padding {
+    @return list.index($padding-categories, $category) != null;
+  }
+
+  // gap 沒有 category
+  @return false;
+}
+
+// 驗證 tone 是否對該 context/category 有效
+@function is-valid-tone($context, $category, $tone, $spacings: $semantic-spacings) {
+  @if not is-valid-context($context) {
+    @return false;
+  }
+
+  $context-map: map.get($spacings, $context);
+
+  @if not $context-map {
+    @return false;
+  }
+
+  // gap 沒有 category，直接檢查 tone
+  @if $context == gap {
+    @return map.has-key($context-map, $tone);
+  }
+
+  // size 和 padding 需要先檢查 category
+  @if not $category {
+    @return false;
+  }
+
+  $category-map: map.get($context-map, $category);
+
+  @if not $category-map {
+    @return false;
+  }
+
+  @return map.has-key($category-map, $tone);
+}
+
+// 取得特定 context 的所有 categories（僅適用於 size 和 padding）
+@function get-context-categories($context) {
+  @if $context == size {
+    @return $size-categories;
+  } @else if $context == padding {
+    @return $padding-categories;
+  }
+
+  @return ();
+}
+
+// 取得特定 context/category 的所有 tones
+@function get-tones($context, $category: null) {
+  @if $context == gap {
+    @return map.keys(map.get($semantic-spacings, gap));
+  }
+
+  @if $context == size and $category == element {
+    @return $element-tones;
+  } @else if $context == size and $category == container {
+    @return $container-tones;
+  } @else if $context == padding and $category == horizontal {
+    @return $horizontal-tones;
+  } @else if $context == padding and $category == vertical {
+    @return $vertical-tones;
+  }
+
+  @return ();
+}
+
+// 取得 CSS 變數名稱
+// size: --mzn-spacing-size-element-base
+// gap: --mzn-spacing-gap-base
+// padding: --mzn-spacing-padding-horizontal-base
+@function get-var-name($context, $category, $tone: null) {
+  // gap 沒有 category，tone 在第二個參數
+  @if $context == gap {
+    @return --#{$prefix}-#{$context}-#{$category};
+  }
+
+  // size 和 padding 有 category
+  @return --#{$prefix}-#{$context}-#{$category}-#{$tone};
+}
+
+// 使用 CSS 變數引用 spacing
+@function variable($context, $category, $tone: null) {
+  @if not is-valid-context($context) {
+    @error 'Invalid context "#{$context}". Valid contexts are: #{$semantic-contexts}';
+  }
+
+  @return var(#{get-var-name($context, $category, $tone)});
+}
+
+// 檢查 spacing 值是否已定義
+@function is-spacing-defined($value) {
+  @return $value != null;
+}
+
+// 生成所有 semantic spacing CSS 變數
+// mode: 'default' 或 'compact'
+@mixin variables($mode: default, $spacings: ()) {
+  @include primitive.variables();
+
+  $spacings: map.deep-merge($semantic-spacings, $spacings);
+
+  @each $context, $context-value in $spacings {
+    @if not is-valid-context($context) {
+      @error 'Invalid context "#{$context}" in semantic spacings map. Valid contexts are: #{$semantic-contexts}';
+    }
+
+    @if $context == gap {
+      @each $tone, $modes in $context-value {
+        @if not is-valid-tone($context, null, $tone, $spacings) {
+          $valid-tones: get-tones($context);
+
+          @error 'Invalid tone "#{$tone}" for context "#{$context}". Valid tones are: #{$valid-tones}';
+        }
+
+        $spacing: map.get($modes, $mode);
+
+        @if is-spacing-defined($spacing) {
+          #{get-var-name($context, $tone)}: #{$spacing};
+        }
+      }
+    } @else {
+      @each $category, $category-value in $context-value {
+        @if not is-valid-category($context, $category) {
+          $valid-categories: get-context-categories($context);
+
+          @error 'Invalid category "#{$category}" for context "#{$context}". Valid categories are: #{$valid-categories}';
+        }
+
+        @each $tone, $modes in $category-value {
+          @if not is-valid-tone($context, $category, $tone, $spacings) {
+            $valid-tones: get-tones($context, $category);
+
+            @error 'Invalid tone "#{$tone}" for context "#{$context}" and category "#{$category}". Valid tones are: #{$valid-tones}';
+          }
+
+          $spacing: map.get($modes, $mode);
+
+          @if is-spacing-defined($spacing) {
+            #{get-var-name($context, $category, $tone)}: #{$spacing};
+          }
+        }
+      }
+    }
+  }
+}
