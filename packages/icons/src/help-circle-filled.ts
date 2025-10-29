@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const HelpCircleFilledIcon: IconDefinition = {
   name: 'help-circle-filled',
   definition: {

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const MenuOpenIcon: IconDefinition = {
   name: 'menu-open',
   definition: {

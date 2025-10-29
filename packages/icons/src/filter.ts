@@ -1,6 +1,6 @@
-
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const FilterIcon: IconDefinition = {
   name: 'filter',
   definition: {

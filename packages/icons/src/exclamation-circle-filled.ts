@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const ExclamationCircleFilledIcon: IconDefinition = {
   name: 'exclamation-circle-filled',
   definition: {

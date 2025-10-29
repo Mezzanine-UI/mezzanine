@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const SettingsIcon: IconDefinition = {
   name: 'settings',
   definition: {

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const MinusBoldIcon: IconDefinition = {
   name: 'minus-bold',
   definition: {

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const CaretDownIcon: IconDefinition = {
   name: 'caret-down',
   definition: {
