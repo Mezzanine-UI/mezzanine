@@ -88,7 +88,7 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(
     const defaultIconElement = useMemo(
       () => (
         <Icon
-          color={disabled ? 'disabled' : 'primary'}
+          color={disabled ? 'neutral-faint' : 'neutral'}
           className={cx(
             classes.summaryIcon,
             {
@@ -109,7 +109,7 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(
     const defaultIconWithPrefixClassName = useMemo(
       () => (
         <Icon
-          color={disabled ? 'disabled' : 'primary'}
+          color={disabled ? 'neutral-faint' : 'neutral'}
           className={cx(
             classes.summaryIcon,
             {

@@ -1,229 +1,294 @@
-import { useState } from 'react';
-import { StoryFn, Meta } from '@storybook/react-webpack5';
-import {
-  ArrowDownIcon,
-  ArrowRightIcon,
-  ArrowUpIcon,
-  ArrowLeftIcon,
-  BellIcon,
-  CalendarIcon,
-  CancelIcon,
-  CaretDownIcon,
-  CaretRightIcon,
-  CheckBoldIcon,
-  CheckCircleFilledIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronUpIcon,
-  ClockIcon,
-  DocIcon,
-  DollarIcon,
-  DownloadIcon,
-  DragIcon,
-  EditIcon,
-  ExclamationCircleFilledIcon,
-  EyeCloseIcon,
-  EyeIcon,
-  EyeSlashIcon,
-  FilterIcon,
-  FolderOpenIcon,
-  HelpCircleFilledIcon,
-  InfoCircleFilledIcon,
-  MenuCloseIcon,
-  MenuIcon,
-  MenuOpenIcon,
-  MinusBoldIcon,
-  MinusCircleFilledIcon,
-  MinusIcon,
-  MoreHorizontalIcon,
-  MoreVerticalIcon,
-  PercentIcon,
-  PlusIcon,
-  ProfileIcon,
-  ResetIcon,
-  SearchIcon,
-  SettingsIcon,
-  SlashIcon,
-  SpinnerIcon,
-  StarIcon,
-  StarPressedIcon,
-  SwitcherIcon,
-  TimesCircleFilledIcon,
-  TimesIcon,
-  TrashIcon,
-  UploadIcon,
-} from '@mezzanine-ui/icons';
-import { MainColor } from '@mezzanine-ui/system/palette/typings';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
+import * as AllIcons from '@mezzanine-ui/icons';
 import Icon, { IconColor, IconProps } from '.';
+
+const { PlusIcon, CheckedIcon } = AllIcons;
 
 const colors: IconColor[] = [
   'inherit',
-  'primary',
-  'primary-dark',
-  'primary-light',
-  'secondary',
-  'secondary-dark',
-  'secondary-light',
+  'fixed-light',
+  'neutral-faint',
+  'neutral-light',
+  'neutral',
+  'neutral-strong',
+  'neutral-bold',
+  'neutral-solid',
+  'brand',
+  'brand-strong',
+  'brand-solid',
   'error',
+  'error-strong',
+  'error-solid',
   'warning',
-  'text-primary',
-  'text-secondary',
-  'text-disabled',
+  'warning-strong',
   'success',
-  'disabled',
+  'success-strong',
+  'info',
+  'info-strong',
 ];
 
 export default {
   title: 'General/Icon',
-} as Meta;
+  component: Icon,
+} satisfies Meta<typeof Icon>;
 
-export const Playground: StoryFn<IconProps> = ({ ...props }) => (
-  <Icon {...props} icon={PlusIcon} />
-);
+type Story = StoryObj<IconProps>;
 
-Playground.args = {
-  color: 'primary',
-  icon: PlusIcon,
-  spin: false,
-  size: 16,
-};
-Playground.argTypes = {
-  color: {
-    options: [undefined, ...colors],
-    control: {
-      type: 'select',
+export const Playground: Story = {
+  argTypes: {
+    color: {
+      options: [undefined, ...colors],
+      control: {
+        type: 'select',
+      },
+    },
+    size: {
+      control: {
+        type: 'number',
+      },
     },
   },
-  size: {
-    control: {
-      type: 'number',
-    },
+  args: {
+    color: 'neutral',
+    icon: PlusIcon,
+    spin: false,
+    size: 16,
+  },
+  render: ({ ...props }) => <Icon {...props} icon={PlusIcon} />,
+};
+
+export const All: Story = {
+  render: () => {
+    const iconCategories = [
+      {
+        name: 'System',
+        icons: [
+          AllIcons.MenuIcon,
+          AllIcons.MenuOpenIcon,
+          AllIcons.MenuCloseIcon,
+          AllIcons.SearchIcon,
+          AllIcons.SearchHistoryIcon,
+          AllIcons.UserIcon,
+          AllIcons.SlashIcon,
+          AllIcons.FolderIcon,
+          AllIcons.FolderOpenIcon,
+          AllIcons.FolderMoveIcon,
+          AllIcons.FolderAddIcon,
+          AllIcons.CalendarIcon,
+          AllIcons.CalendarTimeIcon,
+          AllIcons.ClockIcon,
+          AllIcons.CurrencyDollarIcon,
+          AllIcons.PercentIcon,
+          AllIcons.LightIcon,
+          AllIcons.DarkIcon,
+          AllIcons.NotificationIcon,
+          AllIcons.NotificationUnreadIcon,
+          AllIcons.SiderIcon,
+          AllIcons.HomeIcon,
+          AllIcons.SpinnerIcon,
+          AllIcons.LoginIcon,
+          AllIcons.LogoutIcon,
+        ],
+      },
+      {
+        name: 'Arrow',
+        icons: [
+          AllIcons.LongTailArrowRightIcon,
+          AllIcons.LongTailArrowLeftIcon,
+          AllIcons.LongTailArrowUpIcon,
+          AllIcons.LongTailArrowDownIcon,
+          AllIcons.ShortTailArrowRightIcon,
+          AllIcons.ShortTailArrowLeftIcon,
+          AllIcons.ShortTailArrowUpIcon,
+          AllIcons.ShortTailArrowDownIcon,
+          AllIcons.CaretRightIcon,
+          AllIcons.CaretLeftIcon,
+          AllIcons.CaretUpIcon,
+          AllIcons.CaretDownIcon,
+          AllIcons.CaretUpFlatIcon,
+          AllIcons.CaretDownFlatIcon,
+          AllIcons.CaretVerticalIcon,
+          AllIcons.ChevronRightIcon,
+          AllIcons.ChevronLeftIcon,
+          AllIcons.ChevronUpIcon,
+          AllIcons.ChevronDownIcon,
+          AllIcons.ChevronVerticalIcon,
+          AllIcons.DoubleChevronRightIcon,
+          AllIcons.DoubleChevronLeftIcon,
+          AllIcons.SwitchVerticalIcon,
+          AllIcons.ReverseLeftIcon,
+          AllIcons.ReverseRightIcon,
+        ],
+      },
+      {
+        name: 'Controls',
+        icons: [
+          AllIcons.CloseIcon,
+          AllIcons.TrashIcon,
+          AllIcons.SettingIcon,
+          AllIcons.FilterIcon,
+          AllIcons.ResetIcon,
+          AllIcons.RefreshCcwIcon,
+          AllIcons.RefreshCwIcon,
+          AllIcons.EyeIcon,
+          AllIcons.EyeInvisibleIcon,
+          AllIcons.PlusIcon,
+          AllIcons.MinusIcon,
+          AllIcons.CheckedIcon,
+          AllIcons.DotVerticalIcon,
+          AllIcons.DotHorizontalIcon,
+          AllIcons.DotGridIcon,
+          AllIcons.DotDragVerticalIcon,
+          AllIcons.DotDragHorizontalIcon,
+          AllIcons.ZoomInIcon,
+          AllIcons.ZoomOutIcon,
+          AllIcons.PinIcon,
+          AllIcons.MaximizeIcon,
+          AllIcons.MinimizeIcon,
+          AllIcons.ResizeHandleIcon,
+          AllIcons.LockIcon,
+          AllIcons.UnlockIcon,
+        ],
+      },
+      {
+        name: 'Alert',
+        icons: [
+          AllIcons.CheckedFilledIcon,
+          AllIcons.CheckedOutlineIcon,
+          AllIcons.ErrorFilledIcon,
+          AllIcons.ErrorOutlineIcon,
+          AllIcons.WarningFilledIcon,
+          AllIcons.WarningOutlineIcon,
+          AllIcons.InfoFilledIcon,
+          AllIcons.InfoOutlineIcon,
+          AllIcons.DangerousFilledIcon,
+          AllIcons.DangerousOutlineIcon,
+          AllIcons.QuestionFilledIcon,
+          AllIcons.QuestionOutlineIcon,
+        ],
+      },
+      {
+        name: 'Content',
+        icons: [
+          AllIcons.DownloadIcon,
+          AllIcons.UploadIcon,
+          AllIcons.FileIcon,
+          AllIcons.FileSearchIcon,
+          AllIcons.FileAttachmentIcon,
+          AllIcons.EditIcon,
+          AllIcons.CopyIcon,
+          AllIcons.LinkIcon,
+          AllIcons.ShareIcon,
+          AllIcons.LinkExternalIcon,
+          AllIcons.GalleryIcon,
+          AllIcons.ListIcon,
+          AllIcons.AlignLeftIcon,
+          AllIcons.AlignRightIcon,
+          AllIcons.StarOutlineIcon,
+          AllIcons.StarFilledIcon,
+          AllIcons.BookmarkOutlineIcon,
+          AllIcons.BookmarkFilledIcon,
+          AllIcons.BookmarkAddIcon,
+          AllIcons.BookmarkRemoveIcon,
+          AllIcons.BookmarkAddedIcon,
+          AllIcons.ImageIcon,
+          AllIcons.CodeIcon,
+        ],
+      },
+      {
+        name: 'Stepper',
+        icons: [
+          AllIcons.Item0Icon,
+          AllIcons.Item1Icon,
+          AllIcons.Item2Icon,
+          AllIcons.Item3Icon,
+          AllIcons.Item4Icon,
+          AllIcons.Item5Icon,
+          AllIcons.Item6Icon,
+          AllIcons.Item7Icon,
+          AllIcons.Item8Icon,
+          AllIcons.Item9Icon,
+        ],
+      },
+    ];
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
+        {iconCategories.map((category) => (
+          <div key={category.name}>
+            <h3
+              style={{
+                marginBottom: '16px',
+                fontSize: '18px',
+                fontWeight: 600,
+                color: 'var(--mzn-color-text-neutral)',
+              }}
+            >
+              {category.name} ({category.icons.length})
+            </h3>
+            <div
+              style={{
+                display: 'flex',
+                flexFlow: 'row wrap',
+                columnGap: '8px',
+                rowGap: '16px',
+                color: 'var(--mzn-color-icon-neutral)',
+                textAlign: 'center',
+              }}
+            >
+              {category.icons.map((icon) => (
+                <div
+                  key={icon.name}
+                  style={{
+                    width: '140px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    transition: 'all 0.2s',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Icon icon={icon} size={24} />
+                  <div style={{ fontSize: 12, wordBreak: 'break-word' }}>
+                    {icon.name}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
   },
 };
 
-interface AllStoryArgs {
-  search: string;
-}
-
-export const All: StoryFn<AllStoryArgs> = ({ search }) => {
-  const icons = [
-    ArrowDownIcon,
-    ArrowRightIcon,
-    ArrowUpIcon,
-    ArrowLeftIcon,
-    BellIcon,
-    CalendarIcon,
-    CancelIcon,
-    CaretDownIcon,
-    CaretRightIcon,
-    CheckBoldIcon,
-    CheckCircleFilledIcon,
-    CheckIcon,
-    ChevronDownIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-    ChevronUpIcon,
-    ClockIcon,
-    DocIcon,
-    DollarIcon,
-    DownloadIcon,
-    DragIcon,
-    EditIcon,
-    ExclamationCircleFilledIcon,
-    EyeCloseIcon,
-    EyeIcon,
-    EyeSlashIcon,
-    FilterIcon,
-    FolderOpenIcon,
-    HelpCircleFilledIcon,
-    InfoCircleFilledIcon,
-    MenuCloseIcon,
-    MenuIcon,
-    MenuOpenIcon,
-    MinusBoldIcon,
-    MinusCircleFilledIcon,
-    MinusIcon,
-    MoreHorizontalIcon,
-    MoreVerticalIcon,
-    PercentIcon,
-    PlusIcon,
-    ProfileIcon,
-    ResetIcon,
-    SearchIcon,
-    SettingsIcon,
-    SlashIcon,
-    SpinnerIcon,
-    StarIcon,
-    StarPressedIcon,
-    SwitcherIcon,
-    TimesCircleFilledIcon,
-    TimesIcon,
-    TrashIcon,
-    UploadIcon,
-  ].filter((icon) => !search || icon.name.includes(search));
-
-  return (
+export const Colors: Story = {
+  render: () => (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        rowGap: '16px',
-        color: 'var(--mzn-color-action-inactive)',
-        textAlign: 'center',
+        display: 'flex',
+        flexFlow: 'row wrap',
+        gap: '24px',
       }}
     >
-      {icons.map((icon) => (
-        <div key={icon.name}>
-          <Icon icon={icon} size={48} />
-          <div style={{ fontSize: 20 }}>{icon.name}</div>
+      {colors.map((color) => (
+        <div
+          key={color}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            color: 'var(--mzn-color-text-neutral)',
+          }}
+        >
+          <Icon icon={CheckedIcon} color={color} size={48} />
+          <div style={{ fontSize: 16, wordBreak: 'break-word' }}>{color}</div>
         </div>
       ))}
     </div>
-  );
-};
-
-All.args = {
-  search: '',
-};
-
-export const Colors = () => (
-  <div
-    style={{
-      color: 'var(--mzn-color-action-inactive)',
-    }}
-  >
-    {colors.map((color) => (
-      <Icon key={color} icon={CheckIcon} color={color} size={48} />
-    ))}
-  </div>
-);
-
-const clickableColors: MainColor[] = ['primary', 'secondary'];
-
-export const Clickable = () => {
-  const [colorIndex, setColorIndex] = useState(0);
-
-  return (
-    <>
-      <section style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon
-          icon={ResetIcon}
-          color={clickableColors[colorIndex % 2]}
-          onClick={() => setColorIndex(colorIndex + 1)}
-          size={60}
-        />
-        with onClick event
-      </section>
-      <section style={{ display: 'flex', alignItems: 'center' }}>
-        <Icon
-          icon={colorIndex % 2 ? EyeSlashIcon : EyeIcon}
-          color={clickableColors[colorIndex % 2]}
-          size={60}
-        />
-        without onClick event
-      </section>
-    </>
-  );
+  ),
 };

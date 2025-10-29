@@ -72,7 +72,7 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(
         <Icon
           {...iconPropsRest}
           className={cx(classes.icon, iconClassName)}
-          color={iconColor || 'primary'}
+          color={iconColor}
           icon={SpinnerIcon}
           spin
           style={{

@@ -67,7 +67,7 @@ const TableExpandable = forwardRef<HTMLDivElement, TableExpandableProps>(
               className={cx(classes.icon, {
                 [classes.iconClickable]: expandable,
               })}
-              color={expandable ? 'primary' : 'disabled'}
+              color={expandable ? 'brand' : 'neutral-faint'}
               icon={ChevronDownIcon}
               onClick={onClick}
               style={{ transform: `rotate(${expanded ? '180deg' : '0'})` }}

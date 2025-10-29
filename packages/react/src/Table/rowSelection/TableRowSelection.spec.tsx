@@ -385,7 +385,7 @@ describe('<TableRowSelection />', () => {
       it('should use disabled color for icon', () => {
         const styleMatch = icon
           ?.getAttribute('style')
-          ?.match(/--mzn-color-action-disabled/);
+          ?.match(/--mzn-color-icon-neutral-faint/);
 
         expect(styleMatch).not.toBeUndefined();
         expect(styleMatch).not.toBeNull();

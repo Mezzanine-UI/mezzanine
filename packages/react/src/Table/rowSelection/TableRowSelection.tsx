@@ -186,7 +186,7 @@ const TableRowSelection = forwardRef<HTMLDivElement, TableRowSelectionProps>(
                     className={cx(classes.icon, {
                       [classes.iconClickable]: isMenuAllowOpen,
                     })}
-                    color={isMenuAllowOpen ? 'primary' : 'disabled'}
+                    color={isMenuAllowOpen ? 'brand' : 'neutral-faint'}
                     icon={MoreVerticalIcon}
                     onClick={onIconClicked}
                   />
