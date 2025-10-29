@@ -1,2 +1,2 @@
-/* @deprecated */
+/** @deprecated */
 export type Size = 'small' | 'medium' | 'large';

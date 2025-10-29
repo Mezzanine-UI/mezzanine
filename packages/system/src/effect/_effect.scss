@@ -1,0 +1,65 @@
+@use 'sass:map';
+@use '../palette/semantic' as semantic;
+
+$prefix: mzn-effect;
+
+// 定義所有效果類型
+$effect-contexts: (shadow, focus);
+
+$effect-values: (
+  shadow: (
+    none: (
+      value: 0 0 0 0 rgb(0 0 0 / 0%),
+    ),
+    raised: (
+      value: 0 0 6px 0 semantic.variable(shadow, dark),
+    ),
+    floating: (
+      value: 0 0 16px 0 semantic.variable(shadow, dark),
+    ),
+    modal: (
+      value: 0 9px 28px 8px semantic.variable(shadow, dark-faint) 0 20px 24px -4px semantic.variable(shadow, dark-light) 0 3px 6px -4px semantic.variable(shadow, dark-ghost),
+    ),
+    table-sticky: (
+      value: 1px 0 4px 0 semantic.variable(shadow, dark),
+    ),
+    slider-handle: (
+      value: 0 2px 3px 0 semantic.variable(shadow, brand),
+    ),
+    inner-top-and-bottom: (
+      value: 0 1px 1px 0 semantic.variable(shadow, light-faint) inset 0 -1px 1px 0 semantic.variable(shadow, light-faint) inset 0 0 12px 0 semantic.variable(shadow, dark),
+    ),
+  ),
+  focus: (
+    primary: (
+      value: 0 0 0 1px semantic.variable(background, base) 0 0 0 2px semantic.variable(background, brand),
+    ),
+    error: (
+      value: 0 0 0 1px semantic.variable(background, base) 0 0 0 2px semantic.variable(background, error),
+    ),
+  ),
+);
+
+/**
+ * 取得 effect 變數名稱
+ * @param {string} $context - 效果情境 (shadow, focus)
+ * @param {string} $type - 效果類型
+ * @example
+ * variable(shadow, raised) => var(--mzn-effect-shadow-raised)
+ */
+@function variable($context, $type) {
+  @return var(--#{$prefix}-#{$context}-#{$type});
+}
+
+/**
+ * 定義 CSS 變數
+ * @example
+ * @include variables();
+ */
+@mixin variables() {
+  @each $context, $types in $effect-values {
+    @each $type, $config in $types {
+      --#{$prefix}-#{$context}-#{$type}: #{map.get($config, value)};
+    }
+  }
+}

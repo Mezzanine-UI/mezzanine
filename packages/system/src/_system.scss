@@ -4,6 +4,7 @@
 @use './typography';
 @use './z-index';
 @use './radius';
+@use './effect';
 @use './palette' as system-palette;
 
 @mixin common-variables($mode: default, $options: ()) {
@@ -12,6 +13,8 @@
   $typography: map.get($options, typography);
   $z-index: map.get($options, z-index);
   $radius: map.get($options, radius);
+
+  @include effect.variables();
 
   @if not $motion {
     @include motion.variables();
