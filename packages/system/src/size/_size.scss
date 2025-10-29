@@ -1,4 +1,9 @@
-@use 'sass:list';
+@use '../utils/list';
 
+/** @deprecated */
 $sizes: (small, medium, large);
+
+/** @deprecated */
 $sizes-with-extra-large: list.append($sizes, extra-large);
+
+$general-sizes: (main, sub, minor);
