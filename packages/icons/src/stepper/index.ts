@@ -1,0 +1,10 @@
+export { Item0Icon } from './item-0';
+export { Item1Icon } from './item-1';
+export { Item2Icon } from './item-2';
+export { Item3Icon } from './item-3';
+export { Item4Icon } from './item-4';
+export { Item5Icon } from './item-5';
+export { Item6Icon } from './item-6';
+export { Item7Icon } from './item-7';
+export { Item8Icon } from './item-8';
+export { Item9Icon } from './item-9';
