@@ -61,6 +61,10 @@ $semantic-colors: (
       light: primitive.variable(gray, 200),
       dark: primitive.variable(gray, 700),
     ),
+    neutral-light: (
+      light: primitive.variable(gray, 300),
+      dark: primitive.variable(gray, 600),
+    ),
     neutral: (
       light: primitive.variable(gray, 400),
       dark: primitive.variable(gray, 500),
