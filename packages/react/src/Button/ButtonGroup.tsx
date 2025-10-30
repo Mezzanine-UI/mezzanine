@@ -1,29 +1,18 @@
 'use client';
 
+import { Children, cloneElement, forwardRef, ReactElement } from 'react';
 import {
-  Children,
-  cloneElement,
-  forwardRef,
-  ReactElement,
-  useContext,
-} from 'react';
-import {
-  ButtonColor,
   buttonGroupClasses as classes,
   ButtonGroupOrientation,
-  ButtonGroupSpacing,
   ButtonSize,
   ButtonVariant,
-  toButtonGroupCssVars,
 } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { ButtonProps } from './Button';
-import { IconButtonProps } from './IconButton';
-import { MezzanineConfig } from '../Provider/context';
 
 export type ButtonGroupChild =
-  | ReactElement<ButtonProps | IconButtonProps>
+  | ReactElement<ButtonProps>
   | null
   | undefined
   | false;
@@ -31,24 +20,9 @@ export type ButtonGroupChild =
 export interface ButtonGroupProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * If `true`, all buttons will not have spacing between each others.
-   * @default false
-   */
-  attached?: boolean;
-  /**
-   * Only accept button elements or icon button elements.
+   * Only accept button elements.
    */
   children: ButtonGroupChild | ButtonGroupChild[];
-  /**
-   * If the `color` of a button inside group not provided, the `color` of group will override it.
-   * @default 'primary'
-   */
-  color?: ButtonColor;
-  /**
-   * If the `danger` of a button inside group not provided, the `danger` of group will override it.
-   * @default false
-   */
-  danger?: boolean;
   /**
    * If the `disabled` of a button inside group not provided, the `disabled` of group will override it.
    * @default false
@@ -61,23 +35,17 @@ export interface ButtonGroupProps
   fullWidth?: boolean;
   /**
    * The orientation of button group.
-   * @default horizontal
+   * @default 'horizontal'
    */
   orientation?: ButtonGroupOrientation;
   /**
    * If the `size` of a button inside group not provided, the `size` of group will override it.
-   * @default 'medium'
+   * @default 'main'
    */
   size?: ButtonSize;
   /**
-   * The spacing level of button gap between each buttons.
-   * Will be added on if `attached`=false.
-   * @default small:3,others:4
-   */
-  spacing?: ButtonGroupSpacing;
-  /**
    * If the `variant` of a button inside group not provided, the `variant` of group will override it.
-   * @default 'text'
+   * @default 'base-primary'
    */
   variant?: ButtonVariant;
 }
@@ -87,28 +55,17 @@ export interface ButtonGroupProps
  */
 const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
   function ButtonGroup(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
     const {
-      attached = false,
       children,
       className,
-      color = 'primary',
-      danger = false,
       disabled = false,
       fullWidth = false,
       orientation = 'horizontal',
       role = 'group',
-      size = globalSize,
-      spacing,
-      style: styleProp,
-      variant = 'text',
+      size = 'main',
+      variant = 'base-primary',
       ...rest
     } = props;
-    const cssVars = toButtonGroupCssVars({ size, spacing });
-    const style = {
-      ...styleProp,
-      ...cssVars,
-    };
 
     return (
       <div
@@ -120,12 +77,10 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
           classes.orientation(orientation),
           {
             [classes.fullWidth]: fullWidth,
-            [classes.attached]: attached,
           },
           className,
         )}
         role={role}
-        style={style}
       >
         {Children.map(children, (unknownChild) => {
           const child = unknownChild as ButtonGroupChild;
@@ -135,8 +90,6 @@ const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
           }
 
           return cloneElement(child, {
-            color: child.props.color || color,
-            danger: child.props.danger ?? danger,
             disabled: child.props.disabled ?? disabled,
             size: child.props.size || size,
             variant: child.props.variant || variant,

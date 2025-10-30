@@ -1,13 +1,12 @@
 'use client';
 
-import { forwardRef, MouseEvent, ReactNode, useContext } from 'react';
+import { forwardRef, MouseEvent } from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
 import { ButtonComponent, ButtonPropsBase } from './typings';
-import { MezzanineConfig } from '../Provider/context';
 
 export type ButtonProps<C extends ButtonComponent = 'button'> =
   ComponentOverridableForwardRefComponentPropsFactory<
@@ -21,37 +20,39 @@ export type ButtonProps<C extends ButtonComponent = 'button'> =
  */
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
     const {
       children,
       className,
-      color = 'primary',
       component: Component = 'button',
-      danger = false,
       disabled = false,
+      icon,
       loading = false,
       onClick,
-      prefix: prefixProp,
-      size = globalSize,
-      suffix: suffixProp,
-      variant = 'text',
+      size = 'main',
+      variant = 'base-primary',
       ...rest
     } = props;
 
-    let prefix: ReactNode = prefixProp;
-    let suffix: ReactNode = suffixProp;
+    // 判斷是否為 icon-only 模式
+    const isIconOnly = icon?.position === 'icon-only' || (!!icon && !children);
 
-    if (loading) {
-      const loadingIcon = <Icon icon={SpinnerIcon} spin />;
+    // 判斷 icon 位置
+    const hasLeadingIcon = icon?.position === 'leading' && !isIconOnly;
+    const hasTrailingIcon = icon?.position === 'trailing' && !isIconOnly;
 
-      if (suffix && !prefix) {
-        suffix = loadingIcon;
-      } else {
-        prefix = loadingIcon;
+    // Loading 狀態下的 icon
+    const loadingIcon = <Icon icon={SpinnerIcon} spin />;
+
+    // 渲染 icon 內容
+    const renderIcon = () => {
+      if (loading) {
+        return loadingIcon;
       }
-    }
-
-    const asIconBtn = children == null && !!(prefix || suffix);
+      if (icon) {
+        return <Icon icon={icon.src} />;
+      }
+      return null;
+    };
 
     return (
       <Component
@@ -61,13 +62,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cx(
           classes.host,
           classes.variant(variant),
-          classes.color(color),
           classes.size(size),
           {
-            [classes.danger]: danger,
             [classes.disabled]: disabled,
-            [classes.icon]: asIconBtn,
             [classes.loading]: loading,
+            [classes.iconLeading]: hasLeadingIcon,
+            [classes.iconTrailing]: hasTrailingIcon,
+            [classes.iconOnly]: isIconOnly,
           },
           className,
         )}
@@ -78,9 +79,15 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           }
         }}
       >
-        {prefix}
-        {children && <span className={classes.label}>{children}</span>}
-        {suffix}
+        {loading ? (
+          renderIcon()
+        ) : (
+          <>
+            {(hasLeadingIcon || isIconOnly) && renderIcon()}
+            {!isIconOnly && children}
+            {hasTrailingIcon && renderIcon()}
+          </>
+        )}
       </Component>
     );
   },

@@ -35,18 +35,15 @@ export * from './Form/useSwitchControlValue';
 /**
  * General
  */
-export { default as Button, IconButton, ButtonGroup } from './Button';
+export { default as Button, ButtonGroup } from './Button';
 export type {
-  ButtonColor,
   ButtonComponent,
   ButtonSize,
   ButtonVariant,
   ButtonProps,
   ButtonPropsBase,
-  IconButtonProps,
   ButtonGroupChild,
   ButtonGroupOrientation,
-  ButtonGroupSpacing,
   ButtonGroupProps,
 } from './Button';
 export type { IconColor, IconProps } from './Icon';

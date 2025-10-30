@@ -1,8 +1,6 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
-import Icon from '../Icon';
-import Button, { ButtonColor, ButtonSize, ButtonVariant, ButtonProps } from '.';
-import ConfigProvider from '../Provider';
+import Button, { ButtonSize, ButtonVariant, ButtonProps } from '.';
 
 export default {
   title: 'General/Button',
@@ -11,14 +9,25 @@ export default {
 
 type Story = StoryObj<ButtonProps>;
 
-const colors: ButtonColor[] = ['primary', 'secondary'];
-const sizes: ButtonSize[] = ['small', 'medium', 'large'];
-const variants: ButtonVariant[] = ['contained', 'outlined', 'text'];
+const sizes: ButtonSize[] = ['main', 'sub', 'minor'];
+const variants: ButtonVariant[] = [
+  'base-primary',
+  'base-secondary',
+  'base-tertiary',
+  'base-ghost',
+  'base-dashed',
+  'base-text-link',
+  'destructive-primary',
+  'destructive-secondary',
+  'destructive-ghost',
+  'destructive-text-link',
+  'inverse',
+];
 
 export const Playground: Story = {
   argTypes: {
-    color: {
-      options: colors,
+    variant: {
+      options: variants,
       control: {
         type: 'select',
       },
@@ -29,33 +38,25 @@ export const Playground: Story = {
         type: 'select',
       },
     },
-    variant: {
-      options: variants,
+    disabled: {
       control: {
-        type: 'select',
+        type: 'boolean',
+      },
+    },
+    loading: {
+      control: {
+        type: 'boolean',
       },
     },
   },
   args: {
-    children: 'BUTTON',
-    danger: false,
+    children: 'Button',
+    variant: 'base-primary',
+    size: 'main',
     disabled: false,
     loading: false,
-    color: 'primary',
-    size: 'medium',
-    variant: 'contained',
-    prefix: false,
-    suffix: false,
   },
-  render: ({ children, prefix, suffix, ...props }) => (
-    <Button
-      prefix={prefix ? <Icon icon={PlusIcon} /> : null}
-      suffix={suffix ? <Icon icon={SearchIcon} /> : null}
-      {...props}
-    >
-      {children}
-    </Button>
-  ),
+  render: (props) => <Button {...props} />,
 };
 
 export const Variants: Story = {
@@ -63,34 +64,27 @@ export const Variants: Story = {
     <div
       style={{
         display: 'inline-grid',
-        gridTemplateColumns: 'repeat(4, min-content)',
+        gridTemplateColumns: 'repeat(3, min-content)',
         gap: '16px',
       }}
     >
-      <Button variant="contained">primary</Button>
-      <Button variant="contained" color="secondary">
-        secondary
+      <Button variant="base-primary">Primary</Button>
+      <Button variant="base-secondary">Secondary</Button>
+      <Button variant="base-tertiary">Tertiary</Button>
+
+      <Button variant="base-ghost">Ghost</Button>
+      <Button variant="base-dashed">Dashed</Button>
+      <Button variant="base-text-link">Text Link</Button>
+
+      <Button variant="destructive-primary">Destructive Primary</Button>
+      <Button variant="destructive-secondary">Destructive Secondary</Button>
+      <Button variant="destructive-ghost">Destructive Ghost</Button>
+
+      <Button variant="destructive-text-link">Destructive Text Link</Button>
+      <Button variant="inverse">Inverse</Button>
+      <Button variant="base-primary" disabled>
+        Disabled
       </Button>
-      <Button variant="contained" danger>
-        danger
-      </Button>
-      <Button variant="contained" disabled>
-        disabled
-      </Button>
-      <Button variant="outlined">primary</Button>
-      <Button variant="outlined" color="secondary">
-        secondary
-      </Button>
-      <Button variant="outlined" danger>
-        danger
-      </Button>
-      <Button variant="outlined" disabled>
-        disabled
-      </Button>
-      <Button>primary</Button>
-      <Button color="secondary">secondary</Button>
-      <Button danger>danger</Button>
-      <Button disabled>disabled</Button>
     </div>
   ),
 };
@@ -105,23 +99,29 @@ export const Sizes: Story = {
         alignItems: 'center',
       }}
     >
-      <Button size="small">ok</Button>
-      <Button>ok</Button>
-      <Button size="large">ok</Button>
-      <Button variant="outlined" size="small">
-        ok
+      <Button size="main">Main</Button>
+      <Button size="sub">Sub</Button>
+      <Button size="minor">Minor</Button>
+
+      <Button variant="base-secondary" size="main">
+        Main
       </Button>
-      <Button variant="outlined">ok</Button>
-      <Button variant="outlined" size="large">
-        ok
+      <Button variant="base-secondary" size="sub">
+        Sub
       </Button>
-      <ConfigProvider size="small">
-        <Button variant="contained">ok</Button>
-      </ConfigProvider>
-      <Button variant="contained">ok</Button>
-      <ConfigProvider size="large">
-        <Button variant="contained">ok</Button>
-      </ConfigProvider>
+      <Button variant="base-secondary" size="minor">
+        Minor
+      </Button>
+
+      <Button variant="destructive-primary" size="main">
+        Main
+      </Button>
+      <Button variant="destructive-primary" size="sub">
+        Sub
+      </Button>
+      <Button variant="destructive-primary" size="minor">
+        Minor
+      </Button>
     </div>
   ),
 };
@@ -131,49 +131,247 @@ export const WithIcons: Story = {
     <div
       style={{
         display: 'inline-grid',
-        gridTemplateColumns: 'repeat(3, min-content)',
+        gridTemplateColumns: 'repeat(4, min-content)',
         gap: '16px',
         alignItems: 'center',
       }}
     >
+      {/* Leading icons */}
       <Button
-        prefix={<Icon icon={PlusIcon} />}
-        color="secondary"
-        variant="contained"
+        variant="base-primary"
+        icon={{ position: 'leading', src: PlusIcon }}
       >
-        plus
-      </Button>
-      <Button suffix={<Icon icon={SearchIcon} />} variant="contained">
-        search
-      </Button>
-      <Button suffix={<Icon icon={SearchIcon} />} disabled variant="contained">
-        search
+        Leading Icon
       </Button>
       <Button
-        suffix={<Icon icon={SearchIcon} />}
-        size="small"
-        variant="contained"
+        variant="base-secondary"
+        icon={{ position: 'leading', src: PlusIcon }}
       >
-        search
+        Leading Icon
       </Button>
       <Button
-        suffix={<Icon icon={SearchIcon} />}
-        size="large"
-        variant="contained"
+        variant="destructive-primary"
+        icon={{ position: 'leading', src: PlusIcon }}
       >
-        search
+        Leading Icon
       </Button>
+      <Button
+        variant="base-primary"
+        icon={{ position: 'leading', src: PlusIcon }}
+        disabled
+      >
+        Disabled
+      </Button>
+
+      {/* Trailing icons */}
+      <Button
+        variant="base-primary"
+        icon={{ position: 'trailing', src: SearchIcon }}
+      >
+        Trailing Icon
+      </Button>
+      <Button
+        variant="base-secondary"
+        icon={{ position: 'trailing', src: SearchIcon }}
+      >
+        Trailing Icon
+      </Button>
+      <Button
+        variant="destructive-primary"
+        icon={{ position: 'trailing', src: SearchIcon }}
+      >
+        Trailing Icon
+      </Button>
+      <Button
+        variant="base-primary"
+        icon={{ position: 'trailing', src: SearchIcon }}
+        size="sub"
+      >
+        Sub Size
+      </Button>
+
+      {/* Icon only */}
+      <Button
+        variant="base-primary"
+        icon={{ position: 'icon-only', src: PlusIcon }}
+      />
+      <Button
+        variant="base-secondary"
+        icon={{ position: 'icon-only', src: SearchIcon }}
+      />
+      <Button
+        variant="destructive-primary"
+        icon={{ position: 'icon-only', src: PlusIcon }}
+      />
+      <Button
+        variant="base-primary"
+        icon={{ position: 'icon-only', src: PlusIcon }}
+        size="minor"
+      />
     </div>
   ),
 };
 
 export const Loading: Story = {
-  args: {
-    loading: true,
-  },
-  render: ({ loading }) => (
-    <Button loading={loading} variant="contained">
-      ok
-    </Button>
+  render: () => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(4, min-content)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <Button variant="base-primary" loading>
+        Loading
+      </Button>
+      <Button variant="base-secondary" loading>
+        Loading
+      </Button>
+      <Button
+        variant="base-primary"
+        loading
+        icon={{ position: 'leading', src: PlusIcon }}
+      >
+        With Icon
+      </Button>
+      <Button
+        variant="base-primary"
+        loading
+        icon={{ position: 'icon-only', src: PlusIcon }}
+      />
+    </div>
   ),
+};
+
+export const States: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(3, min-content)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <Button variant="base-primary">Normal</Button>
+      <Button variant="base-primary" disabled>
+        Disabled
+      </Button>
+      <Button variant="base-primary" loading>
+        Loading
+      </Button>
+
+      <Button variant="base-secondary">Normal</Button>
+      <Button variant="base-secondary" disabled>
+        Disabled
+      </Button>
+      <Button variant="base-secondary" loading>
+        Loading
+      </Button>
+
+      <Button variant="destructive-primary">Normal</Button>
+      <Button variant="destructive-primary" disabled>
+        Disabled
+      </Button>
+      <Button variant="destructive-primary" loading>
+        Loading
+      </Button>
+    </div>
+  ),
+};
+
+export const AsLink: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, min-content)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      {/* Native <a> tag */}
+      <Button<'a'>
+        component="a"
+        href="https://github.com/Mezzanine-UI/mezzanine"
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="base-primary"
+      >
+        GitHub (Opens in new tab)
+      </Button>
+
+      <Button<'a'> component="a" href="#example" variant="base-secondary">
+        Anchor Link
+      </Button>
+
+      <Button<'a'>
+        component="a"
+        href="https://www.npmjs.com/package/@mezzanine-ui/react"
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="base-text-link"
+        icon={{ position: 'trailing', src: SearchIcon }}
+      >
+        NPM Package
+      </Button>
+
+      <Button<'a'>
+        component="a"
+        href="#disabled-link"
+        variant="base-primary"
+        disabled
+      >
+        Disabled Link
+      </Button>
+    </div>
+  ),
+};
+
+export const CustomComponent: Story = {
+  render: () => {
+    // Example: Custom Link component
+    // This could be useful with Next.js Link, React Router Link, etc.
+    const CustomLink = ({ href, children, ...props }: any) => (
+      <a
+        {...props}
+        href={href}
+        onClick={(e) => {
+          e.preventDefault();
+          alert(`Navigating to: ${href}`);
+        }}
+      >
+        {children}
+      </a>
+    );
+
+    return (
+      <div
+        style={{
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(2, min-content)',
+          gap: '16px',
+          alignItems: 'center',
+        }}
+      >
+        <Button<typeof CustomLink>
+          component={CustomLink}
+          href="/dashboard"
+          variant="base-primary"
+        >
+          Custom Link Component
+        </Button>
+
+        <Button<typeof CustomLink>
+          component={CustomLink}
+          href="/profile"
+          variant="base-secondary"
+          icon={{ position: 'leading', src: PlusIcon }}
+        >
+          With Icon
+        </Button>
+      </div>
+    );
+  },
 };
