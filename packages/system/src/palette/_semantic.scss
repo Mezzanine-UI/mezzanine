@@ -1,5 +1,6 @@
 @use '../utils/list';
 @use '../utils/map';
+@use 'sass:string';
 @use './primitives' as primitive;
 
 $prefix: mzn-color;
@@ -483,13 +484,25 @@ $semantic-colors: (
 }
 
 // 取得 semantic color 的 CSS 變數引用
-// 使用方式: semantic(background, default) => var(--mzn-color-background-default)
-@function variable($context, $tone) {
+@function variable($context, $tone, $alpha: null) {
   @if not is-valid-context($context) {
     @error 'Invalid context "#{$context}". Valid contexts are: #{$semantic-contexts}';
   }
 
-  @return var(#{get-semantic-var-name($context, $tone)});
+  $var-ref: var(#{get-semantic-var-name($context, $tone)});
+
+  // 如果沒有指定 alpha，直接返回 CSS 變數
+  @if not $alpha {
+    @return $var-ref;
+  }
+
+  // 驗證 alpha 範圍 (0-100)
+  @if $alpha < 0 or $alpha > 100 {
+    @error 'Alpha value must be between 0 and 100, got #{$alpha}';
+  }
+
+  // 使用 color-mix 來動態設定透明度
+  @return string.unquote('color-mix(in srgb, #{$var-ref} #{$alpha}%, transparent)');
 }
 
 // 檢查顏色值是否已定義（包括 CSS 變數）
