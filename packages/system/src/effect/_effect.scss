@@ -1,4 +1,5 @@
 @use 'sass:map';
+@use 'sass:string';
 @use '../palette/semantic' as semantic;
 
 $prefix: mzn-effect;
@@ -18,7 +19,7 @@ $effect-values: (
       value: 0 0 16px 0 semantic.variable(shadow, dark),
     ),
     modal: (
-      value: 0 9px 28px 8px semantic.variable(shadow, dark-faint) 0 20px 24px -4px semantic.variable(shadow, dark-light) 0 3px 6px -4px semantic.variable(shadow, dark-ghost),
+      value: string.unquote('0 9px 28px 8px #{semantic.variable(shadow, dark-faint)}, 0 20px 24px -4px #{semantic.variable(shadow, dark-light)}, 0 3px 6px -4px #{semantic.variable(shadow, dark-ghost)}'),
     ),
     table-sticky: (
       value: 1px 0 4px 0 semantic.variable(shadow, dark),
@@ -27,15 +28,15 @@ $effect-values: (
       value: 0 2px 3px 0 semantic.variable(shadow, brand),
     ),
     inner-top-and-bottom: (
-      value: 0 1px 1px 0 semantic.variable(shadow, light-faint) inset 0 -1px 1px 0 semantic.variable(shadow, light-faint) inset 0 0 12px 0 semantic.variable(shadow, dark),
+      value: string.unquote('0 1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 -1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 0 12px 0 #{semantic.variable(shadow, dark)}'),
     ),
   ),
   focus: (
     primary: (
-      value: 0 0 0 1px semantic.variable(background, base) 0 0 0 2px semantic.variable(background, brand),
+      value: string.unquote('0 0 0 1px #{semantic.variable(background, base)}, 0 0 0 2px #{semantic.variable(background, brand)}'),
     ),
     error: (
-      value: 0 0 0 1px semantic.variable(background, base) 0 0 0 2px semantic.variable(background, error),
+      value: string.unquote('0 0 0 1px #{semantic.variable(background, base)}, 0 0 0 2px #{semantic.variable(background, error)}'),
     ),
   ),
 );
