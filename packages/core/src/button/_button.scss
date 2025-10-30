@@ -4,7 +4,7 @@ $prefix: mzn-button;
 $group-prefix: #{$prefix}-group;
 $sizes: size.$general-sizes;
 
-// Variant 組合：對應設計師定義的 variants
+// Variant 組合：對應設計師定義的 variants + hierarchy
 $variants: (
   base-primary,
   base-secondary,

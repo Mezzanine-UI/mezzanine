@@ -313,7 +313,7 @@ $destructive-primary: (
     icon-color: palette.semantic-variable(icon, fixed-light),
     background-color: palette.semantic-variable(background, error),
     border-color: none,
-    focus-color: effect.variable(focus, primary),
+    focus-color: effect.variable(focus, error),
   ),
   disabled: (
     text-color: palette.semantic-variable(text, neutral-light),
@@ -617,11 +617,11 @@ $size-configs: (
     padding-configs: $size-main-configs,
   ),
   sub: (
-    typography: button2, // 待 typography system 完成後更新
+    typography: button1, // 待 typography system 完成後更新
     padding-configs: $size-sub-configs,
   ),
   minor: (
-    typography: button3, // 待 typography system 完成後更新
+    typography: button1, // 待 typography system 完成後更新
     padding-configs: $size-minor-configs,
   ),
 );
@@ -663,12 +663,10 @@ $size-configs: (
     border-color: $border;
   }
 
-  // Icon color 通過 CSS variable 傳遞給 icon 元素
   @if $icon {
     --#{$prefix}-icon-color: #{$icon};
   }
 
-  // Focus color 用於 box-shadow
   @if $focus {
     box-shadow: $focus;
   }
@@ -679,27 +677,27 @@ $size-configs: (
   @include _apply-hierarchy-colors($variant, enable);
 
   // Hover state
-  &:hover:not(&--disabled, &--loading) {
+  &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
     @include _apply-hierarchy-colors($variant, hover);
   }
 
   // Active state
-  &:active:not(&--disabled, &--loading) {
+  &:active:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
     @include _apply-hierarchy-colors($variant, active);
   }
 
   // Focus state
-  &:focus:not(&--disabled, &--loading) {
+  &:focus-visible:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
     @include _apply-hierarchy-colors($variant, focus);
   }
 
   // Disabled state
-  &--disabled {
+  &.#{$prefix}--disabled {
     @include _apply-hierarchy-colors($variant, disabled);
   }
 
   // Loading state
-  &--loading {
+  &.#{$prefix}--loading {
     @include _apply-hierarchy-colors($variant, loading);
   }
 }
@@ -780,15 +778,26 @@ $size-configs: (
     pointer-events: none;
   }
 
-  @each $variant in $variants {
-    &--#{$variant} {
-      @include _apply-variant-states($variant);
-    }
-  }
-
   @each $size in $sizes {
     &--#{$size} {
       @include _apply-size($size);
+    }
+  }
+
+  @each $variant in $variants {
+    &--#{$variant} {
+      @include _apply-variant-states($variant);
+
+      // Text link variants 不需要 padding
+      @if $variant == 'base-text-link' or $variant == 'destructive-text-link' {
+        padding: 0;
+
+        &.#{$prefix}--icon-leading,
+        &.#{$prefix}--icon-trailing,
+        &.#{$prefix}--icon-only {
+          padding: 0;
+        }
+      }
     }
   }
 
@@ -798,13 +807,9 @@ $size-configs: (
   }
 }
 
-// ====================================
-// Button Group
-// ====================================
-
 .#{$group-prefix} {
   display: inline-flex;
-  gap: spacing.semantic-variable(gap, button-group);
+  gap: spacing.semantic-variable(gap, base);
   align-items: center;
 
   &--vertical {
@@ -816,49 +821,6 @@ $size-configs: (
 
     .#{$prefix} {
       flex: 1;
-    }
-  }
-
-  &--attached {
-    gap: 0;
-
-    .#{$prefix} {
-      border-radius: 0;
-
-      &:first-child {
-        border-top-left-radius: radius.variable(base);
-        border-bottom-left-radius: radius.variable(base);
-      }
-
-      &:last-child {
-        border-top-right-radius: radius.variable(base);
-        border-bottom-right-radius: radius.variable(base);
-      }
-
-      &:not(:first-child) {
-        margin-left: -1px;
-      }
-    }
-
-    &.#{$group-prefix}--vertical {
-      .#{$prefix} {
-        border-radius: 0;
-
-        &:first-child {
-          border-top-left-radius: radius.variable(base);
-          border-top-right-radius: radius.variable(base);
-        }
-
-        &:last-child {
-          border-bottom-left-radius: radius.variable(base);
-          border-bottom-right-radius: radius.variable(base);
-        }
-
-        &:not(:first-child) {
-          margin-left: 0;
-          margin-top: -1px;
-        }
-      }
     }
   }
 }
