@@ -1,68 +1,46 @@
 import { CssVarInterpolations, toCssVar } from '@mezzanine-ui/system/css';
+import { colorSemanticPrefix, TextTone } from '@mezzanine-ui/system/palette';
 import {
-  GradualMainColor,
-  MainColor,
-  colorSemanticPrefix,
-  TextColor,
-} from '@mezzanine-ui/system/palette';
-import {
-  typographyPrefix,
-  TypographyVariant,
+  typographySemanticPrefix,
+  TypographySemanticType,
 } from '@mezzanine-ui/system/typography';
 
 export type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
 
-export type TypographyColor =
-  | 'inherit'
-  | MainColor
-  | GradualMainColor
-  | TextColor;
+export type TypographyColor = 'inherit' | `text-${TextTone}`;
 
 type TypographyDisplayBase = 'block' | 'flex';
 export type TypographyDisplay =
   | TypographyDisplayBase
   | `inline-${TypographyDisplayBase}`;
 
-export type TypographyWeight =
-  | 100
-  | 200
-  | 300
-  | 400
-  | 500
-  | 600
-  | 700
-  | 800
-  | 900;
-
 export interface TypographyCssVars {
   align?: TypographyAlign;
   color?: TypographyColor;
   display?: TypographyDisplay;
-  weight?: TypographyWeight;
 }
 
 export const typographyClasses = {
-  variant: (variant: TypographyVariant) => `${typographyPrefix}--${variant}`,
-  align: `${typographyPrefix}--align`,
-  color: `${typographyPrefix}--color`,
-  display: `${typographyPrefix}--display`,
-  ellipsis: `${typographyPrefix}--ellipsis`,
-  noWrap: `${typographyPrefix}--nowrap`,
-  weight: `${typographyPrefix}--weight`,
+  type: (type: TypographySemanticType) =>
+    `${typographySemanticPrefix}--${type}`,
+  align: `${typographySemanticPrefix}--align`,
+  color: `${typographySemanticPrefix}--color`,
+  display: `${typographySemanticPrefix}--display`,
+  ellipsis: `${typographySemanticPrefix}--ellipsis`,
+  noWrap: `${typographySemanticPrefix}--nowrap`,
 } as const;
 
 export function toTypographyCssVars(
   variables: TypographyCssVars,
 ): CssVarInterpolations {
-  const { align, color, display, weight } = variables;
+  const { align, color, display } = variables;
 
   return {
-    [`--${typographyPrefix}-align`]: align,
-    [`--${typographyPrefix}-color`]:
+    [`--${typographySemanticPrefix}-align`]: align,
+    [`--${typographySemanticPrefix}-color`]:
       !color || color === 'inherit'
         ? color
         : toCssVar(`${colorSemanticPrefix}-${color}`),
-    [`--${typographyPrefix}-display`]: display,
-    [`--${typographyPrefix}-weight`]: weight,
+    [`--${typographySemanticPrefix}-display`]: display,
   };
 }
