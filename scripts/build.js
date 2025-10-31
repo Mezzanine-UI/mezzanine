@@ -101,6 +101,27 @@ async function run() {
   });
 
   /**
+   * copy font files (otf, ttf, woff, woff2)
+   */
+  const fontFiles = await getFilesByGlob(
+    `${packageSrcPath}/**/*.{otf,ttf,woff,woff2}`,
+  );
+
+  fontFiles.forEach((file) => {
+    const dist = path.resolve(
+      packageDistPath,
+      path.relative(packageSrcPath, file),
+    );
+    const distDir = dist.split('/').slice(0, -1).join('/');
+
+    if (!fse.existsSync(distDir)) {
+      fse.mkdirSync(distDir, { recursive: true });
+    }
+
+    fse.copyFileSync(file, dist);
+  });
+
+  /**
    * build
    */
   const input = await getFilesByGlob(`${packageSrcPath}/**/index.ts`);

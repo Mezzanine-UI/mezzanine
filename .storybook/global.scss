@@ -11,7 +11,7 @@
 
 .sb-show-main {
   background-color: palette.semantic-variable("background", base);
-  color: palette.semantic-variable(text, brand);
+  color: palette.semantic-variable(text, neutral);
   transition: transition.standard(background-color), transition.standard(color);
   will-change: background-color, color;
 }

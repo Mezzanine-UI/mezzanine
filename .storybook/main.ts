@@ -38,6 +38,15 @@ const config: StorybookConfig = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       });
+
+      // Handle font files
+      config.module.rules.push({
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]',
+        },
+      });
     }
 
     return config;
