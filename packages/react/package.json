@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/react",
-  "version": "1.0.0-canary.1",
+  "version": "1.0.0-canary.2",
   "description": "React components for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@hello-pangea/dnd": "^18.0.1",
-    "@mezzanine-ui/core": "^1.0.0-canary.1",
+    "@mezzanine-ui/core": "^1.0.0-canary.2",
     "@mezzanine-ui/icons": "^1.0.0-canary.1",
     "@mezzanine-ui/system": "^1.0.0-canary.1",
     "@popperjs/core": "^2.11.8",
