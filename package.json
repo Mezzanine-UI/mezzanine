@@ -37,7 +37,7 @@
     "test:affected": "nx affected -t test",
     "graph": "nx graph",
     "release": "lerna version && yarn build && lerna publish from-package",
-    "release:canary": "yarn build && lerna publish --canary --preid canary --dist-tag canary --yes",
+    "release:canary": "lerna version prerelease --preid canary --no-push && yarn build && lerna publish from-package --dist-tag canary --yes",
     "release:beta": "yarn build && lerna publish prerelease --preid beta --dist-tag beta --yes",
     "release:rc": "yarn build && lerna publish prerelease --preid rc --dist-tag rc --yes",
     "release:stable": "yarn build && lerna publish --dist-tag latest --yes",
