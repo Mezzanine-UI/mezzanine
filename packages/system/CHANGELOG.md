@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.0...@mezzanine-ui/system@1.0.0-canary.1) (2025-10-31)
+
+### Bug Fixes
+
+- **system:** fix invalid value ([fbe23c1](https://github.com/Mezzanine-UI/mezzanine/commit/fbe23c1d416a16dbc41cc2a71b63be72f5d10c37))
+
+### Features
+
+- **system/effect:** implement effect for new design system ([a7c4212](https://github.com/Mezzanine-UI/mezzanine/commit/a7c4212387d2d5f57ec27e2d1da8b44616c5a2a7))
+- **system/palette:** add neutral-light ([44c51bd](https://github.com/Mezzanine-UI/mezzanine/commit/44c51bd21ff10b19f530be1c04487fe7bc3b2873))
+- **system/palette:** implement color primitive ([8965f87](https://github.com/Mezzanine-UI/mezzanine/commit/8965f874aa5a75fa0fbac8c9beb7c605b06d2086))
+- **system/palette:** implement color semantic and update functions ([30a38e4](https://github.com/Mezzanine-UI/mezzanine/commit/30a38e4728877d0ddd619adbe9057abad930c68e))
+- **system/radius:** implement radius config ([4df6c21](https://github.com/Mezzanine-UI/mezzanine/commit/4df6c2151b02d8ca0b6aa6f1539382c3da4116a4))
+- **system/spacing:** implement new spacing system ([2f30c86](https://github.com/Mezzanine-UI/mezzanine/commit/2f30c86252cc015ce9032ff8d1eb76de3143951b))
+- **system/typography:** refactor typography to use new design system ([8be4524](https://github.com/Mezzanine-UI/mezzanine/commit/8be45247fc99b3535597cda686aa31b14577f963))
+
 # [1.0.0-canary.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.16.0...@mezzanine-ui/system@1.0.0-canary.0) (2025-10-27)
 
 **Note:** Version bump only for package @mezzanine-ui/system

@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.0...@mezzanine-ui/core@1.0.0-canary.1) (2025-10-31)
+
+### Features
+
+- **core/button:** refactor button to apply new design system ([bdb86fb](https://github.com/Mezzanine-UI/mezzanine/commit/bdb86fb14503ec456c7d68ba963588e78e442a06))
+- **core/typography:** typography styling and typings updated ([dbd0227](https://github.com/Mezzanine-UI/mezzanine/commit/dbd0227f09a357a9868ed9a528a27ffe8cfb10a9))
+- **react/icon:** refactor Icon component to use v2 color system ([0936167](https://github.com/Mezzanine-UI/mezzanine/commit/093616774143d6c28e1bea3824626733904afa75))
+- **system/palette:** implement color semantic and update functions ([30a38e4](https://github.com/Mezzanine-UI/mezzanine/commit/30a38e4728877d0ddd619adbe9057abad930c68e))
+
 # [1.0.0-canary.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.16.0...@mezzanine-ui/core@1.0.0-canary.0) (2025-10-27)
 
 **Note:** Version bump only for package @mezzanine-ui/core

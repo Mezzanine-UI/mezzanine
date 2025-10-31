@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.0...@mezzanine-ui/icons@1.0.0-canary.1) (2025-10-31)
+
+### Features
+
+- **icons:** add alert icons ([cd05780](https://github.com/Mezzanine-UI/mezzanine/commit/cd05780b233ab3500d7f6a7a0e0a71f0a36977a0))
+- **icons:** add arrow icons ([1faf2c8](https://github.com/Mezzanine-UI/mezzanine/commit/1faf2c88c5ee895db9d642f03fb383cb9c795bad))
+- **icons:** add content icons ([8b62454](https://github.com/Mezzanine-UI/mezzanine/commit/8b6245436d4c7f6f3605627df5d2b6ff1d42e42c))
+- **icons:** add controls icons ([450b205](https://github.com/Mezzanine-UI/mezzanine/commit/450b2056ef5e2c540cdd9813636e161c8549bf82))
+- **icons:** add stepper icons ([27766e1](https://github.com/Mezzanine-UI/mezzanine/commit/27766e16561c7467dbed472a2c514ff3333423ff))
+- **icons:** add system icons and mark deprecated icons ([bcd0af0](https://github.com/Mezzanine-UI/mezzanine/commit/bcd0af01cf3d9e4c9ec8f81aee749e5998429987))
+- **react/icon:** refactor Icon component to use v2 color system ([0936167](https://github.com/Mezzanine-UI/mezzanine/commit/093616774143d6c28e1bea3824626733904afa75))
+
 # [1.0.0-canary.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.16.0...@mezzanine-ui/icons@1.0.0-canary.0) (2025-10-27)
 
 **Note:** Version bump only for package @mezzanine-ui/icons
