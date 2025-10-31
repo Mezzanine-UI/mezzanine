@@ -1,28 +1,38 @@
-import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import Typography, {
   TypographyAlign,
   TypographyColor,
   TypographyDisplay,
-  TypographyProps,
-  TypographyVariant,
-  TypographyWeight,
+  TypographySemanticType,
 } from '.';
 
 export default {
   title: 'General/Typography',
-} as Meta;
+  component: Typography,
+} as Meta<typeof Typography>;
+
+type Story = StoryObj<typeof Typography>;
 
 const aligns: TypographyAlign[] = ['left', 'center', 'right', 'justify'];
 const colors: TypographyColor[] = [
   'inherit',
-  'primary',
-  'secondary',
-  'error',
-  'warning',
-  'success',
-  'text-primary',
-  'text-secondary',
-  'text-disabled',
+  'text-fixed-light',
+  'text-neutral-faint',
+  'text-neutral-light',
+  'text-neutral',
+  'text-neutral-strong',
+  'text-neutral-solid',
+  'text-brand',
+  'text-brand-strong',
+  'text-brand-solid',
+  'text-error',
+  'text-error-strong',
+  'text-error-solid',
+  'text-warning',
+  'text-warning-strong',
+  'text-success',
+  'text-info',
+  'text-info-strong',
 ];
 const displays: TypographyDisplay[] = [
   'block',
@@ -30,133 +40,185 @@ const displays: TypographyDisplay[] = [
   'flex',
   'inline-flex',
 ];
-const variants: TypographyVariant[] = [
+const variants: TypographySemanticType[] = [
   'h1',
   'h2',
   'h3',
-  'h4',
-  'h5',
-  'h6',
-  'body1',
-  'body2',
-  'button1',
-  'button2',
-  'button3',
-  'input1',
-  'input2',
-  'input3',
+  'body',
+  'body-highlight',
+  'body-mono',
+  'body-mono-highlight',
+  'text-link-body',
+  'text-link-caption',
   'caption',
-];
-const weights: TypographyWeight[] = [
-  100, 200, 300, 400, 500, 600, 700, 800, 900,
+  'caption-highlight',
+  'annotation',
+  'annotation-highlight',
+  'button',
+  'button-highlight',
+  'input',
+  'input-mono',
+  'label-primary',
+  'label-primary-highlight',
+  'label-secondary',
 ];
 
-export const Playgroud: StoryFn<TypographyProps<any>> = ({
-  children,
-  ...props
-}) => <Typography {...props}>{children}</Typography>;
-
-Playgroud.args = {
-  children: 'Hello World!',
-  variant: 'body1',
-  ellipsis: false,
-  noWrap: false,
-};
-Playgroud.argTypes = {
-  align: {
-    options: [undefined, ...aligns],
-    control: {
-      type: 'select',
-    },
+export const Playground: Story = {
+  args: {
+    children: 'Hello World!',
+    ellipsis: false,
+    noWrap: false,
+    variant: 'body',
   },
-  color: {
-    options: [undefined, ...colors],
-    control: {
-      type: 'select',
+  argTypes: {
+    align: {
+      control: {
+        type: 'select',
+      },
+      options: [undefined, ...aligns],
     },
-  },
-  display: {
-    options: [undefined, ...displays],
-    control: {
-      type: 'select',
+    color: {
+      control: {
+        type: 'select',
+      },
+      options: [undefined, ...colors],
     },
-  },
-  variant: {
-    options: variants,
-    control: {
-      type: 'select',
+    display: {
+      control: {
+        type: 'select',
+      },
+      options: [undefined, ...displays],
     },
-  },
-  weight: {
-    options: [undefined, ...weights],
-    control: {
-      type: 'select',
+    variant: {
+      control: {
+        type: 'select',
+      },
+      options: variants,
     },
   },
 };
 
-export const Variants = () => (
-  <>
-    <Typography variant="h1">h1. Heading</Typography>
-    <Typography variant="h2">h2. Heading</Typography>
-    <Typography variant="h3">h3. Heading</Typography>
-    <Typography variant="h4">h4. Heading</Typography>
-    <Typography variant="h5">h5. Heading</Typography>
-    <Typography variant="h6">h6. Heading</Typography>
-    <br />
-    <Typography variant="body1">
-      body1. Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
-      asperiores fuga porro officiis mollitia qui, consectetur sed provident
-      suscipit voluptate quae similique minima itaque officia non impedit
-      perferendis quis consequatur?
-    </Typography>
-    <Typography variant="body2">
-      body2. Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
-      asperiores fuga porro officiis mollitia qui, consectetur sed provident
-      suscipit voluptate quae similique minima itaque officia non impedit
-      perferendis quis consequatur?
-    </Typography>
-    <br />
-    <Typography variant="button1" display="block">
-      button 1
-    </Typography>
-    <Typography variant="button2" display="block">
-      button 2
-    </Typography>
-    <Typography variant="button3" display="block">
-      button 3
-    </Typography>
-    <Typography variant="input1" display="block">
-      input 1
-    </Typography>
-    <Typography variant="input2" display="block">
-      input 2
-    </Typography>
-    <Typography variant="input3" display="block">
-      input 3
-    </Typography>
-    <Typography variant="caption" display="block">
-      caption text
-    </Typography>
-  </>
-);
-
-export const Colors = () => (
-  <>
-    {colors.map((color) => (
-      <Typography key={color} color={color}>
-        {color}
+export const Variants: Story = {
+  render: () => (
+    <>
+      <Typography variant="h1">h1. Heading</Typography>
+      <Typography variant="h2">h2. Heading</Typography>
+      <Typography variant="h3">h3. Heading</Typography>
+      <br />
+      <Typography variant="body">
+        body. Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque,
+        asperiores fuga porro officiis mollitia qui, consectetur sed provident
+        suscipit voluptate quae similique minima itaque officia non impedit
+        perferendis quis consequatur?
       </Typography>
-    ))}
-  </>
-);
-
-export const Weights = () => (
-  <>
-    {weights.map((weight) => (
-      <Typography key={weight} weight={weight}>
-        {`Font Weight: ${weight}`}
+      <Typography variant="body-highlight">
+        body-highlight. Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        Neque, asperiores fuga porro officiis mollitia qui, consectetur sed
+        provident suscipit voluptate quae similique minima itaque officia non
+        impedit perferendis quis consequatur?
       </Typography>
-    ))}
-  </>
-);
+      <br />
+      <Typography variant="body-mono" display="block">
+        body-mono. Monospace font for code or technical content.
+      </Typography>
+      <Typography variant="body-mono-highlight" display="block">
+        body-mono-highlight. Highlighted monospace font.
+      </Typography>
+      <br />
+      <Typography variant="text-link-body" display="block">
+        text-link-body. Link text style for body content.
+      </Typography>
+      <Typography variant="text-link-caption" display="block">
+        text-link-caption. Link text style for caption content.
+      </Typography>
+      <br />
+      <Typography variant="caption" display="block">
+        caption. Caption text
+      </Typography>
+      <Typography variant="caption-highlight" display="block">
+        caption-highlight. Highlighted caption text
+      </Typography>
+      <br />
+      <Typography variant="annotation" display="block">
+        annotation. Annotation text
+      </Typography>
+      <Typography variant="annotation-highlight" display="block">
+        annotation-highlight. Highlighted annotation text
+      </Typography>
+      <br />
+      <Typography variant="button" display="block">
+        button. Button text
+      </Typography>
+      <Typography variant="button-highlight" display="block">
+        button-highlight. Highlighted button text
+      </Typography>
+      <br />
+      <Typography variant="input" display="block">
+        input. Input text
+      </Typography>
+      <Typography variant="input-mono" display="block">
+        input-mono. Monospace input text
+      </Typography>
+      <br />
+      <Typography variant="label-primary" display="block">
+        label-primary. Primary label text
+      </Typography>
+      <Typography variant="label-primary-highlight" display="block">
+        label-primary-highlight. Primary 500 label text
+      </Typography>
+      <Typography variant="label-secondary" display="block">
+        label-secondary. Secondary label text
+      </Typography>
+    </>
+  ),
+};
+
+export const Colors: Story = {
+  render: () => (
+    <>
+      {colors.map((color) => (
+        <Typography key={color} color={color} display="block">
+          {color}
+        </Typography>
+      ))}
+    </>
+  ),
+};
+
+export const MonoFonts: Story = {
+  render: () => (
+    <>
+      <Typography variant="body-mono" display="block">
+        body-mono: const greeting = &quot;Hello, World!&quot;;
+      </Typography>
+      <Typography variant="body-mono-highlight" display="block">
+        body-mono-highlight: function add(a, b) {'{ return a + b; }'}
+      </Typography>
+      <Typography variant="input-mono" display="block">
+        input-mono: user@example.com
+      </Typography>
+    </>
+  ),
+};
+
+export const Ellipsis: Story = {
+  render: () => (
+    <div style={{ width: '200px' }}>
+      <Typography ellipsis>
+        This is a very long text that will be truncated with an ellipsis when it
+        exceeds the container width
+      </Typography>
+    </div>
+  ),
+};
+
+export const NoWrap: Story = {
+  render: () => (
+    <div style={{ width: '200px', border: '1px solid #ddd', padding: '8px' }}>
+      <Typography noWrap>
+        This is a very long text that will not wrap and will overflow the
+        container
+      </Typography>
+    </div>
+  ),
+};

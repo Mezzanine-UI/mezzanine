@@ -5,16 +5,11 @@ export type {
   TypographyAlign,
   TypographyColor,
   TypographyDisplay,
-  TypographyVariant,
-  TypographyWeight,
 } from '@mezzanine-ui/core/typography';
+export type { TypographySemanticType } from '@mezzanine-ui/system/typography';
 
 export type { TypographyComponent, TypographyProps };
 
-/**
- * @remark
- * Add type alias here for parsable to react docgen typescript.
- */
 type GenericTypography = <C extends TypographyComponent = 'p'>(
   props: PropsWithoutRef<TypographyProps<C>> & RefAttributes<HTMLElement>,
 ) => ReactElement<any>;
