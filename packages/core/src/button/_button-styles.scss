@@ -613,15 +613,15 @@ $size-minor-configs: (
 // 整合所有 size 配置
 $size-configs: (
   main: (
-    typography: button1, // 待 typography system 完成後更新
+    typography: button-highlight,
     padding-configs: $size-main-configs,
   ),
   sub: (
-    typography: button1, // 待 typography system 完成後更新
+    typography: button-highlight,
     padding-configs: $size-sub-configs,
   ),
   minor: (
-    typography: button1, // 待 typography system 完成後更新
+    typography: button,
     padding-configs: $size-minor-configs,
   ),
 );
@@ -714,11 +714,16 @@ $size-configs: (
 }
 
 // 套用 size 配置
-@mixin _apply-size($size) {
+@mixin _apply-size($size, $variant: null) {
   $config: map.get($size-configs, $size);
 
   @if $config {
-    @include typography.variant(map.get($config, typography), (line-height));
+    // Inverse variant 一律使用 button typography
+    @if $variant == 'inverse' {
+      @include typography.semantic-variable(button);
+    } @else {
+      @include typography.semantic-variable(map.get($config, typography));
+    }
 
     // 預設 padding (無 icon)
     $padding-configs: map.get($config, padding-configs);
@@ -787,6 +792,15 @@ $size-configs: (
   @each $variant in $variants {
     &--#{$variant} {
       @include _apply-variant-states($variant);
+
+      // Inverse variant 的所有 size 都使用 button typography
+      @if $variant == 'inverse' {
+        @each $size in $sizes {
+          &.#{$prefix}--#{$size} {
+            @include _apply-size($size, inverse);
+          }
+        }
+      }
 
       // Text link variants 不需要 padding
       @if $variant == 'base-text-link' or $variant == 'destructive-text-link' {
