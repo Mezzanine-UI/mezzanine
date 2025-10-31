@@ -1,0 +1,33 @@
+/**
+ * SF Mono Font Face Definitions
+ *
+ * SF Mono is a monospaced font designed by Apple.
+ * This file provides @font-face declarations to load SF Mono from file.
+ */
+
+/* SF Mono Regular (400) */
+@font-face {
+  font-family: 'SF Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~@mezzanine-ui/system/typography/SF-Mono/SF-Mono-Regular.otf') format('opentype');
+}
+
+/* SF Mono Medium (500) */
+@font-face {
+  font-family: 'SF Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('~@mezzanine-ui/system/typography/SF-Mono/SF-Mono-Medium.otf') format('opentype');
+}
+
+/* SF Mono Semibold (600) */
+@font-face {
+  font-family: 'SF Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('~@mezzanine-ui/system/typography/SF-Mono/SF-Mono-Semibold.otf') format('opentype');
+}

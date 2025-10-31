@@ -11,6 +11,7 @@
   $motion: map.get($options, motion);
   $spacing: map.get($options, spacing);
   $typography: map.get($options, typography);
+  $typography-primitives: map.get($options, typography-primitives);
   $z-index: map.get($options, z-index);
   $radius: map.get($options, radius);
 
@@ -28,10 +29,36 @@
     @include spacing.semantic-variables($mode, $spacing);
   }
 
-  @if not $typography {
-    @include typography.variables();
+  @if not $typography-primitives {
+    @include typography.primitive-variables();
   } @else {
-    @include typography.variables($typography);
+    $font-families: map.get($typography-primitives, font-families) or ();
+    $font-weights: map.get($typography-primitives, font-weights) or ();
+    $font-sizes: map.get($typography-primitives, font-sizes) or ();
+    $line-heights: map.get($typography-primitives, line-heights) or ();
+    $letter-spacings: map.get($typography-primitives, letter-spacings) or ();
+
+    @include typography.primitive-variables(
+      $font-families,
+      $font-weights,
+      $font-sizes,
+      $line-heights,
+      $letter-spacings
+    );
+  }
+
+  @if not $typography-primitives {
+    font-family: typography.primitive-get-font-family-list();
+  } @else {
+    $font-families: map.get($typography-primitives, font-families) or ();
+
+    font-family: typography.primitive-get-font-family-list($font-families);
+  }
+
+  @if not $typography {
+    @include typography.semantic-variables();
+  } @else {
+    @include typography.semantic-variables($typography);
   }
 
   @if not $z-index {

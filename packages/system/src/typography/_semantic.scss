@@ -1,0 +1,237 @@
+@use '../utils/list';
+@use '../utils/map';
+@use './primitives' as primitive;
+
+$prefix: mzn-typography;
+
+// 定義所有 semantic 類型
+$semantic-types: (
+  h1,
+  h2,
+  h3,
+  body,
+  body-highlight,
+  body-mono,
+  body-mono-highlight,
+  text-link-body,
+  text-link-caption,
+  caption,
+  caption-highlight,
+  annotation,
+  annotation-highlight,
+  button,
+  button-highlight,
+  input,
+  input-mono,
+  label-primary,
+  label-primary-highlight,
+  label-secondary
+);
+
+// 定義所有 typography 屬性
+$semantic-props: (
+  font-family,
+  font-size,
+  font-weight,
+  line-height,
+  letter-spacing
+);
+
+// Semantic Typography 定義
+$semantic-typographies: (
+  h1: (
+    font-size: primitive.font-size-variable(24),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(h1),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  h2: (
+    font-size: primitive.font-size-variable(18),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(h2),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  h3: (
+    font-size: primitive.font-size-variable(16),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(h3),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  body: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(body),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  body-highlight: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(medium),
+    line-height: primitive.line-height-variable(body),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  body-mono: (
+    font-family: primitive.font-family-variable(sfmono),
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(body),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  body-mono-highlight: (
+    font-family: primitive.font-family-variable(sfmono),
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(medium),
+    line-height: primitive.line-height-variable(body),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  text-link-body: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(body),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  text-link-caption: (
+    font-size: primitive.font-size-variable(12),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(caption),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  caption: (
+    font-size: primitive.font-size-variable(12),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(caption),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  caption-highlight: (
+    font-size: primitive.font-size-variable(12),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(caption),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  annotation: (
+    font-size: primitive.font-size-variable(10),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(annotation),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  annotation-highlight: (
+    font-size: primitive.font-size-variable(10),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(annotation),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  button: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  button-highlight: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(medium),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  input: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  input-mono: (
+    font-family: primitive.font-family-variable(sfmono),
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(semibold),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  label-primary: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  label-primary-highlight: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(medium),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  label-secondary: (
+    font-size: primitive.font-size-variable(12),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+);
+
+@function is-semantic-type-valid($type) {
+  @return list.includes($semantic-types, $type);
+}
+
+@function is-semantic-prop-valid($prop) {
+  @return list.includes($semantic-props, $prop);
+}
+
+// Get semantic typography CSS variable name
+@function get-semantic-var-name($type, $prop) {
+  @return --#{$prefix}-#{$type}-#{$prop};
+}
+
+// Get semantic typography property value as CSS variable
+@function prop($type, $prop) {
+  @if not is-semantic-type-valid($type) {
+    @error 'Invalid semantic type #{$type}. Please choose one of #{$semantic-types}';
+  }
+
+  @if not is-semantic-prop-valid($prop) {
+    @error 'Invalid property #{$prop}. Please choose one of #{$semantic-props}';
+  }
+
+  @return var(#{get-semantic-var-name($type, $prop)});
+}
+
+// Generate all semantic typography CSS variables
+@mixin variables($typographies: ()) {
+  // Merge user typographies with default typographies
+  $merged-typographies: map.deep-merge($semantic-typographies, $typographies);
+
+  @each $type, $props in $merged-typographies {
+    @if not is-semantic-type-valid($type) {
+      @error 'Invalid semantic type #{$type}. Please choose one of #{$semantic-types}';
+    }
+
+    @each $prop, $value in $props {
+      @if not is-semantic-prop-valid($prop) {
+        @error 'Invalid property #{$prop}. Please choose one of #{$semantic-props}';
+      }
+
+      @if $value {
+        #{get-semantic-var-name($type, $prop)}: #{$value};
+      }
+    }
+  }
+}
+
+// Apply Semantic Typography Mixin
+@mixin variable($type, $exclude-props: ()) {
+  @if not is-semantic-type-valid($type) {
+    @error 'Invalid semantic type #{$type}. Please choose one of #{$semantic-types}';
+  }
+
+  // Validate exclude props
+  @each $prop in $exclude-props {
+    @if not is-semantic-prop-valid($prop) {
+      @error 'Invalid property #{$prop}. Please choose one of #{$semantic-props}';
+    }
+  }
+
+  $typography: map.get($semantic-typographies, $type);
+
+  @each $prop in $semantic-props {
+    @if not list.includes($exclude-props, $prop) {
+      @if map.has-key($typography, $prop) {
+        #{$prop}: var(--#{$prefix}-#{$type}-#{$prop});
+      }
+    }
+  }
+}
