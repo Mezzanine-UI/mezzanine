@@ -357,6 +357,9 @@ yarn react:storybook
 
 # 執行測試
 yarn react:test
+
+# 執行 build 確認編譯沒問題
+yarn build
 ```
 
 ### 5. 提交與發 PR
