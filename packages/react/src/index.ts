@@ -6,6 +6,7 @@ export * from './utils/general';
 export * from './utils/scroll-lock';
 export * from './utils/array-move';
 export * from './utils/get-scrollbar-width';
+export * from './utils/get-css-variable-value';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
@@ -54,8 +55,8 @@ export type {
   TypographyColor,
   TypographyComponent,
   TypographyDisplay,
-  TypographyVariant,
   TypographyProps,
+  TypographySemanticType,
 } from './Typography';
 
 /**

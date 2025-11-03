@@ -7,15 +7,12 @@ import {
 } from 'react';
 import { tooltipClasses as classes } from '@mezzanine-ui/core/tooltip';
 import { StrictModifiers } from '@popperjs/core';
+import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import Popper, { PopperProps } from '../Popper';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useDelayMouseEnterLeave } from './useDelayMouseEnterLeave';
 import { cx } from '../utils/cx';
-
-const offsetModifier: StrictModifiers = {
-  name: 'offset',
-  options: { offset: [0, 8] },
-};
+import { getCSSVariableValue } from '../utils/get-css-variable-value';
 
 export interface TooltipProps extends Omit<PopperProps, 'children' | 'title'> {
   /**
@@ -61,6 +58,16 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
 
     /** tooltip shown only when title existed && visible is true */
     const isTooltipVisible = open || (visible && Boolean(title));
+
+    const offset =
+      Number(
+        getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
+      ) * 16;
+
+    const offsetModifier: StrictModifiers = {
+      name: 'offset',
+      options: { offset: [0, offset] },
+    };
 
     return (
       <>
