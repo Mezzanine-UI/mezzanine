@@ -41,7 +41,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const hasTrailingIcon = icon?.position === 'trailing' && !isIconOnly;
 
     // Loading 狀態下的 icon
-    const loadingIcon = <Icon icon={SpinnerIcon} spin />;
+    const loadingIcon = <Icon icon={SpinnerIcon} spin size={16} />;
 
     // 渲染 icon 內容
     const renderIcon = () => {
@@ -49,7 +49,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return loadingIcon;
       }
       if (icon) {
-        return <Icon icon={icon.src} />;
+        return <Icon icon={icon.src} size={16} />;
       }
       return null;
     };
