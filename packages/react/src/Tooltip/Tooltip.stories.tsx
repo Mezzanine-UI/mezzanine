@@ -1,5 +1,5 @@
 import { Meta } from '@storybook/react-webpack5';
-import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
+import { InfoFilledIcon } from '@mezzanine-ui/icons';
 import Button from '../Button';
 import Tooltip from '.';
 import Icon from '../Icon';
@@ -29,8 +29,8 @@ export const Basic = () => (
     >
       {({ onMouseEnter, onMouseLeave }) => (
         <Icon
-          color="primary"
-          icon={InfoCircleFilledIcon}
+          color="neutral"
+          icon={InfoFilledIcon}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         />
@@ -40,7 +40,7 @@ export const Basic = () => (
       title={
         <div style={{ display: 'flex', flexFlow: 'column' }}>
           <span>Custom Element</span>
-          <Icon icon={InfoCircleFilledIcon} size={14} />
+          <Icon icon={InfoFilledIcon} size={16} />
         </div>
       }
       options={{
@@ -49,8 +49,8 @@ export const Basic = () => (
     >
       {({ onMouseEnter, onMouseLeave }) => (
         <Icon
-          color="primary"
-          icon={InfoCircleFilledIcon}
+          color="neutral"
+          icon={InfoFilledIcon}
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
         />
@@ -66,7 +66,7 @@ export const Basic = () => (
         <Button
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          variant="contained"
+          variant="base-primary"
         >
           按鈕
         </Button>
@@ -87,7 +87,7 @@ export const Placement = () => {
         <Button
           onMouseEnter={onMouseEnter}
           onMouseLeave={onMouseLeave}
-          variant="contained"
+          variant="base-primary"
         >
           {placement}
         </Button>
