@@ -355,8 +355,8 @@ export const Playground: StoryObj<typeof Button> = {
 # 啟動 Storybook 預覽
 yarn react:storybook
 
-# 執行測試
-yarn react:test
+# 執行單檔測試（換成正確路徑）
+yarn nx test react --testPathPatterns=packages/react/src/Button/Button.spec.tsx
 
 # 執行 build 確認編譯沒問題
 yarn build
