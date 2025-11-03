@@ -36,6 +36,10 @@
 - 使用 **Yarn v4**
 - 不使用 npm 或 pnpm
 
+### Linter
+
+- 確認有安裝 ESLint + Stylelint
+
 ### 安裝依賴
 
 ```bash
@@ -84,7 +88,7 @@ packages/
 | `size`        | ✅ 已更新   | 尺寸系統                              |
 | `typography`  | ✅ 已更新   | 文字排版系統（primitives + semantic） |
 | `spacing`     | ✅ 已更新   | 間距系統（primitives + semantic）     |
-| `breakpoint`  | ⏳ 等待設計 | 響應式斷點                            |
+| `breakpoint`  | ❌ 可能移除 | 響應式斷點                            |
 | `motion`      | ⏳ 等待設計 | 動畫參數                              |
 | `transition`  | ⏳ 等待設計 | 轉場效果                              |
 | `css`         | 🔒 舊版維持 | CSS 工具函式                          |
@@ -92,7 +96,7 @@ packages/
 | `z-index`     | 🔒 舊版維持 | Z 軸層級                              |
 | `severity`    | 🔒 舊版維持 | 嚴重程度（success/error 等）          |
 
-> ⚠️ **重要**：標記為「等待設計」的模組中，部分舊版方法僅為了編譯成功而保留，入口已標記為 `@deprecated`，請勿使用。
+> ⚠️ **重要**：標記為「等待設計」的模組中，部分舊版方法僅為了編譯成功而保留，入口若已標記為 `@deprecated`，請勿使用。
 
 ### 2. Core Package (`@mezzanine-ui/core`)
 
