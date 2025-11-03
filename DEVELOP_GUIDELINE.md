@@ -563,30 +563,6 @@ import { forwardRef } from 'react';
 - 純展示性元件（如 `Typography`, `Icon`）
 - 僅處理樣式與結構，無互動邏輯
 
-### 2. Props 定義規範
-
-#### 使用 ComponentOverridableForwardRefComponentPropsFactory
-
-```typescript
-import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
-
-export type ButtonComponent = 'button' | 'a';
-
-export interface ButtonPropsBase {
-  /** 按鈕尺寸 */
-  size?: ButtonSize;
-  /** 按鈕變體 */
-  variant?: ButtonVariant;
-  /** 是否禁用 */
-  disabled?: boolean;
-  /** 載入中狀態 */
-  loading?: boolean;
-  // ... 其他 props
-}
-
-export type ButtonProps<C extends ButtonComponent = 'button'> = ComponentOverridableForwardRefComponentPropsFactory<ButtonComponent, C, ButtonPropsBase>;
-```
-
 #### Props 排序規範
 
 **所有 Props 必須按字母順序排列（a-z）**：
