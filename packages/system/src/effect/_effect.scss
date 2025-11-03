@@ -9,9 +9,6 @@ $effect-contexts: (shadow, focus);
 
 $effect-values: (
   shadow: (
-    none: (
-      value: 0 0 0 0 rgb(0 0 0 / 0%),
-    ),
     raised: (
       value: 0 0 6px 0 semantic.variable(shadow, dark),
     ),
