@@ -6,6 +6,7 @@ export interface ConfigProviderProps {
   size?: MezzanineConfigContext['size'];
 }
 
+/** @deprecated 未來不提供此設定 */
 function ConfigProvider(props: ConfigProviderProps): JSX.Element {
   const { children, size } = props;
 
