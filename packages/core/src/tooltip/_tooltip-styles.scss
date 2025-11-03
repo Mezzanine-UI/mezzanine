@@ -1,22 +1,23 @@
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/z-index' as z-index;
 @use './tooltip' as *;
 
-$min-height: 24px !default;
-$vertical-padding: 4px !default;
-$horizontal-padding: 8px !default;
-
 .#{$prefix} {
+  max-width: spacing.semantic-variable(size, container, narrow);
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: $vertical-padding $horizontal-padding;
-  background-color: palette.color(action-inactive);
-  color: palette.color(on-secondary);
-  min-height: $min-height;
+  padding: spacing.semantic-variable(padding, vertical, tiny) spacing.semantic-variable(padding, horizontal, base);
+  border-radius: radius.variable(tiny);
+  background-color: palette.semantic-variable("background", fixed-dark);
+  color: palette.semantic-variable(text, fixed-light);
+  box-shadow: effect.variable(shadow, floating);
   z-index: z-index.get(popover);
   white-space: pre-line;
 
-  @include typography.variant(caption);
+  @include typography.semantic-variable(caption);
 }
