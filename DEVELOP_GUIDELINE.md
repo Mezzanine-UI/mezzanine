@@ -33,7 +33,7 @@
 
 ### 套件管理工具
 
-- 使用 **Yarn** (Yarn Berry / v3+)
+- 使用 **Yarn v4**
 - 不使用 npm 或 pnpm
 
 ### 安裝依賴
@@ -62,7 +62,7 @@ Mezzanine UI v2 採用 **Monorepo** 架構，使用 **Nx** 進行專案管理，
 ```
 packages/
 ├── system/      # Design System 的基礎變數與 tokens
-├── core/        # 純 CSS/SCSS 樣式與邏輯（不含 React）
+├── core/        # 純 SCSS 樣式與邏輯（不含 React）
 ├── icons/       # SVG icon 元件
 └── react/       # React 元件（依賴 core）
 ```
@@ -227,8 +227,8 @@ Button/
 ```scss
 // ✅ 使用 semantic variable
 .button {
-  color: palette.semantic-variable(text, brand);
-  padding: spacing.semantic-variable(padding, base);
+  color: palette.semantic-variable(text, brand-strong);
+  padding: spacing.semantic-variable(padding, horizontal, base);
 }
 ```
 
@@ -285,7 +285,8 @@ git checkout -b feature/button-component
   // ✅ 使用 semantic variables
   color: palette.semantic-variable(text, brand);
   background-color: palette.semantic-variable(background, brand);
-  padding: spacing.semantic-variable(padding, base);
+  padding: spacing.semantic-variable(padding, horizontal, tiny-fixed);
+  gap: spacing.semantic-variable(gap, base);
   border-radius: radius.variable(base);
 
   @include typography.semantic-variable(button);
@@ -343,6 +344,11 @@ export const Playground: StoryObj<typeof Button> = {
 };
 ```
 
+#### Step 5: 確認 [Component].spec.tsx 的 test cases 是否正確
+
+- 無使用任何 Deprecated typings/function
+- 測試結果無誤
+
 ### 4. 測試與驗證
 
 ```bash
@@ -358,7 +364,7 @@ yarn react:test
 ```bash
 # 提交變更
 git add .
-git commit -m "feat(button): implement new button component"
+git commit -m "feat(react/button): implement new button component"
 
 # 推送到遠端
 git push origin feature/button-component
@@ -396,11 +402,11 @@ git push origin feature/button-component
 @use '~@mezzanine-ui/system/typography';
 
 .example {
-  // ✅ 套用完整的 semantic typography
+  // 套用完整的 semantic typography
   @include typography.semantic-variable(button);
 
   // 排除特定屬性（例如不要套用 line-height）
-  @include typography.semantic-variable(button, (line-height));
+  @include typography.semantic-variable(button-highlight, (line-height));
 
   // 只取得特定屬性的 CSS variable
   font-size: typography.semantic-prop(body, font-size);
@@ -418,8 +424,8 @@ git push origin feature/button-component
 
 .example {
   // ✅ 使用 semantic spacing
-  padding: spacing.semantic-variable(padding, base);
-  margin: spacing.semantic-variable(margin, base);
+  padding-x: spacing.semantic-variable(padding, horizontal, none);
+  padding-y: spacing.semantic-variable(padding, vertical, comfort);
   gap: spacing.semantic-variable(gap, tight);
 }
 ```
@@ -430,10 +436,10 @@ git push origin feature/button-component
 @use '~@mezzanine-ui/system/radius' as radius;
 
 .example {
-  border-radius: radius.variable(base); // 基礎圓角
-  border-radius: radius.variable(small); // 小圓角
-  border-radius: radius.variable(large); // 大圓角
-  border-radius: radius.variable(full); // 完全圓形
+  border-radius: radius.variable(tiny);
+  border-radius: radius.variable(base);
+  border-radius: radius.variable(roomy);
+  border-radius: radius.variable(full);
 }
 ```
 
@@ -444,12 +450,12 @@ git push origin feature/button-component
 
 .example {
   // Focus ring
-  &:focus {
+  &:focus-visible {
     box-shadow: effect.variable(focus, primary);
   }
 
   // Shadow
-  box-shadow: effect.variable(shadow, base);
+  box-shadow: effect.variable(shadow, raised);
 }
 ```
 
@@ -497,14 +503,6 @@ component-name/
 
 - 只有在確實沒有對應的 system variable 時才使用 px 值
 - 使用前應在團隊頻道討論確認
-
-```scss
-// ⚠️ 如果真的需要使用 px，請附註原因
-.special-case {
-  // 這是特殊情況，因為設計稿指定了非標準的值
-  padding: 13px; // Design spec: 特殊對齊需求
-}
-```
 
 ### TypeScript 開發規範
 
@@ -587,22 +585,13 @@ export type ButtonProps<C extends ButtonComponent = 'button'> = ComponentOverrid
 **所有 Props 必須按字母順序排列（a-z）**：
 
 ```typescript
-// ✅ 正確 - 按字母順序
+// 按字母順序
 export interface ButtonPropsBase {
   disabled?: boolean;
   icon?: IconConfig;
   loading?: boolean;
   size?: ButtonSize;
   variant?: ButtonVariant;
-}
-
-// ❌ 錯誤 - 順序混亂
-export interface ButtonPropsBase {
-  variant?: ButtonVariant;
-  disabled?: boolean;
-  size?: ButtonSize;
-  loading?: boolean;
-  icon?: IconConfig;
 }
 ```
 
@@ -644,8 +633,6 @@ export const Disabled: StoryObj<typeof Button> = {
 ```
 
 ## Light/Dark Mode
-
-### 自動支援原理
 
 Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使用者在引入樣式時即可選擇：
 
@@ -713,7 +700,7 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 ```scss
 .mzn-button {
   // ✅ 使用 semantic spacing，自動支援 Default/Compact mode
-  padding: spacing.semantic-variable(padding, base);
+  padding: spacing.semantic-variable(padding, horizontal, tiny);
   gap: spacing.semantic-variable(gap, base);
 }
 
