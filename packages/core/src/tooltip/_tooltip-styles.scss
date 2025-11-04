@@ -18,6 +18,11 @@
   box-shadow: effect.variable(shadow, floating);
   z-index: z-index.get(popover);
   white-space: pre-line;
+  word-break: break-all;
 
   @include typography.semantic-variable(caption);
+
+  &__arrow {
+    color: palette.semantic-variable("background", fixed-dark);
+  }
 }
