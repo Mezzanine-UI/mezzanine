@@ -1,5 +1,5 @@
 import { inputTriggerPopperClasses as classes } from '@mezzanine-ui/core/_internal/input-trigger-popper';
-import { Modifier } from '@popperjs/core';
+import { offset, size } from '@floating-ui/react-dom';
 import { forwardRef } from 'react';
 import Popper, { PopperProps } from '../../Popper';
 import { Fade, FadeProps } from '../../Transition';
@@ -16,6 +16,15 @@ export interface InputTriggerPopperProps extends PopperProps {
   sameWidth?: boolean;
 }
 
+// Middleware to make the popper have the same min-width as the reference element
+const sameWidthMiddleware = size({
+  apply({ rects, elements }) {
+    Object.assign(elements.floating.style, {
+      minWidth: `${rects.reference.width}px`,
+    });
+  },
+});
+
 /**
  * The react component for `mezzanine` input popper.
  */
@@ -31,26 +40,7 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
       sameWidth,
       ...restPopperProps
     } = props;
-    const { modifiers = [], ...restPopperOptions } = options || {};
-
-    const sameWidthModifier: Modifier<'sameWidth', Record<string, any>> = {
-      name: 'sameWidth',
-      enabled: true,
-      phase: 'beforeWrite',
-      requires: ['computeStyles'],
-      fn: ({ state }) => {
-        const reassignState = state;
-
-        reassignState.styles.popper.minWidth = `${state.rects.reference.width}px`;
-      },
-      effect: ({ state }) => {
-        const reassignState = state;
-
-        reassignState.elements.popper.style.minWidth = `${
-          state.elements.reference.getBoundingClientRect().width
-        }px`;
-      },
-    };
+    const { middleware = [], ...restPopperOptions } = options || {};
 
     return (
       <Fade {...fadeProps} in={open} ref={ref}>
@@ -67,15 +57,10 @@ const InputTriggerPopper = forwardRef<HTMLDivElement, InputTriggerPopperProps>(
           options={{
             placement: 'bottom-start',
             ...restPopperOptions,
-            modifiers: [
-              {
-                name: 'offset',
-                options: {
-                  offset: [0, 4],
-                },
-              },
-              ...(sameWidth ? [sameWidthModifier] : []),
-              ...modifiers,
+            middleware: [
+              offset({ mainAxis: 4 }),
+              ...(sameWidth ? [sameWidthMiddleware] : []),
+              ...middleware,
             ],
           }}
         >
