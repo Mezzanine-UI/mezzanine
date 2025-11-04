@@ -1,37 +1,42 @@
+'use client';
+
+import { FC, Key, useEffect, useMemo, useState } from 'react';
+
 import {
   messageClasses as classes,
   messageIcons,
   MessageSeverity,
+  MessageSeverityMap,
 } from '@mezzanine-ui/core/message';
-import { IconDefinition } from '@mezzanine-ui/icons';
-import { FC, Key, useEffect, useState } from 'react';
-import { cx } from '../utils/cx';
+import { CloseIcon, IconDefinition } from '@mezzanine-ui/icons';
+
 import Icon from '../Icon';
 import {
   createNotifier,
   Notifier,
-  NotifierData,
   NotifierConfig,
+  NotifierData,
 } from '../Notifier';
 import { SlideFade, SlideFadeProps } from '../Transition';
+import { cx } from '../utils/cx';
 
 export interface MessageConfigProps
   extends Pick<NotifierConfig, 'duration'>,
-    Pick<
-      SlideFadeProps,
-      | 'onEnter'
-      | 'onEntering'
-      | 'onEntered'
-      | 'onExit'
-      | 'onExiting'
-      | 'onExited'
-      | 'easing'
-      | 'direction'
-    > {}
+  Pick<
+    SlideFadeProps,
+    | 'onEnter'
+    | 'onEntering'
+    | 'onEntered'
+    | 'onExit'
+    | 'onExiting'
+    | 'onExited'
+    | 'easing'
+    | 'direction'
+  > { }
 
 export interface MessageData
   extends Omit<NotifierData, 'onClose'>,
-    MessageConfigProps {
+  MessageConfigProps {
   /**
    * If given, the message will be closed after the amount of time.
    * You can use `Message.config` to overwrite.
@@ -50,6 +55,10 @@ export interface MessageData
    * The severity of the message.
    */
   severity?: MessageSeverity;
+  /**
+   * Called when user clicks the close button.
+   */
+  onClose?: (reference?: Key) => void;
 }
 
 export type MessageType = FC<MessageData> &
@@ -72,10 +81,11 @@ const Message: MessageType = ((props) => {
   const {
     children,
     duration,
-    icon,
+    onClose: onCloseProp,
+    onExited: onExitedProp,
     reference,
     severity,
-    onExited: onExitedProp,
+    icon,
     ...restTransitionProps
   } = props;
 
@@ -101,13 +111,53 @@ const Message: MessageType = ((props) => {
     if (reference) Message.remove(reference);
   };
 
+  const onClose = () => {
+    setOpen(false);
+
+    if (onCloseProp) {
+      onCloseProp(reference);
+    }
+  };
+
+  const iconNode = useMemo(() => {
+    const iconNodeMap = {
+      [MessageSeverityMap.Warning]: messageIcons.warning,
+      [MessageSeverityMap.Error]: messageIcons.error,
+      [MessageSeverityMap.Info]: messageIcons.info,
+    }
+
+    if (!severity) return (<></>);
+
+    if (icon) {
+      return (<Icon className={classes.icon} icon={icon} />);
+    }
+
+    const severityIcon = iconNodeMap[severity];
+
+    return (<Icon className={classes.icon} icon={severityIcon} />);
+  }, [severity, icon]);
+
   return (
-    <SlideFade in={open} appear onExited={onExited} {...restTransitionProps}>
+    <SlideFade appear in={open} onExited={onExited} {...restTransitionProps}>
       <div
         className={cx(classes.host, severity ? classes.severity(severity) : '')}
       >
-        {icon ? <Icon className={classes.icon} icon={icon} /> : null}
-        <span className={classes.content}>{children}</span>
+        <div className={classes.contentContainer}>
+          {iconNode}
+          <span className={classes.content}>{children}</span>
+        </div>
+        {
+          severity === MessageSeverityMap.Info
+            ? (
+              <button type="button" onClick={onClose} className={classes.close}>
+                <Icon
+                  icon={CloseIcon}
+                  className={classes.closeIcon}
+                />
+              </button>
+            )
+            : <></>
+        }
       </div>
     </SlideFade>
   );
@@ -131,10 +181,6 @@ Message.remove = remove;
 
 const severities = [
   {
-    key: 'success',
-    icon: messageIcons.success,
-  },
-  {
     key: 'warning',
     icon: messageIcons.warning,
   },
@@ -149,7 +195,6 @@ const severities = [
 ];
 
 const validSeverities: MessageSeverity[] = [
-  'success',
   'warning',
   'error',
   'info',

@@ -2,3 +2,9 @@
 
 $prefix: mzn-message;
 $severities: severity.$severities-with-info;
+
+$variants: (
+  base-info,
+  base-error,
+  base-warning,
+)

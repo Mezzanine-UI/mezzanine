@@ -1,44 +1,161 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/z-index' as z-index;
 @use './message' as *;
 
-$height: 40px !default;
-$padding-left: 12px !default;
-$padding-right: 12px !default;
-$content-padding: 12px !default;
-$icon-size: 24px !default;
+// Default padding config
+$default-padding-config: (
+  padding-y: spacing.semantic-variable(padding, vertical, calm),
+  padding-x: spacing.semantic-variable(padding, horizontal, cozy),
+);
+
+// Base Info
+$base-info: (
+  background-color: palette.semantic-variable(background, info-faint),
+  icon-color: palette.semantic-variable(icon, info-strong),
+  text-color: palette.semantic-variable(text, info-strong),
+  close-hover-bg: var(--background-error, #{palette.semantic-variable(background, error, 16)}),
+);
+
+// Base Error
+$base-error: (
+  background-color: palette.semantic-variable(background, error-faint),
+  icon-color: palette.semantic-variable(icon, error-strong),
+  text-color: palette.semantic-variable(text, error-strong),
+  close-hover-bg: none,
+);
+
+// Base Warning
+$base-warning: (
+  background-color: palette.semantic-variable(background, warning-faint),
+  icon-color: palette.semantic-variable(icon, warning-strong),
+  text-color: palette.semantic-variable(text, warning-strong),
+  close-hover-bg: none,
+);
+
+// Variant hierarchy map - 將所有 variants 整合
+$variant-hierarchy: (
+  base-info: $base-info,
+  base-error: $base-error,
+  base-warning: $base-warning,
+);
+
+// 取得特定 variant 和 hierarchy 的顏色值
+@function _get-color($variant, $property) {
+  $variant-map: map.get($variant-hierarchy, $variant);
+
+  @if $variant-map {
+    $value: map.get($variant-map, $property);
+
+    @return if($value == none, null, $value);
+  }
+
+  @return null;
+}
+
+// 套用特定 variant 的顏色
+@mixin _apply-variant-colors($variant) {
+  $background-color: _get-color($variant, background-color);
+  $icon-color: _get-color($variant, icon-color);
+  $text-color: _get-color($variant, text-color);
+  $close-hover-bg: _get-color($variant, close-hover-bg);
+
+  @if $background-color {
+    background-color: $background-color;
+  }
+
+  @if $icon-color {
+    --#{$prefix}-icon-color: #{$icon-color};
+  }
+
+  @if $text-color {
+    --#{$prefix}-text-color: #{$text-color};
+  }
+
+  @if $close-hover-bg {
+    --#{$prefix}-close-hover-bg: #{$close-hover-bg};
+  }
+}
+
+// 套用 padding 配置
+@mixin _apply-padding($padding-config) {
+  padding: map.get($padding-config, padding-y) map.get($padding-config, padding-x);
+}
 
 .#{$prefix} {
   display: flex;
   align-items: center;
+  gap: spacing.semantic-variable(gap, comfort);
+  justify-content: space-between;
+  width: fill-content;
   max-width: 100%;
-  height: $height;
-  margin-top: spacing.level(4);
-  padding-left: $padding-left;
-  padding-right: $padding-right;
-  background-color: palette.color(surface);
-  border: 1px solid var(--#{$prefix}-color);
+  border-radius: radius.variable(base);
   flex-shrink: 0;
   box-sizing: border-box;
 
+  @include _apply-padding($default-padding-config);
+
+  &:not(:first-child) {
+    margin-top: spacing.semantic-variable(gap, comfort);
+  }
+
+  &__content-container {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tight);
+  }
+
   &__icon {
-    color: var(--#{$prefix}-color);
-    font-size: typography.px-to-rem($icon-size);
+    color: var(--#{$prefix}-icon-color);
+    font-size: spacing.semantic-variable(size, element, gentle);
   }
 
   &__content {
-    @include typography.variant(body1);
+    @include typography.semantic-variable(body);
     @include typography.overflow-ellipsis();
 
-    padding: 0 $content-padding;
+    color: var(--#{$prefix}-text-color);
+  }
+
+  &__close {
+    background-color: transparent;
+    border: 0;
+    padding: spacing.semantic-variable(padding, vertical, micro)
+      spacing.semantic-variable(padding, horizontal, micro);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    appearance: none;
+    transition: transition.standard(background-color);
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      background: var(--#{$prefix}-close-hover-bg);
+    }
+  }
+
+  &__close-icon {
+    color: palette.semantic-variable(icon, neutral);
+    font-size: spacing.semantic-variable(size, element, base);
   }
 
   @each $severity in $severities {
     &--#{$severity} {
-      --#{$prefix}-color: #{palette.color(if($severity == 'info', primary, $severity))};
+      $variant-key: if(
+        $severity == 'info',
+        'base-info',
+        if($severity == 'error', 'base-error', 'base-warning')
+      );
+
+      @include _apply-variant-colors($variant-key);
     }
   }
 
