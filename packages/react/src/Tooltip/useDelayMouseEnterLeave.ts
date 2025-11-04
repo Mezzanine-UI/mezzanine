@@ -5,10 +5,9 @@ export interface UseDelayMouseEnterLeave {
 }
 
 export interface DelayMouseEnterLeave {
-  anchor: HTMLButtonElement | null;
   onLeave(v: any): void;
   onPopperEnter(v: any): void;
-  onTargetEnter(v: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
+  onTargetEnter(v: React.MouseEvent<HTMLElement, MouseEvent>): void;
   visible: boolean;
 }
 
@@ -19,8 +18,6 @@ export function useDelayMouseEnterLeave(
 
   /** state that control tooltip visible/invisible */
   const [visible, setVisible] = useState<boolean>(false);
-  /** tooltip reference anchor */
-  const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
   /** timer for mouse leaving delay - use ref to persist across renders */
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -44,10 +41,8 @@ export function useDelayMouseEnterLeave(
   }, [clearVisibilityDelayTimeout]);
 
   const onTargetEnter = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
       event.stopPropagation();
-
-      setAnchor(event.currentTarget);
       clearVisibilityDelayTimeout();
       setVisible(true);
     },
@@ -55,7 +50,6 @@ export function useDelayMouseEnterLeave(
   );
 
   return {
-    anchor,
     onLeave,
     onPopperEnter,
     onTargetEnter,

@@ -179,6 +179,8 @@ export type {
   TreeNodeListProps,
   TreeProps,
 } from './Tree';
+export type { TooltipProps } from './Tooltip';
+export { default as Tooltip } from './Tooltip';
 
 /**
  * Data Entry
@@ -372,7 +374,6 @@ export type {
   PopperPlacement,
   PopperPositionStrategy,
   PopperController,
-  PopperOptions,
   PopperProps,
 } from './Popper';
 export type { PortalProps } from './Portal';
@@ -394,8 +395,6 @@ export type {
   SlideFadeProps,
   ZoomProps,
 } from './Transition';
-export type { TooltipProps } from './Tooltip';
-export { default as Tooltip } from './Tooltip';
 export {
   useCalendarControlModifiers,
   useCalendarModeStack,
