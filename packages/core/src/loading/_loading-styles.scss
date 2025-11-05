@@ -1,11 +1,74 @@
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/z-index';
+@use 'sass:map';
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/z-index' as z-index;
 @use './loading' as *;
 
-$icon-size: 48px !default;
-$spin-padding: 8px !default;
-$tip-bottom-padding: 4px !default;
+$size-configs: (
+  main: (
+    typography: body-highlight,
+    icon: spacing.semantic-variable(size, element, extra),
+    padding-x: spacing.semantic-variable(padding, horizontal, none),
+    padding-y: spacing.semantic-variable(padding, vertical, none),
+    gap: spacing.semantic-variable(gap, comfort),
+    radius: radius.variable(none),
+  ),
+  sub: (
+    typography: body-highlight,
+    icon: spacing.semantic-variable(size, element, airy),
+    padding-x: spacing.semantic-variable(padding, horizontal, none),
+    padding-y: spacing.semantic-variable(padding, vertical, none),
+    gap: spacing.semantic-variable(gap, calm),
+    radius: radius.variable(none),
+  ),
+  minor: (
+    typography: label-primary,
+    icon: spacing.semantic-variable(size, element, base-fixed),
+    padding-x: spacing.semantic-variable(padding, horizontal, none),
+    padding-y: spacing.semantic-variable(padding, vertical, none),
+    gap: spacing.semantic-variable(gap, tight-fixed),
+    radius: radius.variable(none),
+  ),
+);
+
+@mixin _apply-size($size, $variant: null) {
+  $config: map.get($size-configs, $size);
+
+  @if $config {
+    $typography: map.get($config, typography);
+    $icon: map.get($config, icon);
+    $padding-x: map.get($config, padding-x);
+    $padding-y: map.get($config, padding-y);
+    $gap: map.get($config, gap);
+    $radius: map.get($config, radius);
+
+    @if $typography {
+      .#{$prefix}__spin__description {
+        @include typography.semantic-variable($typography);
+      }
+    }
+
+    @if $icon {
+      .#{$prefix}__spin__icon {
+        font-size: $icon;
+      }
+    }
+
+    @if $padding-x != null and $padding-y != null {
+      padding: $padding-y $padding-x;
+    }
+
+    @if $gap {
+      gap: $gap;
+    }
+
+    @if $radius {
+      border-radius: $radius;
+    }
+  }
+}
 
 @mixin _full-container() {
   width: 100%;
@@ -35,17 +98,18 @@ $tip-bottom-padding: 4px !default;
   flex-flow: column;
   align-items: center;
   justify-content: center;
-  padding: $spin-padding;
 
-  &__icon {
-    font-size: $icon-size;
+  @each $size in $sizes {
+    &--#{$size} {
+      @include _apply-size($size);
+    }
   }
 
-  &__tip {
-    box-sizing: border-box;
-    padding-bottom: $tip-bottom-padding;
-    color: palette.color(text-secondary);
+  &--minor {
+    flex-flow: row;
+  }
 
-    @include typography.variant(body1);
+  &__icon {
+    color: palette.semantic-variable(icon, brand);
   }
 }
