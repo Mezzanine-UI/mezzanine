@@ -4,7 +4,7 @@
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/z-index' as z-index;
-@use './loading' as *;
+@use './spin' as *;
 
 $size-configs: (
   main: (

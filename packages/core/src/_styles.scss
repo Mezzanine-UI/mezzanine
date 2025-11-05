@@ -74,12 +74,12 @@
 
   // Feedback
   @include _load-styles($options, alert);
-  @include _load-styles($options, loading);
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
   @include _load-styles($options, notification);
   @include _load-styles($options, popconfirm);
   @include _load-styles($options, progress);
+  @include _load-styles($options, spin);
   @include _load-styles($options, skeleton);
 
   // Others
