@@ -31,7 +31,7 @@ import TableHeader from './TableHeader';
 import TableBody from './TableBody';
 import TablePagination from './pagination/TablePagination';
 import TableRefresh from './refresh/TableRefresh';
-import Loading from '../Loading';
+import Spin from '../Spin';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTableRowSelection } from './rowSelection/useTableRowSelection';
@@ -355,10 +355,10 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
               onBeforeDragStart={onBeforeDragStart}
               onDragEnd={onDragEnd}
             >
-              <Loading
+              <Spin
                 loading={loading}
                 stretch
-                tip={loadingTip}
+                description={loadingTip}
                 overlayProps={{
                   className: classes.loading,
                 }}
@@ -464,7 +464,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                     </Fragment>
                   )}
                 </Droppable>
-              </Loading>
+              </Spin>
             </DragDropContext>
           </TableComponentContext.Provider>
         </TableDataContext.Provider>

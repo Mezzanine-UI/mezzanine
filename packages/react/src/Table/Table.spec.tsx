@@ -17,9 +17,9 @@ jest.mock('./TableHeader', () => {
 });
 
 const mockLoadingRender = jest.fn();
-const OriginalLoading = jest.requireActual('../Loading').default;
+const OriginalLoading = jest.requireActual('../Spin').default;
 
-jest.mock('../Loading', () => {
+jest.mock('../Spin', () => {
   return function MockLoading(props: any) {
     mockLoadingRender(props);
     const React = require('react');

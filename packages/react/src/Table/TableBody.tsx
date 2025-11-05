@@ -10,7 +10,7 @@ import { cx } from '../utils/cx';
 import { TableContext, TableDataContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
 import Empty from '../Empty';
-import Loading from '../Loading/Loading';
+import Spin from '../Spin/Spin';
 
 export interface TableBodyProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
@@ -87,7 +87,7 @@ const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
         {fetchMore?.isFetching ? (
           <tr className={classes.bodyFetchMore}>
             <td aria-label="Loading">
-              <Loading loading />
+              <Spin loading />
             </td>
           </tr>
         ) : null}

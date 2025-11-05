@@ -319,8 +319,8 @@ export type { AlertSeverity, AlertProps } from './Alert';
 export { default as Alert } from './Alert';
 export { default as ConfirmActions } from './ConfirmActions';
 export type { ConfirmActionsProps } from './ConfirmActions';
-export type { LoadingProps } from './Loading';
-export { default as Loading } from './Loading';
+export type { SpinProps } from './Spin';
+export { default as Spin } from './Spin';
 export { default as Message } from './Message';
 export type { MessageData, MessageSeverity, MessageType } from './Message';
 export {

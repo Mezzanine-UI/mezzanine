@@ -1,17 +1,17 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
-import Loading from '.';
+import Spin from '.';
 import Alert from '../Alert';
 import Button from '../Button/Button';
 import Menu, { MenuItem } from '../Menu';
 import Modal, { ModalBody, ModalHeader } from '../Modal';
 
 export default {
-  title: 'Feedback/Loading',
-  component: Loading,
-} as Meta<typeof Loading>;
+  title: 'Feedback/Spin',
+  component: Spin,
+} as Meta<typeof Spin>;
 
-export const Playground: StoryObj<typeof Loading> = {
+export const Playground: StoryObj<typeof Spin> = {
   args: {
     description: 'Loading...',
     loading: true,
@@ -27,16 +27,16 @@ export const Playground: StoryObj<typeof Loading> = {
       }}
     >
       <div style={{ height: '100%', width: '100%' }}>
-        <Loading {...args} />
+        <Spin {...args} />
       </div>
-      <Loading {...args}>
+      <Spin {...args}>
         <Menu size="medium">
           <MenuItem>item 1</MenuItem>
           <MenuItem>item 2</MenuItem>
           <MenuItem>item 3</MenuItem>
           <MenuItem>item 4</MenuItem>
         </Menu>
-      </Loading>
+      </Spin>
     </div>
   ),
 };
@@ -49,12 +49,12 @@ const BasicExample = () => (
       gridTemplateColumns: 'repeat(3, 140px)',
     }}
   >
-    <Loading loading />
-    <Loading description="Loading..." loading />
+    <Spin loading />
+    <Spin description="Loading..." loading />
   </div>
 );
 
-export const Basic: StoryObj<typeof Loading> = {
+export const Basic: StoryObj<typeof Spin> = {
   render: () => <BasicExample />,
 };
 
@@ -65,26 +65,26 @@ const NestedExample = () => (
       gap: 16,
     }}
   >
-    <Loading
+    <Spin
       iconProps={{
         size: 24,
       }}
       loading
     >
       <Alert severity="success">成功送出</Alert>
-    </Loading>
-    <Loading description="Loading..." loading>
+    </Spin>
+    <Spin description="Loading..." loading>
       <Menu size="medium">
         <MenuItem>item 1</MenuItem>
         <MenuItem>item 2</MenuItem>
         <MenuItem>item 3</MenuItem>
         <MenuItem>item 4</MenuItem>
       </Menu>
-    </Loading>
+    </Spin>
   </div>
 );
 
-export const Nested: StoryObj<typeof Loading> = {
+export const Nested: StoryObj<typeof Spin> = {
   render: () => <NestedExample />,
 };
 
@@ -97,7 +97,7 @@ const OnModalExample = () => {
         OPEN
       </Button>
       <Modal onClose={() => setOpen(false)} open={open}>
-        <Loading description="元件加載中..." loading stretch>
+        <Spin description="元件加載中..." loading stretch>
           <ModalHeader>Hi</ModalHeader>
           <ModalBody>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
@@ -105,13 +105,13 @@ const OnModalExample = () => {
             provident sed sint harum delectus nihil quod sequi vero porro
             excepturi eos facilis quos.
           </ModalBody>
-        </Loading>
+        </Spin>
       </Modal>
     </>
   );
 };
 
-export const OnModal: StoryObj<typeof Loading> = {
+export const OnModal: StoryObj<typeof Spin> = {
   render: () => <OnModalExample />,
 };
 
@@ -122,12 +122,12 @@ const SizesExample = () => (
       gap: 24,
     }}
   >
-    <Loading description="Main size" loading size="main" />
-    <Loading description="Sub size" loading size="sub" />
-    <Loading description="Minor size" loading size="minor" />
+    <Spin description="Main size" loading size="main" />
+    <Spin description="Sub size" loading size="sub" />
+    <Spin description="Minor size" loading size="minor" />
   </div>
 );
 
-export const Sizes: StoryObj<typeof Loading> = {
+export const Sizes: StoryObj<typeof Spin> = {
   render: () => <SizesExample />,
 };

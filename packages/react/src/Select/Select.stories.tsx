@@ -12,7 +12,7 @@ import Typography from '../Typography';
 import Button from '../Button';
 import Modal, { ModalHeader, ModalBody } from '../Modal';
 import ConfigProvider from '../Provider';
-import Loading from '../Loading/Loading';
+import Spin from '../Spin/Spin';
 
 export default {
   title: 'Data Entry/Select',
@@ -162,7 +162,7 @@ export const DynamicFetching = () => {
             {opt.label}
           </Option>
         ))}
-        {isLoading ? <Loading loading iconProps={{ size: 24 }} /> : null}
+        {isLoading ? <Spin loading iconProps={{ size: 24 }} /> : null}
       </Select>
     </div>
   );
@@ -286,7 +286,7 @@ export const TreeSelectDynamicLoading = () => {
     <>
       <Typography
         component="p"
-        variant="input2"
+        variant="input"
         style={{ marginBottom: '12px' }}
       >
         {`current value: [${mapValues()}]`}
@@ -428,7 +428,7 @@ export const TreeSelectPlayground: StoryFn<TreeSelectPlaygroundArgs> = ({
     <>
       <Typography
         component="p"
-        variant="input2"
+        variant="input"
         style={{ marginBottom: '12px' }}
       >
         {`current value: [${mapValues()}]`}
@@ -515,12 +515,12 @@ export const FullControl = () => {
         <Option value="3">item3</Option>
       </Select>
       <Button
-        variant="contained"
+        variant="base-primary"
         onClick={() => setValue({ id: '2', name: 'item2' })}
       >
         set 2
       </Button>
-      <Button variant="contained" onClick={() => setValue(null)}>
+      <Button variant="base-primary" onClick={() => setValue(null)}>
         reset
       </Button>
     </div>
