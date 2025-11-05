@@ -6,9 +6,23 @@ import Overlay, { OverlayProps } from '../Overlay';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { GeneralSize } from '@mezzanine-ui/system/size';
 
 export interface LoadingProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * Customize description content
+   */
+  description?: string;
+  /**
+   * Customize description content className
+   */
+  descriptionClassName?: string;
+  /**
+   * Component Size
+   * @default 'main'
+   */
+  size?: GeneralSize;
   /**
    * When set stretch=true, host container will stretch to width & height 100%
    * @default false
@@ -27,14 +41,6 @@ export interface LoadingProps
    * Custom overlay props (only display when nested children)
    */
   overlayProps?: Omit<OverlayProps, 'container' | 'open'>;
-  /**
-   * Customize description content
-   */
-  tip?: string;
-  /**
-   * Customize description content className
-   */
-  tipClassName?: string;
 }
 
 const Loading = forwardRef<HTMLDivElement, LoadingProps>(
@@ -43,12 +49,13 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(
     const {
       children,
       className,
+      description,
+      descriptionClassName,
       stretch = false,
+      size = 'main',
       iconProps = {},
       loading = false,
       overlayProps = {},
-      tip,
-      tipClassName,
     } = props;
 
     const {
@@ -65,7 +72,7 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(
     const spinElement = loading ? (
       <div
         ref={isNestedPattern ? null : ref}
-        className={cx(classes.spin, {
+        className={cx(classes.spin, classes.size(size), {
           [classes.stretch]: stretch,
         })}
       >
@@ -80,8 +87,10 @@ const Loading = forwardRef<HTMLDivElement, LoadingProps>(
             ...(iconStyle || {}),
           }}
         />
-        {tip ? (
-          <span className={cx(classes.tip, tipClassName)}>{tip}</span>
+        {description ? (
+          <span className={cx(classes.description, descriptionClassName)}>
+            {description}
+          </span>
         ) : null}
       </div>
     ) : null;

@@ -1,63 +1,64 @@
-import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
-import Loading, { LoadingProps } from '.';
+import Loading from '.';
 import Alert from '../Alert';
 import Button from '../Button/Button';
 import Menu, { MenuItem } from '../Menu';
-import Modal, { ModalHeader, ModalBody } from '../Modal';
+import Modal, { ModalBody, ModalHeader } from '../Modal';
 
 export default {
   title: 'Feedback/Loading',
-} as Meta;
+  component: Loading,
+} as Meta<typeof Loading>;
 
-type PlaygroundArgs = LoadingProps;
-
-export const Playground: StoryFn<PlaygroundArgs> = ({
-  stretch,
-  loading,
-  tip,
-}) => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 140px)',
-      gap: 60,
-    }}
-  >
-    <div style={{ width: '100%', height: '100%' }}>
-      <Loading stretch={stretch} loading={loading} tip={tip} />
+export const Playground: StoryObj<typeof Loading> = {
+  args: {
+    description: 'Loading...',
+    loading: true,
+    size: 'main',
+    stretch: false,
+  },
+  render: (args) => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gap: 60,
+        gridTemplateColumns: 'repeat(3, 140px)',
+      }}
+    >
+      <div style={{ height: '100%', width: '100%' }}>
+        <Loading {...args} />
+      </div>
+      <Loading {...args}>
+        <Menu size="medium">
+          <MenuItem>item 1</MenuItem>
+          <MenuItem>item 2</MenuItem>
+          <MenuItem>item 3</MenuItem>
+          <MenuItem>item 4</MenuItem>
+        </Menu>
+      </Loading>
     </div>
-    <Loading stretch={stretch} loading={loading} tip={tip}>
-      <Menu size="medium">
-        <MenuItem>item 1</MenuItem>
-        <MenuItem>item 2</MenuItem>
-        <MenuItem>item 3</MenuItem>
-        <MenuItem>item 4</MenuItem>
-      </Menu>
-    </Loading>
-  </div>
-);
-
-Playground.args = {
-  loading: true,
-  stretch: false,
-  tip: '',
+  ),
 };
 
-export const Basic = () => (
+const BasicExample = () => (
   <div
     style={{
       display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 140px)',
       gap: 60,
+      gridTemplateColumns: 'repeat(3, 140px)',
     }}
   >
     <Loading loading />
-    <Loading loading tip="Loading..." />
+    <Loading description="Loading..." loading />
   </div>
 );
 
-export const Nested = () => (
+export const Basic: StoryObj<typeof Loading> = {
+  render: () => <BasicExample />,
+};
+
+const NestedExample = () => (
   <div
     style={{
       display: 'grid',
@@ -65,14 +66,14 @@ export const Nested = () => (
     }}
   >
     <Loading
-      loading
       iconProps={{
         size: 24,
       }}
+      loading
     >
       <Alert severity="success">成功送出</Alert>
     </Loading>
-    <Loading loading tip="Loading...">
+    <Loading description="Loading..." loading>
       <Menu size="medium">
         <MenuItem>item 1</MenuItem>
         <MenuItem>item 2</MenuItem>
@@ -83,16 +84,20 @@ export const Nested = () => (
   </div>
 );
 
-export const OnModal = () => {
+export const Nested: StoryObj<typeof Loading> = {
+  render: () => <NestedExample />,
+};
+
+const OnModalExample = () => {
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Button variant="contained" onClick={() => setOpen(true)}>
+      <Button onClick={() => setOpen(true)} variant="base-primary">
         OPEN
       </Button>
       <Modal onClose={() => setOpen(false)} open={open}>
-        <Loading stretch loading tip="元件加載中...">
+        <Loading description="元件加載中..." loading stretch>
           <ModalHeader>Hi</ModalHeader>
           <ModalBody>
             Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
@@ -104,4 +109,25 @@ export const OnModal = () => {
       </Modal>
     </>
   );
+};
+
+export const OnModal: StoryObj<typeof Loading> = {
+  render: () => <OnModalExample />,
+};
+
+const SizesExample = () => (
+  <div
+    style={{
+      display: 'grid',
+      gap: 24,
+    }}
+  >
+    <Loading description="Main size" loading size="main" />
+    <Loading description="Sub size" loading size="sub" />
+    <Loading description="Minor size" loading size="minor" />
+  </div>
+);
+
+export const Sizes: StoryObj<typeof Loading> = {
+  render: () => <SizesExample />,
 };
