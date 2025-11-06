@@ -5,6 +5,7 @@ import {
   useMemo,
   RefObject,
   Fragment,
+  useEffect,
 } from 'react';
 import { NotifierData, NotifierConfig, RenderNotifier } from './typings';
 
@@ -24,40 +25,73 @@ function NotifierManager<N extends NotifierData>(
   props: NotifierManagerProps<N>,
 ) {
   const { controllerRef, defaultNotifiers = [], maxCount, render } = props;
-  const [notifiers, setNotifiers] = useState(defaultNotifiers);
-  const notifiersShouldRendered =
-    typeof maxCount === 'number' && notifiers.length > maxCount
-      ? notifiers.slice(0, maxCount)
-      : notifiers;
+  const [displayedNotifiers, setDisplayedNotifiers] =
+    useState(defaultNotifiers);
+  const [queuedNotifiers, setQueuedNotifiers] = useState<(N & { key: Key })[]>(
+    [],
+  );
+
+  // 當有空位時，從 queue 中補上
+  useEffect(() => {
+    if (queuedNotifiers.length > 0) {
+      const hasMaxCount = typeof maxCount === 'number';
+      const availableSlots = hasMaxCount
+        ? maxCount - displayedNotifiers.length
+        : Infinity;
+
+      if (availableSlots > 0) {
+        const notifiersToDisplay = queuedNotifiers.slice(0, availableSlots);
+
+        setDisplayedNotifiers((prev) => [...prev, ...notifiersToDisplay]);
+        setQueuedNotifiers((prev) => prev.slice(availableSlots));
+      }
+    }
+  }, [displayedNotifiers.length, queuedNotifiers, maxCount]);
+
   const controller: NotifierController<N> = useMemo(
     () => ({
       add(notifier) {
-        setNotifiers((prev) => {
+        setDisplayedNotifiers((prev) => {
           const notifierIndex = prev.findIndex(
             ({ key }) => key === notifier.key,
           );
 
-          return ~notifierIndex
-            ? [
-                ...prev.slice(0, notifierIndex),
-                notifier,
-                ...prev.slice(notifierIndex + 1, prev.length),
-              ]
-            : [...prev, notifier];
+          // 如果已存在，則更新該訊息
+          if (~notifierIndex) {
+            return [
+              ...prev.slice(0, notifierIndex),
+              notifier,
+              ...prev.slice(notifierIndex + 1, prev.length),
+            ];
+          }
+
+          // 新訊息：檢查是否超過 maxCount
+          const hasMaxCount = typeof maxCount === 'number';
+
+          if (hasMaxCount && prev.length >= maxCount) {
+            // 超過上限，加入 queue
+            setQueuedNotifiers((queue) => [...queue, notifier]);
+
+            return prev;
+          }
+
+          // 未超過上限，直接加到最後
+          return [...prev, notifier];
         });
       },
       remove(key: Key) {
-        setNotifiers((prev) => prev.filter((m) => m.key !== key));
+        setDisplayedNotifiers((prev) => prev.filter((m) => m.key !== key));
+        setQueuedNotifiers((prev) => prev.filter((m) => m.key !== key));
       },
     }),
-    [],
+    [maxCount],
   );
 
   useImperativeHandle(controllerRef, () => controller, [controller]);
 
   return (
     <>
-      {notifiersShouldRendered.map((notifier) => (
+      {displayedNotifiers.map((notifier) => (
         <Fragment key={notifier.key}>{render(notifier)}</Fragment>
       ))}
     </>

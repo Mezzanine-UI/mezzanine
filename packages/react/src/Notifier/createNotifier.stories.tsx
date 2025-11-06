@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react-webpack5';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { Key, useEffect, useState } from 'react';
 import Button, { ButtonGroup } from '../Button';
 import { createNotifier } from '.';
@@ -13,10 +13,32 @@ type TestNotifierData = NotifierData & {
 };
 
 const Notifier = createNotifier<TestNotifierData>({
-  render: ({ children, reference }) => <div key={reference}>{children}</div>,
+  duration: 3000,
+  maxCount: 4,
+  render: ({ children, reference }) => (
+    <div
+      key={reference}
+      style={{
+        padding: '12px 16px',
+        marginBottom: '8px',
+        background: '#1976d2',
+        color: 'white',
+        borderRadius: '4px',
+      }}
+    >
+      {children}
+    </div>
+  ),
+  setRoot: (root) => {
+    root.style.position = 'fixed';
+    root.style.top = '16px';
+    root.style.right = '16px';
+    root.style.zIndex = '9999';
+    root.style.minWidth = '300px';
+  },
 });
 
-export const Common = () => {
+function CommonExample() {
   const [messageKeys, setMessageKeys] = useState<Key[]>([]);
 
   useEffect(
@@ -29,7 +51,7 @@ export const Common = () => {
   return (
     <ButtonGroup style={{ marginBottom: 16 }}>
       <Button
-        variant="contained"
+        variant="base-primary"
         onClick={() => {
           const key = Notifier.add({
             children: 'foo',
@@ -41,7 +63,7 @@ export const Common = () => {
         Add a notification
       </Button>
       <Button
-        variant="contained"
+        variant="base-primary"
         onClick={() => {
           Notifier.destroy();
 
@@ -52,7 +74,7 @@ export const Common = () => {
       </Button>
       {messageKeys.length ? (
         <Button
-          variant="contained"
+          variant="base-primary"
           onClick={() => {
             Notifier.remove(messageKeys[0]);
 
@@ -64,4 +86,8 @@ export const Common = () => {
       ) : null}
     </ButtonGroup>
   );
+}
+
+export const Common: StoryObj = {
+  render: () => <CommonExample />,
 };
