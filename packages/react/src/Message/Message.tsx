@@ -4,7 +4,7 @@ import {
   MessageSeverity,
 } from '@mezzanine-ui/core/message';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import { FC, Key, useEffect, useState } from 'react';
+import { FC, Key, useEffect, useState, useRef, useCallback } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import {
@@ -14,6 +14,7 @@ import {
   NotifierConfig,
 } from '../Notifier';
 import { SlideFade, SlideFadeProps } from '../Transition';
+import { messageTimerController } from './MessageTimerController';
 
 export interface MessageConfigProps
   extends Pick<NotifierConfig, 'duration'>,
@@ -58,7 +59,9 @@ export type MessageType = FC<MessageData> &
     string,
     (
       message: MessageData['children'],
-      props?: Omit<MessageData, 'children' | 'severity' | 'icon'>,
+      props?: Omit<MessageData, 'children' | 'severity' | 'icon'> & {
+        key?: Key;
+      },
     ) => Key
   >;
 
@@ -80,18 +83,89 @@ const Message: MessageType = ((props) => {
   } = props;
 
   const [open, setOpen] = useState(true);
+  const timerRef = useRef<number | null>(null);
+  const remainingTimeRef = useRef<number>(duration || 0);
+  const startTimeRef = useRef<number>(Date.now());
 
+  // 清理計時器
+  const clearTimer = useCallback(() => {
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+  }, []);
+
+  // 開始計時器
+  const startTimer = useCallback(
+    (time: number) => {
+      clearTimer();
+
+      if (time > 0) {
+        startTimeRef.current = Date.now();
+        remainingTimeRef.current = time;
+        timerRef.current = window.setTimeout(() => {
+          setOpen(false);
+        }, time);
+      }
+    },
+    [clearTimer],
+  );
+
+  // 暫停計時器
+  const pauseTimer = useCallback(() => {
+    if (timerRef.current) {
+      clearTimer();
+
+      const elapsed = Date.now() - startTimeRef.current;
+
+      remainingTimeRef.current = Math.max(
+        0,
+        remainingTimeRef.current - elapsed,
+      );
+    }
+  }, [clearTimer]);
+
+  // 恢復計時器
+  const resumeTimer = useCallback(() => {
+    if (remainingTimeRef.current > 0) {
+      startTimer(remainingTimeRef.current);
+    }
+  }, [startTimer]);
+
+  // 初始設定計時器
   useEffect(() => {
     if (open && duration) {
-      const timer = window.setTimeout(() => {
-        setOpen(false);
-      }, duration);
+      startTimer(duration);
+    } else if (open && duration === false) {
+      // duration 為 false 時，清除計時器（不自動關閉）
+      clearTimer();
+    }
+
+    return () => {
+      clearTimer();
+    };
+  }, [open, duration, clearTimer, startTimer]);
+
+  // 註冊到全域控制器
+  useEffect(() => {
+    if (reference && duration) {
+      messageTimerController.register(reference, {
+        pause: pauseTimer,
+        resume: resumeTimer,
+      });
 
       return () => {
-        window.clearTimeout(timer);
+        messageTimerController.unregister(reference);
       };
     }
-  }, [open, duration]);
+  }, [reference, duration, pauseTimer, resumeTimer]);
+
+  // 清理計時器（組件卸載時）
+  useEffect(() => {
+    return () => {
+      clearTimer();
+    };
+  }, [clearTimer]);
 
   const onExited: SlideFadeProps['onExited'] = (node) => {
     if (onExitedProp) {
@@ -101,12 +175,45 @@ const Message: MessageType = ((props) => {
     if (reference) Message.remove(reference);
   };
 
+  const handleMouseEnter = () => {
+    messageTimerController.pause();
+  };
+
+  const handleMouseLeave = () => {
+    messageTimerController.resume();
+  };
+
+  const handleFocus = () => {
+    messageTimerController.pause();
+  };
+
+  const handleBlur = () => {
+    messageTimerController.resume();
+  };
+
   return (
-    <SlideFade in={open} appear onExited={onExited} {...restTransitionProps}>
+    <SlideFade
+      in={open}
+      appear
+      onExited={onExited}
+      direction="up"
+      {...restTransitionProps}
+    >
       <div
         className={cx(classes.host, severity ? classes.severity(severity) : '')}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        role="status"
       >
-        {icon ? <Icon className={classes.icon} icon={icon} /> : null}
+        {icon ? (
+          <Icon
+            className={classes.icon}
+            icon={icon}
+            spin={severity === 'loading'}
+          />
+        ) : null}
         <span className={classes.content}>{children}</span>
       </div>
     </SlideFade>
@@ -118,7 +225,14 @@ const { add, config, destroy, remove } = createNotifier<
   MessageConfigProps
 >({
   duration: 3000,
-  render: (message) => <Message {...message} key={undefined} />,
+  maxCount: 4,
+  render: (message) => (
+    <Message
+      {...message}
+      reference={(message as MessageData & { key: Key }).key}
+      key={undefined}
+    />
+  ),
   setRoot: (root) => {
     root?.setAttribute('class', classes.root);
   },
@@ -146,6 +260,10 @@ const severities = [
     key: 'info',
     icon: messageIcons.info,
   },
+  {
+    key: 'loading',
+    icon: messageIcons.loading,
+  },
 ];
 
 const validSeverities: MessageSeverity[] = [
@@ -153,6 +271,7 @@ const validSeverities: MessageSeverity[] = [
   'warning',
   'error',
   'info',
+  'loading',
 ];
 
 severities.forEach((severity) => {
@@ -164,6 +283,7 @@ severities.forEach((severity) => {
         ? (severity.key as MessageSeverity)
         : undefined,
       icon: severity.icon,
+      duration: severity.key === 'loading' ? false : props?.duration,
     });
 });
 

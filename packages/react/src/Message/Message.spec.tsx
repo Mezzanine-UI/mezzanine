@@ -1,15 +1,22 @@
 import {
-  CheckCircleFilledIcon,
-  ExclamationCircleFilledIcon,
-  TimesCircleFilledIcon,
-  InfoCircleFilledIcon,
+  CheckedFilledIcon,
+  WarningFilledIcon,
+  ErrorFilledIcon,
+  InfoFilledIcon,
+  SpinnerIcon,
 } from '@mezzanine-ui/icons';
-import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
+import { MessageSeverity } from '@mezzanine-ui/core/message';
 import { Key } from 'react';
 import { act, cleanup, render } from '../../__test-utils__';
 import Message from '.';
 
-const severities: SeverityWithInfo[] = ['success', 'warning', 'error', 'info'];
+const severities: MessageSeverity[] = [
+  'success',
+  'warning',
+  'error',
+  'info',
+  'loading',
+];
 
 describe('<Message />', () => {
   afterEach(cleanup);
@@ -31,24 +38,19 @@ describe('<Message />', () => {
   describe('prop: severity', () => {
     const icons = {
       success: {
-        color: 'success',
-        icon: CheckCircleFilledIcon,
+        icon: CheckedFilledIcon,
       },
       warning: {
-        color: 'warning',
-        icon: ExclamationCircleFilledIcon,
+        icon: WarningFilledIcon,
       },
       error: {
-        color: 'error',
-        icon: TimesCircleFilledIcon,
+        icon: ErrorFilledIcon,
       },
       info: {
-        color: 'primary',
-        icon: InfoCircleFilledIcon,
+        icon: InfoFilledIcon,
       },
-      custom: {
-        color: 'custom',
-        icon: undefined,
+      loading: {
+        icon: SpinnerIcon,
       },
     };
 
@@ -96,25 +98,106 @@ describe('<Message />', () => {
       });
 
       expect(onExited).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('prop: duration', () => {
+    it('should not auto close if duration is false', () => {
+      jest.useFakeTimers();
+
+      const { getHostHTMLElement } = render(
+        <Message duration={false}>持續顯示</Message>,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(10000);
+      });
+
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toBe('持續顯示');
+
+      jest.useRealTimers();
+    });
+
+    it('should auto close after custom duration', () => {
+      jest.useFakeTimers();
+
+      const onExited = jest.fn();
+
+      render(
+        <Message duration={5000} onExited={onExited}>
+          5秒後關閉
+        </Message>,
+      );
+
+      act(() => {
+        jest.advanceTimersByTime(4999);
+      });
+
+      expect(onExited).not.toHaveBeenCalled();
+
+      act(() => {
+        jest.advanceTimersByTime(1);
+      });
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(onExited).toHaveBeenCalledTimes(1);
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('icon spin', () => {
+    it('should spin icon when severity is loading', () => {
+      const { getHostHTMLElement } = render(
+        <Message severity="loading" icon={SpinnerIcon}>
+          載入中
+        </Message>,
+      );
+
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector('.mzn-icon');
+
+      expect(iconElement?.classList.contains('mzn-icon--spin')).toBeTruthy();
+    });
+
+    it('should not spin icon for other severities', () => {
+      const { getHostHTMLElement } = render(
+        <Message severity="success" icon={CheckedFilledIcon}>
+          成功
+        </Message>,
+      );
+
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector('.mzn-icon');
+
+      expect(iconElement?.classList.contains('mzn-icon--spin')).toBeFalsy();
     });
   });
 });
 
 describe('Message API', () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    act(() => {
+      Message.destroy();
+    });
+    cleanup();
+  });
 
   severities.forEach((severity) => {
     describe(`Message.${severity}`, () => {
-      afterEach(() => {
-        act(() => {
-          Message.destroy();
-        });
-      });
-
       const testMessage = 'foo';
       const handler = Message[severity];
 
-      expect(handler).toBeInstanceOf(Function);
+      it('should be a function', () => {
+        expect(handler).toBeInstanceOf(Function);
+      });
 
       it('should find root at the end of body', () => {
         act(() => {
@@ -151,29 +234,236 @@ describe('Message API', () => {
         expect(rootElement?.childElementCount).toBe(0);
       });
 
-      it('should remove message after 3 second by default', () => {
-        jest.useFakeTimers();
+      if (severity === 'loading') {
+        it('should not auto close by default for loading', () => {
+          jest.useFakeTimers();
 
-        act(() => {
-          handler(testMessage);
+          act(() => {
+            handler(testMessage);
+          });
+
+          const { lastElementChild: rootElement } = document.body;
+
+          expect(rootElement?.childElementCount).toBe(1);
+
+          act(() => {
+            jest.advanceTimersByTime(10000);
+          });
+
+          expect(rootElement?.childElementCount).toBe(1);
+
+          jest.useRealTimers();
         });
+      } else {
+        it('should remove message after 3 seconds by default', () => {
+          jest.useFakeTimers();
 
-        const { lastElementChild: rootElement } = document.body;
+          act(() => {
+            handler(testMessage);
+          });
 
-        expect(rootElement?.childElementCount).toBe(1);
+          const { lastElementChild: rootElement } = document.body;
 
-        // wait until effect triggered
-        act(() => {
-          jest.runAllTimers();
+          expect(rootElement?.childElementCount).toBe(1);
+
+          // wait until effect triggered
+          act(() => {
+            jest.runAllTimers();
+          });
+
+          // wait until transition ends
+          act(() => {
+            jest.runAllTimers();
+          });
+
+          expect(rootElement?.childElementCount).toBe(0);
+
+          jest.useRealTimers();
         });
+      }
+    });
+  });
 
-        // wait until transition ends
-        act(() => {
-          jest.runAllTimers();
-        });
+  describe('Message update functionality', () => {
+    it('should update message with same key', () => {
+      jest.useFakeTimers();
 
-        expect(rootElement?.childElementCount).toBe(0);
+      let key: Key;
+
+      act(() => {
+        key = Message.loading('載入中...');
       });
+
+      const { lastElementChild: rootElement } = document.body;
+      let messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('載入中...');
+      expect(
+        messageElement?.classList.contains('mzn-message--loading'),
+      ).toBeTruthy();
+
+      act(() => {
+        Message.success('載入成功！', { key });
+      });
+
+      messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('載入成功！');
+      expect(
+        messageElement?.classList.contains('mzn-message--success'),
+      ).toBeTruthy();
+
+      jest.useRealTimers();
+    });
+
+    it('should start timer when updating loading to success', () => {
+      jest.useFakeTimers();
+
+      let key: Key;
+
+      act(() => {
+        key = Message.loading('處理中...');
+      });
+
+      const { lastElementChild: rootElement } = document.body;
+
+      expect(rootElement?.childElementCount).toBe(1);
+
+      // Loading 不會自動關閉
+      act(() => {
+        jest.advanceTimersByTime(10000);
+      });
+
+      expect(rootElement?.childElementCount).toBe(1);
+
+      // 更新為 success
+      act(() => {
+        Message.success('處理完成！', { key });
+      });
+
+      // Success 會在 3 秒後自動關閉
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      act(() => {
+        jest.runAllTimers();
+      });
+
+      expect(rootElement?.childElementCount).toBe(0);
+
+      jest.useRealTimers();
+    });
+
+    it('should support multiple step updates', () => {
+      jest.useFakeTimers();
+
+      let key: Key;
+
+      act(() => {
+        key = Message.loading('步驟 1/3');
+      });
+
+      const { lastElementChild: rootElement } = document.body;
+      let messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('步驟 1/3');
+
+      act(() => {
+        Message.loading('步驟 2/3', { key });
+      });
+
+      messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('步驟 2/3');
+
+      act(() => {
+        Message.loading('步驟 3/3', { key });
+      });
+
+      messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('步驟 3/3');
+
+      act(() => {
+        Message.success('完成！', { key });
+      });
+
+      messageElement = rootElement?.firstElementChild;
+
+      expect(messageElement?.textContent).toBe('完成！');
+      expect(
+        messageElement?.classList.contains('mzn-message--success'),
+      ).toBeTruthy();
+
+      jest.useRealTimers();
+    });
+  });
+
+  describe('Message queue with maxCount', () => {
+    it('should queue messages when exceeding maxCount (4)', async () => {
+      const keys: Key[] = [];
+
+      // 添加 5 個訊息
+      for (let i = 0; i < 5; i += 1) {
+        act(() => {
+          keys.push(Message.info(`訊息 ${i + 1}`, { duration: false }));
+        });
+      }
+
+      // 等待所有 React 更新和動畫完成
+      await act(async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
+      });
+
+      const { lastElementChild: rootElement } = document.body;
+
+      // 只顯示 4 個（第 5 個在 queue 中）
+      expect(rootElement?.childElementCount).toBe(4);
+    });
+
+    it('should display queued message after one is removed', async () => {
+      const keys: Key[] = [];
+
+      // 添加 5 個訊息
+      for (let i = 0; i < 5; i += 1) {
+        act(() => {
+          keys.push(Message.info(`訊息 ${i + 1}`, { duration: false }));
+        });
+      }
+
+      // 等待 React 更新和動畫
+      await act(async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
+      });
+
+      const { lastElementChild: rootElement } = document.body;
+
+      expect(rootElement?.childElementCount).toBe(4);
+
+      // 移除第一個訊息
+      act(() => {
+        Message.remove(keys[0]);
+      });
+
+      // 等待退場動畫和 queue 補位
+      await act(async () => {
+        await new Promise((resolve) => {
+          setTimeout(resolve, 1000);
+        });
+      });
+
+      // 還是 4 個，但第 5 個訊息補上了
+      expect(rootElement?.childElementCount).toBe(4);
+
+      const messages = Array.from(rootElement?.children || []);
+      const lastMessage = messages[messages.length - 1];
+
+      expect(lastMessage?.textContent).toBe('訊息 5');
     });
   });
 });
