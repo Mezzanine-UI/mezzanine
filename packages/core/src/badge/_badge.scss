@@ -1,1 +1,17 @@
 $prefix: mzn-badge;
+
+$dot-types: (
+  success,
+  error,
+  warning,
+  info,
+  inactive
+);
+
+$count-types: (
+  alert,
+  inactive,
+  inverse,
+  brand,
+  info
+)
