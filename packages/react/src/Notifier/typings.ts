@@ -19,7 +19,9 @@ export interface NotifierData extends Pick<NotifierConfig, 'duration'> {
   onClose?: (key: Key) => void;
 }
 
-export type RenderNotifier<N extends NotifierData> = (notifier: N) => ReactNode;
+export type RenderNotifier<N extends NotifierData> = (
+  notifier: N & { key: Key },
+) => ReactNode;
 
 export interface Notifier<
   N extends NotifierData,

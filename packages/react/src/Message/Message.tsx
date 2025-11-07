@@ -230,11 +230,7 @@ const { add, config, destroy, remove } = createNotifier<
   duration: 3000,
   maxCount: 4,
   render: (message) => (
-    <Message
-      {...message}
-      reference={(message as MessageData & { key: Key }).key}
-      key={undefined}
-    />
+    <Message {...message} reference={message.key} key={undefined} />
   ),
   setRoot: (root) => {
     root?.setAttribute('class', classes.root);
