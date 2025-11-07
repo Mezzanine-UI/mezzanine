@@ -9,7 +9,6 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 export type BadgeProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
   /**
    * If the children is number and greater than overflowCount, it will show overflowCount suffixed with a "+".
-   * @default 99
    */
   overflowCount?: number;
   variant: BadgeVariant;
