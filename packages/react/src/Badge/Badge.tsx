@@ -1,21 +1,19 @@
 import { forwardRef, ReactNode } from 'react';
-import { badgeClasses as classes } from '@mezzanine-ui/core/badge';
+import {
+  BadgeVariant,
+  badgeClasses as classes,
+} from '@mezzanine-ui/core/badge';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface BadgeProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'color'> {
-  /**
-   * It `true`, ignore passed children and display as a dot.
-   * @default false
-   */
-  dot?: boolean;
+export type BadgeProps = NativeElementPropsWithoutKeyAndRef<'span'> & {} & {
   /**
    * If the children is number and greater than overflowCount, it will show overflowCount suffixed with a "+".
    * @default 99
    */
   overflowCount?: number;
-}
+  variant: BadgeVariant;
+};
 
 /**
  * The react component for `mezzanine` badge.
@@ -25,20 +23,20 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     const {
       children: childrenProp,
       className,
-      dot = false,
-      overflowCount = 99,
+      overflowCount,
+      variant,
       ...rest
     } = props;
+
     let children: ReactNode;
+    const isCount = variant.startsWith('count-');
 
-    if (!dot) {
-      if (typeof childrenProp === 'number') {
-        const count = childrenProp;
+    if (isCount && !Number.isNaN(Number(childrenProp)) && !!overflowCount) {
+      const count = Number(childrenProp);
 
-        children = count > overflowCount ? `${overflowCount}+` : count;
-      } else {
-        children = childrenProp;
-      }
+      children = count > overflowCount ? `${overflowCount}+` : count;
+    } else {
+      children = childrenProp;
     }
 
     return (
@@ -47,9 +45,9 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         ref={ref}
         className={cx(
           classes.host,
+          classes.variant(variant),
           {
-            [classes.dot]: dot,
-            [classes.hide]: !dot && children === 0,
+            [classes.hide]: isCount && Number(children) === 0,
           },
           className,
         )}
