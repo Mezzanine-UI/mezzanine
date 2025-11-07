@@ -1,3 +1,5 @@
+'use client';
+
 import { createRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import {

@@ -1,10 +1,13 @@
+'use client';
+
 import {
   messageClasses as classes,
   messageIcons,
   MessageSeverity,
 } from '@mezzanine-ui/core/message';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import { FC, Key, useEffect, useState, useRef, useCallback } from 'react';
+import type { FC, Key } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import {
