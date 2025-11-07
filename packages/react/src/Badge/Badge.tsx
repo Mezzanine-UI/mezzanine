@@ -11,6 +11,9 @@ export type BadgeProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
    * If the children is number and greater than overflowCount, it will show overflowCount suffixed with a "+".
    */
   overflowCount?: number;
+  /**
+   * Controls the visual style (dot vs count variants) and enables the related overflow/hide rules.
+   */
   variant: BadgeVariant;
 };
 
