@@ -93,7 +93,6 @@ $count-type-config: (
       min-height: spacing.semantic-variable(size, element, base-fixed);
       padding-block: spacing.semantic-variable(padding, vertical, none);
       padding-inline: spacing.semantic-variable(padding, horizontal,tiny);
-
       color: map.get($count-type-config, $type, text-color);
       background-color: map.get($count-type-config, $type, background-color);
       border-radius: map.get($count-type-config, $type, border-radius);
