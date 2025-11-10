@@ -3,57 +3,94 @@ import {
   ReactElement,
   cloneElement,
   Children,
-  ReactNode,
+  useRef,
+  CSSProperties,
 } from 'react';
 import { stepperClasses as classes } from '@mezzanine-ui/core/stepper';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-
-export interface StepperProps
-  extends NativeElementPropsWithoutKeyAndRef<'div'> {
-  /**
-   * Set the active step (zero based index) and set other `<Step />` to completed or disabled depending on index.
-   * Set to -1 to disable all the steps.
-   * @default -1
-   */
-  activeStep?: number;
-  /**
-   * Two or more `<Step />` components.
-   */
-  children: ReactNode;
-}
+import { StepperProps, StepProps } from './typings';
+import { useStepDistance } from './useStepDistance';
 
 /**
  * The react component for `mezzanine` stepper.
  */
 const Stepper = forwardRef<HTMLDivElement, StepperProps>(
   function Stepper(props, ref) {
-    const { activeStep = -1, children, className, ...rest } = props;
+    const {
+      className,
+      children,
+      orientation,
+      processingStep = -1,
+      type,
+      ...rest
+    } = props;
 
     const childrenArray = Children.toArray(children);
+
+    const stepperRef = useRef<HTMLDivElement>(null);
+    const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    const stepPositions = useStepDistance(
+      orientation,
+      stepperRef,
+      stepRefs,
+      type,
+      childrenArray,
+    );
+
     const stepsWithState = childrenArray.map((element, index) => {
-      const step = element as ReactElement<any>;
-      const state = {
-        index,
-        active: activeStep === index,
-        completed: activeStep > index,
-        disabled: activeStep < index,
+      const step = element as ReactElement<StepProps>;
+      const appendProps: Partial<
+        Pick<StepProps, 'indicatorNumber' | 'status'>
+      > = {
+        indicatorNumber: index + 1,
+        status:
+          index + 1 === processingStep
+            ? ('processing' as StepProps['status'])
+            : undefined,
       };
 
-      if (step.props.active || step.props.disabled || step.props.completed) {
-        state.active = false;
-        state.completed = false;
-        state.disabled = false;
-      }
-
-      return cloneElement(step, {
-        ...state,
+      return cloneElement(step as ReactElement<any>, {
+        ...appendProps,
+        orientation,
+        type,
+        ref: (el: HTMLDivElement | null) => {
+          stepRefs.current[index] = el;
+        },
+        style: {
+          '--connect-line-distance': stepPositions?.distances?.[index]
+            ? `${stepPositions.distances[index]}px`
+            : undefined,
+          ...step.props.style,
+        } as CSSProperties,
         ...step.props,
       });
     });
 
     return (
-      <div className={cx(classes.host, className)} ref={ref} {...rest}>
+      <div
+        className={cx(
+          classes.host,
+          {
+            // orientation
+            [classes.horizontal]: orientation === 'horizontal',
+            [classes.vertical]: orientation === 'vertical',
+            // type
+            [classes.dot]: type === 'dot',
+            [classes.number]: type === 'number',
+          },
+          className,
+        )}
+        ref={(element) => {
+          stepperRef.current = element;
+          if (typeof ref === 'function') {
+            ref(element);
+          } else if (ref) {
+            ref.current = element;
+          }
+        }}
+        {...rest}
+      >
         {stepsWithState}
       </div>
     );
