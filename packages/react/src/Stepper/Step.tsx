@@ -61,11 +61,9 @@ const NumberStatusIndicator = ({
   }
 };
 
-const DotStatusIndicator = () => {
-  return (
-    <span className={cx(classes.statusIndicator, classes.statusIndicatorDot)} />
-  );
-};
+const DotStatusIndicator = () => (
+  <span className={cx(classes.statusIndicator, classes.statusIndicatorDot)} />
+);
 
 /**
  * The react component for `mezzanine` step.

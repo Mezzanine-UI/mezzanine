@@ -6,6 +6,7 @@ import {
   useRef,
   CSSProperties,
   useEffect,
+  useCallback,
 } from 'react';
 import { stepperClasses as classes } from '@mezzanine-ui/core/stepper';
 import { cx } from '../utils/cx';
@@ -20,9 +21,9 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
     const {
       children,
       className,
+      currentStep = 0,
       onStepChange,
       orientation = 'horizontal',
-      currentStep = 0,
       type = 'number',
       ...rest
     } = props;
@@ -32,6 +33,20 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
     const stepperRef = useRef<HTMLDivElement>(null);
     const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+    const mergedRef = useCallback(
+      (element: HTMLDivElement | null) => {
+        stepperRef.current = element;
+        if (ref) {
+          if (typeof ref === 'function') {
+            ref(element);
+          } else {
+            ref.current = element;
+          }
+        }
+      },
+      [ref],
+    );
+
     const stepPositions = useStepDistance(
       orientation,
       stepperRef,
@@ -40,36 +55,32 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
       childrenArray,
     );
 
+    const getStepStatus = (
+      index: number,
+      processingIndex: number,
+    ): StepProps['status'] => {
+      if (index === processingIndex) return 'processing';
+      if (index < processingIndex) return 'succeeded';
+      return 'pending';
+    };
+
     const stepsWithState = childrenArray.map((element, index) => {
       const step = element as ReactElement<StepProps>;
 
-      const getStepStatus = (
-        index: number,
-        processingIndex: number,
-      ): StepProps['status'] => {
-        if (index === processingIndex) return 'processing';
-        if (index < processingIndex) return 'succeeded';
-        return undefined;
-      };
-
-      const appendProps: Partial<Pick<StepProps, 'index' | 'status'>> = {
-        index,
-        status: getStepStatus(index, currentStep),
-      };
-
       return cloneElement(step as ReactElement<any>, {
-        ...appendProps,
+        index,
         orientation,
-        type,
         ref: (el: HTMLDivElement | null) => {
           stepRefs.current[index] = el;
         },
+        status: getStepStatus(index, currentStep),
         style: {
           '--connect-line-distance': stepPositions?.distances?.[index]
             ? `${stepPositions.distances[index]}px`
             : undefined,
           ...step.props.style,
         } as CSSProperties,
+        type,
         ...step.props,
       });
     });
@@ -82,27 +93,18 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
 
     return (
       <div
+        {...rest}
         className={cx(
           classes.host,
           {
-            // orientation
             [classes.horizontal]: orientation === 'horizontal',
             [classes.vertical]: orientation === 'vertical',
-            // type
             [classes.dot]: type === 'dot',
             [classes.number]: type === 'number',
           },
           className,
         )}
-        ref={(element) => {
-          stepperRef.current = element;
-          if (typeof ref === 'function') {
-            ref(element);
-          } else if (ref) {
-            ref.current = element;
-          }
-        }}
-        {...rest}
+        ref={mergedRef}
       >
         {stepsWithState}
       </div>

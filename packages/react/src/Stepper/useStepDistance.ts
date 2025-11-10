@@ -1,12 +1,12 @@
 import { stepClasses } from '@mezzanine-ui/core/stepper';
-import { useLayoutEffect, useState } from 'react';
+import { ReactNode, RefObject, useLayoutEffect, useState } from 'react';
 
 export const useStepDistance = (
   orientation: 'horizontal' | 'vertical',
-  stepperRef: React.RefObject<HTMLDivElement | null>,
-  stepRefs: React.RefObject<Array<HTMLDivElement | null>>,
+  stepperRef: RefObject<HTMLDivElement | null>,
+  stepRefs: RefObject<(HTMLDivElement | null)[]>,
   type: 'dot' | 'number',
-  childrenArray: Array<Exclude<React.ReactNode, boolean | null | undefined>>,
+  childrenArray: Array<Exclude<ReactNode, boolean | null | undefined>>,
 ) => {
   const [stepPositions, setStepPositions] = useState<{
     distances: number[];
