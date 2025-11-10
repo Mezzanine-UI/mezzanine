@@ -162,6 +162,10 @@ $variant-hierarchy: (
     }
   }
 
+  // Set gap between inline messages when not inside InlineMessageGroup
+  &:not(.#{$group-prefix} > &) {
+    margin-bottom: spacing.semantic-variable(gap, comfort);
+  }
 }
 
 .#{$group-prefix} {
@@ -176,13 +180,5 @@ $variant-hierarchy: (
 
   > .#{$prefix} {
     pointer-events: auto;
-  }
-
-  @each $type in $group-types {
-    &--#{$type} {
-      @if $type == 'form' {
-        gap: spacing.semantic-variable(gap, comfort);
-      }
-    }
   }
 }
