@@ -16,6 +16,7 @@ $padding-categories: (horizontal, vertical);
 // 定義各個分類下的 tones
 $element-tones: (
   hairline,
+  micro,
   tiny,
   tight,
   compact,
@@ -91,6 +92,10 @@ $semantic-spacings: (
       hairline: (
         default: primitive.variable(1),
         compact: primitive.variable(1),
+      ),
+      micro: (
+        default: primitive.variable(3),
+        compact: primitive.variable(3),
       ),
       tiny: (
         default: primitive.variable(4),
