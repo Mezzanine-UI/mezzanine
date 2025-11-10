@@ -2,10 +2,14 @@
 @use '~@mezzanine-ui/system/severity';
 
 $prefix: mzn-inline-message;
+$group-prefix: #{$prefix}-group;
 $severities: (info, warning, error);
 
 $variants: (
   base-info,
   base-error,
   base-warning,
-)
+);
+
+$group-placements: (top, center, bottom);
+$group-types: (message, form);

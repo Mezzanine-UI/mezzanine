@@ -16,7 +16,6 @@ export type InlineMessageSeverity = keyof typeof inlineMessageIcons;
 
 export const inlineMessageClasses = {
   host: inlineMessagePrefix,
-  root: `${inlineMessagePrefix}__root`,
   icon: `${inlineMessagePrefix}__icon`,
   contentContainer: `${inlineMessagePrefix}__content-container`,
   content: `${inlineMessagePrefix}__content`,

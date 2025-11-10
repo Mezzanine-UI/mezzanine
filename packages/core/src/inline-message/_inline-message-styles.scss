@@ -104,10 +104,6 @@ $variant-hierarchy: (
 
   @include _apply-padding($default-padding-config);
 
-  &:not(:first-child) {
-    margin-top: spacing.semantic-variable(gap, comfort);
-  }
-
   &__content-container {
     display: flex;
     align-items: center;
@@ -166,14 +162,31 @@ $variant-hierarchy: (
     }
   }
 
-  &__root {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: fixed;
-    z-index: z-index.get(feedback);
-    inset: 0;
-    pointer-events: none;
-    overflow: hidden;
+}
+
+.#{$group-prefix} {
+  display: flex;
+  flex-direction: column;
+  z-index: z-index.get(feedback);
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  gap: spacing.semantic-variable(gap, base);
+  margin-block: 0;
+
+  > .#{$prefix} {
+    pointer-events: auto;
+  }
+
+  @each $type in $group-types {
+    &--#{$type} {
+      @if $type == 'form' {
+        gap: spacing.semantic-variable(gap, comfort);
+      }
+
+      @if $type == 'message' {
+        gap: spacing.semantic-variable(gap, base);
+      }
+    }
   }
 }
