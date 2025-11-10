@@ -22,7 +22,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
       className,
       onStepChange,
       orientation = 'horizontal',
-      processingIndex = 0,
+      currentStep = 0,
       type = 'number',
       ...rest
     } = props;
@@ -54,7 +54,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
 
       const appendProps: Partial<Pick<StepProps, 'index' | 'status'>> = {
         index,
-        status: getStepStatus(index, processingIndex),
+        status: getStepStatus(index, currentStep),
       };
 
       return cloneElement(step as ReactElement<any>, {
@@ -76,9 +76,9 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
 
     useEffect(() => {
       if (typeof onStepChange === 'function') {
-        onStepChange(processingIndex);
+        onStepChange(currentStep);
       }
-    }, [processingIndex, onStepChange]);
+    }, [currentStep, onStepChange]);
 
     return (
       <div

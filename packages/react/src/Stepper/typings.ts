@@ -9,6 +9,13 @@ export interface StepperProps
   children: ReactElement<StepProps> | ReactElement<StepProps>[];
 
   /**
+   * Set the processing step index to replace step status.
+   * Index is zero-based (0 = first step, 1 = second step, etc.).
+   * @default 0
+   */
+  currentStep?: number;
+
+  /**
    * Callback fired when the step changes.
    * @param stepIndex The current step index after change.
    */
@@ -21,13 +28,6 @@ export interface StepperProps
    * @default 'horizontal'
    */
   orientation?: 'horizontal' | 'vertical';
-
-  /**
-   * Set the processing step index to replace step status.
-   * Index is zero-based (0 = first step, 1 = second step, etc.).
-   * @default 0
-   */
-  processingIndex?: number;
 
   /**
    * The type of step indicator.

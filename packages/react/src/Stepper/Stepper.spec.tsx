@@ -29,7 +29,7 @@ describe('<Stepper />', () => {
       it(`should render correct UI when type is ${type} and orientation is ${orientation}`, () => {
         const { container } = render(
           <Stepper
-            processingIndex={2}
+            currentStep={2}
             type={type as 'number' | 'dot'}
             orientation={orientation as 'horizontal' | 'vertical'}
           >
