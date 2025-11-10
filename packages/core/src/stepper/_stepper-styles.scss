@@ -112,13 +112,11 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
     &.#{$prefix-step}--dot {
       display: grid;
       row-gap: spacing.semantic-variable(gap, base);
-
       justify-items: center;
 
       .#{$prefix-step}__text-container {
         display: grid;
         gap: spacing.semantic-variable(gap, tight);
-
         text-align: center;
       }
 
