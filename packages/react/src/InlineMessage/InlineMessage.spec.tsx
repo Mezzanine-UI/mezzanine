@@ -11,29 +11,29 @@ describe('<InlineMessage />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<InlineMessage ref={ref} />),
+    render(<InlineMessage ref={ref} content="Test" severity="info" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<InlineMessage className={className} />),
+    render(<InlineMessage className={className} content="Test" severity="info" />),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<InlineMessage>Hello</InlineMessage>);
+    const { getHostHTMLElement } = render(<InlineMessage content="Hello" severity="info" />);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-inline-message')).toBeTruthy();
   });
 
-  it('should render children', () => {
-    const { getHostHTMLElement } = render(<InlineMessage>Hello World</InlineMessage>);
+  it('should render content', () => {
+    const { getHostHTMLElement } = render(<InlineMessage content="Hello World" severity="info" />);
     const element = getHostHTMLElement();
 
     expect(element.textContent).toContain('Hello World');
   });
 
   it('should have accessibility attributes', () => {
-    const { getHostHTMLElement } = render(<InlineMessage severity="info">Message</InlineMessage>);
+    const { getHostHTMLElement } = render(<InlineMessage content="Message" severity="info" />);
     const element = getHostHTMLElement();
 
     expect(element.getAttribute('role')).toBe('status');
@@ -46,7 +46,7 @@ describe('<InlineMessage />', () => {
     severities.forEach((severity) => {
       it(`should add class if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <InlineMessage severity={severity}>Message</InlineMessage>,
+          <InlineMessage content="Message" severity={severity} />,
         );
         const element = getHostHTMLElement();
 
@@ -57,7 +57,7 @@ describe('<InlineMessage />', () => {
 
       it(`should render default icon if severity="${severity}" and no custom icon`, () => {
         const { getHostHTMLElement } = render(
-          <InlineMessage severity={severity}>Message</InlineMessage>,
+          <InlineMessage content="Message" severity={severity} />,
         );
         const element = getHostHTMLElement();
         const iconElement = element.querySelector('.mzn-inline-message__icon');
@@ -70,9 +70,7 @@ describe('<InlineMessage />', () => {
   describe('prop: icon', () => {
     it('should render custom icon when provided', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="info" icon={InfoFilledIcon}>
-          Message
-        </InlineMessage>,
+        <InlineMessage content="Message" severity="info" icon={InfoFilledIcon} />,
       );
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-inline-message__icon');
@@ -81,19 +79,21 @@ describe('<InlineMessage />', () => {
       expect(iconElement?.getAttribute('data-icon-name')).toBe(InfoFilledIcon.name);
     });
 
-    it('should not render icon when severity is not provided', () => {
-      const { getHostHTMLElement } = render(<InlineMessage>Message</InlineMessage>);
+    it('should render default icon when custom icon is not provided', () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage content="Message" severity="info" />,
+      );
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-inline-message__icon');
 
-      expect(iconElement).toBeNull();
+      expect(iconElement).toBeTruthy();
     });
   });
 
   describe('prop: onClose', () => {
     it('should render close button when severity is info', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="info">Message</InlineMessage>,
+        <InlineMessage content="Message" severity="info" />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close');
@@ -103,7 +103,7 @@ describe('<InlineMessage />', () => {
 
     it('should not render close button when severity is warning', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="warning">Message</InlineMessage>,
+        <InlineMessage content="Message" severity="warning" />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close');
@@ -113,7 +113,7 @@ describe('<InlineMessage />', () => {
 
     it('should not render close button when severity is error', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="error">Message</InlineMessage>,
+        <InlineMessage content="Message" severity="error" />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close');
@@ -124,9 +124,7 @@ describe('<InlineMessage />', () => {
     it('should call onClose when close button is clicked', () => {
       const onClose = jest.fn();
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="info" onClose={onClose}>
-          Message
-        </InlineMessage>,
+        <InlineMessage content="Message" severity="info" onClose={onClose} />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
@@ -138,7 +136,7 @@ describe('<InlineMessage />', () => {
 
     it('should hide message when close button is clicked', () => {
       const { getHostHTMLElement, container } = render(
-        <InlineMessage severity="info">Message</InlineMessage>,
+        <InlineMessage content="Message" severity="info" />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
@@ -151,7 +149,7 @@ describe('<InlineMessage />', () => {
 
     it('should have aria-label on close button', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="info">Message</InlineMessage>,
+        <InlineMessage content="Message" severity="info" />,
       );
       const element = getHostHTMLElement();
       const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
@@ -163,7 +161,7 @@ describe('<InlineMessage />', () => {
   describe('content structure', () => {
     it('should render content in content container', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage severity="info">Message content</InlineMessage>,
+        <InlineMessage content="Message content" severity="info" />,
       );
       const element = getHostHTMLElement();
       const contentContainer = element.querySelector('.mzn-inline-message__content-container');

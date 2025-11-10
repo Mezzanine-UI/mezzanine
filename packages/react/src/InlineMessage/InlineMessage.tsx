@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, ReactNode, useCallback, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useMemo, useState } from 'react';
 
 import {
   inlineMessageClasses as classes,
@@ -11,9 +11,10 @@ import { CloseIcon, IconDefinition } from '@mezzanine-ui/icons';
 
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface InlineMessageProps {
-  children?: ReactNode;
+export interface InlineMessageProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  content: string;
   className?: string;
   /**
    * The icon of the inline message.
@@ -26,7 +27,7 @@ export interface InlineMessageProps {
   /**
    * The inline message severity (`'info' | 'warning' | 'error'`).
    */
-  severity?: InlineMessageSeverity;
+  severity: InlineMessageSeverity;
 }
 
 /**
@@ -37,7 +38,7 @@ export interface InlineMessageProps {
  */
 const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
   function InlineMessage(props, ref) {
-    const { children, className, icon, onClose, severity } = props;
+    const { content, className, icon, onClose, severity } = props;
     const [visible, setVisible] = useState(true);
 
     const handleClose = useCallback(() => {
@@ -49,10 +50,6 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
     }, [onClose]);
 
     const iconNode = useMemo(() => {
-      if (!severity) {
-        return null;
-      }
-
       if (icon) {
         return <Icon className={classes.icon} icon={icon} />;
       }
@@ -72,14 +69,14 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
         aria-live="polite"
         className={cx(
           classes.host,
-          severity ? classes.severity(severity) : '',
+          classes.severity(severity),
           className,
         )}
         role="status"
       >
         <div className={classes.contentContainer}>
           {iconNode}
-          <span className={classes.content}>{children}</span>
+          <span className={classes.content}>{content}</span>
         </div>
         {severity === 'info' ? (
           // TODO: should be remove when use the clearbutton component, but the clearbutton component is not yet implemented

@@ -66,7 +66,7 @@ describe('<InlineMessageGroup />', () => {
   it('should accept custom children', () => {
     const { getHostHTMLElement } = render(
       <InlineMessageGroup>
-        <InlineMessage severity="warning">自訂訊息</InlineMessage>
+        <InlineMessage content="自訂訊息" severity="warning" />
       </InlineMessageGroup>,
     );
 

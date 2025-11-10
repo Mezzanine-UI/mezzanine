@@ -13,9 +13,9 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import InlineMessage, { InlineMessageProps } from './InlineMessage';
 
 export interface InlineMessageGroupItem
-  extends Omit<InlineMessageProps, 'children'> {
+  extends Omit<InlineMessageProps, 'content'> {
   key: Key;
-  content: ReactNode;
+  content: string;
 }
 
 export interface InlineMessageGroupProps
@@ -43,6 +43,7 @@ const mapItemsToMessages = (
     <InlineMessage
       key={key}
       {...restItemProps}
+      content={content}
       onClose={() => {
         if (onClose) {
           onClose();
@@ -52,9 +53,7 @@ const mapItemsToMessages = (
           onItemClose(key);
         }
       }}
-    >
-      {content}
-    </InlineMessage>
+    />
   ));
 
 const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
