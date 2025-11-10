@@ -5,6 +5,7 @@ import {
   Children,
   useRef,
   CSSProperties,
+  useEffect,
 } from 'react';
 import { stepperClasses as classes } from '@mezzanine-ui/core/stepper';
 import { cx } from '../utils/cx';
@@ -17,8 +18,9 @@ import { useStepDistance } from './useStepDistance';
 const Stepper = forwardRef<HTMLDivElement, StepperProps>(
   function Stepper(props, ref) {
     const {
-      className,
       children,
+      className,
+      onStepChange,
       orientation = 'horizontal',
       processingIndex = 0,
       type = 'number',
@@ -71,6 +73,12 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
         ...step.props,
       });
     });
+
+    useEffect(() => {
+      if (typeof onStepChange === 'function') {
+        onStepChange(processingIndex);
+      }
+    }, [processingIndex, onStepChange]);
 
     return (
       <div

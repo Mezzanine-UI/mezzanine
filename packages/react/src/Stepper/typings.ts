@@ -9,6 +9,12 @@ export interface StepperProps
   children: ReactElement<StepProps> | ReactElement<StepProps>[];
 
   /**
+   * Callback fired when the step changes.
+   * @param stepIndex The current step index after change.
+   */
+  onStepChange?: (stepIndex: number) => void;
+
+  /**
    * The orientation of the stepper.
    * - 'horizontal': Steps arranged horizontally
    * - 'vertical': Steps arranged vertically

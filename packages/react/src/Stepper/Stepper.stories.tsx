@@ -107,6 +107,10 @@ export const Playground: StoryFn<PlaygroundArgs> = ({ stepCount }) => {
           orientation="horizontal"
           type="number"
           processingIndex={current}
+          onStepChange={(stepIndex) =>
+            // eslint-disable-next-line no-console
+            console.log(`Horizontal Number Step Changed: ${stepIndex}`)
+          }
         >
           {Array.from(Array(storyStepCount)).map((_, idx) => (
             <Step
