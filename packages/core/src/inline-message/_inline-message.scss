@@ -1,0 +1,11 @@
+@use 'sass:list';
+@use '~@mezzanine-ui/system/severity';
+
+$prefix: mzn-inline-message;
+$severities: (info, warning, error);
+
+$variants: (
+  base-info,
+  base-error,
+  base-warning,
+)
