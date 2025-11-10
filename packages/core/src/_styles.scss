@@ -51,6 +51,7 @@
   @include _load-styles($options, accordion);
   @include _load-styles($options, tree);
   @include _load-styles($options, table);
+  @include _load-styles($options, inline-message);
 
   // Data Entry
   @include _load-styles($options, checkbox);
