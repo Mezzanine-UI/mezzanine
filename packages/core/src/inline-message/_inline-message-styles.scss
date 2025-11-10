@@ -18,6 +18,7 @@ $base-info: (
   background-color: palette.semantic-variable(background, info-faint),
   icon-color: palette.semantic-variable(icon, info-strong),
   text-color: palette.semantic-variable(text, info-strong),
+  // TODO: should be remove when use the clearbutton component
   close-hover-bg: var(--background-error, #{palette.semantic-variable(background, error, 16)}),
 );
 
@@ -26,6 +27,7 @@ $base-error: (
   background-color: palette.semantic-variable(background, error-faint),
   icon-color: palette.semantic-variable(icon, error-strong),
   text-color: palette.semantic-variable(text, error-strong),
+  // TODO: should be remove when use the clearbutton component
   close-hover-bg: none,
 );
 
@@ -34,6 +36,7 @@ $base-warning: (
   background-color: palette.semantic-variable(background, warning-faint),
   icon-color: palette.semantic-variable(icon, warning-strong),
   text-color: palette.semantic-variable(text, warning-strong),
+  // TODO: should be remove when use the clearbutton component
   close-hover-bg: none,
 );
 
@@ -62,6 +65,7 @@ $variant-hierarchy: (
   $background-color: _get-color($variant, background-color);
   $icon-color: _get-color($variant, icon-color);
   $text-color: _get-color($variant, text-color);
+  // TODO: should be remove when use the clearbutton component
   $close-hover-bg: _get-color($variant, close-hover-bg);
 
   @if $background-color {
@@ -76,6 +80,7 @@ $variant-hierarchy: (
     --#{$prefix}-text-color: #{$text-color};
   }
 
+  // TODO: should be remove when use the clearbutton component
   @if $close-hover-bg {
     --#{$prefix}-close-hover-bg: #{$close-hover-bg};
   }
@@ -122,6 +127,7 @@ $variant-hierarchy: (
   }
 
   &__close {
+    // TODO: should be remove when use the clearbutton component
     background-color: transparent;
     border: 0;
     padding: spacing.semantic-variable(padding, vertical, micro)
@@ -143,6 +149,7 @@ $variant-hierarchy: (
   }
 
   &__close-icon {
+    // TODO: should be remove when use the clearbutton component
     color: palette.semantic-variable(icon, neutral);
     font-size: spacing.semantic-variable(size, element, base);
   }
