@@ -106,7 +106,7 @@ export const useStepDistance = (
     return () => {
       window.removeEventListener('resize', calculatePositions);
     };
-  }, [orientation, type, childrenArray?.length, stepperRef, stepRefs]);
+  }, [orientation, type, childrenArray.length, stepperRef, stepRefs]);
 
   return stepPositions;
 };

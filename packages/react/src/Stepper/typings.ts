@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface StepperProps
@@ -7,25 +7,28 @@ export interface StepperProps
    * The type of step indicator.
    * - 'dot': Display as dots
    * - 'number': Display as numbers
+   * @default 'number'
    */
-  type: 'dot' | 'number';
+  type?: 'dot' | 'number';
 
   /**
    * The orientation of the stepper.
    * - 'horizontal': Steps arranged horizontally
    * - 'vertical': Steps arranged vertically
+   * @default 'horizontal'
    */
-  orientation: 'horizontal' | 'vertical';
+  orientation?: 'horizontal' | 'vertical';
 
   /**
    * Set the processing step to replace step status.
+   * @default 0 (process the first step)
    */
-  processingStep?: number;
+  processingIndex?: number;
 
   /**
    * Three or more `<Step />` components.
    */
-  children: ReactNode;
+  children: ReactElement<StepProps> | ReactElement<StepProps>[];
 }
 
 export interface StepProps
@@ -57,9 +60,9 @@ export interface StepProps
   description?: string;
 
   /**
-   * Step indicator number. automatically set by the parent <Stepper />.
+   * Step index. automatically set by the parent <Stepper />.
    */
-  indicatorNumber?: number;
+  index?: number;
 
   /**
    * The orientation of the step, inherited from parent Stepper.

@@ -19,9 +19,9 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
     const {
       className,
       children,
-      orientation,
-      processingStep = -1,
-      type,
+      orientation = 'horizontal',
+      processingIndex = 0,
+      type = 'number',
       ...rest
     } = props;
 

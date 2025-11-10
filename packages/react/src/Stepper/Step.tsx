@@ -74,7 +74,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
   const {
     className,
     description,
-    indicatorNumber = 1,
+    index = 0,
     orientation,
     status = 'pending',
     title,
@@ -121,7 +121,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
         {/* title (required) */}
         <Typography className={classes.title} variant="label-primary-highlight">
           {title}
-          <span className={classes.titleConnectLine}></span>
+          <span className={classes.titleConnectLine} />
         </Typography>
         {/* description (optional) */}
         {description && (

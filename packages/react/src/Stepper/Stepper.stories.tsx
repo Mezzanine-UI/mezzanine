@@ -31,14 +31,14 @@ export const Status = () => (
         gap: '24px',
       }}
     >
-      <Stepper orientation="horizontal" type="number" processingStep={1}>
+      <Stepper orientation="horizontal" type="number" processingIndex={0}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
         <Step title={'error'} error />
         <Step title={'disabled'} disabled />
       </Stepper>
-      <Stepper orientation="horizontal" type="dot" processingStep={1}>
+      <Stepper orientation="horizontal" type="dot" processingIndex={0}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
@@ -53,14 +53,14 @@ export const Status = () => (
         justifyContent: 'space-around',
       }}
     >
-      <Stepper orientation="vertical" type="number" processingStep={1}>
+      <Stepper orientation="vertical" type="number" processingIndex={0}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
         <Step title={'error'} error />
         <Step title={'disabled'} disabled />
       </Stepper>
-      <Stepper orientation="vertical" type="dot" processingStep={1}>
+      <Stepper orientation="vertical" type="dot" processingIndex={0}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
@@ -106,7 +106,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({ stepCount }) => {
         <Stepper
           orientation="horizontal"
           type="number"
-          processingStep={current}
+          processingIndex={current}
         >
           {Array.from(Array(storyStepCount)).map((_, idx) => (
             <Step
@@ -117,7 +117,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({ stepCount }) => {
             />
           ))}
         </Stepper>
-        <Stepper orientation="horizontal" type="dot" processingStep={current}>
+        <Stepper orientation="horizontal" type="dot" processingIndex={current}>
           {Array.from(Array(storyStepCount)).map((_, idx) => (
             <Step
               key={exampleSteps[idx % 3] + idx.toString()}
@@ -137,7 +137,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({ stepCount }) => {
           justifyContent: 'space-around',
         }}
       >
-        <Stepper orientation="vertical" type="number" processingStep={current}>
+        <Stepper orientation="vertical" type="number" processingIndex={current}>
           {Array.from(Array(storyStepCount)).map((_, idx) => (
             <Step
               key={exampleSteps[idx % 3] + idx.toString()}
@@ -147,7 +147,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({ stepCount }) => {
             />
           ))}
         </Stepper>
-        <Stepper orientation="vertical" type="dot" processingStep={current}>
+        <Stepper orientation="vertical" type="dot" processingIndex={current}>
           {Array.from(Array(storyStepCount)).map((_, idx) => (
             <Step
               key={exampleSteps[idx % 3] + idx.toString()}
