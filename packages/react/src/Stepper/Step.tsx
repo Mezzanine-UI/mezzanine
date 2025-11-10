@@ -35,17 +35,19 @@ const indicatorNumberIconList = [
 /** icon and indicatorNumber */
 const NumberStatusIndicator = ({
   status,
+  error,
   indicatorNumber,
 }: {
-  status: string;
+  status: StepProps['status'];
+  error?: boolean;
   indicatorNumber: number;
 }) => {
-  switch (status) {
-    case 'succeeded':
+  switch (true) {
+    case status === 'succeeded':
       return (
         <Icon className={classes.statusIndicator} icon={CheckedOutlineIcon} />
       );
-    case 'error':
+    case status !== 'processing' && error:
       return (
         <Icon className={classes.statusIndicator} icon={DangerousFilledIcon} />
       );
@@ -77,6 +79,8 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
     status = 'pending',
     title,
     type = 'number',
+    error,
+    disabled,
     ...rest
   } = props;
 
@@ -89,8 +93,8 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
           [classes.processing]: status === 'processing',
           [classes.pending]: status === 'pending',
           [classes.succeeded]: status === 'succeeded',
-          [classes.error]: status === 'error',
-          [classes.disabled]: status === 'disabled',
+          [classes.error]: status !== 'processing' && error,
+          [classes.disabled]: status !== 'processing' && disabled,
           // orientation
           [classes.horizontal]: orientation === 'horizontal',
           [classes.vertical]: orientation === 'vertical',
@@ -98,7 +102,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
           [classes.dot]: type === 'dot',
           [classes.number]: type === 'number',
           // interactive
-          [classes.interactive]: rest.onClick && status !== 'disabled',
+          [classes.interactive]: rest.onClick && !disabled,
         },
         className,
       )}
@@ -108,7 +112,8 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
       {type === 'number' && (
         <NumberStatusIndicator
           status={status}
-          indicatorNumber={indicatorNumber}
+          indicatorNumber={index + 1}
+          error={error}
         />
       )}
       {type === 'dot' && <DotStatusIndicator />}

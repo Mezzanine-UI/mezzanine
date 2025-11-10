@@ -35,15 +35,15 @@ export const Status = () => (
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} status="error" />
-        <Step title={'disabled'} status="disabled" />
+        <Step title={'error'} error />
+        <Step title={'disabled'} disabled />
       </Stepper>
       <Stepper orientation="horizontal" type="dot" processingStep={1}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} status="error" />
-        <Step title={'disabled'} status="disabled" />
+        <Step title={'error'} error />
+        <Step title={'disabled'} disabled />
       </Stepper>
     </div>
 
@@ -57,15 +57,15 @@ export const Status = () => (
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} status="error" />
-        <Step title={'disabled'} status="disabled" />
+        <Step title={'error'} error />
+        <Step title={'disabled'} disabled />
       </Stepper>
       <Stepper orientation="vertical" type="dot" processingStep={1}>
         <Step title={'processing'} status="processing" />
         <Step title={'pending'} status="pending" />
         <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} status="error" />
-        <Step title={'disabled'} status="disabled" />
+        <Step title={'error'} error />
+        <Step title={'disabled'} disabled />
       </Stepper>
     </div>
   </div>

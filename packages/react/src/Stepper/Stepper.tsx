@@ -40,14 +40,19 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
 
     const stepsWithState = childrenArray.map((element, index) => {
       const step = element as ReactElement<StepProps>;
-      const appendProps: Partial<
-        Pick<StepProps, 'indicatorNumber' | 'status'>
-      > = {
-        indicatorNumber: index + 1,
-        status:
-          index + 1 === processingStep
-            ? ('processing' as StepProps['status'])
-            : undefined,
+
+      const getStepStatus = (
+        index: number,
+        processingIndex: number,
+      ): StepProps['status'] => {
+        if (index === processingIndex) return 'processing';
+        if (index < processingIndex) return 'succeeded';
+        return undefined;
+      };
+
+      const appendProps: Partial<Pick<StepProps, 'index' | 'status'>> = {
+        index,
+        status: getStepStatus(index, processingIndex),
       };
 
       return cloneElement(step as ReactElement<any>, {

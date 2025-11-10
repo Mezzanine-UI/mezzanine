@@ -34,14 +34,22 @@ export interface StepProps
     'title' | 'children'
   > {
   /**
-   * The current status of the step.
+   * The current status of the step, automatically set by the parent <Stepper />.
    * - 'processing': Currently active/in progress
    * - 'pending': Waiting to be processed
    * - 'succeeded': Successfully completed
-   * - 'error': Failed or has errors
-   * - 'disabled': Not available for interaction
    */
-  status?: 'processing' | 'pending' | 'succeeded' | 'error' | 'disabled';
+  status?: 'processing' | 'pending' | 'succeeded';
+
+  /**
+   * Whether the step is in error state.
+   */
+  error?: boolean;
+
+  /**
+   * Whether the step is disabled.
+   */
+  disabled?: boolean;
 
   /**
    * The step description, visible if value is not empty.
