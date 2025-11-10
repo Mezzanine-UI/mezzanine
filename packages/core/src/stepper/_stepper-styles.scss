@@ -210,7 +210,6 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
 
   @each $current-status, $colors in $status-colors {
     &--#{$current-status} {
-
       .#{$prefix-step}__status-indicator {
         color: _get-status-color($current-status, status-indicator-color);
       }
