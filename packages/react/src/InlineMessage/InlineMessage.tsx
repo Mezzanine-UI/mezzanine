@@ -82,6 +82,7 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
           <span className={classes.content}>{children}</span>
         </div>
         {severity === 'info' ? (
+          // TODO: should be remove when use the clearbutton component, but the clearbutton component is not yet implemented
           <button
             aria-label="Close"
             className={classes.close}
