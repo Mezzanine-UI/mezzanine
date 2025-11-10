@@ -183,10 +183,6 @@ $variant-hierarchy: (
       @if $type == 'form' {
         gap: spacing.semantic-variable(gap, comfort);
       }
-
-      @if $type == 'message' {
-        gap: spacing.semantic-variable(gap, base);
-      }
     }
   }
 }
