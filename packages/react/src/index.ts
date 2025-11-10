@@ -355,8 +355,13 @@ export type { SkeletonProps } from './Skeleton';
 export { default as Spin } from './Spin';
 export type { SpinProps } from './Spin';
 
-export { default as InlineMessage } from './InlineMessage';
-export type { InlineMessageProps } from './InlineMessage';
+export { default as InlineMessage, InlineMessageGroup } from './InlineMessage';
+export type {
+  InlineMessageGroupItem,
+  InlineMessageGroupProps,
+  InlineMessageGroupType,
+  InlineMessageProps,
+} from './InlineMessage';
 
 /**
  * Others
