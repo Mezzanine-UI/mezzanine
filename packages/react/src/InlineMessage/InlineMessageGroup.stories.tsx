@@ -35,14 +35,6 @@ const defaultItems: InlineMessageGroupItem[] = [
 export const Basic: Story = {
   args: {
     items: defaultItems,
-    type: 'message',
-  },
-};
-
-export const FormBasic: Story = {
-  args: {
-    items: defaultItems,
-    type: 'form',
   },
 };
 

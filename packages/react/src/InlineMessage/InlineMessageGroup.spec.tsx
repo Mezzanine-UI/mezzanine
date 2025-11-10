@@ -74,25 +74,5 @@ describe('<InlineMessageGroup />', () => {
       getHostHTMLElement().classList.contains(inlineMessageGroupClasses.host),
     ).toBeTruthy();
   });
-
-  it('should apply type modifier class', () => {
-    const { getHostHTMLElement: getMessageHost } = render(
-      <InlineMessageGroup type="message" />,
-    );
-
-    expect(
-      getMessageHost().classList.contains(
-        inlineMessageGroupClasses.type('message'),
-      ),
-    ).toBeTruthy();
-
-    const { getHostHTMLElement: getFormHost } = render(
-      <InlineMessageGroup type="form" />,
-    );
-
-    expect(
-      getFormHost().classList.contains(inlineMessageGroupClasses.type('form')),
-    ).toBeTruthy();
-  });
 });
 

@@ -359,7 +359,6 @@ export { default as InlineMessage, InlineMessageGroup } from './InlineMessage';
 export type {
   InlineMessageGroupItem,
   InlineMessageGroupProps,
-  InlineMessageGroupType,
   InlineMessageProps,
 } from './InlineMessage';
 

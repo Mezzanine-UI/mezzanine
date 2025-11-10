@@ -1,6 +1,5 @@
 import {
   inlineMessageGroupClasses as classes,
-  InlineMessageGroupType,
 } from '@mezzanine-ui/core/inline-message';
 import {
   forwardRef,
@@ -30,11 +29,6 @@ export interface InlineMessageGroupProps
    * Custom inline message nodes.
    */
   children?: ReactNode;
-  /**
-   * Visual density configuration for the group.
-   * @default 'message'
-   */
-  type?: InlineMessageGroupType;
   /**
    * Callback invoked when any item triggers `onClose`.
    */
@@ -69,7 +63,6 @@ const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
       children: childrenProp,
       className,
       items,
-      type = 'message',
       onItemClose,
       ...rest
     } = props;
@@ -85,7 +78,6 @@ const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
         ref={ref}
         className={cx(
           classes.host,
-          classes.type(type),
           className,
         )}
         aria-live="polite"
@@ -98,6 +90,4 @@ const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
 );
 
 export default InlineMessageGroup;
-
-export type { InlineMessageGroupType };
 
