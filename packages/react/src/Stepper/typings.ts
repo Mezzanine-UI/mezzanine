@@ -4,12 +4,9 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 export interface StepperProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * The type of step indicator.
-   * - 'dot': Display as dots
-   * - 'number': Display as numbers
-   * @default 'number'
+   * Three or more `<Step />` components.
    */
-  type?: 'dot' | 'number';
+  children: ReactElement<StepProps> | ReactElement<StepProps>[];
 
   /**
    * The orientation of the stepper.
@@ -20,15 +17,19 @@ export interface StepperProps
   orientation?: 'horizontal' | 'vertical';
 
   /**
-   * Set the processing step to replace step status.
-   * @default 0 (process the first step)
+   * Set the processing step index to replace step status.
+   * Index is zero-based (0 = first step, 1 = second step, etc.).
+   * @default 0
    */
   processingIndex?: number;
 
   /**
-   * Three or more `<Step />` components.
+   * The type of step indicator.
+   * - 'dot': Display as dots
+   * - 'number': Display as numbers
+   * @default 'number'
    */
-  children: ReactElement<StepProps> | ReactElement<StepProps>[];
+  type?: 'dot' | 'number';
 }
 
 export interface StepProps
@@ -37,30 +38,25 @@ export interface StepProps
     'title' | 'children'
   > {
   /**
-   * The current status of the step, automatically set by the parent <Stepper />.
-   * - 'processing': Currently active/in progress
-   * - 'pending': Waiting to be processed
-   * - 'succeeded': Successfully completed
-   */
-  status?: 'processing' | 'pending' | 'succeeded';
-
-  /**
-   * Whether the step is in error state.
-   */
-  error?: boolean;
-
-  /**
-   * Whether the step is disabled.
-   */
-  disabled?: boolean;
-
-  /**
    * The step description, visible if value is not empty.
    */
   description?: string;
 
   /**
-   * Step index. automatically set by the parent <Stepper />.
+   * Whether the step is disabled.
+   * Only applies when status is not 'processing'.
+   */
+  disabled?: boolean;
+
+  /**
+   * Whether the step is in error state.
+   * Only applies when status is not 'processing'.
+   */
+  error?: boolean;
+
+  /**
+   * Step index, automatically set by the parent <Stepper />.
+   * Zero-based index (0 = first step, 1 = second step, etc.).
    */
   index?: number;
 
@@ -70,6 +66,14 @@ export interface StepProps
    * - 'vertical': Step arranged vertically
    */
   orientation?: 'horizontal' | 'vertical';
+
+  /**
+   * The current status of the step, automatically set by the parent <Stepper />.
+   * - 'processing': Currently active/in progress
+   * - 'pending': Waiting to be processed (default for future steps)
+   * - 'succeeded': Successfully completed
+   */
+  status?: 'processing' | 'pending' | 'succeeded';
 
   /**
    * The step title.
