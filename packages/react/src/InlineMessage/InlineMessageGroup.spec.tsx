@@ -75,17 +75,6 @@ describe('<InlineMessageGroup />', () => {
     ).toBeTruthy();
   });
 
-  it('should apply placement modifier class', () => {
-    const { getHostHTMLElement } = render(
-      <InlineMessageGroup placement="bottom" />,
-    );
-
-    expect(
-      getHostHTMLElement()
-        .classList.contains(inlineMessageGroupClasses.placement('bottom')),
-    ).toBeTruthy();
-  });
-
   it('should apply type modifier class', () => {
     const { getHostHTMLElement: getMessageHost } = render(
       <InlineMessageGroup type="message" />,

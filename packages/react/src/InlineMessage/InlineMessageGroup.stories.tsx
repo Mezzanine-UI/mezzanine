@@ -42,7 +42,6 @@ export const Basic: Story = {
 export const FormBasic: Story = {
   args: {
     items: defaultItems,
-    placement: 'top',
     type: 'form',
   },
 };

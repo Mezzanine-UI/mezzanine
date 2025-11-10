@@ -1,6 +1,5 @@
 import {
   inlineMessageGroupClasses as classes,
-  InlineMessageGroupPlacement,
   InlineMessageGroupType,
 } from '@mezzanine-ui/core/inline-message';
 import {
@@ -31,11 +30,6 @@ export interface InlineMessageGroupProps
    * Custom inline message nodes.
    */
   children?: ReactNode;
-  /**
-   * The vertical placement of the group container.
-   * @default 'center'
-   */
-  placement?: InlineMessageGroupPlacement;
   /**
    * Visual density configuration for the group.
    * @default 'message'
@@ -75,7 +69,6 @@ const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
       children: childrenProp,
       className,
       items,
-      placement = 'center',
       type = 'message',
       onItemClose,
       ...rest
@@ -92,7 +85,6 @@ const InlineMessageGroup = forwardRef<HTMLDivElement, InlineMessageGroupProps>(
         ref={ref}
         className={cx(
           classes.host,
-          classes.placement(placement),
           classes.type(type),
           className,
         )}
