@@ -10,7 +10,7 @@ $status-colors: (
     description-color: palette.semantic-variable(text, neutral),
     status-indicator-color: palette.semantic-variable(icon, brand),
     status-indicator-background-color: palette.semantic-variable(background, brand-subtle),
-    line-color: palette.semantic-variable(border, brand),
+    line-color: palette.semantic-variable(border, neutral-light),
   ),
   pending: (
     title-color: palette.semantic-variable(text, neutral),
@@ -101,7 +101,6 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
               left: 100%;
               width: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(size, element, tight)});
               height: 1px;
-              background-color: palette.semantic-variable(border, neutral-light);
               transform: translateY(-50%);
             }
           }
@@ -134,7 +133,6 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
           top: 50%;
           width: calc(var(--connect-line-distance, 0) - $dotBoxShadowMargin - $dotBoxShadowMargin);
           height: 1px;
-          background-color: palette.semantic-variable(border, neutral-light);
           transform: translateY(-50%);
         }
       }
@@ -161,7 +159,6 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
           left: 50%;
           width: 1px;
           height: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(gap, tiny)});
-          background-color: palette.semantic-variable(border, neutral-light);
           transform: translateX(-50%);
         }
       }
@@ -195,7 +192,6 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
           left: 50%;
           width: 1px;
           height: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(gap, tiny)} - $dotBoxShadowMargin);
-          background-color: palette.semantic-variable(border, neutral-light);
           transform: translateX(-50%);
         }
       }
@@ -224,8 +220,16 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
         }
       }
 
+      .#{$prefix-step}__title {
+        color: _get-status-color($current-status, title-color);
+      }
+
+      .#{$prefix-step}__description {
+        color: _get-status-color($current-status, description-color);
+      }
+
       // Connect line color based on status
-      .#{$prefix-step}__title::after,
+      .#{$prefix-step}__title-connect-line::after,
       .#{$prefix-step}__status-indicator::after,
       .#{$prefix-step}__status-indicator-dot::after {
         background-color: _get-status-color($current-status, line-color);
