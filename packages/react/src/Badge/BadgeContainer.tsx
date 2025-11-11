@@ -6,7 +6,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 export type BadgeContainerProps = NativeElementPropsWithoutKeyAndRef<'span'>;
 
 /**
- * The react component for `mezzanine` badge container.
+ * @deprecated Use `Badge` component instead.
  */
 const BadgeContainer = forwardRef<HTMLSpanElement, BadgeContainerProps>(
   function BadgeContainer(props, ref) {
