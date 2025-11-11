@@ -6,18 +6,15 @@ import { CloseIcon } from '@mezzanine-ui/icons';
 
 import {
   dismissButtonClasses as classes,
+  DismissButtonEmbeddedVariant,
+  DismissButtonStandardVariant,
+  DismissButtonType,
+  DismissButtonVariant,
 } from '@mezzanine-ui/core/dismiss-button';
 
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-
-type DismissButtonType = 'embedded' | 'standard';
-type DismissButtonEmbeddedVariant = 'contrast' | 'emphasis';
-type DismissButtonStandardVariant = 'base' | 'inverse';
-type DismissButtonVariant =
-  | DismissButtonEmbeddedVariant
-  | DismissButtonStandardVariant;
 
 type DismissButtonCommonProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'button'>,
