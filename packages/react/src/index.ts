@@ -47,6 +47,8 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from './Button';
+export { default as DismissButton } from './DismissButton';
+export type { DismissButtonProps } from './DismissButton';
 export { default as Icon } from './Icon';
 export type { IconColor, IconProps } from './Icon';
 export { default as Typography } from './Typography';
