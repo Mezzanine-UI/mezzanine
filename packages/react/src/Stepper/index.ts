@@ -1,4 +1,5 @@
-export type { StepProps } from './Step';
+export type { StepProps } from './typings';
 export { default as Step } from './Step';
-export type { StepperProps } from './Stepper';
+export type { StepperProps } from './typings';
 export { default } from './Stepper';
+export { useStepper } from './useStepper';

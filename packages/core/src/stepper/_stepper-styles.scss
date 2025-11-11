@@ -1,79 +1,248 @@
+@use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/spacing';
 @use './stepper' as *;
 
-$icon-size: 24px !default;
-$stepper-padding: spacing.level(4) !default;
-$step-items-margin-right: spacing.level(2) !default;
+$status-colors: (
+  processing: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    status-indicator-color: palette.semantic-variable(icon, brand),
+    status-indicator-background-color: palette.semantic-variable(background, brand-subtle),
+    line-color: palette.semantic-variable(border, neutral-light),
+  ),
+  pending: (
+    title-color: palette.semantic-variable(text, neutral),
+    description-color: palette.semantic-variable(text, neutral),
+    status-indicator-color: palette.semantic-variable(icon, neutral-light),
+    status-indicator-background-color: none,
+    line-color: palette.semantic-variable(border, neutral-light),
+  ),
+  succeeded: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    status-indicator-color: palette.semantic-variable(icon, brand),
+    status-indicator-background-color: none,
+    line-color: palette.semantic-variable(border, brand),
+  ),
+  error: (
+    title-color: palette.semantic-variable(text, error),
+    description-color: palette.semantic-variable(text, neutral),
+    status-indicator-color: palette.semantic-variable(icon, error),
+    status-indicator-background-color: none,
+    line-color: palette.semantic-variable(border, neutral-light),
+  ),
+  disabled: (
+    title-color: palette.semantic-variable(text, neutral-light),
+    description-color: palette.semantic-variable(text, neutral-light),
+    status-indicator-color: palette.semantic-variable(icon, neutral-light),
+    status-indicator-background-color: none,
+    line-color: palette.semantic-variable(border, neutral-light),
+  ),
+);
 
-.#{$prefix} {
-  align-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  display: flex;
-  margin: $stepper-padding;
+@function _get-status-color($status, $property) {
+  $status-map: map.get($status-colors, $status);
+
+  @if $status-map {
+    $value: map.get($status-map, $property);
+
+    @return if($value == none, null, $value);
+  }
+
+  @return null;
 }
 
-.#{$prefix-step} {
-  --#{$prefix-step}-color: #{palette.color(text-primary)};
-
-  align-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  color: var(--#{$prefix-step}-color);
+.#{$prefix} {
   display: flex;
-  flex-grow: 1;
-  position: relative;
-  white-space: nowrap;
+  justify-content: space-between;
 
-  // display step number or icon
-  &__icon-background {
-    --#{$prefix-step}-icon-background-color: #{palette.color(on-primary)};
-    --#{$prefix-step}-icon-background-background: #{palette.color(primary)};
+  &--vertical {
+    flex-direction: column;
+  }
+}
 
-    align-items: center;
-    background-color: var(--#{$prefix-step}-icon-background-background);
-    border-radius: 50%;
-    color: var(--#{$prefix-step}-icon-background-color);
-    display: flex;
-    height: $icon-size;
-    place-content: center;
-    margin-right: $step-items-margin-right;
-    width: $icon-size;
+$dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
+
+.#{$prefix-step} {
+  &--interactive {
+    cursor: pointer;
   }
 
-  &--disabled {
-    --#{$prefix-step}-color: #{palette.color(text-disabled)};
-    --#{$prefix-step}-icon-color: #{palette.color(on-primary)};
+  &--horizontal {
+    height: fit-content;
+    min-width: spacing.semantic-variable(size, container, tight);
+
+    // horizontal number
+    &.#{$prefix-step}--number {
+      display: flex;
+      column-gap: spacing.semantic-variable(gap, tight);
+
+      .#{$prefix-step}__text-container {
+        display: grid;
+
+        .#{$prefix-step}__title {
+          display: flex;
+          align-items: center;
+          height: spacing.semantic-variable(size, element, relaxed);
+
+          // for connect line
+          column-gap: spacing.semantic-variable(gap, tight);
+
+          .#{$prefix-step}__title-connect-line {
+            position: relative;
+
+            &::after {
+              pointer-events: none;
+              content: '';
+              position: absolute;
+              top: 50%;
+              left: 100%;
+              width: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(size, element, tight)});
+              height: 1px;
+              transform: translateY(-50%);
+            }
+          }
+        }
+      }
+    }
+
+    // horizontal dot
+    &.#{$prefix-step}--dot {
+      display: grid;
+      row-gap: spacing.semantic-variable(gap, base);
+      justify-items: center;
+
+      .#{$prefix-step}__text-container {
+        display: grid;
+        gap: spacing.semantic-variable(gap, tight);
+        text-align: center;
+      }
+
+      .#{$prefix-step}__status-indicator-dot {
+        position: relative;
+
+        &::after {
+          pointer-events: none;
+          content: '';
+          position: absolute;
+          left: calc(100% + $dotBoxShadowMargin);
+          top: 50%;
+          width: calc(var(--connect-line-distance, 0) - $dotBoxShadowMargin - $dotBoxShadowMargin);
+          height: 1px;
+          transform: translateY(-50%);
+        }
+      }
+    }
   }
 
-  &--disabled > &__icon-background {
-    --#{$prefix-step}-icon-background-color: #{palette.color(text-disabled)};
-    --#{$prefix-step}-icon-background-background: #{palette.color(action-disabled-bg)};
+  &--vertical {
+    min-height: spacing.semantic-variable(size, container, collapsed);
+    width: fit-content;
+
+    // vertical number
+    &.#{$prefix-step}--number {
+      display: flex;
+      column-gap: spacing.semantic-variable(gap, tight);
+      align-items: start;
+
+      .#{$prefix-step}__status-indicator {
+        position: relative;
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: calc(100% + spacing.semantic-variable(gap, tiny));
+          left: 50%;
+          width: 1px;
+          height: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(gap, tiny)});
+          transform: translateX(-50%);
+        }
+      }
+
+      .#{$prefix-step}__text-container {
+        display: grid;
+        row-gap: spacing.semantic-variable(gap, tiny);
+
+        .#{$prefix-step}__title {
+          display: flex;
+          align-items: center;
+          height: spacing.semantic-variable(size, element, relaxed);
+        }
+      }
+    }
+
+    // vertical dot
+    &.#{$prefix-step}--dot {
+      display: flex;
+      column-gap: spacing.semantic-variable(gap, base);
+      align-items: start;
+
+      .#{$prefix-step}__status-indicator-dot {
+        position: relative;
+        margin-top: spacing.semantic-variable(size, element, tiny);
+
+        &::after {
+          content: '';
+          position: absolute;
+          top: calc(100% + spacing.semantic-variable(gap, tiny) + $dotBoxShadowMargin);
+          left: 50%;
+          width: 1px;
+          height: calc(var(--connect-line-distance, 0) - #{spacing.semantic-variable(gap, tiny)} - $dotBoxShadowMargin);
+          transform: translateX(-50%);
+        }
+      }
+
+      .#{$prefix-step}__text-container {
+        display: grid;
+        row-gap: spacing.semantic-variable(gap, tiny);
+      }
+    }
+
   }
 
-  &__completed-icon {
-    width: 100%;
-    height: 100%;
+  @each $current-status, $colors in $status-colors {
+    &--#{$current-status} {
+      .#{$prefix-step}__status-indicator {
+        color: _get-status-color($current-status, status-indicator-color);
+      }
+
+      .#{$prefix-step}__status-indicator-dot {
+        background-color: _get-status-color($current-status, status-indicator-color);
+
+        $status-indicator-background-color: _get-status-color($current-status, status-indicator-background-color);
+
+        @if $status-indicator-background-color {
+          box-shadow: 0 0 0 $dotBoxShadowMargin $status-indicator-background-color;
+        }
+      }
+
+      .#{$prefix-step}__title {
+        color: _get-status-color($current-status, title-color);
+      }
+
+      .#{$prefix-step}__description {
+        color: _get-status-color($current-status, description-color);
+      }
+
+      // Connect line color based on status
+      .#{$prefix-step}__title-connect-line::after,
+      .#{$prefix-step}__status-indicator::after,
+      .#{$prefix-step}__status-indicator-dot::after {
+        background-color: _get-status-color($current-status, line-color);
+      }
+    }
   }
 
-  &__title {
-    margin-right: $step-items-margin-right;
+  &__status-indicator {
+    width: spacing.semantic-variable(size, element, relaxed);
+    height: spacing.semantic-variable(size, element, relaxed);
   }
 
-  // connector
-  &:not(:last-child)::after {
-    background: palette.color(border);
-    content: '';
-    display: block;
-    flex-grow: 1;
-    height: 1px;
-    margin-right: $step-items-margin-right;
-    width: auto;
-  }
-
-  &:last-child {
-    flex-grow: 0;
+  &__status-indicator-dot {
+    width: spacing.semantic-variable(size, element, compact);
+    height: spacing.semantic-variable(size, element, compact);
+    border-radius: 100%;
   }
 }
