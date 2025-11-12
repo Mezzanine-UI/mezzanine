@@ -86,4 +86,5 @@
 
   // Others
   @include _load-styles($options, anchor);
+  @include _load-styles($options, portal);
 }
