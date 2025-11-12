@@ -1,11 +1,13 @@
 export const overlayPrefix = 'mzn-overlay';
 
+export type OverlayVariant = 'dark' | 'light';
+
 export const overlayClasses = {
   host: overlayPrefix,
   hostOpen: `${overlayPrefix}--open`,
-  hostFixed: `${overlayPrefix}--fixed`,
+  hostAbsolute: `${overlayPrefix}--absolute`,
   backdrop: `${overlayPrefix}__backdrop`,
-  backdropOnSurface: `${overlayPrefix}__backdrop--on-surface`,
-  backdropFixed: `${overlayPrefix}__backdrop--fixed`,
-  invisible: `${overlayPrefix}__backdrop--invisible`,
+  backdropVariant: (variant: OverlayVariant) =>
+    `${overlayPrefix}__backdrop--${variant}`,
+  content: `${overlayPrefix}__content`,
 } as const;

@@ -1,33 +1,49 @@
 @use '~@mezzanine-ui/system/palette';
 @use './overlay' as *;
 
+$variant-colors: (
+  dark: palette.semantic-variable(overlay, strong),
+  light: palette.semantic-variable(surface, solid),
+);
+
 .#{$prefix} {
-  position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
+  position: relative;
 
   &--open {
     pointer-events: auto;
   }
 
+  &--absolute {
+    position: absolute;
+    inset: 0;
+  }
+
   &__backdrop {
     position: absolute;
     inset: 0;
+    z-index: 0;
     touch-action: none;
-    background-color: palette.color(overlay-bg);
     -webkit-tap-highlight-color: transparent;
+
+    @each $variant, $color in $variant-colors {
+      &--#{$variant} {
+        background-color: $color;
+      }
+    }
   }
 
-  &__backdrop--on-surface {
-    background-color: palette.color(overlay-surface-bg);
-  }
+  &__content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
 
-  &__backdrop--invisible {
-    background-color: transparent;
+    > * {
+      pointer-events: auto;
+    }
   }
-}
-
-.#{$prefix}--fixed,
-.#{$prefix}__backdrop--fixed {
-  position: fixed;
 }
