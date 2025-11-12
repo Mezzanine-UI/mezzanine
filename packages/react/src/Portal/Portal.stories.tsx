@@ -81,6 +81,7 @@ function DefaultLayerExample() {
               backgroundColor: '#fff',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
               borderRadius: '8px',
+              pointerEvents: 'auto',
             }}
           >
             <Typography variant="h2" style={{ marginBottom: '8px' }}>
@@ -144,6 +145,7 @@ function AlertLayerExample() {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              pointerEvents: 'auto',
             }}
           >
             <Typography style={{ color: '#fff' }}>{alert}</Typography>
@@ -255,6 +257,7 @@ function LayerComparisonExample() {
               padding: '16px 24px',
               backgroundColor: '#ff9800',
               color: '#fff',
+              pointerEvents: 'auto',
             }}
           >
             <Typography style={{ color: '#fff' }}>Alert Layer</Typography>
@@ -272,6 +275,7 @@ function LayerComparisonExample() {
               backgroundColor: 'rgba(33, 150, 243, 0.95)',
               color: '#fff',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+              pointerEvents: 'auto',
             }}
           >
             <Typography style={{ color: '#fff' }}>Default Layer</Typography>
