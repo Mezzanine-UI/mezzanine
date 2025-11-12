@@ -92,42 +92,38 @@ describe('<InlineMessage />', () => {
 
   describe('prop: onClose', () => {
     it('should render close button when severity is info', () => {
-      const { getHostHTMLElement } = render(
+      const { getByRole } = render(
         <InlineMessage content="Message" severity="info" />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close');
+      const closeButton = getByRole('button', { name: 'Close' });
 
       expect(closeButton).toBeTruthy();
     });
 
     it('should not render close button when severity is warning', () => {
-      const { getHostHTMLElement } = render(
+      const { queryByRole } = render(
         <InlineMessage content="Message" severity="warning" />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close');
+      const closeButton = queryByRole('button', { name: 'Close' });
 
       expect(closeButton).toBeNull();
     });
 
     it('should not render close button when severity is error', () => {
-      const { getHostHTMLElement } = render(
+      const { queryByRole } = render(
         <InlineMessage content="Message" severity="error" />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close');
+      const closeButton = queryByRole('button', { name: 'Close' });
 
       expect(closeButton).toBeNull();
     });
 
     it('should call onClose when close button is clicked', () => {
       const onClose = jest.fn();
-      const { getHostHTMLElement } = render(
+      const { getByRole } = render(
         <InlineMessage content="Message" severity="info" onClose={onClose} />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
+      const closeButton = getByRole('button', { name: 'Close' });
 
       fireEvent.click(closeButton);
 
@@ -135,11 +131,10 @@ describe('<InlineMessage />', () => {
     });
 
     it('should hide message when close button is clicked', () => {
-      const { getHostHTMLElement, container } = render(
+      const { getByRole, container } = render(
         <InlineMessage content="Message" severity="info" />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
+      const closeButton = getByRole('button', { name: 'Close' });
 
       fireEvent.click(closeButton);
 
@@ -148,11 +143,10 @@ describe('<InlineMessage />', () => {
     });
 
     it('should have aria-label on close button', () => {
-      const { getHostHTMLElement } = render(
+      const { getByRole } = render(
         <InlineMessage content="Message" severity="info" />,
       );
-      const element = getHostHTMLElement();
-      const closeButton = element.querySelector('.mzn-inline-message__close') as HTMLButtonElement;
+      const closeButton = getByRole('button', { name: 'Close' });
 
       expect(closeButton.getAttribute('aria-label')).toBe('Close');
     });
