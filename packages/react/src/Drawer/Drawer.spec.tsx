@@ -3,7 +3,7 @@ import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Drawer, { DrawerPlacement } from '.';
 
 function getOverlayElement(container: HTMLElement = document.body) {
-  return container?.querySelector('.mzn-overlay');
+  return container?.querySelector('.mzn-backdrop');
 }
 
 function getDrawerElement(container: HTMLElement = document.body) {

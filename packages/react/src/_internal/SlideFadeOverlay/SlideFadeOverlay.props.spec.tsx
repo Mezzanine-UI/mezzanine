@@ -4,7 +4,7 @@ import SlideFadeOverlay from '.';
 // Mock Overlay Component
 const mockOverlayRender = jest.fn();
 
-jest.mock('../../Overlay', () => {
+jest.mock('../../Backdrop', () => {
   return function MockOverlay(props: any) {
     mockOverlayRender(props);
     return <div>{props.children}</div>;

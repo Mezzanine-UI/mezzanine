@@ -2,14 +2,14 @@ import { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
 import Button from '../Button';
 import Typography from '../Typography';
-import Overlay from './Overlay';
+import Backdrop from '.';
 
 export default {
-  title: 'Others/Overlay',
-  component: Overlay,
-} as Meta<typeof Overlay>;
+  title: 'Others/Backdrop',
+  component: Backdrop,
+} as Meta<typeof Backdrop>;
 
-type Story = StoryObj<typeof Overlay>;
+type Story = StoryObj<typeof Backdrop>;
 
 export const DarkVariant: Story = {
   render: function DarkVariantStory() {
@@ -18,9 +18,9 @@ export const DarkVariant: Story = {
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Dark Overlay
+          Open Dark Backdrop
         </Button>
-        <Overlay
+        <Backdrop
           onBackdropClick={() => setOpen(false)}
           onClose={() => setOpen(false)}
           open={open}
@@ -54,7 +54,7 @@ export const DarkVariant: Story = {
               </Button>
             </div>
           ) : null}
-        </Overlay>
+        </Backdrop>
       </>
     );
   },
@@ -74,7 +74,7 @@ export const CustomContainer: Story = {
         }}
       >
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Overlay in Container
+          Open Backdrop in Container
         </Button>
         <div
           ref={containerRef}
@@ -94,10 +94,10 @@ export const CustomContainer: Story = {
             }}
           >
             <Typography variant="body">
-              Container Element (Overlay will be rendered inside this)
+              Container Element (Backdrop will be rendered inside this)
             </Typography>
           </div>
-          <Overlay
+          <Backdrop
             container={containerRef}
             onBackdropClick={() => setOpen(false)}
             open={open}
@@ -114,7 +114,7 @@ export const CustomContainer: Story = {
                 }}
               >
                 <Typography color="text-brand" variant="h3">
-                  Container Overlay
+                  Container Backdrop
                 </Typography>
                 <Typography align="center" variant="body">
                   This overlay is rendered inside the container element above,
@@ -125,7 +125,7 @@ export const CustomContainer: Story = {
                 </Button>
               </div>
             ) : null}
-          </Overlay>
+          </Backdrop>
         </div>
       </div>
     );
@@ -145,7 +145,7 @@ export const DisablePortal: Story = {
         }}
       >
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Toggle Overlay (No Portal)
+          Toggle Backdrop (No Portal)
         </Button>
         <div
           style={{
@@ -162,7 +162,7 @@ export const DisablePortal: Story = {
           <Typography variant="body">
             Parent Element (overflow: hidden)
           </Typography>
-          <Overlay
+          <Backdrop
             disablePortal
             onBackdropClick={() => setOpen(false)}
             open={open}
@@ -190,7 +190,7 @@ export const DisablePortal: Story = {
                 </Button>
               </div>
             ) : null}
-          </Overlay>
+          </Backdrop>
         </div>
       </div>
     );
@@ -206,7 +206,7 @@ export const DisableBackdropClick: Story = {
         <Button onClick={() => setOpen(true)} variant="base-primary">
           Open Modal (Must Use Button)
         </Button>
-        <Overlay disableCloseOnBackdropClick open={open} variant="dark">
+        <Backdrop disableCloseOnBackdropClick open={open} variant="dark">
           {open ? (
             <div
               style={{
@@ -235,7 +235,7 @@ export const DisableBackdropClick: Story = {
               </Button>
             </div>
           ) : null}
-        </Overlay>
+        </Backdrop>
       </>
     );
   },

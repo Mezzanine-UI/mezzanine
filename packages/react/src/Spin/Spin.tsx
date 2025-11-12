@@ -2,7 +2,7 @@ import { forwardRef, useRef } from 'react';
 import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { iconClasses as classes } from '@mezzanine-ui/core/spin';
 import Icon, { IconProps } from '../Icon';
-import Overlay, { OverlayProps } from '../Overlay';
+import Backdrop, { BackdropProps } from '../Backdrop';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -37,9 +37,9 @@ export interface SpinProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
    */
   loading?: boolean;
   /**
-   * Custom overlay props (only display when nested children)
+   * Custom backdrop props (only display when nested children)
    */
-  overlayProps?: Omit<OverlayProps, 'container' | 'open'>;
+  backdropProps?: Omit<BackdropProps, 'container' | 'open'>;
 }
 
 const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
@@ -53,7 +53,7 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
     size = 'main',
     iconProps = {},
     loading = false,
-    overlayProps = {},
+    backdropProps = {},
   } = props;
 
   const {
@@ -105,15 +105,15 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
           className,
         )}
       >
-        <Overlay
-          {...overlayProps}
+        <Backdrop
+          {...backdropProps}
           container={hostRef}
           open={loading}
-          variant="light"
           style={{ pointerEvents: 'none' }}
+          variant="light"
         >
           {spinElement}
-        </Overlay>
+        </Backdrop>
         {children}
       </div>
     );

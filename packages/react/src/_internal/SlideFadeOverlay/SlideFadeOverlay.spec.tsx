@@ -12,12 +12,8 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 } as any;
 
-function getOverlayElement(container: HTMLElement = document.body) {
-  return container?.querySelector('.mzn-overlay');
-}
-
 function getBackdropElement(container: HTMLElement = document.body) {
-  return getOverlayElement(container)?.querySelector('.mzn-overlay__backdrop');
+  return container?.querySelector('.mzn-backdrop');
 }
 
 window.scrollTo = jest.fn();
@@ -47,7 +43,7 @@ describe('<SlideFadeOverlay />', () => {
       </SlideFadeOverlay>,
     );
 
-    const element = document.querySelector('.mzn-overlay-with-slide-fade');
+    const element = document.querySelector('.mzn-backdrop-with-slide-fade');
 
     expect(element).toBeInstanceOf(HTMLDivElement);
   });
@@ -72,9 +68,9 @@ describe('<SlideFadeOverlay />', () => {
         </SlideFadeOverlay>,
       );
 
-      const overlayElement = getOverlayElement();
+      const backdropElement = getBackdropElement();
 
-      expect(overlayElement).toBe(null);
+      expect(backdropElement).toBe(null);
     });
   });
 

@@ -2,7 +2,7 @@ import { overlayWithSlideFadeClasses as classes } from '@mezzanine-ui/core/_inte
 import { forwardRef, useState, useEffect } from 'react';
 import { cx } from '../../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
-import Overlay, { OverlayProps } from '../../Overlay';
+import Backdrop, { BackdropProps } from '../../Backdrop';
 import {
   SlideFade,
   SlideFadeProps,
@@ -15,7 +15,7 @@ import useTopStack from './useTopStack';
 export interface SlideFadeOverlayProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
     Pick<
-      OverlayProps,
+      BackdropProps,
       | 'container'
       | 'disableCloseOnBackdropClick'
       | 'disablePortal'
@@ -109,7 +109,7 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
     }
 
     return (
-      <Overlay
+      <Backdrop
         className={cx(classes.host, className)}
         container={container}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
@@ -128,7 +128,7 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
         >
           {children}
         </SlideFade>
-      </Overlay>
+      </Backdrop>
     );
   },
 );

@@ -201,7 +201,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay');
+      const overlay = host.querySelector('.mzn-backdrop');
 
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
@@ -214,7 +214,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay__backdrop--light');
+      const overlay = host.querySelector('.mzn-backdrop__backdrop--light');
 
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
@@ -236,9 +236,9 @@ describe('<Spin />', () => {
       expect(child?.textContent).toBe('test content');
     });
 
-    it('should pass overlayProps to Overlay component', async () => {
+    it('should pass backdropProps to Overlay component', async () => {
       const { getHostHTMLElement } = render(
-        <Spin loading overlayProps={{ className: 'custom-overlay' }}>
+        <Spin loading backdropProps={{ className: 'custom-overlay' }}>
           test
         </Spin>,
       );
@@ -248,7 +248,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay');
+      const overlay = host.querySelector('.mzn-backdrop');
 
       expect(overlay?.classList.contains('custom-overlay')).toBe(true);
     });

@@ -367,8 +367,8 @@ export type {
  */
 export { default as Anchor } from './Anchor';
 export type { AnchorProps } from './Anchor';
-export { default as Overlay } from './Overlay';
-export type { OverlayProps } from './Overlay';
+export { default as Backdrop } from './Backdrop';
+export type { BackdropProps } from './Backdrop';
 
 /**
  * Utility

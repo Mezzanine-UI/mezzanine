@@ -2,15 +2,15 @@
 
 import { forwardRef, MouseEventHandler } from 'react';
 import {
-  overlayClasses as classes,
-  OverlayVariant,
-} from '@mezzanine-ui/core/overlay';
+  backdropClasses as classes,
+  BackdropVariant,
+} from '@mezzanine-ui/core/backdrop';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
 import { Fade } from '../Transition';
 
-export interface OverlayProps
+export interface BackdropProps
   extends Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
     NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
@@ -35,14 +35,14 @@ export interface OverlayProps
    * The variant of backdrop.
    * @default 'dark'
    */
-  variant?: OverlayVariant;
+  variant?: BackdropVariant;
 }
 
 /**
- * The react component for `mezzanine` overlay.
+ * The react component for `mezzanine` backdrop.
  */
-const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
-  function Overlay(props, ref) {
+const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
+  function Backdrop(props, ref) {
     const {
       children,
       className,
@@ -102,4 +102,4 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
   },
 );
 
-export default Overlay;
+export default Backdrop;
