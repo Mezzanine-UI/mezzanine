@@ -1,5 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
-@use './overlay' as *;
+@use './backdrop' as *;
 
 $variant-colors: (
   dark: palette.semantic-variable(overlay, strong),

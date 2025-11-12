@@ -23,7 +23,7 @@
   @include _load-styles($options, dismiss-button);
 
   // Utility
-  @include _load-styles($options, overlay);
+  @include _load-styles($options, backdrop);
   @include _load-styles($options, popover);
   @include _load-styles($options, tooltip);
   @include _load-styles($options, calendar);
