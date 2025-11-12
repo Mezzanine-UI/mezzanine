@@ -1,8 +1,25 @@
 import { createRef } from 'react';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import Overlay from '.';
+import { resetPortals } from '../Portal/portalRegistry';
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
 
 describe('<Overlay />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanup);
 
   describe('ref', () => {
@@ -51,10 +68,12 @@ describe('<Overlay />', () => {
       it(message, () => {
         render(<Overlay open={open} />);
 
-        const overlayElement = document.body.querySelector('.mzn-overlay')!;
-        const { firstElementChild: backdropElement } = overlayElement;
+        const backdropElement = document.body.querySelector(
+          '.mzn-overlay__backdrop',
+        );
 
         if (open) {
+          expect(backdropElement).toBeInstanceOf(HTMLElement);
           expect(
             backdropElement!.classList.contains('mzn-overlay__backdrop'),
           ).toBeTruthy();
@@ -62,16 +81,6 @@ describe('<Overlay />', () => {
           expect(backdropElement).toBe(null);
         }
       });
-    });
-
-    it('should not render backdrop if hideBackdrop=true', () => {
-      render(<Overlay hideBackdrop open />);
-
-      const overlayElement = document.body.querySelector('.mzn-overlay')!;
-      const { firstElementChild: backdropElement } = overlayElement;
-
-      expect(overlayElement).toBeInstanceOf(HTMLElement);
-      expect(backdropElement).toBe(null);
     });
 
     it('should fire onBackdropClick while backdrop clicked', () => {

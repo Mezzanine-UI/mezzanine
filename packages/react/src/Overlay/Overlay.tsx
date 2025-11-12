@@ -1,5 +1,10 @@
+'use client';
+
 import { forwardRef, MouseEventHandler } from 'react';
-import { overlayClasses as classes } from '@mezzanine-ui/core/overlay';
+import {
+  overlayClasses as classes,
+  OverlayVariant,
+} from '@mezzanine-ui/core/overlay';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
@@ -14,16 +19,6 @@ export interface OverlayProps
    */
   disableCloseOnBackdropClick?: boolean;
   /**
-   * Whether to hide backdrop.
-   * @default false
-   */
-  hideBackdrop?: boolean;
-  /**
-   * Whether to set backdrop invisible
-   * @default false
-   */
-  invisibleBackdrop?: boolean;
-  /**
    * Click handler for backdrop.
    */
   onBackdropClick?: MouseEventHandler;
@@ -32,15 +27,15 @@ export interface OverlayProps
    */
   onClose?: VoidFunction;
   /**
-   * Overlay is use on top of a component(surface)
-   * @default false
-   */
-  onSurface?: boolean;
-  /**
    * Controls whether to show the element.
    * @default false
    */
   open?: boolean;
+  /**
+   * The variant of backdrop.
+   * @default 'dark'
+   */
+  variant?: OverlayVariant;
 }
 
 /**
@@ -54,53 +49,53 @@ const Overlay = forwardRef<HTMLDivElement, OverlayProps>(
       container,
       disableCloseOnBackdropClick = false,
       disablePortal,
-      hideBackdrop = false,
-      invisibleBackdrop = false,
       onBackdropClick,
       onClose,
-      onSurface,
       open = false,
+      variant = 'dark',
       ...rest
     } = props;
 
-    const fixedAtBody = Boolean(!container);
+    // When using custom container or disablePortal, overlay should be absolutely positioned
+    // When using default Portal (to #mzn-portal-container), overlay uses relative positioning
+    const applyAbsolutePosition = Boolean(disablePortal || container);
 
     return (
-      <Portal container={container} disablePortal={disablePortal}>
+      <Portal
+        container={container}
+        disablePortal={disablePortal}
+        layer="default"
+      >
         <div
           {...rest}
           ref={ref}
+          aria-hidden={!open}
           className={cx(
             classes.host,
             {
-              [classes.hostFixed]: fixedAtBody,
+              [classes.hostAbsolute]: applyAbsolutePosition,
               [classes.hostOpen]: open,
             },
             className,
           )}
+          role="presentation"
         >
-          {hideBackdrop ? null : (
-            <Fade in={open}>
-              <div
-                aria-hidden
-                className={cx(classes.backdrop, {
-                  [classes.backdropFixed]: fixedAtBody,
-                  [classes.invisible]: invisibleBackdrop,
-                  [classes.backdropOnSurface]: onSurface,
-                })}
-                onClick={(event) => {
-                  if (!disableCloseOnBackdropClick && onClose) {
-                    onClose();
-                  }
+          <Fade in={open}>
+            <div
+              aria-hidden="true"
+              className={cx(classes.backdrop, classes.backdropVariant(variant))}
+              onClick={(event) => {
+                if (!disableCloseOnBackdropClick && onClose) {
+                  onClose();
+                }
 
-                  if (onBackdropClick) {
-                    onBackdropClick(event);
-                  }
-                }}
-              />
-            </Fade>
-          )}
-          {children}
+                if (onBackdropClick) {
+                  onBackdropClick(event);
+                }
+              }}
+            />
+          </Fade>
+          <div className={classes.content}>{children}</div>
         </div>
       </Portal>
     );
