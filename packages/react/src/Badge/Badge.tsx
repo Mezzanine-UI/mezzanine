@@ -1,21 +1,20 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef } from 'react';
 import {
+  BadgeCountVariant,
   BadgeVariant,
   badgeClasses as classes,
 } from '@mezzanine-ui/core/badge';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { BadgeProps } from './typings';
 
-export type BadgeProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
-  /**
-   * If the children is number and greater than overflowCount, it will show overflowCount suffixed with a "+".
-   */
-  overflowCount?: number;
-  /**
-   * Controls the visual style (dot vs count variants) and enables the related overflow/hide rules.
-   */
-  variant: BadgeVariant;
-};
+const isCountVariant = (variant: BadgeVariant): variant is BadgeCountVariant =>
+  [
+    'count-alert',
+    'count-inactive',
+    'count-inverse',
+    'count-brand',
+    'count-info',
+  ].includes(variant);
 
 /**
  * The react component for `mezzanine` badge.
@@ -23,39 +22,36 @@ export type BadgeProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
 const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
   function Badge(props, ref) {
     const {
-      children: childrenProp,
+      children,
+      count,
       className,
       overflowCount,
+      text,
       variant,
       ...rest
     } = props;
 
-    let children: ReactNode;
-    const isCount = variant.startsWith('count-');
-
-    if (isCount && !Number.isNaN(Number(childrenProp)) && !!overflowCount) {
-      const count = Number(childrenProp);
-
-      children = count > overflowCount ? `${overflowCount}+` : count;
-    } else {
-      children = childrenProp;
-    }
-
     return (
-      <span
-        {...rest}
-        ref={ref}
-        className={cx(
-          classes.host,
-          classes.variant(variant),
-          {
-            [classes.hide]: isCount && Number(children) === 0,
-          },
-          className,
-        )}
-      >
+      <div className={classes.container(!!children)}>
+        <span
+          {...rest}
+          ref={ref}
+          className={cx(
+            classes.host,
+            classes.variant(variant),
+            { [classes.hide]: isCountVariant(variant) && count === 0 },
+            className,
+          )}
+        >
+          {isCountVariant(variant)
+            ? overflowCount && count > overflowCount
+              ? `${overflowCount}+`
+              : count
+            : text}
+        </span>
+
         {children}
-      </span>
+      </div>
     );
   },
 );

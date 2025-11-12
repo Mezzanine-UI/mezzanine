@@ -100,19 +100,26 @@ $count-type-config: (
   }
 
   &__container {
-    display: inline-block;
-    position: relative;
-    width: fit-content;
+    display: inline-flex;
+    align-items: center;
 
-    .#{$prefix} {
-      position: absolute;
-      top: spacing.semantic-variable(padding, vertical, tiny);
-      right: spacing.semantic-variable(padding, horizontal, tiny);
+    &--has-children {
+      display: inline-block;
+      position: relative;
+      width: fit-content;
+      height: fit-content;
+
+      .#{$prefix} {
+        position: absolute;
+        top: spacing.semantic-variable(padding, vertical, tiny);
+        right: spacing.semantic-variable(padding, horizontal, tiny);
+      }
     }
   }
 
   &--hide {
-    transform: scale(0);
+    visibility: hidden;
+    opacity: 0;
   }
 }
 
