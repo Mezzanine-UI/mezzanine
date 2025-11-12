@@ -19,10 +19,6 @@ export const inlineMessageClasses = {
   icon: `${inlineMessagePrefix}__icon`,
   contentContainer: `${inlineMessagePrefix}__content-container`,
   content: `${inlineMessagePrefix}__content`,
-  // TODO: should be remove when use the clearbutton component
-  close: `${inlineMessagePrefix}__close`,
-  closeIcon: `${inlineMessagePrefix}__close-icon`,
-  // ----------------
   severity: (severity: InlineMessageSeverity) =>
     `${inlineMessagePrefix}--${severity}`,
 } as const;

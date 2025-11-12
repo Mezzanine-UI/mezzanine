@@ -7,14 +7,21 @@ import {
   inlineMessageIcons,
   InlineMessageSeverity,
 } from '@mezzanine-ui/core/inline-message';
-import { CloseIcon, IconDefinition } from '@mezzanine-ui/icons';
+import { IconDefinition } from '@mezzanine-ui/icons';
 
+import DismissButton from '../DismissButton';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface InlineMessageProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * The content of the inline message value(only string is supported).
+   */
   content: string;
+  /**
+   * The class name of the inline message element.
+   */
   className?: string;
   /**
    * The icon of the inline message.
@@ -79,15 +86,11 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
           <span className={classes.content}>{content}</span>
         </div>
         {severity === 'info' ? (
-          // TODO: should be remove when use the clearbutton component, but the clearbutton component is not yet implemented
-          <button
-            aria-label="Close"
-            className={classes.close}
+          <DismissButton
             onClick={handleClose}
-            type="button"
-          >
-            <Icon className={classes.closeIcon} icon={CloseIcon} />
-          </button>
+            type="standard"
+            variant="base"
+          />
         ) : null}
       </div>
     );
