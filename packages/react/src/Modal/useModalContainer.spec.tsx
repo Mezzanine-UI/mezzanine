@@ -38,8 +38,6 @@ describe('useModalContainer()', () => {
         direction: defaultOptions.direction,
         disableCloseOnBackdropClick: defaultOptions.disableCloseOnBackdropClick,
         disablePortal: defaultOptions.disableCloseOnEscapeKeyDown,
-        hideBackdrop: defaultOptions.hideBackdrop,
-        invisibleBackdrop: defaultOptions.invisibleBackdrop,
         onBackdropClick: undefined,
         onClose: undefined,
         open: defaultOptions.open,
@@ -50,7 +48,7 @@ describe('useModalContainer()', () => {
   it('should override default props when custom props given', () => {
     const { result } = renderHook(() => useModalContainer());
 
-    const container = () => document.createElement('div');
+    const container = document.createElement('div');
     const onBackdropClick = () => {};
 
     const onClose = () => {};
@@ -64,8 +62,6 @@ describe('useModalContainer()', () => {
         direction="left"
         disableCloseOnBackdropClick
         disablePortal
-        hideBackdrop
-        invisibleBackdrop
         onBackdropClick={onBackdropClick}
         onClose={onClose}
         open
@@ -81,8 +77,6 @@ describe('useModalContainer()', () => {
         direction: 'left',
         disableCloseOnBackdropClick: true,
         disablePortal: true,
-        hideBackdrop: true,
-        invisibleBackdrop: true,
         onBackdropClick,
         onClose,
         open: true,
