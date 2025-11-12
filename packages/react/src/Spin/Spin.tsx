@@ -105,7 +105,13 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
           className,
         )}
       >
-        <Overlay {...overlayProps} container={hostRef} onSurface open={loading}>
+        <Overlay
+          {...overlayProps}
+          container={hostRef}
+          open={loading}
+          variant="light"
+          style={{ pointerEvents: 'none' }}
+        >
           {spinElement}
         </Overlay>
         {children}

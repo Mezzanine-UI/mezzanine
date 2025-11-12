@@ -2,8 +2,25 @@ import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { act, cleanupHook, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Spin from '.';
+import { resetPortals } from '../Portal/portalRegistry';
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
 
 describe('<Spin />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
@@ -189,7 +206,7 @@ describe('<Spin />', () => {
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
 
-    it('should render overlay with on-surface class', async () => {
+    it('should render overlay with light variant', async () => {
       const { getHostHTMLElement } = render(<Spin loading>test</Spin>);
 
       await act(async () => {
@@ -197,7 +214,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay__backdrop--on-surface');
+      const overlay = host.querySelector('.mzn-overlay__backdrop--light');
 
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
