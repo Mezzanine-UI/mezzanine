@@ -22,15 +22,13 @@ describe('<SlideFadeOverlay />', () => {
       'container',
       'disableCloseOnBackdropClick',
       'disablePortal',
-      'hideBackdrop',
-      'invisibleBackdrop',
       'onBackdropClick',
       'onClose',
       'open',
     ];
 
     it(`should pass ${propsShouldPassed.join(',')} to overlay`, () => {
-      const container = () => document.createElement('div');
+      const container = document.createElement('div');
       const onBackdropClick = () => {};
 
       const onClose = () => {};
@@ -41,8 +39,6 @@ describe('<SlideFadeOverlay />', () => {
           container={container}
           disableCloseOnBackdropClick
           disablePortal
-          hideBackdrop
-          invisibleBackdrop
           onBackdropClick={onBackdropClick}
           onClose={onClose}
           open
@@ -58,8 +54,6 @@ describe('<SlideFadeOverlay />', () => {
           container,
           disableCloseOnBackdropClick: true,
           disablePortal: true,
-          hideBackdrop: true,
-          invisibleBackdrop: true,
           onBackdropClick,
           onClose,
           open: true,

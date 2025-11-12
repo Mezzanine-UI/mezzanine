@@ -19,8 +19,6 @@ export interface SlideFadeOverlayProps
       | 'container'
       | 'disableCloseOnBackdropClick'
       | 'disablePortal'
-      | 'invisibleBackdrop'
-      | 'hideBackdrop'
       | 'onBackdropClick'
       | 'onClose'
       | 'open'
@@ -51,8 +49,6 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
       disableCloseOnBackdropClick = false,
       disableCloseOnEscapeKeyDown = false,
       disablePortal = false,
-      hideBackdrop = false,
-      invisibleBackdrop = false,
       onBackdropClick,
       onClose,
       open,
@@ -118,8 +114,6 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
         container={container}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disablePortal={disablePortal}
-        hideBackdrop={hideBackdrop}
-        invisibleBackdrop={invisibleBackdrop}
         onBackdropClick={onBackdropClick}
         onClose={onClose}
         open={open}

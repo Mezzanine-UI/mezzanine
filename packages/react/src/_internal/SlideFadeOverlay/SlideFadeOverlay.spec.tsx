@@ -1,6 +1,16 @@
 import { cleanup, render, fireEvent } from '../../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import SlideFadeOverlay from '.';
+import { resetPortals } from '../../Portal/portalRegistry';
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
 
 function getOverlayElement(container: HTMLElement = document.body) {
   return container?.querySelector('.mzn-overlay');
@@ -13,6 +23,13 @@ function getBackdropElement(container: HTMLElement = document.body) {
 window.scrollTo = jest.fn();
 
 describe('<SlideFadeOverlay />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>

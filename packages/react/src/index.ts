@@ -367,6 +367,8 @@ export type {
  */
 export { default as Anchor } from './Anchor';
 export type { AnchorProps } from './Anchor';
+export { default as Overlay } from './Overlay';
+export type { OverlayProps } from './Overlay';
 
 /**
  * Utility
@@ -402,8 +404,6 @@ export type {
   UseCalendarControlModifiersResult,
 } from './Calendar';
 export * from './Notifier';
-export { default as Overlay } from './Overlay';
-export type { OverlayProps } from './Overlay';
 export { default as Popover } from './Popover';
 export type { PopoverProps } from './Popover';
 export { default as Popper } from './Popper';
