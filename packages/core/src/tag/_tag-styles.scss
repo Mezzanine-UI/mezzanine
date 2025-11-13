@@ -1,86 +1,228 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/radius';
+@use '~@mezzanine-ui/system/spacing';
 @use './tag' as *;
 
-$label-min-width: 32px !default;
-$label-min-width-small: 24px !default;
-$padding-x: 12px !default;
-$padding-x-small: 8px !default;
-$icon-size: 20px !default;
-$icon-size-small: 12px !default;
-$icon-label-gap-x: 4px !default;
+$tag-config: (
+  static: (
+    left: text,
+    right: text,
+    text-color: palette.semantic-variable(text, brand-solid),
+    background-color: palette.semantic-variable(background, brand-faint)
+  ),
+  counter: (
+    left: text,
+    right: item,
+    gap: (
+      main: spacing.semantic-variable(gap, tight),
+      sub: spacing.semantic-variable(gap, tiny)
+    ),
+    text-color: palette.semantic-variable(text, brand-solid),
+    background-color: palette.semantic-variable(background, brand-faint)
+  ),
+  overflow-counter: (
+    left: item,
+    right: text,
+    gap: (
+      main: spacing.semantic-variable(gap, tiny),
+      sub: spacing.semantic-variable(gap, tiny)
+    ),
+    text-color: palette.semantic-variable(text, brand-solid),
+    icon-color: palette.semantic-variable(icon, brand-solid),
+    background-color: palette.semantic-variable(background, brand-faint)
+  ),
+  dismissable: (
+    left: text,
+    right: item,
+    gap: (
+      main: spacing.semantic-variable(gap, tight),
+      sub: spacing.semantic-variable(gap, tiny)
+    ),
+    text-color: palette.semantic-variable(text, brand-solid),
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: palette.semantic-variable(background, brand-faint),
+    hover: (
+      text-color: palette.semantic-variable(text, brand-solid),
+      icon-color: palette.semantic-variable(icon, neutral-solid),
+      background-color: palette.semantic-variable(background, brand-subtle)
+    ),
+    active: (
+      text-color: palette.semantic-variable(text, brand-solid),
+      icon-color: palette.semantic-variable(icon, neutral-solid),
+      background-color: palette.semantic-variable(background, brand-light)
+    ),
+    disabled: (
+      text-color: palette.semantic-variable(text, neutral-light),
+      icon-color: palette.semantic-variable(icon, neutral-light),
+      background-color: palette.semantic-variable(background, neutral-subtle),
+      border: 1px solid palette.semantic-variable(border, neutral-light)
+    ),
+    read-only: (
+      text-color: palette.semantic-variable(text, neutral-solid),
+      background-color: unset,
+      border: 1px solid palette.semantic-variable(border, neutral-light)
+    )
+  ),
+  addable: (
+    left: item,
+    right: text,
+    gap: (
+      main: spacing.semantic-variable(gap, tight),
+      sub: spacing.semantic-variable(gap, tiny)
+    ),
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral),
+    border: 1px dashed palette.semantic-variable(border, neutral-light),
+    hover: (
+      text-color: palette.semantic-variable(text, neutral-solid),
+      icon-color: palette.semantic-variable(icon, neutral-solid),
+      border: 1px dashed palette.semantic-variable(border, neutral)
+    ),
+    active: (
+      text-color: palette.semantic-variable(text, neutral-solid),
+      icon-color: palette.semantic-variable(icon, neutral-solid),
+      border: 1px dashed palette.semantic-variable(border, neutral-strong)
+    ),
+    disabled: (
+      text-color: palette.semantic-variable(text, neutral-light),
+      icon-color: palette.semantic-variable(icon, neutral-light),
+      border: 1px dashed palette.semantic-variable(border, neutral-light)
+    )
+  )
+);
+
+@mixin _tag-state-styles($config) {
+  // Text color
+  .#{$prefix}__label {
+    color: map.get($config, text-color);
+  }
+
+  // Icon color
+  @if map.has-key($config, icon-color) {
+    .#{$prefix}__icon {
+      color: map.get($config, icon-color);
+    }
+  }
+
+  // Background color
+  @if map.has-key($config, background-color) {
+    background-color: map.get($config, background-color);
+  }
+
+  // Border
+  @if map.has-key($config, border) {
+    border: map.get($config, border);
+  }
+}
 
 .#{$prefix} {
-  --#{$prefix}-padding-x: #{$padding-x};
+  @include typography.semantic-variable(label-primary);
 
+  box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  background-color: palette.color(primary-hover-bg);
-  color: palette.color(text-primary);
-  box-sizing: border-box;
+  border-radius: radius.variable(base);
 
-  @include typography.variant(input2);
-
-  a {
-    color: inherit;
-    text-decoration: none;
-    outline: 0;
-
-    &:first-child:last-child {
-      margin: 0 calc(var(--#{$prefix}-padding-x) * -1);
-    }
-  }
-
-  &,
-  a:first-child:last-child {
-    padding: 0 var(--#{$prefix}-padding-x);
-  }
-
-  &__label {
-    display: inline-block;
-    min-width: var(--#{$prefix}-label-min-width, $label-min-width);
-
-    @include typography.nowrap();
-  }
-
-  &__close-icon {
-    font-size: var(--#{$prefix}-close-icon-size, typography.px-to-rem($icon-size));
-    margin-right: -#{$icon-label-gap-x};
-    margin-left: $icon-label-gap-x;
-    color: palette.color(action-inactive);
-    transition: transition.standard(color);
-    will-change: color;
-    outline: 0;
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    flex-shrink: 0;
+    border: 0;
     cursor: pointer;
+  }
 
-    &:hover {
-      color: palette.color(action-active);
+  @each $type in $tag-types {
+    $type-config: map.get($tag-config, $type);
+
+    &--#{$type} {
+      // Default style
+      @include _tag-state-styles(map.get($tag-config, $type));
+
+      // Hover style
+      @if map.has-key($type-config, hover) {
+        $type-hover-config: map.get($type-config, hover);
+
+        &:hover {
+          @include _tag-state-styles($type-hover-config);
+        }
+      }
+
+      // Active style
+      @if map.has-key($type-config, active) {
+        $type-active-config: map.get($type-config, active);
+
+        &.#{$prefix}--active {
+          @include _tag-state-styles($type-active-config);
+        }
+      }
+
+      // Disabled style
+      @if map.has-key($type-config, disabled) {
+        $type-disabled-config: map.get($type-config, disabled);
+
+        &.#{$prefix}--disabled {
+          @include _tag-state-styles($type-disabled-config);
+        }
+      }
+
+      // ReadOnly style
+      @if map.has-key($type-config, read-only) {
+        $type-readonly-config: map.get($type-config, read-only);
+
+        &.#{$prefix}--read-only {
+          @include _tag-state-styles($type-readonly-config);
+        }
+      }
     }
-  }
 
-  &--disabled {
-    background-color: palette.color(action-disabled-bg);
-    color: palette.color(action-disabled);
+    // Main size
+    &.#{$prefix}--main.#{$prefix}--#{$type} {
+      padding-block: spacing.semantic-variable(padding, vertical, tight);
 
-    .#{$prefix}__close-icon {
-      color: palette.color(action-disabled);
-      cursor: default;
-      pointer-events: none;
+      @if map.get($type-config, left) == text {
+        padding-left: spacing.semantic-variable(padding, horizontal, base);
+      } @else {
+        padding-left: spacing.semantic-variable(padding, horizontal, tight);
+      }
+
+      @if map.get($type-config, right) == text {
+        padding-right: spacing.semantic-variable(padding, horizontal, base);
+      } @else {
+        padding-right: spacing.semantic-variable(padding, horizontal, tight);
+      }
+
+      @if map.has-key($type-config, gap) {
+        column-gap: map.get($tag-config, $type, gap, main);
+      }
     }
-  }
 
-  &--medium {
-    line-height: typography.prop(input3, line-height);
-  }
+    // Sub size
+    &.#{$prefix}--sub.#{$prefix}--#{$type} {
+      padding-block: spacing.semantic-variable(padding, vertical, micro);
 
-  &--small {
-    --#{$prefix}-padding-x: #{$padding-x-small};
-    --#{$prefix}-label-min-width: #{$label-min-width-small};
-    --#{$prefix}-close-icon-size: #{typography.px-to-rem($icon-size-small)};
+      @if map.get($type-config, left) == text {
+        padding-left: spacing.semantic-variable(padding, horizontal, tiny);
+      } @else {
+        padding-left: spacing.semantic-variable(padding, horizontal, micro);
+      }
 
-    @include typography.variant(caption);
+      @if map.get($type-config, right) == text {
+        padding-right: spacing.semantic-variable(padding, horizontal, tiny);
+      } @else {
+        padding-right: spacing.semantic-variable(padding, horizontal, micro);
+      }
+
+      @if map.has-key($type-config, gap) {
+        column-gap: map.get($tag-config, $type, gap, sub);
+      }
+    }
   }
 }
