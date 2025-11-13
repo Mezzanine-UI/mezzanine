@@ -47,13 +47,13 @@ export const Basic = () => (
     <div style={{ width: '32px' }}>
       <Skeleton circle />
     </div>
-    <Skeleton circle width={32} />
+    <Skeleton circle width={48} />
 
     <Typography>Type Square</Typography>
     <div style={{ width: '120px', height: '80px' }}>
       <Skeleton />
     </div>
-    <Skeleton width={120} height={80} />
+    <Skeleton width={120} height={120} />
 
     <Typography>Group Example</Typography>
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
