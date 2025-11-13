@@ -2,8 +2,25 @@ import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { act, cleanupHook, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Spin from '.';
+import { resetPortals } from '../Portal/portalRegistry';
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
 
 describe('<Spin />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanupHook);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
@@ -184,12 +201,12 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay');
+      const overlay = host.querySelector('.mzn-backdrop');
 
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
 
-    it('should render overlay with on-surface class', async () => {
+    it('should render overlay with light variant', async () => {
       const { getHostHTMLElement } = render(<Spin loading>test</Spin>);
 
       await act(async () => {
@@ -197,7 +214,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay__backdrop--on-surface');
+      const overlay = host.querySelector('.mzn-backdrop__backdrop--light');
 
       expect(overlay).toBeInstanceOf(HTMLDivElement);
     });
@@ -219,9 +236,9 @@ describe('<Spin />', () => {
       expect(child?.textContent).toBe('test content');
     });
 
-    it('should pass overlayProps to Overlay component', async () => {
+    it('should pass backdropProps to Overlay component', async () => {
       const { getHostHTMLElement } = render(
-        <Spin loading overlayProps={{ className: 'custom-overlay' }}>
+        <Spin loading backdropProps={{ className: 'custom-overlay' }}>
           test
         </Spin>,
       );
@@ -231,7 +248,7 @@ describe('<Spin />', () => {
       });
 
       const host = getHostHTMLElement();
-      const overlay = host.querySelector('.mzn-overlay');
+      const overlay = host.querySelector('.mzn-backdrop');
 
       expect(overlay?.classList.contains('custom-overlay')).toBe(true);
     });

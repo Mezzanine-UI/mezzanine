@@ -1,17 +1,34 @@
 import { createRef } from 'react';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
-import Overlay from '.';
+import Backdrop from '.';
+import { resetPortals } from '../Portal/portalRegistry';
 
-describe('<Overlay />', () => {
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
+
+describe('<Backdrop />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanup);
 
   describe('ref', () => {
     it('should forward ref to modal element', () => {
       const ref = createRef<HTMLDivElement>();
 
-      render(<Overlay ref={ref} />);
+      render(<Backdrop ref={ref} />);
 
-      const rootElement = document.body.querySelector('.mzn-overlay');
+      const rootElement = document.body.querySelector('.mzn-backdrop');
 
       expect(ref.current).toBeInstanceOf(HTMLDivElement);
       expect(ref.current).toEqual(rootElement);
@@ -22,21 +39,21 @@ describe('<Overlay />', () => {
     it('should render children', () => {
       const testChildren = 'foo';
 
-      render(<Overlay>{testChildren}</Overlay>);
+      render(<Backdrop>{testChildren}</Backdrop>);
 
-      const rootElement = document.body.querySelector('.mzn-overlay');
+      const rootElement = document.body.querySelector('.mzn-backdrop');
 
       expect(rootElement?.textContent).toBe(testChildren);
     });
   });
 
   describe('prop: className', () => {
-    it('should append class name on overlay element', () => {
+    it('should append class name on backdrop element', () => {
       const className = 'foo';
 
-      render(<Overlay className={className} />);
+      render(<Backdrop className={className} />);
 
-      const rootElement = document.body.querySelector('.mzn-overlay');
+      const rootElement = document.body.querySelector('.mzn-backdrop');
 
       expect(rootElement?.classList.contains(className)).toBeTruthy();
     });
@@ -49,14 +66,16 @@ describe('<Overlay />', () => {
         : 'should not render backdrop if open=false';
 
       it(message, () => {
-        render(<Overlay open={open} />);
+        render(<Backdrop open={open} />);
 
-        const overlayElement = document.body.querySelector('.mzn-overlay')!;
-        const { firstElementChild: backdropElement } = overlayElement;
+        const backdropElement = document.body.querySelector(
+          '.mzn-backdrop__backdrop',
+        );
 
         if (open) {
+          expect(backdropElement).toBeInstanceOf(HTMLElement);
           expect(
-            backdropElement!.classList.contains('mzn-overlay__backdrop'),
+            backdropElement!.classList.contains('mzn-backdrop__backdrop'),
           ).toBeTruthy();
         } else {
           expect(backdropElement).toBe(null);
@@ -64,23 +83,13 @@ describe('<Overlay />', () => {
       });
     });
 
-    it('should not render backdrop if hideBackdrop=true', () => {
-      render(<Overlay hideBackdrop open />);
-
-      const overlayElement = document.body.querySelector('.mzn-overlay')!;
-      const { firstElementChild: backdropElement } = overlayElement;
-
-      expect(overlayElement).toBeInstanceOf(HTMLElement);
-      expect(backdropElement).toBe(null);
-    });
-
     it('should fire onBackdropClick while backdrop clicked', () => {
       const onBackdropClick = jest.fn();
 
-      render(<Overlay onBackdropClick={onBackdropClick} open />);
+      render(<Backdrop onBackdropClick={onBackdropClick} open />);
 
       const backdropElement = document.body.querySelector(
-        '.mzn-overlay .mzn-overlay__backdrop',
+        '.mzn-backdrop .mzn-backdrop__backdrop',
       )!;
 
       fireEvent.click(backdropElement!);
@@ -91,10 +100,10 @@ describe('<Overlay />', () => {
     it('should fire onClose while backdrop clicked', () => {
       const onClose = jest.fn();
 
-      render(<Overlay onClose={onClose} open />);
+      render(<Backdrop onClose={onClose} open />);
 
       const backdropElement = document.body.querySelector(
-        '.mzn-overlay .mzn-overlay__backdrop',
+        '.mzn-backdrop .mzn-backdrop__backdrop',
       )!;
 
       fireEvent.click(backdropElement);
@@ -105,10 +114,10 @@ describe('<Overlay />', () => {
     it('should not fire onClose while backdrop clicked if disableCloseOnBackdropClick=true', () => {
       const onClose = jest.fn();
 
-      render(<Overlay disableCloseOnBackdropClick onClose={onClose} open />);
+      render(<Backdrop disableCloseOnBackdropClick onClose={onClose} open />);
 
       const backdropElement = document.body.querySelector(
-        '.mzn-overlay .mzn-overlay__backdrop',
+        '.mzn-backdrop .mzn-backdrop__backdrop',
       )!;
 
       fireEvent.click(backdropElement);

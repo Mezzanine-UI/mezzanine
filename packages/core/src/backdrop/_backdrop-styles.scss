@@ -1,0 +1,49 @@
+@use '~@mezzanine-ui/system/palette';
+@use './backdrop' as *;
+
+$variant-colors: (
+  dark: palette.semantic-variable(overlay, strong),
+  light: palette.semantic-variable(surface, solid),
+);
+
+.#{$prefix} {
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  position: relative;
+
+  &--open {
+    pointer-events: auto;
+  }
+
+  &--absolute {
+    position: absolute;
+    inset: 0;
+  }
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+
+    @each $variant, $color in $variant-colors {
+      &--#{$variant} {
+        background-color: $color;
+      }
+    }
+  }
+
+  &__content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+
+    > * {
+      pointer-events: auto;
+    }
+  }
+}

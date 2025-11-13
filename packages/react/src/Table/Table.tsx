@@ -359,7 +359,7 @@ const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
                 loading={loading}
                 stretch
                 description={loadingTip}
-                overlayProps={{
+                backdropProps={{
                   className: classes.loading,
                 }}
               >

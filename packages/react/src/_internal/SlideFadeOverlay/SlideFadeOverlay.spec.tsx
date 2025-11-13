@@ -1,18 +1,31 @@
 import { cleanup, render, fireEvent } from '../../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import SlideFadeOverlay from '.';
+import { resetPortals } from '../../Portal/portalRegistry';
 
-function getOverlayElement(container: HTMLElement = document.body) {
-  return container?.querySelector('.mzn-overlay');
-}
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+} as any;
 
 function getBackdropElement(container: HTMLElement = document.body) {
-  return getOverlayElement(container)?.querySelector('.mzn-overlay__backdrop');
+  return container?.querySelector('.mzn-backdrop');
 }
 
 window.scrollTo = jest.fn();
 
 describe('<SlideFadeOverlay />', () => {
+  beforeEach(() => {
+    // Clean up portal containers
+    document.getElementById('mzn-alert-container')?.remove();
+    document.getElementById('mzn-portal-container')?.remove();
+    resetPortals();
+  });
+
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
@@ -30,7 +43,7 @@ describe('<SlideFadeOverlay />', () => {
       </SlideFadeOverlay>,
     );
 
-    const element = document.querySelector('.mzn-overlay-with-slide-fade');
+    const element = document.querySelector('.mzn-backdrop-with-slide-fade');
 
     expect(element).toBeInstanceOf(HTMLDivElement);
   });
@@ -55,9 +68,9 @@ describe('<SlideFadeOverlay />', () => {
         </SlideFadeOverlay>,
       );
 
-      const overlayElement = getOverlayElement();
+      const backdropElement = getBackdropElement();
 
-      expect(overlayElement).toBe(null);
+      expect(backdropElement).toBe(null);
     });
   });
 
