@@ -3,15 +3,10 @@
 @use './page-footer' as *;
 
 .#{$prefix} {
-  padding: spacing.level(4) spacing.level(5);
-  border-top: 1px solid palette.color(border);
-  background-color: palette.color(surface);
+  width: 100%;
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  background-color: palette.semantic-variable("background", base);
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  div:first-child {
-    margin-right: spacing.level(2);
-    overflow: hidden;
-  }
+  gap: spacing.semantic-variable(gap, comfort);
 }
