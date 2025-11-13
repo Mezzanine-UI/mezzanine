@@ -1,5 +1,5 @@
 import { overlayWithSlideFadeClasses as classes } from '@mezzanine-ui/core/_internal/overlay-with-slide-fade';
-import { forwardRef, useState, useEffect } from 'react';
+import { forwardRef, useState } from 'react';
 import { cx } from '../../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
 import Backdrop, { BackdropProps } from '../../Backdrop';
@@ -9,7 +9,6 @@ import {
   SlideFadeDirection,
 } from '../../Transition';
 import { useDocumentEscapeKeyDown } from '../../hooks/useDocumentEscapeKeyDown';
-import { allowBodyScroll, lockBodyScroll } from '../../utils/scroll-lock';
 import useTopStack from './useTopStack';
 
 export interface SlideFadeOverlayProps
@@ -74,35 +73,6 @@ const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
         }
       };
     }, [disableCloseOnEscapeKeyDown, checkIsOnTheTop, open, onClose]);
-
-    /** lock body scroll */
-    useEffect(() => {
-      if (open) {
-        lockBodyScroll();
-      }
-    }, [open]);
-
-    /** unlock body scroll */
-    useEffect(() => {
-      function checkAndAllowScroll() {
-        // wait until dom element unmount, and check if other modal existed
-        const allStacks = document.querySelectorAll(
-          '.mzn-overlay-with-slide-fade',
-        );
-
-        if (!allStacks.length) {
-          allowBodyScroll();
-        }
-      }
-
-      if (!open && exited) {
-        checkAndAllowScroll();
-      }
-
-      return () => {
-        requestAnimationFrame(checkAndAllowScroll);
-      };
-    }, [open, exited]);
 
     if (!open && exited) {
       return null;
