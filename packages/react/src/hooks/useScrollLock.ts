@@ -114,10 +114,21 @@ function unlock() {
 function isIOS(): boolean {
   if (typeof window === 'undefined') return false;
 
-  return (
-    /iPad|iPhone|iPod/.test(navigator.platform) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
-  );
+  // Modern approach using userAgentData API (when available)
+  if ('userAgentData' in navigator) {
+    const userAgentData = (navigator as any).userAgentData;
+    if (userAgentData?.platform) {
+      return userAgentData.platform === 'iOS';
+    }
+  }
+
+  // Fallback to userAgent string parsing
+  const userAgent = navigator.userAgent.toLowerCase();
+  const isIOSDevice = /iphone|ipad|ipod/.test(userAgent);
+  const isSafariOnMac =
+    /macintosh/.test(userAgent) && navigator.maxTouchPoints > 1;
+
+  return isIOSDevice || isSafariOnMac;
 }
 
 /**
