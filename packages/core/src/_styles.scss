@@ -83,6 +83,7 @@
   @include _load-styles($options, progress);
   @include _load-styles($options, spin);
   @include _load-styles($options, skeleton);
+  @include _load-styles($options, result-state);
 
   // Others
   @include _load-styles($options, anchor);

@@ -362,6 +362,9 @@ export type {
   InlineMessageProps,
 } from './InlineMessage';
 
+export { default as ResultState } from './ResultState';
+export type { ResultStateProps } from './ResultState';
+
 /**
  * Others
  */
