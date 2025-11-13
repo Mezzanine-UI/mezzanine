@@ -1,0 +1,6 @@
+@use '~@mezzanine-ui/system/size';
+
+$prefix: mzn-result-state;
+
+$result-state-types: (information, success, help, warning, error, failure);
+$result-state-sizes: (main, sub);
