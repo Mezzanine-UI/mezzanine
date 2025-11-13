@@ -165,11 +165,4 @@ $size-configs: (
   &__description {
     margin: 0;
   }
-
-  &__actions {
-    display: flex;
-    gap: spacing.semantic-variable(gap, base);
-    align-items: center;
-    justify-content: center;
-  }
 }
