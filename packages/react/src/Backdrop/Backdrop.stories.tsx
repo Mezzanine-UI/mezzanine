@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { SpinnerIcon } from '@mezzanine-ui/icons';
 import Button from '../Button';
+import Icon from '../Icon';
 import Typography from '../Typography';
 import Backdrop from '.';
 
@@ -17,9 +19,40 @@ export const DarkVariant: Story = {
 
     return (
       <>
+        <div style={{ marginBottom: '16px' }}>
+          <Typography color="text-neutral" variant="body">
+            📌 Try scrolling the page before and after opening the backdrop to
+            see the scroll lock in action!
+          </Typography>
+        </div>
         <Button onClick={() => setOpen(true)} variant="base-primary">
           Open Dark Backdrop
         </Button>
+        {/* Add content to make page scrollable */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            marginTop: '24px',
+          }}
+        >
+          {Array.from({ length: 20 }, (_, i) => (
+            <div
+              key={i}
+              style={{
+                background: 'var(--mzn-color-background-neutral-faint)',
+                borderRadius: '8px',
+                padding: '16px',
+              }}
+            >
+              <Typography variant="body">
+                Scrollable content item {i + 1} - This page has enough content
+                to scroll. When the backdrop opens, scrolling will be locked.
+              </Typography>
+            </div>
+          ))}
+        </div>
         <Backdrop
           onBackdropClick={() => setOpen(false)}
           onClose={() => setOpen(false)}
@@ -46,9 +79,98 @@ export const DarkVariant: Story = {
                 Dark Variant Modal
               </Typography>
               <Typography variant="body">
-                This is a modal with dark backdrop. Click outside or the button
-                to close.
+                This is a modal with dark backdrop. Notice the background page
+                cannot be scrolled while this is open. Click outside or the
+                button to close.
               </Typography>
+              <Button onClick={() => setOpen(false)} variant="base-primary">
+                Close
+              </Button>
+            </div>
+          ) : null}
+        </Backdrop>
+      </>
+    );
+  },
+};
+
+export const LightVariant: Story = {
+  render: function LightVariantStory() {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <div style={{ marginBottom: '16px' }}>
+          <Typography color="text-neutral" variant="body">
+            💡 Light variant is commonly used for loading states (like Spin
+            component)
+          </Typography>
+        </div>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Light Backdrop
+        </Button>
+        {/* Add content to make page scrollable */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            marginTop: '24px',
+          }}
+        >
+          {Array.from({ length: 15 }, (_, i) => (
+            <div
+              key={i}
+              style={{
+                background: 'var(--mzn-color-background-neutral-faint)',
+                borderRadius: '8px',
+                padding: '16px',
+              }}
+            >
+              <Typography variant="body">
+                Scrollable content item {i + 1} - Background scroll is locked
+                when backdrop is open.
+              </Typography>
+            </div>
+          ))}
+        </div>
+        <Backdrop
+          onBackdropClick={() => setOpen(false)}
+          onClose={() => setOpen(false)}
+          open={open}
+          variant="light"
+        >
+          {open ? (
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '24px',
+                justifyContent: 'center',
+              }}
+            >
+              <Icon icon={SpinnerIcon} size={48} spin />
+              <div
+                style={{
+                  background: 'var(--mzn-color-background-base)',
+                  borderRadius: '8px',
+                  padding: '24px',
+                  textAlign: 'center',
+                }}
+              >
+                <Typography color="text-brand" variant="h3">
+                  Light Variant Loading
+                </Typography>
+                <Typography
+                  style={{ marginTop: '8px' }}
+                  color="text-neutral"
+                  variant="body"
+                >
+                  Perfect for loading overlays and component-level blocking
+                  states
+                </Typography>
+              </div>
               <Button onClick={() => setOpen(false)} variant="base-primary">
                 Close
               </Button>
@@ -82,17 +204,13 @@ export const CustomContainer: Story = {
             background: 'var(--mzn-color-background-base)',
             border: '2px dashed var(--mzn-color-border-neutral)',
             borderRadius: '8px',
+            minHeight: '300px',
             padding: '16px',
             position: 'relative',
             width: '100%',
           }}
         >
-          <div
-            style={{
-              height: '200px',
-              padding: '24px',
-            }}
-          >
+          <div style={{ padding: '24px' }}>
             <Typography variant="body">
               Container Element (Backdrop will be rendered inside this)
             </Typography>
@@ -101,7 +219,7 @@ export const CustomContainer: Story = {
             container={containerRef}
             onBackdropClick={() => setOpen(false)}
             open={open}
-            variant="light"
+            variant="dark"
           >
             {open ? (
               <div
@@ -113,13 +231,25 @@ export const CustomContainer: Story = {
                   justifyContent: 'center',
                 }}
               >
-                <Typography color="text-brand" variant="h3">
-                  Container Backdrop
-                </Typography>
-                <Typography align="center" variant="body">
-                  This overlay is rendered inside the container element above,
-                  perfect for component-level loading states like Spin.
-                </Typography>
+                <div
+                  style={{
+                    background: 'var(--mzn-color-background-base)',
+                    borderRadius: '8px',
+                    padding: '24px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography color="text-brand" variant="h3">
+                    Container Backdrop
+                  </Typography>
+                  <Typography
+                    style={{ marginTop: '8px' }}
+                    color="text-neutral"
+                    variant="body"
+                  >
+                    This overlay is scoped to the container element above
+                  </Typography>
+                </div>
                 <Button onClick={() => setOpen(false)} variant="base-primary">
                   Close
                 </Button>
@@ -128,6 +258,87 @@ export const CustomContainer: Story = {
           </Backdrop>
         </div>
       </div>
+    );
+  },
+};
+
+export const DisableScrollLock: Story = {
+  render: function DisableScrollLockStory() {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <div style={{ marginBottom: '16px' }}>
+          <Typography color="text-neutral" variant="body">
+            ⚠️ With disableScrollLock=true, you can still scroll the background
+            page
+          </Typography>
+        </div>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Without Scroll Lock
+        </Button>
+        {/* Add content to make page scrollable */}
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            marginTop: '24px',
+          }}
+        >
+          {Array.from({ length: 20 }, (_, i) => (
+            <div
+              key={i}
+              style={{
+                background: 'var(--mzn-color-background-neutral-faint)',
+                borderRadius: '8px',
+                padding: '16px',
+              }}
+            >
+              <Typography variant="body">
+                Scrollable content item {i + 1} - You can scroll this even when
+                backdrop is open!
+              </Typography>
+            </div>
+          ))}
+        </div>
+        <Backdrop
+          disableScrollLock
+          onBackdropClick={() => setOpen(false)}
+          onClose={() => setOpen(false)}
+          open={open}
+          variant="dark"
+        >
+          {open ? (
+            <div
+              style={{
+                background: 'var(--mzn-color-background-base)',
+                borderRadius: '8px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '16px',
+                margin: 'auto',
+                maxWidth: '400px',
+                padding: '24px',
+                position: 'relative',
+                top: '50%',
+                transform: 'translateY(-50%)',
+              }}
+            >
+              <Typography color="text-brand" variant="h3">
+                Scroll Lock Disabled
+              </Typography>
+              <Typography variant="body">
+                Try scrolling the page - it still works! This is useful for
+                scenarios where you want to allow background interaction.
+              </Typography>
+              <Button onClick={() => setOpen(false)} variant="base-primary">
+                Close
+              </Button>
+            </div>
+          ) : null}
+        </Backdrop>
+      </>
     );
   },
 };
@@ -178,13 +389,25 @@ export const DisablePortal: Story = {
                   justifyContent: 'center',
                 }}
               >
-                <Typography color="text-brand" variant="h3">
-                  No Portal
-                </Typography>
-                <Typography align="center" variant="body">
-                  This overlay is rendered in the normal DOM flow without
-                  portal. Notice it respects parent overflow.
-                </Typography>
+                <div
+                  style={{
+                    background: 'var(--mzn-color-background-base)',
+                    borderRadius: '8px',
+                    padding: '24px',
+                    textAlign: 'center',
+                  }}
+                >
+                  <Typography color="text-brand" variant="h3">
+                    No Portal
+                  </Typography>
+                  <Typography
+                    style={{ marginTop: '8px' }}
+                    color="text-neutral"
+                    variant="body"
+                  >
+                    Rendered in normal DOM flow, respects parent overflow
+                  </Typography>
+                </div>
                 <Button onClick={() => setOpen(false)} variant="base-primary">
                   Close
                 </Button>
@@ -203,6 +426,11 @@ export const DisableBackdropClick: Story = {
 
     return (
       <>
+        <div style={{ marginBottom: '16px' }}>
+          <Typography color="text-neutral" variant="body">
+            🔒 Clicking outside will not close the modal - use the button
+          </Typography>
+        </div>
         <Button onClick={() => setOpen(true)} variant="base-primary">
           Open Modal (Must Use Button)
         </Button>
@@ -223,15 +451,16 @@ export const DisableBackdropClick: Story = {
                 transform: 'translateY(-50%)',
               }}
             >
-              <Typography color="text-brand" variant="h3">
-                Disable Backdrop Click
-              </Typography>
-              <Typography variant="body">
+              <Typography
+                variant="body"
+                color="text-neutral"
+                style={{ marginBottom: 16 }}
+              >
                 Clicking the backdrop will not close this modal. You must use
                 the button below.
               </Typography>
-              <Button onClick={() => setOpen(false)} variant="base-primary">
-                Close
+              <Button variant="base-primary" onClick={() => setOpen(false)}>
+                Close Modal
               </Button>
             </div>
           ) : null}

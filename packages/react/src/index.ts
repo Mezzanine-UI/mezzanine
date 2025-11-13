@@ -6,7 +6,6 @@ export * from './utils/get-css-variable-value';
 export * from './utils/get-scrollbar-width';
 export * from './utils/getElement';
 export * from './utils/jsx-types';
-export * from './utils/scroll-lock';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
@@ -17,6 +16,7 @@ export * from './hooks/useIsomorphicLayoutEffect';
 export * from './hooks/useLastCallback';
 export * from './hooks/useLastValue';
 export * from './hooks/usePreviousValue';
+export * from './hooks/useScrollLock';
 export * from './hooks/useWindowWidth';
 export * from './Tooltip/useDelayMouseEnterLeave';
 
@@ -122,7 +122,7 @@ export type {
   AccordionSummaryProps,
 } from './Accordion';
 export { default as Badge, BadgeContainer } from './Badge';
-export type { BadgeContainerProps, BadgeProps } from './Badge';
+export type { BadgeProps } from './Badge';
 export { default as Card, CardActions } from './Card';
 export type { CardActionsProps, CardProps } from './Card';
 export { default as Empty } from './Empty';

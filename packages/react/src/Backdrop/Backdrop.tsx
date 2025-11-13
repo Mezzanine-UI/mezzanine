@@ -9,6 +9,7 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
 import { Fade } from '../Transition';
+import { useScrollLock } from '../hooks/useScrollLock';
 
 export interface BackdropProps
   extends Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
@@ -18,6 +19,11 @@ export interface BackdropProps
    * @default false
    */
   disableCloseOnBackdropClick?: boolean;
+  /**
+   * Controls whether to disable scroll locking when backdrop is open.
+   * @default false
+   */
+  disableScrollLock?: boolean;
   /**
    * Click handler for backdrop.
    */
@@ -49,12 +55,16 @@ const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
       container,
       disableCloseOnBackdropClick = false,
       disablePortal,
+      disableScrollLock = false,
       onBackdropClick,
       onClose,
       open = false,
       variant = 'dark',
       ...rest
     } = props;
+
+    // Lock body scroll when backdrop is open
+    useScrollLock({ enabled: open && !disableScrollLock });
 
     // When using custom container or disablePortal, overlay should be absolutely positioned
     // When using default Portal (to #mzn-portal-container), overlay uses relative positioning
