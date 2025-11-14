@@ -90,7 +90,7 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
 
     // Filter out onAnnotationClick from rest props to avoid React warnings
     if ('onAnnotationClick' in rest) {
-      delete (rest as any).onAnnotationClick;
+      delete rest.onAnnotationClick;
     }
 
     const { children: primaryButtonText, ...restPrimaryButtonProps } =
