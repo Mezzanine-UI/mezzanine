@@ -1,86 +1,266 @@
-import { StoryFn, Meta } from '@storybook/react-webpack5';
-import { action } from 'storybook/actions';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+import { ReactNode } from 'react';
 import Tag, { TagProps, TagSize } from '.';
-import ConfigProvider from '../Provider';
+import { TagType } from '@mezzanine-ui/core/tag';
+import Typography from '../Typography';
 
 export default {
   title: 'Data Display/Tag',
-} as Meta;
+  component: Tag,
+} satisfies Meta<typeof Tag>;
 
-const sizes: TagSize[] = ['small', 'medium', 'large'];
+const types: TagType[] = [
+  'static',
+  'counter',
+  'overflow-counter',
+  'dismissable',
+  'addable',
+];
+const sizes: TagSize[] = ['main', 'sub'];
 
-interface PlaygroudStoryArgs
-  extends Required<Pick<TagProps, 'closable' | 'disabled' | 'size'>> {
-  label: string;
-  onClose: VoidFunction;
-}
+type Story = StoryObj<TagProps>;
 
-export const Playgroud: StoryFn<PlaygroudStoryArgs> = ({ label, ...args }) => (
-  <Tag {...args}>{label}</Tag>
-);
-
-Playgroud.args = {
-  label: 'Tag',
-  closable: false,
-  disabled: false,
-  size: 'medium',
-  onClose: action('onClose'),
-};
-Playgroud.argTypes = {
-  size: {
-    options: sizes,
-    control: {
-      type: 'select',
+export const Playgroud: Story = {
+  args: {
+    type: 'static',
+    size: 'main',
+    label: 'Tag',
+    count: undefined,
+  },
+  argTypes: {
+    type: {
+      control: 'select',
+      options: types,
     },
+    size: {
+      control: 'inline-radio',
+      options: sizes,
+    },
+    count: { control: 'number' },
+    active: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    readOnly: { control: 'boolean' },
+    onAdd: { control: false },
+    onClose: { control: false },
   },
 };
 
-interface CommonStoryArgs {
-  onClose: VoidFunction;
-}
+const voidFn = () => {};
 
-export const Common: StoryFn<CommonStoryArgs> = ({ onClose }) => (
+const Section = ({
+  children,
+  title,
+}: {
+  children: ReactNode;
+  title: string;
+}) => (
   <div
     style={{
-      display: 'inline-grid',
-      alignItems: 'center',
-      gridAutoFlow: 'column',
-      gap: 8,
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '16px',
     }}
   >
-    <Tag>Tag</Tag>
-    <Tag>
-      <a href="https://www.google.com" target="_blank" rel="noreferrer">
-        Link
-      </a>
-    </Tag>
-    <Tag disabled>Disabled</Tag>
-    <Tag closable onClose={onClose}>
-      Closable
-    </Tag>
-    <Tag closable disabled onClose={onClose}>
-      Disabled
-    </Tag>
+    <Typography variant="h2">{title}</Typography>
+    {children}
   </div>
 );
 
-Common.args = {
-  onClose: action('onClose'),
+const SectionItem = ({
+  children,
+  label,
+}: {
+  children: ReactNode;
+  label?: string;
+}) => (
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+    }}
+  >
+    {children}
+    <Typography variant="body" style={{ marginInline: 'auto' }}>
+      {label}
+    </Typography>
+  </div>
+);
+
+const ItemList = ({ children }: { children: ReactNode }) => (
+  <div style={{ display: 'flex', gap: '36px', alignItems: 'flex-end' }}>
+    {children}
+  </div>
+);
+
+export const Types: Story = {
+  parameters: {
+    controls: { disable: true },
+  },
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '48px',
+      }}
+    >
+      <div style={{ display: 'flex', gap: '80px' }}>
+        <Section title="Static">
+          <SectionItem>
+            <Tag label="Tag" size="main" type="static" />
+          </SectionItem>
+        </Section>
+        <Section title="Counter">
+          <SectionItem>
+            <Tag count={5} label="Tag" size="main" type="counter" />
+          </SectionItem>
+        </Section>
+        <Section title="Overflow Counter">
+          <SectionItem>
+            <Tag count={5} size="main" type="overflow-counter" />
+          </SectionItem>
+        </Section>
+      </div>
+
+      <Section title="Dismissable">
+        <ItemList>
+          <SectionItem label="Enabled">
+            <Tag label="Tag" onClose={voidFn} size="main" type="dismissable" />
+          </SectionItem>
+          <SectionItem label="Active">
+            <Tag
+              active
+              label="Tag"
+              onClose={voidFn}
+              size="main"
+              type="dismissable"
+            />
+          </SectionItem>
+
+          <SectionItem label="Disabled">
+            <Tag
+              disabled
+              label="Tag"
+              onClose={voidFn}
+              size="main"
+              type="dismissable"
+            />
+          </SectionItem>
+          <SectionItem label="Read Only">
+            <Tag
+              readOnly
+              label="Tag"
+              onClose={voidFn}
+              size="main"
+              type="dismissable"
+            />
+          </SectionItem>
+        </ItemList>
+      </Section>
+
+      <Section title="Addable">
+        <ItemList>
+          <SectionItem label="Enabled">
+            <Tag label="Tag" onAdd={voidFn} size="main" type="addable" />
+          </SectionItem>
+          <SectionItem label="Active">
+            <Tag active label="Tag" onAdd={voidFn} size="main" type="addable" />
+          </SectionItem>
+
+          <SectionItem label="Disabled">
+            <Tag
+              disabled
+              label="Tag"
+              onAdd={voidFn}
+              size="main"
+              type="addable"
+            />
+          </SectionItem>
+        </ItemList>
+      </Section>
+    </div>
+  ),
 };
 
-export const Sizes: StoryFn = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, min-content)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <Tag size="small">small</Tag>
-    <Tag>medium</Tag>
-    <ConfigProvider size="large">
-      <Tag>large</Tag>
-    </ConfigProvider>
-  </div>
-);
+export const Sizes: Story = {
+  parameters: {
+    controls: { disable: true },
+  },
+  render: () => (
+    <div style={{ display: 'flex', gap: '72px' }}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '48px',
+        }}
+      >
+        <Section title="Static">
+          <ItemList>
+            <SectionItem label="Main">
+              <Tag label="Tag" size="main" type="static" />
+            </SectionItem>
+            <SectionItem label="Sub">
+              <Tag label="Tag" size="sub" type="static" />
+            </SectionItem>
+          </ItemList>
+        </Section>
+
+        <Section title="Counter">
+          <ItemList>
+            <SectionItem label="Main">
+              <Tag label="Tag" size="main" type="counter" count={5} />
+            </SectionItem>
+            <SectionItem label="Sub">
+              <Tag label="Tag" size="sub" type="counter" count={5} />
+            </SectionItem>
+          </ItemList>
+        </Section>
+        <Section title="Overflow Counter">
+          <ItemList>
+            <SectionItem label="Main">
+              <Tag size="main" type="overflow-counter" count={5} />
+            </SectionItem>
+            <SectionItem label="Sub">
+              <Tag size="sub" type="overflow-counter" count={5} />
+            </SectionItem>
+          </ItemList>
+        </Section>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '48px',
+        }}
+      >
+        <Section title="Dismissable">
+          <ItemList>
+            <SectionItem label="Main">
+              <Tag
+                label="Tag"
+                size="main"
+                type="dismissable"
+                onClose={voidFn}
+              />
+            </SectionItem>
+            <SectionItem label="Sub">
+              <Tag label="Tag" size="sub" type="dismissable" onClose={voidFn} />
+            </SectionItem>
+          </ItemList>
+        </Section>
+        <Section title="Addable">
+          <ItemList>
+            <SectionItem label="Main">
+              <Tag label="Tag" size="main" type="addable" onAdd={voidFn} />
+            </SectionItem>
+            <SectionItem label="Sub">
+              <Tag label="Tag" size="sub" type="addable" onAdd={voidFn} />
+            </SectionItem>
+          </ItemList>
+        </Section>
+      </div>
+    </div>
+  ),
+};

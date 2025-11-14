@@ -86,7 +86,7 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
               type="button"
               onClick={onClose}
               aria-label="Dismiss tag"
-              disabled={disabled}
+              disabled={disabled || readOnly}
             >
               <Icon className={classes.icon} icon={CloseIcon} size={16} />
             </button>
