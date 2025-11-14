@@ -74,6 +74,7 @@ $tag-config: (
     ),
     text-color: palette.semantic-variable(text, neutral-solid),
     icon-color: palette.semantic-variable(icon, neutral),
+    background-color: unset,
     border: 1px dashed palette.semantic-variable(border, neutral-light),
     hover: (
       text-color: palette.semantic-variable(text, neutral-solid),
@@ -125,19 +126,11 @@ $tag-config: (
   align-items: center;
   flex-shrink: 0;
   border-radius: radius.variable(base);
+  width: fit-content;
+  height: fit-content;
 
-  button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    flex-shrink: 0;
-    border: 0;
-    cursor: pointer;
-  }
+
+
 
   @each $type in $tag-types {
     $type-config: map.get($tag-config, $type);
@@ -150,7 +143,7 @@ $tag-config: (
       @if map.has-key($type-config, hover) {
         $type-hover-config: map.get($type-config, hover);
 
-        &:hover {
+        &:not(.#{$prefix}--active):not(.#{$prefix}--disabled):not(.#{$prefix}--read-only):hover {
           @include _tag-state-styles($type-hover-config);
         }
       }
@@ -225,4 +218,29 @@ $tag-config: (
       }
     }
   }
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    flex-shrink: 0;
+    border: 0;
+  }
+}
+
+button.#{$prefix},
+.#{$prefix} button {
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.#{$prefix}.#{$prefix}--read-only button {
+    cursor: default;
 }
