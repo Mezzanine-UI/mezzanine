@@ -1,201 +1,121 @@
-import { RefObject, MouseEvent, useState } from 'react';
-import { action } from 'storybook/actions';
-import { Meta, StoryFn } from '@storybook/react-webpack5';
-import { MoreVerticalIcon } from '@mezzanine-ui/icons';
-import AppBar, { AppBarBrand, AppBarMain, AppBarSupport } from '../AppBar';
-import Button from '../Button/Button';
-import Dropdown from '../Dropdown';
-import Icon from '../Icon';
-import Menu, { MenuItem } from '../Menu';
-import PageFooter, { PageFooterProps } from './PageFooter';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import PageFooter from '.';
 
 export default {
   title: 'Navigation/PageFooter',
-} as Meta;
+  component: PageFooter,
+} as Meta<typeof PageFooter>;
 
-const pageFooterArgs = {
-  cancelText: 'cancel',
-  confirmText: 'ok',
-  danger: false,
-  loading: false,
-  onCancel: action('onCancel'),
-  onConfirm: action('onConfirm'),
+type Story = StoryObj<typeof PageFooter>;
+
+export const Basic: Story = {
+  args: {},
 };
 
-export const Basic: StoryFn<PageFooterProps> = ({
-  cancelText,
-  confirmText,
-  danger,
-  loading,
-  onCancel,
-  onConfirm,
-}) => (
-  <PageFooter
-    cancelText={cancelText}
-    confirmText={confirmText}
-    confirmButtonProps={{
-      type: 'submit',
-    }}
-    danger={danger}
-    loading={loading}
-    onCancel={onCancel}
-    onConfirm={onConfirm}
-  />
-);
-
-Basic.args = pageFooterArgs;
-
-export const WithDropdown: StoryFn<PageFooterProps> = ({
-  cancelText,
-  confirmText,
-  danger,
-  loading,
-  onCancel,
-  onConfirm,
-}) => {
-  const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
-
-  const open = Boolean(anchor);
-
-  const onClose = () => {
-    setAnchor(null);
-  };
-
-  return (
-    <PageFooter
-      cancelText={cancelText}
-      confirmText={confirmText}
-      danger={danger}
-      loading={loading}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-    >
-      <Dropdown
-        menu={
-          <Menu style={{ border: 0 }}>
-            <MenuItem>item 1</MenuItem>
-            <MenuItem>item 2</MenuItem>
-            <MenuItem>item 3</MenuItem>
-            <MenuItem>item 4</MenuItem>
-          </Menu>
-        }
-        onClose={onClose}
-        popperProps={{
-          open,
-        }}
-      >
-        {(ref) => (
-          <Button
-            ref={ref as RefObject<HTMLButtonElement | null>}
-            onClick={(event: MouseEvent<HTMLButtonElement>) => {
-              event.stopPropagation();
-              setAnchor(
-                anchor === event.currentTarget ? null : event.currentTarget,
-              );
-            }}
-            suffix={<Icon icon={MoreVerticalIcon} />}
-            variant="text"
-          >
-            Dropdown
-          </Button>
-        )}
-      </Dropdown>
-    </PageFooter>
-  );
+export const StandardType: Story = {
+  args: {
+    type: 'standard',
+    actions: {
+      primaryButtonProps: {
+        children: '發佈',
+      },
+      secondaryButtonProps: {
+        children: '儲存草稿',
+      },
+    },
+    annotation: '查看發佈紀錄',
+    onAnnotationClick: () => {
+      alert('Annotation button clicked!');
+    },
+  },
 };
 
-WithDropdown.args = pageFooterArgs;
+export const OverflowType: Story = {
+  args: {
+    type: 'overflow',
+    actions: {
+      primaryButtonProps: {
+        children: '發佈',
+      },
+      secondaryButtonProps: {
+        children: '儲存草稿',
+      },
+    },
+    /** @TODO dropdown replacement */
+    annotation: {
+      position: 'icon-only',
+      src: DotVerticalIcon,
+    },
+    onAnnotationClick: () => {
+      alert('Overflow button clicked!');
+    },
+  },
+};
 
-export const WithAppBar: StoryFn<PageFooterProps> = ({
-  cancelText,
-  confirmText,
-  danger,
-  loading,
-  onCancel,
-  onConfirm,
-}) => (
-  <div
-    style={{
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-    }}
-  >
-    <AppBar orientation="horizontal">
-      <AppBarSupport>Support</AppBarSupport>
-      <AppBarMain>Main</AppBarMain>
-      <AppBarBrand>Brand</AppBarBrand>
-    </AppBar>
-    <PageFooter
-      cancelText={cancelText}
-      confirmText={confirmText}
-      danger={danger}
-      loading={loading}
-      onCancel={onCancel}
-      onConfirm={onConfirm}
-    />
-  </div>
-);
+export const InformationType: Story = {
+  args: {
+    type: 'information',
+    actions: {
+      primaryButtonProps: {
+        children: '發佈',
+      },
+      secondaryButtonProps: {
+        children: '儲存草稿',
+      },
+    },
+    annotation: '發佈後將無法編輯，請確認內容無誤',
+  },
+};
 
-WithAppBar.args = pageFooterArgs;
+export const WithWarningMessage: Story = {
+  args: {
+    type: 'standard',
+    actions: {
+      primaryButtonProps: {
+        children: '發佈',
+      },
+      secondaryButtonProps: {
+        children: '儲存草稿',
+      },
+    },
+    annotation: '查看發佈紀錄',
+    annotationClassName: 'foo',
+    warningMessage: '部分內容未通過驗證，請調整後重試',
+  },
+};
 
-export const WithMenuNavigation: StoryFn<PageFooterProps> = ({
-  cancelText,
-  confirmText,
-  danger,
-  loading,
-  onCancel,
-  onConfirm,
-}) => (
-  <div
-    style={{
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-    }}
-  >
-    <AppBar orientation="horizontal">
-      <AppBarSupport>Support</AppBarSupport>
-      <AppBarMain>Main</AppBarMain>
-      <AppBarBrand>Brand</AppBarBrand>
-    </AppBar>
-    <div
-      style={{
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-      }}
-    >
-      <div
-        style={{
-          width: 200,
-          backgroundColor: '#fff',
-          border: 'solid 1px #d9d9d9',
-        }}
-      >
-        MenuNavigation
-      </div>
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div>CONTENT</div>
-        <PageFooter
-          cancelText={cancelText}
-          confirmText={confirmText}
-          danger={danger}
-          loading={loading}
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        />
-      </div>
-    </div>
-  </div>
-);
+export const LoadingState: Story = {
+  args: {
+    type: 'standard',
+    actions: {
+      primaryButtonProps: {
+        children: 'Saving...',
+        loading: true,
+      },
+      secondaryButtonProps: {
+        children: 'Cancel',
+        disabled: true,
+      },
+    },
+    annotation: '查看說明',
+    warningMessage: 'Please wait while we save your changes',
+  },
+};
 
-WithMenuNavigation.args = pageFooterArgs;
+export const DangerAction: Story = {
+  args: {
+    type: 'information',
+    actions: {
+      primaryButtonProps: {
+        children: 'Delete',
+        variant: 'destructive-primary',
+      },
+      secondaryButtonProps: {
+        children: 'Cancel',
+      },
+    },
+    annotation: '此操作將永久刪除資料',
+    warningMessage: 'This action cannot be undone',
+  },
+};
