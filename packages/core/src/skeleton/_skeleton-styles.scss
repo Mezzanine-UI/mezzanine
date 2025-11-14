@@ -4,28 +4,45 @@
 @use '~@mezzanine-ui/system/motion';
 @use './skeleton' as *;
 
-$animation-back: palette.color(divider) !default;
 $animation-duration: motion.duration(short) !default;
-$animation-front: palette.color(action-disabled-bg) !default;
-$circle-default-size: 40px !default;
-$line-default-height: typography.prop(body1, font-size) !default;
+$animation-front: palette.semantic-variable(background, neutral-faint) !default;
+$animation-back: palette.semantic-variable(background, neutral-subtle) !default;
 
 .#{$prefix} {
+  width: 100%;
+  height: 100%;
+
+  &--strip {
+    @each $type in typography.$semantic-semantic-types {
+      &--#{$type} {
+        height: typography.semantic-prop($type, line-height);
+        display: flex;
+        align-items: center;
+
+        > span {
+          height: typography.semantic-prop($type, font-size);
+          width: 100%;
+        }
+      }
+    }
+  }
+
+  &--circle {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    height: auto;
+  }
+}
+
+.#{$prefix}--bg {
   animation: transition.standard(active-animation, calc(#{$animation-duration} * 10)) infinite;
   background: linear-gradient(90deg, #{$animation-back 25%}, #{$animation-front}, #{$animation-back} 75%);
   background-size: 400% 100%;
   box-sizing: border-box;
-  height: $line-default-height;
 
   @keyframes active-animation {
     0% { background-position: 100%; }
     33% { background-position: 0%; }
     100% { background-position: 0%; }
-  }
-
-  &--circle {
-    width: $circle-default-size;
-    height: $circle-default-size;
-    border-radius: 50%;
   }
 }
