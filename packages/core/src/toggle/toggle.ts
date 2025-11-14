@@ -1,29 +1,19 @@
-import type { IconDefinition } from '@mezzanine-ui/icons';
-import { Size } from '@mezzanine-ui/system/size';
-
-export type ToggleSize = Extract<Size, 'medium' | 'large'>;
+export type ToggleSize = 'main' | 'sub';
 
 export const togglePrefix = 'mzn-toggle';
 
-export const ToggleSpinnerIcon: IconDefinition = {
-  name: 'toggle-spinner-icon',
-  definition: {
-    svg: {
-      viewBox: '0 0 24 24',
-    },
-    path: {
-      fill: 'currentColor',
-      fillRule: 'evenodd',
-      d: 'M 12 3 L12 2 A10 10, 0 0 1 22 12 L21 12 A10 10, 0 0 0 12 3Z',
-    },
-  },
-};
-
 export const toggleClasses = {
   host: togglePrefix,
+  // status
   checked: `${togglePrefix}--checked`,
   disabled: `${togglePrefix}--disabled`,
-  large: `${togglePrefix}--large`,
-  control: `${togglePrefix}__control`,
+  // size
+  main: `${togglePrefix}--main`,
+  sub: `${togglePrefix}--sub`,
+  // controller
+  inputContainer: `${togglePrefix}__input-container`,
+  knob: `${togglePrefix}__knob`,
   input: `${togglePrefix}__input`,
+  // text content
+  textContainer: `${togglePrefix}__text-container`,
 } as const;
