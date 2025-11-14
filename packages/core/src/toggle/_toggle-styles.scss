@@ -38,8 +38,7 @@ $size-spacing: (
     // standalone
     knob: spacing.semantic-variable(size, element, base),
     padding-horizontal-on-side: spacing.semantic-variable(padding, horizontal, micro),
-    // TODO: waiting for design confirmation
-    padding-horizontal-off-side: 20px,
+    padding-horizontal-off-side: spacing.semantic-variable(padding, horizontal, open),
     padding-vertical: spacing.semantic-variable(padding, vertical, micro),
     height: spacing.semantic-variable(size, element, gentle),
     // with label
