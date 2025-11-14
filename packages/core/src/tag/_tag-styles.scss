@@ -7,14 +7,10 @@
 
 $tag-config: (
   static: (
-    left: text,
-    right: text,
     text-color: palette.semantic-variable(text, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint)
   ),
   counter: (
-    left: text,
-    right: item,
     gap: (
       main: spacing.semantic-variable(gap, tight),
       sub: spacing.semantic-variable(gap, tiny)
@@ -23,8 +19,6 @@ $tag-config: (
     background-color: palette.semantic-variable(background, brand-faint)
   ),
   overflow-counter: (
-    left: item,
-    right: text,
     gap: (
       main: spacing.semantic-variable(gap, tiny),
       sub: spacing.semantic-variable(gap, tiny)
@@ -34,8 +28,6 @@ $tag-config: (
     background-color: palette.semantic-variable(background, brand-faint)
   ),
   dismissable: (
-    left: text,
-    right: item,
     gap: (
       main: spacing.semantic-variable(gap, tight),
       sub: spacing.semantic-variable(gap, tiny)
@@ -66,8 +58,6 @@ $tag-config: (
     )
   ),
   addable: (
-    left: item,
-    right: text,
     gap: (
       main: spacing.semantic-variable(gap, tight),
       sub: spacing.semantic-variable(gap, tiny)
@@ -178,18 +168,14 @@ $tag-config: (
 
     // Main size
     &.#{$prefix}--main.#{$prefix}--#{$type} {
-      padding-block: spacing.semantic-variable(padding, vertical, tight);
+      padding: spacing.semantic-variable(padding, vertical, tight);
 
-      @if map.get($type-config, left) == text {
+      &:has(> :first-child.#{$prefix}__label) {
         padding-left: spacing.semantic-variable(padding, horizontal, base);
-      } @else {
-        padding-left: spacing.semantic-variable(padding, horizontal, tight);
       }
 
-      @if map.get($type-config, right) == text {
+      &:has(> :last-child.#{$prefix}__label) {
         padding-right: spacing.semantic-variable(padding, horizontal, base);
-      } @else {
-        padding-right: spacing.semantic-variable(padding, horizontal, tight);
       }
 
       @if map.has-key($type-config, gap) {
@@ -199,18 +185,14 @@ $tag-config: (
 
     // Sub size
     &.#{$prefix}--sub.#{$prefix}--#{$type} {
-      padding-block: spacing.semantic-variable(padding, vertical, micro);
+      padding: spacing.semantic-variable(padding, vertical, micro);
 
-      @if map.get($type-config, left) == text {
+      &:has(> :first-child.#{$prefix}__label) {
         padding-left: spacing.semantic-variable(padding, horizontal, tiny);
-      } @else {
-        padding-left: spacing.semantic-variable(padding, horizontal, micro);
       }
 
-      @if map.get($type-config, right) == text {
+      &:has(> :last-child.#{$prefix}__label) {
         padding-right: spacing.semantic-variable(padding, horizontal, tiny);
-      } @else {
-        padding-right: spacing.semantic-variable(padding, horizontal, micro);
       }
 
       @if map.has-key($type-config, gap) {
