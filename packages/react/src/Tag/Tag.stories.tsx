@@ -20,12 +20,27 @@ const sizes: TagSize[] = ['main', 'sub'];
 
 type Story = StoryObj<TagProps>;
 
-export const Playgroud: Story = {
+type PlaygroundArgs = {
+  type: TagType;
+  size: TagSize;
+  label: string;
+  count: number;
+  active: boolean;
+  disabled: boolean;
+  readOnly: boolean;
+  onAdd: () => void;
+  onClose: () => void;
+};
+
+export const Playgroud: StoryObj<PlaygroundArgs> = {
   args: {
     type: 'static',
     size: 'main',
     label: 'Tag',
-    count: undefined,
+    count: 5,
+    active: false,
+    disabled: false,
+    readOnly: false,
   },
   argTypes: {
     type: {
@@ -40,8 +55,8 @@ export const Playgroud: Story = {
     active: { control: 'boolean' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
-    onAdd: { control: false },
-    onClose: { control: false },
+    onAdd: { control: false, table: { disable: true } },
+    onClose: { control: false, table: { disable: true } },
   },
 };
 
