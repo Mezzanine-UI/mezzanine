@@ -2,17 +2,17 @@
 
 import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import {
-  switchClasses as classes,
-  SwitchSize,
-  SwitchSpinnerIcon,
-} from '@mezzanine-ui/core/switch';
+  toggleClasses as classes,
+  ToggleSize,
+  ToggleSpinnerIcon,
+} from '@mezzanine-ui/core/toggle';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useSwitchControlValue } from '../Form/useSwitchControlValue';
 import Icon from '../Icon';
 import { FormControlContext } from '../Form';
 
-export interface SwitchProps
+export interface ToggleProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'onChange'> {
   /**
    * Whether the switch is checked.
@@ -56,14 +56,14 @@ export interface SwitchProps
    * The size of switch.
    * @default 'medium'
    */
-  size?: SwitchSize;
+  size?: ToggleSize;
 }
 
 /**
  * The react component for `mezzanine` switch.
  */
-const Switch = forwardRef<HTMLSpanElement, SwitchProps>(
-  function Switch(props, ref) {
+const Toggle = forwardRef<HTMLSpanElement, ToggleProps>(
+  function Toggle(props, ref) {
     const { disabled: disabledFromFormControl } =
       useContext(FormControlContext) || {};
     const {
@@ -99,7 +99,7 @@ const Switch = forwardRef<HTMLSpanElement, SwitchProps>(
         )}
       >
         <span className={classes.control}>
-          {loading && <Icon icon={SwitchSpinnerIcon} spin />}
+          {loading && <Icon icon={ToggleSpinnerIcon} spin />}
         </span>
         <input
           {...inputProps}
@@ -116,4 +116,4 @@ const Switch = forwardRef<HTMLSpanElement, SwitchProps>(
   },
 );
 
-export default Switch;
+export default Toggle;

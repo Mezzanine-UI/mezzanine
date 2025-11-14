@@ -287,8 +287,11 @@ export type {
   UseSliderProps,
   UseSliderResult,
 } from './Slider';
-export { default as Switch } from './Switch';
-export type { SwitchProps, SwitchSize } from './Switch';
+export { default as Switch } from './Toggle';
+export type {
+  ToggleProps as SwitchProps,
+  ToggleSize as SwitchSize,
+} from './Toggle';
 export { default as Textarea } from './Textarea';
 export type { TextareaProps, TextareaSize } from './Textarea';
 export { default as TextField } from './TextField';
