@@ -317,6 +317,10 @@ $semantic-spacings: (
         default: primitive.variable(16),
         compact: primitive.variable(14),
       ),
+      open: (
+        default: primitive.variable(20),
+        compact: primitive.variable(16),
+      ),
       relaxed: (
         default: primitive.variable(24),
         compact: primitive.variable(20),
@@ -336,6 +340,10 @@ $semantic-spacings: (
       max: (
         default: primitive.variable(48),
         compact: primitive.variable(40),
+      ),
+      ultra: (
+        default: primitive.variable(56),
+        compact: primitive.variable(48),
       ),
     ),
     vertical: (
