@@ -8,6 +8,7 @@ import {
   NotifierData,
   RenderNotifier,
 } from './typings';
+import type { ComponentType } from 'react';
 import NotifierManager, { NotifierController } from './NotifierManager';
 
 export interface CreateNotifierProps<
@@ -26,6 +27,10 @@ export interface CreateNotifierProps<
    * The method to set attributes or listeners to root.
    */
   setRoot?: (root: HTMLDivElement) => void;
+  /**
+   * Custom NotifierManager component. If provided, will be used instead of the default NotifierManager.
+   */
+  NotifierManagerComponent?: ComponentType<any>;
 }
 
 /**
@@ -43,6 +48,7 @@ export function createNotifier<
     setRoot,
     duration,
     maxCount,
+    NotifierManagerComponent,
     ...restNotifierProps
   } = props;
   const container =
@@ -79,8 +85,10 @@ export function createNotifier<
       if (controllerRef.current) {
         controllerRef.current.add(resolvedNotifier);
       } else {
+        const ManagerComponent = NotifierManagerComponent || NotifierManager;
+
         root?.render(
-          <NotifierManager<N>
+          <ManagerComponent<N>
             controllerRef={controllerRef}
             defaultNotifiers={[resolvedNotifier]}
             maxCount={currentConfig.maxCount}

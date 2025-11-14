@@ -1,0 +1,48 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { AlertBannerComponent } from './AlertBanner';
+
+<Meta title="Feedback/Alert Banner" />
+
+# AlertBanner
+
+<Description of={AlertBannerComponent} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/AlertBanner/AlertBanner.tsx)
+
+<ArgTypes of={AlertBannerComponent} />
+
+## Actions
+
+`AlertBanner` 支援透過 `actions` 屬性添加操作按鈕。每個 action 物件包含以下屬性：
+
+- **content** (string, optional): 按鈕顯示的文字內容
+- **onClick** (function, required): 按鈕點擊時的回調函數，接收 `MouseEvent<HTMLButtonElement>` 作為參數
+
+### 範例
+
+```tsx
+<AlertBanner
+  message="這是一個提示訊息"
+  severity="info"
+  actions={[
+    {
+      content: '了解更多',
+      onClick: (event) => {
+        console.warn('按鈕被點擊了');
+      },
+    },
+    {
+      content: '關閉',
+      onClick: (event) => {
+        AlertBanner.destroy();
+      },
+    },
+  ]}
+/>
+```
+
+**注意事項：**
+
+- `actions` 陣列最多支援 2 個按鈕
+- 如果 `actions` 為空陣列或未提供，則不會顯示操作按鈕區域
+- `onClick` 是必填屬性，用於處理按鈕點擊事件
