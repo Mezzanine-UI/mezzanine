@@ -76,6 +76,7 @@
 
   // Feedback
   @include _load-styles($options, alert);
+  @include _load-styles($options, alert-banner);
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
   @include _load-styles($options, notification);
