@@ -1,6 +1,6 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
-@use './switch' as *;
+@use './toggle' as *;
 
 $width: 36px !default;
 $width-large: 48px !default;

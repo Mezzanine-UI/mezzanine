@@ -59,8 +59,8 @@
   @include _load-styles($options, input);
   @include _load-styles($options, radio);
   @include _load-styles($options, select);
-  @include _load-styles($options, switch);
   @include _load-styles($options, textarea);
+  @include _load-styles($options, toggle);
   @include _load-styles($options, upload);
   @include _load-styles($options, upload, upload-result);
   @include _load-styles($options, upload, upload-picture);
