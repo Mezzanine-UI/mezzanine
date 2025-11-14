@@ -1,49 +1,61 @@
 import { Meta, StoryFn } from '@storybook/react-webpack5';
-import Toggle, { ToggleProps, ToggleSize } from '.';
+import Toggle, { ToggleProps } from '.';
 
 export default {
   title: 'Data Entry/Toggle',
 } as Meta;
 
-const sizes: ToggleSize[] = ['medium', 'large'];
+export const All: StoryFn<ToggleProps> = () => (
+  <div
+    style={{
+      display: 'grid',
+      gap: 16,
+      alignItems: 'center',
+    }}
+  >
+    Size: main
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      enable
+      <Toggle />
+      <Toggle defaultChecked />
+      disabled
+      <Toggle disabled />
+      <Toggle defaultChecked disabled />
+    </div>
+    <br />
+    Size: sub
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      enable
+      <Toggle size="sub" />
+      <Toggle size="sub" defaultChecked />
+      disabled
+      <Toggle size="sub" disabled />
+      <Toggle size="sub" defaultChecked disabled />
+    </div>
+    <br />
+    With text content
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <Toggle label="Toggle Label" supportingText="Toggle Supporting Text" />
+      <Toggle label="Toggle Label" />
+    </div>
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <Toggle
+        disabled
+        label="Toggle Label"
+        supportingText="Toggle Supporting Text"
+      />
+      <Toggle disabled label="Toggle Label" />
+    </div>
+  </div>
+);
 
 export const Playground: StoryFn<ToggleProps> = (args) => <Toggle {...args} />;
 
 Playground.args = {
   checked: true,
   disabled: false,
-  loading: false,
-  size: 'medium',
+  size: 'main',
 };
 Playground.argTypes = {
-  size: {
-    options: sizes,
-    control: {
-      type: 'select',
-    },
-  },
+  size: { control: 'select', options: ['main', 'sub'] },
 };
-
-export const All = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateRows: 'repeat(2, min-content)',
-      gridTemplateColumns: 'repeat(5, min-content)',
-      gap: 16,
-      alignItems: 'center',
-    }}
-  >
-    <Toggle defaultChecked />
-    <Toggle defaultChecked disabled />
-    <Toggle defaultChecked loading />
-    <Toggle disabled />
-    <Toggle loading />
-
-    <Toggle size="large" defaultChecked />
-    <Toggle size="large" defaultChecked disabled />
-    <Toggle size="large" defaultChecked loading />
-    <Toggle size="large" disabled />
-    <Toggle size="large" loading />
-  </div>
-);

@@ -4,33 +4,32 @@ import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import {
   toggleClasses as classes,
   ToggleSize,
-  ToggleSpinnerIcon,
 } from '@mezzanine-ui/core/toggle';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useSwitchControlValue } from '../Form/useSwitchControlValue';
-import Icon from '../Icon';
 import { FormControlContext } from '../Form';
+import Typography from '../Typography';
 
 export interface ToggleProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'span'>, 'onChange'> {
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange'> {
   /**
-   * Whether the switch is checked.
+   * Whether the toggle is checked.
    */
   checked?: boolean;
   /**
-   * Whether the switch is checked by default.
+   * Whether the toggle is checked by default.
    * Only used for uncontrolled.
    */
   defaultChecked?: boolean;
   /**
-   * Whether the switch is disabled.
+   * Whether the toggle is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
-   *  If you need direct control to the input element, use this prop to provide to it.
+   * If you need direct control to the input element, use this prop to provide to it.
    */
   inputProps?: Omit<
     NativeElementPropsWithoutKeyAndRef<'input'>,
@@ -44,25 +43,28 @@ export interface ToggleProps
     | `aria-${'disabled' | 'checked'}`
   >;
   /**
-   * Whether the switch is loading.
-   * @default false
+   * The label text displayed beside the toggle.
    */
-  loading?: boolean;
+  label?: string;
   /**
    * Invoked by input change event.
    */
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The size of switch.
-   * @default 'medium'
+   * The size of toggle.
+   * @default 'main'
    */
   size?: ToggleSize;
+  /**
+   * Supporting text displayed below the label.
+   */
+  supportingText?: string;
 }
 
 /**
- * The react component for `mezzanine` switch.
+ * The react component for `mezzanine` toggle.
  */
-const Toggle = forwardRef<HTMLSpanElement, ToggleProps>(
+const Toggle = forwardRef<HTMLDivElement, ToggleProps>(
   function Toggle(props, ref) {
     const { disabled: disabledFromFormControl } =
       useContext(FormControlContext) || {};
@@ -70,11 +72,12 @@ const Toggle = forwardRef<HTMLSpanElement, ToggleProps>(
       checked: checkedProp,
       className,
       defaultChecked,
-      disabled: disabledProp = disabledFromFormControl,
+      disabled = disabledFromFormControl,
       inputProps,
-      loading = false,
+      label,
       onChange: onChangeProp,
-      size = 'medium',
+      size = 'main',
+      supportingText,
       ...rest
     } = props;
     const [checked, onChange] = useSwitchControlValue({
@@ -82,10 +85,9 @@ const Toggle = forwardRef<HTMLSpanElement, ToggleProps>(
       defaultChecked,
       onChange: onChangeProp,
     });
-    const disabled = loading || disabledProp;
 
     return (
-      <span
+      <div
         ref={ref}
         {...rest}
         className={cx(
@@ -93,25 +95,38 @@ const Toggle = forwardRef<HTMLSpanElement, ToggleProps>(
           {
             [classes.checked]: checked,
             [classes.disabled]: disabled,
-            [classes.large]: size === 'large',
+            [classes.main]: size === 'main',
+            [classes.sub]: size === 'sub',
           },
           className,
         )}
       >
-        <span className={classes.control}>
-          {loading && <Icon icon={ToggleSpinnerIcon} spin />}
-        </span>
-        <input
-          {...inputProps}
-          aria-checked={checked}
-          aria-disabled={disabled}
-          checked={checked}
-          className={classes.input}
-          disabled={disabled}
-          onChange={onChange}
-          type="checkbox"
-        />
-      </span>
+        <div className={classes.inputContainer}>
+          <span className={classes.knob} />
+          <input
+            {...inputProps}
+            aria-checked={checked}
+            aria-disabled={disabled}
+            checked={checked}
+            className={classes.input}
+            disabled={disabled}
+            onChange={onChange}
+            type="checkbox"
+          />
+        </div>
+        {label && (
+          <div className={classes.textContainer}>
+            <Typography color="text-neutral-solid" variant="label-primary">
+              {label}
+            </Typography>
+            {supportingText && (
+              <Typography color="text-neutral" variant="caption">
+                {supportingText}
+              </Typography>
+            )}
+          </div>
+        )}
+      </div>
     );
   },
 );
