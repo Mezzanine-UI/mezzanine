@@ -82,14 +82,16 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
         {type === 'dismissable' && (
           <>
             <span className={classes.label}>{label}</span>
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Dismiss tag"
-              disabled={disabled || readOnly}
-            >
-              <Icon className={classes.icon} icon={CloseIcon} size={16} />
-            </button>
+            {!readOnly && (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Dismiss tag"
+                disabled={disabled}
+              >
+                <Icon className={classes.icon} icon={CloseIcon} size={16} />
+              </button>
+            )}
           </>
         )}
       </span>

@@ -135,16 +135,16 @@ describe('<Tag />', () => {
       expect(onClose).not.toHaveBeenCalled();
     });
 
-    it('should mark close button as readOnly', () => {
+    it('should hide close button when readOnly', () => {
       const onClose = jest.fn();
-      const { getByRole, getHostHTMLElement } = render(
+      const { getHostHTMLElement, queryByRole } = render(
         <Tag label="Closable" onClose={onClose} readOnly type="dismissable" />,
       );
       const element = getHostHTMLElement();
-      const closeButton = getByRole('button', { name: 'Dismiss tag' });
 
       expect(element.classList.contains(classes.readOnly)).toBeTruthy();
-      expect(closeButton.hasAttribute('disabled')).toBeTruthy();
+      expect(queryByRole('button', { name: 'Dismiss tag' })).toBeNull();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 
