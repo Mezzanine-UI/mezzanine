@@ -16,9 +16,10 @@ $animation-back: palette.semantic-variable(background, neutral-subtle) !default;
     @each $type in typography.$semantic-semantic-types {
       &--#{$type} {
         height: typography.semantic-prop($type, line-height);
+        display: flex;
+        align-items: center;
 
         > span {
-          display: inline-flex;
           height: typography.semantic-prop($type, font-size);
           width: 100%;
         }
