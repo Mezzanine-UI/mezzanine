@@ -17,7 +17,6 @@ export type TagProps = TagPropsShared &
 type TagPropsShared = NativeElementPropsWithoutKeyAndRef<'span'> & {
   /** Custom class names on the host element. */
   className?: string;
-
   /** Active state. Only available on dismissable/addable tags. */
   active?: boolean;
   /** Disabled state. Only available on dismissable/addable tags. */
@@ -34,7 +33,7 @@ type TagPropsShared = NativeElementPropsWithoutKeyAndRef<'span'> & {
   readOnly?: boolean;
   /**
    * Size of the tag.
-   * @default 'main'
+   * @default main
    */
   size?: TagSize;
   /**
