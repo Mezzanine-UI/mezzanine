@@ -16,6 +16,7 @@ export const tagClasses = {
   type: (type: TagType) => `${tagPrefix}--${type}`,
   size: (size: TagSize) => `${tagPrefix}--${size}`,
   label: `${tagPrefix}__label`,
+  closeButton: `${tagPrefix}__close-button`,
   icon: `${tagPrefix}__icon`,
   active: `${tagPrefix}--active`,
   readOnly: `${tagPrefix}--read-only`,

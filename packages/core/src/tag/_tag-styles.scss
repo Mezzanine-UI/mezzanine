@@ -119,9 +119,6 @@ $tag-config: (
   width: fit-content;
   height: fit-content;
 
-
-
-
   @each $type in $tag-types {
     $type-config: map.get($tag-config, $type);
 
@@ -201,7 +198,7 @@ $tag-config: (
     }
   }
 
-  button {
+  &__close-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -212,17 +209,13 @@ $tag-config: (
     flex-shrink: 0;
     border: 0;
   }
-}
 
-button.#{$prefix},
-.#{$prefix} button {
-  cursor: pointer;
+  &:is(button),
+  & &__close-button {
+    cursor: pointer;
 
-  &:disabled {
-    cursor: default;
+    &:disabled {
+      cursor: default;
+    }
   }
-}
-
-.#{$prefix}.#{$prefix}--read-only button {
-    cursor: default;
 }
