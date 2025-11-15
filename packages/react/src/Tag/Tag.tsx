@@ -84,6 +84,7 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
             <span className={classes.label}>{label}</span>
             {!readOnly && (
               <button
+                className={classes.closeButton}
                 type="button"
                 onClick={onClose}
                 aria-label="Dismiss tag"
