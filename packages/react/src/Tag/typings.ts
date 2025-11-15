@@ -18,9 +18,9 @@ type TagPropsShared = NativeElementPropsWithoutKeyAndRef<'span'> & {
   /** Custom class names on the host element. */
   className?: string;
 
-  /** Active state. Only avaiable on dismissable/addable tags. */
+  /** Active state. Only available on dismissable/addable tags. */
   active?: boolean;
-  /** Disabled state. Only avaiable on dismissable/addable tags. */
+  /** Disabled state. Only available on dismissable/addable tags. */
   disabled?: boolean;
   /** Text rendered inside label-based tags. */
   label?: string;

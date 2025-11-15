@@ -32,7 +32,7 @@ type PlaygroundArgs = {
   onClose: () => void;
 };
 
-export const Playgroud: StoryObj<PlaygroundArgs> = {
+export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
     type: 'static',
     size: 'main',
