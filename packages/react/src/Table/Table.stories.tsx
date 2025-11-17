@@ -20,7 +20,7 @@ import Button from '../Button';
 import Icon from '../Icon';
 import Menu, { MenuItem, MenuSize, MenuDivider } from '../Menu';
 import Dropdown from '../Dropdown';
-import Switch from '../Switch';
+import Switch from '../Toggle';
 import Input from '../Input';
 import Select, { Option } from '../Select';
 import { cx } from '../utils/cx';

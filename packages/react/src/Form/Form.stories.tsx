@@ -6,7 +6,7 @@ import Icon from '../Icon';
 import Checkbox, { CheckboxGroup, CheckAll } from '../Checkbox';
 import Input from '../Input';
 import Radio, { RadioGroup } from '../Radio';
-import Switch from '../Switch';
+import Switch from '../Toggle';
 import Textarea from '../Textarea';
 import { FormField, FormLabel, FormMessage } from '.';
 

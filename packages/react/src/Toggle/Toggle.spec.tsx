@@ -4,7 +4,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Switch from '.';
+import Toggle from '.';
 import { FormField } from '../Form';
 
 function testChecked(
@@ -12,7 +12,7 @@ function testChecked(
   inputElement: HTMLInputElement,
   checked: boolean,
 ) {
-  expect(element.classList.contains('mzn-switch--checked')).toBe(checked);
+  expect(element.classList.contains('mzn-toggle--checked')).toBe(checked);
   expect(inputElement.getAttribute('aria-checked')).toBe(`${checked}`);
 }
 
@@ -22,15 +22,15 @@ function testInputDisabled(input: HTMLInputElement, disabled: boolean) {
   expect(input.getAttribute('aria-disabled')).toBe(`${disabled}`);
 }
 
-describe('<Switch />', () => {
+describe('<Toggle />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
-    render(<Switch ref={ref} />),
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+    render(<Toggle ref={ref} />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<Switch className={className} />),
+    render(<Toggle className={className} />),
   );
 
   describe('prop: checked', () => {
@@ -40,7 +40,7 @@ describe('<Switch />', () => {
         : 'should be unchecked if checked=false';
 
       it(message, () => {
-        const { getHostHTMLElement } = render(<Switch checked={checked} />);
+        const { getHostHTMLElement } = render(<Toggle checked={checked} />);
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
 
@@ -55,7 +55,7 @@ describe('<Switch />', () => {
 
       it(message, () => {
         const { getHostHTMLElement } = render(
-          <Switch checked={checked} defaultChecked={!checked} />,
+          <Toggle checked={checked} defaultChecked={!checked} />,
         );
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
@@ -67,7 +67,7 @@ describe('<Switch />', () => {
 
   describe('prop: defaultChecked', () => {
     it('should be checked by default ', () => {
-      const { getHostHTMLElement } = render(<Switch defaultChecked />);
+      const { getHostHTMLElement } = render(<Toggle defaultChecked />);
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
@@ -78,11 +78,11 @@ describe('<Switch />', () => {
   describe('prop: disabled', () => {
     it('should bind disabled class and has disabled and aria-disabled attributes', () => {
       [false, true].forEach((disabled) => {
-        const { getHostHTMLElement } = render(<Switch disabled={disabled} />);
+        const { getHostHTMLElement } = render(<Toggle disabled={disabled} />);
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
 
-        expect(element.classList.contains('mzn-switch--disabled')).toBe(
+        expect(element.classList.contains('mzn-toggle--disabled')).toBe(
           disabled,
         );
         testInputDisabled(inputElement, disabled);
@@ -92,8 +92,8 @@ describe('<Switch />', () => {
     it('should use disabled from form control if disabled not passed', () => {
       const { getHostHTMLElement } = render(
         <FormField disabled>
-          <Switch />
-          <Switch disabled={false} />
+          <Toggle />
+          <Toggle disabled={false} />
         </FormField>,
       );
       const element = getHostHTMLElement();
@@ -104,35 +104,10 @@ describe('<Switch />', () => {
     });
   });
 
-  describe('prop: loading', () => {
-    [false, true].forEach((loading) => {
-      const message = loading
-        ? 'should add spinner if loading=true'
-        : 'should not add spinner if loading=false';
-
-      it(message, () => {
-        const { getHostHTMLElement } = render(<Switch loading={loading} />);
-        const element = getHostHTMLElement();
-        const spinnerElement = element.getElementsByTagName('i')[0];
-
-        expect(!!spinnerElement).toBe(loading);
-      });
-    });
-
-    it('should be disabled if loading=true', () => {
-      const { getHostHTMLElement } = render(<Switch loading />);
-      const element = getHostHTMLElement();
-      const inputElement = element.getElementsByTagName('input')[0];
-
-      expect(element.classList.contains('mzn-switch--disabled')).toBeTruthy();
-      testInputDisabled(inputElement, true);
-    });
-  });
-
   describe('prop: onChange', () => {
     it('should trigger the onChange event', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<Switch onChange={onChange} />);
+      const { getHostHTMLElement } = render(<Toggle onChange={onChange} />);
       const element = getHostHTMLElement();
       const inputElement = element.getElementsByTagName('input')[0];
 
@@ -140,52 +115,80 @@ describe('<Switch />', () => {
 
       expect(onChange).toHaveBeenCalled();
     });
-
-    /**
-     * @see {@link https://github.com/testing-library/dom-testing-library/issues/92}
-     */
-    // it('should not be triggered if disabled=true', () => {
-    //   const onChange = jest.fn();
-    //   const { getHostHTMLElement } = render(<Switch disabled onChange={onChange} />);
-    //   const element = getHostHTMLElement();
-    //   const inputElement = element.getElementsByTagName('input')[0];
-
-    //   fireEvent.click(inputElement);
-
-    //   expect(onChange).not.toHaveBeenCalled();
-    // });
-
-    // it('should not be triggered if loading=true', () => {
-    //   const onChange = jest.fn();
-    //   const { getHostHTMLElement } = render(<Switch loading onChange={onChange} />);
-    //   const element = getHostHTMLElement();
-    //   const inputElement = element.getElementsByTagName('input')[0];
-
-    //   fireEvent.click(inputElement);
-
-    //   expect(onChange).not.toHaveBeenCalled();
-    // });
   });
 
   describe('prop: size', () => {
-    it('should render size="medium" by default', () => {
-      const { getHostHTMLElement } = render(<Switch />);
+    it('should render size="main" by default', () => {
+      const { getHostHTMLElement } = render(<Toggle />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-switch--large')).toBeFalsy();
+      expect(element.classList.contains('mzn-toggle--main')).toBeTruthy();
+      expect(element.classList.contains('mzn-toggle--sub')).toBeFalsy();
     });
 
-    it('should add class if size="large"', () => {
-      const { getHostHTMLElement } = render(<Switch size="large" />);
+    it('should add class if size="sub"', () => {
+      const { getHostHTMLElement } = render(<Toggle size="sub" />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-switch--large')).toBeTruthy();
+      expect(element.classList.contains('mzn-toggle--sub')).toBeTruthy();
+      expect(element.classList.contains('mzn-toggle--main')).toBeFalsy();
+    });
+  });
+
+  describe('prop: label', () => {
+    it('should render label if provided', () => {
+      const { getHostHTMLElement } = render(<Toggle label="Test Label" />);
+      const element = getHostHTMLElement();
+      const textContainer = element.querySelector(
+        '.mzn-toggle__text-container',
+      );
+
+      expect(textContainer).toBeTruthy();
+      expect(textContainer?.textContent).toContain('Test Label');
+    });
+
+    it('should not render text container if no label provided', () => {
+      const { getHostHTMLElement } = render(<Toggle />);
+      const element = getHostHTMLElement();
+      const textContainer = element.querySelector(
+        '.mzn-toggle__text-container',
+      );
+
+      expect(textContainer).toBeNull();
+    });
+  });
+
+  describe('prop: supportingText', () => {
+    it('should render supporting text when label is provided', () => {
+      const { getHostHTMLElement } = render(
+        <Toggle label="Test Label" supportingText="Supporting text" />,
+      );
+      const element = getHostHTMLElement();
+      const textContainer = element.querySelector(
+        '.mzn-toggle__text-container',
+      );
+
+      expect(textContainer).toBeTruthy();
+      expect(textContainer?.textContent).toContain('Test Label');
+      expect(textContainer?.textContent).toContain('Supporting text');
+    });
+
+    it('should not render supporting text if no label provided', () => {
+      const { getHostHTMLElement } = render(
+        <Toggle supportingText="Supporting text" />,
+      );
+      const element = getHostHTMLElement();
+      const textContainer = element.querySelector(
+        '.mzn-toggle__text-container',
+      );
+
+      expect(textContainer).toBeNull();
     });
   });
 
   describe('control', () => {
     it('uncontrolled', () => {
-      const { getHostHTMLElement } = render(<Switch />);
+      const { getHostHTMLElement } = render(<Toggle />);
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
@@ -203,7 +206,7 @@ describe('<Switch />', () => {
         const [checked, setChecked] = useState(false);
 
         return (
-          <Switch
+          <Toggle
             checked={checked}
             onChange={(event) => setChecked(event.target.checked)}
           />
@@ -228,7 +231,7 @@ describe('<Switch />', () => {
         const [checked, setChecked] = useState(false);
 
         return (
-          <Switch
+          <Toggle
             checked={controlled ? checked : undefined}
             defaultChecked
             onChange={(event) => setChecked(event.target.checked)}
@@ -242,20 +245,11 @@ describe('<Switch />', () => {
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
-      /**
-       * Since defaultChecked is true.
-       */
       testChecked(element, inputElement, true);
 
-      /**
-       * Change to controlled and sync the switch.
-       */
       rerender(<TestingContainer controlled />);
       testChecked(element, inputElement, false);
 
-      /**
-       * Still not checked after changed back to uncontrolled.
-       */
       rerender(<TestingContainer controlled={false} />);
       testChecked(element, inputElement, false);
     });

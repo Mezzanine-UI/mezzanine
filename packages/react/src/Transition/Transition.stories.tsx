@@ -6,7 +6,7 @@ import {
   MOTION_DURATION,
   MOTION_EASING,
 } from '@mezzanine-ui/system/motion';
-import Switch from '../Switch';
+import Switch from '../Toggle';
 import { Collapse, Fade, Grow, SlideFadeDirection, SlideFade, Zoom } from '.';
 
 export default {
