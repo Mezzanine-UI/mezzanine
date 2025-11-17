@@ -3,6 +3,68 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@0.16.0...@mezzanine-ui/react@1.0.0-canary.3) (2025-11-17)
+
+### Bug Fixes
+
+- add use client ([128236b](https://github.com/Mezzanine-UI/mezzanine/commit/128236b346a5aeeb3d23b51f2d150e00d706b2d7))
+- fix message typings ([67e34d1](https://github.com/Mezzanine-UI/mezzanine/commit/67e34d1f674fcfbf4b08110cb39bf86c0fc08b7d))
+- fix table scroll touch check and upgrade packages ([0283c83](https://github.com/Mezzanine-UI/mezzanine/commit/0283c831711762d10eee8f0ddbff70e0ae32c28f))
+- **internal/slide-fade:** remove deprecated overlay props ([6cc6961](https://github.com/Mezzanine-UI/mezzanine/commit/6cc6961d5bba5ce7887fe817a817133166d76229))
+- mark config provider as deprecated function ([d180809](https://github.com/Mezzanine-UI/mezzanine/commit/d180809471b695e2a2346c94ce02dbd909b50a4b))
+- **react/AlertBanner:** refactor to use new Notifier API and filter internal props ([adcac8a](https://github.com/Mezzanine-UI/mezzanine/commit/adcac8ac555d949df9432fd7459a577c92d69807))
+- **react/AlertBanner:** remove unused NotifierManagerComponent prop ([fdb3a2f](https://github.com/Mezzanine-UI/mezzanine/commit/fdb3a2f6e459b385f6210e4c2b1f27077a95aaea))
+- **react/badge:** remove overflowCount default value ([f21cbb6](https://github.com/Mezzanine-UI/mezzanine/commit/f21cbb665a11877e551efc00b460bed23848a4ba))
+- **react/badge:** remove redundant code ([a36982b](https://github.com/Mezzanine-UI/mezzanine/commit/a36982b3addf9ddd73e44dae81c5dcece58396bf))
+- **react/dismissButton:** import types from core and remove public export ([e2d2b07](https://github.com/Mezzanine-UI/mezzanine/commit/e2d2b070a7aed09de52795bdb5d6a824aa7a3a9f))
+- **react/drawer:** remove deprecated overlay props ([0c7f37b](https://github.com/Mezzanine-UI/mezzanine/commit/0c7f37b0a0c89f0569f01f875de0b59ded863611))
+- **react/inlineMessage:** add comment about the clearbutton ([be77aaf](https://github.com/Mezzanine-UI/mezzanine/commit/be77aafb7eaa329a54a0228156b0597feb14264a))
+- **react/inlineMessage:** replace custom close button with DismissButton component ([9200a4f](https://github.com/Mezzanine-UI/mezzanine/commit/9200a4f8650782dad3feed19b5d9433a0548abe9))
+- **react/internal:** remove deprecated body scroll lock for slide fade overlay ([3600ea9](https://github.com/Mezzanine-UI/mezzanine/commit/3600ea9bb95b4e4f3f2a9c60931fe09004865887))
+- **react/modal:** remove deprecated overlay props ([d859578](https://github.com/Mezzanine-UI/mezzanine/commit/d8595789e1c934d7b76d3b5c58b761867b317841))
+- **react/Notifier:** add renderContainer and sortBeforeUpdate support ([8ab864a](https://github.com/Mezzanine-UI/mezzanine/commit/8ab864aafa401b0a011db16cf43811f23667425b))
+- **react/page-footer:** remove as any ([2e8f0c6](https://github.com/Mezzanine-UI/mezzanine/commit/2e8f0c631f7fb7b77b74965ff3236c3ee2445bd7))
+- **react/portal:** portal register alert layer at first child of body ([d4d174f](https://github.com/Mezzanine-UI/mezzanine/commit/d4d174f6f9282bbb7809ff097f92963cc175b529))
+- **react/result-state:** use ButtonGroup as button container ([8b2ee5a](https://github.com/Mezzanine-UI/mezzanine/commit/8b2ee5a426cf91a4bd67eafb9e696a417710aaa5))
+- **react/spin:** spin element should disable pointer event and use light variant ([1c32bc6](https://github.com/Mezzanine-UI/mezzanine/commit/1c32bc664219ef01dc1c72529939c03afd48959e))
+- **react/stepper:** add window resize listener to recalculate step distances ([c2b94ae](https://github.com/Mezzanine-UI/mezzanine/commit/c2b94ae8808992395c014db1f7c0056f7bfae4e1))
+- **react/tag:** fix typo ([c0d0050](https://github.com/Mezzanine-UI/mezzanine/commit/c0d0050a4b3f094f996f416667f343fd1ae55e7a))
+- **react/tag:** hide close button when dismissable tag read only ([07457ef](https://github.com/Mezzanine-UI/mezzanine/commit/07457ef52fa787e4828aebdf5d864b550f686e47))
+
+### Features
+
+- add css variable value getter for js ([953ceb3](https://github.com/Mezzanine-UI/mezzanine/commit/953ceb37c7e7aee3e8904c59aec532f192d5b31a))
+- **react/alertBanner:** implement alert banner component ([34f98d4](https://github.com/Mezzanine-UI/mezzanine/commit/34f98d463fda9a6359ef4a4db8b9d9161ade12e9))
+- **react/backdrop:** block background scroll when backdrop open ([b35bcfb](https://github.com/Mezzanine-UI/mezzanine/commit/b35bcfbf463f732dfaeb679b1ec770cdf470fba6))
+- **react/badge:** refactor badge with new design system ([9a91cfb](https://github.com/Mezzanine-UI/mezzanine/commit/9a91cfb44aebfcbb467f18ad8b55351a69ef6561))
+- **react/badge:** update badge storybook ([2410133](https://github.com/Mezzanine-UI/mezzanine/commit/2410133d59e1f2de0be4755a28ff8d399dedb509))
+- **react/button:** add size for icon ([6ed7515](https://github.com/Mezzanine-UI/mezzanine/commit/6ed751505e70d50b8262ed58b471f9b8decf44e0))
+- **react/button:** refactor button to use new design system ([b12009b](https://github.com/Mezzanine-UI/mezzanine/commit/b12009b314ca8899973c1747ed17b8142b060bcc))
+- **react/clearableButton:** add ClearableButton React component ([796c818](https://github.com/Mezzanine-UI/mezzanine/commit/796c818677efb38194e442af29e281ccf9f4b58d))
+- **react/hooks:** add useScrollLock for body scroll lock ([1e9883d](https://github.com/Mezzanine-UI/mezzanine/commit/1e9883d238e3b5e8f85435dc4a24a647d2892ad2))
+- **react/icon:** refactor Icon component to use v2 color system ([0936167](https://github.com/Mezzanine-UI/mezzanine/commit/093616774143d6c28e1bea3824626733904afa75))
+- **react/inlineMessage:** add InlineMessage component ([51c640c](https://github.com/Mezzanine-UI/mezzanine/commit/51c640cbc9bf4f6b6921d8f7a33b6a6f0ffb355e))
+- **react/inlineMessage:** add InlineMessageGroup component ([d2954b1](https://github.com/Mezzanine-UI/mezzanine/commit/d2954b1688baa04303ec4202b2aa0058b6d491e6))
+- **react/inlineMessage:** change content prop from children to string and make severity required ([0dcdeb9](https://github.com/Mezzanine-UI/mezzanine/commit/0dcdeb9a8693c46363c55b347bf66a57f96a6cb8))
+- **react/loading:** refactor loading to fit new design system ([044d481](https://github.com/Mezzanine-UI/mezzanine/commit/044d481746933eb99b9e35700988d219a5730e03))
+- **react/message:** refactor message to fit new design system and logic ([cd1cbbc](https://github.com/Mezzanine-UI/mezzanine/commit/cd1cbbcc629febbd204984bb2a40486ec8b9cf5f))
+- **react/notifier:** refactor notifier to use queue ([153e3fd](https://github.com/Mezzanine-UI/mezzanine/commit/153e3fd1ab69304a806d331a2ca36d48f16eda81))
+- **react/overlay:** redesign overlay ([9b07a4f](https://github.com/Mezzanine-UI/mezzanine/commit/9b07a4fc0e212aef5353903a6426e16942368ee8))
+- **react/page-footer:** implement v2 page footer ([cc51b50](https://github.com/Mezzanine-UI/mezzanine/commit/cc51b5038fe5f1a1c7692fe2b6bf46238ca6d5c3))
+- **react/popper:** refactor popper to use [@floating-ui](https://github.com/floating-ui) ([bac588c](https://github.com/Mezzanine-UI/mezzanine/commit/bac588cceb12a0094793306ff75e2b85f071a773))
+- **react/portal:** refactor portal to fit new design system ([e9b16cb](https://github.com/Mezzanine-UI/mezzanine/commit/e9b16cbe32c0cfe41bb05b2a0ceb58012f09a037))
+- **react/result-state:** implement react ResultState component ([a509ce9](https://github.com/Mezzanine-UI/mezzanine/commit/a509ce95ba51412cef2de6572563cc239bbee910))
+- **react/skeleton:** v2 skeleton implement ([2bb3636](https://github.com/Mezzanine-UI/mezzanine/commit/2bb3636cd24ec30969138f2428816f71f0cad21a))
+- **react/stepper:** add onStepChange callback prop ([284f15a](https://github.com/Mezzanine-UI/mezzanine/commit/284f15a8e11ff711aff1127bdede0820a5fb5b5e))
+- **react/stepper:** add useStepper hook ([7770545](https://github.com/Mezzanine-UI/mezzanine/commit/7770545fe2e9e4545f7255f81cd9b8870506005b))
+- **react/stepper:** use zero-based indexing for step numbering ([77e344f](https://github.com/Mezzanine-UI/mezzanine/commit/77e344f7f2850249e0cc51dcf47450338a234e62))
+- **react/stepper:** v2 stepper implement ([56056a2](https://github.com/Mezzanine-UI/mezzanine/commit/56056a2fe921d93e38cd6737aebace896036b18a))
+- **react/tag:** implement tag componet for new design system ([f2df2b8](https://github.com/Mezzanine-UI/mezzanine/commit/f2df2b8e0634d9373b372cb50073b2d0adb8549a))
+- **react/tag:** update storybook for tag v2 ([21797f4](https://github.com/Mezzanine-UI/mezzanine/commit/21797f4bce8f20868c73576d37dc5301e7646561))
+- **react/toggle:** v2 toggle implement ([1c3c56b](https://github.com/Mezzanine-UI/mezzanine/commit/1c3c56b3c0316e0fc85736edd4c8efd7f6845250))
+- **react/tooltip:** refactor tooltip to fit new design system ([33544d0](https://github.com/Mezzanine-UI/mezzanine/commit/33544d01ee9efadd16973a35fe1f9296d849d15d))
+- **react/typography:** refactor typography to fit new design system ([bf0333d](https://github.com/Mezzanine-UI/mezzanine/commit/bf0333dbf7c306947f9cd20bc08146cb16a13014))
+
 # [1.0.0-canary.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.1...@mezzanine-ui/react@1.0.0-canary.2) (2025-10-31)
 
 **Note:** Version bump only for package @mezzanine-ui/react

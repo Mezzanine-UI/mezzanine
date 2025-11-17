@@ -3,6 +3,50 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@0.16.0...@mezzanine-ui/core@1.0.0-canary.3) (2025-11-17)
+
+### Bug Fixes
+
+- **core/AlertBanner:** implement multi-line text truncation for message ([7bdc8cd](https://github.com/Mezzanine-UI/mezzanine/commit/7bdc8cd56ca8157bf1b8651e981d03ca7fbb513d))
+- **core/badge:** align badge container box with host badge ([1353a75](https://github.com/Mezzanine-UI/mezzanine/commit/1353a751cdada9cf5c37364f4f8e028301a56b4b))
+- **core/badge:** remove redundant empty line ([95da91a](https://github.com/Mezzanine-UI/mezzanine/commit/95da91a3fd61f975b4231302acd21cec182f1112))
+- **core/dismissButton:** export type definitions for shared usage ([dd95003](https://github.com/Mezzanine-UI/mezzanine/commit/dd9500302aa610ef1e5feac89deda4c746729f30))
+- **core/inlineMessage:** add comment about the clearbutton ([e5ad17d](https://github.com/Mezzanine-UI/mezzanine/commit/e5ad17d88109b3dd783e49f22fb0e8482894d8ff))
+- **core/inlineMessage:** remove deprecated close button styles and classes ([0a94fd7](https://github.com/Mezzanine-UI/mezzanine/commit/0a94fd72dd9b946f6c25f8fff477bc1c79212ab1))
+- **core/portal:** fix portal pointer events ([df05264](https://github.com/Mezzanine-UI/mezzanine/commit/df0526400215e77f7d7deb98b9172f2a51e2fa26))
+- **core/result-state:** remove button actions styling ([25d401d](https://github.com/Mezzanine-UI/mezzanine/commit/25d401d9ea4e8047f16a92203fa02c5b5cc89c69))
+- **core/result-state:** remove unused styles ([37ea994](https://github.com/Mezzanine-UI/mezzanine/commit/37ea9943a498b44995cf8562c09cb709a25112e4))
+- **core/stepper:** connect line color, text color ([f84f5c9](https://github.com/Mezzanine-UI/mezzanine/commit/f84f5c9bf7f8d2f2a6137f05b6cb4f05066bcdaa))
+- **core/stepper:** resolve lint error ([bcb0b8b](https://github.com/Mezzanine-UI/mezzanine/commit/bcb0b8b51d10812355470b3576029996f5e84a7d))
+- **core/tag:** remove addable tag default background color ([f3b2d2f](https://github.com/Mezzanine-UI/mezzanine/commit/f3b2d2f709d2b57f744dc814a5d333c8c235b867))
+
+### Features
+
+- **core/alertBanner:** add alert banner styles and type definitions ([4873ab5](https://github.com/Mezzanine-UI/mezzanine/commit/4873ab57a3687d66caff7caec67ba90fa84c289e))
+- **core/badge:** update badge with new design system ([8104b3d](https://github.com/Mezzanine-UI/mezzanine/commit/8104b3dd722d08a104ae815a8f2fc36903080dd2))
+- **core/button:** refactor button to apply new design system ([bdb86fb](https://github.com/Mezzanine-UI/mezzanine/commit/bdb86fb14503ec456c7d68ba963588e78e442a06))
+- **core/button:** refactor button typography ([bb65b68](https://github.com/Mezzanine-UI/mezzanine/commit/bb65b68c5ff483400962aba8a5c6f14a7dacbd4c))
+- **core/clearableButton:** add clearableButton styles and type definitions ([e11c248](https://github.com/Mezzanine-UI/mezzanine/commit/e11c2487ac3f6c21736ca12b265fc60d8ba769cd))
+- **core/inlineMessage:** add inline-message styles and types ([6d308a1](https://github.com/Mezzanine-UI/mezzanine/commit/6d308a14ae979dcc6a8a1d83fc53d8afd75cc3d4))
+- **core/inlineMessage:** add InlineMessageGroup styles and utilities ([2a32d38](https://github.com/Mezzanine-UI/mezzanine/commit/2a32d38d9262ebe307bbba22cde07a73d36a4fdb))
+- **core/loading:** refactor loading to fit new design system ([3b39acc](https://github.com/Mezzanine-UI/mezzanine/commit/3b39acc68d90008d28c8023dee76fbc2759b9760))
+- **core/message:** refactor message styles to fit new design system ([bdcee24](https://github.com/Mezzanine-UI/mezzanine/commit/bdcee24bf82d3a4eb401f6c87e6ce1495241169c))
+- **core/overlay:** update overlay styles ([9d4473c](https://github.com/Mezzanine-UI/mezzanine/commit/9d4473c5bbd700e0b97068ca6383d743c1701b6d))
+- **core/page-footer:** refactor page footer stylings ([f8cf3e4](https://github.com/Mezzanine-UI/mezzanine/commit/f8cf3e4572e190b3b3d4d6af168cb70b2e565999))
+- **core/page-footer:** use correct variable for page footer ([29ccc00](https://github.com/Mezzanine-UI/mezzanine/commit/29ccc00d7f3f65e464582686de572b14b45c64d2))
+- **core/portal:** add portal target container styles ([e7fd7ff](https://github.com/Mezzanine-UI/mezzanine/commit/e7fd7ffdbaa37e47987d9ff52bcd9ddd803a7f2b))
+- **core/result-state:** result state style and typings implement ([1c061c5](https://github.com/Mezzanine-UI/mezzanine/commit/1c061c5aef71c67e3de5a1a95fad2ead229308b7))
+- **core/skeleton:** v2 styles config ([0e90f2d](https://github.com/Mezzanine-UI/mezzanine/commit/0e90f2d606aba5304055a74d38859291029b56a5))
+- **core/stepper:** implement ([7e40fd9](https://github.com/Mezzanine-UI/mezzanine/commit/7e40fd9c6d5241c88588fa0b74a48ee555137b88))
+- **core/tag:** update tag style for new design system ([dbb57dc](https://github.com/Mezzanine-UI/mezzanine/commit/dbb57dca26ea08b37a001f490fbb9458526b6b40))
+- **core/toggle:** replace padding-horizontal-off-side hardcode ([f01e411](https://github.com/Mezzanine-UI/mezzanine/commit/f01e4110aa74811dc53e44e8976151caf8a332a0))
+- **core/toggle:** v2 toggle styles implement ([c838864](https://github.com/Mezzanine-UI/mezzanine/commit/c838864904cddc148271f70e11190e5348ead676))
+- **core/tooltip:** add arrow style for tooltip ([62e53e6](https://github.com/Mezzanine-UI/mezzanine/commit/62e53e6a3f415d939cc4574ca06962c052a8e29a))
+- **core/tooltip:** update tooltip styling to fit v2 design system ([17b9c5c](https://github.com/Mezzanine-UI/mezzanine/commit/17b9c5cab6ff973ee56a3ed93f45397a6d068886))
+- **core/typography:** typography styling and typings updated ([dbd0227](https://github.com/Mezzanine-UI/mezzanine/commit/dbd0227f09a357a9868ed9a528a27ffe8cfb10a9))
+- **react/icon:** refactor Icon component to use v2 color system ([0936167](https://github.com/Mezzanine-UI/mezzanine/commit/093616774143d6c28e1bea3824626733904afa75))
+- **system/palette:** implement color semantic and update functions ([30a38e4](https://github.com/Mezzanine-UI/mezzanine/commit/30a38e4728877d0ddd619adbe9057abad930c68e))
+
 # [1.0.0-canary.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.1...@mezzanine-ui/core@1.0.0-canary.2) (2025-10-31)
 
 ### Features
