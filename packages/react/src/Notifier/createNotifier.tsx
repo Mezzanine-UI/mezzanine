@@ -2,13 +2,16 @@
 
 import { createRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
+import NotifierManager, {
+  NotifierController,
+  type NotifierManagerProps,
+} from './NotifierManager';
 import {
   Notifier,
   NotifierConfig,
   NotifierData,
   RenderNotifier,
 } from './typings';
-import NotifierManager, { NotifierController } from './NotifierManager';
 
 export interface CreateNotifierProps<
   N extends NotifierData,
@@ -26,6 +29,14 @@ export interface CreateNotifierProps<
    * The method to set attributes or listeners to root.
    */
   setRoot?: (root: HTMLDivElement) => void;
+  /**
+   * Custom wrapper for rendered notifiers (e.g. AlertBanner group container).
+   */
+  renderContainer?: NotifierManagerProps<N>['renderContainer'];
+  /**
+   * Sorting hook to enforce display/queue ordering before updates.
+   */
+  sortBeforeUpdate?: NotifierManagerProps<N>['sortBeforeUpdate'];
 }
 
 /**
@@ -43,6 +54,8 @@ export function createNotifier<
     setRoot,
     duration,
     maxCount,
+    renderContainer,
+    sortBeforeUpdate,
     ...restNotifierProps
   } = props;
   const container =
@@ -79,12 +92,15 @@ export function createNotifier<
       if (controllerRef.current) {
         controllerRef.current.add(resolvedNotifier);
       } else {
+
         root?.render(
           <NotifierManager<N>
             controllerRef={controllerRef}
             defaultNotifiers={[resolvedNotifier]}
             maxCount={currentConfig.maxCount}
             render={renderNotifier}
+            renderContainer={renderContainer}
+            sortBeforeUpdate={sortBeforeUpdate}
           />,
         );
       }
