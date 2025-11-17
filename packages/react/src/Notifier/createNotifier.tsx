@@ -1,15 +1,18 @@
 'use client';
 
+import type { ComponentType } from 'react';
 import { createRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
+import NotifierManager, {
+  NotifierController,
+  type NotifierManagerProps,
+} from './NotifierManager';
 import {
   Notifier,
   NotifierConfig,
   NotifierData,
   RenderNotifier,
 } from './typings';
-import type { ComponentType } from 'react';
-import NotifierManager, { NotifierController } from './NotifierManager';
 
 export interface CreateNotifierProps<
   N extends NotifierData,
@@ -31,6 +34,14 @@ export interface CreateNotifierProps<
    * Custom NotifierManager component. If provided, will be used instead of the default NotifierManager.
    */
   NotifierManagerComponent?: ComponentType<any>;
+  /**
+   * Custom wrapper for rendered notifiers (e.g. AlertBanner group container).
+   */
+  renderContainer?: NotifierManagerProps<N>['renderContainer'];
+  /**
+   * Sorting hook to enforce display/queue ordering before updates.
+   */
+  sortBeforeUpdate?: NotifierManagerProps<N>['sortBeforeUpdate'];
 }
 
 /**
@@ -49,6 +60,8 @@ export function createNotifier<
     duration,
     maxCount,
     NotifierManagerComponent,
+    renderContainer,
+    sortBeforeUpdate,
     ...restNotifierProps
   } = props;
   const container =
@@ -93,6 +106,8 @@ export function createNotifier<
             defaultNotifiers={[resolvedNotifier]}
             maxCount={currentConfig.maxCount}
             render={renderNotifier}
+            renderContainer={renderContainer}
+            sortBeforeUpdate={sortBeforeUpdate}
           />,
         );
       }
