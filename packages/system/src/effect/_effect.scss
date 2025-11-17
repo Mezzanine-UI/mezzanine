@@ -27,9 +27,6 @@ $effect-values: (
     inner-top-and-bottom: (
       value: string.unquote('0 1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 -1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 0 12px 0 #{semantic.variable(shadow, dark)}'),
     ),
-    message: (
-      value: string.unquote('0 2px 10px 0 var(#{semantic.get-semantic-var-name(shadow, dark)}, rgba(0, 0, 0, 0.10))'),
-    ),
   ),
   focus: (
     primary: (
