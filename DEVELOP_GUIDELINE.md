@@ -38,7 +38,7 @@
 
 ### Linter
 
-- 確認有安裝 ESLint + Stylelint
+- 確認有安裝 ESLint + Stylelint + Prettier
 
 ### 安裝依賴
 
@@ -88,7 +88,7 @@ packages/
 | `size`        | ✅ 已更新   | 尺寸系統                              |
 | `typography`  | ✅ 已更新   | 文字排版系統（primitives + semantic） |
 | `spacing`     | ✅ 已更新   | 間距系統（primitives + semantic）     |
-| `breakpoint`  | ❌ 可能移除 | 響應式斷點                            |
+| `breakpoint`  | ⏳ 等待設計 | 響應式斷點                            |
 | `motion`      | ⏳ 等待設計 | 動畫參數                              |
 | `transition`  | ⏳ 等待設計 | 轉場效果                              |
 | `css`         | 🔒 舊版維持 | CSS 工具函式                          |
@@ -313,6 +313,8 @@ export type ButtonVariant = 'base-primary' | 'base-secondary';
 
 #### Step 3: 在 React Package 中實作元件（要注意 RSC 問題）
 
+在有互動性的元件必須加上 'use client'
+
 ```typescript
 // packages/react/src/Button/Button.tsx
 'use client'; // ⚠️ 互動性元件必須加上
@@ -326,6 +328,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 ```
 
 #### Step 4: 撰寫 Storybook Stories
+
+要使用 StoryObj 的方式呈現（舊方法都會是 StoryFn）
 
 ```typescript
 // packages/react/src/Button/Button.stories.tsx
@@ -351,7 +355,7 @@ export const Playground: StoryObj<typeof Button> = {
 #### Step 5: 確認 [Component].spec.tsx 的 test cases 是否正確
 
 - 無使用任何 Deprecated typings/function
-- 測試結果無誤
+- 測試結果無誤（請測試單檔即可）
 
 ### 4. 測試與驗證
 
@@ -699,3 +703,13 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 
 - **Button**：`packages/react/src/Button`
 - **Typography**：`packages/react/src/Typography`
+- **Skeleton**：`packages/react/src/Skeleton`
+- **Toggle**：`packages/react/src/Toggle`
+- **Badge**：`packages/react/src/Badge`
+- **Tag**：`packages/react/src/Tag`
+- **Tooltip**：`packages/react/src/Tooltip`
+- **Spin**：`packages/react/src/Spin`
+- **Message**：`packages/react/src/Message`
+- **Backdrop**：`packages/react/src/Backdrop`
+- **ResultState**：`packages/react/src/ResultState`
+- **PageFooter**：`packages/react/src/PageFooter`
