@@ -1,6 +1,5 @@
 'use client';
 
-import type { ComponentType } from 'react';
 import { createRef } from 'react';
 import { createRoot, Root } from 'react-dom/client';
 import NotifierManager, {
@@ -31,10 +30,6 @@ export interface CreateNotifierProps<
    */
   setRoot?: (root: HTMLDivElement) => void;
   /**
-   * Custom NotifierManager component. If provided, will be used instead of the default NotifierManager.
-   */
-  NotifierManagerComponent?: ComponentType<any>;
-  /**
    * Custom wrapper for rendered notifiers (e.g. AlertBanner group container).
    */
   renderContainer?: NotifierManagerProps<N>['renderContainer'];
@@ -59,7 +54,6 @@ export function createNotifier<
     setRoot,
     duration,
     maxCount,
-    NotifierManagerComponent,
     renderContainer,
     sortBeforeUpdate,
     ...restNotifierProps
@@ -98,10 +92,9 @@ export function createNotifier<
       if (controllerRef.current) {
         controllerRef.current.add(resolvedNotifier);
       } else {
-        const ManagerComponent = NotifierManagerComponent || NotifierManager;
 
         root?.render(
-          <ManagerComponent<N>
+          <NotifierManager<N>
             controllerRef={controllerRef}
             defaultNotifiers={[resolvedNotifier]}
             maxCount={currentConfig.maxCount}
