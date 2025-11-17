@@ -61,7 +61,6 @@ $severity-config: (
   padding-block: spacing.semantic-variable(padding, vertical, comfort);
   padding-inline: spacing.semantic-variable(padding, horizontal, relaxed);
   border-radius: radius.variable(none);
-  box-shadow: effect.variable(shadow, message);
   box-sizing: border-box;
   pointer-events: auto;
   
@@ -81,13 +80,20 @@ $severity-config: (
   }
 
   &__message {
+    display: -webkit-box;
     margin: 0;
     max-width: spacing.semantic-variable(size, container, max);
+    overflow: hidden;
+    flex: 1 0 0;
     color: var(--#{$prefix}-message-color);
     font-style: normal;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
 
     @include typography.semantic-variable(body);
-    @include typography.overflow-ellipsis();
   }
 
   &__controls {
