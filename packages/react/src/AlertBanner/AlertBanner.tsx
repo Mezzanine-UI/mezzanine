@@ -4,6 +4,7 @@ import type { Key, MouseEvent, ReactElement } from 'react';
 import { forwardRef, useCallback, useEffect, useState } from 'react';
 
 import {
+  alertBannerGroupClasses,
   alertBannerIcons,
   AlertBannerSeverity,
   alertBannerClasses as classes,
@@ -21,7 +22,6 @@ import {
 import Portal from '../Portal';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import AlertBannerGroupManager from './AlertBannerGroupManager';
 
 export interface AlertBannerAction
   extends Omit<ButtonPropsBase, 'children'> {
@@ -77,6 +77,32 @@ export interface AlertBannerData
 
 type AlertBannerInternalData = AlertBannerData &
   Required<Pick<AlertBannerData, 'createdAt'>>;
+
+type AlertBannerNotifier = AlertBannerInternalData & { key: Key };
+
+function getPriority(severity: AlertBannerData['severity']) {
+  if (severity === 'info') {
+    return 1;
+  }
+
+  return 0;
+}
+
+function sortAlertNotifiers(notifiers: AlertBannerNotifier[]) {
+  return [...notifiers].sort((a, b) => {
+    const priorityDiff = getPriority(a.severity) - getPriority(b.severity);
+
+    if (priorityDiff !== 0) {
+      return priorityDiff;
+    }
+
+    if (a.createdAt !== b.createdAt) {
+      return b.createdAt - a.createdAt;
+    }
+
+    return 0;
+  });
+}
 
 export interface AlertBannerProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'title'> {
@@ -196,8 +222,10 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
     ) : null;
 
     const {
+      maxCount: _maxCount,
+      instanceKey: _instanceKey,
       ...restProps
-    } = rest;
+    } = rest as typeof rest & { maxCount?: unknown; instanceKey?: unknown };
 
     const content = (
       <div
@@ -239,7 +267,7 @@ const AlertBanner: AlertBannerType = ((props) => {
     maxCount: _maxCount,
     createdAt: _createdAt,
     ...restProps
-  } = props;
+  } = props as AlertBannerData & { instanceKey?: unknown; maxCount?: unknown };
 
   const onClose = useCallback(() => {
     if (onCloseProp) {
@@ -273,7 +301,7 @@ function initializeAlertBannerNotifier() {
         onClose: onCloseProp,
         createdAt: _createdAt,
         ...restProps
-      } = notifierProps;
+      } = notifierProps as typeof notifierProps & { maxCount?: unknown; instanceKey?: unknown };
 
       return (
         <AlertBannerComponent
@@ -289,7 +317,12 @@ function initializeAlertBannerNotifier() {
         />
       );
     },
-    NotifierManagerComponent: AlertBannerGroupManager,
+    renderContainer: (children) => (
+      <Portal layer="alert">
+        <div className={alertBannerGroupClasses.host}>{children}</div>
+      </Portal>
+    ),
+    sortBeforeUpdate: sortAlertNotifiers,
   });
 
   return notifier;

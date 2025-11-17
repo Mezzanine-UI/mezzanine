@@ -27,7 +27,7 @@ function InfoExample() {
         {
           content: '了解更多',
           onClick: () => {
-            AlertBanner.destroy();
+            console.warn('on click:了解更多')
           },
         },
       ],
@@ -48,7 +48,7 @@ function InfoExample() {
           {
             content: '了解更多',
             onClick: () => {
-              AlertBanner.destroy();
+              console.warn('on click:了解更多')
             },
           },
         ]}
@@ -75,13 +75,13 @@ function WarningExample() {
         {
           content: '查看詳情',
           onClick: () => {
-            AlertBanner.destroy();
+            console.warn('on click:查看詳情')
           },
         },
         {
           content: '忽略',
           onClick: () => {
-            AlertBanner.destroy();
+            console.warn('on click:忽略')
           },
         },
       ],
@@ -102,17 +102,17 @@ function WarningExample() {
           {
             content: '查看詳情',
             onClick: () => {
-              AlertBanner.destroy();
+              console.warn('on click:查看詳情')
             },
           },
           {
             content: '忽略',
             onClick: () => {
-              AlertBanner.destroy();
+              console.warn('on click:忽略')
             },
           },
         ]}
-        message="提醒潛在風險或需要注意的情況。"
+        message="您的帳號即將到期，部分功能將在期限屆滿後暫時停用。為確保服務不中斷，請於到期日前完成續約或更新付款資訊。"
         severity="warning"
       />
       <Button variant="base-primary" onClick={handleAdd}>
@@ -135,13 +135,13 @@ function ErrorExample() {
         {
           content: '重試',
           onClick: () => {
-            AlertBanner.destroy();
+            console.warn('on click:重試')
           },
         },
         {
           content: '取消',
           onClick: () => {
-            AlertBanner.destroy();
+            console.warn('on click:取消')
           },
         },
       ],
@@ -162,13 +162,13 @@ function ErrorExample() {
           {
             content: '重試',
             onClick: () => {
-              AlertBanner.destroy();
+              console.warn('on click:重試')
             },
           },
           {
             content: '取消',
             onClick: () => {
-              AlertBanner.destroy();
+              console.warn('on click:取消')
             },
           },
         ]}
@@ -261,6 +261,10 @@ function ActionsExample() {
     });
   }, []);
 
+  const handleDestroy = useCallback(() => {
+    AlertBanner.destroy();
+  }, []);
+
   const handleWarningWithActions = useCallback(() => {
     AlertBanner.warning(formatMessage('提醒潛在風險或需要注意的情況。'), {
       actions: [
@@ -323,6 +327,9 @@ function ActionsExample() {
         </Button>
         <Button variant="base-primary" onClick={handleErrorWithActions}>
           新增 Error AlertBanner (2 個 actions)
+        </Button>
+        <Button variant="base-primary" onClick={handleDestroy}>
+          清除所有 AlertBanner
         </Button>
       </ButtonGroup>
     </div>
