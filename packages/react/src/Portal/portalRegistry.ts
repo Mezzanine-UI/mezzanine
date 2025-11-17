@@ -64,12 +64,7 @@ function createContainers() {
   portalContainer.id = 'mzn-portal-container';
   portalContainer.className = 'mzn-portal-default';
 
-  if (rootElement.parentElement) {
-    rootElement.parentElement.insertBefore(alertContainer, rootElement);
-  } else {
-    document.body.insertBefore(alertContainer, document.body.firstChild);
-  }
-
+  rootElement.insertBefore(alertContainer, rootElement.firstChild);
   rootElement.appendChild(portalContainer);
 
   containers = {
