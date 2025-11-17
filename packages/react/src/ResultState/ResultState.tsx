@@ -13,7 +13,7 @@ import {
   WarningFilledIcon,
 } from '@mezzanine-ui/icons';
 import type { IconDefinition } from '@mezzanine-ui/icons';
-import Button from '../Button';
+import Button, { ButtonGroup } from '../Button';
 import type { ButtonProps } from '../Button';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
@@ -91,7 +91,7 @@ const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
           <h3 className={classes.title}>{title}</h3>
           {description && <p className={classes.description}>{description}</p>}
           {actions && (
-            <div className={classes.actions}>
+            <ButtonGroup className={classes.actions}>
               {actions.secondaryButtonProps && (
                 <Button
                   size="main"
@@ -106,7 +106,7 @@ const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
                   {...actions.primaryButtonProps}
                 />
               )}
-            </div>
+            </ButtonGroup>
           )}
         </div>
       </div>
