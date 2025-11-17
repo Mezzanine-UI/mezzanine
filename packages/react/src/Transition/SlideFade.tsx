@@ -39,13 +39,13 @@ function getStyle(
 }
 
 const defaultDuration = {
-  enter: MOTION_DURATION.short,
-  exit: MOTION_DURATION.shorter,
+  enter: MOTION_DURATION.moderate,
+  exit: MOTION_DURATION.moderate,
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+  enter: MOTION_EASING.entrance,
+  exit: MOTION_EASING.exit,
 };
 
 export type SlideFadeDirection = 'left' | 'right' | 'up' | 'down';

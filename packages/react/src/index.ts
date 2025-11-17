@@ -437,19 +437,17 @@ export type {
 export {
   Collapse,
   Fade,
-  Grow,
+  Scale,
   SlideFade,
   default as Transition,
-  Zoom,
 } from './Transition';
 export type {
   CollapseProps,
   FadeProps,
-  GrowProps,
+  ScaleProps,
   SlideFadeDirection,
   SlideFadeProps,
   TransitionProps,
-  ZoomProps,
 } from './Transition';
 
 /** Context */

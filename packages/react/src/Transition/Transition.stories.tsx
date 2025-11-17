@@ -6,27 +6,23 @@ import {
   MOTION_DURATION,
   MOTION_EASING,
 } from '@mezzanine-ui/system/motion';
-import Switch from '../Toggle';
-import { Collapse, Fade, Grow, SlideFadeDirection, SlideFade, Zoom } from '.';
+import Toggle from '../Toggle';
+import { Collapse, Fade, Scale, SlideFadeDirection, SlideFade } from '.';
 
 export default {
   title: 'Utility/Transition',
 } as Meta;
 
 const durations: MotionDurationType[] = [
-  'shortest',
-  'shorter',
-  'short',
-  'standard',
-  'long',
+  'fast',
+  'moderate',
+  'slow',
+  'loop',
+  'pauseShort',
+  'pauseLong',
 ];
 
-const easings: MotionEasingType[] = [
-  'standard',
-  'emphasized',
-  'decelerated',
-  'accelerated',
-];
+const easings: MotionEasingType[] = ['entrance', 'exit', 'standard'];
 
 interface TransitionStoryArgs {
   durationEnter: MotionDurationType;
@@ -40,11 +36,12 @@ type TransitionStory<Args = Record<string, any>> = StoryFn<
 >;
 
 const args = {
-  durationEnter: 'standard',
-  durationExit: 'standard',
-  easingEnter: 'decelerated',
-  easingExit: 'accelerated',
+  durationEnter: 'moderate',
+  durationExit: 'moderate',
+  easingEnter: 'entrance',
+  easingExit: 'exit',
 } as const;
+
 const argTypes = {
   durationEnter: {
     options: durations,
@@ -83,10 +80,10 @@ export const CollapseStory: TransitionStory<{ collapsedHeight: number }> = ({
 
   return (
     <>
-      <Switch
+      <Toggle
+        size="main"
         checked={checked}
         onChange={() => setChecked((prev) => !prev)}
-        size="large"
       />
       <Collapse
         in={checked}
@@ -104,7 +101,7 @@ export const CollapseStory: TransitionStory<{ collapsedHeight: number }> = ({
           style={{
             width: 200,
             height: 200,
-            background: 'var(--mzn-color-primary)',
+            background: 'var(--mzn-color-background-brand)',
           }}
         />
       </Collapse>
@@ -129,10 +126,10 @@ export const FadeStory: TransitionStory = ({
 
   return (
     <>
-      <Switch
+      <Toggle
         checked={checked}
         onChange={() => setChecked((prev) => !prev)}
-        size="large"
+        size="main"
       />
       <Fade
         in={checked}
@@ -149,7 +146,7 @@ export const FadeStory: TransitionStory = ({
           style={{
             width: 200,
             height: 200,
-            background: 'var(--mzn-color-primary)',
+            background: 'var(--mzn-color-background-brand)',
           }}
         />
       </Fade>
@@ -161,7 +158,7 @@ FadeStory.storyName = 'Fade';
 FadeStory.args = args;
 FadeStory.argTypes = argTypes;
 
-export const GrowStory: TransitionStory<{ transformOrigin: string }> = ({
+export const ScaleStory: TransitionStory<{ transformOrigin: string }> = ({
   durationEnter,
   durationExit,
   easingEnter,
@@ -172,12 +169,12 @@ export const GrowStory: TransitionStory<{ transformOrigin: string }> = ({
 
   return (
     <>
-      <Switch
+      <Toggle
         checked={checked}
         onChange={() => setChecked((prev) => !prev)}
-        size="large"
+        size="main"
       />
-      <Grow
+      <Scale
         in={checked}
         keepMount
         duration={{
@@ -194,20 +191,20 @@ export const GrowStory: TransitionStory<{ transformOrigin: string }> = ({
           style={{
             width: 200,
             height: 200,
-            background: 'var(--mzn-color-primary)',
+            background: 'var(--mzn-color-background-brand)',
           }}
         />
-      </Grow>
+      </Scale>
     </>
   );
 };
 
-GrowStory.storyName = 'Grow';
-GrowStory.args = {
+ScaleStory.storyName = 'Scale';
+ScaleStory.args = {
   ...args,
   transformOrigin: 'initial',
 };
-GrowStory.argTypes = argTypes;
+ScaleStory.argTypes = argTypes;
 
 const slideFadeDirections: SlideFadeDirection[] = [
   'up',
@@ -223,10 +220,10 @@ export const SlideFadeStory: TransitionStory<{
 
   return (
     <>
-      <Switch
+      <Toggle
         checked={checked}
         onChange={() => setChecked((prev) => !prev)}
-        size="large"
+        size="main"
       />
       <SlideFade
         in={checked}
@@ -244,7 +241,7 @@ export const SlideFadeStory: TransitionStory<{
           style={{
             width: 200,
             height: 200,
-            background: 'var(--mzn-color-primary)',
+            background: 'var(--mzn-color-background-brand)',
           }}
         />
       </SlideFade>
@@ -266,45 +263,3 @@ SlideFadeStory.argTypes = {
     },
   },
 };
-
-export const ZoomStory: TransitionStory = ({
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-}) => {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <Zoom
-        in={checked}
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
-          }}
-        />
-      </Zoom>
-    </>
-  );
-};
-
-ZoomStory.storyName = 'Zoom';
-ZoomStory.args = args;
-ZoomStory.argTypes = argTypes;

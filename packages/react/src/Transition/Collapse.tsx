@@ -32,8 +32,8 @@ function getStyle(
 }
 
 const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+  enter: MOTION_EASING.entrance,
+  exit: MOTION_EASING.exit,
 };
 
 export interface CollapseProps

@@ -24,13 +24,13 @@ function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
 }
 
 const defaultDuration = {
-  enter: MOTION_DURATION.short,
-  exit: MOTION_DURATION.shorter,
+  enter: MOTION_DURATION.moderate,
+  exit: MOTION_DURATION.moderate,
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+  enter: MOTION_EASING.entrance,
+  exit: MOTION_EASING.exit,
 };
 
 export type FadeProps = TransitionImplementationProps;

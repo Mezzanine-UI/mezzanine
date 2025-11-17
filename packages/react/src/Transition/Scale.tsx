@@ -1,5 +1,5 @@
 import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
-import { MOTION_EASING } from '@mezzanine-ui/system/motion';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
   TransitionImplementationProps,
@@ -12,7 +12,7 @@ import { useAutoTransitionDuration } from './useAutoTransitionDuration';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
 function getScale(value: number) {
-  return `scale(${value}, ${value ** 2})`;
+  return `scale(${value})`;
 }
 
 function getStyle(state: TransitionState): CSSProperties {
@@ -32,16 +32,21 @@ function getStyle(state: TransitionState): CSSProperties {
 
   return {
     opacity: 0,
-    transform: getScale(0.75),
+    transform: getScale(0.95),
   };
 }
 
-const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+const defaultDuration = {
+  enter: MOTION_DURATION.moderate,
+  exit: MOTION_DURATION.moderate,
 };
 
-export interface GrowProps extends TransitionImplementationProps {
+const defaultEasing = {
+  enter: MOTION_EASING.entrance,
+  exit: MOTION_EASING.exit,
+};
+
+export interface ScaleProps extends TransitionImplementationProps {
   /**
    * The transform origin for child element.
    */
@@ -49,17 +54,17 @@ export interface GrowProps extends TransitionImplementationProps {
 }
 
 /**
- * The react component for `mezzanine` transition grow.
+ * The react component for `mezzanine` transition scale.
  */
-const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
-  props: GrowProps,
+const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
+  props: ScaleProps,
   ref,
 ) {
   const {
     appear,
     children,
     delay = 0,
-    duration = 'auto',
+    duration: durationProp = defaultDuration,
     easing = defaultEasing,
     in: inProp,
     onEnter,
@@ -69,6 +74,7 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
     transformOrigin,
     ...rest
   } = props;
+  const duration = durationProp === 'auto' ? defaultDuration : durationProp;
   const { autoTransitionDurationRef, addEndListener } =
     useAutoTransitionDuration(duration);
   const nodeRef = useRef<HTMLElement>(null);
@@ -81,15 +87,14 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
         'opacity',
         [
           'transform',
-          (transitionProps, mode) => {
+          (transitionProps) => {
             const { delay: delayProp, duration: durationProp } =
               transitionProps;
 
             return {
               ...transitionProps,
-              delay:
-                mode === 'exit' ? delayProp || durationProp * 0.333 : delayProp,
-              duration: durationProp * 0.666,
+              delay: delayProp,
+              duration: durationProp,
             };
           },
         ],
@@ -164,4 +169,4 @@ const Grow = forwardRef<HTMLElement, GrowProps>(function Grow(
   );
 });
 
-export default Grow;
+export default Scale;
