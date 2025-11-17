@@ -38,7 +38,9 @@ $element-tones: (
 
 $container-tones: (
   collapsed,
+  compressed,
   tiny,
+  snug,
   tight,
   slim,
   narrow,
@@ -173,9 +175,17 @@ $semantic-spacings: (
         default: primitive.variable(52),
         compact: primitive.variable(52),
       ),
+      compressed: (
+        default: primitive.variable(70),
+        compact: primitive.variable(70),
+      ),
       tiny: (
         default: primitive.variable(80),
         compact: primitive.variable(80),
+      ),
+      snug: (
+        default: primitive.variable(140),
+        compact: primitive.variable(140),
       ),
       tight: (
         default: primitive.variable(160),
