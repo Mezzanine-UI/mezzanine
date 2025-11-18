@@ -1,72 +1,66 @@
 'use client';
 
-import { forwardRef, useContext } from 'react';
 import {
   progressClasses as classes,
-  ProgressType,
-  ProgressTypes,
   ProgressStatus,
   ProgressStatuses,
+  ProgressType,
+  ProgressTypes,
 } from '@mezzanine-ui/core/progress';
-import { Size } from '@mezzanine-ui/system/size';
 import {
-  CheckIcon,
-  TimesIcon,
-  CheckCircleFilledIcon,
-  TimesCircleFilledIcon,
+  CheckedFilledIcon,
+  DangerousFilledIcon,
+  IconDefinition,
 } from '@mezzanine-ui/icons';
-import Typography, { TypographyProps, TypographyVariant } from '../Typography';
-import Icon, { IconProps } from '../Icon';
+
+import { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
+import Icon from '../Icon';
+import Typography, { TypographyProps } from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { MezzanineConfig } from '../Provider/context';
-
 export interface ProgressProps
   extends Omit<
     NativeElementPropsWithoutKeyAndRef<'div'>,
     'title' | 'children'
   > {
   /**
-   * Customize circle.
-   * circle radius = (size - strokeWidth) / 2
-   * @default size=80,strokeWidth=8
+   * Custom icons for different statuses.
+   * If not provided, defaults to CheckedFilledIcon for success and DangerousFilledIcon for error.
    */
-  circleProps?: { size: number; strokeWidth: number };
-  /**
-   * Icon props when status is 'error'.
-   */
-  errorIconProps?: Omit<IconProps, 'className'>;
+  icons?: {
+    /**
+     * Custom icon when status is 'error'.
+     * If not provided, defaults to DangerousFilledIcon.
+     */
+    error?: IconDefinition;
+    /**
+     * Custom icon when status is 'success'.
+     * If not provided, defaults to CheckedFilledIcon.
+     */
+    success?: IconDefinition;
+  };
   /**
    * The progress percent(0~100).
    * @default 0
    */
   percent?: number;
   /**
-   * Percent text props when status is 'normal'.
+   * Percent text props when status is 'enabled'.
    */
   percentProps?: Omit<TypographyProps, 'className' | 'children'>;
   /**
    * Force mark the progress status. automatically set if not defined.
-   * (normal(0~99) or success(100) depending on percent)
+   * (enabled(0~99) or success(100) depending on percent)
    */
   status?: ProgressStatus;
   /**
-   * The size of line type progress.
-   * @default 'medium'
+   * The tick of progress.
+   * @default 0
    */
-  size?: Size;
+  tick?: number;
   /**
-   * Display the progress info(percent and icon) or not.
-   * @default true
-   */
-  showInfo?: boolean;
-  /**
-   * Icon props when status is 'success'.
-   */
-  successIconProps?: Omit<IconProps, 'className'>;
-  /**
-   * The type of progress.
-   * @default 'line'
+   * The type of progress display.
+   * @default 'progress'
    */
   type?: ProgressType;
 }
@@ -76,123 +70,138 @@ export interface ProgressProps
  */
 const Progress = forwardRef<HTMLDivElement, ProgressProps>(
   function Progress(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
     const {
-      circleProps,
       className,
-      errorIconProps,
+      icons,
       percent = 0,
       percentProps,
-      showInfo = true,
-      size = globalSize,
       status = percent < 100
-        ? ProgressStatuses.normal
+        ? ProgressStatuses.enabled
         : ProgressStatuses.success,
-      successIconProps,
-      type = ProgressTypes.line,
-      ...rest
+      tick,
+      type = 'progress',
     } = props;
 
     const percentLimited = Math.max(0, Math.min(100, percent));
 
-    const defaultSuccessIcon =
-      type === ProgressTypes.line ? CheckCircleFilledIcon : CheckIcon;
-    const defaultErrorIcon =
-      type === ProgressTypes.line ? TimesCircleFilledIcon : TimesIcon;
+    const icon = useMemo(() => {
+      if (status === ProgressStatuses.success) {
+        return icons?.success ?? CheckedFilledIcon;
+      }
+      return icons?.error ?? DangerousFilledIcon;
+    }, [status, icons]);
 
-    const renderInfo = (variant: TypographyVariant) => (
-      <div className={classes.info}>
-        {status === ProgressStatuses.normal ? (
-          /** percent text */ <Typography
-            className={classes.infoPercent}
-            variant={variant}
-            {...percentProps}
-          >
-            {`${percentLimited}%`}
-          </Typography>
-        ) : (
-          <>
-            {status === ProgressStatuses.success && (
-              <Icon
-                className={classes.infoIcon}
-                icon={defaultSuccessIcon}
-                {...successIconProps}
-              />
-            )}
-            {status === ProgressStatuses.error && (
-              <Icon
-                className={classes.infoIcon}
-                icon={defaultErrorIcon}
-                {...errorIconProps}
-              />
-            )}
-          </>
-        )}
-      </div>
-    );
+    const isSuccessStatus = useMemo(() => status === ProgressStatuses.success && type === ProgressTypes.icon, [status, type]);
+    const isErrorStatus = useMemo(() => status === ProgressStatuses.error && type === ProgressTypes.icon, [status, type]);
+    const isActiveTick = useMemo(() => tick !== undefined && tick > 0 && tick <= 100, [tick]);
 
-    const renderLine = () => (
-      <>
-        <div className={classes.lineBg}>
-          <div style={{ width: `${percentLimited}%` }} />
-        </div>
-        {showInfo && renderInfo('input3')}
-      </>
-    );
+    const tickPosition = useMemo(() => {
+      if (!isActiveTick || tick === undefined) return undefined;
+      return Math.max(0, Math.min(100, tick));
+    }, [isActiveTick, tick]);
 
-    const renderCircle = () => {
-      const { size: circleSize = 80, strokeWidth = 8 } = circleProps || {};
-      const radius = (circleSize - strokeWidth) / 2;
-      const progressLength =
-        percent > 0 ? percent * radius * Math.PI * 0.02 : 0.00001;
-      const circleXY = circleSize / 2;
+    const lineRef = useRef<HTMLDivElement>(null);
+    const [tickLeft, setTickLeft] = useState<string | undefined>(undefined);
 
-      return (
-        <>
-          <svg
-            style={{ boxSizing: 'border-box' }}
-            height={circleSize}
-            width={circleSize}
-          >
-            <circle
-              className={classes.circleBg}
-              cx={circleXY}
-              cy={circleXY}
-              r={radius}
-              strokeWidth={strokeWidth}
-            />
-            <circle
-              className={classes.circleFiller}
-              cx={circleXY}
-              cy={circleXY}
-              r={radius}
-              strokeWidth={strokeWidth}
-              strokeDasharray={`${progressLength.toString()} 999`}
-            />
-          </svg>
-          {showInfo && renderInfo('button3')}
-        </>
-      );
-    };
+    useEffect(() => {
+      if (!isActiveTick || tickPosition === undefined || !lineRef.current) {
+        setTickLeft(undefined);
+        return;
+      }
+
+      const lineElement = lineRef.current;
+      if (!lineElement) return;
+
+      const updateTickPosition = () => {
+        const containerElement = lineElement.parentElement;
+        if (!containerElement) return;
+
+        const lineRect = lineElement.getBoundingClientRect();
+        const containerRect = containerElement.getBoundingClientRect();
+
+        // 計算 line 相對於容器的位置和寬度
+        const lineLeft = lineRect.left - containerRect.left;
+        const lineWidth = lineRect.width;
+
+        // 計算 tick 在 line 中的位置（百分比轉換為像素）
+        const tickOffsetInLine = (tickPosition / 100) * lineWidth;
+
+        // 計算 tick 相對於容器的絕對位置
+        const tickAbsoluteLeft = lineLeft + tickOffsetInLine;
+
+        // 轉換為百分比（相對於容器）
+        const containerWidth = containerRect.width;
+        const tickPercent = (tickAbsoluteLeft / containerWidth) * 100;
+
+        setTickLeft(`${tickPercent}%`);
+      };
+
+      // 初始計算
+      updateTickPosition();
+
+      // 使用 ResizeObserver 監聽 line 元素尺寸變化
+      const resizeObserver = new ResizeObserver(() => {
+        updateTickPosition();
+      });
+
+      resizeObserver.observe(lineElement);
+      const containerElement = lineElement.parentElement;
+      if (containerElement) {
+        resizeObserver.observe(containerElement);
+      }
+
+      // 監聽窗口大小變化
+      window.addEventListener('resize', updateTickPosition);
+
+      return () => {
+        resizeObserver.disconnect();
+        window.removeEventListener('resize', updateTickPosition);
+      };
+    }, [isActiveTick, tickPosition, type, percentLimited]);
 
     return (
       <div
         ref={ref}
-        className={cx(
-          classes.host,
-          className,
-          status === ProgressStatuses.success && classes.success,
-          status === ProgressStatuses.error && classes.error,
-          type === ProgressTypes.line && classes.lineVariant,
-          type === ProgressTypes.circle && classes.circleVariant,
-          classes.size(size),
-        )}
-        {...rest}
+        className={
+          cx(
+            classes.host,
+            classes.type(type),
+            status === ProgressStatuses.success && classes.success,
+            status === ProgressStatuses.error && classes.error,
+            className,
+          )
+        }
       >
-        {type === ProgressTypes.line && renderLine()}
-        {type === ProgressTypes.circle && renderCircle()}
+        <div ref={lineRef} className={classes.lineVariant}>
+          <i className={classes.lineBg} style={{ width: `${percentLimited}%` }} />
+        </div>
+        {
+          type === ProgressTypes.percent && (
+            <Typography variant="input" {...percentProps} className={classes.infoPercent}>
+              {`${percentLimited}%`}
+            </Typography>
+          )
+        }
+        {
+          (isSuccessStatus || isErrorStatus) && (
+            <Icon
+              className={classes.infoIcon}
+              icon={icon}
+            />
+          )
+        }
+        {
+          isActiveTick && tickLeft !== undefined && (
+            <div
+              className={classes.tick}
+              style={{
+                '--tick-position': tickLeft,
+              } as React.CSSProperties}
+            />
+          )
+        }
       </div>
-    );
+    )
   },
 );
 
