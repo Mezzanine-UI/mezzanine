@@ -591,7 +591,7 @@ Transition 系統提供了**便利函數**來快速建立 CSS transition，自�
 
 #### 完整使用範例
 
-````scss
+```scss
 @use '~@mezzanine-ui/system/transition' as transition;
 
 .button {
@@ -599,16 +599,14 @@ Transition 系統提供了**便利函數**來快速建立 CSS transition，自�
   transition: transition.standard(background-color, fast);
 
   // 多個屬性轉場
-  transition:
-    transition.standard(background-color, fast),
-    transition.standard(border-color, fast),
-    transition.standard(color, fast);
+  transition: transition.standard(background-color, fast), transition.standard(border-color, fast), transition.standard(color, fast);
 
   // 使用不同的 easing
   &--menu-item {
     transition:
-      transition.entrance(opacity),      // 使用 entrance easing
-      transition.standard(transform);    // 使用 standard easing
+      transition.entrance(opacity),
+      // 使用 entrance easing
+      transition.standard(transform); // 使用 standard easing
   }
 
   // 加上 delay
@@ -621,6 +619,7 @@ Transition 系統提供了**便利函數**來快速建立 CSS transition，自�
     transition: transition.standard(width, 500ms);
   }
 }
+```
 
 ### React Transition 元件
 
@@ -628,13 +627,13 @@ React Package 提供了基於 `react-transition-group` 的轉場元件，並整�
 
 #### 可用的 Transition 元件
 
-| 元件         | 效果                         | 特殊說明                         |
-| ------------ | ---------------------------- | -------------------------------- |
-| `Fade`       | 淡入淡出（透明度）           | -                                |
-| `Scale`      | 縮放（從 0.95 放大）         | 支援 transform-origin            |
-| `Slide`      | 滑動（橫向 100%）            | -                                |
-| `Translate`  | 微移動（4px，支援四個方向）  | 可指定 from 方向                 |
-| `Rotate`     | 旋轉                         | **不使用 react-transition-group**，元素始終可見 |
+| 元件        | 效果                        | 特殊說明                                        |
+| ----------- | --------------------------- | ----------------------------------------------- |
+| `Fade`      | 淡入淡出（透明度）          | -                                               |
+| `Scale`     | 縮放（從 0.95 放大）        | 支援 transform-origin                           |
+| `Slide`     | 滑動（橫向 100%）           | -                                               |
+| `Translate` | 微移動（4px，支援四個方向） | 可指定 from 方向                                |
+| `Rotate`    | 旋轉                        | **不使用 react-transition-group**，元素始終可見 |
 
 #### Rotate 的特殊設計
 
@@ -938,4 +937,7 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 - **Backdrop**：`packages/react/src/Backdrop`
 - **ResultState**：`packages/react/src/ResultState`
 - **PageFooter**：`packages/react/src/PageFooter`
-````
+
+```
+
+```
