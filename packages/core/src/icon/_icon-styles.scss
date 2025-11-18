@@ -1,3 +1,4 @@
+@use '~@mezzanine-ui/system/motion' as motion;
 @use './icon' as *;
 
 @keyframes #{$prefix}-spin {
@@ -20,7 +21,10 @@
   }
 
   &--spin {
-    animation: #{$prefix}-spin 500ms infinite linear;
+    @include motion.pattern(spin, animation);
+
+    animation-name: #{$prefix}-spin;
+    animation-iteration-count: infinite;
   }
 
   &--size {
