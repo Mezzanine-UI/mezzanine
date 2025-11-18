@@ -650,7 +650,7 @@ Rotate 元件與其他轉場元件不同，**不會讓元素消失或隱藏**，
 <Fade in={isVisible}>
   <div>Content</div>
 </Fade>
-````
+```
 
 #### 基本使用範例
 
@@ -938,3 +938,4 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 - **Backdrop**：`packages/react/src/Backdrop`
 - **ResultState**：`packages/react/src/ResultState`
 - **PageFooter**：`packages/react/src/PageFooter`
+````
