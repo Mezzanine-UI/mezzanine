@@ -1,7 +1,33 @@
+@use 'sass:meta';
+@use 'sass:string';
 @use '../motion';
 
-@function standard($property, $duration: motion.duration(moderate), $delay: 0ms) {
-  @warn 'Deprecated function standard(). Please update to use other motion functions.';
+@function entrance($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
 
-  @return $property $duration motion.easing(standard) $delay;
+  @return $property $duration-value motion.easing(entrance) $delay;
+}
+
+@function exit($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
+
+  @return $property $duration-value motion.easing(exit) $delay;
+}
+
+@function standard($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
+
+  @return $property $duration-value motion.easing(standard) $delay;
 }
