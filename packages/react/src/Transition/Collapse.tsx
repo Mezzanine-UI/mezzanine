@@ -36,6 +36,7 @@ const defaultEasing = {
   exit: MOTION_EASING.exit,
 };
 
+/** @deprecated 設計師未定義，暫時標記為 deprecated */
 export interface CollapseProps
   extends TransitionImplementationProps,
     Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
@@ -48,6 +49,7 @@ export interface CollapseProps
 
 /**
  * The react component for `mezzanine` transition collapse.
+ * @deprecated 設計師未定義，暫時標記為 deprecated
  */
 const Collapse = forwardRef<HTMLElement, CollapseProps>(
   function Collapse(props, ref) {

@@ -438,16 +438,23 @@ export {
   Collapse,
   Fade,
   Scale,
+  Slide,
   SlideFade,
+  Translate,
+  Rotate,
   default as Transition,
 } from './Transition';
 export type {
   CollapseProps,
   FadeProps,
   ScaleProps,
+  SlideProps,
   SlideFadeDirection,
   SlideFadeProps,
+  TranslateFrom,
+  TranslateProps,
   TransitionProps,
+  RotateProps,
 } from './Transition';
 
 /** Context */

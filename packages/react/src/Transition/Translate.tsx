@@ -1,39 +1,41 @@
-import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import { cloneElement, CSSProperties, forwardRef, useRef } from 'react';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Transition, {
+  TransitionState,
   TransitionImplementationProps,
   TransitionProps,
-  TransitionState,
 } from './Transition';
-import { getAutoSizeDuration } from './getAutoSizeDuration';
 import { reflow } from './reflow';
-import { useAutoTransitionDuration } from './useAutoTransitionDuration';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
-function getScale(value: number) {
-  return `scale(${value})`;
-}
-
-function getStyle(state: TransitionState): CSSProperties {
-  if (state === 'entering') {
+function getStyle(
+  state: TransitionState,
+  inProp: boolean,
+  from: TranslateFrom,
+): CSSProperties {
+  if (state === 'entering' || state === 'entered') {
     return {
       opacity: 1,
-      transform: getScale(1),
+      transform: 'translate3d(0, 0, 0)',
     };
   }
 
-  if (state === 'entered') {
-    return {
-      opacity: 1,
-      transform: 'none',
-    };
-  }
-
-  return {
+  const style: CSSProperties = {
     opacity: 0,
-    transform: getScale(0.95),
+    transform: {
+      top: 'translate3d(0, -4px, 0)',
+      right: 'translate3d(4px, 0, 0)',
+      bottom: 'translate3d(0, 4px, 0)',
+      left: 'translate3d(-4px, 0, 0)',
+    }[from],
   };
+
+  if (state === 'exited' && !inProp) {
+    style.visibility = 'hidden';
+  }
+
+  return style;
 }
 
 const defaultDuration = {
@@ -42,85 +44,57 @@ const defaultDuration = {
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.entrance,
-  exit: MOTION_EASING.exit,
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
 };
 
-export interface ScaleProps extends TransitionImplementationProps {
+export type TranslateFrom = 'top' | 'bottom' | 'left' | 'right';
+
+export interface TranslateProps extends TransitionImplementationProps {
   /**
-   * The transform origin for child element.
-   * @default 'center'
+   * The position of child element will enter from.
+   * @default 'top'
    */
-  transformOrigin?: string;
+  from?: TranslateFrom;
 }
 
 /**
- * The react component for `mezzanine` transition scale.
+ * The react component for `mezzanine` transition translate in/out.
  */
-const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
-  props: ScaleProps,
+const Translate = forwardRef<HTMLElement, TranslateProps>(function Translate(
+  props: TranslateProps,
   ref,
 ) {
   const {
-    appear,
     children,
     delay = 0,
     duration: durationProp = defaultDuration,
     easing = defaultEasing,
-    in: inProp,
+    from = 'top',
+    in: inProp = false,
     onEnter,
     onEntered,
     onExit,
     onExited,
-    transformOrigin = 'center',
     ...rest
   } = props;
   const duration = durationProp === 'auto' ? defaultDuration : durationProp;
-  const { autoTransitionDurationRef, addEndListener } =
-    useAutoTransitionDuration(duration);
   const nodeRef = useRef<HTMLElement>(null);
+  const composedNodeRef = useComposeRefs([ref, nodeRef]);
   const [setNodeTransition, resetNodeTransition] = useSetNodeTransition(
     {
       delay,
       duration,
       easing,
-      properties: [
-        'opacity',
-        [
-          'transform',
-          (transitionProps) => {
-            const { delay: delayProp, duration: durationProp } =
-              transitionProps;
-
-            return {
-              ...transitionProps,
-              delay: delayProp,
-              duration: durationProp,
-            };
-          },
-        ],
-      ],
-      resolveAutoDuration: () => {
-        const autoSizeDuration = getAutoSizeDuration(
-          nodeRef.current?.clientHeight ?? 0,
-        );
-
-        autoTransitionDurationRef.current = autoSizeDuration;
-
-        return autoSizeDuration;
-      },
+      properties: ['opacity', 'transform'],
     },
     children?.props.style,
   );
-  const composedNodeRef = useComposeRefs([ref, nodeRef]);
   const transitionProps: TransitionProps = {
     ...rest,
-    addEndListener,
-    appear,
     duration,
     in: inProp,
     nodeRef,
-
     onEnter(node, isAppearing) {
       setNodeTransition(node, 'enter');
       reflow(node);
@@ -160,9 +134,7 @@ const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
             ...children.props,
             ref: composedNodeRef,
             style: {
-              visibility: state === 'exited' && !inProp ? 'hidden' : undefined,
-              ...getStyle(state),
-              transformOrigin,
+              ...getStyle(state, inProp, from),
               ...children.props.style,
             },
           }))}
@@ -170,4 +142,4 @@ const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
   );
 });
 
-export default Scale;
+export default Translate;

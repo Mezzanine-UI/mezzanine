@@ -9,26 +9,15 @@ import Transition, {
 import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
-function getStyle(
-  state: TransitionState,
-  inProp: boolean,
-  direction: SlideFadeDirection,
-): CSSProperties {
+function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
   if (state === 'entering' || state === 'entered') {
     return {
-      opacity: 1,
       transform: 'translate3d(0, 0, 0)',
     };
   }
 
   const style: CSSProperties = {
-    opacity: 0,
-    transform: {
-      up: 'translate3d(0, 100%, 0)',
-      right: 'translate3d(-100%, 0, 0)',
-      down: 'translate3d(0, -100%, 0)',
-      left: 'translate3d(100%, 0, 0)',
-    }[direction],
+    transform: 'translate3d(100%, 0, 0)',
   };
 
   if (state === 'exited' && !inProp) {
@@ -39,8 +28,8 @@ function getStyle(
 }
 
 const defaultDuration = {
-  enter: MOTION_DURATION.moderate,
-  exit: MOTION_DURATION.moderate,
+  enter: MOTION_DURATION.slow,
+  exit: MOTION_DURATION.slow,
 };
 
 const defaultEasing = {
@@ -48,29 +37,17 @@ const defaultEasing = {
   exit: MOTION_EASING.standard,
 };
 
-/** @deprecated use Translate instead */
-export type SlideFadeDirection = 'left' | 'right' | 'up' | 'down';
-
-/** @deprecated use Translate instead */
-export interface SlideFadeProps extends TransitionImplementationProps {
-  /**
-   * The direction of child element will enter to.
-   * @default 'down'
-   */
-  direction?: SlideFadeDirection;
-}
+export type SlideProps = TransitionImplementationProps;
 
 /**
- * The react component for `mezzanine` transition slide fade.
- * @deprecated use Translate instead
+ * The react component for `mezzanine` transition slide in/out.
  */
-const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
-  props: SlideFadeProps,
+const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
+  props: SlideProps,
   ref,
 ) {
   const {
     children,
-    direction = 'down',
     delay = 0,
     duration: durationProp = defaultDuration,
     easing = defaultEasing,
@@ -89,7 +66,7 @@ const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
       delay,
       duration,
       easing,
-      properties: ['opacity', 'transform'],
+      properties: ['transform'],
     },
     children?.props.style,
   );
@@ -137,7 +114,7 @@ const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
             ...children.props,
             ref: composedNodeRef,
             style: {
-              ...getStyle(state, inProp, direction),
+              ...getStyle(state, inProp),
               ...children.props.style,
             },
           }))}
@@ -145,4 +122,4 @@ const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
   );
 });
 
-export default SlideFade;
+export default Slide;
