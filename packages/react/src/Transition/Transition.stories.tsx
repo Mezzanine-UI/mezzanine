@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { useState } from 'react';
 import {
   MotionDurationType,
@@ -6,27 +6,26 @@ import {
   MOTION_DURATION,
   MOTION_EASING,
 } from '@mezzanine-ui/system/motion';
-import Switch from '../Toggle';
-import { Collapse, Fade, Grow, SlideFadeDirection, SlideFade, Zoom } from '.';
+import { ChevronUpIcon } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
+import Toggle from '../Toggle';
+import Button from '../Button';
+import { Fade, Rotate, Scale, TranslateFrom, Translate, Slide } from '.';
 
 export default {
   title: 'Utility/Transition',
 } as Meta;
 
 const durations: MotionDurationType[] = [
-  'shortest',
-  'shorter',
-  'short',
-  'standard',
-  'long',
+  'fast',
+  'moderate',
+  'slow',
+  'loop',
+  'pauseShort',
+  'pauseLong',
 ];
 
-const easings: MotionEasingType[] = [
-  'standard',
-  'emphasized',
-  'decelerated',
-  'accelerated',
-];
+const easings: MotionEasingType[] = ['entrance', 'exit', 'standard'];
 
 interface TransitionStoryArgs {
   durationEnter: MotionDurationType;
@@ -35,276 +34,280 @@ interface TransitionStoryArgs {
   easingExit: MotionEasingType;
 }
 
-type TransitionStory<Args = Record<string, any>> = StoryFn<
-  TransitionStoryArgs & Args
->;
+const defaultArgs = {
+  durationEnter: 'moderate' as const,
+  durationExit: 'moderate' as const,
+  easingEnter: 'standard' as const,
+  easingExit: 'standard' as const,
+};
 
-const args = {
-  durationEnter: 'standard',
-  durationExit: 'standard',
-  easingEnter: 'decelerated',
-  easingExit: 'accelerated',
-} as const;
-const argTypes = {
+const defaultArgTypes = {
   durationEnter: {
     options: durations,
-    control: {
-      type: 'select',
-    },
+    control: { type: 'select' as const },
   },
   durationExit: {
     options: durations,
-    control: {
-      type: 'select',
-    },
+    control: { type: 'select' as const },
   },
   easingEnter: {
     options: easings,
-    control: {
-      type: 'select',
-    },
+    control: { type: 'select' as const },
   },
   easingExit: {
     options: easings,
-    control: {
-      type: 'select',
-    },
+    control: { type: 'select' as const },
   },
-} as const;
-
-export const CollapseStory: TransitionStory<{ collapsedHeight: number }> = ({
-  collapsedHeight,
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-}) => {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <Collapse
-        in={checked}
-        collapsedHeight={collapsedHeight}
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
-          }}
-        />
-      </Collapse>
-    </>
-  );
 };
 
-CollapseStory.storyName = 'Collapse';
-CollapseStory.args = {
-  ...args,
-  collapsedHeight: 0,
-};
-CollapseStory.argTypes = argTypes;
+export const FadeStory: StoryObj<TransitionStoryArgs> = {
+  render: function FadeRender({
+    durationEnter,
+    durationExit,
+    easingEnter,
+    easingExit,
+  }) {
+    const [checked, setChecked] = useState(false);
 
-export const FadeStory: TransitionStory = ({
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-}) => {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <Fade
-        in={checked}
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
-          }}
+    return (
+      <>
+        <Toggle
+          checked={checked}
+          onChange={() => setChecked((prev) => !prev)}
+          size="main"
         />
-      </Fade>
-    </>
-  );
+        <Fade
+          in={checked}
+          duration={{
+            enter: MOTION_DURATION[durationEnter],
+            exit: MOTION_DURATION[durationExit],
+          }}
+          easing={{
+            enter: MOTION_EASING[easingEnter],
+            exit: MOTION_EASING[easingExit],
+          }}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+              background: 'var(--mzn-color-background-brand)',
+            }}
+          />
+        </Fade>
+      </>
+    );
+  },
+  args: defaultArgs,
+  argTypes: defaultArgTypes,
 };
 
 FadeStory.storyName = 'Fade';
-FadeStory.args = args;
-FadeStory.argTypes = argTypes;
 
-export const GrowStory: TransitionStory<{ transformOrigin: string }> = ({
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-  transformOrigin,
-}) => {
-  const [checked, setChecked] = useState(false);
+export const ScaleStory: StoryObj<
+  TransitionStoryArgs & { transformOrigin: string }
+> = {
+  render: function ScaleRender({
+    durationEnter,
+    durationExit,
+    easingEnter,
+    easingExit,
+    transformOrigin,
+  }) {
+    const [checked, setChecked] = useState(false);
 
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <Grow
-        in={checked}
-        keepMount
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-        transformOrigin={transformOrigin}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
-          }}
+    return (
+      <>
+        <Toggle
+          checked={checked}
+          onChange={() => setChecked((prev) => !prev)}
+          size="main"
         />
-      </Grow>
-    </>
-  );
-};
-
-GrowStory.storyName = 'Grow';
-GrowStory.args = {
-  ...args,
-  transformOrigin: 'initial',
-};
-GrowStory.argTypes = argTypes;
-
-const slideFadeDirections: SlideFadeDirection[] = [
-  'up',
-  'down',
-  'left',
-  'right',
-];
-
-export const SlideFadeStory: TransitionStory<{
-  direction: SlideFadeDirection;
-}> = ({ direction, durationEnter, durationExit, easingEnter, easingExit }) => {
-  const [checked, setChecked] = useState(false);
-
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <SlideFade
-        in={checked}
-        direction={direction}
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
+        <Scale
+          in={checked}
+          keepMount
+          duration={{
+            enter: MOTION_DURATION[durationEnter],
+            exit: MOTION_DURATION[durationExit],
           }}
-        />
-      </SlideFade>
-    </>
-  );
+          easing={{
+            enter: MOTION_EASING[easingEnter],
+            exit: MOTION_EASING[easingExit],
+          }}
+          transformOrigin={transformOrigin}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+              background: 'var(--mzn-color-background-brand)',
+            }}
+          />
+        </Scale>
+      </>
+    );
+  },
+  args: {
+    ...defaultArgs,
+    transformOrigin: 'initial',
+  },
+  argTypes: defaultArgTypes,
 };
 
-SlideFadeStory.storyName = 'SlideFade';
-SlideFadeStory.args = {
-  ...args,
-  direction: 'down',
-};
-SlideFadeStory.argTypes = {
-  ...argTypes,
-  direction: {
-    options: slideFadeDirections,
-    control: {
-      type: 'select',
+ScaleStory.storyName = 'Scale';
+
+const translateFrom: TranslateFrom[] = ['top', 'bottom', 'left', 'right'];
+
+export const TranslateStory: StoryObj<
+  TransitionStoryArgs & { from: TranslateFrom }
+> = {
+  render: function TranslateRender({
+    from,
+    durationEnter,
+    durationExit,
+    easingEnter,
+    easingExit,
+  }) {
+    const [checked, setChecked] = useState(false);
+
+    return (
+      <>
+        <Toggle
+          checked={checked}
+          onChange={() => setChecked((prev) => !prev)}
+          size="main"
+        />
+        <Translate
+          in={checked}
+          from={from}
+          duration={{
+            enter: MOTION_DURATION[durationEnter],
+            exit: MOTION_DURATION[durationExit],
+          }}
+          easing={{
+            enter: MOTION_EASING[easingEnter],
+            exit: MOTION_EASING[easingExit],
+          }}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+              background: 'var(--mzn-color-background-brand)',
+            }}
+          />
+        </Translate>
+      </>
+    );
+  },
+  args: {
+    ...defaultArgs,
+    from: 'top',
+  },
+  argTypes: {
+    ...defaultArgTypes,
+    from: {
+      options: translateFrom,
+      control: { type: 'select' as const },
     },
   },
 };
 
-export const ZoomStory: TransitionStory = ({
-  durationEnter,
-  durationExit,
-  easingEnter,
-  easingExit,
-}) => {
-  const [checked, setChecked] = useState(false);
+TranslateStory.storyName = 'Translate';
 
-  return (
-    <>
-      <Switch
-        checked={checked}
-        onChange={() => setChecked((prev) => !prev)}
-        size="large"
-      />
-      <Zoom
-        in={checked}
-        duration={{
-          enter: MOTION_DURATION[durationEnter],
-          exit: MOTION_DURATION[durationExit],
-        }}
-        easing={{
-          enter: MOTION_EASING[easingEnter],
-          exit: MOTION_EASING[easingExit],
-        }}
-      >
-        <div
-          style={{
-            width: 200,
-            height: 200,
-            background: 'var(--mzn-color-primary)',
-          }}
+export const SlideStory: StoryObj<TransitionStoryArgs> = {
+  render: function SlideRender({
+    durationEnter,
+    durationExit,
+    easingEnter,
+    easingExit,
+  }) {
+    const [checked, setChecked] = useState(false);
+
+    return (
+      <>
+        <Toggle
+          checked={checked}
+          onChange={() => setChecked((prev) => !prev)}
+          size="main"
         />
-      </Zoom>
-    </>
-  );
+        <Slide
+          in={checked}
+          keepMount
+          duration={{
+            enter: MOTION_DURATION[durationEnter],
+            exit: MOTION_DURATION[durationExit],
+          }}
+          easing={{
+            enter: MOTION_EASING[easingEnter],
+            exit: MOTION_EASING[easingExit],
+          }}
+        >
+          <div
+            style={{
+              width: 200,
+              height: 200,
+              background: 'var(--mzn-color-background-brand)',
+            }}
+          />
+        </Slide>
+      </>
+    );
+  },
+  args: defaultArgs,
+  argTypes: defaultArgTypes,
 };
 
-ZoomStory.storyName = 'Zoom';
-ZoomStory.args = args;
-ZoomStory.argTypes = argTypes;
+SlideStory.storyName = 'Slide';
+
+export const RotateStory: StoryObj<
+  Pick<TransitionStoryArgs, 'durationEnter' | 'easingEnter'> & {
+    degrees: number;
+  }
+> = {
+  render: function RotateRender({ degrees, durationEnter, easingEnter }) {
+    const [checked, setChecked] = useState(false);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <div>
+          <h3 style={{ marginBottom: '16px' }}>Rotate Arrow Indicator</h3>
+          <Button
+            variant="base-secondary"
+            onClick={() => setChecked((prev) => !prev)}
+          >
+            <span>Select Options</span>
+            <Rotate
+              in={checked}
+              degrees={degrees}
+              duration={MOTION_DURATION[durationEnter]}
+              easing={MOTION_EASING[easingEnter]}
+            >
+              <Icon icon={ChevronUpIcon} />
+            </Rotate>
+          </Button>
+        </div>
+      </div>
+    );
+  },
+  args: {
+    durationEnter: 'fast',
+    easingEnter: 'standard',
+    degrees: 180,
+  },
+  argTypes: {
+    durationEnter: {
+      options: durations,
+      control: { type: 'select' as const },
+    },
+    easingEnter: {
+      options: easings,
+      control: { type: 'select' as const },
+    },
+    degrees: {
+      control: { type: 'number' as const },
+    },
+  },
+};
+
+RotateStory.storyName = 'Rotate';

@@ -10,13 +10,17 @@ import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
 function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
+  if (state === 'entering' || state === 'entered') {
+    return {
+      transform: 'translate3d(0, 0, 0)',
+    };
+  }
+
   const style: CSSProperties = {
-    transform: 'scale(0)',
+    transform: 'translate3d(100%, 0, 0)',
   };
 
-  if (state === 'entering' || state === 'entered') {
-    style.transform = 'none';
-  } else if (state === 'exited' && !inProp) {
+  if (state === 'exited' && !inProp) {
     style.visibility = 'hidden';
   }
 
@@ -24,22 +28,22 @@ function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
 }
 
 const defaultDuration = {
-  enter: MOTION_DURATION.short,
-  exit: MOTION_DURATION.shorter,
+  enter: MOTION_DURATION.slow,
+  exit: MOTION_DURATION.slow,
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
 };
 
-export type ZoomProps = TransitionImplementationProps;
+export type SlideProps = TransitionImplementationProps;
 
 /**
- * The react component for `mezzanine` transition zoom.
+ * The react component for `mezzanine` transition slide in/out.
  */
-const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(
-  props: ZoomProps,
+const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
+  props: SlideProps,
   ref,
 ) {
   const {
@@ -118,4 +122,4 @@ const Zoom = forwardRef<HTMLElement, ZoomProps>(function Zoom(
   );
 });
 
-export default Zoom;
+export default Slide;

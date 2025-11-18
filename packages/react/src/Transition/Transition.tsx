@@ -12,7 +12,7 @@ import type {
 } from 'react-transition-group/Transition';
 import { NativeElementTag } from '../utils/jsx-types';
 
-export { TransitionState };
+export type { TransitionState };
 
 export type TransitionMode = 'enter' | 'exit';
 

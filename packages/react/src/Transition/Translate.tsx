@@ -9,14 +9,29 @@ import Transition, {
 import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
-function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
+function getStyle(
+  state: TransitionState,
+  inProp: boolean,
+  from: TranslateFrom,
+): CSSProperties {
+  if (state === 'entering' || state === 'entered') {
+    return {
+      opacity: 1,
+      transform: 'translate3d(0, 0, 0)',
+    };
+  }
+
   const style: CSSProperties = {
     opacity: 0,
+    transform: {
+      top: 'translate3d(0, -4px, 0)',
+      right: 'translate3d(4px, 0, 0)',
+      bottom: 'translate3d(0, 4px, 0)',
+      left: 'translate3d(-4px, 0, 0)',
+    }[from],
   };
 
-  if (state === 'entering' || state === 'entered') {
-    style.opacity = 1;
-  } else if (state === 'exited' && !inProp) {
+  if (state === 'exited' && !inProp) {
     style.visibility = 'hidden';
   }
 
@@ -29,25 +44,34 @@ const defaultDuration = {
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.entrance,
-  exit: MOTION_EASING.exit,
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
 };
 
-export type FadeProps = TransitionImplementationProps;
+export type TranslateFrom = 'top' | 'bottom' | 'left' | 'right';
+
+export interface TranslateProps extends TransitionImplementationProps {
+  /**
+   * The position of child element will enter from.
+   * @default 'top'
+   */
+  from?: TranslateFrom;
+}
 
 /**
- * The react component for `mezzanine` transition fade.
+ * The react component for `mezzanine` transition translate in/out.
  */
-const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
-  props: FadeProps,
+const Translate = forwardRef<HTMLElement, TranslateProps>(function Translate(
+  props: TranslateProps,
   ref,
 ) {
   const {
     children,
-    in: inProp = false,
     delay = 0,
     duration: durationProp = defaultDuration,
     easing = defaultEasing,
+    from = 'top',
+    in: inProp = false,
     onEnter,
     onEntered,
     onExit,
@@ -62,7 +86,7 @@ const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
       delay,
       duration,
       easing,
-      properties: ['opacity'],
+      properties: ['opacity', 'transform'],
     },
     children?.props.style,
   );
@@ -110,7 +134,7 @@ const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
             ...children.props,
             ref: composedNodeRef,
             style: {
-              ...getStyle(state, inProp),
+              ...getStyle(state, inProp, from),
               ...children.props.style,
             },
           }))}
@@ -118,4 +142,4 @@ const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
   );
 });
 
-export default Fade;
+export default Translate;

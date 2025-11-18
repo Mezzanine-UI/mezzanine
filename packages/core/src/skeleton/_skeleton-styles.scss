@@ -4,7 +4,7 @@
 @use '~@mezzanine-ui/system/motion';
 @use './skeleton' as *;
 
-$animation-duration: motion.duration(short) !default;
+$animation-duration: motion.duration(moderate) !default;
 $animation-front: palette.semantic-variable(background, neutral-faint) !default;
 $animation-back: palette.semantic-variable(background, neutral-subtle) !default;
 

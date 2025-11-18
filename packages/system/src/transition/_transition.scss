@@ -1,17 +1,33 @@
+@use 'sass:meta';
+@use 'sass:string';
 @use '../motion';
 
-@function enter($property, $duration: motion.duration(short), $delay: 0ms) {
-  @return $property $duration motion.easing(decelerated) $delay;
+@function entrance($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
+
+  @return $property $duration-value motion.easing(entrance) $delay;
 }
 
-@function exit($property, $duration: motion.duration(shorter), $delay: 0ms) {
-  @return $property $duration motion.easing(accelerated) $delay;
+@function exit($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
+
+  @return $property $duration-value motion.easing(exit) $delay;
 }
 
-@function emphasized($property, $duration: motion.duration(short), $delay: 0ms) {
-  @return $property $duration motion.easing(emphasized) $delay;
-}
+@function standard($property, $duration: moderate, $delay: 0ms) {
+  $duration-value: if(
+    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
+    $duration,
+    motion.duration($duration)
+  );
 
-@function standard($property, $duration: motion.duration(short), $delay: 0ms) {
-  @return $property $duration motion.easing(standard) $delay;
+  @return $property $duration-value motion.easing(standard) $delay;
 }

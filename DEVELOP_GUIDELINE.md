@@ -89,8 +89,8 @@ packages/
 | `typography`  | ✅ 已更新   | 文字排版系統（primitives + semantic） |
 | `spacing`     | ✅ 已更新   | 間距系統（primitives + semantic）     |
 | `breakpoint`  | ⏳ 等待設計 | 響應式斷點                            |
-| `motion`      | ⏳ 等待設計 | 動畫參數                              |
-| `transition`  | ⏳ 等待設計 | 轉場效果                              |
+| `motion`      | ✅ 已更新   | 動畫參數（duration、easing、pattern） |
+| `transition`  | ✅ 已更新   | 轉場效果便利函數                      |
 | `css`         | 🔒 舊版維持 | CSS 工具函式                          |
 | `orientation` | 🔒 舊版維持 | 方向設定                              |
 | `z-index`     | 🔒 舊版維持 | Z 軸層級                              |
@@ -284,6 +284,7 @@ git checkout -b feature/button-component
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/transition' as transition;
 
 .mzn-button {
   // ✅ 使用 semantic variables
@@ -292,6 +293,9 @@ git checkout -b feature/button-component
   padding: spacing.semantic-variable(padding, horizontal, tiny-fixed);
   gap: spacing.semantic-variable(gap, base);
   border-radius: radius.variable(base);
+
+  // ✅ 使用 transition 便利函數
+  transition: transition.standard(background-color, fast), transition.standard(border-color, fast), transition.standard(color, fast);
 
   @include typography.semantic-variable(button);
 }
@@ -470,6 +474,224 @@ git push origin feature/button-component
 }
 ```
 
+### Motion（動畫系統）
+
+Motion 系統提供了**標準化的動畫參數**，包含 duration（時長）、easing（緩動函數）和 pattern（預設組合）。
+
+#### Duration（動畫時長）
+
+提供六種預定義的時長：
+
+| 名稱          | 時長    | 用途                          |
+| ------------- | ------- | ----------------------------- |
+| `fast`        | 150ms   | 快速互動（hover、focus）      |
+| `moderate`    | 250ms   | 一般轉場（預設值）            |
+| `slow`        | 400ms   | 複雜動畫、大範圍移動          |
+| `loop`        | 1600ms  | 循環動畫（loading、skeleton） |
+| `pause-short` | 3000ms  | 短暫停頓                      |
+| `pause-long`  | 10000ms | 長時間停頓                    |
+
+#### Easing（緩動函數）
+
+提供三種標準化的緩動曲線：
+
+| 名稱       | Cubic Bezier                   | 用途                       |
+| ---------- | ------------------------------ | -------------------------- |
+| `entrance` | `cubic-bezier(0, 0, 0.58, 1)`  | 元素進場（淡入、放大）     |
+| `exit`     | `cubic-bezier(0.42, 0, 1, 1)`  | 元素退場（淡出、縮小）     |
+| `standard` | `cubic-bezier(0.4, 0, 0.2, 1)` | 一般互動（顏色、位置變化） |
+
+#### Pattern（預設組合）
+
+提供三種常用的動畫模式組合：
+
+| 名稱               | Duration | Easing   | 用途           |
+| ------------------ | -------- | -------- | -------------- |
+| `spin`             | loop     | entrance | 旋轉動畫       |
+| `breathe`          | loop     | standard | 呼吸效果       |
+| `skeleton-loading` | loop     | standard | 骨架屏載入動畫 |
+
+#### 在 SCSS 中使用
+
+```scss
+@use '~@mezzanine-ui/system/motion' as motion;
+
+.example {
+  // 使用 duration
+  animation-duration: motion.duration(fast);
+  transition-duration: motion.duration(moderate);
+
+  // 使用 easing
+  animation-timing-function: motion.easing(entrance);
+  transition-timing-function: motion.easing(standard);
+
+  // 使用 pattern（自動套用 duration + easing）
+  @keyframes spin {
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  &--loading {
+    @include motion.pattern(spin, animation);
+    animation-name: spin;
+    animation-iteration-count: infinite;
+  }
+}
+```
+
+#### 在 TypeScript 中使用
+
+```typescript
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+
+// 使用範例（React Transition 元件）
+<Fade
+  in={show}
+  duration={{ enter: MOTION_DURATION.moderate, exit: MOTION_DURATION.fast }}
+  easing={{ enter: MOTION_EASING.entrance, exit: MOTION_EASING.exit }}
+>
+  <div>Content</div>
+</Fade>
+```
+
+### Transition（轉場便利函數）
+
+Transition 系統提供了**便利函數**來快速建立 CSS transition，自動整合 Motion 系統的參數。
+
+#### 三種便利函數
+
+每個函數都對應一種 easing 類型：
+
+| 函數名稱              | 對應 Easing | 用途                 |
+| --------------------- | ----------- | -------------------- |
+| `transition.entrance` | entrance    | 元素進場時的屬性變化 |
+| `transition.exit`     | exit        | 元素退場時的屬性變化 |
+| `transition.standard` | standard    | 一般互動時的屬性變化 |
+
+#### Duration 參數的三種用法
+
+```scss
+@use '~@mezzanine-ui/system/transition' as transition;
+
+.example {
+  // 1. 使用 duration 名稱（推薦）
+  transition: transition.standard(color, fast);
+  // 產生: color var(--mzn-motion-duration-fast) var(--mzn-motion-easing-standard) 0ms
+
+  // 2. 使用自訂數字
+  transition: transition.standard(opacity, 300ms);
+  // 產生: opacity 300ms var(--mzn-motion-easing-standard) 0ms
+
+  // 3. 使用 calc() 或 CSS 變數
+  transition: transition.standard(width, calc(var(--custom-duration) * 2));
+  // 產生: width calc(var(--custom-duration) * 2) var(--mzn-motion-easing-standard) 0ms
+}
+```
+
+#### 完整使用範例
+
+````scss
+@use '~@mezzanine-ui/system/transition' as transition;
+
+.button {
+  // 單一屬性轉場
+  transition: transition.standard(background-color, fast);
+
+  // 多個屬性轉場
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(border-color, fast),
+    transition.standard(color, fast);
+
+  // 使用不同的 easing
+  &--menu-item {
+    transition:
+      transition.entrance(opacity),      // 使用 entrance easing
+      transition.standard(transform);    // 使用 standard easing
+  }
+
+  // 加上 delay
+  &--delayed {
+    transition: transition.exit(opacity, moderate, 100ms);
+  }
+
+  // 使用自訂時長
+  &--custom {
+    transition: transition.standard(width, 500ms);
+  }
+}
+
+### React Transition 元件
+
+React Package 提供了基於 `react-transition-group` 的轉場元件，並整合了 Motion 系統。
+
+#### 可用的 Transition 元件
+
+| 元件         | 效果                         | 特殊說明                         |
+| ------------ | ---------------------------- | -------------------------------- |
+| `Fade`       | 淡入淡出（透明度）           | -                                |
+| `Scale`      | 縮放（從 0.95 放大）         | 支援 transform-origin            |
+| `Slide`      | 滑動（橫向 100%）            | -                                |
+| `Translate`  | 微移動（4px，支援四個方向）  | 可指定 from 方向                 |
+| `Rotate`     | 旋轉                         | **不使用 react-transition-group**，元素始終可見 |
+
+#### Rotate 的特殊設計
+
+Rotate 元件與其他轉場元件不同，**不會讓元素消失或隱藏**，只改變旋轉角度。這是為了符合箭頭指示器的使用情境（如 Select、Accordion 的箭頭）。
+
+```typescript
+// Rotate：元素始終可見，只改變旋轉角度
+<Rotate in={isOpen}>
+  <ChevronDownIcon />
+</Rotate>
+
+// 其他元件：in={false} 時會隱藏或移除元素
+<Fade in={isVisible}>
+  <div>Content</div>
+</Fade>
+```
+
+#### 基本使用範例
+
+```typescript
+import { useState } from 'react';
+import { Fade, Scale, Slide, Translate, Rotate } from '@mezzanine-ui/react';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+
+function Example() {
+  const [show, setShow] = useState(false);
+
+  return (
+    <>
+      {/* 基本用法：使用預設參數 */}
+      <Fade in={show}>
+        <div>Fade content</div>
+      </Fade>
+
+      {/* 自訂 duration 和 easing */}
+      <Scale
+        in={show}
+        duration={{ enter: MOTION_DURATION.moderate, exit: MOTION_DURATION.fast }}
+        easing={{ enter: MOTION_EASING.entrance, exit: MOTION_EASING.exit }}
+      >
+        <div>Scale content</div>
+      </Scale>
+
+      {/* Translate 可指定方向 */}
+      <Translate in={show} from="top">
+        <div>Translate from top</div>
+      </Translate>
+
+      {/* Rotate 用於箭頭等始終可見的元素 */}
+      <Rotate in={show}>
+        <ChevronDownIcon />
+      </Rotate>
+    </>
+  );
+}
+```
+
 ---
 
 ## Core Package 開發規範
@@ -495,16 +717,19 @@ component-name/
 // ✅ 正確
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
 
 .mzn-button {
   color: palette.semantic-variable(text, brand);
   padding: spacing.semantic-variable(padding, base);
+  transition: transition.standard(background-color, fast);
 }
 
 // ❌ 錯誤 - 不要寫死數值
 .mzn-button {
   color: #3b82f6;
   padding: 16px;
+  transition: background-color 0.15s ease;
 }
 ```
 
@@ -713,3 +938,4 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 - **Backdrop**：`packages/react/src/Backdrop`
 - **ResultState**：`packages/react/src/ResultState`
 - **PageFooter**：`packages/react/src/PageFooter`
+````
