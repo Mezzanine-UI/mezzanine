@@ -23,16 +23,16 @@ $default-easings: (
 $pattern-names: (breathe, skeleton-loading, spin);
 $default-pattern: (
   breathe: (
-    duration: duration(loop),
-    easing: easing(standard),
+    duration: loop,
+    easing: standard,
   ),
   skeleton-loading: (
-    duration: duration(loop),
-    easing: easing(standard),
+    duration: loop,
+    easing: standard,
   ),
   spin: (
-    duration: duration(loop),
-    easing: easing(entrance),
+    duration: loop,
+    easing: entrance,
   ),
 );
 
@@ -91,10 +91,10 @@ $default-options: (
   $pattern: map.get($default-pattern, $pattern-name);
 
   @if $pattern {
-    $duration: map.get($pattern, duration);
-    $easing: map.get($pattern, easing);
+    $duration-name: map.get($pattern, duration);
+    $easing-name: map.get($pattern, easing);
 
-    #{$action-name}-duration: $duration;
-    #{$action-name}-timing-function: $easing;
+    #{$action-name}-duration: duration($duration-name);
+    #{$action-name}-timing-function: easing($easing-name);
   }
 }
