@@ -55,7 +55,7 @@ const Rotate = forwardRef<HTMLElement, RotateProps>(function Rotate(
     transformOrigin = 'center',
   } = props;
 
-  const childRef = (children as any).ref;
+  const childRef = 'ref' in children ? (children as any).ref : undefined;
   const composedRef = useComposeRefs([ref, childRef]);
   const childProps = children.props as Record<string, any>;
 
@@ -63,7 +63,7 @@ const Rotate = forwardRef<HTMLElement, RotateProps>(function Rotate(
     transform: inProp ? `rotate(${degrees}deg)` : 'rotate(0deg)',
     transformOrigin,
     transition: `transform ${duration}ms ${easing}`,
-    ...(childProps.style as CSSProperties),
+    ...(childProps.style || {}),
   };
 
   return cloneElement(children, {
