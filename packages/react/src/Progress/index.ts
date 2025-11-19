@@ -1,9 +1,8 @@
 export type {
-  ProgressType,
-  ProgressTypes,
   ProgressStatus,
   ProgressStatuses,
+  ProgressType,
 } from '@mezzanine-ui/core/progress';
 
-export type { ProgressProps } from './Progress';
 export { default } from './Progress';
+export type { ProgressProps } from './Progress';
