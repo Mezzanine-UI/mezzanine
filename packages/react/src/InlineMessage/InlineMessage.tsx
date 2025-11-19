@@ -8,9 +8,11 @@ import {
   InlineMessageSeverity,
 } from '@mezzanine-ui/core/inline-message';
 import { IconDefinition } from '@mezzanine-ui/icons';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 import DismissButton from '../DismissButton';
 import Icon from '../Icon';
+import Fade from '../Transition/Fade';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
@@ -66,33 +68,41 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
       return <Icon className={classes.icon} icon={severityIcon} />;
     }, [icon, severity]);
 
-    if (!visible) {
-      return null;
-    }
-
     return (
-      <div
+      <Fade
         ref={ref}
-        aria-live="polite"
-        className={cx(
-          classes.host,
-          classes.severity(severity),
-          className,
-        )}
-        role="status"
+        duration={{
+          enter: MOTION_DURATION.fast,
+          exit: MOTION_DURATION.fast,
+        }}
+        easing={{
+          enter: MOTION_EASING.standard,
+          exit: MOTION_EASING.standard,
+        }}
+        in={visible}
       >
-        <div className={classes.contentContainer}>
-          {iconNode}
-          <span className={classes.content}>{content}</span>
+        <div
+          aria-live="polite"
+          className={cx(
+            classes.host,
+            classes.severity(severity),
+            className,
+          )}
+          role="status"
+        >
+          <div className={classes.contentContainer}>
+            {iconNode}
+            <span className={classes.content}>{content}</span>
+          </div>
+          {severity === 'info' ? (
+            <DismissButton
+              onClick={handleClose}
+              type="standard"
+              variant="base"
+            />
+          ) : null}
         </div>
-        {severity === 'info' ? (
-          <DismissButton
-            onClick={handleClose}
-            type="standard"
-            variant="base"
-          />
-        ) : null}
-      </div>
+      </Fade>
     );
   },
 );
