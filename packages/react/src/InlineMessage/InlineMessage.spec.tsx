@@ -1,5 +1,7 @@
+import { act, waitFor } from '@testing-library/react';
 import { InlineMessageSeverity } from '@mezzanine-ui/core/inline-message';
 import { InfoFilledIcon } from '@mezzanine-ui/icons';
+import { MOTION_DURATION } from '@mezzanine-ui/system/motion';
 import InlineMessage from '.';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
@@ -130,7 +132,7 @@ describe('<InlineMessage />', () => {
       expect(onClose).toHaveBeenCalledTimes(1);
     });
 
-    it('should hide message when close button is clicked', () => {
+    it('should hide message when close button is clicked', async () => {
       const { getByRole, container } = render(
         <InlineMessage content="Message" severity="info" />,
       );
@@ -138,8 +140,13 @@ describe('<InlineMessage />', () => {
 
       fireEvent.click(closeButton);
 
-      // Message should be removed from DOM
-      expect(container.querySelector('.mzn-inline-message')).toBeNull();
+      // Wait for fade out animation to complete
+      await waitFor(
+        () => {
+          expect(container.querySelector('.mzn-inline-message')).toBeNull();
+        },
+        { timeout: MOTION_DURATION.fast + 100 },
+      );
     });
 
     it('should have aria-label on close button', () => {
@@ -164,6 +171,59 @@ describe('<InlineMessage />', () => {
       expect(contentContainer).toBeTruthy();
       expect(content).toBeTruthy();
       expect(content?.textContent).toBe('Message content');
+    });
+  });
+
+  describe('animation', () => {
+    it('should apply fade transition when message is visible', async () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage content="Message" severity="info" />,
+      );
+
+      await waitFor(() => {
+        const element = getHostHTMLElement();
+
+        // After fade in, opacity should be 1
+        expect(element.style.opacity).toBe('1');
+      });
+    });
+
+    it('should fade out when close button is clicked', async () => {
+      const { getByRole, getHostHTMLElement } = render(
+        <InlineMessage content="Message" severity="info" />,
+      );
+      const closeButton = getByRole('button', { name: 'Close' });
+      const element = getHostHTMLElement();
+
+      // Initially visible
+      await waitFor(() => {
+        expect(element.style.opacity).toBe('1');
+      });
+
+      // Click close button
+      fireEvent.click(closeButton);
+
+      // Should start fading out (opacity becomes 0)
+      await waitFor(
+        () => {
+          expect(element.style.opacity).toBe('0');
+        },
+        { timeout: MOTION_DURATION.fast + 100 },
+      );
+    });
+
+    it('should use fast duration for fade animation', async () => {
+      const { getHostHTMLElement } = render(
+        <InlineMessage content="Message" severity="info" />,
+      );
+      const element = getHostHTMLElement();
+
+      // Check that transition is applied with fast duration
+      await waitFor(() => {
+        const transition = element.style.transition;
+
+        expect(transition).toContain(`${MOTION_DURATION.fast}ms`);
+      });
     });
   });
 });
