@@ -1,10 +1,15 @@
+/* stylelint-disable declaration-property-value-keyword-no-deprecated */
 @use 'sass:math';
+@use '~@mezzanine-ui/system/effect';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition' as transition;
 @use './slider' as *;
 
-$rail-height: 4px !default;
-$handler-size: 16px !default;
-$handler-scale-size: 24px !default;
+$rail-height: spacing.semantic-variable(size, element, hairline) !default;
+$handler-size: spacing.semantic-variable(size, element, base) !default;
+$handler-scale-size: spacing.semantic-variable(size, element, relaxed) !default;
+$handler-color: palette.semantic-variable(background, brand) !default;
 
 .#{$prefix} {
   display: inline-flex;
@@ -20,38 +25,40 @@ $handler-scale-size: 24px !default;
     }
 
     .#{$track-prefix} {
-      background-color: palette.color(action-disabled);
+      > span {
+        background-color: palette.semantic-variable(background, neutral-light);
+      }
     }
 
     .#{$handler-prefix} {
       pointer-events: none;
-      background-color: palette.color(action-disabled);
+
+      > span {
+        background-color: palette.semantic-variable(background, neutral-subtle);
+      }
     }
   }
 
   &__input {
-    flex: 0 0 auto;
-    min-width: unset;
-
     &:first-of-type {
-      margin-right: 16px;
+      margin-right: spacing.semantic-variable(gap, base);
     }
 
     &:last-of-type {
-      margin-left: 16px;
+      margin-left: spacing.semantic-variable(gap, base);
     }
 
     input {
-      box-sizing: content-box;
+      // TODO: waiting v2 Input component implement, remove hardcode style here
+      padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
+      min-width: 48px;
+      height: 36px;
+      text-align: center;
 
       &::-webkit-outer-spin-button,
       &::-webkit-inner-spin-button {
         appearance: none;
         margin: 0;
-      }
-
-      &[type='number'] {
-        appearance: textfield;
       }
     }
   }
@@ -59,58 +66,102 @@ $handler-scale-size: 24px !default;
   &__controls {
     flex: 1 1 auto;
     position: relative;
-    height: $rail-height;
+    display: flex;
+    align-items: center;
+    height: $handler-size;
   }
 }
 
 .#{$rail-prefix} {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: palette.color(border);
+  align-items: center;
   box-sizing: border-box;
   cursor: pointer;
+  display: flex;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+
+  > span {
+    background-color: palette.semantic-variable(background, neutral-light);
+    display: block;
+    height: $rail-height;
+    width: 100%;
+  }
 }
 
 .#{$track-prefix} {
-  position: absolute;
-  background-color: palette.color(primary);
-  width: var(--#{$prefix}-track-width);
-  left: var(--#{$prefix}-track-position);
-  height: 100%;
+  align-items: center;
   cursor: pointer;
+  display: flex;
+  height: 100%;
+  left: var(--#{$prefix}-track-position);
+  position: absolute;
+  width: var(--#{$prefix}-track-width);
+
+  > span {
+    background-color: palette.semantic-variable(background, brand);
+    display: block;
+    height: $rail-height;
+    width: 100%;
+  }
 }
 
 .#{$handler-prefix} {
-  background-color: palette.color(primary);
-  height: $handler-size;
-  width: $handler-size;
   border-radius: 50%;
-  cursor: pointer;
+  height: $handler-scale-size;
+  outline: none;
+  position: relative;
   user-select: none;
-  box-sizing: border-box;
+  width: $handler-scale-size;
 
-  &:hover {
-    transform: scale(math.div($handler-scale-size, $handler-size));
-    background-color: palette.color(primary-light);
+  > span {
+    background-color: $handler-color;
+    border-radius: 50%;
+    box-shadow: effect.variable(shadow, slider-handle);
+    content: '';
+    height: $handler-size;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: $handler-size;
+    transition: transition.standard(transform, fast);
   }
 
-  &--active {
-    z-index: 1;
-    transform: scale(math.div($handler-scale-size, $handler-size));
-    background-color: palette.color(primary-dark);
+  cursor: grab;
 
-    &:hover {
-      background-color: palette.color(primary-dark);
+  &:active {
+    cursor: grabbing;
+  }
+
+  &:hover, &--active {
+    > span {
+      transform: translate(-50%, -50%) scale(calc($handler-scale-size / $handler-size));
+    }
+  }
+
+  &:focus-visible {
+    > span {
+      box-shadow: effect.variable(focus, primary);
     }
   }
 }
 
+.#{$handler-tooltip-prefix} {
+  text-wrap: nowrap;
+}
+
 .#{$handler-position-prefix} {
+  align-items: center;
+  display: flex;
+  left: var(--#{$prefix}-handler-position);
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  left: var(--#{$prefix}-handler-position);
+
+  &:not(:has(:active)) {
+    transition: transition.standard(left, fast);
+  }
 
   &--start {
     left: var(--#{$prefix}-handler-start-position);
@@ -118,5 +169,40 @@ $handler-scale-size: 24px !default;
 
   &--end {
     left: var(--#{$prefix}-handler-end-position);
+  }
+}
+
+.#{$icon-prefix} {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: spacing.semantic-variable(size, element, base);
+  height: spacing.semantic-variable(size, element, base);
+
+  &:first-of-type {
+    margin-right: spacing.semantic-variable(gap, base);
+  }
+
+  &:last-of-type {
+    margin-left: spacing.semantic-variable(gap, base);
+  }
+}
+
+.#{$prefix}__tick {
+  background-color: palette.semantic-variable(background, base);
+  display: flex;
+  height: $rail-height;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: $rail-height;
+
+  // tick number Typography
+  > span {
+    margin-top: spacing.semantic-variable(gap, base);
+    height: fit-content;
+    transform: translateX(-50%);
   }
 }
