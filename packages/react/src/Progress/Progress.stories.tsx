@@ -133,16 +133,17 @@ const SectionItem = ({
     }}
   >
     <Tag label={label ?? ''} size="main" type="static" />
-    <div style={
-      {
+    <div
+      style={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: direction === 'row' ? '20px' : 'auto',
         flexDirection: direction,
-      }
-    }
-    >{children}</div>
+      }}
+    >
+      {children}
+    </div>
   </div>
 );
 
@@ -153,13 +154,15 @@ const ItemList = ({ children }: { children: ReactNode }) => (
 );
 
 const ItemContent = ({ children }: { children: ReactNode }) => (
-  <div style={{
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
-    width: '100%',
-    marginBottom: 16,
-  }}>
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '8px',
+      width: '100%',
+      marginBottom: 16,
+    }}
+  >
     {children}
   </div>
 );

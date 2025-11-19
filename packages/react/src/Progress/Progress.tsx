@@ -93,7 +93,7 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
 
     const isSuccessStatus = useMemo(() => status === ProgressStatuses.success && type === ProgressTypes.icon, [status, type]);
     const isErrorStatus = useMemo(() => status === ProgressStatuses.error && type === ProgressTypes.icon, [status, type]);
-    const isActiveTick = useMemo(() => tick !== undefined && tick > 0 && tick <= 100, [tick]);
+    const isActiveTick = useMemo(() => tick !== undefined && tick > 0 && tick < 100, [tick]);
 
     const tickPosition = useMemo(() => {
       if (!isActiveTick || tick === undefined) return undefined;
@@ -110,12 +110,14 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       }
 
       const lineElement = lineRef.current;
-      if (!lineElement) return;
+      const containerElement = lineElement.parentElement;
+
+      if (!containerElement) {
+        setTickLeft(undefined);
+        return;
+      }
 
       const updateTickPosition = () => {
-        const containerElement = lineElement.parentElement;
-        if (!containerElement) return;
-
         const lineRect = lineElement.getBoundingClientRect();
         const containerRect = containerElement.getBoundingClientRect();
 
@@ -145,10 +147,7 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
       });
 
       resizeObserver.observe(lineElement);
-      const containerElement = lineElement.parentElement;
-      if (containerElement) {
-        resizeObserver.observe(containerElement);
-      }
+      resizeObserver.observe(containerElement);
 
       // 監聽窗口大小變化
       window.addEventListener('resize', updateTickPosition);
@@ -194,14 +193,16 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
           isActiveTick && tickLeft !== undefined && (
             <div
               className={classes.tick}
-              style={{
-                '--tick-position': tickLeft,
-              } as React.CSSProperties}
+              style={
+                {
+                  '--tick-position': tickLeft,
+                } as React.CSSProperties
+              }
             />
           )
         }
       </div>
-    )
+    );
   },
 );
 
