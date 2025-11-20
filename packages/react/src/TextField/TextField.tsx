@@ -15,7 +15,7 @@ import {
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
-import DismissButton from '../DismissButton';
+import ClearActions from '../ClearActions';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
 /**
@@ -255,7 +255,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
         {renderedChildren}
         {suffix && <div className={classes.suffix}>{suffix}</div>}
         {clearable && (
-          <DismissButton
+          <ClearActions
             className={classes.clearIcon}
             onClick={(event) => {
               if (!disabled && !readonly && onClear) {
