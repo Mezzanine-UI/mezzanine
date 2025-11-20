@@ -5,7 +5,7 @@
 @use '~@mezzanine-ui/system/effect' as effect;
 @use '~@mezzanine-ui/system/transition';
 @use '../icon';
-@use './dismiss-button' as *;
+@use './clear-actions' as *;
 
 // Standard type - Base variant
 $standard-base: (
@@ -213,3 +213,4 @@ $variant-keys-by-type: (
     }
   }
 }
+
