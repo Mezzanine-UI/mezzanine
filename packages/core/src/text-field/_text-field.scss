@@ -1,4 +1,2 @@
-@use '~@mezzanine-ui/system/size';
-
 $prefix: mzn-text-field;
-$sizes: size.$sizes;
+$sizes: (main, sub);
