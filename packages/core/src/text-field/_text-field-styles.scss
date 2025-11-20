@@ -272,19 +272,8 @@ $size-configs: (
   }
 
   &__clear-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    padding: 0;
-    margin: 0;
-    background-color: transparent;
-    border: none;
-    color: var(--#{$prefix}-icon-color);
-    cursor: pointer;
-    outline: none;
-    transition: transition.standard(opacity, fast);
-    will-change: opacity;
+    opacity: 0;
+    pointer-events: none;
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
@@ -292,20 +281,9 @@ $size-configs: (
     }
   }
 
-  &__clear-icon {
-    opacity: 0;
-    pointer-events: none;
-    margin-left: spacing.semantic-variable(padding, horizontal, tiny);
-  }
-
-  &__action-icon {
-    opacity: 1;
-    margin-left: spacing.semantic-variable(padding, horizontal, tiny);
-  }
-
   &--clearable:hover,
   &--clearable:focus-within {
-    &:not(.#{$prefix}--disabled) {
+    &:not(.#{$prefix}--disabled):not(.#{$prefix}--readonly) {
       .#{$prefix}__clear-icon {
         opacity: 1;
         pointer-events: auto;
