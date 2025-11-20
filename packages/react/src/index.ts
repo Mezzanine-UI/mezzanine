@@ -295,7 +295,14 @@ export type {
 export { default as Textarea } from './Textarea';
 export type { TextareaProps, TextareaSize } from './Textarea';
 export { default as TextField } from './TextField';
-export type { TextFieldProps, TextFieldSize } from './TextField';
+export type {
+  TextFieldProps,
+  TextFieldSize,
+  TextFieldBaseProps,
+  TextFieldAffixProps,
+  TextFieldInteractiveStateProps,
+  TextFieldPaddingInfo,
+} from './TextField';
 export { default as TimePicker, TimePickerPanel } from './TimePicker';
 export type { TimePickerPanelProps, TimePickerProps } from './TimePicker';
 export {
@@ -351,7 +358,6 @@ export type {
   ProgressStatus,
   ProgressStatuses,
   ProgressType,
-  ProgressTypes,
 } from './Progress';
 export { default as Skeleton } from './Skeleton';
 export type { SkeletonProps } from './Skeleton';

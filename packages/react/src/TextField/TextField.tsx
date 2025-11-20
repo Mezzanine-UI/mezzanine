@@ -4,11 +4,10 @@ import {
   forwardRef,
   MouseEventHandler,
   ReactNode,
-  cloneElement,
-  ReactElement,
-  useContext,
+  useState,
+  useRef,
+  useEffect,
 } from 'react';
-import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   textFieldClasses as classes,
   TextFieldSize,
@@ -16,18 +15,41 @@ import {
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
-import Icon from '../Icon';
-import { MezzanineConfig } from '../Provider/context';
+import ClearActions from '../ClearActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
-export interface TextFieldProps
+/**
+ * Padding info provided to children function
+ */
+export interface TextFieldPaddingInfo {
+  /**
+   * ClassName that applies the same padding as TextField's current size.
+   * Use this when you want to move padding from TextField to input/textarea.
+   */
+  paddingClassName: string;
+}
+
+/**
+ * Base props shared by all TextField variants
+ */
+export interface TextFieldBaseProps
   extends Omit<
     NativeElementPropsWithoutKeyAndRef<'div'>,
-    'defaultValue' | 'onChange' | 'prefix'
+    'children' | 'defaultValue' | 'onChange' | 'prefix'
   > {
   /**
-   * Whether the field is active.
+   * Whether the field is active (focused/opened/expanded).
+   * @default false
    */
   active?: boolean;
+  /**
+   * The input/textarea element, or a function that receives padding info.
+   * When using function form, TextField will not apply padding (you control it).
+   */
+  children: ReactNode | ((paddingInfo: TextFieldPaddingInfo) => ReactNode);
+  /**
+   * Additional class name to apply to the root element.
+   */
   className?: string;
   /**
    * Whether to show the clear button.
@@ -35,18 +57,13 @@ export interface TextFieldProps
    */
   clearable?: boolean;
   /**
-   * Whether the field is disabled.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * Whether the field is error.
+   * Whether the field is in error state.
    * @default false
    */
   error?: boolean;
   /**
-   * If `true`, set width: 100%.
-   * @default false
+   * Whether the field should take the full width of its container.
+   * @default true
    */
   fullWidth?: boolean;
   /**
@@ -54,55 +71,162 @@ export interface TextFieldProps
    */
   onClear?: MouseEventHandler;
   /**
-   * The prefix addon of the field.
-   */
-  prefix?: ReactNode;
-  /**
    * The size of field.
-   * @default 'medium'
+   * @default 'main'
    */
   size?: TextFieldSize;
-  /**
-   * The suffix addon of the field.
-   */
-  suffix?: ReactNode;
-  suffixActionIcon?: ReactElement<HTMLElement>;
 }
 
 /**
- * The react component for `mezzanine` input.
+ * Affix props - prefix and suffix
+ */
+export type TextFieldAffixProps =
+  | {
+      /**
+       * The prefix addon of the field.
+       */
+      prefix: ReactNode;
+      suffix?: never;
+    }
+  | {
+      prefix?: never;
+      /**
+       * The suffix addon of the field.
+       */
+      suffix: ReactNode;
+    }
+  | {
+      prefix?: never;
+      suffix?: never;
+    };
+
+/**
+ * Interactive state - typing, disabled, and readonly are mutually exclusive
+ */
+export type TextFieldInteractiveStateProps =
+  | {
+      /**
+       * Whether the user is currently typing.
+       * If not provided, will be auto-detected.
+       */
+      typing?: boolean;
+      disabled?: never;
+      readonly?: never;
+    }
+  | {
+      typing?: never;
+      /**
+       * Whether the field is disabled.
+       * @default false
+       */
+      disabled: true;
+      readonly?: never;
+    }
+  | {
+      typing?: never;
+      disabled?: never;
+      /**
+       * Whether the field is readonly.
+       * @default false
+       */
+      readonly: true;
+    }
+  | {
+      typing?: never;
+      disabled?: never;
+      readonly?: never;
+    };
+
+export type TextFieldProps = TextFieldBaseProps &
+  TextFieldAffixProps &
+  TextFieldInteractiveStateProps;
+
+/**
+ * The react component for `mezzanine` text field.
  */
 const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
   function TextField(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
     const {
       active = false,
       children,
       className,
       clearable = false,
-      disabled = false,
+      disabled,
       error = false,
-      fullWidth,
+      fullWidth = true,
       onClear,
       onClick: onClickProps,
       onKeyDown: onKeyDownProps,
       prefix,
+      readonly,
       role: roleProp,
-      size = globalSize,
+      size = 'main',
       suffix,
-      suffixActionIcon,
+      typing: typingProp,
       ...rest
     } = props;
+
+    const [isTyping, setIsTyping] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const hostRef = useComposeRefs([ref, containerRef]);
+
+    const typing =
+      disabled || readonly
+        ? false
+        : typeof typingProp !== 'undefined'
+          ? typingProp
+          : isTyping;
+
+    useEffect(() => {
+      if (typingProp !== undefined || disabled || readonly) return;
+
+      const container = containerRef.current;
+      if (!container) return;
+
+      const input = container.querySelector('input, textarea');
+      if (!input) return;
+
+      const handleInput = () => {
+        setIsTyping(true);
+      };
+
+      const handleBlur = () => {
+        setIsTyping(false);
+      };
+
+      input.addEventListener('input', handleInput, false);
+      input.addEventListener('mousedown', handleInput, false);
+      input.addEventListener('blur', handleBlur, false);
+
+      return () => {
+        input.removeEventListener('input', handleInput, false);
+        input.removeEventListener('mousedown', handleInput, false);
+        input.removeEventListener('blur', handleBlur, false);
+      };
+    }, [typingProp, disabled, readonly]);
 
     const { role, onClick, onKeyDown } = useTextFieldControl({
       onClick: onClickProps,
       onKeyDown: onKeyDownProps,
     });
 
+    const isChildrenFunction = typeof children === 'function';
+
+    const paddingInfo: TextFieldPaddingInfo = {
+      paddingClassName: cx(
+        classes.inputPadding,
+        size === 'main' ? classes.inputPaddingMain : classes.inputPaddingSub,
+      ),
+    };
+
+    const renderedChildren = isChildrenFunction
+      ? children(paddingInfo)
+      : children;
+
     return (
       <div
         {...rest}
-        ref={ref}
+        ref={hostRef}
         role={roleProp || role}
         onClick={(evt) => {
           evt.stopPropagation();
@@ -112,39 +236,33 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
         onKeyDown={onKeyDown}
         className={cx(
           classes.host,
-          classes.size(size),
           {
-            [classes.active]: active,
+            [classes.main]: size === 'main',
+            [classes.sub]: size === 'sub',
             [classes.clearable]: clearable,
             [classes.disabled]: disabled,
             [classes.error]: error,
             [classes.fullWidth]: fullWidth,
-            [classes.withPrefix]: prefix,
-            [classes.withSuffix]: suffix || suffixActionIcon,
+            [classes.noPadding]: isChildrenFunction,
+            [classes.readonly]: readonly,
+            [classes.typing]: typing,
+            [classes.active]: active,
           },
           className,
         )}
       >
         {prefix && <div className={classes.prefix}>{prefix}</div>}
-        {children}
+        {renderedChildren}
         {suffix && <div className={classes.suffix}>{suffix}</div>}
-        {suffixActionIcon &&
-          cloneElement(suffixActionIcon, {
-            className: cx(classes.actionIcon, suffixActionIcon.props.className),
-            role: 'button',
-            tabIndex: -1,
-          })}
         {clearable && (
-          <Icon
+          <ClearActions
             className={classes.clearIcon}
-            icon={TimesIcon}
             onClick={(event) => {
-              if (!disabled && onClear) {
+              if (!disabled && !readonly && onClear) {
                 onClear(event);
               }
             }}
             onMouseDown={(event) => event.preventDefault()}
-            role="button"
             tabIndex={-1}
           />
         )}
