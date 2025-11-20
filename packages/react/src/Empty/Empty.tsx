@@ -1,52 +1,89 @@
 import { forwardRef, ReactNode } from 'react';
 import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
-import { FolderOpenIcon } from '@mezzanine-ui/icons';
+import {
+  BoxIcon,
+  FolderOpenIcon,
+  IconDefinition,
+  NotificationIcon,
+  SystemIcon,
+} from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import Button, { ButtonGroup } from '../Button';
 import Icon from '../Icon';
+import { EmptyMainInitialDataIcon } from './icons/EmptyMainInitialDataIcon';
+import { EmptyMainResultIcon } from './icons/EmptyMainResultIcon';
+import { EmptyMainSystemIcon } from './icons/EmptyMainSystemIcon';
+import { EmptyProps } from '.';
 
-export interface EmptyProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'> {
-  /**
-   * if true, the empty component will be 100% height of it's parent
-   */
-  fullHeight?: boolean;
-  /**
-   * Override default icon.
-   */
-  image?: ReactNode;
-  /**
-   * Optionally given a title. If not required, simply use react children to display description.
-   */
-  title?: ReactNode;
-}
+const iconMap: Record<
+  Exclude<EmptyProps['type'], undefined>,
+  IconDefinition | null
+> = {
+  custom: null,
+  'initial-data': BoxIcon,
+  notification: NotificationIcon,
+  result: FolderOpenIcon,
+  system: SystemIcon,
+};
+
+const mainIconMap: Record<Exclude<EmptyProps['type'], undefined>, ReactNode> = {
+  custom: null,
+  'initial-data': <EmptyMainInitialDataIcon className={classes.icon} />,
+  notification: null,
+  result: <EmptyMainResultIcon className={classes.icon} />,
+  system: <EmptyMainSystemIcon className={classes.icon} />,
+};
 
 const Empty = forwardRef<HTMLDivElement, EmptyProps>(
   function Empty(props, ref) {
     const {
-      children,
+      actions,
       className,
-      fullHeight,
-      image = <Icon className={classes.icon} icon={FolderOpenIcon} />,
+      description,
+      pictogram,
+      size = 'main',
       title,
+      type = 'initial-data',
       ...rest
     } = props;
 
+    const icon: ReactNode =
+      (size === 'main'
+        ? mainIconMap[type]
+        : iconMap[type] && (
+            <Icon className={classes.icon} icon={iconMap[type]} />
+          )) || null;
+
     return (
       <div
-        ref={ref}
         {...rest}
-        className={cx(
-          classes.host,
-          {
-            [classes.fullHeight]: fullHeight,
-          },
-          className,
-        )}
+        className={cx(classes.host, classes.size(size), className)}
+        ref={ref}
       >
-        {image}
-        {title && <div className={classes.title}>{title}</div>}
-        {children && <div className={classes.description}>{children}</div>}
+        <div className={classes.container}>
+          {pictogram ? <div className={classes.icon}>{pictogram}</div> : icon}
+
+          <h3 className={classes.title}>{title}</h3>
+          {description && <p className={classes.description}>{description}</p>}
+          {actions && (
+            <ButtonGroup className={classes.actions}>
+              {actions.secondaryButtonProps && (
+                <Button
+                  size="main"
+                  variant="base-secondary"
+                  {...actions.secondaryButtonProps}
+                />
+              )}
+              {actions.primaryButtonProps && (
+                <Button
+                  size="main"
+                  variant="base-primary"
+                  {...actions.primaryButtonProps}
+                />
+              )}
+            </ButtonGroup>
+          )}
+        </div>
       </div>
     );
   },
