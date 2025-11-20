@@ -1,4 +1,9 @@
 @use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use '../text-field';
 @use '../select';
 @use './input' as *;

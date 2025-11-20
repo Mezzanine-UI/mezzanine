@@ -1,8 +1,26 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { TextFieldSize } from '../text-field';
 
-export type InputSize = Size;
+export type InputSize = TextFieldSize;
 
 export const inputPrefix = 'mzn-input';
+
+export const inputSpinnerButtonClasses = {
+  host: `${inputPrefix}__spinner-button`,
+  up: `${inputPrefix}__spinner-button--up`,
+  down: `${inputPrefix}__spinner-button--down`,
+  disabled: `${inputPrefix}__spinner-button--disabled`,
+  main: `${inputPrefix}__spinner-button--main`,
+  sub: `${inputPrefix}__spinner-button--sub`,
+} as const;
+
+export const inputActionButtonClasses = {
+  host: `${inputPrefix}__action-button`,
+  disabled: `${inputPrefix}__action-button--disabled`,
+  icon: `${inputPrefix}__action-button__icon`,
+  text: `${inputPrefix}__action-button__text`,
+  main: `${inputPrefix}__action-button--main`,
+  sub: `${inputPrefix}__action-button--sub`,
+} as const;
 
 export const inputClasses = {
   host: inputPrefix,

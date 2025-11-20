@@ -36,6 +36,8 @@
   @include _load-styles($options, _internal/input-check, input-check);
   @include _load-styles($options, _internal/input-trigger-popper, input-trigger-popper);
   @include _load-styles($options, text-field);
+  @include _load-styles($options, input, input-spinner-button);
+  @include _load-styles($options, input, input-action-button);
 
   // Navigation
   @include _load-styles($options, menu);
