@@ -10,7 +10,7 @@ import {
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
-import DismissButton from '../DismissButton';
+import ClearActions from '../ClearActions';
 import Icon from '../Icon';
 import Fade from '../Transition/Fade';
 import { cx } from '../utils/cx';
@@ -95,7 +95,7 @@ const InlineMessage = forwardRef<HTMLDivElement, InlineMessageProps>(
             <span className={classes.content}>{content}</span>
           </div>
           {severity === 'info' ? (
-            <DismissButton
+            <ClearActions
               onClick={handleClose}
               type="standard"
               variant="base"

@@ -11,7 +11,7 @@ import {
 } from '@mezzanine-ui/core/alert-banner';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Button, { ButtonPropsBase } from '../Button';
-import DismissButton from '../DismissButton';
+import ClearActions from '../ClearActions';
 import Icon from '../Icon';
 import {
   createNotifier,
@@ -212,8 +212,8 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
       </div>
     ) : null;
 
-    const dismissButtonArea = showCloseButton ? (
-      <DismissButton
+    const clearActionsArea = showCloseButton ? (
+      <ClearActions
         className={classes.close}
         onClick={handleClose}
         type="standard"
@@ -246,7 +246,7 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
 
         <div className={classes.controls}>
           {actionsArea}
-          {dismissButtonArea}
+          {clearActionsArea}
         </div>
       </div>
     );

@@ -5,18 +5,18 @@ import { forwardRef } from 'react';
 import { CloseIcon } from '@mezzanine-ui/icons';
 
 import {
-  dismissButtonClasses as classes,
-  DismissButtonEmbeddedVariant,
-  DismissButtonStandardVariant,
-  DismissButtonType,
-  DismissButtonVariant,
-} from '@mezzanine-ui/core/dismiss-button';
+  clearActionsClasses as classes,
+  ClearActionsEmbeddedVariant,
+  ClearActionsStandardVariant,
+  ClearActionsType,
+  ClearActionsVariant,
+} from '@mezzanine-ui/core/clear-actions';
 
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-type DismissButtonCommonProps = Omit<
+type ClearActionsCommonProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'button'>,
   'onClick' | 'type'
 > & {
@@ -26,41 +26,41 @@ type DismissButtonCommonProps = Omit<
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-type DismissButtonStandardProps = DismissButtonCommonProps & {
+type ClearActionsStandardProps = ClearActionsCommonProps & {
   /**
-   * Dismiss Button Contextual type.
+   * Clear Actions Contextual type.
    */
   type?: 'standard';
   /**
    * Visual variant for standard type.
    */
-  variant?: DismissButtonStandardVariant;
+  variant?: ClearActionsStandardVariant;
 };
 
-type DismissButtonEmbeddedProps = DismissButtonCommonProps & {
+type ClearActionsEmbeddedProps = ClearActionsCommonProps & {
   /**
-   * Dismiss Button Contextual type.
+   * Clear Actions Contextual type.
    */
   type: 'embedded';
   /**
    * Visual variant for embedded type.
    */
-  variant?: DismissButtonEmbeddedVariant;
+  variant?: ClearActionsEmbeddedVariant;
 };
 
-export type DismissButtonProps =
-  | DismissButtonEmbeddedProps
-  | DismissButtonStandardProps;
+export type ClearActionsProps =
+  | ClearActionsEmbeddedProps
+  | ClearActionsStandardProps;
 
 /**
- * Mezzanine dismiss/close button.
+ * Mezzanine clear actions button.
  */
-const DismissButton = forwardRef<HTMLButtonElement, DismissButtonProps>(
-  function DismissButton(props, ref) {
+const ClearActions = forwardRef<HTMLButtonElement, ClearActionsProps>(
+  function ClearActions(props, ref) {
     const { className, onClick, type: typeProp, variant, ...rest } = props;
 
-    const type: DismissButtonType = typeProp ?? 'standard';
-    const resolvedVariant: DismissButtonVariant =
+    const type: ClearActionsType = typeProp ?? 'standard';
+    const resolvedVariant: ClearActionsVariant =
       variant ?? (type === 'standard' ? 'base' : 'contrast');
 
     return (
@@ -83,4 +83,5 @@ const DismissButton = forwardRef<HTMLButtonElement, DismissButtonProps>(
   },
 );
 
-export default DismissButton;
+export default ClearActions;
+

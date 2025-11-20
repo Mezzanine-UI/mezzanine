@@ -164,7 +164,7 @@ describe('<AlertBanner />', () => {
 
       expect(closeButton).toBeInstanceOf(HTMLButtonElement);
       expect(
-        closeButton?.classList.contains('mzn-dismiss-button--variant-inverse'),
+        closeButton?.classList.contains('mzn-clear-actions--variant-inverse'),
       ).toBeTruthy();
     });
 
