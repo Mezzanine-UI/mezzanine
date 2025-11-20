@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import DismissButton, { DismissButtonProps } from '.';
+import ClearActions, { ClearActionsProps } from '.';
 
 const appearanceOptions = [
   {
@@ -9,7 +9,7 @@ const appearanceOptions = [
     props: {
       type: 'standard',
       variant: 'base',
-    } as Pick<DismissButtonProps, 'type' | 'variant'>,
+    } as Pick<ClearActionsProps, 'type' | 'variant'>,
   },
   {
     value: 'standard-inverse',
@@ -18,7 +18,7 @@ const appearanceOptions = [
     props: {
       type: 'standard',
       variant: 'inverse',
-    } as Pick<DismissButtonProps, 'type' | 'variant'>,
+    } as Pick<ClearActionsProps, 'type' | 'variant'>,
   },
   {
     value: 'embedded-contrast',
@@ -27,7 +27,7 @@ const appearanceOptions = [
     props: {
       type: 'embedded',
       variant: 'contrast',
-    } as Pick<DismissButtonProps, 'type' | 'variant'>,
+    } as Pick<ClearActionsProps, 'type' | 'variant'>,
   },
   {
     value: 'embedded-emphasis',
@@ -36,33 +36,33 @@ const appearanceOptions = [
     props: {
       type: 'embedded',
       variant: 'emphasis',
-    } as Pick<DismissButtonProps, 'type' | 'variant'>,
+    } as Pick<ClearActionsProps, 'type' | 'variant'>,
   },
 ] as const;
 
-type DismissButtonAppearance =
+type ClearActionsAppearance =
   (typeof appearanceOptions)[number]['value'];
 
 const appearanceMap = appearanceOptions.reduce<
   Record<
-    DismissButtonAppearance,
+    ClearActionsAppearance,
     (typeof appearanceOptions)[number]
   >
 >((acc, option) => {
   acc[option.value] = option;
 
   return acc;
-}, {} as Record<DismissButtonAppearance, (typeof appearanceOptions)[number]>);
+}, {} as Record<ClearActionsAppearance, (typeof appearanceOptions)[number]>);
 
 const appearanceLabels = appearanceOptions.reduce<
-  Record<DismissButtonAppearance, string>
+  Record<ClearActionsAppearance, string>
 >((acc, option) => {
   acc[option.value] = option.label;
 
   return acc;
-}, {} as Record<DismissButtonAppearance, string>);
+}, {} as Record<ClearActionsAppearance, string>);
 
-const getAppearanceOption = <T extends DismissButtonAppearance>(
+const getAppearanceOption = <T extends ClearActionsAppearance>(
   value: T,
 ) =>
   appearanceMap[value] as Extract<
@@ -70,13 +70,13 @@ const getAppearanceOption = <T extends DismissButtonAppearance>(
     { value: T }
   >;
 
-type PlaygroundArgs = Omit<DismissButtonProps, 'type' | 'variant'> & {
-  appearance: DismissButtonAppearance;
+type PlaygroundArgs = Omit<ClearActionsProps, 'type' | 'variant'> & {
+  appearance: ClearActionsAppearance;
 };
 
-const meta: Meta<typeof DismissButton> = {
-  title: 'Internal/DismissButton',
-  component: DismissButton,
+const meta: Meta<typeof ClearActions> = {
+  title: 'Internal/ClearActions',
+  component: ClearActions,
   argTypes: {
     type: {
       control: false,
@@ -99,11 +99,11 @@ const meta: Meta<typeof DismissButton> = {
 
 export default meta;
 
-type Story = StoryObj<typeof DismissButton>;
+type Story = StoryObj<typeof ClearActions>;
 
 const renderWithinBackground =
   (backgroundColor: string) =>
-    (args: DismissButtonProps) =>
+    (args: ClearActionsProps) =>
     (
       <div style={{ width: '100px', height: '100px', backgroundColor }}>
         <div
@@ -115,14 +115,14 @@ const renderWithinBackground =
             height: '100%',
           }}
         >
-          <DismissButton {...args} />
+          <ClearActions {...args} />
         </div>
       </div>
     );
 
 const logOnClick = () => {
   // eslint-disable-next-line no-console
-  console.log('DismissButton clicked');
+  console.log('ClearActions clicked');
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
@@ -146,7 +146,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     const finalProps = {
       ...rest,
       ...option.props,
-    } as DismissButtonProps;
+    } as ClearActionsProps;
 
     return (
       <div
@@ -165,7 +165,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             height: '100%',
           }}
         >
-          <DismissButton {...finalProps} />
+          <ClearActions {...finalProps} />
         </div>
       </div>
     );
@@ -215,3 +215,4 @@ export const EmbeddedEmphasis: Story = {
     getAppearanceOption('embedded-emphasis').backgroundColor,
   ),
 };
+
