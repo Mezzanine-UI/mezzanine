@@ -314,6 +314,10 @@ export const ComponentsExample: Story = {
           </h3>
           <div style={{ position: 'relative' }}>
             <TextField
+              role="combobox"
+              aria-expanded={selectOpen}
+              aria-haspopup="listbox"
+              aria-controls="select-listbox"
               active={selectOpen}
               onClick={() => setSelectOpen(!selectOpen)}
               onKeyDown={(e) => {
@@ -344,6 +348,8 @@ export const ComponentsExample: Story = {
             </TextField>
             {selectOpen && (
               <div
+                id="select-listbox"
+                role="listbox"
                 style={{
                   position: 'absolute',
                   top: 'calc(100% + 4px)',
@@ -404,6 +410,11 @@ export const ComponentsExample: Story = {
           </h3>
           <div style={{ position: 'relative' }}>
             <TextField
+              role="combobox"
+              aria-expanded={autocompleteOpen && filteredOptions.length > 0}
+              aria-haspopup="listbox"
+              aria-autocomplete="list"
+              aria-controls="autocomplete-listbox"
               clearable={!!autocompleteValue}
               onClear={() => {
                 setAutocompleteValue('');
@@ -426,6 +437,8 @@ export const ComponentsExample: Story = {
             </TextField>
             {autocompleteOpen && filteredOptions.length > 0 && (
               <div
+                id="autocomplete-listbox"
+                role="listbox"
                 style={{
                   position: 'absolute',
                   top: 'calc(100% + 4px)',

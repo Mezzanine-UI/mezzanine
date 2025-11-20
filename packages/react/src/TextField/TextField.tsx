@@ -78,7 +78,7 @@ export interface TextFieldBaseProps
 }
 
 /**
- * Affix props - prefix and suffix are mutually exclusive
+ * Affix props - prefix and suffix
  */
 export type TextFieldAffixProps =
   | {
