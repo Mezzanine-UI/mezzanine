@@ -22,6 +22,15 @@ export const inputActionButtonClasses = {
   sub: `${inputPrefix}__action-button--sub`,
 } as const;
 
+export const inputSelectButtonClasses = {
+  host: `${inputPrefix}__select-button`,
+  disabled: `${inputPrefix}__select-button--disabled`,
+  icon: `${inputPrefix}__select-button__icon`,
+  text: `${inputPrefix}__select-button__text`,
+  main: `${inputPrefix}__select-button--main`,
+  sub: `${inputPrefix}__select-button--sub`,
+} as const;
+
 export const inputClasses = {
   host: inputPrefix,
   tagsMode: `${inputPrefix}__tags-mode`,

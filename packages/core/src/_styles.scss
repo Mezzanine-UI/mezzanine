@@ -38,6 +38,7 @@
   @include _load-styles($options, text-field);
   @include _load-styles($options, input, input-spinner-button);
   @include _load-styles($options, input, input-action-button);
+  @include _load-styles($options, input, input-select-button);
 
   // Navigation
   @include _load-styles($options, menu);
