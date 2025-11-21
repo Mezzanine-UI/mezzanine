@@ -43,6 +43,7 @@ export const inputPasswordStrengthIndicatorClasses = {
 
 export const inputClasses = {
   host: inputPrefix,
-  tagsMode: `${inputPrefix}__tags-mode`,
-  tagsModeInputOnTop: `${inputPrefix}__tags-mode__input-on-top`,
+  withButton: `${inputPrefix}--with-button`,
+  number: `${inputPrefix}--number`,
+  size: (size: InputSize) => `${inputPrefix}--${size}`,
 } as const;
