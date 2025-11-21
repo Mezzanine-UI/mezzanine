@@ -39,6 +39,7 @@
   @include _load-styles($options, input, input-spinner-button);
   @include _load-styles($options, input, input-action-button);
   @include _load-styles($options, input, input-select-button);
+  @include _load-styles($options, input, input-password-strength-indicator);
 
   // Navigation
   @include _load-styles($options, menu);

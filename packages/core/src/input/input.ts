@@ -1,6 +1,7 @@
 import { TextFieldSize } from '../text-field';
 
 export type InputSize = TextFieldSize;
+export type InputStrength = 'weak' | 'medium' | 'strong';
 
 export const inputPrefix = 'mzn-input';
 
@@ -29,6 +30,15 @@ export const inputSelectButtonClasses = {
   text: `${inputPrefix}__select-button__text`,
   main: `${inputPrefix}__select-button--main`,
   sub: `${inputPrefix}__select-button--sub`,
+} as const;
+
+export const inputPasswordStrengthIndicatorClasses = {
+  host: `${inputPrefix}__password-strength-indicator`,
+  bar: `${inputPrefix}__password-strength-indicator__bar`,
+  barState: (strength: InputStrength) =>
+    `${inputPrefix}__password-strength-indicator__bar--${strength}`,
+  text: `${inputPrefix}__password-strength-indicator__text`,
+  hintTextGroup: `${inputPrefix}__password-strength-indicator__hint-text-group`,
 } as const;
 
 export const inputClasses = {
