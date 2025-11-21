@@ -23,4 +23,5 @@ export const textFieldClasses = {
   sub: `${textFieldPrefix}--sub`,
   suffix: `${textFieldPrefix}__suffix`,
   typing: `${textFieldPrefix}--typing`,
+  warning: `${textFieldPrefix}--warning`,
 } as const;
