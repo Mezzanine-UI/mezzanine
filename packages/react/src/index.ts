@@ -217,12 +217,12 @@ export type {
   DateTimePickerPanelProps,
   DateTimePickerProps,
 } from './DateTimePicker';
-export { FormControlContext, FormField, FormLabel, FormMessage } from './Form';
+export { FormControlContext, FormField, FormLabel, FormHintText } from './Form';
 export type {
   FormControl,
   FormFieldProps,
   FormLabelProps,
-  FormMessageProps,
+  FormHintTextProps,
 } from './Form';
 export { default as Input } from './Input';
 export type { InputProps, InputSize } from './Input';
