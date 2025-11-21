@@ -89,7 +89,7 @@ export const Types = {
           <Textarea
             type="default"
             placeholder="輸入文字..."
-            value="Lorem ipsum dolor sit amet"
+            defaultValue="Lorem ipsum dolor sit amet"
           />
         </TypeRowItem>
       </TypeRow>
@@ -101,7 +101,7 @@ export const Types = {
           <Textarea
             type="warning"
             placeholder="輸入文字..."
-            value="Lorem ipsum dolor sit amet"
+            defaultValue="Lorem ipsum dolor sit amet"
           />
         </TypeRowItem>
       </TypeRow>
@@ -113,7 +113,7 @@ export const Types = {
           <Textarea
             type="error"
             placeholder="輸入文字..."
-            value="Lorem ipsum dolor sit amet"
+            defaultValue="Lorem ipsum dolor sit amet"
           />
         </TypeRowItem>
       </TypeRow>
