@@ -5,6 +5,7 @@ import {
   Fragment,
   KeyboardEventHandler,
   Ref,
+  useCallback,
   useEffect,
   useState,
   type JSX,
@@ -63,11 +64,11 @@ export interface SliderBaseProps
   step?: number;
   /**
    * Whether to show tick marks on the slider.
-   * If a number is given, it represents the number of equally spaced segments between min and max to display tick marks.
-   * If a number array is given, the values represent the positions to show the tick marks.
+   * If a number is given, it represents the number of equally spaced segments between min and max to display tick marks (excluding min and max).
+   * If a number array is given, the values represent the actual slider values at which to show the tick marks (not percentages).
    * @example
-   * 3 // means show tick marks at 25%, 50% and 75%
-   * [20, 50, 80] // means show tick marks at 20%, 50% and 80%
+   * 3 // means show tick marks at values 25, 50, and 75 (for min=0, max=100)
+   * [20, 50, 80] // means show tick marks at values 20, 50, and 80
    */
   withTick?: number | number[];
 }
@@ -192,13 +193,21 @@ function SliderComponent(props: SliderComponentProps) {
     </div>
   );
 
-  const getTick = (tickText: number | string, leftPercent: number) => {
-    return (
-      <span className={classes.tick} style={{ left: `${leftPercent}%` }}>
-        <Typography variant="caption">{tickText}</Typography>
-      </span>
-    );
-  };
+  const getTick = useCallback(
+    (tickText: number | string, leftPercent: number) => {
+      return (
+        <span
+          aria-hidden="true"
+          className={classes.tick}
+          key={tickText}
+          style={{ left: `${leftPercent}%` }}
+        >
+          <Typography variant="caption">{tickText}</Typography>
+        </span>
+      );
+    },
+    [],
+  );
 
   const [startInputValue, setStartInputValue] = useState(() => {
     if (!isRangeSlider(value)) {
@@ -439,26 +448,20 @@ function SliderComponent(props: SliderComponentProps) {
           {/* line */}
           <span />
         </div>
-        {/* ticks dot and */}
+        {/* ticks dot and label */}
         {withTick ? (
           <>
             {getTick(min, 0)}
             {Array.isArray(withTick)
               ? withTick.map((tick) =>
-                  tick <= max && tick >= min ? (
-                    <Fragment key={tick}>
-                      {getTick(tick, ((tick - min) / (max - min)) * 100)}
-                    </Fragment>
-                  ) : null,
+                  tick <= max && tick >= min
+                    ? getTick(tick, ((tick - min) / (max - min)) * 100)
+                    : null,
                 )
-              : Array.from({ length: withTick }, (_, i) => i + 1).map(
-                  (tick) => (
-                    <Fragment key={tick}>
-                      {getTick(
-                        (tick / (withTick + 1)) * (max - min),
-                        (tick / (withTick + 1)) * 100,
-                      )}
-                    </Fragment>
+              : Array.from({ length: withTick }, (_, i) => i + 1).map((tick) =>
+                  getTick(
+                    (tick / (withTick + 1)) * (max - min) + min,
+                    (tick / (withTick + 1)) * 100,
                   ),
                 )}
             {getTick(max, 100)}
