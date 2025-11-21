@@ -76,11 +76,20 @@ export interface SliderBaseProps
 export type SliderWithInputProps = SliderBaseProps & {
   prefixIcon?: never;
   suffixIcon?: never;
+  /**
+   * Whether to show input box to allow user to input value.
+   */
   withInput: true;
 };
 
 export type SliderWithIconProps = SliderBaseProps & {
-  prefixIcon?: IconDefinition;
+  /**
+   * Set prefix icon.
+   */
+  prefixIcon: IconDefinition;
+  /**
+   * Set suffix icon.
+   */
   suffixIcon: IconDefinition;
   withInput?: never;
 };
@@ -98,11 +107,17 @@ export type SliderAddonProps =
 
 export type SingleSliderProps = SliderAddonProps & {
   onChange?: (value: SingleSliderValue) => void;
+  /**
+   * The value of the slider.
+   */
   value: UseSingleSliderProps['value'];
 };
 
 export type RangeSliderProps = SliderAddonProps & {
   onChange?: (value: RangeSliderValue) => void;
+  /**
+   * The value of the slider.
+   */
   value: UseRangeSliderProps['value'];
 };
 
