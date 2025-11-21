@@ -1,7 +1,6 @@
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
-@use '../text-field';
+@use '~@mezzanine-ui/system/spacing';
 @use './textarea' as *;
 
 $min-width: 452px !default;
@@ -10,51 +9,26 @@ $min-height: 102px !default;
 $padding-y: 8px !default;
 $count-gap: 4px !default;
 
+.#{$prefix}.#{$prefix} {
+  @include typography.variant(body);
+}
+
 .#{$prefix} {
-  min-width: $min-width;
-  min-height: $min-height;
-  padding: #{$padding-y} 0;
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
 
-  textarea {
-    margin: 0;
-    padding-left: var(--#{text-field.$prefix}-padding-left);
-    padding-right: var(--#{text-field.$prefix}-padding-right);
-
-    @include typography.variant(body1);
+  &__textarea {
+    padding-block: spacing.semantic-variable(padding, vertical, calm);
+    padding-left: spacing.semantic-variable(padding, horizontal, cozy);
+    padding-right: spacing.semantic-variable(padding, horizontal, spacious);
+    resize: both;
+    overflow-y: auto;
   }
+}
 
-  .#{text-field.$prefix}__clear-icon {
-    top: $padding-y;
-  }
-
-  &.#{text-field.$prefix}--small {
-    min-width: $min-width-small;
-
-    textarea {
-      @include typography.variant(body2);
-    }
-  }
-
-  &__count {
-    position: absolute;
-    top: calc(100% + #{$count-gap});
-    right: 0;
-    color: palette.color(text-secondary);
-    transition: transition.standard(color);
-    will-change: color;
-
-    @include typography.variant(caption);
-
-    .#{$prefix}--upper-limit & {
-      color: palette.color(primary);
-    }
-
-    .#{text-field.$prefix}--error & {
-      color: palette.color(error);
-    }
-
-    .#{text-field.$prefix}--disabled & {
-      color: palette.color(text-disabled);
-    }
-  }
+.aa {
+  width: 200px;
+  max-width: 300px;
+  min-width: 100px;
 }
