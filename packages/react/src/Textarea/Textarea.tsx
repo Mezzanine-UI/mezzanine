@@ -6,6 +6,8 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import TextField from '../TextField';
+import Icon from '../Icon';
+import { ResizeHandleIcon } from '@mezzanine-ui/icons';
 
 export type TextareaProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'textarea'>,
@@ -73,7 +75,9 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
           style={{ resize, ...textareaProps.style }}
         />
 
-        {/* <Icon icon={ResizeHandleIcon} size={16} className={classes.resizer} /> */}
+        {resize !== 'none' && (
+          <Icon icon={ResizeHandleIcon} size={16} className={classes.resizer} />
+        )}
       </TextField>
     );
   },
