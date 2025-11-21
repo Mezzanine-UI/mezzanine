@@ -1,6 +1,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/radius';
 @use './textarea' as *;
 
 $min-width: 452px !default;
@@ -22,13 +23,34 @@ $count-gap: 4px !default;
     padding-block: spacing.semantic-variable(padding, vertical, calm);
     padding-left: spacing.semantic-variable(padding, horizontal, cozy);
     padding-right: spacing.semantic-variable(padding, horizontal, spacious);
-    resize: both;
-    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: calc(6px + spacing.semantic-variable(gap, tight) * 2);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: palette.semantic-variable(background, neutral-subtle);
+      background-clip: content-box;
+      border: spacing.semantic-variable(gap, tight) solid transparent;
+      border-radius: radius.variable(full);
+    }
+
+    &::-webkit-resizer {
+      background-color: transparent;
+    }
+  }
+
+  &__resizer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: spacing.semantic-variable(size, element, base);
+    height: spacing.semantic-variable(size, element, base);
+    color: palette.semantic-variable(icon, neutral);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
-.aa {
-  width: 200px;
-  max-width: 300px;
-  min-width: 100px;
-}
