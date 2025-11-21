@@ -118,7 +118,6 @@ $handler-color: palette.semantic-variable(background, brand) !default;
     background-color: $handler-color;
     border-radius: 50%;
     box-shadow: effect.variable(shadow, slider-handle);
-    content: '';
     height: $handler-size;
     left: 50%;
     position: absolute;
