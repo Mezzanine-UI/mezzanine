@@ -7,19 +7,32 @@ import { getCSSVariableValue } from '../utils/get-css-variable-value';
 import { flip, offset, Placement, shift } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 
-/**
- * The react component for `mezzanine` overflow-tooltip.
- */
 export type OverflowTooltipProps = {
+  /** Popper anchor that tells the tooltip which trigger element or DOM node to follow. */
   anchor: PopperProps['anchor'];
+  /** Optional root className for integrating custom styles. */
   className?: string;
+  /** Fired when a tag's dismiss icon is clicked, returning the removed tag's index for syncing state. */
   onTagDismiss: (tagIndex: number) => void;
+  /** Controls whether the tooltip is rendered; true mounts the Popper and computes placement. */
   open: boolean;
+  /**
+   * Popper placement, allowing consumers to change the tooltip direction.
+   * @default top-start
+   */
   placement?: Placement;
+  /** List of tag labels to render; each entry becomes a dismissable tag. */
   tags: string[];
+  /**
+   * Size of tags.
+   * @default main
+   */
   tagSize?: TagProps['size'];
 };
 
+/**
+ * The react component for `mezzanine` overflow-tooltip.
+ */
 const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
   function OverflowTooltip(props, ref) {
     const {
