@@ -1,46 +1,61 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import OverflowTooltip, { OverflowTooltipProps } from '.';
-import { useRef, useState } from 'react';
-import Tag from '../Tag';
+import { OverflowCounterTag } from '.';
+import { useRef } from 'react';
 
 export default {
   title: 'Internal/OverflowTooltip',
   component: OverflowTooltip,
+  subcomponents: { OverflowCounterTag },
 } satisfies Meta<typeof OverflowTooltip>;
 
-type Story = StoryObj<OverflowTooltipProps>;
+type TooltipStory = StoryObj<OverflowTooltipProps>;
 
-export const Playground: Story = {
+export const Playground: TooltipStory = {
   args: {
     open: false,
-    tags: ['Tagaaa 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5ssss'],
+    tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5'],
     onTagDismiss: (tagIndex: number) => {
       // eslint-disable-next-line no-console
       console.log(`Dismiss tag at index: ${tagIndex}`);
     },
   },
   render: function Render(args) {
-    const [open, setOpen] = useState(false);
-
-    const anchorRef = useRef<HTMLElement | null>(null);
-    const tooltipRef = useRef<HTMLDivElement | null>(null);
+    const anchorRef = useRef<HTMLDivElement | null>(null);
 
     return (
       <div style={{ padding: '100px' }}>
-        <Tag
+        <div
           ref={anchorRef}
-          type="overflow-counter"
-          count={5}
-          onClick={() => setOpen(true)}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '999px',
+            backgroundColor: 'white',
+          }}
         />
-
-        <OverflowTooltip
-          ref={tooltipRef}
-          {...args}
-          open={open}
-          anchor={anchorRef.current}
-        />
+        <OverflowTooltip {...args} anchor={anchorRef} open={true} />
       </div>
     );
   },
+};
+
+type CounterTagStory = StoryObj<typeof OverflowCounterTag>;
+
+export const OverflowCounterTagPlayground: CounterTagStory = {
+  args: {
+    tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5'],
+    tagSize: 'main',
+  },
+  render: (args) => (
+    <div style={{ padding: '100px' }}>
+      <OverflowCounterTag
+        {...args}
+        onTagDismiss={(index) => {
+          // eslint-disable-next-line no-console
+          console.log(`Dismiss tag at index: ${index}`);
+        }}
+      />
+    </div>
+  ),
 };
