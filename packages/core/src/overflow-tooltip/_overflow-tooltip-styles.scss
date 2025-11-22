@@ -1,0 +1,29 @@
+@use '@mezzanine-ui/system/palette';
+@use '@mezzanine-ui/system/spacing';
+@use '@mezzanine-ui/system/radius';
+@use '@mezzanine-ui/system/effect';
+@use './overflow-tooltip' as *;
+
+.#{$prefix} {
+  &__content {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tight);
+    width: fit-content;
+    height: fit-content;
+    max-width: spacing.semantic-variable(size, container, narrow);
+    max-inline-size: spacing.semantic-variable(size, container, narrow);
+    padding: spacing.semantic-variable(padding, vertical, tiny)
+    spacing.semantic-variable(padding, horizontal, tiny);
+    border-radius: radius.variable(tiny);
+    background-color: palette.semantic-variable('background', base);
+    box-shadow: effect.variable(shadow, floating);
+  }
+
+  &__arrow {
+    color: palette.semantic-variable('background', base);
+  }
+}

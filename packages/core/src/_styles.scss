@@ -20,7 +20,11 @@
   @include _load-styles($options, typography);
   @include _load-styles($options, icon);
   @include _load-styles($options, button);
+
+  // Internal
   @include _load-styles($options, clear-actions);
+  @include _load-styles($options, dismiss-button);
+  @include _load-styles($options, overflow-tooltip);
 
   // Utility
   @include _load-styles($options, backdrop);
