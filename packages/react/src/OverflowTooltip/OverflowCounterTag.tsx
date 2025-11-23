@@ -12,6 +12,9 @@ export type OverflowCounterTagProps =
       'className' | 'onTagDismiss' | 'placement' | 'tags' | 'tagSize'
     >;
 
+/**
+ * Compound component for OverflowTooltip and Tag with over-flow-counter type.
+ */
 const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
   function OverflowCounterTag(props, ref) {
     const {
