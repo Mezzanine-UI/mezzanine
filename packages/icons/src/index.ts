@@ -28,6 +28,7 @@ export { HomeIcon } from './system/home';
 export { SpinnerIcon } from './system/spinner';
 export { LoginIcon } from './system/login';
 export { LogoutIcon } from './system/logout';
+export { SystemIcon } from './system/system';
 
 /**
  * Arrow Icons
@@ -129,6 +130,7 @@ export { BookmarkRemoveIcon } from './content/bookmark-remove';
 export { BookmarkAddedIcon } from './content/bookmark-added';
 export { ImageIcon } from './content/image';
 export { CodeIcon } from './content/code';
+export { BoxIcon } from './content/box';
 
 /**
  * Stepper Icons
