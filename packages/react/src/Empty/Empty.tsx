@@ -63,7 +63,7 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
         <div className={classes.container}>
           {pictogram ? <div className={classes.icon}>{pictogram}</div> : icon}
 
-          <h3 className={classes.title}>{title}</h3>
+          <p className={classes.title}>{title}</p>
           {description && <p className={classes.description}>{description}</p>}
           {actions && (
             <ButtonGroup className={classes.actions}>
