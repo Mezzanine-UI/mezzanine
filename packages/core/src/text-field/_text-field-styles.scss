@@ -286,11 +286,13 @@ $size-configs: (
     align-items: center;
     flex-shrink: 0;
     gap: spacing.semantic-variable(gap, tiny);
-    color: var(--#{$prefix}-icon-color);
+    color: palette.semantic-variable(text, neutral);
+
+    @include typography.semantic-variable(input);
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
-      color: inherit;
+      color: var(--#{$prefix}-icon-color);
       transition: transition.standard(color, fast);
       will-change: color;
     }
