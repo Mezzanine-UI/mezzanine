@@ -7,8 +7,6 @@ export const inputPrefix = 'mzn-input';
 
 export const inputSpinnerButtonClasses = {
   host: `${inputPrefix}__spinner-button`,
-  up: `${inputPrefix}__spinner-button--up`,
-  down: `${inputPrefix}__spinner-button--down`,
   disabled: `${inputPrefix}__spinner-button--disabled`,
   main: `${inputPrefix}__spinner-button--main`,
   sub: `${inputPrefix}__spinner-button--sub`,
@@ -43,7 +41,9 @@ export const inputPasswordStrengthIndicatorClasses = {
 
 export const inputClasses = {
   host: inputPrefix,
-  withButton: `${inputPrefix}--with-button`,
+  withPrefixExternalAction: `${inputPrefix}--with-prefix-external-action`,
+  withSuffixExternalAction: `${inputPrefix}--with-suffix-external-action`,
   number: `${inputPrefix}--number`,
   size: (size: InputSize) => `${inputPrefix}--${size}`,
+  spinners: `${inputPrefix}__spinners`,
 } as const;

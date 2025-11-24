@@ -11,7 +11,23 @@
   width: 100%;
   display: flex;
 
-  &--with-button {
+  &--with-prefix-external-action {
+    .#{text-field.$prefix} {
+      width: auto;
+      flex: 1;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .#{$prefix}__select-button:first-child,
+    .#{$prefix}__action-button:first-child {
+      border-right: none;
+      border-top-left-radius: radius.variable(base);
+      border-bottom-left-radius: radius.variable(base);
+    }
+  }
+
+  &--with-suffix-external-action {
     .#{text-field.$prefix} {
       width: auto;
       flex: 1;
@@ -19,10 +35,11 @@
       border-bottom-right-radius: 0;
     }
 
-    .#{$prefix}__spinner-button,
-    .#{$prefix}__select-button,
-    .#{$prefix}__action-button {
+    .#{$prefix}__select-button:last-child,
+    .#{$prefix}__action-button:last-child {
       border-left: none;
+      border-top-right-radius: radius.variable(base);
+      border-bottom-right-radius: radius.variable(base);
     }
   }
 
@@ -48,7 +65,16 @@
     }
   }
 
+  &__spinners {
+    display: flex;
+    flex-flow: column;
+    gap: 0;
+    padding-left: spacing.semantic-variable(padding, horizontal, micro);
+  }
+
   input {
+    padding: 0;
+
     /* clears the 'X' from Chrome */
     &[type='search']::-webkit-search-decoration,
     &[type='search']::-webkit-search-cancel-button,

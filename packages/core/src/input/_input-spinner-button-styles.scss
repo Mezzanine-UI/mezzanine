@@ -95,19 +95,6 @@ $spinner-button-sizes: (
     cursor: default;
   }
 
-  &--up {
-    position: absolute;
-    top: 50%;
-    right: spacing.semantic-variable(padding, horizontal, micro);
-    transform: translateY(-100%);
-  }
-
-  &--down {
-    position: absolute;
-    top: 50%;
-    right: spacing.semantic-variable(padding, horizontal, micro);
-  }
-
   &--main {
     @include _apply-spinner-button-size(main);
 
