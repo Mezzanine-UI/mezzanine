@@ -60,7 +60,10 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
         <Tag
           {...restTagProps}
           count={tags.length}
-          onClick={() => setOpen((prevOpen) => !prevOpen)}
+          onClick={(e) => {
+            setOpen((prevOpen) => !prevOpen);
+            restTagProps.onClick?.(e);
+          }}
           ref={composedTriggerRef}
           type="overflow-counter"
           size={tagSize}
