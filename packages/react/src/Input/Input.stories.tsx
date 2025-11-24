@@ -247,7 +247,7 @@ export const ActionInput = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '24px',
-        maxWidth: '400px',
+        maxWidth: '300px',
       }}
     >
       <Typography variant="h2" style={typoStyle}>
