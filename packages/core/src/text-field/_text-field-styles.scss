@@ -94,9 +94,41 @@ $state-error: (
   ),
 );
 
+$state-warning: (
+  default: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning-subtle),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning),
+    focus-color: none,
+  ),
+  typing: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning),
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning-subtle),
+    focus-color: effect.variable(focus, warning),
+  )
+);
+
 $state-hierarchy: (
   default: $state-default,
   error: $state-error,
+  warning: $state-warning,
 );
 
 $size-configs: (
@@ -320,6 +352,10 @@ $size-configs: (
 
   &--error {
     @include _apply-severity-states(error, $include-readonly-disabled: false);
+  }
+
+  &--warning:not(&--error) {
+    @include _apply-severity-states(warning, $include-readonly-disabled: false);
   }
 
   &--no-padding {

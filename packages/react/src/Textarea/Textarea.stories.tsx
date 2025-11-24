@@ -1,72 +1,122 @@
-import { StoryFn } from '@storybook/react-webpack5';
-import Textarea, { TextareaProps, TextareaSize } from '.';
-import ConfigProvider from '../Provider';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+import Textarea, { TextareaProps } from '.';
+import Typography from '../Typography';
+import { ReactNode } from 'react';
 
 export default {
   title: 'Data Entry/Textarea',
-};
+  component: Textarea,
+} satisfies Meta<typeof Textarea>;
 
-const sizes: TextareaSize[] = ['small', 'medium', 'large'];
+type Story = StoryObj<TextareaProps>;
 
-export const Playground: StoryFn<TextareaProps> = ({ ...props }) => (
-  <Textarea {...props} />
-);
-
-Playground.args = {
-  clearable: false,
-  disabled: false,
-  readOnly: false,
-  error: false,
-  fullWidth: false,
-  placeholder: '輸入文字...',
-  maxLength: 50,
-  size: 'medium',
-};
-
-Playground.argTypes = {
-  size: {
-    options: sizes,
-    control: {
-      type: 'select',
-    },
+export const Playground: Story = {
+  args: {
+    className: '',
+    disabled: false,
+    id: 'test-id-01',
+    placeholder: '輸入文字...',
+    readOnly: false,
+    resize: 'none',
+    type: 'default',
+    textareaClassName: '',
   },
+  argTypes: {
+    className: { control: 'text' },
+    disabled: { control: 'boolean' },
+    placeholder: { control: 'text' },
+    readOnly: { control: 'boolean' },
+    resize: {
+      control: 'inline-radio',
+      options: ['none', 'both', 'horizontal', 'vertical'],
+    },
+    type: {
+      control: 'select',
+      options: ['default', 'warning', 'error'],
+    },
+    textareaClassName: { control: 'text' },
+    textareaRef: { table: { disable: true } },
+  },
+  render: (args: TextareaProps) => (
+    <Textarea {...args} textareaClassName="aa" />
+  ),
 };
 
-export const Basic = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateRows: 'repeat(4, auto)',
-      gridTemplateColumns: '500px',
-      gap: '24px',
-    }}
-  >
-    <Textarea clearable placeholder="輸入文字..." maxLength={100} rows={4} />
-    <Textarea placeholder="輸入文字..." maxLength={50} disabled />
-    <Textarea placeholder="輸入文字..." maxLength={50} error clearable />
-    <Textarea
-      placeholder="輸入文字..."
-      maxLength={50}
-      value="Example"
-      readOnly
-    />
+const TypeRow = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) => (
+  <div>
+    <Typography variant="h2">{title}</Typography>
+    <div style={{ display: 'flex', gap: '24px' }}>{children}</div>
   </div>
 );
 
-export const Sizes = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateRows: 'repeat(3, 102px)',
-      gridTemplateColumns: '500px',
-      gap: '24px',
-      justifyItems: 'center',
-    }}
-  >
-    <Textarea placeholder="輸入文字..." size="small" maxLength={20} />
-    <Textarea placeholder="輸入文字..." />
-    <ConfigProvider size="large">
-      <Textarea placeholder="輸入文字..." />
-    </ConfigProvider>
+const TypeRowItem = ({
+  caption,
+  children,
+}: {
+  caption: string;
+  children: ReactNode;
+}) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+    <Typography variant="caption">{caption}</Typography>
+    {children}
   </div>
 );
+
+export const Types = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+      }}
+    >
+      <TypeRow title="Default">
+        <TypeRowItem caption="Default">
+          <Textarea
+            type="default"
+            placeholder="Enter a description..."
+            resize="horizontal"
+          />
+        </TypeRowItem>
+        <TypeRowItem caption="Filled">
+          <Textarea
+            type="default"
+            placeholder="輸入文字..."
+            defaultValue="Lorem ipsum dolor sit amet"
+          />
+        </TypeRowItem>
+      </TypeRow>
+      <TypeRow title="Warning">
+        <TypeRowItem caption="Default">
+          <Textarea type="warning" placeholder="Enter a description..." />
+        </TypeRowItem>
+        <TypeRowItem caption="Filled">
+          <Textarea
+            type="warning"
+            placeholder="輸入文字..."
+            defaultValue="Lorem ipsum dolor sit amet"
+          />
+        </TypeRowItem>
+      </TypeRow>
+      <TypeRow title="Error">
+        <TypeRowItem caption="Default">
+          <Textarea type="error" placeholder="Enter a description..." />
+        </TypeRowItem>
+        <TypeRowItem caption="Filled">
+          <Textarea
+            type="error"
+            placeholder="輸入文字..."
+            defaultValue="Lorem ipsum dolor sit amet"
+          />
+        </TypeRowItem>
+      </TypeRow>
+    </div>
+  ),
+};

@@ -75,6 +75,11 @@ export interface TextFieldBaseProps
    * @default 'main'
    */
   size?: TextFieldSize;
+  /**
+   * Whether the field is in warning state.
+   * @default false
+   */
+  warning?: boolean;
 }
 
 /**
@@ -163,6 +168,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       size = 'main',
       suffix,
       typing: typingProp,
+      warning,
       ...rest
     } = props;
 
@@ -247,6 +253,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
             [classes.readonly]: readonly,
             [classes.typing]: typing,
             [classes.active]: active,
+            [classes.warning]: warning,
           },
           className,
         )}
