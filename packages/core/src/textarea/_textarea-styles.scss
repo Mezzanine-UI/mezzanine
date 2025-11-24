@@ -25,11 +25,11 @@ $count-gap: 4px !default;
     padding-right: spacing.semantic-variable(padding, horizontal, spacious);
 
     &::-webkit-scrollbar {
-      width: calc(6px + spacing.semantic-variable(gap, tight) * 2);
+      width: calc(spacing.semantic-variable(size, element, tight) + spacing.semantic-variable(gap, tight) * 2);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: palette.semantic-variable(background, neutral-subtle);
+      background-color: palette.semantic-variable("background", neutral-subtle);
       background-clip: content-box;
       border: spacing.semantic-variable(gap, tight) solid transparent;
       border-radius: radius.variable(full);
