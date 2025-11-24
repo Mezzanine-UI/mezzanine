@@ -266,6 +266,7 @@ $size-configs: (
     color: inherit;
     outline: none;
     box-sizing: border-box;
+    caret-color: palette.semantic-variable(text, neutral-solid);
   }
 
   @each $size-name, $size-config in $size-configs {

@@ -13,8 +13,16 @@
 
   &--with-button {
     .#{text-field.$prefix} {
+      width: auto;
+      flex: 1;
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
+    }
+
+    .#{$prefix}__spinner-button,
+    .#{$prefix}__select-button,
+    .#{$prefix}__action-button {
+      border-left: none;
     }
   }
 
