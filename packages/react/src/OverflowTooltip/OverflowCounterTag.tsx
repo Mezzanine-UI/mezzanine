@@ -15,7 +15,7 @@ export type OverflowCounterTagProps =
     >;
 
 /**
- * Compound component for OverflowTooltip and Tag with over-flow-counter type.
+ * Compound component for OverflowTooltip and Tag with overflow-counter type.
  */
 const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
   function OverflowCounterTag(props, ref) {
