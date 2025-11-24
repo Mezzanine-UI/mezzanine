@@ -24,9 +24,6 @@ export const Playground: Story = {
           <h3 style={{ marginBottom: '12px' }}>Size: main (Normal)</h3>
           <div
             style={{
-              width: '160px',
-              height: '40px',
-              border: '1px solid #9b9b9b',
               position: 'relative',
             }}
           >
@@ -39,9 +36,6 @@ export const Playground: Story = {
           <h3 style={{ marginBottom: '12px' }}>Size: sub (Normal)</h3>
           <div
             style={{
-              width: '160px',
-              height: '32px',
-              border: '1px solid #9b9b9b',
               position: 'relative',
             }}
           >
@@ -54,10 +48,6 @@ export const Playground: Story = {
           <h3 style={{ marginBottom: '12px' }}>Disabled</h3>
           <div
             style={{
-              width: '160px',
-              height: '40px',
-              border: '1px solid #9b9b9b',
-              background: 'var(--mzn-color-background-neutral-subtle)',
               position: 'relative',
             }}
           >

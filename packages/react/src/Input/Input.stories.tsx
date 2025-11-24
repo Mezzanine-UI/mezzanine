@@ -22,35 +22,40 @@ export const BaseInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Normal
         </Typography>
-        <Input placeholder="請輸入文字" />
+        <Input name="input1" placeholder="請輸入文字" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           With Value
         </Typography>
-        <Input value="Example" />
-      </section>
-
-      <section style={containerStyle}>
-        <Typography variant="h3" style={typoStyle}>
-          Disabled
-        </Typography>
-        <Input placeholder="請輸入文字" disabled />
+        <Input name="input2" value="Example" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Error
         </Typography>
-        <Input placeholder="請輸入文字" error />
+        <Input name="input3" placeholder="請輸入文字" error />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Disabled
+        </Typography>
+        <Input name="input4" placeholder="請輸入文字" disabled />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Read Only
         </Typography>
-        <Input placeholder="請輸入文字" value="Example" readonly />
+        <Input
+          name="input5"
+          placeholder="請輸入文字"
+          value="Example"
+          readonly
+        />
       </section>
     </div>
   );
@@ -68,10 +73,10 @@ export const WithAffixInput = () => {
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          With Prefix
+          Icon Leading
         </Typography>
         <Input
-          type="affix"
+          variant="affix"
           prefix={<Icon icon={UserIcon} />}
           placeholder="Placeholder"
         />
@@ -79,19 +84,27 @@ export const WithAffixInput = () => {
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          With Suffix
+          Prefix
         </Typography>
-        <Input type="affix" suffix="Suffix" placeholder="Placeholder" />
+        <Input variant="affix" prefix="Prefix" placeholder="Placeholder" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          With Text Prefix
+          Suffix
+        </Typography>
+        <Input variant="affix" suffix="Suffix" placeholder="Placeholder" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Prefix & Suffix
         </Typography>
         <Input
-          type="affix"
-          prefix={<span style={{ padding: '0 8px' }}>https://</span>}
-          placeholder="www.example.com"
+          variant="affix"
+          prefix="Prefix"
+          suffix="Suffix"
+          placeholder="Placeholder"
         />
       </section>
     </div>
@@ -112,28 +125,28 @@ export const SearchInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Default (with SearchIcon and clearable)
         </Typography>
-        <Input type="search" placeholder="搜尋..." />
+        <Input variant="search" placeholder="搜尋..." />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Not Clearable
         </Typography>
-        <Input type="search" clearable={false} placeholder="搜尋..." />
+        <Input variant="search" clearable={false} placeholder="搜尋..." />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Sizes - Main
         </Typography>
-        <Input type="search" size="main" placeholder="搜尋..." />
+        <Input variant="search" size="main" placeholder="搜尋..." />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Sizes - Sub
         </Typography>
-        <Input type="search" size="sub" placeholder="搜尋..." />
+        <Input variant="search" size="sub" placeholder="搜尋..." />
       </section>
     </div>
   );
@@ -144,7 +157,14 @@ export const NumberInput = () => {
   const typoStyle = { margin: '0 0 12px 0' };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        width: '120px',
+      }}
+    >
       <Typography variant="h2" style={typoStyle}>
         Number Input
       </Typography>
@@ -153,21 +173,21 @@ export const NumberInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Basic Number
         </Typography>
-        <Input type="number" placeholder="0" />
+        <Input variant="number" placeholder="0" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           With Min/Max
         </Typography>
-        <Input type="number" min={0} max={100} defaultValue="50" />
+        <Input variant="number" min={0} max={100} defaultValue="50" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Sub
         </Typography>
-        <Input type="number" step={0.5} defaultValue="1.5" size="sub" />
+        <Input variant="number" step={0.5} defaultValue="1.5" size="sub" />
       </section>
     </div>
   );
@@ -176,6 +196,8 @@ export const NumberInput = () => {
 export const UnitInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
+
+  const [spinNumber, setSpinNumber] = useState(100);
 
   return (
     <div
@@ -187,58 +209,83 @@ export const UnitInput = () => {
       }}
     >
       <Typography variant="h2" style={typoStyle}>
-        Unit Input (Right-aligned with SpinnerButton)
+        Unit Input
       </Typography>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          With Unit Text
+          Prefix
         </Typography>
-        <Input type="unit" unit="公斤" defaultValue="70" placeholder="0" />
+        <Input variant="unit" prefix="NT" defaultValue="1000" placeholder="0" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          With SpinnerButton (default)
+          Suffix
         </Typography>
         <Input
-          type="unit"
-          unit="元"
+          variant="unit"
+          suffix="NT"
           min={0}
-          max={1000}
-          step={10}
+          max={10000}
+          step={100}
           defaultValue="100"
-          onSpinUp={() => {}}
-          onSpinDown={() => {}}
         />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          Without SpinnerButton
+          Text Only
         </Typography>
-        <Input type="unit" unit="cm" showSpinner={false} defaultValue="175" />
+        <Input variant="unit" defaultValue="175" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Spinner
+        </Typography>
+        <Input
+          variant="unit"
+          inputType="number"
+          value={`${spinNumber}`}
+          onChange={(evt) => setSpinNumber(Number(evt.target.value))}
+          min={0}
+          max={10000}
+          step={100}
+          showSpinner
+          onSpinUp={() => {
+            /** custom listener */
+          }}
+          onSpinDown={() => {
+            /** custom listener */
+          }}
+        />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Main
         </Typography>
-        <Input type="unit" unit="kg" size="main" defaultValue="70" />
+        <Input variant="unit" size="main" defaultValue="70" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Sub
         </Typography>
-        <Input type="unit" unit="kg" size="sub" defaultValue="70" />
+        <Input variant="unit" size="sub" defaultValue="70" />
       </section>
     </div>
   );
 };
 
 export const ActionInput = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
   const typoStyle = { margin: '0 0 12px 0' };
 
   return (
@@ -259,9 +306,20 @@ export const ActionInput = () => {
           Copy Action
         </Typography>
         <Input
-          type="action"
+          variant="action"
           defaultValue="https://example.com/share/abc123"
           actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => alert('Copied!'),
+          }}
+        />
+        <Input
+          variant="action"
+          defaultValue="https://example.com/share/abc123"
+          actionButton={{
+            position: 'prefix',
             icon: CopyIcon,
             label: '複製',
             onClick: () => alert('Copied!'),
@@ -274,9 +332,10 @@ export const ActionInput = () => {
           Download Action
         </Typography>
         <Input
-          type="action"
+          variant="action"
           defaultValue="report_2024.pdf"
           actionButton={{
+            position: 'suffix',
             icon: DownloadIcon,
             label: '下載',
             onClick: () => alert('Downloading...'),
@@ -289,9 +348,10 @@ export const ActionInput = () => {
           Disabled Action Button
         </Typography>
         <Input
-          type="action"
+          variant="action"
           defaultValue="content"
           actionButton={{
+            position: 'suffix',
             icon: CopyIcon,
             label: '複製',
             onClick: () => {},
@@ -305,10 +365,11 @@ export const ActionInput = () => {
           Size Main
         </Typography>
         <Input
-          type="action"
+          variant="action"
           size="main"
           defaultValue="example"
           actionButton={{
+            position: 'suffix',
             icon: CopyIcon,
             label: '複製',
             onClick: () => {},
@@ -321,10 +382,11 @@ export const ActionInput = () => {
           Size Sub
         </Typography>
         <Input
-          type="action"
+          variant="action"
           size="sub"
           defaultValue="example"
           actionButton={{
+            position: 'suffix',
             icon: CopyIcon,
             label: '複製',
             onClick: () => {},
@@ -336,7 +398,12 @@ export const ActionInput = () => {
 };
 
 export const SelectInput = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
   const typoStyle = { margin: '0 0 12px 0' };
   const [selectedValue, setSelectedValue] = useState('.com');
 
@@ -346,7 +413,7 @@ export const SelectInput = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '24px',
-        maxWidth: '300px',
+        maxWidth: '400px',
       }}
     >
       <Typography variant="h2" style={typoStyle}>
@@ -358,10 +425,41 @@ export const SelectInput = () => {
           Domain Selector
         </Typography>
         <Input
-          type="select"
+          variant="select"
           defaultValue="https://"
           placeholder="Domain"
           selectButton={{
+            position: 'prefix',
+            value: selectedValue,
+            onClick: () => {
+              const domains = ['.com', '.tw', '.cn', '.net'];
+              const currentIndex = domains.indexOf(selectedValue);
+              const nextIndex = (currentIndex + 1) % domains.length;
+              setSelectedValue(domains[nextIndex]);
+            },
+          }}
+        />
+        <Input
+          variant="select"
+          defaultValue="https://"
+          placeholder="Domain"
+          selectButton={{
+            position: 'suffix',
+            value: selectedValue,
+            onClick: () => {
+              const domains = ['.com', '.tw', '.cn', '.net'];
+              const currentIndex = domains.indexOf(selectedValue);
+              const nextIndex = (currentIndex + 1) % domains.length;
+              setSelectedValue(domains[nextIndex]);
+            },
+          }}
+        />
+        <Input
+          variant="select"
+          defaultValue="https://"
+          placeholder="Domain"
+          selectButton={{
+            position: 'both',
             value: selectedValue,
             onClick: () => {
               const domains = ['.com', '.tw', '.cn', '.net'];
@@ -378,10 +476,11 @@ export const SelectInput = () => {
           Size Main
         </Typography>
         <Input
-          type="select"
+          variant="select"
           size="main"
           placeholder="Placeholder"
           selectButton={{
+            position: 'suffix',
             value: '.com',
             onClick: () => {},
           }}
@@ -393,10 +492,11 @@ export const SelectInput = () => {
           Size Sub
         </Typography>
         <Input
-          type="select"
+          variant="select"
           size="sub"
           placeholder="Placeholder"
           selectButton={{
+            position: 'suffix',
             value: '.com',
             onClick: () => {},
           }}
@@ -427,21 +527,73 @@ export const PasswordInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Basic Password
         </Typography>
-        <Input type="password" placeholder="請輸入密碼" />
+        <Input variant="password" placeholder="請輸入密碼" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Main
         </Typography>
-        <Input type="password" size="main" placeholder="請輸入密碼" />
+        <Input variant="password" size="main" placeholder="請輸入密碼" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Sub
         </Typography>
-        <Input type="password" size="sub" placeholder="請輸入密碼" />
+        <Input variant="password" size="sub" placeholder="請輸入密碼" />
+      </section>
+    </div>
+  );
+};
+
+export const FormatterAndParser = () => {
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  const [currencyValue, setCurrencyValue] = useState('');
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '400px',
+      }}
+    >
+      <Typography variant="h2" style={typoStyle}>
+        Formatter+Parser
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Currency Format (Thousand Separator)
+        </Typography>
+        <Input
+          variant="unit"
+          showSpinner
+          placeholder="輸入金額"
+          value={currencyValue}
+          onChange={(e) => {
+            setCurrencyValue(e.target.value);
+          }}
+          formatter={(value) => {
+            // Remove non-digit characters
+            const cleanValue = value.replace(/\D/g, '');
+            // Add thousand separators
+            return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          }}
+          parser={(value) => value.replace(/,/g, '')}
+        />
+        <Typography variant="caption" color="text-neutral">
+          Raw value: {currencyValue}
+        </Typography>
       </section>
     </div>
   );

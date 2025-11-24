@@ -42,7 +42,6 @@ const SpinnerButton = forwardRef<HTMLButtonElement, SpinnerButtonProps>(
         className={cx(
           classes.host,
           disabled && classes.disabled,
-          type === 'up' ? classes.up : classes.down,
           size === 'main' ? classes.main : classes.sub,
           className,
         )}
