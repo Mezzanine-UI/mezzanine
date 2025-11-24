@@ -4,14 +4,8 @@
 @use '~@mezzanine-ui/system/radius';
 @use './textarea' as *;
 
-$min-width: 452px !default;
-$min-width-small: 388px !default;
-$min-height: 102px !default;
-$padding-y: 8px !default;
-$count-gap: 4px !default;
-
 .#{$prefix}.#{$prefix} {
-  @include typography.variant(body);
+  @include typography.semantic-variable(body);
 }
 
 .#{$prefix} {
@@ -20,6 +14,7 @@ $count-gap: 4px !default;
     height: fit-content;
 
   &__textarea {
+    appearance: none;
     padding-block: spacing.semantic-variable(padding, vertical, calm);
     padding-left: spacing.semantic-variable(padding, horizontal, cozy);
     padding-right: spacing.semantic-variable(padding, horizontal, spacious);
