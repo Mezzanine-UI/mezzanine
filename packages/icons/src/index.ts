@@ -129,8 +129,8 @@ export { BookmarkAddIcon } from './content/bookmark-add';
 export { BookmarkRemoveIcon } from './content/bookmark-remove';
 export { BookmarkAddedIcon } from './content/bookmark-added';
 export { ImageIcon } from './content/image';
-export { CodeIcon } from './content/code';
 export { BoxIcon } from './content/box';
+export { CodeIcon } from './content/code';
 
 /**
  * Stepper Icons
