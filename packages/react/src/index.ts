@@ -152,6 +152,8 @@ export {
 export type { TableProps, TableRefreshProps } from './Table';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';
+export { OverflowCounterTag } from './OverflowTooltip';
+export type { OverflowCounterTagProps } from './OverflowTooltip';
 export { default as Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
 export {
