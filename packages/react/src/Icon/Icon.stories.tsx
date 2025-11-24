@@ -193,8 +193,8 @@ export const All: Story = {
           AllIcons.BookmarkRemoveIcon,
           AllIcons.BookmarkAddedIcon,
           AllIcons.ImageIcon,
-          AllIcons.CodeIcon,
           AllIcons.BoxIcon,
+          AllIcons.CodeIcon,
         ],
       },
       {
