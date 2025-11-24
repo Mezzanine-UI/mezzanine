@@ -1,37 +1,134 @@
-@use '~@mezzanine-ui/system/palette';
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/typography';
 @use './empty' as *;
 
-$padding: 8px !default;
-$icon-size: 48px !default;
-$title-gap: 4px !default;
+// Size configurations
+$size-configs: (
+  main: (
+    icon-size: spacing.semantic-variable(size, element, extra),
+    title: h3,
+    description: body,
+    padding-bottom: spacing.semantic-variable(padding, vertical, relaxed),
+    gap-below-icon: spacing.semantic-variable(gap, comfort),
+    gap-content: spacing.semantic-variable(gap, tight),
+    gap-below-content: spacing.semantic-variable(gap, comfort),
+    min-width: spacing.semantic-variable(size, container, slim),
+    max-width: spacing.semantic-variable(size, container, narrow),
+  ),
+  sub: (
+    icon-size: spacing.semantic-variable(size, element, airy),
+    title: body-highlight,
+    description: label-secondary,
+    padding-bottom: spacing.semantic-variable(padding, vertical, spacious),
+    gap-below-icon: spacing.semantic-variable(gap, slim),
+    gap-content: spacing.semantic-variable(gap, tiny),
+    gap-below-content: spacing.semantic-variable(gap, calm),
+    min-width: spacing.semantic-variable(size, container, slim),
+    max-width: spacing.semantic-variable(size, container, narrow),
+  ),
+  minor: (
+    icon-size: spacing.semantic-variable(size, element, base),
+    title: body,
+    description: none,
+    padding-bottom: none,
+    gap-below-icon: none,
+    gap-content: none,
+    gap-below-content: none,
+    min-width: none,
+    max-width: none,
+  ),
+);
 
-.#{$prefix} {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: $padding;
-  color: palette.color(text-secondary);
-  box-sizing: border-box;
+// Helper function to get size config
+@function _get-size-config($size, $property) {
+  $size-map: map.get($size-configs, $size);
 
-  &__icon {
-    font-size: typography.px-to-rem($icon-size);
-    color: palette.color(action-inactive);
+  @if $size-map {
+    $value: map.get($size-map, $property);
+
+    @return if($value == none, null, $value);
   }
 
-  &__title {
-    @include typography.variant(h3);
+  @return null;
+}
 
-    margin-bottom: $title-gap;
+// Color variables
+$description-color: palette.semantic-variable(text, neutral) !default;
+$icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
+$title-color: palette.semantic-variable(text, neutral-solid) !default;
+
+.#{$prefix} {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+
+  // Apply size-specific styles
+  @each $size in $empty-sizes {
+    &--#{$size} {
+      padding-bottom: _get-size-config($size, padding-bottom);
+
+      .#{$prefix}__icon {
+        font-size: _get-size-config($size, icon-size);
+      }
+
+      .#{$prefix}__title {
+        @include typography.semantic-variable(_get-size-config($size, title));
+      }
+
+      @if $size != minor {
+        .#{$prefix}__container {
+          max-width: _get-size-config($size, max-width);
+          min-width: _get-size-config($size, min-width);
+        }
+
+        .#{$prefix}__description {
+          @include typography.semantic-variable(_get-size-config($size, description));
+
+          margin-top: _get-size-config($size, gap-content);
+        }
+
+        .#{$prefix}__icon {
+          margin-bottom: _get-size-config($size, gap-below-icon);
+        }
+
+        .#{$prefix}__actions {
+          margin-top: _get-size-config($size, gap-below-content);
+        }
+      } @else {
+        .#{$prefix}__container {
+          flex-direction: row;
+          gap: spacing.semantic-variable(gap, tight);
+        }
+      }
+    }
+  }
+
+  &__container {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
   }
 
   &__description {
-    @include typography.variant(body1);
+    color: $description-color;
+    margin: 0;
   }
 
-  &--full-height {
-    height: 100%;
+  &__icon {
+    align-items: center;
+    color: $icon-color;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__title {
+    color: $title-color;
+    margin: 0;
   }
 }
