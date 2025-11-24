@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useRef, useState } from 'react';
 import OverflowTooltip, { OverflowTooltipProps } from './OverflowTooltip';
 import Tag from '../Tag';
