@@ -11,7 +11,7 @@
 
   &__content {
     box-sizing: border-box;
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: center;
@@ -19,7 +19,6 @@
     width: fit-content;
     height: fit-content;
     max-width: spacing.semantic-variable(size, container, narrow);
-    max-inline-size: spacing.semantic-variable(size, container, narrow);
     padding: spacing.semantic-variable(padding, vertical, tiny)
       spacing.semantic-variable(padding, horizontal, tiny);
     border-radius: radius.variable(tiny);
