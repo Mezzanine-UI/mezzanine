@@ -1,4 +1,4 @@
-import { CopyIcon, DownloadIcon, UserIcon } from '@mezzanine-ui/icons';
+import { CopyIcon, UserIcon } from '@mezzanine-ui/icons';
 import { useState } from 'react';
 import Icon from '../Icon';
 import Input from '.';
@@ -116,6 +116,8 @@ export const SearchInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
+  const [searchValue, setSearchValue] = useState<string>('');
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <Typography variant="h2" style={typoStyle}>
@@ -126,7 +128,13 @@ export const SearchInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Default (with SearchIcon and clearable)
         </Typography>
-        <Input variant="search" placeholder="搜尋..." />
+        <Input
+          variant="search"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder="搜尋..."
+          onClear={() => setSearchValue('')}
+        />
       </section>
 
       <section style={containerStyle}>
@@ -324,22 +332,6 @@ export const ActionInput = () => {
             icon: CopyIcon,
             label: '複製',
             onClick: () => alert('Copied!'),
-          }}
-        />
-      </section>
-
-      <section style={containerStyle}>
-        <Typography variant="h3" style={typoStyle}>
-          Download Action
-        </Typography>
-        <Input
-          variant="action"
-          defaultValue="report_2024.pdf"
-          actionButton={{
-            position: 'suffix',
-            icon: DownloadIcon,
-            label: '下載',
-            onClick: () => alert('Downloading...'),
           }}
         />
       </section>
