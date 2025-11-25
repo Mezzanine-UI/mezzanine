@@ -106,22 +106,22 @@ $embedded-emphasis: (
 // Clearable type - Default variant
 $clearable-default: (
   enable: (
-    icon-color: palette.semantic-variable(background, neutral),
+    icon-color: palette.semantic-variable(icon, neutral),
     background-color: transparent,
     focus-color: none,
   ),
   hover: (
-    icon-color: palette.semantic-variable(background, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
     background-color: transparent,
     focus-color: none,
   ),
   active: (
-    icon-color: palette.semantic-variable(background, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
     background-color: transparent,
     focus-color: effect.variable(focus, primary),
   ),
   focus: (
-    icon-color: palette.semantic-variable(background, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
     background-color: transparent,
     focus-color: effect.variable(focus, primary),
   ),
@@ -222,8 +222,7 @@ $variant-keys-by-type: (
   appearance: none;
   transition:
     transition.standard(background-color, fast),
-    transition.standard(box-shadow, fast),
-    transition.standard(--#{$prefix}-icon-color, fast);
+    transition.standard(box-shadow, fast);
 
   &:focus {
     outline: none;

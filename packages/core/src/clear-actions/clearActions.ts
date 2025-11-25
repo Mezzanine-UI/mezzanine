@@ -17,4 +17,4 @@ export const clearActionsClasses = {
   type: (type: ClearActionsType) => `${clearActionsPrefix}--type-${type}`,
   variant: (variant: ClearActionsVariant) =>
     `${clearActionsPrefix}--variant-${variant}`,
-} as const;
+};
