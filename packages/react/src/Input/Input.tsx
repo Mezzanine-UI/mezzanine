@@ -548,27 +548,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           }
         };
 
-        const toggleIcon = showPassword ? (
+        suffix = (
           <Icon
-            icon={EyeIcon}
+            icon={showPassword ? EyeIcon : EyeInvisibleIcon}
             onClick={() => setShowPassword((prev) => !prev)}
             role="button"
             tabIndex={0}
-            aria-label="Hide password"
-            onKeyDown={handlePasswordToggle}
-          />
-        ) : (
-          <Icon
-            icon={EyeInvisibleIcon}
-            onClick={() => setShowPassword((prev) => !prev)}
-            role="button"
-            tabIndex={0}
-            aria-label="Show password"
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
             onKeyDown={handlePasswordToggle}
           />
         );
-
-        suffix = toggleIcon;
 
         if (passwordProps.showPasswordStrengthIndicator) {
           showPasswordStrengthIndicator = true;
