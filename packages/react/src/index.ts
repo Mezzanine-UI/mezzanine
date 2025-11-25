@@ -190,6 +190,8 @@ export type {
 export { CheckAll, default as Checkbox, CheckboxGroup } from './Checkbox';
 export type {
   CheckAllProps,
+  CheckboxGroupChangeEvent,
+  CheckboxGroupChangeEventTarget,
   CheckboxGroupOption,
   CheckboxGroupOrientation,
   CheckboxGroupProps,

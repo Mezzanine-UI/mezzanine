@@ -1,11 +1,32 @@
+import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
+import Checkbox, { CheckboxProps } from './Checkbox';
+
 export type {
-  CheckboxSize,
-  CheckboxGroupOrientation,
   CheckboxGroupOption,
+  CheckboxGroupOrientation,
 } from '@mezzanine-ui/core/checkbox';
-export type { CheckboxProps } from './Checkbox';
-export { default } from './Checkbox';
-export type { CheckboxGroupProps } from './CheckboxGroup';
-export { default as CheckboxGroup } from './CheckboxGroup';
-export type { CheckAllProps } from './CheckAll';
 export { default as CheckAll } from './CheckAll';
+export type { CheckAllProps } from './CheckAll';
+export { default as CheckboxGroup } from './CheckboxGroup';
+export type {
+  CheckboxGroupLevelConfig,
+  CheckboxGroupChangeEvent,
+  CheckboxGroupChangeEventTarget,
+  CheckboxGroupProps,
+} from './CheckboxGroup';
+
+export type {
+  CheckboxComponent,
+  CheckboxProps,
+  CheckboxPropsBase,
+} from './typings';
+
+/**
+ * @remark
+ * Add type alias here for parsable to react docgen typescript.
+ */
+type GenericCheckbox = (
+  props: PropsWithoutRef<CheckboxProps> & RefAttributes<HTMLLabelElement>,
+) => ReactElement<any>;
+
+export default Checkbox as GenericCheckbox;

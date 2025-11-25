@@ -1,65 +1,96 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, useContext } from 'react';
 import {
-  checkboxClasses as classes,
-  CheckboxSize,
+  ChangeEventHandler,
+  Ref,
+  forwardRef,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+} from 'react';
+
+import {
+  checkboxClasses as classes
 } from '@mezzanine-ui/core/checkbox';
-import { cx } from '../utils/cx';
-import InputCheck, { InputCheckProps } from '../_internal/InputCheck';
+
+import { CheckedIcon } from '@mezzanine-ui/icons';
+
 import { useCheckboxControlValue } from '../Form/useCheckboxControlValue';
-import { FormControlContext } from '../Form';
-import { CheckboxGroupContext } from './CheckboxGroupContext';
+import Icon from '../Icon';
+import Typography, { TypographyColor } from '../Typography';
+import { composeRefs } from '../utils/composeRefs';
+import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { MezzanineConfig } from '../Provider/context';
+import { CheckboxGroupContext } from './CheckboxGroupContext';
+import { CheckboxPropsBase } from './typings';
+
+type CheckboxInputElementProps = Omit<
+  NativeElementPropsWithoutKeyAndRef<'input'>,
+  | 'checked'
+  | 'defaultChecked'
+  | 'disabled'
+  | 'onChange'
+  | 'placeholder'
+  | 'type'
+  | 'value'
+  | 'id'
+  | `aria-${'disabled' | 'checked'}`
+> & {
+  /**
+   * The name attribute can be provided via inputProps, but it's recommended to use the `name` prop directly.
+   * If both are provided, the `name` prop takes precedence.
+   */
+  name?: string;
+};
 
 export interface CheckboxProps
-  extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'>,
+  CheckboxPropsBase {
   /**
-   * Whether the checkbox is checked.
+   * The id of input element.
    */
-  checked?: boolean;
-  /**
-   * Whether the checkbox is checked by default.
-   * @default false
-   */
-  defaultChecked?: boolean;
-  /**
-   * If true, it means its children checkboxes have at least one unchecked.
-   * @default false
-   */
-  indeterminate?: boolean;
+  id?: string;
   /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
-   *  If you need direct control to the input element, use this prop to provide to it.
-   *
-   * Noticed that if you pass in an id within this prop,
-   *  the rendered label element will have `htmlFor` sync with passed in id.
+   * If you need direct control to the input element, use this prop to provide to it.
    */
-  inputProps?: Omit<
-    NativeElementPropsWithoutKeyAndRef<'input'>,
-    | 'checked'
-    | 'defaultChecked'
-    | 'disabled'
-    | 'onChange'
-    | 'placeholder'
-    | 'readOnly'
-    | 'required'
-    | 'type'
-    | 'value'
-    | `aria-${'disabled' | 'checked'}`
-  >;
+  inputProps?: CheckboxInputElementProps;
   /**
-   * The change event handler of input in checkbox.
+   * The react ref passed to input element.
+   * 
+   * @important When using with react-hook-form's `register`, pass the ref through this prop:
+   * ```tsx
+   * const { register } = useForm();
+   * <Checkbox inputRef={register('fieldName').ref} name="fieldName" />
+   * ```
+   * 
+   * For CheckboxGroup, use `Controller` instead of `register` for better array value handling.
+   */
+  inputRef?: Ref<HTMLInputElement>;
+  /**
+   * The name attribute of the input element.
+   * 
+   * @important When using with react-hook-form or inside a CheckboxGroup, this prop is recommended.
+   * For CheckboxGroup, all checkboxes should share the same `name` attribute.
+   * 
+   * When using with react-hook-form's `register`, ensure this matches the field name:
+   * ```tsx
+   * const { register } = useForm();
+   * <Checkbox {...register('fieldName')} inputRef={register('fieldName').ref} />
+   * ```
+   */
+  name?: string;
+  /**
+   * Invoked by input change event.
    */
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The size of checkbox.
-   * @default 'medium'
-   */
-  size?: CheckboxSize;
-  /**
-   * The value of input in checkbox.
+   * The value of checkbox. Used when checkbox is inside a CheckboxGroup.
+   * 
+   * @important This prop is required when checkbox is inside a CheckboxGroup.
+   * It is also recommended when integrating with react-hook-form.
    */
   value?: string;
 }
@@ -69,76 +100,172 @@ export interface CheckboxProps
  */
 const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
   function Checkbox(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
-    const { disabled: disabledFromFormControl, severity } =
-      useContext(FormControlContext) || {};
     const checkboxGroup = useContext(CheckboxGroupContext);
     const {
       disabled: disabledFromGroup,
       name: nameFromGroup,
-      size: sizeFromGroup,
     } = checkboxGroup || {};
     const {
       checked: checkedProp,
-      children,
+      className,
       defaultChecked,
-      disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
-      error = severity === 'error' || false,
-      indeterminate: indeterminateProp = false,
-      onChange: onChangeProp,
-      size = sizeFromGroup || globalSize,
-      value,
+      description,
+      disabled = disabledFromGroup,
+      id,
+      indeterminate = false,
       inputProps,
+      inputRef: inputRefProp,
+      label,
+      mode = 'main',
+      name = nameFromGroup,
+      onChange: onChangeProp,
+      value,
       ...rest
     } = props;
+
     const {
-      id: inputId,
-      name = nameFromGroup,
+      name: nameFromInputProps,
       ...restInputProps
     } = inputProps || {};
+
+    // Generate unique id if not provided
+    const generatedId = useId();
+    const finalInputId = id ?? generatedId;
+
+    if (checkboxGroup && value == null) {
+      throw new Error(
+        'Checkbox: `value` is required when the checkbox is used inside a CheckboxGroup.',
+      );
+    }
+
     const [checked, onChange] = useCheckboxControlValue({
-      checkboxGroup,
       checked: checkedProp,
       defaultChecked,
       onChange: onChangeProp,
+      checkboxGroup,
       value,
     });
-    const indeterminate = !checked && indeterminateProp;
+
+    // Warn when checkbox is standalone and missing a name (helpful for form libs)
+    useEffect(() => {
+      if (!checkboxGroup && !name && !nameFromInputProps && label) {
+        console.warn(
+          'Checkbox: The `name` prop is recommended when integrating with react-hook-form. ' +
+          `Checkbox with label "${label}" is missing the \`name\` prop.`,
+        );
+      }
+    }, [checkboxGroup, name, nameFromInputProps, label]);
+
+    const isChecked = checked && !indeterminate;
+    const isIndeterminate = indeterminate;
+
+    const resolvedName = useMemo(() => {
+      if (name) return name;
+      if (nameFromInputProps) return nameFromInputProps;
+
+      return finalInputId;
+    }, [finalInputId, name, nameFromInputProps]);
+
+    const labelColor: TypographyColor = useMemo(() => {
+      if (mode === 'chip' && disabled) {
+        return 'text-neutral-light';
+      }
+      return 'text-neutral-solid';
+    }, [mode, disabled]);
+
+    const inputElementRef = useRef<HTMLInputElement | null>(null);
+
+    const composedInputRef = useMemo(
+      () => composeRefs([inputRefProp, inputElementRef]),
+      [inputRefProp],
+    );
+
+    useEffect(() => {
+      if (inputElementRef.current) {
+        inputElementRef.current.indeterminate = isIndeterminate;
+      }
+    }, [isIndeterminate]);
 
     return (
-      <InputCheck
-        {...rest}
+      <label
         ref={ref}
-        control={
-          <span
-            className={cx(classes.host, {
-              [classes.checked]: checked,
-              [classes.indeterminate]: indeterminate,
-            })}
-          >
+        {...rest}
+        className={cx(
+          classes.host,
+          {
+            [classes.checked]: isChecked,
+            [classes.indeterminate]: isIndeterminate,
+            [classes.disabled]: disabled,
+          },
+          classes.mode(mode),
+          className,
+        )}
+      >
+        <div className={classes.inputContainer}>
+          <div className={classes.inputContent}>
             <input
               {...restInputProps}
-              aria-checked={indeterminate ? 'mixed' : checked}
+              aria-checked={isIndeterminate ? 'mixed' : checked}
               aria-disabled={disabled}
-              checked={checked}
+              checked={isChecked}
+              className={classes.input}
               disabled={disabled}
-              id={inputId}
+              id={finalInputId}
+              name={resolvedName}
               onChange={onChange}
-              name={name}
+              ref={composedInputRef}
               type="checkbox"
               value={value}
             />
+            {mode === 'chip' && isChecked && (
+              <Icon
+                aria-hidden="true"
+                className={classes.icon}
+                color="brand"
+                icon={CheckedIcon}
+                size={16}
+              />
+            )}
+            {mode !== 'chip' && isChecked && (
+              <Icon
+                aria-hidden="true"
+                className={classes.icon}
+                color="fixed-light"
+                icon={CheckedIcon}
+                size={7}
+              />
+            )}
+            {mode !== 'chip' && isIndeterminate && (
+              <span aria-hidden="true" className={classes.indeterminateLine} />
+            )}
+          </div>
+        </div>
+        {(label || description) && (
+          <span className={classes.textContainer}>
+            {label && (
+              <Typography
+                className={classes.label}
+                color={labelColor}
+                variant="label-primary"
+              >
+                {label}
+              </Typography>
+            )}
+            {description && mode !== 'chip' && (
+              <Typography
+                className={classes.description}
+                color="text-neutral"
+                variant="caption"
+              >
+                {description}
+              </Typography>
+            )}
           </span>
-        }
-        disabled={disabled}
-        error={error}
-        htmlFor={inputId}
-        size={size}
-      >
-        {children}
-      </InputCheck>
+        )}
+      </label>
     );
   },
 );
 
 export default Checkbox;
+
