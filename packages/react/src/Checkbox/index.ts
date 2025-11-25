@@ -2,24 +2,21 @@ import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
 import Checkbox, { CheckboxProps } from './Checkbox';
 
 export type {
+  CheckboxGroupLayout,
   CheckboxGroupOption,
-  CheckboxGroupOrientation,
 } from '@mezzanine-ui/core/checkbox';
 export { default as CheckAll } from './CheckAll';
 export type { CheckAllProps } from './CheckAll';
 export { default as CheckboxGroup } from './CheckboxGroup';
 export type {
-  CheckboxGroupLevelConfig,
   CheckboxGroupChangeEvent,
   CheckboxGroupChangeEventTarget,
+  CheckboxGroupLevelConfig,
   CheckboxGroupProps,
 } from './CheckboxGroup';
 
-export type {
-  CheckboxComponent,
-  CheckboxProps,
-  CheckboxPropsBase,
-} from './typings';
+export type { CheckboxProps } from './Checkbox';
+export type { CheckboxComponent, CheckboxPropsBase } from './typings';
 
 /**
  * @remark

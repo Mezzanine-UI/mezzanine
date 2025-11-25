@@ -35,9 +35,13 @@ type CheckboxInputElementProps = Omit<
   | 'placeholder'
   | 'type'
   | 'value'
-  | 'id'
   | `aria-${'disabled' | 'checked'}`
 > & {
+  /**
+   * The id attribute can be provided via inputProps, but it's recommended to use the `id` prop directly.
+   * If both are provided, the `id` prop takes precedence.
+   */
+  id?: string;
   /**
    * The name attribute can be provided via inputProps, but it's recommended to use the `name` prop directly.
    * If both are provided, the `name` prop takes precedence.

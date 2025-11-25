@@ -15,9 +15,11 @@ const modes: CheckboxProps['mode'][] = ['main', 'sub', 'chip'];
 
 export const Playground: Story = {
   args: {
+    id: 'playground-checkbox',
     label: 'Checkbox Label',
     description: 'Supporting text',
     mode: 'main',
+    name: 'playground-checkbox',
     checked: false,
     indeterminate: false,
     disabled: false,
@@ -145,12 +147,14 @@ export const State = () => {
         <SectionItem label="Main" direction="column">
           <ItemContent>
             <Typography>Normal:</Typography>
-            <InteractiveCheckbox label="Checkbox Label" description="Supporting text" value="main-1" />
+            <InteractiveCheckbox id="state-main-1" label="Checkbox Label" name="state-main-1" description="Supporting text" value="main-1" />
           </ItemContent>
           <ItemContent>
             <Typography>Checked:</Typography>
             <InteractiveCheckbox
+              id="state-main-2"
               label="Checkbox Label"
+              name="state-main-2"
               description="Supporting text"
               initialChecked
               value="main-2"
@@ -158,12 +162,14 @@ export const State = () => {
           </ItemContent>
           <ItemContent>
             <Typography>Indeterminate:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" indeterminate />
+            <Checkbox id="state-main-indeterminate" label="Checkbox Label" name="state-main-indeterminate" description="Supporting text" indeterminate />
           </ItemContent>
           <ItemContent>
             <Typography>Disabled:</Typography>
             <InteractiveCheckbox
+              id="state-main-3"
               label="Checkbox Label"
+              name="state-main-3"
               description="Supporting text"
               disabled
               value="main-3"
@@ -173,33 +179,33 @@ export const State = () => {
         <SectionItem label="Sub" direction="column">
           <ItemContent>
             <Typography>Normal:</Typography>
-            <InteractiveCheckbox label="Checkbox Label" description="Supporting text" mode="sub" value="sub-1" />
+            <InteractiveCheckbox id="state-sub-1" label="Checkbox Label" name="state-sub-1" description="Supporting text" mode="sub" value="sub-1" />
           </ItemContent>
           <ItemContent>
             <Typography>Checked:</Typography>
-            <InteractiveCheckbox label="Checkbox Label" description="Supporting text" mode="sub" initialChecked value="sub-2" />
+            <InteractiveCheckbox id="state-sub-2" label="Checkbox Label" name="state-sub-2" description="Supporting text" mode="sub" initialChecked value="sub-2" />
           </ItemContent>
           <ItemContent>
             <Typography>Indeterminate:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" mode="sub" indeterminate />
+            <Checkbox id="state-sub-indeterminate" label="Checkbox Label" name="state-sub-indeterminate" description="Supporting text" mode="sub" indeterminate />
           </ItemContent>
           <ItemContent>
             <Typography>Disabled:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" mode="sub" disabled />
+            <Checkbox id="state-sub-disabled" label="Checkbox Label" name="state-sub-disabled" description="Supporting text" mode="sub" disabled />
           </ItemContent>
         </SectionItem>
         <SectionItem label="Chip" direction="column">
           <ItemContent>
             <Typography>Normal:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" mode="chip" />
+            <Checkbox id="state-chip-1" label="Checkbox Label" name="state-chip-1" description="Supporting text" mode="chip" />
           </ItemContent>
           <ItemContent>
             <Typography>Checked:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" mode="chip" checked />
+            <Checkbox id="state-chip-2" label="Checkbox Label" name="state-chip-2" description="Supporting text" mode="chip" checked />
           </ItemContent>
           <ItemContent>
             <Typography>Disabled:</Typography>
-            <Checkbox label="Checkbox Label" description="Supporting text" mode="chip" disabled />
+            <Checkbox id="state-chip-3" label="Checkbox Label" name="state-chip-3" description="Supporting text" mode="chip" disabled />
           </ItemContent>
         </SectionItem>
       </ItemList>
@@ -335,10 +341,11 @@ export const WithForm: Story = {
             maxWidth: '400px',
           }}
         >
-          <Typography variant="heading-6">簡單表單範例</Typography>
-          
+          <Typography>簡單表單範例</Typography>
+
           <Checkbox
             checked={formData.agreeToTerms}
+            id="form-agree-to-terms"
             label="我同意服務條款"
             name="agreeToTerms"
             onChange={(e) => {
@@ -352,6 +359,7 @@ export const WithForm: Story = {
           <Checkbox
             checked={formData.subscribeNewsletter}
             description="訂閱我們的電子報以獲得最新消息"
+            id="form-subscribe-newsletter"
             label="訂閱電子報"
             name="subscribeNewsletter"
             onChange={(e) => {

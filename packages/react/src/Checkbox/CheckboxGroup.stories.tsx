@@ -5,7 +5,6 @@ import CheckboxGroup, {
   CheckboxGroupChangeEvent,
   CheckboxGroupProps,
 } from './CheckboxGroup';
-import Typography from '../Typography';
 
 export default {
   title: 'Data Entry/Checkbox/Group',
@@ -64,29 +63,30 @@ const CheckboxGroupStoryContent = ({
         layout={layout}
         level={level}
         mode={mode}
+        name="checkbox-group-children"
         value={value}
         onChange={handleChange}
       >
-        <Checkbox label="Checkbox Label" value="1" />
-        <Checkbox label="Checkbox Label" value="2" />
-        <Checkbox label="Checkbox Label" value="3" disabled />
-        <Checkbox label="Checkbox Label" value="4" />
-        <Checkbox label="Checkbox Label" value="5" />
-        <Checkbox label="Checkbox Label" value="6" />
-        <Checkbox label="Checkbox Label" value="7" />
-        <Checkbox label="Checkbox Label" value="8" />
-        <Checkbox label="Checkbox Label" value="9" />
-        <Checkbox label="Checkbox Label" value="10" />
-        <Checkbox label="Checkbox Label" value="11" />
-        <Checkbox label="Checkbox Label" value="12" />
-        <Checkbox label="Checkbox Label" value="13" />
-        <Checkbox label="Checkbox Label" value="14" />
-        <Checkbox label="Checkbox Label" value="15" />
-        <Checkbox label="Checkbox Label" value="16" />
-        <Checkbox label="Checkbox Label" value="17" />
-        <Checkbox label="Checkbox Label" value="18" />
-        <Checkbox label="Checkbox Label" value="19" />
-        <Checkbox label="Checkbox Label" value="20" />
+        <Checkbox id="group-child-1" label="Checkbox Label" value="1" />
+        <Checkbox id="group-child-2" label="Checkbox Label" value="2" />
+        <Checkbox id="group-child-3" label="Checkbox Label" value="3" disabled />
+        <Checkbox id="group-child-4" label="Checkbox Label" value="4" />
+        <Checkbox id="group-child-5" label="Checkbox Label" value="5" />
+        <Checkbox id="group-child-6" label="Checkbox Label" value="6" />
+        <Checkbox id="group-child-7" label="Checkbox Label" value="7" />
+        <Checkbox id="group-child-8" label="Checkbox Label" value="8" />
+        <Checkbox id="group-child-9" label="Checkbox Label" value="9" />
+        <Checkbox id="group-child-10" label="Checkbox Label" value="10" />
+        <Checkbox id="group-child-11" label="Checkbox Label" value="11" />
+        <Checkbox id="group-child-12" label="Checkbox Label" value="12" />
+        <Checkbox id="group-child-13" label="Checkbox Label" value="13" />
+        <Checkbox id="group-child-14" label="Checkbox Label" value="14" />
+        <Checkbox id="group-child-15" label="Checkbox Label" value="15" />
+        <Checkbox id="group-child-16" label="Checkbox Label" value="16" />
+        <Checkbox id="group-child-17" label="Checkbox Label" value="17" />
+        <Checkbox id="group-child-18" label="Checkbox Label" value="18" />
+        <Checkbox id="group-child-19" label="Checkbox Label" value="19" />
+        <Checkbox id="group-child-20" label="Checkbox Label" value="20" />
       </CheckboxGroup>
     );
   }
@@ -96,6 +96,7 @@ const CheckboxGroupStoryContent = ({
       layout={layout}
       level={level}
       mode={mode}
+      name="checkbox-group-options"
       options={defaultOptions}
       value={value}
       onChange={handleChange}
@@ -226,6 +227,7 @@ export const Playground: Story = {
         <CheckboxGroup
           {...props}
           level={levelWithOnChange}
+          name={props.name || 'playground-checkbox-group'}
           value={value}
           onChange={handleChange}
         />
@@ -277,6 +279,7 @@ export const WithLevelControlCustomization: Story = {
             label: '全選',
             disabled: false,
           }}
+          name="level-control-group"
           options={defaultOptions}
           value={value}
           onChange={handleChange}
@@ -291,98 +294,5 @@ export const WithLevelControlCustomization: Story = {
 export const WithChildren: Story = {
   render: () => {
     return <CheckboxGroupStoryContent useChildren />;
-  },
-};
-
-export const SimpleExample: Story = {
-  render: () => {
-    const SimpleCheckboxGroupExample = () => {
-      const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-      const options = [
-        { label: '選項 1', value: 'option1' },
-        { label: '選項 2', value: 'option2' },
-        { label: '選項 3', value: 'option3' },
-      ];
-
-      const handleChange = (event: CheckboxGroupChangeEvent) => {
-        setSelectedValues(event.target.values || []);
-        // eslint-disable-next-line no-console
-        console.log('選中的值:', event.target.values);
-      };
-
-      return (
-        <div style={{ padding: '24px' }}>
-          <Typography variant="heading-6" style={{ marginBottom: '16px' }}>
-            簡單的 CheckboxGroup 範例
-          </Typography>
-          <CheckboxGroup
-            name="simple-group"
-            options={options}
-            value={selectedValues}
-            onChange={handleChange}
-          />
-          {selectedValues.length > 0 && (
-            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f3f4f6', borderRadius: '4px' }}>
-              <Typography variant="body">已選中: {selectedValues.join(', ')}</Typography>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    return <SimpleCheckboxGroupExample />;
-  },
-};
-
-export const SimpleLevelControl: Story = {
-  render: () => {
-    const SimpleLevelControlExample = () => {
-      const [selectedValues, setSelectedValues] = useState<string[]>([]);
-
-      const options = [
-        { label: '閱讀', value: 'reading' },
-        { label: '程式設計', value: 'coding' },
-        { label: '運動', value: 'sports' },
-        { label: '音樂', value: 'music' },
-        { label: '旅行', value: 'travel' },
-      ];
-
-      const handleChange = (event: CheckboxGroupChangeEvent) => {
-        setSelectedValues(event.target.values || []);
-        // eslint-disable-next-line no-console
-        console.log('選中的興趣:', event.target.values);
-      };
-
-      return (
-        <div style={{ padding: '24px' }}>
-          <Typography variant="heading-6" style={{ marginBottom: '16px' }}>
-            使用 Level Control 的範例
-          </Typography>
-          <Typography variant="caption" style={{ marginBottom: '16px', color: '#6b7280' }}>
-            點擊「全選」可以一次選擇或取消所有選項
-          </Typography>
-          <CheckboxGroup
-            level={{
-              active: true,
-              label: '全選',
-            }}
-            name="interests"
-            options={options}
-            value={selectedValues}
-            onChange={handleChange}
-          />
-          {selectedValues.length > 0 && (
-            <div style={{ marginTop: '16px', padding: '12px', backgroundColor: '#f3f4f6', borderRadius: '4px' }}>
-              <Typography variant="body">
-                已選擇 {selectedValues.length} 個興趣: {selectedValues.join(', ')}
-              </Typography>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    return <SimpleLevelControlExample />;
   },
 };
