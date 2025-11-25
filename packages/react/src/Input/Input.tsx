@@ -9,6 +9,7 @@ import {
   useState,
   MouseEventHandler,
   useCallback,
+  KeyboardEventHandler,
 } from 'react';
 import { inputClasses as classes } from '@mezzanine-ui/core/input';
 import { cx } from '../utils/cx';
@@ -538,15 +539,32 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           onClear = passwordProps.onClear || onClearFromHook;
         }
 
+        const handlePasswordToggle: KeyboardEventHandler<HTMLElement> = (
+          event,
+        ) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setShowPassword((prev) => !prev);
+          }
+        };
+
         const toggleIcon = showPassword ? (
           <Icon
             icon={EyeIcon}
             onClick={() => setShowPassword((prev) => !prev)}
+            role="button"
+            tabIndex={0}
+            aria-label="Hide password"
+            onKeyDown={handlePasswordToggle}
           />
         ) : (
           <Icon
             icon={EyeInvisibleIcon}
             onClick={() => setShowPassword((prev) => !prev)}
+            role="button"
+            tabIndex={0}
+            aria-label="Show password"
+            onKeyDown={handlePasswordToggle}
           />
         );
 
