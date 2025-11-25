@@ -7,6 +7,10 @@
 @use '../text-field';
 @use './input' as *;
 
+.#{$prefix}-container {
+  width: 100%;
+}
+
 .#{$prefix} {
   width: 100%;
   display: flex;
@@ -93,4 +97,13 @@
       appearance: textfield;
     }
   }
+}
+
+.#{$prefix}__field {
+  width: 100%;
+  display: flex;
+}
+
+.#{$prefix}__indicator-container {
+  padding-top: spacing.semantic-variable(gap, calm);
 }

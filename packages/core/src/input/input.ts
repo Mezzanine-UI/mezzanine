@@ -40,9 +40,12 @@ export const inputPasswordStrengthIndicatorClasses = {
 } as const;
 
 export const inputClasses = {
+  container: `${inputPrefix}-container`,
+  indicatorContainer: `${inputPrefix}__indicator-container`,
   host: inputPrefix,
   withPrefixExternalAction: `${inputPrefix}--with-prefix-external-action`,
   withSuffixExternalAction: `${inputPrefix}--with-suffix-external-action`,
+  field: `${inputPrefix}__field`,
   number: `${inputPrefix}--number`,
   size: (size: InputSize) => `${inputPrefix}--${size}`,
   spinners: `${inputPrefix}__spinners`,
