@@ -20,4 +20,5 @@ export { BookmarkAddIcon } from './bookmark-add';
 export { BookmarkRemoveIcon } from './bookmark-remove';
 export { BookmarkAddedIcon } from './bookmark-added';
 export { ImageIcon } from './image';
+export { BoxIcon } from './box';
 export { CodeIcon } from './code';
