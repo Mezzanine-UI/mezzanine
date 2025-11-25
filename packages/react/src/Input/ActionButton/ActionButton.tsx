@@ -17,7 +17,7 @@ export interface ActionButtonProps
     'type' | 'disabled'
   > {
   /**
-   * Whether the spinner button is disabled.
+   * Whether the action button is disabled.
    */
   disabled?: boolean;
   /**
