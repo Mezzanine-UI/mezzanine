@@ -61,11 +61,19 @@
     .#{$prefix}--number {
       padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
     }
+
+    .#{$prefix}__spinners {
+      margin: calc(spacing.semantic-variable(padding, vertical, calm) * -1) 0;
+    }
   }
 
   &--sub {
     .#{$prefix}--number {
       padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, tiny);
+    }
+
+    .#{$prefix}__spinners {
+      margin: calc(spacing.semantic-variable(padding, vertical, tight) * -1) 0;
     }
   }
 
