@@ -40,6 +40,8 @@ $handler-color: palette.semantic-variable(background, brand) !default;
   }
 
   &__input {
+    width: 48px;
+
     &:first-of-type {
       margin-right: spacing.semantic-variable(gap, base);
     }
@@ -48,18 +50,10 @@ $handler-color: palette.semantic-variable(background, brand) !default;
       margin-left: spacing.semantic-variable(gap, base);
     }
 
-    input {
-      // TODO: waiting v2 Input component implement, remove hardcode style here
-      padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
-      min-width: 48px;
-      height: 36px;
+    .mzn-text-field {
       text-align: center;
-
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        appearance: none;
-        margin: 0;
-      }
+      width: 48px;
+      padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
     }
   }
 
