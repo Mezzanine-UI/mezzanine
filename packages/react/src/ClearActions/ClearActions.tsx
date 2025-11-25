@@ -2,13 +2,12 @@
 
 import { forwardRef } from 'react';
 
-import { CloseIcon } from '@mezzanine-ui/icons';
+import { CloseIcon, DangerousFilledIcon } from '@mezzanine-ui/icons';
 
 import {
   clearActionsClasses as classes,
   ClearActionsEmbeddedVariant,
   ClearActionsStandardVariant,
-  ClearActionsType,
   ClearActionsVariant,
 } from '@mezzanine-ui/core/clear-actions';
 
@@ -29,6 +28,7 @@ type ClearActionsCommonProps = Omit<
 type ClearActionsStandardProps = ClearActionsCommonProps & {
   /**
    * Clear Actions Contextual type.
+   * @default 'standard'
    */
   type?: 'standard';
   /**
@@ -48,20 +48,31 @@ type ClearActionsEmbeddedProps = ClearActionsCommonProps & {
   variant?: ClearActionsEmbeddedVariant;
 };
 
+type ClearActionsClearableProps = ClearActionsCommonProps & {
+  /**
+   * Clear Actions Contextual type.
+   */
+  type: 'clearable';
+};
+
 export type ClearActionsProps =
   | ClearActionsEmbeddedProps
-  | ClearActionsStandardProps;
+  | ClearActionsStandardProps
+  | ClearActionsClearableProps;
 
 /**
  * Mezzanine clear actions button.
  */
 const ClearActions = forwardRef<HTMLButtonElement, ClearActionsProps>(
   function ClearActions(props, ref) {
-    const { className, onClick, type: typeProp, variant, ...rest } = props;
+    const { className, onClick, type = 'standard', ...rest } = props;
 
-    const type: ClearActionsType = typeProp ?? 'standard';
+    const variant =
+      'variant' in props ? props.variant : undefined;
     const resolvedVariant: ClearActionsVariant =
-      variant ?? (type === 'standard' ? 'base' : 'contrast');
+      type === 'clearable'
+        ? 'default'
+        : variant ?? (type === 'standard' ? 'base' : 'contrast');
 
     return (
       <button
@@ -77,7 +88,11 @@ const ClearActions = forwardRef<HTMLButtonElement, ClearActionsProps>(
         onClick={onClick}
         type="button"
       >
-        <Icon className={classes.icon} icon={CloseIcon} />
+        {
+          type === 'clearable'
+            ? <Icon className={classes.icon} icon={DangerousFilledIcon} />
+            : <Icon className={classes.icon} icon={CloseIcon} />
+        }
       </button>
     );
   },

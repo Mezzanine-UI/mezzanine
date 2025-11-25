@@ -76,6 +76,33 @@ describe('<ClearActions />', () => {
         element.classList.contains('mzn-clear-actions--variant-contrast'),
       ).toBeTruthy();
     });
+
+    it('should apply clearable type class when type="clearable"', () => {
+      const { getHostHTMLElement } = render(<ClearActions type="clearable" />);
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-clear-actions--type-clearable'),
+      ).toBeTruthy();
+    });
+
+    it('should default variant to default when type="clearable"', () => {
+      const { getHostHTMLElement } = render(<ClearActions type="clearable" />);
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-clear-actions--variant-default'),
+      ).toBeTruthy();
+    });
+
+    it('should render DangerousFilledIcon when type="clearable"', () => {
+      const { getHostHTMLElement } = render(<ClearActions type="clearable" />);
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector('.mzn-clear-actions__icon');
+
+      expect(iconElement).toBeTruthy();
+      expect(iconElement?.getAttribute('data-icon-name')).toBe('dangerous-filled');
+    });
   });
 
   describe('prop: variant', () => {
