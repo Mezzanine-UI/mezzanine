@@ -88,11 +88,9 @@ const ClearActions = forwardRef<HTMLButtonElement, ClearActionsProps>(
         onClick={onClick}
         type="button"
       >
-        {
-          type === 'clearable'
-            ? <Icon className={classes.icon} icon={DangerousFilledIcon} />
-            : <Icon className={classes.icon} icon={CloseIcon} />
-        }
+        {type === 'clearable'
+          ? <Icon className={classes.icon} icon={DangerousFilledIcon} />
+          : <Icon className={classes.icon} icon={CloseIcon} />}
       </button>
     );
   },
