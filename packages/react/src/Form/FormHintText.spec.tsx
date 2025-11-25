@@ -1,25 +1,25 @@
 import { Severity } from '@mezzanine-ui/system/severity';
-import { formMessageIcons } from '@mezzanine-ui/core/form';
+import { formHintIcons } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { FormField, FormMessage } from '.';
+import { FormField, FormHintText } from '.';
 
-describe('<FormMessage />', () => {
+describe('<FormHintText />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
-    render(<FormMessage ref={ref} />),
+    render(<FormHintText ref={ref} />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<FormMessage className={className} />),
+    render(<FormHintText className={className} />),
   );
 
   it('should render by span and bind host class', () => {
-    const { getHostHTMLElement } = render(<FormMessage>Hello</FormMessage>);
+    const { getHostHTMLElement } = render(<FormHintText>Hello</FormHintText>);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-form-field__message')).toBeTruthy();
@@ -38,7 +38,7 @@ describe('<FormMessage />', () => {
       );
 
       if (severity) {
-        const icon = formMessageIcons[severity];
+        const icon = formHintIcons[severity];
 
         expect(severityIconElement!.tagName.toLowerCase()).toBe('i');
         expect(severityIconElement!.getAttribute('data-icon-name')).toBe(
@@ -52,7 +52,7 @@ describe('<FormMessage />', () => {
     it('should not render severity icon if severity=undefined', () => {
       const { getHostHTMLElement } = render(
         <FormField>
-          <FormMessage>Hello</FormMessage>
+          <FormHintText>Hello</FormHintText>
         </FormField>,
       );
       const element = getHostHTMLElement();
@@ -63,10 +63,10 @@ describe('<FormMessage />', () => {
     const severities: Severity[] = ['success', 'warning', 'error'];
 
     severities.forEach((severity) => {
-      it(`should render ${formMessageIcons[severity].name} icon if severity=${severity}`, () => {
+      it(`should render ${formHintIcons[severity].name} icon if severity=${severity}`, () => {
         const { getHostHTMLElement } = render(
           <FormField severity={severity}>
-            <FormMessage>Hello</FormMessage>
+            <FormHintText>Hello</FormHintText>
           </FormField>,
         );
         const element = getHostHTMLElement();

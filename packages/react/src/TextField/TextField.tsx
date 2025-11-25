@@ -85,25 +85,16 @@ export interface TextFieldBaseProps
 /**
  * Affix props - prefix and suffix
  */
-export type TextFieldAffixProps =
-  | {
-      /**
-       * The prefix addon of the field.
-       */
-      prefix: ReactNode;
-      suffix?: never;
-    }
-  | {
-      prefix?: never;
-      /**
-       * The suffix addon of the field.
-       */
-      suffix: ReactNode;
-    }
-  | {
-      prefix?: never;
-      suffix?: never;
-    };
+export type TextFieldAffixProps = {
+  /**
+   * The prefix addon of the field.
+   */
+  prefix?: ReactNode;
+  /**
+   * The suffix addon of the field.
+   */
+  suffix?: ReactNode;
+};
 
 /**
  * Interactive state - typing, disabled, and readonly are mutually exclusive

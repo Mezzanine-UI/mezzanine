@@ -1,0 +1,128 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './input' as *;
+
+// Inner components (select button)
+$select-button-states: (
+  enable: (
+    text: palette.semantic-variable(text, neutral-solid),
+    icon: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, neutral-faint),
+    border: palette.semantic-variable(border, neutral-light),
+    focus: none,
+  ),
+  hover: (
+    text: palette.semantic-variable(text, neutral-solid),
+    icon: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, brand-ghost),
+    border: palette.semantic-variable(border, neutral-light),
+    focus: none,
+  ),
+  active: (
+    text: palette.semantic-variable(text, neutral-solid),
+    icon: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, brand-faint),
+    border: palette.semantic-variable(border, neutral-light),
+    focus: none,
+  ),
+  focus: (
+    text: palette.semantic-variable(text, neutral-solid),
+    icon: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, neutral-faint),
+    border: palette.semantic-variable(border, neutral-light),
+    focus: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text: palette.semantic-variable(text, neutral-light),
+    icon: palette.semantic-variable(icon, neutral-light),
+    background: palette.semantic-variable(background, neutral-subtle),
+    border: palette.semantic-variable(border, neutral-light),
+    focus: none,
+  ),
+);
+
+$select-button-sizes: (
+  main: (
+    padding-horizontal: spacing.semantic-variable(padding, horizontal, cozy),
+    padding-vertical: spacing.semantic-variable(padding, vertical, calm),
+  ),
+  sub: (
+    padding-horizontal: spacing.semantic-variable(padding, horizontal, tight),
+    padding-vertical: spacing.semantic-variable(padding, vertical, tight),
+  ),
+);
+
+@mixin _apply-select-button-states($state) {
+  $config: map.get($select-button-states, $state);
+
+  --#{$prefix}-select-button-icon-color: map.get($config, icon);
+
+  color: map.get($config, text);
+  background-color: map.get($config, background);
+  border-color: map.get($config, border);
+  box-shadow: map.get($config, focus);
+}
+
+@mixin _apply-select-button-size($size) {
+  $config: map.get($select-button-sizes, $size);
+
+  padding: map.get($config, padding-vertical) map.get($config, padding-horizontal);
+}
+
+.#{$prefix}__select-button {
+  max-width: spacing.semantic-variable(size, element, max);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacing.semantic-variable(gap, tight);
+  border: 1px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+  transition: transition.standard(background-color, fast), transition.standard(color, fast), transition.standard(box-shadow, fast), transition.standard(border-color, fast);
+
+  @include _apply-select-button-states(enable);
+
+  &:hover:not(.#{$prefix}__select-button--disabled) {
+    @include _apply-select-button-states(hover);
+  }
+
+  &:focus-visible:not(.#{$prefix}__select-button--disabled) {
+    @include _apply-select-button-states(focus);
+  }
+
+  &:active:not(.#{$prefix}__select-button--disabled) {
+    @include _apply-select-button-states(active);
+  }
+
+  &--disabled {
+    @include _apply-select-button-states(disabled);
+
+    cursor: default;
+  }
+
+  &--main {
+    @include _apply-select-button-size(main);
+  }
+
+  &--sub {
+    @include _apply-select-button-size(sub);
+  }
+
+  &__icon {
+    color: var(--#{$prefix}-select-button-icon-color);
+  }
+
+  &__text {
+    @include typography.semantic-variable(input);
+
+    color: inherit;
+    white-space: nowrap;
+  }
+}

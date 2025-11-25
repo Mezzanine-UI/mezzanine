@@ -183,6 +183,7 @@ $size-configs: (
   }
 
   @if $border {
+    outline-color: $border;
     border-color: $border;
   }
 
@@ -208,7 +209,9 @@ $size-configs: (
 
   &.#{$prefix}--typing,
   &.#{$prefix}--active {
-    border-width: 2px;
+    outline-width: 1px;
+    outline-style: solid;
+
     @include _apply-state-colors($severity, typing);
   }
 
@@ -266,6 +269,7 @@ $size-configs: (
     color: inherit;
     outline: none;
     box-sizing: border-box;
+    caret-color: palette.semantic-variable(text, neutral-solid);
   }
 
   @each $size-name, $size-config in $size-configs {
@@ -285,11 +289,13 @@ $size-configs: (
     align-items: center;
     flex-shrink: 0;
     gap: spacing.semantic-variable(gap, tiny);
-    color: var(--#{$prefix}-icon-color);
+    color: palette.semantic-variable(text, neutral);
+
+    @include typography.semantic-variable(input);
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
-      color: inherit;
+      color: var(--#{$prefix}-icon-color);
       transition: transition.standard(color, fast);
       will-change: color;
     }
@@ -309,7 +315,6 @@ $size-configs: (
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
-      color: inherit;
     }
   }
 
