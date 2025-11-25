@@ -1,92 +1,506 @@
-@use 'sass:math';
+@use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/effect';
 @use '../_internal/input-check';
 @use './checkbox' as *;
 
-$checkmark-line-width: 1px !default;
-
-$checkmark-short-line-size: 6px !default;
-$checkmark-long-line-size: 10px !default;
-$checkmark-top: 1px !default;
-$checkmark-left: 4px !default;
-$checkmark-short-line-size-small: 4px !default;
-$checkmark-long-line-size-small: 7px !default;
-$checkmark-top-small: 1px !default;
-$checkmark-left-small: 3px !default;
-
 $indeterminate-line-width: 8px !default;
 $indeterminate-line-width-small: 5px !default;
+$indeterminate-line-height: 2px !default;
+
+// Mode configurations
+$mode-configs: (
+  main: (
+    padding-top: spacing.semantic-variable(padding, vertical, calm),
+    label-color: none,
+    label-color-disabled: none,
+  ),
+  sub: (
+    padding-top: spacing.semantic-variable(padding, vertical, tight),
+    label-color: none,
+    label-color-disabled: none,
+  ),
+  chip: (
+    padding-top: none,
+    label-color: palette.semantic-variable(text, neutral-solid),
+    label-color-disabled: palette.semantic-variable(text, neutral-light),
+    input-padding-horizontal: spacing.semantic-variable(padding, horizontal, base),
+    input-padding-vertical: spacing.semantic-variable(padding, vertical, tight),
+    input-padding-left-checked: spacing.semantic-variable(padding, horizontal, tight),
+    input-padding-right-checked: spacing.semantic-variable(padding, horizontal, base),
+  ),
+);
+
+$chip-host-states: (
+  base: (
+    border-radius: radius.variable(tiny),
+    border: 1px solid palette.semantic-variable(border, neutral-faint),
+    background: palette.semantic-variable(background, base),
+    gap: 0,
+  ),
+  checked: (
+    border-color: palette.semantic-variable(border, brand),
+    background-color: palette.semantic-variable(background, brand-ghost),
+    gap: spacing.semantic-variable(gap, tight),
+  ),
+  disabled: (
+    border-color: palette.semantic-variable(border, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+  ),
+  hover-unchecked: (
+    border-color: palette.semantic-variable(border, brand),
+    background: palette.semantic-variable(background, base),
+  ),
+  hover-checked: (
+    border-color: palette.semantic-variable(border, brand),
+  ),
+);
+
+// Get mode property value
+@function _get-mode-property($mode-map, $property) {
+  $value: map.get($mode-map, $property);
+  @return if($value == none, null, $value);
+}
+
+// Apply mode styles
+@mixin _apply-mode-styles($mode) {
+  $mode-config: map.get($mode-configs, $mode);
+  $padding-top: _get-mode-property($mode-config, padding-top);
+
+  @if $padding-top {
+    padding-top: $padding-top;
+  }
+}
+
+// Apply mode styles when checked
+@mixin _apply-mode-styles-checked($mode) {
+  $mode-config: map.get($mode-configs, $mode);
+  $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
+  $padding-left-checked: _get-mode-property($mode-config, input-padding-left-checked);
+  $padding-right-checked: _get-mode-property($mode-config, input-padding-right-checked);
+
+  @if $padding-vertical {
+    padding-top: $padding-vertical;
+    padding-bottom: $padding-vertical;
+  }
+  @if $padding-left-checked {
+    padding-left: $padding-left-checked;
+  }
+  @if $padding-right-checked {
+    padding-right: $padding-right-checked;
+  }
+}
+
+// Apply mode label color styles
+@mixin _apply-mode-label-colors($mode) {
+  $mode-config: map.get($mode-configs, $mode);
+  $label-color: _get-mode-property($mode-config, label-color);
+  $label-color-disabled: _get-mode-property($mode-config, label-color-disabled);
+
+  @if $label-color {
+    --mzn-typography-color: #{$label-color};
+  }
+
+  &.#{$prefix}--disabled {
+    @if $label-color-disabled {
+      --mzn-typography-color: #{$label-color-disabled};
+    }
+  }
+}
+
+// Apply mode input content padding styles
+@mixin _apply-mode-input-padding($mode) {
+  $mode-config: map.get($mode-configs, $mode);
+  $padding-horizontal: _get-mode-property($mode-config, input-padding-horizontal);
+  $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
+  $padding-left-checked: _get-mode-property($mode-config, input-padding-left-checked);
+  $padding-right-checked: _get-mode-property($mode-config, input-padding-right-checked);
+
+  @if $padding-horizontal and $padding-vertical {
+    padding: $padding-vertical $padding-horizontal;
+  }
+}
+
+// Apply chip host state styles
+@mixin _apply-chip-host-styles($state) {
+  $state-config: map.get($chip-host-states, $state);
+
+  @if $state-config {
+    @each $property, $value in $state-config {
+      #{$property}: $value;
+    }
+  }
+}
+
+// Unchecked state configurations
+$unchecked-states: (
+  enable: (
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral),
+  ),
+  hover: (
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, brand),
+  ),
+  disabled: (
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+  ),
+);
+
+// Checked/Indeterminate state configurations
+$checked-states: (
+  enable: (
+    background-color: var(--#{$prefix}-color),
+    border-color: var(--#{$prefix}-color),
+  ),
+  hover: (
+    background-color: palette.semantic-variable(background, brand-strong),
+    border-color: palette.semantic-variable(background, brand-strong),
+  ),
+  disabled: (
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(background, neutral-subtle),
+  ),
+);
+
+// Get color value from state map
+@function _get-state-color($state-map, $property) {
+  $value: map.get($state-map, $property);
+  @return if($value == none, null, $value);
+}
+
+// Apply state colors to input
+@mixin _apply-input-state-colors($state-map) {
+  $bg: _get-state-color($state-map, background-color);
+  $border: _get-state-color($state-map, border-color);
+
+  @if $bg {
+    background-color: $bg;
+  }
+
+  @if $border {
+    border-color: $border;
+  }
+}
+
+@mixin checkbox-indeterminate-line {
+  background-color: var(--#{$prefix}-on-color);
+  opacity: 1;
+  top: 50%;
+  left: 50%;
+  width: var(--#{$prefix}-indeterminate-line-width);
+  height: $indeterminate-line-height;
+  transform: translate(-50%, -50%);
+  border: none;
+}
 
 .#{$prefix} {
-  --#{$prefix}-color: #{palette.color(primary)};
-  --#{$prefix}-on-color: #{palette.color(on-primary)};
-  --#{$prefix}-checkmark-top: #{$checkmark-top};
-  --#{$prefix}-checkmark-left: #{$checkmark-left};
-  --#{$prefix}-short-line-size: #{$checkmark-short-line-size};
-  --#{$prefix}-long-line-size: #{$checkmark-long-line-size};
+  --#{$prefix}-color: var(
+    --#{input-check.$prefix}-color,
+    #{palette.semantic-variable(background, brand)}
+  );
+  --#{$prefix}-on-color: var(
+    --#{input-check.$prefix}-on-color,
+    #{palette.semantic-variable(icon, fixed-light)}
+  );
   --#{$prefix}-indeterminate-line-width: #{$indeterminate-line-width};
 
   position: relative;
-  width: 100%;
-  height: 100%;
-  border: 1px solid palette.color(text-secondary);
-  transition: transition.standard(background-color), transition.standard(border-color);
-  will-change: background-color, border-color;
+  width: fit-content;
+  height: fit-content;
   box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight);
 
-  &::before,
-  &::after {
-    display: block;
-    position: absolute;
-    content: '';
-    opacity: 0;
-    transition: transition.standard(opacity);
-    will-change: opacity;
+  &:has(.#{$prefix}__text-container) {
+    &.#{$prefix}--main {
+      @include _apply-mode-styles(main);
+    }
+
+    &.#{$prefix}--sub {
+      @include _apply-mode-styles(sub);
+    }
+
+    &.#{$prefix}--chip {
+      @include _apply-mode-styles(chip);
+      @include _apply-mode-input-padding(chip);
+      @include _apply-chip-host-styles(base);
+      transition:
+        transition.standard(border-color, fast),
+        transition.standard(background-color, fast),
+        transition.standard(box-shadow, fast);
+
+      // Chip mode checked state
+      &.#{$prefix}--checked {
+        @include _apply-chip-host-styles(checked);
+        @include _apply-mode-styles-checked(chip);
+      }
+
+      // Chip mode disabled state
+      &.#{$prefix}--disabled,
+      .#{input-check.$prefix}--disabled & {
+        @include _apply-chip-host-styles(disabled);
+      }
+    }
+  }
+
+  &__input-container {
+    display: flex;
+    align-items: center;
+    height: fit-content;
+  }
+
+  &__input-content {
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    width: spacing.semantic-variable(size, element, base-fixed);
+    height: spacing.semantic-variable(size, element, base-fixed);
+    padding: spacing.semantic-variable(padding, horizontal, micro)
+      spacing.semantic-variable(padding, horizontal, micro);
+
+    // Chip mode: width and height should be auto
+    .#{$prefix}--chip & {
+      width: auto;
+      height: auto;
+      padding: 0;
+    }
+
+    // Chip mode checked: padding should be 0
+    .#{$prefix}--chip.#{$prefix}--checked & {
+      padding: 0;
+    }
   }
 
-  &--checked,
-  &--indeterminate {
-    background-color: var(--#{input-check.$prefix}-color);
+  &__icon {
+    pointer-events: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    // set the checkmark icon thickness
+    svg {
+      filter: drop-shadow(0 0 0.3px currentColor);
+    }
+
+    path {
+      stroke: currentColor;
+      stroke-width: 0.5px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }
+
+    // Chip mode checked: icon size should be 16px
+    .#{$prefix}--chip.#{$prefix}--checked & {
+      --mzn-icon-size: 16px;
+      --mzn-icon-color: #{palette.semantic-variable(icon, brand)};
+      position: relative;
+      top: initial;
+      left: initial;
+      transform: initial; 
+    }
   }
 
-  &--checked::before,
-  &--indeterminate::after {
-    border: $checkmark-line-width solid var(--#{$prefix}-on-color);
-    border-top: 0;
-    border-left: 0;
+  &__indeterminate-line {
+    pointer-events: none;
+    position: absolute;
+    background-color: var(--#{$prefix}-on-color);
     opacity: 1;
+    top: 50%;
+    left: 50%;
+    width: var(--#{$prefix}-indeterminate-line-width);
+    height: $indeterminate-line-height;
+    transform: translate(-50%, -50%);
+    border: none;
+    z-index: 1;
   }
+
+  &__text-container {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, tight);
+  }
+
+  &__label {
+    .#{$prefix}--main & {
+      @include _apply-mode-label-colors(main);
+    }
+
+    .#{$prefix}--sub & {
+      @include _apply-mode-label-colors(sub);
+    }
+
+    .#{$prefix}--chip & {
+      @include _apply-mode-label-colors(chip);
+    }
+  }
+
+  &__input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid;
+    border-radius: radius.variable(tiny);
+    cursor: pointer;
+    height: spacing.semantic-variable(size, element, slim);
+    margin: 0;
+    padding: 0;
+    position: relative;
+    transition:
+      transition.standard(border-color, fast),
+      transition.standard(background-color, fast),
+      transition.standard(box-shadow, fast);
+    width: spacing.semantic-variable(size, element, slim);
+    box-shadow: none;
+    outline: none;
+    z-index: 0;
+
+    // Enable state (unchecked)
+    @include _apply-input-state-colors(map.get($unchecked-states, enable));
+
+    // Checked/Indeterminate enable state
+    &:checked,
+    &:indeterminate {
+      @include _apply-input-state-colors(map.get($checked-states, enable));
+    }
+
+    &:focus-visible:not(:disabled),
+    &:focus:not(:disabled) {
+      box-shadow: effect.variable(focus, primary);
+    }
+
+    // Chip mode: hide native input
+    .#{$prefix}--chip & {
+      position: absolute;
+      width: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+  &:focus-within:not(.#{$prefix}--disabled) {
+    .#{$prefix}__input {
+      box-shadow: effect.variable(focus, primary);
+    }
+
+    // Chip mode focus state
+    &.#{$prefix}--chip {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
 
   &--checked {
-    &::before {
-      top: var(--#{$prefix}-checkmark-top);
-      left: var(--#{$prefix}-checkmark-left);
-      width: var(--#{$prefix}-short-line-size);
-      height: var(--#{$prefix}-long-line-size);
-      transform: rotate(45deg);
-      transform-origin: center;
+    .#{$prefix}__input {
+      @include _apply-input-state-colors(map.get($checked-states, enable));
     }
   }
 
   &--indeterminate {
-    &::after {
-      top: 50%;
-      left: 50%;
-      width: var(--#{$prefix}-indeterminate-line-width);
-      height: 0;
-      border-right: 0;
-      transform: translate(-50%, -50%);
+    .#{$prefix}__input {
+      @include _apply-input-state-colors(map.get($checked-states, enable));
     }
   }
 
-  &:hover,
-  .#{input-check.$prefix}:hover &,
-  &--checked,
+  &--disabled,
   .#{input-check.$prefix}--disabled & {
-    border-color: var(--#{input-check.$prefix}-color);
+    .#{$prefix}__input-content {
+      cursor: not-allowed;
+    }
+
+    .#{$prefix}__input {
+      @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+      cursor: not-allowed;
+    }
+
+    // Chip mode disabled state (cursor only, colors handled in &:has block)
+    &.#{$prefix}--chip {
+      @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+      cursor: not-allowed;
+    }
+
+    &.#{$prefix}--checked,
+    &.#{$prefix}--indeterminate {
+      .#{$prefix}__input {
+        @include _apply-input-state-colors(map.get($checked-states, disabled));
+      }
+
+      // Chip mode checked disabled state (colors handled in &:has block)
+      &.#{$prefix}--chip {
+        @include _apply-input-state-colors(map.get($checked-states, disabled));
+      }
+
+      .#{$prefix}__icon {
+        opacity: 0.5;
+      }
+
+      .#{$prefix}__indeterminate-line {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  // Hover state
+  &:hover:not(.#{$prefix}--disabled):not(.#{input-check.$prefix}--disabled &),
+  .#{input-check.$prefix}:hover &:not(.#{$prefix}--disabled) {
+    .#{$prefix}__input {
+      &:not(:checked):not(:indeterminate) {
+        @include _apply-input-state-colors(map.get($unchecked-states, hover));
+      }
+
+      &:checked,
+      &:indeterminate {
+        @include _apply-input-state-colors(map.get($checked-states, hover));
+      }
+    }
+
+    // Chip mode hover state (unchecked)
+    &.#{$prefix}--chip {
+      &:not(.#{$prefix}--checked) {
+        @include _apply-chip-host-styles(hover-unchecked);
+      }
+    }
+
+    &.#{$prefix}--checked,
+    &.#{$prefix}--indeterminate {
+      .#{$prefix}__input {
+        @include _apply-input-state-colors(map.get($checked-states, hover));
+
+        &:checked,
+        &:indeterminate {
+          @include _apply-input-state-colors(map.get($checked-states, hover));
+        }
+      }
+
+      // Chip mode hover state (checked)
+      &.#{$prefix}--chip {
+        @include _apply-chip-host-styles(hover-checked);
+      }
+    }
+  }
+
+  &--disabled:hover,
+  .#{input-check.$prefix}--disabled &:hover {
+    .#{$prefix}__input {
+      border-color: palette.semantic-variable(border, neutral-light);
+    }
+
+    &.#{$prefix}--chip {
+      @include _apply-chip-host-styles(disabled);
+    }
   }
 
   &__all {
@@ -99,11 +513,34 @@ $indeterminate-line-width-small: 5px !default;
 .#{input-check.$prefix} {
   &--small {
     .#{$prefix} {
-      --#{$prefix}-checkmark-top: #{$checkmark-top-small};
-      --#{$prefix}-checkmark-left: #{$checkmark-left-small};
-      --#{$prefix}-short-line-size: #{$checkmark-short-line-size-small};
-      --#{$prefix}-long-line-size: #{$checkmark-long-line-size-small};
       --#{$prefix}-indeterminate-line-width: #{$indeterminate-line-width-small};
     }
+  }
+}
+
+.#{$group-prefix} {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+
+  &--content-wrapper {
+    display: flex;
+    padding-left: spacing.semantic-variable(gap, comfort);
+  }
+
+  &--horizontal {
+    column-gap: spacing.semantic-variable(gap, comfort);
+    row-gap: spacing.semantic-variable(gap, none);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &--vertical {
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, none);
+  }
+
+  &--chip {
+    gap: spacing.semantic-variable(gap, slim);
   }
 }
