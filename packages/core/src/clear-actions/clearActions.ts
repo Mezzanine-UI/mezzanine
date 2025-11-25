@@ -1,12 +1,29 @@
-export type ClearActionsType = 'embedded' | 'standard';
+export type ClearActionsType = 'embedded' | 'standard' | 'clearable';
 
 export type ClearActionsEmbeddedVariant = 'contrast' | 'emphasis';
 
 export type ClearActionsStandardVariant = 'base' | 'inverse';
 
+export enum ClearActionsTypeEnum {
+  Embedded = 'embedded',
+  Standard = 'standard',
+  Clearable = 'clearable',
+}
+
+export enum ClearActionsEmbeddedVariantEnum {
+  Contrast = 'contrast',
+  Emphasis = 'emphasis',
+}
+
+export enum ClearActionsStandardVariantEnum {
+  Base = 'base',
+  Inverse = 'inverse',
+}
+
 export type ClearActionsVariant =
   | ClearActionsEmbeddedVariant
-  | ClearActionsStandardVariant;
+  | ClearActionsStandardVariant
+  | 'default';
 
 export const clearActionsPrefix = 'mzn-clear-actions';
 
@@ -17,4 +34,3 @@ export const clearActionsClasses = {
   variant: (variant: ClearActionsVariant) =>
     `${clearActionsPrefix}--variant-${variant}`,
 } as const;
-
