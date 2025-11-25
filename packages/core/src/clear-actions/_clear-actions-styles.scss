@@ -103,12 +103,37 @@ $embedded-emphasis: (
   ),
 );
 
+// Clearable type - Default variant
+$clearable-default: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
 // Variant hierarchy map - 將所有 variants 整合
 $variant-hierarchy: (
   embedded-contrast: $embedded-contrast,
   embedded-emphasis: $embedded-emphasis,
   standard-base: $standard-base,
   standard-inverse: $standard-inverse,
+  clearable-default: $clearable-default,
 );
 
 // 取得特定 variant 和 hierarchy 的顏色值
@@ -177,6 +202,9 @@ $variant-keys-by-type: (
     base: standard-base,
     inverse: standard-inverse,
   ),
+  clearable: (
+    default: clearable-default,
+  ),
 );
 
 .#{$prefix} {
@@ -192,8 +220,9 @@ $variant-keys-by-type: (
   border-radius: radius.variable(full);
   cursor: pointer;
   appearance: none;
-  // TODO: should be check transition animation after design is confirmed
-  transition: transition.standard(background-color);
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(box-shadow, fast);
 
   &:focus {
     outline: none;
@@ -202,6 +231,7 @@ $variant-keys-by-type: (
   &__icon {
     font-size: spacing.semantic-variable(size, element, base);
     color: var(--#{$prefix}-icon-color, #{palette.semantic-variable(icon, neutral)});
+    transition: transition.standard(color, fast);
   }
 
   // 套用所有 type + variant 組合
@@ -211,6 +241,14 @@ $variant-keys-by-type: (
         @include _apply-variant-states($variant-key);
       }
     }
+  }
+
+  // Clearable 特殊樣式
+  &--type-clearable {
+    width: spacing.semantic-variable(size, element, base-fixed);
+    height: spacing.semantic-variable(size, element, base-fixed);
+    padding: spacing.semantic-variable(padding, horizontal, none)
+      spacing.semantic-variable(padding, vertical, none);
   }
 }
 

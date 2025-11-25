@@ -263,6 +263,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
         {suffix && <div className={classes.suffix}>{suffix}</div>}
         {clearable && (
           <ClearActions
+            type="clearable"
             className={classes.clearIcon}
             onClick={(event) => {
               if (!disabled && !readonly && onClear) {

@@ -9,7 +9,7 @@ const appearanceOptions = [
     props: {
       type: 'standard',
       variant: 'base',
-    } as Pick<ClearActionsProps, 'type' | 'variant'>,
+    } as ClearActionsProps,
   },
   {
     value: 'standard-inverse',
@@ -18,7 +18,7 @@ const appearanceOptions = [
     props: {
       type: 'standard',
       variant: 'inverse',
-    } as Pick<ClearActionsProps, 'type' | 'variant'>,
+    } as ClearActionsProps,
   },
   {
     value: 'embedded-contrast',
@@ -27,7 +27,7 @@ const appearanceOptions = [
     props: {
       type: 'embedded',
       variant: 'contrast',
-    } as Pick<ClearActionsProps, 'type' | 'variant'>,
+    } as ClearActionsProps,
   },
   {
     value: 'embedded-emphasis',
@@ -36,7 +36,15 @@ const appearanceOptions = [
     props: {
       type: 'embedded',
       variant: 'emphasis',
-    } as Pick<ClearActionsProps, 'type' | 'variant'>,
+    } as ClearActionsProps,
+  },
+  {
+    value: 'clearable-base',
+    label: 'Clearable · Base Button',
+    backgroundColor: '#F3F4F6',
+    props: {
+      type: 'clearable',
+    } as ClearActionsProps,
   },
 ] as const;
 
@@ -138,7 +146,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       options: appearanceOptions.map((option) => option.value),
       labels: appearanceLabels,
       description:
-        'Select one of the four design-approved combinations.',
+        'Select one of the five design-approved combinations.',
     },
   },
   render: ({ appearance, ...rest }) => {
@@ -213,6 +221,16 @@ export const EmbeddedEmphasis: Story = {
   },
   render: renderWithinBackground(
     getAppearanceOption('embedded-emphasis').backgroundColor,
+  ),
+};
+
+export const ClearableBase: Story = {
+  args: {
+    onClick: logOnClick,
+    type: 'clearable',
+  },
+  render: renderWithinBackground(
+    getAppearanceOption('clearable-base').backgroundColor,
   ),
 };
 
