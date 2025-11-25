@@ -183,6 +183,7 @@ $size-configs: (
   }
 
   @if $border {
+    outline-color: $border;
     border-color: $border;
   }
 
@@ -208,7 +209,9 @@ $size-configs: (
 
   &.#{$prefix}--typing,
   &.#{$prefix}--active {
-    border-width: 2px;
+    outline-width: 1px;
+    outline-style: solid;
+
     @include _apply-state-colors($severity, typing);
   }
 
