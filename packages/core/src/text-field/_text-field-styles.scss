@@ -315,7 +315,6 @@ $size-configs: (
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
-      color: inherit;
     }
   }
 
