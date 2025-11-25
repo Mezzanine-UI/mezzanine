@@ -8,6 +8,7 @@ import {
   ReactNode,
   useState,
   MouseEventHandler,
+  useCallback,
 } from 'react';
 import { inputClasses as classes } from '@mezzanine-ui/core/input';
 import { cx } from '../utils/cx';
@@ -24,6 +25,9 @@ import Icon from '../Icon';
 import SpinnerButton from './SpinnerButton';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import SelectButton, { SelectButtonProps } from './SelectButton';
+import PasswordStrengthIndicator, {
+  PasswordStrengthIndicatorProps,
+} from './PasswordStrengthIndicator';
 
 /**
  * Base props shared by all Input variants
@@ -210,8 +214,28 @@ export type SelectInputProps = InputBaseProps & {
 /**
  * 8. Password Input - Password input with visibility toggle
  */
+export type WithPasswordStrengthIndicator =
+  | {
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator?: false;
+      passwordStrengthIndicator?: never;
+    }
+  | {
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator: true;
+      /**
+       * The props for password strength indicator.
+       */
+      passwordStrengthIndicator: PasswordStrengthIndicatorProps;
+    };
+
 export type PasswordInputProps = InputBaseProps &
-  ClearableInput & {
+  ClearableInput &
+  WithPasswordStrengthIndicator & {
     variant: 'password';
   };
 
@@ -256,37 +280,36 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     const inputRef = useRef<HTMLInputElement>(null);
     const [showPassword, setShowPassword] = useState(false);
 
-    // Handle formatter/parser logic
-    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-      let newValue = event.target.value;
-
-      // Parse the formatted value back to raw value if parser is provided
-      if (parser) {
-        newValue = parser(newValue);
-      }
-
-      // Create a new event with parsed value for onChange callback
-      const syntheticEvent = {
-        ...event,
-        target: {
-          ...event.target,
-          value: newValue,
-        },
-      } as React.ChangeEvent<HTMLInputElement>;
-
-      if (onChangeProp) {
-        onChangeProp(syntheticEvent);
-      } else {
-        onChange(syntheticEvent);
-      }
-    };
-
     const [value, onChange, onClearFromHook] = useInputWithClearControlValue({
       defaultValue,
-      onChange: handleChange,
+      onChange: onChangeProp,
       ref: inputRef,
       value: valueProp,
     });
+
+    // Handle formatter/parser logic
+    const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+      (event) => {
+        let newValue = event.target.value;
+
+        // Parse the formatted value back to raw value if parser is provided
+        if (parser) {
+          newValue = parser(newValue);
+        }
+
+        // Create a new event with parsed value for onChange callback
+        const syntheticEvent = {
+          ...event,
+          target: {
+            ...event.target,
+            value: newValue,
+          },
+        } as React.ChangeEvent<HTMLInputElement>;
+
+        onChange(syntheticEvent);
+      },
+      [parser, onChange],
+    );
 
     // Format the display value
     const displayValue = formatter ? formatter(value) : value;
@@ -312,6 +335,10 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     > = {};
     let prefixExternalButton: ReactNode = undefined;
     let suffixExternalButton: ReactNode = undefined;
+    let showPasswordStrengthIndicator: boolean = false;
+    let passwordStrengthIndicatorProps:
+      | PasswordStrengthIndicatorProps
+      | undefined = undefined;
 
     // Handle different input types with type narrowing
     switch (variant) {
@@ -319,7 +346,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         const baseProps = props as BaseInputProps;
 
         if (baseProps.clearable) {
-          clearable = true;
+          clearable = baseProps.clearable;
           onClear = baseProps.onClear || onClearFromHook;
         }
 
@@ -329,7 +356,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         const affixProps = props as WithAffixInputProps;
 
         if (affixProps.clearable) {
-          clearable = true;
+          clearable = affixProps.clearable;
           onClear = affixProps.onClear || onClearFromHook;
         }
 
@@ -525,32 +552,18 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 
         suffix = toggleIcon;
 
+        if (passwordProps.showPasswordStrengthIndicator) {
+          showPasswordStrengthIndicator = true;
+          passwordStrengthIndicatorProps =
+            passwordProps.passwordStrengthIndicator;
+        }
+
         break;
       }
 
       default:
         break;
     }
-
-    // Prepare common TextField props
-    const commonProps = {
-      active,
-      className: cx(
-        classes.host,
-        {
-          [classes.number]: variant === 'number',
-        },
-        classes.size(size),
-        className,
-      ),
-      clearable,
-      error,
-      fullWidth,
-      onClear,
-      size,
-      prefix,
-      suffix,
-    };
 
     const interactiveProps: TextFieldInteractiveStateProps = (() => {
       if (disabled) {
@@ -566,35 +579,63 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     })();
 
     return (
-      <div
-        className={cx(classes.host, {
-          [classes.withPrefixExternalAction]:
-            prefixExternalButton !== undefined,
-          [classes.withSuffixExternalAction]:
-            suffixExternalButton !== undefined,
-        })}
-      >
-        {prefixExternalButton}
-        <TextField ref={ref} {...commonProps} {...interactiveProps}>
-          <input
-            {...defaultInputProps}
-            {...inputProps}
-            id={id}
-            name={name}
-            aria-disabled={disabled}
-            aria-multiline={false}
-            aria-readonly={readonly}
-            disabled={disabled}
-            onChange={formatter || parser ? handleChange : onChange}
-            placeholder={placeholder}
-            readOnly={readonly}
-            ref={composedInputRef}
-            style={{ ...inputStyle, ...inputProps?.style }}
-            type={inputType ?? defaultInputType}
-            value={displayValue}
+      <div ref={ref} className={cx(classes.container, className)}>
+        <div
+          className={cx(classes.host, {
+            [classes.withPrefixExternalAction]:
+              prefixExternalButton !== undefined,
+            [classes.withSuffixExternalAction]:
+              suffixExternalButton !== undefined,
+          })}
+        >
+          {prefixExternalButton}
+          <TextField
+            active={active}
+            className={cx(
+              classes.field,
+              {
+                [classes.number]: variant === 'number',
+              },
+              classes.size(size),
+            )}
+            clearable={clearable}
+            error={error}
+            fullWidth={fullWidth}
+            onClear={onClear}
+            size={size}
+            prefix={prefix}
+            suffix={suffix}
+            {...interactiveProps}
+          >
+            <input
+              {...defaultInputProps}
+              {...inputProps}
+              id={id}
+              name={name}
+              aria-disabled={disabled}
+              aria-multiline={false}
+              aria-readonly={readonly}
+              disabled={disabled}
+              onChange={formatter || parser ? handleChange : onChange}
+              placeholder={placeholder}
+              readOnly={readonly}
+              ref={composedInputRef}
+              style={{ ...inputStyle, ...inputProps?.style }}
+              type={inputType ?? defaultInputType}
+              value={displayValue}
+            />
+          </TextField>
+          {suffixExternalButton}
+        </div>
+        {variant === 'password' && showPasswordStrengthIndicator ? (
+          <PasswordStrengthIndicator
+            {...(passwordStrengthIndicatorProps || {})}
+            className={cx(
+              classes.indicatorContainer,
+              passwordStrengthIndicatorProps?.className,
+            )}
           />
-        </TextField>
-        {suffixExternalButton}
+        ) : null}
       </div>
     );
   },

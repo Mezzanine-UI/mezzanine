@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Icon from '../Icon';
 import Input from '.';
 import Typography from '../Typography';
+import { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
 
 export default {
   title: 'Data Entry/Input',
@@ -510,6 +511,46 @@ export const PasswordInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
+  const [password, setPassword] = useState('');
+
+  const calculatePasswordStrength = (
+    pwd: string,
+  ): PasswordStrengthIndicatorProps => {
+    const length = pwd.length;
+    const hasLowerCase = /[a-z]/.test(pwd);
+    const hasUpperCase = /[A-Z]/.test(pwd);
+    const hasNumbers = /\d/.test(pwd);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+
+    const hasMinLength = length >= 8;
+    const hasMixedCase = hasLowerCase && hasUpperCase;
+    const hasNumberOrSpecial = hasNumbers || hasSpecialChars;
+
+    const allCriteriaMet = hasMinLength && hasMixedCase && hasNumberOrSpecial;
+
+    const hintTexts: PasswordStrengthIndicatorProps['hintTexts'] = [
+      {
+        severity: hasMinLength ? 'success' : 'info',
+        hint: '至少 8 個字元',
+      },
+      {
+        severity: hasMixedCase ? 'success' : 'info',
+        hint: '包含大小寫字母',
+      },
+      {
+        severity: hasNumberOrSpecial ? 'success' : 'info',
+        hint: '包含數字或特殊符號',
+      },
+    ];
+
+    return {
+      strength: allCriteriaMet ? 'strong' : length >= 6 ? 'medium' : 'weak',
+      hintTexts,
+    };
+  };
+
+  const passwordStrengthIndicator = calculatePasswordStrength(password);
+
   return (
     <div
       style={{
@@ -528,6 +569,20 @@ export const PasswordInput = () => {
           Basic Password
         </Typography>
         <Input variant="password" placeholder="請輸入密碼" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          With Password Strength Indicator
+        </Typography>
+        <Input
+          variant="password"
+          placeholder="請輸入密碼"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          showPasswordStrengthIndicator
+          passwordStrengthIndicator={passwordStrengthIndicator}
+        />
       </section>
 
       <section style={containerStyle}>
@@ -589,7 +644,7 @@ export const FormatterAndParser = () => {
             // Add thousand separators
             return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
           }}
-          parser={(value) => value.replace(/,/g, '')}
+          parser={(value) => value.replace(/,/g, '').replace(/\D/g, '')}
         />
         <Typography variant="caption" color="text-neutral">
           Raw value: {currencyValue}

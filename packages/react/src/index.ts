@@ -225,7 +225,23 @@ export type {
   FormHintTextProps,
 } from './Form';
 export { default as Input } from './Input';
-export type { InputProps, InputSize } from './Input';
+export type {
+  InputSize,
+  InputStrength,
+  InputBaseProps,
+  ClearableInput,
+  NumberInput,
+  BaseInputProps,
+  WithAffixInputProps,
+  SearchInputProps,
+  NumberInputProps,
+  UnitInputProps,
+  ActionInputProps,
+  SelectInputProps,
+  WithPasswordStrengthIndicator,
+  PasswordInputProps,
+  InputProps,
+} from './Input';
 export {
   PickerTrigger,
   RangePickerTrigger,
@@ -295,7 +311,7 @@ export type {
   ToggleSize as SwitchSize,
 } from './Toggle';
 export { default as Textarea } from './Textarea';
-export type { TextareaProps, TextareaSize } from './Textarea';
+export type { TextareaProps } from './Textarea';
 export { default as TextField } from './TextField';
 export type {
   TextFieldProps,
