@@ -43,11 +43,11 @@ $handler-color: palette.semantic-variable(background, brand) !default;
     width: 48px;
 
     &:first-of-type {
-      margin-right: spacing.semantic-variable(gap, base);
+      margin-right: spacing.semantic-variable(gap, comfort);
     }
 
     &:last-of-type {
-      margin-left: spacing.semantic-variable(gap, base);
+      margin-left: spacing.semantic-variable(gap, comfort);
     }
 
     .mzn-text-field {
@@ -173,11 +173,11 @@ $handler-color: palette.semantic-variable(background, brand) !default;
   height: spacing.semantic-variable(size, element, base);
 
   &:first-of-type {
-    margin-right: spacing.semantic-variable(gap, base);
+    margin-right: spacing.semantic-variable(gap, comfort);
   }
 
   &:last-of-type {
-    margin-left: spacing.semantic-variable(gap, base);
+    margin-left: spacing.semantic-variable(gap, comfort);
   }
 }
 
