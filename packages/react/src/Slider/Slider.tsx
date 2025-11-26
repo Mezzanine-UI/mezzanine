@@ -207,21 +207,18 @@ function SliderComponent(props: SliderComponentProps) {
     </div>
   );
 
-  const getTick = useCallback(
-    (tickText: number | string, leftPercent: number) => {
-      return (
-        <span
-          aria-hidden="true"
-          className={classes.tick}
-          key={tickText}
-          style={{ left: `${leftPercent}%` }}
-        >
-          <Typography variant="caption">{tickText}</Typography>
-        </span>
-      );
-    },
-    [],
-  );
+  const getTick = useCallback((tickText: number | string, percent: number) => {
+    return (
+      <span
+        aria-hidden="true"
+        className={classes.tick}
+        key={tickText}
+        style={{ left: `${percent}%` }}
+      >
+        <Typography variant="caption">{tickText}</Typography>
+      </span>
+    );
+  }, []);
 
   const [startInputValue, setStartInputValue] = useState(() => {
     if (!isRangeSlider(value)) {
@@ -468,7 +465,7 @@ function SliderComponent(props: SliderComponentProps) {
             {getTick(min, 0)}
             {Array.isArray(withTick)
               ? withTick.map((tick) =>
-                  tick <= max && tick >= min
+                  tick < max && tick > min
                     ? getTick(tick, ((tick - min) / (max - min)) * 100)
                     : null,
                 )
