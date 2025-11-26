@@ -10,6 +10,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Portal, { PortalProps } from '../Portal';
 import { Fade } from '../Transition';
 import { useScrollLock } from '../hooks/useScrollLock';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 export interface BackdropProps
   extends Pick<PortalProps, 'children' | 'container' | 'disablePortal'>,
@@ -90,7 +91,17 @@ const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
           )}
           role="presentation"
         >
-          <Fade in={open}>
+          <Fade
+            in={open}
+            duration={{
+              enter: MOTION_DURATION.fast,
+              exit: MOTION_DURATION.fast,
+            }}
+            easing={{
+              enter: MOTION_EASING.standard,
+              exit: MOTION_EASING.standard,
+            }}
+          >
             <div
               aria-hidden="true"
               className={cx(classes.backdrop, classes.backdropVariant(variant))}
