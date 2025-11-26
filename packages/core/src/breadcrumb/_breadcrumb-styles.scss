@@ -1,0 +1,63 @@
+/* stylelint-disable declaration-property-value-keyword-no-deprecated */
+@use 'sass:math';
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography';
+@use '../button';
+@use './breadcrumb' as *;
+
+.#{$prefix} {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: spacing.semantic-variable(gap, tiny);
+}
+
+.#{$prefix}__item {
+  @include button.reset();
+
+  align-items: center;
+  border-radius: radius.variable(tiny);
+  color: palette.semantic-variable(text, neutral);
+  display: flex;
+  gap: spacing.semantic-variable(gap, tiny);
+  transition: transition.standard((color, background-color, box-shadow), fast);
+  white-space: nowrap;
+
+  &__icon {
+    color: palette.semantic-variable(icon, neutral);
+    transition: transition.standard(color, fast);
+  }
+
+  &__menu {
+    inset-block-start: calc(100% + spacing.semantic-variable(gap, tight-fixed));
+    inset-inline-start: 0;
+    position: absolute;
+  }
+
+  &--current {
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+
+  &--expanded {
+    color: palette.semantic-variable(text, neutral-solid);
+
+    .#{$prefix}__item__icon {
+      color: palette.semantic-variable(icon, neutral-solid);
+    }
+  }
+
+  &:focus-visible {
+    background-color: palette.semantic-variable(background, white);
+    box-shadow: effect.variable(focus, primary);
+  }
+}
+
+a.#{$prefix}__item {
+  &:hover {
+    color: palette.semantic-variable(text, brand);
+  }
+}
