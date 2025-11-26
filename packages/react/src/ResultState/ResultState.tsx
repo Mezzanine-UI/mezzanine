@@ -19,16 +19,35 @@ import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
+/**
+ * Single button configuration - only secondary button is allowed
+ */
+type SingleButtonAction = {
+  secondaryButton: ButtonProps;
+  primaryButton?: never;
+};
+
+/**
+ * Two buttons configuration - both secondary and primary buttons
+ */
+type TwoButtonsAction = {
+  secondaryButton: ButtonProps;
+  primaryButton: ButtonProps;
+};
+
+/**
+ * Actions can be either single button or two buttons
+ */
+export type ResultStateActions = SingleButtonAction | TwoButtonsAction;
+
 export interface ResultStateProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * Action buttons configuration for primary and secondary actions.
-   * Renders buttons in the order: secondary (left), primary (right).
+   * Action buttons configuration.
+   * - Single button: Only `secondaryButton` (ButtonProps)
+   * - Two buttons: Both `secondaryButton` and `primaryButton`
    */
-  actions?: {
-    primaryButtonProps?: ButtonProps;
-    secondaryButtonProps?: ButtonProps;
-  };
+  actions?: ResultStateActions;
   /**
    * Optional description text displayed below the title.
    * Provides additional context or details about the result state.
@@ -90,20 +109,20 @@ const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
           <Icon className={classes.icon} icon={icon} />
           <h3 className={classes.title}>{title}</h3>
           {description && <p className={classes.description}>{description}</p>}
-          {actions && (
+          {(actions?.secondaryButton || actions?.primaryButton) && (
             <ButtonGroup className={classes.actions}>
-              {actions.secondaryButtonProps && (
+              {actions?.secondaryButton && (
                 <Button
-                  size="main"
+                  size={size}
                   variant="base-secondary"
-                  {...actions.secondaryButtonProps}
+                  {...actions.secondaryButton}
                 />
               )}
-              {actions.primaryButtonProps && (
+              {actions?.primaryButton && (
                 <Button
-                  size="main"
+                  size={size}
                   variant="base-primary"
-                  {...actions.primaryButtonProps}
+                  {...actions.primaryButton}
                 />
               )}
             </ButtonGroup>

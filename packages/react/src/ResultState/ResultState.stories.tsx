@@ -134,33 +134,39 @@ export const WithActions: Story = {
         gap: '48px',
       }}
     >
-      <ResultState
-        actions={{
-          primaryButtonProps: {
-            children: 'Try Again',
-            onClick: () => alert('Primary action clicked'),
-          },
-          secondaryButtonProps: {
-            children: 'Go Back',
-            onClick: () => alert('Secondary action clicked'),
-          },
-        }}
-        description="The operation failed. You can try again or go back to the previous page."
-        title="Operation Failed"
-        type="error"
-      />
-      <ResultState
-        actions={{
-          primaryButtonProps: {
-            children: 'Continue',
-            onClick: () => alert('Continue clicked'),
-          },
-        }}
-        description="Your changes have been saved successfully."
-        size="sub"
-        title="Changes Saved"
-        type="success"
-      />
+      <div>
+        <h3 style={{ marginBottom: '24px' }}>Two Buttons - Props</h3>
+        <ResultState
+          actions={{
+            secondaryButton: {
+              children: 'Go Back',
+              onClick: () => alert('Secondary action clicked'),
+            },
+            primaryButton: {
+              children: 'Try Again',
+              onClick: () => alert('Primary action clicked'),
+            },
+          }}
+          description="The operation failed. You can try again or go back to the previous page."
+          title="Operation Failed"
+          type="error"
+        />
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '24px' }}>Single Button - Props</h3>
+        <ResultState
+          actions={{
+            secondaryButton: {
+              children: 'Continue',
+              onClick: () => alert('Continue clicked'),
+            },
+          }}
+          description="Your changes have been saved successfully."
+          size="sub"
+          title="Changes Saved"
+          type="success"
+        />
+      </div>
     </div>
   ),
 };
@@ -177,7 +183,7 @@ export const WithoutDescription: Story = {
       <ResultState title="No Description" type="information" />
       <ResultState
         actions={{
-          primaryButtonProps: {
+          secondaryButton: {
             children: 'Confirm',
           },
         }}

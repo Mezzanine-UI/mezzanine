@@ -160,7 +160,7 @@ describe('<ResultState />', () => {
       const { getHostHTMLElement } = render(
         <ResultState
           actions={{
-            primaryButtonProps: { children: 'Primary' },
+            secondaryButton: { children: 'Secondary' },
           }}
           title="Test"
         />,
@@ -173,36 +173,12 @@ describe('<ResultState />', () => {
       expect(actionsElement).toBeInstanceOf(HTMLElement);
     });
 
-    it('should render primary button when primaryButtonProps is provided', () => {
+    it('should render secondary button when secondaryButton is provided', () => {
       const onClick = jest.fn();
       const { getByText } = render(
         <ResultState
           actions={{
-            primaryButtonProps: {
-              children: 'Primary Action',
-              onClick,
-            },
-          }}
-          title="Test"
-        />,
-      );
-      const button = getByText('Primary Action');
-
-      expect(button).toBeInstanceOf(HTMLElement);
-      expect(
-        button.classList.contains('mzn-button--base-primary'),
-      ).toBeTruthy();
-
-      fireEvent.click(button);
-      expect(onClick).toHaveBeenCalledTimes(1);
-    });
-
-    it('should render secondary button when secondaryButtonProps is provided', () => {
-      const onClick = jest.fn();
-      const { getByText } = render(
-        <ResultState
-          actions={{
-            secondaryButtonProps: {
+            secondaryButton: {
               children: 'Secondary Action',
               onClick,
             },
@@ -225,15 +201,15 @@ describe('<ResultState />', () => {
       const { getByText } = render(
         <ResultState
           actions={{
-            primaryButtonProps: { children: 'Primary' },
-            secondaryButtonProps: { children: 'Secondary' },
+            secondaryButton: { children: 'Secondary' },
+            primaryButton: { children: 'Primary' },
           }}
           title="Test"
         />,
       );
 
-      expect(getByText('Primary')).toBeInstanceOf(HTMLElement);
       expect(getByText('Secondary')).toBeInstanceOf(HTMLElement);
+      expect(getByText('Primary')).toBeInstanceOf(HTMLElement);
     });
   });
 
@@ -242,7 +218,7 @@ describe('<ResultState />', () => {
       const { getHostHTMLElement } = render(
         <ResultState
           actions={{
-            primaryButtonProps: { children: 'Action' },
+            secondaryButton: { children: 'Action' },
           }}
           description="Description"
           title="Title"

@@ -390,7 +390,7 @@ export type {
 } from './InlineMessage';
 
 export { default as ResultState } from './ResultState';
-export type { ResultStateProps } from './ResultState';
+export type { ResultStateProps, ResultStateActions } from './ResultState';
 
 /**
  * Others
