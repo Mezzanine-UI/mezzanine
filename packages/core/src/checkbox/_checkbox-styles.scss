@@ -215,7 +215,17 @@ $checked-states: (
   box-sizing: border-box;
   display: flex;
   align-items: flex-start;
-  gap: spacing.semantic-variable(gap, tight);
+  gap: spacing.semantic-variable(gap, base);
+
+  &:has(.#{$prefix}__editable-input) {
+    align-items: center;
+  }
+
+  &__label-container {
+    display: flex;
+    align-items: flex-start;
+    gap: spacing.semantic-variable(gap, tight);
+  }
 
   &:has(.#{$prefix}__text-container) {
     &.#{$prefix}--main {
@@ -507,6 +517,10 @@ $checked-states: (
     .#{input-check.$group-prefix} {
       margin: spacing.level(1) 0 0 spacing.level(5);
     }
+  }
+
+  &__editable-input {
+    max-width: 120px;
   }
 }
 

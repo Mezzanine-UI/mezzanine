@@ -4,6 +4,7 @@ export type CheckboxMode = 'main' | 'sub' | 'chip';
 
 export const checkboxClasses = {
   host: checkboxPrefix,
+  labelContainer: `${checkboxPrefix}__label-container`,
   // status
   checked: `${checkboxPrefix}--checked`,
   indeterminate: `${checkboxPrefix}--indeterminate`,
@@ -20,4 +21,6 @@ export const checkboxClasses = {
   textContainer: `${checkboxPrefix}__text-container`,
   label: `${checkboxPrefix}__label`,
   description: `${checkboxPrefix}__description`,
+  // editable input
+  editableInput: `${checkboxPrefix}__editable-input`,
 } as const;
