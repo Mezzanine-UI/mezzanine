@@ -16,6 +16,8 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useDelayMouseEnterLeave } from './useDelayMouseEnterLeave';
 import { cx } from '../utils/cx';
 import { getCSSVariableValue } from '../utils/get-css-variable-value';
+import { Fade } from '../Transition';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 export interface TooltipProps
   extends Omit<PopperProps, 'arrow' | 'children' | 'disablePortal' | 'title'> {
@@ -110,38 +112,50 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
 
     return (
       <>
-        <Popper
-          {...rest}
-          ref={composedRef}
-          anchor={anchorProp || targetRef.current}
-          arrow={
-            showArrow
-              ? {
-                  className: classes.arrow,
-                  enabled: true,
-                  padding: isPlacementAtEdge
-                    ? Number(
-                        getCSSVariableValue(
-                          `--${spacingPrefix}-padding-horizontal-comfort`,
-                        ).replace('rem', ''),
-                      ) * 16
-                    : 0,
-                }
-              : undefined
-          }
-          className={cx(classes.host, className)}
-          disablePortal={disablePortal}
-          onMouseEnter={onPopperEnter}
-          onMouseLeave={onLeave}
-          open={isTooltipVisible}
-          options={{
-            ...options,
-            placement,
-            middleware: [...middleware, ...middlewareProp],
+        <Fade
+          in={isTooltipVisible}
+          duration={{
+            enter: MOTION_DURATION.fast,
+            exit: MOTION_DURATION.fast,
+          }}
+          easing={{
+            enter: MOTION_EASING.standard,
+            exit: MOTION_EASING.standard,
           }}
         >
-          {title}
-        </Popper>
+          <Popper
+            {...rest}
+            ref={composedRef}
+            anchor={anchorProp || targetRef.current}
+            arrow={
+              showArrow
+                ? {
+                    className: classes.arrow,
+                    enabled: true,
+                    padding: isPlacementAtEdge
+                      ? Number(
+                          getCSSVariableValue(
+                            `--${spacingPrefix}-padding-horizontal-comfort`,
+                          ).replace('rem', ''),
+                        ) * 16
+                      : 0,
+                  }
+                : undefined
+            }
+            className={cx(classes.host, className)}
+            disablePortal={disablePortal}
+            onMouseEnter={onPopperEnter}
+            onMouseLeave={onLeave}
+            open={isTooltipVisible}
+            options={{
+              ...options,
+              placement,
+              middleware: [...middleware, ...middlewareProp],
+            }}
+          >
+            {title}
+          </Popper>
+        </Fade>
         {typeof children === 'function' &&
           children({
             onMouseEnter: onTargetEnter,
