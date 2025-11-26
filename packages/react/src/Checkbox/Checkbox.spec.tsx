@@ -368,4 +368,185 @@ describe('<Checkbox />', () => {
       expect(indeterminateLine).toBeFalsy();
     });
   });
+
+  describe('prop: withEditInput and editableInput', () => {
+    it('should render editable input when checkbox is checked and withEditInput=true', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      expect(editableInputContainer).toBeTruthy();
+      expect(input).toBeTruthy();
+      expect(input.disabled).toBe(false);
+    });
+
+    it('should render editable input when checkbox is unchecked but disabled', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked={false}
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      // Editable input should be rendered but disabled when unchecked
+      expect(editableInputContainer).toBeTruthy();
+      expect(input).toBeTruthy();
+      expect(input.disabled).toBe(true);
+    });
+
+    it('should use default placeholder when editableInput is not provided', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      expect(input).toBeTruthy();
+      expect(input.getAttribute('placeholder')).toBe('Please enter...');
+    });
+
+    it('should apply custom editableInput props correctly', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          withEditInput
+          editableInput={{
+            placeholder: 'Custom placeholder',
+            name: 'custom-name',
+            id: 'custom-id',
+          }}
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      expect(input).toBeTruthy();
+      expect(input.getAttribute('placeholder')).toBe('Custom placeholder');
+      expect(input.getAttribute('name')).toBe('custom-name');
+      expect(input.getAttribute('id')).toBe('custom-id');
+    });
+
+    it('should disable editable input when checkbox is disabled', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          disabled
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      expect(input).toBeTruthy();
+      expect(input.disabled).toBe(true);
+    });
+
+    it('should not render editable input in chip mode', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          mode="chip"
+          withEditInput
+          label="Chip"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+
+      expect(editableInputContainer).toBeFalsy();
+    });
+
+    it('should not render editable input when indeterminate', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          indeterminate
+          withEditInput
+          label="Other"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+
+      expect(editableInputContainer).toBeFalsy();
+    });
+
+    it('should hide description when editable input is shown', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          withEditInput
+          label="Other"
+          description="Description text"
+          name="test"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const description = element.querySelector('.mzn-checkbox__description');
+
+      expect(description).toBeFalsy();
+    });
+
+    it('should generate default id and name for editable input', () => {
+      const { getHostHTMLElement } = render(
+        <Checkbox
+          checked
+          withEditInput
+          id="checkbox-id"
+          name="checkbox-name"
+          label="Other"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const editableInputContainer = element.querySelector(
+        '.mzn-checkbox__editable-input-container',
+      );
+      const input = editableInputContainer?.querySelector('input') as HTMLInputElement;
+
+      expect(input).toBeTruthy();
+      expect(input.getAttribute('id')).toBe('checkbox-id_input');
+      expect(input.getAttribute('name')).toBe('checkbox-name_input');
+    });
+  });
 });

@@ -106,7 +106,7 @@ export interface CheckboxProps
    * Default values when not provided:
    * - `name`: `{checkboxName}_input` or `{checkboxId}_input`
    * - `id`: `{checkboxId}_input`
-   * - `placeholder`: "請輸入"
+   * - `placeholder`: "Please enter..."
    */
   editableInput?: Omit<BaseInputProps, 'variant'>;
   /**
@@ -267,8 +267,8 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       return {
         id: defaultId,
         name: defaultName,
-        placeholder: '請輸入...',
-      };
+        placeholder: 'Please enter...',
+      } as Omit<BaseInputProps, 'variant'>;
     }, [withEditInput, editableInput, resolvedName, finalInputId]);
 
     const shouldShowEditableInput = withEditInput && defaultEditableInput;
@@ -351,18 +351,18 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
             </span>
           )}
         </label>
-        {shouldShowEditableInput && defaultEditableInput && !indeterminate && (
-          <Input
-            {...defaultEditableInput}
-            {...(disabled && defaultEditableInput.disabled !== true ? { disabled: true } : {})}
-            fullWidth={false}
-            inputRef={composeRefs([
-              defaultEditableInput.inputRef,
-              editableInputRef,
-            ])}
-            variant="base"
-            className={cx(classes.editableInput, defaultEditableInput.className)}
-          />
+        {shouldShowEditableInput && defaultEditableInput && mode !== 'chip' && !indeterminate && (
+          <div className={classes.editableInputContainer}>
+            <Input
+              {...defaultEditableInput}
+              {...((!isChecked || disabled) && defaultEditableInput.disabled !== true ? { disabled: true } : {})}
+              inputRef={composeRefs([
+                defaultEditableInput.inputRef,
+                editableInputRef,
+              ])}
+              variant="base"
+            />
+          </div>
         )}
       </div>
     );

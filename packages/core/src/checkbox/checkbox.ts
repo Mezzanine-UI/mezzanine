@@ -22,5 +22,6 @@ export const checkboxClasses = {
   label: `${checkboxPrefix}__label`,
   description: `${checkboxPrefix}__description`,
   // editable input
+  editableInputContainer: `${checkboxPrefix}__editable-input-container`,
   editableInput: `${checkboxPrefix}__editable-input`,
 } as const;

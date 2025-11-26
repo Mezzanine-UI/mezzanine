@@ -217,7 +217,7 @@ $checked-states: (
   align-items: flex-start;
   gap: spacing.semantic-variable(gap, base);
 
-  &:has(.#{$prefix}__editable-input) {
+  &:has(.#{$prefix}__editable-input-container) {
     align-items: center;
   }
 
@@ -519,8 +519,8 @@ $checked-states: (
     }
   }
 
-  &__editable-input {
-    max-width: 120px;
+  &__editable-input-container {
+    width: 120px;
   }
 }
 
