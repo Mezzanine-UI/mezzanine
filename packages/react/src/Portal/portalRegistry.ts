@@ -37,8 +37,9 @@ function observeAlertHeight() {
 
     if (height !== alertHeight) {
       alertHeight = height;
-      containers.default.style.top = `${height}px`;
-      containers.default.style.height = `calc(100% - ${height}px)`;
+      /** @Note 暫時隱藏 height 變更 */
+      // containers.default.style.top = `${height}px`;
+      // containers.default.style.height = `calc(100% - ${height}px)`;
     }
   };
 
