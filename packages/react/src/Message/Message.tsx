@@ -16,13 +16,13 @@ import {
   NotifierData,
   NotifierConfig,
 } from '../Notifier';
-import { SlideFade, SlideFadeProps } from '../Transition';
+import { Translate, TranslateProps } from '../Transition';
 import { messageTimerController } from './MessageTimerController';
 
 export interface MessageConfigProps
   extends Pick<NotifierConfig, 'duration'>,
     Pick<
-      SlideFadeProps,
+      TranslateProps,
       | 'onEnter'
       | 'onEntering'
       | 'onEntered'
@@ -30,7 +30,7 @@ export interface MessageConfigProps
       | 'onExiting'
       | 'onExited'
       | 'easing'
-      | 'direction'
+      | 'from'
     > {}
 
 export interface MessageData
@@ -170,7 +170,7 @@ const Message: MessageType = ((props) => {
     };
   }, [clearTimer]);
 
-  const onExited: SlideFadeProps['onExited'] = (node) => {
+  const onExited: TranslateProps['onExited'] = (node) => {
     if (onExitedProp) {
       onExitedProp(node);
     }
@@ -195,11 +195,11 @@ const Message: MessageType = ((props) => {
   };
 
   return (
-    <SlideFade
+    <Translate
       in={open}
       appear
       onExited={onExited}
-      direction="up"
+      from="bottom"
       {...restTransitionProps}
     >
       <div
@@ -219,7 +219,7 @@ const Message: MessageType = ((props) => {
         ) : null}
         <span className={classes.content}>{children}</span>
       </div>
-    </SlideFade>
+    </Translate>
   );
 }) as MessageType;
 
