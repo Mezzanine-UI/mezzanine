@@ -1,4 +1,3 @@
-import { CheckboxMode } from '@mezzanine-ui/core/checkbox';
 import { useContext, useState } from 'react';
 import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
 import {
@@ -6,8 +5,8 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { createWrapper } from '../../__test-utils__/render';
-import Checkbox from './Checkbox';
 import CheckAll from './CheckAll';
+import Checkbox from './Checkbox';
 import CheckboxGroup, { CheckboxGroupLevelConfig } from './CheckboxGroup';
 import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
 
@@ -50,9 +49,9 @@ describe('<CheckboxGroup />', () => {
 
   it('should render children when provided', () => {
     const { getHostHTMLElement } = render(
-      <CheckboxGroup>
-        <Checkbox label="Child 1" value="1" />
-        <Checkbox label="Child 2" value="2" />
+      <CheckboxGroup name="test-group">
+        <Checkbox label="Child 1" name="test-group" value="1" />
+        <Checkbox label="Child 2" name="test-group" value="2" />
       </CheckboxGroup>,
     );
     const element = getHostHTMLElement();

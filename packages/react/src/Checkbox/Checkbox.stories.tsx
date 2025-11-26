@@ -24,6 +24,8 @@ export const Playground: Story = {
     indeterminate: false,
     disabled: false,
     value: 'checkbox-value',
+    withEditInput: false,
+    editableInput: undefined,
   },
   argTypes: {
     label: {
@@ -124,6 +126,25 @@ export const Playground: Story = {
         disable: true,
       },
     },
+    withEditInput: {
+      control: {
+        type: 'boolean',
+      },
+      description: 'Whether to show an editable input when checkbox is checked',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
+      },
+    },
+    editableInput: {
+      control: {
+        type: 'object',
+      },
+      description: 'Configuration for editable input. If not provided and withEditInput is true, default values will be used.',
+      table: {
+        type: { summary: 'Omit<BaseInputProps, "variant"> | undefined' },
+      },
+    },
   },
   render: (props: CheckboxProps) => {
     const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -175,6 +196,17 @@ export const State = () => {
               value="main-3"
             />
           </ItemContent>
+          <ItemContent>
+            <Typography>With editable input:</Typography>
+            <InteractiveCheckbox
+              id="state-main-4"
+              label="Checkbox Label"
+              name="state-main-4"
+              description="Supporting text"
+              withEditInput
+              value="main-4"
+            />
+          </ItemContent>
         </SectionItem>
         <SectionItem label="Sub" direction="column">
           <ItemContent>
@@ -192,6 +224,17 @@ export const State = () => {
           <ItemContent>
             <Typography>Disabled:</Typography>
             <Checkbox id="state-sub-disabled" label="Checkbox Label" name="state-sub-disabled" description="Supporting text" mode="sub" disabled />
+          </ItemContent>
+          <ItemContent>
+            <Typography>With editable input:</Typography>
+            <InteractiveCheckbox
+              id="state-sub-4"
+              label="Checkbox Label"
+              name="state-sub-4"
+              description="Supporting text"
+              withEditInput
+              value="sub-4"
+            />
           </ItemContent>
         </SectionItem>
         <SectionItem label="Chip" direction="column">
@@ -389,5 +432,133 @@ export const WithForm: Story = {
     };
 
     return <SimpleFormExample />;
+  },
+};
+
+export const WithEditableInputAndForm: Story = {
+  render: () => {
+    const EditableInputFormExample = () => {
+      const [formData, setFormData] = useState({
+        options: [] as string[],
+        otherOption: '',
+      });
+
+      const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        // eslint-disable-next-line no-console
+        console.log('Form submitted:', formData);
+        alert(`Form Data: ${JSON.stringify(formData, null, 2)}`);
+      };
+
+      const isOtherChecked = formData.options.includes('other');
+
+      return (
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '24px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            maxWidth: '500px',
+          }}
+        >
+          <Typography>表單整合範例</Typography>
+          <Typography color="text-neutral">
+            選擇「其他」選項後，需要填寫自訂內容才能提交。
+          </Typography>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <Checkbox
+              checked={formData.options.includes('option1')}
+              id="form-option-1"
+              label="選項 1"
+              name="options"
+              value="option1"
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  options: e.target.checked
+                    ? [...prev.options, value]
+                    : prev.options.filter((v) => v !== value),
+                }));
+              }}
+            />
+
+            <Checkbox
+              checked={formData.options.includes('option2')}
+              id="form-option-2"
+              label="選項 2"
+              name="options"
+              value="option2"
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  options: e.target.checked
+                    ? [...prev.options, value]
+                    : prev.options.filter((v) => v !== value),
+                }));
+              }}
+            />
+
+            <Checkbox
+              checked={isOtherChecked}
+              id="form-other"
+              label="其他"
+              name="options"
+              value="other"
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData((prev) => ({
+                  ...prev,
+                  options: e.target.checked
+                    ? [...prev.options, value]
+                    : prev.options.filter((v) => v !== value),
+                  otherOption: e.target.checked ? prev.otherOption : '',
+                }));
+              }}
+              withEditInput
+              editableInput={{
+                value: formData.otherOption,
+                onChange: (e) => {
+                  setFormData((prev) => ({
+                    ...prev,
+                    otherOption: e.target.value,
+                  }));
+                },
+              }}
+            />
+          </div>
+
+          {isOtherChecked && !formData.otherOption && (
+            <Typography variant="caption" color="text-error">
+              請輸入其他選項的內容
+            </Typography>
+          )}
+
+          <button
+            style={{
+              padding: '8px 16px',
+              backgroundColor: '#3b82f6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              marginTop: '8px',
+            }}
+            disabled={isOtherChecked && !formData.otherOption}
+            type="submit"
+          >
+            提交
+          </button>
+        </form>
+      );
+    };
+
+    return <EditableInputFormExample />;
   },
 };

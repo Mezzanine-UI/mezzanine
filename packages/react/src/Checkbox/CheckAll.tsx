@@ -90,6 +90,7 @@ const CheckAll = forwardRef<HTMLDivElement, CheckAllProps>(
           indeterminate={indeterminate}
           inputProps={{ id: checkAllId }}
           label={label}
+          name={checkboxGroupProps.name || checkAllId}
           onChange={handleCheckAllChange}
         />
         {children}

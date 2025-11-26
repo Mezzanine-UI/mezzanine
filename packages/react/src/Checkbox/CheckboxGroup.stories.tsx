@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { ChangeEvent, useState } from 'react';
+import Typography from '../Typography';
 import Checkbox from './Checkbox';
 import CheckboxGroup, {
   CheckboxGroupChangeEvent,
@@ -294,5 +295,227 @@ export const WithLevelControlCustomization: Story = {
 export const WithChildren: Story = {
   render: () => {
     return <CheckboxGroupStoryContent useChildren />;
+  },
+};
+
+export const WithEditableInput: Story = {
+  render: () => {
+    const EditableInputGroupExample = () => {
+      const [value, setValue] = useState<string[]>([]);
+      const [editableValues, setEditableValues] = useState<Record<string, string>>({});
+
+      const handleChange = (event: CheckboxGroupChangeEvent) => {
+        const newValue = event.target.values || [];
+        setValue(newValue);
+
+        // Clear editable values for unchecked items
+        const newEditableValues = { ...editableValues };
+        Object.keys(newEditableValues).forEach((key) => {
+          if (!newValue.includes(key)) {
+            delete newEditableValues[key];
+          }
+        });
+        setEditableValues(newEditableValues);
+      };
+
+      const options = [
+        { label: '選項 1', value: 'option1' },
+        { label: '選項 2', value: 'option2' },
+        {
+          label: '其他',
+          value: 'other',
+          withEditInput: true,
+          editableInput: {
+            value: editableValues.other || '',
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              setEditableValues((prev) => ({
+                ...prev,
+                other: event.target.value,
+              }));
+            },
+          },
+        },
+        { label: '選項 3', value: 'option3' },
+      ];
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '24px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            maxWidth: '600px',
+          }}
+        >
+          <Typography>CheckboxGroup 可編輯輸入範例</Typography>
+          <Typography color="text-neutral">
+            選擇「其他」選項後，會顯示輸入框讓您輸入自訂內容。只設置 `withEditInput: true` 即可使用默認配置。
+          </Typography>
+
+          <CheckboxGroup
+            layout="vertical"
+            name="editable-group"
+            options={options}
+            value={value}
+            onChange={handleChange}
+          />
+
+          {value.length > 0 && (
+            <div
+              style={{
+                padding: '12px',
+                backgroundColor: '#f3f4f6',
+                borderRadius: '4px',
+                marginTop: '8px',
+              }}
+            >
+              <Typography variant="caption" color="text-neutral">
+                已選擇：{value.join(', ')}
+              </Typography>
+              {editableValues.other && (
+                <Typography variant="caption" color="text-neutral" style={{ display: 'block', marginTop: '4px' }}>
+                  其他選項內容：{editableValues.other}
+                </Typography>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    return <EditableInputGroupExample />;
+  },
+};
+
+export const WithEditableInputMultiple: Story = {
+  render: () => {
+    const MultipleEditableInputExample = () => {
+      const [value, setValue] = useState<string[]>([]);
+      const [editableValues, setEditableValues] = useState<Record<string, string>>({});
+
+      const handleChange = (event: CheckboxGroupChangeEvent) => {
+        const newValue = event.target.values || [];
+        setValue(newValue);
+
+        // Clear editable values for unchecked items
+        const newEditableValues = { ...editableValues };
+        Object.keys(newEditableValues).forEach((key) => {
+          if (!newValue.includes(key)) {
+            delete newEditableValues[key];
+          }
+        });
+        setEditableValues(newEditableValues);
+      };
+
+      const options = [
+        {
+          label: '自訂選項 1',
+          value: 'custom1',
+          withEditInput: true,
+          editableInput: {
+            value: editableValues.custom1 || '',
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              setEditableValues((prev) => ({
+                ...prev,
+                custom1: event.target.value,
+              }));
+            },
+          },
+        },
+        {
+          label: '自訂選項 2',
+          value: 'custom2',
+          withEditInput: true,
+          editableInput: {
+            value: editableValues.custom2 || '',
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              setEditableValues((prev) => ({
+                ...prev,
+                custom2: event.target.value,
+              }));
+            },
+          },
+        },
+        { label: '一般選項', value: 'normal' },
+        {
+          label: '其他',
+          value: 'other',
+          withEditInput: true,
+          editableInput: {
+            value: editableValues.other || '',
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              setEditableValues((prev) => ({
+                ...prev,
+                other: event.target.value,
+              }));
+            },
+          },
+        },
+      ];
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '24px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            maxWidth: '600px',
+          }}
+        >
+          <Typography>多個可編輯輸入範例</Typography>
+          <Typography color="text-neutral">
+            多個選項都可以有可編輯輸入框，勾選後會自動顯示。
+          </Typography>
+
+          <CheckboxGroup
+            layout="vertical"
+            name="multiple-editable-group"
+            options={options}
+            value={value}
+            onChange={handleChange}
+          />
+
+          {value.length > 0 && (
+            <div
+              style={{
+                padding: '12px',
+                backgroundColor: '#f3f4f6',
+                borderRadius: '4px',
+                marginTop: '8px',
+              }}
+            >
+              <Typography variant="caption" color="text-neutral">
+                已選擇：{value.join(', ')}
+              </Typography>
+              {Object.keys(editableValues).length > 0 && (
+                <div style={{ marginTop: '8px' }}>
+                  <Typography variant="caption" color="text-neutral" style={{ display: 'block', marginBottom: '4px' }}>
+                    已輸入的內容：
+                  </Typography>
+                  {Object.entries(editableValues).map(([key, val]) => (
+                    <Typography
+                      key={key}
+                      variant="caption"
+                      color="text-neutral"
+                      style={{ display: 'block', marginLeft: '8px' }}
+                    >
+                      {key}: {val}
+                    </Typography>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    return <MultipleEditableInputExample />;
   },
 };

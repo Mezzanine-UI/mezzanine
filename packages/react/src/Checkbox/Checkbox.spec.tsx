@@ -1,28 +1,33 @@
 import { CheckboxMode } from '@mezzanine-ui/core/checkbox';
-import { useContext } from 'react';
+import { createRef, useContext } from 'react';
 import { cleanup, fireEvent, render, renderHook } from '../../__test-utils__';
 import {
-  describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { createWrapper } from '../../__test-utils__/render';
 import Checkbox from './Checkbox';
-import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
 import CheckboxGroup from './CheckboxGroup';
+import { CheckboxGroupContext, CheckboxGroupContextValue } from './CheckboxGroupContext';
 
 describe('<Checkbox />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
-    render(<Checkbox ref={ref} />),
-  );
+  describe('ref', () => {
+    it('should forward ref to label element', () => {
+      const ref = createRef<HTMLLabelElement>();
+
+      render(<Checkbox ref={ref} />);
+
+      expect(ref.current).toBeInstanceOf(HTMLLabelElement);
+    });
+  });
 
   describeHostElementClassNameAppendable('foo', (className) =>
     render(<Checkbox className={className} />),
   );
 
   it('should render the label text', () => {
-    const { getHostHTMLElement } = render(<Checkbox label="Hello" />);
+    const { getHostHTMLElement } = render(<Checkbox label="Hello" name="test" />);
     const element = getHostHTMLElement();
 
     expect(element.textContent).toContain('Hello');
@@ -30,7 +35,7 @@ describe('<Checkbox />', () => {
 
   it('should render the description text', () => {
     const { getHostHTMLElement } = render(
-      <Checkbox label="Hello" description="Description text" />,
+      <Checkbox label="Hello" name="test" description="Description text" />,
     );
     const element = getHostHTMLElement();
 
@@ -60,7 +65,7 @@ describe('<Checkbox />', () => {
 
     it('should not render description when mode="chip"', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox mode="chip" label="Chip" description="Description" />,
+        <Checkbox mode="chip" label="Chip" name="test" description="Description" />,
       );
       const element = getHostHTMLElement();
 
@@ -232,7 +237,7 @@ describe('<Checkbox />', () => {
 
       const { getHostHTMLElement } = render(
         <CheckboxGroupContext.Provider value={contextValue}>
-          <Checkbox />
+          <Checkbox value="option1" />
         </CheckboxGroupContext.Provider>,
       );
       const element = getHostHTMLElement();
@@ -333,7 +338,7 @@ describe('<Checkbox />', () => {
   describe('chip mode specific behavior', () => {
     it('should render icon when checked in chip mode', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox mode="chip" checked label="Chip" />,
+        <Checkbox mode="chip" checked label="Chip" name="test" />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
@@ -343,7 +348,7 @@ describe('<Checkbox />', () => {
 
     it('should not render icon when unchecked in chip mode', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox mode="chip" checked={false} label="Chip" />,
+        <Checkbox mode="chip" checked={false} label="Chip" name="test" />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('.mzn-icon');
@@ -353,7 +358,7 @@ describe('<Checkbox />', () => {
 
     it('should not render indeterminate line in chip mode', () => {
       const { getHostHTMLElement } = render(
-        <Checkbox mode="chip" indeterminate label="Chip" />,
+        <Checkbox mode="chip" indeterminate label="Chip" name="test" />,
       );
       const element = getHostHTMLElement();
       const indeterminateLine = element.querySelector(

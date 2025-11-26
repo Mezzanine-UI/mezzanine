@@ -19,6 +19,7 @@ import { CheckedIcon } from '@mezzanine-ui/icons';
 
 import { useCheckboxControlValue } from '../Form/useCheckboxControlValue';
 import Icon from '../Icon';
+import Input, { BaseInputProps } from '../Input';
 import Typography, { TypographyColor } from '../Typography';
 import { composeRefs } from '../utils/composeRefs';
 import { cx } from '../utils/cx';
@@ -52,6 +53,62 @@ type CheckboxInputElementProps = Omit<
 export interface CheckboxProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'>,
   CheckboxPropsBase {
+  /**
+   * Whether to show an editable input when checkbox is checked.
+   * When `true`, an Input component will be displayed after the checkbox when checked.
+   * If `editableInput` is not provided, default values will be used (name, id, placeholder).
+   * 
+   * @example Simple usage
+   * ```tsx
+   * <Checkbox
+   *   label="其他"
+   *   withEditInput
+   *   value={otherValue}
+   *   onChange={(e) => setOtherValue(e.target.value)}
+   * />
+   * ```
+   * 
+   * @example With custom editableInput
+   * ```tsx
+   * <Checkbox
+   *   label="其他"
+   *   withEditInput
+   *   editableInput={{
+   *     placeholder: "請輸入其他選項",
+   *     name: "otherOption",
+   *     value: otherValue,
+   *     onChange: (e) => setOtherValue(e.target.value),
+   *   }}
+   * />
+   * ```
+   * 
+   * @example With react-hook-form
+   * ```tsx
+   * const { register, watch } = useForm();
+   * const isOtherChecked = watch('options.other');
+   * 
+   * <Checkbox
+   *   label="其他"
+   *   {...register('options.other')}
+   *   withEditInput
+   *   editableInput={{
+   *     ...register('otherOption', { required: isOtherChecked }),
+   *     placeholder: "請輸入其他選項",
+   *   }}
+   * />
+   * ```
+   */
+  withEditInput?: boolean;
+  /**
+   * Configuration for editable input that appears when checkbox is checked.
+   * When `withEditInput` is `true` and this prop is not provided, default values will be used.
+   * 
+   * Default values when not provided:
+   * - `name`: `{checkboxName}_input` or `{checkboxId}_input`
+   * - `id`: `{checkboxId}_input`
+   * - `placeholder`: "請輸入"
+   */
+  editableInput?: Omit<BaseInputProps, 'variant'>;
   /**
    * The id of input element.
    */
@@ -97,6 +154,7 @@ export interface CheckboxProps
    * It is also recommended when integrating with react-hook-form.
    */
   value?: string;
+
 }
 
 /**
@@ -115,6 +173,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       defaultChecked,
       description,
       disabled = disabledFromGroup,
+      editableInput,
       id,
       indeterminate = false,
       inputProps,
@@ -124,6 +183,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       name = nameFromGroup,
       onChange: onChangeProp,
       value,
+      withEditInput = false,
       ...rest
     } = props;
 
@@ -190,83 +250,121 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       }
     }, [isIndeterminate]);
 
+    const editableInputRef = useRef<HTMLInputElement | null>(null);
+
+    // Generate default editable input config when withEditInput is true but editableInput is not provided
+    const defaultEditableInput = useMemo(() => {
+      if (!withEditInput) return undefined;
+
+      if (editableInput) {
+        return editableInput;
+      }
+
+      // Default values when editableInput is not provided
+      const defaultName = resolvedName ? `${resolvedName}_input` : `${finalInputId}_input`;
+      const defaultId = `${finalInputId}_input`;
+
+      return {
+        id: defaultId,
+        name: defaultName,
+        placeholder: '請輸入...',
+      };
+    }, [withEditInput, editableInput, resolvedName, finalInputId]);
+
+    const shouldShowEditableInput = withEditInput && defaultEditableInput;
+
     return (
-      <label
-        ref={ref}
-        {...rest}
-        className={cx(
-          classes.host,
-          {
-            [classes.checked]: isChecked,
-            [classes.indeterminate]: isIndeterminate,
-            [classes.disabled]: disabled,
-          },
-          classes.mode(mode),
-          className,
-        )}
-      >
-        <div className={classes.inputContainer}>
-          <div className={classes.inputContent}>
-            <input
-              {...restInputProps}
-              aria-checked={isIndeterminate ? 'mixed' : checked}
-              aria-disabled={disabled}
-              checked={isChecked}
-              className={classes.input}
-              disabled={disabled}
-              id={finalInputId}
-              name={resolvedName}
-              onChange={onChange}
-              ref={composedInputRef}
-              type="checkbox"
-              value={value}
-            />
-            {mode === 'chip' && isChecked && (
-              <Icon
-                aria-hidden="true"
-                className={classes.icon}
-                color="brand"
-                icon={CheckedIcon}
-                size={16}
+      <div className={cx(
+        classes.host,
+        className,
+        {
+          [classes.checked]: isChecked,
+          [classes.indeterminate]: isIndeterminate,
+          [classes.disabled]: disabled,
+        },
+        classes.mode(mode),
+      )}>
+        <label
+          ref={ref}
+          {...rest}
+          className={classes.labelContainer}
+        >
+          <div className={classes.inputContainer}>
+            <div className={classes.inputContent}>
+              <input
+                {...restInputProps}
+                aria-checked={isIndeterminate ? 'mixed' : checked}
+                aria-disabled={disabled}
+                checked={isChecked}
+                className={classes.input}
+                disabled={disabled}
+                id={finalInputId}
+                name={resolvedName}
+                onChange={onChange}
+                ref={composedInputRef}
+                type="checkbox"
+                value={value}
               />
-            )}
-            {mode !== 'chip' && isChecked && (
-              <Icon
-                aria-hidden="true"
-                className={classes.icon}
-                color="fixed-light"
-                icon={CheckedIcon}
-                size={7}
-              />
-            )}
-            {mode !== 'chip' && isIndeterminate && (
-              <span aria-hidden="true" className={classes.indeterminateLine} />
-            )}
+              {mode === 'chip' && isChecked && (
+                <Icon
+                  aria-hidden="true"
+                  className={classes.icon}
+                  color="brand"
+                  icon={CheckedIcon}
+                  size={16}
+                />
+              )}
+              {mode !== 'chip' && isChecked && (
+                <Icon
+                  aria-hidden="true"
+                  className={classes.icon}
+                  color="fixed-light"
+                  icon={CheckedIcon}
+                  size={7}
+                />
+              )}
+              {mode !== 'chip' && isIndeterminate && (
+                <span aria-hidden="true" className={classes.indeterminateLine} />
+              )}
+            </div>
           </div>
-        </div>
-        {(label || description) && (
-          <span className={classes.textContainer}>
-            {label && (
-              <Typography
-                className={classes.label}
-                color={labelColor}
-                variant="label-primary"
-              >
-                {label}
-              </Typography>
-            )}
-            {description && mode !== 'chip' && (
-              <Typography
-                className={classes.description}
-                color="text-neutral"
-                variant="caption"
-              >
-                {description}
-              </Typography>
-            )}
-          </span>
+          {(label || description) && (
+            <span className={classes.textContainer}>
+              {label && (
+                <Typography
+                  className={classes.label}
+                  color={labelColor}
+                  variant="label-primary"
+                >
+                  {label}
+                </Typography>
+              )}
+              {description && mode !== 'chip' && !shouldShowEditableInput && (
+                <Typography
+                  className={classes.description}
+                  color="text-neutral"
+                  variant="caption"
+                >
+                  {description}
+                </Typography>
+              )}
+            </span>
+          )}
+        </label>
+        {shouldShowEditableInput && defaultEditableInput && !indeterminate && (
+          <Input
+            {...defaultEditableInput}
+            {...(disabled && defaultEditableInput.disabled !== true ? { disabled: true } : {})}
+            fullWidth={false}
+            inputRef={composeRefs([
+              defaultEditableInput.inputRef,
+              editableInputRef,
+            ])}
+            variant="base"
+            className={cx(classes.editableInput, defaultEditableInput.className)}
+          />
         )}
-      </label>
+      </div>
     );
   },
 );
