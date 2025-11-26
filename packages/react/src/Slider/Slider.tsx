@@ -2,7 +2,6 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   forwardRef,
-  Fragment,
   KeyboardEventHandler,
   Ref,
   useCallback,
@@ -416,7 +415,6 @@ function SliderComponent(props: SliderComponentProps) {
   const inputProps: InputProps['inputProps'] = {
     max,
     min,
-    type: 'number',
   };
 
   return (
@@ -432,6 +430,7 @@ function SliderComponent(props: SliderComponentProps) {
           disabled={disabled || undefined}
           onChange={onStartInputChange}
           value={startInputValue}
+          variant="number"
           inputProps={{
             ...inputProps,
             onKeyDown: onStartInputKeydown,
@@ -498,6 +497,7 @@ function SliderComponent(props: SliderComponentProps) {
           disabled={disabled || undefined}
           onChange={onEndInputChange}
           value={endInputValue}
+          variant="number"
           inputProps={{
             ...inputProps,
             onKeyDown: onEndInputKeydown,
