@@ -13,7 +13,7 @@ describe('<PageFooter />', () => {
     render(
       <PageFooter
         actions={{
-          primaryButtonProps: { children: 'Confirm' },
+          primaryButton: { children: 'Confirm' },
         }}
         ref={ref}
       />,
@@ -24,7 +24,7 @@ describe('<PageFooter />', () => {
     render(
       <PageFooter
         actions={{
-          primaryButtonProps: { children: 'Confirm' },
+          primaryButton: { children: 'Confirm' },
         }}
         className={className}
       />,
@@ -35,7 +35,7 @@ describe('<PageFooter />', () => {
     const { getHostHTMLElement } = render(
       <PageFooter
         actions={{
-          primaryButtonProps: { children: 'Confirm' },
+          primaryButton: { children: 'Confirm' },
         }}
       />,
     );
@@ -49,7 +49,7 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: { children: 'Submit' },
+            primaryButton: { children: 'Submit' },
           }}
         />,
       );
@@ -64,8 +64,8 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: { children: 'Confirm' },
-            secondaryButtonProps: { children: 'Cancel' },
+            primaryButton: { children: 'Confirm' },
+            secondaryButton: { children: 'Cancel' },
           }}
         />,
       );
@@ -82,7 +82,7 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: {},
+            primaryButton: {},
           }}
         />,
       );
@@ -101,7 +101,7 @@ describe('<PageFooter />', () => {
           <PageFooter
             type="standard"
             actions={{
-              primaryButtonProps: { children: 'Confirm' },
+              primaryButton: { children: 'Confirm' },
             }}
             annotation="View History"
           />,
@@ -125,7 +125,7 @@ describe('<PageFooter />', () => {
           <PageFooter
             type="standard"
             actions={{
-              primaryButtonProps: { children: 'Confirm' },
+              primaryButton: { children: 'Confirm' },
             }}
             annotation="View History"
             onAnnotationClick={onClick}
@@ -149,7 +149,7 @@ describe('<PageFooter />', () => {
           <PageFooter
             type="overflow"
             actions={{
-              primaryButtonProps: { children: 'Confirm' },
+              primaryButton: { children: 'Confirm' },
             }}
             annotation={{
               position: 'icon-only',
@@ -178,7 +178,7 @@ describe('<PageFooter />', () => {
           <PageFooter
             type="overflow"
             actions={{
-              primaryButtonProps: { children: 'Confirm' },
+              primaryButton: { children: 'Confirm' },
             }}
             annotation={{
               position: 'icon-only',
@@ -205,7 +205,7 @@ describe('<PageFooter />', () => {
           <PageFooter
             type="information"
             actions={{
-              primaryButtonProps: { children: 'Confirm' },
+              primaryButton: { children: 'Confirm' },
             }}
             annotation="Last saved: 5 mins ago"
           />,
@@ -234,7 +234,7 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: { children: 'Confirm' },
+            primaryButton: { children: 'Confirm' },
           }}
           annotationClassName={className}
         />,
@@ -253,7 +253,7 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: { children: 'Confirm' },
+            primaryButton: { children: 'Confirm' },
           }}
           warningMessage="Please review before submitting"
         />,
@@ -270,7 +270,7 @@ describe('<PageFooter />', () => {
       const { getHostHTMLElement } = render(
         <PageFooter
           actions={{
-            primaryButtonProps: { children: 'Confirm' },
+            primaryButton: { children: 'Confirm' },
           }}
         />,
       );

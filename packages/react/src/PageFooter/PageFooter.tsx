@@ -6,6 +6,27 @@ import type { ButtonProps } from '../Button';
 import Button, { ButtonGroup } from '../Button';
 import Typography from '../Typography';
 
+/**
+ * Single button configuration - only primary button is allowed
+ */
+type SingleButtonAction = {
+  secondaryButton?: never;
+  primaryButton: ButtonProps;
+};
+
+/**
+ * Two buttons configuration - both secondary and primary buttons
+ */
+type TwoButtonsAction = {
+  secondaryButton: ButtonProps;
+  primaryButton: ButtonProps;
+};
+
+/**
+ * Actions can be either single button or two buttons
+ */
+export type PageFooterActions = SingleButtonAction | TwoButtonsAction;
+
 export type PageFooterType = 'standard' | 'overflow' | 'information';
 
 type PageFooterBaseProps = NativeElementPropsWithoutKeyAndRef<'footer'> & {
@@ -13,10 +34,7 @@ type PageFooterBaseProps = NativeElementPropsWithoutKeyAndRef<'footer'> & {
    * Action buttons configuration for primary and secondary actions.
    * Renders buttons in the order: secondary (left), primary (right).
    */
-  actions?: {
-    primaryButtonProps?: ButtonProps;
-    secondaryButtonProps?: ButtonProps;
-  };
+  actions?: PageFooterActions;
   /**
    * The className of annotation wrapper.
    */
@@ -94,7 +112,7 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
     }
 
     const { children: primaryButtonText, ...restPrimaryButtonProps } =
-      actions?.primaryButtonProps ?? {};
+      actions?.primaryButton ?? {};
 
     // Render annotation based on type
     const renderAnnotation = () => {
@@ -159,11 +177,11 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
           ) : null}
         </div>
         <ButtonGroup>
-          {actions?.secondaryButtonProps && (
+          {actions?.secondaryButton && (
             <Button
               size="main"
               variant="base-secondary"
-              {...actions.secondaryButtonProps}
+              {...actions.secondaryButton}
             />
           )}
           <Button

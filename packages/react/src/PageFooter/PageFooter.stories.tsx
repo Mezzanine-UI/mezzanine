@@ -17,10 +17,10 @@ export const StandardType: Story = {
   args: {
     type: 'standard',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: '發佈',
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: '儲存草稿',
       },
     },
@@ -35,10 +35,10 @@ export const OverflowType: Story = {
   args: {
     type: 'overflow',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: '發佈',
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: '儲存草稿',
       },
     },
@@ -57,10 +57,10 @@ export const InformationType: Story = {
   args: {
     type: 'information',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: '發佈',
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: '儲存草稿',
       },
     },
@@ -72,10 +72,10 @@ export const WithWarningMessage: Story = {
   args: {
     type: 'standard',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: '發佈',
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: '儲存草稿',
       },
     },
@@ -89,11 +89,11 @@ export const LoadingState: Story = {
   args: {
     type: 'standard',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: 'Saving...',
         loading: true,
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: 'Cancel',
         disabled: true,
       },
@@ -107,11 +107,11 @@ export const DangerAction: Story = {
   args: {
     type: 'information',
     actions: {
-      primaryButtonProps: {
+      primaryButton: {
         children: 'Delete',
         variant: 'destructive-primary',
       },
-      secondaryButtonProps: {
+      secondaryButton: {
         children: 'Cancel',
       },
     },
