@@ -262,39 +262,37 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
     const hasChildrenInput = typeof childrenProp !== 'undefined';
     const hasOptionsInput = Array.isArray(options);
 
-    if (process.env.NODE_ENV !== 'production') {
-      if (hasChildrenInput && hasOptionsInput) {
-        console.error(
-          'CheckboxGroup: Please provide either `children` or `options`, but not both.',
-        );
-      } else if (!hasChildrenInput && !hasOptionsInput) {
-        console.error(
-          'CheckboxGroup: Please provide one of `children` or `options`.',
-        );
-      }
+    if (hasChildrenInput && hasOptionsInput) {
+      console.error(
+        'CheckboxGroup: Please provide either `children` or `options`, but not both.',
+      );
+    } else if (!hasChildrenInput && !hasOptionsInput) {
+      console.error(
+        'CheckboxGroup: Please provide one of `children` or `options`.',
+      );
+    }
 
-      // Warn if name is not provided (important for react-hook-form integration)
-      if (!name) {
-        console.warn(
-          'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
-          'All checkboxes in the group should share the same `name` attribute.',
-        );
-      }
+    // Warn if name is not provided (important for react-hook-form integration)
+    if (!name) {
+      console.warn(
+        'CheckboxGroup: The `name` prop is recommended, especially when integrating with react-hook-form. ' +
+        'All checkboxes in the group should share the same `name` attribute.',
+      );
+    }
 
-      // Validate that all children have value prop
-      if (hasChildrenInput) {
-        Children.forEach(childrenProp, (child, index) => {
-          if (isValidElement(child) && child.type === Checkbox) {
-            const checkboxProps = child.props as CheckboxProps;
-            if (!checkboxProps.value) {
-              console.warn(
-                `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
-                `Checkbox at index ${index} is missing the \`value\` prop.`,
-              );
-            }
+    // Validate that all children have value prop
+    if (hasChildrenInput) {
+      Children.forEach(childrenProp, (child, index) => {
+        if (isValidElement(child) && child.type === Checkbox) {
+          const checkboxProps = child.props as CheckboxProps;
+          if (!checkboxProps.value) {
+            console.warn(
+              `CheckboxGroup: Each Checkbox child should have a \`value\` prop. ` +
+              `Checkbox at index ${index} is missing the \`value\` prop.`,
+            );
           }
-        });
-      }
+        }
+      });
     }
 
     // Render priority: ReactNode (children) first, then options
@@ -304,16 +302,14 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
       // Note: Only Checkbox components are supported when using ReactNode input
       if (hasChildrenInput) {
         // Validate that all children are Checkbox components
-        if (process.env.NODE_ENV !== 'production') {
-          Children.forEach(childrenProp, (child) => {
-            if (isValidElement(child) && child.type !== Checkbox) {
-              console.warn(
-                'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
-                `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
-              );
-            }
-          });
-        }
+        Children.forEach(childrenProp, (child) => {
+          if (isValidElement(child) && child.type !== Checkbox) {
+            console.warn(
+              'CheckboxGroup: When using ReactNode (children) input, only Checkbox components are supported. ' +
+              `Found unsupported component: ${typeof child.type === 'string' ? child.type : child.type?.name || 'Unknown'}`,
+            );
+          }
+        });
         return childrenProp;
       }
 
