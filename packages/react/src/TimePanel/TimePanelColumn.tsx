@@ -2,9 +2,7 @@ import {
   TimePanelUnit,
   timePanelClasses as classes,
 } from '@mezzanine-ui/core/time-panel';
-import { ChevronDownIcon, ChevronUpIcon } from '@mezzanine-ui/icons';
-import { forwardRef, ReactNode, useEffect, useRef } from 'react';
-import Icon from '../Icon';
+import { forwardRef, useEffect, useRef } from 'react';
 import { cx } from '../utils/cx';
 
 export interface TimePanelColumnProps {
@@ -21,18 +19,6 @@ export interface TimePanelColumnProps {
    */
   onChange?: (unit: TimePanelUnit) => void;
   /**
-   * Click handler for the next button.
-   */
-  onNext?: VoidFunction;
-  /**
-   * Click handler for the prev button.
-   */
-  onPrev?: VoidFunction;
-  /**
-   * The prefix of the column.
-   */
-  prefix?: ReactNode;
-  /**
    * Display units inside the column.
    */
   units: TimePanelUnit[];
@@ -43,15 +29,7 @@ export interface TimePanelColumnProps {
  */
 const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
   function TimePanelColumn(props, ref) {
-    const {
-      activeUnit,
-      cellHeight = 32,
-      onChange,
-      onNext,
-      onPrev,
-      prefix,
-      units,
-    } = props;
+    const { activeUnit, cellHeight = 32, onChange, units } = props;
 
     const cellsRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +41,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
       };
     };
 
-    const prevetSmoothScrollTo = useRef(true);
+    const preferSmoothScrollRef = useRef(true);
 
     useEffect(() => {
       const activeIndex = units.findIndex(({ value }) => value === activeUnit);
@@ -71,23 +49,15 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
       if (cellsRef.current) {
         cellsRef.current.scrollTo({
           top: activeIndex * cellHeight,
-          behavior: prevetSmoothScrollTo.current ? 'auto' : 'smooth',
+          behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
         });
       }
 
-      prevetSmoothScrollTo.current = false;
+      preferSmoothScrollRef.current = false;
     }, [activeUnit, cellHeight, units]);
 
     return (
       <div ref={ref} className={classes.column}>
-        {prefix && <div className={classes.columnPrefix}>{prefix}</div>}
-        <button
-          type="button"
-          className={cx(classes.button, classes.columnControlButton)}
-          onClick={onPrev}
-        >
-          <Icon icon={ChevronUpIcon} />
-        </button>
         <div ref={cellsRef} className={classes.columnCells}>
           {units.map((unit) => (
             <button
@@ -102,13 +72,6 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className={cx(classes.button, classes.columnControlButton)}
-          onClick={onNext}
-        >
-          <Icon icon={ChevronDownIcon} />
-        </button>
       </div>
     );
   },
