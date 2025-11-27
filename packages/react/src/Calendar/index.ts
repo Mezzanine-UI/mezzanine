@@ -16,6 +16,8 @@ export type {
 } from './CalendarContext';
 export type { CalendarYearsProps } from './CalendarYears';
 export { default as CalendarYears } from './CalendarYears';
+export type { CalendarQuartersProps } from './CalendarQuarters';
+export { default as CalendarQuarters } from './CalendarQuarters';
 export type { CalendarWeeksProps } from './CalendarWeeks';
 export { default as CalendarWeeks } from './CalendarWeeks';
 export { default as CalendarMonths } from './CalendarMonths';

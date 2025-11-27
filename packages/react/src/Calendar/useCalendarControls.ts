@@ -33,6 +33,18 @@ export function useCalendarControls(
     setReferenceDate(handleAdd(referenceDate));
   };
 
+  const onDoublePrev = () => {
+    const [handleMinus] = modifierGroup[currentMode];
+
+    setReferenceDate(handleMinus(referenceDate));
+  };
+
+  const onDoubleNext = () => {
+    const [, handleAdd] = modifierGroup[currentMode];
+
+    setReferenceDate(handleAdd(referenceDate));
+  };
+
   const onMonthControlClick = () => pushModeStack('month');
 
   const onYearControlClick = () => pushModeStack('year');
@@ -42,6 +54,8 @@ export function useCalendarControls(
     onMonthControlClick,
     onNext,
     onPrev,
+    onDoubleNext,
+    onDoublePrev,
     onYearControlClick,
     popModeStack,
     referenceDate,

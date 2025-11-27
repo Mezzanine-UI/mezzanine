@@ -6,6 +6,8 @@ import {
   DateType,
   getYearRange,
   calendarYearModuler,
+  calendarQuarterYearsCount,
+  calendarHalfYearYearsCount,
 } from '@mezzanine-ui/core/calendar';
 import castArray from 'lodash/castArray';
 import { forwardRef } from 'react';
@@ -17,6 +19,8 @@ import CalendarDays, { CalendarDaysProps } from './CalendarDays';
 import CalendarMonths, { CalendarMonthsProps } from './CalendarMonths';
 import CalendarWeeks, { CalendarWeeksProps } from './CalendarWeeks';
 import CalendarYears, { CalendarYearsProps } from './CalendarYears';
+import CalendarQuarters, { CalendarQuartersProps } from './CalendarQuarters';
+import CalendarHalfYears, { CalendarHalfYearsProps } from './CalendarHalfYears';
 import CalendarFooterControl from './CalendarFooterControl';
 
 export interface CalendarProps
@@ -45,6 +49,14 @@ export interface CalendarProps
     Pick<
       CalendarYearsProps,
       'isYearDisabled' | 'isYearInRange' | 'onYearHover'
+    >,
+    Pick<
+      CalendarQuartersProps,
+      'isQuarterDisabled' | 'isQuarterInRange' | 'onQuarterHover'
+    >,
+    Pick<
+      CalendarHalfYearsProps,
+      'isHalfYearDisabled' | 'isHalfYearInRange' | 'onHalfYearHover'
     >,
     Pick<
       CalendarControlsProps,
@@ -104,6 +116,30 @@ export interface CalendarProps
     | 'isYearDisabled'
     | 'isYearInRange'
     | 'onYearHover'
+  >;
+  /**
+   * Other props you may provide to `CalendarQuarters`
+   */
+  calendarQuartersProps?: Omit<
+    CalendarQuartersProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'isQuarterDisabled'
+    | 'isQuarterInRange'
+    | 'onQuarterHover'
+  >;
+  /**
+   * Other props you may provide to `CalendarHalfYears`
+   */
+  calendarHalfYearsProps?: Omit<
+    CalendarHalfYearsProps,
+    | 'onClick'
+    | 'referenceDate'
+    | 'value'
+    | 'isHalfYearDisabled'
+    | 'isHalfYearInRange'
+    | 'onHalfYearHover'
   >;
   /**
    * Disabled `Month` calendar button click
@@ -181,6 +217,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       calendarMonthsProps,
       calendarWeeksProps,
       calendarYearsProps,
+      calendarQuartersProps,
+      calendarHalfYearsProps,
       className,
       disabledMonthSwitch,
       disableOnNext,
@@ -198,6 +236,10 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       isWeekInRange,
       isYearDisabled,
       isYearInRange,
+      isQuarterDisabled,
+      isQuarterInRange,
+      isHalfYearDisabled,
+      isHalfYearInRange,
       mode = 'day',
       onChange,
       onDateHover,
@@ -210,6 +252,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       onWeekHover,
       onYearControlClick,
       onYearHover,
+      onQuarterHover,
+      onHalfYearHover,
       referenceDate,
       value: valueProp,
       ...restCalendarProps
@@ -300,14 +344,45 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           This year
         </CalendarFooterControl>
       );
+    } else if (mode === 'quarter') {
+      displayCalendar = (
+        <CalendarQuarters
+          {...calendarQuartersProps}
+          isQuarterDisabled={isQuarterDisabled}
+          isQuarterInRange={isQuarterInRange}
+          onClick={onChange}
+          onQuarterHover={onQuarterHover}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          This quarter
+        </CalendarFooterControl>
+      );
+    } else if (mode === 'half-year') {
+      displayCalendar = (
+        <CalendarHalfYears
+          {...calendarHalfYearsProps}
+          isHalfYearDisabled={isHalfYearDisabled}
+          isHalfYearInRange={isHalfYearInRange}
+          onClick={onChange}
+          onHalfYearHover={onHalfYearHover}
+          referenceDate={referenceDate}
+          value={value}
+        />
+      );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          This half year
+        </CalendarFooterControl>
+      );
     }
 
     /** Compute controls outcome */
-    const [start, end] = getYearRange(
-      getYear(referenceDate),
-      calendarYearModuler,
-    );
-    const displayYearRange = `${start} - ${end}`;
     let controls;
 
     if (mode === 'day' || mode === 'week') {
@@ -343,9 +418,39 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         </button>
       );
     } else if (mode === 'year') {
+      const [start, end] = getYearRange(
+        getYear(referenceDate),
+        calendarYearModuler,
+      );
+      const displayYearRange = `${start} - ${end}`;
+
       controls = (
         <button type="button" disabled aria-disabled>
           {displayYearRange}
+        </button>
+      );
+    } else if (mode === 'quarter') {
+      const [start, end] = getYearRange(
+        getYear(referenceDate),
+        calendarQuarterYearsCount,
+      );
+      const displayQuarterYearRange = `${start} - ${end}`;
+
+      controls = (
+        <button type="button" disabled aria-disabled>
+          {displayQuarterYearRange}
+        </button>
+      );
+    } else if (mode === 'half-year') {
+      const [start, end] = getYearRange(
+        getYear(referenceDate),
+        calendarHalfYearYearsCount,
+      );
+      const displayHalfYearYearRange = `${start} - ${end}`;
+
+      controls = (
+        <button type="button" disabled aria-disabled>
+          {displayHalfYearYearRange}
         </button>
       );
     }
@@ -370,7 +475,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                 : undefined
             }
             onNext={
-              onNext
+              onNext && mode !== 'quarter' && mode !== 'half-year'
                 ? () => {
                     onNext(mode);
                   }
@@ -384,7 +489,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                 : undefined
             }
             onPrev={
-              onPrev
+              onPrev && mode !== 'quarter' && mode !== 'half-year'
                 ? () => {
                     onPrev(mode);
                   }
