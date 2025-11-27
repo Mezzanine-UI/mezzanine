@@ -2,6 +2,8 @@ import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import isBetween from 'dayjs/plugin/isBetween';
+import weekOfYear from 'dayjs/plugin/weekOfYear';
+import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
@@ -18,6 +20,8 @@ function init() {
   dayjs.extend(weekday);
   dayjs.extend(localeData);
   dayjs.extend(isBetween);
+  dayjs.extend(weekOfYear);
+  dayjs.extend(quarterOfYear);
 
   return true;
 }
@@ -29,6 +33,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getMinute: (date) => dayjs(date).minute(),
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
+  getWeek: (date) => dayjs(date).week(),
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
 
@@ -36,11 +41,15 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
   getMonth: (date) => dayjs(date).month(),
   getYear: (date) => dayjs(date).year(),
+  getQuarter: (date) => dayjs(date).quarter(),
+  getHalfYear: (date) => Math.floor(dayjs(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
     return dayjs().locale(localeMapping(locale)).localeData().weekdaysMin();
   },
   getMonthShortName: (month, locale) => {
-    const names = CalendarMethodsDayjs.getMonthShortNames(localeMapping(locale));
+    const names = CalendarMethodsDayjs.getMonthShortNames(
+      localeMapping(locale),
+    );
 
     return names[month];
   },
@@ -58,18 +67,24 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   setMonth: (date, month) => dayjs(date).month(month).toISOString(),
   setYear: (date, year) => dayjs(date).year(year).toISOString(),
   setDate: (date, target) => dayjs(date).date(target).toISOString(),
-  startOf: (target, granularity) => dayjs(target).startOf(granularity).toISOString(),
+  startOf: (target, granularity) =>
+    dayjs(target).startOf(granularity).toISOString(),
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
-    const lastDateOfPrevMonth = dayjs(target).subtract(1, 'month').endOf('month')
+    const lastDateOfPrevMonth = dayjs(target)
+      .subtract(1, 'month')
+      .endOf('month')
       .date();
     const firstDayOfCurrentMonth = dayjs(target).date(1).day();
     const lastDateOfCurrentMonth = dayjs(target).endOf('month').date();
 
     return chunk(
       [
-        ...range(lastDateOfPrevMonth - firstDayOfCurrentMonth + 1, lastDateOfPrevMonth + 1),
+        ...range(
+          lastDateOfPrevMonth - firstDayOfCurrentMonth + 1,
+          lastDateOfPrevMonth + 1,
+        ),
         ...range(1, lastDateOfCurrentMonth + 1),
         ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 1),
       ],
@@ -79,21 +94,34 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
 
   /** Compares */
   isBefore: (target, comparison) => dayjs(target).isBefore(comparison),
-  isBetween: (
-    value,
-    target1,
-    target2,
-    granularity,
-  ) => dayjs(value).isBetween(target1, target2, granularity),
-  isSameDate: (dateOne, dateTwo) => dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo) => dayjs(dateOne).isSame(dayjs(dateTwo), 'week'),
+  isBetween: (value, target1, target2, granularity) =>
+    dayjs(value).isBetween(target1, target2, granularity),
+  isSameDate: (dateOne, dateTwo) =>
+    dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
+  isSameWeek: (dateOne, dateTwo) =>
+    dayjs(dateOne).isSame(dayjs(dateTwo), 'week'),
   isInMonth: (target, month) => dayjs(target).month() === month,
-  isDateIncluded: (date, targets) => targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
-    (target) => dayjs(firstDateOfWeek).isSame(dayjs(target), 'week'),
-  ),
-  isMonthIncluded: (date, targets) => targets.some((target) => dayjs(date).isSame(dayjs(target), 'month')),
-  isYearIncluded: (date, targets) => targets.some((target) => dayjs(date).isSame(dayjs(target), 'year')),
+  isDateIncluded: (date, targets) =>
+    targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
+  isWeekIncluded: (firstDateOfWeek, targets) =>
+    targets.some((target) =>
+      dayjs(firstDateOfWeek).isSame(dayjs(target), 'week'),
+    ),
+  isMonthIncluded: (date, targets) =>
+    targets.some((target) => dayjs(date).isSame(dayjs(target), 'month')),
+  isYearIncluded: (date, targets) =>
+    targets.some((target) => dayjs(date).isSame(dayjs(target), 'year')),
+  isQuarterIncluded: (date, targets) =>
+    targets.some((target) => dayjs(date).isSame(dayjs(target), 'quarter')),
+  isHalfYearIncluded: (date, targets) => {
+    const halfYear = Math.floor(dayjs(date).month() / 6);
+    return targets.some((target) => {
+      const targetHalfYear = Math.floor(dayjs(target).month() / 6);
+      return (
+        dayjs(date).isSame(dayjs(target), 'year') && halfYear === targetHalfYear
+      );
+    });
+  },
 
   /** Format */
   formatToString: (locale, date, format) => {
@@ -133,10 +161,11 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
 };
 
 const CalendarMethods: CalendarMethodsType = hasInit
-  ? CalendarMethodsDayjs : (() => {
-    init();
+  ? CalendarMethodsDayjs
+  : (() => {
+      init();
 
-    return CalendarMethodsDayjs;
-  })();
+      return CalendarMethodsDayjs;
+    })();
 
 export default CalendarMethods;

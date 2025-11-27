@@ -28,11 +28,8 @@ export const timePanelClasses = {
 
   /** Column classes */
   column: timePanelColumnPrefix,
-  columnPrefix: `${timePanelColumnPrefix}__prefix`,
   columnButton: `${timePanelColumnPrefix}__button`,
-  columnControlButton: `${timePanelColumnPrefix}__control-button`,
   columnCells: `${timePanelColumnPrefix}__cells`,
-  columnRatioBoxInner: `${timePanelColumnPrefix}__ratio-box-inner`,
 };
 
 /** Helpers */
@@ -57,11 +54,7 @@ export function getUnitLabel(
   return guardedString;
 }
 
-export function getUnits(
-  start: number,
-  end: number,
-  step: number,
-) {
+export function getUnits(start: number, end: number, step: number) {
   const units: TimePanelUnit[] = [];
 
   for (let i = start; i <= end; i += step) {

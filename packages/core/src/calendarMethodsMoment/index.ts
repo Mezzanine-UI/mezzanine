@@ -10,6 +10,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getMinute: (date) => moment(date).minute(),
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
+  getWeek: (date) => moment(date).week(),
   getWeekDay: (date) => {
     const clone = moment(date).locale('en_US');
 
@@ -17,6 +18,8 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
   getMonth: (date) => moment(date).month(),
   getYear: (date) => moment(date).year(),
+  getQuarter: (date) => moment(date).quarter(),
+  getHalfYear: (date) => Math.floor(moment(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
     const date = moment().locale(locale);
 
@@ -79,18 +82,24 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
     return clone.date(target).toISOString();
   },
-  startOf: (target, granularity: unitOfTime.StartOf) => moment(target).startOf(granularity).toISOString(),
+  startOf: (target, granularity: unitOfTime.StartOf) =>
+    moment(target).startOf(granularity).toISOString(),
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
-    const lastDateOfPrevMonth = moment(target).subtract(1, 'month').endOf('month')
+    const lastDateOfPrevMonth = moment(target)
+      .subtract(1, 'month')
+      .endOf('month')
       .date();
     const firstDayOfCurrentMonth = moment(target).date(1).day();
     const lastDateOfCurrentMonth = moment(target).endOf('month').date();
 
     return chunk(
       [
-        ...range(lastDateOfPrevMonth - firstDayOfCurrentMonth + 1, lastDateOfPrevMonth + 1),
+        ...range(
+          lastDateOfPrevMonth - firstDayOfCurrentMonth + 1,
+          lastDateOfPrevMonth + 1,
+        ),
         ...range(1, lastDateOfCurrentMonth + 1),
         ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 1),
       ],
@@ -100,21 +109,35 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
   /** Compares */
   isBefore: (target, comparison) => moment(target).isBefore(comparison),
-  isBetween: (
-    value,
-    target1,
-    target2,
-    granularity: unitOfTime.StartOf,
-  ) => moment(value).isBetween(target1, target2, granularity),
-  isSameDate: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'week'),
+  isBetween: (value, target1, target2, granularity: unitOfTime.StartOf) =>
+    moment(value).isBetween(target1, target2, granularity),
+  isSameDate: (dateOne, dateTwo) =>
+    moment(dateOne).isSame(moment(dateTwo), 'date'),
+  isSameWeek: (dateOne, dateTwo) =>
+    moment(dateOne).isSame(moment(dateTwo), 'week'),
   isInMonth: (target, month) => moment(target).month() === month,
-  isDateIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
-    (target) => moment(firstDateOfWeek).isSame(moment(target), 'week'),
-  ),
-  isMonthIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'month')),
-  isYearIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'year')),
+  isDateIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'day')),
+  isWeekIncluded: (firstDateOfWeek, targets) =>
+    targets.some((target) =>
+      moment(firstDateOfWeek).isSame(moment(target), 'week'),
+    ),
+  isMonthIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'month')),
+  isYearIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'year')),
+  isQuarterIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'quarter')),
+  isHalfYearIncluded: (date, targets) => {
+    const halfYear = Math.floor(moment(date).month() / 6);
+    return targets.some((target) => {
+      const targetHalfYear = Math.floor(moment(target).month() / 6);
+      return (
+        moment(date).isSame(moment(target), 'year') &&
+        halfYear === targetHalfYear
+      );
+    });
+  },
 
   /** Format */
   formatToString: (locale, date, format) => {

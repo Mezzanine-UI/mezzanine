@@ -10,34 +10,59 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   getMinute: (date) => DateTime.fromISO(date).minute,
   getHour: (date) => DateTime.fromISO(date).hour,
   getDate: (date) => DateTime.fromISO(date).day,
+  getWeek: (date) => DateTime.fromISO(date).weekNumber,
   getWeekDay: (date) => DateTime.fromISO(date).weekday,
   getMonth: (date) => DateTime.fromISO(date).month - 1,
   getYear: (date) => DateTime.fromISO(date).year,
+  getQuarter: (date) => DateTime.fromISO(date).quarter,
+  getHalfYear: (date) => Math.floor((DateTime.fromISO(date).month - 1) / 6) + 1,
   getWeekDayNames: (locale) => Info.weekdays('narrow', { locale }),
-  getMonthShortName: (month, locale) => DateTime.now().set({ month: month + 1 }).toFormat('MMM', { locale }),
+  getMonthShortName: (month, locale) =>
+    DateTime.now()
+      .set({ month: month + 1 })
+      .toFormat('MMM', { locale }),
   getMonthShortNames: (locale) => Info.months('short', { locale }),
 
   /** Manipulate */
-  addDay: (date, diff) => DateTime.fromISO(date).plus({ day: diff }).toISO() as string,
-  addYear: (date, diff) => DateTime.fromISO(date).plus({ year: diff }).toISO() as string,
-  addMonth: (date, diff) => DateTime.fromISO(date).plus({ month: diff }).toISO() as string,
-  setSecond: (date, second) => DateTime.fromISO(date).set({ second }).toISO() as string,
-  setMinute: (date, minute) => DateTime.fromISO(date).set({ minute }).toISO() as string,
-  setHour: (date, hour) => DateTime.fromISO(date).set({ hour }).toISO() as string,
-  setMonth: (date, month) => DateTime.fromISO(date).set({ month: month + 1 }).toISO() as string,
-  setYear: (date, year) => DateTime.fromISO(date).set({ year }).toISO() as string,
-  setDate: (date, target) => DateTime.fromISO(date).set({ day: target }).toISO() as string,
-  startOf: (target, granularity) => DateTime.fromISO(target).startOf(granularity).toISO() as string,
+  addDay: (date, diff) =>
+    DateTime.fromISO(date).plus({ day: diff }).toISO() as string,
+  addYear: (date, diff) =>
+    DateTime.fromISO(date).plus({ year: diff }).toISO() as string,
+  addMonth: (date, diff) =>
+    DateTime.fromISO(date).plus({ month: diff }).toISO() as string,
+  setSecond: (date, second) =>
+    DateTime.fromISO(date).set({ second }).toISO() as string,
+  setMinute: (date, minute) =>
+    DateTime.fromISO(date).set({ minute }).toISO() as string,
+  setHour: (date, hour) =>
+    DateTime.fromISO(date).set({ hour }).toISO() as string,
+  setMonth: (date, month) =>
+    DateTime.fromISO(date)
+      .set({ month: month + 1 })
+      .toISO() as string,
+  setYear: (date, year) =>
+    DateTime.fromISO(date).set({ year }).toISO() as string,
+  setDate: (date, target) =>
+    DateTime.fromISO(date).set({ day: target }).toISO() as string,
+  startOf: (target, granularity) =>
+    DateTime.fromISO(target).startOf(granularity).toISO() as string,
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
-    const lastDateOfPrevMonth = DateTime.fromISO(target).minus({ month: 1 }).endOf('month').day;
-    const firstDayOfCurrentMonth = DateTime.fromISO(target).set({ day: 1 }).weekday;
+    const lastDateOfPrevMonth = DateTime.fromISO(target)
+      .minus({ month: 1 })
+      .endOf('month').day;
+    const firstDayOfCurrentMonth = DateTime.fromISO(target).set({
+      day: 1,
+    }).weekday;
     const lastDateOfCurrentMonth = DateTime.fromISO(target).endOf('month').day;
 
     return chunk(
       [
-        ...range(lastDateOfPrevMonth - firstDayOfCurrentMonth + 2, lastDateOfPrevMonth + 1),
+        ...range(
+          lastDateOfPrevMonth - firstDayOfCurrentMonth + 2,
+          lastDateOfPrevMonth + 1,
+        ),
         ...range(1, lastDateOfCurrentMonth + 1),
         ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 2),
       ],
@@ -46,23 +71,52 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   },
 
   /** Compares */
-  isBefore: (target, comparison) => DateTime.fromISO(target) < DateTime.fromISO(comparison),
-  isBetween: (
-    value,
-    target1,
-    target2,
-  ) => Interval.fromDateTimes(DateTime.fromISO(target1), DateTime.fromISO(target2)).contains(DateTime.fromISO(value)),
-  isSameDate: (dateOne, dateTwo) => DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'day'),
-  isSameWeek: (dateOne, dateTwo) => DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'week'),
+  isBefore: (target, comparison) =>
+    DateTime.fromISO(target) < DateTime.fromISO(comparison),
+  isBetween: (value, target1, target2) =>
+    Interval.fromDateTimes(
+      DateTime.fromISO(target1),
+      DateTime.fromISO(target2),
+    ).contains(DateTime.fromISO(value)),
+  isSameDate: (dateOne, dateTwo) =>
+    DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'day'),
+  isSameWeek: (dateOne, dateTwo) =>
+    DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'week'),
   isInMonth: (target, month) => DateTime.fromISO(target).month === month + 1,
-  isDateIncluded: (date, targets) => targets
-    .some((target) => DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
-    (target) => DateTime.fromISO(firstDateOfWeek).hasSame(DateTime.fromISO(target), 'week')),
-  isMonthIncluded: (date, targets) => targets
-    .some((target) => DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'month')),
-  isYearIncluded: (date, targets) => targets
-    .some((target) => DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'year')),
+  isDateIncluded: (date, targets) =>
+    targets.some((target) =>
+      DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'day'),
+    ),
+  isWeekIncluded: (firstDateOfWeek, targets) =>
+    targets.some((target) =>
+      DateTime.fromISO(firstDateOfWeek).hasSame(
+        DateTime.fromISO(target),
+        'week',
+      ),
+    ),
+  isMonthIncluded: (date, targets) =>
+    targets.some((target) =>
+      DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'month'),
+    ),
+  isYearIncluded: (date, targets) =>
+    targets.some((target) =>
+      DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'year'),
+    ),
+  isQuarterIncluded: (date, targets) =>
+    targets.some((target) =>
+      DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'quarter'),
+    ),
+  isHalfYearIncluded: (date, targets) => {
+    const dateTime = DateTime.fromISO(date);
+    const halfYear = Math.floor((dateTime.month - 1) / 6);
+    return targets.some((target) => {
+      const targetTime = DateTime.fromISO(target);
+      const targetHalfYear = Math.floor((targetTime.month - 1) / 6);
+      return (
+        dateTime.hasSame(targetTime, 'year') && halfYear === targetHalfYear
+      );
+    });
+  },
 
   /** Format */
   formatToString: (locale, date: string | Date, format) => {
@@ -93,8 +147,9 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
       .replace(/zz/g, 'ZZZZ')
       .replace(/z/g, 'ZZZZ');
 
-    return (date instanceof Date ? DateTime.fromJSDate(date) : DateTime.fromISO(date))
-      .toFormat(luxonFormat, { locale });
+    return (
+      date instanceof Date ? DateTime.fromJSDate(date) : DateTime.fromISO(date)
+    ).toFormat(luxonFormat, { locale });
   },
 
   /** Parse */

@@ -53,18 +53,18 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
       <Typography style={{ margin: '0 0 12px 0' }}>
         {`current value: ${moment(val).format(formats[mode])}`}
       </Typography>
-      <div style={{ width: '224px' }}>
-        <Calendar
-          mode={currentMode}
-          onChange={onChange}
-          onMonthControlClick={onMonthControlClick}
-          onNext={onNext}
-          onPrev={onPrev}
-          onYearControlClick={onYearControlClick}
-          referenceDate={referenceDate}
-          value={val}
-        />
-      </div>
+      <Calendar
+        mode={currentMode}
+        onChange={onChange}
+        onMonthControlClick={onMonthControlClick}
+        onDoubleNext={() => ''}
+        onNext={onNext}
+        onDoublePrev={() => ''}
+        onPrev={onPrev}
+        onYearControlClick={onYearControlClick}
+        referenceDate={referenceDate}
+        value={val}
+      />
     </>
   );
 };
@@ -187,23 +187,34 @@ CellPlayground.args = {
 
 type ControlPlaygroundArgs = Pick<
   CalendarControlsProps,
-  'disableOnNext' | 'disableOnPrev'
+  | 'disableOnNext'
+  | 'disableOnPrev'
+  | 'disableOnDoubleNext'
+  | 'disableOnDoublePrev'
 >;
 export const ControlPlayground: StoryFn<ControlPlaygroundArgs> = ({
   disableOnNext,
+  disableOnDoubleNext,
   disableOnPrev,
+  disableOnDoublePrev,
 }) => (
   <div style={{ width: '224px' }}>
     <CalendarControls
       disableOnNext={disableOnNext}
+      disableOnDoubleNext={disableOnDoubleNext}
       disableOnPrev={disableOnPrev}
+      disableOnDoublePrev={disableOnDoublePrev}
       onPrev={() => {}}
+      onDoublePrev={() => {}}
       onNext={() => {}}
+      onDoubleNext={() => {}}
     />
   </div>
 );
 
 ControlPlayground.args = {
   disableOnNext: false,
+  disableOnDoubleNext: false,
   disableOnPrev: false,
+  disableOnDoublePrev: false,
 };

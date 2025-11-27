@@ -17,6 +17,7 @@ import CalendarDays, { CalendarDaysProps } from './CalendarDays';
 import CalendarMonths, { CalendarMonthsProps } from './CalendarMonths';
 import CalendarWeeks, { CalendarWeeksProps } from './CalendarWeeks';
 import CalendarYears, { CalendarYearsProps } from './CalendarYears';
+import CalendarFooterControl from './CalendarFooterControl';
 
 export interface CalendarProps
   extends Omit<
@@ -45,7 +46,13 @@ export interface CalendarProps
       CalendarYearsProps,
       'isYearDisabled' | 'isYearInRange' | 'onYearHover'
     >,
-    Pick<CalendarControlsProps, 'disableOnNext' | 'disableOnPrev'> {
+    Pick<
+      CalendarControlsProps,
+      | 'disableOnNext'
+      | 'disableOnPrev'
+      | 'disableOnDoubleNext'
+      | 'disableOnDoublePrev'
+    > {
   /**
    * Other props you may provide to `CalendarDays`
    */
@@ -126,9 +133,17 @@ export interface CalendarProps
    */
   onNext?: (currentMode: CalendarMode) => void;
   /**
+   * Click handler for control button of next.
+   */
+  onDoubleNext?: (currentMode: CalendarMode) => void;
+  /**
    * Click handler for control button of prev.
    */
   onPrev?: (currentMode: CalendarMode) => void;
+  /**
+   * Click handler for control button of double prev.
+   */
+  onDoublePrev?: (currentMode: CalendarMode) => void;
   /**
    * Click handler for control button of year.
    */
@@ -155,6 +170,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
   function Calendar(props, ref) {
     const {
       displayMonthLocale: displayMonthLocaleFromConfig,
+      getNow,
       getMonth,
       getMonthShortName,
       getYear,
@@ -169,6 +185,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       disabledMonthSwitch,
       disableOnNext,
       disableOnPrev,
+      disableOnDoubleNext,
+      disableOnDoublePrev,
       disabledYearSwitch,
       displayMonthLocale = displayMonthLocaleFromConfig,
       displayWeekDayLocale,
@@ -186,7 +204,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       onMonthControlClick,
       onMonthHover,
       onNext,
+      onDoubleNext,
       onPrev,
+      onDoublePrev,
       onWeekHover,
       onYearControlClick,
       onYearHover,
@@ -199,6 +219,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
     /** Compute which calendar to use */
     let displayCalendar;
+    let displayFooterControl;
 
     if (mode === 'day') {
       displayCalendar = (
@@ -215,6 +236,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           value={value}
         />
       );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          Today
+        </CalendarFooterControl>
+      );
     } else if (mode === 'week') {
       displayCalendar = (
         <CalendarWeeks
@@ -230,6 +257,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           value={value}
         />
       );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          This week
+        </CalendarFooterControl>
+      );
     } else if (mode === 'month') {
       displayCalendar = (
         <CalendarMonths
@@ -243,6 +276,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           value={value}
         />
       );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          This month
+        </CalendarFooterControl>
+      );
     } else if (mode === 'year') {
       displayCalendar = (
         <CalendarYears
@@ -254,6 +293,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           referenceDate={referenceDate}
           value={value}
         />
+      );
+
+      displayFooterControl = (
+        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          This year
+        </CalendarFooterControl>
       );
     }
 
@@ -270,11 +315,6 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         <>
           <button
             type="button"
-            className={cx(
-              classes.button,
-              classes.controlsButton,
-              disabledMonthSwitch && classes.buttonDisabled,
-            )}
             disabled={disabledMonthSwitch}
             aria-disabled={disabledMonthSwitch}
             onClick={onMonthControlClick}
@@ -283,13 +323,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
           </button>
           <button
             type="button"
-            className={cx(
-              classes.button,
-              classes.controlsButton,
-              disabledYearSwitch && classes.buttonDisabled,
-            )}
-            disabled={disabledYearSwitch}
-            aria-disabled={disabledYearSwitch}
+            disabled={disabledMonthSwitch}
+            aria-disabled={disabledMonthSwitch}
             onClick={onYearControlClick}
           >
             {getYear(referenceDate)}
@@ -300,11 +335,6 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       controls = (
         <button
           type="button"
-          className={cx(
-            classes.button,
-            classes.controlsButton,
-            disabledYearSwitch && classes.buttonDisabled,
-          )}
           disabled={disabledYearSwitch}
           aria-disabled={disabledYearSwitch}
           onClick={onYearControlClick}
@@ -314,16 +344,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       );
     } else if (mode === 'year') {
       controls = (
-        <button
-          type="button"
-          className={cx(
-            classes.button,
-            classes.controlsButton,
-            classes.buttonDisabled,
-          )}
-          disabled
-          aria-disabled
-        >
+        <button type="button" disabled aria-disabled>
           {displayYearRange}
         </button>
       );
@@ -333,29 +354,48 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       <div
         {...restCalendarProps}
         ref={ref}
-        className={cx(classes.host, className)}
+        className={cx(classes.host, classes.mode(mode), className)}
       >
-        <CalendarControls
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          onNext={
-            onNext
-              ? () => {
-                  onNext(mode);
-                }
-              : undefined
-          }
-          onPrev={
-            onPrev
-              ? () => {
-                  onPrev(mode);
-                }
-              : undefined
-          }
-        >
-          {controls}
-        </CalendarControls>
-        {displayCalendar}
+        <div className={classes.main}>
+          <CalendarControls
+            disableOnNext={disableOnNext}
+            disableOnPrev={disableOnPrev}
+            disableOnDoubleNext={disableOnDoubleNext}
+            disableOnDoublePrev={disableOnDoublePrev}
+            onDoubleNext={
+              onDoubleNext
+                ? () => {
+                    onDoubleNext(mode);
+                  }
+                : undefined
+            }
+            onNext={
+              onNext
+                ? () => {
+                    onNext(mode);
+                  }
+                : undefined
+            }
+            onDoublePrev={
+              onDoublePrev
+                ? () => {
+                    onDoublePrev(mode);
+                  }
+                : undefined
+            }
+            onPrev={
+              onPrev
+                ? () => {
+                    onPrev(mode);
+                  }
+                : undefined
+            }
+          >
+            {controls}
+          </CalendarControls>
+          {displayCalendar}
+        </div>
+        {displayFooterControl}
       </div>
     );
   },

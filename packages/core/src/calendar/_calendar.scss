@@ -1,7 +1,13 @@
 $prefix: mzn-calendar;
+$main-prefix: #{$prefix}-main;
 $board-prefix: #{$prefix}-board;
+$week-prefix: #{$prefix}-week;
+$days-grid-prefix: #{$prefix}-days-grid;
 $row-prefix: #{$prefix}-row;
 $cell-prefix: #{$prefix}-cell;
 $button-prefix: #{$prefix}-button;
 $twelve-grid-prefix: #{$prefix}-twelve-grid;
 $controls-prefix: #{$prefix}-controls;
+$footer-control-prefix: #{$prefix}-footer-control;
+
+$modes: (year, month, week, day, quarter, half-year);

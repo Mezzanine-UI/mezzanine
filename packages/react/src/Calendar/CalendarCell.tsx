@@ -28,7 +28,7 @@ function CalendarCell(props: CalendarCellProps) {
     children,
     className,
     disabled,
-    today,
+    // today,
     ...restCalendarCellProps
   } = props;
 
@@ -39,7 +39,6 @@ function CalendarCell(props: CalendarCellProps) {
         {
           [classes.cellActive]: active,
           [classes.cellDisabled]: disabled,
-          [classes.cellToday]: today,
         },
         className,
       )}

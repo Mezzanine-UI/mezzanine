@@ -83,68 +83,70 @@ function CalendarDays(props: CalendarDaysProps) {
 
   return (
     <div {...rest} className={cx(classes.board, className)}>
-      <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
-      {daysGrid.map((week, index) => (
-        <div key={`CALENDAR_DAYS/WEEK_OF/${index}`} className={classes.row}>
-          {week.map((dateNum) => {
-            const isPrevMonth = index === 0 && dateNum > 7;
-            const isNextMonth = index > 3 && dateNum <= 14;
-            const thisMonth = getMonth(referenceDate);
+      <div className={classes.daysGrid}>
+        <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
+        {daysGrid.map((week, index) => (
+          <div key={`CALENDAR_DAYS/WEEK_OF/${index}`} className={classes.row}>
+            {week.map((dateNum) => {
+              const isPrevMonth = index === 0 && dateNum > 7;
+              const isNextMonth = index > 3 && dateNum <= 14;
+              const thisMonth = getMonth(referenceDate);
 
-            const month = isPrevMonth
-              ? thisMonth - 1
-              : isNextMonth
-                ? thisMonth + 1
-                : thisMonth;
-            const date = setDate(setMonth(referenceDate, month), dateNum);
-            const disabled =
-              isYearDisabled?.(date) ||
-              isMonthDisabled?.(date) ||
-              isDateDisabled?.(date) ||
-              false;
-            const inactive = !disabled && (isPrevMonth || isNextMonth);
-            const inRange = !inactive && isDateInRange && isDateInRange(date);
-            const active =
-              !disabled && !inactive && value && isDateIncluded(date, value);
+              const month = isPrevMonth
+                ? thisMonth - 1
+                : isNextMonth
+                  ? thisMonth + 1
+                  : thisMonth;
+              const date = setDate(setMonth(referenceDate, month), dateNum);
+              const disabled =
+                isYearDisabled?.(date) ||
+                isMonthDisabled?.(date) ||
+                isDateDisabled?.(date) ||
+                false;
+              const inactive = !disabled && (isPrevMonth || isNextMonth);
+              const inRange = !inactive && isDateInRange && isDateInRange(date);
+              const active =
+                !disabled && !inactive && value && isDateIncluded(date, value);
 
-            const onMouseEnter = onDateHover
-              ? () => {
-                  onDateHover(date);
-                }
-              : undefined;
+              const onMouseEnter = onDateHover
+                ? () => {
+                    onDateHover(date);
+                  }
+                : undefined;
 
-            const onClick = onClickProp
-              ? () => {
-                  onClickProp(date);
-                }
-              : undefined;
+              const onClick = onClickProp
+                ? () => {
+                    onClickProp(date);
+                  }
+                : undefined;
 
-            return (
-              <CalendarCell
-                key={`${getMonth(date)}/${getDate(date)}`}
-                today={isSameDate(date, getNow())}
-                active={active}
-                disabled={isPrevMonth || isNextMonth}
-              >
-                <button
-                  type="button"
-                  aria-disabled={disabled}
-                  disabled={disabled}
-                  onMouseEnter={onMouseEnter}
-                  className={cx(classes.button, {
-                    [classes.buttonInRange]: inRange,
-                    [classes.buttonActive]: active,
-                    [classes.buttonDisabled]: disabled,
-                  })}
-                  onClick={onClick}
+              return (
+                <CalendarCell
+                  key={`${getMonth(date)}/${getDate(date)}`}
+                  today={isSameDate(date, getNow())}
+                  active={active}
+                  disabled={isPrevMonth || isNextMonth}
                 >
-                  {dateNum}
-                </button>
-              </CalendarCell>
-            );
-          })}
-        </div>
-      ))}
+                  <button
+                    type="button"
+                    aria-disabled={disabled}
+                    disabled={disabled}
+                    onMouseEnter={onMouseEnter}
+                    className={cx(classes.button, {
+                      [classes.buttonInRange]: inRange,
+                      [classes.buttonActive]: active,
+                      [classes.buttonDisabled]: disabled,
+                    })}
+                    onClick={onClick}
+                  >
+                    {dateNum}
+                  </button>
+                </CalendarCell>
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

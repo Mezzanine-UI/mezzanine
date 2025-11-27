@@ -1,24 +1,38 @@
-
 /** Types */
-export type CalendarMode = 'year' | 'month' | 'week' | 'day';
+export type CalendarMode =
+  | 'year'
+  | 'month'
+  | 'week'
+  | 'day'
+  | 'quarter'
+  | 'half-year';
 
 /** ISO 8601 text */
 export type DateType = string;
 
 /** Classes */
 export const calendarPrefix = 'mzn-calendar';
+export const calendarMainPrefix = `${calendarPrefix}-main`;
 export const calendarBoardPrefix = `${calendarPrefix}-board`;
+export const calendarWeekPrefix = `${calendarPrefix}-week`;
+export const calendarDaysGridPrefix = `${calendarPrefix}-days-grid`;
 export const calendarRowPrefix = `${calendarPrefix}-row`;
 export const calendarCellPrefix = `${calendarPrefix}-cell`;
 export const calendarButtonPrefix = `${calendarPrefix}-button`;
 export const calendarTwelveGridPrefix = `${calendarPrefix}-twelve-grid`;
 export const calendarControlsPrefix = `${calendarPrefix}-controls`;
+export const calendarFooterControlPrefix = `${calendarPrefix}-footer-control`;
 
 export const calendarClasses = {
   host: calendarPrefix,
+  mode: (mode: CalendarMode) => `${calendarPrefix}--${mode}`,
+  main: calendarMainPrefix,
 
   /** Date grid classes */
   board: calendarBoardPrefix,
+  week: calendarWeekPrefix,
+  weekRow: `${calendarWeekPrefix}__row`,
+  daysGrid: calendarDaysGridPrefix,
 
   /** Button classes */
   button: calendarButtonPrefix,
@@ -29,11 +43,11 @@ export const calendarClasses = {
 
   /** Row classes */
   row: calendarRowPrefix,
+  rowWithBorder: `${calendarRowPrefix}--with-border`,
 
   /** Cell classes */
   cell: calendarCellPrefix,
   cellInner: `${calendarCellPrefix}__inner`,
-  cellToday: `${calendarCellPrefix}--today`,
   cellActive: `${calendarCellPrefix}--active`,
   cellDisabled: `${calendarCellPrefix}--disabled`,
 
@@ -42,16 +56,22 @@ export const calendarClasses = {
 
   /** Controls classes */
   controls: calendarControlsPrefix,
+  controlsActions: `${calendarControlsPrefix}__actions`,
   controlsButton: `${calendarControlsPrefix}__button`,
-  controlsIconButton: `${calendarControlsPrefix}__icon-button`,
-  controlsPrev: `${calendarControlsPrefix}__prev`,
-  controlsNext: `${calendarControlsPrefix}__next`,
+  controlsMain: `${calendarControlsPrefix}__main`,
+
+  /** Footer control classes */
+  footerControl: calendarFooterControlPrefix,
 };
 
 /** Constants */
 export const calendarYearsBase = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 export const calendarYearModuler = 10;
 export const calendarMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+export const calendarQuarters = [1, 2, 3, 4];
+export const calendarQuarterYearsCount = 5;
+export const calendarHalfYears = [1, 2];
+export const calendarHalfYearYearsCount = 5;
 
 /** Helpers */
 export function getYearRange(year: number, mod: number) {
@@ -81,6 +101,14 @@ export function getDefaultModeFormat(mode: CalendarMode) {
     return 'YYYY';
   }
 
+  if (mode === 'quarter') {
+    return 'YYYY-[Q]Q';
+  }
+
+  if (mode === 'half-year') {
+    // Use quarter format as base, will be converted to half-year (Q1,Q2→H1, Q3,Q4→H2)
+    return 'YYYY-[Q]Q';
+  }
+
   return 'YYYY-MM-DD';
 }
-

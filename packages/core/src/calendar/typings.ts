@@ -8,9 +8,12 @@ export type CalendarMethods<TDateType = DateType> = {
   getMinute: (value: TDateType) => number;
   getHour: (value: TDateType) => number;
   getDate: (value: TDateType) => number;
+  getWeek: (value: TDateType) => number;
   getWeekDay: (value: TDateType) => number;
   getMonth: (value: TDateType) => number;
   getYear: (value: TDateType) => number;
+  getQuarter: (value: TDateType) => number;
+  getHalfYear: (value: TDateType) => number;
   getWeekDayNames: (locale: string) => string[];
   getMonthShortName: (value: number, locale: string) => string;
   getMonthShortNames: (locale: string) => Readonly<string[]>;
@@ -32,7 +35,12 @@ export type CalendarMethods<TDateType = DateType> = {
 
   /** Compares */
   isBefore: (target: TDateType, comparison: TDateType) => boolean;
-  isBetween: (value: TDateType, target1: TDateType, target2: TDateType, granularity: any) => boolean;
+  isBetween: (
+    value: TDateType,
+    target1: TDateType,
+    target2: TDateType,
+    granularity: any,
+  ) => boolean;
   isSameDate: (dateOne: TDateType, dateTwo: TDateType) => boolean;
   isSameWeek: (dateOne: TDateType, dateTwo: TDateType) => boolean;
   isInMonth: (target: TDateType, month: number) => boolean;
@@ -40,10 +48,16 @@ export type CalendarMethods<TDateType = DateType> = {
   isWeekIncluded: (firstDateOfWeek: TDateType, targets: TDateType[]) => boolean;
   isMonthIncluded: (date: TDateType, targets: TDateType[]) => boolean;
   isYearIncluded: (date: TDateType, targets: TDateType[]) => boolean;
+  isQuarterIncluded: (date: TDateType, targets: TDateType[]) => boolean;
+  isHalfYearIncluded: (date: TDateType, targets: TDateType[]) => boolean;
 
   /** Format */
   formatToString: (locale: string, date: TDateType, format: string) => string;
 
   /** Parse */
-  parse: (locale: string, text: string, formats: string[]) => TDateType | undefined;
+  parse: (
+    locale: string,
+    text: string,
+    formats: string[],
+  ) => TDateType | undefined;
 };
