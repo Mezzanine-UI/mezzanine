@@ -20,7 +20,7 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
       count,
       disabled,
       label,
-      onAdd,
+      onClick,
       onClose,
       readOnly,
       size = 'main',
@@ -40,13 +40,29 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
       className,
     );
 
+    if (type === 'overflow-counter') {
+      return (
+        <button
+          {...rest}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          type="button"
+          onClick={onClick}
+          disabled={disabled}
+          className={commonClassName}
+        >
+          <Icon className={classes.icon} icon={PlusIcon} size={16} />
+          <span className={classes.label}>{count}</span>
+        </button>
+      );
+    }
+
     if (type === 'addable') {
       return (
         <button
           {...rest}
           ref={ref as React.Ref<HTMLButtonElement>}
           type="button"
-          onClick={onAdd}
+          onClick={onClick}
           disabled={disabled}
           className={commonClassName}
         >
@@ -69,13 +85,6 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
           <>
             <span className={classes.label}>{label}</span>
             <Badge variant="count-info" count={count} />
-          </>
-        )}
-
-        {type === 'overflow-counter' && (
-          <>
-            <Icon className={classes.icon} icon={PlusIcon} size={16} />
-            <span className={classes.label}>{count}</span>
           </>
         )}
 

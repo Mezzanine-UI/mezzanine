@@ -143,6 +143,15 @@ export const Types: Story = {
           <SectionItem label="Enabled">
             <Tag label="Tag" onClose={voidFn} size="main" type="dismissable" />
           </SectionItem>
+          <SectionItem label="Hover">
+            <Tag
+              className="is-hover"
+              label="Tag"
+              onClose={voidFn}
+              size="main"
+              type="dismissable"
+            />
+          </SectionItem>
           <SectionItem label="Active">
             <Tag
               active
@@ -177,17 +186,32 @@ export const Types: Story = {
       <Section title="Addable">
         <ItemList>
           <SectionItem label="Enabled">
-            <Tag label="Tag" onAdd={voidFn} size="main" type="addable" />
+            <Tag label="Tag" onClick={voidFn} size="main" type="addable" />
+          </SectionItem>
+          <SectionItem label="Hover">
+            <Tag
+              className="is-hover"
+              label="Tag"
+              onClick={voidFn}
+              size="main"
+              type="addable"
+            />
           </SectionItem>
           <SectionItem label="Active">
-            <Tag active label="Tag" onAdd={voidFn} size="main" type="addable" />
+            <Tag
+              active
+              label="Tag"
+              onClick={voidFn}
+              size="main"
+              type="addable"
+            />
           </SectionItem>
 
           <SectionItem label="Disabled">
             <Tag
               disabled
               label="Tag"
-              onAdd={voidFn}
+              onClick={voidFn}
               size="main"
               type="addable"
             />
@@ -268,10 +292,10 @@ export const Sizes: Story = {
         <Section title="Addable">
           <ItemList>
             <SectionItem label="Main">
-              <Tag label="Tag" size="main" type="addable" onAdd={voidFn} />
+              <Tag label="Tag" size="main" type="addable" onClick={voidFn} />
             </SectionItem>
             <SectionItem label="Sub">
-              <Tag label="Tag" size="sub" type="addable" onAdd={voidFn} />
+              <Tag label="Tag" size="sub" type="addable" onClick={voidFn} />
             </SectionItem>
           </ItemList>
         </Section>
