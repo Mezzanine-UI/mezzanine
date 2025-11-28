@@ -10,7 +10,7 @@
 
 @mixin mode-width {
   @each $mode in $modes {
-    &.#{$prefix}--#{$mode} {
+    .#{$prefix}--#{$mode} & {
       @if $mode == week {
         width: 292px;
       } @else {
@@ -21,8 +21,7 @@
 }
 
 .#{$prefix} {
-  @include mode-width();
-
+  display: inline-flex;
   box-sizing: border-box;
   border-radius: radius.variable(roomy);
   box-shadow: effect.variable(shadow, inner-top-and-bottom);
@@ -32,24 +31,20 @@
     box-sizing: border-box;
   }
 
-  &--range {
-    display: inline-flex;
-    flex-flow: column;
-    width: auto;
-
-    & > div {
-      display: inline-flex;
-      flex-flow: row;
-    }
-  }
-
   &--no-shadow {
     box-shadow: none;
   }
 }
 
 .#{$main-prefix} {
+  @include mode-width();
+
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
+
+  &-with-footer {
+    display: inline-flex;
+    flex-flow: column;
+  }
 }
 
 .#{$board-prefix} {
@@ -94,10 +89,23 @@
 .#{$button-prefix} {
   @include btn-utils.reset();
 
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid transparent;
   border-radius: radius.variable(base);
   transition: transition.standard(background-color) transition.standard(color) transition.standard(border);
 
   @include typography.inherit;
+
+  &__annotation {
+    @include typography.semantic-variable(annotation);
+
+    text-align: center;
+    color: palette.semantic-variable(text, neutral);
+  }
 
   &[aria-disabled='true'] {
     cursor: default;
@@ -105,6 +113,10 @@
 
   &:hover:not(.#{$button-prefix}--disabled):not(.#{$button-prefix}--active) {
     background-color: palette.semantic-variable("background", neutral-faint);
+  }
+
+  .#{$cell-prefix}--today & {
+    border: 1px solid palette.semantic-variable(border, brand);
   }
 
   &--inRange {
@@ -308,5 +320,60 @@
 
   button {
     min-width: spacing.semantic-variable(size, element, expansive);
+  }
+}
+
+.#{$quick-select-prefix} {
+  width: 128px;
+  border-radius: radius.variable(roomy);
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight);
+  background-color: palette.semantic-variable("background", base);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background-color: palette.semantic-variable(separator, neutral-faint);
+  }
+
+  &__button {
+    @include btn-utils.reset();
+
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: spacing.semantic-variable(gap, tight);
+    padding: spacing.semantic-variable(padding, horizontal, tiny);
+
+    @include typography.semantic-variable(caption);
+
+    color: palette.semantic-variable(text, neutral);
+    text-align: left;
+    transition: transition.standard(color);
+
+    &:hover,
+    &--active {
+      color: palette.semantic-variable(text, neutral-solid);
+    }
+
+    &:disabled {
+      cursor: default;
+      color: palette.semantic-variable(text, neutral-faint);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: effect.variable(focus, primary);
+    }
   }
 }

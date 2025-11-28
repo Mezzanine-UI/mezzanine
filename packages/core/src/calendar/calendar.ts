@@ -23,12 +23,13 @@ export const calendarTwelveGridPrefix = `${calendarPrefix}-twelve-grid`;
 export const calendarControlsPrefix = `${calendarPrefix}-controls`;
 export const calendarFooterControlPrefix = `${calendarPrefix}-footer-control`;
 export const calendarFooterActionsPrefix = `${calendarPrefix}-footer-actions`;
+export const calendarQuickSelectPrefix = `${calendarPrefix}-quick-select`;
 
 export const calendarClasses = {
   host: calendarPrefix,
-  rangeHost: `${calendarPrefix}--range`,
   noShadowHost: `${calendarPrefix}--no-shadow`,
   mode: (mode: CalendarMode) => `${calendarPrefix}--${mode}`,
+  mainWithFooter: `${calendarMainPrefix}-with-footer`,
   main: calendarMainPrefix,
 
   /** Date grid classes */
@@ -39,6 +40,7 @@ export const calendarClasses = {
 
   /** Button classes */
   button: calendarButtonPrefix,
+  buttonAnnotation: `${calendarButtonPrefix}__annotation`,
   buttonActive: `${calendarButtonPrefix}--active`,
   buttonDisabled: `${calendarButtonPrefix}--disabled`,
   buttonInRange: `${calendarButtonPrefix}--inRange`,
@@ -51,6 +53,7 @@ export const calendarClasses = {
   /** Cell classes */
   cell: calendarCellPrefix,
   cellInner: `${calendarCellPrefix}__inner`,
+  cellToday: `${calendarCellPrefix}--today`,
   cellActive: `${calendarCellPrefix}--active`,
   cellDisabled: `${calendarCellPrefix}--disabled`,
 
@@ -66,6 +69,11 @@ export const calendarClasses = {
   /** Footer control classes */
   footerControl: calendarFooterControlPrefix,
   footerActions: calendarFooterActionsPrefix,
+
+  /** Quick select classes */
+  quickSelect: calendarQuickSelectPrefix,
+  quickSelectButton: `${calendarQuickSelectPrefix}__button`,
+  quickSelectButtonActive: `${calendarQuickSelectPrefix}__button--active`,
 };
 
 /** Constants */
