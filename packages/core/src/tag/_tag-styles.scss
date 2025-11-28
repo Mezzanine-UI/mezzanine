@@ -218,4 +218,15 @@ $tag-config: (
       cursor: default;
     }
   }
+
+  &__group {
+    flex-grow: 1;
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tight);
+    width: fit-content;
+    height: fit-content;
+  }
 }
