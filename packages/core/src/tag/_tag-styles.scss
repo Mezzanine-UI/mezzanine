@@ -3,34 +3,36 @@
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
 @use './tag' as *;
 
 $tag-config: (
   static: (
     text-color: palette.semantic-variable(text, brand-solid),
-    background-color: palette.semantic-variable(background, brand-faint)
+    background-color: palette.semantic-variable(background, brand-faint),
   ),
   counter: (
     gap: (
       main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny)
+      sub: spacing.semantic-variable(gap, tiny),
     ),
     text-color: palette.semantic-variable(text, brand-solid),
-    background-color: palette.semantic-variable(background, brand-faint)
+    background-color: palette.semantic-variable(background, brand-faint),
   ),
   overflow-counter: (
     gap: (
       main: spacing.semantic-variable(gap, tiny),
-      sub: spacing.semantic-variable(gap, tiny)
+      sub: spacing.semantic-variable(gap, tiny),
     ),
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, brand-solid),
-    background-color: palette.semantic-variable(background, brand-faint)
+    background-color: palette.semantic-variable(background, brand-faint),
+    border: 0,
   ),
   dismissable: (
     gap: (
       main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny)
+      sub: spacing.semantic-variable(gap, tiny),
     ),
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, neutral),
@@ -38,29 +40,29 @@ $tag-config: (
     hover: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
-      background-color: palette.semantic-variable(background, brand-subtle)
+      background-color: palette.semantic-variable(background, brand-subtle),
     ),
     active: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
-      background-color: palette.semantic-variable(background, brand-light)
+      background-color: palette.semantic-variable(background, brand-light),
     ),
     disabled: (
       text-color: palette.semantic-variable(text, neutral-light),
       icon-color: palette.semantic-variable(icon, neutral-light),
       background-color: palette.semantic-variable(background, neutral-subtle),
-      border: 1px solid palette.semantic-variable(border, neutral-light)
+      border: 1px solid palette.semantic-variable(border, neutral-light),
     ),
     read-only: (
       text-color: palette.semantic-variable(text, neutral-solid),
       background-color: unset,
-      border: 1px solid palette.semantic-variable(border, neutral-light)
-    )
+      border: 1px solid palette.semantic-variable(border, neutral-light),
+    ),
   ),
   addable: (
     gap: (
       main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny)
+      sub: spacing.semantic-variable(gap, tiny),
     ),
     text-color: palette.semantic-variable(text, neutral-solid),
     icon-color: palette.semantic-variable(icon, neutral),
@@ -69,19 +71,19 @@ $tag-config: (
     hover: (
       text-color: palette.semantic-variable(text, neutral-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
-      border: 1px dashed palette.semantic-variable(border, neutral)
+      border: 1px dashed palette.semantic-variable(border, neutral),
     ),
     active: (
       text-color: palette.semantic-variable(text, neutral-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
-      border: 1px dashed palette.semantic-variable(border, neutral-strong)
+      border: 1px dashed palette.semantic-variable(border, neutral-strong),
     ),
     disabled: (
       text-color: palette.semantic-variable(text, neutral-light),
       icon-color: palette.semantic-variable(icon, neutral-light),
-      border: 1px dashed palette.semantic-variable(border, neutral-light)
-    )
-  )
+      border: 1px dashed palette.semantic-variable(border, neutral-light),
+    ),
+  ),
 );
 
 @mixin _tag-state-styles($config) {
@@ -118,6 +120,10 @@ $tag-config: (
   border-radius: radius.variable(base);
   width: fit-content;
   height: fit-content;
+  transition:
+    transition.standard(color, fast),
+    transition.standard(background-color, fast),
+    transition.standard(border-color, fast);
 
   @each $type in $tag-types {
     $type-config: map.get($tag-config, $type);
@@ -130,7 +136,8 @@ $tag-config: (
       @if map.has-key($type-config, hover) {
         $type-hover-config: map.get($type-config, hover);
 
-        &:not(.#{$prefix}--active):not(.#{$prefix}--disabled):not(.#{$prefix}--read-only):hover {
+        &:not(.#{$prefix}--active):not(.#{$prefix}--disabled):not(.#{$prefix}--read-only):hover,
+        &.is-hover {
           @include _tag-state-styles($type-hover-config);
         }
       }
@@ -139,7 +146,8 @@ $tag-config: (
       @if map.has-key($type-config, active) {
         $type-active-config: map.get($type-config, active);
 
-        &.#{$prefix}--active {
+        &.#{$prefix}--active,
+        &:active {
           @include _tag-state-styles($type-active-config);
         }
       }
@@ -148,7 +156,8 @@ $tag-config: (
       @if map.has-key($type-config, disabled) {
         $type-disabled-config: map.get($type-config, disabled);
 
-        &.#{$prefix}--disabled {
+        &.#{$prefix}--disabled,
+        &:disabled {
           @include _tag-state-styles($type-disabled-config);
         }
       }
