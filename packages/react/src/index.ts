@@ -226,7 +226,6 @@ export type {
   FormControl,
   FormFieldProps,
   FormHintTextProps,
-  FormHintTextProps,
   FormLabelProps,
 } from './Form';
 export { default as Input } from './Input';
@@ -426,10 +425,14 @@ export {
   CalendarMonths,
   CalendarWeeks,
   CalendarYears,
+  CalendarQuarters,
+  CalendarHalfYears,
+  RangeCalendar,
   useCalendarContext,
   useCalendarControlModifiers,
   useCalendarControls,
   useCalendarModeStack,
+  useRangeCalendarControls,
 } from './Calendar';
 export type {
   CalendarCellProps,
@@ -443,6 +446,9 @@ export type {
   CalendarProps,
   CalendarWeeksProps,
   CalendarYearsProps,
+  CalendarQuartersProps,
+  CalendarHalfYearsProps,
+  RangeCalendarProps,
   UseCalendarControlModifiersResult,
 } from './Calendar';
 export * from './Notifier';
