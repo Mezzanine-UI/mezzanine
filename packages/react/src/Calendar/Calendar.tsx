@@ -22,6 +22,9 @@ import CalendarYears, { CalendarYearsProps } from './CalendarYears';
 import CalendarQuarters, { CalendarQuartersProps } from './CalendarQuarters';
 import CalendarHalfYears, { CalendarHalfYearsProps } from './CalendarHalfYears';
 import CalendarFooterControl from './CalendarFooterControl';
+import CalendarQuickSelect, {
+  CalendarQuickSelectProps,
+} from './CalendarQuickSelect';
 
 export interface CalendarProps
   extends Omit<
@@ -30,6 +33,7 @@ export interface CalendarProps
     >,
     Pick<
       CalendarDaysProps,
+      | 'renderAnnotations'
       | 'isDateDisabled'
       | 'isDateInRange'
       | 'onDateHover'
@@ -190,10 +194,15 @@ export interface CalendarProps
    */
   onYearControlClick?: VoidFunction;
   /**
-   * The refernce date for getting the calendar.
+   * The reference date for getting the calendar.
    * **The type of `referenceDate` should be the same as your declared `DateType`.**
    */
   referenceDate: DateType;
+  /**
+   * Quick select options for calendar.
+   * Provide options for users to quickly select specific dates or ranges.
+   */
+  quickSelect?: Pick<CalendarQuickSelectProps, 'activeId' | 'options'>;
   /**
    * The displaying cells will be marked as active
    * if the single value of it matches any date object in the array. <br />
@@ -218,6 +227,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
     } = useCalendarContext();
 
     const {
+      renderAnnotations,
       calendarDaysProps,
       calendarMonthsProps,
       calendarWeeksProps,
@@ -260,6 +270,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       onYearHover,
       onQuarterHover,
       onHalfYearHover,
+      quickSelect,
       referenceDate,
       value: valueProp,
       ...restCalendarProps
@@ -275,6 +286,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       displayCalendar = (
         <CalendarDays
           {...calendarDaysProps}
+          renderAnnotations={renderAnnotations}
           isYearDisabled={isYearDisabled}
           isMonthDisabled={isMonthDisabled}
           isDateDisabled={isDateDisabled}
@@ -479,48 +491,56 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         ref={ref}
         className={cx(classes.host, classes.mode(mode), className)}
       >
-        <div className={classes.main}>
-          <CalendarControls
-            disableOnNext={disableOnNext}
-            disableOnPrev={disableOnPrev}
-            disableOnDoubleNext={disableOnDoubleNext}
-            disableOnDoublePrev={disableOnDoublePrev}
-            onDoubleNext={
-              onDoubleNext
-                ? () => {
-                    onDoubleNext(mode);
-                  }
-                : undefined
-            }
-            onNext={
-              // Only day and week modes have single next/prev (for month navigation)
-              onNext && (mode === 'day' || mode === 'week')
-                ? () => {
-                    onNext(mode);
-                  }
-                : undefined
-            }
-            onDoublePrev={
-              onDoublePrev
-                ? () => {
-                    onDoublePrev(mode);
-                  }
-                : undefined
-            }
-            onPrev={
-              // Only day and week modes have single next/prev (for month navigation)
-              onPrev && (mode === 'day' || mode === 'week')
-                ? () => {
-                    onPrev(mode);
-                  }
-                : undefined
-            }
-          >
-            {controls}
-          </CalendarControls>
-          {displayCalendar}
+        {quickSelect && (
+          <CalendarQuickSelect
+            activeId={quickSelect.activeId}
+            options={quickSelect.options}
+          />
+        )}
+        <div className={classes.mainWithFooter}>
+          <div className={classes.main}>
+            <CalendarControls
+              disableOnNext={disableOnNext}
+              disableOnPrev={disableOnPrev}
+              disableOnDoubleNext={disableOnDoubleNext}
+              disableOnDoublePrev={disableOnDoublePrev}
+              onDoubleNext={
+                onDoubleNext
+                  ? () => {
+                      onDoubleNext(mode);
+                    }
+                  : undefined
+              }
+              onNext={
+                // Only day and week modes have single next/prev (for month navigation)
+                onNext && (mode === 'day' || mode === 'week')
+                  ? () => {
+                      onNext(mode);
+                    }
+                  : undefined
+              }
+              onDoublePrev={
+                onDoublePrev
+                  ? () => {
+                      onDoublePrev(mode);
+                    }
+                  : undefined
+              }
+              onPrev={
+                // Only day and week modes have single next/prev (for month navigation)
+                onPrev && (mode === 'day' || mode === 'week')
+                  ? () => {
+                      onPrev(mode);
+                    }
+                  : undefined
+              }
+            >
+              {controls}
+            </CalendarControls>
+            {displayCalendar}
+          </div>
+          {displayFooterControl}
         </div>
-        {displayFooterControl}
       </div>
     );
   },

@@ -15,6 +15,9 @@ import { useRangeCalendarControls } from './useRangeCalendarControls';
 import CalendarFooterActions, {
   CalendarFooterActionsProps,
 } from './CalendarFooterActions';
+import CalendarQuickSelect, {
+  CalendarQuickSelectProps,
+} from './CalendarQuickSelect';
 
 export interface RangeCalendarProps
   extends Omit<
@@ -23,6 +26,7 @@ export interface RangeCalendarProps
     >,
     Pick<
       CalendarProps,
+      | 'renderAnnotations'
       | 'isDateDisabled'
       | 'isDateInRange'
       | 'onDateHover'
@@ -84,6 +88,11 @@ export interface RangeCalendarProps
    */
   onChange?: (target: DateType) => void;
   /**
+   * Quick select options for range calendar.
+   * Provide options for users to quickly select specific date ranges.
+   */
+  quickSelect?: Pick<CalendarQuickSelectProps, 'activeId' | 'options'>;
+  /**
    * The reference date for getting the calendar.
    * **The type of `referenceDate` should be the same as your declared `DateType`.**
    */
@@ -111,6 +120,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
 
     const {
       actions,
+      renderAnnotations,
       calendarProps,
       className,
       disabledMonthSwitch,
@@ -142,6 +152,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       onYearHover,
       onQuarterHover,
       onHalfYearHover,
+      quickSelect,
       referenceDate: referenceDateProp,
       secondCalendarRef,
       value: valueProp,
@@ -257,110 +268,116 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       <div
         {...restProps}
         ref={ref}
-        className={cx(
-          calendarClasses.host,
-          calendarClasses.rangeHost,
-          className,
-        )}
+        className={cx(calendarClasses.host, className)}
       >
-        <div>
-          <Calendar
-            {...calendarProps}
-            className={cx(
-              calendarClasses.noShadowHost,
-              calendarProps?.className,
-            )}
-            ref={firstCalendarRef}
-            mode={currentMode}
-            value={value}
-            onChange={onChangeFactory(0)}
-            referenceDate={referenceDates[0]}
-            onPrev={onFirstPrev}
-            onDoublePrev={onFirstDoublePrev}
-            onMonthControlClick={onMonthControlClick}
-            onYearControlClick={onYearControlClick}
-            disabledFooterControl
-            disabledMonthSwitch={disabledMonthSwitch}
-            disabledYearSwitch={disabledYearSwitch}
-            disableOnPrev={disableOnPrev}
-            disableOnDoublePrev={disableOnDoublePrev}
-            displayMonthLocale={displayMonthLocale}
-            displayWeekDayLocale={displayWeekDayLocale}
-            isDateDisabled={isDateDisabled}
-            isDateInRange={isDateInRange}
-            onDateHover={onDateHover}
-            isMonthDisabled={isMonthDisabled}
-            isMonthInRange={isMonthInRange}
-            onMonthHover={onMonthHover}
-            isWeekDisabled={isWeekDisabled}
-            isWeekInRange={isWeekInRange}
-            onWeekHover={onWeekHover}
-            isYearDisabled={isYearDisabled}
-            isYearInRange={isYearInRange}
-            onYearHover={onYearHover}
-            isQuarterDisabled={isQuarterDisabled}
-            isQuarterInRange={isQuarterInRange}
-            onQuarterHover={onQuarterHover}
-            isHalfYearDisabled={isHalfYearDisabled}
-            isHalfYearInRange={isHalfYearInRange}
-            onHalfYearHover={onHalfYearHover}
+        {quickSelect && (
+          <CalendarQuickSelect
+            activeId={quickSelect.activeId}
+            options={quickSelect.options}
           />
-          <Calendar
-            {...calendarProps}
-            className={cx(
-              calendarClasses.noShadowHost,
-              calendarProps?.className,
-            )}
-            ref={secondCalendarRef}
-            mode={currentMode}
-            value={value}
-            onChange={onChangeFactory(1)}
-            referenceDate={referenceDates[1]}
-            onNext={onSecondNext}
-            onDoubleNext={onSecondDoubleNext}
-            onMonthControlClick={onMonthControlClick}
-            onYearControlClick={onYearControlClick}
-            disabledFooterControl
-            disabledMonthSwitch={disabledMonthSwitch}
-            disabledYearSwitch={disabledYearSwitch}
-            disableOnNext={disableOnNext}
-            disableOnDoubleNext={disableOnDoubleNext}
-            displayMonthLocale={displayMonthLocale}
-            displayWeekDayLocale={displayWeekDayLocale}
-            isDateDisabled={isDateDisabled}
-            isDateInRange={isDateInRange}
-            onDateHover={onDateHover}
-            isMonthDisabled={isMonthDisabled}
-            isMonthInRange={isMonthInRange}
-            onMonthHover={onMonthHover}
-            isWeekDisabled={isWeekDisabled}
-            isWeekInRange={isWeekInRange}
-            onWeekHover={onWeekHover}
-            isYearDisabled={isYearDisabled}
-            isYearInRange={isYearInRange}
-            onYearHover={onYearHover}
-            isQuarterDisabled={isQuarterDisabled}
-            isQuarterInRange={isQuarterInRange}
-            onQuarterHover={onQuarterHover}
-            isHalfYearDisabled={isHalfYearDisabled}
-            isHalfYearInRange={isHalfYearInRange}
-            onHalfYearHover={onHalfYearHover}
+        )}
+        <div className={calendarClasses.mainWithFooter}>
+          <div style={{ display: 'inline-flex', flexFlow: 'row' }}>
+            <Calendar
+              {...calendarProps}
+              renderAnnotations={renderAnnotations}
+              className={cx(
+                calendarClasses.noShadowHost,
+                calendarProps?.className,
+              )}
+              ref={firstCalendarRef}
+              mode={currentMode}
+              value={value}
+              onChange={onChangeFactory(0)}
+              referenceDate={referenceDates[0]}
+              onPrev={onFirstPrev}
+              onDoublePrev={onFirstDoublePrev}
+              onMonthControlClick={onMonthControlClick}
+              onYearControlClick={onYearControlClick}
+              disabledFooterControl
+              disabledMonthSwitch={disabledMonthSwitch}
+              disabledYearSwitch={disabledYearSwitch}
+              disableOnPrev={disableOnPrev}
+              disableOnDoublePrev={disableOnDoublePrev}
+              displayMonthLocale={displayMonthLocale}
+              displayWeekDayLocale={displayWeekDayLocale}
+              isDateDisabled={isDateDisabled}
+              isDateInRange={isDateInRange}
+              onDateHover={onDateHover}
+              isMonthDisabled={isMonthDisabled}
+              isMonthInRange={isMonthInRange}
+              onMonthHover={onMonthHover}
+              isWeekDisabled={isWeekDisabled}
+              isWeekInRange={isWeekInRange}
+              onWeekHover={onWeekHover}
+              isYearDisabled={isYearDisabled}
+              isYearInRange={isYearInRange}
+              onYearHover={onYearHover}
+              isQuarterDisabled={isQuarterDisabled}
+              isQuarterInRange={isQuarterInRange}
+              onQuarterHover={onQuarterHover}
+              isHalfYearDisabled={isHalfYearDisabled}
+              isHalfYearInRange={isHalfYearInRange}
+              onHalfYearHover={onHalfYearHover}
+            />
+            <Calendar
+              {...calendarProps}
+              renderAnnotations={renderAnnotations}
+              className={cx(
+                calendarClasses.noShadowHost,
+                calendarProps?.className,
+              )}
+              ref={secondCalendarRef}
+              mode={currentMode}
+              value={value}
+              onChange={onChangeFactory(1)}
+              referenceDate={referenceDates[1]}
+              onNext={onSecondNext}
+              onDoubleNext={onSecondDoubleNext}
+              onMonthControlClick={onMonthControlClick}
+              onYearControlClick={onYearControlClick}
+              disabledFooterControl
+              disabledMonthSwitch={disabledMonthSwitch}
+              disabledYearSwitch={disabledYearSwitch}
+              disableOnNext={disableOnNext}
+              disableOnDoubleNext={disableOnDoubleNext}
+              displayMonthLocale={displayMonthLocale}
+              displayWeekDayLocale={displayWeekDayLocale}
+              isDateDisabled={isDateDisabled}
+              isDateInRange={isDateInRange}
+              onDateHover={onDateHover}
+              isMonthDisabled={isMonthDisabled}
+              isMonthInRange={isMonthInRange}
+              onMonthHover={onMonthHover}
+              isWeekDisabled={isWeekDisabled}
+              isWeekInRange={isWeekInRange}
+              onWeekHover={onWeekHover}
+              isYearDisabled={isYearDisabled}
+              isYearInRange={isYearInRange}
+              onYearHover={onYearHover}
+              isQuarterDisabled={isQuarterDisabled}
+              isQuarterInRange={isQuarterInRange}
+              onQuarterHover={onQuarterHover}
+              isHalfYearDisabled={isHalfYearDisabled}
+              isHalfYearInRange={isHalfYearInRange}
+              onHalfYearHover={onHalfYearHover}
+            />
+          </div>
+          <CalendarFooterActions
+            actions={{
+              secondaryButtonProps: {
+                children: 'Cancel',
+                disabled: false,
+                ...actions?.secondaryButtonProps,
+              },
+              primaryButtonProps: {
+                children: 'Ok',
+                disabled: false,
+                ...actions?.primaryButtonProps,
+              },
+            }}
           />
         </div>
-        <CalendarFooterActions
-          actions={{
-            secondaryButtonProps: {
-              children: 'Cancel',
-              disabled: false,
-              ...actions?.secondaryButtonProps,
-            },
-            primaryButtonProps: {
-              children: 'Ok',
-              disabled: false,
-              ...actions?.primaryButtonProps,
-            },
-          }}
-        />
       </div>
     );
   },

@@ -12,6 +12,7 @@ import CalendarDayOfWeek, { CalendarDayOfWeekProps } from './CalendarDayOfWeek';
 import { useCalendarContext } from './CalendarContext';
 import type { CalendarYearsProps } from './CalendarYears';
 import type { CalendarMonthsProps } from './CalendarMonths';
+import Typography, { TypographyColor } from '../Typography';
 
 export interface CalendarDaysProps
   extends Pick<CalendarDayOfWeekProps, 'displayWeekDayLocale'>,
@@ -35,6 +36,13 @@ export interface CalendarDaysProps
    * Mouse enter handler for date button.
    */
   onDateHover?: (date: DateType) => void;
+  /**
+   * The extra annotations for specific dates.
+   */
+  renderAnnotations?: (date: DateType) => {
+    value: string;
+    color?: TypographyColor;
+  };
   /**
    * The refernce date for getting the month of the calendar.
    */
@@ -71,6 +79,7 @@ function CalendarDays(props: CalendarDaysProps) {
     isDateInRange,
     onClick: onClickProp,
     onDateHover,
+    renderAnnotations,
     referenceDate,
     value,
     ...rest
@@ -140,6 +149,20 @@ function CalendarDays(props: CalendarDaysProps) {
                     onClick={onClick}
                   >
                     {dateNum}
+                    {typeof renderAnnotations === 'function'
+                      ? (() => {
+                          const annotation = renderAnnotations(date);
+
+                          return (
+                            <Typography
+                              variant="annotation"
+                              color={annotation?.color ?? 'text-neutral'}
+                            >
+                              {annotation?.value ?? ''}
+                            </Typography>
+                          );
+                        })()
+                      : null}
                   </button>
                 </CalendarCell>
               );

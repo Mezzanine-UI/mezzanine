@@ -8,6 +8,7 @@ import Calendar, { CalendarProps } from './Calendar';
 import RangeCalendar, { RangeCalendarProps } from './RangeCalendar';
 import Typography from '../Typography/Typography';
 import { useCalendarControls } from './useCalendarControls';
+import Toggle from '../Toggle';
 
 export default {
   title: 'Utility/Calendar',
@@ -23,6 +24,8 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
     'half-year': 'YYYY-[Q]Q', // Will convert Q to H (Q1,Q2→H1, Q3,Q4→H2)
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
+  const [showQuickSelect, setShowQuickSelect] = useState(false);
+  const [showAnnotations, setShowAnnotations] = useState(false);
   const [val, setVal] = useState<DateType>();
   const {
     currentMode,
@@ -63,13 +66,63 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
     return formatted;
   };
 
+  const quickSelectOptions = [
+    {
+      id: 'yesterday',
+      name: 'Yesterday',
+      onClick: () => onChange(moment().subtract(1, 'day').toISOString()),
+    },
+    {
+      id: 'today',
+      name: 'Today',
+      onClick: () => onChange(moment().toISOString()),
+    },
+    {
+      id: 'tomorrow',
+      name: 'Tomorrow',
+      onClick: () => onChange(moment().add(1, 'day').toISOString()),
+    },
+  ];
+
   return (
     <>
+      <Toggle
+        checked={showQuickSelect}
+        label="Enabled QuickSelect"
+        onClick={() => setShowQuickSelect((prev) => !prev)}
+      />
+      <Toggle
+        checked={showAnnotations}
+        label="Enabled Annotations"
+        onClick={() => setShowAnnotations((prev) => !prev)}
+      />
       <Typography style={{ margin: '0 0 12px 0' }}>
         {`current value: ${formatValue(val)}`}
       </Typography>
       <Calendar
         mode={currentMode}
+        renderAnnotations={
+          showAnnotations
+            ? (date) => {
+                // your custom annotations
+                const availableAnnotations = {
+                  [moment().format('YYYY-MM-DD')]: {
+                    color: 'text-success' as const,
+                    value: '12.4%',
+                  },
+                  [moment().subtract(1, 'days').format('YYYY-MM-DD')]: {
+                    color: 'text-error' as const,
+                    value: '-8%',
+                  },
+                };
+
+                const dateKey = moment(date).format('YYYY-MM-DD');
+                const annotation = availableAnnotations[dateKey];
+
+                return annotation;
+              }
+            : undefined
+        }
         onChange={onChange}
         onMonthControlClick={onMonthControlClick}
         onDoubleNext={onDoubleNext}
@@ -79,6 +132,39 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
         onYearControlClick={onYearControlClick}
         referenceDate={referenceDate}
         value={val}
+        quickSelect={
+          showQuickSelect
+            ? {
+                activeId: (() => {
+                  if (!val) return undefined;
+
+                  const todayId = 'today';
+                  const valMoment = moment(val);
+                  const todayMoment = moment();
+
+                  if (valMoment.isSame(todayMoment, 'day')) {
+                    return todayId;
+                  }
+                  if (
+                    valMoment.isSame(
+                      todayMoment.clone().subtract(1, 'day'),
+                      'day',
+                    )
+                  ) {
+                    return 'yesterday';
+                  }
+                  if (
+                    valMoment.isSame(todayMoment.clone().add(1, 'day'), 'day')
+                  ) {
+                    return 'tomorrow';
+                  }
+
+                  return undefined;
+                })(),
+                options: quickSelectOptions,
+              }
+            : undefined
+        }
       />
     </>
   );
@@ -120,6 +206,7 @@ const InnerRangeCalendarPlayground = ({
     'half-year': 'YYYY-[Q]Q',
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
+  const [showQuickSelect, setShowQuickSelect] = useState(false);
 
   // Final confirmed values
   const [confirmedStartVal, setConfirmedStartVal] = useState<DateType>();
@@ -181,8 +268,36 @@ const InnerRangeCalendarPlayground = ({
     return moment(date).isBetween(tempStartVal, tempEndVal, granularity, '[]');
   };
 
+  const quickSelectOptions = [
+    {
+      id: 'lastWeek',
+      name: 'Last 7 Days',
+      onClick: () => {
+        const end = moment();
+        const start = moment().subtract(7, 'days');
+        setTempStartVal(start.toISOString());
+        setTempEndVal(end.toISOString());
+      },
+    },
+    {
+      id: 'lastMonth',
+      name: 'Last 30 Days',
+      onClick: () => {
+        const end = moment();
+        const start = moment().subtract(30, 'days');
+        setTempStartVal(start.toISOString());
+        setTempEndVal(end.toISOString());
+      },
+    },
+  ];
+
   return (
     <>
+      <Toggle
+        checked={showQuickSelect}
+        label="Enabled QuickSelect"
+        onClick={() => setShowQuickSelect((prev) => !prev)}
+      />
       <Typography style={{ margin: '0 0 12px 0' }}>
         {`Confirmed Range: ${formatValue(confirmedStartVal)} ~ ${formatValue(confirmedEndVal)}`}
       </Typography>
@@ -219,6 +334,44 @@ const InnerRangeCalendarPlayground = ({
             onClick: handleCancel,
           },
         }}
+        quickSelect={
+          showQuickSelect
+            ? {
+                activeId: (() => {
+                  if (!tempStartVal || !tempEndVal) return undefined;
+
+                  const lastWeekId = 'lastWeek';
+                  const lastMonthId = 'lastMonth';
+                  const endMoment = moment(tempEndVal);
+                  const startMoment = moment(tempStartVal);
+                  const todayMoment = moment();
+
+                  if (
+                    startMoment.isSame(
+                      todayMoment.clone().subtract(7, 'days'),
+                      'day',
+                    ) &&
+                    endMoment.isSame(todayMoment, 'day')
+                  ) {
+                    return lastWeekId;
+                  }
+
+                  if (
+                    startMoment.isSame(
+                      todayMoment.clone().subtract(30, 'days'),
+                      'day',
+                    ) &&
+                    endMoment.isSame(todayMoment, 'day')
+                  ) {
+                    return lastMonthId;
+                  }
+
+                  return undefined;
+                })(),
+                options: quickSelectOptions,
+              }
+            : undefined
+        }
       />
     </>
   );
