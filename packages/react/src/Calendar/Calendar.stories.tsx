@@ -5,6 +5,7 @@ import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarConfigProvider from './CalendarContext';
 import Calendar, { CalendarProps } from './Calendar';
+import RangeCalendar, { RangeCalendarProps } from './RangeCalendar';
 import Typography from '../Typography/Typography';
 import { useCalendarControls } from './useCalendarControls';
 
@@ -102,5 +103,145 @@ CalendarPlayground.argTypes = {
 };
 
 CalendarPlayground.args = {
+  mode: 'day',
+};
+
+const InnerRangeCalendarPlayground = ({
+  mode = 'day',
+}: {
+  mode: CalendarMode;
+}) => {
+  const formats = {
+    day: 'YYYY-MM-DD',
+    week: 'gggg-wo',
+    month: 'YYYY-MM',
+    year: 'YYYY',
+    quarter: 'YYYY-[Q]Q',
+    'half-year': 'YYYY-[Q]Q',
+  };
+  const initialReferenceDate = useMemo(() => moment().toISOString(), []);
+
+  // Final confirmed values
+  const [confirmedStartVal, setConfirmedStartVal] = useState<DateType>();
+  const [confirmedEndVal, setConfirmedEndVal] = useState<DateType>();
+
+  // Temporary selection values
+  const [tempStartVal, setTempStartVal] = useState<DateType>();
+  const [tempEndVal, setTempEndVal] = useState<DateType>();
+
+  const formatValue = (value: DateType | undefined) => {
+    if (!value) return '';
+    const formatted = moment(value).format(formats[mode]);
+
+    if (mode === 'half-year') {
+      return formatted.replace(/Q([1-4])/, (_, quarter) => {
+        const q = parseInt(quarter, 10);
+        const halfYear = Math.ceil(q / 2);
+        return `H${halfYear}`;
+      });
+    }
+
+    return formatted;
+  };
+
+  const handleChange = (target: DateType) => {
+    if (!tempStartVal || (tempStartVal && tempEndVal)) {
+      // Start new selection
+      setTempStartVal(target);
+      setTempEndVal(undefined);
+    } else {
+      // Set end value
+      const start = moment(tempStartVal);
+      const end = moment(target);
+
+      if (end.isBefore(start)) {
+        setTempStartVal(target);
+        setTempEndVal(tempStartVal);
+      } else {
+        setTempEndVal(target);
+      }
+    }
+  };
+
+  const handleOk = () => {
+    // Apply temporary selection to confirmed values
+    setConfirmedStartVal(tempStartVal);
+    setConfirmedEndVal(tempEndVal);
+  };
+
+  const handleCancel = () => {
+    // Revert to confirmed values
+    setTempStartVal(confirmedStartVal);
+    setTempEndVal(confirmedEndVal);
+  };
+
+  const isDateInRange = (date: DateType) => {
+    if (!tempStartVal || !tempEndVal) return false;
+    const granularity = mode === 'half-year' ? 'quarter' : (mode as any);
+    return moment(date).isBetween(tempStartVal, tempEndVal, granularity, '[]');
+  };
+
+  return (
+    <>
+      <Typography style={{ margin: '0 0 12px 0' }}>
+        {`Confirmed Range: ${formatValue(confirmedStartVal)} ~ ${formatValue(confirmedEndVal)}`}
+      </Typography>
+      <Typography style={{ margin: '0 0 12px 0', color: '#999' }}>
+        {`Current Selection: ${formatValue(tempStartVal)} ~ ${formatValue(tempEndVal)}`}
+      </Typography>
+      <RangeCalendar
+        mode={mode}
+        onChange={handleChange}
+        referenceDate={
+          tempStartVal || confirmedStartVal || initialReferenceDate
+        }
+        value={
+          tempStartVal && tempEndVal
+            ? [tempStartVal, tempEndVal]
+            : tempStartVal
+              ? [tempStartVal]
+              : undefined
+        }
+        isDateInRange={isDateInRange}
+        isMonthInRange={isDateInRange}
+        isWeekInRange={isDateInRange}
+        isYearInRange={isDateInRange}
+        isQuarterInRange={isDateInRange}
+        isHalfYearInRange={isDateInRange}
+        actions={{
+          primaryButtonProps: {
+            children: 'Ok',
+            onClick: handleOk,
+            disabled: !tempStartVal || !tempEndVal,
+          },
+          secondaryButtonProps: {
+            children: 'Cancel',
+            onClick: handleCancel,
+          },
+        }}
+      />
+    </>
+  );
+};
+
+type RangeCalendarPlaygroundArgs = Pick<RangeCalendarProps, 'mode'>;
+export const RangeCalendarPlayground: StoryFn<RangeCalendarPlaygroundArgs> = ({
+  mode = 'day',
+}) => (
+  <CalendarConfigProvider methods={CalendarMethodsMoment}>
+    <InnerRangeCalendarPlayground mode={mode} />
+  </CalendarConfigProvider>
+);
+
+RangeCalendarPlayground.argTypes = {
+  mode: {
+    options: ['day', 'week', 'month', 'year', 'quarter', 'half-year'],
+    control: {
+      type: 'select',
+    },
+  },
+};
+
+RangeCalendarPlayground.args = {
   mode: 'day',
 };

@@ -142,6 +142,11 @@ export interface CalendarProps
     | 'onHalfYearHover'
   >;
   /**
+   * Disabled footer control element
+   * @default false
+   */
+  disabledFooterControl?: boolean;
+  /**
    * Disabled `Month` calendar button click
    * @default false
    */
@@ -220,6 +225,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       calendarQuartersProps,
       calendarHalfYearsProps,
       className,
+      disabledFooterControl = false,
       disabledMonthSwitch,
       disableOnNext,
       disableOnPrev,
@@ -281,11 +287,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          Today
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            Today
+          </CalendarFooterControl>
+        );
+      }
     } else if (mode === 'week') {
       displayCalendar = (
         <CalendarWeeks
@@ -302,11 +310,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          This week
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            This week
+          </CalendarFooterControl>
+        );
+      }
     } else if (mode === 'month') {
       displayCalendar = (
         <CalendarMonths
@@ -321,11 +331,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          This month
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            This month
+          </CalendarFooterControl>
+        );
+      }
     } else if (mode === 'year') {
       displayCalendar = (
         <CalendarYears
@@ -339,11 +351,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          This year
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            This year
+          </CalendarFooterControl>
+        );
+      }
     } else if (mode === 'quarter') {
       displayCalendar = (
         <CalendarQuarters
@@ -357,11 +371,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          This quarter
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            This quarter
+          </CalendarFooterControl>
+        );
+      }
     } else if (mode === 'half-year') {
       displayCalendar = (
         <CalendarHalfYears
@@ -375,11 +391,13 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         />
       );
 
-      displayFooterControl = (
-        <CalendarFooterControl onClick={() => onChange?.(getNow())}>
-          This half year
-        </CalendarFooterControl>
-      );
+      if (!disabledFooterControl) {
+        displayFooterControl = (
+          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+            This half year
+          </CalendarFooterControl>
+        );
+      }
     }
 
     /** Compute controls outcome */
