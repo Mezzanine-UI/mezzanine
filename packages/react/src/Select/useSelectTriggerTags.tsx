@@ -1,120 +1,178 @@
-import { RefObject, useState, useEffect, type JSX } from 'react';
+import {
+  JSX,
+  RefObject,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
+import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { TagSize } from '@mezzanine-ui/core/tag';
-import take from 'lodash/take';
 import { SelectValue } from './typings';
 import Tag from '../Tag';
 
 export interface UseSelectTriggerTagsProps {
-  controlRef: RefObject<HTMLDivElement | undefined>;
+  /**
+   * Enable ellipsis calculation.
+   */
+  enabled?: boolean;
+  /**
+   * The ref for wrapper that defines available width.
+   */
+  containerRef: RefObject<HTMLDivElement | null>;
+  /**
+   * Container ref of the visible tags list.
+   */
+  tagsRef: RefObject<HTMLDivElement | null>;
   size?: TagSize;
   value?: SelectValue[];
 }
 
 export interface UseSelectTriggerTagsValue {
+  overflowSelections: SelectValue[];
   renderFakeTags: () => JSX.Element | null;
   takeCount: number;
+  visibleSelections: SelectValue[];
 }
 
-export function calcTakeCount({
-  tagsWidths,
-  maxWidth,
-  ellipsisTagWidth,
-  setTakeCount,
-}: {
-  tagsWidths: number[];
-  maxWidth: number;
-  ellipsisTagWidth: number;
-  setTakeCount: (count: number) => void;
-}) {
-  let targetCount = 0;
+const fakeTagClassName = 'mzn-select-trigger__fake-tag';
+const fakeEllipsisClassName = 'mzn-select-trigger__fake-ellipsis';
 
-  for (let count = 0; count <= tagsWidths.length; count += 1) {
-    const prevTotal = take(tagsWidths, count).reduce(
-      (prev, curr) => prev + curr,
-      0,
-    );
-    const nowTotal = take(tagsWidths, count + 1).reduce(
-      (prev, curr) => prev + curr,
-      0,
-    );
+function getFullWidth(element: HTMLElement) {
+  const rect = element.getBoundingClientRect();
+  const style = window.getComputedStyle(element);
+  const marginStart =
+    parseFloat(style.marginInlineStart || style.marginLeft || '0') || 0;
+  const marginEnd =
+    parseFloat(style.marginInlineEnd || style.marginRight || '0') || 0;
 
-    targetCount = count;
-
-    if (prevTotal <= maxWidth && nowTotal >= maxWidth && maxWidth > 0) {
-      if (prevTotal + ellipsisTagWidth > maxWidth) {
-        targetCount -= 1;
-      }
-
-      break;
-    }
-  }
-
-  setTakeCount(targetCount);
+  return rect.width + marginStart + marginEnd;
 }
 
 export function useSelectTriggerTags(
   props: UseSelectTriggerTagsProps,
 ): UseSelectTriggerTagsValue {
-  const { controlRef, value, size } = props;
+  const { containerRef, tagsRef, value = [], size, enabled = false } = props;
+  const [takeCount, setTakeCount] = useState<number>(value.length);
+  const fakeContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const [tagsWidths, setTagsWidths] = useState<number[]>([]);
-  const [takeCount, setTakeCount] = useState<number>(0);
-  const mznFakeTagClassName = 'mzn-fake-tag';
-  const mznFakeEllipsisTagClassName = 'mzn-fake-ellipsis-tag';
+  const measure = useCallback(() => {
+    if (!enabled) {
+      setTakeCount(value.length);
+      return;
+    }
+
+    const container = containerRef.current ?? tagsRef.current;
+    const fakeContainer = fakeContainerRef.current;
+
+    if (!container || !fakeContainer) {
+      setTakeCount(value.length);
+      return;
+    }
+
+    const fakeTags = Array.from(
+      fakeContainer.getElementsByClassName(fakeTagClassName),
+    ) as HTMLElement[];
+    const fakeEllipsis = fakeContainer.getElementsByClassName(
+      fakeEllipsisClassName,
+    )[0] as HTMLElement | undefined;
+
+    if (!fakeTags.length) {
+      setTakeCount(0);
+      return;
+    }
+
+    const computedStyleTarget = tagsRef.current ?? container;
+    const containerWidth = container.clientWidth;
+    const style = computedStyleTarget
+      ? window.getComputedStyle(computedStyleTarget)
+      : null;
+    const paddingLeft = style ? parseFloat(style.paddingLeft) || 0 : 0;
+    const paddingRight = style ? parseFloat(style.paddingRight) || 0 : 0;
+    const maxWidth = containerWidth - paddingLeft - paddingRight;
+    const ellipsisWidth = fakeEllipsis ? getFullWidth(fakeEllipsis) : 0;
+
+    let nextCount = fakeTags.length;
+    let consumedWidth = 0;
+
+    for (let i = 0; i < fakeTags.length; i += 1) {
+      const tagWidth = getFullWidth(fakeTags[i]);
+      const hasOverflow = fakeTags.length - (i + 1) > 0;
+      const reservedWidth = hasOverflow ? ellipsisWidth : 0;
+
+      if (consumedWidth + tagWidth + reservedWidth > maxWidth) {
+        nextCount = i;
+        break;
+      }
+
+      consumedWidth += tagWidth;
+      nextCount = i + 1;
+    }
+
+    setTakeCount(nextCount);
+  }, [containerRef, enabled, tagsRef, value.length]);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [value, size, enabled, measure]);
 
   useEffect(() => {
-    const elements =
-      controlRef.current?.getElementsByClassName(mznFakeTagClassName);
-    const ellipsisTagElement = controlRef.current?.getElementsByClassName(
-      mznFakeEllipsisTagClassName,
-    )[0];
+    if (!enabled) return;
 
-    if (elements?.length && ellipsisTagElement) {
-      const tagsWidthsArray = Array.from(elements).map((e) => e.clientWidth);
-      const parentWidth = controlRef.current?.clientWidth || 0;
-      const maxWidth = parentWidth * 0.7;
-      const ellipsisTagWidth = ellipsisTagElement.clientWidth;
+    const container = tagsRef.current;
+    if (!container) return;
 
-      setTagsWidths(tagsWidthsArray);
+    const observer = new ResizeObserver(() => {
+      measure();
+    });
 
-      calcTakeCount({
-        tagsWidths: tagsWidthsArray,
-        maxWidth,
-        ellipsisTagWidth,
-        setTakeCount,
-      });
-    }
-  }, [value, controlRef]);
+    observer.observe(container);
+
+    return () => observer.disconnect();
+  }, [enabled, containerRef, tagsRef, value.length, measure]);
 
   const renderFakeTags = () => {
-    if (value && value.length === tagsWidths.length) return null;
+    if (!enabled || !value.length) return null;
 
     return (
       <div
+        aria-hidden
+        className={classes.triggerTags}
+        ref={fakeContainerRef}
         style={{
           position: 'absolute',
-          visibility: 'hidden',
           pointerEvents: 'none',
+          visibility: 'hidden',
           opacity: 0,
+          inset: 0,
         }}
       >
-        {value?.map((selection) => (
-          <Tag
-            key={selection.id}
-            className={mznFakeTagClassName}
-            closable
-            disabled
-            size={size}
-          >
-            {selection.name}
-          </Tag>
+        {value.map((selection) => (
+          <span className={fakeTagClassName} key={`fake-${selection.id}`}>
+            <Tag
+              disabled
+              label={selection.name}
+              onClose={() => {}}
+              size={size}
+              type="dismissable"
+            />
+          </span>
         ))}
-        <Tag disabled className={mznFakeEllipsisTagClassName} size={size}>
-          +99...
-        </Tag>
+        <span className={fakeEllipsisClassName}>
+          <Tag count={99} size={size} type="overflow-counter" />
+        </span>
       </div>
     );
   };
 
-  return { renderFakeTags, takeCount };
+  const visibleSelections = value.slice(0, takeCount);
+  const overflowSelections = value.slice(takeCount);
+
+  return {
+    overflowSelections,
+    renderFakeTags,
+    takeCount,
+    visibleSelections,
+  };
 }
