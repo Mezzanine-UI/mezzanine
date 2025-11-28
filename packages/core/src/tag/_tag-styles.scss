@@ -37,15 +37,18 @@ $tag-config: (
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, neutral),
     background-color: palette.semantic-variable(background, brand-faint),
+    border: 1px solid palette.semantic-variable(background, brand-faint),
     hover: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
       background-color: palette.semantic-variable(background, brand-subtle),
+      border: 1px solid palette.semantic-variable(background, brand-subtle),
     ),
     active: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
       background-color: palette.semantic-variable(background, brand-light),
+      border: 1px solid palette.semantic-variable(background, brand-light),
     ),
     disabled: (
       text-color: palette.semantic-variable(text, neutral-light),
