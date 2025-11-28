@@ -40,7 +40,7 @@ $handler-color: palette.semantic-variable(background, brand) !default;
   }
 
   &__input {
-    width: 48px;
+    width: spacing.semantic-variable(size, element, expansive);
 
     &:first-of-type {
       margin-right: spacing.semantic-variable(gap, comfort);
@@ -52,7 +52,7 @@ $handler-color: palette.semantic-variable(background, brand) !default;
 
     .mzn-text-field {
       text-align: center;
-      width: 48px;
+      width: spacing.semantic-variable(size, element, expansive);
       padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
     }
   }
