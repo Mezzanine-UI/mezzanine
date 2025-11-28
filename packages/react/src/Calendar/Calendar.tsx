@@ -475,7 +475,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                 : undefined
             }
             onNext={
-              onNext && mode !== 'quarter' && mode !== 'half-year'
+              // Only day and week modes have single next/prev (for month navigation)
+              onNext && (mode === 'day' || mode === 'week')
                 ? () => {
                     onNext(mode);
                   }
@@ -489,7 +490,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
                 : undefined
             }
             onPrev={
-              onPrev && mode !== 'quarter' && mode !== 'half-year'
+              // Only day and week modes have single next/prev (for month navigation)
+              onPrev && (mode === 'day' || mode === 'week')
                 ? () => {
                     onPrev(mode);
                   }
