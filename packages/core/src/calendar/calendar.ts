@@ -22,9 +22,12 @@ export const calendarButtonPrefix = `${calendarPrefix}-button`;
 export const calendarTwelveGridPrefix = `${calendarPrefix}-twelve-grid`;
 export const calendarControlsPrefix = `${calendarPrefix}-controls`;
 export const calendarFooterControlPrefix = `${calendarPrefix}-footer-control`;
+export const calendarFooterActionsPrefix = `${calendarPrefix}-footer-actions`;
 
 export const calendarClasses = {
   host: calendarPrefix,
+  rangeHost: `${calendarPrefix}--range`,
+  noShadowHost: `${calendarPrefix}--no-shadow`,
   mode: (mode: CalendarMode) => `${calendarPrefix}--${mode}`,
   main: calendarMainPrefix,
 
@@ -62,6 +65,7 @@ export const calendarClasses = {
 
   /** Footer control classes */
   footerControl: calendarFooterControlPrefix,
+  footerActions: calendarFooterActionsPrefix,
 };
 
 /** Constants */

@@ -31,6 +31,21 @@
   * {
     box-sizing: border-box;
   }
+
+  &--range {
+    display: inline-flex;
+    flex-flow: column;
+    width: auto;
+
+    & > div {
+      display: inline-flex;
+      flex-flow: row;
+    }
+  }
+
+  &--no-shadow {
+    box-shadow: none;
+  }
 }
 
 .#{$main-prefix} {
@@ -280,4 +295,18 @@
   align-items: center;
   justify-content: center;
   gap: spacing.semantic-variable(gap, base);
+}
+
+.#{$footer-actions-prefix} {
+  width: 100%;
+  border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: spacing.semantic-variable(gap, base);
+
+  button {
+    min-width: spacing.semantic-variable(size, element, expansive);
+  }
 }
