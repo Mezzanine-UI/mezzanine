@@ -26,6 +26,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     active,
     className,
     disabled,
+    ellipsis,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
@@ -103,7 +104,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       {isMultipleSelection(props) && props.value?.length ? (
         <SelectTriggerTags
           disabled={disabled}
-          ellipsis={props.ellipsis ?? false}
+          ellipsis={ellipsis ?? false}
           inputProps={inputProps}
           inputRef={inputRef}
           onTagClose={onTagClose}
