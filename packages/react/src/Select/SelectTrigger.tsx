@@ -76,11 +76,17 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     />
   );
 
-  const interactiveProps: TextFieldInteractiveStateProps = disabled
-    ? { disabled: true }
-    : readOnly
-      ? { readonly: true }
-      : {};
+  const interactiveProps: TextFieldInteractiveStateProps = (() => {
+    if (disabled) {
+      return { disabled: true };
+    }
+
+    if (readOnly) {
+      return { readonly: true };
+    }
+
+    return {};
+  })();
 
   return (
     <TextField
