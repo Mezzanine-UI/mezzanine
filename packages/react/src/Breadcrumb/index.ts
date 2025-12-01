@@ -1,2 +1,2 @@
-export type { BreadcrumbProps } from './typings';
+export type { BreadcrumbProps, BreadcrumbItemProps } from './typings';
 export { default } from './Breadcrumb';

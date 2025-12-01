@@ -40,7 +40,7 @@ export type BreadcrumbDropdownItemProps = Omit<
    * Whether to expand the dropdown item icon.
    */
   expand?: boolean;
-  href?: never;
+  href?: string;
   label?: string;
   /**
    * The dropdown options.
@@ -57,7 +57,7 @@ export type BreadcrumbDropdownItemProps = Omit<
     label?: string;
     target?: '_blank' | '_parent' | '_self' | '_top' | string;
   }>;
-  target?: never;
+  target?: '_blank' | '_parent' | '_self' | '_top' | string;
 };
 
 export type BreadcrumbItemTextProps = {

@@ -55,6 +55,8 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
     return (
       <Component
         {...rest}
+        aria-expanded={options ? expand : undefined}
+        aria-haspopup={options ? 'true' : undefined}
         className={cx(
           classes.host,
           expand && classes.expanded,
