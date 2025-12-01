@@ -75,6 +75,8 @@ export type {
   AppBarMainProps,
   AppBarSupportProps,
 } from './AppBar';
+export { default as Breadcrumb } from './Breadcrumb';
+export type { BreadcrumbProps, BreadcrumbItemProps } from './Breadcrumb';
 export { default as Drawer } from './Drawer';
 export type { DrawerPlacement, DrawerProps } from './Drawer';
 export { default as Dropdown } from './Dropdown';

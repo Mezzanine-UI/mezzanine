@@ -42,6 +42,7 @@
   @include _load-styles($options, input, input-password-strength-indicator);
 
   // Navigation
+  @include _load-styles($options, breadcrumb);
   @include _load-styles($options, menu);
   @include _load-styles($options, tabs);
   @include _load-styles($options, pagination);
