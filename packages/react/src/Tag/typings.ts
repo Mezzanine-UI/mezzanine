@@ -40,7 +40,7 @@ type TagPropsStatic = TagSpanHostProps & {
   disabled?: never;
   /** Handler fired when the close button in dismissable tag is clicked. */
   onClose?: never;
-  /** Handler fired when buttin-based tag clicked */
+  /** Handler fired when button-based tag clicked */
   onClick?: never;
   /** Applies read-only styling for dismissable tags. */
   readOnly?: never;
