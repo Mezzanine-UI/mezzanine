@@ -93,7 +93,7 @@ export interface SelectTriggerBaseProps
   required?: boolean;
   searchText?: string;
   showTextInputAfterTags?: boolean;
-  /** Suffic icon click event handler */
+  /** Suffix icon click event handler */
   suffixAction?: VoidFunction;
   /** Customize suffix icon */
   suffixActionIcon?: ReactElement<IconProps, typeof Icon>;
