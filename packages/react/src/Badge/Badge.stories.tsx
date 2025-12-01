@@ -3,6 +3,8 @@ import Badge, { BadgeProps } from '.';
 import Typography from '../Typography';
 import { NotificationIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
+import { BadgeCountVariant, BadgeDotVariant } from '@mezzanine-ui/core/badge';
+import { ReactNode } from 'react';
 
 export default {
   title: 'Data Display/Badge',
@@ -24,14 +26,27 @@ const variants = [
   'count-info',
 ] as const;
 
-export const Playground: Story = {
+type PlaygroundArgs = {
+  className: string;
+  count: number;
+  text: string;
+  variant: BadgeDotVariant | BadgeCountVariant;
+  overflowCount: number;
+  children: ReactNode;
+};
+
+export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
+    className: '',
+    count: undefined,
+    text: '',
     variant: variants[0],
     overflowCount: undefined,
+    children: undefined,
   },
   argTypes: {
-    children: { control: false },
     className: { control: 'text' },
+    children: { control: false },
     count: { control: 'number' },
     overflowCount: { control: 'number' },
     text: { control: 'text' },
