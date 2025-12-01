@@ -7,7 +7,7 @@ import type {
 export interface BreadcrumbProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'nav'>, 'children'> {
   /**
-   * Only display the last two items with ellipsis
+   * Display only the last two items with an ellipsis dropdown for all previous items
    */
   condensed?: boolean;
   items: Array<BreadcrumbItemProps>;
