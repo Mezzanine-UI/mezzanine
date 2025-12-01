@@ -1,7 +1,8 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
 @use './stepper' as *;
 
 $status-colors: (
@@ -68,6 +69,19 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
 .#{$prefix-step} {
   &--interactive {
     cursor: pointer;
+  }
+
+  // transitions
+  .#{$prefix-step}__title, .#{$prefix-step}__description, .#{$prefix-step}__status-indicator {
+    transition: transition.standard(color, fast);
+  }
+  .#{$prefix-step}__title-connect-line::after,
+  .#{$prefix-step}__status-indicator::after,
+  .#{$prefix-step}__status-indicator-dot::after {
+    transition: transition.standard(background-color, fast);
+  }
+  .#{$prefix-step}__status-indicator-dot {
+    transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
   }
 
   &--horizontal {

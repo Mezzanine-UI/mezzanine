@@ -24,7 +24,7 @@
   color: palette.semantic-variable(text, neutral);
   display: flex;
   gap: spacing.semantic-variable(gap, tiny);
-  transition: transition.standard((color, background-color, box-shadow), fast);
+  transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
   white-space: nowrap;
 
   &__icon {
@@ -56,8 +56,12 @@
   }
 }
 
-a.#{$prefix}__item {
+a.#{$prefix}__item, button.#{$prefix}__item:not(.#{$prefix}__item--expanded) {
   &:hover {
     color: palette.semantic-variable(text, brand);
+
+    .#{$prefix}__item__icon {
+      color: palette.semantic-variable(icon, brand);
+    }
   }
 }

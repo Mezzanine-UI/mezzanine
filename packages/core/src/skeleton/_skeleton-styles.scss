@@ -1,7 +1,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/motion';
+@use '~@mezzanine-ui/system/motion' as motion;
 @use './skeleton' as *;
 
 $animation-duration: motion.duration(moderate) !default;
@@ -35,7 +35,10 @@ $animation-back: palette.semantic-variable(background, neutral-subtle) !default;
 }
 
 .#{$prefix}--bg {
-  animation: transition.standard(active-animation, calc(#{$animation-duration} * 10)) infinite;
+  @include motion.pattern(skeleton-loading, animation);
+
+  animation-name: active-animation;
+  animation-iteration-count: infinite;
   background: linear-gradient(90deg, #{$animation-back 25%}, #{$animation-front}, #{$animation-back} 75%);
   background-size: 400% 100%;
   box-sizing: border-box;
