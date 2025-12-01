@@ -11,3 +11,8 @@ export type { PickerTriggerProps } from './PickerTrigger';
 export { default as PickerTrigger } from './PickerTrigger';
 export { default as RangePickerTrigger } from './RangePickerTrigger';
 export type { RangePickerTriggerProps } from './RangePickerTrigger';
+export { default as FormattedInput } from './FormattedInput';
+export type { FormattedInputProps } from './FormattedInput';
+export { useDateInputFormatter } from './useDateInputFormatter';
+export type { UseDateInputFormatterProps } from './useDateInputFormatter';
+export { default as MaskFormat } from './MaskFormat';

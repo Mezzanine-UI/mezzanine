@@ -47,7 +47,6 @@ export interface DatePickerProps
       | 'onClick'
       | 'onIconClick'
       | 'onKeyDown'
-      | 'suffixActionIcon'
       | 'value'
     > {
   /**
@@ -280,7 +279,13 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       onCalendarToggle(!open);
     };
 
-    const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
+    const suffixActionIcon = (
+      <Icon
+        aria-label="Open calendar"
+        icon={CalendarIcon}
+        onClick={onIconClick}
+      />
+    );
 
     return (
       <>
@@ -290,7 +295,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           className={className}
           clearable={clearable}
           disabled={disabled}
+          enableFormatted={true}
           error={error}
+          format={format}
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
@@ -301,7 +308,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           readOnly={readOnly}
           required={required}
           size={size}
-          suffixActionIcon={suffixActionIcon}
+          suffix={suffixActionIcon}
           value={inputValue}
         />
         <DatePickerCalendar
