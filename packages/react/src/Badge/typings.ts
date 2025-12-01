@@ -14,39 +14,45 @@ type BadgeVariantProps =
   | BadgeDotProps;
 
 type BadgeCountProps = {
-  /** Badge renders internally, so children is disabled for count badges. */
+  /**
+   * ONLY AVAILABLE FOR DOT BADGE(WITHOUT TEXT).
+   * When dot badges have children (typically an icon),
+   * the dot appears on the children's top-right corner.
+   */
   children?: never;
-  /** Base number rendered inside the badge when using the count variant. */
+  /**
+   * ONLY AVAILABLE FOR COUNT BADGE.
+   * Base number rendered inside the badge when using the count variant.
+   */
   count: number;
   /**
-   * If the children is number and greater than overflowCount, it will show overflowCount suffixed with a "+".
-   * Only available on count badge.
+   * ONLY AVAILABLE FOR COUNT BADGE.
+   * If the children is number and greater than overflowCount,
+   * it will show overflowCount suffixed with a "+".
    */
   overflowCount?: number;
-  /** Additional label is not supported for count badges. */
+  /**
+   * ONLY AVAILABLE FOR DOT WITH TEXT BADGE.
+   * String displayed next to the dot badge.
+   */
   text?: never;
-  /** Controls the visual style (dot vs count variants) and enables the related overflow/hide rules. */
+  /**
+   * Controls the visual style (dot vs count variants) and enables the related overflow/hide rules.
+   */
   variant: BadgeCountVariant;
 };
 
 type BadgeDotWithTextProps = {
-  /** Dot badges with text do not render children content. */
   children?: never;
-  /** Count is disabled when rendering dot badges. */
   count?: never;
-  /** Overflow handling is only meaningful in count mode. */
   overflowCount?: never;
-  /** Optional string displayed next to the dot badge. */
   text?: string;
   variant: BadgeDotVariant;
 };
 
 type BadgeDotProps = {
-  /** Content rendered next to the dot badge, commonly an anchor or icon. */
   children?: ReactNode;
-  /** Count is disabled when rendering dot badges. */
   count?: never;
-  /** Overflow handling is only meaningful in count mode. */
   overflowCount?: never;
   text?: never;
   variant: BadgeDotVariant;

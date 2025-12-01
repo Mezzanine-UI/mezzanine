@@ -4,6 +4,8 @@
 @use '~@mezzanine-ui/system/radius';
 @use './textarea' as *;
 
+$textarea-min-width-default: 240px;
+
 .#{$prefix}.#{$prefix} {
   @include typography.semantic-variable(body);
 }
@@ -18,6 +20,7 @@
     padding-block: spacing.semantic-variable(padding, vertical, calm);
     padding-left: spacing.semantic-variable(padding, horizontal, cozy);
     padding-right: spacing.semantic-variable(padding, horizontal, spacious);
+    min-width: $textarea-min-width-default;
 
     &::-webkit-scrollbar {
       width: calc(spacing.semantic-variable(size, element, tight) + spacing.semantic-variable(gap, tight) * 2);

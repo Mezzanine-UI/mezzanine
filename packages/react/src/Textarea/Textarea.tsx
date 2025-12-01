@@ -43,7 +43,7 @@ const Textarea = forwardRef<HTMLDivElement, TextareaProps>(
       textareaClassName,
       textareaRef: textareaRefProp,
       type = 'default',
-      resize,
+      resize = 'none',
       ...textareaProps
     } = props;
     const textareaRef = useRef<HTMLTextAreaElement>(null);

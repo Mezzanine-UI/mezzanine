@@ -14,7 +14,7 @@ describe('<Tag />', () => {
   );
 
   describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
-    render(<Tag label="Add" onAdd={() => {}} ref={ref} type="addable" />),
+    render(<Tag label="Add" onClick={() => {}} ref={ref} type="addable" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
@@ -22,9 +22,7 @@ describe('<Tag />', () => {
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(
-      <Tag label="Label" type="static" />,
-    );
+    const { getHostHTMLElement } = render(<Tag label="Label" type="static" />);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains(classes.host)).toBeTruthy();
@@ -162,22 +160,22 @@ describe('<Tag />', () => {
       expect(labelElement.classList.contains(classes.label)).toBeTruthy();
     });
 
-    it('should fire onAdd when clicked', () => {
-      const onAdd = jest.fn();
+    it('should fire onClick when clicked', () => {
+      const onClick = jest.fn();
       const { getHostHTMLElement } = render(
-        <Tag label="Add" onAdd={onAdd} type="addable" />,
+        <Tag label="Add" onClick={onClick} type="addable" />,
       );
       const element = getHostHTMLElement();
 
       fireEvent.click(element);
 
-      expect(onAdd).toHaveBeenCalledTimes(1);
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it('should prevent click when disabled', () => {
-      const onAdd = jest.fn();
+      const onClick = jest.fn();
       const { getHostHTMLElement } = render(
-        <Tag disabled label="Add" onAdd={onAdd} type="addable" />,
+        <Tag disabled label="Add" onClick={onClick} type="addable" />,
       );
       const element = getHostHTMLElement();
 
@@ -186,7 +184,7 @@ describe('<Tag />', () => {
 
       fireEvent.click(element);
 
-      expect(onAdd).not.toHaveBeenCalled();
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 

@@ -1,6 +1,12 @@
 'use client';
 
-import { forwardRef, useLayoutEffect, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 import Popper, { PopperProps } from '../Popper';
 import Tag, { TagProps } from '../Tag';
@@ -8,6 +14,8 @@ import { cx } from '../utils/cx';
 import { getCSSVariableValue } from '../utils/get-css-variable-value';
 import { flip, offset, Placement, shift } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import { Fade } from '../Transition';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 function computeWrappedWidth(widths: number[], maxWidth: number, gap: number) {
   let currentLineWidth = 0;
@@ -128,35 +136,55 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
       setContentWidth(actualWidth);
     }, [tags, open]);
 
+    const [popperOpen, setPopperOpen] = useState(false);
+    useEffect(() => {
+      if (open) {
+        setPopperOpen(true);
+      }
+    }, [open]);
+
     return (
       <Popper
         ref={ref}
         anchor={anchor}
-        open={open}
+        open={popperOpen}
         arrow={{ enabled: true, className: classes.arrow }}
         className={cx(classes.host, className)}
         options={{ placement, middleware }}
       >
-        <div
-          className={classes.content}
-          ref={contentRef}
-          style={contentWidth ? { width: contentWidth } : undefined}
+        <Fade
+          in={open}
+          duration={{
+            enter: MOTION_DURATION.fast,
+            exit: MOTION_DURATION.fast,
+          }}
+          easing={{
+            enter: MOTION_EASING.standard,
+            exit: MOTION_EASING.standard,
+          }}
+          onExited={() => setPopperOpen(false)}
         >
-          {tags.map((tag, index) => (
-            <Tag
-              ref={(el) => {
-                if (!el) return;
+          <div
+            className={classes.content}
+            ref={contentRef}
+            style={contentWidth ? { width: contentWidth } : undefined}
+          >
+            {tags.map((tag, index) => (
+              <Tag
+                ref={(el) => {
+                  if (!el) return;
 
-                tagRefs.current[index] = el;
-              }}
-              key={index}
-              type="dismissable"
-              label={tag}
-              onClose={() => onTagDismiss(index)}
-              size={tagSize}
-            />
-          ))}
-        </div>
+                  tagRefs.current[index] = el;
+                }}
+                key={index}
+                type="dismissable"
+                label={tag}
+                onClose={() => onTagDismiss(index)}
+                size={tagSize}
+              />
+            ))}
+          </div>
+        </Fade>
       </Popper>
     );
   },
