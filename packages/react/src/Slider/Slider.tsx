@@ -4,6 +4,7 @@ import {
   forwardRef,
   KeyboardEventHandler,
   Ref,
+  useCallback,
   useEffect,
   useState,
   type JSX,
@@ -27,6 +28,9 @@ import {
 } from './useSlider';
 import Tooltip from '../Tooltip';
 import Input, { InputProps } from '../Input';
+import { IconDefinition } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
+import Typography from '../Typography';
 
 export interface SliderBaseProps
   extends Omit<
@@ -38,6 +42,10 @@ export interface SliderBaseProps
    * @default false
    */
   disabled?: boolean;
+  /**
+   * The ref for Slider root.
+   */
+  innerRef?: Ref<HTMLDivElement>;
   /**
    * The maximum permitted value
    * @default 100
@@ -54,23 +62,64 @@ export interface SliderBaseProps
    */
   step?: number;
   /**
-   * Will render input if `withInput` is `true`.
+   * Whether to show tick marks on the slider.
+   * If a number is given, it represents the number of equally spaced segments between min and max to display tick marks (excluding min and max).
+   * If a number array is given, the values represent the actual slider values at which to show the tick marks (not percentages).
+   * @example
+   * 3 // means show tick marks at values 25, 50, and 75 (for min=0, max=100)
+   * [20, 50, 80] // means show tick marks at values 20, 50, and 80
    */
-  withInput?: boolean;
-  /**
-   * The ref for Slider root.
-   */
-  innerRef?: Ref<HTMLDivElement>;
+  withTick?: number | number[];
 }
 
-export type SingleSliderProps = SliderBaseProps & {
+export type SliderWithInputProps = SliderBaseProps & {
+  prefixIcon?: never;
+  suffixIcon?: never;
+  /**
+   * Whether to show input box to allow user to input value.
+   */
+  withInput: true;
+};
+
+export type SliderWithIconProps = SliderBaseProps & {
+  /**
+   * Set prefix icon.
+   */
+  prefixIcon: IconDefinition;
+  /**
+   * Set suffix icon.
+   */
+  suffixIcon: IconDefinition;
+  withInput?: never;
+};
+
+export type SliderWithoutAddonsProps = SliderBaseProps & {
+  prefixIcon?: never;
+  suffixIcon?: never;
+  withInput?: never;
+};
+
+export type SliderAddonProps =
+  | SliderWithInputProps
+  | SliderWithIconProps
+  | SliderWithoutAddonsProps;
+
+export type SingleSliderProps = SliderAddonProps & {
   onChange?: (value: SingleSliderValue) => void;
+  /**
+   * The value of the slider.
+   */
   value: UseSingleSliderProps['value'];
 };
-export type RangeSliderProps = SliderBaseProps & {
+
+export type RangeSliderProps = SliderAddonProps & {
   onChange?: (value: RangeSliderValue) => void;
+  /**
+   * The value of the slider.
+   */
   value: UseRangeSliderProps['value'];
 };
+
 export type SliderComponentProps = SingleSliderProps | RangeSliderProps;
 export type SliderProps = Omit<SliderComponentProps, 'innerRef'>;
 
@@ -84,10 +133,13 @@ function SliderComponent(props: SliderComponentProps) {
     max = 100,
     min = 0,
     onChange,
+    prefixIcon,
     step = 1,
     style: styleProp,
+    suffixIcon,
     value,
     withInput,
+    withTick,
     ...rest
   } = props;
 
@@ -121,14 +173,15 @@ function SliderComponent(props: SliderComponentProps) {
       )}
     >
       <Tooltip
-        disablePortal
         options={{
           placement: 'top',
         }}
         title={handlerValue.toString()}
+        className={classes.handlerTooltip}
       >
-        {({ onMouseEnter, onMouseLeave }) => (
+        {({ onMouseEnter, onMouseLeave, ref }) => (
           <div
+            ref={ref}
             className={cx(
               classes.handler,
               index === activeHandleIndex && classes.handlerActive,
@@ -144,14 +197,28 @@ function SliderComponent(props: SliderComponentProps) {
             onMouseLeave={onMouseLeave}
             onTouchStart={(e) => handlePress(e, index)}
             role="slider"
-            tabIndex={index}
-          />
+            tabIndex={0}
+          >
+            {/* handler circle icon */}
+            <span />
+          </div>
         )}
       </Tooltip>
     </div>
   );
 
-  const inputSize = Math.max(min.toString().length, max.toString().length);
+  const getTick = useCallback((tickText: number | string, percent: number) => {
+    return (
+      <span
+        aria-hidden="true"
+        className={classes.tick}
+        key={tickText}
+        style={{ left: `${percent}%` }}
+      >
+        <Typography variant="caption">{tickText}</Typography>
+      </span>
+    );
+  }, []);
 
   const [startInputValue, setStartInputValue] = useState(() => {
     if (!isRangeSlider(value)) {
@@ -345,10 +412,6 @@ function SliderComponent(props: SliderComponentProps) {
   const inputProps: InputProps['inputProps'] = {
     max,
     min,
-    style: {
-      width: `${inputSize}ch`,
-    },
-    type: 'number',
   };
 
   return (
@@ -361,9 +424,10 @@ function SliderComponent(props: SliderComponentProps) {
       {withInput && isRangeSlider(value) ? (
         <Input
           className={classes.input}
-          disabled={disabled}
+          disabled={disabled || undefined}
           onChange={onStartInputChange}
           value={startInputValue}
+          variant="number"
           inputProps={{
             ...inputProps,
             onKeyDown: onStartInputKeydown,
@@ -371,18 +435,50 @@ function SliderComponent(props: SliderComponentProps) {
           }}
         />
       ) : null}
+      {prefixIcon ? (
+        <span className={classes.icon}>
+          <Icon icon={prefixIcon} />
+        </span>
+      ) : null}
       <div className={classes.controls}>
+        {/* interactive area */}
         <div
-          ref={railRef}
           className={classes.rail}
-          role="presentation"
           onMouseDown={handleClickTrackOrRail}
-        />
+          ref={railRef}
+          role="presentation"
+        >
+          {/* line */}
+          <span />
+        </div>
         <div
           className={classes.track}
-          role="presentation"
           onMouseDown={handleClickTrackOrRail}
-        />
+          role="presentation"
+        >
+          {/* line */}
+          <span />
+        </div>
+        {/* ticks dot and label */}
+        {withTick ? (
+          <>
+            {getTick(min, 0)}
+            {Array.isArray(withTick)
+              ? withTick.map((tick) =>
+                  tick < max && tick > min
+                    ? getTick(tick, ((tick - min) / (max - min)) * 100)
+                    : null,
+                )
+              : Array.from({ length: withTick }, (_, i) => i + 1).map((tick) =>
+                  getTick(
+                    (tick / (withTick + 1)) * (max - min) + min,
+                    (tick / (withTick + 1)) * 100,
+                  ),
+                )}
+            {getTick(max, 100)}
+          </>
+        ) : null}
+        {/* handlers */}
         {isRangeSlider(value) ? (
           <>
             {getHandle(value[0], 0)}
@@ -395,15 +491,21 @@ function SliderComponent(props: SliderComponentProps) {
       {withInput ? (
         <Input
           className={classes.input}
-          disabled={disabled}
+          disabled={disabled || undefined}
           onChange={onEndInputChange}
           value={endInputValue}
+          variant="number"
           inputProps={{
             ...inputProps,
             onKeyDown: onEndInputKeydown,
             onBlur: onEndInputBlur,
           }}
         />
+      ) : null}
+      {suffixIcon ? (
+        <span className={classes.icon}>
+          <Icon icon={suffixIcon} />
+        </span>
       ) : null}
     </div>
   );
