@@ -131,7 +131,7 @@ describe('<Textarea />', () => {
     );
     const defaultTextarea = getTextareaElement(getDefaultHost());
 
-    expect(defaultTextarea.style.resize).toBe('');
+    expect(defaultTextarea.style.resize).toBe('none');
     expect(defaultTextarea.style.width).toBe('200px');
 
     const { getHostHTMLElement: getWithResizeHost } = render(
