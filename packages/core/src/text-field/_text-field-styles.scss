@@ -255,6 +255,10 @@ $size-configs: (
   will-change: background-color, border-color, color, box-shadow;
   box-sizing: border-box;
 
+  &--slim-gap {
+    gap: spacing.semantic-variable(gap, slim);
+  }
+
   &--full-width {
     width: 100%;
   }
