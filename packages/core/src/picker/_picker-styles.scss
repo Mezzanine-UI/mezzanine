@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
 @use '../text-field';
 @use './picker' as *;
 
@@ -6,20 +7,50 @@
   display: inline-flex;
   align-items: center;
 
-  input {
-    &:first-of-type {
-      padding-left: var(--#{text-field.$prefix}-padding-left);
-    }
-
-    &:last-of-type {
-      padding-right: var(--#{text-field.$prefix}-padding-right);
-    }
-  }
-
   &__arrow-icon {
     display: flex;
     align-items: center;
     margin: 0 4px;
     color: palette.color(action-inactive);
+  }
+
+  &__input-mono {
+    padding: 0;
+
+    @include typography.semantic-variable(input-mono);
+  }
+
+  &__formatted-input {
+    position: relative;
+    display: inline-block;
+
+    @include typography.semantic-variable(input-mono);
+  }
+
+  &__formatted-input-hidden {
+    color: transparent;
+    background-color: transparent;
+    caret-color: palette.semantic-variable(text, neutral-solid);
+    pointer-events: auto;
+  }
+
+  &__formatted-input-display {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    white-space: pre;
+    background-color: transparent;
+
+    @include typography.semantic-variable(input-mono);
+  }
+
+  &__formatted-input-segment {
+    color: palette.semantic-variable(text, neutral-faint);
+
+    &--filled {
+      color: palette.semantic-variable(text, neutral-solid);
+    }
   }
 }
