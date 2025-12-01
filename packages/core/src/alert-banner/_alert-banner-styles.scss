@@ -4,6 +4,8 @@
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/typography' as typography;
 @use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/motion' as motion;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use './alert-banner' as *;
 
 $severity-config: (
@@ -63,6 +65,24 @@ $severity-config: (
   border-radius: radius.variable(none);
   box-sizing: border-box;
   pointer-events: auto;
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+  transition:
+    transition.entrance(opacity, moderate),
+    transition.entrance(transform, moderate);
+
+  &--entering {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  &--exiting {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+    transition:
+      transition.exit(opacity, moderate),
+      transition.exit(transform, moderate);
+  }
   
   &__icon {
     flex-shrink: 0;
