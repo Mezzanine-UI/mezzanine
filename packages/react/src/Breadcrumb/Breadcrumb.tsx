@@ -63,11 +63,17 @@ const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(
               <>
                 {/* overflow dropdown icon */}
                 <BreadcrumbItem
-                  {...({
-                    options: condensed
+                  {...{
+                    options: (condensed
                       ? items.slice(0, lastIndex - 1)
-                      : items.slice(2, lastIndex - 1),
-                  } as BreadcrumbDropdownItemProps)}
+                      : items.slice(2, lastIndex - 1)
+                    ).map((item) => ({
+                      label: item.label,
+                      href: item.href,
+                      target: item.target,
+                      id: item.id,
+                    })),
+                  }}
                 />
                 <Icon icon={SlashIcon} size={14} />
               </>

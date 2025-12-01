@@ -54,7 +54,7 @@ export type BreadcrumbDropdownItemProps = Omit<
     /**
      * The content of dropdown item.
      */
-    label: string;
+    label?: string;
     target?: '_blank' | '_parent' | '_self' | '_top' | string;
   }>;
   target?: never;

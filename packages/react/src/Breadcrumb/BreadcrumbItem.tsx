@@ -86,9 +86,13 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
         {/* TODO: waiting Dropdown component */}
         {options && expand && (
           <Menu className={classes.menu}>
-            {options.map((option) => (
-              <MenuItem key={option.label}>{option.label}</MenuItem>
-            ))}
+            {options
+              .filter((v) => v.label)
+              .map((option) => (
+                <MenuItem key={option.id || option.label}>
+                  {option.label}
+                </MenuItem>
+              ))}
           </Menu>
         )}
       </Component>
