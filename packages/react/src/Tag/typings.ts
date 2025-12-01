@@ -51,7 +51,6 @@ type TagPropsCounter = TagSpanHostProps & {
   count: number;
   active?: never;
   disabled?: never;
-  onAdd?: never;
   onClose?: never;
   onClick?: never;
   readOnly?: never;
@@ -63,7 +62,6 @@ type TagPropsOverflowCounter = TagButtonHostProps & {
   active?: never;
   disabled?: never;
   label?: never;
-  onAdd?: never;
   onClose?: never;
   readOnly?: never;
 };
@@ -75,7 +73,6 @@ type TagPropsDismissable = TagSpanHostProps & {
   label: string;
   onClose: MouseEventHandler<HTMLButtonElement>;
   count?: never;
-  onAdd?: never;
   onClick?: never;
 };
 type TagPropsAddable = TagButtonHostProps & {

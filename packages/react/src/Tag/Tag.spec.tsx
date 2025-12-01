@@ -160,7 +160,7 @@ describe('<Tag />', () => {
       expect(labelElement.classList.contains(classes.label)).toBeTruthy();
     });
 
-    it('should fire onAdd when clicked', () => {
+    it('should fire onClick when clicked', () => {
       const onClick = jest.fn();
       const { getHostHTMLElement } = render(
         <Tag label="Add" onClick={onClick} type="addable" />,

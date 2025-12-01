@@ -28,8 +28,8 @@ type PlaygroundArgs = {
   active: boolean;
   disabled: boolean;
   readOnly: boolean;
-  onAdd: () => void;
   onClose: () => void;
+  className: string;
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
@@ -41,6 +41,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     active: false,
     disabled: false,
     readOnly: false,
+    className: '',
   },
   argTypes: {
     type: {
@@ -55,7 +56,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     active: { control: 'boolean' },
     disabled: { control: 'boolean' },
     readOnly: { control: 'boolean' },
-    onAdd: { control: false, table: { disable: true } },
+    className: { control: 'text' },
     onClose: { control: false, table: { disable: true } },
   },
 };
