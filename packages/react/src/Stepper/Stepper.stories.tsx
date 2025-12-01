@@ -4,6 +4,7 @@ import Step from './Step';
 import Typography from '../Typography';
 import Button, { ButtonGroup } from '../Button';
 import { useStepper } from './useStepper';
+import { StepperProps } from './typings';
 
 export default {
   title: 'Navigation/Stepper',
@@ -15,6 +16,31 @@ const exampleStepsDescription = ['步驟一敘述', '步驟二敘述', '步驟�
 interface PlaygroundArgs {
   stepCount: number;
 }
+
+const MockStepperExamples: React.FC<Omit<StepperProps, 'children'>> = (
+  props,
+) => (
+  <>
+    <Stepper {...props}>
+      <Step title={'succeeded'} />
+      <Step title={'succeeded'} />
+      <Step title={'processing'} />
+      <Step title={'pending'} />
+    </Stepper>
+    <Stepper {...props}>
+      <Step title={'succeeded'} />
+      <Step title={'error'} error />
+      <Step title={'processing'} />
+      <Step title={'pending'} />
+    </Stepper>
+    <Stepper {...props}>
+      <Step title={'succeeded'} />
+      <Step title={'error'} error />
+      <Step title={'processing-error'} error />
+      <Step title={'pending'} />
+    </Stepper>
+  </>
+);
 
 export const Status = () => (
   <div
@@ -31,20 +57,16 @@ export const Status = () => (
         gap: '24px',
       }}
     >
-      <Stepper orientation="horizontal" type="number" currentStep={0}>
-        <Step title={'processing'} status="processing" />
-        <Step title={'pending'} status="pending" />
-        <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} error />
-        <Step title={'disabled'} disabled />
-      </Stepper>
-      <Stepper orientation="horizontal" type="dot" currentStep={0}>
-        <Step title={'processing'} status="processing" />
-        <Step title={'pending'} status="pending" />
-        <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} error />
-        <Step title={'disabled'} disabled />
-      </Stepper>
+      <MockStepperExamples
+        orientation="horizontal"
+        type="number"
+        currentStep={2}
+      />
+      <MockStepperExamples
+        orientation="horizontal"
+        type="dot"
+        currentStep={2}
+      />
     </div>
 
     <div
@@ -53,20 +75,19 @@ export const Status = () => (
         justifyContent: 'space-around',
       }}
     >
-      <Stepper orientation="vertical" type="number" currentStep={0}>
-        <Step title={'processing'} status="processing" />
-        <Step title={'pending'} status="pending" />
-        <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} error />
-        <Step title={'disabled'} disabled />
-      </Stepper>
-      <Stepper orientation="vertical" type="dot" currentStep={0}>
-        <Step title={'processing'} status="processing" />
-        <Step title={'pending'} status="pending" />
-        <Step title={'succeeded'} status="succeeded" />
-        <Step title={'error'} error />
-        <Step title={'disabled'} disabled />
-      </Stepper>
+      <MockStepperExamples
+        orientation="vertical"
+        type="number"
+        currentStep={2}
+      />
+    </div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-around',
+      }}
+    >
+      <MockStepperExamples orientation="vertical" type="dot" currentStep={2} />
     </div>
   </div>
 );
