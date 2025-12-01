@@ -34,11 +34,11 @@ $status-colors: (
     status-indicator-background-color: none,
     line-color: palette.semantic-variable(border, neutral-light),
   ),
-  disabled: (
-    title-color: palette.semantic-variable(text, neutral-light),
-    description-color: palette.semantic-variable(text, neutral-light),
-    status-indicator-color: palette.semantic-variable(icon, neutral-light),
-    status-indicator-background-color: none,
+  processing-error: (
+    title-color: palette.semantic-variable(text, error),
+    description-color: palette.semantic-variable(text, neutral),
+    status-indicator-color: palette.semantic-variable(icon, error),
+    status-indicator-background-color: palette.semantic-variable(background, error-subtle),
     line-color: palette.semantic-variable(border, neutral-light),
   ),
 );
