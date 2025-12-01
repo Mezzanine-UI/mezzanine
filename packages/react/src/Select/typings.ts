@@ -102,7 +102,7 @@ export interface SelectTriggerBaseProps
 }
 
 export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
-  /** Only avaiable on multiple selector */
+  /** Only available on multiple selector */
   ellipsis?: never;
   /**
    * Controls the layout of trigger.
