@@ -39,7 +39,7 @@ export type BreadcrumbDropdownItemProps = Omit<
   /**
    * Whether to expand the dropdown item icon.
    */
-  expand: boolean;
+  expand?: boolean;
   href?: never;
   label?: string;
   /**

@@ -15,6 +15,7 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
       className,
       component,
       current,
+      expand: expandProp,
       label,
       onClick,
       onTouchEnd,
@@ -22,7 +23,8 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
       ...rest
     } = props;
 
-    const [expand, setExpand] = useState(false);
+    const [_expand, setExpand] = useState(false);
+    const expand = expandProp ?? _expand;
 
     const Component = (() => {
       if (component) return component;
