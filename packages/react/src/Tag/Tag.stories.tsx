@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import Tag, { TagProps, TagSize } from '.';
 import { TagType } from '@mezzanine-ui/core/tag';
 import Typography from '../Typography';
-import { useState } from 'storybook/internal/preview-api';
+import { useState } from 'react';
 import Button from '../Button';
 import TagGroup from './TagGroup';
 
