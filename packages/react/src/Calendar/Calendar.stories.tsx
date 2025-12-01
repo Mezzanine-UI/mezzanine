@@ -86,16 +86,20 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
 
   return (
     <>
-      <Toggle
-        checked={showQuickSelect}
-        label="Enabled QuickSelect"
-        onClick={() => setShowQuickSelect((prev) => !prev)}
-      />
-      <Toggle
-        checked={showAnnotations}
-        label="Enabled Annotations"
-        onClick={() => setShowAnnotations((prev) => !prev)}
-      />
+      {mode === 'day' && (
+        <>
+          <Toggle
+            checked={showQuickSelect}
+            label="Enabled QuickSelect"
+            onClick={() => setShowQuickSelect((prev) => !prev)}
+          />
+          <Toggle
+            checked={showAnnotations}
+            label="Enabled Annotations"
+            onClick={() => setShowAnnotations((prev) => !prev)}
+          />
+        </>
+      )}
       <Typography style={{ margin: '0 0 12px 0' }}>
         {`current value: ${formatValue(val)}`}
       </Typography>
@@ -293,11 +297,13 @@ const InnerRangeCalendarPlayground = ({
 
   return (
     <>
-      <Toggle
-        checked={showQuickSelect}
-        label="Enabled QuickSelect"
-        onClick={() => setShowQuickSelect((prev) => !prev)}
-      />
+      {mode === 'day' && (
+        <Toggle
+          checked={showQuickSelect}
+          label="Enabled QuickSelect"
+          onClick={() => setShowQuickSelect((prev) => !prev)}
+        />
+      )}
       <Typography style={{ margin: '0 0 12px 0' }}>
         {`Confirmed Range: ${formatValue(confirmedStartVal)} ~ ${formatValue(confirmedEndVal)}`}
       </Typography>
