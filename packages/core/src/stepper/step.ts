@@ -27,7 +27,7 @@ export const stepClasses = {
   pending: `${stepPrefix}--pending`,
   succeeded: `${stepPrefix}--succeeded`,
   error: `${stepPrefix}--error`,
-  disabled: `${stepPrefix}--disabled`,
+  processingError: `${stepPrefix}--processing-error`,
 
   // interactive
   interactive: `${stepPrefix}--interactive`,

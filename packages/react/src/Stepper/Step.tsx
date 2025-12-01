@@ -43,7 +43,7 @@ const NumberStatusIndicator = ({
   indicatorNumber: number;
 }) => {
   switch (true) {
-    case status === 'succeeded':
+    case !error && status === 'succeeded':
       return (
         <Icon className={classes.statusIndicator} icon={CheckedOutlineIcon} />
       );
@@ -78,7 +78,6 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
     title,
     type = 'number',
     error,
-    disabled,
     ...rest
   } = props;
 
@@ -90,9 +89,9 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
           // status
           [classes.processing]: status === 'processing',
           [classes.pending]: status === 'pending',
-          [classes.succeeded]: status === 'succeeded',
-          [classes.error]: status !== 'processing' && error,
-          [classes.disabled]: status !== 'processing' && disabled,
+          [classes.succeeded]: !error && status === 'succeeded',
+          [classes.error]: error && status !== 'processing',
+          [classes.processingError]: error && status === 'processing',
           // orientation
           [classes.horizontal]: orientation === 'horizontal',
           [classes.vertical]: orientation === 'vertical',
@@ -100,7 +99,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
           [classes.dot]: type === 'dot',
           [classes.number]: type === 'number',
           // interactive
-          [classes.interactive]: rest.onClick && !disabled,
+          [classes.interactive]: rest.onClick,
         },
         className,
       )}
