@@ -1,16 +1,26 @@
+import type { MouseEvent, TouchEvent } from 'react';
 import { forwardRef, useState } from 'react';
+import { ChevronDownIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { breadcrumbItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { cx } from '../utils/cx';
-import { BreadcrumbItemProps } from './typings';
-import Typography from '../Typography';
 import Icon from '../Icon';
-import { ChevronDownIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
-import { Rotate } from '../Transition';
 import Menu, { MenuItem } from '../Menu';
+import { Rotate } from '../Transition';
+import Typography from '../Typography';
+import type { BreadcrumbItemProps } from './typings';
 
 const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
   function BreadcrumbItem(props, ref) {
-    const { component, label, className, options, current, ...rest } = props;
+    const {
+      className,
+      component,
+      current,
+      label,
+      onClick,
+      onTouchEnd,
+      options,
+      ...rest
+    } = props;
 
     const [expand, setExpand] = useState(false);
 
@@ -28,12 +38,21 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
       return 'div';
     })();
 
-    const handleClick = () => {
+    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
       setExpand(!expand);
+
+      onClick?.(e);
+    };
+
+    const handleTouchEnd = (e: TouchEvent<HTMLButtonElement>) => {
+      setExpand(!expand);
+
+      onTouchEnd?.(e);
     };
 
     return (
       <Component
+        {...rest}
         className={cx(
           classes.host,
           expand && classes.expanded,
@@ -41,9 +60,8 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
           className,
         )}
         onClick={Component === 'button' ? handleClick : undefined}
-        onTouchEnd={Component === 'button' ? handleClick : undefined}
+        onTouchEnd={Component === 'button' ? handleTouchEnd : undefined}
         ref={ref}
-        {...rest}
       >
         {/* text */}
         {label && (
@@ -56,11 +74,11 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
           (label ? (
             /* normal dropdown icon item */
             <Rotate in={expand}>
-              <Icon className={classes.icon} size={14} icon={ChevronDownIcon} />
+              <Icon className={classes.icon} icon={ChevronDownIcon} size={14} />
             </Rotate>
           ) : (
             /* overflow dropdown icon item */
-            <Icon className={classes.icon} size={14} icon={DotHorizontalIcon} />
+            <Icon className={classes.icon} icon={DotHorizontalIcon} size={14} />
           ))}
 
         {/* TODO: waiting Dropdown component */}
