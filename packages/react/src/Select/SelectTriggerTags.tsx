@@ -94,8 +94,6 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
         tags.push(
           <OverflowCounterTag
             key="overflow-counter"
-            // TODO: tbc
-            // disabled={disabled}
             onClick={(e) => {
               e.stopPropagation();
             }}
