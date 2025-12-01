@@ -3,6 +3,9 @@ import { ReactNode } from 'react';
 import Tag, { TagProps, TagSize } from '.';
 import { TagType } from '@mezzanine-ui/core/tag';
 import Typography from '../Typography';
+import { useState } from 'react';
+import Button from '../Button';
+import TagGroup from './TagGroup';
 
 export default {
   title: 'Data Display/Tag',
@@ -278,4 +281,46 @@ export const Sizes: Story = {
       </div>
     </div>
   ),
+};
+
+const mockTags = Array.from(new Array(5), (_, index) => `Tag${index + 1}`);
+
+export const Tag_Group = {
+  parameters: {
+    control: { disable: true },
+  },
+  render: function Render() {
+    const [tags, setTags] = useState(mockTags);
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <Button
+          style={{ width: '120px' }}
+          onClick={() => {
+            setTags((prev) => [...prev, `Tag${tags.length + 1}`]);
+          }}
+        >
+          Add tag
+        </Button>
+
+        <TagGroup style={{ maxWidth: '320px' }}>
+          {tags.map((tag, index) => (
+            <Tag
+              key={tag}
+              type="dismissable"
+              onClose={() =>
+                setTags((prev) => {
+                  const next = [...prev];
+                  next.splice(index, 1);
+
+                  return next;
+                })
+              }
+              label={tag}
+            />
+          ))}
+        </TagGroup>
+      </div>
+    );
+  },
 };

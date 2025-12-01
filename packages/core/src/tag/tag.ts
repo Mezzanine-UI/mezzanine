@@ -18,6 +18,7 @@ export const tagClasses = {
   label: `${tagPrefix}__label`,
   closeButton: `${tagPrefix}__close-button`,
   icon: `${tagPrefix}__icon`,
+  group: `${tagPrefix}__group`,
   active: `${tagPrefix}--active`,
   readOnly: `${tagPrefix}--read-only`,
   disabled: `${tagPrefix}--disabled`,

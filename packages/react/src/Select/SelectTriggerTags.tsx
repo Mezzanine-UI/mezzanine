@@ -1,13 +1,14 @@
-import { Ref, forwardRef, useRef } from 'react';
+import { Ref, forwardRef, useMemo, useRef } from 'react';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { TagSize } from '@mezzanine-ui/core/tag';
-import take from 'lodash/take';
 import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useSelectTriggerTags } from './useSelectTriggerTags';
 import { SelectValue } from './typings';
 import Tag from '../Tag';
+import { OverflowCounterTag } from '../OverflowTooltip';
+import TagGroup from '../Tag/TagGroup';
 
 export interface SelectTriggerTagsProps {
   disabled?: boolean;
@@ -53,16 +54,72 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
       searchText,
       size,
       showTextInputAfterTags,
-      value,
+      value = [],
     } = props;
-    const controlRef = useRef<HTMLDivElement>(undefined);
-    const composedRef = useComposeRefs([ref, controlRef]);
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const tagsRef = useRef<HTMLDivElement>(null);
+    const composedRef = useComposeRefs([ref, wrapperRef]);
 
-    const { renderFakeTags, takeCount } = useSelectTriggerTags({
-      controlRef,
-      value,
+    const { overflowSelections, renderFakeTags, visibleSelections } =
+      useSelectTriggerTags({
+        enabled: ellipsis,
+        containerRef: wrapperRef,
+        tagsRef,
+        value,
+        size,
+      });
+
+    const displaySelections = useMemo(
+      () => (ellipsis ? visibleSelections : value),
+      [ellipsis, value, visibleSelections],
+    );
+
+    const tagChildren = useMemo(() => {
+      const tags = displaySelections.map((selection) => (
+        <Tag
+          key={selection.id}
+          type="dismissable"
+          disabled={disabled}
+          onClose={(e) => {
+            e.stopPropagation();
+            onTagClose?.(selection);
+          }}
+          readOnly={readOnly}
+          size={size}
+          label={selection.name}
+        />
+      ));
+
+      if (ellipsis && overflowSelections.length) {
+        tags.push(
+          <OverflowCounterTag
+            key="overflow-counter"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            onTagDismiss={(tagIndex) => {
+              const target = overflowSelections[tagIndex];
+
+              if (!target) return;
+
+              onTagClose?.(target);
+            }}
+            tagSize={size}
+            tags={overflowSelections.map((selection) => selection.name)}
+          />,
+        );
+      }
+
+      return tags;
+    }, [
+      disabled,
+      displaySelections,
+      ellipsis,
+      onTagClose,
+      overflowSelections,
+      readOnly,
       size,
-    });
+    ]);
 
     return (
       <div
@@ -72,50 +129,16 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
         })}
       >
         <div
+          ref={tagsRef}
           className={cx(classes.triggerTags, {
             [classes.triggerTagsEllipsis]: ellipsis,
           })}
         >
-          {ellipsis ? (
-            <>
-              {take(value, takeCount).map((selection) => (
-                <Tag
-                  key={selection.id}
-                  closable
-                  disabled={disabled}
-                  onClose={(e) => {
-                    e.stopPropagation();
-                    onTagClose?.(selection);
-                  }}
-                  size={size}
-                >
-                  {selection.name}
-                </Tag>
-              ))}
-              {value && value.length > takeCount ? (
-                <Tag disabled={disabled} size={size}>
-                  {`+${value.length - takeCount <= 99 ? value.length - takeCount : 99}...`}
-                </Tag>
-              ) : null}
-            </>
-          ) : (
-            value?.map((selection) => (
-              <Tag
-                key={selection.id}
-                closable
-                disabled={disabled}
-                onClose={(e) => {
-                  e.stopPropagation();
-                  onTagClose?.(selection);
-                }}
-                size={size}
-              >
-                {selection.name}
-              </Tag>
-            ))
-          )}
+          <TagGroup>{tagChildren}</TagGroup>
+
           {ellipsis ? renderFakeTags() : null}
         </div>
+
         {showTextInputAfterTags ? (
           <div className={classes.triggerTagsInput}>
             <input
