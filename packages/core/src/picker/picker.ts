@@ -12,6 +12,7 @@ export const pickerClasses = {
   formattedInputDisplay: `${pickerPrefix}__formatted-input-display`,
   formattedInputSegment: `${pickerPrefix}__formatted-input-segment`,
   formattedInputSegmentFilled: `${pickerPrefix}__formatted-input-segment--filled`,
+  formattedInputSegmentDisabled: `${pickerPrefix}__formatted-input-segment--disabled`,
 } as const;
 
 /** Types */

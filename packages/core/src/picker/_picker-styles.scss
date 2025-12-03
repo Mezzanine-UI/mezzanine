@@ -52,5 +52,9 @@
     &--filled {
       color: palette.semantic-variable(text, neutral-solid);
     }
+
+    &--disabled {
+      color: palette.semantic-variable(text, neutral-light);
+    }
   }
 }
