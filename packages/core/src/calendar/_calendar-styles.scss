@@ -26,6 +26,7 @@
   border-radius: radius.variable(roomy);
   box-shadow: effect.variable(shadow, inner-top-and-bottom);
   background-color: palette.semantic-variable("background", base);
+  pointer-events: auto;
 
   * {
     box-sizing: border-box;

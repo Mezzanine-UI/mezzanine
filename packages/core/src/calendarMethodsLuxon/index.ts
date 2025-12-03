@@ -24,12 +24,20 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   getMonthShortNames: (locale) => Info.months('short', { locale }),
 
   /** Manipulate */
+  addHour: (date, diff) =>
+    DateTime.fromISO(date).plus({ hour: diff }).toISO() as string,
+  addMinute: (date, diff) =>
+    DateTime.fromISO(date).plus({ minute: diff }).toISO() as string,
+  addSecond: (date, diff) =>
+    DateTime.fromISO(date).plus({ second: diff }).toISO() as string,
   addDay: (date, diff) =>
     DateTime.fromISO(date).plus({ day: diff }).toISO() as string,
   addYear: (date, diff) =>
     DateTime.fromISO(date).plus({ year: diff }).toISO() as string,
   addMonth: (date, diff) =>
     DateTime.fromISO(date).plus({ month: diff }).toISO() as string,
+  setMillisecond: (date, millisecond) =>
+    DateTime.fromISO(date).set({ millisecond }).toISO() as string,
   setSecond: (date, second) =>
     DateTime.fromISO(date).set({ second }).toISO() as string,
   setMinute: (date, minute) =>
@@ -46,6 +54,51 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     DateTime.fromISO(date).set({ day: target }).toISO() as string,
   startOf: (target, granularity) =>
     DateTime.fromISO(target).startOf(granularity).toISO() as string,
+
+  /** Get first date of period at 00:00:00 */
+  getCurrentWeekFirstDate: (value) =>
+    DateTime.fromISO(value)
+      .startOf('week')
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO() as string,
+  getCurrentMonthFirstDate: (value) =>
+    DateTime.fromISO(value)
+      .startOf('month')
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO() as string,
+  getCurrentYearFirstDate: (value) =>
+    DateTime.fromISO(value)
+      .startOf('year')
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO() as string,
+  getCurrentQuarterFirstDate: (value) => {
+    const dt = DateTime.fromISO(value);
+    const quarterStart = Math.floor((dt.month - 1) / 3) * 3 + 1;
+    return dt
+      .set({
+        month: quarterStart,
+        day: 1,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISO() as string;
+  },
+  getCurrentHalfYearFirstDate: (value) => {
+    const dt = DateTime.fromISO(value);
+    const halfYearStart = Math.floor((dt.month - 1) / 6) * 6 + 1;
+    return dt
+      .set({
+        month: halfYearStart,
+        day: 1,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      })
+      .toISO() as string;
+  },
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {

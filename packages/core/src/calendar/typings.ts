@@ -19,9 +19,13 @@ export type CalendarMethods<TDateType = DateType> = {
   getMonthShortNames: (locale: string) => Readonly<string[]>;
 
   /** Manipulate */
+  addHour: (value: TDateType, diff: number) => TDateType;
+  addMinute: (value: TDateType, diff: number) => TDateType;
+  addSecond: (value: TDateType, diff: number) => TDateType;
   addDay: (value: TDateType, diff: number) => TDateType;
   addYear: (value: TDateType, diff: number) => TDateType;
   addMonth: (value: TDateType, diff: number) => TDateType;
+  setMillisecond: (value: TDateType, millisecond: number) => TDateType;
   setSecond: (value: TDateType, second: number) => TDateType;
   setMinute: (value: TDateType, minute: number) => TDateType;
   setHour: (value: TDateType, hour: number) => TDateType;
@@ -29,6 +33,13 @@ export type CalendarMethods<TDateType = DateType> = {
   setMonth: (value: TDateType, month: number) => TDateType;
   setDate: (value: TDateType, date: number) => TDateType;
   startOf: (value: TDateType, granularity: any) => TDateType;
+
+  /** Get first date of period at 00:00:00 */
+  getCurrentWeekFirstDate: (value: TDateType) => TDateType;
+  getCurrentMonthFirstDate: (value: TDateType) => TDateType;
+  getCurrentYearFirstDate: (value: TDateType) => TDateType;
+  getCurrentQuarterFirstDate: (value: TDateType) => TDateType;
+  getCurrentHalfYearFirstDate: (value: TDateType) => TDateType;
 
   /** Generate day calendar */
   getCalendarGrid: (target: TDateType) => number[][];

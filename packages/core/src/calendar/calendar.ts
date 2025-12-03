@@ -102,7 +102,7 @@ export function getCalendarYearRange(year: number) {
 
 export function getDefaultModeFormat(mode: CalendarMode) {
   if (mode === 'week') {
-    return 'gggg-wo';
+    return 'YYYY-[W]WW';
   }
 
   if (mode === 'month') {

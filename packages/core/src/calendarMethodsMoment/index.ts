@@ -37,6 +37,21 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
 
   /** Manipulate */
+  addHour: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'hour').toISOString();
+  },
+  addMinute: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'minute').toISOString();
+  },
+  addSecond: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'second').toISOString();
+  },
   addDay: (date, diff) => {
     const clone = moment(date);
 
@@ -51,6 +66,11 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     const clone = moment(date);
 
     return clone.add(diff, 'month').toISOString();
+  },
+  setMillisecond: (date, millisecond) => {
+    const clone = moment(date);
+
+    return clone.millisecond(millisecond).toISOString();
   },
   setSecond: (date, second) => {
     const clone = moment(date);
@@ -84,6 +104,56 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
   startOf: (target, granularity: unitOfTime.StartOf) =>
     moment(target).startOf(granularity).toISOString(),
+
+  /** Get first date of period at 00:00:00 */
+  getCurrentWeekFirstDate: (value) =>
+    moment(value)
+      .startOf('week')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentMonthFirstDate: (value) =>
+    moment(value)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentYearFirstDate: (value) =>
+    moment(value)
+      .startOf('year')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentQuarterFirstDate: (value) => {
+    const m = moment(value);
+    const quarterStart = Math.floor(m.month() / 3) * 3;
+    return m
+      .month(quarterStart)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+  },
+  getCurrentHalfYearFirstDate: (value) => {
+    const m = moment(value);
+    const halfYearStart = Math.floor(m.month() / 6) * 6;
+    return m
+      .month(halfYearStart)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+  },
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
