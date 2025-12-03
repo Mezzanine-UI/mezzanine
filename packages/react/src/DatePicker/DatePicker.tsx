@@ -33,6 +33,8 @@ export interface DatePickerProps
       DatePickerCalendarProps,
       | 'anchor'
       | 'calendarRef'
+      | 'disableOnDoubleNext'
+      | 'disableOnDoublePrev'
       | 'onChange'
       | 'open'
       | 'referenceDate'
@@ -53,6 +55,16 @@ export interface DatePickerProps
    * Default value for date picker.
    */
   defaultValue?: DateType;
+  /**
+   * Disabled "double next" button on calendar controls
+   * @default false
+   */
+  disableOnDoubleNext?: boolean;
+  /**
+   * Disabled "double prev" button on calendar controls
+   * @default false
+   */
+  disableOnDoublePrev?: boolean;
   /**
    * The format for displaying date.
    */
@@ -92,6 +104,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabledMonthSwitch = false,
       disableOnNext,
       disableOnPrev,
+      disableOnDoubleNext,
+      disableOnDoublePrev,
       disabledYearSwitch = false,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
@@ -323,6 +337,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           disabledMonthSwitch={disabledMonthSwitch}
           disableOnNext={disableOnNext}
           disableOnPrev={disableOnPrev}
+          disableOnDoubleNext={disableOnDoubleNext}
+          disableOnDoublePrev={disableOnDoublePrev}
           disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           fadeProps={fadeProps}

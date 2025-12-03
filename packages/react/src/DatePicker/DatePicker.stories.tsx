@@ -14,9 +14,7 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType | undefined>(
-    new Date().toISOString(),
-  );
+  const [val, setVal] = useState<DateType | undefined>();
   const onChange = (v?: DateType) => {
     setVal(v);
   };
@@ -43,7 +41,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h3" style={typoStyle}>
-        {val}
+        {`Value: ${val}`}
       </Typography>
       <DatePicker
         value={val}
@@ -84,7 +82,7 @@ Playground.args = {
   format: 'YYYY-MM-DD',
   fullWidth: false,
   mode: 'day',
-  placeholder: '',
+  placeholder: 'Start Date',
   readOnly: false,
   size: 'main',
 };

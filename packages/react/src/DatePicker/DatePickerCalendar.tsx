@@ -18,6 +18,8 @@ export interface DatePickerCalendarProps
       | 'disabledMonthSwitch'
       | 'disableOnNext'
       | 'disableOnPrev'
+      | 'disableOnDoubleNext'
+      | 'disableOnDoublePrev'
       | 'disabledYearSwitch'
       | 'displayMonthLocale'
       | 'isDateDisabled'
@@ -36,6 +38,8 @@ export interface DatePickerCalendarProps
     CalendarProps,
     | 'disableOnNext'
     | 'disableOnPrev'
+    | 'disableOnDoubleNext'
+    | 'disableOnDoublePrev'
     | 'displayMonthLocale'
     | 'isDateDisabled'
     | 'isMonthDisabled'
@@ -48,7 +52,9 @@ export interface DatePickerCalendarProps
     | 'onChange'
     | 'onMonthControlClick'
     | 'onNext'
+    | 'onDoubleNext'
     | 'onPrev'
+    | 'onDoublePrev'
     | 'onYearControlClick'
     | 'referenceDate'
     | 'updateReferenceDate'
@@ -92,6 +98,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       disabledMonthSwitch,
       disableOnNext,
       disableOnPrev,
+      disableOnDoubleNext,
+      disableOnDoublePrev,
       disabledYearSwitch,
       displayMonthLocale = displayMonthLocaleFromConfig,
       fadeProps,
@@ -115,6 +123,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       onMonthControlClick,
       onNext,
       onPrev,
+      onDoublePrev,
+      onDoubleNext,
       onYearControlClick,
       popModeStack,
       referenceDate,
@@ -194,6 +204,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
           disabledMonthSwitch={disabledMonthSwitch}
           disableOnNext={disableOnNext}
           disableOnPrev={disableOnPrev}
+          disableOnDoubleNext={disableOnDoubleNext}
+          disableOnDoublePrev={disableOnDoublePrev}
           disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           isDateDisabled={isDateDisabled}
@@ -206,7 +218,9 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
           onChange={onChange}
           onMonthControlClick={onMonthControlClick}
           onNext={onNext}
+          onDoubleNext={onDoubleNext}
           onPrev={onPrev}
+          onDoublePrev={onDoublePrev}
           onYearControlClick={onYearControlClick}
           referenceDate={referenceDate}
           value={value}
