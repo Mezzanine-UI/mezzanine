@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react';
 import MaskFormat, { getMaskRange } from './MaskFormat';
+import { getTemplateWithoutBrackets } from './formatUtils';
 
 export interface UseDateInputFormatterProps {
   /**
@@ -29,23 +30,42 @@ export interface UseDateInputFormatterProps {
 
 /**
  * Hook for formatting date/time input with mask format
- * Based on Ant Design's implementation approach
  */
 export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const { format, value: externalValue = '', onChange, inputRef } = props;
 
-  // State
-  const [internalValue, setInternalValue] = useState(externalValue);
-
-  // Mask format parser
   const maskFormat = useRef(new MaskFormat(format)).current;
+  const [internalValue, setInternalValue] = useState(
+    externalValue || getTemplateWithoutBrackets(format),
+  );
 
-  // Sync external value
+  // Track composition state to block Chinese/Japanese/Korean input
+  const [isComposing, setIsComposing] = useState(false);
+
+  /**
+   * Check if value is completely filled and valid
+   */
+  const isValueComplete = useCallback(
+    (val: string): boolean => {
+      return maskFormat.match(val);
+    },
+    [maskFormat],
+  );
+
+  // Sync external value - only update internal when external explicitly changes
+  const prevExternalValue = useRef(externalValue);
   useEffect(() => {
-    if (externalValue !== internalValue) {
-      setInternalValue(externalValue);
+    // Only sync when external value actually changes (not caused by our own onChange)
+    if (externalValue !== prevExternalValue.current) {
+      prevExternalValue.current = externalValue;
+      if (externalValue) {
+        setInternalValue(externalValue);
+      } else {
+        // External cleared - reset to template
+        setInternalValue(getTemplateWithoutBrackets(format));
+      }
     }
-  }, [externalValue, internalValue]);
+  }, [externalValue, format]);
 
   /**
    * Trigger value change
@@ -54,8 +74,10 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     (newValue: string, cursorPosition?: number) => {
       setInternalValue(newValue);
 
-      if (onChange) {
+      // Only trigger onChange if value is complete and valid
+      if (onChange && isValueComplete(newValue)) {
         const rawDigits = newValue.replace(/[^0-9]/g, '');
+
         onChange(newValue, rawDigits);
       }
 
@@ -66,7 +88,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         });
       }
     },
-    [onChange, inputRef],
+    [onChange, inputRef, isValueComplete],
   );
 
   /**
@@ -75,30 +97,65 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const handleFocus = useCallback(() => {
     // If value doesn't match format, fill with format template
     if (!maskFormat.match(internalValue)) {
-      triggerChange(format);
+      triggerChange(getTemplateWithoutBrackets(format));
     }
   }, [format, internalValue, maskFormat, triggerChange]);
 
   /**
-   * Handle blur event
+   * Handle blur event - clear incomplete values
    */
   const handleBlur = useCallback(() => {
-    // No-op for now
-  }, []);
+    // If value is incomplete, clear it and notify parent
+    if (!isValueComplete(internalValue)) {
+      const templateValue = getTemplateWithoutBrackets(format);
+      setInternalValue(templateValue);
+      // Notify parent that value is cleared
+      if (onChange) {
+        onChange('', '');
+      }
+    }
+  }, [format, internalValue, isValueComplete, onChange]);
 
   /**
    * Handle change event (for non-mask input, blocked in mask mode)
    */
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      // Block change during composition (Chinese/Japanese/Korean input)
+      if (isComposing) {
+        e.preventDefault();
+        return;
+      }
+
       // In mask mode, we handle input through keydown
-      // This is just a fallback
+      // Validate that input only contains digits and separators
       const newValue = e.target.value;
-      if (newValue.length <= format.length) {
+      const templateValue = getTemplateWithoutBrackets(format);
+
+      // Check if new value only contains valid characters (digits and format separators)
+      let isValid = true;
+      if (newValue.length > templateValue.length) {
+        isValid = false;
+      } else {
+        for (let i = 0; i < newValue.length; i++) {
+          const char = newValue[i];
+          const templateChar = templateValue[i];
+          // Allow digits or the exact separator from template
+          if (!/\d/.test(char) && char !== templateChar) {
+            isValid = false;
+            break;
+          }
+        }
+      }
+
+      if (isValid) {
         triggerChange(newValue);
+      } else {
+        // Reset to current internal value if invalid
+        triggerChange(internalValue);
       }
     },
-    [format.length, triggerChange],
+    [format, internalValue, isComposing, triggerChange],
   );
 
   /**
@@ -107,6 +164,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
       const { key } = e;
+      const templateValue = getTemplateWithoutBrackets(format);
 
       // Backspace
       if (key === 'Backspace') {
@@ -146,7 +204,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
           // Clear that position
           const newValue = internalValue.split('');
-          newValue[prevPos] = format[prevPos];
+          newValue[prevPos] = templateValue[prevPos];
           triggerChange(newValue.join(''), prevPos);
           return;
         }
@@ -195,7 +253,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
             if (lastDigitPos >= prevCell.start) {
               const newValue = internalValue.split('');
-              newValue[lastDigitPos] = format[lastDigitPos];
+              newValue[lastDigitPos] = templateValue[lastDigitPos];
               triggerChange(newValue.join(''), lastDigitPos);
               return;
             }
@@ -204,7 +262,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
         // Normal clear
         const newValue = internalValue.split('');
-        newValue[clearPos] = format[clearPos];
+        newValue[clearPos] = templateValue[clearPos];
         triggerChange(newValue.join(''), clearPos);
         return;
       }
@@ -324,11 +382,31 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     [format, internalValue, maskFormat, triggerChange],
   );
 
+  /**
+   * Handle composition start (IME input start)
+   */
+  const handleCompositionStart = useCallback(() => {
+    setIsComposing(true);
+  }, []);
+
+  /**
+   * Handle composition end (IME input end)
+   */
+  const handleCompositionEnd = useCallback(() => {
+    setIsComposing(false);
+    // Reset to template on composition end to clear any invalid input
+    if (inputRef?.current) {
+      triggerChange(internalValue);
+    }
+  }, [internalValue, inputRef, triggerChange]);
+
   return {
     value: internalValue,
     handleChange,
     handleKeyDown,
     handleFocus,
     handleBlur,
+    handleCompositionStart,
+    handleCompositionEnd,
   };
 }

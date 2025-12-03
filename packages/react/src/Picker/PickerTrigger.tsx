@@ -37,7 +37,7 @@ export interface PickerTriggerProps
   /**
    * Change handler for the input element.
    */
-  onChange?: ChangeEventHandler;
+  onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
    * Placeholder for the input element.
    */

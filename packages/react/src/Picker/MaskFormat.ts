@@ -1,7 +1,20 @@
+import { parseFormatSegments } from './formatUtils';
+
 /**
  * Format keys that can be used in mask format
  */
-export const FORMAT_KEYS = ['YYYY', 'MM', 'DD', 'HH', 'mm', 'ss', 'SSS'];
+export const FORMAT_KEYS = [
+  'YYYY', // Year
+  'gggg', // ISO week year
+  'WW', // Week of year (2 digits)
+  'MM', // Month
+  'DD', // Day
+  'HH', // Hour
+  'mm', // Minute
+  'ss', // Second
+  'SSS', // Millisecond
+  'Q', // Quarter
+];
 
 /**
  * Cell represents a single mask field or separator in the format
@@ -25,7 +38,10 @@ export interface Cell {
 export function getMaskRange(key: string): [number, number] {
   switch (key) {
     case 'YYYY':
-      return [1900, 2100];
+    case 'gggg':
+      return [1000, 9999];
+    case 'WW':
+      return [1, 53];
     case 'MM':
       return [1, 12];
     case 'DD':
@@ -37,6 +53,8 @@ export function getMaskRange(key: string): [number, number] {
       return [0, 59];
     case 'SSS':
       return [0, 999];
+    case 'Q':
+      return [1, 4];
     default:
       return [0, 99];
   }
@@ -55,50 +73,29 @@ export default class MaskFormat {
     this.cells = [];
     this.maskCells = [];
 
-    let i = 0;
-    while (i < format.length) {
-      let matched = false;
+    const segments = parseFormatSegments(format);
 
-      // Try to match format keys
-      for (const key of FORMAT_KEYS) {
-        if (format.slice(i, i + key.length) === key) {
-          const cell: Cell = {
-            text: key,
-            mask: key,
-            start: i,
-            end: i + key.length,
-          };
-          this.cells.push(cell);
-          this.maskCells.push(cell);
-          i += key.length;
-          matched = true;
-          break;
-        }
+    for (const segment of segments) {
+      let cell: Cell;
+
+      if (segment.type === 'mask') {
+        cell = {
+          text: segment.text,
+          mask: segment.text,
+          start: segment.start,
+          end: segment.end,
+        };
+        this.maskCells.push(cell);
+      } else {
+        cell = {
+          text: segment.text,
+          start: segment.start,
+          end: segment.end,
+        };
       }
 
-      // If not matched, it's a separator
-      if (!matched) {
-        this.cells.push({
-          text: format[i],
-          start: i,
-          end: i + 1,
-        });
-        i += 1;
-      }
+      this.cells.push(cell);
     }
-  }
-
-  /**
-   * Get selection range for a specific mask cell index
-   * @param maskCellIndex Index in maskCells array
-   * @returns [start, end] for setSelectionRange
-   */
-  getSelection(maskCellIndex: number): [number, number] {
-    const cell = this.maskCells[maskCellIndex];
-    if (!cell) {
-      return [0, 0];
-    }
-    return [cell.start, cell.end];
   }
 
   /**
@@ -128,36 +125,5 @@ export default class MaskFormat {
     }
 
     return true;
-  }
-
-  /**
-   * Get number of editable mask cells
-   */
-  size(): number {
-    return this.maskCells.length;
-  }
-
-  /**
-   * Get mask cell index from cursor position
-   * @param cursorPos Current cursor position
-   * @returns Index of closest mask cell
-   */
-  getMaskCellIndex(cursorPos: number): number {
-    for (let i = 0; i < this.maskCells.length; i++) {
-      const cell = this.maskCells[i];
-      if (cursorPos >= cell.start && cursorPos <= cell.end) {
-        return i;
-      }
-    }
-
-    // Find closest cell
-    for (let i = 0; i < this.maskCells.length; i++) {
-      const cell = this.maskCells[i];
-      if (cursorPos < cell.start) {
-        return i;
-      }
-    }
-
-    return this.maskCells.length - 1;
   }
 }
