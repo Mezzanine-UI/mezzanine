@@ -17,7 +17,7 @@ export default {
 const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
   const formats = {
     day: 'YYYY-MM-DD',
-    week: 'gggg-wo',
+    week: 'YYYY-[W]ww',
     month: 'YYYY-MM',
     year: 'YYYY',
     quarter: 'YYYY-[Q]Q',
@@ -218,7 +218,7 @@ const InnerRangeCalendarPlayground = ({
 
   // Temporary selection values
   const [tempStartVal, setTempStartVal] = useState<DateType>();
-  const [tempEndVal, setTempEndVal] = useState<DateType>();
+  const [tempEndVal, setTempEndVal] = useState<DateType | undefined>();
 
   const formatValue = (value: DateType | undefined) => {
     if (!value) return '';
@@ -235,23 +235,11 @@ const InnerRangeCalendarPlayground = ({
     return formatted;
   };
 
-  const handleChange = (target: DateType) => {
-    if (!tempStartVal || (tempStartVal && tempEndVal)) {
-      // Start new selection
-      setTempStartVal(target);
-      setTempEndVal(undefined);
-    } else {
-      // Set end value
-      const start = moment(tempStartVal);
-      const end = moment(target);
-
-      if (end.isBefore(start)) {
-        setTempStartVal(target);
-        setTempEndVal(tempStartVal);
-      } else {
-        setTempEndVal(target);
-      }
-    }
+  const handleChange = (target: [DateType, DateType | undefined]) => {
+    // RangeCalendar already handles sorting and normalization
+    // Just use the values as-is
+    setTempStartVal(target[0]);
+    setTempEndVal(target[1]);
   };
 
   const handleOk = () => {

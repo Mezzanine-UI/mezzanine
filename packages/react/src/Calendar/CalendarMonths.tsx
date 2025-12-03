@@ -58,6 +58,7 @@ function CalendarMonths(props: CalendarMonthsProps) {
     displayMonthLocale: displayMonthLocaleFromConfig,
     getMonthShortNames,
     isMonthIncluded,
+    getCurrentMonthFirstDate,
     setMonth,
   } = useCalendarContext();
   const {
@@ -79,7 +80,10 @@ function CalendarMonths(props: CalendarMonthsProps) {
     <div className={cx(classes.board, className)} {...rest}>
       <div className={classes.twelveGrid}>
         {calendarMonths.map((month) => {
-          const monthDateType = setMonth(referenceDate, month);
+          const monthDateType = setMonth(
+            getCurrentMonthFirstDate(referenceDate),
+            month,
+          );
           const active = value && isMonthIncluded(monthDateType, value);
           /** @NOTE Current month should be disabled when current year is disabled */
           const disabled =

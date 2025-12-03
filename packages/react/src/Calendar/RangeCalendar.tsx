@@ -85,8 +85,11 @@ export interface RangeCalendarProps
   mode?: CalendarMode;
   /**
    * Click handler for every cell on calendars.
+   * When completing a range (second click), returns normalized [start, end].
+   * When starting a new range (first click), returns the clicked date.
+   * The normalization ensures start is beginning of period and end is end of period based on mode.
    */
-  onChange?: (target: DateType) => void;
+  onChange?: (value: [DateType, DateType | undefined]) => void;
   /**
    * Quick select options for range calendar.
    * Provide options for users to quickly select specific date ranges.
@@ -116,7 +119,26 @@ export interface RangeCalendarProps
  */
 const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
   function RangeCalendar(props, ref) {
-    const { getMonth, getYear, setMonth, setYear } = useCalendarContext();
+    const {
+      getMonth,
+      getYear,
+      setMonth,
+      setYear,
+      getCurrentWeekFirstDate,
+      getCurrentMonthFirstDate,
+      getCurrentYearFirstDate,
+      getCurrentQuarterFirstDate,
+      getCurrentHalfYearFirstDate,
+      addSecond,
+      addDay,
+      addMonth,
+      addYear,
+      setHour,
+      setMinute,
+      setSecond,
+      setMillisecond,
+      isBefore,
+    } = useCalendarContext();
 
     const {
       actions,
@@ -175,6 +197,170 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       updateSecondReferenceDate,
     } = useRangeCalendarControls(referenceDateProp, mode);
 
+    // Helper function to normalize dates based on mode
+    const normalizeRangeStart = useCallback(
+      (date: DateType): DateType => {
+        switch (mode) {
+          case 'day':
+            return setMillisecond(
+              setSecond(setMinute(setHour(date, 0), 0), 0),
+              0,
+            );
+          case 'week':
+            return getCurrentWeekFirstDate(date);
+          case 'month':
+            return getCurrentMonthFirstDate(date);
+          case 'year':
+            return getCurrentYearFirstDate(date);
+          case 'quarter':
+            return getCurrentQuarterFirstDate(date);
+          case 'half-year':
+            return getCurrentHalfYearFirstDate(date);
+          default:
+            return date;
+        }
+      },
+      [
+        mode,
+        getCurrentWeekFirstDate,
+        getCurrentMonthFirstDate,
+        getCurrentYearFirstDate,
+        getCurrentQuarterFirstDate,
+        getCurrentHalfYearFirstDate,
+        setHour,
+        setMinute,
+        setSecond,
+        setMillisecond,
+      ],
+    );
+
+    const normalizeRangeEnd = useCallback(
+      (date: DateType): DateType => {
+        switch (mode) {
+          case 'day':
+            return setMillisecond(
+              setSecond(setMinute(setHour(date, 23), 59), 59),
+              999,
+            );
+          case 'week': {
+            const weekStart = getCurrentWeekFirstDate(date);
+            const weekEnd = addSecond(addDay(weekStart, 7), -1);
+            return setMillisecond(
+              setSecond(setMinute(setHour(weekEnd, 23), 59), 59),
+              999,
+            );
+          }
+          case 'month': {
+            const nextMonth = addSecond(
+              addMonth(getCurrentMonthFirstDate(date), 1),
+              -1,
+            );
+            return setMillisecond(
+              setSecond(setMinute(setHour(nextMonth, 23), 59), 59),
+              999,
+            );
+          }
+          case 'year': {
+            const nextYear = addSecond(
+              addYear(getCurrentYearFirstDate(date), 1),
+              -1,
+            );
+            return setMillisecond(
+              setSecond(setMinute(setHour(nextYear, 23), 59), 59),
+              999,
+            );
+          }
+          case 'quarter': {
+            const nextQuarter = addSecond(
+              addMonth(getCurrentQuarterFirstDate(date), 3),
+              -1,
+            );
+            return setMillisecond(
+              setSecond(setMinute(setHour(nextQuarter, 23), 59), 59),
+              999,
+            );
+          }
+          case 'half-year': {
+            const nextHalfYear = addSecond(
+              addMonth(getCurrentHalfYearFirstDate(date), 6),
+              -1,
+            );
+            return setMillisecond(
+              setSecond(setMinute(setHour(nextHalfYear, 23), 59), 59),
+              999,
+            );
+          }
+          default:
+            return date;
+        }
+      },
+      [
+        mode,
+        getCurrentWeekFirstDate,
+        getCurrentMonthFirstDate,
+        getCurrentYearFirstDate,
+        getCurrentQuarterFirstDate,
+        getCurrentHalfYearFirstDate,
+        addSecond,
+        addDay,
+        addMonth,
+        addYear,
+        setHour,
+        setMinute,
+        setSecond,
+        setMillisecond,
+      ],
+    );
+
+    // Helper function to handle range selection logic
+    const handleRangeSelection = useCallback(
+      (target: DateType) => {
+        if (!onChangeProp) return;
+
+        const [existingStart, existingEnd] = value || [];
+
+        if (!existingStart || (existingStart && existingEnd)) {
+          // First click: start new selection
+          onChangeProp([target, undefined]);
+        } else {
+          // Complete the range
+          const rawStart = existingStart;
+          const rawEnd = target;
+
+          const isEndBeforeStart = isBefore(rawEnd, rawStart);
+          const [start, end] = isEndBeforeStart
+            ? [rawEnd, rawStart]
+            : [rawStart, rawEnd];
+
+          const normalizedStart = normalizeRangeStart(start);
+          const normalizedEnd = normalizeRangeEnd(end);
+
+          onChangeProp([normalizedStart, normalizedEnd]);
+        }
+      },
+      [value, onChangeProp, isBefore, normalizeRangeStart, normalizeRangeEnd],
+    );
+
+    // Helper function to get the target value based on mode
+    const getTargetValue = useCallback(
+      (target: DateType, targetDate: DateType): DateType => {
+        if (currentMode === mode) {
+          return target;
+        }
+
+        // Mode switching logic
+        if (currentMode === 'month') {
+          return setMonth(targetDate, getMonth(target));
+        }
+        if (currentMode === 'year') {
+          return setYear(targetDate, getYear(target));
+        }
+
+        return target;
+      },
+      [currentMode, mode, getMonth, getYear, setMonth, setYear],
+    );
+
     const onChangeFactory = useCallback(
       (calendar: 0 | 1) => {
         const targetDate = referenceDates[calendar];
@@ -182,85 +368,28 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           ? updateSecondReferenceDate
           : updateFirstReferenceDate;
 
-        if (currentMode === 'day' || currentMode === 'week') {
-          return (target: DateType) => {
-            updateReferenceDate(target);
+        return (target: DateType) => {
+          if (currentMode === mode) {
+            // Handle range selection in target mode
+            const resultValue = getTargetValue(target, targetDate);
+            handleRangeSelection(resultValue);
+          } else {
+            // When switching modes (currentMode !== mode), update reference and pop
+            const resultValue = getTargetValue(target, targetDate);
+            updateReferenceDate(resultValue);
             popModeStack();
-
-            if (currentMode === mode && onChangeProp) {
-              onChangeProp(target);
-            }
-          };
-        }
-
-        if (currentMode === 'month') {
-          return (target: DateType) => {
-            const result =
-              currentMode === mode
-                ? target
-                : setMonth(targetDate, getMonth(target));
-
-            updateReferenceDate(result);
-            popModeStack();
-
-            if (currentMode === mode && onChangeProp) {
-              onChangeProp(result);
-            }
-          };
-        }
-
-        if (currentMode === 'year') {
-          return (target: DateType) => {
-            const result =
-              currentMode === mode
-                ? target
-                : setYear(targetDate, getYear(target));
-
-            updateReferenceDate(result);
-            popModeStack();
-
-            if (currentMode === mode && onChangeProp) {
-              onChangeProp(result);
-            }
-          };
-        }
-
-        if (currentMode === 'quarter') {
-          return (target: DateType) => {
-            updateReferenceDate(target);
-            popModeStack();
-
-            if (currentMode === mode && onChangeProp) {
-              onChangeProp(target);
-            }
-          };
-        }
-
-        if (currentMode === 'half-year') {
-          return (target: DateType) => {
-            updateReferenceDate(target);
-            popModeStack();
-
-            if (currentMode === mode && onChangeProp) {
-              onChangeProp(target);
-            }
-          };
-        }
-
-        return undefined;
+          }
+        };
       },
       [
         currentMode,
-        getMonth,
-        getYear,
         mode,
-        onChangeProp,
-        popModeStack,
         referenceDates,
-        setMonth,
-        setYear,
         updateFirstReferenceDate,
         updateSecondReferenceDate,
+        popModeStack,
+        getTargetValue,
+        handleRangeSelection,
       ],
     );
 

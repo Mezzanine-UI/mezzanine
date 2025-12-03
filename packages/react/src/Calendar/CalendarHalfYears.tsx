@@ -54,8 +54,13 @@ export interface CalendarHalfYearsProps
  * You may use it to compose your own calendar.
  */
 function CalendarHalfYears(props: CalendarHalfYearsProps) {
-  const { getYear, isHalfYearIncluded, setYear, setMonth } =
-    useCalendarContext();
+  const {
+    getYear,
+    getCurrentHalfYearFirstDate,
+    isHalfYearIncluded,
+    setYear,
+    setMonth,
+  } = useCalendarContext();
 
   const {
     className,
@@ -96,7 +101,7 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
             {calendarHalfYears.map((halfYear) => {
               const halfYearStartMonth = (halfYear - 1) * 6;
               const halfYearDate = setMonth(
-                setYear(referenceDate, year),
+                setYear(getCurrentHalfYearFirstDate(referenceDate), year),
                 halfYearStartMonth,
               );
 

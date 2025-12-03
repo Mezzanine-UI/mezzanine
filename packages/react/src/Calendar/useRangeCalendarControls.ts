@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import {
   DateType,
   CalendarMode,
@@ -46,10 +46,13 @@ export function useRangeCalendarControls(
     getSecondCalendarDate(referenceDateProp),
   );
 
-  useEffect(() => {
-    setFirstReferenceDate(referenceDateProp);
-    setSecondReferenceDate(getSecondCalendarDate(referenceDateProp));
-  }, [referenceDateProp, getSecondCalendarDate]);
+  /**
+   * @NOTE referenceDate sync off（為了避免自動跳轉）
+   */
+  // useEffect(() => {
+  //   setFirstReferenceDate(referenceDateProp);
+  //   setSecondReferenceDate(getSecondCalendarDate(referenceDateProp));
+  // }, [referenceDateProp, getSecondCalendarDate]);
 
   const { currentMode, pushModeStack, popModeStack } = useCalendarModeStack(
     mode || 'day',
@@ -98,8 +101,36 @@ export function useRangeCalendarControls(
   const onSecondDoublePrev = onFirstDoublePrev;
   const onSecondDoubleNext = onFirstDoubleNext;
 
-  const onMonthControlClick = () => pushModeStack('month');
-  const onYearControlClick = () => pushModeStack('year');
+  const onMonthControlClick = () => {
+    setFirstReferenceDate(firstReferenceDate);
+    setSecondReferenceDate(addYear(firstReferenceDate, 1));
+    pushModeStack('month');
+  };
+  const onYearControlClick = () => {
+    setFirstReferenceDate(firstReferenceDate);
+    setSecondReferenceDate(addYear(firstReferenceDate, calendarYearModuler));
+    pushModeStack('year');
+  };
+
+  // Wrapper functions for updating reference dates
+  // These should be used when switching modes (e.g., from month picker back to day mode)
+  // They update the target calendar and maintain the offset between calendars
+  const updateFirstReferenceDate = useCallback(
+    (date: DateType) => {
+      setFirstReferenceDate(date);
+      setSecondReferenceDate(getSecondCalendarDate(date));
+    },
+    [getSecondCalendarDate],
+  );
+
+  const updateSecondReferenceDate = useCallback(
+    (date: DateType) => {
+      console.log('second: ', date);
+      setFirstReferenceDate(date);
+      setSecondReferenceDate(getSecondCalendarDate(date));
+    },
+    [getSecondCalendarDate],
+  );
 
   return {
     currentMode,
@@ -118,7 +149,7 @@ export function useRangeCalendarControls(
       () => [firstReferenceDate, secondReferenceDate] as [DateType, DateType],
       [firstReferenceDate, secondReferenceDate],
     ),
-    updateFirstReferenceDate: setFirstReferenceDate,
-    updateSecondReferenceDate: setSecondReferenceDate,
+    updateFirstReferenceDate,
+    updateSecondReferenceDate,
   };
 }

@@ -44,7 +44,7 @@ export interface CalendarDaysProps
     color?: TypographyColor;
   };
   /**
-   * The refernce date for getting the month of the calendar.
+   * The reference date for getting the month of the calendar.
    */
   referenceDate: DateType;
   /**

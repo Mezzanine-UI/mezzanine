@@ -224,6 +224,15 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       getMonth,
       getMonthShortName,
       getYear,
+      getCurrentWeekFirstDate,
+      getCurrentMonthFirstDate,
+      getCurrentYearFirstDate,
+      getCurrentQuarterFirstDate,
+      getCurrentHalfYearFirstDate,
+      setHour,
+      setMinute,
+      setSecond,
+      setMillisecond,
     } = useCalendarContext();
 
     const {
@@ -301,7 +310,16 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() =>
+              onChange?.(
+                setMillisecond(
+                  setSecond(setMinute(setHour(getNow(), 0), 0), 0),
+                  0,
+                ),
+              )
+            }
+          >
             Today
           </CalendarFooterControl>
         );
@@ -324,7 +342,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() => onChange?.(getCurrentWeekFirstDate(getNow()))}
+          >
             This week
           </CalendarFooterControl>
         );
@@ -345,7 +365,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() => onChange?.(getCurrentMonthFirstDate(getNow()))}
+          >
             This month
           </CalendarFooterControl>
         );
@@ -365,7 +387,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() => onChange?.(getCurrentYearFirstDate(getNow()))}
+          >
             This year
           </CalendarFooterControl>
         );
@@ -385,7 +409,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() => onChange?.(getCurrentQuarterFirstDate(getNow()))}
+          >
             This quarter
           </CalendarFooterControl>
         );
@@ -405,7 +431,9 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
 
       if (!disabledFooterControl) {
         displayFooterControl = (
-          <CalendarFooterControl onClick={() => onChange?.(getNow())}>
+          <CalendarFooterControl
+            onClick={() => onChange?.(getCurrentHalfYearFirstDate(getNow()))}
+          >
             This half year
           </CalendarFooterControl>
         );

@@ -66,6 +66,10 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     isWeekIncluded,
     setDate,
     setMonth,
+    setHour,
+    setMinute,
+    setSecond,
+    setMillisecond,
   } = useCalendarContext();
   const {
     className,
@@ -129,7 +133,16 @@ function CalendarWeeks(props: CalendarWeeksProps) {
               : isNextMonth
                 ? thisMonth + 1
                 : thisMonth;
-            const date = setDate(setMonth(referenceDate, month), dateNum);
+            const date = setMillisecond(
+              setSecond(
+                setMinute(
+                  setHour(setDate(setMonth(referenceDate, month), dateNum), 0),
+                  0,
+                ),
+                0,
+              ),
+              0,
+            );
 
             dates.push(date);
           });

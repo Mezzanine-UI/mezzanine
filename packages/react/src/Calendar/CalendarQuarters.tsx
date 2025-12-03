@@ -52,8 +52,13 @@ export interface CalendarQuartersProps
  * The react component for `mezzanine` calendar quarters.
  */
 function CalendarQuarters(props: CalendarQuartersProps) {
-  const { getYear, isQuarterIncluded, setYear, setMonth } =
-    useCalendarContext();
+  const {
+    getYear,
+    getCurrentQuarterFirstDate,
+    isQuarterIncluded,
+    setYear,
+    setMonth,
+  } = useCalendarContext();
 
   const {
     className,
@@ -94,7 +99,12 @@ function CalendarQuarters(props: CalendarQuartersProps) {
             {calendarQuarters.map((quarter) => {
               const quarterStartMonth = (quarter - 1) * 3;
               const quarterDate = setMonth(
-                setYear(referenceDate, year),
+                setYear(
+                  getCurrentQuarterFirstDate(
+                    getCurrentQuarterFirstDate(referenceDate),
+                  ),
+                  year,
+                ),
                 quarterStartMonth,
               );
 

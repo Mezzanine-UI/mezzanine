@@ -37,8 +37,10 @@ function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
 
   return (
     <div className={cx(classes.row, className)} {...restRowProps}>
-      {weekDayNames.map((name) => (
-        <CalendarCell key={`CALENDAR_DAY_OF_WEEK/${name}`}>{name}</CalendarCell>
+      {weekDayNames.map((name, idx) => (
+        <CalendarCell key={`CALENDAR_DAY_OF_WEEK/${name}-${idx}`}>
+          {name}
+        </CalendarCell>
       ))}
     </div>
   );
