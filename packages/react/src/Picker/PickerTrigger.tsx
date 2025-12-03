@@ -135,7 +135,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
                 } as React.ChangeEvent<HTMLInputElement>);
               }
             }}
-            placeholder={placeholder || format}
+            placeholder={placeholder}
             readOnly={readOnly}
             required={required}
             value={value}

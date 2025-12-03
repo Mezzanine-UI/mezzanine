@@ -7,6 +7,7 @@ import {
   parseFormatSegments,
   isMaskSegmentFilled,
   findPreviousMaskSegment,
+  getTemplateWithoutBrackets,
 } from './formatUtils';
 
 export interface FormattedInputProps
@@ -15,6 +16,10 @@ export interface FormattedInputProps
    * The format pattern (e.g., "YYYY-MM-DD", "HH:mm:ss")
    */
   format: string;
+  /**
+   * Placeholder to show when not focused and value is empty
+   */
+  placeholder?: string;
   /**
    * The current value
    */
@@ -37,8 +42,11 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       className,
       disabled,
       format,
+      placeholder,
       value: externalValue,
       onChange,
+      onFocus,
+      onBlur,
       ...inputProps
     } = props;
 
@@ -47,6 +55,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
 
     const {
       value,
+      focused,
       handleChange,
       handleKeyDown,
       handleFocus,
@@ -58,6 +67,8 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       value: externalValue,
       onChange,
       inputRef: internalInputRef,
+      onFocus,
+      onBlur,
     });
 
     // Parse format once
@@ -66,6 +77,13 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     // Render mixed-color display overlay
     const renderMixedColorDisplay = () => {
       const currentValue = value || '';
+
+      // Show placeholder when no value
+      if (currentValue === getTemplateWithoutBrackets(format) && placeholder) {
+        return null;
+      }
+
+      // Show format mask when focused or has value
       const displaySegments: Array<{ text: string; filled: boolean }> = [];
 
       for (const segment of segments) {
@@ -109,6 +127,16 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       );
     };
 
+    const renderPlaceholder = () => {
+      if (value === getTemplateWithoutBrackets(format)) {
+        if (focused) return getTemplateWithoutBrackets(format);
+
+        return placeholder;
+      }
+
+      return undefined;
+    };
+
     return (
       <div className={classes.formattedInput}>
         <input
@@ -121,7 +149,8 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
           )}
           disabled={disabled}
           type="text"
-          value={value}
+          value={value === getTemplateWithoutBrackets(format) ? '' : value}
+          placeholder={renderPlaceholder()}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}

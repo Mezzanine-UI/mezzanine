@@ -1,5 +1,6 @@
 import {
   ChangeEvent,
+  FocusEventHandler,
   KeyboardEvent,
   useCallback,
   useEffect,
@@ -8,6 +9,7 @@ import {
 } from 'react';
 import MaskFormat, { getMaskRange } from './MaskFormat';
 import { getTemplateWithoutBrackets } from './formatUtils';
+import { useCalendarContext } from '../Calendar';
 
 export interface UseDateInputFormatterProps {
   /**
@@ -26,13 +28,30 @@ export interface UseDateInputFormatterProps {
    * Input ref for controlling selection
    */
   inputRef?: React.RefObject<HTMLInputElement | null>;
+  /**
+   * Focus event handler
+   */
+  onFocus?: FocusEventHandler<HTMLInputElement>;
+  /**
+   * Blur event handler
+   */
+  onBlur?: FocusEventHandler<HTMLInputElement>;
 }
 
 /**
  * Hook for formatting date/time input with mask format
  */
 export function useDateInputFormatter(props: UseDateInputFormatterProps) {
-  const { format, value: externalValue = '', onChange, inputRef } = props;
+  const {
+    format,
+    value: externalValue = '',
+    onChange,
+    inputRef,
+    onFocus: onFocusProp,
+    onBlur: onBlurProp,
+  } = props;
+
+  const { formatToISOString } = useCalendarContext();
 
   const maskFormat = useRef(new MaskFormat(format)).current;
   const [internalValue, setInternalValue] = useState(
@@ -41,6 +60,9 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
   // Track composition state to block Chinese/Japanese/Korean input
   const [isComposing, setIsComposing] = useState(false);
+
+  // Track focus state
+  const [focused, setFocused] = useState(false);
 
   /**
    * Check if value is completely filled and valid
@@ -78,7 +100,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       if (onChange && isValueComplete(newValue)) {
         const rawDigits = newValue.replace(/[^0-9]/g, '');
 
-        onChange(newValue, rawDigits);
+        onChange(formatToISOString(newValue), rawDigits);
       }
 
       // Restore cursor position after React re-renders
@@ -88,33 +110,43 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         });
       }
     },
-    [onChange, inputRef, isValueComplete],
+    [onChange, inputRef, isValueComplete, formatToISOString],
   );
 
   /**
    * Handle focus event
    */
-  const handleFocus = useCallback(() => {
-    // If value doesn't match format, fill with format template
-    if (!maskFormat.match(internalValue)) {
-      triggerChange(getTemplateWithoutBrackets(format));
-    }
-  }, [format, internalValue, maskFormat, triggerChange]);
+  const handleFocus: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      setFocused(true);
+      onFocusProp?.(e);
+      // If value doesn't match format, fill with format template
+      if (!maskFormat.match(internalValue)) {
+        triggerChange(getTemplateWithoutBrackets(format));
+      }
+    },
+    [format, internalValue, maskFormat, triggerChange, onFocusProp],
+  );
 
   /**
    * Handle blur event - clear incomplete values
    */
-  const handleBlur = useCallback(() => {
-    // If value is incomplete, clear it and notify parent
-    if (!isValueComplete(internalValue)) {
-      const templateValue = getTemplateWithoutBrackets(format);
-      setInternalValue(templateValue);
-      // Notify parent that value is cleared
-      if (onChange) {
-        onChange('', '');
+  const handleBlur: FocusEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      setFocused(false);
+      onBlurProp?.(e);
+      // If value is incomplete, clear it and notify parent
+      if (!isValueComplete(internalValue)) {
+        const templateValue = getTemplateWithoutBrackets(format);
+        setInternalValue(templateValue);
+        // Notify parent that value is cleared
+        if (onChange) {
+          onChange('', '');
+        }
       }
-    }
-  }, [format, internalValue, isValueComplete, onChange]);
+    },
+    [format, internalValue, isValueComplete, onChange, onBlurProp],
+  );
 
   /**
    * Handle change event (for non-mask input, blocked in mask mode)
@@ -311,8 +343,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         }
 
         const targetCell = maskFormat.maskCells[targetCellIndex];
-        const cellFormat = format.slice(targetCell.start, targetCell.end);
-        const [minVal, maxVal] = getMaskRange(cellFormat);
+        const [minVal, maxVal] = getMaskRange(targetCell.mask || '');
 
         // Get current cell value
         const currentCellValue = internalValue.slice(
@@ -350,6 +381,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
         // All filled, validate range
         const cellNum = parseInt(newCellStr, 10);
+
         if (cellNum < minVal || cellNum > maxVal) {
           // Invalid, block input
           return;
@@ -402,6 +434,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
   return {
     value: internalValue,
+    focused,
     handleChange,
     handleKeyDown,
     handleFocus,
