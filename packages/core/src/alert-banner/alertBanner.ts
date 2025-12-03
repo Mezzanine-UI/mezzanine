@@ -26,6 +26,8 @@ export const alertBannerClasses = {
   close: `${alertBannerPrefix}__close`,
   severity: (severity: AlertBannerSeverity) =>
     `${alertBannerPrefix}--${severity}`,
+  entering: `${alertBannerPrefix}--entering`,
+  exiting: `${alertBannerPrefix}--exiting`,
 } as const;
 
 export const alertBannerGroupClasses = {

@@ -1,7 +1,7 @@
 'use client';
 
 import type { Key, MouseEvent, ReactElement } from 'react';
-import { forwardRef, useCallback, useEffect, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   alertBannerGroupClasses,
@@ -12,6 +12,7 @@ import {
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Button, { ButtonPropsBase } from '../Button';
 import ClearActions from '../ClearActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
 import {
   createNotifier,
@@ -167,13 +168,21 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
       ...rest
     } = props;
     const [visible, setVisible] = useState(true);
+    const [isExiting, setIsExiting] = useState(false);
+    const [isEntering, setIsEntering] = useState(false);
+    const nodeRef = useRef<HTMLDivElement>(null);
+    const composedRef = useComposeRefs([ref, nodeRef]);
 
     const handleClose = useCallback(() => {
-      setVisible(false);
+      setIsExiting(true);
 
-      if (onClose) {
-        onClose();
-      }
+      setTimeout(() => {
+        setVisible(false);
+
+        if (onClose) {
+          onClose();
+        }
+      }, 250); // moderate duration
     }, [onClose]);
 
     useEffect(() => {
@@ -181,6 +190,19 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
         console.warn('AlertBanner: actions maximum is 2');
       }
     }, [actions]);
+
+    useEffect(() => {
+      if (visible && !isExiting && nodeRef.current) {
+        // Force reflow to ensure initial state is applied
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        nodeRef.current.offsetHeight;
+
+        // Trigger entering animation in next frame
+        requestAnimationFrame(() => {
+          setIsEntering(true);
+        });
+      }
+    }, [visible, isExiting]);
 
     if (!visible) {
       return null;
@@ -230,11 +252,13 @@ export const AlertBannerComponent = forwardRef<HTMLDivElement, AlertBannerProps>
     const content = (
       <div
         {...restProps}
-        ref={ref}
+        ref={composedRef}
         aria-live="polite"
         className={cx(
           classes.host,
           classes.severity(severity),
+          isExiting && classes.exiting,
+          isEntering && !isExiting && classes.entering,
           className,
         )}
         role="status"

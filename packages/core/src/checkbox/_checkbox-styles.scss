@@ -224,6 +224,7 @@ $checked-states: (
   &__label-container {
     display: flex;
     align-items: flex-start;
+    cursor: pointer;
     gap: spacing.semantic-variable(gap, tight);
   }
 
@@ -240,6 +241,7 @@ $checked-states: (
       @include _apply-mode-styles(chip);
       @include _apply-mode-input-padding(chip);
       @include _apply-chip-host-styles(base);
+      cursor: pointer;
       transition:
         transition.standard(border-color, fast),
         transition.standard(background-color, fast),
@@ -255,6 +257,7 @@ $checked-states: (
       &.#{$prefix}--disabled,
       .#{input-check.$prefix}--disabled & {
         @include _apply-chip-host-styles(disabled);
+        cursor: not-allowed;
       }
     }
   }
@@ -427,6 +430,10 @@ $checked-states: (
 
   &--disabled,
   .#{input-check.$prefix}--disabled & {
+    .#{$prefix}__label-container {
+      cursor: not-allowed;
+    }
+
     .#{$prefix}__input-content {
       cursor: not-allowed;
     }
@@ -547,6 +554,10 @@ $checked-states: (
     row-gap: spacing.semantic-variable(gap, none);
     align-items: center;
     flex-wrap: wrap;
+    transition:
+      transition.entrance(height, fast),
+      transition.entrance(min-height, fast);
+    will-change: height, min-height;
   }
 
   &--vertical {
@@ -556,5 +567,9 @@ $checked-states: (
 
   &--chip {
     gap: spacing.semantic-variable(gap, slim);
+    transition:
+      transition.entrance(height, fast),
+      transition.entrance(min-height, fast);
+    will-change: height, min-height;
   }
 }
