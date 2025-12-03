@@ -283,7 +283,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       <Icon
         aria-label="Open calendar"
         icon={CalendarIcon}
-        onClick={onIconClick}
+        onClick={readOnly ? undefined : onIconClick}
       />
     );
 
@@ -301,8 +301,13 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e);
+            onCalendarChange(e.target.value);
+            onCalendarToggle(true);
+          }}
           onClear={onClear}
+          onFocus={() => onCalendarToggle(true)}
           placeholder={placeholder}
           prefix={prefix}
           readOnly={readOnly}

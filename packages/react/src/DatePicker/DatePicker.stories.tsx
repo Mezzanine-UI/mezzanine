@@ -8,7 +8,6 @@ import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
 import Typography from '../Typography';
 import { CalendarConfigProvider } from '../Calendar';
-import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DatePicker',
@@ -43,7 +42,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
+      <Typography variant="h3" style={typoStyle}>
         {val}
       </Typography>
       <DatePicker
@@ -71,7 +70,7 @@ Playground.argTypes = {
     },
   },
   size: {
-    options: ['small', 'medium', 'large'],
+    options: ['main', 'sub'],
     control: {
       type: 'select',
     },
@@ -87,7 +86,7 @@ Playground.args = {
   mode: 'day',
   placeholder: '',
   readOnly: false,
-  size: 'medium',
+  size: 'main',
 };
 
 export const Basic = () => {
@@ -101,25 +100,25 @@ export const Basic = () => {
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Normal
         </Typography>
         <DatePicker value={val} onChange={onChange} />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Disabled
         </Typography>
         <DatePicker value={new Date().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Error
         </Typography>
         <DatePicker value={new Date().toISOString()} error />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Read only
         </Typography>
         <DatePicker value={new Date().toISOString()} readOnly />
@@ -142,7 +141,7 @@ export const Method = () => {
     <>
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsMoment
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -150,7 +149,7 @@ export const Method = () => {
       </CalendarConfigProvider>
       <CalendarConfigProvider methods={CalendarMethodsDayjs}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsDayjs
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -158,7 +157,7 @@ export const Method = () => {
       </CalendarConfigProvider>
       <CalendarConfigProvider methods={CalendarMethodsLuxon}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsLuxon
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -171,31 +170,22 @@ export const Method = () => {
 export const Sizes = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [valSm, onChangeSm] = usePickerChange();
-  const [valMd, onChangeMd] = usePickerChange();
-  const [valLg, onChangeLg] = usePickerChange();
+  const [valMain, onChangeMain] = usePickerChange();
+  const [valSub, onChangeSub] = usePickerChange();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Small
+        <Typography variant="h3" style={typoStyle}>
+          Size: Main
         </Typography>
-        <DatePicker value={valSm} onChange={onChangeSm} size="small" />
+        <DatePicker value={valMain} onChange={onChangeMain} size="main" />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Medium
+        <Typography variant="h3" style={typoStyle}>
+          Size: Sub
         </Typography>
-        <DatePicker value={valMd} onChange={onChangeMd} size="medium" />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Large
-        </Typography>
-        <ConfigProvider size="large">
-          <DatePicker value={valLg} onChange={onChangeLg} />
-        </ConfigProvider>
+        <DatePicker value={valSub} onChange={onChangeSub} size="sub" />
       </div>
     </CalendarConfigProvider>
   );
@@ -208,67 +198,99 @@ export const Modes = () => {
   const [valW, onChangeW] = usePickerChange();
   const [valM, onChangeM] = usePickerChange();
   const [valY, onChangeY] = usePickerChange();
+  const [valQ, onChangeQ] = usePickerChange();
+  const [valH, onChangeH] = usePickerChange();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Day
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valD).format(getDefaultModeFormat('day'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valD ? moment(valD).format(getDefaultModeFormat('day')) : ''}`}
         </Typography>
         <DatePicker
           value={valD}
           onChange={onChangeD}
           mode="day"
-          format="YYYY-MM-DD"
-          placeholder="YYYY-MM-DD"
+          format={getDefaultModeFormat('day')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Week
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valW).format(getDefaultModeFormat('week'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valW ? moment(valW).format(getDefaultModeFormat('week')) : ''}`}
         </Typography>
         <DatePicker
           value={valW}
           onChange={onChangeW}
           mode="week"
-          format="gggg-wo"
-          placeholder="gggg-wo"
+          format={getDefaultModeFormat('week')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Month
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valM).format(getDefaultModeFormat('month'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valM ? moment(valM).format(getDefaultModeFormat('month')) : ''}`}
         </Typography>
         <DatePicker
           value={valM}
           onChange={onChangeM}
           mode="month"
-          format="YYYY-MM"
-          placeholder="YYYY-MM"
+          format={getDefaultModeFormat('month')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Year
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valY).format(getDefaultModeFormat('year'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valY ? moment(valY).format(getDefaultModeFormat('year')) : ''}`}
         </Typography>
         <DatePicker
           value={valY}
           onChange={onChangeY}
           mode="year"
-          format="YYYY"
-          placeholder="YYYY"
+          format={getDefaultModeFormat('year')}
+          placeholder="輸入日期"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Quarter
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valQ ? moment(valQ).format(getDefaultModeFormat('quarter')) : ''}`}
+        </Typography>
+        <DatePicker
+          value={valQ}
+          onChange={onChangeQ}
+          mode="quarter"
+          format={getDefaultModeFormat('quarter')}
+          placeholder="輸入日期"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Half year
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`current value: ${valH ? moment(valH).format(getDefaultModeFormat('half-year')) : ''}`}
+        </Typography>
+        <DatePicker
+          value={valH}
+          onChange={onChangeH}
+          mode="half-year"
+          format={getDefaultModeFormat('half-year')}
+          placeholder="輸入日期"
         />
       </div>
     </CalendarConfigProvider>
@@ -326,7 +348,7 @@ export const CustomDisable = () => {
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='day')
           disabledMonthSwitch = true
           disabledYearSwitch = true
@@ -346,7 +368,7 @@ export const CustomDisable = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='day') Disabled
             Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
             Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
@@ -365,7 +387,7 @@ export const CustomDisable = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='week') Disabled
           Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
           Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
@@ -383,7 +405,7 @@ export const CustomDisable = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='day') Disabled Dates:
           ${disabledDatesStart.format(getDefaultModeFormat('day'))} ~ ${disabledDatesEnd.format(getDefaultModeFormat('day'))}`}
         </Typography>
@@ -397,7 +419,7 @@ export const CustomDisable = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='month') Disabled Months:
           ${disabledMonthsStart.format(getDefaultModeFormat('month'))} ~ ${disabledMonthsEnd.format(getDefaultModeFormat('month'))}`}
         </Typography>
@@ -411,7 +433,7 @@ export const CustomDisable = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           {`(mode='year') Disabled Years:
           ${disabledYearsStart.format(getDefaultModeFormat('year'))} ~ ${disabledYearsEnd.format(getDefaultModeFormat('year'))}`}
         </Typography>
