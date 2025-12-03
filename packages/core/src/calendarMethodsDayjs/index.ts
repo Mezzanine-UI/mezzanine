@@ -3,6 +3,7 @@ import weekday from 'dayjs/plugin/weekday';
 import localeData from 'dayjs/plugin/localeData';
 import isBetween from 'dayjs/plugin/isBetween';
 import weekOfYear from 'dayjs/plugin/weekOfYear';
+import IsoWeek from 'dayjs/plugin/isoWeek';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
@@ -21,6 +22,7 @@ function init() {
   dayjs.extend(localeData);
   dayjs.extend(isBetween);
   dayjs.extend(weekOfYear);
+  dayjs.extend(IsoWeek);
   dayjs.extend(quarterOfYear);
 
   return true;
@@ -33,7 +35,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getMinute: (date) => dayjs(date).minute(),
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
-  getWeek: (date) => dayjs(date).week(),
+  getWeek: (date) => dayjs(date).isoWeek(),
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
 
@@ -185,6 +187,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
 
     return result.format(format);
   },
+  formatToISOString: (date) => dayjs(date).toISOString(),
 
   /** Parse */
   parse: (locale, text, formats) => {

@@ -10,7 +10,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getMinute: (date) => moment(date).minute(),
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
-  getWeek: (date) => moment(date).week(),
+  getWeek: (date) => moment(date).isoWeek(),
   getWeekDay: (date) => {
     const clone = moment(date).locale('en_US');
 
@@ -216,6 +216,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
     return result.format(format);
   },
+  formatToISOString: (date) => moment(date).toISOString(),
 
   /** Parse */
   parse: (locale, text, formats) => {

@@ -64,6 +64,7 @@ export type CalendarMethods<TDateType = DateType> = {
 
   /** Format */
   formatToString: (locale: string, date: TDateType, format: string) => string;
+  formatToISOString: (date: TDateType) => string;
 
   /** Parse */
   parse: (

@@ -204,6 +204,7 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
       date instanceof Date ? DateTime.fromJSDate(date) : DateTime.fromISO(date)
     ).toFormat(luxonFormat, { locale });
   },
+  formatToISOString: (date) => DateTime.fromISO(date).toISO() as string,
 
   /** Parse */
   parse: (locale, text, formats) => {
