@@ -25,13 +25,17 @@
     display: inline-block;
 
     @include typography.semantic-variable(input-mono);
+
+    color: transparent;
   }
 
   &__formatted-input-hidden {
-    color: transparent;
-    background-color: transparent;
     caret-color: palette.semantic-variable(text, neutral-solid);
     pointer-events: auto;
+
+    &::placeholder {
+      color: palette.semantic-variable(text, neutral-faint);
+    }
   }
 
   &__formatted-input-display {
@@ -40,13 +44,14 @@
     top: 0;
     left: 0;
     pointer-events: none;
-    white-space: pre;
     background-color: transparent;
-
-    @include typography.semantic-variable(input-mono);
   }
 
   &__formatted-input-segment {
+    white-space: pre;
+
+    @include typography.semantic-variable(input-mono);
+
     color: palette.semantic-variable(text, neutral-faint);
 
     &--filled {
