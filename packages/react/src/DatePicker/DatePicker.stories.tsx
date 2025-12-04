@@ -222,7 +222,8 @@ export const Modes = () => {
           Day
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valD ? moment(valD).format(getDefaultModeFormat('day')) : ''}`}
+          {`origin value: ${valD || ''}
+          format value: ${valD ? moment(valD).format(getDefaultModeFormat('day')) : ''}`}
         </Typography>
         <DatePicker
           value={valD}
@@ -237,7 +238,8 @@ export const Modes = () => {
           Week
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valW ? moment(valW).format(getDefaultModeFormat('week')) : ''}`}
+          {`origin value: ${valW || ''}
+          format value: ${valW ? moment(valW).format(getDefaultModeFormat('week')) : ''}`}
         </Typography>
         <DatePicker
           value={valW}
@@ -252,7 +254,8 @@ export const Modes = () => {
           Month
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valM ? moment(valM).format(getDefaultModeFormat('month')) : ''}`}
+          {`origin value: ${valM || ''}
+          format value: ${valM ? moment(valM).format(getDefaultModeFormat('month')) : ''}`}
         </Typography>
         <DatePicker
           value={valM}
@@ -267,7 +270,8 @@ export const Modes = () => {
           Year
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valY ? moment(valY).format(getDefaultModeFormat('year')) : ''}`}
+          {`origin value: ${valY || ''}
+          format value: ${valY ? moment(valY).format(getDefaultModeFormat('year')) : ''}`}
         </Typography>
         <DatePicker
           value={valY}
@@ -282,7 +286,8 @@ export const Modes = () => {
           Quarter
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valQ ? moment(valQ).format(getDefaultModeFormat('quarter')) : ''}`}
+          {`origin value: ${valQ || ''}
+          format value: ${valQ ? moment(valQ).format(getDefaultModeFormat('quarter')) : ''}`}
         </Typography>
         <DatePicker
           value={valQ}
@@ -297,7 +302,8 @@ export const Modes = () => {
           Half year
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${formatWithHalfYear(valH, 'half-year')}`}
+          {`origin value: ${valH || ''}
+          format value: ${formatWithHalfYear(valH, 'half-year')}`}
         </Typography>
         <DatePicker
           value={valH}
