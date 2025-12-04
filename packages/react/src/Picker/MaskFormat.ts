@@ -43,6 +43,7 @@ export function getMaskRange(key: string): [number, number] {
     case 'GGGG':
       return [1000, 9999];
     case 'WW':
+    case 'ww':
       return [1, 53];
     case 'MM':
       return [1, 12];

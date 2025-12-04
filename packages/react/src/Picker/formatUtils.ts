@@ -6,6 +6,7 @@ export const FORMAT_KEY_CHARS = new Set([
   'g',
   'G',
   'W',
+  'w', // Locale week (not ISO week)
   'M',
   'D',
   'H', // Hour (0-23)
