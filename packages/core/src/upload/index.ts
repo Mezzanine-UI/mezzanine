@@ -1,5 +1,6 @@
-export * from './uploadInput';
-export * from './uploadResult';
-export * from './uploadPicture';
-export * from './UploadPictureBlock';
-export * from './UploadPictureWall';
+export * from './uploader';
+export * from './uploadItem';
+export * from './uploadMain';
+export * from './uploadPictureCard';
+
+export type UploadMode = 'list' | 'button-list' | 'cards' | 'card-wall';

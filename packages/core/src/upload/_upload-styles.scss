@@ -1,6 +1,9 @@
+@use '~@mezzanine-ui/system/spacing' as spacing;
 @use './upload' as *;
 
-.#{$input-prefix} {
-  position: absolute;
-  width: 0;
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, base);
 }
+
