@@ -2,6 +2,7 @@ import { StoryFn, Meta, StoryObj } from '@storybook/react-webpack5';
 import Typography from '../Typography';
 import Empty from './Empty';
 import { EmptyProps } from './typings';
+import Button from '../Button';
 
 export default {
   title: 'Data Display/Empty',
@@ -27,11 +28,11 @@ const demoImage = (
 );
 
 const actionProps: EmptyProps['actions'] = {
-  secondaryButtonProps: {
+  secondaryButton: {
     children: 'Secondary',
     onClick: () => alert('Secondary Action Clicked'),
   },
-  primaryButtonProps: {
+  primaryButton: {
     children: 'Primary',
     onClick: () => alert('Primary Action Clicked'),
   },
@@ -132,7 +133,7 @@ export const WithButtons: Story = {
         size="main"
         title="System"
         type="system"
-        actions={{ secondaryButtonProps: actionProps.secondaryButtonProps }}
+        actions={{ secondaryButton: actionProps.secondaryButton }}
       />
       <Empty
         description="no actions"
@@ -141,6 +142,62 @@ export const WithButtons: Story = {
         type="system"
       />
     </div>
+  ),
+};
+
+export const actionProp: Story = {
+  render: () => (
+    <>
+      <div>
+        {/* Style 1: ButtonProps object format */}
+        <Empty
+          description="Using ButtonProps object with children property"
+          size="main"
+          title="ButtonProps - Single Button"
+          type="initial-data"
+          actions={{
+            secondaryButton: {
+              children: 'Button 1',
+            },
+          }}
+        />
+
+        <Empty
+          description="Using ButtonProps objects for both primary and secondary buttons"
+          size="main"
+          title="ButtonProps - Two Buttons"
+          type="initial-data"
+          actions={{
+            secondaryButton: {
+              children: 'Button 1',
+            },
+            primaryButton: {
+              children: 'Button 2',
+            },
+          }}
+        />
+
+        {/* Style 2: ReactElement format */}
+        <Empty
+          description="Using ReactElement directly as actions"
+          size="main"
+          title="ReactElement - Single Button"
+          type="initial-data"
+          actions={<Button>Button 1</Button>}
+        />
+
+        <Empty
+          description="Using ReactElements for both primary and secondary buttons"
+          size="main"
+          title="ReactElement - Two Buttons"
+          type="initial-data"
+          actions={{
+            secondaryButton: <Button>Button 1</Button>,
+            primaryButton: <Button>Button 2</Button>,
+          }}
+        />
+      </div>
+    </>
   ),
 };
 
