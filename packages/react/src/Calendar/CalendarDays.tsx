@@ -69,6 +69,10 @@ function CalendarDays(props: CalendarDaysProps) {
     isSameDate,
     setDate,
     setMonth,
+    setHour,
+    setMinute,
+    setSecond,
+    setMillisecond,
   } = useCalendarContext();
   const {
     className,
@@ -106,7 +110,19 @@ function CalendarDays(props: CalendarDaysProps) {
                 : isNextMonth
                   ? thisMonth + 1
                   : thisMonth;
-              const date = setDate(setMonth(referenceDate, month), dateNum);
+              const date = setMillisecond(
+                setSecond(
+                  setMinute(
+                    setHour(
+                      setDate(setMonth(referenceDate, month), dateNum),
+                      0,
+                    ),
+                    0,
+                  ),
+                  0,
+                ),
+                0,
+              );
               const disabled =
                 isYearDisabled?.(date) ||
                 isMonthDisabled?.(date) ||

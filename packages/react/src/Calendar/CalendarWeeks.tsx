@@ -93,8 +93,8 @@ function CalendarWeeks(props: CalendarWeeksProps) {
 
   const weekFirstDates = useMemo(() => {
     return daysGrid.map((week, index) => {
-      // No matter start from Sunday/Monday, week[1] is always in this week
-      const dateNum = week[1];
+      // week[0] is the first day of the week (respects firstDayOfWeek setting)
+      const dateNum = week[0];
       const isPrevMonth = index === 0 && dateNum > 7;
       const isNextMonth = index > 3 && dateNum <= 14;
       const thisMonth = getMonth(referenceDate);
@@ -105,9 +105,9 @@ function CalendarWeeks(props: CalendarWeeksProps) {
           ? thisMonth + 1
           : thisMonth;
 
-      const anyDateInWeek = setDate(setMonth(referenceDate, month), dateNum);
+      const weekFirstDate = setDate(setMonth(referenceDate, month), dateNum);
 
-      return getCurrentWeekFirstDate(anyDateInWeek);
+      return getCurrentWeekFirstDate(weekFirstDate);
     });
   }, [
     daysGrid,
@@ -172,15 +172,13 @@ function CalendarWeeks(props: CalendarWeeksProps) {
 
           const onMouseEnter = onWeekHover
             ? () => {
-                // No matter start from Sunday/Monday, dates[1] is always in this week
-                onWeekHover(getCurrentWeekFirstDate(dates[1]));
+                onWeekHover(getCurrentWeekFirstDate(dates[0]));
               }
             : undefined;
 
           const onClick = onClickProp
             ? () => {
-                // No matter start from Sunday/Monday, dates[1] is always in this week
-                onClickProp(getCurrentWeekFirstDate(dates[1]));
+                onClickProp(getCurrentWeekFirstDate(dates[0]));
               }
             : undefined;
 

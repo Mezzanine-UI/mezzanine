@@ -17,7 +17,7 @@ export default {
 const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
   const formats = {
     day: 'YYYY-MM-DD',
-    week: 'GGGG-[W]WW',
+    week: 'gggg-[W]ww',
     month: 'YYYY-MM',
     year: 'YYYY',
     quarter: 'YYYY-[Q]Q',
