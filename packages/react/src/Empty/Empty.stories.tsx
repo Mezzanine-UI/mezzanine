@@ -145,7 +145,7 @@ export const WithButtons: Story = {
   ),
 };
 
-export const actionProp: Story = {
+export const ActionProp: Story = {
   render: () => (
     <>
       <div>
