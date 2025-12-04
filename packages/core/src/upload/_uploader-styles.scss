@@ -1,0 +1,151 @@
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use './uploader' as *;
+
+$square-size: 140px !default;
+
+.#{$prefix} {
+  display: inline-flex;
+  position: relative;
+  width: $square-size;
+  height: $square-size;
+  padding-block: spacing.semantic-variable(padding, vertical, relaxed);
+  padding-inline: spacing.semantic-variable(padding, vertical, relaxed);
+  border-radius: radius.variable(base);
+  border: 1px dashed palette.semantic-variable(border, neutral-light);
+  background: palette.semantic-variable(background, base);
+  cursor: pointer;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  transition: transition.standard(border-color, fast);
+
+  // Container mode for Upload component (when used as div, not label)
+  &[role='group'],
+  &:not(label):not(button) {
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: default;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &:hover {
+    border-color: palette.semantic-variable(border, brand);
+  }
+
+  &:active {
+    border: 2px solid palette.semantic-variable(border, brand);
+  }
+
+  &:focus {
+    box-shadow: effect.variable(focus, primary);
+    border-color: palette.semantic-variable(border, brand);
+  }
+
+  &--button {
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
+    border: none;
+    background: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    transition: transition.standard(border-color, fast);
+  }
+
+  &--dragging {
+    border-color: palette.semantic-variable(border, brand);
+    background: var(--background-brand-faint, #E2E6FD);
+  }
+
+  &--fill-width {
+    width: 100%;
+    padding-block: spacing.semantic-variable(padding, vertical, relaxed);
+    padding-inline: spacing.semantic-variable(padding, vertical, base);
+  }
+
+  &--disabled:not(.#{$prefix}--button) {
+    border: 1px dashed palette.semantic-variable(border, neutral-light);
+    background: palette.semantic-variable(background, neutral-subtle);
+    cursor: not-allowed;
+    pointer-events: none;
+
+    &:hover {
+      border-color: palette.semantic-variable(border, neutral-light);
+    }
+
+    &:active {
+      border: 1px dashed palette.semantic-variable(border, neutral-light);
+    }
+
+    &:focus {
+      box-shadow: none;
+      border-color: palette.semantic-variable(border, neutral-light);
+    }
+
+    .#{$prefix}__upload-label {
+      color: palette.semantic-variable(text, neutral-light);
+
+      .#{$prefix}__click-to-upload {
+        color: palette.semantic-variable(text, neutral-light);
+      }
+    }
+
+    .#{$prefix}__upload-icon {
+      color: palette.semantic-variable(icon, neutral-light);
+    }
+  }
+
+  &__upload-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, tight);
+  }
+
+  &__upload-label {
+    color: palette.semantic-variable(text, neutral-solid);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.semantic-variable(label-primary);
+
+    .#{$prefix}__click-to-upload {
+      color: palette.semantic-variable(text, brand);
+      cursor: pointer;
+    }
+  }
+
+  &__fill-width-hints {
+    color: palette.semantic-variable(text, neutral);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.semantic-variable(annotation);
+  }
+
+  &__upload-icon {
+    color: palette.semantic-variable(icon, brand);
+    font-size: spacing.semantic-variable(size, element, base);
+  }
+}
+
+.#{$prefix}__input {
+  width: 0;
+  height: 0;
+}
+
+.#{$input-prefix} {
+  position: absolute;
+  width: 0;
+}

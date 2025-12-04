@@ -1,0 +1,60 @@
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use './upload-main' as *;
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, comfort);
+
+  &__upload-list {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, base);
+
+    &--cards {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: spacing.semantic-variable(gap, base);
+    }
+  }
+
+  &__host--cards {
+    gap: 0;
+  }
+
+  &__hints,
+  &__fill-width-hints {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, tiny);
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  &__hints {
+    max-width: 50%;
+  }
+
+  &__hint--error,
+  &__hint--info {
+    @include typography.semantic-variable(annotation);
+    color: palette.semantic-variable(text, neutral);
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tiny);
+  }
+
+  &__hint--error {
+    color: palette.semantic-variable(text, error);
+  }
+
+  &__hint--info {
+    color: palette.semantic-variable(text, neutral);
+  }
+}
+

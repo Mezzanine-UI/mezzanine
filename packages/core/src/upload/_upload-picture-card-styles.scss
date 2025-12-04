@@ -1,0 +1,269 @@
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '../icon';
+@use '../button/button' as button;
+@use './upload-picture-card' as *;
+
+$minor-image-size: 40px !default;
+$image-size: 140px !default;
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  width: $image-size;
+  position: relative;
+  background: palette.semantic-variable(background, base);
+  box-sizing: border-box;
+  transition: transition.standard(border-color, fast);
+  gap: spacing.semantic-variable(gap, base);
+
+  &:hover {
+    border-color: palette.semantic-variable(border, brand);
+  }
+
+  &:focus,
+  &:focus-visible,
+  &:focus-within,
+  &:focus-within:hover {
+    .#{$prefix}__image {
+      box-shadow: effect.variable(focus, primary);
+    }
+
+    .#{$prefix}__actions--done {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  &__image {
+    width: $image-size;
+    height: $image-size;
+    border-radius: var(--Radius-radius-base, 4px);
+    background: palette.semantic-variable(background, neutral-ghost);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover {
+      .#{$prefix}__actions--done,
+      .#{$prefix}__actions--error {
+        opacity: 1;
+        pointer-events: auto;
+        background: linear-gradient(
+          0deg,
+          palette.semantic-variable(overlay, subtle) 0%,
+          palette.semantic-variable(overlay, subtle) 100%
+        );
+      }
+
+      ~ .#{$prefix}__content {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+
+    &:has(.#{$prefix}__actions--error) {
+      border: 1px solid palette.semantic-variable(border, error);
+      transition: transition.standard(border-color, fast);
+
+      &:hover {
+        border-color: palette.semantic-variable(border, error);
+      }
+    }
+  }
+
+  &:focus,
+  &:focus-visible,
+  &:focus-within,
+  &:focus-within:hover {
+    .#{$prefix}__image:has(.#{$prefix}__actions--error) {
+      box-shadow: effect.variable(focus, error);
+    }
+
+    .#{$prefix}__actions--error {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: spacing.semantic-variable(gap, tight);
+    opacity: 0;
+    visibility: hidden;
+    transition: transition.standard(opacity, fast),
+      transition.standard(visibility, fast);
+  }
+
+  &:hover &__content {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__name {
+    overflow: hidden;
+    color: palette.semantic-variable(text, neutral);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+    width: 100%;
+    @include typography.semantic-variable(label-primary);
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+
+    .#{$prefix}__image {
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          0deg,
+          palette.semantic-variable(surface, subtle) 0%,
+          palette.semantic-variable(surface, subtle) 100%
+        );
+        z-index: 1;
+      }
+    }
+
+    .#{$prefix}__name {
+      color: palette.semantic-variable(text, neutral-light);
+    }
+  }
+
+  &__size {
+    color: palette.semantic-variable(text, neutral);
+    @include typography.semantic-variable(annotation);
+  }
+
+  &__actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    color: palette.semantic-variable(icon, neutral);
+    transition: transition.standard(color, fast),
+      transition.standard(background, fast),
+      transition.standard(opacity, fast);
+
+    &--loading {
+      background: linear-gradient(
+        0deg,
+        palette.semantic-variable(overlay, subtle) 0%,
+        palette.semantic-variable(overlay, subtle) 100%
+      );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .#{$prefix}__clear-actions-icon {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+
+      .#{$prefix}__loading-icon {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        position: relative;
+
+        &::before {
+          border: 2px solid palette.semantic-variable(background, fixed-dark);
+          border-radius: 50%;
+          content: '';
+          height: 20px;
+          left: 50%;
+          pointer-events: none;
+          position: absolute;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          width: 20px;
+        }
+      }
+    }
+
+    &--done,
+    &--error {
+      pointer-events: none;
+      opacity: 0;
+    }
+  }
+
+
+  &__tools {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: spacing.semantic-variable(padding, horizontal, cozy);
+    width: 100%;
+  }
+
+  &__tools-content {
+    display: flex;
+    gap: spacing.semantic-variable(gap, calm);
+  }
+
+  &__tools .#{button.$prefix} .#{icon.$prefix} {
+    font-size: typography.px-to-rem(16px);
+  }
+
+  &__size--sub {
+    gap: spacing.semantic-variable(gap, slim);
+  }
+
+  &__size--minor {
+    gap: spacing.semantic-variable(gap, none);
+    width: $minor-image-size;
+
+    .#{$prefix}__image {
+      width: $minor-image-size;
+      height: $minor-image-size;
+
+      &:hover {
+        .#{$prefix}__actions {
+          opacity: 1;
+          pointer-events: auto;
+          background: linear-gradient(
+            0deg,
+            palette.semantic-variable(overlay, subtle) 0%,
+            palette.semantic-variable(overlay, subtle) 100%
+          );
+        }
+      }
+    }
+
+    .#{$prefix}__actions {
+      opacity: 0;
+      pointer-events: none;
+      transition: transition.standard(opacity, fast),
+        transition.standard(background, fast);
+    }
+  }
+}
+
