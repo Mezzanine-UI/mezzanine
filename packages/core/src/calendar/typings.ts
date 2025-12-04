@@ -72,4 +72,7 @@ export type CalendarMethods<TDateType = DateType> = {
     text: string,
     formats: string[],
   ) => TDateType | undefined;
+
+  /** Parse and validate formatted input */
+  parseFormattedValue: (text: string, format: string) => TDateType | undefined;
 };

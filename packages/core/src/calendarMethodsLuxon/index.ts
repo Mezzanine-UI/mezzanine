@@ -56,11 +56,20 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     DateTime.fromISO(target).startOf(granularity).toISO() as string,
 
   /** Get first date of period at 00:00:00 */
-  getCurrentWeekFirstDate: (value) =>
-    DateTime.fromISO(value)
-      .startOf('week')
-      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      .toISO() as string,
+  getCurrentWeekFirstDate: (value) => {
+    // Get ISO week start date (Monday)
+    const weekStart = DateTime.fromISO(value).startOf('week');
+    // Create UTC date at midnight using the date portion
+    return DateTime.utc(
+      weekStart.year,
+      weekStart.month,
+      weekStart.day,
+      0,
+      0,
+      0,
+      0,
+    ).toISO() as string;
+  },
   getCurrentMonthFirstDate: (value) =>
     DateTime.fromISO(value)
       .startOf('month')
@@ -173,6 +182,20 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
 
   /** Format */
   formatToString: (locale, date: string | Date, format) => {
+    // Handle half-year format: convert n to half-year number (1 or 2)
+    if (format.includes('[H]n')) {
+      const dt =
+        date instanceof Date
+          ? DateTime.fromJSDate(date)
+          : DateTime.fromISO(date);
+      const quarter = dt.quarter;
+      const halfYear = Math.ceil(quarter / 2);
+      return dt.toFormat(
+        format.replace('n', `'${halfYear}'`).replace(/YYYY/g, 'yyyy'),
+        { locale },
+      );
+    }
+
     const luxonFormat = format
       .replace(/YYYY/g, 'yyyy')
       .replace(/YY/g, 'yy')
@@ -232,6 +255,128 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     }
 
     return undefined;
+  },
+
+  /** Parse and validate formatted input */
+  parseFormattedValue: (text, format) => {
+    // Handle half-year format: convert n to Q for parsing
+    let parseFormat = format;
+    let parseText = text;
+
+    if (format.includes('[H]n')) {
+      // Extract half-year value (1 or 2) and convert to quarter (1-4)
+      const halfYearMatch = text.match(/(\d{4})-H(\d)/);
+      if (halfYearMatch) {
+        const year = halfYearMatch[1];
+        const halfYear = parseInt(halfYearMatch[2], 10);
+
+        if (halfYear < 1 || halfYear > 2) {
+          return undefined;
+        }
+
+        // Convert n to Q: H1 → Q1, H2 → Q3
+        const quarter = halfYear === 1 ? 1 : 3;
+        parseText = `${year}-Q${quarter}`;
+        parseFormat = format.replace('[H]n', '[Q]Q');
+      }
+    }
+
+    // Convert format from dayjs/moment style to luxon style
+    const luxonFormat = parseFormat
+      .replace(/\[([^\]]+)\]/g, "'$1'") // Convert [W] to 'W'
+      .replace(/YYYY/g, 'yyyy')
+      .replace(/YY/g, 'yy')
+      .replace(/Y/g, 'y')
+      .replace(/dddd/g, 'EEEE')
+      .replace(/ddd/g, 'EEE')
+      .replace(/dd/g, 'EEE')
+      .replace(/d/g, 'E')
+      .replace(/DDDD/g, 'ooo')
+      .replace(/DDD/g, 'o')
+      .replace(/DD/g, 'dd')
+      .replace(/D/g, 'd')
+      .replace(/e/g, 'E')
+      .replace(/WW/g, 'WW')
+      .replace(/w/g, 'W')
+      .replace(/kk/g, 'HH')
+      .replace(/k/g, 'H')
+      .replace(/gggg/g, 'kkkk')
+      .replace(/gg/g, 'kk')
+      .replace(/GGGG/g, 'kkkk')
+      .replace(/GG/g, 'kk')
+      .replace(/SSS/g, 'uuu')
+      .replace(/SS/g, 'uu')
+      .replace(/S/g, 'u')
+      .replace(/zz/g, 'ZZZZ')
+      .replace(/z/g, 'ZZZZ');
+
+    const parsed = DateTime.fromFormat(parseText, luxonFormat);
+
+    if (!parsed.isValid) {
+      return undefined;
+    }
+
+    // Validate based on format keys present (use parseFormat for converted H→Q)
+    const hasWeek = parseFormat.includes('W');
+    const hasQuarter = parseFormat.includes('Q');
+    const hasMonth = parseFormat.includes('M') && !hasQuarter;
+    const hasDay = parseFormat.includes('D');
+    const hasYear = parseFormat.includes('Y') || parseFormat.includes('G');
+
+    // If it's a week format, validate that the week number is valid for that year
+    if (hasWeek && hasYear && !hasMonth && !hasDay) {
+      // Use ISO week year for validation (kkkk in luxon, GGGG in moment/dayjs)
+      const year = parsed.weekYear;
+      const weekNum = parsed.weekNumber;
+
+      // Find max ISO weeks in the year
+      // Check from 12-28 which is always in the last week of the ISO year
+      let checkDate = DateTime.fromObject({ year, month: 12, day: 28 });
+      while (checkDate.weekYear !== year && checkDate.month === 12) {
+        checkDate = checkDate.minus({ day: 1 });
+      }
+      const maxWeeks = checkDate.weekYear === year ? checkDate.weekNumber : 52;
+
+      if (weekNum > maxWeeks) {
+        return undefined;
+      }
+
+      return CalendarMethodsLuxon.getCurrentWeekFirstDate(
+        parsed.toISO() as string,
+      );
+    }
+
+    // If it's a quarter format, validate and normalize
+    if (hasQuarter && hasYear && !hasMonth && !hasDay) {
+      const quarter = parsed.quarter;
+      if (quarter < 1 || quarter > 4) {
+        return undefined;
+      }
+      return CalendarMethodsLuxon.getCurrentQuarterFirstDate(
+        parsed.toISO() as string,
+      );
+    }
+
+    // If it's a month format without day, normalize to first day
+    if (hasMonth && hasYear && !hasDay && !hasWeek && !hasQuarter) {
+      return CalendarMethodsLuxon.getCurrentMonthFirstDate(
+        parsed.toISO() as string,
+      );
+    }
+
+    // If it's year only, normalize to first day of year
+    if (hasYear && !hasMonth && !hasDay && !hasWeek && !hasQuarter) {
+      return CalendarMethodsLuxon.getCurrentYearFirstDate(
+        parsed.toISO() as string,
+      );
+    }
+
+    // For complete dates, just validate
+    if (hasYear && hasMonth && hasDay) {
+      return parsed.toISO() as string;
+    }
+
+    return parsed.toISO() as string;
   },
 };
 
