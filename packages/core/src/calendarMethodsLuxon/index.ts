@@ -55,21 +55,11 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   startOf: (target, granularity) =>
     DateTime.fromISO(target).startOf(granularity).toISO() as string,
 
-  /** Get first date of period at 00:00:00 */
-  getCurrentWeekFirstDate: (value) => {
-    // Get ISO week start date (Monday)
-    const weekStart = DateTime.fromISO(value).startOf('week');
-    // Create UTC date at midnight using the date portion
-    return DateTime.utc(
-      weekStart.year,
-      weekStart.month,
-      weekStart.day,
-      0,
-      0,
-      0,
-      0,
-    ).toISO() as string;
-  },
+  getCurrentWeekFirstDate: (value) =>
+    DateTime.fromISO(value)
+      .startOf('week')
+      .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+      .toISO() as string,
   getCurrentMonthFirstDate: (value) =>
     DateTime.fromISO(value)
       .startOf('month')
@@ -325,19 +315,16 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
 
     // If it's a week format, validate that the week number is valid for that year
     if (hasWeek && hasYear && !hasMonth && !hasDay) {
-      // Use ISO week year for validation (kkkk in luxon, GGGG in moment/dayjs)
-      const year = parsed.weekYear;
+      // Use week year + week of year (respects locale's firstDayOfWeek)
+      const weekYear = parsed.weekYear;
       const weekNum = parsed.weekNumber;
 
-      // Find max ISO weeks in the year
-      // Check from 12-28 which is always in the last week of the ISO year
-      let checkDate = DateTime.fromObject({ year, month: 12, day: 28 });
-      while (checkDate.weekYear !== year && checkDate.month === 12) {
-        checkDate = checkDate.minus({ day: 1 });
-      }
-      const maxWeeks = checkDate.weekYear === year ? checkDate.weekNumber : 52;
+      // Find max weeks in the week year
+      // Check the last week of the week year
+      const lastWeekOfYear = DateTime.fromObject({ weekYear, weekNumber: 52 });
+      const maxWeeks = lastWeekOfYear.weekYear === weekYear ? 52 : 53;
 
-      if (weekNum > maxWeeks) {
+      if (weekNum < 1 || weekNum > maxWeeks) {
         return undefined;
       }
 

@@ -102,7 +102,7 @@ export function getCalendarYearRange(year: number) {
 
 export function getDefaultModeFormat(mode: CalendarMode) {
   if (mode === 'week') {
-    return 'GGGG-[W]WW';
+    return 'gggg-[W]ww';
   }
 
   if (mode === 'month') {
@@ -118,8 +118,6 @@ export function getDefaultModeFormat(mode: CalendarMode) {
   }
 
   if (mode === 'half-year') {
-    // Use [H]n format for half-year (H1 = Q1-Q2, H2 = Q3-Q4)
-    // n represents half-year number (1 or 2)
     return 'YYYY-[H]n';
   }
 

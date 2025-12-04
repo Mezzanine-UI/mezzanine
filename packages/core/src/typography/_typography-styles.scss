@@ -1,12 +1,12 @@
 @use '~@mezzanine-ui/system/typography' as typography;
 
 .#{typography.$semantic-prefix} {
-  @include typography.smooth-font();
-
   @each $type in typography.$semantic-semantic-types {
     &--#{$type} {
       margin: 0;
+      white-space: pre-line;
 
+      @include typography.smooth-font();
       @include typography.semantic-variable($type);
     }
   }

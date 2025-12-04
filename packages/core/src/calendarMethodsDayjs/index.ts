@@ -37,7 +37,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getMinute: (date) => dayjs(date).minute(),
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
-  getWeek: (date) => dayjs(date).isoWeek(),
+  getWeek: (date) => dayjs(date).week(),
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
 
@@ -79,25 +79,14 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   startOf: (target, granularity) =>
     dayjs(target).startOf(granularity).toISOString(),
 
-  /** Get first date of period at 00:00:00 */
-  getCurrentWeekFirstDate: (value) => {
-    // Get ISO week start date, then normalize to UTC midnight
-    const weekStart = dayjs(value).startOf('isoWeek');
-    // Get the date portion and create a new date at UTC midnight
-    const year = weekStart.year();
-    const month = weekStart.month();
-    const date = weekStart.date();
-    return dayjs
-      .utc()
-      .year(year)
-      .month(month)
-      .date(date)
+  getCurrentWeekFirstDate: (value) =>
+    dayjs(value)
+      .startOf('week')
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
-      .toISOString();
-  },
+      .toISOString(),
   getCurrentMonthFirstDate: (value) =>
     dayjs(value)
       .startOf('month')
@@ -276,20 +265,12 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
 
     // If it's a week format, validate that the week number is valid for that year
     if (hasWeek && hasYear && !hasMonth && !hasDay) {
-      // Use ISO week year for validation (GGGG format)
-      const year = parsed.isoWeekYear();
-      const weekNum = parsed.isoWeek();
+      // Use week year + week of year (respects locale's firstDayOfWeek)
+      // Note: dayjs doesn't have weekYear() method, so we validate more loosely
+      const weekNum = parsed.week();
 
-      // Find max ISO weeks in the year
-      // Check from 12-28 which is always in the last week of the ISO year
-      let checkDate = dayjs(`${year}-12-28`);
-      while (checkDate.isoWeekYear() !== year && checkDate.month() === 11) {
-        checkDate = checkDate.subtract(1, 'day');
-      }
-      const maxWeeks =
-        checkDate.isoWeekYear() === year ? checkDate.isoWeek() : 52;
-
-      if (weekNum > maxWeeks) {
+      // Week numbers are generally 1-53
+      if (weekNum < 1 || weekNum > 53) {
         return undefined;
       }
 
