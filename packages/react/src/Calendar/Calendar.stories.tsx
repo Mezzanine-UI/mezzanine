@@ -17,11 +17,11 @@ export default {
 const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
   const formats = {
     day: 'YYYY-MM-DD',
-    week: 'YYYY-[W]ww',
+    week: 'GGGG-[W]WW',
     month: 'YYYY-MM',
     year: 'YYYY',
     quarter: 'YYYY-[Q]Q',
-    'half-year': 'YYYY-[Q]Q', // Will convert Q to H (Q1,Q2→H1, Q3,Q4→H2)
+    'half-year': 'YYYY-[H]n', // H1 or H2 (n = half-year number)
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
   const [showQuickSelect, setShowQuickSelect] = useState(false);
@@ -52,18 +52,17 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
 
   const formatValue = (value: DateType | undefined) => {
     if (!value) return '';
-    const formatted = moment(value).format(formats[mode]);
+    const format = formats[mode];
+    const m = moment(value);
 
-    if (mode === 'half-year') {
-      // Convert: Q1,Q2 → H1 and Q3,Q4 → H2
-      return formatted.replace(/Q([1-4])/, (_, quarter) => {
-        const q = parseInt(quarter, 10);
-        const halfYear = Math.ceil(q / 2);
-        return `H${halfYear}`;
-      });
+    // Handle [H]n format for half-year
+    if (format === 'YYYY-[H]n') {
+      const quarter = m.quarter();
+      const halfYear = Math.ceil(quarter / 2); // Q1,Q2→1  Q3,Q4→2
+      return m.format('YYYY') + '-H' + halfYear;
     }
 
-    return formatted;
+    return m.format(format);
   };
 
   const quickSelectOptions = [
@@ -207,7 +206,7 @@ const InnerRangeCalendarPlayground = ({
     month: 'YYYY-MM',
     year: 'YYYY',
     quarter: 'YYYY-[Q]Q',
-    'half-year': 'YYYY-[Q]Q',
+    'half-year': 'YYYY-[H]n',
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
   const [showQuickSelect, setShowQuickSelect] = useState(false);
@@ -222,17 +221,17 @@ const InnerRangeCalendarPlayground = ({
 
   const formatValue = (value: DateType | undefined) => {
     if (!value) return '';
-    const formatted = moment(value).format(formats[mode]);
+    const format = formats[mode];
+    const m = moment(value);
 
-    if (mode === 'half-year') {
-      return formatted.replace(/Q([1-4])/, (_, quarter) => {
-        const q = parseInt(quarter, 10);
-        const halfYear = Math.ceil(q / 2);
-        return `H${halfYear}`;
-      });
+    // Handle [H]n format for half-year
+    if (format === 'YYYY-[H]n') {
+      const quarter = m.quarter();
+      const halfYear = Math.ceil(quarter / 2); // Q1,Q2→1  Q3,Q4→2
+      return m.format('YYYY') + '-H' + halfYear;
     }
 
-    return formatted;
+    return m.format(format);
   };
 
   const handleChange = (target: [DateType, DateType | undefined]) => {
