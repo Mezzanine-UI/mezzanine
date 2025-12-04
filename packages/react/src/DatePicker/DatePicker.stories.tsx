@@ -199,6 +199,22 @@ export const Modes = () => {
   const [valQ, onChangeQ] = usePickerChange();
   const [valH, onChangeH] = usePickerChange();
 
+  // Helper function to format values with [H]n support
+  const formatWithHalfYear = (value: DateType | undefined, mode: string) => {
+    if (!value) return '';
+    const format = getDefaultModeFormat(mode as any);
+    const m = moment(value);
+
+    // Handle [H]n format for half-year
+    if (format === 'YYYY-[H]n') {
+      const quarter = m.quarter();
+      const halfYear = Math.ceil(quarter / 2); // Q1,Q2→1  Q3,Q4→2
+      return m.format('YYYY') + '-H' + halfYear;
+    }
+
+    return m.format(format);
+  };
+
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
@@ -281,7 +297,7 @@ export const Modes = () => {
           Half year
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${valH ? moment(valH).format(getDefaultModeFormat('half-year')) : ''}`}
+          {`current value: ${formatWithHalfYear(valH, 'half-year')}`}
         </Typography>
         <DatePicker
           value={valH}

@@ -109,6 +109,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabledYearSwitch = false,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
+      enableFormatted = true,
       error = severity === 'error' || false,
       fadeProps,
       format = defaultDateFormat,
@@ -309,7 +310,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           className={className}
           clearable={clearable}
           disabled={disabled}
-          enableFormatted={true}
+          enableFormatted={enableFormatted}
           error={error}
           format={format}
           fullWidth={fullWidth}
