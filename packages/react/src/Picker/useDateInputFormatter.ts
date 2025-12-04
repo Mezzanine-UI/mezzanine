@@ -1,5 +1,4 @@
 import {
-  ChangeEvent,
   FocusEventHandler,
   KeyboardEvent,
   useCallback,
@@ -51,15 +50,12 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     onBlur: onBlurProp,
   } = props;
 
-  const { formatToISOString } = useCalendarContext();
+  const { parseFormattedValue } = useCalendarContext();
 
   const maskFormat = useRef(new MaskFormat(format)).current;
   const [internalValue, setInternalValue] = useState(
     externalValue || getTemplateWithoutBrackets(format),
   );
-
-  // Track composition state to block Chinese/Japanese/Korean input
-  const [isComposing, setIsComposing] = useState(false);
 
   // Track focus state
   const [focused, setFocused] = useState(false);
@@ -98,9 +94,13 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
       // Only trigger onChange if value is complete and valid
       if (onChange && isValueComplete(newValue)) {
-        const rawDigits = newValue.replace(/[^0-9]/g, '');
+        // Try to parse and validate the formatted value
+        const isoDate = parseFormattedValue(newValue, format);
 
-        onChange(formatToISOString(newValue), rawDigits);
+        if (isoDate) {
+          const rawDigits = newValue.replace(/[^0-9]/g, '');
+          onChange(isoDate, rawDigits);
+        }
       }
 
       // Restore cursor position after React re-renders
@@ -110,7 +110,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         });
       }
     },
-    [onChange, inputRef, isValueComplete, formatToISOString],
+    [onChange, inputRef, isValueComplete, parseFormattedValue, format],
   );
 
   /**
@@ -135,6 +135,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     (e) => {
       setFocused(false);
       onBlurProp?.(e);
+
       // If value is incomplete, clear it and notify parent
       if (!isValueComplete(internalValue)) {
         const templateValue = getTemplateWithoutBrackets(format);
@@ -143,51 +144,28 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         if (onChange) {
           onChange('', '');
         }
-      }
-    },
-    [format, internalValue, isValueComplete, onChange, onBlurProp],
-  );
-
-  /**
-   * Handle change event (for non-mask input, blocked in mask mode)
-   */
-  const handleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      // Block change during composition (Chinese/Japanese/Korean input)
-      if (isComposing) {
-        e.preventDefault();
-        return;
-      }
-
-      // In mask mode, we handle input through keydown
-      // Validate that input only contains digits and separators
-      const newValue = e.target.value;
-      const templateValue = getTemplateWithoutBrackets(format);
-
-      // Check if new value only contains valid characters (digits and format separators)
-      let isValid = true;
-      if (newValue.length > templateValue.length) {
-        isValid = false;
       } else {
-        for (let i = 0; i < newValue.length; i++) {
-          const char = newValue[i];
-          const templateChar = templateValue[i];
-          // Allow digits or the exact separator from template
-          if (!/\d/.test(char) && char !== templateChar) {
-            isValid = false;
-            break;
+        // Value is complete, validate it
+        const isoDate = parseFormattedValue(internalValue, format);
+
+        if (!isoDate) {
+          // Invalid date, clear it
+          const templateValue = getTemplateWithoutBrackets(format);
+          setInternalValue(templateValue);
+          if (onChange) {
+            onChange('', '');
           }
         }
       }
-
-      if (isValid) {
-        triggerChange(newValue);
-      } else {
-        // Reset to current internal value if invalid
-        triggerChange(internalValue);
-      }
     },
-    [format, internalValue, isComposing, triggerChange],
+    [
+      format,
+      internalValue,
+      isValueComplete,
+      onChange,
+      onBlurProp,
+      parseFormattedValue,
+    ],
   );
 
   /**
@@ -414,32 +392,11 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     [format, internalValue, maskFormat, triggerChange],
   );
 
-  /**
-   * Handle composition start (IME input start)
-   */
-  const handleCompositionStart = useCallback(() => {
-    setIsComposing(true);
-  }, []);
-
-  /**
-   * Handle composition end (IME input end)
-   */
-  const handleCompositionEnd = useCallback(() => {
-    setIsComposing(false);
-    // Reset to template on composition end to clear any invalid input
-    if (inputRef?.current) {
-      triggerChange(internalValue);
-    }
-  }, [internalValue, inputRef, triggerChange]);
-
   return {
     value: internalValue,
     focused,
-    handleChange,
     handleKeyDown,
     handleFocus,
     handleBlur,
-    handleCompositionStart,
-    handleCompositionEnd,
   };
 }

@@ -4,10 +4,12 @@
 export const FORMAT_KEY_CHARS = new Set([
   'Y',
   'g',
+  'G',
   'W',
   'M',
   'D',
-  'H',
+  'H', // Hour (0-23)
+  'n', // Half-year number (1-2)
   'm',
   's',
   'S',

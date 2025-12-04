@@ -5,7 +5,8 @@ import { parseFormatSegments } from './formatUtils';
  */
 export const FORMAT_KEYS = [
   'YYYY', // Year
-  'gggg', // ISO week year
+  'gggg', // ISO week year (lowercase)
+  'GGGG', // ISO week year (uppercase)
   'WW', // Week of year (2 digits)
   'MM', // Month
   'DD', // Day
@@ -39,6 +40,7 @@ export function getMaskRange(key: string): [number, number] {
   switch (key) {
     case 'YYYY':
     case 'gggg':
+    case 'GGGG':
       return [1000, 9999];
     case 'WW':
       return [1, 53];
@@ -48,6 +50,8 @@ export function getMaskRange(key: string): [number, number] {
       return [1, 31];
     case 'HH':
       return [0, 23];
+    case 'n':
+      return [1, 2]; // Half-year number: 1 or 2
     case 'mm':
     case 'ss':
       return [0, 59];

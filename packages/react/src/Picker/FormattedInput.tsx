@@ -32,9 +32,6 @@ export interface FormattedInputProps
 
 /**
  * Formatted input component with mixed-color placeholder
- * - Filled digits: neutral-solid (black)
- * - Unfilled positions: neutral-faint (gray)
- * - Separators: neutral-solid when displayed
  */
 const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
   function FormattedInput(props, ref) {
@@ -53,28 +50,18 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     const internalInputRef = useRef<HTMLInputElement>(null);
     const composedRef = useComposeRefs([ref, internalInputRef]);
 
-    const {
-      value,
-      focused,
-      handleChange,
-      handleKeyDown,
-      handleFocus,
-      handleBlur,
-      handleCompositionStart,
-      handleCompositionEnd,
-    } = useDateInputFormatter({
-      format,
-      value: externalValue,
-      onChange,
-      inputRef: internalInputRef,
-      onFocus,
-      onBlur,
-    });
+    const { value, focused, handleKeyDown, handleFocus, handleBlur } =
+      useDateInputFormatter({
+        format,
+        value: externalValue,
+        onChange,
+        inputRef: internalInputRef,
+        onFocus,
+        onBlur,
+      });
 
-    // Parse format once
     const segments = useRef(parseFormatSegments(format)).current;
 
-    // Render mixed-color display overlay
     const renderMixedColorDisplay = () => {
       const currentValue = value || '';
 
@@ -151,12 +138,10 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
           type="text"
           value={value === getTemplateWithoutBrackets(format) ? '' : value}
           placeholder={renderPlaceholder()}
-          onChange={handleChange}
+          onChange={() => {}}
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          onCompositionStart={handleCompositionStart}
-          onCompositionEnd={handleCompositionEnd}
         />
         {renderMixedColorDisplay()}
       </div>
