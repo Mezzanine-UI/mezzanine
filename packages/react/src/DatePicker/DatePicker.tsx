@@ -119,6 +119,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       isMonthDisabled,
       isWeekDisabled,
       isYearDisabled,
+      isQuarterDisabled,
+      isHalfYearDisabled,
       mode = 'day',
       onCalendarToggle: onCalendarToggleProp,
       onChange: onChangeProp,
@@ -346,7 +348,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
           isWeekDisabled={isWeekDisabled}
+          isQuarterDisabled={isQuarterDisabled}
           isYearDisabled={isYearDisabled}
+          isHalfYearDisabled={isHalfYearDisabled}
           mode={mode}
           onChange={onCalendarChange}
           open={open}
