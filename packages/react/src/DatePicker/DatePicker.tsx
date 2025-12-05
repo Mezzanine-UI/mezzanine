@@ -43,6 +43,7 @@ export interface DatePickerProps
     Omit<
       PickerTriggerProps,
       | 'defaultValue'
+      | 'format'
       | 'inputRef'
       | 'onChange'
       | 'onClear'
@@ -109,7 +110,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabledYearSwitch = false,
       disabled = disabledFromFormControl || false,
       displayMonthLocale,
-      enableFormatted = true,
       error = severity === 'error' || false,
       fadeProps,
       format = defaultDateFormat,
@@ -145,6 +145,40 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     const formats = useMemo(
       () => [format, defaultDateFormat, getDefaultModeFormat(mode)],
       [defaultDateFormat, format, mode],
+    );
+
+    /**
+     * Validate date value against disabled constraints based on mode.
+     * Returns true if valid, false if the date is disabled.
+     */
+    const validateDate = useCallback(
+      (isoDate: string): boolean => {
+        switch (mode) {
+          case 'day':
+            return !isDateDisabled?.(isoDate);
+          case 'week':
+            return !isWeekDisabled?.(isoDate);
+          case 'month':
+            return !isMonthDisabled?.(isoDate);
+          case 'quarter':
+            return !isQuarterDisabled?.(isoDate);
+          case 'year':
+            return !isYearDisabled?.(isoDate);
+          case 'half-year':
+            return !isHalfYearDisabled?.(isoDate);
+          default:
+            return true;
+        }
+      },
+      [
+        isDateDisabled,
+        isHalfYearDisabled,
+        isMonthDisabled,
+        isQuarterDisabled,
+        isWeekDisabled,
+        isYearDisabled,
+        mode,
+      ],
     );
 
     /** Calender display control */
@@ -312,7 +346,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           className={className}
           clearable={clearable}
           disabled={disabled}
-          enableFormatted={enableFormatted}
           error={error}
           format={format}
           fullWidth={fullWidth}
@@ -331,6 +364,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           required={required}
           size={size}
           suffix={suffixActionIcon}
+          validate={validateDate}
           value={inputValue}
         />
         <DatePickerCalendar
