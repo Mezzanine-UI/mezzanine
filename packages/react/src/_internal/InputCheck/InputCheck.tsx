@@ -27,6 +27,11 @@ export interface InputCheckProps
    */
   error?: boolean;
   /**
+   * Whether the input check is focus.
+   * @default false
+   */
+  focused?: boolean;
+  /**
    * The size of input check.
    * @default 'medium'
    */
@@ -44,6 +49,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
       control,
       disabled,
       error,
+      focused,
       htmlFor,
       size = 'medium',
       ...rest
@@ -65,7 +71,13 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
         )}
         htmlFor={htmlFor}
       >
-        <span className={classes.control}>{control}</span>
+        <span
+          className={cx(classes.control, {
+            [classes.controlFocused]: focused,
+          })}
+        >
+          {control}
+        </span>
         {children && <span className={classes.label}>{children}</span>}
       </label>
     );
