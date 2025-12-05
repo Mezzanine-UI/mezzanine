@@ -1,6 +1,6 @@
 export { default as Upload } from './Upload';
 export type { UploadFile, UploadProps } from './Upload';
-export { default, default as Uploader } from './Uploader';
+export { default as Uploader } from './Uploader';
 export type { UploaderProps } from './Uploader';
 export { default as UploadItem } from './UploadItem';
 export type { UploadItemProps } from './UploadItem';

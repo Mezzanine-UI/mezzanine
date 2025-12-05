@@ -403,7 +403,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
               </span>
             </Typography>
             {
-              isFillWidth && hints?.map((hint, index) => (
+              hints?.map((hint, index) => (
                 <Typography key={index} className={classes.fillWidthHints}>
                   {hint.label}
                 </Typography>

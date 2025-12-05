@@ -190,7 +190,12 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
         {
           isFinished && (
             <div className={classes.deleteContent}>
-              <Icon icon={TrashIcon} size={16} className={classes.deleteIconIcon} onClick={onDelete} />
+              <Icon
+                icon={TrashIcon}
+                size={16}
+                className={classes.deleteIcon}
+                onClick={onDelete}
+              />
             </div>
           )
         }

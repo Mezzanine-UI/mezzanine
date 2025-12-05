@@ -1,8 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ChangeEvent, ReactNode } from 'react';
+import { ChangeEvent } from 'react';
 import type { UploaderProps } from '.';
 import { Uploader } from '.';
-import Tag from '../Tag';
 
 export default {
   title: 'Data Entry/Upload/Uploader',
@@ -169,59 +168,3 @@ export const Playground: Story = {
     );
   },
 };
-
-const SectionItem = ({
-  children,
-  label,
-  direction = 'row',
-}: {
-  children: ReactNode;
-  label?: string;
-  direction?: 'column' | 'row';
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '8px',
-      width: '33%',
-      height: 'auto',
-      backgroundColor: '#F3F4F6',
-      padding: 32,
-    }}
-  >
-    <Tag label={label ?? ''} size="main" type="static" />
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'flex-start',
-        alignItems: direction === 'row' ? 'center' : 'flex-start',
-        height: direction === 'row' ? 'auto' : 'auto',
-        flexDirection: direction,
-        gap: direction === 'row' ? 8 : 16,
-        marginTop: 8,
-      }}
-    >
-      {children}
-    </div>
-  </div>
-);
-
-const ItemList = ({ children }: { children: ReactNode }) => (
-  <div style={{ display: 'flex', gap: '36px', alignItems: 'flex-start' }}>
-    {children}
-  </div>
-);
-
-const ItemContent = ({ children }: { children: ReactNode }) => (
-  <div
-    style={{
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      marginBottom: 16,
-    }}
-  >
-    {children}
-  </div>
-);

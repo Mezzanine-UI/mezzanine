@@ -18,8 +18,45 @@ import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
+export interface UploadPictureCardAriaLabels {
+  /**
+   * Aria label for cancel upload button.
+   * @default 'Cancel upload'
+   */
+  cancelUpload?: string;
+  /**
+   * Aria label for uploading status.
+   * @default 'Uploading'
+   */
+  uploading?: string;
+  /**
+   * Aria label for zoom in button.
+   * @default 'Zoom in image'
+   */
+  zoomIn?: string;
+  /**
+   * Aria label for download button.
+   * @default 'Download file'
+   */
+  download?: string;
+  /**
+   * Aria label for delete button.
+   * @default 'Delete file'
+   */
+  delete?: string;
+  /**
+   * Aria label for reload/retry button.
+   * @default 'Retry upload'
+   */
+  reload?: string;
+}
+
 export interface UploadPictureCardProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * Aria labels for accessibility. Allows customization for internationalization.
+   */
+  ariaLabels?: UploadPictureCardAriaLabels;
   /**
    * The file to display.
    */
@@ -80,6 +117,7 @@ export interface UploadPictureCardProps
 const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
   function UploadPictureCard(props, ref) {
     const {
+      ariaLabels,
       className,
       file,
       status = 'loading',
@@ -94,6 +132,18 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       onReload,
       ...rest
     } = props;
+
+    // Default aria labels (English)
+    const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
+      cancelUpload: 'Cancel upload',
+      uploading: 'Uploading',
+      zoomIn: 'Zoom in image',
+      download: 'Download file',
+      delete: 'Delete file',
+      reload: 'Retry upload',
+    };
+
+    const labels = { ...defaultAriaLabels, ...ariaLabels };
 
     // Default error icon when status is error and no errorIcon is provided
     const defaultErrorIcon = errorIcon ?? (status === 'error' ? <Icon icon={ImageIcon} color="error" size={16} /> : null);
@@ -155,9 +205,9 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                       variant="contrast"
                       onClick={onDelete}
                       className={classes.clearActionsIcon}
-                      aria-label="取消上傳"
+                      aria-label={labels.cancelUpload}
                     />
-                    <div className={classes.loadingIcon} aria-label="上傳中">
+                    <div className={classes.loadingIcon} aria-label={labels.uploading}>
                       <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
                     </div>
                   </>
@@ -172,21 +222,21 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         icon={{ position: 'icon-only', src: ZoomInIcon }}
                         onClick={onZoomIn}
-                        aria-label="放大圖片"
+                        aria-label={labels.zoomIn}
                       />
                       <Button
                         variant="base-secondary"
                         size="minor"
                         icon={{ position: 'icon-only', src: DownloadIcon }}
                         onClick={onDownload}
-                        aria-label="下載檔案"
+                        aria-label={labels.download}
                       />
                       <Button
                         variant="base-secondary"
                         size="minor"
                         icon={{ position: 'icon-only', src: TrashIcon }}
                         onClick={onDelete}
-                        aria-label="刪除檔案"
+                        aria-label={labels.delete}
                       />
                     </div>
                   </div>
@@ -216,14 +266,14 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                           size="minor"
                           icon={{ position: 'icon-only', src: ResetIcon }}
                           onClick={onReload}
-                          aria-label="重新上傳"
+                          aria-label={labels.reload}
                         />
                         <Button
                           variant="base-secondary"
                           size="minor"
                           icon={{ position: 'icon-only', src: TrashIcon }}
                           onClick={onDelete}
-                          aria-label="刪除檔案"
+                          aria-label={labels.delete}
                         />
                       </div>
                     </div>

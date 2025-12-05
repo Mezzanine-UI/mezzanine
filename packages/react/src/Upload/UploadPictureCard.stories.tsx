@@ -11,14 +11,14 @@ export default {
 
 type Story = StoryObj<UploadPictureCardProps>;
 
-// 從 URL 載入圖片並轉換為 File 對象的輔助函數
+// Helper function to load image from URL and convert to File object
 async function createFileFromUrl(url: string, fileName: string): Promise<File> {
   const response = await fetch(url);
   const blob = await response.blob();
   return new File([blob], fileName, { type: blob.type || 'image/png' });
 }
 
-// 用於載入圖片的 React 組件
+// React component for loading images
 function UploadPictureCardWithImageLoader({ args }: { args: UploadPictureCardProps }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -27,7 +27,7 @@ function UploadPictureCardWithImageLoader({ args }: { args: UploadPictureCardPro
       .then(setImageFile)
       .catch((error) => {
         console.error('Failed to load image:', error);
-        // 如果載入失敗，使用預設的 mock file
+        // use mock file if load image failed
         setImageFile(new File([''], 'example.jpg', { type: 'image/jpeg' }));
       });
   }, []);
@@ -112,7 +112,6 @@ export const Playground: Story = {
   },
 };
 
-// 用於 Basic story 的組件
 function BasicStoryContent() {
   const [imageFile, setImageFile] = useState<File | null>(null);
 

@@ -287,12 +287,18 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
         }
       }
 
-      // Create temporary files with simple temporary IDs
+      // Create temporary files with unique temporary IDs
       // The actual IDs will be provided by the backend via onUpload return value
-      const timestamp = Date.now();
+      // Use a batch identifier + index to create unique IDs for this batch of files
+      const batchId = Date.now();
       const tempFiles: UploadFile[] = selectedFiles.map((file, index) => ({
         file,
-        id: `temp-${timestamp}-${index}-${Math.random().toString(36).substring(2, 9)}`,
+        // Simple ID: batch timestamp + index ensures uniqueness within this upload batch
+        // This is sufficient because:
+        // 1. Each upload batch has a unique timestamp
+        // 2. Index ensures uniqueness within the batch
+        // 3. Backend will replace this with real ID after upload completes
+        id: `temp-${batchId}-${index}`,
         status: 'loading' as UploadItemStatus,
         progress: 0,
       }));
