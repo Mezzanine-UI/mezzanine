@@ -28,6 +28,10 @@ export interface FormattedInputProps
    * Change handler receiving formatted value and raw digits
    */
   onChange?: (formattedValue: string, rawDigits: string) => void;
+  /**
+   * Custom validation function. Return true if valid, false to reject the value.
+   */
+  validate?: (isoDate: string) => boolean;
 }
 
 /**
@@ -40,6 +44,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       disabled,
       format,
       placeholder,
+      validate,
       value: externalValue,
       onChange,
       onFocus,
@@ -58,6 +63,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
         inputRef: internalInputRef,
         onFocus,
         onBlur,
+        validate,
       });
 
     const segments = useRef(parseFormatSegments(format)).current;

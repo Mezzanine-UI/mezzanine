@@ -21,15 +21,9 @@ export interface PickerTriggerProps
    */
   disabled?: boolean;
   /**
-   * Enable formatted input with mask format behavior.
-   * @default false
-   */
-  enableFormatted?: boolean;
-  /**
    * Format pattern for formatted input (e.g., "YYYY-MM-DD", "HH:mm:ss").
-   * Required when enableFormatted is true.
    */
-  format?: string;
+  format: string;
   /**
    * React ref for the input element.
    */
@@ -56,6 +50,10 @@ export interface PickerTriggerProps
    * Custom suffix element. If not provided, defaults to CalendarIcon.
    */
   suffix?: ReactNode;
+  /**
+   * Custom validation function. Return true if valid, false to reject the value.
+   */
+  validate?: (isoDate: string) => boolean;
   /**
    * The value of the input element.
    */
@@ -85,7 +83,6 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
       className,
       clearable = true,
       disabled,
-      enableFormatted = false,
       format,
       inputProps,
       inputRef,
@@ -94,6 +91,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
       readOnly,
       required,
       suffix,
+      validate,
       value,
       ...restTextFieldProps
     } = props;
@@ -107,66 +105,35 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
       defaultTextFieldProps = { readonly: true as const };
     }
 
-    // Formatted input mode
-    if (enableFormatted && format) {
-      return (
-        <TextField
-          {...restTextFieldProps}
-          {...defaultTextFieldProps}
-          ref={ref}
-          className={cx(classes.host, className)}
-          clearable={!readOnly && clearable}
-          suffix={suffix}
-        >
-          <FormattedInput
-            {...inputProps}
-            ref={inputRef}
-            aria-disabled={disabled}
-            aria-multiline={false}
-            aria-readonly={readOnly}
-            aria-required={required}
-            disabled={disabled}
-            format={format}
-            onChange={(formatted, _rawDigits) => {
-              if (onChange) {
-                onChange({
-                  target: { value: formatted },
-                } as React.ChangeEvent<HTMLInputElement>);
-              }
-            }}
-            placeholder={placeholder}
-            readOnly={readOnly}
-            required={required}
-            value={value}
-          />
-        </TextField>
-      );
-    }
-
-    // Standard input mode
     return (
       <TextField
         {...restTextFieldProps}
         {...defaultTextFieldProps}
         ref={ref}
-        active={!!value}
         className={cx(classes.host, className)}
         clearable={!readOnly && clearable}
         suffix={suffix}
       >
-        <input
+        <FormattedInput
           {...inputProps}
           ref={inputRef}
           aria-disabled={disabled}
           aria-multiline={false}
           aria-readonly={readOnly}
           aria-required={required}
-          className={cx(classes.inputMono, inputProps?.className)}
           disabled={disabled}
-          onChange={onChange}
+          format={format}
+          onChange={(formatted, _rawDigits) => {
+            if (onChange) {
+              onChange({
+                target: { value: formatted },
+              } as React.ChangeEvent<HTMLInputElement>);
+            }
+          }}
           placeholder={placeholder}
           readOnly={readOnly}
           required={required}
+          validate={validate}
           value={value}
         />
       </TextField>

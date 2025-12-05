@@ -35,6 +35,11 @@ export interface UseDateInputFormatterProps {
    * Blur event handler
    */
   onBlur?: FocusEventHandler<HTMLInputElement>;
+  /**
+   * Custom validation function. Return true if valid, false to clear the value.
+   * Called after format validation passes.
+   */
+  validate?: (isoDate: string) => boolean;
 }
 
 /**
@@ -48,6 +53,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     inputRef,
     onFocus: onFocusProp,
     onBlur: onBlurProp,
+    validate,
   } = props;
 
   const { parseFormattedValue } = useCalendarContext();
@@ -97,7 +103,8 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         // Try to parse and validate the formatted value
         const isoDate = parseFormattedValue(newValue, format);
 
-        if (isoDate) {
+        // Validate format and custom validation (e.g., time step)
+        if (isoDate && (!validate || validate(isoDate))) {
           const rawDigits = newValue.replace(/[^0-9]/g, '');
           onChange(isoDate, rawDigits);
         }
@@ -110,7 +117,14 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         });
       }
     },
-    [onChange, inputRef, isValueComplete, parseFormattedValue, format],
+    [
+      onChange,
+      inputRef,
+      isValueComplete,
+      parseFormattedValue,
+      format,
+      validate,
+    ],
   );
 
   /**
@@ -149,7 +163,14 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         const isoDate = parseFormattedValue(internalValue, format);
 
         if (!isoDate) {
-          // Invalid date, clear it
+          // Invalid date/time format, clear it
+          const templateValue = getTemplateWithoutBrackets(format);
+          setInternalValue(templateValue);
+          if (onChange) {
+            onChange('', '');
+          }
+        } else if (validate && !validate(isoDate)) {
+          // Custom validation failed (e.g., time step validation), clear it
           const templateValue = getTemplateWithoutBrackets(format);
           setInternalValue(templateValue);
           if (onChange) {
@@ -165,6 +186,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       onChange,
       onBlurProp,
       parseFormattedValue,
+      validate,
     ],
   );
 
