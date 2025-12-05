@@ -114,7 +114,6 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
           {...restTextFieldProps}
           {...defaultTextFieldProps}
           ref={ref}
-          active={!!value}
           className={cx(classes.host, className)}
           clearable={!readOnly && clearable}
           suffix={suffix}
