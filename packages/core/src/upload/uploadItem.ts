@@ -20,7 +20,7 @@ export const uploadItemClasses = {
   loadingIcon: `${uploadItemPrefix}__loading-icon`,
   downloadIcon: `${uploadItemPrefix}__download-icon`,
   deleteContent: `${uploadItemPrefix}__delete-content`,
-  deleteIconIcon: `${uploadItemPrefix}__delete-icon`,
+  deleteIcon: `${uploadItemPrefix}__delete-icon`,
   resetIcon: `${uploadItemPrefix}__reset-icon`,
   disabled: `${uploadItemPrefix}--disabled`,
 } as const;
