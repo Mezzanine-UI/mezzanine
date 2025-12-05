@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, useContext } from 'react';
+import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
 import InputCheck, {
   InputCheckProps,
@@ -96,6 +96,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
       radioGroup,
       value,
     });
+    const [focused, setFocused] = useState<boolean>(false);
 
     return (
       <InputCheck
@@ -115,6 +116,12 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
               disabled={disabled}
               id={inputId}
               onChange={onChange}
+              onFocus={() => {
+                setFocused(true);
+              }}
+              onBlur={() => {
+                setFocused(false);
+              }}
               name={name}
               type="radio"
               value={value}
@@ -123,6 +130,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
         }
         disabled={disabled}
         error={error}
+        focused={focused}
         htmlFor={inputId}
         size={size}
       >

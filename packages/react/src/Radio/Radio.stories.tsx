@@ -89,7 +89,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
 
   return (
     <>
-      <Typography variant="h5">From children</Typography>
+      <Typography variant="h2">From children</Typography>
       <RadioGroup disabled={disabled} orientation={orientation} size={size}>
         {options.map(({ disabled: optionDisabled, label, value }) => (
           <Radio key={value} disabled={optionDisabled} value={value}>
@@ -99,7 +99,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
       </RadioGroup>
       <br />
       <br />
-      <Typography variant="h5">From options</Typography>
+      <Typography variant="h2">From options</Typography>
       <RadioGroup
         disabled={disabled}
         options={options}
