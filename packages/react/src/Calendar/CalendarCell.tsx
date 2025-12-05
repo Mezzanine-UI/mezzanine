@@ -16,6 +16,10 @@ export interface CalendarCellProps
    * Apply today styles if true.
    */
   today?: boolean;
+  /**
+   * The role attribute for accessibility
+   */
+  role?: string;
 }
 
 /**
@@ -29,11 +33,13 @@ function CalendarCell(props: CalendarCellProps) {
     className,
     disabled,
     today,
+    role,
     ...restCalendarCellProps
   } = props;
 
   return (
     <div
+      role={role}
       className={cx(
         classes.cell,
         {

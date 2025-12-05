@@ -397,6 +397,8 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       <div
         {...restProps}
         ref={ref}
+        role="application"
+        aria-label={`Range calendar, ${mode} view`}
         className={cx(calendarClasses.host, className)}
       >
         {quickSelect && (

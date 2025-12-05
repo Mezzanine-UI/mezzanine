@@ -444,35 +444,46 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
     let controls;
 
     if (mode === 'day' || mode === 'week') {
+      const displayMonth = getMonthShortName(
+        getMonth(referenceDate),
+        displayMonthLocale,
+      );
+      const displayYear = getYear(referenceDate);
+
       controls = (
         <>
           <button
             type="button"
             disabled={disabledMonthSwitch}
             aria-disabled={disabledMonthSwitch}
+            aria-label={`Select month, currently ${displayMonth}`}
             onClick={onMonthControlClick}
           >
-            {getMonthShortName(getMonth(referenceDate), displayMonthLocale)}
+            {displayMonth}
           </button>
           <button
             type="button"
-            disabled={disabledMonthSwitch}
-            aria-disabled={disabledMonthSwitch}
+            disabled={disabledYearSwitch}
+            aria-disabled={disabledYearSwitch}
+            aria-label={`Select year, currently ${displayYear}`}
             onClick={onYearControlClick}
           >
-            {getYear(referenceDate)}
+            {displayYear}
           </button>
         </>
       );
     } else if (mode === 'month') {
+      const displayYear = getYear(referenceDate);
+
       controls = (
         <button
           type="button"
           disabled={disabledYearSwitch}
           aria-disabled={disabledYearSwitch}
+          aria-label={`Select year, currently ${displayYear}`}
           onClick={onYearControlClick}
         >
-          {getYear(referenceDate)}
+          {displayYear}
         </button>
       );
     } else if (mode === 'year') {
@@ -483,7 +494,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       const displayYearRange = `${start} - ${end}`;
 
       controls = (
-        <button type="button" disabled aria-disabled>
+        <button
+          type="button"
+          disabled
+          aria-disabled
+          aria-label={`Year range ${displayYearRange}`}
+        >
           {displayYearRange}
         </button>
       );
@@ -495,7 +511,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       const displayQuarterYearRange = `${start} - ${end}`;
 
       controls = (
-        <button type="button" disabled aria-disabled>
+        <button
+          type="button"
+          disabled
+          aria-disabled
+          aria-label={`Quarter year range ${displayQuarterYearRange}`}
+        >
           {displayQuarterYearRange}
         </button>
       );
@@ -507,7 +528,12 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       const displayHalfYearYearRange = `${start} - ${end}`;
 
       controls = (
-        <button type="button" disabled aria-disabled>
+        <button
+          type="button"
+          disabled
+          aria-disabled
+          aria-label={`Half-year range ${displayHalfYearYearRange}`}
+        >
           {displayHalfYearYearRange}
         </button>
       );
@@ -517,6 +543,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       <div
         {...restCalendarProps}
         ref={ref}
+        role="application"
+        aria-label={`Calendar, ${mode} view`}
         className={cx(classes.host, classes.mode(mode), className)}
       >
         {quickSelect && (

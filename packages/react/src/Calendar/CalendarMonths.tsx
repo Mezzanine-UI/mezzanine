@@ -103,12 +103,30 @@ function CalendarMonths(props: CalendarMonthsProps) {
               }
             : undefined;
 
+          // Accessible month label for screen readers
+          const monthDate = new Date(monthDateType);
+          const fullMonthName = monthDate.toLocaleDateString(
+            displayMonthLocale,
+            { month: 'long' },
+          );
+          const year = monthDate.getFullYear();
+
+          const ariaLabel = [
+            `${fullMonthName} ${year}`,
+            active && 'Selected',
+            disabled && 'Not available',
+          ]
+            .filter(Boolean)
+            .join(', ');
+
           return (
             <button
               key={month}
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
+              aria-label={ariaLabel}
+              aria-pressed={active}
               className={cx(classes.button, {
                 [classes.buttonActive]: active,
                 [classes.buttonInRange]: inRange,

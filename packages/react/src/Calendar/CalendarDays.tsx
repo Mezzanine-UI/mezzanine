@@ -145,6 +145,29 @@ function CalendarDays(props: CalendarDaysProps) {
                   }
                 : undefined;
 
+              // Accessible date label for screen readers
+              const dateObj = new Date(date);
+              const dayName = dateObj.toLocaleDateString(displayWeekDayLocale, {
+                weekday: 'long',
+              });
+              const monthName = dateObj.toLocaleDateString(
+                displayWeekDayLocale,
+                { month: 'long' },
+              );
+              const year = dateObj.getFullYear();
+              const day = dateObj.getDate();
+              const isToday = isSameDate(date, getNow());
+
+              const ariaLabel = [
+                `${dayName}, ${monthName} ${day}, ${year}`,
+                isToday && 'Today',
+                active && 'Selected',
+                disabled && 'Not available',
+                inactive && 'Outside current month',
+              ]
+                .filter(Boolean)
+                .join(', ');
+
               return (
                 <CalendarCell
                   key={`${getMonth(date)}/${getDate(date)}`}
@@ -156,6 +179,9 @@ function CalendarDays(props: CalendarDaysProps) {
                     type="button"
                     aria-disabled={disabled}
                     disabled={disabled}
+                    aria-label={ariaLabel}
+                    aria-pressed={active}
+                    aria-current={isToday ? 'date' : undefined}
                     onMouseEnter={onMouseEnter}
                     className={cx(classes.button, {
                       [classes.buttonInRange]: inRange,

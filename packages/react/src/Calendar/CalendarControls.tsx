@@ -73,10 +73,11 @@ function CalendarControls(props: CalendarControlsProps) {
             aria-disabled={disableOnDoublePrev}
             disabled={disableOnDoublePrev}
             onClick={onDoublePrev}
-            title="Double Previous"
+            aria-label="Go to previous year"
+            title="Previous Year"
             className={cx(classes.controlsButton)}
           >
-            <Icon icon={DoubleChevronLeftIcon} />
+            <Icon icon={DoubleChevronLeftIcon} aria-hidden="true" />
           </button>
         )}
         {onPrev && (
@@ -85,10 +86,11 @@ function CalendarControls(props: CalendarControlsProps) {
             aria-disabled={disableOnPrev}
             disabled={disableOnPrev}
             onClick={onPrev}
-            title="Previous"
+            aria-label="Go to previous month"
+            title="Previous Month"
             className={cx(classes.controlsButton)}
           >
-            <Icon icon={ChevronLeftIcon} />
+            <Icon icon={ChevronLeftIcon} aria-hidden="true" />
           </button>
         )}
       </div>
@@ -100,10 +102,11 @@ function CalendarControls(props: CalendarControlsProps) {
             aria-disabled={disableOnNext}
             disabled={disableOnNext}
             onClick={onNext}
-            title="Next"
+            aria-label="Go to next month"
+            title="Next Month"
             className={cx(classes.controlsButton)}
           >
-            <Icon icon={ChevronRightIcon} />
+            <Icon icon={ChevronRightIcon} aria-hidden="true" />
           </button>
         )}
         {onDoubleNext && (
@@ -112,10 +115,11 @@ function CalendarControls(props: CalendarControlsProps) {
             aria-disabled={disableOnDoubleNext}
             disabled={disableOnDoubleNext}
             onClick={onDoubleNext}
-            title="Double Next"
+            aria-label="Go to next year"
+            title="Next Year"
             className={cx(classes.controlsButton)}
           >
-            <Icon icon={DoubleChevronRightIcon} />
+            <Icon icon={DoubleChevronRightIcon} aria-hidden="true" />
           </button>
         )}
       </div>

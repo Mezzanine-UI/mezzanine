@@ -99,12 +99,24 @@ function CalendarYears(props: CalendarYearsProps) {
               }
             : undefined;
 
+          // Accessible year label for screen readers
+          const ariaLabel = [
+            `Year ${thisYear}`,
+            active && 'Selected',
+            disabled && 'Not available',
+            inactive && 'Outside range',
+          ]
+            .filter(Boolean)
+            .join(', ');
+
           return (
             <button
               key={base + start}
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
+              aria-label={ariaLabel}
+              aria-pressed={active}
               className={cx(classes.button, {
                 [classes.buttonActive]: active,
                 [classes.buttonInRange]: inRange,

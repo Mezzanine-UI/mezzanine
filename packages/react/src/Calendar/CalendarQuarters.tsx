@@ -125,11 +125,32 @@ function CalendarQuarters(props: CalendarQuartersProps) {
                   }
                 : undefined;
 
+              // Accessible quarter label for screen readers
+              const quarterMonths = [
+                ['January', 'February', 'March'],
+                ['April', 'May', 'June'],
+                ['July', 'August', 'September'],
+                ['October', 'November', 'December'],
+              ];
+              const monthNames = quarterMonths[quarter - 1].join(', ');
+
+              const ariaLabel = [
+                `Quarter ${quarter}, ${year}`,
+                `${monthNames}`,
+                active && 'Selected',
+                disabled && 'Not available',
+              ]
+                .filter(Boolean)
+                .join(', ');
+
               return (
                 <button
                   key={quarter}
                   type="button"
                   disabled={disabled}
+                  aria-disabled={disabled}
+                  aria-label={ariaLabel}
+                  aria-pressed={active}
                   className={cx(classes.button, {
                     [classes.buttonActive]: active,
                     [classes.buttonInRange]: inRange,

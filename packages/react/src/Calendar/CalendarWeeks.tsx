@@ -182,6 +182,30 @@ function CalendarWeeks(props: CalendarWeeksProps) {
               }
             : undefined;
 
+          // Accessible week label for screen readers
+          const firstDate = new Date(dates[0]);
+          const lastDate = new Date(dates[dates.length - 1]);
+          const weekNum = getWeek(dates[0]);
+          const startMonth = firstDate.toLocaleDateString(
+            displayWeekDayLocale,
+            { month: 'short' },
+          );
+          const endMonth = lastDate.toLocaleDateString(displayWeekDayLocale, {
+            month: 'short',
+          });
+          const startDay = firstDate.getDate();
+          const endDay = lastDate.getDate();
+
+          const ariaLabel = [
+            `Week ${weekNum}`,
+            `${startMonth} ${startDay} to ${endMonth} ${endDay}`,
+            active && 'Selected',
+            disabled && 'Not available',
+            inactive && 'Outside current month',
+          ]
+            .filter(Boolean)
+            .join(', ');
+
           return (
             <button
               key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
@@ -193,6 +217,8 @@ function CalendarWeeks(props: CalendarWeeksProps) {
               })}
               disabled={disabled}
               aria-disabled={disabled}
+              aria-label={ariaLabel}
+              aria-pressed={active}
               onClick={onClick}
               onMouseEnter={onMouseEnter}
             >

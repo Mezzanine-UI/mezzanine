@@ -124,11 +124,27 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
                 onHalfYearHover?.(halfYearDate);
               };
 
+              // Accessible half-year label for screen readers
+              const halfYearMonths =
+                halfYear === 1 ? 'January to June' : 'July to December';
+
+              const ariaLabel = [
+                `Half ${halfYear}, ${year}`,
+                halfYearMonths,
+                active && 'Selected',
+                disabled && 'Not available',
+              ]
+                .filter(Boolean)
+                .join(', ');
+
               return (
                 <button
                   key={halfYear}
                   type="button"
+                  disabled={disabled}
                   aria-disabled={disabled}
+                  aria-label={ariaLabel}
+                  aria-pressed={active}
                   className={cx(classes.button, {
                     [classes.buttonDisabled]: disabled,
                     [classes.buttonInRange]: inRange,
