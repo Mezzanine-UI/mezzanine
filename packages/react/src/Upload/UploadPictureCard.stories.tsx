@@ -33,7 +33,7 @@ function UploadPictureCardWithImageLoader({ args }: { args: UploadPictureCardPro
   }, []);
 
   if (!imageFile) {
-    return <div>載入中...</div>;
+    return <></>;
   }
 
   return (
@@ -84,6 +84,24 @@ export const Playground: Story = {
         defaultValue: { summary: 'cover' },
       },
     },
+    errorMessage: {
+      control: {
+        type: 'text',
+      },
+      description: 'Error message to display when status is error',
+      table: {
+        type: { summary: 'string' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
+    errorIcon: {
+      control: false,
+      description: 'Error icon to display when status is error',
+      table: {
+        type: { summary: 'ReactNode' },
+        defaultValue: { summary: 'undefined' },
+      },
+    },
     onDelete: {
       description: 'When delete icon is clicked, this callback will be fired',
       table: {
@@ -107,7 +125,7 @@ function BasicStoryContent() {
   }, []);
 
   if (!imageFile) {
-    return <div>載入中...</div>;
+    return <></>
   }
 
   return (

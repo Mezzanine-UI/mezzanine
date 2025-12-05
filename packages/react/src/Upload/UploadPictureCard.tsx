@@ -2,13 +2,14 @@
 
 import {
   uploadPictureCardClasses as classes,
+  defaultUploadPictureCardErrorMessage,
   UploadItemStatus,
   UploadPictureCardImageFit,
   UploadPictureCardSize,
 } from '@mezzanine-ui/core/upload';
-import { forwardRef, MouseEventHandler, useEffect, useState } from 'react';
+import { forwardRef, MouseEventHandler, useEffect, useState, type ReactNode } from 'react';
 
-import { DownloadIcon, ResetIcon, SpinnerIcon, TrashIcon, ZoomInIcon } from '@mezzanine-ui/icons';
+import { DownloadIcon, ImageIcon, ResetIcon, SpinnerIcon, TrashIcon, ZoomInIcon } from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import ClearActions from '../ClearActions';
@@ -36,17 +37,25 @@ export interface UploadPictureCardProps
    * The size of the upload picture card.
    * @default 'main'
    */
-  size?: UploadPictureCardSize
+  size?: UploadPictureCardSize;
   /**
    * The image fit of the upload picture card.
    * @default 'cover'
    */
-  imageFit?: UploadPictureCardImageFit
+  imageFit?: UploadPictureCardImageFit;
   /**
    * Whether the upload picture card is disabled.
    * @default false
    */
   disabled?: boolean;
+  /**
+   * Error message to display when status is 'error'.
+   */
+  errorMessage?: string;
+  /**
+   * Error icon to display when status is 'error'.
+   */
+  errorIcon?: ReactNode;
   /**
    * When delete icon is clicked, this callback will be fired.
    */
@@ -77,6 +86,8 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       imageFit = 'cover',
       size = 'main',
       disabled = false,
+      errorMessage,
+      errorIcon,
       onDelete,
       onZoomIn,
       onDownload,
@@ -84,16 +95,26 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       ...rest
     } = props;
 
+    // Default error icon when status is error and no errorIcon is provided
+    const defaultErrorIcon = errorIcon ?? (status === 'error' ? <Icon icon={ImageIcon} color="error" size={16} /> : null);
+
     const [imageUrl, setImageUrl] = useState<string>('');
 
     useEffect(() => {
       if (file && file.type.startsWith('image/')) {
-        const url = URL.createObjectURL(file);
-        setImageUrl(url);
+        try {
+          const url = URL.createObjectURL(file);
+          setImageUrl(url);
 
-        return () => {
-          URL.revokeObjectURL(url);
-        };
+          return () => {
+            URL.revokeObjectURL(url);
+          };
+        } catch (error) {
+          console.error('Failed to create object URL for image:', error);
+          setImageUrl('');
+        }
+      } else {
+        setImageUrl('');
       }
 
       return undefined;
@@ -112,14 +133,16 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       >
         {imageUrl && (
           <div className={classes.image}>
-            <img
-              alt={file.name}
-              src={imageUrl}
-              style={{
-                objectFit: imageFit,
-                objectPosition: 'center',
-              }}
-            />
+            {status !== 'error' && (
+              <img
+                alt={file.name}
+                src={imageUrl}
+                style={{
+                  objectFit: imageFit,
+                  objectPosition: 'center',
+                }}
+              />
+            )}
             <div className={cx(
               classes.actions,
               classes.actionsStatus(status),
@@ -127,8 +150,14 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
               {
                 status === 'loading' && size !== 'minor' && (
                   <>
-                    <ClearActions type="embedded" variant="contrast" onClick={onDelete} className={classes.clearActionsIcon} />
-                    <div className={classes.loadingIcon}>
+                    <ClearActions
+                      type="embedded"
+                      variant="contrast"
+                      onClick={onDelete}
+                      className={classes.clearActionsIcon}
+                      aria-label="取消上傳"
+                    />
+                    <div className={classes.loadingIcon} aria-label="上傳中">
                       <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
                     </div>
                   </>
@@ -143,18 +172,21 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                         size="minor"
                         icon={{ position: 'icon-only', src: ZoomInIcon }}
                         onClick={onZoomIn}
+                        aria-label="放大圖片"
                       />
                       <Button
                         variant="base-secondary"
                         size="minor"
                         icon={{ position: 'icon-only', src: DownloadIcon }}
                         onClick={onDownload}
+                        aria-label="下載檔案"
                       />
                       <Button
                         variant="base-secondary"
                         size="minor"
                         icon={{ position: 'icon-only', src: TrashIcon }}
                         onClick={onDelete}
+                        aria-label="刪除檔案"
                       />
                     </div>
                   </div>
@@ -162,22 +194,40 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
               }
               {
                 status === 'error' && size !== 'minor' && (
-                  <div className={classes.tools}>
-                    <div className={classes.toolsContent}>
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: ResetIcon }}
-                        onClick={onReload}
-                      />
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: TrashIcon }}
-                        onClick={onDelete}
-                      />
+                  <>
+                    {(errorMessage ?? defaultUploadPictureCardErrorMessage) || defaultErrorIcon ? (
+                      <div className={classes.errorMessage} role="alert" aria-live="polite">
+                        {defaultErrorIcon && (
+                          <div className={classes.errorIcon} aria-hidden="true">
+                            {defaultErrorIcon}
+                          </div>
+                        )}
+                        {(errorMessage ?? defaultUploadPictureCardErrorMessage) && (
+                          <Typography className={classes.errorMessageText}>
+                            {errorMessage ?? defaultUploadPictureCardErrorMessage}
+                          </Typography>
+                        )}
+                      </div>
+                    ) : null}
+                    <div className={classes.tools}>
+                      <div className={classes.toolsContent}>
+                        <Button
+                          variant="base-secondary"
+                          size="minor"
+                          icon={{ position: 'icon-only', src: ResetIcon }}
+                          onClick={onReload}
+                          aria-label="重新上傳"
+                        />
+                        <Button
+                          variant="base-secondary"
+                          size="minor"
+                          icon={{ position: 'icon-only', src: TrashIcon }}
+                          onClick={onDelete}
+                          aria-label="刪除檔案"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )
               }
               {

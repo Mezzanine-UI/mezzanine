@@ -1,13 +1,242 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { ArgTypes } from '@storybook/react-webpack5';
 import type { FormEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { action } from 'storybook/actions';
 import type { UploadFile, UploadProps } from '.';
 import { Upload } from '.';
 
+const argTypes: Partial<ArgTypes<UploadProps>> = {
+  accept: {
+    control: {
+      type: 'text',
+    },
+    description: 'The accept attributes of native input element',
+    table: {
+      type: { summary: 'string' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  disabled: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether the upload is disabled',
+    table: {
+      type: { summary: 'boolean' },
+      defaultValue: { summary: 'false' },
+    },
+  },
+  mode: {
+    control: {
+      type: 'radio',
+      options: ['list', 'button-list', 'cards', 'card-wall'],
+    },
+    description: 'The display mode for the upload component',
+    table: {
+      type: { summary: "'list' | 'button-list' | 'cards' | 'card-wall'" },
+      defaultValue: { summary: "'list'" },
+    },
+  },
+  size: {
+    control: {
+      type: 'radio',
+      options: ['main', 'sub'],
+    },
+    description: 'The size of the upload component',
+    table: {
+      type: { summary: 'UploadSize' },
+      defaultValue: { summary: "'main'" },
+    },
+  },
+  showFileSize: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to show file size in list mode',
+    table: {
+      type: { summary: 'boolean' },
+      defaultValue: { summary: 'true' },
+    },
+  },
+  multiple: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether can select multiple files to upload',
+    table: {
+      type: { summary: 'boolean' },
+      defaultValue: { summary: 'false' },
+    },
+  },
+  maxFiles: {
+    control: {
+      type: 'number',
+    },
+    description: 'Maximum number of files allowed to upload',
+    table: {
+      type: { summary: 'number' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onUpload: {
+    control: false,
+    description: 'Fired when files are selected for upload',
+    table: {
+      type: { summary: '(files: File[], setProgress?: (fileIndex: number, progress: number) => void) => Promise<void> | void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onDelete: {
+    control: false,
+    description: 'Fired when a file is deleted',
+    table: {
+      type: { summary: '(fileId: string, file: File) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onReload: {
+    control: false,
+    description: 'Fired when a file upload is retried (error state)',
+    table: {
+      type: { summary: '(fileId: string, file: File) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onDownload: {
+    control: false,
+    description: 'Fired when a file is downloaded (done state)',
+    table: {
+      type: { summary: '(fileId: string, file: File) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onZoomIn: {
+    control: false,
+    description: 'Fired when zoom in is clicked on a picture card (done state)',
+    table: {
+      type: { summary: '(fileId: string, file: File) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onChange: {
+    control: false,
+    description: 'Fired when files list changes',
+    table: {
+      type: { summary: '(files: UploadFile[]) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  files: {
+    control: false,
+    description: 'Controlled file list for the upload component. Provide this along with onChange to fully control the file state.',
+    table: {
+      type: { summary: 'UploadFile[]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  hints: {
+    control: false,
+    description: 'Array of hints to display with the upload component',
+    table: {
+      type: { summary: 'UploaderProps["hints"]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  uploaderIcon: {
+    control: false,
+    description: 'Icon configuration for different actions and states',
+    table: {
+      type: { summary: 'UploaderProps["icon"]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  id: {
+    control: {
+      type: 'text',
+    },
+    description: 'The id of input element',
+    table: {
+      type: { summary: 'string' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  inputProps: {
+    control: false,
+    description: 'Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element. If you need direct control to the input element, use this prop to provide to it.',
+    table: {
+      type: { summary: 'UploaderProps["inputProps"]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  inputRef: {
+    control: false,
+    description: 'The react ref passed to input element',
+    table: {
+      type: { summary: 'React.Ref<HTMLInputElement>' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  isFillWidth: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to fill the width of the container',
+    table: {
+      type: { summary: 'boolean' },
+      defaultValue: { summary: 'false' },
+    },
+  },
+  name: {
+    control: {
+      type: 'text',
+    },
+    description: 'The name attribute of the input element',
+    table: {
+      type: { summary: 'string' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  uploaderLabel: {
+    control: false,
+    description: 'Label configuration for different states',
+    table: {
+      type: { summary: 'UploaderProps["label"]' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  errorMessage: {
+    control: {
+      type: 'text',
+    },
+    description: 'Default error message to display when upload fails. This will be used when a file\'s status becomes \'error\' and no errorMessage is provided.',
+    table: {
+      type: { summary: 'string' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  errorIcon: {
+    control: false,
+    description: 'Default error icon to display when upload fails. This will be used when a file\'s status becomes \'error\' and no errorIcon is provided.',
+    table: {
+      type: { summary: 'ReactNode' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+  onMaxFilesExceeded: {
+    control: false,
+    description: 'Fired when the maximum number of files is exceeded',
+    table: {
+      type: { summary: '(maxFiles: number, selectedCount: number, currentCount: number) => void' },
+      defaultValue: { summary: 'undefined' },
+    },
+  },
+};
+
 export default {
   title: 'Data Entry/Upload/Upload',
   component: Upload,
+  argTypes,
 } satisfies Meta<typeof Upload>;
 
 type Story = StoryObj<UploadProps>;
@@ -280,118 +509,6 @@ export const Playground: Story = {
     size: 'main',
     multiple: true,
   },
-  argTypes: {
-    accept: {
-      control: 'text',
-      description: 'The accept attributes of native input element',
-      table: {
-        type: { summary: 'string' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'Whether the upload is disabled',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    mode: {
-      control: {
-        type: 'radio',
-        options: ['list', 'button-list', 'cards', 'card-wall'],
-      },
-      description: 'The display mode for the upload component',
-      table: {
-        type: { summary: "'list' | 'button-list' | 'cards' | 'card-wall'" },
-        defaultValue: { summary: "'list'" },
-      },
-    },
-    size: {
-      control: {
-        type: 'radio',
-        options: ['main', 'sub'],
-      },
-      description: 'The size of the upload component',
-      table: {
-        type: { summary: 'UploadSize' },
-        defaultValue: { summary: "'main'" },
-      },
-    },
-    showFileSize: {
-      control: 'boolean',
-      description: 'Whether to show file size in list mode',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
-      },
-    },
-    multiple: {
-      control: 'boolean',
-      description: 'Whether can select multiple files to upload',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
-      },
-    },
-    maxFiles: {
-      control: 'number',
-      description: 'Maximum number of files allowed to upload',
-      table: {
-        type: { summary: 'number' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onUpload: {
-      control: false,
-      description: 'Fired when files are selected for upload',
-      table: {
-        type: { summary: '(files: File[], setProgress?: (fileIndex: number, progress: number) => void) => Promise<void> | void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onDelete: {
-      control: false,
-      description: 'Fired when a file is deleted',
-      table: {
-        type: { summary: '(fileId: string, file: File) => void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onReload: {
-      control: false,
-      description: 'Fired when a file upload is retried (error state)',
-      table: {
-        type: { summary: '(fileId: string, file: File) => void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onDownload: {
-      control: false,
-      description: 'Fired when a file is downloaded (done state)',
-      table: {
-        type: { summary: '(fileId: string, file: File) => void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onZoomIn: {
-      control: false,
-      description: 'Fired when zoom in is clicked on a picture card (done state)',
-      table: {
-        type: { summary: '(fileId: string, file: File) => void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-    onChange: {
-      control: false,
-      description: 'Fired when files list changes',
-      table: {
-        type: { summary: '(files: UploadFile[]) => void' },
-        defaultValue: { summary: 'undefined' },
-      },
-    },
-  },
 };
 
 // Component for Basic story, displays Upload with preloaded image
@@ -436,7 +553,7 @@ function UploadWithPreloadedImage(props: UploadProps) {
   }, [handleChange]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <></>;
   }
 
   return (

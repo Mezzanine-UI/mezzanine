@@ -33,14 +33,10 @@ export interface UploadItemProps
    * Custom icon for the item.
    */
   icon?: IconDefinition;
-  /** 
+  /**
    * Whether to show the file size.
    */
   showFileSize?: boolean;
-  /**
-   * The progress percentage of the item.
-   */
-  progressPercent?: number;
   /**
    * Whether the item is disabled.
    * @default false
@@ -66,7 +62,7 @@ export interface UploadItemProps
   /**
    * When download icon is clicked, this callback will be fired.
    */
-  onDonwload?: MouseEventHandler;
+  onDownload?: MouseEventHandler;
 }
 
 /**
@@ -82,9 +78,9 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       showFileSize = true,
       disabled = false,
       onCancel,
-      onReload,
-      onDonwload,
       onDelete,
+      onDownload,
+      onReload,
       ...rest
     } = props;
 
@@ -92,7 +88,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
 
     const itemIcon = useMemo(() => {
       if (icon) {
-        return icon && <Icon icon={icon} className={classes.icon} size={16} />;
+        return <Icon icon={icon} className={classes.icon} size={16} />;
       }
 
       if (isImage) {
@@ -110,9 +106,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       )
     }, []);
 
-    const fileName = useMemo(() => {
-      return props.file.name;
-    }, [props.file]);
+    const fileName = props.file.name;
 
     const fileSize = useMemo(() => {
       const bytes = props.file.size;
@@ -183,7 +177,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
             }
             {
               status === 'done' && !disabled && (
-                <Icon icon={DownloadIcon} size={16} className={classes.downloadIcon} onClick={onDonwload} />
+                <Icon icon={DownloadIcon} size={16} className={classes.downloadIcon} onClick={onDownload} />
               )
             }
             {

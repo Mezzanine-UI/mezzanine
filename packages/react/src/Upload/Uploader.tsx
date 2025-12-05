@@ -15,7 +15,8 @@ import {
 } from 'react';
 
 import {
-  uploadClasses as classes,
+  uploaderClasses as classes,
+  type UploaderHintType,
   type UploadPictureControl,
   type UploadType
 } from '@mezzanine-ui/core/upload';
@@ -57,7 +58,7 @@ export interface UploaderHint {
   /**
    * The icon element of the hint.
    */
-  type?: 'error' | 'info';
+  type?: UploaderHintType;
 }
 
 export interface UploaderLabel {
