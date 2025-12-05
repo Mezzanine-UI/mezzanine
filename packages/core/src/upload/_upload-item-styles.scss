@@ -7,7 +7,7 @@
 @use '../icon';
 @use './upload-item' as *;
 
-$action-gap: 8px !default;
+$action-gap: spacing.semantic-variable(gap, base);
 
 .#{$prefix} {
   display: flex;
@@ -108,13 +108,15 @@ $action-gap: 8px !default;
   &__loading-icon {
     align-items: center;
     display: flex;
-    height: 16px;
+    height: spacing.semantic-variable(size, element, base);
     justify-content: center;
     position: relative;
-    width: 16px;
+    width: spacing.semantic-variable(size, element, base);
 
     &::before {
-      border: 1px solid white;
+      border-width: 1px;
+      border-style: solid;
+      border-color: palette.semantic-variable(text, fixed-light);
       border-radius: 50%;
       content: '';
       height: 10px;
@@ -165,7 +167,8 @@ $action-gap: 8px !default;
 
   &__size--sub {
     .#{$prefix}__container {
-      padding: var(--padding-vertical-tight, 6px) var(--padding-horizontal-base, 8px);
+      padding-block: spacing.semantic-variable(padding, vertical, tight);
+      padding-inline: spacing.semantic-variable(padding, horizontal, base);
     }
   }
 
@@ -203,11 +206,11 @@ $action-gap: 8px !default;
     }
 
     .#{$prefix}__delete-icon {
-      color: var(--icon-neutral-light-disabled, #9DA4AE);
+      color: palette.semantic-variable(icon, neutral-light);
       cursor: not-allowed;
 
       &:hover {
-        color: var(--icon-neutral-light-disabled, #9DA4AE);
+        color: palette.semantic-variable(icon, neutral-light);
         cursor: not-allowed;
       }
     }

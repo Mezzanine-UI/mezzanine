@@ -8,8 +8,8 @@
 @use '../button/button' as button;
 @use './upload-picture-card' as *;
 
-$minor-image-size: 40px !default;
-$image-size: 140px !default;
+$minor-image-size: spacing.primitive-variable(40);
+$image-size: spacing.primitive-variable(140);
 
 .#{$prefix} {
   display: flex;
@@ -42,7 +42,7 @@ $image-size: 140px !default;
   &__image {
     width: $image-size;
     height: $image-size;
-    border-radius: var(--Radius-radius-base, 4px);
+    border-radius: radius.variable(base);
     background: palette.semantic-variable(background, neutral-ghost);
     overflow: hidden;
     display: flex;
@@ -50,14 +50,14 @@ $image-size: 140px !default;
     justify-content: center;
     position: relative;
 
+
     img {
       width: 100%;
       height: 100%;
     }
 
     &:hover {
-      .#{$prefix}__actions--done,
-      .#{$prefix}__actions--error {
+      .#{$prefix}__actions--done {
         opacity: 1;
         pointer-events: auto;
         background: linear-gradient(
@@ -65,6 +65,24 @@ $image-size: 140px !default;
           palette.semantic-variable(overlay, subtle) 0%,
           palette.semantic-variable(overlay, subtle) 100%
         );
+      }
+
+      .#{$prefix}__actions--error {
+        background: linear-gradient(
+          0deg,
+          palette.semantic-variable(overlay, subtle) 0%,
+          palette.semantic-variable(overlay, subtle) 100%
+        );
+
+        .#{$prefix}__error-message {
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        .#{$prefix}__tools {
+          opacity: 1;
+          visibility: visible;
+        }
       }
 
       ~ .#{$prefix}__content {
@@ -183,8 +201,8 @@ $image-size: 140px !default;
 
       .#{$prefix}__clear-actions-icon {
         position: absolute;
-        top: 8px;
-        right: 8px;
+        top: spacing.semantic-variable(gap, base);
+        right: spacing.semantic-variable(gap, base);
       }
 
       .#{$prefix}__loading-icon {
@@ -194,25 +212,68 @@ $image-size: 140px !default;
         position: relative;
 
         &::before {
-          border: 2px solid palette.semantic-variable(background, fixed-dark);
+          border-width: 2px;
+          border-style: solid;
+          border-color: palette.semantic-variable(background, fixed-dark);
           border-radius: 50%;
           content: '';
-          height: 20px;
+          height: spacing.semantic-variable(size, element, gentle);
           left: 50%;
           pointer-events: none;
           position: absolute;
           top: 50%;
           transform: translate(-50%, -50%);
-          width: 20px;
+          width: spacing.semantic-variable(size, element, gentle);
         }
       }
     }
 
-    &--done,
-    &--error {
+    &--done {
       pointer-events: none;
       opacity: 0;
     }
+
+    &--error {
+      pointer-events: auto;
+      opacity: 1;
+      background: linear-gradient(
+        0deg,
+        var(--overlay-surface-solid, rgba(255, 255, 255, 0.90)) 0%,
+        var(--overlay-surface-solid, rgba(255, 255, 255, 0.90)) 100%
+      );
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: spacing.semantic-variable(gap, base);
+    }
+  }
+
+  &__error-message {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-inline: spacing.semantic-variable(padding, horizontal, cozy);
+    width: 100%;
+    opacity: 1;
+    visibility: visible;
+    transition: transition.standard(opacity, fast),
+      transition.standard(visibility, fast);
+    gap: spacing.semantic-variable(gap, tight);
+  }
+
+  &__error-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__error-message-text {
+    color: palette.semantic-variable(text, error);
+    text-align: center;
+    @include typography.semantic-variable(label-primary);
   }
 
 
@@ -222,6 +283,10 @@ $image-size: 140px !default;
     justify-content: center;
     padding-inline: spacing.semantic-variable(padding, horizontal, cozy);
     width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: transition.standard(opacity, fast),
+      transition.standard(visibility, fast);
   }
 
   &__tools-content {
@@ -230,7 +295,7 @@ $image-size: 140px !default;
   }
 
   &__tools .#{button.$prefix} .#{icon.$prefix} {
-    font-size: typography.px-to-rem(16px);
+    font-size: spacing.semantic-variable(size, element, base);
   }
 
   &__size--sub {

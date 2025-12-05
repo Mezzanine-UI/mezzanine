@@ -6,7 +6,7 @@
 @use '~@mezzanine-ui/system/effect' as effect;
 @use './uploader' as *;
 
-$square-size: 140px !default;
+$square-size: spacing.primitive-variable(140);
 
 .#{$prefix} {
   display: inline-flex;
@@ -43,7 +43,9 @@ $square-size: 140px !default;
   }
 
   &:active {
-    border: 2px solid palette.semantic-variable(border, brand);
+    border-width: 2px;
+    border-style: solid;
+    border-color: palette.semantic-variable(border, brand);
   }
 
   &:focus {
@@ -66,7 +68,7 @@ $square-size: 140px !default;
 
   &--dragging {
     border-color: palette.semantic-variable(border, brand);
-    background: var(--background-brand-faint, #E2E6FD);
+    background: palette.semantic-variable(background, brand-faint);
   }
 
   &--fill-width {

@@ -1,13 +1,5 @@
 export const uploadItemPrefix = 'mzn-upload-item';
 
-/**
- * File type for upload items.
- * Can be a MIME type (e.g., 'image/*', 'image/png', 'application/pdf')
- * or a simple category ('image', 'file').
- * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
- */
-export type UploadFileType = string;
-
 export type UploadItemStatus = 'done' | 'error' | 'loading';
 
 export type UploadItemSize = 'main' | 'sub';
