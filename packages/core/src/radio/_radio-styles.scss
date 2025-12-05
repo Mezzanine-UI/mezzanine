@@ -14,7 +14,7 @@ $dot-size-small: 6px !default;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px solid palette.color(text-secondary);
+  border: 1px solid palette.semantic-variable('border', neutral);
   transition: transition.standard(border-color);
   will-change: border-color;
   box-sizing: border-box;
