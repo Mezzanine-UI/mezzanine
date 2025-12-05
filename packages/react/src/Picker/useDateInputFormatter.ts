@@ -176,6 +176,11 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       const { key } = e;
       const templateValue = getTemplateWithoutBrackets(format);
 
+      if (key === 'Tab') {
+        e.stopPropagation();
+        return;
+      }
+
       // Backspace
       if (key === 'Backspace') {
         e.preventDefault();
