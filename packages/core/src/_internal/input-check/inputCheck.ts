@@ -11,5 +11,6 @@ export const inputCheckClasses = {
   error: `${inputCheckPrefix}--error`,
   withLabel: `${inputCheckPrefix}--with-label`,
   control: `${inputCheckPrefix}__control`,
+  controlFocused: `${inputCheckPrefix}__control--focused`,
   label: `${inputCheckPrefix}__label`,
 } as const;
