@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { cloneElement, forwardRef, isValidElement, ReactNode } from 'react';
 import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import {
   BoxIcon,
@@ -8,7 +8,7 @@ import {
   SystemIcon,
 } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
-import Button, { ButtonGroup } from '../Button';
+import Button, { ButtonGroup, ButtonGroupChild, ButtonProps } from '../Button';
 import Icon from '../Icon';
 import { EmptyMainInitialDataIcon } from './icons/EmptyMainInitialDataIcon';
 import { EmptyMainResultIcon } from './icons/EmptyMainResultIcon';
@@ -34,6 +34,20 @@ const mainIconMap: Record<Exclude<EmptyProps['type'], undefined>, ReactNode> = {
   system: <EmptyMainSystemIcon className={classes.icon} />,
 };
 
+const renderButtonOrElement = (
+  button: ButtonProps | ButtonGroupChild | undefined,
+  size: ButtonProps['size'],
+  variant: 'base-primary' | 'base-secondary',
+) => {
+  if (!button) return null;
+
+  if (isValidElement(button)) {
+    return cloneElement(button, { size, variant });
+  }
+
+  return <Button {...button} size={size} variant={variant} />;
+};
+
 const Empty = forwardRef<HTMLDivElement, EmptyProps>(
   function Empty(props, ref) {
     const {
@@ -54,6 +68,20 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
             <Icon className={classes.icon} icon={iconMap[type]} />
           )) || null;
 
+    const fragmentButtons: ButtonGroupChild =
+      actions && 'secondaryButton' in actions ? (
+        <>
+          {renderButtonOrElement(
+            actions.secondaryButton,
+            size,
+            'base-secondary',
+          )}
+          {renderButtonOrElement(actions.primaryButton, size, 'base-primary')}
+        </>
+      ) : (
+        renderButtonOrElement(actions, size, 'base-secondary')
+      );
+
     return (
       <div
         {...rest}
@@ -65,22 +93,9 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
 
           <p className={classes.title}>{title}</p>
           {description && <p className={classes.description}>{description}</p>}
-          {actions && (
+          {actions && size !== 'minor' && (
             <ButtonGroup className={classes.actions}>
-              {actions.secondaryButtonProps && (
-                <Button
-                  size="main"
-                  variant="base-secondary"
-                  {...actions.secondaryButtonProps}
-                />
-              )}
-              {actions.primaryButtonProps && (
-                <Button
-                  size="main"
-                  variant="base-primary"
-                  {...actions.primaryButtonProps}
-                />
-              )}
+              {fragmentButtons}
             </ButtonGroup>
           )}
         </div>

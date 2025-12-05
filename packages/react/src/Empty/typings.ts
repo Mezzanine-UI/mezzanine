@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { ButtonProps } from '../Button';
+import { ButtonGroupChild, ButtonProps } from '../Button';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface BaseEmptyProps {
@@ -30,12 +30,15 @@ export interface CustomPictogramEmptyProps {
 export interface MainOrSubEmptyProps {
   /**
    * Action buttons configuration for primary and secondary actions.
-   * Renders buttons in the order: secondary (left), primary (right).
+   * Renders buttons in the order: secondary (left or only one), primary (right).
    */
-  actions?: {
-    primaryButtonProps?: ButtonProps;
-    secondaryButtonProps: ButtonProps;
-  };
+  actions?:
+    | {
+        primaryButton?: ButtonProps | ButtonGroupChild;
+        secondaryButton: ButtonProps | ButtonGroupChild;
+      }
+    | ButtonProps
+    | ButtonGroupChild;
   /**
    * Optional description text displayed below the title.
    * Provides additional context or details about the empty state.

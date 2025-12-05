@@ -5,6 +5,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Empty from '.';
+import Button from '../Button';
 
 describe('<Empty />', () => {
   afterEach(cleanup);
@@ -25,11 +26,10 @@ describe('<Empty />', () => {
   });
 
   describe('prop: title', () => {
-    it('should render title in h3 element', () => {
-      const { getByRole } = render(<Empty title="Test Title" />);
-      const titleElement = getByRole('heading', { level: 3 });
+    it('should have mzn-empty__title class', () => {
+      const { getByText } = render(<Empty title="Test Title" />);
+      const titleElement = getByText('Test Title');
 
-      expect(titleElement.textContent).toBe('Test Title');
       expect(titleElement.classList.contains('mzn-empty__title')).toBeTruthy();
     });
   });
@@ -138,12 +138,12 @@ describe('<Empty />', () => {
   });
 
   describe('prop: actions', () => {
-    it('should render actions when provided', () => {
+    it('should render actions when provided as ButtonProps', () => {
       const actions = {
-        primaryButtonProps: {
+        primaryButton: {
           children: 'Primary Action',
         },
-        secondaryButtonProps: {
+        secondaryButton: {
           children: 'Secondary Action',
         },
       };
@@ -158,9 +158,36 @@ describe('<Empty />', () => {
 
     it('should render only secondary button when primary is not provided', () => {
       const actions = {
-        secondaryButtonProps: {
+        secondaryButton: {
           children: 'Secondary Action',
         },
+      };
+
+      const { getByText, queryByText } = render(
+        <Empty actions={actions} title="Test Title" />,
+      );
+
+      expect(getByText('Secondary Action')).toBeInstanceOf(Node);
+      expect(queryByText('Primary Action')).toBeNull();
+    });
+
+    it('should render actions when provided as ReactElement', () => {
+      const actions = {
+        primaryButton: <Button>Primary Action</Button>,
+        secondaryButton: <Button>Secondary Action</Button>,
+      };
+
+      const { getByText } = render(
+        <Empty actions={actions} title="Test Title" />,
+      );
+
+      expect(getByText('Primary Action')).toBeInstanceOf(Node);
+      expect(getByText('Secondary Action')).toBeInstanceOf(Node);
+    });
+
+    it('should render only secondary button when primary is not provided as ReactElement', () => {
+      const actions = {
+        secondaryButton: <Button>Secondary Action</Button>,
       };
 
       const { getByText, queryByText } = render(
