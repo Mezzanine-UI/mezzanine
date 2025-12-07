@@ -50,6 +50,7 @@
   @include _load-styles($options, navigation);
   @include _load-styles($options, app-bar);
   @include _load-styles($options, page-footer);
+  @include _load-styles($options, page-toolbar);
   @include _load-styles($options, stepper);
 
   // Data Display
