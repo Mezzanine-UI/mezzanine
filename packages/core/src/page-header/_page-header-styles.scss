@@ -1,0 +1,31 @@
+@use '~@mezzanine-ui/system/spacing';
+@use './page-header' as *;
+
+.#{$prefix} {
+  box-sizing: border-box;
+  display: grid;
+  gap: spacing.semantic-variable(gap, calm);
+  padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, spacious) 0;
+  width: 100%;
+
+  &__header-content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: spacing.semantic-variable(gap, calm);
+
+    .#{$prefix}__page-title-with-icon {
+      display: flex;
+      flex-grow: 1;
+      gap: spacing.semantic-variable(gap, tiny);
+      width: 100%;
+      max-width: spacing.semantic-variable(size, container, balanced);
+
+      &__text {
+        display: grid;
+        gap: spacing.semantic-variable(gap, tiny);
+        padding: spacing.semantic-variable(gap, tiny) 0;
+      }
+    }
+  }
+}
