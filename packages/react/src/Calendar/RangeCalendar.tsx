@@ -320,10 +320,9 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         const [existingStart, existingEnd] = value || [];
 
         if (!existingStart || (existingStart && existingEnd)) {
-          // First click: start new selection
+          // 未選取起始日期，或已完成區間選取，重新開始選取
           onChangeProp([target, undefined]);
         } else {
-          // Complete the range
           const rawStart = existingStart;
           const rawEnd = target;
 
