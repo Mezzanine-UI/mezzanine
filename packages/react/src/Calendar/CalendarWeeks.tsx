@@ -93,7 +93,6 @@ function CalendarWeeks(props: CalendarWeeksProps) {
 
   const weekFirstDates = useMemo(() => {
     return daysGrid.map((week, index) => {
-      // week[0] is the first day of the week (respects firstDayOfWeek setting)
       const dateNum = week[0];
       const isPrevMonth = index === 0 && dateNum > 7;
       const isNextMonth = index > 3 && dateNum <= 14;
