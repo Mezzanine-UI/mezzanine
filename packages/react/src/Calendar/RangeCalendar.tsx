@@ -197,7 +197,6 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       updateSecondReferenceDate,
     } = useRangeCalendarControls(referenceDateProp, mode);
 
-    // Helper function to normalize dates based on mode
     const normalizeRangeStart = useCallback(
       (date: DateType): DateType => {
         switch (mode) {
@@ -312,7 +311,6 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       ],
     );
 
-    // Helper function to handle range selection logic
     const handleRangeSelection = useCallback(
       (target: DateType) => {
         if (!onChangeProp) return;
@@ -340,14 +338,12 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       [value, onChangeProp, isBefore, normalizeRangeStart, normalizeRangeEnd],
     );
 
-    // Helper function to get the target value based on mode
     const getTargetValue = useCallback(
       (target: DateType, targetDate: DateType): DateType => {
         if (currentMode === mode) {
           return target;
         }
 
-        // Mode switching logic
         if (currentMode === 'month') {
           return setMonth(targetDate, getMonth(target));
         }
@@ -369,11 +365,9 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
 
         return (target: DateType) => {
           if (currentMode === mode) {
-            // Handle range selection in target mode
             const resultValue = getTargetValue(target, targetDate);
             handleRangeSelection(resultValue);
           } else {
-            // When switching modes (currentMode !== mode), update reference and pop
             const resultValue = getTargetValue(target, targetDate);
             updateReferenceDate(resultValue);
             popModeStack();
