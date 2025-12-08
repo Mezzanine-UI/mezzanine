@@ -133,14 +133,14 @@ $semantic-typographies: (
   ),
   input: (
     font-size: primitive.font-size-variable(14),
-    font-weight: primitive.font-weight-variable(semibold),
+    font-weight: primitive.font-weight-variable(regular),
     line-height: primitive.line-height-variable(functional),
     letter-spacing: primitive.letter-spacing-variable(0),
   ),
   input-mono: (
     font-family: primitive.font-family-variable(sfmono),
     font-size: primitive.font-size-variable(14),
-    font-weight: primitive.font-weight-variable(semibold),
+    font-weight: primitive.font-weight-variable(regular),
     line-height: primitive.line-height-variable(functional),
     letter-spacing: primitive.letter-spacing-variable(0),
   ),

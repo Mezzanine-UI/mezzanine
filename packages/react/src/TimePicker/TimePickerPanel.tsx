@@ -1,21 +1,21 @@
 import { forwardRef } from 'react';
 import { DateType } from '@mezzanine-ui/core/calendar';
 import TimePanel, { TimePanelProps } from '../TimePanel';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
 } from '../_internal/InputTriggerPopper';
 
 export interface TimePickerPanelProps
-  extends Omit<
+  extends Pick<
       TimePanelProps,
-      | Exclude<
-          keyof NativeElementPropsWithoutKeyAndRef<'div'>,
-          'className' | 'style' | 'id'
-        >
-      | 'withoutAction'
-      | 'onChange'
-      | 'value'
+      | 'className'
+      | 'hideHour'
+      | 'hideMinute'
+      | 'hideSecond'
+      | 'hourStep'
+      | 'minuteStep'
+      | 'secondStep'
+      | 'style'
     >,
     Pick<InputTriggerPopperProps, 'anchor' | 'fadeProps' | 'open'> {
   /**
@@ -42,23 +42,19 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
   function TimePickerPanel(props, ref) {
     const {
       anchor,
-      confirmText,
+      className,
       fadeProps,
       hideHour,
       hideMinute,
       hideSecond,
-      hourPrefix,
       hourStep,
-      minutePrefix,
       minuteStep,
       onChange,
-      onConfirm,
       open,
       popperProps,
-      secondPrefix,
       secondStep,
+      style,
       value,
-      ...restHostProps
     } = props;
 
     return (
@@ -70,20 +66,16 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
         fadeProps={fadeProps}
       >
         <TimePanel
-          {...restHostProps}
+          className={className}
           hideHour={hideHour}
-          hourStep={hourStep}
           hideMinute={hideMinute}
-          minuteStep={minuteStep}
           hideSecond={hideSecond}
-          secondStep={secondStep}
-          hourPrefix={hourPrefix}
-          minutePrefix={minutePrefix}
-          secondPrefix={secondPrefix}
+          hourStep={hourStep}
+          minuteStep={minuteStep}
           onChange={onChange}
+          secondStep={secondStep}
+          style={style}
           value={value}
-          onConfirm={onConfirm}
-          confirmText={confirmText}
         />
       </InputTriggerPopper>
     );

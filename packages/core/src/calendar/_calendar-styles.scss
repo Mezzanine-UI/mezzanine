@@ -2,70 +2,192 @@
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/effect';
+@use '~@mezzanine-ui/system/radius';
 @use '../button/utils' as btn-utils;
 @use './calendar' as *;
 
+@mixin mode-width {
+  @each $mode in $modes {
+    .#{$prefix}--#{$mode} & {
+      @if $mode == week {
+        width: 292px;
+      } @else {
+        width: 260px;
+      }
+    }
+  }
+}
+
 .#{$prefix} {
-  width: 224px;
-  padding: 16px;
-  background-color: palette.color(surface);
+  display: inline-flex;
+  box-sizing: border-box;
+  border-radius: radius.variable(roomy);
+  box-shadow: effect.variable(shadow, inner-top-and-bottom);
+  background-color: palette.semantic-variable("background", base);
+  pointer-events: auto;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &--no-shadow {
+    box-shadow: none;
+  }
+}
+
+.#{$main-prefix} {
+  @include mode-width();
+
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
+
+  &-with-footer {
+    display: inline-flex;
+    flex-flow: column;
+  }
 }
 
 .#{$board-prefix} {
-  width: 100%;
+  display: flex;
+  flex-flow: row;
+
+  .#{$prefix}--quarter &,
+  .#{$prefix}--half-year & {
+    flex-flow: column;
+  }
+}
+
+.#{$week-prefix} {
+  width: 32px;
+  height: 100%;
+  padding-top: 34px;
+  display: flex;
+  flex-flow: column;
+
+  &__row {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    padding: spacing.semantic-variable(padding, vertical, micro) 0;
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 1px;
+      height: 100%;
+      background-color: palette.semantic-variable(separator, neutral-faint);
+    }
+  }
+}
+
+.#{$days-grid-prefix} {
+  flex: 1;
 }
 
 .#{$button-prefix} {
   @include btn-utils.reset();
 
-  transition: transition.standard(background-color);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  border: 1px solid transparent;
+  border-radius: radius.variable(base);
+  transition: transition.standard(background-color) transition.standard(color) transition.standard(border);
 
   @include typography.inherit;
+
+  &__annotation {
+    @include typography.semantic-variable(annotation);
+
+    text-align: center;
+    color: palette.semantic-variable(text, neutral);
+  }
 
   &[aria-disabled='true'] {
     cursor: default;
   }
 
   &:hover:not(.#{$button-prefix}--disabled):not(.#{$button-prefix}--active) {
-    background-color: palette.color(primary-hover-bg);
+    background-color: palette.semantic-variable("background", neutral-faint);
+  }
+
+  .#{$cell-prefix}--today & {
+    border: 1px solid palette.semantic-variable(border, brand);
   }
 
   &--inRange {
-    background-color: palette.color(primary-hover-bg);
+    background-color: palette.semantic-variable("background", brand-faint)
   }
 
   &--active {
-    color: palette.color(on-primary);
-    background-color: palette.color(primary);
+    color: palette.semantic-variable(text, fixed-light);
+    background-color: palette.semantic-variable("background", brand);
+
+    .#{$cell-prefix} {
+      color: palette.semantic-variable(text, fixed-light);
+    }
   }
 
   &--disabled {
-    color: palette.color(text-disabled);
+    color: palette.semantic-variable(text, neutral-faint);
     background-color: transparent;
     cursor: default;
   }
 
   &--inactive {
-    color: palette.color(text-disabled);
+    color: palette.semantic-variable(text, neutral-faint);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: effect.variable(focus, primary);
   }
 }
 
 .#{$row-prefix} {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
+  column-gap: spacing.semantic-variable(gap, tiny);
   width: 100%;
+  padding: spacing.semantic-variable(padding, vertical, micro) 0;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  .#{$prefix}--quarter & {
+    padding: spacing.semantic-variable(padding, vertical, tiny) 0;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-auto-rows: 32px;
+  }
+
+  .#{$prefix}--half-year & {
+    padding: spacing.semantic-variable(padding, vertical, tiny) 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 32px;
+  }
+
+  &--with-border {
+    border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
 }
 
 .#{$cell-prefix} {
-  --#{$cell-prefix}-text-color: #{palette.color(text-primary)};
+  --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
 
   position: relative;
   width: 100%;
   padding-top: 100%;
   color: var(--#{$cell-prefix}-text-color);
   user-select: none;
+  transition: transition.standard(color);
 
-  @include typography.variant(input3);
+  @include typography.semantic-variable(label-primary);
 
   button {
     width: 100%;
@@ -83,30 +205,17 @@
     height: 100%;
   }
 
-  &--today {
-    --#{$cell-prefix}-text-color: #{palette.color(primary)};
-
-    &::after {
-      $dot-width: 2px;
-
-      content: '';
-      position: absolute;
-      left: calc(50% - #{math.div($dot-width, 2)});
-      display: block;
-      width: $dot-width;
-      height: $dot-width;
-      border-radius: 50%;
-      bottom: 6px;
-      background-color: var(--#{$cell-prefix}-text-color);
-    }
-  }
-
   &--active {
-    --#{$cell-prefix}-text-color: #{palette.color(on-primary)};
+    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
   }
 
   &--disabled {
-    --#{$cell-prefix}-text-color: #{palette.color(text-disabled)};
+    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-faint)};
+  }
+
+  .#{$prefix}--quarter &,
+  .#{$prefix}--half-year & {
+    padding-top: 32px;
   }
 }
 
@@ -114,37 +223,158 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-auto-rows: 32px;
-  grid-row-gap: 16px;
+  gap: calc(#{spacing.semantic-variable(padding, vertical, micro)} * 2) spacing.semantic-variable(gap, tiny);
   width: 100%;
 
-  @include typography.variant(input3);
+  @include typography.semantic-variable(label-primary);
+
+  color: palette.semantic-variable(text, neutral-solid);
 }
 
 .#{$controls-prefix} {
+  padding: spacing.semantic-variable(padding, vertical, tiny) spacing.semantic-variable(padding, horizontal, relaxed);
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  gap: spacing.semantic-variable(gap, tiny);
   position: relative;
   width: 100%;
-  margin: 0 0 12px;
+  margin: 0 0 spacing.semantic-variable(gap, tight);
+  box-sizing: border-box;
 
-  &__icon-button {
-    position: absolute;
-    top: 0;
-    font-size: 24px;
-    line-height: 0;
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tiny);
   }
 
   &__button {
-    padding: 0 8px;
+    @include btn-utils.reset();
 
-    @include typography.variant(button3);
+    line-height: 0;
+    padding: spacing.semantic-variable(padding, vertical, micro) 0;
+    border-radius: radius.variable(base);
+    color: palette.semantic-variable(icon, neutral);
+
+    &:hover:not([aria-disabled='true']) {
+      color: palette.semantic-variable(icon, neutral-solid);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: effect.variable(focus, primary);
+    }
+
+    &:disabled {
+      cursor: default;
+      color: palette.semantic-variable(icon, neutral-faint);
+    }
   }
 
-  &__prev {
-    left: 0;
-  }
+  &__main {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tight);
 
-  &__next {
+    button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+
+      @include typography.semantic-variable(button-highlight);
+
+      color: palette.semantic-variable(text, neutral-solid);
+      text-align: center;
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: effect.variable(focus, primary);
+      }
+
+      &:disabled {
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+  }
+}
+
+.#{$footer-control-prefix} {
+  width: 100%;
+  border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: spacing.semantic-variable(gap, base);
+}
+
+.#{$footer-actions-prefix} {
+  width: 100%;
+  border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: spacing.semantic-variable(gap, base);
+
+  button {
+    min-width: spacing.semantic-variable(size, element, expansive);
+  }
+}
+
+.#{$quick-select-prefix} {
+  width: 128px;
+  border-radius: radius.variable(roomy);
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight);
+  background-color: palette.semantic-variable("background", base);
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
     right: 0;
+    width: 1px;
+    height: 100%;
+    background-color: palette.semantic-variable(separator, neutral-faint);
+  }
+
+  &__button {
+    @include btn-utils.reset();
+
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: spacing.semantic-variable(gap, tight);
+    padding: spacing.semantic-variable(padding, horizontal, tiny);
+
+    @include typography.semantic-variable(caption);
+
+    color: palette.semantic-variable(text, neutral);
+    text-align: left;
+    transition: transition.standard(color);
+
+    &:hover,
+    &--active {
+      color: palette.semantic-variable(text, neutral-solid);
+    }
+
+    &:disabled {
+      cursor: default;
+      color: palette.semantic-variable(text, neutral-faint);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: effect.variable(focus, primary);
+    }
   }
 }

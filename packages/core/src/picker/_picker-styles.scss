@@ -1,4 +1,5 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
 @use '../text-field';
 @use './picker' as *;
 
@@ -6,20 +7,60 @@
   display: inline-flex;
   align-items: center;
 
-  input {
-    &:first-of-type {
-      padding-left: var(--#{text-field.$prefix}-padding-left);
-    }
-
-    &:last-of-type {
-      padding-right: var(--#{text-field.$prefix}-padding-right);
-    }
-  }
-
   &__arrow-icon {
     display: flex;
     align-items: center;
     margin: 0 4px;
     color: palette.color(action-inactive);
+  }
+
+  &__input-mono {
+    padding: 0;
+
+    @include typography.semantic-variable(input-mono);
+  }
+
+  &__formatted-input {
+    width: 100%;
+    display: flex;
+    position: relative;
+
+    @include typography.semantic-variable(input-mono);
+
+    color: transparent;
+  }
+
+  &__formatted-input-hidden {
+    caret-color: palette.semantic-variable(text, neutral-solid);
+    pointer-events: auto;
+
+    &::placeholder {
+      color: palette.semantic-variable(text, neutral-faint);
+    }
+  }
+
+  &__formatted-input-display {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    background-color: transparent;
+  }
+
+  &__formatted-input-segment {
+    white-space: pre;
+
+    @include typography.semantic-variable(input-mono);
+
+    color: palette.semantic-variable(text, neutral-faint);
+
+    &--filled {
+      color: palette.semantic-variable(text, neutral-solid);
+    }
+
+    &--disabled {
+      color: palette.semantic-variable(text, neutral-light);
+    }
   }
 }

@@ -8,16 +8,13 @@ import moment from 'moment';
 import DatePicker, { DatePickerProps } from './DatePicker';
 import Typography from '../Typography';
 import { CalendarConfigProvider } from '../Calendar';
-import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DatePicker',
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType | undefined>(
-    new Date().toISOString(),
-  );
+  const [val, setVal] = useState<DateType | undefined>();
   const onChange = (v?: DateType) => {
     setVal(v);
   };
@@ -43,8 +40,8 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
-        {val}
+      <Typography variant="h3" style={typoStyle}>
+        {`Value: ${val}`}
       </Typography>
       <DatePicker
         value={val}
@@ -71,7 +68,7 @@ Playground.argTypes = {
     },
   },
   size: {
-    options: ['small', 'medium', 'large'],
+    options: ['main', 'sub'],
     control: {
       type: 'select',
     },
@@ -85,15 +82,17 @@ Playground.args = {
   format: 'YYYY-MM-DD',
   fullWidth: false,
   mode: 'day',
-  placeholder: '',
+  placeholder: 'Start Date',
   readOnly: false,
-  size: 'medium',
+  size: 'main',
 };
 
 export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType | undefined>('2022-01-05');
+  const [val, setVal] = useState<DateType | undefined>(
+    '2025-12-04T16:00:00.000Z',
+  );
   const onChange = (v?: DateType) => {
     setVal(v);
   };
@@ -101,25 +100,25 @@ export const Basic = () => {
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Normal
         </Typography>
         <DatePicker value={val} onChange={onChange} />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Disabled
         </Typography>
         <DatePicker value={new Date().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Error
         </Typography>
         <DatePicker value={new Date().toISOString()} error />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Read only
         </Typography>
         <DatePicker value={new Date().toISOString()} readOnly />
@@ -142,7 +141,7 @@ export const Method = () => {
     <>
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsMoment
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -150,7 +149,7 @@ export const Method = () => {
       </CalendarConfigProvider>
       <CalendarConfigProvider methods={CalendarMethodsDayjs}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsDayjs
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -158,7 +157,7 @@ export const Method = () => {
       </CalendarConfigProvider>
       <CalendarConfigProvider methods={CalendarMethodsLuxon}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
+          <Typography variant="h3" style={typoStyle}>
             CalendarMethodsLuxon
           </Typography>
           <DatePicker value={val} onChange={onChange} />
@@ -171,31 +170,22 @@ export const Method = () => {
 export const Sizes = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [valSm, onChangeSm] = usePickerChange();
-  const [valMd, onChangeMd] = usePickerChange();
-  const [valLg, onChangeLg] = usePickerChange();
+  const [valMain, onChangeMain] = usePickerChange();
+  const [valSub, onChangeSub] = usePickerChange();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Small
+        <Typography variant="h3" style={typoStyle}>
+          Size: Main
         </Typography>
-        <DatePicker value={valSm} onChange={onChangeSm} size="small" />
+        <DatePicker value={valMain} onChange={onChangeMain} size="main" />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Medium
+        <Typography variant="h3" style={typoStyle}>
+          Size: Sub
         </Typography>
-        <DatePicker value={valMd} onChange={onChangeMd} size="medium" />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Large
-        </Typography>
-        <ConfigProvider size="large">
-          <DatePicker value={valLg} onChange={onChangeLg} />
-        </ConfigProvider>
+        <DatePicker value={valSub} onChange={onChangeSub} size="sub" />
       </div>
     </CalendarConfigProvider>
   );
@@ -208,67 +198,121 @@ export const Modes = () => {
   const [valW, onChangeW] = usePickerChange();
   const [valM, onChangeM] = usePickerChange();
   const [valY, onChangeY] = usePickerChange();
+  const [valQ, onChangeQ] = usePickerChange();
+  const [valH, onChangeH] = usePickerChange();
+
+  // Helper function to format values with [H]n support
+  const formatWithHalfYear = (value: DateType | undefined, mode: string) => {
+    if (!value) return '';
+    const format = getDefaultModeFormat(mode as any);
+    const m = moment(value);
+
+    // Handle [H]n format for half-year
+    if (format === 'YYYY-[H]n') {
+      const quarter = m.quarter();
+      const halfYear = Math.ceil(quarter / 2); // Q1,Q2→1  Q3,Q4→2
+      return m.format('YYYY') + '-H' + halfYear;
+    }
+
+    return m.format(format);
+  };
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Day
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valD).format(getDefaultModeFormat('day'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valD || ''}
+          format value: ${valD ? moment(valD).format(getDefaultModeFormat('day')) : ''}`}
         </Typography>
         <DatePicker
           value={valD}
           onChange={onChangeD}
           mode="day"
-          format="YYYY-MM-DD"
-          placeholder="YYYY-MM-DD"
+          format={getDefaultModeFormat('day')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Week
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valW).format(getDefaultModeFormat('week'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valW || ''}
+          format value: ${valW ? moment(valW).format(getDefaultModeFormat('week')) : ''}`}
         </Typography>
         <DatePicker
           value={valW}
           onChange={onChangeW}
           mode="week"
-          format="gggg-wo"
-          placeholder="gggg-wo"
+          format={getDefaultModeFormat('week')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Month
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valM).format(getDefaultModeFormat('month'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valM || ''}
+          format value: ${valM ? moment(valM).format(getDefaultModeFormat('month')) : ''}`}
         </Typography>
         <DatePicker
           value={valM}
           onChange={onChangeM}
           mode="month"
-          format="YYYY-MM"
-          placeholder="YYYY-MM"
+          format={getDefaultModeFormat('month')}
+          placeholder="輸入日期"
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Year
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(valY).format(getDefaultModeFormat('year'))}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valY || ''}
+          format value: ${valY ? moment(valY).format(getDefaultModeFormat('year')) : ''}`}
         </Typography>
         <DatePicker
           value={valY}
           onChange={onChangeY}
           mode="year"
-          format="YYYY"
-          placeholder="YYYY"
+          format={getDefaultModeFormat('year')}
+          placeholder="輸入日期"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Quarter
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valQ || ''}
+          format value: ${valQ ? moment(valQ).format(getDefaultModeFormat('quarter')) : ''}`}
+        </Typography>
+        <DatePicker
+          value={valQ}
+          onChange={onChangeQ}
+          mode="quarter"
+          format={getDefaultModeFormat('quarter')}
+          placeholder="輸入日期"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Half year
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${valH || ''}
+          format value: ${formatWithHalfYear(valH, 'half-year')}`}
+        </Typography>
+        <DatePicker
+          value={valH}
+          onChange={onChangeH}
+          mode="half-year"
+          format={getDefaultModeFormat('half-year')}
+          placeholder="輸入日期"
         />
       </div>
     </CalendarConfigProvider>
@@ -276,26 +320,50 @@ export const Modes = () => {
 };
 
 export const CustomDisable = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
+  const containerStyle = { margin: '0 0 32px 0' };
+  const sectionStyle = {
+    margin: '0 0 48px 0',
+    padding: '16px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+  };
   const typoStyle = {
     margin: '0 0 12px 0',
     whiteSpace: 'pre-line',
   } as CSSProperties;
+
   const [valD, onChangeD] = usePickerChange();
   const [valW, onChangeW] = usePickerChange();
   const [valM, onChangeM] = usePickerChange();
   const [valY, onChangeY] = usePickerChange();
+  const [valQ, onChangeQ] = usePickerChange();
+  const [valH, onChangeH] = usePickerChange();
+  const [valMinMax, onChangeMinMax] = usePickerChange();
 
-  // We use moment.date  instead of moment.add is because storybook currently has internal conflict with the method.
-  const disabledDatesStart = moment().date(moment().date() + 3);
-  const disabledDatesEnd = moment().date(moment().date() + 7);
-  const disabledWeeksStart = moment().week(moment().week() - 5);
-  const disabledWeeksEnd = moment().week(moment().week() - 2);
-  const disabledMonthsStart = moment().month(moment().month() - 5);
-  const disabledMonthsEnd = moment().month(moment().month() - 1);
-  const disabledYearsStart = moment().year(moment().year() - 20);
-  const disabledYearsEnd = moment().year(moment().year() - 1);
+  // Define disabled ranges relative to today
+  const today = moment();
 
+  // Disable specific date range: 3-7 days from today
+  const disabledDatesStart = moment().date(today.date() + 3);
+  const disabledDatesEnd = moment().date(today.date() + 7);
+
+  // Disable specific week range: 5 weeks ago to 2 weeks ago
+  const disabledWeeksStart = moment().week(today.week() - 5);
+  const disabledWeeksEnd = moment().week(today.week() - 2);
+
+  // Disable specific month range: 5 months ago to 1 month ago
+  const disabledMonthsStart = moment().month(today.month() - 5);
+  const disabledMonthsEnd = moment().month(today.month() - 1);
+
+  // Disable specific year range: 20 years ago to 1 year ago
+  const disabledYearsStart = moment().year(today.year() - 20);
+  const disabledYearsEnd = moment().year(today.year() - 1);
+
+  // Min/Max date constraints
+  const minDate = moment().subtract(30, 'days');
+  const maxDate = moment().add(30, 'days');
+
+  // Disable functions
   const isDateDisabled = (target: DateType) =>
     moment(target).isBetween(disabledDatesStart, disabledDatesEnd, 'day', '[]');
 
@@ -323,106 +391,334 @@ export const CustomDisable = () => {
       '[]',
     );
 
+  const isQuarterDisabled = (target: DateType) => {
+    const q = moment(target).quarter();
+    const y = moment(target).year();
+    // Disable Q1 and Q2 of current year
+    return y === today.year() && (q === 1 || q === 2);
+  };
+
+  const isHalfYearDisabled = (target: DateType) => {
+    const h = Math.ceil(moment(target).quarter() / 2);
+    const y = moment(target).year();
+    // Disable H1 of current year
+    return y === today.year() && h === 1;
+  };
+
+  // Min/Max constraint
+  const isDateOutOfRange = (target: DateType) =>
+    moment(target).isBefore(minDate, 'day') ||
+    moment(target).isAfter(maxDate, 'day');
+
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='day')
-          disabledMonthSwitch = true
-          disabledYearSwitch = true
-          disableOnNext = true
-          disableOnPrev = true`}
+      <div style={sectionStyle}>
+        <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+          1. Disable Navigation Controls
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          Disable month/year switching buttons and navigation arrows. Useful
+          when you want to restrict user to current view only.
         </Typography>
         <DatePicker
           value={valD}
           onChange={onChangeD}
           mode="day"
           format="YYYY-MM-DD"
-          placeholder="YYYY-MM-DD"
+          fullWidth
+          placeholder="Date"
           disabledMonthSwitch
           disabledYearSwitch
           disableOnNext
+          disableOnDoubleNext
           disableOnPrev
+          disableOnDoublePrev
         />
       </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='day') Disabled
-            Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
-            Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
-            Dates: ${disabledDatesStart.format('YYYY-MM-DD')} ~ ${disabledDatesEnd.format('YYYY-MM-DD')}
-          `}
+      <div style={sectionStyle}>
+        <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+          2. Min/Max Date Range
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`Only allow dates within a specific range.
+          Available range: ${minDate.format('YYYY-MM-DD')} ~ ${maxDate.format('YYYY-MM-DD')} (±30 days from today)`}
         </Typography>
         <DatePicker
-          value={valD}
-          onChange={onChangeD}
+          value={valMinMax}
+          onChange={onChangeMinMax}
           mode="day"
           format="YYYY-MM-DD"
-          placeholder="YYYY-MM-DD"
-          isDateDisabled={isDateDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isYearDisabled={isYearDisabled}
+          fullWidth
+          placeholder="Date"
+          isDateDisabled={isDateOutOfRange}
         />
       </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='week') Disabled
-          Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
-          Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
-          Weeks: ${disabledWeeksStart.format(getDefaultModeFormat('week'))} ~ ${disabledWeeksEnd.format(getDefaultModeFormat('week'))}`}
+      <div style={sectionStyle}>
+        <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+          3. Mode-specific Disable Examples
         </Typography>
-        <DatePicker
-          value={valW}
-          onChange={onChangeW}
-          mode="week"
-          format={getDefaultModeFormat('week')}
-          placeholder={getDefaultModeFormat('week')}
-          isYearDisabled={isYearDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isWeekDisabled={isWeekDisabled}
-        />
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Day Mode - Disable Date Range
+            Disabled: ${disabledDatesStart.format('YYYY-MM-DD')} ~ ${disabledDatesEnd.format('YYYY-MM-DD')}`}
+          </Typography>
+          <DatePicker
+            value={valD}
+            onChange={onChangeD}
+            mode="day"
+            format={getDefaultModeFormat('day')}
+            placeholder="Date"
+            isDateDisabled={isDateDisabled}
+          />
+        </div>
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Week Mode - Disable Week Range
+            Disabled: ${disabledWeeksStart.format('gggg-[W]ww')} ~ ${disabledWeeksEnd.format('gggg-[W]ww')}`}
+          </Typography>
+          <DatePicker
+            value={valW}
+            onChange={onChangeW}
+            mode="week"
+            format={getDefaultModeFormat('week')}
+            placeholder="Week"
+            isWeekDisabled={isWeekDisabled}
+          />
+        </div>
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Month Mode - Disable Month Range
+            Disabled: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}`}
+          </Typography>
+          <DatePicker
+            value={valM}
+            onChange={onChangeM}
+            mode="month"
+            format={getDefaultModeFormat('month')}
+            placeholder="Month"
+            isMonthDisabled={isMonthDisabled}
+          />
+        </div>
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Year Mode - Disable Year Range
+            Disabled: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}`}
+          </Typography>
+          <DatePicker
+            value={valY}
+            onChange={onChangeY}
+            mode="year"
+            format={getDefaultModeFormat('year')}
+            placeholder="Year"
+            isYearDisabled={isYearDisabled}
+          />
+        </div>
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Quarter Mode - Disable Q1 & Q2 of ${today.year()}`}
+          </Typography>
+          <DatePicker
+            value={valQ}
+            onChange={onChangeQ}
+            mode="quarter"
+            format={getDefaultModeFormat('quarter')}
+            placeholder="Quarter"
+            isQuarterDisabled={isQuarterDisabled}
+          />
+        </div>
+
+        <div style={containerStyle}>
+          <Typography variant="h3" style={typoStyle}>
+            {`Half-Year Mode - Disable H1 of ${today.year()}`}
+          </Typography>
+          <DatePicker
+            value={valH}
+            onChange={onChangeH}
+            mode="half-year"
+            format={getDefaultModeFormat('half-year')}
+            placeholder="Half Year"
+            isHalfYearDisabled={isHalfYearDisabled}
+          />
+        </div>
       </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='day') Disabled Dates:
-          ${disabledDatesStart.format(getDefaultModeFormat('day'))} ~ ${disabledDatesEnd.format(getDefaultModeFormat('day'))}`}
+    </CalendarConfigProvider>
+  );
+};
+
+/**
+ * Calendar Integration Examples
+ */
+export const CalendarIntegration = () => {
+  const containerStyle = { margin: '0 0 32px 0' };
+  const sectionStyle = {
+    margin: '0 0 48px 0',
+    padding: '16px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+  };
+  const typoStyle = {
+    margin: '0 0 12px 0',
+    whiteSpace: 'pre-line',
+  } as CSSProperties;
+
+  const [valAnnotation, onChangeAnnotation] = usePickerChange();
+  const [valQuickSelect, onChangeQuickSelect] = usePickerChange();
+
+  const annotationData: Record<
+    string,
+    {
+      value: string;
+      color: 'text-success' | 'text-error' | 'text-warning' | 'text-neutral';
+    }
+  > = {
+    [moment().format('YYYY-MM-DD')]: { value: '+5.2%', color: 'text-success' },
+    [moment().subtract(1, 'days').format('YYYY-MM-DD')]: {
+      value: '-3.1%',
+      color: 'text-error',
+    },
+    [moment().subtract(2, 'days').format('YYYY-MM-DD')]: {
+      value: '+1.8%',
+      color: 'text-warning',
+    },
+    [moment().subtract(3, 'days').format('YYYY-MM-DD')]: {
+      value: '+8.4%',
+      color: 'text-success',
+    },
+    [moment().subtract(4, 'days').format('YYYY-MM-DD')]: {
+      value: '-7.2%',
+      color: 'text-error',
+    },
+    [moment().add(1, 'days').format('YYYY-MM-DD')]: {
+      value: '+2.1%',
+      color: 'text-warning',
+    },
+    [moment().add(2, 'days').format('YYYY-MM-DD')]: {
+      value: '-0.5%',
+      color: 'text-neutral',
+    },
+    [moment().add(3, 'days').format('YYYY-MM-DD')]: {
+      value: '+6.7%',
+      color: 'text-success',
+    },
+  };
+
+  // Quick select options
+  const quickSelectOptions = [
+    {
+      id: 'today',
+      name: 'Today',
+      onClick: () => onChangeQuickSelect(moment().toISOString()),
+    },
+    {
+      id: 'yesterday',
+      name: 'Yesterday',
+      onClick: () =>
+        onChangeQuickSelect(moment().subtract(1, 'day').toISOString()),
+    },
+    {
+      id: 'lastWeek',
+      name: 'Last Week',
+      onClick: () =>
+        onChangeQuickSelect(moment().subtract(7, 'days').toISOString()),
+    },
+    {
+      id: 'lastMonth',
+      name: 'Last Month',
+      onClick: () =>
+        onChangeQuickSelect(moment().subtract(1, 'month').toISOString()),
+    },
+  ];
+
+  const getQuickSelectActiveId = (val?: DateType) => {
+    if (!val) return undefined;
+    const selected = moment(val);
+    const today = moment();
+
+    if (selected.isSame(today, 'day')) return 'today';
+    if (selected.isSame(today.clone().subtract(1, 'day'), 'day'))
+      return 'yesterday';
+    if (selected.isSame(today.clone().subtract(7, 'days'), 'day'))
+      return 'lastWeek';
+    if (selected.isSame(today.clone().subtract(1, 'month'), 'day'))
+      return 'lastMonth';
+    return undefined;
+  };
+
+  return (
+    <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <div style={sectionStyle}>
+        <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+          1. Date Annotations (renderAnnotations)
         </Typography>
-        <DatePicker
-          value={valD}
-          onChange={onChangeD}
-          mode="day"
-          format={getDefaultModeFormat('day')}
-          placeholder={getDefaultModeFormat('day')}
-          isDateDisabled={isDateDisabled}
-        />
+        <Typography variant="body" style={typoStyle}>
+          Display additional information on each date cell via calendarProps.
+          Perfect for showing metrics, events, or status indicators.
+        </Typography>
+        <div style={containerStyle}>
+          <Typography
+            variant="body"
+            style={{ margin: '0 0 8px 0', color: '#666' }}
+          >
+            Selected:{' '}
+            {valAnnotation
+              ? moment(valAnnotation).format('YYYY-MM-DD')
+              : 'None'}
+            {valAnnotation &&
+              annotationData[moment(valAnnotation).format('YYYY-MM-DD')] &&
+              ` (${annotationData[moment(valAnnotation).format('YYYY-MM-DD')].value})`}
+          </Typography>
+          <DatePicker
+            value={valAnnotation}
+            onChange={onChangeAnnotation}
+            mode="day"
+            format="YYYY-MM-DD"
+            placeholder="Date"
+            calendarProps={{
+              renderAnnotations: (date: DateType) => {
+                const dateKey = moment(date).format('YYYY-MM-DD');
+                return annotationData[dateKey];
+              },
+            }}
+          />
+        </div>
       </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='month') Disabled Months:
-          ${disabledMonthsStart.format(getDefaultModeFormat('month'))} ~ ${disabledMonthsEnd.format(getDefaultModeFormat('month'))}`}
+      <div style={sectionStyle}>
+        <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+          2. Quick Select Options
         </Typography>
-        <DatePicker
-          value={valM}
-          onChange={onChangeM}
-          mode="month"
-          format={getDefaultModeFormat('month')}
-          placeholder={getDefaultModeFormat('month')}
-          isMonthDisabled={isMonthDisabled}
-        />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='year') Disabled Years:
-          ${disabledYearsStart.format(getDefaultModeFormat('year'))} ~ ${disabledYearsEnd.format(getDefaultModeFormat('year'))}`}
+        <Typography variant="body" style={typoStyle}>
+          Provide shortcut buttons for commonly selected dates via
+          calendarProps. Great for improving UX in dashboards and reports.
         </Typography>
-        <DatePicker
-          value={valY}
-          onChange={onChangeY}
-          mode="year"
-          format={getDefaultModeFormat('year')}
-          placeholder={getDefaultModeFormat('year')}
-          isYearDisabled={isYearDisabled}
-        />
+        <div style={containerStyle}>
+          <Typography
+            variant="body"
+            style={{ margin: '0 0 8px 0', color: '#666' }}
+          >
+            Selected:{' '}
+            {valQuickSelect
+              ? moment(valQuickSelect).format('YYYY-MM-DD')
+              : 'None'}
+          </Typography>
+          <DatePicker
+            value={valQuickSelect}
+            onChange={onChangeQuickSelect}
+            mode="day"
+            format="YYYY-MM-DD"
+            placeholder="Date"
+            calendarProps={{
+              quickSelect: {
+                activeId: getQuickSelectActiveId(valQuickSelect),
+                options: quickSelectOptions,
+              },
+            }}
+          />
+        </div>
       </div>
     </CalendarConfigProvider>
   );

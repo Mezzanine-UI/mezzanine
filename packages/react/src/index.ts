@@ -226,7 +226,6 @@ export type {
   FormControl,
   FormFieldProps,
   FormHintTextProps,
-  FormHintTextProps,
   FormLabelProps,
 } from './Form';
 export { default as Input } from './Input';
@@ -328,25 +327,13 @@ export type {
   ToggleProps as SwitchProps,
   ToggleSize as SwitchSize,
 } from './Toggle';
-export {
-  UploadButton,
-  Uploader,
-  UploadItem,
-  UploadPicture,
-  UploadPictureWall,
-  UploadResult,
-} from './Upload';
+export { Uploader, UploadItem, UploadPictureCard, Upload } from './Upload';
 export type {
-  UploadButtonProps,
-  UploadPictureControl,
-  UploadPictureProps,
-  UploadPictureWallControl,
-  UploadPictureWallProps,
   UploaderProps,
   UploadItemProps,
-  UploadResultProps,
-  UploadResultSize,
-  UploadResultStatus,
+  UploadFile,
+  UploadPictureCardProps,
+  UploadProps,
 } from './Upload';
 
 /**
@@ -426,10 +413,14 @@ export {
   CalendarMonths,
   CalendarWeeks,
   CalendarYears,
+  CalendarQuarters,
+  CalendarHalfYears,
+  RangeCalendar,
   useCalendarContext,
   useCalendarControlModifiers,
   useCalendarControls,
   useCalendarModeStack,
+  useRangeCalendarControls,
 } from './Calendar';
 export type {
   CalendarCellProps,
@@ -443,6 +434,9 @@ export type {
   CalendarProps,
   CalendarWeeksProps,
   CalendarYearsProps,
+  CalendarQuartersProps,
+  CalendarHalfYearsProps,
+  RangeCalendarProps,
   UseCalendarControlModifiersResult,
 } from './Calendar';
 export * from './Notifier';

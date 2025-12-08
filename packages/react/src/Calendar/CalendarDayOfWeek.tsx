@@ -36,9 +36,19 @@ function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
   const weekDayNames = getWeekDayNames(displayWeekDayLocale);
 
   return (
-    <div className={cx(classes.row, className)} {...restRowProps}>
-      {weekDayNames.map((name) => (
-        <CalendarCell key={`CALENDAR_DAY_OF_WEEK/${name}`}>{name}</CalendarCell>
+    <div
+      className={cx(classes.row, className)}
+      role="row"
+      aria-label="Days of the week"
+      {...restRowProps}
+    >
+      {weekDayNames.map((name, idx) => (
+        <CalendarCell
+          key={`CALENDAR_DAY_OF_WEEK/${name}-${idx}`}
+          role="columnheader"
+        >
+          {name}
+        </CalendarCell>
       ))}
     </div>
   );

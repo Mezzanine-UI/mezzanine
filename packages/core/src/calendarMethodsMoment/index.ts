@@ -10,6 +10,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getMinute: (date) => moment(date).minute(),
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
+  getWeek: (date) => moment(date).week(),
   getWeekDay: (date) => {
     const clone = moment(date).locale('en_US');
 
@@ -17,6 +18,8 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
   getMonth: (date) => moment(date).month(),
   getYear: (date) => moment(date).year(),
+  getQuarter: (date) => moment(date).quarter(),
+  getHalfYear: (date) => Math.floor(moment(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
     const date = moment().locale(locale);
 
@@ -34,6 +37,21 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
 
   /** Manipulate */
+  addHour: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'hour').toISOString();
+  },
+  addMinute: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'minute').toISOString();
+  },
+  addSecond: (date, diff) => {
+    const clone = moment(date);
+
+    return clone.add(diff, 'second').toISOString();
+  },
   addDay: (date, diff) => {
     const clone = moment(date);
 
@@ -48,6 +66,11 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     const clone = moment(date);
 
     return clone.add(diff, 'month').toISOString();
+  },
+  setMillisecond: (date, millisecond) => {
+    const clone = moment(date);
+
+    return clone.millisecond(millisecond).toISOString();
   },
   setSecond: (date, second) => {
     const clone = moment(date);
@@ -79,18 +102,73 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
     return clone.date(target).toISOString();
   },
-  startOf: (target, granularity: unitOfTime.StartOf) => moment(target).startOf(granularity).toISOString(),
+  startOf: (target, granularity: unitOfTime.StartOf) =>
+    moment(target).startOf(granularity).toISOString(),
+
+  getCurrentWeekFirstDate: (value) =>
+    moment(value)
+      .startOf('week')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentMonthFirstDate: (value) =>
+    moment(value)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentYearFirstDate: (value) =>
+    moment(value)
+      .startOf('year')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString(),
+  getCurrentQuarterFirstDate: (value) => {
+    const m = moment(value);
+    const quarterStart = Math.floor(m.month() / 3) * 3;
+    return m
+      .month(quarterStart)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+  },
+  getCurrentHalfYearFirstDate: (value) => {
+    const m = moment(value);
+    const halfYearStart = Math.floor(m.month() / 6) * 6;
+    return m
+      .month(halfYearStart)
+      .startOf('month')
+      .hour(0)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+  },
 
   /** Generate day calendar */
   getCalendarGrid: (target) => {
-    const lastDateOfPrevMonth = moment(target).subtract(1, 'month').endOf('month')
+    const lastDateOfPrevMonth = moment(target)
+      .subtract(1, 'month')
+      .endOf('month')
       .date();
     const firstDayOfCurrentMonth = moment(target).date(1).day();
     const lastDateOfCurrentMonth = moment(target).endOf('month').date();
 
     return chunk(
       [
-        ...range(lastDateOfPrevMonth - firstDayOfCurrentMonth + 1, lastDateOfPrevMonth + 1),
+        ...range(
+          lastDateOfPrevMonth - firstDayOfCurrentMonth + 1,
+          lastDateOfPrevMonth + 1,
+        ),
         ...range(1, lastDateOfCurrentMonth + 1),
         ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 1),
       ],
@@ -100,29 +178,51 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
   /** Compares */
   isBefore: (target, comparison) => moment(target).isBefore(comparison),
-  isBetween: (
-    value,
-    target1,
-    target2,
-    granularity: unitOfTime.StartOf,
-  ) => moment(value).isBetween(target1, target2, granularity),
-  isSameDate: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo) => moment(dateOne).isSame(moment(dateTwo), 'week'),
+  isBetween: (value, target1, target2, granularity: unitOfTime.StartOf) =>
+    moment(value).isBetween(target1, target2, granularity),
+  isSameDate: (dateOne, dateTwo) =>
+    moment(dateOne).isSame(moment(dateTwo), 'date'),
+  isSameWeek: (dateOne, dateTwo) =>
+    moment(dateOne).isSame(moment(dateTwo), 'week'),
   isInMonth: (target, month) => moment(target).month() === month,
-  isDateIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) => targets.some(
-    (target) => moment(firstDateOfWeek).isSame(moment(target), 'week'),
-  ),
-  isMonthIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'month')),
-  isYearIncluded: (date, targets) => targets.some((target) => moment(date).isSame(moment(target), 'year')),
+  isDateIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'day')),
+  isWeekIncluded: (firstDateOfWeek, targets) =>
+    targets.some((target) =>
+      moment(firstDateOfWeek).isSame(moment(target), 'week'),
+    ),
+  isMonthIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'month')),
+  isYearIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'year')),
+  isQuarterIncluded: (date, targets) =>
+    targets.some((target) => moment(date).isSame(moment(target), 'quarter')),
+  isHalfYearIncluded: (date, targets) => {
+    const halfYear = Math.floor(moment(date).month() / 6);
+    return targets.some((target) => {
+      const targetHalfYear = Math.floor(moment(target).month() / 6);
+      return (
+        moment(date).isSame(moment(target), 'year') &&
+        halfYear === targetHalfYear
+      );
+    });
+  },
 
   /** Format */
   formatToString: (locale, date, format) => {
     const clone = moment(date);
     const result = clone.locale(locale);
 
+    // Handle half-year format: convert n to half-year number (1 or 2)
+    if (format.includes('[H]n')) {
+      const quarter = result.quarter();
+      const halfYear = Math.ceil(quarter / 2);
+      return result.format(format.replace('n', halfYear.toString()));
+    }
+
     return result.format(format);
   },
+  formatToISOString: (date) => moment(date).toISOString(),
 
   /** Parse */
   parse: (locale, text, formats) => {
@@ -150,6 +250,96 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     }
 
     return undefined;
+  },
+
+  /** Parse and validate formatted input */
+  parseFormattedValue: (text, format) => {
+    // Handle half-year format: convert n to Q for parsing
+    let parseFormat = format;
+    let parseText = text;
+
+    if (format.includes('[H]n')) {
+      // Extract half-year value (1 or 2) and convert to quarter (1-4)
+      const halfYearMatch = text.match(/(\d{4})-H(\d)/);
+      if (halfYearMatch) {
+        const year = halfYearMatch[1];
+        const halfYear = parseInt(halfYearMatch[2], 10);
+
+        if (halfYear < 1 || halfYear > 2) {
+          return undefined;
+        }
+
+        // Convert n to Q: H1 → Q1, H2 → Q3
+        const quarter = halfYear === 1 ? 1 : 3;
+        parseText = `${year}-Q${quarter}`;
+        parseFormat = format.replace('[H]n', '[Q]Q');
+      }
+    }
+
+    const parsed = moment(parseText, parseFormat, true);
+
+    if (!parsed.isValid()) {
+      return undefined;
+    }
+
+    // Validate based on format keys present
+    const hasWeek = parseFormat.includes('W');
+    const hasQuarter = parseFormat.includes('Q');
+    const hasMonth = parseFormat.includes('M') && !hasQuarter;
+    const hasDay = parseFormat.includes('D');
+    const hasYear = parseFormat.includes('Y') || parseFormat.includes('G');
+
+    // If it's a week format, validate that the week number is valid for that year
+    if (hasWeek && hasYear && !hasMonth && !hasDay) {
+      // Use week year + week of year (respects locale's firstDayOfWeek)
+      const weekYear = parsed.weekYear();
+      const weekNum = parsed.week();
+
+      // Find max weeks in the week year
+      // Check the last week of the week year
+      const lastWeekOfYear = moment().weekYear(weekYear).week(52);
+      const maxWeeks = lastWeekOfYear.weekYear() === weekYear ? 52 : 53;
+
+      if (weekNum < 1 || weekNum > maxWeeks) {
+        return undefined;
+      }
+
+      return CalendarMethodsMoment.getCurrentWeekFirstDate(
+        parsed.toISOString(),
+      );
+    }
+
+    // If it's a quarter format, validate and normalize
+    if (hasQuarter && hasYear && !hasMonth && !hasDay) {
+      const quarter = parsed.quarter();
+      if (quarter < 1 || quarter > 4) {
+        return undefined;
+      }
+      return CalendarMethodsMoment.getCurrentQuarterFirstDate(
+        parsed.toISOString(),
+      );
+    }
+
+    // If it's a month format without day, normalize to first day
+    if (hasMonth && hasYear && !hasDay && !hasWeek && !hasQuarter) {
+      return CalendarMethodsMoment.getCurrentMonthFirstDate(
+        parsed.toISOString(),
+      );
+    }
+
+    // If it's year only, normalize to first day of year
+    if (hasYear && !hasMonth && !hasDay && !hasWeek && !hasQuarter) {
+      return CalendarMethodsMoment.getCurrentYearFirstDate(
+        parsed.toISOString(),
+      );
+    }
+
+    // For complete dates, just validate
+    if (hasYear && hasMonth && hasDay) {
+      return parsed.toISOString();
+    }
+
+    return parsed.toISOString();
   },
 };
 

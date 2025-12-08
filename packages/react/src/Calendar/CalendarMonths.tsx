@@ -58,6 +58,7 @@ function CalendarMonths(props: CalendarMonthsProps) {
     displayMonthLocale: displayMonthLocaleFromConfig,
     getMonthShortNames,
     isMonthIncluded,
+    getCurrentMonthFirstDate,
     setMonth,
   } = useCalendarContext();
   const {
@@ -79,7 +80,10 @@ function CalendarMonths(props: CalendarMonthsProps) {
     <div className={cx(classes.board, className)} {...rest}>
       <div className={classes.twelveGrid}>
         {calendarMonths.map((month) => {
-          const monthDateType = setMonth(referenceDate, month);
+          const monthDateType = setMonth(
+            getCurrentMonthFirstDate(referenceDate),
+            month,
+          );
           const active = value && isMonthIncluded(monthDateType, value);
           /** @NOTE Current month should be disabled when current year is disabled */
           const disabled =
@@ -99,12 +103,30 @@ function CalendarMonths(props: CalendarMonthsProps) {
               }
             : undefined;
 
+          // Accessible month label for screen readers
+          const monthDate = new Date(monthDateType);
+          const fullMonthName = monthDate.toLocaleDateString(
+            displayMonthLocale,
+            { month: 'long' },
+          );
+          const year = monthDate.getFullYear();
+
+          const ariaLabel = [
+            `${fullMonthName} ${year}`,
+            active && 'Selected',
+            disabled && 'Not available',
+          ]
+            .filter(Boolean)
+            .join(', ');
+
           return (
             <button
               key={month}
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
+              aria-label={ariaLabel}
+              aria-pressed={active}
               className={cx(classes.button, {
                 [classes.buttonActive]: active,
                 [classes.buttonInRange]: inRange,

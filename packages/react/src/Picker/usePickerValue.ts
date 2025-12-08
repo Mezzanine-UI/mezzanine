@@ -54,18 +54,12 @@ export function usePickerValue({
   });
 
   useEffect(() => {
-    const valString = valueProp
-      ? formatToString(valueLocale, valueProp, format)
-      : '';
-
-    setInputValue(valString);
+    setInputValue(valueProp || '');
     onChange(valueProp);
   }, [valueProp, format, formatToString, setInputValue, valueLocale]);
 
   const onSyncInputAndStateChange = (val?: DateType) => {
-    const valueString = val ? formatToString(valueLocale, val, format) : '';
-
-    setInputValue(valueString);
+    setInputValue(val || '');
     setValue(val);
   };
 
@@ -90,7 +84,9 @@ export function usePickerValue({
   };
 
   return {
-    inputValue,
+    inputValue: inputValue
+      ? formatToString(valueLocale, inputValue, format)
+      : '',
     onBlur,
     onChange: onSyncInputAndStateChange,
     onInputChange: inputChangeHandler,

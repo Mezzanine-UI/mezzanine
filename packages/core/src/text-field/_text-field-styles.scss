@@ -31,13 +31,13 @@ $state-default: (
     background-color: palette.semantic-variable(background, base),
     border-color: palette.semantic-variable(border, brand),
     icon-color: palette.semantic-variable(icon, neutral),
-    focus-color: none,
+    focus-color: effect.variable(focus, primary),
   ),
   focus: (
     text-color: palette.semantic-variable(text, neutral-solid),
     placeholder-color: palette.semantic-variable(text, neutral-light),
     background-color: palette.semantic-variable(background, base),
-    border-color: palette.semantic-variable(border, neutral-light),
+     border-color: palette.semantic-variable(border, brand),
     icon-color: palette.semantic-variable(icon, neutral),
     focus-color: effect.variable(focus, primary),
   ),
@@ -82,7 +82,7 @@ $state-error: (
     background-color: palette.semantic-variable(background, base),
     border-color: palette.semantic-variable(border, error),
     icon-color: palette.semantic-variable(icon, neutral),
-    focus-color: none,
+    focus-color: effect.variable(focus, error),
   ),
   focus: (
     text-color: palette.semantic-variable(text, neutral-solid),
@@ -114,13 +114,13 @@ $state-warning: (
     placeholder-color: palette.semantic-variable(text, neutral-light),
     background-color: palette.semantic-variable(background, base),
     border-color: palette.semantic-variable(border, warning),
-    focus-color: none,
+    focus-color: effect.variable(focus, warning),
   ),
   focus: (
     text-color: palette.semantic-variable(text, neutral-solid),
     placeholder-color: palette.semantic-variable(text, neutral-light),
     background-color: palette.semantic-variable(background, base),
-    border-color: palette.semantic-variable(border, warning-subtle),
+    border-color: palette.semantic-variable(border, warning),
     focus-color: effect.variable(focus, warning),
   )
 );
@@ -183,7 +183,6 @@ $size-configs: (
   }
 
   @if $border {
-    outline-color: $border;
     border-color: $border;
   }
 
@@ -209,9 +208,6 @@ $size-configs: (
 
   &.#{$prefix}--typing,
   &.#{$prefix}--active {
-    outline-width: 1px;
-    outline-style: solid;
-
     @include _apply-state-colors($severity, typing);
   }
 
@@ -254,6 +250,10 @@ $size-configs: (
     transition.standard(box-shadow, fast);
   will-change: background-color, border-color, color, box-shadow;
   box-sizing: border-box;
+
+  &--slim-gap {
+    gap: spacing.semantic-variable(gap, slim);
+  }
 
   &--full-width {
     width: 100%;

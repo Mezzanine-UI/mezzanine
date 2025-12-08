@@ -1,9 +1,10 @@
-import { ArrowRightIcon } from '@mezzanine-ui/icons';
+import { ArrowRightIcon, CalendarIcon } from '@mezzanine-ui/icons';
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import {
   ChangeEventHandler,
   forwardRef,
   MouseEventHandler,
+  ReactNode,
   RefObject,
 } from 'react';
 import TextField, { TextFieldProps } from '../TextField';
@@ -14,8 +15,19 @@ import { cx } from '../utils/cx';
 export interface RangePickerTriggerProps
   extends Omit<
     TextFieldProps,
-    'active' | 'children' | 'suffix' | 'defaultChecked' | 'placeholder'
+    | 'active'
+    | 'children'
+    | 'defaultChecked'
+    | 'disabled'
+    | 'placeholder'
+    | 'readonly'
+    | 'typing'
   > {
+  /**
+   * Whether the picker is disabled.
+   * @default false
+   */
+  disabled?: boolean;
   /**
    * Placeholder for the 'from' input element.
    */
@@ -63,6 +75,10 @@ export interface RangePickerTriggerProps
    */
   required?: boolean;
   /**
+   * Custom suffix element. If not provided, defaults to CalendarIcon.
+   */
+  suffix?: ReactNode;
+  /**
    * Other input props you may provide to the 'from' input element.
    */
   inputFromProps?: Omit<
@@ -99,7 +115,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
   function DateRangePickerTrigger(props, ref) {
     const {
       className,
-      clearable,
+      clearable = true,
       disabled,
       inputFromPlaceholder,
       inputFromProps,
@@ -109,29 +125,51 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
       inputToProps,
       inputToRef,
       inputToValue,
+      onIconClick,
       onInputFromChange,
       onInputToChange,
       readOnly,
       required,
+      suffix,
       ...restTextFieldProps
     } = props;
+
+    const defaultSuffix = (
+      <Icon
+        icon={CalendarIcon}
+        onClick={onIconClick}
+        aria-label="Open calendar"
+      />
+    );
+
+    // TextField requires disabled and readonly to be mutually exclusive
+    let defaultTextFieldProps = {};
+
+    if (disabled) {
+      defaultTextFieldProps = { disabled: true as const };
+    } else if (readOnly) {
+      defaultTextFieldProps = { readonly: true as const };
+    }
 
     return (
       <TextField
         {...restTextFieldProps}
+        {...defaultTextFieldProps}
         ref={ref}
         active={!!inputFromValue || !!inputToValue}
         className={cx(classes.host, className)}
         clearable={!readOnly && clearable}
-        disabled={disabled}
+        suffix={suffix ?? defaultSuffix}
       >
         <input
           {...inputFromProps}
           ref={inputFromRef}
           aria-disabled={disabled}
+          aria-label="Start date"
           aria-multiline={false}
           aria-readonly={readOnly}
           aria-required={required}
+          className={cx(classes.inputMono, inputFromProps?.className)}
           disabled={disabled}
           onChange={onInputFromChange}
           placeholder={inputFromPlaceholder}
@@ -139,14 +177,20 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
           required={required}
           value={inputFromValue}
         />
-        <Icon icon={ArrowRightIcon} className={classes.arrowIcon} />
+        <Icon
+          icon={ArrowRightIcon}
+          className={classes.arrowIcon}
+          aria-hidden="true"
+        />
         <input
           {...inputToProps}
           ref={inputToRef}
           aria-disabled={disabled}
+          aria-label="End date"
           aria-multiline={false}
           aria-readonly={readOnly}
           aria-required={required}
+          className={cx(classes.inputMono, inputToProps?.className)}
           disabled={disabled}
           onChange={onInputToChange}
           placeholder={inputToPlaceholder}
