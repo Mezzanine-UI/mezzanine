@@ -172,14 +172,17 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
     return (
       <div
-        {...rest}
-        ref={ref}
         className={cx(
           classes.host,
           classes.size(size),
           disabled && classes.disabled,
           className
         )}
+        aria-disabled={disabled}
+        ref={ref}
+        role="group"
+        tabIndex={disabled ? -1 : 0}
+        {...rest}
       >
         {imageUrl && (
           <div className={classes.image}>

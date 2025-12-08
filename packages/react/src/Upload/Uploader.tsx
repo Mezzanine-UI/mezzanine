@@ -4,7 +4,6 @@ import {
   ChangeEventHandler,
   DragEventHandler,
   forwardRef,
-  KeyboardEventHandler,
   MouseEvent,
   ReactNode,
   Ref,
@@ -356,20 +355,8 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
     }
   };
 
-  const handleKeyDownToUpload: KeyboardEventHandler<HTMLElement> = (event) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (!disabled && inputElementRef.current) {
-        inputElementRef.current.click();
-      }
-    }
-  };
-
   return (
     <label
-      ref={ref}
       className={cx(
         classes.host,
         type && classes.type(type),
@@ -378,10 +365,11 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
         type !== 'button' && disabled && classes.disabled,
         className,
       )}
-      onDragOver={handleDragOver}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
       onDrop={handleDrop}
+      ref={ref}
       {...rest}
     >
       <>
@@ -392,13 +380,7 @@ const Uploader = forwardRef<HTMLLabelElement, UploaderProps>(function Uploader(
             {uploadIcon}
             <Typography className={classes.uploadLabel}>
               {uploadLabel && <>{uploadLabel}{' '}</>}
-              <span
-                className={classes.clickToUpload}
-                onClick={handleClickToUpload}
-                onKeyDown={handleKeyDownToUpload}
-                role="button"
-                tabIndex={disabled ? -1 : 0}
-              >
+              <span className={classes.clickToUpload}>
                 {clickToUploadLabel}
               </span>
             </Typography>

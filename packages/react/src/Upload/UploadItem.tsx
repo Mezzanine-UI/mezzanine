@@ -146,7 +146,13 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
           className,
         )}
       >
-        <div {...rest} className={classes.container}>
+        <div
+          {...rest}
+          aria-disabled={disabled}
+          className={classes.container}
+          role="group"
+          tabIndex={disabled ? -1 : 0}
+        >
           <div className={classes.contentWrapper}>
             <div className={classes.icon}>
               {itemIcon}
