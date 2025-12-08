@@ -4,7 +4,7 @@ import { breadcrumbClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { cx } from '../utils/cx';
 import BreadcrumbItem from './BreadcrumbItem';
 import Icon from '../Icon';
-import type { BreadcrumbDropdownItemProps, BreadcrumbProps } from './typings';
+import type { BreadcrumbProps } from './typings';
 
 /**
  * The react component for `mezzanine` breadcrumb.
