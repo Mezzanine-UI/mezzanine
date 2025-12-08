@@ -1,5 +1,5 @@
-import { Meta, StoryObj } from '@storybook/react-webpack5';
 import type { ArgTypes } from '@storybook/react-webpack5';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import type { FormEvent } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { action } from 'storybook/actions';
@@ -233,11 +233,13 @@ const argTypes: Partial<ArgTypes<UploadProps>> = {
   },
 };
 
-export default {
+const meta = {
   title: 'Data Entry/Upload/Upload',
   component: Upload,
   argTypes,
 } satisfies Meta<typeof Upload>;
+
+export default meta;
 
 type Story = StoryObj<UploadProps>;
 
