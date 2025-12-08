@@ -21,8 +21,9 @@
   }
 
   &__formatted-input {
+    width: 100%;
+    display: flex;
     position: relative;
-    display: inline-block;
 
     @include typography.semantic-variable(input-mono);
 
