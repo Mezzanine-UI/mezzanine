@@ -39,6 +39,7 @@ $action-gap: spacing.semantic-variable(gap, base);
     &:focus-visible,
     &:focus-within,
     &:focus-within:hover {
+      outline: none;
       border-color: palette.semantic-variable(border, brand);
       box-shadow: effect.variable(focus, primary);
     }

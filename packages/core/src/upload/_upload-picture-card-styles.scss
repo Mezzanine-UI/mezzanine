@@ -29,6 +29,7 @@ $image-size: spacing.primitive-variable(140);
   &:focus-visible,
   &:focus-within,
   &:focus-within:hover {
+    outline: none;
     .#{$prefix}__image {
       box-shadow: effect.variable(focus, primary);
     }
@@ -36,6 +37,11 @@ $image-size: spacing.primitive-variable(140);
     .#{$prefix}__actions--done {
       opacity: 1;
       pointer-events: auto;
+
+      .#{$prefix}__tools {
+        opacity: 1;
+        visibility: visible;
+      }
     }
   }
 
@@ -65,6 +71,11 @@ $image-size: spacing.primitive-variable(140);
           palette.semantic-variable(overlay, subtle) 0%,
           palette.semantic-variable(overlay, subtle) 100%
         );
+
+        .#{$prefix}__tools {
+          opacity: 1;
+          visibility: visible;
+        }
       }
 
       .#{$prefix}__actions--error {

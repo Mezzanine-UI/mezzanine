@@ -48,7 +48,10 @@ $square-size: spacing.primitive-variable(140);
     border-color: palette.semantic-variable(border, brand);
   }
 
-  &:focus {
+  &:focus,
+  &:focus-within,
+  &:focus-visible,
+  &:focus-within:hover {
     box-shadow: effect.variable(focus, primary);
     border-color: palette.semantic-variable(border, brand);
   }
@@ -143,8 +146,11 @@ $square-size: spacing.primitive-variable(140);
 }
 
 .#{$prefix}__input {
-  width: 0;
-  height: 0;
+  width: 1px;
+  height: 1px;
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .#{$input-prefix} {
