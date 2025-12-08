@@ -70,11 +70,10 @@
   @include _load-styles($options, select);
   @include _load-styles($options, textarea);
   @include _load-styles($options, toggle);
-  @include _load-styles($options, upload);
-  @include _load-styles($options, upload, upload-result);
-  @include _load-styles($options, upload, upload-picture);
-  @include _load-styles($options, upload, upload-picture-block);
-  @include _load-styles($options, upload, upload-picture-wall);
+  @include _load-styles($options, upload, upload);
+  @include _load-styles($options, upload, uploader);
+  @include _load-styles($options, upload, upload-item);
+  @include _load-styles($options, upload, upload-picture-card);
   @include _load-styles($options, picker);
   @include _load-styles($options, date-range-picker);
   @include _load-styles($options, date-time-picker);

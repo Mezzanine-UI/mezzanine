@@ -1,9 +1,0 @@
-@use './upload-picture' as *;
-
-$width: 128px !default;
-$height: 128px !default;
-
-.#{$prefix} {
-  width: $width;
-  height: $height;
-}

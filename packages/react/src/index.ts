@@ -330,6 +330,8 @@ export type {
 } from './Toggle';
 export {
   UploadButton,
+  Uploader,
+  UploadItem,
   UploadPicture,
   UploadPictureWall,
   UploadResult,
@@ -340,6 +342,8 @@ export type {
   UploadPictureProps,
   UploadPictureWallControl,
   UploadPictureWallProps,
+  UploaderProps,
+  UploadItemProps,
   UploadResultProps,
   UploadResultSize,
   UploadResultStatus,
@@ -395,7 +399,7 @@ export type {
 } from './InlineMessage';
 
 export { default as ResultState } from './ResultState';
-export type { ResultStateProps, ResultStateActions } from './ResultState';
+export type { ResultStateActions, ResultStateProps } from './ResultState';
 
 /**
  * Others
