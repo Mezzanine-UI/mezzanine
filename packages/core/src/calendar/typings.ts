@@ -45,6 +45,7 @@ export type CalendarMethods<TDateType = DateType> = {
   getCalendarGrid: (target: TDateType) => number[][];
 
   /** Compares */
+  isValid: (date: TDateType) => boolean;
   isBefore: (target: TDateType, comparison: TDateType) => boolean;
   isBetween: (
     value: TDateType,

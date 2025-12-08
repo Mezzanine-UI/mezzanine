@@ -177,6 +177,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
 
   /** Compares */
+  isValid: (date) => moment(date).isValid(),
   isBefore: (target, comparison) => moment(target).isBefore(comparison),
   isBetween: (value, target1, target2, granularity: unitOfTime.StartOf) =>
     moment(value).isBetween(target1, target2, granularity),

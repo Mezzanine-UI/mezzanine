@@ -123,6 +123,7 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   },
 
   /** Compares */
+  isValid: (date) => DateTime.fromISO(date).isValid,
   isBefore: (target, comparison) =>
     DateTime.fromISO(target) < DateTime.fromISO(comparison),
   isBetween: (value, target1, target2) =>

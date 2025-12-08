@@ -151,6 +151,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
 
   /** Compares */
+  isValid: (date) => dayjs(date).isValid(),
   isBefore: (target, comparison) => dayjs(target).isBefore(comparison),
   isBetween: (value, target1, target2, granularity) =>
     dayjs(value).isBetween(target1, target2, granularity),
