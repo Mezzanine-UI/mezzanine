@@ -572,4 +572,19 @@ $checked-states: (
       transition.entrance(min-height, fast);
     will-change: height, min-height;
   }
+
+  &--level-control-separator {
+    width: 1px;
+    height: spacing.semantic-variable(size, element, gentle);
+    margin-inline: 1px;
+    background-color: palette.semantic-variable(border, neutral-faint);
+  }
+
+  &--nested {
+    .#{$group-prefix}--content-wrapper.#{$group-prefix}--vertical.#{$group-prefix}--chip {
+      .#{$prefix}.#{$prefix}--indeterminate.#{$prefix}--chip {
+        margin-bottom: spacing.semantic-variable(padding, vertical, tiny);
+      }
+    }
+  }
 }

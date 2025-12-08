@@ -231,7 +231,7 @@ describe('<CheckboxGroup />', () => {
       expect(checkboxes.length).toBe(4);
     });
 
-    it('should not render level control when mode="chip"', () => {
+    it('should render level control when mode="chip"', () => {
       const level: CheckboxGroupLevelConfig = {
         active: true,
         label: 'Select All',
@@ -242,8 +242,8 @@ describe('<CheckboxGroup />', () => {
       const element = getHostHTMLElement();
       const checkboxes = element.querySelectorAll('.mzn-checkbox');
 
-      // Should only have 4 checkboxes (from options), no level control
-      expect(checkboxes.length).toBe(4);
+      // Should have 5 checkboxes: 1 level control + 4 from options
+      expect(checkboxes.length).toBe(5);
     });
 
     it('should check all when level control is checked', () => {

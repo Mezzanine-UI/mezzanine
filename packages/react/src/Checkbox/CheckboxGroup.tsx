@@ -368,10 +368,12 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 
     const isLevelActive = level?.active ?? false;
     const isChipMode = mode === 'chip';
+    const isHorizontalLayout = layout === 'horizontal';
+    const shouldRenderLevelInsideContent = isLevelActive && isChipMode;
     const ariaOrientation = isLevelActive ? 'vertical' : layout;
 
     const canRenderLevelControl =
-      isLevelActive && normalizedOptions.length > 0 && !isChipMode;
+      isLevelActive && normalizedOptions.length > 0;
 
     useEffect(() => {
       if (isLevelActive && !hasOptionsInput) {
@@ -379,12 +381,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
           'CheckboxGroup: `level.active=true` currently supports only the `options` input approach.',
         );
       }
-      if (isLevelActive && isChipMode) {
-        console.warn(
-          'CheckboxGroup: `level` is not supported when `mode="chip"`. Level control will be disabled.',
-        );
-      }
-    }, [hasOptionsInput, isLevelActive, isChipMode]);
+    }, [hasOptionsInput, isLevelActive]);
 
     const { levelChecked, levelIndeterminate } = useMemo(() => {
       if (!canRenderLevelControl) {
@@ -464,7 +461,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
         )}
         role={role}
       >
-        {canRenderLevelControl && (
+        {canRenderLevelControl && !shouldRenderLevelInsideContent && (
           <Checkbox
             checked={levelChecked}
             disabled={disabled || level?.disabled}
@@ -483,6 +480,23 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             mode && classes.mode(mode),
           )}
         >
+          {canRenderLevelControl && shouldRenderLevelInsideContent && (
+            <>
+              <Checkbox
+                checked={levelChecked}
+                disabled={disabled || level?.disabled}
+                id={`${resolvedName}-level-control`}
+                indeterminate={levelIndeterminate}
+                label={level?.label ?? ''}
+                mode={level?.mode ?? 'main'}
+                name={`${resolvedName}-level-control`}
+                onChange={handleLevelControlChange}
+              />
+              {
+                isHorizontalLayout && <i className={classes.levelControlSeparator} />
+              }
+            </>
+          )}
           <CheckboxGroupContext.Provider value={context}>
             {children}
           </CheckboxGroupContext.Provider>

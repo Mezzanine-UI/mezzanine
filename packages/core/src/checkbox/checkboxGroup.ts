@@ -18,4 +18,5 @@ export const checkboxGroupClasses = {
   mode: (mode: CheckboxMode) => `${checkboxGroupPrefix}--${mode}`,
   nested: `${checkboxGroupPrefix}--nested`,
   contentWrapper: `${checkboxGroupPrefix}--content-wrapper`,
+  levelControlSeparator: `${checkboxGroupPrefix}--level-control-separator`,
 } as const;
