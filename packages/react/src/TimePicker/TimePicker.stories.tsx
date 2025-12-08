@@ -45,7 +45,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <Typography variant="h3" style={typoStyle}>
-        {`current value: ${val ? moment(val).format(format) : 'None'}`}
+        {`current value: ${val ? moment(val).format(format) : ''}`}
       </Typography>
       <TimePicker
         value={val}
@@ -172,7 +172,8 @@ export const DisplayColumn = () => {
           Hours, minutes, seconds
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${val1 ? moment(val1).format('HH:mm:ss') : 'None'}`}
+          {`origin value: ${val1}
+          current value: ${val1 ? moment(val1).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val1}
@@ -186,7 +187,8 @@ export const DisplayColumn = () => {
           Hours, minutes
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${val2 ? moment(val2).format('HH:mm') : 'None'}`}
+          {`origin value: ${val2}
+          current value: ${val2 ? moment(val2).format('HH:mm') : ''}`}
         </Typography>
         <TimePicker
           value={val2}
@@ -214,7 +216,8 @@ export const Steps = () => {
           Hour step (15 minutes)
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${val1 ? moment(val1).format('HH:mm:ss') : 'None'}`}
+          {`origin value: ${val1}
+          current value: ${val1 ? moment(val1).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val1}
@@ -229,7 +232,8 @@ export const Steps = () => {
           Minute step (30 seconds)
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${val2 ? moment(val2).format('HH:mm:ss') : 'None'}`}
+          {`origin value: ${val2}
+          current value: ${val2 ? moment(val2).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val2}
@@ -244,7 +248,8 @@ export const Steps = () => {
           All steps (6 hours, 15 minutes, 20 seconds)
         </Typography>
         <Typography variant="body" style={typoStyle}>
-          {`current value: ${val3 ? moment(val3).format('HH:mm:ss') : 'None'}`}
+          {`origin value: ${val3}
+          current value: ${val3 ? moment(val3).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val3}
