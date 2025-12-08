@@ -327,25 +327,13 @@ export type {
   ToggleProps as SwitchProps,
   ToggleSize as SwitchSize,
 } from './Toggle';
-export {
-  UploadButton,
-  Uploader,
-  UploadItem,
-  UploadPicture,
-  UploadPictureWall,
-  UploadResult,
-} from './Upload';
+export { Uploader, UploadItem, UploadPictureCard, Upload } from './Upload';
 export type {
-  UploadButtonProps,
-  UploadPictureControl,
-  UploadPictureProps,
-  UploadPictureWallControl,
-  UploadPictureWallProps,
   UploaderProps,
   UploadItemProps,
-  UploadResultProps,
-  UploadResultSize,
-  UploadResultStatus,
+  UploadFile,
+  UploadPictureCardProps,
+  UploadProps,
 } from './Upload';
 
 /**
