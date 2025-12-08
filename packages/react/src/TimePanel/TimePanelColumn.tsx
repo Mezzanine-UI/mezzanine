@@ -48,7 +48,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
 
       if (cellsRef.current) {
         cellsRef.current.scrollTo({
-          top: activeIndex * cellHeight,
+          top: activeIndex * cellHeight, // (activeIndex - 3) * cellHeight, (center)
           behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
         });
       }
