@@ -55,16 +55,22 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     const internalInputRef = useRef<HTMLInputElement>(null);
     const composedRef = useComposeRefs([ref, internalInputRef]);
 
-    const { value, focused, handleKeyDown, handleFocus, handleBlur } =
-      useDateInputFormatter({
-        format,
-        value: externalValue,
-        onChange,
-        inputRef: internalInputRef,
-        onFocus,
-        onBlur,
-        validate,
-      });
+    const {
+      value,
+      focused,
+      handleKeyDown,
+      handleFocus,
+      handleBlur,
+      handlePaste,
+    } = useDateInputFormatter({
+      format,
+      value: externalValue,
+      onChange,
+      inputRef: internalInputRef,
+      onFocus,
+      onBlur,
+      validate,
+    });
 
     const segments = useRef(parseFormatSegments(format)).current;
 
@@ -148,6 +154,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
           onKeyDown={handleKeyDown}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          onPaste={handlePaste}
         />
         {renderMixedColorDisplay()}
       </div>

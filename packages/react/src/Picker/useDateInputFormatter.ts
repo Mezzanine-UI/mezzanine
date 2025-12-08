@@ -1,4 +1,5 @@
 import {
+  ClipboardEventHandler,
   FocusEventHandler,
   KeyboardEvent,
   useCallback,
@@ -56,7 +57,8 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     validate,
   } = props;
 
-  const { parseFormattedValue } = useCalendarContext();
+  const { parseFormattedValue, isValid, valueLocale, formatToString } =
+    useCalendarContext();
 
   const maskFormat = useRef(new MaskFormat(format)).current;
   const [internalValue, setInternalValue] = useState(
@@ -412,11 +414,68 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       }
 
       // Block other keys (separators, letters, etc.)
-      if (key.length === 1) {
-        e.preventDefault();
+      if (key.length === 1 && !/[\dBackspace]/.test(key)) {
+        if (!(e.ctrlKey || e.metaKey || e.altKey)) {
+          e.preventDefault();
+        }
       }
     },
     [format, internalValue, maskFormat, triggerChange],
+  );
+
+  const handlePaste: ClipboardEventHandler<HTMLInputElement> = useCallback(
+    (e) => {
+      e.preventDefault();
+
+      const pasteData = e.clipboardData.getData('Text');
+
+      console.log(pasteData);
+
+      if (isValid(pasteData)) {
+        // If pasted data is a valid ISO date, format it accordingly
+        const parsedDate = formatToString(valueLocale, pasteData, format);
+
+        if (parsedDate) {
+          triggerChange(parsedDate);
+          return;
+        }
+      }
+
+      const newValue = internalValue.split('');
+
+      let pasteIndex = 0;
+
+      for (const cell of maskFormat.maskCells) {
+        for (let i = cell.start; i < cell.end; i++) {
+          if (pasteIndex >= pasteData.length) {
+            break;
+          }
+          const char = pasteData[pasteIndex];
+          if (/\d/.test(char)) {
+            newValue[i] = char;
+            pasteIndex++;
+          } else {
+            // Skip non-digit characters in paste data
+            pasteIndex++;
+            i--; // Stay on the same position
+          }
+        }
+        if (pasteIndex >= pasteData.length) {
+          break;
+        }
+      }
+
+      triggerChange(newValue.join(''));
+    },
+    [
+      internalValue,
+      maskFormat,
+      triggerChange,
+      isValid,
+      format,
+      formatToString,
+      valueLocale,
+    ],
   );
 
   return {
@@ -425,5 +484,6 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     handleKeyDown,
     handleFocus,
     handleBlur,
+    handlePaste,
   };
 }
