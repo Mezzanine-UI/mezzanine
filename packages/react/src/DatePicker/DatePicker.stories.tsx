@@ -90,7 +90,9 @@ Playground.args = {
 export const Basic = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType | undefined>('2022-01-05');
+  const [val, setVal] = useState<DateType | undefined>(
+    '2025-12-04T16:00:00.000Z',
+  );
   const onChange = (v?: DateType) => {
     setVal(v);
   };
@@ -329,16 +331,6 @@ export const CustomDisable = () => {
     margin: '0 0 12px 0',
     whiteSpace: 'pre-line',
   } as CSSProperties;
-  const codeStyle = {
-    background: '#f5f5f5',
-    padding: '8px 12px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    margin: '8px 0 16px 0',
-    display: 'block',
-    whiteSpace: 'pre-line',
-  } as CSSProperties;
 
   const [valD, onChangeD] = usePickerChange();
   const [valW, onChangeW] = usePickerChange();
@@ -428,22 +420,13 @@ export const CustomDisable = () => {
           Disable month/year switching buttons and navigation arrows. Useful
           when you want to restrict user to current view only.
         </Typography>
-        <code style={codeStyle}>
-          {`<DatePicker
-  disabledMonthSwitch  // Disable month button click
-  disabledYearSwitch   // Disable year button click
-  disableOnNext        // Disable next arrow
-  disableOnDoubleNext  // Disable double next arrow
-  disableOnPrev        // Disable prev arrow
-  disableOnDoublePrev  // Disable double prev arrow
-/>`}
-        </code>
         <DatePicker
           value={valD}
           onChange={onChangeD}
           mode="day"
           format="YYYY-MM-DD"
-          placeholder="Navigation disabled"
+          fullWidth
+          placeholder="Date"
           disabledMonthSwitch
           disabledYearSwitch
           disableOnNext
@@ -460,19 +443,13 @@ export const CustomDisable = () => {
           {`Only allow dates within a specific range.
           Available range: ${minDate.format('YYYY-MM-DD')} ~ ${maxDate.format('YYYY-MM-DD')} (±30 days from today)`}
         </Typography>
-        <code style={codeStyle}>
-          {`const isDateOutOfRange = (target: DateType) =>
-  moment(target).isBefore(minDate, 'day') ||
-  moment(target).isAfter(maxDate, 'day');
-
-<DatePicker isDateDisabled={isDateOutOfRange} />`}
-        </code>
         <DatePicker
           value={valMinMax}
           onChange={onChangeMinMax}
           mode="day"
           format="YYYY-MM-DD"
-          placeholder="Select within ±30 days"
+          fullWidth
+          placeholder="Date"
           isDateDisabled={isDateOutOfRange}
         />
       </div>
@@ -491,7 +468,7 @@ export const CustomDisable = () => {
             onChange={onChangeD}
             mode="day"
             format={getDefaultModeFormat('day')}
-            placeholder="Select date"
+            placeholder="Date"
             isDateDisabled={isDateDisabled}
           />
         </div>
@@ -506,7 +483,7 @@ export const CustomDisable = () => {
             onChange={onChangeW}
             mode="week"
             format={getDefaultModeFormat('week')}
-            placeholder="Select week"
+            placeholder="Week"
             isWeekDisabled={isWeekDisabled}
           />
         </div>
@@ -521,7 +498,7 @@ export const CustomDisable = () => {
             onChange={onChangeM}
             mode="month"
             format={getDefaultModeFormat('month')}
-            placeholder="Select month"
+            placeholder="Month"
             isMonthDisabled={isMonthDisabled}
           />
         </div>
@@ -536,7 +513,7 @@ export const CustomDisable = () => {
             onChange={onChangeY}
             mode="year"
             format={getDefaultModeFormat('year')}
-            placeholder="Select year"
+            placeholder="Year"
             isYearDisabled={isYearDisabled}
           />
         </div>
@@ -550,7 +527,7 @@ export const CustomDisable = () => {
             onChange={onChangeQ}
             mode="quarter"
             format={getDefaultModeFormat('quarter')}
-            placeholder="Select quarter"
+            placeholder="Quarter"
             isQuarterDisabled={isQuarterDisabled}
           />
         </div>
@@ -564,7 +541,7 @@ export const CustomDisable = () => {
             onChange={onChangeH}
             mode="half-year"
             format={getDefaultModeFormat('half-year')}
-            placeholder="Select half-year"
+            placeholder="Half Year"
             isHalfYearDisabled={isHalfYearDisabled}
           />
         </div>
@@ -588,22 +565,10 @@ export const CalendarIntegration = () => {
     margin: '0 0 12px 0',
     whiteSpace: 'pre-line',
   } as CSSProperties;
-  const codeStyle = {
-    background: '#f5f5f5',
-    padding: '8px 12px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    margin: '8px 0 16px 0',
-    display: 'block',
-    whiteSpace: 'pre-wrap',
-  } as CSSProperties;
 
   const [valAnnotation, onChangeAnnotation] = usePickerChange();
   const [valQuickSelect, onChangeQuickSelect] = usePickerChange();
 
-  // Static sample data for annotations (avoid Math.random in render)
-  // In real app, this would come from an API
   const annotationData: Record<
     string,
     {
@@ -694,23 +659,6 @@ export const CalendarIntegration = () => {
           Display additional information on each date cell via calendarProps.
           Perfect for showing metrics, events, or status indicators.
         </Typography>
-        <code style={codeStyle}>
-          {`// Define annotation data
-const annotationData = {
-  '2025-12-05': { value: '+5.2%', color: 'text-success' },
-  '2025-12-04': { value: '-3.1%', color: 'text-error' },
-  // ... more data
-};
-
-<DatePicker
-  calendarProps={{
-    renderAnnotations: (date: DateType) => {
-      const dateKey = moment(date).format('YYYY-MM-DD');
-      return annotationData[dateKey];
-    }
-  }}
-/>`}
-        </code>
         <div style={containerStyle}>
           <Typography
             variant="body"
@@ -729,7 +677,7 @@ const annotationData = {
             onChange={onChangeAnnotation}
             mode="day"
             format="YYYY-MM-DD"
-            placeholder="Select date with annotations"
+            placeholder="Date"
             calendarProps={{
               renderAnnotations: (date: DateType) => {
                 const dateKey = moment(date).format('YYYY-MM-DD');
@@ -747,21 +695,6 @@ const annotationData = {
           Provide shortcut buttons for commonly selected dates via
           calendarProps. Great for improving UX in dashboards and reports.
         </Typography>
-        <code style={codeStyle}>
-          {`const quickSelectOptions = [
-  { id: 'today', name: 'Today', onClick: () => onChange(moment().toISOString()) },
-  { id: 'yesterday', name: 'Yesterday', onClick: () => onChange(moment().subtract(1, 'day').toISOString()) },
-];
-
-<DatePicker
-  calendarProps={{
-    quickSelect: {
-      activeId: getActiveId(value),
-      options: quickSelectOptions,
-    }
-  }}
-/>`}
-        </code>
         <div style={containerStyle}>
           <Typography
             variant="body"
@@ -777,7 +710,7 @@ const annotationData = {
             onChange={onChangeQuickSelect}
             mode="day"
             format="YYYY-MM-DD"
-            placeholder="Use quick select"
+            placeholder="Date"
             calendarProps={{
               quickSelect: {
                 activeId: getQuickSelectActiveId(valQuickSelect),
