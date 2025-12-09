@@ -49,6 +49,11 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
         clearable={clearable}
         disabled={disabled}
         error={error}
+        errorMessages={{
+          enabled: true,
+          invalidInput: '輸入字串不正確。',
+          invalidPaste: '貼上的內容不正確。',
+        }}
         format={format}
         fullWidth={fullWidth}
         mode={mode}

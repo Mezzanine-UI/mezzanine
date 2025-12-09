@@ -103,6 +103,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabled = false,
       displayMonthLocale,
       error = false,
+      errorMessages,
       fadeProps,
       format: formatProp,
       fullWidth = false,
@@ -340,6 +341,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           clearable={clearable}
           disabled={disabled}
           error={error}
+          errorMessages={errorMessages}
           format={format}
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
