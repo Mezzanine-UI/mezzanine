@@ -3,27 +3,24 @@ import { ChangeEventHandler, forwardRef, ReactNode, RefObject } from 'react';
 import TextField, { TextFieldProps } from '../TextField';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
-import FormattedInput from './FormattedInput';
+import FormattedInput, { FormattedInputProps } from './FormattedInput';
 
 export interface PickerTriggerProps
   extends Omit<
-    TextFieldProps,
-    | 'active'
-    | 'children'
-    | 'defaultChecked'
-    | 'disabled'
-    | 'readonly'
-    | 'typing'
-  > {
+      TextFieldProps,
+      | 'active'
+      | 'children'
+      | 'defaultChecked'
+      | 'disabled'
+      | 'readonly'
+      | 'typing'
+    >,
+    Pick<FormattedInputProps, 'errorMessages' | 'validate' | 'format'> {
   /**
    * Whether the input is disabled.
    * @default false
    */
   disabled?: boolean;
-  /**
-   * Format pattern for formatted input (e.g., "YYYY-MM-DD", "HH:mm:ss").
-   */
-  format: string;
   /**
    * React ref for the input element.
    */
@@ -50,10 +47,6 @@ export interface PickerTriggerProps
    * Custom suffix element. If not provided, defaults to CalendarIcon.
    */
   suffix?: ReactNode;
-  /**
-   * Custom validation function. Return true if valid, false to reject the value.
-   */
-  validate?: (isoDate: string) => boolean;
   /**
    * The value of the input element.
    */
@@ -83,6 +76,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
       className,
       clearable = true,
       disabled,
+      errorMessages,
       format,
       inputProps,
       inputRef,
@@ -122,6 +116,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
           aria-readonly={readOnly}
           aria-required={required}
           disabled={disabled}
+          errorMessages={errorMessages}
           format={format}
           onChange={(formatted, _rawDigits) => {
             if (onChange) {

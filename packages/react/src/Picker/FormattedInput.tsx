@@ -1,7 +1,10 @@
 import { forwardRef, InputHTMLAttributes, useRef } from 'react';
 import { pickerClasses as classes } from '@mezzanine-ui/core/picker';
 import { cx } from '../utils/cx';
-import { useDateInputFormatter } from './useDateInputFormatter';
+import {
+  useDateInputFormatter,
+  type UseDateInputFormatterProps,
+} from './useDateInputFormatter';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import {
   parseFormatSegments,
@@ -11,11 +14,11 @@ import {
 } from './formatUtils';
 
 export interface FormattedInputProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
-  /**
-   * The format pattern (e.g., "YYYY-MM-DD", "HH:mm:ss")
-   */
-  format: string;
+  extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>,
+    Pick<
+      UseDateInputFormatterProps,
+      'errorMessages' | 'validate' | 'format' | 'onChange'
+    > {
   /**
    * Placeholder to show when not focused and value is empty
    */
@@ -24,14 +27,6 @@ export interface FormattedInputProps
    * The current value
    */
   value?: string;
-  /**
-   * Change handler receiving formatted value and raw digits
-   */
-  onChange?: (formattedValue: string, rawDigits: string) => void;
-  /**
-   * Custom validation function. Return true if valid, false to reject the value.
-   */
-  validate?: (isoDate: string) => boolean;
 }
 
 /**
@@ -42,6 +37,11 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     const {
       className,
       disabled,
+      errorMessages = {
+        enabled: true,
+        invalidInput: 'Input value is not valid.',
+        invalidPaste: 'Pasted content is not valid.',
+      },
       format,
       placeholder,
       validate,
@@ -63,6 +63,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       handleBlur,
       handlePaste,
     } = useDateInputFormatter({
+      errorMessages,
       format,
       value: externalValue,
       onChange,

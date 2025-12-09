@@ -10,8 +10,18 @@ import {
 import MaskFormat, { getMaskRange } from './MaskFormat';
 import { getTemplateWithoutBrackets } from './formatUtils';
 import { useCalendarContext } from '../Calendar';
+import Message from '../Message';
 
 export interface UseDateInputFormatterProps {
+  /**
+   * error messages for different validation scenarios
+   * @default { enabled: true, invalidInput: 'Input value is not valid.', invalidPaste: 'Pasted content is not valid.' }
+   */
+  errorMessages?: {
+    enabled?: boolean;
+    invalidInput?: string;
+    invalidPaste?: string;
+  };
   /**
    * Format pattern (e.g., "YYYY-MM-DD", "HH:mm:ss")
    */
@@ -48,6 +58,11 @@ export interface UseDateInputFormatterProps {
  */
 export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   const {
+    errorMessages = {
+      enabled: true,
+      invalidInput: 'Input value is not valid.',
+      invalidPaste: 'Pasted content is not valid.',
+    },
     format,
     value: externalValue = '',
     onChange,
@@ -109,6 +124,10 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         if (isoDate && (!validate || validate(isoDate))) {
           const rawDigits = newValue.replace(/[^0-9]/g, '');
           onChange(isoDate, rawDigits);
+        } else {
+          if (errorMessages.enabled) {
+            Message.error(errorMessages.invalidInput);
+          }
         }
       }
 
@@ -120,6 +139,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       }
     },
     [
+      errorMessages,
       onChange,
       inputRef,
       isValueComplete,
@@ -429,8 +449,6 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
       const pasteData = e.clipboardData.getData('Text');
 
-      console.log(pasteData);
-
       if (isValid(pasteData)) {
         // If pasted data is a valid ISO date, format it accordingly
         const parsedDate = formatToString(valueLocale, pasteData, format);
@@ -441,7 +459,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         }
       }
 
-      const newValue = internalValue.split('');
+      const newValueArray = internalValue.split('');
 
       let pasteIndex = 0;
 
@@ -452,7 +470,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
           }
           const char = pasteData[pasteIndex];
           if (/\d/.test(char)) {
-            newValue[i] = char;
+            newValueArray[i] = char;
             pasteIndex++;
           } else {
             // Skip non-digit characters in paste data
@@ -465,9 +483,19 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         }
       }
 
-      triggerChange(newValue.join(''));
+      const newValue = newValueArray.join('');
+
+      if (newValue === getTemplateWithoutBrackets(format)) {
+        // No valid input from paste
+        if (errorMessages.enabled) {
+          Message.error(errorMessages.invalidPaste);
+        }
+      }
+
+      triggerChange(newValue);
     },
     [
+      errorMessages,
       internalValue,
       maskFormat,
       triggerChange,
