@@ -173,11 +173,18 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
   );
 };
 
-type CalendarPlaygroundArgs = Pick<CalendarProps, 'mode'>;
+type CalendarPlaygroundArgs = Pick<CalendarProps, 'mode'> & {
+  defaultLocale?: string;
+};
 export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
   mode = 'day',
+  defaultLocale = 'en-us',
 }) => (
-  <CalendarConfigProvider methods={CalendarMethodsMoment}>
+  <CalendarConfigProvider
+    methods={CalendarMethodsMoment}
+    displayMonthLocale={defaultLocale}
+    displayWeekDayLocale={defaultLocale}
+  >
     <InnerCalendarPlayground mode={mode} />
   </CalendarConfigProvider>
 );
@@ -189,10 +196,17 @@ CalendarPlayground.argTypes = {
       type: 'select',
     },
   },
+  defaultLocale: {
+    options: ['en-us', 'zh-cn', 'zh-tw', 'fr-fr', 'de-de', 'ja-jp', 'ko-kr'],
+    control: {
+      type: 'select',
+    },
+  },
 };
 
 CalendarPlayground.args = {
   mode: 'day',
+  defaultLocale: 'en-us',
 };
 
 const InnerRangeCalendarPlayground = ({

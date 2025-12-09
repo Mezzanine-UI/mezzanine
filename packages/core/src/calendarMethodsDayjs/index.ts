@@ -12,6 +12,12 @@ import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
 
 const localeMappingTable: Record<string, string> = {
   'en-us': 'en',
+  'zh-cn': 'zh-cn',
+  'zh-tw': 'zh-tw',
+  'fr-fr': 'fr',
+  'de-de': 'de',
+  'ja-jp': 'ja',
+  'ko-kr': 'ko',
 };
 
 const localeMapping = (locale: string) => localeMappingTable[locale] ?? locale;
