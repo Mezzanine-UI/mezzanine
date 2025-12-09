@@ -3,7 +3,18 @@ import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
 
+/**
+ * CalendarMethodsLuxon - Luxon implementation of CalendarMethods
+ *
+ * NOTE: Luxon only supports ISO week (Monday as first day of week).
+ * Regardless of the locale parameter, this implementation always uses ISO week.
+ * If you need Sunday-first week support, please use moment or dayjs instead.
+ */
 const CalendarMethodsLuxon: CalendarMethodsType = {
+  /** Locale helpers - Luxon always uses ISO week (Monday-first) */
+  getFirstDayOfWeek: () => 1, // Always Monday for Luxon
+  isISOWeekLocale: () => true, // Always ISO week for Luxon
+
   /** Get date infos */
   getNow: () => DateTime.now().toISO() as string,
   getSecond: (date) => DateTime.fromISO(date).second,
@@ -11,16 +22,20 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   getHour: (date) => DateTime.fromISO(date).hour,
   getDate: (date) => DateTime.fromISO(date).day,
   getWeek: (date) => DateTime.fromISO(date).weekNumber,
+  getWeekYear: (date) => DateTime.fromISO(date).weekYear,
   getWeekDay: (date) => DateTime.fromISO(date).weekday,
   getMonth: (date) => DateTime.fromISO(date).month - 1,
   getYear: (date) => DateTime.fromISO(date).year,
   getQuarter: (date) => DateTime.fromISO(date).quarter,
   getHalfYear: (date) => Math.floor((DateTime.fromISO(date).month - 1) / 6) + 1,
-  getWeekDayNames: (locale) => Info.weekdays('narrow', { locale }),
-  getMonthShortName: (month, locale) =>
-    DateTime.now()
-      .set({ month: month + 1 })
-      .toFormat('MMM', { locale }),
+  getWeekDayNames: (locale) => {
+    // Luxon returns Monday-first by default (ISO week)
+    return Info.weekdays('narrow', { locale });
+  },
+  getMonthShortName: (month, locale) => {
+    const names = CalendarMethodsLuxon.getMonthShortNames(locale);
+    return names[month];
+  },
   getMonthShortNames: (locale) => Info.months('short', { locale }),
 
   /** Manipulate */
@@ -55,11 +70,13 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   startOf: (target, granularity) =>
     DateTime.fromISO(target).startOf(granularity).toISO() as string,
 
-  getCurrentWeekFirstDate: (value) =>
-    DateTime.fromISO(value)
+  getCurrentWeekFirstDate: (value) => {
+    // Luxon startOf('week') gives Monday (ISO week)
+    return DateTime.fromISO(value)
       .startOf('week')
       .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-      .toISO() as string,
+      .toISO() as string;
+  },
   getCurrentMonthFirstDate: (value) =>
     DateTime.fromISO(value)
       .startOf('month')
@@ -99,24 +116,30 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
       .toISO() as string;
   },
 
-  /** Generate day calendar */
+  /** Generate day calendar - Always Monday-first for Luxon */
   getCalendarGrid: (target) => {
     const lastDateOfPrevMonth = DateTime.fromISO(target)
       .minus({ month: 1 })
       .endOf('month').day;
-    const firstDayOfCurrentMonth = DateTime.fromISO(target).set({
-      day: 1,
-    }).weekday;
+    // Luxon weekday: 1=Monday, 7=Sunday
+    const firstDayWeekday = DateTime.fromISO(target).set({ day: 1 }).weekday;
     const lastDateOfCurrentMonth = DateTime.fromISO(target).endOf('month').day;
+
+    // Monday-first: weekday 1 (Monday) should appear at position 0
+    const daysFromPrevMonth = firstDayWeekday - 1;
+
+    const totalDaysInGrid = 42; // 6 weeks * 7 days
+    const daysFromNextMonth =
+      totalDaysInGrid - daysFromPrevMonth - lastDateOfCurrentMonth;
 
     return chunk(
       [
         ...range(
-          lastDateOfPrevMonth - firstDayOfCurrentMonth + 2,
+          lastDateOfPrevMonth - daysFromPrevMonth + 1,
           lastDateOfPrevMonth + 1,
         ),
         ...range(1, lastDateOfCurrentMonth + 1),
-        ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 2),
+        ...range(1, daysFromNextMonth + 1),
       ],
       7,
     );
@@ -133,20 +156,23 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     ).contains(DateTime.fromISO(value)),
   isSameDate: (dateOne, dateTwo) =>
     DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'day'),
-  isSameWeek: (dateOne, dateTwo) =>
-    DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'week'),
+  isSameWeek: (dateOne, dateTwo) => {
+    // Use Luxon's default ISO week comparison
+    return DateTime.fromISO(dateOne).hasSame(DateTime.fromISO(dateTwo), 'week');
+  },
   isInMonth: (target, month) => DateTime.fromISO(target).month === month + 1,
   isDateIncluded: (date, targets) =>
     targets.some((target) =>
       DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'day'),
     ),
-  isWeekIncluded: (firstDateOfWeek, targets) =>
-    targets.some((target) =>
+  isWeekIncluded: (firstDateOfWeek, targets) => {
+    return targets.some((target) =>
       DateTime.fromISO(firstDateOfWeek).hasSame(
         DateTime.fromISO(target),
         'week',
       ),
-    ),
+    );
+  },
   isMonthIncluded: (date, targets) =>
     targets.some((target) =>
       DateTime.fromISO(date).hasSame(DateTime.fromISO(target), 'month'),
@@ -288,6 +314,7 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
       .replace(/D/g, 'd')
       .replace(/e/g, 'E')
       .replace(/WW/g, 'WW')
+      .replace(/ww/g, 'WW')
       .replace(/w/g, 'W')
       .replace(/kk/g, 'HH')
       .replace(/k/g, 'H')
@@ -308,20 +335,24 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     }
 
     // Validate based on format keys present (use parseFormat for converted H→Q)
-    const hasWeek = parseFormat.includes('W');
+    // Luxon always uses ISO week format (GGGG-[W]WW)
+    const hasISOWeek =
+      (parseFormat.includes('G') || parseFormat.includes('g')) &&
+      (parseFormat.includes('W') || parseFormat.includes('w'));
     const hasQuarter = parseFormat.includes('Q');
     const hasMonth = parseFormat.includes('M') && !hasQuarter;
     const hasDay = parseFormat.includes('D');
-    const hasYear = parseFormat.includes('Y') || parseFormat.includes('G');
+    const hasYear =
+      parseFormat.includes('Y') ||
+      parseFormat.includes('G') ||
+      parseFormat.includes('g');
 
-    // If it's a week format, validate that the week number is valid for that year
-    if (hasWeek && hasYear && !hasMonth && !hasDay) {
-      // Use week year + week of year (respects locale's firstDayOfWeek)
+    // If it's a week format - Luxon always uses ISO week
+    if (hasISOWeek && hasYear && !hasMonth && !hasDay) {
       const weekYear = parsed.weekYear;
       const weekNum = parsed.weekNumber;
 
       // Find max weeks in the week year
-      // Check the last week of the week year
       const lastWeekOfYear = DateTime.fromObject({ weekYear, weekNumber: 52 });
       const maxWeeks = lastWeekOfYear.weekYear === weekYear ? 52 : 53;
 
@@ -329,9 +360,11 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
         return undefined;
       }
 
-      return CalendarMethodsLuxon.getCurrentWeekFirstDate(
-        parsed.toISO() as string,
-      );
+      // Return start of ISO week (Monday)
+      return parsed
+        .startOf('week')
+        .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+        .toISO() as string;
     }
 
     // If it's a quarter format, validate and normalize
@@ -346,14 +379,14 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     }
 
     // If it's a month format without day, normalize to first day
-    if (hasMonth && hasYear && !hasDay && !hasWeek && !hasQuarter) {
+    if (hasMonth && hasYear && !hasDay && !hasISOWeek && !hasQuarter) {
       return CalendarMethodsLuxon.getCurrentMonthFirstDate(
         parsed.toISO() as string,
       );
     }
 
     // If it's year only, normalize to first day of year
-    if (hasYear && !hasMonth && !hasDay && !hasWeek && !hasQuarter) {
+    if (hasYear && !hasMonth && !hasDay && !hasISOWeek && !hasQuarter) {
       return CalendarMethodsLuxon.getCurrentYearFirstDate(
         parsed.toISO() as string,
       );

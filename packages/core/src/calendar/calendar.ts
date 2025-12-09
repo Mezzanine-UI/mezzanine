@@ -100,8 +100,84 @@ export function getCalendarYearRange(year: number) {
   return [start - 1, end + 1];
 }
 
-export function getDefaultModeFormat(mode: CalendarMode) {
+/**
+ * Locales that use ISO week (Monday as first day of week).
+ * These are primarily European and Middle Eastern locales.
+ * Includes both full locale codes (e.g., 'de-de') and short codes (e.g., 'de').
+ */
+export const ISO_WEEK_LOCALES = new Set([
+  'de-de',
+  'de',
+  'fr-fr',
+  'fr',
+  'it-it',
+  'it',
+  'es-es',
+  'es',
+  'nl-nl',
+  'nl',
+  'pl-pl',
+  'pl',
+  'pt-pt',
+  'pt',
+  'ru-ru',
+  'ru',
+  'sv-se',
+  'sv',
+  'nb-no',
+  'nb',
+  'da-dk',
+  'da',
+  'fi-fi',
+  'fi',
+  'cs-cz',
+  'cs',
+  'hu-hu',
+  'hu',
+  'ro-ro',
+  'ro',
+  'sk-sk',
+  'sk',
+  'sl-si',
+  'sl',
+  'hr-hr',
+  'hr',
+  'bg-bg',
+  'bg',
+  'el-gr',
+  'el',
+  'tr-tr',
+  'tr',
+  'uk-ua',
+  'uk',
+  'he-il',
+  'he',
+  'ar-sa',
+  'ar',
+  'et-ee',
+  'et',
+  'lv-lv',
+  'lv',
+  'lt-lt',
+  'lt',
+  'en-gb',
+  'en-au',
+  'en-nz',
+]);
+
+/**
+ * Check if a locale uses ISO week (Monday as first day of week)
+ */
+export function isISOWeekLocale(locale: string): boolean {
+  return ISO_WEEK_LOCALES.has(locale.toLowerCase());
+}
+
+export function getDefaultModeFormat(mode: CalendarMode, locale?: string) {
   if (mode === 'week') {
+    // Use ISO week format for ISO week locales (Monday-first)
+    if (locale && isISOWeekLocale(locale)) {
+      return 'GGGG-[W]WW';
+    }
     return 'gggg-[W]ww';
   }
 

@@ -9,18 +9,113 @@ import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
+import { isISOWeekLocale } from '../calendar/calendar';
 
 const localeMappingTable: Record<string, string> = {
+  // English variants
   'en-us': 'en',
+  'en-au': 'en-au',
+  'en-ca': 'en-ca',
+  'en-gb': 'en-gb',
+  'en-ie': 'en-ie',
+  'en-in': 'en-in',
+  'en-nz': 'en-nz',
+  'en-sg': 'en-sg',
+
+  // Chinese variants
   'zh-cn': 'zh-cn',
   'zh-tw': 'zh-tw',
+  'zh-hk': 'zh-hk',
+
+  // Spanish variants
+  'es-es': 'es',
+  'es-mx': 'es-mx',
+  'es-do': 'es-do',
+  'es-pr': 'es-pr',
+  'es-us': 'es-us',
+
+  // Portuguese variants
+  'pt-pt': 'pt',
+  'pt-br': 'pt-br',
+
+  // French variants
   'fr-fr': 'fr',
+  'fr-ca': 'fr-ca',
+  'fr-ch': 'fr-ch',
+
+  // German variants
   'de-de': 'de',
+  'de-at': 'de-at',
+  'de-ch': 'de-ch',
+
+  // Italian variants
+  'it-it': 'it',
+  'it-ch': 'it-ch',
+
+  // Dutch variants
+  'nl-nl': 'nl',
+  'nl-be': 'nl-be',
+
+  // Swedish variants
+  'sv-se': 'sv',
+  'sv-fi': 'sv-fi',
+
+  // Norwegian variants
+  'nb-no': 'nb',
+
+  // Other European languages
+  'pl-pl': 'pl',
+  'cs-cz': 'cs',
+  'sk-sk': 'sk',
+  'hu-hu': 'hu',
+  'ro-ro': 'ro',
+  'da-dk': 'da',
+  'fi-fi': 'fi',
+  'el-gr': 'el',
+  'tr-tr': 'tr',
+  'uk-ua': 'uk',
+  'ru-ru': 'ru',
+  'bg-bg': 'bg',
+  'hr-hr': 'hr',
+  'sl-si': 'sl',
+  'et-ee': 'et',
+  'lv-lv': 'lv',
+  'lt-lt': 'lt',
+  'be-by': 'be',
+
+  // Asian languages
   'ja-jp': 'ja',
   'ko-kr': 'ko',
+  'vi-vn': 'vi',
+  'th-th': 'th',
+  'id-id': 'id',
+  'ms-my': 'ms-my',
+  'bn-bd': 'bn-bd',
+  'bn-in': 'bn',
+  'hi-in': 'hi',
+  'ta-in': 'ta',
+  'te-in': 'te',
+  'kn-in': 'kn',
+  'ml-in': 'ml',
+
+  // Middle East
+  'ar-sa': 'ar-sa',
+  'ar-ae': 'ar',
+  'he-il': 'he',
+  'fa-ir': 'fa',
+
+  // Other regions
+  'af-za': 'af',
+  'ca-es': 'ca',
+  'eu-es': 'eu',
+  'gl-es': 'gl',
+  'is-is': 'is',
 };
 
-const localeMapping = (locale: string) => localeMappingTable[locale] ?? locale;
+const localeMapping = (locale: string): string => {
+  const normalized = locale.toLowerCase();
+  return localeMappingTable[normalized] ?? normalized;
+};
 
 const hasInit = false;
 
@@ -37,13 +132,28 @@ function init() {
 }
 
 const CalendarMethodsDayjs: CalendarMethodsType = {
+  /** Locale helpers */
+  getFirstDayOfWeek: (locale) => (isISOWeekLocale(locale) ? 1 : 0),
+  isISOWeekLocale,
+
   /** Get date infos */
   getNow: () => dayjs().toISOString(),
   getSecond: (date) => dayjs(date).second(),
   getMinute: (date) => dayjs(date).minute(),
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
-  getWeek: (date) => dayjs(date).week(),
+  getWeek: (date, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return dayjs(date).isoWeek();
+    }
+    return dayjs(date).week();
+  },
+  getWeekYear: (date, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return dayjs(date).isoWeekYear();
+    }
+    return dayjs(date).year(); // dayjs doesn't have weekYear, use year as approximation
+  },
   getWeekDay: (date) => {
     const clone = dayjs(date).locale('en');
 
@@ -54,7 +164,16 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getQuarter: (date) => dayjs(date).quarter(),
   getHalfYear: (date) => Math.floor(dayjs(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
-    return dayjs().locale(localeMapping(locale)).localeData().weekdaysMin();
+    const names = dayjs()
+      .locale(localeMapping(locale))
+      .localeData()
+      .weekdaysMin();
+
+    // If ISO week locale (Monday-first), rotate array so Monday is first
+    if (isISOWeekLocale(locale)) {
+      return [...names.slice(1), names[0]];
+    }
+    return names;
   },
   getMonthShortName: (month, locale) => {
     const names = CalendarMethodsDayjs.getMonthShortNames(
@@ -85,14 +204,24 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   startOf: (target, granularity) =>
     dayjs(target).startOf(granularity).toISOString(),
 
-  getCurrentWeekFirstDate: (value) =>
-    dayjs(value)
+  getCurrentWeekFirstDate: (value, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return dayjs(value)
+        .startOf('isoWeek')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString();
+    }
+    return dayjs(value)
       .startOf('week')
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
-      .toISOString(),
+      .toISOString();
+  },
   getCurrentMonthFirstDate: (value) =>
     dayjs(value)
       .startOf('month')
@@ -135,22 +264,41 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
 
   /** Generate day calendar */
-  getCalendarGrid: (target) => {
+  getCalendarGrid: (target, locale = 'en-us') => {
+    const isISO = isISOWeekLocale(locale);
     const lastDateOfPrevMonth = dayjs(target)
       .subtract(1, 'month')
       .endOf('month')
       .date();
+
     const firstDayOfCurrentMonth = dayjs(target).date(1).day();
     const lastDateOfCurrentMonth = dayjs(target).endOf('month').date();
+
+    // Calculate how many days from previous month to show
+    // For ISO week: if first day is Sunday (0), we need 6 days from prev month
+    // For regular: if first day is Sunday (0), we need 0 days from prev month
+    let daysFromPrevMonth: number;
+    if (isISO) {
+      // Monday-first: Sunday (0) should appear at position 6
+      daysFromPrevMonth =
+        firstDayOfCurrentMonth === 0 ? 6 : firstDayOfCurrentMonth - 1;
+    } else {
+      // Sunday-first
+      daysFromPrevMonth = firstDayOfCurrentMonth;
+    }
+
+    const totalDaysInGrid = 42; // 6 weeks * 7 days
+    const daysFromNextMonth =
+      totalDaysInGrid - daysFromPrevMonth - lastDateOfCurrentMonth;
 
     return chunk(
       [
         ...range(
-          lastDateOfPrevMonth - firstDayOfCurrentMonth + 1,
+          lastDateOfPrevMonth - daysFromPrevMonth + 1,
           lastDateOfPrevMonth + 1,
         ),
         ...range(1, lastDateOfCurrentMonth + 1),
-        ...range(1, 42 - lastDateOfCurrentMonth - firstDayOfCurrentMonth + 1),
+        ...range(1, daysFromNextMonth + 1),
       ],
       7,
     );
@@ -163,15 +311,25 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     dayjs(value).isBetween(target1, target2, granularity),
   isSameDate: (dateOne, dateTwo) =>
     dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo) =>
-    dayjs(dateOne).isSame(dayjs(dateTwo), 'week'),
+  isSameWeek: (dateOne, dateTwo, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return dayjs(dateOne).isSame(dayjs(dateTwo), 'isoWeek');
+    }
+    return dayjs(dateOne).isSame(dayjs(dateTwo), 'week');
+  },
   isInMonth: (target, month) => dayjs(target).month() === month,
   isDateIncluded: (date, targets) =>
     targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) =>
-    targets.some((target) =>
+  isWeekIncluded: (firstDateOfWeek, targets, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return targets.some((target) =>
+        dayjs(firstDateOfWeek).isSame(dayjs(target), 'isoWeek'),
+      );
+    }
+    return targets.some((target) =>
       dayjs(firstDateOfWeek).isSame(dayjs(target), 'week'),
-    ),
+    );
+  },
   isMonthIncluded: (date, targets) =>
     targets.some((target) => dayjs(date).isSame(dayjs(target), 'month')),
   isYearIncluded: (date, targets) =>
@@ -264,16 +422,38 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     }
 
     // Validate based on format keys present
-    const hasWeek = parseFormat.includes('W');
+    // Check for ISO week format (GGGG-[W]WW) vs regular week format (gggg-[W]ww)
+    const hasISOWeek = parseFormat.includes('G') && parseFormat.includes('W');
+    const hasWeek = parseFormat.includes('w') && !hasISOWeek;
     const hasQuarter = parseFormat.includes('Q');
     const hasMonth = parseFormat.includes('M') && !hasQuarter;
     const hasDay = parseFormat.includes('D');
-    const hasYear = parseFormat.includes('Y') || parseFormat.includes('G');
+    const hasYear =
+      parseFormat.includes('Y') ||
+      parseFormat.includes('G') ||
+      parseFormat.includes('g');
 
-    // If it's a week format, validate that the week number is valid for that year
+    // If it's an ISO week format (GGGG-[W]WW)
+    if (hasISOWeek && hasYear && !hasMonth && !hasDay) {
+      const isoWeekNum = parsed.isoWeek();
+
+      // ISO week numbers are 1-53
+      if (isoWeekNum < 1 || isoWeekNum > 53) {
+        return undefined;
+      }
+
+      // Return the first day of the ISO week (Monday)
+      return parsed
+        .startOf('isoWeek')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString();
+    }
+
+    // If it's a regular week format (gggg-[W]ww)
     if (hasWeek && hasYear && !hasMonth && !hasDay) {
-      // Use week year + week of year (respects locale's firstDayOfWeek)
-      // Note: dayjs doesn't have weekYear() method, so we validate more loosely
       const weekNum = parsed.week();
 
       // Week numbers are generally 1-53

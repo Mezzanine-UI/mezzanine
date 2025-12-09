@@ -8,15 +8,38 @@ export type CalendarMethods<TDateType = DateType> = {
   getMinute: (value: TDateType) => number;
   getHour: (value: TDateType) => number;
   getDate: (value: TDateType) => number;
-  getWeek: (value: TDateType) => number;
+  /**
+   * Get week number based on locale.
+   * For locales with Monday as first day (e.g., de-de, fr-fr), returns ISO week number.
+   * For locales with Sunday as first day (e.g., en-us, zh-tw), returns locale-based week number.
+   */
+  getWeek: (value: TDateType, locale?: string) => number;
+  /**
+   * Get the week year (the year that the week belongs to).
+   * Important for weeks that span two calendar years.
+   */
+  getWeekYear: (value: TDateType, locale?: string) => number;
   getWeekDay: (value: TDateType) => number;
   getMonth: (value: TDateType) => number;
   getYear: (value: TDateType) => number;
   getQuarter: (value: TDateType) => number;
   getHalfYear: (value: TDateType) => number;
+  /**
+   * Get localized weekday names, ordered by locale's first day of week.
+   * For Monday-first locales: [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+   * For Sunday-first locales: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+   */
   getWeekDayNames: (locale: string) => string[];
   getMonthShortName: (value: number, locale: string) => string;
   getMonthShortNames: (locale: string) => Readonly<string[]>;
+  /**
+   * Get the first day of week for a locale (0 = Sunday, 1 = Monday, etc.)
+   */
+  getFirstDayOfWeek: (locale: string) => number;
+  /**
+   * Check if locale uses ISO week (Monday as first day)
+   */
+  isISOWeekLocale: (locale: string) => boolean;
 
   /** Manipulate */
   addHour: (value: TDateType, diff: number) => TDateType;
@@ -35,14 +58,23 @@ export type CalendarMethods<TDateType = DateType> = {
   startOf: (value: TDateType, granularity: any) => TDateType;
 
   /** Get first date of period at 00:00:00 */
-  getCurrentWeekFirstDate: (value: TDateType) => TDateType;
+  /**
+   * Get the first date of the week containing the given value.
+   * For ISO week locales (Monday-first), returns Monday.
+   * For Sunday-first locales, returns Sunday.
+   */
+  getCurrentWeekFirstDate: (value: TDateType, locale?: string) => TDateType;
   getCurrentMonthFirstDate: (value: TDateType) => TDateType;
   getCurrentYearFirstDate: (value: TDateType) => TDateType;
   getCurrentQuarterFirstDate: (value: TDateType) => TDateType;
   getCurrentHalfYearFirstDate: (value: TDateType) => TDateType;
 
-  /** Generate day calendar */
-  getCalendarGrid: (target: TDateType) => number[][];
+  /**
+   * Generate day calendar grid.
+   * For ISO week locales (Monday-first), grid starts with Monday.
+   * For Sunday-first locales, grid starts with Sunday.
+   */
+  getCalendarGrid: (target: TDateType, locale?: string) => number[][];
 
   /** Compares */
   isValid: (date: TDateType) => boolean;
@@ -54,10 +86,26 @@ export type CalendarMethods<TDateType = DateType> = {
     granularity: any,
   ) => boolean;
   isSameDate: (dateOne: TDateType, dateTwo: TDateType) => boolean;
-  isSameWeek: (dateOne: TDateType, dateTwo: TDateType) => boolean;
+  /**
+   * Check if two dates are in the same week.
+   * Uses ISO week for Monday-first locales, locale week for Sunday-first locales.
+   */
+  isSameWeek: (
+    dateOne: TDateType,
+    dateTwo: TDateType,
+    locale?: string,
+  ) => boolean;
   isInMonth: (target: TDateType, month: number) => boolean;
   isDateIncluded: (date: TDateType, targets: TDateType[]) => boolean;
-  isWeekIncluded: (firstDateOfWeek: TDateType, targets: TDateType[]) => boolean;
+  /**
+   * Check if a week is included in the target dates.
+   * Uses ISO week for Monday-first locales, locale week for Sunday-first locales.
+   */
+  isWeekIncluded: (
+    firstDateOfWeek: TDateType,
+    targets: TDateType[],
+    locale?: string,
+  ) => boolean;
   isMonthIncluded: (date: TDateType, targets: TDateType[]) => boolean;
   isYearIncluded: (date: TDateType, targets: TDateType[]) => boolean;
   isQuarterIncluded: (date: TDateType, targets: TDateType[]) => boolean;

@@ -2,6 +2,14 @@ import moment, { unitOfTime } from 'moment';
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
+import { isISOWeekLocale } from '../calendar/calendar';
+
+/**
+ * Get the first day of week for a locale (0 = Sunday, 1 = Monday)
+ */
+const getFirstDayOfWeek = (locale: string): number => {
+  return isISOWeekLocale(locale) ? 1 : 0;
+};
 
 const CalendarMethodsMoment: CalendarMethodsType = {
   /** Get date infos */
@@ -10,7 +18,18 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getMinute: (date) => moment(date).minute(),
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
-  getWeek: (date) => moment(date).week(),
+  getWeek: (date, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return moment(date).isoWeek();
+    }
+    return moment(date).week();
+  },
+  getWeekYear: (date, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return moment(date).isoWeekYear();
+    }
+    return moment(date).weekYear();
+  },
   getWeekDay: (date) => {
     const clone = moment(date).locale('en_US');
 
@@ -21,9 +40,15 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getQuarter: (date) => moment(date).quarter(),
   getHalfYear: (date) => Math.floor(moment(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
-    const date = moment().locale(locale);
+    const names = moment().locale(locale).localeData().weekdaysMin();
 
-    return date.localeData().weekdaysMin();
+    // If locale uses Monday as first day, rotate the array
+    if (isISOWeekLocale(locale)) {
+      // Move Sunday to the end: [Sun, Mon, Tue, ...] -> [Mon, Tue, ..., Sun]
+      return [...names.slice(1), names[0]];
+    }
+
+    return names;
   },
   getMonthShortName: (month, locale) => {
     const names = CalendarMethodsMoment.getMonthShortNames(locale);
@@ -35,6 +60,8 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
     return date.localeData().monthsShort();
   },
+  getFirstDayOfWeek,
+  isISOWeekLocale,
 
   /** Manipulate */
   addHour: (date, diff) => {
@@ -105,14 +132,27 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   startOf: (target, granularity: unitOfTime.StartOf) =>
     moment(target).startOf(granularity).toISOString(),
 
-  getCurrentWeekFirstDate: (value) =>
-    moment(value)
+  getCurrentWeekFirstDate: (value, locale = 'en-us') => {
+    const m = moment(value);
+    if (isISOWeekLocale(locale)) {
+      // ISO week: starts on Monday
+      return m
+        .startOf('isoWeek')
+        .hour(0)
+        .minute(0)
+        .second(0)
+        .millisecond(0)
+        .toISOString();
+    }
+    // Locale week: starts on Sunday (for en-us, zh-tw, etc.)
+    return m
       .startOf('week')
       .hour(0)
       .minute(0)
       .second(0)
       .millisecond(0)
-      .toISOString(),
+      .toISOString();
+  },
   getCurrentMonthFirstDate: (value) =>
     moment(value)
       .startOf('month')
@@ -155,13 +195,37 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
 
   /** Generate day calendar */
-  getCalendarGrid: (target) => {
+  getCalendarGrid: (target, locale = 'en-us') => {
     const lastDateOfPrevMonth = moment(target)
       .subtract(1, 'month')
       .endOf('month')
       .date();
-    const firstDayOfCurrentMonth = moment(target).date(1).day();
     const lastDateOfCurrentMonth = moment(target).endOf('month').date();
+
+    if (isISOWeekLocale(locale)) {
+      // ISO week: Monday is first day (1-7, where 1=Monday)
+      // moment.isoWeekday() returns 1-7 where 1=Monday
+      const firstDayOfCurrentMonth = moment(target).date(1).isoWeekday();
+      // Adjust: if firstDayOfCurrentMonth is 1 (Monday), we need 0 days from prev month
+      // if it's 7 (Sunday), we need 6 days from prev month
+      const daysFromPrevMonth = firstDayOfCurrentMonth - 1;
+
+      return chunk(
+        [
+          ...range(
+            lastDateOfPrevMonth - daysFromPrevMonth + 1,
+            lastDateOfPrevMonth + 1,
+          ),
+          ...range(1, lastDateOfCurrentMonth + 1),
+          ...range(1, 42 - lastDateOfCurrentMonth - daysFromPrevMonth + 1),
+        ],
+        7,
+      );
+    }
+
+    // Sunday-first week (en-us, zh-tw, etc.)
+    // moment.day() returns 0-6 where 0=Sunday
+    const firstDayOfCurrentMonth = moment(target).date(1).day();
 
     return chunk(
       [
@@ -183,15 +247,25 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     moment(value).isBetween(target1, target2, granularity),
   isSameDate: (dateOne, dateTwo) =>
     moment(dateOne).isSame(moment(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo) =>
-    moment(dateOne).isSame(moment(dateTwo), 'week'),
+  isSameWeek: (dateOne, dateTwo, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return moment(dateOne).isSame(moment(dateTwo), 'isoWeek');
+    }
+    return moment(dateOne).isSame(moment(dateTwo), 'week');
+  },
   isInMonth: (target, month) => moment(target).month() === month,
   isDateIncluded: (date, targets) =>
     targets.some((target) => moment(date).isSame(moment(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets) =>
-    targets.some((target) =>
+  isWeekIncluded: (firstDateOfWeek, targets, locale = 'en-us') => {
+    if (isISOWeekLocale(locale)) {
+      return targets.some((target) =>
+        moment(firstDateOfWeek).isSame(moment(target), 'isoWeek'),
+      );
+    }
+    return targets.some((target) =>
       moment(firstDateOfWeek).isSame(moment(target), 'week'),
-    ),
+    );
+  },
   isMonthIncluded: (date, targets) =>
     targets.some((target) => moment(date).isSame(moment(target), 'month')),
   isYearIncluded: (date, targets) =>
@@ -284,13 +358,35 @@ const CalendarMethodsMoment: CalendarMethodsType = {
     }
 
     // Validate based on format keys present
-    const hasWeek = parseFormat.includes('W');
+    // Check for ISO week format (GGGG = ISO week year, WW = ISO week number)
+    const hasISOWeek = parseFormat.includes('G') && parseFormat.includes('W');
+    const hasWeek = parseFormat.includes('W') && !hasISOWeek;
     const hasQuarter = parseFormat.includes('Q');
     const hasMonth = parseFormat.includes('M') && !hasQuarter;
     const hasDay = parseFormat.includes('D');
     const hasYear = parseFormat.includes('Y') || parseFormat.includes('G');
 
-    // If it's a week format, validate that the week number is valid for that year
+    // If it's an ISO week format (GGGG-[W]WW), validate and normalize
+    if (hasISOWeek && !hasMonth && !hasDay) {
+      const isoWeekYear = parsed.isoWeekYear();
+      const isoWeekNum = parsed.isoWeek();
+
+      // Find max ISO weeks in the year
+      const lastWeekOfYear = moment().isoWeekYear(isoWeekYear).isoWeek(52);
+      const maxWeeks = lastWeekOfYear.isoWeekYear() === isoWeekYear ? 52 : 53;
+
+      if (isoWeekNum < 1 || isoWeekNum > maxWeeks) {
+        return undefined;
+      }
+
+      // Return the Monday of the ISO week
+      return CalendarMethodsMoment.getCurrentWeekFirstDate(
+        parsed.toISOString(),
+        'de-de', // Use an ISO week locale to get Monday
+      );
+    }
+
+    // If it's a locale week format (gggg-[W]ww), validate and normalize
     if (hasWeek && hasYear && !hasMonth && !hasDay) {
       // Use week year + week of year (respects locale's firstDayOfWeek)
       const weekYear = parsed.weekYear();
@@ -307,6 +403,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
       return CalendarMethodsMoment.getCurrentWeekFirstDate(
         parsed.toISOString(),
+        'en-us', // Use a Sunday-first locale
       );
     }
 
