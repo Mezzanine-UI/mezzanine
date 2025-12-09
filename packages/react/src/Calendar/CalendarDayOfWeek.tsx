@@ -23,15 +23,8 @@ export interface CalendarDayOfWeekProps
  * You may use it to compose your own calendar.
  */
 function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
-  const {
-    getWeekDayNames,
-    displayWeekDayLocale: displayWeekDayLocaleFromConfig,
-  } = useCalendarContext();
-  const {
-    displayWeekDayLocale = displayWeekDayLocaleFromConfig,
-    className,
-    ...restRowProps
-  } = props;
+  const { getWeekDayNames, locale } = useCalendarContext();
+  const { displayWeekDayLocale = locale, className, ...restRowProps } = props;
 
   const weekDayNames = getWeekDayNames(displayWeekDayLocale);
 

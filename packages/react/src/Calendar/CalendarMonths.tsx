@@ -55,7 +55,7 @@ export interface CalendarMonthsProps
  */
 function CalendarMonths(props: CalendarMonthsProps) {
   const {
-    displayMonthLocale: displayMonthLocaleFromConfig,
+    locale,
     getMonthShortNames,
     isMonthIncluded,
     getCurrentMonthFirstDate,
@@ -63,7 +63,7 @@ function CalendarMonths(props: CalendarMonthsProps) {
   } = useCalendarContext();
   const {
     className,
-    displayMonthLocale = displayMonthLocaleFromConfig,
+    displayMonthLocale = locale,
     isMonthDisabled,
     isMonthInRange,
     isYearDisabled,

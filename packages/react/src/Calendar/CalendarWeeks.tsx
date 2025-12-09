@@ -39,7 +39,7 @@ export interface CalendarWeeksProps
    */
   onWeekHover?: (firstDateOfWeek: DateType) => void;
   /**
-   * The refernce date for getting the dates of calendar.
+   * The reference date for getting the dates of calendar.
    */
   referenceDate: DateType;
   /**
@@ -55,7 +55,7 @@ export interface CalendarWeeksProps
  */
 function CalendarWeeks(props: CalendarWeeksProps) {
   const {
-    displayWeekDayLocale: displayWeekDayLocaleFromConfig,
+    locale,
     getCalendarGrid,
     getWeek,
     getDate,
@@ -74,7 +74,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
   } = useCalendarContext();
   const {
     className,
-    displayWeekDayLocale = displayWeekDayLocaleFromConfig,
+    displayWeekDayLocale = locale,
     isYearDisabled,
     isMonthDisabled,
     isWeekDisabled,
@@ -87,8 +87,8 @@ function CalendarWeeks(props: CalendarWeeksProps) {
   } = props;
 
   const daysGrid = useMemo(
-    () => getCalendarGrid(referenceDate),
-    [getCalendarGrid, referenceDate],
+    () => getCalendarGrid(referenceDate, displayWeekDayLocale),
+    [getCalendarGrid, referenceDate, displayWeekDayLocale],
   );
 
   const weekFirstDates = useMemo(() => {
@@ -106,7 +106,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
 
       const weekFirstDate = setDate(setMonth(referenceDate, month), dateNum);
 
-      return getCurrentWeekFirstDate(weekFirstDate);
+      return getCurrentWeekFirstDate(weekFirstDate, displayWeekDayLocale);
     });
   }, [
     daysGrid,
@@ -115,6 +115,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     setDate,
     setMonth,
     getCurrentWeekFirstDate,
+    displayWeekDayLocale,
   ]);
 
   return (
@@ -122,7 +123,9 @@ function CalendarWeeks(props: CalendarWeeksProps) {
       <div className={classes.week}>
         {weekFirstDates.map((firstDate, idx) => (
           <div key={idx} className={classes.weekRow}>
-            <CalendarCell disabled>{getWeek(firstDate)}</CalendarCell>
+            <CalendarCell disabled>
+              {getWeek(firstDate, displayWeekDayLocale)}
+            </CalendarCell>
           </div>
         ))}
       </div>
@@ -165,26 +168,33 @@ function CalendarWeeks(props: CalendarWeeksProps) {
           const inactive =
             !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
           const active =
-            !disabled && !inactive && value && isWeekIncluded(dates[0], value);
+            !disabled &&
+            !inactive &&
+            value &&
+            isWeekIncluded(dates[0], value, displayWeekDayLocale);
           const inRange =
             !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
 
           const onMouseEnter = onWeekHover
             ? () => {
-                onWeekHover(getCurrentWeekFirstDate(dates[0]));
+                onWeekHover(
+                  getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
+                );
               }
             : undefined;
 
           const onClick = onClickProp
             ? () => {
-                onClickProp(getCurrentWeekFirstDate(dates[0]));
+                onClickProp(
+                  getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
+                );
               }
             : undefined;
 
           // Accessible week label for screen readers
           const firstDate = new Date(dates[0]);
           const lastDate = new Date(dates[dates.length - 1]);
-          const weekNum = getWeek(dates[0]);
+          const weekNum = getWeek(dates[0], displayWeekDayLocale);
           const startMonth = firstDate.toLocaleDateString(
             displayWeekDayLocale,
             { month: 'short' },

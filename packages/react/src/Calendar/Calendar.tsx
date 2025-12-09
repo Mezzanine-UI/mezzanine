@@ -219,7 +219,7 @@ export interface CalendarProps
 const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
   function Calendar(props, ref) {
     const {
-      displayMonthLocale: displayMonthLocaleFromConfig,
+      locale,
       getNow,
       getMonth,
       getMonthShortName,
@@ -251,8 +251,8 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       disableOnDoubleNext,
       disableOnDoublePrev,
       disabledYearSwitch,
-      displayMonthLocale = displayMonthLocaleFromConfig,
-      displayWeekDayLocale,
+      displayMonthLocale = locale,
+      displayWeekDayLocale = locale,
       isDateDisabled,
       isDateInRange,
       isMonthDisabled,
@@ -343,7 +343,11 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
       if (!disabledFooterControl) {
         displayFooterControl = (
           <CalendarFooterControl
-            onClick={() => onChange?.(getCurrentWeekFirstDate(getNow()))}
+            onClick={() =>
+              onChange?.(
+                getCurrentWeekFirstDate(getNow(), displayWeekDayLocale),
+              )
+            }
           >
             This week
           </CalendarFooterControl>
@@ -448,6 +452,7 @@ const Calendar = forwardRef<HTMLDivElement, CalendarProps>(
         getMonth(referenceDate),
         displayMonthLocale,
       );
+
       const displayYear = getYear(referenceDate);
 
       controls = (

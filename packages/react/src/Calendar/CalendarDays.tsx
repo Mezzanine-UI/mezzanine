@@ -60,7 +60,7 @@ export interface CalendarDaysProps
  */
 function CalendarDays(props: CalendarDaysProps) {
   const {
-    displayWeekDayLocale: displayWeekDayLocaleFromConfig,
+    locale,
     getCalendarGrid,
     getDate,
     getMonth,
@@ -76,7 +76,7 @@ function CalendarDays(props: CalendarDaysProps) {
   } = useCalendarContext();
   const {
     className,
-    displayWeekDayLocale = displayWeekDayLocaleFromConfig,
+    displayWeekDayLocale = locale,
     isYearDisabled,
     isMonthDisabled,
     isDateDisabled,
@@ -90,8 +90,8 @@ function CalendarDays(props: CalendarDaysProps) {
   } = props;
 
   const daysGrid = useMemo(
-    () => getCalendarGrid(referenceDate),
-    [getCalendarGrid, referenceDate],
+    () => getCalendarGrid(referenceDate, displayWeekDayLocale),
+    [getCalendarGrid, displayWeekDayLocale, referenceDate],
   );
 
   return (

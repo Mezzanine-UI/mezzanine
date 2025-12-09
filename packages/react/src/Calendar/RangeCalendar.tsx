@@ -120,6 +120,7 @@ export interface RangeCalendarProps
 const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
   function RangeCalendar(props, ref) {
     const {
+      locale,
       getMonth,
       getYear,
       setMonth,
@@ -151,8 +152,8 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       disableOnPrev,
       disableOnDoubleNext,
       disableOnDoublePrev,
-      displayMonthLocale,
-      displayWeekDayLocale,
+      displayMonthLocale = locale,
+      displayWeekDayLocale = locale,
       firstCalendarRef,
       isDateDisabled,
       isDateInRange,
@@ -206,7 +207,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               0,
             );
           case 'week':
-            return getCurrentWeekFirstDate(date);
+            return getCurrentWeekFirstDate(date, displayWeekDayLocale);
           case 'month':
             return getCurrentMonthFirstDate(date);
           case 'year':
@@ -220,6 +221,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         }
       },
       [
+        displayWeekDayLocale,
         mode,
         getCurrentWeekFirstDate,
         getCurrentMonthFirstDate,
@@ -242,7 +244,10 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               999,
             );
           case 'week': {
-            const weekStart = getCurrentWeekFirstDate(date);
+            const weekStart = getCurrentWeekFirstDate(
+              date,
+              displayWeekDayLocale,
+            );
             const weekEnd = addSecond(addDay(weekStart, 7), -1);
             return setMillisecond(
               setSecond(setMinute(setHour(weekEnd, 23), 59), 59),
@@ -294,6 +299,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
         }
       },
       [
+        displayWeekDayLocale,
         mode,
         getCurrentWeekFirstDate,
         getCurrentMonthFirstDate,

@@ -1,6 +1,10 @@
 import { StoryFn, Meta } from '@storybook/react-webpack5';
 import moment from 'moment';
-import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarMode,
+  DateType,
+  getDefaultModeFormat,
+} from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarConfigProvider from './CalendarContext';
@@ -9,19 +13,27 @@ import RangeCalendar, { RangeCalendarProps } from './RangeCalendar';
 import Typography from '../Typography/Typography';
 import { useCalendarControls } from './useCalendarControls';
 import Toggle from '../Toggle';
+import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
+import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 
 export default {
   title: 'Utility/Calendar',
 } as Meta;
 
-const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
+const InnerCalendarPlayground = ({
+  mode = 'day',
+  locale = 'en-us',
+}: {
+  mode: CalendarMode;
+  locale?: string;
+}) => {
   const formats = {
-    day: 'YYYY-MM-DD',
-    week: 'gggg-[W]ww',
-    month: 'YYYY-MM',
-    year: 'YYYY',
-    quarter: 'YYYY-[Q]Q',
-    'half-year': 'YYYY-[H]n', // H1 or H2 (n = half-year number)
+    day: getDefaultModeFormat('day', locale),
+    week: getDefaultModeFormat('week', locale),
+    month: getDefaultModeFormat('month', locale),
+    year: getDefaultModeFormat('year', locale),
+    quarter: getDefaultModeFormat('quarter', locale),
+    'half-year': getDefaultModeFormat('half-year', locale),
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
   const [showQuickSelect, setShowQuickSelect] = useState(false);
@@ -100,7 +112,8 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
         </>
       )}
       <Typography style={{ margin: '0 0 12px 0' }}>
-        {`current value: ${formatValue(val)}`}
+        {`original value: ${val},
+        formatted value: ${formatValue(val)}`}
       </Typography>
       <Calendar
         mode={currentMode}
@@ -174,19 +187,38 @@ const InnerCalendarPlayground = ({ mode = 'day' }: { mode: CalendarMode }) => {
 };
 
 type CalendarPlaygroundArgs = Pick<CalendarProps, 'mode'> & {
-  defaultLocale?: string;
+  locale?: string;
 };
 export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
   mode = 'day',
-  defaultLocale = 'en-us',
+  locale = 'en-us',
 }) => (
-  <CalendarConfigProvider
-    methods={CalendarMethodsMoment}
-    displayMonthLocale={defaultLocale}
-    displayWeekDayLocale={defaultLocale}
+  <div
+    style={{
+      display: 'flex',
+      flexFlow: 'row wrap',
+      gap: '12px',
+    }}
   >
-    <InnerCalendarPlayground mode={mode} />
-  </CalendarConfigProvider>
+    <div>
+      Moment
+      <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>
+        <InnerCalendarPlayground mode={mode} locale={locale} />
+      </CalendarConfigProvider>
+    </div>
+    <div>
+      Dayjs
+      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale={locale}>
+        <InnerCalendarPlayground mode={mode} locale={locale} />
+      </CalendarConfigProvider>
+    </div>
+    <div>
+      Luxon
+      <CalendarConfigProvider methods={CalendarMethodsLuxon} locale={locale}>
+        <InnerCalendarPlayground mode={mode} locale={locale} />
+      </CalendarConfigProvider>
+    </div>
+  </div>
 );
 
 CalendarPlayground.argTypes = {
@@ -196,7 +228,7 @@ CalendarPlayground.argTypes = {
       type: 'select',
     },
   },
-  defaultLocale: {
+  locale: {
     options: ['en-us', 'zh-cn', 'zh-tw', 'fr-fr', 'de-de', 'ja-jp', 'ko-kr'],
     control: {
       type: 'select',
@@ -206,21 +238,23 @@ CalendarPlayground.argTypes = {
 
 CalendarPlayground.args = {
   mode: 'day',
-  defaultLocale: 'en-us',
+  locale: 'en-us',
 };
 
 const InnerRangeCalendarPlayground = ({
   mode = 'day',
+  locale,
 }: {
   mode: CalendarMode;
+  locale?: string;
 }) => {
   const formats = {
-    day: 'YYYY-MM-DD',
-    week: 'gggg-wo',
-    month: 'YYYY-MM',
-    year: 'YYYY',
-    quarter: 'YYYY-[Q]Q',
-    'half-year': 'YYYY-[H]n',
+    day: getDefaultModeFormat('day', locale),
+    week: getDefaultModeFormat('week', locale),
+    month: getDefaultModeFormat('month', locale),
+    year: getDefaultModeFormat('year', locale),
+    quarter: getDefaultModeFormat('quarter', locale),
+    'half-year': getDefaultModeFormat('half-year', locale),
   };
   const initialReferenceDate = useMemo(() => moment().toISOString(), []);
   const [showQuickSelect, setShowQuickSelect] = useState(false);
@@ -269,8 +303,8 @@ const InnerRangeCalendarPlayground = ({
 
   const isDateInRange = (date: DateType) => {
     if (!tempStartVal || !tempEndVal) return false;
-    const granularity = mode === 'half-year' ? 'quarter' : (mode as any);
-    return moment(date).isBetween(tempStartVal, tempEndVal, granularity, '[]');
+
+    return moment(date).isBetween(tempStartVal, tempEndVal, null, '[]');
   };
 
   const quickSelectOptions = [
@@ -384,12 +418,15 @@ const InnerRangeCalendarPlayground = ({
   );
 };
 
-type RangeCalendarPlaygroundArgs = Pick<RangeCalendarProps, 'mode'>;
+type RangeCalendarPlaygroundArgs = Pick<RangeCalendarProps, 'mode'> & {
+  locale?: string;
+};
 export const RangeCalendarPlayground: StoryFn<RangeCalendarPlaygroundArgs> = ({
   mode = 'day',
+  locale,
 }) => (
-  <CalendarConfigProvider methods={CalendarMethodsMoment}>
-    <InnerRangeCalendarPlayground mode={mode} />
+  <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>
+    <InnerRangeCalendarPlayground mode={mode} locale={locale} />
   </CalendarConfigProvider>
 );
 
@@ -400,8 +437,15 @@ RangeCalendarPlayground.argTypes = {
       type: 'select',
     },
   },
+  locale: {
+    options: ['en-us', 'zh-cn', 'zh-tw', 'fr-fr', 'de-de', 'ja-jp', 'ko-kr'],
+    control: {
+      type: 'select',
+    },
+  },
 };
 
 RangeCalendarPlayground.args = {
   mode: 'day',
+  locale: 'en-us',
 };
