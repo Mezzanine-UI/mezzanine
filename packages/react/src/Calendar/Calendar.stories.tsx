@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react-webpack5';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import moment from 'moment';
 import {
   CalendarMode,
@@ -8,17 +8,22 @@ import {
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { useMemo, useState } from 'react';
 import CalendarConfigProvider from './CalendarContext';
-import Calendar, { CalendarProps } from './Calendar';
-import RangeCalendar, { RangeCalendarProps } from './RangeCalendar';
+import Calendar from './Calendar';
+import RangeCalendar from './RangeCalendar';
 import Typography from '../Typography/Typography';
 import { useCalendarControls } from './useCalendarControls';
 import Toggle from '../Toggle';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 
-export default {
+const meta: Meta<typeof Calendar> = {
   title: 'Utility/Calendar',
-} as Meta;
+  component: Calendar,
+};
+
+export default meta;
+
+type Story = StoryObj<typeof Calendar>;
 
 const InnerCalendarPlayground = ({
   mode = 'day',
@@ -186,59 +191,59 @@ const InnerCalendarPlayground = ({
   );
 };
 
-type CalendarPlaygroundArgs = Pick<CalendarProps, 'mode'> & {
-  locale?: string;
-};
-export const CalendarPlayground: StoryFn<CalendarPlaygroundArgs> = ({
-  mode = 'day',
-  locale = 'en-us',
-}) => (
-  <div
-    style={{
-      display: 'flex',
-      flexFlow: 'row wrap',
-      gap: '12px',
-    }}
-  >
-    <div>
-      Moment
-      <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>
-        <InnerCalendarPlayground mode={mode} locale={locale} />
-      </CalendarConfigProvider>
-    </div>
-    <div>
-      Dayjs
-      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale={locale}>
-        <InnerCalendarPlayground mode={mode} locale={locale} />
-      </CalendarConfigProvider>
-    </div>
-    <div>
-      Luxon
-      <CalendarConfigProvider methods={CalendarMethodsLuxon} locale={locale}>
-        <InnerCalendarPlayground mode={mode} locale={locale} />
-      </CalendarConfigProvider>
-    </div>
-  </div>
-);
-
-CalendarPlayground.argTypes = {
-  mode: {
-    options: ['day', 'week', 'month', 'year', 'quarter', 'half-year'],
-    control: {
-      type: 'select',
+export const CalendarPlayground: Story = {
+  args: {
+    mode: 'day',
+  },
+  argTypes: {
+    mode: {
+      options: ['day', 'week', 'month', 'year', 'quarter', 'half-year'],
+      control: {
+        type: 'select',
+      },
     },
   },
-  locale: {
-    options: ['en-us', 'zh-cn', 'zh-tw', 'fr-fr', 'de-de', 'ja-jp', 'ko-kr'],
-    control: {
-      type: 'select',
-    },
-  },
-};
+  render: function Render({ mode = 'day' }) {
+    const locale = 'en-us';
 
-CalendarPlayground.args = {
-  mode: 'day',
-  locale: 'en-us',
+    return (
+      <div
+        style={{
+          display: 'flex',
+          flexFlow: 'row wrap',
+          gap: '12px',
+        }}
+      >
+        <div>
+          Moment
+          <CalendarConfigProvider
+            methods={CalendarMethodsMoment}
+            locale={locale}
+          >
+            <InnerCalendarPlayground mode={mode} locale={locale} />
+          </CalendarConfigProvider>
+        </div>
+        <div>
+          Dayjs
+          <CalendarConfigProvider
+            methods={CalendarMethodsDayjs}
+            locale={locale}
+          >
+            <InnerCalendarPlayground mode={mode} locale={locale} />
+          </CalendarConfigProvider>
+        </div>
+        <div>
+          Luxon
+          <CalendarConfigProvider
+            methods={CalendarMethodsLuxon}
+            locale={locale}
+          >
+            <InnerCalendarPlayground mode={mode} locale={locale} />
+          </CalendarConfigProvider>
+        </div>
+      </div>
+    );
+  },
 };
 
 const InnerRangeCalendarPlayground = ({
@@ -418,34 +423,25 @@ const InnerRangeCalendarPlayground = ({
   );
 };
 
-type RangeCalendarPlaygroundArgs = Pick<RangeCalendarProps, 'mode'> & {
-  locale?: string;
-};
-export const RangeCalendarPlayground: StoryFn<RangeCalendarPlaygroundArgs> = ({
-  mode = 'day',
-  locale,
-}) => (
-  <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>
-    <InnerRangeCalendarPlayground mode={mode} locale={locale} />
-  </CalendarConfigProvider>
-);
-
-RangeCalendarPlayground.argTypes = {
-  mode: {
-    options: ['day', 'week', 'month', 'year', 'quarter', 'half-year'],
-    control: {
-      type: 'select',
+export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
+  args: {
+    mode: 'day',
+  },
+  argTypes: {
+    mode: {
+      options: ['day', 'week', 'month', 'year', 'quarter', 'half-year'],
+      control: {
+        type: 'select',
+      },
     },
   },
-  locale: {
-    options: ['en-us', 'zh-cn', 'zh-tw', 'fr-fr', 'de-de', 'ja-jp', 'ko-kr'],
-    control: {
-      type: 'select',
-    },
-  },
-};
+  render: function Render({ mode = 'day' }) {
+    const locale = 'en-us';
 
-RangeCalendarPlayground.args = {
-  mode: 'day',
-  locale: 'en-us',
+    return (
+      <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>
+        <InnerRangeCalendarPlayground mode={mode} locale={locale} />
+      </CalendarConfigProvider>
+    );
+  },
 };
