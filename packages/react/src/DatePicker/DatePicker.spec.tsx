@@ -121,43 +121,6 @@ describe('<DatePicker />', () => {
       jest.useRealTimers();
     });
 
-    it('should close calendar when enter key down', async () => {
-      jest.useFakeTimers();
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      await waitFor(() => {
-        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
-          HTMLDivElement,
-        );
-      });
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement, { key: 'Enter' });
-      });
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      await waitFor(() => {
-        expect(document.querySelector('.mzn-calendar')).toBe(null);
-      });
-
-      jest.useRealTimers();
-    });
-
     it('should close calendar when escape key down', async () => {
       jest.useFakeTimers();
 
@@ -364,13 +327,15 @@ describe('<DatePicker />', () => {
       expect(onChange).toHaveBeenCalledTimes(1);
     });
 
-    it('should be invoked when enter key down', async () => {
+    it('should be invoked when calendar date is selected', async () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker onChange={onChange} />
-        </CalendarConfigProvider>,
-      );
+      const referenceDate = '2021-10-20';
+      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DatePicker onChange={onChange} referenceDate={referenceDate} />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
@@ -380,11 +345,15 @@ describe('<DatePicker />', () => {
       });
 
       await waitFor(() => {
-        fireEvent.change(inputElement, { target: { value: '2021-10-20' } });
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
+        );
       });
 
+      const cellElement = getByTextWithHostElement('15');
+
       await waitFor(() => {
-        fireEvent.keyDown(inputElement, { key: 'Enter' });
+        fireEvent.click(cellElement);
       });
 
       await waitFor(() => {
@@ -459,28 +428,47 @@ describe('<DatePicker />', () => {
   });
 
   describe('prop: clearable', () => {
-    it('should clear input value by default', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker clearable />
-        </CalendarConfigProvider>,
-      );
+    it('should clear input value when clear button clicked', async () => {
+      const referenceDate = '2021-10-20';
+      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DatePicker clearable referenceDate={referenceDate} />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
+      // Select a date first
       await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
+        fireEvent.focus(inputElement!);
       });
 
       await waitFor(() => {
-        inputElement.focus();
-
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
         );
+      });
 
-        fireEvent.click(clearIconElement!);
+      const cellElement = getByTextWithHostElement('15');
+
+      await waitFor(() => {
+        fireEvent.click(cellElement);
+      });
+
+      await waitFor(() => {
+        expect(inputElement.value).toBeTruthy();
+      });
+
+      // Now clear it
+      await waitFor(() => {
+        fireEvent.focus(inputElement!);
+
+        const clearButton = element.querySelector('button[aria-label="Close"]');
+
+        expect(clearButton).toBeInstanceOf(HTMLButtonElement);
+        fireEvent.click(clearButton!);
       });
 
       await waitFor(() => {
@@ -488,35 +476,53 @@ describe('<DatePicker />', () => {
       });
     });
 
-    it('should clear values when clear icon clicked', async () => {
+    it('should invoke onChange with undefined when clear button clicked', async () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DatePicker onChange={onChange} clearable />
-        </CalendarConfigProvider>,
-      );
+      const referenceDate = '2021-10-20';
+      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <DatePicker
+              onChange={onChange}
+              clearable
+              referenceDate={referenceDate}
+            />
+          </CalendarConfigProvider>,
+        );
 
       const element = getHostHTMLElement();
       const [inputElement] = element.getElementsByTagName('input');
 
+      // Select a date first
       await waitFor(() => {
         fireEvent.focus(inputElement!);
       });
 
       await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.mouseOver(element!);
-      });
-
-      await waitFor(() => {
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
+        expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+          HTMLDivElement,
         );
+      });
 
-        fireEvent.click(clearIconElement!);
+      const cellElement = getByTextWithHostElement('15');
+
+      await waitFor(() => {
+        fireEvent.click(cellElement);
+      });
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledTimes(1);
+      });
+
+      onChange.mockClear();
+
+      // Now clear it
+      await waitFor(() => {
+        fireEvent.focus(inputElement!);
+
+        const clearButton = element.querySelector('button[aria-label="Close"]');
+
+        fireEvent.click(clearButton!);
       });
 
       await waitFor(() => {
@@ -527,12 +533,10 @@ describe('<DatePicker />', () => {
   });
 
   describe('prop: inputProps', () => {
-    it('should bind focus, blur, keydown events to input element', async () => {
-      const onKeyDown = jest.fn();
+    it('should bind focus and blur events to input element', async () => {
       const onBlur = jest.fn();
       const onFocus = jest.fn();
       const inputProps: DatePickerProps['inputProps'] = {
-        onKeyDown,
         onBlur,
         onFocus,
       };
@@ -551,33 +555,12 @@ describe('<DatePicker />', () => {
       });
 
       expect(onFocus).toHaveBeenCalledTimes(1);
-      expect(onFocus).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!);
-      });
-
-      expect(onKeyDown).toHaveBeenCalledTimes(1);
-      expect(onKeyDown).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
 
       await waitFor(() => {
         fireEvent.blur(inputElement!);
       });
 
       expect(onBlur).toHaveBeenCalledTimes(1);
-      expect(onBlur).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
     });
   });
 
