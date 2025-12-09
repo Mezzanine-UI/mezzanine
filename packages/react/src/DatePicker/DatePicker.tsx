@@ -4,7 +4,6 @@ import {
   useState,
   useRef,
   useCallback,
-  useContext,
   useMemo,
   useEffect,
   MouseEventHandler,
@@ -18,7 +17,6 @@ import { useCalendarContext } from '../Calendar';
 import DatePickerCalendar, {
   DatePickerCalendarProps,
 } from './DatePickerCalendar';
-import { FormControlContext } from '../Form';
 import {
   PickerTrigger,
   PickerTriggerProps,
@@ -90,13 +88,7 @@ export interface DatePickerProps
  */
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   function DatePicker(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
-    const { defaultDateFormat, getNow } = useCalendarContext();
+    const { getNow } = useCalendarContext();
     const {
       calendarProps,
       className,
@@ -108,12 +100,12 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disableOnDoubleNext,
       disableOnDoublePrev,
       disabledYearSwitch = false,
-      disabled = disabledFromFormControl || false,
+      disabled = false,
       displayMonthLocale,
-      error = severity === 'error' || false,
+      error = false,
       fadeProps,
-      format = defaultDateFormat,
-      fullWidth = fullWidthFromFormControl || false,
+      format: formatProp,
+      fullWidth = false,
       inputProps,
       isDateDisabled,
       isMonthDisabled,
@@ -129,11 +121,12 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       prefix,
       readOnly,
       referenceDate: referenceDateProp,
-      required = requiredFromFormControl || false,
+      required = false,
       size,
       value: valueProp,
       ...restTriggerProps
     } = props;
+    const format = formatProp || getDefaultModeFormat(mode);
     const {
       onBlur: onBlurProp,
       onKeyDown: onKeyDownProp,
@@ -143,8 +136,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     } = inputProps || {};
 
     const formats = useMemo(
-      () => [format, defaultDateFormat, getDefaultModeFormat(mode)],
-      [defaultDateFormat, format, mode],
+      () => [format, getDefaultModeFormat(mode)],
+      [format, mode],
     );
 
     /**

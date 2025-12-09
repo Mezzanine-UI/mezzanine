@@ -155,7 +155,7 @@ export const Method = () => {
           <DatePicker value={val} onChange={onChange} />
         </div>
       </CalendarConfigProvider>
-      <CalendarConfigProvider methods={CalendarMethodsLuxon}>
+      <CalendarConfigProvider methods={CalendarMethodsLuxon} locale="fr-fr">
         <div style={containerStyle}>
           <Typography variant="h3" style={typoStyle}>
             CalendarMethodsLuxon
