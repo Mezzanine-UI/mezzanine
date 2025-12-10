@@ -1,6 +1,6 @@
 'use client';
 
-import { ChangeEventHandler, forwardRef, KeyboardEvent, MouseEvent, Ref, useId, useMemo } from 'react';
+import { ChangeEventHandler, forwardRef, MouseEvent, Ref, useId, useMemo } from 'react';
 
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
@@ -43,7 +43,7 @@ export interface SelectionPropsBase
    */
   direction?: SelectionDirection;
   /**
-   * The image of selection. support image url.
+   * The image of selection. Supports image URL.
    */
   image?: string;
   /**
@@ -62,7 +62,7 @@ export interface SelectionPropsBase
    */
   name?: string;
   /**
-   * The description of selection.
+   * The id of the input element.
    */
   id?: string;
   /**
@@ -172,15 +172,7 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
           className,
         )}
         {...(disabled && { 'aria-disabled': true })}
-        {...(onClick && {
-          onClick,
-          onKeyDown: (e: KeyboardEvent<HTMLLabelElement>) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              (e.currentTarget as HTMLLabelElement).click();
-            }
-          },
-        })}
+        {...(onClick && { onClick })}
       >
         <div className={classes.container}>
           {

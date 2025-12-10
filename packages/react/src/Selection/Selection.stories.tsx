@@ -217,7 +217,7 @@ export const Horizontal: Story = {
               />
             </ItemContent>
             <ItemContent>
-              <Typography>Checked:</Typography>
+              <Typography>Unchecked:</Typography>
               <Selection
                 selector="checkbox"
                 text="Checkbox Selection"
@@ -301,7 +301,7 @@ export const Horizontal: Story = {
               />
             </ItemContent>
             <ItemContent>
-              <Typography>Checked:</Typography>
+              <Typography>Unchecked:</Typography>
               <Selection
                 selector="checkbox"
                 text="Checkbox Selection"
@@ -456,7 +456,7 @@ export const Vertical: Story = {
               />
             </ItemContent>
             <ItemContent>
-              <Typography>Checked:</Typography>
+              <Typography>Unchecked:</Typography>
               <Selection
                 direction="vertical"
                 selector="checkbox"
@@ -548,7 +548,7 @@ export const Vertical: Story = {
               />
             </ItemContent>
             <ItemContent>
-              <Typography>Checked:</Typography>
+              <Typography>Unchecked:</Typography>
               <Selection
                 direction="vertical"
                 image="https://rytass.com/logo.png"
