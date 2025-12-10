@@ -12,6 +12,10 @@ import type { IconDefinition } from '@mezzanine-ui/icons';
 import { FileIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 
+// Icon size constant for Selection component
+// Note: This value is component-specific and doesn't have a corresponding design token
+const SELECTION_ICON_SIZE = 26;
+
 export interface SelectionPropsBase
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'> {
   /**
@@ -150,8 +154,15 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
 
     const haveImage = useMemo(() => {
       if (!image) return false;
+      if (typeof image !== 'string') return false;
 
-      return typeof image === 'string' && image.startsWith('http');
+      return (
+        image.startsWith('http://') ||
+        image.startsWith('https://') ||
+        image.startsWith('data:') ||
+        image.startsWith('/') ||
+        image.startsWith('./')
+      );
     }, [image]);
 
     if (!text || !supportingText) {
@@ -180,7 +191,7 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
           onKeyDown: (e: KeyboardEvent<HTMLLabelElement>) => {
             if (e.key === 'Enter' || e.key === ' ') {
               e.preventDefault();
-              onClick(e as unknown as MouseEvent<HTMLLabelElement>);
+              (e.currentTarget as HTMLLabelElement).click();
             }
           },
         })}
@@ -200,7 +211,7 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
                   className={classes.icon}
                   color="neutral-solid"
                   icon={customIcon || FileIcon}
-                  size={26}
+                  size={SELECTION_ICON_SIZE}
                 />
             }
           </div>
