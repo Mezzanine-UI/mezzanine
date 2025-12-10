@@ -1,0 +1,347 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use './selection' as *;
+
+$border-width: spacing.primitive-variable(1);
+$box-shadow-spread: spacing.primitive-variable(2);
+$horizontal-image-size: spacing.primitive-variable(40);
+$vertical-image-size: spacing.primitive-variable(160);
+$input-size: spacing.primitive-variable(12);
+$input-offset: spacing.primitive-variable(12);
+
+// State configurations
+$states: (
+  enable: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    background-color: palette.semantic-variable(background, neutral-faint),
+    border-color: palette.semantic-variable(border, neutral-faint),
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: effect.variable(focus, primary),
+  ),
+  selected: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, brand),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-faint),
+  ),
+);
+
+@function _get-state-config($state) {
+  @return map.get($states, $state);
+}
+
+@function _get-color($state, $property) {
+  $state-config: _get-state-config($state);
+
+  @if $state-config {
+    @return map.get($state-config, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-state($state) {
+  $text-color: _get-color($state, text-color);
+  $background-color: _get-color($state, background-color);
+  $border-color: _get-color($state, border-color);
+  $focus-color: _get-color($state, focus-color);
+
+  @if $text-color {
+    color: $text-color;
+  }
+
+  @if $background-color {
+    background-color: $background-color;
+  }
+
+  @if $border-color {
+    border-color: $border-color;
+  }
+
+  @if $focus-color {
+    --#{$prefix}-focus-color: #{$focus-color};
+  }
+}
+
+.#{$prefix} {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: $border-width solid palette.semantic-variable(border, neutral-faint);
+  border-radius: radius.variable(roomy);
+  background-color: palette.semantic-variable(background, base);
+  cursor: pointer;
+  user-select: none;
+  width: fit-content;
+  height: fit-content;
+  padding-inline: spacing.semantic-variable(padding, horizontal, base-fixed);
+  padding-block: spacing.semantic-variable(padding, vertical, base);
+  gap: spacing.semantic-variable(gap, base);
+  @include typography.variant(body1);
+  
+  transition:
+    transition.standard(color),
+    transition.standard(background-color),
+    transition.standard(border-color),
+    transition.standard(box-shadow);
+
+  @include _apply-state(enable);
+
+  &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--selected) {
+    @include _apply-state(hover);
+    box-shadow: effect.variable(shadow, floating);
+  }
+
+  &:active:not(.#{$prefix}--disabled):not(.#{$prefix}--selected) {
+    @include _apply-state(active);
+  }
+
+  &:focus,
+  &:focus-visible,
+  &:focus-within {
+    outline: none;
+    @include _apply-state(focus);
+    box-shadow: effect.variable(focus, primary);
+  }
+
+  // Selected state (when input is checked)
+  &:has(input:checked):not(.#{$prefix}--disabled),
+  &--selected:not(.#{$prefix}--disabled) {
+    cursor: default;
+    @include _apply-state(selected);
+
+    // Selected + hover
+    &:hover {
+      @include _apply-state(selected);
+      box-shadow: effect.variable(shadow, floating);
+    }
+
+    // Selected + focus
+    &:focus,
+    &:focus-visible,
+    &:focus-within {
+      outline: none;
+      @include _apply-state(selected);
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    @include _apply-state(disabled);
+  }
+
+  &--readonly:not(.#{$prefix}--disabled) {
+    cursor: auto;
+  }
+
+  // Selected + disabled (when input is checked and disabled)
+  &:has(input:checked).#{$prefix}--disabled,
+  &--selected.#{$prefix}--disabled {
+    @include _apply-state(disabled);
+  }
+
+  &--focused {
+    box-shadow: 0 0 0 $box-shadow-spread var(--#{$prefix}-focus-color, transparent);
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, tiny);
+  }
+
+  &__text {
+    overflow: hidden;
+    color: palette.semantic-variable(text, neutral-solid);
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include typography.variant(body-highlight);
+  }
+
+  &--disabled &__text {
+    color: palette.semantic-variable(text, neutral-light);
+  }
+
+  &__supporting-text {
+    color: palette.semantic-variable(text, neutral);
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.variant(caption);
+  }
+
+  &--disabled &__supporting-text {
+    color: palette.semantic-variable(text, neutral-light);
+  }
+
+  &__icon {
+    width: spacing.semantic-variable(size, element, relaxed);
+  }
+
+  &--disabled &__icon {
+    color: palette.semantic-variable(icon, neutral-light);
+  }
+
+  &__selection-image {
+    border-radius: radius.variable(base);
+  }
+
+  &--disabled &__selection-image {
+    background-color: palette.semantic-variable(surface, subtle);
+  }
+
+  &--horizontal &__selection-image {
+    width: $horizontal-image-size;
+    height: $horizontal-image-size;
+  }
+
+  &__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &--vertical {
+    align-items: flex-start;
+  }
+
+  &--vertical &__container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  &--vertical &__selection-image {
+    width: $vertical-image-size;
+    height: $vertical-image-size;
+  }
+
+  &--disabled &__input {
+    cursor: not-allowed;
+  }
+
+  &__input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
+    margin-inline: spacing.semantic-variable(padding, horizontal, micro);
+    margin-block: spacing.semantic-variable(padding, vertical, micro);
+    width: $input-size;
+    height: $input-size;
+    border: $border-width solid;
+    border-color: palette.semantic-variable(border, neutral);
+
+    &[type="radio"] {
+      position: relative;
+      border-radius: 50%;
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: spacing.primitive-variable(6);
+        height: spacing.primitive-variable(6);
+        border-radius: 50%;
+        background-color: transparent;
+        transition: transition.standard(background-color);
+      }
+
+      &:checked {
+        border-color: palette.semantic-variable(border, brand);
+
+        &::before {
+          background-color: palette.semantic-variable(background, brand);
+        }
+      }
+
+      &:disabled {
+        border-color: palette.semantic-variable(background, neutral);
+
+        &:checked::before {
+          background-color: palette.semantic-variable(background, neutral);
+        }
+      }
+    }
+
+    &[type="checkbox"] {
+      position: relative;
+      border-radius: radius.variable(tiny);
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -65%) rotate(-45deg) scaleX(-1);
+        width: 5.21px;
+        height: 3.21px;
+        border: 1.5px solid;
+        border-top: none;
+        border-left: none;
+        border-color: palette.semantic-variable(icon, fixed-light);
+        opacity: 0;
+        transition: transition.standard(opacity);
+      }
+
+      &:checked {
+        background-color: palette.semantic-variable(background, brand);
+        border-color: palette.semantic-variable(border, brand);
+
+        &::after {
+          opacity: 1;
+        }
+      }
+
+      &:disabled {
+        background-color: palette.semantic-variable(background, neutral-subtle);
+        border-color: palette.semantic-variable(border, neutral-light);
+
+        &::after {
+          border-color: palette.semantic-variable(icon, neutral-light);
+        }
+      }
+    }
+
+    &:focus,
+    &:focus-visible,
+    &:focus-within {
+      outline: none;
+    }
+  }
+
+  &--vertical:has(&__selection-image) &__input {
+    position: absolute;
+    right: $input-offset;
+    top: $input-offset;
+  }
+
+}
