@@ -1,5 +1,6 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
 @use '../text-field';
 @use './picker' as *;
 
@@ -63,4 +64,27 @@
       color: palette.semantic-variable(text, neutral-light);
     }
   }
+
+  &__separator-inputs {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+    flex: 1;
+  }
+
+  &__separator-input {
+    flex: 1;
+
+    .#{$prefix}__formatted-input > input {
+      width: 100%;
+    }
+  }
+
+  &__separator {
+    width: 1px;
+    height: 16px;
+    background-color: palette.semantic-variable(separator, neutral-light);
+    flex-shrink: 0;
+  }
 }
+

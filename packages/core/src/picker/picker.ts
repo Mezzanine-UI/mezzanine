@@ -13,6 +13,9 @@ export const pickerClasses = {
   formattedInputSegment: `${pickerPrefix}__formatted-input-segment`,
   formattedInputSegmentFilled: `${pickerPrefix}__formatted-input-segment--filled`,
   formattedInputSegmentDisabled: `${pickerPrefix}__formatted-input-segment--disabled`,
+  separator: `${pickerPrefix}__separator`,
+  separatorInputs: `${pickerPrefix}__separator-inputs`,
+  separatorInput: `${pickerPrefix}__separator-input`,
 } as const;
 
 /** Types */
