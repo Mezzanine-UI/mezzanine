@@ -9,6 +9,8 @@ export { useRangePickerValue } from './useRangePickerValue';
 export type { UseRangePickerValueProps } from './useRangePickerValue';
 export type { PickerTriggerProps } from './PickerTrigger';
 export { default as PickerTrigger } from './PickerTrigger';
+export { default as PickerTriggerWithSeparator } from './PickerTriggerWithSeparator';
+export type { PickerTriggerWithSeparatorProps } from './PickerTriggerWithSeparator';
 export { default as RangePickerTrigger } from './RangePickerTrigger';
 export type { RangePickerTriggerProps } from './RangePickerTrigger';
 export { default as FormattedInput } from './FormattedInput';
