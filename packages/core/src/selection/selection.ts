@@ -18,7 +18,6 @@ export const selectionClasses = {
   text: `${selectionPrefix}__text`,
   supportingText: `${selectionPrefix}__supporting-text`,
   content: `${selectionPrefix}__content`,
-  stateContent: `${selectionPrefix}__state-content`,
   direction: (direction: SelectionDirection) =>
     `${selectionPrefix}--${direction}`,
   disabled: `${selectionPrefix}--disabled`,

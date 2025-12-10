@@ -302,9 +302,9 @@ $states: (
         top: 50%;
         left: 50%;
         transform: translate(-50%, -65%) rotate(-45deg) scaleX(-1);
-        width: spacing.primitive-variable(5.21);
-        height: spacing.primitive-variable(3.21);
-        border: spacing.primitive-variable(1.5) solid;
+        width: spacing.primitive-variable(6);
+        height: spacing.primitive-variable(3);
+        border: spacing.primitive-variable(2) solid;
         border-top: none;
         border-left: none;
         border-color: palette.semantic-variable(icon, fixed-light);
