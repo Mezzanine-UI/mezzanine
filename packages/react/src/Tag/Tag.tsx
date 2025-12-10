@@ -9,6 +9,13 @@ import Icon from '../Icon';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { CloseIcon } from '@mezzanine-ui/icons';
 
+const getTagType = (props: TagProps) => props.type ?? 'static';
+
+const isTagType = <T extends NonNullable<TagProps['type']>>(
+  props: TagProps,
+  current: T,
+): props is Extract<TagProps, { type: T }> => getTagType(props) === current;
+
 /**
  * The react component for `mezzanine` tag.
  */
@@ -17,21 +24,21 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
     const {
       active,
       className,
-      count,
       disabled,
-      label,
       onClick,
       onClose,
       readOnly,
       size = 'main',
-      type,
+      type: _type,
       ...rest
     } = props;
+
+    const tagType = _type ?? 'static';
 
     const commonClassName = cx(
       classes.host,
       classes.size(size),
-      classes.type(type),
+      classes.type(tagType),
       {
         [classes.disabled]: disabled,
         [classes.active]: active,
@@ -40,7 +47,9 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
       className,
     );
 
-    if (type === 'overflow-counter') {
+    if (isTagType(props, 'overflow-counter')) {
+      const { count } = props;
+
       return (
         <button
           {...rest}
@@ -56,7 +65,9 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
       );
     }
 
-    if (type === 'addable') {
+    if (isTagType(props, 'addable')) {
+      const { label } = props;
+
       return (
         <button
           {...rest}
@@ -79,18 +90,20 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
         aria-disabled={disabled}
         className={commonClassName}
       >
-        {type === 'static' && <span className={classes.label}>{label}</span>}
+        {tagType === 'static' && (
+          <span className={classes.label}>{props.label}</span>
+        )}
 
-        {type === 'counter' && (
+        {isTagType(props, 'counter') && (
           <>
-            <span className={classes.label}>{label}</span>
-            <Badge variant="count-info" count={count} />
+            <span className={classes.label}>{props.label}</span>
+            <Badge variant="count-info" count={props.count} />
           </>
         )}
 
-        {type === 'dismissable' && (
+        {isTagType(props, 'dismissable') && (
           <>
-            <span className={classes.label}>{label}</span>
+            <span className={classes.label}>{props.label}</span>
             {!readOnly && (
               <button
                 className={classes.closeButton}
