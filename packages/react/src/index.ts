@@ -292,6 +292,13 @@ export type {
   TreeSelectOption,
   TreeSelectProps,
 } from './Select';
+export { default as Selection } from './Selection';
+export type {
+  SelectionProps,
+  SelectionPropsBase,
+  SelectionSize,
+  SelectionVariant,
+} from './Selection';
 export { default as Slider, useSlider } from './Slider';
 export type {
   RangeSliderProps,
