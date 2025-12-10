@@ -16,35 +16,32 @@ export const Default: Story = {
   render: () => (
     <>
       <div>
-        <PageHeader
-          title="Page Title"
-          description="This is a Description."
-          onBack={() => {}}
-          breadcrumb={
-            <Breadcrumb
-              items={[
-                { label: 'Home', href: '/' },
-                { label: 'Category', href: '/' },
-                { label: 'Detail', href: '/' },
-                { label: 'History', href: '/' },
-              ]}
-            />
-          }
-          pageToolbar={
-            <PageToolbar
-              actions={{
-                primaryButton: <Button>Primary</Button>,
-                secondaryButton: <Button>Secondary</Button>,
-              }}
-              utilities={
-                <Button
-                  title="Button description"
-                  icon={{ src: MenuIcon, position: 'icon-only' }}
-                />
-              }
-            />
-          }
-        />
+        <PageHeader title="Page Title" description="This is a Description.">
+          {/* back button: use component with href prop or <Button /> component */}
+          <a href="./">BackButton</a>
+
+          <Breadcrumb
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Category', href: '/' },
+              { label: 'Detail', href: '/' },
+              { label: 'History', href: '/' },
+            ]}
+          />
+
+          <PageToolbar
+            actions={{
+              primaryButton: <Button>Primary</Button>,
+              secondaryButton: <Button>Secondary</Button>,
+            }}
+            utilities={
+              <Button
+                title="Button description"
+                icon={{ src: MenuIcon, position: 'icon-only' }}
+              />
+            }
+          />
+        </PageHeader>
       </div>
     </>
   ),
