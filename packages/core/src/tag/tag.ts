@@ -9,7 +9,7 @@ export type TagType =
   | 'dismissable'
   | 'addable';
 
-export type TagSize = Exclude<GeneralSize, 'minor'>;
+export type TagSize = GeneralSize;
 
 export const tagClasses = {
   host: tagPrefix,

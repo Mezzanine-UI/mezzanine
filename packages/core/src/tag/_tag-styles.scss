@@ -6,34 +6,22 @@
 @use '~@mezzanine-ui/system/transition';
 @use './tag' as *;
 
-$tag-config: (
+$tag-type-config: (
   static: (
     text-color: palette.semantic-variable(text, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint),
   ),
   counter: (
-    gap: (
-      main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny),
-    ),
     text-color: palette.semantic-variable(text, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint),
   ),
   overflow-counter: (
-    gap: (
-      main: spacing.semantic-variable(gap, tiny),
-      sub: spacing.semantic-variable(gap, tiny),
-    ),
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint),
     border: 0,
   ),
   dismissable: (
-    gap: (
-      main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny),
-    ),
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, neutral),
     background-color: palette.semantic-variable(background, brand-faint),
@@ -63,10 +51,6 @@ $tag-config: (
     ),
   ),
   addable: (
-    gap: (
-      main: spacing.semantic-variable(gap, tight),
-      sub: spacing.semantic-variable(gap, tiny),
-    ),
     text-color: palette.semantic-variable(text, neutral-solid),
     icon-color: palette.semantic-variable(icon, neutral),
     background-color: unset,
@@ -86,6 +70,30 @@ $tag-config: (
       icon-color: palette.semantic-variable(icon, neutral-light),
       border: 1px dashed palette.semantic-variable(border, neutral-light),
     ),
+  ),
+);
+
+$tag-size-config: (
+  main: (
+    typography: typography.semantic-variable(label-primary),
+    padding-vertical: spacing.semantic-variable(padding, vertical, tight),
+    padding-horizontal: spacing.semantic-variable(padding, horizontal, tight),
+    padding-text-side: spacing.semantic-variable(padding, horizontal, base),
+    gap: spacing.semantic-variable(gap, tight),
+  ),
+  sub: (
+    typography: typography.semantic-variable(label-primary),
+    padding-vertical: spacing.semantic-variable(padding, vertical, micro),
+    padding-horizontal: spacing.semantic-variable(padding, horizontal, micro),
+    padding-text-side: spacing.semantic-variable(padding, horizontal, tiny),
+    gap: spacing.semantic-variable(gap, tiny),
+  ),
+  minor: (
+    typography: typography.semantic-variable(caption),
+    padding-vertical: spacing.semantic-variable(padding, vertical, micro),
+    padding-horizontal: spacing.semantic-variable(padding, horizontal, micro),
+    padding-text-side: spacing.semantic-variable(padding, horizontal, tiny),
+    gap: spacing.semantic-variable(gap, tiny),
   ),
 );
 
@@ -114,8 +122,6 @@ $tag-config: (
 }
 
 .#{$prefix} {
-  @include typography.semantic-variable(label-primary);
-
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -129,17 +135,19 @@ $tag-config: (
     transition.standard(border-color, fast);
 
   @each $type in $tag-types {
-    $type-config: map.get($tag-config, $type);
+    $type-config: map.get($tag-type-config, $type);
 
     &--#{$type} {
       // Default style
-      @include _tag-state-styles(map.get($tag-config, $type));
+      @include _tag-state-styles(map.get($tag-type-config, $type));
 
       // Hover style
       @if map.has-key($type-config, hover) {
         $type-hover-config: map.get($type-config, hover);
 
-        &:not(.#{$prefix}--active):not(.#{$prefix}--disabled):not(.#{$prefix}--read-only):hover,
+        &:not(.#{$prefix}--active):not(.#{$prefix}--disabled):not(
+            .#{$prefix}--read-only
+          ):hover,
         &.is-hover {
           @include _tag-state-styles($type-hover-config);
         }
@@ -175,37 +183,28 @@ $tag-config: (
       }
     }
 
-    // Main size
-    &.#{$prefix}--main.#{$prefix}--#{$type} {
-      padding: spacing.semantic-variable(padding, vertical, tight);
+    @each $size in $tag-sizes {
+      $size-config: map.get($tag-size-config, $size);
 
-      &:has(> :first-child.#{$prefix}__label) {
-        padding-left: spacing.semantic-variable(padding, horizontal, base);
-      }
+      &.#{$prefix}--#{$size}.#{$prefix}--#{$type} {
+        @include $size-config.typography;
 
-      &:has(> :last-child.#{$prefix}__label) {
-        padding-right: spacing.semantic-variable(padding, horizontal, base);
-      }
+        padding-block: $size-config.padding-vertical;
+        padding-inline: $size-config.padding-horizontal;
 
-      @if map.has-key($type-config, gap) {
-        column-gap: map.get($tag-config, $type, gap, main);
-      }
-    }
+        &:has(> :first-child.#{$prefix}__label) {
+          padding-left: $size-config.padding-text-side;
+        }
 
-    // Sub size
-    &.#{$prefix}--sub.#{$prefix}--#{$type} {
-      padding: spacing.semantic-variable(padding, vertical, micro);
+        &:has(> :last-child.#{$prefix}__label) {
+          padding-right: $size-config.padding-text-side;
+        }
 
-      &:has(> :first-child.#{$prefix}__label) {
-        padding-left: spacing.semantic-variable(padding, horizontal, tiny);
-      }
-
-      &:has(> :last-child.#{$prefix}__label) {
-        padding-right: spacing.semantic-variable(padding, horizontal, tiny);
-      }
-
-      @if map.has-key($type-config, gap) {
-        column-gap: map.get($tag-config, $type, gap, sub);
+        @if $type == overflow-counter and $size == main {
+          column-gap: spacing.semantic-variable(gap, tiny);
+        } @else if $type != static {
+          column-gap: $size-config.gap;
+        }
       }
     }
   }
