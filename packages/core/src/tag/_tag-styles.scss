@@ -10,6 +10,13 @@ $tag-type-config: (
   static: (
     text-color: palette.semantic-variable(text, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint),
+    // Background-colored border to keep height consistent across states
+    border: 1px solid palette.semantic-variable(background, brand-faint),
+    read-only: (
+      text-color: palette.semantic-variable(text, neutral-solid),
+      background-color: unset,
+      border: 1px solid palette.semantic-variable(border, neutral-light),
+    ),
   ),
   counter: (
     text-color: palette.semantic-variable(text, brand-solid),
@@ -19,34 +26,45 @@ $tag-type-config: (
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, brand-solid),
     background-color: palette.semantic-variable(background, brand-faint),
-    border: 0,
+    // Background-colored border to keep height consistent across states
+    border: 1px solid palette.semantic-variable(background, brand-faint),
+    disabled: (
+      text-color: palette.semantic-variable(text, neutral-light),
+      icon-color: palette.semantic-variable(icon, neutral-light),
+      background-color: palette.semantic-variable(background, neutral-subtile),
+      border: 1px solid palette.semantic-variable(border, neutral-light),
+    ),
+    read-only: (
+      text-color: palette.semantic-variable(text, neutral-solid),
+      icon-color: palette.semantic-variable(icon, neutral-solid),
+      background-color: unset,
+      border: 1px solid palette.semantic-variable(border, neutral-light),
+    ),
   ),
   dismissable: (
     text-color: palette.semantic-variable(text, brand-solid),
     icon-color: palette.semantic-variable(icon, neutral),
     background-color: palette.semantic-variable(background, brand-faint),
+    // Background-colored border to keep height consistent across states
     border: 1px solid palette.semantic-variable(background, brand-faint),
     hover: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
       background-color: palette.semantic-variable(background, brand-subtle),
+      // Background-colored border to keep height consistent across states
       border: 1px solid palette.semantic-variable(background, brand-subtle),
     ),
     active: (
       text-color: palette.semantic-variable(text, brand-solid),
       icon-color: palette.semantic-variable(icon, neutral-solid),
       background-color: palette.semantic-variable(background, brand-light),
+      // Background-colored border to keep height consistent across states
       border: 1px solid palette.semantic-variable(background, brand-light),
     ),
     disabled: (
       text-color: palette.semantic-variable(text, neutral-light),
       icon-color: palette.semantic-variable(icon, neutral-light),
       background-color: palette.semantic-variable(background, neutral-subtle),
-      border: 1px solid palette.semantic-variable(border, neutral-light),
-    ),
-    read-only: (
-      text-color: palette.semantic-variable(text, neutral-solid),
-      background-color: unset,
       border: 1px solid palette.semantic-variable(border, neutral-light),
     ),
   ),
@@ -75,21 +93,21 @@ $tag-type-config: (
 
 $tag-size-config: (
   main: (
-    typography: typography.semantic-variable(label-primary),
+    typography: label-primary,
     padding-vertical: spacing.semantic-variable(padding, vertical, tight),
     padding-horizontal: spacing.semantic-variable(padding, horizontal, tight),
     padding-text-side: spacing.semantic-variable(padding, horizontal, base),
     gap: spacing.semantic-variable(gap, tight),
   ),
   sub: (
-    typography: typography.semantic-variable(label-primary),
+    typography: label-primary,
     padding-vertical: spacing.semantic-variable(padding, vertical, micro),
     padding-horizontal: spacing.semantic-variable(padding, horizontal, micro),
     padding-text-side: spacing.semantic-variable(padding, horizontal, tiny),
     gap: spacing.semantic-variable(gap, tiny),
   ),
   minor: (
-    typography: typography.semantic-variable(caption),
+    typography: caption,
     padding-vertical: spacing.semantic-variable(padding, vertical, micro),
     padding-horizontal: spacing.semantic-variable(padding, horizontal, micro),
     padding-text-side: spacing.semantic-variable(padding, horizontal, tiny),
@@ -187,23 +205,25 @@ $tag-size-config: (
       $size-config: map.get($tag-size-config, $size);
 
       &.#{$prefix}--#{$size}.#{$prefix}--#{$type} {
-        @include $size-config.typography;
+        @include typography.semantic-variable(
+          map.get($size-config, typography)
+        );
 
-        padding-block: $size-config.padding-vertical;
-        padding-inline: $size-config.padding-horizontal;
+        padding-block: map.get($size-config, padding-vertical);
+        padding-inline: map.get($size-config, padding-horizontal);
 
         &:has(> :first-child.#{$prefix}__label) {
-          padding-left: $size-config.padding-text-side;
+          padding-left: map.get($size-config, padding-text-side);
         }
 
         &:has(> :last-child.#{$prefix}__label) {
-          padding-right: $size-config.padding-text-side;
+          padding-right: map.get($size-config, padding-text-side);
         }
 
         @if $type == overflow-counter and $size == main {
           column-gap: spacing.semantic-variable(gap, tiny);
         } @else if $type != static {
-          column-gap: $size-config.gap;
+          column-gap: map.get($size-config, gap);
         }
       }
     }
@@ -225,7 +245,12 @@ $tag-size-config: (
   & &__close-button {
     cursor: pointer;
 
-    &:disabled {
+    &:disabled,
+    &.#{$prefix}--disabled {
+      cursor: not-allowed;
+    }
+
+    &.#{$prefix}--read-only {
       cursor: default;
     }
   }
