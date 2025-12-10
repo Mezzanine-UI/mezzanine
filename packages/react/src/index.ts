@@ -214,14 +214,8 @@ export type {
   DateRangePickerProps,
   UseDateRangePickerValueProps,
 } from './DateRangePicker';
-export {
-  default as DateTimePicker,
-  DateTimePickerPanel,
-} from './DateTimePicker';
-export type {
-  DateTimePickerPanelProps,
-  DateTimePickerProps,
-} from './DateTimePicker';
+export { default as DateTimePicker } from './DateTimePicker';
+export type { DateTimePickerProps } from './DateTimePicker';
 export { FormControlContext, FormField, FormHintText, FormLabel } from './Form';
 export type {
   FormControl,

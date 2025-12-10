@@ -14,9 +14,9 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
-import DateTimePicker, { DateTimePickerProps } from '.';
+import DateTimePicker from '.';
 
-describe('<DateTimePickerPanel />', () => {
+describe('<DateTimePicker />', () => {
   Element.prototype.scrollTo = () => {};
 
   afterEach(cleanup);
@@ -24,7 +24,7 @@ describe('<DateTimePickerPanel />', () => {
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateTimePicker ref={ref} open referenceDate="2022-01-02" />
+        <DateTimePicker ref={ref} referenceDate="2022-01-02" />
       </CalendarConfigProvider>,
     ),
   );
@@ -32,13 +32,13 @@ describe('<DateTimePickerPanel />', () => {
   describeHostElementClassNameAppendable('foo', (className) =>
     render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateTimePicker referenceDate="2022-01-02" className={className} />
+        <DateTimePicker className={className} referenceDate="2022-01-02" />
       </CalendarConfigProvider>,
     ),
   );
 
   describe('panel toggle', () => {
-    it('should open panel when input focused', () => {
+    it('should open calendar panel when left (date) input focused', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePicker />
@@ -46,13 +46,37 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
-      expect(inputElement).toBeInstanceOf(HTMLInputElement);
+      expect(dateInput).toBeInstanceOf(HTMLInputElement);
+      expect(document.querySelector('.mzn-calendar')).toBe(null);
+
+      await waitFor(() => {
+        fireEvent.focus(dateInput);
+      });
+
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
+        HTMLDivElement,
+      );
+    });
+
+    it('should open time panel when right (time) input focused', async () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateTimePicker />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const inputElements = element.getElementsByTagName('input');
+      const timeInput = inputElements[1];
+
+      expect(timeInput).toBeInstanceOf(HTMLInputElement);
       expect(document.querySelector('.mzn-time-panel')).toBe(null);
 
-      waitFor(() => {
-        fireEvent.focus(inputElement);
+      await waitFor(() => {
+        fireEvent.focus(timeInput);
       });
 
       expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
@@ -60,7 +84,7 @@ describe('<DateTimePickerPanel />', () => {
       );
     });
 
-    it('should not open panel if readOnly', () => {
+    it('should not open panel if readOnly', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePicker readOnly />
@@ -68,18 +92,24 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
+      const timeInput = inputElements[1];
 
-      expect(inputElement).toBeInstanceOf(HTMLInputElement);
+      await waitFor(() => {
+        fireEvent.click(dateInput);
+      });
 
-      waitFor(() => {
-        fireEvent.click(inputElement);
+      expect(document.querySelector('.mzn-calendar')).toBe(null);
+
+      await waitFor(() => {
+        fireEvent.click(timeInput);
       });
 
       expect(document.querySelector('.mzn-time-panel')).toBe(null);
     });
 
-    it('should toggle panel when icon clicked', async () => {
+    it('should toggle calendar panel when calendar icon clicked', async () => {
       jest.useFakeTimers();
 
       const { getHostHTMLElement } = render(
@@ -89,30 +119,30 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const iconElement = element.querySelector('[data-icon-name="clock"]');
+      const calendarIcon = element.querySelector('[data-icon-name="calendar"]');
 
-      expect(iconElement).toBeInstanceOf(HTMLElement);
+      expect(calendarIcon).toBeInstanceOf(HTMLElement);
 
       await waitFor(() => {
-        fireEvent.click(iconElement!);
+        fireEvent.click(calendarIcon!);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
         HTMLDivElement,
       );
 
       await waitFor(() => {
-        fireEvent.click(iconElement!);
+        fireEvent.click(calendarIcon!);
       });
 
       act(() => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBe(null);
+      expect(document.querySelector('.mzn-calendar')).toBe(null);
     });
 
-    it('should close panel when enter key down', async () => {
+    it('should toggle time panel when clock icon clicked', async () => {
       jest.useFakeTimers();
 
       const { getHostHTMLElement } = render(
@@ -122,10 +152,12 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const clockIcon = element.querySelector('[data-icon-name="clock"]');
+
+      expect(clockIcon).toBeInstanceOf(HTMLElement);
 
       await waitFor(() => {
-        fireEvent.focus(inputElement!);
+        fireEvent.click(clockIcon!);
       });
 
       expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
@@ -133,7 +165,7 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       await waitFor(() => {
-        fireEvent.keyDown(inputElement, { key: 'Enter' });
+        fireEvent.click(clockIcon!);
       });
 
       act(() => {
@@ -153,13 +185,14 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement!);
+        fireEvent.focus(dateInput);
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+      expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
         HTMLDivElement,
       );
 
@@ -171,11 +204,11 @@ describe('<DateTimePickerPanel />', () => {
         jest.runAllTimers();
       });
 
-      expect(document.querySelector('.mzn-time-panel')).toBe(null);
+      expect(document.querySelector('.mzn-calendar')).toBe(null);
     });
 
     describe('prop: onPanelToggle', () => {
-      it('should get open state in its arguement', async () => {
+      it('should get open state and focused input in its argument', async () => {
         const onPanelToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -184,23 +217,24 @@ describe('<DateTimePickerPanel />', () => {
         );
 
         const element = getHostHTMLElement();
-        const [inputElement] = element.getElementsByTagName('input');
+        const inputElements = element.getElementsByTagName('input');
+        const dateInput = inputElements[0];
 
         await waitFor(() => {
-          fireEvent.focus(inputElement!);
+          fireEvent.focus(dateInput);
         });
 
-        expect(onPanelToggle).toHaveBeenCalledWith(true);
+        expect(onPanelToggle).toHaveBeenCalledWith(true, 'left');
         onPanelToggle.mockClear();
 
         await waitFor(() => {
           fireEvent.keyDown(document, { key: 'Escape' });
         });
 
-        expect(onPanelToggle).toHaveBeenCalledWith(false);
+        expect(onPanelToggle).toHaveBeenCalledWith(false, null);
       });
 
-      it('should not be invoked if readOnly', () => {
+      it('should not be invoked if readOnly', async () => {
         const onPanelToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -209,10 +243,11 @@ describe('<DateTimePickerPanel />', () => {
         );
 
         const element = getHostHTMLElement();
-        const [inputElement] = element.getElementsByTagName('input');
+        const inputElements = element.getElementsByTagName('input');
+        const dateInput = inputElements[0];
 
-        waitFor(() => {
-          fireEvent.click(inputElement!);
+        await waitFor(() => {
+          fireEvent.click(dateInput);
         });
 
         expect(onPanelToggle).toHaveBeenCalledTimes(0);
@@ -221,7 +256,8 @@ describe('<DateTimePickerPanel />', () => {
   });
 
   describe('panel picking', () => {
-    it('should update input value', async () => {
+    it('should update date input value when calendar date clicked', async () => {
+      jest.useFakeTimers();
       const referenceDate = '2021-10-20';
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -230,218 +266,100 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement);
+        fireEvent.focus(dateInput);
       });
 
       const [calendarElement] = document.getElementsByClassName('mzn-calendar');
-      const cellElemet = getByText(calendarElement as HTMLElement, '15');
+      const cellElement = getByText(calendarElement as HTMLElement, '15');
 
       await waitFor(() => {
-        fireEvent.click(cellElemet);
+        fireEvent.click(cellElement);
       });
 
-      expect(inputElement.value).toBe('2021-10-15 00:00:00');
-    });
-  });
+      act(() => {
+        jest.runAllTimers();
+      });
 
-  describe('guard value string format', () => {
-    it('should clear input values when blured if it does not match the date format', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker />
-        </CalendarConfigProvider>,
+      // After clicking calendar date, the date input should show the selected date
+      expect(dateInput.value).toBe('2021-10-15');
+
+      // And time panel should be opened (focus moved to time input)
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
       );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: 'foo' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.blur(inputElement!);
-      });
-
-      expect(inputElement.value).toBe('');
     });
   });
 
   describe('prop: clearable', () => {
-    it('should by default clear input value', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker clearable />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputElement!, {
-          target: { value: '2021-10-20 00:00:00' },
-        });
-      });
-
-      await waitFor(() => {
-        inputElement.focus();
-
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
-        );
-
-        fireEvent.click(clearIconElement!);
-      });
-
-      expect(inputElement.value).toBe('');
-    });
-
-    it('should clear values when clear icon clicked', async () => {
+    it('should clear input values when clear icon clicked', async () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker onChange={onChange} clearable />
+          <DateTimePicker
+            clearable
+            onChange={onChange}
+            value="2021-10-20T12:00:00"
+          />
         </CalendarConfigProvider>,
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
 
       await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!, { key: 'Enter' });
-      });
-
-      onChange.mockClear();
-
-      await waitFor(() => {
-        fireEvent.mouseOver(element!);
+        fireEvent.mouseOver(element);
       });
 
       await waitFor(() => {
         const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
+          'button[aria-label="Close"]',
         );
 
         fireEvent.click(clearIconElement!);
       });
 
-      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(undefined);
     });
   });
 
   describe('prop: onChange', () => {
-    it('should be invoked when confirm button clicked', async () => {
+    it('should be invoked when date is selected from calendar and time has value', async () => {
+      jest.useFakeTimers();
       const onChange = jest.fn();
-      const { getHostHTMLElement, getByText: getByTextWithHostElement } =
-        render(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DateTimePicker onChange={onChange} />
-          </CalendarConfigProvider>,
-        );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      const confirmButtonElement = getByTextWithHostElement('OK');
-
-      await waitFor(() => {
-        fireEvent.click(confirmButtonElement);
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
-    });
-
-    it('should be invoked when enter key down', async () => {
-      const onChange = jest.fn();
+      const referenceDate = '2021-10-20';
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker onChange={onChange} />
+          <DateTimePicker
+            onChange={onChange}
+            referenceDate={referenceDate}
+            value="2021-10-01T09:00:00"
+          />
         </CalendarConfigProvider>,
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement!);
+        fireEvent.focus(dateInput);
       });
+
+      const [calendarElement] = document.getElementsByClassName('mzn-calendar');
+      const cellElement = getByText(calendarElement as HTMLElement, '15');
 
       await waitFor(() => {
-        fireEvent.keyDown(inputElement!, { key: 'Enter' });
+        fireEvent.click(cellElement);
       });
 
-      expect(onChange).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('prop: inputProps', () => {
-    it('should bind focus, blur, keydown events to input element', async () => {
-      const onKeyDown = jest.fn();
-      const onBlur = jest.fn();
-      const onFocus = jest.fn();
-      const inputProps: DateTimePickerProps['inputProps'] = {
-        onKeyDown,
-        onBlur,
-        onFocus,
-      };
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker inputProps={inputProps} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
+      act(() => {
+        jest.runAllTimers();
       });
 
-      expect(onFocus).toHaveBeenCalledTimes(1);
-      expect(onFocus).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!);
-      });
-
-      expect(onKeyDown).toHaveBeenCalledTimes(1);
-      expect(onKeyDown).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.blur(inputElement!);
-      });
-
-      expect(onBlur).toHaveBeenCalledTimes(1);
-      expect(onBlur).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
+      expect(onChange).toHaveBeenCalled();
     });
   });
 
@@ -456,10 +374,11 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement);
+        fireEvent.focus(dateInput);
       });
 
       const [calendarElement] = document.getElementsByClassName('mzn-calendar');
@@ -473,7 +392,7 @@ describe('<DateTimePickerPanel />', () => {
     });
 
     it('should use defaultValue as referenceDate if referenceDate prop is not provided', async () => {
-      const defaultValue = '2021-10-20';
+      const defaultValue = '2021-10-20T12:00:00';
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -482,10 +401,11 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement);
+        fireEvent.focus(dateInput);
       });
 
       const [calendarElement] = document.getElementsByClassName('mzn-calendar');
@@ -507,61 +427,70 @@ describe('<DateTimePickerPanel />', () => {
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
+      const dateInput = inputElements[0];
 
       await waitFor(() => {
-        fireEvent.focus(inputElement);
+        fireEvent.focus(dateInput);
       });
 
-      const [calendarElementt] =
-        document.getElementsByClassName('mzn-calendar');
+      const [calendarElement] = document.getElementsByClassName('mzn-calendar');
 
       expect(
         getByText(
-          calendarElementt as HTMLElement,
+          calendarElement as HTMLElement,
           getMonthShortName(moment().month(), 'en-US'),
         ),
       ).toBeInstanceOf(HTMLButtonElement);
       expect(
         getByText(
-          calendarElementt as HTMLElement,
+          calendarElement as HTMLElement,
           getYear(moment().toISOString()),
         ),
       ).toBeInstanceOf(HTMLButtonElement);
     });
+  });
 
-    it('should update referenceDate after value changed', async () => {
-      const referenceDate = '2021-10-20';
+  describe('dual input layout', () => {
+    it('should render two input fields for date and time', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker referenceDate={referenceDate} />
+          <DateTimePicker />
         </CalendarConfigProvider>,
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const inputElements = element.getElementsByTagName('input');
 
-      act(() => {
-        fireEvent.focus(inputElement);
-      });
+      expect(inputElements).toHaveLength(2);
+    });
 
-      act(() => {
-        fireEvent.change(inputElement, {
-          target: { value: '2031-11-20 12:00:00' },
-        });
-      });
+    it('should render separator between inputs', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateTimePicker />
+        </CalendarConfigProvider>,
+      );
 
-      await waitFor(() => {
-        const [calendarElement] =
-          document.getElementsByClassName('mzn-calendar');
+      const element = getHostHTMLElement();
+      const separator = element.querySelector('.mzn-picker__separator');
 
-        expect(getByText(calendarElement as HTMLElement, 'Nov')).toBeInstanceOf(
-          HTMLButtonElement,
-        );
-        expect(
-          getByText(calendarElement as HTMLElement, '2031'),
-        ).toBeInstanceOf(HTMLButtonElement);
-      });
+      expect(separator).toBeInstanceOf(HTMLDivElement);
+    });
+
+    it('should render both calendar and clock icons', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateTimePicker />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const calendarIcon = element.querySelector('[data-icon-name="calendar"]');
+      const clockIcon = element.querySelector('[data-icon-name="clock"]');
+
+      expect(calendarIcon).toBeInstanceOf(HTMLElement);
+      expect(clockIcon).toBeInstanceOf(HTMLElement);
     });
   });
 });
