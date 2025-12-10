@@ -142,33 +142,19 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
 
     const isRadioOrCheckbox = selector === 'radio' || selector === 'checkbox';
     const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => {
-      if (!isRadioOrCheckbox) {
-        onChangeProp?.(event);
-        return;
-      }
-
-      if (onChangeProp) {
-        onChangeProp(event);
-      }
+      onChangeProp?.(event);
     };
 
-    const haveImage = useMemo(() => {
-      if (!image) return false;
-      if (typeof image !== 'string') return false;
+    const haveImage = useMemo(() => Boolean(image && typeof image === 'string' && image.trim().length > 0), [image]);
 
-      return (
-        image.startsWith('http://') ||
-        image.startsWith('https://') ||
-        image.startsWith('data:') ||
-        image.startsWith('/') ||
-        image.startsWith('./')
-      );
-    }, [image]);
-
-    if (!text || !supportingText) {
-      console.warn('Selection: `text` and `supportingText` are required when the selection is used standalone.');
+    if (!text) {
+      console.error('Selection: `text` (title) is required.');
 
       return null;
+    }
+
+    if (!supportingText) {
+      console.warn('Selection: `supportingText` is optional but strongly recommended for better accessibility.');
     }
 
     return (
@@ -185,7 +171,7 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
           },
           className,
         )}
-        aria-disabled={disabled}
+        {...(disabled && { 'aria-disabled': true })}
         {...(onClick && {
           onClick,
           onKeyDown: (e: KeyboardEvent<HTMLLabelElement>) => {
@@ -197,24 +183,22 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
         })}
       >
         <div className={classes.container}>
-          <div className={classes.stateContent}>
-            {
-              haveImage
-                ? <img
-                  src={image}
-                  alt={text}
-                  className={classes.selectionImage}
-                  style={{ objectFit: imageObjectFit }}
-                />
-                : <Icon
-                  aria-hidden="true"
-                  className={classes.icon}
-                  color="neutral-solid"
-                  icon={customIcon || FileIcon}
-                  size={SELECTION_ICON_SIZE}
-                />
-            }
-          </div>
+          {
+            haveImage
+              ? <img
+                src={image}
+                alt={text}
+                className={classes.selectionImage}
+                style={{ objectFit: imageObjectFit }}
+              />
+              : <Icon
+                aria-hidden="true"
+                className={classes.icon}
+                color="neutral-solid"
+                icon={customIcon || FileIcon}
+                size={SELECTION_ICON_SIZE}
+              />
+          }
           <div className={classes.content}>
             <Typography
               id={textId}
