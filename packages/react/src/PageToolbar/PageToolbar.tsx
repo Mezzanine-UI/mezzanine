@@ -14,6 +14,7 @@ import Tooltip from '../Tooltip';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
+// TODO: Replace with actual SegmentedControlProps when SegmentedControl component is complete
 type SegmentedControlProps = {
   mock: 'SegmentedControlProps';
 };
@@ -120,7 +121,7 @@ const createIconButtonWithTooltip = (
           ...tooltipProps,
           icon: childProps.icon
             ? {
-                ...(childProps.icon || {}),
+                ...childProps.icon,
                 position: 'icon-only',
               }
             : undefined,

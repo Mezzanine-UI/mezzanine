@@ -61,4 +61,4 @@ export interface MinorEmptyProps {
 export type EmptyProps = (MainOrSubEmptyProps | MinorEmptyProps) &
   (CustomPictogramEmptyProps | PresetPictogramEmptyProps) &
   BaseEmptyProps &
-  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title' | 'children'>;
+  Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'>;
