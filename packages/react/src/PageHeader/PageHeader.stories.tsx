@@ -15,33 +15,57 @@ type Story = StoryObj<typeof PageHeader>;
 export const Default: Story = {
   render: () => (
     <>
-      <div>
-        <PageHeader title="Page Title" description="This is a Description.">
-          {/* back button: use component with href prop or <Button /> component */}
-          <a href="./">BackButton</a>
+      <div style={{ display: 'grid', gap: '24px' }}>
+        <div>
+          Default
+          <PageHeader title="Test Title" description="This is a description." />
+        </div>
+        <div>
+          With Back Button
+          <PageHeader title="Test Title" description="This is a description.">
+            <a href="./" title="back" />
+          </PageHeader>
+        </div>
+        <div>
+          With Breadcrumb
+          <PageHeader title="Test Title" description="This is a description.">
+            <Breadcrumb
+              items={[
+                { href: '/', label: 'Home' },
+                { href: '/category', label: 'Category' },
+              ]}
+            />
+          </PageHeader>
+        </div>
+        <div>
+          Full features
+          <PageHeader title="Page Title" description="This is a Description.">
+            {/* back button: use component with href prop or <Button /> component */}
+            <a href="./" title="back" />
 
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/' },
-              { label: 'Category', href: '/' },
-              { label: 'Detail', href: '/' },
-              { label: 'History', href: '/' },
-            ]}
-          />
+            <Breadcrumb
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Category', href: '/' },
+                { label: 'Detail', href: '/' },
+                { label: 'History', href: '/' },
+              ]}
+            />
 
-          <PageToolbar
-            actions={{
-              primaryButton: <Button>Primary</Button>,
-              secondaryButton: <Button>Secondary</Button>,
-            }}
-            utilities={
-              <Button
-                title="Button description"
-                icon={{ src: MenuIcon, position: 'icon-only' }}
-              />
-            }
-          />
-        </PageHeader>
+            <PageToolbar
+              actions={{
+                primaryButton: <Button>Primary</Button>,
+                secondaryButton: <Button>Secondary</Button>,
+              }}
+              utilities={
+                <Button
+                  title="Button description"
+                  icon={{ src: MenuIcon, position: 'icon-only' }}
+                />
+              }
+            />
+          </PageHeader>
+        </div>
       </div>
     </>
   ),

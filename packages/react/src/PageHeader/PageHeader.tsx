@@ -1,12 +1,25 @@
-import { cloneElement, forwardRef, HTMLAttributes, ReactElement } from 'react';
+import {
+  Children,
+  cloneElement,
+  forwardRef,
+  HTMLAttributes,
+  isValidElement,
+  ReactElement,
+} from 'react';
 import { ChevronLeftIcon } from '@mezzanine-ui/icons';
 import { pageHeaderClasses as classes } from '@mezzanine-ui/core/page-header';
-import { BreadcrumbProps } from '../Breadcrumb';
+import Breadcrumb, { BreadcrumbProps } from '../Breadcrumb';
 import Button, { ButtonComponent, ButtonProps } from '../Button';
-import { PageToolbarProps } from '../PageToolbar';
+import PageToolbar, { PageToolbarProps } from '../PageToolbar';
 import Typography, { TypographyProps } from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+
+type PageHeaderChild =
+  | ReactElement<BreadcrumbProps>
+  | ReactElement<PageToolbarProps>
+  | ReactElement<ButtonProps>
+  | ReactElement<HTMLAttributes<HTMLAnchorElement>>;
 
 /**
  * Props for the PageHeader component.
@@ -15,17 +28,12 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 export type PageHeaderProps = NativeElementPropsWithoutKeyAndRef<'header'> & {
   /** Optional description text displayed below the title */
   description?: string;
-  backButtonProps?: Omit<ButtonProps, 'icon' | 'size' | 'variant'>;
   /** Main title text for the page header */
   title: string;
   /** HTML element type for the title (defaults to 'h2') */
   titleComponent?: TypographyProps['component'];
-  children?: ReactElement<
-    | BreadcrumbProps
-    | PageToolbarProps
-    | ButtonProps
-    | HTMLAttributes<HTMLAnchorElement>
-  >[];
+  /** Child components: Breadcrumb, PageToolbar, Button, or component with href prop */
+  children?: PageHeaderChild | PageHeaderChild[];
 };
 
 const getBreadcrumbAndToolbar = (
@@ -43,18 +51,19 @@ const getBreadcrumbAndToolbar = (
     | ReactElement<ButtonProps | HTMLAttributes<HTMLAnchorElement>>
     | undefined;
 
+  const childrenArray = Children.toArray(children) as PageHeaderChild[];
+
   if (children) {
-    children.forEach((child) => {
-      if (child.type && (child.type as any).displayName === 'Breadcrumb') {
+    childrenArray.forEach((child) => {
+      if (!isValidElement(child)) return;
+
+      if (child.type === Breadcrumb) {
         breadcrumb = child as ReactElement<BreadcrumbProps>;
-      } else if (
-        child.type &&
-        (child.type as any).displayName === 'PageToolbar'
-      ) {
-        pageToolbar = cloneElement(child, {
+      } else if (child.type === PageToolbar) {
+        pageToolbar = cloneElement(child as ReactElement<PageToolbarProps>, {
           size: 'main',
         }) as ReactElement<PageToolbarProps>;
-      } else if (child.type && (child.type as any).displayName === 'Button') {
+      } else if (child.type === Button) {
         backButtonOrLink = cloneElement(child as ReactElement<ButtonProps>, {
           icon: {
             position: 'icon-only',
@@ -63,7 +72,7 @@ const getBreadcrumbAndToolbar = (
           size: 'sub',
           variant: 'base-tertiary',
         }) as ReactElement<ButtonProps>;
-      } else if (child.type === 'a' || (child.type as any).href) {
+      } else if (child.type === 'a') {
         backButtonOrLink = cloneElement(
           child as ReactElement<HTMLAttributes<HTMLAnchorElement>>,
           {
@@ -83,15 +92,14 @@ const getBreadcrumbAndToolbar = (
       } else {
         if (process.env.NODE_ENV !== 'production') {
           console.warn(
-            'PageHeader only accepts Breadcrumb, PageToolbar, Button or Anchor as its children.',
-            `not supported: ${child.type}/${(child.type as any).displayName}`,
+            'PageHeader only accepts Breadcrumb, PageToolbar, Button or component with href prop as its children.',
           );
         }
       }
     });
   }
 
-  return { breadcrumb, pageToolbar, backButtonOrLink };
+  return { breadcrumb, backButtonOrLink, pageToolbar };
 };
 
 /**
@@ -101,15 +109,15 @@ const getBreadcrumbAndToolbar = (
 const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
   function PageHeader(props, ref) {
     const {
+      children,
       className,
       description,
       title,
       titleComponent = 'h2',
-      children,
       ...rest
     } = props;
 
-    const { breadcrumb, pageToolbar, backButtonOrLink } =
+    const { backButtonOrLink, breadcrumb, pageToolbar } =
       getBreadcrumbAndToolbar(children);
 
     return (
