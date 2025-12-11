@@ -181,6 +181,15 @@ $tag-size-config: (
         }
       }
 
+      // ReadOnly style
+      @if map.has-key($type-config, read-only) {
+        $type-readonly-config: map.get($type-config, read-only);
+
+        &.#{$prefix}--read-only {
+          @include _tag-state-styles($type-readonly-config);
+        }
+      }
+
       // Disabled style
       @if map.has-key($type-config, disabled) {
         $type-disabled-config: map.get($type-config, disabled);
@@ -188,15 +197,6 @@ $tag-size-config: (
         &.#{$prefix}--disabled,
         &:disabled {
           @include _tag-state-styles($type-disabled-config);
-        }
-      }
-
-      // ReadOnly style
-      @if map.has-key($type-config, read-only) {
-        $type-readonly-config: map.get($type-config, read-only);
-
-        &.#{$prefix}--read-only {
-          @include _tag-state-styles($type-readonly-config);
         }
       }
     }
@@ -246,10 +246,7 @@ $tag-size-config: (
     cursor: pointer;
 
     &:disabled,
-    &.#{$prefix}--disabled {
-      cursor: not-allowed;
-    }
-
+    &.#{$prefix}--disabled,
     &.#{$prefix}--read-only {
       cursor: default;
     }
