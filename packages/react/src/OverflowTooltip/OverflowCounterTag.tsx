@@ -6,13 +6,22 @@ import Tag from '../Tag';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { cx } from '../utils/cx';
+import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 
 export type OverflowCounterTagProps =
   NativeElementPropsWithoutKeyAndRef<'span'> &
     Pick<
       OverflowTooltipProps,
-      'className' | 'onTagDismiss' | 'placement' | 'tags' | 'tagSize'
-    >;
+      | 'className'
+      | 'onTagDismiss'
+      | 'placement'
+      | 'tags'
+      | 'tagSize'
+      | 'readOnly'
+    > & {
+      disabled?: boolean;
+    };
 
 /**
  * Compound component for OverflowTooltip and Tag with overflow-counter type.
@@ -59,6 +68,14 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
       <>
         <Tag
           {...restTagProps}
+          className={cx(
+            classes.counterTagHost,
+            {
+              [classes.counterTagDisabled]: restTagProps.disabled,
+              [classes.counterTagReadOnly]: restTagProps.readOnly,
+            },
+            restTagProps.className,
+          )}
           count={tags.length}
           onClick={(e) => {
             setOpen((prevOpen) => !prevOpen);
@@ -77,6 +94,7 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           ref={tooltipRef}
           tags={tags}
           tagSize={tagSize}
+          readOnly={restTagProps.readOnly}
         />
       </>
     );
