@@ -76,7 +76,7 @@ export type {
   AppBarSupportProps,
 } from './AppBar';
 export { default as Breadcrumb } from './Breadcrumb';
-export type { BreadcrumbProps, BreadcrumbItemProps } from './Breadcrumb';
+export type { BreadcrumbItemProps, BreadcrumbProps } from './Breadcrumb';
 export { default as Drawer } from './Drawer';
 export type { DrawerPlacement, DrawerProps } from './Drawer';
 export { default as Dropdown } from './Dropdown';
@@ -105,9 +105,8 @@ export type {
 } from './Navigation';
 export { default as PageFooter } from './PageFooter';
 export type { PageFooterProps } from './PageFooter';
-export { Step, default as Stepper } from './Stepper';
+export { Step, default as Stepper, useStepper } from './Stepper';
 export type { StepperProps, StepProps } from './Stepper';
-export { useStepper } from './Stepper';
 export { Tab, TabPane, default as Tabs } from './Tabs';
 export type { TabPaneProps, TabProps, TabsChild, TabsProps } from './Tabs';
 
@@ -292,6 +291,8 @@ export type {
   TreeSelectOption,
   TreeSelectProps,
 } from './Select';
+export { default as Selection } from './Selection';
+export type { SelectionProps, SelectionPropsBase } from './Selection';
 export { default as Slider, useSlider } from './Slider';
 export type {
   RangeSliderProps,
@@ -327,11 +328,11 @@ export type {
   ToggleProps as SwitchProps,
   ToggleSize as SwitchSize,
 } from './Toggle';
-export { Uploader, UploadItem, UploadPictureCard, Upload } from './Upload';
+export { Upload, Uploader, UploadItem, UploadPictureCard } from './Upload';
 export type {
   UploaderProps,
-  UploadItemProps,
   UploadFile,
+  UploadItemProps,
   UploadPictureCardProps,
   UploadProps,
 } from './Upload';
@@ -410,11 +411,11 @@ export {
   CalendarControls,
   CalendarDayOfWeek,
   CalendarDays,
+  CalendarHalfYears,
   CalendarMonths,
+  CalendarQuarters,
   CalendarWeeks,
   CalendarYears,
-  CalendarQuarters,
-  CalendarHalfYears,
   RangeCalendar,
   useCalendarContext,
   useCalendarControlModifiers,
@@ -430,12 +431,12 @@ export type {
   CalendarControlsProps,
   CalendarDayOfWeekProps,
   CalendarDaysProps,
+  CalendarHalfYearsProps,
   CalendarMonthsProps,
   CalendarProps,
+  CalendarQuartersProps,
   CalendarWeeksProps,
   CalendarYearsProps,
-  CalendarQuartersProps,
-  CalendarHalfYearsProps,
   RangeCalendarProps,
   UseCalendarControlModifiersResult,
 } from './Calendar';
