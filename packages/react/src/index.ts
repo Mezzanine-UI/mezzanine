@@ -105,6 +105,8 @@ export type {
 } from './Navigation';
 export { default as PageFooter } from './PageFooter';
 export type { PageFooterProps } from './PageFooter';
+export { default as PageHeader } from './PageHeader';
+export type { PageHeaderProps } from './PageHeader';
 export { Step, default as Stepper, useStepper } from './Stepper';
 export type { StepperProps, StepProps } from './Stepper';
 export { Tab, TabPane, default as Tabs } from './Tabs';
