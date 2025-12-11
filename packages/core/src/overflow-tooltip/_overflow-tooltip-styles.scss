@@ -30,3 +30,7 @@
     color: palette.semantic-variable('background', base);
   }
 }
+
+.#{$counterTagPrefix}.#{$counterTagPrefix}.#{$counterTagPrefix}--readonly {
+  cursor: pointer;
+}
