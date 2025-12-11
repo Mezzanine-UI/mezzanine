@@ -1,24 +1,38 @@
 import { createRef } from 'react';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
+import { CalendarConfigProvider } from '../Calendar';
 import { PickerTrigger } from '.';
 
 describe('<PickerTrigger />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<PickerTrigger ref={ref} />),
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <PickerTrigger ref={ref} format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    ),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<PickerTrigger className={className} />),
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <PickerTrigger className={className} format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    ),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<PickerTrigger />);
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <PickerTrigger format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    );
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-picker')).toBeTruthy();
@@ -28,7 +42,11 @@ describe('<PickerTrigger />', () => {
     it('should bind to input element', () => {
       const ref = createRef<HTMLInputElement>();
 
-      render(<PickerTrigger inputRef={ref} />);
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <PickerTrigger inputRef={ref} format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
 
       expect(ref.current).toBeInstanceOf(HTMLInputElement);
     });
@@ -38,7 +56,15 @@ describe('<PickerTrigger />', () => {
     const placeholder = 'placeholder';
 
     const { getHostHTMLElement } = render(
-      <PickerTrigger disabled placeholder={placeholder} readOnly required />,
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <PickerTrigger
+          disabled
+          placeholder={placeholder}
+          readOnly
+          required
+          format="YYYY-MM-DD"
+        />
+      </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
     const inputElement = element.getElementsByTagName('input')[0];
