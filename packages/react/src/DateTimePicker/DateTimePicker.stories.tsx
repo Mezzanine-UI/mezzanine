@@ -11,6 +11,7 @@ import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 
 export default {
   title: 'Data Entry/DateTimePicker',
+  component: DateTimePicker,
 } as Meta;
 
 function usePickerChange() {
