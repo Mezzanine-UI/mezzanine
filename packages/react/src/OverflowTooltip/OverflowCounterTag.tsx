@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import OverflowTooltip, { OverflowTooltipProps } from './OverflowTooltip';
 import Tag from '../Tag';
 import { useComposeRefs } from '../hooks/useComposeRefs';
@@ -29,9 +29,11 @@ export type OverflowCounterTagProps =
 const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
   function OverflowCounterTag(props, ref) {
     const {
+      disabled,
       onTagDismiss,
       tags = [],
       placement,
+      readOnly,
       tagSize,
       ...restTagProps
     } = props;
@@ -64,6 +66,8 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
       };
     });
 
+    useEffect(() => setOpen(false), [disabled, readOnly, tagSize]);
+
     return (
       <>
         <Tag
@@ -71,8 +75,8 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           className={cx(
             classes.counterTagHost,
             {
-              [classes.counterTagDisabled]: restTagProps.disabled,
-              [classes.counterTagReadOnly]: restTagProps.readOnly,
+              [classes.counterTagDisabled]: disabled,
+              [classes.counterTagReadOnly]: readOnly,
             },
             restTagProps.className,
           )}
@@ -84,6 +88,8 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           ref={composedTriggerRef}
           type="overflow-counter"
           size={tagSize}
+          disabled={disabled}
+          readOnly={readOnly}
         />
 
         <OverflowTooltip
@@ -94,7 +100,7 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           ref={tooltipRef}
           tags={tags}
           tagSize={tagSize}
-          readOnly={restTagProps.readOnly}
+          readOnly={readOnly}
         />
       </>
     );
