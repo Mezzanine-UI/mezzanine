@@ -120,11 +120,20 @@ export const OverflowCounterTagPlayground: CounterTagStory = {
     tags: ['Tag 1', 'Tag 2', 'Tag 3', 'Tag 4', 'Tag 5'],
     tagSize: 'main',
     placement: 'top-start',
+    disabled: false,
+    readOnly: false,
   },
   parameters: {
     component: OverflowCounterTag,
     controls: {
-      include: ['className', 'placement', 'tagSize', 'tags'],
+      include: [
+        'className',
+        'placement',
+        'tagSize',
+        'tags',
+        'disabled',
+        'readOnly',
+      ],
     },
   },
   render: (args) => (
