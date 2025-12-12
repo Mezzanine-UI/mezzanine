@@ -14,7 +14,7 @@ const getTagType = (props: TagProps) => props.type ?? 'static';
 const isTagType = <T extends NonNullable<TagProps['type']>>(
   props: TagProps,
   current: T,
-): props is Extract<TagProps, { type: T }> => getTagType(props) === current;
+): props is Extract<TagProps, { type?: T }> => getTagType(props) === current;
 
 /**
  * The react component for `mezzanine` tag.
@@ -26,7 +26,7 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
       className,
       disabled,
       onClick,
-      onClose,
+      onClose: _onClose,
       readOnly,
       size = 'main',
       type: _type,
@@ -90,7 +90,7 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
         aria-disabled={disabled}
         className={commonClassName}
       >
-        {tagType === 'static' && (
+        {isTagType(props, 'static') && (
           <span className={classes.label}>{props.label}</span>
         )}
 
@@ -104,17 +104,15 @@ const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
         {isTagType(props, 'dismissable') && (
           <>
             <span className={classes.label}>{props.label}</span>
-            {!readOnly && (
-              <button
-                className={classes.closeButton}
-                type="button"
-                onClick={onClose}
-                aria-label="Dismiss tag"
-                disabled={disabled}
-              >
-                <Icon className={classes.icon} icon={CloseIcon} size={16} />
-              </button>
-            )}
+
+            <button
+              className={classes.closeButton}
+              type="button"
+              onClick={props.onClose}
+              disabled={disabled}
+            >
+              <Icon className={classes.icon} icon={CloseIcon} size={16} />
+            </button>
           </>
         )}
       </span>
