@@ -116,6 +116,7 @@ const OverflowTooltip = forwardRef<HTMLDivElement, OverflowTooltipProps>(
                     type="static"
                     label={tag}
                     readOnly
+                    size={tagSize}
                   />
                 );
               }
