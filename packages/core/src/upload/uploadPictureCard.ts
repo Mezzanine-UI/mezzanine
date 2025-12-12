@@ -15,7 +15,7 @@ export type UploadPictureCardImageFit =
 
 export const uploadPictureCardClasses = {
   host: uploadPictureCardPrefix,
-  image: `${uploadPictureCardPrefix}__image`,
+  container: `${uploadPictureCardPrefix}__container`,
   content: `${uploadPictureCardPrefix}__content`,
   name: `${uploadPictureCardPrefix}__name`,
   size: (size: UploadPictureCardSize) =>

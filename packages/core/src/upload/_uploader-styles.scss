@@ -38,20 +38,20 @@ $square-size: spacing.primitive-variable(140);
     gap: spacing.semantic-variable(gap, base);
   }
 
-  &:hover {
+  &:not(.#{$prefix}--button):hover {
     border-color: palette.semantic-variable(border, brand);
   }
 
-  &:active {
+  &:not(.#{$prefix}--button):active {
     border-width: 2px;
     border-style: solid;
     border-color: palette.semantic-variable(border, brand);
   }
 
-  &:focus,
-  &:focus-within,
-  &:focus-visible,
-  &:focus-within:hover {
+  &:not(.#{$prefix}--button):focus,
+  &:not(.#{$prefix}--button):focus-within,
+  &:not(.#{$prefix}--button):focus-visible,
+  &:not(.#{$prefix}--button):focus-within:hover {
     box-shadow: effect.variable(focus, primary);
     border-color: palette.semantic-variable(border, brand);
   }
