@@ -2,6 +2,7 @@
 
 import {
   type UploadItemStatus,
+  type UploadItemType,
   type UploadMode,
   type UploadSize
 } from '@mezzanine-ui/core/upload';
@@ -32,8 +33,16 @@ import UploadPictureCard from './UploadPictureCard';
 export interface UploadFile {
   /**
    * The file object.
+   * Required when uploading new files.
+   * Optional when `url` is provided for already uploaded files.
    */
-  file: File;
+  file?: File;
+  /**
+   * The URL of the uploaded file.
+   * When provided, this will be used to display files that have already been uploaded to the server.
+   * Useful for loading file lists from the backend.
+   */
+  url?: string;
   /**
    * The unique id of the file.
    */
@@ -441,7 +450,9 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
       const updated = filesRef.current.filter((f) => f.id !== fileId);
 
       emitChange(updated);
-      onDelete?.(fileId, file.file);
+      if (file.file) {
+        onDelete?.(fileId, file.file);
+      }
     },
     [emitChange, findFileById, onDelete],
   );
@@ -459,7 +470,9 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
       );
 
       emitChange(updated);
-      onReload?.(fileId, file.file);
+      if (file.file) {
+        onReload?.(fileId, file.file);
+      }
     },
     [emitChange, findFileById, onReload],
   );
@@ -467,7 +480,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
   const handleDownload = useCallback(
     (fileId: string) => {
       const file = findFileById(fileId);
-      if (file) {
+      if (file && file.file) {
         onDownload?.(fileId, file.file);
       }
     },
@@ -477,7 +490,7 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
   const handleZoomIn = useCallback(
     (fileId: string) => {
       const file = findFileById(fileId);
-      if (file) {
+      if (file && file.file) {
         onZoomIn?.(fileId, file.file);
       }
     },
@@ -489,7 +502,19 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
     const nonImages: UploadFile[] = [];
 
     files.forEach((file) => {
-      if (file.file.type.startsWith('image/')) {
+      // Determine file type: prefer file.type, otherwise infer from URL extension
+      const fileType = file.file?.type || '';
+      const isImageFromType = fileType.startsWith('image/');
+
+      // If no file type from file object, try to infer from URL
+      let isImage = isImageFromType;
+      if (!isImageFromType && file.url) {
+        const extension = file.url.split('.').pop()?.toLowerCase();
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
+        isImage = extension ? imageExtensions.includes(extension) : false;
+      }
+
+      if (isImage) {
         images.push(file);
       } else {
         nonImages.push(file);
@@ -536,20 +561,44 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
   }, [mode]);
 
   const renderUploadItem = useCallback(
-    (uploadFile: UploadFile) => (
-      <UploadItem
-        key={uploadFile.id}
-        file={uploadFile.file}
-        id={uploadFile.id}
-        status={uploadFile.status}
-        size={size}
-        showFileSize={showFileSize}
-        disabled={disabled}
-        onDelete={() => handleDelete(uploadFile.id)}
-        onDownload={() => handleDownload(uploadFile.id)}
-        onReload={() => handleReload(uploadFile.id)}
-      />
-    ),
+    (uploadFile: UploadFile) => {
+      // Skip rendering if neither file nor url is provided
+      if (!uploadFile.file && !uploadFile.url) {
+        return null;
+      }
+
+      // Determine if it's an image
+      const fileType = uploadFile.file?.type || '';
+      const isImageFromType = fileType.startsWith('image/');
+
+      // If no file type from file object, try to infer from URL
+      let isImage = isImageFromType;
+      if (!isImageFromType && uploadFile.url) {
+        const extension = uploadFile.url.split('.').pop()?.toLowerCase();
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
+        isImage = extension ? imageExtensions.includes(extension) : false;
+      }
+
+      // For images, use 'thumbnail' to show image preview; for non-images, use 'icon' to show file icon
+      const itemType: UploadItemType | undefined = isImage ? 'thumbnail' : 'icon';
+
+      return (
+        <UploadItem
+          key={uploadFile.id}
+          file={uploadFile.file}
+          url={uploadFile.url}
+          id={uploadFile.id}
+          status={uploadFile.status}
+          size={size}
+          type={itemType}
+          showFileSize={showFileSize}
+          disabled={disabled}
+          onDelete={() => handleDelete(uploadFile.id)}
+          onDownload={() => handleDownload(uploadFile.id)}
+          onReload={() => handleReload(uploadFile.id)}
+        />
+      );
+    },
     [size, showFileSize, disabled, handleDelete, handleDownload, handleReload],
   );
 
@@ -639,12 +688,12 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
               <UploadPictureCard
                 key={uploadFile.id}
                 file={uploadFile.file}
+                url={uploadFile.url}
                 id={uploadFile.id}
                 status={uploadFile.status}
                 size={size}
                 disabled={disabled}
                 errorMessage={uploadFile.errorMessage}
-                errorIcon={uploadFile.errorIcon}
                 onDelete={() => handleDelete(uploadFile.id)}
                 onReload={() => handleReload(uploadFile.id)}
                 onDownload={() => handleDownload(uploadFile.id)}
