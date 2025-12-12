@@ -110,7 +110,7 @@ export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
   /**
    * Only available on multiple selector
    */
-  overflowStrategy?: 'counter' | 'wrap';
+  overflowStrategy?: never;
   /**
    * The value of selection.
    * @default undefined
