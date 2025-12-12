@@ -22,9 +22,8 @@ export interface PaginationJumperProps
   buttonText?: string;
   /**
    * If `true`, the pagination jumper fields is disabled.
-   * @default false
    */
-  disabled?: boolean;
+  disabled?: true;
   /**
    * The hint text displayed in front of `input`.
    */
@@ -56,7 +55,7 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
     const {
       buttonText,
       className,
-      disabled = false,
+      disabled = undefined,
       hintText,
       inputPlaceholder,
       onChange: handleChange,
@@ -105,29 +104,25 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
 
     return (
       <div {...rest} ref={ref} className={cx(classes.host, className)}>
-        <Typography
-          color={disabled ? 'text-disabled' : 'text-primary'}
-          component="div"
-          ellipsis
-          variant="input2"
-        >
+        <Typography component="div" ellipsis variant="label-primary">
           {hintText}
         </Typography>
         <Input
+          size="sub"
           disabled={disabled}
           error={error}
+          variant="number"
+          className={classes.input}
           onChange={(e) => {
             setValue(e.target.value);
           }}
           placeholder={inputPlaceholder}
           inputProps={{
-            type: 'number',
-            className: classes.input,
             onKeyDown: handleKeyDown,
           }}
           value={value}
         />
-        <Button disabled={disabled} onClick={handleClick}>
+        <Button size="sub" disabled={disabled} onClick={handleClick}>
           {buttonText}
         </Button>
       </div>

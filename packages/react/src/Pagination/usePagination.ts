@@ -5,10 +5,12 @@ export interface UsePaginationParams {
   boundaryCount?: number;
   current?: number;
   disabled?: boolean;
+  hideFirstButton?: boolean;
+  hideLastButton?: boolean;
   hideNextButton?: boolean;
   hidePreviousButton?: boolean;
-  pageSize?: number;
   onChange?: (page: number) => void;
+  pageSize?: number;
   siblingCount?: number;
   total?: number;
 }
@@ -24,10 +26,12 @@ export function usePagination(props: UsePaginationParams = {}) {
     boundaryCount = 1,
     current = 1,
     disabled = false,
+    hideFirstButton = false,
+    hideLastButton = false,
     hideNextButton = false,
     hidePreviousButton = false,
-    pageSize = 10,
     onChange: handleChange,
+    pageSize = 10,
     siblingCount = 1,
     total = 0,
   } = props;
@@ -55,6 +59,7 @@ export function usePagination(props: UsePaginationParams = {}) {
     );
 
     return [
+      ...(hideFirstButton ? [] : ['first']),
       ...(hidePreviousButton ? [] : ['previous']),
 
       ...startPages,
@@ -75,10 +80,13 @@ export function usePagination(props: UsePaginationParams = {}) {
       ...endPages,
 
       ...(hideNextButton ? [] : ['next']),
+      ...(hideLastButton ? [] : ['last']),
     ];
   }, [
     boundaryCount,
     current,
+    hideFirstButton,
+    hideLastButton,
     hideNextButton,
     hidePreviousButton,
     siblingCount,
@@ -126,6 +134,22 @@ export function usePagination(props: UsePaginationParams = {}) {
             disabled: disabled || current + 1 > totalPages,
             onClick: () => {
               handleClick(current + 1);
+            },
+            type: item,
+          },
+          first: {
+            'aria-label': 'Go to first Page',
+            disabled: disabled || current - 1 < 1,
+            onClick: () => {
+              handleClick(1);
+            },
+            type: item,
+          },
+          last: {
+            'aria-label': 'Go to last Page',
+            disabled: disabled || current + 1 > totalPages,
+            onClick: () => {
+              handleClick(totalPages);
             },
             type: item,
           },

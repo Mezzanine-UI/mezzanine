@@ -3,6 +3,7 @@ import {
   DetailedHTMLProps,
   HTMLAttributes,
   ReactNode,
+  Fragment,
 } from 'react';
 import { paginationClasses as classes } from '@mezzanine-ui/core/pagination';
 import PaginationItem, { PaginationItemProps } from './PaginationItem';
@@ -12,6 +13,7 @@ import PaginationPageSize, {
 } from './PaginationPageSize';
 import { usePagination } from './usePagination';
 import { cx } from '../utils/cx';
+import Typography from '../Typography';
 
 export interface PaginationProps
   extends Omit<
@@ -36,7 +38,7 @@ export interface PaginationProps
    * Whether the fields is disabled.
    * @default false
    */
-  disabled?: boolean;
+  disabled?: true;
   /**
    * If `true`, hide the next-page button.
    * @default false
@@ -88,9 +90,10 @@ export interface PaginationProps
    */
   pageSizeOptions?: PaginationPageSizeProps['options'];
   /**
-   * Page size unit after `select`
+   * Render custom result summary
+   * @example (from, to, total) => `目前顯示 ${from}-${to} 筆，共 ${total} 筆資料`
    */
-  pageSizeUnit?: PaginationPageSizeProps['unit'];
+  renderResultSummary?: (from: number, to: number, total: number) => string;
   /**
    * Render custom page size option name
    */
@@ -120,11 +123,11 @@ export interface PaginationProps
  */
 const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
   const {
-    className,
     boundaryCount = 1,
     buttonText,
+    className,
     current = 1,
-    disabled = false,
+    disabled = undefined,
     hideNextButton = false,
     hidePreviousButton = false,
     hintText,
@@ -135,8 +138,8 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     pageSize = 10,
     pageSizeLabel,
     pageSizeOptions,
-    pageSizeUnit,
     renderPageSizeOptionName,
+    renderResultSummary,
     showJumper = false,
     showPageSizeOptions = false,
     siblingCount = 1,
@@ -163,6 +166,16 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       aria-label="pagination navigation"
       className={cx(classes.host, className)}
     >
+      {renderResultSummary && (
+        <Typography variant="label-primary">
+          {renderResultSummary(
+            pageSize * (current - 1) + 1,
+            Math.min(pageSize * current, total),
+            total,
+          )}
+        </Typography>
+      )}
+
       <ul className={classes.container}>
         {showPageSizeOptions && (
           <li className={classes.pageSize}>
@@ -172,16 +185,19 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
               onChange={onChangePageSize}
               options={pageSizeOptions}
               renderOptionName={renderPageSizeOptionName}
-              unit={pageSizeUnit}
               value={pageSize}
             />
           </li>
         )}
-        {items.map((item, index) => (
-          <li className={classes.item} key={index}>
-            {itemRender(item)}
-          </li>
-        ))}
+        <li>
+          <ul className={classes.itemList}>
+            {items.map((item, index) => (
+              <li className={classes.item} key={index}>
+                {itemRender(item)}
+              </li>
+            ))}
+          </ul>
+        </li>
         {showJumper && (
           <li className={classes.jumper}>
             <PaginationJumper
