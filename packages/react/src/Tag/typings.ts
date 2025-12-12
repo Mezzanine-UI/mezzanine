@@ -74,7 +74,7 @@ type TagPropsDismissable = TagSpanHostProps & {
   disabled?: boolean;
   readOnly?: never;
   label: string;
-  onClose?: MouseEventHandler<HTMLButtonElement>;
+  onClose: MouseEventHandler<HTMLButtonElement>;
   count?: never;
   onClick?: never;
 };
