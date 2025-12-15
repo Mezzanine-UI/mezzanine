@@ -6,7 +6,7 @@ import {
   type UploadItemStatus,
   type UploadItemType
 } from '@mezzanine-ui/core/upload';
-import { forwardRef, MouseEventHandler, useEffect, useMemo, useRef, useState } from 'react';
+import { forwardRef, MouseEventHandler, type Ref, useEffect, useMemo, useRef, useState } from 'react';
 
 import { DangerousFilledIcon, DownloadIcon, FileIcon, IconDefinition, ResetIcon, SpinnerIcon, TrashIcon } from '@mezzanine-ui/icons';
 import ClearActions from '../ClearActions';
@@ -16,6 +16,7 @@ import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import UploadPictureCard from './UploadPictureCard';
+import { isImageFile } from './upload-utils';
 
 export interface UploadItemProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
@@ -110,21 +111,25 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       ...rest
     } = props;
 
-    // Determine file type: prefer file.type, otherwise infer from URL extension
-    const resolvedFileType = useMemo(() => {
-      if (props.file?.type) return props.file.type;
+    const isImage = useMemo(() => {
+      return isImageFile(props.file, props.url);
+    }, [props.file, props.url]);
+
+    const fileName = useMemo(() => {
+      if (props.file?.name && !props.url) return props.file.name;
       if (props.url) {
-        const extension = props.url.split('.').pop()?.toLowerCase();
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-        if (extension && imageExtensions.includes(extension)) {
-          return `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+        try {
+          const url = new URL(props.url);
+          const pathname = url.pathname;
+          const filename = pathname.split('/').pop() || '';
+          return filename;
+        } catch {
+          const urlWithoutQuery = props.url.split('?')[0].split('#')[0];
+          return urlWithoutQuery.split('/').pop() || '';
         }
       }
       return '';
-    }, [props.file, props.url]);
-
-    const isImage = resolvedFileType.startsWith('image/');
-    const fileName = props.file?.name ?? props.url?.split('/').pop() ?? '';
+    }, [props.file?.name, props.url]);
 
     const itemIcon = useMemo(() => {
       if (type === 'thumbnail') {
@@ -156,6 +161,20 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
     // Example usage: if (isTextTruncated) { /* show tooltip or adjust UI */ }
     const [isTextTruncated, setIsTextTruncated] = useState(false);
 
+    // Helper function to merge refs (for Tooltip and fileNameRef)
+    const mergeRefs = (tooltipRef: Ref<HTMLParagraphElement>) => {
+      return (node: HTMLParagraphElement | null) => {
+        // Set fileNameRef for truncation detection
+        fileNameRef.current = node;
+        // Set tooltipRef for Tooltip functionality
+        if (typeof tooltipRef === 'function') {
+          tooltipRef(node);
+        } else if (tooltipRef && 'current' in tooltipRef) {
+          (tooltipRef as { current: HTMLParagraphElement | null }).current = node;
+        }
+      };
+    };
+
     // Function to check if text is truncated
     const checkTextTruncation = () => {
       const element = fileNameRef.current;
@@ -182,16 +201,20 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       const element = fileNameRef.current;
       if (!element) return;
 
-      // Check truncation when element is resized
-      const resizeObserver = new ResizeObserver(() => {
-        checkTextTruncation();
-      });
+      if (typeof ResizeObserver !== 'undefined') {
+        // Check truncation when element is resized
+        const resizeObserver = new ResizeObserver(() => {
+          checkTextTruncation();
+        });
 
-      resizeObserver.observe(element);
+        resizeObserver.observe(element);
 
-      return () => {
-        resizeObserver.disconnect();
-      };
+        return () => {
+          resizeObserver.disconnect();
+        };
+      }
+
+      return;
     }, [fileName]);
 
     const fileSize = useMemo(() => {
@@ -223,6 +246,13 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       return /done|error/.test(status);
     }, [status]);
 
+    // Warn if both file and url are missing
+    useEffect(() => {
+      if (!props.file && !props.url) {
+        console.warn('UploadItem: Both `file` and `url` props are missing. At least one should be provided to display the upload item.');
+      }
+    }, [props.file, props.url]);
+
     return (
       <>
         <div
@@ -253,8 +283,9 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                 {
                   isTextTruncated ? (
                     <Tooltip title={fileName} options={{ placement: 'bottom' }}>
-                      {({ onMouseEnter, onMouseLeave, ref }) => (
-                        <Typography ref={ref}
+                      {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+                        <Typography
+                          ref={mergeRefs(tooltipRef)}
                           className={classes.name}
                           ellipsis
                           onMouseEnter={onMouseEnter}
@@ -270,7 +301,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                     </Typography>
                   )
                 }
-                {showFileSize && fileSize && isFinished && (
+                {showFileSize && !props.url && fileSize && isFinished && (
                   <Typography className={classes.fontSize}>
                     {fileSize}
                   </Typography>
@@ -334,4 +365,3 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
 );
 
 export default UploadItem;
-

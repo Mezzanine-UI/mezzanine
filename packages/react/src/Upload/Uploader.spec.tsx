@@ -445,8 +445,6 @@ describe('<Uploader />', () => {
       const input = container.querySelector('input[type="file"]') as HTMLInputElement;
 
       expect(input).toBeTruthy();
-      // 如果 className 被應用，應該能找到
-      const customInput = container.querySelector('input.custom-input-class');
       // 由於 classes.input 可能會覆蓋，這裡只檢查 input 存在即可
       expect(input).toBeTruthy();
     });

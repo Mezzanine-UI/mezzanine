@@ -104,42 +104,8 @@ export const Type: Story = {
       type: string = 'application/pdf',
       sizeInBytes: number = 1024,
     ) => {
-      const sanitizedName = name.trim();
-      const dangerousPatterns = [
-        /\.\./g,
-        /[/\\]/g,
-        /^[a-zA-Z]:/g,
-      ];
-
-      for (const pattern of dangerousPatterns) {
-        if (pattern.test(sanitizedName)) {
-          throw new Error(`不安全的文件名稱: ${name}`);
-        }
-      }
-
-      const allowedTypes = [
-        'application/pdf',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'text/plain',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ];
-
-      if (!allowedTypes.includes(type)) {
-        throw new Error(`不允許的文件類型: ${type}`);
-      }
-
-      const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-      if (sizeInBytes < 0 || sizeInBytes > MAX_FILE_SIZE) {
-        throw new Error(`文件大小必須在 0 到 ${MAX_FILE_SIZE / 1024 / 1024}MB 之間`);
-      }
-
       const content = new Uint8Array(sizeInBytes);
-      return new File([content], sanitizedName, { type });
+      return new File([content], name, { type });
     };
 
     const imageFile = createMockFile('example.jpg', 'image/jpeg', 15360);
@@ -297,42 +263,8 @@ export const Status: Story = {
       type: string = 'application/pdf',
       sizeInBytes: number = 1024,
     ) => {
-      const sanitizedName = name.trim();
-      const dangerousPatterns = [
-        /\.\./g,
-        /[/\\]/g,
-        /^[a-zA-Z]:/g,
-      ];
-
-      for (const pattern of dangerousPatterns) {
-        if (pattern.test(sanitizedName)) {
-          throw new Error(`不安全的文件名稱: ${name}`);
-        }
-      }
-
-      const allowedTypes = [
-        'application/pdf',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'text/plain',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ];
-
-      if (!allowedTypes.includes(type)) {
-        throw new Error(`不允許的文件類型: ${type}`);
-      }
-
-      const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-      if (sizeInBytes < 0 || sizeInBytes > MAX_FILE_SIZE) {
-        throw new Error(`文件大小必須在 0 到 ${MAX_FILE_SIZE / 1024 / 1024}MB 之間`);
-      }
-
       const content = new Uint8Array(sizeInBytes);
-      return new File([content], sanitizedName, { type });
+      return new File([content], name, { type });
     };
 
     const imageFile = createMockFile('example.jpg', 'image/jpeg', 15360);
@@ -598,44 +530,8 @@ export const Size: Story = {
       type: string = 'application/pdf',
       sizeInBytes: number = 1024,
     ) => {
-      const sanitizedName = name.trim();
-      const dangerousPatterns = [
-        /\.\./g,
-        /[/\\]/g,
-        /^[a-zA-Z]:/g,
-      ];
-
-      for (const pattern of dangerousPatterns) {
-        if (pattern.test(sanitizedName)) {
-          throw new Error(`不安全的文件名稱: ${name}`);
-        }
-      }
-
-      const allowedTypes = [
-        'application/pdf',
-        'image/jpeg',
-        'image/png',
-        'image/gif',
-        'text/plain',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.ms-excel',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      ];
-
-      if (!allowedTypes.includes(type)) {
-        throw new Error(`不允許的文件類型: ${type}`);
-      }
-
-      // 文件大小安全檢查：限制最大 100MB，防止記憶體攻擊
-      const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
-      if (sizeInBytes < 0 || sizeInBytes > MAX_FILE_SIZE) {
-        throw new Error(`文件大小必須在 0 到 ${MAX_FILE_SIZE / 1024 / 1024}MB 之間`);
-      }
-
-      // 創建指定大小的 Blob 內容（使用空字節）
       const content = new Uint8Array(sizeInBytes);
-      return new File([content], sanitizedName, { type });
+      return new File([content], name, { type });
     };
 
     // Create a file with exactly 100 characters filename to test ellipsis behavior

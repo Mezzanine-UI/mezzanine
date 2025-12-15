@@ -28,6 +28,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import type { UploaderProps } from './Uploader';
 import Uploader from './Uploader';
 import UploadItem from './UploadItem';
+import { isImageFile } from './upload-utils';
 import UploadPictureCard from './UploadPictureCard';
 
 export interface UploadFile {
@@ -502,17 +503,8 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
     const nonImages: UploadFile[] = [];
 
     files.forEach((file) => {
-      // Determine file type: prefer file.type, otherwise infer from URL extension
-      const fileType = file.file?.type || '';
-      const isImageFromType = fileType.startsWith('image/');
-
-      // If no file type from file object, try to infer from URL
-      let isImage = isImageFromType;
-      if (!isImageFromType && file.url) {
-        const extension = file.url.split('.').pop()?.toLowerCase();
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-        isImage = extension ? imageExtensions.includes(extension) : false;
-      }
+      // Determine if file is an image using shared utility
+      const isImage = isImageFile(file.file, file.url);
 
       if (isImage) {
         images.push(file);
@@ -567,17 +559,8 @@ const Upload = forwardRef<HTMLDivElement, UploadProps>(function Upload(
         return null;
       }
 
-      // Determine if it's an image
-      const fileType = uploadFile.file?.type || '';
-      const isImageFromType = fileType.startsWith('image/');
-
-      // If no file type from file object, try to infer from URL
-      let isImage = isImageFromType;
-      if (!isImageFromType && uploadFile.url) {
-        const extension = uploadFile.url.split('.').pop()?.toLowerCase();
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-        isImage = extension ? imageExtensions.includes(extension) : false;
-      }
+      // Determine if it's an image using shared utility
+      const isImage = isImageFile(uploadFile.file, uploadFile.url);
 
       // For images, use 'thumbnail' to show image preview; for non-images, use 'icon' to show file icon
       const itemType: UploadItemType | undefined = isImage ? 'thumbnail' : 'icon';

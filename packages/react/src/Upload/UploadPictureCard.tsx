@@ -18,6 +18,7 @@ import Icon from '../Icon';
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { isImageFile } from './upload-utils';
 
 export interface UploadPictureCardAriaLabels {
   /**
@@ -146,7 +147,6 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       ...rest
     } = props;
 
-    // Default aria labels (English)
     const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
       cancelUpload: 'Cancel upload',
       uploading: 'Uploading',
@@ -158,22 +158,25 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
     const labels = { ...defaultAriaLabels, ...ariaLabels };
 
-    // Determine file type: prefer file.type, otherwise infer from URL extension
-    // Similar to UploadItem's approach: props.file.type.startsWith('image/')
-    const resolvedFileType = useMemo(() => {
-      if (file?.type) return file.type;
-      if (url) {
-        const extension = url.split('.').pop()?.toLowerCase();
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico'];
-        if (extension && imageExtensions.includes(extension)) {
-          return `image/${extension === 'jpg' ? 'jpeg' : extension}`;
+    const isImage = useMemo(() => {
+      return isImageFile(file, url);
+    }, [file, url]);
+
+    const fileName = useMemo(() => {
+      if (props.file?.name && !props.url) return props.file.name;
+      if (props.url) {
+        try {
+          const url = new URL(props.url);
+          const pathname = url.pathname;
+          const filename = pathname.split('/').pop() || '';
+          return filename;
+        } catch {
+          const urlWithoutQuery = props.url.split('?')[0].split('#')[0];
+          return urlWithoutQuery.split('/').pop() || '';
         }
       }
       return '';
-    }, [file, url]);
-
-    const isImage = resolvedFileType.startsWith('image/');
-    const fileName = file?.name ?? url?.split('/').pop() ?? '';
+    }, [props.file?.name, props.url]);
 
     const [imageUrl, setImageUrl] = useState<string>('');
 
@@ -192,6 +195,13 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
       return fileName ? fileName : 'Upload error';
     }, [fileName, errorMessage]);
+
+    // Warn if both file and url are missing
+    useEffect(() => {
+      if (!file && !url) {
+        console.warn('UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.');
+      }
+    }, [file, url]);
 
     useEffect(() => {
       // Priority: use url prop if provided, otherwise create blob URL from file
@@ -253,7 +263,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
           )}
           {
             status === 'done' && size !== 'minor' && !isImage && (
-              <div className={classes.content} role="alert" aria-live="polite">
+              <div className={classes.content}>
                 <Icon icon={FileIcon} color="brand" size={16} />
                 <Typography className={classes.name} ellipsis>{fileName}</Typography>
               </div>

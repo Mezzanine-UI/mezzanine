@@ -228,13 +228,13 @@ describe('<UploadItem />', () => {
       expect(fileName?.textContent).toBe('document.pdf');
     });
 
-    it('應該優先使用 file.name 而不是 url', () => {
+    it('當同時有 file 和 url 時，應該使用從 url 提取的文件名', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const url = 'https://example.com/files/other.jpg';
       const { container } = render(<UploadItem file={file} url={url} status="done" />);
       const fileName = container.querySelector('.mzn-upload-item__name');
 
-      expect(fileName?.textContent).toBe('test.jpg');
+      expect(fileName?.textContent).toBe('other.jpg');
     });
   });
 
