@@ -1,7 +1,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '../button';
-@use './tabs' as *;
+@use './tab' as *;
 
 $gap: 32px !default;
 $margin-bottom: 32px !default;
@@ -39,7 +39,7 @@ $tab-padding: 8px 0 !default;
     align-items: center;
   }
 
-  &__tabs {
+  &__tab {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: max-content;
@@ -79,7 +79,7 @@ $tab-padding: 8px 0 !default;
     }
   }
 
-  &__tab {
+  &__item {
     @include button.reset();
     @include typography.variant(button2);
 
