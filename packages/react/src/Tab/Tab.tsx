@@ -8,19 +8,19 @@ import {
   ReactNode,
   useRef,
 } from 'react';
-import { tabsClasses as classes } from '@mezzanine-ui/core/tabs';
+import { tabClasses as classes } from '@mezzanine-ui/core/tab';
 import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCustomControlValue } from '../Form/useCustomControlValue';
-import { TabProps } from './Tab';
+import { TabItemProps } from './TabItem';
 import { TabPaneProps } from './TabPane';
 import useTabsOverflow from './useTabsOverflow';
 
 export type TabsChild = ReactElement<TabPaneProps>;
 
-export interface TabsProps
+export interface TabProps
   extends Omit<
     NativeElementPropsWithoutKeyAndRef<'div'>,
     'onChange' | 'children'
@@ -58,8 +58,8 @@ export interface TabsProps
 /**
  * The react component for `mezzanine` tabs.
  */
-const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
-  props: TabsProps,
+const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
+  props: TabProps,
   ref,
 ) {
   const {
@@ -86,7 +86,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
     const { tab } = tabPane.props;
     const active = activeKey.toString() === key.toString();
 
-    return cloneElement<TabProps>(tab, {
+    return cloneElement<TabItemProps>(tab, {
       key,
       active,
       onClick: (event) => {
@@ -133,7 +133,7 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
               <Icon icon={ChevronLeftIcon} />
             </button>
           )}
-          <div ref={tabsRef} className={classes.tabs}>
+          <div ref={tabsRef} className={classes.tab}>
             {tabs}
           </div>
           {isOverflowing && !isScrollToEnd && (
@@ -154,4 +154,4 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   );
 });
 
-export default Tabs;
+export default Tab;

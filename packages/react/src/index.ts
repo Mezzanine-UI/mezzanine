@@ -109,8 +109,8 @@ export { default as PageHeader } from './PageHeader';
 export type { PageHeaderProps } from './PageHeader';
 export { Step, default as Stepper, useStepper } from './Stepper';
 export type { StepperProps, StepProps } from './Stepper';
-export { Tab, TabPane, default as Tabs } from './Tabs';
-export type { TabPaneProps, TabProps, TabsChild, TabsProps } from './Tabs';
+export { TabItem, TabPane, default as Tab } from './Tab';
+export type { TabPaneProps, TabItemProps, TabsChild, TabProps } from './Tab';
 
 /**
  * Data Display

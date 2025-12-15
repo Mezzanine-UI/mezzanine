@@ -29,7 +29,7 @@ describe('<Tabs />', () => {
     render(
       <Tabs ref={ref}>
         <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
-      </Tabs>,
+      </tab>,
     ),
   );
 
@@ -37,7 +37,7 @@ describe('<Tabs />', () => {
     render(
       <Tabs className={className}>
         <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
-      </Tabs>,
+      </tab>,
     ),
   );
 
@@ -45,7 +45,7 @@ describe('<Tabs />', () => {
     const { getHostHTMLElement } = render(
       <Tabs>
         <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
-      </Tabs>,
+      </tab>,
     );
     const element = getHostHTMLElement();
 
@@ -58,7 +58,7 @@ describe('<Tabs />', () => {
         <Tabs>
           <TabPane tab={<Tab>tab0</Tab>}>tabPane0</TabPane>
           <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
-        </Tabs>,
+        </tab>,
       );
       const element = getHostHTMLElement();
       const {
@@ -88,7 +88,7 @@ describe('<Tabs />', () => {
           const { getHostHTMLElement } = render(
             <Tabs>
               <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
-            </Tabs>,
+            </tab>,
           );
           const element = getHostHTMLElement();
           const { firstElementChild: tabBarElement } = element;
@@ -103,7 +103,7 @@ describe('<Tabs />', () => {
           const { getHostHTMLElement } = render(
             <Tabs tabBarClassName="foo">
               <TabPane tab={<Tab>tab</Tab>}>tabPane</TabPane>
-            </Tabs>,
+            </tab>,
           );
           const element = getHostHTMLElement();
           const { firstElementChild: tabBarElement } = element;
@@ -133,7 +133,7 @@ describe('<Tabs />', () => {
                 {tab}
               </TabPane>
             ))}
-          </Tabs>
+          </tab>
         </div>,
       );
 
@@ -157,7 +157,7 @@ describe('<Tabs />', () => {
                 {tab}
               </TabPane>
             ))}
-          </Tabs>
+          </tab>
         </div>,
       );
 
@@ -190,7 +190,7 @@ describe('<Tabs />', () => {
                 {tab}
               </TabPane>
             ))}
-          </Tabs>
+          </tab>
         </div>,
       );
 
@@ -222,7 +222,7 @@ describe('<Tabs />', () => {
                 {tab}
               </TabPane>
             ))}
-          </Tabs>
+          </tab>
         </div>,
       );
 
@@ -259,7 +259,7 @@ describe('<Tabs />', () => {
           <TabPane key="foo" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
-        </Tabs>,
+        </tab>,
       );
       const element = getHostHTMLElement();
       const tabsElement = element.querySelector('.mzn-tabs__tabs');
@@ -279,7 +279,7 @@ describe('<Tabs />', () => {
           <TabPane key="foo" tab={<Tab>tab1</Tab>}>
             tabPane1
           </TabPane>
-        </Tabs>,
+        </tab>,
       );
 
       const element = getHostHTMLElement();
@@ -300,7 +300,7 @@ describe('<Tabs />', () => {
         <TabPane key="bar" tab={<Tab>bar</Tab>}>
           bar
         </TabPane>
-      </Tabs>,
+      </tab>,
     );
 
     const calls = mockTabRender.mock.calls;
@@ -327,7 +327,7 @@ describe('<Tabs />', () => {
           <TabPane key="1" tab={<Tab>tab2</Tab>}>
             tabPane2
           </TabPane>
-        </Tabs>,
+        </tab>,
       );
     });
 
@@ -340,7 +340,7 @@ describe('<Tabs />', () => {
           <TabPane key="1" tab={<Tab>tab2</Tab>}>
             tabPane2
           </TabPane>
-        </Tabs>,
+        </tab>,
       );
     });
 
@@ -350,7 +350,7 @@ describe('<Tabs />', () => {
         <Tabs onChange={onChange}>
           <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
           <TabPane tab={<Tab>tab2</Tab>}>tabPane2</TabPane>
-        </Tabs>,
+        </tab>,
       );
       const element = getHostHTMLElement();
       const tabsElement = element.querySelector('.mzn-tabs__tabs');
@@ -397,7 +397,7 @@ describe('<Tabs />', () => {
         <Tabs>
           <TabPane tab={<Tab>tab1</Tab>}>tabPane1</TabPane>
           <TabPane tab={<Tab>tab2</Tab>}>tabPane2</TabPane>
-        </Tabs>,
+        </tab>,
       );
     });
 
@@ -413,7 +413,7 @@ describe('<Tabs />', () => {
             <TabPane key="2" tab={<Tab>tab2</Tab>}>
               tabPane2
             </TabPane>
-          </Tabs>
+          </tab>
         );
       };
 
