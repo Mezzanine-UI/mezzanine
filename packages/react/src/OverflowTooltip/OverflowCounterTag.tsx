@@ -66,11 +66,7 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
       };
     });
 
-    useEffect(() => {
-      if (!open) return;
-
-      setOpen(false);
-    }, [disabled, open, readOnly, tagSize]);
+    useEffect(() => setOpen(false), [disabled, readOnly, tagSize]);
 
     return (
       <>
