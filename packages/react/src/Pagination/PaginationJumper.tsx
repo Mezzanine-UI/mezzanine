@@ -21,30 +21,30 @@ export interface PaginationJumperProps
    */
   buttonText?: string;
   /**
-   * If `true`, the pagination jumper fields is disabled.
+   * If `true`, the pagination jumper fields are disabled.
+   * @default false
    */
   disabled?: true;
   /**
-   * The hint text displayed in front of `input`.
+   * The hint text displayed in front of input.
    */
   hintText?: string;
   /**
-   * The hint displayed in the `input` before the user enters a value.
+   * The placeholder displayed in the input before the user enters a value.
    */
   inputPlaceholder?: string;
   /**
    * Callback fired when the page is changed.
-   *
-   * @param {number} page The page active.
+   * @param {number} page The active page number.
    */
   onChange?: (page: number) => void;
   /**
-   * Number of data per page
+   * Number of items per page.
    * @default 5
    */
   pageSize?: number;
   /**
-   * Items total count.
+   * Total number of items.
    * @default 0
    */
   total?: number;

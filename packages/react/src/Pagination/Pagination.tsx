@@ -3,7 +3,6 @@ import {
   DetailedHTMLProps,
   HTMLAttributes,
   ReactNode,
-  Fragment,
 } from 'react';
 import { paginationClasses as classes } from '@mezzanine-ui/core/pagination';
 import PaginationItem, { PaginationItemProps } from './PaginationItem';
@@ -35,8 +34,7 @@ export interface PaginationProps
    */
   current?: number;
   /**
-   * Whether the fields is disabled.
-   * @default false
+   * If `true`, the fields are disabled.
    */
   disabled?: true;
   /**
@@ -54,56 +52,60 @@ export interface PaginationProps
    */
   hintText?: string;
   /**
-   * The hint displayed in the jumper `input` before the user enters a value.
+   * The placeholder displayed in the jumper input before the user enters a value.
    */
   inputPlaceholder?: string;
   /**
    * Render the item.
-   * @param {PaginationRenderItemParams} params The props to spread on a PaginationItem.
+   * @param {PaginationItemProps} item The props to spread on a PaginationItem.
    * @returns {ReactNode}
    * @default (item) => <PaginationItem {...item} />
    */
   itemRender?: (item: PaginationItemProps) => ReactNode;
   /**
    * Callback fired when the page is changed.
-   *
-   * @param {number} page The page active.
+   * @param {number} page The active page number.
    */
   onChange?: (page: number) => void;
   /**
-   * Callback fired when the page size is changed
-   *
-   * @param {number} pageSize
+   * Callback fired when the page size is changed.
+   * @param {number} pageSize The new page size.
    */
   onChangePageSize?: PaginationPageSizeProps['onChange'];
   /**
-   * Number of data per page
+   * Number of items per page.
    * @default 10
    */
   pageSize?: PaginationPageSizeProps['value'];
   /**
-   * Label display before page size selector
+   * Label displayed before page size selector.
    */
   pageSizeLabel?: PaginationPageSizeProps['label'];
   /**
-   * Page size options to render
+   * Page size options to render.
    */
   pageSizeOptions?: PaginationPageSizeProps['options'];
   /**
-   * Render custom result summary
+   * Render custom result summary.
+   * @param {number} from Start index of current page.
+   * @param {number} to End index of current page.
+   * @param {number} total Total number of items.
+   * @returns {string}
    * @example (from, to, total) => `目前顯示 ${from}-${to} 筆，共 ${total} 筆資料`
    */
   renderResultSummary?: (from: number, to: number, total: number) => string;
   /**
-   * Render custom page size option name
+   * Render custom page size option name.
    */
   renderPageSizeOptionName?: PaginationPageSizeProps['renderOptionName'];
   /**
-   * Show jumper or not.
+   * If `true`, show jumper.
+   * @default false
    */
   showJumper?: boolean;
   /**
-   * Ship page size or not
+   * If `true`, show page size options.
+   * @default false
    */
   showPageSizeOptions?: boolean;
   /**
@@ -112,7 +114,7 @@ export interface PaginationProps
    */
   siblingCount?: number;
   /**
-   * Items total count.
+   * Total number of items.
    * @default 0
    */
   total?: number;

@@ -44,7 +44,7 @@ export interface PaginationItemProps
    */
   page?: number;
   /**
-   * Whether the field type.
+   * The type of pagination item.
    * @default 'page'
    */
   type?: PaginationItemType;

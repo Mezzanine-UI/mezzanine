@@ -10,32 +10,33 @@ export interface PaginationPageSizeProps
     'onChange'
   > {
   /**
-   * If `true`, the pagination page size fields is disabled.
+   * If `true`, the pagination page size fields are disabled.
    * @default false
    */
   disabled?: boolean;
   /**
-   * Label display before `select`
+   * Label displayed before select.
    */
   label?: string;
   /**
    * Callback fired when the page size is changed.
-   *
-   * @param {number} pageSize The page active.
+   * @param {number} pageSize The new page size.
    */
   onChange?: (pageSize: number) => void;
   /**
-   * options for `select` to use
+   * Options for select component.
    * @default [10, 20, 50, 100]
    */
   options?: number[];
   /**
-   * Callback to custom render option name
+   * Callback to render custom option name.
+   * @param {number} pageSize The page size value.
+   * @returns {string}
    * @default (p) => `${p}`
    */
   renderOptionName?: (pageSize: number) => string;
   /**
-   * Current page size value
+   * Current page size value.
    */
   value?: number;
 }
