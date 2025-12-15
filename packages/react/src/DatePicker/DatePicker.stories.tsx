@@ -1,10 +1,12 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
+// import dayjs from 'dayjs';
+// import UpdateLocale from 'dayjs/plugin/updateLocale';
+import moment from 'moment';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import { CSSProperties, useState } from 'react';
-import moment from 'moment';
 import DatePicker from './DatePicker';
 import Typography from '../Typography';
 import { CalendarConfigProvider } from '../Calendar';
@@ -17,6 +19,20 @@ const meta: Meta<typeof DatePicker> = {
 export default meta;
 
 type Story = StoryObj<typeof DatePicker>;
+
+/**
+ * @NOTE Set week to start on Monday for dayjs and moment
+ */
+// dayjs.extend(UpdateLocale);
+// dayjs.updateLocale('en', {
+//   weekStart: 1, // Set week to start on Monday
+// });
+
+// moment.updateLocale('en', {
+//   week: {
+//     dow: 1, // Set week to start on Monday
+//   },
+// });
 
 export const Playground: Story = {
   args: {
@@ -48,7 +64,7 @@ export const Playground: Story = {
     const [val, setVal] = useState<DateType | undefined>();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale="en-us">
         <Typography variant="h3" style={{ margin: '0 0 12px 0' }}>
           {`Value: ${val || ''}`}
         </Typography>
@@ -132,7 +148,7 @@ export const Method: Story = {
             <DatePicker value={val} onChange={setVal} />
           </div>
         </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsLuxon} locale="fr-fr">
+        <CalendarConfigProvider methods={CalendarMethodsLuxon}>
           <div style={containerStyle}>
             <Typography variant="h3" style={typoStyle}>
               CalendarMethodsLuxon

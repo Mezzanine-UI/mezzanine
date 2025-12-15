@@ -15,7 +15,7 @@ export default {
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType>();
+  const [val, setVal] = useState<DateType | undefined>();
   const onChange = (v?: DateType) => {
     setVal(v);
   };
