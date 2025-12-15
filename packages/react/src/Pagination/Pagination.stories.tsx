@@ -10,8 +10,6 @@ export const Playground: StoryFn<PaginationProps> = ({
   boundaryCount,
   buttonText,
   disabled,
-  hideNextButton,
-  hidePreviousButton,
   hintText,
   inputPlaceholder,
   pageSize,
@@ -27,8 +25,6 @@ export const Playground: StoryFn<PaginationProps> = ({
       buttonText={buttonText}
       current={current}
       disabled={disabled}
-      hideNextButton={hideNextButton}
-      hidePreviousButton={hidePreviousButton}
       hintText={hintText}
       inputPlaceholder={inputPlaceholder}
       pageSize={pageSize}
@@ -114,9 +110,6 @@ export const All: StoryFn = () => {
 Playground.args = {
   boundaryCount: 1,
   buttonText: '確認',
-  disabled: undefined,
-  hideNextButton: false,
-  hidePreviousButton: false,
   hintText: '前往',
   inputPlaceholder: '1',
   pageSize: 5,

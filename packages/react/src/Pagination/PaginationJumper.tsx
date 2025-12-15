@@ -22,7 +22,6 @@ export interface PaginationJumperProps
   buttonText?: string;
   /**
    * If `true`, the pagination jumper fields are disabled.
-   * @default false
    */
   disabled?: true;
   /**
@@ -55,7 +54,7 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
     const {
       buttonText,
       className,
-      disabled = undefined,
+      disabled,
       hintText,
       inputPlaceholder,
       onChange: handleChange,

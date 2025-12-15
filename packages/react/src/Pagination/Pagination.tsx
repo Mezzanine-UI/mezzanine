@@ -38,16 +38,6 @@ export interface PaginationProps
    */
   disabled?: true;
   /**
-   * If `true`, hide the next-page button.
-   * @default false
-   */
-  hideNextButton?: boolean;
-  /**
-   * If `true`, hide the previous-page button.
-   * @default false
-   */
-  hidePreviousButton?: boolean;
-  /**
    * The hint text displayed in front of jumper `input`.
    */
   hintText?: string;
@@ -129,9 +119,7 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     buttonText,
     className,
     current = 1,
-    disabled = undefined,
-    hideNextButton = false,
-    hidePreviousButton = false,
+    disabled,
     hintText,
     inputPlaceholder,
     itemRender = (item) => <PaginationItem {...item} />,
@@ -153,8 +141,6 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     boundaryCount,
     current,
     disabled,
-    hideNextButton,
-    hidePreviousButton,
     onChange,
     pageSize,
     siblingCount,
