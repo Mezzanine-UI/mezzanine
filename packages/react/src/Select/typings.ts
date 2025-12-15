@@ -102,13 +102,15 @@ export interface SelectTriggerBaseProps
 }
 
 export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
-  /** Only available on multiple selector */
-  ellipsis?: never;
   /**
    * Controls the layout of trigger.
    * @default single
    */
   mode?: 'single';
+  /**
+   * Only available on multiple selector
+   */
+  overflowStrategy?: never;
   /**
    * The value of selection.
    * @default undefined
@@ -123,14 +125,17 @@ export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
 
 export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
   /**
-   * Tags arg ellipsis or not.
-   */
-  ellipsis?: boolean;
-  /**
    * Controls the layout of trigger.
    * @default single
    */
   mode: 'multiple';
+  /**
+   * Tag overflow strategy:
+   * - counter: collapse extra tags into a counter tag showing the remaining count.
+   * - wrap: wrap to new lines to display all tags.
+   * @default counter
+   */
+  overflowStrategy?: 'counter' | 'wrap';
   /**
    * The value of selection.
    * @default undefined

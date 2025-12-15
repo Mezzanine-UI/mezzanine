@@ -124,23 +124,34 @@ export const Types: Story = {
         gap: '48px',
       }}
     >
-      <div style={{ display: 'flex', gap: '80px' }}>
-        <Section title="Static">
-          <SectionItem>
+      <Section title="Static">
+        <ItemList>
+          <SectionItem label="Enabled">
             <Tag label="Tag" size="main" type="static" />
           </SectionItem>
-        </Section>
-        <Section title="Counter">
-          <SectionItem>
-            <Tag count={5} label="Tag" size="main" type="counter" />
+          <SectionItem label="Read Only">
+            <Tag label="Tag" size="main" type="static" readOnly />
           </SectionItem>
-        </Section>
-        <Section title="Overflow Counter">
-          <SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="Counter">
+        <SectionItem>
+          <Tag count={5} label="Tag" size="main" type="counter" />
+        </SectionItem>
+      </Section>
+      <Section title="Overflow Counter">
+        <ItemList>
+          <SectionItem label="Enabled">
             <Tag count={5} size="main" type="overflow-counter" />
           </SectionItem>
-        </Section>
-      </div>
+          <SectionItem label="Disabled">
+            <Tag count={5} size="main" type="overflow-counter" disabled />
+          </SectionItem>
+          <SectionItem label="Read Only">
+            <Tag count={5} size="main" type="overflow-counter" readOnly />
+          </SectionItem>
+        </ItemList>
+      </Section>
 
       <Section title="Dismissable">
         <ItemList>
@@ -175,7 +186,7 @@ export const Types: Story = {
               type="dismissable"
             />
           </SectionItem>
-          <SectionItem label="Read Only">
+          {/* <SectionItem label="Read Only">
             <Tag
               readOnly
               label="Tag"
@@ -183,7 +194,7 @@ export const Types: Story = {
               size="main"
               type="dismissable"
             />
-          </SectionItem>
+          </SectionItem> */}
         </ItemList>
       </Section>
 
@@ -247,6 +258,9 @@ export const Sizes: Story = {
             <SectionItem label="Sub">
               <Tag label="Tag" size="sub" type="static" />
             </SectionItem>
+            <SectionItem label="Minor">
+              <Tag label="Tag" size="minor" type="static" />
+            </SectionItem>
           </ItemList>
         </Section>
 
@@ -258,6 +272,9 @@ export const Sizes: Story = {
             <SectionItem label="Sub">
               <Tag label="Tag" size="sub" type="counter" count={5} />
             </SectionItem>
+            <SectionItem label="Minor">
+              <Tag label="Tag" size="minor" type="counter" count={5} />
+            </SectionItem>
           </ItemList>
         </Section>
         <Section title="Overflow Counter">
@@ -267,6 +284,9 @@ export const Sizes: Story = {
             </SectionItem>
             <SectionItem label="Sub">
               <Tag size="sub" type="overflow-counter" count={5} />
+            </SectionItem>
+            <SectionItem label="Minor">
+              <Tag size="minor" type="overflow-counter" count={5} />
             </SectionItem>
           </ItemList>
         </Section>
@@ -291,6 +311,14 @@ export const Sizes: Story = {
             <SectionItem label="Sub">
               <Tag label="Tag" size="sub" type="dismissable" onClose={voidFn} />
             </SectionItem>
+            <SectionItem label="Minor">
+              <Tag
+                label="Tag"
+                size="minor"
+                type="dismissable"
+                onClose={voidFn}
+              />
+            </SectionItem>
           </ItemList>
         </Section>
         <Section title="Addable">
@@ -300,6 +328,9 @@ export const Sizes: Story = {
             </SectionItem>
             <SectionItem label="Sub">
               <Tag label="Tag" size="sub" type="addable" onClick={voidFn} />
+            </SectionItem>
+            <SectionItem label="Minor">
+              <Tag label="Tag" size="minor" type="addable" onClick={voidFn} />
             </SectionItem>
           </ItemList>
         </Section>

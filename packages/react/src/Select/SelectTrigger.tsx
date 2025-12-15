@@ -26,13 +26,13 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     active,
     className,
     disabled,
-    ellipsis,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
     inputRef,
     mode = 'single',
     onTagClose,
+    overflowStrategy = 'counter',
     placeholder,
     readOnly,
     required,
@@ -101,16 +101,40 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         classes.triggerSelected(
           Array.isArray(props.value) ? props.value?.length : props.value,
         ),
+        {
+          [classes.triggerReadOnly]: readOnly,
+          [classes.triggerDisabled]: disabled,
+        },
         className,
       )}
       error={type === 'error'}
       size={size}
       suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
+      clearable={
+        mode === 'multiple' &&
+        Array.isArray(props.value) &&
+        !!props.value.length
+      }
     >
-      {isMultipleSelection(props) && props.value?.length ? (
+      <input
+        {...inputProps}
+        ref={inputRef}
+        aria-autocomplete="list"
+        aria-haspopup="listbox"
+        autoComplete="off"
+        className={cx(classes.triggerInput, inputProps?.className)}
+        disabled={disabled}
+        placeholder={placeholder}
+        readOnly={inputProps?.readOnly ?? true}
+        required={required}
+        type="text"
+        value={renderValue()}
+      />
+
+      {isMultipleSelection(props) && props.value?.length && (
         <SelectTriggerTags
           disabled={disabled}
-          ellipsis={ellipsis ?? false}
+          overflowStrategy={overflowStrategy}
           inputProps={inputProps}
           inputRef={inputRef}
           onTagClose={onTagClose}
@@ -120,20 +144,6 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
           size={size}
           showTextInputAfterTags={showTextInputAfterTags}
           value={props.value}
-        />
-      ) : (
-        <input
-          {...inputProps}
-          ref={inputRef}
-          aria-autocomplete="list"
-          aria-haspopup="listbox"
-          autoComplete="off"
-          disabled={disabled}
-          placeholder={placeholder}
-          readOnly={inputProps?.readOnly ?? true}
-          required={required}
-          type="text"
-          value={renderValue()}
         />
       )}
     </TextField>

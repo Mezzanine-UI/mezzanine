@@ -20,6 +20,9 @@ export const selectClasses = {
   triggerMode: (mode: SelectMode) => `${selectTriggerPrefix}--${mode}`,
   triggerSelected: (value: unknown) =>
     value ? `${selectTriggerPrefix}--selected` : '',
+  triggerReadOnly: `${selectTriggerPrefix}--readonly`,
+  triggerDisabled: `${selectTriggerPrefix}--disabled`,
+  triggerInput: `${selectTriggerPrefix}__input`,
   triggerTagsInputWrapper: `${selectTriggerPrefix}__tags-input-wrapper`,
   triggerTagsInputWrapperEllipsis: `${selectTriggerPrefix}__tags-input-wrapper--ellipsis`,
   triggerTagsInput: `${selectTriggerPrefix}__tags-input`,

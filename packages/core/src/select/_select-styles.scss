@@ -24,22 +24,28 @@ $popper-horizontal-padding: 0 !default;
 .#{$trigger-prefix} {
   cursor: pointer;
 
-  input {
+  &__input {
     appearance: none;
     min-width: 0;
+  }
 
-    &:read-only {
-      cursor: pointer;
+  &--readonly {
+    cursor: default;
+  }
+
+  &--multiple.#{$trigger-prefix}--selected {
+    padding: spacing.semantic-variable(padding, vertical, tiny)
+      spacing.semantic-variable(padding, horizontal, cozy)
+      spacing.semantic-variable(padding, horizontal, tiny)
+      spacing.semantic-variable(padding, vertical, tiny);
+    gap: spacing.semantic-variable(gap, slim);
+
+    .#{$trigger-prefix}__input {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
     }
   }
-}
-
-.#{$trigger-prefix}.#{$trigger-prefix}--multiple.#{$trigger-prefix}--selected {
-  padding: spacing.semantic-variable(padding, vertical, tiny)
-    spacing.semantic-variable(padding, horizontal, cozy)
-    spacing.semantic-variable(padding, horizontal, tiny)
-    spacing.semantic-variable(padding, vertical, tiny);
-  gap: spacing.semantic-variable(gap, slim);
 }
 
 .#{$trigger-prefix}__tags-input-wrapper {
