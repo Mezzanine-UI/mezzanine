@@ -140,20 +140,23 @@ const Progress = forwardRef<HTMLDivElement, ProgressProps>(
 
       // 初始計算
       updateTickPosition();
-
-      // 使用 ResizeObserver 監聽 line 元素尺寸變化
-      const resizeObserver = new ResizeObserver(() => {
-        updateTickPosition();
-      });
-
-      resizeObserver.observe(lineElement);
-      resizeObserver.observe(containerElement);
-
-      // 監聽窗口大小變化
       window.addEventListener('resize', updateTickPosition);
 
+      if (typeof ResizeObserver !== 'undefined') {
+        const resizeObserver = new ResizeObserver(() => {
+          updateTickPosition();
+        });
+
+        resizeObserver.observe(lineElement);
+        resizeObserver.observe(containerElement);
+
+        return () => {
+          resizeObserver.disconnect();
+          window.removeEventListener('resize', updateTickPosition);
+        };
+      }
+
       return () => {
-        resizeObserver.disconnect();
         window.removeEventListener('resize', updateTickPosition);
       };
     }, [isActiveTick, tickPosition, type, percentLimited]);
