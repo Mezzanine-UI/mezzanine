@@ -131,9 +131,26 @@ function init() {
   return true;
 }
 
+/**
+ * Get the actual first day of week from locale data
+ * Returns 0 for Sunday-first, 1 for Monday-first
+ */
+const getActualFirstDayOfWeek = (locale: string): number => {
+  const mappedLocale = localeMapping(locale);
+  const localeData = dayjs().locale(mappedLocale).localeData();
+  return localeData.firstDayOfWeek();
+};
+
+/**
+ * Check if locale uses Monday as first day of week
+ */
+const isMondayFirst = (locale: string): boolean => {
+  return getActualFirstDayOfWeek(locale) === 1;
+};
+
 const CalendarMethodsDayjs: CalendarMethodsType = {
   /** Locale helpers */
-  getFirstDayOfWeek: (locale) => (isISOWeekLocale(locale) ? 1 : 0),
+  getFirstDayOfWeek: (locale) => getActualFirstDayOfWeek(locale),
   isISOWeekLocale,
 
   /** Get date infos */
@@ -143,13 +160,13 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
   getWeek: (date, locale = 'en-us') => {
-    if (isISOWeekLocale(locale)) {
+    if (isMondayFirst(locale)) {
       return dayjs(date).isoWeek();
     }
     return dayjs(date).week();
   },
   getWeekYear: (date, locale = 'en-us') => {
-    if (isISOWeekLocale(locale)) {
+    if (isMondayFirst(locale)) {
       return dayjs(date).isoWeekYear();
     }
     return dayjs(date).year(); // dayjs doesn't have weekYear, use year as approximation
@@ -164,15 +181,16 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getQuarter: (date) => dayjs(date).quarter(),
   getHalfYear: (date) => Math.floor(dayjs(date).month() / 6) + 1,
   getWeekDayNames: (locale) => {
-    const names = dayjs()
-      .locale(localeMapping(locale))
-      .localeData()
-      .weekdaysMin();
+    const mappedLocale = localeMapping(locale);
+    const dayjsInstance = dayjs().locale(mappedLocale);
+    const localeData = dayjsInstance.localeData();
+    const names = localeData.weekdaysMin();
 
-    // If ISO week locale (Monday-first), rotate array so Monday is first
-    if (isISOWeekLocale(locale)) {
+    // If Monday-first, rotate so Monday is first
+    if (isMondayFirst(locale)) {
       return [...names.slice(1), names[0]];
     }
+
     return names;
   },
   getMonthShortName: (month, locale) => {
@@ -205,7 +223,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     dayjs(target).startOf(granularity).toISOString(),
 
   getCurrentWeekFirstDate: (value, locale = 'en-us') => {
-    if (isISOWeekLocale(locale)) {
+    if (isMondayFirst(locale)) {
       return dayjs(value)
         .startOf('isoWeek')
         .hour(0)
@@ -265,7 +283,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
 
   /** Generate day calendar */
   getCalendarGrid: (target, locale = 'en-us') => {
-    const isISO = isISOWeekLocale(locale);
+    const mondayFirst = isMondayFirst(locale);
     const lastDateOfPrevMonth = dayjs(target)
       .subtract(1, 'month')
       .endOf('month')
@@ -275,10 +293,10 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     const lastDateOfCurrentMonth = dayjs(target).endOf('month').date();
 
     // Calculate how many days from previous month to show
-    // For ISO week: if first day is Sunday (0), we need 6 days from prev month
-    // For regular: if first day is Sunday (0), we need 0 days from prev month
+    // For Monday-first: if first day is Sunday (0), we need 6 days from prev month
+    // For Sunday-first: if first day is Sunday (0), we need 0 days from prev month
     let daysFromPrevMonth: number;
-    if (isISO) {
+    if (mondayFirst) {
       // Monday-first: Sunday (0) should appear at position 6
       daysFromPrevMonth =
         firstDayOfCurrentMonth === 0 ? 6 : firstDayOfCurrentMonth - 1;
@@ -312,7 +330,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   isSameDate: (dateOne, dateTwo) =>
     dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
   isSameWeek: (dateOne, dateTwo, locale = 'en-us') => {
-    if (isISOWeekLocale(locale)) {
+    if (isMondayFirst(locale)) {
       return dayjs(dateOne).isSame(dayjs(dateTwo), 'isoWeek');
     }
     return dayjs(dateOne).isSame(dayjs(dateTwo), 'week');
@@ -321,7 +339,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   isDateIncluded: (date, targets) =>
     targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
   isWeekIncluded: (firstDateOfWeek, targets, locale = 'en-us') => {
-    if (isISOWeekLocale(locale)) {
+    if (isMondayFirst(locale)) {
       return targets.some((target) =>
         dayjs(firstDateOfWeek).isSame(dayjs(target), 'isoWeek'),
       );
