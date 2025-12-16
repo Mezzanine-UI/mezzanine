@@ -89,16 +89,18 @@ export function useDateRangePickerValue({
   const onInputFromChange = useCallback(
     (formattedValue: string) => {
       if (formattedValue) {
+        setIsSelecting(true);
+
         if (to && isBefore(to, formattedValue)) {
           setInternalFrom(to);
           setInternalTo(formattedValue);
 
-          // Range is complete, trigger onChange
+          // Range is complete, trigger onChange (only in immediate mode)
           onChangeProp?.([to, formattedValue]);
         } else {
           setInternalFrom(formattedValue);
 
-          // If to is also set, range is complete
+          // If to is also set, range is complete (only trigger in immediate mode)
           if (to) {
             onChangeProp?.([formattedValue, to]);
           }
@@ -115,16 +117,18 @@ export function useDateRangePickerValue({
   const onInputToChange = useCallback(
     (formattedValue: string) => {
       if (formattedValue) {
+        setIsSelecting(true);
+
         if (from && isBefore(formattedValue, from)) {
           setInternalTo(from);
           setInternalFrom(formattedValue);
 
-          // Range is complete, trigger onChange
+          // Range is complete, trigger onChange (only in immediate mode)
           onChangeProp?.([formattedValue, from]);
         } else {
           setInternalTo(formattedValue);
 
-          // If from is also set, range is complete
+          // If from is also set, range is complete (only trigger in immediate mode)
           if (from) {
             onChangeProp?.([from, formattedValue]);
           }
