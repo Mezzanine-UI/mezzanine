@@ -6,13 +6,23 @@ import {
   type UploadItemStatus,
   type UploadItemType
 } from '@mezzanine-ui/core/upload';
-import { forwardRef, MouseEventHandler, type Ref, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  MouseEventHandler,
+  type Ref,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { DangerousFilledIcon, DownloadIcon, FileIcon, IconDefinition, ResetIcon, SpinnerIcon, TrashIcon } from '@mezzanine-ui/icons';
 import ClearActions from '../ClearActions';
 import Icon from '../Icon';
 import Tooltip from '../Tooltip';
 import Typography from '../Typography';
+import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import UploadPictureCard from './UploadPictureCard';
@@ -40,6 +50,10 @@ export interface UploadItemProps
    * The file size to display (optional).
    */
   size?: UploadItemSize;
+  /**
+   * The file size to display (optional).
+   */
+  fileSize?: number;
   /**
    * The type of the item.
    * @default 'icon'
@@ -154,76 +168,36 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
     }, []);
 
 
-    // Ref to track the Typography element for ellipsis detection
     const fileNameRef = useRef<HTMLParagraphElement>(null);
-    // State to store whether the text is truncated
-    // This can be used to conditionally show tooltip, adjust layout, etc.
-    // Example usage: if (isTextTruncated) { /* show tooltip or adjust UI */ }
+    const tooltipRefRef = useRef<Ref<HTMLParagraphElement> | null>(null);
     const [isTextTruncated, setIsTextTruncated] = useState(false);
 
-    // Helper function to merge refs (for Tooltip and fileNameRef)
-    const mergeRefs = (tooltipRef: Ref<HTMLParagraphElement>) => {
-      return (node: HTMLParagraphElement | null) => {
-        // Set fileNameRef for truncation detection
-        fileNameRef.current = node;
-        // Set tooltipRef for Tooltip functionality
+    const mergedRefCallback = useCallback((node: HTMLParagraphElement | null) => {
+      fileNameRef.current = node;
+
+      const tooltipRef = tooltipRefRef.current;
+
+      if (tooltipRef) {
         if (typeof tooltipRef === 'function') {
           tooltipRef(node);
         } else if (tooltipRef && 'current' in tooltipRef) {
           (tooltipRef as { current: HTMLParagraphElement | null }).current = node;
         }
-      };
-    };
-
-    // Function to check if text is truncated
-    const checkTextTruncation = () => {
-      const element = fileNameRef.current;
-      if (element) {
-        // Compare scrollWidth (full content width) with clientWidth (visible width)
-        // If scrollWidth > clientWidth, the text is truncated
-        const isTruncated = element.scrollWidth > element.clientWidth;
-        setIsTextTruncated(isTruncated);
       }
-    };
+    }, []);
 
-    // Effect to check truncation on mount and when fileName or size changes
-    useEffect(() => {
-      // Use requestAnimationFrame to ensure DOM is fully rendered
-      const timeoutId = setTimeout(() => {
-        checkTextTruncation();
-      }, 0);
-
-      return () => clearTimeout(timeoutId);
-    }, [fileName, size]);
-
-    // Use ResizeObserver to detect when container size changes
-    useEffect(() => {
-      const element = fileNameRef.current;
-      if (!element) return;
-
-      if (typeof ResizeObserver !== 'undefined') {
-        // Check truncation when element is resized
-        const resizeObserver = new ResizeObserver(() => {
-          checkTextTruncation();
-        });
-
-        resizeObserver.observe(element);
-
-        return () => {
-          resizeObserver.disconnect();
-        };
-      }
-
-      return;
-    }, [fileName]);
+    const mergeRefs = useCallback((tooltipRef: Ref<HTMLParagraphElement>) => {
+      tooltipRefRef.current = tooltipRef;
+      return mergedRefCallback;
+    }, [mergedRefCallback]);
 
     const fileSize = useMemo(() => {
-      // Only show file size if file object is available
-      if (!props.file) {
+
+      if (!props.file && !props.fileSize) {
         return null;
       }
 
-      const bytes = props.file.size;
+      const bytes = props.file?.size ?? props.fileSize;
 
       if (bytes === 0) {
         return '0 B';
@@ -232,7 +206,7 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       const k = 1024;
       const sizes = ['B', 'KB', 'MB'];
       let i = 0;
-      let size = bytes;
+      let size = bytes ?? 0;
 
       while (size >= k && i < sizes.length - 1) {
         size /= k;
@@ -240,18 +214,31 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
       }
 
       return `${Math.round(size * 10) / 10} ${sizes[i]}`;
-    }, [props.file]);
+    }, [props.file, props.fileSize]);
 
     const isFinished = useMemo(() => {
       return /done|error/.test(status);
     }, [status]);
 
-    // Warn if both file and url are missing
     useEffect(() => {
       if (!props.file && !props.url) {
         console.warn('UploadItem: Both `file` and `url` props are missing. At least one should be provided to display the upload item.');
       }
     }, [props.file, props.url]);
+
+    // Check text truncation only once after render completes
+    // This runs after DOM is updated but before browser paint
+    useIsomorphicLayoutEffect(() => {
+      const element = fileNameRef.current;
+      if (!element) {
+        setIsTextTruncated(false);
+        return;
+      }
+
+      // Measure once after render completes
+      const isTruncated = element.scrollWidth > element.clientWidth;
+      setIsTextTruncated(isTruncated);
+    }, [fileName, size]);
 
     return (
       <>
@@ -280,32 +267,29 @@ const UploadItem = forwardRef<HTMLDivElement, UploadItemProps>(
                 {itemIcon}
               </div>
               <div className={classes.content}>
-                {
-                  isTextTruncated ? (
-                    <Tooltip title={fileName} options={{ placement: 'bottom' }}>
-                      {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
-                        <Typography
-                          ref={mergeRefs(tooltipRef)}
-                          className={classes.name}
-                          ellipsis
-                          onMouseEnter={onMouseEnter}
-                          onMouseLeave={onMouseLeave}
-                        >
-                          {fileName}
-                        </Typography>
-                      )}
-                    </Tooltip>
-                  ) : (
-                    <Typography ref={fileNameRef} className={classes.name} ellipsis>
+                <Tooltip
+                  title={isTextTruncated ? fileName : undefined}
+                  options={{ placement: 'bottom' }}
+                >
+                  {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+                    <Typography
+                      ref={mergeRefs(tooltipRef)}
+                      className={classes.name}
+                      ellipsis
+                      onMouseEnter={onMouseEnter}
+                      onMouseLeave={onMouseLeave}
+                    >
                       {fileName}
+                    </Typography>
+                  )}
+                </Tooltip>
+                {
+                  showFileSize && isFinished && fileSize && (
+                    <Typography className={classes.fontSize}>
+                      {fileSize}
                     </Typography>
                   )
                 }
-                {showFileSize && !props.url && fileSize && isFinished && (
-                  <Typography className={classes.fontSize}>
-                    {fileSize}
-                  </Typography>
-                )}
               </div>
             </div>
             <div className={classes.actions}>

@@ -204,8 +204,6 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
     }, [file, url]);
 
     useEffect(() => {
-      // Priority: use url prop if provided, otherwise create blob URL from file
-      // Similar to UploadItem's approach for handling file display
       if (url && isImage) {
         setImageUrl(url);
         return undefined;
