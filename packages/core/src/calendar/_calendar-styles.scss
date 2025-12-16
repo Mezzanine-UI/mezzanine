@@ -8,6 +8,7 @@
 @use '../button/utils' as btn-utils;
 @use './calendar' as *;
 
+// Todo: width fixed?
 @mixin mode-width {
   @each $mode in $modes {
     .#{$prefix}--#{$mode} & {
@@ -121,7 +122,7 @@
   }
 
   &--inRange {
-    background-color: palette.semantic-variable("background", brand-faint)
+    background-color: palette.semantic-variable("background", brand-faint);
   }
 
   &--active {
