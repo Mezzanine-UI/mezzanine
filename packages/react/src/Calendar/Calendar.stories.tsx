@@ -1,6 +1,8 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import moment from 'moment';
 import {
+  CalendarLocale,
+  CalendarLocaleValue,
   CalendarMode,
   DateType,
   getDefaultModeFormat,
@@ -27,10 +29,10 @@ type Story = StoryObj<typeof Calendar>;
 
 const InnerCalendarPlayground = ({
   mode = 'day',
-  locale = 'en-us',
+  locale = CalendarLocale.EN_US,
 }: {
   mode: CalendarMode;
-  locale?: string;
+  locale?: CalendarLocaleValue;
 }) => {
   const formats = {
     day: getDefaultModeFormat('day', locale),
@@ -204,7 +206,7 @@ export const CalendarPlayground: Story = {
     },
   },
   render: function Render({ mode = 'day' }) {
-    const locale = 'en-us';
+    const locale = CalendarLocale.EN_US;
 
     return (
       <div
@@ -436,7 +438,7 @@ export const RangeCalendarPlayground: StoryObj<typeof RangeCalendar> = {
     },
   },
   render: function Render({ mode = 'day' }) {
-    const locale = 'en-us';
+    const locale = CalendarLocale.EN_US;
 
     return (
       <CalendarConfigProvider methods={CalendarMethodsMoment} locale={locale}>

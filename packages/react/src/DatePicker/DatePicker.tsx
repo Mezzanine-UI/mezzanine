@@ -66,6 +66,7 @@ export interface DatePickerProps
   disableOnDoublePrev?: boolean;
   /**
    * The format for displaying date.
+   * The length of the format must match the length of the actual generated value. For example, "gggg-wo" may cause a length mismatch when the week of year is a single digit. It is recommended to use the system's default format instead.
    */
   format?: string;
   /**
@@ -135,11 +136,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       size: inputSize = format.length + 2,
       ...restInputProp
     } = inputProps || {};
-
-    const formats = useMemo(
-      () => [format, getDefaultModeFormat(mode)],
-      [format, mode],
-    );
 
     /**
      * Validate date value against disabled constraints based on mode.
@@ -219,7 +215,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     } = usePickerValue({
       defaultValue,
       format,
-      formats,
       inputRef,
       value: valueProp,
     });

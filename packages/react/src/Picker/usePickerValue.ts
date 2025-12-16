@@ -12,7 +12,6 @@ import { usePickerInputValue } from './usePickerInputValue';
 export type UsePickerValueProps = {
   defaultValue?: DateType;
   format: string;
-  formats: string[];
   inputRef: RefObject<HTMLInputElement | null>;
   value?: DateType;
 };
@@ -23,13 +22,12 @@ export type UsePickerValueProps = {
 export function usePickerValue({
   defaultValue,
   format,
-  formats,
   inputRef,
   value: valueProp,
 }: UsePickerValueProps) {
-  const { formatToString, parse, valueLocale } = useCalendarContext();
+  const { formatToString, locale } = useCalendarContext();
   const inputDefaultValue = defaultValue
-    ? formatToString(valueLocale, defaultValue, format)
+    ? formatToString(locale, defaultValue, format)
     : '';
 
   const [value, setValue] = useState<DateType | undefined>(valueProp);
@@ -39,9 +37,7 @@ export function usePickerValue({
   };
 
   const onInputChange = (val: string) => {
-    const valDateType = parse(valueLocale, val, formats);
-
-    onChange(valDateType);
+    onChange(val);
   };
 
   const {
@@ -56,7 +52,7 @@ export function usePickerValue({
   useEffect(() => {
     setInputValue(valueProp || '');
     onChange(valueProp);
-  }, [valueProp, format, formatToString, setInputValue, valueLocale]);
+  }, [valueProp, format, formatToString, setInputValue, locale]);
 
   const onSyncInputAndStateChange = (val?: DateType) => {
     setInputValue(val || '');
@@ -84,9 +80,7 @@ export function usePickerValue({
   };
 
   return {
-    inputValue: inputValue
-      ? formatToString(valueLocale, inputValue, format)
-      : '',
+    inputValue: inputValue ? formatToString(locale, inputValue, format) : '',
     onBlur,
     onChange: onSyncInputAndStateChange,
     onInputChange: inputChangeHandler,

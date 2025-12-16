@@ -67,6 +67,7 @@ export interface RangeCalendarProps
     | 'value'
     | 'onChange'
     | 'referenceDate'
+    | 'renderAnnotations'
     | 'onNext'
     | 'onPrev'
     | 'onDoubleNext'
@@ -317,6 +318,65 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
       ],
     );
 
+    const hasDisabledDateInRange = useCallback(
+      (start: DateType, end: DateType): boolean => {
+        const [rangeStart, rangeEnd] = isBefore(start, end)
+          ? [start, end]
+          : [end, start];
+
+        let current = rangeStart;
+        while (isBefore(current, rangeEnd) || current === rangeEnd) {
+          // Check disabled based on current mode
+          let isDisabled = false;
+
+          switch (mode) {
+            case 'day':
+              isDisabled = isDateDisabled?.(current) ?? false;
+              break;
+            case 'week':
+              isDisabled = isWeekDisabled?.(current) ?? false;
+              break;
+            case 'month':
+              isDisabled = isMonthDisabled?.(current) ?? false;
+              break;
+            case 'year':
+              isDisabled = isYearDisabled?.(current) ?? false;
+              break;
+            case 'quarter':
+              isDisabled = isQuarterDisabled?.(current) ?? false;
+              break;
+            case 'half-year':
+              isDisabled = isHalfYearDisabled?.(current) ?? false;
+              break;
+            default:
+              break;
+          }
+
+          if (isDisabled) {
+            return true;
+          }
+
+          current = addDay(current, 1);
+          // Break if we've passed the end date (safety check)
+          if (isBefore(rangeEnd, current)) {
+            break;
+          }
+        }
+        return false;
+      },
+      [
+        mode,
+        isBefore,
+        addDay,
+        isDateDisabled,
+        isWeekDisabled,
+        isMonthDisabled,
+        isYearDisabled,
+        isQuarterDisabled,
+        isHalfYearDisabled,
+      ],
+    );
+
     const handleRangeSelection = useCallback(
       (target: DateType) => {
         if (!onChangeProp) return;
@@ -330,6 +390,12 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           const rawStart = existingStart;
           const rawEnd = target;
 
+          // 檢查是否有不可選日期
+          if (hasDisabledDateInRange(rawStart, rawEnd)) {
+            onChangeProp([target, undefined]);
+            return;
+          }
+
           const isEndBeforeStart = isBefore(rawEnd, rawStart);
           const [start, end] = isEndBeforeStart
             ? [rawEnd, rawStart]
@@ -341,7 +407,14 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           onChangeProp([normalizedStart, normalizedEnd]);
         }
       },
-      [value, onChangeProp, isBefore, normalizeRangeStart, normalizeRangeEnd],
+      [
+        value,
+        onChangeProp,
+        isBefore,
+        normalizeRangeStart,
+        normalizeRangeEnd,
+        hasDisabledDateInRange,
+      ],
     );
 
     const getTargetValue = useCallback(
@@ -493,20 +566,22 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               onHalfYearHover={onHalfYearHover}
             />
           </div>
-          <CalendarFooterActions
-            actions={{
-              secondaryButtonProps: {
-                children: 'Cancel',
-                disabled: false,
-                ...actions?.secondaryButtonProps,
-              },
-              primaryButtonProps: {
-                children: 'Ok',
-                disabled: false,
-                ...actions?.primaryButtonProps,
-              },
-            }}
-          />
+          {actions && (
+            <CalendarFooterActions
+              actions={{
+                secondaryButtonProps: {
+                  children: 'Cancel',
+                  disabled: false,
+                  ...actions?.secondaryButtonProps,
+                },
+                primaryButtonProps: {
+                  children: 'Ok',
+                  disabled: false,
+                  ...actions?.primaryButtonProps,
+                },
+              }}
+            />
+          )}
         </div>
       </div>
     );

@@ -1,24 +1,38 @@
 import { createRef } from 'react';
+import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
+import { CalendarConfigProvider } from '../Calendar';
 import { RangePickerTrigger } from '.';
 
 describe('<RangePickerTrigger />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<RangePickerTrigger ref={ref} />),
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangePickerTrigger ref={ref} format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    ),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<RangePickerTrigger className={className} />),
+    render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangePickerTrigger className={className} format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    ),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<RangePickerTrigger />);
+    const { getHostHTMLElement } = render(
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangePickerTrigger format="YYYY-MM-DD" />
+      </CalendarConfigProvider>,
+    );
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-picker')).toBeTruthy();
@@ -28,7 +42,11 @@ describe('<RangePickerTrigger />', () => {
     it('should bind to input element', () => {
       const ref = createRef<HTMLInputElement>();
 
-      render(<RangePickerTrigger inputFromRef={ref} />);
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <RangePickerTrigger inputFromRef={ref} format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
 
       expect(ref.current).toBeInstanceOf(HTMLInputElement);
     });
@@ -38,7 +56,11 @@ describe('<RangePickerTrigger />', () => {
     it('should bind to input element', () => {
       const ref = createRef<HTMLInputElement>();
 
-      render(<RangePickerTrigger inputToRef={ref} />);
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <RangePickerTrigger inputToRef={ref} format="YYYY-MM-DD" />
+        </CalendarConfigProvider>,
+      );
 
       expect(ref.current).toBeInstanceOf(HTMLInputElement);
     });
@@ -49,13 +71,16 @@ describe('<RangePickerTrigger />', () => {
     const inputToPlaceholder = 'inputToPlaceholder';
 
     const { getHostHTMLElement } = render(
-      <RangePickerTrigger
-        disabled
-        inputFromPlaceholder={inputFromPlaceholder}
-        inputToPlaceholder={inputToPlaceholder}
-        readOnly
-        required
-      />,
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <RangePickerTrigger
+          disabled
+          format="YYYY-MM-DD"
+          inputFromPlaceholder={inputFromPlaceholder}
+          inputToPlaceholder={inputToPlaceholder}
+          readOnly
+          required
+        />
+      </CalendarConfigProvider>,
     );
     const element = getHostHTMLElement();
     const [inputFromElement, inputToElement] =

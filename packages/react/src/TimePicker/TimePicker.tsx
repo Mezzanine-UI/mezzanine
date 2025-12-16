@@ -6,7 +6,6 @@ import {
   KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
-  useContext,
   useMemo,
   useRef,
   useState,
@@ -14,7 +13,6 @@ import {
 import { DateType } from '@mezzanine-ui/core/calendar';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
-import { FormControlContext } from '../Form';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
 import {
@@ -68,21 +66,15 @@ export interface TimePickerProps
  */
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   function TimePicker(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
     const { defaultTimeFormat } = useCalendarContext();
     const {
       className,
       clearable = true,
       defaultValue,
-      disabled = disabledFromFormControl || false,
-      error = severity === 'error' || false,
+      disabled = false,
+      error = false,
       fadeProps,
-      fullWidth = fullWidthFromFormControl || false,
+      fullWidth = false,
       hideHour,
       hideMinute,
       hideSecond,
@@ -95,7 +87,7 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       popperProps,
       prefix,
       readOnly,
-      required = requiredFromFormControl || false,
+      required = false,
       secondStep,
       size,
       value: valueProp,
@@ -150,11 +142,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       ...restInputProp
     } = inputProps || {};
 
-    const formats = useMemo(
-      () => [resolvedFormat, defaultTimeFormat, 'HH:mm:ss', 'HH:mm'],
-      [resolvedFormat, defaultTimeFormat],
-    );
-
     /** Panel open control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
@@ -199,7 +186,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     } = usePickerValue({
       defaultValue,
       format: resolvedFormat,
-      formats,
       inputRef,
       value: valueProp,
     });

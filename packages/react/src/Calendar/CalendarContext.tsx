@@ -1,7 +1,12 @@
 'use client';
 
 import { createContext, ReactNode, useContext, useMemo } from 'react';
-import { CalendarMethods } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarLocale,
+  CalendarLocaleValue,
+  CalendarMethods,
+  normalizeLocale,
+} from '@mezzanine-ui/core/calendar';
 
 export interface CalendarConfigs extends CalendarMethods {
   defaultDateFormat: string;
@@ -10,18 +15,6 @@ export interface CalendarConfigs extends CalendarMethods {
    * The unified locale for all calendar display and value processing.
    */
   locale: string;
-  /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  displayMonthLocale: string;
-  /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  displayWeekDayLocale: string;
-  /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  valueLocale: string;
 }
 
 export type CalendarConfigProviderProps = {
@@ -29,25 +22,17 @@ export type CalendarConfigProviderProps = {
   defaultDateFormat?: string;
   defaultTimeFormat?: string;
   /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  displayMonthLocale?: string;
-  /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  displayWeekDayLocale?: string;
-  /**
    * The unified locale for all calendar display and value processing.
    * This determines the first day of week, month names, weekday names, etc.
-   * Examples: 'en-us', 'zh-tw', 'de-de', 'fr-fr'
+   * Use CalendarLocale enum for type-safe locale values.
+   * @example CalendarLocale.EN_US, CalendarLocale.ZH_TW, CalendarLocale.DE_DE
+   * @default CalendarLocale.EN_US
    */
-  locale?: string;
+  locale?: CalendarLocaleValue;
   methods: CalendarMethods;
-  /**
-   * @deprecated Use `locale` instead. Will be removed in future versions.
-   */
-  valueLocale?: string;
 };
+
+export { CalendarLocale };
 
 export const CalendarContext = createContext<CalendarConfigs | undefined>(
   undefined,
@@ -72,16 +57,11 @@ function CalendarConfigProvider(props: CalendarConfigProviderProps) {
     children,
     defaultDateFormat = 'YYYY-MM-DD',
     defaultTimeFormat = 'HH:mm:ss',
-    displayMonthLocale,
-    displayWeekDayLocale,
-    locale = 'en-us',
+    locale = CalendarLocale.EN_US,
     methods,
-    valueLocale,
   } = props;
 
-  // Use unified locale, but allow legacy props to override for backward compatibility
-  const resolvedLocale =
-    valueLocale ?? displayWeekDayLocale ?? displayMonthLocale ?? locale;
+  const resolvedLocale = normalizeLocale(locale);
 
   const context = useMemo(
     () => ({
@@ -89,10 +69,6 @@ function CalendarConfigProvider(props: CalendarConfigProviderProps) {
       defaultDateFormat,
       defaultTimeFormat,
       locale: resolvedLocale,
-      // Keep deprecated props for backward compatibility, all pointing to the same locale
-      displayMonthLocale: resolvedLocale,
-      displayWeekDayLocale: resolvedLocale,
-      valueLocale: resolvedLocale,
     }),
     [methods, defaultDateFormat, defaultTimeFormat, resolvedLocale],
   );
