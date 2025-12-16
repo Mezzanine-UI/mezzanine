@@ -6,6 +6,7 @@ import {
   MouseEventHandler,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -13,6 +14,7 @@ import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
+import { CalendarFooterActionsProps } from '../Calendar/CalendarFooterActions';
 import DateRangePickerCalendar, {
   DateRangePickerCalendarProps,
 } from './DateRangePickerCalendar';
@@ -28,7 +30,6 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 export interface DateRangePickerProps
   extends Pick<
       DateRangePickerCalendarProps,
-      | 'actions'
       | 'calendarProps'
       | 'disabledMonthSwitch'
       | 'disableOnNext'
@@ -73,6 +74,21 @@ export interface DateRangePickerProps
       | 'validateTo'
     > {
   /**
+   * Footer action buttons props.
+   * When provided, the calendar will NOT auto-close after range selection.
+   * This allows users to interact with the action buttons before confirming.
+   */
+  actions?: CalendarFooterActionsProps['actions'];
+  /**
+   * The confirm mode for date range selection.
+   * - `'immediate'` (default): onChange is triggered immediately after selecting both dates,
+   *   and calendar auto-closes (unless actions prop is provided).
+   * - `'manual'`: onChange is triggered only when user clicks the confirm button.
+   *   Default actions (Confirm/Cancel) will be auto-generated if not provided.
+   * @default 'immediate'
+   */
+  confirmMode?: 'immediate' | 'manual';
+  /**
    * Default value for date range picker.
    */
   defaultValue?: [DateType, DateType];
@@ -107,10 +123,11 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
   function DateRangePicker(props, ref) {
     const { addDay, getNow, isBefore, isBetween } = useCalendarContext();
     const {
-      actions,
+      actions: actionsProp,
       calendarProps,
       className,
       clearable = true,
+      confirmMode = 'immediate',
       defaultValue,
       disabledMonthSwitch = false,
       disableOnDoubleNext,
@@ -249,6 +266,10 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const inputToRef = useRef<HTMLInputElement>(null);
     const inputFromRef = useRef<HTMLInputElement>(null);
 
+    // In manual mode, don't pass onChange to hook - we'll handle it via confirm button
+    const shouldTriggerOnChangeImmediately =
+      confirmMode === 'immediate' && !actionsProp;
+
     const {
       calendarValue,
       checkIsInRange,
@@ -271,7 +292,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       inputFromRef,
       inputToRef,
       mode,
-      onChange: onChangeProp,
+      onChange: shouldTriggerOnChangeImmediately ? onChangeProp : undefined,
       value: valueProp,
     });
 
@@ -291,13 +312,63 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       (val: [DateType, DateType | undefined]) => {
         onCalendarChange(val);
 
-        // Close panel when range is complete
-        if (val[0] && val[1]) {
+        // Close panel when range is complete (only if auto-close is enabled)
+        // Auto-close is disabled when actions are provided or in manual mode
+        if (val[0] && val[1] && shouldTriggerOnChangeImmediately) {
           onCalendarToggle(false);
         }
       },
-      [onCalendarChange, onCalendarToggle],
+      [onCalendarChange, onCalendarToggle, shouldTriggerOnChangeImmediately],
     );
+
+    /** Handle confirm action (for manual mode) */
+    const onConfirm = useCallback(() => {
+      const [from, to] = internalValue;
+
+      if (from && to) {
+        onChangeProp?.([from, to]);
+        // Sync internal state and reset isSelecting
+        onChange([from, to]);
+      }
+
+      onCalendarToggle(false);
+    }, [internalValue, onChange, onChangeProp, onCalendarToggle]);
+
+    /** Handle cancel action (for manual mode) */
+    const onCancel = useCallback(() => {
+      onChange(valueProp);
+      onCalendarToggle(false);
+    }, [onChange, onCalendarToggle, valueProp]);
+
+    /** Auto-generated actions for manual mode */
+    const actions: CalendarFooterActionsProps['actions'] | undefined =
+      useMemo(() => {
+        // In manual mode, auto-generate actions
+        if (confirmMode === 'manual') {
+          const [from, to] = internalValue;
+          const isRangeComplete = Boolean(from && to);
+
+          return {
+            primaryButtonProps: {
+              children: 'Confirm',
+              disabled: !isRangeComplete,
+              onClick: onConfirm,
+              ...actionsProp?.primaryButtonProps,
+            },
+            secondaryButtonProps: {
+              children: 'Cancel',
+              onClick: onCancel,
+              ...actionsProp?.secondaryButtonProps,
+            },
+          };
+        }
+
+        if (actionsProp) {
+          return actionsProp;
+        }
+
+        return undefined;
+      }, [actionsProp, confirmMode, internalValue, onConfirm, onCancel]);
 
     /** Calendar cell in range checker */
     const getIsInRangeHandler = (granularity: string) => {
@@ -341,6 +412,13 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     }, [onChange, onCalendarToggle, valueProp]);
 
     const onChangeClose = useCallback(() => {
+      // In manual mode, always restore to valueProp (don't auto-submit on click-away)
+      if (confirmMode === 'manual') {
+        onChange(valueProp);
+        onCalendarToggle(false);
+        return;
+      }
+
       const [from, to] = internalValue;
 
       if (from && to) {
@@ -350,7 +428,14 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       }
 
       onCalendarToggle(false);
-    }, [internalValue, onChange, onCalendarToggle, onChangeProp, valueProp]);
+    }, [
+      confirmMode,
+      internalValue,
+      onChange,
+      onCalendarToggle,
+      onChangeProp,
+      valueProp,
+    ]);
 
     usePickerDocumentEventClose({
       anchorRef,

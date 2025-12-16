@@ -58,8 +58,12 @@ export function useDateRangePickerValue({
     valueProp?.[1],
   );
 
-  const from = valueProp?.[0] ?? internalFrom;
-  const to = valueProp?.[1] ?? internalTo;
+  // Track if user is currently selecting a new range
+  // When selecting, we use internal state; otherwise, we prefer valueProp
+  const [isSelecting, setIsSelecting] = useState(false);
+
+  const from = isSelecting ? internalFrom : (valueProp?.[0] ?? internalFrom);
+  const to = isSelecting ? internalTo : (valueProp?.[1] ?? internalTo);
   const value = [from, to] as RangePickerPickingValue;
 
   const formatDate = useCallback(
@@ -150,6 +154,7 @@ export function useDateRangePickerValue({
         }
       } else {
         setInternalTo(undefined);
+        setIsSelecting(true);
 
         // 開始新的選取，則先清除值
         if (from && to) {
@@ -166,6 +171,9 @@ export function useDateRangePickerValue({
 
   const onChange = useCallback(
     (target?: RangePickerPickingValue): RangePickerPickingValue | undefined => {
+      // Reset selecting state when value is explicitly changed (e.g., cancel/close)
+      setIsSelecting(false);
+
       if (!target) {
         setInternalFrom(undefined);
         setInternalTo(undefined);
@@ -226,6 +234,7 @@ export function useDateRangePickerValue({
     setInternalFrom(undefined);
     setInternalTo(undefined);
     setHoverValue(undefined);
+    setIsSelecting(false);
     onChangeProp?.(undefined);
   }, [onChangeProp]);
 

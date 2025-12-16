@@ -581,4 +581,212 @@ describe('<DateRangePicker />', () => {
       ).toBeInstanceOf(HTMLButtonElement);
     });
   });
+
+  describe('prop: confirmMode', () => {
+    // Helper function to get the RangeCalendar popup
+    const getRangeCalendar = () =>
+      document.querySelector('[aria-label^="Range calendar"]');
+
+    it('should auto-close after range selection in immediate mode (default)', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker onChange={onChange} referenceDate={referenceDate} />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Click on day 10
+      const [day10] = getAllByText('10');
+      expect(day10).toBeInstanceOf(HTMLButtonElement);
+
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      // Calendar should still be open (only one date selected)
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // Click on day 20
+      const [day20] = getAllByText('20');
+      expect(day20).toBeInstanceOf(HTMLButtonElement);
+
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should auto-close after both dates selected
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBe(null);
+      });
+
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    it('should show Confirm/Cancel buttons in manual mode', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            confirmMode="manual"
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Check for Confirm button
+      const confirmButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect(confirmButton).toBeInstanceOf(HTMLButtonElement);
+      expect(confirmButton?.textContent).toBe('Confirm');
+      expect((confirmButton as HTMLButtonElement)?.disabled).toBe(true);
+
+      // Check for Cancel button
+      const cancelButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-tertiary',
+      );
+      expect(cancelButton).toBeInstanceOf(HTMLButtonElement);
+      expect(cancelButton?.textContent).toBe('Cancel');
+    });
+
+    it('should not trigger onChange until Confirm is clicked in manual mode', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            confirmMode="manual"
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Select two dates
+      const [day10] = getAllByText('10');
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      const [day20] = getAllByText('20');
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should NOT auto-close in manual mode
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // onChange should NOT have been called yet
+      expect(onChange).not.toHaveBeenCalled();
+
+      // Confirm button should now be enabled
+      const confirmButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect((confirmButton as HTMLButtonElement)?.disabled).toBe(false);
+
+      // Click Confirm
+      await act(async () => {
+        fireEvent.click(confirmButton!);
+      });
+
+      // Now onChange should be called
+      expect(onChange).toHaveBeenCalled();
+
+      // Calendar should close
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBe(null);
+      });
+    });
+
+    it('should not auto-close when actions prop is provided', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            actions={{
+              primaryButtonProps: {
+                children: 'Apply',
+                onClick: jest.fn(),
+              },
+              secondaryButtonProps: {
+                children: 'Reset',
+                onClick: jest.fn(),
+              },
+            }}
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Select two dates
+      const [day10] = getAllByText('10');
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      const [day20] = getAllByText('20');
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should NOT auto-close when actions prop is provided
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // Custom actions should be rendered
+      const applyButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect(applyButton?.textContent).toBe('Apply');
+    });
+  });
 });

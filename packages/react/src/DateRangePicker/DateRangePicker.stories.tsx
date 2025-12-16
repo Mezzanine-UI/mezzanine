@@ -68,6 +68,7 @@ export const Playground: Story = {
     mode: 'day',
     readOnly: false,
     size: 'main',
+    confirmMode: 'immediate',
   },
   argTypes: {
     mode: {
@@ -82,6 +83,12 @@ export const Playground: Story = {
       },
       options: ['main', 'sub'],
     },
+    confirmMode: {
+      control: {
+        type: 'select',
+      },
+      options: ['immediate', 'manual'],
+    },
   },
   render: function Playground({
     clearable,
@@ -93,6 +100,7 @@ export const Playground: Story = {
     mode = 'day',
     readOnly,
     size,
+    confirmMode,
   }: PlaygroundArgs) {
     const [val, onChange] = usePickerChange();
 
@@ -119,6 +127,7 @@ export const Playground: Story = {
           onChange={onChange}
           readOnly={readOnly}
           size={size}
+          confirmMode={confirmMode}
           value={val}
         />
       </CalendarConfigProvider>
@@ -776,6 +785,106 @@ export const CalendarIntegration: Story = {
                 options: quickSelectOptions,
               }}
               value={valQuickSelect}
+            />
+          </div>
+        </div>
+      </CalendarConfigProvider>
+    );
+  },
+};
+
+export const ConfirmMode: Story = {
+  render: function ConfirmMode() {
+    const sectionStyle = {
+      margin: '0 0 48px 0',
+      padding: '16px',
+      border: '1px solid #e0e0e0',
+      borderRadius: '8px',
+    };
+    const typoStylePre = {
+      margin: '0 0 12px 0',
+      whiteSpace: 'pre-line',
+    } as CSSProperties;
+
+    const [valImmediate, onChangeImmediate] = usePickerChange();
+    const [valManual, onChangeManual] = usePickerChange();
+
+    const [changeCount, setChangeCount] = useState(0);
+    const [manualChangeCount, setManualChangeCount] = useState(0);
+
+    const handleImmediateChange = (v?: RangePickerValue) => {
+      onChangeImmediate(v);
+      if (v && v[0] && v[1]) {
+        setChangeCount((c) => c + 1);
+      }
+    };
+
+    const handleManualChange = (v?: RangePickerValue) => {
+      onChangeManual(v);
+      if (v && v[0] && v[1]) {
+        setManualChangeCount((c) => c + 1);
+      }
+    };
+
+    return (
+      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <div style={sectionStyle}>
+          <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+            1. Immediate Mode (Default)
+          </Typography>
+          <Typography style={typoStylePre} variant="body">
+            {`confirmMode="immediate" (default behavior)
+- onChange is triggered immediately after selecting both dates
+- Calendar auto-closes after range selection
+- onChange triggered count: ${changeCount}`}
+          </Typography>
+          <div style={containerStyle}>
+            <Typography style={typoStylePre} variant="body">
+              {`Selected: [${valImmediate?.[0] ? moment(valImmediate[0]).format('YYYY-MM-DD') : ''}, ${valImmediate?.[1] ? moment(valImmediate[1]).format('YYYY-MM-DD') : ''}]`}
+            </Typography>
+            <DateRangePicker
+              confirmMode="immediate"
+              format="YYYY-MM-DD"
+              inputFromPlaceholder="Start Date"
+              inputToPlaceholder="End Date"
+              mode="day"
+              onChange={handleImmediateChange}
+              value={valImmediate}
+            />
+          </div>
+        </div>
+
+        <div style={sectionStyle}>
+          <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
+            2. Manual Mode
+          </Typography>
+          <Typography style={typoStylePre} variant="body">
+            {`confirmMode="manual"
+- Auto-generates Confirm/Cancel buttons
+- onChange is only triggered when clicking "Confirm"
+- Confirm button is disabled until both dates are selected
+- onChange triggered count: ${manualChangeCount}`}
+          </Typography>
+          <div style={containerStyle}>
+            <Typography style={typoStylePre} variant="body">
+              {`Selected: [${valManual?.[0] ? moment(valManual[0]).format('YYYY-MM-DD') : ''}, ${valManual?.[1] ? moment(valManual[1]).format('YYYY-MM-DD') : ''}]`}
+            </Typography>
+            <DateRangePicker
+              actions={{
+                primaryButtonProps: {
+                  children: '確定',
+                },
+                secondaryButtonProps: {
+                  children: '取消',
+                },
+              }}
+              confirmMode="manual"
+              format="YYYY-MM-DD"
+              inputFromPlaceholder="Start Date"
+              inputToPlaceholder="End Date"
+              mode="day"
+              onChange={handleManualChange}
+              value={valManual}
             />
           </div>
         </div>
