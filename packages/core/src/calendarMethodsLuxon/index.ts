@@ -246,34 +246,6 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
   },
   formatToISOString: (date) => DateTime.fromISO(date).toISO() as string,
 
-  /** Parse */
-  parse: (locale, text, formats) => {
-    for (let i = 0; i < formats.length; i += 1) {
-      let format = formats[i];
-      let formatText = text;
-
-      if (format.includes('wo') || format.includes('Wo')) {
-        format = format.replace(/wo/g, 'w').replace(/Wo/g, 'W');
-
-        const matchFormat = format.match(/[-YyMmDdHhSsWwGg]+/g);
-        const matchText = formatText.match(/[-\d]+/g);
-
-        if (matchFormat && matchText) {
-          format = matchFormat.join('');
-          formatText = matchText.join('');
-        }
-      }
-
-      const date = DateTime.fromFormat(formatText, format, { locale });
-
-      if (date.isValid) {
-        return date.toISO() as string;
-      }
-    }
-
-    return undefined;
-  },
-
   /** Parse and validate formatted input */
   parseFormattedValue: (text, format) => {
     // Handle half-year format: convert n to Q for parsing

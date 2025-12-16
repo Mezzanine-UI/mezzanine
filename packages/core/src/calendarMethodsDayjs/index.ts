@@ -406,34 +406,6 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
   formatToISOString: (date) => dayjs(date).toISOString(),
 
-  /** Parse */
-  parse: (locale, text, formats) => {
-    for (let i = 0; i < formats.length; i += 1) {
-      let format = formats[i];
-      let formatText = text;
-
-      if (format.includes('wo') || format.includes('Wo')) {
-        format = format.replace(/wo/g, 'w').replace(/Wo/g, 'W');
-
-        const matchFormat = format.match(/[-YyMmDdHhSsWwGg]+/g);
-        const matchText = formatText.match(/[-\d]+/g);
-
-        if (matchFormat && matchText) {
-          format = matchFormat.join('');
-          formatText = matchText.join('');
-        }
-      }
-
-      const date = dayjs(formatText, format, localeMapping(locale), true);
-
-      if (date.isValid()) {
-        return date.toISOString();
-      }
-    }
-
-    return undefined;
-  },
-
   /** Parse and validate formatted input */
   parseFormattedValue: (text, format, locale) => {
     // Handle half-year format: convert n to Q for parsing

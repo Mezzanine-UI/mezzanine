@@ -115,13 +115,6 @@ export type CalendarMethods<TDateType = DateType> = {
   formatToString: (locale: string, date: TDateType, format: string) => string;
   formatToISOString: (date: TDateType) => string;
 
-  /** Parse */
-  parse: (
-    locale: string,
-    text: string,
-    formats: string[],
-  ) => TDateType | undefined;
-
   /** Parse and validate formatted input */
   parseFormattedValue: (
     text: string,
