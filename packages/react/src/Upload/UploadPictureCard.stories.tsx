@@ -182,3 +182,94 @@ function BasicStoryContent() {
 export const Basic: Story = {
   render: () => <BasicStoryContent />,
 };
+
+function NonImageFilesStoryContent() {
+  // Create mock non-image files
+  const pdfFile = new File(['PDF content'], 'document.pdf', { type: 'application/pdf' });
+  const docFile = new File(['DOC content'], 'document.doc', { type: 'application/msword' });
+  const txtFile = new File(['Text content'], 'document.txt', { type: 'text/plain' });
+  const zipFile = new File(['ZIP content'], 'archive.zip', { type: 'application/zip' });
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        width: 400,
+      }}
+    >
+      <h3 style={{ marginBottom: '8px', marginTop: 0, fontSize: '16px', fontWeight: 600 }}>
+        Non-Image Files
+      </h3>
+      <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', padding: 0 }}>
+        <li>
+          <UploadPictureCard
+            file={pdfFile}
+            status="loading"
+            onDelete={action('onDelete')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={docFile}
+            status="done"
+            onDelete={action('onDelete')}
+            onDownload={action('onDownload')}
+            onZoomIn={action('onZoomIn')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={txtFile}
+            status="error"
+            errorMessage="Upload failed"
+            onDelete={action('onDelete')}
+            onReload={action('onReload')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={zipFile}
+            status="done"
+            disabled
+            onDelete={action('onDelete')}
+            onDownload={action('onDownload')}
+            onZoomIn={action('onZoomIn')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={pdfFile}
+            status="done"
+            size="sub"
+            onDelete={action('onDelete')}
+            onDownload={action('onDownload')}
+            onZoomIn={action('onZoomIn')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={docFile}
+            status="done"
+            size="minor"
+            onDelete={action('onDelete')}
+            onDownload={action('onDownload')}
+            onZoomIn={action('onZoomIn')}
+          />
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+export const NonImageFiles: Story = {
+  render: () => <NonImageFilesStoryContent />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Examples of UploadPictureCard displaying non-image files (PDF, DOC, TXT, ZIP, etc.). When a non-image file is provided, the component will display accordingly based on the file type.',
+      },
+    },
+  },
+};

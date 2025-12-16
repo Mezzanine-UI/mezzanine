@@ -368,7 +368,7 @@ function FormBindingStory() {
         JSON.stringify(
           files.map((file) => ({
             id: file.id,
-            name: file.file.name,
+            name: file.file?.name ?? file.url?.split('/').pop() ?? 'Unknown',
             status: file.status,
           })),
           null,
@@ -663,5 +663,130 @@ export const FormBinding: Story = {
 
 export const IdNameBinding: Story = {
   render: () => <IdNameBindingStory />,
+};
+
+// Component for PreloadedImageFromUrl story - demonstrates loading images from URL (backend scenario)
+function UploadWithPreloadedImageFromUrl(props: UploadProps) {
+  const onFilesChange = useCallback(
+    (next: UploadFile[]) => {
+      action('onChange')(next);
+    },
+    [],
+  );
+
+  const { files, handleChange } = useControlledFiles([], onFilesChange);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    // Simulate loading from backend - use URL instead of File object
+    setTimeout(() => {
+      if (!mounted) return;
+
+      handleChange([
+        {
+          url: 'https://rytass.com/logo.png',
+          id: `story-preload-url-${Date.now()}-${Math.random()}`,
+          status: 'done',
+        },
+      ]);
+      setIsLoading(false);
+    }, 500);
+
+    return () => {
+      mounted = false;
+    };
+  }, [handleChange]);
+
+  if (isLoading) {
+    return <></>;
+  }
+
+  return (
+    <Upload
+      {...props}
+      files={files}
+      onChange={handleChange}
+      onUpload={props.onUpload ?? simulateUpload}
+      onDelete={props.onDelete ?? storyHandlers.onDelete}
+      onReload={props.onReload ?? storyHandlers.onReload}
+      onDownload={props.onDownload ?? storyHandlers.onDownload}
+      onZoomIn={props.onZoomIn ?? storyHandlers.onZoomIn}
+    />
+  );
+}
+
+// Story demonstrating preloaded images from URL (backend scenario)
+function PreloadedImageFromUrlStoryContent() {
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+        width: 800,
+      }}
+    >
+      <div>
+        <h3>List Mode (Picture Item):</h3>
+        <p>Display preloaded image from URL in list format using UploadItem with thumbnail</p>
+        <UploadWithPreloadedImageFromUrl
+          mode="list"
+          size="main"
+          showFileSize
+          hints={[
+            {
+              label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。',
+            },
+          ]}
+        />
+      </div>
+
+      <div>
+        <h3>Cards Mode (Picture Card):</h3>
+        <p>Display preloaded image from URL in card format using UploadPictureCard</p>
+        <UploadWithPreloadedImageFromUrl
+          mode="cards"
+          size="main"
+          hints={[
+            {
+              label: '支援 JPG、PNG、PDF；單檔上限 500 KB。',
+              type: 'info',
+            },
+            {
+              label: '最多 5 個檔案。',
+              type: 'info',
+            },
+          ]}
+        />
+      </div>
+
+      <div>
+        <h3>Card Wall Mode (Picture Card):</h3>
+        <p>Display preloaded image from URL in card wall format using UploadPictureCard</p>
+        <UploadWithPreloadedImageFromUrl
+          mode="card-wall"
+          size="main"
+          hints={[
+            {
+              label: '支援 JPG、PNG；單檔上限 500 KB；最多 5 個檔案。',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
+
+export const PreloadedImageFromUrl: Story = {
+  render: () => <PreloadedImageFromUrlStoryContent />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates loading pre-existing images from backend URLs. This scenario shows how Upload component handles files that are already uploaded to the server (using `url` prop instead of `file` object).',
+      },
+    },
+  },
 };
 

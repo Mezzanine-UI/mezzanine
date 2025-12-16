@@ -8,6 +8,7 @@
 @use './upload-item' as *;
 
 $action-gap: spacing.semantic-variable(gap, base);
+$thumbnail-image-size: spacing.primitive-variable(40);
 
 .#{$prefix} {
   display: flex;
@@ -173,6 +174,21 @@ $action-gap: spacing.semantic-variable(gap, base);
     }
   }
 
+  &__thumbnail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $thumbnail-image-size;
+    height: $thumbnail-image-size;
+    border-radius: radius.variable(base);
+    overflow: hidden;
+    background: palette.semantic-variable(background, neutral-ghost);
+
+    .#{$prefix}__icon {
+      color: palette.semantic-variable(icon, brand);
+    }
+  }
+
   &--error {
     .#{$prefix}__container {
       border-color: palette.semantic-variable(border, error);
@@ -185,6 +201,24 @@ $action-gap: spacing.semantic-variable(gap, base);
         box-shadow: effect.variable(focus, error);
       }
     }
+
+    .#{$prefix}__thumbnail {
+      .#{$prefix}__icon {
+        color: palette.semantic-variable(icon, error);
+      }
+    }
+  }  
+
+  &__error-message {
+    display: flex;
+    align-items: center;
+    margin-top: spacing.semantic-variable(gap, tight);
+  }
+
+  &__error-message-text {
+    color: palette.semantic-variable(text, error);
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.semantic-variable(annotation);
   }
 
   &--disabled {

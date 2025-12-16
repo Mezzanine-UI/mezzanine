@@ -1,15 +1,16 @@
 'use client';
 
+import { forwardRef, MouseEventHandler, useEffect, useMemo, useState } from 'react';
+
 import {
   uploadPictureCardClasses as classes,
-  defaultUploadPictureCardErrorMessage,
   UploadItemStatus,
   UploadPictureCardImageFit,
-  UploadPictureCardSize,
+  UploadPictureCardSize
 } from '@mezzanine-ui/core/upload';
-import { forwardRef, MouseEventHandler, useEffect, useState, type ReactNode } from 'react';
+import type { IconDefinition } from '@mezzanine-ui/icons';
 
-import { DownloadIcon, ImageIcon, ResetIcon, SpinnerIcon, TrashIcon, ZoomInIcon } from '@mezzanine-ui/icons';
+import { DownloadIcon, FileIcon, ImageIcon, ResetIcon, SpinnerIcon, TrashIcon, ZoomInIcon } from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import ClearActions from '../ClearActions';
@@ -17,6 +18,7 @@ import Icon from '../Icon';
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { isImageFile } from './upload-utils';
 
 export interface UploadPictureCardAriaLabels {
   /**
@@ -59,8 +61,19 @@ export interface UploadPictureCardProps
   ariaLabels?: UploadPictureCardAriaLabels;
   /**
    * The file to display.
+   * Required when displaying local files (before upload).
+   * Optional when `url` is provided for already uploaded files.
    */
-  file: File;
+  file?: File;
+  /**
+   * The URL of the uploaded file.
+   * When provided, this will be used instead of creating a blob URL from `file`.
+   * Useful for displaying files that have already been uploaded to the server.
+   * 
+   * @note If only `url` is provided (without `file`), the file type will be inferred
+   * from the URL extension. For accurate type detection, provide `file` when available.
+   */
+  url?: string;
   /**
    * The id of the file id to identify the file.
    */
@@ -92,7 +105,7 @@ export interface UploadPictureCardProps
   /**
    * Error icon to display when status is 'error'.
    */
-  errorIcon?: ReactNode;
+  errorIcon?: IconDefinition;
   /**
    * When delete icon is clicked, this callback will be fired.
    */
@@ -120,6 +133,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       ariaLabels,
       className,
       file,
+      url,
       status = 'loading',
       imageFit = 'cover',
       size = 'main',
@@ -133,7 +147,6 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       ...rest
     } = props;
 
-    // Default aria labels (English)
     const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
       cancelUpload: 'Cancel upload',
       uploading: 'Uploading',
@@ -145,19 +158,64 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
     const labels = { ...defaultAriaLabels, ...ariaLabels };
 
-    // Default error icon when status is error and no errorIcon is provided
-    const defaultErrorIcon = errorIcon ?? (status === 'error' ? <Icon icon={ImageIcon} color="error" size={16} /> : null);
+    const isImage = useMemo(() => {
+      return isImageFile(file, url);
+    }, [file, url]);
+
+    const fileName = useMemo(() => {
+      if (props.file?.name && !props.url) return props.file.name;
+      if (props.url) {
+        try {
+          const url = new URL(props.url);
+          const pathname = url.pathname;
+          const filename = pathname.split('/').pop() || '';
+          return filename;
+        } catch {
+          const urlWithoutQuery = props.url.split('?')[0].split('#')[0];
+          return urlWithoutQuery.split('/').pop() || '';
+        }
+      }
+      return '';
+    }, [props.file?.name, props.url]);
 
     const [imageUrl, setImageUrl] = useState<string>('');
 
+    const errorIconContent = useMemo(() => {
+      if (errorIcon) {
+        return errorIcon;
+      }
+
+      return isImage ? ImageIcon : FileIcon;
+    }, [isImage, errorIcon]);
+
+    const errorMessageContent = useMemo(() => {
+      if (errorMessage) {
+        return errorMessage;
+      }
+
+      return fileName ? fileName : 'Upload error';
+    }, [fileName, errorMessage]);
+
+    // Warn if both file and url are missing
     useEffect(() => {
-      if (file && file.type.startsWith('image/')) {
+      if (!file && !url) {
+        console.warn('UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.');
+      }
+    }, [file, url]);
+
+    useEffect(() => {
+      if (url && isImage) {
+        setImageUrl(url);
+        return undefined;
+      }
+
+      if (file && isImage) {
         try {
-          const url = URL.createObjectURL(file);
-          setImageUrl(url);
+          const blobUrl = URL.createObjectURL(file);
+          setImageUrl(blobUrl);
 
           return () => {
-            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(blobUrl);
           };
         } catch (error) {
           console.error('Failed to create object URL for image:', error);
@@ -168,7 +226,13 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       }
 
       return undefined;
-    }, [file]);
+    }, [file, url, isImage]);
+
+    if (!isImage && size === 'minor') {
+      console.warn('UploadPictureCard: minor size is not supported for non-image files');
+
+      return null;
+    }
 
     return (
       <div
@@ -184,40 +248,56 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
         tabIndex={disabled ? -1 : 0}
         {...rest}
       >
-        {imageUrl && (
-          <div className={classes.image}>
-            {status !== 'error' && (
-              <img
-                alt={file.name}
-                src={imageUrl}
-                style={{
-                  objectFit: imageFit,
-                  objectPosition: 'center',
-                }}
-              />
-            )}
-            <div className={cx(
-              classes.actions,
-              classes.actionsStatus(status),
-            )}>
-              {
-                status === 'loading' && size !== 'minor' && (
-                  <>
-                    <ClearActions
-                      type="embedded"
-                      variant="contrast"
-                      onClick={onDelete}
-                      className={classes.clearActionsIcon}
-                      aria-label={labels.cancelUpload}
-                    />
-                    <div className={classes.loadingIcon} aria-label={labels.uploading}>
-                      <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
-                    </div>
-                  </>
-                )
-              }
-              {
-                status === 'done' && size !== 'minor' && (
+        <div className={classes.container}>
+          {isImage && imageUrl && status !== 'error' && (
+            <img
+              alt={fileName}
+              src={imageUrl}
+              style={{
+                objectFit: imageFit,
+                objectPosition: 'center',
+              }}
+            />
+          )}
+          {
+            status === 'done' && size !== 'minor' && !isImage && (
+              <div className={classes.content}>
+                <Icon icon={FileIcon} color="brand" size={16} />
+                <Typography className={classes.name} ellipsis>{fileName}</Typography>
+              </div>
+            )
+          }
+          {
+            status === 'error' && size !== 'minor' && (
+              <div className={classes.errorMessage} role="alert" aria-live="polite">
+                <Icon icon={errorIconContent} color="error" size={16} />
+                <Typography className={classes.errorMessageText}>{errorMessageContent}</Typography>
+              </div>
+            )
+          }
+          <div className={cx(
+            classes.actions,
+            classes.actionsStatus(status),
+          )}>
+            {
+              status === 'loading' && size !== 'minor' && (
+                <>
+                  <ClearActions
+                    type="embedded"
+                    variant="contrast"
+                    onClick={onDelete}
+                    className={classes.clearActionsIcon}
+                    aria-label={labels.cancelUpload}
+                  />
+                  <div className={classes.loadingIcon} aria-label={labels.uploading}>
+                    <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
+                  </div>
+                </>
+              )
+            }
+            {
+              status === 'done' && size !== 'minor' && (
+                <>
                   <div className={classes.tools}>
                     <div className={classes.toolsContent}>
                       <Button
@@ -243,61 +323,40 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                       />
                     </div>
                   </div>
-                )
-              }
-              {
-                status === 'error' && size !== 'minor' && (
-                  <>
-                    {(errorMessage ?? defaultUploadPictureCardErrorMessage) || defaultErrorIcon ? (
-                      <div className={classes.errorMessage} role="alert" aria-live="polite">
-                        {defaultErrorIcon && (
-                          <div className={classes.errorIcon} aria-hidden="true">
-                            {defaultErrorIcon}
-                          </div>
-                        )}
-                        {(errorMessage ?? defaultUploadPictureCardErrorMessage) && (
-                          <Typography className={classes.errorMessageText}>
-                            {errorMessage ?? defaultUploadPictureCardErrorMessage}
-                          </Typography>
-                        )}
-                      </div>
-                    ) : null}
-                    <div className={classes.tools}>
-                      <div className={classes.toolsContent}>
-                        <Button
-                          variant="base-secondary"
-                          size="minor"
-                          icon={{ position: 'icon-only', src: ResetIcon }}
-                          onClick={onReload}
-                          aria-label={labels.reload}
-                        />
-                        <Button
-                          variant="base-secondary"
-                          size="minor"
-                          icon={{ position: 'icon-only', src: TrashIcon }}
-                          onClick={onDelete}
-                          aria-label={labels.delete}
-                        />
-                      </div>
+                </>
+              )
+            }
+            {
+              status === 'error' && size !== 'minor' && (
+                <>
+                  <div className={classes.tools}>
+                    <div className={classes.toolsContent}>
+                      <Button
+                        variant="base-secondary"
+                        size="minor"
+                        icon={{ position: 'icon-only', src: ResetIcon }}
+                        onClick={onReload}
+                        aria-label={labels.reload}
+                      />
+                      <Button
+                        variant="base-secondary"
+                        size="minor"
+                        icon={{ position: 'icon-only', src: TrashIcon }}
+                        onClick={onDelete}
+                        aria-label={labels.delete}
+                      />
                     </div>
-                  </>
-                )
-              }
-              {
-                size === 'minor' && (
-                  <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
-                )
-              }
-            </div>
+                  </div>
+                </>
+              )
+            }
+            {
+              size === 'minor' && (
+                <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
+              )
+            }
           </div>
-        )}
-        {
-          size !== 'minor' && (
-            <div className={classes.content}>
-              <Typography className={classes.name} ellipsis>{file.name}</Typography>
-            </div>
-          )
-        }
+        </div>
       </div>
     );
   },
