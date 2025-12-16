@@ -6,7 +6,6 @@ import {
   MouseEventHandler,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -106,7 +105,7 @@ export interface DateRangePickerProps
  */
 const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
   function DateRangePicker(props, ref) {
-    const { getNow, isBetween } = useCalendarContext();
+    const { addDay, getNow, isBefore, isBetween } = useCalendarContext();
     const {
       actions,
       calendarProps,
@@ -158,11 +157,6 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const format = formatProp || getDefaultModeFormat(mode);
 
-    const formats = useMemo(
-      () => [format, getDefaultModeFormat(mode)],
-      [format, mode],
-    );
-
     function isBetweenRange(
       valueToCheck: DateType,
       t1: DateType,
@@ -174,6 +168,64 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
         isBetween(valueToCheck, t2, t1, granularity)
       );
     }
+
+    /** Check if there are disabled dates in the range */
+    const hasDisabledDateInRange = useCallback(
+      (start: DateType, end: DateType): boolean => {
+        const [rangeStart, rangeEnd] = isBefore(start, end)
+          ? [start, end]
+          : [end, start];
+
+        let current = rangeStart;
+        while (isBefore(current, rangeEnd) || current === rangeEnd) {
+          let isDisabled = false;
+
+          switch (mode) {
+            case 'day':
+              isDisabled = isDateDisabled?.(current) ?? false;
+              break;
+            case 'week':
+              isDisabled = isWeekDisabled?.(current) ?? false;
+              break;
+            case 'month':
+              isDisabled = isMonthDisabled?.(current) ?? false;
+              break;
+            case 'year':
+              isDisabled = isYearDisabled?.(current) ?? false;
+              break;
+            case 'quarter':
+              isDisabled = isQuarterDisabled?.(current) ?? false;
+              break;
+            case 'half-year':
+              isDisabled = isHalfYearDisabled?.(current) ?? false;
+              break;
+            default:
+              break;
+          }
+
+          if (isDisabled) {
+            return true;
+          }
+
+          current = addDay(current, 1);
+          if (isBefore(rangeEnd, current)) {
+            break;
+          }
+        }
+        return false;
+      },
+      [
+        addDay,
+        isBefore,
+        mode,
+        isDateDisabled,
+        isWeekDisabled,
+        isMonthDisabled,
+        isYearDisabled,
+        isQuarterDisabled,
+        isHalfYearDisabled,
+      ],
+    );
 
     /** Using internal reference date */
     const [referenceDate, updateReferenceDate] = useState(
@@ -199,6 +251,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const {
       calendarValue,
+      checkIsInRange,
       inputFromValue,
       inputToValue,
       onCalendarChange,
@@ -214,7 +267,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       value: internalValue,
     } = useDateRangePickerValue({
       format,
-      formats,
+      hasDisabledDateInRange,
       inputFromRef,
       inputToRef,
       mode,
@@ -250,10 +303,13 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const getIsInRangeHandler = (granularity: string) => {
       const [anchor1, anchor2] = calendarValue || [];
 
-      return anchor1 && anchor2
-        ? (date: DateType) =>
-            isBetweenRange(date, anchor1, anchor2, granularity)
-        : undefined;
+      // If no range or disabled dates exist in range, return undefined
+      if (!anchor1 || !anchor2 || !checkIsInRange(anchor2)) {
+        return undefined;
+      }
+
+      return (date: DateType) =>
+        isBetweenRange(date, anchor1, anchor2, granularity);
     };
 
     /** Popper settings */

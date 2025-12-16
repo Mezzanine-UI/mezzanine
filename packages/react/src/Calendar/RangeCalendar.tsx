@@ -67,6 +67,7 @@ export interface RangeCalendarProps
     | 'value'
     | 'onChange'
     | 'referenceDate'
+    | 'renderAnnotations'
     | 'onNext'
     | 'onPrev'
     | 'onDoubleNext'

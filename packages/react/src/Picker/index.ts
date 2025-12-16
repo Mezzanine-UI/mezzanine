@@ -5,8 +5,6 @@ export { usePickerInputValue } from './usePickerInputValue';
 export type { UsePickerInputValueProps } from './usePickerInputValue';
 export { usePickerValue } from './usePickerValue';
 export type { UsePickerValueProps } from './usePickerValue';
-export { useRangePickerValue } from './useRangePickerValue';
-export type { UseRangePickerValueProps } from './useRangePickerValue';
 export type { PickerTriggerProps } from './PickerTrigger';
 export { default as PickerTrigger } from './PickerTrigger';
 export { default as PickerTriggerWithSeparator } from './PickerTriggerWithSeparator';

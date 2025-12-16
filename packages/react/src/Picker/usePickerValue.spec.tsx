@@ -28,7 +28,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );
@@ -52,7 +51,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );
@@ -138,7 +136,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );
@@ -165,7 +162,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );
@@ -217,7 +213,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );
@@ -248,7 +243,6 @@ describe('usePickerValue', () => {
           usePickerValue({
             inputRef,
             format: 'YYYY-MM-DD',
-            formats: ['YYYY-MM-DD'],
           }),
         { wrapper },
       );

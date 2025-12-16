@@ -15,9 +15,9 @@ export interface UseDateRangePickerValueProps {
    */
   format: string;
   /**
-   * Array of formats to try when parsing
+   * Function to check if there are disabled dates in the range
    */
-  formats: string[];
+  hasDisabledDateInRange?: (start: DateType, end: DateType) => boolean;
   /**
    * Ref for the 'from' input element
    */
@@ -42,20 +42,14 @@ export interface UseDateRangePickerValueProps {
 
 export function useDateRangePickerValue({
   format,
-  formats,
+  hasDisabledDateInRange,
   inputFromRef: _inputFromRef,
   inputToRef,
   mode,
   onChange: onChangeProp,
   value: valueProp,
 }: UseDateRangePickerValueProps) {
-  const {
-    addDay,
-    formatToString,
-    isBefore,
-    parse: parseFromConfig,
-    locale,
-  } = useCalendarContext();
+  const { addDay, formatToString, isBefore, locale } = useCalendarContext();
 
   const [internalFrom, setInternalFrom] = useState<DateType | undefined>(
     valueProp?.[0],
@@ -67,14 +61,6 @@ export function useDateRangePickerValue({
   const from = valueProp?.[0] ?? internalFrom;
   const to = valueProp?.[1] ?? internalTo;
   const value = [from, to] as RangePickerPickingValue;
-
-  const parse = useCallback(
-    (val: string): DateType | undefined => {
-      if (!val) return undefined;
-      return parseFromConfig(locale, val, formats);
-    },
-    [parseFromConfig, locale, formats],
-  );
 
   const formatDate = useCallback(
     (date: DateType | undefined): string => {
@@ -98,14 +84,20 @@ export function useDateRangePickerValue({
 
   const onInputFromChange = useCallback(
     (formattedValue: string) => {
-      const parsedValue = parse(formattedValue);
-
-      if (parsedValue) {
-        if (to && isBefore(to, parsedValue)) {
+      if (formattedValue) {
+        if (to && isBefore(to, formattedValue)) {
           setInternalFrom(to);
-          setInternalTo(parsedValue);
+          setInternalTo(formattedValue);
+
+          // Range is complete, trigger onChange
+          onChangeProp?.([to, formattedValue]);
         } else {
-          setInternalFrom(parsedValue);
+          setInternalFrom(formattedValue);
+
+          // If to is also set, range is complete
+          if (to) {
+            onChangeProp?.([formattedValue, to]);
+          }
         }
       } else {
         setInternalFrom(undefined);
@@ -113,19 +105,25 @@ export function useDateRangePickerValue({
 
       setHoverValue(undefined);
     },
-    [parse, to, isBefore],
+    [to, isBefore, onChangeProp],
   );
 
   const onInputToChange = useCallback(
     (formattedValue: string) => {
-      const parsedValue = parse(formattedValue);
-
-      if (parsedValue) {
-        if (from && isBefore(parsedValue, from)) {
+      if (formattedValue) {
+        if (from && isBefore(formattedValue, from)) {
           setInternalTo(from);
-          setInternalFrom(parsedValue);
+          setInternalFrom(formattedValue);
+
+          // Range is complete, trigger onChange
+          onChangeProp?.([formattedValue, from]);
         } else {
-          setInternalTo(parsedValue);
+          setInternalTo(formattedValue);
+
+          // If from is also set, range is complete
+          if (from) {
+            onChangeProp?.([from, formattedValue]);
+          }
         }
       } else {
         setInternalTo(undefined);
@@ -133,7 +131,7 @@ export function useDateRangePickerValue({
 
       setHoverValue(undefined);
     },
-    [parse, from, isBefore],
+    [from, isBefore, onChangeProp],
   );
 
   const onCalendarChange = useCallback(
@@ -204,6 +202,24 @@ export function useDateRangePickerValue({
     return undefined;
   }, [anchor1, anchor2]);
 
+  /**
+   * Check if date is in range, considering disabled dates
+   * Returns a function that can be used as isDateInRange handler
+   */
+  const checkIsInRange = useCallback(
+    (_date: DateType): boolean => {
+      if (!anchor1 || !anchor2) return false;
+
+      // Check if the range crosses any disabled dates
+      if (hasDisabledDateInRange?.(anchor1, anchor2)) {
+        return false;
+      }
+
+      return true;
+    },
+    [anchor1, anchor2, hasDisabledDateInRange],
+  );
+
   const onCalendarHover = !(from && to) && anchor1 ? setHoverValue : undefined;
 
   const onClear = useCallback(() => {
@@ -231,6 +247,7 @@ export function useDateRangePickerValue({
 
   return {
     calendarValue,
+    checkIsInRange,
     inputFromValue,
     inputToValue,
     onCalendarChange,

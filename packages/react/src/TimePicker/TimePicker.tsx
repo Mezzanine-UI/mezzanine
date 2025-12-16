@@ -142,11 +142,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       ...restInputProp
     } = inputProps || {};
 
-    const formats = useMemo(
-      () => [resolvedFormat, defaultTimeFormat, 'HH:mm:ss', 'HH:mm'],
-      [resolvedFormat, defaultTimeFormat],
-    );
-
     /** Panel open control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
@@ -191,7 +186,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     } = usePickerValue({
       defaultValue,
       format: resolvedFormat,
-      formats,
       inputRef,
       value: valueProp,
     });

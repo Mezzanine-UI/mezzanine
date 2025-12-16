@@ -12,7 +12,6 @@ import { usePickerInputValue } from './usePickerInputValue';
 export type UsePickerValueProps = {
   defaultValue?: DateType;
   format: string;
-  formats: string[];
   inputRef: RefObject<HTMLInputElement | null>;
   value?: DateType;
 };
@@ -23,11 +22,10 @@ export type UsePickerValueProps = {
 export function usePickerValue({
   defaultValue,
   format,
-  formats,
   inputRef,
   value: valueProp,
 }: UsePickerValueProps) {
-  const { formatToString, parse, locale } = useCalendarContext();
+  const { formatToString, locale } = useCalendarContext();
   const inputDefaultValue = defaultValue
     ? formatToString(locale, defaultValue, format)
     : '';
@@ -39,9 +37,7 @@ export function usePickerValue({
   };
 
   const onInputChange = (val: string) => {
-    const valDateType = parse(locale, val, formats);
-
-    onChange(valDateType);
+    onChange(val);
   };
 
   const {
