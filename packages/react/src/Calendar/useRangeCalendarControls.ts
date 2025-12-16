@@ -125,7 +125,6 @@ export function useRangeCalendarControls(
 
   const updateSecondReferenceDate = useCallback(
     (date: DateType) => {
-      console.log('second: ', date);
       setFirstReferenceDate(date);
       setSecondReferenceDate(getSecondCalendarDate(date));
     },
