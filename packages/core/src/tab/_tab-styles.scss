@@ -1,96 +1,30 @@
-@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography';
 @use '../button';
 @use './tab' as *;
 
-$gap: 32px !default;
-$margin-bottom: 32px !default;
-$tab-height: 48px !default;
-$tab-min-width: 32px !default;
-$tab-padding: 8px 0 !default;
 
 .#{$prefix} {
-  color: palette.color(text-primary);
   box-sizing: border-box;
-
-  &__tab-bar {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: $margin-bottom;
-    position: relative;
-
-    &::after {
-      content: '';
-      position: absolute;
-      z-index: 0;
-      left: 0;
-      bottom: 0;
-      width: 100%;
-      height: 2px;
-      background-color: palette.color(border);
-    }
-  }
-
-  &--overflow {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-  }
-
-  &__tab {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
-    align-items: center;
-    justify-content: left;
-    column-gap: $gap;
-    overflow-x: scroll;
-    scrollbar-width: none; /* Firefox specific */
-
-    &::-webkit-scrollbar {
-      display: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    &:last-child {
-      padding-right: 20px;
-    }
-  }
-
-  &__scroll-btn {
-    @include button.reset();
-
-    color: palette.color(action-inactive);
-    background-color: transparent;
-    font-size: 40px;
-    width: 40px;
-    height: 44px;
-
-    &:hover {
-      background-color: palette.color(primary-hover-bg);
-      color: palette.color(primary);
-    }
-
-    &:focus,
-    &:active {
-      background-color: palette.color(primary-active-bg);
-    }
-  }
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  justify-content: left;
+  overflow-x: scroll;
+  scrollbar-width: none; /* Firefox specific */
 
   &__item {
     @include button.reset();
-    @include typography.variant(button2);
+    @include typography.variant(button-highlight);
 
-    min-width: $tab-min-width;
-    height: $tab-height;
-    color: palette.color(action-inactive);
-    padding: $tab-padding;
+    color: palette.semantic-variable(text, neutral-strong);
     box-sizing: border-box;
 
     &--active {
-      color: palette.color(primary);
+      // color: palette.color(primary);
 
       &::after {
         content: '';
@@ -100,23 +34,14 @@ $tab-padding: 8px 0 !default;
         bottom: 0;
         width: 100%;
         height: 2px;
-        background-color: palette.color(primary);
+        // background-color: palette.color(primary);
       }
     }
 
-    &:hover:enabled {
-      color: palette.color(primary);
-    }
-
     &:disabled {
-      border: none;
-      color: palette.color(action-disabled);
+      // color: palette.color(action-disabled);
       cursor: default;
       pointer-events: none;
     }
-  }
-
-  &__pane {
-    box-sizing: border-box;
   }
 }

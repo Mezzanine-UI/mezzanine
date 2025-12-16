@@ -14,11 +14,9 @@ import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCustomControlValue } from '../Form/useCustomControlValue';
-import { TabItemProps } from './TabItem';
-import { TabPaneProps } from './TabPane';
-import useTabsOverflow from './useTabsOverflow';
+import TabItem, { TabItemProps } from './TabItem';
 
-export type TabsChild = ReactElement<TabPaneProps>;
+export type TabsChild = ReactElement<TabItemProps>;
 
 export interface TabProps
   extends Omit<
@@ -29,10 +27,6 @@ export interface TabProps
    * Current TabPane's index
    */
   activeKey?: Key;
-  /**
-   * Actions on the right side of tabBar
-   */
-  actions?: ReactNode;
   /**
    * The tab panes in tabs
    */
@@ -49,10 +43,6 @@ export interface TabProps
    * Callback executed when tab is clicked
    */
   onTabClick?: (key: Key, event: MouseEvent) => void;
-  /**
-   * The className of tabBar
-   */
-  tabBarClassName?: string;
 }
 
 /**
@@ -64,16 +54,13 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
 ) {
   const {
     activeKey: activeKeyProp,
-    actions,
     children,
     className,
     defaultActiveKey = 0,
     onChange,
     onTabClick,
-    tabBarClassName,
     ...rest
   } = props;
-  const tabsRef = useRef(null);
 
   const [activeKey, setActiveKey] = useCustomControlValue({
     defaultValue: defaultActiveKey,
@@ -81,12 +68,15 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     value: activeKeyProp,
   });
 
-  const tabs = Children.map(children, (tabPane, index) => {
-    const key = tabPane.key ?? index;
-    const { tab } = tabPane.props;
+  const tabItems = Children.map(children, (tabItem, index) => {
+    if (!tabItem || tabItem.type !== TabItem) {
+      return null;
+    }
+
+    const key = tabItem.key ?? index;
     const active = activeKey.toString() === key.toString();
 
-    return cloneElement<TabItemProps>(tab, {
+    return cloneElement<TabItemProps>(tabItem, {
       key,
       active,
       onClick: (event) => {
@@ -101,55 +91,9 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     });
   });
 
-  let pane: ReactNode | undefined;
-  Children.forEach(children, (tabPane, index) => {
-    const child = tabPane as TabsChild;
-    const key = child.key ?? index;
-
-    if (activeKey.toString() === key.toString()) {
-      pane = child;
-    }
-  });
-
-  const {
-    isOverflowing,
-    isScrollToBegin,
-    isScrollToEnd,
-    scrollToLeft,
-    scrollToRight,
-  } = useTabsOverflow(tabsRef);
-
   return (
     <div {...rest} ref={ref} className={cx(classes.host, className)}>
-      <div className={cx(classes.tabBar, tabBarClassName)}>
-        <div className={classes.overflow}>
-          {isOverflowing && !isScrollToBegin && (
-            <button
-              aria-label="scrollToLeft"
-              className={classes.scrollBtn}
-              onClick={() => scrollToLeft()}
-              type="button"
-            >
-              <Icon icon={ChevronLeftIcon} />
-            </button>
-          )}
-          <div ref={tabsRef} className={classes.tab}>
-            {tabs}
-          </div>
-          {isOverflowing && !isScrollToEnd && (
-            <button
-              aria-label="scrollToRight"
-              className={classes.scrollBtn}
-              onClick={() => scrollToRight()}
-              type="button"
-            >
-              <Icon icon={ChevronRightIcon} />
-            </button>
-          )}
-        </div>
-        {actions}
-      </div>
-      {pane}
+      {tabItems}
     </div>
   );
 });
