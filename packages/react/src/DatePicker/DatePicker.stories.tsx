@@ -64,7 +64,7 @@ export const Playground: Story = {
     const [val, setVal] = useState<DateType | undefined>();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale="en-us">
+      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale="zh-TW">
         <Typography variant="h3" style={{ margin: '0 0 12px 0' }}>
           {`Value: ${val || ''}`}
         </Typography>
@@ -72,6 +72,7 @@ export const Playground: Story = {
           {...args}
           value={val}
           onChange={setVal}
+          placeholder="輸入日期"
           errorMessages={{
             enabled: true,
             invalidInput: '輸入字串不正確。',

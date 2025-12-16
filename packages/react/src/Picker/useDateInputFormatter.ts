@@ -72,7 +72,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     validate,
   } = props;
 
-  const { parseFormattedValue, isValid, valueLocale, formatToString } =
+  const { parseFormattedValue, isValid, locale, formatToString } =
     useCalendarContext();
 
   const maskFormat = useRef(new MaskFormat(format)).current;
@@ -118,7 +118,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       // Only trigger onChange if value is complete and valid
       if (onChange && isValueComplete(newValue)) {
         // Try to parse and validate the formatted value
-        const isoDate = parseFormattedValue(newValue, format);
+        const isoDate = parseFormattedValue(newValue, format, locale);
 
         // Validate format and custom validation (e.g., time step)
         if (isoDate && (!validate || validate(isoDate))) {
@@ -146,6 +146,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       parseFormattedValue,
       format,
       validate,
+      locale,
     ],
   );
 
@@ -182,7 +183,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         }
       } else {
         // Value is complete, validate it
-        const isoDate = parseFormattedValue(internalValue, format);
+        const isoDate = parseFormattedValue(internalValue, format, locale);
 
         if (!isoDate) {
           // Invalid date/time format, clear it
@@ -209,6 +210,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       onBlurProp,
       parseFormattedValue,
       validate,
+      locale,
     ],
   );
 
@@ -451,7 +453,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
 
       if (isValid(pasteData)) {
         // If pasted data is a valid ISO date, format it accordingly
-        const parsedDate = formatToString(valueLocale, pasteData, format);
+        const parsedDate = formatToString(locale, pasteData, format);
 
         if (parsedDate) {
           triggerChange(parsedDate);
@@ -502,7 +504,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       isValid,
       format,
       formatToString,
-      valueLocale,
+      locale,
     ],
   );
 

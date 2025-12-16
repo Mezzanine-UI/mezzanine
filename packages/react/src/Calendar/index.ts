@@ -11,6 +11,7 @@ export {
   default as CalendarConfigProvider,
 } from './CalendarContext';
 export type {
+  CalendarLocale,
   CalendarConfigs,
   CalendarConfigProviderProps,
 } from './CalendarContext';

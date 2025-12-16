@@ -84,13 +84,8 @@ export interface DatePickerCalendarProps
 
 const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
   function DatePickerCalendar(props, ref) {
-    const {
-      displayMonthLocale: displayMonthLocaleFromConfig,
-      getMonth,
-      getYear,
-      setMonth,
-      setYear,
-    } = useCalendarContext();
+    const { locale, getMonth, getYear, setMonth, setYear } =
+      useCalendarContext();
     const {
       anchor,
       calendarProps,
@@ -101,7 +96,7 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       disableOnDoubleNext,
       disableOnDoublePrev,
       disabledYearSwitch,
-      displayMonthLocale = displayMonthLocaleFromConfig,
+      displayMonthLocale = locale,
       fadeProps,
       isDateDisabled,
       isMonthDisabled,

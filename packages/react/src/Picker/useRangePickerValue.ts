@@ -21,14 +21,10 @@ export function useRangePickerValue({
   inputToRef,
   value: valueProp,
 }: UseRangePickerValueProps) {
-  const {
-    parse: parseFromConfig,
-    valueLocale,
-    isBefore,
-  } = useCalendarContext();
+  const { parse: parseFromConfig, locale, isBefore } = useCalendarContext();
 
   function parse(val: string) {
-    return parseFromConfig(valueLocale, val, formats);
+    return parseFromConfig(locale, val, formats);
   }
 
   function sortValues(valueToSort: [DateType, DateType]): [DateType, DateType] {
