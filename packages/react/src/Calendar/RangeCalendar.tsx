@@ -566,20 +566,22 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
               onHalfYearHover={onHalfYearHover}
             />
           </div>
-          <CalendarFooterActions
-            actions={{
-              secondaryButtonProps: {
-                children: 'Cancel',
-                disabled: false,
-                ...actions?.secondaryButtonProps,
-              },
-              primaryButtonProps: {
-                children: 'Ok',
-                disabled: false,
-                ...actions?.primaryButtonProps,
-              },
-            }}
-          />
+          {actions && (
+            <CalendarFooterActions
+              actions={{
+                secondaryButtonProps: {
+                  children: 'Cancel',
+                  disabled: false,
+                  ...actions?.secondaryButtonProps,
+                },
+                primaryButtonProps: {
+                  children: 'Ok',
+                  disabled: false,
+                  ...actions?.primaryButtonProps,
+                },
+              }}
+            />
+          )}
         </div>
       </div>
     );
