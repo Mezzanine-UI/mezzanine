@@ -27,13 +27,13 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   getMinute: (date) => moment(date).minute(),
   getHour: (date) => moment(date).hour(),
   getDate: (date) => moment(date).date(),
-  getWeek: (date, locale = 'en-us') => {
+  getWeek: (date, locale) => {
     if (isMondayFirst(locale)) {
       return moment(date).isoWeek();
     }
     return moment(date).week();
   },
-  getWeekYear: (date, locale = 'en-us') => {
+  getWeekYear: (date, locale) => {
     if (isMondayFirst(locale)) {
       return moment(date).isoWeekYear();
     }
@@ -141,7 +141,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   startOf: (target, granularity: unitOfTime.StartOf) =>
     moment(target).startOf(granularity).toISOString(),
 
-  getCurrentWeekFirstDate: (value, locale = 'en-us') => {
+  getCurrentWeekFirstDate: (value, locale) => {
     const m = moment(value);
     if (isMondayFirst(locale)) {
       // Monday-first: starts on Monday
@@ -337,7 +337,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
 
   /** Parse and validate formatted input */
-  parseFormattedValue: (text, format) => {
+  parseFormattedValue: (text, format, locale) => {
     // Handle half-year format: convert n to Q for parsing
     let parseFormat = format;
     let parseText = text;
@@ -391,7 +391,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
       // Return the Monday of the ISO week
       return CalendarMethodsMoment.getCurrentWeekFirstDate(
         parsed.toISOString(),
-        'de-de', // Use an ISO week locale to get Monday
+        locale,
       );
     }
 
@@ -412,7 +412,7 @@ const CalendarMethodsMoment: CalendarMethodsType = {
 
       return CalendarMethodsMoment.getCurrentWeekFirstDate(
         parsed.toISOString(),
-        'en-us', // Use a Sunday-first locale
+        locale,
       );
     }
 

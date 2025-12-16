@@ -13,12 +13,12 @@ export type CalendarMethods<TDateType = DateType> = {
    * For locales with Monday as first day (e.g., de-de, fr-fr), returns ISO week number.
    * For locales with Sunday as first day (e.g., en-us, zh-tw), returns locale-based week number.
    */
-  getWeek: (value: TDateType, locale?: string) => number;
+  getWeek: (value: TDateType, locale: string) => number;
   /**
    * Get the week year (the year that the week belongs to).
    * Important for weeks that span two calendar years.
    */
-  getWeekYear: (value: TDateType, locale?: string) => number;
+  getWeekYear: (value: TDateType, locale: string) => number;
   getWeekDay: (value: TDateType) => number;
   getMonth: (value: TDateType) => number;
   getYear: (value: TDateType) => number;
@@ -63,7 +63,7 @@ export type CalendarMethods<TDateType = DateType> = {
    * For ISO week locales (Monday-first), returns Monday.
    * For Sunday-first locales, returns Sunday.
    */
-  getCurrentWeekFirstDate: (value: TDateType, locale?: string) => TDateType;
+  getCurrentWeekFirstDate: (value: TDateType, locale: string) => TDateType;
   getCurrentMonthFirstDate: (value: TDateType) => TDateType;
   getCurrentYearFirstDate: (value: TDateType) => TDateType;
   getCurrentQuarterFirstDate: (value: TDateType) => TDateType;
@@ -74,7 +74,7 @@ export type CalendarMethods<TDateType = DateType> = {
    * For ISO week locales (Monday-first), grid starts with Monday.
    * For Sunday-first locales, grid starts with Sunday.
    */
-  getCalendarGrid: (target: TDateType, locale?: string) => number[][];
+  getCalendarGrid: (target: TDateType, locale: string) => number[][];
 
   /** Compares */
   isValid: (date: TDateType) => boolean;
@@ -93,7 +93,7 @@ export type CalendarMethods<TDateType = DateType> = {
   isSameWeek: (
     dateOne: TDateType,
     dateTwo: TDateType,
-    locale?: string,
+    locale: string,
   ) => boolean;
   isInMonth: (target: TDateType, month: number) => boolean;
   isDateIncluded: (date: TDateType, targets: TDateType[]) => boolean;
@@ -104,7 +104,7 @@ export type CalendarMethods<TDateType = DateType> = {
   isWeekIncluded: (
     firstDateOfWeek: TDateType,
     targets: TDateType[],
-    locale?: string,
+    locale: string,
   ) => boolean;
   isMonthIncluded: (date: TDateType, targets: TDateType[]) => boolean;
   isYearIncluded: (date: TDateType, targets: TDateType[]) => boolean;
@@ -123,5 +123,9 @@ export type CalendarMethods<TDateType = DateType> = {
   ) => TDateType | undefined;
 
   /** Parse and validate formatted input */
-  parseFormattedValue: (text: string, format: string) => TDateType | undefined;
+  parseFormattedValue: (
+    text: string,
+    format: string,
+    locale: string,
+  ) => TDateType | undefined;
 };

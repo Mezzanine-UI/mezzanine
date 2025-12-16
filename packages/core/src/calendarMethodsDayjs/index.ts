@@ -6,6 +6,28 @@ import weekOfYear from 'dayjs/plugin/weekOfYear';
 import IsoWeek from 'dayjs/plugin/isoWeek';
 import utc from 'dayjs/plugin/utc';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
+
+// Import common locales
+import 'dayjs/locale/zh-cn';
+import 'dayjs/locale/zh-tw';
+import 'dayjs/locale/zh-hk';
+import 'dayjs/locale/ja';
+import 'dayjs/locale/ko';
+import 'dayjs/locale/de';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/es';
+import 'dayjs/locale/it';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/ar';
+import 'dayjs/locale/en-au';
+import 'dayjs/locale/en-ca';
+import 'dayjs/locale/en-gb';
+import 'dayjs/locale/en-ie';
+import 'dayjs/locale/en-in';
+import 'dayjs/locale/en-nz';
+import 'dayjs/locale/en-sg';
+
 import range from 'lodash/range';
 import chunk from 'lodash/chunk';
 import { CalendarMethods as CalendarMethodsType } from '../calendar/typings';
@@ -117,9 +139,11 @@ const localeMapping = (locale: string): string => {
   return localeMappingTable[normalized] ?? normalized;
 };
 
-const hasInit = false;
+let hasInit = false;
 
 function init() {
+  if (hasInit) return true;
+
   dayjs.extend(weekday);
   dayjs.extend(localeData);
   dayjs.extend(isBetween);
@@ -128,6 +152,7 @@ function init() {
   dayjs.extend(utc);
   dayjs.extend(quarterOfYear);
 
+  hasInit = true;
   return true;
 }
 
@@ -138,6 +163,7 @@ function init() {
 const getActualFirstDayOfWeek = (locale: string): number => {
   const mappedLocale = localeMapping(locale);
   const localeData = dayjs().locale(mappedLocale).localeData();
+
   return localeData.firstDayOfWeek();
 };
 
@@ -159,13 +185,13 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   getMinute: (date) => dayjs(date).minute(),
   getHour: (date) => dayjs(date).hour(),
   getDate: (date) => dayjs(date).date(),
-  getWeek: (date, locale = 'en-us') => {
+  getWeek: (date, locale) => {
     if (isMondayFirst(locale)) {
       return dayjs(date).isoWeek();
     }
     return dayjs(date).week();
   },
-  getWeekYear: (date, locale = 'en-us') => {
+  getWeekYear: (date, locale) => {
     if (isMondayFirst(locale)) {
       return dayjs(date).isoWeekYear();
     }
@@ -222,7 +248,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   startOf: (target, granularity) =>
     dayjs(target).startOf(granularity).toISOString(),
 
-  getCurrentWeekFirstDate: (value, locale = 'en-us') => {
+  getCurrentWeekFirstDate: (value, locale) => {
     if (isMondayFirst(locale)) {
       return dayjs(value)
         .startOf('isoWeek')
@@ -282,7 +308,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
 
   /** Generate day calendar */
-  getCalendarGrid: (target, locale = 'en-us') => {
+  getCalendarGrid: (target, locale) => {
     const mondayFirst = isMondayFirst(locale);
     const lastDateOfPrevMonth = dayjs(target)
       .subtract(1, 'month')
@@ -329,7 +355,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
     dayjs(value).isBetween(target1, target2, granularity),
   isSameDate: (dateOne, dateTwo) =>
     dayjs(dateOne).isSame(dayjs(dateTwo), 'date'),
-  isSameWeek: (dateOne, dateTwo, locale = 'en-us') => {
+  isSameWeek: (dateOne, dateTwo, locale) => {
     if (isMondayFirst(locale)) {
       return dayjs(dateOne).isSame(dayjs(dateTwo), 'isoWeek');
     }
@@ -338,7 +364,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   isInMonth: (target, month) => dayjs(target).month() === month,
   isDateIncluded: (date, targets) =>
     targets.some((target) => dayjs(date).isSame(dayjs(target), 'day')),
-  isWeekIncluded: (firstDateOfWeek, targets, locale = 'en-us') => {
+  isWeekIncluded: (firstDateOfWeek, targets, locale) => {
     if (isMondayFirst(locale)) {
       return targets.some((target) =>
         dayjs(firstDateOfWeek).isSame(dayjs(target), 'isoWeek'),
@@ -409,7 +435,7 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
   },
 
   /** Parse and validate formatted input */
-  parseFormattedValue: (text, format) => {
+  parseFormattedValue: (text, format, locale) => {
     // Handle half-year format: convert n to Q for parsing
     let parseFormat = format;
     let parseText = text;
@@ -479,7 +505,10 @@ const CalendarMethodsDayjs: CalendarMethodsType = {
         return undefined;
       }
 
-      return CalendarMethodsDayjs.getCurrentWeekFirstDate(parsed.toISOString());
+      return CalendarMethodsDayjs.getCurrentWeekFirstDate(
+        parsed.toISOString(),
+        locale,
+      );
     }
 
     // If it's a quarter format, validate and normalize
