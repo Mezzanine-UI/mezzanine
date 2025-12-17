@@ -96,6 +96,7 @@ export const Select_Trigger: StoryObj<SelectTriggerProps> = {
             {...args}
             mode="multiple"
             value={mockSelectTriggerMultipleValue}
+            overflowStrategy="wrap"
           />
         </>
 
@@ -105,7 +106,7 @@ export const Select_Trigger: StoryObj<SelectTriggerProps> = {
             {...args}
             mode="multiple"
             value={mockSelectTriggerMultipleValue}
-            ellipsis
+            overflowStrategy="counter"
           />
         </>
       </SelectTriggerModeItem>

@@ -1,36 +1,43 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/radius';
+@use '~@mezzanine-ui/system/effect';
+@use '~@mezzanine-ui/system/spacing';
 @use '../text-field';
 @use '../button';
 @use '../button/utils' as btn-utils;
 @use './time-panel' as *;
 
-$padding: 16px !default;
-
 .#{$prefix} {
+  box-sizing: border-box;
   display: inline-flex;
   flex-direction: column;
-  background-color: palette.color(surface);
+  border-radius: radius.variable(roomy);
+  box-shadow: effect.variable(shadow, inner-top-and-bottom);
+  background-color: palette.semantic-variable("background", base);
+
+  * {
+    box-sizing: border-box;
+  }
 }
 
 .#{$columns-prefix} {
   display: flex;
-  padding: $padding 0 $padding $padding;
 }
 
 .#{$action-prefix} {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  padding: $padding;
-  border-top: 1px solid palette.color(border);
+  justify-content: center;
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);
+  border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
 }
 
 .#{$button-prefix} {
   @include btn-utils.reset();
 
-  transition: transition.standard(background-color);
+  transition: transition.standard(background-color) transition.standard(color);
 
   @include typography.inherit;
 
@@ -39,65 +46,44 @@ $padding: 16px !default;
   }
 
   &--active {
-    color: palette.color(on-primary);
-    background-color: palette.color(primary);
+    color: palette.semantic-variable(text, fixed-light);
+    background-color: palette.semantic-variable("background", brand);
   }
 }
 
 .#{$column-prefix} {
   $cell-height: 32px;
 
-  @include typography.variant(input3);
+  width: 68px;
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, micro);
+  position: relative;
 
-  width: 48px;
-
-  &__prefix {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 32px;
-    height: 24px;
-    margin: 0 auto 12px 0;
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background-color: palette.semantic-variable(separator, neutral-faint);
   }
 
   &__button {
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: $cell-height;
-    height: $cell-height;
-  }
-
-  &__control-button {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    width: 24px;
-    height: 24px;
-    margin: 0 auto 0 4px;
-    font-size: 24px;
-  }
-
-  &__ratio-box-inner {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
+    height: $cell-height;
+    padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, tiny);
+    border-radius: radius.variable(base);
   }
 
   &__cells {
-    height: $cell-height * 5;
+    height: $cell-height * 7;
     overflow: hidden;
 
     &:hover {
       overflow-y: auto;
-    }
-
-    &::after {
-      content: '';
-      display: block;
-      height: $cell-height * 4;
     }
   }
 }

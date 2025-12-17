@@ -1,18 +1,27 @@
 'use client';
 
-import { forwardRef, useRef, useState } from 'react';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import OverflowTooltip, { OverflowTooltipProps } from './OverflowTooltip';
 import Tag from '../Tag';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { cx } from '../utils/cx';
+import { overflowTooltipClasses as classes } from '@mezzanine-ui/core/overflow-tooltip';
 
 export type OverflowCounterTagProps =
   NativeElementPropsWithoutKeyAndRef<'span'> &
     Pick<
       OverflowTooltipProps,
-      'className' | 'onTagDismiss' | 'placement' | 'tags' | 'tagSize'
-    >;
+      | 'className'
+      | 'onTagDismiss'
+      | 'placement'
+      | 'tags'
+      | 'tagSize'
+      | 'readOnly'
+    > & {
+      disabled?: boolean;
+    };
 
 /**
  * Compound component for OverflowTooltip and Tag with overflow-counter type.
@@ -20,9 +29,11 @@ export type OverflowCounterTagProps =
 const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
   function OverflowCounterTag(props, ref) {
     const {
+      disabled,
       onTagDismiss,
       tags = [],
       placement,
+      readOnly,
       tagSize,
       ...restTagProps
     } = props;
@@ -55,10 +66,20 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
       };
     });
 
+    useEffect(() => setOpen(false), [disabled, readOnly, tagSize]);
+
     return (
       <>
         <Tag
           {...restTagProps}
+          className={cx(
+            classes.counterTagHost,
+            {
+              [classes.counterTagDisabled]: disabled,
+              [classes.counterTagReadOnly]: readOnly,
+            },
+            restTagProps.className,
+          )}
           count={tags.length}
           onClick={(e) => {
             setOpen((prevOpen) => !prevOpen);
@@ -67,6 +88,8 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           ref={composedTriggerRef}
           type="overflow-counter"
           size={tagSize}
+          disabled={disabled}
+          readOnly={readOnly}
         />
 
         <OverflowTooltip
@@ -77,6 +100,7 @@ const OverflowCounterTag = forwardRef<HTMLSpanElement, OverflowCounterTagProps>(
           ref={tooltipRef}
           tags={tags}
           tagSize={tagSize}
+          readOnly={readOnly}
         />
       </>
     );

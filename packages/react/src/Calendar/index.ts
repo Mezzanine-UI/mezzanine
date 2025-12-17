@@ -11,11 +11,22 @@ export {
   default as CalendarConfigProvider,
 } from './CalendarContext';
 export type {
+  CalendarLocale,
   CalendarConfigs,
   CalendarConfigProviderProps,
 } from './CalendarContext';
+export { default as CalendarConfigProviderDayjs } from './CalendarConfigProviderDayjs';
+export type { CalendarConfigProviderDayjsProps } from './CalendarConfigProviderDayjs';
+export { default as CalendarConfigProviderMoment } from './CalendarConfigProviderMoment';
+export type { CalendarConfigProviderMomentProps } from './CalendarConfigProviderMoment';
+export { default as CalendarConfigProviderLuxon } from './CalendarConfigProviderLuxon';
+export type { CalendarConfigProviderLuxonProps } from './CalendarConfigProviderLuxon';
 export type { CalendarYearsProps } from './CalendarYears';
 export { default as CalendarYears } from './CalendarYears';
+export type { CalendarQuartersProps } from './CalendarQuarters';
+export { default as CalendarQuarters } from './CalendarQuarters';
+export type { CalendarHalfYearsProps } from './CalendarHalfYears';
+export { default as CalendarHalfYears } from './CalendarHalfYears';
 export type { CalendarWeeksProps } from './CalendarWeeks';
 export { default as CalendarWeeks } from './CalendarWeeks';
 export { default as CalendarMonths } from './CalendarMonths';
@@ -30,3 +41,6 @@ export type { CalendarCellProps } from './CalendarCell';
 export { default as CalendarCell } from './CalendarCell';
 export type { CalendarProps } from './Calendar';
 export { default } from './Calendar';
+export type { RangeCalendarProps } from './RangeCalendar';
+export { default as RangeCalendar } from './RangeCalendar';
+export { useRangeCalendarControls } from './useRangeCalendarControls';

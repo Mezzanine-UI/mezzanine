@@ -72,7 +72,8 @@ export function useDateRangeCalendarControls(
   );
 
   const onPrevFactory = (target: 0 | 1) => () => {
-    const [handleMinus] = modifierGroup[currentMode];
+    const modifiers = modifierGroup[currentMode];
+    const [handleMinus] = modifiers.single ?? modifiers.double;
 
     const newAnchor = handleMinus(referenceDates[target]);
     const newDates = [...referenceDates];
@@ -91,7 +92,8 @@ export function useDateRangeCalendarControls(
   };
 
   const onNextFactory = (target: 0 | 1) => () => {
-    const [, handleAdd] = modifierGroup[currentMode];
+    const modifiers = modifierGroup[currentMode];
+    const [, handleAdd] = modifiers.single ?? modifiers.double;
 
     const newAnchor = handleAdd(referenceDates[target]);
     const newDates = [...referenceDates];

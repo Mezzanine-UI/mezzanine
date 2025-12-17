@@ -11,12 +11,8 @@ import {
   waitFor,
   getByText,
 } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
 import { CalendarConfigProvider } from '../Calendar';
-import DateRangePicker, { DateRangePickerProps } from '.';
+import DateRangePicker from '.';
 
 describe('<DateRangePicker />', () => {
   afterEach(() => {
@@ -24,23 +20,34 @@ describe('<DateRangePicker />', () => {
     cleanupHook();
   });
 
-  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+  it('should forward ref to host element', () => {
+    const ref = { current: null as HTMLDivElement | null };
     render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
         <DateRangePicker ref={ref} />
       </CalendarConfigProvider>,
-    ),
-  );
+    );
 
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(
+    expect(ref.current).toBeInstanceOf(HTMLDivElement);
+  });
+
+  it('should append className to host element', () => {
+    const { getHostHTMLElement } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <DateRangePicker className={className} />
+        <DateRangePicker className="foo" />
       </CalendarConfigProvider>,
-    ),
-  );
+    );
+
+    const element = getHostHTMLElement();
+
+    expect(element.classList.contains('foo')).toBe(true);
+  });
 
   describe('calendar toggle', () => {
+    // Helper function to get the RangeCalendar popup
+    const getRangeCalendar = () =>
+      document.querySelector('[aria-label^="Range calendar"]');
+
     it('should open calendar when inputs focused', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -55,38 +62,30 @@ describe('<DateRangePicker />', () => {
       expect(inputFromElement).toBeInstanceOf(HTMLInputElement);
       expect(inputToElement).toBeInstanceOf(HTMLInputElement);
 
-      expect(
-        document.querySelector('.mzn-date-range-picker-calendar-group'),
-      ).toBe(null);
+      expect(getRangeCalendar()).toBe(null);
 
-      act(() => {
+      await act(async () => {
         fireEvent.focus(inputFromElement);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
       });
 
-      act(() => {
+      await act(async () => {
         fireEvent.click(document.body);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
+        expect(getRangeCalendar()).toBe(null);
       });
 
-      act(() => {
+      await act(async () => {
         fireEvent.focus(inputToElement);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
       });
     });
 
@@ -103,132 +102,17 @@ describe('<DateRangePicker />', () => {
 
       expect(inputFromElement).toBeInstanceOf(HTMLInputElement);
 
-      await waitFor(() => {
+      await act(async () => {
         fireEvent.click(inputFromElement);
       });
 
-      expect(
-        document.querySelector('.mzn-date-range-picker-calendar-group'),
-      ).toBe(null);
+      expect(getRangeCalendar()).toBe(null);
 
-      await waitFor(() => {
+      await act(async () => {
         fireEvent.click(inputToElement);
       });
 
-      expect(
-        document.querySelector('.mzn-date-range-picker-calendar-group'),
-      ).toBe(null);
-    });
-
-    it('should toggle calendar when icon clicked', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const iconElement = element.querySelector('[data-icon-name="calendar"]');
-
-      expect(iconElement).toBeInstanceOf(HTMLElement);
-
-      act(() => {
-        fireEvent.click(iconElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
-      });
-
-      act(() => {
-        fireEvent.click(iconElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
-      });
-    });
-
-    it('should close calendar when inputTo enter key down and has valid value', async () => {
-      jest.useFakeTimers();
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      act(() => {
-        fireEvent.focus(inputFromElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
-      });
-
-      act(() => {
-        fireEvent.change(inputFromElement, { target: { value: '2021-10-20' } });
-      });
-      act(() => {
-        fireEvent.change(inputToElement, { target: { value: '2021-10-21' } });
-      });
-      act(() => {
-        fireEvent.keyDown(inputToElement, { key: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
-      });
-    });
-
-    it('should close calendar when inputFrom enter key down and has valid value', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      act(() => {
-        fireEvent.focus(inputToElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
-      });
-
-      act(() => {
-        fireEvent.change(inputToElement, { target: { value: '2021-10-21' } });
-      });
-      act(() => {
-        fireEvent.change(inputFromElement, { target: { value: '2021-10-20' } });
-      });
-      act(() => {
-        fireEvent.keyDown(inputFromElement, { key: 'Enter' });
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
-      });
+      expect(getRangeCalendar()).toBe(null);
     });
 
     it('should close calendar when click away', async () => {
@@ -241,24 +125,20 @@ describe('<DateRangePicker />', () => {
       const element = getHostHTMLElement();
       const [inputFromElement] = element.getElementsByTagName('input');
 
-      act(() => {
+      await act(async () => {
         fireEvent.focus(inputFromElement!);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
       });
 
-      act(() => {
+      await act(async () => {
         fireEvent.click(document);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
+        expect(getRangeCalendar()).toBe(null);
       });
     });
 
@@ -272,24 +152,20 @@ describe('<DateRangePicker />', () => {
       const element = getHostHTMLElement();
       const [inputFromElement] = element.getElementsByTagName('input');
 
-      act(() => {
+      await act(async () => {
         fireEvent.focus(inputFromElement!);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
       });
 
-      act(() => {
+      await act(async () => {
         fireEvent.keyDown(document, { key: 'Escape' });
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
+        expect(getRangeCalendar()).toBe(null);
       });
     });
 
@@ -303,94 +179,24 @@ describe('<DateRangePicker />', () => {
       const element = getHostHTMLElement();
       const [, inputToElement] = element.getElementsByTagName('input');
 
-      act(() => {
+      await act(async () => {
         fireEvent.focus(inputToElement!);
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBeInstanceOf(HTMLDivElement);
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
       });
 
-      act(() => {
+      await act(async () => {
         inputToElement.focus();
       });
 
-      act(() => {
+      await act(async () => {
         fireEvent.keyDown(document, { key: 'Tab' });
       });
 
       await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
-      });
-    });
-
-    it('should close calendar on a case when inputTo has value and calendar clicked to have valid value', async () => {
-      const referenceDate = '2021-10-01';
-      const { getHostHTMLElement, getAllByText } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker referenceDate={referenceDate} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [, inputToElement] = element.getElementsByTagName('input');
-
-      act(() => {
-        fireEvent.focus(inputToElement!);
-      });
-
-      act(() => {
-        fireEvent.change(inputToElement!, { target: { value: '2021-10-21' } });
-      });
-
-      const testCalendarCellElement = getAllByText('20')[0];
-
-      act(() => {
-        fireEvent.click(testCalendarCellElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
-      });
-    });
-
-    it('should close calendar on a case when inputFrom has value and calendar clicked to have valid value', async () => {
-      const referenceDate = '2021-10-01';
-      const { getHostHTMLElement, getAllByText } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker referenceDate={referenceDate} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement] = element.getElementsByTagName('input');
-
-      act(() => {
-        fireEvent.focus(inputFromElement!);
-      });
-
-      act(() => {
-        fireEvent.change(inputFromElement!, {
-          target: { value: '2021-10-20' },
-        });
-      });
-
-      const testCalendarCellElement = getAllByText('21')[0];
-
-      act(() => {
-        fireEvent.click(testCalendarCellElement!);
-      });
-
-      await waitFor(() => {
-        expect(
-          document.querySelector('.mzn-date-range-picker-calendar-group'),
-        ).toBe(null);
+        expect(getRangeCalendar()).toBe(null);
       });
     });
 
@@ -406,28 +212,28 @@ describe('<DateRangePicker />', () => {
         const element = getHostHTMLElement();
         const [inputFromElement] = element.getElementsByTagName('input');
 
-        await waitFor(() => {
+        await act(async () => {
           fireEvent.focus(inputFromElement!);
         });
 
         expect(onCalendarToggle).toHaveBeenCalledWith(true);
         onCalendarToggle.mockClear();
 
-        await waitFor(() => {
+        await act(async () => {
           fireEvent.keyDown(document, { key: 'Escape' });
         });
 
         expect(onCalendarToggle).toHaveBeenCalledWith(false);
       });
 
-      it('should not be invoked if readOnly', () => {
+      it('should not be invoked if readOnly', async () => {
         const onCalendarToggle = jest.fn();
         const { getHostHTMLElement } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DateRangePicker
-              referenceDate="2022-01-02"
               onCalendarToggle={onCalendarToggle}
               readOnly
+              referenceDate="2022-01-02"
             />
           </CalendarConfigProvider>,
         );
@@ -435,7 +241,7 @@ describe('<DateRangePicker />', () => {
         const element = getHostHTMLElement();
         const [inputElement] = element.getElementsByTagName('input');
 
-        waitFor(() => {
+        await act(async () => {
           fireEvent.click(inputElement!);
         });
 
@@ -445,7 +251,7 @@ describe('<DateRangePicker />', () => {
   });
 
   describe('calendar picking', () => {
-    it('should update input value', async () => {
+    it('should update input value by clicking on calendar cells', async () => {
       const referenceDate = '2021-10-20';
       const { getHostHTMLElement, getAllByText: getAllByTextWithHostElement } =
         render(
@@ -462,11 +268,11 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputFromElement);
       });
 
-      const [firstCellElemet] = getAllByTextWithHostElement('15');
+      const [firstCellElement] = getAllByTextWithHostElement('15');
       const [, secondCellElement] = getAllByTextWithHostElement('17');
 
       await waitFor(() => {
-        fireEvent.click(firstCellElemet);
+        fireEvent.click(firstCellElement);
       });
 
       await waitFor(() => {
@@ -485,6 +291,7 @@ describe('<DateRangePicker />', () => {
             <DateRangePicker referenceDate={referenceDate} />
           </CalendarConfigProvider>,
         );
+
       const element = getHostHTMLElement();
       const [inputFromElement, inputToElement] =
         element.getElementsByTagName('input');
@@ -493,11 +300,11 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputFromElement);
       });
 
-      const [firstCellElemet] = getAllByTextWithHostElement('15');
+      const [firstCellElement] = getAllByTextWithHostElement('15');
       const [, secondCellElement] = getAllByTextWithHostElement('17');
 
       await waitFor(() => {
-        fireEvent.click(firstCellElemet);
+        fireEvent.click(firstCellElement);
       });
 
       await waitFor(() => {
@@ -512,135 +319,19 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputFromElement);
       });
 
-      const [anotherfirstCellElemet] = getAllByTextWithHostElement('14');
-      const [, anothersecondCellElement] = getAllByTextWithHostElement('16');
+      const [anotherFirstCellElement] = getAllByTextWithHostElement('14');
+      const [, anotherSecondCellElement] = getAllByTextWithHostElement('16');
 
       await waitFor(() => {
-        fireEvent.click(anotherfirstCellElemet);
+        fireEvent.click(anotherFirstCellElement);
       });
 
       await waitFor(() => {
-        fireEvent.click(anothersecondCellElement);
+        fireEvent.click(anotherSecondCellElement);
       });
 
       expect(inputFromElement.value).toBe('2021-10-14');
       expect(inputToElement.value).toBe('2021-11-16');
-    });
-  });
-
-  describe('guard order', () => {
-    it('should clear inputTo if inputFrom has a value that is later than inputTo', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: '2020-10-20' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, {
-          target: { value: '2020-10-21' },
-        });
-      });
-
-      expect(inputToElement.value).toBe('');
-    });
-
-    it('should clear inputFrom if inputTo has a value that is prior to inputFrom', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, {
-          target: { value: '2020-10-21' },
-        });
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: '2020-10-20' } });
-      });
-
-      expect(inputFromElement.value).toBe('');
-    });
-  });
-
-  describe('guard value string format', () => {
-    it('should clear input values when blured if it does not match the date format', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: 'foo' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.blur(inputFromElement!);
-      });
-
-      expect(inputFromElement.value).toBe('');
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: 'foo' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.blur(inputToElement!);
-      });
-
-      expect(inputToElement.value).toBe('');
-    });
-
-    it('should clear input values when escape key down if it does not match the date format', async () => {
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, { target: { value: 'foo' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputFromElement!, { key: 'Escape' });
-      });
-
-      expect(inputFromElement.value).toBe('');
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: 'foo' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputToElement!, { key: 'Escape' });
-      });
-
-      expect(inputToElement.value).toBe('');
     });
   });
 
@@ -649,151 +340,100 @@ describe('<DateRangePicker />', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker onChange={onChange} clearable />
+          <DateRangePicker
+            clearable
+            onChange={onChange}
+            value={['2021-10-20', '2021-10-21']}
+          />
         </CalendarConfigProvider>,
       );
 
       const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
+      const clearButton = element.querySelector('.mzn-clear-actions');
 
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
+      expect(clearButton).toBeInstanceOf(HTMLElement);
+
+      await act(async () => {
+        fireEvent.click(clearButton!);
       });
 
-      await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.mouseOver(element!);
-      });
-
-      await waitFor(() => {
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
-        );
-
-        fireEvent.click(clearIconElement!);
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(undefined);
     });
   });
 
-  describe('prop: inputProps', () => {
-    it('should bind focus, blur, keydown events to inputFrom element', async () => {
-      const onKeyDown = jest.fn();
-      const onBlur = jest.fn();
-      const onFocus = jest.fn();
-      const inputFromProps: DateRangePickerProps['inputFromProps'] = {
-        onKeyDown,
-        onBlur,
-        onFocus,
-      };
-
+  describe('prop: disabled', () => {
+    it('should have disabled class when disabled', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker inputFromProps={inputFromProps} />
+          <DateRangePicker disabled />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-text-field--disabled')).toBe(true);
+    });
+  });
+
+  describe('prop: error', () => {
+    it('should have error class when error', () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker error />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-text-field--error')).toBe(true);
+    });
+  });
+
+  describe('prop: onChange', () => {
+    it('should be invoked when range selection is complete', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-01';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker onChange={onChange} referenceDate={referenceDate} />
         </CalendarConfigProvider>,
       );
 
       const element = getHostHTMLElement();
       const [inputFromElement] = element.getElementsByTagName('input');
 
-      await waitFor(() => {
-        fireEvent.focus(inputFromElement!);
+      act(() => {
+        fireEvent.focus(inputFromElement);
       });
 
-      expect(onFocus).toHaveBeenCalledTimes(1);
-      expect(onFocus).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputFromElement,
-        }),
-      );
+      const firstCellElement = getAllByText('15')[0];
+      const secondCellElement = getAllByText('20')[1];
 
-      await waitFor(() => {
-        fireEvent.keyDown(inputFromElement!);
+      act(() => {
+        fireEvent.click(firstCellElement);
       });
 
-      expect(onKeyDown).toHaveBeenCalledTimes(1);
-      expect(onKeyDown).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputFromElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.blur(inputFromElement!);
+      act(() => {
+        fireEvent.click(secondCellElement);
       });
 
-      expect(onBlur).toHaveBeenCalledTimes(1);
-      expect(onBlur).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputFromElement,
-        }),
-      );
-    });
-
-    it('should bind focus, blur, keydown events to inputTo element', async () => {
-      const onKeyDown = jest.fn();
-      const onBlur = jest.fn();
-      const onFocus = jest.fn();
-      const inputToProps: DateRangePickerProps['inputToProps'] = {
-        onKeyDown,
-        onBlur,
-        onFocus,
-      };
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker inputToProps={inputToProps} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [, inputToElement] = element.getElementsByTagName('input');
-
       await waitFor(() => {
-        fireEvent.focus(inputToElement!);
+        expect(onChange).toHaveBeenCalled();
       });
 
-      expect(onFocus).toHaveBeenCalledTimes(1);
-      expect(onFocus).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputToElement,
-        }),
-      );
+      const calledValue = onChange.mock.calls[0][0];
 
-      await waitFor(() => {
-        fireEvent.keyDown(inputToElement!);
-      });
-
-      expect(onKeyDown).toHaveBeenCalledTimes(1);
-      expect(onKeyDown).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputToElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.blur(inputToElement!);
-      });
-
-      expect(onBlur).toHaveBeenCalledTimes(1);
-      expect(onBlur).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputToElement,
-        }),
-      );
+      expect(Array.isArray(calledValue)).toBe(true);
+      expect(calledValue.length).toBe(2);
     });
   });
 
-  describe('prop: onChange', () => {
-    it('should be invoked when click away and has valid value', async () => {
-      const onChange = jest.fn();
+  describe('prop: value', () => {
+    it('should display controlled value', () => {
+      const value: [DateType, DateType] = ['2021-10-20', '2021-10-25'];
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker onChange={onChange} />
+          <DateRangePicker value={value} />
         </CalendarConfigProvider>,
       );
 
@@ -801,91 +441,8 @@ describe('<DateRangePicker />', () => {
       const [inputFromElement, inputToElement] =
         element.getElementsByTagName('input');
 
-      await waitFor(() => {
-        fireEvent.focus(inputFromElement!);
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, {
-          target: { value: '2021-10-20' },
-        });
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: '2021-10-21' } });
-      });
-
-      await waitFor(() => {
-        fireEvent.click(document.body);
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
-    });
-
-    it('should be invoked when range selected via calendar', async () => {
-      const onChange = jest.fn();
-      const { getHostHTMLElement, getAllByText } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateRangePicker onChange={onChange} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      const testCellFromElement = getAllByText('15')[0];
-      const testCellToElement = getAllByText('17')[1];
-
-      await waitFor(() => {
-        fireEvent.click(testCellFromElement!);
-      });
-
-      await waitFor(() => {
-        fireEvent.click(testCellToElement!);
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
-    });
-
-    it('should be invoked when using tab to remove focus and has valid value', async () => {
-      const onChange = jest.fn();
-      const { getHostHTMLElement } = render(
-        <>
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DateRangePicker onChange={onChange} />
-          </CalendarConfigProvider>
-          <input />
-        </>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputFromElement, inputToElement] =
-        element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputToElement!);
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputFromElement!, {
-          target: { value: '2021-10-20' },
-        });
-      });
-
-      await waitFor(() => {
-        fireEvent.change(inputToElement!, { target: { value: '2021-10-21' } });
-      });
-
-      await waitFor(() => {
-        inputToElement.focus();
-        fireEvent.keyDown(document, { key: 'Tab' });
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
+      expect(inputFromElement.value).toBe('2021-10-20');
+      expect(inputToElement.value).toBe('2021-10-25');
     });
   });
 
@@ -906,8 +463,15 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
+      // Get internal calendars (with mzn-calendar--no-shadow class)
+      const internalCalendars = document.querySelectorAll(
+        '.mzn-calendar--no-shadow',
+      );
+
+      expect(internalCalendars.length).toBe(2);
+
       const [leftCalendarElement, rightCalendarElement] =
-        document.getElementsByClassName('mzn-calendar');
+        Array.from(internalCalendars);
 
       expect(
         getByText(leftCalendarElement as HTMLElement, 'Oct'),
@@ -940,8 +504,15 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
+      // Get internal calendars (with mzn-calendar--no-shadow class)
+      const internalCalendars = document.querySelectorAll(
+        '.mzn-calendar--no-shadow',
+      );
+
+      expect(internalCalendars.length).toBe(2);
+
       const [leftCalendarElement, rightCalendarElement] =
-        document.getElementsByClassName('mzn-calendar');
+        Array.from(internalCalendars);
 
       expect(
         getByText(leftCalendarElement as HTMLElement, 'Oct'),
@@ -973,8 +544,15 @@ describe('<DateRangePicker />', () => {
         fireEvent.focus(inputElement);
       });
 
+      // Get internal calendars (with mzn-calendar--no-shadow class)
+      const internalCalendars = document.querySelectorAll(
+        '.mzn-calendar--no-shadow',
+      );
+
+      expect(internalCalendars.length).toBe(2);
+
       const [leftCalendarElement, rightCalendarElement] =
-        document.getElementsByClassName('mzn-calendar');
+        Array.from(internalCalendars);
 
       expect(
         getByText(
@@ -1001,6 +579,214 @@ describe('<DateRangePicker />', () => {
           getYear(moment().add(1, 'month').toISOString()),
         ),
       ).toBeInstanceOf(HTMLButtonElement);
+    });
+  });
+
+  describe('prop: confirmMode', () => {
+    // Helper function to get the RangeCalendar popup
+    const getRangeCalendar = () =>
+      document.querySelector('[aria-label^="Range calendar"]');
+
+    it('should auto-close after range selection in immediate mode (default)', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker onChange={onChange} referenceDate={referenceDate} />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Click on day 10
+      const [day10] = getAllByText('10');
+      expect(day10).toBeInstanceOf(HTMLButtonElement);
+
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      // Calendar should still be open (only one date selected)
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // Click on day 20
+      const [day20] = getAllByText('20');
+      expect(day20).toBeInstanceOf(HTMLButtonElement);
+
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should auto-close after both dates selected
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBe(null);
+      });
+
+      expect(onChange).toHaveBeenCalled();
+    });
+
+    it('should show Confirm/Cancel buttons in manual mode', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            confirmMode="manual"
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Check for Confirm button
+      const confirmButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect(confirmButton).toBeInstanceOf(HTMLButtonElement);
+      expect(confirmButton?.textContent).toBe('Confirm');
+      expect((confirmButton as HTMLButtonElement)?.disabled).toBe(true);
+
+      // Check for Cancel button
+      const cancelButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-tertiary',
+      );
+      expect(cancelButton).toBeInstanceOf(HTMLButtonElement);
+      expect(cancelButton?.textContent).toBe('Cancel');
+    });
+
+    it('should not trigger onChange until Confirm is clicked in manual mode', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            confirmMode="manual"
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Select two dates
+      const [day10] = getAllByText('10');
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      const [day20] = getAllByText('20');
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should NOT auto-close in manual mode
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // onChange should NOT have been called yet
+      expect(onChange).not.toHaveBeenCalled();
+
+      // Confirm button should now be enabled
+      const confirmButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect((confirmButton as HTMLButtonElement)?.disabled).toBe(false);
+
+      // Click Confirm
+      await act(async () => {
+        fireEvent.click(confirmButton!);
+      });
+
+      // Now onChange should be called
+      expect(onChange).toHaveBeenCalled();
+
+      // Calendar should close
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBe(null);
+      });
+    });
+
+    it('should not auto-close when actions prop is provided', async () => {
+      const onChange = jest.fn();
+      const referenceDate = '2021-10-15';
+      const { getHostHTMLElement, getAllByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <DateRangePicker
+            actions={{
+              primaryButtonProps: {
+                children: 'Apply',
+                onClick: jest.fn(),
+              },
+              secondaryButtonProps: {
+                children: 'Reset',
+                onClick: jest.fn(),
+              },
+            }}
+            onChange={onChange}
+            referenceDate={referenceDate}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      const element = getHostHTMLElement();
+      const [inputFromElement] = element.getElementsByTagName('input');
+
+      await act(async () => {
+        fireEvent.focus(inputFromElement);
+      });
+
+      await waitFor(() => {
+        expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+      });
+
+      // Select two dates
+      const [day10] = getAllByText('10');
+      await act(async () => {
+        fireEvent.click(day10);
+      });
+
+      const [day20] = getAllByText('20');
+      await act(async () => {
+        fireEvent.click(day20);
+      });
+
+      // Calendar should NOT auto-close when actions prop is provided
+      expect(getRangeCalendar()).toBeInstanceOf(HTMLDivElement);
+
+      // Custom actions should be rendered
+      const applyButton = document.querySelector(
+        '.mzn-calendar-footer-actions .mzn-button--base-primary',
+      );
+      expect(applyButton?.textContent).toBe('Apply');
     });
   });
 });

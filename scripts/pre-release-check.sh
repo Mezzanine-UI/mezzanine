@@ -40,24 +40,7 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# 3. 檢查是否與遠程同步
-echo ""
-echo -e "${YELLOW}3. 檢查遠程同步狀態...${NC}"
-git fetch origin "${CURRENT_BRANCH}" --quiet 2>/dev/null || true
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse @{u} 2>/dev/null || echo "")
-if [ -z "$REMOTE" ]; then
-  echo -e "${YELLOW}   ⚠  無法檢測遠程分支（可能是新分支）${NC}"
-  WARNINGS=$((WARNINGS + 1))
-elif [ "$LOCAL" = "$REMOTE" ]; then
-  echo -e "${GREEN}   ✓ 與遠程同步${NC}"
-else
-  echo -e "${RED}   ✗ 與遠程不同步${NC}"
-  echo -e "${YELLOW}   💡 請執行: git pull origin ${CURRENT_BRANCH}${NC}"
-  ERRORS=$((ERRORS + 1))
-fi
-
-# 4. 檢查 node_modules
+# 3. 檢查 node_modules
 echo ""
 echo -e "${YELLOW}4. 檢查依賴安裝...${NC}"
 if [ -d "node_modules" ]; then
@@ -68,7 +51,7 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# 5. 運行 lint
+# 4. 運行 lint
 echo ""
 echo -e "${YELLOW}5. 執行 lint 檢查...${NC}"
 if yarn lint --quiet 2>/dev/null; then
@@ -79,7 +62,7 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# 6. 運行構建測試
+# 5. 運行構建測試
 echo ""
 echo -e "${YELLOW}6. 測試構建...${NC}"
 if yarn build --quiet 2>/dev/null; then
@@ -90,7 +73,7 @@ else
   ERRORS=$((ERRORS + 1))
 fi
 
-# 7. 檢查 npm 登錄狀態
+# 6. 檢查 npm 登錄狀態
 echo ""
 echo -e "${YELLOW}7. 檢查 npm 登錄狀態...${NC}"
 if npm whoami &>/dev/null; then

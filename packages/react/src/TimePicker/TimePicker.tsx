@@ -1,20 +1,18 @@
 'use client';
 
-import { DateType } from '@mezzanine-ui/core/calendar';
-import { ClockIcon } from '@mezzanine-ui/icons';
 import {
   FocusEventHandler,
   forwardRef,
   KeyboardEventHandler,
   MouseEventHandler,
   useCallback,
-  useContext,
   useMemo,
   useRef,
   useState,
 } from 'react';
+import { DateType } from '@mezzanine-ui/core/calendar';
+import { ClockIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
-import { FormControlContext } from '../Form';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
 import {
@@ -25,21 +23,19 @@ import {
 } from '../Picker';
 import TimePickerPanel, { TimePickerPanelProps } from './TimePickerPanel';
 
+/**
+ * Validate if a time value matches the step constraint.
+ */
+function isValidStep(value: number, step: number): boolean {
+  if (step <= 1) return true;
+  return value % step === 0;
+}
+
 export interface TimePickerProps
-  extends Omit<TimePickerPanelProps, 'onConfirm'>,
+  extends Omit<TimePickerPanelProps, 'anchor' | 'onChange' | 'open' | 'value'>,
     Omit<
       PickerTriggerProps,
-      | 'anchor'
-      | 'defaultValue'
-      | 'inputRef'
-      | 'onChange'
-      | 'onClear'
-      | 'onClick'
-      | 'onIconClick'
-      | 'onKeyDown'
-      | 'open'
-      | 'suffixActionIcon'
-      | 'value'
+      'format' | 'inputRef' | 'onChange' | 'onClear' | 'suffix' | 'value'
     > {
   /**
    * Default value for time picker.
@@ -47,12 +43,21 @@ export interface TimePickerProps
   defaultValue?: DateType;
   /**
    * The format for displaying time.
+   * @default 'HH:mm:ss' or 'HH:mm' based on hideSecond
    */
   format?: string;
+  /**
+   * Change handler. Takes your declared `DateType` as argument.
+   */
+  onChange?: (target?: DateType) => void;
   /**
    * A function that fires when panel toggled. Receive open status in boolean format as props.
    */
   onPanelToggle?: (open: boolean) => void;
+  /**
+   * Current value of time picker.
+   */
+  value?: DateType;
 }
 
 /**
@@ -61,29 +66,20 @@ export interface TimePickerProps
  */
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   function TimePicker(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
     const { defaultTimeFormat } = useCalendarContext();
     const {
       className,
       clearable = true,
-      confirmText,
       defaultValue,
-      disabled = disabledFromFormControl,
-      error = severity === 'error' || false,
-      format = defaultTimeFormat,
-      fullWidth = fullWidthFromFormControl,
+      disabled = false,
+      error = false,
+      fadeProps,
+      fullWidth = false,
       hideHour,
       hideMinute,
       hideSecond,
-      hourPrefix,
       hourStep,
       inputProps,
-      minutePrefix,
       minuteStep,
       onChange: onChangeProp,
       onPanelToggle: onPanelToggleProp,
@@ -91,21 +87,60 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       popperProps,
       prefix,
       readOnly,
-      required = requiredFromFormControl,
-      secondPrefix,
+      required = false,
       secondStep,
-      size: sizeProp,
+      size,
       value: valueProp,
+      ...restTriggerProps
     } = props;
+
+    // Determine default format based on hideSecond
+    const resolvedFormat =
+      props.format ?? (hideSecond ? 'HH:mm' : defaultTimeFormat);
+
+    const { getHour, getMinute, getSecond } = useCalendarContext();
+
+    /**
+     * Validate time value against step constraints.
+     * Returns true if valid, false if the time doesn't match the step.
+     */
+    const validateTimeStep = useCallback(
+      (isoDate: string): boolean => {
+        const hour = getHour(isoDate);
+        const minute = getMinute(isoDate);
+        const second = getSecond(isoDate);
+
+        if (!hideHour && hourStep && !isValidStep(hour, hourStep)) {
+          return false;
+        }
+        if (!hideMinute && minuteStep && !isValidStep(minute, minuteStep)) {
+          return false;
+        }
+        if (!hideSecond && secondStep && !isValidStep(second, secondStep)) {
+          return false;
+        }
+
+        return true;
+      },
+      [
+        getHour,
+        getMinute,
+        getSecond,
+        hideHour,
+        hideMinute,
+        hideSecond,
+        hourStep,
+        minuteStep,
+        secondStep,
+      ],
+    );
+
     const {
       onBlur: onBlurProp,
       onKeyDown: onKeyDownProp,
       onFocus: onFocusProp,
-      size: inputSize = format.length + 2,
       ...restInputProp
     } = inputProps || {};
-
-    const formats = useMemo(() => [format], [format]);
 
     /** Panel open control */
     const [open, setOpen] = useState(false);
@@ -123,16 +158,21 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       [onPanelToggleProp, preventOpen],
     );
 
-    const onFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
-      (event) => {
+    const onFocus = useMemo<
+      FocusEventHandler<HTMLInputElement> | undefined
+    >(() => {
+      if (readOnly) {
+        return undefined;
+      }
+
+      return (event) => {
         if (onFocusProp) {
           onFocusProp(event);
         }
 
         onPanelToggle(true);
-      },
-      [onFocusProp, onPanelToggle],
-    );
+      };
+    }, [onPanelToggle, onFocusProp, readOnly]);
 
     /** Controlling input value and bind change handler */
     const inputRef = useRef<HTMLInputElement>(null);
@@ -145,39 +185,38 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       value: internalValue,
     } = usePickerValue({
       defaultValue,
-      format,
-      formats,
+      format: resolvedFormat,
       inputRef,
       value: valueProp,
     });
 
-    /** Panel confirm handler */
-    const onConfirm = useCallback(() => {
-      if (onChangeProp) {
-        onChangeProp(internalValue);
+    /** Bind close control to handlers */
+    const onPanelChange = (val?: DateType) => {
+      if (val) {
+        onChange(val);
+        onChangeProp?.(val);
       }
+    };
 
-      onPanelToggle(false);
-    }, [internalValue, onChangeProp, onPanelToggle]);
-
-    /** Bind input props */
-    const onResolvedKeyDown = useCallback<
+    const onKeyDownWithCloseControl = useCallback<
       KeyboardEventHandler<HTMLInputElement>
     >(
       (event) => {
+        onKeyDown(event);
+
         if (onKeyDownProp) {
           onKeyDownProp(event);
         }
 
-        onKeyDown(event);
-
         if (event.key === 'Enter') {
-          onConfirm();
+          onChangeProp?.(internalValue);
+          onPanelToggle(false);
         }
       },
-      [onConfirm, onKeyDown, onKeyDownProp],
+      [internalValue, onPanelToggle, onChangeProp, onKeyDown, onKeyDownProp],
     );
 
+    /** Resolve input props */
     const onResolvedBlur = useCallback<FocusEventHandler<HTMLInputElement>>(
       (event) => {
         if (onBlurProp) {
@@ -191,20 +230,31 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
 
     const resolvedInputProps = {
       ...restInputProp,
-      size: inputSize,
       onFocus,
-      onKeyDown: onResolvedKeyDown,
+      onKeyDown: onKeyDownWithCloseControl,
       onBlur: onResolvedBlur,
     };
 
     /** Popper positioning */
     const anchorRef = useRef<HTMLDivElement>(null);
+    const triggerComposedRef = useComposeRefs([ref, anchorRef]);
     const panelRef = useRef<HTMLDivElement>(null);
-    const triggerComposedRef = useComposeRefs([anchorRef, ref]);
+
+    /** Clear handler */
+    const onClear = useCallback<MouseEventHandler<HTMLInputElement>>(() => {
+      onChange(undefined);
+      onChangeProp?.(undefined);
+    }, [onChange, onChangeProp]);
 
     /** Blur, click away and key down close */
     const onClose = () => {
       onChange(valueProp);
+
+      onPanelToggle(false);
+    };
+
+    const onChangeClose = () => {
+      onChangeProp?.(internalValue);
 
       onPanelToggle(false);
     };
@@ -215,15 +265,8 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       popperRef: panelRef,
       lastElementRefInFlow: inputRef,
       onClose,
-      onChangeClose: onClose,
+      onChangeClose,
     });
-
-    /** Bind on change to on clear */
-    const onClear: PickerTriggerProps['onClear'] = () => {
-      onChange(undefined);
-
-      onChangeProp?.(undefined);
-    };
 
     /** Icon */
     const onIconClick: MouseEventHandler<HTMLElement> = (e) => {
@@ -236,45 +279,55 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       onPanelToggle(!open);
     };
 
-    const suffixActionIcon = <Icon icon={ClockIcon} onClick={onIconClick} />;
+    const suffixIcon = (
+      <Icon
+        aria-label="Open time picker"
+        icon={ClockIcon}
+        onClick={readOnly ? undefined : onIconClick}
+      />
+    );
 
     return (
       <>
         <PickerTrigger
+          {...restTriggerProps}
           ref={triggerComposedRef}
           className={className}
           clearable={clearable}
           disabled={disabled}
           error={error}
+          format={resolvedFormat}
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e);
+            onPanelChange(e.target.value);
+            onPanelToggle(true);
+          }}
           onClear={onClear}
+          onFocus={() => onPanelToggle(true)}
           placeholder={placeholder}
           prefix={prefix}
           readOnly={readOnly}
           required={required}
-          size={sizeProp}
-          suffixActionIcon={suffixActionIcon}
+          size={size}
+          suffix={suffixIcon}
+          validate={validateTimeStep}
           value={inputValue}
         />
         <TimePickerPanel
           ref={panelRef}
           anchor={anchorRef}
-          confirmText={confirmText}
+          fadeProps={fadeProps}
           hideHour={hideHour}
           hideMinute={hideMinute}
           hideSecond={hideSecond}
-          hourPrefix={hourPrefix}
           hourStep={hourStep}
-          minutePrefix={minutePrefix}
           minuteStep={minuteStep}
-          onChange={onChange}
-          onConfirm={onConfirm}
+          onChange={onPanelChange}
           open={open}
           popperProps={popperProps}
-          secondPrefix={secondPrefix}
           secondStep={secondStep}
           value={internalValue}
         />

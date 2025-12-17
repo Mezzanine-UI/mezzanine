@@ -5,10 +5,12 @@ export interface UsePaginationParams {
   boundaryCount?: number;
   current?: number;
   disabled?: boolean;
+  hideFirstButton?: boolean;
+  hideLastButton?: boolean;
   hideNextButton?: boolean;
   hidePreviousButton?: boolean;
-  pageSize?: number;
   onChange?: (page: number) => void;
+  pageSize?: number;
   siblingCount?: number;
   total?: number;
 }
@@ -24,10 +26,8 @@ export function usePagination(props: UsePaginationParams = {}) {
     boundaryCount = 1,
     current = 1,
     disabled = false,
-    hideNextButton = false,
-    hidePreviousButton = false,
-    pageSize = 10,
     onChange: handleChange,
+    pageSize = 10,
     siblingCount = 1,
     total = 0,
   } = props;
@@ -55,7 +55,8 @@ export function usePagination(props: UsePaginationParams = {}) {
     );
 
     return [
-      ...(hidePreviousButton ? [] : ['previous']),
+      'first',
+      'previous',
 
       ...startPages,
 
@@ -74,16 +75,10 @@ export function usePagination(props: UsePaginationParams = {}) {
 
       ...endPages,
 
-      ...(hideNextButton ? [] : ['next']),
+      'next',
+      'last',
     ];
-  }, [
-    boundaryCount,
-    current,
-    hideNextButton,
-    hidePreviousButton,
-    siblingCount,
-    totalPages,
-  ]);
+  }, [boundaryCount, current, siblingCount, totalPages]);
 
   const handleClick = useCallback(
     (page: number) => {
@@ -114,18 +109,34 @@ export function usePagination(props: UsePaginationParams = {}) {
 
         const restItemProps: { [key: string]: PaginationItemProps } = {
           previous: {
-            'aria-label': 'Go to previous Page',
-            disabled: disabled || current - 1 < 1,
+            'aria-label': 'Go to previous page',
+            disabled: disabled || current === 1,
             onClick: () => {
               handleClick(current - 1);
             },
             type: item,
           },
           next: {
-            'aria-label': 'Go to next Page',
-            disabled: disabled || current + 1 > totalPages,
+            'aria-label': 'Go to next page',
+            disabled: disabled || current === totalPages,
             onClick: () => {
               handleClick(current + 1);
+            },
+            type: item,
+          },
+          first: {
+            'aria-label': 'Go to first page',
+            disabled: disabled || current === 1,
+            onClick: () => {
+              handleClick(1);
+            },
+            type: item,
+          },
+          last: {
+            'aria-label': 'Go to last page',
+            disabled: disabled || current === totalPages,
+            onClick: () => {
+              handleClick(totalPages);
             },
             type: item,
           },

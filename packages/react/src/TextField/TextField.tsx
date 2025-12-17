@@ -234,6 +234,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
         className={cx(
           classes.host,
           {
+            [classes.slimGap]: (prefix && suffix) || clearable,
             [classes.main]: size === 'main',
             [classes.sub]: size === 'sub',
             [classes.clearable]: clearable,
@@ -251,7 +252,6 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       >
         {prefix && <div className={classes.prefix}>{prefix}</div>}
         {renderedChildren}
-        {suffix && <div className={classes.suffix}>{suffix}</div>}
         {clearable && (
           <ClearActions
             type="clearable"
@@ -265,6 +265,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
             tabIndex={-1}
           />
         )}
+        {suffix && <div className={classes.suffix}>{suffix}</div>}
       </div>
     );
   },

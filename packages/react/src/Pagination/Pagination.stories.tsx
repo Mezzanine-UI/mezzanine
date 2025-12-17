@@ -10,8 +10,6 @@ export const Playground: StoryFn<PaginationProps> = ({
   boundaryCount,
   buttonText,
   disabled,
-  hideNextButton,
-  hidePreviousButton,
   hintText,
   inputPlaceholder,
   pageSize,
@@ -27,8 +25,6 @@ export const Playground: StoryFn<PaginationProps> = ({
       buttonText={buttonText}
       current={current}
       disabled={disabled}
-      hideNextButton={hideNextButton}
-      hidePreviousButton={hidePreviousButton}
       hintText={hintText}
       inputPlaceholder={inputPlaceholder}
       pageSize={pageSize}
@@ -40,50 +36,82 @@ export const Playground: StoryFn<PaginationProps> = ({
   );
 };
 
-export const WithJumper: StoryFn = () => {
-  const [current, setCurrent] = useState(1);
-
-  return (
-    <Pagination
-      buttonText="確認"
-      current={current}
-      hintText="前往"
-      inputPlaceholder="頁碼"
-      showJumper
-      onChange={setCurrent}
-      total={100}
-    />
-  );
-};
-
-export const WithPageSize: StoryFn = () => {
+export const All: StoryFn = () => {
   const [current, setCurrent] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
   return (
-    <Pagination
-      showPageSizeOptions
-      current={current}
-      onChange={setCurrent}
-      onChangePageSize={(p) => setPageSize(p)}
-      pageSize={pageSize}
-      pageSizeOptions={[10, 20, 50, 100]}
-      pageSizeLabel="每頁顯示："
-      pageSizeUnit="筆"
-      renderPageSizeOptionName={(p) => `${p}/page`}
-      total={100}
-    />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+      <div>
+        Basic
+        <Pagination
+          current={current}
+          onChange={setCurrent}
+          onChangePageSize={(p) => setPageSize(p)}
+          pageSize={pageSize}
+          pageSizeOptions={[10, 20, 50, 100]}
+          renderPageSizeOptionName={(p) => `${p}`}
+          total={100}
+        />
+      </div>
+      <div>
+        With Page Size Options
+        <Pagination
+          showPageSizeOptions
+          current={current}
+          onChange={setCurrent}
+          onChangePageSize={(p) => setPageSize(p)}
+          pageSize={pageSize}
+          pageSizeOptions={[10, 20, 50, 100]}
+          pageSizeLabel="每頁顯示："
+          renderPageSizeOptionName={(p) => `${p}`}
+          total={100}
+        />
+      </div>
+      <div>
+        With Jumper Options
+        <Pagination
+          current={current}
+          onChange={setCurrent}
+          onChangePageSize={(p) => setPageSize(p)}
+          showJumper
+          buttonText="確認"
+          hintText="前往"
+          renderPageSizeOptionName={(p) => `${p}`}
+          total={100}
+          inputPlaceholder="1"
+        />
+      </div>
+      <div>
+        Full Featured
+        <Pagination
+          showPageSizeOptions
+          current={current}
+          onChange={setCurrent}
+          onChangePageSize={(p) => setPageSize(p)}
+          pageSize={pageSize}
+          pageSizeOptions={[10, 20, 50, 100]}
+          pageSizeLabel="每頁顯示："
+          showJumper
+          buttonText="確認"
+          hintText="前往"
+          inputPlaceholder="1"
+          renderResultSummary={(from, to, total) =>
+            `目前顯示 ${from}-${to} 筆，共 ${total} 筆資料`
+          }
+          renderPageSizeOptionName={(p) => `${p}`}
+          total={100}
+        />
+      </div>
+    </div>
   );
 };
 
 Playground.args = {
   boundaryCount: 1,
   buttonText: '確認',
-  disabled: false,
-  hideNextButton: false,
-  hidePreviousButton: false,
   hintText: '前往',
-  inputPlaceholder: '頁碼',
+  inputPlaceholder: '1',
   pageSize: 5,
   showJumper: false,
   siblingCount: 1,

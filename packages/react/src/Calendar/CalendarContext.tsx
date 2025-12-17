@@ -1,25 +1,38 @@
 'use client';
 
 import { createContext, ReactNode, useContext, useMemo } from 'react';
-import { CalendarMethods } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarLocale,
+  CalendarLocaleValue,
+  CalendarMethods,
+  normalizeLocale,
+} from '@mezzanine-ui/core/calendar';
 
 export interface CalendarConfigs extends CalendarMethods {
   defaultDateFormat: string;
   defaultTimeFormat: string;
-  displayMonthLocale: string;
-  displayWeekDayLocale: string;
-  valueLocale: string;
+  /**
+   * The unified locale for all calendar display and value processing.
+   */
+  locale: string;
 }
 
 export type CalendarConfigProviderProps = {
   children?: ReactNode;
   defaultDateFormat?: string;
   defaultTimeFormat?: string;
-  displayMonthLocale?: string;
-  displayWeekDayLocale?: string;
+  /**
+   * The unified locale for all calendar display and value processing.
+   * This determines the first day of week, month names, weekday names, etc.
+   * Use CalendarLocale enum for type-safe locale values.
+   * @example CalendarLocale.EN_US, CalendarLocale.ZH_TW, CalendarLocale.DE_DE
+   * @default CalendarLocale.EN_US
+   */
+  locale?: CalendarLocaleValue;
   methods: CalendarMethods;
-  valueLocale?: string;
 };
+
+export { CalendarLocale };
 
 export const CalendarContext = createContext<CalendarConfigs | undefined>(
   undefined,
@@ -44,29 +57,20 @@ function CalendarConfigProvider(props: CalendarConfigProviderProps) {
     children,
     defaultDateFormat = 'YYYY-MM-DD',
     defaultTimeFormat = 'HH:mm:ss',
-    displayMonthLocale = 'en-us',
-    displayWeekDayLocale = 'en-us',
+    locale = CalendarLocale.EN_US,
     methods,
-    valueLocale = 'en-us',
   } = props;
+
+  const resolvedLocale = normalizeLocale(locale);
 
   const context = useMemo(
     () => ({
       ...methods,
       defaultDateFormat,
       defaultTimeFormat,
-      displayMonthLocale,
-      displayWeekDayLocale,
-      valueLocale,
+      locale: resolvedLocale,
     }),
-    [
-      methods,
-      defaultDateFormat,
-      defaultTimeFormat,
-      displayMonthLocale,
-      displayWeekDayLocale,
-      valueLocale,
-    ],
+    [methods, defaultDateFormat, defaultTimeFormat, resolvedLocale],
   );
 
   return (

@@ -263,6 +263,102 @@ export const VerticalChips: Story = {
   },
 };
 
+export const ChipsWithLevelControl: Story = {
+  render: () => {
+    const ChipsWithLevelExample = () => {
+      const [value, setValue] = useState<string[]>(['2', '4']);
+
+      const handleChange = (event: CheckboxGroupChangeEvent) => {
+        const newValue = event.target.values || [];
+        setValue(newValue);
+      };
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '24px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            maxWidth: '600px',
+          }}
+        >
+          <Typography>Chip 模式搭配 Level 控制範例</Typography>
+          <Typography color="text-neutral">
+            使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能。
+          </Typography>
+
+          <CheckboxGroup
+            level={{
+              active: true,
+              label: '全選',
+              mode: 'chip',
+            }}
+            layout="horizontal"
+            mode="chip"
+            name="chips-level-group"
+            options={defaultOptions.slice(0, 8)}
+            value={value}
+            onChange={handleChange}
+          />
+        </div>
+      );
+    };
+
+    return <ChipsWithLevelExample />;
+  },
+};
+
+export const ChipsWithLevelControlVertical: Story = {
+  render: () => {
+    const ChipsWithLevelVerticalExample = () => {
+      const [value, setValue] = useState<string[]>(['2', '4']);
+
+      const handleChange = (event: CheckboxGroupChangeEvent) => {
+        const newValue = event.target.values || [];
+        setValue(newValue);
+      };
+
+      return (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            padding: '24px',
+            border: '1px solid #e5e7eb',
+            borderRadius: '8px',
+            maxWidth: '600px',
+          }}
+        >
+          <Typography>Chip 模式搭配 Level 控制範例（垂直佈局）</Typography>
+          <Typography color="text-neutral">
+            使用 chip 模式的 checkbox 組件，並搭配 level（全選）功能，垂直排列。
+          </Typography>
+
+          <CheckboxGroup
+            level={{
+              active: true,
+              label: '全選',
+              mode: 'chip',
+            }}
+            layout="vertical"
+            mode="chip"
+            name="chips-level-group-vertical"
+            options={defaultOptions.slice(0, 8)}
+            value={value}
+            onChange={handleChange}
+          />
+        </div>
+      );
+    };
+
+    return <ChipsWithLevelVerticalExample />;
+  },
+};
+
 export const WithLevelControlCustomization: Story = {
   render: () => {
     const CustomLevelControlExample = () => {

@@ -6,7 +6,6 @@ import moment from 'moment';
 import { CalendarConfigProvider } from '../Calendar';
 import TimePicker, { TimePickerProps } from './TimePicker';
 import Typography from '../Typography';
-import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/TimePicker',
@@ -32,14 +31,11 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
   hideHour,
   hideMinute,
   hideSecond,
-  hourPrefix,
   hourStep = 1,
-  minutePrefix,
   minuteStep = 1,
   placeholder,
   readOnly,
   required,
-  secondPrefix,
   secondStep = 1,
   size,
 }) => {
@@ -48,8 +44,8 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
-        {`current value: ${moment(val).format(format)}`}
+      <Typography variant="h3" style={typoStyle}>
+        {`current value: ${val ? moment(val).format(format) : ''}`}
       </Typography>
       <TimePicker
         value={val}
@@ -62,14 +58,11 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
         hideHour={hideHour}
         hideMinute={hideMinute}
         hideSecond={hideSecond}
-        hourPrefix={hourPrefix}
         hourStep={hourStep}
-        minutePrefix={minutePrefix}
         minuteStep={minuteStep}
         placeholder={placeholder}
         readOnly={readOnly}
         required={required}
-        secondPrefix={secondPrefix}
         secondStep={secondStep}
         size={size}
       />
@@ -79,7 +72,7 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
 
 Playground.argTypes = {
   size: {
-    options: ['small', 'medium', 'large'],
+    options: ['main', 'sub'],
     control: {
       type: 'select',
     },
@@ -87,7 +80,7 @@ Playground.argTypes = {
 };
 
 Playground.args = {
-  clearable: false,
+  clearable: true,
   disabled: false,
   error: false,
   format: 'HH:mm:ss',
@@ -95,16 +88,13 @@ Playground.args = {
   hideHour: false,
   hideMinute: false,
   hideSecond: false,
-  hourPrefix: 'Hrs',
   hourStep: 1,
-  minutePrefix: 'Min',
   minuteStep: 1,
-  placeholder: '',
+  placeholder: 'Select time',
   readOnly: false,
   required: false,
-  secondPrefix: 'Sec',
   secondStep: 1,
-  size: 'medium',
+  size: 'main',
 };
 
 export const Basic = () => {
@@ -118,25 +108,25 @@ export const Basic = () => {
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Normal
         </Typography>
         <TimePicker value={val} onChange={onChange} />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Disabled
         </Typography>
         <TimePicker value={moment().toISOString()} disabled />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Error
         </Typography>
         <TimePicker value={moment().toISOString()} error />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Read only
         </Typography>
         <TimePicker value={moment().toISOString()} readOnly />
@@ -150,29 +140,20 @@ export const Sizes = () => {
   const typoStyle = { margin: '0 0 12px 0' };
   const [val1, onChange1] = usePickerChange();
   const [val2, onChange2] = usePickerChange();
-  const [val3, onChange3] = usePickerChange();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Small
+        <Typography variant="h3" style={typoStyle}>
+          Main (Default)
         </Typography>
-        <TimePicker value={val1} onChange={onChange1} size="small" />
+        <TimePicker value={val1} onChange={onChange1} size="main" />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Medium
+        <Typography variant="h3" style={typoStyle}>
+          Sub
         </Typography>
-        <TimePicker value={val2} onChange={onChange2} size="medium" />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Large
-        </Typography>
-        <ConfigProvider size="large">
-          <TimePicker value={val3} onChange={onChange3} />
-        </ConfigProvider>
+        <TimePicker value={val2} onChange={onChange2} size="sub" />
       </div>
     </CalendarConfigProvider>
   );
@@ -183,16 +164,16 @@ export const DisplayColumn = () => {
   const typoStyle = { margin: '0 0 8px 0' };
   const [val1, onChange1] = usePickerChange();
   const [val2, onChange2] = usePickerChange();
-  const [val3, onChange3] = usePickerChange();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Hours, minutes, seconds
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val1).format('HH:mm:ss')}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${val1}
+          current value: ${val1 ? moment(val1).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val1}
@@ -202,11 +183,12 @@ export const DisplayColumn = () => {
         />
       </div>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
+        <Typography variant="h3" style={typoStyle}>
           Hours, minutes
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val2).format('HH:mm')}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${val2}
+          current value: ${val2 ? moment(val2).format('HH:mm') : ''}`}
         </Typography>
         <TimePicker
           value={val2}
@@ -216,20 +198,66 @@ export const DisplayColumn = () => {
           placeholder="HH:mm"
         />
       </div>
+    </CalendarConfigProvider>
+  );
+};
+
+export const Steps = () => {
+  const containerStyle = { margin: '0 0 32px 0' };
+  const typoStyle = { margin: '0 0 8px 0' };
+  const [val1, onChange1] = usePickerChange();
+  const [val2, onChange2] = usePickerChange();
+  const [val3, onChange3] = usePickerChange();
+
+  return (
+    <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
-          Hours
+        <Typography variant="h3" style={typoStyle}>
+          Hour step (15 minutes)
         </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val3).format('HH')}`}
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${val1}
+          current value: ${val1 ? moment(val1).format('HH:mm:ss') : ''}`}
+        </Typography>
+        <TimePicker
+          value={val1}
+          onChange={onChange1}
+          hourStep={1}
+          minuteStep={15}
+          placeholder="HH:mm:ss"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Minute step (30 seconds)
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${val2}
+          current value: ${val2 ? moment(val2).format('HH:mm:ss') : ''}`}
+        </Typography>
+        <TimePicker
+          value={val2}
+          onChange={onChange2}
+          minuteStep={1}
+          secondStep={30}
+          placeholder="HH:mm:ss"
+        />
+      </div>
+      <div style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          All steps (6 hours, 15 minutes, 20 seconds)
+        </Typography>
+        <Typography variant="body" style={typoStyle}>
+          {`origin value: ${val3}
+          current value: ${val3 ? moment(val3).format('HH:mm:ss') : ''}`}
         </Typography>
         <TimePicker
           value={val3}
           onChange={onChange3}
-          hideSecond
-          hideMinute
-          format="HH"
-          placeholder="HH"
+          hourStep={6}
+          minuteStep={15}
+          secondStep={20}
+          placeholder="HH:mm:ss"
         />
       </div>
     </CalendarConfigProvider>

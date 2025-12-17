@@ -1,4 +1,4 @@
-import { act, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import { InlineMessageSeverity } from '@mezzanine-ui/core/inline-message';
 import { InfoFilledIcon } from '@mezzanine-ui/icons';
 import { MOTION_DURATION } from '@mezzanine-ui/system/motion';
@@ -17,25 +17,33 @@ describe('<InlineMessage />', () => {
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<InlineMessage className={className} content="Test" severity="info" />),
+    render(
+      <InlineMessage className={className} content="Test" severity="info" />,
+    ),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<InlineMessage content="Hello" severity="info" />);
+    const { getHostHTMLElement } = render(
+      <InlineMessage content="Hello" severity="info" />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-inline-message')).toBeTruthy();
   });
 
   it('should render content', () => {
-    const { getHostHTMLElement } = render(<InlineMessage content="Hello World" severity="info" />);
+    const { getHostHTMLElement } = render(
+      <InlineMessage content="Hello World" severity="info" />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.textContent).toContain('Hello World');
   });
 
   it('should have accessibility attributes', () => {
-    const { getHostHTMLElement } = render(<InlineMessage content="Message" severity="info" />);
+    const { getHostHTMLElement } = render(
+      <InlineMessage content="Message" severity="info" />,
+    );
     const element = getHostHTMLElement();
 
     expect(element.getAttribute('role')).toBe('status');
@@ -72,13 +80,19 @@ describe('<InlineMessage />', () => {
   describe('prop: icon', () => {
     it('should render custom icon when provided', () => {
       const { getHostHTMLElement } = render(
-        <InlineMessage content="Message" severity="info" icon={InfoFilledIcon} />,
+        <InlineMessage
+          content="Message"
+          severity="info"
+          icon={InfoFilledIcon}
+        />,
       );
       const element = getHostHTMLElement();
       const iconElement = element.querySelector('.mzn-inline-message__icon');
 
       expect(iconElement).toBeTruthy();
-      expect(iconElement?.getAttribute('data-icon-name')).toBe(InfoFilledIcon.name);
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
+        InfoFilledIcon.name,
+      );
     });
 
     it('should render default icon when custom icon is not provided', () => {
@@ -165,7 +179,9 @@ describe('<InlineMessage />', () => {
         <InlineMessage content="Message content" severity="info" />,
       );
       const element = getHostHTMLElement();
-      const contentContainer = element.querySelector('.mzn-inline-message__content-container');
+      const contentContainer = element.querySelector(
+        '.mzn-inline-message__content-container',
+      );
       const content = element.querySelector('.mzn-inline-message__content');
 
       expect(contentContainer).toBeTruthy();

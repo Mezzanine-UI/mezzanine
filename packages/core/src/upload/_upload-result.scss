@@ -1,5 +1,0 @@
-@use '~@mezzanine-ui/system/size';
-@use './upload';
-
-$prefix: #{upload.$prefix}-result;
-$sizes: size.$sizes;

@@ -3,12 +3,15 @@
 ## 發布流程總覽
 
 ```
-v2 分支 (開發)
-  ├─ Canary 版本 (快速測試)
-  ├─ Beta 版本 (功能測試)
-  └─ RC 版本 (發布候選)
+v2 分支 (快速測試)
+  └─ Canary 版本 (快照測試)
        ↓
     合併到 main
+       ↓
+main 分支 (正式流程)
+  ├─ Alpha 版本 (內部測試)
+  ├─ Beta 版本 (公開測試)
+  └─ RC 版本 (發布候選)
        ↓
   Stable 版本 (正式發布)
 ```
@@ -23,9 +26,11 @@ v2 分支 (開發)
 
 - 需要快速驗證某個功能
 - 每日構建測試
-- 內部測試版本
+- 內部快速迭代
 
-**版本格式**: `1.0.0-canary.20250127123456`
+**版本格式**: `1.0.0-canary.0`
+
+**發布分支**: `v2`
 
 **發布命令**:
 
@@ -41,22 +46,52 @@ npm install @mezzanine-ui/react@canary
 yarn add @mezzanine-ui/react@canary
 ```
 
-### 2. Beta 版本 🧪
+### 2. Alpha 版本 🧪
 
-**用途**: 功能測試，手動版本號
+**用途**: 內部測試，手動版本號
 
 **適用場景**:
 
-- 新功能開發完成
+- 合併 v2 分支後的首次測試
+- 內部團隊測試
+- 功能初步驗證
+
+**版本格式**: `1.0.0-alpha.1`, `1.0.0-alpha.2`, ...
+
+**發布分支**: `main`
+
+**發布命令**:
+
+```bash
+# 在 main 分支（合併 v2 後）
+yarn release:alpha
+```
+
+**安裝方式**:
+
+```bash
+npm install @mezzanine-ui/react@alpha
+yarn add @mezzanine-ui/react@alpha
+```
+
+### 3. Beta 版本 🎯
+
+**用途**: 公開測試，手動版本號
+
+**適用場景**:
+
+- 功能開發完成
 - 需要用戶測試反饋
 - API 可能變更
 
 **版本格式**: `1.1.0-beta.1`, `1.1.0-beta.2`, ...
 
+**發布分支**: `main`
+
 **發布命令**:
 
 ```bash
-# 在 v2 分支
+# 在 main 分支
 yarn release:beta
 ```
 
@@ -67,7 +102,7 @@ npm install @mezzanine-ui/react@beta
 yarn add @mezzanine-ui/react@beta
 ```
 
-### 3. RC 版本 🎯
+### 4. RC 版本 🚀
 
 **用途**: 發布候選，準備正式發布
 
@@ -75,14 +110,16 @@ yarn add @mezzanine-ui/react@beta
 
 - 功能已凍結
 - 只修復 bug
-- 準備合併到 main
+- 準備正式發布
 
 **版本格式**: `1.1.0-rc.1`, `1.1.0-rc.2`, ...
+
+**發布分支**: `main`
 
 **發布命令**:
 
 ```bash
-# 在 v2 分支
+# 在 main 分支
 yarn release:rc
 ```
 
@@ -93,7 +130,7 @@ npm install @mezzanine-ui/react@rc
 yarn add @mezzanine-ui/react@rc
 ```
 
-### 4. Stable 版本 ✅
+### 5. Stable 版本 ✅
 
 **用途**: 正式版本
 
@@ -104,6 +141,8 @@ yarn add @mezzanine-ui/react@rc
 - 準備發布給所有用戶
 
 **版本格式**: `1.1.0`
+
+**發布分支**: `main`
 
 **發布命令**:
 
@@ -164,51 +203,9 @@ git checkout v2
 npm info @mezzanine-ui/react@canary
 ```
 
-#### 發布 Beta 版本
+### 發布正式流程版本 (main 分支)
 
-```bash
-# 1. 確保在 v2 分支
-git checkout v2
-
-# 2. 執行檢查
-./scripts/pre-release-check.sh
-
-# 3. 執行發布
-./scripts/release.sh
-# 選擇選項 2 (Beta)
-
-# 4. 驗證發布
-npm dist-tag ls @mezzanine-ui/react
-npm info @mezzanine-ui/react@beta
-
-# 5. 推送 git 變更
-git push origin v2
-git push origin --tags
-```
-
-#### 發布 RC 版本
-
-```bash
-# 1. 確保在 v2 分支
-git checkout v2
-
-# 2. 執行完整測試
-yarn test
-yarn lint
-
-# 3. 執行發布
-./scripts/release.sh
-# 選擇選項 3 (RC)
-
-# 4. 驗證發布
-npm info @mezzanine-ui/react@rc
-
-# 5. 推送 git 變更
-git push origin v2
-git push origin --tags
-```
-
-### 發布正式版本 (main 分支)
+#### 合併 v2 到 main
 
 ```bash
 # 1. 將 v2 合併到 main
@@ -219,23 +216,95 @@ git merge v2
 # 2. 解決衝突（如果有）
 git status
 
-# 3. 執行完整測試
+# 3. 推送變更
+git push origin main
+```
+
+#### 發布 Alpha 版本
+
+```bash
+# 1. 確保在 main 分支
+git checkout main
+
+# 2. 執行檢查
+./scripts/pre-release-check.sh
+
+# 3. 執行發布
+./scripts/release.sh
+# 選擇選項 2 (Alpha)
+
+# 4. 驗證發布
+npm dist-tag ls @mezzanine-ui/react
+npm info @mezzanine-ui/react@alpha
+
+# 5. 推送 git 變更
+git push origin main
+git push origin --tags
+```
+
+#### 發布 Beta 版本
+
+```bash
+# 1. 確保在 main 分支
+git checkout main
+
+# 2. 執行完整測試
+yarn test
+yarn lint
+
+# 3. 執行發布
+./scripts/release.sh
+# 選擇選項 3 (Beta)
+
+# 4. 驗證發布
+npm info @mezzanine-ui/react@beta
+
+# 5. 推送 git 變更
+git push origin main
+git push origin --tags
+```
+
+#### 發布 RC 版本
+
+```bash
+# 1. 確保在 main 分支
+git checkout main
+
+# 2. 執行完整測試
+yarn test
+yarn lint
+
+# 3. 執行發布
+./scripts/release.sh
+# 選擇選項 4 (RC)
+
+# 4. 驗證發布
+npm info @mezzanine-ui/react@rc
+
+# 5. 推送 git 變更
+git push origin main
+git push origin --tags
+```
+
+### 發布正式版本 (main 分支)
+
+```bash
+# 1. 確保在 main 分支
+git checkout main
+git pull origin main
+
+# 2. 執行完整測試
 yarn test
 yarn lint
 yarn build
 
-# 4. 執行發布
+# 3. 執行發布
 ./scripts/release.sh
-# 選擇選項 4 (Stable)
+# 選擇選項 5 (Stable)
 
-# 5. 推送變更
+# 4. 推送變更
 git push origin main
 git push origin --tags
-
-# 6. (可選) 更新 v2 分支
-git checkout v2
-git merge main
-git push origin v2
 ```
 
 ## 手動發布命令
@@ -243,16 +312,19 @@ git push origin v2
 如果不想使用腳本，可以直接使用以下命令：
 
 ```bash
-# Canary 版本
+# Canary 版本 (v2 分支)
 yarn release:canary
 
-# Beta 版本
+# Alpha 版本 (main 分支)
+yarn release:alpha
+
+# Beta 版本 (main 分支)
 yarn release:beta
 
-# RC 版本
+# RC 版本 (main 分支)
 yarn release:rc
 
-# Stable 版本
+# Stable 版本 (main 分支)
 yarn release:stable
 ```
 
@@ -358,17 +430,22 @@ lerna publish --force-publish
 
 ### 2. 版本號策略
 
-- **Canary**: 自動版本號，用於頻繁測試
-- **Beta**: 從 `beta.1` 開始遞增
-- **RC**: 從 `rc.1` 開始遞增
-- **Stable**: 遵循語義化版本
+- **Canary**: 自動版本號，用於 v2 分支的頻繁測試
+- **Alpha**: 從 `alpha.1` 開始遞增，用於 main 分支的內部測試
+- **Beta**: 從 `beta.1` 開始遞增，用於 main 分支的公開測試
+- **RC**: 從 `rc.1` 開始遞增，用於 main 分支的發布候選
+- **Stable**: 遵循語義化版本，用於 main 分支的正式發布
 
 ### 3. Git Workflow
 
 ```
-feature branch → v2 branch → main branch
-                  ↓             ↓
-              canary/beta/rc  stable
+v2 branch (快速開發)
+    └─ canary
+         ↓
+    merge to main
+         ↓
+main branch (正式流程)
+    └─ alpha → beta → rc → stable
 ```
 
 ### 4. 通知用戶
@@ -384,8 +461,9 @@ feature branch → v2 branch → main branch
 | 版本類型 | 分支 | 命令                  | 安裝方式  |
 | -------- | ---- | --------------------- | --------- |
 | Canary   | v2   | `yarn release:canary` | `@canary` |
-| Beta     | v2   | `yarn release:beta`   | `@beta`   |
-| RC       | v2   | `yarn release:rc`     | `@rc`     |
+| Alpha    | main | `yarn release:alpha`  | `@alpha`  |
+| Beta     | main | `yarn release:beta`   | `@beta`   |
+| RC       | main | `yarn release:rc`     | `@rc`     |
 | Stable   | main | `yarn release:stable` | `@latest` |
 
 ## 腳本位置

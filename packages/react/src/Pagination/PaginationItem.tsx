@@ -7,12 +7,16 @@ import {
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
+  DotHorizontalIcon,
+  DoubleChevronLeftIcon,
+  DoubleChevronRightIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
 
 import Icon from '../Icon';
 
 import { cx } from '../utils/cx';
+import Typography from '../Typography';
 
 export type PaginationItemElement = HTMLButtonElement | HTMLDivElement;
 
@@ -40,7 +44,7 @@ export interface PaginationItemProps
    */
   page?: number;
   /**
-   * Whether the field type.
+   * The type of pagination item.
    * @default 'page'
    */
   type?: PaginationItemType;
@@ -60,6 +64,8 @@ const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
     const icons: { [index: string]: IconDefinition } = {
       next: ChevronRightIcon,
       previous: ChevronLeftIcon,
+      first: DoubleChevronLeftIcon,
+      last: DoubleChevronRightIcon,
     };
 
     const ButtonIcon = icons[type];
@@ -77,7 +83,7 @@ const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
           className,
         )}
       >
-        ...
+        <Icon icon={DotHorizontalIcon} />
       </div>
     ) : (
       <button
@@ -97,7 +103,9 @@ const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
         type="button"
       >
         {ButtonIcon && <Icon icon={ButtonIcon} />}
-        {type === 'page' && page}
+        {type === 'page' && (
+          <Typography variant="label-primary">{page}</Typography>
+        )}
       </button>
     );
   },

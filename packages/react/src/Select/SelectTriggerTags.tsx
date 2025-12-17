@@ -12,7 +12,6 @@ import TagGroup from '../Tag/TagGroup';
 
 export interface SelectTriggerTagsProps {
   disabled?: boolean;
-  ellipsis: boolean;
   inputProps?: Omit<
     NativeElementPropsWithoutKeyAndRef<'input'>,
     | 'autoComplete'
@@ -33,6 +32,7 @@ export interface SelectTriggerTagsProps {
   >;
   inputRef?: Ref<HTMLInputElement>;
   onTagClose?: (target: SelectValue) => void;
+  overflowStrategy: 'counter' | 'wrap';
   readOnly?: boolean;
   required?: boolean;
   searchText?: string;
@@ -45,10 +45,10 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
   function SelectTriggerTags(props, ref) {
     const {
       disabled,
-      ellipsis,
       inputProps,
       inputRef,
       onTagClose,
+      overflowStrategy,
       readOnly,
       required,
       searchText,
@@ -62,7 +62,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
 
     const { overflowSelections, renderFakeTags, visibleSelections } =
       useSelectTriggerTags({
-        enabled: ellipsis,
+        enabled: overflowStrategy === 'counter',
         containerRef: wrapperRef,
         tagsRef,
         value,
@@ -70,29 +70,43 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
       });
 
     const displaySelections = useMemo(
-      () => (ellipsis ? visibleSelections : value),
-      [ellipsis, value, visibleSelections],
+      () => (overflowStrategy === 'counter' ? visibleSelections : value),
+      [overflowStrategy, value, visibleSelections],
     );
 
     const tagChildren = useMemo(() => {
-      const tags = displaySelections.map((selection) => (
-        <Tag
-          key={selection.id}
-          type="dismissable"
-          disabled={disabled}
-          onClose={(e) => {
-            e.stopPropagation();
-            onTagClose?.(selection);
-          }}
-          readOnly={readOnly}
-          size={size}
-          label={selection.name}
-        />
-      ));
+      const tags = displaySelections.map((selection) => {
+        if (readOnly) {
+          return (
+            <Tag
+              key={selection.id}
+              type="static"
+              size={size}
+              label={selection.name}
+              readOnly
+            />
+          );
+        }
 
-      if (ellipsis && overflowSelections.length) {
+        return (
+          <Tag
+            key={selection.id}
+            type="dismissable"
+            disabled={disabled}
+            onClose={(e) => {
+              e.stopPropagation();
+              onTagClose?.(selection);
+            }}
+            size={size}
+            label={selection.name}
+          />
+        );
+      });
+
+      if (overflowStrategy === 'counter' && overflowSelections.length) {
         tags.push(
           <OverflowCounterTag
+            disabled={disabled}
             key="overflow-counter"
             onClick={(e) => {
               e.stopPropagation();
@@ -104,6 +118,7 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
 
               onTagClose?.(target);
             }}
+            readOnly={readOnly}
             tagSize={size}
             tags={overflowSelections.map((selection) => selection.name)}
           />,
@@ -114,9 +129,9 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
     }, [
       disabled,
       displaySelections,
-      ellipsis,
       onTagClose,
       overflowSelections,
+      overflowStrategy,
       readOnly,
       size,
     ]);
@@ -125,18 +140,19 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
       <div
         ref={composedRef}
         className={cx(classes.triggerTagsInputWrapper, {
-          [classes.triggerTagsInputWrapperEllipsis]: ellipsis,
+          [classes.triggerTagsInputWrapperEllipsis]:
+            overflowStrategy === 'counter',
         })}
       >
         <div
           ref={tagsRef}
           className={cx(classes.triggerTags, {
-            [classes.triggerTagsEllipsis]: ellipsis,
+            [classes.triggerTagsEllipsis]: overflowStrategy === 'counter',
           })}
         >
           <TagGroup>{tagChildren}</TagGroup>
 
-          {ellipsis ? renderFakeTags() : null}
+          {overflowStrategy === 'counter' ? renderFakeTags() : null}
         </div>
 
         {showTextInputAfterTags ? (

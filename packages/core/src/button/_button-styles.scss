@@ -733,25 +733,26 @@ $size-configs: (
     @include _apply-padding($default-padding);
 
     // Icon leading - 左邊有 icon
-    &--icon-leading {
+    &.#{$prefix}--icon-leading {
       $leading-padding: map.get($padding-configs, leading);
 
       @include _apply-padding($leading-padding);
     }
 
     // Icon trailing - 右邊有 icon
-    &--icon-trailing {
+    &.#{$prefix}--icon-trailing {
       $trailing-padding: map.get($padding-configs, trailing);
 
       @include _apply-padding($trailing-padding);
     }
 
     // Icon only - 只有 icon 沒有文字
-    &--icon-only {
+    &.#{$prefix}--icon-only {
       $icon-only-padding: map.get($padding-configs, icon-only);
 
       @include _apply-padding($icon-only-padding);
 
+      width: fit-content;
       aspect-ratio: 1;
     }
   }

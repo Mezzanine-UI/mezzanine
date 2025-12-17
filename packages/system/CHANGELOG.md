@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.3...@mezzanine-ui/system@1.0.0-alpha.0) (2025-12-17)
+
+**Note:** Version bump only for package @mezzanine-ui/system
+
+# [1.0.0-canary.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.2...@mezzanine-ui/system@1.0.0-canary.3) (2025-12-17)
+
+### Bug Fixes
+
+- **system/spacing:** update ultra spacing ([a22ebc9](https://github.com/Mezzanine-UI/mezzanine/commit/a22ebc9c3b33e8275c3053b5fb222ada88c8141e))
+
+### Features
+
+- **system/motion:** motion variable mapping fix ([85cfa3b](https://github.com/Mezzanine-UI/mezzanine/commit/85cfa3b4a460915df25814e3ca7539564c40e180))
+- **system/motion:** update motion variables ([031b5a1](https://github.com/Mezzanine-UI/mezzanine/commit/031b5a177477557b78e63f592f82fba83f93281c))
+- **system/transition:** transition easing function implement ([1420f81](https://github.com/Mezzanine-UI/mezzanine/commit/1420f811a3f5c8219331619ed66c7d3ec481a9a9))
+- **system/z-index:** add more z-index orders ([fb8bf37](https://github.com/Mezzanine-UI/mezzanine/commit/fb8bf37ce20bb1024bdede194e1a99746c70bcb9))
+
 # [1.0.0-canary.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@0.16.0...@mezzanine-ui/system@1.0.0-canary.2) (2025-11-17)
 
 ### Bug Fixes

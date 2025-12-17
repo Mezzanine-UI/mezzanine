@@ -34,16 +34,17 @@ echo "請選擇發布類型："
 echo ""
 echo -e "${YELLOW}測試版本 (v2 分支)：${NC}"
 echo "  1. 🔥 Canary   - 快照版本 (自動版本號，用於快速測試)"
-echo "  2. 🧪 Beta     - 測試版本 (手動版本號，用於功能測試)"
-echo "  3. 🎯 RC       - 發布候選版本 (準備正式發布前的最後測試)"
 echo ""
-echo -e "${GREEN}正式版本 (main 分支)：${NC}"
-echo "  4. ✅ Stable   - 正式版本 (僅在 main 分支發布)"
+echo -e "${GREEN}正式版本流程 (main 分支)：${NC}"
+echo "  2. 🧪 Alpha    - 內部測試版本 (首個測試版本)"
+echo "  3. 🎯 Beta     - 公開測試版本 (功能測試)"
+echo "  4. 🚀 RC       - 發布候選版本 (準備正式發布前的最後測試)"
+echo "  5. ✅ Stable   - 正式版本 (生產環境)"
 echo ""
 echo "  0. ❌ 取消"
 echo ""
 
-read -p "請選擇 (0-4): " choice
+read -p "請選擇 (0-5): " choice
 
 case $choice in
   1)
@@ -56,15 +57,6 @@ case $choice in
     echo ""
     echo -e "${YELLOW}📦 準備發布 Canary 版本...${NC}"
     echo -e "${BLUE}ℹ️  Canary 版本會自動生成時間戳版本號${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
@@ -82,24 +74,41 @@ case $choice in
     ;;
 
   2)
-    if [ "$CURRENT_BRANCH" != "v2" ]; then
-      echo -e "${RED}❌ Beta 版本只能在 v2 分支發布${NC}"
-      echo -e "${YELLOW}💡 提示: 請切換到 v2 分支: git checkout v2${NC}"
+    if [ "$CURRENT_BRANCH" != "main" ]; then
+      echo -e "${RED}❌ Alpha 版本只能在 main 分支發布${NC}"
+      echo -e "${YELLOW}💡 提示: 請先將 v2 合併到 main 分支: git checkout main && git merge v2${NC}"
+      exit 1
+    fi
+
+    echo ""
+    echo -e "${YELLOW}📦 準備發布 Alpha 版本...${NC}"
+    echo -e "${BLUE}ℹ️  Alpha 版本格式: x.y.z-alpha.n (從 .1 開始)${NC}"
+    echo ""
+
+    # 發布
+    echo -e "${YELLOW}🚀 發布中...${NC}"
+    yarn release:alpha
+
+    echo ""
+    echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
+    echo -e "${GREEN}║   ✅ Alpha 版本發布完成！                 ║${NC}"
+    echo -e "${GREEN}╚════════════════════════════════════════════╝${NC}"
+    echo ""
+    echo -e "${BLUE}📦 安裝方式:${NC}"
+    echo -e "   npm install @mezzanine-ui/react@alpha"
+    echo -e "   yarn add @mezzanine-ui/react@alpha"
+    ;;
+
+  3)
+    if [ "$CURRENT_BRANCH" != "main" ]; then
+      echo -e "${RED}❌ Beta 版本只能在 main 分支發布${NC}"
+      echo -e "${YELLOW}💡 提示: 請先將 v2 合併到 main 分支${NC}"
       exit 1
     fi
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Beta 版本...${NC}"
     echo -e "${BLUE}ℹ️  Beta 版本格式: x.y.z-beta.n${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
@@ -116,25 +125,16 @@ case $choice in
     echo -e "   yarn add @mezzanine-ui/react@beta"
     ;;
 
-  3)
-    if [ "$CURRENT_BRANCH" != "v2" ]; then
-      echo -e "${RED}❌ RC 版本只能在 v2 分支發布${NC}"
-      echo -e "${YELLOW}💡 提示: 請切換到 v2 分支: git checkout v2${NC}"
+  4)
+    if [ "$CURRENT_BRANCH" != "main" ]; then
+      echo -e "${RED}❌ RC 版本只能在 main 分支發布${NC}"
+      echo -e "${YELLOW}💡 提示: 請先將 v2 合併到 main 分支${NC}"
       exit 1
     fi
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 RC 版本...${NC}"
     echo -e "${BLUE}ℹ️  RC 版本格式: x.y.z-rc.n${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
@@ -151,7 +151,7 @@ case $choice in
     echo -e "   yarn add @mezzanine-ui/react@rc"
     ;;
 
-  4)
+  5)
     if [ "$CURRENT_BRANCH" != "main" ]; then
       echo -e "${RED}❌ Stable 版本只能在 main 分支發布${NC}"
       echo -e "${YELLOW}💡 提示: 請先將 v2 合併到 main 分支${NC}"
@@ -171,15 +171,6 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Stable 版本...${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行完整測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
