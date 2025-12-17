@@ -106,6 +106,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
           <span
             className={cx(classes.host, {
               [classes.checked]: checked,
+              [classes.focused]: focused,
               [classes.error]: error,
             })}
           >
