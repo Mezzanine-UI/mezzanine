@@ -62,6 +62,7 @@ $chip-host-states: (
 // Get mode property value
 @function _get-mode-property($mode-map, $property) {
   $value: map.get($mode-map, $property);
+
   @return if($value == none, null, $value);
 }
 
@@ -170,6 +171,7 @@ $checked-states: (
 // Get color value from state map
 @function _get-state-color($state-map, $property) {
   $value: map.get($state-map, $property);
+
   @return if($value == none, null, $value);
 }
 
@@ -241,6 +243,7 @@ $checked-states: (
       @include _apply-mode-styles(chip);
       @include _apply-mode-input-padding(chip);
       @include _apply-chip-host-styles(base);
+
       cursor: pointer;
       transition:
         transition.standard(border-color, fast),
@@ -257,6 +260,7 @@ $checked-states: (
       &.#{$prefix}--disabled,
       .#{input-check.$prefix}--disabled & {
         @include _apply-chip-host-styles(disabled);
+
         cursor: not-allowed;
       }
     }
@@ -306,11 +310,11 @@ $checked-states: (
 
     // set the checkmark icon thickness
     svg {
-      filter: drop-shadow(0 0 0.3px currentColor);
+      filter: drop-shadow(0 0 0.3px currentcolor);
     }
 
     path {
-      stroke: currentColor;
+      stroke: currentcolor;
       stroke-width: 0.5px;
       stroke-linejoin: round;
       stroke-linecap: round;
@@ -320,10 +324,11 @@ $checked-states: (
     .#{$prefix}--chip.#{$prefix}--checked & {
       --mzn-icon-size: 16px;
       --mzn-icon-color: #{palette.semantic-variable(icon, brand)};
+
       position: relative;
       top: initial;
       left: initial;
-      transform: initial; 
+      transform: initial;
     }
   }
 
@@ -362,8 +367,6 @@ $checked-states: (
   }
 
   &__input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     border: 1px solid;
     border-radius: radius.variable(tiny);
@@ -440,12 +443,14 @@ $checked-states: (
 
     .#{$prefix}__input {
       @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+
       cursor: not-allowed;
     }
 
     // Chip mode disabled state (cursor only, colors handled in &:has block)
     &.#{$prefix}--chip {
       @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+
       cursor: not-allowed;
     }
 
@@ -474,7 +479,7 @@ $checked-states: (
   &:hover:not(.#{$prefix}--disabled):not(.#{input-check.$prefix}--disabled &),
   .#{input-check.$prefix}:hover &:not(.#{$prefix}--disabled) {
     .#{$prefix}__input {
-      &:not(:checked):not(:indeterminate) {
+      &:not(:checked, :indeterminate) {
         @include _apply-input-state-colors(map.get($unchecked-states, hover));
       }
 
@@ -550,8 +555,7 @@ $checked-states: (
   }
 
   &--horizontal {
-    column-gap: spacing.semantic-variable(gap, comfort);
-    row-gap: spacing.semantic-variable(gap, none);
+    gap: spacing.semantic-variable(gap, none) spacing.semantic-variable(gap, comfort);
     align-items: center;
     flex-wrap: wrap;
     transition:
