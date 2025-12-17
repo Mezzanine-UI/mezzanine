@@ -1,16 +1,16 @@
 import {
   Children,
   cloneElement,
+  CSSProperties,
   forwardRef,
   Key,
   MouseEvent,
   ReactElement,
-  ReactNode,
+  useLayoutEffect,
   useRef,
+  useState,
 } from 'react';
 import { tabClasses as classes } from '@mezzanine-ui/core/tab';
-import { ChevronLeftIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
-import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCustomControlValue } from '../Form/useCustomControlValue';
@@ -24,19 +24,24 @@ export interface TabProps
     'onChange' | 'children'
   > {
   /**
-   * Current TabPane's index
+   * Current TabItem's index
    */
   activeKey?: Key;
   /**
-   * The tab panes in tabs
+   * The TabItems in tab
    */
   children: TabsChild | TabsChild[];
   /**
-   * Initial active TabPane's key, if activeKey is not set.
+   * Initial active TabItem's key, if activeKey is not set.
    */
   defaultActiveKey?: Key;
   /**
-   * The change event handler of Tabs
+   * The direction of tab
+   * @default 'horizontal'
+   */
+  direction?: 'horizontal' | 'vertical';
+  /**
+   * The change event handler of Tab
    */
   onChange?: (activeKey: Key) => void;
   /**
@@ -59,6 +64,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     defaultActiveKey = 0,
     onChange,
     onTabClick,
+    direction = 'horizontal',
     ...rest
   } = props;
 
@@ -68,6 +74,8 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     value: activeKeyProp,
   });
 
+  const activeTabItemRef = useRef<HTMLDivElement>(null);
+
   const tabItems = Children.map(children, (tabItem, index) => {
     if (!tabItem || tabItem.type !== TabItem) {
       return null;
@@ -76,24 +84,62 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     const key = tabItem.key ?? index;
     const active = activeKey.toString() === key.toString();
 
-    return cloneElement<TabItemProps>(tabItem, {
-      key,
-      active,
-      onClick: (event) => {
-        if (!active) {
-          setActiveKey(key);
-        }
+    return cloneElement<TabItemProps & { ref?: React.Ref<HTMLDivElement> }>(
+      tabItem,
+      {
+        key,
+        active,
+        ref: active ? activeTabItemRef : undefined,
+        onClick: (event) => {
+          if (!active) {
+            setActiveKey(key);
+          }
 
-        if (onTabClick) {
-          onTabClick(key, event);
-        }
+          if (onTabClick) {
+            onTabClick(key, event);
+          }
+        },
       },
-    });
+    );
   });
 
+  // get active TabItem left and width for activeBar position
+  const [activeBarStyle, setActiveBarStyle] = useState<CSSProperties>({
+    '--active-bar-length': '0px',
+    '--active-bar-shift': '0px',
+  } as CSSProperties);
+
+  useLayoutEffect(() => {
+    const activeTabElement = activeTabItemRef.current;
+
+    if (activeTabElement) {
+      const { offsetLeft, offsetWidth, offsetTop, offsetHeight } =
+        activeTabElement;
+
+      setActiveBarStyle({
+        '--active-bar-length':
+          direction === 'horizontal' ? `${offsetWidth}px` : `${offsetHeight}px`,
+        '--active-bar-shift':
+          direction === 'horizontal' ? `${offsetLeft}px` : `${offsetTop}px`,
+      } as CSSProperties);
+    }
+  }, [activeKey, direction]);
+
   return (
-    <div {...rest} ref={ref} className={cx(classes.host, className)}>
+    <div
+      {...rest}
+      ref={ref}
+      className={cx(
+        classes.host,
+        {
+          [classes.tabHorizontal]: direction === 'horizontal',
+          [classes.tabVertical]: direction === 'vertical',
+        },
+        className,
+      )}
+    >
       {tabItems}
+      <div className={classes.tabActiveBar} style={activeBarStyle} />
     </div>
   );
 });
