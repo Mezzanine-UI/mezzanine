@@ -131,8 +131,7 @@ $status-hierarchy: (
   width: fit-content;
   align-items: center;
   justify-content: flex-start;
-  flex-direction: row;
-  flex-wrap: nowrap;
+  flex-flow: row nowrap;
   position: relative;
 
   // 預設使用 progress type
@@ -141,6 +140,7 @@ $status-hierarchy: (
   // 套用各 type 的配置
   &--progress {
     @include _apply-type-config(progress);
+
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -148,12 +148,14 @@ $status-hierarchy: (
 
   &--percent {
     @include _apply-type-config(percent);
+
     width: 100%;
     flex-direction: row;
   }
 
   &--icon {
     @include _apply-type-config(icon);
+
     width: 100%;
     flex-direction: row;
   }
@@ -207,6 +209,7 @@ $status-hierarchy: (
 
   &__info-percent {
     @include typography.semantic-variable(input);
+
     color: palette.semantic-variable(text, neutral-solid);
     text-align: right;
     font-feature-settings: 'liga' off, 'clig' off;
