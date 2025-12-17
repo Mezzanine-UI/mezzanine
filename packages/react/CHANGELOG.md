@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.8...@mezzanine-ui/react@1.0.0-alpha.0) (2025-12-17)
+
+### Bug Fixes
+
+- **react/pagination:** pr interface issue ([2a9f4a9](https://github.com/Mezzanine-UI/mezzanine/commit/2a9f4a92a21101a1be2ce83be92a98a9b475b3a6))
+
+### Features
+
+- **react/pagination:** v2 implement ([ccfb697](https://github.com/Mezzanine-UI/mezzanine/commit/ccfb697a1bb74397f8b5d0167839ec4191256a4d))
+
 # [1.0.0-canary.8](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.7...@mezzanine-ui/react@1.0.0-canary.8) (2025-12-17)
 
 **Note:** Version bump only for package @mezzanine-ui/react

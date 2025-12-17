@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.3...@mezzanine-ui/icons@1.0.0-alpha.0) (2025-12-17)
+
+**Note:** Version bump only for package @mezzanine-ui/icons
+
 # [1.0.0-canary.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.2...@mezzanine-ui/icons@1.0.0-canary.3) (2025-12-17)
 
 ### Bug Fixes

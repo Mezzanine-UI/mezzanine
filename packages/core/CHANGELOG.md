@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-alpha.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.6...@mezzanine-ui/core@1.0.0-alpha.0) (2025-12-17)
+
+### Features
+
+- **core/pagination:** v2 styles implement ([9dd8b48](https://github.com/Mezzanine-UI/mezzanine/commit/9dd8b48b232bd4a879f1a4ea8477e9f5bfc371d1))
+
 # [1.0.0-canary.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.5...@mezzanine-ui/core@1.0.0-canary.6) (2025-12-17)
 
 **Note:** Version bump only for package @mezzanine-ui/core
