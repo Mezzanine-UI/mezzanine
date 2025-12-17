@@ -401,9 +401,6 @@ export {
   default as Calendar,
   CalendarCell,
   CalendarConfigProvider,
-  CalendarConfigProviderDayjs,
-  CalendarConfigProviderLuxon,
-  CalendarConfigProviderMoment,
   CalendarContext,
   CalendarControls,
   CalendarDayOfWeek,
@@ -422,9 +419,6 @@ export {
 } from './Calendar';
 export type {
   CalendarCellProps,
-  CalendarConfigProviderDayjsProps,
-  CalendarConfigProviderLuxonProps,
-  CalendarConfigProviderMomentProps,
   CalendarConfigProviderProps,
   CalendarConfigs,
   CalendarControlModifier,

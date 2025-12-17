@@ -22,24 +22,6 @@ export type CalendarConfigProviderDayjsProps = {
 /**
  * Pre-configured CalendarConfigProvider with Dayjs methods.
  * Use this component in Next.js App Router to avoid Server/Client Component boundary issues.
- *
- * @example
- * ```tsx
- * // In your Next.js app/layout.tsx
- * import { CalendarConfigProviderDayjs, CalendarLocale } from '@mezzanine-ui/react';
- *
- * export default function RootLayout({ children }) {
- *   return (
- *     <html>
- *       <body>
- *         <CalendarConfigProviderDayjs locale={CalendarLocale.ZH_TW}>
- *           {children}
- *         </CalendarConfigProviderDayjs>
- *       </body>
- *     </html>
- *   );
- * }
- * ```
  */
 export function CalendarConfigProviderDayjs(
   props: CalendarConfigProviderDayjsProps,

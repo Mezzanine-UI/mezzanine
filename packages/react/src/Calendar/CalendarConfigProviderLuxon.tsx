@@ -22,24 +22,6 @@ export type CalendarConfigProviderLuxonProps = {
 /**
  * Pre-configured CalendarConfigProvider with Luxon methods.
  * Use this component in Next.js App Router to avoid Server/Client Component boundary issues.
- *
- * @example
- * ```tsx
- * // In your Next.js app/layout.tsx
- * import { CalendarConfigProviderLuxon, CalendarLocale } from '@mezzanine-ui/react';
- *
- * export default function RootLayout({ children }) {
- *   return (
- *     <html>
- *       <body>
- *         <CalendarConfigProviderLuxon locale={CalendarLocale.ZH_TW}>
- *           {children}
- *         </CalendarConfigProviderLuxon>
- *       </body>
- *     </html>
- *   );
- * }
- * ```
  */
 export function CalendarConfigProviderLuxon(
   props: CalendarConfigProviderLuxonProps,

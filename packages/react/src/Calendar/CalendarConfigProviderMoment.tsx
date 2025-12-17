@@ -22,24 +22,6 @@ export type CalendarConfigProviderMomentProps = {
 /**
  * Pre-configured CalendarConfigProvider with Moment methods.
  * Use this component in Next.js App Router to avoid Server/Client Component boundary issues.
- *
- * @example
- * ```tsx
- * // In your Next.js app/layout.tsx
- * import { CalendarConfigProviderMoment, CalendarLocale } from '@mezzanine-ui/react';
- *
- * export default function RootLayout({ children }) {
- *   return (
- *     <html>
- *       <body>
- *         <CalendarConfigProviderMoment locale={CalendarLocale.ZH_TW}>
- *           {children}
- *         </CalendarConfigProviderMoment>
- *       </body>
- *     </html>
- *   );
- * }
- * ```
  */
 export function CalendarConfigProviderMoment(
   props: CalendarConfigProviderMomentProps,

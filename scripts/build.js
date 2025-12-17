@@ -124,7 +124,11 @@ async function run() {
   /**
    * build
    */
-  const input = await getFilesByGlob(`${packageSrcPath}/**/index.ts`);
+  const indexFiles = await getFilesByGlob(`${packageSrcPath}/**/index.ts`);
+  const entryFiles = await getFilesByGlob(
+    `${packageSrcPath}/{dayjs,moment,luxon}.ts`,
+  );
+  const input = [...indexFiles, ...entryFiles];
 
   await rollupBuild({
     input,
