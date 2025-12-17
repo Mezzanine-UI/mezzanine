@@ -26,7 +26,7 @@ $square-size: spacing.primitive-variable(140);
 
   // Container mode for Upload component (when used as div, not label)
   &[role='group'],
-  &:not(label):not(button) {
+  &:not(label, button) {
     display: flex;
     flex-direction: column;
     width: auto;

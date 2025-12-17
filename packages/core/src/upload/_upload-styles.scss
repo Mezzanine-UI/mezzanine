@@ -14,8 +14,7 @@
     gap: spacing.semantic-variable(gap, base);
 
     &--cards {
-      flex-direction: row;
-      flex-wrap: wrap;
+      flex-flow: row wrap;
       gap: spacing.semantic-variable(gap, base);
     }
   }
@@ -43,6 +42,7 @@
   &__hint--error,
   &__hint--info {
     @include typography.semantic-variable(annotation);
+
     color: palette.semantic-variable(text, neutral);
     display: flex;
     align-items: center;
