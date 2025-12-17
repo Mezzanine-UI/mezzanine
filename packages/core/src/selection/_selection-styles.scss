@@ -93,7 +93,7 @@ $states: (
   justify-content: center;
   border: $border-width solid palette.semantic-variable(border, neutral-faint);
   border-radius: radius.variable(roomy);
-  background-color: palette.semantic-variable(canvas, base);
+  background-color: palette.semantic-variable("background", base);
   cursor: pointer;
   user-select: none;
   width: fit-content;
@@ -281,15 +281,15 @@ $states: (
         border-color: palette.semantic-variable(border, brand);
 
         &::before {
-          background-color: palette.semantic-variable(canvas, brand);
+          background-color: palette.semantic-variable("background", brand);
         }
       }
 
       &:disabled {
-        border-color: palette.semantic-variable(canvas, neutral);
+        border-color: palette.semantic-variable("background", neutral);
 
         &:checked::before {
-          background-color: palette.semantic-variable(canvas, neutral);
+          background-color: palette.semantic-variable("background", neutral);
         }
       }
     }
@@ -315,7 +315,7 @@ $states: (
       }
 
       &:checked {
-        background-color: palette.semantic-variable(canvas, brand);
+        background-color: palette.semantic-variable("background", brand);
         border-color: palette.semantic-variable(border, brand);
 
         &::after {
@@ -324,7 +324,7 @@ $states: (
       }
 
       &:disabled {
-        background-color: palette.semantic-variable(canvas, neutral-subtle);
+        background-color: palette.semantic-variable("background", neutral-subtle);
         border-color: palette.semantic-variable(border, neutral-light);
 
         &::after {

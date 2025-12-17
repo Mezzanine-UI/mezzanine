@@ -207,7 +207,7 @@ $thumbnail-image-size: spacing.primitive-variable(40);
         color: palette.semantic-variable(icon, error);
       }
     }
-  }  
+  }
 
   &__error-message {
     display: flex;
@@ -223,11 +223,11 @@ $thumbnail-image-size: spacing.primitive-variable(40);
 
   &--disabled {
     .#{$prefix}__container {
-      border-color: palette.semantic-variable(canvas, neutral-subtle);
+      border-color: palette.semantic-variable("background", neutral-subtle);
       cursor: not-allowed;
 
       &:hover {
-        border-color: palette.semantic-variable(canvas, neutral-subtle);
+        border-color: palette.semantic-variable("background", neutral-subtle);
         cursor: not-allowed;
       }
 
@@ -235,7 +235,7 @@ $thumbnail-image-size: spacing.primitive-variable(40);
       &:focus-visible,
       &:focus-within,
       &:focus-within:hover {
-        border-color: palette.semantic-variable(canvas, neutral-subtle);
+        border-color: palette.semantic-variable("background", neutral-subtle);
         cursor: not-allowed;
       }
     }
