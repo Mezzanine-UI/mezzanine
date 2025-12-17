@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.4...@mezzanine-ui/core@1.0.0-canary.5) (2025-12-17)
+
+### Bug Fixes
+
+- revert auto fix for semantic background ([e44e476](https://github.com/Mezzanine-UI/mezzanine/commit/e44e47614dfe255c713c1d7c5573d75d4ca7e9b3))
+
 # [1.0.0-canary.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.3...@mezzanine-ui/core@1.0.0-canary.4) (2025-12-17)
 
 ### Bug Fixes
