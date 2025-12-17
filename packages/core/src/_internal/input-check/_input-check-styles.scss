@@ -8,6 +8,7 @@
 .#{$prefix} {
   --#{$prefix}-control-size: #{spacing.semantic-variable(size, element, base-fixed)};
   --#{$prefix}-color: #{palette.semantic-variable('border', brand)};
+  --#{$prefix}-checked-hover-color: #{palette.semantic-variable('background', brand-strong)};
 
   display: inline-flex;
   align-items: flex-start;
@@ -72,6 +73,7 @@
 
   &--error {
     --#{$prefix}-color: #{palette.semantic-variable('border', error)};
+    --#{$prefix}-checked-hover-color: #{palette.semantic-variable('background', error-strong)};
   }
 
   &--disabled {
