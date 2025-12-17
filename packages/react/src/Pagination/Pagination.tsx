@@ -12,6 +12,7 @@ import PaginationPageSize, {
 } from './PaginationPageSize';
 import { usePagination } from './usePagination';
 import { cx } from '../utils/cx';
+import Typography from '../Typography';
 
 export interface PaginationProps
   extends Omit<
@@ -33,74 +34,68 @@ export interface PaginationProps
    */
   current?: number;
   /**
-   * Whether the fields is disabled.
-   * @default false
+   * If `true`, the fields are disabled.
    */
-  disabled?: boolean;
-  /**
-   * If `true`, hide the next-page button.
-   * @default false
-   */
-  hideNextButton?: boolean;
-  /**
-   * If `true`, hide the previous-page button.
-   * @default false
-   */
-  hidePreviousButton?: boolean;
+  disabled?: true;
   /**
    * The hint text displayed in front of jumper `input`.
    */
   hintText?: string;
   /**
-   * The hint displayed in the jumper `input` before the user enters a value.
+   * The placeholder displayed in the jumper input before the user enters a value.
    */
   inputPlaceholder?: string;
   /**
    * Render the item.
-   * @param {PaginationRenderItemParams} params The props to spread on a PaginationItem.
+   * @param {PaginationItemProps} item The props to spread on a PaginationItem.
    * @returns {ReactNode}
    * @default (item) => <PaginationItem {...item} />
    */
   itemRender?: (item: PaginationItemProps) => ReactNode;
   /**
    * Callback fired when the page is changed.
-   *
-   * @param {number} page The page active.
+   * @param {number} page The active page number.
    */
   onChange?: (page: number) => void;
   /**
-   * Callback fired when the page size is changed
-   *
-   * @param {number} pageSize
+   * Callback fired when the page size is changed.
+   * @param {number} pageSize The new page size.
    */
   onChangePageSize?: PaginationPageSizeProps['onChange'];
   /**
-   * Number of data per page
+   * Number of items per page.
    * @default 10
    */
   pageSize?: PaginationPageSizeProps['value'];
   /**
-   * Label display before page size selector
+   * Label displayed before page size selector.
    */
   pageSizeLabel?: PaginationPageSizeProps['label'];
   /**
-   * Page size options to render
+   * Page size options to render.
    */
   pageSizeOptions?: PaginationPageSizeProps['options'];
   /**
-   * Page size unit after `select`
+   * Render custom result summary.
+   * @param {number} from Start index of current page.
+   * @param {number} to End index of current page.
+   * @param {number} total Total number of items.
+   * @returns {string}
+   * @example (from, to, total) => `目前顯示 ${from}-${to} 筆，共 ${total} 筆資料`
    */
-  pageSizeUnit?: PaginationPageSizeProps['unit'];
+  renderResultSummary?: (from: number, to: number, total: number) => string;
   /**
-   * Render custom page size option name
+   * Render custom page size option name.
    */
   renderPageSizeOptionName?: PaginationPageSizeProps['renderOptionName'];
   /**
-   * Show jumper or not.
+   * If `true`, show jumper.
+   * @default false
    */
   showJumper?: boolean;
   /**
-   * Ship page size or not
+   * If `true`, show page size options.
+   * @default false
    */
   showPageSizeOptions?: boolean;
   /**
@@ -109,7 +104,7 @@ export interface PaginationProps
    */
   siblingCount?: number;
   /**
-   * Items total count.
+   * Total number of items.
    * @default 0
    */
   total?: number;
@@ -120,13 +115,11 @@ export interface PaginationProps
  */
 const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
   const {
-    className,
     boundaryCount = 1,
     buttonText,
+    className,
     current = 1,
-    disabled = false,
-    hideNextButton = false,
-    hidePreviousButton = false,
+    disabled,
     hintText,
     inputPlaceholder,
     itemRender = (item) => <PaginationItem {...item} />,
@@ -135,8 +128,8 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     pageSize = 10,
     pageSizeLabel,
     pageSizeOptions,
-    pageSizeUnit,
     renderPageSizeOptionName,
+    renderResultSummary,
     showJumper = false,
     showPageSizeOptions = false,
     siblingCount = 1,
@@ -148,8 +141,6 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
     boundaryCount,
     current,
     disabled,
-    hideNextButton,
-    hidePreviousButton,
     onChange,
     pageSize,
     siblingCount,
@@ -163,6 +154,16 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       aria-label="pagination navigation"
       className={cx(classes.host, className)}
     >
+      {renderResultSummary && (
+        <Typography variant="label-primary">
+          {renderResultSummary(
+            pageSize * (current - 1) + 1,
+            Math.min(pageSize * current, total),
+            total,
+          )}
+        </Typography>
+      )}
+
       <ul className={classes.container}>
         {showPageSizeOptions && (
           <li className={classes.pageSize}>
@@ -172,16 +173,19 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
               onChange={onChangePageSize}
               options={pageSizeOptions}
               renderOptionName={renderPageSizeOptionName}
-              unit={pageSizeUnit}
               value={pageSize}
             />
           </li>
         )}
-        {items.map((item, index) => (
-          <li className={classes.item} key={index}>
-            {itemRender(item)}
-          </li>
-        ))}
+        <li>
+          <ul className={classes.itemList}>
+            {items.map((item, index) => (
+              <li className={classes.item} key={index}>
+                {itemRender(item)}
+              </li>
+            ))}
+          </ul>
+        </li>
         {showJumper && (
           <li className={classes.jumper}>
             <PaginationJumper
