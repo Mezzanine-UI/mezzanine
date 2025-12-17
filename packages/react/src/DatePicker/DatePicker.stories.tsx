@@ -3,13 +3,14 @@ import { Meta, StoryObj } from '@storybook/react-webpack5';
 // import UpdateLocale from 'dayjs/plugin/updateLocale';
 import moment from 'moment';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
-import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
-import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import { CSSProperties, useState } from 'react';
 import DatePicker from './DatePicker';
 import Typography from '../Typography';
-import { CalendarConfigProvider } from '../Calendar';
+import {
+  CalendarConfigProviderDayjs,
+  CalendarConfigProviderLuxon,
+  CalendarConfigProviderMoment,
+} from '../Calendar';
 
 const meta: Meta<typeof DatePicker> = {
   title: 'Data Entry/DatePicker',
@@ -64,7 +65,7 @@ export const Playground: Story = {
     const [val, setVal] = useState<DateType | undefined>();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsDayjs} locale="zh-TW">
+      <CalendarConfigProviderDayjs locale="zh-TW">
         <Typography variant="h3" style={{ margin: '0 0 12px 0' }}>
           {`Value: ${val || ''}`}
         </Typography>
@@ -79,7 +80,7 @@ export const Playground: Story = {
             invalidPaste: '貼上的內容不正確。',
           }}
         />
-      </CalendarConfigProvider>
+      </CalendarConfigProviderDayjs>
     );
   },
 };
@@ -93,7 +94,7 @@ export const Basic: Story = {
     );
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography variant="h3" style={typoStyle}>
             Normal
@@ -118,7 +119,7 @@ export const Basic: Story = {
           </Typography>
           <DatePicker value={new Date().toISOString()} readOnly />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -133,30 +134,30 @@ export const Method: Story = {
 
     return (
       <>
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <CalendarConfigProviderMoment>
           <div style={containerStyle}>
             <Typography variant="h3" style={typoStyle}>
               CalendarMethodsMoment
             </Typography>
             <DatePicker value={val} onChange={setVal} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        </CalendarConfigProviderMoment>
+        <CalendarConfigProviderDayjs>
           <div style={containerStyle}>
             <Typography variant="h3" style={typoStyle}>
               CalendarMethodsDayjs
             </Typography>
             <DatePicker value={val} onChange={setVal} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsLuxon}>
+        </CalendarConfigProviderDayjs>
+        <CalendarConfigProviderLuxon>
           <div style={containerStyle}>
             <Typography variant="h3" style={typoStyle}>
               CalendarMethodsLuxon
             </Typography>
             <DatePicker value={val} onChange={setVal} />
           </div>
-        </CalendarConfigProvider>
+        </CalendarConfigProviderLuxon>
       </>
     );
   },
@@ -170,7 +171,7 @@ export const Sizes: Story = {
     const [valSub, setValSub] = useState<DateType | undefined>();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography variant="h3" style={typoStyle}>
             Size: Main
@@ -183,7 +184,7 @@ export const Sizes: Story = {
           </Typography>
           <DatePicker value={valSub} onChange={setValSub} size="sub" />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -216,7 +217,7 @@ export const Modes: Story = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography variant="h3" style={typoStyle}>
             Day
@@ -313,7 +314,7 @@ format value: ${formatWithHalfYear(valH, 'half-year')}`}
             placeholder="輸入日期"
           />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -416,7 +417,7 @@ export const CustomDisable: Story = {
       moment(target).isAfter(maxDate, 'day');
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={sectionStyle}>
           <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
             1. Disable Navigation Controls
@@ -547,7 +548,7 @@ Available range: ${minDate.format('YYYY-MM-DD')} ~ ${maxDate.format('YYYY-MM-DD'
             />
           </div>
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -655,7 +656,7 @@ export const CalendarIntegration: Story = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={sectionStyle}>
           <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
             1. Date Annotations (renderAnnotations)
@@ -710,7 +711,7 @@ export const CalendarIntegration: Story = {
             />
           </div>
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };

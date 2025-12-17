@@ -15,6 +15,12 @@ export type {
   CalendarConfigs,
   CalendarConfigProviderProps,
 } from './CalendarContext';
+export { default as CalendarConfigProviderDayjs } from './CalendarConfigProviderDayjs';
+export type { CalendarConfigProviderDayjsProps } from './CalendarConfigProviderDayjs';
+export { default as CalendarConfigProviderMoment } from './CalendarConfigProviderMoment';
+export type { CalendarConfigProviderMomentProps } from './CalendarConfigProviderMoment';
+export { default as CalendarConfigProviderLuxon } from './CalendarConfigProviderLuxon';
+export type { CalendarConfigProviderLuxonProps } from './CalendarConfigProviderLuxon';
 export type { CalendarYearsProps } from './CalendarYears';
 export { default as CalendarYears } from './CalendarYears';
 export type { CalendarQuartersProps } from './CalendarQuarters';

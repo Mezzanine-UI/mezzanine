@@ -4,16 +4,17 @@ import {
   DateType,
   getDefaultModeFormat,
 } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
-import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
-import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { CSSProperties, useState } from 'react';
 import moment from 'moment';
 import { RangePickerValue } from '@mezzanine-ui/core/picker';
 import DateRangePicker from '.';
 import { DateRangePickerProps } from './DateRangePicker';
 import Typography from '../Typography';
-import { CalendarConfigProvider } from '../Calendar';
+import {
+  CalendarConfigProviderDayjs,
+  CalendarConfigProviderLuxon,
+  CalendarConfigProviderMoment,
+} from '../Calendar';
 
 const meta: Meta<typeof DateRangePicker> = {
   component: DateRangePicker,
@@ -105,7 +106,7 @@ export const Playground: Story = {
     const [val, onChange] = usePickerChange();
 
     return (
-      <CalendarConfigProvider locale="zh-TW" methods={CalendarMethodsDayjs}>
+      <CalendarConfigProviderDayjs locale="zh-TW">
         <Typography style={typoStyle} variant="h3">
           {getUpperCase(mode)}
         </Typography>
@@ -130,7 +131,7 @@ export const Playground: Story = {
           confirmMode={confirmMode}
           value={val}
         />
-      </CalendarConfigProvider>
+      </CalendarConfigProviderDayjs>
     );
   },
 };
@@ -140,7 +141,7 @@ export const Basic: Story = {
     const [val, onChange] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             Normal
@@ -183,7 +184,7 @@ export const Basic: Story = {
             ]}
           />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -196,30 +197,30 @@ export const Method: Story = {
 
     return (
       <>
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <CalendarConfigProviderMoment>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodsMoment
             </Typography>
             <DateRangePicker onChange={onChangeMoment} value={valMoment} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        </CalendarConfigProviderMoment>
+        <CalendarConfigProviderDayjs>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodsDayjs
             </Typography>
             <DateRangePicker onChange={onChangeDayjs} value={valDayjs} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsLuxon}>
+        </CalendarConfigProviderDayjs>
+        <CalendarConfigProviderLuxon>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodsLuxon
             </Typography>
             <DateRangePicker onChange={onChangeLuxon} value={valLuxon} />
           </div>
-        </CalendarConfigProvider>
+        </CalendarConfigProviderLuxon>
       </>
     );
   },
@@ -231,7 +232,7 @@ export const Sizes: Story = {
     const [valSub, onChangeSub] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             Size: Main
@@ -248,7 +249,7 @@ export const Sizes: Story = {
           </Typography>
           <DateRangePicker onChange={onChangeSub} size="sub" value={valSub} />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -263,7 +264,7 @@ export const Modes: Story = {
     const [valH, onChangeH] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             Day
@@ -366,7 +367,7 @@ format value: [${formatWithHalfYear(valH?.[0], 'half-year')}, ${formatWithHalfYe
             value={valH}
           />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -451,7 +452,7 @@ export const CustomDisable: Story = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={sectionStyle}>
           <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
             1. Disable Navigation Controls
@@ -575,7 +576,7 @@ export const CustomDisable: Story = {
             />
           </div>
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -735,7 +736,7 @@ export const CalendarIntegration: Story = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={sectionStyle}>
           <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
             1. Date Annotations (renderAnnotations)
@@ -788,7 +789,7 @@ export const CalendarIntegration: Story = {
             />
           </div>
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -827,7 +828,7 @@ export const ConfirmMode: Story = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={sectionStyle}>
           <Typography variant="h2" style={{ margin: '0 0 16px 0' }}>
             1. Immediate Mode (Default)
@@ -888,7 +889,7 @@ export const ConfirmMode: Story = {
             />
           </div>
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };

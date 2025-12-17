@@ -1,13 +1,14 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { DateType } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
-import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { CSSProperties, useState } from 'react';
 import moment from 'moment';
-import { CalendarConfigProvider } from '../Calendar';
+import {
+  CalendarConfigProviderDayjs,
+  CalendarConfigProviderMoment,
+  CalendarConfigProviderLuxon,
+} from '../Calendar';
 import DateTimePicker, { DateTimePickerProps } from './DateTimePicker';
 import Typography from '../Typography';
-import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 
 export default {
   title: 'Data Entry/DateTimePicker',
@@ -74,7 +75,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     const [val, onChange] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <Typography style={typoStyle} variant="h3">
           {`origin value: ${val}`}
         </Typography>
@@ -98,7 +99,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           placeholderLeft={placeholderLeft}
           placeholderRight={placeholderRight}
         />
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -114,7 +115,7 @@ export const Basic: StoryObj = {
     };
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             {`Normal
@@ -140,7 +141,7 @@ export const Basic: StoryObj = {
           </Typography>
           <DateTimePicker readOnly value={moment().toISOString()} />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -156,30 +157,30 @@ export const Method: StoryObj = {
 
     return (
       <>
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+        <CalendarConfigProviderMoment>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodsMoment
             </Typography>
             <DateTimePicker onChange={onChange} value={val} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsDayjs}>
+        </CalendarConfigProviderMoment>
+        <CalendarConfigProviderDayjs>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodsDayjs
             </Typography>
             <DateTimePicker onChange={onChange} value={val} />
           </div>
-        </CalendarConfigProvider>
-        <CalendarConfigProvider methods={CalendarMethodsLuxon}>
+        </CalendarConfigProviderDayjs>
+        <CalendarConfigProviderLuxon>
           <div style={containerStyle}>
             <Typography style={typoStyle} variant="h3">
               CalendarMethodLuxon
             </Typography>
             <DateTimePicker onChange={onChange} value={val} />
           </div>
-        </CalendarConfigProvider>
+        </CalendarConfigProviderLuxon>
       </>
     );
   },
@@ -193,7 +194,7 @@ export const Sizes: StoryObj = {
     const [val2, onChange2] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             Size: main
@@ -206,7 +207,7 @@ export const Sizes: StoryObj = {
           </Typography>
           <DateTimePicker onChange={onChange1} size="sub" value={val1} />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -219,7 +220,7 @@ export const DisplayColumn: StoryObj = {
     const [val2, onChange2] = usePickerChange();
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             Hours, minutes, seconds
@@ -249,7 +250,7 @@ export const DisplayColumn: StoryObj = {
             value={val2}
           />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
@@ -297,7 +298,7 @@ export const CustomDisable: StoryObj = {
       );
 
     return (
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">
             {`(mode='day')
@@ -335,7 +336,7 @@ export const CustomDisable: StoryObj = {
             value={valD}
           />
         </div>
-      </CalendarConfigProvider>
+      </CalendarConfigProviderMoment>
     );
   },
 };
