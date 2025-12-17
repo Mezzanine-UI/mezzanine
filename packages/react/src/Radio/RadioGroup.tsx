@@ -87,6 +87,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           key={option.value}
           disabled={option.disabled}
           value={option.value}
+          error={option.error}
         >
           {option.label}
         </Radio>

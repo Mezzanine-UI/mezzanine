@@ -85,17 +85,29 @@ export const Group: StoryFn<RadioGroupProps> = ({
       label: 'Option 3',
       disabled: true,
     },
+    {
+      value: 'option-error',
+      label: 'Option 4',
+      error: true,
+    },
   ];
 
   return (
     <>
       <Typography variant="h2">From children</Typography>
       <RadioGroup disabled={disabled} orientation={orientation} size={size}>
-        {options.map(({ disabled: optionDisabled, label, value }) => (
-          <Radio key={value} disabled={optionDisabled} value={value}>
-            {label}
-          </Radio>
-        ))}
+        {options.map(
+          ({ disabled: optionDisabled, error: optionError, label, value }) => (
+            <Radio
+              key={value}
+              disabled={optionDisabled}
+              error={optionError}
+              value={value}
+            >
+              {label}
+            </Radio>
+          ),
+        )}
       </RadioGroup>
       <br />
       <br />
