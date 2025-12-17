@@ -2928,7 +2928,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mezzanine-ui/core@npm:^1.0.0-canary.5, @mezzanine-ui/core@workspace:packages/core":
+"@mezzanine-ui/core@npm:^1.0.0-canary.6, @mezzanine-ui/core@workspace:packages/core":
   version: 0.0.0-use.local
   resolution: "@mezzanine-ui/core@workspace:packages/core"
   dependencies:
@@ -2965,7 +2965,7 @@ __metadata:
     "@floating-ui/dom": "npm:^1.7.4"
     "@floating-ui/react-dom": "npm:^2.1.6"
     "@hello-pangea/dnd": "npm:^18.0.1"
-    "@mezzanine-ui/core": "npm:^1.0.0-canary.5"
+    "@mezzanine-ui/core": "npm:^1.0.0-canary.6"
     "@mezzanine-ui/icons": "npm:^1.0.0-canary.3"
     "@mezzanine-ui/system": "npm:^1.0.0-canary.3"
     "@types/lodash": "npm:^4.17.20"
