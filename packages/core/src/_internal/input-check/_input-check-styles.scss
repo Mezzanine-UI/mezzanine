@@ -5,25 +5,12 @@
 @use '~@mezzanine-ui/system/typography';
 @use './input-check' as *;
 
-$control-size: 24px !default;
-$control-size-small: 16px !default;
-$control-padding: 4px !default;
-$control-padding-small: 2px !default;
-$with-label-min-width: 56px !default;
-$with-label-min-width-small: 44px !default;
-$with-label-padding-start: 4px !default;
-$with-label-padding-end: 8px !default;
-$label-gap: 4px !default;
-
 .#{$prefix} {
-  --#{$prefix}-control-size: #{$control-size};
-  --#{$prefix}-color: #{palette.semantic-variable('background', brand)};
-  --#{$prefix}-on-color: #{palette.semantic-variable('background', brand)};
-  --#{$prefix}-hover-bg: transparent;
-  --#{$prefix}-active-bg: transparent;
+  --#{$prefix}-control-size: #{spacing.semantic-variable(size, element, base-fixed)};
+  --#{$prefix}-color: #{palette.semantic-variable('border', brand)};
 
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   transition: transition.standard(background-color), transition.standard(color);
   will-change: background-color, color;
   cursor: pointer;
@@ -50,7 +37,8 @@ $label-gap: 4px !default;
     flex-shrink: 0;
     width: var(--#{$prefix}-control-size);
     height: var(--#{$prefix}-control-size);
-    padding: $control-padding;
+    padding: spacing.semantic-variable(padding, vertical, micro)
+      spacing.semantic-variable(padding, horizontal, micro);
     box-sizing: border-box;
 
     &--focused {
@@ -59,23 +47,19 @@ $label-gap: 4px !default;
         position: absolute;
         width: var(--#{$prefix}-control-size);
         height: var(--#{$prefix}-control-size);
-        border: 1px solid palette.semantic-variable('border', brand);
+        border: 1px solid var(--#{$prefix}-color);
         top: 0;
         left: 0;
         border-radius: 50%;
         box-sizing: border-box;
       }
     }
-
-    .#{$prefix}--small & {
-      --#{$prefix}-control-size: #{$control-size-small};
-
-      padding: $control-padding-small;
-    }
   }
 
   &__label {
-    margin-left: $label-gap;
+    @include typography.semantic-variable(label-primary);
+    color: palette.semantic-variable(text, neutral-solid);
+    margin-left: spacing.semantic-variable(gap, tight);
 
     &:empty {
       display: none;
@@ -83,54 +67,19 @@ $label-gap: 4px !default;
   }
 
   &--with-label {
-    padding: 0 $with-label-padding-end 0 $with-label-padding-start;
-    min-width: $with-label-min-width;
-
-    &.#{$prefix}--small {
-      min-width: $with-label-min-width-small;
-    }
-
-    &:not(.#{$prefix}--disabled) {
-      &:hover {
-        background-color: var(--#{$prefix}-hover-bg);
-      }
-
-      &:active,
-      &:focus-within {
-        background-color: var(--#{$prefix}-active-bg);
-      }
-    }
+    background-color: transparent;
   }
 
   &--error {
-    --#{$prefix}-color: #{palette.color(error)};
-    --#{$prefix}-on-color: #{palette.color(on-error)};
-    --#{$prefix}-hover-bg: #{palette.color(error-hover-bg)};
-    --#{$prefix}-active-bg: #{palette.color(error-active-bg)};
+    --#{$prefix}-color: #{palette.semantic-variable('border', error)};
   }
 
   &--disabled {
-    --#{$prefix}-color: #{palette.color(action-disabled)};
+    --#{$prefix}-color: #C9CBD4; // TODO: border-neutral-light-disabled
 
     background-color: transparent;
-    color: palette.color(text-disabled);
     cursor: default;
     pointer-events: none;
-  }
-
-  @each $size in $sizes {
-    $typography-variant: map.get(
-      (
-        small: input3,
-        medium: input2,
-        large: input1,
-      ),
-      $size
-    );
-
-    &--#{$size} {
-      @include typography.variant($typography-variant);
-    }
   }
 }
 
