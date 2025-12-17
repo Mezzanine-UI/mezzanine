@@ -93,7 +93,7 @@ $states: (
   justify-content: center;
   border: $border-width solid palette.semantic-variable(border, neutral-faint);
   border-radius: radius.variable(roomy);
-  background-color: palette.semantic-variable(background, base);
+  background-color: palette.semantic-variable(canvas, base);
   cursor: pointer;
   user-select: none;
   width: fit-content;
@@ -102,7 +102,7 @@ $states: (
   padding-block: spacing.semantic-variable(padding, vertical, base);
   gap: spacing.semantic-variable(gap, base);
   @include typography.variant(body1);
-  
+
   transition:
     transition.standard(color),
     transition.standard(background-color),
@@ -113,6 +113,7 @@ $states: (
 
   &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--selected) {
     @include _apply-state(hover);
+
     box-shadow: effect.variable(shadow, floating);
   }
 
@@ -125,6 +126,7 @@ $states: (
   &:focus-within {
     outline: none;
     @include _apply-state(focus);
+
     box-shadow: effect.variable(focus, primary);
   }
 
@@ -137,6 +139,7 @@ $states: (
     // Selected + hover
     &:hover {
       @include _apply-state(selected);
+
       box-shadow: effect.variable(shadow, floating);
     }
 
@@ -146,6 +149,7 @@ $states: (
     &:focus-within {
       outline: none;
       @include _apply-state(selected);
+
       box-shadow: effect.variable(focus, primary);
     }
   }
@@ -247,8 +251,6 @@ $states: (
   }
 
   &__input {
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     margin: 0;
     margin-inline: spacing.semantic-variable(padding, horizontal, micro);
@@ -279,15 +281,15 @@ $states: (
         border-color: palette.semantic-variable(border, brand);
 
         &::before {
-          background-color: palette.semantic-variable(background, brand);
+          background-color: palette.semantic-variable(canvas, brand);
         }
       }
 
       &:disabled {
-        border-color: palette.semantic-variable(background, neutral);
+        border-color: palette.semantic-variable(canvas, neutral);
 
         &:checked::before {
-          background-color: palette.semantic-variable(background, neutral);
+          background-color: palette.semantic-variable(canvas, neutral);
         }
       }
     }
@@ -313,7 +315,7 @@ $states: (
       }
 
       &:checked {
-        background-color: palette.semantic-variable(background, brand);
+        background-color: palette.semantic-variable(canvas, brand);
         border-color: palette.semantic-variable(border, brand);
 
         &::after {
@@ -322,7 +324,7 @@ $states: (
       }
 
       &:disabled {
-        background-color: palette.semantic-variable(background, neutral-subtle);
+        background-color: palette.semantic-variable(canvas, neutral-subtle);
         border-color: palette.semantic-variable(border, neutral-light);
 
         &::after {
