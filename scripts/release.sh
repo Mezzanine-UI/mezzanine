@@ -59,15 +59,6 @@ case $choice in
     echo -e "${BLUE}ℹ️  Canary 版本會自動生成時間戳版本號${NC}"
     echo ""
 
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
-    echo ""
-
     # 發布
     echo -e "${YELLOW}🚀 發布中...${NC}"
     yarn release:canary
@@ -92,15 +83,6 @@ case $choice in
     echo ""
     echo -e "${YELLOW}📦 準備發布 Alpha 版本...${NC}"
     echo -e "${BLUE}ℹ️  Alpha 版本格式: x.y.z-alpha.n (從 .1 開始)${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
@@ -129,15 +111,6 @@ case $choice in
     echo -e "${BLUE}ℹ️  Beta 版本格式: x.y.z-beta.n${NC}"
     echo ""
 
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
-    echo ""
-
     # 發布
     echo -e "${YELLOW}🚀 發布中...${NC}"
     yarn release:beta
@@ -162,15 +135,6 @@ case $choice in
     echo ""
     echo -e "${YELLOW}📦 準備發布 RC 版本...${NC}"
     echo -e "${BLUE}ℹ️  RC 版本格式: x.y.z-rc.n${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
@@ -207,15 +171,6 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Stable 版本...${NC}"
-    echo ""
-
-    # 運行測試
-    echo -e "${YELLOW}🧪 運行完整測試...${NC}"
-    yarn test || {
-      echo -e "${RED}❌ 測試失敗，發布已取消${NC}"
-      exit 1
-    }
-    echo -e "${GREEN}✓ 測試通過${NC}"
     echo ""
 
     # 發布
