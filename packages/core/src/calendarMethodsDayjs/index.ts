@@ -7,7 +7,7 @@ import IsoWeek from 'dayjs/plugin/isoWeek';
 import utc from 'dayjs/plugin/utc';
 import quarterOfYear from 'dayjs/plugin/quarterOfYear';
 
-// Import common locales
+// Import common locales - these imports have side effects and must be preserved
 import 'dayjs/locale/zh-cn';
 import 'dayjs/locale/zh-tw';
 import 'dayjs/locale/zh-hk';

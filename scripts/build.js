@@ -150,7 +150,21 @@ async function run() {
       preserveDirectives(),
     ],
     treeshake: {
-      moduleSideEffects: false,
+      moduleSideEffects: (id) => {
+        // Preserve side effects for locale imports
+        if (id.includes('/locale/')) {
+          return true;
+        }
+        // Preserve side effects for calendar methods files
+        if (
+          id.includes('calendarMethodsDayjs') ||
+          id.includes('calendarMethodsMoment') ||
+          id.includes('calendarMethodsLuxon')
+        ) {
+          return true;
+        }
+        return false;
+      },
     },
   });
 
