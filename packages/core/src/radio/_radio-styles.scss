@@ -44,8 +44,15 @@
   &:hover,
   .#{input-check.$prefix}:hover &,
   &--checked,
+  &--focused,
   .#{input-check.$prefix}--disabled & {
     border-color: var(--#{input-check.$prefix}-color);
+  }
+
+  .#{input-check.$prefix}:hover &--checked {
+    &::before {
+      background-color:  var(--#{input-check.$prefix}-checked-hover-color);
+    }
   }
 
   .#{input-check.$prefix}--disabled & {

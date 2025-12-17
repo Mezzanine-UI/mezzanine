@@ -19,5 +19,6 @@ export const radioPrefix = 'mzn-radio';
 export const radioClasses = {
   host: radioPrefix,
   checked: `${radioPrefix}--checked`,
+  focused: `${radioPrefix}--focused`,
   error: `${radioPrefix}--error`,
 } as const;
