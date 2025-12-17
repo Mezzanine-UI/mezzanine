@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.5...@mezzanine-ui/react@1.0.0-canary.6) (2025-12-17)
+
+### Features
+
+- **react/calendar:** add pre-configured calendar config provider ([eaac7e5](https://github.com/Mezzanine-UI/mezzanine/commit/eaac7e52613d6fb51379c80c6d34a52cf641db0d))
+
 # [1.0.0-canary.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.4...@mezzanine-ui/react@1.0.0-canary.5) (2025-12-17)
 
 **Note:** Version bump only for package @mezzanine-ui/react
