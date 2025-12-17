@@ -38,7 +38,6 @@ const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
     const {
       activeAnchorId,
       className,
-      children,
       ellipsis = false,
       list,
       maxWidth,

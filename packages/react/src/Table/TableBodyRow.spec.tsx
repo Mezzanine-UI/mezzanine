@@ -1,16 +1,21 @@
 import { TableColumn } from '@mezzanine-ui/core/table';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import {
-  act,
-  cleanupHook,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { act, cleanupHook, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { TableDataContext, TableContext } from './TableContext';
 import TableBodyRow from './TableBodyRow';
-import TableCell from './TableCell';
+
+// Mock TableCell to track props
+const mockTableCellRender = jest.fn();
+const OriginalTableCell = jest.requireActual('./TableCell').default;
+
+jest.mock('./TableCell', () => {
+  return function MockTableCell(props: any) {
+    mockTableCellRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTableCell, props);
+  };
+});
 
 type DataType = {
   key: string;
@@ -87,7 +92,8 @@ describe('<TableBodyRow />', () => {
       },
     ];
 
-    const testInstance = TestRenderer.create(
+    mockTableCellRender.mockClear();
+    render(
       <TableDataContext.Provider
         value={{
           columns,
@@ -101,11 +107,12 @@ describe('<TableBodyRow />', () => {
         </DragDropContext>
       </TableDataContext.Provider>,
     );
-    const cellInstance = testInstance.root.findAllByType(TableCell);
 
-    expect(cellInstance[0].props.ellipsis).toBe(true);
-    expect(cellInstance[1].props.ellipsis).toBe(true);
-    expect(cellInstance[2].props.ellipsis).toBe(false);
+    const calls = mockTableCellRender.mock.calls;
+
+    expect(calls[0][0].ellipsis).toBe(true);
+    expect(calls[1][0].ellipsis).toBe(true);
+    expect(calls[2][0].ellipsis).toBe(false);
   });
 
   describe('columns are given', () => {
@@ -292,7 +299,7 @@ describe('<TableBodyRow />', () => {
 
           expect(expandedContentHost?.textContent).toBe('foo');
           expect(expandedContentHost?.classList.contains('foo')).toBe(true);
-          expect(onExpand).toBeCalledWith(rowData, true);
+          expect(onExpand).toHaveBeenCalledWith(rowData, true);
         });
 
         it('dataSource case', async () => {

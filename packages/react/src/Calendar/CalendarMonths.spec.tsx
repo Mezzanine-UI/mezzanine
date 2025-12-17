@@ -45,7 +45,7 @@ describe('<CalendarMonths />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getMonthShortNamesSpy).toBeCalledWith('zh-TW');
+      expect(getMonthShortNamesSpy).toHaveBeenCalledWith('zh-TW');
     });
   });
 
@@ -137,7 +137,7 @@ describe('<CalendarMonths />', () => {
       buttons.forEach((btn) => {
         fireEvent.click(btn);
 
-        expect(onClick).toBeCalledTimes(1);
+        expect(onClick).toHaveBeenCalledTimes(1);
 
         onClick.mockClear();
       });
@@ -177,7 +177,7 @@ describe('<CalendarMonths />', () => {
       buttons.forEach((btn) => {
         fireEvent.mouseEnter(btn);
 
-        expect(onMonthHover).toBeCalledTimes(1);
+        expect(onMonthHover).toHaveBeenCalledTimes(1);
 
         onMonthHover.mockClear();
       });

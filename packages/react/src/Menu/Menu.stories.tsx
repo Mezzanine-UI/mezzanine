@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import Menu, { MenuDivider, MenuItem, MenuItemGroup } from '.';
 import ConfigProvider from '../Provider';
 

@@ -1,9 +1,6 @@
-export {
-  TimePanelActionProps,
-  default as TimePanelAction,
-} from './TimePanelAction';
-export {
-  TimePanelColumnProps,
-  default as TimePanelColumn,
-} from './TimePanelColumn';
-export { TimePanelProps, default } from './TimePanel';
+export { default as TimePanelAction } from './TimePanelAction';
+export type { TimePanelActionProps } from './TimePanelAction';
+export { default as TimePanelColumn } from './TimePanelColumn';
+export type { TimePanelColumnProps } from './TimePanelColumn';
+export type { TimePanelProps } from './TimePanel';
+export { default } from './TimePanel';

@@ -3,21 +3,37 @@
 
 $prefix: mzn-motion;
 
-$duration-names: (shortest, shorter, short, standard, long);
+$duration-names: (fast, moderate, slow, loop, pause-short, pause-long);
 $default-durations: (
-  shortest: 150ms,
-  shorter: 200ms,
-  short: 250ms,
-  standard: 300ms,
-  long: 375ms,
+  fast: 150ms,
+  moderate: 250ms,
+  slow: 400ms,
+  loop: 1600ms,
+  pause-short: 3000ms,
+  pause-long: 10000ms,
 );
 
-$easing-names: (standard, emphasized, decelerated, accelerated);
+$easing-names: (entrance, exit, standard);
 $default-easings: (
-  standard: cubic-bezier(0.58, 0.01, 0.29, 1.01),
-  emphasized: cubic-bezier(0.83, 0, 0.17, 1),
-  decelerated: cubic-bezier(0, 0, 0.3, 1),
-  accelerated: cubic-bezier(0.32, 0, 0.67, 0),
+  entrance: cubic-bezier(0.0, 0.0, 0.58, 1),
+  exit: cubic-bezier(0.42, 0.0, 1, 1),
+  standard: cubic-bezier(0.4, 0.0, 0.2, 1),
+);
+
+$pattern-names: (breathe, skeleton-loading, spin);
+$default-pattern: (
+  breathe: (
+    duration: loop,
+    easing: standard,
+  ),
+  skeleton-loading: (
+    duration: loop,
+    easing: standard,
+  ),
+  spin: (
+    duration: loop,
+    easing: entrance,
+  ),
 );
 
 $default-options: (
@@ -31,6 +47,10 @@ $default-options: (
 
 @function is-easing-name-valid($easing-name) {
   @return list.includes($easing-names, $easing-name);
+}
+
+@function is-pattern-name-valid($pattern-name) {
+  @return list.includes($pattern-names, $pattern-name);
 }
 
 @function duration($duration-name) {
@@ -60,5 +80,21 @@ $default-options: (
 
   @each $name, $value in $easings {
     --#{$prefix}-easing-#{$name}: #{$value};
+  }
+}
+
+@mixin pattern($pattern-name, $action-name: animation) {
+  @if not is-pattern-name-valid($pattern-name) {
+    @error 'Invalid pattern name #{$pattern-name}. Please choose one of #{$pattern-names}';
+  }
+
+  $pattern: map.get($default-pattern, $pattern-name);
+
+  @if $pattern {
+    $duration-name: map.get($pattern, duration);
+    $easing-name: map.get($pattern, easing);
+
+    #{$action-name}-duration: duration($duration-name);
+    #{$action-name}-timing-function: easing($easing-name);
   }
 }

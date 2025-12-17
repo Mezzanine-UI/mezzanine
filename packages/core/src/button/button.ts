@@ -1,20 +1,37 @@
-import { MainColor } from '@mezzanine-ui/system/palette';
-import { Size } from '@mezzanine-ui/system/size';
+import { GeneralSize } from '@mezzanine-ui/system/size';
+import { IconDefinition } from '@mezzanine-ui/icons';
 
-export type ButtonColor = Extract<MainColor, 'primary' | 'secondary'>;
-export type ButtonSize = Size;
-export type ButtonVariant = 'contained' | 'outlined' | 'text';
+export type ButtonVariant =
+  | 'base-primary'
+  | 'base-secondary'
+  | 'base-tertiary'
+  | 'base-ghost'
+  | 'base-dashed'
+  | 'base-text-link'
+  | 'destructive-primary'
+  | 'destructive-secondary'
+  | 'destructive-ghost'
+  | 'destructive-text-link'
+  | 'inverse';
+
+export type ButtonSize = GeneralSize;
+
+export type ButtonIconPosition = 'leading' | 'trailing' | 'icon-only';
+
+export interface ButtonIcon {
+  position: ButtonIconPosition;
+  src: IconDefinition;
+}
 
 export const buttonPrefix = 'mzn-button';
 
 export const buttonClasses = {
   host: buttonPrefix,
-  label: `${buttonPrefix}__label`,
-  variant: (variant: ButtonVariant) => (variant === 'text' ? '' : `${buttonPrefix}--${variant}`),
-  color: (color: ButtonColor) => `${buttonPrefix}--${color}`,
+  variant: (variant: ButtonVariant) => `${buttonPrefix}--${variant}`,
   size: (size: ButtonSize) => `${buttonPrefix}--${size}`,
-  danger: `${buttonPrefix}--danger`,
   disabled: `${buttonPrefix}--disabled`,
-  icon: `${buttonPrefix}--icon`,
   loading: `${buttonPrefix}--loading`,
+  iconLeading: `${buttonPrefix}--icon-leading`,
+  iconTrailing: `${buttonPrefix}--icon-trailing`,
+  iconOnly: `${buttonPrefix}--icon-only`,
 };

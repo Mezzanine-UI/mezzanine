@@ -1,42 +1,33 @@
-@use '~@mezzanine-ui/system/typography' as *;
+@use '~@mezzanine-ui/system/typography' as typography;
 
-.#{$prefix} {
-  @each $prop in $base-props {
-    #{$prop}: var(--#{$prefix}-base-#{$prop});
-  }
-
-  @include smooth-font();
-
-  @each $variant in $variants {
-    &--#{$variant} {
+.#{typography.$semantic-prefix} {
+  @each $type in typography.$semantic-semantic-types {
+    &--#{$type} {
       margin: 0;
+      white-space: pre-line;
 
-      @include smooth-font();
-      @include variant($variant);
+      @include typography.smooth-font();
+      @include typography.semantic-variable($type);
     }
   }
 
   &--align {
-    text-align: var(--#{$prefix}-align);
+    text-align: var(--#{typography.$semantic-prefix}-align);
   }
 
   &--color {
-    color: var(--#{$prefix}-color);
+    color: var(--#{typography.$semantic-prefix}-color);
   }
 
   &--display {
-    display: var(--#{$prefix}-display);
+    display: var(--#{typography.$semantic-prefix}-display);
   }
 
   &--ellipsis {
-    @include overflow-ellipsis();
+    @include typography.overflow-ellipsis();
   }
 
   &--nowrap {
-    @include nowrap();
-  }
-
-  &--weight {
-    font-weight: var(--#{$prefix}-weight);
+    @include typography.nowrap();
   }
 }

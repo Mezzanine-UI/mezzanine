@@ -1,7 +1,8 @@
-/* eslint-disable react/jsx-no-useless-fragment */
-import { FC, ReactNode, useEffect, useState } from 'react';
+'use client';
+
+import { ReactNode, RefObject, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ElementGetter, getElement } from '../utils/getElement';
+import { getContainer, type PortalLayer } from './portalRegistry';
 
 export interface PortalProps {
   /**
@@ -10,37 +11,71 @@ export interface PortalProps {
   children?: ReactNode;
   /**
    * The destination where to portal.
+   * If provided, it will override the default portal container.
+   * Accepts HTMLElement, RefObject, or null.
    */
-  container?: ElementGetter;
+  container?:
+    | HTMLElement
+    | RefObject<HTMLElement | null>
+    | RefObject<HTMLElement>
+    | null;
   /**
    * Whether to disable portal.
    * If true, it will be a normal component.
    * @default false
    */
   disablePortal?: boolean;
+  /**
+   * The portal layer to use.
+   * - 'alert': Portal to alert container (above root, sticky)
+   * - 'default': Portal to default container (inside root, fixed)
+   * @default 'default'
+   */
+  layer?: PortalLayer;
 }
 
-const Portal: FC<PortalProps> = (props) => {
-  const { children, container, disablePortal = false } = props;
+export default function Portal({
+  children,
+  container: containerProp,
+  disablePortal = false,
+  layer = 'default',
+}: PortalProps) {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
 
-  const [portalElement, setPortalElement] = useState(() =>
-    disablePortal ? null : getElement(container),
-  );
+  // Extract ref.current for dependency tracking
+  const refCurrent =
+    containerProp && 'current' in containerProp
+      ? containerProp.current
+      : undefined;
 
   useEffect(() => {
-    if (!disablePortal) {
-      setPortalElement(getElement(container) || document.body);
+    if (disablePortal) return;
+
+    if (containerProp) {
+      // Handle RefObject
+      if ('current' in containerProp) {
+        setContainer(containerProp.current);
+
+        return;
+      }
+
+      // Handle HTMLElement
+      setContainer(containerProp);
+
+      return;
     }
-  }, [container, disablePortal]);
+
+    const targetContainer = getContainer(layer);
+
+    setContainer(targetContainer);
+  }, [containerProp, disablePortal, layer, refCurrent]);
 
   /** This element is fully client side, so `return null` on server side */
   if (typeof window === 'undefined') return null;
 
-  if (disablePortal || !portalElement) {
+  if (disablePortal || !container) {
     return <>{children}</>;
   }
 
-  return createPortal(children, portalElement);
-};
-
-export default Portal;
+  return createPortal(children, container);
+}

@@ -1,44 +1,64 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/z-index' as z-index;
 @use './message' as *;
 
-$height: 40px !default;
-$padding-left: 12px !default;
-$padding-right: 12px !default;
-$content-padding: 12px !default;
-$icon-size: 24px !default;
+@mixin _get-icon-color($severity) {
+  @if $severity == 'info' {
+    color: palette.semantic-variable(icon, info);
+  }
+
+  @if $severity == 'error' {
+    color: palette.semantic-variable(icon, error);
+  }
+
+  @if $severity == 'success' {
+    color: palette.semantic-variable(icon, success);
+  }
+
+  @if $severity == 'warning' {
+    color: palette.semantic-variable(icon, warning);
+  }
+
+  @if $severity == 'loading' {
+    color: palette.semantic-variable(icon, brand);
+  }
+}
 
 .#{$prefix} {
-  display: flex;
-  align-items: center;
-  max-width: 100%;
-  height: $height;
-  margin-top: spacing.level(4);
-  padding-left: $padding-left;
-  padding-right: $padding-right;
-  background-color: palette.color(surface);
-  border: 1px solid var(--#{$prefix}-color);
   flex-shrink: 0;
+  display: flex;
+  flex-flow: row;
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight-fixed);
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, spacious);
+  max-width: spacing.semantic-variable(size, container, standard);
+  background-color: palette.semantic-variable("background", base);
+  border: 1px solid palette.semantic-variable(border, neutral-faint);
+  border-radius: radius.variable(base);
+  box-shadow: effect.variable(shadow, floating);
   box-sizing: border-box;
+  pointer-events: auto;
 
   &__icon {
-    color: var(--#{$prefix}-color);
-    font-size: typography.px-to-rem($icon-size);
+    font-size: spacing.semantic-variable(size, element, gentle);
   }
 
   &__content {
-    @include typography.variant(body1);
+    color: palette.semantic-variable(text, neutral-solid);
+    @include typography.semantic-variable(body);
     @include typography.overflow-ellipsis();
-
-    padding: 0 $content-padding;
   }
 
   @each $severity in $severities {
     &--#{$severity} {
-      --#{$prefix}-color: #{palette.color(if($severity == 'info', primary, $severity))};
+      .#{$prefix}__icon {
+        @include _get-icon-color($severity);
+      }
     }
   }
 
@@ -46,10 +66,14 @@ $icon-size: 24px !default;
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: spacing.semantic-variable(gap, tight);
     position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-bottom: calc(spacing.semantic-variable(gap, spacious) + spacing.semantic-variable(padding, vertical, base) + spacing.semantic-variable(padding, vertical, base) + spacing.semantic-variable(padding, vertical, calm) + spacing.semantic-variable(padding, vertical, calm) + typography.primitive-line-height-variable(functional));
     z-index: z-index.get(feedback);
-    inset: 0;
-    pointer-events: none;
     overflow: hidden;
+    pointer-events: none;
   }
 }

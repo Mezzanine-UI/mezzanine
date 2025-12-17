@@ -111,7 +111,7 @@ describe('<CalendarYears />', () => {
       buttons.forEach((btn) => {
         fireEvent.click(btn);
 
-        expect(onClick).toBeCalledTimes(1);
+        expect(onClick).toHaveBeenCalledTimes(1);
 
         onClick.mockClear();
       });
@@ -151,7 +151,7 @@ describe('<CalendarYears />', () => {
       buttons.forEach((btn) => {
         fireEvent.mouseEnter(btn);
 
-        expect(onYearHover).toBeCalledTimes(1);
+        expect(onYearHover).toHaveBeenCalledTimes(1);
 
         onYearHover.mockClear();
       });

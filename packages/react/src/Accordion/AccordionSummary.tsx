@@ -1,3 +1,5 @@
+'use client';
+
 import {
   forwardRef,
   MouseEvent,
@@ -83,29 +85,46 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(
       return result;
     }, [detailsId, expanded]);
 
-    const DefaultIcon = useCallback(
-      (iconProps: { className?: string }) => {
-        const { className: iconClassNames = '' } = iconProps;
+    const defaultIconElement = useMemo(
+      () => (
+        <Icon
+          color={disabled ? 'neutral-faint' : 'neutral'}
+          className={cx(
+            classes.summaryIcon,
+            {
+              [classes.summaryIconExpanded]: expanded,
+              [classes.summaryIconDisabled]: disabled,
+            },
+            iconClassNameProp,
+          )}
+          icon={ChevronDownIcon}
+          onClick={onToggle}
+          onMouseDown={(evt) => evt.preventDefault()}
+          role="button"
+        />
+      ),
+      [disabled, expanded, iconClassNameProp, onToggle],
+    );
 
-        return (
-          <Icon
-            color={disabled ? 'disabled' : 'primary'}
-            className={cx(
-              classes.summaryIcon,
-              {
-                [classes.summaryIconExpanded]: expanded,
-                [classes.summaryIconDisabled]: disabled,
-              },
-              iconClassNames,
-              iconClassNameProp,
-            )}
-            icon={ChevronDownIcon}
-            onClick={onToggle}
-            onMouseDown={(evt) => evt.preventDefault()}
-            role="button"
-          />
-        );
-      },
+    const defaultIconWithPrefixClassName = useMemo(
+      () => (
+        <Icon
+          color={disabled ? 'neutral-faint' : 'neutral'}
+          className={cx(
+            classes.summaryIcon,
+            {
+              [classes.summaryIconExpanded]: expanded,
+              [classes.summaryIconDisabled]: disabled,
+            },
+            classes.summaryMainPartPrefix,
+            iconClassNameProp,
+          )}
+          icon={ChevronDownIcon}
+          onClick={onToggle}
+          onMouseDown={(evt) => evt.preventDefault()}
+          role="button"
+        />
+      ),
       [disabled, expanded, iconClassNameProp, onToggle],
     );
 
@@ -127,14 +146,10 @@ const AccordionSummary = forwardRef<HTMLDivElement, AccordionSummaryProps>(
         tabIndex={0}
       >
         <div className={classes.summaryMainPart}>
-          {suffixActions
-            ? prefixIcon || (
-                <DefaultIcon className={classes.summaryMainPartPrefix} />
-              )
-            : null}
+          {suffixActions ? prefixIcon || defaultIconWithPrefixClassName : null}
           {children}
         </div>
-        {suffixActions || <DefaultIcon />}
+        {suffixActions || defaultIconElement}
       </div>
     );
   },

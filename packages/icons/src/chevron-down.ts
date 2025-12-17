@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const ChevronDownIcon: IconDefinition = {
   name: 'chevron-down',
   definition: {

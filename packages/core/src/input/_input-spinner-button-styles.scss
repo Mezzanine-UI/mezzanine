@@ -1,0 +1,109 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './input' as *;
+
+// Inner components (SpinnerButton)
+$spinner-button-states: (
+  enable: (
+    foreground: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, base),
+    focus: none,
+  ),
+  hover: (
+    foreground: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, neutral-faint),
+    focus: none,
+  ),
+  active: (
+    foreground: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, neutral-subtle),
+    focus: none,
+  ),
+  focus: (
+    foreground: palette.semantic-variable(icon, neutral-solid),
+    background: palette.semantic-variable(background, base),
+    focus: effect.variable(focus, primary),
+  ),
+  disabled: (
+    foreground: palette.semantic-variable(icon, neutral-light),
+    background: palette.semantic-variable(background, neutral-subtle),
+    focus: none,
+  ),
+);
+
+$spinner-button-sizes: (
+  main: (
+    width: spacing.semantic-variable(size, element, base-fixed),
+    height: spacing.semantic-variable(size, element, narrow),
+  ),
+  sub: (
+    width: spacing.semantic-variable(size, element, slim),
+    height: spacing.semantic-variable(size, element, compact),
+  ),
+);
+
+@mixin _apply-spinner-button-states($state) {
+  $config: map.get($spinner-button-states, $state);
+
+  color: map.get($config, foreground);
+  background-color: map.get($config, background);
+  box-shadow: map.get($config, focus);
+}
+
+@mixin _apply-spinner-button-size($size) {
+  $config: map.get($spinner-button-sizes, $size);
+
+  width: map.get($config, width);
+  height: map.get($config, height);
+}
+
+.#{$prefix}__spinner-button {
+  width: spacing.semantic-variable(size, element, base-fixed);
+  height: spacing.semantic-variable(size, element, narrow);
+  padding: 0;
+  border-radius: radius.variable(tiny);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  overflow: hidden;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: transition.standard(background-color, fast), transition.standard(color, fast), transition.standard(box-shadow, fast);
+
+  @include _apply-spinner-button-states(enable);
+
+  &:hover:not(.#{$prefix}__spinner-button--disabled) {
+    @include _apply-spinner-button-states(hover);
+  }
+
+  &:focus-visible:not(.#{$prefix}__spinner-button--disabled) {
+    @include _apply-spinner-button-states(focus);
+  }
+
+  &:active:not(.#{$prefix}__spinner-button--disabled) {
+    @include _apply-spinner-button-states(active);
+  }
+
+  &--disabled {
+    @include _apply-spinner-button-states(disabled);
+
+    cursor: default;
+  }
+
+  &--main {
+    @include _apply-spinner-button-size(main);
+
+    font-size: spacing.semantic-variable(size, element, fixed);
+  }
+
+  &--sub {
+    @include _apply-spinner-button-size(sub);
+
+    font-size: spacing.semantic-variable(size, element, slim);
+  }
+}

@@ -1,45 +1,92 @@
 @use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use '../text-field';
-@use '../select';
 @use './input' as *;
 
+.#{$prefix}-container {
+  width: 100%;
+}
+
 .#{$prefix} {
-  &__tags-mode {
-    display: flex;
-    flex-wrap: wrap;
+  width: 100%;
+  display: flex;
 
-    .#{select.$prefix}-trigger__tags {
-      width: unset;
-    }
-
-    input {
-      width: unset;
+  &--with-prefix-external-action {
+    .#{text-field.$prefix} {
+      width: auto;
       flex: 1;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
 
-    &__input-on-top {
-      flex-direction: column-reverse;
-    }
-
-    &:hover {
-      .#{text-field.$prefix}__clear-icon {
-        opacity: 1;
-        pointer-events: auto;
-      }
+    .#{$prefix}__select-button:first-child,
+    .#{$prefix}__action-button:first-child {
+      border-right: none;
+      border-top-left-radius: radius.variable(base);
+      border-bottom-left-radius: radius.variable(base);
     }
   }
 
-  input {
-    padding-left: var(--#{text-field.$prefix}-padding-left);
-    padding-right: var(--#{text-field.$prefix}-padding-right);
-
-    /* clears the 'X' from Internet Explorer */
-    &[type='search']::-ms-clear,
-    &[type='search']::-ms-reveal {
-      display: none;
-      width: 0;
-      height: 0;
+  &--with-suffix-external-action {
+    .#{text-field.$prefix} {
+      width: auto;
+      flex: 1;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
     }
+
+    .#{$prefix}__select-button:last-child,
+    .#{$prefix}__action-button:last-child {
+      border-left: none;
+      border-top-right-radius: radius.variable(base);
+      border-bottom-right-radius: radius.variable(base);
+    }
+  }
+
+  &--number {
+    input {
+      width: 100%;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &--main {
+    .#{$prefix}--number {
+      padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, tiny);
+    }
+
+    .#{$prefix}__spinners {
+      margin: calc(spacing.semantic-variable(padding, vertical, calm) * -1) 0;
+    }
+  }
+
+  &--sub {
+    .#{$prefix}--number {
+      padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, tiny);
+    }
+
+    .#{$prefix}__spinners {
+      margin: calc(spacing.semantic-variable(padding, vertical, tight) * -1) 0;
+    }
+  }
+
+  &__spinners {
+    display: flex;
+    flex-flow: column;
+    gap: 0;
+    padding-left: spacing.semantic-variable(padding, horizontal, micro);
+  }
+
+  input {
+    width: 100%;
+    padding: 0;
 
     /* clears the 'X' from Chrome */
     &[type='search']::-webkit-search-decoration,
@@ -48,5 +95,24 @@
     &[type='search']::-webkit-search-results-decoration {
       display: none;
     }
+
+    &[type='number']::-webkit-outer-spin-button,
+    &[type='number']::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    &[type='number'] {
+      appearance: textfield;
+    }
   }
+}
+
+.#{$prefix}__field {
+  width: 100%;
+  display: flex;
+}
+
+.#{$prefix}__indicator-container {
+  padding-top: spacing.semantic-variable(gap, calm);
 }

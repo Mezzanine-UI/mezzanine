@@ -1,6 +1,7 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
 @use '../icon';
 @use '../text-field';
 @use './form-field' as *;
@@ -35,8 +36,7 @@ $message-gap: 4px !default;
   }
 
   &__asterisk,
-  &__remark,
-  &__message {
+  &__remark {
     @include typography.variant(caption);
   }
 
@@ -60,26 +60,9 @@ $message-gap: 4px !default;
     }
   }
 
-  &__message {
-    display: inline-flex;
-    align-items: center;
-    position: absolute;
-    top: 100%;
-    margin-top: $message-gap;
-    color: var(--#{$prefix}-severity-color, palette.color(action-inactive));
-    transition: transition.standard(color);
-    will-change: color;
-  }
-
   &__severity-icon {
     font-size: typography.px-to-rem($severity-icon-size);
     margin-right: $severity-icon-gap;
-  }
-
-  &--disabled {
-    .#{$prefix}__message {
-      display: none;
-    }
   }
 
   &--full-width {
@@ -89,6 +72,57 @@ $message-gap: 4px !default;
   @each $severity in $severities {
     &--#{$severity} {
       --#{$prefix}-severity-color: #{palette.color($severity)};
+    }
+  }
+}
+
+/* @TODO
+* 以下是因應 Input 需求而製作的 Hint Text 樣式
+* 設計稿上有標注使用 Form Hint Text 樣式
+* 但 Form 本身還沒完成定義，待完成定義後要回頭確認是否有需要調整
+*/
+.#{$prefix}__hint-text {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: spacing.semantic-variable(gap, tiny);
+  align-items: flex-start;
+  color: palette.semantic-variable(text, neutral);
+
+  @include typography.semantic-variable(annotation);
+
+  &__icon {
+    font-size: spacing.semantic-variable(size, element, narrow);
+  }
+
+  &--success {
+    color: palette.semantic-variable(text, success);
+
+    .#{$prefix}__hint-text__icon {
+      color: palette.semantic-variable(icon, success);
+    }
+  }
+
+  &--warning {
+    color: palette.semantic-variable(text, warning);
+
+    .#{$prefix}__hint-text__icon {
+      color: palette.semantic-variable(icon, warning);
+    }
+  }
+
+  &--error {
+    color: palette.semantic-variable(text, error);
+
+    .#{$prefix}__hint-text__icon {
+      color: palette.semantic-variable(icon, error);
+    }
+  }
+
+  &--info {
+    color: palette.semantic-variable(text, neutral);
+
+    .#{$prefix}__hint-text__icon {
+      color: palette.semantic-variable(icon, info);
     }
   }
 }

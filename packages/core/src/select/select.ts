@@ -2,6 +2,7 @@ import { Size } from '@mezzanine-ui/system/size';
 
 export type SelectInputSize = Size;
 export type SelectMode = 'single' | 'multiple';
+export type SelectTriggerType = 'default' | 'error';
 
 export const selectPrefix = 'mzn-select';
 export const treeSelectPrefix = 'mzn-tree-select';
@@ -16,6 +17,12 @@ export const selectClasses = {
 
   /** Trigger classes */
   trigger: selectTriggerPrefix,
+  triggerMode: (mode: SelectMode) => `${selectTriggerPrefix}--${mode}`,
+  triggerSelected: (value: unknown) =>
+    value ? `${selectTriggerPrefix}--selected` : '',
+  triggerReadOnly: `${selectTriggerPrefix}--readonly`,
+  triggerDisabled: `${selectTriggerPrefix}--disabled`,
+  triggerInput: `${selectTriggerPrefix}__input`,
   triggerTagsInputWrapper: `${selectTriggerPrefix}__tags-input-wrapper`,
   triggerTagsInputWrapperEllipsis: `${selectTriggerPrefix}__tags-input-wrapper--ellipsis`,
   triggerTagsInput: `${selectTriggerPrefix}__tags-input`,

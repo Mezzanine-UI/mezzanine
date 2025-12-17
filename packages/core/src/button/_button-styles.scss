@@ -1,176 +1,759 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/utils/list';
-@use '~@mezzanine-ui/system/orientation';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/motion' as motion;
+@use '~@mezzanine-ui/system/typography' as typography;
 @use '../icon';
 @use './utils';
 @use './button' as *;
 
-$colors-and-danger: list.push($colors, danger);
+$base-primary: (
+  enable: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, brand),
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, brand-strong),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, brand-solid),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, brand),
+    border-color: none,
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: none,
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, fixed-light, 60),
+    background-color: palette.semantic-variable(background, brand),
+    border-color: none,
+    focus-color: none,
+  ),
+);
 
-@function _get-colors($name) {
-  @return if($name == 'danger', 'error', $name);
+// Base Secondary
+$base-secondary: (
+  enable: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, neutral-ghost),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, neutral-faint),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, neutral-bold, 60),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+);
+
+// Base Tertiary
+$base-tertiary: (
+  enable: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, brand-ghost),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, brand-faint),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, neutral, 60),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Base Ghost
+$base-ghost: (
+  enable: (
+    text-color: palette.semantic-variable(text, brand),
+    icon-color: palette.semantic-variable(icon, brand),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, brand-strong),
+    icon-color: palette.semantic-variable(icon, brand-strong),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, brand-solid),
+    icon-color: palette.semantic-variable(icon, brand-solid),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, brand),
+    icon-color: palette.semantic-variable(icon, brand),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, neutral-bold, 60),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Base Dashed
+$base-dashed: (
+  enable: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, neutral-ghost),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, neutral-faint),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, neutral-bold, 60),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-faint),
+    focus-color: none,
+  ),
+);
+
+// Base Text Link
+$base-text-link: (
+  enable: (
+    text-color: palette.semantic-variable(text, brand),
+    icon-color: palette.semantic-variable(icon, brand),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, brand-strong),
+    icon-color: palette.semantic-variable(icon, brand-strong),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, brand-solid),
+    icon-color: palette.semantic-variable(icon, brand-solid),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, brand),
+    icon-color: palette.semantic-variable(icon, brand),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  // 設計未定義
+  loading: (
+    text-color: none,
+    icon-color: none,
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Destructive Primary
+$destructive-primary: (
+  enable: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, error),
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, error-strong),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, error-solid),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, error),
+    border-color: none,
+    focus-color: effect.variable(focus, error),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: none,
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, fixed-light, 60),
+    background-color: palette.semantic-variable(background, error),
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Destructive Secondary
+$destructive-secondary: (
+  enable: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, error-ghost),
+    border-color: palette.semantic-variable(border, error),
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, error-faint),
+    border-color: palette.semantic-variable(border, error),
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error),
+    focus-color: effect.variable(focus, error),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, error, 60),
+    background-color: none,
+    border-color: palette.semantic-variable(border, error),
+    focus-color: none,
+  ),
+);
+
+// Destructive Ghost
+$destructive-ghost: (
+  enable: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, error-ghost),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, error-faint),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: effect.variable(focus, error),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  loading: (
+    text-color: none,
+    icon-color: palette.semantic-variable(icon, error, 60),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Destructive Text Link
+$destructive-text-link: (
+  enable: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, error-strong),
+    icon-color: palette.semantic-variable(icon, error-strong),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, error-solid),
+    icon-color: palette.semantic-variable(icon, error-solid),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, error),
+    icon-color: palette.semantic-variable(icon, error),
+    background-color: palette.semantic-variable(background, base),
+    border-color: none,
+    focus-color: effect.variable(focus, error),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  // 設計未定義
+  loading: (
+    text-color: none,
+    icon-color: none,
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Inverse
+$inverse: (
+  enable: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: none,
+    border-color: palette.semantic-variable(surface, subtle),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(surface, ghost),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(surface, subtle),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, fixed-light),
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  // 設計未定義
+  loading: (
+    text-color: none,
+    icon-color: none,
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
+// Variant hierarchy map - 將所有 variants 整合
+$variant-hierarchy: (
+  base-primary: $base-primary,
+  base-secondary: $base-secondary,
+  base-tertiary: $base-tertiary,
+  base-ghost: $base-ghost,
+  base-dashed: $base-dashed,
+  base-text-link: $base-text-link,
+  destructive-primary: $destructive-primary,
+  destructive-secondary: $destructive-secondary,
+  destructive-ghost: $destructive-ghost,
+  destructive-text-link: $destructive-text-link,
+  inverse: $inverse,
+);
+
+// Size: main
+$size-main-configs: (
+  // 無 icon
+  default: (
+    padding-y: spacing.semantic-variable(padding, vertical, calm),
+    padding-x: spacing.semantic-variable(padding, horizontal, roomy),
+  ),
+  // Icon 在前 (leading)
+  leading: (
+    padding-y: spacing.semantic-variable(padding, vertical, calm),
+    padding-left: spacing.semantic-variable(padding, horizontal, cozy),
+    padding-right: spacing.semantic-variable(padding, horizontal, roomy),
+  ),
+  // Icon 在後 (trailing)
+  trailing: (
+    padding-y: spacing.semantic-variable(padding, vertical, calm),
+    padding-left: spacing.semantic-variable(padding, horizontal, roomy),
+    padding-right: spacing.semantic-variable(padding, horizontal, cozy),
+  ),
+  // Icon only
+  icon-only: (
+    padding-y: spacing.semantic-variable(padding, vertical, calm),
+    padding-x: spacing.semantic-variable(padding, horizontal, cozy),
+  ),
+);
+
+// Size: sub
+$size-sub-configs: (
+  // 無 icon
+  default: (
+    padding-y: spacing.semantic-variable(padding, vertical, tight),
+    padding-x: spacing.semantic-variable(padding, horizontal, cozy),
+  ),
+  // Icon 在前 (leading)
+  leading: (
+    padding-y: spacing.semantic-variable(padding, vertical, tight),
+    padding-left: spacing.semantic-variable(padding, horizontal, tight),
+    padding-right: spacing.semantic-variable(padding, horizontal, cozy),
+  ),
+  // Icon 在後 (trailing)
+  trailing: (
+    padding-y: spacing.semantic-variable(padding, vertical, tight),
+    padding-left: spacing.semantic-variable(padding, horizontal, cozy),
+    padding-right: spacing.semantic-variable(padding, horizontal, tight),
+  ),
+  // Icon only
+  icon-only: (
+    padding-y: spacing.semantic-variable(padding, vertical, tight),
+    padding-x: spacing.semantic-variable(padding, horizontal, tight),
+  ),
+);
+
+// Size: minor
+$size-minor-configs: (
+  // 無 icon
+  default: (
+    padding-y: spacing.semantic-variable(padding, vertical, tiny),
+    padding-x: spacing.semantic-variable(padding, horizontal, tight),
+  ),
+  // Icon 在前 (leading)
+  leading: (
+    padding-y: spacing.semantic-variable(padding, vertical, tiny),
+    padding-left: spacing.semantic-variable(padding, horizontal, tight),
+    padding-right: spacing.semantic-variable(padding, horizontal, tiny),
+  ),
+  // Icon 在後 (trailing)
+  trailing: (
+    padding-y: spacing.semantic-variable(padding, vertical, tiny),
+    padding-left: spacing.semantic-variable(padding, horizontal, tiny),
+    padding-right: spacing.semantic-variable(padding, horizontal, tight),
+  ),
+  // Icon only
+  icon-only: (
+    padding-y: spacing.semantic-variable(padding, vertical, tiny),
+    padding-x: spacing.semantic-variable(padding, horizontal, tiny),
+  ),
+);
+
+// 整合所有 size 配置
+$size-configs: (
+  main: (
+    typography: button-highlight,
+    padding-configs: $size-main-configs,
+  ),
+  sub: (
+    typography: button-highlight,
+    padding-configs: $size-sub-configs,
+  ),
+  minor: (
+    typography: button,
+    padding-configs: $size-minor-configs,
+  ),
+);
+
+// 取得特定 variant 和 hierarchy 的顏色值
+@function _get-color($variant, $hierarchy, $property) {
+  $variant-map: map.get($variant-hierarchy, $variant);
+
+  @if $variant-map {
+    $hierarchy-map: map.get($variant-map, $hierarchy);
+
+    @if $hierarchy-map {
+      $value: map.get($hierarchy-map, $property);
+
+      @return if($value == none, null, $value);
+    }
+  }
+
+  @return null;
 }
 
-$label-min-width: 32px !default;
-$label-min-width-small: 24px !default;
-$padding-x: 16px !default;
-$padding-x-small: 12px !default;
-$icon-size: 24px !default;
-$icon-size-small: 16px !default;
-$prefix-label-gap-x: 4px !default;
-$outlined-border-width: 1px !default;
+// 套用特定層級的顏色
+@mixin _apply-hierarchy-colors($variant, $hierarchy) {
+  $text: _get-color($variant, $hierarchy, text-color);
+  $icon: _get-color($variant, $hierarchy, icon-color);
+  $bg: _get-color($variant, $hierarchy, background-color);
+  $border: _get-color($variant, $hierarchy, border-color);
+  $focus: _get-color($variant, $hierarchy, focus-color);
 
-@mixin _base-color() {
-  &--disabled {
-    color: palette.color(action-disabled);
+  @if $text {
+    color: $text;
   }
 
-  &:not(.#{$prefix}--disabled) {
-    // Fallback to transparent for text and outlined button.
-    background-color: var(--#{$prefix}-bg, transparent);
-    color: var(--#{$prefix}-color);
-
-    &:hover {
-      background-color: var(--#{$prefix}-hover-bg);
-    }
-
-    &:focus,
-    &:active {
-      background-color: var(--#{$prefix}-active-bg);
-    }
+  @if $bg {
+    background-color: $bg;
   }
 
-  @each $name in $colors-and-danger {
-    $color: _get-colors($name);
+  @if $border {
+    border-color: $border;
+  }
 
-    &--#{$name} {
-      --#{$prefix}-color: #{palette.color($color)};
-      --#{$prefix}-hover-bg: #{palette.color(#{$color}-hover-bg)};
-      --#{$prefix}-active-bg: #{palette.color(#{$color}-active-bg)};
-    }
+  @if $icon {
+    --#{$prefix}-icon-color: #{$icon};
+  }
+
+  @if $focus {
+    box-shadow: $focus;
   }
 }
 
-@mixin _outlined-border-color() {
-  border: #{$outlined-border-width} solid var(--#{$prefix}-border);
+// 套用 variant 的所有狀態
+@mixin _apply-variant-states($variant) {
+  @include _apply-hierarchy-colors($variant, enable);
 
+  // Hover state
+  &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors($variant, hover);
+  }
+
+  // Active state
+  &:active:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors($variant, active);
+  }
+
+  // Focus state
+  &:focus-visible:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors($variant, focus);
+  }
+
+  // Disabled state
   &.#{$prefix}--disabled {
-    border-color: palette.color(action-disabled);
+    @include _apply-hierarchy-colors($variant, disabled);
   }
 
-  @each $name in $colors-and-danger {
-    $color: _get-colors($name);
-
-    &.#{$prefix}--#{$name} {
-      --#{$prefix}-border: #{palette.color($color)};
-    }
+  // Loading state
+  &.#{$prefix}--loading {
+    @include _apply-hierarchy-colors($variant, loading);
   }
 }
 
-@mixin _contained-color() {
-  &.#{$prefix}--disabled {
-    background-color: palette.color(action-disabled-bg);
-  }
-
-  @each $name in $colors-and-danger {
-    $color: _get-colors($name);
-
-    &.#{$prefix}--#{$name} {
-      --#{$prefix}-color: #{palette.color(on-#{$color})};
-      --#{$prefix}-bg: #{palette.color($color)};
-      --#{$prefix}-hover-bg: #{palette.color(#{$color}-light)};
-      --#{$prefix}-active-bg: #{palette.color(#{$color}-dark)};
-    }
+// 套用特定 icon position 的 padding
+@mixin _apply-padding($padding-config) {
+  @if map.has-key($padding-config, padding-x) {
+    // 對稱 padding (default 和 icon-only)
+    padding: map.get($padding-config, padding-y) map.get($padding-config, padding-x);
+  } @else {
+    // 非對稱 padding (leading 和 trailing)
+    padding: map.get($padding-config, padding-y) map.get($padding-config, padding-right) map.get($padding-config, padding-y) map.get($padding-config, padding-left);
   }
 }
 
-@mixin _size() {
-  & {
-    padding: 0 $padding-x;
-    height: var(--#{$prefix}-height);
-  }
+// 套用 size 配置
+@mixin _apply-size($size, $variant: null) {
+  $config: map.get($size-configs, $size);
 
-  @each $size in $sizes {
-    $typography-variant: map.get(
-      (
-        small: button3,
-        medium: button2,
-        large: button1,
-      ),
-      $size
-    );
-
-    &--#{$size} {
-      --#{$prefix}-height: #{typography.prop($typography-variant, line-height)};
-
-      @include typography.variant($typography-variant, (line-height));
-
-      @if $size == small {
-        padding: 0 $padding-x-small;
-      }
-    }
-  }
-
-  &__label {
-    min-width: $label-min-width;
-
-    .#{$prefix}--small & {
-      min-width: $label-min-width-small;
-    }
-  }
-
-  .#{icon.$prefix} {
-    font-size: typography.px-to-rem($icon-size);
-
-    .#{$prefix}--small & {
-      font-size: typography.px-to-rem($icon-size-small);
-    }
-  }
-
-  > * {
-    &:not(.#{$prefix}__label) {
-      &:first-child {
-        // For element on the left of button.
-        margin-left: -#{$prefix-label-gap-x};
-        margin-right: $prefix-label-gap-x;
-      }
-
-      &:last-child {
-        // For element on the right of button.
-        margin-right: -#{$prefix-label-gap-x};
-        margin-left: $prefix-label-gap-x;
-      }
-
-      &:first-child:last-child {
-        margin: 0;
-      }
-    }
-  }
-}
-
-@mixin _group-attached-spacing($orientation) {
-  $direction: if($orientation == horizontal, left, top);
-
-  .#{$prefix} {
-    &:not(:first-child) {
-      border-#{$direction}: 1px solid var(--#{$prefix}-color);
+  @if $config {
+    // Inverse variant 一律使用 button typography
+    @if $variant == 'inverse' {
+      @include typography.semantic-variable(button);
+    } @else {
+      @include typography.semantic-variable(map.get($config, typography));
     }
 
-    &--outlined {
-      &:not(:first-child) {
-        margin-#{$direction}: -1px;
-        border-#{$direction}: 0;
-      }
+    // 預設 padding (無 icon)
+    $padding-configs: map.get($config, padding-configs);
+    $default-padding: map.get($padding-configs, default);
+
+    @include _apply-padding($default-padding);
+
+    // Icon leading - 左邊有 icon
+    &.#{$prefix}--icon-leading {
+      $leading-padding: map.get($padding-configs, leading);
+
+      @include _apply-padding($leading-padding);
     }
 
-    &--contained {
-      &:not(:first-child) {
-        margin-#{$direction}: 1px;
-        border-#{$direction}: 0;
-      }
+    // Icon trailing - 右邊有 icon
+    &.#{$prefix}--icon-trailing {
+      $trailing-padding: map.get($padding-configs, trailing);
+
+      @include _apply-padding($trailing-padding);
+    }
+
+    // Icon only - 只有 icon 沒有文字
+    &.#{$prefix}--icon-only {
+      $icon-only-padding: map.get($padding-configs, icon-only);
+
+      @include _apply-padding($icon-only-padding);
+
+      width: fit-content;
+      aspect-ratio: 1;
     }
   }
 }
@@ -180,62 +763,80 @@ $outlined-border-width: 1px !default;
   @include typography.nowrap();
 
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: spacing.semantic-variable(gap, tight);
   text-decoration: none;
-  transition: transition.standard(background-color), transition.standard(border), transition.standard(color);
+  border: 1px solid transparent;
+  border-radius: radius.variable(base);
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(border-color, fast),
+    transition.standard(color, fast);
   will-change: background-color, border-color, color;
 
-  &--disabled,
+  &--disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   &--loading {
     cursor: default;
     pointer-events: none;
   }
 
-  @include _base-color();
-  @include _size();
-
-  &--outlined {
-    @include _outlined-border-color();
+  @each $size in $sizes {
+    &--#{$size} {
+      @include _apply-size($size);
+    }
   }
 
-  &--contained {
-    @include _contained-color();
+  @each $variant in $variants {
+    &--#{$variant} {
+      @include _apply-variant-states($variant);
+
+      // Inverse variant 的所有 size 都使用 button typography
+      @if $variant == 'inverse' {
+        @each $size in $sizes {
+          &.#{$prefix}--#{$size} {
+            @include _apply-size($size, inverse);
+          }
+        }
+      }
+
+      // Text link variants 不需要 padding
+      @if $variant == 'base-text-link' or $variant == 'destructive-text-link' {
+        padding: 0;
+
+        &.#{$prefix}--icon-leading,
+        &.#{$prefix}--icon-trailing,
+        &.#{$prefix}--icon-only {
+          padding: 0;
+        }
+      }
+    }
   }
 
-  &--icon {
-    padding: 0;
-    width: var(--#{$prefix}-height);
+  .#{icon.$prefix} {
+    font-size: typography.px-to-rem(16px);
+    color: var(--#{$prefix}-icon-color, currentColor);
   }
 }
 
 .#{$group-prefix} {
-  display: inline-grid;
-  grid-auto-flow: column;
-  gap: var(--#{$group-prefix}-spacing);
+  display: inline-flex;
+  gap: spacing.semantic-variable(gap, base);
   align-items: center;
+
+  &--vertical {
+    flex-direction: column;
+  }
 
   &--full-width {
     width: 100%;
-  }
 
-  &--vertical {
-    grid-auto-flow: row;
-  }
-
-  &--attached {
-    display: inline-flex;
-    gap: 0;
-
-    @each $orientation in orientation.$orientations {
-      &.#{$group-prefix}--#{$orientation} {
-        @if $orientation == vertical {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        @include _group-attached-spacing($orientation);
-      }
+    .#{$prefix} {
+      flex: 1;
     }
   }
 }

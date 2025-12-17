@@ -1,3 +1,5 @@
+'use client';
+
 import {
   calendarClasses as classes,
   DateType,
@@ -50,7 +52,8 @@ export interface CalendarYearsProps
  * You may use it to compose your own calendar.
  */
 function CalendarYears(props: CalendarYearsProps) {
-  const { getNow, getYear, isYearIncluded, setYear } = useCalendarContext();
+  const { getNow, getYear, isYearIncluded, setYear, getCurrentYearFirstDate } =
+    useCalendarContext();
   const {
     className,
     isYearDisabled,
@@ -72,7 +75,10 @@ function CalendarYears(props: CalendarYearsProps) {
       <div className={classes.twelveGrid}>
         {calendarYearsBase.map((base) => {
           const thisYear = base + start;
-          const yearDateType = setYear(getNow(), thisYear);
+          const yearDateType = setYear(
+            getCurrentYearFirstDate(getNow()),
+            thisYear,
+          );
           const disabled = isYearDisabled && isYearDisabled(yearDateType);
           const inactive = !disabled && (base === 0 || base === 11);
           const active =
@@ -93,12 +99,24 @@ function CalendarYears(props: CalendarYearsProps) {
               }
             : undefined;
 
+          // Accessible year label for screen readers
+          const ariaLabel = [
+            `Year ${thisYear}`,
+            active && 'Selected',
+            disabled && 'Not available',
+            inactive && 'Outside range',
+          ]
+            .filter(Boolean)
+            .join(', ');
+
           return (
             <button
               key={base + start}
               type="button"
               aria-disabled={disabled}
               disabled={disabled}
+              aria-label={ariaLabel}
+              aria-pressed={active}
               className={cx(classes.button, {
                 [classes.buttonActive]: active,
                 [classes.buttonInRange]: inRange,

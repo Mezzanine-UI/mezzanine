@@ -5,22 +5,16 @@ export {
   toggleValueWithStatusControl,
 } from './toggleValue';
 export { traverseTree } from './traverseTree';
-export {
-  UseTreeExpandedValueProps,
-  useTreeExpandedValue,
-} from './useTreeExpandedValue';
-export {
-  GetTreeNodeEntitiesProps,
-  getTreeNodeEntities,
-} from './getTreeNodeEntities';
-export {
-  TreeNodeElementProps,
-  TreeNodeProps,
-  default as TreeNode,
-} from './TreeNode';
-export {
+export { useTreeExpandedValue } from './useTreeExpandedValue';
+export type { UseTreeExpandedValueProps } from './useTreeExpandedValue';
+export { getTreeNodeEntities } from './getTreeNodeEntities';
+export type { GetTreeNodeEntitiesProps } from './getTreeNodeEntities';
+export { default as TreeNode } from './TreeNode';
+export type { TreeNodeElementProps, TreeNodeProps } from './TreeNode';
+export { default as TreeNodeList } from './TreeNodeList';
+export type {
   TreeNodeListElementProps,
   TreeNodeListProps,
-  default as TreeNodeList,
 } from './TreeNodeList';
-export { TreeProps, default } from './Tree';
+export type { TreeProps } from './Tree';
+export { default } from './Tree';

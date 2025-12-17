@@ -1,0 +1,318 @@
+@use 'sass:meta';
+@use '../utils/list';
+@use '../utils/map';
+@use './utils' as typography-utils;
+
+// ==========================================
+// Font Family Primitives
+// ==========================================
+
+// 定義所有可用的 font-family 類型
+$primitive-font-family-types: (
+  pingfangtc,
+  notosans,
+  sfmono
+);
+
+// CSS 變數前綴
+$primitive-prefix: mzn-typography-primitive;
+
+// 預設 font-family 定義
+$default-font-families: (
+  pingfangtc: 'PingFang TC',
+  notosans: 'Noto Sans TC',
+  sfmono: 'SF Mono',
+);
+
+// ==========================================
+// Font Weight Primitives
+// ==========================================
+
+// 定義所有可用的 font-weight 類型
+$primitive-font-weight-types: (
+  regular,
+  medium,
+  semibold
+);
+
+// 預設 font-weight 定義
+$default-font-weights: (
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+);
+
+// ==========================================
+// Font Size Primitives
+// ==========================================
+
+// 定義所有可用的 font-size 級距
+$primitive-font-size-scales: (24, 18, 16, 14, 12, 10);
+
+// 預設 font-size 定義
+$default-font-sizes: (
+  24: typography-utils.px-to-rem(24px),
+  18: typography-utils.px-to-rem(18px),
+  16: typography-utils.px-to-rem(16px),
+  14: typography-utils.px-to-rem(14px),
+  12: typography-utils.px-to-rem(12px),
+  10: typography-utils.px-to-rem(10px),
+);
+
+// ==========================================
+// Line Height Primitives
+// ==========================================
+
+// 定義所有可用的 line-height 類型
+$primitive-line-height-types: (
+  h1,
+  h2,
+  h3,
+  body,
+  caption,
+  annotation,
+  functional
+);
+
+// 預設 line-height 定義
+$default-line-heights: (
+  h1: 28px,
+  h2: 24px,
+  h3: 22px,
+  body: 20px,
+  caption: 16px,
+  annotation: 14px,
+  functional: 16px,
+);
+
+// ==========================================
+// Letter Spacing Primitives
+// ==========================================
+
+// 定義所有可用的 letter-spacing 類型
+$primitive-letter-spacing-types: (
+  0
+);
+
+// 預設 letter-spacing 定義
+$default-letter-spacings: (
+  0: 0em,
+);
+
+// ==========================================
+// Validation Functions
+// ==========================================
+
+@function is-font-family-type-valid($type) {
+  @return list.includes($primitive-font-family-types, $type);
+}
+
+@function is-font-weight-type-valid($type) {
+  @return list.includes($primitive-font-weight-types, $type);
+}
+
+@function is-font-size-scale-valid($scale) {
+  @return list.includes($primitive-font-size-scales, $scale);
+}
+
+@function is-line-height-type-valid($type) {
+  @return list.includes($primitive-line-height-types, $type);
+}
+
+@function is-letter-spacing-type-valid($type) {
+  @return list.includes($primitive-letter-spacing-types, $type);
+}
+
+// ==========================================
+// CSS Variable Functions
+// ==========================================
+
+// Get font-family CSS variable
+@function font-family-variable($type, $fallback: null) {
+  @if not is-font-family-type-valid($type) {
+    @error 'Invalid font-family type #{$type}. Please choose one of #{$primitive-font-family-types}';
+  }
+
+  $varname: --#{$primitive-prefix}-font-family-#{$type};
+
+  @if not $fallback {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+// Get font-weight CSS variable
+@function font-weight-variable($type, $fallback: null) {
+  @if not is-font-weight-type-valid($type) {
+    @error 'Invalid font-weight type #{$type}. Please choose one of #{$primitive-font-weight-types}';
+  }
+
+  $varname: --#{$primitive-prefix}-font-weight-#{$type};
+
+  @if not $fallback {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+// Get font-size CSS variable
+@function font-size-variable($scale, $fallback: null) {
+  @if not is-font-size-scale-valid($scale) {
+    @error 'Invalid font-size scale #{$scale}. Please choose one of #{$primitive-font-size-scales}';
+  }
+
+  $varname: --#{$primitive-prefix}-font-size-#{$scale};
+
+  @if not $fallback {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+// Get line-height CSS variable
+@function line-height-variable($type, $fallback: null) {
+  @if not is-line-height-type-valid($type) {
+    @error 'Invalid line-height type #{$type}. Please choose one of #{$primitive-line-height-types}';
+  }
+
+  $varname: --#{$primitive-prefix}-line-height-#{$type};
+
+  @if not $fallback {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+// Get letter-spacing CSS variable
+@function letter-spacing-variable($type, $fallback: null) {
+  @if not is-letter-spacing-type-valid($type) {
+    @error 'Invalid letter-spacing type #{$type}. Please choose one of #{$primitive-letter-spacing-types}';
+  }
+
+  $varname: --#{$primitive-prefix}-letter-spacing-#{$type};
+
+  @if not $fallback {
+    @return var(#{$varname});
+  }
+
+  @return var(#{$varname}, $fallback);
+}
+
+// Get default font-family list from primitives
+@function get-font-family-list($font-families: ()) {
+  $merged-font-families: map.merge($default-font-families, $font-families);
+  $result: ();
+
+  // 按照指定順序：PingFang TC, Noto Sans TC, SF Mono, sans-serif
+  @if map.has-key($merged-font-families, pingfangtc) {
+    $result: list.append($result, map.get($merged-font-families, pingfangtc), comma);
+  }
+
+  @if map.has-key($merged-font-families, notosans) {
+    $result: list.append($result, map.get($merged-font-families, notosans), comma);
+  }
+
+  @if map.has-key($merged-font-families, sfmono) {
+    $result: list.append($result, map.get($merged-font-families, sfmono), comma);
+  }
+
+  // 添加 sans-serif 作為最終回退
+  $result: list.append($result, sans-serif, comma);
+
+  @return $result;
+}
+
+// ==========================================
+// Generate CSS Variables Mixin
+// ==========================================
+
+// Generate partial font-family CSS variables
+@mixin partial-font-family-variables($font-families: ()) {
+  @each $type, $value in $font-families {
+    @if not is-font-family-type-valid($type) {
+      @error 'Invalid font-family type #{$type}. Please choose one of #{$primitive-font-family-types}';
+    }
+
+    @if $value {
+      --#{$primitive-prefix}-font-family-#{$type}: #{meta.inspect($value)};
+    }
+  }
+}
+
+// Generate partial font-weight CSS variables
+@mixin partial-font-weight-variables($font-weights: ()) {
+  @each $type, $value in $font-weights {
+    @if not is-font-weight-type-valid($type) {
+      @error 'Invalid font-weight type #{$type}. Please choose one of #{$primitive-font-weight-types}';
+    }
+
+    @if $value {
+      --#{$primitive-prefix}-font-weight-#{$type}: #{$value};
+    }
+  }
+}
+
+// Generate partial font-size CSS variables
+@mixin partial-font-size-variables($font-sizes: ()) {
+  @each $scale, $value in $font-sizes {
+    @if not is-font-size-scale-valid($scale) {
+      @error 'Invalid font-size scale #{$scale}. Please choose one of #{$primitive-font-size-scales}';
+    }
+
+    @if $value {
+      --#{$primitive-prefix}-font-size-#{$scale}: #{$value};
+    }
+  }
+}
+
+// Generate partial line-height CSS variables
+@mixin partial-line-height-variables($line-heights: ()) {
+  @each $type, $value in $line-heights {
+    @if not is-line-height-type-valid($type) {
+      @error 'Invalid line-height type #{$type}. Please choose one of #{$primitive-line-height-types}';
+    }
+
+    @if $value {
+      --#{$primitive-prefix}-line-height-#{$type}: #{$value};
+    }
+  }
+}
+
+// Generate partial letter-spacing CSS variables
+@mixin partial-letter-spacing-variables($letter-spacings: ()) {
+  @each $type, $value in $letter-spacings {
+    @if not is-letter-spacing-type-valid($type) {
+      @error 'Invalid letter-spacing type #{$type}. Please choose one of #{$primitive-letter-spacing-types}';
+    }
+
+    @if $value {
+      --#{$primitive-prefix}-letter-spacing-#{$type}: #{$value};
+    }
+  }
+}
+
+// Generate all typography primitive CSS variables
+@mixin variables(
+  $font-families: (),
+  $font-weights: (),
+  $font-sizes: (),
+  $line-heights: (),
+  $letter-spacings: ()
+) {
+  // Merge user values with defaults
+  $merged-font-families: map.merge($default-font-families, $font-families);
+  $merged-font-weights: map.merge($default-font-weights, $font-weights);
+  $merged-font-sizes: map.merge($default-font-sizes, $font-sizes);
+  $merged-line-heights: map.merge($default-line-heights, $line-heights);
+  $merged-letter-spacings: map.merge($default-letter-spacings, $letter-spacings);
+
+  @include partial-font-family-variables($merged-font-families);
+  @include partial-font-weight-variables($merged-font-weights);
+  @include partial-font-size-variables($merged-font-sizes);
+  @include partial-line-height-variables($merged-line-heights);
+  @include partial-letter-spacing-variables($merged-letter-spacings);
+}

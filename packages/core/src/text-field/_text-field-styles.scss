@@ -1,67 +1,286 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/size';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography' as typography;
 @use '../icon';
-@use '../form';
 @use './text-field' as *;
 
-$min-width: 160px !default;
-$min-width-small: 132px !default;
-$padding-x: 16px !default;
-$padding-x-small: 12px !default;
-$icon-size: 24px !default;
-$icon-size-small: 16px !default;
-$prefix-suffix-gap: 4px !default;
+$state-default: (
+  default: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, brand),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: none,
+  ),
+  typing: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, brand),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+     border-color: palette.semantic-variable(border, brand),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    focus-color: none,
+  ),
+  readonly: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-color: palette.semantic-variable(border, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: none,
+  ),
+);
+
+$state-error: (
+  default: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error-subtle),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: none,
+  ),
+  typing: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: effect.variable(focus, error),
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, error),
+    icon-color: palette.semantic-variable(icon, neutral),
+    focus-color: effect.variable(focus, error),
+  ),
+);
+
+$state-warning: (
+  default: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning-subtle),
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning),
+    focus-color: none,
+  ),
+  typing: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning),
+    focus-color: effect.variable(focus, warning),
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    placeholder-color: palette.semantic-variable(text, neutral-light),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, warning),
+    focus-color: effect.variable(focus, warning),
+  )
+);
+
+$state-hierarchy: (
+  default: $state-default,
+  error: $state-error,
+  warning: $state-warning,
+);
+
+$size-configs: (
+  main: (
+    padding-y: spacing.semantic-variable(padding, vertical, calm),
+    padding-x: spacing.semantic-variable(padding, horizontal, cozy),
+    typography: input,
+    icon-size: 16px,
+  ),
+  sub: (
+    padding-y: spacing.semantic-variable(padding, vertical, tight),
+    padding-x: spacing.semantic-variable(padding, horizontal, cozy),
+    typography: input,
+    icon-size: 16px,
+  ),
+);
+
+@function _get-state-color($severity, $state, $property) {
+  $severity-map: map.get($state-hierarchy, $severity);
+
+  @if $severity-map {
+    $state-map: map.get($severity-map, $state);
+
+    @if $state-map {
+      $value: map.get($state-map, $property);
+
+      @return if($value == none, null, $value);
+    }
+  }
+
+  @return null;
+}
+
+@mixin _apply-state-colors($severity, $state) {
+  $text: _get-state-color($severity, $state, text-color);
+  $placeholder: _get-state-color($severity, $state, placeholder-color);
+  $bg: _get-state-color($severity, $state, background-color);
+  $border: _get-state-color($severity, $state, border-color);
+  $icon: _get-state-color($severity, $state, icon-color);
+  $focus: _get-state-color($severity, $state, focus-color);
+
+  @if $text {
+    color: $text;
+  }
+
+  @if $placeholder {
+    --#{$prefix}-placeholder-color: #{$placeholder};
+  }
+
+  @if $bg {
+    background-color: $bg;
+  }
+
+  @if $border {
+    border-color: $border;
+  }
+
+  @if $icon {
+    --#{$prefix}-icon-color: #{$icon};
+  }
+
+  @if $focus {
+    box-shadow: $focus;
+  }
+}
+
+@mixin _apply-severity-states($severity, $include-readonly-disabled: true) {
+  @include _apply-state-colors($severity, default);
+
+  &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--readonly):not(.#{$prefix}--typing) {
+    @include _apply-state-colors($severity, hover);
+  }
+
+  &:has(*:focus-visible):not(.#{$prefix}--disabled):not(.#{$prefix}--readonly):not(.#{$prefix}--typing) {
+    @include _apply-state-colors($severity, focus);
+  }
+
+  &.#{$prefix}--typing,
+  &.#{$prefix}--active {
+    @include _apply-state-colors($severity, typing);
+  }
+
+  @if $include-readonly-disabled {
+    &.#{$prefix}--readonly {
+      @include _apply-state-colors($severity, readonly);
+    }
+
+    &.#{$prefix}--disabled {
+      @include _apply-state-colors($severity, disabled);
+    }
+  }
+}
+
+@mixin _apply-size($size) {
+  $config: map.get($size-configs, $size);
+
+  @if $config {
+    --#{$prefix}-icon-size: #{typography.px-to-rem(map.get($config, icon-size))};
+
+    @include typography.semantic-variable(map.get($config, typography));
+
+    padding: map.get($config, padding-y) map.get($config, padding-x);
+  }
+}
 
 .#{$prefix} {
-  --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size)};
-  --#{$prefix}-padding-x: #{$padding-x};
-  --#{$prefix}-padding-x-prefix: calc(var(--#{$prefix}-padding-x) + var(--#{$prefix}-icon-size));
-  --#{$prefix}-padding-left: var(--#{$prefix}-padding-x);
-  --#{$prefix}-padding-right: var(--#{$prefix}-padding-x);
-  --#{$prefix}-prefix-x-gap: calc(var(--#{$prefix}-padding-x) - #{$prefix-suffix-gap});
-  --#{$prefix}-interact-icon-color: var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color));
-
   position: relative;
   display: inline-flex;
-  min-width: $min-width;
-  height: auto;
-  min-height: var(--#{$prefix}-height);
-  background-color: palette.color(surface);
-  border: 1px solid var(--#{form.$field-prefix}-severity-color, var(--#{$prefix}-status-color, palette.color(border)));
-  color: palette.color(text-primary);
-  caret-color: palette.color(text-primary);
-  transition: transition.standard(background-color), transition.standard(border), transition.standard(color);
-  will-change: background-color, border-color, color;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, base);
+  width: auto;
+  border: 1px solid transparent;
+  border-radius: radius.variable(base);
+  caret-color: palette.semantic-variable(text, brand);
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(border-color, fast),
+    transition.standard(color, fast),
+    transition.standard(box-shadow, fast);
+  will-change: background-color, border-color, color, box-shadow;
   box-sizing: border-box;
+
+  &--slim-gap {
+    gap: spacing.semantic-variable(gap, slim);
+  }
+
+  &--full-width {
+    width: 100%;
+  }
 
   input,
   textarea {
+    flex: 1;
     font: inherit;
-    width: 100%;
     margin: 0;
-    padding: 0;
     background-color: transparent;
     border: none;
     color: inherit;
     outline: none;
-    resize: none;
     box-sizing: border-box;
+    caret-color: palette.semantic-variable(text, neutral-solid);
   }
 
-  ::placeholder,
+  @each $size-name, $size-config in $size-configs {
+    &__input-padding--#{$size-name} {
+      padding: map.get($size-config, padding-y) map.get($size-config, padding-x);
+    }
+  }
+
+  *::placeholder,
   &__placeholder {
-    color: palette.color(text-secondary);
-  }
-
-  &__prefix,
-  &__suffix,
-  &__clear-icon,
-  &__action-icon {
-    position: absolute;
-    top: calc((var(--#{$prefix}-height) - var(--#{$prefix}-icon-size)) / 2);
+    color: var(--#{$prefix}-placeholder-color);
   }
 
   &__prefix,
@@ -69,132 +288,82 @@ $prefix-suffix-gap: 4px !default;
     display: flex;
     align-items: center;
     flex-shrink: 0;
+    gap: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, neutral);
+
+    @include typography.semantic-variable(input);
+
+    .#{icon.$prefix} {
+      font-size: var(--#{$prefix}-icon-size);
+      color: var(--#{$prefix}-icon-color);
+      transition: transition.standard(color, fast);
+      will-change: color;
+    }
   }
 
-  &__prefix {
-    left: var(--#{$prefix}-prefix-x-gap);
+  &:has(.#{$prefix}__prefix) {
+    padding-left: spacing.semantic-variable(padding, horizontal, cozy);
   }
 
-  &__suffix,
-  &__clear-icon,
-  &__action-icon {
-    right: var(--#{$prefix}-prefix-x-gap);
-  }
-
-  &__clear-icon,
-  &__action-icon {
-    background-color: inherit;
-    border: none;
-    color: var(--#{$prefix}-interact-icon-color, #{palette.color(action-inactive)});
-    padding: 0;
-    outline: none;
-    cursor: pointer;
+  &:has(.#{$prefix}__suffix) {
+    padding-right: spacing.semantic-variable(padding, horizontal, cozy);
   }
 
   &__clear-icon {
     opacity: 0;
     pointer-events: none;
-  }
 
-  &__action-icon {
-    opacity: 1;
-  }
-
-  .#{icon.$prefix} {
-    font-size: var(--#{$prefix}-icon-size);
-    transition: transition.standard(color), transition.standard(opacity);
-    will-change: color, opacity;
-  }
-
-  &:not(.#{$prefix}--disabled) {
     .#{icon.$prefix} {
-      &:not(.#{$prefix}__clear-icon)
-      &:not(.#{$prefix}__action-icon) {
-        color: palette.color(action-inactive);
-      }
+      font-size: var(--#{$prefix}-icon-size);
     }
   }
 
-  &--active {
-    &:hover,
-    &:focus-within {
-      &:not(.#{$prefix}--disabled) {
-        .#{$prefix}__clear-icon {
-          opacity: 1;
-          pointer-events: auto;
-        }
+  &--clearable:hover,
+  &--clearable:focus-within {
+    &:not(.#{$prefix}--disabled):not(.#{$prefix}--readonly) {
+      .#{$prefix}__clear-icon {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .#{$prefix}__action-icon {
+        opacity: 0;
+        pointer-events: none;
       }
     }
-  }
-
-  &--error {
-    --#{$prefix}-status-color: #{palette.color(error)};
   }
 
   &--disabled {
-    background-color: palette.color(action-disabled-bg);
-    border-color: transparent;
-    color: palette.color(text-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
-    &,
+  &--readonly {
+    cursor: default;
+
     input,
     textarea {
-      pointer-events: none;
       cursor: default;
     }
+  }
 
-    .#{icon.$prefix} {
-      color: palette.color(action-disabled);
+  @each $size-name, $size-config in $size-configs {
+    &--#{$size-name} {
+      @include _apply-size($size-name);
     }
   }
 
-  &--prefix {
-    --#{$prefix}-padding-left: var(--#{$prefix}-padding-x-prefix);
+  @include _apply-severity-states(default);
+
+  &--error {
+    @include _apply-severity-states(error, $include-readonly-disabled: false);
   }
 
-  &--clearable,
-  &--suffix {
-    --#{$prefix}-padding-right: var(--#{$prefix}-padding-x-prefix);
+  &--warning:not(&--error) {
+    @include _apply-severity-states(warning, $include-readonly-disabled: false);
   }
 
-  &--full-width {
-    width: 100%;
-  }
-
-  &:hover,
-  &:focus-within {
-    &:not(.#{$prefix}--disabled) {
-      &:not(
-      .#{$prefix}--error,
-      .#{form.$field-prefix}--success,
-      .#{form.$field-prefix}--error,
-      .#{form.$field-prefix}--warning) {
-        --#{$prefix}-status-color: #{palette.color(primary)};
-      }
-    }
-  }
-
-  @each $size in $sizes {
-    $typography-variant: map.get(
-      (
-        small: input3,
-        medium: input2,
-        large: input1,
-      ),
-      $size
-    );
-
-    &--#{$size} {
-      --#{$prefix}-height: #{typography.prop($typography-variant, line-height)};
-
-      @if $size == small {
-        --#{$prefix}-padding-x: #{$padding-x-small};
-        --#{$prefix}-icon-size: #{typography.px-to-rem($icon-size-small)};
-
-        min-width: $min-width-small;
-      }
-
-      @include typography.variant($typography-variant);
-    }
+  &--no-padding {
+    padding: 0;
   }
 }

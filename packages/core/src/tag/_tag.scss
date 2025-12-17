@@ -1,4 +1,6 @@
 @use '~@mezzanine-ui/system/size';
+@use 'sass:list';
 
 $prefix: mzn-tag;
-$sizes: size.$sizes;
+$tag-sizes: size.$general-sizes;
+$tag-types: (static, counter, overflow-counter, dismissable, addable);

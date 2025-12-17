@@ -1,6 +1,6 @@
-
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const MinusIcon: IconDefinition = {
   name: 'minus',
   definition: {

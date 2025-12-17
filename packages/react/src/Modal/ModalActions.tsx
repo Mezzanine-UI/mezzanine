@@ -1,3 +1,5 @@
+'use client';
+
 import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { forwardRef, useContext } from 'react';
 import ConfirmActions, { ConfirmActionsProps } from '../ConfirmActions';

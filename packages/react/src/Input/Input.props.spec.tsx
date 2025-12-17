@@ -1,9 +1,7 @@
-import { PlusIcon } from '@mezzanine-ui/icons';
-import { cleanup, render, cleanupHook } from '../../__test-utils__';
+import { PlusIcon, CopyIcon } from '@mezzanine-ui/icons';
+import { cleanup, render } from '../../__test-utils__';
 import Icon from '../Icon';
-import { FormField } from '../Form';
 import Input from '.';
-import ConfigProvider from '../Provider';
 
 const mockRenderTextField = jest.fn();
 
@@ -21,47 +19,105 @@ describe('<Input />', () => {
 
   afterEach(cleanup);
 
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    render(
-      <Input
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
+  describe('variant: base', () => {
+    it('props should pass to TextField', () => {
+      render(
+        <Input
+          clearable
+          disabled
+          error
+          fullWidth
+          size="main"
+          value="foo"
+          onClear={jest.fn()}
+        />,
+      );
 
-    expect(mockRenderTextField).toHaveBeenCalledWith(
-      expect.objectContaining({
-        active: true,
-        clearable: true,
-        disabled: true,
-        error: true,
-        fullWidth: true,
-        prefix,
-        size: 'large',
-        suffix,
-      }),
-    );
+      expect(mockRenderTextField).toHaveBeenCalledWith(
+        expect.objectContaining({
+          clearable: true,
+          disabled: true,
+          error: true,
+          fullWidth: true,
+          size: 'main',
+        }),
+      );
+    });
   });
 
-  it('should accept ConfigProvider context changes', () => {
-    render(
-      <ConfigProvider size="small">
-        <Input />
-      </ConfigProvider>,
-    );
-    expect(mockRenderTextField).toHaveBeenCalledWith(
-      expect.objectContaining({
-        size: 'small',
-      }),
-    );
+  describe('variant: affix', () => {
+    it('should pass prefix and suffix to TextField', () => {
+      const prefix = <Icon icon={PlusIcon} />;
+      const suffix = <Icon icon={PlusIcon} />;
+      render(
+        <Input
+          variant="affix"
+          prefix={prefix}
+          suffix={suffix}
+          clearable
+          onClear={jest.fn()}
+        />,
+      );
+
+      expect(mockRenderTextField).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prefix,
+          suffix,
+          clearable: true,
+        }),
+      );
+    });
+  });
+
+  describe('variant: search', () => {
+    it('should render with search icon prefix', () => {
+      render(<Input variant="search" />);
+
+      expect(mockRenderTextField).toHaveBeenCalledWith(
+        expect.objectContaining({
+          prefix: expect.anything(),
+          clearable: true,
+        }),
+      );
+    });
+  });
+
+  describe('variant: number', () => {
+    it('should render number input', () => {
+      render(<Input variant="number" min={0} max={100} step={5} />);
+
+      expect(mockRenderTextField).toHaveBeenCalled();
+    });
+  });
+
+  describe('variant: action', () => {
+    it('should render with action button', () => {
+      render(
+        <Input
+          variant="action"
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: 'Copy',
+            onClick: jest.fn(),
+          }}
+        />,
+      );
+
+      expect(mockRenderTextField).toHaveBeenCalled();
+    });
+  });
+
+  describe('variant: password', () => {
+    it('should render password input', () => {
+      render(<Input variant="password" />);
+
+      expect(mockRenderTextField).toHaveBeenCalledWith(
+        expect.objectContaining({
+          suffix: expect.anything(),
+        }),
+      );
+    });
   });
 
   describe('prop: error', () => {
@@ -69,12 +125,8 @@ describe('<Input />', () => {
       mockRenderTextField.mockClear();
     });
 
-    it('should use severity from form control if error not passed', () => {
-      render(
-        <FormField severity="error">
-          <Input />
-        </FormField>,
-      );
+    it('should pass error prop to TextField', () => {
+      render(<Input error />);
 
       expect(mockRenderTextField).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -89,12 +141,18 @@ describe('<Input />', () => {
       mockRenderTextField.mockClear();
     });
 
-    it('should use fullWidth from form control if fullWidth not passed', () => {
-      render(
-        <FormField fullWidth>
-          <Input />
-        </FormField>,
+    it('should pass fullWidth prop to TextField', () => {
+      render(<Input fullWidth />);
+
+      expect(mockRenderTextField).toHaveBeenCalledWith(
+        expect.objectContaining({
+          fullWidth: true,
+        }),
       );
+    });
+
+    it('should default to fullWidth true', () => {
+      render(<Input />);
 
       expect(mockRenderTextField).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -105,141 +163,29 @@ describe('<Input />', () => {
   });
 });
 
-describe('<Input tags="default" />', () => {
+describe('prop: size', () => {
   beforeEach(() => {
     mockRenderTextField.mockClear();
   });
 
   afterEach(cleanup);
 
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    render(
-      <Input
-        clearable
-        disabled
-        error
-        fullWidth
-        mode="default"
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
+  it('should support main size', () => {
+    render(<Input size="main" />);
 
     expect(mockRenderTextField).toHaveBeenCalledWith(
       expect.objectContaining({
-        active: true,
-        clearable: true,
-        disabled: true,
-        error: true,
-        fullWidth: true,
-        prefix,
-        size: 'large',
-        suffix,
+        size: 'main',
       }),
     );
   });
 
-  describe('prop: error', () => {
-    beforeEach(() => {
-      mockRenderTextField.mockClear();
-    });
+  it('should support sub size', () => {
+    render(<Input size="sub" />);
 
-    it('should use severity from form control if error not passed', () => {
-      render(
-        <FormField severity="error">
-          <Input mode="default" />
-          <Input mode="default" error={false} />
-        </FormField>,
-      );
-
-      expect(mockRenderTextField).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: true,
-        }),
-      );
-
-      render(
-        <FormField severity="error">
-          <Input mode="default" error={false} />
-        </FormField>,
-      );
-
-      expect(mockRenderTextField).toHaveBeenCalledWith(
-        expect.objectContaining({
-          error: false,
-        }),
-      );
-    });
-  });
-
-  describe('prop: fullWidth', () => {
-    beforeEach(() => {
-      mockRenderTextField.mockClear();
-    });
-
-    it('should use fullWidth from form control if fullWidth not passed', () => {
-      render(
-        <FormField fullWidth>
-          <Input mode="default" />
-        </FormField>,
-      );
-
-      expect(mockRenderTextField).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fullWidth: true,
-        }),
-      );
-      render(
-        <FormField fullWidth>
-          <Input mode="default" fullWidth={false} />
-        </FormField>,
-      );
-
-      expect(mockRenderTextField).toHaveBeenCalledWith(
-        expect.objectContaining({
-          fullWidth: false,
-        }),
-      );
-    });
-  });
-});
-
-describe('<Input mode="tags" />', () => {
-  afterEach(() => {
-    cleanup();
-    cleanupHook();
-  });
-
-  it('props should pass to TextField', () => {
-    const prefix = <Icon icon={PlusIcon} />;
-    const suffix = <Icon icon={PlusIcon} />;
-    render(
-      <Input
-        mode="tags"
-        clearable
-        disabled
-        error
-        fullWidth
-        prefix={prefix}
-        size="large"
-        suffix={suffix}
-        value="foo"
-      />,
-    );
     expect(mockRenderTextField).toHaveBeenCalledWith(
       expect.objectContaining({
-        active: true,
-        clearable: true,
-        disabled: true,
-        error: true,
-        fullWidth: true,
-        prefix,
-        size: 'large',
-        suffix,
+        size: 'sub',
       }),
     );
   });

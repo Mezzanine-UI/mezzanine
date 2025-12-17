@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,

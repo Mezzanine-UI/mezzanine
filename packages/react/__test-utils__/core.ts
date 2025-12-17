@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement } from 'react';
 import { queries } from '@testing-library/dom';
 import {
   render as coreRender,
@@ -7,10 +7,6 @@ import {
   Queries,
 } from '@testing-library/react';
 
-export {
-  ReactTestRenderer,
-  default as TestRenderer,
-} from 'react-test-renderer';
 export * from '@testing-library/react';
 export { renderHook, cleanup as cleanupHook } from '@testing-library/react';
 

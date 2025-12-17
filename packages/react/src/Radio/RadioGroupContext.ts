@@ -1,3 +1,5 @@
+'use client';
+
 import { RadioSize } from '@mezzanine-ui/core/radio';
 import { createContext } from 'react';
 import { RadioGroupControlContextValue } from '../Form/useRadioControlValue';

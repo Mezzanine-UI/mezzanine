@@ -1,4 +1,5 @@
-/* eslint-disable react/jsx-curly-brace-presence */
+'use client';
+
 import {
   treeClasses as classes,
   TreeNodeValue,
@@ -9,12 +10,12 @@ import { forwardRef, useMemo, useContext } from 'react';
 import Checkbox from '../Checkbox';
 import Icon from '../Icon';
 import { Collapse, CollapseProps } from '../Transition';
-import Typography, { TypographyVariant } from '../Typography';
+import Typography, { TypographySemanticType } from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TreeNodeData } from './typings';
 import { MezzanineConfig } from '../Provider/context';
-import Loading from '../Loading/Loading';
+import Spin from '../Spin/Spin';
 
 export type TreeNodeElementProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'li'>,
@@ -76,16 +77,16 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
       ...restRootProps
     } = props;
 
-    const variant: TypographyVariant = useMemo(() => {
+    const variant: TypographySemanticType = useMemo(() => {
       if (size === 'small') {
-        return 'input3';
+        return 'input';
       }
 
       if (size === 'large') {
-        return 'input1';
+        return 'input';
       }
 
-      return 'input2';
+      return 'input';
     }, [size]);
 
     const onExpand = onExpandProp
@@ -150,7 +151,7 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
         </div>
         {mayHaveChildren && (
           <Collapse in={expanded} appear={false}>
-            {children || <Loading loading iconProps={{ size: 16 }} />}
+            {children || <Spin loading iconProps={{ size: 16 }} />}
           </Collapse>
         )}
       </li>

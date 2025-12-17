@@ -1,3 +1,5 @@
+'use client';
+
 import { useContext, forwardRef } from 'react';
 import {
   tableClasses as classes,

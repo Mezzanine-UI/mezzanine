@@ -21,31 +21,29 @@ export interface PaginationJumperProps
    */
   buttonText?: string;
   /**
-   * If `true`, the pagination jumper fields is disabled.
-   * @default false
+   * If `true`, the pagination jumper fields are disabled.
    */
-  disabled?: boolean;
+  disabled?: true;
   /**
-   * The hint text displayed in front of `input`.
+   * The hint text displayed in front of input.
    */
   hintText?: string;
   /**
-   * The hint displayed in the `input` before the user enters a value.
+   * The placeholder displayed in the input before the user enters a value.
    */
   inputPlaceholder?: string;
   /**
    * Callback fired when the page is changed.
-   *
-   * @param {number} page The page active.
+   * @param {number} page The active page number.
    */
   onChange?: (page: number) => void;
   /**
-   * Number of data per page
+   * Number of items per page.
    * @default 5
    */
   pageSize?: number;
   /**
-   * Items total count.
+   * Total number of items.
    * @default 0
    */
   total?: number;
@@ -56,7 +54,7 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
     const {
       buttonText,
       className,
-      disabled = false,
+      disabled,
       hintText,
       inputPlaceholder,
       onChange: handleChange,
@@ -105,29 +103,25 @@ const PaginationJumper = forwardRef<HTMLDivElement, PaginationJumperProps>(
 
     return (
       <div {...rest} ref={ref} className={cx(classes.host, className)}>
-        <Typography
-          color={disabled ? 'text-disabled' : 'text-primary'}
-          component="div"
-          ellipsis
-          variant="input2"
-        >
+        <Typography component="div" ellipsis variant="label-primary">
           {hintText}
         </Typography>
         <Input
+          size="sub"
           disabled={disabled}
           error={error}
+          variant="number"
+          className={classes.input}
           onChange={(e) => {
             setValue(e.target.value);
           }}
           placeholder={inputPlaceholder}
           inputProps={{
-            type: 'number',
-            className: classes.input,
             onKeyDown: handleKeyDown,
           }}
           value={value}
         />
-        <Button disabled={disabled} onClick={handleClick}>
+        <Button size="sub" disabled={disabled} onClick={handleClick}>
           {buttonText}
         </Button>
       </div>

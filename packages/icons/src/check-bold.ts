@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const CheckBoldIcon: IconDefinition = {
   name: 'check-bold',
   definition: {

@@ -151,7 +151,7 @@ describe('<CalendarWeeks />', () => {
       buttons.forEach((btn) => {
         fireEvent.click(btn);
 
-        expect(onClick).toBeCalledTimes(1);
+        expect(onClick).toHaveBeenCalledTimes(1);
 
         onClick.mockClear();
       });
@@ -191,7 +191,7 @@ describe('<CalendarWeeks />', () => {
       buttons.forEach((btn) => {
         fireEvent.mouseEnter(btn);
 
-        expect(onWeekHover).toBeCalledTimes(1);
+        expect(onWeekHover).toHaveBeenCalledTimes(1);
 
         onWeekHover.mockClear();
       });
@@ -212,7 +212,7 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getCalendarGridSpy).toBeCalledWith(referenceDate);
+      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate);
     });
   });
 

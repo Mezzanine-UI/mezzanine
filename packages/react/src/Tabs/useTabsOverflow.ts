@@ -57,13 +57,15 @@ export default function useTabsOverflow(
       tabsRef.current.addEventListener('scroll', handleScrollState);
 
       return () => {
-        if (tabsRef.current) {
+        const { current: tabsEl } = tabsRef;
+
+        if (tabsEl) {
           window.removeEventListener('resize', handleOverflowingState);
-          tabsRef.current.removeEventListener('scroll', handleScrollState);
+          tabsEl.removeEventListener('scroll', handleScrollState);
         }
       };
     }
-  }, [tabsRef.current]);
+  }, [tabsRef]);
 
   return {
     isOverflowing,

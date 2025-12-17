@@ -1,6 +1,6 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
 import { toCssVar } from '@mezzanine-ui/system/css';
-import { Color } from '@mezzanine-ui/system/palette';
+import { colorSemanticPrefix } from '@mezzanine-ui/system/palette';
 import { cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -52,15 +52,21 @@ describe('<Icon />', () => {
   });
 
   describe('prop: color', () => {
-    const colorMaps: ([IconColor, Color] | IconColor | undefined)[] = [
+    const colorMaps: ([IconColor, string] | IconColor | undefined)[] = [
       undefined,
       'inherit',
-      ['primary', 'primary'],
-      ['secondary', 'secondary'],
-      ['error', 'error'],
-      ['warning', 'warning'],
-      ['success', 'success'],
-      ['disabled', 'action-disabled'],
+      ['neutral', 'icon-neutral'],
+      ['neutral-strong', 'icon-neutral-strong'],
+      ['brand', 'icon-brand'],
+      ['brand-strong', 'icon-brand-strong'],
+      ['error', 'icon-error'],
+      ['error-strong', 'icon-error-strong'],
+      ['warning', 'icon-warning'],
+      ['warning-strong', 'icon-warning-strong'],
+      ['success', 'icon-success'],
+      ['success-strong', 'icon-success-strong'],
+      ['info', 'icon-info'],
+      ['info-strong', 'icon-info-strong'],
     ];
 
     colorMaps.forEach((colorMap) => {
@@ -71,7 +77,7 @@ describe('<Icon />', () => {
         const [iconColor, expectedColor] = colorMap;
 
         color = iconColor;
-        expected = toCssVar(`mzn-color-${expectedColor}`);
+        expected = toCssVar(`${colorSemanticPrefix}-${expectedColor}`);
       } else {
         color = colorMap;
         expected = colorMap || '';

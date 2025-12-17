@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { Key, useState } from 'react';
 import Badge, { BadgeContainer } from '../Badge';
 import Button from '../Button';

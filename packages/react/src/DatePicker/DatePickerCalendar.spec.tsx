@@ -195,7 +195,7 @@ describe('<DatePickerCalendar />', () => {
             fireEvent.click(testButtonElement!);
           });
 
-          expect(onChange).toBeCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
         });
       });
     });

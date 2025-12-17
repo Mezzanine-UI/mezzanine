@@ -2,6 +2,19 @@
 
 $prefix: mzn-button;
 $group-prefix: #{$prefix}-group;
-$colors: (primary, secondary);
-$variants: (contained, outlined, text);
-$sizes: size.$sizes;
+$sizes: size.$general-sizes;
+
+// Variant 組合：對應設計師定義的 variants + hierarchy
+$variants: (
+  base-primary,
+  base-secondary,
+  base-tertiary,
+  base-ghost,
+  base-dashed,
+  base-text-link,
+  destructive-primary,
+  destructive-secondary,
+  destructive-ghost,
+  destructive-text-link,
+  inverse
+);

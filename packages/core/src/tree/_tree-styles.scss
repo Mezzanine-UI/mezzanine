@@ -67,7 +67,7 @@ $layer-indent-medium: 16px !default;
     top: calc((var(--#{$node-prefix}-height) - var(--#{$node-prefix}-icon-size)) / 2);
     color: palette.color(action-inactive);
     cursor: pointer;
-    transition: transition.standard(transform, motion.duration(shortest));
+    transition: transition.standard(transform, moderate);
     transform-origin: center center;
   }
 
@@ -78,7 +78,7 @@ $layer-indent-medium: 16px !default;
   &__label {
     padding: 0 8px;
     cursor: default;
-    transition: transition.standard(background-color, motion.duration(shortest));
+    transition: transition.standard(background-color, moderate);
   }
 
   &__label--selectable {

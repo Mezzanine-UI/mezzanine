@@ -4,6 +4,10 @@
   white-space: nowrap;
 }
 
+@mixin inherit() {
+  font: inherit;
+}
+
 @mixin overflow-ellipsis() {
   overflow: hidden;
   text-overflow: ellipsis;

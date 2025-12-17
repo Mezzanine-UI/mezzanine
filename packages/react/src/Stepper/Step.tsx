@@ -1,97 +1,132 @@
 import { forwardRef } from 'react';
 import { stepClasses as classes } from '@mezzanine-ui/core/stepper';
-import { CheckIcon } from '@mezzanine-ui/icons';
-import Icon, { IconProps } from '../Icon';
-import Typography, { TypographyProps } from '../Typography';
+import {
+  CheckedOutlineIcon,
+  DangerousFilledIcon,
+  Item0Icon,
+  Item1Icon,
+  Item2Icon,
+  Item3Icon,
+  Item4Icon,
+  Item5Icon,
+  Item6Icon,
+  Item7Icon,
+  Item8Icon,
+  Item9Icon,
+} from '@mezzanine-ui/icons';
+import Icon from '../Icon';
+import Typography from '../Typography';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { StepProps } from './typings';
 
-export interface StepProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'title'> {
-  /**
-   * Mark the step as active. automatically set by `activeStep` of `Stepper`.
-   */
-  active?: boolean;
-  /**
-   * Mark the step as completed. automatically set by `activeStep` of `Stepper`.
-   */
-  completed?: boolean;
-  /**
-   * Step icon props. effective only when the step is completed.
-   * @default 'icon: CheckIcon'
-   */
-  completedIconProps?: IconProps;
-  /**
-   * Mark the step as disabled. automatically set by `activeStep` of `Stepper`.
-   */
-  disabled?: boolean;
-  /**
-   * Step index. automatically set by the parent <Stepper />.
-   */
-  index?: number;
-  /**
-   * The step label on the right side of the icon, visible if value is not empty.
-   */
-  title?: string;
-  /**
-   * title typography props.
-   * @default 'variant: button2'
-   */
-  titleProps?: Omit<TypographyProps, 'children'>;
-}
+const indicatorNumberIconList = [
+  Item0Icon,
+  Item1Icon,
+  Item2Icon,
+  Item3Icon,
+  Item4Icon,
+  Item5Icon,
+  Item6Icon,
+  Item7Icon,
+  Item8Icon,
+  Item9Icon,
+];
+
+/** icon and indicatorNumber */
+const NumberStatusIndicator = ({
+  status,
+  error,
+  indicatorNumber,
+}: {
+  status: StepProps['status'];
+  error?: boolean;
+  indicatorNumber: number;
+}) => {
+  switch (true) {
+    case !error && status === 'succeeded':
+      return (
+        <Icon className={classes.statusIndicator} icon={CheckedOutlineIcon} />
+      );
+    case status !== 'processing' && error:
+      return (
+        <Icon className={classes.statusIndicator} icon={DangerousFilledIcon} />
+      );
+    default:
+      return (
+        <Icon
+          className={classes.statusIndicator}
+          icon={indicatorNumberIconList[indicatorNumber % 10]}
+        />
+      );
+  }
+};
+
+const DotStatusIndicator = () => (
+  <span className={cx(classes.statusIndicator, classes.statusIndicatorDot)} />
+);
 
 /**
  * The react component for `mezzanine` step.
  */
 const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
   const {
-    active,
-    children,
     className,
-    completed,
-    completedIconProps,
-    disabled,
-    index = -1,
+    description,
+    index = 0,
+    orientation,
+    status = 'pending',
     title,
-    titleProps,
+    type = 'number',
+    error,
     ...rest
   } = props;
 
-  /** icon and step number */
-  const iconRender = (
-    <Typography className={classes.iconBackground} variant="button3">
-      {completed ? (
-        <Icon
-          className={classes.completedIcon}
-          icon={CheckIcon}
-          {...completedIconProps}
-        />
-      ) : (
-        index + 1
-      )}
-    </Typography>
-  );
-
   return (
     <div
-      className={cx(classes.host, disabled && classes.disabled, className)}
+      className={cx(
+        classes.host,
+        {
+          // status
+          [classes.processing]: status === 'processing',
+          [classes.pending]: status === 'pending',
+          [classes.succeeded]: !error && status === 'succeeded',
+          [classes.error]: error && status !== 'processing',
+          [classes.processingError]: error && status === 'processing',
+          // orientation
+          [classes.horizontal]: orientation === 'horizontal',
+          [classes.vertical]: orientation === 'vertical',
+          // type
+          [classes.dot]: type === 'dot',
+          [classes.number]: type === 'number',
+          // interactive
+          [classes.interactive]: rest.onClick,
+        },
+        className,
+      )}
       ref={ref}
       {...rest}
     >
-      {iconRender}
-      {
-        /** title (optional) */
-        title && (
-          <Typography
-            className={classes.title}
-            variant="button2"
-            {...titleProps}
-          >
-            {title}
+      {type === 'number' && (
+        <NumberStatusIndicator
+          status={status}
+          indicatorNumber={index + 1}
+          error={error}
+        />
+      )}
+      {type === 'dot' && <DotStatusIndicator />}
+      <div className={classes.textContainer}>
+        {/* title (required) */}
+        <Typography className={classes.title} variant="label-primary-highlight">
+          {title}
+          <span className={classes.titleConnectLine} />
+        </Typography>
+        {/* description (optional) */}
+        {description && (
+          <Typography className={classes.description} variant="caption">
+            {description}
           </Typography>
-        )
-      }
-      {children}
+        )}
+      </div>
     </div>
   );
 });

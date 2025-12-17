@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const MenuCloseIcon: IconDefinition = {
   name: 'menu-close',
   definition: {

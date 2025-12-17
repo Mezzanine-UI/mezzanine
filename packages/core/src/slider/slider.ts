@@ -48,10 +48,17 @@ export const sliderClasses = {
   handlerPosition: `${sliderHandlerPrefix}__position`,
   handlerStartPosition: `${sliderHandlerPrefix}__position--start`,
   handlerEndPosition: `${sliderHandlerPrefix}__position--end`,
+  handlerTooltip: `${sliderHandlerPrefix}__tooltip`,
+  /** Icon */
+  icon: `${sliderPrefix}__icon`,
+  /** Tick */
+  tick: `${sliderPrefix}__tick`,
 } as const;
 
 /** Methods */
-export function toSliderCssVars(variables: SliderCssVars): CssVarInterpolations {
+export function toSliderCssVars(
+  variables: SliderCssVars,
+): CssVarInterpolations {
   const {
     trackWidth,
     trackPosition,
@@ -77,16 +84,16 @@ export function sortSliderValue(value: SingleSliderValue): never;
 export function sortSliderValue(value: RangeSliderValue): RangeSliderValue;
 export function sortSliderValue(value: SliderValue) {
   if (typeof value !== 'object') {
-    throw Error('should provide `RangeSliderValue` to `sortSliderValue` method');
+    throw Error(
+      'should provide `RangeSliderValue` to `sortSliderValue` method',
+    );
   }
 
   return value[1] > value[0] ? [value[0], value[1]] : [value[1], value[0]];
 }
 
 // methods for computing handle and track position
-export function getSliderRect(
-  element: HTMLDivElement,
-): SliderRect {
+export function getSliderRect(element: HTMLDivElement): SliderRect {
   const rect = element.getBoundingClientRect();
 
   return {
@@ -108,25 +115,13 @@ export function getValueFromClientX(
   return value + min;
 }
 
-export function getPercentage(
-  value: number,
-  min: number,
-  max: number,
-) {
+export function getPercentage(value: number, min: number, max: number) {
   if (min > max) return 0;
 
-  return Math.max(
-    0,
-    Math.min(
-      100,
-      (value / Math.abs(max - min)) * 100,
-    ),
-  );
+  return Math.max(0, Math.min(100, (value / Math.abs(max - min)) * 100));
 }
 
-export function getPrecision(
-  step: number,
-) {
+export function getPrecision(step: number) {
   const stepString = step.toString();
   let precision = 0;
 
@@ -199,12 +194,11 @@ export function roundToStep(
   return parseFloat(right.toFixed(getPrecision(step)));
 }
 
-export function findClosetValueIndex(
-  value: SliderValue,
-  newValue: number,
-) {
+export function findClosetValueIndex(value: SliderValue, newValue: number) {
   if (!isRangeSlider(value)) return -1;
-  const [closetValue] = [...value].sort((a, b) => Math.abs(newValue - a) - Math.abs(newValue - b));
+  const [closetValue] = [...value].sort(
+    (a, b) => Math.abs(newValue - a) - Math.abs(newValue - b),
+  );
 
   return value.findIndex((element) => element === closetValue);
 }

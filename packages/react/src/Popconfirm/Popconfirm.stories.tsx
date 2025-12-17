@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { MouseEvent, useState } from 'react';
 import { NotificationData } from '..';
 import Button from '../Button';

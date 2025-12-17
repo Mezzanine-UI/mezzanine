@@ -1,0 +1,25 @@
+{
+  "name": "@mezzanine-ui/icons",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/icons/src",
+  "projectType": "library",
+  "tags": ["type:lib"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/build.js",
+        "cwd": "packages/icons"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["@mezzanine-ui/system:build"]
+    },
+    "build:clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/cleanBuild.js",
+        "cwd": "packages/icons"
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const StarPressedIcon: IconDefinition = {
   name: 'star-pressed',
   definition: {

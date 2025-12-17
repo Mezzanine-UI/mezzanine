@@ -1,442 +1,432 @@
 # Mezzanine UI
 
-## BEFORE YOU STARTED
+A comprehensive React component library with a complete design system, built for modern web applications.
 
-Please note that the current project is still in the "Beta stage" but has been widely utilized across various Rytass projects. If you intend to use it in a production environment, be aware that API changes may still occur.
+## ⚠️ Current Status
 
-## Storybook preview
+This project is in **active development** for v2. While it has been widely utilized across various Rytass projects, please note that API changes may still occur. We recommend pinning to specific versions in production environments.
 
-If you're interested in this project, please refer to the [Storybook](https://storybook.mezzanine-ui.org) for more information.
+## 📚 Documentation
 
-## Migrations
+- **[Storybook](https://storybook.mezzanine-ui.org)** - Interactive component documentation and examples
+- **[Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations)** - Upgrading from previous versions
 
-If you've previously used this project and wish to update to the latest version, please consult the [Migration Guide](https://github.com/Mezzanine-UI/mezzanine/tree/main/migrations) for detailed instructions.
+## 🌐 Browser Support
 
-## Browser Support
-
-`Google Chrome` 64 or newer (2018) <br />
-`Edge` 79 or newer (2020) <br />
-`Safari` 13.1 or newer (2020) <br />
-`Firefox` 69 or newer (2019) <br />
+| Browser       | Minimum Version |
+| ------------- | --------------- |
+| Google Chrome | 64 (2018)       |
+| Edge          | 79 (2020)       |
+| Safari        | 13.1 (2020)     |
+| Firefox       | 69 (2019)       |
 
 ---
 
-## Installation
+## 📦 Installation
 
-For fully installation:
+Install all required packages:
 
-```
+```bash
 yarn add @mezzanine-ui/core @mezzanine-ui/react @mezzanine-ui/system @mezzanine-ui/icons
 ```
 
-## Setup
+---
 
-### Quickly Setup
+## 🚀 Quick Start
 
-All you need to do is create a `main.scss` file and paste the following code into it.
+### 1. Setup Styles
+
+Create a `main.scss` file in your project:
 
 ```scss
 @use '~@mezzanine-ui/system' as mzn-system;
 @use '~@mezzanine-ui/core' as mzn-core;
 
+// Apply design system variables
 :root {
-  @include mzn-system.common-variables();
-  @include mzn-system.palette();
+  @include mzn-system.palette-variables(light);
+  @include mzn-system.common-variables(default);
 }
 
+// Optional: Dark mode support
+[data-theme='dark'] {
+  @include mzn-system.palette-variables(dark);
+}
+
+// Optional: Compact mode support
+[data-density='compact'] {
+  @include mzn-system.common-variables(compact);
+}
+
+// Import component styles
 @include mzn-core.styles();
 ```
 
-Then, import it at the root node.
+### 2. Import Styles
+
+Import the stylesheet at your app's entry point:
 
 ```jsx
 import './main.scss';
 
-function App() {}
-```
-
-### Customize palette
-
-Here are default palette.
-
-```scss
-$custom-palette: (
-  light: (
-    primary: #465bc7,
-    primary-light: #778de8,
-    primary-dark: #2d2d9e,
-    on-primary: #fff,
-    secondary: #383838,
-    secondary-light: #6a6a6a,
-    secondary-dark: #161616,
-    on-secondary: #fff,
-    error: #db2b1d,
-    error-light: #f75142,
-    error-dark: #c00f03,
-    on-error: #fff,
-    warning: #f7ac38,
-    warning-light: #fdd948,
-    warning-dark: #f1842b,
-    on-warning: #fff,
-    success: #2e8d36,
-    success-light: #42ae4a,
-    success-dark: #0c5d19,
-    on-success: #fff,
-    text-primary: #161616,
-    text-secondary: #8f8f8f,
-    text-disabled: #bcbcbc,
-    action-active: #161616,
-    action-inactive: #8f8f8f,
-    action-disabled: #bcbcbc,
-    action-disabled-bg: #e5e5e5,
-    bg: #f4f4f4,
-    surface: #fff,
-    border: #d9d9d9,
-    divider: #f2f2f2,
-  ),
-);
-
-:root {
-  @include mzn-system.palette('light', $custom-palette);
-}
-```
-
-### Customize common system variables
-
-**System common variables** contains `typography`, `motion`, `spacing`, `z-index`
-
-- **typography**: `base` contains `font-family` and each tag contains `font-size`, `font-weight`, `letter-spacing`, `line-height`. We recommend
-  to use our `px-to-rem` or `px-to-em` to convert pixel into `rem` or `em`.
-- **motion**: motion contains `duration` and `easing` which used by `Transition`, `Collapse`...etc
-- **spacing**: spacings used by mezzanine internally, we **RECOMMEND NOT** to modify these values only if you fully understand mezzanine design system.
-- **z-index**: z-index start from 1000 as default.
-
-Default values are listed as below.
-
-```scss
-@use 'sass:string';
-@use '~@mezzanine-ui/system' as mzn-system;
-@use '~@mezzanine-ui/system/typography' as mzn-typography;
-
-$custom-variables: (
-  typography: (
-    base: (
-      font-family: string.unquote('PingFang TC, Microsoft JhengHei'),
-    ),
-    h1: (
-      font-size: mzn-typography.px-to-rem(32px),
-      font-weight: 600,
-      letter-spacing: mzn-typography.px-to-em(4px),
-      line-height: mzn-typography.px-to-rem(48px),
-    ),
-    h2: (
-      font-size: mzn-typography.px-to-rem(24px),
-      font-weight: 600,
-      letter-spacing: mzn-typography.px-to-em(2px),
-      line-height: mzn-typography.px-to-rem(36px),
-    ),
-    h3: (
-      font-size: mzn-typography.px-to-rem(22px),
-      font-weight: 500,
-      letter-spacing: mzn-typography.px-to-em(2px),
-      line-height: mzn-typography.px-to-rem(32px),
-    ),
-    h4: (
-      font-size: mzn-typography.px-to-rem(18px),
-      font-weight: 500,
-      letter-spacing: mzn-typography.px-to-em(1px),
-      line-height: mzn-typography.px-to-rem(28px),
-    ),
-    h5: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 500,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(24px),
-    ),
-    h6: (
-      font-size: mzn-typography.px-to-rem(13px),
-      font-weight: 500,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(20px),
-    ),
-    button1: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 500,
-      letter-spacing: mzn-typography.px-to-em(2px),
-      line-height: mzn-typography.px-to-rem(40px),
-    ),
-    button2: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 500,
-      letter-spacing: mzn-typography.px-to-em(2px),
-      line-height: mzn-typography.px-to-rem(32px),
-    ),
-    button3: (
-      font-size: mzn-typography.px-to-rem(13px),
-      font-weight: 500,
-      letter-spacing: mzn-typography.px-to-em(1px),
-      line-height: mzn-typography.px-to-rem(24px),
-    ),
-    input1: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 400,
-      letter-spacing: mzn-typography.px-to-em(1px),
-      line-height: mzn-typography.px-to-rem(40px),
-    ),
-    input2: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 400,
-      letter-spacing: mzn-typography.px-to-em(1px),
-      line-height: mzn-typography.px-to-rem(32px),
-    ),
-    input3: (
-      font-size: mzn-typography.px-to-rem(13px),
-      font-weight: 400,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(24px),
-    ),
-    body1: (
-      font-size: mzn-typography.px-to-rem(15px),
-      font-weight: 400,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(24px),
-    ),
-    body2: (
-      font-size: mzn-typography.px-to-rem(13px),
-      font-weight: 400,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(20px),
-    ),
-    caption: (
-      font-size: mzn-typography.px-to-rem(12px),
-      font-weight: 400,
-      letter-spacing: 0,
-      line-height: mzn-typography.px-to-rem(16px),
-    ),
-  ),
-  motion: (
-    durations: (
-      shortest: 150ms,
-      shorter: 200ms,
-      short: 250ms,
-      standard: 300ms,
-      long: 375ms,
-    ),
-    easings: (
-      standard: cubic-bezier(0.58, 0.01, 0.29, 1.01),
-      emphasized: cubic-bezier(0.83, 0, 0.17, 1),
-      decelerated: cubic-bezier(0, 0, 0.3, 1),
-      accelerated: cubic-bezier(0.32, 0, 0.67, 0),
-    ),
-  ),
-  spacing: (
-    4px,
-    8px,
-    12px,
-    16px,
-    24px,
-    32px,
-    40px,
-    48px,
-    64px,
-    96px,
-    160px,
-  ),
-  z-index: 1000,
-);
-
-:root {
-  @include mzn-system.common-variables($custom-variables);
-}
-```
-
-and in your component level
-
-#### Use mezzanine typography
-
-If `h1` typography is needed, apply it like this:
-
-```scss
-@use '~@mezzanine-ui/system/typography';
-
-.text {
-  @include typography.variant(h1);
-}
-```
-
-#### Use mezzanine transition (motion)
-
-If `standard` transition is needed, apply it like this:
-
-```scss
-@use '~@mezzanine-ui/system/transition';
-
-.text {
-  transition: transition.standard(color);
-}
-```
-
-#### Use mezzanine z-index
-
-If `modal` z-index is needed, apply it like this:
-
-```scss
-@use '~@mezzanine-ui/system/z-index';
-
-.text {
-  z-index: z-index.get(modal);
-}
-```
-
-Notice that mezzanine z-index only includes `modal`, `drawer`, `popover`, `feedback`.<br />
-If you need more z-index orders, please add extra z-index scss file by yourself since mezzanine isn't support adding custom order name currently.
-
----
-
-### Usage
-
-Mezzanine components are listed in [storybook](https://storybook.mezzanine-ui.org) and props descriptions are in `docs` section. <br />
-
-For example:
-
-```tsx
-import { Button } from '@mezzanine-ui/react';
-
 function App() {
-  return <Button>Click me!</Button>;
+  return <div>Your App</div>;
 }
 ```
 
-Also, we provide a `<ConfigProvider />` that makes it convenient to control the size of all components.
+### 3. Use Components
 
-```tsx
-import { ConfigProvider, Button } from '@mezzanine-ui/react';
+```jsx
+import { Button, Typography } from '@mezzanine-ui/react';
+import { PlusIcon } from '@mezzanine-ui/icons';
 
 function App() {
   return (
-    <ConfigProvider size="large">
-      <Button>Large Button</Button>
-    </ConfigProvider>
+    <div>
+      <Typography variant="h1">Welcome to Mezzanine UI</Typography>
+      <Button variant="base-primary" size="main">
+        <PlusIcon />
+        Click Me
+      </Button>
+    </div>
   );
 }
 ```
 
-#### React Hooks (not listed in storybook)
+---
 
-Some useful hooks you may needed:
+## 🎨 Design System Customization
 
-- **useComposeRefs**
+### Understanding Primitives vs Semantic
 
-Composing react refs, for example:
+Mezzanine UI v2 uses a two-layer design token system:
+
+- **Primitives**: Raw values (e.g., `#3b82f6`, `16px`)
+- **Semantic**: Contextual tokens that reference primitives (e.g., `text-brand`, `padding-base`)
+
+> 💡 **Best Practice**: Always use semantic tokens in your application for automatic theme switching support.
+
+### Customize Color Palette
+
+Override palette colors by passing a custom configuration:
+
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+
+$custom-palette: (
+  background: (
+    base: (
+      light: #000,
+      dark: #fff,
+    ),
+    menu: (
+      light: #fff,
+      dark: #9a9a9a,
+    ),
+    // ...
+  ), // ...
+);
+
+:root {
+  @include mzn-system.palette-variables(light, $custom-palette);
+}
+
+[data-theme='dark'] {
+  @include mzn-system.palette-variables(dark, $custom-palette);
+}
+```
+
+### Customize Typography
+
+Override typography settings:
+
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+@use '~@mezzanine-ui/system/typography' as typography;
+
+$custom-variables: (
+  typography: (
+    h3: (
+      font-size: 18px,
+      font-weight: 700,
+      line-height: 26px,
+      letter-spacing: 0,
+    ),
+    // ...
+  ),
+);
+
+:root {
+  @include mzn-system.common-variables(default, $custom-variables);
+}
+```
+
+### Customize Spacing
+
+Override spacing values:
+
+```scss
+@use '~@mezzanine-ui/system' as mzn-system;
+
+$custom-variables: (
+  spacing: (
+    size: (
+      element: (
+        hairline: (
+          default: 2px,
+          compact: 2px,
+        ),
+      ),
+    ),
+  ),
+);
+
+:root {
+  @include mzn-system.common-variables(default, $custom-variables);
+}
+
+[data-density='compact'] {
+  @include mzn-system.common-variables(compact, $custom-variables);
+}
+```
+
+---
+
+## 🎯 Using Design Tokens in Your Components
+
+### In SCSS
+
+```scss
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/typography' as typography;
+
+.my-component {
+  // Colors - use semantic variables
+  color: palette.semantic-variable(text, brand);
+  background-color: palette.semantic-variable(background, base);
+  border-color: palette.semantic-variable(border, neutral);
+
+  // Spacing - use semantic variables
+  padding: spacing.semantic-variable(padding, horizontal, base);
+  gap: spacing.semantic-variable(gap, tight);
+
+  // Border radius
+  border-radius: radius.variable(base);
+
+  // Typography - apply full semantic typography
+  @include typography.semantic-variable(body);
+}
+```
+
+### Available System Modules
+
+| Module       | Purpose                         | Example                                         |
+| ------------ | ------------------------------- | ----------------------------------------------- |
+| `palette`    | Colors (text, background, etc.) | `palette.semantic-variable(text, brand)`        |
+| `spacing`    | Padding, margin, gap            | `spacing.semantic-variable(padding, base)`      |
+| `radius`     | Border radius                   | `radius.variable(base)`                         |
+| `typography` | Font settings                   | `@include typography.semantic-variable(button)` |
+| `effect`     | Shadows, focus rings            | `effect.variable(focus, primary)`               |
+| `size`       | Element sizes                   | `size.semantic-variable(element, main)`         |
+
+---
+
+## 🔧 Using React Components
+
+### Component Examples
+
+#### Button
+
+```jsx
+import { Button } from '@mezzanine-ui/react';
+import { PlusIcon } from '@mezzanine-ui/icons';
+
+<Button variant="base-primary" size="main">
+  Primary Button
+</Button>
+
+<Button variant="base-secondary" size="sub" disabled>
+  Disabled Button
+</Button>
+
+<Button variant="outlined-primary" size="minor">
+  <PlusIcon />
+  With Icon
+</Button>
+```
+
+#### Typography
+
+```jsx
+import { Typography } from '@mezzanine-ui/react';
+
+<Typography variant="h1">Heading 1</Typography>
+<Typography variant="body">Body text</Typography>
+<Typography variant="caption" color="text-neutral">
+  Caption text
+</Typography>
+```
+
+---
+
+## 🪝 Useful React Hooks
+
+Mezzanine provides several utility hooks:
+
+### useComposeRefs
+
+Compose multiple refs:
 
 ```jsx
 import { forwardRef, useRef } from 'react';
 import { useComposeRefs } from '@mezzanine-ui/react';
 
 const Component = forwardRef((props, ref) => {
-  const myRef = useRef();
-  const composedRef = useComposeRefs([ref, myRef]);
+  const internalRef = useRef();
+  const composedRef = useComposeRefs([ref, internalRef]);
 
   return <div ref={composedRef} />;
 });
 ```
 
-- **useClickAway**
+### useClickAway
 
-Detect whether the user click event is triggered outside the target element.
-This may be useful when you have modal/message/pop-up...etc over your container, for example:
+Detect clicks outside an element:
 
 ```jsx
+import { useRef } from 'react';
 import { useClickAway } from '@mezzanine-ui/react';
 
-function App() {
+function Modal({ onClose }) {
+  const modalRef = useRef();
+
   useClickAway(
     () => {
-      if (disabled) {
-        /** Conditions when not willing to triggered */
-        return;
-      }
-
       return (event) => {
-        /** Conditions when willing to triggered */
-        if (onClose) {
-          onClose(event);
-        }
+        onClose(event);
       };
     },
-    popperRef, // your target element (check whether click event is outside this element)
-    [
-      disabled,
-      onClose,
-      // ...dependencies
-    ],
+    modalRef,
+    [onClose],
+  );
+
+  return <div ref={modalRef}>Modal content</div>;
+}
+```
+
+### Other Hooks
+
+- `usePreviousValue` - Store previous render value
+- `useWindowWidth` - Get window width with resize listener
+- `useDocumentEscapeKeyDown` - Handle ESC key press
+- `useIsomorphicLayoutEffect` - SSR-safe useLayoutEffect
+
+---
+
+## 🌙 Theme Support
+
+### Light/Dark Mode
+
+Mezzanine UI v2 has built-in support for light and dark modes:
+
+```scss
+// In your SCSS
+:root {
+  @include mzn-system.palette-variables(light);
+}
+
+[data-theme='dark'] {
+  @include mzn-system.palette-variables(dark);
+}
+```
+
+Toggle theme in your React app:
+
+```jsx
+function ThemeToggle() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  return <Button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}>Toggle Theme</Button>;
+}
+```
+
+### Default/Compact Mode
+
+Switch between comfortable and compact spacing:
+
+```scss
+:root {
+  @include mzn-system.common-variables(default);
+}
+
+[data-density='compact'] {
+  @include mzn-system.common-variables(compact);
+}
+```
+
+Toggle density in your React app:
+
+```jsx
+function DensityToggle() {
+  const [density, setDensity] = useState('default');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-density', density);
+  }, [density]);
+
+  return <Button onClick={() => setDensity(density === 'default' ? 'compact' : 'default')}>Toggle Density</Button>;
+}
+```
+
+---
+
+## 📖 Icon Usage
+
+Use icons from the `@mezzanine-ui/icons` package:
+
+```jsx
+import { ChevronDownIcon, PlusIcon, CheckIcon } from '@mezzanine-ui/icons';
+
+function Example() {
+  return (
+    <div>
+      <ChevronDownIcon />
+      <PlusIcon />
+      <CheckIcon />
+    </div>
   );
 }
 ```
 
-- **usePreviousValue**
-
-Store previous render cycle value, for example:
-
-```jsx
-import { useState } from 'react';
-import { usePreviousValue } from '@mezzanine-ui/react';
-
-function App() {
-  const [value] = useState('');
-  const previousValue = usePreviousValue(value);
-}
-```
-
-- **useWindowWidth**
-
-Add `resize` event on window and return `window.innerWidth`
-
-```jsx
-import { useWindowWidth } from '@mezzanine-ui/react';
-
-function App() {
-  const windowWidth = useWindowWidth();
-}
-```
-
-And some other hooks used by mezzanine components are also exported if you need:
-
-- **useDocumentEscapeKeyDown**
-- **useDocumentEvents**
-- **useIsomorphicLayoutEffect**
-- **useLastCallback**
-- **useDocumentTabKeyDown**
-- **useDelayMouseEnterLeave**
+> ⚠️ **Important**: Only use icons from categorized folders (e.g., `arrow/`, `controls/`, `system/`). Avoid deprecated icons in the root directory.
 
 ---
 
-## 開發指引
+## 🤝 Contributing
 
-### 架構
+We welcome contributions! Please see our [Development Guidelines](./DEVELOP_GUIDELINE.md) for:
 
-- monorepo
-- core: component styles (writen in scss)
-- icons: export svg specific definition icons
-- react: react components implementation
-- system: shared config (typography, palette, transition...etc)
+- Setting up the development environment
+- Understanding the project architecture
+- Following coding conventions
+- Writing tests and documentation
 
-### 規範
+---
 
-- Props 須按照字母 a-z 排序
-- Component interface 需寫註解
-- BEM css naming + css variables
-- Component Storybook
-- Unit tests (PR 審核的版本需確認 test coverage 盡可能 100%)
-  - cd 到 `react/` 資料夾下，執行 `yarn test:coverage`
+## 📝 License
 
-### Commits
+MIT License - see [LICENSE](./LICENSE) for details.
 
-- 依照各個 monorepo 上的更動，個別 commit
-  - feat(core/input): xxx
-  - fix(react/input): xxx
-- 如果因反覆修改，而在支線上有「不屬於主線」該存在的修改時，應整併 commits
-  - feat(react/input): implement react input
-  - fix(react/input): fix some bug _(squash this commit)_
-  - fix(react/input): fix some bugs again _(squash this commit)_
-- commit 時統一使用 `yarn commit`
+---
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/Mezzanine-UI/mezzanine)
+- [Storybook Documentation](https://storybook.mezzanine-ui.org)
+- [NPM Package](https://www.npmjs.com/package/@mezzanine-ui/react)

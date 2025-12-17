@@ -1,5 +1,4 @@
+@forward './uploader';
+@forward './upload-item';
 @forward './upload';
-@forward './upload-result';
-@forward './upload-picture';
-@forward './upload-picture-block';
-@forward './upload-picture-wall';
+@forward './upload-picture-card';

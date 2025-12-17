@@ -198,9 +198,9 @@ describe('<AutoComplete />', () => {
         const valueAfterClear = mode === 'single' ? null : [];
 
         expect(inputRef.current!.value).toBe('');
-        expect(onClear).toBeCalledTimes(1);
-        expect(onChange).toBeCalledWith(valueAfterClear);
-        expect(onSearch).toBeCalledWith('');
+        expect(onClear).toHaveBeenCalledTimes(1);
+        expect(onChange).toHaveBeenCalledWith(valueAfterClear);
+        expect(onSearch).toHaveBeenCalledWith('');
       });
     });
   });
@@ -275,8 +275,8 @@ describe('<AutoComplete />', () => {
       fireEvent.change(inputRef.current!, { target: { value: 'foo' } });
     });
 
-    expect(onSearch).toBeCalledTimes(1);
-    expect(onSearch).toBeCalledWith('foo');
+    expect(onSearch).toHaveBeenCalledTimes(1);
+    expect(onSearch).toHaveBeenCalledWith('foo');
   });
 
   it('prop: inputProps.onBlur, should triggered when input blur', async () => {
@@ -299,7 +299,7 @@ describe('<AutoComplete />', () => {
       fireEvent.blur(inputRef.current!);
     });
 
-    expect(onBlur).toBeCalledTimes(1);
+    expect(onBlur).toHaveBeenCalledTimes(1);
   });
 
   it('prop: inputProps.onFocus, should triggered when input focus', async () => {
@@ -322,7 +322,7 @@ describe('<AutoComplete />', () => {
       fireEvent.focus(inputRef.current!);
     });
 
-    expect(onFocus).toBeCalledTimes(1);
+    expect(onFocus).toHaveBeenCalledTimes(1);
   });
 
   it('prop: disabledOptionsFilter, should disabled options filtering', async () => {
@@ -402,8 +402,8 @@ describe('<AutoComplete />', () => {
         fireEvent.click(addableContainer);
       });
 
-      expect(onInsert).toBeCalledTimes(1);
-      expect(onChange).toBeCalledWith({
+      expect(onInsert).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith({
         id: 'rytass',
         name: 'rytass',
       });
@@ -435,6 +435,6 @@ describe('<AutoComplete />', () => {
       fireEvent.click(addableContainer);
     });
 
-    expect(onChange).toBeCalledTimes(0);
+    expect(onChange).toHaveBeenCalledTimes(0);
   });
 });

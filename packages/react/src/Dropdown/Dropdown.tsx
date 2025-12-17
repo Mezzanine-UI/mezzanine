@@ -6,7 +6,8 @@ import {
   Ref,
   useRef,
 } from 'react';
-import Popper, { PopperOptions, PopperProps } from '../Popper';
+import { size } from '@floating-ui/react-dom';
+import Popper, { PopperProps } from '../Popper';
 import { ClickAwayEvent, useClickAway } from '../hooks/useClickAway';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
@@ -35,28 +36,15 @@ export interface DropdownProps
   popperProps?: PopperProps;
 }
 
-const popperOptions: PopperOptions<any> = {
-  modifiers: [
-    {
-      name: 'sameWidth',
-      enabled: true,
-      phase: 'beforeWrite',
-      requires: ['computeStyles'],
-      fn: ({ state }) => {
-        const reassignState = state;
-
-        reassignState.styles.popper.width = 'auto';
-        reassignState.styles.popper.minWidth = `${state.rects.reference.width}px`;
-      },
-      effect: ({ state }) => {
-        const reassignState = state;
-
-        reassignState.elements.popper.style.width = 'auto';
-        reassignState.elements.popper.style.minWidth = `${state.elements.reference.getBoundingClientRect().width}px`;
-      },
-    },
-  ],
-};
+// Middleware to make the dropdown menu have the same width as the reference element
+const sameWidthMiddleware = size({
+  apply({ rects, elements }) {
+    Object.assign(elements.floating.style, {
+      width: 'auto',
+      minWidth: `${rects.reference.width}px`,
+    });
+  },
+});
 
 const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
   function Dropdown(props, ref) {
@@ -74,7 +62,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     const open = popperProps?.open;
 
-    const modifiers = popperProps?.options?.modifiers || [];
+    const middleware = popperProps?.options?.middleware || [];
 
     useClickAway(
       () => {
@@ -103,7 +91,7 @@ const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
           options={{
             placement: 'top-start',
             ...popperProps?.options,
-            modifiers: [...(popperOptions.modifiers || []), ...modifiers],
+            middleware: [sameWidthMiddleware, ...middleware],
           }}
         >
           {menu}

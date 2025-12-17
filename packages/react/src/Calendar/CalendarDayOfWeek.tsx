@@ -1,3 +1,5 @@
+'use client';
+
 import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -21,22 +23,25 @@ export interface CalendarDayOfWeekProps
  * You may use it to compose your own calendar.
  */
 function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
-  const {
-    getWeekDayNames,
-    displayWeekDayLocale: displayWeekDayLocaleFromConfig,
-  } = useCalendarContext();
-  const {
-    displayWeekDayLocale = displayWeekDayLocaleFromConfig,
-    className,
-    ...restRowProps
-  } = props;
+  const { getWeekDayNames, locale } = useCalendarContext();
+  const { displayWeekDayLocale = locale, className, ...restRowProps } = props;
 
   const weekDayNames = getWeekDayNames(displayWeekDayLocale);
 
   return (
-    <div className={cx(classes.row, className)} {...restRowProps}>
-      {weekDayNames.map((name) => (
-        <CalendarCell key={`CALENDAR_DAY_OF_WEEK/${name}`}>{name}</CalendarCell>
+    <div
+      className={cx(classes.row, className)}
+      role="row"
+      aria-label="Days of the week"
+      {...restRowProps}
+    >
+      {weekDayNames.map((name, idx) => (
+        <CalendarCell
+          key={`CALENDAR_DAY_OF_WEEK/${name}-${idx}`}
+          role="columnheader"
+        >
+          {name}
+        </CalendarCell>
       ))}
     </div>
   );

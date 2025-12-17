@@ -108,7 +108,7 @@ describe('<MenuItem />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).toBeCalledTimes(1);
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it('should not be fired if disabled=true', () => {
@@ -123,7 +123,7 @@ describe('<MenuItem />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).toBeCalledTimes(0);
+      expect(onClick).toHaveBeenCalledTimes(0);
     });
   });
 

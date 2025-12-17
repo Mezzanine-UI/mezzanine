@@ -1,60 +1,54 @@
 @use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
-@use '../text-field';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/radius';
 @use './textarea' as *;
 
-$min-width: 452px !default;
-$min-width-small: 388px !default;
-$min-height: 102px !default;
-$padding-y: 8px !default;
-$count-gap: 4px !default;
+$textarea-min-width-default: 240px;
+
+.#{$prefix}.#{$prefix} {
+  @include typography.semantic-variable(body);
+}
 
 .#{$prefix} {
-  min-width: $min-width;
-  min-height: $min-height;
-  padding: #{$padding-y} 0;
+    padding: 0;
+    width: fit-content;
+    height: fit-content;
 
-  textarea {
-    margin: 0;
-    padding-left: var(--#{text-field.$prefix}-padding-left);
-    padding-right: var(--#{text-field.$prefix}-padding-right);
+  &__textarea {
+    appearance: none;
+    padding-block: spacing.semantic-variable(padding, vertical, calm);
+    padding-left: spacing.semantic-variable(padding, horizontal, cozy);
+    padding-right: spacing.semantic-variable(padding, horizontal, spacious);
+    min-width: $textarea-min-width-default;
 
-    @include typography.variant(body1);
-  }
+    &::-webkit-scrollbar {
+      width: calc(spacing.semantic-variable(size, element, tight) + spacing.semantic-variable(gap, tight) * 2);
+    }
 
-  .#{text-field.$prefix}__clear-icon {
-    top: $padding-y;
-  }
+    &::-webkit-scrollbar-thumb {
+      background-color: palette.semantic-variable("background", neutral-subtle);
+      background-clip: content-box;
+      border: spacing.semantic-variable(gap, tight) solid transparent;
+      border-radius: radius.variable(full);
+    }
 
-  &.#{text-field.$prefix}--small {
-    min-width: $min-width-small;
-
-    textarea {
-      @include typography.variant(body2);
+    &::-webkit-resizer {
+      background-color: transparent;
     }
   }
 
-  &__count {
+  &__resizer {
     position: absolute;
-    top: calc(100% + #{$count-gap});
     right: 0;
-    color: palette.color(text-secondary);
-    transition: transition.standard(color);
-    will-change: color;
-
-    @include typography.variant(caption);
-
-    .#{$prefix}--upper-limit & {
-      color: palette.color(primary);
-    }
-
-    .#{text-field.$prefix}--error & {
-      color: palette.color(error);
-    }
-
-    .#{text-field.$prefix}--disabled & {
-      color: palette.color(text-disabled);
-    }
+    bottom: 0;
+    width: spacing.semantic-variable(size, element, base);
+    height: spacing.semantic-variable(size, element, base);
+    color: palette.semantic-variable(icon, neutral);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
+

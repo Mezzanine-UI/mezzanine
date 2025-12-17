@@ -1,22 +1,13 @@
-import { ChangeEvent, useState } from 'react';
-import { cleanup, render, TestRenderer, fireEvent } from '../../__test-utils__';
+import { createRef, useState } from 'react';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import TextField from '../TextField';
-import { FormField } from '../Form';
 import Textarea from '.';
-import ConfigProvider from '../Provider';
 
 function getTextareaElement(element: HTMLElement) {
   return element.getElementsByTagName('textarea')[0];
-}
-
-function testValue(element: HTMLElement, value: string) {
-  const textareaElement = getTextareaElement(element);
-
-  expect(textareaElement.value).toBe(value);
 }
 
 describe('<Textarea />', () => {
@@ -30,247 +21,166 @@ describe('<Textarea />', () => {
     render(<Textarea textareaRef={ref} />),
   );
 
-  describeHostElementClassNameAppendable('foo', (className) =>
+  describeHostElementClassNameAppendable('custom-host', (className) =>
     render(<Textarea className={className} />),
   );
 
-  it('should bind host class', () => {
+  it('should render host with TextField + Textarea classes and default type', () => {
     const { getHostHTMLElement } = render(<Textarea />);
-    const element = getHostHTMLElement();
+    const host = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-textarea')).toBeTruthy();
+    expect(host.classList.contains('mzn-text-field')).toBe(true);
+    expect(host.classList.contains('mzn-textarea')).toBe(true);
+    expect(host.classList.contains('mzn-text-field--warning')).toBe(false);
+    expect(host.classList.contains('mzn-text-field--error')).toBe(false);
   });
 
-  it('props should pass to TextField', () => {
-    const testRenderer = TestRenderer.create(
-      <Textarea clearable disabled error fullWidth size="large" value="foo" />,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
+  it('should render textarea with mzn-textarea__textarea class', () => {
+    const { getHostHTMLElement } = render(<Textarea className="foo" />);
+    const textarea = getTextareaElement(getHostHTMLElement());
 
-    expect(textFieldInstance.props.active).toBe(true);
-    expect(textFieldInstance.props.clearable).toBe(true);
-    expect(textFieldInstance.props.disabled).toBe(true);
-    expect(textFieldInstance.props.error).toBe(true);
-    expect(textFieldInstance.props.fullWidth).toBe(true);
-    expect(textFieldInstance.props.size).toBe('large');
+    expect(textarea.classList.contains('mzn-textarea__textarea')).toBe(true);
+    expect(textarea.classList.contains('foo')).toBe(false);
   });
 
-  it('should accept ConfigProvider context changes', () => {
-    const testRenderer = TestRenderer.create(
-      <ConfigProvider size="small">
-        <Textarea />
-      </ConfigProvider>,
-    );
-    const testInstance = testRenderer.root;
-    const textFieldInstance = testInstance.findByType(TextField);
+  it('should forward textareaRef to native textarea', () => {
+    const ref = createRef<HTMLTextAreaElement>();
+    render(<Textarea textareaRef={ref} />);
 
-    expect(textFieldInstance.props.size).toBe('small');
+    expect(ref.current).toBeInstanceOf(HTMLTextAreaElement);
   });
 
-  it('props should directly pass to native textarea element', () => {
+  it('should forward native props to textarea', () => {
     const { getHostHTMLElement } = render(
-      <Textarea disabled placeholder="placeholder" readOnly rows={4} />,
+      <Textarea
+        aria-label="內容"
+        data-testid="textarea"
+        defaultValue="foo"
+        disabled
+        id="foo-id"
+        name="foo-name"
+        placeholder="hint"
+        readOnly
+        rows={3}
+      />,
     );
-    const element = getHostHTMLElement();
-    const textareaElement = getTextareaElement(element);
+    const textarea = getTextareaElement(getHostHTMLElement());
 
-    expect(textareaElement.getAttribute('aria-disabled')).toBe('true');
-    expect(textareaElement.getAttribute('aria-multiline')).toBe('true');
-    expect(textareaElement.getAttribute('aria-readonly')).toBe('true');
-    expect(textareaElement.hasAttribute('disabled')).toBe(true);
-    expect(textareaElement.getAttribute('placeholder')).toBe('placeholder');
-    expect(textareaElement.hasAttribute('readonly')).toBe(true);
-    expect(textareaElement.getAttribute('rows')).toBe('4');
+    expect(textarea.getAttribute('aria-label')).toBe('內容');
+    expect(textarea.getAttribute('data-testid')).toBe('textarea');
+    expect(textarea.value).toBe('foo');
+    expect(textarea.disabled).toBe(true);
+    expect(textarea.readOnly).toBe(true);
+    expect(textarea.id).toBe('foo-id');
+    expect(textarea.name).toBe('foo-name');
+    expect(textarea.placeholder).toBe('hint');
+    expect(textarea.getAttribute('rows')).toBe('3');
   });
 
-  describe('prop: clearable', () => {
-    function testClearable(element: HTMLElement) {
-      const clearIconElement = element.querySelector(
-        '.mzn-text-field__clear-icon',
-      );
+  it('default type disabled/readOnly should sync between TextField and textarea', () => {
+    const { getHostHTMLElement: getDisabledHost } = render(
+      <Textarea disabled />,
+    );
+    const disabledHost = getDisabledHost();
+    const disabledTextarea = getTextareaElement(disabledHost);
 
-      fireEvent.click(clearIconElement!);
+    expect(disabledHost.classList.contains('mzn-text-field--disabled')).toBe(
+      true,
+    );
+    expect(disabledTextarea.disabled).toBe(true);
 
-      testValue(element, '');
-    }
+    const { getHostHTMLElement: getReadonlyHost } = render(
+      <Textarea readOnly />,
+    );
+    const readonlyHost = getReadonlyHost();
+    const readonlyTextarea = getTextareaElement(readonlyHost);
 
-    describe('should clear value when click the clear icon', () => {
-      it('uncontrolled', () => {
-        let valueAfterClear = 'not empty';
-        const onChange = jest.fn<void, [ChangeEvent<HTMLTextAreaElement>]>(
-          (event) => {
-            valueAfterClear = event.target.value;
-          },
-        );
-        const { getHostHTMLElement } = render(
-          <Textarea
-            clearable
-            defaultValue="default value"
-            onChange={onChange}
-          />,
-        );
-        const element = getHostHTMLElement();
-
-        testClearable(element);
-        expect(valueAfterClear).toBe('');
-      });
-
-      it('controlled', () => {
-        const TestComponent = () => {
-          const [value, setValue] = useState('not empty');
-
-          return (
-            <Textarea
-              clearable
-              onChange={(event) => setValue(event.target.value)}
-              value={value}
-            />
-          );
-        };
-
-        const { getHostHTMLElement } = render(<TestComponent />);
-        const element = getHostHTMLElement();
-
-        testClearable(element);
-      });
-    });
+    expect(readonlyHost.classList.contains('mzn-text-field--readonly')).toBe(
+      true,
+    );
+    expect(readonlyHost.classList.contains('mzn-text-field--disabled')).toBe(
+      false,
+    );
+    expect(readonlyTextarea.readOnly).toBe(true);
+    expect(readonlyTextarea.disabled).toBe(false);
   });
 
-  describe('prop: disabled', () => {
-    it('should use disabled from form control if disabled not passed', () => {
-      const { getHostHTMLElement } = render(
-        <FormField disabled>
-          <Textarea />
-          <Textarea disabled={false} />
-        </FormField>,
-      );
-      const element = getHostHTMLElement();
-      const [textarea1, textarea2] = element.getElementsByTagName('textarea');
+  it('warning/error type should apply styles without blocking textarea input', () => {
+    const { getHostHTMLElement: getWarningHost } = render(
+      <Textarea type="warning" />,
+    );
+    const warningHost = getWarningHost();
 
-      expect(textarea1.disabled).toBeTruthy();
-      expect(textarea2.disabled).toBeFalsy();
-    });
+    expect(warningHost.classList.contains('mzn-text-field--warning')).toBe(
+      true,
+    );
+    expect(getTextareaElement(warningHost).disabled).toBe(false);
+
+    const { getHostHTMLElement: getErrorHost } = render(
+      <Textarea type="error" />,
+    );
+    const errorHost = getErrorHost();
+
+    expect(errorHost.classList.contains('mzn-text-field--error')).toBe(true);
+    expect(getTextareaElement(errorHost).readOnly).toBe(false);
   });
 
-  describe('prop: error', () => {
-    it('should use severity from form control if error not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField severity="error">
-          <Textarea />
-          <Textarea error={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
+  it('should merge style and resize while keeping custom width by default', () => {
+    const { getHostHTMLElement: getDefaultHost } = render(
+      <Textarea style={{ width: '200px' }} />,
+    );
+    const defaultTextarea = getTextareaElement(getDefaultHost());
 
-      expect(textField1.props.error).toBe(true);
-      expect(textField2.props.error).toBe(false);
-    });
-  });
+    expect(defaultTextarea.style.resize).toBe('none');
+    expect(defaultTextarea.style.width).toBe('200px');
 
-  describe('prop: fullWidth', () => {
-    it('should use fullWidth from form control if fullWidth not passed', () => {
-      const testInstance = TestRenderer.create(
-        <FormField fullWidth>
-          <Textarea />
-          <Textarea fullWidth={false} />
-        </FormField>,
-      );
-      const [textField1, textField2] =
-        testInstance.root.findAllByType(TextField);
+    const { getHostHTMLElement: getWithResizeHost } = render(
+      <Textarea resize="vertical" style={{ color: 'rgb(0, 0, 0)' }} />,
+    );
+    const resizeTextarea = getTextareaElement(getWithResizeHost());
 
-      expect(textField1.props.fullWidth).toBeTruthy();
-      expect(textField2.props.fullWidth).toBeFalsy();
-    });
-  });
-
-  describe('prop: required', () => {
-    it('should use required from form control if required not passed', () => {
-      const { getHostHTMLElement } = render(
-        <FormField required>
-          <Textarea />
-          <Textarea required={false} />
-        </FormField>,
-      );
-      const element = getHostHTMLElement();
-      const [textarea1, textarea2] = element.getElementsByTagName('textarea');
-
-      expect(textarea1.required).toBeTruthy();
-      expect(textarea2.required).toBeFalsy();
-    });
+    expect(resizeTextarea.style.resize).toBe('vertical');
+    expect(resizeTextarea.style.color).toBe('rgb(0, 0, 0)');
   });
 
   describe('control', () => {
-    it('uncontrolled', () => {
-      const { getHostHTMLElement } = render(<Textarea defaultValue="foo" />);
-      const element = getHostHTMLElement();
-      const textareaElement = getTextareaElement(element);
-
-      testValue(element, 'foo');
-
-      textareaElement.value = 'bar';
-      fireEvent.change(textareaElement);
-      testValue(element, 'bar');
-
-      textareaElement.value = '';
-      fireEvent.change(textareaElement);
-      testValue(element, '');
-    });
-  });
-
-  it('controlled', () => {
-    const ControlledTextarea = () => {
-      const [value, setValue] = useState('foo');
-
-      return (
-        <Textarea
-          onChange={(event) => setValue(event.target.value)}
-          value={value}
-        />
-      );
-    };
-
-    const { getHostHTMLElement } = render(<ControlledTextarea />);
-    const element = getHostHTMLElement();
-    const textareaElement = getTextareaElement(element);
-
-    testValue(element, 'foo');
-
-    textareaElement.value = 'bar';
-    fireEvent.change(textareaElement);
-    testValue(element, 'bar');
-
-    textareaElement.value = '';
-    fireEvent.change(textareaElement);
-    testValue(element, '');
-  });
-
-  describe('prop: maxLength', () => {
-    it('should apply attribute maxLength to textarea and render count element', () => {
+    it('uncontrolled should update value and trigger onChange', () => {
+      const handleChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <Textarea maxLength={8} value="hello" />,
+        <Textarea defaultValue="foo" onChange={handleChange} />,
       );
-      const element = getHostHTMLElement();
-      const { lastElementChild: countElement, childElementCount } = element;
+      const textarea = getTextareaElement(getHostHTMLElement());
 
-      expect(childElementCount).toBe(2);
-      expect(countElement?.tagName.toLowerCase()).toBe('span');
-      expect(
-        countElement?.classList.contains('mzn-textarea__count'),
-      ).toBeTruthy();
-      expect(countElement?.innerHTML).toBe('5/8');
+      expect(textarea.value).toBe('foo');
+
+      fireEvent.change(textarea, { target: { value: 'bar' } });
+
+      expect(textarea.value).toBe('bar');
+      expect(handleChange).toHaveBeenCalledTimes(1);
     });
 
-    it('should bind upper limit class if ', () => {
-      const { getHostHTMLElement } = render(
-        <Textarea maxLength={5} value="hello" />,
-      );
-      const element = getHostHTMLElement();
+    it('controlled should follow external state', () => {
+      const Controlled = () => {
+        const [value, setValue] = useState('foo');
 
-      expect(
-        element.classList.contains('mzn-textarea--upper-limit'),
-      ).toBeTruthy();
+        return (
+          <Textarea
+            onChange={(event) => setValue(event.target.value)}
+            value={value}
+          />
+        );
+      };
+
+      const { getHostHTMLElement } = render(<Controlled />);
+      const textarea = getTextareaElement(getHostHTMLElement());
+
+      expect(textarea.value).toBe('foo');
+
+      fireEvent.change(textarea, { target: { value: 'bar' } });
+      expect(textarea.value).toBe('bar');
+
+      fireEvent.change(textarea, { target: { value: '' } });
+      expect(textarea.value).toBe('');
     });
   });
 });

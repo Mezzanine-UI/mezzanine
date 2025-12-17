@@ -1,15 +1,19 @@
 import { createRef } from 'react';
-import {
-  cleanupHook,
-  render,
-  fireEvent,
-  act,
-  TestRenderer,
-} from '../../../__test-utils__';
+import { cleanupHook, render, fireEvent, act } from '../../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../../__test-utils__/common';
 import { TableContext, TableDataContext } from '../TableContext';
 import TablePagination from './TablePagination';
-import Pagination from '../../Pagination';
+
+const mockPaginationRender = jest.fn();
+const OriginalPagination = jest.requireActual('../../Pagination').default;
+
+jest.mock('../../Pagination', () => {
+  return function MockPagination(props: any) {
+    mockPaginationRender(props);
+    const React = require('react');
+    return React.createElement(OriginalPagination, props);
+  };
+});
 
 const defaultPaginationContext = {
   current: 1,
@@ -181,7 +185,8 @@ describe('<TablePagination />', () => {
 
     describe('options mapping', () => {
       it('given options', () => {
-        const testInstance = TestRenderer.create(
+        mockPaginationRender.mockClear();
+        render(
           <TableContext.Provider
             value={{
               pagination: {
@@ -206,16 +211,17 @@ describe('<TablePagination />', () => {
           </TableContext.Provider>,
         );
 
-        const paginationInstance = testInstance.root.findByType(Pagination);
+        const calls = mockPaginationRender.mock.calls;
+        const lastCallProps = calls[calls.length - 1][0];
 
-        expect(paginationInstance.props.boundaryCount).toBe(2);
-        expect(paginationInstance.props.className).toBe('foo');
-        expect(paginationInstance.props.disabled).toBe(true);
-        expect(paginationInstance.props.hideNextButton).toBe(true);
-        expect(paginationInstance.props.hidePreviousButton).toBe(true);
-        expect(paginationInstance.props.pageSize).toBe(2);
-        expect(paginationInstance.props.siblingCount).toBe(2);
-        expect(paginationInstance.props.total).toBe(100);
+        expect(lastCallProps.boundaryCount).toBe(2);
+        expect(lastCallProps.className).toBe('foo');
+        expect(lastCallProps.disabled).toBe(true);
+        expect(lastCallProps.hideNextButton).toBe(true);
+        expect(lastCallProps.hidePreviousButton).toBe(true);
+        expect(lastCallProps.pageSize).toBe(2);
+        expect(lastCallProps.siblingCount).toBe(2);
+        expect(lastCallProps.total).toBe(100);
       });
     });
 

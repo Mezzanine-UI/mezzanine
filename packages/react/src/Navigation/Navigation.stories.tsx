@@ -1,5 +1,5 @@
 import { Key, useState } from 'react';
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
   DownloadIcon,
   EyeIcon,
@@ -65,7 +65,7 @@ export const Playground: StoryFn<NavigationProps> = ({ orientation }) => {
   const [active, setActive] = useState<Key | null | undefined>();
 
   return (
-    <div style={{ height: '30vh' }}>
+    <div style={{ height: '60vh' }}>
       <Navigation
         orientation={orientation}
         onClick={setActive}

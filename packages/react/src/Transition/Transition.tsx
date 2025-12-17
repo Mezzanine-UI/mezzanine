@@ -5,13 +5,14 @@ import {
   JSXElementConstructor,
   Ref,
 } from 'react';
-import ReactTransition, {
+import ReactTransition from 'react-transition-group/Transition';
+import type {
   TransitionStatus as TransitionState,
   TransitionChildren,
 } from 'react-transition-group/Transition';
 import { NativeElementTag } from '../utils/jsx-types';
 
-export { TransitionState };
+export type { TransitionState };
 
 export type TransitionMode = 'enter' | 'exit';
 

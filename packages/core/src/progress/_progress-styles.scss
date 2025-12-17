@@ -1,125 +1,235 @@
-@use '~@mezzanine-ui/system/palette';
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/typography';
 @use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
 @use './progress' as *;
 
-$circle-icon-size: 24px !default;
-$info-margin-left: #{spacing.level(2)} !default;
-$info-percent-color: #{palette.color(text-primary)} !default;
-$info-width: 30px !default;
-$large-line-height: 8px !default;
-$line-icon-size: 24px !default;
-$medium-line-height: 8px !default;
-$margin: #{spacing.level(2)} !default;
-$small-line-height: 4px !default;
+// Type: progress
+$type-progress: (
+  height: spacing.semantic-variable(size, element, tiny),
+  gap: spacing.semantic-variable(gap, none),
+);
 
-@mixin cross-axle-center() {
-  align-content: center;
-  align-items: center;
-  box-sizing: border-box;
-  display: flex;
+// Type: percent
+$type-percent: (
+  height: fit-content,
+  gap: spacing.semantic-variable(gap, tight),
+);
+
+// Type: icon
+$type-icon: (
+  height: fit-content,
+  gap: spacing.semantic-variable(gap, base),
+);
+
+// Type hierarchy map - 將所有 type 整合
+$type-hierarchy: (
+  progress: $type-progress,
+  percent: $type-percent,
+  icon: $type-icon,
+);
+
+// Status: enabled
+$status-enabled: (
+  line-bg-color: palette.semantic-variable(background, brand),
+  line-color: palette.semantic-variable(background, neutral-subtle),
+  info-color: palette.semantic-variable(text, neutral-strong),
+  icon-color: none,
+);
+
+// Status: success
+$status-success: (
+  line-bg-color: palette.semantic-variable(background, success),
+  line-color: palette.semantic-variable(background, neutral-subtle),
+  info-color: palette.semantic-variable(text, success),
+  icon-color: palette.semantic-variable(background, success),
+);
+
+// Status: error
+$status-error: (
+  line-bg-color: palette.semantic-variable(background, error),
+  line-color: palette.semantic-variable(background, neutral-subtle),
+  info-color: palette.semantic-variable(text, error),
+  icon-color: palette.semantic-variable(background, error),
+);
+
+// Status hierarchy map - 將所有 status 整合
+$status-hierarchy: (
+  enabled: $status-enabled,
+  success: $status-success,
+  error: $status-error,
+);
+
+// 取得特定 type 的配置值
+@function _get-type-config($type, $property) {
+  $type-map: map.get($type-hierarchy, $type);
+
+  @if $type-map {
+    $value: map.get($type-map, $property);
+
+    @return if($value == none, null, $value);
+  }
+
+  @return null;
+}
+
+// 取得特定 status 的顏色值
+@function _get-status-color($status, $property) {
+  $status-map: map.get($status-hierarchy, $status);
+
+  @if $status-map {
+    $value: map.get($status-map, $property);
+
+    @return if($value == none, null, $value);
+  }
+
+  @return null;
+}
+
+// 套用特定 type 的配置
+@mixin _apply-type-config($type) {
+  $height: _get-type-config($type, height);
+  $gap: _get-type-config($type, gap);
+
+  @if $height {
+    height: $height;
+  }
+
+  @if $gap {
+    gap: $gap;
+  }
+}
+
+// 套用特定 status 的顏色
+@mixin _apply-status-colors($status) {
+  $line-bg: _get-status-color($status, line-bg-color);
+  $line: _get-status-color($status, line-color);
+  $info: _get-status-color($status, info-color);
+  $icon-color: _get-status-color($status, icon-color);
+
+  @if $line-bg {
+    --#{$prefix}-line-bg-color: #{$line-bg};
+  }
+
+  @if $line {
+    --#{$prefix}-line-color: #{$line};
+  }
+
+  @if $info {
+    --#{$prefix}-info-color: #{$info};
+  }
+
+  @if $icon-color {
+    --#{$prefix}-icon-color: #{$icon-color};
+  }
 }
 
 .#{$prefix} {
-  --#{$prefix}-bg-color: #{palette.color(border)};
-  --#{$prefix}-color: #{palette.color(primary)};
-
+  display: inline-flex;
+  width: fit-content;
   align-items: center;
-  box-sizing: border-box;
-  color: var(--#{$prefix}-color);
-  display: flex;
-  justify-content: center;
-  margin: #{$margin};
+  justify-content: flex-start;
+  flex-flow: row nowrap;
   position: relative;
-  width: 100%;
 
-  &--circle {
-    --#{$prefix}-icon-size: #{$circle-icon-size};
-    --#{$prefix}-info-icon-position: absolute;
-    --#{$prefix}-info-justify: center;
-  }
+  // 預設使用 progress type
+  @include _apply-type-config(progress);
 
-  @mixin circle-svg() {
-    box-sizing: border-box;
-    fill-opacity: 0;
-  }
+  // 套用各 type 的配置
+  &--progress {
+    @include _apply-type-config(progress);
 
-  &__circle-bg {
-    @include circle-svg();
-
-    stroke: var(--#{$prefix}-bg-color);
-  }
-
-  &__circle-filler {
-    @include circle-svg();
-
-    stroke: var(--#{$prefix}-color);
-    transform-origin: 50% 50%;
-    transform: rotate(-90deg);
-    transition: transition.standard(stroke-dasharray);
-  }
-
-  &--line {
-    --#{$prefix}-icon-size: #{$line-icon-size};
-    --#{$prefix}-info-justify: start;
-    --#{$prefix}-info-margin-left: #{$info-margin-left};
-  }
-
-  &__line-bg {
-    background-color: var(--#{$prefix}-bg-color);
-    box-sizing: border-box;
-    height: var(--#{$prefix}-line-height);
     width: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  // line filler
-  &__line-bg > div {
-    background-color: var(--#{$prefix}-color);
-    box-sizing: border-box;
-    height: var(--#{$prefix}-line-height);
-    transition: transition.standard(width);
+  &--percent {
+    @include _apply-type-config(percent);
+
+    width: 100%;
+    flex-direction: row;
   }
 
-  // include percent <Typography /> and icon
-  &__info {
-    height: var(--#{$prefix}-icon-size);
-    justify-content: var(--#{$prefix}-info-justify);
-    margin-left: var(--#{$prefix}-info-margin-left);
-    position: var(--#{$prefix}-info-icon-position);
-    width: #{$info-width};
-    @include cross-axle-center();
+  &--icon {
+    @include _apply-type-config(icon);
+
+    width: 100%;
+    flex-direction: row;
   }
 
-  &__info-percent {
-    box-sizing: border-box;
-    color: #{$info-percent-color};
-  }
+  // 預設使用 enabled status
+  @include _apply-status-colors(enabled);
 
-  &__info-icon {
-    height: var(--#{$prefix}-icon-size);
-    width: var(--#{$prefix}-icon-size);
-  }
-
+  // 套用各 status 的顏色
   &--success {
-    --#{$prefix}-color: #{palette.color(success)};
-    --#{$prefix}-info-justify: center;
+    @include _apply-status-colors(success);
   }
 
   &--error {
-    --#{$prefix}-color: #{palette.color(error)};
-    --#{$prefix}-info-justify: center;
+    @include _apply-status-colors(error);
   }
 
-  &--small {
-    --#{$prefix}-line-height: #{$small-line-height};
+  // Line variant styles
+  &--line {
+    height: spacing.semantic-variable(size, element, tiny);
+    background-color: var(--#{$prefix}-line-color, #{_get-status-color(enabled, line-color)});
+    border-radius: radius.variable(full);
+    overflow: hidden;
   }
 
-  &--medium {
-    --#{$prefix}-line-height: #{$medium-line-height};
+  // Percent 和 Icon type 的 line 需要 flex-grow 來擴展
+  &--percent &--line,
+  &--icon &--line {
+    flex-grow: 1;
   }
 
-  &--large {
-    --#{$prefix}-line-height: #{$large-line-height};
+  // Progress type 的 line 不需要 flex-grow（因為容器已經是 100%）
+  &--progress &--line {
+    flex-grow: 0;
+    width: 100%;
+  }
+
+  &__line-bg {
+    height: 100%;
+    display: block;
+    background-color: var(--#{$prefix}-line-bg-color, #{_get-status-color(enabled, line-bg-color)});
+    transition: transition.standard(width);
+    border-radius: radius.variable(full);
+  }
+
+  // Info styles
+  &__info {
+    height: fit-content;
+    flex-shrink: 0;
+    color: var(--#{$prefix}-info-color, #{_get-status-color(enabled, info-color)});
+  }
+
+  &__info-percent {
+    @include typography.semantic-variable(input);
+
+    color: palette.semantic-variable(text, neutral-solid);
+    text-align: right;
+    font-feature-settings: 'liga' off, 'clig' off;
+    min-width: spacing.semantic-variable(size, element, roomy);
+  }
+
+  &__info-icon {
+    color: var(--#{$prefix}-icon-color, #{_get-status-color(enabled, icon-color)});
+  }
+
+  &__tick {
+    position: absolute;
+    left: var(--tick-position, 0);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: 4px;
+    margin-top: calc(-1 * (2px + #{spacing.semantic-variable(gap, slim)} / 2));
+    pointer-events: none;
+    background-color: palette.semantic-variable(border, neutral-strong);
+    box-shadow: 0 calc(4px + #{spacing.semantic-variable(gap, slim)}) 0 0 palette.semantic-variable(border, neutral-strong);
   }
 }

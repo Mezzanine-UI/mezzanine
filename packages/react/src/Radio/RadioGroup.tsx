@@ -1,6 +1,8 @@
 import { RadioGroupOption, RadioSize } from '@mezzanine-ui/core/radio';
 import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
-import { InputCheckGroup, InputCheckGroupProps } from '../_internal/InputCheck';
+import InputCheckGroup, {
+  InputCheckGroupProps,
+} from '../_internal/InputCheck/InputCheckGroup';
 import { useInputControlValue } from '../Form/useInputControlValue';
 import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
 import Radio from './Radio';

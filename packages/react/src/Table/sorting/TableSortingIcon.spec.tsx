@@ -62,7 +62,9 @@ describe('<TableSortingIcon />', () => {
           const colorMatch = icon
             .getAttribute('style')
             ?.match(
-              mode === 'none' ? /--mzn-color-secondary/ : /--mzn-color-primary/,
+              mode === 'none'
+                ? /--mzn-color-icon-neutral/
+                : /--mzn-color-icon-neutral-strong/,
             );
           const transformMatch = icon
             .getAttribute('style')
@@ -125,7 +127,7 @@ describe('<TableSortingIcon />', () => {
 
       const colorMatch = element
         .getAttribute('style')
-        ?.match(/--mzn-color-secondary/);
+        ?.match(/--mzn-color-icon-neutral-strong/);
       const transformMatch = element
         .getAttribute('style')
         ?.match(/rotate\(90deg\)/);
@@ -152,7 +154,7 @@ describe('<TableSortingIcon />', () => {
     it('should apply default state when sorting methods is not given', () => {
       const colorMatch = icon
         .getAttribute('style')
-        ?.match(/--mzn-color-secondary/);
+        ?.match(/--mzn-color-icon-neutral-strong/);
       const transformMatch = icon
         .getAttribute('style')
         ?.match(/rotate\(90deg\)/);

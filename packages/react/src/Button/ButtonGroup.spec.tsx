@@ -1,24 +1,11 @@
-import { toCssVar } from '@mezzanine-ui/system/css';
 import {
   ButtonGroupOrientation,
-  ButtonGroupSpacing,
   ButtonSize,
+  ButtonVariant,
 } from '@mezzanine-ui/core/button';
 import { cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Button, { ButtonGroup } from '.';
-import MockButton from './Button';
-import ConfigProvider from '../Provider';
-
-// Mock Button Component
-const mockButtonRender = jest.fn();
-
-jest.mock('./Button', () => {
-  return function MockButton(props: any) {
-    mockButtonRender(props);
-    return <button>{props.children}</button>;
-  };
-});
+import { ButtonGroup } from '.';
 
 describe('<ButtonGroup />', () => {
   afterEach(cleanup);
@@ -26,17 +13,17 @@ describe('<ButtonGroup />', () => {
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(
       <ButtonGroup ref={ref}>
-        <Button />
+        <button>Button 1</button>
       </ButtonGroup>,
     ),
   );
 
-  it('shoulde just wrap buttons', () => {
+  it('should wrap buttons', () => {
     const { getHostHTMLElement } = render(
       <ButtonGroup>
-        <Button />
-        <Button />
-        <Button />
+        <button>Button 1</button>
+        <button>Button 2</button>
+        <button>Button 3</button>
       </ButtonGroup>,
     );
     const element = getHostHTMLElement();
@@ -51,39 +38,125 @@ describe('<ButtonGroup />', () => {
     expect(childElementCount).toBe(3);
   });
 
-  describe('prop:attached', () => {
-    function testAttached(element: HTMLElement, attached: boolean) {
-      expect(element.classList.contains('mzn-button-group--attached')).toBe(
-        attached,
-      );
-    }
-
-    it('should render attached=false by default', () => {
+  describe('prop: variant', () => {
+    it('should render variant="base-primary" by default', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup>
-          <Button />
+          <button>Button</button>
         </ButtonGroup>,
       );
       const element = getHostHTMLElement();
 
-      testAttached(element, false);
+      expect(element.classList.contains('mzn-button-group')).toBeTruthy();
     });
 
-    [false, true].forEach((attached) => {
-      it(`should add class if attached=${attached}`, () => {
-        const { getHostHTMLElement } = render(
-          <ButtonGroup attached={attached}>
-            <Button />
+    const variants: ButtonVariant[] = [
+      'base-primary',
+      'base-secondary',
+      'destructive-primary',
+      'inverse',
+    ];
+
+    variants.forEach((variant) => {
+      it(`should pass variant="${variant}" to children`, () => {
+        const TestButton = jest.fn(() => <button>Test</button>);
+
+        render(
+          <ButtonGroup variant={variant}>
+            <TestButton />
           </ButtonGroup>,
         );
-        const element = getHostHTMLElement();
 
-        testAttached(element, attached);
+        expect(TestButton).toHaveBeenCalledWith(
+          expect.objectContaining({ variant }),
+          {},
+        );
       });
     });
   });
 
-  describe('prop:fullWidth', () => {
+  describe('prop: size', () => {
+    it('should render size="main" by default', () => {
+      const { getHostHTMLElement } = render(
+        <ButtonGroup>
+          <button>Button</button>
+        </ButtonGroup>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button-group')).toBeTruthy();
+    });
+
+    const sizes: ButtonSize[] = ['main', 'sub', 'minor'];
+
+    sizes.forEach((size) => {
+      it(`should pass size="${size}" to children`, () => {
+        const TestButton = jest.fn(() => <button>Test</button>);
+
+        render(
+          <ButtonGroup size={size}>
+            <TestButton />
+          </ButtonGroup>,
+        );
+
+        expect(TestButton).toHaveBeenCalledWith(
+          expect.objectContaining({ size }),
+          {},
+        );
+      });
+    });
+  });
+
+  describe('prop: disabled', () => {
+    it('should render disabled=false by default', () => {
+      const TestButton = jest.fn(() => <button>Test</button>);
+
+      render(
+        <ButtonGroup>
+          <TestButton />
+        </ButtonGroup>,
+      );
+
+      expect(TestButton).toHaveBeenCalledWith(
+        expect.objectContaining({ disabled: false }),
+        {},
+      );
+    });
+
+    [false, true].forEach((disabled) => {
+      it(`should pass disabled=${disabled} to children`, () => {
+        const TestButton = jest.fn(() => <button>Test</button>);
+
+        render(
+          <ButtonGroup disabled={disabled}>
+            <TestButton />
+          </ButtonGroup>,
+        );
+
+        expect(TestButton).toHaveBeenCalledWith(
+          expect.objectContaining({ disabled }),
+          {},
+        );
+      });
+    });
+
+    it('should not override child disabled prop if explicitly provided', () => {
+      const TestButton = jest.fn(() => <button>Test</button>);
+
+      render(
+        <ButtonGroup disabled={true}>
+          <TestButton disabled={false} />
+        </ButtonGroup>,
+      );
+
+      expect(TestButton).toHaveBeenCalledWith(
+        expect.objectContaining({ disabled: false }),
+        {},
+      );
+    });
+  });
+
+  describe('prop: fullWidth', () => {
     function testFullWidth(element: HTMLElement, fullWidth: boolean) {
       expect(element.classList.contains('mzn-button-group--full-width')).toBe(
         fullWidth,
@@ -93,7 +166,7 @@ describe('<ButtonGroup />', () => {
     it('should render fullWidth=false by default', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup>
-          <Button />
+          <button>Button</button>
         </ButtonGroup>,
       );
       const element = getHostHTMLElement();
@@ -105,7 +178,7 @@ describe('<ButtonGroup />', () => {
       it(`should add class if fullWidth=${fullWidth}`, () => {
         const { getHostHTMLElement } = render(
           <ButtonGroup fullWidth={fullWidth}>
-            <Button />
+            <button>Button</button>
           </ButtonGroup>,
         );
         const element = getHostHTMLElement();
@@ -115,7 +188,7 @@ describe('<ButtonGroup />', () => {
     });
   });
 
-  describe('prop:orientation', () => {
+  describe('prop: orientation', () => {
     function testOrientation(
       element: HTMLElement,
       orientation: ButtonGroupOrientation,
@@ -129,7 +202,7 @@ describe('<ButtonGroup />', () => {
     it('should render orientation="horizontal" by default', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup>
-          <Button />
+          <button>Button</button>
         </ButtonGroup>,
       );
       const element = getHostHTMLElement();
@@ -143,7 +216,7 @@ describe('<ButtonGroup />', () => {
       it(`should add 'aria-orientation' attribute and class if orientation=${orientation}`, () => {
         const { getHostHTMLElement } = render(
           <ButtonGroup orientation={orientation}>
-            <Button />
+            <button>Button</button>
           </ButtonGroup>,
         );
         const element = getHostHTMLElement();
@@ -155,7 +228,7 @@ describe('<ButtonGroup />', () => {
     it('aria-orientation from props should not override', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup aria-orientation="vertical" orientation="horizontal">
-          <Button />
+          <button>Button</button>
         </ButtonGroup>,
       );
       const element = getHostHTMLElement();
@@ -168,7 +241,7 @@ describe('<ButtonGroup />', () => {
     it('should render role="group" by default', () => {
       const { getHostHTMLElement } = render(
         <ButtonGroup>
-          <Button />
+          <button>Button</button>
         </ButtonGroup>,
       );
       const element = getHostHTMLElement();
@@ -177,156 +250,89 @@ describe('<ButtonGroup />', () => {
     });
   });
 
-  describe('prop: spacing', () => {
-    it('should render spacing=4 by default(size=medium)', () => {
-      const { getHostHTMLElement } = render(
-        <ButtonGroup>
-          <Button />
-        </ButtonGroup>,
-      );
-      const element = getHostHTMLElement();
+  describe('children prop inheritance', () => {
+    it('should pass variant, size, disabled to children when not provided', () => {
+      const TestButton = jest.fn(() => <button>Test</button>);
 
-      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(
-        toCssVar('mzn-spacing-4'),
-      );
-    });
-
-    const sizeSpacingMaps: [ButtonSize, ButtonGroupSpacing][] = [
-      ['large', 4],
-      ['medium', 4],
-      ['small', 3],
-    ];
-
-    sizeSpacingMaps.forEach(([size, spacing]) => {
-      it(`should set spacing=${spacing} if size=${size}`, () => {
-        const { getHostHTMLElement } = render(
-          <ButtonGroup size={size}>
-            <Button />
-          </ButtonGroup>,
-        );
-        const element = getHostHTMLElement();
-
-        expect(
-          element.style.getPropertyValue('--mzn-button-group-spacing'),
-        ).toBe(toCssVar(`mzn-spacing-${spacing}`));
-      });
-    });
-
-    it('should override spacing by passed spacing', () => {
-      const spacing: ButtonGroupSpacing = 1;
-      const { getHostHTMLElement } = render(
-        <ButtonGroup size="small" spacing={spacing}>
-          <Button />
-        </ButtonGroup>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.style.getPropertyValue('--mzn-button-group-spacing')).toBe(
-        toCssVar(`mzn-spacing-${spacing}`),
-      );
-    });
-  });
-
-  describe('ButtonGroup passes props to child Button (Composite Tests)', () => {
-    beforeEach(() => {
-      mockButtonRender.mockClear();
-    });
-
-    it('passes default props', () => {
       render(
-        <ButtonGroup>
-          <MockButton />
+        <ButtonGroup variant="destructive-primary" size="minor" disabled>
+          <TestButton />
         </ButtonGroup>,
       );
 
-      // 驗證 Button 被呼叫過一次
-      expect(mockButtonRender).toHaveBeenCalledTimes(1);
-
-      // 驗證傳遞的 props 正確（根據 ButtonGroup 的預設邏輯）
-      expect(mockButtonRender).toHaveBeenCalledWith(
+      expect(TestButton).toHaveBeenCalledWith(
         expect.objectContaining({
-          color: 'primary',
-          danger: false,
-          disabled: false,
-          size: 'medium',
-          variant: 'text',
-        }),
-      );
-    });
-
-    it('overrides props via ButtonGroup', () => {
-      render(
-        <ButtonGroup
-          color="secondary"
-          danger
-          disabled
-          size="large"
-          variant="outlined"
-        >
-          <MockButton />
-        </ButtonGroup>,
-      );
-
-      expect(mockButtonRender).toHaveBeenCalledTimes(1);
-      expect(mockButtonRender).toHaveBeenCalledWith(
-        expect.objectContaining({
-          color: 'secondary',
-          danger: true,
+          variant: 'destructive-primary',
+          size: 'minor',
           disabled: true,
-          size: 'large',
-          variant: 'outlined',
         }),
+        {},
       );
     });
 
-    it('provided by context', () => {
-      render(
-        <ConfigProvider size="small">
-          <ButtonGroup color="secondary" danger disabled variant="contained">
-            <MockButton />
-          </ButtonGroup>
-        </ConfigProvider>,
-      );
+    it('should not override child props if explicitly provided', () => {
+      const TestButton = jest.fn(() => <button>Test</button>);
 
-      expect(mockButtonRender).toHaveBeenCalledWith(
-        expect.objectContaining({
-          color: 'secondary',
-          danger: true,
-          disabled: true,
-          size: 'small',
-          variant: 'contained',
-        }),
-      );
-    });
-
-    it('should not override if child explicitly provided props', () => {
       render(
-        <ButtonGroup
-          color="primary"
-          danger
-          disabled
-          size="small"
-          variant="contained"
-        >
-          <MockButton
-            color="secondary"
-            danger={false}
+        <ButtonGroup variant="base-primary" size="main" disabled={true}>
+          <TestButton
+            variant="destructive-primary"
+            size="minor"
             disabled={false}
-            size="large"
-            variant="outlined"
           />
         </ButtonGroup>,
       );
 
-      expect(mockButtonRender).toHaveBeenCalledWith(
+      expect(TestButton).toHaveBeenCalledWith(
         expect.objectContaining({
-          color: 'secondary',
-          danger: false,
+          variant: 'destructive-primary',
+          size: 'minor',
           disabled: false,
-          size: 'large',
-          variant: 'outlined',
         }),
+        {},
       );
+    });
+
+    it('should handle null and undefined children', () => {
+      const { getHostHTMLElement } = render(
+        <ButtonGroup>
+          <button>Button 1</button>
+          {null}
+          {undefined}
+          <button>Button 2</button>
+        </ButtonGroup>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.childElementCount).toBe(2);
+    });
+  });
+
+  describe('combinations', () => {
+    it('should work with all props together', () => {
+      const { getHostHTMLElement } = render(
+        <ButtonGroup
+          variant="inverse"
+          size="sub"
+          disabled
+          fullWidth
+          orientation="vertical"
+        >
+          <button>Button 1</button>
+          <button>Button 2</button>
+        </ButtonGroup>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button-group')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button-group--full-width'),
+      ).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button-group--vertical'),
+      ).toBeTruthy();
+      expect(element.getAttribute('aria-orientation')).toBe('vertical');
+      expect(element.getAttribute('role')).toBe('group');
     });
   });
 });

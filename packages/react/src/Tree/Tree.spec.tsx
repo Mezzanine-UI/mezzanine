@@ -1,12 +1,6 @@
 import { TreeNodeValue, TreeSize } from '@mezzanine-ui/core/tree';
 import { RefObject } from 'react';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -15,10 +9,30 @@ import Tree, {
   TreeNodeRefs,
   TreeExpandControl,
   TreeNodeProp,
-  TreeNodeList,
-  TreeNode,
   traverseTree,
 } from '.';
+
+const mockTreeNodeListRender = jest.fn();
+const OriginalTreeNodeList = jest.requireActual('./TreeNodeList').default;
+
+jest.mock('./TreeNodeList', () => {
+  return function MockTreeNodeList(props: any) {
+    mockTreeNodeListRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTreeNodeList, props);
+  };
+});
+
+const mockTreeNodeRender = jest.fn();
+const OriginalTreeNode = jest.requireActual('./TreeNode').default;
+
+jest.mock('./TreeNode', () => {
+  return function MockTreeNode(props: any) {
+    mockTreeNodeRender(props);
+    const React = require('react');
+    return React.createElement(OriginalTreeNode, props);
+  };
+});
 
 describe('<Tree />', () => {
   const nodes: TreeNodeProp[] = [
@@ -74,11 +88,13 @@ describe('<Tree />', () => {
   });
 
   it('should render nodes with TreeNodeList', () => {
-    const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
-    const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+    mockTreeNodeListRender.mockClear();
+    render(<Tree nodes={nodes} />);
+    const calls = mockTreeNodeListRender.mock.calls;
+    const treeNodeListProps = calls[calls.length - 1][0];
 
     nodes.forEach((node, i) => {
-      expect(node.value).toEqual(treeNodeListInstance.props.nodes[i].value);
+      expect(node.value).toEqual(treeNodeListProps.nodes[i].value);
     });
   });
 
@@ -141,46 +157,36 @@ describe('<Tree />', () => {
   describe('values can be either TreeNodeValue or array of TreeNodeValue', () => {
     it('case: TreeNodeValue', () => {
       const values = '1-1-1';
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} values={values} defaultExpandAll />,
-      );
-      const targetNodeListInstance = testInstance.root.findByProps({
-        value: '1-1-1',
-      });
+      mockTreeNodeRender.mockClear();
+      render(<Tree nodes={nodes} values={values} defaultExpandAll />);
+      const calls = mockTreeNodeRender.mock.calls;
+      const targetCall = calls.find((call) => call[0].value === '1-1-1');
 
-      expect(targetNodeListInstance.props.selected).toBe(true);
+      expect(targetCall[0].selected).toBe(true);
     });
 
     it('case: TreeNodeValue[]', () => {
       const values = ['1-1-1', '1-1-2'];
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} values={values} defaultExpandAll />,
-      );
-      const firstTargetNodeListInstance = testInstance.root.findByProps({
-        value: '1-1-1',
-      });
-      const secondTargetNodeListInstance = testInstance.root.findByProps({
-        value: '1-1-2',
-      });
+      mockTreeNodeRender.mockClear();
+      render(<Tree nodes={nodes} values={values} defaultExpandAll />);
+      const calls = mockTreeNodeRender.mock.calls;
+      const firstTargetCall = calls.find((call) => call[0].value === '1-1-1');
+      const secondTargetCall = calls.find((call) => call[0].value === '1-1-2');
 
-      expect(firstTargetNodeListInstance.props.selected).toBe(true);
-      expect(secondTargetNodeListInstance.props.selected).toBe(true);
+      expect(firstTargetCall[0].selected).toBe(true);
+      expect(secondTargetCall[0].selected).toBe(true);
     });
   });
 
   describe('prop: defaultExpandAll', () => {
     it('default collapse all', () => {
-      const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
-      const treeNodeListInstances =
-        testInstance.root.findAllByType(TreeNodeList);
+      const { getHostHTMLElement } = render(<Tree nodes={nodes} />);
+      const element = getHostHTMLElement();
+      const expandedNodes = element.querySelectorAll(
+        '.mzn-tree-node--expanded',
+      );
 
-      treeNodeListInstances.forEach((treeNodeListInstance) => {
-        const treeNodeInstances = treeNodeListInstance.findAllByType(TreeNode);
-
-        treeNodeInstances.forEach((treeNodeInstance) => {
-          expect(treeNodeInstance.props.expand).toBeFalsy();
-        });
-      });
+      expect(expandedNodes.length).toBe(0);
     });
 
     it('should expand all list if defaultExpandAll=true on first render', () => {
@@ -190,16 +196,14 @@ describe('<Tree />', () => {
         allNodeValues.push(node.value);
       });
 
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} defaultExpandAll />,
-      );
+      mockTreeNodeRender.mockClear();
+      render(<Tree nodes={nodes} defaultExpandAll />);
+      const calls = mockTreeNodeRender.mock.calls;
 
       allNodeValues.forEach((value) => {
-        const targetInstance = testInstance.root.findByProps({
-          value,
-        });
+        const targetCall = calls.find((call) => call[0].value === value);
 
-        expect(targetInstance).toBeTruthy();
+        expect(targetCall).toBeTruthy();
       });
     });
   });
@@ -407,13 +411,13 @@ describe('<Tree />', () => {
     it('multiple should be passed to TreeNodeList', () => {
       const multiple = true;
 
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} multiple={multiple} />,
-      );
+      mockTreeNodeListRender.mockClear();
+      render(<Tree nodes={nodes} multiple={multiple} />);
 
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListProps = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.multiple).toEqual(multiple);
+      expect(treeNodeListProps.multiple).toEqual(multiple);
     });
 
     it('prop onSelect should only bind to leaf elements when multiple is falsy', () => {
@@ -425,7 +429,7 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(0);
+      expect(onSelect).toHaveBeenCalledTimes(0);
     });
 
     it('prop onSelect should receive target value in the returned array if multiple is falsy', () => {
@@ -437,8 +441,8 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
     });
 
     it('prop onSelect should receive multiple value in the returned array if multiple=true', () => {
@@ -456,15 +460,15 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
 
       const secondTargetLabelElement = getByText('label 1-1-2');
 
       fireEvent.click(secondTargetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(2);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-2']));
+      expect(onSelect).toHaveBeenCalledTimes(2);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-2']));
     });
   });
 
@@ -484,8 +488,10 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.not.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.not.arrayContaining(['1-1-1']),
+      );
     });
 
     it('should always include target if selectMode="target"', () => {
@@ -504,17 +510,19 @@ describe('<Tree />', () => {
 
       fireEvent.click(targetLabelElement);
 
-      expect(onSelect).toBeCalledTimes(1);
-      expect(onSelect).toBeCalledWith(expect.arrayContaining(['1-1-1']));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(expect.arrayContaining(['1-1-1']));
     });
   });
 
   describe('prop: selectable', () => {
     it('default to falsy', () => {
-      const testInstance = TestRenderer.create(<Tree nodes={nodes} />);
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      mockTreeNodeListRender.mockClear();
+      render(<Tree nodes={nodes} />);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListProps = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.onSelect).toBe(undefined);
+      expect(treeNodeListProps.onSelect).toBe(undefined);
     });
 
     it('should have click handler on caret icons if selectable=true and onSelect is provided', () => {
@@ -532,19 +540,20 @@ describe('<Tree />', () => {
   describe('prop: size', () => {
     it('should pass to TreeNodeList', () => {
       const size: TreeSize = 'large';
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} size={size} />,
-      );
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      mockTreeNodeListRender.mockClear();
+      render(<Tree nodes={nodes} size={size} />);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListProps = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.size).toEqual(size);
+      expect(treeNodeListProps.size).toEqual(size);
     });
   });
 
   describe('prop: treeNodeListProps', () => {
     it('properties should pass to TreeNodeList', () => {
       const className = 'foo';
-      const testInstance = TestRenderer.create(
+      mockTreeNodeListRender.mockClear();
+      render(
         <Tree
           nodes={nodes}
           treeNodeListProps={{
@@ -552,9 +561,10 @@ describe('<Tree />', () => {
           }}
         />,
       );
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListProps = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.className).toEqual(className);
+      expect(treeNodeListProps.className).toEqual(className);
     });
   });
 
@@ -563,24 +573,24 @@ describe('<Tree />', () => {
       const treeNodeProps = {
         className: 'foo',
       };
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} treeNodeProps={treeNodeProps} />,
-      );
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      mockTreeNodeListRender.mockClear();
+      render(<Tree nodes={nodes} treeNodeProps={treeNodeProps} />);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListPropsObj = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.treeNodeProps).toEqual(treeNodeProps);
+      expect(treeNodeListPropsObj.treeNodeProps).toEqual(treeNodeProps);
     });
   });
 
   describe('prop: treeNodeRefs', () => {
     it('should pass to TreeNodeList', () => {
       const treeNodeRefs = { current: undefined } as TreeNodeRefs;
-      const testInstance = TestRenderer.create(
-        <Tree nodes={nodes} treeNodeRefs={treeNodeRefs} />,
-      );
-      const treeNodeListInstance = testInstance.root.findByType(TreeNodeList);
+      mockTreeNodeListRender.mockClear();
+      render(<Tree nodes={nodes} treeNodeRefs={treeNodeRefs} />);
+      const calls = mockTreeNodeListRender.mock.calls;
+      const treeNodeListProps = calls[calls.length - 1][0];
 
-      expect(treeNodeListInstance.props.treeNodeRefs).toEqual(treeNodeRefs);
+      expect(treeNodeListProps.treeNodeRefs).toEqual(treeNodeRefs);
     });
   });
 });

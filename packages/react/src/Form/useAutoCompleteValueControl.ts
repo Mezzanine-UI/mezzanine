@@ -204,11 +204,13 @@ export const useAutoCompleteValueControl = (
   props: UseAutoCompleteValueControl,
 ) => {
   if (props.mode === 'multiple') {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useAutoCompleteBaseValueControl(
       props as UseAutoCompleteMultipleValueControl,
     ) as AutoCompleteMultipleValueControl;
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
   return useAutoCompleteBaseValueControl(
     props as UseAutoCompleteSingleValueControl,
   ) as AutoCompleteSingleValueControl;

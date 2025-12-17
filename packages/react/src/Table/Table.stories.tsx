@@ -20,7 +20,7 @@ import Button from '../Button';
 import Icon from '../Icon';
 import Menu, { MenuItem, MenuSize, MenuDivider } from '../Menu';
 import Dropdown from '../Dropdown';
-import Switch from '../Switch';
+import Switch from '../Toggle';
 import Input from '../Input';
 import Select, { Option } from '../Select';
 import { cx } from '../utils/cx';
@@ -52,9 +52,9 @@ const columns: TableColumn<DataType>[] = [
 
       return -1;
     },
-    // eslint-disable-next-line no-console
+
     onSorted: (key, sortedType) => {
-      console.log(key, sortedType);
+      console.warn(key, sortedType);
     },
   },
   {
@@ -68,9 +68,9 @@ const columns: TableColumn<DataType>[] = [
     renderTooltipTitle: (source) => `${source.name} is age ${source.age}.`,
     forceShownTooltipWhenHovered: true,
     sorter: (a: number, b: number) => b - a,
-    // eslint-disable-next-line no-console
+
     onSorted: (key, sortedType) => {
-      console.log(key, sortedType);
+      console.warn(key, sortedType);
     },
     width: 80,
   },
@@ -337,17 +337,17 @@ export const Selections = () => {
       {
         key: 'mark-as-read',
         text: 'Mark as read',
-        // eslint-disable-next-line no-console
+
         onClick: (keys: string[]) => {
-          console.log('mark ', keys, ' as read');
+          console.warn('mark ', keys, ' as read');
         },
       },
       {
         key: 'delete',
         text: 'Delete',
-        // eslint-disable-next-line no-console
+
         onClick: (keys: string[]) => {
-          console.log('Delete ', keys);
+          console.warn('Delete ', keys);
         },
         className: '',
       },
@@ -512,11 +512,7 @@ export const WithActions = () => {
 export const WithPagination = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState(10);
-  const [sources, setSources] = useState<typeof dataSource>([]);
-
-  useEffect(() => {
-    setSources(dataSource);
-  }, []);
+  const [sources] = useState<typeof dataSource>(dataSource);
 
   const slicedSources = useMemo(
     () => sources.slice((currentPage - 1) * pageSize, currentPage * pageSize),
@@ -601,10 +597,8 @@ export const WithRefresh = () => {
           dataSource={dataSource.slice(0, 5)}
           refresh={{
             show: true,
-            // eslint-disable-next-line no-console
-            onClick: () => {
-              console.log('refresh clicked!');
-            },
+
+            onClick: () => {},
           }}
         />
       </div>
@@ -658,7 +652,7 @@ export const ExpandedWithString = () => {
   const expandable: TableProps<DataType>['expandable'] = useMemo(
     () => ({
       className: '',
-      // eslint-disable-next-line react/no-unstable-nested-components
+
       expandedRowRender: (record) => (
         <div style={{ padding: '40px' }}>{record.description}</div>
       ),
@@ -746,7 +740,7 @@ export const ExpandedWithDataSource = () => {
               ],
             }),
             rowExpandable: () => true,
-            // eslint-disable-next-line no-console
+
             onExpand: (record, status) => {
               if (status) {
                 setTimeout(() => {

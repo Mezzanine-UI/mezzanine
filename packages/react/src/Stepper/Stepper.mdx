@@ -1,6 +1,7 @@
-import { Meta, ArgTypes, Description } from '@storybook/blocks';
-import Stepper from '.';
-import Step from '.';
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import Step from './Step';
+import Stepper from './Stepper';
+import { useStepper } from './useStepper';
 import * as StepperStories from './Stepper.stories';
 
 <Meta of={StepperStories} />
@@ -20,3 +21,116 @@ import * as StepperStories from './Stepper.stories';
 [Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Stepper/Step.tsx)
 
 <ArgTypes of={Step} />
+
+# useStepper
+
+A custom hook that provides state management for stepper navigation.
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Stepper/useStepper.tsx)
+
+## UseStepperOptions
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Type</th>
+      <th>Default</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>defaultStep</code>
+      </td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        <code>0</code>
+      </td>
+      <td>The initial step index (zero-based)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>totalSteps</code>
+      </td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>
+        <code>Number.MAX_VALUE</code>
+      </td>
+      <td>Total number of steps in the stepper</td>
+    </tr>
+  </tbody>
+</table>
+
+## Return Value
+
+<table>
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <code>currentStep</code>
+      </td>
+      <td>
+        <code>number</code>
+      </td>
+      <td>Current active step index (zero-based)</td>
+    </tr>
+    <tr>
+      <td>
+        <code>goToStep</code>
+      </td>
+      <td>
+        <code>(step: number) =&gt; void</code>
+      </td>
+      <td>Function to jump to a specific step</td>
+    </tr>
+    <tr>
+      <td>
+        <code>isFirstStep</code>
+      </td>
+      <td>
+        <code>boolean</code>
+      </td>
+      <td>Whether the current step is the first step</td>
+    </tr>
+    <tr>
+      <td>
+        <code>isLastStep</code>
+      </td>
+      <td>
+        <code>boolean</code>
+      </td>
+      <td>Whether the current step is the last step</td>
+    </tr>
+    <tr>
+      <td>
+        <code>nextStep</code>
+      </td>
+      <td>
+        <code>() =&gt; void</code>
+      </td>
+      <td>Function to advance to the next step</td>
+    </tr>
+    <tr>
+      <td>
+        <code>prevStep</code>
+      </td>
+      <td>
+        <code>() =&gt; void</code>
+      </td>
+      <td>Function to go back to the previous step</td>
+    </tr>
+  </tbody>
+</table>

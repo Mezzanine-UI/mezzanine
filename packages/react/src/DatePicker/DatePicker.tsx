@@ -1,8 +1,9 @@
+'use client';
+
 import {
   useState,
   useRef,
   useCallback,
-  useContext,
   useMemo,
   useEffect,
   MouseEventHandler,
@@ -16,7 +17,6 @@ import { useCalendarContext } from '../Calendar';
 import DatePickerCalendar, {
   DatePickerCalendarProps,
 } from './DatePickerCalendar';
-import { FormControlContext } from '../Form';
 import {
   PickerTrigger,
   PickerTriggerProps,
@@ -31,6 +31,8 @@ export interface DatePickerProps
       DatePickerCalendarProps,
       | 'anchor'
       | 'calendarRef'
+      | 'disableOnDoubleNext'
+      | 'disableOnDoublePrev'
       | 'onChange'
       | 'open'
       | 'referenceDate'
@@ -39,13 +41,13 @@ export interface DatePickerProps
     Omit<
       PickerTriggerProps,
       | 'defaultValue'
+      | 'format'
       | 'inputRef'
       | 'onChange'
       | 'onClear'
       | 'onClick'
       | 'onIconClick'
       | 'onKeyDown'
-      | 'suffixActionIcon'
       | 'value'
     > {
   /**
@@ -53,7 +55,18 @@ export interface DatePickerProps
    */
   defaultValue?: DateType;
   /**
+   * Disabled "double next" button on calendar controls
+   * @default false
+   */
+  disableOnDoubleNext?: boolean;
+  /**
+   * Disabled "double prev" button on calendar controls
+   * @default false
+   */
+  disableOnDoublePrev?: boolean;
+  /**
    * The format for displaying date.
+   * The length of the format must match the length of the actual generated value. For example, "gggg-wo" may cause a length mismatch when the week of year is a single digit. It is recommended to use the system's default format instead.
    */
   format?: string;
   /**
@@ -76,13 +89,7 @@ export interface DatePickerProps
  */
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   function DatePicker(props, ref) {
-    const {
-      disabled: disabledFromFormControl,
-      fullWidth: fullWidthFromFormControl,
-      required: requiredFromFormControl,
-      severity,
-    } = useContext(FormControlContext) || {};
-    const { defaultDateFormat, getNow } = useCalendarContext();
+    const { getNow } = useCalendarContext();
     const {
       calendarProps,
       className,
@@ -91,18 +98,23 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       disabledMonthSwitch = false,
       disableOnNext,
       disableOnPrev,
+      disableOnDoubleNext,
+      disableOnDoublePrev,
       disabledYearSwitch = false,
-      disabled = disabledFromFormControl || false,
+      disabled = false,
       displayMonthLocale,
-      error = severity === 'error' || false,
+      error = false,
+      errorMessages,
       fadeProps,
-      format = defaultDateFormat,
-      fullWidth = fullWidthFromFormControl || false,
+      format: formatProp,
+      fullWidth = false,
       inputProps,
       isDateDisabled,
       isMonthDisabled,
       isWeekDisabled,
       isYearDisabled,
+      isQuarterDisabled,
+      isHalfYearDisabled,
       mode = 'day',
       onCalendarToggle: onCalendarToggleProp,
       onChange: onChangeProp,
@@ -111,11 +123,12 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       prefix,
       readOnly,
       referenceDate: referenceDateProp,
-      required = requiredFromFormControl || false,
+      required = false,
       size,
       value: valueProp,
       ...restTriggerProps
     } = props;
+    const format = formatProp || getDefaultModeFormat(mode);
     const {
       onBlur: onBlurProp,
       onKeyDown: onKeyDownProp,
@@ -124,9 +137,38 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       ...restInputProp
     } = inputProps || {};
 
-    const formats = useMemo(
-      () => [format, defaultDateFormat, getDefaultModeFormat(mode)],
-      [defaultDateFormat, format, mode],
+    /**
+     * Validate date value against disabled constraints based on mode.
+     * Returns true if valid, false if the date is disabled.
+     */
+    const validateDate = useCallback(
+      (isoDate: string): boolean => {
+        switch (mode) {
+          case 'day':
+            return !isDateDisabled?.(isoDate);
+          case 'week':
+            return !isWeekDisabled?.(isoDate);
+          case 'month':
+            return !isMonthDisabled?.(isoDate);
+          case 'quarter':
+            return !isQuarterDisabled?.(isoDate);
+          case 'year':
+            return !isYearDisabled?.(isoDate);
+          case 'half-year':
+            return !isHalfYearDisabled?.(isoDate);
+          default:
+            return true;
+        }
+      },
+      [
+        isDateDisabled,
+        isHalfYearDisabled,
+        isMonthDisabled,
+        isQuarterDisabled,
+        isWeekDisabled,
+        isYearDisabled,
+        mode,
+      ],
     );
 
     /** Calender display control */
@@ -173,7 +215,6 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
     } = usePickerValue({
       defaultValue,
       format,
-      formats,
       inputRef,
       value: valueProp,
     });
@@ -278,7 +319,13 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       onCalendarToggle(!open);
     };
 
-    const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
+    const suffixActionIcon = (
+      <Icon
+        aria-label="Open calendar"
+        icon={CalendarIcon}
+        onClick={readOnly ? undefined : onIconClick}
+      />
+    );
 
     return (
       <>
@@ -289,17 +336,25 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           clearable={clearable}
           disabled={disabled}
           error={error}
+          errorMessages={errorMessages}
+          format={format}
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e);
+            onCalendarChange(e.target.value);
+            onCalendarToggle(true);
+          }}
           onClear={onClear}
+          onFocus={() => onCalendarToggle(true)}
           placeholder={placeholder}
           prefix={prefix}
           readOnly={readOnly}
           required={required}
           size={size}
-          suffixActionIcon={suffixActionIcon}
+          suffix={suffixActionIcon}
+          validate={validateDate}
           value={inputValue}
         />
         <DatePickerCalendar
@@ -309,13 +364,17 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           disabledMonthSwitch={disabledMonthSwitch}
           disableOnNext={disableOnNext}
           disableOnPrev={disableOnPrev}
+          disableOnDoubleNext={disableOnDoubleNext}
+          disableOnDoublePrev={disableOnDoublePrev}
           disabledYearSwitch={disabledYearSwitch}
           displayMonthLocale={displayMonthLocale}
           fadeProps={fadeProps}
           isDateDisabled={isDateDisabled}
           isMonthDisabled={isMonthDisabled}
           isWeekDisabled={isWeekDisabled}
+          isQuarterDisabled={isQuarterDisabled}
           isYearDisabled={isYearDisabled}
+          isHalfYearDisabled={isHalfYearDisabled}
           mode={mode}
           onChange={onCalendarChange}
           open={open}

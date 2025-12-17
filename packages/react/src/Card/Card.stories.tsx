@@ -1,4 +1,4 @@
-import { Meta, StoryFn } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react-webpack5';
 import { EyeIcon, MoreVerticalIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Card, { CardProps } from './Card';
@@ -104,7 +104,7 @@ Playground.args = {
   title: 'Card title',
   titleVariant: 'h3',
   subtitle: 'subtitle~',
-  // eslint-disable-next-line max-len
+
   description:
     'Lorem ipsum dolor sit amet consectetur adipisicing elit. In nisi temporibus eligendi voluptatem eum necessitatibus illum sint id earum et, quis sunt soluta, esse, autem minima ipsam libero eveniet molestiae?',
   actionsTemplate: 'Confirm',
@@ -134,7 +134,7 @@ export const Basic = () => {
   const style = { width: '375px' };
   const title = 'title1';
   const subtitle = 'subtitle';
-  // eslint-disable-next-line max-len
+
   const text =
     'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
 
@@ -164,10 +164,10 @@ export const Group = () => {
   const style = { width: '300px' };
   const title = 'card title';
   const subtitle = 'subtitle';
-  // eslint-disable-next-line max-len
+
   const textLong =
     'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vel voluptatibus magni natus aliquid doloremque quidem, eveniet explicabo iusto. Possimus nemo temporibus deleniti. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
-  // eslint-disable-next-line max-len
+
   const textShort =
     'Lorem ipsum dolor sit amet consectetur. Asperiores consectetur deserunt repudiandae eligendi distinctio ducimus exercitationem.';
 

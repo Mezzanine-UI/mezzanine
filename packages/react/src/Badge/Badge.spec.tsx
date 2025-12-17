@@ -1,33 +1,83 @@
 import { cleanup, render } from '../../__test-utils__';
-import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
+import {
+  describeForwardRefToHTMLElement,
+  describeHostElementClassNameAppendable,
+} from '../../__test-utils__/common';
 import Badge from '.';
+
+const queryBadgeHostElement = (container: Element): HTMLElement => {
+  const host = container.querySelector('.mzn-badge');
+
+  if (!host) {
+    throw new Error('Badge host element not found');
+  }
+
+  return host as HTMLElement;
+};
 
 describe('<Badge />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(<Badge className={className} />),
+  describeForwardRefToHTMLElement(HTMLSpanElement, (ref) =>
+    render(<Badge variant="count-alert" count={1} ref={ref} />),
   );
 
+  describeHostElementClassNameAppendable('foo', (className) => {
+    const result = render(
+      <Badge variant="count-alert" className={className} count={1} />,
+    );
+
+    return {
+      ...result,
+      getHostHTMLElement: <E extends Element = HTMLElement>() =>
+        queryBadgeHostElement(result.getHostHTMLElement()) as unknown as E,
+    };
+  });
+
   it('should bind content class', () => {
-    const { getHostHTMLElement } = render(<Badge>No Data</Badge>);
-    const element = getHostHTMLElement();
+    const { getHostHTMLElement } = render(
+      <Badge variant="count-alert" count={1} />,
+    );
+    const element = queryBadgeHostElement(getHostHTMLElement());
 
     expect(element.classList.contains('mzn-badge')).toBeTruthy();
   });
 
-  describe('prop: children', () => {
-    it('should render children by a span', () => {
-      const { getHostHTMLElement } = render(<Badge>foo</Badge>);
-      const element = getHostHTMLElement();
+  it('should append variant class', () => {
+    const variant = 'count-alert';
+    const { getHostHTMLElement } = render(
+      <Badge variant={variant} count={1} />,
+    );
+    const element = queryBadgeHostElement(getHostHTMLElement());
+
+    expect(element.classList.contains(`mzn-badge--${variant}`)).toBeTruthy();
+  });
+
+  describe('prop: count', () => {
+    it('should render badge host as span', () => {
+      const { getHostHTMLElement } = render(
+        <Badge variant="count-alert" count={9} />,
+      );
+      const element = queryBadgeHostElement(getHostHTMLElement());
 
       expect(element.tagName.toLowerCase()).toBe('span');
     });
 
+    it('should render count when overflowCount is not provided', () => {
+      const count = 120;
+      const { getHostHTMLElement } = render(
+        <Badge count={count} variant="count-alert" />,
+      );
+      const element = queryBadgeHostElement(getHostHTMLElement());
+
+      expect(element.textContent).toBe(`${count}`);
+    });
+
     it('should not shown if count is 0', () => {
-      const count = 0;
-      const { getHostHTMLElement } = render(<Badge>{count}</Badge>);
-      const element = getHostHTMLElement();
+      const { getHostHTMLElement } = render(
+        <Badge count={0} variant="count-alert" />,
+      );
+      const element = queryBadgeHostElement(getHostHTMLElement());
 
       expect(element.classList.contains('mzn-badge--hide')).toBeTruthy();
     });
@@ -36,9 +86,13 @@ describe('<Badge />', () => {
       const count = 999;
       const overflowCount = 99;
       const { getHostHTMLElement } = render(
-        <Badge overflowCount={overflowCount}>{count}</Badge>,
+        <Badge
+          count={count}
+          overflowCount={overflowCount}
+          variant="count-alert"
+        />,
       );
-      const element = getHostHTMLElement();
+      const element = queryBadgeHostElement(getHostHTMLElement());
 
       expect(element.textContent).toBe(`${overflowCount}+`);
     });
@@ -47,16 +101,22 @@ describe('<Badge />', () => {
       const count = 5;
       const overflowCount = 99;
       const { getHostHTMLElement } = render(
-        <Badge overflowCount={overflowCount}>{count}</Badge>,
+        <Badge
+          count={count}
+          overflowCount={overflowCount}
+          variant="count-alert"
+        />,
       );
-      const element = getHostHTMLElement();
+      const element = queryBadgeHostElement(getHostHTMLElement());
 
       expect(element.textContent).toBe(`${count}`);
     });
+  });
 
+  describe('prop: children', () => {
     it('should just wrap children', () => {
       const { getHostHTMLElement } = render(
-        <Badge>
+        <Badge variant="dot-success">
           <div className="foo">foo</div>
         </Badge>,
       );
@@ -65,30 +125,41 @@ describe('<Badge />', () => {
 
       expect(fooElement?.textContent).toBe('foo');
     });
+
+    it('should not hide dot variant when children is 0', () => {
+      const { getHostHTMLElement } = render(
+        <Badge variant="dot-success">0</Badge>,
+      );
+      const element = queryBadgeHostElement(getHostHTMLElement());
+
+      expect(element.classList.contains('mzn-badge--hide')).toBeFalsy();
+    });
   });
 
-  describe('prop: dot', () => {
-    it('should render dot=false by default', () => {
-      const { getHostHTMLElement } = render(<Badge />);
-      const element = getHostHTMLElement();
+  describe('prop: text', () => {
+    it('should render text content for dot variant with text prop', () => {
+      const text = 'States';
+      const { getHostHTMLElement } = render(
+        <Badge text={text} variant="dot-success" />,
+      );
+      const element = queryBadgeHostElement(getHostHTMLElement());
 
-      expect(element.classList.contains('mzn-badge--dot')).toBeFalsy();
+      expect(element.textContent).toBe(text);
     });
+  });
 
-    it('should append dot class if dot=false', () => {
-      const { getHostHTMLElement } = render(<Badge dot={false} />);
-      const element = getHostHTMLElement();
+  it('should forward rest props to host element', () => {
+    const { getHostHTMLElement } = render(
+      <Badge
+        aria-label="badge"
+        count={10}
+        data-testid="badge"
+        variant="count-alert"
+      />,
+    );
+    const element = queryBadgeHostElement(getHostHTMLElement());
 
-      expect(element.classList.contains('mzn-badge--dot')).toBeFalsy();
-    });
-
-    it('should append dot class and render no children if dot=true', () => {
-      const { getHostHTMLElement } = render(<Badge dot>0</Badge>);
-      const element = getHostHTMLElement();
-      const { firstElementChild, childElementCount } = element;
-
-      expect(firstElementChild).toBe(null);
-      expect(childElementCount).toBe(0);
-    });
+    expect(element.getAttribute('aria-label')).toBe('badge');
+    expect(element.dataset.testid).toBe('badge');
   });
 });

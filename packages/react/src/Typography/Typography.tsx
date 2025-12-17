@@ -5,9 +5,8 @@ import {
   typographyClasses as classes,
   TypographyColor,
   TypographyDisplay,
-  TypographyVariant,
-  TypographyWeight,
 } from '@mezzanine-ui/core/typography';
+import { TypographySemanticType } from '@mezzanine-ui/system/typography';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 
@@ -21,14 +20,14 @@ export type TypographyComponent =
   | 'a'
   | JSXElementConstructor<any>;
 
-function getComponentFromVariant(
-  variant: TypographyVariant,
+function getComponentFromType(
+  type: TypographySemanticType,
 ): TypographyComponent {
-  if (variant.startsWith('h')) {
-    return variant as TypographyComponent;
+  if (type === 'h1' || type === 'h2' || type === 'h3') {
+    return type as TypographyComponent;
   }
 
-  if (variant.startsWith('body')) {
+  if (type.startsWith('body') || type.startsWith('text-link-body')) {
     return 'p';
   }
 
@@ -41,7 +40,7 @@ interface TypographyPropsBase {
    */
   align?: TypographyAlign;
   /**
-   * The color name provided by palette.
+   * The text semantic color from the palette.
    */
   color?: TypographyColor;
   /**
@@ -61,14 +60,10 @@ interface TypographyPropsBase {
    */
   noWrap?: boolean;
   /**
-   * Applies the typography variant.
-   * @default 'body1'
+   * Applies the typography semantic type.
+   * @default 'body'
    */
-  variant?: TypographyVariant;
-  /**
-   * The css variable for customizing `font-weight`.
-   */
-  weight?: TypographyWeight;
+  variant?: TypographySemanticType;
 }
 
 export type TypographyProps<C extends TypographyComponent = 'p'> =
@@ -92,17 +87,15 @@ const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(
       display,
       ellipsis = false,
       noWrap = false,
-      variant = 'body1',
+      variant = 'body',
       style: styleProp,
-      weight,
       ...rest
     } = props;
-    const Component = component || (getComponentFromVariant(variant) as any);
+    const Component = component || (getComponentFromType(variant) as any);
     const cssVars = toTypographyCssVars({
       align,
       color,
       display,
-      weight,
     });
     const style = {
       ...cssVars,
@@ -116,14 +109,13 @@ const Typography = forwardRef<HTMLParagraphElement, TypographyProps<'p'>>(
         {...rest}
         ref={ref}
         className={cx(
-          classes.variant(variant),
+          classes.type(variant),
           {
             [classes.align]: align,
             [classes.color]: color,
             [classes.display]: display,
             [classes.ellipsis]: ellipsis,
             [classes.noWrap]: noWrap,
-            [classes.weight]: weight,
           },
           className,
         )}

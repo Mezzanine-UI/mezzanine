@@ -1,100 +1,205 @@
+'use client';
+
 import { DateType } from '@mezzanine-ui/core/calendar';
 import {
   RangePickerPickingValue,
   RangePickerValue,
 } from '@mezzanine-ui/core/picker';
-import {
-  ChangeEventHandler,
-  KeyboardEventHandler,
-  useMemo,
-  useState,
-} from 'react';
-import {
-  useRangePickerValue,
-  UseRangePickerValueProps,
-} from '../Picker/useRangePickerValue';
+import { useMemo, useState, useCallback, RefObject } from 'react';
 import { DateRangePickerCalendarProps } from './DateRangePickerCalendar';
 import { useCalendarContext } from '../Calendar';
 
-export interface UseDateRangePickerValueProps
-  extends Omit<UseRangePickerValueProps, 'onChange'> {
+export interface UseDateRangePickerValueProps {
+  /**
+   * The format pattern for the inputs (e.g., "YYYY-MM-DD")
+   */
+  format: string;
+  /**
+   * Function to check if there are disabled dates in the range
+   */
+  hasDisabledDateInRange?: (start: DateType, end: DateType) => boolean;
+  /**
+   * Ref for the 'from' input element
+   */
+  inputFromRef: RefObject<HTMLInputElement | null>;
+  /**
+   * Ref for the 'to' input element
+   */
+  inputToRef: RefObject<HTMLInputElement | null>;
+  /**
+   * Calendar mode
+   */
   mode?: DateRangePickerCalendarProps['mode'];
+  /**
+   * Change handler called when range is complete
+   */
   onChange?: (value?: RangePickerValue) => void;
+  /**
+   * Controlled value
+   */
+  value?: RangePickerValue;
 }
 
 export function useDateRangePickerValue({
   format,
-  formats,
-  inputFromRef,
+  hasDisabledDateInRange,
+  inputFromRef: _inputFromRef,
   inputToRef,
   mode,
   onChange: onChangeProp,
   value: valueProp,
 }: UseDateRangePickerValueProps) {
-  const { addDay } = useCalendarContext();
-  const {
-    inputFromValue,
-    inputToValue,
-    onChange,
-    onFromBlur,
-    onFromKeyDown,
-    onInputFromChange,
-    onInputToChange,
-    onToBlur,
-    onToKeyDown,
-    value,
-  } = useRangePickerValue({
-    format,
-    formats,
-    value: valueProp,
-    inputFromRef,
-    inputToRef,
-  });
+  const { addDay, formatToString, isBefore, locale } = useCalendarContext();
 
-  const [from, to] = value;
+  const [internalFrom, setInternalFrom] = useState<DateType | undefined>(
+    valueProp?.[0],
+  );
+  const [internalTo, setInternalTo] = useState<DateType | undefined>(
+    valueProp?.[1],
+  );
+
+  // Track if user is currently selecting a new range
+  // When selecting, we use internal state; otherwise, we prefer valueProp
+  const [isSelecting, setIsSelecting] = useState(false);
+
+  const from = isSelecting ? internalFrom : (valueProp?.[0] ?? internalFrom);
+  const to = isSelecting ? internalTo : (valueProp?.[1] ?? internalTo);
+  const value = [from, to] as RangePickerPickingValue;
+
+  const formatDate = useCallback(
+    (date: DateType | undefined): string => {
+      if (!date) return '';
+      return formatToString(locale, date, format);
+    },
+    [formatToString, locale, format],
+  );
+
+  const sortValues = useCallback(
+    (v1: DateType, v2: DateType): [DateType, DateType] => {
+      return isBefore(v1, v2) ? [v1, v2] : [v2, v1];
+    },
+    [isBefore],
+  );
+
+  const inputFromValue = formatDate(from);
+  const inputToValue = formatDate(to);
 
   const [hoverValue, setHoverValue] = useState<DateType | undefined>(undefined);
 
-  const onSyncHoverValueInputFromChange: ChangeEventHandler<
-    HTMLInputElement
-  > = (event) => {
-    onInputFromChange(event);
+  const onInputFromChange = useCallback(
+    (formattedValue: string) => {
+      if (formattedValue) {
+        setIsSelecting(true);
 
-    setHoverValue(undefined);
-  };
+        if (to && isBefore(to, formattedValue)) {
+          setInternalFrom(to);
+          setInternalTo(formattedValue);
 
-  const onSyncHoverValueInputToChange: ChangeEventHandler<HTMLInputElement> = (
-    event,
-  ) => {
-    onInputToChange(event);
+          // Range is complete, trigger onChange (only in immediate mode)
+          onChangeProp?.([to, formattedValue]);
+        } else {
+          setInternalFrom(formattedValue);
 
-    setHoverValue(undefined);
-  };
+          // If to is also set, range is complete (only trigger in immediate mode)
+          if (to) {
+            onChangeProp?.([formattedValue, to]);
+          }
+        }
+      } else {
+        setInternalFrom(undefined);
+      }
 
-  const onCalendarChange = (val?: DateType) => {
-    const firstVal = from || to;
-    const newValue =
-      (from && to) || (!from && !to)
-        ? ([val, undefined] as RangePickerPickingValue)
-        : ([firstVal, val] as RangePickerPickingValue);
+      setHoverValue(undefined);
+    },
+    [to, isBefore, onChangeProp],
+  );
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const [sortedFrom, sortedTo] = onChange(newValue, {
-      from: (nextFrom) => nextFrom,
-      to: (nextTo) => {
-        if (!nextTo) return nextTo;
+  const onInputToChange = useCallback(
+    (formattedValue: string) => {
+      if (formattedValue) {
+        setIsSelecting(true);
 
-        /** week mode should use the last day of the week (default is the first day) */
-        return mode === 'week' ? addDay(nextTo, 6) : nextTo;
-      },
-    })!;
+        if (from && isBefore(formattedValue, from)) {
+          setInternalTo(from);
+          setInternalFrom(formattedValue);
 
-    if (sortedFrom && sortedTo) {
-      onChangeProp?.([sortedFrom, sortedTo]);
-    }
-  };
+          // Range is complete, trigger onChange (only in immediate mode)
+          onChangeProp?.([formattedValue, from]);
+        } else {
+          setInternalTo(formattedValue);
 
-  /** Hover settings */
+          // If from is also set, range is complete (only trigger in immediate mode)
+          if (from) {
+            onChangeProp?.([from, formattedValue]);
+          }
+        }
+      } else {
+        setInternalTo(undefined);
+      }
+
+      setHoverValue(undefined);
+    },
+    [from, isBefore, onChangeProp],
+  );
+
+  const onCalendarChange = useCallback(
+    (rangeValue: [DateType, DateType | undefined]) => {
+      const [newFrom, newTo] = rangeValue;
+
+      setInternalFrom(newFrom);
+
+      if (newTo) {
+        const adjustedTo = mode === 'week' ? addDay(newTo, 6) : newTo;
+        setInternalTo(adjustedTo);
+
+        if (newFrom && adjustedTo) {
+          const [sortedFrom, sortedTo] = sortValues(newFrom, adjustedTo);
+          onChangeProp?.([sortedFrom, sortedTo]);
+        }
+      } else {
+        setInternalTo(undefined);
+        setIsSelecting(true);
+
+        // 開始新的選取，則先清除值
+        if (from && to) {
+          onChangeProp?.(undefined);
+        }
+
+        inputToRef.current?.focus();
+      }
+
+      setHoverValue(undefined);
+    },
+    [mode, addDay, sortValues, onChangeProp, inputToRef, from, to],
+  );
+
+  const onChange = useCallback(
+    (target?: RangePickerPickingValue): RangePickerPickingValue | undefined => {
+      // Reset selecting state when value is explicitly changed (e.g., cancel/close)
+      setIsSelecting(false);
+
+      if (!target) {
+        setInternalFrom(undefined);
+        setInternalTo(undefined);
+        return undefined;
+      }
+
+      const [newFrom, newTo] = target;
+
+      if (newFrom && newTo) {
+        const sorted = sortValues(newFrom, newTo);
+        setInternalFrom(sorted[0]);
+        setInternalTo(sorted[1]);
+        return sorted;
+      }
+
+      setInternalFrom(newFrom);
+      setInternalTo(newTo);
+      return target;
+    },
+    [sortValues],
+  );
+
   const anchor1 = from || to;
   const anchor2 = from && to ? to : hoverValue;
   const calendarValue = useMemo(() => {
@@ -109,58 +214,65 @@ export function useDateRangePickerValue({
     return undefined;
   }, [anchor1, anchor2]);
 
+  /**
+   * Check if date is in range, considering disabled dates
+   * Returns a function that can be used as isDateInRange handler
+   */
+  const checkIsInRange = useCallback(
+    (_date: DateType): boolean => {
+      if (!anchor1 || !anchor2) return false;
+
+      // Check if the range crosses any disabled dates
+      if (hasDisabledDateInRange?.(anchor1, anchor2)) {
+        return false;
+      }
+
+      return true;
+    },
+    [anchor1, anchor2, hasDisabledDateInRange],
+  );
+
   const onCalendarHover = !(from && to) && anchor1 ? setHoverValue : undefined;
 
-  const onSyncHoverValueClear = () => {
-    onChange(undefined);
-
+  const onClear = useCallback(() => {
+    setInternalFrom(undefined);
+    setInternalTo(undefined);
     setHoverValue(undefined);
-
+    setIsSelecting(false);
     onChangeProp?.(undefined);
-  };
+  }, [onChangeProp]);
 
-  const onFromKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (
-    event,
-  ) => {
-    onFromKeyDown(event);
+  const onFromFocus = useCallback(() => {
+    // Optional: add focus logic
+  }, []);
 
-    if (event.key === 'Enter' && from && to) {
-      onChangeProp?.([from, to]);
-    }
+  const onToFocus = useCallback(() => {
+    // Optional: add focus logic
+  }, []);
 
-    if (event.key === 'Escape') {
-      onChange(valueProp);
-    }
-  };
+  const onFromBlur = useCallback(() => {
+    // Optional: add blur logic
+  }, []);
 
-  const onToKeyDownWithOnChange: KeyboardEventHandler<HTMLInputElement> = (
-    event,
-  ) => {
-    onToKeyDown(event);
-
-    if (event.key === 'Enter' && from && to) {
-      onChangeProp?.([from, to]);
-    }
-
-    if (event.key === 'Escape') {
-      onChange(valueProp);
-    }
-  };
+  const onToBlur = useCallback(() => {
+    // Optional: add blur logic
+  }, []);
 
   return {
     calendarValue,
+    checkIsInRange,
     inputFromValue,
     inputToValue,
     onCalendarChange,
     onCalendarHover,
     onChange,
-    onClear: onSyncHoverValueClear,
+    onClear,
     onFromBlur,
-    onFromKeyDown: onFromKeyDownWithOnChange,
-    onInputFromChange: onSyncHoverValueInputFromChange,
-    onInputToChange: onSyncHoverValueInputToChange,
+    onFromFocus,
+    onInputFromChange,
+    onInputToChange,
     onToBlur,
-    onToKeyDown: onToKeyDownWithOnChange,
+    onToFocus,
     value,
   };
 }

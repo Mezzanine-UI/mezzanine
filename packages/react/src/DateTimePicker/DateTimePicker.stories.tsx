@@ -1,20 +1,22 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { DateType } from '@mezzanine-ui/core/calendar';
-import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
-import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { CSSProperties, useState } from 'react';
 import moment from 'moment';
-import { CalendarConfigProvider } from '../Calendar';
+import {
+  CalendarConfigProviderDayjs,
+  CalendarConfigProviderMoment,
+  CalendarConfigProviderLuxon,
+} from '../Calendar';
 import DateTimePicker, { DateTimePickerProps } from './DateTimePicker';
 import Typography from '../Typography';
-import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/DateTimePicker',
+  component: DateTimePicker,
 } as Meta;
 
 function usePickerChange() {
-  const [val, setVal] = useState<DateType>();
+  const [val, setVal] = useState<DateType | undefined>();
   const onChange = (v?: DateType) => {
     setVal(v);
   };
@@ -24,324 +26,317 @@ function usePickerChange() {
 
 type PlaygroundArgs = DateTimePickerProps;
 
-export const Playground: StoryFn<PlaygroundArgs> = ({
-  clearable,
-  disabled,
-  error,
-  format,
-  fullWidth,
-  hideHour,
-  hideMinute,
-  hideSecond,
-  hourPrefix,
-  hourStep = 1,
-  minutePrefix,
-  minuteStep = 1,
-  placeholder,
-  readOnly,
-  secondPrefix,
-  secondStep = 1,
-  size,
-}) => {
-  const typoStyle = { margin: '0 0 12px 0' };
-  const [val, onChange] = usePickerChange();
-
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <Typography variant="h5" style={typoStyle}>
-        {`current value: ${moment(val).format(format)}`}
-      </Typography>
-      <DateTimePicker
-        value={val}
-        onChange={onChange}
-        clearable={clearable}
-        disabled={disabled}
-        error={error}
-        format={format}
-        fullWidth={fullWidth}
-        hideHour={hideHour}
-        hideMinute={hideMinute}
-        hideSecond={hideSecond}
-        hourPrefix={hourPrefix}
-        hourStep={hourStep}
-        minutePrefix={minutePrefix}
-        minuteStep={minuteStep}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        secondPrefix={secondPrefix}
-        secondStep={secondStep}
-        size={size}
-      />
-    </CalendarConfigProvider>
-  );
-};
-
-Playground.argTypes = {
-  size: {
-    options: ['small', 'medium', 'large'],
-    control: {
-      type: 'select',
+export const Playground: StoryObj<PlaygroundArgs> = {
+  argTypes: {
+    size: {
+      control: {
+        type: 'select',
+      },
+      options: ['sub', 'main'],
     },
+  },
+  args: {
+    clearable: false,
+    disabled: false,
+    error: false,
+    formatDate: 'YYYY-MM-DD',
+    formatTime: 'HH:mm:ss',
+    fullWidth: false,
+    hideHour: false,
+    hideMinute: false,
+    hideSecond: false,
+    hourStep: 1,
+    minuteStep: 1,
+    readOnly: false,
+    secondStep: 1,
+    size: 'main',
+    placeholderLeft: 'Select date',
+    placeholderRight: 'Select time',
+  },
+  render: function Render({
+    clearable,
+    disabled,
+    error,
+    formatDate,
+    formatTime,
+    fullWidth,
+    hideHour,
+    hideMinute,
+    hideSecond,
+    hourStep,
+    minuteStep,
+    readOnly,
+    secondStep,
+    size,
+    placeholderLeft,
+    placeholderRight,
+  }) {
+    const typoStyle = { margin: '0 0 12px 0' };
+    const [val, onChange] = usePickerChange();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <Typography style={typoStyle} variant="h3">
+          {`origin value: ${val}`}
+        </Typography>
+        <DateTimePicker
+          clearable={clearable}
+          disabled={disabled}
+          error={error}
+          formatDate={formatDate}
+          formatTime={formatTime}
+          fullWidth={fullWidth}
+          hideHour={hideHour}
+          hideMinute={hideMinute}
+          hideSecond={hideSecond}
+          hourStep={hourStep}
+          minuteStep={minuteStep}
+          onChange={onChange}
+          readOnly={readOnly}
+          secondStep={secondStep}
+          size={size}
+          value={val}
+          placeholderLeft={placeholderLeft}
+          placeholderRight={placeholderRight}
+        />
+      </CalendarConfigProviderMoment>
+    );
   },
 };
 
-Playground.args = {
-  clearable: false,
-  disabled: false,
-  error: false,
-  format: 'YYYY-MM-DD HH:mm:ss',
-  fullWidth: false,
-  hideHour: false,
-  hideMinute: false,
-  hideSecond: false,
-  hourPrefix: 'Hrs',
-  hourStep: 1,
-  minutePrefix: 'Min',
-  minuteStep: 1,
-  placeholder: '',
-  readOnly: false,
-  secondPrefix: 'Sec',
-  secondStep: 1,
-  size: 'medium',
-};
+export const Basic: StoryObj = {
+  render: function Render() {
+    const containerStyle = { width: '320px', margin: '0 0 24px 0' };
+    const typoStyle = { margin: '0 0 12px 0' };
+    const [val, setVal] = useState<DateType>();
 
-export const Basic = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => {
-    setVal(v);
-  };
+    const onChange = (v?: DateType) => {
+      setVal(v);
+    };
 
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Normal
-        </Typography>
-        <DateTimePicker value={val} onChange={onChange} />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Disabled
-        </Typography>
-        <DateTimePicker value={moment().toISOString()} disabled />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Error
-        </Typography>
-        <DateTimePicker value={moment().toISOString()} error />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Read only
-        </Typography>
-        <DateTimePicker value={moment().toISOString()} readOnly />
-      </div>
-    </CalendarConfigProvider>
-  );
-};
-
-export const Method = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0' };
-  const [val, setVal] = useState<DateType>();
-  const onChange = (v?: DateType) => {
-    setVal(v);
-  };
-
-  return (
-    <>
-      <CalendarConfigProvider methods={CalendarMethodsMoment}>
+    return (
+      <CalendarConfigProviderMoment>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
-            CalendarMethodsMoment
+          <Typography style={typoStyle} variant="h3">
+            {`Normal
+            Origin Value: ${val}`}
           </Typography>
-          <DateTimePicker value={val} onChange={onChange} />
+          <DateTimePicker onChange={onChange} value={val} />
         </div>
-      </CalendarConfigProvider>
-      <CalendarConfigProvider methods={CalendarMethodsDayjs}>
         <div style={containerStyle}>
-          <Typography variant="h5" style={typoStyle}>
-            CalendarMethodsDayjs
+          <Typography style={typoStyle} variant="h3">
+            Disabled
           </Typography>
-          <DateTimePicker value={val} onChange={onChange} />
+          <DateTimePicker disabled value={moment().toISOString()} />
         </div>
-      </CalendarConfigProvider>
-    </>
-  );
-};
-
-export const Sizes = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = { margin: '0 0 12px 0' };
-  const [val1, onChange1] = usePickerChange();
-  const [val2, onChange2] = usePickerChange();
-  const [val3, onChange3] = usePickerChange();
-
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Small
-        </Typography>
-        <DateTimePicker value={val1} onChange={onChange1} size="small" />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Medium
-        </Typography>
-        <DateTimePicker value={val2} onChange={onChange2} size="medium" />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Large
-        </Typography>
-        <ConfigProvider size="large">
-          <DateTimePicker value={val3} onChange={onChange3} />
-        </ConfigProvider>
-      </div>
-    </CalendarConfigProvider>
-  );
-};
-
-export const DisplayColumn = () => {
-  const containerStyle = { margin: '0 0 32px 0' };
-  const typoStyle = { margin: '0 0 8px 0' };
-  const [val1, onChange1] = usePickerChange();
-  const [val2, onChange2] = usePickerChange();
-  const [val3, onChange3] = usePickerChange();
-  const fullFormat = 'YYYY-MM-DD HH:mm:ss';
-  const withoutSecondFormat = 'YYYY-MM-DD HH:mm';
-  const onlyHourFormat = 'YYYY-MM-DD HH';
-
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
-          Hours, minutes, seconds
-        </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val1).format(fullFormat)}`}
-        </Typography>
-        <DateTimePicker
-          value={val1}
-          onChange={onChange1}
-          format={fullFormat}
-          placeholder={fullFormat}
-        />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
-          Hours, minutes
-        </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val2).format(withoutSecondFormat)}`}
-        </Typography>
-        <DateTimePicker
-          value={val2}
-          onChange={onChange2}
-          hideSecond
-          format={withoutSecondFormat}
-          placeholder={withoutSecondFormat}
-        />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h4" style={typoStyle}>
-          Hours
-        </Typography>
-        <Typography variant="body1" style={typoStyle}>
-          {`current value: ${moment(val3).format(onlyHourFormat)}`}
-        </Typography>
-        <DateTimePicker
-          value={val3}
-          onChange={onChange3}
-          hideSecond
-          hideMinute
-          format={onlyHourFormat}
-          placeholder={onlyHourFormat}
-        />
-      </div>
-    </CalendarConfigProvider>
-  );
-};
-
-export const CustomDisable = () => {
-  const containerStyle = { margin: '0 0 24px 0' };
-  const typoStyle = {
-    margin: '0 0 12px 0',
-    whiteSpace: 'pre-line',
-  } as CSSProperties;
-  const [valD, onChangeD] = usePickerChange();
-
-  // We use moment.date  instead of moment.add is because storybook currently has internal conflict with the method.
-  const disabledDatesStart = moment().date(moment().date() + 3);
-  const disabledDatesEnd = moment().date(moment().date() + 7);
-  const disabledMonthsStart = moment().month(moment().month() - 5);
-  const disabledMonthsEnd = moment().month(moment().month() - 1);
-  const disabledYearsStart = moment().year(moment().year() - 20);
-  const disabledYearsEnd = moment().year(moment().year() - 1);
-  const format = 'YYYY-MM-DD HH:mm:ss';
-
-  const isDateDisabled = (target: DateType) =>
-    moment(target).isBetween(disabledDatesStart, disabledDatesEnd, 'day', '[]');
-
-  const isMonthDisabled = (target: DateType) =>
-    moment(target).isBetween(
-      disabledMonthsStart,
-      disabledMonthsEnd,
-      'month',
-      '[]',
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Error
+          </Typography>
+          <DateTimePicker error value={moment().toISOString()} />
+        </div>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Read only
+          </Typography>
+          <DateTimePicker readOnly value={moment().toISOString()} />
+        </div>
+      </CalendarConfigProviderMoment>
     );
+  },
+};
 
-  const isYearDisabled = (target: DateType) =>
-    moment(target).isBetween(
-      disabledYearsStart,
-      disabledYearsEnd,
-      'year',
-      '[]',
+export const Method: StoryObj = {
+  render: function Render() {
+    const containerStyle = { margin: '0 0 24px 0' };
+    const typoStyle = { margin: '0 0 12px 0' };
+    const [val, setVal] = useState<DateType>();
+    const onChange = (v?: DateType) => {
+      setVal(v);
+    };
+
+    return (
+      <>
+        <CalendarConfigProviderMoment>
+          <div style={containerStyle}>
+            <Typography style={typoStyle} variant="h3">
+              CalendarMethodsMoment
+            </Typography>
+            <DateTimePicker onChange={onChange} value={val} />
+          </div>
+        </CalendarConfigProviderMoment>
+        <CalendarConfigProviderDayjs>
+          <div style={containerStyle}>
+            <Typography style={typoStyle} variant="h3">
+              CalendarMethodsDayjs
+            </Typography>
+            <DateTimePicker onChange={onChange} value={val} />
+          </div>
+        </CalendarConfigProviderDayjs>
+        <CalendarConfigProviderLuxon>
+          <div style={containerStyle}>
+            <Typography style={typoStyle} variant="h3">
+              CalendarMethodLuxon
+            </Typography>
+            <DateTimePicker onChange={onChange} value={val} />
+          </div>
+        </CalendarConfigProviderLuxon>
+      </>
     );
+  },
+};
 
-  return (
-    <CalendarConfigProvider methods={CalendarMethodsMoment}>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='day')
-          disabledMonthSwitch = true
-          disabledYearSwitch = true
-          disableOnNext = true
-          disableOnPrev = true`}
-        </Typography>
-        <DateTimePicker
-          value={valD}
-          onChange={onChangeD}
-          format={format}
-          placeholder={format}
-          disabledMonthSwitch
-          disabledYearSwitch
-          disableOnNext
-          disableOnPrev
-        />
-      </div>
-      <div style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          {`(mode='day') Disabled
-            Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
-            Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
-            Dates: ${disabledDatesStart.format(format)} ~ ${disabledDatesEnd.format(format)}
-          `}
-        </Typography>
-        <DateTimePicker
-          value={valD}
-          onChange={onChangeD}
-          format={format}
-          placeholder={format}
-          isYearDisabled={isYearDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isDateDisabled={isDateDisabled}
-        />
-      </div>
-    </CalendarConfigProvider>
-  );
+export const Sizes: StoryObj = {
+  render: function Render() {
+    const containerStyle = { margin: '0 0 24px 0' };
+    const typoStyle = { margin: '0 0 12px 0' };
+    const [val1, onChange1] = usePickerChange();
+    const [val2, onChange2] = usePickerChange();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Size: main
+          </Typography>
+          <DateTimePicker onChange={onChange2} size="main" value={val2} />
+        </div>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Size: sub
+          </Typography>
+          <DateTimePicker onChange={onChange1} size="sub" value={val1} />
+        </div>
+      </CalendarConfigProviderMoment>
+    );
+  },
+};
+
+export const DisplayColumn: StoryObj = {
+  render: function Render() {
+    const containerStyle = { margin: '0 0 32px 0' };
+    const typoStyle = { margin: '0 0 8px 0' };
+    const [val1, onChange1] = usePickerChange();
+    const [val2, onChange2] = usePickerChange();
+
+    return (
+      <CalendarConfigProviderMoment>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Hours, minutes, seconds
+          </Typography>
+          <Typography style={typoStyle} variant="body">
+            {`current value: ${val1 ? moment(val1).format('YYYY-MM-DD HH:mm:ss') : 'undefined'}`}
+          </Typography>
+          <DateTimePicker
+            formatDate="YYYY-MM-DD"
+            formatTime="HH:mm:ss"
+            onChange={onChange1}
+            value={val1}
+          />
+        </div>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            Hours, minutes
+          </Typography>
+          <Typography style={typoStyle} variant="body">
+            {`current value: ${val2 ? moment(val2).format('YYYY-MM-DD HH:mm') : 'undefined'}`}
+          </Typography>
+          <DateTimePicker
+            formatDate="YYYY-MM-DD"
+            formatTime="HH:mm"
+            hideSecond
+            onChange={onChange2}
+            value={val2}
+          />
+        </div>
+      </CalendarConfigProviderMoment>
+    );
+  },
+};
+
+export const CustomDisable: StoryObj = {
+  render: function Render() {
+    const containerStyle = { margin: '0 0 24px 0' };
+    const typoStyle = {
+      margin: '0 0 12px 0',
+      whiteSpace: 'pre-line',
+    } as CSSProperties;
+    const [valD, onChangeD] = usePickerChange();
+
+    const disabledDatesStart = moment().date(moment().date() + 3);
+    const disabledDatesEnd = moment().date(moment().date() + 7);
+    const disabledMonthsStart = moment().month(moment().month() - 5);
+    const disabledMonthsEnd = moment().month(moment().month() - 1);
+    const disabledYearsStart = moment().year(moment().year() - 20);
+    const disabledYearsEnd = moment().year(moment().year() - 1);
+    const formatDate = 'YYYY-MM-DD';
+    const formatTime = 'HH:mm:ss';
+
+    const isDateDisabled = (target: DateType) =>
+      moment(target).isBetween(
+        disabledDatesStart,
+        disabledDatesEnd,
+        'day',
+        '[]',
+      );
+
+    const isMonthDisabled = (target: DateType) =>
+      moment(target).isBetween(
+        disabledMonthsStart,
+        disabledMonthsEnd,
+        'month',
+        '[]',
+      );
+
+    const isYearDisabled = (target: DateType) =>
+      moment(target).isBetween(
+        disabledYearsStart,
+        disabledYearsEnd,
+        'year',
+        '[]',
+      );
+
+    return (
+      <CalendarConfigProviderMoment>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            {`(mode='day')
+            disabledMonthSwitch = true
+            disabledYearSwitch = true
+            disableOnNext = true
+            disableOnPrev = true`}
+          </Typography>
+          <DateTimePicker
+            disabledMonthSwitch
+            disabledYearSwitch
+            disableOnNext
+            disableOnPrev
+            formatDate={formatDate}
+            formatTime={formatTime}
+            onChange={onChangeD}
+            value={valD}
+          />
+        </div>
+        <div style={containerStyle}>
+          <Typography style={typoStyle} variant="h3">
+            {`(mode='day') Disabled
+              Years: ${disabledYearsStart.format('YYYY')} ~ ${disabledYearsEnd.format('YYYY')}
+              Months: ${disabledMonthsStart.format('YYYY-MM')} ~ ${disabledMonthsEnd.format('YYYY-MM')}
+              Dates: ${disabledDatesStart.format(`${formatDate} ${formatTime}`)} ~ ${disabledDatesEnd.format(`${formatDate} ${formatTime}`)}
+            `}
+          </Typography>
+          <DateTimePicker
+            formatDate={formatDate}
+            formatTime={formatTime}
+            isDateDisabled={isDateDisabled}
+            isMonthDisabled={isMonthDisabled}
+            isYearDisabled={isYearDisabled}
+            onChange={onChangeD}
+            value={valD}
+          />
+        </div>
+      </CalendarConfigProviderMoment>
+    );
+  },
 };

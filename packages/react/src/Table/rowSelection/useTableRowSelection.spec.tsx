@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../../__test-utils__';
 import { useTableRowSelection, SELECTED_ALL_KEY } from './useTableRowSelection';
 
 describe('useTableRowSelection()', () => {
@@ -27,7 +22,7 @@ describe('useTableRowSelection()', () => {
 
     const [, onChange] = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange('foo');
     });
 
@@ -63,13 +58,13 @@ describe('useTableRowSelection()', () => {
 
       expect(selectedRowKey.length).toBe(0);
 
-      TestRenderer.act(() => {
+      act(() => {
         onChange(SELECTED_ALL_KEY);
       });
 
       expect(result.current[0].length).toBe(sources.length);
 
-      TestRenderer.act(() => {
+      act(() => {
         onChange(SELECTED_ALL_KEY);
       });
 
@@ -106,14 +101,14 @@ describe('useTableRowSelection()', () => {
 
       expect(selectedRowKey.length).toBe(0);
 
-      TestRenderer.act(() => {
+      act(() => {
         onChange(sources[0].id);
       });
 
       expect(result.current[0].length).toBe(1);
       expect(result.current[0][0]).toBe(sources[0].id);
 
-      TestRenderer.act(() => {
+      act(() => {
         onChange(sources[0].id);
       });
 

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const EyeCloseIcon: IconDefinition = {
   name: 'eye-close',
   definition: {

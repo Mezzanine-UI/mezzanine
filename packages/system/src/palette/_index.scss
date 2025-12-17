@@ -1,1 +1,3 @@
-@forward './palette';
+@forward './palette'; // @deprecated
+@forward './primitives' as primitive-*;
+@forward './semantic' as semantic-*;

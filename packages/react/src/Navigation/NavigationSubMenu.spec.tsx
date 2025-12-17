@@ -1,20 +1,12 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  TestRenderer,
-} from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Navigation from './Navigation';
 import NavigationSubMenu from './NavigationSubMenu';
-
-import Popper from '../Popper';
-import { Collapse } from '../Transition';
+import { NavigationContext } from './NavigationContext';
 
 describe('<NavigationSubMenu />', () => {
   afterEach(cleanup);
@@ -32,32 +24,6 @@ describe('<NavigationSubMenu />', () => {
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-navigation-sub-menu')).toBeTruthy();
-  });
-
-  describe('should render correct action component', () => {
-    it('should render `Popper` by default', () => {
-      const testRenderer = TestRenderer.create(
-        <Navigation>
-          <NavigationSubMenu />
-        </Navigation>,
-      );
-      const testInstance = testRenderer.root;
-      const popperInstance = testInstance.findByType(Popper);
-
-      expect(popperInstance).toBeTruthy();
-    });
-
-    it('should render `Collapse` when orientation `vertical`', () => {
-      const testRenderer = TestRenderer.create(
-        <Navigation orientation="vertical">
-          <NavigationSubMenu />
-        </Navigation>,
-      );
-      const testInstance = testRenderer.root;
-      const collapseInstance = testInstance.findByType(Collapse);
-
-      expect(collapseInstance).toBeTruthy();
-    });
   });
 
   describe('click on item open subMenu', () => {
@@ -94,7 +60,11 @@ describe('<NavigationSubMenu />', () => {
 
   describe('prop: defaultOpen', () => {
     it('should bind open class', () => {
-      const { getHostHTMLElement } = render(<NavigationSubMenu defaultOpen />);
+      const { getHostHTMLElement } = render(
+        <NavigationContext.Provider value={{ orientation: 'vertical' }}>
+          <NavigationSubMenu defaultOpen />
+        </NavigationContext.Provider>,
+      );
       const element = getHostHTMLElement();
 
       expect(element.classList).toContain('mzn-navigation-sub-menu--open');

@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, useMemo } from 'react';
 import {
   tableClasses as classes,
@@ -40,7 +42,7 @@ const TableSortingIcon = forwardRef<HTMLElement, TableSortingIconProps>(
     const currentIconStyle: { color: IconColor; style: { transform: string } } =
       useMemo(
         () => ({
-          color: currentType === 'none' ? 'secondary' : 'primary',
+          color: currentType === 'none' ? 'neutral' : 'neutral-strong',
           style: {
             transform: `rotate(${90 * (currentType === 'asc' ? -1 : 1)}deg)`,
           },

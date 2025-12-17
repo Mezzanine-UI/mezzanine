@@ -57,9 +57,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       disableCloseOnEscapeKeyDown = false,
       disablePortal = false,
       fullScreen = false,
-      hideBackdrop = false,
       hideCloseIcon = false,
-      invisibleBackdrop = false,
       loading = false,
       onBackdropClick,
       onClose,
@@ -87,8 +85,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
           disablePortal={disablePortal}
-          hideBackdrop={hideBackdrop}
-          invisibleBackdrop={invisibleBackdrop}
           onBackdropClick={onBackdropClick}
           onClose={onClose}
           open={open}

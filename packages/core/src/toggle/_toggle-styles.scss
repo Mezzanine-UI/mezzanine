@@ -1,0 +1,196 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/radius';
+@use '~@mezzanine-ui/system/effect';
+@use '~@mezzanine-ui/system/spacing';
+@use './toggle' as *;
+
+$status-colors: (
+  enable: (
+    background-color: (
+      off: palette.semantic-variable(background, neutral),
+      on: palette.semantic-variable(background, brand),
+    ),
+  ),
+  hover: (
+    background-color: (
+      off: palette.semantic-variable(background, neutral-strong),
+      on: palette.semantic-variable(background, brand-strong),
+    ),
+  ),
+  focus: (
+    background-color: (
+      off: palette.semantic-variable(background, neutral),
+      on: palette.semantic-variable(background, brand),
+    ),
+  ),
+  disabled: (
+    background-color: (
+      off: palette.semantic-variable(background, neutral-subtle),
+      on: palette.semantic-variable(background, neutral-subtle),
+    ),
+  ),
+);
+
+$size-spacing: (
+  main: (
+    // standalone
+    knob: spacing.semantic-variable(size, element, base),
+    padding-horizontal-on-side: spacing.semantic-variable(padding, horizontal, micro),
+    padding-horizontal-off-side: spacing.semantic-variable(padding, horizontal, open),
+    padding-vertical: spacing.semantic-variable(padding, vertical, micro),
+    height: spacing.semantic-variable(size, element, gentle),
+    // with label
+    gap-with-toggle: spacing.semantic-variable(gap, base),
+    gap-content: spacing.semantic-variable(gap, tight),
+  ),
+  sub: (
+    // standalone
+    knob: spacing.semantic-variable(size, element, slim),
+    padding-horizontal-on-side: spacing.semantic-variable(padding, horizontal, micro),
+    padding-horizontal-off-side: spacing.semantic-variable(padding, horizontal, spacious),
+    padding-vertical: spacing.semantic-variable(padding, vertical, micro),
+    height: spacing.semantic-variable(size, element, base),
+    // with label
+    gap-with-toggle: spacing.semantic-variable(gap, base),
+    gap-content: spacing.semantic-variable(gap, tight),
+  ),
+);
+
+$knob-color: palette.semantic-variable(background, base);
+$focus-ring-effect: effect.variable(focus, primary);
+$radius: radius.variable(full);
+
+@function _get-status-colors($status, $property, $switch) {
+  $status-map: map.get($status-colors, $status);
+
+  @if $status-map {
+    $switch-map: map.get($status-map, $property);
+
+    @if $switch-map {
+      $value: map.get($switch-map, $switch);
+
+      @return if($value == none, null, $value);
+    }
+  }
+
+  @return null;
+}
+
+
+@function _get-size-spacing($size, $property) {
+  $size-map: map.get($size-spacing, $size);
+
+  @if $size-map {
+    $value: map.get($size-map, $property);
+
+    @return if($value == none, null, $value);
+  }
+
+  @return null;
+}
+
+.#{$prefix} {
+  align-items: center;
+  border-radius: $radius;
+  display: flex;
+  height: fit-content;
+  width: fit-content;
+
+  &__input-container {
+    background-color: _get-status-colors(enable, background-color, off);
+    border-radius: $radius;
+    display: flex;
+    position: relative;
+    transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
+    will-change: background-color, box-shadow;
+
+    &:has(:focus-visible) {
+      box-shadow: $focus-ring-effect;
+    }
+
+    &:hover {
+      background-color: _get-status-colors(hover, background-color, off);
+    }
+  }
+
+  &__input {
+    cursor: pointer;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    width: 100%;
+  }
+
+  &__knob {
+    background-color: $knob-color;
+    border-radius: $radius;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transition: transition.standard(transform);
+    will-change: transform;
+  }
+
+  &__text-container {
+    display: grid;
+  }
+
+  &--checked {
+    .#{$prefix}__input-container {
+      background-color: _get-status-colors(enable, background-color, on);
+
+      &:hover {
+        background-color: _get-status-colors(hover, background-color, on);
+      }
+    }
+
+    &.#{$prefix}--disabled {
+      .#{$prefix}__input-container {
+        background-color: _get-status-colors(disabled, background-color, on);
+      }
+    }
+  }
+
+  &--disabled {
+    .#{$prefix}__input-container {
+      background-color: _get-status-colors(disabled, background-color, off);
+    }
+
+    .#{$prefix}__input {
+      cursor: not-allowed;
+    }
+  }
+
+  @each $current-size, $values in $size-spacing {
+    &--#{$current-size} {
+      gap: _get-size-spacing($current-size, gap-with-toggle);
+
+      .#{$prefix}__input-container {
+        height: calc(_get-size-spacing($current-size, padding-vertical) * 2 + _get-size-spacing($current-size, knob));
+        width: calc(
+          _get-size-spacing($current-size, knob) + _get-size-spacing($current-size, padding-horizontal-on-side) + _get-size-spacing($current-size, padding-horizontal-off-side)
+        );
+      }
+
+      .#{$prefix}__knob {
+        height: _get-size-spacing($current-size, knob);
+        margin-top: _get-size-spacing($current-size, padding-vertical);
+        transform: translateX(_get-size-spacing($current-size, padding-horizontal-on-side));
+        width: _get-size-spacing($current-size, knob);
+      }
+
+      .#{$prefix}__text-container {
+        gap: _get-size-spacing($current-size, gap-content);
+      }
+
+      &.#{$prefix}--checked {
+        .#{$prefix}__knob {
+          transform: translateX(_get-size-spacing($current-size, padding-horizontal-off-side));
+        }
+      }
+    }
+  }
+}

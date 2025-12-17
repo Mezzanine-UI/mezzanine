@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, useMemo } from 'react';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
 import { cx } from '../utils/cx';

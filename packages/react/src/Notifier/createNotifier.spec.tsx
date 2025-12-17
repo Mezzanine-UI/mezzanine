@@ -241,7 +241,7 @@ describe('createNotifier()', () => {
       notifier.remove('foo');
     });
 
-    expect(removeSpy).toBeCalledWith('foo');
+    expect(removeSpy).toHaveBeenCalledWith('foo');
 
     act(() => {
       notifier.destroy();
@@ -283,6 +283,41 @@ describe('createNotifier()', () => {
       expect(messageElement?.getAttribute('data-test-duration')).toBe(
         `${testDuration}`,
       );
+    });
+
+    it('should not auto remove if duration is false', async () => {
+      jest.useFakeTimers();
+
+      const notifier = createNotifier({
+        render: mockRender,
+      });
+
+      act(() => {
+        notifier.add({
+          children: 'persistent-message',
+          duration: false,
+          key: 'persistent',
+        });
+      });
+
+      let notifierRootElement = document.body.lastElementChild;
+
+      expect(notifierRootElement?.childElementCount).toBe(1);
+
+      // 快轉很長時間
+      act(() => {
+        jest.advanceTimersByTime(10000);
+      });
+
+      notifierRootElement = document.body.lastElementChild;
+
+      // 訊息應該還在
+      expect(notifierRootElement?.childElementCount).toBe(1);
+      expect(notifierRootElement?.firstElementChild?.textContent).toBe(
+        'persistent-message',
+      );
+
+      jest.useRealTimers();
     });
   });
 
@@ -413,6 +448,184 @@ describe('createNotifier()', () => {
       const notifierRootElement = document.body.lastElementChild;
 
       expect(notifierRootElement?.childElementCount).toBe(maxCount);
+    });
+
+    it('should queue notifications when exceeding maxCount', () => {
+      const maxCount = 3;
+
+      const notifier = createNotifier({
+        maxCount,
+        render: mockRender,
+      });
+
+      // 新增 5 個訊息，超過 maxCount (3)
+      const totalMessages = 5;
+
+      for (let i = 0; i < totalMessages; i += 1) {
+        act(() => {
+          notifier.add({
+            children: `message-${i}`,
+            key: `${i}`,
+          });
+        });
+      }
+
+      const notifierRootElement = document.body.lastElementChild;
+
+      // 應該只顯示 maxCount 個
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+
+      // 確認顯示的是前 3 個訊息
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-0');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-1');
+      expect(notifierRootElement?.children[2]?.textContent).toBe('message-2');
+    });
+
+    it('should display queued notification when a notification is removed', async () => {
+      const maxCount = 2;
+
+      const notifier = createNotifier({
+        maxCount,
+        render: mockRender,
+      });
+
+      // 新增 4 個訊息
+      const keys: Key[] = [];
+
+      for (let i = 0; i < 4; i += 1) {
+        act(() => {
+          const key = notifier.add({
+            children: `message-${i}`,
+            key: `${i}`,
+          });
+
+          keys.push(key);
+        });
+      }
+
+      let notifierRootElement = document.body.lastElementChild;
+
+      // 應該只顯示 2 個
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-0');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-1');
+
+      // 移除第一個訊息
+      act(() => {
+        notifier.remove(keys[0]);
+      });
+
+      // 等待 useEffect 執行
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      notifierRootElement = document.body.lastElementChild;
+
+      // 應該還是顯示 2 個，但第三個訊息應該從 queue 中補上
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-1');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-2');
+
+      // 再移除一個
+      act(() => {
+        notifier.remove(keys[1]);
+      });
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      notifierRootElement = document.body.lastElementChild;
+
+      // 第四個訊息應該也補上了
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-2');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-3');
+    });
+
+    it('should maintain order - new notifications always at the end', () => {
+      const maxCount = 3;
+
+      const notifier = createNotifier({
+        maxCount,
+        render: mockRender,
+      });
+
+      // 新增 3 個訊息
+      for (let i = 0; i < 3; i += 1) {
+        act(() => {
+          notifier.add({
+            children: `message-${i}`,
+            key: `${i}`,
+          });
+        });
+      }
+
+      const notifierRootElement = document.body.lastElementChild;
+
+      // 確認順序
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-0');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-1');
+      expect(notifierRootElement?.children[2]?.textContent).toBe('message-2');
+
+      // 新增第 4 個訊息（會進入 queue）
+      act(() => {
+        notifier.add({
+          children: 'message-3',
+          key: '3',
+        });
+      });
+
+      // 還是只有 3 個，順序不變
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-0');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-1');
+      expect(notifierRootElement?.children[2]?.textContent).toBe('message-2');
+    });
+
+    it('should remove notification from queue if removed before displayed', async () => {
+      const maxCount = 2;
+
+      const notifier = createNotifier({
+        maxCount,
+        render: mockRender,
+      });
+
+      // 新增 4 個訊息
+      for (let i = 0; i < 4; i += 1) {
+        act(() => {
+          notifier.add({
+            children: `message-${i}`,
+            key: `${i}`,
+          });
+        });
+      }
+
+      let notifierRootElement = document.body.lastElementChild;
+
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+
+      // 移除還在 queue 中的訊息 (message-3)
+      act(() => {
+        notifier.remove('3');
+      });
+
+      // 移除第一個顯示的訊息
+      act(() => {
+        notifier.remove('0');
+      });
+
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+
+      notifierRootElement = document.body.lastElementChild;
+
+      // 應該顯示 message-1 和 message-2，message-3 已被移除不會補上
+      expect(notifierRootElement?.childElementCount).toBe(maxCount);
+      expect(notifierRootElement?.children[0]?.textContent).toBe('message-1');
+      expect(notifierRootElement?.children[1]?.textContent).toBe('message-2');
     });
   });
 });

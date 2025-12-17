@@ -1,0 +1,168 @@
+
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
+@use './result-state' as *;
+
+// Type hierarchy map
+$type-hierarchy: (
+  information: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, info),
+  ),
+  success: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, success),
+  ),
+  help: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, warning),
+  ),
+  warning: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, warning),
+  ),
+  error: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, error),
+  ),
+  failure: (
+    title-color: palette.semantic-variable(text, neutral-solid),
+    description-color: palette.semantic-variable(text, neutral),
+    icon-color: palette.semantic-variable(icon, error),
+  ),
+);
+
+// Size configurations
+$size-configs: (
+  main: (
+    icon-size: spacing.semantic-variable(size, element, extra),
+    title: h3,
+    description: body,
+    padding-bottom: spacing.semantic-variable(padding, vertical, relaxed),
+    gap-below-icon: spacing.semantic-variable(gap, comfort),
+    gap-content: spacing.semantic-variable(gap, tight),
+    gap-below-content: spacing.semantic-variable(gap, comfort),
+    min-width: spacing.semantic-variable(size, container, slim),
+    max-width: spacing.semantic-variable(size, container, narrow),
+  ),
+  sub: (
+    icon-size: spacing.semantic-variable(size, element, airy),
+    title: body-highlight,
+    description: label-secondary,
+    padding-bottom: spacing.semantic-variable(padding, vertical, spacious),
+    gap-below-icon: spacing.semantic-variable(gap, slim),
+    gap-content: spacing.semantic-variable(gap, tiny),
+    gap-below-content: spacing.semantic-variable(gap, calm),
+    min-width: spacing.semantic-variable(size, container, slim),
+    max-width: spacing.semantic-variable(size, container, narrow),
+  ),
+);
+
+// Helper function to get type color
+@function _get-type-color($type, $property) {
+  $type-map: map.get($type-hierarchy, $type);
+
+  @if $type-map {
+    @return map.get($type-map, $property);
+  }
+
+  @return null;
+}
+
+// Helper function to get size config
+@function _get-size-config($size, $property) {
+  $size-map: map.get($size-configs, $size);
+
+  @if $size-map {
+    @return map.get($size-map, $property);
+  }
+
+  @return null;
+}
+
+.#{$prefix} {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // Apply size-specific styles
+  @each $size in $result-state-sizes {
+    &--#{$size} {
+      padding-bottom: _get-size-config($size, padding-bottom);
+
+      .#{$prefix}__container {
+        min-width: _get-size-config($size, min-width);
+        max-width: _get-size-config($size, max-width);
+      }
+
+      .#{$prefix}__icon {
+        margin-bottom: _get-size-config($size, gap-below-icon);
+        font-size: _get-size-config($size, icon-size);
+      }
+
+      .#{$prefix}__title {
+        @include typography.semantic-variable(_get-size-config($size, title));
+      }
+
+      .#{$prefix}__description {
+        @include typography.semantic-variable(_get-size-config($size, description));
+
+        margin-top: _get-size-config($size, gap-content);
+      }
+
+      .#{$prefix}__actions {
+        margin-top: _get-size-config($size, gap-below-content);
+      }
+    }
+  }
+
+  // Apply type-specific colors
+  @each $type in $result-state-types {
+    &--#{$type} {
+      .#{$prefix}__icon {
+        color: _get-type-color($type, icon-color);
+      }
+
+      .#{$prefix}__title {
+        color: _get-type-color($type, title-color);
+      }
+
+      .#{$prefix}__description {
+        color: _get-type-color($type, description-color);
+      }
+    }
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__description {
+    margin: 0;
+  }
+}

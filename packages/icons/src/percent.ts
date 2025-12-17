@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const PercentIcon: IconDefinition = {
   name: 'percent',
   definition: {

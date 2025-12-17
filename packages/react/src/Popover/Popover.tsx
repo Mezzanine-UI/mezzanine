@@ -1,17 +1,12 @@
 import { forwardRef, ReactNode, useRef } from 'react';
 import { popoverClasses as classes } from '@mezzanine-ui/core/popover';
-import { StrictModifiers } from '@popperjs/core';
+import { offset } from '@floating-ui/react-dom';
 import { cx } from '../utils/cx';
 import Popper, { PopperProps } from '../Popper';
 import { ClickAwayEvent, useClickAway } from '../hooks/useClickAway';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 
-const offsetModifier: StrictModifiers = {
-  name: 'offset',
-  options: {
-    offset: [0, 8],
-  },
-};
+const offsetMiddleware = offset({ mainAxis: 8 });
 
 export interface PopoverProps extends Omit<PopperProps, 'title'> {
   /**
@@ -44,7 +39,7 @@ const Popover = forwardRef<HTMLDivElement, PopoverProps>(
       title,
       ...rest
     } = props;
-    const { modifiers = [] } = options;
+    const { middleware = [] } = options;
     const popoverRef = useRef<HTMLDivElement>(null);
     const composedRef = useComposeRefs([ref, popoverRef]);
 
@@ -72,7 +67,7 @@ const Popover = forwardRef<HTMLDivElement, PopoverProps>(
         open={open}
         options={{
           ...options,
-          modifiers: [offsetModifier, ...modifiers],
+          middleware: [offsetMiddleware, ...middleware],
         }}
       >
         {title && <div className={classes.title}>{title}</div>}

@@ -1,7 +1,11 @@
+'use client';
+
 import {
   CalendarMode,
   DateType,
   calendarYearModuler,
+  calendarQuarterYearsCount,
+  calendarHalfYearYearsCount,
 } from '@mezzanine-ui/core/calendar';
 import { useMemo } from 'react';
 import { useCalendarContext } from './CalendarContext';
@@ -10,7 +14,10 @@ export type CalendarControlModifier = (value: DateType) => DateType;
 
 export type UseCalendarControlModifiersResult = Record<
   CalendarMode,
-  [CalendarControlModifier, CalendarControlModifier]
+  {
+    single: [CalendarControlModifier, CalendarControlModifier] | null;
+    double: [CalendarControlModifier, CalendarControlModifier];
+  }
 >;
 
 export function useCalendarControlModifiers(): UseCalendarControlModifiersResult {
@@ -18,13 +25,44 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
 
   return useMemo(
     () => ({
-      year: [
-        (date) => addYear(date, -calendarYearModuler),
-        (date) => addYear(date, calendarYearModuler),
-      ],
-      month: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
-      week: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
-      day: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
+      // day and week modes: single=month, double=year
+      day: {
+        single: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
+        double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
+      },
+      week: {
+        single: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
+        double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
+      },
+      // month mode: only double (year)
+      month: {
+        single: null,
+        double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
+      },
+      // year mode: only double (10 years)
+      year: {
+        single: null,
+        double: [
+          (date) => addYear(date, -calendarYearModuler),
+          (date) => addYear(date, calendarYearModuler),
+        ],
+      },
+      // quarter mode: only double (5 years)
+      quarter: {
+        single: null,
+        double: [
+          (date) => addYear(date, -calendarQuarterYearsCount),
+          (date) => addYear(date, calendarQuarterYearsCount),
+        ],
+      },
+      // half-year mode: only double (5 years)
+      'half-year': {
+        single: null,
+        double: [
+          (date) => addYear(date, -calendarHalfYearYearsCount),
+          (date) => addYear(date, calendarHalfYearYearsCount),
+        ],
+      },
     }),
     [addYear, addMonth],
   );

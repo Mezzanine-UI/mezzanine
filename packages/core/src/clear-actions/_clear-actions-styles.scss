@@ -1,0 +1,254 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition';
+@use '../icon';
+@use './clear-actions' as *;
+
+// Standard type - Base variant
+$standard-base: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, base),
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: palette.semantic-variable(background, base),
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: palette.semantic-variable(background, base),
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
+// Standard type - Inverse variant
+$standard-inverse: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
+// Embedded type - Contrast variant
+$embedded-contrast: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(overlay, strong),
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(background, neutral-solid),
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
+// Embedded type - Emphasis variant
+$embedded-emphasis: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, inverse),
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: palette.semantic-variable(background, inverse),
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, inverse),
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, inverse),
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
+// Clearable type - Default variant
+$clearable-default: (
+  enable: (
+    icon-color: palette.semantic-variable(icon, neutral),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  hover: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: none,
+  ),
+  active: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: effect.variable(focus, primary),
+  ),
+  focus: (
+    icon-color: palette.semantic-variable(icon, neutral-strong),
+    background-color: transparent,
+    focus-color: effect.variable(focus, primary),
+  ),
+);
+
+// Variant hierarchy map - 將所有 variants 整合
+$variant-hierarchy: (
+  embedded-contrast: $embedded-contrast,
+  embedded-emphasis: $embedded-emphasis,
+  standard-base: $standard-base,
+  standard-inverse: $standard-inverse,
+  clearable-default: $clearable-default,
+);
+
+// 取得特定 variant 和 hierarchy 的顏色值
+@function _get-color($variant, $hierarchy, $property) {
+  $variant-map: map.get($variant-hierarchy, $variant);
+
+  @if $variant-map {
+    $hierarchy-map: map.get($variant-map, $hierarchy);
+
+    @if $hierarchy-map {
+      $value: map.get($hierarchy-map, $property);
+
+      @return if($value == none, null, $value);
+    }
+  }
+
+  @return null;
+}
+
+// 套用特定層級的顏色
+@mixin _apply-hierarchy-colors($variant, $hierarchy) {
+  $icon: _get-color($variant, $hierarchy, icon-color);
+  $bg: _get-color($variant, $hierarchy, background-color);
+  $focus: _get-color($variant, $hierarchy, focus-color);
+
+  @if $icon {
+    --#{$prefix}-icon-color: #{$icon};
+  }
+
+  @if $bg {
+    background-color: $bg;
+  }
+
+  @if $focus {
+    box-shadow: $focus;
+  }
+}
+
+// 套用 variant 的所有狀態
+@mixin _apply-variant-states($variant) {
+  @include _apply-hierarchy-colors($variant, enable);
+
+  // Hover state
+  &:hover:not(.#{$prefix}--disabled) {
+    @include _apply-hierarchy-colors($variant, hover);
+  }
+
+  // Active state
+  &:active:not(.#{$prefix}--disabled) {
+    @include _apply-hierarchy-colors($variant, active);
+  }
+
+  // Focus state
+  &:focus-visible:not(.#{$prefix}--disabled) {
+    @include _apply-hierarchy-colors($variant, focus);
+  }
+}
+
+// Type 與 Variant 對應表
+$variant-keys-by-type: (
+  embedded: (
+    contrast: embedded-contrast,
+    emphasis: embedded-emphasis,
+  ),
+  standard: (
+    base: standard-base,
+    inverse: standard-inverse,
+  ),
+  clearable: (
+    default: clearable-default,
+  ),
+);
+
+.#{$prefix} {
+  background-color: transparent;
+  border: 0;
+  padding: spacing.semantic-variable(padding, horizontal, micro)
+    spacing.semantic-variable(padding, vertical, micro);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  height: fit-content;
+  border-radius: radius.variable(full);
+  cursor: pointer;
+  appearance: none;
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(box-shadow, fast);
+
+  &:focus {
+    outline: none;
+  }
+
+  &__icon {
+    font-size: spacing.semantic-variable(size, element, base);
+    color: var(--#{$prefix}-icon-color, #{palette.semantic-variable(icon, neutral)});
+    transition: transition.standard(color, fast);
+  }
+
+  // 套用所有 type + variant 組合
+  @each $type, $variants in $variant-keys-by-type {
+    @each $variant, $variant-key in $variants {
+      &--type-#{$type}.#{$prefix}--variant-#{$variant} {
+        @include _apply-variant-states($variant-key);
+      }
+    }
+  }
+
+  // Clearable 特殊樣式
+  &--type-clearable {
+    width: spacing.semantic-variable(size, element, base-fixed);
+    height: spacing.semantic-variable(size, element, base-fixed);
+    padding: spacing.semantic-variable(padding, horizontal, none)
+      spacing.semantic-variable(padding, vertical, none);
+  }
+}
+

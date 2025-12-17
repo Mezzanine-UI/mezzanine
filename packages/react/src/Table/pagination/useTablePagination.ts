@@ -1,3 +1,5 @@
+'use client';
+
 import { RefObject, useContext } from 'react';
 import { TablePagination } from '@mezzanine-ui/core/table';
 import { useControlValueState } from '../../Form/useControlValueState';

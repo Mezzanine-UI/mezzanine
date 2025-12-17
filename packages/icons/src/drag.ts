@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const DragIcon: IconDefinition = {
   name: 'drag',
   definition: {

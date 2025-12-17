@@ -1,125 +1,23 @@
-/* eslint-disable no-redeclare */
-/* global JSX */
-import { forwardRef, Ref, MouseEventHandler, type JSX } from 'react';
+'use client';
+
+import { forwardRef, MouseEventHandler, type JSX } from 'react';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
-import TextField, { TextFieldProps } from '../TextField';
-import { SelectValue } from './typings';
+import TextField, { TextFieldInteractiveStateProps } from '../TextField';
+import {
+  SelectTriggerComponentProps,
+  SelectTriggerMultipleProps,
+  SelectTriggerProps,
+  SelectTriggerSingleProps,
+} from './typings';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+
 import Icon from '../Icon';
 import SelectTriggerTags from './SelectTriggerTags';
 
-export type SelectTriggerInputProps = Omit<
-  NativeElementPropsWithoutKeyAndRef<'input'>,
-  | 'autoComplete'
-  | 'children'
-  | 'defaultValue'
-  | 'disabled'
-  | 'readOnly'
-  | 'required'
-  | 'type'
-  | 'value'
-  | `aria-${
-      | 'autocomplete'
-      | 'disabled'
-      | 'haspopup'
-      | 'multiline'
-      | 'readonly'
-      | 'required'}`
->;
-
-export interface SelectTriggerBaseProps
-  extends Omit<
-    TextFieldProps,
-    'active' | 'children' | 'defaultChecked' | 'suffix'
-  > {
-  /**
-   * Controls the chevron icon layout.
-   */
-  active?: boolean;
-  /**
-   * Tags arg ellipsis or not.
-   */
-  ellipsis?: boolean;
-  /**
-   * force hide suffixAction icons
-   */
-  forceHideSuffixActionIcon?: boolean;
-  /**
-   * The ref for SelectTrigger root.
-   */
-  innerRef?: Ref<HTMLDivElement>;
-  /**
-   * Other props you may provide to input element.
-   */
-  inputProps?: SelectTriggerInputProps;
-  /**
-   * The ref object for input element.
-   */
-  inputRef?: Ref<HTMLInputElement>;
-  /**
-   * The click handler for the cross icon on tags
-   */
-  onTagClose?: (target: SelectValue) => void;
-  /**
-   * Whether the input is readonly.
-   * @default false
-   */
-  readOnly?: boolean;
-  /**
-   * Provide if you have a customize value rendering logic.
-   * By default will have a comma between values.
-   */
-  renderValue?: (value: SelectValue[] | SelectValue | null) => string;
-  /**
-   * Whether the input is required.
-   * @default false
-   */
-  required?: boolean;
-  searchText?: string;
-  showTextInputAfterTags?: boolean;
-  suffixAction?: VoidFunction;
-}
-
-export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
-  /**
-   * Controls the layout of trigger.
-   */
-  mode: 'multiple';
-  /**
-   * The value of selection.
-   * @default undefined
-   */
-  value?: SelectValue[];
-  /**
-   * Provide if you have a customize value rendering logic.
-   * By default will have a comma between values.
-   */
-  renderValue?: (value: SelectValue[]) => string;
-};
-
-export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
-  /**
-   * Controls the layout of trigger.
-   */
-  mode?: 'single';
-  /**
-   * The value of selection.
-   * @default undefined
-   */
-  value?: SelectValue | null;
-  /**
-   * Provide if you have a customize value rendering logic.
-   * By default will have a comma between values.
-   */
-  renderValue?: (value: SelectValue | null) => string;
-};
-
-export type SelectTriggerComponentProps =
-  | SelectTriggerMultipleProps
-  | SelectTriggerSingleProps;
-export type SelectTriggerProps = Omit<SelectTriggerComponentProps, 'innerRef'>;
+const isMultipleSelection = (
+  props: SelectTriggerComponentProps,
+): props is SelectTriggerMultipleProps => props.mode === 'multiple';
 
 function SelectTriggerComponent(props: SelectTriggerMultipleProps): JSX.Element;
 function SelectTriggerComponent(props: SelectTriggerSingleProps): JSX.Element;
@@ -128,41 +26,35 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     active,
     className,
     disabled,
-    ellipsis = false,
     forceHideSuffixActionIcon,
     inputProps,
     innerRef,
     inputRef,
-    mode,
+    mode = 'single',
     onTagClose,
+    overflowStrategy = 'counter',
+    placeholder,
     readOnly,
-    renderValue: renderValueProp,
     required,
     searchText,
-    size,
+    size = 'main',
     showTextInputAfterTags = false,
     suffixAction,
     suffixActionIcon: suffixActionIconProp,
-    value,
+    type = 'default',
     onClick,
     ...restTextFieldProps
   } = props;
 
-  /** Render value to string for input */
+  /** Render value to string for single selection trigger input */
   const renderValue = () => {
-    if (typeof renderValueProp === 'function') {
-      return renderValueProp(value || (mode === 'multiple' ? [] : null));
+    if (isMultipleSelection(props)) return;
+
+    if (typeof props.renderValue === 'function') {
+      return props.renderValue(props.value);
     }
 
-    if (value) {
-      if (Array.isArray(value)) {
-        return value.map((v) => v.name).join(', ');
-      }
-
-      return value.name;
-    }
-
-    return '';
+    return props.value?.name ?? '';
   };
 
   /** Compute suffix action icon */
@@ -184,35 +76,65 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     />
   );
 
-  const getTextFieldActive = () => {
-    if (value) {
-      if (Array.isArray(value)) {
-        return !!value.length;
-      }
-
-      return !!value;
+  const interactiveProps: TextFieldInteractiveStateProps = (() => {
+    if (disabled) {
+      return { disabled: true };
     }
 
-    return false;
-  };
+    if (readOnly) {
+      return { readonly: true };
+    }
+
+    return {};
+  })();
 
   return (
     <TextField
       ref={innerRef}
+      {...interactiveProps}
       {...restTextFieldProps}
       onClick={onClick}
-      active={getTextFieldActive()}
-      className={cx(classes.trigger, className)}
-      disabled={disabled}
+      active={active}
+      className={cx(
+        classes.trigger,
+        classes.triggerMode(mode),
+        classes.triggerSelected(
+          Array.isArray(props.value) ? props.value?.length : props.value,
+        ),
+        {
+          [classes.triggerReadOnly]: readOnly,
+          [classes.triggerDisabled]: disabled,
+        },
+        className,
+      )}
+      error={type === 'error'}
       size={size}
-      suffixActionIcon={
-        forceHideSuffixActionIcon ? undefined : suffixActionIcon
+      suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
+      clearable={
+        mode === 'multiple' &&
+        Array.isArray(props.value) &&
+        !!props.value.length
       }
     >
-      {mode === 'multiple' && (value as SelectValue[])?.length ? (
+      <input
+        {...inputProps}
+        ref={inputRef}
+        aria-autocomplete="list"
+        aria-haspopup="listbox"
+        autoComplete="off"
+        className={cx(classes.triggerInput, inputProps?.className)}
+        disabled={disabled}
+        placeholder={placeholder}
+        readOnly={inputProps?.readOnly ?? true}
+        required={required}
+        type="text"
+        value={renderValue()}
+      />
+
+      {isMultipleSelection(props) && props.value?.length && (
         <SelectTriggerTags
           disabled={disabled}
-          ellipsis={ellipsis}
+          overflowStrategy={overflowStrategy}
           inputProps={inputProps}
           inputRef={inputRef}
           onTagClose={onTagClose}
@@ -221,23 +143,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
           searchText={searchText}
           size={size}
           showTextInputAfterTags={showTextInputAfterTags}
-          value={value}
-        />
-      ) : (
-        <input
-          {...inputProps}
-          ref={inputRef}
-          aria-autocomplete="list"
-          aria-disabled={disabled}
-          aria-haspopup="listbox"
-          aria-readonly={readOnly}
-          aria-required={required}
-          autoComplete="off"
-          disabled={disabled}
-          readOnly={readOnly}
-          required={required}
-          type="search"
-          value={renderValue()}
+          value={props.value}
         />
       )}
     </TextField>

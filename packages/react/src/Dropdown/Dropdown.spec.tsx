@@ -126,7 +126,7 @@ describe('<Dropdown />', () => {
 
         fireEvent.click(document);
 
-        expect(onClose).not.toBeCalled();
+        expect(onClose).not.toHaveBeenCalled();
       });
     });
   });

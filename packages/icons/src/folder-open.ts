@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const FolderOpenIcon: IconDefinition = {
   name: 'folder-open',
   definition: {

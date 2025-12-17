@@ -1,9 +1,4 @@
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { useTabKeyClose } from '.';
 
 describe('useTabKeyClose', () => {
@@ -26,7 +21,7 @@ describe('useTabKeyClose', () => {
 
     inputElement.focus();
 
-    TestRenderer.act(() => {
+    act(() => {
       document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'Tab',
@@ -34,7 +29,7 @@ describe('useTabKeyClose', () => {
       );
     });
 
-    expect(onClose).toBeCalledTimes(1);
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('should not invoke onClose when active element is not last-element-in-flow', () => {
@@ -49,7 +44,7 @@ describe('useTabKeyClose', () => {
 
     renderHook(() => useTabKeyClose(onClose, inputRef));
 
-    TestRenderer.act(() => {
+    act(() => {
       document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'Tab',
@@ -57,6 +52,6 @@ describe('useTabKeyClose', () => {
       );
     });
 
-    expect(onClose).toBeCalledTimes(0);
+    expect(onClose).toHaveBeenCalledTimes(0);
   });
 });

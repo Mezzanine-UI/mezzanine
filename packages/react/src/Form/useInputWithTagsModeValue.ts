@@ -88,7 +88,7 @@ export function useInputWithTagsModeValue<
 
   const tagsWillOverflow = useCallback(
     () => tagsSetRef.current.size === activeMaxTagsLength,
-    [],
+    [activeMaxTagsLength],
   );
 
   const clearTypingFieldValue = () => {
@@ -158,6 +158,7 @@ export function useInputWithTagsModeValue<
         clearTypingFieldValue();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [tagsWillOverflow],
   );
 

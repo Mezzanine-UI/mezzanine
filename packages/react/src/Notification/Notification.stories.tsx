@@ -1,4 +1,4 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import { useEffect } from 'react';
 import { NotificationSeverity } from '@mezzanine-ui/core/notification';
 import Button, { ButtonGroup } from '../Button';

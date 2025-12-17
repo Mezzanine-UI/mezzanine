@@ -101,7 +101,6 @@ describe('getTreeNodeEntities()', () => {
     });
   });
 
-  // eslint-disable-next-line max-len
   it('while selectedValue is provided, all parent nodes of each selectedValue should be marked as indeterminate or selected', () => {
     const selectedValues: TreeNodeValue[] = ['1-1-1', '1-1-2'];
 
@@ -120,7 +119,6 @@ describe('getTreeNodeEntities()', () => {
     });
   });
 
-  // eslint-disable-next-line max-len
   it('while selectedValue is provided, the node whose direct sibling values are all marked as selected should be selected as well', () => {
     const selectedValues: TreeNodeValue[] = ['1-1-1-1', '1-1-1-2', '1-1-1-3'];
 
@@ -134,7 +132,6 @@ describe('getTreeNodeEntities()', () => {
     expect(targetEntity.node.selected).toBe(true);
   });
 
-  // eslint-disable-next-line max-len
   it('while selectedValue is provided, the node whose leaf values are all marked as selected should be selected as well', () => {
     const selectedValues: TreeNodeValue[] = [
       '1-1-1-1',

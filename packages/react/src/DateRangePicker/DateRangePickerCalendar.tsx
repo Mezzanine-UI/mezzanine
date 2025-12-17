@@ -1,47 +1,61 @@
-import { DateType } from '@mezzanine-ui/core/calendar';
-import { dateRangePickerClasses as classes } from '@mezzanine-ui/core/date-range-picker';
-import { forwardRef, RefObject, useCallback, useState } from 'react';
-import Calendar, { CalendarProps, useCalendarContext } from '../Calendar';
-import { cx } from '../utils/cx';
+'use client';
+
+import { DateType, CalendarMode } from '@mezzanine-ui/core/calendar';
+import { forwardRef } from 'react';
+import { RangeCalendar, RangeCalendarProps } from '../Calendar';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
 } from '../_internal/InputTriggerPopper';
-import { useDateRangeCalendarControls } from './useDateRangeCalendarControls';
 
 export interface DateRangePickerCalendarProps
   extends Pick<InputTriggerPopperProps, 'anchor' | 'fadeProps' | 'open'>,
     Pick<
-      CalendarProps,
-      | 'value'
-      | 'onChange'
+      RangeCalendarProps,
+      | 'actions'
+      | 'calendarProps'
       | 'disabledMonthSwitch'
       | 'disabledYearSwitch'
       | 'disableOnNext'
       | 'disableOnPrev'
+      | 'disableOnDoubleNext'
+      | 'disableOnDoublePrev'
       | 'displayMonthLocale'
-      | 'mode'
-      | 'isDateInRange'
+      | 'displayWeekDayLocale'
+      | 'firstCalendarRef'
       | 'isDateDisabled'
+      | 'isDateInRange'
       | 'isMonthDisabled'
       | 'isMonthInRange'
       | 'isWeekDisabled'
       | 'isWeekInRange'
       | 'isYearDisabled'
       | 'isYearInRange'
+      | 'isQuarterDisabled'
+      | 'isQuarterInRange'
+      | 'isHalfYearDisabled'
+      | 'isHalfYearInRange'
       | 'onDateHover'
       | 'onWeekHover'
       | 'onMonthHover'
       | 'onYearHover'
-      | 'referenceDate'
+      | 'onQuarterHover'
+      | 'onHalfYearHover'
+      | 'quickSelect'
+      | 'renderAnnotations'
+      | 'secondCalendarRef'
+      | 'value'
     > {
   /**
-   * Other props you may pass to calendar component.
+   * Use this prop to switch calendars.
+   * @default 'day'
    */
-  calendarProps?: Omit<CalendarProps, keyof DateRangePickerCalendarProps>;
+  mode?: CalendarMode;
   /**
-   * React Ref for the first(on the left side) calendar
+   * Click handler for every cell on calendars.
+   * When completing a range (second click), returns normalized [start, end].
+   * When starting a new range (first click), returns the clicked date.
    */
-  firstCalendarRef?: RefObject<HTMLDivElement | null>;
+  onChange?: (value: [DateType, DateType | undefined]) => void;
   /**
    * Other props you may provide to `Popper` component
    */
@@ -50,257 +64,108 @@ export interface DateRangePickerCalendarProps
     'anchor' | 'children' | 'fadeProps' | 'open'
   >;
   /**
-   * React Ref for the second(on the right side) calendar
+   * The reference date for getting the calendar.
    */
-  secondCalendarRef?: RefObject<HTMLDivElement | null>;
+  referenceDate: DateType;
 }
 
 /**
  * The react component for `mezzanine` date range picker calendar.
+ * This is a wrapper around RangeCalendar with InputTriggerPopper for popup behavior.
  */
 const DateRangePickerCalendar = forwardRef<
   HTMLDivElement,
   DateRangePickerCalendarProps
 >(function DateRangePickerCalendar(props, ref) {
   const {
-    displayMonthLocale: displayMonthLocaleFromConfig,
-    getMonth,
-    getYear,
-    setMonth,
-    setYear,
-  } = useCalendarContext();
-  const {
+    actions,
     anchor,
     calendarProps,
     disabledMonthSwitch,
     disableOnNext,
     disableOnPrev,
+    disableOnDoubleNext,
+    disableOnDoublePrev,
     disabledYearSwitch,
-    displayMonthLocale = displayMonthLocaleFromConfig,
+    displayMonthLocale,
+    displayWeekDayLocale,
     fadeProps,
     firstCalendarRef,
     isDateDisabled,
     isDateInRange,
+    isHalfYearDisabled,
+    isHalfYearInRange,
     isMonthDisabled,
     isMonthInRange,
+    isQuarterDisabled,
+    isQuarterInRange,
     isWeekDisabled,
     isWeekInRange,
     isYearDisabled,
     isYearInRange,
     mode = 'day',
-    onChange: onChangeProp,
+    onChange,
     onDateHover,
+    onHalfYearHover,
     onMonthHover,
+    onQuarterHover,
     onWeekHover,
     onYearHover,
     open,
     popperProps,
-    referenceDate: referenceDateProp,
+    quickSelect,
+    referenceDate,
+    renderAnnotations,
     secondCalendarRef,
     value,
   } = props;
-  const { className, ...restCalendarProps } = calendarProps || {};
-
-  const {
-    currentMode,
-    onMonthControlClick: onMonthControlClickFromHook,
-    onFirstNext,
-    onFirstPrev,
-    onSecondNext,
-    onSecondPrev,
-    onYearControlClick: onYearControlClickFromHook,
-    popModeStack,
-    referenceDates,
-    updateFirstReferenceDate,
-    updateSecondReferenceDate,
-  } = useDateRangeCalendarControls(referenceDateProp, mode);
-
-  const onChangeFactory = useCallback(
-    (calendar: 0 | 1) => {
-      const targetDate = referenceDates[calendar];
-      const updateReferenceDate = calendar
-        ? updateSecondReferenceDate
-        : updateFirstReferenceDate;
-
-      if (currentMode === 'day' || currentMode === 'week') {
-        return (target: DateType) => {
-          updateReferenceDate(target);
-          popModeStack();
-
-          if (currentMode === mode && onChangeProp) {
-            onChangeProp(target);
-          }
-        };
-      }
-
-      if (currentMode === 'month') {
-        return (target: DateType) => {
-          const result =
-            currentMode === mode
-              ? target
-              : setMonth(targetDate, getMonth(target));
-
-          updateReferenceDate(result);
-          popModeStack();
-
-          if (currentMode === mode && onChangeProp) {
-            onChangeProp(result);
-          }
-        };
-      }
-
-      if (currentMode === 'year') {
-        return (target: DateType) => {
-          const result =
-            currentMode === mode
-              ? target
-              : setYear(targetDate, getYear(target));
-
-          updateReferenceDate(result);
-          popModeStack();
-
-          if (currentMode === mode && onChangeProp) {
-            onChangeProp(result);
-          }
-        };
-      }
-    },
-    [
-      currentMode,
-      getMonth,
-      getYear,
-      mode,
-      onChangeProp,
-      popModeStack,
-      referenceDates,
-      setMonth,
-      setYear,
-      updateFirstReferenceDate,
-      updateSecondReferenceDate,
-    ],
-  );
-
-  const [controlPanelOnLeft, setControlPanelOnLeft] = useState(true);
-
-  const onMonthControlClickFactory = useCallback(
-    (calendar: 0 | 1) => {
-      if (calendar) {
-        return () => {
-          setControlPanelOnLeft(false);
-          onMonthControlClickFromHook();
-        };
-      }
-
-      return () => {
-        setControlPanelOnLeft(true);
-        onMonthControlClickFromHook();
-      };
-    },
-    [onMonthControlClickFromHook],
-  );
-
-  const onYearControlClickFactory = useCallback(
-    (calendar: 0 | 1) => {
-      if (calendar) {
-        return () => {
-          setControlPanelOnLeft(false);
-          onYearControlClickFromHook();
-        };
-      }
-
-      return () => {
-        setControlPanelOnLeft(true);
-        onYearControlClickFromHook();
-      };
-    },
-    [onYearControlClickFromHook],
-  );
-
-  const isSettingFirstCalendar = currentMode !== mode && controlPanelOnLeft;
-  const isSettingSecondCalendar = currentMode !== mode && !controlPanelOnLeft;
 
   return (
     <InputTriggerPopper
       {...popperProps}
       ref={ref}
       anchor={anchor}
-      open={open}
       fadeProps={fadeProps}
+      open={open}
     >
-      <div className={classes.calendarGroup}>
-        <Calendar
-          {...restCalendarProps}
-          className={cx(
-            classes.calendar,
-            {
-              [classes.calendarInactive]: isSettingSecondCalendar,
-            },
-            className,
-          )}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          disabledYearSwitch={disabledYearSwitch}
-          displayMonthLocale={displayMonthLocale}
-          isDateDisabled={isDateDisabled}
-          isDateInRange={isDateInRange}
-          isMonthDisabled={isMonthDisabled}
-          isMonthInRange={isMonthInRange}
-          isWeekDisabled={isWeekDisabled}
-          isWeekInRange={isWeekInRange}
-          isYearDisabled={isYearDisabled}
-          isYearInRange={isYearInRange}
-          mode={controlPanelOnLeft ? currentMode : mode}
-          onChange={onChangeFactory(0)}
-          onDateHover={currentMode === mode ? onDateHover : undefined}
-          onMonthHover={currentMode === mode ? onMonthHover : undefined}
-          onWeekHover={currentMode === mode ? onWeekHover : undefined}
-          onYearHover={currentMode === mode ? onYearHover : undefined}
-          onMonthControlClick={onMonthControlClickFactory(0)}
-          onNext={isSettingFirstCalendar ? onFirstNext : undefined}
-          onPrev={onFirstPrev}
-          onYearControlClick={onYearControlClickFactory(0)}
-          ref={firstCalendarRef}
-          referenceDate={referenceDates[0]}
-          value={isSettingFirstCalendar ? referenceDates[0] : value}
-        />
-        <Calendar
-          {...restCalendarProps}
-          className={cx(
-            classes.calendar,
-            {
-              [classes.calendarInactive]: isSettingFirstCalendar,
-            },
-            className,
-          )}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          disabledYearSwitch={disabledYearSwitch}
-          displayMonthLocale={displayMonthLocale}
-          isDateDisabled={isDateDisabled}
-          isDateInRange={isDateInRange}
-          isMonthDisabled={isMonthDisabled}
-          isMonthInRange={isMonthInRange}
-          isWeekDisabled={isWeekDisabled}
-          isWeekInRange={isWeekInRange}
-          isYearDisabled={isYearDisabled}
-          isYearInRange={isYearInRange}
-          mode={!controlPanelOnLeft ? currentMode : mode}
-          onChange={onChangeFactory(1)}
-          onDateHover={currentMode === mode ? onDateHover : undefined}
-          onMonthHover={currentMode === mode ? onMonthHover : undefined}
-          onWeekHover={currentMode === mode ? onWeekHover : undefined}
-          onYearHover={currentMode === mode ? onYearHover : undefined}
-          onMonthControlClick={onMonthControlClickFactory(1)}
-          onNext={onSecondNext}
-          onPrev={isSettingSecondCalendar ? onSecondPrev : undefined}
-          onYearControlClick={onYearControlClickFactory(1)}
-          ref={secondCalendarRef}
-          referenceDate={referenceDates[1]}
-          value={isSettingSecondCalendar ? referenceDates[1] : value}
-        />
-      </div>
+      <RangeCalendar
+        actions={actions}
+        calendarProps={calendarProps}
+        disabledMonthSwitch={disabledMonthSwitch}
+        disabledYearSwitch={disabledYearSwitch}
+        disableOnDoubleNext={disableOnDoubleNext}
+        disableOnDoublePrev={disableOnDoublePrev}
+        disableOnNext={disableOnNext}
+        disableOnPrev={disableOnPrev}
+        displayMonthLocale={displayMonthLocale}
+        displayWeekDayLocale={displayWeekDayLocale}
+        firstCalendarRef={firstCalendarRef}
+        isDateDisabled={isDateDisabled}
+        isDateInRange={isDateInRange}
+        isHalfYearDisabled={isHalfYearDisabled}
+        isHalfYearInRange={isHalfYearInRange}
+        isMonthDisabled={isMonthDisabled}
+        isMonthInRange={isMonthInRange}
+        isQuarterDisabled={isQuarterDisabled}
+        isQuarterInRange={isQuarterInRange}
+        isWeekDisabled={isWeekDisabled}
+        isWeekInRange={isWeekInRange}
+        isYearDisabled={isYearDisabled}
+        isYearInRange={isYearInRange}
+        mode={mode}
+        onChange={onChange}
+        onDateHover={onDateHover}
+        onHalfYearHover={onHalfYearHover}
+        onMonthHover={onMonthHover}
+        onQuarterHover={onQuarterHover}
+        onWeekHover={onWeekHover}
+        onYearHover={onYearHover}
+        quickSelect={quickSelect}
+        referenceDate={referenceDate}
+        renderAnnotations={renderAnnotations}
+        secondCalendarRef={secondCalendarRef}
+        value={value}
+      />
     </InputTriggerPopper>
   );
 });

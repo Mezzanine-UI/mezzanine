@@ -225,14 +225,14 @@ describe('<TimePicker />', () => {
           fireEvent.focus(inputElement!);
         });
 
-        expect(onPanelToggle).toBeCalledWith(true);
+        expect(onPanelToggle).toHaveBeenCalledWith(true);
         onPanelToggle.mockClear();
 
         await waitFor(() => {
           fireEvent.keyDown(document, { key: 'Escape' });
         });
 
-        expect(onPanelToggle).toBeCalledWith(false);
+        expect(onPanelToggle).toHaveBeenCalledWith(false);
       });
 
       it('should not be invoked if readOnly', () => {
@@ -250,7 +250,7 @@ describe('<TimePicker />', () => {
           fireEvent.click(inputElement!);
         });
 
-        expect(onPanelToggle).toBeCalledTimes(0);
+        expect(onPanelToggle).toHaveBeenCalledTimes(0);
       });
     });
   });
@@ -343,7 +343,7 @@ describe('<TimePicker />', () => {
         fireEvent.click(clearIconElement!);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -371,8 +371,8 @@ describe('<TimePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      expect(onFocus).toBeCalledTimes(1);
-      expect(onFocus).toBeCalledWith(
+      expect(onFocus).toHaveBeenCalledTimes(1);
+      expect(onFocus).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -382,8 +382,8 @@ describe('<TimePicker />', () => {
         fireEvent.keyDown(inputElement!);
       });
 
-      expect(onKeyDown).toBeCalledTimes(1);
-      expect(onKeyDown).toBeCalledWith(
+      expect(onKeyDown).toHaveBeenCalledTimes(1);
+      expect(onKeyDown).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -393,8 +393,8 @@ describe('<TimePicker />', () => {
         fireEvent.blur(inputElement!);
       });
 
-      expect(onBlur).toBeCalledTimes(1);
-      expect(onBlur).toBeCalledWith(
+      expect(onBlur).toHaveBeenCalledTimes(1);
+      expect(onBlur).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -424,7 +424,7 @@ describe('<TimePicker />', () => {
         fireEvent.click(confirmButtonElement);
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should be invoked when enter key down', async () => {
@@ -446,7 +446,7 @@ describe('<TimePicker />', () => {
         fireEvent.keyDown(inputElement!, { key: 'Enter' });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
   });
 });

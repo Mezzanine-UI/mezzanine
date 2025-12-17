@@ -21,8 +21,12 @@
   @include _load-styles($options, icon);
   @include _load-styles($options, button);
 
+  // Internal
+  @include _load-styles($options, clear-actions);
+  @include _load-styles($options, overflow-tooltip);
+
   // Utility
-  @include _load-styles($options, overlay);
+  @include _load-styles($options, backdrop);
   @include _load-styles($options, popover);
   @include _load-styles($options, tooltip);
   @include _load-styles($options, calendar);
@@ -32,8 +36,13 @@
   @include _load-styles($options, _internal/input-check, input-check);
   @include _load-styles($options, _internal/input-trigger-popper, input-trigger-popper);
   @include _load-styles($options, text-field);
+  @include _load-styles($options, input, input-spinner-button);
+  @include _load-styles($options, input, input-action-button);
+  @include _load-styles($options, input, input-select-button);
+  @include _load-styles($options, input, input-password-strength-indicator);
 
   // Navigation
+  @include _load-styles($options, breadcrumb);
   @include _load-styles($options, menu);
   @include _load-styles($options, tabs);
   @include _load-styles($options, pagination);
@@ -41,6 +50,8 @@
   @include _load-styles($options, navigation);
   @include _load-styles($options, app-bar);
   @include _load-styles($options, page-footer);
+  @include _load-styles($options, page-header);
+  @include _load-styles($options, page-toolbar);
   @include _load-styles($options, stepper);
 
   // Data Display
@@ -51,19 +62,20 @@
   @include _load-styles($options, accordion);
   @include _load-styles($options, tree);
   @include _load-styles($options, table);
+  @include _load-styles($options, inline-message);
 
   // Data Entry
   @include _load-styles($options, checkbox);
   @include _load-styles($options, input);
   @include _load-styles($options, radio);
   @include _load-styles($options, select);
-  @include _load-styles($options, switch);
+  @include _load-styles($options, selection);
   @include _load-styles($options, textarea);
-  @include _load-styles($options, upload);
-  @include _load-styles($options, upload, upload-result);
-  @include _load-styles($options, upload, upload-picture);
-  @include _load-styles($options, upload, upload-picture-block);
-  @include _load-styles($options, upload, upload-picture-wall);
+  @include _load-styles($options, toggle);
+  @include _load-styles($options, upload, upload);
+  @include _load-styles($options, upload, uploader);
+  @include _load-styles($options, upload, upload-item);
+  @include _load-styles($options, upload, upload-picture-card);
   @include _load-styles($options, picker);
   @include _load-styles($options, date-range-picker);
   @include _load-styles($options, date-time-picker);
@@ -74,14 +86,17 @@
 
   // Feedback
   @include _load-styles($options, alert);
-  @include _load-styles($options, loading);
+  @include _load-styles($options, alert-banner);
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
   @include _load-styles($options, notification);
   @include _load-styles($options, popconfirm);
   @include _load-styles($options, progress);
+  @include _load-styles($options, spin);
   @include _load-styles($options, skeleton);
+  @include _load-styles($options, result-state);
 
   // Others
   @include _load-styles($options, anchor);
+  @include _load-styles($options, portal);
 }

@@ -1,4 +1,5 @@
-/* eslint-disable react/jsx-no-useless-fragment */
+'use client';
+
 import { useContext } from 'react';
 import {
   TableColumnBase,

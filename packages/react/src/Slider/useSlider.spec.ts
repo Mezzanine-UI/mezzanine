@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  TestRenderer,
+  act,
   cleanup,
   cleanupHook,
   renderHook,
@@ -10,7 +10,6 @@ import {
   useSlider,
   UseSingleSliderProps,
   UseRangeSliderProps,
-  UseSliderResult,
   RangeSliderValue,
 } from '.';
 
@@ -73,22 +72,22 @@ describe('useSlider()', () => {
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handlePress!({ preventDefault: jest.fn() });
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         fireEvent.mouseMove(railElement, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       onChange.mockClear();
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onChange if railRef is not binding to HTMLElement', () => {
@@ -105,21 +104,21 @@ describe('useSlider()', () => {
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handlePress!({ preventDefault: jest.fn() });
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         fireEvent.mouseMove(document.body, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -134,8 +133,8 @@ describe('useSlider()', () => {
       });
 
       const onChange = jest.fn();
-      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(
-        useSlider,
+      const { result } = renderHook(
+        (props: UseRangeSliderProps) => useSlider(props),
         {
           initialProps: {
             max: 100,
@@ -143,34 +142,34 @@ describe('useSlider()', () => {
             step: 1,
             value: [0, 100] as RangeSliderValue,
             onChange,
-          } as unknown as UseRangeSliderProps,
+          } as any,
         },
       );
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handlePress!({ preventDefault: jest.fn() });
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         fireEvent.mouseMove(railElement, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
       onChange.mockClear();
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('should not invoke onChange if railRef is not binding to HTMLElement', () => {
       const onChange = jest.fn();
-      const { result } = renderHook<UseRangeSliderProps, UseSliderResult>(
-        useSlider,
+      const { result } = renderHook(
+        (props: UseRangeSliderProps) => useSlider(props),
         {
           initialProps: {
             max: 100,
@@ -178,27 +177,27 @@ describe('useSlider()', () => {
             step: 1,
             value: [0, 100] as RangeSliderValue,
             onChange,
-          } as unknown as UseRangeSliderProps,
+          } as any,
         },
       );
 
       expect(result.current.handlePress).toBeInstanceOf(Function);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handlePress!({ preventDefault: jest.fn() });
       });
 
-      TestRenderer.act(() => {
+      act(() => {
         fireEvent.mouseMove(document.body, { clientX: 50 });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
 
-      TestRenderer.act(() => {
+      act(() => {
         result.current.handleClickTrackOrRail!({ preventDefault: jest.fn() });
       });
 
-      expect(onChange).toBeCalledTimes(0);
+      expect(onChange).toHaveBeenCalledTimes(0);
     });
   });
 });

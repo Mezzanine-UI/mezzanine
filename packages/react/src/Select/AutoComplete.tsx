@@ -1,4 +1,5 @@
-/* eslint-disable consistent-return */
+'use client';
+
 import {
   forwardRef,
   useRef,

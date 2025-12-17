@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, RefObject } from 'react';
 import { tableClasses as classes } from '@mezzanine-ui/core/table';
 import { TableContext } from '../TableContext';

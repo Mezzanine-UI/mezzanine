@@ -39,17 +39,19 @@ function getStyle(
 }
 
 const defaultDuration = {
-  enter: MOTION_DURATION.short,
-  exit: MOTION_DURATION.shorter,
+  enter: MOTION_DURATION.moderate,
+  exit: MOTION_DURATION.moderate,
 };
 
 const defaultEasing = {
-  enter: MOTION_EASING.decelerated,
-  exit: MOTION_EASING.accelerated,
+  enter: MOTION_EASING.standard,
+  exit: MOTION_EASING.standard,
 };
 
+/** @deprecated use Translate instead */
 export type SlideFadeDirection = 'left' | 'right' | 'up' | 'down';
 
+/** @deprecated use Translate instead */
 export interface SlideFadeProps extends TransitionImplementationProps {
   /**
    * The direction of child element will enter to.
@@ -60,6 +62,7 @@ export interface SlideFadeProps extends TransitionImplementationProps {
 
 /**
  * The react component for `mezzanine` transition slide fade.
+ * @deprecated use Translate instead
  */
 const SlideFade = forwardRef<HTMLElement, SlideFadeProps>(function SlideFade(
   props: SlideFadeProps,

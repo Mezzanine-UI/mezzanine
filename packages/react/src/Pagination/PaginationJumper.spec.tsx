@@ -1,11 +1,8 @@
-import { cleanup, render, TestRenderer, fireEvent } from '../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Button from '../Button';
-import Typography from '../Typography';
-import Input from '../Input';
 
 import { PaginationJumper } from '.';
 
@@ -45,7 +42,7 @@ describe('<PaginationJumper />', () => {
 
       fireEvent.click(button!);
 
-      expect(onChange).toBeCalled();
+      expect(onChange).toHaveBeenCalled();
     });
     it('should not trigger onChange when input over range', () => {
       const onChange = jest.fn();
@@ -72,7 +69,7 @@ describe('<PaginationJumper />', () => {
 
       fireEvent.click(button!);
 
-      expect(onChange).not.toBeCalled();
+      expect(onChange).not.toHaveBeenCalled();
     });
 
     it('should not trigger onChange when input string', () => {
@@ -92,7 +89,7 @@ describe('<PaginationJumper />', () => {
 
       fireEvent.click(button!);
 
-      expect(onChange).not.toBeCalled();
+      expect(onChange).not.toHaveBeenCalled();
     });
 
     it('should trigger onChange when trigger input keyDown event: Enter', () => {
@@ -113,51 +110,7 @@ describe('<PaginationJumper />', () => {
         key: 'Enter',
       });
 
-      expect(onChange).toBeCalled();
-    });
-  });
-
-  describe('prop: buttonText,hintText,inputPlaceholder', () => {
-    const hintText = 'Go To';
-    const buttonText = 'Go';
-    const inputPlaceholder = 'Page';
-
-    const testRenderer = TestRenderer.create(
-      <PaginationJumper
-        hintText={hintText}
-        buttonText={buttonText}
-        inputPlaceholder={inputPlaceholder}
-      />,
-    );
-    const testInstance = testRenderer.root;
-    const typographyInstance = testInstance.findByType(Typography);
-    const buttonInstance = testInstance.findByType(Button);
-    const inputInstance = testInstance.findByType(Input);
-
-    it('hintText should displayed in front of `input`', () => {
-      expect(typographyInstance.props.children).toBe(hintText);
-    });
-
-    it('buttonText should displayed in the `button` content', () => {
-      expect(buttonInstance.props.children).toBe(buttonText);
-    });
-
-    it('inputPlaceholder displayed in the `input` before the user enters a value', () => {
-      expect(inputInstance.props.placeholder).toBe(inputPlaceholder);
-    });
-  });
-
-  describe('prop: disabled', () => {
-    it('should pass disabled props to children', () => {
-      const testRenderer = TestRenderer.create(<PaginationJumper disabled />);
-      const testInstance = testRenderer.root;
-      const typographyInstance = testInstance.findByType(Typography);
-      const buttonInstance = testInstance.findByType(Button);
-      const inputInstance = testInstance.findByType(Input);
-
-      expect(typographyInstance.props.color).toBe('text-disabled');
-      expect(inputInstance.props.disabled).toBe(true);
-      expect(buttonInstance.props.disabled).toBe(true);
+      expect(onChange).toHaveBeenCalled();
     });
   });
 });

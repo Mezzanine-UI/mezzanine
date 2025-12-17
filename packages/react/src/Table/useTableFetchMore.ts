@@ -61,7 +61,7 @@ export function useTableFetchMore(props: UseTableFetchMore) {
     if (prevSourceLength !== currentSourceLength) {
       onFetching(false);
     }
-  }, [prevSourceLength, currentSourceLength]);
+  }, [prevSourceLength, currentSourceLength, onFetching]);
 
   return {
     fetchMore,

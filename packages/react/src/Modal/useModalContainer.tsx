@@ -11,8 +11,6 @@ const defaultOptions: Pick<
   | 'disableCloseOnBackdropClick'
   | 'disableCloseOnEscapeKeyDown'
   | 'disablePortal'
-  | 'hideBackdrop'
-  | 'invisibleBackdrop'
   | 'open'
 > = {
   className: classes.overlay,
@@ -20,8 +18,6 @@ const defaultOptions: Pick<
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   disablePortal: false,
-  hideBackdrop: false,
-  invisibleBackdrop: false,
   open: false,
 };
 
@@ -35,8 +31,6 @@ const ModalContainer = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
       disableCloseOnBackdropClick = defaultOptions.disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown = defaultOptions.disableCloseOnEscapeKeyDown,
       disablePortal = defaultOptions.disablePortal,
-      hideBackdrop = defaultOptions.hideBackdrop,
-      invisibleBackdrop = defaultOptions.invisibleBackdrop,
       onBackdropClick,
       onClose,
       open = defaultOptions.open,
@@ -50,8 +44,6 @@ const ModalContainer = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
         disablePortal={disablePortal}
-        hideBackdrop={hideBackdrop}
-        invisibleBackdrop={invisibleBackdrop}
         onBackdropClick={onBackdropClick}
         onClose={onClose}
         open={open}

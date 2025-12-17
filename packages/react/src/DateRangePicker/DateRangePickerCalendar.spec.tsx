@@ -294,7 +294,7 @@ describe('<DateRangePickerCalendar />', () => {
             fireEvent.click(firstTestButtonElement!);
           });
 
-          expect(onChange).toBeCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
           onChange.mockClear();
 
           const [, secondCalendarElement] =
@@ -311,7 +311,7 @@ describe('<DateRangePickerCalendar />', () => {
             fireEvent.click(secondTestButtonElement!);
           });
 
-          expect(onChange).toBeCalledTimes(1);
+          expect(onChange).toHaveBeenCalledTimes(1);
         });
       });
     });
@@ -323,8 +323,8 @@ describe('<DateRangePickerCalendar />', () => {
         const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
-        function isSameDate(val: DateType) {
-          return targetDate.isSame(val, 'date');
+        function isSameDate(val: [DateType, DateType | undefined]) {
+          return targetDate.isSame(val[0], 'date');
         }
 
         const onChange = jest.fn(isSameDate);
@@ -357,8 +357,8 @@ describe('<DateRangePickerCalendar />', () => {
         const referenceDate = '2021-12-15';
         const targetDate = moment('2021-12-15');
 
-        function isSameWeek(val: DateType) {
-          return targetDate.isSame(val, 'week');
+        function isSameWeek(val: [DateType, DateType | undefined]) {
+          return targetDate.isSame(val[0], 'week');
         }
 
         const onChange = jest.fn(isSameWeek);
@@ -391,8 +391,8 @@ describe('<DateRangePickerCalendar />', () => {
         const referenceDate = '2021-12-15';
         const targetDate = moment('2021-11-15');
 
-        function isSameMonth(val: DateType) {
-          return targetDate.isSame(val, 'month');
+        function isSameMonth(val: [DateType, DateType | undefined]) {
+          return targetDate.isSame(val[0], 'month');
         }
 
         const onChange = jest.fn(isSameMonth);
@@ -425,8 +425,8 @@ describe('<DateRangePickerCalendar />', () => {
         const referenceDate = '2021-12-15';
         const targetDate = moment('2020-12-15');
 
-        function isSameYear(val: DateType) {
-          return targetDate.isSame(val, 'year');
+        function isSameYear(val: [DateType, DateType | undefined]) {
+          return targetDate.isSame(val[0], 'year');
         }
 
         const onChange = jest.fn(isSameYear);

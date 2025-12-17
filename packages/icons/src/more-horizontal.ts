@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const MoreHorizontalIcon: IconDefinition = {
   name: 'more-horizontal',
   definition: {

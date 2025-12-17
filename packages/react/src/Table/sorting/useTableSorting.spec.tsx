@@ -1,10 +1,5 @@
 import { TableDataSource } from '@mezzanine-ui/core/table';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../../__test-utils__';
 import { useTableSorting } from './useTableSorting';
 
 describe('useTableSorting()', () => {
@@ -53,7 +48,7 @@ describe('useTableSorting()', () => {
     expect(dataSource[2].id).toBe(originSources[2].id);
     expect(sortedType).toBe('none');
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',
@@ -67,7 +62,7 @@ describe('useTableSorting()', () => {
     expect(result.current[0][0].id).toBe(maxAgeId);
     expect(result.current[0][2].id).toBe(minAgeId);
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',
@@ -81,7 +76,7 @@ describe('useTableSorting()', () => {
     expect(result.current[0][0].id).toBe(minAgeId);
     expect(result.current[0][2].id).toBe(maxAgeId);
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',
@@ -106,7 +101,7 @@ describe('useTableSorting()', () => {
 
     const [, onChange] = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',
@@ -119,7 +114,7 @@ describe('useTableSorting()', () => {
     expect(result.current[0][0].id).toBe(maxAgeId);
     expect(result.current[0][2].id).toBe(minAgeId);
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'count',
         dataIndex: 'count',
@@ -151,7 +146,7 @@ describe('useTableSorting()', () => {
     /** current should be 'none' */
     const [, onChange] = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',
@@ -175,7 +170,7 @@ describe('useTableSorting()', () => {
     /** current should be 'none' */
     const [, , { onResetAll }] = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onResetAll();
     });
 
@@ -195,7 +190,7 @@ describe('useTableSorting()', () => {
     /** current should be 'none' */
     const [, onChange] = result.current;
 
-    TestRenderer.act(() => {
+    act(() => {
       onChange({
         key: 'age',
         dataIndex: 'age',

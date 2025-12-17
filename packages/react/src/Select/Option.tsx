@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef, useContext, KeyboardEvent } from 'react';
 import { MenuItem, MenuItemProps } from '../Menu';
 import { SelectControlContext } from './SelectControlContext';

@@ -1,292 +1,647 @@
-import {
-  PlusIcon,
-  SearchIcon,
-  DollarIcon,
-  ClockIcon,
-  EyeIcon,
-} from '@mezzanine-ui/icons';
+import { CopyIcon, UserIcon } from '@mezzanine-ui/icons';
+import { useState } from 'react';
 import Icon from '../Icon';
 import Input from '.';
-import { Message } from '..';
-import ConfigProvider from '../Provider';
-import Typography from '../Typography/Typography';
+import Typography from '../Typography';
+import { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
 
 export default {
   title: 'Data Entry/Input',
 };
 
-export const Basic = () => {
+export const BaseInput = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Typography variant="h2" style={typoStyle}>
+        Base Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Normal
+        </Typography>
+        <Input name="input1" placeholder="請輸入文字" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          With Value
+        </Typography>
+        <Input name="input2" value="Example" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Error
+        </Typography>
+        <Input name="input3" placeholder="請輸入文字" error />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Disabled
+        </Typography>
+        <Input name="input4" placeholder="請輸入文字" disabled />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Read Only
+        </Typography>
+        <Input
+          name="input5"
+          placeholder="請輸入文字"
+          value="Example"
+          readonly
+        />
+      </section>
+    </div>
+  );
+};
+
+export const WithAffixInput = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Typography variant="h2" style={typoStyle}>
+        With Affix Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Icon Leading
+        </Typography>
+        <Input
+          variant="affix"
+          prefix={<Icon icon={UserIcon} />}
+          placeholder="Placeholder"
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Prefix
+        </Typography>
+        <Input variant="affix" prefix="Prefix" placeholder="Placeholder" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Suffix
+        </Typography>
+        <Input variant="affix" suffix="Suffix" placeholder="Placeholder" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Prefix & Suffix
+        </Typography>
+        <Input
+          variant="affix"
+          prefix="Prefix"
+          suffix="Suffix"
+          placeholder="Placeholder"
+        />
+      </section>
+    </div>
+  );
+};
+
+export const SearchInput = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Typography variant="h2" style={typoStyle}>
+        Search Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Default (with SearchIcon and clearable)
+        </Typography>
+        <Input
+          variant="search"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder="搜尋..."
+          onClear={() => setSearchValue('')}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Not Clearable
+        </Typography>
+        <Input variant="search" clearable={false} placeholder="搜尋..." />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Sizes - Main
+        </Typography>
+        <Input variant="search" size="main" placeholder="搜尋..." />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Sizes - Sub
+        </Typography>
+        <Input variant="search" size="sub" placeholder="搜尋..." />
+      </section>
+    </div>
+  );
+};
+
+export const NumberInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
   return (
     <div
       style={{
-        display: 'inline-grid',
-        gridTemplateColumns: 'repeat(2, 200px)',
-        gap: '16px',
-        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        width: '120px',
       }}
     >
+      <Typography variant="h2" style={typoStyle}>
+        Number Input
+      </Typography>
+
       <section style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Normal
+        <Typography variant="h3" style={typoStyle}>
+          Basic Number
         </Typography>
-        <Input placeholder="please enter text" />
+        <Input variant="number" placeholder="0" />
       </section>
+
       <section style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Disabled
+        <Typography variant="h3" style={typoStyle}>
+          With Min/Max
         </Typography>
-        <Input placeholder="please enter text" disabled />
+        <Input variant="number" min={0} max={100} defaultValue="50" />
       </section>
+
       <section style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Error
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
         </Typography>
-        <Input placeholder="please enter text" error />
-      </section>
-      <section style={containerStyle}>
-        <Typography variant="h5" style={typoStyle}>
-          Read Only
-        </Typography>
-        <Input placeholder="please enter text" value="Example" readOnly />
+        <Input variant="number" step={0.5} defaultValue="1.5" size="sub" />
       </section>
     </div>
   );
 };
 
-export const Sizes = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 200px)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <Typography variant="h5">Small</Typography>
-    <Typography variant="h5">Medium</Typography>
-    <Typography variant="h5">Large</Typography>
-    <Input placeholder="please enter text" size="small" />
-    <Input placeholder="please enter text" size="medium" />
-    <Input placeholder="please enter text" size="large" />
-    <Input placeholder="please enter text" size="small" disabled />
-    <Input placeholder="please enter text" size="medium" disabled />
-    <Input placeholder="please enter text" size="large" disabled />
-    <ConfigProvider size="small">
-      <Input placeholder="please enter text" error />
-    </ConfigProvider>
-    <ConfigProvider size="medium">
-      <Input placeholder="please enter text" error />
-    </ConfigProvider>
-    <ConfigProvider size="large">
-      <Input placeholder="please enter text" error />
-    </ConfigProvider>
-  </div>
-);
+export const UnitInput = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
 
-export const PrefixSuffix = () => (
-  <div
-    style={{
-      display: 'inline-grid',
-      gridTemplateColumns: 'repeat(3, 200px)',
-      gap: '16px',
-      alignItems: 'center',
-    }}
-  >
-    <Input placeholder="please enter text" prefix={<Icon icon={PlusIcon} />} />
-    <Input placeholder="please enter text" suffix={<Icon icon={PlusIcon} />} />
-    <Input
-      placeholder="please enter text"
-      suffix={<Icon icon={PlusIcon} />}
-      disabled
-    />
-    <Input
-      placeholder="search"
-      prefix={<Icon icon={SearchIcon} />}
-      size="small"
-      clearable
-    />
-    <Input placeholder="search" prefix={<Icon icon={SearchIcon} />} clearable />
-    <Input
-      placeholder="search"
-      prefix={<Icon icon={SearchIcon} />}
-      size="large"
-      clearable
-    />
-    <Input placeholder="search" prefix={<Icon icon={SearchIcon} />} clearable />
-    <Input
-      placeholder="please enter text"
-      prefix={<Icon icon={PlusIcon} />}
-      clearable
-      error
-    />
-  </div>
-);
+  const [spinNumber, setSpinNumber] = useState(100);
 
-export const TagsMode = () => (
-  <>
-    <ul>
-      <li>
-        Default Max Tags Length is
-        <b> 3</b>
-      </li>
-      <li>
-        Default Input Max Length is
-        <b> 8</b>
-      </li>
-      <li>
-        Default Position of tags-mode-input field is
-        <b> bottom</b>
-      </li>
-      <li>
-        Tags will be stored in a set
-        <b> (unique value)</b>
-      </li>
-      <li>
-        type of tags will be number
-        <b> if the type of input is number</b>
-      </li>
-    </ul>
-    <div style={{ height: '20px' }} />
+  return (
     <div
       style={{
-        display: 'inline-grid',
-        gridTemplateColumns: 'repeat(2, 320px)',
-        gap: '16px',
-        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '300px',
       }}
     >
-      <section>
-        <Typography>inputMaxLength=1</Typography>
-        <Input
-          fullWidth
-          mode="tags"
-          placeholder="inputMaxLength=1"
-          inputProps={{ maxLength: 1 }}
-          tagsProps={{
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
+      <Typography variant="h2" style={typoStyle}>
+        Unit Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Prefix
+        </Typography>
+        <Input variant="unit" prefix="NT" defaultValue="1000" placeholder="0" />
       </section>
-      <section>
-        <Typography>maxTagsLength=4, inputMaxLength=3</Typography>
-        <Input
-          mode="tags"
-          placeholder="maxTagsLength=4; inputMaxLength=3"
-          inputProps={{ maxLength: 3 }}
-          tagsProps={{
-            maxTagsLength: 4,
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
-      </section>
-      <section>
-        <Typography>with clearable, type: number</Typography>
-        <Input
-          clearable
-          error
-          mode="tags"
-          placeholder="with clearable;"
-          inputProps={{ type: 'number' }}
-          tagsProps={{
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
-      </section>
-      <section>
-        <Typography>with initialTagsValue</Typography>
-        <Input
-          clearable
-          mode="tags"
-          placeholder="with initialTagsValue"
-          tagsProps={{
-            initialTagsValue: ['1', '2', '3', '4'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
-      </section>
-      <section>
-        <Typography>
-          initialTagsValue will be sliced, once maxTagsLength is given
-          (maxTagsLength: 2)
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Suffix
         </Typography>
         <Input
-          clearable
-          mode="tags"
-          placeholder="initialTagsValue will be sliced"
-          tagsProps={{
-            maxTagsLength: 2,
-            initialTagsValue: ['1', '2', '3'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
+          variant="unit"
+          suffix="NT"
+          min={0}
+          max={10000}
+          step={100}
+          defaultValue="100"
         />
       </section>
-      <section>
-        <Typography>Input Field on Top Position</Typography>
-        <Input
-          clearable
-          mode="tags"
-          placeholder="Input Field on Top Position"
-          tagsProps={{
-            inputPosition: 'top',
-            maxTagsLength: 5,
-            initialTagsValue: ['1', '2', '3', '4'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Text Only
+        </Typography>
+        <Input variant="unit" defaultValue="175" />
       </section>
-      <section>
-        <Typography>With Prefix (Origin Input Prop Combination)</Typography>
-        <Input
-          clearable
-          mode="tags"
-          placeholder="Input Field with prefix"
-          prefix={<Icon icon={DollarIcon} />}
-          tagsProps={{
-            inputPosition: 'top',
-            maxTagsLength: 5,
-            initialTagsValue: ['With', 'Prefix', '!', '!'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
-          }}
-        />
-      </section>
-      <section>
-        <Typography>
-          Large Input Size (Origin Input Prop Combination)
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Spinner
         </Typography>
         <Input
-          clearable
-          mode="tags"
-          size="large"
-          placeholder="Input Field with large size"
-          prefix={<Icon icon={EyeIcon} />}
-          tagsProps={{
-            inputPosition: 'top',
-            maxTagsLength: 5,
-            initialTagsValue: ['Large', 'Size', '!', '!'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
+          variant="unit"
+          inputType="number"
+          value={`${spinNumber}`}
+          onChange={(evt) => setSpinNumber(Number(evt.target.value))}
+          min={0}
+          max={10000}
+          step={100}
+          showSpinner
+          onSpinUp={() => {
+            /** custom listener */
+          }}
+          onSpinDown={() => {
+            /** custom listener */
           }}
         />
       </section>
-      <section>
-        <Typography>
-          Small Input Size (Origin Input Prop Combination)
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Main
+        </Typography>
+        <Input variant="unit" size="main" defaultValue="70" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input variant="unit" size="sub" defaultValue="70" />
+      </section>
+    </div>
+  );
+};
+
+export const ActionInput = () => {
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '300px',
+      }}
+    >
+      <Typography variant="h2" style={typoStyle}>
+        Action Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Copy Action
         </Typography>
         <Input
-          mode="tags"
-          size="small"
-          placeholder="Input Field with small size"
-          prefix={<Icon icon={ClockIcon} />}
-          tagsProps={{
-            inputPosition: 'top',
-            maxTagsLength: 5,
-            initialTagsValue: ['Small', 'Size', ' ! ', '!'],
-            onTagsChange: (newValue) => Message.info(JSON.stringify(newValue)),
+          variant="action"
+          defaultValue="https://example.com/share/abc123"
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => alert('Copied!'),
+          }}
+        />
+        <Input
+          variant="action"
+          defaultValue="https://example.com/share/abc123"
+          actionButton={{
+            position: 'prefix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => alert('Copied!'),
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Disabled Action Button
+        </Typography>
+        <Input
+          variant="action"
+          defaultValue="content"
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => {},
+            disabled: true,
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Main
+        </Typography>
+        <Input
+          variant="action"
+          size="main"
+          defaultValue="example"
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => {},
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input
+          variant="action"
+          size="sub"
+          defaultValue="example"
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => {},
           }}
         />
       </section>
     </div>
-  </>
-);
+  );
+};
+
+export const SelectInput = () => {
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
+  const typoStyle = { margin: '0 0 12px 0' };
+  const [selectedValue, setSelectedValue] = useState('.com');
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '400px',
+      }}
+    >
+      <Typography variant="h2" style={typoStyle}>
+        Select Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Domain Selector
+        </Typography>
+        <Input
+          variant="select"
+          defaultValue="https://"
+          placeholder="Domain"
+          selectButton={{
+            position: 'prefix',
+            value: selectedValue,
+            onClick: () => {
+              const domains = ['.com', '.tw', '.cn', '.net'];
+              const currentIndex = domains.indexOf(selectedValue);
+              const nextIndex = (currentIndex + 1) % domains.length;
+              setSelectedValue(domains[nextIndex]);
+            },
+          }}
+        />
+        <Input
+          variant="select"
+          defaultValue="https://"
+          placeholder="Domain"
+          selectButton={{
+            position: 'suffix',
+            value: selectedValue,
+            onClick: () => {
+              const domains = ['.com', '.tw', '.cn', '.net'];
+              const currentIndex = domains.indexOf(selectedValue);
+              const nextIndex = (currentIndex + 1) % domains.length;
+              setSelectedValue(domains[nextIndex]);
+            },
+          }}
+        />
+        <Input
+          variant="select"
+          defaultValue="https://"
+          placeholder="Domain"
+          selectButton={{
+            position: 'both',
+            value: selectedValue,
+            onClick: () => {
+              const domains = ['.com', '.tw', '.cn', '.net'];
+              const currentIndex = domains.indexOf(selectedValue);
+              const nextIndex = (currentIndex + 1) % domains.length;
+              setSelectedValue(domains[nextIndex]);
+            },
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Main
+        </Typography>
+        <Input
+          variant="select"
+          size="main"
+          placeholder="Placeholder"
+          selectButton={{
+            position: 'suffix',
+            value: '.com',
+            onClick: () => {},
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input
+          variant="select"
+          size="sub"
+          placeholder="Placeholder"
+          selectButton={{
+            position: 'suffix',
+            value: '.com',
+            onClick: () => {},
+          }}
+        />
+      </section>
+    </div>
+  );
+};
+
+export const PasswordInput = () => {
+  const containerStyle = { margin: '0 0 24px 0' };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  const [password, setPassword] = useState('');
+
+  const calculatePasswordStrength = (
+    pwd: string,
+  ): PasswordStrengthIndicatorProps => {
+    const length = pwd.length;
+    const hasLowerCase = /[a-z]/.test(pwd);
+    const hasUpperCase = /[A-Z]/.test(pwd);
+    const hasNumbers = /\d/.test(pwd);
+    const hasSpecialChars = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+
+    const hasMinLength = length >= 8;
+    const hasMixedCase = hasLowerCase && hasUpperCase;
+    const hasNumberOrSpecial = hasNumbers || hasSpecialChars;
+
+    const allCriteriaMet = hasMinLength && hasMixedCase && hasNumberOrSpecial;
+
+    const hintTexts: PasswordStrengthIndicatorProps['hintTexts'] = [
+      {
+        severity: hasMinLength ? 'success' : 'info',
+        hint: '至少 8 個字元',
+      },
+      {
+        severity: hasMixedCase ? 'success' : 'info',
+        hint: '包含大小寫字母',
+      },
+      {
+        severity: hasNumberOrSpecial ? 'success' : 'info',
+        hint: '包含數字或特殊符號',
+      },
+    ];
+
+    return {
+      strength: allCriteriaMet ? 'strong' : length >= 6 ? 'medium' : 'weak',
+      hintTexts,
+    };
+  };
+
+  const passwordStrengthIndicator = calculatePasswordStrength(password);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '300px',
+      }}
+    >
+      <Typography variant="h2" style={typoStyle}>
+        Password Input
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Basic Password
+        </Typography>
+        <Input variant="password" placeholder="請輸入密碼" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          With Password Strength Indicator
+        </Typography>
+        <Input
+          variant="password"
+          placeholder="請輸入密碼"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          showPasswordStrengthIndicator
+          passwordStrengthIndicator={passwordStrengthIndicator}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Main
+        </Typography>
+        <Input variant="password" size="main" placeholder="請輸入密碼" />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input variant="password" size="sub" placeholder="請輸入密碼" />
+      </section>
+    </div>
+  );
+};
+
+export const FormatterAndParser = () => {
+  const containerStyle = {
+    margin: '0 0 24px 0',
+    display: 'flex',
+    flexFlow: 'column',
+    gap: '12px',
+  };
+  const typoStyle = { margin: '0 0 12px 0' };
+
+  const [currencyValue, setCurrencyValue] = useState('');
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        maxWidth: '400px',
+      }}
+    >
+      <Typography variant="h2" style={typoStyle}>
+        Formatter+Parser
+      </Typography>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Currency Format (Thousand Separator)
+        </Typography>
+        <Input
+          variant="unit"
+          showSpinner
+          placeholder="輸入金額"
+          value={currencyValue}
+          onChange={(e) => {
+            setCurrencyValue(e.target.value);
+          }}
+          formatter={(value) => {
+            // Remove non-digit characters
+            const cleanValue = value.replace(/\D/g, '');
+            // Add thousand separators
+            return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+          }}
+          parser={(value) => value.replace(/,/g, '').replace(/\D/g, '')}
+        />
+        <Typography variant="caption" color="text-neutral">
+          Raw value: {currencyValue}
+        </Typography>
+      </section>
+    </div>
+  );
+};

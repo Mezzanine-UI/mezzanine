@@ -1,59 +1,125 @@
+@use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/radius';
 @use './badge' as *;
 
-$dot-size: 8px !default;
-$standalone-margin: 2px !default;
+$dot-size: spacing.semantic-variable(size, element, tight);
 
-$content-height: typography.prop(body2, line-height);
+$dot-type-config: (
+  success: (
+    icon-color: palette.semantic-variable(icon, success),
+    text-color: palette.semantic-variable(text, success)
+  ),
+  error: (
+    icon-color: palette.semantic-variable(icon, error),
+    text-color: palette.semantic-variable(text, error),
+  ),
+  warning: (
+    icon-color: palette.semantic-variable(icon, warning),
+    text-color: palette.semantic-variable(text, warning)
+  ),
+  info: (
+    icon-color: palette.semantic-variable(icon, info),
+    text-color: palette.semantic-variable(text, info)
+  ),
+  inactive: (
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    text-color: palette.semantic-variable(text, neutral-light)
+  )
+);
+
+$count-type-config: (
+  alert: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    background-color: palette.semantic-variable(background, error),
+    border-radius: radius.variable(full)
+  ),
+  inactive: (
+    text-color: palette.semantic-variable(text, neutral-strong),
+    background-color: palette.semantic-variable(background, neutral-subtle),
+    border-radius: radius.variable(full)
+  ),
+  inverse: (
+    text-color: palette.semantic-variable(text, brand-solid),
+    background-color: palette.semantic-variable(background, inverse),
+    border-radius: radius.variable(full)
+  ),
+  brand: (
+    text-color: palette.semantic-variable(text, brand-strong),
+    background-color: palette.semantic-variable(background, brand-faint),
+    border-radius: radius.variable(full)
+  ),
+  info: (
+    text-color: palette.semantic-variable(text, brand-solid),
+    background-color: palette.semantic-variable(background, brand-subtle),
+    border-radius: radius.variable(tiny)
+  )
+);
+
 
 .#{$prefix} {
   display: inline-flex;
-  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  min-width: $content-height;
-  height: $content-height;
-  // For standalone
-  margin: $standalone-margin;
-  padding: 0 4px;
-  background-color: palette.color(error);
-  color: palette.color(on-error);
-  border-radius: calc(#{$content-height} / 2);
-  transition: transition.standard(transform);
-  transform-origin: center;
-  transform: none;
-  will-change: transform;
   box-sizing: border-box;
+  width: fit-content;
+  height: fit-content;
 
-  @include typography.variant(body2);
+  @each $type in $dot-types {
+    &.#{$prefix}--dot-#{$type} {
+      @include typography.semantic-variable(body);
 
-  &__container {
-    display: inline-block;
-    position: relative;
+      column-gap: spacing.semantic-variable(gap, base);
+      color: map.get($dot-type-config, $type, text-color);
 
-    .#{$prefix} {
-      position: absolute;
-      right: 0;
-      top: 0;
-      margin: 0;
-      transform: translate(50%, -50%);
-
-      &--hide {
-        transform: translate(50%, -50%) scale(0);
+      &::before {
+        content: '';
+        width: $dot-size;
+        height: $dot-size;
+        border-radius: radius.variable(full);
+        background-color: map.get($dot-type-config, $type, icon-color);
       }
     }
   }
 
-  &--dot {
-    min-width: initial;
-    width: $dot-size;
-    height: $dot-size;
-    border-radius: 50%;
+  @each $type in $count-types {
+    &.#{$prefix}--count-#{$type} {
+      @include typography.semantic-variable(label-secondary);
+
+      justify-content: center;
+      min-width: spacing.semantic-variable(size, element, base-fixed);
+      min-height: spacing.semantic-variable(size, element, base-fixed);
+      padding-block: spacing.semantic-variable(padding, vertical, none);
+      padding-inline: spacing.semantic-variable(padding, horizontal,tiny);
+      color: map.get($count-type-config, $type, text-color);
+      background-color: map.get($count-type-config, $type, background-color);
+      border-radius: map.get($count-type-config, $type, border-radius);
+    }
+  }
+
+  &__container {
+    display: inline-flex;
+    align-items: center;
+
+    &--has-children {
+      display: inline-block;
+      position: relative;
+      width: fit-content;
+      height: fit-content;
+
+      .#{$prefix} {
+        position: absolute;
+        top: spacing.semantic-variable(padding, vertical, tiny);
+        right: spacing.semantic-variable(padding, horizontal, tiny);
+      }
+    }
   }
 
   &--hide {
-    transform: scale(0);
+    visibility: hidden;
+    opacity: 0;
   }
 }
+

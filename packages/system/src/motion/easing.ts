@@ -1,12 +1,7 @@
-export type MotionEasingType =
-  | 'standard'
-  | 'emphasized'
-  | 'decelerated'
-  | 'accelerated';
+export type MotionEasingType = 'entrance' | 'exit' | 'standard';
 
 export const MOTION_EASING: Readonly<Record<MotionEasingType, string>> = {
-  standard: 'cubic-bezier(0.58, 0.01, 0.29, 1.01)',
-  emphasized: 'cubic-bezier(0.83, 0, 0.17, 1)',
-  decelerated: 'cubic-bezier(0, 0, 0.3, 1)',
-  accelerated: 'cubic-bezier(0.32, 0, 0.67, 0)',
+  entrance: 'cubic-bezier(0, 0, 0.58, 1)',
+  exit: 'cubic-bezier(0.42, 0, 1, 1)',
+  standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
 };

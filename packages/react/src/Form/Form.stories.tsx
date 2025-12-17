@@ -1,4 +1,4 @@
-import { StoryFn, Meta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react-webpack5';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { Severity } from '@mezzanine-ui/system/severity';
 import { ReactNode, useState } from 'react';
@@ -6,9 +6,9 @@ import Icon from '../Icon';
 import Checkbox, { CheckboxGroup, CheckAll } from '../Checkbox';
 import Input from '../Input';
 import Radio, { RadioGroup } from '../Radio';
-import Switch from '../Switch';
+import Switch from '../Toggle';
 import Textarea from '../Textarea';
-import { FormField, FormLabel, FormMessage } from '.';
+import { FormField, FormLabel, FormHintText } from '.';
 
 export default {
   title: 'Data Entry/Form',
@@ -53,7 +53,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
         {label}
       </FormLabel>
       {control}
-      <FormMessage>{message}</FormMessage>
+      <FormHintText>{message}</FormHintText>
     </FormField>
   );
   const CheckAllExample = () => {

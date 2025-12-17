@@ -1,14 +1,16 @@
 export type MotionDurationType =
-  | 'shortest'
-  | 'shorter'
-  | 'short'
-  | 'standard'
-  | 'long';
+  | 'fast'
+  | 'moderate'
+  | 'slow'
+  | 'loop'
+  | 'pauseShort'
+  | 'pauseLong';
 
 export const MOTION_DURATION: Readonly<Record<MotionDurationType, number>> = {
-  shortest: 150,
-  shorter: 200,
-  short: 250,
-  standard: 300,
-  long: 375,
+  fast: 150,
+  moderate: 250,
+  slow: 400,
+  loop: 1600,
+  pauseShort: 3000,
+  pauseLong: 10000,
 };

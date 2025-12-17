@@ -1,5 +1,6 @@
-import { Meta } from '@storybook/react';
+import { Meta } from '@storybook/react-webpack5';
 import Skeleton from '.';
+import Typography from '../Typography';
 
 export default {
   title: 'Feedback/Skeleton',
@@ -14,14 +15,55 @@ export const Basic = () => (
       backgroundColor: '#ffffff',
     }}
   >
-    <Skeleton type="circle" />
-    <Skeleton width={300} />
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <Skeleton width={40} height={40} type="circle" />
-      <div style={{ alignItems: 'center' }}>
-        <Skeleton width="250px" height="16px" style={{ margin: '8px' }} />
-        <Skeleton style={{ width: '250px', height: '16px', margin: '8px' }} />
+    <Typography>Type Strip</Typography>
+    <div style={{ width: '480px', gap: 8, display: 'grid' }}>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Typography style={{ flexShrink: 0 }} variant="h1">
+          variant: h1
+        </Typography>
+        <Skeleton variant="h1" />
       </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Typography style={{ flexShrink: 0 }} variant="h2">
+          variant: h2
+        </Typography>
+        <Skeleton variant="h2" />
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Typography style={{ flexShrink: 0 }} variant="body">
+          variant: body
+        </Typography>
+        <Skeleton variant="body" />
+      </div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <Typography style={{ flexShrink: 0 }} variant="label-primary">
+          variant: label-primary
+        </Typography>
+        <Skeleton variant="label-primary" />
+      </div>
+    </div>
+
+    <Typography>Type Circle</Typography>
+    <div style={{ width: '32px' }}>
+      <Skeleton circle />
+    </div>
+    <Skeleton circle width={48} />
+
+    <Typography>Type Square</Typography>
+    <div style={{ width: '120px', height: '80px' }}>
+      <Skeleton />
+    </div>
+    <Skeleton width={120} height={120} />
+
+    <Typography>Group Example</Typography>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <Skeleton circle width={36} />
+      <Skeleton variant="body" />
+    </div>
+    <div style={{ display: 'grid' }}>
+      <Skeleton variant="body" />
+      <Skeleton variant="body" />
+      <Skeleton variant="body" />
     </div>
   </div>
 );

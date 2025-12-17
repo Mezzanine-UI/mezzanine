@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { DateType, CalendarMode } from '@mezzanine-ui/core/calendar';
 import { useCalendarControlModifiers } from './useCalendarControlModifiers';
@@ -20,14 +22,28 @@ export function useCalendarControls(
   const modifierGroup = useCalendarControlModifiers();
 
   const onPrev = () => {
-    const [handleMinus] = modifierGroup[currentMode];
+    const modifiers = modifierGroup[currentMode].single;
+    if (!modifiers) return;
 
+    const [handleMinus] = modifiers;
     setReferenceDate(handleMinus(referenceDate));
   };
 
   const onNext = () => {
-    const [, handleAdd] = modifierGroup[currentMode];
+    const modifiers = modifierGroup[currentMode].single;
+    if (!modifiers) return;
 
+    const [, handleAdd] = modifiers;
+    setReferenceDate(handleAdd(referenceDate));
+  };
+
+  const onDoublePrev = () => {
+    const [handleMinus] = modifierGroup[currentMode].double;
+    setReferenceDate(handleMinus(referenceDate));
+  };
+
+  const onDoubleNext = () => {
+    const [, handleAdd] = modifierGroup[currentMode].double;
     setReferenceDate(handleAdd(referenceDate));
   };
 
@@ -40,6 +56,8 @@ export function useCalendarControls(
     onMonthControlClick,
     onNext,
     onPrev,
+    onDoubleNext,
+    onDoublePrev,
     onYearControlClick,
     popModeStack,
     referenceDate,

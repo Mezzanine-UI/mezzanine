@@ -1,8 +1,7 @@
-export {
+export { default } from './Popper';
+export type {
   PopperPlacement,
   PopperPositionStrategy,
-  PopperOptions,
   PopperController,
   PopperProps,
-  default,
 } from './Popper';

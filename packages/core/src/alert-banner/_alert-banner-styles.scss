@@ -1,0 +1,155 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/motion' as motion;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './alert-banner' as *;
+
+$severity-config: (
+  info: (
+    background-color: palette.semantic-variable(background, info),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    message-color: palette.semantic-variable(text, fixed-light),
+  ),
+  warning: (
+    background-color: palette.semantic-variable(background, warning),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    message-color: palette.semantic-variable(text, fixed-light),
+  ),
+  error: (
+    background-color: palette.semantic-variable(background, error),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    message-color: palette.semantic-variable(text, fixed-light),
+  ),
+);
+
+@function _get-color($severity, $property) {
+  $config: map.get($severity-config, $severity);
+
+  @if $config {
+    @return map.get($config, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-severity($severity) {
+  $background-color: _get-color($severity, background-color);
+  $icon-color: _get-color($severity, icon-color);
+  $message-color: _get-color($severity, message-color);
+
+  @if $background-color {
+    background-color: $background-color;
+  }
+
+  @if $icon-color {
+    --#{$prefix}-icon-color: #{$icon-color};
+  }
+
+  @if $message-color {
+    --#{$prefix}-message-color: #{$message-color};
+  }
+}
+
+.#{$prefix} {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacing.semantic-variable(gap, spacious);
+  width: 100%;
+  padding-block: spacing.semantic-variable(padding, vertical, comfort);
+  padding-inline: spacing.semantic-variable(padding, horizontal, relaxed);
+  border-radius: radius.variable(none);
+  box-sizing: border-box;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+  transition:
+    transition.entrance(opacity, moderate),
+    transition.entrance(transform, moderate);
+
+  &--entering {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  &--exiting {
+    opacity: 0;
+    transform: translate3d(0, -100%, 0);
+    transition:
+      transition.exit(opacity, moderate),
+      transition.exit(transform, moderate);
+  }
+  
+  &__icon {
+    flex-shrink: 0;
+    font-size: spacing.semantic-variable(size, element, gentle);
+    height: spacing.semantic-variable(size, element, relaxed);
+    width: spacing.semantic-variable(size, element, relaxed);
+    color: var(--#{$prefix}-icon-color);
+  }
+
+  &__body {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+    min-width: 0;
+  }
+
+  &__message {
+    display: -webkit-box;
+    margin: 0;
+    max-width: spacing.semantic-variable(size, container, max);
+    overflow: hidden;
+    flex: 1 0 0;
+    color: var(--#{$prefix}-message-color);
+    font-style: normal;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+
+    @include typography.semantic-variable(body);
+  }
+
+  &__controls {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, spacious);
+    flex-shrink: 0;
+  }
+
+  &__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__close {
+    display: inline-flex;
+  }
+
+  @each $severity in $severities {
+    &--#{$severity} {
+      @include _apply-severity($severity);
+    }
+  }
+}
+
+.#{$group-prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, none);
+  margin: 0;
+  padding: 0;
+
+  > .#{$prefix} {
+    width: 100%;
+  }
+}
+
+

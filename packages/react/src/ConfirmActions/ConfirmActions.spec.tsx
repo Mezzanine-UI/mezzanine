@@ -1,6 +1,6 @@
-import { cleanup, fireEvent, render, TestRenderer } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Button, { ButtonProps } from '../Button/Button';
+import { ButtonProps } from '../Button/Button';
 import ConfirmActions from '.';
 
 const renderMockButton = jest.fn();
@@ -88,7 +88,7 @@ describe('<ConfirmActions />', () => {
         fireEvent.click(confirmButtonElement);
 
         expect(element.childElementCount).toBe(1);
-        expect(onCancel).not.toBeCalled();
+        expect(onCancel).not.toHaveBeenCalled();
       });
     });
 
@@ -103,7 +103,7 @@ describe('<ConfirmActions />', () => {
 
         fireEvent.click(cancelButtonElement);
 
-        expect(onCancel).toBeCalledTimes(1);
+        expect(onCancel).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -170,7 +170,7 @@ describe('<ConfirmActions />', () => {
         fireEvent.click(cancelButtonElement!);
 
         expect(childElementCount).toBe(1);
-        expect(onConfirm).not.toBeCalled();
+        expect(onConfirm).not.toHaveBeenCalled();
       });
     });
 
@@ -185,7 +185,7 @@ describe('<ConfirmActions />', () => {
 
         fireEvent.click(confirmButtonElement!);
 
-        expect(onConfirm).toBeCalledTimes(1);
+        expect(onConfirm).toHaveBeenCalledTimes(1);
       });
     });
   });

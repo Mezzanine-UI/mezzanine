@@ -1,0 +1,71 @@
+@use '../utils/list';
+@use '../utils/map';
+
+$prefix: mzn-radius;
+
+// 定義所有可用的 radius 尺寸
+$radius-sizes: (none, tiny, base, roomy, full);
+
+// 預設 radius 值定義
+$default-radius: (
+  none: 0,
+  tiny: 0.125rem,   // 2px
+  base: 0.25rem,    // 4px
+  roomy: 0.5rem,  // 8px
+  full: 62.4375rem, // 999px
+);
+
+// 驗證 radius size 是否有效
+@function is-valid-size($size) {
+  @return list.index($radius-sizes, $size) != null;
+}
+
+// 取得特定 size 的 radius 值
+@function get-radius($size, $radius: $default-radius) {
+  @if not is-valid-size($size) {
+    @error 'Invalid radius size "#{$size}". Valid sizes are: #{$radius-sizes}';
+  }
+
+  $value: map.get($radius, $size);
+
+  @if not $value and $value != 0 {
+    @error 'Radius value not defined for size "#{$size}"';
+  }
+
+  @return $value;
+}
+
+// 取得 CSS 變數名稱
+// 例如: --mzn-radius-base
+@function get-var-name($size) {
+  @if $prefix == '' {
+    @return --#{$size};
+  }
+
+  @return --#{$prefix}-#{$size};
+}
+
+// 使用 CSS 變數引用 radius
+// 例如: radius(base) => var(--mzn-radius-base)
+@function variable($size) {
+  @if not is-valid-size($size) {
+    @error 'Invalid radius size "#{$size}". Valid sizes are: #{$radius-sizes}';
+  }
+
+  @return var(#{get-var-name($size)});
+}
+
+// 生成所有 radius CSS 變數
+@mixin variables($radius: ()) {
+  $radius: map.deep-merge($default-radius, $radius);
+
+  @each $size, $value in $radius {
+    @if not is-valid-size($size) {
+      @error 'Invalid radius size "#{$size}" in radius map. Valid sizes are: #{$radius-sizes}';
+    }
+
+    @if $value or $value == 0 {
+      #{get-var-name($size)}: #{$value};
+    }
+  }
+}

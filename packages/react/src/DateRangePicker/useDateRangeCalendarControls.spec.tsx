@@ -1,12 +1,7 @@
 import moment from 'moment';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { ReactNode } from 'react';
-import {
-  TestRenderer,
-  cleanup,
-  cleanupHook,
-  renderHook,
-} from '../../__test-utils__';
+import { act, cleanup, cleanupHook, renderHook } from '../../__test-utils__';
 import { CalendarConfigProvider } from '../Calendar';
 import { useDateRangeCalendarControls } from '.';
 
@@ -34,7 +29,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -63,7 +58,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -92,7 +87,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -121,7 +116,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('day');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -150,7 +145,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -179,7 +174,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -208,7 +203,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -237,7 +232,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('week');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -266,7 +261,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -295,7 +290,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -324,7 +319,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -353,7 +348,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('month');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -382,7 +377,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -411,7 +406,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -440,7 +435,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstPrev();
       });
 
@@ -469,7 +464,7 @@ describe('useDateRangeCalendarControls', () => {
 
       expect(currentMode).toBe('year');
 
-      TestRenderer.act(() => {
+      act(() => {
         onFirstNext();
       });
 
@@ -495,13 +490,13 @@ describe('useDateRangeCalendarControls', () => {
           { wrapper },
         );
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onMonthControlClick();
         });
 
         expect(result.current.currentMode).toBe('month');
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onFirstNext();
         });
 
@@ -520,13 +515,13 @@ describe('useDateRangeCalendarControls', () => {
           { wrapper },
         );
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onMonthControlClick();
         });
 
         expect(result.current.currentMode).toBe('month');
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onFirstPrev();
         });
 
@@ -545,13 +540,13 @@ describe('useDateRangeCalendarControls', () => {
           { wrapper },
         );
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onMonthControlClick();
         });
 
         expect(result.current.currentMode).toBe('month');
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onSecondNext();
         });
 
@@ -570,13 +565,13 @@ describe('useDateRangeCalendarControls', () => {
           { wrapper },
         );
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onMonthControlClick();
         });
 
         expect(result.current.currentMode).toBe('month');
 
-        TestRenderer.act(() => {
+        act(() => {
           result.current.onSecondPrev();
         });
 

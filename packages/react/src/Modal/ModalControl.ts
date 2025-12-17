@@ -1,3 +1,5 @@
+'use client';
+
 import { ModalSeverity } from '@mezzanine-ui/core/modal';
 import { createContext } from 'react';
 

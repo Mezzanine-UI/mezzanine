@@ -1,0 +1,39 @@
+{
+  "name": "@mezzanine-ui/core",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/core/src",
+  "projectType": "library",
+  "tags": ["type:lib"],
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/build.js",
+        "cwd": "packages/core"
+      },
+      "outputs": ["{projectRoot}/dist"],
+      "dependsOn": ["@mezzanine-ui/system:build", "@mezzanine-ui/icons:build"]
+    },
+    "build:clean": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node ../../scripts/cleanBuild.js",
+        "cwd": "packages/core"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest",
+        "cwd": "packages/core"
+      }
+    },
+    "test:coverage": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "jest --coverage",
+        "cwd": "packages/core"
+      }
+    }
+  }
+}

@@ -23,6 +23,7 @@ const TabPane = forwardRef<HTMLDivElement, TabPaneProps>(
       /**
        * Ignore it
        */
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       tab,
       ...rest
     } = props;

@@ -1,6 +1,6 @@
-import { JSXElementConstructor, ReactNode } from 'react';
+import { JSXElementConstructor } from 'react';
 import {
-  ButtonColor,
+  ButtonIcon,
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
@@ -9,42 +9,27 @@ export type ButtonComponent = 'button' | 'a' | JSXElementConstructor<any>;
 
 export interface ButtonPropsBase {
   /**
-   * The color name provided by palette.
-   * @default 'primary'
+   * The variant of button.
+   * @default 'base-primary'
    */
-  color?: ButtonColor;
+  variant?: ButtonVariant;
   /**
-   * If true, will use error color instead of color from props.
-   * @default false
+   * The size of button.
+   * @default 'main'
    */
-  danger?: boolean;
+  size?: ButtonSize;
   /**
    * If true, button will be disabled
    * @default false
    */
   disabled?: boolean;
   /**
-   * If true, replace the original icon.
-   * Replace suffix if only suffix provided, or prefix.
+   * If true, show loading state with spinner icon.
    * @default false
    */
   loading?: boolean;
   /**
-   * The element placed on the start of button.
+   * Icon configuration with position and icon source.
    */
-  prefix?: ReactNode;
-  /**
-   * The size of button.
-   * @default 'medium'
-   */
-  size?: ButtonSize;
-  /**
-   * The element placed on the end of button.
-   */
-  suffix?: ReactNode;
-  /**
-   * The variant of button.
-   * @default 'text'
-   */
-  variant?: ButtonVariant;
+  icon?: ButtonIcon;
 }

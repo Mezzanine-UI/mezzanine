@@ -2,9 +2,5 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react-jsxdev"
-  },
-  "references": [
-    { "path": "./tsconfig.dev.json" },
-    { "path": "./tsconfig.spec.json" }
-  ]
+  }
 }

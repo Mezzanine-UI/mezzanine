@@ -1,5 +1,4 @@
-export {
-  TimePickerPanelProps,
-  default as TimePickerPanel,
-} from './TimePickerPanel';
-export { TimePickerProps, default } from './TimePicker';
+export { default as TimePickerPanel } from './TimePickerPanel';
+export type { TimePickerPanelProps } from './TimePickerPanel';
+export type { TimePickerProps } from './TimePicker';
+export { default } from './TimePicker';

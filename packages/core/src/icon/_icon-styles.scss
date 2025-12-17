@@ -1,8 +1,7 @@
+@use '~@mezzanine-ui/system/motion' as motion;
 @use './icon' as *;
 
-$spin-keyframes-name: #{$prefix}-spin !default;
-
-@keyframes #{$spin-keyframes-name} {
+@keyframes #{$prefix}-spin {
   100% {
     transform: rotate(360deg);
   }
@@ -16,15 +15,16 @@ $spin-keyframes-name: #{$prefix}-spin !default;
   line-height: 0;
   flex-shrink: 0;
   user-select: none;
-  // @todo add animation system
-  // transition: fill 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   &--color {
     color: var(--#{$prefix}-color);
   }
 
   &--spin {
-    animation: #{$spin-keyframes-name} 500ms infinite linear;
+    @include motion.pattern(spin, animation);
+
+    animation-name: #{$prefix}-spin;
+    animation-iteration-count: infinite;
   }
 
   &--size {

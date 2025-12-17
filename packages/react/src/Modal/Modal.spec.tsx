@@ -14,7 +14,7 @@ import Modal, { ModalProps, ModalSeverity } from '.';
 import { createWrapper } from '../../__test-utils__/render';
 
 function getOverlayElement(container: HTMLElement = document.body) {
-  return container?.querySelector('.mzn-overlay');
+  return container?.querySelector('.mzn-backdrop');
 }
 
 function getModalElement(container: HTMLElement = document.body) {
@@ -139,7 +139,7 @@ describe('<Modal />', () => {
       it(`should bind ${size} class if size="${size}"`, () => {
         render(<Modal open size={size} />);
 
-        const rootElement = document.body.querySelector('.mzn-overlay')!;
+        const rootElement = document.body.querySelector('.mzn-backdrop')!;
         const modalElement = rootElement.querySelector('.mzn-modal')!;
 
         expect(modalElement.classList.contains(classes.size(size))).toBe(true);
@@ -173,7 +173,7 @@ describe('<Modal />', () => {
 
       fireEvent.click(closeIconElement!);
 
-      expect(onClose).toBeCalledTimes(1);
+      expect(onClose).toHaveBeenCalledTimes(1);
     });
 
     it('should not render close icon and not bind close icon class if hideCloseIcon=true', () => {

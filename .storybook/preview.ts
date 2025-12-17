@@ -1,15 +1,14 @@
-import type { Preview } from '@storybook/react';
-import { DocsPage } from '@storybook/addon-docs';
+import type { Preview } from '@storybook/react-webpack5';
 import './global.scss';
 
 const preview: Preview = {
   parameters: {
-    docs: { page: DocsPage },
+    docs: { page: null },
     backgrounds: {
-      disable: true,
       grid: {
         disable: false,
       },
+      disabled: true,
     },
     controls: {
       sort: 'requiredFirst',

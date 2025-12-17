@@ -1,10 +1,13 @@
+'use client';
+
 import { forwardRef, ReactElement, useContext, useRef, useState } from 'react';
 import { navigationSubMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronUpIcon, ChevronDownIcon } from '@mezzanine-ui/icons';
+import { offset, size } from '@floating-ui/react-dom';
 import { useClickAway } from '../hooks/useClickAway';
 import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import Popper, { PopperOptions } from '../Popper';
+import Popper from '../Popper';
 import Icon from '../Icon';
 import { Collapse } from '../Transition';
 import NavigationItem, { NavigationItemProps } from './NavigationItem';
@@ -32,35 +35,15 @@ export interface NavigationSubMenuProps
    */
   defaultOpen?: boolean;
 }
-/* istanbul ignore next */
-const popperOptions: PopperOptions<any> = {
-  modifiers: [
-    {
-      name: 'offset',
-      options: {
-        offset: [0, 0],
-      },
-    },
-    {
-      name: 'sameWidth',
-      enabled: true,
-      phase: 'beforeWrite',
-      requires: ['computeStyles'],
-      fn: ({ state }) => {
-        const reassignState = state;
 
-        reassignState.styles.popper.width = `${state.rects.reference.width}px`;
-      },
-      effect: ({ state }) => {
-        const reassignState = state;
-
-        reassignState.elements.popper.style.width = `${
-          state.elements.reference.getBoundingClientRect().width
-        }px`;
-      },
-    },
-  ],
-};
+// Middleware to make the submenu have the same width as the reference element
+const sameWidthMiddleware = size({
+  apply({ rects, elements }) {
+    Object.assign(elements.floating.style, {
+      width: `${rects.reference.width}px`,
+    });
+  },
+});
 
 const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
   (props, ref) => {
@@ -120,7 +103,12 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
             anchor={nodeRef}
             disablePortal
             open={!!open}
-            options={popperOptions}
+            options={{
+              middleware: [
+                offset({ mainAxis: 0, crossAxis: 0 }),
+                sameWidthMiddleware,
+              ],
+            }}
           >
             {WrapChildren}
           </Popper>

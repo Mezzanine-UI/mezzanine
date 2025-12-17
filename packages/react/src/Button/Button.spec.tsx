@@ -1,13 +1,11 @@
-import { PlusIcon, SpinnerIcon } from '@mezzanine-ui/icons';
+import { PlusIcon, SearchIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Icon from '../Icon';
-import Button, { ButtonColor, ButtonComponent } from '.';
-import ConfigProvider from '../Provider';
+import Button from './Button';
 
 describe('<Button />', () => {
   afterEach(cleanup);
@@ -20,40 +18,76 @@ describe('<Button />', () => {
     render(<Button className={className} />),
   );
 
-  it('should render the text and wrap it by button label rendered by span', () => {
-    const { getHostHTMLElement, getByText } = render(<Button>Hello</Button>);
+  it('should render the text content', () => {
+    const { getHostHTMLElement } = render(<Button>Hello</Button>);
     const element = getHostHTMLElement();
-    const labelElement = getByText('Hello');
 
     expect(element.textContent).toBe('Hello');
-    expect(labelElement.textContent).toBe('Hello');
-    expect(labelElement.tagName.toLowerCase()).toBe('span');
-    expect(labelElement.classList.contains('mzn-button__label')).toBeTruthy();
   });
 
-  it('should not render the button label if no children', () => {
-    const { getHostHTMLElement } = render(<Button />);
+  it('should not render children if icon-only mode', () => {
+    const { getHostHTMLElement } = render(
+      <Button icon={{ position: 'icon-only', src: PlusIcon }}>
+        Should not render
+      </Button>,
+    );
     const element = getHostHTMLElement();
 
-    expect(element.firstElementChild).toBe(null);
+    expect(element.textContent).toBe('');
   });
 
-  describe('prop: color', () => {
-    it('should render color="primary" by default', () => {
+  describe('prop: variant', () => {
+    it('should render variant="base-primary" by default', () => {
       const { getHostHTMLElement } = render(<Button />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-button--primary')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button--base-primary'),
+      ).toBeTruthy();
     });
 
-    const colors: ButtonColor[] = ['primary', 'secondary'];
+    const variants: ButtonVariant[] = [
+      'base-primary',
+      'base-secondary',
+      'base-tertiary',
+      'base-ghost',
+      'base-dashed',
+      'base-text-link',
+      'destructive-primary',
+      'destructive-secondary',
+      'destructive-ghost',
+      'destructive-text-link',
+      'inverse',
+    ];
 
-    colors.forEach((color) => {
-      it(`should add class if color="${color}"`, () => {
-        const { getHostHTMLElement } = render(<Button color={color} />);
+    variants.forEach((variant) => {
+      it(`should add class if variant="${variant}"`, () => {
+        const { getHostHTMLElement } = render(<Button variant={variant} />);
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-button--${color}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-button--${variant}`),
+        ).toBeTruthy();
+      });
+    });
+  });
+
+  describe('prop: size', () => {
+    it('should render size="main" by default', () => {
+      const { getHostHTMLElement } = render(<Button />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-button--main')).toBeTruthy();
+    });
+
+    const sizes: ButtonSize[] = ['main', 'sub', 'minor'];
+
+    sizes.forEach((size) => {
+      it(`should add class if size="${size}"`, () => {
+        const { getHostHTMLElement } = render(<Button size={size} />);
+        const element = getHostHTMLElement();
+
+        expect(element.classList.contains(`mzn-button--${size}`)).toBeTruthy();
       });
     });
   });
@@ -66,24 +100,22 @@ describe('<Button />', () => {
       expect(element.tagName.toLowerCase()).toBe('button');
     });
 
-    const components: ButtonComponent[] = ['button', 'a'];
-
-    components.forEach((component) => {
-      it(`should render by overriding component="${component}"`, () => {
-        const { getHostHTMLElement } = render(<Button component={component} />);
-        const element = getHostHTMLElement();
-
-        expect(element.tagName.toLowerCase()).toBe(component);
-      });
-    });
-  });
-
-  describe('prop:danger', () => {
-    it('should add class if danger=true', () => {
-      const { getHostHTMLElement } = render(<Button danger />);
+    it('should render as anchor tag when component="a"', () => {
+      const { getHostHTMLElement } = render(<Button component="a" />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-button--danger')).toBeTruthy();
+      expect(element.tagName.toLowerCase()).toBe('a');
+    });
+
+    it('should render custom component', () => {
+      const CustomComponent = (props: any) => <div {...props} data-custom />;
+      const { getHostHTMLElement } = render(
+        <Button component={CustomComponent} />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.tagName.toLowerCase()).toBe('div');
+      expect(element.hasAttribute('data-custom')).toBeTruthy();
     });
   });
 
@@ -107,7 +139,7 @@ describe('<Button />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.getAttribute('aria-disabled')).toBeTruthy();
+      expect(element.getAttribute('aria-disabled')).toBe('true');
     });
   });
 
@@ -125,68 +157,102 @@ describe('<Button />', () => {
       });
     });
 
-    it('should replace prefix w/ loading icon if no icon provided', () => {
+    it('should render loading spinner when loading=true', () => {
       const { getHostHTMLElement } = render(<Button loading>Hello</Button>);
       const element = getHostHTMLElement();
-      const { firstElementChild: loadingIconElement } = element;
+      const iconElement = element.querySelector('i');
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
         SpinnerIcon.name,
       );
     });
 
-    it('should replace prefix w/ loading icon if only prefix provided', () => {
+    it('should replace icon with loading spinner', () => {
       const { getHostHTMLElement } = render(
-        <Button loading prefix={<Icon icon={PlusIcon} />}>
+        <Button loading icon={{ position: 'leading', src: PlusIcon }}>
           Hello
         </Button>,
       );
       const element = getHostHTMLElement();
-      const { firstElementChild: loadingIconElement } = element;
+      const iconElement = element.querySelector('i');
 
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
         SpinnerIcon.name,
       );
-    });
-
-    it('should replace suffix w/ loading icon if only suffix provided', () => {
-      const { getHostHTMLElement } = render(
-        <Button loading suffix={<Icon icon={PlusIcon} />}>
-          Hello
-        </Button>,
-      );
-      const element = getHostHTMLElement();
-      const { lastElementChild: loadingIconElement } = element;
-
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
-        SpinnerIcon.name,
-      );
-    });
-
-    it('should replace prefix w/ loading icon if both prefix and suffix provided', () => {
-      const { getHostHTMLElement } = render(
-        <Button
-          loading
-          prefix={<Icon icon={PlusIcon} />}
-          suffix={<Icon icon={PlusIcon} />}
-        >
-          Hello
-        </Button>,
-      );
-      const element = getHostHTMLElement();
-      const {
-        firstElementChild: loadingIconElement,
-        lastElementChild: suffixElement,
-      } = element;
-
-      expect(loadingIconElement?.getAttribute('data-icon-name')).toBe(
-        SpinnerIcon.name,
-      );
-      expect(suffixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
     });
   });
 
-  describe('prop:onClick', () => {
+  describe('prop: icon', () => {
+    describe('position: leading', () => {
+      it('should render icon before text', () => {
+        const { getHostHTMLElement } = render(
+          <Button icon={{ position: 'leading', src: PlusIcon }}>Hello</Button>,
+        );
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains('mzn-button--icon-leading'),
+        ).toBeTruthy();
+        expect(element.firstElementChild?.tagName.toLowerCase()).toBe('i');
+        expect(element.firstElementChild?.getAttribute('data-icon-name')).toBe(
+          PlusIcon.name,
+        );
+        expect(element.textContent).toBe('Hello');
+      });
+    });
+
+    describe('position: trailing', () => {
+      it('should render icon after text', () => {
+        const { getHostHTMLElement } = render(
+          <Button icon={{ position: 'trailing', src: SearchIcon }}>
+            Hello
+          </Button>,
+        );
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains('mzn-button--icon-trailing'),
+        ).toBeTruthy();
+        expect(element.lastElementChild?.tagName.toLowerCase()).toBe('i');
+        expect(element.lastElementChild?.getAttribute('data-icon-name')).toBe(
+          SearchIcon.name,
+        );
+        expect(element.textContent).toBe('Hello');
+      });
+    });
+
+    describe('position: icon-only', () => {
+      it('should render only icon without text', () => {
+        const { getHostHTMLElement } = render(
+          <Button icon={{ position: 'icon-only', src: PlusIcon }}>
+            Should not render
+          </Button>,
+        );
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains('mzn-button--icon-only'),
+        ).toBeTruthy();
+        expect(element.textContent).toBe('');
+        expect(element.querySelector('i')?.getAttribute('data-icon-name')).toBe(
+          PlusIcon.name,
+        );
+      });
+
+      it('should auto detect icon-only when icon provided but no children', () => {
+        const { getHostHTMLElement } = render(
+          <Button icon={{ position: 'leading', src: PlusIcon }} />,
+        );
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains('mzn-button--icon-only'),
+        ).toBeTruthy();
+      });
+    });
+  });
+
+  describe('prop: onClick', () => {
     it('should be fired on click event', () => {
       const onClick = jest.fn();
       const { getHostHTMLElement } = render(<Button onClick={onClick} />);
@@ -194,7 +260,7 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).toBeCalledTimes(1);
+      expect(onClick).toHaveBeenCalledTimes(1);
     });
 
     it('should not be fired if disabled=true', () => {
@@ -206,7 +272,7 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).not.toBeCalled();
+      expect(onClick).not.toHaveBeenCalled();
     });
 
     it('should not be fired if loading=true', () => {
@@ -218,102 +284,65 @@ describe('<Button />', () => {
 
       fireEvent.click(element);
 
-      expect(onClick).not.toBeCalled();
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 
-  describe('prop: prefix', () => {
-    it('should render icon before button label', () => {
+  describe('combinations', () => {
+    it('should work with variant + size', () => {
       const { getHostHTMLElement } = render(
-        <Button prefix={<Icon icon={PlusIcon} />}>Hello</Button>,
+        <Button variant="destructive-primary" size="minor">
+          Delete
+        </Button>,
       );
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: prefixElement,
-        lastElementChild: labelElement,
-        childElementCount,
-      } = element;
 
-      expect(childElementCount).toBe(2);
-      expect(prefixElement?.tagName.toLowerCase()).toBe('i');
-      expect(prefixElement?.getAttribute('data-icon-name')).toBe(PlusIcon.name);
-      expect(labelElement?.textContent).toBe('Hello');
-      expect(labelElement?.tagName.toLowerCase()).toBe('span');
-    });
-  });
-
-  describe('prop: size', () => {
-    it('should render size="medium" by default', () => {
-      const { getHostHTMLElement } = render(<Button />);
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-button--medium')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button--destructive-primary'),
+      ).toBeTruthy();
+      expect(element.classList.contains('mzn-button--minor')).toBeTruthy();
     });
 
-    it('should accept ConfigProvider context size changes', () => {
+    it('should work with variant + icon', () => {
       const { getHostHTMLElement } = render(
-        <ConfigProvider size="large">
-          <Button />
-        </ConfigProvider>,
+        <Button
+          variant="base-secondary"
+          icon={{ position: 'leading', src: PlusIcon }}
+        >
+          Add
+        </Button>,
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-button--large')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button--base-secondary'),
+      ).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button--icon-leading'),
+      ).toBeTruthy();
     });
 
-    const sizes: ButtonSize[] = ['small', 'medium', 'large'];
-
-    sizes.forEach((size) => {
-      it(`should add class if size="${size}"`, () => {
-        const { getHostHTMLElement } = render(<Button size={size} />);
-        const element = getHostHTMLElement();
-
-        expect(element.classList.contains(`mzn-button--${size}`)).toBeTruthy();
-      });
-    });
-  });
-
-  describe('prop: suffix', () => {
-    it('should render icon after button label', () => {
+    it('should work with all states', () => {
       const { getHostHTMLElement } = render(
-        <Button suffix={<Icon icon={PlusIcon} />}>Hello</Button>,
+        <Button
+          variant="destructive-primary"
+          size="sub"
+          disabled
+          icon={{ position: 'trailing', src: SearchIcon }}
+        >
+          Complex
+        </Button>,
       );
       const element = getHostHTMLElement();
-      const {
-        firstElementChild: labelElement,
-        lastElementChild: suffixdElement,
-        childElementCount,
-      } = element;
 
-      expect(childElementCount).toBe(2);
-      expect(labelElement?.textContent).toBe('Hello');
-      expect(labelElement?.tagName.toLowerCase()).toBe('span');
-      expect(suffixdElement?.tagName.toLowerCase()).toBe('i');
-      expect(suffixdElement?.getAttribute('data-icon-name')).toBe(
-        PlusIcon.name,
-      );
-    });
-  });
-
-  describe('prop: variant', () => {
-    it('should render variant="text" by default. The text button doesn\'t have specific class', () => {
-      const { getHostHTMLElement } = render(<Button />);
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-button')).toBeTruthy();
-    });
-
-    const variants: ButtonVariant[] = ['text', 'outlined', 'contained'];
-
-    variants.forEach((variant) => {
-      it(`should add class as need if variant="${variant}"`, () => {
-        const { getHostHTMLElement } = render(<Button variant={variant} />);
-        const element = getHostHTMLElement();
-
-        expect(element.classList.contains(`mzn-button--${variant}`)).toBe(
-          variant !== 'text',
-        );
-      });
+      expect(
+        element.classList.contains('mzn-button--destructive-primary'),
+      ).toBeTruthy();
+      expect(element.classList.contains('mzn-button--sub')).toBeTruthy();
+      expect(element.classList.contains('mzn-button--disabled')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-button--icon-trailing'),
+      ).toBeTruthy();
     });
   });
 });

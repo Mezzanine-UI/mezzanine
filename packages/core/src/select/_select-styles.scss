@@ -2,13 +2,12 @@
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
 @use '../text-field';
 @use './select' as *;
 
 $popper-vertical-padding: 4px !default;
 $popper-horizontal-padding: 0 !default;
-$tags-container-padding: 4px !default;
-$tags-gap: 4px !default;
 
 .#{$prefix} {
   position: relative;
@@ -23,31 +22,46 @@ $tags-gap: 4px !default;
 }
 
 .#{$trigger-prefix} {
-  input {
-    padding-left: var(--#{text-field.$prefix}-padding-left);
-    padding-right: var(--#{text-field.$prefix}-padding-right);
+  cursor: pointer;
 
-    &:read-only {
-      cursor: pointer;
-    }
-
-    /* clears the 'X' from Internet Explorer */
-    &[type='search']::-ms-clear,
-    &[type='search']::-ms-reveal {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-
-    /* clears the 'X' from Chrome */
-    &[type='search']::-webkit-search-decoration,
-    &[type='search']::-webkit-search-cancel-button,
-    &[type='search']::-webkit-search-results-button,
-    &[type='search']::-webkit-search-results-decoration {
-      display: none;
-    }
+  &__input {
+    appearance: none;
+    min-width: 0;
   }
 
+  &--readonly {
+    cursor: default;
+  }
+
+  &--multiple.#{$trigger-prefix}--selected {
+    padding: spacing.semantic-variable(padding, vertical, tiny)
+      spacing.semantic-variable(padding, horizontal, cozy)
+      spacing.semantic-variable(padding, horizontal, tiny)
+      spacing.semantic-variable(padding, vertical, tiny);
+    gap: spacing.semantic-variable(gap, slim);
+
+    .#{$trigger-prefix}__input {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+  }
+}
+
+.#{$trigger-prefix}__tags-input-wrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  flex-wrap: wrap;
+
+  &--ellipsis {
+    flex-wrap: nowrap;
+  }
+}
+
+.#{$trigger-prefix} {
   &__tags-input-wrapper {
     width: 100%;
     display: flex;
@@ -66,10 +80,12 @@ $tags-gap: 4px !default;
   }
 
   &__tags {
-    padding-top: $tags-container-padding;
-    padding-left: $tags-container-padding;
     width: auto;
-    max-width: calc(100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(--#{text-field.$prefix}-icon-size));
+    max-width: calc(
+      100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(
+          --#{text-field.$prefix}-icon-size
+        )
+    );
     display: flex;
     flex-flow: row wrap;
     align-items: center;
@@ -78,17 +94,11 @@ $tags-gap: 4px !default;
     &--ellipsis {
       flex-wrap: unset;
     }
-
-    > span {
-      margin-right: $tags-gap;
-      margin-bottom: $tags-gap;
-    }
   }
 
   & &__suffix-action-icon {
     transition:
-      transition.standard(transform),
-      transition.standard(color),
+      transition.standard(transform), transition.standard(color),
       transition.standard(opacity);
     will-change: transform, color, opacity;
 

@@ -5,23 +5,28 @@
 @use '~@mezzanine-ui/core';
 
 :root {
-  @include system.common-variables();
-  @include system.palette();
+  @include system.common-variables("default");
+  @include system.colors();
 }
 
 .sb-show-main {
-  background-color: palette.color(bg);
-  color: palette.color(text-primary);
+  padding: 0 !important;
+  background-color: palette.semantic-variable("background", base);
+  color: palette.semantic-variable(text, neutral);
   transition: transition.standard(background-color), transition.standard(color);
   will-change: background-color, color;
 }
 
 .custom-table-header {
-  background-color: palette.color(primary) !important;
+  background-color: palette.semantic-variable("background", base) !important;
 }
 
 .custom-table-body {
-  color: palette.color(primary);
+  color: palette.semantic-variable(text, neutral);
+}
+
+#storybook-root {
+  padding: 1em;
 }
 
 @include core.styles();

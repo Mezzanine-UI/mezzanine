@@ -10,19 +10,15 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Calendar, {
-  CalendarConfigProvider,
-  CalendarDays,
-  CalendarMonths,
-  CalendarWeeks,
-  CalendarYears,
-} from '.';
+import Calendar, { CalendarConfigProvider } from '.';
 
 // Mock Calendar Component
 const mockCalendarDaysRender = jest.fn();
 const mockCalendarMonthsRender = jest.fn();
 const mockCalendarWeeksRender = jest.fn();
 const mockCalendarYearsRender = jest.fn();
+const mockCalendarQuartersRender = jest.fn();
+const mockCalendarHalfYearsRender = jest.fn();
 
 jest.mock('./CalendarDays', () => {
   return function MockCalendarDays(props: any) {
@@ -52,13 +48,19 @@ jest.mock('./CalendarYears', () => {
   };
 });
 
-const modes: CalendarMode[] = ['day', 'month', 'week', 'year'];
-const calendars = {
-  day: CalendarDays,
-  month: CalendarMonths,
-  week: CalendarWeeks,
-  year: CalendarYears,
-};
+jest.mock('./CalendarQuarters', () => {
+  return function MockCalendarQuarters(props: any) {
+    mockCalendarQuartersRender(props);
+    return <div data-testid="mock-calendar-quarters">Mock Child</div>;
+  };
+});
+
+jest.mock('./CalendarHalfYears', () => {
+  return function MockCalendarHalfYears(props: any) {
+    mockCalendarHalfYearsRender(props);
+    return <div data-testid="mock-calendar-half-years">Mock Child</div>;
+  };
+});
 
 describe('<Calendar />', () => {
   afterEach(cleanup);
@@ -99,6 +101,8 @@ describe('<Calendar />', () => {
       mockCalendarMonthsRender.mockClear();
       mockCalendarWeeksRender.mockClear();
       mockCalendarYearsRender.mockClear();
+      mockCalendarQuartersRender.mockClear();
+      mockCalendarHalfYearsRender.mockClear();
     });
 
     it('default to "day"', () => {
@@ -139,6 +143,26 @@ describe('<Calendar />', () => {
       );
 
       expect(mockCalendarYearsRender).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render CalendarQuarters when mode="quarter"', () => {
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="quarter" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(mockCalendarQuartersRender).toHaveBeenCalledTimes(1);
+    });
+
+    it('should render CalendarHalfYears when mode="half-year"', () => {
+      render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="half-year" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(mockCalendarHalfYearsRender).toHaveBeenCalledTimes(1);
     });
 
     describe('props should be passed to corresponded calendar', () => {
@@ -267,6 +291,66 @@ describe('<Calendar />', () => {
           }),
         );
       });
+
+      it('case: mode="quarter"', () => {
+        const isQuarterDisabled = jest.fn();
+        const isQuarterInRange = jest.fn();
+        const onChange = jest.fn();
+        const onQuarterHover = jest.fn();
+        const referenceDate = moment().toISOString();
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <Calendar
+              mode="quarter"
+              referenceDate={referenceDate}
+              isQuarterDisabled={isQuarterDisabled}
+              isQuarterInRange={isQuarterInRange}
+              onQuarterHover={onQuarterHover}
+              onChange={onChange}
+            />
+          </CalendarConfigProvider>,
+        );
+
+        expect(mockCalendarQuartersRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isQuarterDisabled,
+            isQuarterInRange,
+            onClick: onChange,
+            onQuarterHover,
+            referenceDate,
+          }),
+        );
+      });
+
+      it('case: mode="half-year"', () => {
+        const isHalfYearDisabled = jest.fn();
+        const isHalfYearInRange = jest.fn();
+        const onChange = jest.fn();
+        const onHalfYearHover = jest.fn();
+        const referenceDate = moment().toISOString();
+        render(
+          <CalendarConfigProvider methods={CalendarMethodsMoment}>
+            <Calendar
+              mode="half-year"
+              referenceDate={referenceDate}
+              isHalfYearDisabled={isHalfYearDisabled}
+              isHalfYearInRange={isHalfYearInRange}
+              onHalfYearHover={onHalfYearHover}
+              onChange={onChange}
+            />
+          </CalendarConfigProvider>,
+        );
+
+        expect(mockCalendarHalfYearsRender).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isHalfYearDisabled,
+            isHalfYearInRange,
+            onClick: onChange,
+            onHalfYearHover,
+            referenceDate,
+          }),
+        );
+      });
     });
 
     describe('should have relevant control buttons', () => {
@@ -354,44 +438,80 @@ describe('<Calendar />', () => {
   });
 
   describe('prop: onNext', () => {
-    it('CalendarControls should receive onNext if prop provided', () => {
+    it('CalendarControls should receive onNext if prop provided in day mode', () => {
       const onNext = jest.fn();
-      const { getHostHTMLElement } = render(
+      const { getByTitle } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment().toISOString()} onNext={onNext} />
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="day"
+            onNext={onNext}
+          />
         </CalendarConfigProvider>,
       );
-      const hostElement = getHostHTMLElement();
-      const nextButtonElement = hostElement.querySelector(
-        '.mzn-calendar-controls__next',
-      );
+      const nextButtonElement = getByTitle('Next');
 
       expect(nextButtonElement).toBeInstanceOf(HTMLButtonElement);
 
-      fireEvent.click(nextButtonElement!);
+      fireEvent.click(nextButtonElement);
 
       expect(onNext).toHaveBeenCalledTimes(1);
+      expect(onNext).toHaveBeenCalledWith('day');
+    });
+
+    it('should not render single next button in year mode', () => {
+      const onNext = jest.fn();
+      const { queryByTitle } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="year"
+            onNext={onNext}
+          />
+        </CalendarConfigProvider>,
+      );
+      const nextButtonElement = queryByTitle('Next');
+
+      expect(nextButtonElement).toBeNull();
     });
   });
 
   describe('prop: onPrev', () => {
-    it('CalendarControls should receive onPrev if prop provided', () => {
+    it('CalendarControls should receive onPrev if prop provided in day mode', () => {
       const onPrev = jest.fn();
-      const { getHostHTMLElement } = render(
+      const { getByTitle } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <Calendar referenceDate={moment().toISOString()} onPrev={onPrev} />
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="day"
+            onPrev={onPrev}
+          />
         </CalendarConfigProvider>,
       );
-      const hostElement = getHostHTMLElement();
-      const prevButtonElement = hostElement.querySelector(
-        '.mzn-calendar-controls__prev',
-      );
+      const prevButtonElement = getByTitle('Previous');
 
       expect(prevButtonElement).toBeInstanceOf(HTMLButtonElement);
 
-      fireEvent.click(prevButtonElement!);
+      fireEvent.click(prevButtonElement);
 
       expect(onPrev).toHaveBeenCalledTimes(1);
+      expect(onPrev).toHaveBeenCalledWith('day');
+    });
+
+    it('should not render single prev button in month mode', () => {
+      const onPrev = jest.fn();
+      const { queryByTitle } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="month"
+            onPrev={onPrev}
+          />
+        </CalendarConfigProvider>,
+      );
+      const prevButtonElement = queryByTitle('Previous');
+
+      expect(prevButtonElement).toBeNull();
     });
   });
 
@@ -418,6 +538,158 @@ describe('<Calendar />', () => {
           value: [value],
         }),
       );
+    });
+  });
+
+  describe('prop: onDoubleNext', () => {
+    it('should receive onDoubleNext handler and call it when double next button clicked', () => {
+      const onDoubleNext = jest.fn();
+      const { getByTitle } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            onDoubleNext={onDoubleNext}
+          />
+        </CalendarConfigProvider>,
+      );
+      const doubleNextButton = getByTitle('Double Next');
+
+      expect(doubleNextButton).toBeInstanceOf(HTMLButtonElement);
+
+      fireEvent.click(doubleNextButton);
+
+      expect(onDoubleNext).toHaveBeenCalledTimes(1);
+      expect(onDoubleNext).toHaveBeenCalledWith('day');
+    });
+  });
+
+  describe('prop: onDoublePrev', () => {
+    it('should receive onDoublePrev handler and call it when double prev button clicked', () => {
+      const onDoublePrev = jest.fn();
+      const { getByTitle } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            onDoublePrev={onDoublePrev}
+          />
+        </CalendarConfigProvider>,
+      );
+      const doublePrevButton = getByTitle('Double Previous');
+
+      expect(doublePrevButton).toBeInstanceOf(HTMLButtonElement);
+
+      fireEvent.click(doublePrevButton);
+
+      expect(onDoublePrev).toHaveBeenCalledTimes(1);
+      expect(onDoublePrev).toHaveBeenCalledWith('day');
+    });
+  });
+
+  describe('prop: disabledFooterControl', () => {
+    it('should render footer control by default', () => {
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="day" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('Today')).toBeInstanceOf(HTMLButtonElement);
+    });
+
+    it('should not render footer control when disabledFooterControl is true', () => {
+      const { queryByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            mode="day"
+            disabledFooterControl
+          />
+        </CalendarConfigProvider>,
+      );
+
+      expect(queryByText('Today')).toBeNull();
+    });
+
+    it('should render correct footer text for different modes', () => {
+      const { getByText, rerender } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="week" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This week')).toBeInstanceOf(HTMLButtonElement);
+
+      rerender(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="month" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This month')).toBeInstanceOf(HTMLButtonElement);
+
+      rerender(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="year" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This year')).toBeInstanceOf(HTMLButtonElement);
+
+      rerender(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="quarter" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This quarter')).toBeInstanceOf(HTMLButtonElement);
+
+      rerender(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} mode="half-year" />
+        </CalendarConfigProvider>,
+      );
+
+      expect(getByText('This half year')).toBeInstanceOf(HTMLButtonElement);
+    });
+  });
+
+  describe('prop: quickSelect', () => {
+    it('should render quick select when provided', () => {
+      const options = [
+        { id: 'today', name: 'Today', onClick: jest.fn() },
+        { id: 'yesterday', name: 'Yesterday', onClick: jest.fn() },
+      ];
+
+      const { getByText } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar
+            referenceDate={moment().toISOString()}
+            disabledFooterControl
+            quickSelect={{
+              activeId: 'today',
+              options,
+            }}
+          />
+        </CalendarConfigProvider>,
+      );
+
+      // Should have Today and Yesterday in quick select
+      expect(getByText('Today')).toBeInstanceOf(HTMLSpanElement);
+      expect(getByText('Yesterday')).toBeInstanceOf(HTMLSpanElement);
+    });
+
+    it('should not render quick select when not provided', () => {
+      const { container } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <Calendar referenceDate={moment().toISOString()} />
+        </CalendarConfigProvider>,
+      );
+
+      const quickSelectElement = container.querySelector(
+        '.mzn-calendar__quick-select',
+      );
+
+      expect(quickSelectElement).toBeNull();
     });
   });
 });

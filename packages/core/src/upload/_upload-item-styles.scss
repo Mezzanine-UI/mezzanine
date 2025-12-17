@@ -1,0 +1,254 @@
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '../icon';
+@use './upload-item' as *;
+
+$action-gap: spacing.semantic-variable(gap, base);
+$thumbnail-image-size: spacing.primitive-variable(40);
+
+.#{$prefix} {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  width: 100%;
+
+  &__container {
+    align-items: center;
+    background: palette.semantic-variable(background, neutral-subtle);
+    border: 1px solid transparent;
+    border-radius: radius.variable(base);
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 0 0;
+    gap: spacing.semantic-variable(gap, base);
+    justify-content: space-between;
+    padding-block: spacing.semantic-variable(padding, vertical, base);
+    padding-inline: spacing.semantic-variable(padding, horizontal, base);
+    position: relative;
+    transition: transition.standard(border-color, fast);
+    width: 100%;
+
+    &:hover {
+      border-color: palette.semantic-variable(border, brand);
+    }
+
+    &:focus,
+    &:focus-visible,
+    &:focus-within,
+    &:focus-within:hover {
+      outline: none;
+      border-color: palette.semantic-variable(border, brand);
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &__content-wrapper {
+    align-items: flex-start;
+    display: flex;
+    flex: 1;
+    gap: spacing.semantic-variable(gap, base);
+    min-width: 0;
+  }
+
+  &__icon {
+    align-items: center;
+    color: palette.semantic-variable(icon, neutral);
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+  }
+
+  &__content {
+    align-items: flex-start;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, tight);
+    min-width: 0;
+  }
+
+  &__name {
+    color: palette.semantic-variable(text, neutral-solid);
+    font-feature-settings: 'liga' off, 'clig' off;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    @include typography.semantic-variable(label-primary);
+  }
+
+  &__font-size {
+    color: palette.semantic-variable(text, neutral);
+    font-feature-settings: 'liga' off, 'clig' off;
+    width: 100%;
+    @include typography.semantic-variable(annotation);
+  }
+
+  &__actions {
+    align-items: center;
+    color: palette.semantic-variable(icon, neutral);
+    display: flex;
+    flex-shrink: 0;
+    gap: spacing.semantic-variable(gap, base);
+    margin-inline-start: $action-gap;
+    transition: transition.standard(color, fast);
+
+    &__close-icon {
+      cursor: pointer;
+
+      &:hover {
+        color: palette.semantic-variable(icon, brand);
+      }
+    }
+  }
+
+  &__loading-icon {
+    align-items: center;
+    display: flex;
+    height: spacing.semantic-variable(size, element, base);
+    justify-content: center;
+    position: relative;
+    width: spacing.semantic-variable(size, element, base);
+
+    &::before {
+      border-width: 1px;
+      border-style: solid;
+      border-color: palette.semantic-variable(text, fixed-light);
+      border-radius: 50%;
+      content: '';
+      height: 10px;
+      left: 50%;
+      pointer-events: none;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+    }
+  }
+
+  &__delete-content {
+    display: flex;
+    padding-block: spacing.semantic-variable(padding, vertical, calm);
+    padding-inline: spacing.semantic-variable(padding, horizontal, cozy);
+  }
+
+  &__download-icon {
+    color: palette.semantic-variable(icon, neutral);
+    cursor: pointer;
+    transition: transition.standard(color, fast);
+
+    &:hover {
+      color: palette.semantic-variable(icon, brand);
+    }
+  }
+
+  &__delete-icon {
+    color: palette.semantic-variable(icon, neutral-solid);
+    cursor: pointer;
+    transition: transition.standard(color, fast);
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral);
+    }
+  }
+
+  &__reset-icon {
+    color: palette.semantic-variable(icon, neutral);
+    cursor: pointer;
+    transition: transition.standard(color, fast);
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral-solid);
+    }
+  }
+
+  &__size--sub {
+    .#{$prefix}__container {
+      padding-block: spacing.semantic-variable(padding, vertical, tight);
+      padding-inline: spacing.semantic-variable(padding, horizontal, base);
+    }
+  }
+
+  &__thumbnail {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $thumbnail-image-size;
+    height: $thumbnail-image-size;
+    border-radius: radius.variable(base);
+    overflow: hidden;
+    background: palette.semantic-variable(background, neutral-ghost);
+
+    .#{$prefix}__icon {
+      color: palette.semantic-variable(icon, brand);
+    }
+  }
+
+  &--error {
+    .#{$prefix}__container {
+      border-color: palette.semantic-variable(border, error);
+
+      &:focus,
+      &:focus-visible,
+      &:focus-within,
+      &:focus-within:hover {
+        border-color: palette.semantic-variable(border, error);
+        box-shadow: effect.variable(focus, error);
+      }
+    }
+
+    .#{$prefix}__thumbnail {
+      .#{$prefix}__icon {
+        color: palette.semantic-variable(icon, error);
+      }
+    }
+  }
+
+  &__error-message {
+    display: flex;
+    align-items: center;
+    margin-top: spacing.semantic-variable(gap, tight);
+  }
+
+  &__error-message-text {
+    color: palette.semantic-variable(text, error);
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.semantic-variable(annotation);
+  }
+
+  &--disabled {
+    .#{$prefix}__container {
+      border-color: palette.semantic-variable("background", neutral-subtle);
+      cursor: not-allowed;
+
+      &:hover {
+        border-color: palette.semantic-variable("background", neutral-subtle);
+        cursor: not-allowed;
+      }
+
+      &:focus,
+      &:focus-visible,
+      &:focus-within,
+      &:focus-within:hover {
+        border-color: palette.semantic-variable("background", neutral-subtle);
+        cursor: not-allowed;
+      }
+    }
+
+    .#{$prefix}__delete-icon {
+      color: palette.semantic-variable(icon, neutral-light);
+      cursor: not-allowed;
+
+      &:hover {
+        color: palette.semantic-variable(icon, neutral-light);
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+

@@ -1,5 +1,6 @@
 import { IconDefinition } from './typings';
 
+/** @deprecated */
 export const ArrowLeftIcon: IconDefinition = {
   name: 'arrow-left',
   definition: {

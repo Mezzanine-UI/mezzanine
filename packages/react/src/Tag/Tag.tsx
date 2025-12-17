@@ -1,77 +1,123 @@
-import { forwardRef, MouseEventHandler, useContext } from 'react';
-import { tagClasses as classes, TagSize } from '@mezzanine-ui/core/tag';
-import { TimesIcon } from '@mezzanine-ui/icons';
-import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import Icon from '../Icon';
-import { MezzanineConfig } from '../Provider/context';
+'use client';
 
-export interface TagProps extends NativeElementPropsWithoutKeyAndRef<'span'> {
-  /**
-   * Whether the tag can be closed.
-   * @default false
-   */
-  closable?: boolean;
-  /**
-   * Whether the tag disabled.
-   * @default false
-   */
-  disabled?: boolean;
-  /**
-   * Callback executed while tag closed.
-   */
-  onClose?: MouseEventHandler;
-  /**
-   * The size of the tag.
-   * @default 'medium'
-   */
-  size?: TagSize;
-}
+import { forwardRef } from 'react';
+import { tagClasses as classes } from '@mezzanine-ui/core/tag';
+import { cx } from '../utils/cx';
+import { TagProps } from './typings';
+import Badge from '../Badge';
+import Icon from '../Icon';
+import { PlusIcon } from '@mezzanine-ui/icons';
+import { CloseIcon } from '@mezzanine-ui/icons';
+
+const getTagType = (props: TagProps) => props.type ?? 'static';
+
+const isTagType = <T extends NonNullable<TagProps['type']>>(
+  props: TagProps,
+  current: T,
+): props is Extract<TagProps, { type?: T }> => getTagType(props) === current;
 
 /**
  * The react component for `mezzanine` tag.
  */
-const Tag = forwardRef<HTMLSpanElement, TagProps>(function Tag(props, ref) {
-  const { size: globalSize } = useContext(MezzanineConfig);
-  const {
-    children,
-    className,
-    closable = false,
-    disabled = false,
-    onClose,
-    size = globalSize,
-    ...rest
-  } = props;
+const Tag = forwardRef<HTMLSpanElement | HTMLButtonElement, TagProps>(
+  function Tag(props, ref) {
+    const {
+      active,
+      className,
+      disabled,
+      onClick,
+      onClose: _onClose,
+      readOnly,
+      size = 'main',
+      type: _type,
+      ...rest
+    } = props;
 
-  return (
-    <span
-      {...rest}
-      ref={ref}
-      aria-disabled={disabled}
-      className={cx(
-        classes.host,
-        classes.size(size),
-        {
-          [classes.disabled]: disabled,
-        },
-        className,
-      )}
-    >
-      <span className={classes.label}>{children}</span>
-      {closable && (
-        <Icon
-          className={classes.closeIcon}
-          icon={TimesIcon}
-          onClick={(event) => {
-            if (!disabled && onClose) {
-              onClose(event);
-            }
-          }}
-          tabIndex={-1}
-        />
-      )}
-    </span>
-  );
-});
+    const tagType = _type ?? 'static';
+
+    const commonClassName = cx(
+      classes.host,
+      classes.size(size),
+      classes.type(tagType),
+      {
+        [classes.disabled]: disabled,
+        [classes.active]: active,
+        [classes.readOnly]: readOnly,
+      },
+      className,
+    );
+
+    if (isTagType(props, 'overflow-counter')) {
+      const { count } = props;
+
+      return (
+        <button
+          {...rest}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          type="button"
+          onClick={onClick}
+          disabled={disabled}
+          className={commonClassName}
+        >
+          <Icon className={classes.icon} icon={PlusIcon} size={16} />
+          <span className={classes.label}>{count}</span>
+        </button>
+      );
+    }
+
+    if (isTagType(props, 'addable')) {
+      const { label } = props;
+
+      return (
+        <button
+          {...rest}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          type="button"
+          onClick={onClick}
+          disabled={disabled}
+          className={commonClassName}
+        >
+          <Icon className={classes.icon} icon={PlusIcon} size={16} />
+          <span className={classes.label}>{label}</span>
+        </button>
+      );
+    }
+
+    return (
+      <span
+        {...rest}
+        ref={ref as React.Ref<HTMLSpanElement>}
+        aria-disabled={disabled}
+        className={commonClassName}
+      >
+        {isTagType(props, 'static') && (
+          <span className={classes.label}>{props.label}</span>
+        )}
+
+        {isTagType(props, 'counter') && (
+          <>
+            <span className={classes.label}>{props.label}</span>
+            <Badge variant="count-info" count={props.count} />
+          </>
+        )}
+
+        {isTagType(props, 'dismissable') && (
+          <>
+            <span className={classes.label}>{props.label}</span>
+
+            <button
+              className={classes.closeButton}
+              type="button"
+              onClick={props.onClose}
+              disabled={disabled}
+            >
+              <Icon className={classes.icon} icon={CloseIcon} size={16} />
+            </button>
+          </>
+        )}
+      </span>
+    );
+  },
+);
 
 export default Tag;

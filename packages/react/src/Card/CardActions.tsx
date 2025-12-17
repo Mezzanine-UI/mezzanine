@@ -61,6 +61,8 @@ const CardActions = forwardRef<HTMLDivElement, CardActionsProps>(
           hideCancelButton={hideCancelButton || !cancelText}
           hideConfirmButton={hideConfirmButton || !confirmText}
           loading={loading}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
         />
       </div>
     );

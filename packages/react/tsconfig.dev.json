@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "jsx": "react-jsxdev",
     "importHelpers": false,
     "noEmitHelpers": false
   },

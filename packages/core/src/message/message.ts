@@ -1,20 +1,22 @@
 import {
-  CheckCircleFilledIcon,
-  ExclamationCircleFilledIcon,
-  InfoCircleFilledIcon,
-  TimesCircleFilledIcon,
+  CheckedFilledIcon,
+  ErrorFilledIcon,
+  InfoFilledIcon,
+  SpinnerIcon,
+  WarningFilledIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
-export type MessageSeverity = SeverityWithInfo;
+export type MessageSeverity = SeverityWithInfo | 'loading';
 
 export const messagePrefix = 'mzn-message';
 
 export const messageIcons = {
-  success: CheckCircleFilledIcon,
-  warning: ExclamationCircleFilledIcon,
-  error: TimesCircleFilledIcon,
-  info: InfoCircleFilledIcon,
+  success: CheckedFilledIcon,
+  warning: WarningFilledIcon,
+  error: ErrorFilledIcon,
+  info: InfoFilledIcon,
+  loading: SpinnerIcon,
 } as const;
 
 export const messageClasses = {
