@@ -1,13 +1,11 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
 @use '../_internal/input-check';
 @use './radio' as *;
 
-$dot-size: 8px !default;
-$dot-size-small: 6px !default;
-
 .#{$prefix} {
-  --#{$prefix}-dot-size: #{$dot-size};
+  --#{$prefix}-dot-size: #{spacing.semantic-variable(size, element, tight)};
   --#{$prefix}-dot-top: calc((100% - var(--#{$prefix}-dot-size)) / 2);
 
   position: relative;
@@ -15,6 +13,7 @@ $dot-size-small: 6px !default;
   height: 100%;
   border-radius: 50%;
   border: 1px solid palette.semantic-variable('border', neutral);
+  background-color: palette.semantic-variable('background', base);
   transition: transition.standard(border-color);
   will-change: border-color;
   box-sizing: border-box;
@@ -38,18 +37,19 @@ $dot-size-small: 6px !default;
     }
   }
 
+  &--error {
+    border-color: palette.semantic-variable('border', error-subtle)
+  }
+
   &:hover,
   .#{input-check.$prefix}:hover &,
   &--checked,
   .#{input-check.$prefix}--disabled & {
     border-color: var(--#{input-check.$prefix}-color);
   }
-}
 
-.#{input-check.$prefix} {
-  &--small {
-    .#{$prefix} {
-      --#{$prefix}-dot-size: #{$dot-size-small};
-    }
+  .#{input-check.$prefix}--disabled & {
+    background-color: #E5E7EB; //TODO: --background-neutral-subtle-disabled,
   }
 }
+
