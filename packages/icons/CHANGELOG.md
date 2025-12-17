@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.2...@mezzanine-ui/icons@1.0.0-canary.3) (2025-12-17)
+
+### Bug Fixes
+
+- **icons:** export newly added icons in barrel files ([a3aaaca](https://github.com/Mezzanine-UI/mezzanine/commit/a3aaaca3aed05743942d13ea3fb27bed1a6e91cc))
+
+### Features
+
+- **icon:** add content/box, system/system ([395c9d9](https://github.com/Mezzanine-UI/mezzanine/commit/395c9d9667b9b28d140892ecca4cb097f1b05d3a))
+- **icons:** reorder icons according to design specification changes ([0a8bb02](https://github.com/Mezzanine-UI/mezzanine/commit/0a8bb0230c4870ac7c18d5b6564828ae5b37fa7d))
+
 # [1.0.0-canary.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@0.16.0...@mezzanine-ui/icons@1.0.0-canary.2) (2025-11-17)
 
 ### Features
