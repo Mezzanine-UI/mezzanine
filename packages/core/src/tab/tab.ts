@@ -2,11 +2,11 @@ export const tabPrefix = 'mzn-tab';
 
 export const tabClasses = {
   host: tabPrefix,
-  tabBar: `${tabPrefix}__tab-bar`,
-  overflow: `${tabPrefix}--overflow`,
-  tab: `${tabPrefix}__tab`,
-  scrollBtn: `${tabPrefix}__scroll-btn`,
+  tabHorizontal: `${tabPrefix}--horizontal`,
+  tabVertical: `${tabPrefix}--vertical`,
+  tabActiveBar: `${tabPrefix}__active-bar`,
   tabItem: `${tabPrefix}__item`,
-  tabActive: `${tabPrefix}__item--active`,
-  pane: `${tabPrefix}__pane`,
+  tabItemActive: `${tabPrefix}__item--active`,
+  tabItemIcon: `${tabPrefix}__item__icon`,
+  tabItemBadge: `${tabPrefix}__item__badge`,
 } as const;
