@@ -24,6 +24,10 @@ export interface RadioProps
    */
   defaultChecked?: boolean;
   /**
+   * Support text of hint.
+   */
+  hint?: string;
+  /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
    *  If you need direct control to the input element, use this prop to provide to it.
    *
@@ -78,6 +82,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
       defaultChecked,
       disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
       error = severity === 'error' || false,
+      hint,
       inputProps,
       onChange: onChangeProp,
       size = sizeFromGroup || globalSize,
@@ -133,6 +138,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
         disabled={disabled}
         error={error}
         focused={focused}
+        hint={hint}
         htmlFor={inputId}
         size={size}
       >

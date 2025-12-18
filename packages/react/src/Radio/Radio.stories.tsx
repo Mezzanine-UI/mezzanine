@@ -23,10 +23,11 @@ export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => (
 );
 
 Playground.args = {
-  children: 'label',
+  children: 'Radio Button Label',
   error: false,
   disabled: false,
   defaultChecked: false,
+  hint: 'Support text',
   size: 'medium',
 };
 
@@ -79,6 +80,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
     {
       value: 'option-2',
       label: 'Option 2',
+      hint: 'option2 support text',
     },
     {
       value: 'option-disabled',
@@ -97,11 +99,18 @@ export const Group: StoryFn<RadioGroupProps> = ({
       <Typography variant="h2">From children</Typography>
       <RadioGroup disabled={disabled} orientation={orientation} size={size}>
         {options.map(
-          ({ disabled: optionDisabled, error: optionError, label, value }) => (
+          ({
+            disabled: optionDisabled,
+            error: optionError,
+            hint,
+            label,
+            value,
+          }) => (
             <Radio
               key={value}
               disabled={optionDisabled}
               error={optionError}
+              hint={hint}
               value={value}
             >
               {label}
