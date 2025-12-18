@@ -1,12 +1,16 @@
 export const drawerPrefix = 'mzn-drawer';
 
-export type DrawerPlacement = 'top' | 'right' | 'bottom'| 'left';
+export type DrawerPlacement = 'top' | 'right' | 'bottom' | 'left';
+
+export type DrawerSize = 'narrow' | 'medium' | 'wide';
 
 export const drawerClasses = {
   host: drawerPrefix,
   overlay: `${drawerPrefix}__overlay`,
-  top: `${drawerPrefix}--top`,
   right: `${drawerPrefix}--right`,
-  bottom: `${drawerPrefix}--bottom`,
-  left: `${drawerPrefix}--left`,
-};
+  header: `${drawerPrefix}__header`,
+  bottom: `${drawerPrefix}__bottom`,
+  bottom__actions: `${drawerPrefix}__bottom__actions`,
+  size: (size: DrawerSize) => `${drawerPrefix}--${size}`,
+  content: `${drawerPrefix}__content`,
+} as const;
