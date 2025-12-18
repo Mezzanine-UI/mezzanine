@@ -32,6 +32,10 @@ export interface InputCheckProps
    */
   focused?: boolean;
   /**
+   * Support text of input check.
+   */
+  hint?: string;
+  /**
    * The size of input check.
    * @default 'medium'
    */
@@ -50,6 +54,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
       disabled,
       error,
       focused,
+      hint,
       htmlFor,
       size = 'medium',
       ...rest
@@ -78,7 +83,12 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
         >
           {control}
         </span>
-        {children && <span className={classes.label}>{children}</span>}
+        {children && (
+          <span className={classes.label}>
+            {children}
+            {hint && <span className={classes.hint}>{hint}</span>}
+          </span>
+        )}
       </label>
     );
   },
