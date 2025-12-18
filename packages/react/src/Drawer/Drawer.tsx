@@ -30,7 +30,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     onBackdropClick,
     onClose,
     open,
-    placement = 'left',
+    placement = 'right',
     ...rest
   } = props;
 
