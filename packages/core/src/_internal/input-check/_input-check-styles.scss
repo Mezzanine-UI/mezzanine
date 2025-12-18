@@ -59,12 +59,20 @@
 
   &__label {
     @include typography.semantic-variable(label-primary);
+    display: inline-flex;
+    flex-direction: column;
     color: palette.semantic-variable(text, neutral-solid);
     margin-left: spacing.semantic-variable(gap, tight);
+    gap: spacing.semantic-variable(gap, tight);
 
     &:empty {
       display: none;
     }
+  }
+
+  &__hint {
+    @include typography.semantic-variable(caption);
+    color: palette.semantic-variable(text, neutral);
   }
 
   &--with-label {

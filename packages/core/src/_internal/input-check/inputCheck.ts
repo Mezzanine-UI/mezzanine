@@ -13,4 +13,5 @@ export const inputCheckClasses = {
   control: `${inputCheckPrefix}__control`,
   controlFocused: `${inputCheckPrefix}__control--focused`,
   label: `${inputCheckPrefix}__label`,
+  hint: `${inputCheckPrefix}__hint`,
 } as const;
