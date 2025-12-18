@@ -1,23 +1,31 @@
+import { tabClasses } from '@mezzanine-ui/core/tab';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { Tab } from '.';
+import TabItem from './TabItem';
 
-describe('<Tab />', () => {
+describe('<TabItem />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLButtonElement, (ref) =>
-    render(<Tab ref={ref} />),
+    render(<TabItem ref={ref}>tab</TabItem>),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<Tab className={className} />),
+    render(<TabItem className={className}>tab</TabItem>),
   );
 
+  it('should bind host class', () => {
+    const { getHostHTMLElement } = render(<TabItem>tab</TabItem>);
+    const element = getHostHTMLElement();
+
+    expect(element.classList.contains(tabClasses.tabItem)).toBeTruthy();
+  });
+
   it('should wrap children by button', () => {
-    const { getHostHTMLElement } = render(<Tab>tab</Tab>);
+    const { getHostHTMLElement } = render(<TabItem>tab</TabItem>);
     const element = getHostHTMLElement();
 
     expect(element.tagName.toLowerCase()).toBe('button');
@@ -25,51 +33,94 @@ describe('<Tab />', () => {
   });
 
   describe('prop: active', () => {
-    it('should be render active=false by default', () => {
-      const { getHostHTMLElement } = render(<Tab>tab</Tab>);
+    it('should render active=false by default', () => {
+      const { getHostHTMLElement } = render(<TabItem>tab</TabItem>);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-tabs__tab--active')).toBeFalsy();
+      expect(element.classList.contains(tabClasses.tabItemActive)).toBeFalsy();
     });
 
-    [false, true].forEach((active) => {
-      const message = active
-        ? 'should active if active=true'
-        : 'should inactive if active=false';
+    it('should be inactive if active=false', () => {
+      const { getHostHTMLElement } = render(
+        <TabItem active={false}>tab</TabItem>,
+      );
+      const element = getHostHTMLElement();
 
-      it(message, () => {
-        const { getHostHTMLElement } = render(<Tab active={active}>tab</Tab>);
-        const element = getHostHTMLElement();
+      expect(element.classList.contains(tabClasses.tabItemActive)).toBe(false);
+    });
 
-        expect(element.classList.contains('mzn-tabs__tab--active')).toBe(
-          active,
-        );
-      });
+    it('should be active if active=true', () => {
+      const { getHostHTMLElement } = render(<TabItem active>tab</TabItem>);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabItemActive)).toBe(true);
     });
   });
 
   describe('prop: disabled', () => {
-    it('should has disabled and aria-disabled attributes', () => {
-      [false, true].forEach((disabled) => {
-        const { getHostHTMLElement } = render(
-          <Tab disabled={disabled}>tab</Tab>,
-        );
-        const element = getHostHTMLElement();
+    it('should not have disabled attribute by default', () => {
+      const { getHostHTMLElement } = render(<TabItem>tab</TabItem>);
+      const element = getHostHTMLElement();
 
-        expect(element.hasAttribute('disabled')).toBe(disabled);
-        expect(element.getAttribute('aria-disabled')).toBe(`${disabled}`);
-      });
+      expect(element.hasAttribute('disabled')).toBe(false);
+      expect(element.getAttribute('aria-disabled')).toBe('false');
     });
 
-    it('aria-disabled from props should not override', () => {
+    it('should have disabled and aria-disabled attributes when disabled=true', () => {
+      const { getHostHTMLElement } = render(<TabItem disabled>tab</TabItem>);
+      const element = getHostHTMLElement();
+
+      expect(element.hasAttribute('disabled')).toBe(true);
+      expect(element.getAttribute('aria-disabled')).toBe('true');
+    });
+
+    it('should not have disabled attribute when disabled=false', () => {
       const { getHostHTMLElement } = render(
-        <Tab aria-disabled={false} disabled>
-          tab
-        </Tab>,
+        <TabItem disabled={false}>tab</TabItem>,
       );
       const element = getHostHTMLElement();
 
-      expect(element.getAttribute('aria-disabled')).toBeTruthy();
+      expect(element.hasAttribute('disabled')).toBe(false);
+      expect(element.getAttribute('aria-disabled')).toBe('false');
+    });
+
+    it('should override aria-disabled from props', () => {
+      const { getHostHTMLElement } = render(
+        <TabItem aria-disabled={false} disabled>
+          tab
+        </TabItem>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-disabled')).toBe('true');
+    });
+  });
+
+  describe('prop: onClick', () => {
+    it('should call onClick handler when clicked', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TabItem onClick={onClick}>tab</TabItem>,
+      );
+      const element = getHostHTMLElement();
+
+      element.click();
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call onClick when disabled', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <TabItem disabled onClick={onClick}>
+          tab
+        </TabItem>,
+      );
+      const element = getHostHTMLElement();
+
+      element.click();
+
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 });
