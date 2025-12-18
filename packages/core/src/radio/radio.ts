@@ -22,4 +22,5 @@ export const radioClasses = {
   checked: `${radioPrefix}--checked`,
   focused: `${radioPrefix}--focused`,
   error: `${radioPrefix}--error`,
+  wrapper: `${radioPrefix}__wrapper`,
 } as const;
