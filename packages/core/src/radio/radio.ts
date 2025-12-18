@@ -8,6 +8,7 @@ export type RadioSize = InputCheckSize;
 export interface RadioGroupOption {
   disabled?: boolean;
   error?: boolean;
+  hint?: string;
   label: string | number;
   value: string;
 }
