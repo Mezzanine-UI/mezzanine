@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { StoryFn } from '@storybook/react-webpack5';
 import Typography from '../Typography';
 import Radio, {
@@ -18,16 +19,43 @@ const orientations: RadioGroupOrientation[] = ['horizontal', 'vertical'];
 
 const sizes: RadioSize[] = ['small', 'medium', 'large'];
 
-export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => (
-  <Radio {...props}>{children}</Radio>
-);
+export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => {
+  const [inputText, setInputText] = useState<string>('first');
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Radio
+        {...props}
+        withInputConfig={{
+          width: 140,
+          onChange: (e) => setInputText(e.target.value),
+          value: inputText,
+        }}
+      >
+        {children}
+      </Radio>
+      <Radio {...props} hint="Support text">
+        {children}
+      </Radio>
+      <Radio
+        {...props}
+        hint="Support text"
+        withInputConfig={{
+          width: 140,
+          disabled: true,
+        }}
+      >
+        {children}
+      </Radio>
+    </div>
+  );
+};
 
 Playground.args = {
   children: 'Radio Button Label',
   error: false,
   disabled: false,
   defaultChecked: false,
-  hint: 'Support text',
   size: 'medium',
 };
 

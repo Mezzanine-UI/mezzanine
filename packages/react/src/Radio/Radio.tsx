@@ -9,6 +9,7 @@ import { cx } from '../utils/cx';
 import { useRadioControlValue } from '../Form/useRadioControlValue';
 import { FormControlContext } from '../Form';
 import { RadioGroupContext } from './RadioGroupContext';
+import Input, { BaseInputProps } from '../Input';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { MezzanineConfig } from '../Provider/context';
 
@@ -60,6 +61,15 @@ export interface RadioProps
    * The value of input in radio.
    */
   value?: string;
+  /**
+   * Config of additional input component.
+   */
+  withInputConfig?: Pick<
+    BaseInputProps,
+    'aria-disabled' | 'disabled' | 'onChange' | 'placeholder' | 'value'
+  > & {
+    width?: number;
+  };
 }
 
 /**
@@ -87,6 +97,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
       onChange: onChangeProp,
       size = sizeFromGroup || globalSize,
       value,
+      withInputConfig,
       ...rest
     } = props;
     const {
@@ -104,46 +115,57 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
     const [focused, setFocused] = useState<boolean>(false);
 
     return (
-      <InputCheck
-        {...rest}
-        ref={ref}
-        control={
-          <span
-            className={cx(classes.host, {
-              [classes.checked]: checked,
-              [classes.focused]: focused,
-              [classes.error]: error,
-            })}
-          >
-            <input
-              {...restInputProps}
-              aria-checked={checked}
-              aria-disabled={disabled}
-              checked={checked}
-              disabled={disabled}
-              id={inputId}
-              onChange={onChange}
-              onFocus={() => {
-                setFocused(true);
-              }}
-              onBlur={() => {
-                setFocused(false);
-              }}
-              name={name}
-              type="radio"
-              value={value}
+      <div className={cx(classes.wrapper)}>
+        <InputCheck
+          {...rest}
+          ref={ref}
+          control={
+            <span
+              className={cx(classes.host, {
+                [classes.checked]: checked,
+                [classes.focused]: focused,
+                [classes.error]: error,
+              })}
+            >
+              <input
+                {...restInputProps}
+                aria-checked={checked}
+                aria-disabled={disabled}
+                checked={checked}
+                disabled={disabled}
+                id={inputId}
+                onChange={onChange}
+                onFocus={() => {
+                  setFocused(true);
+                }}
+                onBlur={() => {
+                  setFocused(false);
+                }}
+                name={name}
+                type="radio"
+                value={value}
+              />
+            </span>
+          }
+          disabled={disabled}
+          error={error}
+          focused={focused}
+          hint={hint}
+          htmlFor={inputId}
+          size={size}
+        >
+          {children}
+        </InputCheck>
+        {withInputConfig && (
+          <div style={{ width: withInputConfig.width ?? 120 }}>
+            <Input
+              {...withInputConfig}
+              variant="base"
+              placeholder={withInputConfig.placeholder ?? 'Placeholder'}
             />
-          </span>
-        }
-        disabled={disabled}
-        error={error}
-        focused={focused}
-        hint={hint}
-        htmlFor={inputId}
-        size={size}
-      >
-        {children}
-      </InputCheck>
+          </div>
+        )}
+      </div>
     );
   },
 );
