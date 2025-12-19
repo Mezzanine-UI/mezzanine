@@ -37,7 +37,7 @@ export interface InputCheckProps
   hint?: string;
   /**
    * The size of input check.
-   * @default 'medium'
+   * @default 'main'
    */
   size?: InputCheckSize;
 }
@@ -56,7 +56,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
       focused,
       hint,
       htmlFor,
-      size = 'medium',
+      size = 'main',
       ...rest
     } = props;
 
