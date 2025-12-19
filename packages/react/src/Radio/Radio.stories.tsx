@@ -22,7 +22,8 @@ export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => {
   const [inputText, setInputText] = useState<string>('first');
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <Radio {...props}>{children}</Radio>
       <Radio
         {...props}
         withInputConfig={{
@@ -81,9 +82,9 @@ export const Sizes = () => (
     style={{
       width: 'fit-content',
       display: 'flex',
-      flexFlow: 'row',
+      flexDirection: 'column',
       justifyContent: 'flex-start',
-      alignItems: 'center',
+      alignItems: 'flex-start',
     }}
   >
     <Radio size="minor">Minor</Radio>
@@ -159,6 +160,13 @@ export const Group: StoryFn<RadioGroupProps> = ({
         disabled={disabled}
         options={options}
         orientation={orientation}
+        size={size}
+      />
+      <Typography variant="h2">Vertical</Typography>
+      <RadioGroup
+        disabled={disabled}
+        options={options}
+        orientation="vertical"
         size={size}
       />
     </>
