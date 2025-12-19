@@ -56,7 +56,7 @@
   }
 
   .#{input-check.$prefix}--disabled & {
-    background-color: #E5E7EB; // TODO: --background-neutral-subtle-disabled,
+    background-color: palette.semantic-variable(background, neutral-subtle);
 
     &--checked {
       &::before {
