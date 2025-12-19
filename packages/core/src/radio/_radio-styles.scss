@@ -14,7 +14,7 @@
   border-radius: 50%;
   border: 1px solid palette.semantic-variable('border', neutral);
   background-color: palette.semantic-variable('background', base);
-  transition: transition.standard(border-color);
+  transition: transition.standard(border-color, fast);
   will-change: border-color;
   box-sizing: border-box;
 
@@ -27,7 +27,7 @@
     width: var(--#{$prefix}-dot-size);
     height: var(--#{$prefix}-dot-size);
     border-radius: 50%;
-    transition: transition.standard(background-color);
+    transition: transition.standard(background-color, fast);
     will-change: background-color;
   }
 
