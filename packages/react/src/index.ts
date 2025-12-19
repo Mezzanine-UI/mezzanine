@@ -156,6 +156,29 @@ export {
   useTableScroll,
 } from './Table';
 export type { TableProps, TableRefreshProps } from './Table';
+export {
+  TableV2,
+  TableV2Context,
+  TableV2DataContext,
+  useTableV2Context,
+  useTableV2DataContext,
+  useTableV2Sorting,
+  useTableV2Selection,
+  useTableV2Columns,
+  useTableV2Expansion,
+  useTableV2Scroll,
+  useTableV2Virtualization,
+} from './TableV2';
+export type {
+  TableV2Props,
+  TableV2ContextValue,
+  TableV2DataContextValue,
+  TableV2SortingState,
+  TableV2SelectionState,
+  TableV2ExpansionState,
+  TableV2ColumnState,
+  TableV2DraggableState,
+} from './TableV2';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';
 export { default as Tooltip } from './Tooltip';

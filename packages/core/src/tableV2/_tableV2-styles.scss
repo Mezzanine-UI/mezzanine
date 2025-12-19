@@ -1,0 +1,573 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use './tableV2' as *;
+@use '../button/utils' as button-utils;
+
+// ============================================
+// Size Variables (using semantic spacing)
+// ============================================
+$header-cell: (
+  main: (
+    typography: body-highlight,
+    gap: spacing.semantic-variable(gap, tiny),
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, calm),
+    ),
+    help-size: spacing.semantic-variable(size, element, base),
+    sort-size: spacing.semantic-variable(size, element, base),
+    menu-size: spacing.semantic-variable(size, element, base),
+    resize: (
+      width: spacing.semantic-variable(size, element, hairline),
+      height: spacing.semantic-variable(size, element, relaxed),
+    ),
+  ),
+  sub: (
+    typography: body-highlight,
+    gap: spacing.semantic-variable(gap, tiny),
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, base),
+    ),
+    help-size: spacing.semantic-variable(size, element, base),
+    sort-size: spacing.semantic-variable(size, element, base),
+    menu-size: spacing.semantic-variable(size, element, base),
+    resize: (
+      width: spacing.semantic-variable(size, element, hairline),
+      height: spacing.semantic-variable(size, element, relaxed),
+    ),
+  ),
+);
+
+$content-cell: (
+  main: (
+    typography: body,
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, calm),
+    ),
+  ),
+  sub: (
+    typography: body,
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, base),
+    ),
+  ),
+);
+
+$icon-size: spacing.semantic-variable(size, element, base);
+$action-height: spacing.semantic-variable(size, element, gentle);
+$sticky-cell-z-index: 1;
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin text-color {
+  color: palette.semantic-variable(text, neutral-solid);
+}
+
+@mixin surface-bg {
+  background-color: palette.semantic-variable("background", base);
+}
+
+@mixin header-bg {
+  background-color: palette.semantic-variable("background", neutral-ghost);
+}
+
+@mixin highlight-bg {
+  background-color: palette.semantic-variable("background", brand-ghost);
+}
+
+@mixin icon-size {
+  width: $icon-size;
+  height: $icon-size;
+}
+
+@mixin fixed-column-shadow($direction: 'start') {
+  &::after {
+    position: absolute;
+    inset-block: 0;
+    width: 10px;
+    content: '';
+    pointer-events: none;
+    transition: transition.standard(box-shadow);
+
+    @if $direction == 'start' {
+      inset-inline-end: 0;
+      transform: translateX(100%);
+    } @else {
+      inset-inline-start: 0;
+      transform: translateX(-100%);
+    }
+  }
+}
+
+@mixin fixed-column-shadow-active($direction: 'start') {
+  &::after {
+    @if $direction == 'start' {
+      box-shadow: inset 8px 0 8px -8px palette.semantic-variable(shadow, dark-light);
+    } @else {
+      box-shadow: inset -8px 0 8px -8px palette.semantic-variable(shadow, dark-light);
+    }
+  }
+}
+
+// ============================================
+// Loading overlay
+// ============================================
+
+.#{$loading-prefix} {
+  z-index: 4;
+}
+
+// ============================================
+// Scroll container (wrapper div for horizontal scroll)
+// ============================================
+
+.#{$scroll-container-prefix} {
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  max-height: var(--table-v2-scroll-y, auto);
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 8px;
+
+    @media (hover: none) and (pointer: coarse) {
+      display: none;
+      height: 0;
+    }
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: palette.semantic-variable("background", neutral-strong);
+    border-radius: radius.variable(full);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: palette.semantic-variable("background", neutral-ghost);
+  }
+}
+
+// ============================================
+// Main table element
+// ============================================
+
+.#{$prefix} {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: var(--table-v2-scroll-x, 100%);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+
+  @include text-color;
+  @include surface-bg;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  th,
+  td {
+    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
+
+  // Sticky header
+  &--sticky {
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: calc(#{$sticky-cell-z-index} + 2);
+    }
+  }
+
+  // Size variants - using padding to control cell height
+  &--main {
+    th {
+      @include typography.semantic-variable(map.get($header-cell, main, typography));
+
+      padding: map.get($header-cell, main, padding, vertical) map.get($header-cell, main, padding, horizontal);
+      gap: map.get($header-cell, main, gap);
+    }
+
+    td {
+      @include typography.semantic-variable(map.get($content-cell, main, typography));
+
+      padding: map.get($content-cell, main, padding, vertical) map.get($content-cell, main, padding, horizontal);
+    }
+  }
+
+  &--sub {
+    th {
+      @include typography.semantic-variable(map.get($header-cell, sub, typography));
+
+      padding: map.get($header-cell, sub, padding, vertical) map.get($header-cell, sub, padding, horizontal);
+      gap: map.get($header-cell, sub, gap);
+    }
+
+    td {
+      @include typography.semantic-variable(map.get($content-cell, sub, typography));
+
+      padding: map.get($content-cell, sub, padding, vertical) map.get($content-cell, sub, padding, horizontal);
+    }
+  }
+
+  // Loading state
+  &--loading {
+    pointer-events: none;
+    opacity: 0.6;
+  }
+}
+
+// ============================================
+// Header (thead)
+// ============================================
+
+.#{$header-prefix} {
+  @include header-bg;
+
+  &__row {
+    border-block-end: 1px solid palette.semantic-variable(border, neutral-faint);
+  }
+
+  &__cell {
+    position: relative;
+    box-sizing: border-box;
+    text-align: start;
+    vertical-align: middle;
+
+    @include header-bg;
+
+    &--fixed {
+      position: sticky;
+      z-index: 2;
+
+      @include header-bg;
+    }
+  }
+
+  &__cell-content {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__cell-actions {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+    gap: spacing.semantic-variable(gap, tiny);
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__cell-title {
+    @include typography.overflow-ellipsis();
+
+    color: palette.semantic-variable(text, neutral-strong);
+  }
+
+  &__cell-icon {
+    border: none;
+    border-radius: radius.variable(base);
+    width: spacing.semantic-variable(size, element, base);
+    height: spacing.semantic-variable(size, element, base);
+    color: palette.semantic-variable(icon, neutral-light);
+    transition: transition.standard(color, fast);
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral-bold);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+}
+
+// ============================================
+// Body (tbody)
+// ============================================
+
+.#{$body-prefix} {
+  &__virtual-container {
+    position: relative;
+    width: 100%;
+  }
+
+  &__row {
+    border-block-end: 1px solid palette.semantic-variable(border, neutral-faint);
+
+    @include surface-bg;
+
+    &:hover,
+    &--highlight {
+      td {
+        @include highlight-bg;
+      }
+    }
+
+    &--dragging {
+      filter: drop-shadow(0 4px 20px palette.semantic-variable(shadow, dark));
+    }
+
+    &--expanded {
+      border-block-end: none;
+    }
+
+    &--selected {
+      td {
+        @include highlight-bg;
+      }
+    }
+  }
+
+  &__cell {
+    box-sizing: border-box;
+    text-align: start;
+    vertical-align: middle;
+
+    @include surface-bg;
+  }
+
+  &__cell-content {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  &__empty {
+    td {
+      text-align: center;
+      vertical-align: middle;
+
+      @include surface-bg;
+    }
+  }
+}
+
+// ============================================
+// Cell common styles
+// ============================================
+
+.#{$cell-prefix} {
+  @include surface-bg;
+
+  &--ellipsis {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &--align-start {
+    text-align: start;
+  }
+
+  &--align-center {
+    text-align: center;
+  }
+
+  &--align-end {
+    text-align: end;
+  }
+
+  &--highlight {
+    @include highlight-bg;
+  }
+
+  &--fixed {
+    position: sticky;
+  }
+
+  &--fixed-start {
+    inset-inline-start: var(--fixed-start-offset, 0);
+    z-index: calc(#{$sticky-cell-z-index} + 1);
+
+    @include fixed-column-shadow('start');
+  }
+
+  &--fixed-end {
+    inset-inline-end: var(--fixed-end-offset, 0);
+    z-index: $sticky-cell-z-index;
+
+    @include fixed-column-shadow('end');
+  }
+
+  &--fixed-shadow {
+    @include fixed-column-shadow-active('start');
+  }
+
+  &--fixed-end#{&}--fixed-shadow {
+    @include fixed-column-shadow-active('end');
+  }
+
+  &__content {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+  }
+}
+
+// ============================================
+// Drag handle column
+// ============================================
+
+.#{$prefix}__drag-handle-cell {
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.#{$prefix}__drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+// ============================================
+// Selection column
+// ============================================
+
+.#{$prefix}__selection-column {
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.#{$prefix}__selection-checkbox {
+  height: $action-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================
+// Expand column
+// ============================================
+
+.#{$prefix}__expand-cell {
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.#{$prefix}__expand-icon {
+  @include button-utils.reset();
+
+  width: 100%;
+  height: $action-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: palette.semantic-variable(icon, neutral-strong);
+  transition: transition.entrance(transform, moderate);
+
+  &--expanded {
+    transform: rotate(90deg);
+  }
+}
+
+// ============================================
+// Expanded row
+// ============================================
+
+.#{$prefix}__expanded-row {
+  &__cell {
+    background-color: palette.semantic-variable("background", neutral-ghost);
+    padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, base-fixed);
+  }
+}
+
+.#{$prefix}__expanded-content {
+  width: 100%;
+}
+
+// ============================================
+// Sort icons
+// ============================================
+
+.#{$prefix}__sort-icons {
+  width: spacing.semantic-variable(size, element, base);
+  height: spacing.semantic-variable(size, element, base);
+  border: none;
+  border-radius: radius.variable(base);
+  background-color: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    & > .#{$prefix}__sort-icon {
+      color: palette.semantic-variable(icon, neutral-bold);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: effect.variable(focus, primary);
+  }
+}
+
+.#{$prefix}__sort-icon {
+  color: palette.semantic-variable(icon, neutral-light);
+  transition: transition.standard(color, fast);
+
+  &--active {
+    color: palette.semantic-variable(icon, neutral-bold);
+  }
+}
+
+// ============================================
+// Resize handle
+// ============================================
+
+.#{$resize-handle-prefix} {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  z-index: 1;
+  width: map.get($header-cell, main, resize, width);
+  cursor: col-resize;
+  user-select: none;
+  background-color: transparent;
+  transition: transition.standard(background-color);
+
+  &:hover,
+  &--active {
+    background-color: palette.semantic-variable("background", brand);
+  }
+}
+
+// ============================================
+// Empty state
+// ============================================
+
+.#{$prefix}__empty {
+  min-height: 200px;
+  text-align: center;
+  vertical-align: middle;
+}
