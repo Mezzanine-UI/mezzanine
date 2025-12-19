@@ -38,7 +38,7 @@
   }
 
   &--error {
-    border-color: palette.semantic-variable('border', error-subtle)
+    border-color: palette.semantic-variable('border', error-subtle);
   }
 
   &:hover,
