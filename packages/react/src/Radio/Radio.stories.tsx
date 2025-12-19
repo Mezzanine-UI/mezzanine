@@ -100,10 +100,17 @@ export const Group: StoryFn<RadioGroupProps> = ({
   orientation,
   size,
 }) => {
+  const [inputText, setInputText] = useState<string>('first');
+
   const options: RadioGroupOption[] = [
     {
       value: 'option-1',
       label: 'Option 1',
+      withInputConfig: {
+        width: 140,
+        onChange: (e) => setInputText(e.target.value),
+        value: inputText,
+      },
     },
     {
       value: 'option-2',
@@ -133,6 +140,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
             hint,
             label,
             value,
+            withInputConfig,
           }) => (
             <Radio
               key={value}
@@ -140,6 +148,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
               error={optionError}
               hint={hint}
               value={value}
+              withInputConfig={withInputConfig}
             >
               {label}
             </Radio>
