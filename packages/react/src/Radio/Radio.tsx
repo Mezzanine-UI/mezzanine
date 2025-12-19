@@ -11,7 +11,6 @@ import { FormControlContext } from '../Form';
 import { RadioGroupContext } from './RadioGroupContext';
 import Input, { BaseInputProps } from '../Input';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { MezzanineConfig } from '../Provider/context';
 
 export interface RadioProps
   extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
@@ -54,7 +53,7 @@ export interface RadioProps
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
    * The size of radio.
-   * @default 'medium'
+   * @default 'main'
    */
   size?: RadioSize;
   /**
@@ -77,7 +76,6 @@ export interface RadioProps
  */
 const Radio = forwardRef<HTMLLabelElement, RadioProps>(
   function Radio(props, ref) {
-    const { size: globalSize } = useContext(MezzanineConfig);
     const { disabled: disabledFromFormControl, severity } =
       useContext(FormControlContext) || {};
     const radioGroup = useContext(RadioGroupContext);
@@ -95,7 +93,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
       hint,
       inputProps,
       onChange: onChangeProp,
-      size = sizeFromGroup || globalSize,
+      size = sizeFromGroup || 'main',
       value,
       withInputConfig,
       ...rest

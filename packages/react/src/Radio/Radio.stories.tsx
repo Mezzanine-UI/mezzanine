@@ -9,7 +9,6 @@ import Radio, {
   RadioGroupOption,
   RadioGroupOrientation,
 } from '.';
-import ConfigProvider from '../Provider';
 
 export default {
   title: 'Data Entry/Radio',
@@ -17,7 +16,7 @@ export default {
 
 const orientations: RadioGroupOrientation[] = ['horizontal', 'vertical'];
 
-const sizes: RadioSize[] = ['small', 'medium', 'large'];
+const sizes: RadioSize[] = ['minor', 'sub', 'main'];
 
 export const Playground: StoryFn<RadioProps> = ({ children, ...props }) => {
   const [inputText, setInputText] = useState<string>('first');
@@ -56,7 +55,7 @@ Playground.args = {
   error: false,
   disabled: false,
   defaultChecked: false,
-  size: 'medium',
+  size: 'main',
 };
 
 Playground.argTypes = {
@@ -87,11 +86,9 @@ export const Sizes = () => (
       alignItems: 'center',
     }}
   >
-    <Radio size="small">Small</Radio>
-    <Radio size="medium">Medium</Radio>
-    <ConfigProvider size="large">
-      <Radio>Large</Radio>
-    </ConfigProvider>
+    <Radio size="minor">Minor</Radio>
+    <Radio size="sub">Sub</Radio>
+    <Radio size="main">Main</Radio>
   </div>
 );
 
@@ -171,7 +168,7 @@ export const Group: StoryFn<RadioGroupProps> = ({
 Group.args = {
   disabled: false,
   orientation: 'horizontal',
-  size: 'medium',
+  size: 'main',
 };
 Group.argTypes = {
   orientation: {
