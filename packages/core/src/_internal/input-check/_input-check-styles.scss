@@ -13,7 +13,7 @@
   display: inline-flex;
   align-items: flex-start;
   gap: spacing.semantic-variable(gap, tight);
-  transition: transition.standard(background-color), transition.standard(color);
+  transition: transition.standard(background-color, fast), transition.standard(color, fast);
   padding: spacing.semantic-variable(padding, vertical, calm) 0;
   will-change: background-color, color;
   cursor: pointer;
@@ -90,7 +90,7 @@
   }
 
   &--disabled {
-    --#{$prefix}-color: #C9CBD4; // TODO: border-neutral-light-disabled
+    --#{$prefix}-color: #{palette.semantic-variable(border, neutral-light)};
 
     background-color: transparent;
     cursor: default;
@@ -101,10 +101,9 @@
 .#{$group-prefix} {
   display: inline-grid;
   grid-auto-flow: column;
-  gap: spacing.level(1);
+  gap: 0 spacing.semantic-variable(gap, comfort);
 
   &--vertical {
     grid-auto-flow: row;
-    gap: 0;
   }
 }
