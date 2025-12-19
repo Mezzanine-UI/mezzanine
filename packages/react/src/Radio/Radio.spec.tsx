@@ -10,7 +10,7 @@ import Radio, { RadioGroup } from '.';
 describe('<Radio />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(<Radio ref={ref} />),
   );
 
@@ -21,7 +21,8 @@ describe('<Radio />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(<Radio />);
     const element = getHostHTMLElement();
-    const { firstElementChild } = element.firstElementChild!;
+    const { firstElementChild: controllerElement } = element.firstElementChild!;
+    const { firstElementChild } = controllerElement!;
 
     expect(firstElementChild!.classList.contains('mzn-radio')).toBeTruthy();
   });
@@ -34,17 +35,28 @@ describe('<Radio />', () => {
     expect(inputElement.getAttribute('type')).toBe('radio');
   });
 
+  it('prop: withInputConfig', () => {
+    const { getHostHTMLElement } = render(
+      <Radio withInputConfig={{ width: 120 }} />,
+    );
+    const element = getHostHTMLElement();
+    const [inputWrapperElement] = element.getElementsByTagName('div');
+    const [inputContainer] = inputWrapperElement.getElementsByTagName('div');
+
+    expect(
+      inputContainer!.classList.contains('mzn-input-container'),
+    ).toBeTruthy();
+  });
+
   describe('prop: checked', () => {
     [false, true].forEach((checked) => {
       it('should', () => {
         const { getHostHTMLElement } = render(<Radio checked={checked} />);
         const element = getHostHTMLElement();
-        const { firstElementChild } = element.firstElementChild!;
+        const [radio] = element.getElementsByClassName('mzn-radio');
         const [input] = element.getElementsByTagName('input');
 
-        expect(
-          firstElementChild!.classList.contains('mzn-radio--checked'),
-        ).toBe(checked);
+        expect(radio!.classList.contains('mzn-radio--checked')).toBe(checked);
         expect(input.getAttribute('aria-checked')).toBe(`${checked}`);
         expect(input.checked).toBe(checked);
       });
@@ -117,9 +129,10 @@ describe('<Radio />', () => {
         <Radio inputProps={{ id: testId }} />,
       );
       const element = getHostHTMLElement();
+      const [labelElement] = element.getElementsByTagName('label');
       const [inputElement] = element.getElementsByTagName('input');
 
-      expect(element.getAttribute('for')).toBe(testId);
+      expect(labelElement.getAttribute('for')).toBe(testId);
       expect(inputElement.getAttribute('id')).toBe(testId);
     });
 

@@ -1,7 +1,6 @@
 import { cleanup, render } from '../../__test-utils__';
 import { FormField } from '../Form';
 import Radio, { RadioGroup } from '.';
-import ConfigProvider from '../Provider';
 
 // Mock InputCheck Component
 const mockInputCheckRender = jest.fn();
@@ -22,7 +21,7 @@ describe('<Radio />', () => {
 
   it('should pass children, disabled, error, size to InputCheck', () => {
     render(
-      <Radio disabled error size="large">
+      <Radio disabled error size="main">
         foo
       </Radio>,
     );
@@ -32,21 +31,7 @@ describe('<Radio />', () => {
         children: 'foo',
         disabled: true,
         error: true,
-        size: 'large',
-      }),
-    );
-  });
-
-  it('should accept ConfigProvider context changes', () => {
-    render(
-      <ConfigProvider size="small">
-        <Radio>foo</Radio>
-      </ConfigProvider>,
-    );
-
-    expect(mockInputCheckRender).toHaveBeenCalledWith(
-      expect.objectContaining({
-        size: 'small',
+        size: 'main',
       }),
     );
   });
@@ -82,26 +67,26 @@ describe('<Radio />', () => {
   describe('prop: size', () => {
     it('should use size from group if size not passed', () => {
       render(
-        <RadioGroup size="large">
+        <RadioGroup size="main">
           <Radio />
         </RadioGroup>,
       );
 
       expect(mockInputCheckRender).toHaveBeenCalledWith(
         expect.objectContaining({
-          size: 'large',
+          size: 'main',
         }),
       );
 
       render(
-        <RadioGroup size="large">
-          <Radio size="small" />
+        <RadioGroup size="main">
+          <Radio size="sub" />
         </RadioGroup>,
       );
 
       expect(mockInputCheckRender).toHaveBeenCalledWith(
         expect.objectContaining({
-          size: 'small',
+          size: 'sub',
         }),
       );
     });

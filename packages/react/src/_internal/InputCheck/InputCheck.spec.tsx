@@ -106,16 +106,14 @@ describe('<InputCheck />', () => {
   });
 
   describe('prop: size', () => {
-    it('should render size="medium" by default', () => {
+    it('should render size="main" by default', () => {
       const { getHostHTMLElement } = render(<InputCheck />);
       const element = getHostHTMLElement();
 
-      expect(
-        element.classList.contains('mzn-input-check--medium'),
-      ).toBeTruthy();
+      expect(element.classList.contains('mzn-input-check--main')).toBeTruthy();
     });
 
-    const sizes: InputCheckSize[] = ['small', 'medium', 'large'];
+    const sizes: InputCheckSize[] = ['minor', 'sub', 'main'];
 
     sizes.forEach((size) => {
       it(`should add class if size="${size}"`, () => {
