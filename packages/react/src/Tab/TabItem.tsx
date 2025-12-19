@@ -9,21 +9,21 @@ import Badge from '../Badge';
 export interface TabItemProps
   extends NativeElementPropsWithoutKeyAndRef<'button'> {
   /**
-   * Whether the tab is active.
-   * Controlled by tabs.
+   * Whether the tab item is active.
+   * Controlled by `<Tab />`.
    */
   active?: boolean;
   /**
-   * The badge count to display on the tab.
+   * The badge count to display on the tab item.
    */
   badgeCount?: number;
   /**
-   * Whether the tab is disabled.
+   * Whether the tab item is disabled.
    * @default false
    */
   disabled?: boolean;
   /**
-   * The icon to display on the tab.
+   * The icon to display on the tab item.
    */
   icon?: IconDefinition;
 }
@@ -32,7 +32,7 @@ export interface TabItemProps
  * The react component for `mezzanine` tab.
  */
 const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
-  function Tab(props, ref) {
+  function TabItem(props, ref) {
     const {
       active,
       badgeCount,
@@ -60,7 +60,7 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
       >
         {icon && <Icon className={classes.tabItemIcon} icon={icon} size={16} />}
         {children}
-        {badgeCount && (
+        {badgeCount !== undefined && (
           <Badge
             className={classes.tabItemBadge}
             count={badgeCount}

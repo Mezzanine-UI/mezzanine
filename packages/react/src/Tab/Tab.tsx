@@ -51,9 +51,9 @@ export interface TabProps
 }
 
 /**
- * The react component for `mezzanine` tabs.
+ * The react component for `mezzanine` tab.
  */
-const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
+const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
   props: TabProps,
   ref,
 ) {
@@ -74,7 +74,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     value: activeKeyProp,
   });
 
-  const activeTabItemRef = useRef<HTMLDivElement>(null);
+  const activeTabItemRef = useRef<HTMLButtonElement>(null);
 
   const tabItems = Children.map(children, (tabItem, index) => {
     if (!tabItem || tabItem.type !== TabItem) {
@@ -84,7 +84,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
     const key = tabItem.key ?? index;
     const active = activeKey.toString() === key.toString();
 
-    return cloneElement<TabItemProps & { ref?: React.Ref<HTMLDivElement> }>(
+    return cloneElement<TabItemProps & { ref?: React.Ref<HTMLButtonElement> }>(
       tabItem,
       {
         key,
@@ -98,6 +98,8 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tabs(
           if (onTabClick) {
             onTabClick(key, event);
           }
+
+          tabItem.props.onClick?.(event);
         },
       },
     );
