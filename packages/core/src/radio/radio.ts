@@ -5,14 +5,6 @@ import {
 
 export type RadioSize = InputCheckSize;
 
-export interface RadioGroupOption {
-  disabled?: boolean;
-  error?: boolean;
-  hint?: string;
-  label: string | number;
-  value: string;
-}
-
 export type RadioGroupOrientation = InputCheckGroupOrientation;
 
 export const radioPrefix = 'mzn-radio';
