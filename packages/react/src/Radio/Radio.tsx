@@ -7,7 +7,6 @@ import InputCheck, {
 } from '../_internal/InputCheck/InputCheck';
 import { cx } from '../utils/cx';
 import { useRadioControlValue } from '../Form/useRadioControlValue';
-import { FormControlContext } from '../Form';
 import { RadioGroupContext } from './RadioGroupContext';
 import Input, { BaseInputProps } from '../Input';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -74,8 +73,6 @@ export interface RadioProps
  */
 const Radio = forwardRef<HTMLDivElement, RadioProps>(
   function Radio(props, ref) {
-    const { disabled: disabledFromFormControl, severity } =
-      useContext(FormControlContext) || {};
     const radioGroup = useContext(RadioGroupContext);
     const {
       disabled: disabledFromGroup,
@@ -87,8 +84,8 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       className,
       children,
       defaultChecked,
-      disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
-      error = severity === 'error' || false,
+      disabled = disabledFromGroup || false,
+      error = false,
       hint,
       inputProps,
       onChange: onChangeProp,
