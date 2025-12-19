@@ -12,10 +12,16 @@
 
   display: inline-flex;
   align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight);
   transition: transition.standard(background-color), transition.standard(color);
+  padding: spacing.semantic-variable(padding, vertical, calm) 0;
   will-change: background-color, color;
   cursor: pointer;
   box-sizing: border-box;
+
+  &--sub, &--minor {
+    padding: spacing.semantic-variable(padding, vertical, tight) 0;
+  }
 
   input {
     position: absolute;
@@ -62,7 +68,6 @@
     display: inline-flex;
     flex-direction: column;
     color: palette.semantic-variable(text, neutral-solid);
-    margin-left: spacing.semantic-variable(gap, tight);
     gap: spacing.semantic-variable(gap, tight);
 
     &:empty {
