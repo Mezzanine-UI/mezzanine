@@ -35,6 +35,19 @@ describe('<Radio />', () => {
     expect(inputElement.getAttribute('type')).toBe('radio');
   });
 
+  it('prop: withInputConfig', () => {
+    const { getHostHTMLElement } = render(
+      <Radio withInputConfig={{ width: 120 }} />,
+    );
+    const element = getHostHTMLElement();
+    const [inputWrapperElement] = element.getElementsByTagName('div');
+    const [inputContainer] = inputWrapperElement.getElementsByTagName('div');
+
+    expect(
+      inputContainer!.classList.contains('mzn-input-container'),
+    ).toBeTruthy();
+  });
+
   describe('prop: checked', () => {
     [false, true].forEach((checked) => {
       it('should', () => {
