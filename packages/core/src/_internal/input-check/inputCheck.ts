@@ -1,6 +1,6 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { GeneralSize } from '@mezzanine-ui/system/size';
 
-export type InputCheckSize = Size;
+export type InputCheckSize = GeneralSize;
 
 export const inputCheckPrefix = 'mzn-input-check';
 
