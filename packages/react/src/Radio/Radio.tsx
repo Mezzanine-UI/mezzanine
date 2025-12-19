@@ -74,7 +74,7 @@ export interface RadioProps
 /**
  * The react component for `mezzanine` radio.
  */
-const Radio = forwardRef<HTMLLabelElement, RadioProps>(
+const Radio = forwardRef<HTMLDivElement, RadioProps>(
   function Radio(props, ref) {
     const { disabled: disabledFromFormControl, severity } =
       useContext(FormControlContext) || {};
@@ -86,6 +86,7 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
     } = radioGroup || {};
     const {
       checked: checkedProp,
+      className,
       children,
       defaultChecked,
       disabled = (disabledFromGroup ?? disabledFromFormControl) || false,
@@ -113,10 +114,9 @@ const Radio = forwardRef<HTMLLabelElement, RadioProps>(
     const [focused, setFocused] = useState<boolean>(false);
 
     return (
-      <div className={cx(classes.wrapper)}>
+      <div ref={ref} className={cx(classes.wrapper, className)}>
         <InputCheck
           {...rest}
-          ref={ref}
           control={
             <span
               className={cx(classes.host, {
