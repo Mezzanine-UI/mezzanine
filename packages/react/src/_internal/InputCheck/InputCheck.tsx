@@ -27,7 +27,7 @@ export interface InputCheckProps
    */
   error?: boolean;
   /**
-   * Whether the input check is focus.
+   * Whether the input check is focused.
    * @default false
    */
   focused?: boolean;
