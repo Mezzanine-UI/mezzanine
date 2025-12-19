@@ -24,10 +24,6 @@ export interface RadioProps
    */
   defaultChecked?: boolean;
   /**
-   * Support text of hint.
-   */
-  hint?: string;
-  /**
    * Since at Mezzanine we use a host element to wrap our input, most derived props will be passed to the host element.
    *  If you need direct control to the input element, use this prop to provide to it.
    *
@@ -61,7 +57,9 @@ export interface RadioProps
    */
   value?: string;
   /**
-   * Config of additional input component.
+   * When `withInputConfig` is provided, an `Input` component is rendered alongside the
+   * radio using the passed props. By default, this input has a width of 120px unless you
+   * override it via the `width` property below.
    */
   withInputConfig?: Pick<
     BaseInputProps,

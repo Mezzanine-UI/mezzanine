@@ -8,11 +8,9 @@ import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
 import Radio, { RadioProps } from './Radio';
 
 export interface RadioGroupOption
-  extends Pick<
-    RadioProps,
-    'disabled' | 'error' | 'hint' | 'value' | 'withInputConfig'
-  > {
+  extends Pick<RadioProps, 'disabled' | 'error' | 'hint' | 'withInputConfig'> {
   label: string | number;
+  value: string;
 }
 
 export interface RadioGroupProps
