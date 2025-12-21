@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { StoryFn, Meta } from '@storybook/react-webpack5';
-import Drawer, { DrawerProps, DrawerPlacement } from '.';
-import Button from '../Button';
+import Drawer, { DrawerProps } from '.';
+import { Button } from '../index';
 
 export default {
   title: 'Navigation/Drawer',
@@ -9,12 +9,10 @@ export default {
 
 type PlaygroundStoryArgs = DrawerProps;
 
-const placements: DrawerPlacement[] = ['top', 'right', 'bottom', 'left'];
-
 export const Playground: StoryFn<PlaygroundStoryArgs> = ({
   disableCloseOnBackdropClick,
   disableCloseOnEscapeKeyDown,
-  placement,
+  size,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -26,7 +24,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
 
   return (
     <>
-      <Button onClick={() => handleClick()} variant="contained">
+      <Button onClick={() => handleClick()} variant="base-text-link">
         OPEN
       </Button>
 
@@ -35,7 +33,16 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
         onClose={handleClose}
         open={open}
-        placement={placement}
+        header={{ title: 'Drawer Title' }}
+        size={size}
+        bottom={{
+          ghostActionText: '更多選項',
+          onGhostActionClick: handleClose,
+          secondaryActionText: '取消',
+          onSecondaryActionClick: handleClose,
+          primaryActionText: '儲存變更',
+          onPrimaryActionClick: handleClose,
+        }}
       >
         content
       </Drawer>
@@ -46,6 +53,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({
 Playground.args = {
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
+  size: 'medium',
 };
 
 Playground.argTypes = {
@@ -59,10 +67,10 @@ Playground.argTypes = {
       type: 'boolean',
     },
   },
-  placement: {
-    options: placements,
+  size: {
     control: {
-      type: 'select',
+      type: 'radio',
     },
+    options: ['narrow', 'medium', 'wide'],
   },
 };
