@@ -26,6 +26,8 @@ type PageHeaderChild =
  * Extends native HTML header element props.
  */
 export type PageHeaderProps = NativeElementPropsWithoutKeyAndRef<'header'> & {
+  /** Optional back button properties */
+  onBackClick?: () => void;
   /** Optional description text displayed below the title */
   description?: string;
   /** Main title text for the page header */
@@ -112,6 +114,7 @@ const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
       children,
       className,
       description,
+      onBackClick,
       title,
       titleComponent = 'h2',
       ...rest
@@ -120,12 +123,27 @@ const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
     const { backButtonOrLink, breadcrumb, pageToolbar } =
       getBreadcrumbAndToolbar(children);
 
+    // prop onBack takes precedence over backButtonOrLink
+    const backButton = onBackClick ? (
+      <Button
+        icon={{
+          position: 'icon-only',
+          src: ChevronLeftIcon,
+        }}
+        onClick={onBackClick}
+        size="sub"
+        variant="base-tertiary"
+      />
+    ) : (
+      backButtonOrLink
+    );
+
     return (
       <header {...rest} className={cx(classes.host, className)} ref={ref}>
         {breadcrumb}
         <span className={classes.headerContent}>
           <span className={classes.pageTitleWithIcon}>
-            {backButtonOrLink && <div>{backButtonOrLink}</div>}
+            {backButton && <div>{backButton}</div>}
 
             <div className={classes.pageTitleText}>
               <Typography

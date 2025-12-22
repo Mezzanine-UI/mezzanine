@@ -25,6 +25,13 @@ export const Default: Story = {
           <PageHeader title="Test Title" description="This is a description.">
             <a href="./" title="back" />
           </PageHeader>
+          <PageHeader
+            title="Page Title"
+            description="This is a Description."
+            onBackClick={() => {
+              alert('Back button clicked');
+            }}
+          />
         </div>
         <div>
           With Breadcrumb
