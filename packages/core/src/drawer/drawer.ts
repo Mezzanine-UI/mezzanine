@@ -1,5 +1,9 @@
 export const drawerPrefix = 'mzn-drawer';
 
+/**
+ * @deprecated Drawer is currently hardcoded to `right` placement. This type is kept
+ * for backward compatibility and should not be used for new code.
+ */
 export type DrawerPlacement = 'top' | 'right' | 'bottom' | 'left';
 
 export type DrawerSize = 'narrow' | 'medium' | 'wide';
