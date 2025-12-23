@@ -1,4 +1,4 @@
-import { RadioSize } from '@mezzanine-ui/core/radio';
+import { RadioSize, RadioType } from '@mezzanine-ui/core/radio';
 import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
 import InputCheckGroup, {
   InputCheckGroupProps,
@@ -49,6 +49,11 @@ export interface RadioGroupProps
    */
   size?: RadioSize;
   /**
+   * The type of radio group.
+   * Control the type of radios in group if type not passed to radio.
+   */
+  type?: RadioType;
+  /**
    * The value of radio group.
    */
   value?: string;
@@ -67,6 +72,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       options = [],
       onChange: onChangeProp,
       size,
+      type,
       value: valueProp,
       ...rest
     } = props;
@@ -81,9 +87,10 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
         name,
         onChange,
         size,
+        type,
         value,
       }),
-      [disabled, name, onChange, size, value],
+      [disabled, name, onChange, size, type, value],
     );
 
     const children =

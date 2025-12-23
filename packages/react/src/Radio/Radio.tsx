@@ -1,7 +1,11 @@
 'use client';
 
 import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
-import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
+import {
+  radioClasses as classes,
+  RadioSize,
+  RadioType,
+} from '@mezzanine-ui/core/radio';
 import InputCheck, {
   InputCheckProps,
 } from '../_internal/InputCheck/InputCheck';
@@ -52,6 +56,11 @@ export interface RadioProps
    */
   size?: RadioSize;
   /**
+   * The type of radio.
+   * @default 'radio'
+   */
+  type?: RadioType;
+  /**
    * The value of input in radio.
    */
   value?: string;
@@ -78,6 +87,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       disabled: disabledFromGroup,
       name: nameFromGroup,
       size: sizeFromGroup,
+      type: typeFromGroup,
     } = radioGroup || {};
     const {
       checked: checkedProp,
@@ -90,6 +100,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       inputProps,
       onChange: onChangeProp,
       size = sizeFromGroup || 'main',
+      type = typeFromGroup || 'radio',
       value,
       withInputConfig,
       ...rest
