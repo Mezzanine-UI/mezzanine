@@ -6,7 +6,7 @@ import Radio, {
   RadioProps,
   RadioGroup,
   RadioGroupProps,
-  RadioGroupOption,
+  RadioGroupNormalOption,
   RadioGroupOrientation,
 } from '.';
 
@@ -120,10 +120,10 @@ export const Group: StoryObj<RadioGroupProps> = {
     orientation: 'horizontal',
     size: 'main',
   },
-  render: function Render({ disabled, orientation, size }) {
+  render: function Render({ ...props }) {
     const [inputText, setInputText] = useState<string>('first');
 
-    const options: RadioGroupOption[] = [
+    const options: RadioGroupNormalOption[] = [
       {
         value: 'option-1',
         label: 'Option 1',
@@ -153,7 +153,7 @@ export const Group: StoryObj<RadioGroupProps> = {
     return (
       <>
         <Typography variant="h2">From children</Typography>
-        <RadioGroup disabled={disabled} orientation={orientation} size={size}>
+        <RadioGroup {...props}>
           {options.map(
             ({
               disabled: optionDisabled,
@@ -179,19 +179,9 @@ export const Group: StoryObj<RadioGroupProps> = {
         <br />
         <br />
         <Typography variant="h2">From options</Typography>
-        <RadioGroup
-          disabled={disabled}
-          options={options}
-          orientation={orientation}
-          size={size}
-        />
+        <RadioGroup {...props} options={options} />
         <Typography variant="h2">Vertical</Typography>
-        <RadioGroup
-          disabled={disabled}
-          options={options}
-          orientation="vertical"
-          size={size}
-        />
+        <RadioGroup {...props} options={options} orientation="vertical" />
       </>
     );
   },

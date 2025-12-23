@@ -79,6 +79,10 @@ export interface RadioNormalProps extends RadioBaseProps {
 
 export interface RadioSegmentProps extends RadioBaseProps {
   hint?: never;
+  /**
+   * The type of radio.
+   * @default 'radio'
+   */
   type: 'segment';
   withInputConfig?: never;
 }

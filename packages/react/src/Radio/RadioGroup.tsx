@@ -1,19 +1,31 @@
-import { RadioSize, RadioType } from '@mezzanine-ui/core/radio';
+import { RadioSize } from '@mezzanine-ui/core/radio';
 import { ChangeEventHandler, forwardRef, ReactNode, useMemo } from 'react';
 import InputCheckGroup, {
   InputCheckGroupProps,
 } from '../_internal/InputCheck/InputCheckGroup';
 import { useInputControlValue } from '../Form/useInputControlValue';
 import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
-import Radio, { RadioProps } from './Radio';
+import Radio, { RadioNormalProps, RadioSegmentProps } from './Radio';
 
-export interface RadioGroupOption
-  extends Pick<RadioProps, 'disabled' | 'error' | 'hint' | 'withInputConfig'> {
+export interface RadioGroupNormalOption
+  extends Pick<
+    RadioNormalProps,
+    'disabled' | 'error' | 'hint' | 'withInputConfig'
+  > {
   label: string | number;
   value: string;
 }
 
-export interface RadioGroupProps
+export interface RadioGroupSegmentOption
+  extends Pick<
+    RadioSegmentProps,
+    'disabled' | 'error' | 'hint' | 'withInputConfig'
+  > {
+  label: string | number;
+  value: string;
+}
+
+export interface RadioGroupBaseProps
   extends Omit<InputCheckGroupProps, 'onChange'> {
   /**
    * The radios in radio group.
@@ -39,25 +51,43 @@ export interface RadioGroupProps
    */
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The options of radio group.
-   * Will be ignored if children passed.
-   */
-  options?: RadioGroupOption[];
-  /**
    * The size of radio group.
    * Control the size of radios in group if size not passed to radio.
    */
   size?: RadioSize;
   /**
-   * The type of radio group.
-   * Control the type of radios in group if type not passed to radio.
-   */
-  type?: RadioType;
-  /**
    * The value of radio group.
    */
   value?: string;
 }
+
+export interface RadioGroupNormalProps extends RadioGroupBaseProps {
+  /**
+   * The options of radio group.
+   * Will be ignored if children passed.
+   */
+  options?: RadioGroupNormalOption[];
+  /**
+   * The type of radio group.
+   * Control the type of radios in group if type not passed to radio.
+   */
+  type?: 'radio';
+}
+
+export interface RadioGroupSegmentProps extends RadioGroupBaseProps {
+  /**
+   * The options of radio group.
+   * Will be ignored if children passed.
+   */
+  options?: RadioGroupSegmentOption[];
+  /**
+   * The type of radio group.
+   * Control the type of radios in group if type not passed to radio.
+   */
+  type: 'segment';
+}
+
+export type RadioGroupProps = RadioGroupNormalProps | RadioGroupSegmentProps;
 
 /**
  * The react component for `mezzanine` radio group.
