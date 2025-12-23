@@ -138,11 +138,15 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           control={
             <span
               className={cx(classes.host, {
+                [classes.segmented]: type === 'segment',
                 [classes.checked]: checked,
                 [classes.focused]: focused,
                 [classes.error]: error,
               })}
             >
+              {type === 'segment' && (
+                <div className={cx(classes.segmentedContainer)}>{children}</div>
+              )}
               <input
                 {...restInputProps}
                 aria-checked={checked}
@@ -168,11 +172,12 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           focused={focused}
           hint={hint}
           htmlFor={inputId}
+          segmentedStyle={type === 'segment'}
           size={size}
         >
-          {children}
+          {type === 'radio' && children}
         </InputCheck>
-        {withInputConfig && (
+        {type === 'radio' && withInputConfig && (
           <div style={{ width: withInputConfig.width ?? 120 }}>
             <Input
               {...withInputConfig}
