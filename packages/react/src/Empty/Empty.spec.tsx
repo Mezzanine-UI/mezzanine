@@ -205,4 +205,103 @@ describe('<Empty />', () => {
       expect(actionsElement).toBeNull();
     });
   });
+
+  describe('prop: children', () => {
+    it('should render single Button child as secondary action', () => {
+      const { getByText } = render(
+        <Empty title="Test Title">
+          <Button>Action Button</Button>
+        </Empty>,
+      );
+      const button = getByText('Action Button');
+
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(
+        button.classList.contains('mzn-button--base-secondary'),
+      ).toBeTruthy();
+    });
+
+    it('should render two Button children with correct variants', () => {
+      const { getByText } = render(
+        <Empty title="Test Title">
+          <Button>Secondary</Button>
+          <Button>Primary</Button>
+        </Empty>,
+      );
+
+      const secondaryButton = getByText('Secondary');
+      const primaryButton = getByText('Primary');
+
+      expect(
+        secondaryButton.classList.contains('mzn-button--base-secondary'),
+      ).toBeTruthy();
+      expect(
+        primaryButton.classList.contains('mzn-button--base-primary'),
+      ).toBeTruthy();
+    });
+
+    it('should apply correct size to Button children', () => {
+      const { getByText } = render(
+        <Empty size="sub" title="Test Title">
+          <Button>Action Button</Button>
+        </Empty>,
+      );
+      const button = getByText('Action Button');
+
+      expect(button.classList.contains('mzn-button--sub')).toBeTruthy();
+    });
+
+    it('should not render children when size is minor', () => {
+      const { queryByText } = render(
+        <Empty size="minor" title="Test Title">
+          <Button>Action Button</Button>
+        </Empty>,
+      );
+
+      expect(queryByText('Action Button')).toBeNull();
+    });
+
+    it('should prioritize actions prop over children', () => {
+      const { getByText, queryByText } = render(
+        <Empty
+          actions={{
+            secondaryButton: { children: 'Props Action' },
+          }}
+          title="Test Title"
+        >
+          <Button>Children Action</Button>
+        </Empty>,
+      );
+
+      expect(getByText('Props Action')).toBeInstanceOf(HTMLButtonElement);
+      expect(queryByText('Children Action')).toBeNull();
+    });
+
+    it('should handle fragment children', () => {
+      const { getByText } = render(
+        <Empty title="Test Title">
+          <>
+            <Button>Secondary</Button>
+            <Button>Primary</Button>
+          </>
+        </Empty>,
+      );
+
+      expect(getByText('Secondary')).toBeInstanceOf(HTMLButtonElement);
+      expect(getByText('Primary')).toBeInstanceOf(HTMLButtonElement);
+    });
+
+    it('should render children inside actions container', () => {
+      const { container } = render(
+        <Empty title="Test Title">
+          <Button>Action Button</Button>
+        </Empty>,
+      );
+      const actionsContainer = container.querySelector('.mzn-empty__actions');
+      const button = actionsContainer?.querySelector('button');
+
+      expect(actionsContainer).toBeInstanceOf(HTMLDivElement);
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+    });
+  });
 });
