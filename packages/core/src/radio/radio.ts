@@ -7,6 +7,8 @@ export type RadioSize = InputCheckSize;
 
 export type RadioGroupOrientation = InputCheckGroupOrientation;
 
+export type RadioType = 'radio' | 'segment';
+
 export const radioPrefix = 'mzn-radio';
 
 export const radioClasses = {
