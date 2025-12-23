@@ -1,6 +1,8 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
 @use '../_internal/input-check';
 @use './radio' as *;
 
@@ -65,11 +67,23 @@
     }
   }
 
+  &--segmented {
+    border: none;
+    border-radius: radius.variable(tiny);
+    background-color: transparent;
+  }
+
   &__wrapper {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
     gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__segmented-container {
+    @include typography.semantic-variable(label-primary-highlight);
+    color: palette.semantic-variable(text, neutral-solid);
+    padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, base);
   }
 }
 
