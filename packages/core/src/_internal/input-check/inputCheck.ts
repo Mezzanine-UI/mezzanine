@@ -9,6 +9,7 @@ export const inputCheckClasses = {
   size: (size: InputCheckSize) => `${inputCheckPrefix}--${size}`,
   disabled: `${inputCheckPrefix}--disabled`,
   error: `${inputCheckPrefix}--error`,
+  segmented: `${inputCheckPrefix}--segmented`,
   withLabel: `${inputCheckPrefix}--with-label`,
   control: `${inputCheckPrefix}__control`,
   controlFocused: `${inputCheckPrefix}__control--focused`,
