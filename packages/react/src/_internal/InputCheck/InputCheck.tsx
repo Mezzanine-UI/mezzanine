@@ -76,6 +76,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
           {
             [classes.disabled]: disabled,
             [classes.error]: error,
+            [classes.segmented]: segmentedStyle,
             [classes.withLabel]: !!children,
           },
           className,

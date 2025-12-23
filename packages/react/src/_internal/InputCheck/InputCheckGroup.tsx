@@ -16,6 +16,11 @@ export interface InputCheckGroupProps
    * The orientation of input check group.
    */
   orientation?: InputCheckGroupOrientation;
+  /**
+   * Whether the input check group use segment style.
+   * @default false
+   */
+  segmentedStyle?: boolean;
 }
 
 /**
@@ -23,7 +28,13 @@ export interface InputCheckGroupProps
  */
 const InputCheckGroup = forwardRef<HTMLDivElement, InputCheckGroupProps>(
   function InputCheckGroup(props, ref) {
-    const { children, className, orientation = 'horizontal', ...rest } = props;
+    const {
+      children,
+      className,
+      orientation = 'horizontal',
+      segmentedStyle = false,
+      ...rest
+    } = props;
 
     return (
       <div
@@ -33,6 +44,9 @@ const InputCheckGroup = forwardRef<HTMLDivElement, InputCheckGroupProps>(
         className={cx(
           classes.host,
           classes.orientation(orientation),
+          {
+            [classes.segmented]: segmentedStyle,
+          },
           className,
         )}
       >
