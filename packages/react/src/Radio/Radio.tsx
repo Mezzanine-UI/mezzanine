@@ -1,11 +1,7 @@
 'use client';
 
 import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
-import {
-  radioClasses as classes,
-  RadioSize,
-  RadioType,
-} from '@mezzanine-ui/core/radio';
+import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
 import InputCheck, {
   InputCheckProps,
 } from '../_internal/InputCheck/InputCheck';
@@ -15,7 +11,7 @@ import { RadioGroupContext } from './RadioGroupContext';
 import Input, { BaseInputProps } from '../Input';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface RadioProps
+export interface RadioBaseProps
   extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
   /**
    * Whether the radio is checked.
@@ -56,14 +52,18 @@ export interface RadioProps
    */
   size?: RadioSize;
   /**
-   * The type of radio.
-   * @default 'radio'
-   */
-  type?: RadioType;
-  /**
    * The value of input in radio.
    */
   value?: string;
+}
+
+export interface RadioNormalProps extends RadioBaseProps {
+  hint?: string;
+  /**
+   * The type of radio.
+   * @default 'radio'
+   */
+  type?: 'radio';
   /**
    * When `withInputConfig` is provided, an `Input` component is rendered alongside the
    * radio using the passed props. By default, this input has a width of 120px unless you
@@ -76,6 +76,14 @@ export interface RadioProps
     width?: number;
   };
 }
+
+export interface RadioSegmentProps extends RadioBaseProps {
+  hint?: never;
+  type: 'segment';
+  withInputConfig?: never;
+}
+
+export type RadioProps = RadioNormalProps | RadioSegmentProps;
 
 /**
  * The react component for `mezzanine` radio.

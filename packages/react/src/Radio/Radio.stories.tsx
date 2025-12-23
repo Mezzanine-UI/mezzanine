@@ -28,18 +28,17 @@ export const Playground: StoryObj<RadioProps> = {
     },
   },
   args: {
-    children: 'Radio Button Label',
     error: false,
     disabled: false,
     defaultChecked: false,
     size: 'main',
   },
-  render: function Render({ children, ...props }) {
+  render: function Render({ ...props }) {
     const [inputText, setInputText] = useState<string>('first');
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Radio {...props}>{children}</Radio>
+        <Radio {...props}>Radio Button Label</Radio>
         <Radio
           {...props}
           withInputConfig={{
@@ -48,10 +47,10 @@ export const Playground: StoryObj<RadioProps> = {
             value: inputText,
           }}
         >
-          {children}
+          Radio Button Label
         </Radio>
         <Radio {...props} hint="Support text">
-          {children}
+          Radio Button Label
         </Radio>
         <Radio
           {...props}
@@ -61,7 +60,7 @@ export const Playground: StoryObj<RadioProps> = {
             disabled: true,
           }}
         >
-          {children}
+          Radio Button Label
         </Radio>
       </div>
     );
