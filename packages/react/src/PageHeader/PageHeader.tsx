@@ -19,7 +19,10 @@ type PageHeaderChild =
   | ReactElement<BreadcrumbProps>
   | ReactElement<PageToolbarProps>
   | ReactElement<ButtonProps>
-  | ReactElement<HTMLAttributes<HTMLAnchorElement>>;
+  | ReactElement<HTMLAttributes<HTMLAnchorElement>>
+  | null
+  | undefined
+  | false;
 
 /**
  * Props for the PageHeader component.

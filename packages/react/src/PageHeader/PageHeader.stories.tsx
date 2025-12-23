@@ -4,6 +4,7 @@ import PageToolbar from '../PageToolbar';
 import Button from '../Button';
 import { MenuIcon } from '@mezzanine-ui/icons';
 import Breadcrumb from '../Breadcrumb';
+import BreadcrumbItem from '../Breadcrumb/BreadcrumbItem';
 
 export default {
   title: 'Navigation/PageHeader',
@@ -50,27 +51,21 @@ export const Default: Story = {
             {/* back button: use component with href prop or <Button /> component */}
             <a href="./" title="back" />
 
-            <Breadcrumb
-              items={[
-                { label: 'Home', href: '/' },
-                { label: 'Category', href: '/' },
-                { label: 'Detail', href: '/' },
-                { label: 'History', href: '/' },
-              ]}
-            />
+            <Breadcrumb>
+              <BreadcrumbItem href="/" label="Home" />
+              <BreadcrumbItem href="/category" label="Category" />
+              <BreadcrumbItem href="/detail" label="Detail" />
+              <BreadcrumbItem href="/history" label="History" />
+            </Breadcrumb>
 
-            <PageToolbar
-              actions={{
-                primaryButton: <Button>Primary</Button>,
-                secondaryButton: <Button>Secondary</Button>,
-              }}
-              utilities={
-                <Button
-                  title="Button description"
-                  icon={{ src: MenuIcon, position: 'icon-only' }}
-                />
-              }
-            />
+            <PageToolbar>
+              <Button>Secondary</Button>
+              <Button>Primary</Button>
+              <Button
+                title="Button description"
+                icon={{ src: MenuIcon, position: 'icon-only' }}
+              />
+            </PageToolbar>
           </PageHeader>
         </div>
       </div>

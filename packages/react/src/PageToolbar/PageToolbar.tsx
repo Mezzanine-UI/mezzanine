@@ -18,10 +18,37 @@ type SegmentedControlProps = {
   mock: 'SegmentedControlProps';
 };
 
+type PageToolbarChild =
+  | ReactElement<
+      SearchInputProps | SelectProps | SegmentedControlProps | ButtonProps
+    >
+  | null
+  | false
+  | undefined;
+
 /**
  * Props for the PageToolbar component.
+ *
+ * PageToolbar provides a flexible toolbar layout for page-level actions,
+ * including filter components, action buttons, and utility buttons.
+ *
+ * @example
+ * ```tsx
+ * <PageToolbar
+ *   size="main"
+ *   filter={{ variant: 'search', placeholder: 'Search...' }}
+ *   actions={{
+ *     primaryButton: { children: 'Save' },
+ *     secondaryButton: { children: 'Cancel' },
+ *   }}
+ *   utilities={[{ icon: { src: settingsIcon }, title: 'Settings' }]}
+ * />
+ * ```
  */
-export type PageToolbarProps = NativeElementPropsWithoutKeyAndRef<'div'> & {
+export type PageToolbarProps = Omit<
+  NativeElementPropsWithoutKeyAndRef<'div'>,
+  'children'
+> & {
   /**
    * Button configuration for primary, secondary, and destructive actions. <br />
    * Automatically applies proper styling and order. <br />
@@ -31,13 +58,17 @@ export type PageToolbarProps = NativeElementPropsWithoutKeyAndRef<'div'> & {
     primaryButton?: ButtonProps;
     secondaryButton?: ButtonProps;
   };
-  children?:
-    | ReactElement<
-        SearchInputProps | SelectProps | SegmentedControlProps | ButtonProps
-      >[]
-    | ReactElement<
-        SearchInputProps | SelectProps | SegmentedControlProps | ButtonProps
-      >;
+  /**
+   * Children elements: <br />
+   * - Filter component (SearchInput, Select, or SegmentedControl) <br />
+   * - Action buttons `<Button />` <br />
+   * - Icon-only utility buttons `<Button icon="..." />` <br />
+   * <br />
+   * Can mix and match the above children. <br />
+   * The order of children does not matter as they will be arranged properly. <br />
+   * When conflicting with other props, props take priority over children. <br />
+   */
+  children?: PageToolbarChild[] | PageToolbarChild;
   /** Filter component (SearchInput, Select, or SegmentedControl) */
   filter?: { variant: 'search' | 'select' | 'segmentedControl' } & (
     | SearchInputProps
@@ -50,10 +81,7 @@ export type PageToolbarProps = NativeElementPropsWithoutKeyAndRef<'div'> & {
    */
   size?: 'main' | 'sub';
   /**
-   * Icon-only utility buttons `<Button title="..." icon="..." />`. <br />
-   * Wrapped with Tooltip automatically. <br />
-   * Supports a single Button or a Fragment of Buttons. <br />
-   * `<> <Button ... /> <Button ... /> </>` <br />
+   * Icon-only utility buttons `<Button icon="..." />`. <br />
    */
   utilities?: (ButtonProps & {
     icon: { src: IconDefinition };
