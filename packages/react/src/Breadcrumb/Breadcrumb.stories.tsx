@@ -1,6 +1,7 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import Breadcrumb, { BreadcrumbProps } from '.';
 import Typography from '../Typography';
+import BreadcrumbItem from './BreadcrumbItem';
 
 export default {
   title: 'Data Display/Breadcrumb',
@@ -118,6 +119,14 @@ export const All: Story = {
             { label: 'History', href: '/' },
           ]}
         />
+        <Breadcrumb>
+          <BreadcrumbItem label="Home" href="/" />
+          <BreadcrumbItem label="Category" href="/" />
+          <BreadcrumbItem label="Subcategory" href="/" />
+          <BreadcrumbItem label="Tab" href="/" />
+          <BreadcrumbItem label="Detail" href="/" />
+          <BreadcrumbItem label="History" href="/" />
+        </Breadcrumb>
       </div>
     </div>
   ),
