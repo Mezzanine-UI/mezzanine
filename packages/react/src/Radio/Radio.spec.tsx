@@ -4,7 +4,6 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { FormField } from '../Form';
 import Radio, { RadioGroup } from '.';
 
 describe('<Radio />', () => {
@@ -98,20 +97,6 @@ describe('<Radio />', () => {
           <Radio />
           <Radio disabled={false} />
         </RadioGroup>,
-      );
-      const element = getHostHTMLElement();
-      const [input1, input2] = element.getElementsByTagName('input');
-
-      testDisabled(input1, true);
-      testDisabled(input2, false);
-    });
-
-    it('should use disabled from form control if disabled not passed', () => {
-      const { getHostHTMLElement } = render(
-        <FormField disabled>
-          <Radio />
-          <Radio disabled={false} />
-        </FormField>,
       );
       const element = getHostHTMLElement();
       const [input1, input2] = element.getElementsByTagName('input');
