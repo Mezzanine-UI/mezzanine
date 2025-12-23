@@ -186,3 +186,28 @@ export const Group: StoryObj<RadioGroupProps> = {
     );
   },
 };
+
+export const Segmented: StoryObj = {
+  render: function Render() {
+    return (
+      <div
+        style={{
+          width: 'fit-content',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+        }}
+      >
+        <RadioGroup type="segment">
+          <Radio value="op1">Option1</Radio>
+          <Radio value="op2">Option2</Radio>
+          <Radio value="op3">Option3</Radio>
+          <Radio value="op4" disabled>
+            Option4
+          </Radio>
+        </RadioGroup>
+      </div>
+    );
+  },
+};

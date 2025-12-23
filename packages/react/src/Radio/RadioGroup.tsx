@@ -140,7 +140,12 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
 
     return (
       <RadioGroupContext.Provider value={context}>
-        <InputCheckGroup {...rest} ref={ref} role="radiogroup">
+        <InputCheckGroup
+          {...rest}
+          ref={ref}
+          role="radiogroup"
+          segmentedStyle={type === 'segment'}
+        >
           {children}
         </InputCheckGroup>
       </RadioGroupContext.Provider>
