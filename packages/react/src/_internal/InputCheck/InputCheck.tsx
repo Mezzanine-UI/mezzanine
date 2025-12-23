@@ -36,6 +36,11 @@ export interface InputCheckProps
    */
   hint?: string;
   /**
+   * Whether the input check use segment style.
+   * @default false
+   */
+  segmentedStyle?: boolean;
+  /**
    * The size of input check.
    * @default 'main'
    */
@@ -56,6 +61,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
       focused,
       hint,
       htmlFor,
+      segmentedStyle = false,
       size = 'main',
       ...rest
     } = props;
@@ -79,6 +85,7 @@ const InputCheck = forwardRef<HTMLLabelElement, InputCheckProps>(
         <span
           className={cx(classes.control, {
             [classes.controlFocused]: focused,
+            [classes.controlSegmented]: segmentedStyle,
           })}
         >
           {control}
