@@ -33,28 +33,37 @@
     will-change: background-color;
   }
 
-  &--main {
-    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, base)};
-    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
-    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
-    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
-    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+  &--main & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, base)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
   }
 
-  &--sub {
-    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
-    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
-    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
-    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
-    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+  &--sub & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
   }
 
-  &--minor {
-    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
-    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
-    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
-    --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
-    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
+  &--minor & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
+      @include typography.semantic-variable(button-highlight);
+    }
   }
 
   &--checked {
@@ -124,7 +133,6 @@
   }
 
   &__segmented-container {
-    @include typography.semantic-variable(label-primary-highlight);
     color: palette.semantic-variable(text, neutral-solid);
     padding: var(--#{$prefix}-segmented-vertical-padding) var(--#{$prefix}-segmented-horizontal-padding);
     display: flex;
