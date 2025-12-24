@@ -128,6 +128,18 @@
   grid-auto-flow: column;
   gap: 0 spacing.semantic-variable(gap, comfort);
 
+  &--main, &--sub {
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, micro)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, micro)};
+    --#{$group-prefix}-segmented-background: #{palette.semantic-variable(background, neutral-subtle)};
+  }
+
+  &--minor {
+     --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, none)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, none)};
+    --#{$group-prefix}-segmented-background: transparent;
+  }
+
   &--vertical {
     grid-auto-flow: row;
   }
@@ -135,8 +147,7 @@
   &--segmented {
     gap: spacing.semantic-variable(gap, tight);
     border-radius: radius.variable(base);
-    background-color: palette.semantic-variable(background, neutral-subtle);
-    padding: spacing.semantic-variable(padding, vertical, micro)
-      spacing.semantic-variable(padding, horizontal, micro);
+    background-color: var(--#{$group-prefix}-segmented-background);
+    padding: var(--#{$group-prefix}-segmented-vertical-padding) var(--#{$group-prefix}-segmented-horizontal-padding);
   }
 }
