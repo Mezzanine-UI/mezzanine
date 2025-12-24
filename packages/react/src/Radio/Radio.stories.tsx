@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { StoryObj } from '@storybook/react-webpack5';
+import { LightIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
 import Radio, {
   RadioSize,
@@ -197,16 +198,45 @@ export const Segmented: StoryObj = {
           flexDirection: 'column',
           justifyContent: 'flex-start',
           alignItems: 'flex-start',
+          gap: 8,
         }}
       >
-        <RadioGroup type="segment">
-          <Radio value="op1">Option1</Radio>
-          <Radio value="op2">Option2</Radio>
-          <Radio value="op3">Option3</Radio>
-          <Radio value="op4" disabled>
-            Option4
-          </Radio>
-        </RadioGroup>
+        <div>
+          <Typography variant="h2">Main</Typography>
+          <RadioGroup type="segment">
+            <Radio value="op1" type="segment" icon={LightIcon}>
+              Option1
+            </Radio>
+            <Radio value="op2" type="segment" icon={LightIcon}>
+              Option2
+            </Radio>
+            <Radio value="op3" type="segment" icon={LightIcon}>
+              Option3
+            </Radio>
+            <Radio value="op4" type="segment" icon={LightIcon} disabled>
+              Option4
+            </Radio>
+          </RadioGroup>
+        </div>
+        <div>
+          <Typography variant="h2">Sub</Typography>
+          <RadioGroup type="segment" size="sub">
+            <Radio value="op1">全部</Radio>
+            <Radio value="op2">已發佈</Radio>
+            <Radio value="op3">未發布</Radio>
+          </RadioGroup>
+        </div>
+        <div>
+          <Typography variant="h2">Minor</Typography>
+          <RadioGroup type="segment" size="minor">
+            <Radio value="op1">Option1</Radio>
+            <Radio value="op2">Option2</Radio>
+            <Radio value="op3">Option3</Radio>
+            <Radio value="op4" disabled>
+              Option4
+            </Radio>
+          </RadioGroup>
+        </div>
       </div>
     );
   },

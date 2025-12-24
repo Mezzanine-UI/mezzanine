@@ -10,7 +10,7 @@ import Radio, { RadioNormalProps, RadioSegmentProps } from './Radio';
 export interface RadioGroupNormalOption
   extends Pick<
     RadioNormalProps,
-    'disabled' | 'error' | 'hint' | 'withInputConfig'
+    'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
   > {
   label: string | number;
   value: string;
@@ -19,7 +19,7 @@ export interface RadioGroupNormalOption
 export interface RadioGroupSegmentOption
   extends Pick<
     RadioSegmentProps,
-    'disabled' | 'error' | 'hint' | 'withInputConfig'
+    'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
   > {
   label: string | number;
   value: string;

@@ -2,6 +2,7 @@
 
 import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
+import { IconDefinition } from '@mezzanine-ui/icons';
 import InputCheck, {
   InputCheckProps,
 } from '../_internal/InputCheck/InputCheck';
@@ -9,6 +10,7 @@ import { cx } from '../utils/cx';
 import { useRadioControlValue } from '../Form/useRadioControlValue';
 import { RadioGroupContext } from './RadioGroupContext';
 import Input, { BaseInputProps } from '../Input';
+import Icon from '../Icon';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface RadioBaseProps
@@ -58,6 +60,7 @@ export interface RadioBaseProps
 }
 
 export interface RadioNormalProps extends RadioBaseProps {
+  icon?: never;
   hint?: string;
   /**
    * The type of radio.
@@ -78,6 +81,10 @@ export interface RadioNormalProps extends RadioBaseProps {
 }
 
 export interface RadioSegmentProps extends RadioBaseProps {
+  /**
+   * The icon in radio prefix.
+   */
+  icon?: IconDefinition;
   hint?: never;
   /**
    * The type of radio.
@@ -108,6 +115,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       defaultChecked,
       disabled = disabledFromGroup || false,
       error = false,
+      icon,
       hint,
       inputProps,
       onChange: onChangeProp,
@@ -137,7 +145,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           {...rest}
           control={
             <span
-              className={cx(classes.host, {
+              className={cx(classes.host, classes.size(size), {
                 [classes.segmented]: type === 'segment',
                 [classes.checked]: checked,
                 [classes.focused]: focused,
@@ -145,7 +153,10 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
               })}
             >
               {type === 'segment' && (
-                <div className={cx(classes.segmentedContainer)}>{children}</div>
+                <span className={cx(classes.segmentedContainer)}>
+                  {icon && <Icon icon={icon} size={16} />}
+                  {children}
+                </span>
               )}
               <input
                 {...restInputProps}
