@@ -221,18 +221,30 @@ export const Segmented: StoryObj = {
         <div>
           <Typography variant="h2">Sub</Typography>
           <RadioGroup type="segment" size="sub">
-            <Radio value="op1">全部</Radio>
-            <Radio value="op2">已發佈</Radio>
-            <Radio value="op3">未發布</Radio>
+            <Radio value="op1" type="segment">
+              全部
+            </Radio>
+            <Radio value="op2" type="segment">
+              已發佈
+            </Radio>
+            <Radio value="op3" type="segment">
+              未發佈
+            </Radio>
           </RadioGroup>
         </div>
         <div>
           <Typography variant="h2">Minor</Typography>
           <RadioGroup type="segment" size="minor">
-            <Radio value="op1">Option1</Radio>
-            <Radio value="op2">Option2</Radio>
-            <Radio value="op3">Option3</Radio>
-            <Radio value="op4" disabled>
+            <Radio value="op1" type="segment">
+              Option1
+            </Radio>
+            <Radio value="op2" type="segment">
+              Option2
+            </Radio>
+            <Radio value="op3" type="segment">
+              Option3
+            </Radio>
+            <Radio value="op4" type="segment" disabled>
               Option4
             </Radio>
           </RadioGroup>

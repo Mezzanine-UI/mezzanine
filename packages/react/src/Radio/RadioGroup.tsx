@@ -26,7 +26,7 @@ export interface RadioGroupSegmentOption
 }
 
 export interface RadioGroupBaseProps
-  extends Omit<InputCheckGroupProps, 'onChange'> {
+  extends Omit<InputCheckGroupProps, 'onChange' | 'type'> {
   /**
    * The radios in radio group.
    */
