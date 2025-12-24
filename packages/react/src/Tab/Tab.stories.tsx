@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 export const All = () => {
-  const [tabKey, setTabKey] = useState<Key>('s1');
+  const [tabKey, setTabKey] = useState<Key>('0');
 
   return (
     <div style={{ display: 'grid', gap: 40 }}>

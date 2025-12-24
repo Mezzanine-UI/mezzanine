@@ -81,8 +81,10 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
         active,
         ref: active ? activeTabItemRef : undefined,
         onClick: (event) => {
-          setActiveKey(key);
-          onChange?.(key, index);
+          if (!active) {
+            setActiveKey(key);
+            onChange?.(key, index);
+          }
 
           tabItem.props.onClick?.(event);
         },
