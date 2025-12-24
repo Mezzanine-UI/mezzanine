@@ -19,6 +19,16 @@ export const Playground: StoryObj<DrawerProps> = {
         type: 'boolean',
       },
     },
+    isBottomDisplay: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    isHeaderDisplay: {
+      control: {
+        type: 'boolean',
+      },
+    },
     size: {
       control: {
         type: 'radio',
@@ -29,11 +39,15 @@ export const Playground: StoryObj<DrawerProps> = {
   args: {
     disableCloseOnBackdropClick: false,
     disableCloseOnEscapeKeyDown: false,
+    isBottomDisplay: true,
+    isHeaderDisplay: true,
     size: 'medium',
   },
   render: function Render({
     disableCloseOnBackdropClick,
     disableCloseOnEscapeKeyDown,
+    isBottomDisplay,
+    isHeaderDisplay,
     size,
   }) {
     const [open, setOpen] = useState(false);
@@ -51,17 +65,17 @@ export const Playground: StoryObj<DrawerProps> = {
         </Button>
 
         <Drawer
-          bottom={{
-            ghostActionText: '更多選項',
-            onGhostActionClick: handleClose,
-            onPrimaryActionClick: handleClose,
-            onSecondaryActionClick: handleClose,
-            primaryActionText: '儲存變更',
-            secondaryActionText: '取消',
-          }}
+          bottomGhostActionText="更多選項"
+          bottomOnGhostActionClick={handleClose}
+          bottomOnPrimaryActionClick={handleClose}
+          bottomOnSecondaryActionClick={handleClose}
+          bottomPrimaryActionText="儲存變更"
+          bottomSecondaryActionText="取消"
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
-          header={{ title: 'Drawer Title' }}
+          headerTitle="Drawer Title"
+          isBottomDisplay={isBottomDisplay}
+          isHeaderDisplay={isHeaderDisplay}
           onClose={handleClose}
           open={open}
           size={size}
