@@ -21,13 +21,13 @@ describe('<RadioGroup /> - props', () => {
   describe('prop: options', () => {
     const options: RadioGroupNormalOption[] = [
       {
-        label: 'foo',
-        value: 'foo',
+        id: 'foo',
+        name: 'foo',
       },
       {
         disabled: true,
-        label: 'bar',
-        value: 'bar',
+        id: 'bar',
+        name: 'bar',
       },
     ];
 

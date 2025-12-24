@@ -126,8 +126,8 @@ export const Group: StoryObj<RadioGroupProps> = {
 
     const options: RadioGroupNormalOption[] = [
       {
-        value: 'option-1',
-        label: 'Option 1',
+        id: 'option-1',
+        name: 'Option 1',
         withInputConfig: {
           width: 140,
           onChange: (e) => setInputText(e.target.value),
@@ -135,18 +135,18 @@ export const Group: StoryObj<RadioGroupProps> = {
         },
       },
       {
-        value: 'option-2',
-        label: 'Option 2',
+        id: 'option-2',
+        name: 'Option 2',
         hint: 'option2 support text',
       },
       {
-        value: 'option-disabled',
-        label: 'Option 3',
+        id: 'option-disabled',
+        name: 'Option 3',
         disabled: true,
       },
       {
-        value: 'option-error',
-        label: 'Option 4',
+        id: 'option-error',
+        name: 'Option 4',
         error: true,
       },
     ];
@@ -160,19 +160,19 @@ export const Group: StoryObj<RadioGroupProps> = {
               disabled: optionDisabled,
               error: optionError,
               hint,
-              label,
-              value,
+              id,
+              name,
               withInputConfig,
             }) => (
               <Radio
-                key={value}
+                key={id}
                 disabled={optionDisabled}
                 error={optionError}
                 hint={hint}
-                value={value}
+                value={id}
                 withInputConfig={withInputConfig}
               >
-                {label}
+                {name}
               </Radio>
             ),
           )}

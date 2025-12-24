@@ -12,8 +12,8 @@ export interface RadioGroupNormalOption
     RadioNormalProps,
     'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
   > {
-  label: string | number;
-  value: string;
+  id: string;
+  name: string | number;
 }
 
 export interface RadioGroupSegmentOption
@@ -21,8 +21,8 @@ export interface RadioGroupSegmentOption
     RadioSegmentProps,
     'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
   > {
-  label: string | number;
-  value: string;
+  id: string;
+  name: string | number;
 }
 
 export interface RadioGroupBaseProps
@@ -127,14 +127,14 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       childrenProp ||
       options.map((option) => (
         <Radio
-          key={option.value}
+          key={option.id}
           disabled={option.disabled}
           error={option.error}
           hint={option.hint}
-          value={option.value}
+          value={option.id}
           withInputConfig={option.withInputConfig}
         >
-          {option.label}
+          {option.name}
         </Radio>
       ));
 
