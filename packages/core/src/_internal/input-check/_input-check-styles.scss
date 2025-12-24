@@ -20,6 +20,14 @@
   cursor: pointer;
   box-sizing: border-box;
 
+  &--main, &--sub {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+  }
+
+  &--minor {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+  }
+
   &--sub, &--minor {
     padding: spacing.semantic-variable(padding, vertical, tight) 0;
   }
@@ -75,13 +83,13 @@
 
     &--segmented.#{$prefix}__control--focused {
       background-color: palette.semantic-variable('background', base);
-      border-radius: radius.variable(tiny);
+      border-radius: var(--#{$prefix}-segmented-border-radius);
 
       &::before {
         width: calc(100% + 4px);
         height: calc(100% + 4px);
         background-color: palette.semantic-variable('background', base);
-        border-radius: radius.variable(tiny);
+        border-radius: var(--#{$prefix}-segmented-border-radius);
         top: -2px;
         left: -2px;
       }
