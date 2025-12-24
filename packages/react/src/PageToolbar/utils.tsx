@@ -39,22 +39,11 @@ export const renderButton = (
   return <Button key={variant} {...button} size={size} variant={variant} />;
 };
 
-/**
- * Clones filter component with the specified size prop.
- */
 const withSize = (
   target: ReactElement<SearchInputProps | SelectProps | SegmentedControlProps>,
   size: 'main' | 'sub',
 ) => {
-  if (!target) {
-    return null;
-  }
-
-  if (isValidElement(target)) {
-    return cloneElement(target, { size });
-  }
-
-  return target;
+  return cloneElement(target, { size });
 };
 
 export const renderFilterProp = (
@@ -178,12 +167,16 @@ export const resolvePageToolbarChild = (
       if (type === Input && (props as InputProps).variant === 'search') {
         filter = withSize(child as ReactElement<SearchInputProps>, size);
       } else if (type === Select) {
+        // TODO: waiting size prop Select
         filter = withSize(child as ReactElement<SelectProps>, size);
       } else if (type.toString() === 'SegmentedControl') {
         console.warn('SegmentedControl component is not implemented yet.');
       }
       // is utilities (icon button)
-      else if (type === Button && (props as ButtonProps).icon) {
+      else if (
+        type === Button &&
+        (props as ButtonProps).icon?.position === 'icon-only'
+      ) {
         utilities.push(
           renderIconButtonWithProps(child as ReactElement<ButtonProps>, size),
         );
@@ -220,7 +213,8 @@ export const resolvePageToolbarChild = (
       }
     });
 
-    // filling null action
+    // Fill the buttons from left to right according to the number of buttons passed in,
+    // and ensure that the button on the right has a higher priority
     const fillIndexStartWith =
       3 -
       buttonsWithoutVariant.length -
