@@ -137,7 +137,7 @@ describe('<Drawer />', () => {
 
     it('should render header with title when provided', () => {
       render(
-        <Drawer open header={{ title: 'Drawer Title' }}>
+        <Drawer headerTitle="Drawer Title" isHeaderDisplay open>
           Content
         </Drawer>,
       );
@@ -151,7 +151,7 @@ describe('<Drawer />', () => {
 
     it('should render close icon in header', () => {
       render(
-        <Drawer open header={{ title: 'Title' }}>
+        <Drawer headerTitle="Title" isHeaderDisplay open>
           Content
         </Drawer>,
       );
@@ -168,7 +168,7 @@ describe('<Drawer />', () => {
       const onClose = jest.fn();
 
       render(
-        <Drawer open header={{ title: 'Title' }} onClose={onClose}>
+        <Drawer headerTitle="Title" isHeaderDisplay onClose={onClose} open>
           Content
         </Drawer>,
       );
@@ -199,11 +199,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
             open
-            bottom={{
-              ghostActionText: 'Cancel',
-              onGhostActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -226,11 +225,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
             open
-            bottom={{
-              ghostActionText: 'Cancel',
-              onGhostActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -247,12 +245,7 @@ describe('<Drawer />', () => {
 
       it('should not render ghost button if only text provided without handler', () => {
         render(
-          <Drawer
-            open
-            bottom={{
-              ghostActionText: 'Cancel',
-            }}
-          >
+          <Drawer bottomGhostActionText="Cancel" isBottomDisplay open>
             Content
           </Drawer>,
         );
@@ -271,11 +264,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionText="Back"
+            isBottomDisplay
             open
-            bottom={{
-              secondaryActionText: 'Back',
-              onSecondaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -300,11 +292,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionText="Back"
+            isBottomDisplay
             open
-            bottom={{
-              secondaryActionText: 'Back',
-              onSecondaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -329,11 +320,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionText="Submit"
+            isBottomDisplay
             open
-            bottom={{
-              primaryActionText: 'Submit',
-              onPrimaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -358,11 +348,10 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionText="Submit"
+            isBottomDisplay
             open
-            bottom={{
-              primaryActionText: 'Submit',
-              onPrimaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -389,15 +378,14 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomPrimaryActionText="Submit"
+            bottomSecondaryActionText="Back"
+            isBottomDisplay
             open
-            bottom={{
-              ghostActionText: 'Cancel',
-              onGhostActionClick,
-              secondaryActionText: 'Back',
-              onSecondaryActionClick,
-              primaryActionText: 'Submit',
-              onPrimaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -419,13 +407,12 @@ describe('<Drawer />', () => {
 
         render(
           <Drawer
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionText="Submit"
+            isBottomDisplay
             open
-            bottom={{
-              ghostActionText: 'Cancel',
-              onGhostActionClick,
-              primaryActionText: 'Submit',
-              onPrimaryActionClick,
-            }}
           >
             Content
           </Drawer>,
@@ -499,18 +486,18 @@ describe('<Drawer />', () => {
 
       render(
         <Drawer
+          bottomGhostActionText="Cancel"
+          bottomOnGhostActionClick={onGhostActionClick}
+          bottomOnPrimaryActionClick={onPrimaryActionClick}
+          bottomOnSecondaryActionClick={onSecondaryActionClick}
+          bottomPrimaryActionText="Submit"
+          bottomSecondaryActionText="Back"
+          headerTitle="Complete Drawer"
+          isBottomDisplay
+          isHeaderDisplay
+          onClose={onClose}
           open
           size="wide"
-          header={{ title: 'Complete Drawer' }}
-          bottom={{
-            ghostActionText: 'Cancel',
-            onGhostActionClick,
-            secondaryActionText: 'Back',
-            onSecondaryActionClick,
-            primaryActionText: 'Submit',
-            onPrimaryActionClick,
-          }}
-          onClose={onClose}
         >
           <div>Main Content</div>
         </Drawer>,
