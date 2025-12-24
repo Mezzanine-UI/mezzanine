@@ -59,6 +59,8 @@
     height: var(--#{$prefix}-control-size);
     padding: spacing.semantic-variable(padding, vertical, micro)
       spacing.semantic-variable(padding, horizontal, micro);
+    transition: transition.standard(background-color, fast);
+    will-change: background-color;
     box-sizing: border-box;
 
     &--focused {
@@ -143,7 +145,7 @@
   }
 
   &--minor {
-     --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, none)};
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, none)};
     --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, none)};
     --#{$group-prefix}-segmented-background: transparent;
   }
