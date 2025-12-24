@@ -38,6 +38,7 @@
     --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
     --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
     --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
   }
 
   &--sub {
@@ -45,6 +46,7 @@
     --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
     --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
     --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
   }
 
   &--minor {
@@ -52,6 +54,7 @@
     --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
     --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
     --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+    --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
   }
 
   &--checked {
@@ -86,7 +89,7 @@
 
   &--checked & {
     &__segmented-container {
-      background-color: palette.semantic-variable('background', base);
+      background-color: var(--#{$prefix}-segmented-checked-color);
     }
   }
 
@@ -106,7 +109,7 @@
 
   &--segmented {
     border: none;
-    background-color: transparent;
+    background-color: transparent !important;
 
     &::before {
       display: none;
@@ -139,6 +142,7 @@
 
     &--with-icon-text {
       padding-left: var(--#{$prefix}-segmented-horizontal-with-icon-padding);
+      padding-right: spacing.semantic-variable(padding, horizontal, base);
     }
   }
 }
