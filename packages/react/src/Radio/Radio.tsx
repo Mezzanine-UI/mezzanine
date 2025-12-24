@@ -153,7 +153,13 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
               })}
             >
               {type === 'segment' && (
-                <span className={cx(classes.segmentedContainer)}>
+                <span
+                  className={cx(classes.segmentedContainer, {
+                    [classes.segmentedContainerHaveMinWidth]: !!children,
+                    [classes.segmentedContainerWithIconText]:
+                      !!children && !!icon,
+                  })}
+                >
                   {icon && <Icon icon={icon} size={16} />}
                   {children}
                 </span>

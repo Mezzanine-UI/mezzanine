@@ -145,6 +145,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
           ref={ref}
           role="radiogroup"
           segmentedStyle={type === 'segment'}
+          size={size}
         >
           {children}
         </InputCheckGroup>
