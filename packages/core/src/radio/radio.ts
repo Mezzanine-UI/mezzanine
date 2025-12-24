@@ -19,5 +19,7 @@ export const radioClasses = {
   error: `${radioPrefix}--error`,
   segmented: `${radioPrefix}--segmented`,
   segmentedContainer: `${radioPrefix}__segmented-container`,
+  segmentedContainerHaveMinWidth: `${radioPrefix}__segmented-container--have-min-width`,
+  segmentedContainerWithIconText: `${radioPrefix}__segmented-container--with-icon-text`,
   wrapper: `${radioPrefix}__wrapper`,
 } as const;

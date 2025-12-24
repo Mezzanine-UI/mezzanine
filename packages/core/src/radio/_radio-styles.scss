@@ -33,6 +33,27 @@
     will-change: background-color;
   }
 
+  &--main {
+    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, base)};
+    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+  }
+
+  &--sub {
+    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+  }
+
+  &--minor {
+    --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+    --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+    --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
+    --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+  }
+
   &--checked {
     &::before {
       background-color: var(--#{input-check.$prefix}-color);
@@ -102,15 +123,23 @@
   &__segmented-container {
     @include typography.semantic-variable(label-primary-highlight);
     color: palette.semantic-variable(text, neutral-solid);
-    padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, base);
+    padding: var(--#{$prefix}-segmented-vertical-padding) var(--#{$prefix}-segmented-horizontal-padding);
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: spacing.semantic-variable(gap, tight);
-    border-radius: radius.variable(tiny);
+    border-radius: var(--#{$prefix}-segmented-border-radius);
     background-color: transparent;
     transition: transition.standard(background-color, fast);
     will-change: background-color;
+
+    &--have-min-width {
+      min-width: spacing.semantic-variable(size, element, extra-wide);
+    }
+
+    &--with-icon-text {
+      padding-left: var(--#{$prefix}-segmented-horizontal-with-icon-padding);
+    }
   }
 }
 
