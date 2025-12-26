@@ -36,10 +36,8 @@ import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
 import { cx } from '../utils/cx';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
-import SelectTrigger, {
-  SelectTriggerProps,
-  SelectTriggerInputProps,
-} from './SelectTrigger';
+import SelectTrigger from './SelectTrigger';
+import { SelectTriggerProps, SelectTriggerInputProps } from './typings';
 
 export interface AutoCompleteBaseProps
   extends Omit<
@@ -324,7 +322,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             className={className}
             clearable
             disabled={disabled}
-            ellipsis
+            // ellipsis
             error={error}
             fullWidth={fullWidth}
             inputRef={inputRef}

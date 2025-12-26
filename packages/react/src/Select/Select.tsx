@@ -21,7 +21,11 @@ import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from './SelectControlContext';
-import { SelectValue } from './typings';
+import {
+  SelectValue,
+  SelectTriggerProps,
+  SelectTriggerInputProps,
+} from './typings';
 import {
   useSelectValueControl,
   UseSelectMultipleValueControl,
@@ -30,10 +34,7 @@ import {
 import { useClickAway } from '../hooks/useClickAway';
 import { PickRenameMulti } from '../utils/general';
 import InputTriggerPopper from '../_internal/InputTriggerPopper';
-import SelectTrigger, {
-  SelectTriggerProps,
-  SelectTriggerInputProps,
-} from './SelectTrigger';
+import SelectTrigger from './SelectTrigger';
 
 export interface SelectBaseProps
   extends Omit<
@@ -95,7 +96,7 @@ export interface SelectBaseProps
   /**
    * To customize rendering select input value
    */
-  renderValue?(values: SelectValue[] | SelectValue | null): string;
+  renderValue?(values?: SelectValue[] | SelectValue | null): string;
   /**
    * Whether the selection is required.
    * @default false
@@ -123,7 +124,7 @@ export type SelectMultipleProps = SelectBaseProps & {
   /**
    * To customize rendering select input value
    */
-  renderValue?(values: SelectValue[]): string;
+  renderValue?(values?: SelectValue[]): string;
   /**
    * The value of selection.
    * @default undefined
@@ -147,7 +148,7 @@ export type SelectSingleProps = SelectBaseProps & {
   /**
    * To customize rendering select input value
    */
-  renderValue?(values: SelectValue | null): string;
+  renderValue?(values?: SelectValue | null): string;
   /**
    * The value of selection.
    * @default undefined

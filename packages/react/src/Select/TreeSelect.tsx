@@ -21,11 +21,13 @@ import { PickRenameMulti } from '../utils/general';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
 } from '../_internal/InputTriggerPopper';
-import SelectTrigger, {
+import SelectTrigger from './SelectTrigger';
+import {
+  SelectValue,
+  TreeSelectOption,
   SelectTriggerProps,
   SelectTriggerInputProps,
-} from './SelectTrigger';
-import { SelectValue, TreeSelectOption } from './typings';
+} from './typings';
 import Tree, {
   TreeProps,
   TreeNodeProp,
@@ -232,7 +234,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
   const controllerRef = useRef<PopperController>(null);
 
   useIsomorphicLayoutEffect(() => {
-    controllerRef.current?.forceUpdate?.();
+    controllerRef.current?.update?.();
   }, [valueProp]);
 
   /** Open control */

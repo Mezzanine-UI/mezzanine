@@ -115,7 +115,7 @@ export type SelectTriggerSingleProps = SelectTriggerBaseProps & {
    * The value of selection.
    * @default undefined
    */
-  value?: SelectValue;
+  value?: SelectValue | null;
   /**
    * Provide if you have a customize value rendering logic.
    * By default will have a comma between values.
@@ -141,6 +141,11 @@ export type SelectTriggerMultipleProps = SelectTriggerBaseProps & {
    * @default undefined
    */
   value?: SelectValue[];
+  /**
+   * Provide if you have a customize value rendering logic.
+   * By default will have a comma between values.
+   */
+  renderValue?: (value?: SelectValue[]) => string;
 };
 
 export type SelectTriggerComponentProps =
