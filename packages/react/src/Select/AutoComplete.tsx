@@ -301,6 +301,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onChange: onSearchInputChange,
       onFocus: onSearchInputFocus,
       placeholder: getPlaceholder(),
+      readOnly: false,
       role: 'combobox',
     };
 
