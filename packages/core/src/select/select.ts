@@ -1,6 +1,6 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { GeneralSize } from '@mezzanine-ui/system/size';
 
-export type SelectInputSize = Size;
+export type SelectInputSize = Extract<GeneralSize, 'main' | 'sub'>;
 export type SelectMode = 'single' | 'multiple';
 export type SelectTriggerType = 'default' | 'error';
 
