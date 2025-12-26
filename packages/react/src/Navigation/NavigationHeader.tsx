@@ -2,26 +2,22 @@ import { forwardRef, ReactNode } from 'react';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
 import { navigationHeaderClasses as classes } from '@mezzanine-ui/core/navigation';
+import { SiderIcon } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
 
 export interface NavigationHeaderProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'header'>, 'onClick'> {
-  /**
-   * Whether the item is active.
-   */
-  active?: boolean;
-  /**
-   * Item display content.
-   */
+  extends NativeElementPropsWithoutKeyAndRef<'header'> {
   children?: ReactNode;
 }
 
 const NavigationHeader = forwardRef<HTMLHeadElement, NavigationHeaderProps>(
   (props, ref) => {
-    const { active, children, className, ...rest } = props;
+    const { children, className, ...rest } = props;
 
     return (
       <header {...rest} ref={ref} className={cx(classes.host, className)}>
-        {children}
+        <span className={classes.content}>{children}</span>
+        <Icon icon={SiderIcon} className={classes.siderIcon} />
       </header>
     );
   },
