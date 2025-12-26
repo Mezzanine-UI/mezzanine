@@ -15,6 +15,8 @@ $vertical-icon-gap: 8px !default;
 $vertical-group-indent: 8px !default;
 $vertical-group-icon-indent: 40px !default;
 
+$background: background;
+
 $icon-size: 24px !default;
 
 .#{$prefix} {
@@ -22,7 +24,7 @@ $icon-size: 24px !default;
   @include typography.variant(button2);
 
   overflow: hidden;
-  background-color: palette.color(surface);
+  background-color: palette.semantic-variable($background, base);
   color: palette.color(action-inactive);
   display: grid;
 
@@ -149,8 +151,29 @@ $icon-size: 24px !default;
 
 .#{$header-prefix} {
   box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  gap: spacing.semantic-variable(gap, comfort);
+  align-items: center;
   width: 100%;
-  border-bottom: 1px solid palette.color(divider);
+  border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+  padding: spacing.semantic-variable(padding, horizontal, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed) spacing.semantic-variable(padding, vertical, base);
+  @include typography.semantic-variable(h3);
+
+  &__content {
+    align-items: center;
+    color: palette.semantic-variable(text, neutral-solid);
+    display: flex;
+    flex-grow: 1;
+    gap: spacing.semantic-variable(gap, base);
+    height: 100%;
+  }
+
+  &__sider-icon {
+    color: palette.semantic-variable(icon, neutral);
+    padding: spacing.semantic-variable(padding, vertical, tight-fixed) spacing.semantic-variable(padding, horizontal, tight-fixed);
+    width: spacing.semantic-variable(size, element, base-fixed);
+  }
 }
 
 .#{$footer-prefix} {
