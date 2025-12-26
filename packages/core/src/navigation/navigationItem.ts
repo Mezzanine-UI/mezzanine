@@ -6,4 +6,5 @@ export const navigationItemClasses = {
   host: navigationItemPrefix,
   icon: `${navigationItemPrefix}__icon`,
   active: `${navigationItemPrefix}--active`,
+  badge: `${navigationItemPrefix}__badge`,
 } as const;

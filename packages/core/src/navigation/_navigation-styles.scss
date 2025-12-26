@@ -1,16 +1,12 @@
-@use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography';
 @use './navigation' as *;
 @use '../icon';
 @use './utils';
-
-$horizontal-max-height: 64px !default;
-$horizontal-item-height: 64px !default;
-$horizontal-group-item-height: 40px !default;
-$horizontal-toggle-icon-gap: 4px !default;
-$horizontal-icon-gap: 4px !default;
-$horizontal-item-padding-x: 8px !default;
 
 $vertical-max-width: 256px !default;
 $vertical-item-height: 32px !default;
@@ -30,72 +26,6 @@ $icon-size: 24px !default;
   color: palette.color(action-inactive);
   display: grid;
 
-  &--horizontal {
-    max-height: $horizontal-max-height;
-    grid-auto-flow: column;
-    grid-auto-columns: max-content;
-
-    &__toggle-icon {
-      margin-left: $horizontal-toggle-icon-gap;
-    }
-
-    .#{$item-prefix} {
-      padding: 0 spacing.level(4);
-      height: $horizontal-item-height;
-      grid-auto-flow: column;
-      align-items: center;
-      border-bottom: 2px solid transparent;
-
-      &--active {
-        color: palette.color(primary);
-        border-bottom: 2px solid palette.color(primary);
-      }
-
-      &__icon {
-        margin-right: $horizontal-icon-gap;
-      }
-
-      &:hover {
-        color: palette.color(primary);
-      }
-    }
-
-    .#{$sub-menu-prefix} {
-      border-bottom: 2px solid transparent;
-      height: $horizontal-item-height;
-
-      &__icon {
-        margin-right: $horizontal-icon-gap;
-      }
-
-      &__group {
-        overflow: hidden;
-        background-color: palette.color(surface);
-        border-color: palette.color(border);
-        border-width: 0 1px 1px;
-        border-style: solid;
-        .#{$item-prefix} {
-          @include typography.variant(input1);
-
-          height: $horizontal-group-item-height;
-          color: palette.color(text-primary);
-          border-bottom: none;
-
-          &--active,
-          &:hover {
-            background-color: palette.color(primary-hover-bg);
-          }
-        }
-      }
-
-      &--open,
-      &--active {
-        color: palette.color(primary);
-        border-bottom: 2px solid palette.color(primary);
-      }
-    }
-  }
-
   &--vertical {
     width: $vertical-max-width;
     grid-auto-flow: row;
@@ -108,7 +38,7 @@ $icon-size: 24px !default;
       align-items: center;
       height: $vertical-item-height;
       grid-auto-flow: column;
-      padding: 0 $horizontal-item-padding-x;
+      // padding: 0 $horizontal-item-padding-x;
       overflow: hidden;
       max-width: 100%;
 
@@ -134,7 +64,7 @@ $icon-size: 24px !default;
       }
 
       &__title {
-        padding: 0 $horizontal-item-padding-x;
+        // padding: 0 $horizontal-item-padding-x;
         width: 100%;
 
         &:hover {
@@ -215,4 +145,16 @@ $icon-size: 24px !default;
   &__group {
     @include utils.reset();
   }
+}
+
+.#{$header-prefix} {
+  box-sizing: border-box;
+  width: 100%;
+  border-bottom: 1px solid palette.color(divider);
+}
+
+.#{$footer-prefix} {
+  box-sizing: border-box;
+  width: 100%;
+  border-top: 1px solid palette.color(divider);
 }
