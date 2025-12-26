@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
@@ -19,8 +20,20 @@
   cursor: pointer;
   box-sizing: border-box;
 
+  &--main, &--sub {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+  }
+
+  &--minor {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+  }
+
   &--sub, &--minor {
     padding: spacing.semantic-variable(padding, vertical, tight) 0;
+  }
+
+  &--segmented {
+    padding: 0;
   }
 
   input {
@@ -46,10 +59,12 @@
     height: var(--#{$prefix}-control-size);
     padding: spacing.semantic-variable(padding, vertical, micro)
       spacing.semantic-variable(padding, horizontal, micro);
+    transition: transition.standard(background-color, fast);
+    will-change: background-color;
     box-sizing: border-box;
 
     &--focused {
-      &::after {
+      &::before {
         content: '';
         position: absolute;
         width: var(--#{$prefix}-control-size);
@@ -59,6 +74,26 @@
         left: 0;
         border-radius: 50%;
         box-sizing: border-box;
+      }
+    }
+
+    &--segmented {
+      width: auto;
+      height: auto;
+      padding: 0;
+    }
+
+    &--segmented.#{$prefix}__control--focused {
+      background-color: palette.semantic-variable('background', base);
+      border-radius: var(--#{$prefix}-segmented-border-radius);
+
+      &::before {
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        background-color: palette.semantic-variable('background', base);
+        border-radius: var(--#{$prefix}-segmented-border-radius);
+        top: -2px;
+        left: -2px;
       }
     }
   }
@@ -103,7 +138,26 @@
   grid-auto-flow: column;
   gap: 0 spacing.semantic-variable(gap, comfort);
 
+  &--main, &--sub {
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, micro)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, micro)};
+    --#{$group-prefix}-segmented-background: #{palette.semantic-variable(background, neutral-subtle)};
+  }
+
+  &--minor {
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, none)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, none)};
+    --#{$group-prefix}-segmented-background: transparent;
+  }
+
   &--vertical {
     grid-auto-flow: row;
+  }
+
+  &--segmented {
+    gap: spacing.semantic-variable(gap, tight);
+    border-radius: radius.variable(base);
+    background-color: var(--#{$group-prefix}-segmented-background);
+    padding: var(--#{$group-prefix}-segmented-vertical-padding) var(--#{$group-prefix}-segmented-horizontal-padding);
   }
 }

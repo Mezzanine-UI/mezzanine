@@ -5,16 +5,28 @@ import InputCheckGroup, {
 } from '../_internal/InputCheck/InputCheckGroup';
 import { useInputControlValue } from '../Form/useInputControlValue';
 import { RadioGroupContext, RadioGroupContextValue } from './RadioGroupContext';
-import Radio, { RadioProps } from './Radio';
+import Radio, { RadioNormalProps, RadioSegmentProps } from './Radio';
 
-export interface RadioGroupOption
-  extends Pick<RadioProps, 'disabled' | 'error' | 'hint' | 'withInputConfig'> {
-  label: string | number;
-  value: string;
+export interface RadioGroupNormalOption
+  extends Pick<
+    RadioNormalProps,
+    'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
+  > {
+  id: string;
+  name: string | number;
 }
 
-export interface RadioGroupProps
-  extends Omit<InputCheckGroupProps, 'onChange'> {
+export interface RadioGroupSegmentOption
+  extends Pick<
+    RadioSegmentProps,
+    'disabled' | 'error' | 'icon' | 'hint' | 'withInputConfig'
+  > {
+  id: string;
+  name: string | number;
+}
+
+export interface RadioGroupBaseProps
+  extends Omit<InputCheckGroupProps, 'onChange' | 'type'> {
   /**
    * The radios in radio group.
    */
@@ -39,11 +51,6 @@ export interface RadioGroupProps
    */
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The options of radio group.
-   * Will be ignored if children passed.
-   */
-  options?: RadioGroupOption[];
-  /**
    * The size of radio group.
    * Control the size of radios in group if size not passed to radio.
    */
@@ -53,6 +60,34 @@ export interface RadioGroupProps
    */
   value?: string;
 }
+
+export interface RadioGroupNormalProps extends RadioGroupBaseProps {
+  /**
+   * The options of radio group.
+   * Will be ignored if children passed.
+   */
+  options?: RadioGroupNormalOption[];
+  /**
+   * The type of radio group.
+   * Control the type of radios in group if type not passed to radio.
+   */
+  type?: 'radio';
+}
+
+export interface RadioGroupSegmentProps extends RadioGroupBaseProps {
+  /**
+   * The options of radio group.
+   * Will be ignored if children passed.
+   */
+  options?: RadioGroupSegmentOption[];
+  /**
+   * The type of radio group.
+   * Control the type of radios in group if type not passed to radio.
+   */
+  type: 'segment';
+}
+
+export type RadioGroupProps = RadioGroupNormalProps | RadioGroupSegmentProps;
 
 /**
  * The react component for `mezzanine` radio group.
@@ -67,6 +102,7 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
       options = [],
       onChange: onChangeProp,
       size,
+      type,
       value: valueProp,
       ...rest
     } = props;
@@ -81,29 +117,36 @@ const RadioGroup = forwardRef<HTMLDivElement, RadioGroupProps>(
         name,
         onChange,
         size,
+        type,
         value,
       }),
-      [disabled, name, onChange, size, value],
+      [disabled, name, onChange, size, type, value],
     );
 
     const children =
       childrenProp ||
       options.map((option) => (
         <Radio
-          key={option.value}
+          key={option.id}
           disabled={option.disabled}
           error={option.error}
           hint={option.hint}
-          value={option.value}
+          value={option.id}
           withInputConfig={option.withInputConfig}
         >
-          {option.label}
+          {option.name}
         </Radio>
       ));
 
     return (
       <RadioGroupContext.Provider value={context}>
-        <InputCheckGroup {...rest} ref={ref} role="radiogroup">
+        <InputCheckGroup
+          {...rest}
+          ref={ref}
+          role="radiogroup"
+          segmentedStyle={type === 'segment'}
+          size={size}
+        >
           {children}
         </InputCheckGroup>
       </RadioGroupContext.Provider>

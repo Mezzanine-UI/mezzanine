@@ -2,6 +2,7 @@
 
 import { ChangeEventHandler, forwardRef, useContext, useState } from 'react';
 import { radioClasses as classes, RadioSize } from '@mezzanine-ui/core/radio';
+import { IconDefinition } from '@mezzanine-ui/icons';
 import InputCheck, {
   InputCheckProps,
 } from '../_internal/InputCheck/InputCheck';
@@ -9,9 +10,10 @@ import { cx } from '../utils/cx';
 import { useRadioControlValue } from '../Form/useRadioControlValue';
 import { RadioGroupContext } from './RadioGroupContext';
 import Input, { BaseInputProps } from '../Input';
+import Icon from '../Icon';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export interface RadioProps
+export interface RadioBaseProps
   extends Omit<InputCheckProps, 'control' | 'htmlFor'> {
   /**
    * Whether the radio is checked.
@@ -55,6 +57,16 @@ export interface RadioProps
    * The value of input in radio.
    */
   value?: string;
+}
+
+export interface RadioNormalProps extends RadioBaseProps {
+  icon?: never;
+  hint?: string;
+  /**
+   * The type of radio.
+   * @default 'radio'
+   */
+  type?: 'radio';
   /**
    * When `withInputConfig` is provided, an `Input` component is rendered alongside the
    * radio using the passed props. By default, this input has a width of 120px unless you
@@ -68,6 +80,22 @@ export interface RadioProps
   };
 }
 
+export interface RadioSegmentProps extends RadioBaseProps {
+  /**
+   * The icon in radio prefix.
+   */
+  icon?: IconDefinition;
+  hint?: never;
+  /**
+   * The type of radio.
+   * @default 'radio'
+   */
+  type: 'segment';
+  withInputConfig?: never;
+}
+
+export type RadioProps = RadioNormalProps | RadioSegmentProps;
+
 /**
  * The react component for `mezzanine` radio.
  */
@@ -78,6 +106,7 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       disabled: disabledFromGroup,
       name: nameFromGroup,
       size: sizeFromGroup,
+      type: typeFromGroup,
     } = radioGroup || {};
     const {
       checked: checkedProp,
@@ -86,10 +115,12 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
       defaultChecked,
       disabled = disabledFromGroup || false,
       error = false,
+      icon,
       hint,
       inputProps,
       onChange: onChangeProp,
       size = sizeFromGroup || 'main',
+      type = typeFromGroup || 'radio',
       value,
       withInputConfig,
       ...rest
@@ -114,12 +145,25 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           {...rest}
           control={
             <span
-              className={cx(classes.host, {
+              className={cx(classes.host, classes.size(size), {
+                [classes.segmented]: type === 'segment',
                 [classes.checked]: checked,
                 [classes.focused]: focused,
                 [classes.error]: error,
               })}
             >
+              {type === 'segment' && (
+                <span
+                  className={cx(classes.segmentedContainer, {
+                    [classes.segmentedContainerHaveMinWidth]: !!children,
+                    [classes.segmentedContainerWithIconText]:
+                      !!children && !!icon,
+                  })}
+                >
+                  {icon && <Icon icon={icon} size={16} />}
+                  {children}
+                </span>
+              )}
               <input
                 {...restInputProps}
                 aria-checked={checked}
@@ -145,11 +189,12 @@ const Radio = forwardRef<HTMLDivElement, RadioProps>(
           focused={focused}
           hint={hint}
           htmlFor={inputId}
+          segmentedStyle={type === 'segment'}
           size={size}
         >
-          {children}
+          {type === 'radio' && children}
         </InputCheck>
-        {withInputConfig && (
+        {type === 'radio' && withInputConfig && (
           <div style={{ width: withInputConfig.width ?? 120 }}>
             <Input
               {...withInputConfig}

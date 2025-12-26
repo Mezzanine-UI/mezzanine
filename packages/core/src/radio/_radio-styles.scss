@@ -1,6 +1,8 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
 @use '../_internal/input-check';
 @use './radio' as *;
 
@@ -31,6 +33,39 @@
     will-change: background-color;
   }
 
+  &--main & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, base)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
+  }
+
+  &--sub & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
+  }
+
+  &--minor & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
+      @include typography.semantic-variable(button-highlight);
+    }
+  }
+
   &--checked {
     &::before {
       background-color: var(--#{input-check.$prefix}-color);
@@ -55,6 +90,18 @@
     }
   }
 
+  .#{input-check.$prefix}:hover & {
+    &__segmented-container {
+      background-color: palette.semantic-variable('background', neutral-faint);
+    }
+  }
+
+  &--checked & {
+    &__segmented-container {
+      background-color: var(--#{$prefix}-segmented-checked-color);
+    }
+  }
+
   .#{input-check.$prefix}--disabled & {
     background-color: palette.semantic-variable(background, neutral-subtle);
 
@@ -63,6 +110,19 @@
         background-color: palette.semantic-variable('background', neutral);
       }
     }
+
+    &__segmented-container {
+      color: palette.semantic-variable(text, neutral-light);
+    }
+  }
+
+  &--segmented {
+    border: none;
+    background-color: transparent !important;
+
+    &::before {
+      display: none;
+    }
   }
 
   &__wrapper {
@@ -70,6 +130,28 @@
     align-items: center;
     justify-content: flex-start;
     gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__segmented-container {
+    color: palette.semantic-variable(text, neutral-solid);
+    padding: var(--#{$prefix}-segmented-vertical-padding) var(--#{$prefix}-segmented-horizontal-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, tight);
+    border-radius: var(--#{$prefix}-segmented-border-radius);
+    background-color: transparent;
+    transition: transition.standard(background-color, fast);
+    will-change: background-color;
+
+    &--have-min-width {
+      min-width: spacing.semantic-variable(size, element, extra-wide);
+    }
+
+    &--with-icon-text {
+      padding-left: var(--#{$prefix}-segmented-horizontal-with-icon-padding);
+      padding-right: spacing.semantic-variable(padding, horizontal, base);
+    }
   }
 }
 

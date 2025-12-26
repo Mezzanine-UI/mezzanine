@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { StoryObj } from '@storybook/react-webpack5';
+import { LightIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
 import Radio, {
   RadioSize,
   RadioProps,
   RadioGroup,
   RadioGroupProps,
-  RadioGroupOption,
+  RadioGroupNormalOption,
   RadioGroupOrientation,
 } from '.';
 
@@ -28,18 +29,17 @@ export const Playground: StoryObj<RadioProps> = {
     },
   },
   args: {
-    children: 'Radio Button Label',
     error: false,
     disabled: false,
     defaultChecked: false,
     size: 'main',
   },
-  render: function Render({ children, ...props }) {
+  render: function Render({ ...props }) {
     const [inputText, setInputText] = useState<string>('first');
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <Radio {...props}>{children}</Radio>
+        <Radio {...props}>Radio Button Label</Radio>
         <Radio
           {...props}
           withInputConfig={{
@@ -48,10 +48,10 @@ export const Playground: StoryObj<RadioProps> = {
             value: inputText,
           }}
         >
-          {children}
+          Radio Button Label
         </Radio>
         <Radio {...props} hint="Support text">
-          {children}
+          Radio Button Label
         </Radio>
         <Radio
           {...props}
@@ -61,7 +61,7 @@ export const Playground: StoryObj<RadioProps> = {
             disabled: true,
           }}
         >
-          {children}
+          Radio Button Label
         </Radio>
       </div>
     );
@@ -121,13 +121,13 @@ export const Group: StoryObj<RadioGroupProps> = {
     orientation: 'horizontal',
     size: 'main',
   },
-  render: function Render({ disabled, orientation, size }) {
+  render: function Render({ ...props }) {
     const [inputText, setInputText] = useState<string>('first');
 
-    const options: RadioGroupOption[] = [
+    const options: RadioGroupNormalOption[] = [
       {
-        value: 'option-1',
-        label: 'Option 1',
+        id: 'option-1',
+        name: 'Option 1',
         withInputConfig: {
           width: 140,
           onChange: (e) => setInputText(e.target.value),
@@ -135,18 +135,18 @@ export const Group: StoryObj<RadioGroupProps> = {
         },
       },
       {
-        value: 'option-2',
-        label: 'Option 2',
+        id: 'option-2',
+        name: 'Option 2',
         hint: 'option2 support text',
       },
       {
-        value: 'option-disabled',
-        label: 'Option 3',
+        id: 'option-disabled',
+        name: 'Option 3',
         disabled: true,
       },
       {
-        value: 'option-error',
-        label: 'Option 4',
+        id: 'option-error',
+        name: 'Option 4',
         error: true,
       },
     ];
@@ -154,25 +154,25 @@ export const Group: StoryObj<RadioGroupProps> = {
     return (
       <>
         <Typography variant="h2">From children</Typography>
-        <RadioGroup disabled={disabled} orientation={orientation} size={size}>
+        <RadioGroup {...props}>
           {options.map(
             ({
               disabled: optionDisabled,
               error: optionError,
               hint,
-              label,
-              value,
+              id,
+              name,
               withInputConfig,
             }) => (
               <Radio
-                key={value}
+                key={id}
                 disabled={optionDisabled}
                 error={optionError}
                 hint={hint}
-                value={value}
+                value={id}
                 withInputConfig={withInputConfig}
               >
-                {label}
+                {name}
               </Radio>
             ),
           )}
@@ -180,20 +180,76 @@ export const Group: StoryObj<RadioGroupProps> = {
         <br />
         <br />
         <Typography variant="h2">From options</Typography>
-        <RadioGroup
-          disabled={disabled}
-          options={options}
-          orientation={orientation}
-          size={size}
-        />
+        <RadioGroup {...props} options={options} />
         <Typography variant="h2">Vertical</Typography>
-        <RadioGroup
-          disabled={disabled}
-          options={options}
-          orientation="vertical"
-          size={size}
-        />
+        <RadioGroup {...props} options={options} orientation="vertical" />
       </>
+    );
+  },
+};
+
+export const Segmented: StoryObj = {
+  render: function Render() {
+    return (
+      <div
+        style={{
+          width: 'fit-content',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          gap: 8,
+        }}
+      >
+        <div>
+          <Typography variant="h2">Main</Typography>
+          <RadioGroup type="segment">
+            <Radio value="op1" type="segment" icon={LightIcon}>
+              Option1
+            </Radio>
+            <Radio value="op2" type="segment" icon={LightIcon}>
+              Option2
+            </Radio>
+            <Radio value="op3" type="segment" icon={LightIcon}>
+              Option3
+            </Radio>
+            <Radio value="op4" type="segment" icon={LightIcon} disabled>
+              Option4
+            </Radio>
+          </RadioGroup>
+        </div>
+        <div>
+          <Typography variant="h2">Sub</Typography>
+          <RadioGroup type="segment" size="sub">
+            <Radio value="op1" type="segment">
+              全部
+            </Radio>
+            <Radio value="op2" type="segment">
+              已發佈
+            </Radio>
+            <Radio value="op3" type="segment">
+              未發佈
+            </Radio>
+          </RadioGroup>
+        </div>
+        <div>
+          <Typography variant="h2">Minor</Typography>
+          <RadioGroup type="segment" size="minor">
+            <Radio value="op1" type="segment">
+              Option1
+            </Radio>
+            <Radio value="op2" type="segment">
+              Option2
+            </Radio>
+            <Radio value="op3" type="segment">
+              Option3
+            </Radio>
+            <Radio value="op4" type="segment" disabled>
+              Option4
+            </Radio>
+          </RadioGroup>
+        </div>
+      </div>
     );
   },
 };
