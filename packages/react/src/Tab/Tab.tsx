@@ -4,7 +4,6 @@ import {
   CSSProperties,
   forwardRef,
   Key,
-  MouseEvent,
   ReactElement,
   useLayoutEffect,
   useRef,
@@ -13,7 +12,6 @@ import {
 import { tabClasses as classes } from '@mezzanine-ui/core/tab';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { useCustomControlValue } from '../Form/useCustomControlValue';
 import TabItem, { TabItemProps } from './TabItem';
 
 export type TabsChild = ReactElement<TabItemProps>;
@@ -43,11 +41,7 @@ export interface TabProps
   /**
    * The change event handler of Tab
    */
-  onChange?: (activeKey: Key) => void;
-  /**
-   * Callback executed when tab is clicked
-   */
-  onTabClick?: (key: Key, event: MouseEvent) => void;
+  onChange?: (activeKey: Key, index: number) => void;
 }
 
 /**
@@ -63,16 +57,12 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
     className,
     defaultActiveKey = 0,
     onChange,
-    onTabClick,
     direction = 'horizontal',
     ...rest
   } = props;
 
-  const [activeKey, setActiveKey] = useCustomControlValue({
-    defaultValue: defaultActiveKey,
-    onChange,
-    value: activeKeyProp,
-  });
+  const [activeKeyInternal, setActiveKey] = useState(defaultActiveKey);
+  const activeKey = activeKeyProp ?? activeKeyInternal;
 
   const activeTabItemRef = useRef<HTMLButtonElement>(null);
 
@@ -82,7 +72,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
     }
 
     const key = tabItem.key ?? index;
-    const active = activeKey.toString() === key.toString();
+    const active = activeKey === key;
 
     return cloneElement<TabItemProps & { ref?: React.Ref<HTMLButtonElement> }>(
       tabItem,
@@ -93,10 +83,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
         onClick: (event) => {
           if (!active) {
             setActiveKey(key);
-          }
-
-          if (onTabClick) {
-            onTabClick(key, event);
+            onChange?.(key, index);
           }
 
           tabItem.props.onClick?.(event);

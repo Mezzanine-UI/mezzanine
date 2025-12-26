@@ -1,4 +1,10 @@
-import { cloneElement, forwardRef, isValidElement, ReactNode } from 'react';
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  ReactElement,
+  ReactNode,
+} from 'react';
 import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import {
   BoxIcon,
@@ -14,6 +20,7 @@ import { EmptyMainInitialDataIcon } from './icons/EmptyMainInitialDataIcon';
 import { EmptyMainResultIcon } from './icons/EmptyMainResultIcon';
 import { EmptyMainSystemIcon } from './icons/EmptyMainSystemIcon';
 import { EmptyProps } from '.';
+import { flattenChildren } from '../utils/flatten-children';
 
 const iconMap: Record<
   Exclude<EmptyProps['type'], undefined>,
@@ -52,6 +59,7 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
   function Empty(props, ref) {
     const {
       actions,
+      children,
       className,
       description,
       pictogram,
@@ -68,8 +76,10 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
             <Icon className={classes.icon} icon={iconMap[type]} />
           )) || null;
 
+    const flatChildren = flattenChildren(children);
     const fragmentButtons: ButtonGroupChild =
-      actions && 'secondaryButton' in actions ? (
+      actions &&
+      ('secondaryButton' in actions ? (
         <>
           {renderButtonOrElement(
             actions.secondaryButton,
@@ -80,7 +90,42 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
         </>
       ) : (
         renderButtonOrElement(actions, size, 'base-secondary')
-      );
+      ));
+
+    const renderChildren =
+      !fragmentButtons &&
+      flatChildren.length > 0 &&
+      flatChildren.map((child, index) => {
+        if (!isValidElement(child)) {
+          return null;
+        } else if (child.type === Button) {
+          switch (index) {
+            case 0:
+              return renderButtonOrElement(
+                child as ReactElement<ButtonProps>,
+                size,
+                'base-secondary',
+              );
+            case 1:
+              return renderButtonOrElement(
+                child as ReactElement<ButtonProps>,
+                size,
+                'base-primary',
+              );
+            default:
+              console.warn(
+                'Only up to two Button components are allowed as children of Empty.',
+              );
+              return null;
+          }
+        }
+
+        console.warn(
+          'Only Button components are allowed as children of Empty.',
+        );
+
+        return null;
+      });
 
     return (
       <div
@@ -93,9 +138,9 @@ const Empty = forwardRef<HTMLDivElement, EmptyProps>(
 
           <p className={classes.title}>{title}</p>
           {description && <p className={classes.description}>{description}</p>}
-          {actions && size !== 'minor' && (
+          {(actions || children) && size !== 'minor' && (
             <ButtonGroup className={classes.actions}>
-              {fragmentButtons}
+              {fragmentButtons || renderChildren}
             </ButtonGroup>
           )}
         </div>
