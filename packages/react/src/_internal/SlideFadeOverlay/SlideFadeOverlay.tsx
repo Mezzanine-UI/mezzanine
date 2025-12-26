@@ -36,7 +36,7 @@ export interface SlideFadeOverlayProps
 }
 
 /**
- * The react component for slide fade + overlay compose
+ * @deprecated
  */
 const SlideFadeOverlay = forwardRef<HTMLDivElement, SlideFadeOverlayProps>(
   function SlideFadeOverlay(props, ref) {

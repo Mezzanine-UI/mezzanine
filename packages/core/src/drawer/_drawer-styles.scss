@@ -1,14 +1,98 @@
+@use 'sass:map';
 @use '~@mezzanine-ui/system/z-index';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/radius';
+
 @use '../app-bar';
 @use './drawer' as *;
 
 $drawer-size: 256px !default;
-$positions: top, right, bottom, left;
+$positions: right;
+
+$drawer-header-config: (
+  typography: label-primary-highlight,
+  padding-horizontal: spacing.semantic-variable(padding, horizontal, spacious),
+  padding-vertical: spacing.semantic-variable(padding, vertical, comfort),
+  gap: spacing.semantic-variable(gap, base),
+  radius: radius.variable(none),
+  text-color: palette.semantic-variable(text, neutral-solid),
+  icon-color: palette.semantic-variable(icon, neutral),
+  separator-color: palette.semantic-variable(separator, neutral-faint),
+);
+
+$drawer-bottom-config: (
+  padding-horizontal: spacing.semantic-variable(padding, horizontal, spacious),
+  padding-vertical: spacing.semantic-variable(padding, vertical, comfort),
+  gap: spacing.semantic-variable(gap, base),
+  radius: radius.variable(none),
+  separator-color: palette.semantic-variable(separator, neutral-faint),
+);
+
+$drawer-size-config: (
+  narrow: (
+    min-width: spacing.semantic-variable(size, container, narrow),
+    max-width: spacing.semantic-variable(size, container, standard)
+  ),
+  medium: (
+    min-width: spacing.semantic-variable(size, container, balanced),
+    max-width: spacing.semantic-variable(size, container, wide)
+  ),
+  wide: (
+    min-width: spacing.semantic-variable(size, container, expanded),
+    max-width: spacing.semantic-variable(size, container, max),
+  ),
+);
 
 .#{$prefix} {
-  background-color: palette.color(on-primary);
+  background-color: palette.semantic-variable("background", base);
   position: absolute;
+  display: flex;
+  flex-direction: column;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: map.get($drawer-header-config, gap);
+    padding-block: map.get($drawer-header-config, padding-vertical);
+    padding-inline: map.get($drawer-header-config, padding-horizontal);
+    border-end-end-radius: map.get($drawer-header-config, radius);
+    border-end-start-radius: map.get($drawer-header-config, radius);
+    border-block-end: 1px solid map.get($drawer-header-config, separator-color);
+    color: map.get($drawer-header-config, text-color);
+
+    @include typography.semantic-variable(map.get($drawer-header-config, typography));
+
+    svg {
+      color: map.get($drawer-header-config, icon-color);
+    }
+  }
+
+  &__content {
+    padding-block: spacing.semantic-variable(padding, vertical, comfort);
+    padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
+    overflow: auto;
+    flex-grow: 1;
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: map.get($drawer-bottom-config, gap);
+    padding-block: map.get($drawer-bottom-config, padding-vertical);
+    padding-inline: map.get($drawer-bottom-config, padding-horizontal);
+    border-start-end-radius: map.get($drawer-bottom-config, radius);
+    border-start-start-radius: map.get($drawer-bottom-config, radius);
+    border-block-start: 1px solid map.get($drawer-bottom-config, separator-color);
+
+    &__actions {
+      display: flex;
+      gap: spacing.semantic-variable(gap, base);
+    }
+  }
 
   .#{app-bar.$prefix} {
     border: none;
@@ -18,18 +102,17 @@ $positions: top, right, bottom, left;
     z-index: z-index.get(drawer);
   }
 
-  &--top,
-  &--bottom {
-    right: 0;
-    left: 0;
-    height: $drawer-size;
-  }
-
-  &--left,
   &--right {
     bottom: 0;
     top: 0;
     width: $drawer-size;
+  }
+
+  @each $size, $config in $drawer-size-config {
+    &--#{$size} {
+      min-width: map.get($config, min-width);
+      max-width: map.get($config, max-width);
+    }
   }
 
   @each $position in $positions {
