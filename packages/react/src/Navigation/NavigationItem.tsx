@@ -1,19 +1,12 @@
 'use client';
 
-import {
-  forwardRef,
-  MouseEvent,
-  useContext,
-  Key,
-  ReactNode,
-  useCallback,
-} from 'react';
+import { forwardRef, MouseEvent, Key, ReactNode, useCallback } from 'react';
 import { navigationItemClasses as classes } from '@mezzanine-ui/core/navigation';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { NavigationContext } from './NavigationContext';
 import Icon from '../Icon';
+import Badge, { BadgeProps } from '../Badge';
 
 export interface NavigationItemProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'li'>, 'onClick'> {
@@ -41,26 +34,29 @@ export interface NavigationItemProps
    * Called when item is clicked.
    */
   onClick?: (key?: Key | string | null) => void;
+  badge?: BadgeProps;
 }
 
 const NavigationItem = forwardRef<HTMLLIElement, NavigationItemProps>(
   (props, ref) => {
-    const { active, children, className, eventKey, icon, onClick, ...rest } =
-      props;
-
-    const { orientation } = useContext(NavigationContext);
+    const {
+      active,
+      badge,
+      children,
+      className,
+      eventKey,
+      icon,
+      onClick,
+      ...rest
+    } = props;
 
     const handleClick = useCallback(
       (event: MouseEvent<HTMLLIElement>) => {
-        if (orientation === 'vertical') {
-          event.stopPropagation();
-        }
-
         if (onClick) {
           onClick(eventKey);
         }
       },
-      [eventKey, onClick, orientation],
+      [eventKey, onClick],
     );
 
     return (
@@ -74,6 +70,9 @@ const NavigationItem = forwardRef<HTMLLIElement, NavigationItemProps>(
       >
         {icon && <Icon className={classes.icon} icon={icon} />}
         {children}
+        {badge && (
+          <Badge {...badge} className={cx(classes.badge, badge.className)} />
+        )}
       </li>
     );
   },

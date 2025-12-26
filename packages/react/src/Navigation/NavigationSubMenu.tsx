@@ -1,17 +1,15 @@
 'use client';
 
-import { forwardRef, ReactElement, useContext, useRef, useState } from 'react';
+import { forwardRef, ReactElement, useRef, useState } from 'react';
 import { navigationSubMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronUpIcon, ChevronDownIcon } from '@mezzanine-ui/icons';
-import { offset, size } from '@floating-ui/react-dom';
+import { size } from '@floating-ui/react-dom';
 import { useClickAway } from '../hooks/useClickAway';
 import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-import Popper from '../Popper';
 import Icon from '../Icon';
 import { Collapse } from '../Transition';
 import NavigationItem, { NavigationItemProps } from './NavigationItem';
-import { NavigationContext } from './NavigationContext';
 
 export type NavigationSubMenuChild = ReactElement<NavigationItemProps>;
 
@@ -60,13 +58,12 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
     const [open, setOpen] = useState<boolean>(defaultOpen);
     const nodeRef = useRef<HTMLLIElement>(null);
     const composedNodeRef = useComposeRefs([ref, nodeRef]);
-    const { orientation } = useContext(NavigationContext);
 
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
     useClickAway(
       () => {
-        if (!open || orientation === 'vertical') {
+        if (!open) {
           return;
         }
 
@@ -75,7 +72,7 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
         };
       },
       nodeRef,
-      [open, orientation],
+      [open],
     );
 
     const WrapChildren = <ul className={classes.group}>{children}</ul>;
@@ -88,7 +85,6 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
           classes.host,
           active && classes.active,
           open && classes.open,
-          icon && orientation === 'vertical' && classes.indent,
           className,
         )}
         onClick={() => setOpen(!open)}
@@ -98,31 +94,14 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
           {title}
           <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
         </div>
-        {orientation === 'horizontal' && (
-          <Popper
-            anchor={nodeRef}
-            disablePortal
-            open={!!open}
-            options={{
-              middleware: [
-                offset({ mainAxis: 0, crossAxis: 0 }),
-                sameWidthMiddleware,
-              ],
-            }}
-          >
-            {WrapChildren}
-          </Popper>
-        )}
-        {orientation === 'vertical' && (
-          <Collapse
-            style={{
-              width: '100%',
-            }}
-            in={!!open}
-          >
-            {WrapChildren}
-          </Collapse>
-        )}
+        <Collapse
+          style={{
+            width: '100%',
+          }}
+          in={!!open}
+        >
+          {WrapChildren}
+        </Collapse>
       </NavigationItem>
     );
   },

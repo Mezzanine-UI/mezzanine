@@ -4,8 +4,12 @@ import {
   ReactElement,
   Children,
   cloneElement,
-  useMemo,
   useCallback,
+  useState,
+  ReactNode,
+  isValidElement,
+  JSX,
+  useMemo,
 } from 'react';
 import {
   navigationClasses as classes,
@@ -15,12 +19,20 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import NavigationItem, { NavigationItemProps } from './NavigationItem';
 import NavigationSubMenu, { NavigationSubMenuProps } from './NavigationSubMenu';
-import { NavigationContext } from './NavigationContext';
+import NavigationHeader, { NavigationHeaderProps } from './NavigationHeader';
+import NavigationFooter, { NavigationFooterProps } from './NavigationFooter';
+import { flattenChildren } from '../utils/flatten-children';
 
-export type NavigationChild = ReactElement<
-  NavigationItemProps | NavigationSubMenuProps
-> | null;
-export type NavigationChildren = NavigationChild | NavigationChild[];
+export type NavigationChild =
+  | ReactElement<
+      | NavigationItemProps
+      | NavigationSubMenuProps
+      | NavigationHeaderProps
+      | NavigationFooterProps
+    >
+  | null
+  | JSX.Element[];
+export type NavigationChildren = NavigationChild[];
 
 export interface NavigationProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'ul'>, 'onClick'> {
@@ -29,7 +41,7 @@ export interface NavigationProps
    */
   activeKey?: Key | null;
   /**
-   * Strict children with `NavigationItem` or `NavigationSubMenu`.
+   * Strict children with `NavigationItem`, `NavigationSubMenu`, `NavigationHeader` or `NavigationFooter`.
    * @default []
    */
   children?: NavigationChildren;
@@ -46,96 +58,110 @@ export interface NavigationProps
 
 const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
   (props, ref) => {
-    const {
-      activeKey,
-      children = [],
-      className,
-      onClick,
-      orientation = 'horizontal',
-      ...rest
-    } = props;
+    const { activeKey, children = [], className, onClick, ...rest } = props;
 
-    const renderItemChildren = useCallback(
-      function renderItemChildrenImpl(parsedChildren: NavigationChildren): any {
-        return Children.map(parsedChildren, (child: NavigationChild) => {
-          if (child) {
-            switch (child.type) {
-              case NavigationItem: {
-                const itemChild = child as ReactElement<NavigationItemProps>;
+    const { headerComponent, footerComponent } = useMemo(() => {
+      let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
+      let footerComponent: ReactElement<NavigationFooterProps> | null = null;
 
-                return cloneElement(itemChild, {
-                  active: itemChild.props.active || activeKey === itemChild.key,
-                  eventKey: itemChild.key,
-                  onClick: itemChild.props.onClick || onClick,
-                });
-              }
-
-              case NavigationSubMenu: {
-                const subMenuChild = child as ReactElement<NavigationItemProps>;
-                const subMenuChildren = child.props.children as
-                  | ReactElement<NavigationItemProps>[]
-                  | ReactElement<NavigationItemProps>;
-
-                let subMenuActive = false;
-
-                const groupChildren = Children.map(
-                  subMenuChildren,
-                  (groupChild) => {
-                    const active =
-                      activeKey === groupChild.key || groupChild.props.active;
-
-                    if (active) {
-                      subMenuActive = true;
-                    }
-
-                    return cloneElement(groupChild, {
-                      active,
-                      eventKey: groupChild.key,
-                      onClick: groupChild.props.onClick || onClick,
-                    });
-                  },
-                );
-
-                return cloneElement(
-                  subMenuChild,
-                  {
-                    active: subMenuChild.props.active || subMenuActive,
-                  },
-                  groupChildren,
-                );
-              }
-
-              default:
-                // Keep finding children in case of React.Fragment
-                return renderItemChildrenImpl(
-                  (child.props?.children ?? []) as NavigationChildren,
-                );
+      Children.forEach(children, (child: NavigationChild) => {
+        if (child && isValidElement(child)) {
+          switch (child.type) {
+            case NavigationHeader: {
+              headerComponent = child as ReactElement<NavigationHeaderProps>;
+              break;
+            }
+            case NavigationFooter: {
+              footerComponent = child as ReactElement<NavigationFooterProps>;
+              break;
             }
           }
+        }
+      });
 
-          return null;
-        });
+      return { headerComponent, footerComponent };
+    }, [children]);
+
+    const renderItemChildren = useCallback(
+      function renderItemChildrenImpl(
+        parsedChildren: NavigationChildren,
+      ): ReactNode {
+        const childArray = Children.map(
+          flattenChildren(parsedChildren) as NavigationChildren,
+          (child: NavigationChild) => {
+            if (child && isValidElement(child)) {
+              switch (child.type) {
+                case NavigationItem: {
+                  const itemChild = child as ReactElement<NavigationItemProps>;
+
+                  return cloneElement(itemChild, {
+                    active:
+                      itemChild.props.active || activeKey === itemChild.key,
+                    eventKey: itemChild.key,
+                    onClick: itemChild.props.onClick || onClick,
+                  });
+                }
+
+                case NavigationSubMenu: {
+                  const subMenuChild =
+                    child as ReactElement<NavigationItemProps>;
+                  const subMenuChildren = subMenuChild.props.children as
+                    | ReactElement<NavigationItemProps>[]
+                    | ReactElement<NavigationItemProps>;
+
+                  let subMenuActive = false;
+
+                  const groupChildren = Children.map(
+                    subMenuChildren,
+                    (groupChild) => {
+                      const active =
+                        activeKey === groupChild.key || groupChild.props.active;
+
+                      if (active) {
+                        subMenuActive = true;
+                      }
+
+                      return cloneElement(groupChild, {
+                        active,
+                        eventKey: groupChild.key,
+                        onClick: groupChild.props.onClick || onClick,
+                      });
+                    },
+                  );
+
+                  return cloneElement(
+                    subMenuChild,
+                    {
+                      active: subMenuChild.props.active || subMenuActive,
+                    },
+                    groupChildren,
+                  );
+                }
+
+                default:
+                  return null;
+              }
+            }
+
+            return null;
+          },
+        );
+
+        return childArray?.filter((child) => child !== null) ?? null;
       },
       [activeKey, onClick],
     );
 
-    const context = useMemo(
-      () => ({
-        orientation,
-      }),
-      [orientation],
-    );
-
     return (
-      <ul
+      <nav
         {...rest}
         ref={ref}
-        className={cx(classes.host, classes[orientation], className)}
+        className={cx(classes.host, classes.vertical, className)}
       >
-        <NavigationContext.Provider value={context}>
-          {renderItemChildren(children)}
-        </NavigationContext.Provider>
-      </ul>
+        {headerComponent}
+        <ul>{renderItemChildren(children)}</ul>
+        {footerComponent}
+      </nav>
     );
   },
 );

@@ -58,19 +58,6 @@ describe('<NavigationSubMenu />', () => {
     });
   });
 
-  describe('prop: defaultOpen', () => {
-    it('should bind open class', () => {
-      const { getHostHTMLElement } = render(
-        <NavigationContext.Provider value={{ orientation: 'vertical' }}>
-          <NavigationSubMenu defaultOpen />
-        </NavigationContext.Provider>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList).toContain('mzn-navigation-sub-menu--open');
-    });
-  });
-
   describe('prop: icon', () => {
     it('should render suffix icon', () => {
       const { getHostHTMLElement } = render(

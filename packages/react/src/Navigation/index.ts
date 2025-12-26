@@ -12,5 +12,3 @@ export type {
 } from './NavigationSubMenu';
 export { default as NavigationItem } from './NavigationItem';
 export type { NavigationItemProps } from './NavigationItem';
-export { NavigationContext } from './NavigationContext';
-export type { NavigationContextValue } from './NavigationContext';
