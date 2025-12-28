@@ -53,6 +53,8 @@ const NavigationItem = forwardRef<HTMLLIElement, NavigationItemProps>(
     const handleClick = useCallback(
       (event: MouseEvent<HTMLLIElement>) => {
         if (onClick) {
+          event.stopPropagation();
+
           onClick(eventKey);
         }
       },
