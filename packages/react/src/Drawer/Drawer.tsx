@@ -6,11 +6,12 @@ import {
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Backdrop, { BackdropProps } from '../Backdrop';
-import { Translate } from '../Transition';
+import { Slide } from '../Transition';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import useTopStack from '../_internal/SlideFadeOverlay/useTopStack';
 import ClearActions from '../ClearActions';
 import Button from '../Button';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 export interface DrawerProps
   extends NativeElementPropsWithoutKeyAndRef<'div'>,
@@ -131,8 +132,15 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
       open={open}
       role="presentation"
     >
-      <Translate
-        from="left"
+      <Slide
+        duration={{
+          enter: MOTION_DURATION.moderate,
+          exit: MOTION_DURATION.moderate,
+        }}
+        easing={{
+          enter: MOTION_EASING.entrance,
+          exit: MOTION_EASING.exit,
+        }}
         in={open}
         onEntered={() => setExited(false)}
         onExited={() => setExited(true)}
@@ -192,7 +200,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
             </div>
           )}
         </div>
-      </Translate>
+      </Slide>
     </Backdrop>
   );
 });
