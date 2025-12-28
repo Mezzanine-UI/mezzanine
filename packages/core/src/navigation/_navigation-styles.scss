@@ -4,8 +4,9 @@
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography';
-@use './navigation' as *;
+@use '../button/utils' as btn-utils;
 @use '../icon';
+@use './navigation' as *;
 @use './utils';
 
 $vertical-max-width: 256px !default;
@@ -150,15 +151,16 @@ $icon-size: 24px !default;
 }
 
 .#{$header-prefix} {
+  @include typography.semantic-variable(h3);
+
+  align-items: center;
+  border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
   gap: spacing.semantic-variable(gap, comfort);
-  align-items: center;
-  width: 100%;
-  border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+  justify-content: space-between;
   padding: spacing.semantic-variable(padding, horizontal, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed) spacing.semantic-variable(padding, vertical, base);
-  @include typography.semantic-variable(h3);
+  width: 100%;
 
   &__content {
     align-items: center;
@@ -168,16 +170,37 @@ $icon-size: 24px !default;
     gap: spacing.semantic-variable(gap, base);
     height: 100%;
   }
-
-  &__sider-icon {
-    color: palette.semantic-variable(icon, neutral);
-    padding: spacing.semantic-variable(padding, vertical, tight-fixed) spacing.semantic-variable(padding, horizontal, tight-fixed);
-    width: spacing.semantic-variable(size, element, base-fixed);
-  }
 }
 
 .#{$footer-prefix} {
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid palette.color(divider);
+}
+
+.#{$icon-button-prefix} {
+  @include btn-utils.reset();
+
+  align-items: center;
+  justify-content: center;
+  border-radius: radius.variable(base);
+  box-sizing: border-box;
+  color: palette.semantic-variable(icon, neutral);
+  display: flex;
+  padding: spacing.semantic-variable(padding, vertical, tight-fixed) spacing.semantic-variable(padding, horizontal, tight-fixed);
+  transition: transition.standard(background-color, fast);
+  width: spacing.semantic-variable(size, element, airy);
+  height: spacing.semantic-variable(size, element, airy);
+
+  &:hover {
+    background-color: palette.semantic-variable($background, neutral-faint);
+  }
+
+  &:focus-visible {
+    box-shadow: effect.variable(focus, primary);
+  }
+
+  & > {
+    width: 100%;
+  }
 }
