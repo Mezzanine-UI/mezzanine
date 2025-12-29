@@ -37,9 +37,16 @@ $element-tones: (
 );
 
 $container-tones: (
+  minimal,
+  minimized,
   collapsed,
+  reduced,
+  condensed,
   compressed,
+  tightened,
   tiny,
+  medium,
+  small,
   snug,
   tight,
   slim,
@@ -50,7 +57,8 @@ $container-tones: (
   broad,
   wide,
   expanded,
-  max
+  max,
+  xwide
 );
 
 $horizontal-tones: (
@@ -71,9 +79,11 @@ $horizontal-tones: (
   relaxed,
   airy,
   breath,
+  loose,
   wide,
   max,
-  ultra
+  ultra,
+  xultra
 );
 
 $vertical-tones: (
@@ -81,13 +91,20 @@ $vertical-tones: (
   micro,
   tiny,
   tight,
+  tight-fixed,
   base,
   calm,
   comfort,
   roomy,
   spacious,
   generous,
-  relaxed
+  relaxed,
+  airy,
+  breath,
+  loose,
+  wide,
+  max,
+  ultra
 );
 
 $semantic-spacings: (
@@ -171,9 +188,21 @@ $semantic-spacings: (
       ),
     ),
     container: (
+      minimal: (
+        default: primitive.variable(36),
+        compact: primitive.variable(28),
+      ),
+      minimized: (
+        default: primitive.variable(40),
+        compact: primitive.variable(32),
+      ),
       collapsed: (
         default: primitive.variable(52),
         compact: primitive.variable(52),
+      ),
+      reduced: (
+        default: primitive.variable(56),
+        compact: primitive.variable(48),
       ),
       compressed: (
         default: primitive.variable(70),
@@ -183,9 +212,17 @@ $semantic-spacings: (
         default: primitive.variable(80),
         compact: primitive.variable(80),
       ),
+      medium: (
+        default: primitive.variable(96),
+        compact: primitive.variable(88),
+      ),
+      small: (
+        default: primitive.variable(100),
+        compact: primitive.variable(92),
+      ),
       snug: (
         default: primitive.variable(140),
-        compact: primitive.variable(140),
+        compact: primitive.variable(120),
       ),
       tight: (
         default: primitive.variable(160),
@@ -227,6 +264,10 @@ $semantic-spacings: (
         default: primitive.variable(960),
         compact: primitive.variable(960),
       ),
+      xwide: (
+        default: primitive.variable(1280),
+        compact: primitive.variable(1280),
+      ),
     ),
   ),
   gap: (
@@ -237,7 +278,7 @@ $semantic-spacings: (
     tiny: (
       default: primitive.variable(2),
       compact: primitive.variable(2),
-      ),
+    ),
     tight: (
       default: primitive.variable(4),
       compact: primitive.variable(2),
@@ -345,6 +386,10 @@ $semantic-spacings: (
         default: primitive.variable(32),
         compact: primitive.variable(28),
       ),
+      loose: (
+        default: primitive.variable(36),
+        compact: primitive.variable(32),
+      ),
       wide: (
         default: primitive.variable(40),
         compact: primitive.variable(36),
@@ -356,6 +401,10 @@ $semantic-spacings: (
       ultra: (
         default: primitive.variable(64),
         compact: primitive.variable(56),
+      ),
+      xultra: (
+        default: primitive.variable(80),
+        compact: primitive.variable(76),
       ),
     ),
     vertical: (
@@ -374,6 +423,10 @@ $semantic-spacings: (
       tight: (
         default: primitive.variable(6),
         compact: primitive.variable(4),
+      ),
+      tight-fixed: (
+        default: primitive.variable(6),
+        compact: primitive.variable(6),
       ),
       base: (
         default: primitive.variable(8),
@@ -397,11 +450,35 @@ $semantic-spacings: (
       ),
       generous: (
         default: primitive.variable(20),
-        compact: primitive.variable(14),
+        compact: primitive.variable(16),
       ),
       relaxed: (
         default: primitive.variable(24),
-        compact: primitive.variable(16),
+        compact: primitive.variable(20),
+      ),
+      airy: (
+        default: primitive.variable(28),
+        compact: primitive.variable(24),
+      ),
+      breath: (
+        default: primitive.variable(32),
+        compact: primitive.variable(28),
+      ),
+      loose: (
+        default: primitive.variable(36),
+        compact: primitive.variable(32),
+      ),
+      wide: (
+        default: primitive.variable(40),
+        compact: primitive.variable(36),
+      ),
+      max: (
+        default: primitive.variable(48),
+        compact: primitive.variable(44),
+      ),
+      ultra: (
+        default: primitive.variable(68),
+        compact: primitive.variable(64),
       ),
     ),
   ),
