@@ -92,7 +92,7 @@
   gap: spacing.semantic-variable(gap, base);
 
   .#{$jumper-prefix}__input {
-    width: 36px;
+    width: spacing.semantic-variable(size, element, loose-fixed);
 
     $input-padding-container: mzn-input--number;
     .#{$input-padding-container} {
@@ -107,6 +107,6 @@
   gap: spacing.semantic-variable(gap, base);
 
   &__select {
-    max-width: 68px;
+    width: spacing.semantic-variable(size, element, ultra-fixed);
   }
 }

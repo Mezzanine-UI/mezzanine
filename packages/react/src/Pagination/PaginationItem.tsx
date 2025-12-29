@@ -8,8 +8,6 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   DotHorizontalIcon,
-  DoubleChevronLeftIcon,
-  DoubleChevronRightIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
 
@@ -64,8 +62,6 @@ const PaginationItem = forwardRef<PaginationItemElement, PaginationItemProps>(
     const icons: { [index: string]: IconDefinition } = {
       next: ChevronRightIcon,
       previous: ChevronLeftIcon,
-      first: DoubleChevronLeftIcon,
-      last: DoubleChevronRightIcon,
     };
 
     const ButtonIcon = icons[type];

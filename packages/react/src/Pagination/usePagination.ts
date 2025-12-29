@@ -55,7 +55,6 @@ export function usePagination(props: UsePaginationParams = {}) {
     );
 
     return [
-      'first',
       'previous',
 
       ...startPages,
@@ -76,7 +75,6 @@ export function usePagination(props: UsePaginationParams = {}) {
       ...endPages,
 
       'next',
-      'last',
     ];
   }, [boundaryCount, current, siblingCount, totalPages]);
 
@@ -121,22 +119,6 @@ export function usePagination(props: UsePaginationParams = {}) {
             disabled: disabled || current === totalPages,
             onClick: () => {
               handleClick(current + 1);
-            },
-            type: item,
-          },
-          first: {
-            'aria-label': 'Go to first page',
-            disabled: disabled || current === 1,
-            onClick: () => {
-              handleClick(1);
-            },
-            type: item,
-          },
-          last: {
-            'aria-label': 'Go to last page',
-            disabled: disabled || current === totalPages,
-            onClick: () => {
-              handleClick(totalPages);
             },
             type: item,
           },
