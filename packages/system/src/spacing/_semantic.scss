@@ -149,6 +149,10 @@ $semantic-spacings: (
         default: primitive.variable(36),
         compact: primitive.variable(32),
       ),
+      loose-fixed: (
+        default: primitive.variable(36),
+        compact: primitive.variable(36),
+      ),
       extra-wide: (
         default: primitive.variable(40),
         compact: primitive.variable(36),
@@ -157,13 +161,21 @@ $semantic-spacings: (
         default: primitive.variable(40),
         compact: primitive.variable(24),
       ),
+      wide-expanded: (
+        default: primitive.variable(40),
+        compact: primitive.variable(24),
+      ),
       expansive: (
         default: primitive.variable(60),
-        compact: primitive.variable(24),
+        compact: primitive.variable(56),
       ),
       extra: (
         default: primitive.variable(64),
         compact: primitive.variable(48),
+      ),
+      ultra-fixed: (
+        default: primitive.variable(68),
+        compact: primitive.variable(68),
       ),
       max: (
         default: primitive.variable(80),
