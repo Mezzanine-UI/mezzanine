@@ -107,6 +107,6 @@
   gap: spacing.semantic-variable(gap, base);
 
   &__select {
-    max-width: 68px;
+    width: spacing.semantic-variable(size, element, ultra-fixed);
   }
 }
