@@ -30,7 +30,7 @@ $icon-size: 24px !default;
   display: grid;
 
   &--vertical {
-    width: $vertical-max-width;
+    width: spacing.semantic-variable(size, container, slim);
     grid-auto-flow: row;
     grid-auto-rows: max-content;
     padding: spacing.level(5);
@@ -202,5 +202,57 @@ $icon-size: 24px !default;
 
   & > {
     width: 100%;
+  }
+}
+
+.#{$user-menu-prefix} {
+  @include btn-utils.reset();
+
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, tight-fixed);
+  width: fit-content;
+  border-radius: radius.variable(base);
+  padding: spacing.semantic-variable(padding, vertical, micro) spacing.semantic-variable(padding, horizontal, tiny);
+
+  &__avatar {
+    box-sizing: border-box;
+    width: spacing.semantic-variable(size, element, airy);
+    height: spacing.semantic-variable(size, element, airy);
+    border-radius: radius.variable(full);
+    background-color: palette.semantic-variable($background, neutral);
+    color: palette.semantic-variable(icon, fixed-light);
+    border: 1px solid palette.semantic-variable($background, neutral-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__user-name {
+    @include typography.variant(caption);
+
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+
+  &__icon {
+    color: palette.semantic-variable(icon, neutral-bold);
+    transition: transition.standard(transform, fast);
+  }
+
+  &--open {
+    background-color: palette.semantic-variable($background, neutral-subtle);
+
+    .#{$user-menu-prefix}__icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  &:hover, &:active {
+    background-color: palette.semantic-variable($background, neutral-subtle);
+  }
+
+  &:focus-visible {
+    box-shadow: effect.variable(focus, primary);
   }
 }
