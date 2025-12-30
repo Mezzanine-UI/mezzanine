@@ -269,3 +269,23 @@ $icon-size: 24px !default;
     box-shadow: effect.variable(focus, primary);
   }
 }
+
+.#{$option-category-prefix} {
+  box-sizing: border-box;
+  width: 100%;
+
+  &__title {
+    @include typography.variant(annotation);
+
+    color: palette.semantic-variable(text, neutral-light);
+    padding: spacing.semantic-variable(padding, vertical, micro)
+      spacing.semantic-variable(padding, horizontal, tight-fixed);
+  }
+
+  > ul {
+    @include utils.reset();
+
+    display: grid;
+    gap: spacing.semantic-variable(gap, tight);
+  }
+}

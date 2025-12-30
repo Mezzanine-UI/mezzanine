@@ -8,3 +8,11 @@ export const navigationItemClasses = {
   active: `${navigationItemPrefix}--active`,
   badge: `${navigationItemPrefix}__badge`,
 } as const;
+
+export const navigationOptionCategoryPrefix =
+  `${navigationPrefix}-option-category` as const;
+
+export const navigationOptionCategoryClasses = {
+  host: navigationOptionCategoryPrefix,
+  title: `${navigationOptionCategoryPrefix}__title`,
+} as const;
