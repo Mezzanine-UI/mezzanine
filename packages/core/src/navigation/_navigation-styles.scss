@@ -176,6 +176,19 @@ $icon-size: 24px !default;
   box-sizing: border-box;
   width: 100%;
   border-top: 1px solid palette.color(divider);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: spacing.semantic-variable(padding, vertical, base)
+    spacing.semantic-variable(padding, horizontal, comfort-fixed)
+    spacing.semantic-variable(padding, vertical, comfort);
+  gap: spacing.semantic-variable(gap, tight-fixed);
+
+  &__icons {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, tiny);
+  }
 }
 
 .#{$icon-button-prefix} {
