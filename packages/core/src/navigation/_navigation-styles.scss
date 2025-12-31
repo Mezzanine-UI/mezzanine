@@ -32,7 +32,6 @@ $background: background;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tight-fixed);
 
-
     > ul {
       @include utils.reset();
 
@@ -40,8 +39,6 @@ $background: background;
       gap: spacing.semantic-variable(gap, tight);
     }
   }
-
-
 
   &--vertical {
     width: spacing.semantic-variable(size, container, slim);
@@ -99,7 +96,6 @@ $background: background;
           background-color: palette.semantic-variable($background, brand-faint);
         }
       }
-
 
       &__group {
         @include utils.reset();
@@ -191,10 +187,6 @@ $background: background;
   &:focus-visible {
     box-shadow: effect.variable(focus, primary);
   }
-
-  & > {
-    width: 100%;
-  }
 }
 
 .#{$user-menu-prefix} {
@@ -241,7 +233,8 @@ $background: background;
     }
   }
 
-  &:hover, &:active {
+  &:hover,
+  &:active {
     background-color: palette.semantic-variable($background, neutral-subtle);
   }
 
