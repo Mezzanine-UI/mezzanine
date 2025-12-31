@@ -5,22 +5,21 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Navigation from './Navigation';
-import NavigationSubMenu from './NavigationSubMenu';
-import { NavigationContext } from './NavigationContext';
+import NavigationOption from './NavigationOption';
 
 describe('<NavigationSubMenu />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
-    render(<NavigationSubMenu ref={ref} />),
+    render(<NavigationOption ref={ref} />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<NavigationSubMenu className={className} />),
+    render(<NavigationOption className={className} />),
   );
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<NavigationSubMenu />);
+    const { getHostHTMLElement } = render(<NavigationOption />);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-navigation-sub-menu')).toBeTruthy();
@@ -30,7 +29,7 @@ describe('<NavigationSubMenu />', () => {
     it('should open subMenu', () => {
       const { getHostHTMLElement } = render(
         <Navigation orientation="vertical">
-          <NavigationSubMenu active />
+          <NavigationOption active />
         </Navigation>,
       );
       const element = getHostHTMLElement();
@@ -51,7 +50,7 @@ describe('<NavigationSubMenu />', () => {
 
   describe('prop: active', () => {
     it('should bind active class', () => {
-      const { getHostHTMLElement } = render(<NavigationSubMenu active />);
+      const { getHostHTMLElement } = render(<NavigationOption active />);
       const element = getHostHTMLElement();
 
       expect(element.classList).toContain('mzn-navigation-sub-menu--active');
@@ -61,7 +60,7 @@ describe('<NavigationSubMenu />', () => {
   describe('prop: icon', () => {
     it('should render suffix icon', () => {
       const { getHostHTMLElement } = render(
-        <NavigationSubMenu icon={PlusIcon} />,
+        <NavigationOption icon={PlusIcon} />,
       );
       const element = getHostHTMLElement();
       const { firstElementChild: titleElement } = element;
@@ -75,7 +74,7 @@ describe('<NavigationSubMenu />', () => {
     it('should render title', () => {
       const subMenuTitle = 'foo';
       const { getHostHTMLElement } = render(
-        <NavigationSubMenu title={subMenuTitle} icon={PlusIcon} />,
+        <NavigationOption title={subMenuTitle} icon={PlusIcon} />,
       );
       const element = getHostHTMLElement();
       const { firstElementChild: titleElement } = element;

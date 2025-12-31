@@ -16,7 +16,7 @@ export type NavigationSubMenuChild = ReactElement<NavigationItemProps>;
 export type NavigationSubMenuChildren =
   | NavigationSubMenuChild
   | NavigationSubMenuChild[];
-export interface NavigationSubMenuProps
+export interface NavigationOptionProps
   extends Omit<NavigationItemProps, 'onClick' | 'eventKey' | 'key'> {
   /**
    * Strict children with `NavigationItem`.
@@ -43,7 +43,7 @@ const sameWidthMiddleware = size({
   },
 });
 
-const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
+const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
   (props, ref) => {
     const {
       active,
@@ -92,19 +92,23 @@ const NavigationSubMenu = forwardRef<HTMLLIElement, NavigationSubMenuProps>(
         <div className={classes.title}>
           {icon && <Icon className={classes.icon} icon={icon} />}
           {title}
-          <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
+          {children && (
+            <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
+          )}
         </div>
-        <Collapse
-          style={{
-            width: '100%',
-          }}
-          in={!!open}
-        >
-          {WrapChildren}
-        </Collapse>
+        {children && (
+          <Collapse
+            style={{
+              width: '100%',
+            }}
+            in={!!open}
+          >
+            {WrapChildren}
+          </Collapse>
+        )}
       </NavigationItem>
     );
   },
 );
 
-export default NavigationSubMenu;
+export default NavigationOption;
