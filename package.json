@@ -120,8 +120,5 @@
     "typescript-eslint": "^8.46.2",
     "webpack": "^5.102.1"
   },
-  "packageManager": "yarn@4.10.3",
-  "dependencies": {
-    "keycode": "^2.2.1"
-  }
+  "packageManager": "yarn@4.10.3"
 }
