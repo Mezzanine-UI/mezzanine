@@ -1,250 +1,279 @@
-export const tableScrollContainerPrefix = 'mzn-table-scroll-area';
-export const tableLoadingPrefix = 'mzn-table-loading';
 export const tablePrefix = 'mzn-table';
-export const tableHeaderFixedPrefix = `${tablePrefix}__header-fixed`;
+export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
+export const tableLoadingPrefix = `${tablePrefix}-loading`;
 export const tableHeaderPrefix = `${tablePrefix}__header`;
 export const tableBodyPrefix = `${tablePrefix}__body`;
 export const tableCellPrefix = `${tablePrefix}__cell`;
+export const tableResizeHandlePrefix = `${tablePrefix}__resize-handle`;
 
 export const tableClasses = {
-  loading: tableLoadingPrefix,
-  scrollContainer: tableScrollContainerPrefix,
-  host: tablePrefix,
-  headerFixed: tableHeaderFixedPrefix,
-  header: tableHeaderPrefix,
-  headerCellWrapper: `${tableHeaderPrefix}__cellWrapper`,
-  headerCellWrapperFixed: `${tableHeaderPrefix}__cellWrapper--fixed`,
-  headerCellWrapperFixedStuck: `${tableHeaderPrefix}__cellWrapper--fixed--stuck`,
   body: tableBodyPrefix,
+  bodyCell: `${tableBodyPrefix}__cell`,
+  bodyCellContent: `${tableBodyPrefix}__cell-content`,
+  bodyCellFixed: `${tableBodyPrefix}__cell--fixed`,
+  bodyCellFixedEnd: `${tableBodyPrefix}__cell--fixed-end`,
+  bodyCellFixedShadow: `${tableBodyPrefix}__cell--fixed-shadow`,
+  bodyCellFixedStart: `${tableBodyPrefix}__cell--fixed-start`,
   bodyEmpty: `${tableBodyPrefix}__empty`,
-  bodyFetchMore: `${tableBodyPrefix}__fetchMore`,
   bodyRow: `${tableBodyPrefix}__row`,
-  bodyRowDragging: `${tableBodyPrefix}__row--drag`,
+  bodyRowAdding: `${tableBodyPrefix}__row--adding`,
+  bodyRowDeleting: `${tableBodyPrefix}__row--deleting`,
+  bodyRowDragging: `${tableBodyPrefix}__row--dragging`,
+  bodyRowExpanded: `${tableBodyPrefix}__row--expanded`,
+  bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
-  bodyRowCellWrapper: `${tableBodyPrefix}__row__cellWrapper`,
-  bodyRowCellWrapperFixed: `${tableBodyPrefix}__row__cellWrapper--fixed`,
-  bodyRowCellWrapperFixedStuck: `${tableBodyPrefix}__row__cellWrapper--fixed--stuck`,
-  bodyRowExpandedTableWrapper: `${tableBodyPrefix}__row__expandedTableWrapper`,
-  bodyRowExpandedTable: `${tableBodyPrefix}__row__expandedTable`,
-  bodyRowExpandedTableRow: `${tableBodyPrefix}__row__expandedTableRow`,
+  bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
+  bordered: `${tablePrefix}--bordered`,
   cell: tableCellPrefix,
-  cellEllipsis: `${tableCellPrefix}__ellipsis`,
-  selections: `${tablePrefix}__selections`,
-  icon: `${tablePrefix}__icon`,
-  iconClickable: `${tablePrefix}__icon--clickable`,
-  collapseAction: `${tablePrefix}__collapseAction`,
-  pagination: `${tablePrefix}__pagination`,
-  paginationIndicator: `${tablePrefix}__pagination__indicator`,
-  paginationActions: `${tablePrefix}__pagination__actions`,
-  refresh: `${tablePrefix}__refresh`,
+  cellAlignCenter: `${tableCellPrefix}--align-center`,
+  cellAlignEnd: `${tableCellPrefix}--align-end`,
+  cellAlignStart: `${tableCellPrefix}--align-start`,
+  cellContent: `${tableCellPrefix}__content`,
+  cellEllipsis: `${tableCellPrefix}--ellipsis`,
+  cellFixed: `${tableCellPrefix}--fixed`,
+  cellFixedEnd: `${tableCellPrefix}--fixed-end`,
+  cellFixedShadow: `${tableCellPrefix}--fixed-shadow`,
+  cellFixedStart: `${tableCellPrefix}--fixed-start`,
+  cellHighlight: `${tableCellPrefix}--highlight`,
+  main: `${tablePrefix}--main`,
+  dragHandle: `${tablePrefix}__drag-handle`,
+  dragHandleCell: `${tablePrefix}__drag-handle-cell`,
+  empty: `${tablePrefix}__empty`,
+  emptyRow: `${tablePrefix}__empty-row`,
+  expandCell: `${tablePrefix}__expand-cell`,
+  expandIcon: `${tablePrefix}__expand-icon`,
+  expandIconExpanded: `${tablePrefix}__expand-icon--expanded`,
+  expandedContent: `${tablePrefix}__expanded-content`,
+  expandedRow: `${tablePrefix}__expanded-row`,
+  expandedRowCell: `${tablePrefix}__expanded-row__cell`,
+  header: tableHeaderPrefix,
+  headerCell: `${tableHeaderPrefix}__cell`,
+  headerCellActions: `${tableHeaderPrefix}__cell-actions`,
+  headerCellContent: `${tableHeaderPrefix}__cell-content`,
+  headerCellFixed: `${tableHeaderPrefix}__cell--fixed`,
+  headerCellTitle: `${tableHeaderPrefix}__cell-title`,
+  headerCellIcon: `${tableHeaderPrefix}__cell-icon`,
+  headerRow: `${tableHeaderPrefix}__row`,
+  host: tablePrefix,
+  resizeHandle: tableResizeHandlePrefix,
+  resizeHandleActive: `${tableResizeHandlePrefix}--active`,
+  root: tablePrefix,
+  row: `${tablePrefix}__row`,
+  rowExpanded: `${tablePrefix}__row--expanded`,
+  rowSelected: `${tablePrefix}__row--selected`,
+  scrollContainer: tableScrollContainerPrefix,
+  selectionCell: `${tablePrefix}__selection-cell`,
+  selectionCheckbox: `${tablePrefix}__selection-checkbox`,
+  selectionColumn: `${tablePrefix}__selection-column`,
+  sortIcon: `${tablePrefix}__sort-icon`,
+  sortIconActive: `${tablePrefix}__sort-icon--active`,
+  sortIcons: `${tablePrefix}__sort-icons`,
+  sticky: `${tablePrefix}--sticky`,
+  sub: `${tablePrefix}--sub`,
+  // Highlight mode classes
+  highlightCell: `${tablePrefix}--highlight-cell`,
+  highlightColumn: `${tablePrefix}--highlight-column`,
+  highlightCross: `${tablePrefix}--highlight-cross`,
+  highlightRow: `${tablePrefix}--highlight-row`,
 } as const;
 
-export type TableRecord<T> = Record<string, T>;
+/** Generic record type for table data */
+export type TableRecord<T = unknown> = Record<string, T>;
 
-export interface TableDataSourceWithKey extends TableRecord<unknown> {
+/** Data source must have a unique key or id */
+export interface TableDataSourceWithKey extends TableRecord {
   key: string | number;
 }
 
-export interface TableDataSourceWithID extends TableRecord<unknown> {
+export interface TableDataSourceWithId extends TableRecord {
   id: string | number;
 }
 
-export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithID;
+export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithId;
 
-export interface TableColumnBase<SourceType> {
-  /** Column's primary key */
-  key?: string;
-  dataIndex?: string;
-  render?(source: SourceType, index: number, column: ExpandedTableColumn): any;
-  title?: string;
-  renderTitle?(classes: typeof tableClasses): any;
-  renderTooltipTitle?(source: SourceType): string;
-  // == Custom column style ==
-  align?: 'start' | 'center' | 'end';
+/** Get row key from data source */
+export function getRowKey(record: TableDataSource): string {
+  if ('key' in record) {
+    return String(record.key);
+  }
+
+  if ('id' in record) {
+    return String(record.id);
+  }
+
+  return '';
+}
+
+/** Sort direction type */
+export type SortOrder = 'ascend' | 'descend' | null;
+
+/** Column alignment */
+export type ColumnAlign = 'start' | 'center' | 'end';
+
+/** Highlight mode for hover effects */
+export type HighlightMode = 'cell' | 'column' | 'row' | 'cross';
+
+/** Fixed column position */
+export type FixedType = boolean | 'start' | 'end';
+
+/** Table size type */
+export type TableSize = 'main' | 'sub';
+
+/**
+ * Column definition base interface
+ */
+export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
+  /** Column alignment */
+  align?: ColumnAlign;
+  /** Custom class name for both header and body cells */
+  className?: string;
+  /** Custom class name for body cells */
   bodyClassName?: string;
-  headerClassName?: string;
-  width?: number;
-  // == Feature sorting ==
-  sorter?(a: any, b: any): number;
-  /**
-   * The `key` is automatically generated by mzn. If you need a more specific key,
-   * please provide `key` within the column.
+  /** Data index to access the record value */
+  dataIndex?: string;
+  /** Enable text ellipsis with tooltip
+   * @default true
    */
-  onSorted?(key: string, sortedType: string): void;
-  // == Feature editing ==
-  editable?: boolean;
-  setCellProps?(record: SourceType): TableRecord<unknown>;
-  // == Feature ellipsis ==
-  /** @default true */
   ellipsis?: boolean;
-  /** force display tooltip whenever content is hovered */
-  forceShownTooltipWhenHovered?: boolean;
-}
-
-export interface TableColumnDataIndexAndTitle<SourceType> extends TableColumnBase<SourceType> {
-  dataIndex: string;
-  render?: never;
-  title: string;
-  renderTitle?: never;
-}
-
-export interface TableColumnDataIndexAndRenderTitle<SourceType> extends TableColumnBase<SourceType> {
-  dataIndex: string;
-  render?: never;
-  title?: never;
-  renderTitle(classes: typeof tableClasses): any;
-}
-
-export interface TableColumnRenderAndTitle<SourceType> extends TableColumnBase<SourceType> {
-  dataIndex?: never;
-  render(source: SourceType, index: number, column: ExpandedTableColumn): any;
-  title: string;
-  renderTitle?: never;
-}
-
-export interface TableColumnRenderAndRenderTitle<SourceType> extends TableColumnBase<SourceType> {
-  dataIndex?: never;
-  render(source: SourceType, index: number, column: ExpandedTableColumn): any;
-  title?: never;
-  renderTitle(classes: typeof tableClasses): any;
-}
-
-export type TableColumn<SourceType> = TableColumnDataIndexAndTitle<SourceType>
-| TableColumnDataIndexAndRenderTitle<SourceType>
-| TableColumnRenderAndTitle<SourceType>
-| TableColumnRenderAndRenderTitle<SourceType>;
-
-export type ExpandedTableColumn = Omit<TableColumn<TableRecord<unknown>>,
-'title' |
-'renderTitle' |
-'align' |
-'headerClassName' |
-'width' |
-'sorter' |
-'onSorted' |
-'editable' |
-'setCellProps'
->;
-
-export type TableFetchMore = {
-  callback?(): any;
-  isReachEnd?: boolean;
-  isFetching?: boolean;
-};
-
-/** === Feature MultiSelection */
-export interface TableRowAction {
+  /** Fixed column position */
+  fixed?: FixedType;
+  /** Custom class name for header cells */
+  headerClassName?: string;
+  /** Unique key for the column */
   key: string;
-  text: string;
-  onClick?(keys: string[]): void;
-  className?: string;
+  /** Maximum column width (for resizable columns) */
+  maxWidth?: number;
+  /** Minimum column width (for resizable columns) */
+  minWidth?: number;
+  /** Callback when sort state changes */
+  onSort?: (key: string, order: SortOrder) => void;
+  /** Custom render function for cell content */
+  render?: (record: T, index: number) => React.ReactNode;
+  /** Controlled sort order */
+  sortOrder?: SortOrder;
+  /** Column header title */
+  title?: React.ReactNode;
+  /** Tooltip help text for header */
+  titleHelp?: React.ReactNode;
+  /** Menu content for header (e.g., dropdown menu) */
+  titleMenu?: React.ReactNode;
+  /** Column width in pixels */
+  width?: number;
 }
 
-export interface TableRowSelection {
-  selectedRowKey?: string[];
-  onChange?(keys: string[]): void;
-  actions?: TableRowAction[];
-  disabledRowKeys?: string[];
-}
+export type TableColumn<T extends TableDataSource = TableDataSource> =
+  TableColumnBase<T>;
 
-/** === Feature draggable */
-export interface TableDraggable {
-  enabled: boolean;
-  onDragEnd?: (nextDataSource: any[]) => void;
-}
-
-/** === Feature Expandable */
-export type ExpandRowBySources = {
-  dataSource: TableDataSource[];
-  columns?: ExpandedTableColumn[];
-  className?: string;
-};
-export interface TableExpandable<SourceType> {
-  className?: string;
-  expandedRowRender(record: SourceType): string | ExpandRowBySources;
-  rowExpandable?(record: SourceType): boolean;
-  onExpand?(record: SourceType, status: boolean): void;
-}
-
-/** === Feature Pagination */
-export interface TablePagination {
-  current: number;
-  /** @NOTE set this to true, should control pageSize properly to make layout correct */
-  disableAutoSlicing?: boolean;
-  onChange(page: number): void;
-  total?: number;
-  options?: {
-    boundaryCount?: number;
-    className?: string;
-    disabled?: boolean;
-    hideNextButton?: boolean;
-    hidePreviousButton?: boolean;
-    jumperButtonText?: string;
-    jumperHintText?: string;
-    jumperInputPlaceholder?: string;
-    onChangePageSize?: (pageSize: number) => void;
-    pageSize?: number;
-    pageSizeLabel?: string;
-    pageSizeOptions?: number[];
-    pageSizeUnit?: string;
-    renderPageSizeOptionName?: (pageSize: number) => string;
-    renderPaginationSummary?: (start: number, end: number) => string;
-    showJumper?: boolean;
-    showPageSizeOptions?: boolean;
-    siblingCount?: number;
+/** Row selection configuration */
+export interface TableRowSelection<
+  T extends TableDataSource = TableDataSource,
+> {
+  /** Fixed position of the selection column */
+  fixed?: boolean;
+  /** Get checkbox props for each row */
+  getCheckboxProps?: (record: T) => {
+    indeterminate?: boolean;
+    selected?: boolean;
   };
+  /** Determine if the checkbox is disabled for a row */
+  isCheckboxDisabled?: (record: T) => boolean;
+  /** Hide select all checkbox in header */
+  hideSelectAll?: boolean;
+  /** Callback when selection changes */
+  onChange: (
+    selectedRowKeys: (string | number)[],
+    selectedRow: T | null,
+    selectedRows: T[],
+  ) => void;
+  /** Callback when select all is triggered, function called after onChange */
+  onSelectAll?: (type: 'all' | 'none') => void;
+  /** Preserve selected row keys when toggle select All even when data changes */
+  preserveSelectedRowKeys?: boolean;
+  /** Array of selected row keys */
+  selectedRowKeys: (string | number)[];
 }
 
-/** === Feature Refresh */
-export interface TableRefresh {
-  show?: boolean;
-  onClick?(): void;
+/** Scroll configuration */
+export interface TableScroll {
+  /**
+   * Enable virtualized scrolling for large datasets.
+   * When enabled, only visible rows are rendered for better performance.
+   * Note: Cannot be used together with draggable rows.
+   * @default false
+   */
+  virtualized?: boolean;
+  /** Horizontal scroll width */
+  x?: number | string;
+  /** Vertical scroll height (required when virtualized is true) */
+  y?: number | string;
 }
 
-/** === Feature edit */
-export interface TableComponents {
-  body?: {
-    cell?: any;
-  }
+/** Draggable configuration */
+export interface TableDraggable<T extends TableDataSource = TableDataSource> {
+  /** Enable drag and drop */
+  enabled: boolean;
+  /** Fixed position of drag handle column */
+  fixed?: boolean;
+  /** Indent size for nested rows */
+  indentSize?: number;
+  /** Callback when drag ends */
+  onDragEnd?: (newDataSource: T[]) => void;
 }
 
-/** === Feature scrolling */
-export interface TableScrolling {
-  x?: number;
-  y?: number;
-  /** Only available when horizontal scrolling is enabled */
-  fixedFirstColumn?: boolean;
+/** Expandable configuration */
+export interface TableExpandable<T extends TableDataSource = TableDataSource> {
+  /** Render function for expanded row content */
+  expandedRowRender: (record: T) => React.ReactNode;
+  /** Controlled expanded row keys */
+  expandedRowKeys?: (string | number)[];
+  /** Fixed position of expand icon column */
+  fixed?: boolean;
+  /** Callback when single row expand state changes */
+  onExpand?: (expanded: boolean, record: T) => void;
+  /** Callback when expanded rows change */
+  onExpandedRowsChange?: (expandedRowKeys: (string | number)[]) => void;
+  /** Determine if a row is expandable */
+  rowExpandable?: (record: T) => boolean;
 }
 
-/** styling */
-export function getColumnStyle(column: TableColumn<TableRecord<unknown>>) {
-  if (!column) return {};
+/** Column style helpers */
+export function getColumnStyle(
+  column: TableColumn,
+  computedWidth?: number,
+): React.CSSProperties {
+  const style: React.CSSProperties = {};
 
-  let style = {};
+  const width = computedWidth ?? column.width;
 
-  if (column.width) {
-    style = {
-      ...style,
-      width: column.width,
-      maxWidth: column.width,
-      flex: 'auto',
-    };
+  if (width) {
+    style.width = width;
+    style.minWidth = width;
+    style.maxWidth = width;
+    style.flex = '0 0 auto';
+  } else {
+    style.flex = '1 1 0';
+    style.minWidth = 0;
   }
 
   return style;
 }
 
-export function getCellStyle(column: TableColumn<TableRecord<unknown>>) {
-  if (!column) return {};
-
-  let style = {};
-
-  if (column.align) {
-    style = {
-      ...style,
-      justifyContent: column.align === 'center' ? column.align : `flex-${column.align}`,
-    };
+export function getCellAlignClass(align?: ColumnAlign): string {
+  switch (align) {
+    case 'center':
+      return tableClasses.cellAlignCenter;
+    case 'end':
+      return tableClasses.cellAlignEnd;
+    case 'start':
+    default:
+      return tableClasses.cellAlignStart;
   }
-
-  return style;
 }
+
+// default values
+export const DRAG_HANDLE_KEY = '__mzn-drag-handle__';
+export const SELECTION_KEY = '__mzn-selection__';
+export const EXPANSION_KEY = '__mzn-expansion__';
+export const DRAG_HANDLE_COLUMN_WIDTH = 40;
+export const SELECTION_COLUMN_WIDTH = 40;
+export const EXPANSION_COLUMN_WIDTH = 40;

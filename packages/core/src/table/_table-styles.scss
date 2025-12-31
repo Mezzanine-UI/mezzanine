@@ -1,117 +1,139 @@
-/* stylelint-disable color-function-notation */
-/* stylelint-disable alpha-value-notation */
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/transition';
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
 @use './table' as *;
+@use '../button/utils' as button-utils;
 
-$table-header-height: 40px !default;
-$table-cell-horizontal-gap: 16px !default;
-$table-selections-horizontal-gap: 16px !default;
-$table-icon-size: 24px !default;
-$table-collapsible-icon-horizontal-gap: 16px !default;
-$table-fetch-more-vertical-padding: 12px !default;
-$table-pagination-height: 52px !default;
-$table-refresh-vertical-padding: 8px !default;
+// ============================================
+// Size Variables (using semantic spacing)
+// ============================================
+$header-cell: (
+  main: (
+    typography: body-highlight,
+    gap: spacing.semantic-variable(gap, tiny),
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, calm),
+    ),
+    help-size: spacing.semantic-variable(size, element, base),
+    sort-size: spacing.semantic-variable(size, element, base),
+    menu-size: spacing.semantic-variable(size, element, base),
+    resize: (
+      width: spacing.semantic-variable(size, element, hairline),
+      height: spacing.semantic-variable(size, element, relaxed),
+    ),
+  ),
+  sub: (
+    typography: body-highlight,
+    gap: spacing.semantic-variable(gap, tiny),
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, base),
+    ),
+    help-size: spacing.semantic-variable(size, element, base),
+    sort-size: spacing.semantic-variable(size, element, base),
+    menu-size: spacing.semantic-variable(size, element, base),
+    resize: (
+      width: spacing.semantic-variable(size, element, hairline),
+      height: spacing.semantic-variable(size, element, relaxed),
+    ),
+  ),
+);
 
-@mixin row($min-height) {
-  width: 100%;
-  height: auto;
-  min-height: $min-height;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-start;
-  border-bottom: 1px solid palette.color(border);
+$content-cell: (
+  main: (
+    typography: body,
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, calm),
+    ),
+  ),
+  sub: (
+    typography: body,
+    padding: (
+      horizontal: spacing.semantic-variable(padding, horizontal, comfort),
+      vertical: spacing.semantic-variable(padding, vertical, base),
+    ),
+  ),
+);
+
+$icon-size: spacing.semantic-variable(size, element, base);
+$action-height: spacing.semantic-variable(size, element, gentle);
+$sticky-cell-z-index: 1;
+
+// ============================================
+// Mixins
+// ============================================
+
+@mixin text-color {
+  color: palette.semantic-variable(text, neutral-solid);
 }
 
-@mixin text_color {
-  color: palette.color(text-primary);
+@mixin surface-bg {
+  background-color: palette.semantic-variable("background", base);
 }
 
-@mixin header_content {
-  @include typography.variant(h6);
+@mixin header-bg {
+  background-color: palette.semantic-variable("background", neutral-ghost);
 }
 
-@mixin body_content {
-  @include typography.variant(input2);
+@mixin highlight-bg {
+  background-color: palette.semantic-variable("background", brand-ghost);
 }
 
-@mixin action_highlight_bg {
-  background-color: palette.color(primary-hover-bg);
+@mixin icon-size {
+  width: $icon-size;
+  height: $icon-size;
 }
 
-@mixin flexible {
-  flex: 1 1 0;
-  min-width: 0;
-  display: inline-flex;
-  align-items: center;
-}
+@mixin fixed-column-shadow($direction: 'start') {
+  &::after {
+    position: absolute;
+    inset-block: 0;
+    width: 10px;
+    content: '';
+    pointer-events: none;
+    transition: transition.standard(box-shadow);
 
-@mixin body_bg {
-  background-color: palette.color(surface);
-}
-
-@mixin icon_size($size) {
-  width: $size;
-  height: $size;
-  font-size: typography.px-to-rem($size);
-}
-
-@mixin with-scroll-box-shadow($colorName) {
-  &--fixed {
-    &:first-child {
-      position: sticky;
-      z-index: 2;
-      left: 0;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background-color: palette.color(#{$colorName});
-    }
-
-    &::after {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: -1px;
-      width: 10px;
+    @if $direction == 'start' {
+      inset-inline-end: 0;
       transform: translateX(100%);
-      transition: transition.standard(box-shadow);
-      content: '';
-      pointer-events: none;
-    }
-
-    &--stuck {
-      &::after {
-        box-shadow: inset 8px 0 8px -8px rgb(0 0 0 / 0.25);
-      }
+    } @else {
+      inset-inline-start: 0;
+      transform: translateX(-100%);
     }
   }
 }
 
-.#{$loading-prefix} {
-  z-index: 4;
+@mixin fixed-column-shadow-active($direction: 'start') {
+  &::after {
+    @if $direction == 'start' {
+      box-shadow: inset 8px 0 8px -8px palette.semantic-variable(shadow, dark-light);
+    } @else {
+      box-shadow: inset -8px 0 8px -8px palette.semantic-variable(shadow, dark-light);
+    }
+  }
 }
 
-.#{$container-prefix} {
-  width: 100%;
-  max-height: var(--table-scroll-y, 'unset');
+// ============================================
+// Scroll container (wrapper div for horizontal scroll)
+// ============================================
+
+.#{$scroll-container-prefix} {
   position: relative;
   overflow: auto;
-  scrollbar-width: thin; /* firefox specific (firefox 只能先用原生的) */
+  width: 100%;
+  max-height: var(--table-scroll-y, auto);
+  scrollbar-width: thin;
 
   &::-webkit-scrollbar {
-    height: 8px;
     width: 0;
+    height: 8px;
 
-    /* smartphones, touchscreens */
     @media (hover: none) and (pointer: coarse) {
       display: none;
       height: 0;
@@ -119,186 +141,474 @@ $table-refresh-vertical-padding: 8px !default;
   }
 
   &::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    background: #6a6a6a;
+    background: palette.semantic-variable("background", neutral-strong);
+    border-radius: radius.variable(full);
   }
 
   &::-webkit-scrollbar-track {
-    background: #f2f2f2;
+    background: palette.semantic-variable("background", neutral-ghost);
   }
 }
+
+// ============================================
+// Main table element
+// ============================================
 
 .#{$prefix} {
-  width: 100%;
-  min-width: var(--table-scroll-x, '100%');
-  table-layout: fixed;
-  border-collapse: collapse;
-  border-spacing: 0;
   box-sizing: border-box;
-
-  @include text_color;
-  @include body_bg();
-}
-
-.#{$header-fixed-prefix} {
   width: 100%;
-  min-width: var(--table-scroll-x, '100%');
-  position: sticky;
-  z-index: 3;
-  top: 0;
-}
+  min-width: var(--table-scroll-x, 100%);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
 
-.#{$header-prefix} {
-  @include row(40px);
-  @include header_content;
+  @include text-color;
+  @include surface-bg;
 
-  background-color: palette.color(divider);
+  * {
+    box-sizing: border-box;
+  }
 
-  &__cellWrapper {
-    @include flexible;
+  th,
+  td {
+    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
 
-    background-color: palette.color(divider);
+  // Sticky header
+  &--sticky {
+    thead {
+      position: sticky;
+      top: 0;
+      z-index: calc(#{$sticky-cell-z-index} + 2);
+    }
+  }
 
-    @include with-scroll-box-shadow(divider);
+  // Size variants - using padding to control cell height
+  &--main {
+    th {
+      @include typography.semantic-variable(map.get($header-cell, main, typography));
+
+      padding: map.get($header-cell, main, padding, vertical) map.get($header-cell, main, padding, horizontal);
+      gap: map.get($header-cell, main, gap);
+    }
+
+    td {
+      @include typography.semantic-variable(map.get($content-cell, main, typography));
+
+      padding: 0 map.get($content-cell, main, padding, horizontal);
+    }
+
+    .#{$resize-handle-prefix} {
+      --mzn-table-resize-handle-width: #{map.get($header-cell, main, resize, width)};
+      --mzn-table-resize-handle-height: #{map.get($header-cell, main, resize, height)};
+    }
+  }
+
+  &--sub {
+    th {
+      @include typography.semantic-variable(map.get($header-cell, sub, typography));
+
+      padding: map.get($header-cell, sub, padding, vertical) map.get($header-cell, sub, padding, horizontal);
+      gap: map.get($header-cell, sub, gap);
+    }
+
+    td {
+      @include typography.semantic-variable(map.get($content-cell, sub, typography));
+
+      padding: 0 map.get($content-cell, sub, padding, horizontal);
+    }
+
+    .#{$resize-handle-prefix} {
+      --mzn-table-resize-handle-width: #{map.get($header-cell, sub, resize, width)};
+      --mzn-table-resize-handle-height: #{map.get($header-cell, sub, resize, height)};
+    }
+  }
+
+  // Loading state
+  &--loading {
+    pointer-events: none;
+    opacity: 0.6;
   }
 }
 
-.#{$body-prefix} {
-  position: relative;
-  width: 100%;
-  min-width: var(--table-scroll-x, '100%');
+// ============================================
+// Header (thead)
+// ============================================
+
+.#{$header-prefix} {
+  @include header-bg;
 
   &__row {
-    @include row(52px);
-    @include body_content;
-    @include body_bg;
+    border-block-end: 1px solid palette.semantic-variable(border, neutral-faint);
+  }
 
+  &__cell {
     position: relative;
+    box-sizing: border-box;
+    text-align: start;
+    vertical-align: middle;
+
+    @include header-bg;
+
+    &--fixed {
+      position: sticky;
+      z-index: 2;
+
+      @include header-bg;
+    }
+  }
+
+  &__cell-content {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__cell-actions {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+    gap: spacing.semantic-variable(gap, tiny);
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  &__cell-title {
+    @include typography.overflow-ellipsis();
+
+    color: palette.semantic-variable(text, neutral-strong);
+  }
+
+  &__cell-icon {
+    border: none;
+    border-radius: radius.variable(base);
+    width: spacing.semantic-variable(size, element, base);
+    height: spacing.semantic-variable(size, element, base);
+    color: palette.semantic-variable(icon, neutral-light);
+    transition: transition.standard(color, fast);
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral-bold);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+}
+
+// ============================================
+// Body (tbody)
+// ============================================
+
+.#{$body-prefix} {
+  &__virtual-container {
+    position: relative;
+    width: 100%;
+  }
+
+  &__row {
+    @include surface-bg;
 
     &:hover,
     &--highlight {
-      .#{$body-prefix} {
-        &__row {
-          &__cellWrapper {
-            @include action_highlight_bg;
-
-            &--fixed {
-              @include body_bg;
-
-              &::before {
-                @include action_highlight_bg;
-              }
-            }
-          }
-        }
+      td {
+        @include highlight-bg;
       }
     }
 
-    &--drag {
-      filter: drop-shadow(0 4px 20px rgb(0 0 0 / 0.25));
+    &--dragging {
+      filter: drop-shadow(0 4px 20px palette.semantic-variable(shadow, dark));
     }
 
-    &__cellWrapper {
-      @include flexible;
-      @include body_bg;
-      @include with-scroll-box-shadow(surface);
+    &--expanded {
+      border-block-end: none;
     }
 
-    &__expandedTableWrapper {
-      padding: 0;
-    }
-
-    &__expandedTableRow {
-      background-color: palette.color(divider);
-
-      &:last-child {
-        border-bottom: none;
+    &--selected {
+      td {
+        @include highlight-bg;
       }
     }
+
+    &--adding {
+      td {
+        @include highlight-bg;
+      }
+    }
+
+    &--deleting {
+      td {
+        background-color: palette.semantic-variable("background", error-ghost);
+      }
+    }
+
+    &--fading-out {
+      opacity: 0;
+      transition: transition.entrance(opacity, moderate);
+
+      td {
+        background-color: palette.semantic-variable("background", error-ghost);
+      }
+    }
+  }
+
+  &__cell {
+    box-sizing: border-box;
+    text-align: start;
+    vertical-align: middle;
+
+    @include surface-bg;
+  }
+
+  &__cell-content {
+    display: flex;
+    align-items: center;
+    min-width: 0;
   }
 
   &__empty {
-    @include body_bg;
+    td {
+      text-align: center;
+      vertical-align: middle;
 
-    min-height: calc(var(--table-scroll-y, '130px') - 12px - #{$table-header-height});
-  }
-
-  &__fetchMore {
-    @include row(auto);
-    @include body_bg;
-
-    justify-content: center;
-    padding: $table-fetch-more-vertical-padding 0;
-    border-bottom: none;
-  }
-}
-
-.#{$cell-prefix} {
-  width: 100%;
-  padding: 0 $table-cell-horizontal-gap;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: flex-start;
-
-  &__ellipsis {
-    width: auto;
-    max-width: 100%;
-    min-width: 1em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-  }
-}
-
-.#{$prefix}__selections {
-  padding: 0 $table-selections-horizontal-gap;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.#{$prefix}__icon {
-  @include icon_size($table-icon-size);
-
-  &--clickable {
-    cursor: pointer;
-
-    &:hover {
-      @include action_highlight_bg;
+      @include surface-bg;
     }
   }
 }
 
-.#{$prefix}__collapseAction {
-  padding: 0 0 0 $table-selections-horizontal-gap;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+// ============================================
+// Cell common styles
+// ============================================
+
+.#{$cell-prefix} {
+  @include surface-bg;
+
+  &--ellipsis {
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &--align-start {
+    justify-content: flex-start;
+    text-align: start;
+  }
+
+  &--align-center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  &--align-end {
+    justify-content: flex-end;
+    text-align: end;
+  }
+
+  &--highlight {
+    @include highlight-bg;
+  }
+
+  &--fixed {
+    position: sticky;
+  }
+
+  &--fixed-start {
+    inset-inline-start: var(--fixed-start-offset, 0);
+    z-index: calc(#{$sticky-cell-z-index} + 1);
+
+    @include fixed-column-shadow('start');
+  }
+
+  &--fixed-end {
+    inset-inline-end: var(--fixed-end-offset, 0);
+    z-index: $sticky-cell-z-index;
+
+    @include fixed-column-shadow('end');
+  }
+
+  &--fixed-shadow {
+    @include fixed-column-shadow-active('start');
+  }
+
+  &--fixed-end#{&}--fixed-shadow {
+    @include fixed-column-shadow-active('end');
+  }
+
+  &__content {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+  }
 }
 
-.#{$prefix}__pagination {
-  width: 100%;
-  height: auto;
-  min-height: $table-pagination-height;
-  padding: 0 $table-cell-horizontal-gap;
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  justify-content: space-between;
-  background-color: palette.color(divider);
+// ============================================
+// Drag handle column
+// ============================================
+
+.#{$prefix}__drag-handle-cell {
   box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
 
-  &__indicator {
-    @include body_content;
-  }
+.#{$prefix}__drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
 
-  &__actions {
-    width: auto;
+  &:active {
+    cursor: grabbing;
   }
 }
 
-.#{$prefix}__refresh {
-  padding: $table-refresh-vertical-padding 0;
+// ============================================
+// Selection column
+// ============================================
+
+.#{$prefix}__selection-column {
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.#{$prefix}__selection-checkbox {
+  height: $action-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================
+// Expand column
+// ============================================
+
+.#{$prefix}__expand-cell {
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.#{$prefix}__expand-icon {
+  @include button-utils.reset();
+
+  width: 100%;
+  height: $action-height;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: palette.semantic-variable(icon, neutral-strong);
+  transition: transition.entrance(transform, moderate);
+
+  &--expanded {
+    transform: rotate(90deg);
+  }
+}
+
+// ============================================
+// Expanded row
+// ============================================
+
+.#{$prefix}__expanded-row {
+  & > &__cell {
+    background-color: palette.semantic-variable("background", neutral-ghost);
+    padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, base-fixed);
+  }
+}
+
+.#{$prefix}__expanded-content {
+  width: 100%;
+}
+
+// ============================================
+// Sort icons
+// ============================================
+
+.#{$prefix}__sort-icons {
+  width: spacing.semantic-variable(size, element, base);
+  height: spacing.semantic-variable(size, element, base);
+  border: none;
+  border-radius: radius.variable(base);
+  background-color: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 0;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:hover {
+    & > .#{$prefix}__sort-icon {
+      color: palette.semantic-variable(icon, neutral-bold);
+    }
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: effect.variable(focus, primary);
+  }
+}
+
+.#{$prefix}__sort-icon {
+  color: palette.semantic-variable(icon, neutral-light);
+  transition: transition.standard(color, fast);
+
+  &--active {
+    color: palette.semantic-variable(icon, neutral-bold);
+  }
+}
+
+// ============================================
+// Resize handle
+// ============================================
+
+.#{$resize-handle-prefix} {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+  height: 100%;
+  padding: 0 spacing.semantic-variable(padding, horizontal, comfort);
+  cursor: col-resize;
+  user-select: none;
+  transform: translate3d(50%, -50%, 0);
+  transition: transition.standard(background-color);
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    z-index: 1;
+    transform: translate3d(50%, -50%, 0);
+    width: var(--mzn-table-resize-handle-width);
+    height: var(--mzn-table-resize-handle-height);
+    border-radius: radius.variable(full);
+    background-color: palette.semantic-variable(separator, neutral-faint);
+    transition: transition.standard(background-color);
+  }
+
+  &:hover,
+  &--active {
+    &::after {
+      background-color: palette.semantic-variable("background", brand);
+    }
+  }
+}
+
+// ============================================
+// Empty state
+// ============================================
+
+.#{$prefix}__empty {
+  min-height: 200px;
+  text-align: center;
+  vertical-align: middle;
 }
