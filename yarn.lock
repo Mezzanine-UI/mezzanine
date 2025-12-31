@@ -2976,6 +2976,7 @@ __metadata:
     "@types/react-transition-group": "npm:^4.4.12"
     clsx: "npm:^2.1.1"
     dayjs: "npm:^1.11.19"
+    keycode: "npm:^2.2.1"
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.7.2"
     moment: "npm:^2.30.1"
@@ -11355,6 +11356,13 @@ __metadata:
   version: 6.0.2
   resolution: "just-diff@npm:6.0.2"
   checksum: 10c0/1931ca1f0cea4cc480172165c189a84889033ad7a60bee302268ba8ca9f222b43773fd5f272a23ee618d43d85d3048411f06b635571a198159e9a85bb2495f5c
+  languageName: node
+  linkType: hard
+
+"keycode@npm:^2.2.1":
+  version: 2.2.1
+  resolution: "keycode@npm:2.2.1"
+  checksum: 10c0/e38ecbdc62f57e18ef9f7ad88aefded84e05b89115a40eea3081a7002d7c055765ddb5f5c3e2dd36ac2b2ab3901053c8286c9db082fd807b3abeb7e44034d96a
   languageName: node
   linkType: hard
 
