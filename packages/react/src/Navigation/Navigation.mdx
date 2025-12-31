@@ -1,5 +1,9 @@
 import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
-import Navigation, { NavigationItem, NavigationSubMenu } from '.';
+import Navigation, {
+  NavigationHeader,
+  NavigationOption,
+  NavigationFooter,
+} from '.';
 import * as NavigationStories from './Navigation.stories';
 
 <Meta of={NavigationStories} />
@@ -12,18 +16,26 @@ import * as NavigationStories from './Navigation.stories';
 
 <ArgTypes of={Navigation} />
 
-# NavigationSubMenu
+# NavigationHeader
 
-<Description of={NavigationSubMenu} />
+<Description of={NavigationHeader} />
 
-[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Navigation/NavigationItem.tsx)
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Navigation/NavigationHeader.tsx)
 
-<ArgTypes of={NavigationSubMenu} />
+<ArgTypes of={NavigationHeader} />
 
-# NavigationItem
+# NavigationOption
 
-<Description of={NavigationItem} />
+<Description of={NavigationOption} />
 
-[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Navigation/NavigationItem.tsx)
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Navigation/NavigationOption.tsx)
 
-<ArgTypes of={NavigationItem} />
+<ArgTypes of={NavigationOption} />
+
+# NavigationFooter
+
+<Description of={NavigationFooter} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Navigation/NavigationFooter.tsx)
+
+<ArgTypes of={NavigationFooter} />

@@ -5,8 +5,8 @@ import {
 } from '../../__test-utils__/common';
 
 import Navigation from './Navigation';
-import NavigationItem from './NavigationItem';
-import NavigationSubMenu from './NavigationSubMenu';
+import NavigationOptionItem from './NavigationOptionItem';
+import NavigationOption from './NavigationOption';
 
 const renderMockNavigationItem = jest.fn();
 const renderMockNavigationSubMenu = jest.fn();
@@ -49,8 +49,10 @@ describe('<Navigation />', () => {
       const itemKey = '1';
       const itemChildren = 'foo';
       render(
-        <Navigation activeKey={itemKey} onClick={onClick}>
-          <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
+        <Navigation activeKey={itemKey} onOptionClick={onClick}>
+          <NavigationOptionItem key={itemKey}>
+            {itemChildren}
+          </NavigationOptionItem>
         </Navigation>,
       );
 
@@ -69,9 +71,11 @@ describe('<Navigation />', () => {
 
       render(
         <Navigation activeKey={itemKey}>
-          <NavigationSubMenu>
-            <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
-          </NavigationSubMenu>
+          <NavigationOption>
+            <NavigationOptionItem key={itemKey}>
+              {itemChildren}
+            </NavigationOptionItem>
+          </NavigationOption>
         </Navigation>,
       );
 
@@ -87,10 +91,12 @@ describe('<Navigation />', () => {
       const itemKey = '1';
       const itemChildren = 'foo';
       render(
-        <Navigation activeKey={itemKey} onClick={onClick}>
+        <Navigation activeKey={itemKey} onOptionClick={onClick}>
           {null}
           <>
-            <NavigationItem key={itemKey}>{itemChildren}</NavigationItem>
+            <NavigationOptionItem key={itemKey}>
+              {itemChildren}
+            </NavigationOptionItem>
             test
           </>
         </Navigation>,
