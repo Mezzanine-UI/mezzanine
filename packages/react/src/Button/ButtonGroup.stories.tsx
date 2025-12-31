@@ -4,7 +4,7 @@ import { ButtonGroupOrientation } from '@mezzanine-ui/core/button';
 import Button, { ButtonGroup, ButtonGroupProps } from '.';
 
 export default {
-  title: 'General/Button/ButtonGroup',
+  title: 'Foundation/Button/ButtonGroup',
   component: ButtonGroup,
 } satisfies Meta<typeof ButtonGroup>;
 

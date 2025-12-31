@@ -4,7 +4,7 @@ import Typography from '../Typography';
 import BreadcrumbItem from './BreadcrumbItem';
 
 export default {
-  title: 'Data Display/Breadcrumb',
+  title: 'Navigation/Breadcrumb',
   component: Breadcrumb,
 } satisfies Meta<typeof Breadcrumb>;
 

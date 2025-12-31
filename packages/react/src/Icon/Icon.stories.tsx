@@ -28,7 +28,7 @@ const colors: IconColor[] = [
 ];
 
 export default {
-  title: 'General/Icon',
+  title: 'Foundation/Icon',
   component: Icon,
 } satisfies Meta<typeof Icon>;
 

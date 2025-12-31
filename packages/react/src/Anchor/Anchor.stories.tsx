@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Typography from '../Typography';
 
 export default {
-  title: 'Others/Anchor',
+  title: 'V1/Anchor',
 } as Meta;
 
 const anchorList = [

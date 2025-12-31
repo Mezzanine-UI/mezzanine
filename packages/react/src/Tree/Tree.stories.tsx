@@ -7,7 +7,7 @@ import Tree, { TreeProps } from './Tree';
 import { TreeExpandControl, TreeNodeData } from './typings';
 
 export default {
-  title: 'Data Display/Tree',
+  title: 'V1/Tree',
 } as Meta;
 
 const nodes: TreeNodeData[] = [

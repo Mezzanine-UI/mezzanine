@@ -16,13 +16,15 @@ const preview: Preview = {
     options: {
       storySort: {
         order: [
-          'System',
-          'General',
+          'Foundation',
+          'Motion',
           'Navigation',
           'Data Entry',
           'Data Display',
           'Feedback',
           'Others',
+          'Internal',
+          'V1',
         ],
       },
     },

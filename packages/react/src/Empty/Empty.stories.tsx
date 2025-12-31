@@ -5,7 +5,7 @@ import { EmptyProps } from './typings';
 import Button from '../Button';
 
 export default {
-  title: 'Data Display/Empty',
+  title: 'Feedback/Empty',
 } as Meta;
 
 type Story = StoryObj<typeof Empty>;

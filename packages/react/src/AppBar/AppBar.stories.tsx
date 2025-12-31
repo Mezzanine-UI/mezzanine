@@ -20,7 +20,7 @@ import Input from '../Input';
 import Navigation, { NavigationItem, NavigationSubMenu } from '../Navigation';
 
 export default {
-  title: 'Navigation/AppBar',
+  title: 'V1/AppBar',
 } as Meta;
 
 type PlaygroundStoryArgs = AppBarProps;

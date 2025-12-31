@@ -13,7 +13,7 @@ import Modal, {
 import Button from '../Button';
 
 export default {
-  title: 'Feedback/Modal',
+  title: 'V1/Modal',
 } as Meta;
 
 const severities: ModalSeverity[] = ['info', 'error', 'warning', 'success'];
