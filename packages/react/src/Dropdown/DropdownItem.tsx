@@ -41,6 +41,11 @@ export interface DropdownItemProps<T extends dropdownType | undefined = dropdown
    */
   listboxId: string;
   /**
+   * The aria-label for the listbox.
+   * If not provided, a default label will be used when there are no options.
+   */
+  listboxLabel?: string;
+  /**
    * The max height of the dropdown list.
    */
   maxHeight?: number | string;
@@ -98,12 +103,19 @@ function truncateArrayDepth(
     });
   };
 
-  // Calculate maximum depth (along the first element's children chain)
+  // Calculate maximum depth by checking all elements (not just the first one)
   const getDepth = (options: DropdownOption[] | undefined, depth: number = 1): number => {
     if (!options || options.length === 0) return depth - 1;
-    const firstOption = options[0];
-    if (!firstOption.children) return depth - 1;
-    return getDepth(firstOption.children, depth + 1);
+
+    // Find the maximum depth among all options
+    return Math.max(
+      ...options.map((option) => {
+        if (!option.children || option.children.length === 0) {
+          return depth - 1;
+        }
+        return getDepth(option.children, depth + 1);
+      })
+    );
   };
 
   const depth = getDepth(input);
@@ -125,6 +137,7 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
     activeIndex,
     disabled = false,
     listboxId,
+    listboxLabel,
     mode = 'single',
     options,
     value,
@@ -498,8 +511,6 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
       return undefined;
     }
 
-    console.log('sameWidth', sameWidth);
-
     return {
       maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
       width: sameWidth ? '100%' : undefined,
@@ -518,16 +529,6 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
       maxHeight: `${availableHeight}px`,
     };
   }, [maxHeight, actionHeight, headerHeight]);
-
-  const ariaActivedescendant = useMemo(() => {
-    if (activeIndex !== null) {
-      return `${listboxId}-option-${activeIndex}`;
-    }
-    if (optionsContent && optionsContent.length > 0) {
-      return `${listboxId}-option-0`;
-    }
-    return undefined;
-  }, [activeIndex, listboxId, optionsContent]);
 
   useEffect(() => {
     const listElement = listRef.current;
@@ -567,7 +568,7 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
 
   return (
     <ul
-      aria-activedescendant={ariaActivedescendant}
+      aria-label={listboxLabel || (optionsContent.length === 0 ? 'Dropdown options' : undefined)}
       className={dropdownClasses.list}
       id={listboxId}
       ref={listRef}

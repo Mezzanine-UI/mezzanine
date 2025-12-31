@@ -86,6 +86,11 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   listboxId?: string;
   /**
+   * The aria-label for the listbox.
+   * If not provided, a default label will be used when there are no options.
+   */
+  listboxLabel?: string;
+  /**
    * The max height of the dropdown list.
    */
   maxHeight?: number | string;
@@ -157,7 +162,6 @@ export default function Dropdown(props: DropdownProps) {
   const {
     activeIndex: activeIndexProp,
     id,
-    name: _name,
     children,
     options = [],
     type = 'default',
@@ -175,6 +179,7 @@ export default function Dropdown(props: DropdownProps) {
     placement = 'bottom',
     sameWidth = false,
     listboxId: listboxIdProp,
+    listboxLabel,
     onClose,
     onOpen,
     onSelect,
@@ -208,8 +213,15 @@ export default function Dropdown(props: DropdownProps) {
   const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<number | null>(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
   const mergedActiveIndex = isActiveIndexControlled ? activeIndexProp : uncontrolledActiveIndex;
-  const [inputValue, _setInputValue] = useState<string | undefined>(undefined);
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const ariaActivedescendant = useMemo(() => {
+    if (mergedActiveIndex !== null && mergedActiveIndex >= 0) {
+      return `${listboxId}-option-${mergedActiveIndex}`;
+    }
+    return undefined;
+  }, [mergedActiveIndex, listboxId]);
+
   const translateProps = useMemo(() => ({
     duration: {
       enter: MOTION_DURATION.moderate,
@@ -225,8 +237,15 @@ export default function Dropdown(props: DropdownProps) {
     if (children.type === Button) {
       return undefined;
     }
-    return isMatchInputValue ? inputValue ?? '' : undefined;
-  }, [children, isMatchInputValue, inputValue]);
+    if (!isMatchInputValue) {
+      return undefined;
+    }
+    // Try to get value from Input component props
+    const inputValue = (children.props as InputProps)?.value
+      ?? (children.props as InputProps)?.defaultValue
+      ?? '';
+    return inputValue;
+  }, [children, isMatchInputValue]);
 
   const popoverPlacement: PopperPlacement = useMemo(() => {
     if (inputPosition === 'outside') {
@@ -287,8 +306,20 @@ export default function Dropdown(props: DropdownProps) {
       childWithRef.ref,
     ]);
 
+    // Determine if children is Input (for combobox pattern)
+    const isInput = childWithRef.type !== Button;
+    const comboboxProps = isInput ? {
+      role: 'combobox' as const,
+      'aria-controls': listboxId,
+      'aria-expanded': isOpen,
+      'aria-haspopup': 'listbox' as const,
+      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
+      'aria-activedescendant': ariaActivedescendant,
+    } : {};
+
     return cloneElement(childWithRef, {
       ref: composedRef,
+      ...comboboxProps,
       onClick: (event: any) => {
         childWithRef.props?.onClick?.(event);
         if (event?.defaultPrevented) return;
@@ -298,7 +329,7 @@ export default function Dropdown(props: DropdownProps) {
         }
       },
     });
-  }, [children, isInline]);
+  }, [children, isInline, isOpen, listboxId, isMatchInputValue, ariaActivedescendant]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -312,10 +343,20 @@ export default function Dropdown(props: DropdownProps) {
       childWithRef.ref,
     ]);
 
-    return cloneElement(childWithRef, {
-      ref: composedRef,
+    // Determine if children is Input (for combobox pattern)
+    const isInput = childWithRef.type !== Button;
+    const comboboxProps = isInput ? {
+      role: 'combobox' as const,
       'aria-controls': listboxId,
       'aria-expanded': isOpen,
+      'aria-haspopup': 'listbox' as const,
+      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
+      'aria-activedescendant': ariaActivedescendant,
+    } : {};
+
+    return cloneElement(childWithRef, {
+      ref: composedRef,
+      ...comboboxProps,
       onBlur: (event: any) => {
         childWithRef.props?.onBlur?.(event);
         if (event?.defaultPrevented) return;
@@ -342,7 +383,7 @@ export default function Dropdown(props: DropdownProps) {
         setIsOpen(true);
       },
     });
-  }, [children, isInline, isOpen, listboxId]);
+  }, [children, isInline, isOpen, listboxId, isMatchInputValue, ariaActivedescendant]);
 
   useDocumentEvents(
     () => {
@@ -410,6 +451,7 @@ export default function Dropdown(props: DropdownProps) {
                       followText={followText}
                       headerContent={inlineTriggerElement}
                       listboxId={listboxId}
+                      listboxLabel={props.listboxLabel}
                       maxHeight={maxHeight}
                       sameWidth={sameWidth}
                       onHover={(index) => {
@@ -455,6 +497,7 @@ export default function Dropdown(props: DropdownProps) {
                         disabled={disabled}
                         followText={followText}
                         listboxId={listboxId}
+                        listboxLabel={listboxLabel}
                         maxHeight={maxHeight}
                         onHover={(index) => {
                           if (!isActiveIndexControlled) {
