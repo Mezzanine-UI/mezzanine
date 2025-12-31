@@ -1,28 +1,54 @@
 'use client';
 
-import { forwardRef, ReactElement, useRef, useState } from 'react';
-import { navigationSubMenuClasses as classes } from '@mezzanine-ui/core/navigation';
-import { ChevronUpIcon, ChevronDownIcon } from '@mezzanine-ui/icons';
-import { size } from '@floating-ui/react-dom';
+import {
+  forwardRef,
+  ReactElement,
+  use,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
+import {
+  ChevronUpIcon,
+  ChevronDownIcon,
+  IconDefinition,
+} from '@mezzanine-ui/icons';
 import { useClickAway } from '../hooks/useClickAway';
 import { cx } from '../utils/cx';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
 import { Collapse } from '../Transition';
-import NavigationItem, { NavigationItemProps } from './NavigationItem';
+import {
+  NavigationActivatedContext,
+  NavigationOptionLevelContext,
+} from './context';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-export type NavigationSubMenuChild = ReactElement<NavigationItemProps>;
+export type NavigationOptionChild = ReactElement<NavigationOptionProps>;
 
-export type NavigationSubMenuChildren =
-  | NavigationSubMenuChild
-  | NavigationSubMenuChild[];
+export type NavigationOptionChildren =
+  | NavigationOptionChild
+  | NavigationOptionChild[];
 export interface NavigationOptionProps
-  extends Omit<NavigationItemProps, 'onClick' | 'eventKey' | 'key'> {
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'li'>, 'onClick'> {
   /**
-   * Strict children with `NavigationItem`.
-   * @default []
+   * Whether the item is active.
    */
-  children?: NavigationSubMenuChildren;
+  active?: boolean;
+  /**
+   * Strict children with `NavigationOption`.
+   */
+  children?: NavigationOptionChildren;
+  /**
+   * Icon of the item.
+   */
+  icon?: IconDefinition;
+  /**
+   * Unique ID of the item.
+   */
+  href?: string;
   /**
    * Set display title for sub-menu item.
    */
@@ -32,25 +58,18 @@ export interface NavigationOptionProps
    * @default false
    */
   defaultOpen?: boolean;
+  onTriggerClick?: (path: string[]) => void;
 }
-
-// Middleware to make the submenu have the same width as the reference element
-const sameWidthMiddleware = size({
-  apply({ rects, elements }) {
-    Object.assign(elements.floating.style, {
-      width: `${rects.reference.width}px`,
-    });
-  },
-});
 
 const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
   (props, ref) => {
     const {
       active,
+      children,
       className,
-      children = [],
       defaultOpen = false,
       icon,
+      href,
       title,
       ...rest
     } = props;
@@ -75,25 +94,58 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       [open],
     );
 
-    const WrapChildren = <ul className={classes.group}>{children}</ul>;
+    const { level, path: parentPath } = use(NavigationOptionLevelContext);
+    const currentLevel = level + 1;
+    const currentKey = href || title || 'unknownId';
+    const currentPath = useMemo(
+      () => [...parentPath, currentKey],
+      [parentPath, currentKey],
+    );
+
+    const { activatedPath, setActivatedPath, currentPathname } = use(
+      NavigationActivatedContext,
+    );
+
+    useEffect(() => {
+      if (currentPathname === href) {
+        setActivatedPath(currentPath);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
-      <NavigationItem
+      <li
         {...rest}
         ref={composedNodeRef}
         className={cx(
           classes.host,
-          active && classes.active,
           open && classes.open,
+          !children && classes.basic,
+          (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
+            classes.active,
           className,
         )}
-        onClick={() => setOpen(!open)}
+        data-id={currentKey}
       >
-        <div className={classes.title}>
+        <div
+          className={cx(classes.content, classes.level(currentLevel))}
+          role="menuitem"
+          onClick={() => {
+            setOpen(!open);
+
+            if (!children) setActivatedPath([...parentPath, currentKey]);
+          }}
+          onKeyDown={() => {}}
+          tabIndex={0}
+        >
           {icon && <Icon className={classes.icon} icon={icon} />}
-          {title}
+          <span className={classes.title}>{title}</span>
           {children && (
-            <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
+            <Icon
+              size={12}
+              className={classes.toggleIcon}
+              icon={GroupToggleIcon}
+            />
           )}
         </div>
         {children && (
@@ -103,10 +155,17 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
             }}
             in={!!open}
           >
-            {WrapChildren}
+            <NavigationOptionLevelContext.Provider
+              value={{
+                level: currentLevel,
+                path: currentPath,
+              }}
+            >
+              <ul className={classes.group}>{children}</ul>
+            </NavigationOptionLevelContext.Provider>
           </Collapse>
         )}
-      </NavigationItem>
+      </li>
     );
   },
 );
