@@ -54,9 +54,7 @@ export function useTableScroll({
       measureDimensions();
     });
 
-    if (container) {
-      resizeObserver.observe(container);
-    }
+    resizeObserver.observe(container);
 
     return () => {
       resizeObserver.disconnect();
