@@ -58,7 +58,7 @@ export interface NavigationOptionProps
    * @default false
    */
   defaultOpen?: boolean;
-  onTriggerClick?: (path: string[]) => void;
+  onTriggerClick?: (path: string[], href: string) => void;
 }
 
 const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
@@ -70,6 +70,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       defaultOpen = false,
       href,
       icon,
+      onTriggerClick,
       title,
       ...rest
     } = props;
@@ -113,6 +114,8 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const Component = href ? 'a' : 'div';
+
     return (
       <li
         {...rest}
@@ -127,10 +130,12 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
         )}
         data-id={currentKey}
       >
-        <div
+        <Component
           className={cx(classes.content, classes.level(currentLevel))}
+          href={href}
           onClick={() => {
             setOpen(!open);
+            onTriggerClick?.(currentPath, href || '');
 
             if (!children) setActivatedPath([...parentPath, currentKey]);
           }}
@@ -154,7 +159,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               icon={GroupToggleIcon}
             />
           )}
-        </div>
+        </Component>
         {children && (
           <Collapse
             style={{

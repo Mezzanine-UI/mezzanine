@@ -10,10 +10,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {
-  navigationClasses as classes,
-  NavigationOrientation,
-} from '@mezzanine-ui/core/navigation';
+import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import NavigationOption, { NavigationOptionProps } from './NavigationOption';
@@ -51,120 +48,113 @@ export interface NavigationProps
    * Called when a navigation option is clicked.
    */
   onOptionClick?: (activePath?: string[]) => void;
-  /**
-   * Navigation orientation.
-   * @default 'horizontal'
-   */
-  orientation?: NavigationOrientation;
 }
 
-const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
-  (props, ref) => {
-    const {
-      activatedPath,
-      children = [],
-      className,
-      onOptionClick,
-      ...rest
-    } = props;
-    const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
-    const combineSetActivatedPath = useCallback(
-      (newActivatedPath: string[]) => {
-        onOptionClick?.(newActivatedPath);
-        setInnerActivatedPath(newActivatedPath);
-      },
-      [onOptionClick],
-    );
+const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
+  const {
+    activatedPath,
+    children = [],
+    className,
+    onOptionClick,
+    ...rest
+  } = props;
+  const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
+  const combineSetActivatedPath = useCallback(
+    (newActivatedPath: string[]) => {
+      onOptionClick?.(newActivatedPath);
+      setInnerActivatedPath(newActivatedPath);
+    },
+    [onOptionClick],
+  );
 
-    const currentPathname = useCurrentPathname();
+  const currentPathname = useCurrentPathname();
 
-    const flattenedChildren = useMemo(
-      () => flattenChildren(children) as NavigationChildren,
-      [children],
-    );
+  const flattenedChildren = useMemo(
+    () => flattenChildren(children) as NavigationChildren,
+    [children],
+  );
 
-    const { headerComponent, footerComponent, searchInput } = useMemo(() => {
-      let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
-      let footerComponent: ReactElement<NavigationFooterProps> | null = null;
-      let searchInput: ReactElement<InputProps> | null = null;
+  const { headerComponent, footerComponent, searchInput } = useMemo(() => {
+    let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
+    let footerComponent: ReactElement<NavigationFooterProps> | null = null;
+    let searchInput: ReactElement<InputProps> | null = null;
 
-      Children.forEach(flattenedChildren, (child: NavigationChild) => {
-        if (child && isValidElement(child)) {
-          switch (child.type) {
-            case NavigationHeader: {
-              headerComponent = child as ReactElement<NavigationHeaderProps>;
-              break;
-            }
-            case NavigationFooter: {
-              footerComponent = child as ReactElement<NavigationFooterProps>;
-              break;
-            }
-            case Input: {
-              searchInput = cloneElement(child as ReactElement<InputProps>, {
-                size: 'sub',
-                variant: 'search',
-              });
-              break;
-            }
+    Children.forEach(flattenedChildren, (child: NavigationChild) => {
+      if (child && isValidElement(child)) {
+        switch (child.type) {
+          case NavigationHeader: {
+            headerComponent = child as ReactElement<NavigationHeaderProps>;
+            break;
+          }
+          case NavigationFooter: {
+            footerComponent = child as ReactElement<NavigationFooterProps>;
+            break;
+          }
+          case Input: {
+            searchInput = cloneElement(child as ReactElement<InputProps>, {
+              size: 'sub',
+              variant: 'search',
+            });
+            break;
           }
         }
-      });
+      }
+    });
 
-      return { headerComponent, footerComponent, searchInput };
-    }, [flattenedChildren]);
+    return { headerComponent, footerComponent, searchInput };
+  }, [flattenedChildren]);
 
-    const renderItemChildren = useCallback(function renderItemChildrenImpl(
-      parsedChildren: NavigationChildren,
-    ): ReactNode {
-      const childArray = Children.map(
-        parsedChildren,
-        (child: NavigationChild) => {
-          if (child && isValidElement(child)) {
-            switch (child.type) {
-              case NavigationOptionCategory:
-              case NavigationOption: {
-                return child;
-              }
-
-              default:
-                return null;
+  const renderItemChildren = useCallback(function renderItemChildrenImpl(
+    parsedChildren: NavigationChildren,
+  ): ReactNode {
+    const childArray = Children.map(
+      parsedChildren,
+      (child: NavigationChild) => {
+        if (child && isValidElement(child)) {
+          switch (child.type) {
+            case NavigationOptionCategory:
+            case NavigationOption: {
+              return child;
             }
+
+            default:
+              return null;
           }
+        }
 
-          return null;
-        },
-      );
-
-      return childArray?.filter((child) => child !== null) ?? null;
-    }, []);
-
-    return (
-      <nav
-        {...rest}
-        ref={ref}
-        className={cx(classes.host, classes.vertical, className)}
-      >
-        {headerComponent}
-        <NavigationActivatedContext.Provider
-          value={{
-            activatedPath: activatedPath || innerActivatedPath,
-            setActivatedPath: combineSetActivatedPath,
-            currentPathname,
-          }}
-        >
-          <NavigationOptionLevelContext.Provider
-            value={navigationOptionLevelContextDefaultValues}
-          >
-            <div className={classes.content}>
-              {searchInput}
-              <ul>{renderItemChildren(flattenedChildren)}</ul>
-            </div>
-          </NavigationOptionLevelContext.Provider>
-        </NavigationActivatedContext.Provider>
-        {footerComponent}
-      </nav>
+        return null;
+      },
     );
-  },
-);
+
+    return childArray?.filter((child) => child !== null) ?? null;
+  }, []);
+
+  return (
+    <nav
+      {...rest}
+      ref={ref}
+      className={cx(classes.host, classes.vertical, className)}
+    >
+      {headerComponent}
+      <NavigationActivatedContext.Provider
+        value={{
+          activatedPath: activatedPath || innerActivatedPath,
+          setActivatedPath: combineSetActivatedPath,
+          currentPathname,
+        }}
+      >
+        <NavigationOptionLevelContext.Provider
+          value={navigationOptionLevelContextDefaultValues}
+        >
+          <div className={classes.content}>
+            {searchInput}
+            <ul>{renderItemChildren(flattenedChildren)}</ul>
+          </div>
+        </NavigationOptionLevelContext.Provider>
+      </NavigationActivatedContext.Provider>
+      {footerComponent}
+    </nav>
+  );
+});
 
 export default Navigation;

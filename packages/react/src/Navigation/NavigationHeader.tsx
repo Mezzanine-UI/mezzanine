@@ -11,7 +11,7 @@ export interface NavigationHeaderProps
   children?: ReactNode;
 }
 
-const NavigationHeader = forwardRef<HTMLHeadElement, NavigationHeaderProps>(
+const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
   (props, ref) => {
     const { children, className, onCollapse, ...rest } = props;
 

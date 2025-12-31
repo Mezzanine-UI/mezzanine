@@ -8,7 +8,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 export interface NavigationUserMenuProps
   extends NativeElementPropsWithoutKeyAndRef<'button'> {
   children?: ReactNode;
-  imgSrc: string;
+  imgSrc?: string;
 }
 
 const NavigationUserMenu = forwardRef<

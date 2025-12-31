@@ -84,7 +84,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({ orientation }) => (
         <Button variant="outlined">Button</Button>
       </AppBarSupport>
       <AppBarMain>
-        <Navigation orientation={orientation}></Navigation>
+        <Navigation></Navigation>
         <div
           style={{
             marginLeft: 'auto',
@@ -140,7 +140,7 @@ export const WithDrawer = () => {
               prefix={<Icon icon={SearchIcon} />}
               clearable
             />
-            <Navigation orientation="vertical"></Navigation>
+            <Navigation></Navigation>
           </AppBarMain>
           <AppBarBrand>
             <Icon

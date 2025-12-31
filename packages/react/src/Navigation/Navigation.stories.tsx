@@ -42,54 +42,21 @@ export const Playground: StoryFn<NavigationProps> = () => {
           NavigationHeader
         </NavigationHeader>
         <NavigationOptionCategory title="Category Title 1">
-          <NavigationOption
-            key={'NavigationOption 1-1'}
-            title={'NavigationOption 1-1'}
-            icon={DownloadIcon}
-          >
-            <NavigationOption
-              key={'NavigationOption 1-1-1'}
-              title={'NavigationOption 1-1-1'}
-            />
+          <NavigationOption title={'NavigationOption 1-1'} icon={DownloadIcon}>
+            <NavigationOption title={'NavigationOption 1-1-1'} />
           </NavigationOption>
-          <NavigationOption
-            key={'NavigationOption 1-2'}
-            title={'NavigationOption 1-2'}
-            icon={EyeIcon}
-          >
-            <NavigationOption
-              key={'NavigationOption 1-2-1'}
-              title={'NavigationOption 1-2-1'}
-            />
+          <NavigationOption title={'NavigationOption 1-2'} icon={EyeIcon}>
+            <NavigationOption title={'NavigationOption 1-2-1'} />
           </NavigationOption>
-          <NavigationOption
-            key={'NavigationOption 1-3'}
-            title={'NavigationOption 1-3'}
-            icon={UploadIcon}
-          >
-            <NavigationOption
-              key={'NavigationOption 1-3-1'}
-              title={'NavigationOption 1-3-1'}
-            />
+          <NavigationOption title={'NavigationOption 1-3'} icon={UploadIcon}>
+            <NavigationOption title={'NavigationOption 1-3-1'} />
           </NavigationOption>
-          <NavigationOption
-            key={'NavigationOption 1-4'}
-            title={'NavigationOption 1-4'}
-          />
+          <NavigationOption title={'NavigationOption 1-4'} />
         </NavigationOptionCategory>
         <NavigationOptionCategory title="Category Title 2">
-          <NavigationOption
-            key={'NavigationOption 2-1'}
-            title={'NavigationOption 2-1'}
-          >
-            <NavigationOption
-              key={'NavigationOption 2-1-1'}
-              title={'NavigationOption 2-1-1'}
-            >
-              <NavigationOption
-                key={'NavigationOption 2-1-1-1'}
-                title={'NavigationOption 2-1-1-1'}
-              />
+          <NavigationOption title={'NavigationOption 2-1'}>
+            <NavigationOption title={'NavigationOption 2-1-1'}>
+              <NavigationOption title={'NavigationOption 2-1-1-1'} />
             </NavigationOption>
           </NavigationOption>
         </NavigationOptionCategory>
