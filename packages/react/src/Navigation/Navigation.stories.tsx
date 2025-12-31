@@ -85,7 +85,12 @@ export const Playground: StoryFn<NavigationProps> = () => {
             <NavigationOption
               key={'NavigationOption 2-1-1'}
               title={'NavigationOption 2-1-1'}
-            />
+            >
+              <NavigationOption
+                key={'NavigationOption 2-1-1-1'}
+                title={'NavigationOption 2-1-1-1'}
+              />
+            </NavigationOption>
           </NavigationOption>
         </NavigationOptionCategory>
         <NavigationFooter>
