@@ -41,7 +41,7 @@ const NavigationUserMenu = forwardRef<
           />
         )}
       </span>
-      {children && <p className={classes.userName}>{children}</p>}
+      {children && <span className={classes.userName}>{children}</span>}
       <Icon className={classes.icon} icon={ChevronDownIcon} />
     </button>
   );

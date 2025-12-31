@@ -5,11 +5,11 @@ import {
   Children,
   cloneElement,
   useCallback,
-  useState,
   ReactNode,
   isValidElement,
   JSX,
   useMemo,
+  useState,
 } from 'react';
 import {
   navigationClasses as classes,
@@ -17,18 +17,22 @@ import {
 } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import NavigationItem, { NavigationItemProps } from './NavigationItem';
-import NavigationSubMenu, { NavigationSubMenuProps } from './NavigationSubMenu';
+import NavigationOption, { NavigationOptionProps } from './NavigationOption';
 import NavigationHeader, { NavigationHeaderProps } from './NavigationHeader';
 import NavigationFooter, { NavigationFooterProps } from './NavigationFooter';
 import { flattenChildren } from '../utils/flatten-children';
+import NavigationOptionCategory from './NavigationOptionCategory';
+import Input, { InputProps } from '../Input';
+import {
+  NavigationActivatedContext,
+  NavigationOptionLevelContext,
+  navigationOptionLevelContextDefaultValues,
+} from './context';
+import { useCurrentPathname } from './useCurrentPathname';
 
 export type NavigationChild =
   | ReactElement<
-      | NavigationItemProps
-      | NavigationSubMenuProps
-      | NavigationHeaderProps
-      | NavigationFooterProps
+      NavigationOptionProps | NavigationHeaderProps | NavigationFooterProps
     >
   | null
   | JSX.Element[];
@@ -39,16 +43,15 @@ export interface NavigationProps
   /**
    * Current active key.
    */
-  activeKey?: Key | null;
+  activatedPath?: string[];
   /**
-   * Strict children with `NavigationItem`, `NavigationSubMenu`, `NavigationHeader` or `NavigationFooter`.
-   * @default []
+   * Strict children with `NavigationOption`, `NavigationHeader` or `NavigationFooter`.
    */
   children?: NavigationChildren;
   /**
-   * Called when a navigation item is clicked.
+   * Called when a navigation option is clicked.
    */
-  onClick?: (key?: Key | string | null) => void;
+  onOptionClick?: (activePath?: string[]) => void;
   /**
    * Navigation orientation.
    * @default 'horizontal'
@@ -58,13 +61,35 @@ export interface NavigationProps
 
 const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
   (props, ref) => {
-    const { activeKey, children = [], className, onClick, ...rest } = props;
+    const {
+      activatedPath,
+      children = [],
+      className,
+      onOptionClick,
+      ...rest
+    } = props;
+    const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
+    const combineSetActivatedPath = useCallback(
+      (newActivatedPath: string[]) => {
+        onOptionClick?.(newActivatedPath);
+        setInnerActivatedPath(innerActivatedPath);
+      },
+      [innerActivatedPath, onOptionClick],
+    );
 
-    const { headerComponent, footerComponent } = useMemo(() => {
+    const currentPathname = useCurrentPathname();
+
+    const flattenedChildren = useMemo(
+      () => flattenChildren(children) as NavigationChildren,
+      [children],
+    );
+
+    const { headerComponent, footerComponent, searchInput } = useMemo(() => {
       let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
       let footerComponent: ReactElement<NavigationFooterProps> | null = null;
+      let searchInput: ReactElement<InputProps> | null = null;
 
-      Children.forEach(children, (child: NavigationChild) => {
+      Children.forEach(flattenedChildren, (child: NavigationChild) => {
         if (child && isValidElement(child)) {
           switch (child.type) {
             case NavigationHeader: {
@@ -75,82 +100,43 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
               footerComponent = child as ReactElement<NavigationFooterProps>;
               break;
             }
+            case Input: {
+              searchInput = cloneElement(child as ReactElement<InputProps>, {
+                variant: 'search',
+                size: 'sub',
+              });
+            }
           }
         }
       });
 
-      return { headerComponent, footerComponent };
-    }, [children]);
+      return { headerComponent, footerComponent, searchInput };
+    }, [flattenedChildren]);
 
-    const renderItemChildren = useCallback(
-      function renderItemChildrenImpl(
-        parsedChildren: NavigationChildren,
-      ): ReactNode {
-        const childArray = Children.map(
-          flattenChildren(parsedChildren) as NavigationChildren,
-          (child: NavigationChild) => {
-            if (child && isValidElement(child)) {
-              switch (child.type) {
-                case NavigationItem: {
-                  const itemChild = child as ReactElement<NavigationItemProps>;
-
-                  return cloneElement(itemChild, {
-                    active:
-                      itemChild.props.active || activeKey === itemChild.key,
-                    eventKey: itemChild.key,
-                    onClick: itemChild.props.onClick || onClick,
-                  });
-                }
-
-                case NavigationSubMenu: {
-                  const subMenuChild =
-                    child as ReactElement<NavigationItemProps>;
-                  const subMenuChildren = subMenuChild.props.children as
-                    | ReactElement<NavigationItemProps>[]
-                    | ReactElement<NavigationItemProps>;
-
-                  let subMenuActive = false;
-
-                  const groupChildren = Children.map(
-                    subMenuChildren,
-                    (groupChild) => {
-                      const active =
-                        activeKey === groupChild.key || groupChild.props.active;
-
-                      if (active) {
-                        subMenuActive = true;
-                      }
-
-                      return cloneElement(groupChild, {
-                        active,
-                        eventKey: groupChild.key,
-                        onClick: groupChild.props.onClick || onClick,
-                      });
-                    },
-                  );
-
-                  return cloneElement(
-                    subMenuChild,
-                    {
-                      active: subMenuChild.props.active || subMenuActive,
-                    },
-                    groupChildren,
-                  );
-                }
-
-                default:
-                  return null;
+    const renderItemChildren = useCallback(function renderItemChildrenImpl(
+      parsedChildren: NavigationChildren,
+    ): ReactNode {
+      const childArray = Children.map(
+        parsedChildren,
+        (child: NavigationChild) => {
+          if (child && isValidElement(child)) {
+            switch (child.type) {
+              case NavigationOptionCategory:
+              case NavigationOption: {
+                return child;
               }
+
+              default:
+                return null;
             }
+          }
 
-            return null;
-          },
-        );
+          return null;
+        },
+      );
 
-        return childArray?.filter((child) => child !== null) ?? null;
-      },
-      [activeKey, onClick],
-    );
+      return childArray?.filter((child) => child !== null) ?? null;
+    }, []);
 
     return (
       <nav
@@ -159,7 +145,22 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
         className={cx(classes.host, classes.vertical, className)}
       >
         {headerComponent}
-        <ul>{renderItemChildren(children)}</ul>
+        <NavigationActivatedContext.Provider
+          value={{
+            activatedPath: activatedPath || innerActivatedPath,
+            setActivatedPath: combineSetActivatedPath,
+            currentPathname,
+          }}
+        >
+          <NavigationOptionLevelContext.Provider
+            value={navigationOptionLevelContextDefaultValues}
+          >
+            <div className={classes.content}>
+              {searchInput}
+              <ul>{renderItemChildren(flattenedChildren)}</ul>
+            </div>
+          </NavigationOptionLevelContext.Provider>
+        </NavigationActivatedContext.Provider>
         {footerComponent}
       </nav>
     );

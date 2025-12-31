@@ -4,8 +4,14 @@ import { cx } from '../utils/cx';
 import { navigationFooterClasses as classes } from '@mezzanine-ui/core/navigation';
 import NavigationUserMenu from './NavigationUserMenu';
 
-export type NavigationFooterProps =
-  NativeElementPropsWithoutKeyAndRef<'footer'>;
+export interface NavigationFooterProps
+  extends NativeElementPropsWithoutKeyAndRef<'footer'> {
+  /**
+   * Children of footer, only `NavigationUserMenu` is allowed as direct child,
+   * other children will be wrapped in an icons container.
+   */
+  children?: React.ReactNode;
+}
 
 const resolveChildren = (children: React.ReactNode) => {
   let userMenu: React.ReactNode = null;
