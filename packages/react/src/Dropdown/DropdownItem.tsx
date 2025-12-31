@@ -467,7 +467,7 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
 
   const { elements: renderedOptions } = renderOptions(optionsContent, 0, -1);
 
-  // 動態測量 DropdownAction 的高度
+  // Dynamically measure the height of DropdownAction
   useEffect(() => {
     if (!hasActions || !actionRef.current || !maxHeight) {
       setActionHeight(0);

@@ -18,8 +18,6 @@ export type dropdownCheckPosition = 'prepend' | 'append' | 'none';
 
 export type dropdownInputPosition = 'inside' | 'outside';
 
-export type Max3D<T> = T | T[] | T[][] | T[][][];
-
 /**
  * Base dropdown option interface
  */

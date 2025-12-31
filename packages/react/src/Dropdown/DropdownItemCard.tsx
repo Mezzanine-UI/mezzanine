@@ -111,8 +111,7 @@ export interface DropdownItemCardProps {
   validate?: dropdownItemValidate;
 }
 
-export default function DropdownItemCard(incomingProps: DropdownItemCardProps) {
-  const props = incomingProps;
+export default function DropdownItemCard(props: DropdownItemCardProps) {
   const {
     active = false,
     appendIcon,
@@ -256,7 +255,7 @@ export default function DropdownItemCard(incomingProps: DropdownItemCardProps) {
           classes.card,
           classes.cardLevel(level),
           {
-            // 高亮：鍵盤/滑鼠聚焦 (active) 或已選中 (isChecked)
+            // Highlight: keyboard/mouse focused (active) or selected (isChecked)
             [classes.cardActive]: active || isChecked,
             [classes.cardDisabled]: disabled,
           },

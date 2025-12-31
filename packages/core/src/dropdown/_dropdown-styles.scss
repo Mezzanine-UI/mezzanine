@@ -192,7 +192,7 @@ $section-configs: (
   // dropdown items
   &-list {
     @include _apply-section(list);
-    width: max-content;
+    width: 100%;
     min-width: max-content;
     max-width: 100%;
     margin: 0;
@@ -200,6 +200,7 @@ $section-configs: (
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
   }
 
   &-list-header {

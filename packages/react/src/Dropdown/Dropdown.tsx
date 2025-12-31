@@ -95,10 +95,6 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   maxHeight?: number | string;
   /**
-   * The name of the dropdown.
-   */
-  name?: string;
-  /**
    * Callback fired when the action cancel is clicked.
    */
   onActionCancel?: () => void;
