@@ -14,6 +14,7 @@
   justify-content: space-between;
   justify-self: flex-end;
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  background-color: palette.semantic-variable("background", neutral-ghost);
   width: 100%;
 
   &__container {

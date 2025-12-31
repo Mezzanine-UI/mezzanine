@@ -5,3 +5,7 @@ export function getCSSVariableValue(variableName: string): string {
         .trim()
     : '';
 }
+
+export function getNumericCSSVariablePixelValue(variableName: string): number {
+  return Number(getCSSVariableValue(variableName).replace('rem', '')) * 16;
+}

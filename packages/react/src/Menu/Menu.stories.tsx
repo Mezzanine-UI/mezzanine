@@ -3,7 +3,7 @@ import Menu, { MenuDivider, MenuItem, MenuItemGroup } from '.';
 import ConfigProvider from '../Provider';
 
 export default {
-  title: 'Navigation/Menu',
+  title: 'V1/Menu',
 } as Meta;
 
 export const Sizes = () => (

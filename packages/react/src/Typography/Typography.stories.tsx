@@ -7,7 +7,7 @@ import Typography, {
 } from '.';
 
 export default {
-  title: 'General/Typography',
+  title: 'Foundation/Typography',
   component: Typography,
 } as Meta<typeof Typography>;
 

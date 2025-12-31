@@ -34,6 +34,7 @@
     "@mezzanine-ui/core": "^1.0.0-alpha.0",
     "@mezzanine-ui/icons": "^1.0.0-alpha.0",
     "@mezzanine-ui/system": "^1.0.0-alpha.0",
+    "@tanstack/react-virtual": "^3.13.13",
     "@types/react-transition-group": "^4.4.12",
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",

@@ -12,7 +12,7 @@ import TextField, { TextFieldProps, TextFieldSize } from '.';
 import Icon from '../Icon';
 
 export default {
-  title: 'Data Entry/TextField',
+  title: 'Internal/TextField',
   component: TextField,
 } satisfies Meta<typeof TextField>;
 

@@ -216,9 +216,17 @@ $semantic-spacings: (
         default: primitive.variable(56),
         compact: primitive.variable(48),
       ),
+      condensed: (
+        default: primitive.variable(60),
+        compact: primitive.variable(52),
+      ),
       compressed: (
         default: primitive.variable(70),
         compact: primitive.variable(70),
+      ),
+      tightened: (
+        default: primitive.variable(76),
+        compact: primitive.variable(68),
       ),
       tiny: (
         default: primitive.variable(80),

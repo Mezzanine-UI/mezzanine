@@ -4,7 +4,7 @@ import Drawer, { DrawerProps } from '.';
 import { Button } from '../index';
 
 export default {
-  title: 'Navigation/Drawer',
+  title: 'Feedback/Drawer',
 };
 
 export const Playground: StoryObj<DrawerProps> = {

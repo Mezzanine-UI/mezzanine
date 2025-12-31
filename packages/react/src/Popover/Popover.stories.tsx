@@ -5,7 +5,7 @@ import { PopperPlacement } from '../Popper';
 import Popover from '.';
 
 export default {
-  title: 'Utility/Popover',
+  title: 'V1/Popover',
 } as Meta;
 
 export const Placement = () => {

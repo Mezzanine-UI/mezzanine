@@ -2,7 +2,7 @@ import { Meta, StoryFn } from '@storybook/react-webpack5';
 import Alert, { AlertProps } from './Alert';
 
 export default {
-  title: 'Feedback/Alert',
+  title: 'V1/Alert',
 } as Meta;
 
 type PlaygroundArgs = Required<Pick<AlertProps, 'children' | 'severity'>>;

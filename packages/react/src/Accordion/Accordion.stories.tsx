@@ -7,7 +7,7 @@ import Dropdown from '../Dropdown';
 import Icon from '../Icon';
 
 export default {
-  title: 'Data Display/Accordion',
+  title: 'V1/Accordion',
 };
 
 export const Basic = () => (

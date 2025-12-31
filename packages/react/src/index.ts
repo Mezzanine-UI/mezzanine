@@ -148,14 +148,32 @@ export type {
   PaginationProps,
 } from './Pagination';
 export {
-  SELECTED_ALL_KEY,
   default as Table,
-  TableRefresh,
-  useTableDraggable,
+  TableContext,
+  TableDataContext,
+  useTableContext,
+  useTableDataContext,
+  /** @NOTE Table hooks only for internal usage  */
+  // useTableSorting,
+  // useTableSelection,
+  // useTableColumns,
+  // useTableExpansion,
+  // useTableScroll,
+  // useTableVirtualization,
   useTableRowSelection,
-  useTableScroll,
 } from './Table';
-export type { TableProps, TableRefreshProps } from './Table';
+export type {
+  TableProps,
+  TableContextValue,
+  TableDataContextValue,
+  TableSortingState,
+  TableSelectionState,
+  TableExpansionState,
+  TableColumnState,
+  TableDraggableState,
+  TableSize,
+  UseTableRowSelectionProps,
+} from './Table';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';
 export { default as Tooltip } from './Tooltip';
@@ -256,7 +274,6 @@ export type {
 } from './Picker';
 export { default as Radio, RadioGroup } from './Radio';
 export type {
-  RadioGroupOption,
   RadioGroupOrientation,
   RadioGroupProps,
   RadioProps,

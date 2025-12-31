@@ -4,7 +4,7 @@ import { ButtonSize } from '../Button';
 import ConfirmActions, { ConfirmActionsProps } from '.';
 
 export default {
-  title: 'Feedback/ConfirmActions',
+  title: 'V1/ConfirmActions',
 } as Meta;
 
 const sizes: ButtonSize[] = ['small', 'medium', 'large'];

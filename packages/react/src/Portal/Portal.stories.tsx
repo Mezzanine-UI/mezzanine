@@ -5,7 +5,7 @@ import Typography from '../Typography';
 import Portal from './Portal';
 
 export default {
-  title: 'Utility/Portal',
+  title: 'Others/Portal',
   component: Portal,
 } as Meta<typeof Portal>;
 

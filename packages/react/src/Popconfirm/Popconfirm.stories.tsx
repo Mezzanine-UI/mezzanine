@@ -6,7 +6,7 @@ import { PopperPlacement } from '../Popper';
 import Popconfirm from './Popconfirm';
 
 export default {
-  title: 'Feedback/Popconfirm',
+  title: 'V1/Popconfirm',
 } as Meta;
 
 export const Playground: StoryFn<NotificationData> = ({ ...props }) => {

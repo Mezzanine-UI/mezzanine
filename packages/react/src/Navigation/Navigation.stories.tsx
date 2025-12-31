@@ -11,7 +11,7 @@ import Navigation, { NavigationProps, NavigationItem } from '.';
 import NavigationSubMenu from './NavigationSubMenu';
 
 export default {
-  title: 'Navigation/Navigation',
+  title: 'V1/Navigation',
 } as Meta;
 
 const dataset = [
