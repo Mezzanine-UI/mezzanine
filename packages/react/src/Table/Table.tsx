@@ -1,476 +1,497 @@
+'use client';
+
+import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
 import {
-  CSSProperties,
-  forwardRef,
-  Fragment,
-  ReactNode,
-  useMemo,
-  useRef,
-} from 'react';
-import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import {
+  TableSize,
   tableClasses as classes,
-  TableColumn,
-  TableComponents,
-  TableDataSource,
-  TableRowSelection,
-  TableExpandable,
-  TableFetchMore,
-  TablePagination as TablePaginationType,
-  TableRefresh as TableRefreshType,
-  ExpandRowBySources,
-  TableScrolling,
-  TableDraggable,
+  type HighlightMode,
+  type TableColumn,
+  type TableDataSource,
+  type TableDraggable,
+  type TableExpandable,
+  type TableRowSelection,
+  type TableScroll,
 } from '@mezzanine-ui/core/table';
-import { EmptyProps } from '../Empty';
+import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
+import { cx } from '../utils/cx';
+import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import {
   TableContext,
   TableDataContext,
-  TableComponentContext,
+  TableSuperContext,
+  type TableContextValue,
+  type TableTransitionState,
 } from './TableContext';
-import TableHeader from './TableHeader';
-import TableBody from './TableBody';
-import TablePagination from './pagination/TablePagination';
-import TableRefresh from './refresh/TableRefresh';
-import Spin from '../Spin';
-import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { useTableRowSelection } from './rowSelection/useTableRowSelection';
-import { useTableSorting } from './sorting/useTableSorting';
-import { useTableLoading } from './useTableLoading';
-import { useTableFetchMore } from './useTableFetchMore';
-import { useTableDraggable } from './draggable/useTableDraggable';
-import useTableScroll from './useTableScroll';
-import { useComposeRefs } from '../hooks/useComposeRefs';
+import { TableBody } from './components/TableBody';
+import { TableColGroup } from './components/TableColGroup';
+import { TableHeader } from './components/TableHeader';
+import {
+  TablePagination as TablePaginationComponent,
+  TablePaginationProps,
+} from './components/TablePagination';
+import { useTableColumns } from './hooks/useTableColumns';
+import { useTableExpansion } from './hooks/useTableExpansion';
+import { useTableFixedOffsets } from './hooks/useTableFixedOffsets';
+import { useTableScroll } from './hooks/useTableScroll';
+import { useTableSelection } from './hooks/useTableSelection';
+import { useTableSorting } from './hooks/useTableSorting';
+import type { EmptyProps } from '../Empty';
 import { composeRefs } from '../utils/composeRefs';
+import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
+import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 
-export interface TableBaseProps<T>
+export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   extends Omit<
-    NativeElementPropsWithoutKeyAndRef<'div'>,
-    'role' | 'draggable'
+    NativeElementPropsWithoutKeyAndRef<'table'>,
+    'children' | 'draggable' | 'summary' | 'onChange'
   > {
-  /**
-   * customized body className
-   */
-  bodyClassName?: string;
-  /**
-   * customized body row className
-   */
-  bodyRowClassName?: string | ((source: T) => string);
-  /**
-   * Columns of table <br />
-   * `column.render` allowed customizing the column body cell rendering. <br />
-   * `column.renderTitle` allowed customizing the column header cell rendering. <br />
-   * `column.sorter` is the sorting method that you want to apply to your column. <br />
-   * `column.onSorted` is the callback triggered whenever sort icon clicked.
-   */
+  /** Column configuration */
   columns: TableColumn<T>[];
-  /**
-   * Custom table components <br />
-   */
-  components?: TableComponents;
-  /**
-   * Data record array to be displayed. <br />
-   * Notice that each source should contain `key` or `id` prop as data primary key.
-   */
-  dataSource: TableDataSource[];
-  /**
-   * Draggable table row. This feature allows sort items by mouse dragging. Not supported when `fetchMore` is enabled and also buggy when use finger touch (mobile device).
-   * When `draggable.enabled` is true, draggable will be enabled.
-   * `draggable.onDragEnd` return new dataSource for you
-   */
-  draggable?: TableDraggable;
-  /**
-   * props exported from `<Empty />` component.
-   */
+  /** Data source */
+  dataSource: T[];
+  /** Props for Empty component when no data */
   emptyProps?: EmptyProps;
-  /**
-   * When `expandable.rowExpandable` is given, it will control whether row data is expandable or not
-   * `expandable.expandedRowRender` is a callback to helps you decides what data should be rendered.
+  /** Expandable row configuration */
+  expandable?: TableExpandable<T>;
+  /** Highlight mode for hover effects
+   * @default 'row'
    */
-  expandable?: Omit<TableExpandable<T>, 'expandedRowRender'> & {
-    expandedRowRender(record: T): ReactNode | ExpandRowBySources;
-  };
-  /**
-   * customized header className
-   */
-  headerClassName?: string;
-  /**
-   * Whether table is loading or not
-   */
+  highlight?: HighlightMode;
+  /** Loading state */
   loading?: boolean;
+  /** Number of rows to display when loading */
+  loadingRowsCount?: number;
   /**
-   * When loading is true, show specific loadingTip
-   * @default '資料載入中...'
+   * Whether the table is nested inside an expanded row content area
    */
-  loadingTip?: string;
+  nested?: boolean;
+  /** Pagination configuration */
+  pagination?: TablePaginationProps;
   /**
-   * `refresh.show` is true, refresh button will display at the top-start of table. <br />
-   * `refresh.onClick` is the callback of the refresh button.
+   * Whether columns are resizable by user interaction
+   * @default false
    */
-  refresh?: TableRefreshType;
+  resizable?: boolean;
   /**
-   * Enable row selection feature <br />
-   * `rowSelection.selectedRowKey` is the dataSource keys that are currently selected. <br />
-   * `rowSelection.onChange` is the callback when selection changed. <br />
-   * `rowSelection.actions` are the actions that you want to do for selected data.
+   * Row height preset token.
    */
-  rowSelection?: TableRowSelection;
-  /**
-   * Enable table scroll feature <br />
-   * `scroll.x` set horizontal scrolling, can also be used to specify the width of the scroll area <br />
-   * `scroll.y` Set vertical scrolling, can also be used to specify the height of the scroll area <br />
-   * `scroll.fixedFirstColumn` set first column fixed when horizontal scrolling.
+  rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
+  /** Row selection configuration */
+  rowSelection?: TableRowSelection<T>;
+  /** Show header row */
+  showHeader?: boolean;
+  /** Custom size variant
+   * @default 'main'
    */
-  scroll?: TableScrolling;
-  /**
-   * customize scroll container className
+  size?: TableSize;
+  /** Whether to enable sticky header
+   *  @default true
    */
-  scrollContainerClassName?: string;
+  sticky?: boolean;
+  /** Transition state for row add/remove animations (from useTableDataSource hook) */
+  transitionState?: TableTransitionState;
 }
 
-export interface TableWithFetchMore<T> extends TableBaseProps<T> {
-  /**
-   * If `fetchMore.callback` is given, table will automatically trigger it when scrolling position reach end. <br />
-   * If `fetchMore.isReachEnd` is true, table will stop triggering callback. <br />
-   * If `fetchMore.isFetching` is true, a loading spinner will display at the end of table and stop triggering callback.
-   * <br />
-   * Notice that when `fetchMore.isFetching` is `undefined`, table will take control of it when source length changed.
-   */
-  fetchMore?: TableFetchMore;
-  pagination?: undefined;
+/**
+ * Props when virtualized scrolling is enabled.
+ * Draggable is not allowed in this mode.
+ */
+export interface TableVirtualizedProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Draggable row configuration - not available when virtualized is enabled */
+  draggable?: never;
+  /** Scroll configuration with virtualized enabled */
+  scroll: TableScroll & { virtualized: true; y: number | string };
 }
 
-export interface TableWithPagination<T> extends TableBaseProps<T> {
-  /**
-   * `pagination.current` is the current page number. (required) <br />
-   * `pagination.onChange` is the callback when page number changed. (required) <br />
-   * `pagination.disableAutoSlicing` set this to true if you don't want auto data slicing. <br />
-   * `pagination.total` is the total amount of your data. (default will be dataSource length) <br />
-   * `pagination.options` is the 'Pagination' component props. <br />
-   * Notice that if `pagination` object is given, table will disable fetchMore and use pagination instead.
-   */
-  pagination?: TablePaginationType;
-  fetchMore?: undefined;
+/**
+ * Props when virtualized scrolling is disabled or not specified.
+ * Draggable is allowed in this mode.
+ */
+export interface TableNonVirtualizedProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Draggable row configuration */
+  draggable?: TableDraggable<T>;
+  /** Scroll configuration for scrolling (virtualized defaults to false) */
+  scroll?: TableScroll & { virtualized?: false };
 }
 
-export type TableProps<T> = TableWithFetchMore<T> | TableWithPagination<T>;
+/**
+ * TableProps - discriminated union to ensure draggable and virtualized
+ * scrolling are mutually exclusive at the type level.
+ */
+export type TableProps<T extends TableDataSource = TableDataSource> =
+  | TableVirtualizedProps<T>
+  | TableNonVirtualizedProps<T>;
 
-const Table = forwardRef<HTMLTableElement, TableProps<Record<string, unknown>>>(
-  function Table(props, ref) {
-    const {
-      bodyClassName,
-      bodyRowClassName,
-      className,
-      columns,
-      components,
-      dataSource: dataSourceProp,
-      draggable: draggableProp,
+function TableInner<T extends TableDataSource = TableDataSource>(
+  props: TableVirtualizedProps<T> | TableNonVirtualizedProps<T>,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) {
+  const {
+    className,
+    columns,
+    dataSource,
+    draggable,
+    emptyProps,
+    expandable,
+    highlight = 'row',
+    loading = false,
+    loadingRowsCount = 10,
+    nested = false,
+    pagination,
+    resizable = false,
+    rowHeightPreset = 'base',
+    rowSelection,
+    scroll,
+    showHeader = true,
+    size = 'main',
+    sticky = true,
+    style,
+    transitionState,
+    ...restProps
+  } = props as TableNonVirtualizedProps<T>;
+
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const tableRef = useRef<HTMLTableElement | null>(null);
+
+  // mock loading dataSource
+  const dataSourceForRender = loading
+    ? Array.from({ length: Math.max(loadingRowsCount, 1) }).map((_, idx) => ({
+        key: idx,
+      }))
+    : dataSource;
+
+  // get row height from preset
+  const rowHeight = useMemo(() => {
+    switch (rowHeightPreset) {
+      case 'condensed':
+        return size === 'main'
+          ? getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-condensed`,
+            )
+          : getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-reduced`,
+            );
+      case 'detailed':
+        return size === 'main'
+          ? getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-tiny`,
+            )
+          : getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-tightened`,
+            );
+      case 'roomy':
+        return size === 'main'
+          ? getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-small`,
+            )
+          : getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-medium`,
+            );
+      case 'base':
+      default:
+        return size === 'main'
+          ? getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-minimized`,
+            )
+          : getNumericCSSVariablePixelValue(
+              `--${spacingPrefix}-size-container-minimal`,
+            );
+    }
+  }, [rowHeightPreset, size]);
+
+  // Highlight state for hover effects
+  const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
+  const [hoveredColumnIndex, setHoveredColumnIndex] = useState<number | null>(
+    null,
+  );
+
+  const setHoveredCell = useCallback(
+    (rowIndex: number | null, columnIndex: number | null) => {
+      setHoveredRowIndex(rowIndex);
+      setHoveredColumnIndex(columnIndex);
+    },
+    [],
+  );
+
+  // Hooks
+  const sortingState = useTableSorting({
+    columns,
+  });
+
+  const selectionState = useTableSelection({
+    dataSource,
+    rowSelection,
+  });
+
+  const expansionState = useTableExpansion({
+    expandable,
+    hasDragHandle: !!draggable?.enabled,
+  });
+
+  const actionConfig = useMemo(
+    () => ({
+      hasDragHandle: !!draggable?.enabled,
+      dragHandleFixed: !!draggable?.fixed,
+      hasExpansion: !!expandable,
+      expansionFixed: !!expandable?.fixed,
+      hasSelection: !!rowSelection,
+      selectionFixed: !!rowSelection?.fixed,
+    }),
+    [draggable?.enabled, draggable?.fixed, expandable, rowSelection],
+  );
+
+  const columnState = useTableColumns({
+    actionConfig,
+    columns,
+  });
+
+  const scrollState = useTableScroll({
+    enabled: !nested,
+  });
+
+  // Fixed column offset calculations
+  const fixedOffsetsState = useTableFixedOffsets({
+    actionConfig,
+    columns: columns as TableColumn[],
+    getResizedColumnWidth: columnState.getResizedColumnWidth,
+  });
+
+  // Stabilize draggable object
+  const draggableValue = useMemo(
+    () =>
+      draggable
+        ? {
+            draggingId: null,
+            enabled: true,
+            fixed: draggable.fixed,
+          }
+        : undefined,
+    [draggable],
+  );
+
+  // Stabilize highlight object
+  const highlightValue = useMemo(
+    () => ({
+      columnIndex: hoveredColumnIndex,
+      mode: highlight,
+      rowIndex: hoveredRowIndex,
+      setHoveredCell,
+    }),
+    [highlight, hoveredColumnIndex, hoveredRowIndex, setHoveredCell],
+  );
+
+  // Determine if virtual scrolling should be enabled
+  // Requires scroll.virtualized to be true AND scroll.y to be set
+  const virtualScrollEnabled = !!(scroll?.virtualized && scroll?.y);
+
+  // Context value - cast to any to avoid complex generic issues
+  const contextValue = useMemo(
+    () => ({
+      columnState,
+      columns: columns as TableColumn[],
+      dataSource: dataSourceForRender,
+      draggable: draggableValue,
       emptyProps,
-      expandable: expandableProp,
-      fetchMore: fetchMoreProp,
-      headerClassName,
-      loading: loadingProp,
-      loadingTip = '資料載入中...',
-      pagination: paginationProp,
-      refresh: refreshProp,
-      rowSelection: rowSelectionProp,
-      scroll: scrollProp,
-      scrollContainerClassName,
-      ...rest
-    } = props;
-
-    const bodyRef = useRef<HTMLTableSectionElement>(null);
-
-    /** Feature rowSelection */
-    const [selectedRowKeys, setSelectedRowKey] = useTableRowSelection({
-      selectedRowKey: rowSelectionProp?.selectedRowKey,
-      onChange: rowSelectionProp?.onChange,
-      dataSource: dataSourceProp,
-      disabledRowKeys: rowSelectionProp?.disabledRowKeys,
-    });
-
-    const rowSelection = useMemo(
-      () =>
-        rowSelectionProp
-          ? {
-              selectedRowKeys,
-              onChange: setSelectedRowKey,
-              actions: rowSelectionProp.actions,
-              disabledRowKeys: rowSelectionProp.disabledRowKeys,
-            }
-          : undefined,
-      [rowSelectionProp, selectedRowKeys, setSelectedRowKey],
-    );
-
-    /** Feature sorting */
-    const [
-      dataSource,
-      onSort,
-      { sortedOn, sortedType, onResetAll, setDataSource },
-    ] = useTableSorting({
-      dataSource: dataSourceProp,
-    });
-
-    /** Feature loading */
-    const [loading, setLoading] = useTableLoading({
-      loading: loadingProp,
-    });
-
-    /** Feature fetchMore */
-    const {
-      fetchMore: onFetchMore,
-      isFetching,
-      isReachEnd,
-    } = useTableFetchMore({
-      callback: fetchMoreProp?.callback,
-      dataSource,
-      /** when pagination is given, fetchMore feature should be disabled */
-      disabled: !!paginationProp,
-      isReachEnd: fetchMoreProp?.isReachEnd,
-      isFetching: fetchMoreProp?.isFetching,
-    });
-
-    /** Feature refresh */
-    const isRefreshShow: boolean = useMemo(
-      () =>
-        /** @default false */
-        refreshProp?.show ?? false,
-      [refreshProp?.show],
-    );
-
-    /** Feature Scrolling */
-    const [scrollBody, scrollElement, isHorizontalScrolling] = useTableScroll({
-      onFetchMore,
+      expansion: expansionState as TableContextValue['expansion'],
+      fixedOffsets: fixedOffsetsState,
+      resizable,
+      rowHeight,
+      highlight: highlightValue,
+      isScrollingHorizontally: scrollState.isScrollingHorizontally,
+      isInsideExpandedContentArea: nested,
       loading,
-      scrollBarSize: 4,
-    });
+      pagination: pagination || undefined,
+      scroll,
+      scrollContainerRef,
+      selection: selectionState as TableContextValue['selection'],
+      size,
+      sorting: sortingState,
+      transitionState,
+      virtualScrollEnabled,
+    }),
+    [
+      columnState,
+      columns,
+      dataSourceForRender,
+      draggableValue,
+      emptyProps,
+      expansionState,
+      fixedOffsetsState,
+      resizable,
+      rowHeight,
+      highlightValue,
+      loading,
+      pagination,
+      scroll,
+      scrollContainerRef,
+      scrollState.isScrollingHorizontally,
+      selectionState,
+      size,
+      sortingState,
+      transitionState,
+      virtualScrollEnabled,
+      nested,
+    ],
+  );
 
-    /** Feature drag and drop */
-    const { draggingId, onBeforeDragStart, onDragEnd } = useTableDraggable({
+  const dataContextValue = useMemo(
+    () => ({
+      columns: columns as TableColumn[],
       dataSource,
-      setDataSource,
-      draggable: draggableProp,
-    });
+    }),
+    [columns, dataSource],
+  );
 
-    /** context */
-    const tableContextValue = useMemo(
-      () => ({
-        emptyProps,
-        rowSelection,
-        isHorizontalScrolling,
-        sorting: {
-          onSort,
-          onResetAll,
-          sortedOn,
-          sortedType,
-        },
-        loading,
-        setLoading,
-        expanding: expandableProp,
-        fetchMore: onFetchMore
-          ? {
-              onFetchMore,
-              isFetching,
-              isReachEnd,
-            }
-          : undefined,
-        pagination: paginationProp
-          ? {
-              current: paginationProp.current,
-              disableAutoSlicing: paginationProp.disableAutoSlicing ?? false,
-              onChange: paginationProp.onChange,
-              total: paginationProp.total ?? dataSource.length,
-              options: {
-                ...(paginationProp.options ?? {}),
-                boundaryCount: paginationProp.options?.boundaryCount ?? 1,
-                pageSize: paginationProp.options?.pageSize ?? 10,
-                siblingCount: paginationProp.options?.siblingCount ?? 1,
-              },
-            }
-          : undefined,
-        scroll: scrollProp,
-        draggable: draggableProp
-          ? {
-              ...draggableProp,
-              draggingId,
-            }
-          : undefined,
-      }),
-      [
-        dataSource,
-        emptyProps,
-        expandableProp,
-        rowSelection,
-        onSort,
-        onResetAll,
-        sortedOn,
-        sortedType,
-        loading,
-        setLoading,
-        onFetchMore,
-        isFetching,
-        isReachEnd,
-        paginationProp,
-        isHorizontalScrolling,
-        scrollProp,
-        draggableProp,
-        draggingId,
-      ],
-    );
+  const superContextValue = useMemo(
+    () => ({
+      containerWidth: scrollState.containerWidth,
+      getResizedColumnWidth: columnState.getResizedColumnWidth,
+      scrollLeft: scrollState.scrollLeft,
+      expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
+    }),
+    [
+      scrollState.scrollLeft,
+      expansionState?.expansionLeftPadding,
+      scrollState.containerWidth,
+      columnState.getResizedColumnWidth,
+    ],
+  );
 
-    const tableDataContextValue = useMemo(
-      () => ({
-        columns,
-        dataSource,
-      }),
-      [columns, dataSource],
-    );
+  // Drag and drop handler
+  const handleDragEnd = useCallback(
+    (result: DropResult) => {
+      if (!result.destination || !draggable) return;
 
-    const tableComponentContextValue = useMemo(
-      () => ({
-        bodyCell: components?.body?.cell,
-      }),
-      [components?.body?.cell],
-    );
+      const sourceIndex = result.source.index;
+      const destIndex = result.destination.index;
 
-    const tableRefs = useComposeRefs([ref, scrollBody.target]);
+      if (sourceIndex === destIndex) return;
 
-    const rowClassName = useMemo(() => {
-      if (bodyRowClassName) {
-        if (typeof bodyRowClassName === 'string') {
-          return () => bodyRowClassName;
-        }
+      const newData = [...dataSource];
+      const [removed] = newData.splice(sourceIndex, 1);
 
-        return (source: TableDataSource) => bodyRowClassName?.(source);
-      }
+      newData.splice(destIndex, 0, removed);
 
-      return undefined;
-    }, [bodyRowClassName]);
+      draggable.onDragEnd?.(newData);
+    },
+    [dataSource, draggable],
+  );
 
-    return (
-      <TableContext.Provider value={tableContextValue}>
-        <TableDataContext.Provider value={tableDataContextValue}>
-          <TableComponentContext.Provider value={tableComponentContextValue}>
-            <DragDropContext
-              onBeforeDragStart={onBeforeDragStart}
-              onDragEnd={onDragEnd}
+  const sizeClass = size === 'sub' ? classes.sub : classes.main;
+
+  // Scroll container style
+  const scrollContainerStyle = useMemo<React.CSSProperties>(() => {
+    const containerStyle: React.CSSProperties = {};
+
+    if (scroll?.y) {
+      containerStyle.maxHeight = scroll.y;
+      containerStyle.overflowY = 'auto';
+    }
+
+    if (scroll?.x) {
+      containerStyle.overflowX = 'auto';
+    }
+
+    if (nested) {
+      containerStyle.position = 'unset';
+      containerStyle.overflow = 'unset';
+    }
+
+    return containerStyle;
+  }, [scroll?.x, scroll?.y, nested]);
+
+  // Table style with min-width for horizontal scroll
+  const tableStyle = useMemo<React.CSSProperties>(() => {
+    const baseStyle: React.CSSProperties = {};
+
+    if (scroll?.x) {
+      baseStyle.minWidth = scroll.x;
+      baseStyle.width = '100%';
+    }
+
+    return baseStyle;
+  }, [scroll?.x]);
+
+  const { setContainerRef } = scrollState;
+
+  const handleScrollContainerRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      scrollContainerRef.current = element;
+      setContainerRef(element);
+    },
+    [setContainerRef],
+  );
+
+  const mainTable = (
+    <TableContext.Provider value={contextValue}>
+      <TableDataContext.Provider value={dataContextValue}>
+        <div
+          className={cx(classes.host, className)}
+          ref={ref}
+          style={style}
+          {...restProps}
+        >
+          <div
+            className={cx(classes.scrollContainer, {
+              [classes.sticky]: !!sticky,
+            })}
+            onScroll={scrollState.handleScroll}
+            ref={handleScrollContainerRef}
+            style={scrollContainerStyle}
+          >
+            <table
+              className={cx(classes.root, sizeClass)}
+              ref={tableRef}
+              style={tableStyle}
             >
-              <Spin
-                loading={loading}
-                stretch
-                description={loadingTip}
-                backdropProps={{
-                  className: classes.loading,
-                }}
-              >
-                <Droppable
-                  droppableId="mzn-table-dnd"
-                  isDropDisabled={!draggableProp?.enabled}
-                >
-                  {(provided) => (
-                    <Fragment>
-                      <div
-                        {...provided.droppableProps}
-                        ref={composeRefs([scrollBody.ref, provided.innerRef])}
-                        className={cx(
-                          classes.scrollContainer,
-                          scrollContainerClassName,
-                        )}
-                        onScroll={scrollBody.onScroll}
-                        style={
-                          tableContextValue.scroll
-                            ? ({
-                                '--table-scroll-x': tableContextValue.scroll.x
-                                  ? `${tableContextValue.scroll.x}px`
-                                  : '100%',
-                                '--table-scroll-y': tableContextValue.scroll.y
-                                  ? `${tableContextValue.scroll.y}px`
-                                  : 'unset',
-                              } as CSSProperties)
-                            : undefined
-                        }
-                      >
-                        <table
-                          ref={tableRefs}
-                          {...rest}
-                          className={cx(classes.host, className)}
-                        >
-                          {isRefreshShow ? (
-                            <tbody>
-                              <tr>
-                                <td aria-label="Refresh">
-                                  <TableRefresh
-                                    onClick={
-                                      (refreshProp as TableRefreshType).onClick
-                                    }
-                                  />
-                                </td>
-                              </tr>
-                            </tbody>
-                          ) : null}
-                          <TableHeader className={headerClassName} />
-                          <TableBody
-                            ref={bodyRef}
-                            className={bodyClassName}
-                            rowClassName={rowClassName}
-                          />
-                          <tbody>{provided.placeholder}</tbody>
-                        </table>
-                      </div>
-                      {paginationProp ? (
-                        <TablePagination bodyRef={bodyRef} />
-                      ) : null}
-                      <div
-                        ref={scrollElement.trackRef}
-                        aria-label="Scroll Track"
-                        style={scrollElement.trackStyle}
-                        onMouseDown={scrollElement.onMouseDown}
-                        onMouseUp={scrollElement.onMouseUp}
-                        role="button"
-                        tabIndex={-1}
-                        className="mzn-table-scroll-bar-track"
-                      >
-                        <div
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            position: 'relative',
-                          }}
-                        >
-                          <div
-                            ref={scrollElement.ref}
-                            aria-label="Scroll Bar"
-                            onMouseDown={scrollElement.onMouseDown}
-                            onMouseUp={scrollElement.onMouseUp}
-                            onMouseEnter={scrollElement.onMouseEnter}
-                            onMouseLeave={scrollElement.onMouseLeave}
-                            role="button"
-                            style={scrollElement.style}
-                            tabIndex={-1}
-                            className="mzn-table-scroll-bar"
-                          >
-                            <div
-                              style={{
-                                width: `${scrollElement.scrollBarSize}px`,
-                                height: '100%',
-                                borderRadius: '10px',
-                                backgroundColor: '#7d7d7d',
-                                transition: '0.1s',
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </Fragment>
-                  )}
-                </Droppable>
-              </Spin>
-            </DragDropContext>
-          </TableComponentContext.Provider>
-        </TableDataContext.Provider>
-      </TableContext.Provider>
-    );
-  },
-);
+              <TableColGroup />
+              {showHeader && <TableHeader />}
+              <TableBody />
+            </table>
+          </div>
+          {pagination && <TablePaginationComponent {...pagination} />}
+        </div>
+      </TableDataContext.Provider>
+    </TableContext.Provider>
+  );
+
+  if (nested) {
+    return mainTable;
+  }
+
+  return (
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <Droppable droppableId="mzn-table-v2-dnd">
+        {(provided) => (
+          <div
+            {...provided.droppableProps}
+            ref={composeRefs([hostRef, provided.innerRef])}
+          >
+            <TableSuperContext.Provider value={superContextValue}>
+              {mainTable}
+            </TableSuperContext.Provider>
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+}
+
+/**
+ * Table is a high-performance data table component with support for
+ * virtual scrolling, column resizing, fixed columns, row selection,
+ * sorting, expandable rows, and drag-and-drop row reordering.
+ */
+export const Table = forwardRef(
+  TableInner as Parameters<typeof forwardRef>[0],
+) as <T extends TableDataSource = TableDataSource>(
+  props: TableProps<T> & { ref?: React.ForwardedRef<HTMLDivElement> },
+) => React.ReactElement;
 
 export default Table;

@@ -50,6 +50,10 @@ $semantic-colors: (
       light: primitive.variable(gray, 700),
       dark: primitive.variable(gray, 950),
     ),
+    fixed-solid: (
+      light: primitive.variable(gray, 800),
+      dark: primitive.variable(gray, 800),
+    ),
     neutral-ghost: (
       light: primitive.variable(gray, 50),
       dark: primitive.variable(gray, 950),
@@ -320,6 +324,10 @@ $semantic-colors: (
     ),
   ),
   border: (
+    ghost: (
+      light: primitive.variable(black-base, black-alpha-0),
+      dark: primitive.variable(black-base, black-alpha-0),
+    ),
     fixed-light: (
       light: primitive.variable(white-base, white),
       dark: primitive.variable(white-base, white),
@@ -366,6 +374,10 @@ $semantic-colors: (
     ),
   ),
   separator: (
+    ghost: (
+      light: primitive.variable(black-base, black-alpha-0),
+      dark: primitive.variable(black-base, black-alpha-0),
+    ),
     neutral-faint: (
       light: primitive.variable(gray, 200),
       dark: primitive.variable(gray, 700),

@@ -4,6 +4,7 @@ import {
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Breadcrumb from './Breadcrumb';
+import BreadcrumbItem from './BreadcrumbItem';
 import { BreadcrumbProps } from './typings';
 
 const mockItems: BreadcrumbProps['items'] = [
@@ -255,6 +256,125 @@ describe('<Breadcrumb />', () => {
 
       expect(element.children).toHaveLength(0);
       expect(element.textContent?.trim()).toBe('');
+    });
+  });
+
+  describe('prop: children', () => {
+    it('should render single BreadcrumbItem child', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <BreadcrumbItem href="/" label="Home" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Home');
+      expect(element.querySelectorAll('i')).toHaveLength(0);
+    });
+
+    it('should render multiple BreadcrumbItem children with separators', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/category" label="Category" />
+          <BreadcrumbItem href="/product" label="Product" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Home');
+      expect(element.textContent).toContain('Category');
+      expect(element.textContent).toContain('Product');
+      expect(element.querySelectorAll('i')).toHaveLength(2);
+    });
+
+    it('should mark last child as current', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/category" label="Category" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+      const breadcrumbItems = element.querySelectorAll('.mzn-breadcrumb__item');
+      const lastItem = breadcrumbItems[breadcrumbItems.length - 1];
+
+      expect(
+        lastItem.classList.contains('mzn-breadcrumb__item--current'),
+      ).toBeTruthy();
+    });
+
+    it('should handle four children items', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/category" label="Category" />
+          <BreadcrumbItem href="/product" label="Product" />
+          <BreadcrumbItem href="/details" label="Details" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Home');
+      expect(element.textContent).toContain('Category');
+      expect(element.textContent).toContain('Product');
+      expect(element.textContent).toContain('Details');
+      expect(element.querySelectorAll('i')).toHaveLength(3);
+    });
+
+    it('should show overflow pattern with more than four children', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/level1" label="Level 1" />
+          <BreadcrumbItem href="/level2" label="Level 2" />
+          <BreadcrumbItem href="/level3" label="Level 3" />
+          <BreadcrumbItem href="/level4" label="Level 4" />
+          <BreadcrumbItem href="/level5" label="Level 5" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Home');
+      expect(element.textContent).toContain('Level 5');
+      expect(element.textContent).toContain('Level 4');
+      expect(element.textContent).not.toContain('Level 2');
+      expect(element.textContent).not.toContain('Level 3');
+    });
+
+    it('should handle condensed mode with children', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb condensed>
+          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/category" label="Category" />
+          <BreadcrumbItem href="/product" label="Product" />
+          <BreadcrumbItem href="/details" label="Details" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Product');
+      expect(element.textContent).toContain('Details');
+      expect(element.textContent).not.toContain('Home');
+      expect(element.textContent).not.toContain('Category');
+    });
+
+    it('should handle fragment children', () => {
+      const { getHostHTMLElement } = render(
+        <Breadcrumb>
+          <>
+            <BreadcrumbItem href="/" label="Home" />
+            <BreadcrumbItem href="/category" label="Category" />
+          </>
+          <BreadcrumbItem href="/product" label="Product" />
+        </Breadcrumb>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Home');
+      expect(element.textContent).toContain('Category');
+      expect(element.textContent).toContain('Product');
+      expect(element.querySelectorAll('i')).toHaveLength(2);
     });
   });
 });

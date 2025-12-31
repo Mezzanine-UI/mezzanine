@@ -13,7 +13,7 @@ import Button from '../Button';
 import { Fade, Rotate, Scale, TranslateFrom, Translate, Slide } from '.';
 
 export default {
-  title: 'Utility/Transition',
+  title: 'Motion/Transition',
 } as Meta;
 
 const durations: MotionDurationType[] = [

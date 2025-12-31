@@ -42,7 +42,7 @@ describe('<RadioGroup />', () => {
     let expectProps: RadioGroupContextValue = {
       disabled: true,
       name: 'foo',
-      size: 'small',
+      size: 'main',
       value: 'bar',
     };
     const { result } = renderHook(() => useContext(RadioGroupContext), {

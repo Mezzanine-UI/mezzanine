@@ -11,7 +11,7 @@ import Textarea from '../Textarea';
 import { FormField, FormLabel, FormHintText } from '.';
 
 export default {
-  title: 'Data Entry/Form',
+  title: 'V1/Form',
 } as Meta;
 
 const severities: Severity[] = ['error', 'success', 'warning'];

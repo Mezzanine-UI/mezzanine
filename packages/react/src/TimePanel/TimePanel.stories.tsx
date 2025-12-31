@@ -8,7 +8,7 @@ import { CalendarConfigProvider } from '../Calendar';
 import TimePanel, { TimePanelProps } from './TimePanel';
 
 export default {
-  title: 'Utility/Time Panel',
+  title: 'Internal/Time Panel',
 } as Meta;
 
 type PlaygroundArgs = Pick<

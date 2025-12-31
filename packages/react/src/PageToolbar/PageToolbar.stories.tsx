@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import PageToolbar from '.';
-import Button from '../Button';
 import { DotHorizontalIcon, MenuIcon, PlusIcon } from '@mezzanine-ui/icons';
+import Button from '../Button';
 import Input from '../Input';
 
 export default {
@@ -17,68 +17,64 @@ export const Default: Story = {
       <div style={{ display: 'grid', gap: '24px' }}>
         <PageToolbar
           size={'main'}
-          filter={<Input variant="search" placeholder="搜尋..." />}
-          actions={{
-            primaryButton: <Button>Primary</Button>,
-            secondaryButton: <Button>Secondary</Button>,
-            destructiveButton: <Button>Destructive</Button>,
+          filter={{
+            variant: 'search',
+            placeholder: '搜尋...',
           }}
-          utilities={
-            <>
-              <Button
-                title="Button description"
-                onClick={() => {}}
-                icon={{ src: PlusIcon, position: 'icon-only' }}
-              />
-              <Button
-                title="Button description"
-                onClick={() => {}}
-                icon={{ src: MenuIcon, position: 'icon-only' }}
-              />
-              <Button
-                onClick={() => {}}
-                icon={{ src: DotHorizontalIcon, position: 'icon-only' }}
-              />
-            </>
-          }
+          actions={{
+            primaryButton: { children: 'Primary', onClick: () => {} },
+            secondaryButton: { children: 'Secondary', onClick: () => {} },
+            destructiveButton: { children: 'Destructive', onClick: () => {} },
+          }}
+          utilities={[
+            {
+              icon: { src: PlusIcon, position: 'icon-only' },
+              onClick: () => {},
+            },
+            {
+              icon: { src: MenuIcon, position: 'icon-only' },
+              onClick: () => {},
+            },
+            {
+              icon: {
+                src: DotHorizontalIcon,
+                position: 'icon-only',
+              },
+              onClick: () => {},
+            },
+          ]}
         />
 
         <PageToolbar
           size={'sub'}
-          filter={<Input variant="search" placeholder="搜尋..." />}
-          actions={{
-            primaryButton: <Button>Primary</Button>,
-            secondaryButton: <Button>Secondary</Button>,
-            destructiveButton: <Button>Destructive</Button>,
+          filter={{
+            variant: 'search',
+            placeholder: '搜尋...',
           }}
-          utilities={
-            <>
-              <Button
-                title="Button description"
-                onClick={() => {}}
-                icon={{ src: PlusIcon, position: 'icon-only' }}
-              />
-              <Button
-                title="Button description"
-                onClick={() => {}}
-                icon={{ src: MenuIcon, position: 'icon-only' }}
-              />
-              <Button
-                onClick={() => {}}
-                icon={{ src: DotHorizontalIcon, position: 'icon-only' }}
-              />
-            </>
-          }
+          actions={{
+            primaryButton: { children: 'Primary', onClick: () => {} },
+          }}
+          utilities={[
+            {
+              icon: {
+                src: DotHorizontalIcon,
+                position: 'icon-only',
+              },
+              onClick: () => {},
+            },
+          ]}
         />
 
-        <PageToolbar
-          size={'sub'}
-          filter={<Input variant="search" placeholder="搜尋..." />}
-          actions={<Button>Primary</Button>}
-          utilities={
+        <PageToolbar size="sub">
+          <Input variant="search" placeholder="Search..." />
+          <Button>Destructive</Button>
+          <Button>Secondary</Button>
+          <Button>Primary</Button>
+          <>
+            <Button icon={{ src: PlusIcon, position: 'icon-only' }} />
             <Button icon={{ src: DotHorizontalIcon, position: 'icon-only' }} />
-          }
-        />
+          </>
+        </PageToolbar>
       </div>
     </>
   ),

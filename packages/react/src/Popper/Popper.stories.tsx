@@ -7,7 +7,7 @@ import Popper, { PopperPlacement } from '.';
 import { getCSSVariableValue } from '../utils/get-css-variable-value';
 
 export default {
-  title: 'Utility/Popper',
+  title: 'Internal/Popper',
   component: Popper,
 } as Meta<typeof Popper>;
 

@@ -3,7 +3,7 @@ import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import Button, { ButtonSize, ButtonVariant, ButtonProps } from '.';
 
 export default {
-  title: 'General/Button',
+  title: 'Foundation/Button',
   component: Button,
 } satisfies Meta<typeof Button>;
 

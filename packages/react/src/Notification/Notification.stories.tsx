@@ -5,7 +5,7 @@ import Button, { ButtonGroup } from '../Button';
 import Notification from '.';
 
 export default {
-  title: 'Feedback/Notification',
+  title: 'V1/Notification',
 } as Meta;
 
 export const Severity = () => {

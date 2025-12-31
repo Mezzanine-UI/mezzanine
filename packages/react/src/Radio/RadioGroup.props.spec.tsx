@@ -1,5 +1,5 @@
 import { cleanup, render } from '../../__test-utils__';
-import { RadioGroup, RadioGroupOption } from '.';
+import { RadioGroup, RadioGroupNormalOption } from '.';
 
 // Mock Radio Component
 const mockRadioRender = jest.fn();
@@ -19,15 +19,15 @@ describe('<RadioGroup /> - props', () => {
   afterEach(cleanup);
 
   describe('prop: options', () => {
-    const options: RadioGroupOption[] = [
+    const options: RadioGroupNormalOption[] = [
       {
-        label: 'foo',
-        value: 'foo',
+        id: 'foo',
+        name: 'foo',
       },
       {
         disabled: true,
-        label: 'bar',
-        value: 'bar',
+        id: 'bar',
+        name: 'bar',
       },
     ];
 

@@ -5,7 +5,7 @@ import { createNotifier } from '.';
 import { NotifierData } from './typings';
 
 export default {
-  title: 'Utility/Notifier',
+  title: 'Internal/Notifier',
 } as Meta;
 
 type TestNotifierData = NotifierData & {

@@ -8,7 +8,7 @@ import { TypographyProps } from '../Typography';
 import type { JSX } from 'react';
 
 export default {
-  title: 'Data Display/Card',
+  title: 'V1/Card',
 } as Meta;
 
 interface PlaygroundArgs extends CardProps {

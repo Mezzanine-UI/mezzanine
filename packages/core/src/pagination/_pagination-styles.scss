@@ -14,6 +14,7 @@
   justify-content: space-between;
   justify-self: flex-end;
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  background-color: palette.semantic-variable("background", neutral-ghost);
   width: 100%;
 
   &__container {
@@ -92,7 +93,7 @@
   gap: spacing.semantic-variable(gap, base);
 
   .#{$jumper-prefix}__input {
-    width: 36px;
+    width: spacing.semantic-variable(size, element, loose-fixed);
 
     $input-padding-container: mzn-input--number;
     .#{$input-padding-container} {
@@ -107,6 +108,6 @@
   gap: spacing.semantic-variable(gap, base);
 
   &__select {
-    max-width: 68px;
+    width: spacing.semantic-variable(size, element, ultra-fixed);
   }
 }

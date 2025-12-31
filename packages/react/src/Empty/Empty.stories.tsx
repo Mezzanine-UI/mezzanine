@@ -5,7 +5,7 @@ import { EmptyProps } from './typings';
 import Button from '../Button';
 
 export default {
-  title: 'Data Display/Empty',
+  title: 'Feedback/Empty',
 } as Meta;
 
 type Story = StoryObj<typeof Empty>;
@@ -177,25 +177,25 @@ export const ActionProp: Story = {
           }}
         />
 
-        {/* Style 2: ReactElement format */}
+        {/* use children */}
         <Empty
-          description="Using ReactElement directly as actions"
+          description="Using ReactElement directly as children"
           size="main"
           title="ReactElement - Single Button"
           type="initial-data"
-          actions={<Button>Button 1</Button>}
-        />
+        >
+          <Button>Button 1</Button>
+        </Empty>
 
         <Empty
           description="Using ReactElements for both primary and secondary buttons"
           size="main"
           title="ReactElement - Two Buttons"
           type="initial-data"
-          actions={{
-            secondaryButton: <Button>Button 1</Button>,
-            primaryButton: <Button>Button 2</Button>,
-          }}
-        />
+        >
+          <Button>Button 1</Button>
+          <Button>Button 2</Button>
+        </Empty>
       </div>
     </>
   ),

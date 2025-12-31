@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
-import { ButtonGroupChild, ButtonProps } from '../Button';
+import { ReactElement, ReactNode } from 'react';
+import { ButtonProps } from '../Button';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface BaseEmptyProps {
@@ -29,16 +29,27 @@ export interface CustomPictogramEmptyProps {
 
 export interface MainOrSubEmptyProps {
   /**
-   * Action buttons configuration for primary and secondary actions.
-   * Renders buttons in the order: secondary (left or only one), primary (right).
+   * Action buttons configuration for primary and secondary actions. <br />
+   * Renders buttons in the order: secondary (left or only one), primary (right). <br />
+   * If actions provided, children will be ignored. <br />
    */
   actions?:
     | {
-        primaryButton?: ButtonProps | ButtonGroupChild;
-        secondaryButton: ButtonProps | ButtonGroupChild;
+        primaryButton?: ButtonProps;
+        secondaryButton: ButtonProps;
       }
-    | ButtonProps
-    | ButtonGroupChild;
+    | ButtonProps;
+  /**
+   * Child button elements for actions. <br />
+   * Can be a single Button element or an array of one or two Button elements. <br />
+   * When using children, the first Button is treated as secondary and the second as primary. <br />
+   * If only one Button is provided, it is treated as secondary. <br />
+   * If actions provided, children will be ignored. <br />
+   */
+  children?:
+    | ReactElement<ButtonProps>
+    | [ReactElement<ButtonProps>]
+    | [ReactElement<ButtonProps>, ReactElement<ButtonProps>];
   /**
    * Optional description text displayed below the title.
    * Provides additional context or details about the empty state.

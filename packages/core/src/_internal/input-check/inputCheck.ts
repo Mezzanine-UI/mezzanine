@@ -1,6 +1,6 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { GeneralSize } from '@mezzanine-ui/system/size';
 
-export type InputCheckSize = Size;
+export type InputCheckSize = GeneralSize;
 
 export const inputCheckPrefix = 'mzn-input-check';
 
@@ -9,7 +9,11 @@ export const inputCheckClasses = {
   size: (size: InputCheckSize) => `${inputCheckPrefix}--${size}`,
   disabled: `${inputCheckPrefix}--disabled`,
   error: `${inputCheckPrefix}--error`,
+  segmented: `${inputCheckPrefix}--segmented`,
   withLabel: `${inputCheckPrefix}--with-label`,
   control: `${inputCheckPrefix}__control`,
+  controlFocused: `${inputCheckPrefix}__control--focused`,
+  controlSegmented: `${inputCheckPrefix}__control--segmented`,
   label: `${inputCheckPrefix}__label`,
+  hint: `${inputCheckPrefix}__hint`,
 } as const;

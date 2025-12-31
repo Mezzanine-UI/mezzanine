@@ -1,33 +1,40 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
 @use './input-check' as *;
 
-$control-size: 24px !default;
-$control-size-small: 16px !default;
-$control-padding: 4px !default;
-$control-padding-small: 2px !default;
-$with-label-min-width: 56px !default;
-$with-label-min-width-small: 44px !default;
-$with-label-padding-start: 4px !default;
-$with-label-padding-end: 8px !default;
-$label-gap: 4px !default;
-
 .#{$prefix} {
-  --#{$prefix}-control-size: #{$control-size};
-  --#{$prefix}-color: #{palette.color(primary)};
-  --#{$prefix}-on-color: #{palette.color(on-primary)};
-  --#{$prefix}-hover-bg: transparent;
-  --#{$prefix}-active-bg: transparent;
+  --#{$prefix}-control-size: #{spacing.semantic-variable(size, element, base-fixed)};
+  --#{$prefix}-color: #{palette.semantic-variable('border', brand)};
+  --#{$prefix}-checked-hover-color: #{palette.semantic-variable('background', brand-strong)};
 
   display: inline-flex;
-  align-items: center;
-  transition: transition.standard(background-color), transition.standard(color);
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, tight);
+  transition: transition.standard(background-color, fast), transition.standard(color, fast);
+  padding: spacing.semantic-variable(padding, vertical, calm) 0;
   will-change: background-color, color;
   cursor: pointer;
   box-sizing: border-box;
+
+  &--main, &--sub {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+  }
+
+  &--minor {
+    --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+  }
+
+  &--sub, &--minor {
+    padding: spacing.semantic-variable(padding, vertical, tight) 0;
+  }
+
+  &--segmented {
+    padding: 0;
+  }
 
   input {
     position: absolute;
@@ -50,83 +57,107 @@ $label-gap: 4px !default;
     flex-shrink: 0;
     width: var(--#{$prefix}-control-size);
     height: var(--#{$prefix}-control-size);
-    padding: $control-padding;
+    padding: spacing.semantic-variable(padding, vertical, micro)
+      spacing.semantic-variable(padding, horizontal, micro);
+    transition: transition.standard(background-color, fast);
+    will-change: background-color;
     box-sizing: border-box;
 
-    .#{$prefix}--small & {
-      --#{$prefix}-control-size: #{$control-size-small};
+    &--focused {
+      &::before {
+        content: '';
+        position: absolute;
+        width: var(--#{$prefix}-control-size);
+        height: var(--#{$prefix}-control-size);
+        border: 1px solid var(--#{$prefix}-color);
+        top: 0;
+        left: 0;
+        border-radius: 50%;
+        box-sizing: border-box;
+      }
+    }
 
-      padding: $control-padding-small;
+    &--segmented {
+      width: auto;
+      height: auto;
+      padding: 0;
+    }
+
+    &--segmented.#{$prefix}__control--focused {
+      background-color: palette.semantic-variable('background', base);
+      border-radius: var(--#{$prefix}-segmented-border-radius);
+
+      &::before {
+        width: calc(100% + 4px);
+        height: calc(100% + 4px);
+        background-color: palette.semantic-variable('background', base);
+        border-radius: var(--#{$prefix}-segmented-border-radius);
+        top: -2px;
+        left: -2px;
+      }
     }
   }
 
   &__label {
-    margin-left: $label-gap;
+    @include typography.semantic-variable(label-primary);
+    display: inline-flex;
+    flex-direction: column;
+    color: palette.semantic-variable(text, neutral-solid);
+    gap: spacing.semantic-variable(gap, tight);
 
     &:empty {
       display: none;
     }
   }
 
+  &__hint {
+    @include typography.semantic-variable(caption);
+    color: palette.semantic-variable(text, neutral);
+  }
+
   &--with-label {
-    padding: 0 $with-label-padding-end 0 $with-label-padding-start;
-    min-width: $with-label-min-width;
-
-    &.#{$prefix}--small {
-      min-width: $with-label-min-width-small;
-    }
-
-    &:not(.#{$prefix}--disabled) {
-      &:hover {
-        background-color: var(--#{$prefix}-hover-bg);
-      }
-
-      &:active,
-      &:focus-within {
-        background-color: var(--#{$prefix}-active-bg);
-      }
-    }
+    background-color: transparent;
   }
 
   &--error {
-    --#{$prefix}-color: #{palette.color(error)};
-    --#{$prefix}-on-color: #{palette.color(on-error)};
-    --#{$prefix}-hover-bg: #{palette.color(error-hover-bg)};
-    --#{$prefix}-active-bg: #{palette.color(error-active-bg)};
+    --#{$prefix}-color: #{palette.semantic-variable('border', error)};
+    --#{$prefix}-checked-hover-color: #{palette.semantic-variable('background', error-strong)};
   }
 
   &--disabled {
-    --#{$prefix}-color: #{palette.color(action-disabled)};
+    --#{$prefix}-color: #{palette.semantic-variable(border, neutral-light)};
 
     background-color: transparent;
-    color: palette.color(text-disabled);
     cursor: default;
     pointer-events: none;
-  }
-
-  @each $size in $sizes {
-    $typography-variant: map.get(
-      (
-        small: input3,
-        medium: input2,
-        large: input1,
-      ),
-      $size
-    );
-
-    &--#{$size} {
-      @include typography.variant($typography-variant);
-    }
   }
 }
 
 .#{$group-prefix} {
   display: inline-grid;
   grid-auto-flow: column;
-  gap: spacing.level(1);
+  gap: 0 spacing.semantic-variable(gap, comfort);
+
+  &--main, &--sub {
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, micro)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, micro)};
+    --#{$group-prefix}-segmented-background: #{palette.semantic-variable(background, neutral-subtle)};
+  }
+
+  &--minor {
+    --#{$group-prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, none)};
+    --#{$group-prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, none)};
+    --#{$group-prefix}-segmented-background: transparent;
+  }
 
   &--vertical {
     grid-auto-flow: row;
-    gap: 0;
+  }
+
+  &--segmented {
+    gap: spacing.semantic-variable(gap, tight);
+    border-radius: radius.variable(base);
+    background-color: var(--#{$group-prefix}-segmented-background);
+    padding: var(--#{$group-prefix}-segmented-vertical-padding) var(--#{$group-prefix}-segmented-horizontal-padding);
   }
 }

@@ -1,21 +1,22 @@
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
+@use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/typography';
 @use '../_internal/input-check';
 @use './radio' as *;
 
-$dot-size: 8px !default;
-$dot-size-small: 6px !default;
-
 .#{$prefix} {
-  --#{$prefix}-dot-size: #{$dot-size};
+  --#{$prefix}-dot-size: #{spacing.semantic-variable(size, element, tight)};
   --#{$prefix}-dot-top: calc((100% - var(--#{$prefix}-dot-size)) / 2);
 
   position: relative;
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  border: 1px solid palette.color(text-secondary);
-  transition: transition.standard(border-color);
+  border: 1px solid palette.semantic-variable('border', neutral);
+  background-color: palette.semantic-variable('background', base);
+  transition: transition.standard(border-color, fast);
   will-change: border-color;
   box-sizing: border-box;
 
@@ -28,8 +29,41 @@ $dot-size-small: 6px !default;
     width: var(--#{$prefix}-dot-size);
     height: var(--#{$prefix}-dot-size);
     border-radius: 50%;
-    transition: transition.standard(background-color);
+    transition: transition.standard(background-color, fast);
     will-change: background-color;
+  }
+
+  &--main & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, base)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
+  }
+
+  &--sub & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tight)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(tiny)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', base)};
+      @include typography.semantic-variable(label-primary-highlight);
+    }
+  }
+
+  &--minor & {
+    &__segmented-container {
+      --#{$prefix}-segmented-vertical-padding: #{spacing.semantic-variable(padding, vertical, tiny)};
+      --#{$prefix}-segmented-horizontal-padding: #{spacing.semantic-variable(padding, horizontal, base)};
+      --#{$prefix}-segmented-horizontal-with-icon-padding: #{spacing.semantic-variable(padding, horizontal, tiny)};
+      --#{$prefix}-segmented-border-radius: #{radius.variable(base)};
+      --#{$prefix}-segmented-checked-color: #{palette.semantic-variable('background', neutral-subtle)};
+      @include typography.semantic-variable(button-highlight);
+    }
   }
 
   &--checked {
@@ -38,18 +72,86 @@ $dot-size-small: 6px !default;
     }
   }
 
+  &--error {
+    border-color: palette.semantic-variable('border', error-subtle);
+  }
+
   &:hover,
   .#{input-check.$prefix}:hover &,
   &--checked,
+  &--focused,
   .#{input-check.$prefix}--disabled & {
     border-color: var(--#{input-check.$prefix}-color);
   }
-}
 
-.#{input-check.$prefix} {
-  &--small {
-    .#{$prefix} {
-      --#{$prefix}-dot-size: #{$dot-size-small};
+  .#{input-check.$prefix}:hover &--checked {
+    &::before {
+      background-color:  var(--#{input-check.$prefix}-checked-hover-color);
+    }
+  }
+
+  .#{input-check.$prefix}:hover & {
+    &__segmented-container {
+      background-color: palette.semantic-variable('background', neutral-faint);
+    }
+  }
+
+  &--checked & {
+    &__segmented-container {
+      background-color: var(--#{$prefix}-segmented-checked-color);
+    }
+  }
+
+  .#{input-check.$prefix}--disabled & {
+    background-color: palette.semantic-variable(background, neutral-subtle);
+
+    &--checked {
+      &::before {
+        background-color: palette.semantic-variable('background', neutral);
+      }
+    }
+
+    &__segmented-container {
+      color: palette.semantic-variable(text, neutral-light);
+    }
+  }
+
+  &--segmented {
+    border: none;
+    background-color: transparent !important;
+
+    &::before {
+      display: none;
+    }
+  }
+
+  &__wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__segmented-container {
+    color: palette.semantic-variable(text, neutral-solid);
+    padding: var(--#{$prefix}-segmented-vertical-padding) var(--#{$prefix}-segmented-horizontal-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, tight);
+    border-radius: var(--#{$prefix}-segmented-border-radius);
+    background-color: transparent;
+    transition: transition.standard(background-color, fast);
+    will-change: background-color;
+
+    &--have-min-width {
+      min-width: spacing.semantic-variable(size, element, extra-wide);
+    }
+
+    &--with-icon-text {
+      padding-left: var(--#{$prefix}-segmented-horizontal-with-icon-padding);
+      padding-right: spacing.semantic-variable(padding, horizontal, base);
     }
   }
 }
+

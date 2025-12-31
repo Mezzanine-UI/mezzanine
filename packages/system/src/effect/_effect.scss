@@ -18,14 +18,29 @@ $effect-values: (
     modal: (
       value: string.unquote('0 9px 28px 8px #{semantic.variable(shadow, dark-faint)}, 0 20px 24px -4px #{semantic.variable(shadow, dark-light)}, 0 3px 6px -4px #{semantic.variable(shadow, dark-ghost)}'),
     ),
-    table-sticky: (
+    drawer: (
+      value: -6px 0 10px 0 semantic.variable(shadow, dark),
+    ),
+    table-sticky-left: (
       value: 1px 0 4px 0 semantic.variable(shadow, dark),
+    ),
+    table-sticky-right: (
+      value: -1px 0 4px 0 semantic.variable(shadow, dark),
+    ),
+    table-list-floating: (
+      value: 0px 6px 16px 0 semantic.variable(shadow, dark),
     ),
     slider-handle: (
       value: 0 2px 3px 0 semantic.variable(shadow, brand),
     ),
     inner-top-and-bottom: (
       value: string.unquote('0 1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 -1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 0 12px 0 #{semantic.variable(shadow, dark)}'),
+    ),
+    inner-top: (
+      value: string.unquote('0 1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 0 12px 0 #{semantic.variable(shadow, dark)}'),
+    ),
+    inner-bottom: (
+      value: string.unquote('0 -1px 1px 0 #{semantic.variable(shadow, light-faint)} inset, 0 0 12px 0 #{semantic.variable(shadow, dark)}'),
     ),
   ),
   focus: (

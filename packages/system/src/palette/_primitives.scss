@@ -116,6 +116,7 @@ $default-primitives: (
   // 白色系 - 特殊級距: white, white-alpha-10/20/.../90
   white-base: (
     white: #FFF,
+    white-alpha-0: rgb(255 255 255 / 0%),
     white-alpha-5:  rgb(255 255 255 / 5%),
     white-alpha-10: rgb(255 255 255 / 10%),
     white-alpha-20: rgb(255 255 255 / 20%),
@@ -130,6 +131,7 @@ $default-primitives: (
   // 黑色系 - 特殊級距: black, black-alpha-3/5/8/10/20/.../90
   black-base: (
     black: #000,
+    black-alpha-0: rgb(0 0 0 / 0%),
     black-alpha-3: rgb(0 0 0 / 3%),
     black-alpha-5: rgb(0 0 0 / 5%),
     black-alpha-8: rgb(0 0 0 / 8%),

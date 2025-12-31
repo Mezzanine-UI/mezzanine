@@ -1,16 +1,16 @@
 import { useState } from 'react';
+import { LightIcon } from '@mezzanine-ui/icons';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { FormField } from '../Form';
 import Radio, { RadioGroup } from '.';
 
 describe('<Radio />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
+  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(<Radio ref={ref} />),
   );
 
@@ -21,7 +21,8 @@ describe('<Radio />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(<Radio />);
     const element = getHostHTMLElement();
-    const { firstElementChild } = element.firstElementChild!;
+    const { firstElementChild: controllerElement } = element.firstElementChild!;
+    const { firstElementChild } = controllerElement!;
 
     expect(firstElementChild!.classList.contains('mzn-radio')).toBeTruthy();
   });
@@ -34,17 +35,28 @@ describe('<Radio />', () => {
     expect(inputElement.getAttribute('type')).toBe('radio');
   });
 
+  it('prop: withInputConfig', () => {
+    const { getHostHTMLElement } = render(
+      <Radio withInputConfig={{ width: 120 }} />,
+    );
+    const element = getHostHTMLElement();
+    const [inputWrapperElement] = element.getElementsByTagName('div');
+    const [inputContainer] = inputWrapperElement.getElementsByTagName('div');
+
+    expect(
+      inputContainer!.classList.contains('mzn-input-container'),
+    ).toBeTruthy();
+  });
+
   describe('prop: checked', () => {
     [false, true].forEach((checked) => {
       it('should', () => {
         const { getHostHTMLElement } = render(<Radio checked={checked} />);
         const element = getHostHTMLElement();
-        const { firstElementChild } = element.firstElementChild!;
+        const [radio] = element.getElementsByClassName('mzn-radio');
         const [input] = element.getElementsByTagName('input');
 
-        expect(
-          firstElementChild!.classList.contains('mzn-radio--checked'),
-        ).toBe(checked);
+        expect(radio!.classList.contains('mzn-radio--checked')).toBe(checked);
         expect(input.getAttribute('aria-checked')).toBe(`${checked}`);
         expect(input.checked).toBe(checked);
       });
@@ -93,20 +105,6 @@ describe('<Radio />', () => {
       testDisabled(input1, true);
       testDisabled(input2, false);
     });
-
-    it('should use disabled from form control if disabled not passed', () => {
-      const { getHostHTMLElement } = render(
-        <FormField disabled>
-          <Radio />
-          <Radio disabled={false} />
-        </FormField>,
-      );
-      const element = getHostHTMLElement();
-      const [input1, input2] = element.getElementsByTagName('input');
-
-      testDisabled(input1, true);
-      testDisabled(input2, false);
-    });
   });
 
   describe('prop: inputProps', () => {
@@ -117,9 +115,10 @@ describe('<Radio />', () => {
         <Radio inputProps={{ id: testId }} />,
       );
       const element = getHostHTMLElement();
+      const [labelElement] = element.getElementsByTagName('label');
       const [inputElement] = element.getElementsByTagName('input');
 
-      expect(element.getAttribute('for')).toBe(testId);
+      expect(labelElement.getAttribute('for')).toBe(testId);
       expect(inputElement.getAttribute('id')).toBe(testId);
     });
 
@@ -145,6 +144,39 @@ describe('<Radio />', () => {
 
       expect(input1.name).toBe('foo');
       expect(input2.name).toBe('bar');
+    });
+  });
+
+  describe('prop: icon', () => {
+    const { getHostHTMLElement } = render(
+      <Radio type="segment" icon={LightIcon} />,
+    );
+    const element = getHostHTMLElement();
+    const [radio] = element.getElementsByClassName('mzn-radio');
+    const icons = radio.getElementsByClassName('mzn-icon');
+
+    expect(icons.length).toBe(1);
+  });
+
+  describe('prop: type', () => {
+    it('should be have segmented class', () => {
+      const { getHostHTMLElement } = render(<Radio type="segment" />);
+      const element = getHostHTMLElement();
+      const [radio] = element.getElementsByClassName('mzn-radio');
+
+      expect(radio!.classList.contains('mzn-radio--segmented')).toBe(true);
+    });
+
+    it('should be have segmented class if RadioGroup type="segment', () => {
+      const { getHostHTMLElement } = render(
+        <RadioGroup type="segment">
+          <Radio />
+        </RadioGroup>,
+      );
+      const element = getHostHTMLElement();
+      const [radio] = element.getElementsByClassName('mzn-radio');
+
+      expect(radio!.classList.contains('mzn-radio--segmented')).toBe(true);
     });
   });
 

@@ -44,7 +44,7 @@
   // Navigation
   @include _load-styles($options, breadcrumb);
   @include _load-styles($options, menu);
-  @include _load-styles($options, tabs);
+  @include _load-styles($options, tab);
   @include _load-styles($options, pagination);
   @include _load-styles($options, drawer);
   @include _load-styles($options, navigation);

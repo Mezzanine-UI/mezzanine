@@ -1,0 +1,133 @@
+/* stylelint-disable declaration-property-value-keyword-no-deprecated */
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography';
+@use '../button';
+@use './tab' as *;
+
+
+.#{$prefix} {
+  box-sizing: border-box;
+
+  &--horizontal {
+    align-items: center;
+    display: flex;
+    gap: spacing.semantic-variable(gap, comfort);
+    position: relative;
+
+    &::before {
+      border-bottom: spacing.semantic-variable(size, element, hairline) solid palette.semantic-variable(border, neutral-faint);
+      content: '';
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .#{$prefix}__item {
+      padding: spacing.semantic-variable(padding, vertical, base) 0 spacing.semantic-variable(padding, vertical, comfort);
+    }
+
+    .#{$prefix}__active-bar {
+      border-bottom: spacing.semantic-variable(size, element, hairline) solid palette.semantic-variable(border, brand);
+      bottom: 0;
+      height: spacing.semantic-variable(size, element, hairline);
+      left: var(--active-bar-shift, 0);
+      position: absolute;
+      transition: transition.standard(left, moderate), transition.standard(width, moderate);
+      width: var(--active-bar-length, 0);
+    }
+  }
+
+  &--vertical {
+    display: grid;
+    gap: spacing.semantic-variable(gap, tiny);
+    position: relative;
+    width: fit-content;
+
+    &::before {
+      border-right: spacing.semantic-variable(size, element, hairline) solid palette.semantic-variable(border, neutral-faint);
+      content: '';
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+    }
+
+    .#{$prefix}__item {
+      padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, calm) 0;
+      width: fit-content;
+    }
+
+    .#{$prefix}__active-bar {
+      $vertical-spacing: spacing.semantic-variable(padding, vertical, tiny);
+
+      border-right: spacing.semantic-variable(size, element, hairline) solid palette.semantic-variable(border, brand);
+      height: calc(var(--active-bar-length, 0) - #{$vertical-spacing} - #{$vertical-spacing});
+      position: absolute;
+      right: 0;
+      top: calc(var(--active-bar-shift, 0) + #{$vertical-spacing});
+      transition: transition.standard(top, moderate), transition.standard(height, moderate);
+      width: spacing.semantic-variable(size, element, hairline);
+    }
+  }
+
+  &__item {
+    @include button.reset();
+    @include typography.semantic-variable(button-highlight, (line-height));
+
+    align-items: center;
+    box-sizing: border-box;
+    color: palette.semantic-variable(text, neutral-strong);
+    display: flex;
+
+    &__icon {
+      color: palette.semantic-variable(icon, neutral-strong);
+      margin-right: spacing.semantic-variable(gap, base);
+    }
+
+    &__badge {
+      margin-left: spacing.semantic-variable(gap, tight);
+    }
+
+    &:hover:not(&--active) {
+      color: palette.semantic-variable(text, neutral-solid);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, brand);
+      }
+    }
+
+    &:focus-visible {
+      background-color: palette.semantic-variable(background, base);
+      box-shadow: effect.variable(focus, primary);
+    }
+
+    &:focus-visible:not(&--active) {
+      color: palette.semantic-variable(text, neutral-solid);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
+    }
+
+    &--active {
+      color: palette.semantic-variable(text, brand);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, brand);
+      }
+    }
+
+    &:disabled {
+      color: palette.semantic-variable(text, neutral-light);
+      cursor: default;
+      pointer-events: none;
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, neutral-light);
+      }
+    }
+  }
+}

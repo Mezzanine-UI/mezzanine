@@ -2,6 +2,7 @@ import { forwardRef, ReactNode } from 'react';
 import {
   inputCheckGroupClasses as classes,
   InputCheckGroupOrientation,
+  InputCheckSize,
 } from '@mezzanine-ui/core/_internal/input-check';
 import { cx } from '../../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../../utils/jsx-types';
@@ -16,6 +17,16 @@ export interface InputCheckGroupProps
    * The orientation of input check group.
    */
   orientation?: InputCheckGroupOrientation;
+  /**
+   * Whether the input check group use segment style.
+   * @default false
+   */
+  segmentedStyle?: boolean;
+  /**
+   * The size of input check group.
+   * @default 'main'
+   */
+  size?: InputCheckSize;
 }
 
 /**
@@ -23,7 +34,14 @@ export interface InputCheckGroupProps
  */
 const InputCheckGroup = forwardRef<HTMLDivElement, InputCheckGroupProps>(
   function InputCheckGroup(props, ref) {
-    const { children, className, orientation = 'horizontal', ...rest } = props;
+    const {
+      children,
+      className,
+      orientation = 'horizontal',
+      segmentedStyle = false,
+      size = 'main',
+      ...rest
+    } = props;
 
     return (
       <div
@@ -33,6 +51,10 @@ const InputCheckGroup = forwardRef<HTMLDivElement, InputCheckGroupProps>(
         className={cx(
           classes.host,
           classes.orientation(orientation),
+          classes.size(size),
+          {
+            [classes.segmented]: segmentedStyle,
+          },
           className,
         )}
       >

@@ -1,17 +1,30 @@
-import type { JSXElementConstructor } from 'react';
+import type { JSXElementConstructor, ReactElement } from 'react';
 import type {
   ComponentOverridableForwardRefComponentPropsFactory,
   NativeElementPropsWithoutKeyAndRef,
 } from '../utils/jsx-types';
 
-export interface BreadcrumbProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'nav'>, 'children'> {
-  /**
-   * Display only the last two items with an ellipsis dropdown for all previous items
-   */
-  condensed?: boolean;
-  items: Array<BreadcrumbItemProps>;
-}
+export type BreadcrumbProps = Omit<
+  NativeElementPropsWithoutKeyAndRef<'nav'>,
+  'children'
+> &
+  (
+    | {
+        /**
+         * Display only the last two items with an ellipsis dropdown for all previous items
+         */
+        condensed?: boolean;
+        items: Array<BreadcrumbItemProps>;
+        children?: never;
+      }
+    | {
+        condensed?: boolean;
+        items?: never;
+        children:
+          | ReactElement<BreadcrumbItemProps>
+          | ReactElement<BreadcrumbItemProps>[];
+      }
+  );
 
 export type BreadcrumbItemComponent =
   | 'a'

@@ -19,7 +19,7 @@ import CalendarMethodsLuxon from '@mezzanine-ui/core/calendarMethodsLuxon';
 import CalendarMethodsDayjs from '@mezzanine-ui/core/calendarMethodsDayjs';
 
 const meta: Meta<typeof Calendar> = {
-  title: 'Utility/Calendar',
+  title: 'Internal/Calendar',
   component: Calendar,
 };
 
