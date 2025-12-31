@@ -37,6 +37,7 @@
     "@tanstack/react-virtual": "^3.13.13",
     "@types/react-transition-group": "^4.4.12",
     "clsx": "^2.1.1",
+    "keycode": "^2.2.1",
     "lodash": "^4.17.21",
     "react-transition-group": "^4.4.5",
     "tslib": "^2.8.1"

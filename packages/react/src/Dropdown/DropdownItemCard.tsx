@@ -121,7 +121,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     label,
     level: levelProp,
     mode,
-    name,
+    name: _name,
     prependIcon,
     subTitle,
     validate,
@@ -137,8 +137,24 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   } = props;
 
   const cardLabel = label || '';
-  const cardName = name || cardLabel;
+  const cardName = _name || cardLabel;
   const level = levelProp || 0;
+
+  // Generate ID for the label element to use with aria-labelledby
+  // If no id is provided, we'll rely on the visible text content for accessibility
+  const labelId = useMemo(() => {
+    if (!id) return undefined;
+    return `${id}-label`;
+  }, [id]);
+
+  // If name is different from label, we need to use aria-label as fallback
+  // Note: aria-label on role="option" has limited support, but it's better than nothing
+  const ariaLabel = useMemo(() => {
+    if (cardName !== cardLabel) {
+      return cardName;
+    }
+    return undefined;
+  }, [cardName, cardLabel]);
 
   // Controlled/uncontrolled mode for checked/selected state
   const isControlled = checked !== undefined;
@@ -196,9 +212,10 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     parts: HighlightSegment[],
     defaultColor: TypographyColor,
     className: string,
+    id?: string,
   ): ReactNode => {
     return (
-      <Typography color={defaultColor} className={className}>
+      <Typography color={defaultColor} className={className} id={id}>
         {parts.map((part, index) => (
           <span
             key={index}
@@ -249,7 +266,8 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   return (
     <>
       <li
-        aria-label={cardName}
+        {...(labelId ? { 'aria-labelledby': labelId } : {})}
+        {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
         aria-selected={active}
         className={cx(
           classes.card,
@@ -287,7 +305,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
           }
           <div className={classes.cardBody}>
             {
-              cardLabel && renderHighlightedText(labelParts, labelColor, classes.cardTitle)
+              cardLabel && renderHighlightedText(labelParts, labelColor, classes.cardTitle, labelId)
             }
             {
               subTitleParts.length > 0 && renderHighlightedText(subTitleParts, 'text-neutral', classes.cardDescription)
@@ -311,5 +329,5 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
       </li>
       {showUnderline && <div className={classes.cardUnderline} />}
     </>
-  )
+  );
 }

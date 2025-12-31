@@ -1,8 +1,8 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 
 /**
- * 提供下拉清單的鍵盤導覽處理器，封裝上下鍵 / Enter / Escape 行為。
- * 將邏輯集中於 DropdownItem 以便複用。
+ * Provides a keyboard navigation handler for dropdown lists, encapsulating Arrow keys, Enter, and Escape behaviors.
+ * Keeps logic centralized in DropdownItem for easy reuse.
  */
 export function createDropdownKeydownHandler(params: {
   activeIndex: number | null;

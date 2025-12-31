@@ -44,13 +44,15 @@ describe('DropdownItem', () => {
   });
 
   describe('active index', () => {
-    it('should set aria-activedescendant when activeIndex is set', () => {
+    it('should render active option with correct id when activeIndex is set', () => {
       render(<DropdownItem {...defaultProps} activeIndex={1} />);
       const listbox = screen.getByRole('listbox');
-      expect(listbox).toHaveAttribute(
-        'aria-activedescendant',
-        'test-listbox-option-1'
-      );
+      expect(listbox).toBeInTheDocument();
+      // aria-activedescendant should be on the combobox (in Dropdown.tsx), not on the listbox
+      // Verify that the active option has the correct id
+      const activeOption = screen.getByRole('option', { name: 'Option 2' });
+      expect(activeOption).toHaveAttribute('id', 'test-listbox-option-1');
+      expect(activeOption).toHaveAttribute('aria-selected', 'true');
     });
 
     it('should apply active class to active option', () => {

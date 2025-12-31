@@ -1,10 +1,10 @@
+import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import '@testing-library/jest-dom';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import Dropdown from './Dropdown';
 import Button from '../Button';
 import TextField from '../TextField';
-import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
+import Dropdown from './Dropdown';
 
 function getPopperContainer(container: Element | null = document.body) {
   return container!.querySelector('div[data-popper-placement]');

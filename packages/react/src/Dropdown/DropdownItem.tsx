@@ -353,12 +353,11 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
       const hasChildren = Boolean(option.children && option.children.length > 0);
       const isExpanded = hasChildren && expandedNodes.has(option.id);
       let prependIcon: IconDefinition | undefined = undefined;
-      let checkSite: dropdownCheckPosition = 'none';
 
       if (hasChildren && level !== 2) {
         prependIcon = isExpanded ? CaretDownIcon : CaretRightIcon;
       }
-      checkSite = option.showCheckbox ? 'prepend' : 'none';
+      const checkSite: dropdownCheckPosition = option.showCheckbox ? 'prepend' : 'none';
 
       const card = (
         <DropdownItemCard

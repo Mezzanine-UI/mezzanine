@@ -47,7 +47,7 @@ export default function DropdownStatus(props: DropdownStatusProps) {
       return emptyText ?? 'No matching options.';
     }
 
-    return ''
+    return '';
   }, [status, loadingText, emptyText]);
 
   const IconElement = useMemo(() => {

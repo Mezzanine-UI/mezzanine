@@ -148,5 +148,5 @@ export default function DropdownAction(props: DropdownActionProps) {
         )
       }
     </>
-  )
+  );
 }

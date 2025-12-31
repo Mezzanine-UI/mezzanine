@@ -16,10 +16,13 @@ describe('DropdownItemCard', () => {
       expect(screen.getByText('Test Option')).toBeInTheDocument();
     });
 
-    it('should render with aria-label', () => {
-      render(<DropdownItemCard {...defaultProps} name="Accessible Name" />);
+    it('should render with aria-labelledby when id is provided', () => {
+      render(<DropdownItemCard {...defaultProps} id="test-option" label="Test Option" />);
       const option = screen.getByRole('option');
-      expect(option).toHaveAttribute('aria-label', 'Accessible Name');
+      expect(option).toHaveAttribute('aria-labelledby', 'test-option-label');
+      const label = document.getElementById('test-option-label');
+      expect(label).toBeInTheDocument();
+      expect(label).toHaveTextContent('Test Option');
     });
 
     it('should render subtitle when provided', () => {
