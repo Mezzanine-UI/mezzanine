@@ -225,6 +225,7 @@ $section-configs: (
 
   &-list-wrapper {
     overflow-y: auto;
+    padding-inline: spacing.semantic-variable(padding, horizontal, micro);
   }
 
   &-item-card {
