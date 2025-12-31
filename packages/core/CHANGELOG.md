@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.0...@mezzanine-ui/core@1.0.0-beta.1) (2025-12-31)
+
+### Bug Fixes
+
+- **core/dropdown:** remove padding reset to allow logical properties ([e9ac14f](https://github.com/Mezzanine-UI/mezzanine/commit/e9ac14f4b7348e1fab96921fae6d4335974256d3))
+- **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
+- **core/dropdown:** use semantic spacing variable for list-wrapper padding-inline ([29117bb](https://github.com/Mezzanine-UI/mezzanine/commit/29117bb69b43aeaccb1ddc59c19b8846a178575e))
+
+### Features
+
+- **core/dropdown:** add dropdown styles and type definitions ([5f63d9f](https://github.com/Mezzanine-UI/mezzanine/commit/5f63d9fed0e31bdfc986903dd3042959a11e30aa))
+- **core/navigation:** header styles ([40d29c3](https://github.com/Mezzanine-UI/mezzanine/commit/40d29c3861ddbf10f7207c2a918b73d780be3c4d))
+- **core/navigation:** icon button styles ([95f285f](https://github.com/Mezzanine-UI/mezzanine/commit/95f285fb041cd7e74d82a9c0344978f8f52ed72a))
+- **core/navigation:** nav footer ([7bd8708](https://github.com/Mezzanine-UI/mezzanine/commit/7bd8708013422b445e774032dc905b2f1966a44b))
+- **core/navigation:** option-category ([61ca4da](https://github.com/Mezzanine-UI/mezzanine/commit/61ca4daa5869d403efe26ec1701ec61cf0555d61))
+- **core/navigation:** user menu styles ([9264fd3](https://github.com/Mezzanine-UI/mezzanine/commit/9264fd310be574357700b0ab6ce4b630a69c3265))
+- **core/navigation:** v2 option implement ([5a1d633](https://github.com/Mezzanine-UI/mezzanine/commit/5a1d633789c51d45f7d3835c80cce09c1b4165de))
+- **core/navigation:** v2 vertical implement ([85c7280](https://github.com/Mezzanine-UI/mezzanine/commit/85c7280a8066d2da7d939f237bafa3a0e2788b41))
+- **react/navigation:** clean styles ([31afbaa](https://github.com/Mezzanine-UI/mezzanine/commit/31afbaa7b157ba5d03c1f24fcec51ef36d730bc9))
+
 # [1.0.0-beta.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.9...@mezzanine-ui/core@1.0.0-beta.0) (2025-12-31)
 
 **Note:** Version bump only for package @mezzanine-ui/core
