@@ -15,6 +15,7 @@ import { type IconDefinition } from '@mezzanine-ui/icons';
 
 import { CaretDownIcon, CaretRightIcon } from '@mezzanine-ui/icons';
 
+import { useElementHeight } from '../hooks/useElementHeight';
 import Typography from '../Typography';
 import DropdownAction, { type DropdownActionProps } from './DropdownAction';
 import DropdownItemCard from './DropdownItemCard';
@@ -148,18 +149,17 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
     onSelect,
     followText,
     headerContent,
-    sameWidth,
   } = props;
 
   const optionsContent = truncateArrayDepth(options, 3);
   const listRef = useRef<HTMLUListElement | null>(null);
-  const headerRef = useRef<HTMLLIElement | null>(null);
-  const actionRef = useRef<HTMLDivElement | null>(null);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-  const [actionHeight, setActionHeight] = useState(0);
-  const [headerHeight, setHeaderHeight] = useState(0);
   const hasActions = Boolean(actionConfig?.showActions);
   const hasHeader = Boolean(headerContent);
+
+  // Use custom hook to measure element heights
+  const [actionRef, actionHeight] = useElementHeight<HTMLDivElement>(hasActions && !!maxHeight);
+  const [headerRef, headerHeight] = useElementHeight<HTMLLIElement>(hasHeader && !!maxHeight);
 
   const toggleExpand = useCallback((optionId: string) => {
     setExpandedNodes((prev) => {
@@ -467,45 +467,6 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
 
   const { elements: renderedOptions } = renderOptions(optionsContent, 0, -1);
 
-  // Dynamically measure the height of DropdownAction
-  useEffect(() => {
-    if (!hasActions || !actionRef.current || !maxHeight) {
-      setActionHeight(0);
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setActionHeight(entry.contentRect.height);
-      }
-    });
-
-    resizeObserver.observe(actionRef.current);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [hasActions, maxHeight, actionConfig]);
-
-  useEffect(() => {
-    if (!hasHeader || !headerRef.current || !maxHeight) {
-      setHeaderHeight(0);
-      return;
-    }
-
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setHeaderHeight(entry.contentRect.height);
-      }
-    });
-
-    resizeObserver.observe(headerRef.current);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [hasHeader, maxHeight, headerContent]);
-
   const listStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {
       return undefined;
@@ -513,9 +474,8 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
 
     return {
       maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
-      width: sameWidth ? '100%' : undefined,
     };
-  }, [maxHeight, sameWidth]);
+  }, [maxHeight]);
 
   const listWrapperStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {

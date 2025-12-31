@@ -5,6 +5,7 @@ import {
   cloneElement,
   ReactElement,
   Ref,
+  useCallback,
   useEffect,
   useId,
   useMemo,
@@ -259,7 +260,7 @@ export default function Dropdown(props: DropdownProps) {
     return size({
       apply({ rects, elements }) {
         Object.assign(elements.floating.style, {
-          minWidth: `${rects.reference.width}px`,
+          width: `${rects.reference.width}px`,
         });
       },
     });
@@ -293,6 +294,48 @@ export default function Dropdown(props: DropdownProps) {
   const anchorRef = useRef<HTMLElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
 
+  // Extract combobox props logic to avoid duplication
+  const getComboboxProps = useMemo(() => {
+    const childWithRef = children as ReactElement<any> & {
+      ref?: Ref<HTMLElement>;
+    };
+    const isInput = childWithRef.type !== Button;
+    
+    if (!isInput) return {};
+    
+    return {
+      role: 'combobox' as const,
+      'aria-controls': listboxId,
+      'aria-expanded': isOpen,
+      'aria-haspopup': 'listbox' as const,
+      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
+      'aria-activedescendant': ariaActivedescendant,
+    };
+  }, [children, listboxId, isOpen, isMatchInputValue, ariaActivedescendant]);
+
+  const handleItemHover = useCallback((index: number) => {
+    if (!isActiveIndexControlled) {
+      setUncontrolledActiveIndex(index);
+    }
+    onItemHover?.(index);
+  }, [isActiveIndexControlled, onItemHover]);
+
+  // Extract shared DropdownItem props to avoid duplication
+  const baseDropdownItemProps = useMemo(() => ({
+    actionConfig,
+    activeIndex: mergedActiveIndex,
+    disabled,
+    followText,
+    listboxId,
+    listboxLabel,
+    maxHeight,
+    sameWidth,
+    onHover: handleItemHover,
+    onSelect,
+    options,
+    type,
+  }), [actionConfig, mergedActiveIndex, disabled, followText, listboxId, listboxLabel, maxHeight, sameWidth, handleItemHover, onSelect, options, type]);
+
   const triggerElement = useMemo(() => {
     const childWithRef = children as ReactElement<any> & {
       ref?: Ref<HTMLElement>;
@@ -302,20 +345,9 @@ export default function Dropdown(props: DropdownProps) {
       childWithRef.ref,
     ]);
 
-    // Determine if children is Input (for combobox pattern)
-    const isInput = childWithRef.type !== Button;
-    const comboboxProps = isInput ? {
-      role: 'combobox' as const,
-      'aria-controls': listboxId,
-      'aria-expanded': isOpen,
-      'aria-haspopup': 'listbox' as const,
-      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
-      'aria-activedescendant': ariaActivedescendant,
-    } : {};
-
     return cloneElement(childWithRef, {
       ref: composedRef,
-      ...comboboxProps,
+      ...getComboboxProps,
       onClick: (event: any) => {
         childWithRef.props?.onClick?.(event);
         if (event?.defaultPrevented) return;
@@ -325,7 +357,7 @@ export default function Dropdown(props: DropdownProps) {
         }
       },
     });
-  }, [children, isInline, isOpen, listboxId, isMatchInputValue, ariaActivedescendant]);
+  }, [children, isInline, getComboboxProps]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -339,20 +371,9 @@ export default function Dropdown(props: DropdownProps) {
       childWithRef.ref,
     ]);
 
-    // Determine if children is Input (for combobox pattern)
-    const isInput = childWithRef.type !== Button;
-    const comboboxProps = isInput ? {
-      role: 'combobox' as const,
-      'aria-controls': listboxId,
-      'aria-expanded': isOpen,
-      'aria-haspopup': 'listbox' as const,
-      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
-      'aria-activedescendant': ariaActivedescendant,
-    } : {};
-
     return cloneElement(childWithRef, {
       ref: composedRef,
-      ...comboboxProps,
+      ...getComboboxProps,
       onBlur: (event: any) => {
         childWithRef.props?.onBlur?.(event);
         if (event?.defaultPrevented) return;
@@ -379,7 +400,7 @@ export default function Dropdown(props: DropdownProps) {
         setIsOpen(true);
       },
     });
-  }, [children, isInline, isOpen, listboxId, isMatchInputValue, ariaActivedescendant]);
+  }, [children, isInline, isOpen, getComboboxProps]);
 
   useDocumentEvents(
     () => {
@@ -441,24 +462,8 @@ export default function Dropdown(props: DropdownProps) {
                 <Translate {...translateProps} from={translateFrom} key="inline-list" in>
                   <div>
                     <DropdownItem
-                      actionConfig={actionConfig}
-                      activeIndex={mergedActiveIndex}
-                      disabled={disabled}
-                      followText={followText}
+                      {...baseDropdownItemProps}
                       headerContent={inlineTriggerElement}
-                      listboxId={listboxId}
-                      listboxLabel={props.listboxLabel}
-                      maxHeight={maxHeight}
-                      sameWidth={sameWidth}
-                      onHover={(index) => {
-                        if (!isActiveIndexControlled) {
-                          setUncontrolledActiveIndex(index);
-                        }
-                        onItemHover?.(index);
-                      }}
-                      onSelect={onSelect}
-                      options={options}
-                      type={type}
                     />
                   </div>
                 </Translate>
@@ -488,23 +493,7 @@ export default function Dropdown(props: DropdownProps) {
                   <Translate {...translateProps} from={translateFrom} key="popper-list" in>
                     <div>
                       <DropdownItem
-                        actionConfig={actionConfig}
-                        activeIndex={mergedActiveIndex}
-                        disabled={disabled}
-                        followText={followText}
-                        listboxId={listboxId}
-                        listboxLabel={listboxLabel}
-                        maxHeight={maxHeight}
-                        onHover={(index) => {
-                          if (!isActiveIndexControlled) {
-                            setUncontrolledActiveIndex(index);
-                          }
-                          onItemHover?.(index);
-                        }}
-                        sameWidth={sameWidth}
-                        onSelect={onSelect}
-                        options={options}
-                        type={type}
+                        {...baseDropdownItemProps}
                       />
                     </div>
                   </Translate>
