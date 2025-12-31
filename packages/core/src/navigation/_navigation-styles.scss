@@ -9,144 +9,120 @@
 @use './navigation' as *;
 @use './utils';
 
-$vertical-max-width: 256px !default;
-$vertical-item-height: 32px !default;
-$vertical-toggle-icon-gap: 8px !default;
-$vertical-icon-gap: 8px !default;
-$vertical-group-indent: 8px !default;
-$vertical-group-icon-indent: 40px !default;
+// spacing.semantic-variable(padding, vertical, tight) * 2 + 16px(icon size, text height)
+$vertical-item-height: 28px !default;
 
 $background: background;
 
-$icon-size: 24px !default;
-
 .#{$prefix} {
-  @include utils.reset();
   @include typography.variant(button2);
 
   overflow: hidden;
   background-color: palette.semantic-variable($background, base);
   color: palette.color(action-inactive);
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  &__content {
+    padding: spacing.semantic-variable(padding, vertical, base)
+      spacing.semantic-variable(padding, horizontal, comfort-fixed);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: spacing.semantic-variable(gap, tight-fixed);
+
+
+    > ul {
+      @include utils.reset();
+
+      display: grid;
+      gap: spacing.semantic-variable(gap, tight);
+    }
+  }
+
+
 
   &--vertical {
     width: spacing.semantic-variable(size, container, slim);
-    grid-auto-flow: row;
-    grid-auto-rows: max-content;
-    padding: spacing.level(5);
     height: 100%;
-    gap: spacing.level(2);
 
-    .#{$item-prefix} {
+    .#{$option-prefix} {
+      display: grid;
+      box-sizing: border-box;
       align-items: center;
-      height: $vertical-item-height;
-      grid-auto-flow: column;
-      // padding: 0 $horizontal-item-padding-x;
-      overflow: hidden;
-      max-width: 100%;
-
-      &__icon {
-        margin-right: $vertical-icon-gap;
-      }
-
-      &--active,
-      &:hover {
-        background-color: palette.color(primary-hover-bg);
-        color: palette.color(primary);
-      }
-    }
-
-    .#{$sub-menu-prefix} {
-      flex-direction: column;
+      gap: spacing.semantic-variable(gap, tight);
       height: unset;
-      padding: 0;
-      min-height: $vertical-item-height;
+
+      &__content {
+        align-items: center;
+        border-radius: radius.variable(base);
+        box-sizing: border-box;
+        cursor: pointer;
+        display: flex;
+        gap: spacing.semantic-variable(gap, tight);
+        padding: spacing.semantic-variable(padding, vertical, tight)
+          spacing.semantic-variable(padding, horizontal, tight-fixed);
+        transition: transition.standard(background-color, fast);
+
+        &:hover {
+          .#{$option-prefix}__icon {
+            color: palette.semantic-variable(text, neutral-solid);
+          }
+
+          background-color: palette.semantic-variable($background, neutral-faint);
+        }
+      }
 
       &__icon {
-        margin-right: $vertical-icon-gap;
+        width: spacing.semantic-variable(size, element, base);
+        height: spacing.semantic-variable(size, element, base);
+        color: palette.semantic-variable(icon, neutral);
       }
 
       &__title {
-        // padding: 0 $horizontal-item-padding-x;
-        width: 100%;
+        color: palette.semantic-variable(text, neutral-solid);
+      }
 
-        &:hover {
-          background-color: palette.color(primary-hover-bg);
-          color: palette.color(primary);
+      &--active {
+        .#{$option-prefix}__content {
+          background-color: palette.semantic-variable($background, brand-ghost);
         }
       }
 
-      &__group {
-        display: grid;
-        padding-left: $vertical-group-indent;
-        gap: spacing.level(2);
-        margin-top: spacing.level(2);
-
-        .#{$item-prefix} {
-          height: $vertical-item-height;
-
-          &--active,
-          &:hover {
-            background-color: palette.color(primary-hover-bg);
-            color: palette.color(primary);
-          }
+      &--basic.#{$option-prefix}--active {
+        .#{$option-prefix}__title {
+          color: palette.semantic-variable(text, brand-solid);
         }
+
+        .#{$option-prefix}__content {
+          background-color: palette.semantic-variable($background, brand-faint);
+        }
+      }
+
+
+      &__group {
+        @include utils.reset();
+
+        display: grid;
       }
 
       &__toggle-icon {
         margin-left: auto;
       }
 
-      &--indent {
-        .#{$sub-menu-prefix}__group {
-          padding-left: $vertical-group-icon-indent;
-        }
+      &--level-1 {
+        margin-left: 0;
       }
 
-      &--active {
-        .#{$sub-menu-prefix}__title {
-          background-color: palette.color(primary-hover-bg);
-          color: palette.color(primary);
-        }
+      &--level-2 {
+        margin-left: spacing.semantic-variable(padding, horizontal, relaxed);
       }
 
-      &--open {
-        .#{$sub-menu-prefix}__title {
-          color: palette.color(primary);
-        }
-      }
-
-      &:hover {
-        color: unset;
-        background-color: unset;
+      &--level-3 {
+        margin-left: spacing.semantic-variable(padding, horizontal, breath);
       }
     }
-  }
-}
-
-.#{$item-prefix} {
-  box-sizing: border-box;
-  display: flex;
-  width: 100%;
-  cursor: pointer;
-
-  .#{icon.$prefix} {
-    width: $icon-size;
-    height: $icon-size;
-  }
-}
-
-.#{$sub-menu-prefix} {
-  box-sizing: border-box;
-
-  &__title {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-  }
-
-  &__group {
-    @include utils.reset();
   }
 }
 
@@ -159,7 +135,9 @@ $icon-size: 24px !default;
   display: flex;
   gap: spacing.semantic-variable(gap, comfort);
   justify-content: space-between;
-  padding: spacing.semantic-variable(padding, horizontal, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed) spacing.semantic-variable(padding, vertical, base);
+  padding: spacing.semantic-variable(padding, horizontal, comfort)
+    spacing.semantic-variable(padding, horizontal, comfort-fixed)
+    spacing.semantic-variable(padding, vertical, base);
   width: 100%;
 
   &__content {
@@ -200,7 +178,8 @@ $icon-size: 24px !default;
   box-sizing: border-box;
   color: palette.semantic-variable(icon, neutral);
   display: flex;
-  padding: spacing.semantic-variable(padding, vertical, tight-fixed) spacing.semantic-variable(padding, horizontal, tight-fixed);
+  padding: spacing.semantic-variable(padding, vertical, tight-fixed)
+    spacing.semantic-variable(padding, horizontal, tight-fixed);
   transition: transition.standard(background-color, fast);
   width: spacing.semantic-variable(size, element, airy);
   height: spacing.semantic-variable(size, element, airy);
@@ -227,7 +206,8 @@ $icon-size: 24px !default;
   gap: spacing.semantic-variable(gap, tight-fixed);
   width: fit-content;
   border-radius: radius.variable(base);
-  padding: spacing.semantic-variable(padding, vertical, micro) spacing.semantic-variable(padding, horizontal, tiny);
+  padding: spacing.semantic-variable(padding, vertical, micro)
+    spacing.semantic-variable(padding, horizontal, tiny);
 
   &__avatar {
     box-sizing: border-box;

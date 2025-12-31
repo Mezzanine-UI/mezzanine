@@ -7,4 +7,5 @@ export type NavigationOrientation = Orientation;
 export const navigationClasses = {
   host: navigationPrefix,
   vertical: `${navigationPrefix}--vertical`,
+  content: `${navigationPrefix}__content`,
 } as const;
