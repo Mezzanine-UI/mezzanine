@@ -29,6 +29,33 @@ fi
 echo -e "${GREEN}✓ Git 狀態檢查通過${NC}"
 echo ""
 
+# 從 npm registry 獲取最新的 prerelease 版本號
+get_next_prerelease_version() {
+  local preid=$1
+  local package_name="@mezzanine-ui/react"
+
+  # 獲取所有版本
+  local versions=$(npm view "$package_name" versions --json 2>/dev/null)
+
+  if [ -z "$versions" ]; then
+    echo "1.0.0-${preid}.0"
+    return
+  fi
+
+  # 找到最高的 canary/alpha/beta/rc 版本號
+  local latest_prerelease=$(echo "$versions" | grep -o "\"1\.0\.0-${preid}\.[0-9]*\"" | sed 's/"//g' | sort -t. -k4 -n | tail -1)
+
+  if [ -z "$latest_prerelease" ]; then
+    # 沒有找到該 preid 的版本，從 0 開始
+    echo "1.0.0-${preid}.0"
+  else
+    # 提取當前數字並 +1
+    local current_num=$(echo "$latest_prerelease" | sed "s/1.0.0-${preid}\.//")
+    local next_num=$((current_num + 1))
+    echo "1.0.0-${preid}.${next_num}"
+  fi
+}
+
 # 選擇發布類型
 echo "請選擇發布類型："
 echo ""
@@ -56,12 +83,23 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Canary 版本...${NC}"
-    echo -e "${BLUE}ℹ️  Canary 版本會自動生成時間戳版本號${NC}"
+
+    # 獲取下一個 canary 版本號
+    NEXT_VERSION=$(get_next_prerelease_version "canary")
+    echo -e "${BLUE}ℹ️  下一個版本號: ${NEXT_VERSION}${NC}"
     echo ""
 
-    # 發布
+    read -p "確認要發布 ${NEXT_VERSION} 嗎？ (y/n): " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+      echo -e "${YELLOW}❌ 已取消發布${NC}"
+      exit 0
+    fi
+
+    # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn release:canary
+    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn build
+    yarn lerna publish from-package --dist-tag canary --yes
 
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
@@ -82,12 +120,23 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Alpha 版本...${NC}"
-    echo -e "${BLUE}ℹ️  Alpha 版本格式: x.y.z-alpha.n (從 .1 開始)${NC}"
+
+    # 獲取下一個 alpha 版本號
+    NEXT_VERSION=$(get_next_prerelease_version "alpha")
+    echo -e "${BLUE}ℹ️  下一個版本號: ${NEXT_VERSION}${NC}"
     echo ""
 
-    # 發布
+    read -p "確認要發布 ${NEXT_VERSION} 嗎？ (y/n): " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+      echo -e "${YELLOW}❌ 已取消發布${NC}"
+      exit 0
+    fi
+
+    # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn release:alpha
+    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn build
+    yarn lerna publish from-package --dist-tag alpha --yes
 
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
@@ -108,12 +157,23 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 Beta 版本...${NC}"
-    echo -e "${BLUE}ℹ️  Beta 版本格式: x.y.z-beta.n${NC}"
+
+    # 獲取下一個 beta 版本號
+    NEXT_VERSION=$(get_next_prerelease_version "beta")
+    echo -e "${BLUE}ℹ️  下一個版本號: ${NEXT_VERSION}${NC}"
     echo ""
 
-    # 發布
+    read -p "確認要發布 ${NEXT_VERSION} 嗎？ (y/n): " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+      echo -e "${YELLOW}❌ 已取消發布${NC}"
+      exit 0
+    fi
+
+    # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn release:beta
+    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn build
+    yarn lerna publish from-package --dist-tag beta --yes
 
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
@@ -134,12 +194,23 @@ case $choice in
 
     echo ""
     echo -e "${YELLOW}📦 準備發布 RC 版本...${NC}"
-    echo -e "${BLUE}ℹ️  RC 版本格式: x.y.z-rc.n${NC}"
+
+    # 獲取下一個 rc 版本號
+    NEXT_VERSION=$(get_next_prerelease_version "rc")
+    echo -e "${BLUE}ℹ️  下一個版本號: ${NEXT_VERSION}${NC}"
     echo ""
 
-    # 發布
+    read -p "確認要發布 ${NEXT_VERSION} 嗎？ (y/n): " confirm
+    if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
+      echo -e "${YELLOW}❌ 已取消發布${NC}"
+      exit 0
+    fi
+
+    # 使用明確的版本號
     echo -e "${YELLOW}🚀 發布中...${NC}"
-    yarn release:rc
+    yarn lerna version "$NEXT_VERSION" --no-push --yes
+    yarn build
+    yarn lerna publish from-package --dist-tag rc --yes
 
     echo ""
     echo -e "${GREEN}╔════════════════════════════════════════════╗${NC}"
