@@ -18,7 +18,7 @@ import NavigationOptionCategory from './NavigationOptionCategory';
 import Input from '../Input';
 
 export default {
-  title: 'V1/Navigation',
+  title: 'Navigation/Navigation',
 } as Meta;
 
 export const Playground: StoryFn<NavigationProps> = () => {
