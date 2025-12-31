@@ -1,0 +1,355 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './dropdown' as *;
+
+$card-state-configs: (
+  enable: (
+    background: palette.semantic-variable(background, base),
+    title-color: palette.semantic-variable(text, neutral-strong),
+    description-color: palette.semantic-variable(text, neutral),
+    focus: none,
+  ),
+  hover: (
+    background: palette.semantic-variable(background, neutral-faint),
+  ),
+  active: (
+    background: palette.semantic-variable(background, neutral-subtle),
+  ),
+  focus: (
+    background: palette.semantic-variable(background, base),
+    focus: effect.variable(focus, primary),
+  ),
+  disabled: (
+    background: palette.semantic-variable(background, base),
+    title-color: palette.semantic-variable(text, neutral-light),
+    description-color: palette.semantic-variable(text, neutral-light),
+    focus: none,
+  ),
+);
+
+$card-level-padding: (
+  0: spacing.semantic-variable(padding, horizontal, base),
+  1: spacing.semantic-variable(padding, horizontal, relaxed),
+  2: spacing.semantic-variable(padding, horizontal, ultra),
+);
+
+$section-configs: (
+  list: (
+    radius: radius.variable(roomy),
+    background: palette.semantic-variable(background, base),
+    shadow: effect.variable(shadow, inner-top-and-bottom),
+    padding-inline: spacing.semantic-variable(padding, horizontal, tight),
+    padding-block: spacing.semantic-variable(padding, vertical, tight),
+  ),
+  list-header: (
+    background: palette.semantic-variable(background, base),
+    padding-block: spacing.semantic-variable(padding, vertical, tight),
+    padding-inline: spacing.semantic-variable(padding, horizontal, tight),
+  ),
+  action: (
+    background: palette.semantic-variable(background, base),
+  ),
+  action-top-bar: (
+    background: palette.semantic-variable(separator, neutral-faint),
+    height: 1px,
+    margin-block: spacing.semantic-variable(padding, vertical, tiny),
+  ),
+  status: (
+    background: palette.semantic-variable(background, base),
+    gap: spacing.semantic-variable(gap, tight-fixed),
+    padding-inline: spacing.semantic-variable(padding, horizontal, base),
+    padding-block: spacing.semantic-variable(padding, vertical, base),
+  ),
+);
+
+@function _card-state($state, $property) {
+  $state-map: map.get($card-state-configs, $state);
+
+  @if $state-map {
+    @return map.get($state-map, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-card-state($state) {
+  $background: _card-state($state, background);
+  $title-color: _card-state($state, title-color);
+  $description-color: _card-state($state, description-color);
+  $focus: _card-state($state, focus);
+
+  @if $background {
+    background-color: $background;
+  }
+
+  @if $title-color {
+    --#{$prefix}-item-card-title-color: #{$title-color};
+  }
+
+  @if $description-color {
+    --#{$prefix}-item-card-description-color: #{$description-color};
+  }
+
+  @if $focus {
+    box-shadow: $focus;
+  }
+}
+
+@mixin _apply-card-states() {
+  @include _apply-card-state(enable);
+
+  &:hover:not(.#{$prefix}-item-card--disabled) {
+    @include _apply-card-state(hover);
+  }
+
+  &:active:not(.#{$prefix}-item-card--disabled) {
+    @include _apply-card-state(active);
+  }
+
+  &:focus,
+  &:focus-visible,
+  &:focus-within {
+    @include _apply-card-state(focus);
+    outline: none;
+  }
+
+  &.#{$prefix}-item-card--active:not(.#{$prefix}-item-card--disabled) {
+    @include _apply-card-state(active);
+  }
+
+  &.#{$prefix}-item-card--disabled {
+    @include _apply-card-state(disabled);
+    box-shadow: none;
+  }
+}
+
+@function _section($section, $property) {
+  $section-map: map.get($section-configs, $section);
+
+  @if $section-map {
+    @return map.get($section-map, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-section($section) {
+  $background: _section($section, background);
+  $radius: _section($section, radius);
+  $shadow: _section($section, shadow);
+  $padding-inline: _section($section, padding-inline);
+  $padding-block: _section($section, padding-block);
+  $gap: _section($section, gap);
+  $border-color: _section($section, border-color);
+  $height: _section($section, height);
+  $margin-block: _section($section, margin-block);
+
+  @if $background {
+    background-color: $background;
+  }
+
+  @if $radius {
+    border-radius: $radius;
+  }
+
+  @if $shadow {
+    box-shadow: $shadow;
+  }
+
+  @if $padding-inline {
+    padding-inline: $padding-inline;
+  }
+
+  @if $padding-block {
+    padding-block: $padding-block;
+  }
+
+  @if $gap {
+    gap: $gap;
+  }
+
+  @if $border-color {
+    border-color: $border-color;
+  }
+
+  @if $height {
+    height: $height;
+  }
+
+  @if $margin-block {
+    margin-block: $margin-block;
+  }
+}
+
+.#{$prefix}  {
+  position: relative;
+
+  // dropdown items
+  &-list {
+    @include _apply-section(list);
+    width: 100%;
+    min-width: max-content;
+    max-width: 100%;
+    margin: 0;
+    list-style: none;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  &-list-header {
+    @include _apply-section(list-header);
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 1;
+  }
+
+  &-list-header-inner {
+    display: block;
+    width: 100%;
+  }
+
+  &-group-label {
+    @include typography.semantic-variable(body);
+    color: palette.semantic-variable(text, neutral-light);
+    font-feature-settings: 'liga' off, 'clig' off;
+    padding-block: spacing.semantic-variable(padding, vertical, tiny);
+    padding-inline: spacing.semantic-variable(padding, horizontal, tiny);
+  }
+
+  &-list-wrapper {
+    overflow-y: auto;
+    padding-inline: spacing.semantic-variable(padding, horizontal, micro);
+  }
+
+  &-item-card {
+    @include _apply-card-states();
+    border-radius: radius.variable(base);
+    padding-inline: spacing.semantic-variable(padding, horizontal, base);
+    padding-block: spacing.semantic-variable(padding, vertical, base);
+    box-sizing: border-box;
+    cursor: pointer;
+    margin-bottom: spacing.semantic-variable(gap, tiny);
+    position: relative;
+    list-style: none;
+    width: 100%;
+    transition:
+      transition.standard(background-color, fast),
+      transition.standard(color, fast),
+      transition.standard(border, fast),
+      transition.standard(box-shadow, fast);
+    --#{$prefix}-item-card-title-color: palette.semantic-variable(text, neutral-strong);
+    --#{$prefix}-item-card-description-color: palette.semantic-variable(text, neutral);
+    
+    &--disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  // dropdown item card
+  @each $level, $padding-inline-start in $card-level-padding {
+    &-item-card--level-#{$level} {
+      padding-inline-start: $padding-inline-start;
+    }
+  }
+
+  &-item-card-underline {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+    margin-block: spacing.semantic-variable(padding, vertical, tiny);
+  }
+
+  &-item-card-container {
+    display: flex;
+    gap: spacing.semantic-variable(gap, base);
+    align-items: center;
+    width: 100%;
+  }
+
+  &-item-card-title {
+    @include typography.semantic-variable(label-primary);
+    overflow: hidden;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    transition: transition.standard(color, fast);
+    color: var(--#{$prefix}-item-card-title-color, currentColor);
+  }
+  &-item-card-description {
+    @include typography.semantic-variable(caption);
+    overflow: hidden;
+    font-feature-settings: 'liga' off, 'clig' off;
+    text-overflow: ellipsis;
+    transition: transition.standard(color, fast);
+    color: var(--#{$prefix}-item-card-description-color, currentColor);
+  }
+  &-item-card-prepend-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
+  &-item-card-highlighted-text {
+    color: palette.semantic-variable(text, brand);
+    transition: transition.standard(color, fast);
+  }
+  &-item-card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0;
+    gap: spacing.semantic-variable(gap, tight);
+  }
+  &-item-card-append-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  // dropdown action
+  &-action {
+    display: flex;
+    @include _apply-section(action);
+    position: sticky;
+    inset-block-end: 0;
+    flex-direction: column;
+    width: 100%;
+    z-index: 1;
+  }
+
+  &-action--top-bar {
+    @include _apply-section(action-top-bar);
+    display: block;
+    width: 100%;
+    inset-block-start: 0;
+  }
+
+  &-action-tools {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  // dropdown status
+  &-status {
+    display: flex;
+    @include _apply-section(status);
+    position: relative;
+    align-items: center;
+    width: 100%;
+  }
+
+  &-status-text {
+    @include typography.semantic-variable(input);
+    color: palette.semantic-variable(text, neutral);
+    text-align: center;
+    font-feature-settings: 'liga' off, 'clig' off;
+  }
+}
