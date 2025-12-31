@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-alpha.0...@mezzanine-ui/system@1.0.0-canary.9) (2025-12-31)
+
+### Features
+
+- **system/spacing:** add 68px spacing ([bcb83d1](https://github.com/Mezzanine-UI/mezzanine/commit/bcb83d164f6b1095231da3190b27eccbeb0c3bcd))
+- **system/spacing:** add missing spacing tokens ([89d42fc](https://github.com/Mezzanine-UI/mezzanine/commit/89d42fcf69c95b0157ae68793360ffe3f778bf12))
+- **system/spacing:** add primitive scale ([c2b4c38](https://github.com/Mezzanine-UI/mezzanine/commit/c2b4c388f4bf6485372d0a68e360f704e7943e0d))
+- **system/spacing:** add primitive value ([803c129](https://github.com/Mezzanine-UI/mezzanine/commit/803c12935f1bc1e80772d871c6398e7cd89c6ddd))
+- **system/spacing:** add primitive value ([587f786](https://github.com/Mezzanine-UI/mezzanine/commit/587f78641b8edc20040917dee2e5b6585b070718))
+- **system/spacing:** update element tokens ([91cb45e](https://github.com/Mezzanine-UI/mezzanine/commit/91cb45e8944a0929f6c543b988c6174a44dd3ef8))
+- **system:** add new system tokens ([70f9a3a](https://github.com/Mezzanine-UI/mezzanine/commit/70f9a3ad3d4cb5be1e2e118da4822049922cb145))
+
 # [1.0.0-alpha.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.3...@mezzanine-ui/system@1.0.0-alpha.0) (2025-12-17)
 
 **Note:** Version bump only for package @mezzanine-ui/system
