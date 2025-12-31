@@ -17,7 +17,7 @@ import Typography from '../Typography';
 import Button from '../Button';
 import Drawer from '../Drawer';
 import Input from '../Input';
-import Navigation, { NavigationItem, NavigationSubMenu } from '../Navigation';
+import Navigation from '../Navigation';
 
 export default {
   title: 'V1/AppBar',
@@ -84,30 +84,7 @@ export const Playground: StoryFn<PlaygroundStoryArgs> = ({ orientation }) => (
         <Button variant="outlined">Button</Button>
       </AppBarSupport>
       <AppBarMain>
-        <Navigation orientation={orientation}>
-          {dataset.map((data) =>
-            data.subMenu ? (
-              <NavigationSubMenu
-                title={data.text}
-                icon={data.icon}
-                key={data.text}
-              >
-                {data.subMenu.map((subMenuItem) => (
-                  <NavigationItem
-                    icon={subMenuItem.icon}
-                    key={subMenuItem.text}
-                  >
-                    {subMenuItem.text}
-                  </NavigationItem>
-                ))}
-              </NavigationSubMenu>
-            ) : (
-              <NavigationItem key={data.text} icon={data.icon}>
-                {data.text}
-              </NavigationItem>
-            ),
-          )}
-        </Navigation>
+        <Navigation></Navigation>
         <div
           style={{
             marginLeft: 'auto',
@@ -163,30 +140,7 @@ export const WithDrawer = () => {
               prefix={<Icon icon={SearchIcon} />}
               clearable
             />
-            <Navigation orientation="vertical">
-              {dataset.map((data) =>
-                data.subMenu ? (
-                  <NavigationSubMenu
-                    title={data.text}
-                    icon={data.icon}
-                    key={data.text}
-                  >
-                    {data.subMenu.map((subMenuItem) => (
-                      <NavigationItem
-                        icon={subMenuItem.icon}
-                        key={subMenuItem.text}
-                      >
-                        {subMenuItem.text}
-                      </NavigationItem>
-                    ))}
-                  </NavigationSubMenu>
-                ) : (
-                  <NavigationItem key={data.text} icon={data.icon}>
-                    {data.text}
-                  </NavigationItem>
-                ),
-              )}
-            </Navigation>
+            <Navigation></Navigation>
           </AppBarMain>
           <AppBarBrand>
             <Icon

@@ -4,13 +4,19 @@ export type {
   NavigationChild,
   NavigationChildren,
 } from './Navigation';
-export { default as NavigationSubMenu } from './NavigationSubMenu';
+export { default as NavigationOption } from './NavigationOption';
 export type {
-  NavigationSubMenuProps,
-  NavigationSubMenuChild,
-  NavigationSubMenuChildren,
-} from './NavigationSubMenu';
-export { default as NavigationItem } from './NavigationItem';
-export type { NavigationItemProps } from './NavigationItem';
-export { NavigationContext } from './NavigationContext';
-export type { NavigationContextValue } from './NavigationContext';
+  NavigationOptionProps,
+  NavigationOptionChild,
+  NavigationOptionChildren,
+} from './NavigationOption';
+export { default as NavigationHeader } from './NavigationHeader';
+export type { NavigationHeaderProps } from './NavigationHeader';
+export { default as NavigationFooter } from './NavigationFooter';
+export type { NavigationFooterProps } from './NavigationFooter';
+export { default as NavigationIconButton } from './NavigationIconButton';
+export type { NavigationIconButtonProps } from './NavigationIconButton';
+export { default as NavigationUserMenu } from './NavigationUserMenu';
+export type { NavigationUserMenuProps } from './NavigationUserMenu';
+export { default as NavigationOptionCategory } from './NavigationOptionCategory';
+export type { NavigationOptionCategoryProps } from './NavigationOptionCategory';

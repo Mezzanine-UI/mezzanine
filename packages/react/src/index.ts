@@ -89,19 +89,17 @@ export type {
   MenuProps,
   MenuSize,
 } from './Menu';
-export {
-  default as Navigation,
-  NavigationItem,
-  NavigationSubMenu,
-} from './Navigation';
+export { default as Navigation } from './Navigation';
 export type {
   NavigationChild,
   NavigationChildren,
-  NavigationItemProps,
   NavigationProps,
-  NavigationSubMenuChild,
-  NavigationSubMenuChildren,
-  NavigationSubMenuProps,
+  NavigationFooterProps,
+  NavigationHeaderProps,
+  NavigationOptionProps,
+  NavigationUserMenuProps,
+  NavigationIconButtonProps,
+  NavigationOptionCategoryProps,
 } from './Navigation';
 export { default as PageFooter } from './PageFooter';
 export type { PageFooterProps } from './PageFooter';
