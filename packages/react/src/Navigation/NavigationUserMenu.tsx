@@ -1,9 +1,9 @@
 import { forwardRef, ReactNode, useState } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { cx } from '../utils/cx';
 import { navigationUserMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface NavigationUserMenuProps
   extends NativeElementPropsWithoutKeyAndRef<'button'> {
@@ -15,19 +15,20 @@ const NavigationUserMenu = forwardRef<
   HTMLButtonElement,
   NavigationUserMenuProps
 >((props, ref) => {
-  const { children, imgSrc, className, onClick, ...rest } = props;
+  const { children, className, imgSrc, onClick, ...rest } = props;
   const [imgError, setImgError] = useState(false);
   const [open, setOpen] = useState(false);
 
   return (
     <button
       {...rest}
-      ref={ref}
+      className={cx(classes.host, open && classes.open, className)}
       onClick={(e) => {
         setOpen(!open);
         onClick?.(e);
       }}
-      className={cx(classes.host, open && classes.open, className)}
+      ref={ref}
+      type="button"
     >
       <span className={classes.avatar}>
         {imgError ? (
@@ -36,8 +37,8 @@ const NavigationUserMenu = forwardRef<
           <img
             alt="User avatar"
             className={classes.avatar}
-            onError={() => setImgError(true)}
             src={imgSrc}
+            onError={() => setImgError(true)}
           />
         )}
       </span>

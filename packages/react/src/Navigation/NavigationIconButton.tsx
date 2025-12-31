@@ -1,9 +1,9 @@
 import { forwardRef } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { cx } from '../utils/cx';
 import { navigationIconButtonClasses as classes } from '@mezzanine-ui/core/navigation';
-import Icon from '../Icon';
 import { IconDefinition } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export type NavigationIconButtonProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'button'>,
@@ -22,8 +22,13 @@ const NavigationIconButton = forwardRef<
   const { className, icon, ...rest } = props;
 
   return (
-    <button {...rest} ref={ref} className={cx(classes.host, className)}>
-      <Icon size={16} icon={icon} />
+    <button
+      {...rest}
+      ref={ref}
+      className={cx(classes.host, className)}
+      type="button"
+    >
+      <Icon icon={icon} size={16} />
     </button>
   );
 });

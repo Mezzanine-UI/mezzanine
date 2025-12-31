@@ -1,13 +1,12 @@
 import {
-  forwardRef,
-  Key,
-  ReactElement,
   Children,
   cloneElement,
-  useCallback,
-  ReactNode,
+  forwardRef,
   isValidElement,
   JSX,
+  ReactElement,
+  ReactNode,
+  useCallback,
   useMemo,
   useState,
 } from 'react';
@@ -72,9 +71,9 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
     const combineSetActivatedPath = useCallback(
       (newActivatedPath: string[]) => {
         onOptionClick?.(newActivatedPath);
-        setInnerActivatedPath(innerActivatedPath);
+        setInnerActivatedPath(newActivatedPath);
       },
-      [innerActivatedPath, onOptionClick],
+      [onOptionClick],
     );
 
     const currentPathname = useCurrentPathname();
@@ -102,9 +101,10 @@ const Navigation = forwardRef<HTMLUListElement, NavigationProps>(
             }
             case Input: {
               searchInput = cloneElement(child as ReactElement<InputProps>, {
-                variant: 'search',
                 size: 'sub',
+                variant: 'search',
               });
+              break;
             }
           }
         }

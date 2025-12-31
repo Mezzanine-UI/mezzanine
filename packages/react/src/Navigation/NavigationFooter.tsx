@@ -1,7 +1,7 @@
 import { Children, forwardRef, isValidElement } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { cx } from '../utils/cx';
 import { navigationFooterClasses as classes } from '@mezzanine-ui/core/navigation';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import NavigationUserMenu from './NavigationUserMenu';
 
 export interface NavigationFooterProps

@@ -1,8 +1,8 @@
 import { forwardRef, ReactNode } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { cx } from '../utils/cx';
 import { navigationHeaderClasses as classes } from '@mezzanine-ui/core/navigation';
 import { SiderIcon } from '@mezzanine-ui/icons';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import NavigationIconButton from './NavigationIconButton';
 
 export interface NavigationHeaderProps

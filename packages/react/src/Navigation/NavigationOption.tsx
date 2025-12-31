@@ -11,8 +11,8 @@ import {
 } from 'react';
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
 import {
-  ChevronUpIcon,
   ChevronDownIcon,
+  ChevronUpIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
 import { useClickAway } from '../hooks/useClickAway';
@@ -68,8 +68,8 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       children,
       className,
       defaultOpen = false,
-      icon,
       href,
+      icon,
       title,
       ...rest
     } = props;
@@ -129,13 +129,20 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       >
         <div
           className={cx(classes.content, classes.level(currentLevel))}
-          role="menuitem"
           onClick={() => {
             setOpen(!open);
 
             if (!children) setActivatedPath([...parentPath, currentKey]);
           }}
-          onKeyDown={() => {}}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              setOpen(!open);
+
+              if (!children) setActivatedPath([...parentPath, currentKey]);
+            }
+          }}
+          role="menuitem"
           tabIndex={0}
         >
           {icon && <Icon className={classes.icon} icon={icon} />}
