@@ -4,7 +4,7 @@ import DropdownStatus, { DropdownStatusProps } from './DropdownStatus';
 import { FolderIcon } from '@mezzanine-ui/icons';
 
 export default {
-  title: 'Data Entry/Dropdown/DropdownStatus',
+  title: 'Internal/Dropdown/DropdownStatus',
   component: DropdownStatus,
 } satisfies Meta<typeof DropdownStatus>;
 

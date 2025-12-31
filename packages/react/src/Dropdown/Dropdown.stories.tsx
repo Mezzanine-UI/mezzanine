@@ -13,7 +13,7 @@ import TextField from '../TextField';
 import { createDropdownKeydownHandler } from './dropdownKeydownHandler';
 
 export default {
-  title: 'Data Entry/Dropdown',
+  title: 'Internal/Dropdown',
   component: Dropdown,
 } satisfies Meta<typeof Dropdown>;
 

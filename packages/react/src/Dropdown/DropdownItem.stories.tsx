@@ -7,7 +7,7 @@ import Tag from '../Tag';
 import DropdownItem, { DropdownItemProps } from './DropdownItem';
 
 export default {
-  title: 'Data Entry/Dropdown/DropdownItem',
+  title: 'Internal/Dropdown/DropdownItem',
   component: DropdownItem,
 } satisfies Meta<typeof DropdownItem>;
 

@@ -6,7 +6,7 @@ import { CaretRightIcon, FolderIcon } from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 
 export default {
-  title: 'Data Entry/Dropdown/DropdownItemCard',
+  title: 'Internal/Dropdown/DropdownItemCard',
   component: DropdownItemCard,
 } satisfies Meta<typeof DropdownItemCard>;
 

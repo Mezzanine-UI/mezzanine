@@ -2,7 +2,7 @@ import { Meta, StoryObj } from '@storybook/react-webpack5';
 import DropdownAction, { DropdownActionProps } from './DropdownAction';
 
 export default {
-  title: 'Data Entry/Dropdown/DropdownAction',
+  title: 'Internal/Dropdown/DropdownAction',
   component: DropdownAction,
 } satisfies Meta<typeof DropdownAction>;
 
