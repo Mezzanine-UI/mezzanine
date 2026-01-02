@@ -388,10 +388,7 @@ $sticky-cell-z-index: 1;
   @include surface-bg;
 
   &--ellipsis {
-    overflow: hidden;
-    max-width: 100%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    @include typography.overflow-ellipsis();
   }
 
   &--align-start {
@@ -440,9 +437,7 @@ $sticky-cell-z-index: 1;
   }
 
   &__content {
-    display: inline-flex;
-    align-items: center;
-    max-width: 100%;
+    display: block;
   }
 }
 
