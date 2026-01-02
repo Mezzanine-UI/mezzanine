@@ -266,7 +266,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
 
     return (
       <thead className={cx(classes.header)} ref={ref}>
-        <tr className={classes.headerRow}>
+        <tr>
           {renderDragHandleHeader()}
           {renderExpandHeader()}
           {renderSelectionHeader()}

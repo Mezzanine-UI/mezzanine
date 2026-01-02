@@ -49,6 +49,13 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       transitionState,
     } = useTableContext();
 
+    const isDragging = useMemo(
+      () =>
+        (draggableProvided?.draggableProps.style as React.CSSProperties)
+          ?.position === 'fixed',
+      [draggableProvided?.draggableProps.style],
+    );
+
     const resolvedStyle = useMemo(
       () => ({
         ...style,
@@ -90,19 +97,6 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
 
       return false;
     }, [highlight, rowIndex]);
-
-    const handleRowClick = useCallback(() => {
-      // Future: support row click to expand or select
-    }, []);
-
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          handleRowClick();
-        }
-      },
-      [handleRowClick],
-    );
 
     const handleMouseLeave = useCallback(() => {
       highlight?.setHoveredCell(null, null);
@@ -230,21 +224,18 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
         aria-rowindex={rowIndex + 1}
         aria-selected={isSelected}
         className={cx(
-          classes.row,
+          classes.bodyRow,
           {
             [classes.bodyRowAdding]: isAdding,
             [classes.bodyRowDeleting]: isDeleting,
             [classes.bodyRowFadingOut]: isFadingOut,
             [classes.bodyRowHighlight]: isRowHighlighted,
-            [classes.rowExpanded]: isExpanded,
-            [classes.rowSelected]: isSelected,
+            [classes.bodyRowDragging]: isDragging,
           },
           className,
         )}
         data-index={rowIndex}
         data-row-key={rowKey}
-        onClick={handleRowClick}
-        onKeyDown={handleKeyDown}
         onMouseLeave={handleMouseLeave}
         ref={rowRef}
         tabIndex={0}

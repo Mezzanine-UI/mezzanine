@@ -919,51 +919,20 @@ export const VirtualScrolling: Story = {
 
 export const DraggableRows: Story = {
   render: function DraggableRowsStory() {
-    const [data, setData] = useState<DataType[]>([
-      {
-        address: 'New York No. 1 Lake Park',
-        age: 32,
-        key: '1',
-        name: 'John Brown',
-      },
-      {
-        address: 'London No. 1 Lake Park',
-        age: 42,
-        key: '2',
-        name: 'Jim Green',
-      },
-      {
-        address: 'Sydney No. 1 Lake Park',
-        age: 32,
-        key: '3',
-        name: 'Joe Black',
-      },
-      {
-        address: 'Tokyo No. 1 Lake Park',
-        age: 28,
-        key: '4',
-        name: 'Jane Doe',
-      },
-      {
-        address: 'Paris No. 1 Lake Park',
-        age: 35,
-        key: '5',
-        name: 'Jack Smith',
-      },
-    ]);
+    const [data, setData] = useState<DataType[]>(baseData);
 
     return (
       <div>
-        <p style={{ marginBottom: 16 }}>
-          Drag rows to reorder them. Current order:{' '}
-          {data.map((d) => d.name).join(' → ')}
-        </p>
+        <p style={{ marginBottom: 16 }}>Drag rows to reorder them</p>
         <Table<DataType>
           columns={baseColumns}
           dataSource={data}
           draggable={{
             enabled: true,
             onDragEnd: (newData) => setData(newData),
+          }}
+          scroll={{
+            y: 300,
           }}
         />
       </div>
