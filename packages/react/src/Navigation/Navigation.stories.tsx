@@ -23,12 +23,13 @@ export default {
 
 export const Playground: StoryFn<NavigationProps> = () => {
   const [active, setActive] = useState<string[]>();
+  const [search, setSearch] = useState('');
 
   return (
     <div style={{ height: '60vh' }}>
       <p style={{ height: '20px' }}>{active?.join(' , ')}</p>
       <Navigation onOptionClick={setActive} activatedPath={active}>
-        <Input variant="search" />
+        <Input value={search} onChange={(e) => setSearch(e.target.value)} />
         <NavigationHeader>
           <span
             aria-label="logo"
