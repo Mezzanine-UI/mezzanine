@@ -47,7 +47,7 @@ describe('<FormLabel />', () => {
 
     it('should render remark by span at first child of remark span', () => {
       const { getHostHTMLElement } = render(
-        <FormLabel remark="remark">Hello</FormLabel>,
+        <FormLabel optionalMarker="remark">Hello</FormLabel>,
       );
       const element = getHostHTMLElement();
       const { lastElementChild: remarkElement } = element;
@@ -62,7 +62,7 @@ describe('<FormLabel />', () => {
 
     it('should render remark icon at last child of remark span', () => {
       const { getHostHTMLElement } = render(
-        <FormLabel remarkIcon={<Icon icon={InfoCircleFilledIcon} />}>
+        <FormLabel informationIcon={<Icon icon={InfoCircleFilledIcon} />}>
           Hello
         </FormLabel>,
       );

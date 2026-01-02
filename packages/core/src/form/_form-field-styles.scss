@@ -6,123 +6,213 @@
 @use '../text-field';
 @use './form-field' as *;
 
-$preserve-margin-bottom: 24px !default;
-$label-gap: 4px !default;
-$asterisk-gap: 4px !default;
-$label-remark-gap: 32px !default;
-$remark-icon-size: 16px !default;
-$remark-icon-gap: 4px !default;
-$severity-icon-size: 16px !default;
-$severity-icon-gap: 4px !default;
-$message-gap: 4px !default;
+// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldSize
+$form-field-sizes: (
+  'horizontal-base',
+  'horizontal-tight',
+  'horizontal-narrow',
+  'horizontal-wide',
+  'stretch-tight',
+  'stretch-narrow',
+  'stretch-wide',
+  'vertical'
+);
 
-.#{$prefix} {
-  position: relative;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  margin-bottom: $preserve-margin-bottom;
+// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldHintTextColor
+$form-field-hint-text-colors: (
+  'info',
+  'warning',
+  'error',
+  'success',
+);
 
-  &__label {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    width: 100%;
-    margin-bottom: $label-gap;
-    color: palette.color(action-inactive);
+// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldCounterColor
+$form-field-counter-colors: (
+  'info',
+  'warning',
+  'error',
+);
 
-    @include typography.variant(h6);
-  }
-
-  &__asterisk,
-  &__remark {
-    @include typography.variant(caption);
-  }
-
-  &__asterisk {
-    margin-left: $asterisk-gap;
-    color: palette.color(error);
-    vertical-align: top;
-  }
-
-  &__remark {
-    display: inline-flex;
-    align-items: center;
-    margin-left: $label-remark-gap;
-
-    .#{icon.$prefix} {
-      font-size: $remark-icon-size;
-
-      &:not(:first-child) {
-        margin-left: $remark-icon-gap;
+@each $size in $form-field-sizes {
+  .#{$prefix}--#{$size} {
+    // 根據 size 設置不同的樣式
+    @if $size == 'horizontal-base' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      .#{$prefix}__label-area {
+        width: fit-content;
       }
-    }
-  }
-
-  &__severity-icon {
-    font-size: typography.px-to-rem($severity-icon-size);
-    margin-right: $severity-icon-gap;
-  }
-
-  &--full-width {
-    width: 100%;
-  }
-
-  @each $severity in $severities {
-    &--#{$severity} {
-      --#{$prefix}-severity-color: #{palette.color($severity)};
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, wide);
+      }
+    } @else if $size == 'horizontal-tight' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      .#{$prefix}__label-area {
+        width: spacing.semantic-variable(size, container, tight);
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, wide);
+      }
+    } @else if $size == 'horizontal-narrow' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      .#{$prefix}__label-area {
+        width: spacing.semantic-variable(size, container, slim);
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, wide);
+      }
+    } @else if $size == 'horizontal-wide' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      .#{$prefix}__label-area {
+        width: spacing.semantic-variable(size, container, narrow);
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, wide);
+      }
+    } @else if $size == 'stretch-tight' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      justify-content: space-between;
+      .#{$prefix}__label-area {
+        width: fit-content;
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, slim);
+      }
+    } @else if $size == 'stretch-narrow' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      justify-content: space-between;
+      .#{$prefix}__label-area {
+        width: fit-content;
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, standard);
+      }
+    } @else if $size == 'stretch-wide' {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      justify-content: space-between;
+      .#{$prefix}__label-area {
+        width: fit-content;
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, broad);
+      }
+    } @else if $size == 'vertical' {
+      display: flex;
+      flex-direction: column;
+      gap: spacing.semantic-variable(gap, tight);
+      .#{$prefix}__label-area {
+        width: fit-content;
+      }
+      .#{$prefix}__data-entry {
+        flex-grow: 1;
+        max-width: spacing.semantic-variable(size, container, wide);
+      }
     }
   }
 }
 
-/* @TODO
-* 以下是因應 Input 需求而製作的 Hint Text 樣式
-* 設計稿上有標注使用 Form Hint Text 樣式
-* 但 Form 本身還沒完成定義，待完成定義後要回頭確認是否有需要調整
-*/
+.#{$prefix}__label {
+  display: flex;
+  color: palette.semantic-variable(text, neutral-solid);
+
+  @include typography.semantic-variable(label-primary);
+
+  &__required-marker {
+    margin-right: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, brand);
+  }
+
+  &__optional-marker {
+    display: flex;
+    align-items: center;
+    margin-left: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, neutral);
+  }
+
+  &__information-marker {
+    margin-left: spacing.semantic-variable(gap, tiny);
+  }
+
+  &__colon {
+    margin-left: spacing.semantic-variable(gap, tight);
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+}
+
+.#{$prefix}__data-entry {
+  display: flex;
+  flex-direction: column;
+  margin-left: spacing.semantic-variable(gap, base);
+  gap: spacing.semantic-variable(gap, slim);
+}
+
+.#{$prefix}__hint-text-and-counter-area {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: spacing.semantic-variable(gap, base);
+}
+
+.#{$prefix}__counter {
+  @include typography.semantic-variable(annotation);
+
+  color: palette.semantic-variable(text, neutral);
+}
+
+@each $color in $form-field-counter-colors {
+  .#{$prefix}__counter--#{$color} {
+    @if $color == 'info' {
+      color: palette.semantic-variable(text, neutral);
+    } @else if $color == 'warning' {
+      color: palette.semantic-variable(text, warning);
+    } @else if $color == 'error' {
+      color: palette.semantic-variable(text, error);
+    }
+  }
+}
+
 .#{$prefix}__hint-text {
   display: flex;
   flex-flow: row nowrap;
+  flex-grow: 1;
+  align-items: center;
   gap: spacing.semantic-variable(gap, tiny);
-  align-items: flex-start;
   color: palette.semantic-variable(text, neutral);
 
   @include typography.semantic-variable(annotation);
+}
 
-  &__icon {
-    font-size: spacing.semantic-variable(size, element, narrow);
-  }
-
-  &--success {
-    color: palette.semantic-variable(text, success);
-
-    .#{$prefix}__hint-text__icon {
-      color: palette.semantic-variable(icon, success);
-    }
-  }
-
-  &--warning {
-    color: palette.semantic-variable(text, warning);
-
-    .#{$prefix}__hint-text__icon {
-      color: palette.semantic-variable(icon, warning);
-    }
-  }
-
-  &--error {
-    color: palette.semantic-variable(text, error);
-
-    .#{$prefix}__hint-text__icon {
-      color: palette.semantic-variable(icon, error);
-    }
-  }
-
-  &--info {
-    color: palette.semantic-variable(text, neutral);
-
-    .#{$prefix}__hint-text__icon {
-      color: palette.semantic-variable(icon, info);
+@each $color in $form-field-hint-text-colors {
+  .#{$prefix}__hint-text--#{$color} {
+    @if $color == 'info' {
+      color: palette.semantic-variable(text, neutral);
+    } @else if $color == 'warning' {
+      color: palette.semantic-variable(text, warning);
+    } @else if $color == 'error' {
+      color: palette.semantic-variable(text, error);
+    } @else if $color == 'success' {
+      color: palette.semantic-variable(text, success);
     }
   }
 }
