@@ -238,10 +238,6 @@ $sticky-cell-z-index: 1;
 .#{$header-prefix} {
   @include header-bg;
 
-  &__row {
-    border-block-end: 1px solid palette.semantic-variable(border, neutral-faint);
-  }
-
   &__cell {
     position: relative;
     box-sizing: border-box;
@@ -322,15 +318,13 @@ $sticky-cell-z-index: 1;
 
     &--dragging {
       filter: drop-shadow(0 4px 20px palette.semantic-variable(shadow, dark));
-    }
+      width: 100%;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
 
-    &--expanded {
-      border-block-end: none;
-    }
-
-    &--selected {
       td {
-        @include highlight-bg;
+        border-bottom: none;
       }
     }
 
