@@ -19,6 +19,7 @@ $background: background;
 
   overflow: hidden;
   background-color: palette.semantic-variable($background, base);
+  border-right: 1px solid palette.semantic-variable(separator, neutral-faint);
   color: palette.color(action-inactive);
   display: flex;
   flex-direction: column;
