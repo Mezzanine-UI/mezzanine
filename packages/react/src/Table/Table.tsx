@@ -41,7 +41,6 @@ import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
 import type { EmptyProps } from '../Empty';
-import { composeRefs } from '../utils/composeRefs';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 
@@ -159,7 +158,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     ...restProps
   } = props as TableNonVirtualizedProps<T>;
 
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const tableRef = useRef<HTMLTableElement | null>(null);
 
   // mock loading dataSource
@@ -257,6 +255,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const scrollState = useTableScroll({
     enabled: !nested,
   });
+
+  const { containerRef: scrollContainerRef, setContainerRef } = scrollState;
 
   // Fixed column offset calculations
   const fixedOffsetsState = useTableFixedOffsets({
@@ -421,55 +421,74 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     return baseStyle;
   }, [scroll?.x]);
 
-  const { setContainerRef } = scrollState;
+  // Create a stable ref callback for droppable integration
+  // We need to use a ref to store the latest droppableProvided.innerRef
+  // since it can change between renders
+  const droppableInnerRefRef = useRef<
+    ((instance: HTMLDivElement | null) => void) | null
+  >(null);
 
-  const renderMainTable = (droppableProvided?: DroppableProvided) => (
-    <TableContext.Provider value={contextValue}>
-      <TableDataContext.Provider value={dataContextValue}>
-        <div
-          className={cx(classes.host, className)}
-          ref={ref}
-          style={style}
-          {...restProps}
-        >
-          <div
-            {...droppableProvided?.droppableProps}
-            className={cx(classes.scrollContainer, {
-              [classes.sticky]: !!sticky,
-            })}
-            onScroll={scrollState.handleScroll}
-            ref={
-              droppableProvided
-                ? composeRefs([
-                    scrollContainerRef,
-                    (el) => setContainerRef(el),
-                    droppableProvided.innerRef,
-                  ])
-                : (el) => {
-                    scrollContainerRef.current = el;
-                    setContainerRef(el);
-                  }
-            }
-            style={scrollContainerStyle}
-          >
-            <table
-              className={cx(classes.root, sizeClass)}
-              ref={tableRef}
-              style={tableStyle}
-            >
-              <TableColGroup />
-              {showHeader && <TableHeader />}
-              <TableBody />
-              {droppableProvided?.placeholder ? (
-                <tbody>{droppableProvided.placeholder}</tbody>
-              ) : null}
-            </table>
-          </div>
-          {pagination && <TablePaginationComponent {...pagination} />}
-        </div>
-      </TableDataContext.Provider>
-    </TableContext.Provider>
+  const composedScrollContainerRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      // Call our setContainerRef
+      setContainerRef(element);
+
+      // Call droppable's innerRef if it exists
+      if (droppableInnerRefRef.current) {
+        droppableInnerRefRef.current(element);
+      }
+    },
+    [setContainerRef],
   );
+
+  const renderMainTable = (droppableProvided?: DroppableProvided) => {
+    if (droppableProvided) {
+      droppableInnerRefRef.current = droppableProvided.innerRef as (
+        instance: HTMLDivElement | null,
+      ) => void;
+    } else {
+      droppableInnerRefRef.current = null;
+    }
+
+    return (
+      <TableContext.Provider value={contextValue}>
+        <TableDataContext.Provider value={dataContextValue}>
+          <div
+            className={cx(classes.host, className)}
+            ref={ref}
+            style={style}
+            {...restProps}
+          >
+            <div
+              {...droppableProvided?.droppableProps}
+              className={cx(classes.scrollContainer, {
+                [classes.sticky]: !!sticky,
+              })}
+              onScroll={scrollState.handleScroll}
+              ref={
+                droppableProvided ? composedScrollContainerRef : setContainerRef
+              }
+              style={scrollContainerStyle}
+            >
+              <table
+                className={cx(classes.root, sizeClass)}
+                ref={tableRef}
+                style={tableStyle}
+              >
+                <TableColGroup />
+                {showHeader && <TableHeader />}
+                <TableBody />
+                {droppableProvided?.placeholder ? (
+                  <tbody>{droppableProvided.placeholder}</tbody>
+                ) : null}
+              </table>
+            </div>
+            {pagination && <TablePaginationComponent {...pagination} />}
+          </div>
+        </TableDataContext.Provider>
+      </TableContext.Provider>
+    );
+  };
 
   if (nested) {
     return renderMainTable();

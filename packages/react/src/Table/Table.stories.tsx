@@ -383,6 +383,10 @@ export const CreateDeleteTransition: Story = {
           <h4 style={{ margin: '0 0 8px 0' }}>
             GraphQL Pattern: mutation → refetch → updateDataSource
           </h4>
+          <p>
+            {`Please use "useTableDataSource" to manage data source with
+            create/delete`}
+          </p>
           <p style={{ color: '#666', fontSize: 14, margin: 0 }}>
             API returns <code>{`{ total: number, items: T[] }`}</code> format.
             Pagination uses offset + limit. New items are prepended.
@@ -988,7 +992,12 @@ export const Combined: Story = {
       getSubData: (record) => record.subData,
     });
 
-    const [data, setData] = useState<DataType[]>(baseData);
+    const { dataSource, transitionState, updateDataSource } =
+      useTableDataSource<DataType>({
+        initialData: baseData,
+        highlightDuration: 1000,
+        fadeOutDuration: 200,
+      });
 
     const [sortOrder, setSortOrder] = useState<{
       key: string;
@@ -1017,15 +1026,15 @@ export const Combined: Story = {
         onSort: (key, order) => {
           setSortOrder({ key, sortOrder: order });
           if (order) {
-            const sorted = [...data].sort((a, b) => {
+            const sorted = [...dataSource].sort((a, b) => {
               if (order === 'ascend') {
                 return a.age - b.age;
               }
               return b.age - a.age;
             });
-            setData(sorted);
+            updateDataSource(sorted);
           } else {
-            setData(baseData);
+            updateDataSource(baseData);
           }
         },
         title: 'Age',
@@ -1071,12 +1080,51 @@ export const Combined: Story = {
         dataIndex: 'key',
         fixed: 'end',
         key: 'action',
-        render: () => (
+        render: (record) => (
           <div style={{ display: 'flex', gap: 4 }}>
             <Button size="minor" variant="base-text-link">
               Edit
             </Button>
-            <Button size="minor" variant="destructive-text-link">
+            <Button
+              size="minor"
+              variant="destructive-text-link"
+              onClick={() => {
+                const isFirstLayer = dataSource.some(
+                  (item) => item.key === record.key,
+                );
+
+                if (isFirstLayer) {
+                  updateDataSource(
+                    dataSource.filter((item) => item.key !== record.key),
+                    { removedKeys: [record.key] },
+                  );
+                } else {
+                  const target = dataSource.find((item) =>
+                    item.subData?.some((sub) => sub.key === record.key),
+                  );
+
+                  if (target && target.subData) {
+                    const newSubData = target.subData.filter(
+                      (sub) => sub.key !== record.key,
+                    );
+
+                    const newDataSource = dataSource.map((item) => {
+                      if (item.key === target.key) {
+                        return {
+                          ...item,
+                          subData: newSubData,
+                        };
+                      }
+                      return item;
+                    });
+
+                    updateDataSource(newDataSource, {
+                      removedKeys: [record.key],
+                    });
+                  }
+                }
+              }}
+            >
               Delete
             </Button>
           </div>
@@ -1095,7 +1143,7 @@ export const Combined: Story = {
         </div>
         <Table<DataType>
           columns={combinedColumns}
-          dataSource={data}
+          dataSource={dataSource}
           expandable={{
             expandedRowRender: (record) => (
               <Table<DataType>
@@ -1122,9 +1170,10 @@ export const Combined: Story = {
           highlight="cross"
           draggable={{
             enabled: true,
-            onDragEnd: (newData) => setData(newData),
+            onDragEnd: (newData) => updateDataSource(newData),
             fixed: true,
           }}
+          transitionState={transitionState}
         />
       </div>
     );

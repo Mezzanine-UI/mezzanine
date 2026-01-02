@@ -13,6 +13,7 @@ import {
   type FixedType,
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
+import { calculateColumnWidths } from '../utils/calculateColumnWidths';
 import type { DraggableProvided } from '@hello-pangea/dnd';
 import { cx } from '../../utils/cx';
 import { useTableContext, useTableSuperContext } from '../TableContext';
@@ -96,53 +97,12 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
       if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
 
-      const availableWidth = containerWidth - actionColumnsWidth;
-
-      if (availableWidth <= 0) return null;
-
-      const widthMap = new Map<string, number>();
-
-      // First pass: identify columns with explicit width
-      let totalFixedWidth = 0;
-      const flexColumns: typeof columns = [];
-
-      columns.forEach((column) => {
-        const resizedWidth = getResizedColumnWidth?.(column.key);
-
-        if (resizedWidth !== undefined) {
-          widthMap.set(column.key, resizedWidth);
-          totalFixedWidth += resizedWidth;
-        } else if (column.width !== undefined) {
-          let width = column.width;
-
-          if (column.minWidth !== undefined && width < column.minWidth)
-            width = column.minWidth;
-          if (column.maxWidth !== undefined && width > column.maxWidth)
-            width = column.maxWidth;
-          widthMap.set(column.key, width);
-          totalFixedWidth += width;
-        } else {
-          flexColumns.push(column);
-        }
+      return calculateColumnWidths({
+        actionColumnsWidth,
+        columns,
+        containerWidth,
+        getResizedColumnWidth,
       });
-
-      // Second pass: distribute remaining width to flex columns
-      if (flexColumns.length > 0) {
-        const remainingWidth = availableWidth - totalFixedWidth;
-        const flexWidth = Math.max(0, remainingWidth / flexColumns.length);
-
-        flexColumns.forEach((column) => {
-          let width = flexWidth;
-
-          if (column.minWidth !== undefined && width < column.minWidth)
-            width = column.minWidth;
-          if (column.maxWidth !== undefined && width > column.maxWidth)
-            width = column.maxWidth;
-          widthMap.set(column.key, width);
-        });
-      }
-
-      return widthMap;
     }, [
       isDragging,
       containerWidth,
@@ -306,6 +266,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             [classes.bodyRowDeleting]: isDeleting,
             [classes.bodyRowFadingOut]: isFadingOut,
             [classes.bodyRowHighlight]: isRowHighlighted,
+            [classes.bodyRowSelected]: isSelected,
             [classes.bodyRowDragging]: isDragging,
           },
           className,
