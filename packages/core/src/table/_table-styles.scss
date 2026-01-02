@@ -8,9 +8,6 @@
 @use './table' as *;
 @use '../button/utils' as button-utils;
 
-// ============================================
-// Size Variables (using semantic spacing)
-// ============================================
 $header-cell: (
   main: (
     typography: body-highlight,
@@ -65,10 +62,6 @@ $icon-size: spacing.semantic-variable(size, element, base);
 $action-height: spacing.semantic-variable(size, element, gentle);
 $sticky-cell-z-index: 1;
 
-// ============================================
-// Mixins
-// ============================================
-
 @mixin text-color {
   color: palette.semantic-variable(text, neutral-solid);
 }
@@ -82,7 +75,15 @@ $sticky-cell-z-index: 1;
 }
 
 @mixin highlight-bg {
+  background-color: palette.semantic-variable("background", neutral-faint);
+}
+
+@mixin active-bg {
   background-color: palette.semantic-variable("background", brand-ghost);
+}
+
+@mixin active-hover-bg {
+  background-color: palette.semantic-variable("background", brand-subtle);
 }
 
 @mixin icon-size {
@@ -119,10 +120,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Scroll container (wrapper div for horizontal scroll)
-// ============================================
-
 .#{$scroll-container-prefix} {
   position: relative;
   overflow: auto;
@@ -150,10 +147,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Main table element
-// ============================================
-
 .#{$prefix} {
   box-sizing: border-box;
   width: 100%;
@@ -174,7 +167,6 @@ $sticky-cell-z-index: 1;
     border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
   }
 
-  // Sticky header
   &--sticky {
     thead {
       position: sticky;
@@ -183,7 +175,6 @@ $sticky-cell-z-index: 1;
     }
   }
 
-  // Size variants - using padding to control cell height
   &--main {
     th {
       @include typography.semantic-variable(map.get($header-cell, main, typography));
@@ -230,10 +221,6 @@ $sticky-cell-z-index: 1;
     opacity: 0.6;
   }
 }
-
-// ============================================
-// Header (thead)
-// ============================================
 
 .#{$header-prefix} {
   @include header-bg;
@@ -296,10 +283,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Body (tbody)
-// ============================================
-
 .#{$body-prefix} {
   &__virtual-container {
     position: relative;
@@ -307,12 +290,24 @@ $sticky-cell-z-index: 1;
   }
 
   &__row {
-    @include surface-bg;
+    @include surface-bg();
 
-    &:hover,
     &--highlight {
       td {
         @include highlight-bg;
+      }
+    }
+
+    &--selected {
+      td {
+        @include active-bg();
+      }
+
+      &:hover,
+      &.#{$body-prefix}__row--highlight {
+        td {
+          @include active-hover-bg();
+        }
       }
     }
 
@@ -330,7 +325,7 @@ $sticky-cell-z-index: 1;
 
     &--adding {
       td {
-        @include highlight-bg;
+        @include active-bg;
       }
     }
 
@@ -351,11 +346,8 @@ $sticky-cell-z-index: 1;
   }
 
   &__cell {
-    box-sizing: border-box;
     text-align: start;
     vertical-align: middle;
-
-    @include surface-bg;
   }
 
   &__cell-content {
@@ -369,17 +361,13 @@ $sticky-cell-z-index: 1;
       text-align: center;
       vertical-align: middle;
 
-      @include surface-bg;
+      @include surface-bg();
     }
   }
 }
 
-// ============================================
-// Cell common styles
-// ============================================
-
 .#{$cell-prefix} {
-  @include surface-bg;
+  @include surface-bg();
 
   &--ellipsis {
     @include typography.overflow-ellipsis();
@@ -401,7 +389,7 @@ $sticky-cell-z-index: 1;
   }
 
   &--highlight {
-    @include highlight-bg;
+    @include highlight-bg();
   }
 
   &--fixed {
@@ -435,10 +423,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Drag handle column
-// ============================================
-
 .#{$prefix}__drag-handle-cell {
   box-sizing: border-box;
   text-align: center;
@@ -456,10 +440,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Selection column
-// ============================================
-
 .#{$prefix}__selection-column {
   box-sizing: border-box;
   text-align: center;
@@ -472,10 +452,6 @@ $sticky-cell-z-index: 1;
   align-items: center;
   justify-content: center;
 }
-
-// ============================================
-// Expand column
-// ============================================
 
 .#{$prefix}__expand-cell {
   box-sizing: border-box;
@@ -499,10 +475,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Expanded row
-// ============================================
-
 .#{$prefix}__expanded-row {
   & > &__cell {
     background-color: palette.semantic-variable("background", neutral-ghost);
@@ -513,10 +485,6 @@ $sticky-cell-z-index: 1;
 .#{$prefix}__expanded-content {
   width: 100%;
 }
-
-// ============================================
-// Sort icons
-// ============================================
 
 .#{$prefix}__sort-icons {
   width: spacing.semantic-variable(size, element, base);
@@ -554,10 +522,6 @@ $sticky-cell-z-index: 1;
   }
 }
 
-// ============================================
-// Resize handle
-// ============================================
-
 .#{$resize-handle-prefix} {
   position: absolute;
   right: 0;
@@ -591,10 +555,6 @@ $sticky-cell-z-index: 1;
     }
   }
 }
-
-// ============================================
-// Empty state
-// ============================================
 
 .#{$prefix}__empty {
   min-height: 200px;

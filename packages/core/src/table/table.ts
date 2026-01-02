@@ -21,6 +21,7 @@ export const tableClasses = {
   bodyRowDragging: `${tableBodyPrefix}__row--dragging`,
   bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
+  bodyRowSelected: `${tableBodyPrefix}__row--selected`,
   bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
   bordered: `${tablePrefix}--bordered`,
   cell: tableCellPrefix,
