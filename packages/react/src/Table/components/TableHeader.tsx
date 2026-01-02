@@ -25,14 +25,10 @@ import { TableResizeHandle } from './TableResizeHandle';
 import { TableSelectionCell } from './TableSelectionCell';
 import Icon from '../../Icon';
 
-export interface TableHeaderProps {
-  className?: string;
-}
+export type TableHeaderProps = unknown;
 
 const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
-  function TableHeader(props, ref) {
-    const { className } = props;
-
+  function TableHeader(_, ref) {
     const {
       columns,
       draggable,
@@ -246,6 +242,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
                 [classes.headerCellFixed]: !!fixedPos,
               },
               column.className,
+              column.headerClassName,
             )}
             key={column.key}
             scope="col"
@@ -268,7 +265,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     };
 
     return (
-      <thead className={cx(classes.header, className)} ref={ref}>
+      <thead className={cx(classes.header)} ref={ref}>
         <tr className={classes.headerRow}>
           {renderDragHandleHeader()}
           {renderExpandHeader()}

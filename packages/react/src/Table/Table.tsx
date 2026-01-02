@@ -466,7 +466,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="mzn-table-v2-dnd">
+      <Droppable droppableId="mzn-table-dnd">
         {(provided) => (
           <div
             {...provided.droppableProps}

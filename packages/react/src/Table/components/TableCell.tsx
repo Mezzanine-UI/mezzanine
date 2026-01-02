@@ -162,7 +162,6 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
             [classes.cellFixedStart]: fixed === 'start',
             [classes.cellHighlight]: isCellHighlighted,
           },
-          column.className,
           className,
         )}
         colSpan={colSpan > 1 ? colSpan : undefined}
