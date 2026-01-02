@@ -17,6 +17,8 @@ export interface TableExpandCellProps {
   isHeader?: boolean;
   onClick?: VoidFunction;
   showShadow?: boolean;
+  /** Explicit width for dragging state */
+  width?: number;
 }
 
 const TableExpandCellInner = forwardRef<
@@ -33,6 +35,7 @@ const TableExpandCellInner = forwardRef<
     isHeader = false,
     onClick,
     showShadow = false,
+    width,
   } = props;
 
   const handleClick = useCallback(
@@ -49,6 +52,14 @@ const TableExpandCellInner = forwardRef<
   const CellComponent = isHeader ? 'th' : 'td';
 
   const cellStyle: React.CSSProperties = {};
+
+  // Apply explicit width for dragging state
+  if (width !== undefined) {
+    cellStyle.width = width;
+    cellStyle.minWidth = width;
+    cellStyle.maxWidth = width;
+    cellStyle.flexShrink = 0;
+  }
 
   if (fixed) {
     (cellStyle as Record<string, string>)['--fixed-start-offset'] =

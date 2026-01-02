@@ -2,9 +2,12 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
+  DRAG_HANDLE_COLUMN_WIDTH,
   DRAG_HANDLE_KEY,
+  EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   getRowKey,
+  SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
   tableClasses as classes,
   type FixedType,
@@ -65,7 +68,8 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       [style, rowHeight, draggableProvided?.draggableProps.style],
     );
 
-    const { containerWidth, scrollLeft } = useTableSuperContext();
+    const { containerWidth, getResizedColumnWidth, scrollLeft } =
+      useTableSuperContext();
 
     const rowKey = useMemo(() => getRowKey(record), [record]);
     const isSelected =
@@ -80,6 +84,74 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
     const isDeleting = transitionState?.deletingKeys.has(rowKey) ?? false;
     const isFadingOut = transitionState?.fadingOutKeys.has(rowKey) ?? false;
+
+    // Calculate column widths when dragging (since position: fixed breaks colgroup)
+    const draggingColumnWidths = useMemo(() => {
+      if (!isDragging || !containerWidth) return null;
+
+      // Calculate action columns total width
+      let actionColumnsWidth = 0;
+
+      if (draggable?.enabled) actionColumnsWidth += DRAG_HANDLE_COLUMN_WIDTH;
+      if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
+      if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
+
+      const availableWidth = containerWidth - actionColumnsWidth;
+
+      if (availableWidth <= 0) return null;
+
+      const widthMap = new Map<string, number>();
+
+      // First pass: identify columns with explicit width
+      let totalFixedWidth = 0;
+      const flexColumns: typeof columns = [];
+
+      columns.forEach((column) => {
+        const resizedWidth = getResizedColumnWidth?.(column.key);
+
+        if (resizedWidth !== undefined) {
+          widthMap.set(column.key, resizedWidth);
+          totalFixedWidth += resizedWidth;
+        } else if (column.width !== undefined) {
+          let width = column.width;
+
+          if (column.minWidth !== undefined && width < column.minWidth)
+            width = column.minWidth;
+          if (column.maxWidth !== undefined && width > column.maxWidth)
+            width = column.maxWidth;
+          widthMap.set(column.key, width);
+          totalFixedWidth += width;
+        } else {
+          flexColumns.push(column);
+        }
+      });
+
+      // Second pass: distribute remaining width to flex columns
+      if (flexColumns.length > 0) {
+        const remainingWidth = availableWidth - totalFixedWidth;
+        const flexWidth = Math.max(0, remainingWidth / flexColumns.length);
+
+        flexColumns.forEach((column) => {
+          let width = flexWidth;
+
+          if (column.minWidth !== undefined && width < column.minWidth)
+            width = column.minWidth;
+          if (column.maxWidth !== undefined && width > column.maxWidth)
+            width = column.maxWidth;
+          widthMap.set(column.key, width);
+        });
+      }
+
+      return widthMap;
+    }, [
+      isDragging,
+      containerWidth,
+      columns,
+      draggable?.enabled,
+      expansion,
+      getResizedColumnWidth,
+      selection,
+    ]);
 
     // Check if this row should be highlighted based on highlight mode
     const isRowHighlighted = useMemo(() => {
@@ -125,6 +197,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
           showShadow={showShadow ?? false}
+          width={isDragging ? DRAG_HANDLE_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -152,6 +225,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           onChange={() => selection.toggleRow(rowKey, record)}
           selected={isSelected}
           showShadow={showShadow ?? false}
+          width={isDragging ? SELECTION_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -181,6 +255,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixedOffset={offsetInfo?.offset ?? 0}
           onClick={() => expansion.toggleExpand(rowKey, record)}
           showShadow={showShadow ?? false}
+          width={isDragging ? EXPANSION_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -209,6 +284,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             record={record}
             rowIndex={rowIndex}
             showShadow={showShadow ?? false}
+            width={draggingColumnWidths?.get(column.key)}
           />
         );
       });

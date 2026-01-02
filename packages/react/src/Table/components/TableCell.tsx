@@ -24,6 +24,8 @@ export interface TableCellProps<T extends TableDataSource = TableDataSource> {
   /** Whether to show shadow on this cell (only for edge fixed columns) */
   showShadow?: boolean;
   style?: React.CSSProperties;
+  /** Explicit width for dragging state (when position: fixed breaks colgroup) */
+  width?: number;
 }
 
 const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
@@ -40,6 +42,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       rowIndex,
       showShadow = false,
       style,
+      width,
     } = props;
 
     const { highlight } = useTableContext();
@@ -55,8 +58,17 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
     }, [column, record, rowIndex]);
 
     // Width is managed by colgroup, set fixed position offset via CSS variable
+    // When width is provided (dragging state), apply it directly
     const cellStyle = useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = { ...style };
+
+      // Apply explicit width for dragging state
+      if (width !== undefined) {
+        baseStyle.width = width;
+        baseStyle.minWidth = width;
+        baseStyle.maxWidth = width;
+        baseStyle.flexShrink = 0;
+      }
 
       // Set CSS variable for fixed column positioning
       if (fixed === 'start') {
@@ -68,7 +80,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       }
 
       return baseStyle;
-    }, [style, fixed, fixedOffset]);
+    }, [style, fixed, fixedOffset, width]);
 
     const alignClass = getCellAlignClass(column.align);
 

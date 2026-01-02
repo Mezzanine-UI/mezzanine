@@ -18,6 +18,8 @@ export interface TableSelectionCellProps {
   onChange: () => void;
   selected: boolean;
   showShadow?: boolean;
+  /** Explicit width for dragging state */
+  width?: number;
 }
 
 const TableSelectionCellInner = forwardRef<
@@ -36,11 +38,20 @@ const TableSelectionCellInner = forwardRef<
     onChange,
     selected,
     showShadow = false,
+    width,
   } = props;
 
   const CellComponent = isHeader ? 'th' : 'td';
 
   const cellStyle: React.CSSProperties = {};
+
+  // Apply explicit width for dragging state
+  if (width !== undefined) {
+    cellStyle.width = width;
+    cellStyle.minWidth = width;
+    cellStyle.maxWidth = width;
+    cellStyle.flexShrink = 0;
+  }
 
   if (fixed) {
     (cellStyle as Record<string, string>)['--fixed-start-offset'] =

@@ -1118,13 +1118,13 @@ export const Combined: Story = {
             getCheckboxProps: parentGetCheckboxProps,
             fixed: true,
           }}
-          scroll={{ x: 1000, y: 300, virtualized: true }}
+          scroll={{ x: 1000, y: 300 }}
           highlight="cross"
-          // draggable={{
-          //   enabled: true,
-          //   onDragEnd: (newData) => setData(newData),
-          //   // fixed: true,
-          // }}
+          draggable={{
+            enabled: true,
+            onDragEnd: (newData) => setData(newData),
+            fixed: true,
+          }}
         />
       </div>
     );
