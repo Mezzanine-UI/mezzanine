@@ -3,3 +3,16 @@
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/typography';
 @use './description' as *;
+
+.#{$title-prefix} {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: spacing.semantic-variable(gap, tight);
+  color: palette.semantic-variable(text, neutral);
+
+  &__text {
+    @include typography.semantic-variable(body);
+    color: palette.semantic-variable(text, neutral) !important;
+  }
+}
