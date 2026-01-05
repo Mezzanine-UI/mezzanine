@@ -27,6 +27,7 @@ export const tableClasses = {
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
   bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
   bordered: `${tablePrefix}--bordered`,
+  bulkActions: `${tablePrefix}__bulk-actions`,
   cell: tableCellPrefix,
   cellAlignCenter: `${tableCellPrefix}--align-center`,
   cellAlignEnd: `${tableCellPrefix}--align-end`,
