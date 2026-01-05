@@ -1,6 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import DescriptionTitle from './DescriptionTitle';
+import DescriptionContent from './DescriptionContent';
 
 export default {
   title: 'Data Display/Description',
@@ -32,6 +33,20 @@ export const Title: Story = {
       <DescriptionTitle badge="dot-success" icon={QuestionOutlineIcon}>
         Title
       </DescriptionTitle>
+    </div>
+  ),
+};
+
+export const Content: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}
+    >
+      <DescriptionContent>Content</DescriptionContent>
     </div>
   ),
 };
