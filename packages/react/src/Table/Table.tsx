@@ -10,7 +10,9 @@ import {
   type TableDraggable,
   type TableExpandable,
   type TableRowSelection,
+  type TableRowSelectionCheckbox,
   type TableScroll,
+  type TableBulkActions as TableBulkActionsType,
 } from '@mezzanine-ui/core/table';
 import {
   DragDropContext,
@@ -442,6 +444,24 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     [setContainerRef],
   );
 
+  /** Feature: bulk actions */
+  const bulkActionsConfig = useMemo(() => {
+    if (!selectionState || selectionState.mode !== 'checkbox') {
+      return null;
+    }
+
+    const checkboxConfig =
+      selectionState.config as TableRowSelectionCheckbox<T>;
+
+    return {
+      enabled:
+        !!checkboxConfig.bulkActions && selectionState.selectedRowKeys.length,
+      bulkActions: checkboxConfig.bulkActions as TableBulkActionsType,
+      onClearSelection: () => checkboxConfig.onChange([], null, []),
+      selectedRowKeys: selectionState.selectedRowKeys,
+    };
+  }, [selectionState]);
+
   const renderMainTable = (droppableProvided?: DroppableProvided) => {
     if (droppableProvided) {
       droppableInnerRefRef.current = droppableProvided.innerRef as (
@@ -485,7 +505,13 @@ function TableInner<T extends TableDataSource = TableDataSource>(
               </table>
             </div>
             {pagination && <TablePaginationComponent {...pagination} />}
-            <TableBulkActions />
+            {bulkActionsConfig?.enabled ? (
+              <TableBulkActions
+                bulkActions={bulkActionsConfig.bulkActions}
+                onClearSelection={bulkActionsConfig.onClearSelection}
+                selectedRowKeys={bulkActionsConfig.selectedRowKeys}
+              />
+            ) : null}
           </div>
         </TableDataContext.Provider>
       </TableContext.Provider>

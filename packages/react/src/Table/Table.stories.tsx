@@ -10,6 +10,13 @@ import type {
   TableColumn,
   TableDataSourceWithKey,
 } from '@mezzanine-ui/core/table';
+import {
+  CopyIcon,
+  DotHorizontalIcon,
+  DownloadIcon,
+  FolderMoveIcon,
+  TrashIcon,
+} from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 import Button from '../Button';
 import Toggle from '../Toggle';
@@ -631,6 +638,117 @@ export const WithRowSelection: Story = {
   },
 };
 
+export const WithBulkActions: Story = {
+  render: function WithBulkActionsStory() {
+    // full example
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
+    const originData = useMemo(() => {
+      return Array.from({ length: 100 }, (_, i) => ({
+        address: `Address ${i + 1}`,
+        age: 20 + (i % 50),
+        key: String(i + 1),
+        name: `User ${i + 1}`,
+        disabled: i % 4 === 0,
+      }));
+    }, []);
+
+    const paginationData = useMemo(() => {
+      return originData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      );
+    }, [currentPage, itemsPerPage, originData]);
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
+      [],
+    );
+
+    return (
+      <div>
+        <div
+          style={{
+            margin: '0 0 16px',
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '4px',
+          }}
+        >
+          <span>Mode: checkbox + bulkActions</span>
+          <span>- Selected: [{selectedRowKeys.join(', ')}]</span>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={paginationData}
+          rowSelection={{
+            mode: 'checkbox',
+            bulkActions: {
+              mainActions: [
+                {
+                  icon: FolderMoveIcon,
+                  label: 'Move',
+                  onClick: () => {},
+                },
+                {
+                  icon: CopyIcon,
+                  label: 'Copy',
+                  onClick: () => {},
+                },
+                {
+                  icon: DownloadIcon,
+                  label: 'Download',
+                  onClick: () => {},
+                },
+              ],
+              destructiveAction: {
+                icon: TrashIcon,
+                label: 'Delete',
+                onClick: () => {},
+              },
+              overflowAction: {
+                icon: DotHorizontalIcon,
+                label: 'More',
+                onSelect: (option, keys) => {
+                  // eslint-disable-next-line no-console
+                  console.log('Overflow action:', option, keys);
+                },
+                options: [
+                  { id: 'opt1', name: 'Option 1' },
+                  { id: 'opt2', name: 'Option 2' },
+                  { id: 'opt3', name: 'Option 3' },
+                ],
+                placement: 'top',
+              },
+              renderSelectionSummary: (count: number) =>
+                `已選擇 ${count} 筆資料`,
+            },
+            onChange: (keys) => setSelectedRowKeys(keys),
+            selectedRowKeys,
+            isSelectionDisabled: (record) =>
+              (record as (typeof paginationData)[number]).disabled,
+          }}
+          pagination={{
+            current: currentPage,
+            onChange: (page) => setCurrentPage(page),
+            total: 100,
+            showPageSizeOptions: true,
+            pageSizeLabel: '每頁顯示：',
+            pageSize: itemsPerPage,
+            renderResultSummary: (from, to, total) => {
+              return `${from}-${to} 筆，共 ${total} 筆`;
+            },
+            showJumper: true,
+            inputPlaceholder: '頁碼',
+            hintText: '前往',
+            buttonText: '確定',
+          }}
+        />
+      </div>
+    );
+  },
+};
+
 export const WithPagination: Story = {
   render: function WithPaginationStory() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -1161,6 +1279,27 @@ export const Combined: Story = {
           resizable
           rowSelection={{
             mode: 'checkbox',
+            bulkActions: {
+              mainActions: [
+                {
+                  icon: CopyIcon,
+                  label: 'Copy',
+                  onClick: () => {},
+                },
+                {
+                  icon: DownloadIcon,
+                  label: 'Download',
+                  onClick: () => {},
+                },
+              ],
+              destructiveAction: {
+                icon: TrashIcon,
+                label: 'Delete',
+                onClick: () => {},
+              },
+              renderSelectionSummary: () =>
+                `${totalSelectionCount} items selected`,
+            },
             onChange: parentOnChange,
             selectedRowKeys: parentSelectedKeys,
             getCheckboxProps: parentGetCheckboxProps,
