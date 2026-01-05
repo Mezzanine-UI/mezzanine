@@ -22,7 +22,8 @@
       }
 
       @if $width == stretch {
-        width: 100%;
+        width: auto;
+        flex: 1;
       }
 
       @if $width == hug {
@@ -40,6 +41,7 @@
 .#{$content-prefix} {
   @include typography.semantic-variable(body);
   color: palette.semantic-variable(text, neutral-solid);
+  width: fit-content;
 }
 
 .#{$group-prefix} {
