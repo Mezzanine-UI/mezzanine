@@ -383,7 +383,7 @@ $destructive-ghost: (
   enable: (
     text-color: palette.semantic-variable(text, error),
     icon-color: palette.semantic-variable(icon, error),
-    background-color: palette.semantic-variable(background, base),
+    background-color: none,
     border-color: none,
     focus-color: none,
   ),
@@ -518,6 +518,52 @@ $inverse: (
   ),
 );
 
+$inverse-ghost: (
+  enable: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(surface, ghost),
+    border-color: none,
+    focus-color: none,
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable(surface, subtle),
+    border-color: none,
+    focus-color: none,
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, neutral-solid),
+    icon-color: palette.semantic-variable(icon, neutral-solid),
+    background-color: palette.semantic-variable(background, base),
+    border-color: palette.semantic-variable(border, fixed-light),
+    focus-color: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+  // 設計未定義
+  loading: (
+    text-color: none,
+    icon-color: none,
+    background-color: none,
+    border-color: none,
+    focus-color: none,
+  ),
+);
+
 // Variant hierarchy map - 將所有 variants 整合
 $variant-hierarchy: (
   base-primary: $base-primary,
@@ -531,6 +577,7 @@ $variant-hierarchy: (
   destructive-ghost: $destructive-ghost,
   destructive-text-link: $destructive-text-link,
   inverse: $inverse,
+  inverse-ghost: $inverse-ghost,
 );
 
 // Size: main
@@ -796,7 +843,7 @@ $size-configs: (
       @include _apply-variant-states($variant);
 
       // Inverse variant 的所有 size 都使用 button typography
-      @if $variant == 'inverse' {
+      @if $variant == 'inverse' or $variant == 'inverse-ghost' {
         @each $size in $sizes {
           &.#{$prefix}--#{$size} {
             @include _apply-size($size, inverse);
