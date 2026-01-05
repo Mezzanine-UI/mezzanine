@@ -160,34 +160,74 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
 export type TableColumn<T extends TableDataSource = TableDataSource> =
   TableColumnBase<T>;
 
-/** Row selection configuration */
-export interface TableRowSelection<
+/** Selection mode for row selection */
+export type TableSelectionMode = 'checkbox' | 'radio';
+
+/** Base row selection configuration */
+export interface TableRowSelectionBase<
   T extends TableDataSource = TableDataSource,
 > {
   /** Fixed position of the selection column */
   fixed?: boolean;
+  /** Determine if the selection control is disabled for a row */
+  isSelectionDisabled?: (record: T) => boolean;
+}
+
+/** Checkbox mode row selection configuration */
+export interface TableRowSelectionCheckbox<
+  T extends TableDataSource = TableDataSource,
+> extends TableRowSelectionBase<T> {
+  /**
+   * Selection mode
+   */
+  mode: 'checkbox';
   /** Get checkbox props for each row */
   getCheckboxProps?: (record: T) => {
     indeterminate?: boolean;
     selected?: boolean;
   };
-  /** Determine if the checkbox is disabled for a row */
-  isCheckboxDisabled?: (record: T) => boolean;
   /** Hide select all checkbox in header */
   hideSelectAll?: boolean;
+  /** Callback when select all is triggered, function called after onChange */
+  onSelectAll?: (type: 'all' | 'none') => void;
+  /** Preserve selected row keys when toggle select All even when data changes */
+  preserveSelectedRowKeys?: boolean;
   /** Callback when selection changes */
   onChange: (
     selectedRowKeys: (string | number)[],
     selectedRow: T | null,
     selectedRows: T[],
   ) => void;
-  /** Callback when select all is triggered, function called after onChange */
-  onSelectAll?: (type: 'all' | 'none') => void;
-  /** Preserve selected row keys when toggle select All even when data changes */
-  preserveSelectedRowKeys?: boolean;
   /** Array of selected row keys */
   selectedRowKeys: (string | number)[];
 }
+
+/** Radio mode row selection configuration */
+export interface TableRowSelectionRadio<
+  T extends TableDataSource = TableDataSource,
+> extends TableRowSelectionBase<T> {
+  /** Selection mode */
+  mode: 'radio';
+  /** Callback when selection changes */
+  onChange: (selectedRowKey: string | number, selectedRow: T | null) => void;
+  /** Array of selected row keys */
+  selectedRowKey: string | number | null | undefined;
+  /** Not available in radio mode */
+  getCheckboxProps?: never;
+  /** Not available in radio mode */
+  isCheckboxDisabled?: never;
+  /** Not available in radio mode */
+  hideSelectAll?: never;
+  /** Not available in radio mode */
+  onSelectAll?: never;
+  /** Not available in radio mode */
+  preserveSelectedRowKeys?: never;
+}
+
+/** Row selection configuration - discriminated union */
+export type TableRowSelection<T extends TableDataSource = TableDataSource> =
+  | TableRowSelectionCheckbox<T>
+  | TableRowSelectionRadio<T>;
 
 /** Scroll configuration */
 export interface TableScroll {
