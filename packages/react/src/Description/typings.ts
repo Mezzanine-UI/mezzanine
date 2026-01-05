@@ -1,8 +1,10 @@
+import { ReactElement } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
 import {
   DescriptionWidthType,
   DescriptionSize,
+  DescriptionOrientation,
 } from '@mezzanine-ui/core/description';
 import { Placement } from '@floating-ui/react-dom';
 
@@ -33,4 +35,11 @@ export interface DescriptionContentProps {
   className?: string;
   children: string;
   size?: DescriptionSize;
+}
+
+export interface DescriptionGroupProps {
+  className?: string;
+  children: [ReactElement, ReactElement];
+  orientation?: DescriptionOrientation;
+  widthType?: Extract<DescriptionWidthType, 'narrow' | 'wide' | 'stretch'>;
 }

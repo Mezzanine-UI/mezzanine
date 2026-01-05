@@ -2,6 +2,7 @@ import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import DescriptionTitle from './DescriptionTitle';
 import DescriptionContent from './DescriptionContent';
+import DescriptionGroup from './DescriptionGroup';
 
 export default {
   title: 'Data Display/Description',
@@ -48,5 +49,14 @@ export const Content: Story = {
     >
       <DescriptionContent>Content</DescriptionContent>
     </div>
+  ),
+};
+
+export const Group: Story = {
+  render: () => (
+    <DescriptionGroup widthType="wide">
+      <DescriptionTitle>Title</DescriptionTitle>
+      <DescriptionContent>Content</DescriptionContent>
+    </DescriptionGroup>
   ),
 };

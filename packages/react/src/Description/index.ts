@@ -1,3 +1,7 @@
-export type { DescriptionTitleProps, DescriptionContentProps } from './typings';
+export type {
+  DescriptionTitleProps,
+  DescriptionContentProps,
+  DescriptionGroupProps,
+} from './typings';
 export { default as DescriptionTitle } from './DescriptionTitle';
 export { default as DescriptionContent } from './DescriptionContent';

@@ -1,3 +1,5 @@
+'use client';
+
 import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
