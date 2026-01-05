@@ -17,13 +17,14 @@ import {
   QuestionOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { cx } from '../../utils/cx';
+import Dropdown from '../../Dropdown';
+import Icon from '../../Icon';
 import Tooltip from '../../Tooltip';
 import { useTableContext, useTableSuperContext } from '../TableContext';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableResizeHandle } from './TableResizeHandle';
 import { TableSelectionCell } from './TableSelectionCell';
-import Icon from '../../Icon';
 
 export type TableHeaderProps = unknown;
 
@@ -190,13 +191,21 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     const renderMenuIcon = (column: TableColumn) => {
       if (!column.titleMenu) return null;
 
-      /** @TODO wait for dropdown component */
+      const { maxHeight, onSelect, options, placement } = column.titleMenu;
+
       return (
-        <Icon
-          size={16}
-          icon={DotVerticalIcon}
-          className={classes.headerCellIcon}
-        />
+        <Dropdown
+          maxHeight={maxHeight}
+          onSelect={onSelect}
+          options={options}
+          placement={placement}
+        >
+          <Icon
+            className={classes.headerCellIcon}
+            icon={DotVerticalIcon}
+            size={16}
+          />
+        </Dropdown>
       );
     };
 

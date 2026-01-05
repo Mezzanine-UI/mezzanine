@@ -1005,7 +1005,14 @@ export const Combined: Story = {
         key: 'name',
         title: 'Name',
         titleHelp: 'This is the name column',
-        titleMenu: 'Menu',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+            { id: 'opt3', name: 'Option 3' },
+          ],
+          onSelect: () => {},
+        },
         width: 150,
         minWidth: 100,
         maxWidth: 300,
