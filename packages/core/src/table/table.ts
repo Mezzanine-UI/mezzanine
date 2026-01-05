@@ -215,8 +215,6 @@ export interface TableRowSelectionRadio<
   /** Not available in radio mode */
   getCheckboxProps?: never;
   /** Not available in radio mode */
-  isCheckboxDisabled?: never;
-  /** Not available in radio mode */
   hideSelectAll?: never;
   /** Not available in radio mode */
   onSelectAll?: never;
