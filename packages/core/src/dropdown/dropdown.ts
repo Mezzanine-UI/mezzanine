@@ -2,21 +2,19 @@ import type { IconDefinition } from '@mezzanine-ui/icons';
 
 export const dropdownPrefix = 'mzn-dropdown';
 
-export type dropdownPlacement = 'top' | 'bottom' | 'left' | 'right';
+export type DropdownStatus = 'loading' | 'empty';
 
-export type dropdownStatus = 'loading' | 'empty';
+export type DropdownMode = 'single' | 'multiple';
 
-export type dropdownMode = 'single' | 'multiple';
+export type DropdownType = 'default' | 'tree' | 'grouped';
 
-export type dropdownType = 'default' | 'tree' | 'grouped';
+export type DropdownItemLevel = 0 | 1 | 2;
 
-export type dropdownItemLevel = 0 | 1 | 2;
+export type DropdownItemValidate = 'default' | 'danger';
 
-export type dropdownItemValidate = 'default' | 'danger';
+export type DropdownCheckPosition = 'prepend' | 'append' | 'none';
 
-export type dropdownCheckPosition = 'prepend' | 'append' | 'none';
-
-export type dropdownInputPosition = 'inside' | 'outside';
+export type DropdownInputPosition = 'inside' | 'outside';
 
 /**
  * Base dropdown option interface
@@ -47,11 +45,11 @@ export interface DropdownOption {
   /**
    * The validation type of the dropdown option.
    */
-  validate?: dropdownItemValidate;
+  validate?: DropdownItemValidate;
   /**
    * The position of the checkbox.
    */
-  checkSite?: dropdownCheckPosition;
+  checkSite?: DropdownCheckPosition;
   /**
    * The children options for tree/grouped structure.
    * If provided, this option will be rendered as a group with expand/collapse functionality.
@@ -120,7 +118,7 @@ export type DropdownOptionTree = DropdownOptionTreeLevel3;
  * - 'grouped': array with one level of children (children cannot have children)
  * - 'tree': array with nested children up to 3 levels
  */
-export type DropdownOptionsByType<T extends dropdownType | undefined> =
+export type DropdownOptionsByType<T extends DropdownType | undefined> =
   T extends 'default'
     ? DropdownOptionFlat[]
     : T extends 'grouped'
@@ -131,15 +129,15 @@ export type DropdownOptionsByType<T extends dropdownType | undefined> =
 
 export interface DropdownItemSharedProps {
   disabled?: boolean;
-  mode?: dropdownMode;
+  mode?: DropdownMode;
   onSelect?: (option: DropdownOption) => void;
-  type?: dropdownType;
+  type?: DropdownType;
   value?: string | string[];
 }
 
 export const dropdownClasses = {
   root: `${dropdownPrefix}`,
-  inputPosition: (inputPosition: dropdownInputPosition) =>
+  inputPosition: (inputPosition: DropdownInputPosition) =>
     `${dropdownPrefix}--${inputPosition}`,
   // dropdown list
   list: `${dropdownPrefix}-list`,
@@ -162,7 +160,7 @@ export const dropdownClasses = {
   cardActive: `${dropdownPrefix}-item-card--active`,
   cardDisabled: `${dropdownPrefix}-item-card--disabled`,
   cardUnderline: `${dropdownPrefix}-item-card-underline`,
-  cardLevel: (level: dropdownItemLevel) =>
+  cardLevel: (level: DropdownItemLevel) =>
     `${dropdownPrefix}-item-card--level-${level}`,
   cardBody: `${dropdownPrefix}-item-card-body`,
   cardTitle: `${dropdownPrefix}-item-card-title`,
