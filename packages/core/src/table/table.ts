@@ -56,7 +56,7 @@ export const tableClasses = {
   headerCellFixed: `${tableHeaderPrefix}__cell--fixed`,
   headerCellTitle: `${tableHeaderPrefix}__cell-title`,
   headerCellIcon: `${tableHeaderPrefix}__cell-icon`,
-  host: tablePrefix,
+  host: `${tablePrefix}-host`,
   resizeHandle: tableResizeHandlePrefix,
   resizeHandleActive: `${tableResizeHandlePrefix}--active`,
   root: tablePrefix,

@@ -120,6 +120,16 @@ $sticky-cell-z-index: 1;
   }
 }
 
+.#{$prefix}-host {
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
 .#{$scroll-container-prefix} {
   position: relative;
   overflow: auto;
@@ -148,8 +158,6 @@ $sticky-cell-z-index: 1;
 }
 
 .#{$prefix} {
-  box-sizing: border-box;
-  width: 100%;
   min-width: var(--table-scroll-x, 100%);
   border-collapse: separate;
   border-spacing: 0;
@@ -157,10 +165,6 @@ $sticky-cell-z-index: 1;
 
   @include text-color;
   @include surface-bg;
-
-  * {
-    box-sizing: border-box;
-  }
 
   th,
   td {
