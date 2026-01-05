@@ -484,6 +484,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
               </table>
             </div>
             {pagination && <TablePaginationComponent {...pagination} />}
+            {/** @TODO Table bulk actions render here */}
           </div>
         </TableDataContext.Provider>
       </TableContext.Provider>
