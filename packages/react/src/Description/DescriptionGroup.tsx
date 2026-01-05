@@ -17,7 +17,14 @@ const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
 
     return (
       <DescriptionGroupContext.Provider value={{ widthType }}>
-        <div className={cx(classes.groupHost, className)} ref={ref}>
+        <div
+          className={cx(
+            classes.groupHost,
+            classes.groupOrientation(orientation),
+            className,
+          )}
+          ref={ref}
+        >
           {children}
         </div>
       </DescriptionGroupContext.Provider>

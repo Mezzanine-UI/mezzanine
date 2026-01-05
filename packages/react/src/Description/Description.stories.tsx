@@ -47,16 +47,29 @@ export const Content: Story = {
         gap: '8px',
       }}
     >
-      <DescriptionContent>Content</DescriptionContent>
+      <DescriptionContent size="main">Main Content</DescriptionContent>
+      <DescriptionContent size="sub">Sub Content</DescriptionContent>
     </div>
   ),
 };
 
 export const Group: Story = {
   render: () => (
-    <DescriptionGroup widthType="wide">
-      <DescriptionTitle>Title</DescriptionTitle>
-      <DescriptionContent>Content</DescriptionContent>
-    </DescriptionGroup>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '20px',
+      }}
+    >
+      <DescriptionGroup widthType="narrow">
+        <DescriptionTitle>Title</DescriptionTitle>
+        <DescriptionContent>Content</DescriptionContent>
+      </DescriptionGroup>
+      <DescriptionGroup orientation="vertical">
+        <DescriptionTitle>Title</DescriptionTitle>
+        <DescriptionContent>Content</DescriptionContent>
+      </DescriptionGroup>
+    </div>
   ),
 };

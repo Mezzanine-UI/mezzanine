@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
 import {
@@ -34,12 +34,14 @@ export type DescriptionTitleProps =
 export interface DescriptionContentProps {
   className?: string;
   children: string;
+  prefix?: ReactNode;
   size?: DescriptionSize;
+  suffix?: ReactNode;
 }
 
 export interface DescriptionGroupProps {
   className?: string;
-  children: [ReactElement, ReactElement];
+  children: ReactElement[];
   orientation?: DescriptionOrientation;
   widthType?: Extract<DescriptionWidthType, 'narrow' | 'wide' | 'stretch'>;
 }

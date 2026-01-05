@@ -7,11 +7,20 @@ import { DescriptionContentProps } from '.';
 
 const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
   function DescriptionContent(props, ref) {
-    const { className, children } = props;
+    const { className, children, prefix, size = 'main', suffix } = props;
 
     return (
-      <div className={cx(classes.contentHost, className)} ref={ref}>
+      <div
+        className={cx(
+          classes.contentHost,
+          classes.contentSize(size),
+          className,
+        )}
+        ref={ref}
+      >
+        {prefix}
         <span>{children}</span>
+        {suffix}
       </div>
     );
   },
