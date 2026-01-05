@@ -17,6 +17,10 @@ export const descriptionClasses = {
     `${descriptionTitlePrefix}--${width}`,
   // content
   contentHost: descriptionContentPrefix,
+  contentSize: (size: DescriptionSize) =>
+    `${descriptionContentPrefix}--${size}`,
   // group
   groupHost: descriptionGroupPrefix,
+  groupOrientation: (orientation: DescriptionOrientation) =>
+    `${descriptionGroupPrefix}--${orientation}`,
 } as const;

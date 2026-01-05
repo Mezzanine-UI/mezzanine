@@ -36,3 +36,22 @@
     color: palette.semantic-variable(text, neutral) !important;
   }
 }
+
+.#{$content-prefix} {
+  @include typography.semantic-variable(body);
+  color: palette.semantic-variable(text, neutral-solid);
+}
+
+.#{$group-prefix} {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  justify-content: flex-start;
+  column-gap: spacing.semantic-variable(gap, base);
+
+  &--vertical {
+    flex-direction: column;
+    row-gap: spacing.semantic-variable(gap, tight);
+  }
+}
