@@ -49,6 +49,12 @@ export const Content: Story = {
     >
       <DescriptionContent size="main">Main Content</DescriptionContent>
       <DescriptionContent size="sub">Sub Content</DescriptionContent>
+      <DescriptionContent size="main" type="statistic">
+        Main Statistic
+      </DescriptionContent>
+      <DescriptionContent size="sub" type="statistic">
+        Sub Statistic
+      </DescriptionContent>
     </div>
   ),
 };

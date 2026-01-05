@@ -4,6 +4,7 @@ import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
 import {
   DescriptionWidthType,
   DescriptionSize,
+  DescriptionContentType,
   DescriptionOrientation,
 } from '@mezzanine-ui/core/description';
 import { Placement } from '@floating-ui/react-dom';
@@ -37,6 +38,7 @@ export interface DescriptionContentProps {
   prefix?: ReactNode;
   size?: DescriptionSize;
   suffix?: ReactNode;
+  type?: DescriptionContentType;
 }
 
 export interface DescriptionGroupProps {
