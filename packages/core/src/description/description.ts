@@ -3,6 +3,7 @@ import { GeneralSize } from '@mezzanine-ui/system/size';
 
 export type DescriptionSize = Extract<GeneralSize, 'main' | 'sub'>;
 export type DescriptionWidthType = 'narrow' | 'wide' | 'stretch' | 'hug';
+export type DescriptionContentType = 'normal' | 'statistic';
 export type DescriptionOrientation = Orientation;
 
 export const descriptionTitlePrefix = 'mzn-description-title';
@@ -17,6 +18,8 @@ export const descriptionClasses = {
     `${descriptionTitlePrefix}--${width}`,
   // content
   contentHost: descriptionContentPrefix,
+  contentType: (type: DescriptionContentType) =>
+    `${descriptionContentPrefix}--${type}`,
   contentSize: (size: DescriptionSize) =>
     `${descriptionContentPrefix}--${size}`,
   // group
