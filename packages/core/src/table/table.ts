@@ -1,3 +1,4 @@
+import type { IconDefinition } from '@mezzanine-ui/icons';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import type { Placement } from '@floating-ui/react-dom';
 
@@ -28,6 +29,7 @@ export const tableClasses = {
   bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
   bordered: `${tablePrefix}--bordered`,
   bulkActions: `${tablePrefix}__bulk-actions`,
+  bulkActionsWithPagination: `${tablePrefix}__bulk-actions--with-pagination`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
   bulkActionsActionArea: `${tablePrefix}__bulk-actions__action-area`,
   bulkActionsSeparator: `${tablePrefix}__bulk-actions__separator`,
@@ -184,6 +186,58 @@ export type TableColumn<T extends TableDataSource = TableDataSource> =
 /** Selection mode for row selection */
 export type TableSelectionMode = 'checkbox' | 'radio';
 
+/**
+ * action configuration for bulk actions (destructive or main action)
+ */
+export interface TableBulkGeneralAction {
+  /** Icon for the destructive action button */
+  icon?: IconDefinition;
+  /** Label for the destructive action button */
+  label: string;
+  /** Callback when destructive action is clicked */
+  onClick: (selectedRowKeys: (string | number)[]) => void;
+}
+
+/**
+ * Overflow action configuration for bulk actions (dropdown menu)
+ */
+export interface TableBulkOverflowAction {
+  /** Icon for the overflow action button */
+  icon?: IconDefinition;
+  /** Label for the overflow action button */
+  label: string;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /** Callback when a dropdown option is selected */
+  onSelect: (
+    option: DropdownOption,
+    selectedRowKeys: (string | number)[],
+  ) => void;
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Dropdown placement relative to trigger */
+  placement?: Placement;
+}
+
+/**
+ * Bulk actions configuration for row selection
+ */
+export interface TableBulkActions {
+  /** Destructive action (optional, single action with separator) */
+  destructiveAction?: TableBulkGeneralAction;
+  /** Main actions (required, at least one action) */
+  mainActions: [TableBulkGeneralAction, ...TableBulkGeneralAction[]];
+  /** Overflow action with dropdown menu (optional, with separator) */
+  overflowAction?: TableBulkOverflowAction;
+  /**
+   * Label for selection summary
+   * @param count - Number of selected items
+   * @returns Label string
+   * @default (count) => `${count} item${count > 1 ? 's' : ''} selected`
+   */
+  renderSelectionSummary?: (count: number) => string;
+}
+
 /** Base row selection configuration */
 export interface TableRowSelectionBase<
   T extends TableDataSource = TableDataSource,
@@ -202,6 +256,8 @@ export interface TableRowSelectionCheckbox<
    * Selection mode
    */
   mode: 'checkbox';
+  /** Bulk actions configuration for batch operations */
+  bulkActions?: TableBulkActions;
   /** Get checkbox props for each row */
   getCheckboxProps?: (record: T) => {
     indeterminate?: boolean;

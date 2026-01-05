@@ -582,6 +582,10 @@ $sticky-cell-z-index: 1;
   align-items: center;
   gap: spacing.semantic-variable(gap, spacious);
 
+  &--with-pagination {
+    bottom: calc(#{spacing.semantic-variable(padding, vertical, relaxed)} + 56px)
+  }
+
   &__selection-summary {
     width: auto;
     height: 100%;
