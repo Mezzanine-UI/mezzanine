@@ -1,9 +1,13 @@
 'use client';
 
 import { forwardRef, memo } from 'react';
-import { tableClasses as classes } from '@mezzanine-ui/core/table';
+import {
+  tableClasses as classes,
+  type TableSelectionMode,
+} from '@mezzanine-ui/core/table';
 import { cx } from '../../utils/cx';
 import Checkbox from '../../Checkbox';
+import Radio from '../../Radio';
 import Skeleton from '../../Skeleton';
 import { useTableContext } from '../TableContext';
 
@@ -15,6 +19,8 @@ export interface TableSelectionCellProps {
   hidden?: boolean;
   indeterminate?: boolean;
   isHeader?: boolean;
+  /** Selection mode */
+  mode?: TableSelectionMode;
   onChange: () => void;
   selected: boolean;
   showShadow?: boolean;
@@ -35,6 +41,7 @@ const TableSelectionCellInner = forwardRef<
     hidden = false,
     indeterminate = false,
     isHeader = false,
+    mode = 'checkbox',
     onChange,
     selected,
     showShadow = false,
@@ -63,6 +70,12 @@ const TableSelectionCellInner = forwardRef<
 
     if (loading) {
       return <Skeleton width="100%" variant="body-highlight" />;
+    }
+
+    if (mode === 'radio') {
+      return (
+        <Radio checked={selected} disabled={disabled} onChange={onChange} />
+      );
     }
 
     return (

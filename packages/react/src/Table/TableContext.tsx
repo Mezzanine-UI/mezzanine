@@ -9,6 +9,7 @@ import type {
   TableExpandable,
   TableRowSelection,
   TableScroll,
+  TableSelectionMode,
 } from '@mezzanine-ui/core/table';
 import type { EmptyProps } from '../Empty';
 import type { PaginationProps } from '../Pagination';
@@ -28,6 +29,8 @@ export interface TableSelectionState<
   isIndeterminate: boolean;
   isRowDisabled: (record: T) => boolean;
   isRowSelected: (key: string | number) => boolean;
+  /** Selection mode: 'checkbox' for multi-select, 'radio' for single-select */
+  mode: TableSelectionMode;
   selectedRowKeys: (string | number)[];
   toggleAll: () => void;
   toggleRow: (key: string | number, record: T) => void;

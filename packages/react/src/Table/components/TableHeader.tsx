@@ -86,13 +86,17 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
           containerWidth ?? 0,
         );
 
+      // In radio mode, hide the header selection (no select all)
+      const isRadioMode = selection.mode === 'radio';
+
       return (
         <TableSelectionCell
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
+          hidden={isRadioMode || selection.config?.hideSelectAll}
           indeterminate={selection.isIndeterminate}
           isHeader
-          hidden={selection.config?.hideSelectAll}
+          mode={selection.mode}
           onChange={selection.toggleAll}
           selected={selection.isAllSelected}
           showShadow={showShadow ?? false}

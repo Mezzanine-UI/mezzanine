@@ -3,8 +3,11 @@
 import { useCallback, useMemo } from 'react';
 import {
   getRowKey,
+  TableRowSelectionCheckbox,
+  TableRowSelectionRadio,
   type TableDataSource,
   type TableRowSelection,
+  type TableSelectionMode,
 } from '@mezzanine-ui/core/table';
 import type { TableSelectionState } from '../TableContext';
 
@@ -17,27 +20,43 @@ export function useTableSelection<T extends TableDataSource>({
   dataSource,
   rowSelection,
 }: UseTableSelectionOptions<T>): TableSelectionState<T> | undefined {
-  const {
-    selectedRowKeys = [],
-    isCheckboxDisabled,
-    onChange,
-    onSelectAll,
-    preserveSelectedRowKeys = false,
-  } = rowSelection || {};
+  // Extract common props
+  const { onChange } = rowSelection || {};
+
+  // Extract mode-specific props (checkbox mode)
+  const mode: TableSelectionMode = rowSelection?.mode ?? 'checkbox';
+  const selections =
+    mode === 'radio'
+      ? (rowSelection as TableRowSelectionRadio).selectedRowKey
+      : (rowSelection as TableRowSelectionCheckbox | undefined)
+          ?.selectedRowKeys;
+  const isSelectionDisabled = rowSelection?.isSelectionDisabled;
+  const onSelectAll = mode === 'radio' ? undefined : rowSelection?.onSelectAll;
+  const preserveSelectedRowKeys =
+    mode === 'radio' ? false : (rowSelection?.preserveSelectedRowKeys ?? false);
+
+  const selectedRowKeys: (string | number)[] = useMemo(() => {
+    if (mode === 'radio') {
+      const key = selections as string | number | undefined;
+      return key !== undefined ? [key] : [];
+    }
+
+    return (selections as (string | number)[] | undefined) ?? [];
+  }, [mode, selections]);
 
   const selectableKeys = useMemo(() => {
     if (!rowSelection) return [];
 
     return dataSource
       .filter((record) => {
-        if (!isCheckboxDisabled) return true;
+        if (!isSelectionDisabled) return true;
 
-        const disabled = isCheckboxDisabled(record);
+        const disabled = isSelectionDisabled(record);
 
         return !disabled;
       })
       .map((record) => getRowKey(record));
-  }, [dataSource, isCheckboxDisabled, rowSelection]);
+  }, [dataSource, isSelectionDisabled, rowSelection]);
 
   const isRowSelected = useCallback(
     (key: string | number) => {
@@ -48,12 +67,12 @@ export function useTableSelection<T extends TableDataSource>({
 
   const isRowDisabled = useCallback(
     (record: T) => {
-      if (!isCheckboxDisabled) return false;
-      const disabled = isCheckboxDisabled(record);
+      if (!isSelectionDisabled) return false;
+      const disabled = isSelectionDisabled(record);
 
       return disabled;
     },
-    [isCheckboxDisabled],
+    [isSelectionDisabled],
   );
 
   const isAllSelected = useMemo(() => {
@@ -74,6 +93,19 @@ export function useTableSelection<T extends TableDataSource>({
 
   const toggleRow = useCallback(
     (key: string | number) => {
+      // Radio mode: only one selection allowed
+      if (mode === 'radio') {
+        // If clicking the same row, deselect it
+        // @NOTE Radio mode usually doesn't allow deselection, but we support it here for flexibility
+        const selectedRow =
+          dataSource.find((r) => getRowKey(r) === key) || null;
+
+        (onChange as TableRowSelectionRadio['onChange'])?.(key, selectedRow);
+
+        return;
+      }
+
+      // Checkbox mode: toggle selection
       const newKeys = selectedRowKeys.includes(key)
         ? selectedRowKeys.filter((k) => k !== key)
         : [...selectedRowKeys, key];
@@ -84,9 +116,13 @@ export function useTableSelection<T extends TableDataSource>({
         newKeys.includes(getRowKey(r)),
       );
 
-      onChange?.(newKeys, selectedRow, selectedRows);
+      (onChange as TableRowSelectionCheckbox['onChange'])?.(
+        newKeys,
+        selectedRow,
+        selectedRows,
+      );
     },
-    [selectedRowKeys, dataSource, onChange],
+    [mode, selectedRowKeys, dataSource, onChange],
   );
 
   const toggleAll = useCallback(() => {
@@ -122,7 +158,11 @@ export function useTableSelection<T extends TableDataSource>({
       newKeys.includes(getRowKey(r)),
     );
 
-    onChange?.(newKeys, null, selectedRows);
+    (onChange as TableRowSelectionCheckbox['onChange'])?.(
+      newKeys,
+      null,
+      selectedRows,
+    );
     onSelectAll?.(type);
   }, [
     dataSource,
@@ -144,6 +184,7 @@ export function useTableSelection<T extends TableDataSource>({
     isIndeterminate,
     isRowDisabled,
     isRowSelected,
+    mode,
     selectedRowKeys,
     toggleAll,
     toggleRow,

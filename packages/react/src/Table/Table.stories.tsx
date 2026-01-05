@@ -523,9 +523,6 @@ export const WithSorting: Story = {
 
 export const WithRowSelection: Story = {
   render: function WithRowSelectionStory() {
-    const [selectedSimpleExampleRowKeys, setSelectedSimpleExampleRowKeys] =
-      useState<(string | number)[]>([]);
-
     // full example
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -554,37 +551,20 @@ export const WithRowSelection: Story = {
     const [preserveSelectedRowKeys, togglePreserveSelectedRowKeys] =
       useState(false);
 
+    // Radio selection example
+    const [selectedRadioKey, setSelectedRadioKey] = useState<string | number>();
+
     return (
       <div>
         <div
           style={{
-            marginBottom: 16,
+            margin: '0 0 16px',
             display: 'flex',
             flexFlow: 'column',
             gap: '4px',
           }}
         >
-          <span>Simple Example</span>
-          <span>- Selected: [{selectedSimpleExampleRowKeys.join(', ')}]</span>
-        </div>
-        <Table<DataType>
-          columns={baseColumns}
-          dataSource={baseData}
-          rowSelection={{
-            onChange: (keys) => setSelectedSimpleExampleRowKeys(keys),
-            selectedRowKeys: selectedSimpleExampleRowKeys,
-            isCheckboxDisabled: (record) => record.age > 40,
-          }}
-        />
-        <div
-          style={{
-            marginBottom: 16,
-            display: 'flex',
-            flexFlow: 'column',
-            gap: '4px',
-          }}
-        >
-          <span>Full Example</span>
+          <span>Mode: checkbox</span>
           <span>- Selected: [{selectedRowKeys.join(', ')}]</span>
           <Toggle
             checked={hideSelectAll}
@@ -601,22 +581,12 @@ export const WithRowSelection: Story = {
           columns={baseColumns}
           dataSource={paginationData}
           rowSelection={{
+            mode: 'checkbox',
             hideSelectAll,
             preserveSelectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
-            // onSelectAll: (type) => {
-            //   if (type === 'all') {
-            //     setSelectedRowKeys(
-            //       originData
-            //         .filter((item) => !item.disabled)
-            //         .map((item) => item.key),
-            //     );
-            //   } else {
-            //     setSelectedRowKeys([]);
-            //   }
-            // },
             selectedRowKeys,
-            isCheckboxDisabled: (record) =>
+            isSelectionDisabled: (record) =>
               (record as (typeof paginationData)[number]).disabled,
           }}
           pagination={{
@@ -633,6 +603,27 @@ export const WithRowSelection: Story = {
             inputPlaceholder: '頁碼',
             hintText: '前往',
             buttonText: '確定',
+          }}
+        />
+        <div
+          style={{
+            margin: '32px 0 16px',
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '4px',
+          }}
+        >
+          <span>Mode: radio</span>
+          <span>- Selected: {selectedRadioKey}</span>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          rowSelection={{
+            mode: 'radio',
+            onChange: (key) => setSelectedRadioKey(key),
+            selectedRowKey: selectedRadioKey,
+            isSelectionDisabled: (record) => record.age > 40,
           }}
         />
       </div>
@@ -1150,6 +1141,7 @@ export const Combined: Story = {
                 columns={combinedColumns}
                 dataSource={record.subData || []}
                 rowSelection={{
+                  mode: 'checkbox',
                   onChange: getChildOnChange(record),
                   selectedRowKeys: getChildSelectedRowKeys(record),
                   fixed: true,
@@ -1161,6 +1153,7 @@ export const Combined: Story = {
           }}
           resizable
           rowSelection={{
+            mode: 'checkbox',
             onChange: parentOnChange,
             selectedRowKeys: parentSelectedKeys,
             getCheckboxProps: parentGetCheckboxProps,

@@ -182,6 +182,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
           indeterminate={isIndeterminate}
+          mode={selection.mode}
           onChange={() => selection.toggleRow(rowKey, record)}
           selected={isSelected}
           showShadow={showShadow ?? false}
