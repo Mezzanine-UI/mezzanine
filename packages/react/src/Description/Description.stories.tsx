@@ -17,7 +17,10 @@ export const Title: Story = {
         gap: '8px',
       }}
     >
-      <DescriptionTitle>Title</DescriptionTitle>
+      <DescriptionTitle widthType="narrow">Narrow</DescriptionTitle>
+      <DescriptionTitle widthType="wide">Wide</DescriptionTitle>
+      <DescriptionTitle widthType="stretch">Stretch</DescriptionTitle>
+      <DescriptionTitle widthType="hug">Hug</DescriptionTitle>
       <DescriptionTitle badge="dot-success">Title</DescriptionTitle>
       <DescriptionTitle
         tooltip="tooltip"
