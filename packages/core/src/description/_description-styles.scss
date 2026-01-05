@@ -39,9 +39,24 @@
 }
 
 .#{$content-prefix} {
-  @include typography.semantic-variable(body);
   color: palette.semantic-variable(text, neutral-solid);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: spacing.semantic-variable(gap, tight);
   width: fit-content;
+
+  @each $size in $sizes {
+    &--#{$size} {
+      @if $size == main {
+        @include typography.semantic-variable(body);
+      }
+
+      @if $size == sub {
+        @include typography.semantic-variable(caption);
+      }
+    }
+  }
 }
 
 .#{$group-prefix} {
