@@ -565,3 +565,38 @@ $sticky-cell-z-index: 1;
   text-align: center;
   vertical-align: middle;
 }
+
+.#{$prefix}__bulk-actions {
+  position: absolute;
+  z-index: calc(#{$sticky-cell-z-index} + 3);
+  left: 50%;
+  bottom: spacing.semantic-variable(padding, vertical, relaxed);
+  transform: translateX(-50%);
+  max-width: spacing.semantic-variable(size, container, xwide);
+  padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, base);
+  border-radius: radius.variable(roomy);
+  background-color: palette.semantic-variable("background", fixed-solid);
+  box-shadow: effect.variable(shadow, dark);
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, spacious);
+
+  &__selection-summary {
+    width: auto;
+    height: 100%;
+  }
+
+  &__action-area {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__separator {
+    width: spacing.semantic-variable(size, element, hairline);
+    height: spacing.semantic-variable(size, element, base);
+    background-color: palette.semantic-variable(separator, neutral);
+  }
+}
