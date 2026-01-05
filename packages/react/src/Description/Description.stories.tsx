@@ -19,7 +19,13 @@ export const Title: Story = {
     >
       <DescriptionTitle>Title</DescriptionTitle>
       <DescriptionTitle badge="dot-success">Title</DescriptionTitle>
-      <DescriptionTitle icon={QuestionOutlineIcon}>Title</DescriptionTitle>
+      <DescriptionTitle
+        tooltip="tooltip"
+        tooltipPlacement="top-end"
+        icon={QuestionOutlineIcon}
+      >
+        Title
+      </DescriptionTitle>
       <DescriptionTitle badge="dot-success" icon={QuestionOutlineIcon}>
         Title
       </DescriptionTitle>

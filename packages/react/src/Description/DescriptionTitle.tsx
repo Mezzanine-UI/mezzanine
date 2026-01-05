@@ -1,13 +1,15 @@
 import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
-import Icon from '../Icon';
 import Badge from '../Badge';
+import Icon from '../Icon';
+import Tooltip from '../Tooltip';
 import { DescriptionTitleProps } from '.';
 
 const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
   function DescriptionTitle(props, ref) {
-    const { badge, className, children, icon } = props;
+    const { badge, className, children, icon, tooltip, tooltipPlacement } =
+      props;
 
     return (
       <div className={cx(classes.titleHost, className)} ref={ref}>
@@ -20,7 +22,27 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
         ) : (
           <span className={classes.titleText}>{children}</span>
         )}
-        {icon && <Icon icon={icon} size={16} />}
+        {icon ? (
+          tooltip ? (
+            <Tooltip
+              title={tooltip}
+              options={{
+                placement: tooltipPlacement ?? 'top',
+              }}
+            >
+              {({ onMouseEnter, onMouseLeave, ref }) => (
+                <Icon
+                  ref={ref}
+                  icon={icon}
+                  onMouseEnter={onMouseEnter}
+                  onMouseLeave={onMouseLeave}
+                />
+              )}
+            </Tooltip>
+          ) : (
+            <Icon icon={icon} size={16} />
+          )
+        ) : null}
       </div>
     );
   },
