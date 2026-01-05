@@ -15,10 +15,10 @@ import {
 
 import {
   dropdownClasses,
-  dropdownInputPosition,
+  DropdownInputPosition,
   DropdownItemSharedProps,
   DropdownOption,
-  dropdownType,
+  DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 
 import { offset, size } from '@floating-ui/react-dom';
@@ -76,7 +76,7 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The position of the input.
    * @default 'outside'
    */
-  inputPosition?: dropdownInputPosition;
+  inputPosition?: DropdownInputPosition;
   /**
    * Whether to match the input value.
    * @default false
@@ -152,7 +152,7 @@ export interface DropdownProps extends DropdownItemSharedProps {
   /**
    * The type of the dropdown.
    */
-  type?: dropdownType;
+  type?: DropdownType;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -300,9 +300,9 @@ export default function Dropdown(props: DropdownProps) {
       ref?: Ref<HTMLElement>;
     };
     const isInput = childWithRef.type !== Button;
-    
+
     if (!isInput) return {};
-    
+
     return {
       role: 'combobox' as const,
       'aria-controls': listboxId,
@@ -400,7 +400,7 @@ export default function Dropdown(props: DropdownProps) {
         setIsOpen(true);
       },
     });
-  }, [children, isInline, isOpen, getComboboxProps]);
+  }, [children, isInline, getComboboxProps]);
 
   useDocumentEvents(
     () => {
