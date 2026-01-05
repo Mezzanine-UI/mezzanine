@@ -5,7 +5,7 @@
 @use './description' as *;
 
 .#{$title-prefix} {
-  display: inline-flex;
+  display: flex;
   justify-content: flex-start;
   align-items: center;
   column-gap: spacing.semantic-variable(gap, tight);
