@@ -1,3 +1,6 @@
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import type { Placement } from '@floating-ui/react-dom';
+
 export const tablePrefix = 'mzn-table';
 export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
 export const tableLoadingPrefix = `${tablePrefix}-loading`;
@@ -116,6 +119,20 @@ export type FixedType = boolean | 'start' | 'end';
 export type TableSize = 'main' | 'sub';
 
 /**
+ * Title menu configuration for table column header dropdown
+ */
+export interface TableColumnTitleMenu {
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Callback when an option is selected */
+  onSelect?: (option: DropdownOption) => void;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /** Dropdown placement relative to trigger */
+  placement?: Placement;
+}
+
+/**
  * Column definition base interface
  */
 export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
@@ -151,8 +168,8 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   title?: React.ReactNode;
   /** Tooltip help text for header */
   titleHelp?: React.ReactNode;
-  /** Menu content for header (e.g., dropdown menu) */
-  titleMenu?: React.ReactNode;
+  /** Menu configuration for header dropdown */
+  titleMenu?: TableColumnTitleMenu;
   /** Column width in pixels */
   width?: number;
 }
