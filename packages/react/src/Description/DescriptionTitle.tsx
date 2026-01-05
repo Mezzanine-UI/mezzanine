@@ -8,11 +8,25 @@ import { DescriptionTitleProps } from '.';
 
 const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
   function DescriptionTitle(props, ref) {
-    const { badge, className, children, icon, tooltip, tooltipPlacement } =
-      props;
+    const {
+      badge,
+      className,
+      children,
+      icon,
+      tooltip,
+      tooltipPlacement,
+      widthType = 'stretch',
+    } = props;
 
     return (
-      <div className={cx(classes.titleHost, className)} ref={ref}>
+      <div
+        className={cx(
+          classes.titleHost,
+          classes.titleWidth(widthType),
+          className,
+        )}
+        ref={ref}
+      >
         {badge ? (
           <Badge
             variant={badge}
