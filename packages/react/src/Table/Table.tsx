@@ -43,6 +43,7 @@ import { useTableSorting } from './hooks/useTableSorting';
 import type { EmptyProps } from '../Empty';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import TableBulkActions from './components/TableBulkActions';
 
 export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   extends Omit<
@@ -484,7 +485,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
               </table>
             </div>
             {pagination && <TablePaginationComponent {...pagination} />}
-            {/** @TODO Table bulk actions render here */}
+            <TableBulkActions />
           </div>
         </TableDataContext.Provider>
       </TableContext.Provider>
