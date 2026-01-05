@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo } from 'react';
+import { forwardRef, memo, useState } from 'react';
 import {
   DRAG_HANDLE_KEY,
   EXPANSION_KEY,
@@ -40,6 +40,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       sorting,
     } = useTableContext();
 
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { containerWidth, scrollLeft } = useTableSuperContext();
 
     const parseFixed = (
@@ -195,8 +196,13 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
 
       return (
         <Dropdown
+          open={isMenuOpen}
           maxHeight={maxHeight}
-          onSelect={onSelect}
+          onSelect={(opt) => {
+            onSelect?.(opt);
+            setIsMenuOpen(false);
+          }}
+          onVisibilityChange={(open) => setIsMenuOpen(open)}
           options={options}
           placement={placement}
         >
@@ -204,6 +210,10 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
             className={classes.headerCellIcon}
             icon={DotVerticalIcon}
             size={16}
+            onClick={(evt) => {
+              evt.stopPropagation();
+              setIsMenuOpen((prev) => !prev);
+            }}
           />
         </Dropdown>
       );
