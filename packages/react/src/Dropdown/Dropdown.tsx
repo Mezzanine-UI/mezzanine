@@ -96,6 +96,10 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   maxHeight?: number | string;
   /**
+   * Whether the dropdown is open (controlled).
+   */
+  open?: boolean;
+  /**
    * Callback fired when the action cancel is clicked.
    */
   onActionCancel?: () => void;
@@ -123,6 +127,10 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * Callback fired when the dropdown is opened.
    */
   onOpen?: () => void;
+  /**
+   * Callback fired when the dropdown visibility changes.
+   */
+  onVisibilityChange?: (open: boolean) => void;
   /**
    * Callback fired when the item is selected.
    */
@@ -179,6 +187,8 @@ export default function Dropdown(props: DropdownProps) {
     listboxLabel,
     onClose,
     onOpen,
+    open: openProp,
+    onVisibilityChange,
     onSelect,
     onActionConfirm,
     onActionCancel,
@@ -206,7 +216,9 @@ export default function Dropdown(props: DropdownProps) {
     };
   }, [showDropdownActions, actionCancelText, actionConfirmText, actionClearText, actionText, actionCustomButtonProps, showActionShowTopBar, onActionConfirm, onActionCancel, onActionCustom, onActionClear]);
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isOpenControlled = openProp !== undefined;
+  const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
   const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<number | null>(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
   const mergedActiveIndex = isActiveIndexControlled ? activeIndexProp : uncontrolledActiveIndex;
@@ -279,6 +291,17 @@ export default function Dropdown(props: DropdownProps) {
     const placementBase = popoverPlacement.split('-')[0];
     return placementBase === 'top' ? 'top' : 'bottom';
   }, [isInline, popoverPlacement]);
+
+  const setOpen = useCallback((next: boolean | ((prev: boolean) => boolean)) => {
+    const nextValue = typeof next === 'function' ? (next as (prev: boolean) => boolean)(isOpen) : next;
+
+    if (!isOpenControlled) {
+      setUncontrolledOpen(nextValue);
+    }
+
+    onVisibilityChange?.(nextValue);
+  }, [isOpen, isOpenControlled, onVisibilityChange]);
+
   useEffect(() => {
     if (prevIsOpenRef.current === isOpen) return;
 
@@ -353,11 +376,11 @@ export default function Dropdown(props: DropdownProps) {
         if (event?.defaultPrevented) return;
 
         if (!isInline) {
-          setIsOpen((prev) => !prev);
+          setOpen((prev) => !prev);
         }
       },
     });
-  }, [children, isInline, getComboboxProps]);
+  }, [children, getComboboxProps, isInline, setOpen]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -385,22 +408,22 @@ export default function Dropdown(props: DropdownProps) {
           return;
         }
 
-        setIsOpen(false);
+        setOpen(false);
       },
       onClick: (event: any) => {
         childWithRef.props?.onClick?.(event);
         if (event?.defaultPrevented) return;
 
-        setIsOpen(true);
+        setOpen(true);
       },
       onFocus: (event: any) => {
         childWithRef.props?.onFocus?.(event);
         if (event?.defaultPrevented) return;
 
-        setIsOpen(true);
+        setOpen(true);
       },
     });
-  }, [children, isInline, getComboboxProps]);
+  }, [children, getComboboxProps, isInline, setOpen]);
 
   useDocumentEvents(
     () => {
@@ -418,13 +441,13 @@ export default function Dropdown(props: DropdownProps) {
 
         if (isInline) {
           if (container && !container.contains(target)) {
-            setIsOpen(false);
+            setOpen(false);
           }
           return;
         }
 
         if (anchor && popper && !anchor.contains(target) && !popper.contains(target)) {
-          setIsOpen(false);
+          setOpen(false);
         }
       };
 
@@ -433,7 +456,7 @@ export default function Dropdown(props: DropdownProps) {
         touchend: handleClickAway,
       };
     },
-    [isInline, isOpen],
+    [isInline, isOpen, setOpen],
   );
 
   return (

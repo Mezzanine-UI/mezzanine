@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 import {
   dropdownClasses as classes,
-  DropdownStatus,
+  DropdownStatus as DropdownStatusType,
 } from "@mezzanine-ui/core/dropdown/dropdown";
 import {
   FolderOpenIcon,
@@ -20,7 +20,7 @@ export interface DropdownStatusProps {
    * The status of the dropdown.
    * @default 'loading'
    */
-  status: DropdownStatus;
+  status: DropdownStatusType;
   /**
    * The text of the dropdown loading status.
    */
