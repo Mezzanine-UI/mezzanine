@@ -60,12 +60,6 @@ export function useTableExpansion<T extends TableDataSource>({
 
   const expansionLeftPadding = useMemo(() => {
     let padding = 0;
-    // Number(
-    //   getCSSVariableValue('--mzn-spacing-padding-horizontal-comfort').replace(
-    //     'rem',
-    //     '',
-    //   ),
-    // ) * 16;
 
     if (hasDragHandle) padding += DRAG_HANDLE_COLUMN_WIDTH;
     if (expandable) padding += EXPANSION_COLUMN_WIDTH;

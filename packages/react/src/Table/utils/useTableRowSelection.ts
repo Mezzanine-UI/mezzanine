@@ -104,7 +104,10 @@ export function useTableRowSelection<
 
   const totalSelectionCount = useMemo(
     () =>
-      selectedKeys.reduce((acc, item) => acc + (item.subKeys?.length || 1), 0),
+      selectedKeys.reduce(
+        (acc, item) => acc + (item.subKeys?.length ?? 0) + 1,
+        0,
+      ),
     [selectedKeys],
   );
 

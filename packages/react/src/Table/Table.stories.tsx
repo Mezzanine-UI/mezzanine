@@ -1317,7 +1317,7 @@ export const Combined: Story = {
           draggable={{
             enabled: true,
             onDragEnd: (newData) => updateDataSource(newData),
-            fixed: true,
+            // fixed: true,
           }}
           transitionState={transitionState}
         />

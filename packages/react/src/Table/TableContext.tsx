@@ -14,6 +14,7 @@ import type {
 import type { EmptyProps } from '../Empty';
 import type { PaginationProps } from '../Pagination';
 import type { UseTableFixedOffsetsReturn } from './hooks/useTableFixedOffsets';
+import type { TableTransitionState } from './hooks/useTableDataSource';
 
 /** Sorting context state */
 export interface TableSortingState {
@@ -77,16 +78,6 @@ export interface TableHighlightState {
   rowIndex: number | null;
   /** Set hovered cell */
   setHoveredCell: (rowIndex: number | null, columnIndex: number | null) => void;
-}
-
-/** Transition state for row add/remove animations */
-export interface TableTransitionState {
-  /** Keys of rows currently in adding state (highlighted) */
-  addingKeys: Set<string>;
-  /** Keys of rows currently in deleting state (red highlight) */
-  deletingKeys: Set<string>;
-  /** Keys of rows currently fading out */
-  fadingOutKeys: Set<string>;
 }
 
 /** Main table context */
@@ -175,6 +166,7 @@ export interface TableSuperContextValue {
   getResizedColumnWidth?: (key: string) => number | undefined;
   scrollLeft?: number;
   expansionLeftPadding?: number;
+  hasDragHandleFixed?: boolean;
 }
 
 export const TableSuperContext = createContext<TableSuperContextValue | null>(

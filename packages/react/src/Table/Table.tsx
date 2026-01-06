@@ -34,8 +34,8 @@ import {
   TableDataContext,
   TableSuperContext,
   type TableContextValue,
-  type TableTransitionState,
 } from './TableContext';
+import type { TableTransitionState } from './hooks/useTableDataSource';
 import { TableBody } from './components/TableBody';
 import { TableColGroup } from './components/TableColGroup';
 import { TableHeader } from './components/TableHeader';
@@ -370,12 +370,15 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       getResizedColumnWidth: columnState.getResizedColumnWidth,
       scrollLeft: scrollState.scrollLeft,
       expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
+      hasDragHandleFixed: !!draggable?.enabled && draggable.fixed,
     }),
     [
       scrollState.scrollLeft,
       expansionState?.expansionLeftPadding,
       scrollState.containerWidth,
       columnState.getResizedColumnWidth,
+      draggable?.enabled,
+      draggable?.fixed,
     ],
   );
 

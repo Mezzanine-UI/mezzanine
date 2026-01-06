@@ -135,7 +135,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
             {({ onMouseEnter, onMouseLeave }) => (
               <div
                 ref={ellipsisRef}
-                className={cx(classes.cellContent, {
+                className={cx(classes.cellContent, alignClass, {
                   [classes.cellEllipsis]: isColumnEllipsis,
                 })}
                 onMouseEnter={(e) => {
@@ -157,7 +157,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       }
 
       return (
-        <div className={classes.cellContent}>
+        <div className={cx(classes.cellContent, alignClass)}>
           {cellValue as React.ReactNode}
         </div>
       );
@@ -167,7 +167,6 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       <td
         className={cx(
           classes.cell,
-          alignClass,
           {
             [classes.cellFixed]: !!fixed,
             [classes.cellFixedEnd]: fixed === 'end',
