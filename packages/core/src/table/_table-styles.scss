@@ -364,21 +364,6 @@ $z-index-config: (
     text-align: start;
     vertical-align: middle;
   }
-
-  &__cell-content {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-  }
-
-  &__empty {
-    td {
-      text-align: center;
-      vertical-align: middle;
-
-      @include surface-bg();
-    }
-  }
 }
 
 .#{$cell-prefix} {
@@ -434,7 +419,7 @@ $z-index-config: (
   }
 
   &__content {
-    display: block;
+    display: flex;
   }
 }
 
@@ -563,8 +548,7 @@ $z-index-config: (
     transition: transition.standard(background-color);
   }
 
-  &:hover,
-  &--active {
+  &:hover {
     &::after {
       background-color: palette.semantic-variable("background", brand);
     }

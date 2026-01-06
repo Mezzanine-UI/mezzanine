@@ -13,12 +13,6 @@ export const tableResizeHandlePrefix = `${tablePrefix}__resize-handle`;
 export const tableClasses = {
   body: tableBodyPrefix,
   bodyCell: `${tableBodyPrefix}__cell`,
-  bodyCellContent: `${tableBodyPrefix}__cell-content`,
-  bodyCellFixed: `${tableBodyPrefix}__cell--fixed`,
-  bodyCellFixedEnd: `${tableBodyPrefix}__cell--fixed-end`,
-  bodyCellFixedShadow: `${tableBodyPrefix}__cell--fixed-shadow`,
-  bodyCellFixedStart: `${tableBodyPrefix}__cell--fixed-start`,
-  bodyEmpty: `${tableBodyPrefix}__empty`,
   bodyRow: `${tableBodyPrefix}__row`,
   bodyRowAdding: `${tableBodyPrefix}__row--adding`,
   bodyRowDeleting: `${tableBodyPrefix}__row--deleting`,
@@ -26,10 +20,7 @@ export const tableClasses = {
   bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
-  bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
-  bordered: `${tablePrefix}--bordered`,
   bulkActions: `${tablePrefix}__bulk-actions`,
-  bulkActionsWithPagination: `${tablePrefix}__bulk-actions--with-pagination`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
   bulkActionsActionArea: `${tablePrefix}__bulk-actions__action-area`,
   bulkActionsSeparator: `${tablePrefix}__bulk-actions__separator`,
@@ -64,7 +55,6 @@ export const tableClasses = {
   headerCellIcon: `${tableHeaderPrefix}__cell-icon`,
   host: `${tablePrefix}-host`,
   resizeHandle: tableResizeHandlePrefix,
-  resizeHandleActive: `${tableResizeHandlePrefix}--active`,
   root: tablePrefix,
   scrollContainer: tableScrollContainerPrefix,
   selectionCell: `${tablePrefix}__selection-cell`,
@@ -75,11 +65,6 @@ export const tableClasses = {
   sortIcons: `${tablePrefix}__sort-icons`,
   sticky: `${tablePrefix}--sticky`,
   sub: `${tablePrefix}--sub`,
-  // Highlight mode classes
-  highlightCell: `${tablePrefix}--highlight-cell`,
-  highlightColumn: `${tablePrefix}--highlight-column`,
-  highlightCross: `${tablePrefix}--highlight-cross`,
-  highlightRow: `${tablePrefix}--highlight-row`,
 } as const;
 
 /** Generic record type for table data */
@@ -160,9 +145,9 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   headerClassName?: string;
   /** Unique key for the column */
   key: string;
-  /** Maximum column width (for resizable columns) */
+  /** Maximum column width */
   maxWidth?: number;
-  /** Minimum column width (for resizable columns) */
+  /** Minimum column width */
   minWidth?: number;
   /** Callback when sort state changes */
   onSort?: (key: string, order: SortOrder) => void;
@@ -231,9 +216,6 @@ export interface TableBulkActions {
   overflowAction?: TableBulkOverflowAction;
   /**
    * Label for selection summary
-   * @param count - Number of selected items
-   * @returns Label string
-   * @default (count) => `${count} item${count > 1 ? 's' : ''} selected`
    */
   renderSelectionSummary?: (count: number) => string;
 }
@@ -290,7 +272,7 @@ export interface TableRowSelectionRadio<
     selectedRowKey: string | number | undefined,
     selectedRow: T | null,
   ) => void;
-  /** Array of selected row keys */
+  /** Selected row key */
   selectedRowKey: string | number | undefined;
   /** Not available in radio mode */
   getCheckboxProps?: never;
@@ -328,8 +310,6 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   enabled: boolean;
   /** Fixed position of drag handle column */
   fixed?: boolean;
-  /** Indent size for nested rows */
-  indentSize?: number;
   /** Callback when drag ends */
   onDragEnd?: (newDataSource: T[]) => void;
 }
@@ -348,28 +328,6 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   onExpandedRowsChange?: (expandedRowKeys: (string | number)[]) => void;
   /** Determine if a row is expandable */
   rowExpandable?: (record: T) => boolean;
-}
-
-/** Column style helpers */
-export function getColumnStyle(
-  column: TableColumn,
-  computedWidth?: number,
-): React.CSSProperties {
-  const style: React.CSSProperties = {};
-
-  const width = computedWidth ?? column.width;
-
-  if (width) {
-    style.width = width;
-    style.minWidth = width;
-    style.maxWidth = width;
-    style.flex = '0 0 auto';
-  } else {
-    style.flex = '1 1 0';
-    style.minWidth = 0;
-  }
-
-  return style;
 }
 
 export function getCellAlignClass(align?: ColumnAlign): string {
