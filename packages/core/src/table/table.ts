@@ -165,8 +165,25 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   width?: number;
 }
 
+export interface TableColumnWithDataIndex<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBase<T> {
+  /** Data index to access the record value */
+  dataIndex: string;
+  render?: never;
+}
+
+export interface TableColumnWithRender<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBase<T> {
+  dataIndex?: never;
+  /** Custom render function for cell content */
+  render: (record: T, index: number) => React.ReactNode;
+}
+
 export type TableColumn<T extends TableDataSource = TableDataSource> =
-  TableColumnBase<T>;
+  | TableColumnWithDataIndex<T>
+  | TableColumnWithRender<T>;
 
 /** Selection mode for row selection */
 export type TableSelectionMode = 'checkbox' | 'radio';
