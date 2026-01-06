@@ -13,6 +13,8 @@ export {
   type TableSize,
   type TableColumnTitleMenu,
   type TableColumnBase,
+  type TableColumnWithDataIndex,
+  type TableColumnWithRender,
   type TableColumn,
   type TableSelectionMode,
   type TableBulkGeneralAction,

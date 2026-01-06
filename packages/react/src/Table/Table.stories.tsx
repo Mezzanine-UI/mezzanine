@@ -16,11 +16,14 @@ import {
   DownloadIcon,
   FolderMoveIcon,
   TrashIcon,
+  UserIcon,
 } from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 import Button from '../Button';
 import Toggle from '../Toggle';
 import Input from '../Input';
+import Icon from '../Icon';
+import Slider from '../Slider';
 
 interface DataType extends TableDataSourceWithKey {
   age: number;
@@ -360,9 +363,8 @@ export const CreateDeleteTransition: Story = {
         title: 'Address',
       },
       {
-        align: 'center',
-        dataIndex: 'key',
         key: 'action',
+        align: 'center',
         render: (record) => (
           <Button
             onClick={() => handleDeleteMutation(String(record.key))}
@@ -791,6 +793,15 @@ export const WithExpansion: Story = {
   render: function WithExpansionStory() {
     return (
       <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '12px' }}>
+        <span>Expansion with description</span>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          expandable={{
+            expandedRowRender: (record) => <div>{record.subData?.length}</div>,
+            rowExpandable: (record) => !!record.subData?.length,
+          }}
+        />
         <span>Expansion with sub table</span>
         <Table<DataType>
           columns={baseColumns}
@@ -853,7 +864,6 @@ export const WithFixedColumns: Story = {
         width: 250,
       },
       {
-        dataIndex: 'action',
         key: 'action',
         fixed: 'end',
         render: () => (
@@ -948,18 +958,26 @@ export const WithCustomRender: Story = {
   render: () => {
     const customColumns: TableColumn<DataType>[] = [
       {
-        dataIndex: 'name',
         key: 'name',
         title: 'Name',
+        render: (record) => (
+          <div
+            style={{
+              display: 'flex',
+              flexFlow: 'row',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <Icon icon={UserIcon} size={24} />
+            <span>{record.name}</span>
+          </div>
+        ),
         width: 150,
       },
       {
         key: 'age',
-        render: (record) => (
-          <span style={{ color: record.age > 35 ? 'red' : 'green' }}>
-            {record.age}
-          </span>
-        ),
+        dataIndex: 'age',
         title: 'Age',
         width: 100,
       },
@@ -991,9 +1009,32 @@ export const WithCustomRender: Story = {
 };
 
 export const Loading: Story = {
-  render: () => (
-    <Table<DataType> columns={baseColumns} dataSource={[]} loading />
-  ),
+  render: function LoadingStory() {
+    const [loadingRowsCount, setLoadingRowsCount] = useState(10);
+
+    return (
+      <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '36px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <span>props.loadingRowsCount: </span>
+          <div style={{ width: '260px' }}>
+            <Slider
+              value={loadingRowsCount}
+              min={1}
+              max={10}
+              step={1}
+              onChange={setLoadingRowsCount}
+            />
+          </div>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={[]}
+          loading
+          loadingRowsCount={loadingRowsCount}
+        />
+      </div>
+    );
+  },
 };
 
 export const EmptyState: Story = {
@@ -1036,7 +1077,7 @@ export const DraggableRows: Story = {
 
     return (
       <div>
-        <p style={{ marginBottom: 16 }}>Drag rows to reorder them</p>
+        <p style={{ margin: '0 0 16px' }}>Drag rows to reorder them</p>
         <Table<DataType>
           columns={baseColumns}
           dataSource={data}
@@ -1182,7 +1223,6 @@ export const Combined: Story = {
         maxWidth: 800,
       },
       {
-        dataIndex: 'tags',
         key: 'tags',
         render: (record) => {
           return (
@@ -1200,7 +1240,6 @@ export const Combined: Story = {
       },
       {
         align: 'end',
-        dataIndex: 'key',
         fixed: 'end',
         key: 'action',
         render: (record) => (

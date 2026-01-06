@@ -38,7 +38,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
         scrollContainerRef as React.RefObject<HTMLDivElement | null>,
     });
 
-    const isEmpty = dataSource.length === 0;
+    const isEmpty = useMemo(() => !dataSource.length, [dataSource.length]);
 
     // Calculate total column span for empty row
     const totalColSpan = useMemo(() => {
@@ -80,7 +80,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       record: (typeof dataSource)[number],
       index: number,
       options?: {
-        className?: string;
+        isDragging?: boolean;
         draggableProvided?: Parameters<typeof TableRow>[0]['draggableProvided'];
         measureRef?: (node: HTMLElement | null) => void;
       },
@@ -91,13 +91,16 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       return (
         <>
           <TableRow
-            className={options?.className}
+            className={
+              options?.isDragging ? classes.bodyRowDragging : undefined
+            }
             data-index={virtualization ? index : undefined}
             draggableProvided={options?.draggableProvided}
             record={record}
             ref={options?.measureRef}
             rowIndex={index}
           />
+          {/** @NOTE isExpanded 不能透過判斷 isDragging 來強制變 false，因為拖一開始時，套件會計算好高度，如果開始拖曳後才關閉，高度會計算錯誤 */}
           {renderExpandedContent(record, isExpanded)}
         </>
       );
@@ -146,9 +149,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
               {(provided, snapshot) => (
                 <>
                   {renderRowContent(item.record, item.index, {
-                    className: snapshot.isDragging
-                      ? classes.bodyRowDragging
-                      : undefined,
+                    isDragging: snapshot.isDragging,
                     draggableProvided: provided,
                   })}
                 </>
