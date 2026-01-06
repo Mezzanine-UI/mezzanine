@@ -1,6 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { IconDefinition, InfoOutlineIcon } from '@mezzanine-ui/icons';
-import { FormFieldCounterColor, FormFieldHintTextColor, FormFieldSize } from '@mezzanine-ui/core/form';
+import {
+  FormFieldCounterColor,
+  FormFieldHintTextColor,
+  FormFieldSize,
+} from '@mezzanine-ui/core/form';
 import { ReactNode, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
 import Input from '../Input';
@@ -19,7 +23,7 @@ interface PlaygroundStoryArgs {
   counterColor: FormFieldCounterColor;
   disabled: boolean;
   fullWidth: boolean;
-  hinTextColor?: FormFieldHintTextColor;
+  hintTextColor?: FormFieldHintTextColor;
   hintText?: string;
   hintTextIcon?: IconDefinition;
   label: string;
@@ -58,7 +62,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
       },
       options: Object.values(FormFieldCounterColor),
     },
-    hinTextColor: {
+    hintTextColor: {
       control: {
         type: 'select',
       },
@@ -77,7 +81,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     counterColor,
     disabled,
     fullWidth,
-    hinTextColor,
+    hintTextColor,
     hintText,
     label,
     labelInformationText,
@@ -95,7 +99,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         disabled={disabled}
         fullWidth={fullWidth}
         hintText={hintText}
-        hintTextColor={hinTextColor}
+        hintTextColor={hintTextColor}
         hintTextIcon={showHintTextIcon ? InfoOutlineIcon : undefined}
         label={label}
         labelInformationIcon={showRemarkIcon ? InfoOutlineIcon : undefined}

@@ -18,7 +18,7 @@ export interface FormLabelProps
 }
 
 /**
- * The react component for `mezzanine` form label.
+ * The React component for `mezzanine` form label.
  */
 const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>(
   function FormLabel(props, ref) {
@@ -42,7 +42,9 @@ const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>(
       >
         {required && <span className={classes.labelRequiredMarker}>*</span>}
         {labelText}
-        {optionalMarker && (<span className={classes.labelOptionalMarker}>{optionalMarker}</span>)}
+        {optionalMarker && (
+          <span className={classes.labelOptionalMarker}>{optionalMarker}</span>
+        )}
         {informationIcon && (
           <Tooltip title={informationText}>
             {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (

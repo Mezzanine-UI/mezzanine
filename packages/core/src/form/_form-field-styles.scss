@@ -18,7 +18,7 @@ $form-field-sizes: (
   'vertical'
 );
 
-// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldHintTextColor
+// FormFieldHintTextColor variants - keep this list in sync with TypeScript enum FormFieldHintTextColor
 $form-field-hint-text-colors: (
   'info',
   'warning',
@@ -26,7 +26,7 @@ $form-field-hint-text-colors: (
   'success',
 );
 
-// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldCounterColor
+// FormFieldCounterColor variants - keep this list in sync with TypeScript enum FormFieldCounterColor
 $form-field-counter-colors: (
   'info',
   'warning',
