@@ -1,7 +1,7 @@
 import {
   getRowKey,
   TableDataSource,
-  TableRowSelection,
+  TableRowSelectionCheckbox,
 } from '@mezzanine-ui/core/table';
 import { useCallback, useMemo, useState } from 'react';
 
@@ -26,7 +26,7 @@ export function useTableRowSelection<
     [selectedKeys],
   );
 
-  const parentOnChange: TableRowSelection<T>['onChange'] = useCallback(
+  const parentOnChange: TableRowSelectionCheckbox<T>['onChange'] = useCallback(
     (_, __, selectedRows) => {
       setSelectedKeys(
         selectedRows.map((row) => {
@@ -45,7 +45,7 @@ export function useTableRowSelection<
     [getSubData],
   );
 
-  const parentGetCheckboxProps: TableRowSelection<T>['getCheckboxProps'] =
+  const parentGetCheckboxProps: TableRowSelectionCheckbox<T>['getCheckboxProps'] =
     useCallback(
       (record: T) => {
         const subData = getSubData(record);
@@ -72,23 +72,24 @@ export function useTableRowSelection<
       [selectedKeys, getSubData],
     );
 
-  const getChildOnChange: (record: T) => TableRowSelection<T>['onChange'] =
-    useCallback(
-      (record: T) => (keys) => {
-        setSelectedKeys((prevSelected) => {
-          const otherSelected = prevSelected.filter(
-            (item) => item.key !== getRowKey(record),
-          );
+  const getChildOnChange: (
+    record: T,
+  ) => TableRowSelectionCheckbox<T>['onChange'] = useCallback(
+    (record: T) => (keys) => {
+      setSelectedKeys((prevSelected) => {
+        const otherSelected = prevSelected.filter(
+          (item) => item.key !== getRowKey(record),
+        );
 
-          if (!keys.length) {
-            return otherSelected;
-          }
+        if (!keys.length) {
+          return otherSelected;
+        }
 
-          return [...otherSelected, { key: getRowKey(record), subKeys: keys }];
-        });
-      },
-      [],
-    );
+        return [...otherSelected, { key: getRowKey(record), subKeys: keys }];
+      });
+    },
+    [],
+  );
 
   const getChildSelectedRowKeys = useCallback(
     (record: T) => {
@@ -103,7 +104,10 @@ export function useTableRowSelection<
 
   const totalSelectionCount = useMemo(
     () =>
-      selectedKeys.reduce((acc, item) => acc + (item.subKeys?.length || 1), 0),
+      selectedKeys.reduce(
+        (acc, item) => acc + (item.subKeys?.length ?? 0) + 1,
+        0,
+      ),
     [selectedKeys],
   );
 

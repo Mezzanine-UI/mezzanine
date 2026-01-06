@@ -1,6 +1,13 @@
 'use client';
 
-import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   TableSize,
   tableClasses as classes,
@@ -10,9 +17,16 @@ import {
   type TableDraggable,
   type TableExpandable,
   type TableRowSelection,
+  type TableRowSelectionCheckbox,
   type TableScroll,
+  type TableBulkActions as TableBulkActionsType,
 } from '@mezzanine-ui/core/table';
-import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
+import {
+  DragDropContext,
+  Droppable,
+  DroppableProvided,
+  DropResult,
+} from '@hello-pangea/dnd';
 import { cx } from '../utils/cx';
 import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import {
@@ -20,8 +34,8 @@ import {
   TableDataContext,
   TableSuperContext,
   type TableContextValue,
-  type TableTransitionState,
 } from './TableContext';
+import type { TableTransitionState } from './hooks/useTableDataSource';
 import { TableBody } from './components/TableBody';
 import { TableColGroup } from './components/TableColGroup';
 import { TableHeader } from './components/TableHeader';
@@ -36,9 +50,10 @@ import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
 import type { EmptyProps } from '../Empty';
-import { composeRefs } from '../utils/composeRefs';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import TableBulkActions from './components/TableBulkActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   extends Omit<
@@ -155,7 +170,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   } = props as TableNonVirtualizedProps<T>;
 
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const composedHostRef = useComposeRefs([ref, hostRef]);
   const tableRef = useRef<HTMLTableElement | null>(null);
 
   // mock loading dataSource
@@ -253,6 +268,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const scrollState = useTableScroll({
     enabled: !nested,
   });
+
+  const { containerRef: scrollContainerRef, setContainerRef } = scrollState;
 
   // Fixed column offset calculations
   const fixedOffsetsState = useTableFixedOffsets({
@@ -353,12 +370,15 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       getResizedColumnWidth: columnState.getResizedColumnWidth,
       scrollLeft: scrollState.scrollLeft,
       expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
+      hasDragHandleFixed: !!draggable?.enabled && draggable.fixed,
     }),
     [
       scrollState.scrollLeft,
       expansionState?.expansionLeftPadding,
       scrollState.containerWidth,
       columnState.getResizedColumnWidth,
+      draggable?.enabled,
+      draggable?.fixed,
     ],
   );
 
@@ -417,66 +437,131 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     return baseStyle;
   }, [scroll?.x]);
 
-  const { setContainerRef } = scrollState;
+  const droppableInnerRefSetter = useRef<
+    ((instance: HTMLDivElement | null) => void) | null
+  >(null);
 
-  const handleScrollContainerRef = useCallback(
+  const composedScrollContainerRef = useCallback(
     (element: HTMLDivElement | null) => {
-      scrollContainerRef.current = element;
+      // Call our setContainerRef
       setContainerRef(element);
+
+      // Call droppable's innerRef if it exists
+      if (droppableInnerRefSetter.current) {
+        droppableInnerRefSetter.current(element);
+      }
     },
     [setContainerRef],
   );
 
-  const mainTable = (
-    <TableContext.Provider value={contextValue}>
-      <TableDataContext.Provider value={dataContextValue}>
-        <div
-          className={cx(classes.host, className)}
-          ref={ref}
-          style={style}
-          {...restProps}
-        >
+  /** Feature: bulk actions */
+  const bulkActionsConfig = useMemo(() => {
+    if (!selectionState || selectionState.mode !== 'checkbox') {
+      return null;
+    }
+
+    const checkboxConfig =
+      selectionState.config as TableRowSelectionCheckbox<T>;
+
+    return {
+      enabled:
+        !!checkboxConfig.bulkActions && selectionState.selectedRowKeys.length,
+      bulkActions: checkboxConfig.bulkActions as TableBulkActionsType,
+      onClearSelection: () => checkboxConfig.onChange([], null, []),
+      selectedRowKeys: selectionState.selectedRowKeys,
+    };
+  }, [selectionState]);
+
+  const paginationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const { current: paginationEl } = paginationRef;
+
+    if (paginationEl) {
+      const resizeObserver = new ResizeObserver(() => {
+        hostRef.current?.style.setProperty(
+          '--mzn-table-pagination-height',
+          `${paginationEl.offsetHeight}px`,
+        );
+      });
+
+      resizeObserver.observe(paginationEl);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+
+    return;
+  }, []);
+
+  const renderMainTable = (droppableProvided?: DroppableProvided) => {
+    if (droppableProvided) {
+      droppableInnerRefSetter.current = droppableProvided.innerRef;
+    } else {
+      droppableInnerRefSetter.current = null;
+    }
+
+    return (
+      <TableContext.Provider value={contextValue}>
+        <TableDataContext.Provider value={dataContextValue}>
           <div
-            className={cx(classes.scrollContainer, {
-              [classes.sticky]: !!sticky,
-            })}
-            onScroll={scrollState.handleScroll}
-            ref={handleScrollContainerRef}
-            style={scrollContainerStyle}
+            className={cx(classes.host, className)}
+            ref={composedHostRef}
+            style={style}
+            {...restProps}
           >
-            <table
-              className={cx(classes.root, sizeClass)}
-              ref={tableRef}
-              style={tableStyle}
+            <div
+              {...droppableProvided?.droppableProps}
+              className={cx(classes.scrollContainer, {
+                [classes.sticky]: !!sticky,
+              })}
+              onScroll={scrollState.handleScroll}
+              ref={
+                droppableProvided ? composedScrollContainerRef : setContainerRef
+              }
+              style={scrollContainerStyle}
             >
-              <TableColGroup />
-              {showHeader && <TableHeader />}
-              <TableBody />
-            </table>
+              <table
+                className={cx(classes.root, sizeClass)}
+                ref={tableRef}
+                style={tableStyle}
+              >
+                <TableColGroup />
+                {showHeader && <TableHeader />}
+                <TableBody />
+                {droppableProvided?.placeholder ? (
+                  <tbody>{droppableProvided.placeholder}</tbody>
+                ) : null}
+              </table>
+            </div>
+            {pagination && (
+              <TablePaginationComponent {...pagination} ref={paginationRef} />
+            )}
+            {bulkActionsConfig?.enabled ? (
+              <TableBulkActions
+                bulkActions={bulkActionsConfig.bulkActions}
+                onClearSelection={bulkActionsConfig.onClearSelection}
+                selectedRowKeys={bulkActionsConfig.selectedRowKeys}
+              />
+            ) : null}
           </div>
-          {pagination && <TablePaginationComponent {...pagination} />}
-        </div>
-      </TableDataContext.Provider>
-    </TableContext.Provider>
-  );
+        </TableDataContext.Provider>
+      </TableContext.Provider>
+    );
+  };
 
   if (nested) {
-    return mainTable;
+    return renderMainTable();
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="mzn-table-v2-dnd">
+      <Droppable droppableId="mzn-table-dnd">
         {(provided) => (
-          <div
-            {...provided.droppableProps}
-            ref={composeRefs([hostRef, provided.innerRef])}
-          >
-            <TableSuperContext.Provider value={superContextValue}>
-              {mainTable}
-            </TableSuperContext.Provider>
-            {provided.placeholder}
-          </div>
+          <TableSuperContext.Provider value={superContextValue}>
+            {renderMainTable(provided)}
+          </TableSuperContext.Provider>
         )}
       </Droppable>
     </DragDropContext>

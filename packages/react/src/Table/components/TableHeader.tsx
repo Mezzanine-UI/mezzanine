@@ -13,26 +13,22 @@ import {
 import {
   CaretDownIcon,
   CaretUpIcon,
-  DotVerticalIcon,
   QuestionOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { cx } from '../../utils/cx';
+import Icon from '../../Icon';
 import Tooltip from '../../Tooltip';
 import { useTableContext, useTableSuperContext } from '../TableContext';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableResizeHandle } from './TableResizeHandle';
 import { TableSelectionCell } from './TableSelectionCell';
-import Icon from '../../Icon';
+import TableColumnTitleMenu from './TableColumnTitleMenu';
 
-export interface TableHeaderProps {
-  className?: string;
-}
+export type TableHeaderProps = unknown;
 
 const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
-  function TableHeader(props, ref) {
-    const { className } = props;
-
+  function TableHeader(_, ref) {
     const {
       columns,
       draggable,
@@ -90,13 +86,17 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
           containerWidth ?? 0,
         );
 
+      // In radio mode, hide the header selection (no select all)
+      const isRadioMode = selection.mode === 'radio';
+
       return (
         <TableSelectionCell
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
+          hidden={isRadioMode || selection.config?.hideSelectAll}
           indeterminate={selection.isIndeterminate}
           isHeader
-          hidden={selection.config?.hideSelectAll}
+          mode={selection.mode}
           onChange={selection.toggleAll}
           selected={selection.isAllSelected}
           showShadow={showShadow ?? false}
@@ -187,19 +187,6 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       );
     };
 
-    const renderMenuIcon = (column: TableColumn) => {
-      if (!column.titleMenu) return null;
-
-      /** @TODO wait for dropdown component */
-      return (
-        <Icon
-          size={16}
-          icon={DotVerticalIcon}
-          className={classes.headerCellIcon}
-        />
-      );
-    };
-
     const renderHeaderCells = () => {
       return columns.map((column, columnIndex) => {
         const fixedPos = parseFixed(column.fixed);
@@ -246,6 +233,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
                 [classes.headerCellFixed]: !!fixedPos,
               },
               column.className,
+              column.headerClassName,
             )}
             key={column.key}
             scope="col"
@@ -257,7 +245,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
                 {renderHelpIcon(column)}
                 {renderSortIcon(column)}
               </div>
-              {renderMenuIcon(column)}
+              <TableColumnTitleMenu column={column} />
             </div>
             {resizable && (
               <TableResizeHandle column={column} columnIndex={columnIndex} />
@@ -268,8 +256,8 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     };
 
     return (
-      <thead className={cx(classes.header, className)} ref={ref}>
-        <tr className={classes.headerRow}>
+      <thead className={cx(classes.header)} ref={ref}>
+        <tr>
           {renderDragHandleHeader()}
           {renderExpandHeader()}
           {renderSelectionHeader()}

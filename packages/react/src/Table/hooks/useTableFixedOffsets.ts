@@ -57,7 +57,10 @@ const parseFixed = (fixed: FixedType | undefined): 'end' | 'start' | null => {
 export function useTableFixedOffsets(
   options: UseTableFixedOffsetsOptions,
 ): UseTableFixedOffsetsReturn {
-  const { expansionLeftPadding = 0 } = useTableSuperContext();
+  const {
+    expansionLeftPadding = 0,
+    hasDragHandleFixed: parentHasDragHandleFixed,
+  } = useTableSuperContext();
   const { actionConfig, columns, getResizedColumnWidth } = options;
 
   // Store measured widths
@@ -70,7 +73,7 @@ export function useTableFixedOffsets(
   useEffect(() => {
     const innerMap = new Map<string, number>();
 
-    if (hasDragHandle) {
+    if (hasDragHandle || parentHasDragHandleFixed) {
       innerMap.set(DRAG_HANDLE_KEY, DRAG_HANDLE_COLUMN_WIDTH);
     }
 
@@ -83,7 +86,7 @@ export function useTableFixedOffsets(
     }
 
     setMeasuredWidths(innerMap);
-  }, [hasDragHandle, hasExpansion, hasSelection]);
+  }, [hasDragHandle, hasExpansion, hasSelection, parentHasDragHandleFixed]);
 
   // Get width for a column (prioritize measured, then computed, then defined, then fallback)
   const getWidth = useCallback(
@@ -120,7 +123,10 @@ export function useTableFixedOffsets(
     const endKeys: string[] = [];
 
     // Action columns first (in order: drag handle, expansion, selection)
-    if (actionConfig.hasDragHandle && actionConfig.dragHandleFixed) {
+    if (
+      (actionConfig.hasDragHandle && actionConfig.dragHandleFixed) ||
+      parentHasDragHandleFixed
+    ) {
       startKeys.push(DRAG_HANDLE_KEY);
     }
 
@@ -144,7 +150,7 @@ export function useTableFixedOffsets(
     });
 
     return { fixedEndKeys: endKeys, fixedStartKeys: startKeys };
-  }, [actionConfig, columns]);
+  }, [actionConfig, columns, parentHasDragHandleFixed]);
 
   // Calculate all fixed offsets
   const fixedOffsets = useMemo(() => {

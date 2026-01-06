@@ -10,18 +10,12 @@ import { TableExpandedRow } from './TableExpandedRow';
 import { useTableVirtualization } from '../hooks/useTableVirtualization';
 import Empty from '../../Empty';
 import { Fade } from '../../Transition';
-import { composeRefs } from '../../utils/composeRefs';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
-export interface TableBodyProps {
-  className?: string;
-  droppableRef?: React.Ref<HTMLTableSectionElement>;
-}
+export type TableBodyProps = unknown;
 
 const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  function TableBody(props, ref) {
-    const { className, droppableRef } = props;
-
+  function TableBody(_, ref) {
     const {
       columns,
       dataSource,
@@ -38,7 +32,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     // Use virtualization with the scroll container ref from parent
     const virtualization = useTableVirtualization({
       dataSource,
-      enabled: virtualScrollEnabled ?? false,
+      enabled: virtualScrollEnabled,
       isRowExpanded: expansion?.isRowExpanded,
       scrollContainerRef:
         scrollContainerRef as React.RefObject<HTMLDivElement | null>,
@@ -202,10 +196,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     };
 
     return (
-      <tbody
-        className={cx(classes.body, className)}
-        ref={droppableRef ? composeRefs([ref, droppableRef]) : ref}
-      >
+      <tbody className={cx(classes.body)} ref={ref}>
         {renderRows()}
       </tbody>
     );

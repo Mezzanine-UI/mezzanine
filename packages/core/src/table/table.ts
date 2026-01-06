@@ -1,3 +1,7 @@
+import type { IconDefinition } from '@mezzanine-ui/icons';
+import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
+import type { Placement } from '@floating-ui/react-dom';
+
 export const tablePrefix = 'mzn-table';
 export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
 export const tableLoadingPrefix = `${tablePrefix}-loading`;
@@ -9,21 +13,17 @@ export const tableResizeHandlePrefix = `${tablePrefix}__resize-handle`;
 export const tableClasses = {
   body: tableBodyPrefix,
   bodyCell: `${tableBodyPrefix}__cell`,
-  bodyCellContent: `${tableBodyPrefix}__cell-content`,
-  bodyCellFixed: `${tableBodyPrefix}__cell--fixed`,
-  bodyCellFixedEnd: `${tableBodyPrefix}__cell--fixed-end`,
-  bodyCellFixedShadow: `${tableBodyPrefix}__cell--fixed-shadow`,
-  bodyCellFixedStart: `${tableBodyPrefix}__cell--fixed-start`,
-  bodyEmpty: `${tableBodyPrefix}__empty`,
   bodyRow: `${tableBodyPrefix}__row`,
   bodyRowAdding: `${tableBodyPrefix}__row--adding`,
   bodyRowDeleting: `${tableBodyPrefix}__row--deleting`,
   bodyRowDragging: `${tableBodyPrefix}__row--dragging`,
-  bodyRowExpanded: `${tableBodyPrefix}__row--expanded`,
   bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
-  bodyVirtualContainer: `${tableBodyPrefix}__virtual-container`,
-  bordered: `${tablePrefix}--bordered`,
+  bodyRowSelected: `${tableBodyPrefix}__row--selected`,
+  bulkActions: `${tablePrefix}__bulk-actions`,
+  bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
+  bulkActionsActionArea: `${tablePrefix}__bulk-actions__action-area`,
+  bulkActionsSeparator: `${tablePrefix}__bulk-actions__separator`,
   cell: tableCellPrefix,
   cellAlignCenter: `${tableCellPrefix}--align-center`,
   cellAlignEnd: `${tableCellPrefix}--align-end`,
@@ -53,14 +53,9 @@ export const tableClasses = {
   headerCellFixed: `${tableHeaderPrefix}__cell--fixed`,
   headerCellTitle: `${tableHeaderPrefix}__cell-title`,
   headerCellIcon: `${tableHeaderPrefix}__cell-icon`,
-  headerRow: `${tableHeaderPrefix}__row`,
-  host: tablePrefix,
+  host: `${tablePrefix}-host`,
   resizeHandle: tableResizeHandlePrefix,
-  resizeHandleActive: `${tableResizeHandlePrefix}--active`,
   root: tablePrefix,
-  row: `${tablePrefix}__row`,
-  rowExpanded: `${tablePrefix}__row--expanded`,
-  rowSelected: `${tablePrefix}__row--selected`,
   scrollContainer: tableScrollContainerPrefix,
   selectionCell: `${tablePrefix}__selection-cell`,
   selectionCheckbox: `${tablePrefix}__selection-checkbox`,
@@ -70,11 +65,6 @@ export const tableClasses = {
   sortIcons: `${tablePrefix}__sort-icons`,
   sticky: `${tablePrefix}--sticky`,
   sub: `${tablePrefix}--sub`,
-  // Highlight mode classes
-  highlightCell: `${tablePrefix}--highlight-cell`,
-  highlightColumn: `${tablePrefix}--highlight-column`,
-  highlightCross: `${tablePrefix}--highlight-cross`,
-  highlightRow: `${tablePrefix}--highlight-row`,
 } as const;
 
 /** Generic record type for table data */
@@ -120,6 +110,20 @@ export type FixedType = boolean | 'start' | 'end';
 export type TableSize = 'main' | 'sub';
 
 /**
+ * Title menu configuration for table column header dropdown
+ */
+export interface TableColumnTitleMenu {
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Callback when an option is selected */
+  onSelect?: (option: DropdownOption) => void;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /** Dropdown placement relative to trigger */
+  placement?: Placement;
+}
+
+/**
  * Column definition base interface
  */
 export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
@@ -141,9 +145,9 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   headerClassName?: string;
   /** Unique key for the column */
   key: string;
-  /** Maximum column width (for resizable columns) */
+  /** Maximum column width */
   maxWidth?: number;
-  /** Minimum column width (for resizable columns) */
+  /** Minimum column width */
   minWidth?: number;
   /** Callback when sort state changes */
   onSort?: (key: string, order: SortOrder) => void;
@@ -155,8 +159,8 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   title?: React.ReactNode;
   /** Tooltip help text for header */
   titleHelp?: React.ReactNode;
-  /** Menu content for header (e.g., dropdown menu) */
-  titleMenu?: React.ReactNode;
+  /** Menu configuration for header dropdown */
+  titleMenu?: TableColumnTitleMenu;
   /** Column width in pixels */
   width?: number;
 }
@@ -164,34 +168,126 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
 export type TableColumn<T extends TableDataSource = TableDataSource> =
   TableColumnBase<T>;
 
-/** Row selection configuration */
-export interface TableRowSelection<
+/** Selection mode for row selection */
+export type TableSelectionMode = 'checkbox' | 'radio';
+
+/**
+ * action configuration for bulk actions (destructive or main action)
+ */
+export interface TableBulkGeneralAction {
+  /** Icon for the destructive action button */
+  icon?: IconDefinition;
+  /** Label for the destructive action button */
+  label: string;
+  /** Callback when destructive action is clicked */
+  onClick: (selectedRowKeys: (string | number)[]) => void;
+}
+
+/**
+ * Overflow action configuration for bulk actions (dropdown menu)
+ */
+export interface TableBulkOverflowAction {
+  /** Icon for the overflow action button */
+  icon?: IconDefinition;
+  /** Label for the overflow action button */
+  label: string;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /** Callback when a dropdown option is selected */
+  onSelect: (
+    option: DropdownOption,
+    selectedRowKeys: (string | number)[],
+  ) => void;
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Dropdown placement relative to trigger */
+  placement?: Placement;
+}
+
+/**
+ * Bulk actions configuration for row selection
+ */
+export interface TableBulkActions {
+  /** Destructive action (optional, single action with separator) */
+  destructiveAction?: TableBulkGeneralAction;
+  /** Main actions (required, at least one action) */
+  mainActions: [TableBulkGeneralAction, ...TableBulkGeneralAction[]];
+  /** Overflow action with dropdown menu (optional, with separator) */
+  overflowAction?: TableBulkOverflowAction;
+  /**
+   * Label for selection summary
+   */
+  renderSelectionSummary?: (count: number) => string;
+}
+
+/** Base row selection configuration */
+export interface TableRowSelectionBase<
   T extends TableDataSource = TableDataSource,
 > {
   /** Fixed position of the selection column */
   fixed?: boolean;
+  /** Determine if the selection control is disabled for a row */
+  isSelectionDisabled?: (record: T) => boolean;
+}
+
+/** Checkbox mode row selection configuration */
+export interface TableRowSelectionCheckbox<
+  T extends TableDataSource = TableDataSource,
+> extends TableRowSelectionBase<T> {
+  /**
+   * Selection mode
+   */
+  mode: 'checkbox';
+  /** Bulk actions configuration for batch operations */
+  bulkActions?: TableBulkActions;
   /** Get checkbox props for each row */
   getCheckboxProps?: (record: T) => {
     indeterminate?: boolean;
     selected?: boolean;
   };
-  /** Determine if the checkbox is disabled for a row */
-  isCheckboxDisabled?: (record: T) => boolean;
   /** Hide select all checkbox in header */
   hideSelectAll?: boolean;
+  /** Callback when select all is triggered, function called after onChange */
+  onSelectAll?: (type: 'all' | 'none') => void;
+  /** Preserve selected row keys when toggle select All even when data changes */
+  preserveSelectedRowKeys?: boolean;
   /** Callback when selection changes */
   onChange: (
     selectedRowKeys: (string | number)[],
     selectedRow: T | null,
     selectedRows: T[],
   ) => void;
-  /** Callback when select all is triggered, function called after onChange */
-  onSelectAll?: (type: 'all' | 'none') => void;
-  /** Preserve selected row keys when toggle select All even when data changes */
-  preserveSelectedRowKeys?: boolean;
   /** Array of selected row keys */
   selectedRowKeys: (string | number)[];
 }
+
+/** Radio mode row selection configuration */
+export interface TableRowSelectionRadio<
+  T extends TableDataSource = TableDataSource,
+> extends TableRowSelectionBase<T> {
+  /** Selection mode */
+  mode: 'radio';
+  /** Callback when selection changes */
+  onChange: (
+    selectedRowKey: string | number | undefined,
+    selectedRow: T | null,
+  ) => void;
+  /** Selected row key */
+  selectedRowKey: string | number | undefined;
+  /** Not available in radio mode */
+  getCheckboxProps?: never;
+  /** Not available in radio mode */
+  hideSelectAll?: never;
+  /** Not available in radio mode */
+  onSelectAll?: never;
+  /** Not available in radio mode */
+  preserveSelectedRowKeys?: never;
+}
+
+/** Row selection configuration - discriminated union */
+export type TableRowSelection<T extends TableDataSource = TableDataSource> =
+  | TableRowSelectionCheckbox<T>
+  | TableRowSelectionRadio<T>;
 
 /** Scroll configuration */
 export interface TableScroll {
@@ -214,8 +310,6 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   enabled: boolean;
   /** Fixed position of drag handle column */
   fixed?: boolean;
-  /** Indent size for nested rows */
-  indentSize?: number;
   /** Callback when drag ends */
   onDragEnd?: (newDataSource: T[]) => void;
 }
@@ -234,28 +328,6 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   onExpandedRowsChange?: (expandedRowKeys: (string | number)[]) => void;
   /** Determine if a row is expandable */
   rowExpandable?: (record: T) => boolean;
-}
-
-/** Column style helpers */
-export function getColumnStyle(
-  column: TableColumn,
-  computedWidth?: number,
-): React.CSSProperties {
-  const style: React.CSSProperties = {};
-
-  const width = computedWidth ?? column.width;
-
-  if (width) {
-    style.width = width;
-    style.minWidth = width;
-    style.maxWidth = width;
-    style.flex = '0 0 auto';
-  } else {
-    style.flex = '1 1 0';
-    style.minWidth = 0;
-  }
-
-  return style;
 }
 
 export function getCellAlignClass(align?: ColumnAlign): string {

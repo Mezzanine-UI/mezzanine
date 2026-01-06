@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useCallback, useMemo } from 'react';
+import { forwardRef, memo, useCallback, useMemo, useRef } from 'react';
 import {
   getCellAlignClass,
   tableClasses as classes,
@@ -10,6 +10,7 @@ import {
 import Skeleton from '../../Skeleton';
 import { cx } from '../../utils/cx';
 import { useTableContext } from '../TableContext';
+import Tooltip from '../../Tooltip';
 
 export interface TableCellProps<T extends TableDataSource = TableDataSource> {
   className?: string;
@@ -23,6 +24,8 @@ export interface TableCellProps<T extends TableDataSource = TableDataSource> {
   /** Whether to show shadow on this cell (only for edge fixed columns) */
   showShadow?: boolean;
   style?: React.CSSProperties;
+  /** Explicit width for dragging state (when position: fixed breaks colgroup) */
+  width?: number;
 }
 
 const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
@@ -39,6 +42,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       rowIndex,
       showShadow = false,
       style,
+      width,
     } = props;
 
     const { highlight } = useTableContext();
@@ -54,13 +58,16 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
     }, [column, record, rowIndex]);
 
     // Width is managed by colgroup, set fixed position offset via CSS variable
+    // When width is provided (dragging state), apply it directly
     const cellStyle = useMemo<React.CSSProperties>(() => {
       const baseStyle: React.CSSProperties = { ...style };
 
-      if (column.ellipsis) {
-        baseStyle.overflow = 'hidden';
-        baseStyle.textOverflow = 'ellipsis';
-        baseStyle.whiteSpace = 'nowrap';
+      // Apply explicit width for dragging state
+      if (width !== undefined) {
+        baseStyle.width = width;
+        baseStyle.minWidth = width;
+        baseStyle.maxWidth = width;
+        baseStyle.flexShrink = 0;
       }
 
       // Set CSS variable for fixed column positioning
@@ -73,7 +80,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       }
 
       return baseStyle;
-    }, [style, column.ellipsis, fixed, fixedOffset]);
+    }, [style, fixed, fixedOffset, width]);
 
     const alignClass = getCellAlignClass(column.align);
 
@@ -106,20 +113,67 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       highlight?.setHoveredCell(rowIndex, columnIndex);
     }, [highlight, rowIndex, columnIndex]);
 
+    /** Feature: Ellipsis */
+    const ellipsisRef = useRef<HTMLDivElement>(null);
+    // default to true if undefined
+    const isColumnEllipsis = column.ellipsis ?? true;
+
+    const renderChild = () => {
+      if (loading) {
+        return <Skeleton width="100%" variant="body-highlight" />;
+      }
+
+      if (isColumnEllipsis) {
+        return (
+          <Tooltip
+            anchor={ellipsisRef}
+            title={cellValue as React.ReactNode}
+            options={{
+              placement: 'top-start',
+            }}
+          >
+            {({ onMouseEnter, onMouseLeave }) => (
+              <div
+                ref={ellipsisRef}
+                className={cx(classes.cellContent, alignClass, {
+                  [classes.cellEllipsis]: isColumnEllipsis,
+                })}
+                onMouseEnter={(e) => {
+                  if (ellipsisRef.current) {
+                    const { current: el } = ellipsisRef;
+
+                    const isOverflow = el.scrollWidth > el.offsetWidth;
+
+                    if (isOverflow) onMouseEnter(e);
+                  }
+                }}
+                onMouseLeave={onMouseLeave}
+              >
+                {cellValue as React.ReactNode}
+              </div>
+            )}
+          </Tooltip>
+        );
+      }
+
+      return (
+        <div className={cx(classes.cellContent, alignClass)}>
+          {cellValue as React.ReactNode}
+        </div>
+      );
+    };
+
     return (
       <td
         className={cx(
           classes.cell,
-          alignClass,
           {
-            [classes.cellEllipsis]: column.ellipsis,
             [classes.cellFixed]: !!fixed,
             [classes.cellFixedEnd]: fixed === 'end',
             [classes.cellFixedShadow]: showShadow,
             [classes.cellFixedStart]: fixed === 'start',
             [classes.cellHighlight]: isCellHighlighted,
           },
-          column.className,
           className,
         )}
         colSpan={colSpan > 1 ? colSpan : undefined}
@@ -127,13 +181,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
         ref={ref}
         style={cellStyle}
       >
-        {loading ? (
-          <Skeleton width="100%" variant="body-highlight" />
-        ) : (
-          <span className={classes.cellContent}>
-            {cellValue as React.ReactNode}
-          </span>
-        )}
+        {renderChild()}
       </td>
     );
   },

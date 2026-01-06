@@ -12,7 +12,8 @@ export type ButtonVariant =
   | 'destructive-secondary'
   | 'destructive-ghost'
   | 'destructive-text-link'
-  | 'inverse';
+  | 'inverse'
+  | 'inverse-ghost';
 
 export type ButtonSize = GeneralSize;
 

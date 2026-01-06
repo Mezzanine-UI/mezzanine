@@ -1,30 +1,45 @@
 export {
   tableClasses as classes,
   getCellAlignClass,
-  getColumnStyle,
   getRowKey,
-  type FixedType,
-  type SortOrder,
-  type TableColumn,
+  type TableRecord,
+  type TableDataSourceWithKey,
+  type TableDataSourceWithId,
   type TableDataSource,
-  type TableDraggable,
-  type TableExpandable,
+  type SortOrder,
+  type ColumnAlign,
+  type HighlightMode,
+  type FixedType,
+  type TableSize,
+  type TableColumnTitleMenu,
+  type TableColumnBase,
+  type TableColumn,
+  type TableSelectionMode,
+  type TableBulkGeneralAction,
+  type TableBulkOverflowAction,
+  type TableBulkActions,
+  type TableRowSelectionBase,
+  type TableRowSelectionCheckbox,
+  type TableRowSelectionRadio,
   type TableRowSelection,
   type TableScroll,
-  type TableSize,
+  type TableDraggable,
+  type TableExpandable,
 } from '@mezzanine-ui/core/table';
 export {
   default,
   type TableBaseProps,
+  type TableVirtualizedProps,
   type TableNonVirtualizedProps,
   type TableProps,
-  type TableVirtualizedProps,
 } from './Table';
 export {
   TableContext,
   TableDataContext,
+  TableSuperContext,
   useTableContext,
   useTableDataContext,
+  useTableSuperContext,
   type TableColumnState,
   type TableContextValue,
   type TableDataContextValue,
@@ -32,9 +47,12 @@ export {
   type TableExpansionState,
   type TableSelectionState,
   type TableSortingState,
-  type TableTransitionState,
 } from './TableContext';
-export { type UpdateDataSourceOptions } from './hooks';
+export {
+  type UpdateDataSourceOptions,
+  type UseTableDataSourceOptions,
+  type TableTransitionState,
+} from './hooks';
 export * from './hooks';
 export * from './components';
 export * from './utils';

@@ -115,6 +115,7 @@ $section-configs: (
   &:focus-visible,
   &:focus-within {
     @include _apply-card-state(focus);
+
     outline: none;
   }
 
@@ -124,6 +125,7 @@ $section-configs: (
 
   &.#{$prefix}-item-card--disabled {
     @include _apply-card-state(disabled);
+
     box-shadow: none;
   }
 }
@@ -189,9 +191,14 @@ $section-configs: (
 .#{$prefix}  {
   position: relative;
 
+  &--outside {
+    line-height: 0;
+  }
+
   // dropdown items
   &-list {
     @include _apply-section(list);
+
     width: 100%;
     min-width: max-content;
     max-width: 100%;
@@ -205,6 +212,7 @@ $section-configs: (
 
   &-list-header {
     @include _apply-section(list-header);
+
     position: sticky;
     inset-block-start: 0;
     z-index: 1;
@@ -217,6 +225,7 @@ $section-configs: (
 
   &-group-label {
     @include typography.semantic-variable(body);
+
     color: palette.semantic-variable(text, neutral-light);
     font-feature-settings: 'liga' off, 'clig' off;
     padding-block: spacing.semantic-variable(padding, vertical, tiny);
@@ -230,6 +239,10 @@ $section-configs: (
 
   &-item-card {
     @include _apply-card-states();
+
+    --#{$prefix}-item-card-title-color: palette.semantic-variable(text, neutral-strong);
+    --#{$prefix}-item-card-description-color: palette.semantic-variable(text, neutral);
+
     border-radius: radius.variable(base);
     padding-inline: spacing.semantic-variable(padding, horizontal, base);
     padding-block: spacing.semantic-variable(padding, vertical, base);
@@ -244,9 +257,7 @@ $section-configs: (
       transition.standard(color, fast),
       transition.standard(border, fast),
       transition.standard(box-shadow, fast);
-    --#{$prefix}-item-card-title-color: palette.semantic-variable(text, neutral-strong);
-    --#{$prefix}-item-card-description-color: palette.semantic-variable(text, neutral);
-    
+
     &--disabled {
       cursor: not-allowed;
     }
@@ -275,36 +286,43 @@ $section-configs: (
 
   &-item-card-title {
     @include typography.semantic-variable(label-primary);
+
     overflow: hidden;
     font-feature-settings: 'liga' off, 'clig' off;
     text-overflow: ellipsis;
     transition: transition.standard(color, fast);
     color: var(--#{$prefix}-item-card-title-color, currentColor);
   }
+
   &-item-card-description {
     @include typography.semantic-variable(caption);
+
     overflow: hidden;
     font-feature-settings: 'liga' off, 'clig' off;
     text-overflow: ellipsis;
     transition: transition.standard(color, fast);
     color: var(--#{$prefix}-item-card-description-color, currentColor);
   }
+
   &-item-card-prepend-content {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: spacing.semantic-variable(gap, base);
   }
+
   &-item-card-highlighted-text {
     color: palette.semantic-variable(text, brand);
     transition: transition.standard(color, fast);
   }
+
   &-item-card-body {
     display: flex;
     flex-direction: column;
     flex: 1 0 0;
     gap: spacing.semantic-variable(gap, tight);
   }
+
   &-item-card-append-content {
     display: flex;
     align-items: center;
@@ -316,6 +334,7 @@ $section-configs: (
   &-action {
     display: flex;
     @include _apply-section(action);
+
     position: sticky;
     inset-block-end: 0;
     flex-direction: column;
@@ -325,6 +344,7 @@ $section-configs: (
 
   &-action--top-bar {
     @include _apply-section(action-top-bar);
+
     display: block;
     width: 100%;
     inset-block-start: 0;
@@ -341,6 +361,7 @@ $section-configs: (
   &-status {
     display: flex;
     @include _apply-section(status);
+
     position: relative;
     align-items: center;
     width: 100%;
@@ -348,6 +369,7 @@ $section-configs: (
 
   &-status-text {
     @include typography.semantic-variable(input);
+
     color: palette.semantic-variable(text, neutral);
     text-align: center;
     font-feature-settings: 'liga' off, 'clig' off;

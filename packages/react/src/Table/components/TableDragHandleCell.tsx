@@ -15,6 +15,8 @@ export interface TableDragHandleCellProps {
   fixedOffset?: number;
   isHeader?: boolean;
   showShadow?: boolean;
+  /** Explicit width for dragging state */
+  width?: number;
 }
 
 const TableDragHandleCellInner = forwardRef<
@@ -29,11 +31,20 @@ const TableDragHandleCellInner = forwardRef<
     fixedOffset = 0,
     isHeader = false,
     showShadow = false,
+    width,
   } = props;
 
   const CellComponent = isHeader ? 'th' : 'td';
 
   const cellStyle: React.CSSProperties = {};
+
+  // Apply explicit width for dragging state
+  if (width !== undefined) {
+    cellStyle.width = width;
+    cellStyle.minWidth = width;
+    cellStyle.maxWidth = width;
+    cellStyle.flexShrink = 0;
+  }
 
   if (fixed) {
     (cellStyle as Record<string, string>)['--fixed-start-offset'] =
