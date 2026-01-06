@@ -161,6 +161,10 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The type of the dropdown.
    */
   type?: DropdownType;
+  /**
+   * The z-index of the dropdown.
+   */
+  zIndex?: number | string;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -195,6 +199,7 @@ export default function Dropdown(props: DropdownProps) {
     onActionCustom,
     onActionClear,
     onItemHover,
+    zIndex,
   } = props;
   const isInline = inputPosition === 'inside';
   const inputId = useId();
@@ -556,6 +561,7 @@ export default function Dropdown(props: DropdownProps) {
               ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
             ],
           }}
+          style={zIndex ? { zIndex } : undefined}
         >
           <TransitionGroup component={null}>
             {isOpen && (
