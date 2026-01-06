@@ -1,11 +1,13 @@
 export * from './utils/array-move';
 export * from './utils/composeRefs';
 export * from './utils/cx';
+export * from './utils/format-number-with-commas';
 export * from './utils/general';
 export * from './utils/get-css-variable-value';
 export * from './utils/get-scrollbar-width';
 export * from './utils/getElement';
 export * from './utils/jsx-types';
+export * from './utils/parse-number-with-commas';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
@@ -171,6 +173,8 @@ export {
   type TableColumnTitleMenu,
   type TableColumnBase,
   type TableColumn,
+  type TableColumnWithDataIndex,
+  type TableColumnWithRender,
   type TableSelectionMode,
   type TableBulkGeneralAction,
   type TableBulkOverflowAction,
