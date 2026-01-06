@@ -286,9 +286,12 @@ export interface TableRowSelectionRadio<
   /** Selection mode */
   mode: 'radio';
   /** Callback when selection changes */
-  onChange: (selectedRowKey: string | number, selectedRow: T | null) => void;
+  onChange: (
+    selectedRowKey: string | number | undefined,
+    selectedRow: T | null,
+  ) => void;
   /** Array of selected row keys */
-  selectedRowKey: string | number | null | undefined;
+  selectedRowKey: string | number | undefined;
   /** Not available in radio mode */
   getCheckboxProps?: never;
   /** Not available in radio mode */

@@ -61,6 +61,14 @@ $content-cell: (
 $icon-size: spacing.semantic-variable(size, element, base);
 $action-height: spacing.semantic-variable(size, element, gentle);
 $sticky-cell-z-index: 1;
+$pagination-default-height: 0px;
+$z-index-config: (
+  sticky-cell-at-end: 1,
+  sticky-cell-at-start: 2,
+  header-sticky: 3,
+  bulk-actions: 4,
+  title-menu: 5,
+);
 
 @mixin text-color {
   color: palette.semantic-variable(text, neutral-solid);
@@ -121,6 +129,9 @@ $sticky-cell-z-index: 1;
 }
 
 .#{$prefix}-host {
+  --mzn-table-pagination-height: #{$pagination-default-height};
+  --mzn-table-title-menu-z-index: #{map.get($z-index-config, title-menu)};
+
   box-sizing: border-box;
   width: 100%;
   position: relative;
@@ -175,7 +186,7 @@ $sticky-cell-z-index: 1;
     thead {
       position: sticky;
       top: 0;
-      z-index: calc(#{$sticky-cell-z-index} + 2);
+      z-index: #{map.get($z-index-config, header-sticky)};
     }
   }
 
@@ -402,14 +413,14 @@ $sticky-cell-z-index: 1;
 
   &--fixed-start {
     inset-inline-start: var(--fixed-start-offset, 0);
-    z-index: calc(#{$sticky-cell-z-index} + 1);
+    z-index: #{map.get($z-index-config, sticky-cell-at-start)};
 
     @include fixed-column-shadow('start');
   }
 
   &--fixed-end {
     inset-inline-end: var(--fixed-end-offset, 0);
-    z-index: $sticky-cell-z-index;
+    z-index: #{map.get($z-index-config, sticky-cell-at-end)};
 
     @include fixed-column-shadow('end');
   }
@@ -568,9 +579,9 @@ $sticky-cell-z-index: 1;
 
 .#{$prefix}__bulk-actions {
   position: absolute;
-  z-index: calc(#{$sticky-cell-z-index} + 3);
+  z-index: #{map.get($z-index-config, bulk-actions)};
   left: 50%;
-  bottom: spacing.semantic-variable(padding, vertical, relaxed);
+  bottom: calc(#{spacing.semantic-variable(padding, vertical, relaxed)} + #{var(--mzn-table-pagination-height)});
   transform: translateX(-50%);
   max-width: spacing.semantic-variable(size, container, xwide);
   padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, base);
@@ -581,10 +592,6 @@ $sticky-cell-z-index: 1;
   flex-flow: row;
   align-items: center;
   gap: spacing.semantic-variable(gap, spacious);
-
-  &--with-pagination {
-    bottom: calc(#{spacing.semantic-variable(padding, vertical, relaxed)} + 56px)
-  }
 
   &__selection-summary {
     width: auto;
