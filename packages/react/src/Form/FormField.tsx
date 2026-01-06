@@ -128,7 +128,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         default:
           return 'info';
       }
-    }
+    };
 
     return (
       <div
@@ -152,26 +152,41 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
             informationText={labelInformationText}
             labelText={label}
             optionalMarker={labelOptionalMarker}
-          >
-            {label}
-          </FormLabel>
+          />
           <div className={cx(classes.dataEntry)}>
             {children}
             <div className={cx(classes.hintTextAndCounterArea)}>
               {(hintText || hintTextIcon) && (
                 <span className={cx(classes.hintText)}>
                   {hintTextIcon && (
-                    <Icon icon={hintTextIcon} size={14} color={hintTextIconColor()} />
+                    <Icon
+                      icon={hintTextIcon}
+                      size={14}
+                      color={hintTextIconColor()}
+                    />
                   )}
                   {hintText && (
-                    <span className={cx(classes.hintTextColor(hintTextColor || FormFieldHintTextColor.INFO))}>
+                    <span
+                      className={cx(
+                        classes.hintTextColor(
+                          hintTextColor || FormFieldHintTextColor.INFO,
+                        ),
+                      )}
+                    >
                       {hintText}
                     </span>
                   )}
                 </span>
               )}
               {counter && (
-                <span className={cx(classes.counter, classes.counterColor(counterColor || FormFieldCounterColor.INFO))}>
+                <span
+                  className={cx(
+                    classes.counter,
+                    classes.counterColor(
+                      counterColor || FormFieldCounterColor.INFO,
+                    ),
+                  )}
+                >
                   {counter}
                 </span>
               )}
