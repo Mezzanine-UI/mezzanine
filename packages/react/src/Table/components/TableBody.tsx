@@ -32,7 +32,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     // Use virtualization with the scroll container ref from parent
     const virtualization = useTableVirtualization({
       dataSource,
-      enabled: virtualScrollEnabled ? !!scrollContainerRef : false,
+      enabled: virtualScrollEnabled ? !!scrollContainerRef?.current : false,
       isRowExpanded: expansion?.isRowExpanded,
       scrollContainerRef:
         scrollContainerRef as React.RefObject<HTMLDivElement | null>,

@@ -1,6 +1,13 @@
 'use client';
 
-import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   TableSize,
   tableClasses as classes,
@@ -46,6 +53,7 @@ import type { EmptyProps } from '../Empty';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import TableBulkActions from './components/TableBulkActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   extends Omit<
@@ -161,6 +169,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     ...restProps
   } = props as TableNonVirtualizedProps<T>;
 
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const composedHostRef = useComposeRefs([ref, hostRef]);
   const tableRef = useRef<HTMLTableElement | null>(null);
 
   // mock loading dataSource
@@ -424,10 +434,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     return baseStyle;
   }, [scroll?.x]);
 
-  // Create a stable ref callback for droppable integration
-  // We need to use a ref to store the latest droppableProvided.innerRef
-  // since it can change between renders
-  const droppableInnerRefRef = useRef<
+  const droppableInnerRefSetter = useRef<
     ((instance: HTMLDivElement | null) => void) | null
   >(null);
 
@@ -437,8 +444,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       setContainerRef(element);
 
       // Call droppable's innerRef if it exists
-      if (droppableInnerRefRef.current) {
-        droppableInnerRefRef.current(element);
+      if (droppableInnerRefSetter.current) {
+        droppableInnerRefSetter.current(element);
       }
     },
     [setContainerRef],
@@ -462,13 +469,34 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     };
   }, [selectionState]);
 
+  const paginationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const { current: paginationEl } = paginationRef;
+
+    if (paginationEl) {
+      const resizeObserver = new ResizeObserver(() => {
+        hostRef.current?.style.setProperty(
+          '--mzn-table-pagination-height',
+          `${paginationEl.offsetHeight}px`,
+        );
+      });
+
+      resizeObserver.observe(paginationEl);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+
+    return;
+  }, []);
+
   const renderMainTable = (droppableProvided?: DroppableProvided) => {
     if (droppableProvided) {
-      droppableInnerRefRef.current = droppableProvided.innerRef as (
-        instance: HTMLDivElement | null,
-      ) => void;
+      droppableInnerRefSetter.current = droppableProvided.innerRef;
     } else {
-      droppableInnerRefRef.current = null;
+      droppableInnerRefSetter.current = null;
     }
 
     return (
@@ -476,7 +504,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
         <TableDataContext.Provider value={dataContextValue}>
           <div
             className={cx(classes.host, className)}
-            ref={ref}
+            ref={composedHostRef}
             style={style}
             {...restProps}
           >
@@ -504,7 +532,9 @@ function TableInner<T extends TableDataSource = TableDataSource>(
                 ) : null}
               </table>
             </div>
-            {pagination && <TablePaginationComponent {...pagination} />}
+            {pagination && (
+              <TablePaginationComponent {...pagination} ref={paginationRef} />
+            )}
             {bulkActionsConfig?.enabled ? (
               <TableBulkActions
                 bulkActions={bulkActionsConfig.bulkActions}

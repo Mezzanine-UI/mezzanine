@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, memo, useState } from 'react';
+import { forwardRef, memo } from 'react';
 import {
   DRAG_HANDLE_KEY,
   EXPANSION_KEY,
@@ -13,11 +13,9 @@ import {
 import {
   CaretDownIcon,
   CaretUpIcon,
-  DotVerticalIcon,
   QuestionOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { cx } from '../../utils/cx';
-import Dropdown from '../../Dropdown';
 import Icon from '../../Icon';
 import Tooltip from '../../Tooltip';
 import { useTableContext, useTableSuperContext } from '../TableContext';
@@ -25,6 +23,7 @@ import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableResizeHandle } from './TableResizeHandle';
 import { TableSelectionCell } from './TableSelectionCell';
+import TableColumnTitleMenu from './TableColumnTitleMenu';
 
 export type TableHeaderProps = unknown;
 
@@ -40,7 +39,6 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       sorting,
     } = useTableContext();
 
-    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
     const { containerWidth, scrollLeft } = useTableSuperContext();
 
     const parseFixed = (
@@ -189,36 +187,6 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       );
     };
 
-    const renderMenuIcon = (column: TableColumn) => {
-      if (!column.titleMenu) return null;
-
-      const { maxHeight, onSelect, options, placement } = column.titleMenu;
-
-      return (
-        <Dropdown
-          open={isMenuOpen}
-          maxHeight={maxHeight}
-          onSelect={(opt) => {
-            onSelect?.(opt);
-            setIsMenuOpen(false);
-          }}
-          onVisibilityChange={(open) => setIsMenuOpen(open)}
-          options={options}
-          placement={placement}
-        >
-          <Icon
-            className={classes.headerCellIcon}
-            icon={DotVerticalIcon}
-            size={16}
-            onClick={(evt) => {
-              evt.stopPropagation();
-              setIsMenuOpen((prev) => !prev);
-            }}
-          />
-        </Dropdown>
-      );
-    };
-
     const renderHeaderCells = () => {
       return columns.map((column, columnIndex) => {
         const fixedPos = parseFixed(column.fixed);
@@ -277,7 +245,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
                 {renderHelpIcon(column)}
                 {renderSortIcon(column)}
               </div>
-              {renderMenuIcon(column)}
+              <TableColumnTitleMenu column={column} />
             </div>
             {resizable && (
               <TableResizeHandle column={column} columnIndex={columnIndex} />

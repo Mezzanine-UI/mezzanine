@@ -7,7 +7,6 @@ import {
   TableRowSelectionRadio,
   type TableDataSource,
   type TableRowSelection,
-  type TableSelectionMode,
 } from '@mezzanine-ui/core/table';
 import type { TableSelectionState } from '../TableContext';
 
@@ -21,10 +20,8 @@ export function useTableSelection<T extends TableDataSource>({
   rowSelection,
 }: UseTableSelectionOptions<T>): TableSelectionState<T> | undefined {
   // Extract common props
-  const { onChange } = rowSelection || {};
+  const { onChange, mode = 'checkbox' } = rowSelection || {};
 
-  // Extract mode-specific props (checkbox mode)
-  const mode: TableSelectionMode = rowSelection?.mode ?? 'checkbox';
   const selections =
     mode === 'radio'
       ? (rowSelection as TableRowSelectionRadio).selectedRowKey

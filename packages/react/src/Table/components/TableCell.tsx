@@ -115,6 +115,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
 
     /** Feature: Ellipsis */
     const ellipsisRef = useRef<HTMLDivElement>(null);
+    // default to true if undefined
     const isColumnEllipsis = column.ellipsis ?? true;
 
     const renderChild = () => {

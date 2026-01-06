@@ -1154,6 +1154,13 @@ export const Combined: Story = {
           }
         },
         title: 'Age',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+          ],
+          onSelect: () => {},
+        },
         width: 100,
         minWidth: 60,
         maxWidth: 200,

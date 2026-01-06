@@ -7,7 +7,6 @@ import { CloseIcon } from '@mezzanine-ui/icons';
 import Button from '../../Button';
 import Dropdown from '../../Dropdown';
 import { cx } from '../../utils/cx';
-import { useTableContext } from '../TableContext';
 
 export interface TableBulkActionsProps {
   /** Bulk actions configuration */
@@ -22,8 +21,6 @@ export interface TableBulkActionsProps {
 
 function TableBulkActions(props: TableBulkActionsProps) {
   const { bulkActions, className, onClearSelection, selectedRowKeys } = props;
-
-  const { pagination } = useTableContext();
 
   const {
     destructiveAction,
@@ -41,15 +38,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
     : `${selectedRowKeys.length} item${selectedRowKeys.length > 1 ? 's' : ''} selected`;
 
   return (
-    <div
-      className={cx(
-        classes.bulkActions,
-        {
-          [classes.bulkActionsWithPagination]: !!pagination,
-        },
-        className,
-      )}
-    >
+    <div className={cx(classes.bulkActions, className)}>
       <div className={classes.bulkActionsSelectionSummary}>
         <Button
           icon={{
