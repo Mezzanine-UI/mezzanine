@@ -3,7 +3,11 @@ import { GeneralSize } from '@mezzanine-ui/system/size';
 
 export type DescriptionSize = Extract<GeneralSize, 'main' | 'sub'>;
 export type DescriptionWidthType = 'narrow' | 'wide' | 'stretch' | 'hug';
-export type DescriptionContentType = 'normal' | 'statistic';
+export type DescriptionContentType =
+  | 'normal'
+  | 'statistic'
+  | 'trend-up'
+  | 'trend-down';
 export type DescriptionOrientation = Orientation;
 
 export const descriptionTitlePrefix = 'mzn-description-title';
