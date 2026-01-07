@@ -5,7 +5,6 @@ import Description from './Description';
 
 export default {
   title: 'Data Display/Description/Description',
-  component: Description,
 } as Meta;
 
 type GroupStory = StoryObj<typeof Description>;
@@ -47,6 +46,24 @@ export const Playground: GroupStory = {
             badge: {
               variant: 'dot-success',
               text: '已訂購',
+            },
+          }}
+        />
+      </div>
+      <div>
+        <Typography variant="h3" style={{ marginBottom: 8 }}>
+          Progress
+        </Typography>
+        <Description
+          titleProps={{
+            children: '訂單狀態',
+            widthType: 'wide',
+          }}
+          contentProps={{
+            variant: 'progress',
+            progress: {
+              percent: 80,
+              type: 'percent',
             },
           }}
         />

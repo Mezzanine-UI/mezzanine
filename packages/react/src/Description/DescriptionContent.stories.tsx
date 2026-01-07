@@ -1,10 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { CopyIcon } from '@mezzanine-ui/icons';
+import Typography from '../Typography';
 import DescriptionContent from './DescriptionContent';
 
 export default {
   title: 'Data Display/Description/DescriptionContent',
-  component: DescriptionContent,
 } as Meta;
 
 type ContentStory = StoryObj<typeof DescriptionContent>;
@@ -15,23 +15,38 @@ export const Playground: ContentStory = {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
+        gap: '12px',
       }}
     >
-      <DescriptionContent> Content</DescriptionContent>
-      <DescriptionContent variant="statistic">99,000</DescriptionContent>
-      <DescriptionContent variant="trend-up">88%</DescriptionContent>
-      <DescriptionContent variant="trend-down">60%</DescriptionContent>
-      <DescriptionContent
-        variant="with-icon"
-        icon={CopyIcon}
-        onClickIcon={() => {
-          // eslint-disable-next-line no-console
-          console.log('click icon');
-        }}
-      >
-        With Icon
-      </DescriptionContent>
+      <div>
+        <Typography variant="h3">Normal</Typography>
+        <DescriptionContent>Normal Content</DescriptionContent>
+      </div>
+      <div>
+        <Typography variant="h3">Statistic</Typography>
+        <DescriptionContent variant="statistic">99,000</DescriptionContent>
+      </div>
+      <div>
+        <Typography variant="h3">Trend Up</Typography>
+        <DescriptionContent variant="trend-up">88%</DescriptionContent>
+      </div>
+      <div>
+        <Typography variant="h3">Trend Down</Typography>
+        <DescriptionContent variant="trend-down">60%</DescriptionContent>
+      </div>
+      <div>
+        <Typography variant="h3">With Icon</Typography>
+        <DescriptionContent
+          variant="with-icon"
+          icon={CopyIcon}
+          onClickIcon={() => {
+            // eslint-disable-next-line no-console
+            console.log('click icon');
+          }}
+        >
+          With Icon
+        </DescriptionContent>
+      </div>
     </div>
   ),
 };

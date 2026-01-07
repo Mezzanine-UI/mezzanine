@@ -4,7 +4,6 @@ import DescriptionTitle from './DescriptionTitle';
 
 export default {
   title: 'Data Display/Description/DescriptionTitle',
-  component: DescriptionTitle,
 } as Meta;
 
 type TitleStory = StoryObj<typeof DescriptionTitle>;

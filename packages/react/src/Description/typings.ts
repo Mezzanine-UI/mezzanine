@@ -8,6 +8,7 @@ import {
 } from '@mezzanine-ui/core/description';
 import { Placement } from '@floating-ui/react-dom';
 import { BadgeProps } from '../Badge/typings';
+import { ProgressProps } from '../Progress';
 
 interface DescriptionTitleBaseProps {
   badge?: BadgeDotVariant;
@@ -64,6 +65,10 @@ export interface DescriptionProps {
     | {
         variant: Extract<DescriptionContentVariant, 'badge'>;
         badge: BadgeProps;
+      }
+    | {
+        variant: Extract<DescriptionContentVariant, 'progress'>;
+        progress: ProgressProps;
       };
   orientation?: DescriptionOrientation;
   titleProps: DescriptionTitleProps;
