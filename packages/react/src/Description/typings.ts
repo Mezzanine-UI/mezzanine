@@ -10,6 +10,7 @@ import { Placement } from '@floating-ui/react-dom';
 import { BadgeProps } from '../Badge/typings';
 import { ButtonProps } from '../Button';
 import { ProgressProps } from '../Progress';
+import { TagProps } from '../Tag/typings';
 
 interface DescriptionTitleBaseProps {
   badge?: BadgeDotVariant;
@@ -74,6 +75,10 @@ export interface DescriptionProps {
     | {
         variant: Extract<DescriptionContentVariant, 'progress'>;
         progress: ProgressProps;
+      }
+    | {
+        variant: Extract<DescriptionContentVariant, 'tags'>;
+        tags: TagProps[];
       };
   orientation?: DescriptionOrientation;
   titleProps: DescriptionTitleProps;

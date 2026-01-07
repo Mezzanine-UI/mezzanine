@@ -8,6 +8,8 @@ import DescriptionContent from './DescriptionContent';
 import Badge from '../Badge';
 import Button from '../Button';
 import Progress from '../Progress';
+import Tag from '../Tag';
+import TagGroup from '../Tag/TagGroup';
 import { DescriptionProps } from '.';
 
 const Description = forwardRef<HTMLDivElement, DescriptionProps>(
@@ -29,6 +31,15 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
 
         case 'progress':
           return <Progress {...contentProps.progress} />;
+
+        case 'tags':
+          return (
+            <TagGroup>
+              {contentProps.tags.map((tagProps) => (
+                <Tag key={tagProps.label} {...tagProps} />
+              ))}
+            </TagGroup>
+          );
 
         default:
           return <DescriptionContent {...contentProps} />;

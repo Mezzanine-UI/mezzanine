@@ -90,6 +90,31 @@ export const Playground: GroupStory = {
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
+          Tags
+        </Typography>
+        <Description
+          titleProps={{
+            children: '訂單標籤',
+            widthType: 'narrow',
+          }}
+          contentProps={{
+            variant: 'tags',
+            tags: [
+              {
+                label: '快速',
+              },
+              {
+                label: '冷藏',
+              },
+              {
+                label: '特價',
+              },
+            ],
+          }}
+        />
+      </div>
+      <div>
+        <Typography variant="h3" style={{ marginBottom: 8 }}>
           Vertical
         </Typography>
         <Description
