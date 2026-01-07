@@ -18,14 +18,8 @@ export const Playground: ContentStory = {
         gap: '8px',
       }}
     >
-      <DescriptionContent size="main">Main Content</DescriptionContent>
-      <DescriptionContent size="sub">Sub Content</DescriptionContent>
-      <DescriptionContent size="main" type="statistic">
-        99,000
-      </DescriptionContent>
-      <DescriptionContent size="sub" type="statistic">
-        99,000
-      </DescriptionContent>
+      <DescriptionContent> Content</DescriptionContent>
+      <DescriptionContent type="statistic">99,000</DescriptionContent>
       <DescriptionContent type="trend-up">88%</DescriptionContent>
       <DescriptionContent type="trend-down">60%</DescriptionContent>
       <DescriptionContent
@@ -36,6 +30,27 @@ export const Playground: ContentStory = {
         }}
       >
         With Icon
+      </DescriptionContent>
+    </div>
+  ),
+};
+
+export const Sizes: ContentStory = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+      }}
+    >
+      <DescriptionContent size="main">Main Content</DescriptionContent>
+      <DescriptionContent size="sub">Sub Content</DescriptionContent>
+      <DescriptionContent size="main" type="statistic">
+        99,000 (main)
+      </DescriptionContent>
+      <DescriptionContent size="sub" type="statistic">
+        99,000 (sub)
       </DescriptionContent>
     </div>
   ),

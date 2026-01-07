@@ -18,10 +18,7 @@ export const Playground: TitleStory = {
         gap: '8px',
       }}
     >
-      <DescriptionTitle widthType="narrow">Narrow</DescriptionTitle>
-      <DescriptionTitle widthType="wide">Wide</DescriptionTitle>
-      <DescriptionTitle widthType="stretch">Stretch</DescriptionTitle>
-      <DescriptionTitle widthType="hug">Hug</DescriptionTitle>
+      <DescriptionTitle>Title</DescriptionTitle>
       <DescriptionTitle badge="dot-success">Title</DescriptionTitle>
       <DescriptionTitle
         tooltip="tooltip"
@@ -33,6 +30,66 @@ export const Playground: TitleStory = {
       <DescriptionTitle badge="dot-success" icon={QuestionOutlineIcon}>
         Title
       </DescriptionTitle>
+    </div>
+  ),
+};
+
+export const WidthTypes: TitleStory = {
+  render: () => (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}
+    >
+      <div style={{ width: 'fit-content' }}>
+        <DescriptionTitle widthType="narrow">Narrow</DescriptionTitle>
+        <div
+          style={{
+            width: '100%',
+            height: 2,
+            backgroundColor: '#F03740',
+            opacity: 0.16,
+          }}
+        />
+      </div>
+
+      <div style={{ width: 'fit-content' }}>
+        <DescriptionTitle widthType="wide">Wide</DescriptionTitle>
+        <div
+          style={{
+            width: '100%',
+            height: 2,
+            backgroundColor: '#F03740',
+            opacity: 0.16,
+          }}
+        />
+      </div>
+
+      <div style={{ width: 'auto' }}>
+        <DescriptionTitle widthType="stretch">Stretch</DescriptionTitle>
+        <div
+          style={{
+            width: '100%',
+            height: 2,
+            backgroundColor: '#F03740',
+            opacity: 0.16,
+          }}
+        />
+      </div>
+
+      <div style={{ width: 'fit-content' }}>
+        <DescriptionTitle widthType="hug">Hug</DescriptionTitle>
+        <div
+          style={{
+            width: '100%',
+            height: 2,
+            backgroundColor: '#F03740',
+            opacity: 0.16,
+          }}
+        />
+      </div>
     </div>
   ),
 };
