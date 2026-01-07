@@ -10,11 +10,15 @@ export type DescriptionContentType =
   | 'trend-down';
 export type DescriptionOrientation = Orientation;
 
+export const descriptionPrefix = 'mzn-description';
 export const descriptionTitlePrefix = 'mzn-description-title';
 export const descriptionContentPrefix = 'mzn-description-content';
-export const descriptionGroupPrefix = 'mzn-description-group';
 
 export const descriptionClasses = {
+  // host
+  host: descriptionPrefix,
+  orientation: (orientation: DescriptionOrientation) =>
+    `${descriptionPrefix}--${orientation}`,
   // title
   titleHost: descriptionTitlePrefix,
   titleText: `${descriptionTitlePrefix}__text`,
@@ -29,9 +33,4 @@ export const descriptionClasses = {
     `${descriptionContentPrefix}--${type}`,
   contentSize: (size: DescriptionSize) =>
     `${descriptionContentPrefix}--${size}`,
-  // group
-  groupHost: descriptionGroupPrefix,
-  groupWrapGroup: `${descriptionGroupPrefix}--wrap-group`,
-  groupOrientation: (orientation: DescriptionOrientation) =>
-    `${descriptionGroupPrefix}--${orientation}`,
 } as const;

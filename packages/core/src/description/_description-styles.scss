@@ -5,6 +5,20 @@
 @use '~@mezzanine-ui/system/typography';
 @use './description' as *;
 
+.#{$prefix} {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-self: flex-start;
+  justify-content: flex-start;
+  column-gap: spacing.semantic-variable(gap, base);
+
+  &--vertical {
+    flex-direction: column;
+    row-gap: spacing.semantic-variable(gap, tight);
+  }
+}
+
 .#{$title-prefix} {
   display: flex;
   justify-content: flex-start;
@@ -83,23 +97,5 @@
     &:hover {
       color: palette.semantic-variable(icon, neutral-solid);
     }
-  }
-}
-
-.#{$group-prefix} {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-self: flex-start;
-  justify-content: flex-start;
-  column-gap: spacing.semantic-variable(gap, base);
-
-  &--vertical {
-    flex-direction: column;
-    row-gap: spacing.semantic-variable(gap, tight);
-  }
-
-  &--wrap-group {
-    row-gap: spacing.semantic-variable(gap, base);
   }
 }
