@@ -1,6 +1,7 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography';
 @use './description' as *;
 
@@ -55,6 +56,24 @@
       @if $size == sub {
         @include typography.semantic-variable(caption);
       }
+    }
+  }
+
+  &__trend-up {
+    color: palette.semantic-variable(icon, error);
+  }
+
+  &__trend-down {
+    color: palette.semantic-variable(icon, success);
+  }
+
+  &__icon {
+    color: palette.semantic-variable(icon, neutral);
+    transition: transition.standard(color, fast);
+    will-change: color;
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral-solid);
     }
   }
 }
