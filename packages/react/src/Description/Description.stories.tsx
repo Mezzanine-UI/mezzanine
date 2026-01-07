@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
+import { QuestionOutlineIcon, CopyIcon } from '@mezzanine-ui/icons';
 import DescriptionTitle from './DescriptionTitle';
 import DescriptionContent from './DescriptionContent';
 import DescriptionGroup from './DescriptionGroup';
@@ -54,6 +54,17 @@ export const Content: Story = {
       </DescriptionContent>
       <DescriptionContent size="sub" type="statistic">
         Sub Statistic
+      </DescriptionContent>
+      <DescriptionContent type="trend-up">Trend Up</DescriptionContent>
+      <DescriptionContent type="trend-down">Trend Down</DescriptionContent>
+      <DescriptionContent
+        icon={CopyIcon}
+        onClickIcon={() => {
+          // eslint-disable-next-line no-console
+          console.log('click icon');
+        }}
+      >
+        With Icon
       </DescriptionContent>
     </div>
   ),

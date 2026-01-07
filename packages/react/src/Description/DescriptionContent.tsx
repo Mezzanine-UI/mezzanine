@@ -1,8 +1,10 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { cx } from '../utils/cx';
+import { CaretUpIcon, CaretDownIcon } from '@mezzanine-ui/icons';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
+import { cx } from '../utils/cx';
+import Icon from '../Icon';
 import { DescriptionContentProps } from '.';
 
 const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
@@ -10,9 +12,9 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
     const {
       className,
       children,
-      prefix,
+      icon,
+      onClickIcon,
       size = 'main',
-      suffix,
       type = 'normal',
     } = props;
 
@@ -26,9 +28,10 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
         )}
         ref={ref}
       >
-        {prefix}
+        {type === 'trend-up' && <Icon icon={CaretUpIcon} size={16} />}
+        {type === 'trend-down' && <Icon icon={CaretDownIcon} size={16} />}
         <span>{children}</span>
-        {suffix}
+        {icon && <Icon icon={icon} size={16} onClick={onClickIcon} />}
       </div>
     );
   },
