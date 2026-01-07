@@ -51,10 +51,18 @@
     &--#{$size} {
       @if $size == main {
         @include typography.semantic-variable(body);
+
+        &.#{$content-prefix}--statistic {
+          @include typography.semantic-variable(h2);
+        }
       }
 
       @if $size == sub {
         @include typography.semantic-variable(caption);
+
+        &.#{$content-prefix}--statistic {
+          @include typography.semantic-variable(h3);
+        }
       }
     }
   }
