@@ -132,7 +132,11 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
 
       return renderField(
         <CheckAll label="Check All">
-          <CheckboxGroup onChange={setValue} options={options} value={value} />
+          <CheckboxGroup
+            onChange={(event) => setValue(event.target.values)}
+            options={options}
+            value={value}
+          />
         </CheckAll>,
       );
     };
@@ -144,13 +148,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         )}
         <br />
         <br />
-        {renderField(
-          <Textarea
-            clearable={clearable}
-            placeholder="please enter text"
-            rows={4}
-          />,
-        )}
+        {renderField(<Textarea placeholder="please enter text" rows={4} />)}
         <br />
         <br />
         {renderField(<Switch />)}
