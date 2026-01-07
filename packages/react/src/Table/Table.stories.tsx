@@ -1044,8 +1044,10 @@ export const EmptyState: Story = {
       columns={baseColumns}
       dataSource={[]}
       emptyProps={{
+        height: 444,
         type: 'result',
         title: 'No data available',
+        description: 'There is no data to display in the table.',
       }}
     />
   ),
@@ -1066,7 +1068,7 @@ export const VirtualScrolling: Story = {
       <Table<DataType>
         columns={baseColumns}
         dataSource={largeDataList}
-        scroll={{ virtualized: true, y: 400 }}
+        scroll={{ virtualized: true, y: 420 }}
       />
     );
   },

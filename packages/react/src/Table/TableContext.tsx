@@ -90,7 +90,7 @@ export interface TableContextValue<
   dataSource: T[];
   draggable?: TableDraggableState;
   // Config
-  emptyProps?: EmptyProps;
+  emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
   /** Fixed column offset calculations */
   fixedOffsets?: UseTableFixedOffsetsReturn;

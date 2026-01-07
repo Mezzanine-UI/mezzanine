@@ -109,11 +109,19 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     const renderRows = () => {
       // Empty state
       if (isEmpty && !loading) {
-        const { size: emptySize = size, ...restEmptyProp } = emptyProps || {};
+        const {
+          size: emptySize = size,
+          height,
+          ...restEmptyProp
+        } = emptyProps || {};
 
         return (
           <tr className={classes.emptyRow}>
-            <td className={classes.empty} colSpan={totalColSpan}>
+            <td
+              className={classes.empty}
+              colSpan={totalColSpan}
+              style={height ? { height } : undefined}
+            >
               <Empty size={emptySize} {...(restEmptyProp as any)} />
             </td>
           </tr>

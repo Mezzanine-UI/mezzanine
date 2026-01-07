@@ -64,7 +64,7 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   /** Data source */
   dataSource: T[];
   /** Props for Empty component when no data */
-  emptyProps?: EmptyProps;
+  emptyProps?: EmptyProps & { height?: number | string };
   /** Expandable row configuration */
   expandable?: TableExpandable<T>;
   /** Highlight mode for hover effects
@@ -75,6 +75,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   loading?: boolean;
   /** Number of rows to display when loading */
   loadingRowsCount?: number;
+  /** Minimum height of the table */
+  minHeight?: number | string;
   /**
    * Whether the table is nested inside an expanded row content area
    */
@@ -179,6 +181,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     highlight = 'row',
     loading = false,
     loadingRowsCount = 10,
+    minHeight,
     nested = false,
     pagination,
     resizable = false,
@@ -444,9 +447,12 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       containerStyle.overflow = 'unset';
     }
 
-    return containerStyle;
-  }, [scroll?.x, scroll?.y, nested]);
+    if (minHeight) {
+      containerStyle.minHeight = minHeight;
+    }
 
+    return containerStyle;
+  }, [scroll?.x, scroll?.y, nested, minHeight]);
   // Table style with min-width for horizontal scroll
   const tableStyle = useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {};
@@ -455,7 +461,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       baseStyle.minWidth = scroll.x;
       baseStyle.width = '100%';
     }
-
     return baseStyle;
   }, [scroll?.x]);
 
