@@ -19,9 +19,9 @@ export const Playground: ContentStory = {
       }}
     >
       <DescriptionContent> Content</DescriptionContent>
-      <DescriptionContent type="statistic">99,000</DescriptionContent>
-      <DescriptionContent type="trend-up">88%</DescriptionContent>
-      <DescriptionContent type="trend-down">60%</DescriptionContent>
+      <DescriptionContent variant="statistic">99,000</DescriptionContent>
+      <DescriptionContent variant="trend-up">88%</DescriptionContent>
+      <DescriptionContent variant="trend-down">60%</DescriptionContent>
       <DescriptionContent
         icon={CopyIcon}
         onClickIcon={() => {
@@ -46,10 +46,10 @@ export const Sizes: ContentStory = {
     >
       <DescriptionContent size="main">Main Content</DescriptionContent>
       <DescriptionContent size="sub">Sub Content</DescriptionContent>
-      <DescriptionContent size="main" type="statistic">
+      <DescriptionContent size="main" variant="statistic">
         99,000 (main)
       </DescriptionContent>
-      <DescriptionContent size="sub" type="statistic">
+      <DescriptionContent size="sub" variant="statistic">
         99,000 (sub)
       </DescriptionContent>
     </div>

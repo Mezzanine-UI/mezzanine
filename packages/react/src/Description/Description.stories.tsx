@@ -1,7 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
+import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
-import DescriptionTitle from './DescriptionTitle';
-import DescriptionContent from './DescriptionContent';
 import Description from './Description';
 
 export default {
@@ -24,19 +23,31 @@ export const Playground: GroupStory = {
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Horizontal
         </Typography>
-        <Description widthType="narrow">
-          <DescriptionTitle>訂購日期</DescriptionTitle>
-          <DescriptionContent>2025-11-03</DescriptionContent>
-        </Description>
+        <Description
+          titleProps={{
+            children: '訂購日期',
+            icon: QuestionOutlineIcon,
+            tooltip: 'question',
+            widthType: 'wide',
+          }}
+          contentProps={{
+            children: '2025-11-03',
+          }}
+        />
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Vertical
         </Typography>
-        <Description orientation="vertical">
-          <DescriptionTitle>聯絡信箱</DescriptionTitle>
-          <DescriptionContent>sample@rytass.com</DescriptionContent>
-        </Description>
+        <Description
+          orientation="vertical"
+          titleProps={{
+            children: '訂購日期',
+          }}
+          contentProps={{
+            children: '2025-11-03',
+          }}
+        />
       </div>
     </div>
   ),

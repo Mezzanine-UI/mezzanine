@@ -1,10 +1,9 @@
-import { ReactElement } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
 import {
   DescriptionWidthType,
   DescriptionSize,
-  DescriptionContentType,
+  DescriptionContentVariant,
   DescriptionOrientation,
 } from '@mezzanine-ui/core/description';
 import { Placement } from '@floating-ui/react-dom';
@@ -36,7 +35,7 @@ interface DescriptionContentBaseProps {
   className?: string;
   children: string;
   size?: DescriptionSize;
-  type?: DescriptionContentType;
+  variant?: DescriptionContentVariant;
 }
 
 interface DescriptionContentWithClickableIcon {
@@ -55,7 +54,7 @@ export type DescriptionContentProps =
 
 export interface DescriptionProps {
   className?: string;
-  children: ReactElement[];
+  contentProps: DescriptionContentProps;
   orientation?: DescriptionOrientation;
-  widthType?: Extract<DescriptionWidthType, 'narrow' | 'wide' | 'stretch'>;
+  titleProps: DescriptionTitleProps;
 }

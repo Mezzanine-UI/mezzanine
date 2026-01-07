@@ -15,27 +15,27 @@ const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
       icon,
       onClickIcon,
       size = 'main',
-      type = 'normal',
+      variant = 'normal',
     } = props;
 
     return (
       <span
         className={cx(
           classes.contentHost,
-          classes.contentType(type),
+          classes.contentVariant(variant),
           classes.contentSize(size),
           className,
         )}
         ref={ref}
       >
-        {type === 'trend-up' && (
+        {variant === 'trend-up' && (
           <Icon
             className={classes.contentTrendUp}
             icon={CaretUpIcon}
             size={16}
           />
         )}
-        {type === 'trend-down' && (
+        {variant === 'trend-down' && (
           <Icon
             className={classes.contentTrendDown}
             icon={CaretDownIcon}

@@ -1,18 +1,15 @@
 'use client';
 
-import { forwardRef, useContext } from 'react';
+import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
 import Badge from '../Badge';
 import Icon from '../Icon';
 import Tooltip from '../Tooltip';
-import { DescriptionContext } from './DescriptionContext';
 import { DescriptionTitleProps } from '.';
 
 const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
   function DescriptionTitle(props, ref) {
-    const descriptionGroupContent = useContext(DescriptionContext);
-
     const {
       badge,
       className,
@@ -20,7 +17,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
       icon,
       tooltip,
       tooltipPlacement,
-      widthType = descriptionGroupContent?.widthType ?? 'stretch',
+      widthType = 'stretch',
     } = props;
 
     return (
