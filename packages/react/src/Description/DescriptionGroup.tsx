@@ -11,6 +11,7 @@ const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
     const {
       className,
       children,
+      isWrapGroup,
       orientation = 'horizontal',
       widthType = 'stretch',
     } = props;
@@ -21,6 +22,9 @@ const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
           className={cx(
             classes.groupHost,
             classes.groupOrientation(orientation),
+            {
+              [classes.groupWrapGroup]: isWrapGroup,
+            },
             className,
           )}
           ref={ref}

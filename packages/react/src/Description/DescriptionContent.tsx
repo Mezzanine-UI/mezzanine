@@ -7,7 +7,7 @@ import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import { DescriptionContentProps } from '.';
 
-const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
+const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
   function DescriptionContent(props, ref) {
     const {
       className,
@@ -19,7 +19,7 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
     } = props;
 
     return (
-      <div
+      <span
         className={cx(
           classes.contentHost,
           classes.contentType(type),
@@ -42,7 +42,7 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
             size={16}
           />
         )}
-        <span>{children}</span>
+        {children}
         {icon && (
           <Icon
             className={classes.contentIcon}
@@ -51,7 +51,7 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
             onClick={onClickIcon}
           />
         )}
-      </div>
+      </span>
     );
   },
 );
