@@ -26,9 +26,7 @@ export const Playground: GroupStory = {
         <Description
           titleProps={{
             children: '訂購日期',
-            icon: QuestionOutlineIcon,
-            tooltip: 'question',
-            widthType: 'wide',
+            widthType: 'narrow',
           }}
           contentProps={{
             children: '2025-11-03',
@@ -61,6 +59,9 @@ export const Playground: GroupStory = {
           orientation="vertical"
           titleProps={{
             children: '訂購日期',
+            icon: QuestionOutlineIcon,
+            tooltip: 'tooltip',
+            tooltipPlacement: 'top-start',
           }}
           contentProps={{
             children: '2025-11-03',

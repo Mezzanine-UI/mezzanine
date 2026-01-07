@@ -17,13 +17,13 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
       titleProps,
     } = props;
 
-    const contentComponents = useMemo(() => {
+    const contentComponent = useMemo(() => {
       switch (contentProps.variant) {
         case 'badge':
           return <Badge {...contentProps.badge} />;
 
         default:
-          <DescriptionContent {...contentProps} />;
+          return <DescriptionContent {...contentProps} />;
       }
     }, [contentProps]);
 
@@ -37,7 +37,7 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
         ref={ref}
       >
         <DescriptionTitle {...titleProps} />
-        {contentComponents}
+        {contentComponent}
       </div>
     );
   },
