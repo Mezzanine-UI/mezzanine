@@ -126,6 +126,7 @@ $form-field-counter-colors: (
       .#{$prefix}__data-entry {
         flex-grow: 1;
         max-width: spacing.semantic-variable(size, container, wide);
+        margin-left: 0;
       }
     }
   }
