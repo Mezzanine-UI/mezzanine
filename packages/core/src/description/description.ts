@@ -9,7 +9,7 @@ export type DescriptionContentVariant =
   | 'normal'
   | 'progress'
   | 'statistic'
-  | 'tag'
+  | 'tags'
   | 'trend-up'
   | 'trend-down'
   | 'with-icon';
