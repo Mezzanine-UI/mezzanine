@@ -169,7 +169,6 @@ $z-index-config: (
 }
 
 .#{$prefix} {
-  min-width: var(--table-scroll-x, 100%);
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -420,6 +419,7 @@ $z-index-config: (
 
   &__content {
     display: block;
+    word-break: break-all;
   }
 }
 

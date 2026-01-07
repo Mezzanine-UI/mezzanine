@@ -165,9 +165,24 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   width?: number;
 }
 
+export interface TableColumnBaseWithMinWidthRequired<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBase<T> {
+  /** Minimum column width */
+  minWidth: number;
+}
+
 export interface TableColumnWithDataIndex<
   T extends TableDataSource = TableDataSource,
 > extends TableColumnBase<T> {
+  /** Data index to access the record value */
+  dataIndex: string;
+  render?: never;
+}
+
+export interface TableColumnWithDataIndexAndMinWidth<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBaseWithMinWidthRequired<T> {
   /** Data index to access the record value */
   dataIndex: string;
   render?: never;
@@ -181,9 +196,23 @@ export interface TableColumnWithRender<
   render: (record: T, index: number) => React.ReactNode;
 }
 
+export interface TableColumnWithRenderAndMinWidth<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBaseWithMinWidthRequired<T> {
+  dataIndex?: never;
+  /** Custom render function for cell content */
+  render: (record: T, index: number) => React.ReactNode;
+}
+
 export type TableColumn<T extends TableDataSource = TableDataSource> =
   | TableColumnWithDataIndex<T>
   | TableColumnWithRender<T>;
+
+export type TableColumnWithMinWidth<
+  T extends TableDataSource = TableDataSource,
+> =
+  | TableColumnWithDataIndexAndMinWidth<T>
+  | TableColumnWithRenderAndMinWidth<T>;
 
 /** Selection mode for row selection */
 export type TableSelectionMode = 'checkbox' | 'radio';
