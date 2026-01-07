@@ -1,10 +1,13 @@
-export type {
-  DescriptionProps,
+export { default as Description, DescriptionProps } from './Description';
+export {
+  default as DescriptionTitle,
   DescriptionTitleProps,
+} from './DescriptionTitle';
+export {
+  default as DescriptionContent,
   DescriptionContentProps,
+} from './DescriptionContent';
+export {
+  default as DescriptionGroup,
   DescriptionGroupProps,
-} from './typings';
-export { default as Description } from './Description';
-export { default as DescriptionTitle } from './DescriptionTitle';
-export { default as DescriptionContent } from './DescriptionContent';
-export { default as DescriptionGroup } from './DescriptionGroup';
+} from './DescriptionGroup';

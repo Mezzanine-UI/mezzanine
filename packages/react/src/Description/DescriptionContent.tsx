@@ -1,11 +1,43 @@
 'use client';
 
 import { forwardRef } from 'react';
-import { CaretUpIcon, CaretDownIcon } from '@mezzanine-ui/icons';
-import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
+import {
+  IconDefinition,
+  CaretUpIcon,
+  CaretDownIcon,
+} from '@mezzanine-ui/icons';
+import {
+  DescriptionSize,
+  DescriptionContentVariant,
+  descriptionClasses as classes,
+} from '@mezzanine-ui/core/description';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import { DescriptionContentProps } from '.';
+
+interface DescriptionContentBaseProps {
+  className?: string;
+  children: string;
+  size?: DescriptionSize;
+  variant?: Extract<
+    DescriptionContentVariant,
+    'normal' | 'statistic' | 'trend-up' | 'trend-down'
+  >;
+  icon?: never;
+  onClickIcon?: never;
+}
+
+interface DescriptionContentWithClickableIcon {
+  className?: string;
+  children: string;
+  size?: DescriptionSize;
+  variant: Extract<DescriptionContentVariant, 'with-icon'>;
+  icon: IconDefinition;
+  onClickIcon?: VoidFunction;
+}
+
+export type DescriptionContentProps =
+  | DescriptionContentBaseProps
+  | DescriptionContentWithClickableIcon;
 
 const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
   function DescriptionContent(props, ref) {

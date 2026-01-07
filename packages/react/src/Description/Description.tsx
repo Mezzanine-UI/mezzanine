@@ -2,15 +2,46 @@
 
 import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
-import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
-import DescriptionTitle from './DescriptionTitle';
-import DescriptionContent from './DescriptionContent';
+import {
+  DescriptionContentVariant,
+  DescriptionOrientation,
+  descriptionClasses as classes,
+} from '@mezzanine-ui/core/description';
+import DescriptionTitle, { DescriptionTitleProps } from './DescriptionTitle';
+import DescriptionContent, {
+  DescriptionContentProps,
+} from './DescriptionContent';
+import { BadgeProps } from '../Badge/typings';
 import Badge from '../Badge';
-import Button from '../Button';
-import Progress from '../Progress';
+import Button, { ButtonProps } from '../Button';
+import Progress, { ProgressProps } from '../Progress';
+import { TagProps } from '../Tag/typings';
 import Tag from '../Tag';
 import TagGroup from '../Tag/TagGroup';
-import { DescriptionProps } from '.';
+
+export interface DescriptionProps {
+  className?: string;
+  contentProps:
+    | DescriptionContentProps
+    | {
+        variant: Extract<DescriptionContentVariant, 'badge'>;
+        badge: BadgeProps;
+      }
+    | {
+        variant: Extract<DescriptionContentVariant, 'button'>;
+        button: ButtonProps;
+      }
+    | {
+        variant: Extract<DescriptionContentVariant, 'progress'>;
+        progress: ProgressProps;
+      }
+    | {
+        variant: Extract<DescriptionContentVariant, 'tags'>;
+        tags: TagProps[];
+      };
+  orientation?: DescriptionOrientation;
+  titleProps: DescriptionTitleProps;
+}
 
 const Description = forwardRef<HTMLDivElement, DescriptionProps>(
   function Description(props, ref) {

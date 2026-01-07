@@ -1,9 +1,19 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, ReactElement } from 'react';
 import { cx } from '../utils/cx';
 import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
-import { DescriptionGroupProps } from '.';
+
+export interface DescriptionGroupProps {
+  /**
+   * Custom class name for group
+   */
+  className?: string;
+  /**
+   * Description elements to be grouped and displayed together.
+   */
+  children: ReactElement[];
+}
 
 const DescriptionGroup = forwardRef<HTMLDivElement, DescriptionGroupProps>(
   function DescriptionGroup(props, ref) {

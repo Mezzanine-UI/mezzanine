@@ -2,11 +2,49 @@
 
 import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
-import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
+import { IconDefinition } from '@mezzanine-ui/icons';
+import {
+  DescriptionWidthType,
+  descriptionClasses as classes,
+} from '@mezzanine-ui/core/description';
+import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
+import { Placement } from '@floating-ui/react-dom';
 import Badge from '../Badge';
 import Icon from '../Icon';
 import Tooltip from '../Tooltip';
-import { DescriptionTitleProps } from '.';
+
+interface DescriptionTitleBaseProps {
+  badge?: BadgeDotVariant;
+  /**
+   * Custom class name for title
+   */
+  className?: string;
+  /**
+   * Title text
+   */
+  children: string;
+  /**
+   * Width type for title
+   * @default 'stretch'
+   */
+  widthType?: DescriptionWidthType;
+}
+
+interface DescriptionTitleWithTooltip {
+  icon: IconDefinition;
+  tooltip: string;
+  tooltipPlacement?: Placement;
+}
+
+interface DescriptionTitleWithoutTooltip {
+  icon?: IconDefinition;
+  tooltip?: undefined;
+  tooltipPlacement?: undefined;
+}
+
+export type DescriptionTitleProps =
+  | (DescriptionTitleBaseProps & DescriptionTitleWithTooltip)
+  | (DescriptionTitleBaseProps & DescriptionTitleWithoutTooltip);
 
 const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
   function DescriptionTitle(props, ref) {
