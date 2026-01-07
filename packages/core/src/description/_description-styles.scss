@@ -7,14 +7,14 @@
 
 .#{$prefix} {
   width: 100%;
-  display: grid;
+  display: flex;
+  flex-direction: row;
   align-self: flex-start;
   justify-content: flex-start;
-  grid-template-columns: max-content 1fr;
   column-gap: spacing.semantic-variable(gap, base);
 
   &--vertical {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     row-gap: spacing.semantic-variable(gap, tight);
   }
 }
@@ -30,10 +30,12 @@
     &--#{$width} {
       @if $width == narrow {
         width: spacing.semantic-variable(size, container, compressed);
+        min-width: spacing.semantic-variable(size, container, compressed);
       }
 
       @if $width == wide {
         width: spacing.semantic-variable(size, container, snug);
+        min-width: spacing.semantic-variable(size, container, snug);
       }
 
       @if $width == stretch {
