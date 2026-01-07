@@ -35,22 +35,26 @@ interface DescriptionContentBaseProps {
   className?: string;
   children: string;
   size?: DescriptionSize;
-  variant?: DescriptionContentVariant;
+  variant?: Extract<
+    DescriptionContentVariant,
+    'normal' | 'statistic' | 'trend-up' | 'trend-down'
+  >;
+  icon?: never;
+  onClickIcon?: never;
 }
 
 interface DescriptionContentWithClickableIcon {
+  className?: string;
+  children: string;
+  size?: DescriptionSize;
+  variant: Extract<DescriptionContentVariant, 'with-icon'>;
   icon: IconDefinition;
-  onClickIcon: VoidFunction;
-}
-
-interface DescriptionContentWithoutClickableIcon {
-  icon?: IconDefinition;
-  onClickIcon?: undefined;
+  onClickIcon?: VoidFunction;
 }
 
 export type DescriptionContentProps =
-  | (DescriptionContentBaseProps & DescriptionContentWithClickableIcon)
-  | (DescriptionContentBaseProps & DescriptionContentWithoutClickableIcon);
+  | DescriptionContentBaseProps
+  | DescriptionContentWithClickableIcon;
 
 export interface DescriptionProps {
   className?: string;

@@ -23,6 +23,7 @@ export const Playground: ContentStory = {
       <DescriptionContent variant="trend-up">88%</DescriptionContent>
       <DescriptionContent variant="trend-down">60%</DescriptionContent>
       <DescriptionContent
+        variant="with-icon"
         icon={CopyIcon}
         onClickIcon={() => {
           // eslint-disable-next-line no-console

@@ -43,7 +43,7 @@ const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
           />
         )}
         {children}
-        {icon && (
+        {variant === 'with-icon' && icon && (
           <Icon
             className={classes.contentIcon}
             icon={icon}
