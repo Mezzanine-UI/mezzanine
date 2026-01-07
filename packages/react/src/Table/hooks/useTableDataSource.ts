@@ -32,13 +32,13 @@ export interface UpdateDataSourceOptions {
    * If provided, these items will show the adding animation.
    * If not provided, new items will appear without animation.
    */
-  addedKeys?: (string | number)[];
+  addedKeys?: string[];
   /**
    * Keys of items being removed that should be animated.
    * These items should NOT be in the new data array.
    * The hook will temporarily keep them for animation, then remove after animation completes.
    */
-  removedKeys?: (string | number)[];
+  removedKeys?: string[];
 }
 
 export interface UseTableDataSourceReturn<T extends TableDataSource> {

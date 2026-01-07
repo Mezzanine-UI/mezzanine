@@ -29,12 +29,12 @@ export interface TableSelectionState<
   isAllSelected: boolean;
   isIndeterminate: boolean;
   isRowDisabled: (record: T) => boolean;
-  isRowSelected: (key: string | number) => boolean;
+  isRowSelected: (key: string) => boolean;
   /** Selection mode: 'checkbox' for multi-select, 'radio' for single-select */
   mode: TableSelectionMode;
-  selectedRowKeys: (string | number)[];
+  selectedRowKeys: string[];
   toggleAll: () => void;
-  toggleRow: (key: string | number, record: T) => void;
+  toggleRow: (key: string, record: T) => void;
 }
 
 /** Expansion context state */
@@ -43,9 +43,9 @@ export interface TableExpansionState<
 > {
   config: TableExpandable<T>;
   expansionLeftPadding: number;
-  expandedRowKeys: (string | number)[];
-  isRowExpanded: (key: string | number) => boolean;
-  toggleExpand: (key: string | number, record: T) => void;
+  expandedRowKeys: string[];
+  isRowExpanded: (key: string) => boolean;
+  toggleExpand: (key: string, record: T) => void;
 }
 
 /** Column state with computed widths */
@@ -86,8 +86,6 @@ export interface TableContextValue<
 > {
   // Feature states
   columnState?: TableColumnState;
-  // Data
-  columns: TableColumn<T>[];
   /** Container width for scroll calculations */
   dataSource: T[];
   draggable?: TableDraggableState;

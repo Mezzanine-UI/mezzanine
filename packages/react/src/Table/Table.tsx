@@ -200,7 +200,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   // mock loading dataSource
   const dataSourceForRender = loading
     ? Array.from({ length: Math.max(loadingRowsCount, 1) }).map((_, idx) => ({
-        key: idx,
+        key: `${idx}`,
       }))
     : dataSource;
 
@@ -334,7 +334,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const contextValue = useMemo(
     () => ({
       columnState,
-      columns: columns as TableColumn[],
       dataSource: dataSourceForRender,
       draggable: draggableValue,
       emptyProps,
@@ -357,7 +356,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     }),
     [
       columnState,
-      columns,
       dataSourceForRender,
       draggableValue,
       emptyProps,

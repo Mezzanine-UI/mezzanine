@@ -10,7 +10,11 @@ import {
   SELECTION_KEY,
   tableClasses as classes,
 } from '@mezzanine-ui/core/table';
-import { useTableContext, useTableSuperContext } from '../TableContext';
+import {
+  useTableContext,
+  useTableDataContext,
+  useTableSuperContext,
+} from '../TableContext';
 import {
   shouldCalculateWidths,
   calculateColumnWidths,
@@ -27,12 +31,12 @@ const TableColGroupInner = memo(function TableColGroup(
 
   const {
     columnState,
-    columns,
     draggable,
     expansion,
     isInsideExpandedContentArea,
     selection,
   } = useTableContext();
+  const { columns } = useTableDataContext();
   const { containerWidth, getResizedColumnWidth: getParentResizedColumnWidth } =
     useTableSuperContext();
 

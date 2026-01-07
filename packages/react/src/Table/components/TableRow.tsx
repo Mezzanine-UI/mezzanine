@@ -16,7 +16,11 @@ import {
 import { calculateColumnWidths } from '../utils/calculateColumnWidths';
 import type { DraggableProvided } from '@hello-pangea/dnd';
 import { cx } from '../../utils/cx';
-import { useTableContext, useTableSuperContext } from '../TableContext';
+import {
+  useTableContext,
+  useTableDataContext,
+  useTableSuperContext,
+} from '../TableContext';
 import { TableCell } from './TableCell';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
@@ -43,7 +47,6 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const { className, draggableProvided, record, rowIndex, style } = props;
 
     const {
-      columns,
       draggable,
       expansion,
       fixedOffsets,
@@ -52,6 +55,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       selection,
       transitionState,
     } = useTableContext();
+    const { columns } = useTableDataContext();
 
     const isDragging = useMemo(
       () =>

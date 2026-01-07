@@ -557,15 +557,13 @@ export const WithRowSelection: Story = {
       );
     }, [currentPage, itemsPerPage, originData]);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
-      [],
-    );
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const [hideSelectAll, toggleHideSelectAll] = useState(false);
     const [preserveSelectedRowKeys, togglePreserveSelectedRowKeys] =
       useState(false);
 
     // Radio selection example
-    const [selectedRadioKey, setSelectedRadioKey] = useState<string | number>();
+    const [selectedRadioKey, setSelectedRadioKey] = useState<string>();
 
     return (
       <div>
@@ -654,7 +652,7 @@ export const WithBulkActions: Story = {
       return Array.from({ length: 100 }, (_, i) => ({
         address: `Address ${i + 1}`,
         age: 20 + (i % 50),
-        key: String(i + 1),
+        key: `${i + 1}`,
         name: `User ${i + 1}`,
         disabled: i % 4 === 0,
       }));
@@ -667,9 +665,7 @@ export const WithBulkActions: Story = {
       );
     }, [currentPage, itemsPerPage, originData]);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
-      [],
-    );
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
     return (
       <div>

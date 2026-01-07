@@ -18,7 +18,7 @@ export function useTableRowSelection<
   const { getSubData } = props;
 
   const [selectedKeys, setSelectedKeys] = useState<
-    { key: string | number; subKeys?: (string | number)[] }[]
+    { key: string; subKeys?: string[] }[]
   >([]);
 
   const parentSelectedKeys = useMemo(

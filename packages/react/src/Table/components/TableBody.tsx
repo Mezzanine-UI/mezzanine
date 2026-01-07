@@ -4,7 +4,7 @@ import { forwardRef, Fragment, memo, useMemo } from 'react';
 import { getRowKey, tableClasses as classes } from '@mezzanine-ui/core/table';
 import { Draggable } from '@hello-pangea/dnd';
 import { cx } from '../../utils/cx';
-import { useTableContext } from '../TableContext';
+import { useTableContext, useTableDataContext } from '../TableContext';
 import { TableRow } from './TableRow';
 import { TableExpandedRow } from './TableExpandedRow';
 import { useTableVirtualization } from '../hooks/useTableVirtualization';
@@ -17,7 +17,6 @@ export type TableBodyProps = unknown;
 const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBody(_, ref) {
     const {
-      columns,
       dataSource,
       draggable,
       emptyProps,
@@ -28,6 +27,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       size,
       virtualScrollEnabled,
     } = useTableContext();
+    const { columns } = useTableDataContext();
 
     // Use virtualization with the scroll container ref from parent
     const virtualization = useTableVirtualization({

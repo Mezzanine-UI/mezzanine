@@ -5,7 +5,7 @@ import {
   tableClasses as classes,
   type TableColumn,
 } from '@mezzanine-ui/core/table';
-import { useTableContext } from '../TableContext';
+import { useTableContext, useTableDataContext } from '../TableContext';
 
 export interface TableResizeHandleProps {
   /** The column this resize handle belongs to */
@@ -23,14 +23,9 @@ export const TableResizeHandle = memo(function TableResizeHandle({
   column,
   columnIndex,
 }: TableResizeHandleProps) {
-  const {
-    columnState,
-    columns,
-    draggable,
-    expansion,
-    scrollContainerRef,
-    selection,
-  } = useTableContext();
+  const { columnState, draggable, expansion, scrollContainerRef, selection } =
+    useTableContext();
+  const { columns } = useTableDataContext();
   const { setResizedColumnWidth } = columnState || {};
 
   const startWidthRef = useRef(0);
