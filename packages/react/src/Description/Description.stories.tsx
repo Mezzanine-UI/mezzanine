@@ -50,13 +50,13 @@ export const Content: Story = {
       <DescriptionContent size="main">Main Content</DescriptionContent>
       <DescriptionContent size="sub">Sub Content</DescriptionContent>
       <DescriptionContent size="main" type="statistic">
-        Main Statistic
+        99,000
       </DescriptionContent>
       <DescriptionContent size="sub" type="statistic">
-        Sub Statistic
+        99,000
       </DescriptionContent>
-      <DescriptionContent type="trend-up">Trend Up</DescriptionContent>
-      <DescriptionContent type="trend-down">Trend Down</DescriptionContent>
+      <DescriptionContent type="trend-up">88%</DescriptionContent>
+      <DescriptionContent type="trend-down">60%</DescriptionContent>
       <DescriptionContent
         icon={CopyIcon}
         onClickIcon={() => {
@@ -80,12 +80,12 @@ export const Group: Story = {
       }}
     >
       <DescriptionGroup widthType="narrow">
-        <DescriptionTitle>Title</DescriptionTitle>
-        <DescriptionContent>Content</DescriptionContent>
+        <DescriptionTitle>訂購日期</DescriptionTitle>
+        <DescriptionContent>2025-11-03</DescriptionContent>
       </DescriptionGroup>
       <DescriptionGroup orientation="vertical">
-        <DescriptionTitle>Title</DescriptionTitle>
-        <DescriptionContent>Content</DescriptionContent>
+        <DescriptionTitle>聯絡信箱</DescriptionTitle>
+        <DescriptionContent>sample@rytass.com</DescriptionContent>
       </DescriptionGroup>
     </div>
   ),
