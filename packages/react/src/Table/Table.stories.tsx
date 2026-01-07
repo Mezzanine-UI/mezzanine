@@ -39,12 +39,15 @@ const baseColumns: TableColumn<DataType>[] = [
     key: 'name',
     title: 'Name',
     width: 150,
+    minWidth: 150,
   },
   {
     dataIndex: 'age',
     key: 'age',
     title: 'Age',
+    align: 'center',
     width: 100,
+    minWidth: 100,
   },
   {
     dataIndex: 'address',
@@ -1243,7 +1246,7 @@ export const Combined: Story = {
         fixed: 'end',
         key: 'action',
         render: (record) => (
-          <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
             <Button size="minor" variant="base-text-link">
               Edit
             </Button>
