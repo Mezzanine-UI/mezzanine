@@ -22,6 +22,9 @@ export const descriptionClasses = {
     `${descriptionTitlePrefix}--${width}`,
   // content
   contentHost: descriptionContentPrefix,
+  contentIcon: `${descriptionContentPrefix}__icon`,
+  contentTrendUp: `${descriptionContentPrefix}__trend-up`,
+  contentTrendDown: `${descriptionContentPrefix}__trend-down`,
   contentType: (type: DescriptionContentType) =>
     `${descriptionContentPrefix}--${type}`,
   contentSize: (size: DescriptionSize) =>
