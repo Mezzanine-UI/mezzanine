@@ -72,11 +72,11 @@ export type TableRecord<T = unknown> = Record<string, T>;
 
 /** Data source must have a unique key or id */
 export interface TableDataSourceWithKey extends TableRecord {
-  key: string | number;
+  key: string;
 }
 
 export interface TableDataSourceWithId extends TableRecord {
-  id: string | number;
+  id: string;
 }
 
 export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithId;
@@ -226,7 +226,7 @@ export interface TableBulkGeneralAction {
   /** Label for the destructive action button */
   label: string;
   /** Callback when destructive action is clicked */
-  onClick: (selectedRowKeys: (string | number)[]) => void;
+  onClick: (selectedRowKeys: string[]) => void;
 }
 
 /**
@@ -240,10 +240,7 @@ export interface TableBulkOverflowAction {
   /** Maximum height of the dropdown list */
   maxHeight?: number | string;
   /** Callback when a dropdown option is selected */
-  onSelect: (
-    option: DropdownOption,
-    selectedRowKeys: (string | number)[],
-  ) => void;
+  onSelect: (option: DropdownOption, selectedRowKeys: string[]) => void;
   /** Dropdown options */
   options: DropdownOption[];
   /** Dropdown placement relative to trigger */
@@ -299,12 +296,12 @@ export interface TableRowSelectionCheckbox<
   preserveSelectedRowKeys?: boolean;
   /** Callback when selection changes */
   onChange: (
-    selectedRowKeys: (string | number)[],
+    selectedRowKeys: string[],
     selectedRow: T | null,
     selectedRows: T[],
   ) => void;
   /** Array of selected row keys */
-  selectedRowKeys: (string | number)[];
+  selectedRowKeys: string[];
 }
 
 /** Radio mode row selection configuration */
@@ -314,12 +311,9 @@ export interface TableRowSelectionRadio<
   /** Selection mode */
   mode: 'radio';
   /** Callback when selection changes */
-  onChange: (
-    selectedRowKey: string | number | undefined,
-    selectedRow: T | null,
-  ) => void;
+  onChange: (selectedRowKey: string | undefined, selectedRow: T | null) => void;
   /** Selected row key */
-  selectedRowKey: string | number | undefined;
+  selectedRowKey: string | undefined;
   /** Not available in radio mode */
   getCheckboxProps?: never;
   /** Not available in radio mode */
@@ -365,13 +359,13 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   /** Render function for expanded row content */
   expandedRowRender: (record: T) => React.ReactNode;
   /** Controlled expanded row keys */
-  expandedRowKeys?: (string | number)[];
+  expandedRowKeys?: string[];
   /** Fixed position of expand icon column */
   fixed?: boolean;
   /** Callback when single row expand state changes */
   onExpand?: (expanded: boolean, record: T) => void;
   /** Callback when expanded rows change */
-  onExpandedRowsChange?: (expandedRowKeys: (string | number)[]) => void;
+  onExpandedRowsChange?: (expandedRowKeys: string[]) => void;
   /** Determine if a row is expandable */
   rowExpandable?: (record: T) => boolean;
 }
