@@ -28,10 +28,29 @@ const DescriptionContent = forwardRef<HTMLDivElement, DescriptionContentProps>(
         )}
         ref={ref}
       >
-        {type === 'trend-up' && <Icon icon={CaretUpIcon} size={16} />}
-        {type === 'trend-down' && <Icon icon={CaretDownIcon} size={16} />}
+        {type === 'trend-up' && (
+          <Icon
+            className={classes.contentTrendUp}
+            icon={CaretUpIcon}
+            size={16}
+          />
+        )}
+        {type === 'trend-down' && (
+          <Icon
+            className={classes.contentTrendDown}
+            icon={CaretDownIcon}
+            size={16}
+          />
+        )}
         <span>{children}</span>
-        {icon && <Icon icon={icon} size={16} onClick={onClickIcon} />}
+        {icon && (
+          <Icon
+            className={classes.contentIcon}
+            icon={icon}
+            size={16}
+            onClick={onClickIcon}
+          />
+        )}
       </div>
     );
   },
