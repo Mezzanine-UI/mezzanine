@@ -106,52 +106,18 @@ export function calculateColumnWidths({
 
   // Second pass: distribute remaining width to flex columns
   if (flexColumns.length > 0) {
-    const remainingWidth = availableWidth - totalFixedWidth;
+    const averageWidth =
+      (availableWidth - totalFixedWidth) / flexColumns.length;
 
-    // Calculate flex widths while respecting min/max constraints
-    // This may require multiple iterations if constraints cause redistribution
-    let iterationCount = 0;
-    const maxIterations = flexColumns.length + 1;
-    let unallocatedWidth = remainingWidth;
-    const pendingColumns = [...flexColumns];
+    flexColumns.forEach((column) => {
+      const clampedWidth = clampWidth(
+        averageWidth,
+        column.minWidth,
+        column.maxWidth,
+      );
 
-    while (pendingColumns.length > 0 && iterationCount < maxIterations) {
-      iterationCount += 1;
-      const flexWidth = unallocatedWidth / pendingColumns.length;
-      const stillPending: TableColumn[] = [];
-
-      pendingColumns.forEach((column) => {
-        const clampedWidth = clampWidth(
-          flexWidth,
-          column.minWidth,
-          column.maxWidth,
-        );
-
-        if (clampedWidth !== flexWidth) {
-          // Width was clamped, allocate this column and redistribute
-          widthMap.set(column.key, clampedWidth);
-          unallocatedWidth -= clampedWidth;
-        } else {
-          stillPending.push(column);
-        }
-      });
-
-      // If no columns were allocated in this iteration, allocate all remaining
-      if (stillPending.length === pendingColumns.length) {
-        stillPending.forEach((column) => {
-          const finalWidth = Math.max(
-            0,
-            unallocatedWidth / stillPending.length,
-          );
-
-          widthMap.set(column.key, finalWidth);
-        });
-        break;
-      }
-
-      pendingColumns.length = 0;
-      pendingColumns.push(...stillPending);
-    }
+      widthMap.set(column.key, clampedWidth);
+    });
   }
 
   return widthMap;

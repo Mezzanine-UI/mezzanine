@@ -13,6 +13,7 @@ import {
   tableClasses as classes,
   type HighlightMode,
   type TableColumn,
+  type TableColumnWithMinWidth,
   type TableDataSource,
   type TableDraggable,
   type TableExpandable,
@@ -60,8 +61,6 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
     NativeElementPropsWithoutKeyAndRef<'table'>,
     'children' | 'draggable' | 'summary' | 'onChange'
   > {
-  /** Column configuration */
-  columns: TableColumn<T>[];
   /** Data source */
   dataSource: T[];
   /** Props for Empty component when no data */
@@ -83,11 +82,6 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   /** Pagination configuration */
   pagination?: TablePaginationProps;
   /**
-   * Whether columns are resizable by user interaction
-   * @default false
-   */
-  resizable?: boolean;
-  /**
    * Row height preset token.
    */
   rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
@@ -108,41 +102,71 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
 }
 
 /**
+ * Props when resizable is enabled.
+ * Requires minWidth on all columns.
+ */
+export interface TableResizableProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Column configuration - minWidth required for each column when resizable */
+  columns: TableColumnWithMinWidth<T>[];
+  /**
+   * Whether columns are resizable by user interaction
+   */
+  resizable: true;
+}
+
+/**
+ * Props when resizable is disabled or not specified.
+ */
+export interface TableNonResizableProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Column configuration */
+  columns: TableColumn<T>[];
+  /**
+   * Whether columns are resizable by user interaction
+   * @default false
+   */
+  resizable?: false;
+}
+
+/**
  * Props when virtualized scrolling is enabled.
  * Draggable is not allowed in this mode.
  */
-export interface TableVirtualizedProps<
-  T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
-  /** Draggable row configuration - not available when virtualized is enabled */
-  draggable?: never;
-  /** Scroll configuration with virtualized enabled */
-  scroll: TableScroll & { virtualized: true; y: number | string };
-}
+export type TableVirtualizedProps<T extends TableDataSource = TableDataSource> =
+  (TableResizableProps<T> | TableNonResizableProps<T>) & {
+    /** Draggable row configuration - not available when virtualized is enabled */
+    draggable?: never;
+    /** Scroll configuration with virtualized enabled */
+    scroll: TableScroll & { virtualized: true; y: number | string };
+  };
 
 /**
  * Props when virtualized scrolling is disabled or not specified.
  * Draggable is allowed in this mode.
  */
-export interface TableNonVirtualizedProps<
+export type TableNonVirtualizedProps<
   T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
+> = (TableResizableProps<T> | TableNonResizableProps<T>) & {
   /** Draggable row configuration */
   draggable?: TableDraggable<T>;
   /** Scroll configuration for scrolling (virtualized defaults to false) */
   scroll?: TableScroll & { virtualized?: false };
-}
+};
 
 /**
  * TableProps - discriminated union to ensure draggable and virtualized
- * scrolling are mutually exclusive at the type level.
+ * scrolling are mutually exclusive at the type level, and resizable
+ * requires minWidth on all columns.
  */
 export type TableProps<T extends TableDataSource = TableDataSource> =
   | TableVirtualizedProps<T>
   | TableNonVirtualizedProps<T>;
 
 function TableInner<T extends TableDataSource = TableDataSource>(
-  props: TableVirtualizedProps<T> | TableNonVirtualizedProps<T>,
+  props: TableProps<T>,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const {

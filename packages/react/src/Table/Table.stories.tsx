@@ -8,6 +8,7 @@ import Table, {
 import type {
   SortOrder,
   TableColumn,
+  TableColumnWithMinWidth,
   TableDataSourceWithKey,
 } from '@mezzanine-ui/core/table';
 import {
@@ -904,7 +905,7 @@ export const WithFixedColumns: Story = {
 
 export const WithResizableColumns: Story = {
   render: () => {
-    const resizableColumns: TableColumn<DataType>[] = [
+    const resizableColumns = [
       {
         dataIndex: 'name',
         key: 'name',
@@ -923,6 +924,7 @@ export const WithResizableColumns: Story = {
         key: 'tags',
         title: 'Tags',
         width: 200,
+        minWidth: 140,
       },
       {
         dataIndex: 'address',
@@ -944,7 +946,7 @@ export const WithResizableColumns: Story = {
         <span style={{ whiteSpace: 'pre-line' }}>
           {`Column 1: minWidth: 120, maxWidth: 220;
           Column 2: minWidth: 80;
-          Column 3: width 200;
+          Column 3: width 200 minWidth: 140;
           Column 4: minWidth: 220;`}
         </span>
         <Table<DataType>
@@ -1160,7 +1162,7 @@ export const Combined: Story = {
       sortOrder: 'ascend',
     });
 
-    const combinedColumns: TableColumn<DataType>[] = [
+    const combinedColumns: TableColumnWithMinWidth<DataType>[] = [
       {
         dataIndex: 'name',
         fixed: 'start',
@@ -1206,7 +1208,7 @@ export const Combined: Story = {
           onSelect: () => {},
         },
         width: 100,
-        minWidth: 60,
+        minWidth: 90,
         maxWidth: 200,
       },
       {
@@ -1222,7 +1224,7 @@ export const Combined: Story = {
         key: 'address2',
         title: 'Address',
         width: 600,
-        minWidth: 500,
+        minWidth: 400,
         maxWidth: 800,
       },
       {
@@ -1238,7 +1240,7 @@ export const Combined: Story = {
         },
         title: 'Tags',
         width: 200,
-        minWidth: 100,
+        minWidth: 120,
         maxWidth: 300,
       },
       {
