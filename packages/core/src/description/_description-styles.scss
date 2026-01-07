@@ -7,14 +7,14 @@
 
 .#{$prefix} {
   width: 100%;
-  display: flex;
-  flex-direction: row;
+  display: grid;
   align-self: flex-start;
   justify-content: flex-start;
+  grid-template-columns: max-content 1fr;
   column-gap: spacing.semantic-variable(gap, base);
 
   &--vertical {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     row-gap: spacing.semantic-variable(gap, tight);
   }
 }
