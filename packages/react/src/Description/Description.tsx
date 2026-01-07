@@ -6,6 +6,7 @@ import { descriptionClasses as classes } from '@mezzanine-ui/core/description';
 import DescriptionTitle from './DescriptionTitle';
 import DescriptionContent from './DescriptionContent';
 import Badge from '../Badge';
+import Button from '../Button';
 import Progress from '../Progress';
 import { DescriptionProps } from '.';
 
@@ -22,6 +23,9 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
       switch (contentProps.variant) {
         case 'badge':
           return <Badge {...contentProps.badge} />;
+
+        case 'button':
+          return <Button {...contentProps.button} />;
 
         case 'progress':
           return <Progress {...contentProps.progress} />;

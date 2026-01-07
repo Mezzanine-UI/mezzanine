@@ -13,6 +13,7 @@ export const Playground: GroupStory = {
   render: () => (
     <div
       style={{
+        width: 280,
         display: 'flex',
         flexDirection: 'column',
         gap: '32px',
@@ -52,12 +53,31 @@ export const Playground: GroupStory = {
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
+          Button
+        </Typography>
+        <Description
+          titleProps={{
+            children: '訂單連結',
+            widthType: 'narrow',
+          }}
+          contentProps={{
+            variant: 'button',
+            button: {
+              variant: 'base-text-link',
+              children: '連結',
+              size: 'sub',
+            },
+          }}
+        />
+      </div>
+      <div>
+        <Typography variant="h3" style={{ marginBottom: 8 }}>
           Progress
         </Typography>
         <Description
           titleProps={{
-            children: '訂單狀態',
-            widthType: 'wide',
+            children: '訂單進度',
+            widthType: 'narrow',
           }}
           contentProps={{
             variant: 'progress',
