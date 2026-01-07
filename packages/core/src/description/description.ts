@@ -4,10 +4,15 @@ import { GeneralSize } from '@mezzanine-ui/system/size';
 export type DescriptionSize = Extract<GeneralSize, 'main' | 'sub'>;
 export type DescriptionWidthType = 'narrow' | 'wide' | 'stretch' | 'hug';
 export type DescriptionContentVariant =
+  | 'button'
   | 'normal'
+  | 'progress'
+  | 'state'
   | 'statistic'
+  | 'tag'
   | 'trend-up'
-  | 'trend-down';
+  | 'trend-down'
+  | 'with-icon';
 export type DescriptionOrientation = Orientation;
 
 export const descriptionPrefix = 'mzn-description';
