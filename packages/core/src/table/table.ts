@@ -220,19 +220,23 @@ export type TableSelectionMode = 'checkbox' | 'radio';
 /**
  * action configuration for bulk actions (destructive or main action)
  */
-export interface TableBulkGeneralAction {
+export interface TableBulkGeneralAction<
+  T extends TableDataSource = TableDataSource,
+> {
   /** Icon for the destructive action button */
   icon?: IconDefinition;
   /** Label for the destructive action button */
   label: string;
   /** Callback when destructive action is clicked */
-  onClick: (selectedRowKeys: string[]) => void;
+  onClick: (selectedRowKeys: string[], selectedRows: T[]) => void;
 }
 
 /**
  * Overflow action configuration for bulk actions (dropdown menu)
  */
-export interface TableBulkOverflowAction {
+export interface TableBulkOverflowAction<
+  T extends TableDataSource = TableDataSource,
+> {
   /** Icon for the overflow action button */
   icon?: IconDefinition;
   /** Label for the overflow action button */
@@ -240,7 +244,11 @@ export interface TableBulkOverflowAction {
   /** Maximum height of the dropdown list */
   maxHeight?: number | string;
   /** Callback when a dropdown option is selected */
-  onSelect: (option: DropdownOption, selectedRowKeys: string[]) => void;
+  onSelect: (
+    option: DropdownOption,
+    selectedRowKeys: string[],
+    selectedRows: T[],
+  ) => void;
   /** Dropdown options */
   options: DropdownOption[];
   /** Dropdown placement relative to trigger */
@@ -250,17 +258,21 @@ export interface TableBulkOverflowAction {
 /**
  * Bulk actions configuration for row selection
  */
-export interface TableBulkActions {
+export interface TableBulkActions<T extends TableDataSource = TableDataSource> {
   /** Destructive action (optional, single action with separator) */
-  destructiveAction?: TableBulkGeneralAction;
+  destructiveAction?: TableBulkGeneralAction<T>;
   /** Main actions (required, at least one action) */
-  mainActions: [TableBulkGeneralAction, ...TableBulkGeneralAction[]];
+  mainActions: [TableBulkGeneralAction<T>, ...TableBulkGeneralAction<T>[]];
   /** Overflow action with dropdown menu (optional, with separator) */
-  overflowAction?: TableBulkOverflowAction;
+  overflowAction?: TableBulkOverflowAction<T>;
   /**
    * Label for selection summary
    */
-  renderSelectionSummary?: (count: number) => string;
+  renderSelectionSummary?: (
+    count: number,
+    selectedRowKeys: string[],
+    selectedRows: T[],
+  ) => string;
 }
 
 /** Base row selection configuration */
@@ -282,7 +294,7 @@ export interface TableRowSelectionCheckbox<
    */
   mode: 'checkbox';
   /** Bulk actions configuration for batch operations */
-  bulkActions?: TableBulkActions;
+  bulkActions?: TableBulkActions<T>;
   /** Get checkbox props for each row */
   getCheckboxProps?: (record: T) => {
     indeterminate?: boolean;
