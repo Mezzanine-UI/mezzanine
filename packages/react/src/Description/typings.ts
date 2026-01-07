@@ -53,22 +53,9 @@ export type DescriptionContentProps =
   | (DescriptionContentBaseProps & DescriptionContentWithClickableIcon)
   | (DescriptionContentBaseProps & DescriptionContentWithoutClickableIcon);
 
-interface DescriptionGroupBaseProps {
+export interface DescriptionProps {
   className?: string;
   children: ReactElement[];
+  orientation?: DescriptionOrientation;
   widthType?: Extract<DescriptionWidthType, 'narrow' | 'wide' | 'stretch'>;
 }
-
-interface VerticalDescriptionGroupProps extends DescriptionGroupBaseProps {
-  orientation: Extract<DescriptionOrientation, 'vertical'>;
-  isWrapGroup?: boolean;
-}
-
-interface NonVerticalDescriptionGroupProps extends DescriptionGroupBaseProps {
-  orientation?: Exclude<DescriptionOrientation, 'vertical'>;
-  isWrapGroup?: never;
-}
-
-export type DescriptionGroupProps =
-  | VerticalDescriptionGroupProps
-  | NonVerticalDescriptionGroupProps;
