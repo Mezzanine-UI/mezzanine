@@ -21,7 +21,7 @@ export const Playground: GroupStory = {
     >
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
-          Horizontal
+          Normal
         </Typography>
         <Description
           titleProps={{
@@ -32,6 +32,24 @@ export const Playground: GroupStory = {
           }}
           contentProps={{
             children: '2025-11-03',
+          }}
+        />
+      </div>
+      <div>
+        <Typography variant="h3" style={{ marginBottom: 8 }}>
+          Badge
+        </Typography>
+        <Description
+          titleProps={{
+            children: '訂單狀態',
+            widthType: 'narrow',
+          }}
+          contentProps={{
+            variant: 'badge',
+            badge: {
+              variant: 'dot-success',
+              text: '已訂購',
+            },
           }}
         />
       </div>

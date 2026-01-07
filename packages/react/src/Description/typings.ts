@@ -7,6 +7,7 @@ import {
   DescriptionOrientation,
 } from '@mezzanine-ui/core/description';
 import { Placement } from '@floating-ui/react-dom';
+import { BadgeProps } from '../Badge/typings';
 
 interface DescriptionTitleBaseProps {
   badge?: BadgeDotVariant;
@@ -58,7 +59,12 @@ export type DescriptionContentProps =
 
 export interface DescriptionProps {
   className?: string;
-  contentProps: DescriptionContentProps;
+  contentProps:
+    | DescriptionContentProps
+    | {
+        variant: Extract<DescriptionContentVariant, 'badge'>;
+        badge: BadgeProps;
+      };
   orientation?: DescriptionOrientation;
   titleProps: DescriptionTitleProps;
 }
