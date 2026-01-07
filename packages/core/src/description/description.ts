@@ -18,6 +18,7 @@ export type DescriptionOrientation = Orientation;
 export const descriptionPrefix = 'mzn-description';
 export const descriptionTitlePrefix = 'mzn-description-title';
 export const descriptionContentPrefix = 'mzn-description-content';
+export const descriptionGroupPrefix = 'mzn-description-group';
 
 export const descriptionClasses = {
   // host
@@ -38,4 +39,6 @@ export const descriptionClasses = {
     `${descriptionContentPrefix}--${variant}`,
   contentSize: (size: DescriptionSize) =>
     `${descriptionContentPrefix}--${size}`,
+  // group
+  groupHost: descriptionGroupPrefix,
 } as const;
