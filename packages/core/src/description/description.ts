@@ -3,7 +3,7 @@ import { GeneralSize } from '@mezzanine-ui/system/size';
 
 export type DescriptionSize = Extract<GeneralSize, 'main' | 'sub'>;
 export type DescriptionWidthType = 'narrow' | 'wide' | 'stretch' | 'hug';
-export type DescriptionContentType =
+export type DescriptionContentVariant =
   | 'normal'
   | 'statistic'
   | 'trend-up'
@@ -29,8 +29,8 @@ export const descriptionClasses = {
   contentIcon: `${descriptionContentPrefix}__icon`,
   contentTrendUp: `${descriptionContentPrefix}__trend-up`,
   contentTrendDown: `${descriptionContentPrefix}__trend-down`,
-  contentType: (type: DescriptionContentType) =>
-    `${descriptionContentPrefix}--${type}`,
+  contentVariant: (variant: DescriptionContentVariant) =>
+    `${descriptionContentPrefix}--${variant}`,
   contentSize: (size: DescriptionSize) =>
     `${descriptionContentPrefix}--${size}`,
 } as const;
