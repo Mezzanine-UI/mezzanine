@@ -1,3 +1,4 @@
+import { ReactElement } from 'react';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import { BadgeDotVariant } from '@mezzanine-ui/core/badge';
 import {
@@ -82,4 +83,9 @@ export interface DescriptionProps {
       };
   orientation?: DescriptionOrientation;
   titleProps: DescriptionTitleProps;
+}
+
+export interface DescriptionGroupProps {
+  className?: string;
+  children: ReactElement[];
 }

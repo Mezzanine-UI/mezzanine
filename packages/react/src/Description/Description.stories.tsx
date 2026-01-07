@@ -7,9 +7,9 @@ export default {
   title: 'Data Display/Description/Description',
 } as Meta;
 
-type GroupStory = StoryObj<typeof Description>;
+type Story = StoryObj<typeof Description>;
 
-export const Playground: GroupStory = {
+export const Playground: Story = {
   render: () => (
     <div
       style={{
