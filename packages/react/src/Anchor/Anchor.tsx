@@ -166,9 +166,9 @@ function extractTextContent(node: ReactNode): string {
 }
 
 /**
- * The `mezzanine` Anchor component provides navigation menu for page sections.
- * It supports both data-driven (via `anchors` prop) and JSX-based (via `children`) approaches,
- * with automatic hash tracking and nested structure up to 3 levels deep.
+ * The `mezzanine` Anchor component provides navigation menu for page sections. with automatic hash tracking.
+ * Supports data-driven (`anchors` prop) or JSX-based (`children`) approaches.
+ * Nested structure supports up to 3 levels; deeper levels will be ignored.
  */
 const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
   function Anchor(props, ref) {
