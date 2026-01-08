@@ -7,7 +7,35 @@ import AnchorItem, { AnchorItemData } from './AnchorItem';
 export interface AnchorPropsWithAnchors
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
   /**
-   * Anchor data array (supports nested structure).
+   * Each item can have nested children for hierarchical navigation. <br />
+   * ```tsx
+   * <Anchor
+   *   anchors={[
+   *     {
+   *       id: 'anchor-1',
+   *       name: 'Anchor 1',
+   *       href: '#anchor1',
+   *     },
+   *     {
+   *       id: 'anchor-2',
+   *       name: 'Anchor 2',
+   *       href: '#anchor2',
+   *       children: [
+   *         {
+   *           id: 'anchor2-1',
+   *           name: 'Anchor 2-1',
+   *           href: '#anchor2-1',
+   *         },
+   *         {
+   *           id: 'anchor2-2',
+   *           name: 'Anchor 2-2',
+   *           href: '#anchor2-2',
+   *         },
+   *       ],
+   *     },
+   *   ]}
+   * />
+   * ```
    */
   anchors: AnchorItemData[];
   children?: never;
@@ -21,15 +49,26 @@ export interface AnchorPropsWithChildren
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
   anchors?: never;
   /**
-   * Anchor children (JSX format, supports nested Anchor components).
+   * Use nested `<Anchor>` components to create hierarchical navigation. <br />
+   * ```tsx
+   * <Anchor>
+   *   <Anchor href="#acr1">ACR 1</Anchor>
+   *   <Anchor href="#acr2">
+   *     anchor 2
+   *     <Anchor href="#acr2-1">ACR 2-1</Anchor>
+   *     <Anchor href="#acr2-2">ACR 2-2</Anchor>
+   *   </Anchor>
+   * </Anchor>
+   * ```
    */
   children: ReactNode;
   /**
-   * Whether the anchor is disabled.
+   * Whether the anchor is disabled.<br>
+   * If parent anchor is disabled, all its children will be disabled too. <br />
    */
   disabled?: boolean;
   /**
-   * The href attribute for the anchor link (required when used as child component).
+   * Required when used as child component.
    */
   href?: string;
   /**
@@ -127,23 +166,23 @@ function extractTextContent(node: ReactNode): string {
 }
 
 /**
- * The react component for `mezzanine` anchor.
- * This component should always be full width of its parent.
+ * The `mezzanine` Anchor component provides navigation menu for page sections.
+ * It supports both data-driven (via `anchors` prop) and JSX-based (via `children`) approaches,
+ * with automatic hash tracking and nested structure up to 3 levels deep.
  */
 const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
   function Anchor(props, ref) {
     const {
-      onClick,
       className,
       ...rest
     } = props;
 
     const divProps = Object.keys(rest).reduce((acc, key) => {
-      if (key !== 'anchors' && key !== 'children' && key !== 'disabled' && key !== 'href') {
+      if (key !== 'anchors' && key !== 'children' && key !== 'disabled' && key !== 'href' && key !== 'onClick') {
         (acc as any)[key] = (rest as any)[key];
       }
       return acc;
-    }, {} as Omit<typeof rest, 'anchors' | 'children' | 'disabled' | 'href'>);
+    }, {} as Omit<typeof rest, 'anchors' | 'children' | 'disabled' | 'href' | 'onClick'>);
 
     const anchorItems: AnchorItemData[] =
       'anchors' in props && props.anchors
@@ -161,7 +200,6 @@ const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
         {anchorItems.map((anchorItem) => (
           <AnchorItem
             key={anchorItem.id}
-            onClick={onClick}
             item={anchorItem}
           />
         ))}
