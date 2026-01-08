@@ -4,16 +4,28 @@ import { cx } from '../utils/cx';
 import Typography from '../Typography';
 
 export interface AnchorItemData {
-  children?: AnchorItemData[];
-  disabled?: boolean;
-  href: string;
   id: string;
   name: string;
+  href: string;
+  disabled?: boolean;
   onClick?: VoidFunction;
+  children?: AnchorItemData[];
 }
 
 export interface AnchorItemProps {
   className?: string;
+  /**
+   * ```ts
+   * {
+   *   id: string;
+   *   name: string;
+   *   href: string;
+   *   disabled?: boolean;
+   *   onClick?: VoidFunction;
+   *   children?: AnchorItemData[];
+   * }
+   * ```
+   */
   item: AnchorItemData;
   level?: number;
   onClick?: VoidFunction;
@@ -45,6 +57,11 @@ function useHash() {
   return hash;
 }
 
+/**
+ * The `mezzanine` AnchorItem component represents an individual anchor link with hash tracking,
+ * smooth scrolling, and support for nested items. It handles active state based on current URL hash
+ * and supports disabled state inheritance from parent items.
+ */
 function AnchorItem({
   className,
   item,

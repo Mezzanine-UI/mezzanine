@@ -5,7 +5,7 @@ export default {
   title: 'Navigation/Anchor',
 } as Meta;
 
-const anchorList = [
+const anchors = [
   {
     href: '/?path=/story/navigation-anchor--basics#anchor1',
     id: 'Anchor1',
@@ -83,23 +83,6 @@ const anchorList = [
   },
 ];
 
-export const Basics = () => (
-  <Anchor anchors={anchorList} />
-);
-
-export const JSXNested = () => (
-  <Anchor>
-    <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child1">Child 1</Anchor>
-    <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2">
-      Child 2
-      <Anchor disabled href="/?path=/story/navigation-anchor--jsx-nested#child2-1">Child 2-1</Anchor>
-      <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2-2">
-        Child 2-2
-        <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2-2-1">Child 2-2-1</Anchor>
-        <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2-2-2">Child 2-2-2</Anchor>
-        <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2-2-3">Child 2-2-3</Anchor>
-        <Anchor href="/?path=/story/navigation-anchor--jsx-nested#child2-2-4">Child 2-2-4</Anchor>
-      </Anchor>
-    </Anchor>
-  </Anchor>
+export const All = () => (
+  <Anchor anchors={anchors} />
 );
