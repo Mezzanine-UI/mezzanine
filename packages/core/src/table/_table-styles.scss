@@ -581,7 +581,7 @@ $z-index-config: (
     position: fixed;
     bottom: spacing.semantic-variable(padding, vertical, relaxed);
     left: var(--mzn-bulk-actions-fixed-left, 50%);
-    max-width: var(--mzn-bulk-actions-fixed-max-width, #{spacing.semantic-variable(size, container, xwide)});
+    max-width: spacing.semantic-variable(size, container, xwide);
   }
 
   &__selection-summary {
