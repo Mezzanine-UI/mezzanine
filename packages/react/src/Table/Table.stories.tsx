@@ -669,6 +669,9 @@ export const WithBulkActions: Story = {
 
     return (
       <div>
+        <div style={{ width: '100%', height: '100px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
         <div
           style={{
             margin: '0 0 16px',
@@ -746,6 +749,9 @@ export const WithBulkActions: Story = {
             buttonText: '確定',
           }}
         />
+        <div style={{ width: '100%', height: '600px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
       </div>
     );
   },
