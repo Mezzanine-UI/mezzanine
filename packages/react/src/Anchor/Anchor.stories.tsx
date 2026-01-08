@@ -5,6 +5,10 @@ export default {
   title: 'Navigation/Anchor',
 } as Meta;
 
+/**
+ * Note: href includes full Storybook path to prevent Storybook from modifying anchor URLs.
+ * In normal usage, href only needs the hash (e.g., href: "#anchor-1").
+ */
 const anchors = [
   {
     href: '/?path=/story/navigation-anchor--basics#anchor1',
