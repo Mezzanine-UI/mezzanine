@@ -102,7 +102,7 @@ describe('<Description />', () => {
   });
 
   describe('prop: contentProps', () => {
-    it('default content is "normal"', () => {
+    it('default variant of content is "normal"', () => {
       const { getHostHTMLElement } = render(
         <Description
           titleProps={{
@@ -121,7 +121,7 @@ describe('<Description />', () => {
       expect(contents.length).toBe(1);
     });
 
-    it('when content is "statistic"', () => {
+    it('when variant of content is "statistic"', () => {
       const { getHostHTMLElement } = render(
         <Description
           titleProps={{
@@ -141,7 +141,7 @@ describe('<Description />', () => {
       expect(contents.length).toBe(1);
     });
 
-    it('when content is "trend-up"', () => {
+    it('when variant of content is "trend-up"', () => {
       const { getHostHTMLElement } = render(
         <Description
           titleProps={{
@@ -161,7 +161,7 @@ describe('<Description />', () => {
       expect(contents.length).toBe(1);
     });
 
-    it('when content is "trend-down"', () => {
+    it('when variant of content is "trend-down"', () => {
       const { getHostHTMLElement } = render(
         <Description
           titleProps={{
@@ -181,7 +181,7 @@ describe('<Description />', () => {
       expect(contents.length).toBe(1);
     });
 
-    it('when content is "with-icon"', () => {
+    it('when variant of content is "with-icon"', () => {
       const { getHostHTMLElement } = render(
         <Description
           titleProps={{
@@ -198,6 +198,92 @@ describe('<Description />', () => {
       const contents = element.getElementsByClassName(
         'mzn-description-content--with-icon',
       );
+
+      expect(contents.length).toBe(1);
+    });
+
+    it('when variant of content is "badge"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            variant: 'badge',
+            badge: {
+              variant: 'dot-success',
+              text: 'content',
+            },
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const contents = element.getElementsByClassName('mzn-badge');
+
+      expect(contents.length).toBe(1);
+    });
+
+    it('when variant of content is "button"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            variant: 'button',
+            button: {
+              variant: 'base-text-link',
+              children: 'content',
+              size: 'sub',
+            },
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const contents = element.getElementsByClassName('mzn-button');
+
+      expect(contents.length).toBe(1);
+    });
+
+    it('when variant of content is "progress"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            variant: 'progress',
+            progress: {
+              percent: 80,
+              type: 'percent',
+            },
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const contents = element.getElementsByClassName('mzn-progress');
+
+      expect(contents.length).toBe(1);
+    });
+
+    it('when variant of content is "tags"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            variant: 'tags',
+            tags: [
+              {
+                label: 'tag',
+              },
+            ],
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const contents = element.getElementsByClassName('mzn-tag__group');
 
       expect(contents.length).toBe(1);
     });
