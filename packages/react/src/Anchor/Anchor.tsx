@@ -1,4 +1,4 @@
-import { Children, forwardRef, isValidElement, ReactNode } from 'react';
+import { Children, forwardRef, isValidElement, ReactNode, useEffect, useState } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -54,6 +54,29 @@ interface AnchorItemProps {
 
 const MAX_LEVEL = 3;
 
+/**
+ * Custom hook to track window.location.hash changes
+ */
+function useHash() {
+  const [hash, setHash] = useState(() =>
+    typeof window !== 'undefined' ? window.location.hash : '',
+  );
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      setHash(window.location.hash);
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, []);
+
+  return hash;
+}
+
 function AnchorItem({
   className,
   item,
@@ -66,6 +89,9 @@ function AnchorItem({
       ? item.children.slice(0, MAX_LEVEL)
       : undefined;
 
+  const currentHash = useHash();
+  const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
+  const isActive = itemHash && currentHash === itemHash;
   const isDisabled = parentDisabled || item.disabled;
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -73,6 +99,21 @@ function AnchorItem({
       event.preventDefault();
       return;
     }
+
+    // If href contains a hash, update it manually to ensure hashchange event fires
+    if (itemHash && typeof window !== 'undefined') {
+      // Update the hash in the URL
+      if (window.location.hash !== itemHash) {
+        window.location.hash = itemHash;
+      }
+
+      // Scroll to the target element if it exists
+      const targetElement = document.querySelector(itemHash);
+      if (targetElement) {
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
     onClick?.(event);
   };
 
@@ -80,14 +121,15 @@ function AnchorItem({
     <>
       <a
         aria-disabled={isDisabled}
+        tabIndex={isDisabled ? -1 : undefined}
+        href={item.href}
+        onClick={handleClick}
         className={cx(
           classes.anchor,
+          isActive && classes.anchorActive,
           isDisabled && classes.anchorDisabled,
           className,
         )}
-        href={item.href}
-        onClick={handleClick}
-        tabIndex={isDisabled ? -1 : undefined}
       >
         <Typography color="inherit" variant="label-primary">
           {item.name}
@@ -149,10 +191,12 @@ function parseChildren(children: ReactNode): AnchorItem[] {
         name = nestedChildren;
       } else if (isValidElement(nestedChildren)) {
         nestedItems = parseChildren(nestedChildren);
+
         id = nestedItems[0]?.id || '';
         name = nestedItems[0]?.name || '';
       } else {
         const parsedNested = parseChildren(nestedChildren);
+
         if (parsedNested.length > 0) {
           nestedItems = parsedNested;
         }
@@ -163,10 +207,10 @@ function parseChildren(children: ReactNode): AnchorItem[] {
       }
 
       items.push({
-        children: nestedItems.length > 0 ? nestedItems : undefined,
-        href,
         id,
         name,
+        href,
+        children: nestedItems.length > 0 ? nestedItems : undefined,
       });
     }
   });
