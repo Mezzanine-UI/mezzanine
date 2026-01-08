@@ -133,6 +133,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
             }}
           >
             {({ onMouseEnter, onMouseLeave }) => (
+              /** @Note "display: grid" for feature ellipsis to work properly */
               <div style={{ display: 'grid', width: '100%' }}>
                 <div
                   ref={ellipsisRef}
@@ -159,6 +160,7 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       }
 
       return (
+        /** @Note "display: grid" for feature ellipsis to work properly */
         <div style={{ display: 'grid', width: '100%' }}>
           <div className={cx(classes.cellContent, alignClass)}>
             {cellValue as React.ReactNode}
