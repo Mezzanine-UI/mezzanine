@@ -46,4 +46,50 @@ describe('<DescriptionTitle />', () => {
 
     expect(iconElement!.classList.contains('mzn-icon')).toBeTruthy();
   });
+
+  describe('prop: widthType', () => {
+    it('default widthType is "stretch"', () => {
+      const { getHostHTMLElement } = render(
+        <DescriptionTitle>title</DescriptionTitle>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description-title--stretch'),
+      ).toBeTruthy();
+    });
+
+    it('when widthType is "narrow"', () => {
+      const { getHostHTMLElement } = render(
+        <DescriptionTitle widthType="narrow">title</DescriptionTitle>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description-title--narrow'),
+      ).toBeTruthy();
+    });
+
+    it('when widthType is "wide"', () => {
+      const { getHostHTMLElement } = render(
+        <DescriptionTitle widthType="wide">title</DescriptionTitle>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description-title--wide'),
+      ).toBeTruthy();
+    });
+
+    it('when widthType is "hug"', () => {
+      const { getHostHTMLElement } = render(
+        <DescriptionTitle widthType="hug">title</DescriptionTitle>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description-title--hug'),
+      ).toBeTruthy();
+    });
+  });
 });
