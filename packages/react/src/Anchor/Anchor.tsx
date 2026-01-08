@@ -1,28 +1,20 @@
-import { Children, forwardRef, isValidElement, ReactNode, useEffect, useState } from 'react';
+import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import Typography from '../Typography';
-
-export interface AnchorItem {
-  id: string;
-  name: string;
-  href: string;
-  disabled?: boolean;
-  children?: AnchorItem[];
-}
+import AnchorItem, { AnchorItemData } from './AnchorItem';
 
 export interface AnchorPropsWithAnchors
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
   /**
    * Anchor data array (supports nested structure).
    */
-  anchors: AnchorItem[];
+  anchors: AnchorItemData[];
   children?: never;
   /**
    * Trigger when user click on any anchor.
    */
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: VoidFunction;
 }
 
 export interface AnchorPropsWithChildren
@@ -33,134 +25,26 @@ export interface AnchorPropsWithChildren
    */
   children: ReactNode;
   /**
+   * Whether the anchor is disabled.
+   */
+  disabled?: boolean;
+  /**
    * The href attribute for the anchor link (required when used as child component).
    */
   href?: string;
   /**
    * Trigger when user click on any anchor.
    */
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  onClick?: VoidFunction;
 }
 
 export type AnchorProps = AnchorPropsWithAnchors | AnchorPropsWithChildren;
 
-interface AnchorItemProps {
-  className?: string;
-  item: AnchorItem;
-  level?: number;
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
-  parentDisabled?: boolean;
-}
-
-const MAX_LEVEL = 3;
-
-/**
- * Custom hook to track window.location.hash changes
- */
-function useHash() {
-  const [hash, setHash] = useState(() =>
-    typeof window !== 'undefined' ? window.location.hash : '',
-  );
-
-  useEffect(() => {
-    const handleHashChange = () => {
-      setHash(window.location.hash);
-    };
-
-    window.addEventListener('hashchange', handleHashChange);
-
-    return () => {
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, []);
-
-  return hash;
-}
-
-function AnchorItem({
-  className,
-  item,
-  level = 1,
-  onClick,
-  parentDisabled = false,
-}: AnchorItemProps) {
-  const renderableChildren =
-    item.children && item.children.length > 0 && level < MAX_LEVEL
-      ? item.children.slice(0, MAX_LEVEL)
-      : undefined;
-
-  const currentHash = useHash();
-  const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
-  const isActive = itemHash && currentHash === itemHash;
-  const isDisabled = parentDisabled || item.disabled;
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (isDisabled) {
-      event.preventDefault();
-      return;
-    }
-
-    // If href contains a hash, update it manually to ensure hashchange event fires
-    if (itemHash && typeof window !== 'undefined') {
-      // Update the hash in the URL
-      if (window.location.hash !== itemHash) {
-        window.location.hash = itemHash;
-      }
-
-      // Scroll to the target element if it exists
-      const targetElement = document.querySelector(itemHash);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-
-    onClick?.(event);
-  };
-
-  return (
-    <>
-      <a
-        aria-disabled={isDisabled}
-        tabIndex={isDisabled ? -1 : undefined}
-        href={item.href}
-        onClick={handleClick}
-        className={cx(
-          classes.anchor,
-          isActive && classes.anchorActive,
-          isDisabled && classes.anchorDisabled,
-          className,
-        )}
-      >
-        <Typography color="inherit" variant="label-primary">
-          {item.name}
-        </Typography>
-      </a>
-      {renderableChildren && (
-        <div className={classes.nested}>
-          {renderableChildren.map((child) => (
-            <AnchorItem
-              key={child.id}
-              className={cx(
-                level === 1 && classes.nestedLevel1,
-                level === 2 && classes.nestedLevel2,
-              )}
-              item={child}
-              level={level + 1}
-              onClick={onClick}
-              parentDisabled={isDisabled}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
-}
-
 /**
  * Parse children to extract anchor data
  */
-function parseChildren(children: ReactNode): AnchorItem[] {
-  const items: AnchorItem[] = [];
+function parseChildren(children: ReactNode): AnchorItemData[] {
+  const items: AnchorItemData[] = [];
 
   Children.forEach(children, (child) => {
     if (isValidElement<AnchorProps>(child) && child.type === Anchor) {
@@ -169,7 +53,7 @@ function parseChildren(children: ReactNode): AnchorItem[] {
       let id: string;
       let name: string;
       let href: string | undefined;
-      let nestedItems: AnchorItem[] = [];
+      let nestedItems: AnchorItemData[] = [];
 
       if ('anchors' in childProps && childProps.anchors) {
         items.push(...childProps.anchors);
@@ -207,10 +91,12 @@ function parseChildren(children: ReactNode): AnchorItem[] {
       }
 
       items.push({
+        children: nestedItems.length > 0 ? nestedItems : undefined,
+        disabled: childProps.disabled,
+        href,
         id,
         name,
-        href,
-        children: nestedItems.length > 0 ? nestedItems : undefined,
+        onClick: childProps.onClick,
       });
     }
   });
@@ -247,30 +133,36 @@ function extractTextContent(node: ReactNode): string {
 const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
   function Anchor(props, ref) {
     const {
-      className,
       onClick,
+      className,
       ...rest
     } = props;
 
-    let anchors: AnchorItem[] = [];
+    const divProps = Object.keys(rest).reduce((acc, key) => {
+      if (key !== 'anchors' && key !== 'children' && key !== 'disabled' && key !== 'href') {
+        (acc as any)[key] = (rest as any)[key];
+      }
+      return acc;
+    }, {} as Omit<typeof rest, 'anchors' | 'children' | 'disabled' | 'href'>);
 
-    if ('anchors' in props && props.anchors) {
-      anchors = props.anchors;
-    } else if ('children' in props && props.children) {
-      anchors = parseChildren(props.children);
-    }
+    const anchorItems: AnchorItemData[] =
+      'anchors' in props && props.anchors
+        ? props.anchors
+        : 'children' in props && props.children
+          ? parseChildren(props.children)
+          : [];
 
     return (
       <div
         ref={ref}
         className={cx(classes.host, className)}
-        {...rest}
+        {...divProps}
       >
-        {anchors.map((item) => (
+        {anchorItems.map((anchorItem) => (
           <AnchorItem
-            key={item.id}
-            item={item}
+            key={anchorItem.id}
             onClick={onClick}
+            item={anchorItem}
           />
         ))}
       </div>
