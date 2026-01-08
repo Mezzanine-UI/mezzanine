@@ -1,8 +1,5 @@
-import {
-  FormFieldCounterColor,
-  FormFieldHintTextColor,
-  FormFieldSize,
-} from '@mezzanine-ui/core/form';
+import { FormFieldCounterColor, FormFieldSize } from '@mezzanine-ui/core/form';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
 import { useContext } from 'react';
 import { cleanup, cleanupHook, render, renderHook } from '../../__test-utils__';
@@ -51,7 +48,7 @@ describe('<FormField />', () => {
   });
 
   it('should provide formControl', () => {
-    const firstProps: FormControl = {
+    const firstProps = {
       disabled: true,
       fullWidth: true,
       required: true,
@@ -73,12 +70,16 @@ describe('<FormField />', () => {
       },
     );
 
-    expect(result.current).toEqual(firstProps);
+    expect(result.current).toEqual({
+      ...firstProps,
+      severity: 'info', // Default severity
+    });
 
-    const secondProps: FormControl = {
+    const secondProps = {
       disabled: false,
       fullWidth: false,
       required: false,
+      severity: 'error' as SeverityWithInfo,
     };
 
     rerender();
@@ -175,17 +176,12 @@ describe('<FormField />', () => {
     });
   });
 
-
   describe('prop: size', () => {
     it('should apply size class for all FormFieldSize enum values', () => {
       // This test ensures TypeScript enum and SCSS styles are in sync
       Object.values(FormFieldSize).forEach((size) => {
         const { getHostHTMLElement } = render(
-          <FormField
-            label="Test Label"
-            name="test-field"
-            size={size}
-          />,
+          <FormField label="Test Label" name="test-field" size={size} />,
         );
         const element = getHostHTMLElement();
 
@@ -230,7 +226,11 @@ describe('<FormField />', () => {
   describe('prop: label', () => {
     it('should render label text', () => {
       const { container } = render(
-        <FormField label="Test Label" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test Label"
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        />,
       );
       const labelElement = container.querySelector('.mzn-form-field__label');
 
@@ -240,9 +240,15 @@ describe('<FormField />', () => {
 
     it('should bind htmlFor with name prop', () => {
       const { container } = render(
-        <FormField label="Test Label" name="test-field" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test Label"
+          name="test-field"
+          size={FormFieldSize.VERTICAL}
+        />,
       );
-      const labelElement = container.querySelector('.mzn-form-field__label') as HTMLLabelElement;
+      const labelElement = container.querySelector(
+        '.mzn-form-field__label',
+      ) as HTMLLabelElement;
 
       expect(labelElement?.htmlFor).toBe('test-field');
     });
@@ -253,7 +259,9 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
       );
-      const optionalMarkerElement = container.querySelector('.mzn-form-field__label__optional-marker');
+      const optionalMarkerElement = container.querySelector(
+        '.mzn-form-field__label__optional-marker',
+      );
 
       expect(optionalMarkerElement).toBeFalsy();
     });
@@ -267,7 +275,9 @@ describe('<FormField />', () => {
           size={FormFieldSize.VERTICAL}
         />,
       );
-      const optionalMarkerElement = container.querySelector('.mzn-form-field__label__optional-marker');
+      const optionalMarkerElement = container.querySelector(
+        '.mzn-form-field__label__optional-marker',
+      );
 
       expect(optionalMarkerElement).toBeTruthy();
       expect(optionalMarkerElement?.textContent).toBe('(optional)');
@@ -279,7 +289,9 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
       );
-      const iconElement = container.querySelector('.mzn-form-field__label__information-icon');
+      const iconElement = container.querySelector(
+        '.mzn-form-field__label__information-icon',
+      );
 
       expect(iconElement).toBeFalsy();
     });
@@ -293,10 +305,14 @@ describe('<FormField />', () => {
           size={FormFieldSize.VERTICAL}
         />,
       );
-      const iconElement = container.querySelector('.mzn-form-field__label__information-icon');
+      const iconElement = container.querySelector(
+        '.mzn-form-field__label__information-icon',
+      );
 
       expect(iconElement).toBeTruthy();
-      expect(iconElement?.getAttribute('data-icon-name')).toBe(InfoCircleFilledIcon.name);
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
+        InfoCircleFilledIcon.name,
+      );
     });
   });
 
@@ -311,7 +327,9 @@ describe('<FormField />', () => {
           size={FormFieldSize.VERTICAL}
         />,
       );
-      const iconElement = container.querySelector('.mzn-form-field__label__information-icon');
+      const iconElement = container.querySelector(
+        '.mzn-form-field__label__information-icon',
+      );
 
       expect(iconElement).toBeTruthy();
     });
@@ -322,16 +340,25 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
       );
-      const asteriskElement = container.querySelector('.mzn-form-field__label__required-marker');
+      const asteriskElement = container.querySelector(
+        '.mzn-form-field__label__required-marker',
+      );
 
       expect(asteriskElement).toBeFalsy();
     });
 
     it('should render asterisk when required=true', () => {
       const { container } = render(
-        <FormField label="Test" name="test" required size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          required
+          size={FormFieldSize.VERTICAL}
+        />,
       );
-      const asteriskElement = container.querySelector('.mzn-form-field__label__required-marker');
+      const asteriskElement = container.querySelector(
+        '.mzn-form-field__label__required-marker',
+      );
 
       expect(asteriskElement).toBeTruthy();
       expect(asteriskElement?.textContent).toBe('*');
@@ -345,7 +372,9 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const hintTextElement = container.querySelector('.mzn-form-field__hint-text');
+      const hintTextElement = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
 
       expect(hintTextElement).toBeFalsy();
     });
@@ -361,7 +390,9 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const hintTextElement = container.querySelector('.mzn-form-field__hint-text');
+      const hintTextElement = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
 
       expect(hintTextElement).toBeTruthy();
       expect(hintTextElement?.textContent).toContain('This is a hint');
@@ -381,16 +412,20 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const hintTextArea = container.querySelector('.mzn-form-field__hint-text');
+      const hintTextArea = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
       const iconElement = hintTextArea?.querySelector('i');
 
       expect(iconElement).toBeTruthy();
-      expect(iconElement?.getAttribute('data-icon-name')).toBe(InfoCircleFilledIcon.name);
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
+        InfoCircleFilledIcon.name,
+      );
     });
   });
 
-  describe('prop: hintTextColor', () => {
-    it('should apply default info color to hint text', () => {
+  describe('prop: severity', () => {
+    it('should apply default info severity to hint text', () => {
       const { container } = render(
         <FormField
           hintText="This is a hint"
@@ -401,32 +436,44 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const hintTextContentElement = container.querySelector('.mzn-form-field__hint-text span');
+      const hintTextElement = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
 
-      expect(hintTextContentElement?.classList.contains('mzn-form-field__hint-text--info')).toBeTruthy();
+      expect(
+        hintTextElement?.classList.contains('mzn-form-field__hint-text--info'),
+      ).toBeTruthy();
     });
 
-    [
-      FormFieldHintTextColor.INFO,
-      FormFieldHintTextColor.WARNING,
-      FormFieldHintTextColor.ERROR,
-      FormFieldHintTextColor.SUCCESS,
-    ].forEach((color) => {
-      it(`should apply ${color} color class to hint text`, () => {
+    const severities: SeverityWithInfo[] = [
+      'info',
+      'warning',
+      'error',
+      'success',
+    ];
+
+    severities.forEach((severity) => {
+      it(`should apply ${severity} severity class to hint text`, () => {
         const { container } = render(
           <FormField
             hintText="This is a hint"
-            hintTextColor={color}
             label="Test"
             name="test"
+            severity={severity}
             size={FormFieldSize.VERTICAL}
           >
             <Input />
           </FormField>,
         );
-        const hintTextContentElement = container.querySelector('.mzn-form-field__hint-text span');
+        const hintTextElement = container.querySelector(
+          '.mzn-form-field__hint-text',
+        );
 
-        expect(hintTextContentElement?.classList.contains(`mzn-form-field__hint-text--${color}`)).toBeTruthy();
+        expect(
+          hintTextElement?.classList.contains(
+            `mzn-form-field__hint-text--${severity}`,
+          ),
+        ).toBeTruthy();
       });
     });
   });
@@ -438,7 +485,9 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const counterElement = container.querySelector('.mzn-form-field__counter');
+      const counterElement = container.querySelector(
+        '.mzn-form-field__counter',
+      );
 
       expect(counterElement).toBeFalsy();
     });
@@ -454,7 +503,9 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const counterElement = container.querySelector('.mzn-form-field__counter');
+      const counterElement = container.querySelector(
+        '.mzn-form-field__counter',
+      );
 
       expect(counterElement).toBeTruthy();
       expect(counterElement?.textContent).toBe('10/100');
@@ -473,9 +524,13 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const counterElement = container.querySelector('.mzn-form-field__counter');
+      const counterElement = container.querySelector(
+        '.mzn-form-field__counter',
+      );
 
-      expect(counterElement?.classList.contains('mzn-form-field__counter--info')).toBeTruthy();
+      expect(
+        counterElement?.classList.contains('mzn-form-field__counter--info'),
+      ).toBeTruthy();
     });
 
     [
@@ -495,9 +550,15 @@ describe('<FormField />', () => {
             <Input />
           </FormField>,
         );
-        const counterElement = container.querySelector('.mzn-form-field__counter');
+        const counterElement = container.querySelector(
+          '.mzn-form-field__counter',
+        );
 
-        expect(counterElement?.classList.contains(`mzn-form-field__counter--${color}`)).toBeTruthy();
+        expect(
+          counterElement?.classList.contains(
+            `mzn-form-field__counter--${color}`,
+          ),
+        ).toBeTruthy();
       });
     });
   });
@@ -509,7 +570,9 @@ describe('<FormField />', () => {
           <Input placeholder="test input" />
         </FormField>,
       );
-      const dataEntryElement = container.querySelector('.mzn-form-field__data-entry');
+      const dataEntryElement = container.querySelector(
+        '.mzn-form-field__data-entry',
+      );
       const inputElement = container.querySelector('input');
 
       expect(dataEntryElement).toBeTruthy();

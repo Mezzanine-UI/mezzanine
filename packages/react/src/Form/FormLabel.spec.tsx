@@ -1,4 +1,4 @@
-import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
+import { InfoFilledIcon } from '@mezzanine-ui/icons';
 import { FormFieldSize } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
@@ -92,7 +92,7 @@ describe('<FormLabel />', () => {
 
     it('should render information icon when provided', () => {
       const { container } = render(
-        <FormLabel informationIcon={InfoCircleFilledIcon} labelText="Test" />,
+        <FormLabel informationIcon={InfoFilledIcon} labelText="Test" />,
       );
       const iconElement = container.querySelector(
         '.mzn-form-field__label__information-icon',
@@ -100,7 +100,7 @@ describe('<FormLabel />', () => {
 
       expect(iconElement).toBeTruthy();
       expect(iconElement?.getAttribute('data-icon-name')).toBe(
-        InfoCircleFilledIcon.name,
+        InfoFilledIcon.name,
       );
     });
   });
@@ -109,7 +109,7 @@ describe('<FormLabel />', () => {
     it('should render tooltip with information text when icon is provided', () => {
       const { container } = render(
         <FormLabel
-          informationIcon={InfoCircleFilledIcon}
+          informationIcon={InfoFilledIcon}
           informationText="This is helpful information"
           labelText="Test"
         />,

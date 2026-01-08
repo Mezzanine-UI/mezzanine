@@ -2,7 +2,6 @@ import { forwardRef } from 'react';
 import {
   formFieldClasses as classes,
   FormFieldCounterColor,
-  FormFieldHintTextColor,
   FormFieldSize,
 } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
@@ -10,7 +9,8 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { FormControl, FormControlContext } from './FormControlContext';
 import { FormLabel } from './index';
 import { IconDefinition } from '@mezzanine-ui/icons';
-import Icon, { IconColor } from '../Icon';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
+import FormHintText from './FormHintText';
 
 export interface FormFieldProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
@@ -38,11 +38,6 @@ export interface FormFieldProps
    * Provides additional information or guidance to the user.
    */
   hintText?: string;
-  /**
-   * The color of the hint text.
-   * @default FormFieldHintTextColor.INFO
-   */
-  hintTextColor?: FormFieldHintTextColor;
   /**
    * The icon to display alongside the hint text.
    */
@@ -80,6 +75,12 @@ export interface FormFieldProps
    * Controls the layout and spacing of label, input, and other elements.
    */
   size: FormFieldSize;
+  /**
+   * The severity level of the form field.
+   * Used to indicate the importance or urgency of the field.
+   * @default 'info'
+   */
+  severity?: SeverityWithInfo;
 }
 
 /**
@@ -95,7 +96,6 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       disabled = false,
       fullWidth = false,
       hintText,
-      hintTextColor,
       hintTextIcon,
       label,
       labelInformationIcon,
@@ -104,30 +104,14 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       name,
       required = false,
       size,
+      severity = 'info',
       ...rest
     } = props;
     const formControl: FormControl = {
       disabled,
       fullWidth,
       required,
-    };
-
-    const hintTextIconColor = (): IconColor => {
-      if (!hintTextColor) {
-        return 'info';
-      }
-      switch (hintTextColor) {
-        case FormFieldHintTextColor.INFO:
-          return 'info';
-        case FormFieldHintTextColor.WARNING:
-          return 'warning';
-        case FormFieldHintTextColor.ERROR:
-          return 'error';
-        case FormFieldHintTextColor.SUCCESS:
-          return 'success';
-        default:
-          return 'info';
-      }
+      severity,
     };
 
     return (
@@ -157,26 +141,11 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
             {children}
             <div className={cx(classes.hintTextAndCounterArea)}>
               {(hintText || hintTextIcon) && (
-                <span className={cx(classes.hintText)}>
-                  {hintTextIcon && (
-                    <Icon
-                      icon={hintTextIcon}
-                      size={14}
-                      color={hintTextIconColor()}
-                    />
-                  )}
-                  {hintText && (
-                    <span
-                      className={cx(
-                        classes.hintTextColor(
-                          hintTextColor || FormFieldHintTextColor.INFO,
-                        ),
-                      )}
-                    >
-                      {hintText}
-                    </span>
-                  )}
-                </span>
+                <FormHintText
+                  hintText={hintText}
+                  hintTextIcon={hintTextIcon}
+                  severity={severity}
+                />
               )}
               {counter && (
                 <span

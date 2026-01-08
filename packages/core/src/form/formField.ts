@@ -8,13 +8,6 @@ import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { formPrefix } from './form';
 import { IconDefinition } from '@mezzanine-ui/icons';
 
-export enum FormFieldHintTextColor {
-  INFO = 'info',
-  WARNING = 'warning',
-  ERROR = 'error',
-  SUCCESS = 'success',
-}
-
 export enum FormFieldCounterColor {
   INFO = 'info',
   WARNING = 'warning',
@@ -44,13 +37,14 @@ export const formHintIcons: Record<SeverityWithInfo, IconDefinition> = {
 export const formFieldClasses = {
   host: formFieldPrefix,
   counter: `${formFieldPrefix}__counter`,
-  counterColor: (color: FormFieldCounterColor) => `${formFieldPrefix}__counter--${color}`,
+  counterColor: (color: FormFieldCounterColor) =>
+    `${formFieldPrefix}__counter--${color}`,
   dataEntry: `${formFieldPrefix}__data-entry`,
   disabled: `${formFieldPrefix}--disabled`,
   fullWidth: `${formFieldPrefix}--full-width`,
   hintText: `${formFieldPrefix}__hint-text`,
-  hintTextColor: (color: FormFieldHintTextColor) =>
-    `${formFieldPrefix}__hint-text--${color}`,
+  hintTextColor: (severity: SeverityWithInfo) =>
+    `${formFieldPrefix}__hint-text--${severity}`,
   hintTextIcon: `${formFieldPrefix}__hint-text__icon`,
   hintTextAndCounterArea: `${formFieldPrefix}__hint-text-and-counter-area`,
   hintTextSeverity: (severity: SeverityWithInfo) =>

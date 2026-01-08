@@ -1,10 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { IconDefinition, InfoOutlineIcon } from '@mezzanine-ui/icons';
-import {
-  FormFieldCounterColor,
-  FormFieldHintTextColor,
-  FormFieldSize,
-} from '@mezzanine-ui/core/form';
+import { FormFieldCounterColor, FormFieldSize } from '@mezzanine-ui/core/form';
 import { ReactNode, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
 import Input from '../Input';
@@ -12,6 +8,7 @@ import Radio, { RadioGroup } from '../Radio';
 import Switch from '../Toggle';
 import Textarea from '../Textarea';
 import { FormField } from '.';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
 export default {
   title: 'Data Entry/Form',
@@ -23,7 +20,6 @@ interface PlaygroundStoryArgs {
   counterColor: FormFieldCounterColor;
   disabled: boolean;
   fullWidth: boolean;
-  hintTextColor?: FormFieldHintTextColor;
   hintText?: string;
   hintTextIcon?: IconDefinition;
   label: string;
@@ -35,6 +31,7 @@ interface PlaygroundStoryArgs {
   showHintTextIcon: boolean;
   showRemarkIcon: boolean;
   size: FormFieldSize;
+  severity?: SeverityWithInfo;
 }
 
 export const Playground: StoryObj<PlaygroundStoryArgs> = {
@@ -54,6 +51,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     showHintTextIcon: true,
     showRemarkIcon: false,
     size: FormFieldSize.VERTICAL,
+    severity: 'info',
   },
   argTypes: {
     counterColor: {
@@ -62,17 +60,17 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
       },
       options: Object.values(FormFieldCounterColor),
     },
-    hintTextColor: {
-      control: {
-        type: 'select',
-      },
-      options: Object.values(FormFieldHintTextColor),
-    },
     size: {
       control: {
         type: 'select',
       },
       options: Object.values(FormFieldSize),
+    },
+    severity: {
+      control: {
+        type: 'select',
+      },
+      options: ['info', 'success', 'warning', 'error'],
     },
   },
   render: function Render({
@@ -81,16 +79,15 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     counterColor,
     disabled,
     fullWidth,
-    hintTextColor,
     hintText,
     label,
     labelInformationText,
     name,
     remark,
     required,
-    showHintTextIcon,
     showRemarkIcon,
     size,
+    severity,
   }) {
     const renderField = (control: ReactNode) => (
       <FormField
@@ -99,8 +96,6 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         disabled={disabled}
         fullWidth={fullWidth}
         hintText={hintText}
-        hintTextColor={hintTextColor}
-        hintTextIcon={showHintTextIcon ? InfoOutlineIcon : undefined}
         label={label}
         labelInformationIcon={showRemarkIcon ? InfoOutlineIcon : undefined}
         labelInformationText={labelInformationText}
@@ -108,6 +103,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         name={name}
         required={required}
         size={size}
+        severity={severity}
       >
         {control}
       </FormField>
