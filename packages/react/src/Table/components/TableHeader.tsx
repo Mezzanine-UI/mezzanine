@@ -18,7 +18,11 @@ import {
 import { cx } from '../../utils/cx';
 import Icon from '../../Icon';
 import Tooltip from '../../Tooltip';
-import { useTableContext, useTableSuperContext } from '../TableContext';
+import {
+  useTableContext,
+  useTableDataContext,
+  useTableSuperContext,
+} from '../TableContext';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableResizeHandle } from './TableResizeHandle';
@@ -30,7 +34,6 @@ export type TableHeaderProps = unknown;
 const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   function TableHeader(_, ref) {
     const {
-      columns,
       draggable,
       expansion,
       fixedOffsets,
@@ -38,6 +41,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       selection,
       sorting,
     } = useTableContext();
+    const { columns } = useTableDataContext();
 
     const { containerWidth, scrollLeft } = useTableSuperContext();
 

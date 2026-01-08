@@ -8,6 +8,7 @@ import Table, {
 import type {
   SortOrder,
   TableColumn,
+  TableColumnWithMinWidth,
   TableDataSourceWithKey,
 } from '@mezzanine-ui/core/table';
 import {
@@ -39,12 +40,15 @@ const baseColumns: TableColumn<DataType>[] = [
     key: 'name',
     title: 'Name',
     width: 150,
+    minWidth: 150,
   },
   {
     dataIndex: 'age',
     key: 'age',
     title: 'Age',
+    align: 'center',
     width: 100,
+    minWidth: 100,
   },
   {
     dataIndex: 'address',
@@ -553,15 +557,13 @@ export const WithRowSelection: Story = {
       );
     }, [currentPage, itemsPerPage, originData]);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
-      [],
-    );
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const [hideSelectAll, toggleHideSelectAll] = useState(false);
     const [preserveSelectedRowKeys, togglePreserveSelectedRowKeys] =
       useState(false);
 
     // Radio selection example
-    const [selectedRadioKey, setSelectedRadioKey] = useState<string | number>();
+    const [selectedRadioKey, setSelectedRadioKey] = useState<string>();
 
     return (
       <div>
@@ -644,13 +646,13 @@ export const WithBulkActions: Story = {
   render: function WithBulkActionsStory() {
     // full example
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
 
     const originData = useMemo(() => {
       return Array.from({ length: 100 }, (_, i) => ({
         address: `Address ${i + 1}`,
         age: 20 + (i % 50),
-        key: String(i + 1),
+        key: `${i + 1}`,
         name: `User ${i + 1}`,
         disabled: i % 4 === 0,
       }));
@@ -663,12 +665,13 @@ export const WithBulkActions: Story = {
       );
     }, [currentPage, itemsPerPage, originData]);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
-      [],
-    );
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
 
     return (
       <div>
+        <div style={{ width: '100%', height: '100px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
         <div
           style={{
             margin: '0 0 16px',
@@ -746,6 +749,9 @@ export const WithBulkActions: Story = {
             buttonText: '確定',
           }}
         />
+        <div style={{ width: '100%', height: '600px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
       </div>
     );
   },
@@ -901,7 +907,7 @@ export const WithFixedColumns: Story = {
 
 export const WithResizableColumns: Story = {
   render: () => {
-    const resizableColumns: TableColumn<DataType>[] = [
+    const resizableColumns = [
       {
         dataIndex: 'name',
         key: 'name',
@@ -920,6 +926,7 @@ export const WithResizableColumns: Story = {
         key: 'tags',
         title: 'Tags',
         width: 200,
+        minWidth: 140,
       },
       {
         dataIndex: 'address',
@@ -941,7 +948,7 @@ export const WithResizableColumns: Story = {
         <span style={{ whiteSpace: 'pre-line' }}>
           {`Column 1: minWidth: 120, maxWidth: 220;
           Column 2: minWidth: 80;
-          Column 3: width 200;
+          Column 3: width 200 minWidth: 140;
           Column 4: minWidth: 220;`}
         </span>
         <Table<DataType>
@@ -1043,8 +1050,10 @@ export const EmptyState: Story = {
       columns={baseColumns}
       dataSource={[]}
       emptyProps={{
+        height: 444,
         type: 'result',
         title: 'No data available',
+        description: 'There is no data to display in the table.',
       }}
     />
   ),
@@ -1065,7 +1074,7 @@ export const VirtualScrolling: Story = {
       <Table<DataType>
         columns={baseColumns}
         dataSource={largeDataList}
-        scroll={{ virtualized: true, y: 400 }}
+        scroll={{ virtualized: true, y: 420 }}
       />
     );
   },
@@ -1157,7 +1166,7 @@ export const Combined: Story = {
       sortOrder: 'ascend',
     });
 
-    const combinedColumns: TableColumn<DataType>[] = [
+    const combinedColumns: TableColumnWithMinWidth<DataType>[] = [
       {
         dataIndex: 'name',
         fixed: 'start',
@@ -1203,7 +1212,7 @@ export const Combined: Story = {
           onSelect: () => {},
         },
         width: 100,
-        minWidth: 60,
+        minWidth: 90,
         maxWidth: 200,
       },
       {
@@ -1219,7 +1228,7 @@ export const Combined: Story = {
         key: 'address2',
         title: 'Address',
         width: 600,
-        minWidth: 500,
+        minWidth: 400,
         maxWidth: 800,
       },
       {
@@ -1235,7 +1244,7 @@ export const Combined: Story = {
         },
         title: 'Tags',
         width: 200,
-        minWidth: 100,
+        minWidth: 120,
         maxWidth: 300,
       },
       {
@@ -1243,7 +1252,7 @@ export const Combined: Story = {
         fixed: 'end',
         key: 'action',
         render: (record) => (
-          <div style={{ display: 'flex', gap: 4 }}>
+          <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
             <Button size="minor" variant="base-text-link">
               Edit
             </Button>

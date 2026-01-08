@@ -32,13 +32,13 @@ export function useTableSelection<T extends TableDataSource>({
   const preserveSelectedRowKeys =
     mode === 'radio' ? false : (rowSelection?.preserveSelectedRowKeys ?? false);
 
-  const selectedRowKeys: (string | number)[] = useMemo(() => {
+  const selectedRowKeys: string[] = useMemo(() => {
     if (mode === 'radio') {
-      const key = selections as string | number | undefined;
+      const key = selections as string | undefined;
       return key !== undefined ? [key] : [];
     }
 
-    return (selections as (string | number)[] | undefined) ?? [];
+    return (selections as string[] | undefined) ?? [];
   }, [mode, selections]);
 
   const selectableKeys = useMemo(() => {
@@ -56,7 +56,7 @@ export function useTableSelection<T extends TableDataSource>({
   }, [dataSource, isSelectionDisabled, rowSelection]);
 
   const isRowSelected = useCallback(
-    (key: string | number) => {
+    (key: string) => {
       return selectedRowKeys.includes(key);
     },
     [selectedRowKeys],
@@ -89,11 +89,9 @@ export function useTableSelection<T extends TableDataSource>({
   }, [selectableKeys, selectedRowKeys]);
 
   const toggleRow = useCallback(
-    (key: string | number) => {
+    (key: string) => {
       // Radio mode: only one selection allowed
       if (mode === 'radio') {
-        // If clicking the same row, deselect it
-        // @NOTE Radio mode usually doesn't allow deselection, but we support it here for flexibility
         const selectedRow =
           dataSource.find((r) => getRowKey(r) === key) || null;
 
@@ -123,7 +121,7 @@ export function useTableSelection<T extends TableDataSource>({
   );
 
   const toggleAll = useCallback(() => {
-    let newKeys: (string | number)[];
+    let newKeys: string[];
     let type: 'all' | 'none';
 
     if (isAllSelected) {

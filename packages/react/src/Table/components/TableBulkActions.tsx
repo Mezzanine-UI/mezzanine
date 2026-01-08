@@ -1,5 +1,6 @@
 import {
   tableClasses as classes,
+  getRowKey,
   TableRowSelectionCheckbox,
   type TableBulkActions as TableBulkActionsConfig,
 } from '@mezzanine-ui/core/table';
@@ -7,12 +8,15 @@ import { CloseIcon } from '@mezzanine-ui/icons';
 import Button from '../../Button';
 import Dropdown from '../../Dropdown';
 import { cx } from '../../utils/cx';
+import { useTableDataContext } from '../TableContext';
 
 export interface TableBulkActionsProps {
   /** Bulk actions configuration */
   bulkActions: TableBulkActionsConfig;
   /** Custom class name */
   className?: string;
+  /** Whether to use fixed positioning */
+  isFixed?: boolean;
   /** Callback to clear all selections */
   onClearSelection: VoidFunction;
   /** Array of selected row keys */
@@ -20,8 +24,10 @@ export interface TableBulkActionsProps {
 }
 
 function TableBulkActions(props: TableBulkActionsProps) {
-  const { bulkActions, className, onClearSelection, selectedRowKeys } = props;
+  const { bulkActions, className, isFixed, onClearSelection, selectedRowKeys } =
+    props;
 
+  const { dataSource } = useTableDataContext();
   const {
     destructiveAction,
     mainActions,
@@ -33,12 +39,24 @@ function TableBulkActions(props: TableBulkActionsProps) {
     return null;
   }
 
+  const selectedRows = dataSource.filter((data) =>
+    selectedRowKeys.includes(getRowKey(data)),
+  );
+
   const label = renderSelectionSummary
-    ? renderSelectionSummary(selectedRowKeys.length)
+    ? renderSelectionSummary(
+        selectedRowKeys.length,
+        selectedRowKeys,
+        selectedRows,
+      )
     : `${selectedRowKeys.length} item${selectedRowKeys.length > 1 ? 's' : ''} selected`;
 
   return (
-    <div className={cx(classes.bulkActions, className)}>
+    <div
+      className={cx(classes.bulkActions, className, {
+        [classes.bulkActionsFixed]: isFixed,
+      })}
+    >
       <div className={classes.bulkActionsSelectionSummary}>
         <Button
           icon={{
@@ -66,7 +84,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
                 : undefined
             }
             key={`main-action-${index}`}
-            onClick={() => action.onClick(selectedRowKeys)}
+            onClick={() => action.onClick(selectedRowKeys, selectedRows)}
             size="sub"
             type="button"
             variant="inverse-ghost"
@@ -88,7 +106,9 @@ function TableBulkActions(props: TableBulkActionsProps) {
                     }
                   : undefined
               }
-              onClick={() => destructiveAction.onClick(selectedRowKeys)}
+              onClick={() =>
+                destructiveAction.onClick(selectedRowKeys, selectedRows)
+              }
               size="sub"
               type="button"
               variant="destructive-ghost"
@@ -105,7 +125,7 @@ function TableBulkActions(props: TableBulkActionsProps) {
             <Dropdown
               maxHeight={overflowAction.maxHeight}
               onSelect={(option) =>
-                overflowAction.onSelect(option, selectedRowKeys)
+                overflowAction.onSelect(option, selectedRowKeys, selectedRows)
               }
               options={overflowAction.options}
               placement={overflowAction.placement ?? 'top'}

@@ -21,6 +21,7 @@ export const tableClasses = {
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
   bulkActions: `${tablePrefix}__bulk-actions`,
+  bulkActionsFixed: `${tablePrefix}__bulk-actions--fixed`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
   bulkActionsActionArea: `${tablePrefix}__bulk-actions__action-area`,
   bulkActionsSeparator: `${tablePrefix}__bulk-actions__separator`,
@@ -72,11 +73,11 @@ export type TableRecord<T = unknown> = Record<string, T>;
 
 /** Data source must have a unique key or id */
 export interface TableDataSourceWithKey extends TableRecord {
-  key: string | number;
+  key: string;
 }
 
 export interface TableDataSourceWithId extends TableRecord {
-  id: string | number;
+  id: string;
 }
 
 export type TableDataSource = TableDataSourceWithKey | TableDataSourceWithId;
@@ -165,9 +166,24 @@ export interface TableColumnBase<T extends TableDataSource = TableDataSource> {
   width?: number;
 }
 
+export interface TableColumnBaseWithMinWidthRequired<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBase<T> {
+  /** Minimum column width */
+  minWidth: number;
+}
+
 export interface TableColumnWithDataIndex<
   T extends TableDataSource = TableDataSource,
 > extends TableColumnBase<T> {
+  /** Data index to access the record value */
+  dataIndex: string;
+  render?: never;
+}
+
+export interface TableColumnWithDataIndexAndMinWidth<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBaseWithMinWidthRequired<T> {
   /** Data index to access the record value */
   dataIndex: string;
   render?: never;
@@ -181,9 +197,23 @@ export interface TableColumnWithRender<
   render: (record: T, index: number) => React.ReactNode;
 }
 
+export interface TableColumnWithRenderAndMinWidth<
+  T extends TableDataSource = TableDataSource,
+> extends TableColumnBaseWithMinWidthRequired<T> {
+  dataIndex?: never;
+  /** Custom render function for cell content */
+  render: (record: T, index: number) => React.ReactNode;
+}
+
 export type TableColumn<T extends TableDataSource = TableDataSource> =
   | TableColumnWithDataIndex<T>
   | TableColumnWithRender<T>;
+
+export type TableColumnWithMinWidth<
+  T extends TableDataSource = TableDataSource,
+> =
+  | TableColumnWithDataIndexAndMinWidth<T>
+  | TableColumnWithRenderAndMinWidth<T>;
 
 /** Selection mode for row selection */
 export type TableSelectionMode = 'checkbox' | 'radio';
@@ -191,19 +221,23 @@ export type TableSelectionMode = 'checkbox' | 'radio';
 /**
  * action configuration for bulk actions (destructive or main action)
  */
-export interface TableBulkGeneralAction {
+export interface TableBulkGeneralAction<
+  T extends TableDataSource = TableDataSource,
+> {
   /** Icon for the destructive action button */
   icon?: IconDefinition;
   /** Label for the destructive action button */
   label: string;
   /** Callback when destructive action is clicked */
-  onClick: (selectedRowKeys: (string | number)[]) => void;
+  onClick: (selectedRowKeys: string[], selectedRows: T[]) => void;
 }
 
 /**
  * Overflow action configuration for bulk actions (dropdown menu)
  */
-export interface TableBulkOverflowAction {
+export interface TableBulkOverflowAction<
+  T extends TableDataSource = TableDataSource,
+> {
   /** Icon for the overflow action button */
   icon?: IconDefinition;
   /** Label for the overflow action button */
@@ -213,7 +247,8 @@ export interface TableBulkOverflowAction {
   /** Callback when a dropdown option is selected */
   onSelect: (
     option: DropdownOption,
-    selectedRowKeys: (string | number)[],
+    selectedRowKeys: string[],
+    selectedRows: T[],
   ) => void;
   /** Dropdown options */
   options: DropdownOption[];
@@ -224,17 +259,21 @@ export interface TableBulkOverflowAction {
 /**
  * Bulk actions configuration for row selection
  */
-export interface TableBulkActions {
+export interface TableBulkActions<T extends TableDataSource = TableDataSource> {
   /** Destructive action (optional, single action with separator) */
-  destructiveAction?: TableBulkGeneralAction;
+  destructiveAction?: TableBulkGeneralAction<T>;
   /** Main actions (required, at least one action) */
-  mainActions: [TableBulkGeneralAction, ...TableBulkGeneralAction[]];
+  mainActions: [TableBulkGeneralAction<T>, ...TableBulkGeneralAction<T>[]];
   /** Overflow action with dropdown menu (optional, with separator) */
-  overflowAction?: TableBulkOverflowAction;
+  overflowAction?: TableBulkOverflowAction<T>;
   /**
    * Label for selection summary
    */
-  renderSelectionSummary?: (count: number) => string;
+  renderSelectionSummary?: (
+    count: number,
+    selectedRowKeys: string[],
+    selectedRows: T[],
+  ) => string;
 }
 
 /** Base row selection configuration */
@@ -256,7 +295,7 @@ export interface TableRowSelectionCheckbox<
    */
   mode: 'checkbox';
   /** Bulk actions configuration for batch operations */
-  bulkActions?: TableBulkActions;
+  bulkActions?: TableBulkActions<T>;
   /** Get checkbox props for each row */
   getCheckboxProps?: (record: T) => {
     indeterminate?: boolean;
@@ -270,12 +309,12 @@ export interface TableRowSelectionCheckbox<
   preserveSelectedRowKeys?: boolean;
   /** Callback when selection changes */
   onChange: (
-    selectedRowKeys: (string | number)[],
+    selectedRowKeys: string[],
     selectedRow: T | null,
     selectedRows: T[],
   ) => void;
   /** Array of selected row keys */
-  selectedRowKeys: (string | number)[];
+  selectedRowKeys: string[];
 }
 
 /** Radio mode row selection configuration */
@@ -285,12 +324,9 @@ export interface TableRowSelectionRadio<
   /** Selection mode */
   mode: 'radio';
   /** Callback when selection changes */
-  onChange: (
-    selectedRowKey: string | number | undefined,
-    selectedRow: T | null,
-  ) => void;
+  onChange: (selectedRowKey: string | undefined, selectedRow: T | null) => void;
   /** Selected row key */
-  selectedRowKey: string | number | undefined;
+  selectedRowKey: string | undefined;
   /** Not available in radio mode */
   getCheckboxProps?: never;
   /** Not available in radio mode */
@@ -328,7 +364,10 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   /** Fixed position of drag handle column */
   fixed?: boolean;
   /** Callback when drag ends */
-  onDragEnd?: (newDataSource: T[]) => void;
+  onDragEnd?: (
+    newDataSource: T[],
+    options: { draggingId: string; fromIndex: number; toIndex: number },
+  ) => void;
 }
 
 /** Expandable configuration */
@@ -336,13 +375,13 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   /** Render function for expanded row content */
   expandedRowRender: (record: T) => React.ReactNode;
   /** Controlled expanded row keys */
-  expandedRowKeys?: (string | number)[];
+  expandedRowKeys?: string[];
   /** Fixed position of expand icon column */
   fixed?: boolean;
   /** Callback when single row expand state changes */
   onExpand?: (expanded: boolean, record: T) => void;
   /** Callback when expanded rows change */
-  onExpandedRowsChange?: (expandedRowKeys: (string | number)[]) => void;
+  onExpandedRowsChange?: (expandedRowKeys: string[]) => void;
   /** Determine if a row is expandable */
   rowExpandable?: (record: T) => boolean;
 }

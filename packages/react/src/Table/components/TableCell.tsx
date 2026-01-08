@@ -133,23 +133,26 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
             }}
           >
             {({ onMouseEnter, onMouseLeave }) => (
-              <div
-                ref={ellipsisRef}
-                className={cx(classes.cellContent, alignClass, {
-                  [classes.cellEllipsis]: isColumnEllipsis,
-                })}
-                onMouseEnter={(e) => {
-                  if (ellipsisRef.current) {
-                    const { current: el } = ellipsisRef;
+              /** @Note "display: grid" for feature ellipsis to work properly */
+              <div style={{ display: 'grid', width: '100%' }}>
+                <div
+                  ref={ellipsisRef}
+                  className={cx(classes.cellContent, alignClass, {
+                    [classes.cellEllipsis]: isColumnEllipsis,
+                  })}
+                  onMouseEnter={(e) => {
+                    if (ellipsisRef.current) {
+                      const { current: el } = ellipsisRef;
 
-                    const isOverflow = el.scrollWidth > el.offsetWidth;
+                      const isOverflow = el.scrollWidth > el.offsetWidth;
 
-                    if (isOverflow) onMouseEnter(e);
-                  }
-                }}
-                onMouseLeave={onMouseLeave}
-              >
-                {cellValue as React.ReactNode}
+                      if (isOverflow) onMouseEnter(e);
+                    }
+                  }}
+                  onMouseLeave={onMouseLeave}
+                >
+                  {cellValue as React.ReactNode}
+                </div>
               </div>
             )}
           </Tooltip>
@@ -157,8 +160,11 @@ const TableCellInner = forwardRef<HTMLTableCellElement, TableCellProps>(
       }
 
       return (
-        <div className={cx(classes.cellContent, alignClass)}>
-          {cellValue as React.ReactNode}
+        /** @Note "display: grid" for feature ellipsis to work properly */
+        <div style={{ display: 'grid', width: '100%' }}>
+          <div className={cx(classes.cellContent, alignClass)}>
+            {cellValue as React.ReactNode}
+          </div>
         </div>
       );
     };

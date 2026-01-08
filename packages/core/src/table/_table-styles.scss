@@ -169,7 +169,6 @@ $z-index-config: (
 }
 
 .#{$prefix} {
-  min-width: var(--table-scroll-x, 100%);
   border-collapse: separate;
   border-spacing: 0;
   table-layout: fixed;
@@ -419,7 +418,8 @@ $z-index-config: (
   }
 
   &__content {
-    display: flex;
+    display: block;
+    word-break: break-all;
   }
 }
 
@@ -565,7 +565,7 @@ $z-index-config: (
   position: absolute;
   z-index: #{map.get($z-index-config, bulk-actions)};
   left: 50%;
-  bottom: calc(#{spacing.semantic-variable(padding, vertical, relaxed)} + #{var(--mzn-table-pagination-height)});
+  bottom: calc(#{spacing.semantic-variable(padding, vertical, relaxed)} + var(--mzn-table-pagination-height));
   transform: translateX(-50%);
   max-width: spacing.semantic-variable(size, container, xwide);
   padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, base);
@@ -576,6 +576,13 @@ $z-index-config: (
   flex-flow: row;
   align-items: center;
   gap: spacing.semantic-variable(gap, spacious);
+
+  &--fixed {
+    position: fixed;
+    bottom: spacing.semantic-variable(padding, vertical, relaxed);
+    left: var(--mzn-bulk-actions-fixed-left, 50%);
+    max-width: spacing.semantic-variable(size, container, xwide);
+  }
 
   &__selection-summary {
     width: auto;

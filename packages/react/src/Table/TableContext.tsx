@@ -29,12 +29,11 @@ export interface TableSelectionState<
   isAllSelected: boolean;
   isIndeterminate: boolean;
   isRowDisabled: (record: T) => boolean;
-  isRowSelected: (key: string | number) => boolean;
-  /** Selection mode: 'checkbox' for multi-select, 'radio' for single-select */
+  isRowSelected: (key: string) => boolean;
   mode: TableSelectionMode;
-  selectedRowKeys: (string | number)[];
+  selectedRowKeys: string[];
   toggleAll: () => void;
-  toggleRow: (key: string | number, record: T) => void;
+  toggleRow: (key: string, record: T) => void;
 }
 
 /** Expansion context state */
@@ -43,40 +42,28 @@ export interface TableExpansionState<
 > {
   config: TableExpandable<T>;
   expansionLeftPadding: number;
-  expandedRowKeys: (string | number)[];
-  isRowExpanded: (key: string | number) => boolean;
-  toggleExpand: (key: string | number, record: T) => void;
+  expandedRowKeys: string[];
+  isRowExpanded: (key: string) => boolean;
+  toggleExpand: (key: string, record: T) => void;
 }
 
 /** Column state with computed widths */
-export interface TableColumnState {
-  resizedColumnWidths: Map<string, number>;
-  columns: TableColumn[];
-  fixedEndColumns: TableColumn[];
-  fixedStartColumns: TableColumn[];
+export interface TableResizedColumnState {
   getResizedColumnWidth: (key: string) => number | undefined;
-  scrollableColumns: TableColumn[];
   setResizedColumnWidth: (key: string, width: number) => void;
-  totalFixedEndWidth: number;
-  totalFixedStartWidth: number;
 }
 
 /** Draggable state */
 export interface TableDraggableState {
-  draggingId: string | null;
   enabled: boolean;
   fixed?: boolean | 'start';
 }
 
 /** Highlight state for hover effects */
 export interface TableHighlightState {
-  /** Current column index being hovered */
   columnIndex: number | null;
-  /** Highlight mode */
   mode: HighlightMode;
-  /** Current row index being hovered */
   rowIndex: number | null;
-  /** Set hovered cell */
   setHoveredCell: (rowIndex: number | null, columnIndex: number | null) => void;
 }
 
@@ -84,39 +71,25 @@ export interface TableHighlightState {
 export interface TableContextValue<
   T extends TableDataSource = TableDataSource,
 > {
-  // Feature states
-  columnState?: TableColumnState;
-  // Data
-  columns: TableColumn<T>[];
-  /** Container width for scroll calculations */
+  columnState?: TableResizedColumnState;
   dataSource: T[];
   draggable?: TableDraggableState;
-  // Config
-  emptyProps?: EmptyProps;
+  emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
-  /** Fixed column offset calculations */
   fixedOffsets?: UseTableFixedOffsetsReturn;
-  /** Whether columns are resizable by user interaction */
   resizable?: boolean;
-  /** Row height */
   rowHeight: number;
-  /** Highlight state for hover effects */
   highlight?: TableHighlightState;
-  // Scroll state
   isScrollingHorizontally?: boolean;
   loading?: boolean;
   pagination?: PaginationProps;
   size?: TableSize;
   scroll?: TableScroll;
-  /** Ref to the scroll container div for virtualization */
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;
   sorting?: TableSortingState;
-  /** Transition state for row add/remove animations */
   transitionState?: TableTransitionState;
-  /** Whether virtual scrolling is enabled */
   virtualScrollEnabled?: boolean;
-  /** Whether the table is inside an expanded content area */
   isInsideExpandedContentArea?: boolean;
 }
 
@@ -162,7 +135,6 @@ export function useTableDataContext<
 
 export interface TableSuperContextValue {
   containerWidth?: number;
-  /** Get resized column width from root table (for child table column sync) */
   getResizedColumnWidth?: (key: string) => number | undefined;
   scrollLeft?: number;
   expansionLeftPadding?: number;
