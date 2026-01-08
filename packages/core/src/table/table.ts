@@ -21,6 +21,7 @@ export const tableClasses = {
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
   bulkActions: `${tablePrefix}__bulk-actions`,
+  bulkActionsFixed: `${tablePrefix}__bulk-actions--fixed`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
   bulkActionsActionArea: `${tablePrefix}__bulk-actions__action-area`,
   bulkActionsSeparator: `${tablePrefix}__bulk-actions__separator`,
@@ -363,7 +364,10 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   /** Fixed position of drag handle column */
   fixed?: boolean;
   /** Callback when drag ends */
-  onDragEnd?: (newDataSource: T[]) => void;
+  onDragEnd?: (
+    newDataSource: T[],
+    options: { draggingId: string; fromIndex: number; toIndex: number },
+  ) => void;
 }
 
 /** Expandable configuration */
