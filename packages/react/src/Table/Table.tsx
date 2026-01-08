@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import throttle from 'lodash/throttle';
 import {
   TableSize,
   tableClasses as classes,
@@ -537,16 +538,30 @@ function TableInner<T extends TableDataSource = TableDataSource>(
         hostRect.top < bulkActionsFixedBottom;
 
       setIsBulkActionsFixed(shouldBeFixed);
+
+      if (shouldBeFixed) {
+        /** Table 不一定在 viewport 中間 */
+        const centerLeft = hostRect.left + hostRect.width / 2;
+
+        hostEl.style.setProperty(
+          '--mzn-bulk-actions-fixed-left',
+          `${centerLeft}px`,
+        );
+      }
     };
+
+    /** @NOTE 如果覺得位置更新的不夠即時，再把 throttle 拔掉 (目前先以減少觸發次數做效能優化) */
+    const throttledCalculateFixedState = throttle(calculateFixedState, 50);
 
     calculateFixedState();
 
-    window.addEventListener('scroll', calculateFixedState, false);
-    window.addEventListener('resize', calculateFixedState, false);
+    window.addEventListener('scroll', throttledCalculateFixedState, false);
+    window.addEventListener('resize', throttledCalculateFixedState, false);
 
     return () => {
-      window.removeEventListener('scroll', calculateFixedState, false);
-      window.removeEventListener('resize', calculateFixedState, false);
+      throttledCalculateFixedState.cancel();
+      window.removeEventListener('scroll', throttledCalculateFixedState, false);
+      window.removeEventListener('resize', throttledCalculateFixedState, false);
     };
   }, [bulkActionsConfig?.enabled]);
 
