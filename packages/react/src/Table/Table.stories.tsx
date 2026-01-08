@@ -646,7 +646,7 @@ export const WithBulkActions: Story = {
   render: function WithBulkActionsStory() {
     // full example
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
 
     const originData = useMemo(() => {
       return Array.from({ length: 100 }, (_, i) => ({

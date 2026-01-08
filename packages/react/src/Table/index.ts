@@ -48,7 +48,7 @@ export {
   useTableContext,
   useTableDataContext,
   useTableSuperContext,
-  type TableColumnState,
+  type TableResizedColumnState,
   type TableContextValue,
   type TableDataContextValue,
   type TableDraggableState,

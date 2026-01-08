@@ -15,6 +15,8 @@ export interface TableBulkActionsProps {
   bulkActions: TableBulkActionsConfig;
   /** Custom class name */
   className?: string;
+  /** Whether to use fixed positioning */
+  isFixed?: boolean;
   /** Callback to clear all selections */
   onClearSelection: VoidFunction;
   /** Array of selected row keys */
@@ -22,7 +24,8 @@ export interface TableBulkActionsProps {
 }
 
 function TableBulkActions(props: TableBulkActionsProps) {
-  const { bulkActions, className, onClearSelection, selectedRowKeys } = props;
+  const { bulkActions, className, isFixed, onClearSelection, selectedRowKeys } =
+    props;
 
   const { dataSource } = useTableDataContext();
   const {
@@ -49,7 +52,11 @@ function TableBulkActions(props: TableBulkActionsProps) {
     : `${selectedRowKeys.length} item${selectedRowKeys.length > 1 ? 's' : ''} selected`;
 
   return (
-    <div className={cx(classes.bulkActions, className)}>
+    <div
+      className={cx(classes.bulkActions, className, {
+        [classes.bulkActionsFixed]: isFixed,
+      })}
+    >
       <div className={classes.bulkActionsSelectionSummary}>
         <Button
           icon={{

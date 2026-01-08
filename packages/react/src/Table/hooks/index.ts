@@ -9,7 +9,7 @@ export {
 export {
   useTableColumns,
   type UseTableColumnsOptions,
-} from './useTableColumns';
+} from './useTableResizedColumns';
 export {
   useTableExpansion,
   type UseTableExpansionOptions,
