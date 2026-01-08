@@ -194,7 +194,7 @@ export {
   type TableVirtualizedProps,
   type TableNonVirtualizedProps,
   type TableProps,
-  type TableColumnState,
+  type TableResizedColumnState,
   type TableContextValue,
   type TableDataContextValue,
   type TableDraggableState,

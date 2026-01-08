@@ -52,6 +52,7 @@ export {
   type TableContextValue,
   type TableDataContextValue,
   type TableDraggableState,
+  type TableHighlightState,
   type TableExpansionState,
   type TableSelectionState,
   type TableSortingState,

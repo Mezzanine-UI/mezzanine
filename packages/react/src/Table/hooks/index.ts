@@ -6,10 +6,7 @@ export {
   useTableSelection,
   type UseTableSelectionOptions,
 } from './useTableSelection';
-export {
-  useTableColumns,
-  type UseTableColumnsOptions,
-} from './useTableResizedColumns';
+export { useTableResizedColumns } from './useTableResizedColumns';
 export {
   useTableExpansion,
   type UseTableExpansionOptions,

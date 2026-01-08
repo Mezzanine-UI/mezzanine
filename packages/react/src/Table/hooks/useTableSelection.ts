@@ -92,8 +92,6 @@ export function useTableSelection<T extends TableDataSource>({
     (key: string) => {
       // Radio mode: only one selection allowed
       if (mode === 'radio') {
-        // If clicking the same row, deselect it
-        // @NOTE Radio mode usually doesn't allow deselection, but we support it here for flexibility
         const selectedRow =
           dataSource.find((r) => getRowKey(r) === key) || null;
 

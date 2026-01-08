@@ -198,7 +198,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const composedHostRef = useComposeRefs([ref, hostRef]);
-  const tableRef = useRef<HTMLTableElement | null>(null);
 
   /** Feature: Loading */
   const dataSourceForRender = loading
@@ -608,7 +607,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
                   classes.root,
                   size === 'sub' ? classes.sub : classes.main,
                 )}
-                ref={tableRef}
                 style={tableStyle}
               >
                 <TableColGroup />
