@@ -82,6 +82,7 @@ export { DotDragHorizontalIcon } from './controls/dot-drag-horizontal';
 export { ZoomInIcon } from './controls/zoom-in';
 export { ZoomOutIcon } from './controls/zoom-out';
 export { PinIcon } from './controls/pin';
+export { PinFilledIcon } from './controls/pin-filled';
 export { MaximizeIcon } from './controls/maximize';
 export { MinimizeIcon } from './controls/minimize';
 export { ResizeHandleIcon } from './controls/resize-handle';
