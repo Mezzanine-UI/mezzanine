@@ -58,9 +58,8 @@ function useHash() {
 }
 
 /**
- * The `mezzanine` AnchorItem component represents an individual anchor link with hash tracking,
- * smooth scrolling, and support for nested items. It handles active state based on current URL hash
- * and supports disabled state inheritance from parent items.
+ * Individual anchor link with hash tracking and smooth scrolling.
+ * Tracks active state from URL hash and inherits disabled state from parent.
  */
 function AnchorItem({
   className,
