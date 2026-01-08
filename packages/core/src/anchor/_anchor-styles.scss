@@ -24,7 +24,7 @@ $bar-width: 2px !default;
     pointer-events: none;
   }
 
-  &__anchor {
+  &__anchorItem {
     @include btn-utils.reset();
 
     display: inline-grid;
@@ -49,19 +49,12 @@ $bar-width: 2px !default;
     }
 
     &:hover {
-      color: palette.color(primary);
       color: palette.semantic-variable(text, neutral-solid);
-    }
-
-    &--default-padding {
-      padding-left: spacing.semantic-variable(gap, spacious);
     }
 
     &--active {
       color: palette.semantic-variable(text, brand);
       position: relative;
-      border-left: none;
-      margin-left: 0;
 
       &::before {
         background-color: palette.semantic-variable(text, brand);
