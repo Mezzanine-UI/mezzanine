@@ -10,7 +10,7 @@ export interface DescriptionGroupProps {
    */
   className?: string;
   /**
-   * Description elements to be grouped and displayed together.
+   * Description elements to be grouped and displayed together
    */
   children: ReactElement[];
 }

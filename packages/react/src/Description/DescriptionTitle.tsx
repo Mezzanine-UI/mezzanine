@@ -14,6 +14,9 @@ import Icon from '../Icon';
 import Tooltip from '../Tooltip';
 
 interface DescriptionTitleBaseProps {
+  /**
+   * Displays a badge dot alongside the title text
+   */
   badge?: BadgeDotVariant;
   /**
    * Custom class name for title
@@ -24,15 +27,24 @@ interface DescriptionTitleBaseProps {
    */
   children: string;
   /**
-   * Width type for title
+   * Controls the layout width behavior of the title
    * @default 'stretch'
    */
   widthType?: DescriptionWidthType;
 }
 
 interface DescriptionTitleWithTooltip {
+  /**
+   * An icon displayed after the title text
+   */
   icon: IconDefinition;
+  /**
+   * Text content displayed in a tooltip when hovering over the icon
+   */
   tooltip: string;
+  /**
+   * Defines the placement of the tooltip relative to the icon
+   */
   tooltipPlacement?: Placement;
 }
 

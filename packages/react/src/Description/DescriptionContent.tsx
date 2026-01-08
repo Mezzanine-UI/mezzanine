@@ -15,14 +15,34 @@ import { cx } from '../utils/cx';
 import Icon from '../Icon';
 
 interface DescriptionContentBaseProps {
+  /**
+   * Custom class name for content
+   */
   className?: string;
+  /**
+   * Content text
+   */
   children: string;
+  /**
+   * Control the text size of the content
+   * @default 'main'
+   */
   size?: DescriptionSize;
+  /**
+   * Define the style and behavior of the content
+   * @default 'normal'
+   */
   variant?: Extract<
     DescriptionContentVariant,
     'normal' | 'statistic' | 'trend-up' | 'trend-down'
   >;
+  /**
+   * Custom icon rendered after the content text
+   */
   icon?: never;
+  /**
+   * Click handler for the icon.
+   */
   onClickIcon?: never;
 }
 

@@ -20,7 +20,13 @@ import Tag from '../Tag';
 import TagGroup from '../Tag/TagGroup';
 
 export interface DescriptionProps {
+  /**
+   * Custom class name for description
+   */
   className?: string;
+  /**
+   * Defines what is rendered as the description content
+   */
   contentProps:
     | DescriptionContentProps
     | {
@@ -39,7 +45,14 @@ export interface DescriptionProps {
         variant: Extract<DescriptionContentVariant, 'tags'>;
         tags: TagProps[];
       };
+  /**
+   * Define the layout direction between the title and the content
+   * @default 'horizontal'
+   */
   orientation?: DescriptionOrientation;
+  /**
+   * Props passed to the DescriptionTitle component
+   */
   titleProps: DescriptionTitleProps;
 }
 
