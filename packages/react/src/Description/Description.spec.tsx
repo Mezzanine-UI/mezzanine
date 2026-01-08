@@ -1,5 +1,5 @@
 import { cleanup, render } from '../../__test-utils__';
-import { CopyIcon } from '@mezzanine-ui/icons';
+import { CopyIcon, QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -51,6 +51,54 @@ describe('<Description />', () => {
     const element = getHostHTMLElement();
 
     expect(element!.classList.contains('mzn-description')).toBeTruthy();
+  });
+
+  describe('prop: titleProps', () => {
+    it('give badge to title', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            badge: 'dot-success',
+            children: 'title',
+          }}
+          contentProps={{
+            children: 'content',
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const [titleElement] = element.getElementsByClassName(
+        'mzn-description-title',
+      );
+
+      expect(
+        titleElement.firstElementChild!.classList.contains(
+          'mzn-badge__container',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('give icon to title', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            icon: QuestionOutlineIcon,
+            children: 'title',
+          }}
+          contentProps={{
+            children: 'content',
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const [titleElement] = element.getElementsByClassName(
+        'mzn-description-title',
+      );
+
+      const [iconElement] = titleElement.getElementsByTagName('i');
+
+      expect(iconElement!.classList.contains('mzn-icon')).toBeTruthy();
+    });
   });
 
   describe('prop: contentProps', () => {
@@ -152,6 +200,45 @@ describe('<Description />', () => {
       );
 
       expect(contents.length).toBe(1);
+    });
+  });
+
+  describe('prop: orientation', () => {
+    it('default orientation is "horizontal"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            children: 'content',
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description--horizontal'),
+      ).toBeTruthy();
+    });
+
+    it('when orientation is "vertical"', () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          orientation="vertical"
+          titleProps={{
+            children: 'title',
+          }}
+          contentProps={{
+            children: 'content',
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element!.classList.contains('mzn-description--vertical'),
+      ).toBeTruthy();
     });
   });
 });
