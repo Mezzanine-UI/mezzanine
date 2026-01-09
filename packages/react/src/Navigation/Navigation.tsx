@@ -113,7 +113,6 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
             footerComponent = child as ReactElement<NavigationFooterProps>;
             break;
           }
-          // TODO: 改成 props 形式傳入 search input, 提供預設搜尋行為
           case Input: {
             searchInput = cloneElement(child as ReactElement<InputProps>, {
               size: 'sub',

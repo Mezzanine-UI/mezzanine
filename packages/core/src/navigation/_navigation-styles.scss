@@ -117,7 +117,7 @@ $background: background;
   }
 
 
-   &--collapsed {
+  &--collapsed {
     display: flex;
     flex-direction: column-reverse;
 
@@ -159,7 +159,7 @@ $background: background;
       line-height: #{$option-icon-size};
       overflow: hidden;
       text-overflow: ellipsis;
-      text-wrap: nowrap;
+      white-space: nowrap;
     }
 
     .#{$option-prefix}__icon {
@@ -187,7 +187,7 @@ $background: background;
   }
 
   &--active.#{$option-prefix}--open {
-     .#{$option-prefix}__content {
+    .#{$option-prefix}__content {
       background-color: palette.semantic-variable($background, brand-ghost);
     }
   }
