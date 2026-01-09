@@ -12,7 +12,10 @@ import throttle from 'lodash/throttle';
 import {
   TableSize,
   tableClasses as classes,
+  TABLE_ACTIONS_KEY,
   type HighlightMode,
+  type TableActions,
+  type TableActionsWithMinWidth,
   type TableColumn,
   type TableColumnWithMinWidth,
   type TableDataSource,
@@ -111,6 +114,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
 export interface TableResizableProps<
   T extends TableDataSource = TableDataSource,
 > extends TableBaseProps<T> {
+  /** Actions column configuration - minWidth required when resizable */
+  actions?: TableActionsWithMinWidth<T>;
   /** Column configuration - minWidth required for each column when resizable */
   columns: TableColumnWithMinWidth<T>[];
   /**
@@ -125,6 +130,8 @@ export interface TableResizableProps<
 export interface TableNonResizableProps<
   T extends TableDataSource = TableDataSource,
 > extends TableBaseProps<T> {
+  /** Actions column configuration */
+  actions?: TableActions<T>;
   /** Column configuration */
   columns: TableColumn<T>[];
   /**
@@ -173,6 +180,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const {
+    actions,
     className,
     columns,
     dataSource,
@@ -275,6 +283,21 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     columns,
   });
 
+  /** Feature: Actions column */
+  const columnsWithActions = useMemo(() => {
+    if (!actions) return columns as TableColumn<T>[];
+
+    const actionsColumn: TableColumn<T> = {
+      ...actions,
+      align: actions.align ?? 'end',
+      ellipsis: false,
+      key: TABLE_ACTIONS_KEY,
+      render: () => null, // Placeholder, actual rendering is handled in TableRow
+    };
+
+    return [...(columns as TableColumn<T>[]), actionsColumn];
+  }, [actions, columns]);
+
   /** Feature: Row selection */
   const selectionState = useTableSelection({
     dataSource,
@@ -322,7 +345,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   const fixedOffsetsState = useTableFixedOffsets({
     actionConfig,
-    columns: columns as TableColumn[],
+    columns: columnsWithActions as TableColumn[],
     getResizedColumnWidth: columnState.getResizedColumnWidth,
   });
 
@@ -364,6 +387,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Context values */
   const contextValue = useMemo(
     () => ({
+      actions: actions as TableContextValue['actions'],
       columnState,
       dataSource: dataSourceForRender,
       draggable: draggableState,
@@ -386,6 +410,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       virtualScrollEnabled,
     }),
     [
+      actions,
       columnState,
       dataSourceForRender,
       draggableState,
@@ -411,10 +436,10 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   const dataContextValue = useMemo(
     () => ({
-      columns: columns as TableColumn[],
+      columns: columnsWithActions as TableColumn[],
       dataSource,
     }),
-    [columns, dataSource],
+    [columnsWithActions, dataSource],
   );
 
   const superContextValue = useMemo(

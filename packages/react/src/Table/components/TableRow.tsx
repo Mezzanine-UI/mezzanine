@@ -2,6 +2,7 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
+  TABLE_ACTIONS_KEY,
   DRAG_HANDLE_COLUMN_WIDTH,
   DRAG_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
@@ -21,6 +22,7 @@ import {
   useTableDataContext,
   useTableSuperContext,
 } from '../TableContext';
+import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
@@ -47,11 +49,12 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const { className, draggableProvided, record, rowIndex, style } = props;
 
     const {
+      actions,
       draggable,
       expansion,
       fixedOffsets,
-      rowHeight,
       highlight,
+      rowHeight,
       selection,
       transitionState,
     } = useTableContext();
@@ -238,6 +241,24 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             scrollLeft ?? 0,
             containerWidth ?? 0,
           );
+
+        // Render actions cell for TABLE_ACTIONS_KEY column
+        if (column.key === TABLE_ACTIONS_KEY && actions) {
+          return (
+            <TableActionsCell
+              actions={actions}
+              className={column.className}
+              columnIndex={columnIndex}
+              fixed={fixedPos ?? undefined}
+              fixedOffset={offset}
+              key={column.key}
+              record={record}
+              rowIndex={rowIndex}
+              showShadow={showShadow ?? false}
+              width={draggingColumnWidths?.get(column.key)}
+            />
+          );
+        }
 
         return (
           <TableCell
