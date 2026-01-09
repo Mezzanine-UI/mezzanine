@@ -152,14 +152,14 @@ const TableActionsCellInner = forwardRef<
     >
       <div className={cx(classes.cellContent, alignClass)}>
         <ButtonGroup size="sub" variant={actions.variant}>
-          {actionItems.map((item, index) => {
+          {actionItems.map((item) => {
             const isDisabled = item.disabled?.(record) ?? false;
 
             return (
               <Button
                 disabled={isDisabled}
                 icon={item.icon}
-                key={index}
+                key={`${item.name || 'name'}-${item.icon?.src?.name || 'icon'}-${rowIndex}`}
                 onClick={() => item.onClick(record, rowIndex)}
                 type="button"
                 variant={item.variant}
