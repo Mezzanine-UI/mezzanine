@@ -21,6 +21,8 @@ export const tableClasses = {
   bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
+  bodyRowSeparator: `${tableBodyPrefix}__row--separator`,
+  bodyRowZebra: `${tableBodyPrefix}__row--zebra`,
   bulkActions: `${tablePrefix}__bulk-actions`,
   bulkActionsFixed: `${tablePrefix}__bulk-actions--fixed`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
