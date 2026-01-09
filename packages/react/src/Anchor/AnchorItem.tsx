@@ -6,12 +6,12 @@ import { cx } from '../utils/cx';
 import Typography from '../Typography';
 
 export interface AnchorItemData {
+  children?: AnchorItemData[];
+  disabled?: boolean;
+  href: string;
   id: string;
   name: string;
-  href: string;
-  disabled?: boolean;
   onClick?: VoidFunction;
-  children?: AnchorItemData[];
 }
 
 export interface AnchorItemProps {
@@ -19,12 +19,12 @@ export interface AnchorItemProps {
   /**
    * ```ts
    * {
+   *   children?: AnchorItemData[];
+   *   disabled?: boolean;
+   *   href: string;
    *   id: string;
    *   name: string;
-   *   href: string;
-   *   disabled?: boolean;
    *   onClick?: VoidFunction;
-   *   children?: AnchorItemData[];
    * }
    * ```
    */
@@ -107,15 +107,15 @@ function AnchorItem({
     <>
       <a
         aria-disabled={isDisabled}
-        tabIndex={isDisabled ? -1 : undefined}
-        href={item.href}
-        onClick={handleClick}
         className={cx(
           classes.anchorItem,
           isActive && classes.anchorItemActive,
           isDisabled && classes.anchorItemDisabled,
           className,
         )}
+        href={item.href}
+        onClick={handleClick}
+        tabIndex={isDisabled ? -1 : undefined}
       >
         <Typography color="inherit" variant="label-primary">
           {item.name}
@@ -125,12 +125,12 @@ function AnchorItem({
         <div className={classes.nested}>
           {renderableChildren.map((child) => (
             <AnchorItem
-              key={child.id}
               className={cx(
                 level === 1 && classes.nestedLevel1,
                 level === 2 && classes.nestedLevel2,
               )}
               item={child}
+              key={child.id}
               level={level + 1}
               onClick={onClick}
               parentDisabled={isDisabled}
