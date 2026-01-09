@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-beta.1...@mezzanine-ui/icons@1.0.0-beta.2) (2026-01-09)
+
+### Features
+
+- **icons:** add pin-filled icon ([9b7ca09](https://github.com/Mezzanine-UI/mezzanine/commit/9b7ca0992755a9562a292cb633d8e71268c792ac))
+
 # [1.0.0-beta.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-beta.0...@mezzanine-ui/icons@1.0.0-beta.1) (2025-12-31)
 
 **Note:** Version bump only for package @mezzanine-ui/icons
