@@ -93,6 +93,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
   /** Row selection configuration */
   rowSelection?: TableRowSelection<T>;
+  /** Row indexes where a separator border should be displayed */
+  separatorAtRowIndexes?: number[];
   /** Show header row */
   showHeader?: boolean;
   /** Custom size variant
@@ -105,6 +107,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   sticky?: boolean;
   /** Transition state for row add/remove animations (from useTableDataSource hook) */
   transitionState?: TableTransitionState;
+  /** Enable zebra striping for alternating row backgrounds */
+  zebraStriping?: boolean;
 }
 
 /**
@@ -202,6 +206,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     sticky = true,
     style,
     transitionState,
+    zebraStriping,
+    separatorAtRowIndexes,
     ...restProps
   } = props as TableNonVirtualizedProps<T>;
 
@@ -405,9 +411,11 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       scrollContainerRef,
       selection: selectionState as TableContextValue['selection'],
       size,
+      separatorAtRowIndexes,
       sorting: sortingState,
       transitionState,
       virtualScrollEnabled,
+      zebraStriping,
     }),
     [
       actions,
@@ -430,6 +438,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       sortingState,
       transitionState,
       virtualScrollEnabled,
+      zebraStriping,
+      separatorAtRowIndexes,
       nested,
     ],
   );

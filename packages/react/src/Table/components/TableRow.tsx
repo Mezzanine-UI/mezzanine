@@ -56,7 +56,9 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       highlight,
       rowHeight,
       selection,
+      separatorAtRowIndexes,
       transitionState,
+      zebraStriping,
     } = useTableContext();
     const { columns } = useTableDataContext();
 
@@ -281,6 +283,10 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       ? composeRefs([ref, draggableProvided.innerRef])
       : ref;
 
+    const isZebraRow = zebraStriping && rowIndex % 2 === 1;
+
+    const isSeparatorRow = separatorAtRowIndexes?.includes(rowIndex);
+
     return (
       <tr
         aria-rowindex={rowIndex + 1}
@@ -290,10 +296,12 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           {
             [classes.bodyRowAdding]: isAdding,
             [classes.bodyRowDeleting]: isDeleting,
+            [classes.bodyRowDragging]: isDragging,
             [classes.bodyRowFadingOut]: isFadingOut,
             [classes.bodyRowHighlight]: isRowHighlighted,
             [classes.bodyRowSelected]: isSelected,
-            [classes.bodyRowDragging]: isDragging,
+            [classes.bodyRowSeparator]: isSeparatorRow,
+            [classes.bodyRowZebra]: isZebraRow,
           },
           className,
         )}

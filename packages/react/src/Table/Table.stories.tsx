@@ -226,6 +226,22 @@ export const RowHeightPreset: Story = {
   },
 };
 
+export const DataStateRepresentation: Story = {
+  render: function DataStateRepresentationStory() {
+    return (
+      <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '16px' }}>
+        <span>{`separatorAtRowIndexes: [3, 6], zebraStriping: true`}</span>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          separatorAtRowIndexes={[3, 6]}
+          zebraStriping
+        />
+      </div>
+    );
+  },
+};
+
 export const CreateDeleteTransition: Story = {
   render: function CreateDeleteTransitionStory() {
     const [newName, setNewName] = useState('');

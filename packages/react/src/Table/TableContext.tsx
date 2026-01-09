@@ -89,9 +89,11 @@ export interface TableContextValue<
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;
+  separatorAtRowIndexes?: number[];
   sorting?: TableSortingState;
   transitionState?: TableTransitionState;
   virtualScrollEnabled?: boolean;
+  zebraStriping?: boolean;
   isInsideExpandedContentArea?: boolean;
 }
 
