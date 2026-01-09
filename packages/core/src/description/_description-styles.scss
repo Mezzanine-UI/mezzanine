@@ -1,0 +1,113 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography';
+@use './description' as *;
+
+.#{$prefix} {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: spacing.semantic-variable(gap, base);
+
+  &--vertical {
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: spacing.semantic-variable(gap, tight);
+  }
+}
+
+.#{$title-prefix} {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  column-gap: spacing.semantic-variable(gap, tight);
+  color: palette.semantic-variable(text, neutral);
+
+  @each $width in $widths {
+    &--#{$width} {
+      @if $width == narrow {
+        width: spacing.semantic-variable(size, container, compressed);
+        min-width: spacing.semantic-variable(size, container, compressed);
+      }
+
+      @if $width == wide {
+        width: spacing.semantic-variable(size, container, snug);
+        min-width: spacing.semantic-variable(size, container, snug);
+      }
+
+      @if $width == stretch {
+        width: auto;
+        flex: 1;
+      }
+
+      @if $width == hug {
+        width: fit-content;
+      }
+    }
+  }
+
+  &__text {
+    @include typography.semantic-variable(body);
+    color: palette.semantic-variable(text, neutral) !important;
+  }
+}
+
+.#{$content-prefix} {
+  color: palette.semantic-variable(text, neutral-solid);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  column-gap: spacing.semantic-variable(gap, tight);
+  width: fit-content;
+
+  @each $size in $sizes {
+    &--#{$size} {
+      @if $size == main {
+        @include typography.semantic-variable(body);
+
+        &.#{$content-prefix}--statistic {
+          @include typography.semantic-variable(h2);
+        }
+      }
+
+      @if $size == sub {
+        @include typography.semantic-variable(caption);
+
+        &.#{$content-prefix}--statistic {
+          @include typography.semantic-variable(h3);
+        }
+      }
+    }
+  }
+
+  &__trend-up {
+    color: palette.semantic-variable(icon, error);
+  }
+
+  &__trend-down {
+    color: palette.semantic-variable(icon, success);
+  }
+
+  &__icon {
+    color: palette.semantic-variable(icon, neutral);
+    transition: transition.standard(color, fast);
+    will-change: color;
+
+    &:hover {
+      color: palette.semantic-variable(icon, neutral-solid);
+    }
+  }
+}
+
+.#{$group-prefix} {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  row-gap: spacing.semantic-variable(gap, base);
+}

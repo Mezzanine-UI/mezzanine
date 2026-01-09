@@ -33,6 +33,8 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
 
     return (
       <div className={classes.container(!!children)}>
+        {children}
+
         <span
           {...rest}
           ref={ref}
@@ -49,8 +51,6 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
               : count
             : text}
         </span>
-
-        {children}
       </div>
     );
   },

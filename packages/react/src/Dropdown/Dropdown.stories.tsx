@@ -498,4 +498,62 @@ export const PlacementExample: Story = {
   },
 };
 
+export const ControlledVisibility: Story = {
+  render: () => {
+    const ExampleComponent = () => {
+      const [open, setOpen] = useState(false);
+      const [value, setValue] = useState<string | undefined>(undefined);
+
+      const selectedLabel = useMemo(() => {
+        const matched = simpleOptions.find((option) => option.id === value);
+        return matched?.name ?? '請選擇';
+      }, [value]);
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 240 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <Button
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpen(true);
+              }}
+              size="minor"
+              variant="base-primary"
+            >
+              開啟
+            </Button>
+            <Button
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => {
+                event.stopPropagation();
+                setOpen(false);
+              }}
+              size="minor"
+              variant="base-secondary"
+            >
+              關閉
+            </Button>
+          </div>
+          <Dropdown
+            onSelect={(option) => {
+              // Close the dropdown when an option is selected
+              setValue(option.id);
+              setOpen(false);
+            }}
+            onVisibilityChange={setOpen}
+            open={open}
+            options={simpleOptions}
+            value={value}
+          >
+            <Button variant="base-primary">{selectedLabel}</Button>
+          </Dropdown>
+        </div>
+      );
+    };
+
+    return <ExampleComponent />;
+  },
+};
+
 

@@ -1,18 +1,37 @@
 'use client';
 
-import { forwardRef, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import throttle from 'lodash/throttle';
 import {
   TableSize,
   tableClasses as classes,
+  TABLE_ACTIONS_KEY,
   type HighlightMode,
+  type TableActions,
+  type TableActionsWithMinWidth,
   type TableColumn,
+  type TableColumnWithMinWidth,
   type TableDataSource,
   type TableDraggable,
   type TableExpandable,
   type TableRowSelection,
+  type TableRowSelectionCheckbox,
   type TableScroll,
+  type TableBulkActions as TableBulkActionsType,
 } from '@mezzanine-ui/core/table';
-import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
+import {
+  DragDropContext,
+  Droppable,
+  DroppableProvided,
+  DropResult,
+} from '@hello-pangea/dnd';
 import { cx } from '../utils/cx';
 import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import {
@@ -20,8 +39,8 @@ import {
   TableDataContext,
   TableSuperContext,
   type TableContextValue,
-  type TableTransitionState,
 } from './TableContext';
+import type { TableTransitionState } from './hooks/useTableDataSource';
 import { TableBody } from './components/TableBody';
 import { TableColGroup } from './components/TableColGroup';
 import { TableHeader } from './components/TableHeader';
@@ -29,30 +48,37 @@ import {
   TablePagination as TablePaginationComponent,
   TablePaginationProps,
 } from './components/TablePagination';
-import { useTableColumns } from './hooks/useTableColumns';
+import { useTableResizedColumns } from './hooks/useTableResizedColumns';
 import { useTableExpansion } from './hooks/useTableExpansion';
 import { useTableFixedOffsets } from './hooks/useTableFixedOffsets';
 import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
 import type { EmptyProps } from '../Empty';
-import { composeRefs } from '../utils/composeRefs';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import TableBulkActions from './components/TableBulkActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   extends Omit<
     NativeElementPropsWithoutKeyAndRef<'table'>,
     'children' | 'draggable' | 'summary' | 'onChange'
   > {
-  /** Column configuration */
-  columns: TableColumn<T>[];
   /** Data source */
   dataSource: T[];
   /** Props for Empty component when no data */
-  emptyProps?: EmptyProps;
+  emptyProps?: EmptyProps & { height?: number | string };
   /** Expandable row configuration */
   expandable?: TableExpandable<T>;
+  /**
+   * Whether the table should stretch to fill its container width.
+   * When true, the table will always be 100% width of its container.
+   * Note: If the sum of all column widths is less than the table width,
+   * columns will be proportionally stretched to fill the remaining space.
+   * @default false
+   */
+  fullWidth?: boolean;
   /** Highlight mode for hover effects
    * @default 'row'
    */
@@ -61,6 +87,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   loading?: boolean;
   /** Number of rows to display when loading */
   loadingRowsCount?: number;
+  /** Minimum height of the table */
+  minHeight?: number | string;
   /**
    * Whether the table is nested inside an expanded row content area
    */
@@ -68,16 +96,13 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   /** Pagination configuration */
   pagination?: TablePaginationProps;
   /**
-   * Whether columns are resizable by user interaction
-   * @default false
-   */
-  resizable?: boolean;
-  /**
    * Row height preset token.
    */
   rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
   /** Row selection configuration */
   rowSelection?: TableRowSelection<T>;
+  /** Row indexes where a separator border should be displayed */
+  separatorAtRowIndexes?: number[];
   /** Show header row */
   showHeader?: boolean;
   /** Custom size variant
@@ -90,56 +115,95 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   sticky?: boolean;
   /** Transition state for row add/remove animations (from useTableDataSource hook) */
   transitionState?: TableTransitionState;
+  /** Enable zebra striping for alternating row backgrounds */
+  zebraStriping?: boolean;
+}
+
+/**
+ * Props when resizable is enabled.
+ * Requires minWidth on all columns.
+ */
+export interface TableResizableProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Actions column configuration - minWidth required when resizable */
+  actions?: TableActionsWithMinWidth<T>;
+  /** Column configuration - minWidth required for each column when resizable */
+  columns: TableColumnWithMinWidth<T>[];
+  /**
+   * Whether columns are resizable by user interaction
+   */
+  resizable: true;
+}
+
+/**
+ * Props when resizable is disabled or not specified.
+ */
+export interface TableNonResizableProps<
+  T extends TableDataSource = TableDataSource,
+> extends TableBaseProps<T> {
+  /** Actions column configuration */
+  actions?: TableActions<T>;
+  /** Column configuration */
+  columns: TableColumn<T>[];
+  /**
+   * Whether columns are resizable by user interaction
+   * @default false
+   */
+  resizable?: false;
 }
 
 /**
  * Props when virtualized scrolling is enabled.
  * Draggable is not allowed in this mode.
  */
-export interface TableVirtualizedProps<
-  T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
-  /** Draggable row configuration - not available when virtualized is enabled */
-  draggable?: never;
-  /** Scroll configuration with virtualized enabled */
-  scroll: TableScroll & { virtualized: true; y: number | string };
-}
+export type TableVirtualizedProps<T extends TableDataSource = TableDataSource> =
+  (TableResizableProps<T> | TableNonResizableProps<T>) & {
+    /** Draggable row configuration - not available when virtualized is enabled */
+    draggable?: never;
+    /** Scroll configuration with virtualized enabled */
+    scroll: TableScroll & { virtualized: true; y: number | string };
+  };
 
 /**
  * Props when virtualized scrolling is disabled or not specified.
  * Draggable is allowed in this mode.
  */
-export interface TableNonVirtualizedProps<
+export type TableNonVirtualizedProps<
   T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
+> = (TableResizableProps<T> | TableNonResizableProps<T>) & {
   /** Draggable row configuration */
   draggable?: TableDraggable<T>;
   /** Scroll configuration for scrolling (virtualized defaults to false) */
   scroll?: TableScroll & { virtualized?: false };
-}
+};
 
 /**
  * TableProps - discriminated union to ensure draggable and virtualized
- * scrolling are mutually exclusive at the type level.
+ * scrolling are mutually exclusive at the type level, and resizable
+ * requires minWidth on all columns.
  */
 export type TableProps<T extends TableDataSource = TableDataSource> =
   | TableVirtualizedProps<T>
   | TableNonVirtualizedProps<T>;
 
 function TableInner<T extends TableDataSource = TableDataSource>(
-  props: TableVirtualizedProps<T> | TableNonVirtualizedProps<T>,
+  props: TableProps<T>,
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const {
+    actions,
     className,
     columns,
     dataSource,
     draggable,
     emptyProps,
     expandable,
+    fullWidth = false,
     highlight = 'row',
     loading = false,
     loadingRowsCount = 10,
+    minHeight,
     nested = false,
     pagination,
     resizable = false,
@@ -151,21 +215,22 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     sticky = true,
     style,
     transitionState,
+    zebraStriping,
+    separatorAtRowIndexes,
     ...restProps
   } = props as TableNonVirtualizedProps<T>;
 
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const tableRef = useRef<HTMLTableElement | null>(null);
+  const composedHostRef = useComposeRefs([ref, hostRef]);
 
-  // mock loading dataSource
+  /** Feature: Loading */
   const dataSourceForRender = loading
     ? Array.from({ length: Math.max(loadingRowsCount, 1) }).map((_, idx) => ({
-        key: idx,
+        key: `${idx}`,
       }))
     : dataSource;
 
-  // get row height from preset
+  /** Feature: Row Height Preset */
   const rowHeight = useMemo(() => {
     switch (rowHeightPreset) {
       case 'condensed':
@@ -204,7 +269,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     }
   }, [rowHeightPreset, size]);
 
-  // Highlight state for hover effects
+  /** Feature: Highlight */
   const [hoveredRowIndex, setHoveredRowIndex] = useState<number | null>(null);
   const [hoveredColumnIndex, setHoveredColumnIndex] = useState<number | null>(
     null,
@@ -218,21 +283,69 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     [],
   );
 
-  // Hooks
+  const highlightValue = useMemo(
+    () => ({
+      columnIndex: hoveredColumnIndex,
+      mode: highlight,
+      rowIndex: hoveredRowIndex,
+      setHoveredCell,
+    }),
+    [highlight, hoveredColumnIndex, hoveredRowIndex, setHoveredCell],
+  );
+
+  /** Feature: sorting */
   const sortingState = useTableSorting({
     columns,
   });
 
+  /** Feature: Actions column */
+  const columnsWithActions = useMemo(() => {
+    if (!actions) return columns as TableColumn<T>[];
+
+    const actionsColumn: TableColumn<T> = {
+      ...actions,
+      align: actions.align ?? 'end',
+      ellipsis: false,
+      key: TABLE_ACTIONS_KEY,
+      render: () => null, // Placeholder, actual rendering is handled in TableRow
+    };
+
+    return [...(columns as TableColumn<T>[]), actionsColumn];
+  }, [actions, columns]);
+
+  /** Feature: Row selection */
   const selectionState = useTableSelection({
     dataSource,
     rowSelection,
   });
 
+  /** Feature: Expansion */
   const expansionState = useTableExpansion({
     expandable,
     hasDragHandle: !!draggable?.enabled,
   });
 
+  /** Feature: Column resized */
+  const columnState = useTableResizedColumns();
+
+  /** Feature: Scroll and dimensions calculation */
+  const {
+    containerWidth,
+    handleScroll,
+    isScrollingHorizontally,
+    scrollLeft,
+    containerRef: scrollContainerRef,
+    setContainerRef,
+  } = useTableScroll({
+    enabled: !nested,
+  });
+
+  const virtualScrollEnabled = useMemo(
+    () => !!(scroll?.virtualized && scroll?.y),
+    [scroll?.virtualized, scroll?.y],
+  );
+
+  /** Feature: Column fixed */
   const actionConfig = useMemo(
     () => ({
       hasDragHandle: !!draggable?.enabled,
@@ -245,124 +358,13 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     [draggable?.enabled, draggable?.fixed, expandable, rowSelection],
   );
 
-  const columnState = useTableColumns({
-    actionConfig,
-    columns,
-  });
-
-  const scrollState = useTableScroll({
-    enabled: !nested,
-  });
-
-  // Fixed column offset calculations
   const fixedOffsetsState = useTableFixedOffsets({
     actionConfig,
-    columns: columns as TableColumn[],
+    columns: columnsWithActions as TableColumn[],
     getResizedColumnWidth: columnState.getResizedColumnWidth,
   });
 
-  // Stabilize draggable object
-  const draggableValue = useMemo(
-    () =>
-      draggable
-        ? {
-            draggingId: null,
-            enabled: true,
-            fixed: draggable.fixed,
-          }
-        : undefined,
-    [draggable],
-  );
-
-  // Stabilize highlight object
-  const highlightValue = useMemo(
-    () => ({
-      columnIndex: hoveredColumnIndex,
-      mode: highlight,
-      rowIndex: hoveredRowIndex,
-      setHoveredCell,
-    }),
-    [highlight, hoveredColumnIndex, hoveredRowIndex, setHoveredCell],
-  );
-
-  // Determine if virtual scrolling should be enabled
-  // Requires scroll.virtualized to be true AND scroll.y to be set
-  const virtualScrollEnabled = !!(scroll?.virtualized && scroll?.y);
-
-  // Context value - cast to any to avoid complex generic issues
-  const contextValue = useMemo(
-    () => ({
-      columnState,
-      columns: columns as TableColumn[],
-      dataSource: dataSourceForRender,
-      draggable: draggableValue,
-      emptyProps,
-      expansion: expansionState as TableContextValue['expansion'],
-      fixedOffsets: fixedOffsetsState,
-      resizable,
-      rowHeight,
-      highlight: highlightValue,
-      isScrollingHorizontally: scrollState.isScrollingHorizontally,
-      isInsideExpandedContentArea: nested,
-      loading,
-      pagination: pagination || undefined,
-      scroll,
-      scrollContainerRef,
-      selection: selectionState as TableContextValue['selection'],
-      size,
-      sorting: sortingState,
-      transitionState,
-      virtualScrollEnabled,
-    }),
-    [
-      columnState,
-      columns,
-      dataSourceForRender,
-      draggableValue,
-      emptyProps,
-      expansionState,
-      fixedOffsetsState,
-      resizable,
-      rowHeight,
-      highlightValue,
-      loading,
-      pagination,
-      scroll,
-      scrollContainerRef,
-      scrollState.isScrollingHorizontally,
-      selectionState,
-      size,
-      sortingState,
-      transitionState,
-      virtualScrollEnabled,
-      nested,
-    ],
-  );
-
-  const dataContextValue = useMemo(
-    () => ({
-      columns: columns as TableColumn[],
-      dataSource,
-    }),
-    [columns, dataSource],
-  );
-
-  const superContextValue = useMemo(
-    () => ({
-      containerWidth: scrollState.containerWidth,
-      getResizedColumnWidth: columnState.getResizedColumnWidth,
-      scrollLeft: scrollState.scrollLeft,
-      expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
-    }),
-    [
-      scrollState.scrollLeft,
-      expansionState?.expansionLeftPadding,
-      scrollState.containerWidth,
-      columnState.getResizedColumnWidth,
-    ],
-  );
-
-  // Drag and drop handler
+  /** Feature: Drag n Drop */
   const handleDragEnd = useCallback(
     (result: DropResult) => {
       if (!result.destination || !draggable) return;
@@ -377,24 +379,112 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
       newData.splice(destIndex, 0, removed);
 
-      draggable.onDragEnd?.(newData);
+      draggable.onDragEnd?.(newData, {
+        draggingId: result.draggableId,
+        fromIndex: sourceIndex,
+        toIndex: destIndex,
+      });
     },
     [dataSource, draggable],
   );
 
-  const sizeClass = size === 'sub' ? classes.sub : classes.main;
+  const draggableState = useMemo(
+    () =>
+      draggable
+        ? {
+            enabled: draggable.enabled,
+            fixed: draggable.fixed,
+          }
+        : undefined,
+    [draggable],
+  );
 
-  // Scroll container style
+  /** Context values */
+  const contextValue = useMemo(
+    () => ({
+      actions: actions as TableContextValue['actions'],
+      columnState,
+      dataSource: dataSourceForRender,
+      draggable: draggableState,
+      emptyProps,
+      expansion: expansionState as TableContextValue['expansion'],
+      fixedOffsets: fixedOffsetsState,
+      resizable,
+      rowHeight,
+      highlight: highlightValue,
+      isScrollingHorizontally: isScrollingHorizontally,
+      isInsideExpandedContentArea: nested,
+      loading,
+      pagination: pagination || undefined,
+      scroll,
+      scrollContainerRef,
+      selection: selectionState as TableContextValue['selection'],
+      size,
+      separatorAtRowIndexes,
+      sorting: sortingState,
+      transitionState,
+      virtualScrollEnabled,
+      zebraStriping,
+    }),
+    [
+      actions,
+      columnState,
+      dataSourceForRender,
+      draggableState,
+      emptyProps,
+      expansionState,
+      fixedOffsetsState,
+      resizable,
+      rowHeight,
+      highlightValue,
+      loading,
+      pagination,
+      scroll,
+      scrollContainerRef,
+      isScrollingHorizontally,
+      selectionState,
+      size,
+      sortingState,
+      transitionState,
+      virtualScrollEnabled,
+      zebraStriping,
+      separatorAtRowIndexes,
+      nested,
+    ],
+  );
+
+  const dataContextValue = useMemo(
+    () => ({
+      columns: columnsWithActions as TableColumn[],
+      dataSource,
+    }),
+    [columnsWithActions, dataSource],
+  );
+
+  const superContextValue = useMemo(
+    () => ({
+      containerWidth: containerWidth,
+      getResizedColumnWidth: columnState.getResizedColumnWidth,
+      scrollLeft: scrollLeft,
+      expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
+      hasDragHandleFixed: !!draggable?.enabled && draggable.fixed,
+    }),
+    [
+      scrollLeft,
+      expansionState?.expansionLeftPadding,
+      containerWidth,
+      columnState.getResizedColumnWidth,
+      draggable?.enabled,
+      draggable?.fixed,
+    ],
+  );
+
+  /** Computed styles */
   const scrollContainerStyle = useMemo<React.CSSProperties>(() => {
     const containerStyle: React.CSSProperties = {};
 
     if (scroll?.y) {
       containerStyle.maxHeight = scroll.y;
-      containerStyle.overflowY = 'auto';
-    }
-
-    if (scroll?.x) {
-      containerStyle.overflowX = 'auto';
     }
 
     if (nested) {
@@ -402,81 +492,213 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       containerStyle.overflow = 'unset';
     }
 
-    return containerStyle;
-  }, [scroll?.x, scroll?.y, nested]);
+    if (minHeight) {
+      containerStyle.minHeight = minHeight;
+    }
 
-  // Table style with min-width for horizontal scroll
+    return containerStyle;
+  }, [scroll?.y, nested, minHeight]);
+
   const tableStyle = useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {};
 
-    if (scroll?.x) {
-      baseStyle.minWidth = scroll.x;
+    if (fullWidth) {
       baseStyle.width = '100%';
     }
 
     return baseStyle;
-  }, [scroll?.x]);
+  }, [fullWidth]);
 
-  const { setContainerRef } = scrollState;
+  /** Scroll Container Ref */
+  const droppableInnerRefSetter = useRef<
+    ((instance: HTMLDivElement | null) => void) | null
+  >(null);
 
-  const handleScrollContainerRef = useCallback(
+  const composedScrollContainerRef = useCallback(
     (element: HTMLDivElement | null) => {
-      scrollContainerRef.current = element;
       setContainerRef(element);
+
+      if (droppableInnerRefSetter.current) {
+        droppableInnerRefSetter.current(element);
+      }
     },
     [setContainerRef],
   );
 
-  const mainTable = (
-    <TableContext.Provider value={contextValue}>
-      <TableDataContext.Provider value={dataContextValue}>
-        <div
-          className={cx(classes.host, className)}
-          ref={ref}
-          style={style}
-          {...restProps}
-        >
+  /** Feature: bulk actions */
+  const bulkActionsConfig = useMemo(() => {
+    if (!selectionState || selectionState.mode !== 'checkbox') {
+      return null;
+    }
+
+    const checkboxConfig =
+      selectionState.config as TableRowSelectionCheckbox<T>;
+
+    return {
+      enabled:
+        !!checkboxConfig.bulkActions && selectionState.selectedRowKeys.length,
+      bulkActions: checkboxConfig.bulkActions as TableBulkActionsType,
+      onClearSelection: () => checkboxConfig.onChange([], null, []),
+      selectedRowKeys: selectionState.selectedRowKeys,
+    };
+  }, [selectionState]);
+
+  const [isBulkActionsFixed, setIsBulkActionsFixed] = useState(false);
+
+  useEffect(() => {
+    if (!bulkActionsConfig?.enabled) {
+      return;
+    }
+
+    const calculateFixedState = () => {
+      const { current: hostEl } = hostRef;
+
+      if (!hostEl) return;
+
+      const hostRect = hostEl.getBoundingClientRect();
+      const paginationHeightWithPx = hostEl.style.getPropertyValue(
+        '--mzn-table-pagination-height',
+      );
+
+      const paginationHeight = paginationHeightWithPx
+        ? Number(paginationHeightWithPx.replace('px', ''))
+        : 0;
+
+      const viewportHeight = window.innerHeight;
+
+      const bottomSpacing = getNumericCSSVariablePixelValue(
+        `--${spacingPrefix}-padding-vertical-relaxed`,
+      );
+
+      const bulkActionsFixedBottom = viewportHeight - bottomSpacing;
+
+      const shouldBeFixed =
+        hostRect.bottom > viewportHeight + paginationHeight &&
+        hostRect.top < bulkActionsFixedBottom;
+
+      setIsBulkActionsFixed(shouldBeFixed);
+
+      if (shouldBeFixed) {
+        /** Table 不一定在 viewport 中間 */
+        const centerLeft = hostRect.left + hostRect.width / 2;
+
+        hostEl.style.setProperty(
+          '--mzn-bulk-actions-fixed-left',
+          `${centerLeft}px`,
+        );
+      }
+    };
+
+    /** @NOTE 如果覺得位置更新的不夠即時，再把 throttle 拔掉 (目前先以減少觸發次數做效能優化) */
+    const throttledCalculateFixedState = throttle(calculateFixedState, 50);
+
+    calculateFixedState();
+
+    window.addEventListener('scroll', throttledCalculateFixedState, false);
+    window.addEventListener('resize', throttledCalculateFixedState, false);
+
+    return () => {
+      throttledCalculateFixedState.cancel();
+      window.removeEventListener('scroll', throttledCalculateFixedState, false);
+      window.removeEventListener('resize', throttledCalculateFixedState, false);
+    };
+  }, [bulkActionsConfig?.enabled]);
+
+  /** Get Dynamic Pagination Height */
+  const paginationRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const { current: paginationEl } = paginationRef;
+
+    if (paginationEl) {
+      const resizeObserver = new ResizeObserver(() => {
+        hostRef.current?.style.setProperty(
+          '--mzn-table-pagination-height',
+          `${paginationEl.offsetHeight}px`,
+        );
+      });
+
+      resizeObserver.observe(paginationEl);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }
+
+    return;
+  }, []);
+
+  /** Main render */
+  const renderMainTable = (droppableProvided?: DroppableProvided) => {
+    if (droppableProvided) {
+      droppableInnerRefSetter.current = droppableProvided.innerRef;
+    } else {
+      droppableInnerRefSetter.current = null;
+    }
+
+    return (
+      <TableContext.Provider value={contextValue}>
+        <TableDataContext.Provider value={dataContextValue}>
           <div
-            className={cx(classes.scrollContainer, {
-              [classes.sticky]: !!sticky,
-            })}
-            onScroll={scrollState.handleScroll}
-            ref={handleScrollContainerRef}
-            style={scrollContainerStyle}
+            className={cx(classes.host, className)}
+            ref={composedHostRef}
+            style={style}
+            {...restProps}
           >
-            <table
-              className={cx(classes.root, sizeClass)}
-              ref={tableRef}
-              style={tableStyle}
+            <div
+              {...droppableProvided?.droppableProps}
+              className={cx(classes.scrollContainer, {
+                [classes.sticky]: !!sticky,
+              })}
+              onScroll={handleScroll}
+              ref={
+                droppableProvided ? composedScrollContainerRef : setContainerRef
+              }
+              style={scrollContainerStyle}
             >
-              <TableColGroup />
-              {showHeader && <TableHeader />}
-              <TableBody />
-            </table>
+              <table
+                className={cx(
+                  classes.root,
+                  size === 'sub' ? classes.sub : classes.main,
+                )}
+                style={tableStyle}
+              >
+                <TableColGroup />
+                {showHeader && <TableHeader />}
+                <TableBody />
+                {droppableProvided?.placeholder ? (
+                  <tbody>{droppableProvided.placeholder}</tbody>
+                ) : null}
+              </table>
+            </div>
+            {pagination && (
+              <TablePaginationComponent {...pagination} ref={paginationRef} />
+            )}
+            {bulkActionsConfig?.enabled ? (
+              <TableBulkActions
+                bulkActions={bulkActionsConfig.bulkActions}
+                isFixed={isBulkActionsFixed}
+                onClearSelection={bulkActionsConfig.onClearSelection}
+                selectedRowKeys={bulkActionsConfig.selectedRowKeys}
+              />
+            ) : null}
           </div>
-          {pagination && <TablePaginationComponent {...pagination} />}
-        </div>
-      </TableDataContext.Provider>
-    </TableContext.Provider>
-  );
+        </TableDataContext.Provider>
+      </TableContext.Provider>
+    );
+  };
 
   if (nested) {
-    return mainTable;
+    return renderMainTable();
   }
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <Droppable droppableId="mzn-table-v2-dnd">
+      <Droppable droppableId="mzn-table-dnd">
         {(provided) => (
-          <div
-            {...provided.droppableProps}
-            ref={composeRefs([hostRef, provided.innerRef])}
-          >
-            <TableSuperContext.Provider value={superContextValue}>
-              {mainTable}
-            </TableSuperContext.Provider>
-            {provided.placeholder}
-          </div>
+          <TableSuperContext.Provider value={superContextValue}>
+            {renderMainTable(provided)}
+          </TableSuperContext.Provider>
         )}
       </Droppable>
     </DragDropContext>

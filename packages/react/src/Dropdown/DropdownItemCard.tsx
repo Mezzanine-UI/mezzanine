@@ -5,10 +5,10 @@ import { ChangeEventHandler, ReactNode, useMemo, useState } from "react";
 
 import {
   dropdownClasses as classes,
-  dropdownCheckPosition,
-  dropdownItemLevel,
-  dropdownItemValidate,
-  dropdownMode,
+  DropdownCheckPosition,
+  DropdownItemLevel,
+  DropdownItemValidate,
+  DropdownMode,
 } from "@mezzanine-ui/core/dropdown/dropdown";
 import { type IconDefinition, CheckedIcon } from "@mezzanine-ui/icons";
 
@@ -35,7 +35,7 @@ export interface DropdownItemCardProps {
   /**
    * The position of the checkbox.
    */
-  checkSite?: dropdownCheckPosition;
+  checkSite?: DropdownCheckPosition;
   /**
    * Controlled: Whether the option is selected/checked.
    * Controls checkbox state in multiple mode.
@@ -70,11 +70,11 @@ export interface DropdownItemCardProps {
   /**
    * The level of the dropdown item card.
    */
-  level?: dropdownItemLevel;
+  level?: DropdownItemLevel;
   /**
    * The mode of the dropdown item card.
    */
-  mode: dropdownMode;
+  mode: DropdownMode;
   /**
    * The accessible name / label for the option.
    * Falls back to label if not provided.
@@ -108,7 +108,7 @@ export interface DropdownItemCardProps {
   /**
    * The validation of the dropdown item card.
    */
-  validate?: dropdownItemValidate;
+  validate?: DropdownItemValidate;
 }
 
 export default function DropdownItemCard(props: DropdownItemCardProps) {

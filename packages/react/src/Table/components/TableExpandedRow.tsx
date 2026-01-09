@@ -7,7 +7,7 @@ import {
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
 import { cx } from '../../utils/cx';
-import { useTableContext } from '../TableContext';
+import { useTableContext, useTableDataContext } from '../TableContext';
 import { Table } from '../Table';
 
 export interface TableExpandedRowProps<
@@ -24,7 +24,8 @@ const TableExpandedRowInner = forwardRef<
 >(function TableExpandedRow(props, ref) {
   const { className, record, style } = props;
 
-  const { columns, expansion, draggable, selection } = useTableContext();
+  const { expansion, draggable, selection } = useTableContext();
+  const { columns } = useTableDataContext();
 
   // Calculate total column span
   const totalColSpan = useMemo(() => {

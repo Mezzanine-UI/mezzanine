@@ -8,7 +8,9 @@ export interface UseTableScrollReturn {
   handleScroll: (event: React.UIEvent<HTMLDivElement>) => void;
   isScrollingHorizontally: boolean;
   scrollLeft: number;
-  /** Set refs for measuring container width */
+  /** Ref object for internal use */
+  containerRef: React.RefObject<HTMLDivElement | null>;
+  /** Callback ref setter that should be used for the scroll container */
   setContainerRef: (element: HTMLDivElement | null) => void;
 }
 
@@ -21,10 +23,7 @@ export function useTableScroll({
   const [scrollLeft, setScrollLeft] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
   const containerRef = useRef<HTMLDivElement | null>(null);
-
-  const setContainerRef = useCallback((element: HTMLDivElement | null) => {
-    containerRef.current = element;
-  }, []);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const measureDimensions = useCallback(() => {
     if (containerRef.current) {
@@ -36,6 +35,31 @@ export function useTableScroll({
     }
   }, []);
 
+  // Callback ref that sets up ResizeObserver when element is attached
+  const setContainerRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      // Clean up previous observer
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+        resizeObserverRef.current = null;
+      }
+
+      containerRef.current = element;
+
+      if (element && enabled) {
+        // Measure immediately
+        measureDimensions();
+
+        // Set up ResizeObserver
+        resizeObserverRef.current = new ResizeObserver(() => {
+          measureDimensions();
+        });
+        resizeObserverRef.current.observe(element);
+      }
+    },
+    [enabled, measureDimensions],
+  );
+
   const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
     const target = event.currentTarget;
     const newScrollLeft = target.scrollLeft;
@@ -44,29 +68,14 @@ export function useTableScroll({
     setIsScrollingHorizontally(newScrollLeft > 0);
   }, []);
 
-  // Set up ResizeObserver to track dimension changes
+  // Cleanup on unmount
   useEffect(() => {
-    const { current: container } = containerRef;
-
-    if (!container || !enabled) return;
-
-    const resizeObserver = new ResizeObserver(() => {
-      measureDimensions();
-    });
-
-    resizeObserver.observe(container);
-
     return () => {
-      resizeObserver.disconnect();
+      if (resizeObserverRef.current) {
+        resizeObserverRef.current.disconnect();
+      }
     };
-  }, [measureDimensions, enabled]);
-
-  // Initial measurement after mount
-  useEffect(() => {
-    if (enabled) {
-      measureDimensions();
-    }
-  }, [measureDimensions, enabled]);
+  }, []);
 
   return useMemo(
     () => ({
@@ -74,6 +83,7 @@ export function useTableScroll({
       handleScroll,
       isScrollingHorizontally,
       scrollLeft,
+      containerRef,
       setContainerRef,
     }),
     [

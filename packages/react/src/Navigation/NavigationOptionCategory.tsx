@@ -1,9 +1,16 @@
 'use client';
 
-import { forwardRef } from 'react';
+import {
+  Children,
+  forwardRef,
+  isValidElement,
+  ReactNode,
+  useCallback,
+} from 'react';
 import { navigationOptionCategoryClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import NavigationOption from './NavigationOption';
 
 export interface NavigationOptionCategoryProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'li'>, 'onClick'> {
@@ -16,6 +23,27 @@ const NavigationOptionCategory = forwardRef<
 >((props, ref) => {
   const { children, className, title, ...rest } = props;
 
+  const renderItemChildren = useCallback(function renderItemChildrenImpl(
+    parsedChildren: ReactNode,
+  ): ReactNode {
+    const childArray = Children.map(parsedChildren, (child: ReactNode) => {
+      if (child && isValidElement(child)) {
+        switch (child.type) {
+          case NavigationOption: {
+            return child;
+          }
+
+          default:
+            return null;
+        }
+      }
+
+      return null;
+    });
+
+    return childArray?.filter((child) => child !== null) ?? null;
+  }, []);
+
   return (
     <li
       {...rest}
@@ -24,7 +52,7 @@ const NavigationOptionCategory = forwardRef<
       role="menuitem"
     >
       <span className={classes.title}>{title}</span>
-      <ul>{children}</ul>
+      <ul>{renderItemChildren(children)}</ul>
     </li>
   );
 });

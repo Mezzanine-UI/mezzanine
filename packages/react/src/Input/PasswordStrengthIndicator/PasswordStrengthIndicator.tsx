@@ -65,9 +65,11 @@ const PasswordStrengthIndicator = forwardRef<
       {hintTexts && hintTexts.length > 0 && (
         <div className={classes.hintTextGroup}>
           {hintTexts.map((hintText, idx) => (
-            <FormHintText key={idx} severity={hintText.severity}>
-              {hintText.hint}
-            </FormHintText>
+            <FormHintText
+              key={idx}
+              hintText={hintText.hint}
+              severity={hintText.severity}
+            />
           ))}
         </div>
       )}

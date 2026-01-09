@@ -5,7 +5,7 @@ import {
   tableClasses as classes,
   type TableColumn,
 } from '@mezzanine-ui/core/table';
-import { useTableContext } from '../TableContext';
+import { useTableContext, useTableDataContext } from '../TableContext';
 
 export interface TableResizeHandleProps {
   /** The column this resize handle belongs to */
@@ -23,14 +23,9 @@ export const TableResizeHandle = memo(function TableResizeHandle({
   column,
   columnIndex,
 }: TableResizeHandleProps) {
-  const {
-    columnState,
-    columns,
-    draggable,
-    expansion,
-    scrollContainerRef,
-    selection,
-  } = useTableContext();
+  const { columnState, draggable, expansion, scrollContainerRef, selection } =
+    useTableContext();
+  const { columns } = useTableDataContext();
   const { setResizedColumnWidth } = columnState || {};
 
   const startWidthRef = useRef(0);
@@ -98,7 +93,6 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       startWidthRef.current = currentWidth;
       nextStartWidthRef.current = nextWidth;
 
-      // Get min/max constraints (undefined means no constraint)
       const minWidth = column.minWidth;
       const maxWidth = column.maxWidth;
       const nextMinWidth = nextColumn.minWidth;
@@ -107,11 +101,9 @@ export const TableResizeHandle = memo(function TableResizeHandle({
       const handleMouseMove = (moveEvent: MouseEvent) => {
         const diff = moveEvent.clientX - startXRef.current;
 
-        // Calculate desired new widths
         const newWidth = startWidthRef.current + diff;
         const newNextWidth = nextStartWidthRef.current - diff;
 
-        // Check if either column would hit its constraint
         let isConstrained = false;
 
         // Check current column constraints
@@ -132,12 +124,10 @@ export const TableResizeHandle = memo(function TableResizeHandle({
           isConstrained = true;
         }
 
-        // If either column is constrained, stop both from changing
         if (isConstrained) {
           return;
         }
 
-        // Final validation: ensure we don't go below 0
         if (newWidth < 0 || newNextWidth < 0) {
           return;
         }

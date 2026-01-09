@@ -4,6 +4,8 @@ import Icon from '../Icon';
 import Input from '.';
 import Typography from '../Typography';
 import { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
+import { formatNumberWithCommas } from '../utils/format-number-with-commas';
+import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
 
 export default {
   title: 'Data Entry/Input',
@@ -630,13 +632,8 @@ export const FormatterAndParser = () => {
           onChange={(e) => {
             setCurrencyValue(e.target.value);
           }}
-          formatter={(value) => {
-            // Remove non-digit characters
-            const cleanValue = value.replace(/\D/g, '');
-            // Add thousand separators
-            return cleanValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-          }}
-          parser={(value) => value.replace(/,/g, '').replace(/\D/g, '')}
+          formatter={(value) => formatNumberWithCommas(value)}
+          parser={(value) => parseNumberWithCommas(value)?.toString() ?? ''}
         />
         <Typography variant="caption" color="text-neutral">
           Raw value: {currencyValue}

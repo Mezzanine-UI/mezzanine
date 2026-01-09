@@ -15,10 +15,10 @@ import {
 
 import {
   dropdownClasses,
-  dropdownInputPosition,
+  DropdownInputPosition,
   DropdownItemSharedProps,
   DropdownOption,
-  dropdownType,
+  DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 
 import { offset, size } from '@floating-ui/react-dom';
@@ -76,7 +76,7 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The position of the input.
    * @default 'outside'
    */
-  inputPosition?: dropdownInputPosition;
+  inputPosition?: DropdownInputPosition;
   /**
    * Whether to match the input value.
    * @default false
@@ -95,6 +95,10 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The max height of the dropdown list.
    */
   maxHeight?: number | string;
+  /**
+   * Whether the dropdown is open (controlled).
+   */
+  open?: boolean;
   /**
    * Callback fired when the action cancel is clicked.
    */
@@ -124,6 +128,10 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   onOpen?: () => void;
   /**
+   * Callback fired when the dropdown visibility changes.
+   */
+  onVisibilityChange?: (open: boolean) => void;
+  /**
    * Callback fired when the item is selected.
    */
   onSelect?: (option: DropdownOption) => void;
@@ -152,7 +160,11 @@ export interface DropdownProps extends DropdownItemSharedProps {
   /**
    * The type of the dropdown.
    */
-  type?: dropdownType;
+  type?: DropdownType;
+  /**
+   * The z-index of the dropdown.
+   */
+  zIndex?: number | string;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -179,12 +191,15 @@ export default function Dropdown(props: DropdownProps) {
     listboxLabel,
     onClose,
     onOpen,
+    open: openProp,
+    onVisibilityChange,
     onSelect,
     onActionConfirm,
     onActionCancel,
     onActionCustom,
     onActionClear,
     onItemHover,
+    zIndex,
   } = props;
   const isInline = inputPosition === 'inside';
   const inputId = useId();
@@ -204,12 +219,30 @@ export default function Dropdown(props: DropdownProps) {
       onClick: onActionCustom,
       onClear: onActionClear,
     };
-  }, [showDropdownActions, actionCancelText, actionConfirmText, actionClearText, actionText, actionCustomButtonProps, showActionShowTopBar, onActionConfirm, onActionCancel, onActionCustom, onActionClear]);
+  }, [
+    showDropdownActions,
+    actionCancelText,
+    actionConfirmText,
+    actionClearText,
+    actionText,
+    actionCustomButtonProps,
+    showActionShowTopBar,
+    onActionConfirm,
+    onActionCancel,
+    onActionCustom,
+    onActionClear,
+  ]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<number | null>(activeIndexProp ?? null);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isOpenControlled = openProp !== undefined;
+  const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
+  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<
+    number | null
+  >(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
-  const mergedActiveIndex = isActiveIndexControlled ? activeIndexProp : uncontrolledActiveIndex;
+  const mergedActiveIndex = isActiveIndexControlled
+    ? activeIndexProp
+    : uncontrolledActiveIndex;
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const ariaActivedescendant = useMemo(() => {
@@ -219,16 +252,19 @@ export default function Dropdown(props: DropdownProps) {
     return undefined;
   }, [mergedActiveIndex, listboxId]);
 
-  const translateProps = useMemo(() => ({
-    duration: {
-      enter: MOTION_DURATION.moderate,
-      exit: MOTION_DURATION.moderate,
-    },
-    easing: {
-      enter: MOTION_EASING.standard,
-      exit: MOTION_EASING.standard,
-    },
-  }), []);
+  const translateProps = useMemo(
+    () => ({
+      duration: {
+        enter: MOTION_DURATION.moderate,
+        exit: MOTION_DURATION.moderate,
+      },
+      easing: {
+        enter: MOTION_EASING.standard,
+        exit: MOTION_EASING.standard,
+      },
+    }),
+    [],
+  );
 
   const followText = useMemo(() => {
     if (children.type === Button) {
@@ -238,9 +274,10 @@ export default function Dropdown(props: DropdownProps) {
       return undefined;
     }
     // Try to get value from Input component props
-    const inputValue = (children.props as InputProps)?.value
-      ?? (children.props as InputProps)?.defaultValue
-      ?? '';
+    const inputValue =
+      (children.props as InputProps)?.value ??
+      (children.props as InputProps)?.defaultValue ??
+      '';
     return inputValue;
   }, [children, isMatchInputValue]);
 
@@ -279,6 +316,23 @@ export default function Dropdown(props: DropdownProps) {
     const placementBase = popoverPlacement.split('-')[0];
     return placementBase === 'top' ? 'top' : 'bottom';
   }, [isInline, popoverPlacement]);
+
+  const setOpen = useCallback(
+    (next: boolean | ((prev: boolean) => boolean)) => {
+      const nextValue =
+        typeof next === 'function'
+          ? (next as (prev: boolean) => boolean)(isOpen)
+          : next;
+
+      if (!isOpenControlled) {
+        setUncontrolledOpen(nextValue);
+      }
+
+      onVisibilityChange?.(nextValue);
+    },
+    [isOpen, isOpenControlled, onVisibilityChange],
+  );
+
   useEffect(() => {
     if (prevIsOpenRef.current === isOpen) return;
 
@@ -300,50 +354,66 @@ export default function Dropdown(props: DropdownProps) {
       ref?: Ref<HTMLElement>;
     };
     const isInput = childWithRef.type !== Button;
-    
+
     if (!isInput) return {};
-    
+
     return {
       role: 'combobox' as const,
       'aria-controls': listboxId,
       'aria-expanded': isOpen,
       'aria-haspopup': 'listbox' as const,
-      'aria-autocomplete': isMatchInputValue ? 'list' as const : undefined,
+      'aria-autocomplete': isMatchInputValue ? ('list' as const) : undefined,
       'aria-activedescendant': ariaActivedescendant,
     };
   }, [children, listboxId, isOpen, isMatchInputValue, ariaActivedescendant]);
 
-  const handleItemHover = useCallback((index: number) => {
-    if (!isActiveIndexControlled) {
-      setUncontrolledActiveIndex(index);
-    }
-    onItemHover?.(index);
-  }, [isActiveIndexControlled, onItemHover]);
+  const handleItemHover = useCallback(
+    (index: number) => {
+      if (!isActiveIndexControlled) {
+        setUncontrolledActiveIndex(index);
+      }
+      onItemHover?.(index);
+    },
+    [isActiveIndexControlled, onItemHover],
+  );
 
   // Extract shared DropdownItem props to avoid duplication
-  const baseDropdownItemProps = useMemo(() => ({
-    actionConfig,
-    activeIndex: mergedActiveIndex,
-    disabled,
-    followText,
-    listboxId,
-    listboxLabel,
-    maxHeight,
-    sameWidth,
-    onHover: handleItemHover,
-    onSelect,
-    options,
-    type,
-  }), [actionConfig, mergedActiveIndex, disabled, followText, listboxId, listboxLabel, maxHeight, sameWidth, handleItemHover, onSelect, options, type]);
+  const baseDropdownItemProps = useMemo(
+    () => ({
+      actionConfig,
+      activeIndex: mergedActiveIndex,
+      disabled,
+      followText,
+      listboxId,
+      listboxLabel,
+      maxHeight,
+      sameWidth,
+      onHover: handleItemHover,
+      onSelect,
+      options,
+      type,
+    }),
+    [
+      actionConfig,
+      mergedActiveIndex,
+      disabled,
+      followText,
+      listboxId,
+      listboxLabel,
+      maxHeight,
+      sameWidth,
+      handleItemHover,
+      onSelect,
+      options,
+      type,
+    ],
+  );
 
   const triggerElement = useMemo(() => {
     const childWithRef = children as ReactElement<any> & {
       ref?: Ref<HTMLElement>;
     };
-    const composedRef = composeRefs<HTMLElement>([
-      anchorRef,
-      childWithRef.ref,
-    ]);
+    const composedRef = composeRefs<HTMLElement>([anchorRef, childWithRef.ref]);
 
     return cloneElement(childWithRef, {
       ref: composedRef,
@@ -353,11 +423,11 @@ export default function Dropdown(props: DropdownProps) {
         if (event?.defaultPrevented) return;
 
         if (!isInline) {
-          setIsOpen((prev) => !prev);
+          setOpen((prev) => !prev);
         }
       },
     });
-  }, [children, isInline, getComboboxProps]);
+  }, [children, getComboboxProps, isInline, setOpen]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -367,9 +437,7 @@ export default function Dropdown(props: DropdownProps) {
     const childWithRef = children as ReactElement<any> & {
       ref?: Ref<HTMLElement>;
     };
-    const composedRef = composeRefs<HTMLElement>([
-      childWithRef.ref,
-    ]);
+    const composedRef = composeRefs<HTMLElement>([childWithRef.ref]);
 
     return cloneElement(childWithRef, {
       ref: composedRef,
@@ -381,131 +449,137 @@ export default function Dropdown(props: DropdownProps) {
         const nextFocusTarget = event?.relatedTarget as HTMLElement | null;
         const container = containerRef.current;
 
-        if (container && nextFocusTarget && container.contains(nextFocusTarget)) {
+        if (
+          container &&
+          nextFocusTarget &&
+          container.contains(nextFocusTarget)
+        ) {
           return;
         }
 
-        setIsOpen(false);
+        setOpen(false);
       },
       onClick: (event: any) => {
         childWithRef.props?.onClick?.(event);
         if (event?.defaultPrevented) return;
 
-        setIsOpen(true);
+        setOpen(true);
       },
       onFocus: (event: any) => {
         childWithRef.props?.onFocus?.(event);
         if (event?.defaultPrevented) return;
 
-        setIsOpen(true);
+        setOpen(true);
       },
     });
-  }, [children, isInline, isOpen, getComboboxProps]);
+  }, [children, getComboboxProps, isInline, setOpen]);
 
-  useDocumentEvents(
-    () => {
-      if (!isOpen) {
+  useDocumentEvents(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleClickAway = (event: MouseEvent | TouchEvent) => {
+      const target = event.target as HTMLElement | null;
+      const anchor = anchorRef.current;
+      const popper = popperRef.current;
+      const container = containerRef.current;
+
+      if (!target) return;
+
+      if (isInline) {
+        if (container && !container.contains(target)) {
+          setOpen(false);
+        }
         return;
       }
 
-      const handleClickAway = (event: MouseEvent | TouchEvent) => {
-        const target = event.target as HTMLElement | null;
-        const anchor = anchorRef.current;
-        const popper = popperRef.current;
-        const container = containerRef.current;
+      if (
+        anchor &&
+        popper &&
+        !anchor.contains(target) &&
+        !popper.contains(target)
+      ) {
+        setOpen(false);
+      }
+    };
 
-        if (!target) return;
-
-        if (isInline) {
-          if (container && !container.contains(target)) {
-            setIsOpen(false);
-          }
-          return;
-        }
-
-        if (anchor && popper && !anchor.contains(target) && !popper.contains(target)) {
-          setIsOpen(false);
-        }
-      };
-
-      return {
-        click: handleClickAway,
-        touchend: handleClickAway,
-      };
-    },
-    [isInline, isOpen],
-  );
+    return {
+      click: handleClickAway,
+      touchend: handleClickAway,
+    };
+  }, [isInline, isOpen, setOpen]);
 
   return (
     <div
       id={id}
       ref={containerRef}
-      className={
-        cx(
-          dropdownClasses.root,
-          dropdownClasses.inputPosition(inputPosition)
-        )
-      }
+      className={cx(
+        dropdownClasses.root,
+        dropdownClasses.inputPosition(inputPosition),
+      )}
     >
-      {
-        isInline && (
+      {isInline && (
+        <TransitionGroup component={null}>
+          {!isOpen && inlineTriggerElement && (
+            <Translate
+              {...translateProps}
+              from={translateFrom}
+              key="inline-trigger"
+              in
+            >
+              <div>{inlineTriggerElement}</div>
+            </Translate>
+          )}
+          {isOpen && (
+            <Translate
+              {...translateProps}
+              from={translateFrom}
+              key="inline-list"
+              in
+            >
+              <div>
+                <DropdownItem
+                  {...baseDropdownItemProps}
+                  headerContent={inlineTriggerElement}
+                />
+              </div>
+            </Translate>
+          )}
+        </TransitionGroup>
+      )}
+      {!isInline && (
+        <Popper
+          ref={popperRef}
+          anchor={anchorRef}
+          open={isOpen}
+          disablePortal
+          options={{
+            placement: popoverPlacement,
+            middleware: [
+              offsetMiddleware,
+              ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
+            ],
+          }}
+          style={zIndex ? { zIndex } : undefined}
+        >
           <TransitionGroup component={null}>
-            {
-              !isOpen && inlineTriggerElement && (
-                <Translate {...translateProps} from={translateFrom} key="inline-trigger" in>
-                  <div>{inlineTriggerElement}</div>
-                </Translate>
-              )
-            }
-            {
-              isOpen && (
-                <Translate {...translateProps} from={translateFrom} key="inline-list" in>
-                  <div>
-                    <DropdownItem
-                      {...baseDropdownItemProps}
-                      headerContent={inlineTriggerElement}
-                    />
-                  </div>
-                </Translate>
-              )
-            }
+            {isOpen && (
+              <Translate
+                {...translateProps}
+                from={translateFrom}
+                key="popper-list"
+                in
+              >
+                <div>
+                  <DropdownItem {...baseDropdownItemProps} />
+                </div>
+              </Translate>
+            )}
           </TransitionGroup>
-        )
-      }
-      {
-        !isInline && (
-          <Popper
-            ref={popperRef}
-            anchor={anchorRef}
-            open={isOpen}
-            disablePortal
-            options={{
-              placement: popoverPlacement,
-              middleware: [
-                offsetMiddleware,
-                ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
-              ],
-            }}
-          >
-            <TransitionGroup component={null}>
-              {
-                isOpen && (
-                  <Translate {...translateProps} from={translateFrom} key="popper-list" in>
-                    <div>
-                      <DropdownItem
-                        {...baseDropdownItemProps}
-                      />
-                    </div>
-                  </Translate>
-                )
-              }
-            </TransitionGroup>
-          </Popper>
-        )
-      }
-      {
-        !isInline && triggerElement
-      }
+        </Popper>
+      )}
+      {!isInline && triggerElement}
     </div>
   );
 }

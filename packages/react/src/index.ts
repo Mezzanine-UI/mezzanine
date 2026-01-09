@@ -1,11 +1,13 @@
 export * from './utils/array-move';
 export * from './utils/composeRefs';
 export * from './utils/cx';
+export * from './utils/format-number-with-commas';
 export * from './utils/general';
 export * from './utils/get-css-variable-value';
 export * from './utils/get-scrollbar-width';
 export * from './utils/getElement';
 export * from './utils/jsx-types';
+export * from './utils/parse-number-with-commas';
 
 export * from './hooks/useClickAway';
 export * from './hooks/useComposeRefs';
@@ -127,6 +129,18 @@ export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
 export { default as Card, CardActions } from './Card';
 export type { CardActionsProps, CardProps } from './Card';
+export {
+  Description,
+  DescriptionTitle,
+  DescriptionContent,
+  DescriptionGroup,
+} from './Description';
+export type {
+  DescriptionProps,
+  DescriptionTitleProps,
+  DescriptionContentProps,
+  DescriptionGroupProps,
+} from './Description';
 export { default as Empty } from './Empty';
 export type { EmptyProps } from './Empty';
 export { OverflowCounterTag } from './OverflowTooltip';
@@ -147,30 +161,65 @@ export type {
 } from './Pagination';
 export {
   default as Table,
+  getCellAlignClass,
+  getRowKey,
   TableContext,
   TableDataContext,
+  TableSuperContext,
   useTableContext,
   useTableDataContext,
-  /** @NOTE Table hooks only for internal usage  */
-  // useTableSorting,
-  // useTableSelection,
-  // useTableColumns,
-  // useTableExpansion,
-  // useTableScroll,
-  // useTableVirtualization,
+  useTableSuperContext,
   useTableRowSelection,
+  useTableDataSource,
 } from './Table';
-export type {
-  TableProps,
-  TableContextValue,
-  TableDataContextValue,
-  TableSortingState,
-  TableSelectionState,
-  TableExpansionState,
-  TableColumnState,
-  TableDraggableState,
-  TableSize,
-  UseTableRowSelectionProps,
+export {
+  type TableRecord,
+  type TableDataSourceWithKey,
+  type TableDataSourceWithId,
+  type TableDataSource,
+  type SortOrder,
+  type ColumnAlign,
+  type HighlightMode,
+  type FixedType,
+  type TableSize,
+  type TableColumnTitleMenu,
+  type TableColumnBase,
+  type TableColumnBaseWithMinWidthRequired,
+  type TableColumn,
+  type TableColumnWithMinWidth,
+  type TableColumnWithDataIndex,
+  type TableColumnWithDataIndexAndMinWidth,
+  type TableColumnWithRender,
+  type TableColumnWithRenderAndMinWidth,
+  type TableSelectionMode,
+  type TableBulkGeneralAction,
+  type TableBulkOverflowAction,
+  type TableBulkActions,
+  type TableRowSelectionBase,
+  type TableRowSelectionCheckbox,
+  type TableRowSelectionRadio,
+  type TableRowSelection,
+  type TableScroll,
+  type TableDraggable,
+  type TableExpandable,
+  type TableBaseProps,
+  type TableVirtualizedProps,
+  type TableNonVirtualizedProps,
+  type TableProps,
+  type TableResizedColumnState,
+  type TableContextValue,
+  type TableDataContextValue,
+  type TableDraggableState,
+  type TableExpansionState,
+  type TableSelectionState,
+  type TableSortingState,
+  type UpdateDataSourceOptions,
+  type UseTableDataSourceOptions,
+  type TableTransitionState,
+  type TableActionItem,
+  type TableActions,
+  type TableActionsBase,
+  type TableActionsWithMinWidth,
 } from './Table';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';

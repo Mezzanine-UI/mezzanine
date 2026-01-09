@@ -8,12 +8,25 @@ import Table, {
 import type {
   SortOrder,
   TableColumn,
+  TableColumnWithMinWidth,
   TableDataSourceWithKey,
 } from '@mezzanine-ui/core/table';
+import {
+  CopyIcon,
+  DotHorizontalIcon,
+  DownloadIcon,
+  EditIcon,
+  FolderMoveIcon,
+  TrashIcon,
+  UserIcon,
+} from '@mezzanine-ui/icons';
 import Tag from '../Tag';
 import Button from '../Button';
 import Toggle from '../Toggle';
 import Input from '../Input';
+import Icon from '../Icon';
+import Slider from '../Slider';
+import { Description, DescriptionGroup } from '../Description';
 
 interface DataType extends TableDataSourceWithKey {
   age: number;
@@ -29,12 +42,15 @@ const baseColumns: TableColumn<DataType>[] = [
     key: 'name',
     title: 'Name',
     width: 150,
+    minWidth: 150,
   },
   {
     dataIndex: 'age',
     key: 'age',
     title: 'Age',
+    align: 'center',
     width: 100,
+    minWidth: 100,
   },
   {
     dataIndex: 'address',
@@ -210,6 +226,22 @@ export const RowHeightPreset: Story = {
   },
 };
 
+export const DataStateRepresentation: Story = {
+  render: function DataStateRepresentationStory() {
+    return (
+      <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '16px' }}>
+        <span>{`separatorAtRowIndexes: [3, 6], zebraStriping: true`}</span>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          separatorAtRowIndexes={[3, 6]}
+          zebraStriping
+        />
+      </div>
+    );
+  },
+};
+
 export const CreateDeleteTransition: Story = {
   render: function CreateDeleteTransitionStory() {
     const [newName, setNewName] = useState('');
@@ -352,22 +384,6 @@ export const CreateDeleteTransition: Story = {
         key: 'address',
         title: 'Address',
       },
-      {
-        align: 'center',
-        dataIndex: 'key',
-        key: 'action',
-        render: (record) => (
-          <Button
-            onClick={() => handleDeleteMutation(String(record.key))}
-            size="minor"
-            variant="destructive-text-link"
-          >
-            Delete
-          </Button>
-        ),
-        title: 'Action',
-        width: 120,
-      },
     ];
 
     return (
@@ -383,6 +399,10 @@ export const CreateDeleteTransition: Story = {
           <h4 style={{ margin: '0 0 8px 0' }}>
             GraphQL Pattern: mutation → refetch → updateDataSource
           </h4>
+          <p>
+            {`Please use "useTableDataSource" to manage data source with
+            create/delete`}
+          </p>
           <p style={{ color: '#666', fontSize: 14, margin: 0 }}>
             API returns <code>{`{ total: number, items: T[] }`}</code> format.
             Pagination uses offset + limit. New items are prepended.
@@ -423,6 +443,17 @@ export const CreateDeleteTransition: Story = {
         </div>
 
         <Table<DataType>
+          actions={{
+            render: (record) => [
+              {
+                name: 'Delete',
+                onClick: () => handleDeleteMutation(String(record.key)),
+              },
+            ],
+            title: 'Action',
+            variant: 'destructive-text-link',
+            width: 120,
+          }}
           columns={transitionColumns}
           dataSource={dataSource}
           transitionState={transitionState}
@@ -519,9 +550,6 @@ export const WithSorting: Story = {
 
 export const WithRowSelection: Story = {
   render: function WithRowSelectionStory() {
-    const [selectedSimpleExampleRowKeys, setSelectedSimpleExampleRowKeys] =
-      useState<(string | number)[]>([]);
-
     // full example
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -543,44 +571,25 @@ export const WithRowSelection: Story = {
       );
     }, [currentPage, itemsPerPage, originData]);
 
-    const [selectedRowKeys, setSelectedRowKeys] = useState<(string | number)[]>(
-      [],
-    );
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
     const [hideSelectAll, toggleHideSelectAll] = useState(false);
     const [preserveSelectedRowKeys, togglePreserveSelectedRowKeys] =
       useState(false);
+
+    // Radio selection example
+    const [selectedRadioKey, setSelectedRadioKey] = useState<string>();
 
     return (
       <div>
         <div
           style={{
-            marginBottom: 16,
+            margin: '0 0 16px',
             display: 'flex',
             flexFlow: 'column',
             gap: '4px',
           }}
         >
-          <span>Simple Example</span>
-          <span>- Selected: [{selectedSimpleExampleRowKeys.join(', ')}]</span>
-        </div>
-        <Table<DataType>
-          columns={baseColumns}
-          dataSource={baseData}
-          rowSelection={{
-            onChange: (keys) => setSelectedSimpleExampleRowKeys(keys),
-            selectedRowKeys: selectedSimpleExampleRowKeys,
-            isCheckboxDisabled: (record) => record.age > 40,
-          }}
-        />
-        <div
-          style={{
-            marginBottom: 16,
-            display: 'flex',
-            flexFlow: 'column',
-            gap: '4px',
-          }}
-        >
-          <span>Full Example</span>
+          <span>Mode: checkbox</span>
           <span>- Selected: [{selectedRowKeys.join(', ')}]</span>
           <Toggle
             checked={hideSelectAll}
@@ -597,22 +606,12 @@ export const WithRowSelection: Story = {
           columns={baseColumns}
           dataSource={paginationData}
           rowSelection={{
+            mode: 'checkbox',
             hideSelectAll,
             preserveSelectedRowKeys,
             onChange: (keys) => setSelectedRowKeys(keys),
-            // onSelectAll: (type) => {
-            //   if (type === 'all') {
-            //     setSelectedRowKeys(
-            //       originData
-            //         .filter((item) => !item.disabled)
-            //         .map((item) => item.key),
-            //     );
-            //   } else {
-            //     setSelectedRowKeys([]);
-            //   }
-            // },
             selectedRowKeys,
-            isCheckboxDisabled: (record) =>
+            isSelectionDisabled: (record) =>
               (record as (typeof paginationData)[number]).disabled,
           }}
           pagination={{
@@ -631,6 +630,142 @@ export const WithRowSelection: Story = {
             buttonText: '確定',
           }}
         />
+        <div
+          style={{
+            margin: '32px 0 16px',
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '4px',
+          }}
+        >
+          <span>Mode: radio</span>
+          <span>- Selected: {selectedRadioKey}</span>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          rowSelection={{
+            mode: 'radio',
+            onChange: (key) => setSelectedRadioKey(key),
+            selectedRowKey: selectedRadioKey,
+            isSelectionDisabled: (record) => record.age > 40,
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+export const WithBulkActions: Story = {
+  render: function WithBulkActionsStory() {
+    // full example
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+
+    const originData = useMemo(() => {
+      return Array.from({ length: 100 }, (_, i) => ({
+        address: `Address ${i + 1}`,
+        age: 20 + (i % 50),
+        key: `${i + 1}`,
+        name: `User ${i + 1}`,
+        disabled: i % 4 === 0,
+      }));
+    }, []);
+
+    const paginationData = useMemo(() => {
+      return originData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      );
+    }, [currentPage, itemsPerPage, originData]);
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+
+    return (
+      <div>
+        <div style={{ width: '100%', height: '100px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
+        <div
+          style={{
+            margin: '0 0 16px',
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '4px',
+          }}
+        >
+          <span>Mode: checkbox + bulkActions</span>
+          <span>- Selected: [{selectedRowKeys.join(', ')}]</span>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={paginationData}
+          rowSelection={{
+            mode: 'checkbox',
+            bulkActions: {
+              mainActions: [
+                {
+                  icon: FolderMoveIcon,
+                  label: 'Move',
+                  onClick: () => {},
+                },
+                {
+                  icon: CopyIcon,
+                  label: 'Copy',
+                  onClick: () => {},
+                },
+                {
+                  icon: DownloadIcon,
+                  label: 'Download',
+                  onClick: () => {},
+                },
+              ],
+              destructiveAction: {
+                icon: TrashIcon,
+                label: 'Delete',
+                onClick: () => {},
+              },
+              overflowAction: {
+                icon: DotHorizontalIcon,
+                label: 'More',
+                onSelect: (option, keys) => {
+                  // eslint-disable-next-line no-console
+                  console.log('Overflow action:', option, keys);
+                },
+                options: [
+                  { id: 'opt1', name: 'Option 1' },
+                  { id: 'opt2', name: 'Option 2' },
+                  { id: 'opt3', name: 'Option 3' },
+                ],
+                placement: 'top',
+              },
+              renderSelectionSummary: (count: number) =>
+                `已選擇 ${count} 筆資料`,
+            },
+            onChange: (keys) => setSelectedRowKeys(keys),
+            selectedRowKeys,
+            isSelectionDisabled: (record) =>
+              (record as (typeof paginationData)[number]).disabled,
+          }}
+          pagination={{
+            current: currentPage,
+            onChange: (page) => setCurrentPage(page),
+            total: 100,
+            showPageSizeOptions: true,
+            pageSizeLabel: '每頁顯示：',
+            pageSize: itemsPerPage,
+            renderResultSummary: (from, to, total) => {
+              return `${from}-${to} 筆，共 ${total} 筆`;
+            },
+            showJumper: true,
+            inputPlaceholder: '頁碼',
+            hintText: '前往',
+            buttonText: '確定',
+          }}
+        />
+        <div style={{ width: '100%', height: '600px' }}>
+          (Extra spaces for demo fixed bulk actions)
+        </div>
       </div>
     );
   },
@@ -678,6 +813,38 @@ export const WithExpansion: Story = {
   render: function WithExpansionStory() {
     return (
       <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '12px' }}>
+        <span>Expansion with description</span>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          expandable={{
+            expandedRowRender: () => (
+              <div style={{ padding: '6px 12px' }}>
+                <DescriptionGroup>
+                  <Description
+                    titleProps={{
+                      children: 'Date Created At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 03 Aug 2021 14:22:18 GMT',
+                    }}
+                  />
+                  <Description
+                    titleProps={{
+                      children: 'Data Updated At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 05 Aug 2025 11:22:18 GMT',
+                    }}
+                  />
+                </DescriptionGroup>
+              </div>
+            ),
+            rowExpandable: (record) => !!record.subData?.length,
+          }}
+        />
         <span>Expansion with sub table</span>
         <Table<DataType>
           columns={baseColumns}
@@ -739,18 +906,6 @@ export const WithFixedColumns: Story = {
         title: 'Address 3',
         width: 250,
       },
-      {
-        dataIndex: 'action',
-        key: 'action',
-        fixed: 'end',
-        render: () => (
-          <Button size="minor" variant="base-text-link">
-            Edit
-          </Button>
-        ),
-        title: 'Action',
-        width: 100,
-      },
     ];
 
     return (
@@ -766,9 +921,21 @@ export const WithFixedColumns: Story = {
         <span>{`Fixed Columns: "Name (start)", "Fixed Age (start)", "Fixed Address (end)", "Action (end)"`}</span>
         <div style={{ width: '100%' }}>
           <Table<DataType>
+            actions={{
+              fixed: 'end',
+              render: () => [
+                {
+                  name: 'Edit',
+                  onClick: () => {},
+                },
+              ],
+              title: 'Action',
+              variant: 'base-text-link',
+              width: 100,
+            }}
             columns={fixedColumns}
             dataSource={baseData}
-            scroll={{ x: 800 }}
+            fullWidth
           />
         </div>
       </div>
@@ -778,7 +945,7 @@ export const WithFixedColumns: Story = {
 
 export const WithResizableColumns: Story = {
   render: () => {
-    const resizableColumns: TableColumn<DataType>[] = [
+    const resizableColumns = [
       {
         dataIndex: 'name',
         key: 'name',
@@ -797,6 +964,7 @@ export const WithResizableColumns: Story = {
         key: 'tags',
         title: 'Tags',
         width: 200,
+        minWidth: 140,
       },
       {
         dataIndex: 'address',
@@ -818,7 +986,7 @@ export const WithResizableColumns: Story = {
         <span style={{ whiteSpace: 'pre-line' }}>
           {`Column 1: minWidth: 120, maxWidth: 220;
           Column 2: minWidth: 80;
-          Column 3: width 200;
+          Column 3: width 200 minWidth: 140;
           Column 4: minWidth: 220;`}
         </span>
         <Table<DataType>
@@ -835,18 +1003,26 @@ export const WithCustomRender: Story = {
   render: () => {
     const customColumns: TableColumn<DataType>[] = [
       {
-        dataIndex: 'name',
         key: 'name',
         title: 'Name',
+        render: (record) => (
+          <div
+            style={{
+              display: 'flex',
+              flexFlow: 'row',
+              alignItems: 'center',
+              gap: 4,
+            }}
+          >
+            <Icon icon={UserIcon} size={24} />
+            <span>{record.name}</span>
+          </div>
+        ),
         width: 150,
       },
       {
         key: 'age',
-        render: (record) => (
-          <span style={{ color: record.age > 35 ? 'red' : 'green' }}>
-            {record.age}
-          </span>
-        ),
+        dataIndex: 'age',
         title: 'Age',
         width: 100,
       },
@@ -878,9 +1054,32 @@ export const WithCustomRender: Story = {
 };
 
 export const Loading: Story = {
-  render: () => (
-    <Table<DataType> columns={baseColumns} dataSource={[]} loading />
-  ),
+  render: function LoadingStory() {
+    const [loadingRowsCount, setLoadingRowsCount] = useState(10);
+
+    return (
+      <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '36px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <span>props.loadingRowsCount: </span>
+          <div style={{ width: '260px' }}>
+            <Slider
+              value={loadingRowsCount}
+              min={1}
+              max={10}
+              step={1}
+              onChange={setLoadingRowsCount}
+            />
+          </div>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={[]}
+          loading
+          loadingRowsCount={loadingRowsCount}
+        />
+      </div>
+    );
+  },
 };
 
 export const EmptyState: Story = {
@@ -889,8 +1088,10 @@ export const EmptyState: Story = {
       columns={baseColumns}
       dataSource={[]}
       emptyProps={{
+        height: 444,
         type: 'result',
         title: 'No data available',
+        description: 'There is no data to display in the table.',
       }}
     />
   ),
@@ -911,7 +1112,7 @@ export const VirtualScrolling: Story = {
       <Table<DataType>
         columns={baseColumns}
         dataSource={largeDataList}
-        scroll={{ virtualized: true, y: 400 }}
+        scroll={{ virtualized: true, y: 420 }}
       />
     );
   },
@@ -919,51 +1120,20 @@ export const VirtualScrolling: Story = {
 
 export const DraggableRows: Story = {
   render: function DraggableRowsStory() {
-    const [data, setData] = useState<DataType[]>([
-      {
-        address: 'New York No. 1 Lake Park',
-        age: 32,
-        key: '1',
-        name: 'John Brown',
-      },
-      {
-        address: 'London No. 1 Lake Park',
-        age: 42,
-        key: '2',
-        name: 'Jim Green',
-      },
-      {
-        address: 'Sydney No. 1 Lake Park',
-        age: 32,
-        key: '3',
-        name: 'Joe Black',
-      },
-      {
-        address: 'Tokyo No. 1 Lake Park',
-        age: 28,
-        key: '4',
-        name: 'Jane Doe',
-      },
-      {
-        address: 'Paris No. 1 Lake Park',
-        age: 35,
-        key: '5',
-        name: 'Jack Smith',
-      },
-    ]);
+    const [data, setData] = useState<DataType[]>(baseData);
 
     return (
       <div>
-        <p style={{ marginBottom: 16 }}>
-          Drag rows to reorder them. Current order:{' '}
-          {data.map((d) => d.name).join(' → ')}
-        </p>
+        <p style={{ margin: '0 0 16px' }}>Drag rows to reorder them</p>
         <Table<DataType>
           columns={baseColumns}
           dataSource={data}
           draggable={{
             enabled: true,
             onDragEnd: (newData) => setData(newData),
+          }}
+          scroll={{
+            y: 300,
           }}
         />
       </div>
@@ -1019,7 +1189,12 @@ export const Combined: Story = {
       getSubData: (record) => record.subData,
     });
 
-    const [data, setData] = useState<DataType[]>(baseData);
+    const { dataSource, transitionState, updateDataSource } =
+      useTableDataSource<DataType>({
+        initialData: baseData,
+        highlightDuration: 1000,
+        fadeOutDuration: 200,
+      });
 
     const [sortOrder, setSortOrder] = useState<{
       key: string;
@@ -1029,14 +1204,21 @@ export const Combined: Story = {
       sortOrder: 'ascend',
     });
 
-    const combinedColumns: TableColumn<DataType>[] = [
+    const combinedColumns: TableColumnWithMinWidth<DataType>[] = [
       {
         dataIndex: 'name',
         fixed: 'start',
         key: 'name',
         title: 'Name',
         titleHelp: 'This is the name column',
-        titleMenu: 'Menu',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+            { id: 'opt3', name: 'Option 3' },
+          ],
+          onSelect: () => {},
+        },
         width: 150,
         minWidth: 100,
         maxWidth: 300,
@@ -1048,20 +1230,27 @@ export const Combined: Story = {
         onSort: (key, order) => {
           setSortOrder({ key, sortOrder: order });
           if (order) {
-            const sorted = [...data].sort((a, b) => {
+            const sorted = [...dataSource].sort((a, b) => {
               if (order === 'ascend') {
                 return a.age - b.age;
               }
               return b.age - a.age;
             });
-            setData(sorted);
+            updateDataSource(sorted);
           } else {
-            setData(baseData);
+            updateDataSource(baseData);
           }
         },
         title: 'Age',
+        titleMenu: {
+          options: [
+            { id: 'opt1', name: 'Option 1' },
+            { id: 'opt2', name: 'Option 2' },
+          ],
+          onSelect: () => {},
+        },
         width: 100,
-        minWidth: 60,
+        minWidth: 90,
         maxWidth: 200,
       },
       {
@@ -1077,11 +1266,10 @@ export const Combined: Story = {
         key: 'address2',
         title: 'Address',
         width: 600,
-        minWidth: 500,
+        minWidth: 400,
         maxWidth: 800,
       },
       {
-        dataIndex: 'tags',
         key: 'tags',
         render: (record) => {
           return (
@@ -1094,30 +1282,48 @@ export const Combined: Story = {
         },
         title: 'Tags',
         width: 200,
-        minWidth: 100,
+        minWidth: 120,
         maxWidth: 300,
       },
-      {
-        align: 'end',
-        dataIndex: 'key',
-        fixed: 'end',
-        key: 'action',
-        render: () => (
-          <div style={{ display: 'flex', gap: 4 }}>
-            <Button size="minor" variant="base-text-link">
-              Edit
-            </Button>
-            <Button size="minor" variant="destructive-text-link">
-              Delete
-            </Button>
-          </div>
-        ),
-        title: 'Action',
-        width: 150,
-        minWidth: 150,
-        maxWidth: 150,
-      },
     ];
+
+    const handleDelete = useCallback(
+      (record: DataType) => {
+        const isFirstLayer = dataSource.some((item) => item.key === record.key);
+
+        if (isFirstLayer) {
+          updateDataSource(
+            dataSource.filter((item) => item.key !== record.key),
+            { removedKeys: [record.key] },
+          );
+        } else {
+          const target = dataSource.find((item) =>
+            item.subData?.some((sub) => sub.key === record.key),
+          );
+
+          if (target && target.subData) {
+            const newSubData = target.subData.filter(
+              (sub) => sub.key !== record.key,
+            );
+
+            const newDataSource = dataSource.map((item) => {
+              if (item.key === target.key) {
+                return {
+                  ...item,
+                  subData: newSubData,
+                };
+              }
+              return item;
+            });
+
+            updateDataSource(newDataSource, {
+              removedKeys: [record.key],
+            });
+          }
+        }
+      },
+      [dataSource, updateDataSource],
+    );
 
     return (
       <div style={{ width: '100%' }}>
@@ -1125,14 +1331,65 @@ export const Combined: Story = {
           <span>Selected: {totalSelectionCount} items</span>
         </div>
         <Table<DataType>
+          actions={{
+            fixed: 'end',
+            render: (record) => [
+              {
+                name: 'Edit',
+                icon: {
+                  position: 'leading',
+                  src: EditIcon,
+                },
+                onClick: () => {},
+              },
+              {
+                name: 'Delete',
+                icon: {
+                  position: 'leading',
+                  src: TrashIcon,
+                },
+                variant: 'destructive-primary',
+                onClick: () => handleDelete(record),
+              },
+            ],
+            variant: 'base-primary',
+            width: 180,
+            minWidth: 180,
+          }}
           columns={combinedColumns}
-          dataSource={data}
+          dataSource={dataSource}
           expandable={{
             expandedRowRender: (record) => (
               <Table<DataType>
+                actions={{
+                  fixed: 'end',
+                  render: (subRecord) => [
+                    {
+                      name: 'Edit',
+                      icon: {
+                        position: 'leading',
+                        src: EditIcon,
+                      },
+                      onClick: () => {},
+                    },
+                    {
+                      name: 'Delete',
+                      icon: {
+                        position: 'leading',
+                        src: TrashIcon,
+                      },
+                      variant: 'destructive-primary',
+                      onClick: () => handleDelete(subRecord),
+                    },
+                  ],
+                  variant: 'base-primary',
+                  width: 180,
+                  minWidth: 180,
+                }}
                 columns={combinedColumns}
                 dataSource={record.subData || []}
                 rowSelection={{
+                  mode: 'checkbox',
                   onChange: getChildOnChange(record),
                   selectedRowKeys: getChildSelectedRowKeys(record),
                   fixed: true,
@@ -1142,20 +1399,44 @@ export const Combined: Story = {
             rowExpandable: (record) => !!record.subData?.length,
             // fixed: true,
           }}
+          fullWidth
           resizable
           rowSelection={{
+            mode: 'checkbox',
+            bulkActions: {
+              mainActions: [
+                {
+                  icon: CopyIcon,
+                  label: 'Copy',
+                  onClick: () => {},
+                },
+                {
+                  icon: DownloadIcon,
+                  label: 'Download',
+                  onClick: () => {},
+                },
+              ],
+              destructiveAction: {
+                icon: TrashIcon,
+                label: 'Delete',
+                onClick: () => {},
+              },
+              renderSelectionSummary: () =>
+                `${totalSelectionCount} items selected`,
+            },
             onChange: parentOnChange,
             selectedRowKeys: parentSelectedKeys,
             getCheckboxProps: parentGetCheckboxProps,
             fixed: true,
           }}
-          scroll={{ x: 1000, y: 300, virtualized: true }}
+          scroll={{ y: 300 }}
           highlight="cross"
-          // draggable={{
-          //   enabled: true,
-          //   onDragEnd: (newData) => setData(newData),
-          //   // fixed: true,
-          // }}
+          draggable={{
+            enabled: true,
+            onDragEnd: (newData) => updateDataSource(newData),
+            // fixed: true,
+          }}
+          transitionState={transitionState}
         />
       </div>
     );

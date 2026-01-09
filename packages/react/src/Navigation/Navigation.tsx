@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Children,
   cloneElement,
@@ -32,7 +34,7 @@ export type NavigationChild =
     >
   | null
   | JSX.Element[];
-export type NavigationChildren = NavigationChild[];
+export type NavigationChildren = NavigationChild | NavigationChild[];
 
 export interface NavigationProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'ul'>, 'onClick'> {
@@ -45,6 +47,15 @@ export interface NavigationProps
    */
   children?: NavigationChildren;
   /**
+   * Navigation display type.
+   * @default false (expanded)
+   */
+  collapsed?: boolean;
+  /**
+   * Called when collapsed state changes.
+   */
+  onCollapseChange?: (collapsed: boolean) => void;
+  /**
    * Called when a navigation option is clicked.
    */
   onOptionClick?: (activePath?: string[]) => void;
@@ -55,9 +66,21 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     activatedPath,
     children = [],
     className,
+    collapsed: collapsedProp,
     onOptionClick,
+    onCollapseChange,
     ...rest
   } = props;
+  const [collapsedState, setCollapsedState] = useState(collapsedProp || false);
+  const collapsed = collapsedProp ?? collapsedState;
+  const handleCollapseChange = useCallback(
+    (newCollapsed: boolean) => {
+      setCollapsedState(newCollapsed);
+      onCollapseChange?.(newCollapsed);
+    },
+    [onCollapseChange],
+  );
+
   const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
   const combineSetActivatedPath = useCallback(
     (newActivatedPath: string[]) => {
@@ -94,6 +117,10 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
             searchInput = cloneElement(child as ReactElement<InputProps>, {
               size: 'sub',
               variant: 'search',
+              className: cx(
+                classes.searchInput,
+                (child as ReactElement<InputProps>).props.className,
+              ),
             });
             break;
           }
@@ -117,7 +144,15 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               return child;
             }
 
+            case NavigationHeader:
+            case NavigationFooter:
+              // already handled in headerComponent and footerComponent
+              return null;
+
             default:
+              console.warn(
+                '[Mezzanine][Navigation]: Navigation only accepts NavigationOption, NavigationOptionCategory, NavigationHeader or NavigationFooter as children.',
+              );
               return null;
           }
         }
@@ -133,16 +168,22 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     <nav
       {...rest}
       ref={ref}
-      className={cx(classes.host, classes.vertical, className)}
+      className={cx(
+        classes.host,
+        collapsed ? classes.collapsed : classes.expand,
+        className,
+      )}
     >
-      {headerComponent}
       <NavigationActivatedContext.Provider
         value={{
           activatedPath: activatedPath || innerActivatedPath,
           setActivatedPath: combineSetActivatedPath,
           currentPathname,
+          collapsed,
+          handleCollapseChange,
         }}
       >
+        {headerComponent}
         <NavigationOptionLevelContext.Provider
           value={navigationOptionLevelContextDefaultValues}
         >
@@ -151,8 +192,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
             <ul>{renderItemChildren(flattenedChildren)}</ul>
           </div>
         </NavigationOptionLevelContext.Provider>
+        {footerComponent}
       </NavigationActivatedContext.Provider>
-      {footerComponent}
     </nav>
   );
 });

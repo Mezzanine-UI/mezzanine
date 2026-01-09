@@ -4,26 +4,19 @@ import { forwardRef, Fragment, memo, useMemo } from 'react';
 import { getRowKey, tableClasses as classes } from '@mezzanine-ui/core/table';
 import { Draggable } from '@hello-pangea/dnd';
 import { cx } from '../../utils/cx';
-import { useTableContext } from '../TableContext';
+import { useTableContext, useTableDataContext } from '../TableContext';
 import { TableRow } from './TableRow';
 import { TableExpandedRow } from './TableExpandedRow';
 import { useTableVirtualization } from '../hooks/useTableVirtualization';
 import Empty from '../../Empty';
 import { Fade } from '../../Transition';
-import { composeRefs } from '../../utils/composeRefs';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 
-export interface TableBodyProps {
-  className?: string;
-  droppableRef?: React.Ref<HTMLTableSectionElement>;
-}
+export type TableBodyProps = unknown;
 
 const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  function TableBody(props, ref) {
-    const { className, droppableRef } = props;
-
+  function TableBody(_, ref) {
     const {
-      columns,
       dataSource,
       draggable,
       emptyProps,
@@ -34,19 +27,21 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       size,
       virtualScrollEnabled,
     } = useTableContext();
+    const { columns } = useTableDataContext();
 
-    // Use virtualization with the scroll container ref from parent
+    /** Feature: Empty State */
+    const isEmpty = useMemo(() => !dataSource.length, [dataSource.length]);
+
+    /** Feature: Virtualized Scroll */
     const virtualization = useTableVirtualization({
       dataSource,
-      enabled: virtualScrollEnabled ?? false,
+      enabled: virtualScrollEnabled,
       isRowExpanded: expansion?.isRowExpanded,
       scrollContainerRef:
         scrollContainerRef as React.RefObject<HTMLDivElement | null>,
     });
 
-    const isEmpty = dataSource.length === 0;
-
-    // Calculate total column span for empty row
+    /** Calculate total columns */
     const totalColSpan = useMemo(() => {
       let colSpan = columns.length;
 
@@ -57,7 +52,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       return colSpan;
     }, [columns.length, draggable?.enabled, expansion, selection]);
 
-    // Helper to render expanded content with optional animation
+    /** Feature: Expanded Row render */
     const renderExpandedContent = (
       record: (typeof dataSource)[number],
       isExpanded: boolean,
@@ -81,12 +76,12 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       );
     };
 
-    // Helper to render row and its expanded content
+    /** Main Render */
     const renderRowContent = (
       record: (typeof dataSource)[number],
       index: number,
       options?: {
-        className?: string;
+        isDragging?: boolean;
         draggableProvided?: Parameters<typeof TableRow>[0]['draggableProvided'];
         measureRef?: (node: HTMLElement | null) => void;
       },
@@ -97,26 +92,36 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       return (
         <>
           <TableRow
-            className={options?.className}
+            className={
+              options?.isDragging ? classes.bodyRowDragging : undefined
+            }
             data-index={virtualization ? index : undefined}
             draggableProvided={options?.draggableProvided}
             record={record}
             ref={options?.measureRef}
             rowIndex={index}
           />
+          {/** @NOTE isExpanded 不能透過判斷 isDragging 來強制變 false，因為拖曳開始時，套件會計算好高度，如果開始拖曳後才關閉，高度會計算錯誤 */}
           {renderExpandedContent(record, isExpanded)}
         </>
       );
     };
 
     const renderRows = () => {
-      // Empty state
       if (isEmpty && !loading) {
-        const { size: emptySize = size, ...restEmptyProp } = emptyProps || {};
+        const {
+          size: emptySize = size,
+          height,
+          ...restEmptyProp
+        } = emptyProps || {};
 
         return (
           <tr className={classes.emptyRow}>
-            <td className={classes.empty} colSpan={totalColSpan}>
+            <td
+              className={classes.empty}
+              colSpan={totalColSpan}
+              style={height ? { height } : undefined}
+            >
               <Empty size={emptySize} {...(restEmptyProp as any)} />
             </td>
           </tr>
@@ -152,9 +157,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
               {(provided, snapshot) => (
                 <>
                   {renderRowContent(item.record, item.index, {
-                    className: snapshot.isDragging
-                      ? classes.bodyRowDragging
-                      : undefined,
+                    isDragging: snapshot.isDragging,
                     draggableProvided: provided,
                   })}
                 </>
@@ -202,10 +205,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     };
 
     return (
-      <tbody
-        className={cx(classes.body, className)}
-        ref={droppableRef ? composeRefs([ref, droppableRef]) : ref}
-      >
+      <tbody className={cx(classes.body)} ref={ref}>
         {renderRows()}
       </tbody>
     );

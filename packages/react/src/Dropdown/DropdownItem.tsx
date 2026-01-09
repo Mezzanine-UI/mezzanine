@@ -4,12 +4,12 @@ import keycode from 'keycode';
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
-  dropdownCheckPosition,
+  DropdownCheckPosition,
   dropdownClasses,
   DropdownItemSharedProps,
   DropdownOption,
   DropdownOptionsByType,
-  dropdownType,
+  DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 import { type IconDefinition } from '@mezzanine-ui/icons';
 
@@ -20,7 +20,7 @@ import Typography from '../Typography';
 import DropdownAction, { type DropdownActionProps } from './DropdownAction';
 import DropdownItemCard from './DropdownItemCard';
 
-export interface DropdownItemProps<T extends dropdownType | undefined = dropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
+export interface DropdownItemProps<T extends DropdownType | undefined = DropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
   /**
    * The action configuration for the dropdown.
    */
@@ -74,7 +74,7 @@ export interface DropdownItemProps<T extends dropdownType | undefined = dropdown
    * - 'grouped': array with one level of children (children cannot have children)
    * - 'tree': array with nested children up to 3 levels
    */
-  type?: dropdownType;
+  type?: DropdownType;
 }
 
 /**
@@ -133,7 +133,7 @@ function truncateArrayDepth(
   return truncate(input);
 }
 
-export default function DropdownItem<T extends dropdownType | undefined = dropdownType>(props: DropdownItemProps<T>) {
+export default function DropdownItem<T extends DropdownType | undefined = DropdownType>(props: DropdownItemProps<T>) {
   const {
     activeIndex,
     disabled = false,
@@ -357,7 +357,7 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
       if (hasChildren && level !== 2) {
         prependIcon = isExpanded ? CaretDownIcon : CaretRightIcon;
       }
-      const checkSite: dropdownCheckPosition = option.showCheckbox ? 'prepend' : 'none';
+      const checkSite: DropdownCheckPosition = option.showCheckbox ? 'prepend' : 'none';
 
       const card = (
         <DropdownItemCard
@@ -414,7 +414,7 @@ export default function DropdownItem<T extends dropdownType | undefined = dropdo
         ? value.includes(option.id)
         : value === option.id;
       const isActive = optionIndex === activeIndex;
-      let checkSite: dropdownCheckPosition = 'none';
+      let checkSite: DropdownCheckPosition = 'none';
 
       if (option?.checkSite) {
         checkSite = option.checkSite;

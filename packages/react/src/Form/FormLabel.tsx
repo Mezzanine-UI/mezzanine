@@ -5,19 +5,32 @@ import { formFieldClasses as classes } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { FormControlContext } from './FormControlContext';
+import { IconDefinition } from '@mezzanine-ui/icons';
+import Icon from '../Icon';
+import Tooltip from '../Tooltip';
 
 export interface FormLabelProps
   extends NativeElementPropsWithoutKeyAndRef<'label'> {
-  remark?: ReactNode;
-  remarkIcon?: ReactNode;
+  informationIcon?: IconDefinition;
+  informationText?: string;
+  labelText: string;
+  optionalMarker?: ReactNode;
 }
 
 /**
- * The react component for `mezzanine` form label.
+ * The React component for `mezzanine` form label.
  */
 const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>(
   function FormLabel(props, ref) {
-    const { children, className, htmlFor, remark, remarkIcon, ...rest } = props;
+    const {
+      className,
+      htmlFor,
+      informationIcon,
+      informationText,
+      labelText,
+      optionalMarker,
+      ...rest
+    } = props;
     const { required } = useContext(FormControlContext) || {};
 
     return (
@@ -27,16 +40,27 @@ const FormLabel = forwardRef<HTMLLabelElement, FormLabelProps>(
         className={cx(classes.label, className)}
         htmlFor={htmlFor}
       >
-        <span>
-          {children}
-          {required && <span className={classes.asterisk}>*</span>}
-        </span>
-        {(remark || remarkIcon) && (
-          <span className={classes.remark}>
-            <span>{remark}</span>
-            {remarkIcon}
-          </span>
+        {required && <span className={classes.labelRequiredMarker}>*</span>}
+        {labelText}
+        {optionalMarker && (
+          <span className={classes.labelOptionalMarker}>{optionalMarker}</span>
         )}
+        {informationIcon && (
+          <Tooltip title={informationText}>
+            {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+              <Icon
+                ref={tooltipRef}
+                className={cx(classes.labelInformationIcon)}
+                color="neutral-light"
+                icon={informationIcon}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                size={16}
+              />
+            )}
+          </Tooltip>
+        )}
+        <span className={classes.labelColon}>:</span>
       </label>
     );
   },

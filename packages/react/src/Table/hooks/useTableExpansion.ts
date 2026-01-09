@@ -18,9 +18,9 @@ export function useTableExpansion<T extends TableDataSource>({
   expandable,
   hasDragHandle,
 }: UseTableExpansionOptions<T>): TableExpansionState<T> | undefined {
-  const [internalExpandedKeys, setInternalExpandedKeys] = useState<
-    (string | number)[]
-  >([]);
+  const [internalExpandedKeys, setInternalExpandedKeys] = useState<string[]>(
+    [],
+  );
 
   const {
     expandedRowKeys: expandedRowKeysProp,
@@ -35,14 +35,14 @@ export function useTableExpansion<T extends TableDataSource>({
       : internalExpandedKeys;
 
   const isRowExpanded = useCallback(
-    (key: string | number) => {
+    (key: string) => {
       return expandedRowKeys.includes(key);
     },
     [expandedRowKeys],
   );
 
   const toggleExpand = useCallback(
-    (key: string | number, record: T) => {
+    (key: string, record: T) => {
       const isExpanded = expandedRowKeys.includes(key);
       const newKeys = isExpanded
         ? expandedRowKeys.filter((k) => k !== key)
@@ -60,12 +60,6 @@ export function useTableExpansion<T extends TableDataSource>({
 
   const expansionLeftPadding = useMemo(() => {
     let padding = 0;
-    // Number(
-    //   getCSSVariableValue('--mzn-spacing-padding-horizontal-comfort').replace(
-    //     'rem',
-    //     '',
-    //   ),
-    // ) * 16;
 
     if (hasDragHandle) padding += DRAG_HANDLE_COLUMN_WIDTH;
     if (expandable) padding += EXPANSION_COLUMN_WIDTH;

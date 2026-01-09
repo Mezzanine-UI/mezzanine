@@ -9,7 +9,7 @@ import { useTableContext } from '../TableContext';
 export interface UseTableVirtualizationOptions<T extends TableDataSource> {
   dataSource: T[];
   enabled?: boolean;
-  isRowExpanded?: (key: string | number) => boolean;
+  isRowExpanded?: (key: string) => boolean;
   overscan?: number;
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
 }

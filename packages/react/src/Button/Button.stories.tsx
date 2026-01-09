@@ -22,6 +22,7 @@ const variants: ButtonVariant[] = [
   'destructive-ghost',
   'destructive-text-link',
   'inverse',
+  'inverse-ghost',
 ];
 
 export const Playground: Story = {
@@ -82,6 +83,7 @@ export const Variants: Story = {
 
       <Button variant="destructive-text-link">Destructive Text Link</Button>
       <Button variant="inverse">Inverse</Button>
+      <Button variant="inverse-ghost">Inverse Ghost</Button>
       <Button variant="base-primary" disabled>
         Disabled
       </Button>

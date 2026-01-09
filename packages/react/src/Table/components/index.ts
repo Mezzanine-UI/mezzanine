@@ -1,3 +1,7 @@
+export {
+  TableActionsCell,
+  type TableActionsCellProps,
+} from './TableActionsCell';
 export { TableBody, type TableBodyProps } from './TableBody';
 export { TableCell, type TableCellProps } from './TableCell';
 export { TableColGroup, type TableColGroupProps } from './TableColGroup';

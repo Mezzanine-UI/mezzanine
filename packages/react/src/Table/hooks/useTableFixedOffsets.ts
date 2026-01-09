@@ -55,22 +55,32 @@ const parseFixed = (fixed: FixedType | undefined): 'end' | 'start' | null => {
 };
 
 export function useTableFixedOffsets(
-  options: UseTableFixedOffsetsOptions,
+  props: UseTableFixedOffsetsOptions,
 ): UseTableFixedOffsetsReturn {
-  const { expansionLeftPadding = 0 } = useTableSuperContext();
-  const { actionConfig, columns, getResizedColumnWidth } = options;
+  const {
+    expansionLeftPadding = 0,
+    hasDragHandleFixed: parentHasDragHandleFixed,
+  } = useTableSuperContext();
+  const { actionConfig, columns, getResizedColumnWidth } = props;
 
   // Store measured widths
   const [measuredWidths, setMeasuredWidths] = useState<Map<string, number>>(
     new Map(),
   );
 
-  const { hasDragHandle, hasExpansion, hasSelection } = actionConfig;
+  const {
+    hasDragHandle,
+    hasExpansion,
+    hasSelection,
+    dragHandleFixed,
+    expansionFixed,
+    selectionFixed,
+  } = actionConfig;
 
   useEffect(() => {
     const innerMap = new Map<string, number>();
 
-    if (hasDragHandle) {
+    if (hasDragHandle || parentHasDragHandleFixed) {
       innerMap.set(DRAG_HANDLE_KEY, DRAG_HANDLE_COLUMN_WIDTH);
     }
 
@@ -83,7 +93,7 @@ export function useTableFixedOffsets(
     }
 
     setMeasuredWidths(innerMap);
-  }, [hasDragHandle, hasExpansion, hasSelection]);
+  }, [hasDragHandle, hasExpansion, hasSelection, parentHasDragHandleFixed]);
 
   // Get width for a column (prioritize measured, then computed, then defined, then fallback)
   const getWidth = useCallback(
@@ -119,20 +129,18 @@ export function useTableFixedOffsets(
     const startKeys: string[] = [];
     const endKeys: string[] = [];
 
-    // Action columns first (in order: drag handle, expansion, selection)
-    if (actionConfig.hasDragHandle && actionConfig.dragHandleFixed) {
+    if ((hasDragHandle && dragHandleFixed) || parentHasDragHandleFixed) {
       startKeys.push(DRAG_HANDLE_KEY);
     }
 
-    if (actionConfig.hasExpansion && actionConfig.expansionFixed) {
+    if (hasExpansion && expansionFixed) {
       startKeys.push(EXPANSION_KEY);
     }
 
-    if (actionConfig.hasSelection && actionConfig.selectionFixed) {
+    if (hasSelection && selectionFixed) {
       startKeys.push(SELECTION_KEY);
     }
 
-    // Then data columns
     columns.forEach((column) => {
       const side = parseFixed(column.fixed);
 
@@ -144,14 +152,22 @@ export function useTableFixedOffsets(
     });
 
     return { fixedEndKeys: endKeys, fixedStartKeys: startKeys };
-  }, [actionConfig, columns]);
+  }, [
+    hasDragHandle,
+    dragHandleFixed,
+    hasExpansion,
+    expansionFixed,
+    hasSelection,
+    selectionFixed,
+    columns,
+    parentHasDragHandleFixed,
+  ]);
 
   // Calculate all fixed offsets
   const fixedOffsets = useMemo(() => {
     const startOffsets = new Map<string, FixedOffsetInfo>();
     const endOffsets = new Map<string, FixedOffsetInfo>();
 
-    // Calculate start offsets
     let currentStartOffset = 0;
 
     fixedStartKeys.forEach((key) => {
@@ -162,7 +178,6 @@ export function useTableFixedOffsets(
       currentStartOffset += getWidth(key);
     });
 
-    // Calculate end offsets (from right to left)
     let currentEndOffset = 0;
 
     for (let i = fixedEndKeys.length - 1; i >= 0; i--) {
@@ -178,11 +193,9 @@ export function useTableFixedOffsets(
     return { endOffsets, startOffsets };
   }, [fixedEndKeys, fixedStartKeys, getWidth]);
 
-  // Build ordered list of all columns (for position calculation)
   const allColumnKeys = useMemo(() => {
     const keys: string[] = [];
 
-    // Action columns first
     if (hasDragHandle) {
       keys.push(DRAG_HANDLE_KEY);
     }
@@ -195,7 +208,6 @@ export function useTableFixedOffsets(
       keys.push(SELECTION_KEY);
     }
 
-    // Then data columns
     columns.forEach((column) => {
       keys.push(column.key);
     });
@@ -203,7 +215,6 @@ export function useTableFixedOffsets(
     return keys;
   }, [hasDragHandle, hasSelection, hasExpansion, columns]);
 
-  // Calculate original positions (left edge) for all columns
   const originalPositions = useMemo(() => {
     const positions = new Map<string, number>();
     let currentPosition = 0;
@@ -216,9 +227,6 @@ export function useTableFixedOffsets(
     return positions;
   }, [allColumnKeys, getWidth]);
 
-  /**
-   * Determine if a column should show shadow.
-   */
   const shouldShowShadow = useCallback(
     (key: string, scrollLeft: number, containerWidth: number): boolean => {
       const offsetInfo =

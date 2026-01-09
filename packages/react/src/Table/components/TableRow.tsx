@@ -2,17 +2,27 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
+  TABLE_ACTIONS_KEY,
+  DRAG_HANDLE_COLUMN_WIDTH,
   DRAG_HANDLE_KEY,
+  EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   getRowKey,
+  SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
   tableClasses as classes,
   type FixedType,
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
+import { calculateColumnWidths } from '../utils/calculateColumnWidths';
 import type { DraggableProvided } from '@hello-pangea/dnd';
 import { cx } from '../../utils/cx';
-import { useTableContext, useTableSuperContext } from '../TableContext';
+import {
+  useTableContext,
+  useTableDataContext,
+  useTableSuperContext,
+} from '../TableContext';
+import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
@@ -39,15 +49,25 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const { className, draggableProvided, record, rowIndex, style } = props;
 
     const {
-      columns,
+      actions,
       draggable,
       expansion,
       fixedOffsets,
-      rowHeight,
       highlight,
+      rowHeight,
       selection,
+      separatorAtRowIndexes,
       transitionState,
+      zebraStriping,
     } = useTableContext();
+    const { columns } = useTableDataContext();
+
+    const isDragging = useMemo(
+      () =>
+        (draggableProvided?.draggableProps.style as React.CSSProperties)
+          ?.position === 'fixed',
+      [draggableProvided?.draggableProps.style],
+    );
 
     const resolvedStyle = useMemo(
       () => ({
@@ -58,7 +78,8 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       [style, rowHeight, draggableProvided?.draggableProps.style],
     );
 
-    const { containerWidth, scrollLeft } = useTableSuperContext();
+    const { containerWidth, getResizedColumnWidth, scrollLeft } =
+      useTableSuperContext();
 
     const rowKey = useMemo(() => getRowKey(record), [record]);
     const isSelected =
@@ -73,6 +94,33 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
     const isDeleting = transitionState?.deletingKeys.has(rowKey) ?? false;
     const isFadingOut = transitionState?.fadingOutKeys.has(rowKey) ?? false;
+
+    // Calculate column widths when dragging (since position: fixed breaks colgroup)
+    const draggingColumnWidths = useMemo(() => {
+      if (!isDragging || !containerWidth) return null;
+
+      // Calculate action columns total width
+      let actionColumnsWidth = 0;
+
+      if (draggable?.enabled) actionColumnsWidth += DRAG_HANDLE_COLUMN_WIDTH;
+      if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
+      if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
+
+      return calculateColumnWidths({
+        actionColumnsWidth,
+        columns,
+        containerWidth,
+        getResizedColumnWidth,
+      });
+    }, [
+      isDragging,
+      containerWidth,
+      columns,
+      draggable?.enabled,
+      expansion,
+      getResizedColumnWidth,
+      selection,
+    ]);
 
     // Check if this row should be highlighted based on highlight mode
     const isRowHighlighted = useMemo(() => {
@@ -90,19 +138,6 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
 
       return false;
     }, [highlight, rowIndex]);
-
-    const handleRowClick = useCallback(() => {
-      // Future: support row click to expand or select
-    }, []);
-
-    const handleKeyDown = useCallback(
-      (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          handleRowClick();
-        }
-      },
-      [handleRowClick],
-    );
 
     const handleMouseLeave = useCallback(() => {
       highlight?.setHoveredCell(null, null);
@@ -131,6 +166,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
           showShadow={showShadow ?? false}
+          width={isDragging ? DRAG_HANDLE_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -155,9 +191,11 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
           indeterminate={isIndeterminate}
+          mode={selection.mode}
           onChange={() => selection.toggleRow(rowKey, record)}
           selected={isSelected}
           showShadow={showShadow ?? false}
+          width={isDragging ? SELECTION_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -187,6 +225,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           fixedOffset={offsetInfo?.offset ?? 0}
           onClick={() => expansion.toggleExpand(rowKey, record)}
           showShadow={showShadow ?? false}
+          width={isDragging ? EXPANSION_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -205,6 +244,24 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             containerWidth ?? 0,
           );
 
+        // Render actions cell for TABLE_ACTIONS_KEY column
+        if (column.key === TABLE_ACTIONS_KEY && actions) {
+          return (
+            <TableActionsCell
+              actions={actions}
+              className={column.className}
+              columnIndex={columnIndex}
+              fixed={fixedPos ?? undefined}
+              fixedOffset={offset}
+              key={column.key}
+              record={record}
+              rowIndex={rowIndex}
+              showShadow={showShadow ?? false}
+              width={draggingColumnWidths?.get(column.key)}
+            />
+          );
+        }
+
         return (
           <TableCell
             column={column}
@@ -215,6 +272,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             record={record}
             rowIndex={rowIndex}
             showShadow={showShadow ?? false}
+            width={draggingColumnWidths?.get(column.key)}
           />
         );
       });
@@ -225,26 +283,30 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       ? composeRefs([ref, draggableProvided.innerRef])
       : ref;
 
+    const isZebraRow = zebraStriping && rowIndex % 2 === 1;
+
+    const isSeparatorRow = separatorAtRowIndexes?.includes(rowIndex);
+
     return (
       <tr
         aria-rowindex={rowIndex + 1}
         aria-selected={isSelected}
         className={cx(
-          classes.row,
+          classes.bodyRow,
           {
             [classes.bodyRowAdding]: isAdding,
             [classes.bodyRowDeleting]: isDeleting,
+            [classes.bodyRowDragging]: isDragging,
             [classes.bodyRowFadingOut]: isFadingOut,
             [classes.bodyRowHighlight]: isRowHighlighted,
-            [classes.rowExpanded]: isExpanded,
-            [classes.rowSelected]: isSelected,
+            [classes.bodyRowSelected]: isSelected,
+            [classes.bodyRowSeparator]: isSeparatorRow,
+            [classes.bodyRowZebra]: isZebraRow,
           },
           className,
         )}
         data-index={rowIndex}
         data-row-key={rowKey}
-        onClick={handleRowClick}
-        onKeyDown={handleKeyDown}
         onMouseLeave={handleMouseLeave}
         ref={rowRef}
         tabIndex={0}

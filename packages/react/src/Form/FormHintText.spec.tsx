@@ -1,11 +1,11 @@
-import { Severity } from '@mezzanine-ui/system/severity';
+import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { formHintIcons } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { FormField, FormHintText } from '.';
+import { FormHintText } from '.';
 
 describe('<FormHintText />', () => {
   afterEach(cleanup);
@@ -19,60 +19,95 @@ describe('<FormHintText />', () => {
   );
 
   it('should render by span and bind host class', () => {
-    const { getHostHTMLElement } = render(<FormHintText>Hello</FormHintText>);
+    const { getHostHTMLElement } = render(<FormHintText hintText="Hello" />);
     const element = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-form-field__message')).toBeTruthy();
-    expect(element.textContent).toBe('Hello');
+    expect(
+      element.classList.contains('mzn-form-field__hint-text'),
+    ).toBeTruthy();
+    expect(element.textContent).toContain('Hello');
     expect(element.tagName.toLowerCase()).toBe('span');
   });
 
-  describe('form: severity', () => {
-    function testSeverityIcon(
-      element: HTMLElement,
-      severity: Severity | undefined,
-    ) {
-      const messageElement = element.querySelector('.mzn-form-field__message');
-      const severityIconElement = messageElement!.querySelector(
-        '.mzn-form-field__severity-icon',
-      );
+  it('should render with default severity="info"', () => {
+    const { getHostHTMLElement } = render(<FormHintText hintText="Hello" />);
+    const element = getHostHTMLElement();
 
-      if (severity) {
-        const icon = formHintIcons[severity];
+    expect(
+      element.classList.contains('mzn-form-field__hint-text--info'),
+    ).toBeTruthy();
+  });
 
-        expect(severityIconElement!.tagName.toLowerCase()).toBe('i');
-        expect(severityIconElement!.getAttribute('data-icon-name')).toBe(
-          icon.name,
-        );
-      } else {
-        expect(severityIconElement).toBeNull();
-      }
-    }
-
-    it('should not render severity icon if severity=undefined', () => {
-      const { getHostHTMLElement } = render(
-        <FormField>
-          <FormHintText>Hello</FormHintText>
-        </FormField>,
-      );
-      const element = getHostHTMLElement();
-
-      testSeverityIcon(element, undefined);
-    });
-
-    const severities: Severity[] = ['success', 'warning', 'error'];
+  describe('prop: severity', () => {
+    const severities: SeverityWithInfo[] = [
+      'success',
+      'warning',
+      'error',
+      'info',
+    ];
 
     severities.forEach((severity) => {
-      it(`should render ${formHintIcons[severity].name} icon if severity=${severity}`, () => {
+      it(`should render severity class and icon if severity=${severity}`, () => {
         const { getHostHTMLElement } = render(
-          <FormField severity={severity}>
-            <FormHintText>Hello</FormHintText>
-          </FormField>,
+          <FormHintText hintText="Hello" severity={severity} />,
         );
         const element = getHostHTMLElement();
+        const iconElement = element.querySelector(
+          '.mzn-form-field__hint-text__icon',
+        );
 
-        testSeverityIcon(element, severity);
+        expect(
+          element.classList.contains(`mzn-form-field__hint-text--${severity}`),
+        ).toBeTruthy();
+        expect(iconElement).toBeInstanceOf(HTMLElement);
+        expect(iconElement!.getAttribute('data-icon-name')).toBe(
+          formHintIcons[severity].name,
+        );
       });
+    });
+  });
+
+  describe('prop: hintTextIcon', () => {
+    const customIcon = {
+      name: 'custom-icon',
+      definition: {
+        svg: {
+          viewBox: '0 0 24 24',
+        },
+        path: {
+          fill: 'currentColor',
+          d: 'M0 0h24v24H0z',
+        },
+      },
+    };
+
+    it('should render custom icon when hintTextIcon is provided', () => {
+      const { getHostHTMLElement } = render(
+        <FormHintText hintText="Hello" hintTextIcon={customIcon} />,
+      );
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector(
+        '.mzn-form-field__hint-text__icon',
+      );
+
+      expect(iconElement).toBeInstanceOf(HTMLElement);
+      expect(iconElement!.getAttribute('data-icon-name')).toBe('custom-icon');
+    });
+
+    it('should use custom icon over default severity icon', () => {
+      const { getHostHTMLElement } = render(
+        <FormHintText
+          hintText="Hello"
+          hintTextIcon={customIcon}
+          severity="error"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector(
+        '.mzn-form-field__hint-text__icon',
+      );
+
+      expect(iconElement!.getAttribute('data-icon-name')).toBe('custom-icon');
     });
   });
 });
