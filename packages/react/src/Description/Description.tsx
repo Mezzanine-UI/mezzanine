@@ -79,8 +79,8 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
         case 'tags':
           return (
             <TagGroup>
-              {contentProps.tags.map((tagProps) => (
-                <Tag key={tagProps.label} {...tagProps} />
+              {contentProps.tags.map((tagProps, index) => (
+                <Tag key={`${tagProps.label}-${index}`} {...tagProps} />
               ))}
             </TagGroup>
           );
