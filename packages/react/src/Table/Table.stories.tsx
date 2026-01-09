@@ -935,7 +935,7 @@ export const WithFixedColumns: Story = {
             }}
             columns={fixedColumns}
             dataSource={baseData}
-            scroll={{ x: 800 }}
+            fullWidth
           />
         </div>
       </div>
@@ -1399,6 +1399,7 @@ export const Combined: Story = {
             rowExpandable: (record) => !!record.subData?.length,
             // fixed: true,
           }}
+          fullWidth
           resizable
           rowSelection={{
             mode: 'checkbox',
@@ -1428,7 +1429,7 @@ export const Combined: Story = {
             getCheckboxProps: parentGetCheckboxProps,
             fixed: true,
           }}
-          scroll={{ x: 1000, y: 300 }}
+          scroll={{ y: 300 }}
           highlight="cross"
           draggable={{
             enabled: true,

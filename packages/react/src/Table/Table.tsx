@@ -71,6 +71,14 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   emptyProps?: EmptyProps & { height?: number | string };
   /** Expandable row configuration */
   expandable?: TableExpandable<T>;
+  /**
+   * Whether the table should stretch to fill its container width.
+   * When true, the table will always be 100% width of its container.
+   * Note: If the sum of all column widths is less than the table width,
+   * columns will be proportionally stretched to fill the remaining space.
+   * @default false
+   */
+  fullWidth?: boolean;
   /** Highlight mode for hover effects
    * @default 'row'
    */
@@ -191,6 +199,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     draggable,
     emptyProps,
     expandable,
+    fullWidth = false,
     highlight = 'row',
     loading = false,
     loadingRowsCount = 10,
@@ -476,11 +485,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
     if (scroll?.y) {
       containerStyle.maxHeight = scroll.y;
-      containerStyle.overflowY = 'auto';
-    }
-
-    if (scroll?.x) {
-      containerStyle.overflowX = 'auto';
     }
 
     if (nested) {
@@ -493,17 +497,17 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     }
 
     return containerStyle;
-  }, [scroll?.x, scroll?.y, nested, minHeight]);
+  }, [scroll?.y, nested, minHeight]);
 
   const tableStyle = useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {};
 
-    if (scroll?.x) {
-      baseStyle.minWidth = scroll.x;
+    if (fullWidth) {
       baseStyle.width = '100%';
     }
+
     return baseStyle;
-  }, [scroll?.x]);
+  }, [fullWidth]);
 
   /** Scroll Container Ref */
   const droppableInnerRefSetter = useRef<
