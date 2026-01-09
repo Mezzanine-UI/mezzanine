@@ -6,6 +6,8 @@ export type NavigationOrientation = Orientation;
 
 export const navigationClasses = {
   host: navigationPrefix,
-  vertical: `${navigationPrefix}--vertical`,
+  expand: `${navigationPrefix}--expand`,
+  collapsed: `${navigationPrefix}--collapsed`,
   content: `${navigationPrefix}__content`,
+  searchInput: `${navigationPrefix}__search-input`,
 } as const;

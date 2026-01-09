@@ -9,28 +9,28 @@
 @use './navigation' as *;
 @use './utils';
 
-// spacing.semantic-variable(padding, vertical, tight) * 2 + 16px(icon size, text height)
-$vertical-item-height: 28px !default;
-
+// option icon and text height
+$option-icon-size: spacing.semantic-variable(size, element, base) !default;
+$option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$option-icon-size}) !default;
 $background: background;
 
 .#{$prefix} {
-  @include typography.variant(button2);
-
   overflow: hidden;
   background-color: palette.semantic-variable($background, base);
-  color: palette.color(action-inactive);
+  border-right: 1px solid palette.semantic-variable(separator, neutral-faint);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
 
   &__content {
+    box-sizing: border-box;
     padding: spacing.semantic-variable(padding, vertical, base)
       spacing.semantic-variable(padding, horizontal, comfort-fixed);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tight-fixed);
+    margin-right: -1px;
 
     > ul {
       @include utils.reset();
@@ -40,85 +40,38 @@ $background: background;
     }
   }
 
-  &--vertical {
+  &--expand {
     width: spacing.semantic-variable(size, container, slim);
     height: 100%;
 
-    .#{$option-prefix} {
-      display: grid;
-      box-sizing: border-box;
-      align-items: center;
-      gap: spacing.semantic-variable(gap, tight);
-      height: unset;
+    .#{$prefix}__content {
+      overflow-y: auto;
+    }
+  }
 
-      &__content {
-        align-items: center;
-        border-radius: radius.variable(base);
-        box-sizing: border-box;
-        cursor: pointer;
-        display: flex;
-        gap: spacing.semantic-variable(gap, tight);
-        padding: spacing.semantic-variable(padding, vertical, tight)
-          spacing.semantic-variable(padding, horizontal, tight-fixed);
-        transition: transition.standard(background-color, fast);
+  &--collapsed {
+    width: spacing.semantic-variable(size, container, collapsed);
+    height: 100%;
+    max-height: 100%;
 
-        &:hover {
-          .#{$option-prefix}__icon {
-            color: palette.semantic-variable(text, neutral-solid);
-          }
-
-          background-color: palette.semantic-variable($background, neutral-faint);
-        }
-      }
-
-      &__icon {
-        width: spacing.semantic-variable(size, element, base);
-        height: spacing.semantic-variable(size, element, base);
-        color: palette.semantic-variable(icon, neutral);
-      }
-
-      &__title {
-        color: palette.semantic-variable(text, neutral-solid);
-      }
-
-      &--active {
-        .#{$option-prefix}__content {
-          background-color: palette.semantic-variable($background, brand-ghost);
-        }
-      }
-
-      &--basic.#{$option-prefix}--active {
-        .#{$option-prefix}__title {
-          color: palette.semantic-variable(text, brand-solid);
-        }
-
-        .#{$option-prefix}__content {
-          background-color: palette.semantic-variable($background, brand-faint);
-        }
-      }
-
-      &__group {
-        @include utils.reset();
-
-        display: grid;
-      }
-
-      &__toggle-icon {
-        margin-left: auto;
-      }
-
-      &--level-1 {
-        margin-left: 0;
-      }
-
-      &--level-2 {
-        margin-left: spacing.semantic-variable(padding, horizontal, relaxed);
-      }
-
-      &--level-3 {
-        margin-left: spacing.semantic-variable(padding, horizontal, breath);
+    .#{$header-prefix},
+    .#{$user-menu-prefix} {
+      > :not(:first-child) {
+        display: none;
       }
     }
+
+    .#{$header-prefix}__title,
+    .#{$prefix}__search-input,
+    .#{$option-category-prefix}__title {
+      display: none;
+    }
+
+    .#{$user-menu-prefix} {
+      padding: 0;
+      width: 100%;
+    }
+
   }
 }
 
@@ -149,7 +102,6 @@ $background: background;
 .#{$footer-prefix} {
   box-sizing: border-box;
   width: 100%;
-  border-top: 1px solid palette.color(divider);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -162,6 +114,157 @@ $background: background;
     display: flex;
     align-items: center;
     gap: spacing.semantic-variable(gap, tiny);
+  }
+
+
+  &--collapsed {
+    display: flex;
+    flex-direction: column-reverse;
+
+    .#{$footer-prefix}__icons {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.#{$option-prefix} {
+  display: grid;
+  flex-shrink: 1;
+  box-sizing: border-box;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, tight);
+  height: unset;
+  width: 100%;
+
+
+  &__content {
+    align-items: center;
+    border-radius: radius.variable(base);
+    box-sizing: border-box;
+    overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    width: 100%;
+    gap: spacing.semantic-variable(gap, tight);
+    padding: spacing.semantic-variable(padding, vertical, tight)
+      spacing.semantic-variable(padding, horizontal, tight-fixed);
+    transition: transition.standard(background-color, fast), transition.standard(color, fast);
+
+
+    .#{$option-prefix}__title {
+      @include typography.semantic-variable(label-primary-highlight, (line-height));
+
+      color: palette.semantic-variable(text, neutral-solid);
+      line-height: #{$option-icon-size};
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .#{$option-prefix}__icon {
+      color: palette.semantic-variable(icon, neutral);
+      height: #{$option-icon-size};
+      width: #{$option-icon-size};
+    }
+
+    .#{$option-prefix}__toggle-icon {
+      color: palette.semantic-variable(icon, neutral);
+      height: spacing.semantic-variable(size, element, slim);
+      margin-left: auto;
+      width: spacing.semantic-variable(size, element, slim);
+    }
+
+
+    &:hover {
+      .#{$option-prefix}__icon,
+      .#{$option-prefix}__toggle-icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
+
+      background-color: palette.semantic-variable($background, neutral-faint);
+    }
+  }
+
+  &--active.#{$option-prefix}--open {
+    .#{$option-prefix}__content {
+      background-color: palette.semantic-variable($background, brand-ghost);
+    }
+  }
+
+  &--active {
+    .#{$option-prefix}__content {
+      .#{$option-prefix}__title {
+        color: palette.semantic-variable(text, brand);
+      }
+
+      .#{$option-prefix}__icon {
+        color: palette.semantic-variable(icon, brand);
+      }
+    }
+  }
+
+  &--active.#{$option-prefix}--basic {
+    .#{$option-prefix}__content {
+      background-color: palette.semantic-variable($background, brand-faint);
+
+      .#{$option-prefix}__title {
+        color: palette.semantic-variable(text, brand-solid);
+      }
+
+      .#{$option-prefix}__icon {
+        color: palette.semantic-variable(icon, brand-solid);
+      }
+    }
+  }
+
+  &__group {
+    @include utils.reset();
+
+    display: grid;
+  }
+
+
+  &--level-1 {
+    margin-left: 0;
+  }
+
+  &--level-2 {
+    margin-left: spacing.semantic-variable(padding, horizontal, relaxed);
+    width: calc(
+      100% - spacing.semantic-variable(padding, horizontal, relaxed)
+    );
+
+    .#{$option-prefix}__title {
+      @include typography.semantic-variable(label-secondary, (line-height));
+    }
+  }
+
+  &--level-3 {
+    margin-left: spacing.semantic-variable(padding, horizontal, breath);
+    width: calc(100% - spacing.semantic-variable(padding, horizontal, breath));
+
+    .#{$option-prefix}__title {
+      @include typography.semantic-variable(label-secondary, (line-height));
+    }
+  }
+
+  &--collapsed {
+    .#{$option-prefix}__children-wrapper {
+      display: none;
+    }
+
+    .#{$option-prefix}__content {
+      > :not(:first-child, .mzn-tooltip) {
+        display: none;
+      }
+    }
+
+    .#{$option-prefix}__title {
+      @include typography.semantic-variable(label-secondary, (line-height));
+
+      text-overflow: clip;
+    }
   }
 }
 
@@ -215,7 +318,7 @@ $background: background;
   }
 
   &__user-name {
-    @include typography.variant(caption);
+    @include typography.semantic-variable(caption);
 
     color: palette.semantic-variable(text, neutral-solid);
   }
@@ -245,10 +348,11 @@ $background: background;
 
 .#{$option-category-prefix} {
   box-sizing: border-box;
-  width: 100%;
+  display: grid;
+  gap: spacing.semantic-variable(gap, tight);
 
   &__title {
-    @include typography.variant(annotation);
+    @include typography.semantic-variable(annotation);
 
     color: palette.semantic-variable(text, neutral-light);
     padding: spacing.semantic-variable(padding, vertical, micro)
