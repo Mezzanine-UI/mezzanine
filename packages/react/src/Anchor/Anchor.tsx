@@ -14,14 +14,11 @@ export interface AnchorPropsWithAnchors
    * <Anchor
    *   anchors={[
    *     {
+   *       href: '#anchor1',
    *       id: 'anchor-1',
    *       name: 'Anchor 1',
-   *       href: '#anchor1',
    *     },
    *     {
-   *       id: 'anchor-2',
-   *       name: 'Anchor 2',
-   *       href: '#anchor2',
    *       children: [
    *         {
    *           id: 'anchor2-1',
@@ -34,6 +31,9 @@ export interface AnchorPropsWithAnchors
    *           href: '#anchor2-2',
    *         },
    *       ],
+   *       href: '#anchor2',
+   *       id: 'anchor-2',
+   *       name: 'Anchor 2',
    *     },
    *   ]}
    * />
