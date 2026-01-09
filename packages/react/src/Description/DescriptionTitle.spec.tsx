@@ -1,10 +1,14 @@
-import { cleanup, render } from '../../__test-utils__';
+import { cleanup, render, act, fireEvent } from '../../__test-utils__';
 import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { DescriptionTitle } from '.';
+
+function getPopperContainer(container: Element | null = document.body) {
+  return container!.querySelector('div[data-popper-placement]');
+}
 
 describe('<DescriptionTitle />', () => {
   afterEach(cleanup);
@@ -37,14 +41,24 @@ describe('<DescriptionTitle />', () => {
     ).toBeTruthy();
   });
 
-  it('icon should be set when icon prop is given', () => {
+  it('icon and tooltip should be set when icon and tooltip props are given', async () => {
     const { getHostHTMLElement } = render(
-      <DescriptionTitle icon={QuestionOutlineIcon}>title</DescriptionTitle>,
+      <DescriptionTitle icon={QuestionOutlineIcon} tooltip="Hello">
+        title
+      </DescriptionTitle>,
     );
     const element = getHostHTMLElement();
     const [iconElement] = element.getElementsByTagName('i');
 
     expect(iconElement!.classList.contains('mzn-icon')).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.mouseEnter(iconElement);
+    });
+
+    const popperElement = getPopperContainer();
+
+    expect(popperElement?.textContent).toBe('Hello');
   });
 
   describe('prop: widthType', () => {

@@ -97,7 +97,14 @@ describe('<DescriptionContent />', () => {
 
     it('when variant is "with-icon"', () => {
       const { getHostHTMLElement } = render(
-        <DescriptionContent variant="with-icon" icon={CopyIcon}>
+        <DescriptionContent
+          variant="with-icon"
+          icon={CopyIcon}
+          onClickIcon={() => {
+            // eslint-disable-next-line no-console
+            console.log('click');
+          }}
+        >
           content
         </DescriptionContent>,
       );
@@ -107,6 +114,9 @@ describe('<DescriptionContent />', () => {
       expect(
         iconElement!.classList.contains('mzn-description-content__icon'),
       ).toBeTruthy();
+      expect(iconElement.style.getPropertyValue('--mzn-icon-cursor')).toBe(
+        'pointer',
+      );
     });
   });
 });

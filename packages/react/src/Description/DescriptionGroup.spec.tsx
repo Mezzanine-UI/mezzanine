@@ -25,4 +25,16 @@ describe('<DescriptionGroup />', () => {
       </DescriptionGroup>,
     ),
   );
+
+  it('should bind host class', () => {
+    const { getHostHTMLElement } = render(
+      <DescriptionGroup>
+        <div />
+        <div />
+      </DescriptionGroup>,
+    );
+    const element = getHostHTMLElement();
+
+    expect(element!.classList.contains('mzn-description-group')).toBeTruthy();
+  });
 });
