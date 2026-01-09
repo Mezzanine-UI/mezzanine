@@ -14,7 +14,11 @@ export function highlightText(
   if (!text) return [];
   if (!keyword) return [{ text, highlight: false }];
 
-  const safeKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Ensure keyword is a string
+  const keywordString = String(keyword);
+  if (!keywordString) return [{ text, highlight: false }];
+
+  const safeKeyword = keywordString.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const regex = new RegExp(`(${safeKeyword})`, 'gi');
   const parts: HighlightSegment[] = [];
   let lastIndex = 0;
