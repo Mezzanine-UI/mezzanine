@@ -102,6 +102,7 @@ const DescriptionTitle = forwardRef<HTMLDivElement, DescriptionTitleProps>(
                   icon={icon}
                   onMouseEnter={onMouseEnter}
                   onMouseLeave={onMouseLeave}
+                  size={16}
                 />
               )}
             </Tooltip>
