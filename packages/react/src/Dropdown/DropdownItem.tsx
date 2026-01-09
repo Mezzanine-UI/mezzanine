@@ -9,6 +9,7 @@ import {
   DropdownItemSharedProps,
   DropdownOption,
   DropdownOptionsByType,
+  DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 import { type IconDefinition } from '@mezzanine-ui/icons';
@@ -19,6 +20,8 @@ import { useElementHeight } from '../hooks/useElementHeight';
 import Typography from '../Typography';
 import DropdownAction, { type DropdownActionProps } from './DropdownAction';
 import DropdownItemCard from './DropdownItemCard';
+import DropdownStatus from './DropdownStatus';
+import shortcutTextHandler from './shortcutTextHandler';
 
 export interface DropdownItemProps<T extends DropdownType | undefined = DropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
   /**
@@ -75,6 +78,22 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    * - 'tree': array with nested children up to 3 levels
    */
   type?: DropdownType;
+  /**
+   * The status of the dropdown (loading or empty).
+   */
+  status?: DropdownStatusType;
+  /**
+   * The text of the dropdown loading status.
+   */
+  loadingText?: string;
+  /**
+   * The text of the dropdown empty status.
+   */
+  emptyText?: string;
+  /**
+   * The icon of the dropdown empty status.
+   */
+  emptyIcon?: IconDefinition;
 }
 
 /**
@@ -149,6 +168,10 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     onSelect,
     followText,
     headerContent,
+    status,
+    loadingText,
+    emptyText,
+    emptyIcon,
   } = props;
 
   const optionsContent = truncateArrayDepth(options, 3);
@@ -303,6 +326,9 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           const isSelected = Array.isArray(value)
             ? value.includes(option.id)
             : value === option.id;
+          const shortcutText = option.shortcutText
+            ? option.shortcutText
+            : shortcutTextHandler(option.shortcutKeys ?? []);
 
           groupElements.push(
             <DropdownItemCard
@@ -323,7 +349,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
               validate={option.validate ?? 'default'}
               onMouseEnter={() => onHover?.(optionIndex)}
               showUnderline={option.showUnderline ?? false}
-              appendContent={option.shortcutText}
+              appendContent={shortcutText}
             />
           );
         });
@@ -358,6 +384,9 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         prependIcon = isExpanded ? CaretDownIcon : CaretRightIcon;
       }
       const checkSite: DropdownCheckPosition = option.showCheckbox ? 'prepend' : 'none';
+      const shortcutText = option.shortcutText
+        ? option.shortcutText
+        : shortcutTextHandler(option.shortcutKeys ?? []);
 
       const card = (
         <DropdownItemCard
@@ -384,7 +413,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           prependIcon={prependIcon}
           showUnderline={option.showUnderline ?? false}
           validate={option.validate ?? 'default'}
-          appendContent={option.shortcutText}
+          appendContent={shortcutText}
         />
       );
 
@@ -414,6 +443,10 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         ? value.includes(option.id)
         : value === option.id;
       const isActive = optionIndex === activeIndex;
+      const shortcutText = option.shortcutText
+        ? option.shortcutText
+        : shortcutTextHandler(option.shortcutKeys ?? []);
+
       let checkSite: DropdownCheckPosition = 'none';
 
       if (option?.checkSite) {
@@ -440,7 +473,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           validate={option.validate ?? 'default'}
           showUnderline={option.showUnderline ?? false}
           checkSite={checkSite}
-          appendContent={option.shortcutText}
+          appendContent={shortcutText}
         />
       )
     })
@@ -465,6 +498,9 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
   };
 
   const { elements: renderedOptions } = renderOptions(optionsContent, 0, -1);
+
+  // Show status when options are empty and status is provided
+  const shouldShowStatus = optionsContent.length === 0 && status;
 
   const listStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {
@@ -550,10 +586,28 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         maxHeight
           ? (
             <div className={dropdownClasses.listWrapper} style={listWrapperStyle}>
-              {renderedOptions}
+              {shouldShowStatus ? (
+                <DropdownStatus
+                  status={status}
+                  loadingText={loadingText}
+                  emptyText={emptyText}
+                  emptyIcon={emptyIcon}
+                />
+              ) : (
+                renderedOptions
+              )}
             </div>
           )
-          : renderedOptions
+          : shouldShowStatus ? (
+            <DropdownStatus
+              status={status}
+              loadingText={loadingText}
+              emptyText={emptyText}
+              emptyIcon={emptyIcon}
+            />
+          ) : (
+            renderedOptions
+          )
       }
       {hasActions && (
         <div ref={actionRef}>
