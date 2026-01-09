@@ -1,3 +1,5 @@
+'use client';
+
 import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import { cx } from '../utils/cx';
