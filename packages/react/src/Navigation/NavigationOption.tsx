@@ -6,7 +6,6 @@ import {
   use,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
@@ -15,9 +14,7 @@ import {
   ChevronUpIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
-import { useClickAway } from '../hooks/useClickAway';
 import { cx } from '../utils/cx';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
 import { Collapse } from '../Transition';
 import {
@@ -25,6 +22,7 @@ import {
   NavigationOptionLevelContext,
 } from './context';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import Tooltip from '../Tooltip';
 
 export type NavigationOptionChild = ReactElement<NavigationOptionProps>;
 
@@ -32,7 +30,10 @@ export type NavigationOptionChildren =
   | NavigationOptionChild
   | NavigationOptionChild[];
 export interface NavigationOptionProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'li'>, 'onClick'> {
+  extends Omit<
+    NativeElementPropsWithoutKeyAndRef<'li'>,
+    'onClick' | 'onMouseEnter' | 'onMouseLeave'
+  > {
   /**
    * Whether the item is active.
    */
@@ -76,24 +77,8 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     } = props;
 
     const [open, setOpen] = useState<boolean>(defaultOpen);
-    const nodeRef = useRef<HTMLLIElement>(null);
-    const composedNodeRef = useComposeRefs([ref, nodeRef]);
 
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
-
-    useClickAway(
-      () => {
-        if (!open) {
-          return;
-        }
-
-        return () => {
-          setOpen(!open);
-        };
-      },
-      nodeRef,
-      [open],
-    );
 
     const { level, path: parentPath } = use(NavigationOptionLevelContext);
     const currentLevel = level + 1;
@@ -103,9 +88,13 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       [parentPath, currentKey],
     );
 
-    const { activatedPath, setActivatedPath, currentPathname } = use(
-      NavigationActivatedContext,
-    );
+    const {
+      activatedPath,
+      setActivatedPath,
+      currentPathname,
+      collapsed,
+      handleCollapseChange,
+    } = use(NavigationActivatedContext);
 
     useEffect(() => {
       if (currentPathname === href) {
@@ -119,49 +108,63 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     return (
       <li
         {...rest}
-        ref={composedNodeRef}
+        ref={ref}
         className={cx(
           classes.host,
           open && classes.open,
           !children && classes.basic,
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
+          collapsed && classes.collapsed,
           className,
         )}
         data-id={currentKey}
       >
-        <Component
-          className={cx(classes.content, classes.level(currentLevel))}
-          href={href}
-          onClick={() => {
-            setOpen(!open);
-            onTriggerClick?.(currentPath, href || '');
-
-            if (!children) setActivatedPath([...parentPath, currentKey]);
+        <Tooltip
+          options={{
+            placement: 'right',
           }}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              setOpen(!open);
-
-              if (!children) setActivatedPath([...parentPath, currentKey]);
-            }
-          }}
-          role="menuitem"
-          tabIndex={0}
+          title={collapsed ? title : undefined}
         >
-          {icon && <Icon className={classes.icon} icon={icon} />}
-          <span className={classes.title}>{title}</span>
-          {children && (
-            <Icon
-              size={12}
-              className={classes.toggleIcon}
-              icon={GroupToggleIcon}
-            />
+          {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
+            <Component
+              className={cx(classes.content, classes.level(currentLevel))}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              ref={tooltipChildRef}
+              href={href}
+              onClick={() => {
+                setOpen(!open);
+                onTriggerClick?.(currentPath, href || '');
+
+                if (collapsed) {
+                  handleCollapseChange(false);
+                }
+
+                if (!children) setActivatedPath([...parentPath, currentKey]);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  setOpen(!open);
+
+                  if (!children) setActivatedPath([...parentPath, currentKey]);
+                }
+              }}
+              role="menuitem"
+              tabIndex={0}
+            >
+              {icon && <Icon className={classes.icon} icon={icon} />}
+              <span className={classes.title}>{title}</span>
+              {children && (
+                <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
+              )}
+            </Component>
           )}
-        </Component>
-        {children && (
+        </Tooltip>
+        {children && !collapsed && (
           <Collapse
+            className={classes.childrenWrapper}
             style={{
               width: '100%',
             }}

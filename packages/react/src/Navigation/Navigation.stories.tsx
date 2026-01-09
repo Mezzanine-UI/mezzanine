@@ -3,6 +3,7 @@ import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
   DownloadIcon,
   EyeIcon,
+  FolderIcon,
   NotificationIcon,
   QuestionOutlineIcon,
   UploadIcon,
@@ -21,58 +22,167 @@ export default {
   title: 'Navigation/Navigation',
 } as Meta;
 
-export const Playground: StoryFn<NavigationProps> = () => {
+export const Basic: StoryFn<NavigationProps> = (args) => (
+  <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
+    <Navigation {...args}>
+      <NavigationHeader title="NavigationHeader">
+        <span
+          aria-label="logo"
+          style={{
+            height: '28px',
+            width: '28px',
+            backgroundColor: '#5D74E9',
+            borderRadius: '4px',
+          }}
+        />
+      </NavigationHeader>
+      <NavigationOption title={'NavigationOption 1-1'}>
+        <NavigationOption title={'NavigationOption 1-1-1'} />
+      </NavigationOption>
+      <NavigationOption title={'NavigationOption 1-2'}>
+        <NavigationOption title={'NavigationOption 1-2-1'} />
+      </NavigationOption>
+      <NavigationOption title={'NavigationOption 1-3'}>
+        <NavigationOption title={'NavigationOption 1-3-1'} />
+      </NavigationOption>
+      <NavigationOption title={'NavigationOption 1-4'} />
+      <NavigationFooter>
+        <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
+        <NavigationIconButton icon={QuestionOutlineIcon} />
+        <Badge variant="dot-error">
+          <NavigationIconButton icon={NotificationIcon} />
+        </Badge>
+      </NavigationFooter>
+    </Navigation>
+  </div>
+);
+
+export const All: StoryFn<NavigationProps> = () => {
   const [active, setActive] = useState<string[]>();
   const [search, setSearch] = useState('');
 
+  const navChildren = (hasIcon: boolean) => (
+    <>
+      <Input value={search} onChange={(e) => setSearch(e.target.value)} />
+      <NavigationHeader title="NavigationHeader">
+        <span
+          aria-label="logo"
+          style={{
+            height: '28px',
+            width: '28px',
+            backgroundColor: '#5D74E9',
+            borderRadius: '4px',
+          }}
+        />
+      </NavigationHeader>
+      <NavigationOptionCategory title="Category Title 1">
+        <NavigationOption
+          title={'Option 1-1'}
+          icon={hasIcon ? DownloadIcon : undefined}
+        >
+          <NavigationOption title={'Option 1-1-1'} />
+        </NavigationOption>
+        <NavigationOption
+          title={'Option 1-2'}
+          icon={hasIcon ? EyeIcon : undefined}
+        >
+          <NavigationOption title={'Option 1-2-1'} />
+        </NavigationOption>
+        <NavigationOption
+          title={'Option 1-3'}
+          icon={hasIcon ? UploadIcon : undefined}
+        >
+          <NavigationOption title={'Option 1-3-1'} />
+        </NavigationOption>
+        <NavigationOption
+          title={'Option 1-4'}
+          icon={hasIcon ? UploadIcon : undefined}
+        />
+      </NavigationOptionCategory>
+      <NavigationOptionCategory title="Category Title 2">
+        <NavigationOption
+          title={'Option 2-1'}
+          // badge={{ content: 'New', variant: 'dot-info' }}
+          icon={hasIcon ? UploadIcon : undefined}
+        >
+          <NavigationOption title={'Option 2-1-1'}>
+            <NavigationOption title={'Option 2-1-1-1'} />
+          </NavigationOption>
+        </NavigationOption>
+      </NavigationOptionCategory>
+      <NavigationOptionCategory title="Category Title 3">
+        <NavigationOption
+          title={'Option 3-1'}
+          icon={hasIcon ? UploadIcon : undefined}
+        >
+          <NavigationOption title={'Option 3-1-1'}>
+            <NavigationOption title={'Option 3-1-1-1'} />
+          </NavigationOption>
+        </NavigationOption>
+        <NavigationOption
+          title={'Option 4'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 5'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        {/* <NavigationOption
+          title={'Option 6'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 7'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 8'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 9'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 10 long text example'}
+          icon={hasIcon ? FolderIcon : undefined}
+        />
+        <NavigationOption
+          title={'Option 11 long text example'}
+          icon={hasIcon ? FolderIcon : undefined}
+        /> */}
+      </NavigationOptionCategory>
+      <NavigationFooter>
+        <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
+        <NavigationIconButton icon={QuestionOutlineIcon} />
+        <Badge variant="dot-error">
+          <NavigationIconButton icon={NotificationIcon} />
+        </Badge>
+      </NavigationFooter>
+    </>
+  );
+
   return (
-    <div style={{ height: '60vh' }}>
-      <p style={{ height: '20px' }}>{active?.join(' , ')}</p>
+    <div style={{ display: 'flex', gap: '48px', height: 'calc(100vh - 32px)' }}>
       <Navigation onOptionClick={setActive} activatedPath={active}>
-        <Input value={search} onChange={(e) => setSearch(e.target.value)} />
-        <NavigationHeader>
-          <span
-            aria-label="logo"
-            style={{
-              height: '28px',
-              width: '28px',
-              backgroundColor: '#5D74E9',
-              borderRadius: '4px',
-            }}
-          />
-          NavigationHeader
-        </NavigationHeader>
-        <NavigationOptionCategory title="Category Title 1">
-          <NavigationOption title={'NavigationOption 1-1'} icon={DownloadIcon}>
-            <NavigationOption title={'NavigationOption 1-1-1'} />
-          </NavigationOption>
-          <NavigationOption title={'NavigationOption 1-2'} icon={EyeIcon}>
-            <NavigationOption title={'NavigationOption 1-2-1'} />
-          </NavigationOption>
-          <NavigationOption title={'NavigationOption 1-3'} icon={UploadIcon}>
-            <NavigationOption title={'NavigationOption 1-3-1'} />
-          </NavigationOption>
-          <NavigationOption title={'NavigationOption 1-4'} />
-        </NavigationOptionCategory>
-        <NavigationOptionCategory title="Category Title 2">
-          <NavigationOption title={'NavigationOption 2-1'}>
-            <NavigationOption title={'NavigationOption 2-1-1'}>
-              <NavigationOption title={'NavigationOption 2-1-1-1'} />
-            </NavigationOption>
-          </NavigationOption>
-        </NavigationOptionCategory>
-        <NavigationFooter>
-          <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
-          <NavigationIconButton icon={QuestionOutlineIcon} />
-          <Badge variant="dot-error">
-            <NavigationIconButton icon={NotificationIcon} />
-          </Badge>
-        </NavigationFooter>
+        {navChildren(true)}
       </Navigation>
+      <Navigation onOptionClick={setActive} activatedPath={active} collapsed>
+        {navChildren(true)}
+      </Navigation>
+      <Navigation onOptionClick={setActive} activatedPath={active} collapsed>
+        {navChildren(false)}
+      </Navigation>
+      <p style={{ height: '20px' }}>{active?.join(' , ')}</p>
     </div>
   );
 };
 
-Playground.args = {};
+All.args = {};
 
-Playground.argTypes = {};
+All.argTypes = {};
+
+All.parameters = {
+  // 移除預設padding
+  layout: 'fullscreen',
+};
