@@ -129,6 +129,18 @@ export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
 export { default as Card, CardActions } from './Card';
 export type { CardActionsProps, CardProps } from './Card';
+export {
+  Description,
+  DescriptionTitle,
+  DescriptionContent,
+  DescriptionGroup,
+} from './Description';
+export type {
+  DescriptionProps,
+  DescriptionTitleProps,
+  DescriptionContentProps,
+  DescriptionGroupProps,
+} from './Description';
 export { default as Empty } from './Empty';
 export type { EmptyProps } from './Empty';
 export { OverflowCounterTag } from './OverflowTooltip';

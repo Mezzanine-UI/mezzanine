@@ -57,6 +57,7 @@
   // Data Display
   @include _load-styles($options, badge);
   @include _load-styles($options, card);
+  @include _load-styles($options, description);
   @include _load-styles($options, empty);
   @include _load-styles($options, tag);
   @include _load-styles($options, accordion);
