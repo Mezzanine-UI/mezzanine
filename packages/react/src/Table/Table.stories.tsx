@@ -26,6 +26,7 @@ import Toggle from '../Toggle';
 import Input from '../Input';
 import Icon from '../Icon';
 import Slider from '../Slider';
+import { Description, DescriptionGroup } from '../Description';
 
 interface DataType extends TableDataSourceWithKey {
   age: number;
@@ -801,7 +802,30 @@ export const WithExpansion: Story = {
           columns={baseColumns}
           dataSource={baseData}
           expandable={{
-            expandedRowRender: (record) => <div>{record.subData?.length}</div>,
+            expandedRowRender: () => (
+              <div style={{ padding: '6px 12px' }}>
+                <DescriptionGroup>
+                  <Description
+                    titleProps={{
+                      children: 'Date Created At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 03 Aug 2021 14:22:18 GMT',
+                    }}
+                  />
+                  <Description
+                    titleProps={{
+                      children: 'Data Updated At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 05 Aug 2025 11:22:18 GMT',
+                    }}
+                  />
+                </DescriptionGroup>
+              </div>
+            ),
             rowExpandable: (record) => !!record.subData?.length,
           }}
         />
