@@ -1,0 +1,18 @@
+@use '../select/select' as select;
+@use './autocomplete' as *;
+
+.#{$prefix} {
+  position: relative;
+
+  &--full-width {
+    width: 100%;
+  }
+
+  &--inside-closed {
+    .#{select.$trigger-prefix} {
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
+
