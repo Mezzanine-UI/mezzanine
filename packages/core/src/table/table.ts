@@ -354,9 +354,10 @@ export interface TableScroll {
    * @default false
    */
   virtualized?: boolean;
-  /** Horizontal scroll width */
-  x?: number | string;
-  /** Vertical scroll height (required when virtualized is true) */
+  /**
+   * Vertical scroll height constraint.
+   * Sets max-height on scroll container. Required when virtualized is true.
+   */
   y?: number | string;
 }
 
