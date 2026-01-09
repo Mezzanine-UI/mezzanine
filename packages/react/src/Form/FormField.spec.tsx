@@ -1,13 +1,13 @@
 import { FormFieldCounterColor, FormFieldSize } from '@mezzanine-ui/core/form';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
-import { InfoCircleFilledIcon } from '@mezzanine-ui/icons';
+import { InfoOutlineIcon } from '@mezzanine-ui/icons';
 import { useContext } from 'react';
 import { cleanup, cleanupHook, render, renderHook } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { FormControl, FormControlContext, FormField } from '.';
+import { FormControlContext, FormField } from '.';
 import Input from '../Input';
 
 describe('<FormField />', () => {
@@ -300,7 +300,7 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField
           label="Test"
-          labelInformationIcon={InfoCircleFilledIcon}
+          labelInformationIcon={InfoOutlineIcon}
           name="test"
           size={FormFieldSize.VERTICAL}
         />,
@@ -311,7 +311,7 @@ describe('<FormField />', () => {
 
       expect(iconElement).toBeTruthy();
       expect(iconElement?.getAttribute('data-icon-name')).toBe(
-        InfoCircleFilledIcon.name,
+        InfoOutlineIcon.name,
       );
     });
   });
@@ -321,7 +321,7 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField
           label="Test"
-          labelInformationIcon={InfoCircleFilledIcon}
+          labelInformationIcon={InfoOutlineIcon}
           labelInformationText="This is helpful information"
           name="test"
           size={FormFieldSize.VERTICAL}
@@ -404,7 +404,7 @@ describe('<FormField />', () => {
       const { container } = render(
         <FormField
           hintText="This is a hint"
-          hintTextIcon={InfoCircleFilledIcon}
+          hintTextIcon={InfoOutlineIcon}
           label="Test"
           name="test"
           size={FormFieldSize.VERTICAL}
@@ -419,7 +419,7 @@ describe('<FormField />', () => {
 
       expect(iconElement).toBeTruthy();
       expect(iconElement?.getAttribute('data-icon-name')).toBe(
-        InfoCircleFilledIcon.name,
+        InfoOutlineIcon.name,
       );
     });
   });
