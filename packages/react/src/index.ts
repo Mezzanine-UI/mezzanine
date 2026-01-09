@@ -174,11 +174,6 @@ export {
   type ColumnAlign,
   type FixedType,
   type HighlightMode,
-  type SortOrder,
-  type TableActionItem,
-  type TableActions,
-  type TableActionsBase,
-  type TableActionsWithMinWidth,
   type TableBaseProps,
   type TableBulkActions,
   type TableBulkGeneralAction,
@@ -192,35 +187,32 @@ export {
   type TableColumnWithMinWidth,
   type TableColumnWithRender,
   type TableColumnWithRenderAndMinWidth,
-  type TableContextValue,
-  type TableDataContextValue,
-  type TableDataSource,
-  type TableDataSourceWithId,
-  type TableDataSourceWithKey,
   type TableDraggable,
-  type TableDraggableState,
   type TableExpandable,
-  type TableExpansionState,
   type TableNonVirtualizedProps,
   type TableProps,
-  type TableRecord,
   type TableResizedColumnState,
   type TableRowSelection,
+  type TableRowSelection,
+  type TableRowSelectionBase,
   type TableRowSelectionBase,
   type TableRowSelectionCheckbox,
+  type TableRowSelectionCheckbox,
+  type TableRowSelectionRadio,
   type TableRowSelectionRadio,
   type TableScroll,
+  type TableScroll,
+  type TableSelectionMode,
   type TableSelectionMode,
   type TableSelectionState,
   type TableSize,
   type TableSortingState,
-  type TableTransitionState,
   type TableVirtualizedProps,
   type UpdateDataSourceOptions,
   type UseTableDataSourceOptions,
 } from './Table';
 export { default as Tag, TagGroup } from './Tag';
-export type { TagProps, TagSize, TagGroupProps } from './Tag';
+export type { TagGroupProps, TagProps, TagSize } from './Tag';
 export { default as Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
 export {
@@ -254,6 +246,13 @@ export type {
 /**
  * Data Entry
  */
+export { default as AutoComplete } from './AutoComplete';
+export type {
+  AutoCompleteBaseProps,
+  AutoCompleteMultipleProps,
+  AutoCompleteProps,
+  AutoCompleteSingleProps,
+} from './AutoComplete';
 export { CheckAll, default as Checkbox, CheckboxGroup } from './Checkbox';
 export type {
   CheckAllProps,
@@ -325,7 +324,6 @@ export type {
   RadioSize,
 } from './Radio';
 export {
-  AutoComplete,
   Option,
   OptionGroup,
   default as Select,
@@ -335,7 +333,6 @@ export {
   TreeSelect,
 } from './Select';
 export type {
-  AutoCompleteProps,
   OptionGroupProps,
   OptionProps,
   SelectControl,
