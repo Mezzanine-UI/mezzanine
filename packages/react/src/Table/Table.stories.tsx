@@ -15,6 +15,7 @@ import {
   CopyIcon,
   DotHorizontalIcon,
   DownloadIcon,
+  EditIcon,
   FolderMoveIcon,
   TrashIcon,
   UserIcon,
@@ -25,6 +26,7 @@ import Toggle from '../Toggle';
 import Input from '../Input';
 import Icon from '../Icon';
 import Slider from '../Slider';
+import { Description, DescriptionGroup } from '../Description';
 
 interface DataType extends TableDataSourceWithKey {
   age: number;
@@ -224,6 +226,22 @@ export const RowHeightPreset: Story = {
   },
 };
 
+export const DataStateRepresentation: Story = {
+  render: function DataStateRepresentationStory() {
+    return (
+      <div style={{ display: 'grid', gridAutoColumns: 'row', gap: '16px' }}>
+        <span>{`separatorAtRowIndexes: [3, 6], zebraStriping: true`}</span>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          separatorAtRowIndexes={[3, 6]}
+          zebraStriping
+        />
+      </div>
+    );
+  },
+};
+
 export const CreateDeleteTransition: Story = {
   render: function CreateDeleteTransitionStory() {
     const [newName, setNewName] = useState('');
@@ -366,21 +384,6 @@ export const CreateDeleteTransition: Story = {
         key: 'address',
         title: 'Address',
       },
-      {
-        key: 'action',
-        align: 'center',
-        render: (record) => (
-          <Button
-            onClick={() => handleDeleteMutation(String(record.key))}
-            size="minor"
-            variant="destructive-text-link"
-          >
-            Delete
-          </Button>
-        ),
-        title: 'Action',
-        width: 120,
-      },
     ];
 
     return (
@@ -440,6 +443,17 @@ export const CreateDeleteTransition: Story = {
         </div>
 
         <Table<DataType>
+          actions={{
+            render: (record) => [
+              {
+                name: 'Delete',
+                onClick: () => handleDeleteMutation(String(record.key)),
+              },
+            ],
+            title: 'Action',
+            variant: 'destructive-text-link',
+            width: 120,
+          }}
           columns={transitionColumns}
           dataSource={dataSource}
           transitionState={transitionState}
@@ -804,7 +818,30 @@ export const WithExpansion: Story = {
           columns={baseColumns}
           dataSource={baseData}
           expandable={{
-            expandedRowRender: (record) => <div>{record.subData?.length}</div>,
+            expandedRowRender: () => (
+              <div style={{ padding: '6px 12px' }}>
+                <DescriptionGroup>
+                  <Description
+                    titleProps={{
+                      children: 'Date Created At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 03 Aug 2021 14:22:18 GMT',
+                    }}
+                  />
+                  <Description
+                    titleProps={{
+                      children: 'Data Updated At',
+                      widthType: 'wide',
+                    }}
+                    contentProps={{
+                      children: 'Tue, 05 Aug 2025 11:22:18 GMT',
+                    }}
+                  />
+                </DescriptionGroup>
+              </div>
+            ),
             rowExpandable: (record) => !!record.subData?.length,
           }}
         />
@@ -869,17 +906,6 @@ export const WithFixedColumns: Story = {
         title: 'Address 3',
         width: 250,
       },
-      {
-        key: 'action',
-        fixed: 'end',
-        render: () => (
-          <Button size="minor" variant="base-text-link">
-            Edit
-          </Button>
-        ),
-        title: 'Action',
-        width: 100,
-      },
     ];
 
     return (
@@ -895,6 +921,18 @@ export const WithFixedColumns: Story = {
         <span>{`Fixed Columns: "Name (start)", "Fixed Age (start)", "Fixed Address (end)", "Action (end)"`}</span>
         <div style={{ width: '100%' }}>
           <Table<DataType>
+            actions={{
+              fixed: 'end',
+              render: () => [
+                {
+                  name: 'Edit',
+                  onClick: () => {},
+                },
+              ],
+              title: 'Action',
+              variant: 'base-text-link',
+              width: 100,
+            }}
             columns={fixedColumns}
             dataSource={baseData}
             scroll={{ x: 800 }}
@@ -1247,65 +1285,45 @@ export const Combined: Story = {
         minWidth: 120,
         maxWidth: 300,
       },
-      {
-        align: 'end',
-        fixed: 'end',
-        key: 'action',
-        render: (record) => (
-          <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
-            <Button size="minor" variant="base-text-link">
-              Edit
-            </Button>
-            <Button
-              size="minor"
-              variant="destructive-text-link"
-              onClick={() => {
-                const isFirstLayer = dataSource.some(
-                  (item) => item.key === record.key,
-                );
-
-                if (isFirstLayer) {
-                  updateDataSource(
-                    dataSource.filter((item) => item.key !== record.key),
-                    { removedKeys: [record.key] },
-                  );
-                } else {
-                  const target = dataSource.find((item) =>
-                    item.subData?.some((sub) => sub.key === record.key),
-                  );
-
-                  if (target && target.subData) {
-                    const newSubData = target.subData.filter(
-                      (sub) => sub.key !== record.key,
-                    );
-
-                    const newDataSource = dataSource.map((item) => {
-                      if (item.key === target.key) {
-                        return {
-                          ...item,
-                          subData: newSubData,
-                        };
-                      }
-                      return item;
-                    });
-
-                    updateDataSource(newDataSource, {
-                      removedKeys: [record.key],
-                    });
-                  }
-                }
-              }}
-            >
-              Delete
-            </Button>
-          </div>
-        ),
-        title: 'Action',
-        width: 150,
-        minWidth: 150,
-        maxWidth: 150,
-      },
     ];
+
+    const handleDelete = useCallback(
+      (record: DataType) => {
+        const isFirstLayer = dataSource.some((item) => item.key === record.key);
+
+        if (isFirstLayer) {
+          updateDataSource(
+            dataSource.filter((item) => item.key !== record.key),
+            { removedKeys: [record.key] },
+          );
+        } else {
+          const target = dataSource.find((item) =>
+            item.subData?.some((sub) => sub.key === record.key),
+          );
+
+          if (target && target.subData) {
+            const newSubData = target.subData.filter(
+              (sub) => sub.key !== record.key,
+            );
+
+            const newDataSource = dataSource.map((item) => {
+              if (item.key === target.key) {
+                return {
+                  ...item,
+                  subData: newSubData,
+                };
+              }
+              return item;
+            });
+
+            updateDataSource(newDataSource, {
+              removedKeys: [record.key],
+            });
+          }
+        }
+      },
+      [dataSource, updateDataSource],
+    );
 
     return (
       <div style={{ width: '100%' }}>
@@ -1313,11 +1331,61 @@ export const Combined: Story = {
           <span>Selected: {totalSelectionCount} items</span>
         </div>
         <Table<DataType>
+          actions={{
+            fixed: 'end',
+            render: (record) => [
+              {
+                name: 'Edit',
+                icon: {
+                  position: 'leading',
+                  src: EditIcon,
+                },
+                onClick: () => {},
+              },
+              {
+                name: 'Delete',
+                icon: {
+                  position: 'leading',
+                  src: TrashIcon,
+                },
+                variant: 'destructive-primary',
+                onClick: () => handleDelete(record),
+              },
+            ],
+            variant: 'base-primary',
+            width: 180,
+            minWidth: 180,
+          }}
           columns={combinedColumns}
           dataSource={dataSource}
           expandable={{
             expandedRowRender: (record) => (
               <Table<DataType>
+                actions={{
+                  fixed: 'end',
+                  render: (subRecord) => [
+                    {
+                      name: 'Edit',
+                      icon: {
+                        position: 'leading',
+                        src: EditIcon,
+                      },
+                      onClick: () => {},
+                    },
+                    {
+                      name: 'Delete',
+                      icon: {
+                        position: 'leading',
+                        src: TrashIcon,
+                      },
+                      variant: 'destructive-primary',
+                      onClick: () => handleDelete(subRecord),
+                    },
+                  ],
+                  variant: 'base-primary',
+                  width: 180,
+                  minWidth: 180,
+                }}
                 columns={combinedColumns}
                 dataSource={record.subData || []}
                 rowSelection={{

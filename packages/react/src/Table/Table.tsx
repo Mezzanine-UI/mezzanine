@@ -12,7 +12,10 @@ import throttle from 'lodash/throttle';
 import {
   TableSize,
   tableClasses as classes,
+  TABLE_ACTIONS_KEY,
   type HighlightMode,
+  type TableActions,
+  type TableActionsWithMinWidth,
   type TableColumn,
   type TableColumnWithMinWidth,
   type TableDataSource,
@@ -90,6 +93,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
   /** Row selection configuration */
   rowSelection?: TableRowSelection<T>;
+  /** Row indexes where a separator border should be displayed */
+  separatorAtRowIndexes?: number[];
   /** Show header row */
   showHeader?: boolean;
   /** Custom size variant
@@ -102,6 +107,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   sticky?: boolean;
   /** Transition state for row add/remove animations (from useTableDataSource hook) */
   transitionState?: TableTransitionState;
+  /** Enable zebra striping for alternating row backgrounds */
+  zebraStriping?: boolean;
 }
 
 /**
@@ -111,6 +118,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
 export interface TableResizableProps<
   T extends TableDataSource = TableDataSource,
 > extends TableBaseProps<T> {
+  /** Actions column configuration - minWidth required when resizable */
+  actions?: TableActionsWithMinWidth<T>;
   /** Column configuration - minWidth required for each column when resizable */
   columns: TableColumnWithMinWidth<T>[];
   /**
@@ -125,6 +134,8 @@ export interface TableResizableProps<
 export interface TableNonResizableProps<
   T extends TableDataSource = TableDataSource,
 > extends TableBaseProps<T> {
+  /** Actions column configuration */
+  actions?: TableActions<T>;
   /** Column configuration */
   columns: TableColumn<T>[];
   /**
@@ -173,6 +184,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   ref: React.ForwardedRef<HTMLDivElement>,
 ) {
   const {
+    actions,
     className,
     columns,
     dataSource,
@@ -194,6 +206,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     sticky = true,
     style,
     transitionState,
+    zebraStriping,
+    separatorAtRowIndexes,
     ...restProps
   } = props as TableNonVirtualizedProps<T>;
 
@@ -275,6 +289,21 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     columns,
   });
 
+  /** Feature: Actions column */
+  const columnsWithActions = useMemo(() => {
+    if (!actions) return columns as TableColumn<T>[];
+
+    const actionsColumn: TableColumn<T> = {
+      ...actions,
+      align: actions.align ?? 'end',
+      ellipsis: false,
+      key: TABLE_ACTIONS_KEY,
+      render: () => null, // Placeholder, actual rendering is handled in TableRow
+    };
+
+    return [...(columns as TableColumn<T>[]), actionsColumn];
+  }, [actions, columns]);
+
   /** Feature: Row selection */
   const selectionState = useTableSelection({
     dataSource,
@@ -322,7 +351,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   const fixedOffsetsState = useTableFixedOffsets({
     actionConfig,
-    columns: columns as TableColumn[],
+    columns: columnsWithActions as TableColumn[],
     getResizedColumnWidth: columnState.getResizedColumnWidth,
   });
 
@@ -364,6 +393,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Context values */
   const contextValue = useMemo(
     () => ({
+      actions: actions as TableContextValue['actions'],
       columnState,
       dataSource: dataSourceForRender,
       draggable: draggableState,
@@ -381,11 +411,14 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       scrollContainerRef,
       selection: selectionState as TableContextValue['selection'],
       size,
+      separatorAtRowIndexes,
       sorting: sortingState,
       transitionState,
       virtualScrollEnabled,
+      zebraStriping,
     }),
     [
+      actions,
       columnState,
       dataSourceForRender,
       draggableState,
@@ -405,16 +438,18 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       sortingState,
       transitionState,
       virtualScrollEnabled,
+      zebraStriping,
+      separatorAtRowIndexes,
       nested,
     ],
   );
 
   const dataContextValue = useMemo(
     () => ({
-      columns: columns as TableColumn[],
+      columns: columnsWithActions as TableColumn[],
       dataSource,
     }),
-    [columns, dataSource],
+    [columnsWithActions, dataSource],
   );
 
   const superContextValue = useMemo(

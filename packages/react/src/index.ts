@@ -216,6 +216,10 @@ export {
   type UpdateDataSourceOptions,
   type UseTableDataSourceOptions,
   type TableTransitionState,
+  type TableActionItem,
+  type TableActions,
+  type TableActionsBase,
+  type TableActionsWithMinWidth,
 } from './Table';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';

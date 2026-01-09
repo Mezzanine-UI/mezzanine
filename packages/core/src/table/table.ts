@@ -1,6 +1,7 @@
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import type { Placement } from '@floating-ui/react-dom';
+import type { ButtonVariant, ButtonIcon } from '@mezzanine-ui/core/button';
 
 export const tablePrefix = 'mzn-table';
 export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
@@ -20,6 +21,8 @@ export const tableClasses = {
   bodyRowFadingOut: `${tableBodyPrefix}__row--fading-out`,
   bodyRowHighlight: `${tableBodyPrefix}__row--highlight`,
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
+  bodyRowSeparator: `${tableBodyPrefix}__row--separator`,
+  bodyRowZebra: `${tableBodyPrefix}__row--zebra`,
   bulkActions: `${tablePrefix}__bulk-actions`,
   bulkActionsFixed: `${tablePrefix}__bulk-actions--fixed`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
@@ -386,6 +389,62 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   rowExpandable?: (record: T) => boolean;
 }
 
+/**
+ * Single action item configuration for table row actions
+ */
+export interface TableActionItem<T extends TableDataSource = TableDataSource> {
+  /** Button label text */
+  name?: string;
+  /** Button icon */
+  icon?: ButtonIcon;
+  /** Click handler - receives the row record and index */
+  onClick: (record: T, index: number) => void;
+  /** Dynamic disabled state based on row data */
+  disabled?: (record: T) => boolean;
+  /** Button custom variant */
+  variant?: ButtonVariant;
+}
+
+/**
+ * Base actions column configuration
+ */
+export interface TableActionsBase<T extends TableDataSource = TableDataSource>
+  extends Omit<
+    TableColumnBase<T>,
+    | 'bodyClassName'
+    | 'dataIndex'
+    | 'ellipsis'
+    | 'key'
+    | 'onSort'
+    | 'render'
+    | 'sortOrder'
+  > {
+  /** Column alignment
+   * @default 'end'
+   */
+  align?: ColumnAlign;
+  /** Function to generate action items for each row */
+  render: (record: T, index: number) => TableActionItem<T>[];
+  /** Button variant for all action buttons in the group */
+  variant?: ButtonVariant;
+}
+
+/**
+ * Actions column configuration (when resizable is false or not specified)
+ */
+export type TableActions<T extends TableDataSource = TableDataSource> =
+  TableActionsBase<T>;
+
+/**
+ * Actions column configuration with required minWidth (when resizable is true)
+ */
+export interface TableActionsWithMinWidth<
+  T extends TableDataSource = TableDataSource,
+> extends TableActionsBase<T> {
+  /** Minimum column width - required when table is resizable */
+  minWidth: number;
+}
+
 export function getCellAlignClass(align?: ColumnAlign): string {
   switch (align) {
     case 'center':
@@ -402,6 +461,7 @@ export function getCellAlignClass(align?: ColumnAlign): string {
 export const DRAG_HANDLE_KEY = '__mzn-drag-handle__';
 export const SELECTION_KEY = '__mzn-selection__';
 export const EXPANSION_KEY = '__mzn-expansion__';
+export const TABLE_ACTIONS_KEY = '__mzn-table-actions__';
 export const DRAG_HANDLE_COLUMN_WIDTH = 40;
 export const SELECTION_COLUMN_WIDTH = 40;
 export const EXPANSION_COLUMN_WIDTH = 40;

@@ -357,6 +357,37 @@ $z-index-config: (
         background-color: palette.semantic-variable("background", error-ghost);
       }
     }
+
+    &--separator {
+      td {
+        border-bottom: 3px solid palette.semantic-variable("background", neutral-subtle);
+      }
+    }
+
+    &--zebra {
+      td {
+        background-color: palette.semantic-variable("background", neutral-ghost);
+      }
+
+      &.#{$body-prefix}__row--highlight {
+        td {
+          @include highlight-bg;
+        }
+      }
+
+      &.#{$body-prefix}__row--selected {
+        td {
+          @include active-bg();
+        }
+
+        &:hover,
+        &.#{$body-prefix}__row--highlight {
+          td {
+            @include active-hover-bg();
+          }
+        }
+      }
+    }
   }
 
   &__cell {

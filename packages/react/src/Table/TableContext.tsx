@@ -4,6 +4,7 @@ import { createContext, useContext } from 'react';
 import type {
   HighlightMode,
   TableSize,
+  TableActionsBase,
   TableColumn,
   TableDataSource,
   TableExpandable,
@@ -71,6 +72,7 @@ export interface TableHighlightState {
 export interface TableContextValue<
   T extends TableDataSource = TableDataSource,
 > {
+  actions?: TableActionsBase<T>;
   columnState?: TableResizedColumnState;
   dataSource: T[];
   draggable?: TableDraggableState;
@@ -87,9 +89,11 @@ export interface TableContextValue<
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;
+  separatorAtRowIndexes?: number[];
   sorting?: TableSortingState;
   transitionState?: TableTransitionState;
   virtualScrollEnabled?: boolean;
+  zebraStriping?: boolean;
   isInsideExpandedContentArea?: boolean;
 }
 

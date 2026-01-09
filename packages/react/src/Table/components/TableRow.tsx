@@ -2,6 +2,7 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
+  TABLE_ACTIONS_KEY,
   DRAG_HANDLE_COLUMN_WIDTH,
   DRAG_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
@@ -21,6 +22,7 @@ import {
   useTableDataContext,
   useTableSuperContext,
 } from '../TableContext';
+import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
 import { TableDragHandleCell } from './TableDragHandleCell';
 import { TableExpandCell } from './TableExpandCell';
@@ -47,13 +49,16 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
     const { className, draggableProvided, record, rowIndex, style } = props;
 
     const {
+      actions,
       draggable,
       expansion,
       fixedOffsets,
-      rowHeight,
       highlight,
+      rowHeight,
       selection,
+      separatorAtRowIndexes,
       transitionState,
+      zebraStriping,
     } = useTableContext();
     const { columns } = useTableDataContext();
 
@@ -239,6 +244,24 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             containerWidth ?? 0,
           );
 
+        // Render actions cell for TABLE_ACTIONS_KEY column
+        if (column.key === TABLE_ACTIONS_KEY && actions) {
+          return (
+            <TableActionsCell
+              actions={actions}
+              className={column.className}
+              columnIndex={columnIndex}
+              fixed={fixedPos ?? undefined}
+              fixedOffset={offset}
+              key={column.key}
+              record={record}
+              rowIndex={rowIndex}
+              showShadow={showShadow ?? false}
+              width={draggingColumnWidths?.get(column.key)}
+            />
+          );
+        }
+
         return (
           <TableCell
             column={column}
@@ -260,6 +283,10 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       ? composeRefs([ref, draggableProvided.innerRef])
       : ref;
 
+    const isZebraRow = zebraStriping && rowIndex % 2 === 1;
+
+    const isSeparatorRow = separatorAtRowIndexes?.includes(rowIndex);
+
     return (
       <tr
         aria-rowindex={rowIndex + 1}
@@ -269,10 +296,12 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
           {
             [classes.bodyRowAdding]: isAdding,
             [classes.bodyRowDeleting]: isDeleting,
+            [classes.bodyRowDragging]: isDragging,
             [classes.bodyRowFadingOut]: isFadingOut,
             [classes.bodyRowHighlight]: isRowHighlighted,
             [classes.bodyRowSelected]: isSelected,
-            [classes.bodyRowDragging]: isDragging,
+            [classes.bodyRowSeparator]: isSeparatorRow,
+            [classes.bodyRowZebra]: isZebraRow,
           },
           className,
         )}
