@@ -1,13 +1,8 @@
-export { default as Description, DescriptionProps } from './Description';
-export {
-  default as DescriptionTitle,
-  DescriptionTitleProps,
-} from './DescriptionTitle';
-export {
-  default as DescriptionContent,
-  DescriptionContentProps,
-} from './DescriptionContent';
-export {
-  default as DescriptionGroup,
-  DescriptionGroupProps,
-} from './DescriptionGroup';
+export { default as Description } from './Description';
+export type { DescriptionProps } from './Description';
+export { default as DescriptionTitle } from './DescriptionTitle';
+export type { DescriptionTitleProps } from './DescriptionTitle';
+export { default as DescriptionContent } from './DescriptionContent';
+export type { DescriptionContentProps } from './DescriptionContent';
+export { default as DescriptionGroup } from './DescriptionGroup';
+export type { DescriptionGroupProps } from './DescriptionGroup';
