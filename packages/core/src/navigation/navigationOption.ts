@@ -9,9 +9,12 @@ export const navigationOptionClasses = {
   level: (level: number) =>
     `${navigationOptionPrefix}--level-${level}` as const,
   content: `${navigationOptionPrefix}__content`,
+  trigger: `${navigationOptionPrefix}__content--trigger`,
   title: `${navigationOptionPrefix}__title`,
   toggleIcon: `${navigationOptionPrefix}__toggle-icon`,
   icon: `${navigationOptionPrefix}__icon`,
   active: `${navigationOptionPrefix}--active`,
   open: `${navigationOptionPrefix}--open`,
+  collapsed: `${navigationOptionPrefix}--collapsed`,
+  childrenWrapper: `${navigationOptionPrefix}__children-wrapper`,
 } as const;
