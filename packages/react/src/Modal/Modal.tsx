@@ -8,12 +8,11 @@ import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import { ModalControl, ModalControlContext } from './ModalControl';
-import { SlideFadeOverlayProps } from '../_internal/SlideFadeOverlay';
-import useModalContainer from './useModalContainer';
+import useModalContainer, { ModalContainerProps } from './useModalContainer';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 export interface ModalProps
-  extends Omit<SlideFadeOverlayProps, 'children'>,
+  extends Omit<ModalContainerProps, 'children'>,
     Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Whether to force full screen on any breakpoint.
@@ -52,7 +51,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       children,
       className,
       container,
-      direction = 'down',
       disableCloseOnBackdropClick = false,
       disableCloseOnEscapeKeyDown = false,
       disablePortal = false,
@@ -81,7 +79,6 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         <ModalContainer
           className={classes.overlay}
           container={container}
-          direction={direction}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
           disablePortal={disablePortal}

@@ -1,18 +1,18 @@
 import { cleanup, cleanupHook, renderHook, render } from '../../__test-utils__';
 import useModalContainer from './useModalContainer';
 
-const renderMockSliderFadeOverlay = jest.fn();
+const renderMockBackdrop = jest.fn();
 
-jest.mock('../_internal/SlideFadeOverlay', () => {
-  return function MockRenderSlideFadeOverlay(props: any) {
-    renderMockSliderFadeOverlay(props);
-    return <div data-testid="mock-slide-fade-overlay">Mock Overlay</div>;
+jest.mock('../Backdrop', () => {
+  return function MockRenderBackdrop(props: any) {
+    renderMockBackdrop(props);
+    return <div data-testid="mock-backdrop">{props.children}</div>;
   };
 });
 
 describe('useModalContainer()', () => {
   beforeEach(() => {
-    renderMockSliderFadeOverlay.mockClear();
+    renderMockBackdrop.mockClear();
   });
 
   afterEach(() => {
@@ -26,21 +26,20 @@ describe('useModalContainer()', () => {
     const { Container, defaultOptions } = result.current;
 
     render(
-      <Container>
+      <Container open>
         <div />
       </Container>,
     );
 
-    expect(renderMockSliderFadeOverlay).toHaveBeenCalledWith(
+    expect(renderMockBackdrop).toHaveBeenCalledWith(
       expect.objectContaining({
         className: defaultOptions.className,
         container: undefined,
-        direction: defaultOptions.direction,
         disableCloseOnBackdropClick: defaultOptions.disableCloseOnBackdropClick,
-        disablePortal: defaultOptions.disableCloseOnEscapeKeyDown,
+        disablePortal: defaultOptions.disablePortal,
         onBackdropClick: undefined,
         onClose: undefined,
-        open: defaultOptions.open,
+        open: true,
       }),
     );
   });
@@ -59,7 +58,6 @@ describe('useModalContainer()', () => {
       <Container
         className="foo"
         container={container}
-        direction="left"
         disableCloseOnBackdropClick
         disablePortal
         onBackdropClick={onBackdropClick}
@@ -70,11 +68,10 @@ describe('useModalContainer()', () => {
       </Container>,
     );
 
-    expect(renderMockSliderFadeOverlay).toHaveBeenCalledWith(
+    expect(renderMockBackdrop).toHaveBeenCalledWith(
       expect.objectContaining({
         className: 'foo',
         container,
-        direction: 'left',
         disableCloseOnBackdropClick: true,
         disablePortal: true,
         onBackdropClick,
