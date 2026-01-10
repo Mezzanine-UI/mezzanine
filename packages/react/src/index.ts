@@ -404,19 +404,17 @@ export { default as Message } from './Message';
 export type { MessageData, MessageSeverity, MessageType } from './Message';
 export {
   default as Modal,
-  ModalActions,
   ModalBody,
   ModalFooter,
   ModalHeader,
   useModalContainer,
 } from './Modal';
 export type {
-  ModalActionsProps,
   ModalBodyProps,
   ModalFooterProps,
   ModalHeaderProps,
   ModalProps,
-  ModalSeverity,
+  ModalStatusType,
   ModalSize,
 } from './Modal';
 export { default as NotificationCenter } from './NotificationCenter';

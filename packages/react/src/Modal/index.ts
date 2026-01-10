@@ -1,6 +1,4 @@
-export type { ModalSeverity, ModalSize } from '@mezzanine-ui/core/modal';
-export type { ModalActionsProps } from './ModalActions';
-export { default as ModalActions } from './ModalActions';
+export type { ModalStatusType, ModalSize } from '@mezzanine-ui/core/modal';
 export type { ModalBodyProps } from './ModalBody';
 export { default as ModalBody } from './ModalBody';
 export type { ModalFooterProps } from './ModalFooter';

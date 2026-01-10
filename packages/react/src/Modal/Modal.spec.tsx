@@ -10,7 +10,7 @@ import {
 } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import { ModalControl, ModalControlContext } from './ModalControl';
-import Modal, { ModalProps, ModalSeverity } from '.';
+import Modal, { ModalProps, ModalStatusType } from '.';
 import { createWrapper } from '../../__test-utils__/render';
 
 function getOverlayElement(container: HTMLElement = document.body) {
@@ -40,7 +40,7 @@ describe('<Modal />', () => {
   it('should provide modal control', () => {
     const modalControl: ModalControl = {
       loading: true,
-      severity: 'error',
+      modalStatusType: 'error',
     };
     const props: ModalProps = {
       ...modalControl,
@@ -107,7 +107,7 @@ describe('<Modal />', () => {
   });
 
   describe('prop: severity', () => {
-    function testBindSeverityClass(severity: ModalSeverity) {
+    function testBindSeverityClass(severity: ModalStatusType) {
       const modalElement = getModalElement()!;
 
       expect(
@@ -121,11 +121,11 @@ describe('<Modal />', () => {
       testBindSeverityClass('info');
     });
 
-    const severities: ModalSeverity[] = ['info', 'success', 'warning'];
+    const severities: ModalStatusType[] = ['info', 'success', 'warning'];
 
     severities.forEach((severity) => {
       it(`should bind ${severity} class`, () => {
-        render(<Modal open severity={severity} />);
+        render(<Modal open modalStatusType={severity} />);
 
         testBindSeverityClass(severity);
       });
@@ -177,7 +177,7 @@ describe('<Modal />', () => {
     });
 
     it('should not render close icon and not bind close icon class if hideCloseIcon=true', () => {
-      render(<Modal hideCloseIcon open />);
+      render(<Modal showDismissButton open />);
 
       const modalElement = getModalElement()!;
       const { lastElementChild: closeIconElement } = modalElement;

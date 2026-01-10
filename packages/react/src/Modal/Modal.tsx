@@ -1,52 +1,134 @@
-import {
-  modalClasses as classes,
-  ModalSeverity,
-  ModalSize,
-} from '@mezzanine-ui/core/modal';
-import { TimesIcon } from '@mezzanine-ui/icons';
+import { modalClasses as classes, ModalSize, ModalStatusType, ModalType, } from '@mezzanine-ui/core/modal';
 import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
-import Icon from '../Icon';
 import { ModalControl, ModalControlContext } from './ModalControl';
 import useModalContainer, { ModalContainerProps } from './useModalContainer';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import ModalHeader, { ModalHeaderProps } from './ModalHeader';
+import ModalFooter, { ModalFooterProps } from './ModalFooter';
+import ClearActions from '../ClearActions';
 
-export interface ModalProps
+interface BaseModalProps
   extends Omit<ModalContainerProps, 'children'>,
-    Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
+    Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
+    Partial<
+      Omit<
+        ModalHeaderProps,
+        'children' | 'className' | 'modalHeaderClearAction' | 'modalHeaderTitle'
+      >
+    >,
+    Partial<
+      Omit<
+        ModalFooterProps,
+        'children' | 'className' | 'modalFooterConfirmText'
+      >
+    > {
+  /**
+   * Content for the left side in extendedSplit layout.
+   * Only used when modalType is 'extendedSplit'.
+   */
+  extendedSplitLeftSideContent?: React.ReactNode;
+  /**
+   * Content for the right side in extendedSplit layout.
+   * Only used when modalType is 'extendedSplit'.
+   */
+  extendedSplitRightSideContent?: React.ReactNode;
   /**
    * Whether to force full screen on any breakpoint.
    * @default false
    */
   fullScreen?: boolean;
   /**
-   * Controls whether or not to hide close button at top-end.
-   * @default false
-   */
-  hideCloseIcon?: boolean;
-  /**
    * Whether the modal is loading.
    * Controls the loading prop of confirm button in modal actions.
    */
   loading?: boolean;
   /**
-   * Controlls whether or not to display status icon before title. <br />
+   * Controls whether or not to display status icon before title.
    * Notice that giving a status will only display the regular title.
    * @default 'info'
    */
-  severity?: ModalSeverity;
+  modalStatusType?: ModalStatusType;
+  /**
+   * Controls the type/layout of the modal.
+   * - 'standard': Default modal with body container
+   * - 'extended': Modal with left and right content areas
+   * - 'extendedSplit': Modal with split layout (footer inside left content)
+   * - 'mediaPreview': Modal for media preview
+   * - 'verification': Modal for verification flows
+   * @default 'standard'
+   */
+  modalType: ModalType;
+  /**
+   * Controls whether or not to hide close button at top-end.
+   * @default false
+   */
+  showDismissButton?: boolean;
   /**
    * Controls the size of the modal.
-   * @default "medium"
+   * @default 'regular'
    */
   size?: ModalSize;
 }
 
+type ModalHeaderPropsWithHeader = {
+  /**
+   * Whether to show modal header.
+   */
+  showModalHeader: true;
+  /**
+   * The title of the modal header (required when showModalHeader is true).
+   */
+  modalHeaderTitle: string;
+};
+
+type ModalHeaderPropsWithoutHeader = {
+  /**
+   * Whether to show modal header.
+   * @default false
+   */
+  showModalHeader?: false;
+  /**
+   * The title of the modal header.
+   */
+  modalHeaderTitle?: string;
+};
+
+type ModalFooterPropsWithFooter = {
+  /**
+   * Whether to show modal footer.
+   */
+  showModalFooter: true;
+  /**
+   * The confirm button text of the modal footer (required when showModalFooter is true).
+   */
+  modalFooterConfirmText: string;
+};
+
+type ModalFooterPropsWithoutFooter = {
+  /**
+   * Whether to show modal footer.
+   * @default false
+   */
+  showModalFooter?: false;
+  /**
+   * The confirm button text of the modal footer.
+   */
+  modalFooterConfirmText?: string;
+};
+
+export type ModalProps = BaseModalProps &
+  (
+    | (ModalHeaderPropsWithHeader & ModalFooterPropsWithFooter)
+    | (ModalHeaderPropsWithHeader & ModalFooterPropsWithoutFooter)
+    | (ModalHeaderPropsWithoutHeader & ModalFooterPropsWithFooter)
+    | (ModalHeaderPropsWithoutHeader & ModalFooterPropsWithoutFooter)
+  );
+
 /**
  * The react component for `mezzanine` modal.
  */
-const Modal = forwardRef<HTMLDivElement, ModalProps>(
-  function Modal(props, ref) {
+const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) {
     const {
       children,
       className,
@@ -54,25 +136,88 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       disableCloseOnBackdropClick = false,
       disableCloseOnEscapeKeyDown = false,
       disablePortal = false,
+      extendedSplitLeftSideContent,
+      extendedSplitRightSideContent,
       fullScreen = false,
-      hideCloseIcon = false,
       loading = false,
+      modalFooterActionsButtonLayout,
+      modalFooterAnnotation,
+      modalFooterAuxiliaryContentButtonProps,
+      modalFooterAuxiliaryContentButtonText,
+      modalFooterAuxiliaryContentChecked,
+      modalFooterAuxiliaryContentLabel,
+      modalFooterAuxiliaryContentOnChange,
+      modalFooterAuxiliaryContentOnClick,
+      modalFooterAuxiliaryContentType,
+      modalFooterCancelButtonProps,
+      modalFooterCancelText,
+      modalFooterConfirmButtonProps,
+      modalFooterConfirmText,
+      modalFooterLoading,
+      modalFooterOnCancel,
+      modalFooterOnConfirm,
+      modalFooterPasswordButtonProps,
+      modalFooterPasswordButtonText,
+      modalFooterPasswordChecked,
+      modalFooterPasswordCheckedLabel,
+      modalFooterPasswordCheckedOnChange,
+      modalFooterPasswordOnClick,
+      modalFooterShowCancelButton,
+      modalHeaderShowModalStatusTypeIcon,
+      modalHeaderStatusTypeIconLayout,
+      modalHeaderSupportingText,
+      modalHeaderSupportingTextAlign,
+      modalHeaderTitle,
+      modalHeaderTitleAlign,
+      modalStatusType = 'info',
+      modalType = 'standard',
       onBackdropClick,
       onClose,
       open,
-      severity = 'info',
-      size = 'medium',
+      showDismissButton = false,
+      showModalFooter = false,
+      showModalHeader,
+      size = 'regular',
       ...rest
     } = props;
+
     const modalControl: ModalControl = useMemo(
       () => ({
         loading,
-        severity,
+        modalStatusType: modalStatusType,
       }),
-      [loading, severity],
+      [loading, modalStatusType],
     );
 
     const { Container: ModalContainer } = useModalContainer();
+
+    const renderModalFooter = () => (
+      <ModalFooter
+        modalFooterActionsButtonLayout={modalFooterActionsButtonLayout}
+        modalFooterAnnotation={modalFooterAnnotation}
+        modalFooterAuxiliaryContentButtonProps={modalFooterAuxiliaryContentButtonProps}
+        modalFooterAuxiliaryContentButtonText={modalFooterAuxiliaryContentButtonText}
+        modalFooterAuxiliaryContentChecked={modalFooterAuxiliaryContentChecked}
+        modalFooterAuxiliaryContentLabel={modalFooterAuxiliaryContentLabel}
+        modalFooterAuxiliaryContentOnChange={modalFooterAuxiliaryContentOnChange}
+        modalFooterAuxiliaryContentOnClick={modalFooterAuxiliaryContentOnClick}
+        modalFooterAuxiliaryContentType={modalFooterAuxiliaryContentType}
+        modalFooterCancelButtonProps={modalFooterCancelButtonProps}
+        modalFooterCancelText={modalFooterCancelText}
+        modalFooterConfirmButtonProps={modalFooterConfirmButtonProps}
+        modalFooterConfirmText={modalFooterConfirmText}
+        modalFooterLoading={modalFooterLoading}
+        modalFooterOnCancel={modalFooterOnCancel}
+        modalFooterOnConfirm={modalFooterOnConfirm}
+        modalFooterPasswordButtonProps={modalFooterPasswordButtonProps}
+        modalFooterPasswordButtonText={modalFooterPasswordButtonText}
+        modalFooterPasswordChecked={modalFooterPasswordChecked}
+        modalFooterPasswordCheckedLabel={modalFooterPasswordCheckedLabel}
+        modalFooterPasswordCheckedOnChange={modalFooterPasswordCheckedOnChange}
+        modalFooterPasswordOnClick={modalFooterPasswordOnClick}
+        modalFooterShowCancelButton={modalFooterShowCancelButton}
+      />
+    )
 
     return (
       <ModalControlContext.Provider value={modalControl}>
@@ -91,22 +236,56 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
             {...rest}
             className={cx(
               classes.host,
-              classes.severity(severity),
+              classes.modalStatusType(modalStatusType),
               classes.size(size),
               {
                 [classes.fullScreen]: fullScreen,
-                [classes.withCloseIcon]: !hideCloseIcon,
+                [classes.withCloseIcon]: !showDismissButton,
               },
               className,
             )}
             role="dialog"
           >
-            {children}
-            {!hideCloseIcon && (
-              <Icon
-                className={classes.closeIcon}
-                icon={TimesIcon}
+            {showModalHeader && (
+              <ModalHeader
+                modalHeaderShowModalStatusTypeIcon={
+                  modalHeaderShowModalStatusTypeIcon
+                }
+                modalHeaderStatusTypeIconLayout={
+                  modalHeaderStatusTypeIconLayout
+                }
+                modalHeaderSupportingText={modalHeaderSupportingText}
+                modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
+                modalHeaderTitle={modalHeaderTitle}
+                modalHeaderTitleAlign={modalHeaderTitleAlign}
+              />
+            )}
+            {modalType === 'extendedSplit' && (
+              <div className={classes.modalBodyContainerExtendedSplit}>
+                <div className={classes.modalBodyContainerExtendedSplitRight}>
+                  {extendedSplitRightSideContent}
+                </div>
+                <div className={classes.modalBodyContainerExtendedSplitLeft}>
+                  <div className={classes.modalBodyContainerExtendedSplitLeftSideContent}>
+                    {extendedSplitLeftSideContent}
+                  </div>
+                  {showModalFooter && renderModalFooter()}
+                </div>
+              </div>
+            )}
+            {modalType === 'standard' && (
+              <>
+                <div className={classes.modalBodyContainer}>
+                  {children}
+                </div>
+                {showModalFooter && renderModalFooter()}
+              </>
+            )}
+            {showDismissButton && (
+              <ClearActions
                 onClick={onClose}
+                className={classes.closeIcon}
+                variant="base"
               />
             )}
           </div>

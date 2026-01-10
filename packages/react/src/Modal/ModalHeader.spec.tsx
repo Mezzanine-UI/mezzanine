@@ -1,10 +1,10 @@
-import { modalSeverityIcons } from '@mezzanine-ui/core/modal';
+import { modalStatusTypeIcons } from '@mezzanine-ui/core/modal';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Modal, { ModalHeader, ModalSeverity } from '.';
+import Modal, { ModalHeader, ModalStatusType } from '.';
 
 import type { JSX } from 'react';
 
@@ -80,30 +80,30 @@ describe('<ModalHeader />', () => {
 
   describe('severity icon', () => {
     it('should render severity icon if showSeverityIcon=true and bind severity icon class', () => {
-      const { getHostHTMLElement } = render(<ModalHeader showSeverityIcon />);
+      const { getHostHTMLElement } = render(<ModalHeader showModalStatusTypeIcon/>);
       const element = getHostHTMLElement();
       const { firstElementChild: iconElement } = element;
 
       expect(iconElement!.getAttribute('data-icon-name')).toBe(
-        modalSeverityIcons.info.name,
+        modalStatusTypeIcons.info.name,
       );
       expect(iconElement!.classList.contains('mzn-modal__severity-icon'));
     });
 
-    const severities: ModalSeverity[] = ['info', 'success', 'warning'];
+    const severities: ModalStatusType[] = ['info', 'success', 'warning'];
 
     severities.forEach((severity) => {
       it(`should render ${severity} icon`, () => {
         render(
-          <Modal open severity={severity}>
-            <ModalHeader showSeverityIcon />
+          <Modal open modalStatusType={severity}>
+            <ModalHeader showModalStatusTypeIcon/>
           </Modal>,
         );
 
         const iconElement = document.body.querySelector(
           '.mzn-modal__severity-icon',
         )!;
-        const icon = modalSeverityIcons[severity];
+        const icon = modalStatusTypeIcons[severity];
 
         expect(iconElement!.getAttribute('data-icon-name')).toBe(icon.name);
       });
