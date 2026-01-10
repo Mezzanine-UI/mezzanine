@@ -8,5 +8,6 @@ export { default as ModalFooter } from './ModalFooter';
 export type { ModalHeaderProps } from './ModalHeader';
 export { default as ModalHeader } from './ModalHeader';
 export { default as useModalContainer } from './useModalContainer';
+export type { ModalContainerProps } from './useModalContainer';
 export type { ModalProps } from './Modal';
 export { default } from './Modal';
