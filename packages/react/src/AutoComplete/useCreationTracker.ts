@@ -20,11 +20,22 @@ export function useCreationTracker() {
       options.filter(
         (opt) => !creationTrackerRef.current.unselectedCreatedIds.has(opt.id),
       ),
-    [],
+    [creationTrackerRef],
   );
 
   const clearUnselected = useCallback(() => {
     creationTrackerRef.current.unselectedCreatedIds.clear();
+  }, []);
+
+  const clearNewlyCreated = useCallback((ids?: string[]) => {
+    if (!ids) {
+      creationTrackerRef.current.newlyCreatedIds.clear();
+      return;
+    }
+
+    ids.forEach((id) => {
+      creationTrackerRef.current.newlyCreatedIds.delete(id);
+    });
   }, []);
 
   const markCreated = useCallback((id: string) => {
@@ -50,6 +61,7 @@ export function useCreationTracker() {
     filterUnselected,
     clearUnselected,
     markCreated,
+    clearNewlyCreated,
     markUnselected,
     isNewlyCreated,
   };
