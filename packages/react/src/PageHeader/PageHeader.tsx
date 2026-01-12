@@ -33,6 +33,11 @@ export type PageHeaderProps = NativeElementPropsWithoutKeyAndRef<'header'> & {
   onBackClick?: () => void;
   /** Optional description text displayed below the title */
   description?: string;
+  /**
+   * Size variant of the toolbar. <br />
+   * Affects the size of buttons and filter component. <br />
+   */
+  size?: 'main' | 'sub';
   /** Main title text for the page header */
   title: string;
   /** HTML element type for the title (defaults to 'h2') */
@@ -118,6 +123,7 @@ const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
       className,
       description,
       onBackClick,
+      size,
       title,
       titleComponent = 'h2',
       ...rest
