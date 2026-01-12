@@ -1,7 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import Typography from '../Typography';
+import Badge from '../Badge';
+import Button from '../Button';
+import Progress from '../Progress';
+import Tag from '../Tag';
+import TagGroup from '../Tag/TagGroup';
 import Description from './Description';
+import DescriptionContent from './DescriptionContent';
 
 export default {
   title: 'Data Display/Description/Description',
@@ -23,95 +29,47 @@ export const Playground: Story = {
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Normal
         </Typography>
-        <Description
-          titleProps={{
-            children: '訂購日期',
-            widthType: 'narrow',
-          }}
-          contentProps={{
-            children: '2025-11-03',
-          }}
-        />
+        <Description title="訂購日期" widthType="narrow">
+          <DescriptionContent>2025-11-03</DescriptionContent>
+        </Description>
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Badge
         </Typography>
-        <Description
-          titleProps={{
-            children: '訂單狀態',
-            widthType: 'narrow',
-          }}
-          contentProps={{
-            variant: 'badge',
-            badge: {
-              variant: 'dot-success',
-              text: '已訂購',
-            },
-          }}
-        />
+        <Description title="訂單狀態" widthType="narrow">
+          <Badge variant="dot-success" text="已訂購" />
+        </Description>
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Button
         </Typography>
-        <Description
-          titleProps={{
-            children: '訂單連結',
-            widthType: 'narrow',
-          }}
-          contentProps={{
-            variant: 'button',
-            button: {
-              variant: 'base-text-link',
-              children: '連結',
-              size: 'sub',
-            },
-          }}
-        />
+        <Description title="訂單連結" widthType="narrow">
+          <Button variant="base-text-link" size="sub">
+            連結
+          </Button>
+        </Description>
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Progress
         </Typography>
-        <Description
-          titleProps={{
-            children: '訂單進度',
-            widthType: 'narrow',
-          }}
-          contentProps={{
-            variant: 'progress',
-            progress: {
-              percent: 80,
-              type: 'percent',
-            },
-          }}
-        />
+        <Description title="訂單進度" widthType="narrow">
+          <Progress percent={80} type="percent" />
+        </Description>
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Tags
         </Typography>
-        <Description
-          titleProps={{
-            children: '訂單標籤',
-            widthType: 'narrow',
-          }}
-          contentProps={{
-            variant: 'tags',
-            tags: [
-              {
-                label: '快速',
-              },
-              {
-                label: '冷藏',
-              },
-              {
-                label: '特價',
-              },
-            ],
-          }}
-        />
+        <Description title="訂單標籤" widthType="narrow">
+          <TagGroup>
+            <Tag label="快速" />
+            <Tag label="冷藏" />
+            <Tag label="特價" />
+          </TagGroup>
+        </Description>
       </div>
       <div>
         <Typography variant="h3" style={{ marginBottom: 8 }}>
@@ -119,16 +77,13 @@ export const Playground: Story = {
         </Typography>
         <Description
           orientation="vertical"
-          titleProps={{
-            children: '訂購日期',
-            icon: QuestionOutlineIcon,
-            tooltip: 'tooltip',
-            tooltipPlacement: 'top-start',
-          }}
-          contentProps={{
-            children: '2025-11-03',
-          }}
-        />
+          title="訂購日期"
+          icon={QuestionOutlineIcon}
+          tooltip="tooltip"
+          tooltipPlacement="top-start"
+        >
+          <DescriptionContent>2025-11-03</DescriptionContent>
+        </Description>
       </div>
     </div>
   ),
