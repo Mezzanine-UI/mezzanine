@@ -14,7 +14,7 @@ type Story = StoryObj<AnchorProps>;
  */
 const anchors: AnchorProps['anchors'] = [
   {
-    href: '/?path=/story/navigation-anchor--basics#anchor1',
+    href: '/?path=/story/navigation-anchor--all#anchor1',
     id: 'Anchor1',
     name: 'Anchor 1',
   },
@@ -23,12 +23,12 @@ const anchors: AnchorProps['anchors'] = [
       {
         children: [
           {
-            href: '/?path=/story/navigation-anchor--basics#anchor2-1-1',
+            href: '/?path=/story/navigation-anchor--all#anchor2-1-1',
             id: 'Anchor2-1-1',
             name: 'Anchor 2-1-1',
           },
         ],
-        href: '/?path=/story/navigation-anchor--basics#anchor2-1',
+        href: '/?path=/story/navigation-anchor--all#anchor2-1',
         id: 'Anchor2-1',
         name: 'Anchor 2-1',
       },
@@ -36,23 +36,23 @@ const anchors: AnchorProps['anchors'] = [
         children: [
           {
             disabled: true,
-            href: '/?path=/story/navigation-anchor--basics#anchor2-2-1',
+            href: '/?path=/story/navigation-anchor--all#anchor2-2-1',
             id: 'Anchor2-2-1',
             name: 'Anchor 2-2-1',
           },
           {
             disabled: true,
-            href: '/?path=/story/navigation-anchor--basics#anchor2-2-2',
+            href: '/?path=/story/navigation-anchor--all#anchor2-2-2',
             id: 'Anchor2-2-2',
             name: 'Anchor 2-2-2',
           },
         ],
-        href: '/?path=/story/navigation-anchor--basics#anchor2-2',
+        href: '/?path=/story/navigation-anchor--all#anchor2-2',
         id: 'Anchor2-2',
         name: 'Anchor 2-2',
       },
     ],
-    href: '/?path=/story/navigation-anchor--basics#anchor2',
+    href: '/?path=/story/navigation-anchor--all#anchor2',
     id: 'Anchor2',
     name: 'Anchor 2',
   },
@@ -61,30 +61,30 @@ const anchors: AnchorProps['anchors'] = [
       {
         children: [
           {
-            href: '/?path=/story/navigation-anchor--basics#anchor3-1-1',
+            href: '/?path=/story/navigation-anchor--all#anchor3-1-1',
             id: 'Anchor3-1-1',
             name: 'Anchor 3-1-1',
           },
         ],
-        href: '/?path=/story/navigation-anchor--basics#anchor3-1',
+        href: '/?path=/story/navigation-anchor--all#anchor3-1',
         id: 'Anchor3-1',
         name: 'Anchor 3-1',
       },
       {
         children: [
           {
-            href: '/?path=/story/navigation-anchor--basics#anchor3-2-1',
+            href: '/?path=/story/navigation-anchor--all#anchor3-2-1',
             id: 'Anchor3-2-1',
             name: 'Anchor 3-2-1',
           },
         ],
-        href: '/?path=/story/navigation-anchor--basics#anchor3-2',
+        href: '/?path=/story/navigation-anchor--all#anchor3-2',
         id: 'Anchor3-2',
         name: 'Anchor 3-2',
       },
     ],
     disabled: true,
-    href: '/?path=/story/navigation-anchor--basics#anchor3',
+    href: '/?path=/story/navigation-anchor--all#anchor3',
     id: 'Anchor3',
     name: 'Anchor 3',
   },
