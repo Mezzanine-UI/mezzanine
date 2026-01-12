@@ -193,6 +193,8 @@ const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
           ? parseChildren(props.children)
           : [];
 
+    const onClick = 'onClick' in props ? props.onClick : undefined;
+
     return (
       <div
         ref={ref}
@@ -202,7 +204,10 @@ const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
         {anchorItems.map((anchorItem) => (
           <AnchorItem
             key={anchorItem.id}
-            item={anchorItem}
+            item={{
+              ...anchorItem,
+              onClick: anchorItem.onClick || onClick,
+            }}
           />
         ))}
       </div>

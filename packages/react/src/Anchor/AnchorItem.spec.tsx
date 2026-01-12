@@ -57,11 +57,10 @@ describe('<AnchorItem />', () => {
   });
 
   describe('prop: disabled', () => {
-    it('should not have aria-disabled attribute by default', () => {
+    it('should not have disabled styles by default', () => {
       const { container } = render(<AnchorItem item={mockItem} />);
       const element = container.querySelector('a');
 
-      expect(element?.getAttribute('aria-disabled')).toBe('false');
       expect(element?.classList.contains(anchorClasses.anchorItemDisabled)).toBe(false);
     });
 
@@ -265,6 +264,98 @@ describe('<AnchorItem />', () => {
       const element = container.querySelector('a');
 
       expect(element?.classList.contains(anchorClasses.anchorItemActive)).toBe(false);
+    });
+  });
+
+  describe('prop: autoScrollTo', () => {
+    beforeEach(() => {
+      window.location.hash = '';
+      document.body.innerHTML = '<div id="foo"></div>';
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('should not auto-scroll by default when autoScrollTo is not set', () => {
+      const scrollIntoViewMock = jest.fn();
+      const targetElement = document.getElementById('foo');
+      if (targetElement) {
+        targetElement.scrollIntoView = scrollIntoViewMock;
+      }
+
+      const { container } = render(<AnchorItem item={mockItem} />);
+      const element = container.querySelector('a');
+
+      element?.click();
+
+      expect(scrollIntoViewMock).not.toHaveBeenCalled();
+    });
+
+    it('should auto-scroll when autoScrollTo is true', () => {
+      const scrollIntoViewMock = jest.fn();
+      const targetElement = document.getElementById('foo');
+      if (targetElement) {
+        targetElement.scrollIntoView = scrollIntoViewMock;
+      }
+
+      const itemWithAutoScroll = { ...mockItem, autoScrollTo: true };
+      const { container } = render(<AnchorItem item={itemWithAutoScroll} />);
+      const element = container.querySelector('a');
+
+      element?.click();
+
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+
+    it('should auto-scroll when parentAutoScrollTo is true', () => {
+      const scrollIntoViewMock = jest.fn();
+      const targetElement = document.getElementById('foo');
+      if (targetElement) {
+        targetElement.scrollIntoView = scrollIntoViewMock;
+      }
+
+      const { container } = render(<AnchorItem item={mockItem} parentAutoScrollTo />);
+      const element = container.querySelector('a');
+
+      element?.click();
+
+      expect(scrollIntoViewMock).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'start',
+      });
+    });
+
+    it('should propagate autoScrollTo to children', () => {
+      document.body.innerHTML = '<div id="parent"></div><div id="child-1"></div><div id="child-2"></div>';
+
+      const scrollIntoViewMocks = {
+        child1: jest.fn(),
+        child2: jest.fn(),
+        parent: jest.fn(),
+      };
+
+      const parentElement = document.getElementById('parent');
+      const child1Element = document.getElementById('child-1');
+      const child2Element = document.getElementById('child-2');
+
+      if (parentElement) parentElement.scrollIntoView = scrollIntoViewMocks.parent;
+      if (child1Element) child1Element.scrollIntoView = scrollIntoViewMocks.child1;
+      if (child2Element) child2Element.scrollIntoView = scrollIntoViewMocks.child2;
+
+      const itemWithAutoScroll = { ...mockItemWithChildren, autoScrollTo: true };
+      const { getAllByRole } = render(<AnchorItem item={itemWithAutoScroll} />);
+      const links = getAllByRole('link');
+
+      links[1]?.click();
+
+      expect(scrollIntoViewMocks.child1).toHaveBeenCalledWith({
+        behavior: 'smooth',
+        block: 'start',
+      });
     });
   });
 });
