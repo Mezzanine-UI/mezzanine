@@ -6,7 +6,7 @@ import {
 import { pageHeaderClasses as classes } from '@mezzanine-ui/core/page-header';
 import Breadcrumb from '../Breadcrumb';
 import Button from '../Button';
-import PageToolbar from '../PageToolbar';
+import ContentHeader from '../ContentHeader';
 import PageHeader from '.';
 
 describe('<PageHeader />', () => {
@@ -235,11 +235,11 @@ describe('<PageHeader />', () => {
     });
   });
 
-  describe('prop: children - PageToolbar', () => {
-    it('should render PageToolbar when provided as child', () => {
+  describe('prop: children - ContentHeader', () => {
+    it('should render ContentHeader when provided as child', () => {
       const { getByText } = render(
         <PageHeader title="Test Title">
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Primary</Button>,
             }}
@@ -250,10 +250,10 @@ describe('<PageHeader />', () => {
       expect(getByText('Primary')).toBeInstanceOf(HTMLElement);
     });
 
-    it('should clone PageToolbar with size="main"', () => {
+    it('should clone ContentHeader with size="main"', () => {
       const { container } = render(
         <PageHeader title="Test Title">
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Primary</Button>,
             }}
@@ -265,17 +265,17 @@ describe('<PageHeader />', () => {
       expect(toolbar).toBeInstanceOf(HTMLElement);
     });
 
-    it('should not render PageToolbar when not provided', () => {
+    it('should not render ContentHeader when not provided', () => {
       const { container } = render(<PageHeader title="Test Title" />);
       const toolbar = container.querySelector('[class*="page-toolbar"]');
 
       expect(toolbar).toBe(null);
     });
 
-    it('should render PageToolbar after title in header content', () => {
+    it('should render ContentHeader after title in header content', () => {
       const { container } = render(
         <PageHeader title="Test Title">
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Primary</Button>,
             }}
@@ -350,7 +350,7 @@ describe('<PageHeader />', () => {
         <PageHeader description="Test Description" title="Test Title">
           <Breadcrumb items={[{ href: '/', label: 'Home' }]} />
           <Button onClick={() => {}}>Back</Button>
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Primary</Button>,
             }}
@@ -372,7 +372,7 @@ describe('<PageHeader />', () => {
         <PageHeader description="Test Description" title="Test Title">
           <Breadcrumb items={[{ href: '/', label: 'Home' }]} />
           <a href="/back">Back</a>
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Primary</Button>,
             }}
@@ -422,10 +422,10 @@ describe('<PageHeader />', () => {
       );
     });
 
-    it('should render with only PageToolbar and title', () => {
+    it('should render with only ContentHeader and title', () => {
       const { container, getByText } = render(
         <PageHeader title="Test Title">
-          <PageToolbar
+          <ContentHeader
             actions={{
               primaryButton: <Button>Action</Button>,
             }}
