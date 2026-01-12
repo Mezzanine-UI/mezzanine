@@ -1,10 +1,14 @@
-import { cleanup, render } from '../../__test-utils__';
+import { cleanup, render, act, fireEvent } from '../../__test-utils__';
 import { CopyIcon, QuestionOutlineIcon } from '@mezzanine-ui/icons';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import { Description } from '.';
+
+function getPopperContainer(container: Element | null = document.body) {
+  return container!.querySelector('div[data-popper-placement]');
+}
 
 describe('<Description />', () => {
   afterEach(cleanup);
@@ -13,9 +17,7 @@ describe('<Description />', () => {
     render(
       <Description
         ref={ref}
-        titleProps={{
-          children: 'title',
-        }}
+        title="title"
         contentProps={{
           children: 'content',
         }}
@@ -27,9 +29,7 @@ describe('<Description />', () => {
     render(
       <Description
         className={className}
-        titleProps={{
-          children: 'title',
-        }}
+        title="title"
         contentProps={{
           children: 'content',
         }}
@@ -40,9 +40,7 @@ describe('<Description />', () => {
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
       <Description
-        titleProps={{
-          children: 'title',
-        }}
+        title="title"
         contentProps={{
           children: 'content',
         }}
@@ -53,14 +51,12 @@ describe('<Description />', () => {
     expect(element!.classList.contains('mzn-description')).toBeTruthy();
   });
 
-  describe('prop: titleProps', () => {
+  describe('title component in description', () => {
     it('give badge to title', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            badge: 'dot-success',
-            children: 'title',
-          }}
+          title="title"
+          badge="dot-success"
           contentProps={{
             children: 'content',
           }}
@@ -81,10 +77,8 @@ describe('<Description />', () => {
     it('give icon to title', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            icon: QuestionOutlineIcon,
-            children: 'title',
-          }}
+          title="title"
+          icon={QuestionOutlineIcon}
           contentProps={{
             children: 'content',
           }}
@@ -99,15 +93,42 @@ describe('<Description />', () => {
 
       expect(iconElement!.classList.contains('mzn-icon')).toBeTruthy();
     });
+
+    it('give icon and tooltip to title', async () => {
+      const { getHostHTMLElement } = render(
+        <Description
+          title="title"
+          icon={QuestionOutlineIcon}
+          tooltip="Hello"
+          contentProps={{
+            children: 'content',
+          }}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const [titleElement] = element.getElementsByClassName(
+        'mzn-description-title',
+      );
+
+      const [iconElement] = titleElement.getElementsByTagName('i');
+
+      expect(iconElement!.classList.contains('mzn-icon')).toBeTruthy();
+
+      await act(async () => {
+        fireEvent.mouseEnter(iconElement);
+      });
+
+      const popperElement = getPopperContainer();
+
+      expect(popperElement?.textContent).toBe('Hello');
+    });
   });
 
   describe('prop: contentProps', () => {
     it('default variant of content is "normal"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             children: 'content',
           }}
@@ -124,9 +145,7 @@ describe('<Description />', () => {
     it('when variant of content is "statistic"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'statistic',
             children: 'content',
@@ -144,9 +163,7 @@ describe('<Description />', () => {
     it('when variant of content is "trend-up"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'trend-up',
             children: 'content',
@@ -164,9 +181,7 @@ describe('<Description />', () => {
     it('when variant of content is "trend-down"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'trend-down',
             children: 'content',
@@ -184,9 +199,7 @@ describe('<Description />', () => {
     it('when variant of content is "with-icon"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'with-icon',
             icon: CopyIcon,
@@ -205,9 +218,7 @@ describe('<Description />', () => {
     it('when variant of content is "badge"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'badge',
             badge: {
@@ -226,9 +237,7 @@ describe('<Description />', () => {
     it('when variant of content is "button"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'button',
             button: {
@@ -248,9 +257,7 @@ describe('<Description />', () => {
     it('when variant of content is "progress"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'progress',
             progress: {
@@ -269,9 +276,7 @@ describe('<Description />', () => {
     it('when variant of content is "tags"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             variant: 'tags',
             tags: [
@@ -293,9 +298,7 @@ describe('<Description />', () => {
     it('default orientation is "horizontal"', () => {
       const { getHostHTMLElement } = render(
         <Description
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             children: 'content',
           }}
@@ -312,9 +315,7 @@ describe('<Description />', () => {
       const { getHostHTMLElement } = render(
         <Description
           orientation="vertical"
-          titleProps={{
-            children: 'title',
-          }}
+          title="title"
           contentProps={{
             children: 'content',
           }}

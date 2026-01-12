@@ -19,7 +19,14 @@ import { TagProps } from '../Tag/typings';
 import Tag from '../Tag';
 import TagGroup from '../Tag/TagGroup';
 
-export interface DescriptionProps {
+type DistributiveOmit<T, K extends PropertyKey> = T extends any
+  ? Omit<T, K>
+  : never;
+
+export type DescriptionProps = DistributiveOmit<
+  DescriptionTitleProps,
+  'className' | 'children'
+> & {
   /**
    * Custom class name for description
    */
@@ -51,10 +58,10 @@ export interface DescriptionProps {
    */
   orientation?: DescriptionOrientation;
   /**
-   * Props passed to the DescriptionTitle component
+   * title text for description
    */
-  titleProps: DescriptionTitleProps;
-}
+  title: string;
+};
 
 const Description = forwardRef<HTMLDivElement, DescriptionProps>(
   function Description(props, ref) {
@@ -62,7 +69,8 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
       className,
       contentProps,
       orientation = 'horizontal',
-      titleProps,
+      title,
+      ...rest
     } = props;
 
     const contentComponent = useMemo(() => {
@@ -99,7 +107,7 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
         )}
         ref={ref}
       >
-        <DescriptionTitle {...titleProps} />
+        <DescriptionTitle {...rest}>{title}</DescriptionTitle>
         {contentComponent}
       </div>
     );

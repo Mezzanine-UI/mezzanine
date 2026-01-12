@@ -24,10 +24,8 @@ export const Playground: Story = {
           Normal
         </Typography>
         <Description
-          titleProps={{
-            children: '訂購日期',
-            widthType: 'narrow',
-          }}
+          title="訂購日期"
+          widthType="narrow"
           contentProps={{
             children: '2025-11-03',
           }}
@@ -38,10 +36,8 @@ export const Playground: Story = {
           Badge
         </Typography>
         <Description
-          titleProps={{
-            children: '訂單狀態',
-            widthType: 'narrow',
-          }}
+          title="訂單狀態"
+          widthType="narrow"
           contentProps={{
             variant: 'badge',
             badge: {
@@ -56,10 +52,8 @@ export const Playground: Story = {
           Button
         </Typography>
         <Description
-          titleProps={{
-            children: '訂單連結',
-            widthType: 'narrow',
-          }}
+          title="訂單連結"
+          widthType="narrow"
           contentProps={{
             variant: 'button',
             button: {
@@ -75,10 +69,8 @@ export const Playground: Story = {
           Progress
         </Typography>
         <Description
-          titleProps={{
-            children: '訂單進度',
-            widthType: 'narrow',
-          }}
+          title="訂單進度"
+          widthType="narrow"
           contentProps={{
             variant: 'progress',
             progress: {
@@ -93,10 +85,8 @@ export const Playground: Story = {
           Tags
         </Typography>
         <Description
-          titleProps={{
-            children: '訂單標籤',
-            widthType: 'narrow',
-          }}
+          title="訂單標籤"
+          widthType="narrow"
           contentProps={{
             variant: 'tags',
             tags: [
@@ -119,12 +109,10 @@ export const Playground: Story = {
         </Typography>
         <Description
           orientation="vertical"
-          titleProps={{
-            children: '訂購日期',
-            icon: QuestionOutlineIcon,
-            tooltip: 'tooltip',
-            tooltipPlacement: 'top-start',
-          }}
+          title="訂購日期"
+          icon={QuestionOutlineIcon}
+          tooltip="tooltip"
+          tooltipPlacement="top-start"
           contentProps={{
             children: '2025-11-03',
           }}
