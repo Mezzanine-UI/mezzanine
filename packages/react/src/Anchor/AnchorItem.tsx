@@ -6,6 +6,7 @@ import { cx } from '../utils/cx';
 import Typography from '../Typography';
 
 export interface AnchorItemData {
+  autoScrollTo?: boolean;
   children?: AnchorItemData[];
   disabled?: boolean;
   href: string;
@@ -20,6 +21,7 @@ export interface AnchorItemProps {
   /**
    * ```ts
    * {
+   *   autoScrollTo?: boolean;
    *   children?: AnchorItemData[];
    *   disabled?: boolean;
    *   href: string;
@@ -32,6 +34,7 @@ export interface AnchorItemProps {
    */
   item: AnchorItemData;
   level?: number;
+  parentAutoScrollTo?: boolean;
   parentDisabled?: boolean;
 }
 
@@ -68,6 +71,7 @@ function AnchorItem({
   className,
   item,
   level = 1,
+  parentAutoScrollTo = false,
   parentDisabled = false,
 }: AnchorItemProps) {
   const renderableChildren =
@@ -78,6 +82,7 @@ function AnchorItem({
   const currentHash = useHash();
   const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
   const isActive = itemHash && currentHash === itemHash;
+  const isAutoScrollTo = parentAutoScrollTo || item.autoScrollTo;
   const isDisabled = parentDisabled || item.disabled;
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -93,10 +98,12 @@ function AnchorItem({
         window.location.hash = itemHash;
       }
 
-      // Scroll to the target element if it exists
-      const targetElement = document.querySelector(itemHash);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll to the target element if it exists and autoScrollTo is enabled
+      if (isAutoScrollTo) {
+        const targetElement = document.querySelector(itemHash);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     }
 
@@ -133,6 +140,7 @@ function AnchorItem({
               item={child}
               key={child.id}
               level={level + 1}
+              parentAutoScrollTo={isAutoScrollTo}
               parentDisabled={isDisabled}
             />
           ))}
