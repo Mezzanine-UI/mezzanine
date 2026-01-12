@@ -12,6 +12,7 @@ export interface AnchorItemData {
   id: string;
   name: string;
   onClick?: VoidFunction;
+  title?: string;
 }
 
 export interface AnchorItemProps {
@@ -25,12 +26,12 @@ export interface AnchorItemProps {
    *   id: string;
    *   name: string;
    *   onClick?: VoidFunction;
+   *   title?: string;
    * }
    * ```
    */
   item: AnchorItemData;
   level?: number;
-  onClick?: VoidFunction;
   parentDisabled?: boolean;
 }
 
@@ -67,7 +68,6 @@ function AnchorItem({
   className,
   item,
   level = 1,
-  onClick,
   parentDisabled = false,
 }: AnchorItemProps) {
   const renderableChildren =
@@ -116,6 +116,7 @@ function AnchorItem({
         href={item.href}
         onClick={handleClick}
         tabIndex={isDisabled ? -1 : undefined}
+        title={item.title}
       >
         <Typography color="inherit" variant="label-primary">
           {item.name}
@@ -132,7 +133,6 @@ function AnchorItem({
               item={child}
               key={child.id}
               level={level + 1}
-              onClick={onClick}
               parentDisabled={isDisabled}
             />
           ))}
