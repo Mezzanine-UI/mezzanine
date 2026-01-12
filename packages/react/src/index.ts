@@ -221,8 +221,8 @@ export {
   type TableActionsBase,
   type TableActionsWithMinWidth,
 } from './Table';
-export { default as Tag } from './Tag';
-export type { TagProps, TagSize } from './Tag';
+export { default as Tag, TagGroup } from './Tag';
+export type { TagProps, TagSize, TagGroupProps } from './Tag';
 export { default as Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
 export {
