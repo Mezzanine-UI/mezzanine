@@ -95,13 +95,13 @@ export { default as Navigation } from './Navigation';
 export type {
   NavigationChild,
   NavigationChildren,
-  NavigationProps,
   NavigationFooterProps,
   NavigationHeaderProps,
-  NavigationOptionProps,
-  NavigationUserMenuProps,
   NavigationIconButtonProps,
   NavigationOptionCategoryProps,
+  NavigationOptionProps,
+  NavigationProps,
+  NavigationUserMenuProps,
 } from './Navigation';
 export { default as PageFooter } from './PageFooter';
 export type { PageFooterProps } from './PageFooter';
@@ -109,8 +109,8 @@ export { default as PageHeader } from './PageHeader';
 export type { PageHeaderProps } from './PageHeader';
 export { Step, default as Stepper, useStepper } from './Stepper';
 export type { StepperProps, StepProps } from './Stepper';
-export { TabItem, default as Tab } from './Tab';
-export type { TabItemProps, TabsChild, TabProps } from './Tab';
+export { default as Tab, TabItem } from './Tab';
+export type { TabItemProps, TabProps, TabsChild } from './Tab';
 
 /**
  * Data Display
@@ -131,15 +131,15 @@ export { default as Card, CardActions } from './Card';
 export type { CardActionsProps, CardProps } from './Card';
 export {
   Description,
-  DescriptionTitle,
   DescriptionContent,
   DescriptionGroup,
+  DescriptionTitle,
 } from './Description';
 export type {
-  DescriptionProps,
-  DescriptionTitleProps,
   DescriptionContentProps,
   DescriptionGroupProps,
+  DescriptionProps,
+  DescriptionTitleProps,
 } from './Description';
 export { default as Empty } from './Empty';
 export type { EmptyProps } from './Empty';
@@ -160,66 +160,78 @@ export type {
   PaginationProps,
 } from './Pagination';
 export {
-  default as Table,
   getCellAlignClass,
   getRowKey,
+  default as Table,
   TableContext,
   TableDataContext,
   TableSuperContext,
   useTableContext,
   useTableDataContext,
-  useTableSuperContext,
-  useTableRowSelection,
   useTableDataSource,
-} from './Table';
-export {
-  type TableRecord,
-  type TableDataSourceWithKey,
-  type TableDataSourceWithId,
-  type TableDataSource,
-  type SortOrder,
+  useTableRowSelection,
+  useTableSuperContext,
   type ColumnAlign,
-  type HighlightMode,
   type FixedType,
-  type TableSize,
-  type TableColumnTitleMenu,
-  type TableColumnBase,
-  type TableColumnBaseWithMinWidthRequired,
-  type TableColumn,
-  type TableColumnWithMinWidth,
-  type TableColumnWithDataIndex,
-  type TableColumnWithDataIndexAndMinWidth,
-  type TableColumnWithRender,
-  type TableColumnWithRenderAndMinWidth,
-  type TableSelectionMode,
-  type TableBulkGeneralAction,
-  type TableBulkOverflowAction,
-  type TableBulkActions,
-  type TableRowSelectionBase,
-  type TableRowSelectionCheckbox,
-  type TableRowSelectionRadio,
-  type TableRowSelection,
-  type TableScroll,
-  type TableDraggable,
-  type TableExpandable,
-  type TableBaseProps,
-  type TableVirtualizedProps,
-  type TableNonVirtualizedProps,
-  type TableProps,
-  type TableResizedColumnState,
-  type TableContextValue,
-  type TableDataContextValue,
-  type TableDraggableState,
-  type TableExpansionState,
-  type TableSelectionState,
-  type TableSortingState,
-  type UpdateDataSourceOptions,
-  type UseTableDataSourceOptions,
-  type TableTransitionState,
   type TableActionItem,
   type TableActions,
   type TableActionsBase,
   type TableActionsWithMinWidth,
+  type TableBaseProps,
+  type TableBulkGeneralAction,
+  type TableBulkOverflowAction,
+  type TableColumn,
+  type TableColumn,
+  type TableColumnBase,
+  type TableColumnBase,
+  type TableColumnBaseWithMinWidthRequired,
+  type TableColumnState,
+  type TableColumnTitleMenu,
+  type TableColumnTitleMenu,
+  type TableColumnWithDataIndex,
+  type TableColumnWithDataIndex,
+  type TableColumnWithDataIndexAndMinWidth,
+  type TableColumnWithMinWidth,
+  type TableColumnWithRender,
+  type TableColumnWithRender,
+  type TableColumnWithRenderAndMinWidth,
+  type TableContextValue,
+  type TableContextValue,
+  type TableDataContextValue,
+  type TableDataContextValue,
+  type TableDataSource,
+  type TableDataSourceWithId,
+  type TableDataSourceWithKey,
+  type TableDraggable,
+  type TableDraggable,
+  type TableDraggableState,
+  type TableDraggableState,
+  type TableExpandable,
+  type TableExpandable,
+  type TableExpansionState,
+  type TableExpansionState,
+  type TableNonVirtualizedProps,
+  type TableNonVirtualizedProps,
+  type TableProps,
+  type TableProps,
+  type TableRecord,
+  type TableResizedColumnState,
+  type TableRowSelection,
+  type TableRowSelectionBase,
+  type TableRowSelectionCheckbox,
+  type TableRowSelectionRadio,
+  type TableScroll,
+  type TableSelectionMode,
+  type TableSelectionState,
+  type TableSize,
+  type TableSize,
+  type TableSortingState,
+  type TableTransitionState,
+  type TableTransitionState,
+  type TableVirtualizedProps,
+  type TableVirtualizedProps,
+  type UpdateDataSourceOptions,
+  type UseTableDataSourceOptions,
 } from './Table';
 export { default as Tag } from './Tag';
 export type { TagProps, TagSize } from './Tag';
@@ -256,6 +268,13 @@ export type {
 /**
  * Data Entry
  */
+export { default as AutoComplete } from './AutoComplete';
+export type {
+  AutoCompleteBaseProps,
+  AutoCompleteMultipleProps,
+  AutoCompleteProps,
+  AutoCompleteSingleProps,
+} from './AutoComplete';
 export { CheckAll, default as Checkbox, CheckboxGroup } from './Checkbox';
 export type {
   CheckAllProps,
@@ -327,7 +346,6 @@ export type {
   RadioSize,
 } from './Radio';
 export {
-  AutoComplete,
   Option,
   OptionGroup,
   default as Select,
@@ -337,7 +355,6 @@ export {
   TreeSelect,
 } from './Select';
 export type {
-  AutoCompleteProps,
   OptionGroupProps,
   OptionProps,
   SelectControl,

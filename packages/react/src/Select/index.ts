@@ -15,5 +15,3 @@ export { default as OptionGroup } from '../Menu/MenuItemGroup';
 export type { MenuItemGroupProps as OptionGroupProps } from '../Menu/MenuItemGroup';
 export type { TreeSelectProps } from './TreeSelect';
 export { default as TreeSelect } from './TreeSelect';
-export type { AutoCompleteProps } from './AutoComplete';
-export { default as AutoComplete } from './AutoComplete';
