@@ -8,14 +8,14 @@ import Anchor from '.';
 
 const mockAnchors = [
   {
-    href: '#foo',
-    id: 'foo',
-    name: 'foo',
+    href: '#anchor-1',
+    id: 'anchor-1',
+    name: 'anchor-1',
   },
   {
-    href: '#bar',
-    id: 'bar',
-    name: 'bar',
+    href: '#anchor-2',
+    id: 'anchor-2',
+    name: 'anchor-2',
   },
 ];
 
@@ -60,10 +60,10 @@ describe('<Anchor />', () => {
     const links = getAllByRole('link');
 
     expect(links).toHaveLength(2);
-    expect(links[0]).toHaveTextContent('foo');
-    expect(links[0]).toHaveAttribute('href', '#foo');
-    expect(links[1]).toHaveTextContent('bar');
-    expect(links[1]).toHaveAttribute('href', '#bar');
+    expect(links[0]).toHaveTextContent('anchor-1');
+    expect(links[0]).toHaveAttribute('href', '#anchor-1');
+    expect(links[1]).toHaveTextContent('anchor-2');
+    expect(links[1]).toHaveAttribute('href', '#anchor-2');
   });
 
   it('should render nested anchors with anchors prop', () => {
@@ -80,17 +80,17 @@ describe('<Anchor />', () => {
   it('should render with children prop (JSX format)', () => {
     const { getAllByRole } = render(
       <Anchor>
-        <Anchor href="#foo">foo</Anchor>
-        <Anchor href="#bar">bar</Anchor>
+        <Anchor href="#anchor-1">anchor-1</Anchor>
+        <Anchor href="#anchor-2">anchor-2</Anchor>
       </Anchor>,
     );
     const links = getAllByRole('link');
 
     expect(links).toHaveLength(2);
-    expect(links[0]).toHaveTextContent('foo');
-    expect(links[0]).toHaveAttribute('href', '#foo');
-    expect(links[1]).toHaveTextContent('bar');
-    expect(links[1]).toHaveAttribute('href', '#bar');
+    expect(links[0]).toHaveTextContent('anchor-1');
+    expect(links[0]).toHaveAttribute('href', '#anchor-1');
+    expect(links[1]).toHaveTextContent('anchor-2');
+    expect(links[1]).toHaveAttribute('href', '#anchor-2');
   });
 
   it('should render nested children (JSX format)', () => {
@@ -176,16 +176,16 @@ describe('<Anchor />', () => {
   it('should not render anchor without href in JSX format', () => {
     const { getAllByRole } = render(
       <Anchor>
-        <Anchor href="#foo">foo</Anchor>
-        <Anchor>bar</Anchor>
-        <Anchor href="#baz">baz</Anchor>
+        <Anchor href="#anchor-1">anchor-1</Anchor>
+        <Anchor>anchor-2</Anchor>
+        <Anchor href="#anchor-3">anchor-3</Anchor>
       </Anchor>,
     );
     const links = getAllByRole('link');
 
     expect(links).toHaveLength(2);
-    expect(links[0]).toHaveTextContent('foo');
-    expect(links[1]).toHaveTextContent('baz');
+    expect(links[0]).toHaveTextContent('anchor-1');
+    expect(links[1]).toHaveTextContent('anchor-3');
   });
 
   it('should limit children to maximum 3 items in JSX format', () => {

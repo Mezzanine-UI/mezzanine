@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, isValidElement, ReactNode } from 'react';
+import { Children, forwardRef, isValidElement, ReactElement, ReactNode } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -47,11 +47,14 @@ export interface AnchorPropsWithAnchors
   onClick?: VoidFunction;
 }
 
+type AnchorChild = ReactElement<AnchorProps> | string;
+
 export interface AnchorPropsWithChildren
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
   anchors?: never;
   /**
    * Use nested `<Anchor>` components to create hierarchical navigation. <br />
+   * Only accepts `<Anchor>` components and text content as children. <br />
    * ```tsx
    * <Anchor>
    *   <Anchor href="#acr1">ACR 1</Anchor>
@@ -63,7 +66,7 @@ export interface AnchorPropsWithChildren
    * </Anchor>
    * ```
    */
-  children: ReactNode;
+  children: AnchorChild | AnchorChild[];
   /**
    * Whether the anchor is disabled.<br>
    * If parent anchor is disabled, all its children will be disabled too. <br />
@@ -203,11 +206,15 @@ const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
       >
         {anchorItems.map((anchorItem) => (
           <AnchorItem
+            autoScrollTo={anchorItem.autoScrollTo}
+            disabled={anchorItem.disabled}
+            href={anchorItem.href}
+            id={anchorItem.id}
             key={anchorItem.id}
-            item={{
-              ...anchorItem,
-              onClick: anchorItem.onClick || onClick,
-            }}
+            name={anchorItem.name}
+            onClick={anchorItem.onClick || onClick}
+            subAnchors={anchorItem.children}
+            title={anchorItem.title}
           />
         ))}
       </div>
