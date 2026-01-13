@@ -177,10 +177,7 @@ function extractTextContent(node: ReactNode): string {
  */
 const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
   function Anchor(props, ref) {
-    const {
-      className,
-      ...rest
-    } = props;
+    const { className, ...rest } = props;
 
     const divProps = Object.keys(rest).reduce((acc, key) => {
       if (key !== 'anchors' && key !== 'children' && key !== 'disabled' && key !== 'href' && key !== 'onClick') {
