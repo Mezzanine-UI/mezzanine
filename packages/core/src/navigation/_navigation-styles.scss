@@ -12,11 +12,10 @@
 // option icon and text height
 $option-icon-size: spacing.semantic-variable(size, element, base) !default;
 $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$option-icon-size}) !default;
-$background: background;
 
 .#{$prefix} {
   overflow: hidden;
-  background-color: palette.semantic-variable($background, base);
+  background-color: palette.semantic-variable('background', base);
   border-right: 1px solid palette.semantic-variable(separator, neutral-faint);
   box-sizing: border-box;
   display: flex;
@@ -182,13 +181,13 @@ $background: background;
         color: palette.semantic-variable(icon, neutral-solid);
       }
 
-      background-color: palette.semantic-variable($background, neutral-faint);
+      background-color: palette.semantic-variable('background', neutral-faint);
     }
   }
 
   &--active.#{$option-prefix}--open {
     .#{$option-prefix}__content {
-      background-color: palette.semantic-variable($background, brand-ghost);
+      background-color: palette.semantic-variable('background', brand-ghost);
     }
   }
 
@@ -206,7 +205,7 @@ $background: background;
 
   &--active.#{$option-prefix}--basic {
     .#{$option-prefix}__content {
-      background-color: palette.semantic-variable($background, brand-faint);
+      background-color: palette.semantic-variable('background', brand-faint);
 
       .#{$option-prefix}__title {
         color: palette.semantic-variable(text, brand-solid);
@@ -284,7 +283,7 @@ $background: background;
   height: spacing.semantic-variable(size, element, airy);
 
   &:hover {
-    background-color: palette.semantic-variable($background, neutral-faint);
+    background-color: palette.semantic-variable('background', neutral-faint);
   }
 
   &:focus-visible {
@@ -309,9 +308,9 @@ $background: background;
     width: spacing.semantic-variable(size, element, airy);
     height: spacing.semantic-variable(size, element, airy);
     border-radius: radius.variable(full);
-    background-color: palette.semantic-variable($background, neutral);
+    background-color: palette.semantic-variable('background', neutral);
     color: palette.semantic-variable(icon, fixed-light);
-    border: 1px solid palette.semantic-variable($background, neutral-subtle);
+    border: 1px solid palette.semantic-variable('background', neutral-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,7 +328,7 @@ $background: background;
   }
 
   &--open {
-    background-color: palette.semantic-variable($background, neutral-subtle);
+    background-color: palette.semantic-variable('background', neutral-subtle);
 
     .#{$user-menu-prefix}__icon {
       transform: rotate(180deg);
@@ -338,7 +337,7 @@ $background: background;
 
   &:hover,
   &:active {
-    background-color: palette.semantic-variable($background, neutral-subtle);
+    background-color: palette.semantic-variable('background', neutral-subtle);
   }
 
   &:focus-visible {
