@@ -17,25 +17,18 @@ export interface AnchorItemData {
 }
 
 export interface AnchorItemProps {
+  autoScrollTo?: boolean;
   className?: string;
-  /**
-   * ```ts
-   * {
-   *   autoScrollTo?: boolean;
-   *   children?: AnchorItemData[];
-   *   disabled?: boolean;
-   *   href: string;
-   *   id: string;
-   *   name: string;
-   *   onClick?: VoidFunction;
-   *   title?: string;
-   * }
-   * ```
-   */
-  item: AnchorItemData;
+  disabled?: boolean;
+  href: string;
+  id: string;
   level?: number;
+  name: string;
+  onClick?: VoidFunction;
   parentAutoScrollTo?: boolean;
   parentDisabled?: boolean;
+  subAnchors?: AnchorItemData[];
+  title?: string;
 }
 
 const MAX_LEVEL = 3;
@@ -68,22 +61,29 @@ function useHash() {
  * Tracks active state from URL hash and inherits disabled state from parent.
  */
 function AnchorItem({
+  autoScrollTo,
   className,
-  item,
+  disabled,
+  href,
+  id: _id,
   level = 1,
+  name,
+  onClick,
   parentAutoScrollTo = false,
   parentDisabled = false,
+  subAnchors,
+  title,
 }: AnchorItemProps) {
   const renderableChildren =
-    item.children && item.children.length > 0 && level < MAX_LEVEL
-      ? item.children.slice(0, MAX_LEVEL)
+    subAnchors && subAnchors.length > 0 && level < MAX_LEVEL
+      ? subAnchors.slice(0, MAX_LEVEL)
       : undefined;
 
   const currentHash = useHash();
-  const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
+  const itemHash = href.includes('#') ? '#' + href.split('#')[1] : '';
   const isActive = itemHash && currentHash === itemHash;
-  const isAutoScrollTo = parentAutoScrollTo || item.autoScrollTo;
-  const isDisabled = parentDisabled || item.disabled;
+  const isAutoScrollTo = parentAutoScrollTo || autoScrollTo;
+  const isDisabled = parentDisabled || disabled;
 
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (isDisabled) {
@@ -107,7 +107,7 @@ function AnchorItem({
       }
     }
 
-    item.onClick?.();
+    onClick?.();
   };
 
   return (
@@ -120,28 +120,35 @@ function AnchorItem({
           isDisabled && classes.anchorItemDisabled,
           className,
         )}
-        href={item.href}
+        href={href}
         onClick={handleClick}
         tabIndex={isDisabled ? -1 : undefined}
-        title={item.title}
+        title={title}
       >
         <Typography color="inherit" variant="label-primary">
-          {item.name}
+          {name}
         </Typography>
       </a>
       {renderableChildren && (
         <div className={classes.nested}>
-          {renderableChildren.map((child) => (
+          {renderableChildren.map((child: AnchorItemData) => (
             <AnchorItem
+              autoScrollTo={child.autoScrollTo}
               className={cx(
                 level === 1 && classes.nestedLevel1,
                 level === 2 && classes.nestedLevel2,
               )}
-              item={child}
+              disabled={child.disabled}
+              href={child.href}
+              id={child.id}
               key={child.id}
               level={level + 1}
+              name={child.name}
+              onClick={child.onClick}
               parentAutoScrollTo={isAutoScrollTo}
               parentDisabled={isDisabled}
+              subAnchors={child.children}
+              title={child.title}
             />
           ))}
         </div>

@@ -1,13 +1,8 @@
+import '@testing-library/jest-dom';
 import { anchorClasses } from '@mezzanine-ui/core/anchor';
 import { cleanup, render } from '../../__test-utils__';
 import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
 import AnchorItem, { AnchorItemData } from './AnchorItem';
-
-const mockItem: AnchorItemData = {
-  href: '#foo',
-  id: 'foo',
-  name: 'Foo Item',
-};
 
 const mockItemWithChildren: AnchorItemData = {
   children: [
@@ -30,43 +25,42 @@ const mockItemWithChildren: AnchorItemData = {
 describe('<AnchorItem />', () => {
   afterEach(cleanup);
 
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(<AnchorItem className={className} item={mockItem} />),
+  describeHostElementClassNameAppendable('anchor', (className) =>
+    render(<AnchorItem className={className} href="#anchor" id="anchor" name="Anchor Item" />),
   );
 
   it('should bind host class', () => {
-    const { container } = render(<AnchorItem item={mockItem} />);
+    const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
     const element = container.querySelector('a');
 
     expect(element?.classList.contains(anchorClasses.anchorItem)).toBeTruthy();
   });
 
   it('should wrap children by anchor tag', () => {
-    const { container } = render(<AnchorItem item={mockItem} />);
+    const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
     const element = container.querySelector('a');
 
     expect(element?.tagName.toLowerCase()).toBe('a');
-    expect(element?.textContent).toBe('Foo Item');
+    expect(element?.textContent).toBe('Anchor Item');
   });
 
   it('should render with correct href attribute', () => {
-    const { container } = render(<AnchorItem item={mockItem} />);
+    const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
     const element = container.querySelector('a');
 
-    expect(element?.getAttribute('href')).toBe('#foo');
+    expect(element?.getAttribute('href')).toBe('#anchor');
   });
 
   describe('prop: disabled', () => {
     it('should not have disabled styles by default', () => {
-      const { container } = render(<AnchorItem item={mockItem} />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.classList.contains(anchorClasses.anchorItemDisabled)).toBe(false);
     });
 
-    it('should have aria-disabled attribute when item.disabled=true', () => {
-      const disabledItem = { ...mockItem, disabled: true };
-      const { container } = render(<AnchorItem item={disabledItem} />);
+    it('should have aria-disabled attribute when disabled=true', () => {
+      const { container } = render(<AnchorItem disabled href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.getAttribute('aria-disabled')).toBe('true');
@@ -74,7 +68,7 @@ describe('<AnchorItem />', () => {
     });
 
     it('should have aria-disabled attribute when parentDisabled=true', () => {
-      const { container } = render(<AnchorItem item={mockItem} parentDisabled />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" parentDisabled />);
       const element = container.querySelector('a');
 
       expect(element?.getAttribute('aria-disabled')).toBe('true');
@@ -82,15 +76,14 @@ describe('<AnchorItem />', () => {
     });
 
     it('should set tabIndex to -1 when disabled', () => {
-      const disabledItem = { ...mockItem, disabled: true };
-      const { container } = render(<AnchorItem item={disabledItem} />);
+      const { container } = render(<AnchorItem disabled href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.getAttribute('tabIndex')).toBe('-1');
     });
 
     it('should not have tabIndex when not disabled', () => {
-      const { container } = render(<AnchorItem item={mockItem} />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.hasAttribute('tabIndex')).toBe(false);
@@ -98,10 +91,9 @@ describe('<AnchorItem />', () => {
   });
 
   describe('prop: onClick', () => {
-    it('should call item.onClick handler when clicked', () => {
+    it('should call onClick handler when clicked', () => {
       const onClick = jest.fn();
-      const itemWithClick = { ...mockItem, onClick };
-      const { container } = render(<AnchorItem item={itemWithClick} />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" onClick={onClick} />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -111,8 +103,7 @@ describe('<AnchorItem />', () => {
 
     it('should not call onClick when disabled', () => {
       const onClick = jest.fn();
-      const disabledItem = { ...mockItem, disabled: true, onClick };
-      const { container } = render(<AnchorItem item={disabledItem} />);
+      const { container } = render(<AnchorItem disabled href="#anchor" id="anchor" name="Anchor Item" onClick={onClick} />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -122,8 +113,7 @@ describe('<AnchorItem />', () => {
 
     it('should not call onClick when parent is disabled', () => {
       const onClick = jest.fn();
-      const itemWithClick = { ...mockItem, onClick };
-      const { container } = render(<AnchorItem item={itemWithClick} parentDisabled />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" onClick={onClick} parentDisabled />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -134,7 +124,14 @@ describe('<AnchorItem />', () => {
 
   describe('nested children', () => {
     it('should render children when present', () => {
-      const { getAllByRole } = render(<AnchorItem item={mockItemWithChildren} />);
+      const { getAllByRole } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          name="Parent Item"
+          subAnchors={mockItemWithChildren.children}
+        />
+      );
       const links = getAllByRole('link');
 
       expect(links).toHaveLength(3);
@@ -144,59 +141,79 @@ describe('<AnchorItem />', () => {
     });
 
     it('should apply nested class to children container', () => {
-      const { container } = render(<AnchorItem item={mockItemWithChildren} />);
+      const { container } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          name="Parent Item"
+          subAnchors={mockItemWithChildren.children}
+        />
+      );
       const nestedContainer = container.querySelector(`.${anchorClasses.nested}`);
 
       expect(nestedContainer).toBeInTheDocument();
     });
 
     it('should apply level-1 class to level 1 nested items', () => {
-      const { container } = render(<AnchorItem item={mockItemWithChildren} level={1} />);
+      const { container } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          level={1}
+          name="Parent Item"
+          subAnchors={mockItemWithChildren.children}
+        />
+      );
       const level1Items = container.querySelectorAll(`.${anchorClasses.nestedLevel1}`);
 
       expect(level1Items.length).toBeGreaterThan(0);
     });
 
     it('should apply level-2 class to level 2 nested items', () => {
-      const deepItem: AnchorItemData = {
-        children: [
-          {
-            children: [
-              {
-                href: '#grandchild',
-                id: 'grandchild',
-                name: 'Grandchild',
-              },
-            ],
-            href: '#child',
-            id: 'child',
-            name: 'Child',
-          },
-        ],
-        href: '#parent',
-        id: 'parent',
-        name: 'Parent',
-      };
-      const { container } = render(<AnchorItem item={deepItem} level={1} />);
+      const deepSubAnchors: AnchorItemData[] = [
+        {
+          children: [
+            {
+              href: '#grandchild',
+              id: 'grandchild',
+              name: 'Grandchild',
+            },
+          ],
+          href: '#child',
+          id: 'child',
+          name: 'Child',
+        },
+      ];
+      const { container } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          level={1}
+          name="Parent"
+          subAnchors={deepSubAnchors}
+        />
+      );
       const level2Items = container.querySelectorAll(`.${anchorClasses.nestedLevel2}`);
 
       expect(level2Items.length).toBeGreaterThan(0);
     });
 
     it('should limit children to maximum 3 items', () => {
-      const itemWithManyChildren: AnchorItemData = {
-        children: [
-          { href: '#child-1', id: 'child-1', name: 'Child 1' },
-          { href: '#child-2', id: 'child-2', name: 'Child 2' },
-          { href: '#child-3', id: 'child-3', name: 'Child 3' },
-          { href: '#child-4', id: 'child-4', name: 'Child 4' },
-          { href: '#child-5', id: 'child-5', name: 'Child 5' },
-        ],
-        href: '#parent',
-        id: 'parent',
-        name: 'Parent',
-      };
-      const { getAllByRole } = render(<AnchorItem item={itemWithManyChildren} />);
+      const manySubAnchors: AnchorItemData[] = [
+        { href: '#child-1', id: 'child-1', name: 'Child 1' },
+        { href: '#child-2', id: 'child-2', name: 'Child 2' },
+        { href: '#child-3', id: 'child-3', name: 'Child 3' },
+        { href: '#child-4', id: 'child-4', name: 'Child 4' },
+        { href: '#child-5', id: 'child-5', name: 'Child 5' },
+      ];
+      const { getAllByRole } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          name="Parent"
+          subAnchors={manySubAnchors}
+        />
+      );
       const links = getAllByRole('link');
 
       expect(links).toHaveLength(4);
@@ -207,19 +224,22 @@ describe('<AnchorItem />', () => {
     });
 
     it('should not render children when level reaches MAX_LEVEL (3)', () => {
-      const deepItem: AnchorItemData = {
-        children: [
-          {
-            href: '#child',
-            id: 'child',
-            name: 'Child',
-          },
-        ],
-        href: '#parent',
-        id: 'parent',
-        name: 'Parent',
-      };
-      const { getAllByRole } = render(<AnchorItem item={deepItem} level={3} />);
+      const deepSubAnchors: AnchorItemData[] = [
+        {
+          href: '#child',
+          id: 'child',
+          name: 'Child',
+        },
+      ];
+      const { getAllByRole } = render(
+        <AnchorItem
+          href="#parent"
+          id="parent"
+          level={3}
+          name="Parent"
+          subAnchors={deepSubAnchors}
+        />
+      );
       const links = getAllByRole('link');
 
       expect(links).toHaveLength(1);
@@ -227,8 +247,15 @@ describe('<AnchorItem />', () => {
     });
 
     it('should propagate disabled state to children', () => {
-      const disabledItem = { ...mockItemWithChildren, disabled: true };
-      const { getAllByRole } = render(<AnchorItem item={disabledItem} />);
+      const { getAllByRole } = render(
+        <AnchorItem
+          disabled
+          href="#parent"
+          id="parent"
+          name="Parent Item"
+          subAnchors={mockItemWithChildren.children}
+        />
+      );
       const links = getAllByRole('link');
 
       links.forEach((link) => {
@@ -244,23 +271,23 @@ describe('<AnchorItem />', () => {
     });
 
     it('should not have active class by default', () => {
-      const { container } = render(<AnchorItem item={mockItem} />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.classList.contains(anchorClasses.anchorItemActive)).toBe(false);
     });
 
     it('should have active class when hash matches href', () => {
-      window.location.hash = '#foo';
-      const { container } = render(<AnchorItem item={mockItem} />);
+      window.location.hash = '#anchor';
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.classList.contains(anchorClasses.anchorItemActive)).toBe(true);
     });
 
     it('should not have active class when hash does not match', () => {
-      window.location.hash = '#bar';
-      const { container } = render(<AnchorItem item={mockItem} />);
+      window.location.hash = '#other';
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       expect(element?.classList.contains(anchorClasses.anchorItemActive)).toBe(false);
@@ -270,7 +297,7 @@ describe('<AnchorItem />', () => {
   describe('prop: autoScrollTo', () => {
     beforeEach(() => {
       window.location.hash = '';
-      document.body.innerHTML = '<div id="foo"></div>';
+      document.body.innerHTML = '<div id="anchor"></div>';
     });
 
     afterEach(() => {
@@ -279,12 +306,12 @@ describe('<AnchorItem />', () => {
 
     it('should not auto-scroll by default when autoScrollTo is not set', () => {
       const scrollIntoViewMock = jest.fn();
-      const targetElement = document.getElementById('foo');
+      const targetElement = document.getElementById('anchor');
       if (targetElement) {
         targetElement.scrollIntoView = scrollIntoViewMock;
       }
 
-      const { container } = render(<AnchorItem item={mockItem} />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -294,13 +321,12 @@ describe('<AnchorItem />', () => {
 
     it('should auto-scroll when autoScrollTo is true', () => {
       const scrollIntoViewMock = jest.fn();
-      const targetElement = document.getElementById('foo');
+      const targetElement = document.getElementById('anchor');
       if (targetElement) {
         targetElement.scrollIntoView = scrollIntoViewMock;
       }
 
-      const itemWithAutoScroll = { ...mockItem, autoScrollTo: true };
-      const { container } = render(<AnchorItem item={itemWithAutoScroll} />);
+      const { container } = render(<AnchorItem autoScrollTo href="#anchor" id="anchor" name="Anchor Item" />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -313,12 +339,12 @@ describe('<AnchorItem />', () => {
 
     it('should auto-scroll when parentAutoScrollTo is true', () => {
       const scrollIntoViewMock = jest.fn();
-      const targetElement = document.getElementById('foo');
+      const targetElement = document.getElementById('anchor');
       if (targetElement) {
         targetElement.scrollIntoView = scrollIntoViewMock;
       }
 
-      const { container } = render(<AnchorItem item={mockItem} parentAutoScrollTo />);
+      const { container } = render(<AnchorItem href="#anchor" id="anchor" name="Anchor Item" parentAutoScrollTo />);
       const element = container.querySelector('a');
 
       element?.click();
@@ -346,8 +372,15 @@ describe('<AnchorItem />', () => {
       if (child1Element) child1Element.scrollIntoView = scrollIntoViewMocks.child1;
       if (child2Element) child2Element.scrollIntoView = scrollIntoViewMocks.child2;
 
-      const itemWithAutoScroll = { ...mockItemWithChildren, autoScrollTo: true };
-      const { getAllByRole } = render(<AnchorItem item={itemWithAutoScroll} />);
+      const { getAllByRole } = render(
+        <AnchorItem
+          autoScrollTo
+          href="#parent"
+          id="parent"
+          name="Parent Item"
+          subAnchors={mockItemWithChildren.children}
+        />
+      );
       const links = getAllByRole('link');
 
       links[1]?.click();
