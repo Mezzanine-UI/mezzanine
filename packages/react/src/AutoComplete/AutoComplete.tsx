@@ -12,10 +12,10 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useId,
   useImperativeHandle,
   useMemo,
   useRef,
-  useId,
   useState,
 } from 'react';
 import { cx } from '../utils/cx';
@@ -401,9 +401,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const {
       clearUnselected,
       filterUnselected,
-      isNewlyCreated,
+      isCreated,
       markCreated,
-  clearNewlyCreated,
+      clearNewlyCreated,
       markUnselected,
     } = useCreationTracker();
 
@@ -485,7 +485,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         return result;
       },
-      [isMultiple, isSingle, markUnselected, onChange, value],
+      [clearNewlyCreated, isMultiple, isSingle, markUnselected, onChange, value],
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -582,7 +582,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // Convert SelectValue[] to DropdownOption[]
     const dropdownOptions: DropdownOption[] = useMemo(() => {
       return options.map((option) => {
-        const newlyCreated = isNewlyCreated(option.id);
+        const created = isCreated(option.id);
         const result: DropdownOption = {
           id: option.id,
           name: option.name,
@@ -597,14 +597,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           result.checkSite = 'append';
         }
 
-        // Set appendContent to "New" for newly created items
-        if (newlyCreated) {
+        // Set shortcutText to "New" for created items (persists even after selection)
+        if (created) {
           result.shortcutText = 'New';
         }
 
         return result;
       });
-    }, [isNewlyCreated, mode, options]);
+    }, [isCreated, mode, options]);
 
     // Get selected value for dropdown
     const dropdownValue = useMemo(() => {
@@ -757,7 +757,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         return false;
       },
       [
-        addable,
+        creationEnabled,
         isMultiple,
         isSingle,
         onFocus,

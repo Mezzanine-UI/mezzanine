@@ -56,6 +56,11 @@ export function useCreationTracker() {
     [],
   );
 
+  const isCreated = useCallback(
+    (id: string) => creationTrackerRef.current.allCreatedIds.has(id),
+    [],
+  );
+
   return {
     creationTrackerRef,
     filterUnselected,
@@ -64,6 +69,7 @@ export function useCreationTracker() {
     clearNewlyCreated,
     markUnselected,
     isNewlyCreated,
+    isCreated,
   };
 }
 
