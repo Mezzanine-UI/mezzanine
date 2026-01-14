@@ -1,72 +1,38 @@
 'use client';
 
-import { Children, forwardRef, isValidElement, ReactElement, ReactNode } from 'react';
+import { Children, isValidElement, ReactElement, ReactNode, Ref } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import AnchorItem, { AnchorItemData } from './AnchorItem';
 
-export interface AnchorPropsWithAnchors
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
-  /**
-   * Each item can have nested children for hierarchical navigation. <br />
-   * ```tsx
-   * <Anchor
-   *   anchors={[
-   *     {
-   *       href: '#anchor1',
-   *       id: 'anchor-1',
-   *       name: 'Anchor 1',
-   *     },
-   *     {
-   *       children: [
-   *         {
-   *           id: 'anchor2-1',
-   *           name: 'Anchor 2-1',
-   *           href: '#anchor2-1',
-   *         },
-   *         {
-   *           id: 'anchor2-2',
-   *           name: 'Anchor 2-2',
-   *           href: '#anchor2-2',
-   *         },
-   *       ],
-   *       href: '#anchor2',
-   *       id: 'anchor-2',
-   *       name: 'Anchor 2',
-   *     },
-   *   ]}
-   * />
-   * ```
-   */
+interface AnchorPropsWithAnchors {
   anchors: AnchorItemData[];
   children?: never;
-  /**
-   * Trigger when user click on any anchor.
-   */
-  onClick?: VoidFunction;
+  className?: string;
+  // onClick?: VoidFunction;
+  ref?: Ref<HTMLDivElement>;
 }
 
-type AnchorChild = ReactElement<AnchorProps> | string;
+type AnchorChild = ReactElement<AnchorPropsWithChildren> | string;
 
-export interface AnchorPropsWithChildren
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children' | 'onClick'> {
+export interface AnchorPropsWithChildren {
   anchors?: never;
   /**
    * Use nested `<Anchor>` components to create hierarchical navigation. <br />
    * Only accepts `<Anchor>` components and text content as children. <br />
    * ```tsx
-   * <Anchor>
+   * <AnchorGroup>
    *   <Anchor href="#acr1">ACR 1</Anchor>
    *   <Anchor href="#acr2">
    *     anchor 2
    *     <Anchor href="#acr2-1">ACR 2-1</Anchor>
    *     <Anchor href="#acr2-2">ACR 2-2</Anchor>
    *   </Anchor>
-   * </Anchor>
+   * </AnchorGroup>
    * ```
    */
   children: AnchorChild | AnchorChild[];
+  className?: string;
   /**
    * Whether the anchor is disabled.<br>
    * If parent anchor is disabled, all its children will be disabled too. <br />
@@ -80,36 +46,63 @@ export interface AnchorPropsWithChildren
    * Trigger when user click on any anchor.
    */
   onClick?: VoidFunction;
+  ref?: Ref<HTMLDivElement>;
+  title?: string;
 }
 
 export type AnchorProps = AnchorPropsWithAnchors | AnchorPropsWithChildren;
 
 /**
+ * Extract text content from ReactNode
+ */
+function extractTextContent(node: ReactNode, AnchorComponent: any): string {
+  if (typeof node === 'string') {
+    return node;
+  }
+
+  if (Array.isArray(node)) {
+    return node.map((n) => extractTextContent(n, AnchorComponent)).join('');
+  }
+
+  if (isValidElement(node)) {
+    if (node.type === AnchorComponent) {
+      return '';
+    }
+
+    return extractTextContent((node.props as { children?: ReactNode }).children, AnchorComponent);
+  }
+
+  return '';
+}
+
+/**
  * Parse children to extract anchor data
  */
-function parseChildren(children: ReactNode): AnchorItemData[] {
+function parseChildren(
+  children: ReactNode,
+  AnchorComponent: any,
+): AnchorItemData[] {
   const items: AnchorItemData[] = [];
 
   Children.forEach(children, (child) => {
-    if (isValidElement<AnchorProps>(child) && child.type === Anchor) {
+    if (isValidElement<AnchorProps>(child) && child.type === AnchorComponent) {
       const { children: nestedChildren, ...childProps } = child.props;
 
+      let href: string | undefined;
       let id: string;
       let name: string;
-      let href: string | undefined;
       let nestedItems: AnchorItemData[] = [];
 
       if ('anchors' in childProps && childProps.anchors) {
         items.push(...childProps.anchors);
+
         return;
       }
 
-      // Get href from props (required)
       if ('href' in childProps) {
         href = childProps.href;
       }
 
-      // Skip this anchor if no href is provided
       if (!href) {
         return;
       }
@@ -118,29 +111,30 @@ function parseChildren(children: ReactNode): AnchorItemData[] {
         id = nestedChildren;
         name = nestedChildren;
       } else if (isValidElement(nestedChildren)) {
-        nestedItems = parseChildren(nestedChildren);
+        nestedItems = parseChildren(nestedChildren, AnchorComponent);
 
         id = nestedItems[0]?.id || '';
         name = nestedItems[0]?.name || '';
       } else {
-        const parsedNested = parseChildren(nestedChildren);
+        const parsedNested = parseChildren(nestedChildren, AnchorComponent);
 
         if (parsedNested.length > 0) {
           nestedItems = parsedNested;
         }
 
-        const textContent = extractTextContent(nestedChildren);
+        const textContent = extractTextContent(nestedChildren, AnchorComponent);
+
         id = textContent;
         name = textContent;
       }
 
       items.push({
         children: nestedItems.length > 0 ? nestedItems : undefined,
-        disabled: childProps.disabled,
+        disabled: 'disabled' in childProps ? childProps.disabled : undefined,
         href,
         id,
         name,
-        onClick: childProps.onClick,
+        onClick: ('onClick' in childProps ? childProps.onClick : undefined),
       });
     }
   });
@@ -149,74 +143,45 @@ function parseChildren(children: ReactNode): AnchorItemData[] {
 }
 
 /**
- * Extract text content from ReactNode
- */
-function extractTextContent(node: ReactNode): string {
-  if (typeof node === 'string') {
-    return node;
-  }
-
-  if (Array.isArray(node)) {
-    return node.map(extractTextContent).join('');
-  }
-
-  if (isValidElement(node)) {
-    if (node.type === Anchor) {
-      return '';
-    }
-    return extractTextContent((node.props as { children?: ReactNode }).children);
-  }
-
-  return '';
-}
-
-/**
- * The `mezzanine` Anchor component provides navigation menu for page sections. with automatic hash tracking.
- * Supports data-driven (`anchors` prop) or JSX-based (`children`) approaches.
+ * The `mezzanine` Anchor component provides navigation menu for page sections with automatic hash tracking.
  * Nested structure supports up to 3 levels; deeper levels will be ignored.
  */
-const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
-  function Anchor(props, ref) {
-    const { className, ...rest } = props;
+function Anchor(props: AnchorProps) {
+  const {
+    anchors,
+    children,
+    className,
+    disabled: _disabled,
+    href: _href,
+    ref,
+  } = props as AnchorPropsWithAnchors & AnchorPropsWithChildren;
 
-    const divProps = Object.keys(rest).reduce((acc, key) => {
-      if (key !== 'anchors' && key !== 'children' && key !== 'disabled' && key !== 'href' && key !== 'onClick') {
-        (acc as any)[key] = (rest as any)[key];
-      }
-      return acc;
-    }, {} as Omit<typeof rest, 'anchors' | 'children' | 'disabled' | 'href' | 'onClick'>);
+  const anchorItems: AnchorItemData[] = anchors
+    ? anchors
+    : children
+      ? parseChildren(children, Anchor)
+      : [];
 
-    const anchorItems: AnchorItemData[] =
-      'anchors' in props && props.anchors
-        ? props.anchors
-        : 'children' in props && props.children
-          ? parseChildren(props.children)
-          : [];
-
-    const onClick = 'onClick' in props ? props.onClick : undefined;
-
-    return (
-      <div
-        ref={ref}
-        className={cx(classes.host, className)}
-        {...divProps}
-      >
-        {anchorItems.map((anchorItem) => (
-          <AnchorItem
-            autoScrollTo={anchorItem.autoScrollTo}
-            disabled={anchorItem.disabled}
-            href={anchorItem.href}
-            id={anchorItem.id}
-            key={anchorItem.id}
-            name={anchorItem.name}
-            onClick={anchorItem.onClick || onClick}
-            subAnchors={anchorItem.children}
-            title={anchorItem.title}
-          />
-        ))}
-      </div>
-    );
-  },
-);
+  return (
+    <div
+      ref={ref}
+      className={cx(classes.host, className)}
+    >
+      {anchorItems.map((anchorItem) => (
+        <AnchorItem
+          autoScrollTo={anchorItem.autoScrollTo}
+          disabled={anchorItem.disabled}
+          href={anchorItem.href}
+          id={anchorItem.id}
+          key={anchorItem.id}
+          name={anchorItem.name}
+          onClick={anchorItem.onClick}
+          subAnchors={anchorItem.children}
+          title={anchorItem.title}
+        />
+      ))}
+    </div>
+  );
+}
 
 export default Anchor;
