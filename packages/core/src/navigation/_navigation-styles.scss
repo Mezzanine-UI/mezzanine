@@ -53,48 +53,64 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     height: 100%;
     max-height: 100%;
 
-    .#{$header-prefix},
-    .#{$user-menu-prefix} {
-      > :not(:first-child) {
-        display: none;
-      }
-    }
-
-    .#{$header-prefix}__title,
     .#{$prefix}__search-input,
     .#{$option-category-prefix}__title {
       display: none;
     }
 
-    .#{$user-menu-prefix} {
-      padding: 0;
-      width: 100%;
-    }
 
   }
 }
 
 .#{$header-prefix} {
-  @include typography.semantic-variable(h3);
-
   align-items: center;
   border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
   box-sizing: border-box;
   display: flex;
   gap: spacing.semantic-variable(gap, comfort);
   justify-content: space-between;
-  padding: spacing.semantic-variable(padding, horizontal, comfort)
+  padding: spacing.semantic-variable(padding, vertical, comfort)
     spacing.semantic-variable(padding, horizontal, comfort-fixed)
     spacing.semantic-variable(padding, vertical, base);
+  position: relative;
   width: 100%;
+    flex-direction: row-reverse;
 
   &__content {
     align-items: center;
     color: palette.semantic-variable(text, neutral-solid);
     display: flex;
-    flex-grow: 1;
     gap: spacing.semantic-variable(gap, base);
     height: 100%;
+  }
+
+  &__title {
+    @include typography.semantic-variable(h3);
+  }
+
+
+  &--collapsed {
+    .#{$header-prefix}__content {
+      left: spacing.semantic-variable(padding, horizontal, comfort-fixed);
+      position: absolute;
+      transition: transition.standard(opacity, fast);
+      pointer-events: none;
+
+      &:hover {
+        opacity: 0;
+      }
+    }
+
+    .#{$header-prefix}__title {
+      display: none;
+    }
+
+
+    &:hover {
+      .#{$header-prefix}__content {
+        opacity: 0;
+      }
+    }
   }
 }
 
@@ -123,6 +139,15 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     .#{$footer-prefix}__icons {
       display: flex;
       flex-direction: column;
+    }
+
+    .#{$user-menu-prefix} {
+      padding: 0;
+      width: 100%;
+
+      > :not(:first-child) {
+        display: none;
+      }
     }
   }
 }
