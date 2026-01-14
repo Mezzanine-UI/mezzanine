@@ -30,14 +30,14 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
         ref={ref}
         className={cx(classes.host, collapsed && classes.collapsed, className)}
       >
-        <span className={classes.content}>
-          {children}
-          <span className={classes.title}>{title}</span>
-        </span>
         <NavigationIconButton
           onClick={() => handleCollapseChange(!collapsed)}
           icon={SiderIcon}
         />
+        <span className={classes.content}>
+          {children}
+          <span className={classes.title}>{title}</span>
+        </span>
       </header>
     );
   },
