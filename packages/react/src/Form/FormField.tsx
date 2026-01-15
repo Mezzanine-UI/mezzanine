@@ -140,16 +140,19 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
           <div className={cx(classes.dataEntry)}>
             {children}
             {hintText || hintTextIcon || counter ? (
-              <div className={cx(classes.hintTextAndCounterArea)}>
-                <div>
-                  {(hintText || hintTextIcon) && (
-                    <FormHintText
-                      hintText={hintText}
-                      hintTextIcon={hintTextIcon}
-                      severity={severity}
-                    />
-                  )}
-                </div>
+              <div
+                className={cx(classes.hintTextAndCounterArea, {
+                  [classes.hintTextAndCounterArea + '--align-right']:
+                    !(hintText || hintTextIcon) && counter,
+                })}
+              >
+                {(hintText || hintTextIcon) && (
+                  <FormHintText
+                    hintText={hintText}
+                    hintTextIcon={hintTextIcon}
+                    severity={severity}
+                  />
+                )}
                 {counter && (
                   <span
                     className={cx(

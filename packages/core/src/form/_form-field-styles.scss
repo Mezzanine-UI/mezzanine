@@ -180,6 +180,10 @@ $form-field-counter-colors: (
   align-items: center;
   justify-content: space-between;
   gap: spacing.semantic-variable(gap, base);
+
+  &--align-right {
+    justify-content: flex-end;
+  }
 }
 
 .#{$prefix}__counter {
