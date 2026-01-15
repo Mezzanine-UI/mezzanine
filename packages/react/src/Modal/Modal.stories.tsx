@@ -3,7 +3,6 @@ import { ReactNode, useCallback, useState } from 'react';
 import Modal, {
   ModalStatusType,
   ModalSize,
-  ModalBody,
   ModalBodyForVerification,
 } from '.';
 import Button from '../Button';
@@ -237,7 +236,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             showModalFooter
             showModalHeader
           >
-            {modalType !== 'extendedSplit' && <ModalBody>{body}</ModalBody>}
+            {modalType !== 'extendedSplit' && body}
           </Modal>
         </>
       );
@@ -261,7 +260,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             modalHeaderTitleAlign={modalHeaderTitleAlign}
             showModalHeader
           >
-            {modalType !== 'extendedSplit' && <ModalBody>{body}</ModalBody>}
+            {modalType !== 'extendedSplit' && body}
           </Modal>
         </>
       );
@@ -280,7 +279,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             modalFooterConfirmText={modalFooterConfirmText || 'Confirm'}
             showModalFooter
           >
-            {modalType !== 'extendedSplit' && <ModalBody>{body}</ModalBody>}
+            {modalType !== 'extendedSplit' && body}
           </Modal>
         </>
       );
@@ -292,7 +291,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           open
         </Button>
         <Modal {...baseProps} {...extendedSplitProps} modalType={modalType}>
-          {modalType !== 'extendedSplit' && <ModalBody>{body}</ModalBody>}
+          {modalType !== 'extendedSplit' && body}
         </Modal>
       </>
     );
@@ -345,7 +344,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>Here are some details you should know about.</ModalBody>
+          <>Here are some details you should know about.</>
         </Modal>
         <Modal
           modalType="standard"
@@ -362,7 +361,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>Please try again or contact support if the problem persists.</ModalBody>
+          <>Please try again or contact support if the problem persists.</>
         </Modal>
         <Modal
           modalType="standard"
@@ -379,7 +378,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>This action may have unintended consequences.</ModalBody>
+          <>This action may have unintended consequences.</>
         </Modal>
         <Modal
           modalType="standard"
@@ -396,7 +395,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>Your changes have been saved and applied.</ModalBody>
+          <>Your changes have been saved and applied.</>
         </Modal>
         <Modal
           modalType="standard"
@@ -413,7 +412,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>Check your inbox for important updates and notifications.</ModalBody>
+          <>Check your inbox for important updates and notifications.</>
         </Modal>
         <Modal
           modalType="standard"
@@ -431,7 +430,7 @@ export const ModalHeaderStatusTypes: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>Are you sure you want to delete this item permanently?</ModalBody>
+          <>Are you sure you want to delete this item permanently?</>
         </Modal>
       </>
     );
@@ -466,10 +465,10 @@ export const ModalHeaderComprehensive: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>
+          <>
             This modal showcases all header features: status icon, horizontal layout,
             centered title and supporting text.
-          </ModalBody>
+          </>
         </Modal>
       </>
     );
@@ -498,9 +497,9 @@ export const ModalFooterBasic: StoryObj = {
           showModalHeader
           modalHeaderTitle="Modal with Footer"
         >
-          <ModalBody>
+          <>
             This modal uses the new ModalFooter component with cancel and confirm buttons.
-          </ModalBody>
+          </>
         </Modal>
       </>
     );
@@ -537,10 +536,10 @@ export const ModalFooterButtonLayout: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>
+          <>
             This modal uses fixed width buttons (default behavior). The buttons maintain
             a consistent width.
-          </ModalBody>
+          </>
         </Modal>
         <Modal
           modalFooterActionsButtonLayout="fill"
@@ -555,10 +554,10 @@ export const ModalFooterButtonLayout: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>
+          <>
             This modal uses fill layout. The buttons expand to fill the available space
             equally. Note: This only works when there is no control on the left side.
-          </ModalBody>
+          </>
         </Modal>
       </>
     );
@@ -605,11 +604,11 @@ export const ModalFooterWithPassword: StoryObj = {
           showModalFooter
           showModalHeader
         >
-          <ModalBody>
+          <>
             This modal uses the password type auxiliary content. It displays a checkbox
             for &quot;Remember me&quot; and a link button for &quot;Forgot password?&quot;
             in a special password mode layout.
-          </ModalBody>
+          </>
         </Modal>
       </>
     );

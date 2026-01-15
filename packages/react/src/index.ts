@@ -404,7 +404,6 @@ export { default as Message } from './Message';
 export type { MessageData, MessageSeverity, MessageType } from './Message';
 export {
   default as Modal,
-  ModalBody,
   ModalBodyForVerification,
   ModalFooter,
   ModalHeader,
@@ -412,7 +411,6 @@ export {
 } from './Modal';
 export type {
   ModalBodyForVerificationProps,
-  ModalBodyProps,
   ModalFooterProps,
   ModalHeaderProps,
   ModalProps,

@@ -1,6 +1,4 @@
 export type { ModalStatusType, ModalSize } from '@mezzanine-ui/core/modal';
-export type { ModalBodyProps } from './ModalBody';
-export { default as ModalBody } from './ModalBody';
 export type { ModalBodyForVerificationProps } from './ModalBodyForVerification';
 export { default as ModalBodyForVerification } from './ModalBodyForVerification';
 export type { ModalFooterProps } from './ModalFooter';
