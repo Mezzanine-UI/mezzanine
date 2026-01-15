@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Children,
   FC,
@@ -53,21 +55,46 @@ export interface NotificationData
   extends NotifierData,
   NotificationConfigProps {
   /**
-   * Confirm button text.
+   * The tips to be appended to the notification.
+   * Only displayed when the type is 'drawer'.
    */
-  confirmButtonText?: string;
-  /**
-   * Cancel button text.
-   */
-  cancelButtonText?: string;
+  appendTips?: string;
   /**
    * Other props of cancel button.
    */
   cancelButtonProps?: ButtonProps;
   /**
+   * Cancel button text.
+   */
+  cancelButtonText?: string;
+  /**
    * Other props of confirm button.
    */
   confirmButtonProps?: ButtonProps;
+  /**
+   * Confirm button text.
+   */
+  confirmButtonText?: string;
+  /**
+   * The description of notification.
+   */
+  description?: string;
+  /**
+   * The maximum number of notifications to be displayed.
+   * Only displayed when the type is 'notification'.
+   * @default 3
+   */
+  maxVisibleNotifications?: number;
+  /**
+   * The callback function when the badge is clicked.
+   * Only displayed when the type is 'drawer'.
+   */
+  onBadgeClick?: VoidFunction;
+  /**
+   * The callback function when the badge is selected.
+   * Only displayed when the type is 'drawer'.
+   */
+  onBadgeSelect?: (option: DropdownOption) => void;
   /**
    * Cancel button click event handler. <br />
    * If not provided, the event handler will fallback to a close function using `NotificationCenter.remove`.
@@ -79,10 +106,15 @@ export interface NotificationData
    */
   onConfirm?: VoidFunction;
   /**
-   * If given, the message will be closed after the amount of time.
-   * You can use `Message.config` to overwrite.
-   * @default false
+   * The options of the badge.
+   * Only displayed when the type is 'drawer'.
    */
+  options?: DropdownOption[];
+  /**
+   * The tips to be prepended to the notification.
+   * Only displayed when the type is 'drawer'.
+   */
+  prependTips?: string;
   /**
    * The identifier of the notification.
    */
@@ -93,18 +125,10 @@ export interface NotificationData
    */
   severity: NotificationSeverity;
   /**
-   * The title of notification.
+   * The props of the badge.
+   * Only displayed when the type is 'drawer'.
    */
-  title?: string;
-  /**
-   * The description of notification.
-   */
-  description?: string;
-  /**
-   * The type of notification.
-   * @default 'notification'
-   */
-  type?: NotificationType;
+  showBadge?: boolean;
   /**
    * The time stamp of notification on the drawer list.
    * @default new Date().toLocaleTimeString()
@@ -116,41 +140,14 @@ export interface NotificationData
    */
   timeStampLocale?: string;
   /**
-   * The props of the badge.
-   * Only displayed when the type is 'drawer'.
+   * The title of notification.
    */
-  showBadge?: boolean;
+  title?: string;
   /**
-   * The options of the badge.
-   * Only displayed when the type is 'drawer'.
+   * The type of notification.
+   * @default 'notification'
    */
-  options?: DropdownOption[];
-  /**
-   * The callback function when the badge is clicked.
-   * Only displayed when the type is 'drawer'.
-   */
-  onBadgeClick?: VoidFunction
-  /**
-   * The callback function when the badge is selected.
-   * Only displayed when the type is 'drawer'.
-   */
-  onBadgeSelect?: (option: DropdownOption) => void;
-  /**
-   * The tips to be appended to the notification.
-   * Only displayed when the type is 'drawer'.
-   */
-  appendTips?: string;
-  /**
-   * The tips to be prepended to the notification.
-   * Only displayed when the type is 'drawer'.
-   */
-  prependTips?: string;
-  /**
-   * The maximum number of notifications to be displayed.
-   * Only displayed when the type is 'notification'.
-   * @default 3
-   */
-  maxVisibleNotifications?: number;
+  type?: NotificationType;
 }
 
 export interface NotificationCenter
@@ -283,7 +280,6 @@ const NotificationCenter: NotificationCenter = ((
       const diffInSeconds = Math.round(diffInMs / 1000);
       const diffInDays = Math.round(diffInSeconds / 86400);
 
-      // 7天以內：顯示相對時間（省略秒）
       if (Math.abs(diffInDays) <= 7) {
         const rtf = new Intl.RelativeTimeFormat(timeStampLocale, { numeric: 'always' });
 

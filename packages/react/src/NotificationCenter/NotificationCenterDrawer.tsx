@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo, type ChangeEventHandler, type ComponentProps, type Key, type ReactElement } from "react";
 
 import { DrawerSize } from "@mezzanine-ui/core/drawer";
@@ -20,26 +22,9 @@ type NotificationDataForDrawer = NotificationData & {
 
 type NotificationCenterDrawerPropsBase = Pick<DrawerProps, 'open' | 'onClose'> & {
   /**
-   * The title of the drawer.
-   */
-  title?: string;
-  /**
-   * Controls whether to display the toolbar.
-   * @default true
-   */
-  showToolbar?: boolean;
-  /**
    * The label of the all radio.
    */
   allRadioLabel?: string;
-  /**
-   * The label of the read radio.
-   */
-  readRadioLabel?: string;
-  /**
-   * The label of the unread radio.
-   */
-  unreadRadioLabel?: string;
   /**
    * The label of the custom radio.
    */
@@ -48,10 +33,6 @@ type NotificationCenterDrawerPropsBase = Pick<DrawerProps, 'open' | 'onClose'> &
    * The default value of the radio group.
    */
   defaultValue?: string;
-  /**
-   * The value of the radio group.
-   */
-  value?: string;
   /**
    * The size of the drawer.
    * @default 'narrow'
@@ -66,18 +47,39 @@ type NotificationCenterDrawerPropsBase = Pick<DrawerProps, 'open' | 'onClose'> &
    */
   emptyNotificationTitle?: string;
   /**
-   * Controls whether to display the unread button.
-   * @default false
+   * The callback function when the custom button is clicked.
    */
-  showUnreadButton?: boolean;
+  onCustomButtonClick?: VoidFunction;
   /**
    * The callback function when the radio group value changes.
    */
   onRadioChange?: ChangeEventHandler<HTMLInputElement>;
   /**
-   * The callback function when the custom button is clicked.
+   * The label of the read radio.
    */
-  onCustomButtonClick?: VoidFunction;
+  readRadioLabel?: string;
+  /**
+   * Controls whether to display the toolbar.
+   * @default true
+   */
+  showToolbar?: boolean;
+  /**
+   * Controls whether to display the unread button.
+   * @default false
+   */
+  showUnreadButton?: boolean;
+  /**
+   * The title of the drawer.
+   */
+  title?: string;
+  /**
+   * The label of the unread radio.
+   */
+  unreadRadioLabel?: string;
+  /**
+   * The value of the radio group.
+   */
+  value?: string;
 };
 
 export type NotificationCenterDrawerProps =

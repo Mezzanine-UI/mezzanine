@@ -10,11 +10,6 @@
 @use './notification-center' as *;
 @use '../drawer/drawer' as drawer;
 
-$height: 40px !default;
-$padding-left: 12px !default;
-$padding-right: 24px !default;
-$icon-size: 24px !default;
-$icon-gap: 12px !default;
 
 .#{$prefix} {
   position: relative;
@@ -50,7 +45,7 @@ $icon-gap: 12px !default;
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(body);
     padding-top: spacing.semantic-variable(padding, vertical, comfort);
-    padding-bottom: 2px;
+    padding-bottom: spacing.semantic-variable(padding, vertical, micro);
     padding-inline: spacing.semantic-variable(padding, horizontal, comfort);
   }
 
@@ -117,17 +112,17 @@ $icon-gap: 12px !default;
   }
 
   &__severity-icon {
-    padding: 2px 0;
+    padding: spacing.semantic-variable(padding, vertical, micro) 0;
     color: var(--#{$prefix}-color);
-    font-size: typography.px-to-rem(24px);
+    font-size: typography.prop(h1, font-size);
   }
 
   &__close-icon {
-    color: palette.color(text-secondary);
+    color: palette.semantic-variable(text, secondary);
     cursor: pointer;
 
     :hover {
-      color: palette.color(text-primary);
+      color: palette.semantic-variable(text, primary);
     }
   }
 
