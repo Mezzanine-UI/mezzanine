@@ -131,7 +131,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     gap: spacing.semantic-variable(gap, tiny);
   }
 
-
   &--collapsed {
     display: flex;
     flex-direction: column-reverse;
@@ -153,14 +152,15 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 }
 
 .#{$option-prefix} {
+  align-items: center;
+  border: none;
+  box-sizing: border-box;
   display: grid;
   flex-shrink: 1;
-  box-sizing: border-box;
-  align-items: center;
   gap: spacing.semantic-variable(gap, tight);
   height: unset;
+  outline: none;
   width: 100%;
-
 
   &__content {
     align-items: center;
@@ -174,7 +174,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     padding: spacing.semantic-variable(padding, vertical, tight)
       spacing.semantic-variable(padding, horizontal, tight-fixed);
     transition: transition.standard(background-color, fast), transition.standard(color, fast);
-
+    text-decoration: none;
 
     .#{$option-prefix}__title {
       @include typography.semantic-variable(label-primary-highlight, (line-height));
@@ -199,7 +199,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       width: spacing.semantic-variable(size, element, slim);
     }
 
-
     &:hover {
       .#{$option-prefix}__icon,
       .#{$option-prefix}__toggle-icon {
@@ -207,6 +206,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       }
 
       background-color: palette.semantic-variable('background', neutral-faint);
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
     }
   }
 
