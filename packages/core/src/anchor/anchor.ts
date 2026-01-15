@@ -4,7 +4,6 @@ export const anchorClasses = {
   anchorItem: `${anchorPrefix}__anchorItem`,
   anchorItemActive: `${anchorPrefix}__anchorItem--active`,
   anchorItemDisabled: `${anchorPrefix}__anchorItem--disabled`,
-  group: `${anchorPrefix}-group`,
   host: anchorPrefix,
   nested: `${anchorPrefix}__nested`,
   nestedLevel1: `${anchorPrefix}__nested--level-1`,
