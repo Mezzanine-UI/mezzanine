@@ -18,95 +18,197 @@ describe('<ModalHeader />', () => {
   });
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<ModalHeader ref={ref} />),
+    render(<ModalHeader ref={ref} modalHeaderTitle="Test" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<ModalHeader className={className} />),
+    render(<ModalHeader className={className} modalHeaderTitle="Test" />),
   );
 
-  describe('prop: children', () => {
-    it('should render children under the title element', () => {
-      const testChildren = 'foo';
-
-      const { getHostHTMLElement, getByText } = render(
-        <ModalHeader>{testChildren}</ModalHeader>,
-      );
-
-      const element = getHostHTMLElement();
-      const titleElement = getByText(testChildren);
-
-      expect(titleElement.textContent).toBe(testChildren);
-      expect(titleElement.tagName.toLocaleLowerCase()).toBe('h3');
-      expect(titleElement.parentElement).toEqual(element);
-    });
-  });
-
-  it('should bind header class and render children as title', () => {
-    const { getHostHTMLElement } = render(<ModalHeader>foo</ModalHeader>);
+  it('should bind header class and render title', () => {
+    const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="foo" />);
     const element = getHostHTMLElement();
-    const { lastElementChild: titleElement } = element;
+    const titleElement = element.querySelector('.mzn-modal__header__title');
 
     expect(element.classList.contains('mzn-modal__header')).toBeTruthy();
-    expect(titleElement!.classList.contains('mzn-modal__title')).toBeTruthy();
+    expect(titleElement).toBeTruthy();
     expect(titleElement!.textContent).toBe('foo');
   });
 
-  describe('prop: titleLarge', () => {
-    function testTitleComplex(ui: JSX.Element, titleLarge: boolean) {
-      const { getHostHTMLElement } = render(ui);
-      const element = getHostHTMLElement();
-      const { lastElementChild: titleElement } = element;
-
-      expect(titleElement!.classList.contains('mzn-modal__title--large')).toBe(
-        titleLarge,
-      );
-    }
-
-    it('should render titleLarge=false by default', () => {
-      testTitleComplex(<ModalHeader />, false);
-    });
-
-    [false, true].forEach((titleLarge) => {
-      const message = titleLarge
-        ? 'should bind title large class'
-        : 'should not bind title large class';
-
-      it(message, () => {
-        testTitleComplex(<ModalHeader titleLarge={titleLarge} />, titleLarge);
-      });
-    });
-  });
-
   describe('severity icon', () => {
-    it('should render severity icon if showSeverityIcon=true and bind severity icon class', () => {
-      const { getHostHTMLElement } = render(<ModalHeader showModalStatusTypeIcon/>);
+    it('should render severity icon if modalHeaderShowModalStatusTypeIcon=true and bind severity icon class', () => {
+      const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon/>);
       const element = getHostHTMLElement();
-      const { firstElementChild: iconElement } = element;
+      const iconContainer = element.querySelector('.mzn-modal__header__status-type-icon');
 
-      expect(iconElement!.getAttribute('data-icon-name')).toBe(
+      expect(iconContainer).toBeTruthy();
+      const iconElement = iconContainer?.querySelector('[data-icon-name]');
+      expect(iconElement?.getAttribute('data-icon-name')).toBe(
         modalStatusTypeIcons.info.name,
       );
-      expect(iconElement!.classList.contains('mzn-modal__severity-icon'));
     });
 
-    const severities: ModalStatusType[] = ['info', 'success', 'warning'];
+    it('should not render severity icon by default', () => {
+      const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="Title" />);
+      const element = getHostHTMLElement();
+      const iconContainer = element.querySelector('.mzn-modal__header__status-type-icon');
+
+      expect(iconContainer).toBeNull();
+    });
+
+    const severities: ModalStatusType[] = ['info', 'success', 'warning', 'error', 'email', 'delete'];
 
     severities.forEach((severity) => {
       it(`should render ${severity} icon`, () => {
         render(
-          <Modal open modalStatusType={severity}>
-            <ModalHeader showModalStatusTypeIcon/>
+          <Modal open modalStatusType={severity} modalType="standard">
+            <ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon/>
           </Modal>,
         );
 
         const iconElement = document.body.querySelector(
-          '.mzn-modal__severity-icon',
+          '.mzn-modal__header__status-type-icon [data-icon-name]',
         )!;
         const icon = modalStatusTypeIcons[severity];
 
         expect(iconElement!.getAttribute('data-icon-name')).toBe(icon.name);
       });
+    });
+  });
+
+  describe('prop: modalHeaderStatusTypeIconLayout', () => {
+    it('should render vertical layout by default', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-modal__header--vertical'),
+      ).toBeTruthy();
+    });
+
+    it('should render horizontal layout when modalHeaderStatusTypeIconLayout="horizontal"', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader
+          modalHeaderTitle="Title"
+          modalHeaderShowModalStatusTypeIcon
+          modalHeaderStatusTypeIconLayout="horizontal"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-modal__header--horizontal'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: modalHeaderSupportingText', () => {
+    it('should render supporting text when provided', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader
+          modalHeaderTitle="Title"
+          modalHeaderSupportingText="This is supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+
+      expect(supportingText?.textContent).toBe('This is supporting text');
+    });
+
+    it('should not render supporting text when not provided', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Title" />,
+      );
+      const element = getHostHTMLElement();
+      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+
+      expect(supportingText?.textContent).toBe('');
+    });
+  });
+
+  describe('prop: modalHeaderTitleAlign', () => {
+    it('should align title left by default', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Title" />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-modal__header--title-align-left'),
+      ).toBeTruthy();
+    });
+
+    it('should align title center when modalHeaderTitleAlign="center"', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Title" modalHeaderTitleAlign="center" />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(
+        element.classList.contains('mzn-modal__header--title-align-center'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: modalHeaderSupportingTextAlign', () => {
+    it('should align supporting text left by default', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader
+          modalHeaderTitle="Title"
+          modalHeaderSupportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+
+      expect(
+        supportingText?.classList.contains(
+          'mzn-modal__header__supporting-text--align-left',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should align supporting text center when modalHeaderSupportingTextAlign="center"', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader
+          modalHeaderTitle="Title"
+          modalHeaderSupportingText="Supporting text"
+          modalHeaderSupportingTextAlign="center"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+
+      expect(
+        supportingText?.classList.contains(
+          'mzn-modal__header__supporting-text--align-center',
+        ),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: modalHeaderTitle', () => {
+    it('should render title text', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Test Modal Title" />,
+      );
+      const element = getHostHTMLElement();
+      const title = element.querySelector('.mzn-modal__header__title');
+
+      expect(title?.textContent).toBe('Test Modal Title');
+    });
+
+    it('should render title as h3 variant', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader modalHeaderTitle="Test Title" />,
+      );
+      const element = getHostHTMLElement();
+      const title = element.querySelector('.mzn-modal__header__title');
+
+      expect(title?.tagName.toLowerCase()).toBe('h3');
     });
   });
 });

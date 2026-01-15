@@ -60,7 +60,7 @@ interface BaseModalProps
    */
   modalType: ModalType;
   /**
-   * Controls whether or not to hide close button at top-end.
+   * Controls whether or not to show dismiss button at top-end.
    * @default false
    */
   showDismissButton?: boolean;
@@ -240,7 +240,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
               classes.size(size),
               {
                 [classes.fullScreen]: fullScreen,
-                [classes.withCloseIcon]: !showDismissButton,
+                [classes.withCloseIcon]: showDismissButton,
               },
               className,
             )}

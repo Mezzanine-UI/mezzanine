@@ -134,6 +134,7 @@ const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
   function ModalFooter(props, ref) {
     const {
       children,
+      className,
       modalFooterActionsButtonLayout = 'fixed',
       modalFooterAnnotation,
       modalFooterAuxiliaryContentButtonProps,
@@ -170,7 +171,7 @@ const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
       <div {...rest} ref={ref} className={cx(classes.modalFooter, {
         [classes.modalFooter + '--password-mode']: modalFooterAuxiliaryContentType === 'password',
         [classes.modalFooter + '--with-auxiliary-content']: !!modalFooterAuxiliaryContentType && modalFooterAuxiliaryContentType !== 'password',
-      })}>
+      }, className)}>
         {modalFooterAuxiliaryContentType === 'password' && (
           <div className={classes.modalFooterPasswordContainer}>
             <Checkbox
