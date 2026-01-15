@@ -91,7 +91,7 @@
   @include _load-styles($options, alert-banner);
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
-  @include _load-styles($options, notification, notification-center);
+  @include _load-styles($options, notification-center);
   @include _load-styles($options, popconfirm);
   @include _load-styles($options, progress);
   @include _load-styles($options, spin);
