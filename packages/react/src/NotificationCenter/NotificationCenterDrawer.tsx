@@ -1,7 +1,7 @@
 import { useMemo, type ChangeEventHandler, type ComponentProps, type Key, type ReactElement } from "react";
 
 import { DrawerSize } from "@mezzanine-ui/core/drawer";
-import { notificationClasses as classes } from '@mezzanine-ui/core/notification';
+import { notificationClasses as classes } from '@mezzanine-ui/core/notification-center';
 
 import { NotificationIcon, type IconDefinition } from "@mezzanine-ui/icons";
 

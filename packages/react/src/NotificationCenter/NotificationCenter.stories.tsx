@@ -1,4 +1,4 @@
-import { NotificationSeverity } from '@mezzanine-ui/core/notification';
+import { NotificationSeverity } from '@mezzanine-ui/core/notification-center';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useMemo, useState } from 'react';
 

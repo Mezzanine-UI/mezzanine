@@ -20,7 +20,7 @@ import {
   notificationIcons,
   NotificationSeverity,
   NotificationType
-} from '@mezzanine-ui/core/notification';
+} from '@mezzanine-ui/core/notification-center';
 import { CloseIcon, DotVerticalIcon } from '@mezzanine-ui/icons';
 
 import Badge from '../Badge';
