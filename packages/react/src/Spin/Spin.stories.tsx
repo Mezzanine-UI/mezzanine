@@ -4,7 +4,7 @@ import Spin from '.';
 import Alert from '../Alert';
 import Button from '../Button/Button';
 import Menu, { MenuItem } from '../Menu';
-import Modal, { ModalBody, ModalHeader } from '../Modal';
+import Modal from '../Modal';
 
 export default {
   title: 'Feedback/Spin',
@@ -96,15 +96,18 @@ const OnModalExample = () => {
       <Button onClick={() => setOpen(true)} variant="base-primary">
         OPEN
       </Button>
-      <Modal onClose={() => setOpen(false)} open={open}>
+      <Modal
+        modalHeaderTitle="Hi"
+        modalType="standard"
+        onClose={() => setOpen(false)}
+        open={open}
+        showModalHeader
+      >
         <Spin description="元件加載中..." loading stretch>
-          <ModalHeader>Hi</ModalHeader>
-          <ModalBody>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
-            pariatur aliquid voluptate, totam voluptatum numquam cupiditate
-            provident sed sint harum delectus nihil quod sequi vero porro
-            excepturi eos facilis quos.
-          </ModalBody>
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
+          pariatur aliquid voluptate, totam voluptatum numquam cupiditate
+          provident sed sint harum delectus nihil quod sequi vero porro
+          excepturi eos facilis quos.
         </Spin>
       </Modal>
     </>
