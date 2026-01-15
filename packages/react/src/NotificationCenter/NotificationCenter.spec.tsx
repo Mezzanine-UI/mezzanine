@@ -7,7 +7,7 @@ import {
 import { Key } from 'react';
 import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import NotificationCenter from './NotificationCenter';
-import { NotificationSeverity } from '@mezzanine-ui/core/notification';
+import { NotificationSeverity } from '@mezzanine-ui/core/notification-center';
 
 const severities: NotificationSeverity[] = [
   'success',
