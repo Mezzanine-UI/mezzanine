@@ -6,7 +6,8 @@ import {
 } from '@mezzanine-ui/icons';
 import { Key } from 'react';
 import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
-import Notification, { NotificationSeverity } from '.';
+import NotificationCenter from './NotificationCenter';
+import { NotificationSeverity } from '@mezzanine-ui/core/notification';
 
 const severities: NotificationSeverity[] = [
   'success',
@@ -15,11 +16,11 @@ const severities: NotificationSeverity[] = [
   'info',
 ];
 
-describe('<Notification />', () => {
+describe('<NotificationCenter />', () => {
   afterEach(cleanup);
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<Notification />);
+    const { getHostHTMLElement } = render(<NotificationCenter />);
     const element = getHostHTMLElement();
 
     expect(element.classList.contains('mzn-notif')).toBeTruthy();
@@ -27,7 +28,7 @@ describe('<Notification />', () => {
 
   it('should render children under content element', () => {
     const children = 'foo';
-    const { getByText } = render(<Notification>{children}</Notification>);
+    const { getByText } = render(<NotificationCenter>{children}</NotificationCenter>);
     const contentElement = getByText(children);
 
     expect(contentElement.textContent).toBe('foo');
@@ -37,7 +38,7 @@ describe('<Notification />', () => {
   it('should auto close if duration is provided', () => {
     jest.useFakeTimers();
 
-    const { container } = render(<Notification duration={3000} />);
+    const { container } = render(<NotificationCenter duration={3000} />);
 
     act(() => {
       jest.runAllTimers();
@@ -54,7 +55,7 @@ describe('<Notification />', () => {
     it('should render cancel button with text wrapped by span under action element', () => {
       const cancelText = 'foo';
       const { getByText } = render(
-        <Notification cancelText={cancelText} onConfirm={() => {}} />,
+        <NotificationCenter cancelText={cancelText} onConfirm={() => {}} />,
       );
       const textElement = getByText(cancelText);
 
@@ -69,7 +70,7 @@ describe('<Notification />', () => {
     it('should render confirm button with text wrapped by span under action element', () => {
       const confirmText = 'foo';
       const { getByText } = render(
-        <Notification confirmText={confirmText} onConfirm={() => {}} />,
+        <NotificationCenter confirmText={confirmText} onConfirm={() => {}} />,
       );
       const textElement = getByText(confirmText);
 
@@ -85,7 +86,7 @@ describe('<Notification />', () => {
       const cancelText = 'foo';
       const onCancel = jest.fn();
       const { getByText } = render(
-        <Notification
+        <NotificationCenter
           onConfirm={() => {}}
           cancelText={cancelText}
           onCancel={onCancel}
@@ -105,7 +106,7 @@ describe('<Notification />', () => {
       const cancelText = 'foo';
       const onClose = jest.fn();
       const { getByText } = render(
-        <Notification
+        <NotificationCenter
           onConfirm={() => {}}
           cancelText={cancelText}
           onClose={onClose}
@@ -125,9 +126,9 @@ describe('<Notification />', () => {
   describe('prop: onClose', () => {
     it('should be able to close if `onClose` is not provided', async () => {
       const cancelText = 'foo';
-      const closeSpy = jest.spyOn(Notification, 'remove');
+      const closeSpy = jest.spyOn(NotificationCenter, 'remove');
       const { getByText } = render(
-        <Notification onConfirm={() => {}} cancelText={cancelText} />,
+        <NotificationCenter onConfirm={() => {}} cancelText={cancelText} />,
       );
 
       const { parentElement: buttonElement } = getByText(cancelText);
@@ -147,7 +148,7 @@ describe('<Notification />', () => {
   describe('prop: onConfirm', () => {
     it('should render action element if onConfirm is provided', () => {
       const { getHostHTMLElement } = render(
-        <Notification onConfirm={() => {}} />,
+        <NotificationCenter onConfirm={() => {}} />,
       );
 
       const element = getHostHTMLElement();
@@ -160,7 +161,7 @@ describe('<Notification />', () => {
       const confirmText = 'foo';
       const onConfirm = jest.fn();
       const { getByText } = render(
-        <Notification onConfirm={onConfirm} confirmText={confirmText} />,
+        <NotificationCenter onConfirm={onConfirm} confirmText={confirmText} />,
       );
 
       const { parentElement: buttonElement } = getByText(confirmText);
@@ -179,11 +180,11 @@ describe('<Notification />', () => {
 
       const onExited = jest.fn();
 
-      render(<Notification onExited={onExited} />);
+      render(<NotificationCenter onExited={onExited} />);
 
       const cancelText = 'foo';
       const { getByText } = render(
-        <Notification
+        <NotificationCenter
           onExited={onExited}
           onConfirm={() => {}}
           cancelText={cancelText}
@@ -207,7 +208,7 @@ describe('<Notification />', () => {
       const reference = 'foo';
       const onClose = jest.fn();
       const { getHostHTMLElement } = render(
-        <Notification
+        <NotificationCenter
           onConfirm={() => {}}
           reference={reference}
           onClose={onClose}
@@ -248,7 +249,7 @@ describe('<Notification />', () => {
     severities.forEach((severity) => {
       it(`should add class if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <Notification severity={severity} />,
+          <NotificationCenter severity={severity} />,
         );
         const element = getHostHTMLElement();
 
@@ -261,7 +262,7 @@ describe('<Notification />', () => {
 
       it(`should render "${targetIcon.name}" icon under icon-container element if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <Notification severity={severity} />,
+          <NotificationCenter severity={severity} />,
         );
         const element = getHostHTMLElement();
         const containerElement = element.querySelector(
@@ -281,7 +282,7 @@ describe('<Notification />', () => {
   describe('prop: title', () => {
     it('should render title under title element', () => {
       const title = 'foo';
-      const { getHostHTMLElement } = render(<Notification title={title} />);
+      const { getHostHTMLElement } = render(<NotificationCenter title={title} />);
 
       const element = getHostHTMLElement();
       const titleElement = element.querySelector('.mzn-notif__title');
@@ -292,19 +293,19 @@ describe('<Notification />', () => {
   });
 });
 
-describe('Notification API', () => {
+describe('NotificationCenter API', () => {
   afterEach(cleanup);
 
   severities.forEach((severity) => {
-    describe(`Notification.${severity}`, () => {
+    describe(`NotificationCenter.${severity}`, () => {
       afterEach(() => {
         act(() => {
-          Notification.destroy();
+          NotificationCenter.destroy();
         });
       });
 
       const children = 'foo';
-      const handler = Notification[severity];
+      const handler = NotificationCenter[severity];
 
       expect(handler).toBeInstanceOf(Function);
 
@@ -339,7 +340,7 @@ describe('Notification API', () => {
         expect(notificationElement?.textContent).toBe(children);
 
         act(() => {
-          Notification.remove(reference);
+          NotificationCenter.remove(reference);
         });
 
         expect(rootElement?.childElementCount).toBe(0);
