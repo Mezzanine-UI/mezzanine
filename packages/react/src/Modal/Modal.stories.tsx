@@ -4,6 +4,7 @@ import Modal, {
   ModalStatusType,
   ModalSize,
   ModalBody,
+  ModalBodyForVerification,
 } from '.';
 import Button from '../Button';
 import { ModalType } from '@mezzanine-ui/core/modal';
@@ -652,6 +653,119 @@ export const ExtendedSplit: StoryObj = {
           showModalFooter
           showModalHeader
         />
+      </>
+    );
+  },
+};
+
+export const VerificationCodeInput: StoryObj = {
+  render: function Render() {
+    const [open4Digit, setOpen4Digit] = useState(false);
+    const [open6Digit, setOpen6Digit] = useState(false);
+    const [code4, setCode4] = useState('');
+    const [code6, setCode6] = useState('');
+
+    const onClose4Digit = useCallback(() => {
+      setOpen4Digit(false);
+      setCode4('');
+    }, []);
+
+    const onClose6Digit = useCallback(() => {
+      setOpen6Digit(false);
+      setCode6('');
+    }, []);
+
+    const handleComplete4 = useCallback((value: string) => {
+      console.log('4-digit code completed:', value);
+      alert(`Verification code entered: ${value}`);
+    }, []);
+
+    const handleComplete6 = useCallback((value: string) => {
+      console.log('6-digit code completed:', value);
+      alert(`Verification code entered: ${value}`);
+    }, []);
+
+    const handleResend = useCallback(() => {
+      console.log('Resend verification code');
+      alert('Verification code has been resent to your email!');
+    }, []);
+
+    return (
+      <>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <Button onClick={() => setOpen4Digit(true)} variant="base-primary">
+            4-Digit Verification
+          </Button>
+          <Button onClick={() => setOpen6Digit(true)} variant="base-primary">
+            6-Digit Verification
+          </Button>
+        </div>
+
+        <Modal
+          modalFooterCancelText="取消"
+          modalFooterConfirmText="驗證"
+          modalFooterOnCancel={onClose4Digit}
+          modalFooterOnConfirm={() => {
+            if (code4.length === 4) {
+              alert(`Verifying code: ${code4}`);
+              onClose4Digit();
+            } else {
+              alert('Please enter the complete verification code');
+            }
+          }}
+          modalHeaderShowModalStatusTypeIcon
+          modalHeaderSupportingText="請輸入我們寄送至您信箱的驗證碼"
+          modalHeaderTitle="電子郵件驗證"
+          modalStatusType="email"
+          modalType="standard"
+          onClose={onClose4Digit}
+          open={open4Digit}
+          showModalFooter
+          showModalHeader
+        >
+          <ModalBodyForVerification
+            length={4}
+            value={code4}
+            onChange={setCode4}
+            onComplete={handleComplete4}
+            onResend={handleResend}
+            resendPrompt="收不到驗證碼？"
+            resendText="點此重新寄送"
+          />
+        </Modal>
+
+        <Modal
+          modalFooterCancelText="取消"
+          modalFooterConfirmText="驗證"
+          modalFooterOnCancel={onClose6Digit}
+          modalFooterOnConfirm={() => {
+            if (code6.length === 6) {
+              alert(`Verifying code: ${code6}`);
+              onClose6Digit();
+            } else {
+              alert('Please enter the complete verification code');
+            }
+          }}
+          modalHeaderShowModalStatusTypeIcon
+          modalHeaderSupportingText="請輸入6位數驗證碼以完成雙重驗證"
+          modalHeaderTitle="雙重驗證 (2FA)"
+          modalStatusType="info"
+          modalType="standard"
+          onClose={onClose6Digit}
+          open={open6Digit}
+          showModalFooter
+          showModalHeader
+        >
+          <ModalBodyForVerification
+            length={6}
+            value={code6}
+            onChange={setCode6}
+            onComplete={handleComplete6}
+            onResend={handleResend}
+            resendPrompt="沒收到驗證碼？"
+            resendText="重新傳送"
+          />
+        </Modal>
       </>
     );
   },

@@ -405,11 +405,13 @@ export type { MessageData, MessageSeverity, MessageType } from './Message';
 export {
   default as Modal,
   ModalBody,
+  ModalBodyForVerification,
   ModalFooter,
   ModalHeader,
   useModalContainer,
 } from './Modal';
 export type {
+  ModalBodyForVerificationProps,
   ModalBodyProps,
   ModalFooterProps,
   ModalHeaderProps,
