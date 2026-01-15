@@ -1,11 +1,14 @@
-import { Children, ElementType, isValidElement, ReactNode } from 'react';
+import { Children, isValidElement, type ReactNode } from 'react';
+import Anchor from './Anchor';
 import type { AnchorItemData } from './AnchorItem';
 import type { AnchorProps } from './Anchor';
+
+type AnchorComponentType = typeof Anchor;
 
 /**
  * Extract text content from ReactNode, excluding Anchor components
  */
-export function extractTextContent(node: ReactNode, AnchorComponent: ElementType): string {
+export function extractTextContent(node: ReactNode, AnchorComponent: AnchorComponentType): string {
   if (typeof node === 'string') {
     return node;
   }
@@ -30,11 +33,29 @@ export function extractTextContent(node: ReactNode, AnchorComponent: ElementType
  */
 export function parseChildren(
   children: ReactNode,
-  AnchorComponent: ElementType,
+  AnchorComponent: AnchorComponentType,
 ): AnchorItemData[] {
   const items: AnchorItemData[] = [];
 
   Children.forEach(children, (child) => {
+    if (typeof child === 'string') {
+      return;
+    }
+
+    if (isValidElement(child) && child.type !== AnchorComponent) {
+      const displayName = typeof child.type === 'string'
+        ? child.type
+        : (child.type as { displayName?: string }).displayName
+          || (child.type as { name?: string }).name
+          || 'Unknown';
+
+      console.warn(
+        `[Anchor] Invalid child type: <${displayName}>. Only <Anchor> components or strings are allowed as children. This element will be ignored.`,
+      );
+
+      return;
+    }
+
     if (isValidElement<AnchorProps>(child) && child.type === AnchorComponent) {
       const { children: nestedChildren, ...childProps } = child.props;
 
