@@ -53,12 +53,13 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
   function ModalHeader(props, ref) {
     const {
       children,
+      className,
       modalHeaderShowModalStatusTypeIcon = false,
       modalHeaderStatusTypeIconLayout = 'vertical',
       modalHeaderSupportingText,
-      modalHeaderSupportingTextAlign,
+      modalHeaderSupportingTextAlign = 'left',
       modalHeaderTitle,
-      modalHeaderTitleAlign,
+      modalHeaderTitleAlign = 'left',
       ...rest
     } = props;
     const { modalStatusType } = useContext(ModalControlContext);
@@ -100,6 +101,7 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
             [classes.modalHeader + '--show-modal-status-type-icon']:
               modalHeaderShowModalStatusTypeIcon,
           },
+          className,
         )}
       >
         {modalHeaderShowModalStatusTypeIcon && (

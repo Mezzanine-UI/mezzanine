@@ -41,6 +41,7 @@ export const modalClasses = {
   modalHeaderSupportingText: `${modalPrefix}__header__supporting-text`,
 
   /** Body */
+  body: `${modalPrefix}__body`,
   modalBodyContainer: `${modalPrefix}__body-container`,
   modalBodyContainerExtendedSplit: `${modalPrefix}__body-container__extended-split`,
   modalBodyContainerExtendedSplitRight: `${modalPrefix}__body-container__extended-split-right`,
