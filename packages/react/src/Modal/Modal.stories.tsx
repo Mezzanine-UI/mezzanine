@@ -1,10 +1,6 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
 import { ReactNode, useCallback, useState } from 'react';
-import Modal, {
-  ModalStatusType,
-  ModalSize,
-  ModalBodyForVerification,
-} from '.';
+import Modal, { ModalStatusType, ModalSize, ModalBodyForVerification } from '.';
 import Button from '../Button';
 import { ModalType } from '@mezzanine-ui/core/modal';
 import Typography from '../Typography';
@@ -19,7 +15,7 @@ const severities: ModalStatusType[] = ['info', 'error', 'warning', 'success'];
 const sizes: ModalSize[] = ['tight', 'narrow', 'regular', 'wide'];
 
 type PlaygroundArgs = {
-  modalType: ModalType
+  modalType: ModalType;
   body: ReactNode;
   disableCloseOnBackdropClick?: boolean;
   disableCloseOnEscapeKeyDown?: boolean;
@@ -30,7 +26,12 @@ type PlaygroundArgs = {
   modalFooterAuxiliaryContentButtonText?: string;
   modalFooterAuxiliaryContentChecked?: boolean;
   modalFooterAuxiliaryContentLabel?: string;
-  modalFooterAuxiliaryContentType?: 'checkbox' | 'toggle' | 'annotation' | 'button' | 'password';
+  modalFooterAuxiliaryContentType?:
+    | 'checkbox'
+    | 'toggle'
+    | 'annotation'
+    | 'button'
+    | 'password';
   modalFooterCancelText?: string;
   modalFooterConfirmText?: string;
   modalFooterLoading?: boolean;
@@ -95,7 +96,14 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: {
         type: 'select',
       },
-      options: [undefined, 'annotation', 'button', 'checkbox', 'toggle', 'password'],
+      options: [
+        undefined,
+        'annotation',
+        'button',
+        'checkbox',
+        'toggle',
+        'password',
+      ],
     },
     modalHeaderStatusTypeIconLayout: {
       control: {
@@ -125,7 +133,13 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: {
         type: 'select',
       },
-      options: ['standard', 'extended', 'extendedSplit', 'mediaPreview', 'verification'],
+      options: [
+        'standard',
+        'extended',
+        'extendedSplit',
+        'mediaPreview',
+        'verification',
+      ],
     },
     size: {
       control: {
@@ -202,18 +216,36 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     };
 
     // Extended split specific props
-    const extendedSplitProps = modalType === 'extendedSplit' ? {
-      extendedSplitLeftSideContent: (
-        <div style={{ minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span>Left Side Content</span>
-        </div>
-      ),
-      extendedSplitRightSideContent: (
-        <div style={{ minHeight: '200px', width: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span>Right Side Content</span>
-        </div>
-      ),
-    } : {};
+    const extendedSplitProps =
+      modalType === 'extendedSplit'
+        ? {
+            extendedSplitLeftSideContent: (
+              <div
+                style={{
+                  minHeight: '200px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span>Left Side Content</span>
+              </div>
+            ),
+            extendedSplitRightSideContent: (
+              <div
+                style={{
+                  minHeight: '200px',
+                  width: '150px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span>Right Side Content</span>
+              </div>
+            ),
+          }
+        : {};
 
     // Type-safe props construction based on showModalHeader and showModalFooter
     if (showModalHeader && showModalFooter) {
@@ -227,11 +259,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {...extendedSplitProps}
             modalType={modalType}
             modalFooterConfirmText={modalFooterConfirmText || 'Confirm'}
-            modalHeaderShowModalStatusTypeIcon={modalHeaderShowModalStatusTypeIcon}
+            modalHeaderShowModalStatusTypeIcon={
+              modalHeaderShowModalStatusTypeIcon
+            }
             modalHeaderStatusTypeIconLayout={modalHeaderStatusTypeIconLayout}
             modalHeaderSupportingText={modalHeaderSupportingText}
             modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
-            modalHeaderTitle={typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'}
+            modalHeaderTitle={
+              typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'
+            }
             modalHeaderTitleAlign={modalHeaderTitleAlign}
             showModalFooter
             showModalHeader
@@ -252,11 +288,15 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {...baseProps}
             {...extendedSplitProps}
             modalType={modalType}
-            modalHeaderShowModalStatusTypeIcon={modalHeaderShowModalStatusTypeIcon}
+            modalHeaderShowModalStatusTypeIcon={
+              modalHeaderShowModalStatusTypeIcon
+            }
             modalHeaderStatusTypeIconLayout={modalHeaderStatusTypeIconLayout}
             modalHeaderSupportingText={modalHeaderSupportingText}
             modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
-            modalHeaderTitle={typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'}
+            modalHeaderTitle={
+              typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'
+            }
             modalHeaderTitleAlign={modalHeaderTitleAlign}
             showModalHeader
           >
@@ -466,8 +506,8 @@ export const ModalHeaderComprehensive: StoryObj = {
           showModalHeader
         >
           <>
-            This modal showcases all header features: status icon, horizontal layout,
-            centered title and supporting text.
+            This modal showcases all header features: status icon, horizontal
+            layout, centered title and supporting text.
           </>
         </Modal>
       </>
@@ -498,7 +538,8 @@ export const ModalFooterBasic: StoryObj = {
           modalHeaderTitle="Modal with Footer"
         >
           <>
-            This modal uses the new ModalFooter component with cancel and confirm buttons.
+            This modal uses the new ModalFooter component with cancel and
+            confirm buttons.
           </>
         </Modal>
       </>
@@ -537,8 +578,8 @@ export const ModalFooterButtonLayout: StoryObj = {
           showModalHeader
         >
           <>
-            This modal uses fixed width buttons (default behavior). The buttons maintain
-            a consistent width.
+            This modal uses fixed width buttons (default behavior). The buttons
+            maintain a consistent width.
           </>
         </Modal>
         <Modal
@@ -555,8 +596,9 @@ export const ModalFooterButtonLayout: StoryObj = {
           showModalHeader
         >
           <>
-            This modal uses fill layout. The buttons expand to fill the available space
-            equally. Note: This only works when there is no control on the left side.
+            This modal uses fill layout. The buttons expand to fill the
+            available space equally. Note: This only works when there is no
+            control on the left side.
           </>
         </Modal>
       </>
@@ -605,9 +647,9 @@ export const ModalFooterWithPassword: StoryObj = {
           showModalHeader
         >
           <>
-            This modal uses the password type auxiliary content. It displays a checkbox
-            for &quot;Remember me&quot; and a link button for &quot;Forgot password?&quot;
-            in a special password mode layout.
+            This modal uses the password type auxiliary content. It displays a
+            checkbox for &quot;Remember me&quot; and a link button for
+            &quot;Forgot password?&quot; in a special password mode layout.
           </>
         </Modal>
       </>
@@ -630,13 +672,48 @@ export const ExtendedSplit: StoryObj = {
         </Button>
         <Modal
           extendedSplitRightSideContent={
-            <div style={{ minHeight: '300px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(147, 127, 199, 0.1)' }}>
-              <Typography variant="body" color="text-neutral">Right Side Content (Slot) Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio id quibusdam quis similique vitae? A ab alias aperiam assumenda deleniti ducimus eligendi impedit magni obcaecati rerum? Ad aliquid amet blanditiis cum cumque dolor, ea eveniet exercitationem fugit hic id incidunt ipsam mollitia nemo porro qui quibusdam quisquam similique temporibus ullam, veniam voluptas voluptates voluptatum? Aliquid beatae consequatur ipsa minus perferendis quae, tempora? Accusantium aperiam, beatae consequuntur culpa cupiditate debitis delectus deleniti dignissimos dolor dolorum ducimus enim eos esse, eveniet id incidunt ipsa laboriosam laudantium magnam magni maxime molestiae natus nobis optio provident quasi quia quisquam quo repellat repellendus suscipit vitae?</Typography>
+            <div
+              style={{
+                minHeight: '300px',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+              }}
+            >
+              <Typography variant="body" color="text-neutral">
+                Right Side Content (Slot) Lorem ipsum dolor sit amet,
+                consectetur adipisicing elit. Distinctio id quibusdam quis
+                similique vitae? A ab alias aperiam assumenda deleniti ducimus
+                eligendi impedit magni obcaecati rerum? Ad aliquid amet
+                blanditiis cum cumque dolor, ea eveniet exercitationem fugit hic
+                id incidunt ipsam mollitia nemo porro qui quibusdam quisquam
+                similique temporibus ullam, veniam voluptas voluptates
+                voluptatum? Aliquid beatae consequatur ipsa minus perferendis
+                quae, tempora? Accusantium aperiam, beatae consequuntur culpa
+                cupiditate debitis delectus deleniti dignissimos dolor dolorum
+                ducimus enim eos esse, eveniet id incidunt ipsa laboriosam
+                laudantium magnam magni maxime molestiae natus nobis optio
+                provident quasi quia quisquam quo repellat repellendus suscipit
+                vitae?
+              </Typography>
             </div>
           }
           extendedSplitLeftSideContent={
-            <div style={{ minHeight: '300px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(147, 127, 199, 0.1)' }}>
-              <Typography variant="body" color="text-neutral">Left Side Content (Slot)</Typography>
+            <div
+              style={{
+                minHeight: '300px',
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'rgba(147, 127, 199, 0.1)',
+              }}
+            >
+              <Typography variant="body" color="text-neutral">
+                Left Side Content (Slot)
+              </Typography>
             </div>
           }
           modalFooterCancelText="匯出 CSV"
@@ -716,7 +793,7 @@ export const VerificationCodeInput: StoryObj = {
           modalHeaderSupportingText="請輸入我們寄送至您信箱的驗證碼"
           modalHeaderTitle="電子郵件驗證"
           modalStatusType="email"
-          modalType="standard"
+          modalType="verification"
           onClose={onClose4Digit}
           open={open4Digit}
           showModalFooter
@@ -724,12 +801,12 @@ export const VerificationCodeInput: StoryObj = {
         >
           <ModalBodyForVerification
             length={4}
-            value={code4}
             onChange={setCode4}
             onComplete={handleComplete4}
             onResend={handleResend}
             resendPrompt="收不到驗證碼？"
             resendText="點此重新寄送"
+            value={code4}
           />
         </Modal>
 
@@ -749,7 +826,7 @@ export const VerificationCodeInput: StoryObj = {
           modalHeaderSupportingText="請輸入6位數驗證碼以完成雙重驗證"
           modalHeaderTitle="雙重驗證 (2FA)"
           modalStatusType="info"
-          modalType="standard"
+          modalType="verification"
           onClose={onClose6Digit}
           open={open6Digit}
           showModalFooter
@@ -757,12 +834,12 @@ export const VerificationCodeInput: StoryObj = {
         >
           <ModalBodyForVerification
             length={6}
-            value={code6}
             onChange={setCode6}
             onComplete={handleComplete6}
             onResend={handleResend}
             resendPrompt="沒收到驗證碼？"
             resendText="重新傳送"
+            value={code6}
           />
         </Modal>
       </>
