@@ -1,4 +1,9 @@
-import { modalClasses as classes, ModalSize, ModalStatusType, ModalType, } from '@mezzanine-ui/core/modal';
+import {
+  modalClasses as classes,
+  ModalSize,
+  ModalStatusType,
+  ModalType,
+} from '@mezzanine-ui/core/modal';
 import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { ModalControl, ModalControlContext } from './ModalControl';
@@ -128,7 +133,8 @@ export type ModalProps = BaseModalProps &
 /**
  * The react component for `mezzanine` modal.
  */
-const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) {
+const Modal = forwardRef<HTMLDivElement, ModalProps>(
+  function Modal(props, ref) {
     const {
       children,
       className,
@@ -195,11 +201,17 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
       <ModalFooter
         modalFooterActionsButtonLayout={modalFooterActionsButtonLayout}
         modalFooterAnnotation={modalFooterAnnotation}
-        modalFooterAuxiliaryContentButtonProps={modalFooterAuxiliaryContentButtonProps}
-        modalFooterAuxiliaryContentButtonText={modalFooterAuxiliaryContentButtonText}
+        modalFooterAuxiliaryContentButtonProps={
+          modalFooterAuxiliaryContentButtonProps
+        }
+        modalFooterAuxiliaryContentButtonText={
+          modalFooterAuxiliaryContentButtonText
+        }
         modalFooterAuxiliaryContentChecked={modalFooterAuxiliaryContentChecked}
         modalFooterAuxiliaryContentLabel={modalFooterAuxiliaryContentLabel}
-        modalFooterAuxiliaryContentOnChange={modalFooterAuxiliaryContentOnChange}
+        modalFooterAuxiliaryContentOnChange={
+          modalFooterAuxiliaryContentOnChange
+        }
         modalFooterAuxiliaryContentOnClick={modalFooterAuxiliaryContentOnClick}
         modalFooterAuxiliaryContentType={modalFooterAuxiliaryContentType}
         modalFooterCancelButtonProps={modalFooterCancelButtonProps}
@@ -217,7 +229,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
         modalFooterPasswordOnClick={modalFooterPasswordOnClick}
         modalFooterShowCancelButton={modalFooterShowCancelButton}
       />
-    )
+    );
 
     return (
       <ModalControlContext.Provider value={modalControl}>
@@ -266,18 +278,23 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(function Modal(props, ref) 
                   {extendedSplitRightSideContent}
                 </div>
                 <div className={classes.modalBodyContainerExtendedSplitLeft}>
-                  <div className={classes.modalBodyContainerExtendedSplitLeftSideContent}>
+                  <div
+                    className={
+                      classes.modalBodyContainerExtendedSplitLeftSideContent
+                    }
+                  >
                     {extendedSplitLeftSideContent}
                   </div>
                   {showModalFooter && renderModalFooter()}
                 </div>
               </div>
             )}
-            {modalType === 'standard' && (
+            {(modalType === 'standard' ||
+              modalType === 'verification' ||
+              modalType === 'extended' ||
+              modalType === 'mediaPreview') && (
               <>
-                <div className={classes.modalBodyContainer}>
-                  {children}
-                </div>
+                <div className={classes.modalBodyContainer}>{children}</div>
                 {showModalFooter && renderModalFooter()}
               </>
             )}

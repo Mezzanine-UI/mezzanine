@@ -22,31 +22,91 @@ describe('<ModalBodyForVerification />', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains(modalClasses.modalBodyVerification)).toBeTruthy();
+      expect(
+        element.classList.contains(modalClasses.modalBodyVerification),
+      ).toBeTruthy();
     });
 
     it('should render 4 inputs by default', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       expect(inputs.length).toBe(4);
     });
 
     it('should render custom number of inputs based on length prop', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification length={6} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification length={6} />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       expect(inputs.length).toBe(6);
     });
   });
 
+  describe('prop: autoFocus', () => {
+    it('should auto focus first input by default', () => {
+      const { getHostHTMLElement } = render(<ModalBodyForVerification />);
+      const element = getHostHTMLElement();
+      const firstInput = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
+
+      expect(document.activeElement).toBe(firstInput);
+    });
+
+    it('should not auto focus when autoFocus=false', () => {
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification autoFocus={false} />,
+      );
+      const element = getHostHTMLElement();
+      const firstInput = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
+
+      expect(document.activeElement).not.toBe(firstInput);
+    });
+
+    it('should not auto focus when disabled', () => {
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification disabled />,
+      );
+      const element = getHostHTMLElement();
+      const firstInput = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
+
+      expect(document.activeElement).not.toBe(firstInput);
+    });
+
+    it('should not auto focus when readOnly', () => {
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification readOnly />,
+      );
+      const element = getHostHTMLElement();
+      const firstInput = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
+
+      expect(document.activeElement).not.toBe(firstInput);
+    });
+  });
+
   describe('prop: disabled', () => {
     it('should disable all inputs when disabled=true', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification disabled />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification disabled />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       inputs.forEach((input) => {
         expect((input as HTMLInputElement).disabled).toBe(true);
@@ -59,7 +119,9 @@ describe('<ModalBodyForVerification />', () => {
         <ModalBodyForVerification disabled onChange={onChange} />,
       );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.change(input, { target: { value: '1' } });
 
@@ -69,9 +131,13 @@ describe('<ModalBodyForVerification />', () => {
 
   describe('prop: readOnly', () => {
     it('should set readonly attribute when readOnly=true', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification readOnly />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification readOnly />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       inputs.forEach((input) => {
         expect((input as HTMLInputElement).readOnly).toBe(true);
@@ -84,7 +150,9 @@ describe('<ModalBodyForVerification />', () => {
         <ModalBodyForVerification readOnly onChange={onChange} />,
       );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.change(input, { target: { value: '1' } });
 
@@ -96,29 +164,47 @@ describe('<ModalBodyForVerification />', () => {
     it('should add error class when error=true', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification error />);
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       inputs.forEach((input) => {
-        expect(input.classList.contains(modalClasses.modalBodyVerificationInputError)).toBe(true);
+        expect(
+          input.classList.contains(
+            modalClasses.modalBodyVerificationInputError,
+          ),
+        ).toBe(true);
       });
     });
 
     it('should not add error class when error=false', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification error={false} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification error={false} />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`);
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      );
 
       inputs.forEach((input) => {
-        expect(input.classList.contains(modalClasses.modalBodyVerificationInputError)).toBe(false);
+        expect(
+          input.classList.contains(
+            modalClasses.modalBodyVerificationInputError,
+          ),
+        ).toBe(false);
       });
     });
   });
 
   describe('prop: value', () => {
     it('should display initial value in inputs', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification value="1234" />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification value="1234" />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       expect(inputs[0].value).toBe('1');
       expect(inputs[1].value).toBe('2');
@@ -127,9 +213,13 @@ describe('<ModalBodyForVerification />', () => {
     });
 
     it('should handle partial value', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification value="12" />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification value="12" />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       expect(inputs[0].value).toBe('1');
       expect(inputs[1].value).toBe('2');
@@ -141,9 +231,13 @@ describe('<ModalBodyForVerification />', () => {
   describe('prop: onChange', () => {
     it('should call onChange when input value changes', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.change(input, { target: { value: '1' } });
 
@@ -152,9 +246,13 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should call onChange with full value after all inputs filled', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       fireEvent.change(inputs[0], { target: { value: '1' } });
       fireEvent.change(inputs[1], { target: { value: '2' } });
@@ -168,9 +266,13 @@ describe('<ModalBodyForVerification />', () => {
   describe('prop: onComplete', () => {
     it('should call onComplete when all inputs are filled', () => {
       const onComplete = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onComplete={onComplete} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onComplete={onComplete} />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       fireEvent.change(inputs[0], { target: { value: '1' } });
       fireEvent.change(inputs[1], { target: { value: '2' } });
@@ -185,9 +287,13 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should call onComplete with pasted full value', () => {
       const onComplete = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onComplete={onComplete} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onComplete={onComplete} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -203,25 +309,35 @@ describe('<ModalBodyForVerification />', () => {
     it('should not render resend section when onResend is not provided', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
-      const resendElement = element.querySelector(`.${modalClasses.modalBodyVerificationResend}`);
+      const resendElement = element.querySelector(
+        `.${modalClasses.modalBodyVerificationResend}`,
+      );
 
       expect(resendElement).toBeNull();
     });
 
     it('should render resend section when onResend is provided', () => {
       const onResend = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onResend={onResend} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onResend={onResend} />,
+      );
       const element = getHostHTMLElement();
-      const resendElement = element.querySelector(`.${modalClasses.modalBodyVerificationResend}`);
+      const resendElement = element.querySelector(
+        `.${modalClasses.modalBodyVerificationResend}`,
+      );
 
       expect(resendElement).not.toBeNull();
     });
 
     it('should call onResend when resend link is clicked', () => {
       const onResend = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onResend={onResend} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onResend={onResend} />,
+      );
       const element = getHostHTMLElement();
-      const resendLink = element.querySelector(`.${modalClasses.modalBodyVerificationResendLink}`) as HTMLElement;
+      const resendLink = element.querySelector(
+        `.${modalClasses.modalBodyVerificationResendLink}`,
+      ) as HTMLElement;
 
       fireEvent.click(resendLink);
 
@@ -238,7 +354,9 @@ describe('<ModalBodyForVerification />', () => {
         />,
       );
       const element = getHostHTMLElement();
-      const resendElement = element.querySelector(`.${modalClasses.modalBodyVerificationResend}`) as HTMLElement;
+      const resendElement = element.querySelector(
+        `.${modalClasses.modalBodyVerificationResend}`,
+      ) as HTMLElement;
 
       expect(resendElement.textContent).toContain('Custom prompt');
       expect(resendElement.textContent).toContain('Custom link');
@@ -249,7 +367,9 @@ describe('<ModalBodyForVerification />', () => {
     it('should move focus to next input after entering a value', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       inputs[0].focus();
       fireEvent.change(inputs[0], { target: { value: '1' } });
@@ -259,9 +379,13 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should handle backspace to clear current input', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification value="1234" onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification value="1234" onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       inputs[1].focus();
       fireEvent.keyDown(inputs[1], { key: 'Backspace' });
@@ -270,9 +394,13 @@ describe('<ModalBodyForVerification />', () => {
     });
 
     it('should move focus to previous input on backspace when current is empty', () => {
-      const { getHostHTMLElement } = render(<ModalBodyForVerification value="1" />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification value="1" />,
+      );
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       inputs[1].focus();
       fireEvent.keyDown(inputs[1], { key: 'Backspace' });
@@ -283,7 +411,9 @@ describe('<ModalBodyForVerification />', () => {
     it('should handle arrow left to move focus', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       inputs[1].focus();
       fireEvent.keyDown(inputs[1], { key: 'ArrowLeft' });
@@ -294,7 +424,9 @@ describe('<ModalBodyForVerification />', () => {
     it('should handle arrow right to move focus', () => {
       const { getHostHTMLElement } = render(<ModalBodyForVerification />);
       const element = getHostHTMLElement();
-      const inputs = element.querySelectorAll(`.${modalClasses.modalBodyVerificationInput}`) as NodeListOf<HTMLInputElement>;
+      const inputs = element.querySelectorAll(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as NodeListOf<HTMLInputElement>;
 
       inputs[0].focus();
       fireEvent.keyDown(inputs[0], { key: 'ArrowRight' });
@@ -306,9 +438,13 @@ describe('<ModalBodyForVerification />', () => {
   describe('paste functionality', () => {
     it('should handle pasting full code', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -321,9 +457,13 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should handle pasting partial code', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -336,9 +476,13 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should truncate pasted code exceeding length', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -355,7 +499,9 @@ describe('<ModalBodyForVerification />', () => {
         <ModalBodyForVerification disabled onChange={onChange} />,
       );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -372,7 +518,9 @@ describe('<ModalBodyForVerification />', () => {
         <ModalBodyForVerification readOnly onChange={onChange} />,
       );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.paste(input, {
         clipboardData: {
@@ -387,9 +535,13 @@ describe('<ModalBodyForVerification />', () => {
   describe('input restrictions', () => {
     it('should only accept last character when multiple characters entered', () => {
       const onChange = jest.fn();
-      const { getHostHTMLElement } = render(<ModalBodyForVerification onChange={onChange} />);
+      const { getHostHTMLElement } = render(
+        <ModalBodyForVerification onChange={onChange} />,
+      );
       const element = getHostHTMLElement();
-      const input = element.querySelector(`.${modalClasses.modalBodyVerificationInput}`) as HTMLInputElement;
+      const input = element.querySelector(
+        `.${modalClasses.modalBodyVerificationInput}`,
+      ) as HTMLInputElement;
 
       fireEvent.change(input, { target: { value: '123' } });
 
