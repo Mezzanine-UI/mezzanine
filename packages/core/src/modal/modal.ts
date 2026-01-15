@@ -53,5 +53,13 @@ export const modalClasses = {
   modalFooterAuxiliaryContentContainer: `${modalPrefix}__footer__auxiliary-content-container`,
   modalFooterActionsButtonContainer: `${modalPrefix}__footer__actions-button-container`,
   modalFooterActionsButton: `${modalPrefix}__footer__actions-button`,
+
+  /** Body Verification */
+  modalBodyVerification: `${modalPrefix}__body-verification`,
+  modalBodyVerificationInputs: `${modalPrefix}__body-verification__inputs`,
+  modalBodyVerificationInput: `${modalPrefix}__body-verification__input`,
+  modalBodyVerificationInputError: `${modalPrefix}__body-verification__input--error`,
+  modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,
+  modalBodyVerificationResendLink: `${modalPrefix}__body-verification__resend-link`,
 } as const;
 

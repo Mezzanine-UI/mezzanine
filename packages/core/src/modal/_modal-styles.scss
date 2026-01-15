@@ -109,10 +109,15 @@ $modalSizes: (
       align-items: start;
       gap: spacing.semantic-variable(gap, calm);
 
-      .#{$prefix}__header__title {
-        margin-top: spacing.semantic-variable(gap, tight);
-        margin-bottom: calc(spacing.semantic-variable(gap, slim) + spacing.semantic-variable(gap, tight));
+      .#{$prefix}__header__title-supporting-text-container {
+        gap: spacing.semantic-variable(gap, slim);
       }
+
+      .#{$prefix}__header__title {
+        padding-top: spacing.semantic-variable(gap, tight);
+        padding-bottom: spacing.semantic-variable(gap, tight);
+      }
+
     }
 
     &--vertical {
@@ -146,6 +151,9 @@ $modalSizes: (
 
     &__title-supporting-text-container {
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: spacing.semantic-variable(gap, tight);
     }
 
     &__title {
@@ -166,7 +174,6 @@ $modalSizes: (
       }
     }
   }
-
 
   &__body-container {
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
@@ -193,6 +200,83 @@ $modalSizes: (
 
     &__extended-split-left__content {
       padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+  }
+
+  &__body-verification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+
+    &__inputs {
+      display: flex;
+      gap: spacing.semantic-variable(gap, base);
+    }
+
+    &__input {
+      display: flex;
+      width: spacing.semantic-variable(size, element, wide-expanded);
+      height: spacing.semantic-variable(size, element, wide-expanded);
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      @include typography.semantic-variable(h1);
+
+      color: palette.semantic-variable(text, brand);
+      background-color: palette.semantic-variable('background', base);
+      border: 1px solid palette.semantic-variable(border, neutral-light);
+      border-radius: radius.variable(base);
+      outline: none;
+      transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+
+      &:focus {
+        border-color: palette.semantic-variable(border, neutral-light);
+        box-shadow: 0 0 0 1px palette.semantic-variable('background', base), 0 0 0 2px semantic-variable('background', brand);
+      }
+
+      &:hover:not(:focus):not(:disabled):not([readonly]) {
+        color: palette.semantic-variable(text, neutral-light);
+        border-color: palette.semantic-variable(border, brand);
+      }
+
+      &:not(:placeholder-shown) {
+        color: palette.semantic-variable(text, brand);
+        border-color: palette.semantic-variable(border, brand);
+      }
+
+      &:disabled {
+        color: palette.semantic-variable(text, neutral-light);
+        background-color: palette.semantic-variable('background', neutral-subtle);
+        border-color: palette.semantic-variable(border, neutral-light);
+        cursor: not-allowed;
+      }
+
+      &[readonly] {
+        color: palette.semantic-variable(text, neutral-solid);
+        background-color: palette.semantic-variable('background', neutral-subtle);
+        border-color: palette.semantic-variable(border, neutral-light);
+        cursor: default;
+      }
+
+      &--error {
+        color: palette.semantic-variable(text, error);
+        border-color: palette.semantic-variable(border, error);
+      }
+    }
+
+    &__resend {
+      display: flex;
+      gap: spacing.semantic-variable(gap, tight);
+      align-items: center;
+    }
+
+    &__resend-link {
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 
