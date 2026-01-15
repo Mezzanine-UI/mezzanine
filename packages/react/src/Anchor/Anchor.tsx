@@ -6,13 +6,8 @@ import { parseChildren } from './utils';
 
 interface AnchorPropsWithAnchors {
   anchors: AnchorItemData[];
-  autoScrollTo?: never;
   children?: never;
-  onClick?: never;
-  title?: never;
 }
-
-type AnchorChild = ReactElement<AnchorPropsWithChildren> | string;
 
 export interface AnchorPropsWithChildren {
   anchors?: never;
@@ -34,7 +29,10 @@ export interface AnchorPropsWithChildren {
    * </AnchorGroup>
    * ```
    */
-  children: AnchorChild | AnchorChild[];
+  children:
+  | string
+  | ReactElement<AnchorPropsWithChildren, typeof Anchor>
+  | Array<string | ReactElement<AnchorPropsWithChildren, typeof Anchor>>;
   /**
    * Whether the anchor is disabled.<br>
    * If parent anchor is disabled, all its children will be disabled too. <br />
