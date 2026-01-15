@@ -33,6 +33,39 @@ $form-field-counter-colors: (
   'error',
 );
 
+.#{$prefix}__label {
+  display: flex;
+  color: palette.semantic-variable(text, neutral-solid);
+
+  @include typography.semantic-variable(label-primary);
+
+  &__required-marker {
+    margin-right: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, brand);
+  }
+
+  &__optional-marker {
+    display: flex;
+    align-items: center;
+    margin-left: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, neutral);
+  }
+
+  &__information-marker {
+    margin-left: spacing.semantic-variable(gap, tiny);
+  }
+
+  &__colon {
+    margin-left: spacing.semantic-variable(gap, tight);
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+}
+
+.#{$prefix}__label-area {
+  padding-top: spacing.semantic-variable(padding, vertical, calm);
+  padding-bottom: spacing.semantic-variable(padding, vertical, calm);
+}
+
 @each $size in $form-field-sizes {
   .#{$prefix}--#{$size} {
     // 根據 size 設置不同的樣式
@@ -132,39 +165,6 @@ $form-field-counter-colors: (
       }
     }
   }
-}
-
-.#{$prefix}__label {
-  display: flex;
-  color: palette.semantic-variable(text, neutral-solid);
-
-  @include typography.semantic-variable(label-primary);
-
-  &__required-marker {
-    margin-right: spacing.semantic-variable(gap, tiny);
-    color: palette.semantic-variable(text, brand);
-  }
-
-  &__optional-marker {
-    display: flex;
-    align-items: center;
-    margin-left: spacing.semantic-variable(gap, tiny);
-    color: palette.semantic-variable(text, neutral);
-  }
-
-  &__information-marker {
-    margin-left: spacing.semantic-variable(gap, tiny);
-  }
-
-  &__colon {
-    margin-left: spacing.semantic-variable(gap, tight);
-    color: palette.semantic-variable(text, neutral-solid);
-  }
-}
-
-.#{$prefix}__label-area {
-  padding-top: spacing.semantic-variable(padding, vertical, calm);
-  padding-bottom: spacing.semantic-variable(padding, vertical, calm);
 }
 
 .#{$prefix}__data-entry {
