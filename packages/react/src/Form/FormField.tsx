@@ -139,27 +139,31 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
           />
           <div className={cx(classes.dataEntry)}>
             {children}
-            <div className={cx(classes.hintTextAndCounterArea)}>
-              {(hintText || hintTextIcon) && (
-                <FormHintText
-                  hintText={hintText}
-                  hintTextIcon={hintTextIcon}
-                  severity={severity}
-                />
-              )}
-              {counter && (
-                <span
-                  className={cx(
-                    classes.counter,
-                    classes.counterColor(
-                      counterColor || FormFieldCounterColor.INFO,
-                    ),
+            {hintText || hintTextIcon || counter ? (
+              <div className={cx(classes.hintTextAndCounterArea)}>
+                <div>
+                  {(hintText || hintTextIcon) && (
+                    <FormHintText
+                      hintText={hintText}
+                      hintTextIcon={hintTextIcon}
+                      severity={severity}
+                    />
                   )}
-                >
-                  {counter}
-                </span>
-              )}
-            </div>
+                </div>
+                {counter && (
+                  <span
+                    className={cx(
+                      classes.counter,
+                      classes.counterColor(
+                        counterColor || FormFieldCounterColor.INFO,
+                      ),
+                    )}
+                  >
+                    {counter}
+                  </span>
+                )}
+              </div>
+            ) : null}
           </div>
         </FormControlContext.Provider>
       </div>
