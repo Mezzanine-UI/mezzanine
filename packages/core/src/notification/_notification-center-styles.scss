@@ -1,0 +1,218 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/typography/utils' as utils-typography;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/z-index' as z-index;
+@use './notification-center' as *;
+@use '../drawer/drawer' as drawer;
+
+$height: 40px !default;
+$padding-left: 12px !default;
+$padding-right: 24px !default;
+$icon-size: 24px !default;
+$icon-gap: 12px !default;
+
+.#{$prefix} {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: spacing.semantic-variable(size, container, standard);
+  height: fit-content;
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, spacious);
+  border-radius: radius.variable(roomy);
+  background-color: palette.semantic-variable(background, base);
+  box-shadow: effect.variable(shadow, floating);
+  box-sizing: border-box;
+  pointer-events: auto;
+  gap: spacing.semantic-variable(gap, base);
+  transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
+  border: 0;
+
+  
+  &--drawer {
+    border-radius: 0;
+    background-color: transparent;
+    width: 100%;
+    box-shadow: none;
+    border-bottom: 1px solid palette.semantic-variable(border, neutral-faint);
+    cursor: pointer;
+
+    &:hover {
+      background-color: palette.semantic-variable(background, neutral-ghost);
+    }
+  }
+
+  &__prepend-tips {
+    color: palette.semantic-variable(text, neutral);
+    @include typography.semantic-variable(body);
+    padding-top: spacing.semantic-variable(padding, vertical, comfort);
+    padding-bottom: 2px;
+    padding-inline: spacing.semantic-variable(padding, horizontal, comfort);
+  }
+
+  &__append-tips {
+    color: palette.semantic-variable(text, neutral);
+    @include typography.semantic-variable(body);
+  }
+
+  &__icon-container {
+    flex: 0 0;
+  }
+
+  &__time-stamp-popper {
+    padding: spacing.semantic-variable(padding, vertical, tiny) spacing.semantic-variable(padding, horizontal, base);
+    border-radius: radius.variable(tiny);
+    background-color: palette.semantic-variable("background", fixed-dark);
+    color: palette.semantic-variable(text, fixed-light);
+    box-shadow: effect.variable(shadow, floating);
+  }
+
+  &__time-stamp-popper-arrow {
+    color: palette.semantic-variable("background", fixed-dark);
+  }
+
+  &__time-stamp {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  &__time-stamp-text {
+    color: palette.semantic-variable(text, fixed-light);
+    @include typography.semantic-variable(caption);
+  }
+
+  &__body {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, comfort);
+  }
+
+  &__title {
+    padding-top: spacing.semantic-variable(padding, vertical, tiny);
+    color: palette.semantic-variable(text, neutral-solid);
+    font-feature-settings: 'liga' off, 'clig' off;
+    margin: 0;
+    @include typography.semantic-variable(label-primary-highlight);
+  }
+
+  &__body-content {
+    display: flex;
+    flex-direction: column;
+    gap: spacing.semantic-variable(gap, base);
+  }
+
+  &__content {
+    color: palette.semantic-variable(text, neutral-solid);
+    font-feature-settings: 'liga' off, 'clig' off;
+    @include typography.semantic-variable(body);
+  }
+
+  &__action {
+    display: flex;
+  }
+
+  &__severity-icon {
+    padding: 2px 0;
+    color: var(--#{$prefix}-color);
+    font-size: typography.px-to-rem(24px);
+  }
+
+  &__close-icon {
+    color: palette.color(text-secondary);
+    cursor: pointer;
+
+    :hover {
+      color: palette.color(text-primary);
+    }
+  }
+
+  &--error {
+    .#{$prefix}__severity-icon {
+      color: palette.semantic-variable(text, error);
+    }
+  }
+
+  &--warning {
+    .#{$prefix}__severity-icon {
+      color: palette.semantic-variable(text, warning);
+    }
+  }
+
+  &--info {
+    .#{$prefix}__severity-icon {
+      color: palette.semantic-variable(text, info);
+    }
+  }
+
+  &--success {
+    .#{$prefix}__severity-icon {
+      color: palette.semantic-variable(text, success);
+    }
+  }
+
+  &--drawer {
+    .#{$prefix}__body {
+      gap: spacing.semantic-variable(gap, base);
+    }
+  }
+
+  &__drawer {
+    // TODO: 先短解 drawer 的 content padding 為 0，之後再調整
+    .#{drawer.$prefix}__content {
+      padding: 0;
+    }
+
+    width: spacing.semantic-variable(size, container, compact);
+    min-width: spacing.semantic-variable(size, container, compact);
+    max-width: spacing.semantic-variable(size, container, compact);
+  }
+
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
+    padding-block: spacing.semantic-variable(padding, vertical, base);
+    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
+
+  &__empty-notifications {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, slim);
+  }
+}
+
+// Root container styles
+.#{$prefix}-root {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: spacing.semantic-variable(gap, base);
+  position: fixed;
+  top: spacing.semantic-variable(padding, vertical, base);
+  right: spacing.semantic-variable(padding, horizontal, spacious);
+  z-index: z-index.get(feedback);
+  overflow: visible;
+  pointer-events: none;
+
+  .#{$prefix}__view-all-button {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    pointer-events: auto;
+  }
+
+  .#{$prefix}__view-all-button-text {
+    box-shadow: effect.variable(shadow, floating);
+  }
+}
