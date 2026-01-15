@@ -154,7 +154,6 @@ function AddMethodExample() {
       type: 'notification',
     });
 
-    // 3秒後自動移除
     setTimeout(() => {
       NotificationCenter.remove(reference);
     }, 3000);
@@ -166,13 +165,12 @@ function AddMethodExample() {
       title: '資訊通知',
       description: '這是一個資訊通知，展示 add 方法的基本用法',
       type: 'notification',
-      duration: 5000, // 5秒後自動關閉
+      duration: 5000,
     });
     console.log('通知 reference:', reference);
   };
 
   const handleAddMultiple = () => {
-    // 連續添加多個通知
     severities.forEach((severity, index) => {
       setTimeout(() => {
         NotificationCenter.add({
@@ -181,7 +179,7 @@ function AddMethodExample() {
           description: `這是第 ${index + 1} 個通知`,
           type: 'notification',
         });
-      }, index * 500); // 每隔 500ms 添加一個
+      }, index * 500);
     });
   };
 
@@ -490,14 +488,10 @@ export const DrawerEmpty: DrawerStory = {
 function DrawerTimeStampExample() {
   const [open, setOpen] = useState(false);
 
-  // 獲取當前時間
-  const now = new Date();
-
-  // 生成不同時間範圍的通知
   const notificationList = useMemo(() => {
+    const now = new Date();
     const notifications = [];
 
-    // 今天 - 30分鐘前
     const today30minAgo = new Date(now);
     today30minAgo.setMinutes(now.getMinutes() - 30);
     notifications.push({
@@ -510,7 +504,6 @@ function DrawerTimeStampExample() {
       prependTips: '今天',
     });
 
-    // 今天 - 2小時前
     const today2hoursAgo = new Date(now);
     today2hoursAgo.setHours(now.getHours() - 2);
     notifications.push({
@@ -522,7 +515,6 @@ function DrawerTimeStampExample() {
       timeStamp: today2hoursAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
-    // 昨天
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
     yesterday.setHours(10, 0, 0);
@@ -536,7 +528,6 @@ function DrawerTimeStampExample() {
       prependTips: '昨天',
     });
 
-    // 過去7天內 - 2天前
     const twoDaysAgo = new Date(now);
     twoDaysAgo.setDate(now.getDate() - 2);
     twoDaysAgo.setHours(14, 30, 0);
@@ -550,7 +541,6 @@ function DrawerTimeStampExample() {
       prependTips: '過去 7 天',
     });
 
-    // 過去7天內 - 4天前
     const fourDaysAgo = new Date(now);
     fourDaysAgo.setDate(now.getDate() - 4);
     fourDaysAgo.setHours(9, 15, 0);
@@ -563,7 +553,6 @@ function DrawerTimeStampExample() {
       timeStamp: fourDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
-    // 過去7天內 - 6天前
     const sixDaysAgo = new Date(now);
     sixDaysAgo.setDate(now.getDate() - 6);
     sixDaysAgo.setHours(16, 45, 0);
@@ -576,7 +565,6 @@ function DrawerTimeStampExample() {
       timeStamp: sixDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
-    // 超過7天 - 有精準時間戳
     const eightDaysAgo = new Date(now);
     eightDaysAgo.setDate(now.getDate() - 8);
     eightDaysAgo.setHours(20, 8, 0);
@@ -590,7 +578,6 @@ function DrawerTimeStampExample() {
       prependTips: '更早',
     });
 
-    // 超過7天 - 無精準時間戳（只有日期）
     const tenDaysAgo = new Date(now);
     tenDaysAgo.setDate(now.getDate() - 10);
     notifications.push({
@@ -602,7 +589,6 @@ function DrawerTimeStampExample() {
       timeStamp: tenDaysAgo.toISOString().split('T')[0],
     });
 
-    // 超過7天 - 有精準時間戳（11天前）
     const elevenDaysAgo = new Date(now);
     elevenDaysAgo.setDate(now.getDate() - 11);
     elevenDaysAgo.setHours(15, 30, 0);
@@ -615,8 +601,6 @@ function DrawerTimeStampExample() {
       timeStamp: elevenDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
-
-    // 超過7天 - 有精準時間戳（11天前）
     const twelveDaysAgo = new Date(now);
     twelveDaysAgo.setDate(now.getDate() - 12);
     twelveDaysAgo.setHours(15, 30, 0);
