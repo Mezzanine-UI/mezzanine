@@ -163,8 +163,22 @@ describe('<Anchor />', () => {
 
   it('should handle onClick callback', () => {
     const onClick = jest.fn();
+    const anchorsWithClick = [
+      {
+        href: '#anchor-1',
+        id: 'anchor-1',
+        name: 'anchor-1',
+        onClick,
+      },
+      {
+        href: '#anchor-2',
+        id: 'anchor-2',
+        name: 'anchor-2',
+        onClick,
+      },
+    ];
     const { getAllByRole } = render(
-      <Anchor anchors={mockAnchors} onClick={onClick} />,
+      <Anchor anchors={anchorsWithClick} />,
     );
     const links = getAllByRole('link');
 

@@ -88,6 +88,7 @@ const anchors: AnchorProps['anchors'] = [
     href: '/?path=/story/navigation-anchor--all#anchor3',
     id: 'Anchor3',
     name: 'Anchor 3',
+    title: 'Anchor 3'
   },
 ];
 
