@@ -122,6 +122,8 @@ $form-field-counter-colors: (
       gap: spacing.semantic-variable(gap, tight);
       .#{$prefix}__label-area {
         width: fit-content;
+        padding-top: spacing.semantic-variable(padding, vertical, tiny);
+        padding-bottom: spacing.semantic-variable(padding, vertical, tiny);
       }
       .#{$prefix}__data-entry {
         flex-grow: 1;
@@ -158,6 +160,11 @@ $form-field-counter-colors: (
     margin-left: spacing.semantic-variable(gap, tight);
     color: palette.semantic-variable(text, neutral-solid);
   }
+}
+
+.#{$prefix}__label-area {
+  padding-top: spacing.semantic-variable(padding, vertical, calm);
+  padding-bottom: spacing.semantic-variable(padding, vertical, calm);
 }
 
 .#{$prefix}__data-entry {
