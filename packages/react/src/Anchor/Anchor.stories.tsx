@@ -96,7 +96,9 @@ export const All: Story = {
   render: () => (
     <div style={{ display: 'flex', flexFlow: 'column', gap: '24px' }}>
       <AnchorGroup>
-        <Anchor href="/?path=/story/navigation-anchor--all#child1" title="Child 1">Child 1</Anchor>
+        <Anchor href="/?path=/story/navigation-anchor--all#child1" title="Child 1">
+          Child 1
+        </Anchor>
         <Anchor href="/?path=/story/navigation-anchor--all#child2" title="Child 2">
           Child 2
           <Anchor href="/?path=/story/navigation-anchor--all#child2-1" title="Child 2-1">Child 2-1</Anchor>

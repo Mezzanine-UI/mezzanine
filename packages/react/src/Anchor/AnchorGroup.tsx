@@ -8,17 +8,31 @@ import type { AnchorProps, AnchorPropsWithChildren } from './Anchor';
 import { cx } from '../utils/cx';
 import { parseChildren } from './utils';
 
-type AnchorElement = ReactElement<AnchorPropsWithChildren>;
-type OnlyAnchorChildren = AnchorElement | AnchorElement[];
+type AnchorElement = ReactElement<AnchorPropsWithChildren, typeof Anchor>;
+type AnchorChildren = AnchorElement | AnchorElement[];
 
 export interface AnchorGroupPropsWithAnchors {
+  /**
+   * ```tsx
+   * interface AnchorItemData {
+   *   autoScrollTo?: boolean;
+   *   children?: AnchorItemData[];
+   *   disabled?: boolean;
+   *   href: string;
+   *   id: string;
+   *   name: string;
+   *   onClick?: VoidFunction;
+   *   title?: string;
+   * }
+   * ```
+   */
   anchors: AnchorProps['anchors'];
   children?: never;
 }
 
 export interface AnchorGroupPropsWithChildren {
   anchors?: never;
-  children: OnlyAnchorChildren;
+  children: AnchorChildren;
 }
 
 type AnchorGroupBaseProps = AnchorGroupPropsWithAnchors | AnchorGroupPropsWithChildren;
