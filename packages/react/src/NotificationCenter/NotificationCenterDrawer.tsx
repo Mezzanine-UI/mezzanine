@@ -16,7 +16,7 @@ import Typography from '../Typography';
 import NotificationCenter, { type NotificationData } from './NotificationCenter';
 
 type NotificationDataForDrawer = NotificationData & {
-  reference: Key;
+  key: Key;
   type: 'drawer';
 };
 
@@ -98,7 +98,7 @@ export type NotificationCenterDrawerProps =
     /**
      * The list of notifications to render.
      * Use this when you want to pass notification data and let the component render them.
-     * Each notification must have `reference` and `type: 'drawer'`.
+     * Each notification must have `key` and `type: 'drawer'`.
      */
     notificationList: NotificationDataForDrawer[];
     children?: never;
@@ -157,12 +157,16 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
 
     // Check if notificationList is provided
     if (notificationList) {
-      return notificationList.map((notification) => (
-        <NotificationCenter
-          key={notification.reference}
-          {...notification}
-        />
-      ));
+      return notificationList.map((notification) => {
+        const { key, ...restNotification } = notification;
+        return (
+          <NotificationCenter
+            key={key}
+            {...restNotification}
+            reference={key}
+          />
+        );
+      });
     }
 
     // Return children (can be single element or array)

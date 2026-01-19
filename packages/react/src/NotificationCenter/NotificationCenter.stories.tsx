@@ -112,7 +112,7 @@ export const Severity: Story = {
 
 
 type NotificationDataForDrawer = NotificationData & {
-  reference: Key;
+  key: Key;
   type: 'drawer';
 };
 
@@ -145,7 +145,7 @@ function AddMethodExample() {
     setNotifications([
       ...notifications,
       {
-        reference: reference,
+        key: reference,
         type: 'drawer' as const,
         severity: 'success',
         title: '操作成功',
@@ -171,7 +171,7 @@ function AddMethodExample() {
     setNotifications([
       ...notifications,
       {
-        reference: reference,
+        key: reference,
         type: 'drawer' as const,
         severity: 'error',
         title: '操作失敗',
@@ -198,7 +198,7 @@ function AddMethodExample() {
     setNotifications([
       ...notifications,
       {
-        reference: reference,
+        key: reference,
         type: 'drawer' as const,
         severity: 'warning',
         title: '警告',
@@ -222,7 +222,7 @@ function AddMethodExample() {
     setNotifications([
       ...notifications,
       {
-        reference: reference,
+        key: reference,
         type: 'drawer' as const,
         severity: 'info',
         title: '資訊通知',
@@ -247,7 +247,7 @@ function AddMethodExample() {
         setNotifications((prev) => [
           ...prev,
           {
-            reference: reference,
+            key: reference,
             type: 'drawer' as const,
             severity: severity as NotificationSeverity,
             title: `${severity} 通知`,
@@ -403,7 +403,7 @@ function DrawerWithNotificationListExample() {
   const notificationList = useMemo(
     () => [
       {
-        reference: '1',
+        key: '1',
         type: 'drawer' as const,
         severity: 'info' as NotificationSeverity,
         title: '系統更新通知',
@@ -412,7 +412,7 @@ function DrawerWithNotificationListExample() {
         prependTips: '今天',
       },
       {
-        reference: '2',
+        key: '2',
         type: 'drawer' as const,
         severity: 'warning' as NotificationSeverity,
         title: '帳號安全提醒',
@@ -421,7 +421,7 @@ function DrawerWithNotificationListExample() {
         prependTips: '昨天',
       },
       {
-        reference: '3',
+        key: '3',
         type: 'drawer' as const,
         severity: 'success' as NotificationSeverity,
         title: '已上傳完成',
@@ -429,7 +429,7 @@ function DrawerWithNotificationListExample() {
         timeStamp: '2025-12-14 10:00:00',
       },
       {
-        reference: '4',
+        key: '4',
         type: 'drawer' as const,
         severity: 'error' as NotificationSeverity,
         title: '上傳失敗',
@@ -451,7 +451,7 @@ function DrawerWithNotificationListExample() {
         },
       },
       {
-        reference: '5',
+        key: '5',
         type: 'drawer' as const,
         severity: 'info' as NotificationSeverity,
         title: '資料更新通知',
@@ -497,7 +497,7 @@ function DrawerWithCustomToolbarExample() {
   const notificationList = useMemo(
     () => [
       {
-        reference: '1',
+        key: '1',
         type: 'drawer' as const,
         severity: 'info' as NotificationSeverity,
         title: '系統更新通知',
@@ -505,7 +505,7 @@ function DrawerWithCustomToolbarExample() {
         timeStamp: '2025-12-15 10:00:00',
       },
       {
-        reference: '2',
+        key: '2',
         type: 'drawer' as const,
         severity: 'warning' as NotificationSeverity,
         title: '帳號安全提醒',
@@ -586,7 +586,7 @@ function DrawerTimeStampExample() {
     const today30minAgo = new Date(now);
     today30minAgo.setMinutes(now.getMinutes() - 30);
     notifications.push({
-      reference: 'today-30min',
+      key: 'today-30min',
       type: 'drawer' as const,
       severity: 'info' as NotificationSeverity,
       title: '今天 - 30分鐘前',
@@ -598,7 +598,7 @@ function DrawerTimeStampExample() {
     const today2hoursAgo = new Date(now);
     today2hoursAgo.setHours(now.getHours() - 2);
     notifications.push({
-      reference: 'today-2hours',
+      key: 'today-2hours',
       type: 'drawer' as const,
       severity: 'success' as NotificationSeverity,
       title: '今天 - 2小時前',
@@ -610,7 +610,7 @@ function DrawerTimeStampExample() {
     yesterday.setDate(now.getDate() - 1);
     yesterday.setHours(10, 0, 0);
     notifications.push({
-      reference: 'yesterday',
+      key: 'yesterday',
       type: 'drawer' as const,
       severity: 'warning' as NotificationSeverity,
       title: '昨天',
@@ -623,7 +623,7 @@ function DrawerTimeStampExample() {
     twoDaysAgo.setDate(now.getDate() - 2);
     twoDaysAgo.setHours(14, 30, 0);
     notifications.push({
-      reference: '2days-ago',
+      key: '2days-ago',
       type: 'drawer' as const,
       severity: 'info' as NotificationSeverity,
       title: '過去7天 - 2天前',
@@ -636,7 +636,7 @@ function DrawerTimeStampExample() {
     fourDaysAgo.setDate(now.getDate() - 4);
     fourDaysAgo.setHours(9, 15, 0);
     notifications.push({
-      reference: '4days-ago',
+      key: '4days-ago',
       type: 'drawer' as const,
       severity: 'success' as NotificationSeverity,
       title: '過去7天 - 4天前',
@@ -648,7 +648,7 @@ function DrawerTimeStampExample() {
     sixDaysAgo.setDate(now.getDate() - 6);
     sixDaysAgo.setHours(16, 45, 0);
     notifications.push({
-      reference: '6days-ago',
+      key: '6days-ago',
       type: 'drawer' as const,
       severity: 'warning' as NotificationSeverity,
       title: '過去7天 - 6天前',
@@ -660,7 +660,7 @@ function DrawerTimeStampExample() {
     eightDaysAgo.setDate(now.getDate() - 8);
     eightDaysAgo.setHours(20, 8, 0);
     notifications.push({
-      reference: '8days-ago-with-time',
+      key: '8days-ago-with-time',
       type: 'drawer' as const,
       severity: 'error' as NotificationSeverity,
       title: '超過7天 - 有時間戳',
@@ -672,7 +672,7 @@ function DrawerTimeStampExample() {
     const tenDaysAgo = new Date(now);
     tenDaysAgo.setDate(now.getDate() - 10);
     notifications.push({
-      reference: '10days-ago-no-time',
+      key: '10days-ago-no-time',
       type: 'drawer' as const,
       severity: 'info' as NotificationSeverity,
       title: '超過7天 - 無時間戳',
@@ -684,7 +684,7 @@ function DrawerTimeStampExample() {
     elevenDaysAgo.setDate(now.getDate() - 11);
     elevenDaysAgo.setHours(15, 30, 0);
     notifications.push({
-      reference: '11days-ago-with-time',
+      key: '11days-ago-with-time',
       type: 'drawer' as const,
       severity: 'success' as NotificationSeverity,
       title: '超過7天 - 有時間戳（11天前）',
@@ -696,7 +696,7 @@ function DrawerTimeStampExample() {
     twelveDaysAgo.setDate(now.getDate() - 12);
     twelveDaysAgo.setHours(15, 30, 0);
     notifications.push({
-      reference: '12days-ago-with-time',
+      key: '12days-ago-with-time',
       type: 'drawer' as const,
       severity: 'warning' as NotificationSeverity,
       title: '超過7天 - 有時間戳（12天前）',

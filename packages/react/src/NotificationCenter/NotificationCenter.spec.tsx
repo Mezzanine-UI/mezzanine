@@ -1,8 +1,8 @@
 import {
-  CheckCircleFilledIcon,
-  ExclamationCircleFilledIcon,
-  TimesCircleFilledIcon,
-  InfoCircleFilledIcon,
+  CheckedFilledIcon,
+  WarningFilledIcon,
+  ErrorFilledIcon,
+  InfoFilledIcon,
 } from '@mezzanine-ui/icons';
 import { Key } from 'react';
 import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
@@ -20,25 +20,25 @@ describe('<NotificationCenter />', () => {
   afterEach(cleanup);
 
   it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<NotificationCenter />);
+    const { getHostHTMLElement } = render(<NotificationCenter reference="test" />);
     const element = getHostHTMLElement();
 
-    expect(element.classList.contains('mzn-notif')).toBeTruthy();
+    expect(element.classList.contains('mzn-notification-center')).toBeTruthy();
   });
 
-  it('should render children under content element', () => {
-    const children = 'foo';
-    const { getByText } = render(<NotificationCenter>{children}</NotificationCenter>);
-    const contentElement = getByText(children);
+  it('should render description under content element', () => {
+    const description = 'foo';
+    const { getByText } = render(<NotificationCenter reference="test" description={description} />);
+    const contentElement = getByText(description);
 
     expect(contentElement.textContent).toBe('foo');
-    expect(contentElement.classList.contains('mzn-notif__content'));
+    expect(contentElement.classList.contains('mzn-notification-center__content')).toBeTruthy();
   });
 
   it('should auto close if duration is provided', () => {
     jest.useFakeTimers();
 
-    const { container } = render(<NotificationCenter duration={3000} />);
+    const { container } = render(<NotificationCenter reference="test" duration={3000} />);
 
     act(() => {
       jest.runAllTimers();
@@ -51,49 +51,48 @@ describe('<NotificationCenter />', () => {
     expect(container.childElementCount).toBe(0);
   });
 
-  describe('prop: cancelText', () => {
-    it('should render cancel button with text wrapped by span under action element', () => {
-      const cancelText = 'foo';
-      const { getByText } = render(
-        <NotificationCenter cancelText={cancelText} onConfirm={() => {}} />,
+  describe('prop: cancelButtonText', () => {
+    it('should render cancel button with text under action element', () => {
+      const cancelButtonText = 'foo';
+      const { getByText, getHostHTMLElement } = render(
+        <NotificationCenter reference="test" cancelButtonText={cancelButtonText} onConfirm={() => {}} onClose={() => {}} />,
       );
-      const textElement = getByText(cancelText);
+      const textElement = getByText(cancelButtonText);
+      const buttonElement = textElement.closest('.mzn-button');
 
-      expect(textElement.textContent).toBe(cancelText);
-      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(
-        true,
-      );
+      expect(textElement.textContent).toBe(cancelButtonText);
+      expect(buttonElement).toBeInstanceOf(Element);
     });
   });
 
-  describe('prop: confirmText', () => {
-    it('should render confirm button with text wrapped by span under action element', () => {
-      const confirmText = 'foo';
+  describe('prop: confirmButtonText', () => {
+    it('should render confirm button with text under action element', () => {
+      const confirmButtonText = 'foo';
       const { getByText } = render(
-        <NotificationCenter confirmText={confirmText} onConfirm={() => {}} />,
+        <NotificationCenter reference="test" confirmButtonText={confirmButtonText} onConfirm={() => {}} />,
       );
-      const textElement = getByText(confirmText);
+      const textElement = getByText(confirmButtonText);
+      const buttonElement = textElement.closest('.mzn-button');
 
-      expect(textElement.textContent).toBe(confirmText);
-      expect(textElement.parentElement?.classList.contains('mzn-button')).toBe(
-        true,
-      );
+      expect(textElement.textContent).toBe(confirmButtonText);
+      expect(buttonElement).toBeInstanceOf(Element);
     });
   });
 
   describe('prop: onCancel', () => {
     it('`onCancel` should apply to cancel button', () => {
-      const cancelText = 'foo';
+      const cancelButtonText = 'foo';
       const onCancel = jest.fn();
       const { getByText } = render(
         <NotificationCenter
+          reference="test"
           onConfirm={() => {}}
-          cancelText={cancelText}
+          cancelButtonText={cancelButtonText}
           onCancel={onCancel}
         />,
       );
 
-      const { parentElement: buttonElement } = getByText(cancelText);
+      const buttonElement = getByText(cancelButtonText).closest('button');
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -103,17 +102,18 @@ describe('<NotificationCenter />', () => {
     });
 
     it('if not provided, click event handler of cancel button will fallback to `onClose`', () => {
-      const cancelText = 'foo';
+      const cancelButtonText = 'foo';
       const onClose = jest.fn();
       const { getByText } = render(
         <NotificationCenter
+          reference="test"
           onConfirm={() => {}}
-          cancelText={cancelText}
+          cancelButtonText={cancelButtonText}
           onClose={onClose}
         />,
       );
 
-      const { parentElement: buttonElement } = getByText(cancelText);
+      const buttonElement = getByText(cancelButtonText).closest('button');
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -125,13 +125,13 @@ describe('<NotificationCenter />', () => {
 
   describe('prop: onClose', () => {
     it('should be able to close if `onClose` is not provided', async () => {
-      const cancelText = 'foo';
+      const cancelButtonText = 'foo';
       const closeSpy = jest.spyOn(NotificationCenter, 'remove');
       const { getByText } = render(
-        <NotificationCenter onConfirm={() => {}} cancelText={cancelText} />,
+        <NotificationCenter reference="test" onConfirm={() => {}} cancelButtonText={cancelButtonText} onCancel={() => {}} />,
       );
 
-      const { parentElement: buttonElement } = getByText(cancelText);
+      const buttonElement = getByText(cancelButtonText).closest('button');
 
       if (buttonElement) {
         act(() => {
@@ -148,23 +148,23 @@ describe('<NotificationCenter />', () => {
   describe('prop: onConfirm', () => {
     it('should render action element if onConfirm is provided', () => {
       const { getHostHTMLElement } = render(
-        <NotificationCenter onConfirm={() => {}} />,
+        <NotificationCenter reference="test" onConfirm={() => {}} />,
       );
 
       const element = getHostHTMLElement();
-      const actionElement = element.querySelector('.mzn-notif__action');
+      const actionElement = element.querySelector('.mzn-notification-center__action');
 
       expect(actionElement).toBeInstanceOf(Element);
     });
 
     it('`onConfirm` should apply to confirm button', () => {
-      const confirmText = 'foo';
+      const confirmButtonText = 'foo';
       const onConfirm = jest.fn();
       const { getByText } = render(
-        <NotificationCenter onConfirm={onConfirm} confirmText={confirmText} />,
+        <NotificationCenter reference="test" onConfirm={onConfirm} confirmButtonText={confirmButtonText} />,
       );
 
-      const { parentElement: buttonElement } = getByText(confirmText);
+      const buttonElement = getByText(confirmButtonText).closest('button');
 
       if (buttonElement) {
         fireEvent.click(buttonElement);
@@ -180,20 +180,22 @@ describe('<NotificationCenter />', () => {
 
       const onExited = jest.fn();
 
-      render(<NotificationCenter onExited={onExited} />);
-
-      const cancelText = 'foo';
+      const cancelButtonText = 'foo';
       const { getByText } = render(
         <NotificationCenter
+          reference="test"
           onExited={onExited}
           onConfirm={() => {}}
-          cancelText={cancelText}
+          cancelButtonText={cancelButtonText}
+          onCancel={() => {}}
         />,
       );
 
-      const { parentElement: buttonElement } = getByText(cancelText);
+      const buttonElement = getByText(cancelButtonText).closest('button');
 
-      fireEvent.click(buttonElement!);
+      if (buttonElement) {
+        fireEvent.click(buttonElement);
+      }
 
       act(() => {
         jest.runAllTimers();
@@ -230,31 +232,31 @@ describe('<NotificationCenter />', () => {
     const icons = {
       success: {
         color: 'success',
-        icon: CheckCircleFilledIcon,
+        icon: CheckedFilledIcon,
       },
       warning: {
         color: 'warning',
-        icon: ExclamationCircleFilledIcon,
+        icon: WarningFilledIcon,
       },
       error: {
         color: 'error',
-        icon: TimesCircleFilledIcon,
+        icon: ErrorFilledIcon,
       },
       info: {
         color: 'primary',
-        icon: InfoCircleFilledIcon,
+        icon: InfoFilledIcon,
       },
     };
 
     severities.forEach((severity) => {
       it(`should add class if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <NotificationCenter severity={severity} />,
+          <NotificationCenter reference="test" severity={severity} />,
         );
         const element = getHostHTMLElement();
 
         expect(
-          element.classList.contains(`mzn-notif--${severity}`),
+          element.classList.contains(`mzn-notification-center--${severity}`),
         ).toBeTruthy();
       });
 
@@ -262,11 +264,11 @@ describe('<NotificationCenter />', () => {
 
       it(`should render "${targetIcon.name}" icon under icon-container element if severity="${severity}"`, () => {
         const { getHostHTMLElement } = render(
-          <NotificationCenter severity={severity} />,
+          <NotificationCenter reference="test" severity={severity} />,
         );
         const element = getHostHTMLElement();
         const containerElement = element.querySelector(
-          '.mzn-notif__icon-container',
+          '.mzn-notification-center__icon-container',
         );
 
         const iconElement = containerElement?.firstElementChild;
@@ -282,10 +284,10 @@ describe('<NotificationCenter />', () => {
   describe('prop: title', () => {
     it('should render title under title element', () => {
       const title = 'foo';
-      const { getHostHTMLElement } = render(<NotificationCenter title={title} />);
+      const { getHostHTMLElement } = render(<NotificationCenter reference="test" title={title} />);
 
       const element = getHostHTMLElement();
-      const titleElement = element.querySelector('.mzn-notif__title');
+      const titleElement = element.querySelector('.mzn-notification-center__title');
 
       expect(titleElement).toBeInstanceOf(Element);
       expect(titleElement?.textContent).toBe(title);
@@ -312,13 +314,13 @@ describe('NotificationCenter API', () => {
       it('should find root at the end of body', () => {
         act(() => {
           handler({
-            children,
+            description: children,
           });
         });
 
         const { lastElementChild: rootElement } = document.body;
 
-        expect(rootElement?.classList.contains('mzn-notif-root')).toBeTruthy();
+        expect(rootElement?.classList.contains('mzn-notification-center-root')).toBeTruthy();
       });
 
       it(`should find ${severity} message and be able to remove it`, () => {
@@ -326,7 +328,7 @@ describe('NotificationCenter API', () => {
 
         act(() => {
           reference = handler({
-            children,
+            description: children,
           });
         });
 
@@ -335,9 +337,9 @@ describe('NotificationCenter API', () => {
         const notificationElement = rootElement?.firstElementChild;
 
         expect(
-          notificationElement?.classList.contains(`mzn-notif--${severity}`),
+          notificationElement?.classList.contains(`mzn-notification-center--${severity}`),
         ).toBeTruthy();
-        expect(notificationElement?.textContent).toBe(children);
+        expect(notificationElement?.textContent).toContain(children);
 
         act(() => {
           NotificationCenter.remove(reference);
