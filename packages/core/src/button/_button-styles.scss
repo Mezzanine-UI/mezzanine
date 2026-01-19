@@ -477,7 +477,7 @@ $inverse: (
     text-color: palette.semantic-variable(text, fixed-light),
     icon-color: palette.semantic-variable(icon, fixed-light),
     background-color: none,
-    border-color: palette.semantic-variable(surface, subtle),
+    border-color: palette.semantic-variable(border, fixed-light-alpha),
     focus-color: none,
   ),
   hover: (
@@ -636,6 +636,7 @@ $size-sub-configs: (
 $size-minor-configs: (
   // 無 icon
   default: (
+    min-width: spacing.semantic-variable(size, element, extra-wide),
     padding-y: spacing.semantic-variable(padding, vertical, tiny),
     padding-x: spacing.semantic-variable(padding, horizontal, tight),
   ),
@@ -759,6 +760,10 @@ $size-configs: (
     // 非對稱 padding (leading 和 trailing)
     padding: map.get($padding-config, padding-y) map.get($padding-config, padding-right) map.get($padding-config, padding-y) map.get($padding-config, padding-left);
   }
+
+  @if map.has-key($padding-config, min-width) {
+    min-width: map.get($padding-config, min-width);
+  }
 }
 
 // 套用 size 配置
@@ -801,6 +806,7 @@ $size-configs: (
 
       width: fit-content;
       aspect-ratio: 1;
+      min-width: unset;
     }
   }
 }
