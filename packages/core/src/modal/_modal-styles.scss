@@ -234,7 +234,7 @@ $modalSizes: (
 
       &:focus {
         border-color: palette.semantic-variable(border, neutral-light);
-        box-shadow: 0 0 0 1px palette.semantic-variable('background', base), 0 0 0 2px semantic-variable('background', brand);
+        box-shadow: 0 0 0 1px palette.semantic-variable('background', base), 0 0 0 2px palette.semantic-variable('background', brand);
       }
 
       &:hover:not(:focus, :disabled, [readonly]) {
