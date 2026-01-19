@@ -33,6 +33,39 @@ $form-field-counter-colors: (
   'error',
 );
 
+.#{$prefix}__label {
+  display: flex;
+  color: palette.semantic-variable(text, neutral-solid);
+
+  @include typography.semantic-variable(label-primary);
+
+  &__required-marker {
+    margin-right: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, brand);
+  }
+
+  &__optional-marker {
+    display: flex;
+    align-items: center;
+    margin-left: spacing.semantic-variable(gap, tiny);
+    color: palette.semantic-variable(text, neutral);
+  }
+
+  &__information-marker {
+    margin-left: spacing.semantic-variable(gap, tiny);
+  }
+
+  &__colon {
+    margin-left: spacing.semantic-variable(gap, tight);
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+}
+
+.#{$prefix}__label-area {
+  padding-top: spacing.semantic-variable(padding, vertical, calm);
+  padding-bottom: spacing.semantic-variable(padding, vertical, calm);
+}
+
 @each $size in $form-field-sizes {
   .#{$prefix}--#{$size} {
     // 根據 size 設置不同的樣式
@@ -122,6 +155,8 @@ $form-field-counter-colors: (
       gap: spacing.semantic-variable(gap, tight);
       .#{$prefix}__label-area {
         width: fit-content;
+        padding-top: spacing.semantic-variable(padding, vertical, tiny);
+        padding-bottom: spacing.semantic-variable(padding, vertical, tiny);
       }
       .#{$prefix}__data-entry {
         flex-grow: 1;
@@ -129,34 +164,6 @@ $form-field-counter-colors: (
         margin-left: 0;
       }
     }
-  }
-}
-
-.#{$prefix}__label {
-  display: flex;
-  color: palette.semantic-variable(text, neutral-solid);
-
-  @include typography.semantic-variable(label-primary);
-
-  &__required-marker {
-    margin-right: spacing.semantic-variable(gap, tiny);
-    color: palette.semantic-variable(text, brand);
-  }
-
-  &__optional-marker {
-    display: flex;
-    align-items: center;
-    margin-left: spacing.semantic-variable(gap, tiny);
-    color: palette.semantic-variable(text, neutral);
-  }
-
-  &__information-marker {
-    margin-left: spacing.semantic-variable(gap, tiny);
-  }
-
-  &__colon {
-    margin-left: spacing.semantic-variable(gap, tight);
-    color: palette.semantic-variable(text, neutral-solid);
   }
 }
 
@@ -173,6 +180,10 @@ $form-field-counter-colors: (
   align-items: center;
   justify-content: space-between;
   gap: spacing.semantic-variable(gap, base);
+
+  &--align-right {
+    justify-content: flex-end;
+  }
 }
 
 .#{$prefix}__counter {
