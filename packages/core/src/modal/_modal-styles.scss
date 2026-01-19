@@ -146,7 +146,7 @@ $modalSizes: (
       flex-shrink: 0;
       align-items: center;
       justify-content: center;
-      border-radius: radius.variable(full)
+      border-radius: radius.variable(full);
     }
 
     &__title-supporting-text-container {
@@ -237,7 +237,7 @@ $modalSizes: (
         box-shadow: 0 0 0 1px palette.semantic-variable('background', base), 0 0 0 2px semantic-variable('background', brand);
       }
 
-      &:hover:not(:focus):not(:disabled):not([readonly]) {
+      &:hover:not(:focus, :disabled, [readonly]) {
         color: palette.semantic-variable(text, neutral-light);
         border-color: palette.semantic-variable(border, brand);
       }
