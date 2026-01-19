@@ -97,7 +97,7 @@ const OnModalExample = () => {
         OPEN
       </Button>
       <Modal
-        modalHeaderTitle="Hi"
+        title="Hi"
         modalType="standard"
         onClose={() => setOpen(false)}
         open={open}
