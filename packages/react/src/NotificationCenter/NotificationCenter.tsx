@@ -3,6 +3,7 @@
 import {
   Children,
   FC,
+  Fragment,
   isValidElement,
   Key,
   PropsWithChildren,
@@ -11,6 +12,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type ReactNode,
 } from 'react';
 
 import { flip, offset } from '@floating-ui/react-dom';
@@ -49,7 +51,13 @@ export interface NotificationConfigProps
     | 'onExit'
     | 'onExited'
     | 'easing'
-  > { }
+  > {
+  /**
+   * Callback function when "View All" button is clicked.
+   * This will be called after closing all notifications.
+   */
+  onViewAll?: VoidFunction;
+}
 
 export interface NotificationData
   extends NotifierData,
@@ -165,12 +173,38 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
     () => Children.toArray(children),
     [children],
   );
+
+  // Helper function to extract NotificationCenter component from Fragment or direct element
+  const extractNotificationCenter = (
+    child: ReactNode,
+  ): React.ReactElement<NotificationData> | null => {
+    if (!isValidElement(child)) {
+      return null;
+    }
+
+    // If it's a Fragment, check its children
+    if (child.type === Fragment) {
+      const fragmentProps = child.props as { children?: ReactNode };
+      const fragmentChildren = Children.toArray(fragmentProps.children);
+      const notificationCenter = fragmentChildren.find((fragmentChild) =>
+        isValidElement<NotificationData>(fragmentChild),
+      ) as React.ReactElement<NotificationData> | undefined;
+
+      return notificationCenter ?? null;
+    }
+
+    // If it's directly a NotificationCenter component
+    if (isValidElement<NotificationData>(child)) {
+      return child;
+    }
+
+    return null;
+  };
+
   const maxVisibleNotifications = useMemo(() => {
-    const firstNotification = notificationItems.find((
-      child,
-    ): child is React.ReactElement<NotificationData> => (
-      isValidElement<NotificationData>(child)
-    ));
+    const firstNotification = notificationItems
+      .map(extractNotificationCenter)
+      .find((notification) => notification !== null);
 
     if (firstNotification) {
       return firstNotification.props.maxVisibleNotifications
@@ -179,22 +213,26 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
 
     return DEFAULT_MAX_VISIBLE_NOTIFICATIONS;
   }, [notificationItems]);
-  const [showAll, setShowAll] = useState(false);
+  const onViewAll = useMemo(() => {
+    const firstNotification = notificationItems
+      .map(extractNotificationCenter)
+      .find((notification) => notification !== null);
+
+    return firstNotification?.props.onViewAll;
+  }, [notificationItems]);
   const hasOverflow = notificationItems.length > maxVisibleNotifications;
   const visibleItems = useMemo(
-    () => (
-      showAll
-        ? notificationItems
-        : notificationItems.slice(0, maxVisibleNotifications)
-    ),
-    [notificationItems, showAll, maxVisibleNotifications],
+    () => notificationItems.slice(0, maxVisibleNotifications),
+    [notificationItems, maxVisibleNotifications],
   );
 
-  useEffect(() => {
-    if (!hasOverflow) {
-      setShowAll(false);
+  const handleViewAll = () => {
+    NotificationCenter.destroy();
+
+    if (onViewAll) {
+      onViewAll();
     }
-  }, [hasOverflow]);
+  };
 
   if (!notificationItems.length) {
     return null;
@@ -204,11 +242,11 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
     <>
       {visibleItems}
       {
-        hasOverflow && !showAll
+        hasOverflow
           ? (
             <div className={classes.viewAllButton}>
               <Button
-                onClick={() => setShowAll(true)}
+                onClick={handleViewAll}
                 size="main"
                 variant="base-secondary"
                 className={classes.viewAllButtonText}
@@ -561,12 +599,17 @@ const { add: addNotifier, config, destroy, remove } = createNotifier<
   NotificationConfigProps
 >({
   duration: false,
-  render: (notif) => (
-    <NotificationCenter
-      {...notif}
-      reference={notif.key}
-    />
-  ),
+  render: (notif) => {
+    const { key, ...restNotif } = notif;
+
+    return (
+      <NotificationCenter
+        key={key}
+        {...restNotif}
+        reference={key}
+      />
+    );
+  },
   renderContainer: (children) => (
     <NotificationCenterContainer>{children}</NotificationCenterContainer>
   ),

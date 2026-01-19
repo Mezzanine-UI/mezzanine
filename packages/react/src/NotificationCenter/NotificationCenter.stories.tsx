@@ -1,6 +1,6 @@
 import { NotificationSeverity } from '@mezzanine-ui/core/notification-center';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type Key } from 'react';
 
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import Button from '../Button';
@@ -111,7 +111,20 @@ export const Severity: Story = {
 };
 
 
+type NotificationDataForDrawer = NotificationData & {
+  reference: Key;
+  type: 'drawer';
+};
+
 function AddMethodExample() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const [notifications, setNotifications] = useState<NotificationDataForDrawer[]>([]);
+
+  const handleViewAll = () => {
+    setDrawerOpen(true);
+  };
+
   const handleAddSuccess = () => {
     const reference = NotificationCenter.add({
       severity: 'success',
@@ -119,17 +132,28 @@ function AddMethodExample() {
       description: '使用 NotificationCenter.add 方法添加的通知',
       type: 'notification',
       onConfirm: () => {
-        console.log('確認');
         NotificationCenter.remove(reference);
       },
       onCancel: () => {
-        console.log('取消');
         NotificationCenter.remove(reference);
       },
       confirmButtonText: '確認',
       cancelButtonText: '取消',
+      onViewAll: handleViewAll,
     });
-    console.log('通知 reference:', reference);
+
+    setNotifications([
+      ...notifications,
+      {
+        reference: reference,
+        type: 'drawer' as const,
+        severity: 'success',
+        title: '操作成功',
+        description: '使用 NotificationCenter.add 方法添加的通知',
+        timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        prependTips: '今天',
+      },
+    ]);
   };
 
   const handleAddError = () => {
@@ -139,11 +163,23 @@ function AddMethodExample() {
       description: '這是一個錯誤通知，使用 add 方法添加',
       type: 'notification',
       onClose: () => {
-        console.log('關閉');
         NotificationCenter.remove(reference);
       },
+      onViewAll: handleViewAll,
     });
-    console.log('通知 reference:', reference);
+
+    setNotifications([
+      ...notifications,
+      {
+        reference: reference,
+        type: 'drawer' as const,
+        severity: 'error',
+        title: '操作失敗',
+        description: '這是一個錯誤通知，使用 add 方法添加',
+        timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        prependTips: '今天',
+      },
+    ]);
   };
 
   const handleAddWarning = () => {
@@ -152,11 +188,25 @@ function AddMethodExample() {
       title: '警告',
       description: '這是一個警告通知，可以通過 reference 來控制',
       type: 'notification',
+      onViewAll: handleViewAll,
     });
 
     setTimeout(() => {
       NotificationCenter.remove(reference);
     }, 3000);
+
+    setNotifications([
+      ...notifications,
+      {
+        reference: reference,
+        type: 'drawer' as const,
+        severity: 'warning',
+        title: '警告',
+        description: '這是一個警告通知，可以通過 reference 來控制',
+        timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        prependTips: '今天',
+      },
+    ]);
   };
 
   const handleAddInfo = () => {
@@ -166,19 +216,46 @@ function AddMethodExample() {
       description: '這是一個資訊通知，展示 add 方法的基本用法',
       type: 'notification',
       duration: 5000,
+      onViewAll: handleViewAll,
     });
-    console.log('通知 reference:', reference);
+
+    setNotifications([
+      ...notifications,
+      {
+        reference: reference,
+        type: 'drawer' as const,
+        severity: 'info',
+        title: '資訊通知',
+        description: '這是一個資訊通知，展示 add 方法的基本用法',
+        timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+        prependTips: '今天',
+      },
+    ]);
   };
 
   const handleAddMultiple = () => {
     severities.forEach((severity, index) => {
       setTimeout(() => {
-        NotificationCenter.add({
+        const reference = NotificationCenter.add({
           severity,
           title: `${severity} 通知`,
           description: `這是第 ${index + 1} 個通知`,
           type: 'notification',
+          onViewAll: handleViewAll,
         });
+
+        setNotifications((prev) => [
+          ...prev,
+          {
+            reference: reference,
+            type: 'drawer' as const,
+            severity: severity as NotificationSeverity,
+            title: `${severity} 通知`,
+            description: `這是第 ${index + 1} 個通知`,
+            timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
+            prependTips: '今天',
+          },
+        ]);
       }, index * 500);
     });
   };
@@ -203,6 +280,20 @@ function AddMethodExample() {
           連續添加多個通知
         </Button>
       </div>
+      <NotificationCenterDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title="通知中心"
+        drawerSize="narrow"
+        showToolbar
+        allRadioLabel="全部"
+        readRadioLabel="已讀"
+        unreadRadioLabel="未讀"
+        defaultValue="all"
+        value="all"
+        onRadioChange={(e) => console.log(e.target.value)}
+        notificationList={notifications}
+      />
     </div>
   );
 }
