@@ -28,18 +28,15 @@ export const Default: Story = {
           }}
           utilities={[
             {
-              icon: { src: PlusIcon, position: 'icon-only' },
+              icon: PlusIcon,
               onClick: () => {},
             },
             {
-              icon: { src: MenuIcon, position: 'icon-only' },
+              icon: MenuIcon,
               onClick: () => {},
             },
             {
-              icon: {
-                src: DotHorizontalIcon,
-                position: 'icon-only',
-              },
+              icon: DotHorizontalIcon,
               onClick: () => {},
             },
           ]}
@@ -56,10 +53,7 @@ export const Default: Story = {
           }}
           utilities={[
             {
-              icon: {
-                src: DotHorizontalIcon,
-                position: 'icon-only',
-              },
+              icon: DotHorizontalIcon,
               onClick: () => {},
             },
           ]}
@@ -71,8 +65,8 @@ export const Default: Story = {
           <Button>Secondary</Button>
           <Button>Primary</Button>
           <>
-            <Button icon={{ src: PlusIcon, position: 'icon-only' }} />
-            <Button icon={{ src: DotHorizontalIcon, position: 'icon-only' }} />
+            <Button icon={PlusIcon} iconType="icon-only" />
+            <Button icon={DotHorizontalIcon} iconType="icon-only" />
           </>
         </PageToolbar>
       </div>

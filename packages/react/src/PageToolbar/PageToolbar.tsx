@@ -85,7 +85,7 @@ export type PageToolbarProps = Omit<
    * They usually appear as smaller buttons with only an icon and no text.
    */
   utilities?: (ButtonProps & {
-    icon: { src: IconDefinition };
+    icon: IconDefinition;
   })[];
 };
 

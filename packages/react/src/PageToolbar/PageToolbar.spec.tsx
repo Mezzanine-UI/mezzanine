@@ -223,10 +223,7 @@ describe('<PageToolbar />', () => {
             primaryButton: { children: 'Confirm' },
           }}
           utilities={
-            <Button
-              icon={{ position: 'icon-only', src: PlusIcon }}
-              title="Add"
-            />
+            <Button iconType="icon-only" icon={PlusIcon} title="Add" />
           }
         />,
       );
@@ -250,14 +247,8 @@ describe('<PageToolbar />', () => {
           }}
           utilities={
             <>
-              <Button
-                icon={{ position: 'icon-only', src: PlusIcon }}
-                title="Add"
-              />
-              <Button
-                icon={{ position: 'icon-only', src: PlusIcon }}
-                title="Edit"
-              />
+              <Button iconType="icon-only" icon={PlusIcon} title="Add" />
+              <Button iconType="icon-only" icon={PlusIcon} title="Edit" />
             </>
           }
         />,
@@ -282,10 +273,7 @@ describe('<PageToolbar />', () => {
           }}
           size="sub"
           utilities={
-            <Button
-              icon={{ position: 'icon-only', src: PlusIcon }}
-              title="Add"
-            />
+            <Button iconType="icon-only" icon={PlusIcon} title="Add" />
           }
         />,
       );
@@ -309,14 +297,8 @@ describe('<PageToolbar />', () => {
           size="main"
           utilities={
             <>
-              <Button
-                icon={{ position: 'icon-only', src: PlusIcon }}
-                title="Add"
-              />
-              <Button
-                icon={{ position: 'icon-only', src: PlusIcon }}
-                title="Edit"
-              />
+              <Button iconType="icon-only" icon={PlusIcon} title="Add" />
+              <Button iconType="icon-only" icon={PlusIcon} title="Edit" />
             </>
           }
         />,
