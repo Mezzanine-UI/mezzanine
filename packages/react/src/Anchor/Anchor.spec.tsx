@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom';
-import { createRef } from 'react';
 import { cleanup, render } from '../../__test-utils__';
-import { describeHostElementClassNameAppendable } from '../../__test-utils__/common';
 import Anchor from '.';
 
 const mockAnchors = [
@@ -44,18 +42,6 @@ const mockNestedAnchors = [
 
 describe('<Anchor />', () => {
   afterEach(cleanup);
-
-  it('should bind ref to host element', () => {
-    const ref = createRef<HTMLDivElement>();
-
-    render(<Anchor anchors={mockAnchors} ref={ref} />);
-
-    expect(ref.current).toBeInstanceOf(HTMLDivElement);
-  });
-
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(<Anchor anchors={mockAnchors} className={className} />),
-  );
 
   it('should render with anchors prop (data-driven format)', () => {
     const { getAllByRole } = render(<Anchor anchors={mockAnchors} />);

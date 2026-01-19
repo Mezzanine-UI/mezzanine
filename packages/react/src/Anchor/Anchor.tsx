@@ -4,7 +4,21 @@ import { Fragment, ReactElement } from 'react';
 import AnchorItem, { AnchorItemData } from './AnchorItem';
 import { parseChildren } from './utils';
 
-interface AnchorPropsWithAnchors {
+export interface AnchorPropsWithAnchors {
+  /**
+   * ```tsx
+   * interface AnchorItemData {
+   *   autoScrollTo?: boolean;
+   *   children?: AnchorItemData[];
+   *   disabled?: boolean;
+   *   href: string;
+   *   id: string;
+   *   name: string;
+   *   onClick?: VoidFunction;
+   *   title?: string;
+   * }
+   * ```
+   */
   anchors: AnchorItemData[];
   children?: never;
 }
@@ -56,11 +70,12 @@ export type AnchorProps = AnchorPropsWithAnchors | AnchorPropsWithChildren;
  * Nested structure supports up to 3 levels; deeper levels will be ignored.
  */
 function Anchor(props: AnchorProps) {
-  const anchorItems: AnchorItemData[] = props.anchors
-    ? props.anchors
-    : props.children
-      ? parseChildren(props.children, Anchor)
-      : [];
+  const anchorItems: AnchorItemData[] =
+    'anchors' in props && props.anchors
+      ? props.anchors
+      : 'children' in props && props.children
+        ? parseChildren(props.children, Anchor)
+        : [];
 
   return (
     <Fragment>

@@ -1,5 +1,5 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
-import Anchor, { AnchorProps } from './Anchor';
+import Anchor, { AnchorProps, AnchorPropsWithAnchors } from './Anchor';
 import AnchorGroup from './AnchorGroup';
 
 export default {
@@ -13,7 +13,7 @@ type Story = StoryObj<AnchorProps>;
  * Note: href includes full Storybook path to prevent Storybook from modifying anchor URLs.
  * In normal usage, href only needs the hash (e.g., href: "#anchor-1").
  */
-const anchors: AnchorProps['anchors'] = [
+const anchors: AnchorPropsWithAnchors['anchors'] = [
   {
     href: '/?path=/story/navigation-anchor--all#anchor1',
     id: 'Anchor1',

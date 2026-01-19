@@ -84,8 +84,15 @@ export function parseChildren(
       } else if (isValidElement(nestedChildren)) {
         nestedItems = parseChildren(nestedChildren, AnchorComponent);
 
-        id = nestedItems[0]?.id || '';
-        name = nestedItems[0]?.name || '';
+        if (nestedItems.length > 0) {
+          id = nestedItems[0].id;
+          name = nestedItems[0].name;
+        } else {
+          const textContent = extractTextContent(nestedChildren, AnchorComponent);
+
+          id = textContent;
+          name = textContent;
+        }
       } else {
         const parsedNested = parseChildren(nestedChildren, AnchorComponent);
 

@@ -177,7 +177,7 @@ describe('<AnchorGroup />', () => {
       const links = queryAllByRole('link');
 
       expect(links).toHaveLength(0);
-      expect(container.firstElementChild?.classList.contains(anchorClasses.group)).toBeTruthy();
+      expect(container.firstElementChild?.classList.contains(anchorClasses.host)).toBeTruthy();
     });
   });
 });

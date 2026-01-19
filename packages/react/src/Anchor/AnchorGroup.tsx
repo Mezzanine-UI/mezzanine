@@ -4,31 +4,14 @@ import { ReactElement, Ref } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import Anchor from './Anchor';
 import { AnchorItemData } from './AnchorItem';
-import type { AnchorProps, AnchorPropsWithChildren } from './Anchor';
+import type { AnchorPropsWithAnchors, AnchorPropsWithChildren } from './Anchor';
 import { cx } from '../utils/cx';
 import { parseChildren } from './utils';
 
 type AnchorElement = ReactElement<AnchorPropsWithChildren, typeof Anchor>;
 type AnchorChildren = AnchorElement | AnchorElement[];
 
-export interface AnchorGroupPropsWithAnchors {
-  /**
-   * ```tsx
-   * interface AnchorItemData {
-   *   autoScrollTo?: boolean;
-   *   children?: AnchorItemData[];
-   *   disabled?: boolean;
-   *   href: string;
-   *   id: string;
-   *   name: string;
-   *   onClick?: VoidFunction;
-   *   title?: string;
-   * }
-   * ```
-   */
-  anchors: AnchorProps['anchors'];
-  children?: never;
-}
+export type AnchorGroupPropsWithAnchors = AnchorPropsWithAnchors;
 
 export interface AnchorGroupPropsWithChildren {
   anchors?: never;
