@@ -52,7 +52,6 @@ export interface ModalHeaderProps
 const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
   function ModalHeader(props, ref) {
     const {
-      children,
       className,
       showStatusTypeIcon = false,
       statusTypeIconLayout = 'vertical',
@@ -117,7 +116,7 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
             variant="h3"
             color="text-neutral-solid"
             className={cx(classes.modalHeaderTitle)}
-            title={typeof children === 'string' ? children : undefined}
+            title={typeof title === 'string' ? title : undefined}
           >
             {title}
           </Typography>
