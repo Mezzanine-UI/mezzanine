@@ -48,7 +48,7 @@ type OverflowCounterTagElement = ReactElement<
 
 type TagGroupChild = TagElement | OverflowCounterTagElement;
 
-type TagGroupProps = Omit<
+export type TagGroupProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'div'>,
   'children'
 > & {
