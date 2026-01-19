@@ -10,6 +10,147 @@
 @use './notification-center' as *;
 @use '../drawer/drawer' as drawer;
 
+// Severity configuration map
+$severity-configs: (
+  error: (
+    severity-icon-color: palette.semantic-variable(text, error),
+  ),
+  warning: (
+    severity-icon-color: palette.semantic-variable(text, warning),
+  ),
+  info: (
+    severity-icon-color: palette.semantic-variable(text, info),
+  ),
+  success: (
+    severity-icon-color: palette.semantic-variable(text, success),
+  ),
+);
+
+// Drawer type configuration
+$drawer-type-config: (
+  border-radius: 0,
+  background-color: transparent,
+  width: 100%,
+  box-shadow: none,
+  border-bottom: 1px solid palette.semantic-variable(border, neutral-faint),
+  cursor: pointer,
+  hover-background-color: palette.semantic-variable(background, neutral-ghost),
+  body-gap: spacing.semantic-variable(gap, base),
+);
+
+// Drawer container configuration
+$drawer-container-config: (
+  width: spacing.semantic-variable(size, container, compact),
+  min-width: spacing.semantic-variable(size, container, compact),
+  max-width: spacing.semantic-variable(size, container, compact),
+);
+
+// Get severity configuration value
+@function _get-severity-value($severity, $property) {
+  $severity-map: map.get($severity-configs, $severity);
+
+  @if $severity-map {
+    $value: map.get($severity-map, $property);
+    @return $value;
+  }
+
+  @return null;
+}
+
+// Get drawer type configuration value
+@function _get-drawer-type-value($property) {
+  $value: map.get($drawer-type-config, $property);
+  @return $value;
+}
+
+// Get drawer container configuration value
+@function _get-drawer-container-value($property) {
+  $value: map.get($drawer-container-config, $property);
+  @return $value;
+}
+
+// Apply severity styles
+@mixin _apply-severity($severity) {
+  $severity-icon-color: _get-severity-value($severity, severity-icon-color);
+
+  .#{$prefix}__severity-icon {
+    @if $severity-icon-color {
+      color: $severity-icon-color;
+    }
+  }
+}
+
+// Apply drawer type styles
+@mixin _apply-drawer-type() {
+  $border-radius: _get-drawer-type-value(border-radius);
+  $background-color: _get-drawer-type-value(background-color);
+  $width: _get-drawer-type-value(width);
+  $box-shadow: _get-drawer-type-value(box-shadow);
+  $border-bottom: _get-drawer-type-value(border-bottom);
+  $cursor: _get-drawer-type-value(cursor);
+  $hover-background-color: _get-drawer-type-value(hover-background-color);
+  $body-gap: _get-drawer-type-value(body-gap);
+
+  @if $border-radius {
+    border-radius: $border-radius;
+  }
+
+  @if $background-color {
+    background-color: $background-color;
+  }
+
+  @if $width {
+    width: $width;
+  }
+
+  @if $box-shadow {
+    box-shadow: $box-shadow;
+  }
+
+  @if $border-bottom {
+    border-bottom: $border-bottom;
+  }
+
+  @if $cursor {
+    cursor: $cursor;
+  }
+
+  &:hover {
+    @if $hover-background-color {
+      background-color: $hover-background-color;
+    }
+  }
+
+  .#{$prefix}__body {
+    @if $body-gap {
+      gap: $body-gap;
+    }
+  }
+}
+
+// Apply drawer container styles
+@mixin _apply-drawer-container() {
+  $width: _get-drawer-container-value(width);
+  $min-width: _get-drawer-container-value(min-width);
+  $max-width: _get-drawer-container-value(max-width);
+
+  // TODO: 先短解 drawer 的 content padding 為 0，之後再調整
+  .#{drawer.$prefix}__content {
+    padding: 0;
+  }
+
+  @if $width {
+    width: $width;
+  }
+
+  @if $min-width {
+    min-width: $min-width;
+  }
+
+  @if $max-width {
+    max-width: $max-width;
+  }
+}
 
 .#{$prefix} {
   position: relative;
@@ -27,20 +168,19 @@
   transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
   border: 0;
 
-  
+  // Drawer type modifier
   &--drawer {
-    border-radius: 0;
-    background-color: transparent;
-    width: 100%;
-    box-shadow: none;
-    border-bottom: 1px solid palette.semantic-variable(border, neutral-faint);
-    cursor: pointer;
+    @include _apply-drawer-type();
+  }
 
-    &:hover {
-      background-color: palette.semantic-variable(background, neutral-ghost);
+  // Severity modifiers
+  @each $severity in $severities {
+    &--#{$severity} {
+      @include _apply-severity($severity);
     }
   }
 
+  // Element styles
   &__prepend-tips {
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(body);
@@ -121,50 +261,13 @@
     color: palette.semantic-variable(text, secondary);
     cursor: pointer;
 
-    :hover {
+    &:hover {
       color: palette.semantic-variable(text, primary);
     }
   }
 
-  &--error {
-    .#{$prefix}__severity-icon {
-      color: palette.semantic-variable(text, error);
-    }
-  }
-
-  &--warning {
-    .#{$prefix}__severity-icon {
-      color: palette.semantic-variable(text, warning);
-    }
-  }
-
-  &--info {
-    .#{$prefix}__severity-icon {
-      color: palette.semantic-variable(text, info);
-    }
-  }
-
-  &--success {
-    .#{$prefix}__severity-icon {
-      color: palette.semantic-variable(text, success);
-    }
-  }
-
-  &--drawer {
-    .#{$prefix}__body {
-      gap: spacing.semantic-variable(gap, base);
-    }
-  }
-
   &__drawer {
-    // TODO: 先短解 drawer 的 content padding 為 0，之後再調整
-    .#{drawer.$prefix}__content {
-      padding: 0;
-    }
-
-    width: spacing.semantic-variable(size, container, compact);
-    min-width: spacing.semantic-variable(size, container, compact);
-    max-width: spacing.semantic-variable(size, container, compact);
+    @include _apply-drawer-container();
   }
 
   &__toolbar {
