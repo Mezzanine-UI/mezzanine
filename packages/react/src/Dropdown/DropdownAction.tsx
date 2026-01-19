@@ -1,11 +1,9 @@
 'use client';
 
-import {
-  dropdownClasses as classes
-} from "@mezzanine-ui/core/dropdown/dropdown";
-import { CloseIcon } from "@mezzanine-ui/icons";
+import { dropdownClasses as classes } from '@mezzanine-ui/core/dropdown/dropdown';
+import { CloseIcon } from '@mezzanine-ui/icons';
 
-import Button, { ButtonProps } from "../Button";
+import Button, { ButtonProps } from '../Button';
 
 export interface DropdownActionProps {
   /**
@@ -87,66 +85,52 @@ export default function DropdownAction(props: DropdownActionProps) {
 
   return (
     <>
-      {
-        showActions && hasAnyEvent && (
-          <div className={classes.action}>
-            {
-              showTopBar && <i className={classes.actionTopBar} />
-            }
-            <div className={classes.actionTools}>
-              {
-                hasCancel && (
-                  <Button
-                    variant="base-ghost"
-                    size={actionButtonSize}
-                    onClick={onCancel}
-                  >
-                    {cancelLabel}
-                  </Button>
-                )
-              }
-              {
-                hasConfirm && (
-                  <Button
-                    size={actionButtonSize}
-                    style={hasCancel ? undefined : { marginLeft: 'auto' }}
-                    onClick={onConfirm}
-                  >
-                    {confirmLabel}
-                  </Button>
-                )
-              }
-              {
-                isCustomMode && (
-                  <Button
-                    size={actionButtonSize}
-                    variant="base-ghost"
-                    {...customActionButtonProps}
-                    onClick={onClick}
-                  >
-                    {actionLabel}
-                  </Button>
-                )
-              }
-              {
-                isClearMode && (
-                  <Button
-                    size={actionButtonSize}
-                    variant="base-ghost"
-                    icon={{
-                      position: 'leading',
-                      src: CloseIcon,
-                    }}
-                    onClick={onClear}
-                  >
-                    {clearLabel}
-                  </Button>
-                )
-              }
-            </div>
+      {showActions && hasAnyEvent && (
+        <div className={classes.action}>
+          {showTopBar && <i className={classes.actionTopBar} />}
+          <div className={classes.actionTools}>
+            {hasCancel && (
+              <Button
+                variant="base-ghost"
+                size={actionButtonSize}
+                onClick={onCancel}
+              >
+                {cancelLabel}
+              </Button>
+            )}
+            {hasConfirm && (
+              <Button
+                size={actionButtonSize}
+                style={hasCancel ? undefined : { marginLeft: 'auto' }}
+                onClick={onConfirm}
+              >
+                {confirmLabel}
+              </Button>
+            )}
+            {isCustomMode && (
+              <Button
+                size={actionButtonSize}
+                variant="base-ghost"
+                {...customActionButtonProps}
+                onClick={onClick}
+              >
+                {actionLabel}
+              </Button>
+            )}
+            {isClearMode && (
+              <Button
+                size={actionButtonSize}
+                variant="base-ghost"
+                iconType="leading"
+                icon={CloseIcon}
+                onClick={onClear}
+              >
+                {clearLabel}
+              </Button>
+            )}
           </div>
-        )
-      }
+        </div>
+      )}
     </>
   );
 }
