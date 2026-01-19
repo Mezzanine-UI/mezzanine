@@ -217,7 +217,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
         cancelButtonProps={cancelButtonProps}
         cancelText={cancelText}
         confirmButtonProps={confirmButtonProps}
-        confirmText={confirmText}
+        confirmText={confirmText as string}
         loading={loading}
         onCancel={onCancel}
         onConfirm={onConfirm}
@@ -264,7 +264,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
                 statusTypeIconLayout={statusTypeIconLayout}
                 supportingText={supportingText}
                 supportingTextAlign={supportingTextAlign}
-                title={title}
+                title={title as string}
                 titleAlign={titleAlign}
               />
             )}
