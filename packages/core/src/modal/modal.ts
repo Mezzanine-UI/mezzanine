@@ -1,8 +1,9 @@
 import {
   CheckedOutlineIcon,
   ErrorOutlineIcon,
+  InfoOutlineIcon,
   MailIcon,
-  InfoOutlineIcon, TrashIcon,
+  TrashIcon,
   WarningOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
@@ -11,7 +12,12 @@ export type ModalStatusType = SeverityWithInfo | 'email' | 'delete';
 
 export type ModalSize = 'tight' | 'narrow' | 'regular' | 'wide';
 
-export type ModalType = 'extended' | 'extendedSplit' | 'standard' | 'mediaPreview' | 'verification';
+export type ModalType =
+  | 'extended'
+  | 'extendedSplit'
+  | 'standard'
+  | 'mediaPreview'
+  | 'verification';
 
 export const modalPrefix = 'mzn-modal';
 
@@ -62,4 +68,3 @@ export const modalClasses = {
   modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,
   modalBodyVerificationResendLink: `${modalPrefix}__body-verification__resend-link`,
 } as const;
-
