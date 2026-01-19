@@ -18,15 +18,15 @@ describe('<ModalHeader />', () => {
   });
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<ModalHeader ref={ref} modalHeaderTitle="Test" />),
+    render(<ModalHeader ref={ref} title="Test" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<ModalHeader className={className} modalHeaderTitle="Test" />),
+    render(<ModalHeader className={className} title="Test" />),
   );
 
   it('should bind header class and render title', () => {
-    const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="foo" />);
+    const { getHostHTMLElement } = render(<ModalHeader title="foo" />);
     const element = getHostHTMLElement();
     const titleElement = element.querySelector('.mzn-modal__header__title');
 
@@ -36,10 +36,14 @@ describe('<ModalHeader />', () => {
   });
 
   describe('severity icon', () => {
-    it('should render severity icon if modalHeaderShowModalStatusTypeIcon=true and bind severity icon class', () => {
-      const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon/>);
+    it('should render severity icon if showStatusTypeIcon=true and bind severity icon class', () => {
+      const { getHostHTMLElement } = render(
+        <ModalHeader title="Title" showStatusTypeIcon />,
+      );
       const element = getHostHTMLElement();
-      const iconContainer = element.querySelector('.mzn-modal__header__status-type-icon');
+      const iconContainer = element.querySelector(
+        '.mzn-modal__header__status-type-icon',
+      );
 
       expect(iconContainer).toBeTruthy();
       const iconElement = iconContainer?.querySelector('[data-icon-name]');
@@ -49,20 +53,29 @@ describe('<ModalHeader />', () => {
     });
 
     it('should not render severity icon by default', () => {
-      const { getHostHTMLElement } = render(<ModalHeader modalHeaderTitle="Title" />);
+      const { getHostHTMLElement } = render(<ModalHeader title="Title" />);
       const element = getHostHTMLElement();
-      const iconContainer = element.querySelector('.mzn-modal__header__status-type-icon');
+      const iconContainer = element.querySelector(
+        '.mzn-modal__header__status-type-icon',
+      );
 
       expect(iconContainer).toBeNull();
     });
 
-    const severities: ModalStatusType[] = ['info', 'success', 'warning', 'error', 'email', 'delete'];
+    const severities: ModalStatusType[] = [
+      'info',
+      'success',
+      'warning',
+      'error',
+      'email',
+      'delete',
+    ];
 
     severities.forEach((severity) => {
       it(`should render ${severity} icon`, () => {
         render(
           <Modal open modalStatusType={severity} modalType="standard">
-            <ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon/>
+            <ModalHeader title="Title" showStatusTypeIcon />
           </Modal>,
         );
 
@@ -76,10 +89,10 @@ describe('<ModalHeader />', () => {
     });
   });
 
-  describe('prop: modalHeaderStatusTypeIconLayout', () => {
+  describe('prop: statusTypeIconLayout', () => {
     it('should render vertical layout by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Title" modalHeaderShowModalStatusTypeIcon />,
+        <ModalHeader title="Title" showStatusTypeIcon />,
       );
       const element = getHostHTMLElement();
 
@@ -88,12 +101,12 @@ describe('<ModalHeader />', () => {
       ).toBeTruthy();
     });
 
-    it('should render horizontal layout when modalHeaderStatusTypeIconLayout="horizontal"', () => {
+    it('should render horizontal layout when statusTypeIconLayout="horizontal"', () => {
       const { getHostHTMLElement } = render(
         <ModalHeader
-          modalHeaderTitle="Title"
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderStatusTypeIconLayout="horizontal"
+          title="Title"
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
         />,
       );
       const element = getHostHTMLElement();
@@ -104,36 +117,33 @@ describe('<ModalHeader />', () => {
     });
   });
 
-  describe('prop: modalHeaderSupportingText', () => {
+  describe('prop: supportingText', () => {
     it('should render supporting text when provided', () => {
       const { getHostHTMLElement } = render(
-        <ModalHeader
-          modalHeaderTitle="Title"
-          modalHeaderSupportingText="This is supporting text"
-        />,
+        <ModalHeader title="Title" supportingText="This is supporting text" />,
       );
       const element = getHostHTMLElement();
-      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+      const supportingText = element.querySelector(
+        '.mzn-modal__header__supporting-text',
+      );
 
       expect(supportingText?.textContent).toBe('This is supporting text');
     });
 
     it('should not render supporting text when not provided', () => {
-      const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Title" />,
-      );
+      const { getHostHTMLElement } = render(<ModalHeader title="Title" />);
       const element = getHostHTMLElement();
-      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+      const supportingText = element.querySelector(
+        '.mzn-modal__header__supporting-text',
+      );
 
       expect(supportingText?.textContent).toBe('');
     });
   });
 
-  describe('prop: modalHeaderTitleAlign', () => {
+  describe('prop: titleAlign', () => {
     it('should align title left by default', () => {
-      const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Title" />,
-      );
+      const { getHostHTMLElement } = render(<ModalHeader title="Title" />);
       const element = getHostHTMLElement();
 
       expect(
@@ -141,9 +151,9 @@ describe('<ModalHeader />', () => {
       ).toBeTruthy();
     });
 
-    it('should align title center when modalHeaderTitleAlign="center"', () => {
+    it('should align title center when titleAlign="center"', () => {
       const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Title" modalHeaderTitleAlign="center" />,
+        <ModalHeader title="Title" titleAlign="center" />,
       );
       const element = getHostHTMLElement();
 
@@ -153,16 +163,15 @@ describe('<ModalHeader />', () => {
     });
   });
 
-  describe('prop: modalHeaderSupportingTextAlign', () => {
+  describe('prop: supportingTextAlign', () => {
     it('should align supporting text left by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalHeader
-          modalHeaderTitle="Title"
-          modalHeaderSupportingText="Supporting text"
-        />,
+        <ModalHeader title="Title" supportingText="Supporting text" />,
       );
       const element = getHostHTMLElement();
-      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+      const supportingText = element.querySelector(
+        '.mzn-modal__header__supporting-text',
+      );
 
       expect(
         supportingText?.classList.contains(
@@ -171,16 +180,18 @@ describe('<ModalHeader />', () => {
       ).toBeTruthy();
     });
 
-    it('should align supporting text center when modalHeaderSupportingTextAlign="center"', () => {
+    it('should align supporting text center when supportingTextAlign="center"', () => {
       const { getHostHTMLElement } = render(
         <ModalHeader
-          modalHeaderTitle="Title"
-          modalHeaderSupportingText="Supporting text"
-          modalHeaderSupportingTextAlign="center"
+          title="Title"
+          supportingText="Supporting text"
+          supportingTextAlign="center"
         />,
       );
       const element = getHostHTMLElement();
-      const supportingText = element.querySelector('.mzn-modal__header__supporting-text');
+      const supportingText = element.querySelector(
+        '.mzn-modal__header__supporting-text',
+      );
 
       expect(
         supportingText?.classList.contains(
@@ -190,10 +201,10 @@ describe('<ModalHeader />', () => {
     });
   });
 
-  describe('prop: modalHeaderTitle', () => {
+  describe('prop: title', () => {
     it('should render title text', () => {
       const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Test Modal Title" />,
+        <ModalHeader title="Test Modal Title" />,
       );
       const element = getHostHTMLElement();
       const title = element.querySelector('.mzn-modal__header__title');
@@ -202,9 +213,7 @@ describe('<ModalHeader />', () => {
     });
 
     it('should render title as h3 variant', () => {
-      const { getHostHTMLElement } = render(
-        <ModalHeader modalHeaderTitle="Test Title" />,
-      );
+      const { getHostHTMLElement } = render(<ModalHeader title="Test Title" />);
       const element = getHostHTMLElement();
       const title = element.querySelector('.mzn-modal__header__title');
 

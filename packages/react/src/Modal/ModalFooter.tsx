@@ -16,42 +16,42 @@ export interface ModalFooterProps
    * - 'fill': Buttons expand to fill available space equally
    * @default 'fixed'
    */
-  modalFooterActionsButtonLayout?: 'fill' | 'fixed';
+  actionsButtonLayout?: 'fill' | 'fixed';
   /**
    * Text to display as annotation on the left side.
-   * Only used when modalFooterAuxiliaryContentType is 'annotation'.
+   * Only used when auxiliaryContentType is 'annotation'.
    */
-  modalFooterAnnotation?: ReactNode;
+  annotation?: ReactNode;
   /**
    * Props for the auxiliary content button.
-   * Only used when modalFooterAuxiliaryContentType is 'button'.
+   * Only used when auxiliaryContentType is 'button'.
    */
-  modalFooterAuxiliaryContentButtonProps?: ButtonProps;
+  auxiliaryContentButtonProps?: ButtonProps;
   /**
    * Text for the auxiliary content button.
-   * Only used when modalFooterAuxiliaryContentType is 'button'.
+   * Only used when auxiliaryContentType is 'button'.
    */
-  modalFooterAuxiliaryContentButtonText?: ReactNode;
+  auxiliaryContentButtonText?: ReactNode;
   /**
    * Whether the auxiliary content control (checkbox/toggle) is checked.
-   * Only used when modalFooterAuxiliaryContentType is 'checkbox' or 'toggle'.
+   * Only used when auxiliaryContentType is 'checkbox' or 'toggle'.
    */
-  modalFooterAuxiliaryContentChecked?: boolean;
+  auxiliaryContentChecked?: boolean;
   /**
    * Label text for the auxiliary content control (checkbox/toggle).
-   * Only used when modalFooterAuxiliaryContentType is 'checkbox' or 'toggle'.
+   * Only used when auxiliaryContentType is 'checkbox' or 'toggle'.
    */
-  modalFooterAuxiliaryContentLabel?: string;
+  auxiliaryContentLabel?: string;
   /**
    * Change handler for auxiliary content control (checkbox/toggle).
-   * Only used when modalFooterAuxiliaryContentType is 'checkbox' or 'toggle'.
+   * Only used when auxiliaryContentType is 'checkbox' or 'toggle'.
    */
-  modalFooterAuxiliaryContentOnChange?: (checked: boolean) => void;
+  auxiliaryContentOnChange?: (checked: boolean) => void;
   /**
    * Click handler for the auxiliary content button.
-   * Only used when modalFooterAuxiliaryContentType is 'button'.
+   * Only used when auxiliaryContentType is 'button'.
    */
-  modalFooterAuxiliaryContentOnClick?: ButtonProps['onClick'];
+  auxiliaryContentOnClick?: ButtonProps['onClick'];
   /**
    * Type of auxiliary content to show on the left side of the footer.
    * - 'annotation': Display text annotation
@@ -61,70 +61,75 @@ export interface ModalFooterProps
    * - 'password': Display password-specific controls (remember me + forgot password)
    * @default undefined (no auxiliary content)
    */
-  modalFooterAuxiliaryContentType?: 'annotation' | 'button' | 'checkbox' | 'toggle' | 'password';
+  auxiliaryContentType?:
+    | 'annotation'
+    | 'button'
+    | 'checkbox'
+    | 'toggle'
+    | 'password';
   /**
    * Additional props for the cancel button.
    */
-  modalFooterCancelButtonProps?: ButtonProps;
+  cancelButtonProps?: ButtonProps;
   /**
    * Text content of the cancel button.
    */
-  modalFooterCancelText?: ReactNode;
+  cancelText?: ReactNode;
   /**
    * Additional props for the confirm button.
    */
-  modalFooterConfirmButtonProps?: ButtonProps;
+  confirmButtonProps?: ButtonProps;
   /**
    * Text content of the confirm button.
    */
-  modalFooterConfirmText?: ReactNode;
+  confirmText?: ReactNode;
   /**
    * Whether confirm button is loading and cancel button is disabled.
    */
-  modalFooterLoading?: boolean;
+  loading?: boolean;
   /**
    * Click handler for the cancel button.
    */
-  modalFooterOnCancel?: ButtonProps['onClick'];
+  onCancel?: ButtonProps['onClick'];
   /**
    * Click handler for the confirm button.
    */
-  modalFooterOnConfirm?: ButtonProps['onClick'];
+  onConfirm?: ButtonProps['onClick'];
   /**
    * Props for the password auxiliary button.
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordButtonProps?: ButtonProps;
+  passwordButtonProps?: ButtonProps;
   /**
    * Text for the password auxiliary button (e.g., "Forgot password?").
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordButtonText?: ReactNode;
+  passwordButtonText?: ReactNode;
   /**
    * Whether the password checkbox is checked (e.g., "Remember me").
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordChecked?: boolean;
+  passwordChecked?: boolean;
   /**
    * Label for the password checkbox (e.g., "Remember me").
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordCheckedLabel?: string;
+  passwordCheckedLabel?: string;
   /**
    * Change handler for the password checkbox.
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordCheckedOnChange?: (checked: boolean) => void;
+  passwordCheckedOnChange?: (checked: boolean) => void;
   /**
    * Click handler for the password auxiliary button.
-   * Only used when modalFooterAuxiliaryContentType is 'password'.
+   * Only used when auxiliaryContentType is 'password'.
    */
-  modalFooterPasswordOnClick?: ButtonProps['onClick'];
+  passwordOnClick?: ButtonProps['onClick'];
   /**
    * Whether to show the cancel button.
    * @default true
    */
-  modalFooterShowCancelButton?: boolean;
+  showCancelButton?: boolean;
 }
 
 /**
@@ -135,111 +140,126 @@ const ModalFooter = forwardRef<HTMLDivElement, ModalFooterProps>(
     const {
       children,
       className,
-      modalFooterActionsButtonLayout = 'fixed',
-      modalFooterAnnotation,
-      modalFooterAuxiliaryContentButtonProps,
-      modalFooterAuxiliaryContentButtonText,
-      modalFooterAuxiliaryContentChecked,
-      modalFooterAuxiliaryContentLabel,
-      modalFooterAuxiliaryContentOnChange,
-      modalFooterAuxiliaryContentOnClick,
-      modalFooterAuxiliaryContentType,
-      modalFooterCancelButtonProps,
-      modalFooterCancelText,
-      modalFooterConfirmButtonProps,
-      modalFooterConfirmText,
-      modalFooterLoading,
-      modalFooterOnCancel,
-      modalFooterOnConfirm,
-      modalFooterPasswordButtonProps,
-      modalFooterPasswordButtonText,
-      modalFooterPasswordChecked,
-      modalFooterPasswordCheckedLabel,
-      modalFooterPasswordCheckedOnChange,
-      modalFooterPasswordOnClick,
-      modalFooterShowCancelButton = true,
+      actionsButtonLayout = 'fixed',
+      annotation,
+      auxiliaryContentButtonProps,
+      auxiliaryContentButtonText,
+      auxiliaryContentChecked,
+      auxiliaryContentLabel,
+      auxiliaryContentOnChange,
+      auxiliaryContentOnClick,
+      auxiliaryContentType,
+      cancelButtonProps,
+      cancelText,
+      confirmButtonProps,
+      confirmText,
+      loading,
+      onCancel,
+      onConfirm,
+      passwordButtonProps,
+      passwordButtonText,
+      passwordChecked,
+      passwordCheckedLabel,
+      passwordCheckedOnChange,
+      passwordOnClick,
+      showCancelButton = true,
       ...rest
     } = props;
 
-    const { disabled: cancelButtonDisabled = modalFooterLoading } =
-      modalFooterCancelButtonProps || {};
+    const { disabled: cancelButtonDisabled = loading } =
+      cancelButtonProps || {};
 
     const isActionsButtonFillLayout =
-      modalFooterActionsButtonLayout === 'fill' && !modalFooterAuxiliaryContentType;
+      actionsButtonLayout === 'fill' && !auxiliaryContentType;
 
     return (
-      <div {...rest} ref={ref} className={cx(classes.modalFooter, {
-        [classes.modalFooter + '--password-mode']: modalFooterAuxiliaryContentType === 'password',
-        [classes.modalFooter + '--with-auxiliary-content']: !!modalFooterAuxiliaryContentType && modalFooterAuxiliaryContentType !== 'password',
-      }, className)}>
-        {modalFooterAuxiliaryContentType === 'password' && (
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(
+          classes.modalFooter,
+          {
+            [classes.modalFooter + '--password-mode']:
+              auxiliaryContentType === 'password',
+            [classes.modalFooter + '--with-auxiliary-content']:
+              !!auxiliaryContentType && auxiliaryContentType !== 'password',
+          },
+          className,
+        )}
+      >
+        {auxiliaryContentType === 'password' && (
           <div className={classes.modalFooterPasswordContainer}>
             <Checkbox
-              checked={modalFooterPasswordChecked}
-              label={modalFooterPasswordCheckedLabel}
-              onChange={(e) => modalFooterPasswordCheckedOnChange?.(e.target.checked)}
+              checked={passwordChecked}
+              label={passwordCheckedLabel}
+              onChange={(e) => passwordCheckedOnChange?.(e.target.checked)}
             />
             <Button
               variant="base-text-link"
-              {...modalFooterPasswordButtonProps}
-              onClick={modalFooterPasswordOnClick}
+              {...passwordButtonProps}
+              onClick={passwordOnClick}
             >
-              {modalFooterPasswordButtonText}
+              {passwordButtonText}
             </Button>
           </div>
         )}
-        {modalFooterAuxiliaryContentType && modalFooterAuxiliaryContentType !== 'password' && (
+        {auxiliaryContentType && auxiliaryContentType !== 'password' && (
           <div className={classes.modalFooterAuxiliaryContentContainer}>
-            {modalFooterAuxiliaryContentType === 'annotation' && (
-              <Typography variant="caption" color="text-neutral">{modalFooterAnnotation}</Typography>
+            {auxiliaryContentType === 'annotation' && (
+              <Typography variant="caption" color="text-neutral">
+                {annotation}
+              </Typography>
             )}
-            {modalFooterAuxiliaryContentType === 'button' && (
+            {auxiliaryContentType === 'button' && (
               <Button
                 variant="base-text-link"
-                {...modalFooterAuxiliaryContentButtonProps}
-                onClick={modalFooterAuxiliaryContentOnClick}
+                {...auxiliaryContentButtonProps}
+                onClick={auxiliaryContentOnClick}
               >
-                {modalFooterAuxiliaryContentButtonText}
+                {auxiliaryContentButtonText}
               </Button>
             )}
-            {modalFooterAuxiliaryContentType === 'checkbox' && (
+            {auxiliaryContentType === 'checkbox' && (
               <Checkbox
-                checked={modalFooterAuxiliaryContentChecked}
-                label={modalFooterAuxiliaryContentLabel}
-                onChange={(e) => modalFooterAuxiliaryContentOnChange?.(e.target.checked)}
+                checked={auxiliaryContentChecked}
+                label={auxiliaryContentLabel}
+                onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
               />
             )}
-            {modalFooterAuxiliaryContentType === 'toggle' && (
+            {auxiliaryContentType === 'toggle' && (
               <Toggle
-                checked={modalFooterAuxiliaryContentChecked}
-                label={modalFooterAuxiliaryContentLabel}
-                onChange={(e) => modalFooterAuxiliaryContentOnChange?.(e.target.checked)}
+                checked={auxiliaryContentChecked}
+                label={auxiliaryContentLabel}
+                onChange={(e) => auxiliaryContentOnChange?.(e.target.checked)}
               />
             )}
           </div>
         )}
-        <ButtonGroup className={cx(classes.modalFooterActionsButtonContainer, {
-          [classes.modalFooterActionsButtonContainer + '--fill-layout']: isActionsButtonFillLayout,
-        })}>
-          {modalFooterShowCancelButton && (
+        <ButtonGroup
+          className={cx(classes.modalFooterActionsButtonContainer, {
+            [classes.modalFooterActionsButtonContainer + '--fill-layout']:
+              isActionsButtonFillLayout,
+          })}
+        >
+          {showCancelButton && (
             <Button
               variant="base-secondary"
-              {...modalFooterCancelButtonProps}
+              {...cancelButtonProps}
               disabled={cancelButtonDisabled}
-              onClick={modalFooterOnCancel}
+              onClick={onCancel}
               className={classes.modalFooterActionsButton}
             >
-              {modalFooterCancelText}
+              {cancelText}
             </Button>
           )}
           <Button
             variant="base-primary"
-            {...modalFooterConfirmButtonProps}
-            loading={modalFooterLoading}
-            onClick={modalFooterOnConfirm}
+            {...confirmButtonProps}
+            loading={loading}
+            onClick={onConfirm}
             className={classes.modalFooterActionsButton}
           >
-            {modalFooterConfirmText}
+            {confirmText}
           </Button>
         </ButtonGroup>
         {children}

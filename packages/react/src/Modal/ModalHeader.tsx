@@ -18,32 +18,32 @@ export interface ModalHeaderProps
    * Whether to show status type icon.
    * @default false
    */
-  modalHeaderShowModalStatusTypeIcon?: boolean;
+  showStatusTypeIcon?: boolean;
   /**
    * Layout of the status type icon relative to title.
    * - 'vertical': Icon above title
    * - 'horizontal': Icon to the left of title
    * @default 'vertical'
    */
-  modalHeaderStatusTypeIconLayout?: 'vertical' | 'horizontal';
+  statusTypeIconLayout?: 'vertical' | 'horizontal';
   /**
    * Supporting text displayed below the title.
    */
-  modalHeaderSupportingText?: string;
+  supportingText?: string;
   /**
    * Alignment of the supporting text.
    * @default 'left'
    */
-  modalHeaderSupportingTextAlign?: 'left' | 'center';
+  supportingTextAlign?: 'left' | 'center';
   /**
    * The title text of the modal header.
    */
-  modalHeaderTitle: string;
+  title: string;
   /**
    * Alignment of the title.
    * @default 'left'
    */
-  modalHeaderTitleAlign?: 'left' | 'center';
+  titleAlign?: 'left' | 'center';
 }
 
 /**
@@ -54,12 +54,12 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
     const {
       children,
       className,
-      modalHeaderShowModalStatusTypeIcon = false,
-      modalHeaderStatusTypeIconLayout = 'vertical',
-      modalHeaderSupportingText,
-      modalHeaderSupportingTextAlign = 'left',
-      modalHeaderTitle,
-      modalHeaderTitleAlign = 'left',
+      showStatusTypeIcon = false,
+      statusTypeIconLayout = 'vertical',
+      supportingText,
+      supportingTextAlign = 'left',
+      title,
+      titleAlign = 'left',
       ...rest
     } = props;
     const { modalStatusType } = useContext(ModalControlContext);
@@ -91,20 +91,19 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
           classes.modalHeader,
           {
             [classes.modalHeader + '--horizontal']:
-              modalHeaderStatusTypeIconLayout === 'horizontal',
+              statusTypeIconLayout === 'horizontal',
             [classes.modalHeader + '--vertical']:
-              modalHeaderStatusTypeIconLayout === 'vertical',
-            [classes.modalHeader + '--title-align-left']:
-              modalHeaderTitleAlign === 'left',
+              statusTypeIconLayout === 'vertical',
+            [classes.modalHeader + '--title-align-left']: titleAlign === 'left',
             [classes.modalHeader + '--title-align-center']:
-              modalHeaderTitleAlign === 'center',
+              titleAlign === 'center',
             [classes.modalHeader + '--show-modal-status-type-icon']:
-              modalHeaderShowModalStatusTypeIcon,
+              showStatusTypeIcon,
           },
           className,
         )}
       >
-        {modalHeaderShowModalStatusTypeIcon && (
+        {showStatusTypeIcon && (
           <div className={cx(classes.modalHeaderStatusTypeIcon)}>
             <Icon
               icon={modalStatusTypeIcons[modalStatusType]}
@@ -120,19 +119,19 @@ const ModalHeader = forwardRef<HTMLDivElement, ModalHeaderProps>(
             className={cx(classes.modalHeaderTitle)}
             title={typeof children === 'string' ? children : undefined}
           >
-            {modalHeaderTitle}
+            {title}
           </Typography>
           <Typography
             variant="body"
             color="text-neutral-strong"
             className={cx(classes.modalHeaderSupportingText, {
               [classes.modalHeaderSupportingText + '--align-left']:
-                modalHeaderSupportingTextAlign === 'left',
+                supportingTextAlign === 'left',
               [classes.modalHeaderSupportingText + '--align-center']:
-                modalHeaderSupportingTextAlign === 'center',
+                supportingTextAlign === 'center',
             })}
           >
-            {modalHeaderSupportingText}
+            {supportingText}
           </Typography>
         </div>
       </div>

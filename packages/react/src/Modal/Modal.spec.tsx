@@ -57,7 +57,11 @@ describe('<Modal />', () => {
   });
 
   it('should render children', () => {
-    render(<Modal open modalType="standard">foo</Modal>);
+    render(
+      <Modal open modalType="standard">
+        foo
+      </Modal>,
+    );
 
     const modalElement = getModalElement()!;
 
@@ -153,13 +157,17 @@ describe('<Modal />', () => {
       render(<Modal open showDismissButton modalType="standard" />);
 
       const modalElement = getModalElement()!;
-      const closeIconElement = modalElement.querySelector(`.${classes.closeIcon}`);
+      const closeIconElement = modalElement.querySelector(
+        `.${classes.closeIcon}`,
+      );
 
       expect(
         modalElement.classList.contains('mzn-modal--close-icon'),
       ).toBeTruthy();
       expect(closeIconElement).toBeTruthy();
-      expect(closeIconElement!.classList.contains('mzn-modal__close-icon')).toBeTruthy();
+      expect(
+        closeIconElement!.classList.contains('mzn-modal__close-icon'),
+      ).toBeTruthy();
 
       const iconElement = closeIconElement!.querySelector('[data-icon-name]');
       expect(iconElement).toBeTruthy();
@@ -168,10 +176,14 @@ describe('<Modal />', () => {
     it('should fire onClose while close icon clicked', () => {
       const onClose = jest.fn();
 
-      render(<Modal open onClose={onClose} showDismissButton modalType="standard" />);
+      render(
+        <Modal open onClose={onClose} showDismissButton modalType="standard" />,
+      );
 
       const modalElement = getModalElement()!;
-      const closeIconElement = modalElement.querySelector(`.${classes.closeIcon}`);
+      const closeIconElement = modalElement.querySelector(
+        `.${classes.closeIcon}`,
+      );
 
       fireEvent.click(closeIconElement!);
 
@@ -205,7 +217,11 @@ describe('<Modal />', () => {
 
   describe('prop: modalType', () => {
     it('should render standard layout by default', () => {
-      render(<Modal open modalType="standard">Content</Modal>);
+      render(
+        <Modal open modalType="standard">
+          Content
+        </Modal>,
+      );
 
       const modalElement = getModalElement()!;
       const bodyContainer = modalElement.querySelector(
@@ -255,12 +271,7 @@ describe('<Modal />', () => {
 
     it('should render header when showModalHeader=true', () => {
       render(
-        <Modal
-          open
-          modalType="standard"
-          showModalHeader
-          modalHeaderTitle="Test Title"
-        />,
+        <Modal open modalType="standard" showModalHeader title="Test Title" />,
       );
 
       const modalElement = getModalElement()!;
@@ -287,7 +298,7 @@ describe('<Modal />', () => {
           open
           modalType="standard"
           showModalFooter
-          modalFooterConfirmText="Confirm"
+          confirmText="Confirm"
         />,
       );
 
@@ -304,7 +315,7 @@ describe('<Modal />', () => {
           open
           modalType="extendedSplit"
           showModalFooter
-          modalFooterConfirmText="Confirm"
+          confirmText="Confirm"
           extendedSplitLeftSideContent={<div>Left</div>}
           extendedSplitRightSideContent={<div>Right</div>}
         />,
@@ -395,7 +406,9 @@ describe('<Modal />', () => {
 
   describe('prop: disablePortal', () => {
     it('should render in place when disablePortal=true', () => {
-      const { container } = render(<Modal open disablePortal modalType="standard" />);
+      const { container } = render(
+        <Modal open disablePortal modalType="standard" />,
+      );
 
       const modalInContainer = container.querySelector('.mzn-modal');
       expect(modalInContainer).toBeTruthy();

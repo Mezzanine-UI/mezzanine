@@ -15,84 +15,83 @@ const severities: ModalStatusType[] = ['info', 'error', 'warning', 'success'];
 const sizes: ModalSize[] = ['tight', 'narrow', 'regular', 'wide'];
 
 type PlaygroundArgs = {
-  modalType: ModalType;
-  body: ReactNode;
-  disableCloseOnBackdropClick?: boolean;
-  disableCloseOnEscapeKeyDown?: boolean;
-  fullScreen?: boolean;
-  loading?: boolean;
-  modalFooterActionsButtonLayout?: 'fill' | 'fixed';
-  modalFooterAnnotation?: string;
-  modalFooterAuxiliaryContentButtonText?: string;
-  modalFooterAuxiliaryContentChecked?: boolean;
-  modalFooterAuxiliaryContentLabel?: string;
-  modalFooterAuxiliaryContentType?:
+  actionsButtonLayout?: 'fill' | 'fixed';
+  annotation?: string;
+  auxiliaryContentButtonText?: string;
+  auxiliaryContentChecked?: boolean;
+  auxiliaryContentLabel?: string;
+  auxiliaryContentType?:
     | 'checkbox'
     | 'toggle'
     | 'annotation'
     | 'button'
     | 'password';
-  modalFooterCancelText?: string;
-  modalFooterConfirmText?: string;
-  modalFooterLoading?: boolean;
-  modalFooterPasswordButtonText?: string;
-  modalFooterPasswordChecked?: boolean;
-  modalFooterPasswordCheckedLabel?: string;
-  modalFooterShowCancelButton?: boolean;
-  modalHeaderShowModalStatusTypeIcon: boolean;
-  modalHeaderStatusTypeIconLayout?: 'vertical' | 'horizontal';
-  modalHeaderSupportingText?: string;
-  modalHeaderSupportingTextAlign?: 'left' | 'center';
-  modalHeaderTitle: ReactNode;
-  modalHeaderTitleAlign?: 'left' | 'center';
+  body: ReactNode;
+  cancelText?: string;
+  confirmText?: string;
+  disableCloseOnBackdropClick?: boolean;
+  disableCloseOnEscapeKeyDown?: boolean;
+  fullScreen?: boolean;
+  loading?: boolean;
   modalStatusType?: ModalStatusType;
+  modalType: ModalType;
+  passwordButtonText?: string;
+  passwordChecked?: boolean;
+  passwordCheckedLabel?: string;
+  passwordCheckedOnChange?: (checked: boolean) => void;
+  showCancelButton?: boolean;
   showDismissButton?: boolean;
   showModalFooter?: boolean;
   showModalHeader?: boolean;
+  showStatusTypeIcon: boolean;
   size?: ModalSize;
+  statusTypeIconLayout?: 'vertical' | 'horizontal';
+  supportingText?: string;
+  supportingTextAlign?: 'left' | 'center';
+  title: ReactNode;
+  titleAlign?: 'left' | 'center';
 };
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
-    modalType: 'standard',
+    actionsButtonLayout: 'fixed',
+    annotation: 'Annotation text',
+    auxiliaryContentButtonText: 'Reset',
+    auxiliaryContentChecked: false,
+    auxiliaryContentLabel: 'Control label',
+    auxiliaryContentType: undefined,
     body: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum illum neque soluta atque. Eum dolores placeat unde, molestias exercitationem tempore perspiciatis quia porro sapiente vero impedit consequatur recusandae excepturi cumque.',
+    cancelText: 'Cancel',
+    confirmText: 'Confirm',
     disableCloseOnBackdropClick: false,
     disableCloseOnEscapeKeyDown: false,
     fullScreen: false,
     loading: false,
-    modalFooterActionsButtonLayout: 'fixed',
-    modalFooterAnnotation: 'Annotation text',
-    modalFooterAuxiliaryContentButtonText: 'Reset',
-    modalFooterAuxiliaryContentChecked: false,
-    modalFooterAuxiliaryContentLabel: 'Control label',
-    modalFooterAuxiliaryContentType: undefined,
-    modalFooterCancelText: 'Cancel',
-    modalFooterConfirmText: 'Confirm',
-    modalFooterLoading: false,
-    modalFooterPasswordButtonText: 'Forgot password?',
-    modalFooterPasswordChecked: false,
-    modalFooterPasswordCheckedLabel: 'Remember me',
-    modalFooterShowCancelButton: true,
-    modalHeaderShowModalStatusTypeIcon: false,
-    modalHeaderStatusTypeIconLayout: 'vertical',
-    modalHeaderSupportingText: 'This is a supporting text',
-    modalHeaderSupportingTextAlign: 'left',
-    modalHeaderTitle: 'Title',
-    modalHeaderTitleAlign: 'left',
     modalStatusType: 'info',
+    modalType: 'standard',
+    passwordButtonText: 'Forgot password?',
+    passwordChecked: false,
+    passwordCheckedLabel: 'Remember me',
+    showCancelButton: true,
     showDismissButton: false,
     showModalFooter: true,
     showModalHeader: true,
+    showStatusTypeIcon: false,
     size: 'regular',
+    statusTypeIconLayout: 'vertical',
+    supportingText: 'This is a supporting text',
+    supportingTextAlign: 'left',
+    title: 'Title',
+    titleAlign: 'left',
   },
   argTypes: {
-    modalFooterActionsButtonLayout: {
+    actionsButtonLayout: {
       control: {
         type: 'select',
       },
       options: ['fixed', 'fill'],
     },
-    modalFooterAuxiliaryContentType: {
+    auxiliaryContentType: {
       control: {
         type: 'select',
       },
@@ -105,19 +104,19 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         'password',
       ],
     },
-    modalHeaderStatusTypeIconLayout: {
+    statusTypeIconLayout: {
       control: {
         type: 'select',
       },
       options: ['vertical', 'horizontal'],
     },
-    modalHeaderSupportingTextAlign: {
+    supportingTextAlign: {
       control: {
         type: 'select',
       },
       options: ['left', 'center'],
     },
-    modalHeaderTitleAlign: {
+    titleAlign: {
       control: {
         type: 'select',
       },
@@ -150,67 +149,66 @@ export const Playground: StoryObj<PlaygroundArgs> = {
   },
   render: function Render(args) {
     const {
+      actionsButtonLayout,
+      annotation,
+      auxiliaryContentButtonText,
+      auxiliaryContentChecked,
+      auxiliaryContentLabel,
+      auxiliaryContentType,
       body,
+      cancelText,
+      confirmText,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
       loading,
-      modalFooterActionsButtonLayout,
-      modalFooterAnnotation,
-      modalFooterAuxiliaryContentButtonText,
-      modalFooterAuxiliaryContentChecked,
-      modalFooterAuxiliaryContentLabel,
-      modalFooterAuxiliaryContentType,
-      modalFooterCancelText,
-      modalFooterConfirmText,
-      modalFooterLoading,
-      modalFooterPasswordButtonText,
-      modalFooterPasswordChecked,
-      modalFooterPasswordCheckedLabel,
-      modalFooterShowCancelButton,
-      modalHeaderShowModalStatusTypeIcon,
-      modalHeaderStatusTypeIconLayout,
-      modalHeaderSupportingText,
-      modalHeaderSupportingTextAlign,
-      modalHeaderTitle,
-      modalHeaderTitleAlign,
       modalStatusType,
       modalType,
+      passwordButtonText,
+      passwordChecked,
+      passwordCheckedLabel,
+      passwordCheckedOnChange,
+      showCancelButton,
       showDismissButton,
       showModalFooter,
       showModalHeader,
+      showStatusTypeIcon,
       size,
+      statusTypeIconLayout,
+      supportingText,
+      supportingTextAlign,
+      title,
+      titleAlign,
     } = args;
 
     const [open, setOpen] = useState(false);
     const onClose = useCallback(() => setOpen(false), []);
 
     const baseProps = {
+      actionsButtonLayout,
+      annotation,
+      auxiliaryContentButtonText,
+      auxiliaryContentChecked,
+      auxiliaryContentLabel,
+      auxiliaryContentOnChange: () => {},
+      auxiliaryContentOnClick: () => {},
+      auxiliaryContentType,
+      cancelText,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       fullScreen,
       loading,
-      modalFooterActionsButtonLayout,
-      modalFooterAnnotation,
-      modalFooterAuxiliaryContentButtonText,
-      modalFooterAuxiliaryContentChecked,
-      modalFooterAuxiliaryContentLabel,
-      modalFooterAuxiliaryContentOnChange: () => {},
-      modalFooterAuxiliaryContentOnClick: () => {},
-      modalFooterAuxiliaryContentType,
-      modalFooterCancelText,
-      modalFooterLoading,
-      modalFooterOnCancel: onClose,
-      modalFooterOnConfirm: onClose,
-      modalFooterPasswordButtonText,
-      modalFooterPasswordChecked,
-      modalFooterPasswordCheckedLabel,
-      modalFooterPasswordCheckedOnChange: () => {},
-      modalFooterPasswordOnClick: () => {},
-      modalFooterShowCancelButton,
       modalStatusType,
+      onCancel: onClose,
       onClose,
+      onConfirm: onClose,
       open,
+      passwordButtonText,
+      passwordChecked,
+      passwordCheckedLabel,
+      passwordCheckedOnChange: passwordCheckedOnChange || (() => {}),
+      passwordOnClick: () => {},
+      showCancelButton,
       showDismissButton,
       size,
     };
@@ -258,17 +256,13 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {...baseProps}
             {...extendedSplitProps}
             modalType={modalType}
-            modalFooterConfirmText={modalFooterConfirmText || 'Confirm'}
-            modalHeaderShowModalStatusTypeIcon={
-              modalHeaderShowModalStatusTypeIcon
-            }
-            modalHeaderStatusTypeIconLayout={modalHeaderStatusTypeIconLayout}
-            modalHeaderSupportingText={modalHeaderSupportingText}
-            modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
-            modalHeaderTitle={
-              typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'
-            }
-            modalHeaderTitleAlign={modalHeaderTitleAlign}
+            confirmText={confirmText || 'Confirm'}
+            showStatusTypeIcon={showStatusTypeIcon}
+            statusTypeIconLayout={statusTypeIconLayout}
+            supportingText={supportingText}
+            supportingTextAlign={supportingTextAlign}
+            title={typeof title === 'string' ? title : 'Title'}
+            titleAlign={titleAlign}
             showModalFooter
             showModalHeader
           >
@@ -288,16 +282,12 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {...baseProps}
             {...extendedSplitProps}
             modalType={modalType}
-            modalHeaderShowModalStatusTypeIcon={
-              modalHeaderShowModalStatusTypeIcon
-            }
-            modalHeaderStatusTypeIconLayout={modalHeaderStatusTypeIconLayout}
-            modalHeaderSupportingText={modalHeaderSupportingText}
-            modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
-            modalHeaderTitle={
-              typeof modalHeaderTitle === 'string' ? modalHeaderTitle : 'Title'
-            }
-            modalHeaderTitleAlign={modalHeaderTitleAlign}
+            showStatusTypeIcon={showStatusTypeIcon}
+            statusTypeIconLayout={statusTypeIconLayout}
+            supportingText={supportingText}
+            supportingTextAlign={supportingTextAlign}
+            title={typeof title === 'string' ? title : 'Title'}
+            titleAlign={titleAlign}
             showModalHeader
           >
             {modalType !== 'extendedSplit' && body}
@@ -316,7 +306,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             {...baseProps}
             {...extendedSplitProps}
             modalType={modalType}
-            modalFooterConfirmText={modalFooterConfirmText || 'Confirm'}
+            confirmText={confirmText || 'Confirm'}
             showModalFooter
           >
             {modalType !== 'extendedSplit' && body}
@@ -371,13 +361,13 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </div>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Close"
-          modalFooterConfirmText="OK"
-          modalFooterOnCancel={() => setOpenInfo(false)}
-          modalFooterOnConfirm={() => setOpenInfo(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="This is an informational message"
-          modalHeaderTitle="Information"
+          cancelText="Close"
+          confirmText="OK"
+          onCancel={() => setOpenInfo(false)}
+          onConfirm={() => setOpenInfo(false)}
+          showStatusTypeIcon
+          supportingText="This is an informational message"
+          title="Information"
           modalStatusType="info"
           onClose={() => setOpenInfo(false)}
           open={openInfo}
@@ -388,13 +378,13 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </Modal>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Close"
-          modalFooterConfirmText="OK"
-          modalFooterOnCancel={() => setOpenError(false)}
-          modalFooterOnConfirm={() => setOpenError(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="An error has occurred during the operation"
-          modalHeaderTitle="Error"
+          cancelText="Close"
+          confirmText="OK"
+          onCancel={() => setOpenError(false)}
+          onConfirm={() => setOpenError(false)}
+          showStatusTypeIcon
+          supportingText="An error has occurred during the operation"
+          title="Error"
           modalStatusType="error"
           onClose={() => setOpenError(false)}
           open={openError}
@@ -405,13 +395,13 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </Modal>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Close"
-          modalFooterConfirmText="OK"
-          modalFooterOnCancel={() => setOpenWarning(false)}
-          modalFooterOnConfirm={() => setOpenWarning(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="Please proceed with caution"
-          modalHeaderTitle="Warning"
+          cancelText="Close"
+          confirmText="OK"
+          onCancel={() => setOpenWarning(false)}
+          onConfirm={() => setOpenWarning(false)}
+          showStatusTypeIcon
+          supportingText="Please proceed with caution"
+          title="Warning"
           modalStatusType="warning"
           onClose={() => setOpenWarning(false)}
           open={openWarning}
@@ -422,13 +412,13 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </Modal>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Close"
-          modalFooterConfirmText="OK"
-          modalFooterOnCancel={() => setOpenSuccess(false)}
-          modalFooterOnConfirm={() => setOpenSuccess(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="Operation completed successfully"
-          modalHeaderTitle="Success"
+          cancelText="Close"
+          confirmText="OK"
+          onCancel={() => setOpenSuccess(false)}
+          onConfirm={() => setOpenSuccess(false)}
+          showStatusTypeIcon
+          supportingText="Operation completed successfully"
+          title="Success"
           modalStatusType="success"
           onClose={() => setOpenSuccess(false)}
           open={openSuccess}
@@ -439,13 +429,13 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </Modal>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Close"
-          modalFooterConfirmText="OK"
-          modalFooterOnCancel={() => setOpenEmail(false)}
-          modalFooterOnConfirm={() => setOpenEmail(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="You have new messages in your inbox"
-          modalHeaderTitle="Email Notification"
+          cancelText="Close"
+          confirmText="OK"
+          onCancel={() => setOpenEmail(false)}
+          onConfirm={() => setOpenEmail(false)}
+          showStatusTypeIcon
+          supportingText="You have new messages in your inbox"
+          title="Email Notification"
           modalStatusType="email"
           onClose={() => setOpenEmail(false)}
           open={openEmail}
@@ -456,14 +446,14 @@ export const ModalHeaderStatusTypes: StoryObj = {
         </Modal>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Delete"
-          modalFooterConfirmButtonProps={{ variant: 'destructive-primary' }}
-          modalFooterOnCancel={() => setOpenDelete(false)}
-          modalFooterOnConfirm={() => setOpenDelete(false)}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="This action cannot be undone"
-          modalHeaderTitle="Delete Confirmation"
+          cancelText="Cancel"
+          confirmText="Delete"
+          confirmButtonProps={{ variant: 'destructive-primary' }}
+          onCancel={() => setOpenDelete(false)}
+          onConfirm={() => setOpenDelete(false)}
+          showStatusTypeIcon
+          supportingText="This action cannot be undone"
+          title="Delete Confirmation"
           modalStatusType="delete"
           onClose={() => setOpenDelete(false)}
           open={openDelete}
@@ -489,16 +479,16 @@ export const ModalHeaderComprehensive: StoryObj = {
         </Button>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Acknowledge"
-          modalFooterOnCancel={onClose}
-          modalFooterOnConfirm={onClose}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderStatusTypeIconLayout="horizontal"
-          modalHeaderSupportingText="This modal demonstrates all header features combined together"
-          modalHeaderSupportingTextAlign="center"
-          modalHeaderTitle="Complete Header Example"
-          modalHeaderTitleAlign="center"
+          cancelText="Cancel"
+          confirmText="Acknowledge"
+          onCancel={onClose}
+          onConfirm={onClose}
+          showStatusTypeIcon
+          statusTypeIconLayout="horizontal"
+          supportingText="This modal demonstrates all header features combined together"
+          supportingTextAlign="center"
+          title="Complete Header Example"
+          titleAlign="center"
           modalStatusType="warning"
           onClose={onClose}
           open={open}
@@ -527,15 +517,15 @@ export const ModalFooterBasic: StoryObj = {
         </Button>
         <Modal
           modalType="standard"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Confirm"
-          modalFooterOnCancel={onClose}
-          modalFooterOnConfirm={onClose}
+          cancelText="Cancel"
+          confirmText="Confirm"
+          onCancel={onClose}
+          onConfirm={onClose}
           onClose={onClose}
           open={open}
           showModalFooter
           showModalHeader
-          modalHeaderTitle="Modal with Footer"
+          title="Modal with Footer"
         >
           <>
             This modal uses the new ModalFooter component with cancel and
@@ -565,12 +555,12 @@ export const ModalFooterButtonLayout: StoryObj = {
           </Button>
         </div>
         <Modal
-          modalFooterActionsButtonLayout="fixed"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Confirm"
-          modalFooterOnCancel={onCloseFixed}
-          modalFooterOnConfirm={onCloseFixed}
-          modalHeaderTitle="Fixed Layout"
+          actionsButtonLayout="fixed"
+          cancelText="Cancel"
+          confirmText="Confirm"
+          onCancel={onCloseFixed}
+          onConfirm={onCloseFixed}
+          title="Fixed Layout"
           modalType="standard"
           onClose={onCloseFixed}
           open={openFixed}
@@ -583,12 +573,12 @@ export const ModalFooterButtonLayout: StoryObj = {
           </>
         </Modal>
         <Modal
-          modalFooterActionsButtonLayout="fill"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Confirm"
-          modalFooterOnCancel={onCloseFill}
-          modalFooterOnConfirm={onCloseFill}
-          modalHeaderTitle="Fill Layout"
+          actionsButtonLayout="fill"
+          cancelText="Cancel"
+          confirmText="Confirm"
+          onCancel={onCloseFill}
+          onConfirm={onCloseFill}
+          title="Fill Layout"
           modalType="standard"
           onClose={onCloseFill}
           open={openFill}
@@ -629,17 +619,17 @@ export const ModalFooterWithPassword: StoryObj = {
           Login Modal
         </Button>
         <Modal
-          modalFooterAuxiliaryContentType="password"
-          modalFooterCancelText="Cancel"
-          modalFooterConfirmText="Login"
-          modalFooterOnCancel={onClose}
-          modalFooterOnConfirm={handleLogin}
-          modalFooterPasswordButtonText="Forgot password?"
-          modalFooterPasswordChecked={rememberMe}
-          modalFooterPasswordCheckedLabel="Remember me"
-          modalFooterPasswordCheckedOnChange={setRememberMe}
-          modalFooterPasswordOnClick={handleForgotPassword}
-          modalHeaderTitle="Login"
+          auxiliaryContentType="password"
+          cancelText="Cancel"
+          confirmText="Login"
+          onCancel={onClose}
+          onConfirm={handleLogin}
+          passwordButtonText="Forgot password?"
+          passwordChecked={rememberMe}
+          passwordCheckedLabel="Remember me"
+          passwordCheckedOnChange={setRememberMe}
+          passwordOnClick={handleForgotPassword}
+          title="Login"
           modalType="standard"
           onClose={onClose}
           open={open}
@@ -716,11 +706,11 @@ export const ExtendedSplit: StoryObj = {
               </Typography>
             </div>
           }
-          modalFooterCancelText="匯出 CSV"
-          modalFooterConfirmText="開始資料校正"
-          modalFooterOnCancel={onClose}
-          modalFooterOnConfirm={onClose}
-          modalHeaderTitle="組織專案"
+          cancelText="匯出 CSV"
+          confirmText="開始資料校正"
+          onCancel={onClose}
+          onConfirm={onClose}
+          title="組織專案"
           modalType="extendedSplit"
           size="wide"
           onClose={onClose}
@@ -778,10 +768,10 @@ export const VerificationCodeInput: StoryObj = {
         </div>
 
         <Modal
-          modalFooterCancelText="取消"
-          modalFooterConfirmText="驗證"
-          modalFooterOnCancel={onClose4Digit}
-          modalFooterOnConfirm={() => {
+          cancelText="取消"
+          confirmText="驗證"
+          onCancel={onClose4Digit}
+          onConfirm={() => {
             if (code4.length === 4) {
               alert(`Verifying code: ${code4}`);
               onClose4Digit();
@@ -789,9 +779,9 @@ export const VerificationCodeInput: StoryObj = {
               alert('Please enter the complete verification code');
             }
           }}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="請輸入我們寄送至您信箱的驗證碼"
-          modalHeaderTitle="電子郵件驗證"
+          showStatusTypeIcon
+          supportingText="請輸入我們寄送至您信箱的驗證碼"
+          title="電子郵件驗證"
           modalStatusType="email"
           modalType="verification"
           onClose={onClose4Digit}
@@ -811,10 +801,10 @@ export const VerificationCodeInput: StoryObj = {
         </Modal>
 
         <Modal
-          modalFooterCancelText="取消"
-          modalFooterConfirmText="驗證"
-          modalFooterOnCancel={onClose6Digit}
-          modalFooterOnConfirm={() => {
+          cancelText="取消"
+          confirmText="驗證"
+          onCancel={onClose6Digit}
+          onConfirm={() => {
             if (code6.length === 6) {
               alert(`Verifying code: ${code6}`);
               onClose6Digit();
@@ -822,9 +812,9 @@ export const VerificationCodeInput: StoryObj = {
               alert('Please enter the complete verification code');
             }
           }}
-          modalHeaderShowModalStatusTypeIcon
-          modalHeaderSupportingText="請輸入6位數驗證碼以完成雙重驗證"
-          modalHeaderTitle="雙重驗證 (2FA)"
+          showStatusTypeIcon
+          supportingText="請輸入6位數驗證碼以完成雙重驗證"
+          title="雙重驗證 (2FA)"
           modalStatusType="info"
           modalType="verification"
           onClose={onClose6Digit}
