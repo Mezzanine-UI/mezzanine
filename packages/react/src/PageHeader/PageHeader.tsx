@@ -70,10 +70,8 @@ const getBreadcrumbAndToolbar = (
         }) as ReactElement<PageToolbarProps>;
       } else if (child.type === Button) {
         backButtonOrLink = cloneElement(child as ReactElement<ButtonProps>, {
-          icon: {
-            position: 'icon-only',
-            src: ChevronLeftIcon,
-          },
+          iconType: 'icon-only',
+          icon: ChevronLeftIcon,
           size: 'sub',
           variant: 'base-tertiary',
         }) as ReactElement<ButtonProps>;
@@ -84,10 +82,8 @@ const getBreadcrumbAndToolbar = (
             children: (
               <Button
                 component={'div' as ButtonComponent}
-                icon={{
-                  position: 'icon-only',
-                  src: ChevronLeftIcon,
-                }}
+                iconType="icon-only"
+                icon={ChevronLeftIcon}
                 size="sub"
                 variant="base-tertiary"
               />
@@ -129,10 +125,8 @@ const PageHeader = forwardRef<HTMLElement, PageHeaderProps>(
     // prop onBack takes precedence over backButtonOrLink
     const backButton = onBackClick ? (
       <Button
-        icon={{
-          position: 'icon-only',
-          src: ChevronLeftIcon,
-        }}
+        iconType="icon-only"
+        icon={ChevronLeftIcon}
         onClick={onBackClick}
         size="sub"
         variant="base-tertiary"
