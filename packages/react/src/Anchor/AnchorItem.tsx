@@ -31,7 +31,7 @@ export interface AnchorItemProps {
   title?: string;
 }
 
-const MAX_LEVEL = 3;
+const MAX_CHILDREN_PER_LEVEL = 3;
 
 /**
  * Custom hook to track window.location.hash changes
@@ -75,8 +75,8 @@ function AnchorItem({
   title,
 }: AnchorItemProps) {
   const renderableChildren =
-    subAnchors && subAnchors.length > 0 && level < MAX_LEVEL
-      ? subAnchors.slice(0, MAX_LEVEL)
+    subAnchors && subAnchors.length > 0 && level < MAX_CHILDREN_PER_LEVEL
+      ? subAnchors.slice(0, MAX_CHILDREN_PER_LEVEL)
       : undefined;
 
   const currentHash = useHash();

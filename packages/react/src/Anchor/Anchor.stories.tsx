@@ -47,6 +47,18 @@ const anchors: AnchorProps['anchors'] = [
             id: 'Anchor2-2-2',
             name: 'Anchor 2-2-2',
           },
+          {
+            disabled: true,
+            href: '/?path=/story/navigation-anchor--all#anchor2-2-3',
+            id: 'Anchor2-2-3',
+            name: 'Anchor 2-2-3',
+          },
+          {
+            disabled: true,
+            href: '/?path=/story/navigation-anchor--all#anchor2-2-4',
+            id: 'Anchor2-2-4',
+            name: 'Anchor 2-2-4',
+          },
         ],
         href: '/?path=/story/navigation-anchor--all#anchor2-2',
         id: 'Anchor2-2',
@@ -89,6 +101,16 @@ const anchors: AnchorProps['anchors'] = [
     id: 'Anchor3',
     name: 'Anchor 3',
     title: 'Anchor 3'
+  },
+  {
+    href: '/?path=/story/navigation-anchor--all#anchor4',
+    id: 'Anchor4',
+    name: 'Anchor 4',
+  },
+  {
+    href: '/?path=/story/navigation-anchor--all#anchor5',
+    id: 'Anchor5',
+    name: 'Anchor 5',
   },
 ];
 

@@ -223,7 +223,7 @@ describe('<AnchorItem />', () => {
       expect(links[3]).toHaveTextContent('Child 3');
     });
 
-    it('should not render children when level reaches MAX_LEVEL (3)', () => {
+    it('should not render children when level reaches MAX_CHILDREN_PER_LEVEL (3)', () => {
       const deepSubAnchors: AnchorItemData[] = [
         {
           href: '#child',

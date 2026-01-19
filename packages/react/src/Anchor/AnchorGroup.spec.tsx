@@ -61,7 +61,7 @@ describe('<AnchorGroup />', () => {
     const { container } = render(<AnchorGroup anchors={mockAnchors} />);
     const element = container.firstElementChild;
 
-    expect(element?.classList.contains(anchorClasses.group)).toBeTruthy();
+    expect(element?.classList.contains(anchorClasses.host)).toBeTruthy();
   });
 
   describe('anchors prop (data-driven format)', () => {
