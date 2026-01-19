@@ -413,7 +413,13 @@ export default function Dropdown(props: DropdownProps) {
     }
 
     // Get floating element from controller refs
-    const floatingElement = popperControllerRef.current.refs.floating.current;
+    // Check refs exists before accessing nested properties
+    const refs = popperControllerRef.current.refs;
+    if (!refs) {
+      return;
+    }
+
+    const floatingElement = refs.floating.current;
     if (!floatingElement) {
       return;
     }
@@ -457,26 +463,48 @@ export default function Dropdown(props: DropdownProps) {
   );
 
   // Extract shared DropdownItem props to avoid duplication
-  const baseDropdownItemProps = useMemo(() => ({
-    actionConfig,
-    activeIndex: mergedActiveIndex,
-    disabled,
-    followText,
-    listboxId,
-    listboxLabel,
-    maxHeight,
-    sameWidth,
-    onHover: handleItemHover,
-    onSelect,
-    options,
-    type,
-    status,
-    loadingText,
-    emptyText,
-    emptyIcon,
-    mode,
-    value,
-  }), [actionConfig, mergedActiveIndex, disabled, followText, listboxId, listboxLabel, maxHeight, sameWidth, handleItemHover, onSelect, options, type, status, loadingText, emptyText, emptyIcon, mode, value]);
+  const baseDropdownItemProps = useMemo(
+    () => ({
+      actionConfig,
+      activeIndex: mergedActiveIndex,
+      disabled,
+      followText,
+      listboxId,
+      listboxLabel,
+      maxHeight,
+      sameWidth,
+      onHover: handleItemHover,
+      onSelect,
+      options,
+      type,
+      status,
+      loadingText,
+      emptyText,
+      emptyIcon,
+      mode,
+      value,
+    }),
+    [
+      actionConfig,
+      mergedActiveIndex,
+      disabled,
+      followText,
+      listboxId,
+      listboxLabel,
+      maxHeight,
+      sameWidth,
+      handleItemHover,
+      onSelect,
+      options,
+      type,
+      status,
+      loadingText,
+      emptyText,
+      emptyIcon,
+      mode,
+      value,
+    ],
+  );
 
   const triggerElement = useMemo(() => {
     const childWithRef = children as ReactElement<any> & {
