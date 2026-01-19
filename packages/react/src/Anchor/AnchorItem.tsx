@@ -80,7 +80,8 @@ function AnchorItem({
       : undefined;
 
   const currentHash = useHash();
-  const itemHash = href.includes('#') ? '#' + href.split('#')[1] : '';
+  const hashIndex = href.indexOf('#');
+  const itemHash = hashIndex !== -1 ? href.slice(hashIndex) : '';
   const isActive = itemHash && currentHash === itemHash;
   const isAutoScrollTo = parentAutoScrollTo || autoScrollTo;
   const isDisabled = parentDisabled || disabled;
@@ -95,7 +96,8 @@ function AnchorItem({
     if (itemHash && typeof window !== 'undefined') {
       // Update the hash in the URL
       if (window.location.hash !== itemHash) {
-        window.location.hash = itemHash;
+        window.history.pushState(null, '', itemHash);
+        window.dispatchEvent(new HashChangeEvent('hashchange'));
       }
 
       // Scroll to the target element if it exists and autoScrollTo is enabled
