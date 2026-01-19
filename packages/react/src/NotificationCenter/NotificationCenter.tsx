@@ -57,6 +57,11 @@ export interface NotificationConfigProps
    * This will be called after closing all notifications.
    */
   onViewAll?: VoidFunction;
+  /**
+   * The text of the "View All" button.
+   * @default '查看更多'
+   */
+  viewAllButtonText?: string;
 }
 
 export interface NotificationData
@@ -131,7 +136,7 @@ export interface NotificationData
    * The severity of the message.
    * @default info
    */
-  severity: NotificationSeverity;
+  severity?: NotificationSeverity;
   /**
    * The props of the badge.
    * Only displayed when the type is 'drawer'.
@@ -220,6 +225,13 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
 
     return firstNotification?.props.onViewAll;
   }, [notificationItems]);
+  const viewAllButtonText = useMemo(() => {
+    const firstNotification = notificationItems
+      .map(extractNotificationCenter)
+      .find((notification) => notification !== null);
+
+    return firstNotification?.props.viewAllButtonText ?? '查看更多';
+  }, [notificationItems]);
   const hasOverflow = notificationItems.length > maxVisibleNotifications;
   const visibleItems = useMemo(
     () => notificationItems.slice(0, maxVisibleNotifications),
@@ -251,7 +263,7 @@ const NotificationCenterContainer: FC<PropsWithChildren> = ({ children }) => {
                 variant="base-secondary"
                 className={classes.viewAllButtonText}
               >
-                查看更多
+                {viewAllButtonText}
               </Button>
             </div>
           )
@@ -284,7 +296,7 @@ const NotificationCenter: NotificationCenter = ((
     onConfirm: onConfirmProp,
     onExited: onExitedProp,
     reference,
-    severity,
+    severity = 'info',
     title,
     timeStamp = new Date().toLocaleTimeString(),
     timeStampLocale = 'zh-TW',
@@ -632,7 +644,7 @@ NotificationCenter.remove = remove;
   NotificationCenter[severity] = (props) =>
     NotificationCenter.add({
       ...props,
-      severity,
+      severity: severity || 'info',
       type: 'notification',
     });
 });
