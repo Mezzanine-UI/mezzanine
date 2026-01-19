@@ -1,11 +1,13 @@
 import { PlusIcon, SearchIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
-import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Button from './Button';
+
+jest.useFakeTimers();
 
 describe('<Button />', () => {
   afterEach(cleanup);
@@ -236,6 +238,104 @@ describe('<Button />', () => {
           PlusIcon.name,
         );
       });
+
+      it('should not render children text when iconType is icon-only', () => {
+        const { getHostHTMLElement } = render(
+          <Button icon={PlusIcon} iconType="icon-only">
+            Hidden Text
+          </Button>,
+        );
+        const element = getHostHTMLElement();
+
+        expect(element.textContent).toBe('');
+      });
+    });
+  });
+
+  describe('prop: tooltip (icon-only mode)', () => {
+    it('should show tooltip on hover when iconType is icon-only and children provided', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.textContent).toBe('Add new item');
+    });
+
+    it('should not show tooltip when disabledTooltip is true', async () => {
+      const { getHostHTMLElement } = render(
+        <Button disabledTooltip icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should not show tooltip when no children provided', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only" />,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should use tooltipPosition for placement', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only" tooltipPosition="top">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.getAttribute('data-popper-placement')).toBe('top');
+    });
+
+    it('should not show tooltip for non icon-only buttons', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="leading">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
     });
   });
 

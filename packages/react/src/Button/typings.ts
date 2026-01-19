@@ -5,6 +5,7 @@ import {
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
+import { PopperPlacement } from '../Popper';
 
 export type ButtonComponent = 'button' | 'a' | JSXElementConstructor<any>;
 
@@ -39,6 +40,19 @@ export interface ButtonPropsBase {
   iconType?: ButtonIconType;
   /**
    * The button text content.
+   * When iconType is 'icon-only', children will be used as tooltip content.
    */
   children?: ReactNode;
+  /**
+   * If true, disable the tooltip for icon-only buttons.
+   * Only applies when iconType is 'icon-only'.
+   * @default false
+   */
+  disabledTooltip?: boolean;
+  /**
+   * The position of the tooltip.
+   * Only applies when iconType is 'icon-only'.
+   * @default 'bottom'
+   */
+  tooltipPosition?: PopperPlacement;
 }

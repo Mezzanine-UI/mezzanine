@@ -180,20 +180,70 @@ export const WithIcons: Story = {
         Sub Size
       </Button>
 
-      {/* Icon only */}
-      <Button icon={PlusIcon} iconType="icon-only" variant="base-primary" />
-      <Button icon={SearchIcon} iconType="icon-only" variant="base-secondary" />
+      {/* Icon only with tooltip (default behavior) */}
+      <Button icon={PlusIcon} iconType="icon-only" variant="base-primary">
+        Add new item
+      </Button>
+      <Button icon={SearchIcon} iconType="icon-only" variant="base-secondary">
+        Search
+      </Button>
       <Button
         icon={PlusIcon}
         iconType="icon-only"
         variant="destructive-primary"
-      />
+      >
+        Delete
+      </Button>
       <Button
         icon={PlusIcon}
         iconType="icon-only"
         size="minor"
         variant="base-primary"
-      />
+      >
+        Add
+      </Button>
+    </div>
+  ),
+};
+
+export const IconOnlyWithTooltip: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(4, min-content)',
+        gap: '16px',
+        alignItems: 'center',
+        padding: '60px',
+      }}
+    >
+      {/* Default tooltip (bottom) */}
+      <Button icon={PlusIcon} iconType="icon-only" variant="base-primary">
+        Add new item
+      </Button>
+
+      {/* Tooltip on top */}
+      <Button
+        icon={SearchIcon}
+        iconType="icon-only"
+        tooltipPosition="top"
+        variant="base-secondary"
+      >
+        Search
+      </Button>
+
+      {/* Disabled tooltip */}
+      <Button
+        disabledTooltip
+        icon={PlusIcon}
+        iconType="icon-only"
+        variant="base-primary"
+      >
+        This tooltip is disabled
+      </Button>
+
+      {/* Without children - no tooltip */}
+      <Button icon={SearchIcon} iconType="icon-only" variant="base-secondary" />
     </div>
   ),
 };

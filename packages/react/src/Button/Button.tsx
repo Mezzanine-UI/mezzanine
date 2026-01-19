@@ -6,6 +6,7 @@ import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
+import Tooltip from '../Tooltip';
 import { ButtonComponent, ButtonPropsBase } from './typings';
 
 export type ButtonProps<C extends ButtonComponent = 'button'> =
@@ -25,14 +26,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       component: Component = 'button',
       disabled = false,
+      disabledTooltip = false,
       icon,
       iconType,
       loading = false,
       onClick,
       size = 'main',
+      tooltipPosition = 'bottom',
       variant = 'base-primary',
       ...rest
     } = props;
+
+    const isIconOnly = iconType === 'icon-only';
+    const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
 
     // Loading 狀態下的 icon
     const loadingIcon = <Icon icon={SpinnerIcon} spin size={16} />;
@@ -48,10 +54,14 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       return null;
     };
 
-    return (
+    const buttonElement = (tooltipProps?: {
+      onMouseEnter: React.MouseEventHandler;
+      onMouseLeave: React.MouseEventHandler;
+      ref: React.RefCallback<HTMLElement>;
+    }) => (
       <Component
         {...rest}
-        ref={ref}
+        ref={tooltipProps?.ref || ref}
         aria-disabled={disabled}
         className={cx(
           classes.host,
@@ -62,7 +72,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             [classes.loading]: loading,
             [classes.iconLeading]: iconType === 'leading',
             [classes.iconTrailing]: iconType === 'trailing',
-            [classes.iconOnly]: iconType === 'icon-only',
+            [classes.iconOnly]: isIconOnly,
           },
           className,
         )}
@@ -72,19 +82,30 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             onClick(event);
           }
         }}
+        onMouseEnter={tooltipProps?.onMouseEnter}
+        onMouseLeave={tooltipProps?.onMouseLeave}
       >
         {loading ? (
           renderIcon()
         ) : (
           <>
-            {(iconType === 'leading' || iconType === 'icon-only') &&
-              renderIcon()}
-            {iconType !== 'icon-only' && children}
+            {(iconType === 'leading' || isIconOnly) && renderIcon()}
+            {!isIconOnly && children}
             {iconType === 'trailing' && renderIcon()}
           </>
         )}
       </Component>
     );
+
+    if (showTooltip) {
+      return (
+        <Tooltip options={{ placement: tooltipPosition }} title={children}>
+          {(tooltipProps) => buttonElement(tooltipProps)}
+        </Tooltip>
+      );
+    }
+
+    return buttonElement();
   },
 );
 
