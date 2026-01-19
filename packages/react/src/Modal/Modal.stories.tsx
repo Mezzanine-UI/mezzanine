@@ -21,11 +21,11 @@ type PlaygroundArgs = {
   auxiliaryContentChecked?: boolean;
   auxiliaryContentLabel?: string;
   auxiliaryContentType?:
-    | 'checkbox'
-    | 'toggle'
     | 'annotation'
     | 'button'
-    | 'password';
+    | 'checkbox'
+    | 'password'
+    | 'toggle';
   body: ReactNode;
   cancelText?: string;
   confirmText?: string;
@@ -48,7 +48,7 @@ type PlaygroundArgs = {
   statusTypeIconLayout?: 'vertical' | 'horizontal';
   supportingText?: string;
   supportingTextAlign?: 'left' | 'center';
-  title: ReactNode;
+  title?: ReactNode;
   titleAlign?: 'left' | 'center';
 };
 
@@ -245,8 +245,75 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           }
         : {};
 
-    // Type-safe props construction based on showModalHeader and showModalFooter
-    if (showModalHeader && showModalFooter) {
+    // Type-safe props construction based on modalType, showModalHeader and showModalFooter
+    // Handle extendedSplit separately due to discriminated union
+    if (modalType === 'extendedSplit') {
+      if (showModalHeader && showModalFooter) {
+        return (
+          <>
+            <Button onClick={() => setOpen(true)} variant="base-primary">
+              open
+            </Button>
+            <Modal
+              {...baseProps}
+              {...extendedSplitProps}
+              modalType="extendedSplit"
+              size="wide"
+              confirmText={confirmText || 'Confirm'}
+              showStatusTypeIcon={showStatusTypeIcon}
+              statusTypeIconLayout={statusTypeIconLayout}
+              supportingText={supportingText}
+              supportingTextAlign={supportingTextAlign}
+              title={typeof title === 'string' ? title : 'Title'}
+              titleAlign={titleAlign}
+              showModalFooter
+              showModalHeader
+            />
+          </>
+        );
+      }
+
+      if (showModalHeader) {
+        return (
+          <>
+            <Button onClick={() => setOpen(true)} variant="base-primary">
+              open
+            </Button>
+            <Modal
+              {...baseProps}
+              {...extendedSplitProps}
+              modalType="extendedSplit"
+              size="wide"
+              showStatusTypeIcon={showStatusTypeIcon}
+              statusTypeIconLayout={statusTypeIconLayout}
+              supportingText={supportingText}
+              supportingTextAlign={supportingTextAlign}
+              title={typeof title === 'string' ? title : 'Title'}
+              titleAlign={titleAlign}
+              showModalHeader
+            />
+          </>
+        );
+      }
+
+      if (showModalFooter) {
+        return (
+          <>
+            <Button onClick={() => setOpen(true)} variant="base-primary">
+              open
+            </Button>
+            <Modal
+              {...baseProps}
+              {...extendedSplitProps}
+              modalType="extendedSplit"
+              size="wide"
+              confirmText={confirmText || 'Confirm'}
+              showModalFooter
+            />
+          </>
+        );
+      }
+
       return (
         <>
           <Button onClick={() => setOpen(true)} variant="base-primary">
@@ -255,6 +322,22 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           <Modal
             {...baseProps}
             {...extendedSplitProps}
+            modalType="extendedSplit"
+            size="wide"
+          />
+        </>
+      );
+    }
+
+    // Handle other modal types
+    if (showModalHeader && showModalFooter) {
+      return (
+        <>
+          <Button onClick={() => setOpen(true)} variant="base-primary">
+            open
+          </Button>
+          <Modal
+            {...baseProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showStatusTypeIcon={showStatusTypeIcon}
@@ -266,7 +349,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             showModalFooter
             showModalHeader
           >
-            {modalType !== 'extendedSplit' && body}
+            {body}
           </Modal>
         </>
       );
@@ -280,7 +363,6 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
-            {...extendedSplitProps}
             modalType={modalType}
             showStatusTypeIcon={showStatusTypeIcon}
             statusTypeIconLayout={statusTypeIconLayout}
@@ -290,7 +372,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             titleAlign={titleAlign}
             showModalHeader
           >
-            {modalType !== 'extendedSplit' && body}
+            {body}
           </Modal>
         </>
       );
@@ -304,12 +386,11 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
-            {...extendedSplitProps}
             modalType={modalType}
             confirmText={confirmText || 'Confirm'}
             showModalFooter
           >
-            {modalType !== 'extendedSplit' && body}
+            {body}
           </Modal>
         </>
       );
@@ -320,8 +401,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
         <Button onClick={() => setOpen(true)} variant="base-primary">
           open
         </Button>
-        <Modal {...baseProps} {...extendedSplitProps} modalType={modalType}>
-          {modalType !== 'extendedSplit' && body}
+        <Modal {...baseProps} modalType={modalType}>
+          {body}
         </Modal>
       </>
     );

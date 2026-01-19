@@ -102,8 +102,9 @@ type ModalHeaderPropsWithoutHeader = {
   showModalHeader?: false;
   /**
    * The title of the modal header.
+   * Cannot be provided when showModalHeader is false.
    */
-  title?: string;
+  title?: never;
 };
 
 type ModalFooterPropsWithFooter = {
@@ -125,8 +126,9 @@ type ModalFooterPropsWithoutFooter = {
   showModalFooter?: false;
   /**
    * The confirm button text of the modal footer.
+   * Cannot be provided when showModalFooter is false.
    */
-  confirmText?: string;
+  confirmText?: never;
 };
 
 export type ModalProps = BaseModalProps &
