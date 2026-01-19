@@ -1332,18 +1332,14 @@ export const Combined: Story = {
             render: (record) => [
               {
                 name: 'Edit',
-                icon: {
-                  position: 'leading',
-                  src: EditIcon,
-                },
+                icon: EditIcon,
+                iconType: 'leading',
                 onClick: () => {},
               },
               {
                 name: 'Delete',
-                icon: {
-                  position: 'leading',
-                  src: TrashIcon,
-                },
+                icon: TrashIcon,
+                iconType: 'leading',
                 variant: 'destructive-primary',
                 onClick: () => handleDelete(record),
               },
@@ -1362,18 +1358,14 @@ export const Combined: Story = {
                   render: (subRecord) => [
                     {
                       name: 'Edit',
-                      icon: {
-                        position: 'leading',
-                        src: EditIcon,
-                      },
+                      icon: EditIcon,
+                      iconType: 'leading',
                       onClick: () => {},
                     },
                     {
                       name: 'Delete',
-                      icon: {
-                        position: 'leading',
-                        src: TrashIcon,
-                      },
+                      icon: TrashIcon,
+                      iconType: 'leading',
                       variant: 'destructive-primary',
                       onClick: () => handleDelete(subRecord),
                     },

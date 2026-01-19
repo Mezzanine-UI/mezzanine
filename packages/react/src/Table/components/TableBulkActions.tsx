@@ -59,10 +59,8 @@ function TableBulkActions(props: TableBulkActionsProps) {
     >
       <div className={classes.bulkActionsSelectionSummary}>
         <Button
-          icon={{
-            position: 'trailing',
-            src: CloseIcon,
-          }}
+          iconType="trailing"
+          icon={CloseIcon}
           onClick={onClearSelection}
           size="sub"
           type="button"
@@ -75,14 +73,8 @@ function TableBulkActions(props: TableBulkActionsProps) {
         {/* Main Actions */}
         {mainActions.map((action, index) => (
           <Button
-            icon={
-              action.icon
-                ? {
-                    position: 'leading',
-                    src: action.icon,
-                  }
-                : undefined
-            }
+            iconType="leading"
+            icon={action.icon}
             key={`main-action-${index}`}
             onClick={() => action.onClick(selectedRowKeys, selectedRows)}
             size="sub"
@@ -98,14 +90,8 @@ function TableBulkActions(props: TableBulkActionsProps) {
           <>
             <div className={classes.bulkActionsSeparator} />
             <Button
-              icon={
-                destructiveAction.icon
-                  ? {
-                      position: 'leading',
-                      src: destructiveAction.icon,
-                    }
-                  : undefined
-              }
+              iconType="leading"
+              icon={destructiveAction.icon}
               onClick={() =>
                 destructiveAction.onClick(selectedRowKeys, selectedRows)
               }
@@ -134,14 +120,8 @@ function TableBulkActions(props: TableBulkActionsProps) {
                 size="sub"
                 type="button"
                 variant="inverse-ghost"
-                icon={
-                  overflowAction.icon
-                    ? {
-                        position: 'leading',
-                        src: overflowAction.icon,
-                      }
-                    : undefined
-                }
+                iconType="leading"
+                icon={overflowAction.icon}
               >
                 {overflowAction.label}
               </Button>
