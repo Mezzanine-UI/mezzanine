@@ -12,6 +12,8 @@ export type DropdownItemLevel = 0 | 1 | 2;
 
 export type DropdownItemValidate = 'default' | 'danger';
 
+// TODO: Should be renamed to DropdownCheckSite to follow the naming convention of the other components.
+// TODO: The value should be 'prefix' | 'suffix' | 'both';
 export type DropdownCheckPosition = 'prepend' | 'append' | 'none';
 
 export type DropdownInputPosition = 'inside' | 'outside';
