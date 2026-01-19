@@ -139,6 +139,7 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
           // @TODO Consider Dropdown integration after Dropdown redesign
           return (
             <Button
+              iconType="icon-only"
               icon={annotation as ButtonProps['icon']}
               onClick={
                 'onAnnotationClick' in props
