@@ -2,7 +2,6 @@ import {
   modalClasses as classes,
   ModalSize,
   ModalStatusType,
-  ModalType,
 } from '@mezzanine-ui/core/modal';
 import { forwardRef, useMemo } from 'react';
 import { cx } from '../utils/cx';
@@ -13,21 +12,11 @@ import ModalHeader, { ModalHeaderProps } from './ModalHeader';
 import ModalFooter, { ModalFooterProps } from './ModalFooter';
 import ClearActions from '../ClearActions';
 
-interface BaseModalProps
+interface CommonModalProps
   extends Omit<ModalContainerProps, 'children'>,
     Pick<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'>,
-    Partial<
-      Omit<
-        ModalHeaderProps,
-        'children' | 'className' | 'modalHeaderClearAction' | 'modalHeaderTitle'
-      >
-    >,
-    Partial<
-      Omit<
-        ModalFooterProps,
-        'children' | 'className' | 'modalFooterConfirmText'
-      >
-    > {
+    Partial<Omit<ModalHeaderProps, 'children' | 'className' | 'title'>>,
+    Partial<Omit<ModalFooterProps, 'children' | 'className' | 'confirmText'>> {
   /**
    * Content for the left side in extendedSplit layout.
    * Only used when modalType is 'extendedSplit'.
@@ -55,26 +44,44 @@ interface BaseModalProps
    */
   modalStatusType?: ModalStatusType;
   /**
-   * Controls the type/layout of the modal.
-   * - 'standard': Default modal with body container
-   * - 'extended': Modal with left and right content areas
-   * - 'extendedSplit': Modal with split layout (footer inside left content)
-   * - 'mediaPreview': Modal for media preview
-   * - 'verification': Modal for verification flows
-   * @default 'standard'
-   */
-  modalType: ModalType;
-  /**
    * Controls whether or not to show dismiss button at top-end.
    * @default false
    */
   showDismissButton?: boolean;
+}
+
+interface ExtendedSplitModalProps extends CommonModalProps {
+  /**
+   * Controls the type/layout of the modal.
+   * - 'extendedSplit': Modal with split layout (footer inside left content)
+   */
+  modalType: 'extendedSplit';
+  /**
+   * Controls the size of the modal.
+   * For extendedSplit type, only 'wide' is allowed.
+   * @default 'wide'
+   */
+  size?: 'wide';
+}
+
+interface OtherModalProps extends CommonModalProps {
+  /**
+   * Controls the type/layout of the modal.
+   * - 'standard': Default modal with body container
+   * - 'extended': Modal with left and right content areas
+   * - 'mediaPreview': Modal for media preview
+   * - 'verification': Modal for verification flows
+   * @default 'standard'
+   */
+  modalType: 'extended' | 'standard' | 'mediaPreview' | 'verification';
   /**
    * Controls the size of the modal.
    * @default 'regular'
    */
   size?: ModalSize;
 }
+
+type BaseModalProps = ExtendedSplitModalProps | OtherModalProps;
 
 type ModalHeaderPropsWithHeader = {
   /**
@@ -84,7 +91,7 @@ type ModalHeaderPropsWithHeader = {
   /**
    * The title of the modal header (required when showModalHeader is true).
    */
-  modalHeaderTitle: string;
+  title: string;
 };
 
 type ModalHeaderPropsWithoutHeader = {
@@ -96,7 +103,7 @@ type ModalHeaderPropsWithoutHeader = {
   /**
    * The title of the modal header.
    */
-  modalHeaderTitle?: string;
+  title?: string;
 };
 
 type ModalFooterPropsWithFooter = {
@@ -107,7 +114,7 @@ type ModalFooterPropsWithFooter = {
   /**
    * The confirm button text of the modal footer (required when showModalFooter is true).
    */
-  modalFooterConfirmText: string;
+  confirmText: string;
 };
 
 type ModalFooterPropsWithoutFooter = {
@@ -119,7 +126,7 @@ type ModalFooterPropsWithoutFooter = {
   /**
    * The confirm button text of the modal footer.
    */
-  modalFooterConfirmText?: string;
+  confirmText?: string;
 };
 
 export type ModalProps = BaseModalProps &
@@ -136,8 +143,21 @@ export type ModalProps = BaseModalProps &
 const Modal = forwardRef<HTMLDivElement, ModalProps>(
   function Modal(props, ref) {
     const {
+      actionsButtonLayout,
+      annotation,
+      auxiliaryContentButtonProps,
+      auxiliaryContentButtonText,
+      auxiliaryContentChecked,
+      auxiliaryContentLabel,
+      auxiliaryContentOnChange,
+      auxiliaryContentOnClick,
+      auxiliaryContentType,
+      cancelButtonProps,
+      cancelText,
       children,
       className,
+      confirmButtonProps,
+      confirmText,
       container,
       disableCloseOnBackdropClick = false,
       disableCloseOnEscapeKeyDown = false,
@@ -146,44 +166,30 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       extendedSplitRightSideContent,
       fullScreen = false,
       loading = false,
-      modalFooterActionsButtonLayout,
-      modalFooterAnnotation,
-      modalFooterAuxiliaryContentButtonProps,
-      modalFooterAuxiliaryContentButtonText,
-      modalFooterAuxiliaryContentChecked,
-      modalFooterAuxiliaryContentLabel,
-      modalFooterAuxiliaryContentOnChange,
-      modalFooterAuxiliaryContentOnClick,
-      modalFooterAuxiliaryContentType,
-      modalFooterCancelButtonProps,
-      modalFooterCancelText,
-      modalFooterConfirmButtonProps,
-      modalFooterConfirmText,
-      modalFooterLoading,
-      modalFooterOnCancel,
-      modalFooterOnConfirm,
-      modalFooterPasswordButtonProps,
-      modalFooterPasswordButtonText,
-      modalFooterPasswordChecked,
-      modalFooterPasswordCheckedLabel,
-      modalFooterPasswordCheckedOnChange,
-      modalFooterPasswordOnClick,
-      modalFooterShowCancelButton,
-      modalHeaderShowModalStatusTypeIcon,
-      modalHeaderStatusTypeIconLayout,
-      modalHeaderSupportingText,
-      modalHeaderSupportingTextAlign,
-      modalHeaderTitle,
-      modalHeaderTitleAlign,
       modalStatusType = 'info',
       modalType = 'standard',
       onBackdropClick,
+      onCancel,
       onClose,
+      onConfirm,
       open,
+      passwordButtonProps,
+      passwordButtonText,
+      passwordChecked,
+      passwordCheckedLabel,
+      passwordCheckedOnChange,
+      passwordOnClick,
+      showCancelButton,
       showDismissButton = false,
       showModalFooter = false,
       showModalHeader,
+      showStatusTypeIcon,
       size = 'regular',
+      statusTypeIconLayout,
+      supportingText,
+      supportingTextAlign,
+      title,
+      titleAlign,
       ...rest
     } = props;
 
@@ -199,35 +205,29 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
 
     const renderModalFooter = () => (
       <ModalFooter
-        modalFooterActionsButtonLayout={modalFooterActionsButtonLayout}
-        modalFooterAnnotation={modalFooterAnnotation}
-        modalFooterAuxiliaryContentButtonProps={
-          modalFooterAuxiliaryContentButtonProps
-        }
-        modalFooterAuxiliaryContentButtonText={
-          modalFooterAuxiliaryContentButtonText
-        }
-        modalFooterAuxiliaryContentChecked={modalFooterAuxiliaryContentChecked}
-        modalFooterAuxiliaryContentLabel={modalFooterAuxiliaryContentLabel}
-        modalFooterAuxiliaryContentOnChange={
-          modalFooterAuxiliaryContentOnChange
-        }
-        modalFooterAuxiliaryContentOnClick={modalFooterAuxiliaryContentOnClick}
-        modalFooterAuxiliaryContentType={modalFooterAuxiliaryContentType}
-        modalFooterCancelButtonProps={modalFooterCancelButtonProps}
-        modalFooterCancelText={modalFooterCancelText}
-        modalFooterConfirmButtonProps={modalFooterConfirmButtonProps}
-        modalFooterConfirmText={modalFooterConfirmText}
-        modalFooterLoading={modalFooterLoading}
-        modalFooterOnCancel={modalFooterOnCancel}
-        modalFooterOnConfirm={modalFooterOnConfirm}
-        modalFooterPasswordButtonProps={modalFooterPasswordButtonProps}
-        modalFooterPasswordButtonText={modalFooterPasswordButtonText}
-        modalFooterPasswordChecked={modalFooterPasswordChecked}
-        modalFooterPasswordCheckedLabel={modalFooterPasswordCheckedLabel}
-        modalFooterPasswordCheckedOnChange={modalFooterPasswordCheckedOnChange}
-        modalFooterPasswordOnClick={modalFooterPasswordOnClick}
-        modalFooterShowCancelButton={modalFooterShowCancelButton}
+        actionsButtonLayout={actionsButtonLayout}
+        annotation={annotation}
+        auxiliaryContentButtonProps={auxiliaryContentButtonProps}
+        auxiliaryContentButtonText={auxiliaryContentButtonText}
+        auxiliaryContentChecked={auxiliaryContentChecked}
+        auxiliaryContentLabel={auxiliaryContentLabel}
+        auxiliaryContentOnChange={auxiliaryContentOnChange}
+        auxiliaryContentOnClick={auxiliaryContentOnClick}
+        auxiliaryContentType={auxiliaryContentType}
+        cancelButtonProps={cancelButtonProps}
+        cancelText={cancelText}
+        confirmButtonProps={confirmButtonProps}
+        confirmText={confirmText}
+        loading={loading}
+        onCancel={onCancel}
+        onConfirm={onConfirm}
+        passwordButtonProps={passwordButtonProps}
+        passwordButtonText={passwordButtonText}
+        passwordChecked={passwordChecked}
+        passwordCheckedLabel={passwordCheckedLabel}
+        passwordCheckedOnChange={passwordCheckedOnChange}
+        passwordOnClick={passwordOnClick}
+        showCancelButton={showCancelButton}
       />
     );
 
@@ -260,16 +260,12 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
           >
             {showModalHeader && (
               <ModalHeader
-                modalHeaderShowModalStatusTypeIcon={
-                  modalHeaderShowModalStatusTypeIcon
-                }
-                modalHeaderStatusTypeIconLayout={
-                  modalHeaderStatusTypeIconLayout
-                }
-                modalHeaderSupportingText={modalHeaderSupportingText}
-                modalHeaderSupportingTextAlign={modalHeaderSupportingTextAlign}
-                modalHeaderTitle={modalHeaderTitle}
-                modalHeaderTitleAlign={modalHeaderTitleAlign}
+                showStatusTypeIcon={showStatusTypeIcon}
+                statusTypeIconLayout={statusTypeIconLayout}
+                supportingText={supportingText}
+                supportingTextAlign={supportingTextAlign}
+                title={title}
+                titleAlign={titleAlign}
               />
             )}
             {modalType === 'extendedSplit' && (

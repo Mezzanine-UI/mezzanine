@@ -10,17 +10,17 @@ describe('<ModalFooter />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<ModalFooter ref={ref} modalFooterConfirmText="Confirm" />),
+    render(<ModalFooter ref={ref} confirmText="Confirm" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<ModalFooter className={className} modalFooterConfirmText="Confirm" />),
+    render(<ModalFooter className={className} confirmText="Confirm" />),
   );
 
   describe('basic rendering', () => {
     it('should bind footer class and render children', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter modalFooterConfirmText="Confirm">foo</ModalFooter>,
+        <ModalFooter confirmText="Confirm">foo</ModalFooter>,
       );
       const element = getHostHTMLElement();
 
@@ -30,7 +30,7 @@ describe('<ModalFooter />', () => {
 
     it('should render confirm button by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter modalFooterConfirmText="Confirm" />,
+        <ModalFooter confirmText="Confirm" />,
       );
       const element = getHostHTMLElement();
       const buttons = element.querySelectorAll(
@@ -43,10 +43,10 @@ describe('<ModalFooter />', () => {
     });
   });
 
-  describe('prop: modalFooterActionsButtonLayout', () => {
+  describe('prop: actionsButtonLayout', () => {
     it('should render fixed layout by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter modalFooterConfirmText="Confirm" />,
+        <ModalFooter confirmText="Confirm" />,
       );
       const element = getHostHTMLElement();
       const buttonContainer = element.querySelector(
@@ -60,12 +60,9 @@ describe('<ModalFooter />', () => {
       ).toBe(false);
     });
 
-    it('should render fill layout when modalFooterActionsButtonLayout="fill"', () => {
+    it('should render fill layout when actionsButtonLayout="fill"', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter
-          modalFooterActionsButtonLayout="fill"
-          modalFooterConfirmText="Confirm"
-        />,
+        <ModalFooter actionsButtonLayout="fill" confirmText="Confirm" />,
       );
       const element = getHostHTMLElement();
       const buttonContainer = element.querySelector(
@@ -80,10 +77,10 @@ describe('<ModalFooter />', () => {
     });
   });
 
-  describe('prop: modalFooterShowCancelButton', () => {
+  describe('prop: showCancelButton', () => {
     it('should show cancel button by default', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter modalFooterConfirmText="Confirm" modalFooterCancelText="Cancel" />,
+        <ModalFooter confirmText="Confirm" cancelText="Cancel" />,
       );
       const element = getHostHTMLElement();
       const buttons = element.querySelectorAll(
@@ -93,12 +90,12 @@ describe('<ModalFooter />', () => {
       expect(buttons.length).toBe(2);
     });
 
-    it('should hide cancel button when modalFooterShowCancelButton=false', () => {
+    it('should hide cancel button when showCancelButton=false', () => {
       const { getHostHTMLElement } = render(
         <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterCancelText="Cancel"
-          modalFooterShowCancelButton={false}
+          confirmText="Confirm"
+          cancelText="Cancel"
+          showCancelButton={false}
         />,
       );
       const element = getHostHTMLElement();
@@ -111,14 +108,10 @@ describe('<ModalFooter />', () => {
     });
   });
 
-  describe('prop: modalFooterLoading', () => {
-    it('should disable cancel button when modalFooterLoading=true', () => {
+  describe('prop: loading', () => {
+    it('should disable cancel button when loading=true', () => {
       const { getHostHTMLElement } = render(
-        <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterCancelText="Cancel"
-          modalFooterLoading
-        />,
+        <ModalFooter confirmText="Confirm" cancelText="Cancel" loading />,
       );
       const element = getHostHTMLElement();
       const buttons = element.querySelectorAll(
@@ -129,14 +122,14 @@ describe('<ModalFooter />', () => {
     });
   });
 
-  describe('prop: modalFooterOnConfirm and modalFooterOnCancel', () => {
-    it('should call modalFooterOnConfirm when confirm button clicked', () => {
+  describe('prop: onConfirm and onCancel', () => {
+    it('should call onConfirm when confirm button clicked', () => {
       const onConfirm = jest.fn();
       const { getHostHTMLElement } = render(
         <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterOnConfirm={onConfirm}
-          modalFooterShowCancelButton={false}
+          confirmText="Confirm"
+          onConfirm={onConfirm}
+          showCancelButton={false}
         />,
       );
       const element = getHostHTMLElement();
@@ -150,13 +143,13 @@ describe('<ModalFooter />', () => {
       expect(onConfirm).toHaveBeenCalledTimes(1);
     });
 
-    it('should call modalFooterOnCancel when cancel button clicked', () => {
+    it('should call onCancel when cancel button clicked', () => {
       const onCancel = jest.fn();
       const { getHostHTMLElement } = render(
         <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterCancelText="Cancel"
-          modalFooterOnCancel={onCancel}
+          confirmText="Confirm"
+          cancelText="Cancel"
+          onCancel={onCancel}
         />,
       );
       const element = getHostHTMLElement();
@@ -171,14 +164,14 @@ describe('<ModalFooter />', () => {
     });
   });
 
-  describe('prop: modalFooterAuxiliaryContentType', () => {
+  describe('prop: auxiliaryContentType', () => {
     describe('annotation', () => {
       it('should render annotation text', () => {
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="annotation"
-            modalFooterAnnotation="This is a note"
-            modalFooterConfirmText="Confirm"
+            auxiliaryContentType="annotation"
+            annotation="This is a note"
+            confirmText="Confirm"
           />,
         );
         const element = getHostHTMLElement();
@@ -195,10 +188,10 @@ describe('<ModalFooter />', () => {
         const onClick = jest.fn();
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="button"
-            modalFooterAuxiliaryContentButtonText="Extra Action"
-            modalFooterAuxiliaryContentOnClick={onClick}
-            modalFooterConfirmText="Confirm"
+            auxiliaryContentType="button"
+            auxiliaryContentButtonText="Extra Action"
+            auxiliaryContentOnClick={onClick}
+            confirmText="Confirm"
           />,
         );
         const element = getHostHTMLElement();
@@ -219,15 +212,17 @@ describe('<ModalFooter />', () => {
         const onChange = jest.fn();
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="checkbox"
-            modalFooterAuxiliaryContentLabel="Accept terms"
-            modalFooterAuxiliaryContentChecked={false}
-            modalFooterAuxiliaryContentOnChange={onChange}
-            modalFooterConfirmText="Confirm"
+            auxiliaryContentType="checkbox"
+            auxiliaryContentLabel="Accept terms"
+            auxiliaryContentChecked={false}
+            auxiliaryContentOnChange={onChange}
+            confirmText="Confirm"
           />,
         );
         const element = getHostHTMLElement();
-        const checkbox = element.querySelector('input[type="checkbox"]') as HTMLInputElement;
+        const checkbox = element.querySelector(
+          'input[type="checkbox"]',
+        ) as HTMLInputElement;
 
         expect(checkbox).toBeTruthy();
         expect(checkbox.checked).toBe(false);
@@ -242,15 +237,17 @@ describe('<ModalFooter />', () => {
         const onChange = jest.fn();
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="toggle"
-            modalFooterAuxiliaryContentLabel="Enable feature"
-            modalFooterAuxiliaryContentChecked={true}
-            modalFooterAuxiliaryContentOnChange={onChange}
-            modalFooterConfirmText="Confirm"
+            auxiliaryContentType="toggle"
+            auxiliaryContentLabel="Enable feature"
+            auxiliaryContentChecked={true}
+            auxiliaryContentOnChange={onChange}
+            confirmText="Confirm"
           />,
         );
         const element = getHostHTMLElement();
-        const toggle = element.querySelector('input[type="checkbox"]') as HTMLInputElement;
+        const toggle = element.querySelector(
+          'input[type="checkbox"]',
+        ) as HTMLInputElement;
 
         expect(toggle).toBeTruthy();
         expect(toggle.checked).toBe(true);
@@ -263,13 +260,13 @@ describe('<ModalFooter />', () => {
         const onButtonClick = jest.fn();
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="password"
-            modalFooterPasswordChecked={false}
-            modalFooterPasswordCheckedLabel="Remember me"
-            modalFooterPasswordCheckedOnChange={onCheckboxChange}
-            modalFooterPasswordButtonText="Forgot password?"
-            modalFooterPasswordOnClick={onButtonClick}
-            modalFooterConfirmText="Login"
+            auxiliaryContentType="password"
+            passwordChecked={false}
+            passwordCheckedLabel="Remember me"
+            passwordCheckedOnChange={onCheckboxChange}
+            passwordButtonText="Forgot password?"
+            passwordOnClick={onButtonClick}
+            confirmText="Login"
           />,
         );
         const element = getHostHTMLElement();
@@ -281,11 +278,15 @@ describe('<ModalFooter />', () => {
         expect(passwordContainer?.textContent).toContain('Remember me');
         expect(passwordContainer?.textContent).toContain('Forgot password?');
 
-        const checkbox = passwordContainer?.querySelector('input[type="checkbox"]') as HTMLInputElement;
+        const checkbox = passwordContainer?.querySelector(
+          'input[type="checkbox"]',
+        ) as HTMLInputElement;
         fireEvent.click(checkbox);
         expect(onCheckboxChange).toHaveBeenCalledWith(true);
 
-        const button = passwordContainer?.querySelector('button') as HTMLButtonElement;
+        const button = passwordContainer?.querySelector(
+          'button',
+        ) as HTMLButtonElement;
         fireEvent.click(button);
         expect(onButtonClick).toHaveBeenCalledTimes(1);
       });
@@ -293,28 +294,30 @@ describe('<ModalFooter />', () => {
       it('should add password mode class', () => {
         const { getHostHTMLElement } = render(
           <ModalFooter
-            modalFooterAuxiliaryContentType="password"
-            modalFooterPasswordCheckedLabel="Remember me"
-            modalFooterPasswordButtonText="Forgot password?"
-            modalFooterConfirmText="Login"
+            auxiliaryContentType="password"
+            passwordCheckedLabel="Remember me"
+            passwordButtonText="Forgot password?"
+            confirmText="Login"
           />,
         );
         const element = getHostHTMLElement();
 
         expect(
-          element.classList.contains(`${modalClasses.modalFooter}--password-mode`),
+          element.classList.contains(
+            `${modalClasses.modalFooter}--password-mode`,
+          ),
         ).toBe(true);
       });
     });
   });
 
-  describe('prop: modalFooterConfirmButtonProps and modalFooterCancelButtonProps', () => {
+  describe('prop: confirmButtonProps and cancelButtonProps', () => {
     it('should pass additional props to confirm button', () => {
       const { getHostHTMLElement } = render(
         <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterConfirmButtonProps={{ disabled: true }}
-          modalFooterShowCancelButton={false}
+          confirmText="Confirm"
+          confirmButtonProps={{ disabled: true }}
+          showCancelButton={false}
         />,
       );
       const element = getHostHTMLElement();
@@ -329,9 +332,9 @@ describe('<ModalFooter />', () => {
     it('should pass additional props to cancel button', () => {
       const { getHostHTMLElement } = render(
         <ModalFooter
-          modalFooterConfirmText="Confirm"
-          modalFooterCancelText="Cancel"
-          modalFooterCancelButtonProps={{ 'aria-label': 'close dialog' } as any}
+          confirmText="Confirm"
+          cancelText="Cancel"
+          cancelButtonProps={{ 'aria-label': 'close dialog' } as any}
         />,
       );
       const element = getHostHTMLElement();
