@@ -3,18 +3,18 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { pageToolbarClasses as classes } from '@mezzanine-ui/core/page-toolbar';
+import { contentHeaderClasses as classes } from '@mezzanine-ui/core/page-toolbar';
 import { PlusIcon } from '@mezzanine-ui/icons';
 import Button from '../Button';
-import PageToolbar from '.';
+import ContentHeader from '.';
 import Input from '../Input';
 
-describe('<PageToolbar />', () => {
+describe('<ContentHeader />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(
-      <PageToolbar
+      <ContentHeader
         actions={{
           primaryButton: { children: 'Confirm' },
         }}
@@ -25,7 +25,7 @@ describe('<PageToolbar />', () => {
 
   describeHostElementClassNameAppendable('foo', (className) =>
     render(
-      <PageToolbar
+      <ContentHeader
         actions={{
           primaryButton: { children: 'Confirm' },
         }}
@@ -36,7 +36,7 @@ describe('<PageToolbar />', () => {
 
   it('should bind host class', () => {
     const { container } = render(
-      <PageToolbar
+      <ContentHeader
         actions={{
           primaryButton: { children: 'Confirm' },
         }}
@@ -50,7 +50,7 @@ describe('<PageToolbar />', () => {
   describe('prop: size', () => {
     it('should render with main size by default', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -63,7 +63,7 @@ describe('<PageToolbar />', () => {
 
     it('should render with sub size', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -79,7 +79,7 @@ describe('<PageToolbar />', () => {
   describe('prop: actions', () => {
     it('should render primary button with base-primary variant', () => {
       const { getByText } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Submit' },
           }}
@@ -95,7 +95,7 @@ describe('<PageToolbar />', () => {
 
     it('should render secondary button with base-secondary variant', () => {
       const { getByText } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             secondaryButton: { children: 'Cancel' },
           }}
@@ -111,7 +111,7 @@ describe('<PageToolbar />', () => {
 
     it('should render destructive button with destructive-secondary variant', () => {
       const { getByText } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             destructiveButton: { children: 'Delete' },
           }}
@@ -127,7 +127,7 @@ describe('<PageToolbar />', () => {
 
     it('should render all action buttons in correct order', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             destructiveButton: { children: 'Delete' },
             primaryButton: { children: 'Confirm' },
@@ -146,7 +146,7 @@ describe('<PageToolbar />', () => {
 
     it('should render single button element as action', () => {
       const { getByText } = render(
-        <PageToolbar actions={<Button>Custom Button</Button>} />,
+        <ContentHeader actions={<Button>Custom Button</Button>} />,
       );
       const button = getByText('Custom Button');
 
@@ -158,7 +158,7 @@ describe('<PageToolbar />', () => {
 
     it('should render single button props as action', () => {
       const { getByText } = render(
-        <PageToolbar actions={{ children: 'Single Action' }} />,
+        <ContentHeader actions={{ children: 'Single Action' }} />,
       );
       const button = getByText('Single Action');
 
@@ -170,7 +170,7 @@ describe('<PageToolbar />', () => {
 
     it('should apply correct size to action buttons', () => {
       const { getByText } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Submit' },
           }}
@@ -186,7 +186,7 @@ describe('<PageToolbar />', () => {
   describe('prop: filter', () => {
     it('should render filter component', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -201,7 +201,7 @@ describe('<PageToolbar />', () => {
 
     it('should apply size to filter component', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -218,7 +218,7 @@ describe('<PageToolbar />', () => {
   describe('prop: utilities', () => {
     it('should render single utility button with tooltip', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -241,7 +241,7 @@ describe('<PageToolbar />', () => {
 
     it('should render multiple utility buttons with tooltips', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -267,7 +267,7 @@ describe('<PageToolbar />', () => {
 
     it('should apply correct size to utility buttons', () => {
       const { container } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             primaryButton: { children: 'Confirm' },
           }}
@@ -287,7 +287,7 @@ describe('<PageToolbar />', () => {
   describe('complete layout', () => {
     it('should render all props together', () => {
       const { container, getByText } = render(
-        <PageToolbar
+        <ContentHeader
           actions={{
             destructiveButton: { children: 'Delete' },
             primaryButton: { children: 'Confirm' },
