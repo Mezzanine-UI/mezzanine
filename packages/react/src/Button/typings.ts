@@ -1,6 +1,7 @@
-import { JSXElementConstructor } from 'react';
+import { JSXElementConstructor, ReactNode } from 'react';
+import { IconDefinition } from '@mezzanine-ui/icons';
 import {
-  ButtonIcon,
+  ButtonIconType,
   ButtonSize,
   ButtonVariant,
 } from '@mezzanine-ui/core/button';
@@ -29,7 +30,15 @@ export interface ButtonPropsBase {
    */
   loading?: boolean;
   /**
-   * Icon configuration with position and icon source.
+   * The icon to display.
    */
-  icon?: ButtonIcon;
+  icon?: IconDefinition;
+  /**
+   * The type of the icon relative to the text.
+   */
+  iconType?: ButtonIconType;
+  /**
+   * The button text content.
+   */
+  children?: ReactNode;
 }

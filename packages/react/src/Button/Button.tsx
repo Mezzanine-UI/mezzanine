@@ -26,19 +26,13 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       component: Component = 'button',
       disabled = false,
       icon,
+      iconType,
       loading = false,
       onClick,
       size = 'main',
       variant = 'base-primary',
       ...rest
     } = props;
-
-    // 判斷是否為 icon-only 模式
-    const isIconOnly = icon?.position === 'icon-only' || (!!icon && !children);
-
-    // 判斷 icon 位置
-    const hasLeadingIcon = icon?.position === 'leading' && !isIconOnly;
-    const hasTrailingIcon = icon?.position === 'trailing' && !isIconOnly;
 
     // Loading 狀態下的 icon
     const loadingIcon = <Icon icon={SpinnerIcon} spin size={16} />;
@@ -49,7 +43,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return loadingIcon;
       }
       if (icon) {
-        return <Icon icon={icon.src} size={16} />;
+        return <Icon icon={icon} size={16} />;
       }
       return null;
     };
@@ -66,9 +60,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           {
             [classes.disabled]: disabled,
             [classes.loading]: loading,
-            [classes.iconLeading]: hasLeadingIcon,
-            [classes.iconTrailing]: hasTrailingIcon,
-            [classes.iconOnly]: isIconOnly,
+            [classes.iconLeading]: iconType === 'leading',
+            [classes.iconTrailing]: iconType === 'trailing',
+            [classes.iconOnly]: iconType === 'icon-only',
           },
           className,
         )}
@@ -83,9 +77,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           renderIcon()
         ) : (
           <>
-            {(hasLeadingIcon || isIconOnly) && renderIcon()}
-            {!isIconOnly && children}
-            {hasTrailingIcon && renderIcon()}
+            {(iconType === 'leading' || iconType === 'icon-only') &&
+              renderIcon()}
+            {iconType !== 'icon-only' && children}
+            {iconType === 'trailing' && renderIcon()}
           </>
         )}
       </Component>

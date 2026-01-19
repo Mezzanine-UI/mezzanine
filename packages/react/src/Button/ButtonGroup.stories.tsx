@@ -91,15 +91,18 @@ export const WithIcons: Story = {
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <ButtonGroup variant="base-primary">
-        <Button icon={{ position: 'leading', src: PlusIcon }}>Add</Button>
-        <Button icon={{ position: 'leading', src: PlusIcon }}>Create</Button>
-        <Button icon={{ position: 'leading', src: PlusIcon }}>New</Button>
+        <Button iconType="leading" icon={PlusIcon}>
+          Create
+        </Button>
+        <Button iconType="leading" icon={PlusIcon}>
+          New
+        </Button>
       </ButtonGroup>
 
       <ButtonGroup variant="base-secondary">
-        <Button icon={{ position: 'icon-only', src: PlusIcon }} />
-        <Button icon={{ position: 'icon-only', src: PlusIcon }} />
-        <Button icon={{ position: 'icon-only', src: PlusIcon }} />
+        <Button iconType="icon-only" icon={PlusIcon} />
+        <Button iconType="icon-only" icon={PlusIcon} />
+        <Button iconType="icon-only" icon={PlusIcon} />
       </ButtonGroup>
     </div>
   ),

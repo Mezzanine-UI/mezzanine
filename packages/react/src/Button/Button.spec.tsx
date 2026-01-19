@@ -27,9 +27,7 @@ describe('<Button />', () => {
 
   it('should not render children if icon-only mode', () => {
     const { getHostHTMLElement } = render(
-      <Button icon={{ position: 'icon-only', src: PlusIcon }}>
-        Should not render
-      </Button>,
+      <Button icon={PlusIcon} iconType="icon-only" />,
     );
     const element = getHostHTMLElement();
 
@@ -169,7 +167,7 @@ describe('<Button />', () => {
 
     it('should replace icon with loading spinner', () => {
       const { getHostHTMLElement } = render(
-        <Button loading icon={{ position: 'leading', src: PlusIcon }}>
+        <Button icon={PlusIcon} iconType="leading" loading>
           Hello
         </Button>,
       );
@@ -183,10 +181,12 @@ describe('<Button />', () => {
   });
 
   describe('prop: icon', () => {
-    describe('position: leading', () => {
+    describe('iconType: leading', () => {
       it('should render icon before text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'leading', src: PlusIcon }}>Hello</Button>,
+          <Button icon={PlusIcon} iconType="leading">
+            Hello
+          </Button>,
         );
         const element = getHostHTMLElement();
 
@@ -201,10 +201,10 @@ describe('<Button />', () => {
       });
     });
 
-    describe('position: trailing', () => {
+    describe('iconType: trailing', () => {
       it('should render icon after text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'trailing', src: SearchIcon }}>
+          <Button icon={SearchIcon} iconType="trailing">
             Hello
           </Button>,
         );
@@ -221,12 +221,10 @@ describe('<Button />', () => {
       });
     });
 
-    describe('position: icon-only', () => {
+    describe('iconOnly', () => {
       it('should render only icon without text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'icon-only', src: PlusIcon }}>
-            Should not render
-          </Button>,
+          <Button icon={PlusIcon} iconType="icon-only" />,
         );
         const element = getHostHTMLElement();
 
@@ -237,17 +235,6 @@ describe('<Button />', () => {
         expect(element.querySelector('i')?.getAttribute('data-icon-name')).toBe(
           PlusIcon.name,
         );
-      });
-
-      it('should auto detect icon-only when icon provided but no children', () => {
-        const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'leading', src: PlusIcon }} />,
-        );
-        const element = getHostHTMLElement();
-
-        expect(
-          element.classList.contains('mzn-button--icon-only'),
-        ).toBeTruthy();
       });
     });
   });
@@ -305,10 +292,7 @@ describe('<Button />', () => {
 
     it('should work with variant + icon', () => {
       const { getHostHTMLElement } = render(
-        <Button
-          variant="base-secondary"
-          icon={{ position: 'leading', src: PlusIcon }}
-        >
+        <Button icon={PlusIcon} iconType="leading" variant="base-secondary">
           Add
         </Button>,
       );
@@ -325,10 +309,11 @@ describe('<Button />', () => {
     it('should work with all states', () => {
       const { getHostHTMLElement } = render(
         <Button
-          variant="destructive-primary"
-          size="sub"
           disabled
-          icon={{ position: 'trailing', src: SearchIcon }}
+          icon={SearchIcon}
+          iconType="trailing"
+          size="sub"
+          variant="destructive-primary"
         >
           Complex
         </Button>,
