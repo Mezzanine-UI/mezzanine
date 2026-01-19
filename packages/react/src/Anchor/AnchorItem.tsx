@@ -92,9 +92,11 @@ function AnchorItem({
       return;
     }
 
-    // If href contains a hash, update it manually to ensure hashchange event fires
+    // If href contains a hash, handle navigation manually to ensure hashchange event fires
     if (itemHash && typeof window !== 'undefined') {
-      // Update the hash in the URL
+      event.preventDefault();
+
+      // Update the hash in the URL only if it's different
       if (window.location.hash !== itemHash) {
         window.history.pushState(null, '', itemHash);
         window.dispatchEvent(new HashChangeEvent('hashchange'));
