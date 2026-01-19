@@ -1,41 +1,37 @@
 /* global document */
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import { createRef, FocusEvent, MouseEvent } from 'react';
+import { AutoComplete } from '.';
 import {
   act,
-  cleanupHook,
   cleanup,
+  cleanupHook,
   fireEvent,
   render,
   screen,
   waitFor,
 } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import userEvent from '@testing-library/user-event';
-import { AutoComplete } from '.';
 import { SelectValue } from '../Select/typings';
 
 // Mock ResizeObserver - jsdom 不支援此 API
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 class ResizeObserverMock {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 // Mock scrollIntoView
 const originalScrollIntoView = Element.prototype.scrollIntoView;
 
 function getDropdownListbox() {
-  return document.querySelector('[role="listbox"][id="mzn-select-autocomplete-menu-id"]');
+  return document.querySelector('[role="listbox"][id^="mzn-select-autocomplete-menu-id"]');
 }
 
 function getDropdownOptions() {
   return document.querySelectorAll('[role="option"]');
-}
-
-function getPopperContainer() {
-  return document.querySelector('div[data-popper-placement]');
 }
 
 function getClearIcon(container: HTMLElement | Document = document) {
@@ -194,7 +190,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
+      const onClear = jest.fn<void, [MouseEvent<Element>]>(() => { });
       const inputRef = createRef<HTMLInputElement>();
       const onChange = jest.fn();
       const onSearch = jest.fn();
@@ -239,7 +235,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onSearch = jest.fn<void, [string]>(() => {});
+      const onSearch = jest.fn<void, [string]>(() => { });
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -271,7 +267,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onSearch = jest.fn<void, [string]>(() => {});
+      const onSearch = jest.fn<void, [string]>(() => { });
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -378,7 +374,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
+      const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => { });
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -407,7 +403,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
+      const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => { });
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -737,7 +733,7 @@ describe('<AutoComplete />', () => {
 
   describe('prop: value (controlled)', () => {
     it('should display selected value in single mode', () => {
-      const { container } = render(
+      render(
         <AutoComplete
           mode="single"
           options={defaultOptions}

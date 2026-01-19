@@ -1,7 +1,9 @@
 import {
+  Dispatch,
   KeyboardEvent,
   KeyboardEventHandler,
   Ref,
+  SetStateAction,
   useCallback,
 } from 'react';
 
@@ -26,16 +28,20 @@ type UseAutoCompleteKeyboardParams = {
   processBulkCreate: (text: string) => string[];
   searchText: string;
   searchTextExistWithoutOption: boolean;
-  setActiveIndex: (index: number | null) => void;
+  setActiveIndex: Dispatch<SetStateAction<number | null>>;
   setListboxHasVisualFocus: (focus: boolean) => void;
   setInsertText: (value: string) => void;
   setSearchText: (value: string) => void;
   toggleOpen: (newOpen: boolean | ((prev: boolean) => boolean)) => void;
   value: SelectValue[] | SelectValue | null | undefined;
-  wrappedOnChange: (chooseOption: SelectValue | null) => SelectValue[] | SelectValue | null;
+  wrappedOnChange: (
+    chooseOption: SelectValue | null,
+  ) => SelectValue[] | SelectValue | null;
 };
 
-function isMultipleValue(value: SelectValue[] | SelectValue | null | undefined): value is SelectValue[] {
+function isMultipleValue(
+  value: SelectValue[] | SelectValue | null | undefined,
+): value is SelectValue[] {
   return Array.isArray(value);
 }
 
@@ -48,7 +54,6 @@ export function useAutoCompleteKeyboard({
   handleDropdownSelect,
   inputPropsOnKeyDown,
   inputRef,
-  isMultiple,
   mode,
   onFocus,
   open,
@@ -112,7 +117,9 @@ export function useAutoCompleteKeyboard({
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter' && open) {
         if (addable && searchText) {
-          const hasSeparator = createSeparators.some((sep) => searchText.includes(sep));
+          const hasSeparator = createSeparators.some((sep) =>
+            searchText.includes(sep),
+          );
 
           if (hasSeparator && mode === 'multiple') {
             e.preventDefault();
@@ -222,4 +229,3 @@ export function useAutoCompleteKeyboard({
     handleInputKeyDown,
   };
 }
-

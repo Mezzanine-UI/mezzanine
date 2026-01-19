@@ -51,9 +51,14 @@ export function useAutoCompleteSearch({
           finalize();
         }
       } catch (error) {
+        // Handle synchronous errors that occur before Promise creation
+        // Reset loading state to prevent UI from being stuck in loading state
         if (requestSeqRef.current === currentSeq) {
           setInternalLoading(false);
         }
+        // Re-throw error to allow calling code to handle it
+        // This is necessary because the error occurred synchronously and the caller
+        // should be aware of it (e.g., for error logging or user notification)
         throw error;
       }
     },

@@ -259,7 +259,7 @@ export type AutoCompleteProps =
   | AutoCompleteMultipleProps
   | AutoCompleteSingleProps;
 
-const MENU_ID = 'mzn-select-autocomplete-menu-id';
+const MENU_ID_PREFIX = 'mzn-select-autocomplete-menu-id';
 
 /**
  * Type guard to check if value is array (multiple mode)
@@ -417,7 +417,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     }, [addable, onInsert]);
 
     const idSeed = useId();
-    const menuId = useMemo(() => `${MENU_ID}-${idSeed}`, [idSeed]);
+    const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
 
     const {
       handleActionCustom,
@@ -576,6 +576,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const searchTextExistWithoutOption: boolean =
       !!searchText &&
       options.find((option) => option.name === searchText) === undefined;
+
+    const shouldShowCreateAction = !!(searchTextExistWithoutOption && creationEnabled && insertText);
 
     const context = useMemo(() => ({ onChange: wrappedOnChange, value }), [wrappedOnChange, value]);
 
@@ -800,7 +802,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         >
           <Dropdown
             actionText={
-              searchTextExistWithoutOption && creationEnabled && insertText
+              shouldShowCreateAction
                 ? (createActionText
                   ? createActionText(insertText)
                   : createActionTextTemplate.replace('{text}', insertText))
@@ -817,7 +819,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             maxHeight={menuMaxHeight}
             mode={mode}
             onActionCustom={
-              searchTextExistWithoutOption && creationEnabled && insertText
+              shouldShowCreateAction
                 ? handleActionCustom
                 : undefined
             }
@@ -828,12 +830,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             options={dropdownOptionsForRender}
             placement="bottom"
             sameWidth
-            showDropdownActions={
-              !!(searchTextExistWithoutOption && creationEnabled && insertText)
-            }
-            showActionShowTopBar={
-              !!(searchTextExistWithoutOption && creationEnabled && insertText)
-            }
+            showDropdownActions={shouldShowCreateAction}
+            showActionShowTopBar={shouldShowCreateAction}
             status={dropdownStatus}
             type="default"
             value={dropdownValue}
