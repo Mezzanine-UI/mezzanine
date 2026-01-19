@@ -43,10 +43,7 @@ export const OverflowType: Story = {
       },
     },
     /** @TODO dropdown replacement */
-    annotation: {
-      position: 'icon-only',
-      src: DotVerticalIcon,
-    },
+    annotation: DotVerticalIcon,
     onAnnotationClick: () => {
       alert('Overflow button clicked!');
     },

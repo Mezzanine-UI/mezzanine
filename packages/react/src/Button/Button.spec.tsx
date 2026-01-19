@@ -1,11 +1,13 @@
 import { PlusIcon, SearchIcon, SpinnerIcon } from '@mezzanine-ui/icons';
 import { ButtonSize, ButtonVariant } from '@mezzanine-ui/core/button';
-import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
 import Button from './Button';
+
+jest.useFakeTimers();
 
 describe('<Button />', () => {
   afterEach(cleanup);
@@ -27,9 +29,7 @@ describe('<Button />', () => {
 
   it('should not render children if icon-only mode', () => {
     const { getHostHTMLElement } = render(
-      <Button icon={{ position: 'icon-only', src: PlusIcon }}>
-        Should not render
-      </Button>,
+      <Button icon={PlusIcon} iconType="icon-only" />,
     );
     const element = getHostHTMLElement();
 
@@ -169,7 +169,7 @@ describe('<Button />', () => {
 
     it('should replace icon with loading spinner', () => {
       const { getHostHTMLElement } = render(
-        <Button loading icon={{ position: 'leading', src: PlusIcon }}>
+        <Button icon={PlusIcon} iconType="leading" loading>
           Hello
         </Button>,
       );
@@ -183,10 +183,12 @@ describe('<Button />', () => {
   });
 
   describe('prop: icon', () => {
-    describe('position: leading', () => {
+    describe('iconType: leading', () => {
       it('should render icon before text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'leading', src: PlusIcon }}>Hello</Button>,
+          <Button icon={PlusIcon} iconType="leading">
+            Hello
+          </Button>,
         );
         const element = getHostHTMLElement();
 
@@ -201,10 +203,10 @@ describe('<Button />', () => {
       });
     });
 
-    describe('position: trailing', () => {
+    describe('iconType: trailing', () => {
       it('should render icon after text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'trailing', src: SearchIcon }}>
+          <Button icon={SearchIcon} iconType="trailing">
             Hello
           </Button>,
         );
@@ -221,12 +223,10 @@ describe('<Button />', () => {
       });
     });
 
-    describe('position: icon-only', () => {
+    describe('iconOnly', () => {
       it('should render only icon without text', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'icon-only', src: PlusIcon }}>
-            Should not render
-          </Button>,
+          <Button icon={PlusIcon} iconType="icon-only" />,
         );
         const element = getHostHTMLElement();
 
@@ -239,16 +239,103 @@ describe('<Button />', () => {
         );
       });
 
-      it('should auto detect icon-only when icon provided but no children', () => {
+      it('should not render children text when iconType is icon-only', () => {
         const { getHostHTMLElement } = render(
-          <Button icon={{ position: 'leading', src: PlusIcon }} />,
+          <Button icon={PlusIcon} iconType="icon-only">
+            Hidden Text
+          </Button>,
         );
         const element = getHostHTMLElement();
 
-        expect(
-          element.classList.contains('mzn-button--icon-only'),
-        ).toBeTruthy();
+        expect(element.textContent).toBe('');
       });
+    });
+  });
+
+  describe('prop: tooltip (icon-only mode)', () => {
+    it('should show tooltip on hover when iconType is icon-only and children provided', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.textContent).toBe('Add new item');
+    });
+
+    it('should not show tooltip when disabledTooltip is true', async () => {
+      const { getHostHTMLElement } = render(
+        <Button disabledTooltip icon={PlusIcon} iconType="icon-only">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should not show tooltip when no children provided', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only" />,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
+    });
+
+    it('should use tooltipPosition for placement', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="icon-only" tooltipPosition="top">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).not.toBeNull();
+      expect(tooltip?.getAttribute('data-popper-placement')).toBe('top');
+    });
+
+    it('should not show tooltip for non icon-only buttons', async () => {
+      const { getHostHTMLElement } = render(
+        <Button icon={PlusIcon} iconType="leading">
+          Add new item
+        </Button>,
+      );
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      const tooltip = document.querySelector('[data-popper-placement]');
+
+      expect(tooltip).toBeNull();
     });
   });
 
@@ -305,10 +392,7 @@ describe('<Button />', () => {
 
     it('should work with variant + icon', () => {
       const { getHostHTMLElement } = render(
-        <Button
-          variant="base-secondary"
-          icon={{ position: 'leading', src: PlusIcon }}
-        >
+        <Button icon={PlusIcon} iconType="leading" variant="base-secondary">
           Add
         </Button>,
       );
@@ -325,10 +409,11 @@ describe('<Button />', () => {
     it('should work with all states', () => {
       const { getHostHTMLElement } = render(
         <Button
-          variant="destructive-primary"
-          size="sub"
           disabled
-          icon={{ position: 'trailing', src: SearchIcon }}
+          icon={SearchIcon}
+          iconType="trailing"
+          size="sub"
+          variant="destructive-primary"
         >
           Complex
         </Button>,

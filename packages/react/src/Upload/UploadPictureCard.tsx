@@ -1,16 +1,30 @@
 'use client';
 
-import { forwardRef, MouseEventHandler, useEffect, useMemo, useState } from 'react';
+import {
+  forwardRef,
+  MouseEventHandler,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import {
   uploadPictureCardClasses as classes,
   UploadItemStatus,
   UploadPictureCardImageFit,
-  UploadPictureCardSize
+  UploadPictureCardSize,
 } from '@mezzanine-ui/core/upload';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 
-import { DownloadIcon, FileIcon, ImageIcon, ResetIcon, SpinnerIcon, TrashIcon, ZoomInIcon } from '@mezzanine-ui/icons';
+import {
+  DownloadIcon,
+  FileIcon,
+  ImageIcon,
+  ResetIcon,
+  SpinnerIcon,
+  TrashIcon,
+  ZoomInIcon,
+} from '@mezzanine-ui/icons';
 
 import Button from '../Button';
 import ClearActions from '../ClearActions';
@@ -69,7 +83,7 @@ export interface UploadPictureCardProps
    * The URL of the uploaded file.
    * When provided, this will be used instead of creating a blob URL from `file`.
    * Useful for displaying files that have already been uploaded to the server.
-   * 
+   *
    * @note If only `url` is provided (without `file`), the file type will be inferred
    * from the URL extension. For accurate type detection, provide `file` when available.
    */
@@ -199,7 +213,9 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
     // Warn if both file and url are missing
     useEffect(() => {
       if (!file && !url) {
-        console.warn('UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.');
+        console.warn(
+          'UploadPictureCard: Both `file` and `url` props are missing. At least one should be provided to display the upload picture card.',
+        );
       }
     }, [file, url]);
 
@@ -229,7 +245,9 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
     }, [file, url, isImage]);
 
     if (!isImage && size === 'minor') {
-      console.warn('UploadPictureCard: minor size is not supported for non-image files');
+      console.warn(
+        'UploadPictureCard: minor size is not supported for non-image files',
+      );
 
       return null;
     }
@@ -240,7 +258,7 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
           classes.host,
           classes.size(size),
           disabled && classes.disabled,
-          className
+          className,
         )}
         aria-disabled={disabled}
         ref={ref}
@@ -259,102 +277,103 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
               }}
             />
           )}
-          {
-            status === 'done' && size !== 'minor' && !isImage && (
-              <div className={classes.content}>
-                <Icon icon={FileIcon} color="brand" size={16} />
-                <Typography className={classes.name} ellipsis>{fileName}</Typography>
-              </div>
-            )
-          }
-          {
-            status === 'error' && size !== 'minor' && (
-              <div className={classes.errorMessage} role="alert" aria-live="polite">
-                <Icon icon={errorIconContent} color="error" size={16} />
-                <Typography className={classes.errorMessageText}>{errorMessageContent}</Typography>
-              </div>
-            )
-          }
-          <div className={cx(
-            classes.actions,
-            classes.actionsStatus(status),
-          )}>
-            {
-              status === 'loading' && size !== 'minor' && (
-                <>
-                  <ClearActions
-                    type="embedded"
-                    variant="contrast"
-                    onClick={onDelete}
-                    className={classes.clearActionsIcon}
-                    aria-label={labels.cancelUpload}
-                  />
-                  <div className={classes.loadingIcon} aria-label={labels.uploading}>
-                    <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
+          {status === 'done' && size !== 'minor' && !isImage && (
+            <div className={classes.content}>
+              <Icon icon={FileIcon} color="brand" size={16} />
+              <Typography className={classes.name} ellipsis>
+                {fileName}
+              </Typography>
+            </div>
+          )}
+          {status === 'error' && size !== 'minor' && (
+            <div
+              className={classes.errorMessage}
+              role="alert"
+              aria-live="polite"
+            >
+              <Icon icon={errorIconContent} color="error" size={16} />
+              <Typography className={classes.errorMessageText}>
+                {errorMessageContent}
+              </Typography>
+            </div>
+          )}
+          <div className={cx(classes.actions, classes.actionsStatus(status))}>
+            {status === 'loading' && size !== 'minor' && (
+              <>
+                <ClearActions
+                  type="embedded"
+                  variant="contrast"
+                  onClick={onDelete}
+                  className={classes.clearActionsIcon}
+                  aria-label={labels.cancelUpload}
+                />
+                <div
+                  className={classes.loadingIcon}
+                  aria-label={labels.uploading}
+                >
+                  <Icon icon={SpinnerIcon} color="fixed-light" spin size={32} />
+                </div>
+              </>
+            )}
+            {status === 'done' && size !== 'minor' && (
+              <>
+                <div className={classes.tools}>
+                  <div className={classes.toolsContent}>
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      icon={ZoomInIcon}
+                      iconType="icon-only"
+                      onClick={onZoomIn}
+                      aria-label={labels.zoomIn}
+                    />
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      iconType="icon-only"
+                      icon={DownloadIcon}
+                      onClick={onDownload}
+                      aria-label={labels.download}
+                    />
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      iconType="icon-only"
+                      icon={TrashIcon}
+                      onClick={onDelete}
+                      aria-label={labels.delete}
+                    />
                   </div>
-                </>
-              )
-            }
-            {
-              status === 'done' && size !== 'minor' && (
-                <>
-                  <div className={classes.tools}>
-                    <div className={classes.toolsContent}>
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: ZoomInIcon }}
-                        onClick={onZoomIn}
-                        aria-label={labels.zoomIn}
-                      />
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: DownloadIcon }}
-                        onClick={onDownload}
-                        aria-label={labels.download}
-                      />
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: TrashIcon }}
-                        onClick={onDelete}
-                        aria-label={labels.delete}
-                      />
-                    </div>
+                </div>
+              </>
+            )}
+            {status === 'error' && size !== 'minor' && (
+              <>
+                <div className={classes.tools}>
+                  <div className={classes.toolsContent}>
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      iconType="icon-only"
+                      icon={ResetIcon}
+                      onClick={onReload}
+                      aria-label={labels.reload}
+                    />
+                    <Button
+                      variant="base-secondary"
+                      size="minor"
+                      iconType="icon-only"
+                      icon={TrashIcon}
+                      onClick={onDelete}
+                      aria-label={labels.delete}
+                    />
                   </div>
-                </>
-              )
-            }
-            {
-              status === 'error' && size !== 'minor' && (
-                <>
-                  <div className={classes.tools}>
-                    <div className={classes.toolsContent}>
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: ResetIcon }}
-                        onClick={onReload}
-                        aria-label={labels.reload}
-                      />
-                      <Button
-                        variant="base-secondary"
-                        size="minor"
-                        icon={{ position: 'icon-only', src: TrashIcon }}
-                        onClick={onDelete}
-                        aria-label={labels.delete}
-                      />
-                    </div>
-                  </div>
-                </>
-              )
-            }
-            {
-              size === 'minor' && (
-                <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
-              )
-            }
+                </div>
+              </>
+            )}
+            {size === 'minor' && (
+              <Icon icon={ZoomInIcon} color="fixed-light" size={24} />
+            )}
           </div>
         </div>
       </div>
@@ -363,4 +382,3 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 );
 
 export default UploadPictureCard;
-

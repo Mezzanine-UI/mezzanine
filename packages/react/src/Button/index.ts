@@ -3,8 +3,7 @@ import { ButtonComponent, ButtonPropsBase } from './typings';
 import Button, { ButtonProps } from './Button';
 
 export type {
-  ButtonIcon,
-  ButtonIconPosition,
+  ButtonIconType,
   ButtonGroupOrientation,
   ButtonSize,
   ButtonVariant,

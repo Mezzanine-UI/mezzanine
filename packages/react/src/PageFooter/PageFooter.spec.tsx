@@ -151,10 +151,7 @@ describe('<PageFooter />', () => {
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation={{
-              position: 'icon-only',
-              src: DotVerticalIcon,
-            }}
+            annotation={DotVerticalIcon}
           />,
         );
         const element = getHostHTMLElement();
@@ -180,10 +177,7 @@ describe('<PageFooter />', () => {
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation={{
-              position: 'icon-only',
-              src: DotVerticalIcon,
-            }}
+            annotation={DotVerticalIcon}
             onAnnotationClick={onClick}
           />,
         );

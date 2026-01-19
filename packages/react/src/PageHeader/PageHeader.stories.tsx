@@ -63,7 +63,8 @@ export const Default: Story = {
               <Button>Primary</Button>
               <Button
                 title="Button description"
-                icon={{ src: MenuIcon, position: 'icon-only' }}
+                iconType="icon-only"
+                icon={MenuIcon}
               />
             </PageToolbar>
           </PageHeader>
