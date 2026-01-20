@@ -16,13 +16,19 @@ export interface NavigationHeaderProps
    * The title text displayed in the header.
    */
   title: string;
+  /**
+   * Callback function invoked when the brand area (logo and title) is clicked.
+   */
+  onBrandClick?: () => void;
 }
 
 const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
   (props, ref) => {
-    const { children, className, title, ...rest } = props;
+    const { children, className, title, onBrandClick, ...rest } = props;
 
     const { collapsed, handleCollapseChange } = use(NavigationActivatedContext);
+
+    const BrandComponent = onBrandClick ? 'button' : 'span';
 
     return (
       <header
@@ -34,10 +40,10 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
           onClick={() => handleCollapseChange(!collapsed)}
           icon={SiderIcon}
         />
-        <span className={classes.content}>
+        <BrandComponent className={classes.content} onClick={onBrandClick}>
           {children}
           <span className={classes.title}>{title}</span>
-        </span>
+        </BrandComponent>
       </header>
     );
   },
