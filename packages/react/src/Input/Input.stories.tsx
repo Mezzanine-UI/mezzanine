@@ -1,11 +1,11 @@
 import { CopyIcon, UserIcon } from '@mezzanine-ui/icons';
 import { useState } from 'react';
+import Input, { SelectInputProps } from '.';
 import Icon from '../Icon';
-import Input from '.';
 import Typography from '../Typography';
-import { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
 import { formatNumberWithCommas } from '../utils/format-number-with-commas';
 import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
+import { PasswordStrengthIndicatorProps } from './PasswordStrengthIndicator';
 
 export default {
   title: 'Data Entry/Input',
@@ -349,7 +349,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => {},
+            onClick: () => { },
             disabled: true,
           }}
         />
@@ -367,7 +367,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => {},
+            onClick: () => { },
           }}
         />
       </section>
@@ -384,7 +384,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => {},
+            onClick: () => { },
           }}
         />
       </section>
@@ -400,7 +400,43 @@ export const SelectInput = () => {
     gap: '12px',
   };
   const typoStyle = { margin: '0 0 12px 0' };
-  const [selectedValue, setSelectedValue] = useState('.com');
+
+  const domainOptions = [
+    { id: '.com', name: '.com' },
+    { id: '.tw', name: '.tw' },
+    { id: '.cn', name: '.cn' },
+    { id: '.net', name: '.net' },
+  ];
+
+  const [prefixValue, setPrefixValue] = useState('.com');
+  const [suffixValue, setSuffixValue] = useState('.com');
+  const [bothValue, setBothValue] = useState('.com');
+  const [sizeMainValue, setSizeMainValue] = useState('.com');
+  const [sizeSubValue, setSizeSubValue] = useState('.com');
+
+  const handlePrefixSelect = (value: string) => setPrefixValue(value);
+  const handleSuffixSelect = (value: string) => setSuffixValue(value);
+  const handleBothSelect = (value: string) => setBothValue(value);
+  const handleSizeMainSelect = (value: string) => setSizeMainValue(value);
+  const handleSizeSubSelect = (value: string) => setSizeSubValue(value);
+
+  // Helper to create select input props with proper typing
+  const createSelectProps = (
+    selectedValue: string,
+    onSelect: (value: string) => void,
+    position: 'prefix' | 'suffix' | 'both',
+    additionalProps?: Partial<Omit<SelectInputProps, 'variant' | 'options' | 'selectedValue' | 'onSelect' | 'selectButton'>>,
+  ): SelectInputProps => ({
+    variant: 'select',
+    options: domainOptions,
+    selectedValue,
+    onSelect,
+    selectButton: {
+      position,
+      value: selectedValue,
+    },
+    ...additionalProps,
+  } as SelectInputProps);
 
   return (
     <div
@@ -420,49 +456,22 @@ export const SelectInput = () => {
           Domain Selector
         </Typography>
         <Input
-          variant="select"
-          defaultValue="https://"
-          placeholder="Domain"
-          selectButton={{
-            position: 'prefix',
-            value: selectedValue,
-            onClick: () => {
-              const domains = ['.com', '.tw', '.cn', '.net'];
-              const currentIndex = domains.indexOf(selectedValue);
-              const nextIndex = (currentIndex + 1) % domains.length;
-              setSelectedValue(domains[nextIndex]);
-            },
-          }}
+          {...createSelectProps(prefixValue, handlePrefixSelect, 'prefix', {
+            defaultValue: 'https://',
+            placeholder: 'Domain',
+          })}
         />
         <Input
-          variant="select"
-          defaultValue="https://"
-          placeholder="Domain"
-          selectButton={{
-            position: 'suffix',
-            value: selectedValue,
-            onClick: () => {
-              const domains = ['.com', '.tw', '.cn', '.net'];
-              const currentIndex = domains.indexOf(selectedValue);
-              const nextIndex = (currentIndex + 1) % domains.length;
-              setSelectedValue(domains[nextIndex]);
-            },
-          }}
+          {...createSelectProps(suffixValue, handleSuffixSelect, 'suffix', {
+            defaultValue: 'https://',
+            placeholder: 'Domain',
+          })}
         />
         <Input
-          variant="select"
-          defaultValue="https://"
-          placeholder="Domain"
-          selectButton={{
-            position: 'both',
-            value: selectedValue,
-            onClick: () => {
-              const domains = ['.com', '.tw', '.cn', '.net'];
-              const currentIndex = domains.indexOf(selectedValue);
-              const nextIndex = (currentIndex + 1) % domains.length;
-              setSelectedValue(domains[nextIndex]);
-            },
-          }}
+          {...createSelectProps(bothValue, handleBothSelect, 'both', {
+            defaultValue: 'https://',
+            placeholder: 'Domain',
+          })}
         />
       </section>
 
@@ -471,14 +480,10 @@ export const SelectInput = () => {
           Size Main
         </Typography>
         <Input
-          variant="select"
-          size="main"
-          placeholder="Placeholder"
-          selectButton={{
-            position: 'suffix',
-            value: '.com',
-            onClick: () => {},
-          }}
+          {...createSelectProps(sizeMainValue, handleSizeMainSelect, 'suffix', {
+            size: 'main',
+            placeholder: 'Placeholder',
+          })}
         />
       </section>
 
@@ -487,14 +492,10 @@ export const SelectInput = () => {
           Size Sub
         </Typography>
         <Input
-          variant="select"
-          size="sub"
-          placeholder="Placeholder"
-          selectButton={{
-            position: 'suffix',
-            value: '.com',
-            onClick: () => {},
-          }}
+          {...createSelectProps(sizeSubValue, handleSizeSubSelect, 'suffix', {
+            size: 'sub',
+            placeholder: 'Placeholder',
+          })}
         />
       </section>
     </div>
