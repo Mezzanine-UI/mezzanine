@@ -24,10 +24,12 @@ export const StandardType: Story = {
         children: '儲存草稿',
       },
     },
-    annotation: '查看發佈紀錄',
-    onAnnotationClick: () => {
-      alert('Annotation button clicked!');
+    supportingActionName: '查看發佈紀錄',
+    supportingActionOnClick: () => {
+      alert('Supporting action clicked!');
     },
+    supportingActionType: 'button',
+    supportingActionVariant: 'base-ghost',
   },
 };
 
@@ -42,10 +44,16 @@ export const OverflowType: Story = {
         children: '儲存草稿',
       },
     },
-    /** @TODO dropdown replacement */
-    annotation: DotVerticalIcon,
-    onAnnotationClick: () => {
-      alert('Overflow button clicked!');
+    supportingActionIcon: DotVerticalIcon,
+    dropdownProps: {
+      options: [
+        {
+          id: '1',
+          name: 'Option 1',
+        },
+      ],
+      onSelect: () => {},
+      placement: 'bottom',
     },
   },
 };
@@ -76,7 +84,8 @@ export const WithWarningMessage: Story = {
         children: '儲存草稿',
       },
     },
-    annotation: '查看發佈紀錄',
+    supportingActionName: '查看發佈紀錄',
+    supportingActionType: 'button',
     annotationClassName: 'foo',
     warningMessage: '部分內容未通過驗證，請調整後重試',
   },
@@ -95,7 +104,8 @@ export const LoadingState: Story = {
         disabled: true,
       },
     },
-    annotation: '查看說明',
+    supportingActionName: '查看說明',
+    supportingActionType: 'button',
     warningMessage: 'Please wait while we save your changes',
   },
 };

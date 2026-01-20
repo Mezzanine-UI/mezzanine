@@ -5,6 +5,8 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import type { ButtonProps } from '../Button';
 import Button, { ButtonGroup } from '../Button';
 import Typography from '../Typography';
+import Dropdown, { DropdownProps } from '../Dropdown';
+import { DotVerticalIcon } from '@mezzanine-ui/icons';
 
 /**
  * Single button configuration - only primary button is allowed
@@ -52,14 +54,23 @@ type PageFooterStandardProps = PageFooterBaseProps & {
    */
   type?: 'standard';
   /**
-   * Standard type: A ghost button with text.
-   * Children of the button.
+   * The text/label (children) for the supporting action button in the PageFooter annotation.
    */
-  annotation?: string;
+  supportingActionName?: ButtonProps['children'];
   /**
-   * Standard type: Button click handler.
+   * The HTML button type for the supporting action (e.g., 'button', 'submit', 'reset').
    */
-  onAnnotationClick?: ButtonProps['onClick'];
+  supportingActionType?: ButtonProps['type'];
+  /**
+   * Click handler for the supporting action button in the PageFooter annotation.
+   */
+  supportingActionOnClick?: ButtonProps['onClick'];
+  /**
+   * Visual style variant of the supporting action button in the PageFooter
+   * (for example, 'base-ghost', 'base-secondary').
+   * @default 'base-ghost'
+   */
+  supportingActionVariant?: ButtonProps['variant'];
 };
 
 type PageFooterOverflowProps = PageFooterBaseProps & {
@@ -69,13 +80,13 @@ type PageFooterOverflowProps = PageFooterBaseProps & {
   type: 'overflow';
   /**
    * Overflow type: Icon for the icon-only button.
-   * @TODO Consider Dropdown integration after Dropdown redesign.
+   * @default DotVerticalIcon
    */
-  annotation?: ButtonProps['icon'];
+  supportingActionIcon?: ButtonProps['icon'];
   /**
-   * Overflow type: Button click handler.
+   * Dropdown props for the supporting action button.
    */
-  onAnnotationClick?: ButtonProps['onClick'];
+  dropdownProps: Partial<DropdownProps>;
 };
 
 type PageFooterInformationProps = PageFooterBaseProps & {
@@ -98,7 +109,6 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
   function PageFooter(props, ref) {
     const {
       actions,
-      annotation,
       annotationClassName,
       className,
       type = 'standard',
@@ -116,43 +126,52 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
 
     // Render annotation based on type
     const renderAnnotation = () => {
-      if (!annotation) return null;
-
       switch (type) {
         case 'standard': {
+          const {
+            supportingActionName,
+            supportingActionType,
+            supportingActionOnClick,
+            supportingActionVariant = 'base-ghost',
+          } = props as PageFooterStandardProps;
+
           return (
             <Button
-              onClick={
-                'onAnnotationClick' in props
-                  ? props.onAnnotationClick
-                  : undefined
-              }
               size="main"
-              variant="base-ghost"
+              type={supportingActionType}
+              onClick={supportingActionOnClick}
+              variant={supportingActionVariant}
             >
-              {annotation as string}
+              {supportingActionName}
             </Button>
           );
         }
 
         case 'overflow': {
-          // @TODO Consider Dropdown integration after Dropdown redesign
+          const { supportingActionIcon, dropdownProps } =
+            props as PageFooterOverflowProps;
+
           return (
-            <Button
-              iconType="icon-only"
-              icon={annotation as ButtonProps['icon']}
-              onClick={
-                'onAnnotationClick' in props
-                  ? props.onAnnotationClick
-                  : undefined
-              }
-              size="main"
-              variant="base-ghost"
-            />
+            <Dropdown
+              {...dropdownProps}
+              options={dropdownProps.options || []}
+              placement={dropdownProps.placement || 'top'}
+            >
+              <Button
+                type="button"
+                iconType="icon-only"
+                icon={supportingActionIcon || DotVerticalIcon}
+                size="main"
+                variant="base-ghost"
+              />
+            </Dropdown>
           );
         }
 
         case 'information': {
+          const { annotation } = props as PageFooterInformationProps;
+          if (!annotation) return null;
+
           return (
             <Typography color="text-neutral" variant="caption">
               {annotation as string}
