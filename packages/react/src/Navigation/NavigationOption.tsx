@@ -1,7 +1,9 @@
 'use client';
 
 import {
+  Children,
   forwardRef,
+  isValidElement,
   ReactElement,
   use,
   useEffect,
@@ -11,6 +13,7 @@ import {
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
 import {
   ChevronDownIcon,
+  ChevronRightIcon,
   ChevronUpIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';
@@ -23,8 +26,15 @@ import {
 } from './context';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Tooltip from '../Tooltip';
+import { flattenChildren } from '../utils/flatten-children';
+import Badge, { BadgeProps } from '../Badge';
 
-export type NavigationOptionChild = ReactElement<NavigationOptionProps>;
+export type NavigationOptionChild =
+  | ReactElement<NavigationOptionProps>
+  | ReactElement<BadgeProps>
+  | false
+  | null
+  | undefined;
 
 export type NavigationOptionChildren =
   | NavigationOptionChild
@@ -99,11 +109,44 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     useEffect(() => {
       if (currentPathname === href) {
         setActivatedPath(currentPath);
+        setOpen(true);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const Component = href ? 'a' : 'div';
+
+    const flattenedChildren = useMemo(
+      () => flattenChildren(children) as NavigationOptionChildren,
+      [children],
+    );
+
+    const { badge, items } = useMemo(() => {
+      let badgeComponent: ReactElement<BadgeProps> | null = null;
+
+      const items: ReactElement<NavigationOptionProps>[] = [];
+
+      Children.forEach(flattenedChildren, (child: NavigationOptionChildren) => {
+        if (child && isValidElement(child)) {
+          switch (child.type) {
+            case Badge: {
+              badgeComponent = child as ReactElement<BadgeProps>;
+              break;
+            }
+            case NavigationOption: {
+              items.push(child as ReactElement<NavigationOptionProps>);
+              break;
+            }
+            default:
+              console.warn(
+                '[Mezzanine][NavigationOption]: NavigationOption only accepts NavigationOption or Badge as children.',
+              );
+          }
+        }
+      });
+
+      return { badge: badgeComponent, items };
+    }, [flattenedChildren]);
 
     return (
       <li
@@ -156,6 +199,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
               <span className={classes.title}>{title}</span>
+              {badge}
               {children && (
                 <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
               )}
@@ -176,7 +220,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                 path: currentPath,
               }}
             >
-              <ul className={classes.group}>{children}</ul>
+              <ul className={classes.group}>{items}</ul>
             </NavigationOptionLevelContext.Provider>
           </Collapse>
         )}

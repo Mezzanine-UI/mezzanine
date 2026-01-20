@@ -34,6 +34,9 @@ const NavigationOptionCategory = forwardRef<
           }
 
           default:
+            console.warn(
+              '[Mezzanine][NavigationOptionCategory]: NavigationOptionCategory only accepts NavigationOption as children.',
+            );
             return null;
         }
       }
