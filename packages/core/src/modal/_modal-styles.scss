@@ -1,113 +1,76 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/breakpoint';
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
-@use '~@mezzanine-ui/system/typography';
-@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/breakpoint' as breakpoint;
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/z-index' as z-index;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/effect' as effect;
 @use '../button';
 @use './modal' as *;
 
-$window-gap: 24px !default;
-$padding-x: 32px !default;
-$padding-y: 16px !default;
-$close-icon-size: 24px !default;
-$title-gap: 4px !default;
-$severity-icon-size: 32px !default;
-$action-min-width: 100px !default;
+// ModalStatusType - keep this list in sync with TypeScript type ModalStatusType
+$modalStatusTypes: (
+  'info',
+  'success',
+  'warning',
+  'error',
+  'email',
+  'delete',
+);
 
-$sm-md-width-small: 552px !default;
-$sm-md-width-medium: 552px !default;
-$sm-md-width-large: 576px !default;
-$sm-md-width-extra-large: 576px !default;
-
-$md-lg-width-small: 368px !default;
-$md-lg-width-medium: 460px !default;
-$md-lg-width-large: 648px !default;
-$md-lg-width-extra-large: 736px !default;
-
-$lg-xl-width-small: 320px !default;
-$lg-xl-width-medium: 480px !default;
-$lg-xl-width-large: 716px !default;
-$lg-xl-width-extra-large: 936px !default;
-
-$xl-width-small: 384px !default;
-$xl-width-medium: 576px !default;
-$xl-width-large: 864px !default;
-$xl-width-extra-large: 1104px !default;
-
-$width-map: (
-  (
-    from: sm,
-    to: md,
-    values: (
-      small: $sm-md-width-small,
-      medium: $sm-md-width-medium,
-      large: $sm-md-width-large,
-      extra-large: $sm-md-width-extra-large,
-    ),
-  ),
-  (
-    from: md,
-    to: lg,
-    values: (
-      small: $md-lg-width-small,
-      medium: $md-lg-width-medium,
-      large: $md-lg-width-large,
-      extra-large: $md-lg-width-extra-large,
-    ),
-  ),
-  (
-    from: lg,
-    to: xl,
-    values: (
-      small: $lg-xl-width-small,
-      medium: $lg-xl-width-medium,
-      large: $lg-xl-width-large,
-      extra-large: $lg-xl-width-extra-large,
-    ),
-  ),
-  (
-    from: xl,
-    values: (
-      small: $xl-width-small,
-      medium: $xl-width-medium,
-      large: $xl-width-large,
-      extra-large: $xl-width-extra-large,
-    ),
-  )
+// ModalSize - keep this list in sync with TypeScript type ModalSize
+$modalSizes: (
+  'tight',
+  'narrow',
+  'regular',
+  'wide',
 );
 
 @mixin _full-screen() {
   position: absolute;
-  inset: 0;
   width: 100%;
+  min-height: 100%;
+  inset: 0;
+  transform: none;
 }
 
-@mixin _not-full-screen-width-on-breakpoint() {
-  @each $config in $width-map {
-    $from: map.get($config, from);
-    $to: map.get($config, to);
-    $values: map.get($config, values);
+.#{$prefix} {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  background-color: palette.semantic-variable("background", base);
+  box-sizing: border-box;
+  box-shadow: effect.variable(shadow, modal);
+  border-radius: radius.variable(roomy);
 
-    @include breakpoint.between($from, $to) {
-      @each $size in $sizes {
-        &--#{$size} {
-          width: map.get($values, $size);
+  // each size variant
+  @each $size in $modalSizes {
+    &--#{$size} {
+      @if $size == 'tight' {
+        width: spacing.semantic-variable(size, container, narrow);
+      } @else if $size == 'narrow' {
+        width: spacing.semantic-variable(size, container, balanced);
+        max-height: spacing.semantic-variable(size, container, wide);
+      } @else if $size == 'regular' {
+        width: spacing.semantic-variable(size, container, wide);
+        max-height: spacing.semantic-variable(size, container, expanded);
+      } @else if $size == 'wide' {
+        width: max-content;
+        max-width: calc(100% - spacing.semantic-variable(padding, horizontal, spacious) * 2);
+        max-height: spacing.semantic-variable(size, container, expanded);
+
+        .#{$prefix}__body-container {
+          padding-top: spacing.semantic-variable(padding, vertical, spacious);
+          padding-bottom: spacing.semantic-variable(padding, vertical, spacious);
         }
       }
     }
   }
-}
-
-.#{$prefix} {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  background-color: palette.color(surface);
-  box-sizing: border-box;
-
-  @include typography.variant(body1);
-  @include _not-full-screen-width-on-breakpoint();
 
   @include breakpoint.below(sm) {
     @include _full-screen();
@@ -117,15 +80,10 @@ $width-map: (
     @include _full-screen();
   }
 
-  &:not(.#{$prefix}--full-screen) {
-    @include breakpoint.above(sm) {
-      margin: $window-gap;
-      max-height: calc(100% - #{$window-gap} * 2);
-    }
-  }
-
   &__overlay {
     display: flex;
+    width: 100%;
+    height: 100%;
     justify-content: center;
     align-items: center;
     z-index: z-index.get(modal);
@@ -133,87 +91,256 @@ $width-map: (
 
   &__close-icon {
     position: absolute;
-    top: $padding-y;
-    right: $padding-x;
-    font-size: typography.px-to-rem($close-icon-size);
-    color: palette.color(action-inactive);
-    transition: transition.standard(color);
-    will-change: color;
+    right: 12px;
+    top: 12px;
     cursor: pointer;
-    box-sizing: border-box;
-
-    &:hover {
-      color: palette.color(action-active);
-    }
   }
 
   &__header {
-    display: flex;
-    align-items: center;
-    flex: 0 0;
-    padding: $padding-y $padding-x $padding-y - 1px $padding-x;
-    border-bottom: 1px solid palette.color(border);
-    box-sizing: border-box;
+    padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
 
-    @include breakpoint.below(xl) {
-      .#{$prefix}--close-icon & {
-        padding-right: $close-icon-size + $title-gap + $padding-x;
+    &--show-modal-status-type-icon {
+      padding: spacing.semantic-variable(padding, vertical, generous) spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+
+    &--horizontal {
+      display: flex;
+      flex-direction: row;
+      align-items: start;
+      gap: spacing.semantic-variable(gap, calm);
+
+      .#{$prefix}__header__title-supporting-text-container {
+        gap: spacing.semantic-variable(gap, slim);
+      }
+
+      .#{$prefix}__header__title {
+        padding-top: spacing.semantic-variable(gap, tight);
+        padding-bottom: spacing.semantic-variable(gap, tight);
+      }
+
+    }
+
+    &--vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: start;
+      gap: spacing.semantic-variable(gap, calm);
+    }
+
+    &--title-align-left {
+      align-items: flex-start;
+    }
+
+    &--title-align-center {
+      align-items: center;
+
+      .#{$prefix}__header__title {
+        text-align: center;
       }
     }
 
-    @include breakpoint.above(xl) {
-      padding-right: 24%;
+    &__status-type-icon {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      justify-content: center;
+      border-radius: radius.variable(full);
     }
-  }
 
-  &__severity-icon {
-    font-size: typography.px-to-rem($severity-icon-size);
-    color: palette.color(primary);
-    margin-right: $title-gap;
+    &__title-supporting-text-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: spacing.semantic-variable(gap, tight);
+    }
 
-    @each $severity in $severities {
-      .#{$prefix}--#{$severity} & {
-        color: palette.color($severity);
+    &__title {
+      width: 100%;
+      margin: 0;
+    }
+
+    &__supporting-text {
+      width: 100%;
+      margin: 0;
+
+      &--align-left {
+        text-align: left;
+      }
+
+      &--align-center {
+        text-align: center;
       }
     }
   }
 
-  &__title {
-    margin: 0;
-
-    @include typography.overflow-ellipsis();
-    @include typography.variant(h3);
-
-    &--large {
-      @include typography.variant(h1);
-    }
-  }
-
-  &__body {
-    flex: 1 1 auto;
-    padding: $padding-y $padding-x;
+  &__body-container {
+    padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
     overflow-y: auto;
     box-sizing: border-box;
 
-    &:not(:last-child) {
-      padding-bottom: $padding-y + $padding-x;
+    &__extended-split {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    &__extended-split-right {
+      width: max-content;
+      flex-grow: 1;
+      padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+
+    &__extended-split-left {
+      width: fit-content;
+      min-width: spacing.semantic-variable(size, container, narrow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    &__extended-split-left__content {
+      padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+  }
+
+  &__body-verification {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+
+    &__inputs {
+      display: flex;
+      gap: spacing.semantic-variable(gap, base);
+    }
+
+    &__input {
+      display: flex;
+      width: spacing.semantic-variable(size, element, wide-expanded);
+      height: spacing.semantic-variable(size, element, wide-expanded);
+      padding: 0;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+
+      @include typography.semantic-variable(h1);
+
+      color: palette.semantic-variable(text, brand);
+      background-color: palette.semantic-variable('background', base);
+      border: 1px solid palette.semantic-variable(border, neutral-light);
+      border-radius: radius.variable(base);
+      outline: none;
+      transition: border-color 0.2s, color 0.2s, background-color 0.2s;
+
+      &:focus {
+        border-color: palette.semantic-variable(border, neutral-light);
+        box-shadow: 0 0 0 1px palette.semantic-variable('background', base), 0 0 0 2px palette.semantic-variable('background', brand);
+      }
+
+      &:hover:not(:focus, :disabled, [readonly]) {
+        color: palette.semantic-variable(text, neutral-light);
+        border-color: palette.semantic-variable(border, brand);
+      }
+
+      &:not(:placeholder-shown) {
+        color: palette.semantic-variable(text, brand);
+        border-color: palette.semantic-variable(border, brand);
+      }
+
+      &:disabled {
+        color: palette.semantic-variable(text, neutral-light);
+        background-color: palette.semantic-variable('background', neutral-subtle);
+        border-color: palette.semantic-variable(border, neutral-light);
+        cursor: not-allowed;
+      }
+
+      &[readonly] {
+        color: palette.semantic-variable(text, neutral-solid);
+        background-color: palette.semantic-variable('background', neutral-subtle);
+        border-color: palette.semantic-variable(border, neutral-light);
+        cursor: default;
+      }
+
+      &--error {
+        color: palette.semantic-variable(text, error);
+        border-color: palette.semantic-variable(border, error);
+      }
+    }
+
+    &__resend {
+      display: flex;
+      gap: spacing.semantic-variable(gap, tight);
+      align-items: center;
+    }
+
+    &__resend-link {
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 
   &__footer {
     display: flex;
-    align-items: center;
-    flex: 0 0;
-    padding: $padding-y - 1px $padding-x $padding-y $padding-x;
-    border-top: 1px solid palette.color(border);
-    box-sizing: border-box;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed) spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
+
+    &--password-mode {
+      flex-direction: column;
+      align-items: stretch;
+      gap: spacing.semantic-variable(gap, base);
+    }
+
+    &--with-auxiliary-content {
+      justify-content: space-between;
+    }
+
+    &__password-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-bottom: spacing.semantic-variable(padding, vertical, tight);
+    }
+
+    &__auxiliary-content-container {
+      display: flex;
+      align-items: center;
+    }
+
+    &__actions-button-container {
+      display: flex;
+      justify-content: flex-end;
+      gap: spacing.semantic-variable(gap, base);
+
+      &--fill-layout {
+        flex-grow: 1;
+        .#{$prefix}__footer__actions-button {
+          flex-grow: 1;
+        }
+      }
+    }
   }
 
-  &__actions {
-    margin-left: auto;
-
-    .#{button.$prefix} {
-      min-width: $action-min-width;
+  @each $status-type in $modalStatusTypes {
+    &--#{$status-type} {
+      .#{$prefix}__header {
+        &__status-type-icon {
+          @if $status-type == 'info' {
+            background-color: palette.semantic-variable("background", info-faint);
+          } @else if $status-type == 'success' {
+            background-color: palette.semantic-variable("background", success-faint);
+          } @else if $status-type == 'warning' {
+            background-color: palette.semantic-variable("background", warning-faint);
+          } @else if $status-type == 'error' {
+            background-color: palette.semantic-variable("background", error-faint);
+          } @else if $status-type == 'email' {
+            background-color: palette.semantic-variable("background", info-faint);
+          } @else if $status-type == 'delete' {
+            background-color: palette.semantic-variable("background", error-faint);
+          }
+        }
+      }
     }
   }
 }

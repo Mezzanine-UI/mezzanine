@@ -132,6 +132,7 @@ export { BookmarkAddedIcon } from './content/bookmark-added';
 export { ImageIcon } from './content/image';
 export { BoxIcon } from './content/box';
 export { CodeIcon } from './content/code';
+export { MailIcon } from './content/mail';
 
 /**
  * Stepper Icons

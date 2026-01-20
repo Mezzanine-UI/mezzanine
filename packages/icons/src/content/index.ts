@@ -22,3 +22,4 @@ export { BookmarkAddedIcon } from './bookmark-added';
 export { ImageIcon } from './image';
 export { BoxIcon } from './box';
 export { CodeIcon } from './code';
+export { MailIcon } from './mail';

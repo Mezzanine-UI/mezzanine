@@ -1,45 +1,70 @@
 import {
-  CheckCircleFilledIcon,
-  ExclamationCircleFilledIcon,
-  InfoCircleFilledIcon,
-  TimesCircleFilledIcon,
+  CheckedOutlineIcon,
+  ErrorOutlineIcon,
+  InfoOutlineIcon,
+  MailIcon,
+  TrashIcon,
+  WarningOutlineIcon,
 } from '@mezzanine-ui/icons';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
-import { Size } from '@mezzanine-ui/system/size';
 
-export type ModalSeverity = SeverityWithInfo;
+export type ModalStatusType = SeverityWithInfo | 'email' | 'delete';
 
-export type ModalSize = Size | 'extraLarge';
+export type ModalSize = 'tight' | 'narrow' | 'regular' | 'wide';
+
+export type ModalType =
+  | 'extended'
+  | 'extendedSplit'
+  | 'standard'
+  | 'mediaPreview'
+  | 'verification';
 
 export const modalPrefix = 'mzn-modal';
 
-export const modalSeverityIcons = {
-  success: CheckCircleFilledIcon,
-  warning: ExclamationCircleFilledIcon,
-  error: TimesCircleFilledIcon,
-  info: InfoCircleFilledIcon,
+export const modalStatusTypeIcons = {
+  success: CheckedOutlineIcon,
+  warning: WarningOutlineIcon,
+  error: ErrorOutlineIcon,
+  info: InfoOutlineIcon,
+  email: MailIcon,
+  delete: TrashIcon,
 } as const;
 
 export const modalClasses = {
   host: modalPrefix,
   overlay: `${modalPrefix}__overlay`,
   closeIcon: `${modalPrefix}__close-icon`,
-  severity: (severity: ModalSeverity) => `${modalPrefix}--${severity}`,
-  size: (size: ModalSize) => `${modalPrefix}--${size === 'extraLarge' ? 'extra-large' : size}`,
+  modalStatusType: (severity: ModalStatusType) => `${modalPrefix}--${severity}`,
+  size: (size: ModalSize) => `${modalPrefix}--${size}`,
   fullScreen: `${modalPrefix}--full-screen`,
   withCloseIcon: `${modalPrefix}--close-icon`,
 
   /** Header */
-  header: `${modalPrefix}__header`,
-  severityIcon: `${modalPrefix}__severity-icon`,
-  title: `${modalPrefix}__title`,
-  titleLarge: `${modalPrefix}__title--large`,
+  modalHeader: `${modalPrefix}__header`,
+  modalHeaderStatusTypeIcon: `${modalPrefix}__header__status-type-icon`,
+  modalHeaderTitleAndSupportingTextContainer: `${modalPrefix}__header__title-supporting-text-container`,
+  modalHeaderTitle: `${modalPrefix}__header__title`,
+  modalHeaderSupportingText: `${modalPrefix}__header__supporting-text`,
 
   /** Body */
-  body: `${modalPrefix}__body`,
+  modalBodyContainer: `${modalPrefix}__body-container`,
+  modalBodyContainerExtendedSplit: `${modalPrefix}__body-container__extended-split`,
+  modalBodyContainerExtendedSplitRight: `${modalPrefix}__body-container__extended-split-right`,
+  modalBodyContainerExtendedSplitLeft: `${modalPrefix}__body-container__extended-split-left`,
+  modalBodyContainerExtendedSplitLeftSideContent: `${modalPrefix}__body-container__extended-split-left__content`,
 
   /** Footer */
-  footer: `${modalPrefix}__footer`,
-  actions: `${modalPrefix}__actions`,
-} as const;
+  modalFooter: `${modalPrefix}__footer`,
+  modalFooterPasswordContainer: `${modalPrefix}__footer__password-container`,
+  modalFooterAuxiliaryContentContainer: `${modalPrefix}__footer__auxiliary-content-container`,
+  modalFooterActionsButtonContainer: `${modalPrefix}__footer__actions-button-container`,
+  modalFooterActionsButton: `${modalPrefix}__footer__actions-button`,
 
+  /** Body Verification */
+  modalBodyVerification: `${modalPrefix}__body-verification`,
+  modalBodyVerificationInputs: `${modalPrefix}__body-verification__inputs`,
+  modalBodyVerificationInput: `${modalPrefix}__body-verification__input`,
+  modalBodyVerificationInputError: `${modalPrefix}__body-verification__input--error`,
+  modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,
+  modalBodyVerificationResendLink: `${modalPrefix}__body-verification__resend-link`,
+} as const;
