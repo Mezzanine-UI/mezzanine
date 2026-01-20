@@ -1,85 +1,302 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import { act, cleanup, fireEvent, render } from '../../__test-utils__';
-import {
-  describeForwardRefToHTMLElement,
-  describeHostElementClassNameAppendable,
-} from '../../__test-utils__/common';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Navigation from './Navigation';
 import NavigationOption from './NavigationOption';
+import NavigationOptionCategory from './NavigationOptionCategory';
 
-describe('<NavigationSubMenu />', () => {
+// Mock ResizeObserver
+class ResizeObserverMock {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+global.ResizeObserver = ResizeObserverMock as unknown as typeof ResizeObserver;
+
+describe('<NavigationOption />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
-    render(<NavigationOption ref={ref} />),
+    render(
+      <Navigation>
+        <NavigationOption ref={ref} title="Option" icon={PlusIcon} />
+      </Navigation>,
+    ),
   );
 
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(<NavigationOption className={className} />),
-  );
-
-  it('should bind host class', () => {
-    const { getHostHTMLElement } = render(<NavigationOption />);
-    const element = getHostHTMLElement();
-
-    expect(element.classList.contains('mzn-navigation-sub-menu')).toBeTruthy();
-  });
-
-  describe('click on item open subMenu', () => {
-    it('should open subMenu', () => {
+  describe('className', () => {
+    it('should append class name on host element', () => {
       const { getHostHTMLElement } = render(
-        <Navigation orientation="vertical">
-          <NavigationOption active />
+        <Navigation>
+          <NavigationOption className="foo" title="Option" icon={PlusIcon} />
         </Navigation>,
       );
-      const element = getHostHTMLElement();
-
-      const subMenuElement = element.querySelector('.mzn-navigation-sub-menu');
-
-      act(() => {
-        fireEvent.click(subMenuElement!);
-      });
-
-      const subMenuGroupElement = subMenuElement?.querySelector(
-        '.mzn-navigation-sub-menu__group',
+      const option = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option',
       );
 
-      expect(subMenuGroupElement).toBeTruthy();
+      expect(option?.classList.contains('foo')).toBeTruthy();
     });
   });
 
-  describe('prop: active', () => {
-    it('should bind active class', () => {
-      const { getHostHTMLElement } = render(<NavigationOption active />);
-      const element = getHostHTMLElement();
+  it('should bind host class', () => {
+    const { getHostHTMLElement } = render(
+      <Navigation>
+        <NavigationOption title="Option" icon={PlusIcon} />
+      </Navigation>,
+    );
+    const element = getHostHTMLElement();
+    const option = element.querySelector('.mzn-navigation-option');
 
-      expect(element.classList).toContain('mzn-navigation-sub-menu--active');
-    });
-  });
-
-  describe('prop: icon', () => {
-    it('should render suffix icon', () => {
-      const { getHostHTMLElement } = render(
-        <NavigationOption icon={PlusIcon} />,
-      );
-      const element = getHostHTMLElement();
-      const { firstElementChild: titleElement } = element;
-      const { firstElementChild: iconElement } = titleElement!;
-
-      expect(iconElement?.tagName.toLowerCase()).toBe('i');
-    });
+    expect(option).toBeTruthy();
   });
 
   describe('prop: title', () => {
     it('should render title', () => {
-      const subMenuTitle = 'foo';
       const { getHostHTMLElement } = render(
-        <NavigationOption title={subMenuTitle} icon={PlusIcon} />,
+        <Navigation>
+          <NavigationOption title="My Title" icon={PlusIcon} />
+        </Navigation>,
       );
       const element = getHostHTMLElement();
-      const { firstElementChild: titleElement } = element;
+      const title = element.querySelector('.mzn-navigation-option__title');
 
-      expect(titleElement?.textContent).toBe(subMenuTitle);
+      expect(title?.textContent).toBe('My Title');
+    });
+  });
+
+  describe('prop: icon', () => {
+    it('should render icon', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Option" icon={PlusIcon} />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const icon = element.querySelector('.mzn-navigation-option__icon');
+
+      expect(icon?.tagName.toLowerCase()).toBe('i');
+    });
+  });
+
+  describe('prop: href', () => {
+    it('should render as anchor when href is provided', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Option" icon={PlusIcon} href="/test" />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const content = element.querySelector('.mzn-navigation-option__content');
+
+      expect(content?.tagName.toLowerCase()).toBe('a');
+      expect(content?.getAttribute('href')).toBe('/test');
+    });
+  });
+
+  describe('prop: active', () => {
+    it('should apply active class when active is true', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption active title="Option" icon={PlusIcon} />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const option = element.querySelector('.mzn-navigation-option');
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--active'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: children (nested options)', () => {
+    it('should render toggle icon when has children', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Parent" icon={PlusIcon}>
+            <NavigationOption title="Child" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const toggleIcon = element.querySelector(
+        '.mzn-navigation-option__toggle-icon',
+      );
+
+      expect(toggleIcon).toBeTruthy();
+    });
+
+    it('should toggle children visibility on click', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Parent" icon={PlusIcon}>
+            <NavigationOption title="Child" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const content = element.querySelector('.mzn-navigation-option__content');
+
+      // Initially closed
+      let group = element.querySelector('.mzn-navigation-option__group');
+
+      expect(group).toBeFalsy();
+
+      // Click to open
+      fireEvent.click(content!);
+
+      group = element.querySelector('.mzn-navigation-option__group');
+
+      expect(group).toBeTruthy();
+    });
+
+    it('should apply basic class when no children', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Option" icon={PlusIcon} />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const option = element.querySelector('.mzn-navigation-option');
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--basic'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: defaultOpen', () => {
+    it('should be open by default when defaultOpen is true', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption defaultOpen title="Parent" icon={PlusIcon}>
+            <NavigationOption title="Child" icon={PlusIcon} />
+          </NavigationOption>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const option = element.querySelector('.mzn-navigation-option');
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--open'),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('prop: onTriggerClick', () => {
+    it('should call onTriggerClick when clicked', () => {
+      const onTriggerClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption
+            icon={PlusIcon}
+            onTriggerClick={onTriggerClick}
+            title="Option"
+          />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const content = element.querySelector('.mzn-navigation-option__content');
+
+      fireEvent.click(content!);
+
+      expect(onTriggerClick).toHaveBeenCalled();
+    });
+  });
+});
+
+describe('<NavigationOptionCategory />', () => {
+  afterEach(cleanup);
+
+  describeForwardRefToHTMLElement(HTMLLIElement, (ref) =>
+    render(
+      <Navigation>
+        <NavigationOptionCategory ref={ref} title="Category" />
+      </Navigation>,
+    ),
+  );
+
+  describe('className', () => {
+    it('should append class name on host element', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory className="foo" title="Category" />
+        </Navigation>,
+      );
+      const category = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option-category',
+      );
+
+      expect(category?.classList.contains('foo')).toBeTruthy();
+    });
+  });
+
+  it('should bind host class', () => {
+    const { getHostHTMLElement } = render(
+      <Navigation>
+        <NavigationOptionCategory title="Category" />
+      </Navigation>,
+    );
+    const element = getHostHTMLElement();
+    const category = element.querySelector('.mzn-navigation-option-category');
+
+    expect(category).toBeTruthy();
+  });
+
+  describe('prop: title', () => {
+    it('should render title', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="My Category" />
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const title = element.querySelector(
+        '.mzn-navigation-option-category__title',
+      );
+
+      expect(title?.textContent).toBe('My Category');
+    });
+  });
+
+  describe('prop: children', () => {
+    it('should render NavigationOption children', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option 1" icon={PlusIcon} />
+            <NavigationOption title="Option 2" icon={PlusIcon} />
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const options = element.querySelectorAll('.mzn-navigation-option');
+
+      expect(options.length).toBe(2);
+    });
+
+    it('should only render NavigationOption children', () => {
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(() => {});
+
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOptionCategory title="Category">
+            <NavigationOption title="Option" icon={PlusIcon} />
+            <div data-testid="invalid">Invalid</div>
+          </NavigationOptionCategory>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const invalid = element.querySelector('[data-testid="invalid"]');
+
+      expect(invalid).toBeFalsy();
+      expect(consoleWarnSpy).toHaveBeenCalled();
+
+      consoleWarnSpy.mockRestore();
     });
   });
 });
