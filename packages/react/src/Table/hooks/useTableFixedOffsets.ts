@@ -129,12 +129,12 @@ export function useTableFixedOffsets(
     const startKeys: string[] = [];
     const endKeys: string[] = [];
 
-    if ((hasDragHandle && dragHandleFixed) || parentHasDragHandleFixed) {
-      startKeys.push(DRAG_HANDLE_KEY);
-    }
-
     if (hasExpansion && expansionFixed) {
       startKeys.push(EXPANSION_KEY);
+    }
+
+    if ((hasDragHandle && dragHandleFixed) || parentHasDragHandleFixed) {
+      startKeys.push(DRAG_HANDLE_KEY);
     }
 
     if (hasSelection && selectionFixed) {
@@ -196,12 +196,12 @@ export function useTableFixedOffsets(
   const allColumnKeys = useMemo(() => {
     const keys: string[] = [];
 
-    if (hasDragHandle) {
-      keys.push(DRAG_HANDLE_KEY);
-    }
-
     if (hasExpansion) {
       keys.push(EXPANSION_KEY);
+    }
+
+    if (hasDragHandle) {
+      keys.push(DRAG_HANDLE_KEY);
     }
 
     if (hasSelection) {

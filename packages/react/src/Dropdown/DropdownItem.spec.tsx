@@ -1,8 +1,8 @@
+import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DropdownItem from './DropdownItem';
-import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 
 describe('DropdownItem', () => {
   const mockOptions: DropdownOption[] = [
@@ -100,10 +100,10 @@ describe('DropdownItem', () => {
   });
 
   describe('multiple mode', () => {
-    it('should render checkboxes in multiple mode with checkSite prepend', () => {
+    it('should render checkboxes in multiple mode with checkSite suffix', () => {
       const optionsWithCheckbox: DropdownOption[] = [
-        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'prepend' },
-        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'prepend' },
+        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'suffix' },
+        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'suffix' },
       ];
       render(
         <DropdownItem
@@ -119,8 +119,8 @@ describe('DropdownItem', () => {
 
     it('should mark selected options as checked', () => {
       const optionsWithCheckbox: DropdownOption[] = [
-        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'prepend' },
-        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'prepend' },
+        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'suffix' },
+        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'suffix' },
       ];
       render(
         <DropdownItem

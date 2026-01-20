@@ -26,7 +26,11 @@ import Toggle from '../Toggle';
 import Input from '../Input';
 import Icon from '../Icon';
 import Slider from '../Slider';
-import { Description, DescriptionGroup } from '../Description';
+import {
+  Description,
+  DescriptionContent,
+  DescriptionGroup,
+} from '../Description';
 
 interface DataType extends TableDataSourceWithKey {
   age: number;
@@ -821,24 +825,16 @@ export const WithExpansion: Story = {
             expandedRowRender: () => (
               <div style={{ padding: '6px 12px' }}>
                 <DescriptionGroup>
-                  <Description
-                    titleProps={{
-                      children: 'Date Created At',
-                      widthType: 'wide',
-                    }}
-                    contentProps={{
-                      children: 'Tue, 03 Aug 2021 14:22:18 GMT',
-                    }}
-                  />
-                  <Description
-                    titleProps={{
-                      children: 'Data Updated At',
-                      widthType: 'wide',
-                    }}
-                    contentProps={{
-                      children: 'Tue, 05 Aug 2025 11:22:18 GMT',
-                    }}
-                  />
+                  <Description title="Date Created At" widthType="wide">
+                    <DescriptionContent>
+                      Tue, 03 Aug 2021 14:22:18 GMT
+                    </DescriptionContent>
+                  </Description>
+                  <Description title="Data Updated At" widthType="wide">
+                    <DescriptionContent>
+                      Tue, 05 Aug 2025 11:22:18 GMT
+                    </DescriptionContent>
+                  </Description>
                 </DescriptionGroup>
               </div>
             ),
@@ -1336,18 +1332,14 @@ export const Combined: Story = {
             render: (record) => [
               {
                 name: 'Edit',
-                icon: {
-                  position: 'leading',
-                  src: EditIcon,
-                },
+                icon: EditIcon,
+                iconType: 'leading',
                 onClick: () => {},
               },
               {
                 name: 'Delete',
-                icon: {
-                  position: 'leading',
-                  src: TrashIcon,
-                },
+                icon: TrashIcon,
+                iconType: 'leading',
                 variant: 'destructive-primary',
                 onClick: () => handleDelete(record),
               },
@@ -1366,18 +1358,14 @@ export const Combined: Story = {
                   render: (subRecord) => [
                     {
                       name: 'Edit',
-                      icon: {
-                        position: 'leading',
-                        src: EditIcon,
-                      },
+                      icon: EditIcon,
+                      iconType: 'leading',
                       onClick: () => {},
                     },
                     {
                       name: 'Delete',
-                      icon: {
-                        position: 'leading',
-                        src: TrashIcon,
-                      },
+                      icon: TrashIcon,
+                      iconType: 'leading',
                       variant: 'destructive-primary',
                       onClick: () => handleDelete(subRecord),
                     },

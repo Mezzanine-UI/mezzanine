@@ -159,7 +159,7 @@ const TableActionsCellInner = forwardRef<
               <Button
                 disabled={isDisabled}
                 icon={item.icon}
-                key={`${item.name || 'name'}-${item.icon?.src?.name || 'icon'}-${rowIndex}`}
+                key={`${item.name || 'name'}-${item.icon?.name || 'icon'}-${rowIndex}`}
                 onClick={() => item.onClick(record, rowIndex)}
                 type="button"
                 variant={item.variant}

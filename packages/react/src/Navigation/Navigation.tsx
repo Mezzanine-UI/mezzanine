@@ -2,12 +2,9 @@
 
 import {
   Children,
-  cloneElement,
   forwardRef,
   isValidElement,
-  JSX,
   ReactElement,
-  ReactNode,
   useCallback,
   useMemo,
   useState,
@@ -19,21 +16,27 @@ import NavigationOption, { NavigationOptionProps } from './NavigationOption';
 import NavigationHeader, { NavigationHeaderProps } from './NavigationHeader';
 import NavigationFooter, { NavigationFooterProps } from './NavigationFooter';
 import { flattenChildren } from '../utils/flatten-children';
-import NavigationOptionCategory from './NavigationOptionCategory';
-import Input, { InputProps } from '../Input';
+import NavigationOptionCategory, {
+  NavigationOptionCategoryProps,
+} from './NavigationOptionCategory';
+import Input from '../Input';
 import {
   NavigationActivatedContext,
   NavigationOptionLevelContext,
   navigationOptionLevelContextDefaultValues,
 } from './context';
 import { useCurrentPathname } from './useCurrentPathname';
+import { useVisibleItems } from './useVisibleItems';
+import { CollapsedMenu } from './CollapsedMenu';
 
 export type NavigationChild =
-  | ReactElement<
-      NavigationOptionProps | NavigationHeaderProps | NavigationFooterProps
-    >
+  | ReactElement<NavigationFooterProps>
+  | ReactElement<NavigationHeaderProps>
+  | ReactElement<NavigationOptionCategoryProps>
+  | ReactElement<NavigationOptionProps>
   | null
-  | JSX.Element[];
+  | undefined
+  | false;
 export type NavigationChildren = NavigationChild | NavigationChild[];
 
 export interface NavigationProps
@@ -52,6 +55,10 @@ export interface NavigationProps
    */
   collapsed?: boolean;
   /**
+   * Whether to show search input
+   */
+  filter?: boolean;
+  /**
    * Called when collapsed state changes.
    */
   onCollapseChange?: (collapsed: boolean) => void;
@@ -67,8 +74,9 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     children = [],
     className,
     collapsed: collapsedProp,
-    onOptionClick,
+    filter,
     onCollapseChange,
+    onOptionClick,
     ...rest
   } = props;
   const [collapsedState, setCollapsedState] = useState(collapsedProp || false);
@@ -97,72 +105,67 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     [children],
   );
 
-  const { headerComponent, footerComponent, searchInput } = useMemo(() => {
-    let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
-    let footerComponent: ReactElement<NavigationFooterProps> | null = null;
-    let searchInput: ReactElement<InputProps> | null = null;
+  const [filterText, setFilterText] = useState('');
 
-    Children.forEach(flattenedChildren, (child: NavigationChild) => {
-      if (child && isValidElement(child)) {
-        switch (child.type) {
-          case NavigationHeader: {
-            headerComponent = child as ReactElement<NavigationHeaderProps>;
-            break;
-          }
-          case NavigationFooter: {
-            footerComponent = child as ReactElement<NavigationFooterProps>;
-            break;
-          }
-          case Input: {
-            searchInput = cloneElement(child as ReactElement<InputProps>, {
-              size: 'sub',
-              variant: 'search',
-              className: cx(
-                classes.searchInput,
-                (child as ReactElement<InputProps>).props.className,
-              ),
-            });
-            break;
-          }
-        }
-      }
-    });
+  const { headerComponent, footerComponent, items, level1Items } =
+    useMemo(() => {
+      let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
+      let footerComponent: ReactElement<NavigationFooterProps> | null = null;
+      const items: (
+        | ReactElement<NavigationOptionCategoryProps>
+        | ReactElement<NavigationOptionProps>
+      )[] = [];
+      const level1Items: ReactElement<NavigationOptionProps>[] = [];
 
-    return { headerComponent, footerComponent, searchInput };
-  }, [flattenedChildren]);
-
-  const renderItemChildren = useCallback(function renderItemChildrenImpl(
-    parsedChildren: NavigationChildren,
-  ): ReactNode {
-    const childArray = Children.map(
-      parsedChildren,
-      (child: NavigationChild) => {
+      Children.forEach(flattenedChildren, (child: NavigationChild, index) => {
         if (child && isValidElement(child)) {
           switch (child.type) {
-            case NavigationOptionCategory:
-            case NavigationOption: {
-              return child;
+            case NavigationHeader: {
+              headerComponent = child as ReactElement<NavigationHeaderProps>;
+              break;
             }
-
-            case NavigationHeader:
-            case NavigationFooter:
-              // already handled in headerComponent and footerComponent
-              return null;
-
+            case NavigationFooter: {
+              footerComponent = child as ReactElement<NavigationFooterProps>;
+              break;
+            }
+            case NavigationOptionCategory:
+              level1Items.push(
+                ...(child.props.children
+                  ? (flattenChildren(child.props.children, -1, [
+                      child.props.title || 'NavigationOptionCategory:' + index,
+                    ]) as ReactElement<NavigationOptionProps>[])
+                  : []),
+              );
+              items.push(child as ReactElement<NavigationOptionCategoryProps>);
+              break;
+            case NavigationOption: {
+              level1Items.push(child as ReactElement<NavigationOptionProps>);
+              items.push(child as ReactElement<NavigationOptionProps>);
+              break;
+            }
             default:
               console.warn(
                 '[Mezzanine][Navigation]: Navigation only accepts NavigationOption, NavigationOptionCategory, NavigationHeader or NavigationFooter as children.',
               );
-              return null;
           }
         }
+      });
 
-        return null;
-      },
-    );
+      return { headerComponent, footerComponent, items, level1Items };
+    }, [flattenedChildren]);
 
-    return childArray?.filter((child) => child !== null) ?? null;
-  }, []);
+  const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
+
+  const { collapsedItems, collapsedMenuItems } = useMemo(() => {
+    return {
+      collapsedItems:
+        visibleCount !== null
+          ? level1Items.slice(0, visibleCount)
+          : level1Items,
+      collapsedMenuItems:
+        visibleCount !== null ? level1Items.slice(visibleCount) : [],
+    };
+  }, [level1Items, visibleCount]);
 
   return (
     <nav
@@ -187,9 +190,25 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
         <NavigationOptionLevelContext.Provider
           value={navigationOptionLevelContextDefaultValues}
         >
-          <div className={classes.content}>
-            {searchInput}
-            <ul>{renderItemChildren(flattenedChildren)}</ul>
+          <div ref={contentRef} className={classes.content}>
+            {filter && (
+              <Input
+                size="sub"
+                variant="search"
+                className={cx(classes.searchInput)}
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+              />
+            )}
+            <ul key={collapsed ? 'collapsed' : 'expand'}>
+              {collapsed ? collapsedItems : items}
+
+              {collapsed &&
+                visibleCount !== null &&
+                visibleCount < level1Items.length && (
+                  <CollapsedMenu items={collapsedMenuItems} />
+                )}
+            </ul>
           </div>
         </NavigationOptionLevelContext.Provider>
         {footerComponent}

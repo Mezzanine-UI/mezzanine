@@ -16,7 +16,6 @@ import NavigationIconButton from './NavigationIconButton';
 import NavigationUserMenu from './NavigationUserMenu';
 import Badge from '../Badge';
 import NavigationOptionCategory from './NavigationOptionCategory';
-import Input from '../Input';
 
 export default {
   title: 'Navigation/Navigation',
@@ -25,7 +24,7 @@ export default {
 export const Basic: StoryFn<NavigationProps> = (args) => (
   <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
     <Navigation {...args}>
-      <NavigationHeader title="NavigationHeader">
+      <NavigationHeader title="Navigation">
         <span
           aria-label="logo"
           style={{
@@ -43,6 +42,7 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
         <NavigationOption title={'NavigationOption 1-2-1'} />
       </NavigationOption>
       <NavigationOption title={'NavigationOption 1-3'}>
+        <Badge variant="count-brand" count={5} />
         <NavigationOption title={'NavigationOption 1-3-1'} />
       </NavigationOption>
       <NavigationOption title={'NavigationOption 1-4'} />
@@ -59,21 +59,25 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
 
 export const All: StoryFn<NavigationProps> = () => {
   const [active, setActive] = useState<string[]>();
-  const [search, setSearch] = useState('');
+  const [collapsed, setCollapsed] = useState(true);
 
-  const navChildren = (hasIcon: boolean) => (
+  const navChildren = (hasIcon: boolean, hasLogo: boolean) => (
     <>
-      <Input value={search} onChange={(e) => setSearch(e.target.value)} />
-      <NavigationHeader title="NavigationHeader">
-        <span
-          aria-label="logo"
-          style={{
-            height: '28px',
-            width: '28px',
-            backgroundColor: '#5D74E9',
-            borderRadius: '4px',
-          }}
-        />
+      <NavigationHeader
+        title="Navigation"
+        onBrandClick={() => alert('Brand clicked')}
+      >
+        {hasLogo && (
+          <span
+            aria-label="logo"
+            style={{
+              height: '28px',
+              width: '28px',
+              backgroundColor: '#5D74E9',
+              borderRadius: '4px',
+            }}
+          />
+        )}
       </NavigationHeader>
       <NavigationOptionCategory title="Category Title 1">
         <NavigationOption
@@ -102,7 +106,6 @@ export const All: StoryFn<NavigationProps> = () => {
       <NavigationOptionCategory title="Category Title 2">
         <NavigationOption
           title={'Option 2-1'}
-          // badge={{ content: 'New', variant: 'dot-info' }}
           icon={hasIcon ? UploadIcon : undefined}
         >
           <NavigationOption title={'Option 2-1-1'}>
@@ -120,37 +123,17 @@ export const All: StoryFn<NavigationProps> = () => {
           </NavigationOption>
         </NavigationOption>
         <NavigationOption
+          href="#option-4"
           title={'Option 4'}
           icon={hasIcon ? FolderIcon : undefined}
         />
         <NavigationOption
+          onTriggerClick={(path, href) => {
+            alert('Option 5 clicked' + path.join(' > ') + ', href: ' + href);
+          }}
           title={'Option 5'}
           icon={hasIcon ? FolderIcon : undefined}
         />
-        {/* <NavigationOption
-          title={'Option 6'}
-          icon={hasIcon ? FolderIcon : undefined}
-        />
-        <NavigationOption
-          title={'Option 7'}
-          icon={hasIcon ? FolderIcon : undefined}
-        />
-        <NavigationOption
-          title={'Option 8'}
-          icon={hasIcon ? FolderIcon : undefined}
-        />
-        <NavigationOption
-          title={'Option 9'}
-          icon={hasIcon ? FolderIcon : undefined}
-        />
-        <NavigationOption
-          title={'Option 10 long text example'}
-          icon={hasIcon ? FolderIcon : undefined}
-        />
-        <NavigationOption
-          title={'Option 11 long text example'}
-          icon={hasIcon ? FolderIcon : undefined}
-        /> */}
       </NavigationOptionCategory>
       <NavigationFooter>
         <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
@@ -165,13 +148,18 @@ export const All: StoryFn<NavigationProps> = () => {
   return (
     <div style={{ display: 'flex', gap: '48px', height: 'calc(100vh - 32px)' }}>
       <Navigation onOptionClick={setActive} activatedPath={active}>
-        {navChildren(true)}
+        {navChildren(true, true)}
       </Navigation>
-      <Navigation onOptionClick={setActive} activatedPath={active} collapsed>
-        {navChildren(true)}
+      <Navigation onOptionClick={setActive} activatedPath={active}>
+        {navChildren(true, false)}
       </Navigation>
-      <Navigation onOptionClick={setActive} activatedPath={active} collapsed>
-        {navChildren(false)}
+      <Navigation
+        onOptionClick={setActive}
+        activatedPath={active}
+        collapsed={collapsed}
+        onCollapseChange={setCollapsed}
+      >
+        {navChildren(false, true)}
       </Navigation>
       <p style={{ height: '20px' }}>{active?.join(' , ')}</p>
     </div>

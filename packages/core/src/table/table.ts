@@ -1,7 +1,7 @@
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import type { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import type { Placement } from '@floating-ui/react-dom';
-import type { ButtonVariant, ButtonIcon } from '@mezzanine-ui/core/button';
+import type { ButtonVariant, ButtonIconType } from '@mezzanine-ui/core/button';
 
 export const tablePrefix = 'mzn-table';
 export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
@@ -397,7 +397,9 @@ export interface TableActionItem<T extends TableDataSource = TableDataSource> {
   /** Button label text */
   name?: string;
   /** Button icon */
-  icon?: ButtonIcon;
+  icon?: IconDefinition;
+  /** Button icon type */
+  iconType?: ButtonIconType;
   /** Click handler - receives the row record and index */
   onClick: (record: T, index: number) => void;
   /** Dynamic disabled state based on row data */

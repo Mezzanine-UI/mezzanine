@@ -81,12 +81,8 @@ export const renderIconButtonWithProps = (
   const { icon } = child.props;
 
   return cloneElement(child, {
-    icon: icon
-      ? {
-          ...icon,
-          position: 'icon-only',
-        }
-      : undefined,
+    icon: icon,
+    iconType: icon ? 'icon-only' : undefined,
     size,
     variant: 'base-secondary',
   });
@@ -103,10 +99,8 @@ export const renderIconButtonsProp = (
       <Button
         {...buttonProps}
         size={size}
-        icon={{
-          ...buttonProps.icon,
-          position: 'icon-only',
-        }}
+        icon={buttonProps.icon}
+        iconType={buttonProps.icon ? 'icon-only' : undefined}
         variant="base-secondary"
       />,
     );
@@ -175,7 +169,7 @@ export const resolvePageToolbarChild = (
       // is utilities (icon button)
       else if (
         type === Button &&
-        (props as ButtonProps).icon?.position === 'icon-only'
+        (props as ButtonProps).iconType === 'icon-only'
       ) {
         utilities.push(
           renderIconButtonWithProps(child as ReactElement<ButtonProps>, size),

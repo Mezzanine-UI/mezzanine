@@ -1,6 +1,9 @@
-import { StoryObj, Meta } from '@storybook/react-webpack5';
-import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
-import Button, { ButtonSize, ButtonVariant, ButtonProps } from '.';
+import { DotHorizontalIcon, PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+
+import Button, { ButtonProps, ButtonSize, ButtonVariant } from '.';
+import { DropdownOption } from '..';
+import Dropdown from '../Dropdown';
 
 export default {
   title: 'Foundation/Button',
@@ -139,77 +142,111 @@ export const WithIcons: Story = {
       }}
     >
       {/* Leading icons */}
-      <Button
-        variant="base-primary"
-        icon={{ position: 'leading', src: PlusIcon }}
-      >
+      <Button icon={PlusIcon} iconType="leading" variant="base-primary">
+        Leading Icon
+      </Button>
+      <Button icon={PlusIcon} iconType="leading" variant="base-secondary">
+        Leading Icon
+      </Button>
+      <Button icon={PlusIcon} iconType="leading" variant="destructive-primary">
         Leading Icon
       </Button>
       <Button
-        variant="base-secondary"
-        icon={{ position: 'leading', src: PlusIcon }}
-      >
-        Leading Icon
-      </Button>
-      <Button
-        variant="destructive-primary"
-        icon={{ position: 'leading', src: PlusIcon }}
-      >
-        Leading Icon
-      </Button>
-      <Button
-        variant="base-primary"
-        icon={{ position: 'leading', src: PlusIcon }}
         disabled
+        icon={PlusIcon}
+        iconType="leading"
+        variant="base-primary"
       >
         Disabled
       </Button>
 
       {/* Trailing icons */}
-      <Button
-        variant="base-primary"
-        icon={{ position: 'trailing', src: SearchIcon }}
-      >
+      <Button icon={SearchIcon} iconType="trailing" variant="base-primary">
+        Trailing Icon
+      </Button>
+      <Button icon={SearchIcon} iconType="trailing" variant="base-secondary">
         Trailing Icon
       </Button>
       <Button
-        variant="base-secondary"
-        icon={{ position: 'trailing', src: SearchIcon }}
-      >
-        Trailing Icon
-      </Button>
-      <Button
+        icon={SearchIcon}
+        iconType="trailing"
         variant="destructive-primary"
-        icon={{ position: 'trailing', src: SearchIcon }}
       >
         Trailing Icon
       </Button>
       <Button
-        variant="base-primary"
-        icon={{ position: 'trailing', src: SearchIcon }}
+        icon={SearchIcon}
+        iconType="trailing"
         size="sub"
+        variant="base-primary"
       >
         Sub Size
       </Button>
 
-      {/* Icon only */}
+      {/* Icon only with tooltip (default behavior) */}
+      <Button icon={PlusIcon} iconType="icon-only" variant="base-primary">
+        Add new item
+      </Button>
+      <Button icon={SearchIcon} iconType="icon-only" variant="base-secondary">
+        Search
+      </Button>
       <Button
-        variant="base-primary"
-        icon={{ position: 'icon-only', src: PlusIcon }}
-      />
-      <Button
-        variant="base-secondary"
-        icon={{ position: 'icon-only', src: SearchIcon }}
-      />
-      <Button
+        icon={PlusIcon}
+        iconType="icon-only"
         variant="destructive-primary"
-        icon={{ position: 'icon-only', src: PlusIcon }}
-      />
+      >
+        Delete
+      </Button>
       <Button
-        variant="base-primary"
-        icon={{ position: 'icon-only', src: PlusIcon }}
+        icon={PlusIcon}
+        iconType="icon-only"
         size="minor"
-      />
+        variant="base-primary"
+      >
+        Add
+      </Button>
+    </div>
+  ),
+};
+
+export const IconOnlyWithTooltip: Story = {
+  render: () => (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(4, min-content)',
+        gap: '16px',
+        alignItems: 'center',
+        padding: '60px',
+      }}
+    >
+      {/* Default tooltip (bottom) */}
+      <Button icon={PlusIcon} iconType="icon-only" variant="base-primary">
+        Add new item
+      </Button>
+
+      {/* Tooltip on top */}
+      <Button
+        icon={SearchIcon}
+        iconType="icon-only"
+        tooltipPosition="top"
+        variant="base-secondary"
+      >
+        Search
+      </Button>
+
+      {/* Disabled tooltip */}
+      <Button
+        disabledTooltip
+        icon={PlusIcon}
+        iconType="icon-only"
+        variant="base-primary"
+      >
+        This tooltip is disabled
+      </Button>
+
+      {/* Without children - no tooltip */}
+      <Button icon={SearchIcon} iconType="icon-only" variant="base-secondary" />
     </div>
   ),
 };
@@ -224,23 +261,20 @@ export const Loading: Story = {
         alignItems: 'center',
       }}
     >
-      <Button variant="base-primary" loading>
+      <Button loading variant="base-primary">
         Loading
       </Button>
-      <Button variant="base-secondary" loading>
+      <Button loading variant="base-secondary">
         Loading
       </Button>
-      <Button
-        variant="base-primary"
-        loading
-        icon={{ position: 'leading', src: PlusIcon }}
-      >
+      <Button icon={PlusIcon} iconType="leading" loading variant="base-primary">
         With Icon
       </Button>
       <Button
-        variant="base-primary"
+        icon={PlusIcon}
+        iconType="icon-only"
         loading
-        icon={{ position: 'icon-only', src: PlusIcon }}
+        variant="base-primary"
       />
     </div>
   ),
@@ -297,8 +331,8 @@ export const AsLink: Story = {
       <Button<'a'>
         component="a"
         href="https://github.com/Mezzanine-UI/mezzanine"
-        target="_blank"
         rel="noopener noreferrer"
+        target="_blank"
         variant="base-primary"
       >
         GitHub (Opens in new tab)
@@ -311,22 +345,39 @@ export const AsLink: Story = {
       <Button<'a'>
         component="a"
         href="https://www.npmjs.com/package/@mezzanine-ui/react"
-        target="_blank"
+        icon={SearchIcon}
+        iconType="trailing"
         rel="noopener noreferrer"
+        target="_blank"
         variant="base-text-link"
-        icon={{ position: 'trailing', src: SearchIcon }}
       >
         NPM Package
       </Button>
 
       <Button<'a'>
         component="a"
+        disabled
         href="#disabled-link"
         variant="base-primary"
-        disabled
       >
         Disabled Link
       </Button>
+    </div>
+  ),
+};
+
+const dropdownOptions: DropdownOption[] = [
+  { id: '1', name: 'Option 1' },
+  { id: '2', name: 'Option 2' },
+  { id: '3', name: 'Option 3' },
+];
+
+export const WithDropdown: Story = {
+  render: () => (
+    <div>
+      <Dropdown options={dropdownOptions} placement="right-start">
+        <Button icon={DotHorizontalIcon} iconType="icon-only" variant="base-secondary" />
+      </Dropdown>
     </div>
   ),
 };
@@ -335,7 +386,7 @@ export const CustomComponent: Story = {
   render: () => {
     // Example: Custom Link component
     // This could be useful with Next.js Link, React Router Link, etc.
-    const CustomLink = ({ href, children, ...props }: any) => (
+    const CustomLink = ({ children, href, ...props }: any) => (
       <a
         {...props}
         href={href}
@@ -368,8 +419,9 @@ export const CustomComponent: Story = {
         <Button<typeof CustomLink>
           component={CustomLink}
           href="/profile"
+          icon={PlusIcon}
+          iconType="leading"
           variant="base-secondary"
-          icon={{ position: 'leading', src: PlusIcon }}
         >
           With Icon
         </Button>

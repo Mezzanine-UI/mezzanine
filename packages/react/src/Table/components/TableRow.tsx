@@ -313,8 +313,8 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
         {...draggableProvided?.draggableProps}
         style={resolvedStyle}
       >
-        {renderDragHandleCell()}
         {renderExpandCell()}
+        {renderDragHandleCell()}
         {renderSelectionCell()}
         {renderCells()}
       </tr>

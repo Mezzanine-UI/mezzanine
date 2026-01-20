@@ -6,6 +6,7 @@ import { buttonClasses as classes } from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { ComponentOverridableForwardRefComponentPropsFactory } from '../utils/jsx-types';
 import Icon from '../Icon';
+import Tooltip from '../Tooltip';
 import { ButtonComponent, ButtonPropsBase } from './typings';
 
 export type ButtonProps<C extends ButtonComponent = 'button'> =
@@ -25,20 +26,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       component: Component = 'button',
       disabled = false,
+      disabledTooltip = false,
       icon,
+      iconType,
       loading = false,
       onClick,
       size = 'main',
+      tooltipPosition = 'bottom',
       variant = 'base-primary',
       ...rest
     } = props;
 
-    // 判斷是否為 icon-only 模式
-    const isIconOnly = icon?.position === 'icon-only' || (!!icon && !children);
-
-    // 判斷 icon 位置
-    const hasLeadingIcon = icon?.position === 'leading' && !isIconOnly;
-    const hasTrailingIcon = icon?.position === 'trailing' && !isIconOnly;
+    const isIconOnly = iconType === 'icon-only';
+    const showTooltip = isIconOnly && !disabledTooltip && Boolean(children);
 
     // Loading 狀態下的 icon
     const loadingIcon = <Icon icon={SpinnerIcon} spin size={16} />;
@@ -49,15 +49,19 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         return loadingIcon;
       }
       if (icon) {
-        return <Icon icon={icon.src} size={16} />;
+        return <Icon icon={icon} size={16} />;
       }
       return null;
     };
 
-    return (
+    const buttonElement = (tooltipProps?: {
+      onMouseEnter: React.MouseEventHandler;
+      onMouseLeave: React.MouseEventHandler;
+      ref: React.RefCallback<HTMLElement>;
+    }) => (
       <Component
         {...rest}
-        ref={ref}
+        ref={tooltipProps?.ref || ref}
         aria-disabled={disabled}
         className={cx(
           classes.host,
@@ -66,8 +70,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           {
             [classes.disabled]: disabled,
             [classes.loading]: loading,
-            [classes.iconLeading]: hasLeadingIcon,
-            [classes.iconTrailing]: hasTrailingIcon,
+            [classes.iconLeading]: iconType === 'leading',
+            [classes.iconTrailing]: iconType === 'trailing',
             [classes.iconOnly]: isIconOnly,
           },
           className,
@@ -78,18 +82,30 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             onClick(event);
           }
         }}
+        onMouseEnter={tooltipProps?.onMouseEnter}
+        onMouseLeave={tooltipProps?.onMouseLeave}
       >
         {loading ? (
           renderIcon()
         ) : (
           <>
-            {(hasLeadingIcon || isIconOnly) && renderIcon()}
+            {(iconType === 'leading' || isIconOnly) && renderIcon()}
             {!isIconOnly && children}
-            {hasTrailingIcon && renderIcon()}
+            {iconType === 'trailing' && renderIcon()}
           </>
         )}
       </Component>
     );
+
+    if (showTooltip) {
+      return (
+        <Tooltip options={{ placement: tooltipPosition }} title={children}>
+          {(tooltipProps) => buttonElement(tooltipProps)}
+        </Tooltip>
+      );
+    }
+
+    return buttonElement();
   },
 );
 

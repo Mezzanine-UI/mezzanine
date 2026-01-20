@@ -1,8 +1,11 @@
 export const anchorPrefix = 'mzn-anchor';
 
 export const anchorClasses = {
+  anchorItem: `${anchorPrefix}__anchorItem`,
+  anchorItemActive: `${anchorPrefix}__anchorItem--active`,
+  anchorItemDisabled: `${anchorPrefix}__anchorItem--disabled`,
   host: anchorPrefix,
-  bar: `${anchorPrefix}__bar`,
-  anchor: `${anchorPrefix}__anchor`,
-  anchorActive: `${anchorPrefix}__anchor--active`,
+  nested: `${anchorPrefix}__nested`,
+  nestedLevel1: `${anchorPrefix}__nested--level-1`,
+  nestedLevel2: `${anchorPrefix}__nested--level-2`,
 } as const;

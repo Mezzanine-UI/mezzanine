@@ -6,6 +6,7 @@
     "version": {
       "allowBranch": ["main", "v2"],
       "conventionalCommits": true,
+      "exact": true,
       "ignoreChanges": [
         "**/__test-utils__",
         "**/*.spec.*",

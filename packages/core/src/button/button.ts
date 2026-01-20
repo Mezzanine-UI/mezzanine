@@ -1,5 +1,4 @@
 import { GeneralSize } from '@mezzanine-ui/system/size';
-import { IconDefinition } from '@mezzanine-ui/icons';
 
 export type ButtonVariant =
   | 'base-primary'
@@ -17,12 +16,7 @@ export type ButtonVariant =
 
 export type ButtonSize = GeneralSize;
 
-export type ButtonIconPosition = 'leading' | 'trailing' | 'icon-only';
-
-export interface ButtonIcon {
-  position: ButtonIconPosition;
-  src: IconDefinition;
-}
+export type ButtonIconType = 'leading' | 'trailing' | 'icon-only';
 
 export const buttonPrefix = 'mzn-button';
 

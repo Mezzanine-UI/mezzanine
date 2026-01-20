@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.9...@mezzanine-ui/core@1.0.0-canary.10) (2026-01-19)
 # [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.1...@mezzanine-ui/core@1.0.0-beta.2) (2026-01-09)
 
 ### Bug Fixes
@@ -13,6 +14,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **core/description:** layout of description ([367878e](https://github.com/Mezzanine-UI/mezzanine/commit/367878ec11acec0c09b9fc93a6f92e9792795761))
 - **core/description:** title css ([f11ae16](https://github.com/Mezzanine-UI/mezzanine/commit/f11ae16d61bf4325a5356dd451db8300be131775))
 - **core/dropdown:** fix dropdown stylelint error and remove outside line-height ([09abf96](https://github.com/Mezzanine-UI/mezzanine/commit/09abf96178de6162e56ffbca9461b029f8f1fcf9))
+- **core/dropdown:** remove padding reset to allow logical properties ([e9ac14f](https://github.com/Mezzanine-UI/mezzanine/commit/e9ac14f4b7348e1fab96921fae6d4335974256d3))
+- **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
+- **core/dropdown:** rename type definitions to PascalCase ([5f59478](https://github.com/Mezzanine-UI/mezzanine/commit/5f59478240247472178745dc8561dd2d24731612))
+- **core/dropdown:** use semantic spacing variable for list-wrapper padding-inline ([29117bb](https://github.com/Mezzanine-UI/mezzanine/commit/29117bb69b43aeaccb1ddc59c19b8846a178575e))
 - **core/dropdown:** rename type definitions to PascalCase ([5f59478](https://github.com/Mezzanine-UI/mezzanine/commit/5f59478240247472178745dc8561dd2d24731612))
 - **core/form:** removes left margin from data entry field ([53bfabc](https://github.com/Mezzanine-UI/mezzanine/commit/53bfabca560f9b9d9ec966b4f3381504dcd0ff20)), closes [/github.com/Mezzanine-UI/mezzanine/pull/296#discussion_r2666903337](https://github.com//github.com/Mezzanine-UI/mezzanine/pull/296/issues/discussion_r2666903337)
 - **core/table:** correct style namings ([a704b22](https://github.com/Mezzanine-UI/mezzanine/commit/a704b227646e28c78b6e1947176544c0bc3cc3c6))
@@ -44,6 +49,15 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **core/description:** group css ([53ab956](https://github.com/Mezzanine-UI/mezzanine/commit/53ab956fa30d27ee816c02165dc2843c4f02dc68))
 - **core/description:** group layout css ([bd897b9](https://github.com/Mezzanine-UI/mezzanine/commit/bd897b9b0cab89e95be3abba17e392ed7bb55310))
 - **core/description:** title layout by width type ([01771a4](https://github.com/Mezzanine-UI/mezzanine/commit/01771a4ab1550b076f72eae0657422e0566c1a38))
+- **core/dropdown:** add dropdown styles and type definitions ([5f63d9f](https://github.com/Mezzanine-UI/mezzanine/commit/5f63d9fed0e31bdfc986903dd3042959a11e30aa))
+- **core/navigation:** header styles ([40d29c3](https://github.com/Mezzanine-UI/mezzanine/commit/40d29c3861ddbf10f7207c2a918b73d780be3c4d))
+- **core/navigation:** icon button styles ([95f285f](https://github.com/Mezzanine-UI/mezzanine/commit/95f285fb041cd7e74d82a9c0344978f8f52ed72a))
+- **core/navigation:** nav footer ([7bd8708](https://github.com/Mezzanine-UI/mezzanine/commit/7bd8708013422b445e774032dc905b2f1966a44b))
+- **core/navigation:** option-category ([61ca4da](https://github.com/Mezzanine-UI/mezzanine/commit/61ca4daa5869d403efe26ec1701ec61cf0555d61))
+- **core/navigation:** user menu styles ([9264fd3](https://github.com/Mezzanine-UI/mezzanine/commit/9264fd310be574357700b0ab6ce4b630a69c3265))
+- **core/navigation:** v2 collapsed nav implement ([aba3877](https://github.com/Mezzanine-UI/mezzanine/commit/aba38773bc9943fa350964740599226e7968efcb))
+- **core/navigation:** v2 option implement ([5a1d633](https://github.com/Mezzanine-UI/mezzanine/commit/5a1d633789c51d45f7d3835c80cce09c1b4165de))
+- **core/navigation:** v2 vertical implement ([85c7280](https://github.com/Mezzanine-UI/mezzanine/commit/85c7280a8066d2da7d939f237bafa3a0e2788b41))
 - **core/navigation:** v2 collapsed nav implement ([aba3877](https://github.com/Mezzanine-UI/mezzanine/commit/aba38773bc9943fa350964740599226e7968efcb))
 - **core/table:** add dataStateRepresentation styling ([84ac248](https://github.com/Mezzanine-UI/mezzanine/commit/84ac248da8c9ea9febb73374f17f101e6f0ed4cd))
 - **core/table:** add selectedRows information for bulkactions ([92ca67c](https://github.com/Mezzanine-UI/mezzanine/commit/92ca67c6c328a15b29590653dbd6e15d143cf908))
@@ -56,6 +70,9 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **core/table:** row selection add radio mode typings ([35aaeac](https://github.com/Mezzanine-UI/mezzanine/commit/35aaeace2c8e711728f28ce31963649f8c990eae))
 - **core/table:** table cell ellipsis styling ([46e8f1f](https://github.com/Mezzanine-UI/mezzanine/commit/46e8f1f3a007885f989b3be6349790c015630586))
 - **form:** implement Form component [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)evzfrfk ([6d27dfc](https://github.com/Mezzanine-UI/mezzanine/commit/6d27dfc9150485f7e6ad3eedd8062281aafcecaf))
+- **react/navigation:** clean styles ([31afbaa](https://github.com/Mezzanine-UI/mezzanine/commit/31afbaa7b157ba5d03c1f24fcec51ef36d730bc9))
+- **react/navigation:** v2 collapsed nav pr issue ([d6443ba](https://github.com/Mezzanine-UI/mezzanine/commit/d6443ba60ffbc7b192b150a2caa38286528d273c))
+
 - **react/navigation:** v2 collapsed nav pr issue ([d6443ba](https://github.com/Mezzanine-UI/mezzanine/commit/d6443ba60ffbc7b192b150a2caa38286528d273c))
 
 # [1.0.0-beta.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.0...@mezzanine-ui/core@1.0.0-beta.1) (2025-12-31)

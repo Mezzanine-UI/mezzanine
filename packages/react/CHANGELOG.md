@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.9...@mezzanine-ui/react@1.0.0-canary.10) (2026-01-19)
+
+### Bug Fixes
+
+- **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
 # [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.1...@mezzanine-ui/react@1.0.0-beta.2) (2026-01-09)
 
 ### Bug Fixes
@@ -12,6 +17,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **react/description:** icon size in title is 16 ([e5f5234](https://github.com/Mezzanine-UI/mezzanine/commit/e5f5234b89a2e68238a49a551ca2994183781628))
 - **react/description:** should return content component ([3f4810d](https://github.com/Mezzanine-UI/mezzanine/commit/3f4810d74efdb4b19683efd56b1b4deeedd8aea8))
 - **react/dropdown:** add controlled open prop and visibility change handler ([acecbf6](https://github.com/Mezzanine-UI/mezzanine/commit/acecbf6b0e6f25093e7b101cc3c7c951a34553bf))
+- **react/dropdown:** change dropdown story site on the internal ([4bf8927](https://github.com/Mezzanine-UI/mezzanine/commit/4bf8927a34d1672d9dd99f7404ebd52c453dad6a))
+- **react/dropdown:** extract duplicate logic and fix sameWidth behavior ([c7f6d99](https://github.com/Mezzanine-UI/mezzanine/commit/c7f6d9975facfe8882fab4053ba51bb6fa5e2146))
+- **react/dropdown:** implement W3C ARIA Combobox Pattern and fix issues ([a9164f8](https://github.com/Mezzanine-UI/mezzanine/commit/a9164f88f30cc8697d9280d1754568b0ca07edac))
+- **react/dropdown:** improve accessibility and code quality ([c6dbd70](https://github.com/Mezzanine-UI/mezzanine/commit/c6dbd7065cf4ca38df0e3bcb7c52402c44096e36))
 - **react/dropdown:** update type references to PascalCase ([6b4047e](https://github.com/Mezzanine-UI/mezzanine/commit/6b4047ee980ab9e700d5cc9c4c3710bedc68ff79))
 - **react/form:** fix typo ([8a00307](https://github.com/Mezzanine-UI/mezzanine/commit/8a003071ec19997ea06e3e4c9f369c13cebecd33))
 - **react/form:** removes redundant label rendering in FormField ([145d0ca](https://github.com/Mezzanine-UI/mezzanine/commit/145d0ca7783856b5973f05d7ddc79be84e53037e))
@@ -28,6 +37,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **react/table:** fix export naming error ([8ebcda4](https://github.com/Mezzanine-UI/mezzanine/commit/8ebcda437e042d7fc917b886d534bee33a242548))
 - **react/table:** fix table dragging and virtual scroll ([b81d83e](https://github.com/Mezzanine-UI/mezzanine/commit/b81d83e4d933be74e39e70530fed338d0bc71a32))
 - **react/table:** fix table dragging column width ([b2cd8a7](https://github.com/Mezzanine-UI/mezzanine/commit/b2cd8a72c97663bcfca425d9c31828a2db0f3c29))
+- **react/table:** fix table story with description props usage ([2d25168](https://github.com/Mezzanine-UI/mezzanine/commit/2d2516893531ab5876fc5bf40c86bcacef685b97))
 - **react/table:** remove scroll.x and add fullWidth for more reasonable stretch ([add0be4](https://github.com/Mezzanine-UI/mezzanine/commit/add0be44e5ff43878d44afbb28bded817930a1ff))
 - **react/table:** remove unused props ([17224fe](https://github.com/Mezzanine-UI/mezzanine/commit/17224fef6f42e71dc7da46fee64208307d38eeca))
 - **react/table:** table header menu open state controlled ([107de9f](https://github.com/Mezzanine-UI/mezzanine/commit/107de9fef562b60e27e4109de78aeb0e658f0796))
@@ -35,6 +45,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Features
 
+- **client:** export TagGroup and TagGroupProps ([d4d1389](https://github.com/Mezzanine-UI/mezzanine/commit/d4d1389d1fdc96cb7fd40e68cda5eea8a5ee41b1))
 - **form:** implement Form component [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)evzfrfk ([6d27dfc](https://github.com/Mezzanine-UI/mezzanine/commit/6d27dfc9150485f7e6ad3eedd8062281aafcecaf))
 - **react/button:** add inverse-ghost variant as example ([3183f84](https://github.com/Mezzanine-UI/mezzanine/commit/3183f8473cd32d87f125104ff54afe670ce55d76))
 - **react/description:** add content type prop ([970a87c](https://github.com/Mezzanine-UI/mezzanine/commit/970a87cee22510f18b767dfa045fad095a0c1a18))
@@ -64,6 +75,21 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **react/description:** use content class names ([5783763](https://github.com/Mezzanine-UI/mezzanine/commit/57837636e019e37512dff98b166cad9bb7eccfcf))
 - **react/description:** use width type to class name ([283dd20](https://github.com/Mezzanine-UI/mezzanine/commit/283dd2024a0458d76c02c29d33abefb3be8a2340))
 - **react/dropdown:** add zIndex for dropdown ([b5aae1d](https://github.com/Mezzanine-UI/mezzanine/commit/b5aae1da49ef92fb6e1c93cb5050f10d33a1d3cb))
+- **react/dropdown:** refactor dropdown component with enhanced features ([8a92969](https://github.com/Mezzanine-UI/mezzanine/commit/8a9296981576a1eab268ec35bce49d0beea5a412))
+- **react/form:** update FormLabel tests ([345eba5](https://github.com/Mezzanine-UI/mezzanine/commit/345eba56663a0d4ed62311ed41f9c8208e76eec4))
+- **react/navigation:** header init ([bdeab8f](https://github.com/Mezzanine-UI/mezzanine/commit/bdeab8f6ef2ba2c065ba1ed7638245b5193f32fe))
+- **react/navigation:** iconbutton ([77852f9](https://github.com/Mezzanine-UI/mezzanine/commit/77852f9f009c1eb6aaf9a3a2601621ccf1d805db))
+- **react/navigation:** init ([fd2b8c5](https://github.com/Mezzanine-UI/mezzanine/commit/fd2b8c5fc5899f18b1a05b1e1fc6a7e143845698))
+- **react/navigation:** nav footer ([c2083dd](https://github.com/Mezzanine-UI/mezzanine/commit/c2083dd5ee68252af976ae5db310cbe75f3f801d))
+- **react/navigation:** nav item option ([23c8158](https://github.com/Mezzanine-UI/mezzanine/commit/23c8158925adbee4fe706420e9c05e999a8ac724))
+- **react/navigation:** option-category ([e6918aa](https://github.com/Mezzanine-UI/mezzanine/commit/e6918aa7e3e6d9460360c07e6244e8e9b24d85bb))
+- **react/navigation:** resolve pr issue ([4277784](https://github.com/Mezzanine-UI/mezzanine/commit/42777844d0e4f55851b441fd7981c7dbe40f1b41))
+- **react/navigation:** update storybook ([26f0c17](https://github.com/Mezzanine-UI/mezzanine/commit/26f0c177f370f5b2184b3e1020fde940f28b761d))
+- **react/navigation:** user menu ([45f0e7f](https://github.com/Mezzanine-UI/mezzanine/commit/45f0e7f113a52d5c867e49ee1f4866ae19a68686))
+- **react/navigation:** v2 collapsed nav implement ([8f317ff](https://github.com/Mezzanine-UI/mezzanine/commit/8f317ff5c46a257064662de07d150269d859b6fb))
+- **react/navigation:** v2 collapsed nav pr issue ([d6443ba](https://github.com/Mezzanine-UI/mezzanine/commit/d6443ba60ffbc7b192b150a2caa38286528d273c))
+- **react/navigation:** v2 option implement ([621cc69](https://github.com/Mezzanine-UI/mezzanine/commit/621cc69eb900b35ea8a75ca8c4154599346b0749))
+- **react/navigation:** v2 vertical implement ([27c509b](https://github.com/Mezzanine-UI/mezzanine/commit/27c509b9f1d4a1a8f0a12a0faedb51faab082087))
 - **react/form:** update FormLabel tests ([345eba5](https://github.com/Mezzanine-UI/mezzanine/commit/345eba56663a0d4ed62311ed41f9c8208e76eec4))
 - **react/navigation:** update storybook ([26f0c17](https://github.com/Mezzanine-UI/mezzanine/commit/26f0c177f370f5b2184b3e1020fde940f28b761d))
 - **react/navigation:** v2 collapsed nav implement ([8f317ff](https://github.com/Mezzanine-UI/mezzanine/commit/8f317ff5c46a257064662de07d150269d859b6fb))

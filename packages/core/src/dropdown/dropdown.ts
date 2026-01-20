@@ -12,7 +12,9 @@ export type DropdownItemLevel = 0 | 1 | 2;
 
 export type DropdownItemValidate = 'default' | 'danger';
 
-export type DropdownCheckPosition = 'prepend' | 'append' | 'none';
+// TODO: Should be renamed to DropdownCheckSite to follow the naming convention of the other components.
+// TODO: The value should be 'prefix' | 'suffix' | 'both';
+export type DropdownCheckPosition = 'prefix' | 'suffix' | 'none';
 
 export type DropdownInputPosition = 'inside' | 'outside';
 
@@ -159,6 +161,7 @@ export const dropdownClasses = {
   cardContainer: `${dropdownPrefix}-item-card-container`,
   cardActive: `${dropdownPrefix}-item-card--active`,
   cardDisabled: `${dropdownPrefix}-item-card--disabled`,
+  cardDanger: `${dropdownPrefix}-item-card--danger`,
   cardUnderline: `${dropdownPrefix}-item-card-underline`,
   cardLevel: (level: DropdownItemLevel) =>
     `${dropdownPrefix}-item-card--level-${level}`,

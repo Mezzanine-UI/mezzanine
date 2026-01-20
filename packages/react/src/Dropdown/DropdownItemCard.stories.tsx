@@ -112,7 +112,7 @@ export const Single: Story = {
                     label="Option"
                     subTitle="Supporting text"
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -137,7 +137,7 @@ export const Single: Story = {
                     subTitle="Supporting text option"
                     followText="op"
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -163,7 +163,7 @@ export const Single: Story = {
                     appendIcon={FolderIcon}
                     disabled
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -217,7 +217,7 @@ export const Single: Story = {
                     validate="danger"
                     subTitle="Supporting text"
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -244,7 +244,7 @@ export const Single: Story = {
                     subTitle="Supporting text option"
                     followText="op"
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -272,7 +272,7 @@ export const Single: Story = {
                     appendIcon={FolderIcon}
                     disabled
                     appendContent="New"
-                    checkSite="append"
+                    checkSite="suffix"
                     checked
                   />
                 </td>
@@ -323,7 +323,7 @@ export const Multiple: Story = {
                   mode="multiple"
                   label="Option"
                   subTitle="Supporting text"
-                  checkSite="prepend"
+                  checkSite="suffix"
                   appendContent="New"
                 />
               </td>
@@ -333,7 +333,7 @@ export const Multiple: Story = {
                   mode="multiple"
                   label="Option"
                   subTitle="Supporting text"
-                  checkSite="prepend"
+                  checkSite="suffix"
                   prependIcon={CaretRightIcon}
                 />
               </td>
@@ -346,7 +346,7 @@ export const Multiple: Story = {
                   label="Option"
                   subTitle="Supporting text option"
                   followText="opti"
-                  checkSite="prepend"
+                  checkSite="suffix"
                 />
               </td>
               <td />
@@ -356,7 +356,7 @@ export const Multiple: Story = {
                   label="Option"
                   subTitle="Supporting text option"
                   followText="op"
-                  checkSite="prepend"
+                  checkSite="suffix"
                   prependIcon={CaretRightIcon}
                   checked
                 />
@@ -370,7 +370,7 @@ export const Multiple: Story = {
                   label="Option"
                   subTitle="Supporting text"
                   disabled
-                  checkSite="prepend"
+                  checkSite="suffix"
                 />
               </td>
               <td />
@@ -381,7 +381,7 @@ export const Multiple: Story = {
                   subTitle="Supporting text"
                   disabled
                   checked
-                  checkSite="prepend"
+                  checkSite="suffix"
                   prependIcon={CaretRightIcon}
                 />
               </td>

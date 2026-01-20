@@ -18,10 +18,11 @@ import {
   DropdownInputPosition,
   DropdownItemSharedProps,
   DropdownOption,
+  DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 
-import { offset, size } from '@floating-ui/react-dom';
+import { autoUpdate, offset, size } from '@floating-ui/react-dom';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -32,6 +33,7 @@ import Popper, { PopperPlacement } from '../Popper';
 import Translate, { TranslateFrom } from '../Transition/Translate';
 import { composeRefs } from '../utils/composeRefs';
 
+import { IconDefinition } from '@mezzanine-ui/icons';
 import DropdownItem from './DropdownItem';
 
 export interface DropdownProps extends DropdownItemSharedProps {
@@ -82,6 +84,11 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * @default false
    */
   isMatchInputValue?: boolean;
+  /**
+   * The text to follow for highlighting in dropdown options.
+   * If provided, this will be used instead of auto-extracting from children props.
+   */
+  followText?: string;
   /**
    * The listbox id of the dropdown.
    */
@@ -144,6 +151,12 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   placement?: PopperPlacement;
   /**
+   * Custom width for the dropdown.
+   * Can be a number (pixels) or a string (e.g., '200px', '50%').
+   * If provided, this takes precedence over `sameWidth`.
+   */
+  customWidth?: number | string;
+  /**
    * Whether to set the same width as its anchor element.
    * @default false
    */
@@ -165,6 +178,22 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * The z-index of the dropdown.
    */
   zIndex?: number | string;
+  /**
+   * The status of the dropdown (loading or empty).
+   */
+  status?: DropdownStatusType;
+  /**
+   * The text of the dropdown loading status.
+   */
+  loadingText?: string;
+  /**
+   * The text of the dropdown empty status.
+   */
+  emptyText?: string;
+  /**
+   * The icon of the dropdown empty status.
+   */
+  emptyIcon?: IconDefinition;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -186,6 +215,7 @@ export default function Dropdown(props: DropdownProps) {
     isMatchInputValue = false,
     inputPosition = 'outside',
     placement = 'bottom',
+    customWidth,
     sameWidth = false,
     listboxId: listboxIdProp,
     listboxLabel,
@@ -200,6 +230,13 @@ export default function Dropdown(props: DropdownProps) {
     onActionClear,
     onItemHover,
     zIndex,
+    status,
+    loadingText,
+    emptyText,
+    emptyIcon,
+    followText: followTextProp,
+    mode,
+    value,
   } = props;
   const isInline = inputPosition === 'inside';
   const inputId = useId();
@@ -236,7 +273,9 @@ export default function Dropdown(props: DropdownProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const isOpenControlled = openProp !== undefined;
   const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<
+  // Keep setter for uncontrolled mode support (e.g., keyboard navigation)
+  // Currently not used in handleItemHover to prevent style conflicts
+  const [uncontrolledActiveIndex, _setUncontrolledActiveIndex] = useState<
     number | null
   >(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
@@ -267,6 +306,11 @@ export default function Dropdown(props: DropdownProps) {
   );
 
   const followText = useMemo(() => {
+    // If followText is explicitly provided, use it
+    if (followTextProp !== undefined) {
+      return followTextProp != null ? String(followTextProp) : undefined;
+    }
+    // Otherwise, auto-extract from children props
     if (children.type === Button) {
       return undefined;
     }
@@ -274,12 +318,12 @@ export default function Dropdown(props: DropdownProps) {
       return undefined;
     }
     // Try to get value from Input component props
-    const inputValue =
-      (children.props as InputProps)?.value ??
-      (children.props as InputProps)?.defaultValue ??
-      '';
-    return inputValue;
-  }, [children, isMatchInputValue]);
+    const inputValue = (children.props as InputProps)?.value
+      ?? (children.props as InputProps)?.defaultValue
+      ?? '';
+    // Ensure the value is a string or undefined
+    return inputValue != null ? String(inputValue) : undefined;
+  }, [children, isMatchInputValue, followTextProp]);
 
   const popoverPlacement: PopperPlacement = useMemo(() => {
     if (inputPosition === 'outside') {
@@ -289,8 +333,29 @@ export default function Dropdown(props: DropdownProps) {
     return 'bottom';
   }, [inputPosition, placement]);
 
+  const customWidthMiddleware = useMemo(() => {
+    if (!customWidth) {
+      return null;
+    }
+
+    const widthValue = typeof customWidth === 'number'
+      ? `${customWidth}px`
+      : customWidth;
+
+    return {
+      name: 'customWidth',
+      fn: ({ elements }: { elements: { floating: HTMLElement } }) => {
+        Object.assign(elements.floating.style, {
+          width: widthValue,
+        });
+        return {};
+      },
+    };
+  }, [customWidth]);
+
   const sameWidthMiddleware = useMemo(() => {
-    if (!sameWidth) {
+    // If customWidth is set, don't apply sameWidth
+    if (customWidth || !sameWidth) {
       return null;
     }
 
@@ -301,11 +366,28 @@ export default function Dropdown(props: DropdownProps) {
         });
       },
     });
-  }, [sameWidth]);
+  }, [customWidth, sameWidth]);
 
   const offsetMiddleware = useMemo(() => {
     return offset({ mainAxis: 4 });
   }, []);
+
+  // Set z-index for popper to ensure it appears above other elements
+  const zIndexMiddleware = useMemo(() => {
+    const zIndexValue = zIndex ?? 1;
+    return {
+      name: 'zIndex',
+      fn: ({ elements }: { elements: { floating: HTMLElement } }) => {
+        const zIndexNum = typeof zIndexValue === 'number'
+          ? zIndexValue
+          : (typeof zIndexValue === 'string' ? parseInt(zIndexValue, 10) || zIndexValue : 1);
+        Object.assign(elements.floating.style, {
+          zIndex: zIndexNum,
+        });
+        return {};
+      },
+    };
+  }, [zIndex]);
 
   const prevIsOpenRef = useRef(isOpen);
   const translateFrom = useMemo<TranslateFrom>(() => {
@@ -347,6 +429,39 @@ export default function Dropdown(props: DropdownProps) {
 
   const anchorRef = useRef<HTMLElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
+  const popperControllerRef = useRef<import('../Popper').PopperController | null>(null);
+
+  // Auto-update popper position when anchor element size changes
+  useEffect(() => {
+    if (!isOpen || isInline || !anchorRef.current || !popperControllerRef.current) {
+      return;
+    }
+
+    const update = popperControllerRef.current.update;
+    if (!update) {
+      return;
+    }
+
+    // Get floating element from controller refs
+    // Check refs exists before accessing nested properties
+    const refs = popperControllerRef.current.refs;
+    if (!refs) {
+      return;
+    }
+
+    const floatingElement = refs.floating.current;
+    if (!floatingElement) {
+      return;
+    }
+
+    const cleanup = autoUpdate(
+      anchorRef.current,
+      floatingElement,
+      update,
+    );
+
+    return cleanup;
+  }, [isOpen, isInline]);
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
@@ -369,12 +484,9 @@ export default function Dropdown(props: DropdownProps) {
 
   const handleItemHover = useCallback(
     (index: number) => {
-      if (!isActiveIndexControlled) {
-        setUncontrolledActiveIndex(index);
-      }
       onItemHover?.(index);
     },
-    [isActiveIndexControlled, onItemHover],
+    [onItemHover],
   );
 
   // Extract shared DropdownItem props to avoid duplication
@@ -392,6 +504,12 @@ export default function Dropdown(props: DropdownProps) {
       onSelect,
       options,
       type,
+      status,
+      loadingText,
+      emptyText,
+      emptyIcon,
+      mode,
+      value,
     }),
     [
       actionConfig,
@@ -406,6 +524,12 @@ export default function Dropdown(props: DropdownProps) {
       onSelect,
       options,
       type,
+      status,
+      loadingText,
+      emptyText,
+      emptyIcon,
+      mode,
+      value,
     ],
   );
 
@@ -446,6 +570,12 @@ export default function Dropdown(props: DropdownProps) {
         childWithRef.props?.onBlur?.(event);
         if (event?.defaultPrevented) return;
 
+        // When open is controlled, don't automatically close on blur
+        // Let the controlled state handle the visibility
+        if (isOpenControlled) {
+          return;
+        }
+
         const nextFocusTarget = event?.relatedTarget as HTMLElement | null;
         const container = containerRef.current;
 
@@ -472,7 +602,7 @@ export default function Dropdown(props: DropdownProps) {
         setOpen(true);
       },
     });
-  }, [children, getComboboxProps, isInline, setOpen]);
+  }, [children, getComboboxProps, isInline, setOpen, isOpenControlled]);
 
   useDocumentEvents(() => {
     if (!isOpen) {
@@ -548,38 +678,43 @@ export default function Dropdown(props: DropdownProps) {
           )}
         </TransitionGroup>
       )}
-      {!isInline && (
-        <Popper
-          ref={popperRef}
-          anchor={anchorRef}
-          open={isOpen}
-          disablePortal
-          options={{
-            placement: popoverPlacement,
-            middleware: [
-              offsetMiddleware,
-              ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
-            ],
-          }}
-          style={zIndex ? { zIndex } : undefined}
-        >
-          <TransitionGroup component={null}>
-            {isOpen && (
-              <Translate
-                {...translateProps}
-                from={translateFrom}
-                key="popper-list"
-                in
-              >
-                <div>
-                  <DropdownItem {...baseDropdownItemProps} />
-                </div>
-              </Translate>
-            )}
-          </TransitionGroup>
-        </Popper>
-      )}
-      {!isInline && triggerElement}
+      {
+        !isInline && (
+          <Popper
+            ref={popperRef}
+            anchor={anchorRef}
+            controllerRef={popperControllerRef}
+            open={isOpen}
+            disablePortal
+            options={{
+              placement: popoverPlacement,
+              middleware: [
+                offsetMiddleware,
+                zIndexMiddleware,
+                ...(customWidthMiddleware ? [customWidthMiddleware] : []),
+                ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
+              ],
+            }}
+          >
+            <TransitionGroup component={null}>
+              {
+                isOpen && (
+                  <Translate {...translateProps} from={translateFrom} key="popper-list" in>
+                    <div>
+                      <DropdownItem
+                        {...baseDropdownItemProps}
+                      />
+                    </div>
+                  </Translate>
+                )
+              }
+            </TransitionGroup>
+          </Popper>
+        )
+      }
+      {
+        !isInline && triggerElement
+      }
     </div>
   );
 }

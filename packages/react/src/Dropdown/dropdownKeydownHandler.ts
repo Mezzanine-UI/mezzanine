@@ -1,4 +1,5 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
+import { Dispatch, SetStateAction } from 'react';
 
 /**
  * Provides a keyboard navigation handler for dropdown lists, encapsulating Arrow keys, Enter, and Escape behaviors.
@@ -10,7 +11,7 @@ export function createDropdownKeydownHandler(params: {
   onEscape?: () => void;
   open: boolean;
   options: DropdownOption[];
-  setActiveIndex: (updater: (prev: number | null) => number | null) => void;
+  setActiveIndex: Dispatch<SetStateAction<number | null>>;
   setListboxHasVisualFocus: (focus: boolean) => void;
   setOpen: (open: boolean) => void;
 }) {

@@ -3,7 +3,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import { EditIcon } from '@mezzanine-ui/icons';
 import PageFooter from '.';
 
 describe('<PageFooter />', () => {
@@ -94,16 +94,16 @@ describe('<PageFooter />', () => {
     });
   });
 
-  describe('prop: type and annotation', () => {
+  describe('prop: type and supporting action', () => {
     describe('standard type', () => {
-      it('should render annotation as a ghost button', () => {
+      it('should render supportingActionName as a ghost button', () => {
         const { getHostHTMLElement } = render(
           <PageFooter
             type="standard"
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation="View History"
+            supportingActionName="View History"
           />,
         );
         const element = getHostHTMLElement();
@@ -119,7 +119,7 @@ describe('<PageFooter />', () => {
         ).toBeTruthy();
       });
 
-      it('should call onAnnotationClick when button is clicked', () => {
+      it('should call supportingActionOnClick when button is clicked', () => {
         const onClick = jest.fn();
         const { getHostHTMLElement } = render(
           <PageFooter
@@ -127,8 +127,8 @@ describe('<PageFooter />', () => {
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation="View History"
-            onAnnotationClick={onClick}
+            supportingActionName="View History"
+            supportingActionOnClick={onClick}
           />,
         );
         const element = getHostHTMLElement();
@@ -141,19 +141,40 @@ describe('<PageFooter />', () => {
 
         expect(onClick).toHaveBeenCalledTimes(1);
       });
+
+      it('should apply custom supportingActionVariant', () => {
+        const { getHostHTMLElement } = render(
+          <PageFooter
+            type="standard"
+            actions={{
+              primaryButton: { children: 'Confirm' },
+            }}
+            supportingActionName="Edit"
+            supportingActionVariant="base-secondary"
+          />,
+        );
+        const element = getHostHTMLElement();
+        const annotationElement = element.querySelector(
+          '.mzn-page-footer__annotation',
+        );
+        const button = annotationElement!.querySelector('button');
+
+        expect(
+          button!.classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
     });
 
     describe('overflow type', () => {
-      it('should render annotation as an icon-only ghost button', () => {
+      it('should render as an icon-only ghost button with dropdown', () => {
         const { getHostHTMLElement } = render(
           <PageFooter
             type="overflow"
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation={{
-              position: 'icon-only',
-              src: DotVerticalIcon,
+            dropdownProps={{
+              options: [{ id: '1', name: 'Option 1' }],
             }}
           />,
         );
@@ -172,19 +193,17 @@ describe('<PageFooter />', () => {
         ).toBeTruthy();
       });
 
-      it('should call onAnnotationClick when button is clicked', () => {
-        const onClick = jest.fn();
+      it('should use custom supportingActionIcon', () => {
         const { getHostHTMLElement } = render(
           <PageFooter
             type="overflow"
             actions={{
               primaryButton: { children: 'Confirm' },
             }}
-            annotation={{
-              position: 'icon-only',
-              src: DotVerticalIcon,
+            supportingActionIcon={EditIcon}
+            dropdownProps={{
+              options: [{ id: '1', name: 'Option 1' }],
             }}
-            onAnnotationClick={onClick}
           />,
         );
         const element = getHostHTMLElement();
@@ -193,9 +212,10 @@ describe('<PageFooter />', () => {
         );
         const button = annotationElement!.querySelector('button');
 
-        fireEvent.click(button!);
-
-        expect(onClick).toHaveBeenCalledTimes(1);
+        expect(button).toBeInstanceOf(HTMLButtonElement);
+        expect(
+          button!.classList.contains('mzn-button--icon-only'),
+        ).toBeTruthy();
       });
     });
 
@@ -223,6 +243,23 @@ describe('<PageFooter />', () => {
         expect(
           typography!.classList.contains('mzn-typography--caption'),
         ).toBeTruthy();
+      });
+
+      it('should not render anything when annotation is not provided', () => {
+        const { getHostHTMLElement } = render(
+          <PageFooter
+            type="information"
+            actions={{
+              primaryButton: { children: 'Confirm' },
+            }}
+          />,
+        );
+        const element = getHostHTMLElement();
+        const annotationElement = element.querySelector(
+          '.mzn-page-footer__annotation',
+        );
+
+        expect(annotationElement!.children.length).toBe(0);
       });
     });
   });

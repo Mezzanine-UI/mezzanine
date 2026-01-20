@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.9...@mezzanine-ui/icons@1.0.0-canary.10) (2026-01-19)
 # [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-beta.1...@mezzanine-ui/icons@1.0.0-beta.2) (2026-01-09)
 
 ### Features

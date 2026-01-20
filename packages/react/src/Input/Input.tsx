@@ -1,34 +1,37 @@
 'use client';
 
-import {
-  forwardRef,
-  Ref,
-  ChangeEventHandler,
-  useRef,
-  ReactNode,
-  useState,
-  MouseEventHandler,
-  useCallback,
-  KeyboardEventHandler,
-} from 'react';
+import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { inputClasses as classes } from '@mezzanine-ui/core/input';
-import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import { useComposeRefs } from '../hooks/useComposeRefs';
+import { EyeIcon, EyeInvisibleIcon, SearchIcon } from '@mezzanine-ui/icons';
+import {
+  ChangeEventHandler,
+  forwardRef,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  ReactNode,
+  Ref,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
+import Dropdown from '../Dropdown';
 import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
+import { useComposeRefs } from '../hooks/useComposeRefs';
+import Icon from '../Icon';
+import { PopperPlacement } from '../Popper';
 import TextField, {
   TextFieldAffixProps,
   TextFieldInteractiveStateProps,
   TextFieldProps,
 } from '../TextField';
-import { SearchIcon, EyeIcon, EyeInvisibleIcon } from '@mezzanine-ui/icons';
-import Icon from '../Icon';
-import SpinnerButton from './SpinnerButton';
+import { cx } from '../utils/cx';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import ActionButton, { ActionButtonProps } from './ActionButton';
-import SelectButton, { SelectButtonProps } from './SelectButton';
 import PasswordStrengthIndicator, {
   PasswordStrengthIndicatorProps,
 } from './PasswordStrengthIndicator';
+import SelectButton, { SelectButtonProps } from './SelectButton';
+import SpinnerButton from './SpinnerButton';
 
 /**
  * Base props shared by all Input variants
@@ -210,6 +213,30 @@ export type SelectInputProps = InputBaseProps & {
   selectButton: SelectButtonProps & {
     position: 'prefix' | 'suffix' | 'both';
   };
+  /**
+   * The options of the dropdown.
+   */
+  options?: DropdownOption[];
+  /**
+   * The selected value of the dropdown.
+   */
+  selectedValue?: string;
+  /**
+   * The onChange event handler of the dropdown.
+   */
+  onSelect?: (value: string) => void;
+  /**
+   * The width of the dropdown.
+   */
+  dropdownWidth?: number | string;
+  /**
+   * The max height of the dropdown.
+   */
+  dropdownMaxHeight?: number | string;
+  /**
+   * The placement of the dropdown.
+   */
+  dropdownPlacement?: PopperPlacement;
 };
 
 /**
@@ -217,22 +244,22 @@ export type SelectInputProps = InputBaseProps & {
  */
 export type WithPasswordStrengthIndicator =
   | {
-      /**
-       * Whether to show password strength indicator.
-       */
-      showPasswordStrengthIndicator?: false;
-      passwordStrengthIndicator?: never;
-    }
+    /**
+     * Whether to show password strength indicator.
+     */
+    showPasswordStrengthIndicator?: false;
+    passwordStrengthIndicator?: never;
+  }
   | {
-      /**
-       * Whether to show password strength indicator.
-       */
-      showPasswordStrengthIndicator: true;
-      /**
-       * The props for password strength indicator.
-       */
-      passwordStrengthIndicator: PasswordStrengthIndicatorProps;
-    };
+    /**
+     * Whether to show password strength indicator.
+     */
+    showPasswordStrengthIndicator: true;
+    /**
+     * The props for password strength indicator.
+     */
+    passwordStrengthIndicator: PasswordStrengthIndicatorProps;
+  };
 
 export type PasswordInputProps = InputBaseProps &
   ClearableInput &
@@ -497,7 +524,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       }
       case 'select': {
         const selectProps = props as SelectInputProps;
-        const { selectButton } = selectProps;
+        const { selectButton, options, dropdownWidth = 120, dropdownMaxHeight = 114 } = selectProps;
+        const defaultOptions = options || [];
+        const selectedOptions: DropdownOption[] = defaultOptions.length > 0
+          ? defaultOptions.map((option) => ({
+            ...option,
+            ...(option.id === selectProps.selectedValue
+              ? { checkSite: 'suffix' }
+              : {}),
+          }))
+          : [];
 
         if (
           selectButton.position === 'both' ||
@@ -506,11 +542,22 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           const { ...restSelectButtonProps } = selectButton;
 
           prefixExternalButton = (
-            <SelectButton
-              {...restSelectButtonProps}
-              disabled={restSelectButtonProps.disabled || disabled}
-              size={size}
-            />
+            <Dropdown
+              options={selectedOptions}
+              value={selectProps.selectedValue}
+              customWidth={dropdownWidth}
+              maxHeight={dropdownMaxHeight}
+              placement="bottom-start"
+              onSelect={(option) => {
+                selectProps.onSelect?.(option.id);
+              }}
+            >
+              <SelectButton
+                {...restSelectButtonProps}
+                disabled={restSelectButtonProps.disabled || disabled}
+                size={size}
+              />
+            </Dropdown>
           );
         }
 
@@ -521,11 +568,22 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           const { ...restSelectButtonProps } = selectButton;
 
           suffixExternalButton = (
-            <SelectButton
-              {...restSelectButtonProps}
-              disabled={restSelectButtonProps.disabled || disabled}
-              size={size}
-            />
+            <Dropdown
+              options={selectedOptions}
+              value={selectProps.selectedValue}
+              customWidth={dropdownWidth}
+              maxHeight={dropdownMaxHeight}
+              placement="bottom-start"
+              onSelect={(option) => {
+                selectProps.onSelect?.(option.id);
+              }}
+            >
+              <SelectButton
+                {...restSelectButtonProps}
+                disabled={restSelectButtonProps.disabled || disabled}
+                size={size}
+              />
+            </Dropdown>
           );
         }
 

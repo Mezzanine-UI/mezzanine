@@ -1,5 +1,4 @@
 @use '~@mezzanine-ui/system/severity';
 
-$prefix: mzn-notif;
-$root-prefix: #{$prefix}-root;
+$prefix: mzn-notification-center;
 $severities: severity.$severities-with-info;

@@ -1,82 +1,99 @@
-import { forwardRef } from 'react';
-import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
-import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import Typography from '../Typography';
+'use client';
 
-export interface AnchorProps
-  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onClick'> {
-  /** The current active anchor ID */
-  activeAnchorId?: string;
-  /** Whether apply ellipsis or not
-   * @default false
-   */
-  ellipsis?: boolean;
+import { Fragment, ReactElement } from 'react';
+import AnchorItem, { AnchorItemData } from './AnchorItem';
+import { parseChildren } from './utils';
+
+export interface AnchorPropsWithAnchors {
   /**
-   * Anchor list.
+   * ```tsx
+   * interface AnchorItemData {
+   *   autoScrollTo?: boolean;
+   *   children?: AnchorItemData[];
+   *   disabled?: boolean;
+   *   href: string;
+   *   id: string;
+   *   name: string;
+   *   onClick?: VoidFunction;
+   *   title?: string;
+   * }
+   * ```
    */
-  list: {
-    id: string;
-    name: string;
-  }[];
+  anchors: AnchorItemData[];
+  children?: never;
+}
+
+export interface AnchorPropsWithChildren {
+  anchors?: never;
   /**
-   * The maximum width for anchor container. This might be useful when you need to set `ellipsis: true`.
+   * Whether to enable smooth scrolling to the target element when clicked.
    */
-  maxWidth?: number;
+  autoScrollTo?: boolean;
+  /**
+   * Use nested `<Anchor>` components to create hierarchical navigation. <br />
+   * Only accepts `<Anchor>` components and text content as children. <br />
+   * ```tsx
+   * <AnchorGroup>
+   *   <Anchor href="#acr1">ACR 1</Anchor>
+   *   <Anchor href="#acr2">
+   *     anchor 2
+   *     <Anchor href="#acr2-1">ACR 2-1</Anchor>
+   *     <Anchor href="#acr2-2">ACR 2-2</Anchor>
+   *   </Anchor>
+   * </AnchorGroup>
+   * ```
+   */
+  children:
+  | string
+  | ReactElement<AnchorPropsWithChildren, typeof Anchor>
+  | Array<string | ReactElement<AnchorPropsWithChildren, typeof Anchor>>;
+  /**
+   * Whether the anchor is disabled.<br>
+   * If parent anchor is disabled, all its children will be disabled too. <br />
+   */
+  disabled?: boolean;
+  /**
+   * Required when used as child component.
+   */
+  href?: string;
   /**
    * Trigger when user click on any anchor.
    */
-  onClick?: (nextAnchorId: string) => void;
+  onClick?: VoidFunction;
+  title?: string;
 }
 
+export type AnchorProps = AnchorPropsWithAnchors | AnchorPropsWithChildren;
+
 /**
- * The react component for `mezzanine` anchor.
- * This component should always be full width of its parent.
+ * The `mezzanine` Anchor component provides navigation menu for page sections with automatic hash tracking.
+ * Nested structure supports up to 3 levels; deeper levels will be ignored.
  */
-const Anchor = forwardRef<HTMLDivElement, AnchorProps>(
-  function Anchor(props, ref) {
-    const {
-      activeAnchorId,
-      className,
-      ellipsis = false,
-      list,
-      maxWidth,
-      onClick,
-      style,
-      ...rest
-    } = props;
+function Anchor(props: AnchorProps) {
+  const anchorItems: AnchorItemData[] =
+    'anchors' in props && props.anchors
+      ? props.anchors
+      : 'children' in props && props.children
+        ? parseChildren(props.children, Anchor)
+        : [];
 
-    const resolvedStyle = {
-      ...(style || {}),
-      ...(maxWidth ? { maxWidth: `${maxWidth}px` } : {}),
-    };
-
-    return (
-      <div
-        ref={ref}
-        className={cx(classes.host, className)}
-        style={resolvedStyle}
-        {...rest}
-      >
-        <div className={classes.bar} />
-        {list.map((anchor) => (
-          <button
-            key={anchor.id}
-            type="button"
-            onClick={() => onClick?.(anchor.id)}
-            className={cx(
-              classes.anchor,
-              activeAnchorId === anchor.id && classes.anchorActive,
-            )}
-          >
-            <Typography variant="input3" color="inherit" ellipsis={ellipsis}>
-              {anchor.name}
-            </Typography>
-          </button>
-        ))}
-      </div>
-    );
-  },
-);
+  return (
+    <Fragment>
+      {anchorItems.map((anchorItem) => (
+        <AnchorItem
+          autoScrollTo={anchorItem.autoScrollTo}
+          disabled={anchorItem.disabled}
+          href={anchorItem.href}
+          id={anchorItem.id}
+          key={anchorItem.id}
+          name={anchorItem.name}
+          onClick={anchorItem.onClick}
+          subAnchors={anchorItem.children}
+          title={anchorItem.title}
+        />
+      ))}
+    </Fragment>
+  );
+}
 
 export default Anchor;

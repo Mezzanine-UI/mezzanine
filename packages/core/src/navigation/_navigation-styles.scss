@@ -12,11 +12,10 @@
 // option icon and text height
 $option-icon-size: spacing.semantic-variable(size, element, base) !default;
 $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$option-icon-size}) !default;
-$background: background;
 
 .#{$prefix} {
   overflow: hidden;
-  background-color: palette.semantic-variable($background, base);
+  background-color: palette.semantic-variable('background', base);
   border-right: 1px solid palette.semantic-variable(separator, neutral-faint);
   box-sizing: border-box;
   display: flex;
@@ -24,13 +23,13 @@ $background: background;
 
   &__content {
     box-sizing: border-box;
-    padding: spacing.semantic-variable(padding, vertical, base)
-      spacing.semantic-variable(padding, horizontal, comfort-fixed);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tight-fixed);
     margin-right: -1px;
+    padding: spacing.semantic-variable(padding, vertical, base)
+      spacing.semantic-variable(padding, horizontal, comfort-fixed);
 
     > ul {
       @include utils.reset();
@@ -54,48 +53,80 @@ $background: background;
     height: 100%;
     max-height: 100%;
 
-    .#{$header-prefix},
-    .#{$user-menu-prefix} {
-      > :not(:first-child) {
-        display: none;
-      }
+    .#{$prefix}__content {
+      overflow-y: hidden;
     }
 
-    .#{$header-prefix}__title,
     .#{$prefix}__search-input,
     .#{$option-category-prefix}__title {
       display: none;
     }
+  }
 
-    .#{$user-menu-prefix} {
-      padding: 0;
-      width: 100%;
-    }
-
+  &__collapsed-menu {
+    display: grid;
+    margin-left: spacing.semantic-variable(padding, horizontal, tight);
+    padding: spacing.semantic-variable(padding, vertical, tight)
+      spacing.semantic-variable(padding, horizontal, tight);
+    height: spacing.semantic-variable(size, container, slim);
+    box-shadow: effect.variable(shadow, raised);
+    border-radius: radius.variable(roomy);
+    background-color: palette.semantic-variable('background', base);
   }
 }
 
 .#{$header-prefix} {
-  @include typography.semantic-variable(h3);
-
   align-items: center;
   border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
   box-sizing: border-box;
   display: flex;
   gap: spacing.semantic-variable(gap, comfort);
   justify-content: space-between;
-  padding: spacing.semantic-variable(padding, horizontal, comfort)
+  padding: spacing.semantic-variable(padding, vertical, comfort)
     spacing.semantic-variable(padding, horizontal, comfort-fixed)
     spacing.semantic-variable(padding, vertical, base);
-  width: 100%;
+  position: relative;
+  width: calc(100% + 1px);
+  flex-direction: row-reverse;
 
   &__content {
+    @include btn-utils.reset();
+
     align-items: center;
     color: palette.semantic-variable(text, neutral-solid);
     display: flex;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, base);
     height: 100%;
+  }
+
+  &__title {
+    @include typography.semantic-variable(h3);
+  }
+
+
+  &--collapsed {
+    .#{$header-prefix}__content {
+      left: spacing.semantic-variable(padding, horizontal, comfort-fixed);
+      position: absolute;
+      transition: transition.standard(opacity, fast);
+      pointer-events: none;
+
+      &:hover {
+        opacity: 0;
+      }
+    }
+
+    .#{$header-prefix}__title {
+      display: none;
+    }
+
+
+    &:hover {
+      .#{$header-prefix}__content {
+        opacity: 0;
+      }
+    }
   }
 }
 
@@ -116,7 +147,6 @@ $background: background;
     gap: spacing.semantic-variable(gap, tiny);
   }
 
-
   &--collapsed {
     display: flex;
     flex-direction: column-reverse;
@@ -125,38 +155,49 @@ $background: background;
       display: flex;
       flex-direction: column;
     }
+
+    .#{$user-menu-prefix} {
+      padding: 0;
+      width: 100%;
+
+      > :not(:first-child) {
+        display: none;
+      }
+    }
   }
 }
 
 .#{$option-prefix} {
+  align-items: center;
+  box-sizing: border-box;
   display: grid;
   flex-shrink: 1;
-  box-sizing: border-box;
-  align-items: center;
   gap: spacing.semantic-variable(gap, tight);
   height: unset;
   width: 100%;
 
-
   &__content {
     align-items: center;
     border-radius: radius.variable(base);
+    border: none;
     box-sizing: border-box;
-    overflow: hidden;
     cursor: pointer;
     display: flex;
+    outline: none;
+    overflow: hidden;
     width: 100%;
     gap: spacing.semantic-variable(gap, tight);
     padding: spacing.semantic-variable(padding, vertical, tight)
       spacing.semantic-variable(padding, horizontal, tight-fixed);
     transition: transition.standard(background-color, fast), transition.standard(color, fast);
-
+    text-decoration: none;
 
     .#{$option-prefix}__title {
       @include typography.semantic-variable(label-primary-highlight, (line-height));
 
       color: palette.semantic-variable(text, neutral-solid);
       line-height: #{$option-icon-size};
+      margin-right: auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -171,10 +212,8 @@ $background: background;
     .#{$option-prefix}__toggle-icon {
       color: palette.semantic-variable(icon, neutral);
       height: spacing.semantic-variable(size, element, slim);
-      margin-left: auto;
       width: spacing.semantic-variable(size, element, slim);
     }
-
 
     &:hover {
       .#{$option-prefix}__icon,
@@ -182,13 +221,17 @@ $background: background;
         color: palette.semantic-variable(icon, neutral-solid);
       }
 
-      background-color: palette.semantic-variable($background, neutral-faint);
+      background-color: palette.semantic-variable('background', neutral-faint);
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
     }
   }
 
   &--active.#{$option-prefix}--open {
     .#{$option-prefix}__content {
-      background-color: palette.semantic-variable($background, brand-ghost);
+      background-color: palette.semantic-variable('background', brand-ghost);
     }
   }
 
@@ -206,7 +249,7 @@ $background: background;
 
   &--active.#{$option-prefix}--basic {
     .#{$option-prefix}__content {
-      background-color: palette.semantic-variable($background, brand-faint);
+      background-color: palette.semantic-variable('background', brand-faint);
 
       .#{$option-prefix}__title {
         color: palette.semantic-variable(text, brand-solid);
@@ -284,7 +327,7 @@ $background: background;
   height: spacing.semantic-variable(size, element, airy);
 
   &:hover {
-    background-color: palette.semantic-variable($background, neutral-faint);
+    background-color: palette.semantic-variable('background', neutral-faint);
   }
 
   &:focus-visible {
@@ -309,9 +352,9 @@ $background: background;
     width: spacing.semantic-variable(size, element, airy);
     height: spacing.semantic-variable(size, element, airy);
     border-radius: radius.variable(full);
-    background-color: palette.semantic-variable($background, neutral);
+    background-color: palette.semantic-variable('background', neutral);
     color: palette.semantic-variable(icon, fixed-light);
-    border: 1px solid palette.semantic-variable($background, neutral-subtle);
+    border: 1px solid palette.semantic-variable('background', neutral-subtle);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -329,7 +372,7 @@ $background: background;
   }
 
   &--open {
-    background-color: palette.semantic-variable($background, neutral-subtle);
+    background-color: palette.semantic-variable('background', neutral-subtle);
 
     .#{$user-menu-prefix}__icon {
       transform: rotate(180deg);
@@ -338,7 +381,7 @@ $background: background;
 
   &:hover,
   &:active {
-    background-color: palette.semantic-variable($background, neutral-subtle);
+    background-color: palette.semantic-variable('background', neutral-subtle);
   }
 
   &:focus-visible {
