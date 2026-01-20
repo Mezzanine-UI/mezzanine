@@ -8,6 +8,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 - **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
+# [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.1...@mezzanine-ui/react@1.0.0-beta.2) (2026-01-09)
+
+### Bug Fixes
+
 - **react/badge:** adjust badge element order to fix stacking context ([c207a30](https://github.com/Mezzanine-UI/mezzanine/commit/c207a305e90cd5aa2bbae4ca9819e93e8539a7c2))
 - **react/description:** export correct DescriptionGroup ([4438b5e](https://github.com/Mezzanine-UI/mezzanine/commit/4438b5ed8a3b4f42515ad720f2e9d20a8c74d651))
 - **react/description:** icon size in title is 16 ([e5f5234](https://github.com/Mezzanine-UI/mezzanine/commit/e5f5234b89a2e68238a49a551ca2994183781628))
@@ -86,6 +90,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **react/navigation:** v2 collapsed nav pr issue ([d6443ba](https://github.com/Mezzanine-UI/mezzanine/commit/d6443ba60ffbc7b192b150a2caa38286528d273c))
 - **react/navigation:** v2 option implement ([621cc69](https://github.com/Mezzanine-UI/mezzanine/commit/621cc69eb900b35ea8a75ca8c4154599346b0749))
 - **react/navigation:** v2 vertical implement ([27c509b](https://github.com/Mezzanine-UI/mezzanine/commit/27c509b9f1d4a1a8f0a12a0faedb51faab082087))
+- **react/form:** update FormLabel tests ([345eba5](https://github.com/Mezzanine-UI/mezzanine/commit/345eba56663a0d4ed62311ed41f9c8208e76eec4))
+- **react/navigation:** update storybook ([26f0c17](https://github.com/Mezzanine-UI/mezzanine/commit/26f0c177f370f5b2184b3e1020fde940f28b761d))
+- **react/navigation:** v2 collapsed nav implement ([8f317ff](https://github.com/Mezzanine-UI/mezzanine/commit/8f317ff5c46a257064662de07d150269d859b6fb))
+- **react/navigation:** v2 collapsed nav pr issue ([d6443ba](https://github.com/Mezzanine-UI/mezzanine/commit/d6443ba60ffbc7b192b150a2caa38286528d273c))
 - **react/table:** add minHeight & emptyProps.height for flexibility ([8021505](https://github.com/Mezzanine-UI/mezzanine/commit/8021505083a523a64ecf48c420108c7483ec516a))
 - **react/table:** combined dropdown for table header's titleMenu ([df62523](https://github.com/Mezzanine-UI/mezzanine/commit/df62523cb35ecf68a2b04215d9bb7b023cf84515))
 - **react/table:** fix resizable feature and minWidth is required when resizable ([d8b9d85](https://github.com/Mezzanine-UI/mezzanine/commit/d8b9d8555f97dcacfd5c0eee079f1f0398a417c2))
@@ -99,6 +107,34 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 - **react/table:** table support radio mode for selection ([58a4f16](https://github.com/Mezzanine-UI/mezzanine/commit/58a4f16d7fdf838bd608d39cc365d6788df81c4a))
 - **react/utils:** add formatNumberWithCommas & parseNumberWithCommas ([199ead1](https://github.com/Mezzanine-UI/mezzanine/commit/199ead14f6a87376e4e6cd303f0467c8bb58a4af))
 - **react:** export description components ([9874db7](https://github.com/Mezzanine-UI/mezzanine/commit/9874db7464a0dca341d0beb696ede654737ebf1e))
+
+# [1.0.0-beta.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.0...@mezzanine-ui/react@1.0.0-beta.1) (2025-12-31)
+
+### Bug Fixes
+
+- **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
+- **react/dropdown:** change dropdown story site on the internal ([4bf8927](https://github.com/Mezzanine-UI/mezzanine/commit/4bf8927a34d1672d9dd99f7404ebd52c453dad6a))
+- **react/dropdown:** extract duplicate logic and fix sameWidth behavior ([c7f6d99](https://github.com/Mezzanine-UI/mezzanine/commit/c7f6d9975facfe8882fab4053ba51bb6fa5e2146))
+- **react/dropdown:** implement W3C ARIA Combobox Pattern and fix issues ([a9164f8](https://github.com/Mezzanine-UI/mezzanine/commit/a9164f88f30cc8697d9280d1754568b0ca07edac))
+- **react/dropdown:** improve accessibility and code quality ([c6dbd70](https://github.com/Mezzanine-UI/mezzanine/commit/c6dbd7065cf4ca38df0e3bcb7c52402c44096e36))
+
+### Features
+
+- **react/dropdown:** refactor dropdown component with enhanced features ([8a92969](https://github.com/Mezzanine-UI/mezzanine/commit/8a9296981576a1eab268ec35bce49d0beea5a412))
+- **react/navigation:** header init ([bdeab8f](https://github.com/Mezzanine-UI/mezzanine/commit/bdeab8f6ef2ba2c065ba1ed7638245b5193f32fe))
+- **react/navigation:** iconbutton ([77852f9](https://github.com/Mezzanine-UI/mezzanine/commit/77852f9f009c1eb6aaf9a3a2601621ccf1d805db))
+- **react/navigation:** init ([fd2b8c5](https://github.com/Mezzanine-UI/mezzanine/commit/fd2b8c5fc5899f18b1a05b1e1fc6a7e143845698))
+- **react/navigation:** nav footer ([c2083dd](https://github.com/Mezzanine-UI/mezzanine/commit/c2083dd5ee68252af976ae5db310cbe75f3f801d))
+- **react/navigation:** nav item option ([23c8158](https://github.com/Mezzanine-UI/mezzanine/commit/23c8158925adbee4fe706420e9c05e999a8ac724))
+- **react/navigation:** option-category ([e6918aa](https://github.com/Mezzanine-UI/mezzanine/commit/e6918aa7e3e6d9460360c07e6244e8e9b24d85bb))
+- **react/navigation:** resolve pr issue ([4277784](https://github.com/Mezzanine-UI/mezzanine/commit/42777844d0e4f55851b441fd7981c7dbe40f1b41))
+- **react/navigation:** user menu ([45f0e7f](https://github.com/Mezzanine-UI/mezzanine/commit/45f0e7f113a52d5c867e49ee1f4866ae19a68686))
+- **react/navigation:** v2 option implement ([621cc69](https://github.com/Mezzanine-UI/mezzanine/commit/621cc69eb900b35ea8a75ca8c4154599346b0749))
+- **react/navigation:** v2 vertical implement ([27c509b](https://github.com/Mezzanine-UI/mezzanine/commit/27c509b9f1d4a1a8f0a12a0faedb51faab082087))
+
+# [1.0.0-beta.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.9...@mezzanine-ui/react@1.0.0-beta.0) (2025-12-31)
+
+**Note:** Version bump only for package @mezzanine-ui/react
 
 # [1.0.0-canary.9](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-alpha.0...@mezzanine-ui/react@1.0.0-canary.9) (2025-12-31)
 

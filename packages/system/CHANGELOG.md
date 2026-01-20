@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
 # [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.9...@mezzanine-ui/system@1.0.0-canary.10) (2026-01-19)
+# [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.1...@mezzanine-ui/system@1.0.0-beta.2) (2026-01-09)
+
+**Note:** Version bump only for package @mezzanine-ui/system
+
+# [1.0.0-beta.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.0...@mezzanine-ui/system@1.0.0-beta.1) (2025-12-31)
+
+**Note:** Version bump only for package @mezzanine-ui/system
+
+# [1.0.0-beta.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.9...@mezzanine-ui/system@1.0.0-beta.0) (2025-12-31)
 
 **Note:** Version bump only for package @mezzanine-ui/system
 
