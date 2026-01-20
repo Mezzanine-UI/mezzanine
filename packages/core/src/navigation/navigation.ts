@@ -10,4 +10,5 @@ export const navigationClasses = {
   collapsed: `${navigationPrefix}--collapsed`,
   content: `${navigationPrefix}__content`,
   searchInput: `${navigationPrefix}__search-input`,
+  collapsedMenu: `${navigationPrefix}__collapsed-menu`,
 } as const;

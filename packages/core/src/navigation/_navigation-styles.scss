@@ -53,12 +53,29 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     height: 100%;
     max-height: 100%;
 
+    .#{$prefix}__content {
+      overflow-y: hidden;
+    }
+
     .#{$prefix}__search-input,
     .#{$option-category-prefix}__title {
       display: none;
     }
+  }
 
+  &__collapsed-menu {
+    display: grid;
+    margin-left: spacing.semantic-variable(padding, horizontal, tight);
+    padding: spacing.semantic-variable(padding, vertical, tight)
+      spacing.semantic-variable(padding, horizontal, tight);
+    height: 190px;
+    box-shadow: effect.variable(shadow, raised);
+    border-radius: radius.variable(roomy);
+    background-color: #fff;
 
+    &__sub-menu {
+      width: spacing.semantic-variable(size, container, tight);
+    }
   }
 }
 
@@ -74,7 +91,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     spacing.semantic-variable(padding, vertical, base);
   position: relative;
   width: calc(100% + 1px);
-    flex-direction: row-reverse;
+  flex-direction: row-reverse;
 
   &__content {
     @include btn-utils.reset();
