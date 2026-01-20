@@ -14,7 +14,7 @@ import { type IconDefinition, CheckedIcon } from "@mezzanine-ui/icons";
 
 import Checkbox from "../Checkbox";
 import Icon, { IconColor } from "../Icon";
-import Typography, { TypographyColor } from "../Typography";
+import Typography from "../Typography";
 import { HighlightSegment, highlightText } from "./highlightText";
 
 export interface DropdownItemCardProps {
@@ -163,12 +163,12 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   );
   const isChecked = isControlled ? checked : internalChecked;
 
-  const labelColor: TypographyColor = useMemo(() => {
-    return validate === 'danger' ? 'text-error' : 'text-neutral-solid';
-  }, [validate]);
-
   const appendIconColor: IconColor = useMemo(() => {
-    return disabled || validate === 'danger' ? 'neutral-light' : 'neutral';
+    if (disabled) return 'neutral-light';
+
+    if (validate === 'danger') return 'error';
+
+    return 'brand';
   }, [disabled, validate]);
 
   const iconColor: IconColor = useMemo(() => {
@@ -189,11 +189,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   }, [cardLabel, followText]);
 
   const showPrependContent = useMemo(() => {
-    return prependIcon || (checkSite === 'prepend' && mode === 'multiple');
+    return prependIcon || (checkSite === 'prefix' && mode === 'multiple');
   }, [prependIcon, checkSite, mode]);
 
   const showAppendContent = useMemo(() => {
-    return appendContent || appendIcon || (checkSite === 'append' && isChecked);
+    return appendContent || appendIcon || (checkSite === 'suffix' && isChecked);
   }, [appendContent, appendIcon, checkSite, isChecked]);
 
   const subTitleParts: HighlightSegment[] = useMemo(() => {
@@ -210,12 +210,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
 
   const renderHighlightedText = (
     parts: HighlightSegment[],
-    defaultColor: TypographyColor,
     className: string,
     id?: string,
   ): ReactNode => {
     return (
-      <Typography color={defaultColor} className={className} id={id}>
+      <Typography className={className} id={id}>
         {parts.map((part, index) => (
           <span
             key={index}
@@ -273,9 +272,9 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
           classes.card,
           classes.cardLevel(level),
           {
-            // Highlight: keyboard/mouse focused (active) or selected (isChecked)
             [classes.cardActive]: active || isChecked,
             [classes.cardDisabled]: disabled,
+            [classes.cardDanger]: validate === 'danger',
           },
           className,
         )}
@@ -293,7 +292,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
                 {prependIcon
                   && <Icon icon={prependIcon} color={iconColor} />
                 }
-                {checkSite === 'prepend' && mode === 'multiple' && (
+                {checkSite === 'prefix' && mode === 'multiple' && (
                   <Checkbox
                     checked={isChecked}
                     disabled={disabled}
@@ -305,10 +304,10 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
           }
           <div className={classes.cardBody}>
             {
-              cardLabel && renderHighlightedText(labelParts, labelColor, classes.cardTitle, labelId)
+              cardLabel && renderHighlightedText(labelParts, classes.cardTitle, labelId)
             }
             {
-              subTitleParts.length > 0 && renderHighlightedText(subTitleParts, 'text-neutral', classes.cardDescription)
+              subTitleParts.length > 0 && renderHighlightedText(subTitleParts, classes.cardDescription)
             }
           </div>
           {
@@ -316,7 +315,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
               <div className={classes.cardAppendContent}>
                 {appendContent && <Typography color="text-neutral-light">{appendContent}</Typography>}
                 {appendIcon && <Icon icon={appendIcon} color={iconColor} />}
-                {checkSite === 'append' && isChecked && <Icon
+                {checkSite === 'suffix' && isChecked && <Icon
                   icon={CheckedIcon}
                   color={appendIconColor}
                   size={16}

@@ -1,8 +1,8 @@
+import { CaretRightIcon } from '@mezzanine-ui/icons';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DropdownItemCard from './DropdownItemCard';
-import { CaretRightIcon } from '@mezzanine-ui/icons';
 
 describe('DropdownItemCard', () => {
   const defaultProps = {
@@ -95,7 +95,7 @@ describe('DropdownItemCard', () => {
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="prepend"
+          checkSite="suffix"
         />
       );
       const checkbox = screen.getByRole('checkbox');
@@ -107,7 +107,7 @@ describe('DropdownItemCard', () => {
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="append"
+          checkSite="suffix"
           checked={true}
         />
       );
@@ -122,7 +122,7 @@ describe('DropdownItemCard', () => {
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="prepend"
+          checkSite="suffix"
           onCheckedChange={onCheckedChange}
         />
       );
@@ -149,7 +149,7 @@ describe('DropdownItemCard', () => {
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="prepend"
+          checkSite="suffix"
           checked={true}
         />
       );
@@ -162,7 +162,7 @@ describe('DropdownItemCard', () => {
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="prepend"
+          checkSite="suffix"
           defaultChecked={true}
         />
       );

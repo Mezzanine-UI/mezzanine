@@ -7,10 +7,17 @@
 @use '~@mezzanine-ui/system/transition' as transition;
 @use './dropdown' as *;
 
+.#{$prefix} {
+  // When used as Input trigger, don't affect layout
+  &:has(> .mzn-input__select-button) {
+    display: contents;
+  }
+}
+
 $card-state-configs: (
   enable: (
     background: palette.semantic-variable(background, base),
-    title-color: palette.semantic-variable(text, neutral-strong),
+    title-color: palette.semantic-variable(text, neutral-solid),
     description-color: palette.semantic-variable(text, neutral),
     focus: none,
   ),
@@ -103,12 +110,8 @@ $section-configs: (
 @mixin _apply-card-states() {
   @include _apply-card-state(enable);
 
-  &:hover:not(.#{$prefix}-item-card--disabled) {
+  &:hover:not(.#{$prefix}-item-card--active):not(.#{$prefix}-item-card--disabled) {
     @include _apply-card-state(hover);
-  }
-
-  &:active:not(.#{$prefix}-item-card--disabled) {
-    @include _apply-card-state(active);
   }
 
   &:focus,
@@ -119,8 +122,14 @@ $section-configs: (
     outline: none;
   }
 
-  &.#{$prefix}-item-card--active:not(.#{$prefix}-item-card--disabled) {
+  &.#{$prefix}-item-card--active {
     @include _apply-card-state(active);
+
+    &:hover {
+      &:not(.#{$prefix}-item-card--disabled) {
+        @include _apply-card-state(active);
+      }
+    }
   }
 
   &.#{$prefix}-item-card--disabled {
@@ -240,7 +249,7 @@ $section-configs: (
   &-item-card {
     @include _apply-card-states();
 
-    --#{$prefix}-item-card-title-color: palette.semantic-variable(text, neutral-strong);
+    --#{$prefix}-item-card-title-color: palette.semantic-variable(text, neutral-solid);
     --#{$prefix}-item-card-description-color: palette.semantic-variable(text, neutral);
 
     border-radius: radius.variable(base);
@@ -260,6 +269,16 @@ $section-configs: (
 
     &--disabled {
       cursor: not-allowed;
+
+      .#{$prefix}-item-card-title {
+        --#{$prefix}-item-card-title-color: #{palette.semantic-variable(text, neutral-light)};
+      }
+    }
+
+    &--danger:not(.#{$prefix}-item-card--disabled) {
+      .#{$prefix}-item-card-title {
+        --#{$prefix}-item-card-title-color: #{palette.semantic-variable(text, error)};
+      }
     }
   }
 
@@ -287,11 +306,16 @@ $section-configs: (
   &-item-card-title {
     @include typography.semantic-variable(label-primary);
 
+    --#{$prefix}-item-card-title-color: #{palette.semantic-variable(text, neutral-solid)};
+
     overflow: hidden;
     font-feature-settings: 'liga' off, 'clig' off;
     text-overflow: ellipsis;
     transition: transition.standard(color, fast);
-    color: var(--#{$prefix}-item-card-title-color, currentColor);
+    color: var(
+      --#{$prefix}-item-card-title-color,
+      #{palette.semantic-variable(text, neutral-solid)}
+    );
   }
 
   &-item-card-description {

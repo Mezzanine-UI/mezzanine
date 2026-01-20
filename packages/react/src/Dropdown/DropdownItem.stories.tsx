@@ -14,12 +14,12 @@ export default {
 type Story = StoryObj<DropdownItemProps>;
 
 const actionsOptions: DropdownOption[] = [
-  { name: '顯示通知', id: 'notification', checkSite: 'prepend' },
-  { name: '電子郵件通知', id: 'email-notification', checkSite: 'prepend' },
-  { name: '啟用雙重驗證', id: 'enable-2fa', checkSite: 'prepend' },
-  { name: '自動備份', id: 'auto-backup', checkSite: 'prepend' },
-  { name: '深色模式', id: 'dark-mode', checkSite: 'prepend' },
-  { name: '自動更新', id: 'auto-update', checkSite: 'prepend' },
+  { name: '顯示通知', id: 'notification', checkSite: 'suffix' },
+  { name: '電子郵件通知', id: 'email-notification', checkSite: 'suffix' },
+  { name: '啟用雙重驗證', id: 'enable-2fa', checkSite: 'suffix' },
+  { name: '自動備份', id: 'auto-backup', checkSite: 'suffix' },
+  { name: '深色模式', id: 'dark-mode', checkSite: 'suffix' },
+  { name: '自動更新', id: 'auto-update', checkSite: 'suffix' },
 ]
 
 const iconsOptions: DropdownOption[] = [

@@ -1,6 +1,9 @@
-import { StoryObj, Meta } from '@storybook/react-webpack5';
-import { PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
-import Button, { ButtonSize, ButtonVariant, ButtonProps } from '.';
+import { DotHorizontalIcon, PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+
+import Button, { ButtonProps, ButtonSize, ButtonVariant } from '.';
+import { DropdownOption } from '..';
+import Dropdown from '../Dropdown';
 
 export default {
   title: 'Foundation/Button',
@@ -359,6 +362,22 @@ export const AsLink: Story = {
       >
         Disabled Link
       </Button>
+    </div>
+  ),
+};
+
+const dropdownOptions: DropdownOption[] = [
+  { id: '1', name: 'Option 1' },
+  { id: '2', name: 'Option 2' },
+  { id: '3', name: 'Option 3' },
+];
+
+export const WithDropdown: Story = {
+  render: () => (
+    <div>
+      <Dropdown options={dropdownOptions} placement="right-start">
+        <Button icon={DotHorizontalIcon} iconType="icon-only" variant="base-secondary" />
+      </Dropdown>
     </div>
   ),
 };

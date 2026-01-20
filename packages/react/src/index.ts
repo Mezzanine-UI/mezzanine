@@ -81,8 +81,6 @@ export { default as Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbItemProps, BreadcrumbProps } from './Breadcrumb';
 export { default as Drawer } from './Drawer';
 export type { DrawerPlacement, DrawerProps } from './Drawer';
-export { default as Dropdown } from './Dropdown';
-export type { DropdownProps } from './Dropdown';
 export { default as Menu, MenuDivider, MenuItem, MenuItemGroup } from './Menu';
 export type {
   MenuDividerProps,
@@ -93,12 +91,12 @@ export type {
 } from './Menu';
 export {
   default as Navigation,
-  NavigationOption,
-  NavigationHeader,
   NavigationFooter,
+  NavigationHeader,
   NavigationIconButton,
-  NavigationUserMenu,
+  NavigationOption,
   NavigationOptionCategory,
+  NavigationUserMenu,
 } from './Navigation';
 export type {
   NavigationChild,
@@ -427,8 +425,8 @@ export type {
   ModalFooterProps,
   ModalHeaderProps,
   ModalProps,
-  ModalStatusType,
   ModalSize,
+  ModalStatusType,
 } from './Modal';
 export { default as NotificationCenter } from './NotificationCenter';
 export type {
@@ -558,3 +556,34 @@ export type {
 /** Context */
 export { default as ConfigProvider, MezzanineConfig } from './Provider';
 export type { ConfigProviderProps, MezzanineConfigContext } from './Provider';
+
+/**
+ * internal
+ * only export dropdown related components
+ */
+export { default as Dropdown } from './Dropdown';
+export type { DropdownProps } from './Dropdown';
+export { default as DropdownAction } from './Dropdown/DropdownAction';
+export type { DropdownActionProps } from './Dropdown/DropdownAction';
+export { default as DropdownItem } from './Dropdown/DropdownItem';
+export type { DropdownItemProps } from './Dropdown/DropdownItem';
+export { default as DropdownItemCard } from './Dropdown/DropdownItemCard';
+export type { DropdownItemCardProps } from './Dropdown/DropdownItemCard';
+export { default as DropdownStatus } from './Dropdown/DropdownStatus';
+export type { DropdownStatusProps } from './Dropdown/DropdownStatus';
+
+export type {
+  DropdownCheckPosition,
+  DropdownInputPosition,
+  DropdownItemLevel,
+  DropdownItemSharedProps,
+  DropdownItemValidate,
+  DropdownMode,
+  DropdownOption,
+  DropdownOptionFlat,
+  DropdownOptionGrouped,
+  DropdownOptionsByType,
+  DropdownOptionTree,
+  DropdownStatus as DropdownStatusType,
+  DropdownType,
+} from '@mezzanine-ui/core/dropdown';
