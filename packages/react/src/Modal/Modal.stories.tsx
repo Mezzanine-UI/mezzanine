@@ -132,13 +132,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: {
         type: 'select',
       },
-      options: [
-        'standard',
-        'extended',
-        'extendedSplit',
-        'mediaPreview',
-        'verification',
-      ],
+      options: ['standard', 'extended', 'extendedSplit', 'verification'],
     },
     size: {
       control: {

@@ -67,4 +67,15 @@ export const modalClasses = {
   modalBodyVerificationInputError: `${modalPrefix}__body-verification__input--error`,
   modalBodyVerificationResend: `${modalPrefix}__body-verification__resend`,
   modalBodyVerificationResendLink: `${modalPrefix}__body-verification__resend-link`,
+
+  /** Media Preview */
+  mediaPreview: `${modalPrefix}--media-preview`,
+  mediaPreviewCloseButton: `${modalPrefix}__media-preview-close-button`,
+  mediaPreviewContent: `${modalPrefix}__media-preview-content`,
+  mediaPreviewMediaContainer: `${modalPrefix}__media-preview-media-container`,
+  mediaPreviewImage: `${modalPrefix}__media-preview-image`,
+  mediaPreviewNavButton: `${modalPrefix}__media-preview-nav-button`,
+  mediaPreviewNavButtonPrev: `${modalPrefix}__media-preview-nav-button--prev`,
+  mediaPreviewNavButtonNext: `${modalPrefix}__media-preview-nav-button--next`,
+  mediaPreviewPaginationIndicator: `${modalPrefix}__media-preview-pagination-indicator`,
 } as const;
