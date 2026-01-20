@@ -6,8 +6,6 @@ import {
 } from '../../__test-utils__/common';
 import Modal, { ModalHeader, ModalStatusType } from '.';
 
-import type { JSX } from 'react';
-
 window.scrollTo = jest.fn();
 
 describe('<ModalHeader />', () => {

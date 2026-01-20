@@ -1,6 +1,5 @@
 import { useContext } from 'react';
 import { ModalSize, modalClasses as classes } from '@mezzanine-ui/core/modal';
-import { TimesIcon } from '@mezzanine-ui/icons';
 import {
   cleanup,
   cleanupHook,

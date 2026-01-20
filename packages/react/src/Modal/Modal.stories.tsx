@@ -823,17 +823,14 @@ export const VerificationCodeInput: StoryObj = {
     }, []);
 
     const handleComplete4 = useCallback((value: string) => {
-      console.log('4-digit code completed:', value);
       alert(`Verification code entered: ${value}`);
     }, []);
 
     const handleComplete6 = useCallback((value: string) => {
-      console.log('6-digit code completed:', value);
       alert(`Verification code entered: ${value}`);
     }, []);
 
     const handleResend = useCallback(() => {
-      console.log('Resend verification code');
       alert('Verification code has been resent to your email!');
     }, []);
 
