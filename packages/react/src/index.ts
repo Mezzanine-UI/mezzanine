@@ -91,7 +91,15 @@ export type {
   MenuProps,
   MenuSize,
 } from './Menu';
-export { default as Navigation } from './Navigation';
+export {
+  default as Navigation,
+  NavigationOption,
+  NavigationHeader,
+  NavigationFooter,
+  NavigationIconButton,
+  NavigationUserMenu,
+  NavigationOptionCategory,
+} from './Navigation';
 export type {
   NavigationChild,
   NavigationChildren,
