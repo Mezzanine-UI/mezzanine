@@ -40,7 +40,11 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
           onClick={() => handleCollapseChange(!collapsed)}
           icon={SiderIcon}
         />
-        <BrandComponent className={classes.content} onClick={onBrandClick}>
+        <BrandComponent
+          type="button"
+          className={classes.content}
+          onClick={onBrandClick}
+        >
           {children}
           <span className={classes.title}>{title}</span>
         </BrandComponent>

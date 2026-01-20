@@ -139,6 +139,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               items.push(child as ReactElement<NavigationOptionCategoryProps>);
               break;
             case NavigationOption: {
+              level1Items.push(child as ReactElement<NavigationOptionProps>);
               items.push(child as ReactElement<NavigationOptionProps>);
               break;
             }
@@ -203,7 +204,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               {collapsed ? collapsedItems : items}
 
               {collapsed &&
-                visibleCount &&
+                visibleCount !== null &&
                 visibleCount < level1Items.length && (
                   <CollapsedMenu items={collapsedMenuItems} />
                 )}

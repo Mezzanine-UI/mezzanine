@@ -13,7 +13,6 @@ import {
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
 import {
   ChevronDownIcon,
-  ChevronRightIcon,
   ChevronUpIcon,
   IconDefinition,
 } from '@mezzanine-ui/icons';

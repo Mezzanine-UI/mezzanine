@@ -7,7 +7,6 @@ import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 
 export interface CollapsedMenuProps {
   items: NavigationChild[];
-  // onClose: () => void;
 }
 export const CollapsedMenu: FC<CollapsedMenuProps> = ({ items }) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -29,7 +28,7 @@ export const CollapsedMenu: FC<CollapsedMenuProps> = ({ items }) => {
         }}
       >
         <div className={classes.collapsedMenu}>
-          <span>{items}</span>
+          <ul>{items}</ul>
         </div>
       </Popper>
     </>
