@@ -54,19 +54,20 @@ type PageFooterStandardProps = PageFooterBaseProps & {
    */
   type?: 'standard';
   /**
-   * The supporting action name of PageFooter annotation.
+   * The text/label (children) for the supporting action button in the PageFooter annotation.
    */
   supportingActionName?: ButtonProps['children'];
   /**
-   * The supporting action type of PageFooter annotation.
+   * The HTML button type for the supporting action (e.g., 'button', 'submit', 'reset').
    */
   supportingActionType?: ButtonProps['type'];
   /**
-   * The supporting action onClick of PageFooter annotation.
+   * Click handler for the supporting action button in the PageFooter annotation.
    */
   supportingActionOnClick?: ButtonProps['onClick'];
   /**
-   * The supporting action variant of PageFooter annotation.
+   * Visual style variant of the supporting action button in the PageFooter
+   * (for example, 'base-ghost', 'base-secondary').
    * @default 'base-ghost'
    */
   supportingActionVariant?: ButtonProps['variant'];
@@ -83,7 +84,7 @@ type PageFooterOverflowProps = PageFooterBaseProps & {
    */
   supportingActionIcon?: ButtonProps['icon'];
   /**
-   * Dropdown props for the annotation button.
+   * Dropdown props for the supporting action button.
    */
   dropdownProps: Partial<DropdownProps>;
 };
@@ -153,8 +154,6 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
           return (
             <Dropdown
               {...dropdownProps}
-              maxHeight={dropdownProps.maxHeight}
-              onSelect={dropdownProps.onSelect}
               options={dropdownProps.options || []}
               placement={dropdownProps.placement || 'top'}
             >
