@@ -18,16 +18,6 @@ interface CommonModalProps
     Partial<Omit<ModalHeaderProps, 'children' | 'className' | 'title'>>,
     Partial<Omit<ModalFooterProps, 'children' | 'className' | 'confirmText'>> {
   /**
-   * Content for the left side in extendedSplit layout.
-   * Only used when modalType is 'extendedSplit'.
-   */
-  extendedSplitLeftSideContent?: React.ReactNode;
-  /**
-   * Content for the right side in extendedSplit layout.
-   * Only used when modalType is 'extendedSplit'.
-   */
-  extendedSplitRightSideContent?: React.ReactNode;
-  /**
    * Whether to force full screen on any breakpoint.
    * @default false
    */
@@ -52,6 +42,16 @@ interface CommonModalProps
 
 interface ExtendedSplitModalProps extends CommonModalProps {
   /**
+   * Content for the left side in extendedSplit layout.
+   * Required when modalType is 'extendedSplit'.
+   */
+  extendedSplitLeftSideContent: React.ReactNode;
+  /**
+   * Content for the right side in extendedSplit layout.
+   * Required when modalType is 'extendedSplit'.
+   */
+  extendedSplitRightSideContent: React.ReactNode;
+  /**
    * Controls the type/layout of the modal.
    * - 'extendedSplit': Modal with split layout (footer inside left content)
    */
@@ -65,6 +65,16 @@ interface ExtendedSplitModalProps extends CommonModalProps {
 }
 
 interface OtherModalProps extends CommonModalProps {
+  /**
+   * Content for the left side in extendedSplit layout.
+   * Cannot be provided when modalType is not 'extendedSplit'.
+   */
+  extendedSplitLeftSideContent?: never;
+  /**
+   * Content for the right side in extendedSplit layout.
+   * Cannot be provided when modalType is not 'extendedSplit'.
+   */
+  extendedSplitRightSideContent?: never;
   /**
    * Controls the type/layout of the modal.
    * - 'standard': Default modal with body container
