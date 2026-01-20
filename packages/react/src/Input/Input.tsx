@@ -18,6 +18,7 @@ import Dropdown from '../Dropdown';
 import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
+import { PopperPlacement } from '../Popper';
 import TextField, {
   TextFieldAffixProps,
   TextFieldInteractiveStateProps,
@@ -224,6 +225,18 @@ export type SelectInputProps = InputBaseProps & {
    * The onChange event handler of the dropdown.
    */
   onSelect?: (value: string) => void;
+  /**
+   * The width of the dropdown.
+   */
+  dropdownWidth?: number | string;
+  /**
+   * The max height of the dropdown.
+   */
+  dropdownMaxHeight?: number | string;
+  /**
+   * The placement of the dropdown.
+   */
+  dropdownPlacement?: PopperPlacement;
 };
 
 /**
@@ -511,20 +524,15 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       }
       case 'select': {
         const selectProps = props as SelectInputProps;
-        const { selectButton, options } = selectProps;
+        const { selectButton, options, dropdownWidth = 120, dropdownMaxHeight = 114 } = selectProps;
         const defaultOptions = options || [];
         const selectedOptions: DropdownOption[] = defaultOptions.length > 0
-          ? defaultOptions.map((option) => {
-            const item = {
-              ...option,
-            }
-
-            if (option.id === selectProps.selectedValue) {
-              item.checkSite = 'suffix';
-            }
-
-            return item;
-          })
+          ? defaultOptions.map((option) => ({
+            ...option,
+            ...(option.id === selectProps.selectedValue
+              ? { checkSite: 'suffix' }
+              : {}),
+          }))
           : [];
 
         if (
@@ -537,8 +545,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
             <Dropdown
               options={selectedOptions}
               value={selectProps.selectedValue}
-              customWidth={120}
-              maxHeight={114}
+              customWidth={dropdownWidth}
+              maxHeight={dropdownMaxHeight}
               placement="bottom-start"
               onSelect={(option) => {
                 selectProps.onSelect?.(option.id);
@@ -563,8 +571,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
             <Dropdown
               options={selectedOptions}
               value={selectProps.selectedValue}
-              customWidth={120}
-              maxHeight={114}
+              customWidth={dropdownWidth}
+              maxHeight={dropdownMaxHeight}
               placement="bottom-start"
               onSelect={(option) => {
                 selectProps.onSelect?.(option.id);
