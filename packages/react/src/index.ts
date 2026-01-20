@@ -462,8 +462,8 @@ export type { ResultStateActions, ResultStateProps } from './ResultState';
 /**
  * Others
  */
-export { default as Anchor } from './Anchor';
-export type { AnchorProps } from './Anchor';
+export { default as Anchor, AnchorGroup } from './Anchor';
+export type { AnchorGroupProps, AnchorProps } from './Anchor';
 export { default as Backdrop } from './Backdrop';
 export type { BackdropProps } from './Backdrop';
 
