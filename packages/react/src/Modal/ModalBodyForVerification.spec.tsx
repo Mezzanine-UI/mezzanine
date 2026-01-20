@@ -63,6 +63,7 @@ describe('<ModalBodyForVerification />', () => {
 
     it('should not auto focus when autoFocus=false', () => {
       const { getHostHTMLElement } = render(
+        // eslint-disable-next-line jsx-a11y/no-autofocus
         <ModalBodyForVerification autoFocus={false} />,
       );
       const element = getHostHTMLElement();
