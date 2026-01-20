@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactElement, Ref } from 'react';
+import { forwardRef, ReactElement } from 'react';
 import { anchorClasses as classes } from '@mezzanine-ui/core/anchor';
 import Anchor from './Anchor';
 import { AnchorItemData } from './AnchorItem';
@@ -22,7 +22,6 @@ type AnchorGroupBaseProps = AnchorGroupPropsWithAnchors | AnchorGroupPropsWithCh
 
 export type AnchorGroupProps = AnchorGroupBaseProps & {
   className?: string;
-  ref?: Ref<HTMLDivElement>;
 };
 
 /**
@@ -44,21 +43,22 @@ export type AnchorGroupProps = AnchorGroupBaseProps & {
  * ```
  */
 
-function AnchorGroup(props: AnchorGroupProps) {
-  const { ref, className } = props;
+const AnchorGroup = forwardRef<HTMLDivElement, AnchorGroupProps>(
+  function AnchorGroup(props, ref) {
+    const { className } = props;
 
-  const anchorItems: AnchorItemData[] =
-    'anchors' in props && props.anchors
-      ? props.anchors
-      : 'children' in props && props.children
-        ? parseChildren(props.children, Anchor)
-        : [];
+    const anchorItems: AnchorItemData[] =
+      'anchors' in props && props.anchors
+        ? props.anchors
+        : 'children' in props && props.children
+          ? parseChildren(props.children, Anchor)
+          : [];
 
-  return (
-    <div ref={ref} className={cx(classes.host, className)}>
-      <Anchor anchors={anchorItems} />
-    </div>
-  );
-}
+    return (
+      <div ref={ref} className={cx(classes.host, className)}>
+        <Anchor anchors={anchorItems} />
+      </div>
+    );
+  });
 
 export default AnchorGroup;
