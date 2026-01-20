@@ -151,6 +151,12 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   placement?: PopperPlacement;
   /**
+   * Custom width for the dropdown.
+   * Can be a number (pixels) or a string (e.g., '200px', '50%').
+   * If provided, this takes precedence over `sameWidth`.
+   */
+  customWidth?: number | string;
+  /**
    * Whether to set the same width as its anchor element.
    * @default false
    */
@@ -209,6 +215,7 @@ export default function Dropdown(props: DropdownProps) {
     isMatchInputValue = false,
     inputPosition = 'outside',
     placement = 'bottom',
+    customWidth,
     sameWidth = false,
     listboxId: listboxIdProp,
     listboxLabel,
@@ -266,9 +273,9 @@ export default function Dropdown(props: DropdownProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const isOpenControlled = openProp !== undefined;
   const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
-  const [uncontrolledActiveIndex, setUncontrolledActiveIndex] = useState<
-    number | null
-  >(activeIndexProp ?? null);
+  const [uncontrolledActiveIndex] = useState<number | null>(
+    activeIndexProp ?? null
+  );
   const isActiveIndexControlled = activeIndexProp !== undefined;
   const mergedActiveIndex = isActiveIndexControlled
     ? activeIndexProp
@@ -324,8 +331,29 @@ export default function Dropdown(props: DropdownProps) {
     return 'bottom';
   }, [inputPosition, placement]);
 
+  const customWidthMiddleware = useMemo(() => {
+    if (!customWidth) {
+      return null;
+    }
+
+    const widthValue = typeof customWidth === 'number'
+      ? `${customWidth}px`
+      : customWidth;
+
+    return {
+      name: 'customWidth',
+      fn: ({ elements }: { elements: { floating: HTMLElement } }) => {
+        Object.assign(elements.floating.style, {
+          width: widthValue,
+        });
+        return {};
+      },
+    };
+  }, [customWidth]);
+
   const sameWidthMiddleware = useMemo(() => {
-    if (!sameWidth) {
+    // If customWidth is set, don't apply sameWidth
+    if (customWidth || !sameWidth) {
       return null;
     }
 
@@ -336,7 +364,7 @@ export default function Dropdown(props: DropdownProps) {
         });
       },
     });
-  }, [sameWidth]);
+  }, [customWidth, sameWidth]);
 
   const offsetMiddleware = useMemo(() => {
     return offset({ mainAxis: 4 });
@@ -454,12 +482,9 @@ export default function Dropdown(props: DropdownProps) {
 
   const handleItemHover = useCallback(
     (index: number) => {
-      if (!isActiveIndexControlled) {
-        setUncontrolledActiveIndex(index);
-      }
       onItemHover?.(index);
     },
-    [isActiveIndexControlled, onItemHover],
+    [onItemHover],
   );
 
   // Extract shared DropdownItem props to avoid duplication
@@ -664,6 +689,7 @@ export default function Dropdown(props: DropdownProps) {
               middleware: [
                 offsetMiddleware,
                 zIndexMiddleware,
+                ...(customWidthMiddleware ? [customWidthMiddleware] : []),
                 ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
               ],
             }}

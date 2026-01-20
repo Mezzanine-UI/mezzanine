@@ -383,7 +383,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       if (hasChildren && level !== 2) {
         prependIcon = isExpanded ? CaretDownIcon : CaretRightIcon;
       }
-      const checkSite: DropdownCheckPosition = option.showCheckbox ? 'prepend' : 'none';
+      const checkSite: DropdownCheckPosition = option.showCheckbox ? 'prefix' : 'none';
       const shortcutText = option.shortcutText
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
