@@ -68,14 +68,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     margin-left: spacing.semantic-variable(padding, horizontal, tight);
     padding: spacing.semantic-variable(padding, vertical, tight)
       spacing.semantic-variable(padding, horizontal, tight);
-    height: 190px;
+    height: spacing.semantic-variable(size, container, slim);
     box-shadow: effect.variable(shadow, raised);
     border-radius: radius.variable(roomy);
-    background-color: #fff;
-
-    &__sub-menu {
-      width: spacing.semantic-variable(size, container, tight);
-    }
+    background-color: palette.semantic-variable('background', base);
   }
 }
 
