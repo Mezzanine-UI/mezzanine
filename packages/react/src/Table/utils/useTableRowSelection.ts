@@ -27,17 +27,26 @@ export function useTableRowSelection<
   );
 
   const parentOnChange: TableRowSelectionCheckbox<T>['onChange'] = useCallback(
-    (_, __, selectedRows) => {
-      setSelectedKeys(
+    (_, selectedRow, selectedRows) => {
+      setSelectedKeys((prev) =>
         selectedRows.map((row) => {
+          const isCurrentSelectedRow = row.key === selectedRow?.key;
           const subData = getSubData(row);
           const pk = getRowKey(row);
 
+          const subKeys = (() => {
+            if (isCurrentSelectedRow) {
+              return subData?.length
+                ? subData.map((subRow) => getRowKey(subRow))
+                : undefined;
+            }
+
+            return prev.find((item) => item.key === pk)?.subKeys;
+          })();
+
           return {
             key: pk,
-            subKeys: subData?.length
-              ? subData.map((subRow) => getRowKey(subRow))
-              : undefined,
+            subKeys,
           };
         }),
       );
