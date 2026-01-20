@@ -7,7 +7,7 @@ import Typography from '../Typography';
 
 export default {
   component: Modal,
-  title: 'V1/Modal',
+  title: 'Feedback/Modal',
 } as Meta<typeof Modal>;
 
 const severities: ModalStatusType[] = ['info', 'error', 'warning', 'success'];
