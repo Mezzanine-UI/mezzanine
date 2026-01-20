@@ -220,7 +220,7 @@ export {
   type UseTableDataSourceOptions,
 } from './Table';
 export { default as Tag, TagGroup } from './Tag';
-export type { TagProps, TagSize, TagGroupProps } from './Tag';
+export type { TagGroupProps, TagProps, TagSize } from './Tag';
 export { default as Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
 export {
@@ -254,6 +254,13 @@ export type {
 /**
  * Data Entry
  */
+export { default as AutoComplete } from './AutoComplete';
+export type {
+  AutoCompleteBaseProps,
+  AutoCompleteMultipleProps,
+  AutoCompleteProps,
+  AutoCompleteSingleProps,
+} from './AutoComplete';
 export { CheckAll, default as Checkbox, CheckboxGroup } from './Checkbox';
 export type {
   CheckAllProps,
@@ -325,7 +332,6 @@ export type {
   RadioSize,
 } from './Radio';
 export {
-  AutoComplete,
   Option,
   OptionGroup,
   default as Select,
@@ -335,7 +341,6 @@ export {
   TreeSelect,
 } from './Select';
 export type {
-  AutoCompleteProps,
   OptionGroupProps,
   OptionProps,
   SelectControl,
