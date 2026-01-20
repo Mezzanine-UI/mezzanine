@@ -25,8 +25,7 @@
 
     > .#{$prefix}__select-button:first-child,
     > .#{$prefix}__action-button:first-child,
-    > .mzn-dropdown:first-child > .#{$prefix}__select-button,
-    > .mzn-dropdown:first-child .#{$prefix}__select-button {
+    > .mzn-dropdown:first-child > .#{$prefix}__select-button {
       border-right: none;
       border-top-left-radius: radius.variable(base);
       border-bottom-left-radius: radius.variable(base);
@@ -43,8 +42,7 @@
 
     > .#{$prefix}__select-button:last-child,
     > .#{$prefix}__action-button:last-child,
-    > .mzn-dropdown:last-child > .#{$prefix}__select-button,
-    > .mzn-dropdown:last-child .#{$prefix}__select-button {
+    > .mzn-dropdown:last-child > .#{$prefix}__select-button {
       border-left: none;
       border-top-right-radius: radius.variable(base);
       border-bottom-right-radius: radius.variable(base);
