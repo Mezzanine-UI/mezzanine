@@ -1,48 +1,88 @@
-@use '~@mezzanine-ui/system/palette';
-@use '~@mezzanine-ui/system/transition';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/effect' as effect;
 @use '../button/utils' as btn-utils;
 @use './anchor' as *;
 
-$bar-width: 1px !default;
-$anchor-left-padding: 12px !default;
+$bar-width: 2px !default;
 
 .#{$prefix} {
+  position: relative;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
-  position: relative;
 
-  &__bar {
+  &::before {
+    content: '';
     position: absolute;
     left: 0;
     top: 0;
-    z-index: 0;
+    bottom: 0;
     width: $bar-width;
-    height: 100%;
-    background-color: palette.color(border);
+    background-color: palette.semantic-variable('border', neutral-faint);
+    pointer-events: none;
   }
 
-  &__anchor {
+  &__anchorItem {
     @include btn-utils.reset();
 
     display: inline-grid;
     position: relative;
-    z-index: 1;
     width: 100%;
-    border-left: $bar-width solid palette.color(border);
-    padding-left: $anchor-left-padding;
+    padding-left: calc(spacing.semantic-variable(gap, base) + $bar-width);
+    padding-top: spacing.semantic-variable(padding, vertical, calm);
+    padding-bottom: spacing.semantic-variable(padding, vertical, calm);
     text-align: left;
-    color: palette.color(action-inactive);
+    color: palette.semantic-variable(text, neutral);
     transition: transition.standard(border-left), transition.standard(color);
 
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: spacing.semantic-variable(gap, tight);
+      width: $bar-width;
+      height: calc(100% - 2 * spacing.semantic-variable(gap, tight));
+      background-color: palette.semantic-variable('border', neutral-faint);
+      transition: transition.standard(background-color);
+    }
+
     &:hover {
-      color: palette.color(primary);
+      color: palette.semantic-variable(text, neutral-solid);
     }
 
     &--active {
-      color: palette.color(primary);
-      border-left: $bar-width solid palette.color(primary);
+      color: palette.semantic-variable(text, brand);
+      position: relative;
+
+      &::before {
+        background-color: palette.semantic-variable(text, brand);
+      }
+    }
+
+    &--disabled {
+      color: palette.semantic-variable(text, neutral-light);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    &:focus-visible {
+      background-color: palette.semantic-variable(background, base);
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &__nested {
+    display: grid;
+    grid-template-columns: 1fr;
+
+    &--level-1 {
+      padding-left: spacing.semantic-variable(gap, spacious);
+    }
+
+    &--level-2 {
+      padding-left: spacing.semantic-variable(gap, loose);
     }
   }
 }
