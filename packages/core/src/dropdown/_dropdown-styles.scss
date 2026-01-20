@@ -110,7 +110,6 @@ $section-configs: (
 @mixin _apply-card-states() {
   @include _apply-card-state(enable);
 
-  &:hover:not(.#{$prefix}-item-card--disabled),
   &:hover:not(.#{$prefix}-item-card--active):not(.#{$prefix}-item-card--disabled) {
     @include _apply-card-state(hover);
   }
@@ -276,9 +275,7 @@ $section-configs: (
       }
     }
 
-    &--danger {
-      --#{$prefix}-item-card-title-color: palette.semantic-variable(text, error);
-
+    &--danger:not(.#{$prefix}-item-card--disabled) {
       .#{$prefix}-item-card-title {
         --#{$prefix}-item-card-title-color: #{palette.semantic-variable(text, error)};
       }
