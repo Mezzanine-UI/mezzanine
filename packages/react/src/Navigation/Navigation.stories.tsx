@@ -16,7 +16,6 @@ import NavigationIconButton from './NavigationIconButton';
 import NavigationUserMenu from './NavigationUserMenu';
 import Badge from '../Badge';
 import NavigationOptionCategory from './NavigationOptionCategory';
-import Input from '../Input';
 
 export default {
   title: 'Navigation/Navigation',
@@ -43,6 +42,7 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
         <NavigationOption title={'NavigationOption 1-2-1'} />
       </NavigationOption>
       <NavigationOption title={'NavigationOption 1-3'}>
+        <Badge variant="count-brand" count={5} />
         <NavigationOption title={'NavigationOption 1-3-1'} />
       </NavigationOption>
       <NavigationOption title={'NavigationOption 1-4'} />
@@ -59,13 +59,14 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
 
 export const All: StoryFn<NavigationProps> = () => {
   const [active, setActive] = useState<string[]>();
-  const [search, setSearch] = useState('');
   const [collapsed, setCollapsed] = useState(true);
 
   const navChildren = (hasIcon: boolean, hasLogo: boolean) => (
     <>
-      <Input value={search} onChange={(e) => setSearch(e.target.value)} />
-      <NavigationHeader title="Navigation">
+      <NavigationHeader
+        title="Navigation"
+        onBrandClick={() => alert('Brand clicked')}
+      >
         {hasLogo && (
           <span
             aria-label="logo"
@@ -122,10 +123,14 @@ export const All: StoryFn<NavigationProps> = () => {
           </NavigationOption>
         </NavigationOption>
         <NavigationOption
+          href="#option-4"
           title={'Option 4'}
           icon={hasIcon ? FolderIcon : undefined}
         />
         <NavigationOption
+          onTriggerClick={(path, href) => {
+            alert('Option 5 clicked' + path.join(' > ') + ', href: ' + href);
+          }}
           title={'Option 5'}
           icon={hasIcon ? FolderIcon : undefined}
         />
