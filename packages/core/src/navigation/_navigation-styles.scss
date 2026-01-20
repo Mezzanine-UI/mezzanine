@@ -23,13 +23,13 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
   &__content {
     box-sizing: border-box;
-    padding: spacing.semantic-variable(padding, vertical, base)
-      spacing.semantic-variable(padding, horizontal, comfort-fixed);
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tight-fixed);
     margin-right: -1px;
+    padding: spacing.semantic-variable(padding, vertical, base)
+      spacing.semantic-variable(padding, horizontal, comfort-fixed);
 
     > ul {
       @include utils.reset();
@@ -73,13 +73,16 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     spacing.semantic-variable(padding, horizontal, comfort-fixed)
     spacing.semantic-variable(padding, vertical, base);
   position: relative;
-  width: 100%;
+  width: calc(100% + 1px);
     flex-direction: row-reverse;
 
   &__content {
+    @include btn-utils.reset();
+
     align-items: center;
     color: palette.semantic-variable(text, neutral-solid);
     display: flex;
+    flex-grow: 1;
     gap: spacing.semantic-variable(gap, base);
     height: 100%;
   }
@@ -153,22 +156,22 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
 .#{$option-prefix} {
   align-items: center;
-  border: none;
   box-sizing: border-box;
   display: grid;
   flex-shrink: 1;
   gap: spacing.semantic-variable(gap, tight);
   height: unset;
-  outline: none;
   width: 100%;
 
   &__content {
     align-items: center;
     border-radius: radius.variable(base);
+    border: none;
     box-sizing: border-box;
-    overflow: hidden;
     cursor: pointer;
     display: flex;
+    outline: none;
+    overflow: hidden;
     width: 100%;
     gap: spacing.semantic-variable(gap, tight);
     padding: spacing.semantic-variable(padding, vertical, tight)
@@ -181,6 +184,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
       color: palette.semantic-variable(text, neutral-solid);
       line-height: #{$option-icon-size};
+      margin-right: auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -195,7 +199,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     .#{$option-prefix}__toggle-icon {
       color: palette.semantic-variable(icon, neutral);
       height: spacing.semantic-variable(size, element, slim);
-      margin-left: auto;
       width: spacing.semantic-variable(size, element, slim);
     }
 
