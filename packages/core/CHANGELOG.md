@@ -3,7 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.10...@mezzanine-ui/core@1.0.0-beta.3) (2026-01-20)
+
+### Bug Fixes
+
+- **core/autocomplete:** migrate v2 styles and exports ([a0a4c16](https://github.com/Mezzanine-UI/mezzanine/commit/a0a4c16d01a2e082a71e1c5d71d18eb764056081))
+- **core/button:** update button styles ([62e421e](https://github.com/Mezzanine-UI/mezzanine/commit/62e421e83e161f82bbfe31ef481baba4837838c5))
+- **core/dropdown:** add todo notice on the dropdown component ([23d9e94](https://github.com/Mezzanine-UI/mezzanine/commit/23d9e94381c410b5d13751764f2a8d0ec0973712))
+- **core/dropdown:** fix hover/active styles and update check position naming ([47b7e18](https://github.com/Mezzanine-UI/mezzanine/commit/47b7e18af9d10f9c9a9406002b44f967cc5b89b3))
+- **core/dropdown:** optimize hover selector and danger styles ([1fdb87f](https://github.com/Mezzanine-UI/mezzanine/commit/1fdb87fe973d2779312a3161d719b28efa070c4a))
+- **core/dropdown:** refine dropdown state tokens ([4b051f4](https://github.com/Mezzanine-UI/mezzanine/commit/4b051f44378723d755180d4cc8d7efb6a4c8cd54))
+- **core/input:** fix select button styles when wrapped in dropdown ([854fad3](https://github.com/Mezzanine-UI/mezzanine/commit/854fad37799d82c4b6f6c52857f1407992167d9d))
+- **core/input:** remove redundant descendant selectors ([08cb825](https://github.com/Mezzanine-UI/mezzanine/commit/08cb8255b756687aa8781a49cb8cef43a8081aee))
+- **core/modal:** corrects missing semicolon in SCSS ([644b0c1](https://github.com/Mezzanine-UI/mezzanine/commit/644b0c118541a4b66b4c76058c352ff9fdc29502))
+- **core/modal:** updates modal focus state ([3ea3a39](https://github.com/Mezzanine-UI/mezzanine/commit/3ea3a39863a69e9afabf4f86465be2a9bba9edf5))
+- **core/navigation:** pr styles issue ([c8cedc0](https://github.com/Mezzanine-UI/mezzanine/commit/c8cedc0ae285926889e1e9723ae3ba39f2cfeccf))
+- **react/modal:** fix icon imports ([59007fb](https://github.com/Mezzanine-UI/mezzanine/commit/59007fb08129685103c3cbc3bbe98395729c33b2))
+
+### Features
+
+- **core/anchor:** enhance styles and update class structure for improved layout ([178d03d](https://github.com/Mezzanine-UI/mezzanine/commit/178d03d9d3359529dceba25096e139ffe66fc80b))
+- **core/anchor:** rename anchor class to anchorItem for consistency and clarity ([fb2d1cb](https://github.com/Mezzanine-UI/mezzanine/commit/fb2d1cb30fdabdeedd479694ee266c47d60f6982))
+- **core/navigation:** header logo order ([fb5f255](https://github.com/Mezzanine-UI/mezzanine/commit/fb5f255fd83871273add4d9e6abe51968901dec9))
+- **core/notification-center:** rename notification folder to notification-center ([5f9e2d4](https://github.com/Mezzanine-UI/mezzanine/commit/5f9e2d4d05911f2bdf87a035819f7d858605d377))
+- **core/notificationCenter:** replace Notification with NotificationCenter ([4e5bc0d](https://github.com/Mezzanine-UI/mezzanine/commit/4e5bc0ddf2bb161141998819efe3fa82cf73aaeb))
+- **modal:** adds modal body verification component ([1cefe00](https://github.com/Mezzanine-UI/mezzanine/commit/1cefe00468c65a1412bba0ba8eb1f06ae32616e5))
+- **modal:** update modal component styles and functionality ([fb971a4](https://github.com/Mezzanine-UI/mezzanine/commit/fb971a4daec8fb43cde52eb73a7e7e815d6b33d0))
+- **react/anchor:** remove index.tsx access of AnchorItem ([f18b1ab](https://github.com/Mezzanine-UI/mezzanine/commit/f18b1ab27f899f3d9fbf591cb5d26d268c751b12))
+
 # [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.9...@mezzanine-ui/core@1.0.0-canary.10) (2026-01-19)
+
 # [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.1...@mezzanine-ui/core@1.0.0-beta.2) (2026-01-09)
 
 ### Bug Fixes

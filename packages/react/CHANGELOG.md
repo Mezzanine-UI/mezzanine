@@ -3,11 +3,73 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.10...@mezzanine-ui/react@1.0.0-beta.3) (2026-01-20)
+
+### Bug Fixes
+
+- **react/autoComplete:** add missing hook files for AutoComplete component ([17aadc2](https://github.com/Mezzanine-UI/mezzanine/commit/17aadc28378c67fd18e1ded8fda8e3b356bdda92))
+- **react/AutoComplete:** add standalone v2 component ([5a2be5f](https://github.com/Mezzanine-UI/mezzanine/commit/5a2be5f16535c8ff2fc05dae7899e41b52cb659d))
+- **react/autocomplete:** fix autocomplete type setting ([86034ca](https://github.com/Mezzanine-UI/mezzanine/commit/86034cac837584de30dd49301aa7a7ad6c1d143b))
+- **react/autoComplete:** fix DOM ID conflicts, addable without onInsert, and permanent New badge ([aa3af18](https://github.com/Mezzanine-UI/mezzanine/commit/aa3af18f4bddbfcd7cec0262d1c4a3fedc1b5a8f))
+- **react/autoComplete:** improve code quality and fix type issues ([bb31dc8](https://github.com/Mezzanine-UI/mezzanine/commit/bb31dc8c7b428ebb09911331610318b787433a6a))
+- **react/autoComplete:** keep New label after item creation ([b856939](https://github.com/Mezzanine-UI/mezzanine/commit/b856939119f5ecbec8542685ef0f4fb8c87668c8))
+- **react/button:** export dropdown components and add button dropdown example ([42d26e3](https://github.com/Mezzanine-UI/mezzanine/commit/42d26e35fd0bf924d8c19405c75febf0aeb3ab94))
+- **react/dropdown:** add customWidth prop and fix selection indicator ([9446809](https://github.com/Mezzanine-UI/mezzanine/commit/944680993355e98cf7a2ae29a84f2cb8606b2134))
+- **react/dropdown:** improve shortcut formatting and rendering ([cccc08a](https://github.com/Mezzanine-UI/mezzanine/commit/cccc08a0a9da1400df0bb4848ae5f7ce88983318))
+- **react/dropdown:** improve type safety and null checks ([10c38eb](https://github.com/Mezzanine-UI/mezzanine/commit/10c38eb39753fe1c443f55957fcf3c28398f5cd7))
+- **react/dropdown:** restore setter for uncontrolled mode ([85beab9](https://github.com/Mezzanine-UI/mezzanine/commit/85beab96a1cc64710743514970751baf5b647704))
+- **react/index:** move Dropdown to internal exports ([97f8da5](https://github.com/Mezzanine-UI/mezzanine/commit/97f8da597e2a1caf8ea6c95040bc6b1668ccf0a3))
+- **react/input:** implement dropdown selection for SelectInput variant ([5440a34](https://github.com/Mezzanine-UI/mezzanine/commit/5440a3493aad8f8be692b5f9f3b44f8a81767366))
+- **react/input:** optimize code and add dropdown customization props ([ad6143a](https://github.com/Mezzanine-UI/mezzanine/commit/ad6143a433467e195011c226a82251732b114bf7))
+- **react/modal:** fix modal body test case error ([673832a](https://github.com/Mezzanine-UI/mezzanine/commit/673832a90438d532da61259f62ca181a959fcbe6))
+- **react/navigation:** pr issue ([95ab6ec](https://github.com/Mezzanine-UI/mezzanine/commit/95ab6ecf7e9b84610066d78f5d91af811d23deb7))
+- **react/navigation:** pr issue ([5021b9e](https://github.com/Mezzanine-UI/mezzanine/commit/5021b9ed46e6e3c65fdfa788c0b7c8b020b499e8))
+- **react/notification-center:** fix onViewAll callback not executing and key prop warning ([950401e](https://github.com/Mezzanine-UI/mezzanine/commit/950401e6d96ccc8751493afc5e4334c5c3986316))
+- **react/notification-center:** fix unit tests and change notificationList reference to key ([b00e586](https://github.com/Mezzanine-UI/mezzanine/commit/b00e586ff1a1c758ad7173e8a06d68822f646814))
+- **react/page-footer:** page footer supporting action props updated ([e2d7659](https://github.com/Mezzanine-UI/mezzanine/commit/e2d7659914b05bfcabef8ef10d65786899682707))
+- **react/page-footer:** update documents ([45b4148](https://github.com/Mezzanine-UI/mezzanine/commit/45b4148328407e9d85b6064ebb2a4f883fc43298))
+- **react/table:** change expansion and drag feature order ([e5bc159](https://github.com/Mezzanine-UI/mezzanine/commit/e5bc159567dbd457d5a16c23edb8979bc3a0ef0e))
+- **react/table:** fix table action cell icon usage ([eaf8206](https://github.com/Mezzanine-UI/mezzanine/commit/eaf820673347dbc77adfe46432908f711f632f8b))
+- **react/table:** fix useTableRowSelection parentOnChange behavior ([753e0e4](https://github.com/Mezzanine-UI/mezzanine/commit/753e0e429c0c62b5506de9e8bbaed2045e0b3563))
+
+### Features
+
+- **core/navigation:** add badge support ([cd92ca0](https://github.com/Mezzanine-UI/mezzanine/commit/cd92ca0107ca3942d027a38f11cbf62465933978))
+- **modal:** adds modal body verification component ([1cefe00](https://github.com/Mezzanine-UI/mezzanine/commit/1cefe00468c65a1412bba0ba8eb1f06ae32616e5))
+- **modal:** improve verification and focus behavior ([78b49f1](https://github.com/Mezzanine-UI/mezzanine/commit/78b49f195d4d93cc9e491045706e787593b2d960))
+- **modal:** update modal component styles and functionality ([fb971a4](https://github.com/Mezzanine-UI/mezzanine/commit/fb971a4daec8fb43cde52eb73a7e7e815d6b33d0))
+- **react/anchor:** add 'use client' directive to Anchor and AnchorItem ([c4e997e](https://github.com/Mezzanine-UI/mezzanine/commit/c4e997ef6a1246ac7de6ce8fbf2875cc05e3f860))
+- **react/anchor:** add autoScrollTo prop to AnchorItem for control scrolling behavior ([6537a31](https://github.com/Mezzanine-UI/mezzanine/commit/6537a31fc72d7a4f87e0217200e7b84d44db2ec2))
+- **react/anchor:** add disabled anchors and update MAX_LEVEL constant for better clarity ([a031100](https://github.com/Mezzanine-UI/mezzanine/commit/a0311001511dd3a90b53cf2bec4e3dce4eba7f56))
+- **react/anchor:** add event.preventDefault() in handleClick of AnchorItem ([ed710ab](https://github.com/Mezzanine-UI/mezzanine/commit/ed710ab3d8248bc127498f487986905bad3d1dd2))
+- **react/anchor:** add title property ([1896b24](https://github.com/Mezzanine-UI/mezzanine/commit/1896b24569e316262762391376e9febaa6c3b310))
+- **react/anchor:** add unit tests for extractTextContent & parseChildren ([3daa24c](https://github.com/Mezzanine-UI/mezzanine/commit/3daa24c5dd88cdf7a710b69506d14dea307f15fe))
+- **react/anchor:** Anchor stories to use typed StoryObj ([72fd001](https://github.com/Mezzanine-UI/mezzanine/commit/72fd00180d7853e8605a44ffdbb32d51e946addc))
+- **react/anchor:** enhance All story layout with nested anchors and improved styling ([c6291a7](https://github.com/Mezzanine-UI/mezzanine/commit/c6291a74764b3fae73e11a49bc50451e8834187d))
+- **react/anchor:** enhance Anchor and AnchorItem with improved documentation ([6593a26](https://github.com/Mezzanine-UI/mezzanine/commit/6593a26383c8d32d55e089dd86ca5878a44039be))
+- **react/anchor:** enhance Anchor component with onClick handling and improve utility functions for parsing children ([fc596a0](https://github.com/Mezzanine-UI/mezzanine/commit/fc596a0f102e5678a69453f476c1aca57be39d89))
+- **react/anchor:** enhance type definitions and improve parsing logic in Anchor component ([1a321bf](https://github.com/Mezzanine-UI/mezzanine/commit/1a321bf68ce2eed1d653aaee879e66cb0f1c40cf))
+- **react/anchor:** implement hash tracking and smooth scrolling for anchor items ([d9f0090](https://github.com/Mezzanine-UI/mezzanine/commit/d9f0090f6d0af8ef674a281ebb0c6937b86b3c52))
+- **react/anchor:** refactor Anchor component and introduce AnchorItem ([25c338f](https://github.com/Mezzanine-UI/mezzanine/commit/25c338f981182bd994ca0e02fc57daa5cebbbc0f))
+- **react/anchor:** refactor Anchor component to support nested structure and enhance props handling ([39e4e0a](https://github.com/Mezzanine-UI/mezzanine/commit/39e4e0a990df185562b826e918725e6979ce6544))
+- **react/anchor:** update Anchor and AnchorItem interfaces order ([61b93cd](https://github.com/Mezzanine-UI/mezzanine/commit/61b93cd158dbe8ee1dec41abe3f84c3fffa7e871))
+- **react/anchor:** update Anchor and AnchorItem to use consistent anchor identifiers and improve prop handling ([7ec4a7f](https://github.com/Mezzanine-UI/mezzanine/commit/7ec4a7f66920f2da0e37d602090f31b4aa88ee05))
+- **react/anchor:** update documentation for Anchor and AnchorItem components ([085d090](https://github.com/Mezzanine-UI/mezzanine/commit/085d090243ef8e1913de0331ec3450b313b9ffa3))
+- **react/button:** integrate tooltip with button and apply when in icon only ([df8e8fe](https://github.com/Mezzanine-UI/mezzanine/commit/df8e8fe1edf021af2141a25be999d4a3dba42daf))
+- **react/navigation:** add collapse-menu ([4e63ba0](https://github.com/Mezzanine-UI/mezzanine/commit/4e63ba0395296d8d50a1895207c1dd3911b3e63d))
+- **react/navigation:** add onBrandClick ([e688b68](https://github.com/Mezzanine-UI/mezzanine/commit/e688b687dc940f9c93b3890ec3d047532f2b229c))
+- **react/navigation:** export navigation items ([d914b19](https://github.com/Mezzanine-UI/mezzanine/commit/d914b19a3b29f094182230ac4dc1371ec24d4c15))
+- **react/navigation:** header logo order ([247f2ae](https://github.com/Mezzanine-UI/mezzanine/commit/247f2ae4e2fe16be7c55da3723e76733dec2fdeb))
+- **react/notification-center:** update imports to use notification-center path ([4acb9a5](https://github.com/Mezzanine-UI/mezzanine/commit/4acb9a5e09b10610a44dd6bdb1cf7a6fee60dac0))
+- **react/notificationCenter:** replace Notification with NotificationCenter ([91476b9](https://github.com/Mezzanine-UI/mezzanine/commit/91476b99e96341b902f7e3c30d84e6c3dee50056))
+- **react/src:** export AnchorGroup and AnchorGroupProps ([ddcbfb8](https://github.com/Mezzanine-UI/mezzanine/commit/ddcbfb8002879cc724ba78ee4b08d374ebe21400))
+
 # [1.0.0-canary.10](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.9...@mezzanine-ui/react@1.0.0-canary.10) (2026-01-19)
 
 ### Bug Fixes
 
 - **core/dropdown:** remove unused code and fix list width styling ([9917880](https://github.com/Mezzanine-UI/mezzanine/commit/99178807632c0bc0cf3583d509d9ac53d78c5ea2))
+
 # [1.0.0-beta.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.1...@mezzanine-ui/react@1.0.0-beta.2) (2026-01-09)
 
 ### Bug Fixes
