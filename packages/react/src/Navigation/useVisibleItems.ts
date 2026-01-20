@@ -24,7 +24,7 @@ export function useVisibleItems(items: NavigationChild[], collapsed: boolean) {
 
       const option = contentEl.querySelector('.mzn-navigation-option--level-1');
 
-      const optionHeight = (option?.clientHeight || 0) + 4;
+      const optionHeight = option?.clientHeight || 0;
       const optionsGapTightFixed = 4;
 
       if (optionHeight === 0) {
