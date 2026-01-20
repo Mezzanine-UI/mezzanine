@@ -273,9 +273,11 @@ export default function Dropdown(props: DropdownProps) {
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const isOpenControlled = openProp !== undefined;
   const isOpen = isOpenControlled ? !!openProp : uncontrolledOpen;
-  const [uncontrolledActiveIndex] = useState<number | null>(
-    activeIndexProp ?? null
-  );
+  // Keep setter for uncontrolled mode support (e.g., keyboard navigation)
+  // Currently not used in handleItemHover to prevent style conflicts
+  const [uncontrolledActiveIndex, _setUncontrolledActiveIndex] = useState<
+    number | null
+  >(activeIndexProp ?? null);
   const isActiveIndexControlled = activeIndexProp !== undefined;
   const mergedActiveIndex = isActiveIndexControlled
     ? activeIndexProp
