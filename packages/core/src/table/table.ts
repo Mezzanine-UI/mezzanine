@@ -12,6 +12,7 @@ export const tableCellPrefix = `${tablePrefix}__cell`;
 export const tableResizeHandlePrefix = `${tablePrefix}__resize-handle`;
 
 export const tableClasses = {
+  actionsCell: `${tableCellPrefix}__actions`,
   body: tableBodyPrefix,
   bodyCell: `${tableBodyPrefix}__cell`,
   bodyRow: `${tableBodyPrefix}__row`,
@@ -391,9 +392,13 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
 }
 
 /**
- * Single action item configuration for table row actions
+ * Button action item configuration for table row actions
  */
-export interface TableActionItem<T extends TableDataSource = TableDataSource> {
+export interface TableActionItemButton<
+  T extends TableDataSource = TableDataSource,
+> {
+  /** Action type - button (default) */
+  type?: 'button';
   /** Button label text */
   name?: string;
   /** Button icon */
@@ -407,6 +412,47 @@ export interface TableActionItem<T extends TableDataSource = TableDataSource> {
   /** Button custom variant */
   variant?: ButtonVariant;
 }
+
+/**
+ * Dropdown action item configuration for table row actions
+ */
+export interface TableActionItemDropdown<
+  T extends TableDataSource = TableDataSource,
+> {
+  /** Action type - dropdown */
+  type: 'dropdown';
+  /** Button label text */
+  name?: string;
+  /** Button icon
+   * @default DotHorizontalIcon
+   */
+  icon?: IconDefinition;
+  /** Button icon type */
+  iconType?: ButtonIconType;
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Callback when a dropdown option is selected */
+  onSelect: (option: DropdownOption, record: T, index: number) => void;
+  /** Dynamic disabled state based on row data */
+  disabled?: (record: T) => boolean;
+  /** Button custom variant */
+  variant?: ButtonVariant;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /**
+   * Dropdown placement relative to trigger
+   * @default 'bottom-end'
+   */
+  placement?: Placement;
+}
+
+/**
+ * Single action item configuration for table row actions.
+ * Can be either a button or a dropdown.
+ */
+export type TableActionItem<T extends TableDataSource = TableDataSource> =
+  | TableActionItemButton<T>
+  | TableActionItemDropdown<T>;
 
 /**
  * Base actions column configuration

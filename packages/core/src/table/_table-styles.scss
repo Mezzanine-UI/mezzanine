@@ -452,6 +452,12 @@ $z-index-config: (
     display: block;
     word-break: break-all;
   }
+
+  &__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
 }
 
 .#{$prefix}__drag-handle-cell {
