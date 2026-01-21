@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  DRAG_HANDLE_COLUMN_WIDTH,
-  DRAG_HANDLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   SELECTION_COLUMN_WIDTH,
@@ -24,8 +24,8 @@ export interface FixedOffsetInfo {
 export interface UseTableFixedOffsetsReturn {
   /** Get offset info for a specific column by key */
   getColumnOffset: (key: string) => FixedOffsetInfo | null;
-  /** Get offset info for drag handle column */
-  getDragHandleOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for drag or pin handle column */
+  getDragOrPinHandleOffset: () => FixedOffsetInfo | null;
   /** Get offset info for selection column */
   getSelectionOffset: () => FixedOffsetInfo | null;
   /** Get offset info for expansion column */
@@ -59,7 +59,7 @@ export function useTableFixedOffsets(
 ): UseTableFixedOffsetsReturn {
   const {
     expansionLeftPadding = 0,
-    hasDragHandleFixed: parentHasDragHandleFixed,
+    hasDragOrPinHandleFixed: parentHasDragOrPinHandleFixed,
   } = useTableSuperContext();
   const { actionConfig, columns, getResizedColumnWidth } = props;
 
@@ -69,10 +69,10 @@ export function useTableFixedOffsets(
   );
 
   const {
-    hasDragHandle,
+    hasDragOrPinHandle,
     hasExpansion,
     hasSelection,
-    dragHandleFixed,
+    dragOrPinHandleFixed,
     expansionFixed,
     selectionFixed,
   } = actionConfig;
@@ -80,8 +80,8 @@ export function useTableFixedOffsets(
   useEffect(() => {
     const innerMap = new Map<string, number>();
 
-    if (hasDragHandle || parentHasDragHandleFixed) {
-      innerMap.set(DRAG_HANDLE_KEY, DRAG_HANDLE_COLUMN_WIDTH);
+    if (hasDragOrPinHandle || parentHasDragOrPinHandleFixed) {
+      innerMap.set(DRAG_OR_PIN_HANDLE_KEY, DRAG_OR_PIN_HANDLE_COLUMN_WIDTH);
     }
 
     if (hasExpansion) {
@@ -93,7 +93,12 @@ export function useTableFixedOffsets(
     }
 
     setMeasuredWidths(innerMap);
-  }, [hasDragHandle, hasExpansion, hasSelection, parentHasDragHandleFixed]);
+  }, [
+    hasDragOrPinHandle,
+    hasExpansion,
+    hasSelection,
+    parentHasDragOrPinHandleFixed,
+  ]);
 
   // Get width for a column (prioritize measured, then computed, then defined, then fallback)
   const getWidth = useCallback(
@@ -133,8 +138,11 @@ export function useTableFixedOffsets(
       startKeys.push(EXPANSION_KEY);
     }
 
-    if ((hasDragHandle && dragHandleFixed) || parentHasDragHandleFixed) {
-      startKeys.push(DRAG_HANDLE_KEY);
+    if (
+      (hasDragOrPinHandle && dragOrPinHandleFixed) ||
+      parentHasDragOrPinHandleFixed
+    ) {
+      startKeys.push(DRAG_OR_PIN_HANDLE_KEY);
     }
 
     if (hasSelection && selectionFixed) {
@@ -153,14 +161,14 @@ export function useTableFixedOffsets(
 
     return { fixedEndKeys: endKeys, fixedStartKeys: startKeys };
   }, [
-    hasDragHandle,
-    dragHandleFixed,
+    hasDragOrPinHandle,
+    dragOrPinHandleFixed,
     hasExpansion,
     expansionFixed,
     hasSelection,
     selectionFixed,
     columns,
-    parentHasDragHandleFixed,
+    parentHasDragOrPinHandleFixed,
   ]);
 
   // Calculate all fixed offsets
@@ -200,8 +208,8 @@ export function useTableFixedOffsets(
       keys.push(EXPANSION_KEY);
     }
 
-    if (hasDragHandle) {
-      keys.push(DRAG_HANDLE_KEY);
+    if (hasDragOrPinHandle) {
+      keys.push(DRAG_OR_PIN_HANDLE_KEY);
     }
 
     if (hasSelection) {
@@ -213,7 +221,7 @@ export function useTableFixedOffsets(
     });
 
     return keys;
-  }, [hasDragHandle, hasSelection, hasExpansion, columns]);
+  }, [hasDragOrPinHandle, hasSelection, hasExpansion, columns]);
 
   const originalPositions = useMemo(() => {
     const positions = new Map<string, number>();
@@ -326,12 +334,15 @@ export function useTableFixedOffsets(
     [fixedOffsets],
   );
 
-  const getDragHandleOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasDragHandle || !actionConfig.dragHandleFixed) {
+  const getDragOrPinHandleOffset = useCallback((): FixedOffsetInfo | null => {
+    if (
+      !actionConfig.hasDragOrPinHandle ||
+      !actionConfig.dragOrPinHandleFixed
+    ) {
       return null;
     }
 
-    return fixedOffsets.startOffsets.get(DRAG_HANDLE_KEY) ?? null;
+    return fixedOffsets.startOffsets.get(DRAG_OR_PIN_HANDLE_KEY) ?? null;
   }, [actionConfig, fixedOffsets]);
 
   const getSelectionOffset = useCallback((): FixedOffsetInfo | null => {
@@ -354,14 +365,14 @@ export function useTableFixedOffsets(
   return useMemo(
     () => ({
       getColumnOffset,
-      getDragHandleOffset,
+      getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
       shouldShowShadow,
     }),
     [
       getColumnOffset,
-      getDragHandleOffset,
+      getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
       shouldShowShadow,

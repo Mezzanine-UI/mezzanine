@@ -60,6 +60,16 @@ export interface TableDraggableState {
   fixed?: boolean | 'start';
 }
 
+/** Pinnable state */
+export interface TablePinnableState<
+  T extends TableDataSource = TableDataSource,
+> {
+  enabled: boolean;
+  fixed?: boolean;
+  pinnedRowKeys: string[];
+  onPinChange: (record: T, pinned: boolean) => void;
+}
+
 /** Highlight state for hover effects */
 export interface TableHighlightState {
   columnIndex: number | null;
@@ -79,6 +89,7 @@ export interface TableContextValue<
   emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
   fixedOffsets?: UseTableFixedOffsetsReturn;
+  pinnable?: TablePinnableState;
   resizable?: boolean;
   rowHeight: number;
   highlight?: TableHighlightState;
@@ -142,7 +153,7 @@ export interface TableSuperContextValue {
   getResizedColumnWidth?: (key: string) => number | undefined;
   scrollLeft?: number;
   expansionLeftPadding?: number;
-  hasDragHandleFixed?: boolean;
+  hasDragOrPinHandleFixed?: boolean;
 }
 
 export const TableSuperContext = createContext<TableSuperContextValue | null>(

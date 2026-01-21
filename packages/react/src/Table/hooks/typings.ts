@@ -1,8 +1,10 @@
 export interface ActionColumnConfig {
-  /** Whether drag handle column exists */
-  hasDragHandle: boolean;
-  /** Whether drag handle is fixed */
-  dragHandleFixed: boolean;
+  /** Whether drag or pin handle column exists */
+  hasDragOrPinHandle: boolean;
+  /** Whether drag or pin handle is fixed */
+  dragOrPinHandleFixed: boolean;
+  /** The type of drag or pin handle: 'drag' or 'pin' */
+  dragOrPinHandleType?: 'drag' | 'pin';
   /** Whether selection column exists */
   hasSelection: boolean;
   /** Whether selection is fixed */

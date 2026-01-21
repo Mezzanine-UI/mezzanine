@@ -28,6 +28,7 @@ export {
   type TableDataSourceWithKey,
   type TableDraggable,
   type TableExpandable,
+  type TablePinnable,
   type TableRecord,
   type TableRowSelection,
   type TableRowSelectionBase,
@@ -37,15 +38,18 @@ export {
   type TableSelectionMode,
   type TableSize,
 } from '@mezzanine-ui/core/table';
-export {
-  default,
-  type TableBaseProps,
-  type TableResizableProps,
-  type TableNonResizableProps,
-  type TableVirtualizedProps,
-  type TableNonVirtualizedProps,
-  type TableProps,
-} from './Table';
+export { default } from './Table';
+export type {
+  TableBaseProps,
+  TableDraggableOnlyProps,
+  TableNoDragOrPinProps,
+  TableNonResizableProps,
+  TableNonVirtualizedProps,
+  TablePinnableOnlyProps,
+  TableProps,
+  TableResizableProps,
+  TableVirtualizedProps,
+} from './typings';
 export {
   TableContext,
   TableDataContext,

@@ -2,14 +2,14 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
-  TABLE_ACTIONS_KEY,
-  DRAG_HANDLE_COLUMN_WIDTH,
-  DRAG_HANDLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   getRowKey,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
+  TABLE_ACTIONS_KEY,
   tableClasses as classes,
   type FixedType,
   type TableDataSource,
@@ -24,7 +24,7 @@ import {
 } from '../TableContext';
 import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
-import { TableDragHandleCell } from './TableDragHandleCell';
+import { TableDragOrPinHandleCell } from './TableDragOrPinHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableSelectionCell } from './TableSelectionCell';
 import { composeRefs } from '../../utils/composeRefs';
@@ -54,6 +54,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       expansion,
       fixedOffsets,
       highlight,
+      pinnable,
       rowHeight,
       selection,
       separatorAtRowIndexes,
@@ -102,7 +103,8 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       // Calculate action columns total width
       let actionColumnsWidth = 0;
 
-      if (draggable?.enabled) actionColumnsWidth += DRAG_HANDLE_COLUMN_WIDTH;
+      if (draggable?.enabled || pinnable?.enabled)
+        actionColumnsWidth += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
       if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
       if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
 
@@ -119,6 +121,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       draggable?.enabled,
       expansion,
       getResizedColumnWidth,
+      pinnable?.enabled,
       selection,
     ]);
 
@@ -143,30 +146,37 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       highlight?.setHoveredCell(null, null);
     }, [highlight]);
 
-    const renderDragHandleCell = () => {
-      if (!draggable?.enabled) return null;
+    const renderDragOrPinHandleCell = () => {
+      const isDragMode = draggable?.enabled;
+      const isPinMode = pinnable?.enabled;
 
-      const offsetInfo = fixedOffsets?.getDragHandleOffset();
-      const isFixed = !!draggable.fixed;
+      if (!isDragMode && !isPinMode) return null;
+
+      const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
+      const isFixed = isDragMode ? !!draggable?.fixed : !!pinnable?.fixed;
       const showShadow =
         isFixed &&
         fixedOffsets?.shouldShowShadow(
-          DRAG_HANDLE_KEY,
+          DRAG_OR_PIN_HANDLE_KEY,
           scrollLeft ?? 0,
           containerWidth ?? 0,
         );
 
       return (
-        <TableDragHandleCell
+        <TableDragOrPinHandleCell
           dragHandleProps={
-            draggableProvided?.dragHandleProps as
-              | Record<string, unknown>
-              | undefined
+            isDragMode
+              ? (draggableProvided?.dragHandleProps as
+                  | Record<string, unknown>
+                  | undefined)
+              : undefined
           }
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
+          mode={isDragMode ? 'drag' : 'pin'}
+          record={record}
           showShadow={showShadow ?? false}
-          width={isDragging ? DRAG_HANDLE_COLUMN_WIDTH : undefined}
+          width={isDragging ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -314,7 +324,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
         style={resolvedStyle}
       >
         {renderExpandCell()}
-        {renderDragHandleCell()}
+        {renderDragOrPinHandleCell()}
         {renderSelectionCell()}
         {renderCells()}
       </tr>

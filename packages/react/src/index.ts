@@ -224,6 +224,11 @@ export {
   type TableVirtualizedProps,
   type UpdateDataSourceOptions,
   type UseTableDataSourceOptions,
+  type TableDraggableOnlyProps,
+  type TableNoDragOrPinProps,
+  type TableNonResizableProps,
+  type TablePinnableOnlyProps,
+  type TableResizableProps,
 } from './Table';
 export { default as Tag, TagGroup } from './Tag';
 export type { TagGroupProps, TagProps, TagSize } from './Tag';

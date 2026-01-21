@@ -10,20 +10,12 @@ import {
 } from 'react';
 import throttle from 'lodash/throttle';
 import {
-  TableSize,
   tableClasses as classes,
   TABLE_ACTIONS_KEY,
-  type HighlightMode,
-  type TableActions,
-  type TableActionsWithMinWidth,
   type TableColumn,
-  type TableColumnWithMinWidth,
   type TableDataSource,
-  type TableDraggable,
-  type TableExpandable,
-  type TableRowSelection,
+  type TablePinnable,
   type TableRowSelectionCheckbox,
-  type TableScroll,
   type TableBulkActions as TableBulkActionsType,
 } from '@mezzanine-ui/core/table';
 import {
@@ -33,159 +25,27 @@ import {
   DropResult,
 } from '@hello-pangea/dnd';
 import { cx } from '../utils/cx';
-import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import {
   TableContext,
   TableDataContext,
   TableSuperContext,
   type TableContextValue,
 } from './TableContext';
-import type { TableTransitionState } from './hooks/useTableDataSource';
 import { TableBody } from './components/TableBody';
 import { TableColGroup } from './components/TableColGroup';
 import { TableHeader } from './components/TableHeader';
-import {
-  TablePagination as TablePaginationComponent,
-  TablePaginationProps,
-} from './components/TablePagination';
+import { TablePagination as TablePaginationComponent } from './components/TablePagination';
 import { useTableResizedColumns } from './hooks/useTableResizedColumns';
 import { useTableExpansion } from './hooks/useTableExpansion';
 import { useTableFixedOffsets } from './hooks/useTableFixedOffsets';
 import { useTableScroll } from './hooks/useTableScroll';
 import { useTableSelection } from './hooks/useTableSelection';
 import { useTableSorting } from './hooks/useTableSorting';
-import type { EmptyProps } from '../Empty';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import TableBulkActions from './components/TableBulkActions';
 import { useComposeRefs } from '../hooks/useComposeRefs';
-
-export interface TableBaseProps<T extends TableDataSource = TableDataSource>
-  extends Omit<
-    NativeElementPropsWithoutKeyAndRef<'table'>,
-    'children' | 'draggable' | 'summary' | 'onChange'
-  > {
-  /** Data source */
-  dataSource: T[];
-  /** Props for Empty component when no data */
-  emptyProps?: EmptyProps & { height?: number | string };
-  /** Expandable row configuration */
-  expandable?: TableExpandable<T>;
-  /**
-   * Whether the table should stretch to fill its container width.
-   * When true, the table will always be 100% width of its container.
-   * Note: If the sum of all column widths is less than the table width,
-   * columns will be proportionally stretched to fill the remaining space.
-   * @default false
-   */
-  fullWidth?: boolean;
-  /** Highlight mode for hover effects
-   * @default 'row'
-   */
-  highlight?: HighlightMode;
-  /** Loading state */
-  loading?: boolean;
-  /** Number of rows to display when loading */
-  loadingRowsCount?: number;
-  /** Minimum height of the table */
-  minHeight?: number | string;
-  /**
-   * Whether the table is nested inside an expanded row content area
-   */
-  nested?: boolean;
-  /** Pagination configuration */
-  pagination?: TablePaginationProps;
-  /**
-   * Row height preset token.
-   */
-  rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
-  /** Row selection configuration */
-  rowSelection?: TableRowSelection<T>;
-  /** Row indexes where a separator border should be displayed */
-  separatorAtRowIndexes?: number[];
-  /** Show header row */
-  showHeader?: boolean;
-  /** Custom size variant
-   * @default 'main'
-   */
-  size?: TableSize;
-  /** Whether to enable sticky header
-   *  @default true
-   */
-  sticky?: boolean;
-  /** Transition state for row add/remove animations (from useTableDataSource hook) */
-  transitionState?: TableTransitionState;
-  /** Enable zebra striping for alternating row backgrounds */
-  zebraStriping?: boolean;
-}
-
-/**
- * Props when resizable is enabled.
- * Requires minWidth on all columns.
- */
-export interface TableResizableProps<
-  T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
-  /** Actions column configuration - minWidth required when resizable */
-  actions?: TableActionsWithMinWidth<T>;
-  /** Column configuration - minWidth required for each column when resizable */
-  columns: TableColumnWithMinWidth<T>[];
-  /**
-   * Whether columns are resizable by user interaction
-   */
-  resizable: true;
-}
-
-/**
- * Props when resizable is disabled or not specified.
- */
-export interface TableNonResizableProps<
-  T extends TableDataSource = TableDataSource,
-> extends TableBaseProps<T> {
-  /** Actions column configuration */
-  actions?: TableActions<T>;
-  /** Column configuration */
-  columns: TableColumn<T>[];
-  /**
-   * Whether columns are resizable by user interaction
-   * @default false
-   */
-  resizable?: false;
-}
-
-/**
- * Props when virtualized scrolling is enabled.
- * Draggable is not allowed in this mode.
- */
-export type TableVirtualizedProps<T extends TableDataSource = TableDataSource> =
-  (TableResizableProps<T> | TableNonResizableProps<T>) & {
-    /** Draggable row configuration - not available when virtualized is enabled */
-    draggable?: never;
-    /** Scroll configuration with virtualized enabled */
-    scroll: TableScroll & { virtualized: true; y: number | string };
-  };
-
-/**
- * Props when virtualized scrolling is disabled or not specified.
- * Draggable is allowed in this mode.
- */
-export type TableNonVirtualizedProps<
-  T extends TableDataSource = TableDataSource,
-> = (TableResizableProps<T> | TableNonResizableProps<T>) & {
-  /** Draggable row configuration */
-  draggable?: TableDraggable<T>;
-  /** Scroll configuration for scrolling (virtualized defaults to false) */
-  scroll?: TableScroll & { virtualized?: false };
-};
-
-/**
- * TableProps - discriminated union to ensure draggable and virtualized
- * scrolling are mutually exclusive at the type level, and resizable
- * requires minWidth on all columns.
- */
-export type TableProps<T extends TableDataSource = TableDataSource> =
-  | TableVirtualizedProps<T>
-  | TableNonVirtualizedProps<T>;
+import type { TableProps, TableNonVirtualizedProps } from './typings';
 
 function TableInner<T extends TableDataSource = TableDataSource>(
   props: TableProps<T>,
@@ -206,6 +66,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     minHeight,
     nested = false,
     pagination,
+    pinnable,
     resizable = false,
     rowHeightPreset = 'base',
     rowSelection,
@@ -218,7 +79,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     zebraStriping,
     separatorAtRowIndexes,
     ...restProps
-  } = props as TableNonVirtualizedProps<T>;
+  } = props as TableNonVirtualizedProps<T> & { pinnable?: TablePinnable };
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const composedHostRef = useComposeRefs([ref, hostRef]);
@@ -322,7 +183,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Feature: Expansion */
   const expansionState = useTableExpansion({
     expandable,
-    hasDragHandle: !!draggable?.enabled,
+    hasDragOrPinHandle: !!draggable?.enabled || !!pinnable?.enabled,
   });
 
   /** Feature: Column resized */
@@ -348,14 +209,26 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Feature: Column fixed */
   const actionConfig = useMemo(
     () => ({
-      hasDragHandle: !!draggable?.enabled,
-      dragHandleFixed: !!draggable?.fixed,
+      hasDragOrPinHandle: !!draggable?.enabled || !!pinnable?.enabled,
+      dragOrPinHandleFixed: !!draggable?.fixed || !!pinnable?.fixed,
+      dragOrPinHandleType: draggable?.enabled
+        ? ('drag' as const)
+        : pinnable?.enabled
+          ? ('pin' as const)
+          : undefined,
       hasExpansion: !!expandable,
       expansionFixed: !!expandable?.fixed,
       hasSelection: !!rowSelection,
       selectionFixed: !!rowSelection?.fixed,
     }),
-    [draggable?.enabled, draggable?.fixed, expandable, rowSelection],
+    [
+      draggable?.enabled,
+      draggable?.fixed,
+      pinnable?.enabled,
+      pinnable?.fixed,
+      expandable,
+      rowSelection,
+    ],
   );
 
   const fixedOffsetsState = useTableFixedOffsets({
@@ -399,6 +272,19 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     [draggable],
   );
 
+  const pinnableState = useMemo(
+    () =>
+      pinnable
+        ? {
+            enabled: pinnable.enabled,
+            fixed: pinnable.fixed,
+            pinnedRowKeys: pinnable.pinnedRowKeys,
+            onPinChange: pinnable.onPinChange,
+          }
+        : undefined,
+    [pinnable],
+  );
+
   /** Context values */
   const contextValue = useMemo(
     () => ({
@@ -409,6 +295,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       emptyProps,
       expansion: expansionState as TableContextValue['expansion'],
       fixedOffsets: fixedOffsetsState,
+      pinnable: pinnableState,
       resizable,
       rowHeight,
       highlight: highlightValue,
@@ -434,6 +321,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       emptyProps,
       expansionState,
       fixedOffsetsState,
+      pinnableState,
       resizable,
       rowHeight,
       highlightValue,
@@ -467,7 +355,9 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       getResizedColumnWidth: columnState.getResizedColumnWidth,
       scrollLeft: scrollLeft,
       expansionLeftPadding: expansionState?.expansionLeftPadding ?? 0,
-      hasDragHandleFixed: !!draggable?.enabled && draggable.fixed,
+      hasDragOrPinHandleFixed:
+        (!!draggable?.enabled && draggable.fixed) ||
+        (!!pinnable?.enabled && pinnable.fixed),
     }),
     [
       scrollLeft,
@@ -476,6 +366,8 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       columnState.getResizedColumnWidth,
       draggable?.enabled,
       draggable?.fixed,
+      pinnable?.enabled,
+      pinnable?.fixed,
     ],
   );
 

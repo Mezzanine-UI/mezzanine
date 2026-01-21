@@ -5,6 +5,10 @@ export {
 export { TableBody, type TableBodyProps } from './TableBody';
 export { TableCell, type TableCellProps } from './TableCell';
 export { TableColGroup, type TableColGroupProps } from './TableColGroup';
+export {
+  TableDragOrPinHandleCell,
+  type TableDragOrPinHandleCellProps,
+} from './TableDragOrPinHandleCell';
 export { TableExpandCell, type TableExpandCellProps } from './TableExpandCell';
 export {
   TableExpandedRow,

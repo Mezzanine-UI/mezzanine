@@ -1137,6 +1137,40 @@ export const DraggableRows: Story = {
   },
 };
 
+export const PinnableRows: Story = {
+  render: function PinnableRowsStory() {
+    const [pinnedRowKeys, setPinnedRowKeys] = useState<string[]>([]);
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 16px' }}>
+          Click the pin icon to pin/unpin rows.
+        </p>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          pinnable={{
+            enabled: true,
+            onPinChange: (record, pinned) => {
+              if (pinned) {
+                setPinnedRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setPinnedRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            pinnedRowKeys,
+          }}
+          scroll={{
+            y: 300,
+          }}
+        />
+      </div>
+    );
+  },
+};
+
 export const HighlightMode: Story = {
   render: function HighlightMode() {
     const [mode, setMode] = useState<'row' | 'cell' | 'column' | 'cross'>(
