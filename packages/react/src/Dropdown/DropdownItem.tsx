@@ -447,11 +447,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
 
-      let checkSite: DropdownCheckPosition = 'none';
-
-      if (option?.checkSite) {
-        checkSite = option.checkSite;
-      }
+      const checkSite: DropdownCheckPosition = option?.checkSite ?? 'none';
 
       return (
         <DropdownItemCard
