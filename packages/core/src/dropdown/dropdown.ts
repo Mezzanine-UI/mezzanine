@@ -141,6 +141,7 @@ export const dropdownClasses = {
   root: `${dropdownPrefix}`,
   inputPosition: (inputPosition: DropdownInputPosition) =>
     `${dropdownPrefix}--${inputPosition}`,
+  popperWithPortal: `${dropdownPrefix}-popper--with-portal`,
   // dropdown list
   list: `${dropdownPrefix}-list`,
   listWrapper: `${dropdownPrefix}-list-wrapper`,

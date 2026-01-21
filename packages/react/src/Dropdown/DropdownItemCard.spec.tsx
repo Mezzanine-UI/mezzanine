@@ -90,19 +90,19 @@ describe('DropdownItemCard', () => {
   });
 
   describe('multiple mode', () => {
-    it('should render checkbox when mode is multiple and checkSite is prepend', () => {
+    it('should render checkbox when mode is multiple and checkSite is prefix', () => {
       render(
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
-          checkSite="suffix"
+          checkSite="prefix"
         />
       );
       const checkbox = screen.getByRole('checkbox');
       expect(checkbox).toBeInTheDocument();
     });
 
-    it('should render checked icon when mode is multiple and checkSite is append and checked', () => {
+    it('should render checked icon when mode is multiple and checkSite is suffix and checked', () => {
       const { container } = render(
         <DropdownItemCard
           {...defaultProps}
@@ -145,7 +145,7 @@ describe('DropdownItemCard', () => {
 
   describe('controlled vs uncontrolled', () => {
     it('should use controlled checked state', () => {
-      render(
+      const { container } = render(
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
@@ -153,12 +153,12 @@ describe('DropdownItemCard', () => {
           checked={true}
         />
       );
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
+      const icon = container.querySelector('.mzn-icon[data-icon-name="checked"]');
+      expect(icon).toBeInTheDocument();
     });
 
     it('should use uncontrolled checked state with defaultChecked', () => {
-      render(
+      const { container } = render(
         <DropdownItemCard
           {...defaultProps}
           mode="multiple"
@@ -166,8 +166,8 @@ describe('DropdownItemCard', () => {
           defaultChecked={true}
         />
       );
-      const checkbox = screen.getByRole('checkbox');
-      expect(checkbox).toBeChecked();
+      const icon = container.querySelector('.mzn-icon[data-icon-name="checked"]');
+      expect(icon).toBeInTheDocument();
     });
   });
 

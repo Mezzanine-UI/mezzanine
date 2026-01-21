@@ -594,9 +594,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         // Multiple mode: show checkbox at prepend
         // Single mode: show checked icon at append when selected
         if (mode === 'multiple') {
-          result.checkSite = 'prepend';
+          result.checkSite = 'prefix';
         } else {
-          result.checkSite = 'append';
+          result.checkSite = 'suffix';
         }
 
         // Set shortcutText to "New" for created items (persists even after selection)

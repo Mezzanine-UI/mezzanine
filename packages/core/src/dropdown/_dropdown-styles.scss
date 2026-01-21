@@ -204,6 +204,10 @@ $section-configs: (
     line-height: 0;
   }
 
+  &-popper--with-portal {
+    pointer-events: auto;
+  }
+
   // dropdown items
   &-list {
     @include _apply-section(list);

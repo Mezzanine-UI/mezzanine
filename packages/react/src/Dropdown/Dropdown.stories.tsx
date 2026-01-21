@@ -1,7 +1,7 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ChangeEvent, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
 
 import { DotVerticalIcon } from '@mezzanine-ui/icons';
 
@@ -345,7 +345,7 @@ export const Inside: Story = {
   render: () => {
     const ExampleComponent = () => {
       const [inputValue, setInputValue] = useState('');
-      const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(null);
+      const [open, setOpen] = useState(false);
 
       const filteredOptions = useMemo(() => {
         const keyword = inputValue.trim().toLowerCase();
@@ -356,39 +356,45 @@ export const Inside: Story = {
       }, [inputValue]);
 
       return (
-        <div style={{ maxWidth: 320 }}>
-          <Dropdown
-            inputPosition="inside"
-            isMatchInputValue
-            maxHeight={360}
-            onSelect={(option) => {
-              setSelectedOption(option);
-              setInputValue(option.name);
-            }}
-            sameWidth
-            options={filteredOptions}
-          >
-            <TextField
-              suffix={
-                selectedOption ? (
-                  <Tag
-                    color="primary"
-                    label={selectedOption.name}
-                    style={{ marginInlineEnd: 8 }}
-                  />
-                ) : null
-              }
-            >
-              {({ paddingClassName }: { paddingClassName: string }) => (
-                <input
-                  className={paddingClassName}
-                  onChange={(event: ChangeEvent<HTMLInputElement>) => setInputValue(event.target.value)}
-                  placeholder="輸入關鍵字..."
-                  value={inputValue}
-                />
-              )}
-            </TextField>
-          </Dropdown>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '24px',
+            maxWidth: '400px',
+          }}
+        >
+          <div>
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexDirection: 'column' }}>
+              <div style={{ flex: 1 }}>
+                <Dropdown
+                  inputPosition="inside"
+                  isMatchInputValue
+                  maxHeight={360}
+                  onSelect={(option) => {
+                    setInputValue(option.name);
+                  }}
+                  onVisibilityChange={setOpen}
+                  open={open}
+                  options={filteredOptions}
+                  followText={inputValue}
+                  sameWidth
+                >
+                  <TextField>
+                    {({ paddingClassName }) => (
+                      <input
+                        className={paddingClassName}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="請選擇或輸入..."
+                        type="text"
+                        value={inputValue}
+                      />
+                    )}
+                  </TextField>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
         </div>
       );
     };
@@ -425,6 +431,7 @@ export const PlacementExample: Story = {
             options={simpleOptions}
             placement={placement}
             value={value}
+            disablePortal={false}
             onSelect={(option) => {
               setValue(option.id);
             }}

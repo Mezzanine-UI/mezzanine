@@ -100,10 +100,10 @@ describe('DropdownItem', () => {
   });
 
   describe('multiple mode', () => {
-    it('should render checkboxes in multiple mode with checkSite suffix', () => {
+    it('should render checkboxes in multiple mode with checkSite prefix', () => {
       const optionsWithCheckbox: DropdownOption[] = [
-        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'suffix' },
-        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'suffix' },
+        { id: '1', name: 'Option 1', checkSite: 'prefix' },
+        { id: '2', name: 'Option 2', checkSite: 'prefix' },
       ];
       render(
         <DropdownItem
@@ -119,8 +119,8 @@ describe('DropdownItem', () => {
 
     it('should mark selected options as checked', () => {
       const optionsWithCheckbox: DropdownOption[] = [
-        { id: '1', name: 'Option 1', showCheckbox: true, checkSite: 'suffix' },
-        { id: '2', name: 'Option 2', showCheckbox: true, checkSite: 'suffix' },
+        { id: '1', name: 'Option 1', checkSite: 'prefix' },
+        { id: '2', name: 'Option 2', checkSite: 'prefix' },
       ];
       render(
         <DropdownItem
