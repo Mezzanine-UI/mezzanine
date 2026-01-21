@@ -1328,7 +1328,7 @@ export const Combined: Story = {
         </div>
         <Table<DataType>
           actions={{
-            fixed: 'end',
+            // fixed: 'end',
             render: (record) => [
               {
                 name: 'Edit',
@@ -1337,16 +1337,33 @@ export const Combined: Story = {
                 onClick: () => {},
               },
               {
-                name: 'Delete',
-                icon: TrashIcon,
-                iconType: 'leading',
-                variant: 'destructive-primary',
-                onClick: () => handleDelete(record),
+                type: 'dropdown',
+                options: [
+                  { id: 'copy', name: 'Copy', icon: CopyIcon },
+                  {
+                    id: 'download',
+                    name: 'Download',
+                    icon: DownloadIcon,
+                    showUnderline: true,
+                  },
+                  {
+                    id: 'Delete',
+                    name: 'Delete',
+                    icon: TrashIcon,
+                    validate: 'danger',
+                  },
+                ],
+                onSelect: (option) => {
+                  if (option.id === 'Delete') {
+                    handleDelete(record);
+                    return;
+                  }
+                },
               },
             ],
             variant: 'base-primary',
-            width: 180,
-            minWidth: 180,
+            width: 220,
+            minWidth: 220,
           }}
           columns={combinedColumns}
           dataSource={dataSource}
@@ -1354,7 +1371,7 @@ export const Combined: Story = {
             expandedRowRender: (record) => (
               <Table<DataType>
                 actions={{
-                  fixed: 'end',
+                  // fixed: 'end',
                   render: (subRecord) => [
                     {
                       name: 'Edit',
@@ -1363,16 +1380,33 @@ export const Combined: Story = {
                       onClick: () => {},
                     },
                     {
-                      name: 'Delete',
-                      icon: TrashIcon,
-                      iconType: 'leading',
-                      variant: 'destructive-primary',
-                      onClick: () => handleDelete(subRecord),
+                      type: 'dropdown',
+                      options: [
+                        { id: 'copy', name: 'Copy', icon: CopyIcon },
+                        {
+                          id: 'download',
+                          name: 'Download',
+                          icon: DownloadIcon,
+                          showUnderline: true,
+                        },
+                        {
+                          id: 'Delete',
+                          name: 'Delete',
+                          icon: TrashIcon,
+                          validate: 'danger',
+                        },
+                      ],
+                      onSelect: (option) => {
+                        if (option.id === 'Delete') {
+                          handleDelete(subRecord);
+                          return;
+                        }
+                      },
                     },
                   ],
                   variant: 'base-primary',
-                  width: 180,
-                  minWidth: 180,
+                  width: 220,
+                  minWidth: 220,
                 }}
                 columns={combinedColumns}
                 dataSource={record.subData || []}

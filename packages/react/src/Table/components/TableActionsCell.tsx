@@ -5,12 +5,15 @@ import {
   getCellAlignClass,
   tableClasses as classes,
   type TableActionsBase,
+  type TableActionItemButton,
+  type TableActionItemDropdown,
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
 import { cx } from '../../utils/cx';
 import { useTableContext } from '../TableContext';
 import Button from '../../Button';
-import ButtonGroup from '../../Button/ButtonGroup';
+import Dropdown from '../../Dropdown';
+import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 
 export interface TableActionsCellProps<
   T extends TableDataSource = TableDataSource,
@@ -151,24 +154,56 @@ const TableActionsCellInner = forwardRef<
       style={cellStyle}
     >
       <div className={cx(classes.cellContent, alignClass)}>
-        <ButtonGroup size="sub" variant={actions.variant}>
-          {actionItems.map((item) => {
+        <div className={classes.actionsCell}>
+          {actionItems.map((item, actionIndex) => {
             const isDisabled = item.disabled?.(record) ?? false;
+            const baseKey = `${item.name || 'name'}-${item.icon?.name || 'icon'}-${rowIndex}-${actionIndex}`;
+
+            if (item.type === 'dropdown') {
+              const dropdownItem = item as TableActionItemDropdown;
+
+              return (
+                <Dropdown
+                  key={baseKey}
+                  type="default"
+                  maxHeight={dropdownItem.maxHeight}
+                  onSelect={(option) =>
+                    dropdownItem.onSelect(option, record, rowIndex)
+                  }
+                  options={dropdownItem.options}
+                  placement={dropdownItem.placement ?? 'bottom-end'}
+                >
+                  <Button
+                    iconType="icon-only"
+                    icon={dropdownItem?.icon ?? DotHorizontalIcon}
+                    size="sub"
+                    type="button"
+                    variant={dropdownItem.variant ?? 'base-text-link'}
+                  >
+                    {dropdownItem.name}
+                  </Button>
+                </Dropdown>
+              );
+            }
+
+            // Default to button type
+            const buttonItem = item as TableActionItemButton;
 
             return (
               <Button
                 disabled={isDisabled}
-                icon={item.icon}
-                key={`${item.name || 'name'}-${item.icon?.name || 'icon'}-${rowIndex}`}
-                onClick={() => item.onClick(record, rowIndex)}
+                icon={buttonItem.icon}
+                key={baseKey}
+                onClick={() => buttonItem.onClick(record, rowIndex)}
+                size="sub"
                 type="button"
-                variant={item.variant}
+                variant={buttonItem.variant ?? actions.variant}
               >
-                {item.name}
+                {buttonItem.name}
               </Button>
             );
           })}
-        </ButtonGroup>
+        </div>
       </div>
     </td>
   );
