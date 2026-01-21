@@ -460,13 +460,13 @@ $z-index-config: (
   }
 }
 
-.#{$prefix}__drag-handle-cell {
+.#{$prefix}__drag-or-pin-handle-cell {
   box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
 }
 
-.#{$prefix}__drag-handle {
+.#{$prefix}__drag-or-pin-handle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -474,6 +474,19 @@ $z-index-config: (
 
   &:active {
     cursor: grabbing;
+  }
+}
+
+.#{$prefix}__pin-handle-icon {
+  @include button-utils.reset();
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:active {
+    cursor: pointer;
   }
 }
 

@@ -41,8 +41,9 @@ export const tableClasses = {
   cellFixedStart: `${tableCellPrefix}--fixed-start`,
   cellHighlight: `${tableCellPrefix}--highlight`,
   main: `${tablePrefix}--main`,
-  dragHandle: `${tablePrefix}__drag-handle`,
-  dragHandleCell: `${tablePrefix}__drag-handle-cell`,
+  dragOrPinHandle: `${tablePrefix}__drag-or-pin-handle`,
+  dragOrPinHandleCell: `${tablePrefix}__drag-or-pin-handle-cell`,
+  pinHandleIcon: `${tablePrefix}__pin-handle-icon`,
   empty: `${tablePrefix}__empty`,
   emptyRow: `${tablePrefix}__empty-row`,
   expandCell: `${tablePrefix}__expand-cell`,
@@ -375,6 +376,21 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   ) => void;
 }
 
+/** Pinnable configuration */
+export interface TablePinnable<T extends TableDataSource = TableDataSource> {
+  /** Enable pin to top functionality */
+  enabled: boolean;
+  /** Fixed position of pin handle column */
+  fixed?: boolean;
+  /**
+   * Callback when pin state changes.
+   * Users are responsible for sorting the dataSource based on pinned state.
+   */
+  onPinChange: (record: T, pinned: boolean) => void;
+  /** Array of pinned row keys */
+  pinnedRowKeys: string[];
+}
+
 /** Expandable configuration */
 export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   /** Render function for expanded row content */
@@ -507,10 +523,10 @@ export function getCellAlignClass(align?: ColumnAlign): string {
 }
 
 // default values
-export const DRAG_HANDLE_KEY = '__mzn-drag-handle__';
+export const DRAG_OR_PIN_HANDLE_KEY = '__mzn-drag-or-pin-handle__';
 export const SELECTION_KEY = '__mzn-selection__';
 export const EXPANSION_KEY = '__mzn-expansion__';
 export const TABLE_ACTIONS_KEY = '__mzn-table-actions__';
-export const DRAG_HANDLE_COLUMN_WIDTH = 40;
+export const DRAG_OR_PIN_HANDLE_COLUMN_WIDTH = 40;
 export const SELECTION_COLUMN_WIDTH = 40;
 export const EXPANSION_COLUMN_WIDTH = 40;
