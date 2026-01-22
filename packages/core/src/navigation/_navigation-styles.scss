@@ -62,16 +62,132 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       display: none;
     }
   }
+}
 
-  &__collapsed-menu {
-    display: grid;
-    margin-left: spacing.semantic-variable(padding, horizontal, tight);
+.#{$overflow-menu-prefix} {
+  margin-left: spacing.semantic-variable(padding, horizontal, tight);
+  box-shadow: effect.variable(shadow, raised);
+  border-radius: radius.variable(roomy);
+  background-color: palette.semantic-variable('background', base);
+  height: fit-content;
+  width: fit-content;
+  display: flex;
+
+  &__content {
+    display: flex;
+    overflow-y: hidden;
+    width: fit-content;
+
+    $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
+    $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
+
+    height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$sub-menu-item-height} * 5.5 + #{$sub-menu-item-gap} * 5);
+  }
+
+  &__sub-menu {
+    margin: spacing.semantic-variable(padding, vertical, tight) 0;
+    padding: 0 spacing.semantic-variable(padding, horizontal, tight);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    width: spacing.semantic-variable(size, container, tight);
+    gap: spacing.semantic-variable(gap, tiny);
+  }
+}
+
+
+.#{$overflow-menu-option-prefix} {
+  align-items: center;
+  box-sizing: border-box;
+  display: grid;
+  flex-shrink: 1;
+  gap: spacing.semantic-variable(gap, tight);
+  height: unset;
+  width: 100%;
+
+  &__content {
+    align-items: center;
+    border-radius: radius.variable(base);
+    border: none;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: flex;
+    outline: none;
+    overflow: hidden;
+    width: 100%;
+    gap: spacing.semantic-variable(gap, tight);
     padding: spacing.semantic-variable(padding, vertical, tight)
-      spacing.semantic-variable(padding, horizontal, tight);
-    height: spacing.semantic-variable(size, container, slim);
-    box-shadow: effect.variable(shadow, raised);
-    border-radius: radius.variable(roomy);
-    background-color: palette.semantic-variable('background', base);
+      spacing.semantic-variable(padding, horizontal, tight-fixed);
+    transition: transition.standard(background-color, fast), transition.standard(color, fast);
+    text-decoration: none;
+
+    .#{$overflow-menu-option-prefix}__title {
+      @include typography.semantic-variable(label-secondary, (line-height));
+
+      color: palette.semantic-variable(text, neutral-solid);
+      line-height: spacing.semantic-variable(size, element, base);
+      margin-right: auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .#{$overflow-menu-option-prefix}__icon {
+      color: palette.semantic-variable(icon, neutral);
+      height: #{$option-icon-size};
+      width: #{$option-icon-size};
+    }
+
+    .#{$overflow-menu-option-prefix}__toggle-icon {
+      color: palette.semantic-variable(icon, neutral);
+      height: spacing.semantic-variable(size, element, slim);
+      width: spacing.semantic-variable(size, element, slim);
+    }
+
+    &:hover {
+      .#{$overflow-menu-option-prefix}__icon,
+      .#{$overflow-menu-option-prefix}__toggle-icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
+
+      background-color: palette.semantic-variable('background', neutral-faint);
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &--active.#{$overflow-menu-option-prefix}--open {
+    .#{$overflow-menu-option-prefix}__content {
+      background-color: palette.semantic-variable('background', brand-ghost);
+    }
+  }
+
+  &--active {
+    .#{$overflow-menu-option-prefix}__content {
+      .#{$overflow-menu-option-prefix}__title {
+        color: palette.semantic-variable(text, brand);
+      }
+
+      .#{$overflow-menu-option-prefix}__icon {
+        color: palette.semantic-variable(icon, brand);
+      }
+    }
+  }
+
+  &--active.#{$overflow-menu-option-prefix}--basic {
+    .#{$overflow-menu-option-prefix}__content {
+      background-color: palette.semantic-variable('background', brand-faint);
+
+      .#{$overflow-menu-option-prefix}__title {
+        color: palette.semantic-variable(text, brand-solid);
+      }
+
+      .#{$overflow-menu-option-prefix}__icon {
+        color: palette.semantic-variable(icon, brand-solid);
+      }
+    }
   }
 }
 

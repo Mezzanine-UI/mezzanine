@@ -30,7 +30,24 @@ export const navigationOverflowMenuPrefix =
 
 export const navigationOverflowMenuClasses = {
   host: navigationOverflowMenuPrefix,
+  content: `${navigationOverflowMenuPrefix}__content`,
   subMenu: `${navigationOverflowMenuPrefix}__sub-menu`,
+  option: `${navigationOverflowMenuPrefix}__option`,
+} as const;
+
+export const navigationOverflowMenuOptionPrefix =
+  `${navigationPrefix}-overflow-menu-option` as const;
+
+export const navigationOverflowMenuOptionClasses = {
+  host: navigationOverflowMenuOptionPrefix,
+  basic: `${navigationOverflowMenuOptionPrefix}--basic`,
+  content: `${navigationOverflowMenuOptionPrefix}__content`,
+  title: `${navigationOverflowMenuOptionPrefix}__title`,
+  toggleIcon: `${navigationOverflowMenuOptionPrefix}__toggle-icon`,
+  icon: `${navigationOverflowMenuOptionPrefix}__icon`,
+  active: `${navigationOverflowMenuOptionPrefix}--active`,
+  open: `${navigationOverflowMenuOptionPrefix}--open`,
+  childrenWrapper: `${navigationOverflowMenuOptionPrefix}__children-wrapper`,
 } as const;
 
 export const navigationOptionPrefix = `${navigationPrefix}-option` as const;
