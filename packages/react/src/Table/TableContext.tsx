@@ -11,6 +11,10 @@ import type {
   TableRowSelection,
   TableScroll,
   TableSelectionMode,
+  TableCollectable,
+  TableToggleable,
+  TablePinnable,
+  TableDraggable,
 } from '@mezzanine-ui/core/table';
 import type { EmptyProps } from '../Empty';
 import type { PaginationProps } from '../Pagination';
@@ -54,22 +58,6 @@ export interface TableResizedColumnState {
   setResizedColumnWidth: (key: string, width: number) => void;
 }
 
-/** Draggable state */
-export interface TableDraggableState {
-  enabled: boolean;
-  fixed?: boolean | 'start';
-}
-
-/** Pinnable state */
-export interface TablePinnableState<
-  T extends TableDataSource = TableDataSource,
-> {
-  enabled: boolean;
-  fixed?: boolean;
-  pinnedRowKeys: string[];
-  onPinChange: (record: T, pinned: boolean) => void;
-}
-
 /** Highlight state for hover effects */
 export interface TableHighlightState {
   columnIndex: number | null;
@@ -83,13 +71,14 @@ export interface TableContextValue<
   T extends TableDataSource = TableDataSource,
 > {
   actions?: TableActionsBase<T>;
+  collectable?: TableCollectable<T>;
   columnState?: TableResizedColumnState;
   dataSource: T[];
-  draggable?: TableDraggableState;
+  draggable?: Omit<TableDraggable<T>, 'onDragEnd'>;
   emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
   fixedOffsets?: UseTableFixedOffsetsReturn;
-  pinnable?: TablePinnableState;
+  pinnable?: TablePinnable;
   resizable?: boolean;
   rowHeight: number;
   highlight?: TableHighlightState;
@@ -102,6 +91,7 @@ export interface TableContextValue<
   selection?: TableSelectionState<T>;
   separatorAtRowIndexes?: number[];
   sorting?: TableSortingState;
+  toggleable?: TableToggleable<T>;
   transitionState?: TableTransitionState;
   virtualScrollEnabled?: boolean;
   zebraStriping?: boolean;

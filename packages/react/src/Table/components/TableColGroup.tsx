@@ -8,7 +8,6 @@ import {
   EXPANSION_KEY,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
-  tableClasses as classes,
 } from '@mezzanine-ui/core/table';
 import {
   useTableContext,
@@ -20,15 +19,7 @@ import {
   calculateColumnWidths,
 } from '../utils/calculateColumnWidths';
 
-export interface TableColGroupProps {
-  className?: string;
-}
-
-const TableColGroupInner = memo(function TableColGroup(
-  props: TableColGroupProps,
-) {
-  const { className } = props;
-
+const TableColGroupInner = memo(function TableColGroup() {
   const {
     columnState,
     draggable,
@@ -90,7 +81,6 @@ const TableColGroupInner = memo(function TableColGroup(
     if (draggable?.enabled || pinnable?.enabled) {
       cols.push(
         <col
-          className={classes.dragOrPinHandleCell}
           key={DRAG_OR_PIN_HANDLE_KEY}
           style={{
             maxWidth: DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
@@ -104,7 +94,6 @@ const TableColGroupInner = memo(function TableColGroup(
     if (expansion) {
       cols.push(
         <col
-          className={classes.expandCell}
           key={EXPANSION_KEY}
           style={{
             maxWidth: EXPANSION_COLUMN_WIDTH,
@@ -118,7 +107,6 @@ const TableColGroupInner = memo(function TableColGroup(
     if (selection) {
       cols.push(
         <col
-          className={classes.selectionColumn}
           key={SELECTION_KEY}
           style={{
             maxWidth: SELECTION_COLUMN_WIDTH,
@@ -165,7 +153,7 @@ const TableColGroupInner = memo(function TableColGroup(
     return cols;
   };
 
-  return <colgroup className={className}>{renderCols()}</colgroup>;
+  return <colgroup>{renderCols()}</colgroup>;
 });
 
 export const TableColGroup = TableColGroupInner;

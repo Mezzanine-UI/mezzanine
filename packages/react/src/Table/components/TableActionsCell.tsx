@@ -193,6 +193,7 @@ const TableActionsCellInner = forwardRef<
               <Button
                 disabled={isDisabled}
                 icon={buttonItem.icon}
+                iconType={buttonItem.iconType}
                 key={baseKey}
                 onClick={() => buttonItem.onClick(record, rowIndex)}
                 size="sub"

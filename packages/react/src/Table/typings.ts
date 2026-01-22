@@ -2,6 +2,7 @@ import type {
   HighlightMode,
   TableActions,
   TableActionsWithMinWidth,
+  TableCollectable,
   TableColumn,
   TableColumnWithMinWidth,
   TableDataSource,
@@ -11,6 +12,7 @@ import type {
   TableRowSelection,
   TableScroll,
   TableSize,
+  TableToggleable,
 } from '@mezzanine-ui/core/table';
 import type { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import type { EmptyProps } from '../Empty';
@@ -31,6 +33,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   emptyProps?: EmptyProps & { height?: number | string };
   /** Expandable row configuration */
   expandable?: TableExpandable<T>;
+  /** Collectable row configuration (star/favorite functionality) */
+  collectable?: TableCollectable<T>;
   /**
    * Whether the table should stretch to fill its container width.
    * When true, the table will always be 100% width of its container.
@@ -73,6 +77,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
    *  @default true
    */
   sticky?: boolean;
+  /** Toggleable row configuration */
+  toggleable?: TableToggleable<T>;
   /** Transition state for row add/remove animations (from useTableDataSource hook) */
   transitionState?: TableTransitionState;
   /** Enable zebra striping for alternating row backgrounds */

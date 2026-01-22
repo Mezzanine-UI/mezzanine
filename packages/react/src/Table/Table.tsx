@@ -10,13 +10,19 @@ import {
 } from 'react';
 import throttle from 'lodash/throttle';
 import {
+  COLLECTABLE_KEY,
   tableClasses as classes,
   TABLE_ACTIONS_KEY,
+  TOGGLEABLE_KEY,
+  type TableCollectable,
   type TableColumn,
   type TableDataSource,
   type TablePinnable,
   type TableRowSelectionCheckbox,
   type TableBulkActions as TableBulkActionsType,
+  type TableToggleable,
+  TOGGLEABLE_COLUMN_WIDTH,
+  COLLECTABLE_COLUMN_WIDTH,
 } from '@mezzanine-ui/core/table';
 import {
   DragDropContext,
@@ -75,11 +81,17 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     size = 'main',
     sticky = true,
     style,
+    toggleable,
+    collectable,
     transitionState,
     zebraStriping,
     separatorAtRowIndexes,
     ...restProps
-  } = props as TableNonVirtualizedProps<T> & { pinnable?: TablePinnable };
+  } = props as TableNonVirtualizedProps<T> & {
+    pinnable?: TablePinnable;
+    toggleable?: TableToggleable;
+    collectable?: TableCollectable;
+  };
 
   const hostRef = useRef<HTMLDivElement | null>(null);
   const composedHostRef = useComposeRefs([ref, hostRef]);
@@ -160,19 +172,56 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   });
 
   /** Feature: Actions column */
-  const columnsWithActions = useMemo(() => {
-    if (!actions) return columns as TableColumn<T>[];
+  const columnsWithRightControls = useMemo(() => {
+    const result = [...(columns as TableColumn<T>[])];
 
-    const actionsColumn: TableColumn<T> = {
-      ...actions,
-      align: actions.align ?? 'end',
-      ellipsis: false,
-      key: TABLE_ACTIONS_KEY,
-      render: () => null, // Placeholder, actual rendering is handled in TableRow
-    };
+    // Add toggleable column (rightControl area - after data columns)
+    if (toggleable?.enabled) {
+      const toggleableColumn: TableColumn<T> = {
+        align: toggleable.align ?? 'start',
+        ellipsis: false,
+        fixed: toggleable.fixed ? 'end' : undefined,
+        key: TOGGLEABLE_KEY,
+        render: () => null, // Placeholder, actual rendering is handled in TableRow
+        title: toggleable.title,
+        width: toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH,
+        minWidth: toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH,
+      };
 
-    return [...(columns as TableColumn<T>[]), actionsColumn];
-  }, [actions, columns]);
+      result.push(toggleableColumn);
+    }
+
+    // Add collectable column (rightControl area - after toggleable) d
+    if (collectable?.enabled) {
+      const collectableColumn: TableColumn<T> = {
+        align: collectable.align ?? 'start',
+        ellipsis: false,
+        fixed: collectable.fixed ? 'end' : undefined,
+        key: COLLECTABLE_KEY,
+        render: () => null, // Placeholder, actual rendering is handled in TableRow
+        title: collectable.title,
+        width: collectable?.minWidth ?? COLLECTABLE_COLUMN_WIDTH,
+        minWidth: collectable?.minWidth ?? COLLECTABLE_COLUMN_WIDTH,
+      };
+
+      result.push(collectableColumn);
+    }
+
+    // Add actions column (rightmost)
+    if (actions) {
+      const actionsColumn: TableColumn<T> = {
+        ...actions,
+        align: actions.align ?? 'end',
+        ellipsis: false,
+        key: TABLE_ACTIONS_KEY,
+        render: () => null, // Placeholder, actual rendering is handled in TableRow
+      };
+
+      result.push(actionsColumn);
+    }
+
+    return result;
+  }, [actions, collectable, columns, toggleable]);
 
   /** Feature: Row selection */
   const selectionState = useTableSelection({
@@ -220,20 +269,32 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       expansionFixed: !!expandable?.fixed,
       hasSelection: !!rowSelection,
       selectionFixed: !!rowSelection?.fixed,
+      hasToggleable: !!toggleable?.enabled,
+      toggleableMinWidth: toggleable?.minWidth ?? TOGGLEABLE_COLUMN_WIDTH,
+      toggleableFixed: !!toggleable?.fixed,
+      hasCollectable: !!collectable?.enabled,
+      collectableMinWidth: collectable?.minWidth ?? COLLECTABLE_COLUMN_WIDTH,
+      collectableFixed: !!collectable?.fixed,
     }),
     [
+      collectable?.enabled,
+      collectable?.minWidth,
+      collectable?.fixed,
       draggable?.enabled,
       draggable?.fixed,
       pinnable?.enabled,
       pinnable?.fixed,
       expandable,
       rowSelection,
+      toggleable?.enabled,
+      toggleable?.minWidth,
+      toggleable?.fixed,
     ],
   );
 
   const fixedOffsetsState = useTableFixedOffsets({
     actionConfig,
-    columns: columnsWithActions as TableColumn[],
+    columns: columnsWithRightControls as TableColumn[],
     getResizedColumnWidth: columnState.getResizedColumnWidth,
   });
 
@@ -285,10 +346,41 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     [pinnable],
   );
 
+  const toggleableState = useMemo(
+    () =>
+      toggleable
+        ? {
+            enabled: toggleable.enabled,
+            fixed: toggleable.fixed,
+            isRowDisabled: toggleable.isRowDisabled,
+            onToggleChange: toggleable.onToggleChange,
+            title: toggleable.title,
+            toggledRowKeys: toggleable.toggledRowKeys,
+          }
+        : undefined,
+    [toggleable],
+  );
+
+  const collectableState = useMemo(
+    () =>
+      collectable
+        ? {
+            enabled: collectable.enabled,
+            collectedRowKeys: collectable.collectedRowKeys,
+            fixed: collectable.fixed,
+            isRowDisabled: collectable.isRowDisabled,
+            onCollectChange: collectable.onCollectChange,
+            title: collectable.title,
+          }
+        : undefined,
+    [collectable],
+  );
+
   /** Context values */
   const contextValue = useMemo(
     () => ({
       actions: actions as TableContextValue['actions'],
+      collectable: collectableState,
       columnState,
       dataSource: dataSourceForRender,
       draggable: draggableState,
@@ -309,12 +401,14 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       size,
       separatorAtRowIndexes,
       sorting: sortingState,
+      toggleable: toggleableState,
       transitionState,
       virtualScrollEnabled,
       zebraStriping,
     }),
     [
       actions,
+      collectableState,
       columnState,
       dataSourceForRender,
       draggableState,
@@ -333,6 +427,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       selectionState,
       size,
       sortingState,
+      toggleableState,
       transitionState,
       virtualScrollEnabled,
       zebraStriping,
@@ -343,10 +438,10 @@ function TableInner<T extends TableDataSource = TableDataSource>(
 
   const dataContextValue = useMemo(
     () => ({
-      columns: columnsWithActions as TableColumn[],
+      columns: columnsWithRightControls as TableColumn[],
       dataSource,
     }),
-    [columnsWithActions, dataSource],
+    [columnsWithRightControls, dataSource],
   );
 
   const superContextValue = useMemo(

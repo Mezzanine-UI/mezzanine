@@ -2,6 +2,8 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
+  COLLECTABLE_COLUMN_WIDTH,
+  COLLECTABLE_KEY,
   DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
   DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
@@ -11,6 +13,8 @@ import {
   SELECTION_KEY,
   TABLE_ACTIONS_KEY,
   tableClasses as classes,
+  TOGGLEABLE_COLUMN_WIDTH,
+  TOGGLEABLE_KEY,
   type FixedType,
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
@@ -24,9 +28,11 @@ import {
 } from '../TableContext';
 import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
+import { TableCollectableCell } from './TableCollectableCell';
 import { TableDragOrPinHandleCell } from './TableDragOrPinHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableSelectionCell } from './TableSelectionCell';
+import { TableToggleableCell } from './TableToggleableCell';
 import { composeRefs } from '../../utils/composeRefs';
 
 export interface TableRowProps<T extends TableDataSource = TableDataSource> {
@@ -50,6 +56,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
 
     const {
       actions,
+      collectable,
       draggable,
       expansion,
       fixedOffsets,
@@ -58,6 +65,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       rowHeight,
       selection,
       separatorAtRowIndexes,
+      toggleable,
       transitionState,
       zebraStriping,
     } = useTableContext();
@@ -107,6 +115,9 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
         actionColumnsWidth += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
       if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
       if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
+      if (toggleable?.enabled)
+        actionColumnsWidth += toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
+      if (collectable?.enabled) actionColumnsWidth += COLLECTABLE_COLUMN_WIDTH;
 
       return calculateColumnWidths({
         actionColumnsWidth,
@@ -118,11 +129,14 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       isDragging,
       containerWidth,
       columns,
+      collectable?.enabled,
       draggable?.enabled,
       expansion,
       getResizedColumnWidth,
       pinnable?.enabled,
       selection,
+      toggleable?.enabled,
+      toggleable?.minWidth,
     ]);
 
     // Check if this row should be highlighted based on highlight mode
@@ -253,6 +267,38 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             scrollLeft ?? 0,
             containerWidth ?? 0,
           );
+
+        // Render toggleable cell for TOGGLEABLE_KEY column
+        if (column.key === TOGGLEABLE_KEY && toggleable?.enabled) {
+          const toggleableOffsetInfo = fixedOffsets?.getToggleableOffset();
+
+          return (
+            <TableToggleableCell
+              fixed={!!toggleable.fixed}
+              fixedOffset={toggleableOffsetInfo?.offset ?? 0}
+              key={column.key}
+              record={record}
+              showShadow={showShadow ?? false}
+              width={isDragging ? column.width : undefined}
+            />
+          );
+        }
+
+        // Render collectable cell for COLLECTABLE_KEY column
+        if (column.key === COLLECTABLE_KEY && collectable?.enabled) {
+          const collectableOffsetInfo = fixedOffsets?.getCollectableOffset();
+
+          return (
+            <TableCollectableCell
+              fixed={!!collectable.fixed}
+              fixedOffset={collectableOffsetInfo?.offset ?? 0}
+              key={column.key}
+              record={record}
+              showShadow={showShadow ?? false}
+              width={isDragging ? column.width : undefined}
+            />
+          );
+        }
 
         // Render actions cell for TABLE_ACTIONS_KEY column
         if (column.key === TABLE_ACTIONS_KEY && actions) {

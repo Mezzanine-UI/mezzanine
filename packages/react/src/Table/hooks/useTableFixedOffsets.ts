@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
+  COLLECTABLE_KEY,
   DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
   DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
+  TOGGLEABLE_KEY,
   type FixedType,
   type TableColumn,
 } from '@mezzanine-ui/core/table';
@@ -30,6 +32,10 @@ export interface UseTableFixedOffsetsReturn {
   getSelectionOffset: () => FixedOffsetInfo | null;
   /** Get offset info for expansion column */
   getExpansionOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for toggleable column */
+  getToggleableOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for collectable column */
+  getCollectableOffset: () => FixedOffsetInfo | null;
   /** Check if a column should show shadow based on scroll position */
   shouldShowShadow: (
     key: string,
@@ -72,9 +78,15 @@ export function useTableFixedOffsets(
     hasDragOrPinHandle,
     hasExpansion,
     hasSelection,
+    hasToggleable,
+    hasCollectable,
     dragOrPinHandleFixed,
     expansionFixed,
     selectionFixed,
+    toggleableMinWidth,
+    toggleableFixed,
+    collectableMinWidth,
+    collectableFixed,
   } = actionConfig;
 
   useEffect(() => {
@@ -92,12 +104,24 @@ export function useTableFixedOffsets(
       innerMap.set(SELECTION_KEY, SELECTION_COLUMN_WIDTH);
     }
 
+    if (hasToggleable) {
+      innerMap.set(TOGGLEABLE_KEY, toggleableMinWidth);
+    }
+
+    if (hasCollectable) {
+      innerMap.set(COLLECTABLE_KEY, collectableMinWidth);
+    }
+
     setMeasuredWidths(innerMap);
   }, [
     hasDragOrPinHandle,
     hasExpansion,
     hasSelection,
+    hasToggleable,
+    hasCollectable,
     parentHasDragOrPinHandleFixed,
+    toggleableMinWidth,
+    collectableMinWidth,
   ]);
 
   // Get width for a column (prioritize measured, then computed, then defined, then fallback)
@@ -335,46 +359,63 @@ export function useTableFixedOffsets(
   );
 
   const getDragOrPinHandleOffset = useCallback((): FixedOffsetInfo | null => {
-    if (
-      !actionConfig.hasDragOrPinHandle ||
-      !actionConfig.dragOrPinHandleFixed
-    ) {
+    if (!hasDragOrPinHandle || !dragOrPinHandleFixed) {
       return null;
     }
 
     return fixedOffsets.startOffsets.get(DRAG_OR_PIN_HANDLE_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+  }, [hasDragOrPinHandle, dragOrPinHandleFixed, fixedOffsets]);
 
   const getSelectionOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasSelection || !actionConfig.selectionFixed) {
+    if (!hasSelection || !selectionFixed) {
       return null;
     }
 
     return fixedOffsets.startOffsets.get(SELECTION_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+  }, [hasSelection, selectionFixed, fixedOffsets]);
 
   const getExpansionOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasExpansion || !actionConfig.expansionFixed) {
+    if (!hasExpansion || !expansionFixed) {
       return null;
     }
 
     return fixedOffsets.startOffsets.get(EXPANSION_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+  }, [hasExpansion, expansionFixed, fixedOffsets]);
+
+  const getToggleableOffset = useCallback((): FixedOffsetInfo | null => {
+    if (!hasToggleable || !toggleableFixed) {
+      return null;
+    }
+
+    return fixedOffsets.endOffsets.get(TOGGLEABLE_KEY) ?? null;
+  }, [hasToggleable, toggleableFixed, fixedOffsets]);
+
+  const getCollectableOffset = useCallback((): FixedOffsetInfo | null => {
+    if (!hasCollectable || !collectableFixed) {
+      return null;
+    }
+
+    return fixedOffsets.endOffsets.get(COLLECTABLE_KEY) ?? null;
+  }, [hasCollectable, collectableFixed, fixedOffsets]);
 
   // Memoize return object to prevent unnecessary re-renders
   return useMemo(
     () => ({
+      getCollectableOffset,
       getColumnOffset,
       getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
+      getToggleableOffset,
       shouldShowShadow,
     }),
     [
+      getCollectableOffset,
       getColumnOffset,
       getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
+      getToggleableOffset,
       shouldShowShadow,
     ],
   );
