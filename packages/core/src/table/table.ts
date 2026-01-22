@@ -41,6 +41,7 @@ export const tableClasses = {
   cellFixedStart: `${tableCellPrefix}--fixed-start`,
   cellHighlight: `${tableCellPrefix}--highlight`,
   main: `${tablePrefix}--main`,
+  collectHandleIcon: `${tablePrefix}__collect-handle-icon`,
   dragOrPinHandle: `${tablePrefix}__drag-or-pin-handle`,
   dragOrPinHandleCell: `${tablePrefix}__drag-or-pin-handle-cell`,
   pinHandleIcon: `${tablePrefix}__pin-handle-icon`,
@@ -65,7 +66,6 @@ export const tableClasses = {
   scrollContainer: tableScrollContainerPrefix,
   selectionCell: `${tablePrefix}__selection-cell`,
   selectionCheckbox: `${tablePrefix}__selection-checkbox`,
-  selectionColumn: `${tablePrefix}__selection-column`,
   sortIcon: `${tablePrefix}__sort-icon`,
   sortIconActive: `${tablePrefix}__sort-icon--active`,
   sortIcons: `${tablePrefix}__sort-icons`,
@@ -391,6 +391,42 @@ export interface TablePinnable<T extends TableDataSource = TableDataSource> {
   pinnedRowKeys: string[];
 }
 
+/** Toggleable configuration */
+export interface TableToggleable<T extends TableDataSource = TableDataSource>
+  extends Pick<
+    TableColumnBase<T>,
+    'title' | 'titleHelp' | 'titleMenu' | 'minWidth' | 'align'
+  > {
+  /** Enable toggle functionality */
+  enabled: boolean;
+  /** Fixed position of toggle column */
+  fixed?: boolean;
+  /** Check if a specific row's toggle is disabled */
+  isRowDisabled?: (record: T) => boolean;
+  /** Callback when toggle state changes */
+  onToggleChange: (record: T, toggled: boolean) => void;
+  /** Array of toggled row keys */
+  toggledRowKeys: string[];
+}
+
+/** Collectable configuration */
+export interface TableCollectable<T extends TableDataSource = TableDataSource>
+  extends Pick<
+    TableColumnBase<T>,
+    'title' | 'titleHelp' | 'titleMenu' | 'minWidth' | 'align'
+  > {
+  /** Enable collect functionality */
+  enabled: boolean;
+  /** Array of collected row keys */
+  collectedRowKeys: string[];
+  /** Fixed position of collect column */
+  fixed?: boolean;
+  /** Check if a specific row's collect is disabled */
+  isRowDisabled?: (record: T) => boolean;
+  /** Callback when collect state changes */
+  onCollectChange: (record: T, collected: boolean) => void;
+}
+
 /** Expandable configuration */
 export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   /** Render function for expanded row content */
@@ -526,7 +562,11 @@ export function getCellAlignClass(align?: ColumnAlign): string {
 export const DRAG_OR_PIN_HANDLE_KEY = '__mzn-drag-or-pin-handle__';
 export const SELECTION_KEY = '__mzn-selection__';
 export const EXPANSION_KEY = '__mzn-expansion__';
+export const TOGGLEABLE_KEY = '__mzn-toggleable__';
+export const COLLECTABLE_KEY = '__mzn-collectable__';
 export const TABLE_ACTIONS_KEY = '__mzn-table-actions__';
 export const DRAG_OR_PIN_HANDLE_COLUMN_WIDTH = 40;
 export const SELECTION_COLUMN_WIDTH = 40;
 export const EXPANSION_COLUMN_WIDTH = 40;
+export const TOGGLEABLE_COLUMN_WIDTH = 80;
+export const COLLECTABLE_COLUMN_WIDTH = 80;

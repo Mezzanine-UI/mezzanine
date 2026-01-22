@@ -461,7 +461,6 @@ $z-index-config: (
 }
 
 .#{$prefix}__drag-or-pin-handle-cell {
-  box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
 }
@@ -490,10 +489,18 @@ $z-index-config: (
   }
 }
 
-.#{$prefix}__selection-column {
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: middle;
+.#{$prefix}__collect-handle-icon {
+  @include button-utils.reset();
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .#{$prefix}__selection-checkbox {
@@ -504,7 +511,6 @@ $z-index-config: (
 }
 
 .#{$prefix}__expand-cell {
-  box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
 }
