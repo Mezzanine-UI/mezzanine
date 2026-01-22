@@ -5,6 +5,7 @@
 @use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/scrollbar' as scrollbar;
 @use './table' as *;
 @use '../button/utils' as button-utils;
 
@@ -148,24 +149,7 @@ $z-index-config: (
   max-height: var(--table-scroll-y, auto);
   scrollbar-width: thin;
 
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 8px;
-
-    @media (hover: none) and (pointer: coarse) {
-      display: none;
-      height: 0;
-    }
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: palette.semantic-variable("background", neutral-strong);
-    border-radius: radius.variable(full);
-  }
-
-  &::-webkit-scrollbar-track {
-    background: palette.semantic-variable("background", neutral-ghost);
-  }
+  @include scrollbar.mzn-scrollbar();
 }
 
 .#{$prefix} {
