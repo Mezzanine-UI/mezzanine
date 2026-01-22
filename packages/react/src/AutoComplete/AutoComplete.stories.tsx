@@ -233,6 +233,7 @@ const KeepSearchTextOnBlurComponent = () => {
         onSearch={handleSearch}
         options={options}
         placeholder="既有行為（失焦清空）"
+        size="sub"
       />
     </div>
   );

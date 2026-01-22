@@ -215,7 +215,7 @@ export interface AutoCompleteBaseProps
   /**
    * The z-index of the dropdown.
    */
-  customDropdownZIndex?: number | string;
+  dropdownZIndex?: number | string;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -357,7 +357,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       value: valueProp,
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
-      customDropdownZIndex,
+      dropdownZIndex,
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -855,7 +855,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             status={dropdownStatus}
             type="default"
             value={dropdownValue}
-            zIndex={customDropdownZIndex}
+            zIndex={dropdownZIndex}
           >
             <SelectTrigger
               ref={composedRef}
