@@ -2,5 +2,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "stylelint.snippet": ["css", "postcss", "scss"],
-  "stylelint.validate": ["css", "postcss", "scss"]
+  "stylelint.validate": ["css", "postcss", "scss"],
+  "cSpell.ignoreWords": ["toggleable", "pinnable"]
 }
