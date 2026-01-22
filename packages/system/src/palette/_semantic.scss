@@ -13,6 +13,7 @@ $semantic-contexts: (
   icon,
   border,
   separator,
+  scrollbar,
   overlay,
   surface,
   shadow
@@ -336,6 +337,14 @@ $semantic-colors: (
       light: primitive.variable(white-base, white-alpha-20),
       dark: primitive.variable(white-base, white-alpha-20),
     ),
+    invisible: (
+      light: primitive.variable(black-base, black-alpha-0),
+      dark: primitive.variable(gray, 700),
+    ),
+    neutral-ghost: (
+      light: primitive.variable(gray, 100),
+      dark: primitive.variable(gray, 800),
+    ),
     neutral-faint: (
       light: primitive.variable(gray, 200),
       dark: primitive.variable(gray, 700),
@@ -393,6 +402,20 @@ $semantic-colors: (
     brand: (
       light: primitive.variable(brand, 500),
       dark: primitive.variable(brand, 500),
+    ),
+  ),
+  scrollbar: (
+    neutral-light: (
+      light: primitive.variable(black-base, black-alpha-5),
+      dark: primitive.variable(white-base, white-alpha-5),
+    ),
+    neutral: (
+      light: primitive.variable(black-base, black-alpha-40),
+      dark: primitive.variable(white-base, white-alpha-40),
+    ),
+    strong: (
+      light: primitive.variable(black-base, black-alpha-60),
+      dark: primitive.variable(white-base, white-alpha-60),
     ),
   ),
   overlay: (
