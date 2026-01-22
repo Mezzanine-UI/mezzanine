@@ -656,15 +656,21 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       (option: DropdownOption) => {
         const selectedValue = options.find((opt) => opt.id === option.id);
         if (selectedValue) {
-          wrappedOnChange(selectedValue);
           // Close dropdown after selection in single mode
           if (mode === 'single') {
+            // Update searchText first to prevent showing old value
+            setSearchText(selectedValue.name);
+            setInsertText(selectedValue.name);
+            // Then update value and focus state
+            wrappedOnChange(selectedValue);
             toggleOpen(false);
             onFocus(false);
+          } else {
+            wrappedOnChange(selectedValue);
           }
         }
       },
-      [mode, onFocus, options, toggleOpen, wrappedOnChange],
+      [mode, onFocus, options, setSearchText, setInsertText, toggleOpen, wrappedOnChange],
     );
 
     // Active index for dropdown keyboard navigation
@@ -759,10 +765,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         if (isSingle) {
           if (!value) {
+            // Update searchText first to prevent showing old value
+            setSearchText(matchingOption.name);
+            setInsertText(matchingOption.name);
+            // Then update value and focus state
             wrappedOnChange(matchingOption);
             toggleOpen(false);
             onFocus(false);
-            resetCreationInputs();
             return true;
           }
           return false;
@@ -785,6 +794,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         onFocus,
         options,
         resetCreationInputs,
+        setSearchText,
+        setInsertText,
         toggleOpen,
         value,
         wrappedOnChange,
