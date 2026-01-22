@@ -102,6 +102,11 @@ export interface AutoCompleteBaseProps
    */
   id?: string;
   /**
+   * Whether to keep search text visible after blur when no value is selected.
+   * @default false
+   */
+  keepSearchTextOnBlur?: boolean;
+  /**
    * The position of the input.
    * @default 'outside'
    */
@@ -155,6 +160,10 @@ export interface AutoCompleteBaseProps
    */
   onSearch?(input: string): void | Promise<void>;
   /**
+   * Callback fired on every input change (no debounce).
+   */
+  onSearchTextChange?(text: string): void;
+  /**
    * Callback fired when the dropdown visibility changes.
    */
   onVisibilityChange?: (open: boolean) => void;
@@ -203,6 +212,10 @@ export interface AutoCompleteBaseProps
    * @default '建立 "{text}"'
    */
   createActionTextTemplate?: string;
+  /**
+   * The z-index of the dropdown.
+   */
+  customDropdownZIndex?: number | string;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -317,6 +330,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       error = severity === 'error' || false,
       fullWidth = fullWidthFromFormControl || false,
       id,
+      keepSearchTextOnBlur = false,
       inputPosition = 'outside',
       inputProps,
       inputRef,
@@ -329,6 +343,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onChange: onChangeProp,
       onInsert,
       onSearch,
+      onSearchTextChange,
       onVisibilityChange,
       open: openProp,
       options: optionsProp,
@@ -342,6 +357,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       value: valueProp,
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
+      customDropdownZIndex,
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -494,14 +510,17 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
     const renderValue = useMemo(() => {
-      if (isSingle && focused) {
+      if (
+        isSingle
+        && (focused || (keepSearchTextOnBlur && !value && searchText))
+      ) {
         return () => searchText;
       }
       if (isMultiple) {
         return () => '';
       }
       return undefined;
-    }, [focused, isMultiple, isSingle, searchText]);
+    }, [focused, isMultiple, isSingle, keepSearchTextOnBlur, searchText, value]);
 
     function getPlaceholder() {
       if (isSingle && focused && isSingleValue(value)) {
@@ -517,6 +536,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       /** should sync both search input and value */
       setSearchText(nextSearch);
       setInsertText(nextSearch);
+      onSearchTextChange?.(nextSearch);
 
       if (autoSelectMatchingOption(nextSearch)) return;
 
@@ -835,12 +855,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             status={dropdownStatus}
             type="default"
             value={dropdownValue}
+            zIndex={customDropdownZIndex}
           >
             <SelectTrigger
               ref={composedRef}
               active={open}
               className={className}
               clearable
+              isForceClearable
               disabled={isInputDisabled}
               fullWidth={fullWidth}
               inputRef={inputRef}

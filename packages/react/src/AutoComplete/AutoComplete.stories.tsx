@@ -179,6 +179,69 @@ export const SingleModeSyncSearch: StoryObj<typeof AutoComplete> = {
   render: () => <SingleModeSyncSearchComponent />,
 };
 
+const KeepSearchTextOnBlurComponent = () => {
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
+
+  const handleSearch = useCallback((search: string) => {
+    if (!search) {
+      setOptions(originOptions);
+      return;
+    }
+
+    const filtered = originOptions.filter((opt) =>
+      opt.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setOptions(filtered);
+  }, []);
+
+  const handleSearchTextChange = useCallback((search: string) => {
+    // This is the extension point for any custom string handling with searchText,
+    // such as transformation, validation, API requests, logging, debouncing,
+    // multi-field search, or advanced processing scenarios.
+    // Use onSearchTextChange here for special requirements on search input.
+    console.log('searchTextChange', search);
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 300px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <AutoComplete
+        disabledOptionsFilter
+        emptyText="沒有符合的選項"
+        fullWidth
+        keepSearchTextOnBlur
+        menuMaxHeight={200}
+        mode="single"
+        onSearch={handleSearch}
+        options={options}
+        placeholder="輸入後失焦仍保留文字"
+        onSearchTextChange={handleSearchTextChange}
+      />
+      <AutoComplete
+        disabledOptionsFilter
+        emptyText="沒有符合的選項"
+        fullWidth
+        menuMaxHeight={200}
+        mode="single"
+        onSearch={handleSearch}
+        options={options}
+        placeholder="既有行為（失焦清空）"
+      />
+    </div>
+  );
+};
+
+export const KeepSearchTextOnBlur: StoryObj<typeof AutoComplete> = {
+  render: () => <KeepSearchTextOnBlurComponent />,
+};
+
 const MultipleComponent = () => {
   const [selections, setSelections] = useState<SelectValue[]>([]);
 
