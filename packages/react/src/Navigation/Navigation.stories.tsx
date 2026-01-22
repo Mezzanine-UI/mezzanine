@@ -35,17 +35,24 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
           }}
         />
       </NavigationHeader>
-      <NavigationOption title={'NavigationOption 1-1'}>
+      <NavigationOption title={'NavigationOption 1'}>
         <NavigationOption title={'NavigationOption 1-1-1'} />
       </NavigationOption>
-      <NavigationOption title={'NavigationOption 1-2'}>
+      <NavigationOption title={'NavigationOption 2'}>
         <NavigationOption title={'NavigationOption 1-2-1'} />
       </NavigationOption>
-      <NavigationOption title={'NavigationOption 1-3'}>
+      <NavigationOption title={'NavigationOption 3'}>
         <Badge variant="count-brand" count={5} />
-        <NavigationOption title={'NavigationOption 1-3-1'} />
+        <NavigationOption title={'NavigationOption 3-1'} />
       </NavigationOption>
-      <NavigationOption title={'NavigationOption 1-4'} />
+      <NavigationOption title={'NavigationOption 4'} />
+      <>
+        {Array.from(Array(20)).map((_, index) => (
+          <NavigationOption title={'Nav' + index} key={index}>
+            <NavigationOption title={'Nav' + index + ':Option'} />
+          </NavigationOption>
+        ))}
+      </>
       <NavigationFooter>
         <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
         <NavigationIconButton icon={QuestionOutlineIcon} />
@@ -123,15 +130,36 @@ export const All: StoryFn<NavigationProps> = () => {
           </NavigationOption>
         </NavigationOption>
         <NavigationOption
-          href="#option-4"
-          title={'Option 4'}
+          title={'Option 3-2'}
+          icon={hasIcon ? UploadIcon : undefined}
+        >
+          <NavigationOption title={'Option 3-2-1'}>
+            <NavigationOption title={'Option 3-2-1-1'} />
+          </NavigationOption>
+        </NavigationOption>
+        <NavigationOption
+          title={'Option 3-3'}
+          icon={hasIcon ? UploadIcon : undefined}
+        >
+          <NavigationOption title={'Option 3-3-1'}>
+            <NavigationOption title={'Option 3-3-1-1'} />
+          </NavigationOption>
+        </NavigationOption>
+        <NavigationOption
+          href="#option-3-4"
+          title={'Option 3-4'}
           icon={hasIcon ? FolderIcon : undefined}
         />
         <NavigationOption
-          onTriggerClick={(path, href) => {
-            alert('Option 5 clicked' + path.join(' > ') + ', href: ' + href);
+          onTriggerClick={(path, currentKey) => {
+            alert(
+              'Option 3-5 clicked' +
+                path.join(' > ') +
+                ', currentKey: ' +
+                currentKey,
+            );
           }}
-          title={'Option 5'}
+          title={'Option 3-5'}
           icon={hasIcon ? FolderIcon : undefined}
         />
       </NavigationOptionCategory>

@@ -27,7 +27,7 @@ import {
 } from './context';
 import { useCurrentPathname } from './useCurrentPathname';
 import { useVisibleItems } from './useVisibleItems';
-import { CollapsedMenu } from './CollapsedMenu';
+import { NavigationOverflowMenu } from './NavigationOverflowMenu';
 
 export type NavigationChild =
   | ReactElement<NavigationFooterProps>
@@ -206,7 +206,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               {collapsed &&
                 visibleCount !== null &&
                 visibleCount < level1Items.length && (
-                  <CollapsedMenu items={collapsedMenuItems} />
+                  <NavigationOverflowMenu items={collapsedMenuItems} />
                 )}
             </ul>
           </div>

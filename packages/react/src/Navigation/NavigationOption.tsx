@@ -68,7 +68,7 @@ export interface NavigationOptionProps
    * @default false
    */
   defaultOpen?: boolean;
-  onTriggerClick?: (path: string[], href: string) => void;
+  onTriggerClick?: (path: string[], currentKey: string, href?: string) => void;
 }
 
 const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
@@ -90,7 +90,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
     const { level, path: parentPath } = use(NavigationOptionLevelContext);
-    const currentLevel = level + 1;
+    const currentLevel = level + 1; // start as 1
     const currentKey = href || title || 'unknownId';
     const currentPath = useMemo(
       () => [...parentPath, currentKey],
@@ -177,20 +177,20 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               href={href}
               onClick={() => {
                 setOpen(!open);
-                onTriggerClick?.(currentPath, href || '');
+                onTriggerClick?.(currentPath, currentKey, href);
 
                 if (collapsed) {
                   handleCollapseChange(false);
                 }
 
-                if (!children) setActivatedPath([...parentPath, currentKey]);
+                if (!children) setActivatedPath(currentPath);
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setOpen(!open);
 
-                  if (!children) setActivatedPath([...parentPath, currentKey]);
+                  if (!children) setActivatedPath(currentPath);
                 }
               }}
               role="menuitem"
