@@ -1,0 +1,45 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './scrollbar' as *;
+
+$scrollbar-thumb-color: palette.semantic-variable("scrollbar", neutral);
+$scrollbar-thumb-hover-color: palette.semantic-variable("scrollbar", strong);
+$scrollbar-track-hover-color: palette.semantic-variable("scrollbar", neutral-light);
+$scrollbar-size: spacing.semantic-variable(size, element, tight);
+$scrollbar-radius: radius.variable(full);
+
+.#{$prefix} {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  [data-overlayscrollbars-viewport] {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .os-scrollbar {
+    --os-size: #{$scrollbar-size};
+    --os-padding-perpendicular: 0;
+    --os-padding-axis: 0;
+    --os-track-border-radius: #{$scrollbar-radius};
+    --os-track-bg: transparent;
+    --os-track-bg-hover: #{$scrollbar-track-hover-color};
+    --os-track-bg-active: #{$scrollbar-track-hover-color};
+    --os-handle-border-radius: #{$scrollbar-radius};
+    --os-handle-bg: #{$scrollbar-thumb-color};
+    --os-handle-bg-hover: #{$scrollbar-thumb-hover-color};
+    --os-handle-bg-active: #{$scrollbar-thumb-hover-color};
+  }
+
+  .os-scrollbar-handle {
+    transition: transition.standard(background-color);
+  }
+}
