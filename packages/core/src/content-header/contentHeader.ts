@@ -9,4 +9,5 @@ export const contentHeaderClasses = {
   textGroup: `${contentHeaderPrefix}__text-group`,
   actionArea: `${contentHeaderPrefix}__action-area`,
   utilities: `${contentHeaderPrefix}__utilities`,
+  backButton: `${contentHeaderPrefix}__back-button`,
 } as const;
