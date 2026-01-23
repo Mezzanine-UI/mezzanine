@@ -26,6 +26,7 @@ type ContentHeaderChild =
   | ReactElement<SegmentedControlProps>
   | ReactElement<ButtonProps>
   | ReactElement<DropdownProps>
+  | ReactElement<{ href: string }>
   | null
   | false
   | undefined;
@@ -37,7 +38,7 @@ type ContentHeaderChild =
  * Commonly used in page headers for primary user actions.
  */
 export type ContentHeaderProps = Omit<
-  NativeElementPropsWithoutKeyAndRef<'div'>,
+  NativeElementPropsWithoutKeyAndRef<'header'>,
   'children'
 > & {
   /**
@@ -130,7 +131,7 @@ export type ContentHeaderProps = Omit<
  *  </ContentHeader>
  * ```
  */
-const ContentHeader = forwardRef<HTMLDivElement, ContentHeaderProps>(
+const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
   function ContentHeader(props, ref) {
     const {
       actions,
@@ -165,6 +166,7 @@ const ContentHeader = forwardRef<HTMLDivElement, ContentHeaderProps>(
         iconType="icon-only"
         icon={ChevronLeftIcon}
         onClick={onBackClick}
+        aria-label="Back"
         type="button"
         size="sub"
         variant="base-tertiary"
@@ -181,7 +183,9 @@ const ContentHeader = forwardRef<HTMLDivElement, ContentHeaderProps>(
       >
         <span className={classes.titleArea}>
           {/* title area */}
-          {renderBackButton && <span>{renderBackButton}</span>}
+          {renderBackButton && (
+            <span className={classes.backButton}>{renderBackButton}</span>
+          )}
 
           <span className={classes.textGroup}>
             <Typography
@@ -203,10 +207,10 @@ const ContentHeader = forwardRef<HTMLDivElement, ContentHeaderProps>(
         {/* actions area */}
         <span className={classes.actionArea}>
           {renderFilter || filterFromChildren}
-          {(renderActions || actionsFromChildren) && (
+          {(renderActions || actionsFromChildren.length > 0) && (
             <ButtonGroup>{renderActions || actionsFromChildren}</ButtonGroup>
           )}
-          {(renderUtilities || utilitiesFromChildren) && (
+          {(renderUtilities || utilitiesFromChildren.length > 0) && (
             <span className={classes.utilities}>
               {renderUtilities || utilitiesFromChildren}
             </span>

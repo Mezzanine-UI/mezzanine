@@ -233,6 +233,8 @@ export const resolveContentHeaderChild = (
                 component={'span' as ButtonComponent}
                 iconType="icon-only"
                 icon={ChevronLeftIcon}
+                aria-label="Back"
+                type="button"
                 size="sub"
                 variant="base-tertiary"
               />
@@ -245,7 +247,7 @@ export const resolveContentHeaderChild = (
 
       const sizeProp = (props as { size: any }).size;
 
-      if (size !== undefined && sizeProp !== size) {
+      if (sizeProp !== undefined && sizeProp !== size) {
         console.warn(
           '[Mezzanine][ContentHeader]: Input, Button, Select size in ContentHeader utilities is forced to match ContentHeader size.',
         );
@@ -272,12 +274,25 @@ export const resolveContentHeaderChild = (
       // is utilities (icon button)
       else if (
         (type === Button && (props as ButtonProps).iconType === 'icon-only') ||
-        ((props as ButtonProps).icon && !(props as ButtonProps).children)
+        (type === Button &&
+          (props as ButtonProps).icon &&
+          !(props as ButtonProps).children)
       ) {
         utilities.push(
           renderIconButtonWithProps(child as ReactElement<ButtonProps>, size),
         );
       } else if (type === Dropdown) {
+        const childProps = (child as ReactElement<DropdownProps>).props
+          .children;
+
+        if (!isValidElement(childProps) || childProps.type !== Button) {
+          console.warn(
+            '[Mezzanine][ContentHeader]: Dropdown in utilities should have Button with icon as its children.',
+          );
+
+          return;
+        }
+
         utilities.push(
           cloneElement(child as ReactElement<DropdownProps>, {
             children: renderIconButtonWithProps(

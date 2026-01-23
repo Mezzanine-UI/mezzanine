@@ -20,7 +20,7 @@ const queryContentHeaderHostElement = (container: Element): HTMLElement => {
 describe('<ContentHeader />', () => {
   afterEach(cleanup);
 
-  describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
+  describeForwardRefToHTMLElement(HTMLElement, (ref) =>
     render(<ContentHeader ref={ref} title="Test" />),
   );
 
