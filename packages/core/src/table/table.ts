@@ -4,7 +4,6 @@ import type { Placement } from '@floating-ui/react-dom';
 import type { ButtonVariant, ButtonIconType } from '@mezzanine-ui/core/button';
 
 export const tablePrefix = 'mzn-table';
-export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
 export const tableLoadingPrefix = `${tablePrefix}-loading`;
 export const tableHeaderPrefix = `${tablePrefix}__header`;
 export const tableBodyPrefix = `${tablePrefix}__body`;
@@ -63,7 +62,6 @@ export const tableClasses = {
   host: `${tablePrefix}-host`,
   resizeHandle: tableResizeHandlePrefix,
   root: tablePrefix,
-  scrollContainer: tableScrollContainerPrefix,
   selectionCell: `${tablePrefix}__selection-cell`,
   selectionCheckbox: `${tablePrefix}__selection-checkbox`,
   sortIcon: `${tablePrefix}__sort-icon`,
