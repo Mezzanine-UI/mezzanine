@@ -349,7 +349,6 @@ function DrawerWithChildrenExample() {
           title="系統更新通知"
           description="系統已完成更新，您現在可以使用最新版本功能。"
           timeStamp="2025-12-15 10:00:00"
-          prependTips="今天"
           reference="1"
         />
         <NotificationCenter
@@ -358,7 +357,6 @@ function DrawerWithChildrenExample() {
           title="帳號安全提醒"
           description="您的登入地點異常，請確認是否為本人操作。"
           timeStamp="2025-12-14 10:00:00"
-          prependTips="昨天"
           reference="2"
         />
         <NotificationCenter

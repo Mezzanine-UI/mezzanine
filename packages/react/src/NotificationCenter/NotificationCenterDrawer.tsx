@@ -80,6 +80,26 @@ type NotificationCenterDrawerPropsBase = Pick<DrawerProps, 'open' | 'onClose'> &
    * The value of the radio group.
    */
   value?: string;
+  /**
+   * The label for the "earlier" time group.
+   * @default '更早'
+   */
+  earlierLabel?: string;
+  /**
+   * The label for the "past 7 days" time group.
+   * @default '過去七天'
+   */
+  past7DaysLabel?: string;
+  /**
+   * The label for the "today" time group.
+   * @default '今天'
+   */
+  todayLabel?: string;
+  /**
+   * The label for the "yesterday" time group.
+   * @default '昨天'
+   */
+  yesterdayLabel?: string;
 };
 
 export type NotificationCenterDrawerProps =
@@ -104,6 +124,66 @@ export type NotificationCenterDrawerProps =
     children?: never;
   });
 
+const isValidTime = (timestamp: string | number | undefined): boolean => {
+  if (!timestamp) return false;
+
+  const date = new Date(timestamp);
+
+  return !Number.isNaN(date.getTime());
+};
+
+const getValidTime = (timestamp: string | number | undefined): number => {
+  if (!isValidTime(timestamp)) return 0;
+
+  const date = new Date(timestamp as string | number);
+
+  return date.getTime();
+};
+
+type TimeGroup = 'today' | 'yesterday' | 'past7Days' | 'earlier';
+
+const DEFAULT_TIME_GROUP_LABELS: Record<TimeGroup, string> = {
+  today: '今天',
+  yesterday: '昨天',
+  past7Days: '過去七天',
+  earlier: '更早',
+};
+
+const TIME_GROUP_ORDER: TimeGroup[] = ['today', 'yesterday', 'past7Days', 'earlier'];
+
+const getTimeGroup = (timestamp: string | number | undefined, now: Date): TimeGroup => {
+  if (!isValidTime(timestamp)) return 'earlier';
+
+  const notificationDate = new Date(timestamp as string | number);
+  const nowStartOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const notificationStartOfDay = new Date(
+    notificationDate.getFullYear(),
+    notificationDate.getMonth(),
+    notificationDate.getDate(),
+  );
+
+  // Today: same calendar day
+  if (notificationStartOfDay.getTime() === nowStartOfDay.getTime()) {
+    return 'today';
+  }
+
+  // Yesterday: previous calendar day
+  const yesterdayStartOfDay = new Date(nowStartOfDay);
+  yesterdayStartOfDay.setDate(yesterdayStartOfDay.getDate() - 1);
+  if (notificationStartOfDay.getTime() === yesterdayStartOfDay.getTime()) {
+    return 'yesterday';
+  }
+
+  // Past 7 days: within 7 days but not today or yesterday
+  const diffInDays = (now.getTime() - notificationDate.getTime()) / (1000 * 60 * 60 * 24);
+  if (diffInDays <= 7) {
+    return 'past7Days';
+  }
+
+  // Earlier: more than 7 days ago
+  return 'earlier';
+};
+
 const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
   const {
     children,
@@ -124,6 +204,10 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     onCustomButtonClick,
     open,
     onClose,
+    earlierLabel,
+    past7DaysLabel,
+    todayLabel,
+    yesterdayLabel,
     ...restDrawerProps
   } = props;
 
@@ -157,21 +241,68 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
 
     // Check if notificationList is provided
     if (notificationList) {
-      return notificationList.map((notification) => {
-        const { key, ...restNotification } = notification;
-        return (
-          <NotificationCenter
-            key={key}
-            {...restNotification}
-            reference={key}
-          />
-        );
+      // Sort once by timestamp (newest first), then group while maintaining order
+      const sorted = [...notificationList].sort((a, b) => {
+        const aTime = getValidTime(a.timeStamp);
+        const bTime = getValidTime(b.timeStamp);
+        return bTime - aTime;
+      });
+
+      // Group sorted notifications
+      const now = new Date();
+      const grouped = sorted.reduce(
+        (acc, notification) => {
+          const group = getTimeGroup(notification.timeStamp, now);
+          (acc[group] ??= []).push(notification);
+          return acc;
+        },
+        {} as Record<TimeGroup, typeof notificationList>,
+      );
+
+      // Get time group labels from props or use defaults
+      const timeGroupLabels: Record<TimeGroup, string> = {
+        earlier: earlierLabel ?? DEFAULT_TIME_GROUP_LABELS.earlier,
+        past7Days: past7DaysLabel ?? DEFAULT_TIME_GROUP_LABELS.past7Days,
+        today: todayLabel ?? DEFAULT_TIME_GROUP_LABELS.today,
+        yesterday: yesterdayLabel ?? DEFAULT_TIME_GROUP_LABELS.yesterday,
+      };
+
+      // Render notifications with prependTips for first item in each group
+      return TIME_GROUP_ORDER.flatMap((group) => {
+        const notifications = grouped[group];
+        if (!notifications?.length) {
+          return [];
+        }
+
+        return notifications.map((notification, index) => {
+          const { key, ...restNotification } = notification;
+
+          return (
+            <NotificationCenter
+              key={key}
+              {...restNotification}
+              prependTips={index === 0 ? timeGroupLabels[group] : undefined}
+              reference={key}
+              type="drawer"
+            />
+          );
+        });
       });
     }
 
     // Return children (can be single element or array)
     return Array.isArray(children) ? children : children;
-  }, [isEmpty, notificationList, children, emptyNotificationIcon, emptyNotificationTitle]);
+  }, [
+    isEmpty,
+    notificationList,
+    children,
+    emptyNotificationIcon,
+    emptyNotificationTitle,
+    earlierLabel,
+    past7DaysLabel,
+    todayLabel,
+    yesterdayLabel,
+  ]);
 
   const renderToolbar = () => {
     if (!showToolbar) {
