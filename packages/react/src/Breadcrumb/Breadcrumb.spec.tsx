@@ -8,10 +8,10 @@ import BreadcrumbItem from './BreadcrumbItem';
 import { BreadcrumbProps } from './typings';
 
 const mockItems: BreadcrumbProps['items'] = [
-  { href: '/', label: 'Home' },
-  { href: '/category', label: 'Category' },
-  { href: '/product', label: 'Product' },
-  { href: '/details', label: 'Details' },
+  { href: '/', name: 'Home' },
+  { href: '/category', name: 'Category' },
+  { href: '/product', name: 'Product' },
+  { href: '/details', name: 'Details' },
 ];
 
 describe('<Breadcrumb />', () => {
@@ -99,12 +99,12 @@ describe('<Breadcrumb />', () => {
 
   describe('more than four items', () => {
     const manyItems: BreadcrumbProps['items'] = [
-      { href: '/', label: 'Home' },
-      { href: '/level1', label: 'Level 1' },
-      { href: '/level2', label: 'Level 2' },
-      { href: '/level3', label: 'Level 3' },
-      { href: '/level4', label: 'Level 4' },
-      { href: '/level5', label: 'Level 5' },
+      { href: '/', name: 'Home' },
+      { href: '/level1', name: 'Level 1' },
+      { href: '/level2', name: 'Level 2' },
+      { href: '/level3', name: 'Level 3' },
+      { href: '/level4', name: 'Level 4' },
+      { href: '/level5', name: 'Level 5' },
     ];
 
     it('should show overflow pattern with dropdown', () => {
@@ -263,7 +263,7 @@ describe('<Breadcrumb />', () => {
     it('should render single BreadcrumbItem child', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
-          <BreadcrumbItem href="/" label="Home" />
+          <BreadcrumbItem href="/" name="Home" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -275,9 +275,9 @@ describe('<Breadcrumb />', () => {
     it('should render multiple BreadcrumbItem children with separators', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
-          <BreadcrumbItem href="/" label="Home" />
-          <BreadcrumbItem href="/category" label="Category" />
-          <BreadcrumbItem href="/product" label="Product" />
+          <BreadcrumbItem href="/" name="Home" />
+          <BreadcrumbItem href="/category" name="Category" />
+          <BreadcrumbItem href="/product" name="Product" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -291,8 +291,8 @@ describe('<Breadcrumb />', () => {
     it('should mark last child as current', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
-          <BreadcrumbItem href="/" label="Home" />
-          <BreadcrumbItem href="/category" label="Category" />
+          <BreadcrumbItem href="/" name="Home" />
+          <BreadcrumbItem href="/category" name="Category" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -307,10 +307,10 @@ describe('<Breadcrumb />', () => {
     it('should handle four children items', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
-          <BreadcrumbItem href="/" label="Home" />
-          <BreadcrumbItem href="/category" label="Category" />
-          <BreadcrumbItem href="/product" label="Product" />
-          <BreadcrumbItem href="/details" label="Details" />
+          <BreadcrumbItem href="/" name="Home" />
+          <BreadcrumbItem href="/category" name="Category" />
+          <BreadcrumbItem href="/product" name="Product" />
+          <BreadcrumbItem href="/details" name="Details" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -325,12 +325,12 @@ describe('<Breadcrumb />', () => {
     it('should show overflow pattern with more than four children', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
-          <BreadcrumbItem href="/" label="Home" />
-          <BreadcrumbItem href="/level1" label="Level 1" />
-          <BreadcrumbItem href="/level2" label="Level 2" />
-          <BreadcrumbItem href="/level3" label="Level 3" />
-          <BreadcrumbItem href="/level4" label="Level 4" />
-          <BreadcrumbItem href="/level5" label="Level 5" />
+          <BreadcrumbItem href="/" name="Home" />
+          <BreadcrumbItem href="/level1" name="Level 1" />
+          <BreadcrumbItem href="/level2" name="Level 2" />
+          <BreadcrumbItem href="/level3" name="Level 3" />
+          <BreadcrumbItem href="/level4" name="Level 4" />
+          <BreadcrumbItem href="/level5" name="Level 5" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -345,10 +345,10 @@ describe('<Breadcrumb />', () => {
     it('should handle condensed mode with children', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb condensed>
-          <BreadcrumbItem href="/" label="Home" />
-          <BreadcrumbItem href="/category" label="Category" />
-          <BreadcrumbItem href="/product" label="Product" />
-          <BreadcrumbItem href="/details" label="Details" />
+          <BreadcrumbItem href="/" name="Home" />
+          <BreadcrumbItem href="/category" name="Category" />
+          <BreadcrumbItem href="/product" name="Product" />
+          <BreadcrumbItem href="/details" name="Details" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();
@@ -363,10 +363,10 @@ describe('<Breadcrumb />', () => {
       const { getHostHTMLElement } = render(
         <Breadcrumb>
           <>
-            <BreadcrumbItem href="/" label="Home" />
-            <BreadcrumbItem href="/category" label="Category" />
+            <BreadcrumbItem href="/" name="Home" />
+            <BreadcrumbItem href="/category" name="Category" />
           </>
-          <BreadcrumbItem href="/product" label="Product" />
+          <BreadcrumbItem href="/product" name="Product" />
         </Breadcrumb>,
       );
       const element = getHostHTMLElement();

@@ -81,18 +81,20 @@ const renderItems = (
                         item as ReactElement<BreadcrumbItemProps>;
 
                       return {
-                        label: props.label,
+                        name: props.name,
                         href: props.href,
                         target: props.target,
                         id: props.id,
+                        options: props.options,
                       };
                     }
 
                     return {
-                      label: item.label,
+                      name: item.name,
                       href: item.href,
                       target: item.target,
                       id: item.id,
+                      options: item.options,
                     };
                   }),
                 }}

@@ -1,24 +1,24 @@
-import type { MouseEvent, TouchEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { forwardRef, useState } from 'react';
 import { ChevronDownIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { breadcrumbItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import Menu, { MenuItem } from '../Menu';
+import Menu from '../Menu';
 import { Rotate } from '../Transition';
 import Typography from '../Typography';
 import type { BreadcrumbItemProps } from './typings';
+import { BreadcrumbMenuItem } from './BreadcrumbMenuItem';
 
-const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
+const BreadcrumbItem = forwardRef<HTMLDivElement, BreadcrumbItemProps>(
   function BreadcrumbItem(props, ref) {
     const {
       className,
       component,
       current,
       expand: expandProp,
-      label,
+      name,
       onClick,
-      onTouchEnd,
       options,
       ...rest
     } = props;
@@ -26,7 +26,7 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
     const [_expand, setExpand] = useState(false);
     const expand = expandProp ?? _expand;
 
-    const Component = (() => {
+    const TriggerComponent = (() => {
       if (component) return component;
 
       if ('onClick' in props || 'options' in props) {
@@ -46,58 +46,66 @@ const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
       onClick?.(e);
     };
 
-    const handleTouchEnd = (e: TouchEvent<HTMLButtonElement>) => {
-      setExpand(!expand);
-
-      onTouchEnd?.(e);
-    };
-
     return (
-      <Component
+      <span
         {...rest}
         aria-expanded={options ? expand : undefined}
         aria-haspopup={options ? 'true' : undefined}
-        className={cx(
-          classes.host,
-          expand && classes.expanded,
-          current && classes.current,
-          className,
-        )}
-        onClick={Component === 'button' ? handleClick : undefined}
-        onTouchEnd={Component === 'button' ? handleTouchEnd : undefined}
+        className={cx(classes.host, className)}
         ref={ref}
       >
-        {/* text */}
-        {label && (
-          <Typography variant={current ? 'caption-highlight' : 'caption'}>
-            {label}
-          </Typography>
-        )}
+        <TriggerComponent
+          className={cx(
+            classes.trigger,
+            expand && classes.expanded,
+            current && classes.current,
+          )}
+          onClick={TriggerComponent === 'button' ? handleClick : undefined}
+        >
+          {/* text */}
+          {name && (
+            <Typography variant={current ? 'caption-highlight' : 'caption'}>
+              {name}
+            </Typography>
+          )}
 
-        {'options' in props &&
-          (label ? (
-            /* normal dropdown icon item */
-            <Rotate in={expand}>
-              <Icon className={classes.icon} icon={ChevronDownIcon} size={14} />
-            </Rotate>
-          ) : (
-            /* overflow dropdown icon item */
-            <Icon className={classes.icon} icon={DotHorizontalIcon} size={14} />
-          ))}
+          {'options' in props &&
+            (name ? (
+              /* normal dropdown icon item */
+              <Rotate in={expand}>
+                <Icon
+                  className={classes.icon}
+                  icon={ChevronDownIcon}
+                  size={14}
+                />
+              </Rotate>
+            ) : (
+              /* overflow dropdown icon item */
+              <Icon
+                className={classes.icon}
+                icon={DotHorizontalIcon}
+                size={14}
+              />
+            ))}
+        </TriggerComponent>
 
         {/* TODO: waiting Dropdown component */}
         {options && expand && (
           <Menu className={classes.menu}>
             {options
-              .filter((v) => v.label)
+              .filter((v) => v.name)
               .map((option) => (
-                <MenuItem key={option.id || option.label}>
-                  {option.label}
-                </MenuItem>
+                <BreadcrumbMenuItem
+                  key={option.id || option.name}
+                  {...option}
+                />
+                // <MenuItem key={option.id || option.name}>
+                //   {option.name}
+                // </MenuItem>
               ))}
           </Menu>
         )}
-      </Component>
+      </span>
     );
   },
 );

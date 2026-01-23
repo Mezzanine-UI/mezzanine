@@ -54,7 +54,7 @@ export type BreadcrumbDropdownItemProps = Omit<
    */
   expand?: boolean;
   href?: string;
-  label?: string;
+  name?: string;
   /**
    * The dropdown options.
    */
@@ -67,8 +67,14 @@ export type BreadcrumbDropdownItemProps = Omit<
     /**
      * The content of dropdown item.
      */
-    label?: string;
+    name?: string;
     target?: '_blank' | '_parent' | '_self' | '_top' | string;
+    options?: Array<{
+      href?: string;
+      id?: string;
+      name?: string;
+      target?: '_blank' | '_parent' | '_self' | '_top' | string;
+    }>;
   }>;
   target?: '_blank' | '_parent' | '_self' | '_top' | string;
 };
@@ -84,7 +90,7 @@ export type BreadcrumbItemTextProps = {
   /**
    * The content of breadcrumb text.
    */
-  label: string;
+  name: string;
   options?: never;
   target?: never;
 };
@@ -100,7 +106,7 @@ export type BreadcrumbLinkItemProps = Omit<
    * The href of breadcrumb link.
    */
   href: string;
-  label: string;
+  name: string;
   options?: never;
   /**
    * The target attribute specifies where to open the linked document.

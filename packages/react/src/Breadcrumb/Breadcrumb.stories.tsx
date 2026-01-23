@@ -13,10 +13,10 @@ type Story = StoryObj<BreadcrumbProps>;
 export const Playground: Story = {
   args: {
     items: [
-      { label: 'Home', href: '/' },
-      { label: 'Category', href: '/Category' },
-      { label: 'Parent of Current', href: '/Category/Parent' },
-      { label: 'Current' },
+      { name: 'Home', href: '/' },
+      { name: 'Category', href: '/Category' },
+      { name: 'Parent of Current', href: '/Category/Parent' },
+      { name: 'Current' },
     ],
   },
   argTypes: {},
@@ -24,14 +24,14 @@ export const Playground: Story = {
 
 const breadcrumbItem: BreadcrumbProps['items'] = [
   {
-    label: 'Home',
+    name: 'Home',
     href: '/',
   },
-  { label: 'Category', href: '/Category', target: '_blank' },
-  { label: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
-  { label: 'Tab', href: '/Category/Subcategory/Tab' },
-  { label: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
-  { label: 'History', href: '/Category/Subcategory/Tab/Detail/History' },
+  { name: 'Category', href: '/Category', target: '_blank' },
+  { name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
+  { name: 'Tab', href: '/Category/Subcategory/Tab' },
+  { name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
+  { name: 'History', href: '/Category/Subcategory/Tab/Detail/History' },
 ];
 
 export const All: Story = {
@@ -43,6 +43,7 @@ export const All: Story = {
       style={{
         display: 'grid',
         gap: '40px',
+        paddingBottom: '160px',
       }}
     >
       <div style={{ display: 'grid', gap: '24px' }}>
@@ -87,45 +88,68 @@ export const All: Story = {
         <Typography variant="h2">Item With Dropdown</Typography>
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'List', href: '/' },
+            { name: 'Home', href: '/' },
+            { name: 'List', href: '/' },
             {
-              label: 'History',
+              name: 'History',
               href: '/',
               options: [
-                { label: 'History', href: '/' },
-                { label: 'Detail', href: '/' },
-                { label: 'Order', href: '/' },
+                { name: 'History', href: '/' },
+                { name: 'Detail', href: '/' },
+                { name: 'Order', href: '/' },
               ],
             },
             {
-              label: '01',
+              name: '01',
               href: '/',
               options: [
-                { label: '01', href: '/' },
-                { label: '02', href: '/' },
-                { label: '03', href: '/' },
+                { name: '01', href: '/' },
+                { name: '02', href: '/' },
+                { name: '03', href: '/' },
               ],
             },
           ]}
         />
         <Breadcrumb
           items={[
-            { label: 'Home', href: '/' },
-            { label: 'Category', href: '/' },
-            { label: 'Subcategory', href: '/' },
-            { label: 'Tab', href: '/' },
-            { label: 'Detail', href: '/' },
-            { label: 'History', href: '/' },
+            { name: 'Home', href: '/' },
+            { name: 'List', href: '/' },
+            {
+              name: 'Tab',
+              href: '/',
+              options: [
+                { name: 'tab1', href: '/' },
+                { name: 'tab2', href: '/' },
+                { name: 'tab3', href: '/' },
+              ],
+            },
+            {
+              name: 'History',
+              href: '/',
+              options: [
+                { name: 'History', href: '/' },
+                { name: 'Detail', href: '/' },
+                { name: 'Order', href: '/' },
+              ],
+            },
+            {
+              name: '01',
+              href: '/',
+              options: [
+                { name: '01', href: '/' },
+                { name: '02', href: '/' },
+                { name: '03', href: '/' },
+              ],
+            },
           ]}
         />
         <Breadcrumb>
-          <BreadcrumbItem label="Home" href="/" />
-          <BreadcrumbItem label="Category" href="/" />
-          <BreadcrumbItem label="Subcategory" href="/" />
-          <BreadcrumbItem label="Tab" href="/" />
-          <BreadcrumbItem label="Detail" href="/" />
-          <BreadcrumbItem label="History" href="/" />
+          <BreadcrumbItem name="Home" href="/" />
+          <BreadcrumbItem name="Category" href="/" />
+          <BreadcrumbItem name="Subcategory" href="/" />
+          <BreadcrumbItem name="Tab" href="/" />
+          <BreadcrumbItem name="Detail" href="/" />
+          <BreadcrumbItem name="History" href="/" />
         </Breadcrumb>
       </div>
     </div>
