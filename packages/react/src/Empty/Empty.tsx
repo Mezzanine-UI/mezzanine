@@ -21,6 +21,7 @@ import { EmptyMainResultIcon } from './icons/EmptyMainResultIcon';
 import { EmptyMainSystemIcon } from './icons/EmptyMainSystemIcon';
 import { EmptyProps } from '.';
 import { flattenChildren } from '../utils/flatten-children';
+import { EmptyMainNotificationIcon } from './icons/EmptyMainNotificationIcon';
 
 const iconMap: Record<
   Exclude<EmptyProps['type'], undefined>,
@@ -36,7 +37,7 @@ const iconMap: Record<
 const mainIconMap: Record<Exclude<EmptyProps['type'], undefined>, ReactNode> = {
   custom: null,
   'initial-data': <EmptyMainInitialDataIcon className={classes.icon} />,
-  notification: null,
+  notification: <EmptyMainNotificationIcon className={classes.icon} />,
   result: <EmptyMainResultIcon className={classes.icon} />,
   system: <EmptyMainSystemIcon className={classes.icon} />,
 };
