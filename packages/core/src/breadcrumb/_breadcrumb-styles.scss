@@ -17,19 +17,45 @@
 }
 
 .#{$prefix}__item {
-  @include button.reset();
+  position: relative;
 
-  align-items: center;
-  border-radius: radius.variable(tiny);
-  color: palette.semantic-variable(text, neutral);
-  display: flex;
-  gap: spacing.semantic-variable(gap, tiny);
-  transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
-  white-space: nowrap;
+  &__trigger {
+    @include button.reset();
+
+    align-items: center;
+    border-radius: radius.variable(tiny);
+    color: palette.semantic-variable(text, neutral);
+    display: flex;
+    gap: spacing.semantic-variable(gap, tiny);
+    transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
+    white-space: nowrap;
+
+
+    &:focus-visible {
+      background-color: palette.semantic-variable(background, white);
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
 
   &__icon {
     color: palette.semantic-variable(icon, neutral);
     transition: transition.standard(color, fast);
+  }
+
+  &--current {
+    .#{$prefix}__item__trigger {
+      color: palette.semantic-variable(text, neutral-solid);
+    }
+  }
+
+  &--expanded {
+    .#{$prefix}__item__trigger {
+      color: palette.semantic-variable(text, neutral-solid);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
+    }
   }
 
   &__menu {
@@ -38,21 +64,20 @@
     position: absolute;
   }
 
-  &--current {
-    color: palette.semantic-variable(text, neutral-solid);
+  &__menu-item {
+    // TODO: dropdown menu min-width
+    position: relative;
+    white-space: nowrap;
+    width: fit-content;
   }
 
-  &--expanded {
-    color: palette.semantic-variable(text, neutral-solid);
+  &__menu-item__trigger {
+    @include button.reset();
 
-    .#{$prefix}__item__icon {
-      color: palette.semantic-variable(icon, neutral-solid);
-    }
-  }
-
-  &:focus-visible {
-    background-color: palette.semantic-variable(background, white);
-    box-shadow: effect.variable(focus, primary);
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    min-width: 160px;
   }
 }
 
