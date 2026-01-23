@@ -24,7 +24,8 @@ const TableExpandedRowInner = forwardRef<
 >(function TableExpandedRow(props, ref) {
   const { className, record, style } = props;
 
-  const { expansion, draggable, selection } = useTableContext();
+  const { expansion, draggable, selection, transitionState } =
+    useTableContext();
   const { columns } = useTableDataContext();
 
   // Calculate total column span
@@ -41,6 +42,11 @@ const TableExpandedRowInner = forwardRef<
 
   const rowKey = getRowKey(record);
   const isExpanded = expansion?.isRowExpanded(rowKey);
+
+  // Check transition states for the parent row
+  const isAdding = transitionState?.addingKeys.has(rowKey) ?? false;
+  const isDeleting = transitionState?.deletingKeys.has(rowKey) ?? false;
+  const isFadingOut = transitionState?.fadingOutKeys.has(rowKey) ?? false;
 
   const { config } = expansion || {};
   const { expandedRowRender } = config || {};
@@ -62,7 +68,15 @@ const TableExpandedRowInner = forwardRef<
 
   return (
     <tr
-      className={cx(classes.expandedRow, className)}
+      className={cx(
+        classes.expandedRow,
+        {
+          [classes.expandedRowAdding]: isAdding,
+          [classes.expandedRowDeleting]: isDeleting,
+          [classes.expandedRowFadingOut]: isFadingOut,
+        },
+        className,
+      )}
       data-row-key={`${rowKey}-expanded`}
       ref={ref}
       style={style}
