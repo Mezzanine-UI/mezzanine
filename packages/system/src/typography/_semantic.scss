@@ -16,6 +16,7 @@ $semantic-types: (
   text-link-body,
   text-link-caption,
   caption,
+  caption-mono,
   caption-highlight,
   annotation,
   annotation-highlight,
@@ -96,6 +97,13 @@ $semantic-typographies: (
     letter-spacing: primitive.letter-spacing-variable(0),
   ),
   caption: (
+    font-size: primitive.font-size-variable(12),
+    font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(caption),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  caption-mono: (
+    font-family: primitive.font-family-variable(sfmono),
     font-size: primitive.font-size-variable(12),
     font-weight: primitive.font-weight-variable(regular),
     line-height: primitive.line-height-variable(caption),

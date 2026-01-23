@@ -150,6 +150,10 @@ $semantic-spacings: (
         default: primitive.variable(20),
         compact: primitive.variable(18),
       ),
+      gentle-fixed: (
+        default: primitive.variable(20),
+        compact: primitive.variable(20),
+      ),
       relaxed: (
         default: primitive.variable(24),
         compact: primitive.variable(20),
@@ -157,6 +161,10 @@ $semantic-spacings: (
       airy: (
         default: primitive.variable(28),
         compact: primitive.variable(24),
+      ),
+      airy-fixed: (
+        default: primitive.variable(28),
+        compact: primitive.variable(28),
       ),
       roomy: (
         default: primitive.variable(32),
@@ -197,6 +205,10 @@ $semantic-spacings: (
       max: (
         default: primitive.variable(80),
         compact: primitive.variable(64),
+      ),
+      xwide: (
+        default: primitive.variable(100),
+        compact: primitive.variable(92),
       ),
     ),
     container: (
@@ -330,6 +342,10 @@ $semantic-spacings: (
     spacious: (
       default: primitive.variable(24),
       compact: primitive.variable(20),
+    ),
+    relaxed: (
+      default: primitive.variable(32),
+      compact: primitive.variable(28),
     ),
     loose: (
       default: primitive.variable(40),
