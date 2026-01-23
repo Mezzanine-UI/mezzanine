@@ -509,6 +509,27 @@ $z-index-config: (
     background-color: palette.semantic-variable("background", neutral-ghost);
     padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, base-fixed);
   }
+
+  &--adding {
+    & > .#{$prefix}__expanded-row__cell {
+      background-color: palette.semantic-variable("background", brand-ghost);
+    }
+  }
+
+  &--deleting {
+    & > .#{$prefix}__expanded-row__cell {
+      background-color: palette.semantic-variable("background", error-ghost);
+    }
+  }
+
+  &--fading-out {
+    opacity: 0;
+    transition: transition.entrance(opacity, moderate);
+
+    & > .#{$prefix}__expanded-row__cell {
+      background-color: palette.semantic-variable("background", error-ghost);
+    }
+  }
 }
 
 .#{$prefix}__expanded-content {
