@@ -293,6 +293,12 @@ export type {
 export { default as DateTimePicker } from './DateTimePicker';
 export type { DateTimePickerProps } from './DateTimePicker';
 export { FormControlContext, FormField, FormHintText, FormLabel } from './Form';
+export { FilterArea, FilterLine, Filter } from './FilterArea';
+export type {
+  FilterAreaProps,
+  FilterLineProps,
+  FilterProps,
+} from './FilterArea';
 export type {
   FormControl,
   FormFieldProps,

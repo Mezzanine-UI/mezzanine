@@ -66,6 +66,7 @@ export const Basic: StoryObj<typeof AutoComplete> = {
         options={originOptions}
         placeholder="Placeholder"
         required
+        size="sub"
       />
       <AutoComplete
         error
