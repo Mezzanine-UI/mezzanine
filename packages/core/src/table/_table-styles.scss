@@ -141,33 +141,6 @@ $z-index-config: (
   }
 }
 
-.#{$scroll-container-prefix} {
-  position: relative;
-  overflow: auto;
-  width: 100%;
-  max-height: var(--table-scroll-y, auto);
-  scrollbar-width: thin;
-
-  &::-webkit-scrollbar {
-    width: 0;
-    height: 8px;
-
-    @media (hover: none) and (pointer: coarse) {
-      display: none;
-      height: 0;
-    }
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: palette.semantic-variable("background", neutral-strong);
-    border-radius: radius.variable(full);
-  }
-
-  &::-webkit-scrollbar-track {
-    background: palette.semantic-variable("background", neutral-ghost);
-  }
-}
-
 .#{$prefix} {
   border-collapse: separate;
   border-spacing: 0;
@@ -452,15 +425,20 @@ $z-index-config: (
     display: block;
     word-break: break-all;
   }
+
+  &__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, base);
+  }
 }
 
-.#{$prefix}__drag-handle-cell {
-  box-sizing: border-box;
+.#{$prefix}__drag-or-pin-handle-cell {
   text-align: center;
   vertical-align: middle;
 }
 
-.#{$prefix}__drag-handle {
+.#{$prefix}__drag-or-pin-handle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -471,10 +449,31 @@ $z-index-config: (
   }
 }
 
-.#{$prefix}__selection-column {
-  box-sizing: border-box;
-  text-align: center;
-  vertical-align: middle;
+.#{$prefix}__pin-handle-icon {
+  @include button-utils.reset();
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &:active {
+    cursor: pointer;
+  }
+}
+
+.#{$prefix}__collect-handle-icon {
+  @include button-utils.reset();
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .#{$prefix}__selection-checkbox {
@@ -485,7 +484,6 @@ $z-index-config: (
 }
 
 .#{$prefix}__expand-cell {
-  box-sizing: border-box;
   text-align: center;
   vertical-align: middle;
 }

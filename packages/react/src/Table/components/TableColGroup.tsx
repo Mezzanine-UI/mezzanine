@@ -2,13 +2,12 @@
 
 import { memo, useMemo } from 'react';
 import {
-  DRAG_HANDLE_COLUMN_WIDTH,
-  DRAG_HANDLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
-  tableClasses as classes,
 } from '@mezzanine-ui/core/table';
 import {
   useTableContext,
@@ -20,20 +19,13 @@ import {
   calculateColumnWidths,
 } from '../utils/calculateColumnWidths';
 
-export interface TableColGroupProps {
-  className?: string;
-}
-
-const TableColGroupInner = memo(function TableColGroup(
-  props: TableColGroupProps,
-) {
-  const { className } = props;
-
+const TableColGroupInner = memo(function TableColGroup() {
   const {
     columnState,
     draggable,
     expansion,
     isInsideExpandedContentArea,
+    pinnable,
     selection,
   } = useTableContext();
   const { columns } = useTableDataContext();
@@ -55,12 +47,13 @@ const TableColGroupInner = memo(function TableColGroup(
   const actionColumnsWidth = useMemo(() => {
     let width = 0;
 
-    if (draggable?.enabled) width += DRAG_HANDLE_COLUMN_WIDTH;
+    if (draggable?.enabled || pinnable?.enabled)
+      width += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
     if (selection) width += SELECTION_COLUMN_WIDTH;
     if (expansion) width += EXPANSION_COLUMN_WIDTH;
 
     return width;
-  }, [draggable?.enabled, expansion, selection]);
+  }, [draggable?.enabled, expansion, pinnable?.enabled, selection]);
 
   // Calculate resolved widths for all columns (only for root tables)
   const resolvedWidths = useMemo(() => {
@@ -85,15 +78,14 @@ const TableColGroupInner = memo(function TableColGroup(
   const renderCols = () => {
     const cols: React.ReactNode[] = [];
 
-    if (draggable?.enabled) {
+    if (draggable?.enabled || pinnable?.enabled) {
       cols.push(
         <col
-          className={classes.dragHandleCell}
-          key={DRAG_HANDLE_KEY}
+          key={DRAG_OR_PIN_HANDLE_KEY}
           style={{
-            maxWidth: DRAG_HANDLE_COLUMN_WIDTH,
-            minWidth: DRAG_HANDLE_COLUMN_WIDTH,
-            width: DRAG_HANDLE_COLUMN_WIDTH,
+            maxWidth: DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+            minWidth: DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+            width: DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
           }}
         />,
       );
@@ -102,7 +94,6 @@ const TableColGroupInner = memo(function TableColGroup(
     if (expansion) {
       cols.push(
         <col
-          className={classes.expandCell}
           key={EXPANSION_KEY}
           style={{
             maxWidth: EXPANSION_COLUMN_WIDTH,
@@ -116,7 +107,6 @@ const TableColGroupInner = memo(function TableColGroup(
     if (selection) {
       cols.push(
         <col
-          className={classes.selectionColumn}
           key={SELECTION_KEY}
           style={{
             maxWidth: SELECTION_COLUMN_WIDTH,
@@ -163,7 +153,7 @@ const TableColGroupInner = memo(function TableColGroup(
     return cols;
   };
 
-  return <colgroup className={className}>{renderCols()}</colgroup>;
+  return <colgroup>{renderCols()}</colgroup>;
 });
 
 export const TableColGroup = TableColGroupInner;

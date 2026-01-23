@@ -1137,6 +1137,121 @@ export const DraggableRows: Story = {
   },
 };
 
+export const PinnableRows: Story = {
+  render: function PinnableRowsStory() {
+    const [pinnedRowKeys, setPinnedRowKeys] = useState<string[]>([]);
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 16px' }}>
+          Click the pin icon to pin/unpin rows.
+        </p>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          pinnable={{
+            enabled: true,
+            onPinChange: (record, pinned) => {
+              if (pinned) {
+                setPinnedRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setPinnedRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            pinnedRowKeys,
+          }}
+          scroll={{
+            y: 300,
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+export const ToggleableRows: Story = {
+  render: function ToggleableRowsStory() {
+    const [toggledRowKeys, setToggledRowKeys] = useState<string[]>(['1', '3']);
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 16px' }}>
+          Use the toggle to enable/disable rows. Rows with age &gt; 40 are
+          disabled.
+        </p>
+        <p style={{ margin: '0 0 16px' }}>
+          Toggled rows: [{toggledRowKeys.join(', ')}]
+        </p>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          toggleable={{
+            enabled: true,
+            isRowDisabled: (record) => record.age > 40,
+            onToggleChange: (record, toggled) => {
+              if (toggled) {
+                setToggledRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setToggledRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            title: 'Active',
+            toggledRowKeys,
+          }}
+          scroll={{
+            y: 300,
+          }}
+        />
+      </div>
+    );
+  },
+};
+
+export const CollectableRows: Story = {
+  render: function CollectableRowsStory() {
+    const [collectedRowKeys, setCollectedRowKeys] = useState<string[]>(['2']);
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 16px' }}>
+          Click the star icon to add/remove rows from favorites. Rows with age
+          &lt; 25 are disabled.
+        </p>
+        <p style={{ margin: '0 0 16px' }}>
+          Collected rows: [{collectedRowKeys.join(', ')}]
+        </p>
+        <Table<DataType>
+          collectable={{
+            collectedRowKeys,
+            enabled: true,
+            isRowDisabled: (record) => record.age < 25,
+            onCollectChange: (record, collected) => {
+              if (collected) {
+                setCollectedRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setCollectedRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            title: 'Favorite',
+            minWidth: 120,
+          }}
+          columns={baseColumns}
+          dataSource={baseData}
+          scroll={{
+            y: 300,
+          }}
+        />
+      </div>
+    );
+  },
+};
+
 export const HighlightMode: Story = {
   render: function HighlightMode() {
     const [mode, setMode] = useState<'row' | 'cell' | 'column' | 'cross'>(
@@ -1199,6 +1314,12 @@ export const Combined: Story = {
       key: 'name',
       sortOrder: 'ascend',
     });
+
+    // Toggleable state
+    const [toggledRowKeys, setToggledRowKeys] = useState<string[]>(['1', '3']);
+
+    // Collectable state
+    const [collectedRowKeys, setCollectedRowKeys] = useState<string[]>(['2']);
 
     const combinedColumns: TableColumnWithMinWidth<DataType>[] = [
       {
@@ -1323,12 +1444,21 @@ export const Combined: Story = {
 
     return (
       <div style={{ width: '100%' }}>
-        <div style={{ marginBottom: 16 }}>
+        <div
+          style={{
+            display: 'flex',
+            flexFlow: 'column',
+            gap: '4px',
+            marginBottom: 16,
+          }}
+        >
           <span>Selected: {totalSelectionCount} items</span>
+          <span>Toggled rows: [{toggledRowKeys.join(', ')}]</span>
+          <span>Collected rows: [{collectedRowKeys.join(', ')}]</span>
         </div>
         <Table<DataType>
           actions={{
-            fixed: 'end',
+            // fixed: 'end',
             render: (record) => [
               {
                 name: 'Edit',
@@ -1337,43 +1467,60 @@ export const Combined: Story = {
                 onClick: () => {},
               },
               {
-                name: 'Delete',
-                icon: TrashIcon,
-                iconType: 'leading',
-                variant: 'destructive-primary',
-                onClick: () => handleDelete(record),
+                type: 'dropdown',
+                options: [
+                  { id: 'copy', name: 'Copy', icon: CopyIcon },
+                  {
+                    id: 'download',
+                    name: 'Download',
+                    icon: DownloadIcon,
+                    showUnderline: true,
+                  },
+                  {
+                    id: 'Delete',
+                    name: 'Delete',
+                    icon: TrashIcon,
+                    validate: 'danger',
+                  },
+                ],
+                onSelect: (option) => {
+                  if (option.id === 'Delete') {
+                    handleDelete(record);
+                    return;
+                  }
+                },
               },
             ],
             variant: 'base-primary',
-            width: 180,
-            minWidth: 180,
+            width: 220,
+            minWidth: 220,
+          }}
+          collectable={{
+            collectedRowKeys,
+            enabled: true,
+            // fixed: true,
+            isRowDisabled: (record) => record.age < 25,
+            onCollectChange: (record, collected) => {
+              if (collected) {
+                setCollectedRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setCollectedRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            title: 'Favorite',
           }}
           columns={combinedColumns}
           dataSource={dataSource}
+          draggable={{
+            enabled: true,
+            onDragEnd: (newData) => updateDataSource(newData),
+            // fixed: true,
+          }}
           expandable={{
             expandedRowRender: (record) => (
               <Table<DataType>
-                actions={{
-                  fixed: 'end',
-                  render: (subRecord) => [
-                    {
-                      name: 'Edit',
-                      icon: EditIcon,
-                      iconType: 'leading',
-                      onClick: () => {},
-                    },
-                    {
-                      name: 'Delete',
-                      icon: TrashIcon,
-                      iconType: 'leading',
-                      variant: 'destructive-primary',
-                      onClick: () => handleDelete(subRecord),
-                    },
-                  ],
-                  variant: 'base-primary',
-                  width: 180,
-                  minWidth: 180,
-                }}
                 columns={combinedColumns}
                 dataSource={record.subData || []}
                 rowSelection={{
@@ -1388,6 +1535,7 @@ export const Combined: Story = {
             // fixed: true,
           }}
           fullWidth
+          highlight="cross"
           resizable
           rowSelection={{
             mode: 'checkbox',
@@ -1418,11 +1566,21 @@ export const Combined: Story = {
             fixed: true,
           }}
           scroll={{ y: 300 }}
-          highlight="cross"
-          draggable={{
+          toggleable={{
             enabled: true,
-            onDragEnd: (newData) => updateDataSource(newData),
-            // fixed: true,
+            fixed: true,
+            isRowDisabled: (record) => record.age > 40,
+            onToggleChange: (record, toggled) => {
+              if (toggled) {
+                setToggledRowKeys((prev) => [...prev, record.key]);
+              } else {
+                setToggledRowKeys((prev) =>
+                  prev.filter((k) => k !== record.key),
+                );
+              }
+            },
+            title: 'Active',
+            toggledRowKeys,
           }}
           transitionState={transitionState}
         />

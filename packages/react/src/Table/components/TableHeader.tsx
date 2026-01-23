@@ -2,7 +2,7 @@
 
 import { forwardRef, memo } from 'react';
 import {
-  DRAG_HANDLE_KEY,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_KEY,
   getCellAlignClass,
   SELECTION_KEY,
@@ -23,7 +23,7 @@ import {
   useTableDataContext,
   useTableSuperContext,
 } from '../TableContext';
-import { TableDragHandleCell } from './TableDragHandleCell';
+import { TableDragOrPinHandleCell } from './TableDragOrPinHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableResizeHandle } from './TableResizeHandle';
 import { TableSelectionCell } from './TableSelectionCell';
@@ -37,6 +37,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       draggable,
       expansion,
       fixedOffsets,
+      pinnable,
       resizable,
       selection,
       sorting,
@@ -54,24 +55,29 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
       return null;
     };
 
-    const renderDragHandleHeader = () => {
-      if (!draggable?.enabled) return null;
+    const renderDragOrPinHandleHeader = () => {
+      const hasDragOrPinHandle = draggable?.enabled || pinnable?.enabled;
 
-      const offsetInfo = fixedOffsets?.getDragHandleOffset();
-      const isFixed = !!draggable.fixed;
+      if (!hasDragOrPinHandle) return null;
+
+      const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
+      const isFixed = !!draggable?.fixed || !!pinnable?.fixed;
       const showShadow =
         isFixed &&
         fixedOffsets?.shouldShowShadow(
-          DRAG_HANDLE_KEY,
+          DRAG_OR_PIN_HANDLE_KEY,
           scrollLeft ?? 0,
           containerWidth ?? 0,
         );
 
+      const mode = draggable?.enabled ? 'drag' : 'pin';
+
       return (
-        <TableDragHandleCell
+        <TableDragOrPinHandleCell
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
           isHeader
+          mode={mode}
           showShadow={showShadow ?? false}
         />
       );
@@ -262,7 +268,7 @@ const TableHeaderInner = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
     return (
       <thead className={cx(classes.header)} ref={ref}>
         <tr>
-          {renderDragHandleHeader()}
+          {renderDragOrPinHandleHeader()}
           {renderExpandHeader()}
           {renderSelectionHeader()}
           {renderHeaderCells()}

@@ -189,6 +189,7 @@ export {
   type TableBulkActions,
   type TableBulkGeneralAction,
   type TableBulkOverflowAction,
+  type TableCollectable,
   type TableColumn,
   type TableColumnBase,
   type TableColumnBaseWithMinWidthRequired,
@@ -204,7 +205,6 @@ export {
   type TableDataSourceWithId,
   type TableDataSourceWithKey,
   type TableDraggable,
-  type TableDraggableState,
   type TableExpandable,
   type TableExpansionState,
   type TableNonVirtualizedProps,
@@ -220,10 +220,16 @@ export {
   type TableSelectionState,
   type TableSize,
   type TableSortingState,
+  type TableToggleable,
   type TableTransitionState,
   type TableVirtualizedProps,
   type UpdateDataSourceOptions,
   type UseTableDataSourceOptions,
+  type TableDraggableOnlyProps,
+  type TableNoDragOrPinProps,
+  type TableNonResizableProps,
+  type TablePinnableOnlyProps,
+  type TableResizableProps,
 } from './Table';
 export { default as Tag, TagGroup } from './Tag';
 export type { TagGroupProps, TagProps, TagSize } from './Tag';

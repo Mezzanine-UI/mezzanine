@@ -22,6 +22,7 @@
   @include _load-styles($options, button);
 
   // Internal
+  @include _load-styles($options, scrollbar);
   @include _load-styles($options, clear-actions);
   @include _load-styles($options, overflow-tooltip);
 

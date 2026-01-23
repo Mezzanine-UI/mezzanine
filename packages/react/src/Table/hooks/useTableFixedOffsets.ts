@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  DRAG_HANDLE_COLUMN_WIDTH,
-  DRAG_HANDLE_KEY,
+  COLLECTABLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
+  TOGGLEABLE_KEY,
   type FixedType,
   type TableColumn,
 } from '@mezzanine-ui/core/table';
@@ -24,12 +26,16 @@ export interface FixedOffsetInfo {
 export interface UseTableFixedOffsetsReturn {
   /** Get offset info for a specific column by key */
   getColumnOffset: (key: string) => FixedOffsetInfo | null;
-  /** Get offset info for drag handle column */
-  getDragHandleOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for drag or pin handle column */
+  getDragOrPinHandleOffset: () => FixedOffsetInfo | null;
   /** Get offset info for selection column */
   getSelectionOffset: () => FixedOffsetInfo | null;
   /** Get offset info for expansion column */
   getExpansionOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for toggleable column */
+  getToggleableOffset: () => FixedOffsetInfo | null;
+  /** Get offset info for collectable column */
+  getCollectableOffset: () => FixedOffsetInfo | null;
   /** Check if a column should show shadow based on scroll position */
   shouldShowShadow: (
     key: string,
@@ -59,7 +65,7 @@ export function useTableFixedOffsets(
 ): UseTableFixedOffsetsReturn {
   const {
     expansionLeftPadding = 0,
-    hasDragHandleFixed: parentHasDragHandleFixed,
+    hasDragOrPinHandleFixed: parentHasDragOrPinHandleFixed,
   } = useTableSuperContext();
   const { actionConfig, columns, getResizedColumnWidth } = props;
 
@@ -69,19 +75,25 @@ export function useTableFixedOffsets(
   );
 
   const {
-    hasDragHandle,
+    hasDragOrPinHandle,
     hasExpansion,
     hasSelection,
-    dragHandleFixed,
+    hasToggleable,
+    hasCollectable,
+    dragOrPinHandleFixed,
     expansionFixed,
     selectionFixed,
+    toggleableMinWidth,
+    toggleableFixed,
+    collectableMinWidth,
+    collectableFixed,
   } = actionConfig;
 
   useEffect(() => {
     const innerMap = new Map<string, number>();
 
-    if (hasDragHandle || parentHasDragHandleFixed) {
-      innerMap.set(DRAG_HANDLE_KEY, DRAG_HANDLE_COLUMN_WIDTH);
+    if (hasDragOrPinHandle || parentHasDragOrPinHandleFixed) {
+      innerMap.set(DRAG_OR_PIN_HANDLE_KEY, DRAG_OR_PIN_HANDLE_COLUMN_WIDTH);
     }
 
     if (hasExpansion) {
@@ -92,8 +104,25 @@ export function useTableFixedOffsets(
       innerMap.set(SELECTION_KEY, SELECTION_COLUMN_WIDTH);
     }
 
+    if (hasToggleable) {
+      innerMap.set(TOGGLEABLE_KEY, toggleableMinWidth);
+    }
+
+    if (hasCollectable) {
+      innerMap.set(COLLECTABLE_KEY, collectableMinWidth);
+    }
+
     setMeasuredWidths(innerMap);
-  }, [hasDragHandle, hasExpansion, hasSelection, parentHasDragHandleFixed]);
+  }, [
+    hasDragOrPinHandle,
+    hasExpansion,
+    hasSelection,
+    hasToggleable,
+    hasCollectable,
+    parentHasDragOrPinHandleFixed,
+    toggleableMinWidth,
+    collectableMinWidth,
+  ]);
 
   // Get width for a column (prioritize measured, then computed, then defined, then fallback)
   const getWidth = useCallback(
@@ -133,8 +162,11 @@ export function useTableFixedOffsets(
       startKeys.push(EXPANSION_KEY);
     }
 
-    if ((hasDragHandle && dragHandleFixed) || parentHasDragHandleFixed) {
-      startKeys.push(DRAG_HANDLE_KEY);
+    if (
+      (hasDragOrPinHandle && dragOrPinHandleFixed) ||
+      parentHasDragOrPinHandleFixed
+    ) {
+      startKeys.push(DRAG_OR_PIN_HANDLE_KEY);
     }
 
     if (hasSelection && selectionFixed) {
@@ -153,14 +185,14 @@ export function useTableFixedOffsets(
 
     return { fixedEndKeys: endKeys, fixedStartKeys: startKeys };
   }, [
-    hasDragHandle,
-    dragHandleFixed,
+    hasDragOrPinHandle,
+    dragOrPinHandleFixed,
     hasExpansion,
     expansionFixed,
     hasSelection,
     selectionFixed,
     columns,
-    parentHasDragHandleFixed,
+    parentHasDragOrPinHandleFixed,
   ]);
 
   // Calculate all fixed offsets
@@ -200,8 +232,8 @@ export function useTableFixedOffsets(
       keys.push(EXPANSION_KEY);
     }
 
-    if (hasDragHandle) {
-      keys.push(DRAG_HANDLE_KEY);
+    if (hasDragOrPinHandle) {
+      keys.push(DRAG_OR_PIN_HANDLE_KEY);
     }
 
     if (hasSelection) {
@@ -213,7 +245,7 @@ export function useTableFixedOffsets(
     });
 
     return keys;
-  }, [hasDragHandle, hasSelection, hasExpansion, columns]);
+  }, [hasDragOrPinHandle, hasSelection, hasExpansion, columns]);
 
   const originalPositions = useMemo(() => {
     const positions = new Map<string, number>();
@@ -326,44 +358,64 @@ export function useTableFixedOffsets(
     [fixedOffsets],
   );
 
-  const getDragHandleOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasDragHandle || !actionConfig.dragHandleFixed) {
+  const getDragOrPinHandleOffset = useCallback((): FixedOffsetInfo | null => {
+    if (!hasDragOrPinHandle || !dragOrPinHandleFixed) {
       return null;
     }
 
-    return fixedOffsets.startOffsets.get(DRAG_HANDLE_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+    return fixedOffsets.startOffsets.get(DRAG_OR_PIN_HANDLE_KEY) ?? null;
+  }, [hasDragOrPinHandle, dragOrPinHandleFixed, fixedOffsets]);
 
   const getSelectionOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasSelection || !actionConfig.selectionFixed) {
+    if (!hasSelection || !selectionFixed) {
       return null;
     }
 
     return fixedOffsets.startOffsets.get(SELECTION_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+  }, [hasSelection, selectionFixed, fixedOffsets]);
 
   const getExpansionOffset = useCallback((): FixedOffsetInfo | null => {
-    if (!actionConfig.hasExpansion || !actionConfig.expansionFixed) {
+    if (!hasExpansion || !expansionFixed) {
       return null;
     }
 
     return fixedOffsets.startOffsets.get(EXPANSION_KEY) ?? null;
-  }, [actionConfig, fixedOffsets]);
+  }, [hasExpansion, expansionFixed, fixedOffsets]);
+
+  const getToggleableOffset = useCallback((): FixedOffsetInfo | null => {
+    if (!hasToggleable || !toggleableFixed) {
+      return null;
+    }
+
+    return fixedOffsets.endOffsets.get(TOGGLEABLE_KEY) ?? null;
+  }, [hasToggleable, toggleableFixed, fixedOffsets]);
+
+  const getCollectableOffset = useCallback((): FixedOffsetInfo | null => {
+    if (!hasCollectable || !collectableFixed) {
+      return null;
+    }
+
+    return fixedOffsets.endOffsets.get(COLLECTABLE_KEY) ?? null;
+  }, [hasCollectable, collectableFixed, fixedOffsets]);
 
   // Memoize return object to prevent unnecessary re-renders
   return useMemo(
     () => ({
+      getCollectableOffset,
       getColumnOffset,
-      getDragHandleOffset,
+      getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
+      getToggleableOffset,
       shouldShowShadow,
     }),
     [
+      getCollectableOffset,
       getColumnOffset,
-      getDragHandleOffset,
+      getDragOrPinHandleOffset,
       getExpansionOffset,
       getSelectionOffset,
+      getToggleableOffset,
       shouldShowShadow,
     ],
   );

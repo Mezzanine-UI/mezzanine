@@ -4,7 +4,11 @@ export {
 } from './TableActionsCell';
 export { TableBody, type TableBodyProps } from './TableBody';
 export { TableCell, type TableCellProps } from './TableCell';
-export { TableColGroup, type TableColGroupProps } from './TableColGroup';
+export { TableColGroup } from './TableColGroup';
+export {
+  TableDragOrPinHandleCell,
+  type TableDragOrPinHandleCellProps,
+} from './TableDragOrPinHandleCell';
 export { TableExpandCell, type TableExpandCellProps } from './TableExpandCell';
 export {
   TableExpandedRow,
@@ -21,3 +25,11 @@ export {
   TableSelectionCell,
   type TableSelectionCellProps,
 } from './TableSelectionCell';
+export {
+  TableToggleableCell,
+  type TableToggleableCellProps,
+} from './TableToggleableCell';
+export {
+  TableCollectableCell,
+  type TableCollectableCellProps,
+} from './TableCollectableCell';

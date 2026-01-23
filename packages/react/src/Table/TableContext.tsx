@@ -11,6 +11,10 @@ import type {
   TableRowSelection,
   TableScroll,
   TableSelectionMode,
+  TableCollectable,
+  TableToggleable,
+  TablePinnable,
+  TableDraggable,
 } from '@mezzanine-ui/core/table';
 import type { EmptyProps } from '../Empty';
 import type { PaginationProps } from '../Pagination';
@@ -54,12 +58,6 @@ export interface TableResizedColumnState {
   setResizedColumnWidth: (key: string, width: number) => void;
 }
 
-/** Draggable state */
-export interface TableDraggableState {
-  enabled: boolean;
-  fixed?: boolean | 'start';
-}
-
 /** Highlight state for hover effects */
 export interface TableHighlightState {
   columnIndex: number | null;
@@ -73,28 +71,32 @@ export interface TableContextValue<
   T extends TableDataSource = TableDataSource,
 > {
   actions?: TableActionsBase<T>;
+  collectable?: TableCollectable<T>;
   columnState?: TableResizedColumnState;
   dataSource: T[];
-  draggable?: TableDraggableState;
+  draggable?: Omit<TableDraggable<T>, 'onDragEnd'>;
   emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
   fixedOffsets?: UseTableFixedOffsetsReturn;
-  resizable?: boolean;
-  rowHeight: number;
   highlight?: TableHighlightState;
+  isContainerReady?: boolean;
+  isInsideExpandedContentArea?: boolean;
   isScrollingHorizontally?: boolean;
   loading?: boolean;
   pagination?: PaginationProps;
-  size?: TableSize;
+  pinnable?: TablePinnable;
+  resizable?: boolean;
+  rowHeight: number;
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;
   separatorAtRowIndexes?: number[];
+  size?: TableSize;
   sorting?: TableSortingState;
+  toggleable?: TableToggleable<T>;
   transitionState?: TableTransitionState;
   virtualScrollEnabled?: boolean;
   zebraStriping?: boolean;
-  isInsideExpandedContentArea?: boolean;
 }
 
 export const TableContext = createContext<TableContextValue | null>(null);
@@ -142,7 +144,7 @@ export interface TableSuperContextValue {
   getResizedColumnWidth?: (key: string) => number | undefined;
   scrollLeft?: number;
   expansionLeftPadding?: number;
-  hasDragHandleFixed?: boolean;
+  hasDragOrPinHandleFixed?: boolean;
 }
 
 export const TableSuperContext = createContext<TableSuperContextValue | null>(
