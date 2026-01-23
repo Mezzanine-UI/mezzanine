@@ -51,6 +51,7 @@ import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import TableBulkActions from './components/TableBulkActions';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import Scrollbar from '../Scrollbar';
 import type { TableProps, TableNonVirtualizedProps } from './typings';
 
 function TableInner<T extends TableDataSource = TableDataSource>(
@@ -241,11 +242,13 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Feature: Scroll and dimensions calculation */
   const {
     containerWidth,
-    handleScroll,
+    handleNativeScroll,
+    handleScrollbarScroll,
+    handleViewportReady,
+    isContainerReady,
     isScrollingHorizontally,
     scrollLeft,
     containerRef: scrollContainerRef,
-    setContainerRef,
   } = useTableScroll({
     enabled: !nested,
   });
@@ -387,19 +390,20 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       emptyProps,
       expansion: expansionState as TableContextValue['expansion'],
       fixedOffsets: fixedOffsetsState,
+      highlight: highlightValue,
+      isContainerReady,
+      isInsideExpandedContentArea: nested,
+      isScrollingHorizontally: isScrollingHorizontally,
+      loading,
+      pagination: pagination || undefined,
       pinnable: pinnableState,
       resizable,
       rowHeight,
-      highlight: highlightValue,
-      isScrollingHorizontally: isScrollingHorizontally,
-      isInsideExpandedContentArea: nested,
-      loading,
-      pagination: pagination || undefined,
       scroll,
       scrollContainerRef,
       selection: selectionState as TableContextValue['selection'],
-      size,
       separatorAtRowIndexes,
+      size,
       sorting: sortingState,
       toggleable: toggleableState,
       transitionState,
@@ -415,24 +419,25 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       emptyProps,
       expansionState,
       fixedOffsetsState,
+      highlightValue,
+      isContainerReady,
+      isScrollingHorizontally,
+      loading,
+      nested,
+      pagination,
       pinnableState,
       resizable,
       rowHeight,
-      highlightValue,
-      loading,
-      pagination,
       scroll,
       scrollContainerRef,
-      isScrollingHorizontally,
       selectionState,
+      separatorAtRowIndexes,
       size,
       sortingState,
       toggleableState,
       transitionState,
       virtualScrollEnabled,
       zebraStriping,
-      separatorAtRowIndexes,
-      nested,
     ],
   );
 
@@ -470,21 +475,12 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const scrollContainerStyle = useMemo<React.CSSProperties>(() => {
     const containerStyle: React.CSSProperties = {};
 
-    if (scroll?.y) {
-      containerStyle.maxHeight = scroll.y;
-    }
-
-    if (nested) {
-      containerStyle.position = 'unset';
-      containerStyle.overflow = 'unset';
-    }
-
     if (minHeight) {
       containerStyle.minHeight = minHeight;
     }
 
     return containerStyle;
-  }, [scroll?.y, nested, minHeight]);
+  }, [minHeight]);
 
   const tableStyle = useMemo<React.CSSProperties>(() => {
     const baseStyle: React.CSSProperties = {};
@@ -501,15 +497,28 @@ function TableInner<T extends TableDataSource = TableDataSource>(
     ((instance: HTMLDivElement | null) => void) | null
   >(null);
 
-  const composedScrollContainerRef = useCallback(
-    (element: HTMLDivElement | null) => {
-      setContainerRef(element);
+  // Handler for Scrollbar's onViewportReady - composes with handleViewportReady and droppable innerRef
+  const handleScrollbarViewportReady = useCallback(
+    (
+      viewport: HTMLDivElement,
+      instance: Parameters<typeof handleViewportReady>[1],
+    ) => {
+      handleViewportReady(viewport, instance);
 
+      // Also set droppable innerRef to viewport element for DnD
       if (droppableInnerRefSetter.current) {
-        droppableInnerRefSetter.current(element);
+        droppableInnerRefSetter.current(viewport);
       }
     },
-    [setContainerRef],
+    [handleViewportReady],
+  );
+
+  // Scrollbar events for OverlayScrollbars
+  const scrollbarEvents = useMemo(
+    () => ({
+      scroll: handleScrollbarScroll,
+    }),
+    [handleScrollbarScroll],
   );
 
   /** Feature: bulk actions */
@@ -632,16 +641,16 @@ function TableInner<T extends TableDataSource = TableDataSource>(
             style={style}
             {...restProps}
           >
-            <div
+            <Scrollbar
               {...droppableProvided?.droppableProps}
-              className={cx(classes.scrollContainer, {
-                [classes.sticky]: !!sticky,
-              })}
-              onScroll={handleScroll}
-              ref={
-                droppableProvided ? composedScrollContainerRef : setContainerRef
-              }
+              className={sticky ? classes.sticky : undefined}
+              defer={false}
+              disabled={nested}
+              events={scrollbarEvents}
+              onScroll={nested ? handleNativeScroll : undefined}
+              onViewportReady={handleScrollbarViewportReady}
               style={scrollContainerStyle}
+              maxHeight={scroll?.y}
             >
               <table
                 className={cx(
@@ -657,7 +666,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
                   <tbody>{droppableProvided.placeholder}</tbody>
                 ) : null}
               </table>
-            </div>
+            </Scrollbar>
             {pagination && (
               <TablePaginationComponent {...pagination} ref={paginationRef} />
             )}

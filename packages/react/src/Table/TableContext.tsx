@@ -78,24 +78,25 @@ export interface TableContextValue<
   emptyProps?: EmptyProps & { height?: number | string };
   expansion?: TableExpansionState<T>;
   fixedOffsets?: UseTableFixedOffsetsReturn;
-  pinnable?: TablePinnable;
-  resizable?: boolean;
-  rowHeight: number;
   highlight?: TableHighlightState;
+  isContainerReady?: boolean;
+  isInsideExpandedContentArea?: boolean;
   isScrollingHorizontally?: boolean;
   loading?: boolean;
   pagination?: PaginationProps;
-  size?: TableSize;
+  pinnable?: TablePinnable;
+  resizable?: boolean;
+  rowHeight: number;
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;
   selection?: TableSelectionState<T>;
   separatorAtRowIndexes?: number[];
+  size?: TableSize;
   sorting?: TableSortingState;
   toggleable?: TableToggleable<T>;
   transitionState?: TableTransitionState;
   virtualScrollEnabled?: boolean;
   zebraStriping?: boolean;
-  isInsideExpandedContentArea?: boolean;
 }
 
 export const TableContext = createContext<TableContextValue | null>(null);

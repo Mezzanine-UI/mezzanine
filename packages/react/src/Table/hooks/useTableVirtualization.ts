@@ -1,7 +1,7 @@
 'use client';
 'use no memo';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual';
 import { getRowKey, type TableDataSource } from '@mezzanine-ui/core/table';
 import { useTableContext } from '../TableContext';
@@ -9,6 +9,7 @@ import { useTableContext } from '../TableContext';
 export interface UseTableVirtualizationOptions<T extends TableDataSource> {
   dataSource: T[];
   enabled?: boolean;
+  isContainerReady?: boolean;
   isRowExpanded?: (key: string) => boolean;
   overscan?: number;
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -31,19 +32,13 @@ export interface UseTableVirtualizationReturn {
 export function useTableVirtualization<T extends TableDataSource>({
   dataSource,
   enabled = true,
+  isContainerReady = false,
   isRowExpanded,
   overscan = 5,
   scrollContainerRef,
 }: UseTableVirtualizationOptions<T>): UseTableVirtualizationReturn | null {
   const { rowHeight } = useTableContext();
-  const [isContainerReady, setIsContainerReady] = useState(false);
   const expandedRowHeightsRef = useRef<Map<string, number>>(new Map());
-
-  useEffect(() => {
-    if (scrollContainerRef.current && enabled) {
-      setIsContainerReady(true);
-    }
-  }, [scrollContainerRef, enabled]);
 
   // Estimate size callback that accounts for expanded rows
   const estimateSize = useCallback(
