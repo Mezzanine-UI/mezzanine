@@ -3,316 +3,229 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { contentHeaderClasses as classes } from '@mezzanine-ui/core/page-toolbar';
-import { PlusIcon } from '@mezzanine-ui/icons';
-import Button from '../Button';
 import ContentHeader from '.';
-import Input from '../Input';
+import { DotHorizontalIcon, MenuIcon, PlusIcon } from '@mezzanine-ui/icons';
+import Button from '../Button';
+
+const queryContentHeaderHostElement = (container: Element): HTMLElement => {
+  const host = container.querySelector('.mzn-content-header');
+
+  if (!host) {
+    throw new Error('ContentHeader host element not found');
+  }
+
+  return host as HTMLElement;
+};
 
 describe('<ContentHeader />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(
-      <ContentHeader
-        actions={{
-          primaryButton: { children: 'Confirm' },
-        }}
-        ref={ref}
-      />,
-    ),
+    render(<ContentHeader ref={ref} title="Test" />),
   );
 
-  describeHostElementClassNameAppendable('foo', (className) =>
-    render(
-      <ContentHeader
-        actions={{
-          primaryButton: { children: 'Confirm' },
-        }}
-        className={className}
-      />,
-    ),
-  );
+  describeHostElementClassNameAppendable('foo', (className) => {
+    const result = render(<ContentHeader className={className} title="Test" />);
 
-  it('should bind host class', () => {
-    const { container } = render(
-      <ContentHeader
-        actions={{
-          primaryButton: { children: 'Confirm' },
-        }}
-      />,
-    );
-    const element = container.querySelector(`.${classes.host}`);
+    return {
+      ...result,
+      getHostHTMLElement: <E extends Element = HTMLElement>() =>
+        queryContentHeaderHostElement(
+          result.getHostHTMLElement(),
+        ) as unknown as E,
+    };
+  });
 
-    expect(element).toBeInstanceOf(HTMLDivElement);
+  it('should bind content header class', () => {
+    const { getHostHTMLElement } = render(<ContentHeader title="Test" />);
+    const element = queryContentHeaderHostElement(getHostHTMLElement());
+
+    expect(element.classList.contains('mzn-content-header')).toBeTruthy();
   });
 
   describe('prop: size', () => {
-    it('should render with main size by default', () => {
-      const { container } = render(
-        <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-        />,
+    it('should append size class for main variant', () => {
+      const { getHostHTMLElement } = render(
+        <ContentHeader size="main" title="Test" />,
       );
-      const element = container.querySelector(`.${classes.size('main')}`);
+      const element = queryContentHeaderHostElement(getHostHTMLElement());
 
-      expect(element).toBeInstanceOf(HTMLDivElement);
+      expect(
+        element.classList.contains('mzn-content-header--main'),
+      ).toBeTruthy();
     });
 
-    it('should render with sub size', () => {
-      const { container } = render(
-        <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-          size="sub"
-        />,
+    it('should append size class for sub variant', () => {
+      const { getHostHTMLElement } = render(
+        <ContentHeader size="sub" title="Test" />,
       );
-      const element = container.querySelector(`.${classes.size('sub')}`);
+      const element = queryContentHeaderHostElement(getHostHTMLElement());
 
-      expect(element).toBeInstanceOf(HTMLDivElement);
+      expect(
+        element.classList.contains('mzn-content-header--sub'),
+      ).toBeTruthy();
     });
   });
 
-  describe('prop: actions', () => {
-    it('should render primary button with base-primary variant', () => {
-      const { getByText } = render(
-        <ContentHeader
-          actions={{
-            primaryButton: { children: 'Submit' },
-          }}
-        />,
-      );
-      const button = getByText('Submit');
+  describe('prop: title', () => {
+    it('should render title', () => {
+      const title = 'Test Title';
+      const { getHostHTMLElement } = render(<ContentHeader title={title} />);
+      const element = getHostHTMLElement();
 
-      expect(button).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        button.classList.contains('mzn-button--base-primary'),
-      ).toBeTruthy();
+      expect(element.textContent).toContain(title);
     });
+  });
 
-    it('should render secondary button with base-secondary variant', () => {
-      const { getByText } = render(
-        <ContentHeader
-          actions={{
-            secondaryButton: { children: 'Cancel' },
-          }}
-        />,
+  describe('prop: description', () => {
+    it('should render description', () => {
+      const description = 'Test Description';
+      const { getHostHTMLElement } = render(
+        <ContentHeader description={description} title="Test" />,
       );
-      const button = getByText('Cancel');
+      const element = getHostHTMLElement();
 
-      expect(button).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        button.classList.contains('mzn-button--base-secondary'),
-      ).toBeTruthy();
+      expect(element.textContent).toContain(description);
     });
+  });
 
-    it('should render destructive button with destructive-secondary variant', () => {
-      const { getByText } = render(
-        <ContentHeader
-          actions={{
-            destructiveButton: { children: 'Delete' },
-          }}
-        />,
+  describe('prop: onBackClick', () => {
+    it('should call onBackClick when back button is clicked', () => {
+      const onBackClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <ContentHeader onBackClick={onBackClick} title="Test" />,
       );
-      const button = getByText('Delete');
+      const backButton = getHostHTMLElement().querySelector(
+        '.mzn-content-header__back',
+      ) as HTMLButtonElement;
 
-      expect(button).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        button.classList.contains('mzn-button--destructive-secondary'),
-      ).toBeTruthy();
-    });
+      backButton?.click();
 
-    it('should render all action buttons in correct order', () => {
-      const { container } = render(
-        <ContentHeader
-          actions={{
-            destructiveButton: { children: 'Delete' },
-            primaryButton: { children: 'Confirm' },
-            secondaryButton: { children: 'Cancel' },
-          }}
-        />,
-      );
-      const buttonGroup = container.querySelector('.mzn-button-group');
-      const buttons = buttonGroup!.querySelectorAll('button');
-
-      expect(buttons).toHaveLength(3);
-      expect(buttons[0].textContent).toBe('Delete');
-      expect(buttons[1].textContent).toBe('Cancel');
-      expect(buttons[2].textContent).toBe('Confirm');
-    });
-
-    it('should render single button element as action', () => {
-      const { getByText } = render(
-        <ContentHeader actions={<Button>Custom Button</Button>} />,
-      );
-      const button = getByText('Custom Button');
-
-      expect(button).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        button.classList.contains('mzn-button--base-primary'),
-      ).toBeTruthy();
-    });
-
-    it('should render single button props as action', () => {
-      const { getByText } = render(
-        <ContentHeader actions={{ children: 'Single Action' }} />,
-      );
-      const button = getByText('Single Action');
-
-      expect(button).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        button.classList.contains('mzn-button--base-primary'),
-      ).toBeTruthy();
-    });
-
-    it('should apply correct size to action buttons', () => {
-      const { getByText } = render(
-        <ContentHeader
-          actions={{
-            primaryButton: { children: 'Submit' },
-          }}
-          size="sub"
-        />,
-      );
-      const button = getByText('Submit');
-
-      expect(button.classList.contains('mzn-button--sub')).toBeTruthy();
+      expect(onBackClick).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('prop: filter', () => {
-    it('should render filter component', () => {
-      const { container } = render(
+    it('should render search input', () => {
+      const { getHostHTMLElement } = render(
         <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
+          filter={{
+            placeholder: 'Search...',
+            variant: 'search',
           }}
-          filter={<Input variant="search" placeholder="Search..." />}
+          title="Test"
         />,
       );
-      const input = container.querySelector('input');
+      const input = getHostHTMLElement().querySelector(
+        'input[placeholder="Search..."]',
+      );
 
-      expect(input).toBeInstanceOf(HTMLInputElement);
-      expect(input!.placeholder).toBe('Search...');
+      expect(input).toBeTruthy();
     });
+  });
 
-    it('should apply size to filter component', () => {
-      const { container } = render(
+  describe('prop: actions', () => {
+    it('should render action buttons', () => {
+      const { getHostHTMLElement } = render(
         <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-          filter={<Input variant="search" placeholder="Search..." />}
-          size="sub"
+          actions={[
+            { children: 'Primary', variant: 'base-primary' },
+            { children: 'Secondary', variant: 'base-secondary' },
+          ]}
+          title="Test"
         />,
       );
-      const input = container.querySelector('input');
+      const element = getHostHTMLElement();
 
-      expect(input).toBeInstanceOf(HTMLInputElement);
+      expect(element.textContent).toContain('Primary');
+      expect(element.textContent).toContain('Secondary');
     });
   });
 
   describe('prop: utilities', () => {
-    it('should render single utility button with tooltip', () => {
-      const { container } = render(
+    it('should render utility buttons', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
         <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-          utilities={
-            <Button iconType="icon-only" icon={PlusIcon} title="Add" />
-          }
+          title="Test"
+          utilities={[
+            {
+              icon: PlusIcon,
+              onClick,
+            },
+            {
+              icon: MenuIcon,
+              onClick,
+            },
+          ]}
         />,
       );
-      const buttonGroups = container.querySelectorAll('.mzn-button-group');
-      const utilityButton = buttonGroups[1]?.querySelector('button');
+      const buttons = getHostHTMLElement().querySelectorAll(
+        '.mzn-content-header__utilities button',
+      );
 
-      expect(utilityButton).toBeInstanceOf(HTMLButtonElement);
-      expect(
-        utilityButton!.classList.contains('mzn-button--icon-only'),
-      ).toBeTruthy();
-      expect(
-        utilityButton!.classList.contains('mzn-button--base-secondary'),
-      ).toBeTruthy();
+      expect(buttons.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('should render multiple utility buttons with tooltips', () => {
-      const { container } = render(
+    it('should render dropdown utility', () => {
+      const { getHostHTMLElement } = render(
         <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-          utilities={
-            <>
-              <Button iconType="icon-only" icon={PlusIcon} title="Add" />
-              <Button iconType="icon-only" icon={PlusIcon} title="Edit" />
-            </>
-          }
+          title="Test"
+          utilities={[
+            {
+              children: <Button icon={DotHorizontalIcon} />,
+              options: [
+                { id: '1', name: 'Option 1' },
+                { id: '2', name: 'Option 2' },
+              ],
+            },
+          ]}
         />,
       );
-      const buttonGroups = container.querySelectorAll('.mzn-button-group');
-      const utilityButtons = buttonGroups[1]?.querySelectorAll('button');
+      const dropdown = getHostHTMLElement().querySelector('.mzn-dropdown');
 
-      expect(utilityButtons).toHaveLength(2);
-      expect(
-        utilityButtons![0].classList.contains('mzn-button--icon-only'),
-      ).toBeTruthy();
-      expect(
-        utilityButtons![1].classList.contains('mzn-button--icon-only'),
-      ).toBeTruthy();
-    });
-
-    it('should apply correct size to utility buttons', () => {
-      const { container } = render(
-        <ContentHeader
-          actions={{
-            primaryButton: { children: 'Confirm' },
-          }}
-          size="sub"
-          utilities={
-            <Button iconType="icon-only" icon={PlusIcon} title="Add" />
-          }
-        />,
-      );
-      const buttonGroups = container.querySelectorAll('.mzn-button-group');
-      const utilityButton = buttonGroups[1]?.querySelector('button');
-
-      expect(utilityButton!.classList.contains('mzn-button--sub')).toBeTruthy();
+      expect(dropdown).toBeTruthy();
     });
   });
 
-  describe('complete layout', () => {
-    it('should render all props together', () => {
-      const { container, getByText } = render(
-        <ContentHeader
-          actions={{
-            destructiveButton: { children: 'Delete' },
-            primaryButton: { children: 'Confirm' },
-            secondaryButton: { children: 'Cancel' },
-          }}
-          filter={<Input variant="search" placeholder="Search..." />}
-          size="main"
-          utilities={
-            <>
-              <Button iconType="icon-only" icon={PlusIcon} title="Add" />
-              <Button iconType="icon-only" icon={PlusIcon} title="Edit" />
-            </>
-          }
-        />,
+  describe('prop: children', () => {
+    it('should render children with link as back button', () => {
+      const { getHostHTMLElement } = render(
+        <ContentHeader title="Test">
+          <a href="/back" title="back" />
+        </ContentHeader>,
       );
+      const link = getHostHTMLElement().querySelector('a[title="back"]');
 
-      expect(container.querySelector('input')).toBeInstanceOf(HTMLInputElement);
-      expect(getByText('Delete')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText('Cancel')).toBeInstanceOf(HTMLButtonElement);
-      expect(getByText('Confirm')).toBeInstanceOf(HTMLButtonElement);
-
-      const buttonGroups = container.querySelectorAll('.mzn-button-group');
-      const utilityButtons = buttonGroups[1]?.querySelectorAll('button');
-
-      expect(utilityButtons).toHaveLength(2);
+      expect(link).toBeTruthy();
+      expect(link?.getAttribute('href')).toBe('/back');
     });
+
+    it('should render multiple children elements', () => {
+      const { getHostHTMLElement } = render(
+        <ContentHeader title="Test">
+          <Button>Primary</Button>
+          <Button variant="base-secondary">Secondary</Button>
+        </ContentHeader>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.textContent).toContain('Primary');
+      expect(element.textContent).toContain('Secondary');
+    });
+  });
+
+  it('should forward rest props to host element', () => {
+    const { getHostHTMLElement } = render(
+      <ContentHeader
+        aria-label="content-header"
+        data-testid="content-header"
+        title="Test"
+      />,
+    );
+    const element = queryContentHeaderHostElement(getHostHTMLElement());
+
+    expect(element.getAttribute('aria-label')).toBe('content-header');
+    expect(element.dataset.testid).toBe('content-header');
   });
 });
