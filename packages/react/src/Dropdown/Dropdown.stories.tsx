@@ -1,16 +1,16 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
-import { ChevronDownIcon } from '@mezzanine-ui/icons';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { DotVerticalIcon } from '@mezzanine-ui/icons';
 
 import Dropdown from '.';
+import AutoComplete from '../AutoComplete';
 import Button from '../Button';
 import Icon from '../Icon';
+import { SelectValue } from '../Select/typings';
 import Tag from '../Tag';
 import TextField from '../TextField';
-import { createDropdownKeydownHandler } from './dropdownKeydownHandler';
 
 export default {
   title: 'Internal/Dropdown',
@@ -134,204 +134,32 @@ export const Playground: Story = {
 export const AutoCompleteExample: Story = {
   render: () => {
     const ExampleComponent = () => {
-      const comboboxId = useId();
-      const listboxId = `${comboboxId}-listbox`;
-      const inputId = `${comboboxId}-input`;
-      const [activeIndex, setActiveIndex] = useState<number | null>(null);
-      const [inputValue, setInputValue] = useState('');
-      const [isOpen, setIsOpen] = useState(false);
-      const [_listboxHasVisualFocus, setListboxHasVisualFocus] = useState(false);
-      const [selectedOption, setSelectedOption] = useState<DropdownOption | null>(
+      const [selectedOption, setSelectedOption] = useState<SelectValue | null>(
         null,
       );
-      const comboboxRef = useRef<HTMLDivElement | null>(null);
-      const inputRef = useRef<HTMLInputElement | null>(null);
-      const isPointerDownRef = useRef(false);
 
-      const filteredOptions = useMemo(() => {
-        const keyword = inputValue.trim().toLowerCase();
+      const options: SelectValue[] = usStatesOptions.map((option) => ({
+        id: option.id,
+        name: option.name,
+      }));
 
-        if (!keyword) {
-          return usStatesOptions;
-        }
-
-        return usStatesOptions.filter((option) =>
-          option.name.toLowerCase().startsWith(keyword),
-        );
-      }, [inputValue]);
-
-      useEffect(() => {
-        if (!filteredOptions.length) {
-          setActiveIndex(null);
-          return;
-        }
-
-        setActiveIndex((prev) => {
-          if (prev === null) return 0;
-          return Math.min(prev, filteredOptions.length - 1);
-        });
-      }, [filteredOptions]);
-
-      useEffect(() => {
-        if (!isOpen || activeIndex === null) return;
-
-        requestAnimationFrame(() => {
-          const activeOption = document.getElementById(
-            `${listboxId}-option-${activeIndex}`,
-          );
-
-          activeOption?.scrollIntoView({ block: 'nearest' });
-        });
-      }, [activeIndex, isOpen, listboxId]);
-
-      const activeDescendantId =
-        activeIndex !== null && filteredOptions[activeIndex]
-          ? `${listboxId}-option-${activeIndex}`
-          : undefined;
-
-      const openDropdown = () => {
-        if (!isOpen) {
-          comboboxRef.current?.click();
-        }
+      const handleChange = (newValue: SelectValue | null) => {
+        setSelectedOption(newValue);
       };
-
-      const closeDropdown = () => {
-        if (isOpen) {
-          comboboxRef.current?.click();
-        }
-      };
-
-      const toggleDropdown = () => {
-        comboboxRef.current?.click();
-      };
-
-      const handleSetOpen = (open: boolean) => {
-        if (open && !isOpen) {
-          openDropdown();
-        } else if (!open && isOpen) {
-          closeDropdown();
-        }
-      };
-
-      const handleSelect = (option: DropdownOption) => {
-        setSelectedOption(option);
-        setInputValue(option.name);
-        setActiveIndex(null);
-        closeDropdown();
-        inputRef.current?.focus();
-      };
-
-      const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-        setSelectedOption(null);
-        openDropdown();
-      };
-
-      const handleInputMouseDown = () => {
-        isPointerDownRef.current = true;
-        requestAnimationFrame(() => {
-          isPointerDownRef.current = false;
-        });
-      };
-
-      const handleKeyDown = createDropdownKeydownHandler({
-        activeIndex,
-        onEnterSelect: handleSelect,
-        onEscape: () => {
-          closeDropdown();
-          setActiveIndex(null);
-        },
-        open: isOpen,
-        options: filteredOptions,
-        setActiveIndex,
-        setListboxHasVisualFocus,
-        setOpen: handleSetOpen,
-      });
 
       return (
         <div style={{ width: 320 }}>
           <Tag label="Combobox with AutoComplete" />
           <div style={{ marginTop: 12 }}>
-            <Dropdown
-              activeIndex={activeIndex}
-              inputPosition="outside"
+            <AutoComplete
+              fullWidth
+              menuMaxHeight={300}
               mode="single"
-              isMatchInputValue
-              listboxId={listboxId}
-              onClose={() => {
-                setIsOpen(false);
-                setActiveIndex(null);
-              }}
-              maxHeight={300}
-              onItemHover={(index) => setActiveIndex(index)}
-              onOpen={() => setIsOpen(true)}
-              onSelect={handleSelect}
-              options={filteredOptions}
-              sameWidth
-              value={selectedOption?.id}
-            >
-              <TextField
-                active={isOpen}
-                ref={comboboxRef}
-                suffix={
-                  <button
-                    aria-controls={listboxId}
-                    aria-expanded={isOpen}
-                    aria-haspopup="listbox"
-                    aria-label="States"
-                    onClick={(event) => {
-                      event.preventDefault();
-                      event.stopPropagation();
-                      toggleDropdown();
-                      requestAnimationFrame(() => {
-                        inputRef.current?.focus();
-                      });
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      padding: 0,
-                    }}
-                    type="button"
-                  >
-                    <Icon
-                      icon={ChevronDownIcon}
-                      style={{
-                        transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-                        transition: 'transform 0.2s',
-                      }}
-                    />
-                  </button>
-                }
-              >
-                {({ paddingClassName }) => (
-                  <input
-                    aria-activedescendant={activeDescendantId}
-                    aria-autocomplete="list"
-                    aria-controls={listboxId}
-                    aria-expanded={isOpen}
-                    aria-haspopup="listbox"
-                    className={paddingClassName}
-                    id={inputId}
-                    onChange={handleInputChange}
-                    onFocus={() => {
-                      if (isPointerDownRef.current) return;
-                      openDropdown();
-                    }}
-                    onKeyDown={handleKeyDown}
-                    onMouseDown={handleInputMouseDown}
-                    placeholder="Type or select a state..."
-                    ref={inputRef}
-                    role="combobox"
-                    type="text"
-                    value={inputValue}
-                  />
-                )}
-              </TextField>
-            </Dropdown>
+              onChange={handleChange}
+              options={options}
+              placeholder="Type or select a state..."
+              value={selectedOption}
+            />
           </div>
         </div>
       );
@@ -381,15 +209,12 @@ export const Inside: Story = {
                   sameWidth
                 >
                   <TextField>
-                    {({ paddingClassName }) => (
-                      <input
-                        className={paddingClassName}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        placeholder="請選擇或輸入..."
-                        type="text"
-                        value={inputValue}
-                      />
-                    )}
+                    <input
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder="請選擇或輸入..."
+                      type="text"
+                      value={inputValue}
+                    />
                   </TextField>
                 </Dropdown>
               </div>
@@ -555,6 +380,89 @@ export const ControlledVisibility: Story = {
           >
             <Button variant="base-primary">{selectedLabel}</Button>
           </Dropdown>
+        </div>
+      );
+    };
+
+    return <ExampleComponent />;
+  },
+};
+
+export const LoadMoreOnReachBottom: Story = {
+  render: () => {
+    const ExampleComponent = () => {
+      const [options, setOptions] = useState<DropdownOption[]>(() =>
+        usStatesOptions.slice(0, 10)
+      );
+      const [value, setValue] = useState<string | undefined>(undefined);
+      const [loading, setLoading] = useState(false);
+      const [hasMore, setHasMore] = useState(true);
+      const [hasReachedBottom, setHasReachedBottom] = useState(false);
+
+      const selectedLabel = useMemo(() => {
+        const matched = options.find((option) => option.id === value);
+        return matched?.name ?? '請選擇';
+      }, [value, options]);
+
+      const loadMore = useCallback(() => {
+        if (loading || !hasMore) return;
+
+        setLoading(true);
+
+        // 模擬異步加載數據
+        setTimeout(() => {
+          const currentCount = options.length;
+          const nextBatch = usStatesOptions.slice(currentCount, currentCount + 10);
+
+          if (nextBatch.length === 0) {
+            setHasMore(false);
+          } else {
+            setOptions((prev) => [...prev, ...nextBatch]);
+          }
+
+          setLoading(false);
+          setHasReachedBottom(false);
+        }, 1000);
+      }, [loading, hasMore, options.length]);
+
+      const handleReachBottom = useCallback(() => {
+        if (!hasReachedBottom && !loading) {
+          setHasReachedBottom(true);
+          loadMore();
+        }
+      }, [hasReachedBottom, loading, loadMore]);
+
+      const handleLeaveBottom = useCallback(() => {
+        setHasReachedBottom(false);
+      }, []);
+
+      // 在載入時，暫時清空選項以顯示 DropdownStatus 的 loading
+      const displayOptions = loading ? [] : options;
+
+      return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
+          <Tag label={`已載入 ${options.length} / ${usStatesOptions.length} 個選項`} />
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Dropdown
+              maxHeight={300}
+              onReachBottom={handleReachBottom}
+              onLeaveBottom={handleLeaveBottom}
+              onSelect={(option) => {
+                setValue(option.id);
+              }}
+              options={displayOptions}
+              status={loading ? 'loading' : undefined}
+              loadingText="載入中..."
+              value={value}
+              placement="right-start"
+            >
+              <Button variant="base-primary">{selectedLabel}</Button>
+            </Dropdown>
+          </div>
+          <div style={{ fontSize: '12px', color: '#666' }}>
+            {loading && <div>正在載入更多選項...</div>}
+            {!hasMore && <div>已載入所有選項</div>}
+          </div>
         </div>
       );
     };
