@@ -2980,6 +2980,8 @@ __metadata:
     lodash: "npm:^4.17.21"
     luxon: "npm:^3.7.2"
     moment: "npm:^2.30.1"
+    overlayscrollbars: "npm:^2.13.0"
+    overlayscrollbars-react: "npm:^0.5.6"
     react: "npm:^19.2.0"
     react-dom: "npm:^19.2.0"
     react-transition-group: "npm:^4.4.5"
@@ -13188,6 +13190,23 @@ __metadata:
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
   checksum: 10c0/f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
+  languageName: node
+  linkType: hard
+
+"overlayscrollbars-react@npm:^0.5.6":
+  version: 0.5.6
+  resolution: "overlayscrollbars-react@npm:0.5.6"
+  peerDependencies:
+    overlayscrollbars: ^2.0.0
+    react: ">=16.8.0"
+  checksum: 10c0/59a2aad3664d81dc4dee5e747b72bb2645047e0e6d300d9583244167d1e4b19c4cc263932e4b112d5c24358430f78d15d34ea389beb8845e3b5319ccc57db8d8
+  languageName: node
+  linkType: hard
+
+"overlayscrollbars@npm:^2.13.0":
+  version: 2.13.0
+  resolution: "overlayscrollbars@npm:2.13.0"
+  checksum: 10c0/6a2731c417d926932bb20dd6cb93df78ee2ecac9068959b9d7bdf35180c513324530eea8d9252eef6c9640c99c5c054a5a514f0c1427310a73b764a6fa17740a
   languageName: node
   linkType: hard
 
