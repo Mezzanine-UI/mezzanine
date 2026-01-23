@@ -106,7 +106,7 @@ const Scrollbar = forwardRef<
 
       // Call onViewportReady with the div element (no OverlayScrollbars instance)
       if (element && onViewportReady) {
-        onViewportReady(element, null as unknown as OverlayScrollbars);
+        onViewportReady(element);
       }
     },
     [onViewportReady, ref],

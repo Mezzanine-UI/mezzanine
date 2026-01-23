@@ -6,14 +6,12 @@ import type { OverlayScrollbars } from 'overlayscrollbars';
 export interface UseTableScrollReturn {
   /** Container width (viewport width) */
   containerWidth: number;
-  /** Native scroll event handler (for disabled Scrollbar / nested tables) */
-  handleNativeScroll: (event: React.UIEvent<HTMLDivElement>) => void;
   /** OverlayScrollbars scroll event handler */
   handleScrollbarScroll: (instance: OverlayScrollbars, event: Event) => void;
   /** Handler to be passed to Scrollbar's onViewportReady prop */
   handleViewportReady: (
     viewport: HTMLDivElement,
-    instance: OverlayScrollbars,
+    instance?: OverlayScrollbars,
   ) => void;
   /** Whether the scroll container ref has been set and is ready */
   isContainerReady: boolean;
@@ -96,7 +94,7 @@ export function useTableScroll({
 
   // Handler for Scrollbar's onViewportReady - receives the viewport element
   const handleViewportReady = useCallback(
-    (viewport: HTMLDivElement, _instance: OverlayScrollbars) => {
+    (viewport: HTMLDivElement) => {
       setupResizeObserver(viewport);
     },
     [setupResizeObserver],
@@ -106,18 +104,6 @@ export function useTableScroll({
   const handleScrollbarScroll = useCallback(
     (_instance: OverlayScrollbars, event: Event) => {
       const target = event.target as HTMLElement;
-      const newScrollLeft = target.scrollLeft;
-
-      setScrollLeft(newScrollLeft);
-      setIsScrollingHorizontally(newScrollLeft > 0);
-    },
-    [],
-  );
-
-  // Native scroll event handler (for disabled Scrollbar)
-  const handleNativeScroll = useCallback(
-    (event: React.UIEvent<HTMLDivElement>) => {
-      const target = event.currentTarget;
       const newScrollLeft = target.scrollLeft;
 
       setScrollLeft(newScrollLeft);
@@ -139,7 +125,6 @@ export function useTableScroll({
     () => ({
       containerRef,
       containerWidth,
-      handleNativeScroll,
       handleScrollbarScroll,
       handleViewportReady,
       isContainerReady,
@@ -149,7 +134,6 @@ export function useTableScroll({
     }),
     [
       containerWidth,
-      handleNativeScroll,
       handleScrollbarScroll,
       handleViewportReady,
       isContainerReady,

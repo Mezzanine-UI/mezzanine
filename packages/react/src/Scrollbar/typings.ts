@@ -47,6 +47,6 @@ export interface ScrollbarProps
    */
   onViewportReady?: (
     viewport: HTMLDivElement,
-    instance: OverlayScrollbars,
+    instance?: OverlayScrollbars,
   ) => void;
 }

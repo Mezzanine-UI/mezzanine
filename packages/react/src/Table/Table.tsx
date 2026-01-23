@@ -192,7 +192,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
       result.push(toggleableColumn);
     }
 
-    // Add collectable column (rightControl area - after toggleable) d
+    // Add collectable column (rightControl area - after toggleable)
     if (collectable?.enabled) {
       const collectableColumn: TableColumn<T> = {
         align: collectable.align ?? 'start',
@@ -242,7 +242,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   /** Feature: Scroll and dimensions calculation */
   const {
     containerWidth,
-    handleNativeScroll,
     handleScrollbarScroll,
     handleViewportReady,
     isContainerReady,
@@ -501,7 +500,7 @@ function TableInner<T extends TableDataSource = TableDataSource>(
   const handleScrollbarViewportReady = useCallback(
     (
       viewport: HTMLDivElement,
-      instance: Parameters<typeof handleViewportReady>[1],
+      instance?: Parameters<typeof handleViewportReady>[1],
     ) => {
       handleViewportReady(viewport, instance);
 
@@ -647,7 +646,6 @@ function TableInner<T extends TableDataSource = TableDataSource>(
               defer={false}
               disabled={nested}
               events={scrollbarEvents}
-              onScroll={nested ? handleNativeScroll : undefined}
               onViewportReady={handleScrollbarViewportReady}
               style={scrollContainerStyle}
               maxHeight={scroll?.y}
