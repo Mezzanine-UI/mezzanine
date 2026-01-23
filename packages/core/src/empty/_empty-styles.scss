@@ -9,6 +9,7 @@ $size-configs: (
   main: (
     icon-size: spacing.semantic-variable(size, element, extra),
     title: h3,
+    title-color: palette.semantic-variable(text, neutral-solid),
     description: body,
     padding-bottom: spacing.semantic-variable(padding, vertical, relaxed),
     gap-below-icon: spacing.semantic-variable(gap, comfort),
@@ -20,6 +21,7 @@ $size-configs: (
   sub: (
     icon-size: spacing.semantic-variable(size, element, airy),
     title: body-highlight,
+    title-color: palette.semantic-variable(text, neutral),
     description: label-secondary,
     padding-bottom: spacing.semantic-variable(padding, vertical, spacious),
     gap-below-icon: spacing.semantic-variable(gap, slim),
@@ -31,6 +33,7 @@ $size-configs: (
   minor: (
     icon-size: spacing.semantic-variable(size, element, base),
     title: body,
+    title-color: palette.semantic-variable(text, neutral),
     description: none,
     padding-bottom: none,
     gap-below-icon: none,
@@ -57,7 +60,6 @@ $size-configs: (
 // Color variables
 $description-color: palette.semantic-variable(text, neutral) !default;
 $icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
-$title-color: palette.semantic-variable(text, neutral-solid) !default;
 
 .#{$prefix} {
   align-items: center;
@@ -78,6 +80,8 @@ $title-color: palette.semantic-variable(text, neutral-solid) !default;
 
       .#{$prefix}__title {
         @include typography.semantic-variable(_get-size-config($size, title));
+
+        color: _get-size-config($size, title-color);
       }
 
       @if $size != minor {
@@ -128,7 +132,6 @@ $title-color: palette.semantic-variable(text, neutral-solid) !default;
   }
 
   &__title {
-    color: $title-color;
     margin: 0;
   }
 }
