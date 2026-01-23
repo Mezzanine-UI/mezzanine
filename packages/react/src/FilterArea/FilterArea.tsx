@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, forwardRef, ReactElement, useCallback, useMemo, useState } from 'react';
+import { Children, ComponentPropsWithoutRef, forwardRef, ReactElement, useCallback, useMemo, useState } from 'react';
 import { cx } from '../utils/cx';
 
 import { filterAreaClasses as classes, FilterAreaActionsAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
@@ -40,10 +40,11 @@ export interface FilterAreaProps
   onReset?: () => void;
   /**
    * Callback function triggered when the form is submitted.
-   * Receives all filter values as parameters.
-   * If using react-hook-form, these will be handled through FormProvider's handleSubmit.
+   * FilterArea itself does not manage form state; the parent component should collect
+   * filter values and handle submission logic. If using react-hook-form, values will be
+   * handled through FormProvider's handleSubmit.
    */
-  onSubmit?: (values: Record<string, unknown>) => void;
+  onSubmit?: () => void;
   /**
    * The text of the reset button.
    */
@@ -57,6 +58,16 @@ export interface FilterAreaProps
    * The text of the submit button.
    */
   submitText?: string;
+  /**
+   * The type of the reset button.
+   * @default 'button'
+   */
+  resetButtonType?: ComponentPropsWithoutRef<'button'>['type'];
+  /**
+   * The type of the submit button.
+   * @default 'button'
+   */
+  submitButtonType?: ComponentPropsWithoutRef<'button'>['type'];
 }
 
 const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
@@ -72,6 +83,8 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       resetText = 'Reset',
       size = 'main',
       submitText = 'Search',
+      resetButtonType = 'button',
+      submitButtonType = 'button',
       ...rest
     } = props;
 
@@ -88,9 +101,7 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
 
     const handleSubmit = useCallback(() => {
       if (onSubmit) {
-        // FilterArea itself does not manage form state; the actual values should be provided by the parent component or react-hook-form.
-        // Here, we provide an empty values object; in real usage, the parent component should pass in the correct values.
-        onSubmit({});
+        onSubmit();
       }
     }, [onSubmit]);
 
@@ -98,12 +109,13 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       return (
         <div className={cx(
           classes.actions,
-          classes.actionsAlignStart(actionsAlign),
+          classes.actionsAlign(actionsAlign),
           { [classes.actionsExpanded]: expanded },
         )}>
           <Button
             onClick={handleSubmit}
             size={size}
+            type={submitButtonType}
           >
             {submitText}
           </Button>
@@ -111,16 +123,21 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
             disabled={!isDirty}
             onClick={onReset}
             size={size}
+            type={resetButtonType}
             variant="base-secondary"
           >
             {resetText}
           </Button>
           {hasMultipleLines && (
             <Button
+              aria-expanded={expanded}
+              aria-label={expanded ? 'Collapse filters' : 'Expand filters'}
               icon={expanded ? ChevronUpIcon : ChevronDownIcon}
               iconType="icon-only"
               onClick={handleToggleExpanded}
               size={size}
+              title={expanded ? 'Collapse filters' : 'Expand filters'}
+              type="button"
               variant="base-ghost"
             />
           )}
