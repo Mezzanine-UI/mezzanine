@@ -1,6 +1,6 @@
+import { SelectTriggerType } from '@mezzanine-ui/core/select';
 import { ReactElement, Ref } from 'react';
 import Icon, { IconProps } from '../Icon';
-import { SelectTriggerType } from '@mezzanine-ui/core/select';
 import { TextFieldProps } from '../TextField';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
@@ -81,6 +81,11 @@ export interface SelectTriggerBaseProps
   onTagClose?: (target: SelectValue) => void;
   /** Placeholder text when not selected */
   placeholder?: string;
+  /**
+   * Whether to force show clearable icon regardless of value state.
+   * @default false
+   */
+  isForceClearable?: boolean;
   /**
    * Whether the input is readonly.
    * @default false

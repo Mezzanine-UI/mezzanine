@@ -14,5 +14,9 @@
       pointer-events: none;
     }
   }
+
+  .#{select.$trigger-prefix}__input {
+    padding: 0;
+  }
 }
 

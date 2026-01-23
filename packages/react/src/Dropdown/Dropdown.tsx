@@ -201,6 +201,16 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * @default false
    */
   disablePortal?: boolean;
+  /**
+   * Callback fired when the dropdown list reaches the bottom.
+   * Only fires when `maxHeight` is set and the list is scrollable.
+   */
+  onReachBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list leaves the bottom.
+   * Only fires when `maxHeight` is set and the list is scrollable.
+   */
+  onLeaveBottom?: () => void;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -243,6 +253,8 @@ export default function Dropdown(props: DropdownProps) {
     emptyIcon,
     followText: followTextProp,
     disablePortal = false,
+    onReachBottom,
+    onLeaveBottom,
     mode,
     value,
   } = props;
@@ -510,6 +522,8 @@ export default function Dropdown(props: DropdownProps) {
       sameWidth,
       onHover: handleItemHover,
       onSelect,
+      onReachBottom,
+      onLeaveBottom,
       options,
       type,
       status,
@@ -530,6 +544,8 @@ export default function Dropdown(props: DropdownProps) {
       sameWidth,
       handleItemHover,
       onSelect,
+      onReachBottom,
+      onLeaveBottom,
       options,
       type,
       status,
