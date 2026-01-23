@@ -12,7 +12,7 @@ export const filterAreaClasses = {
   host: filterAreaPrefix,
   panelHost: `${filterAreaPrefix}--panel`,
   actions: `${filterAreaPrefix}__actions`,
-  actionsAlignStart: (align: FilterAreaActionsAlign) =>
+  actionsAlign: (align: FilterAreaActionsAlign) =>
     `${filterAreaPrefix}__actions--align-${align}`,
   actionsExpanded: `${filterAreaPrefix}__actions--expanded`,
   row: `${filterAreaPrefix}__row`,
