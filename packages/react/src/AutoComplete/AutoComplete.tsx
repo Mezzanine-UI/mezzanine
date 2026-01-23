@@ -216,6 +216,16 @@ export interface AutoCompleteBaseProps
    * The z-index of the dropdown.
    */
   dropdownZIndex?: number | string;
+  /**
+   * Callback fired when the dropdown list reaches the bottom.
+   * Only fires when `menuMaxHeight` is set and the list is scrollable.
+   */
+  onReachBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list leaves the bottom.
+   * Only fires when `menuMaxHeight` is set and the list is scrollable.
+   */
+  onLeaveBottom?: () => void;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -358,6 +368,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
       dropdownZIndex,
+      onReachBottom,
+      onLeaveBottom,
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -867,6 +879,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             type="default"
             value={dropdownValue}
             zIndex={dropdownZIndex}
+            onReachBottom={onReachBottom}
+            onLeaveBottom={onLeaveBottom}
           >
             <SelectTrigger
               ref={composedRef}
