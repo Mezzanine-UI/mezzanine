@@ -4,14 +4,15 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Empty from '.';
+import { emptyClasses as classes } from '@mezzanine-ui/core/empty';
 import Button from '../Button';
+import Empty from '.';
 
 describe('<Empty />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<Empty title="Test Title" ref={ref} />),
+    render(<Empty ref={ref} title="Test Title" />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
@@ -105,6 +106,34 @@ describe('<Empty />', () => {
       const iconElement = container.querySelector('.mzn-empty__icon');
 
       expect(iconElement).toBeInstanceOf(Node);
+    });
+
+    it('should render main notification icon when type is notification and size is main', () => {
+      const { container } = render(
+        <Empty size="main" title="Test" type="notification" />,
+      );
+      const svg = container.querySelector('svg');
+
+      expect(svg).toBeInstanceOf(SVGSVGElement);
+      expect(svg?.getAttribute('viewBox')).toBe('0 0 44 47');
+    });
+
+    it('should render sub notification icon when type is notification and size is sub', () => {
+      const { container } = render(
+        <Empty size="sub" title="Test" type="notification" />,
+      );
+      const icon = container.querySelector(`.${classes.icon}`);
+
+      expect(icon).toBeInstanceOf(HTMLElement);
+    });
+
+    it('should render minor notification icon when type is notification and size is minor', () => {
+      const { container } = render(
+        <Empty size="minor" title="Test" type="notification" />,
+      );
+      const icon = container.querySelector(`.${classes.icon}`);
+
+      expect(icon).toBeInstanceOf(HTMLElement);
     });
   });
 
