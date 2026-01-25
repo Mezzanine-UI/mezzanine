@@ -1,11 +1,12 @@
 import { cloneElement, forwardRef, isValidElement, ReactElement } from 'react';
-import { SlashIcon } from '@mezzanine-ui/icons';
 import { breadcrumbClasses as classes } from '@mezzanine-ui/core/breadcrumb';
+import { SlashIcon } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
-import BreadcrumbItem from './BreadcrumbItem';
-import Icon from '../Icon';
-import type { BreadcrumbItemProps, BreadcrumbProps } from './typings';
 import { flattenChildren } from '../utils/flatten-children';
+import Icon from '../Icon';
+import BreadcrumbItem from './BreadcrumbItem';
+import { BreadcrumbOverflowMenu } from './BreadcrumbOverflowMenu';
+import type { BreadcrumbItemProps, BreadcrumbProps } from './typings';
 
 const renderItemWithProps = (
   item: BreadcrumbItemProps | ReactElement<BreadcrumbItemProps>,
@@ -18,8 +19,18 @@ const renderItemWithProps = (
   return <BreadcrumbItem {...item} {...appendProps} />;
 };
 
+const convertToPropsWithId = (
+  item: BreadcrumbItemProps | ReactElement<BreadcrumbItemProps>,
+): BreadcrumbItemProps & { id: string } => {
+  if (isValidElement(item)) {
+    return { id: item.props.id || item.props.name, ...item.props };
+  }
+
+  return { id: item.id || item.name, ...item };
+};
+
 const renderItems = (
-  items: BreadcrumbProps['items'] | ReactElement<BreadcrumbItemProps>[],
+  items: Array<BreadcrumbItemProps> | ReactElement<BreadcrumbItemProps>[],
   condensed?: boolean,
 ) => {
   if (!items) {
@@ -27,6 +38,13 @@ const renderItems = (
   }
 
   const lastIndex = items.length - 1;
+
+  const hasOverflowDropdownIcon = !condensed || items.length > 2;
+  const collapsedProps = hasOverflowDropdownIcon
+    ? condensed
+      ? items.map((v) => convertToPropsWithId(v)).slice(0, lastIndex - 1)
+      : items.map((v) => convertToPropsWithId(v)).slice(2, lastIndex - 1)
+    : [];
 
   return (
     <>
@@ -67,38 +85,9 @@ const renderItems = (
         <>
           {!condensed && <Icon icon={SlashIcon} size={14} />}
 
-          {(!condensed || items.length > 2) && (
+          {hasOverflowDropdownIcon && (
             <>
-              {/* overflow dropdown icon */}
-              <BreadcrumbItem
-                {...{
-                  options: (condensed
-                    ? items.slice(0, lastIndex - 1)
-                    : items.slice(2, lastIndex - 1)
-                  ).map((item) => {
-                    if (isValidElement(item)) {
-                      const { props } =
-                        item as ReactElement<BreadcrumbItemProps>;
-
-                      return {
-                        name: props.name,
-                        href: props.href,
-                        target: props.target,
-                        id: props.id,
-                        options: props.options,
-                      };
-                    }
-
-                    return {
-                      name: item.name,
-                      href: item.href,
-                      target: item.target,
-                      id: item.id,
-                      options: item.options,
-                    };
-                  }),
-                }}
-              />
+              <BreadcrumbOverflowMenu collapsedProps={collapsedProps} />
               <Icon icon={SlashIcon} size={14} />
             </>
           )}

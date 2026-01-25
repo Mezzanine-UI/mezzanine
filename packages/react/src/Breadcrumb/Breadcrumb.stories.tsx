@@ -10,31 +10,29 @@ export default {
 
 type Story = StoryObj<BreadcrumbProps>;
 
-export const Playground: Story = {
-  args: {
-    items: [
-      { name: 'Home', href: '/' },
-      { name: 'Category', href: '/Category' },
-      { name: 'Parent of Current', href: '/Category/Parent' },
-      { name: 'Current' },
-    ],
-  },
-  argTypes: {},
-};
-
 const breadcrumbItem: BreadcrumbProps['items'] = [
   {
+    id: 'home',
     name: 'Home',
     href: '/',
   },
-  { name: 'Category', href: '/Category', target: '_blank' },
-  { name: 'Subcategory', href: '/Category/Subcategory', target: '_blank' },
-  { name: 'Tab', href: '/Category/Subcategory/Tab' },
-  { name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
-  { name: 'History', href: '/Category/Subcategory/Tab/Detail/History' },
+  { id: 'category', name: 'Category', href: '/Category', target: '_blank' },
+  {
+    id: 'subcategory',
+    name: 'Subcategory',
+    href: '/Category/Subcategory',
+    target: '_blank',
+  },
+  { id: 'tab', name: 'Tab', href: '/Category/Subcategory/Tab' },
+  { id: 'detail', name: 'Detail', href: '/Category/Subcategory/Tab/Detail' },
+  {
+    id: 'history',
+    name: 'History',
+    href: '/Category/Subcategory/Tab/Detail/History',
+  },
 ];
 
-export const All: Story = {
+export const Basic: Story = {
   parameters: {
     controls: { disable: true },
   },
@@ -42,11 +40,11 @@ export const All: Story = {
     <div
       style={{
         display: 'grid',
-        gap: '40px',
+        gap: '64px',
         paddingBottom: '160px',
       }}
     >
-      <div style={{ display: 'grid', gap: '24px' }}>
+      <div style={{ display: 'grid', gap: '40px' }}>
         <Typography variant="h2">Default</Typography>
 
         <div style={{ display: 'grid', gap: '8px' }}>
@@ -83,62 +81,65 @@ export const All: Story = {
           <Breadcrumb condensed items={breadcrumbItem.slice(0, 4)} />
         </div>
       </div>
+    </div>
+  ),
+};
 
-      <div style={{ display: 'grid', gap: '24px' }}>
+export const WithDropdown: Story = {
+  parameters: {
+    controls: { disable: true },
+  },
+  render: () => (
+    <div
+      style={{
+        display: 'grid',
+        gap: '64px',
+        paddingBottom: '160px',
+      }}
+    >
+      <div style={{ display: 'grid', gap: '40px' }}>
         <Typography variant="h2">Item With Dropdown</Typography>
+        <Breadcrumb>
+          <BreadcrumbItem name="Home" href="/" />
+          <BreadcrumbItem name="List" href="/" />
+          <BreadcrumbItem name="History" href="/" />
+          <BreadcrumbItem
+            name="01"
+            onSelect={(v) => alert(v.name)}
+            options={[
+              { id: '01', name: '01' },
+              { id: '02', name: '02' },
+              { id: '03', name: '03' },
+            ]}
+          />
+        </Breadcrumb>
         <Breadcrumb
           items={[
-            { name: 'Home', href: '/' },
-            { name: 'List', href: '/' },
+            { id: 'Home', name: 'Home', href: '/' },
+            { id: 'List', name: 'List', href: '/' },
             {
-              name: 'History',
-              href: '/',
-              options: [
-                { name: 'History', href: '/' },
-                { name: 'Detail', href: '/' },
-                { name: 'Order', href: '/' },
-              ],
-            },
-            {
-              name: '01',
-              href: '/',
-              options: [
-                { name: '01', href: '/' },
-                { name: '02', href: '/' },
-                { name: '03', href: '/' },
-              ],
-            },
-          ]}
-        />
-        <Breadcrumb
-          items={[
-            { name: 'Home', href: '/' },
-            { name: 'List', href: '/' },
-            {
+              id: 'Tab',
               name: 'Tab',
-              href: '/',
               options: [
-                { name: 'tab1', href: '/' },
-                { name: 'tab2', href: '/' },
-                { name: 'tab3', href: '/' },
+                { id: 'tab1', name: 'tab1' },
+                { id: 'tab2', name: 'tab2' },
+                { id: 'tab3', name: 'tab3' },
               ],
             },
             {
               name: 'History',
-              href: '/',
               options: [
-                { name: 'History', href: '/' },
-                { name: 'Detail', href: '/' },
-                { name: 'Order', href: '/' },
+                { id: 'history', name: 'History' },
+                { id: 'detail', name: 'Detail' },
+                { id: 'order', name: 'Order' },
               ],
             },
             {
               name: '01',
-              href: '/',
               options: [
-                { name: '01', href: '/' },
-                { name: '02', href: '/' },
-                { name: '03', href: '/' },
+                { id: '01', name: '01' },
+                { id: '02', name: '02' },
+                { id: '03', name: '03' },
               ],
             },
           ]}
@@ -154,4 +155,16 @@ export const All: Story = {
       </div>
     </div>
   ),
+};
+
+export const Playground: Story = {
+  args: {
+    items: [
+      { id: 'home', name: 'Home', href: '/' },
+      { id: 'category', name: 'Category', href: '/Category' },
+      { id: 'parent', name: 'Parent of Current', href: '/Category/Parent' },
+      { id: 'current', name: 'Current' },
+    ],
+  },
+  argTypes: {},
 };
