@@ -220,23 +220,28 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     @include typography.semantic-variable(h3);
   }
 
-
   &--collapsed {
     .#{$header-prefix}__content {
       left: spacing.semantic-variable(padding, horizontal, comfort-fixed);
+      overflow-x: hidden;
+      pointer-events: none;
       position: absolute;
       transition: transition.standard(opacity, fast);
-      pointer-events: none;
+      width: calc(100% - spacing.semantic-variable(padding, horizontal, comfort-fixed) - spacing.semantic-variable(padding, horizontal, comfort-fixed));
 
       &:hover {
         opacity: 0;
       }
     }
 
-    .#{$header-prefix}__title {
+    .#{$header-prefix}__title:not(:first-child) {
       display: none;
     }
 
+    .#{$header-prefix}__title {
+      background-color: palette.semantic-variable('background', base);
+      text-overflow: clip;
+    }
 
     &:hover {
       .#{$header-prefix}__content {
