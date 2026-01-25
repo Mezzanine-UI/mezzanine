@@ -11,6 +11,7 @@ $size-configs: (
     title: h3,
     title-color: palette.semantic-variable(text, neutral-solid),
     description: body,
+    description-color: palette.semantic-variable(text, neutral),
     padding-bottom: spacing.semantic-variable(padding, vertical, relaxed),
     gap-below-icon: spacing.semantic-variable(gap, comfort),
     gap-content: spacing.semantic-variable(gap, tight),
@@ -21,8 +22,9 @@ $size-configs: (
   sub: (
     icon-size: spacing.semantic-variable(size, element, airy),
     title: body-highlight,
-    title-color: palette.semantic-variable(text, neutral),
+    title-color: palette.semantic-variable(text, neutral-light),
     description: label-secondary,
+    description-color: palette.semantic-variable(text, neutral-light),
     padding-bottom: spacing.semantic-variable(padding, vertical, spacious),
     gap-below-icon: spacing.semantic-variable(gap, slim),
     gap-content: spacing.semantic-variable(gap, tiny),
@@ -33,8 +35,9 @@ $size-configs: (
   minor: (
     icon-size: spacing.semantic-variable(size, element, base),
     title: body,
-    title-color: palette.semantic-variable(text, neutral),
+    title-color: palette.semantic-variable(text, neutral-light),
     description: none,
+    description-color: palette.semantic-variable(text, neutral-light),
     padding-bottom: none,
     gap-below-icon: none,
     gap-content: none,
@@ -58,7 +61,6 @@ $size-configs: (
 }
 
 // Color variables
-$description-color: palette.semantic-variable(text, neutral) !default;
 $icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
 
 .#{$prefix} {
@@ -93,6 +95,7 @@ $icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
         .#{$prefix}__description {
           @include typography.semantic-variable(_get-size-config($size, description));
 
+          color: _get-size-config($size, description-color);
           margin-top: _get-size-config($size, gap-content);
         }
 
@@ -120,7 +123,6 @@ $icon-color: palette.semantic-variable(icon, neutral-subtle) !default;
   }
 
   &__description {
-    color: $description-color;
     margin: 0;
   }
 
