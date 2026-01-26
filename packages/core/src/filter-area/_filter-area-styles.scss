@@ -81,11 +81,11 @@ $layout-configs: (
   box-sizing: border-box;
   width: 100%;
   gap: spacing.semantic-variable(gap, map.get(map.get($layout-configs, container), gap));
-  padding-inline: spacing.semantic-variable(
-    padding,
-    map.get(map.get($layout-configs, container), padding-inline-direction),
-    map.get(map.get($layout-configs, container), padding-inline-size)
-  );
+
+  &--main {
+    padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
+    padding-block: spacing.semantic-variable(padding, vertical, spacious);
+  }
 
   &__actions {
     width: fit-content;
