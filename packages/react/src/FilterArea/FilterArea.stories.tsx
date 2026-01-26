@@ -1,13 +1,10 @@
-import { useState } from 'react';
 
 import { FormFieldSize } from '@mezzanine-ui/core/form';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Filter, FilterArea, FilterAreaProps, FilterLine } from '.';
 import { AutoComplete } from '../AutoComplete';
-import Button from '../Button';
 import { CalendarConfigProviderDayjs } from '../Calendar';
-import Drawer from '../Drawer';
 import { FormField } from '../Form';
 import Input from '../Input';
 import { SelectValue } from '../Select/typings';
@@ -49,18 +46,12 @@ export const Basic: Story = {
       },
       options: ['main', 'sub'],
     },
-    isPanel: {
-      control: {
-        type: 'boolean',
-      },
-    },
   },
   args: {
     actionsAlign: 'start',
     submitText: 'Search',
     resetText: 'Reset',
     size: 'main',
-    isPanel: false,
   },
   render: function BasicStory(args) {
     const horizontal = FormFieldSize.HORIZONTAL_BASE;
@@ -191,110 +182,6 @@ export const SubSize: Story = {
           </FilterLine>
         </FilterArea>
       </CalendarConfigProviderDayjs>
-    );
-  },
-};
-
-export const WithPanel: Story = {
-  args: {
-    ...Basic.args,
-    isPanel: true,
-  },
-  render: function WithPanelStory() {
-    const [open, setOpen] = useState(false);
-    const [name, setName] = useState('');
-    const [autoComplete, setAutoComplete] = useState<SelectValue | null>(null);
-
-    const initialValues = {
-      name: '',
-      autoComplete: null as SelectValue | null,
-    };
-
-    const isDirty = name !== initialValues.name || autoComplete !== initialValues.autoComplete;
-
-    const onSubmit = (values: Record<string, any>) => {
-      // eslint-disable-next-line no-console
-      console.log('Form submitted:', values);
-      setOpen(false);
-    };
-
-    const onReset = () => {
-      setName(initialValues.name);
-      setAutoComplete(initialValues.autoComplete);
-    };
-
-    const handleClear = () => {
-      onReset();
-    };
-
-    const handleSubmit = () => {
-      onSubmit({
-        name,
-        autoComplete,
-      });
-    };
-
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>
-          Click
-        </Button>
-        <Drawer
-          bottomGhostActionText="清除全部條件"
-          bottomOnGhostActionClick={handleClear}
-          bottomOnPrimaryActionClick={handleSubmit}
-          bottomOnSecondaryActionClick={() => setOpen(false)}
-          bottomPrimaryActionText="套用條件"
-          bottomSecondaryActionText="取消"
-          headerTitle="進階篩選"
-          isBottomDisplay
-          isHeaderDisplay
-          onClose={() => setOpen(false)}
-          open={open}
-        >
-          <FilterArea
-            isDirty={isDirty}
-            isPanel={true}
-            onReset={onReset}
-            onSubmit={handleSubmit}
-            size="main"
-          >
-            <FilterLine>
-              <Filter>
-                <FormField
-                  label="名稱"
-                  name="name"
-                  size={FormFieldSize.VERTICAL}
-                >
-                  <Input
-                    placeholder="請輸入名稱"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </FormField>
-              </Filter>
-            </FilterLine>
-            <FilterLine>
-              <Filter>
-                <FormField
-                  label="選項"
-                  name="autoComplete"
-                  size={FormFieldSize.VERTICAL}
-                >
-                  <AutoComplete
-                    fullWidth
-                    menuMaxHeight={140}
-                    options={autoCompleteOptions}
-                    placeholder="請選擇"
-                    value={autoComplete}
-                    onChange={setAutoComplete}
-                  />
-                </FormField>
-              </Filter>
-            </FilterLine>
-          </FilterArea>
-        </Drawer>
-      </>
     );
   },
 };

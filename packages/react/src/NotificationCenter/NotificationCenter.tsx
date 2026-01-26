@@ -350,15 +350,22 @@ const NotificationCenter: NotificationCenter = ((
       }
 
       const now = Date.now();
-      const diffInMs = timestampDate.getTime() - now;
-      const diffInSeconds = Math.round(diffInMs / 1000);
-      const diffInDays = Math.round(diffInSeconds / 86400);
+      const nowDate = new Date(now);
+      const nowStartOfDay = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      const timestampStartOfDay = new Date(
+        timestampDate.getFullYear(),
+        timestampDate.getMonth(),
+        timestampDate.getDate(),
+      );
+      const isToday = nowStartOfDay.getTime() === timestampStartOfDay.getTime();
 
-      if (Math.abs(diffInDays) <= 7) {
+      // Only show relative time if the timestamp is today
+      if (isToday) {
+        const diffInMs = timestampDate.getTime() - now;
+        const diffInSeconds = Math.round(diffInMs / 1000);
         const rtf = new Intl.RelativeTimeFormat(timeStampLocale, { numeric: 'always' });
 
         const units: Array<{ unit: Intl.RelativeTimeFormatUnit; seconds: number }> = [
-          { unit: 'day', seconds: 86400 },
           { unit: 'hour', seconds: 3600 },
           { unit: 'minute', seconds: 60 },
         ];

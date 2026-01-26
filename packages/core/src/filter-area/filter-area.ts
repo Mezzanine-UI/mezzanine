@@ -10,7 +10,6 @@ export type FilterAlign = 'start' | 'center' | 'end' | 'stretch';
 
 export const filterAreaClasses = {
   host: filterAreaPrefix,
-  panelHost: `${filterAreaPrefix}--panel`,
   actions: `${filterAreaPrefix}__actions`,
   actionsAlign: (align: FilterAreaActionsAlign) =>
     `${filterAreaPrefix}__actions--align-${align}`,
