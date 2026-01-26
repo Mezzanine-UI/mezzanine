@@ -581,7 +581,7 @@ $checked-states: (
     width: 1px;
     height: spacing.semantic-variable(size, element, gentle);
     margin-inline: 1px;
-    background-color: palette.semantic-variable(border, neutral-faint);
+    background-color: palette.semantic-variable(separator, neutral-faint);
   }
 
   &--nested {
