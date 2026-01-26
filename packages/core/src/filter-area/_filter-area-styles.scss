@@ -48,7 +48,6 @@ $layout-configs: (
   ),
 );
 
-// 套用 actions alignment
 @mixin _apply-actions-align($align) {
   $justify-content: map.get($actions-align-configs, $align);
 
@@ -57,7 +56,6 @@ $layout-configs: (
   }
 }
 
-// 套用 filter alignment
 @mixin _apply-filter-align($align) {
   $align-items: map.get($filter-align-configs, $align);
 
@@ -66,7 +64,6 @@ $layout-configs: (
   }
 }
 
-// 套用 filter span
 @mixin _apply-filter-span($span) {
   $span-value: map.get($filter-span-configs, $span);
 
@@ -128,14 +125,6 @@ $layout-configs: (
     position: relative;
   }
 
-  &--panel {
-    .#{$prefix}__line {
-      display: flex;
-      flex-direction: column;
-      grid-template-columns: none;
-    }
-  }
-
   &__filter {
     $default-span: map.get($filter-span-configs, default);
 
@@ -160,13 +149,6 @@ $layout-configs: (
       &--align-#{$align} {
         @include _apply-filter-align($align);
       }
-    }
-  }
-
-  &--panel {
-    .#{$prefix}__filter {
-      grid-column: unset;
-      width: 100%;
     }
   }
 }
