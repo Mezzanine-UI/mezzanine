@@ -7,12 +7,28 @@
 @use '~@mezzanine-ui/system/typography' as typography;
 @use './selection' as *;
 
-$border-width: spacing.primitive-variable(1);
-$box-shadow-spread: spacing.primitive-variable(2);
-$horizontal-image-size: spacing.primitive-variable(40);
-$vertical-image-size: spacing.primitive-variable(160);
 $input-size: spacing.primitive-variable(12);
 $input-offset: spacing.primitive-variable(12);
+
+// Horizontal direction configurations
+$horizontal-configs: (
+  no-image: (
+    min-width: spacing.semantic-variable(size, container, snug),
+  ),
+  with-image: (
+    min-width: spacing.semantic-variable(size, container, tight),
+  ),
+);
+
+// Vertical direction configurations
+$vertical-configs: (
+  no-image: (
+    min-width: spacing.semantic-variable(size, container, snug),
+  ),
+  with-image: (
+    min-width: none,
+  ),
+);
 
 // State configurations
 $states: (
@@ -86,17 +102,54 @@ $states: (
   }
 }
 
+@function _get-horizontal-config($type, $property) {
+  $config: map.get($horizontal-configs, $type);
+
+  @if $config {
+    @return map.get($config, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-horizontal-config($type) {
+  $min-width: _get-horizontal-config($type, min-width);
+
+  @if $min-width {
+    min-width: $min-width;
+  }
+}
+
+@function _get-vertical-config($type, $property) {
+  $config: map.get($vertical-configs, $type);
+
+  @if $config {
+    @return map.get($config, $property);
+  }
+
+  @return null;
+}
+
+@mixin _apply-vertical-config($type) {
+  $min-width: _get-vertical-config($type, min-width);
+
+  @if $min-width and $min-width != none {
+    min-width: $min-width;
+  }
+}
+
 .#{$prefix} {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: $border-width solid palette.semantic-variable(border, neutral-faint);
+  border: 1px solid palette.semantic-variable(border, neutral-faint);
   border-radius: radius.variable(roomy);
   background-color: palette.semantic-variable("background", base);
   cursor: pointer;
   user-select: none;
   width: fit-content;
+  max-width: 100%;
   height: fit-content;
   padding-inline: spacing.semantic-variable(padding, horizontal, base-fixed);
   padding-block: spacing.semantic-variable(padding, vertical, base);
@@ -170,7 +223,7 @@ $states: (
   }
 
   &--focused {
-    box-shadow: 0 0 0 $box-shadow-spread var(--#{$prefix}-focus-color, transparent);
+    box-shadow: effect.variable(focus, primary);
   }
 
   &__content {
@@ -178,13 +231,16 @@ $states: (
     align-items: flex-start;
     justify-content: center;
     flex-direction: column;
+    flex: 1 1 auto;
     gap: spacing.semantic-variable(gap, tiny);
+    min-inline-size: 0;
   }
 
   &__text {
     overflow: hidden;
     color: palette.semantic-variable(text, neutral-solid);
     font-feature-settings: 'liga' off, 'clig' off;
+    min-inline-size: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
     @include typography.variant(body-highlight);
@@ -195,8 +251,12 @@ $states: (
   }
 
   &__supporting-text {
+    overflow: hidden;
     color: palette.semantic-variable(text, neutral);
     font-feature-settings: 'liga' off, 'clig' off;
+    min-inline-size: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     @include typography.variant(caption);
   }
 
@@ -221,19 +281,37 @@ $states: (
   }
 
   &--horizontal &__selection-image {
-    width: $horizontal-image-size;
-    height: $horizontal-image-size;
+    width: spacing.semantic-variable(size, element, extra-wide);
+    height: spacing.semantic-variable(size, element, extra-wide);
   }
 
   &__container {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex: 1 1 auto;
     gap: spacing.semantic-variable(gap, base);
+    min-width: 0;
+  }
+
+  &--horizontal:not(:has(&__selection-image)) {
+    @include _apply-horizontal-config(no-image);
+  }
+
+  &--horizontal:has(&__selection-image) {
+    @include _apply-horizontal-config(with-image);
   }
 
   &--vertical {
     align-items: flex-start;
+  }
+
+  &--vertical:not(:has(&__selection-image)) {
+    @include _apply-vertical-config(no-image);
+  }
+
+  &--vertical:has(&__selection-image) {
+    @include _apply-vertical-config(with-image);
   }
 
   &--vertical &__container {
@@ -242,8 +320,8 @@ $states: (
   }
 
   &--vertical &__selection-image {
-    width: $vertical-image-size;
-    height: $vertical-image-size;
+    width: 100%;
+    height: 100%;
   }
 
   &--disabled &__input {
@@ -257,7 +335,7 @@ $states: (
     margin-block: spacing.semantic-variable(padding, vertical, micro);
     width: $input-size;
     height: $input-size;
-    border: $border-width solid;
+    border: 1px solid;
     border-color: palette.semantic-variable(border, neutral);
 
     &[type="radio"] {
@@ -344,6 +422,14 @@ $states: (
     position: absolute;
     right: $input-offset;
     top: $input-offset;
+  }
+
+  &-group {
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    max-width: 100%;
+    gap: spacing.semantic-variable(gap, calm);
   }
 
 }
