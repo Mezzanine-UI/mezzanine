@@ -7,6 +7,7 @@ import {
   ReactElement,
   use,
   useEffect,
+  useId,
   useMemo,
   useState,
 } from 'react';
@@ -58,11 +59,15 @@ export interface NavigationOptionProps
   /**
    * Unique ID of the item.
    */
+  id?: string;
+  /**
+   * Href of the item.
+   */
   href?: string;
   /**
    * Set display title for sub-menu item.
    */
-  title?: string;
+  title: string;
   /**
    * Open menu as default
    * @default false
@@ -80,6 +85,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       defaultOpen = false,
       href,
       icon,
+      id,
       onTriggerClick,
       title,
       ...rest
@@ -91,7 +97,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
     const { level, path: parentPath } = use(NavigationOptionLevelContext);
     const currentLevel = level + 1; // start as 1
-    const currentKey = title || href || 'unknownId';
+
+    const uuid = useId();
+    const currentKey = id || title || href || uuid;
     const currentPath = useMemo(
       () => [...parentPath, currentKey],
       [parentPath, currentKey],
@@ -151,8 +159,14 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     const [filter, setFilter] = useState(true);
 
     useEffect(() => {
+      if (!filterText) {
+        setFilter(true);
+
+        return;
+      }
+
       setFilter(
-        (title?.includes(filterText) || href?.includes(filterText)) ?? false,
+        (title.includes(filterText) || href?.includes(filterText)) ?? false,
       );
     }, [currentPath, filterText, href, title]);
 

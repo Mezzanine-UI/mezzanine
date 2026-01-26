@@ -7,6 +7,7 @@ import {
   ReactElement,
   use,
   useEffect,
+  useId,
   useMemo,
   useState,
 } from 'react';
@@ -46,6 +47,7 @@ const NavigationOverflowMenuOption = forwardRef<
     defaultOpen = false,
     href,
     icon,
+    id,
     onTriggerClick,
     title,
     ...rest
@@ -55,7 +57,9 @@ const NavigationOverflowMenuOption = forwardRef<
 
   const { level, path: parentPath } = use(NavigationOptionLevelContext);
   const currentLevel = level + 1; // start as 1
-  const currentKey = title || href || 'unknownId';
+
+  const uuid = useId();
+  const currentKey = id || title || href || uuid;
   const currentPath = useMemo(
     () => [...parentPath, currentKey],
     [parentPath, currentKey],

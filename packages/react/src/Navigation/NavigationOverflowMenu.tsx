@@ -138,7 +138,11 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
           {menuOpen && (
             <Translate {...translateProps} from={'bottom'} key="popper-list" in>
               <li className={classes.host}>
-                <span className={classes.content}>
+                <span
+                  className={classes.content}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen}
+                >
                   {<ul className={classes.subMenu}>{renderedItems}</ul>}
                   <NavigationOptionLevelContext.Provider
                     value={{

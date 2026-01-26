@@ -3,17 +3,12 @@ import { navigationUserMenuClasses as classes } from '@mezzanine-ui/core/navigat
 import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Dropdown, { DropdownProps } from '../Dropdown';
-import { resolveDropdownWithButtonProps } from './utils';
 
 export interface NavigationUserMenuProps
-  extends Omit<
-      NativeElementPropsWithoutKeyAndRef<'button'>,
-      'onSelect' | 'value' | 'children' | 'onClick'
-    >,
-    Omit<DropdownProps, 'children' | 'type'> {
+  extends Omit<DropdownProps, 'children' | 'type'> {
   children?: ReactNode;
+  className?: string;
   imgSrc?: string;
   onClick?: () => void;
 }
@@ -23,16 +18,15 @@ const NavigationUserMenu = forwardRef<
   NavigationUserMenuProps
 >((props, ref) => {
   // shared props
-  const { dropdownProps, buttonProps } = resolveDropdownWithButtonProps(props);
 
-  const { children, className, imgSrc, onClick, ...rest } = buttonProps;
+  const { children, className, imgSrc, onClick, ...rest } = props;
   const {
     open: openProp,
     onClose,
     placement = 'top-end',
     onVisibilityChange,
     ...dropdownRest
-  } = dropdownProps;
+  } = rest;
   const [imgError, setImgError] = useState(false);
   const [_open, setOpen] = useState(false);
 
@@ -45,7 +39,7 @@ const NavigationUserMenu = forwardRef<
       placement={placement}
       onVisibilityChange={() => {
         setOpen(!open);
-        onVisibilityChange?.(open);
+        onVisibilityChange?.(!open);
         onClick?.();
       }}
       onClose={() => {
@@ -55,7 +49,6 @@ const NavigationUserMenu = forwardRef<
     >
       <button
         type="button"
-        {...rest}
         ref={ref}
         className={cx(classes.host, open && classes.open, className)}
       >
