@@ -54,6 +54,7 @@ export const navigationOptionPrefix = `${navigationPrefix}-option` as const;
 
 export const navigationOptionClasses = {
   host: navigationOptionPrefix,
+  hidden: `${navigationOptionPrefix}--hidden`,
   group: `${navigationOptionPrefix}__group`,
   basic: `${navigationOptionPrefix}--basic`,
   level: (level: number) =>
