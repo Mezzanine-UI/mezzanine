@@ -412,7 +412,7 @@ $modalSizes: (
     padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, cozy);
 
     &:hover:not(:disabled) {
-      background-color: palette.semantic-variable(overlay, strong),
+      background-color: palette.semantic-variable(overlay, strong);
     }
 
     &:disabled {
