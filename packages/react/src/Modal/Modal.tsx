@@ -302,7 +302,9 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
               modalType === 'extended' ||
               modalType === 'mediaPreview') && (
               <>
-                <div className={classes.modalBodyContainer}>{children}</div>
+                {children && (
+                  <div className={classes.modalBodyContainer}>{children}</div>
+                )}
                 {showModalFooter && renderModalFooter()}
               </>
             )}
