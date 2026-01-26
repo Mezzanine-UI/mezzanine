@@ -15,9 +15,15 @@ export interface MediaPreviewModalProps
   extends Omit<ModalContainerProps, 'children'>,
     NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * The current index of the media being displayed.
+   * The current index of the media being displayed (controlled mode).
+   * If provided along with onNext/onPrev, the component operates in controlled mode.
    */
-  currentIndex: number;
+  currentIndex?: number;
+  /**
+   * The default index when the modal opens (uncontrolled mode).
+   * @default 0
+   */
+  defaultIndex?: number;
   /**
    * Whether to disable the next navigation button.
    * @default false
@@ -34,11 +40,17 @@ export interface MediaPreviewModalProps
    */
   mediaItems: (string | React.ReactNode)[];
   /**
-   * Callback fired when the next navigation button is clicked.
+   * Callback fired when the index changes (uncontrolled mode).
+   */
+  onIndexChange?: (index: number) => void;
+  /**
+   * Callback fired when the next navigation button is clicked (controlled mode).
+   * If provided, the component operates in controlled mode.
    */
   onNext?: () => void;
   /**
-   * Callback fired when the previous navigation button is clicked.
+   * Callback fired when the previous navigation button is clicked (controlled mode).
+   * If provided, the component operates in controlled mode.
    */
   onPrev?: () => void;
   /**
@@ -57,7 +69,8 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
     const {
       className,
       container,
-      currentIndex,
+      currentIndex: controlledIndex,
+      defaultIndex = 0,
       disableCloseOnBackdropClick = false,
       disableCloseOnEscapeKeyDown = false,
       disableNext = false,
@@ -66,6 +79,7 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
       mediaItems,
       onBackdropClick,
       onClose,
+      onIndexChange,
       onNext,
       onPrev,
       open,
@@ -74,6 +88,51 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
     } = props;
 
     const { Container: ModalContainer } = useModalContainer();
+
+    // Determine if component is in controlled mode
+    const isControlled = controlledIndex !== undefined;
+
+    // Internal state for uncontrolled mode
+    const [internalIndex, setInternalIndex] = useState(defaultIndex);
+
+    // Use controlled index if provided, otherwise use internal state
+    const currentIndex = isControlled ? controlledIndex : internalIndex;
+
+    // Reset internal index when modal opens in uncontrolled mode
+    useEffect(() => {
+      if (open && !isControlled) {
+        setInternalIndex(defaultIndex);
+      }
+    }, [open, isControlled, defaultIndex]);
+
+    // Built-in navigation handlers for uncontrolled mode
+    const handleNext = () => {
+      if (onNext) {
+        // Controlled mode: use provided callback
+        onNext();
+      } else {
+        // Uncontrolled mode: update internal state
+        const nextIndex = Math.min(currentIndex + 1, mediaItems.length - 1);
+        setInternalIndex(nextIndex);
+        onIndexChange?.(nextIndex);
+      }
+    };
+
+    const handlePrev = () => {
+      if (onPrev) {
+        // Controlled mode: use provided callback
+        onPrev();
+      } else {
+        // Uncontrolled mode: update internal state
+        const prevIndex = Math.max(currentIndex - 1, 0);
+        setInternalIndex(prevIndex);
+        onIndexChange?.(prevIndex);
+      }
+    };
+
+    // Auto-calculate disable states for uncontrolled mode
+    const isNextDisabled = disableNext || currentIndex >= mediaItems.length - 1;
+    const isPrevDisabled = disablePrev || currentIndex <= 0;
 
     const [displayedIndices, setDisplayedIndices] = useState<number[]>([
       currentIndex,
@@ -234,32 +293,32 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
           type="embedded"
           variant="contrast"
         />
-        {onPrev && (
+        {mediaItems.length > 1 && (
           <button
-            aria-disabled={disablePrev}
+            aria-disabled={isPrevDisabled}
             aria-label="Previous media"
             className={cx(
               classes.mediaPreviewNavButton,
               classes.mediaPreviewNavButtonPrev,
             )}
-            disabled={disablePrev}
-            onClick={onPrev}
+            disabled={isPrevDisabled}
+            onClick={handlePrev}
             title="Previous"
             type="button"
           >
             <Icon icon={ChevronLeftIcon} size={16} color="fixed-light" />
           </button>
         )}
-        {onNext && (
+        {mediaItems.length > 1 && (
           <button
-            aria-disabled={disableNext}
+            aria-disabled={isNextDisabled}
             aria-label="Next media"
             className={cx(
               classes.mediaPreviewNavButton,
               classes.mediaPreviewNavButtonNext,
             )}
-            disabled={disableNext}
-            onClick={onNext}
+            disabled={isNextDisabled}
+            onClick={handleNext}
             title="Next"
             type="button"
           >

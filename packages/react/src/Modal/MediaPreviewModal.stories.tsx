@@ -8,8 +8,8 @@ export default {
   title: 'Feedback/MediaPreviewModal',
 } as Meta<typeof MediaPreviewModal>;
 
-type PlaygroundArgs = {
-  currentIndex: number;
+type UncontrolledArgs = {
+  defaultIndex: number;
   disableCloseOnBackdropClick?: boolean;
   disableCloseOnEscapeKeyDown?: boolean;
   showPaginationIndicator?: boolean;
@@ -23,35 +23,22 @@ const sampleImages = [
   'https://picsum.photos/id/50/2560/1920',
 ];
 
-export const Playground: StoryObj<PlaygroundArgs> = {
+export const Playground: StoryObj<UncontrolledArgs> = {
   args: {
-    currentIndex: 0,
+    defaultIndex: 0,
     disableCloseOnBackdropClick: false,
     disableCloseOnEscapeKeyDown: false,
     showPaginationIndicator: true,
   },
   render: function Render(args) {
     const {
-      currentIndex: initialIndex,
+      defaultIndex,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
       showPaginationIndicator,
     } = args;
 
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(initialIndex);
-
-    const handlePrev = () => {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) => Math.min(sampleImages.length - 1, prev + 1));
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
 
     return (
       <>
@@ -59,17 +46,38 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           Open Media Preview
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
+          defaultIndex={defaultIndex}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
-          disableNext={currentIndex >= sampleImages.length - 1}
-          disablePrev={currentIndex <= 0}
           mediaItems={sampleImages}
-          onClose={handleClose}
-          onNext={handleNext}
-          onPrev={handlePrev}
+          onClose={() => setOpen(false)}
           open={open}
           showPaginationIndicator={showPaginationIndicator}
+        />
+      </>
+    );
+  },
+};
+
+export const UncontrolledWithCallback: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [lastIndex, setLastIndex] = useState<number | null>(null);
+
+    return (
+      <>
+        <div style={{ marginBottom: '16px' }}>
+          {lastIndex !== null && <p>Last viewed index: {lastIndex}</p>}
+        </div>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Gallery (Track Index Changes)
+        </Button>
+        <MediaPreviewModal
+          defaultIndex={2}
+          mediaItems={sampleImages}
+          onClose={() => setOpen(false)}
+          onIndexChange={setLastIndex}
+          open={open}
         />
       </>
     );
@@ -86,7 +94,6 @@ export const SingleImage: StoryObj = {
           Open Single Image
         </Button>
         <MediaPreviewModal
-          currentIndex={0}
           mediaItems={[sampleImages[0]]}
           onClose={() => setOpen(false)}
           open={open}
@@ -96,11 +103,12 @@ export const SingleImage: StoryObj = {
   },
 };
 
-export const CircularNavigation: StoryObj = {
+export const ControlledCircularNavigation: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    // Custom circular navigation logic requires controlled mode
     const handlePrev = () => {
       setCurrentIndex(
         (prev) => (prev - 1 + sampleImages.length) % sampleImages.length,
@@ -114,7 +122,7 @@ export const CircularNavigation: StoryObj = {
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Gallery (Circular Navigation)
+          Controlled: Circular Navigation
         </Button>
         <MediaPreviewModal
           currentIndex={currentIndex}
@@ -132,7 +140,6 @@ export const CircularNavigation: StoryObj = {
 export const CustomMedia: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
 
     const customMediaItems = [
       <div
@@ -177,29 +184,14 @@ export const CustomMedia: StoryObj = {
       />,
     ];
 
-    const handlePrev = () => {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) =>
-        Math.min(customMediaItems.length - 1, prev + 1),
-      );
-    };
-
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
           Open Custom Media
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
-          disableNext={currentIndex >= customMediaItems.length - 1}
-          disablePrev={currentIndex <= 0}
           mediaItems={customMediaItems}
           onClose={() => setOpen(false)}
-          onNext={handleNext}
-          onPrev={handlePrev}
           open={open}
         />
       </>
@@ -210,15 +202,6 @@ export const CustomMedia: StoryObj = {
 export const WithPaginationIndicator: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const handlePrev = () => {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) => Math.min(sampleImages.length - 1, prev + 1));
-    };
 
     return (
       <>
@@ -226,13 +209,8 @@ export const WithPaginationIndicator: StoryObj = {
           Open Gallery with Pagination Indicator
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
-          disableNext={currentIndex >= sampleImages.length - 1}
-          disablePrev={currentIndex <= 0}
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
-          onNext={handleNext}
-          onPrev={handlePrev}
           open={open}
           showPaginationIndicator
         />
@@ -244,15 +222,6 @@ export const WithPaginationIndicator: StoryObj = {
 export const HidePaginationIndicator: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const handlePrev = () => {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) => Math.min(sampleImages.length - 1, prev + 1));
-    };
 
     return (
       <>
@@ -260,13 +229,8 @@ export const HidePaginationIndicator: StoryObj = {
           Open Gallery without Pagination Indicator
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
-          disableNext={currentIndex >= sampleImages.length - 1}
-          disablePrev={currentIndex <= 0}
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
-          onNext={handleNext}
-          onPrev={handlePrev}
           open={open}
           showPaginationIndicator={false}
         />
@@ -278,7 +242,6 @@ export const HidePaginationIndicator: StoryObj = {
 export const MixedOrientations: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
 
     const mixedImages = [
       'https://picsum.photos/id/100/3840/2160',
@@ -288,27 +251,15 @@ export const MixedOrientations: StoryObj = {
       'https://picsum.photos/id/500/1920/2880',
     ];
 
-    const handlePrev = () => {
-      setCurrentIndex((prev) => Math.max(0, prev - 1));
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) => Math.min(mixedImages.length - 1, prev + 1));
-    };
-
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
           Open Mixed Aspect Ratios
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
-          disableNext={currentIndex >= mixedImages.length - 1}
-          disablePrev={currentIndex <= 0}
+          defaultIndex={2}
           mediaItems={mixedImages}
           onClose={() => setOpen(false)}
-          onNext={handleNext}
-          onPrev={handlePrev}
           open={open}
         />
       </>
