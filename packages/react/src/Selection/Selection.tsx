@@ -193,19 +193,23 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
           }
           <div className={classes.content}>
             <Typography
-              id={textId}
-              color="text-neutral-solid"
-              variant="body-highlight"
               className={classes.text}
+              color="text-neutral-solid"
+              display="block"
+              ellipsis
+              id={textId}
+              variant="body-highlight"
             >
               {text}
             </Typography>
             {supportingText && (
               <Typography
-                id={supportingTextId}
-                color="text-neutral"
-                variant="caption"
                 className={classes.supportingText}
+                color="text-neutral"
+                display="block"
+                ellipsis
+                id={supportingTextId}
+                variant="caption"
               >
                 {supportingText}
               </Typography>

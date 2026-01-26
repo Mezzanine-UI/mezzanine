@@ -13,6 +13,7 @@ export const selectionPrefix = 'mzn-selection';
 
 export const selectionClasses = {
   host: selectionPrefix,
+  group: `${selectionPrefix}-group`,
   container: `${selectionPrefix}__container`,
   selectionImage: `${selectionPrefix}__selection-image`,
   text: `${selectionPrefix}__text`,

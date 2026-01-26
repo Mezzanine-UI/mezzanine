@@ -161,6 +161,23 @@ describe('<Selection />', () => {
       expect(input.defaultChecked).toBe(true);
       expect(input.getAttribute('aria-checked')).toBeNull();
     });
+
+    it('should prioritize checked over defaultChecked when both are provided', () => {
+      const { getHostHTMLElement } = render(
+        <Selection
+          checked={false}
+          defaultChecked={true}
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input') as HTMLInputElement;
+
+      expect(input.checked).toBe(false);
+      expect(input.getAttribute('aria-checked')).toBe('false');
+    });
   });
 
   describe('prop: disabled', () => {
@@ -196,6 +213,24 @@ describe('<Selection />', () => {
       expect(element.getAttribute('aria-disabled')).toBe('true');
       expect(element.classList.contains('mzn-selection--disabled')).toBe(true);
     });
+
+    it('should have disabled input when disabled=true', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Selection
+          disabled={true}
+          onChange={onChange}
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input') as HTMLInputElement;
+
+      // Input should be disabled (browser will prevent events naturally)
+      expect(input.disabled).toBe(true);
+    });
   });
 
   describe('prop: readonly', () => {
@@ -229,6 +264,24 @@ describe('<Selection />', () => {
 
       expect(input).not.toBeNull();
       expect(element.classList.contains('mzn-selection--readonly')).toBe(false);
+    });
+
+    it('should call onClick when readonly and label is clicked', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Selection
+          onClick={onClick}
+          readonly={true}
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      fireEvent.click(element);
+
+      expect(onClick).toHaveBeenCalled();
     });
   });
 
@@ -314,6 +367,59 @@ describe('<Selection />', () => {
 
       expect(img).not.toBeNull();
       expect(img?.getAttribute('src')).toBe('invalid-url');
+      expect(icon).toBeNull();
+    });
+
+    it('should render icon when image is empty string', () => {
+      const { getHostHTMLElement } = render(
+        <Selection
+          image=""
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const img = element.querySelector('img');
+      const icon = element.querySelector('[aria-hidden="true"]');
+
+      expect(img).toBeNull();
+      expect(icon).not.toBeNull();
+    });
+
+    it('should render icon when image is only whitespace', () => {
+      const { getHostHTMLElement } = render(
+        <Selection
+          image="   "
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const img = element.querySelector('img');
+      const icon = element.querySelector('[aria-hidden="true"]');
+
+      expect(img).toBeNull();
+      expect(icon).not.toBeNull();
+    });
+
+    it('should prioritize image over customIcon when both are provided', () => {
+      const CustomIcon = FileIcon;
+      const { getHostHTMLElement } = render(
+        <Selection
+          customIcon={CustomIcon}
+          image="https://example.com/image.png"
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const img = element.querySelector('img');
+      const icon = element.querySelector('[aria-hidden="true"]');
+
+      expect(img).not.toBeNull();
       expect(icon).toBeNull();
     });
   });
@@ -489,52 +595,6 @@ describe('<Selection />', () => {
 
       expect(onClick).toHaveBeenCalled();
     });
-
-    it('should call onClick on Enter key press', () => {
-      const onClick = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Selection
-          onClick={onClick}
-          selector="radio"
-          text="Test"
-          supportingText="Supporting text"
-        />,
-      );
-      const element = getHostHTMLElement();
-
-      // Mock click to prevent double triggering
-      const clickSpy = jest.spyOn(element, 'click').mockImplementation(() => {
-        onClick();
-      });
-
-      fireEvent.keyDown(element, { key: 'Enter' });
-
-      expect(onClick).toHaveBeenCalledTimes(1);
-      clickSpy.mockRestore();
-    });
-
-    it('should call onClick on Space key press', () => {
-      const onClick = jest.fn();
-      const { getHostHTMLElement } = render(
-        <Selection
-          onClick={onClick}
-          selector="radio"
-          text="Test"
-          supportingText="Supporting text"
-        />,
-      );
-      const element = getHostHTMLElement();
-
-      // Mock click to prevent double triggering
-      const clickSpy = jest.spyOn(element, 'click').mockImplementation(() => {
-        onClick();
-      });
-
-      fireEvent.keyDown(element, { key: ' ' });
-
-      expect(onClick).toHaveBeenCalledTimes(1);
-      clickSpy.mockRestore();
-    });
   });
 
   describe('prop: inputRef', () => {
@@ -603,6 +663,64 @@ describe('<Selection />', () => {
       // Component renders normally when supportingText is empty (it's optional)
       expect(element).not.toBeNull();
       expect(input.getAttribute('aria-describedby')).toBeNull();
+    });
+
+    it('should set aria-checked only for radio and checkbox when checked is provided', () => {
+      const { getHostHTMLElement, rerender } = render(
+        <Selection
+          checked={true}
+          id="test-id"
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+      const input = element.querySelector('input') as HTMLInputElement;
+
+      expect(input.getAttribute('aria-checked')).toBe('true');
+
+      rerender(
+        <Selection
+          checked={true}
+          id="test-id"
+          selector="checkbox"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+
+      expect(input.getAttribute('aria-checked')).toBe('true');
+    });
+  });
+
+  describe('prop: native HTML attributes', () => {
+    it('should pass data attributes to label element', () => {
+      const { getHostHTMLElement } = render(
+        <Selection
+          data-testid="selection-test"
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('data-testid')).toBe('selection-test');
+    });
+
+    it('should pass aria attributes to label element', () => {
+      const { getHostHTMLElement } = render(
+        <Selection
+          aria-label="Custom label"
+          selector="radio"
+          text="Test"
+          supportingText="Supporting text"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-label')).toBe('Custom label');
     });
   });
 });

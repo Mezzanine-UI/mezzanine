@@ -1,9 +1,10 @@
 import { SelectionDirection, SelectionImageObjectFit, SelectionType } from '@mezzanine-ui/core/selection';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import Selection, { SelectionProps } from '.';
 import Tag from '../Tag';
 import Typography from '../Typography';
+import SelectionGroup from './SelectionGroup';
 
 export default {
   title: 'Data Entry/Selection',
@@ -660,6 +661,600 @@ export const Vertical: Story = {
             </SectionItem>
           </ItemList>
         </form>
+      </Section>
+    </>
+  ),
+};
+
+export const SelectionGroupBasic: Story = {
+  render: () => (
+    <>
+      <Section title="Radio Group:">
+        <ItemList>
+          <SectionItem direction="column" label="Basic Radio Group:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  defaultChecked
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Dplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Eplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Fplan"
+                />
+                <Selection
+                  name="plan-selection"
+                  selector="radio"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Gplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+          <SectionItem direction="column" label="Checkbox Group:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  defaultChecked
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Eplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Fplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Gplan"
+                />
+                <Selection
+                  name="interest-selection"
+                  selector="checkbox"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Hplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="With Image:">
+        <ItemList>
+          <SectionItem direction="column" label="Radio Group with Image:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  defaultChecked
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Dplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Eplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Fplan"
+                />
+                <Selection
+                  image="https://rytass.com/logo.png"
+                  name="plan-selection-image"
+                  selector="radio"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Gplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="States:">
+        <ItemList>
+          <SectionItem direction="column" label="Required:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  name="required-selection"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  name="required-selection"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+          <SectionItem direction="column" label="Disabled:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="選項 1"
+                  value="Aplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Dplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Eplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Fplan"
+                />
+                <Selection
+                  name="disabled-selection"
+                  selector="radio"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Gplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="Different Sizes:">
+        <ItemList>
+          <SectionItem direction="column" label="Horizontal Base:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Dplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Eplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Fplan"
+                />
+                <Selection
+                  name="horizontal-base-selection"
+                  selector="radio"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Gplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+          <SectionItem direction="column" label="Vertical:">
+            <ItemContent>
+              <SelectionGroup>
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合A方案"
+                  text="A方案"
+                  value="Aplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合B方案"
+                  text="B方案"
+                  value="Bplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合C方案"
+                  text="C方案"
+                  value="Cplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合D方案"
+                  text="D方案"
+                  value="Dplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合E方案"
+                  text="E方案"
+                  value="Eplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合F方案"
+                  text="F方案"
+                  value="Fplan"
+                />
+                <Selection
+                  name="vertical-selection"
+                  selector="radio"
+                  supportingText="適合G方案"
+                  text="G方案"
+                  value="Gplan"
+                />
+              </SelectionGroup>
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+    </>
+  ),
+};
+
+export const SelectionGroupWithOptions: Story = {
+  render: () => (
+    <>
+      <Section title="Using Selections Array:">
+        <ItemList>
+          <SectionItem direction="column" label="Radio Group with Selections:">
+            <ItemContent>
+              <SelectionGroup
+                selections={[
+                  {
+                    defaultChecked: true,
+                    name: 'plan-options',
+                    selector: 'radio',
+                    supportingText: '適合個人使用',
+                    text: '基本方案',
+                    value: 'basic',
+                  },
+                  {
+                    name: 'plan-options',
+                    selector: 'radio',
+                    supportingText: '適合小型團隊',
+                    text: '專業方案',
+                    value: 'professional',
+                  },
+                  {
+                    name: 'plan-options',
+                    selector: 'radio',
+                    supportingText: '適合大型企業',
+                    text: '企業方案',
+                    value: 'enterprise',
+                  },
+                  {
+                    name: 'plan-options',
+                    selector: 'radio',
+                    supportingText: '適合超大型企業',
+                    text: '旗艦方案',
+                    value: 'enterprise-plus',
+                  },
+                ]}
+              />
+            </ItemContent>
+          </SectionItem>
+          <SectionItem direction="column" label="Checkbox Group with Selections:">
+            <ItemContent>
+              <SelectionGroup
+                selections={[
+                  {
+                    defaultChecked: true,
+                    name: 'interest-options',
+                    selector: 'checkbox',
+                    supportingText: '閱讀相關內容',
+                    text: '閱讀',
+                    value: 'reading',
+                  },
+                  {
+                    name: 'interest-options',
+                    selector: 'checkbox',
+                    supportingText: '程式開發相關',
+                    text: '程式開發',
+                    value: 'coding',
+                  },
+                  {
+                    name: 'interest-options',
+                    selector: 'checkbox',
+                    supportingText: '運動健身相關',
+                    text: '運動',
+                    value: 'sports',
+                  },
+                  {
+                    name: 'interest-options',
+                    selector: 'checkbox',
+                    supportingText: '音樂相關',
+                    text: '音樂',
+                    value: 'music',
+                  },
+                ]}
+              />
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="With Image:">
+        <ItemList>
+          <SectionItem direction="column" label="Radio Group with Image:">
+            <ItemContent>
+              <SelectionGroup
+                selections={[
+                  {
+                    defaultChecked: true,
+                    image: 'https://rytass.com/logo.png',
+                    name: 'plan-image-options',
+                    selector: 'radio',
+                    supportingText: '適合個人使用',
+                    text: '基本方案',
+                    value: 'basic',
+                  },
+                  {
+                    image: 'https://rytass.com/logo.png',
+                    name: 'plan-image-options',
+                    selector: 'radio',
+                    supportingText: '適合小型團隊',
+                    text: '專業方案',
+                    value: 'professional',
+                  },
+                  {
+                    image: 'https://rytass.com/logo.png',
+                    name: 'plan-image-options',
+                    selector: 'radio',
+                    supportingText: '適合大型企業',
+                    text: '企業方案',
+                    value: 'enterprise',
+                  },
+                ]}
+              />
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
+      </Section>
+      <Section title="With Different States:">
+        <ItemList>
+          <SectionItem direction="column" label="Mixed States:">
+            <ItemContent>
+              {(() => {
+                const [value, setValue] = useState('option-1');
+
+                return (
+                  <SelectionGroup
+                    selections={[
+                      {
+                        checked: value === 'option-1',
+                        disabled: true,
+                        name: 'mixed-states',
+                        onChange: (e) => setValue(e.target.value),
+                        selector: 'radio',
+                        supportingText: '已選取但停用',
+                        text: '選項 1',
+                        value: 'option-1',
+                      },
+                      {
+                        checked: value === 'option-2',
+                        disabled: true,
+                        name: 'mixed-states',
+                        onChange: (e) => setValue(e.target.value),
+                        selector: 'radio',
+                        supportingText: '未選取但停用',
+                        text: '選項 2',
+                        value: 'option-2',
+                      },
+                      {
+                        checked: value === 'option-3',
+                        name: 'mixed-states',
+                        onChange: (e) => setValue(e.target.value),
+                        selector: 'radio',
+                        supportingText: '可選取的選項',
+                        text: '選項 3',
+                        value: 'option-3',
+                      },
+                      {
+                        checked: value === 'option-4',
+                        name: 'mixed-states',
+                        onChange: (e) => setValue(e.target.value),
+                        selector: 'radio',
+                        supportingText: '可選取的選項',
+                        text: '選項 4',
+                        value: 'option-4',
+                      },
+                    ]}
+                  />
+                );
+              })()}
+            </ItemContent>
+          </SectionItem>
+          <SectionItem direction="column" label="Vertical Direction:">
+            <ItemContent>
+              <SelectionGroup
+                selections={[
+                  {
+                    defaultChecked: true,
+                    direction: 'vertical',
+                    name: 'vertical-options',
+                    selector: 'radio',
+                    supportingText: '垂直排列選項 1',
+                    text: '選項 1',
+                    value: 'option-1',
+                  },
+                  {
+                    direction: 'vertical',
+                    name: 'vertical-options',
+                    selector: 'radio',
+                    supportingText: '垂直排列選項 2',
+                    text: '選項 2',
+                    value: 'option-2',
+                  },
+                  {
+                    direction: 'vertical',
+                    name: 'vertical-options',
+                    selector: 'radio',
+                    supportingText: '垂直排列選項 3',
+                    text: '選項 3',
+                    value: 'option-3',
+                  },
+                ]}
+              />
+            </ItemContent>
+          </SectionItem>
+        </ItemList>
       </Section>
     </>
   ),
