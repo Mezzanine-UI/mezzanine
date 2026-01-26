@@ -21,6 +21,11 @@ export default {
   title: 'Navigation/Navigation',
 } as Meta;
 
+const userMenuOptions = [
+  { id: 'member', name: '帳號設定' },
+  { id: 'logout', name: '登出' },
+];
+
 export const Basic: StoryFn<NavigationProps> = (args) => (
   <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
     <Navigation {...args}>
@@ -54,7 +59,9 @@ export const Basic: StoryFn<NavigationProps> = (args) => (
         ))}
       </>
       <NavigationFooter>
-        <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
+        <NavigationUserMenu imgSrc="1" options={userMenuOptions}>
+          User Name
+        </NavigationUserMenu>
         <NavigationIconButton icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
           <NavigationIconButton icon={NotificationIcon} />
@@ -164,7 +171,15 @@ export const All: StoryFn<NavigationProps> = () => {
         />
       </NavigationOptionCategory>
       <NavigationFooter>
-        <NavigationUserMenu imgSrc="1">User Name</NavigationUserMenu>
+        <NavigationUserMenu
+          options={userMenuOptions}
+          onSelect={(v) => {
+            alert(v.name);
+          }}
+          imgSrc="1"
+        >
+          User Name
+        </NavigationUserMenu>
         <NavigationIconButton icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
           <NavigationIconButton icon={NotificationIcon} />
