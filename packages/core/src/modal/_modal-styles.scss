@@ -91,8 +91,8 @@ $modalSizes: (
 
   &__close-icon {
     position: absolute;
-    right: 12px;
-    top: 12px;
+    right: spacing.semantic-variable(padding, horizontal, relaxed);
+    top: spacing.semantic-variable(padding, horizontal, relaxed);
     cursor: pointer;
   }
 
@@ -345,8 +345,6 @@ $modalSizes: (
   }
 
   &--media-preview {
-    max-width: calc(100vw - 200px);
-    max-height: calc(100vh - 80px);
     width: auto;
     height: auto;
     background-color: unset;
@@ -358,7 +356,6 @@ $modalSizes: (
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
     width: 100%;
   }
 
@@ -374,7 +371,9 @@ $modalSizes: (
 
   &__media-preview-image {
     position: absolute;
-    max-height: calc(100vh - 80px - (spacing.semantic-variable(padding, vertical, spacious) * 2));
+    // 36px 是 icon button 的寬度加上 padding
+    max-width: calc(100vw - (spacing.semantic-variable(padding, horizontal, wide) + 36px + spacing.semantic-variable(padding, horizontal, relaxed)) * 2);
+    max-height: calc(100vh - (spacing.semantic-variable(padding, vertical, base) + typography.primitive-line-height-variable(body) + spacing.semantic-variable(padding, vertical, comfort)) * 2);
     width: auto;
     height: auto;
 
@@ -431,7 +430,7 @@ $modalSizes: (
 
   &__media-preview-pagination-indicator {
     position: fixed;
-    bottom: spacing.semantic-variable(gap, calm);
+    bottom: spacing.semantic-variable(padding, vertical, comfort);
     left: 50%;
     transform: translateX(-50%);
     color: palette.semantic-variable(text, fixed-light);
