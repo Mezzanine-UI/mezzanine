@@ -56,7 +56,7 @@ describe('<Breadcrumb />', () => {
       const element = getHostHTMLElement();
 
       expect(element.textContent).toContain('Product');
-      expect(element.textContent).toContain('Detail');
+      expect(element.textContent).toContain('Details');
     });
 
     it('should show only last two items in condensed mode', () => {

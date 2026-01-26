@@ -27,13 +27,13 @@ const BreadcrumbOverflowMenuDropdown = forwardRef<
       ref={ref}
     >
       <Dropdown
-        onClose={() => handleClick()}
+        onClose={() => setOpen(false)}
         onOpen={() => handleClick()}
         options={options}
         placement="right-start"
         {...rest}
       >
-        <button className={cx(classes.trigger)} onClick={onClick} type="button">
+        <button className={cx(classes.trigger)} type="button">
           <Typography variant={'label-primary'}>{name}</Typography>
           <Icon className={classes.icon} icon={ChevronRightIcon} size={16} />
         </button>

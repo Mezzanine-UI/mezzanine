@@ -3,7 +3,7 @@ import type {
   ComponentOverridableForwardRefComponentPropsFactory,
   NativeElementPropsWithoutKeyAndRef,
 } from '../utils/jsx-types';
-import { DropdownProps } from '../Dropdown';
+import type { DropdownProps } from '../Dropdown';
 
 export type BreadcrumbProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'nav'>,

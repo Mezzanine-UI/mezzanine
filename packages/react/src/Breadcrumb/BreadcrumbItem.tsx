@@ -9,7 +9,17 @@ const BreadcrumbItem = forwardRef<HTMLSpanElement, BreadcrumbItemProps>(
   function BreadcrumbItem(props, ref) {
     if ('options' in props) return <BreadcrumbDropdown {...props} />;
 
-    const { className, component, current, name, onClick, ...rest } = props;
+    const {
+      className,
+      component,
+      current,
+      href,
+      name,
+      onClick,
+      rel,
+      target,
+      ...rest
+    } = props;
 
     const TriggerComponent = (() => {
       if (component) return component;
@@ -32,7 +42,10 @@ const BreadcrumbItem = forwardRef<HTMLSpanElement, BreadcrumbItemProps>(
       <span {...rest} className={cx(classes.host, className)} ref={ref}>
         <TriggerComponent
           className={cx(classes.trigger, current && classes.current)}
+          href={TriggerComponent === 'a' ? href : undefined}
           onClick={TriggerComponent === 'a' ? handleClick : undefined}
+          rel={TriggerComponent === 'a' ? rel : undefined}
+          target={TriggerComponent === 'a' ? target : undefined}
         >
           {name && (
             <Typography variant={current ? 'caption-highlight' : 'caption'}>

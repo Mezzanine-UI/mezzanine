@@ -11,7 +11,17 @@ const BreadcrumbOverflowMenuItem = forwardRef<
 >(function BreadcrumbOverflowMenuItem(props, ref) {
   if ('options' in props) return <BreadcrumbOverflowMenuDropdown {...props} />;
 
-  const { className, component, current, name, onClick, ...rest } = props;
+  const {
+    className,
+    component,
+    current,
+    href,
+    name,
+    onClick,
+    rel,
+    target,
+    ...rest
+  } = props;
 
   const TriggerComponent = (() => {
     if (component) return component;
@@ -34,7 +44,10 @@ const BreadcrumbOverflowMenuItem = forwardRef<
     <span {...rest} className={cx(classes.host, className)} ref={ref}>
       <TriggerComponent
         className={cx(classes.trigger)}
+        href={TriggerComponent === 'a' ? href : undefined}
         onClick={TriggerComponent === 'a' ? handleClick : undefined}
+        rel={TriggerComponent === 'a' ? rel : undefined}
+        target={TriggerComponent === 'a' ? target : undefined}
       >
         <Typography variant={'label-primary'}>{name}</Typography>
       </TriggerComponent>

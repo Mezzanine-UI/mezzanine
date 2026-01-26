@@ -31,8 +31,8 @@ const BreadcrumbDropdown = forwardRef<HTMLSpanElement, BreadcrumbDropdownProps>(
     return (
       <span className={cx(classes.host, className)} ref={ref}>
         <Dropdown
+          onClose={() => setOpen(false)}
           onOpen={() => handleClick()}
-          onClose={() => handleClick()}
           options={options}
           placement="bottom-start"
           {...rest}
@@ -43,7 +43,6 @@ const BreadcrumbDropdown = forwardRef<HTMLSpanElement, BreadcrumbDropdownProps>(
               open && classes.expanded,
               current && classes.current,
             )}
-            onClick={onClick}
             type="button"
           >
             {name && (

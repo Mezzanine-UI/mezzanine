@@ -1,6 +1,12 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import {
+  HtmlHTMLAttributes,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import { breadcrumbClasses } from '@mezzanine-ui/core/breadcrumb';
 import { DotHorizontalIcon } from '@mezzanine-ui/icons';
@@ -11,11 +17,14 @@ import Popper from '../Popper';
 import { Translate } from '../Transition';
 import BreadcrumbOverflowMenuItem from './BreadcrumbOverflowMenuItem';
 import { BreadcrumbItemProps } from './typings';
+import { cx } from '../utils/cx';
 
-export const BreadcrumbOverflowMenu = (props: {
-  collapsedProps: (BreadcrumbItemProps & { id: string })[];
-}) => {
-  const { collapsedProps } = props;
+export const BreadcrumbOverflowMenu = (
+  props: HtmlHTMLAttributes<HTMLButtonElement> & {
+    collapsedProps: (BreadcrumbItemProps & { id: string })[];
+  },
+) => {
+  const { onClick, className, collapsedProps, ...rest } = props;
 
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -83,13 +92,23 @@ export const BreadcrumbOverflowMenu = (props: {
     };
   }, []);
 
+  const buttonOnClick = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      setMenuOpen(!menuOpen);
+      onClick?.(e);
+    },
+    [menuOpen, onClick],
+  );
+
   return (
     <>
       <button
-        className={breadcrumbClasses.iconButton}
-        onClick={() => setMenuOpen(!menuOpen)}
-        ref={targetRef}
+        aria-label={'more options'}
         type="button"
+        {...rest}
+        ref={targetRef}
+        className={cx(breadcrumbClasses.iconButton, className)}
+        onClick={buttonOnClick}
       >
         <Icon icon={DotHorizontalIcon} size={14} />
       </button>
