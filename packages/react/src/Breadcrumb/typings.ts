@@ -3,6 +3,7 @@ import type {
   ComponentOverridableForwardRefComponentPropsFactory,
   NativeElementPropsWithoutKeyAndRef,
 } from '../utils/jsx-types';
+import type { DropdownProps } from '../Dropdown';
 
 export type BreadcrumbProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'nav'>,
@@ -26,72 +27,32 @@ export type BreadcrumbProps = Omit<
       }
   );
 
-export type BreadcrumbItemComponent =
-  | 'a'
-  | 'button'
-  | JSXElementConstructor<any>;
+export type BreadcrumbItemComponent = 'a' | 'span' | JSXElementConstructor<any>;
 
-export type BreadcrumbItemProps<C extends BreadcrumbItemComponent = 'button'> =
-  ComponentOverridableForwardRefComponentPropsFactory<
-    BreadcrumbItemComponent,
-    C,
-    | BreadcrumbDropdownItemProps
-    | BreadcrumbItemTextProps
-    | BreadcrumbLinkItemProps
-  >;
-
-export type BreadcrumbDropdownItemProps = Omit<
-  NativeElementPropsWithoutKeyAndRef<'button'>,
-  'children'
-> & {
-  component?: 'button';
-  /**
-   * Whether is the current page item.
-   */
-  current?: boolean;
-  /**
-   * Whether to expand the dropdown item icon.
-   */
-  expand?: boolean;
-  href?: string;
-  name?: string;
-  /**
-   * The dropdown options.
-   */
-  options: Array<{
-    /**
-     * The href of dropdown item.
-     */
-    href?: string;
-    id?: string;
-    /**
-     * The content of dropdown item.
-     */
-    name?: string;
-    target?: '_blank' | '_parent' | '_self' | '_top' | string;
-    options?: Array<{
-      href?: string;
-      id?: string;
-      name?: string;
-      target?: '_blank' | '_parent' | '_self' | '_top' | string;
-    }>;
-  }>;
-  target?: '_blank' | '_parent' | '_self' | '_top' | string;
-};
+export type BreadcrumbItemProps<C extends BreadcrumbItemComponent = 'span'> =
+  | Omit<
+      ComponentOverridableForwardRefComponentPropsFactory<
+        BreadcrumbItemComponent,
+        C,
+        BreadcrumbItemTextProps | BreadcrumbLinkItemProps
+      >,
+      'children' | 'onSelect'
+    >
+  | BreadcrumbDropdownProps;
 
 export type BreadcrumbItemTextProps = {
-  component?: 'div';
+  component?: 'span';
   /**
    * Whether is the current page item.
    */
   current?: boolean;
-  expand?: never;
   href?: never;
+  id?: string;
   /**
-   * The content of breadcrumb text.
+   * The content of breadcrumb item text.
    */
   name: string;
-  options?: never;
+  onClick?: never;
   target?: never;
 };
 
@@ -101,15 +62,26 @@ export type BreadcrumbLinkItemProps = Omit<
 > & {
   component?: 'a';
   current?: boolean;
-  expand?: never;
   /**
    * The href of breadcrumb link.
    */
   href: string;
+  id?: string;
   name: string;
-  options?: never;
+  onClick?: () => void;
   /**
    * The target attribute specifies where to open the linked document.
    */
   target?: '_blank' | '_parent' | '_self' | '_top' | string;
+};
+
+export type BreadcrumbDropdownProps = Omit<DropdownProps, 'children'> & {
+  className?: string;
+  current?: boolean;
+  href?: never;
+  id?: string;
+  name: string;
+  onClick?: () => void;
+  open?: boolean;
+  target?: never;
 };
