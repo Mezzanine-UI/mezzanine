@@ -9,8 +9,9 @@ export const NavigationOptionLevelContext = createContext<{
 
 export const NavigationActivatedContext = createContext<{
   activatedPath: string[];
-  setActivatedPath: (path: string[]) => void;
-  currentPathname: string | null;
   collapsed: boolean;
+  currentPathname: string | null;
+  filterText: string;
   handleCollapseChange: (newCollapsed: boolean) => void;
+  setActivatedPath: (path: string[]) => void;
 }>(null as any);
