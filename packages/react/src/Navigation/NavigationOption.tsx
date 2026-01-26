@@ -91,7 +91,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
     const { level, path: parentPath } = use(NavigationOptionLevelContext);
     const currentLevel = level + 1; // start as 1
-    const currentKey = href || title || 'unknownId';
+    const currentKey = title || href || 'unknownId';
     const currentPath = useMemo(
       () => [...parentPath, currentKey],
       [parentPath, currentKey],
@@ -99,10 +99,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
     const {
       activatedPath,
-      setActivatedPath,
-      currentPathname,
       collapsed,
+      currentPathname,
+      filterText,
       handleCollapseChange,
+      setActivatedPath,
     } = use(NavigationActivatedContext);
 
     useEffect(() => {
@@ -147,6 +148,14 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       return { badge: badgeComponent, items };
     }, [flattenedChildren]);
 
+    const [filter, setFilter] = useState(true);
+
+    useEffect(() => {
+      setFilter(
+        (title?.includes(filterText) || href?.includes(filterText)) ?? false,
+      );
+    }, [currentPath, filterText, href, title]);
+
     return (
       <li
         {...rest}
@@ -158,6 +167,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
           collapsed && classes.collapsed,
+          !collapsed && !filter && classes.hidden,
           className,
         )}
         data-id={currentKey}

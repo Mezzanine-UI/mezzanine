@@ -105,8 +105,6 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     [children],
   );
 
-  const [filterText, setFilterText] = useState('');
-
   const { headerComponent, footerComponent, items, level1Items } =
     useMemo(() => {
       let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
@@ -167,6 +165,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     };
   }, [level1Items, visibleCount]);
 
+  const [filterText, setFilterText] = useState('');
+
   return (
     <nav
       {...rest}
@@ -180,10 +180,11 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       <NavigationActivatedContext.Provider
         value={{
           activatedPath: activatedPath || innerActivatedPath,
-          setActivatedPath: combineSetActivatedPath,
-          currentPathname,
           collapsed,
+          currentPathname,
+          filterText,
           handleCollapseChange,
+          setActivatedPath: combineSetActivatedPath,
         }}
       >
         {headerComponent}

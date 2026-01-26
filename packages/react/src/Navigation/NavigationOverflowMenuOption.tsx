@@ -55,7 +55,7 @@ const NavigationOverflowMenuOption = forwardRef<
 
   const { level, path: parentPath } = use(NavigationOptionLevelContext);
   const currentLevel = level + 1; // start as 1
-  const currentKey = href || title || 'unknownId';
+  const currentKey = title || href || 'unknownId';
   const currentPath = useMemo(
     () => [...parentPath, currentKey],
     [parentPath, currentKey],

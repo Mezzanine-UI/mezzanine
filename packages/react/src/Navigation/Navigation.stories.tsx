@@ -175,10 +175,10 @@ export const All: StoryFn<NavigationProps> = () => {
 
   return (
     <div style={{ display: 'flex', gap: '48px', height: 'calc(100vh - 32px)' }}>
-      <Navigation onOptionClick={setActive} activatedPath={active}>
+      <Navigation filter onOptionClick={setActive} activatedPath={active}>
         {navChildren(true, true)}
       </Navigation>
-      <Navigation onOptionClick={setActive} activatedPath={active}>
+      <Navigation filter onOptionClick={setActive} activatedPath={active}>
         {navChildren(true, false)}
       </Navigation>
       <Navigation
