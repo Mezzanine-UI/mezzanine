@@ -1,5 +1,5 @@
 import { StoryObj, Meta } from '@storybook/react-webpack5';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import Table, {
   TableBaseProps,
   useTableDataSource,
@@ -475,305 +475,91 @@ export const CreateDeleteTransition: Story = {
   },
 };
 
+/** Component */
+const ExpandedRowRender: React.FC<{
+  record: DataType;
+  columns: TableColumn<DataType>[];
+}> = ({ record, columns }) => {
+  const {
+    dataSource: childDataSource,
+    transitionState: childTransitionState,
+    updateDataSource: updateChildDataSource,
+  } = useTableDataSource<DataType>({
+    initialData: record.subData,
+    highlightDuration: 1500,
+    fadeOutDuration: 300,
+  });
+
+  return (
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          justifyContent: 'flex-end',
+          marginBottom: 8,
+        }}
+      >
+        <Button
+          onClick={() => {
+            const newSource = {
+              key: `new-${Date.now()}`,
+              name: 'New Sub Item',
+              age: 0,
+              address: 'New Address',
+            };
+
+            updateChildDataSource([...childDataSource, newSource], {
+              addedKeys: [newSource.key],
+            });
+          }}
+          size="sub"
+          variant="base-secondary"
+        >
+          Add Sub Item
+        </Button>
+      </div>
+      <Table<DataType>
+        actions={{
+          render: (subRecord) => [
+            {
+              name: 'Delete',
+              onClick: () => {
+                updateChildDataSource(
+                  childDataSource.filter((item) => item.key !== subRecord.key),
+                  { removedKeys: [subRecord.key] },
+                );
+              },
+            },
+          ],
+          title: 'Action',
+          variant: 'destructive-text-link',
+          width: 100,
+        }}
+        columns={columns}
+        dataSource={childDataSource}
+        transitionState={childTransitionState}
+        showHeader={false}
+        nested
+      />
+    </div>
+  );
+};
+
 export const CreateDeleteTransitionWithExpansion: Story = {
   render: function CreateDeleteTransitionWithExpansionStory() {
-    // Parent table data with subData
-    const [parentData, setParentData] = useState<DataType[]>([
-      {
-        address: 'New York No. 1 Lake Park',
-        age: 32,
-        key: '1',
-        name: 'John Brown',
-        subData: [
-          {
-            address: 'Sub Address 1-1',
-            age: 10,
-            key: '1-1',
-            name: 'Sub John 1',
-          },
-          {
-            address: 'Sub Address 1-2',
-            age: 12,
-            key: '1-2',
-            name: 'Sub John 2',
-          },
-        ],
-      },
-      {
-        address: 'London No. 1 Lake Park',
-        age: 42,
-        key: '2',
-        name: 'Jim Green',
-        subData: [
-          {
-            address: 'Sub Address 2-1',
-            age: 15,
-            key: '2-1',
-            name: 'Sub Jim 1',
-          },
-        ],
-      },
-      {
-        address: 'Sydney No. 1 Lake Park',
-        age: 35,
-        key: '3',
-        name: 'Joe Black',
-        subData: [
-          {
-            address: 'Sub Address 3-1',
-            age: 8,
-            key: '3-1',
-            name: 'Sub Joe 1',
-          },
-          {
-            address: 'Sub Address 3-2',
-            age: 9,
-            key: '3-2',
-            name: 'Sub Joe 2',
-          },
-          {
-            address: 'Sub Address 3-3',
-            age: 11,
-            key: '3-3',
-            name: 'Sub Joe 3',
-          },
-        ],
-      },
-    ]);
-
     // Parent table transition state
     const {
       dataSource: parentDataSource,
       transitionState: parentTransitionState,
       updateDataSource: updateParentDataSource,
     } = useTableDataSource<DataType>({
-      initialData: parentData,
+      initialData: baseData,
       highlightDuration: 1500,
       fadeOutDuration: 300,
     });
 
-    // Child table transition states (one per parent row)
-    const [childTransitionStates, setChildTransitionStates] = useState<
-      Record<
-        string,
-        {
-          dataSource: DataType[];
-          transitionState: {
-            addingKeys: Set<string>;
-            deletingKeys: Set<string>;
-            fadingOutKeys: Set<string>;
-          };
-        }
-      >
-    >({});
-
-    // Initialize child transition states
-    useEffect(() => {
-      const states: typeof childTransitionStates = {};
-
-      parentData.forEach((parent) => {
-        states[parent.key] = {
-          dataSource: parent.subData || [],
-          transitionState: {
-            addingKeys: new Set(),
-            deletingKeys: new Set(),
-            fadingOutKeys: new Set(),
-          },
-        };
-      });
-      setChildTransitionStates(states);
-      // eslint-disable-next-line
-    }, []);
-
-    // Handle delete parent row (with expansion content)
-    const handleDeleteParent = useCallback(
-      (key: string) => {
-        // Update parent data
-        const newData = parentData.filter((item) => item.key !== key);
-
-        setParentData(newData);
-        updateParentDataSource(newData, { removedKeys: [key] });
-      },
-      [parentData, updateParentDataSource],
-    );
-
-    // Handle delete child row
-    const handleDeleteChild = useCallback(
-      (parentKey: string, childKey: string) => {
-        // Update child transition state
-        setChildTransitionStates((prev) => {
-          const parentState = prev[parentKey];
-
-          if (!parentState) return prev;
-
-          const newDeletingKeys = new Set(
-            parentState.transitionState.deletingKeys,
-          );
-
-          newDeletingKeys.add(childKey);
-
-          return {
-            ...prev,
-            [parentKey]: {
-              ...parentState,
-              transitionState: {
-                ...parentState.transitionState,
-                deletingKeys: newDeletingKeys,
-              },
-            },
-          };
-        });
-
-        // After delay, move to fading out
-        setTimeout(() => {
-          setChildTransitionStates((prev) => {
-            const parentState = prev[parentKey];
-
-            if (!parentState) return prev;
-
-            const newDeletingKeys = new Set(
-              parentState.transitionState.deletingKeys,
-            );
-            const newFadingOutKeys = new Set(
-              parentState.transitionState.fadingOutKeys,
-            );
-
-            newDeletingKeys.delete(childKey);
-            newFadingOutKeys.add(childKey);
-
-            return {
-              ...prev,
-              [parentKey]: {
-                ...parentState,
-                transitionState: {
-                  ...parentState.transitionState,
-                  deletingKeys: newDeletingKeys,
-                  fadingOutKeys: newFadingOutKeys,
-                },
-              },
-            };
-          });
-
-          // After fade out, remove from data
-          setTimeout(() => {
-            setChildTransitionStates((prev) => {
-              const parentState = prev[parentKey];
-
-              if (!parentState) return prev;
-
-              const newFadingOutKeys = new Set(
-                parentState.transitionState.fadingOutKeys,
-              );
-
-              newFadingOutKeys.delete(childKey);
-
-              return {
-                ...prev,
-                [parentKey]: {
-                  dataSource: parentState.dataSource.filter(
-                    (item) => item.key !== childKey,
-                  ),
-                  transitionState: {
-                    ...parentState.transitionState,
-                    fadingOutKeys: newFadingOutKeys,
-                  },
-                },
-              };
-            });
-
-            // Also update parent data
-            setParentData((prevParent) =>
-              prevParent.map((parent) => {
-                if (parent.key === parentKey) {
-                  return {
-                    ...parent,
-                    subData: parent.subData?.filter(
-                      (sub) => sub.key !== childKey,
-                    ),
-                  };
-                }
-
-                return parent;
-              }),
-            );
-          }, 300);
-        }, 1500);
-      },
-      [],
-    );
-
-    // Handle add child row
-    const handleAddChild = useCallback((parentKey: string) => {
-      const newChildKey = `${parentKey}-${Date.now()}`;
-      const newChild: DataType = {
-        address: `New Sub Address ${newChildKey}`,
-        age: Math.floor(Math.random() * 20) + 5,
-        key: newChildKey,
-        name: `New Sub User ${newChildKey.slice(-4)}`,
-      };
-
-      // Update parent data
-      setParentData((prevParent) =>
-        prevParent.map((parent) => {
-          if (parent.key === parentKey) {
-            return {
-              ...parent,
-              subData: [...(parent.subData || []), newChild],
-            };
-          }
-
-          return parent;
-        }),
-      );
-
-      // Update child transition state with adding animation
-      setChildTransitionStates((prev) => {
-        const parentState = prev[parentKey];
-
-        if (!parentState) return prev;
-
-        const newAddingKeys = new Set(parentState.transitionState.addingKeys);
-
-        newAddingKeys.add(newChildKey);
-
-        return {
-          ...prev,
-          [parentKey]: {
-            dataSource: [...parentState.dataSource, newChild],
-            transitionState: {
-              ...parentState.transitionState,
-              addingKeys: newAddingKeys,
-            },
-          },
-        };
-      });
-
-      // Remove adding state after duration
-      setTimeout(() => {
-        setChildTransitionStates((prev) => {
-          const parentState = prev[parentKey];
-
-          if (!parentState) return prev;
-
-          const newAddingKeys = new Set(parentState.transitionState.addingKeys);
-
-          newAddingKeys.delete(newChildKey);
-
-          return {
-            ...prev,
-            [parentKey]: {
-              ...parentState,
-              transitionState: {
-                ...parentState.transitionState,
-                addingKeys: newAddingKeys,
-              },
-            },
-          };
-        });
-      }, 1500);
-    }, []);
-
-    const parentColumns: TableColumn<DataType>[] = [
+    const columns: TableColumn<DataType>[] = [
       {
         dataIndex: 'name',
         key: 'name',
@@ -793,26 +579,6 @@ export const CreateDeleteTransitionWithExpansion: Story = {
       },
     ];
 
-    const childColumns: TableColumn<DataType>[] = [
-      {
-        dataIndex: 'name',
-        key: 'name',
-        title: 'Sub Name',
-        width: 150,
-      },
-      {
-        dataIndex: 'age',
-        key: 'age',
-        title: 'Sub Age',
-        width: 100,
-      },
-      {
-        dataIndex: 'address',
-        key: 'address',
-        title: 'Sub Address',
-      },
-    ];
-
     return (
       <div style={{ width: '100%' }}>
         <div
@@ -827,7 +593,7 @@ export const CreateDeleteTransitionWithExpansion: Story = {
             Transition with Expansion Demo
           </h4>
           <p style={{ margin: '0 0 4px 0' }}>
-            1. 刪除父層資料時，展開區域會同步顯示刪除提示（紅色底色 + 淡出效果）
+            1. 刪除父層資料時，展開區域會同步顯示刪除提示
           </p>
           <p style={{ margin: '0 0 4px 0' }}>
             2. 在展開區域內的子表格中刪除項目，該項目會有獨立的刪除過渡效果
@@ -842,57 +608,27 @@ export const CreateDeleteTransitionWithExpansion: Story = {
             render: (record) => [
               {
                 name: 'Delete Parent',
-                onClick: () => handleDeleteParent(String(record.key)),
+                onClick: () => {
+                  const newData = parentDataSource.filter(
+                    (item) => item.key !== record.key,
+                  );
+
+                  updateParentDataSource(newData, {
+                    removedKeys: [record.key],
+                  });
+                },
               },
             ],
             title: 'Action',
             variant: 'destructive-text-link',
             width: 140,
           }}
-          columns={parentColumns}
+          columns={columns}
           dataSource={parentDataSource}
           expandable={{
-            expandedRowRender: (record) => {
-              const childState = childTransitionStates[record.key];
-
-              return (
-                <div>
-                  <div
-                    style={{
-                      display: 'flex',
-                      gap: 8,
-                      justifyContent: 'flex-end',
-                      marginBottom: 8,
-                    }}
-                  >
-                    <Button
-                      onClick={() => handleAddChild(record.key)}
-                      size="sub"
-                      variant="base-secondary"
-                    >
-                      Add Sub Item
-                    </Button>
-                  </div>
-                  <Table<DataType>
-                    actions={{
-                      render: (subRecord) => [
-                        {
-                          name: 'Delete',
-                          onClick: () =>
-                            handleDeleteChild(record.key, subRecord.key),
-                        },
-                      ],
-                      title: 'Action',
-                      variant: 'destructive-text-link',
-                      width: 100,
-                    }}
-                    columns={childColumns}
-                    dataSource={childState?.dataSource || record.subData || []}
-                    transitionState={childState?.transitionState}
-                  />
-                </div>
-              );
-            },
+            expandedRowRender: (record) => (
+              <ExpandedRowRender record={record} columns={columns} />
+            ),
             rowExpandable: (record) => !!record.subData?.length,
           }}
           transitionState={parentTransitionState}
