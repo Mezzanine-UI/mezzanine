@@ -325,7 +325,7 @@ export type {
   PasswordInputProps,
   SearchInputProps,
   SelectInputProps,
-  UnitInputProps,
+  CurrencyInputProps,
   WithAffixInputProps,
   WithPasswordStrengthIndicator,
 } from './Input';
