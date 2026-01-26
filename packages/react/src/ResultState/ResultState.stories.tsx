@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import ResultState, { ResultStateProps } from './ResultState';
+import Button from '../Button';
 
 export default {
   title: 'Feedback/ResultState',
@@ -134,39 +135,52 @@ export const WithActions: Story = {
         gap: '48px',
       }}
     >
-      <div>
-        <h3 style={{ marginBottom: '24px' }}>Two Buttons - Props</h3>
-        <ResultState
-          actions={{
-            secondaryButton: {
-              children: 'Go Back',
-              onClick: () => alert('Secondary action clicked'),
-            },
-            primaryButton: {
-              children: 'Try Again',
-              onClick: () => alert('Primary action clicked'),
-            },
-          }}
-          description="The operation failed. You can try again or go back to the previous page."
-          title="Operation Failed"
-          type="error"
-        />
-      </div>
-      <div>
-        <h3 style={{ marginBottom: '24px' }}>Single Button - Props</h3>
-        <ResultState
-          actions={{
-            secondaryButton: {
-              children: 'Continue',
-              onClick: () => alert('Continue clicked'),
-            },
-          }}
-          description="Your changes have been saved successfully."
-          size="sub"
-          title="Changes Saved"
-          type="success"
-        />
-      </div>
+      {/* ButtonProps object format */}
+      <ResultState
+        actions={{
+          secondaryButton: {
+            children: 'Continue',
+            onClick: () => alert('Continue clicked'),
+          },
+        }}
+        description="Your changes have been saved successfully."
+        size="sub"
+        title="Changes Saved"
+        type="success"
+      />
+      <ResultState
+        actions={{
+          secondaryButton: {
+            children: 'Go Back',
+            onClick: () => alert('Secondary action clicked'),
+          },
+          primaryButton: {
+            children: 'Try Again',
+            onClick: () => alert('Primary action clicked'),
+          },
+        }}
+        description="The operation failed. You can try again or go back to the previous page."
+        title="Operation Failed"
+        type="error"
+      />
+      {/* use children */}
+      <ResultState
+        description="Your changes have been saved successfully."
+        size="sub"
+        title="Changes Saved"
+        type="success"
+      >
+        <Button>Button 1</Button>
+      </ResultState>
+      <ResultState
+        description="Your changes have been saved successfully."
+        size="sub"
+        title="Changes Saved"
+        type="success"
+      >
+        <Button>Button 1</Button>
+        <Button>Button 2</Button>
+      </ResultState>
     </div>
   ),
 };
