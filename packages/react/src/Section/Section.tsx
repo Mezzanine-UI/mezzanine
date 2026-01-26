@@ -33,6 +33,18 @@ export interface SectionProps {
   tab?: ReactElement<TabProps>;
 }
 
+function getDisplayName(element: ReactElement): string {
+  const type = element.type;
+
+  if (typeof type === 'string') {
+    return type;
+  }
+
+  return (type as { displayName?: string }).displayName
+    || (type as { name?: string }).name
+    || 'Unknown';
+}
+
 function isContentHeaderElement(
   element: ReactElement<ContentHeaderProps> | undefined,
 ): element is ReactElement<ContentHeaderProps> {
@@ -71,9 +83,9 @@ const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
     if (contentHeader) {
       if (isContentHeaderElement(contentHeader)) {
         renderedContentHeader = cloneElement(contentHeader, { size: 'sub' });
-      } else {
+      } else if (isValidElement(contentHeader)) {
         console.warn(
-          '[Section] The contentHeader prop only accepts a <ContentHeader /> component from @mezzanine-ui/react.',
+          `[Section] Invalid contentHeader type: <${getDisplayName(contentHeader)}>. Only <ContentHeader /> component from @mezzanine-ui/react is allowed.`,
         );
       }
     }
@@ -81,9 +93,9 @@ const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
     if (filterArea) {
       if (isFilterAreaElement(filterArea)) {
         renderedFilterArea = cloneElement(filterArea, { size: 'sub' });
-      } else {
+      } else if (isValidElement(filterArea)) {
         console.warn(
-          '[Section] The filterArea prop only accepts a <FilterArea /> component from @mezzanine-ui/react.',
+          `[Section] Invalid filterArea type: <${getDisplayName(filterArea)}>. Only <FilterArea /> component from @mezzanine-ui/react is allowed.`,
         );
       }
     }
@@ -91,9 +103,9 @@ const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
     if (tab) {
       if (isTabElement(tab)) {
         renderedTab = tab;
-      } else {
+      } else if (isValidElement(tab)) {
         console.warn(
-          '[Section] The tab prop only accepts a <Tab /> component from @mezzanine-ui/react.',
+          `[Section] Invalid tab type: <${getDisplayName(tab)}>. Only <Tab /> component from @mezzanine-ui/react is allowed.`,
         );
       }
     }

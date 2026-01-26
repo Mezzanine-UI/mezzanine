@@ -70,7 +70,7 @@ describe('<Section />', () => {
       render(<Section contentHeader={<div>Invalid</div> as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
-        '[Section] The contentHeader prop only accepts a <ContentHeader /> component from @mezzanine-ui/react.',
+        '[Section] Invalid contentHeader type: <div>. Only <ContentHeader /> component from @mezzanine-ui/react is allowed.',
       );
 
       warnSpy.mockRestore();
@@ -126,7 +126,7 @@ describe('<Section />', () => {
       render(<Section filterArea={<div>Invalid</div> as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
-        '[Section] The filterArea prop only accepts a <FilterArea /> component from @mezzanine-ui/react.',
+        '[Section] Invalid filterArea type: <div>. Only <FilterArea /> component from @mezzanine-ui/react is allowed.',
       );
 
       warnSpy.mockRestore();
@@ -168,20 +168,22 @@ describe('<Section />', () => {
       render(<Section tab={<div>Invalid</div> as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
-        '[Section] The tab prop only accepts a <Tab /> component from @mezzanine-ui/react.',
+        '[Section] Invalid tab type: <div>. Only <Tab /> component from @mezzanine-ui/react is allowed.',
       );
 
       warnSpy.mockRestore();
     });
 
     it('should not render invalid tab', () => {
-      jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       const { queryByText } = render(
         <Section tab={<div>Invalid</div> as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
+
+      warnSpy.mockRestore();
     });
   });
 
