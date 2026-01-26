@@ -29,11 +29,6 @@ export interface FilterAreaProps
    */
   isDirty?: boolean;
   /**
-   * Whether the filter area is a panel.
-   * @default false
-   */
-  isPanel?: boolean;
-  /**
    * Callback function triggered when the form is reset.
    * Used to clear all filter conditions and restore to initial state.
    */
@@ -77,7 +72,6 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
       children,
       className,
       isDirty = true,
-      isPanel = false,
       onReset,
       onSubmit,
       resetText = 'Reset',
@@ -155,7 +149,6 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
           classes.host,
           className,
           {
-            [classes.panelHost]: isPanel,
             [classes.size(size)]: size,
           },
         )}
@@ -163,14 +156,14 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
         {expanded ? (
           <>
             {filterLines}
-            {!isPanel && renderAction()}
+            {renderAction()}
           </>
         ) : (
           <>
             {firstLine && (
               <div className={classes.row}>
                 {firstLine}
-                {!isPanel && renderAction()}
+                {renderAction()}
               </div>
             )}
           </>
