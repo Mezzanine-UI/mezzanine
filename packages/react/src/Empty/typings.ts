@@ -15,7 +15,7 @@ export interface PresetPictogramEmptyProps {
    * The type of empty state, which determines the icon and color theme.
    * @default 'initial-data'
    */
-  type?: 'initial-data' | 'result' | 'system';
+  type?: 'initial-data' | 'result' | 'system' | 'notification';
   /**
    * Custom pictogram element.
    */
@@ -23,7 +23,7 @@ export interface PresetPictogramEmptyProps {
 }
 
 export interface CustomPictogramEmptyProps {
-  type?: 'notification' | 'custom';
+  type?: 'custom';
   pictogram?: ReactNode;
 }
 
