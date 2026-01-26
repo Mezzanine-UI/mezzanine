@@ -158,20 +158,12 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     }
   }
 
-  &--active.#{$overflow-menu-option-prefix}--open {
-    .#{$overflow-menu-option-prefix}__content {
-      background-color: palette.semantic-variable('background', brand-ghost);
-    }
-  }
-
   &--active {
     .#{$overflow-menu-option-prefix}__content {
-      .#{$overflow-menu-option-prefix}__title {
-        color: palette.semantic-variable(text, brand);
-      }
+      background-color: palette.semantic-variable('background', brand-ghost);
 
       .#{$overflow-menu-option-prefix}__icon {
-        color: palette.semantic-variable(icon, brand);
+        color: palette.semantic-variable(icon, neutral-solid);
       }
     }
   }
