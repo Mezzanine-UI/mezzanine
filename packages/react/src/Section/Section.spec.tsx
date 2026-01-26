@@ -65,7 +65,7 @@ describe('<Section />', () => {
     });
 
     it('should warn when contentHeader is not a ContentHeader component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       render(<Section contentHeader={<div>Invalid</div> as never} />);
 
@@ -77,13 +77,15 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid contentHeader', () => {
-      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       const { queryByText } = render(
         <Section contentHeader={<div>Invalid</div> as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
+
+      warnSpy.mockRestore();
     });
   });
 
@@ -119,7 +121,7 @@ describe('<Section />', () => {
     });
 
     it('should warn when filterArea is not a FilterArea component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       render(<Section filterArea={<div>Invalid</div> as never} />);
 
@@ -131,13 +133,15 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid filterArea', () => {
-      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       const { queryByText } = render(
         <Section filterArea={<div>Invalid</div> as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
+
+      warnSpy.mockRestore();
     });
   });
 
@@ -146,7 +150,7 @@ describe('<Section />', () => {
       const { container } = render(
         <Section
           tab={
-            <Tab activeKey="tab1" onChange={() => {}}>
+            <Tab activeKey="tab1" onChange={() => { }}>
               <TabItem key="tab1">Tab 1</TabItem>
               <TabItem key="tab2">Tab 2</TabItem>
             </Tab>
@@ -159,7 +163,7 @@ describe('<Section />', () => {
     });
 
     it('should warn when tab is not a Tab component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       render(<Section tab={<div>Invalid</div> as never} />);
 
@@ -171,7 +175,7 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid tab', () => {
-      jest.spyOn(console, 'warn').mockImplementation(() => {});
+      jest.spyOn(console, 'warn').mockImplementation(() => { });
 
       const { queryByText } = render(
         <Section tab={<div>Invalid</div> as never} />,
@@ -199,7 +203,7 @@ describe('<Section />', () => {
             </FilterArea>
           }
           tab={
-            <Tab activeKey="tab1" onChange={() => {}}>
+            <Tab activeKey="tab1" onChange={() => { }}>
               <TabItem key="tab1">Tab 1</TabItem>
             </Tab>
           }
