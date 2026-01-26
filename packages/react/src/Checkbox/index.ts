@@ -1,5 +1,5 @@
-import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
-import Checkbox, { CheckboxProps } from './Checkbox';
+import type { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
+import type { CheckboxProps } from './Checkbox';
 
 export type {
   CheckboxGroupLayout,
@@ -22,8 +22,9 @@ export type { CheckboxComponent, CheckboxPropsBase } from './typings';
  * @remark
  * Add type alias here for parsable to react docgen typescript.
  */
-type GenericCheckbox = (
+export type GenericCheckbox = (
   props: PropsWithoutRef<CheckboxProps> & RefAttributes<HTMLLabelElement>,
 ) => ReactElement<any>;
 
-export default Checkbox as GenericCheckbox;
+// Direct re-export to avoid webpack initialization order issues
+export { default } from './Checkbox';

@@ -1,7 +1,7 @@
 'use client';
 
-import cx from "clsx";
-import { ChangeEventHandler, ReactNode, useMemo, useState } from "react";
+import cx from 'clsx';
+import { ChangeEventHandler, ReactNode, useMemo, useState } from 'react';
 
 import {
   dropdownClasses as classes,
@@ -9,13 +9,13 @@ import {
   DropdownItemLevel,
   DropdownItemValidate,
   DropdownMode,
-} from "@mezzanine-ui/core/dropdown/dropdown";
-import { type IconDefinition, CheckedIcon } from "@mezzanine-ui/icons";
+} from '@mezzanine-ui/core/dropdown/dropdown';
+import { type IconDefinition, CheckedIcon } from '@mezzanine-ui/icons';
 
-import Checkbox from "../Checkbox";
-import Icon, { IconColor } from "../Icon";
-import Typography from "../Typography";
-import { HighlightSegment, highlightText } from "./highlightText";
+import Checkbox from '../Checkbox';
+import Icon, { IconColor } from '../Icon';
+import Typography from '../Typography';
+import { HighlightSegment, highlightText } from './highlightText';
 
 export interface DropdownItemCardProps {
   /**
@@ -159,7 +159,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   // Controlled/uncontrolled mode for checked/selected state
   const isControlled = checked !== undefined;
   const [internalChecked, setInternalChecked] = useState(
-    defaultChecked ?? false
+    defaultChecked ?? false,
   );
   const isChecked = isControlled ? checked : internalChecked;
 
@@ -181,11 +181,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     return followText
       ? highlightText(cardLabel, followText)
       : [
-        {
-          text: cardLabel,
-          highlight: false
-        }
-      ];
+          {
+            text: cardLabel,
+            highlight: false,
+          },
+        ];
   }, [cardLabel, followText]);
 
   const showPrependContent = useMemo(() => {
@@ -201,10 +201,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
       ? highlightText(subTitle, followText)
       : subTitle
         ? [
-          {
-            text: subTitle,
-            highlight: false
-          }]
+            {
+              text: subTitle,
+              highlight: false,
+            },
+          ]
         : [];
   }, [subTitle, followText]);
 
@@ -218,7 +219,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
         {parts.map((part, index) => (
           <span
             key={index}
-            className={part.highlight && validate !== 'danger' ? classes.cardHighlightedText : ''}
+            className={
+              part.highlight && validate !== 'danger'
+                ? classes.cardHighlightedText
+                : ''
+            }
           >
             {part.text}
           </span>
@@ -249,7 +254,9 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     onClick?.();
   };
 
-  const handleCheckboxChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleCheckboxChange: ChangeEventHandler<HTMLInputElement> = (
+    event,
+  ) => {
     event.stopPropagation();
     toggleChecked();
   };
@@ -286,44 +293,37 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
         onKeyDown={handleKeyDown}
       >
         <div className={classes.cardContainer}>
-          {
-            showPrependContent && (
-              <div className={classes.cardPrependContent}>
-                {prependIcon
-                  && <Icon icon={prependIcon} color={iconColor} />
-                }
-                {checkSite === 'prefix' && mode === 'multiple' && (
-                  <Checkbox
-                    checked={isChecked}
-                    disabled={disabled}
-                    onChange={handleCheckboxChange}
-                  />
-                )}
-              </div>
-            )
-          }
-          <div className={classes.cardBody}>
-            {
-              cardLabel && renderHighlightedText(labelParts, classes.cardTitle, labelId)
-            }
-            {
-              subTitleParts.length > 0 && renderHighlightedText(subTitleParts, classes.cardDescription)
-            }
-          </div>
-          {
-            showAppendContent && (
-              <div className={classes.cardAppendContent}>
-                {appendContent && <Typography color="text-neutral-light">{appendContent}</Typography>}
-                {appendIcon && <Icon icon={appendIcon} color={iconColor} />}
-                {checkSite === 'suffix' && isChecked && <Icon
-                  icon={CheckedIcon}
-                  color={appendIconColor}
-                  size={16}
+          {showPrependContent && (
+            <div className={classes.cardPrependContent}>
+              {prependIcon && <Icon icon={prependIcon} color={iconColor} />}
+              {checkSite === 'prefix' && mode === 'multiple' && (
+                <Checkbox
+                  checked={isChecked}
+                  disabled={disabled}
+                  onChange={handleCheckboxChange}
                 />
-                }
-              </div>
-            )
-          }
+              )}
+            </div>
+          )}
+          <div className={classes.cardBody}>
+            {cardLabel &&
+              renderHighlightedText(labelParts, classes.cardTitle, labelId)}
+            {subTitleParts.length > 0 &&
+              renderHighlightedText(subTitleParts, classes.cardDescription)}
+          </div>
+          {showAppendContent && (
+            <div className={classes.cardAppendContent}>
+              {appendContent && (
+                <Typography color="text-neutral-light">
+                  {appendContent}
+                </Typography>
+              )}
+              {appendIcon && <Icon icon={appendIcon} color={iconColor} />}
+              {checkSite === 'suffix' && isChecked && (
+                <Icon icon={CheckedIcon} color={appendIconColor} size={16} />
+              )}
+            </div>
+          )}
         </div>
       </li>
       {showUnderline && <div className={classes.cardUnderline} />}
