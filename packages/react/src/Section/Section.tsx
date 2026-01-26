@@ -1,9 +1,9 @@
 import {
   cloneElement,
+  forwardRef,
   isValidElement,
   PropsWithChildren,
   ReactElement,
-  forwardRef,
 } from 'react';
 import ContentHeader, { ContentHeaderProps } from '../ContentHeader';
 import { FilterArea, FilterAreaProps } from '../FilterArea';
