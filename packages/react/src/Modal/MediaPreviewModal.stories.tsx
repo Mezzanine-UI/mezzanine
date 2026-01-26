@@ -96,7 +96,7 @@ export const SingleImage: StoryObj = {
   },
 };
 
-export const WithNavigation: StoryObj = {
+export const CircularNavigation: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -223,7 +223,7 @@ export const WithPaginationIndicator: StoryObj = {
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Gallery with Image Counter
+          Open Gallery with Pagination Indicator
         </Button>
         <MediaPreviewModal
           currentIndex={currentIndex}

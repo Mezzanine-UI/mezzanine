@@ -129,8 +129,11 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
         );
 
         // Use requestAnimationFrame to ensure DOM is updated before triggering animation
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
+        let rafId1: number | null = null;
+        let rafId2: number | null = null;
+
+        rafId1 = requestAnimationFrame(() => {
+          rafId2 = requestAnimationFrame(() => {
             setActiveIndex(currentIndex);
           });
         });
@@ -142,6 +145,12 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
 
         return () => {
           clearTimeout(cleanupTimer);
+          if (rafId1 !== null) {
+            cancelAnimationFrame(rafId1);
+          }
+          if (rafId2 !== null) {
+            cancelAnimationFrame(rafId2);
+          }
         };
       }
 
