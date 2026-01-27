@@ -91,8 +91,8 @@ $modalSizes: (
 
   &__close-icon {
     position: absolute;
-    right: 12px;
-    top: 12px;
+    right: spacing.semantic-variable(padding, horizontal, relaxed);
+    top: spacing.semantic-variable(padding, horizontal, relaxed);
     cursor: pointer;
   }
 
@@ -342,5 +342,108 @@ $modalSizes: (
         }
       }
     }
+  }
+
+  &--media-preview {
+    width: auto;
+    height: auto;
+    background-color: unset;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  &__media-preview-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__media-preview-media-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  &__media-preview-image {
+    position: absolute;
+    // 36px 是 icon button 的寬度加上 padding
+    max-width: calc(100vw - (spacing.semantic-variable(padding, horizontal, wide) + 36px + spacing.semantic-variable(padding, horizontal, relaxed)) * 2);
+    max-height: calc(100vh - (spacing.semantic-variable(padding, vertical, base) + typography.primitive-line-height-variable(body) + spacing.semantic-variable(padding, vertical, comfort)) * 2);
+    width: auto;
+    height: auto;
+
+    // For img elements
+    &[src] {
+      object-fit: contain;
+    }
+
+    // For custom content wrapper (div)
+    &:not([src]) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > * {
+        max-width: 100%;
+        max-height: 100%;
+      }
+    }
+  }
+
+  &__media-preview-nav-button {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: palette.semantic-variable("background", neutral-solid);
+    border: none;
+    border-radius: radius.variable(full);
+    color: palette.semantic-variable(icon, neutral-light);
+    cursor: pointer;
+    z-index: z-index.get(modal);
+    padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, cozy);
+
+    &:hover:not(:disabled) {
+      background-color: palette.semantic-variable(overlay, strong);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    &--prev {
+      left: spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+
+    &--next {
+      right: spacing.semantic-variable(padding, horizontal, relaxed);
+    }
+  }
+
+  &__media-preview-pagination-indicator {
+    position: fixed;
+    bottom: spacing.semantic-variable(padding, vertical, comfort);
+    left: 50%;
+    transform: translateX(-50%);
+    color: palette.semantic-variable(text, fixed-light);
+    z-index: z-index.get(modal);
+
+    @include typography.variant(body1);
+  }
+
+  &__media-preview-close-button {
+    position: fixed;
+    top: spacing.semantic-variable(padding, vertical, relaxed);
+    right: spacing.semantic-variable(padding, horizontal, relaxed);
+    z-index: z-index.get(modal);
+    padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, cozy);
   }
 }
