@@ -3,6 +3,15 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.3...@mezzanine-ui/system@1.0.0-beta.4) (2026-01-27)
+
+### Features
+
+- **system/motion:** add long duration ([72d9bed](https://github.com/Mezzanine-UI/mezzanine/commit/72d9beddc80d740e3ae63a32f55d2a7e88205ef3))
+- **system/scrollbar:** implement scroll bar styling in system ([9f6ee0f](https://github.com/Mezzanine-UI/mezzanine/commit/9f6ee0f9fc996e1cb8a303e3b97026d012da9359))
+- **system/scrollbar:** remove system scrollbar ([3676679](https://github.com/Mezzanine-UI/mezzanine/commit/3676679ea67e799eb7fb123ce18e7986df12e825))
+- **system:** update tokens ([1a2eeed](https://github.com/Mezzanine-UI/mezzanine/commit/1a2eeedecc200fc1f61900ed1d737103c022147e))
+
 # [1.0.0-beta.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.10...@mezzanine-ui/system@1.0.0-beta.3) (2026-01-20)
 
 **Note:** Version bump only for package @mezzanine-ui/system

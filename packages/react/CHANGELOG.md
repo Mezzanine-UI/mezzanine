@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.3...@mezzanine-ui/react@1.0.0-beta.4) (2026-01-27)
+
+### Bug Fixes
+
+- fix pr issues ([9725d56](https://github.com/Mezzanine-UI/mezzanine/commit/9725d563fb0cd1dd0fe456fc5a9cc8d9441795b7))
+- **react/autocomplete:** add keepSearchTextOnBlur and onSearchTextChange props ([185dd6a](https://github.com/Mezzanine-UI/mezzanine/commit/185dd6aec6f17f5f285d1f37f968a5fe13dbc7ed))
+- **react/AutoComplete:** add onReachBottom and onLeaveBottom callbacks support ([529d1ca](https://github.com/Mezzanine-UI/mezzanine/commit/529d1ca7cd6a1f9276c13c1035eb6b5aa21d5a18))
+- **react/autoComplete:** fix input foce content issue ([ee7f54f](https://github.com/Mezzanine-UI/mezzanine/commit/ee7f54f04937683c8a18a376b39ce2513ab79308))
+- **react/autocomplete:** update checkSite prop naming ([4003ebc](https://github.com/Mezzanine-UI/mezzanine/commit/4003ebce7a3d8092ad51a77e603b0fea8f621e5f))
+- **react/breadcrumb:** resolve pr issue ([198dda9](https://github.com/Mezzanine-UI/mezzanine/commit/198dda92d4d1173387e537216d0bd34026b757e6))
+- **react/content-header:** pr issue ([4aa9e70](https://github.com/Mezzanine-UI/mezzanine/commit/4aa9e708d7b177d45af45935a7e2af3a848f7650))
+- **react/Dropdown:** add onReachBottom and onLeaveBottom callbacks for scroll detection ([6ce3bc3](https://github.com/Mezzanine-UI/mezzanine/commit/6ce3bc395e3b6e7d1f817245e48a4ab11b736fb3))
+- **react/dropdown:** fix pointer-events issue with portal and update naming ([6399d51](https://github.com/Mezzanine-UI/mezzanine/commit/6399d51704ab8c9c8c5e53f4173d460059063521))
+- **react/dropdown:** fixes incorrect Checkbox import path ([5266ee7](https://github.com/Mezzanine-UI/mezzanine/commit/5266ee7164dfdff548124794abf0085d695bde13))
+- **react/filterArea:** improve API and accessibility ([6e8b29d](https://github.com/Mezzanine-UI/mezzanine/commit/6e8b29df4aca8f8ecdb6a377964f5beb0ac498d9))
+- **react/filterArea:** remove isPanel props on the filter area component ([9124cc1](https://github.com/Mezzanine-UI/mezzanine/commit/9124cc1ef193b84c0cf9497020f58a6c859e9530))
+- **react/input:** add dropdown integration tests ([671b815](https://github.com/Mezzanine-UI/mezzanine/commit/671b8150071a80b17fc45042e0ba6d42bddd2e8f))
+- **react/modal:** cancel pending animation frames on cleanup ([f8b410a](https://github.com/Mezzanine-UI/mezzanine/commit/f8b410ae7f7180dbd9fb288905a205d5d6fb7353))
+- **react/modal:** fix lint errors ([add0bc1](https://github.com/Mezzanine-UI/mezzanine/commit/add0bc1881520beb3e5968819cc1a23f3c1abd83))
+- **react/navigation:** resolve pr issue ([a33e1d8](https://github.com/Mezzanine-UI/mezzanine/commit/a33e1d84dea165ebf35d23d968e007e6f15d5f64))
+- **react/notificationCenter:** add time grouping with prepend tips ([be8d0b5](https://github.com/Mezzanine-UI/mezzanine/commit/be8d0b5c7a9c1844e9f92b96fc9647c026842555))
+- **react/notificationCenter:** show full date time for past days instead of relative time ([081c8f3](https://github.com/Mezzanine-UI/mezzanine/commit/081c8f38f66626e3aad6ce2176c51380a0b80136))
+- **react/select:** add isForceClearable prop to SelectTrigger ([e636dc1](https://github.com/Mezzanine-UI/mezzanine/commit/e636dc103a0850a291b060f752a80155e56a0913))
+- **react/selection:** add SelectionGroup and improve tests ([9725baf](https://github.com/Mezzanine-UI/mezzanine/commit/9725baf5c8d7cddeb00f7113fbacf4171b401b2a))
+- **react/text-field:** rename customDropdownZIndex to dropdownZIndex and add sub size example ([e9e7172](https://github.com/Mezzanine-UI/mezzanine/commit/e9e7172227ed1a1acc031a15a3c5df63b08231f0))
+
+### Features
+
+- **MediaPreviewModal:** add uncontrolled mode with built-in navigation ([8c5177f](https://github.com/Mezzanine-UI/mezzanine/commit/8c5177f71c97e2c7a7f7c29b8f8aa6edd90d19b9))
+- **modal:** MediaPreviewModal ([51dfef2](https://github.com/Mezzanine-UI/mezzanine/commit/51dfef24c2f62024bb534c13c3438d802e9b67dc))
+- **react/breadcrumb:** add overflow menu with dropdown ([a79a567](https://github.com/Mezzanine-UI/mezzanine/commit/a79a567a698996facc8daa924e0926581005b35a))
+- **react/breadcrumb:** rename option label to name for consistency ([041a52d](https://github.com/Mezzanine-UI/mezzanine/commit/041a52dee543e4ebca7976377ef25f3d06aa19a2))
+- **react/content-header:** content-header implement ([27d5d80](https://github.com/Mezzanine-UI/mezzanine/commit/27d5d80c86b874261a29be302463e0db19c38876))
+- **react/empty:** add notification svg CU-86evyvxn8 ([28d4916](https://github.com/Mezzanine-UI/mezzanine/commit/28d4916392922e61f72f490d40ef05ff58e80bee))
+- **react/filterArea:** add filter area components ([1296751](https://github.com/Mezzanine-UI/mezzanine/commit/12967511e649f6f356eaf16e4f4f40d3119dfe1c))
+- **react/input:** refactor input variant unit to currency and enable formatter/parser as default ([4845e2f](https://github.com/Mezzanine-UI/mezzanine/commit/4845e2f0196ff8bd0fb524da141315c671841512))
+- **react/navigation:** add filter rule ([f9440d9](https://github.com/Mezzanine-UI/mezzanine/commit/f9440d9212a17c1041013c52b97fd7434dabe1f6))
+- **react/navigation:** add userMenu options ([c86cc08](https://github.com/Mezzanine-UI/mezzanine/commit/c86cc08b4a3df712a340553bf350e66b008e86bb))
+- **react/navigation:** overflow menu implement ([c0fe7e3](https://github.com/Mezzanine-UI/mezzanine/commit/c0fe7e3229a8f14348c51c29e4bf321e9da3c729))
+- **react/page-header:** remove title area ([e290287](https://github.com/Mezzanine-UI/mezzanine/commit/e29028769fba74de69f0a022b8e88e73d0980ad4))
+- **react/result-state:** result state implement children render button clone ([d1b866e](https://github.com/Mezzanine-UI/mezzanine/commit/d1b866e3d298d0db6075a74ec7a47d863018cbd9))
+- **react/scrollbar:** implement react scroll bar ([aae57c9](https://github.com/Mezzanine-UI/mezzanine/commit/aae57c93806f163f0f01e1b595aadd06c1637689))
+- **react/table:** add dropdown in table actions cell ([b1a3854](https://github.com/Mezzanine-UI/mezzanine/commit/b1a3854b2584f6219b46a23b918eda47d71134a2))
+- **react/table:** implement pin to top feature ([41ab020](https://github.com/Mezzanine-UI/mezzanine/commit/41ab0201c5068f683834caa48aeb7dddd4e33a87))
+- **react/table:** implement toggle & collection feature ([431bec4](https://github.com/Mezzanine-UI/mezzanine/commit/431bec4128a7ce3a4ebfb1206f06277740eb039f))
+- **react/table:** integrate Scrollbar with table ([5a19fa1](https://github.com/Mezzanine-UI/mezzanine/commit/5a19fa11c141892c6848c9d1874f5bae00c77d04))
+- **react/table:** table create/delete transition with expansion ([38b5e7d](https://github.com/Mezzanine-UI/mezzanine/commit/38b5e7d468811a64a1ecd88aa505753cd3e2303a))
+- **react/table:** update table story ([8c7958d](https://github.com/Mezzanine-UI/mezzanine/commit/8c7958d631be24068600a005bb75cab2cf39a722))
+- **react/Transition:** transition Slide add props.from ([654c1c9](https://github.com/Mezzanine-UI/mezzanine/commit/654c1c94d6bbbac8b6ca4a5a282ec3374c67ff99))
+
 # [1.0.0-beta.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.10...@mezzanine-ui/react@1.0.0-beta.3) (2026-01-20)
 
 ### Bug Fixes

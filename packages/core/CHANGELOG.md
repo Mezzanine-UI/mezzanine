@@ -3,6 +3,43 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.3...@mezzanine-ui/core@1.0.0-beta.4) (2026-01-27)
+
+### Bug Fixes
+
+- **core/checkbox:** use separator color for divider background ([b5524ff](https://github.com/Mezzanine-UI/mezzanine/commit/b5524ffac39ec5b05e3abaf124a555ee6d32ff10))
+- **core/content-header:** pr issue ([f81fec1](https://github.com/Mezzanine-UI/mezzanine/commit/f81fec1ee57c5ea09396fc91e110733b13e4da42))
+- **core/dropdown:** add popperWithPortal class for portal pointer-events ([b6b3276](https://github.com/Mezzanine-UI/mezzanine/commit/b6b32764d440ecddbeebb8c17bd91ee9449997f0))
+- **core/filterArea:** add Sass module entrypoint ([fff2d4e](https://github.com/Mezzanine-UI/mezzanine/commit/fff2d4eb083cf8fa99a98a35dd746af2e0bf2d52))
+- **core/filterArea:** fix the main & sub size padding setting ([2c4ee5e](https://github.com/Mezzanine-UI/mezzanine/commit/2c4ee5e4c640eb51cc6404c043db2e4fa328d783))
+- **core/filterArea:** remove isPanel styles on the filter area comopnent ([22aac7b](https://github.com/Mezzanine-UI/mezzanine/commit/22aac7b89b79b38ea6a157b1fefc7dff5a561167))
+- **core/modal:** fix issues found in code review ([eb5442c](https://github.com/Mezzanine-UI/mezzanine/commit/eb5442c7a03925e45fda4b976d16af47b0fbbb7c))
+- **core/navigation:** cascader active bg ([36ddfd8](https://github.com/Mezzanine-UI/mezzanine/commit/36ddfd816eac605e3a4c5a9dc623d7ced0fe98a1))
+- **core/selection:** update styles and add group class ([277d653](https://github.com/Mezzanine-UI/mezzanine/commit/277d653ea2d6f8816eab08c9eb137d0b038f3c04))
+- **core/text-field:** remove default padding from input/textarea to fix sub size height ([d0d45d3](https://github.com/Mezzanine-UI/mezzanine/commit/d0d45d3e3602c10fffce6d220a8643e110da369a))
+- **core/textField:** Add padding reset for Select and AutoComplete input elements ([5991167](https://github.com/Mezzanine-UI/mezzanine/commit/5991167a22817b3690332a7c3dcb513f511e2cac))
+
+### Features
+
+- **core/breadcrumb:** add overflow menu with dropdown ([0542b03](https://github.com/Mezzanine-UI/mezzanine/commit/0542b03d1ce51b9a009d2c88b3f955110fd56713))
+- **core/breadcrumb:** add submenu ([f6a7589](https://github.com/Mezzanine-UI/mezzanine/commit/f6a7589595b1640fa2d917c3071a569741d5a932))
+- **core/content-header:** content-header implement ([c6bb80d](https://github.com/Mezzanine-UI/mezzanine/commit/c6bb80df393a7bdc01e6a01d4916f255a680f304))
+- **core/empty:** update description color CU-86evyvxn8 ([ce13574](https://github.com/Mezzanine-UI/mezzanine/commit/ce135742a7f5187bc17ea656926799167353affc))
+- **core/empty:** update title color CU-86evyvxn8 ([3dfb306](https://github.com/Mezzanine-UI/mezzanine/commit/3dfb306f0ac19bb5f47bcdf4b0ba7938d65f067b))
+- **core/filterArea:** add filter area styles and configuration ([0ab38c4](https://github.com/Mezzanine-UI/mezzanine/commit/0ab38c437d5c0e5612ed079674bc1327f22eac48))
+- **core/navigation:** add title logo ([4e65bd6](https://github.com/Mezzanine-UI/mezzanine/commit/4e65bd6503fcc730d63757f6714153c7d0d1720a))
+- **core/navigation:** filter ([e8f77f1](https://github.com/Mezzanine-UI/mezzanine/commit/e8f77f101191a286a7c2481756507bcabe67d242))
+- **core/navigation:** overflow menu implement ([05cf043](https://github.com/Mezzanine-UI/mezzanine/commit/05cf043b78c1ae551133f44d232422a63e1255cf))
+- **core/page-header:** remove title area ([178a8a3](https://github.com/Mezzanine-UI/mezzanine/commit/178a8a389c69082b9494014e1cea1801aeebc9bc))
+- **core/scrollbar:** implement customize scroll bar styles ([982def3](https://github.com/Mezzanine-UI/mezzanine/commit/982def36e9d9f0438e3225f65682d0420ddc3fcf))
+- **core/table:** add actions cell style ([2a61abb](https://github.com/Mezzanine-UI/mezzanine/commit/2a61abbcadf8f50fd807a82af7389bc0e6f620cf))
+- **core/table:** implement pinnable styles ([5b94a0c](https://github.com/Mezzanine-UI/mezzanine/commit/5b94a0c12fb7786a0a665962524aba940095693e))
+- **core/table:** implement toggle and collection styles and typings ([a66224c](https://github.com/Mezzanine-UI/mezzanine/commit/a66224c4a491959b234865cf591a7d388ef4a75f))
+- **core/table:** integrate scroll bar with table ([88f80e3](https://github.com/Mezzanine-UI/mezzanine/commit/88f80e378788060c152f6167df4481ac6cb7b8b5))
+- **core/table:** integrate system scroll bar with table scroll container ([dad5e45](https://github.com/Mezzanine-UI/mezzanine/commit/dad5e4572afeb712c308f6b532eea761482ed0ed))
+- **core/table:** table create/delete transition with expansion ([67fa66b](https://github.com/Mezzanine-UI/mezzanine/commit/67fa66b29fc2c54c1047308a9131d5b89f8c1368))
+- **modal:** MediaPreviewModal ([51dfef2](https://github.com/Mezzanine-UI/mezzanine/commit/51dfef24c2f62024bb534c13c3438d802e9b67dc))
+
 # [1.0.0-beta.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.10...@mezzanine-ui/core@1.0.0-beta.3) (2026-01-20)
 
 ### Bug Fixes
