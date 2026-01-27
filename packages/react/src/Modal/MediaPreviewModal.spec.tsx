@@ -78,6 +78,68 @@ describe('<MediaPreviewModal />', () => {
     expect(customMediaElement?.textContent).toBe('Custom Media');
   });
 
+  it('should render Next.js Image-like component as media item', () => {
+    // Mock Next.js Image component behavior
+    const MockNextImage = ({
+      src,
+      alt,
+      width,
+      height,
+      priority,
+    }: {
+      alt: string;
+      height: number;
+      priority?: boolean;
+      src: string;
+      width: number;
+    }) => (
+      <img
+        alt={alt}
+        data-priority={priority}
+        data-testid="next-image"
+        height={height}
+        src={src}
+        width={width}
+      />
+    );
+
+    const nextImageItems = [
+      <MockNextImage
+        key="1"
+        alt="Next Image 1"
+        height={1080}
+        priority
+        src="https://example.com/next-image1.jpg"
+        width={1920}
+      />,
+      <MockNextImage
+        key="2"
+        alt="Next Image 2"
+        height={1080}
+        src="https://example.com/next-image2.jpg"
+        width={1920}
+      />,
+    ];
+
+    render(
+      <MediaPreviewModal currentIndex={0} mediaItems={nextImageItems} open />,
+    );
+
+    const modalElement = getModalElement()!;
+    const imageElement = modalElement.querySelector(
+      '[data-testid="next-image"]',
+    ) as HTMLImageElement;
+
+    expect(imageElement).toBeInstanceOf(HTMLImageElement);
+    expect(imageElement?.getAttribute('src')).toBe(
+      'https://example.com/next-image1.jpg',
+    );
+    expect(imageElement?.getAttribute('alt')).toBe('Next Image 1');
+    expect(imageElement?.getAttribute('width')).toBe('1920');
+    expect(imageElement?.getAttribute('height')).toBe('1080');
+    expect(imageElement?.getAttribute('data-priority')).toBe('true');
+  });
+
   it('should bind media-preview class to modal element', () => {
     render(
       <MediaPreviewModal currentIndex={0} mediaItems={mockMediaItems} open />,
@@ -252,6 +314,91 @@ describe('<MediaPreviewModal />', () => {
       const icon = nextButton?.querySelector('svg');
 
       expect(icon).toBeInstanceOf(SVGElement);
+    });
+
+    it('should navigate between Next.js Image components', () => {
+      // Mock Next.js Image component
+      const MockNextImage = ({
+        src,
+        alt,
+        width,
+        height,
+      }: {
+        alt: string;
+        height: number;
+        src: string;
+        width: number;
+      }) => (
+        <img
+          alt={alt}
+          data-next-image="true"
+          data-src={src}
+          height={height}
+          src={src}
+          width={width}
+        />
+      );
+
+      const nextImageItems = [
+        <MockNextImage
+          key="1"
+          alt="Image 1"
+          height={1080}
+          src="https://example.com/img1.jpg"
+          width={1920}
+        />,
+        <MockNextImage
+          key="2"
+          alt="Image 2"
+          height={1080}
+          src="https://example.com/img2.jpg"
+          width={1920}
+        />,
+        <MockNextImage
+          key="3"
+          alt="Image 3"
+          height={1080}
+          src="https://example.com/img3.jpg"
+          width={1920}
+        />,
+      ];
+
+      const onNext = jest.fn();
+      const onPrev = jest.fn();
+
+      render(
+        <MediaPreviewModal
+          currentIndex={1}
+          mediaItems={nextImageItems}
+          onNext={onNext}
+          onPrev={onPrev}
+          open
+        />,
+      );
+
+      const overlayElement = getOverlayElement()!;
+      const nextButton = overlayElement.querySelector(
+        `button[aria-label="Next media"]`,
+      ) as HTMLButtonElement;
+      const prevButton = overlayElement.querySelector(
+        `button[aria-label="Previous media"]`,
+      ) as HTMLButtonElement;
+
+      // Verify current image is displayed
+      const currentImage = overlayElement.querySelector(
+        'img[data-next-image="true"]',
+      ) as HTMLImageElement;
+
+      expect(currentImage?.getAttribute('data-src')).toBe(
+        'https://example.com/img2.jpg',
+      );
+
+      // Test navigation
+      fireEvent.click(nextButton);
+      expect(onNext).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(prevButton);
+      expect(onPrev).toHaveBeenCalledTimes(1);
     });
   });
 
