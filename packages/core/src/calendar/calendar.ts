@@ -53,9 +53,11 @@ export const calendarClasses = {
   /** Cell classes */
   cell: calendarCellPrefix,
   cellInner: `${calendarCellPrefix}__inner`,
+  cellWeekend: `${calendarCellPrefix}--weekend`,
   cellToday: `${calendarCellPrefix}--today`,
   cellActive: `${calendarCellPrefix}--active`,
   cellDisabled: `${calendarCellPrefix}--disabled`,
+  cellWithAnnotation: `${calendarCellPrefix}--with-annotation`,
 
   /** Twelve grid classes */
   twelveGrid: calendarTwelveGridPrefix,

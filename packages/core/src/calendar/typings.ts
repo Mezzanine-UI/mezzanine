@@ -40,6 +40,12 @@ export type CalendarMethods<TDateType = DateType> = {
    * Check if locale uses ISO week (Monday as first day)
    */
   isISOWeekLocale: (locale: string) => boolean;
+  /**
+   * Get a boolean array indicating which positions in the week are weekends.
+   * For Monday-first locales: [false, false, false, false, false, true, true] (Sat, Sun at positions 5, 6)
+   * For Sunday-first locales: [true, false, false, false, false, false, true] (Sun at 0, Sat at 6)
+   */
+  getWeekends: (locale: string) => boolean[];
 
   /** Manipulate */
   addHour: (value: TDateType, diff: number) => TDateType;
