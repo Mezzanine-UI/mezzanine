@@ -20,6 +20,14 @@ export interface CalendarCellProps
    * The role attribute for accessibility
    */
   role?: string;
+  /**
+   * Apply weekend styles if true.
+   */
+  isWeekend?: boolean;
+  /**
+   * Apply annotation styles if true.
+   */
+  withAnnotation?: boolean;
 }
 
 /**
@@ -34,6 +42,8 @@ function CalendarCell(props: CalendarCellProps) {
     disabled,
     today,
     role,
+    isWeekend,
+    withAnnotation,
     ...restCalendarCellProps
   } = props;
 
@@ -46,6 +56,8 @@ function CalendarCell(props: CalendarCellProps) {
           [classes.cellToday]: today,
           [classes.cellActive]: active,
           [classes.cellDisabled]: disabled,
+          [classes.cellWithAnnotation]: withAnnotation,
+          [classes.cellWeekend]: isWeekend,
         },
         className,
       )}

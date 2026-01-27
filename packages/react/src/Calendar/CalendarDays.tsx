@@ -174,6 +174,7 @@ function CalendarDays(props: CalendarDaysProps) {
                   today={isSameDate(date, getNow())}
                   active={active}
                   disabled={isPrevMonth || isNextMonth}
+                  withAnnotation={Boolean(renderAnnotations)}
                 >
                   <button
                     type="button"
