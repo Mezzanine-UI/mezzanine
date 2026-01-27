@@ -151,7 +151,6 @@ function AddMethodExample() {
         title: '操作成功',
         description: '使用 NotificationCenter.add 方法添加的通知',
         timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        prependTips: '今天',
       },
     ]);
   };
@@ -177,7 +176,6 @@ function AddMethodExample() {
         title: '操作失敗',
         description: '這是一個錯誤通知，使用 add 方法添加',
         timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        prependTips: '今天',
       },
     ]);
   };
@@ -204,7 +202,6 @@ function AddMethodExample() {
         title: '警告',
         description: '這是一個警告通知，可以通過 reference 來控制',
         timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        prependTips: '今天',
       },
     ]);
   };
@@ -228,7 +225,6 @@ function AddMethodExample() {
         title: '資訊通知',
         description: '這是一個資訊通知，展示 add 方法的基本用法',
         timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
-        prependTips: '今天',
       },
     ]);
   };
@@ -253,7 +249,6 @@ function AddMethodExample() {
             title: `${severity} 通知`,
             description: `這是第 ${index + 1} 個通知`,
             timeStamp: new Date().toISOString().replace('T', ' ').slice(0, 19),
-            prependTips: '今天',
           },
         ]);
       }, index * 500);
@@ -349,7 +344,6 @@ function DrawerWithChildrenExample() {
           title="系統更新通知"
           description="系統已完成更新，您現在可以使用最新版本功能。"
           timeStamp="2025-12-15 10:00:00"
-          prependTips="今天"
           reference="1"
         />
         <NotificationCenter
@@ -358,7 +352,6 @@ function DrawerWithChildrenExample() {
           title="帳號安全提醒"
           description="您的登入地點異常，請確認是否為本人操作。"
           timeStamp="2025-12-14 10:00:00"
-          prependTips="昨天"
           reference="2"
         />
         <NotificationCenter
@@ -409,7 +402,6 @@ function DrawerWithNotificationListExample() {
         title: '系統更新通知',
         description: '系統已完成更新，您現在可以使用最新版本功能。',
         timeStamp: '2025-12-15 10:00:00',
-        prependTips: '今天',
       },
       {
         key: '2',
@@ -418,7 +410,6 @@ function DrawerWithNotificationListExample() {
         title: '帳號安全提醒',
         description: '您的登入地點異常，請確認是否為本人操作。',
         timeStamp: '2025-12-14 10:00:00',
-        prependTips: '昨天',
       },
       {
         key: '3',
@@ -592,7 +583,6 @@ function DrawerTimeStampExample() {
       title: '今天 - 30分鐘前',
       description: '這是30分鐘前的通知，應該顯示「30 分鐘前」',
       timeStamp: today30minAgo.toISOString().replace('T', ' ').slice(0, 19),
-      prependTips: '今天',
     });
 
     const today2hoursAgo = new Date(now);
@@ -616,7 +606,6 @@ function DrawerTimeStampExample() {
       title: '昨天',
       description: '這是昨天的通知，應該顯示「1 天前」',
       timeStamp: yesterday.toISOString().replace('T', ' ').slice(0, 19),
-      prependTips: '昨天',
     });
 
     const twoDaysAgo = new Date(now);
@@ -629,7 +618,6 @@ function DrawerTimeStampExample() {
       title: '過去7天 - 2天前',
       description: '這是2天前的通知，應該顯示「2 天前」',
       timeStamp: twoDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
-      prependTips: '過去 7 天',
     });
 
     const fourDaysAgo = new Date(now);
@@ -666,7 +654,6 @@ function DrawerTimeStampExample() {
       title: '超過7天 - 有時間戳',
       description: '這是8天前的通知（有時間戳），應該顯示「2025-XX-XX 20:08」格式',
       timeStamp: eightDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
-      prependTips: '更早',
     });
 
     const tenDaysAgo = new Date(now);

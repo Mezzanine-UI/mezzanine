@@ -66,6 +66,7 @@ export const Basic: StoryObj<typeof AutoComplete> = {
         options={originOptions}
         placeholder="Placeholder"
         required
+        size="sub"
       />
       <AutoComplete
         error
@@ -177,6 +178,69 @@ const SingleModeSyncSearchComponent = () => {
 
 export const SingleModeSyncSearch: StoryObj<typeof AutoComplete> = {
   render: () => <SingleModeSyncSearchComponent />,
+};
+
+const KeepSearchTextOnBlurComponent = () => {
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
+
+  const handleSearch = useCallback((search: string) => {
+    if (!search) {
+      setOptions(originOptions);
+      return;
+    }
+
+    const filtered = originOptions.filter((opt) =>
+      opt.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setOptions(filtered);
+  }, []);
+
+  const handleSearchTextChange = useCallback((_search: string) => {
+    // This is the extension point for any custom string handling with searchText,
+    // such as transformation, validation, API requests, logging, debouncing,
+    // multi-field search, or advanced processing scenarios.
+    // Use onSearchTextChange here for special requirements on search input.
+  }, []);
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 300px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <AutoComplete
+        disabledOptionsFilter
+        emptyText="沒有符合的選項"
+        fullWidth
+        keepSearchTextOnBlur
+        menuMaxHeight={200}
+        mode="single"
+        onSearch={handleSearch}
+        options={options}
+        placeholder="輸入後失焦仍保留文字"
+        onSearchTextChange={handleSearchTextChange}
+      />
+      <AutoComplete
+        disabledOptionsFilter
+        emptyText="沒有符合的選項"
+        fullWidth
+        menuMaxHeight={200}
+        mode="single"
+        onSearch={handleSearch}
+        options={options}
+        placeholder="既有行為（失焦清空）"
+        size="sub"
+      />
+    </div>
+  );
+};
+
+export const KeepSearchTextOnBlur: StoryObj<typeof AutoComplete> = {
+  render: () => <KeepSearchTextOnBlurComponent />,
 };
 
 const MultipleComponent = () => {
@@ -483,4 +547,82 @@ const InputPositionInsideComponent = () => {
 
 export const InputPositionInside: StoryObj<typeof AutoComplete> = {
   render: () => <InputPositionInsideComponent />,
+};
+
+const LoadMoreOnReachBottomComponent = () => {
+  const [options, setOptions] = useState<SelectValue[]>(() =>
+    originOptions.slice(0, 5)
+  );
+  const [value, setValue] = useState<SelectValue | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
+
+  const loadMore = useCallback(() => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+
+    // 模擬異步加載數據
+    setTimeout(() => {
+      const currentCount = options.length;
+      const nextBatch = originOptions.slice(currentCount, currentCount + 5);
+
+      if (nextBatch.length === 0) {
+        setHasMore(false);
+      } else {
+        setOptions((prev) => [...prev, ...nextBatch]);
+      }
+
+      setLoading(false);
+      setHasReachedBottom(false);
+    }, 1000);
+  }, [loading, hasMore, options.length]);
+
+  const handleReachBottom = useCallback(() => {
+    if (!hasReachedBottom && !loading && hasMore) {
+      setHasReachedBottom(true);
+      loadMore();
+    }
+  }, [hasReachedBottom, loading, hasMore, loadMore]);
+
+  const handleLeaveBottom = useCallback(() => {
+    setHasReachedBottom(false);
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
+      <Tag label={`已載入 ${options.length} / ${originOptions.length} 個選項`} />
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <AutoComplete
+          disabledOptionsFilter
+          emptyText="沒有符合的選項"
+          fullWidth
+          loading={loading}
+          loadingText="載入中..."
+          menuMaxHeight={120}
+          mode="single"
+          onReachBottom={handleReachBottom}
+          onLeaveBottom={handleLeaveBottom}
+          onChange={setValue}
+          options={options}
+          placeholder="請選擇或輸入..."
+          value={value}
+        />
+      </div>
+      <div style={{ fontSize: '12px', color: '#666' }}>
+        {loading && <div>正在載入更多選項...</div>}
+        {!hasMore && <div>已載入所有選項</div>}
+      </div>
+      {value && (
+        <div style={{ fontSize: '12px', color: '#666' }}>
+          已選擇: {value.name}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const LoadMoreOnReachBottom: StoryObj<typeof AutoComplete> = {
+  render: () => <LoadMoreOnReachBottomComponent />,
 };

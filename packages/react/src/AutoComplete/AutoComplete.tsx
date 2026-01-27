@@ -102,6 +102,11 @@ export interface AutoCompleteBaseProps
    */
   id?: string;
   /**
+   * Whether to keep search text visible after blur when no value is selected.
+   * @default false
+   */
+  keepSearchTextOnBlur?: boolean;
+  /**
    * The position of the input.
    * @default 'outside'
    */
@@ -155,6 +160,10 @@ export interface AutoCompleteBaseProps
    */
   onSearch?(input: string): void | Promise<void>;
   /**
+   * Callback fired on every input change (no debounce).
+   */
+  onSearchTextChange?(text: string): void;
+  /**
    * Callback fired when the dropdown visibility changes.
    */
   onVisibilityChange?: (open: boolean) => void;
@@ -203,6 +212,20 @@ export interface AutoCompleteBaseProps
    * @default '建立 "{text}"'
    */
   createActionTextTemplate?: string;
+  /**
+   * The z-index of the dropdown.
+   */
+  dropdownZIndex?: number | string;
+  /**
+   * Callback fired when the dropdown list reaches the bottom.
+   * Only fires when `menuMaxHeight` is set and the list is scrollable.
+   */
+  onReachBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list leaves the bottom.
+   * Only fires when `menuMaxHeight` is set and the list is scrollable.
+   */
+  onLeaveBottom?: () => void;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -317,6 +340,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       error = severity === 'error' || false,
       fullWidth = fullWidthFromFormControl || false,
       id,
+      keepSearchTextOnBlur = false,
       inputPosition = 'outside',
       inputProps,
       inputRef,
@@ -329,6 +353,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onChange: onChangeProp,
       onInsert,
       onSearch,
+      onSearchTextChange,
       onVisibilityChange,
       open: openProp,
       options: optionsProp,
@@ -342,6 +367,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       value: valueProp,
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
+      dropdownZIndex,
+      onReachBottom,
+      onLeaveBottom,
     } = props;
 
     const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -494,14 +522,17 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
     const renderValue = useMemo(() => {
-      if (isSingle && focused) {
+      if (
+        isSingle
+        && (focused || (keepSearchTextOnBlur && !value && searchText))
+      ) {
         return () => searchText;
       }
       if (isMultiple) {
         return () => '';
       }
       return undefined;
-    }, [focused, isMultiple, isSingle, searchText]);
+    }, [focused, isMultiple, isSingle, keepSearchTextOnBlur, searchText, value]);
 
     function getPlaceholder() {
       if (isSingle && focused && isSingleValue(value)) {
@@ -517,6 +548,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       /** should sync both search input and value */
       setSearchText(nextSearch);
       setInsertText(nextSearch);
+      onSearchTextChange?.(nextSearch);
 
       if (autoSelectMatchingOption(nextSearch)) return;
 
@@ -594,9 +626,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         // Multiple mode: show checkbox at prepend
         // Single mode: show checked icon at append when selected
         if (mode === 'multiple') {
-          result.checkSite = 'prepend';
+          result.checkSite = 'prefix';
         } else {
-          result.checkSite = 'append';
+          result.checkSite = 'suffix';
         }
 
         // Set shortcutText to "New" for created items (persists even after selection)
@@ -636,15 +668,21 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       (option: DropdownOption) => {
         const selectedValue = options.find((opt) => opt.id === option.id);
         if (selectedValue) {
-          wrappedOnChange(selectedValue);
           // Close dropdown after selection in single mode
           if (mode === 'single') {
+            // Update searchText first to prevent showing old value
+            setSearchText(selectedValue.name);
+            setInsertText(selectedValue.name);
+            // Then update value and focus state
+            wrappedOnChange(selectedValue);
             toggleOpen(false);
             onFocus(false);
+          } else {
+            wrappedOnChange(selectedValue);
           }
         }
       },
-      [mode, onFocus, options, toggleOpen, wrappedOnChange],
+      [mode, onFocus, options, setSearchText, setInsertText, toggleOpen, wrappedOnChange],
     );
 
     // Active index for dropdown keyboard navigation
@@ -739,10 +777,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         if (isSingle) {
           if (!value) {
+            // Update searchText first to prevent showing old value
+            setSearchText(matchingOption.name);
+            setInsertText(matchingOption.name);
+            // Then update value and focus state
             wrappedOnChange(matchingOption);
             toggleOpen(false);
             onFocus(false);
-            resetCreationInputs();
             return true;
           }
           return false;
@@ -765,6 +806,8 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         onFocus,
         options,
         resetCreationInputs,
+        setSearchText,
+        setInsertText,
         toggleOpen,
         value,
         wrappedOnChange,
@@ -835,12 +878,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             status={dropdownStatus}
             type="default"
             value={dropdownValue}
+            zIndex={dropdownZIndex}
+            onReachBottom={onReachBottom}
+            onLeaveBottom={onLeaveBottom}
           >
             <SelectTrigger
               ref={composedRef}
               active={open}
               className={className}
               clearable
+              isForceClearable
               disabled={isInputDisabled}
               fullWidth={fullWidth}
               inputRef={inputRef}

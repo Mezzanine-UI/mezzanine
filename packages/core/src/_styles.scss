@@ -22,6 +22,7 @@
   @include _load-styles($options, button);
 
   // Internal
+  @include _load-styles($options, scrollbar);
   @include _load-styles($options, clear-actions);
   @include _load-styles($options, overflow-tooltip);
 
@@ -51,7 +52,7 @@
   @include _load-styles($options, app-bar);
   @include _load-styles($options, page-footer);
   @include _load-styles($options, page-header);
-  @include _load-styles($options, page-toolbar);
+  @include _load-styles($options, content-header);
   @include _load-styles($options, stepper);
 
   // Data Display
@@ -86,6 +87,7 @@
 
   // Data Entry Form
   @include _load-styles($options, form, form-field);
+  @include _load-styles($options, filter-area);
 
   // Feedback
   @include _load-styles($options, alert);

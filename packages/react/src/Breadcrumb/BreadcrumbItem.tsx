@@ -1,103 +1,59 @@
-import type { MouseEvent, TouchEvent } from 'react';
-import { forwardRef, useState } from 'react';
-import { ChevronDownIcon, DotHorizontalIcon } from '@mezzanine-ui/icons';
+import { forwardRef } from 'react';
 import { breadcrumbItemClasses as classes } from '@mezzanine-ui/core/breadcrumb';
 import { cx } from '../utils/cx';
-import Icon from '../Icon';
-import Menu, { MenuItem } from '../Menu';
-import { Rotate } from '../Transition';
 import Typography from '../Typography';
+import BreadcrumbDropdown from './BreadcrumbDropdown';
 import type { BreadcrumbItemProps } from './typings';
 
-const BreadcrumbItem = forwardRef<HTMLElement, BreadcrumbItemProps>(
+const BreadcrumbItem = forwardRef<HTMLSpanElement, BreadcrumbItemProps>(
   function BreadcrumbItem(props, ref) {
+    if ('options' in props) return <BreadcrumbDropdown {...props} />;
+
     const {
       className,
       component,
       current,
-      expand: expandProp,
-      label,
+      href,
+      name,
       onClick,
-      onTouchEnd,
-      options,
+      rel,
+      target,
       ...rest
     } = props;
 
-    const [_expand, setExpand] = useState(false);
-    const expand = expandProp ?? _expand;
-
-    const Component = (() => {
+    const TriggerComponent = (() => {
       if (component) return component;
 
-      if ('onClick' in props || 'options' in props) {
-        return 'button';
-      }
-
-      if (!current && 'href' in props && typeof props.href === 'string') {
+      if (
+        (!current && 'href' in props && typeof props.href === 'string') ||
+        'onClick' in props
+      ) {
         return 'a';
       }
 
-      return 'div';
+      return 'span';
     })();
 
-    const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-      setExpand(!expand);
-
-      onClick?.(e);
-    };
-
-    const handleTouchEnd = (e: TouchEvent<HTMLButtonElement>) => {
-      setExpand(!expand);
-
-      onTouchEnd?.(e);
+    const handleClick = () => {
+      onClick?.();
     };
 
     return (
-      <Component
-        {...rest}
-        aria-expanded={options ? expand : undefined}
-        aria-haspopup={options ? 'true' : undefined}
-        className={cx(
-          classes.host,
-          expand && classes.expanded,
-          current && classes.current,
-          className,
-        )}
-        onClick={Component === 'button' ? handleClick : undefined}
-        onTouchEnd={Component === 'button' ? handleTouchEnd : undefined}
-        ref={ref}
-      >
-        {/* text */}
-        {label && (
-          <Typography variant={current ? 'caption-highlight' : 'caption'}>
-            {label}
-          </Typography>
-        )}
-
-        {'options' in props &&
-          (label ? (
-            /* normal dropdown icon item */
-            <Rotate in={expand}>
-              <Icon className={classes.icon} icon={ChevronDownIcon} size={14} />
-            </Rotate>
-          ) : (
-            /* overflow dropdown icon item */
-            <Icon className={classes.icon} icon={DotHorizontalIcon} size={14} />
-          ))}
-
-        {/* TODO: waiting Dropdown component */}
-        {options && expand && (
-          <Menu className={classes.menu}>
-            {options
-              .filter((v) => v.label)
-              .map((option) => (
-                <MenuItem key={option.id || option.label}>
-                  {option.label}
-                </MenuItem>
-              ))}
-          </Menu>
-        )}
-      </Component>
+      <span {...rest} className={cx(classes.host, className)} ref={ref}>
+        <TriggerComponent
+          className={cx(classes.trigger, current && classes.current)}
+          href={TriggerComponent === 'a' ? href : undefined}
+          onClick={TriggerComponent === 'a' ? handleClick : undefined}
+          rel={TriggerComponent === 'a' ? rel : undefined}
+          target={TriggerComponent === 'a' ? target : undefined}
+        >
+          {name && (
+            <Typography variant={current ? 'caption-highlight' : 'caption'}>
+              {name}
+            </Typography>
+          )}
+        </TriggerComponent>
+      </span>
     );
   },
 );

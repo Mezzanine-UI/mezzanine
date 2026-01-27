@@ -3,7 +3,13 @@ import type {
   ResultStateType,
 } from '@mezzanine-ui/core/result-state';
 import { resultStateClasses as classes } from '@mezzanine-ui/core/result-state';
-import { forwardRef, useMemo } from 'react';
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  ReactElement,
+  useMemo,
+} from 'react';
 import {
   CheckedFilledIcon,
   DangerousFilledIcon,
@@ -14,9 +20,10 @@ import {
 } from '@mezzanine-ui/icons';
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import Button, { ButtonGroup } from '../Button';
-import type { ButtonProps } from '../Button';
+import type { ButtonGroupChild, ButtonProps } from '../Button';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
+import { flattenChildren } from '../utils/flatten-children';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 /**
@@ -49,6 +56,17 @@ export interface ResultStateProps
    */
   actions?: ResultStateActions;
   /**
+   * Child button elements for actions. <br />
+   * Can be a single Button element or an array of one or two Button elements. <br />
+   * When using children, the first Button is treated as secondary and the second as primary. <br />
+   * If only one Button is provided, it is treated as secondary. <br />
+   * If actions provided, children will be ignored. <br />
+   */
+  children?:
+    | ReactElement<ButtonProps>
+    | [ReactElement<ButtonProps>]
+    | [ReactElement<ButtonProps>, ReactElement<ButtonProps>];
+  /**
    * Optional description text displayed below the title.
    * Provides additional context or details about the result state.
    */
@@ -80,11 +98,26 @@ const iconMap: Record<ResultStateType, IconDefinition> = {
   failure: DangerousFilledIcon,
 };
 
+const renderButtonOrElement = (
+  button: ButtonProps | ButtonGroupChild | undefined,
+  size: ButtonProps['size'],
+  variant: 'base-primary' | 'base-secondary',
+) => {
+  if (!button) return null;
+
+  if (isValidElement(button)) {
+    return cloneElement(button, { size, variant });
+  }
+
+  return <Button {...button} size={size} variant={variant} />;
+};
+
 const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
   function ResultState(props, ref) {
     const {
       actions,
       className,
+      children,
       description,
       size = 'main',
       title,
@@ -93,6 +126,57 @@ const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
     } = props;
 
     const icon = useMemo(() => iconMap[type], [type]);
+
+    const flatChildren = flattenChildren(children);
+    const fragmentButtons: ButtonGroupChild =
+      actions &&
+      ('secondaryButton' in actions ? (
+        <>
+          {renderButtonOrElement(
+            actions.secondaryButton,
+            size,
+            'base-secondary',
+          )}
+          {renderButtonOrElement(actions.primaryButton, size, 'base-primary')}
+        </>
+      ) : (
+        renderButtonOrElement(actions, size, 'base-secondary')
+      ));
+
+    const renderChildren =
+      !fragmentButtons &&
+      flatChildren.length > 0 &&
+      flatChildren.map((child, index) => {
+        if (!isValidElement(child)) {
+          return null;
+        } else if (child.type === Button) {
+          switch (index) {
+            case 0:
+              return renderButtonOrElement(
+                child as ReactElement<ButtonProps>,
+                size,
+                'base-secondary',
+              );
+            case 1:
+              return renderButtonOrElement(
+                child as ReactElement<ButtonProps>,
+                size,
+                'base-primary',
+              );
+            default:
+              console.warn(
+                'Only up to two Button components are allowed as children of ResultState.',
+              );
+              return null;
+          }
+        }
+
+        console.warn(
+          'Only Button components are allowed as children of ResultState.',
+        );
+
+        return null;
+      });
 
     return (
       <div
@@ -109,24 +193,11 @@ const ResultState = forwardRef<HTMLDivElement, ResultStateProps>(
           <Icon className={classes.icon} icon={icon} />
           <h3 className={classes.title}>{title}</h3>
           {description && <p className={classes.description}>{description}</p>}
-          {(actions?.secondaryButton || actions?.primaryButton) && (
+          {actions || children ? (
             <ButtonGroup className={classes.actions}>
-              {actions?.secondaryButton && (
-                <Button
-                  size={size}
-                  variant="base-secondary"
-                  {...actions.secondaryButton}
-                />
-              )}
-              {actions?.primaryButton && (
-                <Button
-                  size={size}
-                  variant="base-primary"
-                  {...actions.primaryButton}
-                />
-              )}
+              {fragmentButtons || renderChildren}
             </ButtonGroup>
-          )}
+          ) : null}
         </div>
       </div>
     );

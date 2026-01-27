@@ -94,6 +94,16 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    * The icon of the dropdown empty status.
    */
   emptyIcon?: IconDefinition;
+  /**
+   * Callback fired when the dropdown list reaches the bottom.
+   * Only fires when `maxHeight` is set and the list is scrollable.
+   */
+  onReachBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list leaves the bottom.
+   * Only fires when `maxHeight` is set and the list is scrollable.
+   */
+  onLeaveBottom?: () => void;
 }
 
 /**
@@ -172,10 +182,13 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     loadingText,
     emptyText,
     emptyIcon,
+    onReachBottom,
+    onLeaveBottom,
   } = props;
 
   const optionsContent = truncateArrayDepth(options, 3);
   const listRef = useRef<HTMLUListElement | null>(null);
+  const listWrapperRef = useRef<HTMLDivElement | null>(null);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const hasActions = Boolean(actionConfig?.showActions);
   const hasHeader = Boolean(headerContent);
@@ -447,11 +460,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
 
-      let checkSite: DropdownCheckPosition = 'none';
-
-      if (option?.checkSite) {
-        checkSite = option.checkSite;
-      }
+      const checkSite: DropdownCheckPosition = option?.checkSite ?? 'none';
 
       return (
         <DropdownItemCard
@@ -561,6 +570,46 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     };
   }, [disabled, matchShortcut, onSelect, type, toggleExpand, visibleShortcutOptions]);
 
+  // Handle scroll to bottom detection
+  useEffect(() => {
+    const listWrapperElement = listWrapperRef.current;
+    if (!listWrapperElement || !maxHeight || (!onReachBottom && !onLeaveBottom)) {
+      return;
+    }
+
+    // Initialize wasAtBottom state by checking current position
+    const checkInitialState = () => {
+      const { scrollTop, scrollHeight, clientHeight } = listWrapperElement;
+      return scrollTop + clientHeight >= scrollHeight - 1;
+    };
+
+    let wasAtBottom = checkInitialState();
+
+    const handleScroll = () => {
+      const { scrollTop, scrollHeight, clientHeight } = listWrapperElement;
+      // Check if scrolled to bottom (with 1px threshold for rounding errors)
+      const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+      // Trigger onReachBottom when entering bottom state
+      if (isAtBottom && !wasAtBottom) {
+        onReachBottom?.();
+      }
+
+      // Trigger onLeaveBottom when leaving bottom state
+      if (!isAtBottom && wasAtBottom) {
+        onLeaveBottom?.();
+      }
+
+      wasAtBottom = isAtBottom;
+    };
+
+    listWrapperElement.addEventListener('scroll', handleScroll);
+
+    return () => {
+      listWrapperElement.removeEventListener('scroll', handleScroll);
+    };
+  }, [maxHeight, onReachBottom, onLeaveBottom]);
+
   return (
     <ul
       aria-label={listboxLabel || (optionsContent.length === 0 ? 'Dropdown options' : undefined)}
@@ -585,7 +634,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       {
         maxHeight
           ? (
-            <div className={dropdownClasses.listWrapper} style={listWrapperStyle}>
+            <div
+              ref={listWrapperRef}
+              className={dropdownClasses.listWrapper}
+              style={listWrapperStyle}
+            >
               {shouldShowStatus ? (
                 <DropdownStatus
                   status={status}

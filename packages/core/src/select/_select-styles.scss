@@ -27,6 +27,7 @@ $popper-horizontal-padding: 0 !default;
   &__input {
     appearance: none;
     min-width: 0;
+    padding: 0;
   }
 
   &--readonly {

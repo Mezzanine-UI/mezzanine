@@ -30,6 +30,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     inputProps,
     innerRef,
     inputRef,
+    isForceClearable = false,
     mode = 'single',
     onTagClose,
     overflowStrategy = 'counter',
@@ -111,9 +112,10 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
       size={size}
       suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
       clearable={
-        mode === 'multiple' &&
-        Array.isArray(props.value) &&
-        !!props.value.length
+        isForceClearable ||
+        (mode === 'multiple' &&
+          Array.isArray(props.value) &&
+          !!props.value.length)
       }
     >
       <input

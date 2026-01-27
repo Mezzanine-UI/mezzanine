@@ -27,7 +27,7 @@ import {
 } from './context';
 import { useCurrentPathname } from './useCurrentPathname';
 import { useVisibleItems } from './useVisibleItems';
-import { CollapsedMenu } from './CollapsedMenu';
+import { NavigationOverflowMenu } from './NavigationOverflowMenu';
 
 export type NavigationChild =
   | ReactElement<NavigationFooterProps>
@@ -105,8 +105,6 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     [children],
   );
 
-  const [filterText, setFilterText] = useState('');
-
   const { headerComponent, footerComponent, items, level1Items } =
     useMemo(() => {
       let headerComponent: ReactElement<NavigationHeaderProps> | null = null;
@@ -167,6 +165,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     };
   }, [level1Items, visibleCount]);
 
+  const [filterText, setFilterText] = useState('');
+
   return (
     <nav
       {...rest}
@@ -180,10 +180,11 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       <NavigationActivatedContext.Provider
         value={{
           activatedPath: activatedPath || innerActivatedPath,
-          setActivatedPath: combineSetActivatedPath,
-          currentPathname,
           collapsed,
+          currentPathname,
+          filterText,
           handleCollapseChange,
+          setActivatedPath: combineSetActivatedPath,
         }}
       >
         {headerComponent}
@@ -206,7 +207,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               {collapsed &&
                 visibleCount !== null &&
                 visibleCount < level1Items.length && (
-                  <CollapsedMenu items={collapsedMenuItems} />
+                  <NavigationOverflowMenu items={collapsedMenuItems} />
                 )}
             </ul>
           </div>

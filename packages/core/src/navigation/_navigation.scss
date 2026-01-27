@@ -1,8 +1,11 @@
 $prefix: mzn-navigation;
 
-$option-prefix: #{$prefix}-option;
 $header-prefix: #{$prefix}-header;
 $footer-prefix: #{$prefix}-footer;
 $icon-button-prefix: #{$prefix}-icon-button;
 $user-menu-prefix: #{$prefix}-user-menu;
 $option-category-prefix: #{$prefix}-option-category;
+$option-prefix: #{$prefix}-option;
+
+$overflow-menu-prefix: #{$prefix}-overflow-menu;
+$overflow-menu-option-prefix: #{$overflow-menu-prefix}-option;

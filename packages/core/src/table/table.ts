@@ -4,7 +4,6 @@ import type { Placement } from '@floating-ui/react-dom';
 import type { ButtonVariant, ButtonIconType } from '@mezzanine-ui/core/button';
 
 export const tablePrefix = 'mzn-table';
-export const tableScrollContainerPrefix = `${tablePrefix}-scroll-area`;
 export const tableLoadingPrefix = `${tablePrefix}-loading`;
 export const tableHeaderPrefix = `${tablePrefix}__header`;
 export const tableBodyPrefix = `${tablePrefix}__body`;
@@ -12,6 +11,7 @@ export const tableCellPrefix = `${tablePrefix}__cell`;
 export const tableResizeHandlePrefix = `${tablePrefix}__resize-handle`;
 
 export const tableClasses = {
+  actionsCell: `${tableCellPrefix}__actions`,
   body: tableBodyPrefix,
   bodyCell: `${tableBodyPrefix}__cell`,
   bodyRow: `${tableBodyPrefix}__row`,
@@ -40,8 +40,10 @@ export const tableClasses = {
   cellFixedStart: `${tableCellPrefix}--fixed-start`,
   cellHighlight: `${tableCellPrefix}--highlight`,
   main: `${tablePrefix}--main`,
-  dragHandle: `${tablePrefix}__drag-handle`,
-  dragHandleCell: `${tablePrefix}__drag-handle-cell`,
+  collectHandleIcon: `${tablePrefix}__collect-handle-icon`,
+  dragOrPinHandle: `${tablePrefix}__drag-or-pin-handle`,
+  dragOrPinHandleCell: `${tablePrefix}__drag-or-pin-handle-cell`,
+  pinHandleIcon: `${tablePrefix}__pin-handle-icon`,
   empty: `${tablePrefix}__empty`,
   emptyRow: `${tablePrefix}__empty-row`,
   expandCell: `${tablePrefix}__expand-cell`,
@@ -49,7 +51,10 @@ export const tableClasses = {
   expandIconExpanded: `${tablePrefix}__expand-icon--expanded`,
   expandedContent: `${tablePrefix}__expanded-content`,
   expandedRow: `${tablePrefix}__expanded-row`,
+  expandedRowAdding: `${tablePrefix}__expanded-row--adding`,
   expandedRowCell: `${tablePrefix}__expanded-row__cell`,
+  expandedRowDeleting: `${tablePrefix}__expanded-row--deleting`,
+  expandedRowFadingOut: `${tablePrefix}__expanded-row--fading-out`,
   header: tableHeaderPrefix,
   headerCell: `${tableHeaderPrefix}__cell`,
   headerCellActions: `${tableHeaderPrefix}__cell-actions`,
@@ -60,10 +65,8 @@ export const tableClasses = {
   host: `${tablePrefix}-host`,
   resizeHandle: tableResizeHandlePrefix,
   root: tablePrefix,
-  scrollContainer: tableScrollContainerPrefix,
   selectionCell: `${tablePrefix}__selection-cell`,
   selectionCheckbox: `${tablePrefix}__selection-checkbox`,
-  selectionColumn: `${tablePrefix}__selection-column`,
   sortIcon: `${tablePrefix}__sort-icon`,
   sortIconActive: `${tablePrefix}__sort-icon--active`,
   sortIcons: `${tablePrefix}__sort-icons`,
@@ -374,6 +377,57 @@ export interface TableDraggable<T extends TableDataSource = TableDataSource> {
   ) => void;
 }
 
+/** Pinnable configuration */
+export interface TablePinnable<T extends TableDataSource = TableDataSource> {
+  /** Enable pin to top functionality */
+  enabled: boolean;
+  /** Fixed position of pin handle column */
+  fixed?: boolean;
+  /**
+   * Callback when pin state changes.
+   * Users are responsible for sorting the dataSource based on pinned state.
+   */
+  onPinChange: (record: T, pinned: boolean) => void;
+  /** Array of pinned row keys */
+  pinnedRowKeys: string[];
+}
+
+/** Toggleable configuration */
+export interface TableToggleable<T extends TableDataSource = TableDataSource>
+  extends Pick<
+    TableColumnBase<T>,
+    'title' | 'titleHelp' | 'titleMenu' | 'minWidth' | 'align'
+  > {
+  /** Enable toggle functionality */
+  enabled: boolean;
+  /** Fixed position of toggle column */
+  fixed?: boolean;
+  /** Check if a specific row's toggle is disabled */
+  isRowDisabled?: (record: T) => boolean;
+  /** Callback when toggle state changes */
+  onToggleChange: (record: T, toggled: boolean) => void;
+  /** Array of toggled row keys */
+  toggledRowKeys: string[];
+}
+
+/** Collectable configuration */
+export interface TableCollectable<T extends TableDataSource = TableDataSource>
+  extends Pick<
+    TableColumnBase<T>,
+    'title' | 'titleHelp' | 'titleMenu' | 'minWidth' | 'align'
+  > {
+  /** Enable collect functionality */
+  enabled: boolean;
+  /** Array of collected row keys */
+  collectedRowKeys: string[];
+  /** Fixed position of collect column */
+  fixed?: boolean;
+  /** Check if a specific row's collect is disabled */
+  isRowDisabled?: (record: T) => boolean;
+  /** Callback when collect state changes */
+  onCollectChange: (record: T, collected: boolean) => void;
+}
+
 /** Expandable configuration */
 export interface TableExpandable<T extends TableDataSource = TableDataSource> {
   /** Render function for expanded row content */
@@ -391,9 +445,13 @@ export interface TableExpandable<T extends TableDataSource = TableDataSource> {
 }
 
 /**
- * Single action item configuration for table row actions
+ * Button action item configuration for table row actions
  */
-export interface TableActionItem<T extends TableDataSource = TableDataSource> {
+export interface TableActionItemButton<
+  T extends TableDataSource = TableDataSource,
+> {
+  /** Action type - button (default) */
+  type?: 'button';
   /** Button label text */
   name?: string;
   /** Button icon */
@@ -407,6 +465,47 @@ export interface TableActionItem<T extends TableDataSource = TableDataSource> {
   /** Button custom variant */
   variant?: ButtonVariant;
 }
+
+/**
+ * Dropdown action item configuration for table row actions
+ */
+export interface TableActionItemDropdown<
+  T extends TableDataSource = TableDataSource,
+> {
+  /** Action type - dropdown */
+  type: 'dropdown';
+  /** Button label text */
+  name?: string;
+  /** Button icon
+   * @default DotHorizontalIcon
+   */
+  icon?: IconDefinition;
+  /** Button icon type */
+  iconType?: ButtonIconType;
+  /** Dropdown options */
+  options: DropdownOption[];
+  /** Callback when a dropdown option is selected */
+  onSelect: (option: DropdownOption, record: T, index: number) => void;
+  /** Dynamic disabled state based on row data */
+  disabled?: (record: T) => boolean;
+  /** Button custom variant */
+  variant?: ButtonVariant;
+  /** Maximum height of the dropdown list */
+  maxHeight?: number | string;
+  /**
+   * Dropdown placement relative to trigger
+   * @default 'bottom-end'
+   */
+  placement?: Placement;
+}
+
+/**
+ * Single action item configuration for table row actions.
+ * Can be either a button or a dropdown.
+ */
+export type TableActionItem<T extends TableDataSource = TableDataSource> =
+  | TableActionItemButton<T>
+  | TableActionItemDropdown<T>;
 
 /**
  * Base actions column configuration
@@ -461,10 +560,14 @@ export function getCellAlignClass(align?: ColumnAlign): string {
 }
 
 // default values
-export const DRAG_HANDLE_KEY = '__mzn-drag-handle__';
+export const DRAG_OR_PIN_HANDLE_KEY = '__mzn-drag-or-pin-handle__';
 export const SELECTION_KEY = '__mzn-selection__';
 export const EXPANSION_KEY = '__mzn-expansion__';
+export const TOGGLEABLE_KEY = '__mzn-toggleable__';
+export const COLLECTABLE_KEY = '__mzn-collectable__';
 export const TABLE_ACTIONS_KEY = '__mzn-table-actions__';
-export const DRAG_HANDLE_COLUMN_WIDTH = 40;
+export const DRAG_OR_PIN_HANDLE_COLUMN_WIDTH = 40;
 export const SELECTION_COLUMN_WIDTH = 40;
 export const EXPANSION_COLUMN_WIDTH = 40;
+export const TOGGLEABLE_COLUMN_WIDTH = 80;
+export const COLLECTABLE_COLUMN_WIDTH = 80;

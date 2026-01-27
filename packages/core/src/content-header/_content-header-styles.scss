@@ -1,0 +1,56 @@
+
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing';
+@use './content-header' as *;
+
+.#{$prefix} {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: spacing.semantic-variable(gap, calm);
+
+  &__title-area {
+    align-items: flex-start;
+    display: flex;
+    flex-grow: 1;
+    gap: spacing.semantic-variable(gap, tiny);
+    max-width: spacing.semantic-variable(size, container, balanced);
+    width: 100%;
+  }
+
+  &__action-area {
+    display: flex;
+    align-items: center;
+    gap: spacing.semantic-variable(gap, calm);
+    width: fit-content;
+
+    .#{$prefix}__utilities {
+      display: flex;
+      align-items: center;
+      gap: spacing.semantic-variable(gap, base);
+      width: fit-content;
+    }
+  }
+
+
+  &--main {
+    .#{$prefix}__title-area {
+      gap: spacing.semantic-variable(gap, tiny);
+
+      .#{$prefix}__text-group {
+        padding: spacing.semantic-variable(gap, tiny) 0 spacing.semantic-variable(gap, tiny);
+      }
+    }
+
+    .#{$prefix}__action-area {
+      gap: spacing.semantic-variable(gap, calm);
+    }
+  }
+
+  &--sub {
+    .#{$prefix}__action-area {
+      gap: spacing.semantic-variable(gap, base);
+    }
+  }
+}

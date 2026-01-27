@@ -21,6 +21,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
       draggable,
       emptyProps,
       expansion,
+      isContainerReady,
       loading,
       scrollContainerRef,
       selection,
@@ -36,6 +37,7 @@ const TableBodyInner = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     const virtualization = useTableVirtualization({
       dataSource,
       enabled: virtualScrollEnabled,
+      isContainerReady,
       isRowExpanded: expansion?.isRowExpanded,
       scrollContainerRef:
         scrollContainerRef as React.RefObject<HTMLDivElement | null>,

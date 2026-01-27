@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import {
-  DRAG_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
   EXPANSION_COLUMN_WIDTH,
   type TableDataSource,
   type TableExpandable,
@@ -11,12 +11,12 @@ import type { TableExpansionState } from '../TableContext';
 
 export interface UseTableExpansionOptions<T extends TableDataSource> {
   expandable?: TableExpandable<T>;
-  hasDragHandle: boolean;
+  hasDragOrPinHandle: boolean;
 }
 
 export function useTableExpansion<T extends TableDataSource>({
   expandable,
-  hasDragHandle,
+  hasDragOrPinHandle,
 }: UseTableExpansionOptions<T>): TableExpansionState<T> | undefined {
   const [internalExpandedKeys, setInternalExpandedKeys] = useState<string[]>(
     [],
@@ -61,11 +61,11 @@ export function useTableExpansion<T extends TableDataSource>({
   const expansionLeftPadding = useMemo(() => {
     let padding = 0;
 
-    if (hasDragHandle) padding += DRAG_HANDLE_COLUMN_WIDTH;
+    if (hasDragOrPinHandle) padding += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
     if (expandable) padding += EXPANSION_COLUMN_WIDTH;
 
     return padding;
-  }, [expandable, hasDragHandle]);
+  }, [expandable, hasDragOrPinHandle]);
 
   if (!expandable) {
     return undefined;

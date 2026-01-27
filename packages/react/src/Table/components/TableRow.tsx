@@ -2,15 +2,19 @@
 
 import { forwardRef, memo, useCallback, useMemo } from 'react';
 import {
-  TABLE_ACTIONS_KEY,
-  DRAG_HANDLE_COLUMN_WIDTH,
-  DRAG_HANDLE_KEY,
+  COLLECTABLE_COLUMN_WIDTH,
+  COLLECTABLE_KEY,
+  DRAG_OR_PIN_HANDLE_COLUMN_WIDTH,
+  DRAG_OR_PIN_HANDLE_KEY,
   EXPANSION_COLUMN_WIDTH,
   EXPANSION_KEY,
   getRowKey,
   SELECTION_COLUMN_WIDTH,
   SELECTION_KEY,
+  TABLE_ACTIONS_KEY,
   tableClasses as classes,
+  TOGGLEABLE_COLUMN_WIDTH,
+  TOGGLEABLE_KEY,
   type FixedType,
   type TableDataSource,
 } from '@mezzanine-ui/core/table';
@@ -24,9 +28,11 @@ import {
 } from '../TableContext';
 import { TableActionsCell } from './TableActionsCell';
 import { TableCell } from './TableCell';
-import { TableDragHandleCell } from './TableDragHandleCell';
+import { TableCollectableCell } from './TableCollectableCell';
+import { TableDragOrPinHandleCell } from './TableDragOrPinHandleCell';
 import { TableExpandCell } from './TableExpandCell';
 import { TableSelectionCell } from './TableSelectionCell';
+import { TableToggleableCell } from './TableToggleableCell';
 import { composeRefs } from '../../utils/composeRefs';
 
 export interface TableRowProps<T extends TableDataSource = TableDataSource> {
@@ -50,13 +56,16 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
 
     const {
       actions,
+      collectable,
       draggable,
       expansion,
       fixedOffsets,
       highlight,
+      pinnable,
       rowHeight,
       selection,
       separatorAtRowIndexes,
+      toggleable,
       transitionState,
       zebraStriping,
     } = useTableContext();
@@ -102,9 +111,13 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       // Calculate action columns total width
       let actionColumnsWidth = 0;
 
-      if (draggable?.enabled) actionColumnsWidth += DRAG_HANDLE_COLUMN_WIDTH;
+      if (draggable?.enabled || pinnable?.enabled)
+        actionColumnsWidth += DRAG_OR_PIN_HANDLE_COLUMN_WIDTH;
       if (selection) actionColumnsWidth += SELECTION_COLUMN_WIDTH;
       if (expansion) actionColumnsWidth += EXPANSION_COLUMN_WIDTH;
+      if (toggleable?.enabled)
+        actionColumnsWidth += toggleable.minWidth ?? TOGGLEABLE_COLUMN_WIDTH;
+      if (collectable?.enabled) actionColumnsWidth += COLLECTABLE_COLUMN_WIDTH;
 
       return calculateColumnWidths({
         actionColumnsWidth,
@@ -116,10 +129,14 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       isDragging,
       containerWidth,
       columns,
+      collectable?.enabled,
       draggable?.enabled,
       expansion,
       getResizedColumnWidth,
+      pinnable?.enabled,
       selection,
+      toggleable?.enabled,
+      toggleable?.minWidth,
     ]);
 
     // Check if this row should be highlighted based on highlight mode
@@ -143,30 +160,37 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       highlight?.setHoveredCell(null, null);
     }, [highlight]);
 
-    const renderDragHandleCell = () => {
-      if (!draggable?.enabled) return null;
+    const renderDragOrPinHandleCell = () => {
+      const isDragMode = draggable?.enabled;
+      const isPinMode = pinnable?.enabled;
 
-      const offsetInfo = fixedOffsets?.getDragHandleOffset();
-      const isFixed = !!draggable.fixed;
+      if (!isDragMode && !isPinMode) return null;
+
+      const offsetInfo = fixedOffsets?.getDragOrPinHandleOffset();
+      const isFixed = isDragMode ? !!draggable?.fixed : !!pinnable?.fixed;
       const showShadow =
         isFixed &&
         fixedOffsets?.shouldShowShadow(
-          DRAG_HANDLE_KEY,
+          DRAG_OR_PIN_HANDLE_KEY,
           scrollLeft ?? 0,
           containerWidth ?? 0,
         );
 
       return (
-        <TableDragHandleCell
+        <TableDragOrPinHandleCell
           dragHandleProps={
-            draggableProvided?.dragHandleProps as
-              | Record<string, unknown>
-              | undefined
+            isDragMode
+              ? (draggableProvided?.dragHandleProps as
+                  | Record<string, unknown>
+                  | undefined)
+              : undefined
           }
           fixed={isFixed}
           fixedOffset={offsetInfo?.offset ?? 0}
+          mode={isDragMode ? 'drag' : 'pin'}
+          record={record}
           showShadow={showShadow ?? false}
-          width={isDragging ? DRAG_HANDLE_COLUMN_WIDTH : undefined}
+          width={isDragging ? DRAG_OR_PIN_HANDLE_COLUMN_WIDTH : undefined}
         />
       );
     };
@@ -244,6 +268,38 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             containerWidth ?? 0,
           );
 
+        // Render toggleable cell for TOGGLEABLE_KEY column
+        if (column.key === TOGGLEABLE_KEY && toggleable?.enabled) {
+          const toggleableOffsetInfo = fixedOffsets?.getToggleableOffset();
+
+          return (
+            <TableToggleableCell
+              fixed={!!toggleable.fixed}
+              fixedOffset={toggleableOffsetInfo?.offset ?? 0}
+              key={column.key}
+              record={record}
+              showShadow={showShadow ?? false}
+              width={isDragging ? column.width : undefined}
+            />
+          );
+        }
+
+        // Render collectable cell for COLLECTABLE_KEY column
+        if (column.key === COLLECTABLE_KEY && collectable?.enabled) {
+          const collectableOffsetInfo = fixedOffsets?.getCollectableOffset();
+
+          return (
+            <TableCollectableCell
+              fixed={!!collectable.fixed}
+              fixedOffset={collectableOffsetInfo?.offset ?? 0}
+              key={column.key}
+              record={record}
+              showShadow={showShadow ?? false}
+              width={isDragging ? column.width : undefined}
+            />
+          );
+        }
+
         // Render actions cell for TABLE_ACTIONS_KEY column
         if (column.key === TABLE_ACTIONS_KEY && actions) {
           return (
@@ -314,7 +370,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
         style={resolvedStyle}
       >
         {renderExpandCell()}
-        {renderDragHandleCell()}
+        {renderDragOrPinHandleCell()}
         {renderSelectionCell()}
         {renderCells()}
       </tr>

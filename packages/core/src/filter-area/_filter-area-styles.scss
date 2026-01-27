@@ -1,0 +1,154 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use './filter-area' as *;
+
+// Actions alignment configs
+$actions-align-configs: (
+  start: flex-start,
+  center: center,
+  end: flex-end,
+);
+
+// Filter alignment configs
+$filter-align-configs: (
+  start: flex-start,
+  center: center,
+  end: flex-end,
+  stretch: stretch,
+);
+
+// Filter span configs
+$filter-span-configs: (
+  default: 4,
+  grow: 12,
+);
+
+// Grid configs
+$grid-configs: (
+  columns: 12,
+  default-gap: comfort,
+  actions-gap: base,
+);
+
+// Layout configs
+$layout-configs: (
+  container: (
+    gap: comfort,
+    padding-inline-direction: horizontal,
+    padding-inline-size: spacious,
+  ),
+  row: (
+    gap: comfort,
+    align-items: flex-end,
+  ),
+  line: (
+    gap: comfort,
+  ),
+);
+
+@mixin _apply-actions-align($align) {
+  $justify-content: map.get($actions-align-configs, $align);
+
+  @if $justify-content {
+    justify-content: $justify-content;
+  }
+}
+
+@mixin _apply-filter-align($align) {
+  $align-items: map.get($filter-align-configs, $align);
+
+  @if $align-items {
+    align-items: $align-items;
+  }
+}
+
+@mixin _apply-filter-span($span) {
+  $span-value: map.get($filter-span-configs, $span);
+
+  @if $span-value {
+    grid-column: span $span-value;
+  }
+}
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  gap: spacing.semantic-variable(gap, map.get(map.get($layout-configs, container), gap));
+
+  &--main {
+    padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
+    padding-block: spacing.semantic-variable(padding, vertical, spacious);
+  }
+
+  &__actions {
+    width: fit-content;
+    display: flex;
+    gap: spacing.semantic-variable(gap, map.get($grid-configs, actions-gap));
+    transition: transition.standard(width, fast);
+
+    @include _apply-actions-align(end);
+
+    @each $align, $value in $actions-align-configs {
+      &--align-#{$align} {
+        @include _apply-actions-align($align);
+      }
+    }
+
+    &--expanded {
+      width: 100%;
+    }
+  }
+
+  &__row {
+    display: flex;
+    align-items: map.get(map.get($layout-configs, row), align-items);
+    gap: spacing.semantic-variable(gap, map.get(map.get($layout-configs, row), gap));
+
+    > .#{$prefix}__line {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    > .#{$prefix}__actions {
+      margin-inline-start: auto;
+    }
+  }
+
+  &__line {
+    display: grid;
+    grid-template-columns: repeat(map.get($grid-configs, columns), minmax(0, 1fr));
+    gap: spacing.semantic-variable(gap, map.get(map.get($layout-configs, line), gap));
+    position: relative;
+  }
+
+  &__filter {
+    $default-span: map.get($filter-span-configs, default);
+
+    --#{$prefix}-filter-span: #{$default-span};
+
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    grid-column: span var(--#{$prefix}-filter-span);
+
+    @include _apply-filter-align(stretch);
+
+    @each $span, $value in $filter-span-configs {
+      @if $span == grow {
+        &--#{$span} {
+          @include _apply-filter-span($span);
+        }
+      }
+    }
+
+    @each $align, $value in $filter-align-configs {
+      &--align-#{$align} {
+        @include _apply-filter-align($align);
+      }
+    }
+  }
+}

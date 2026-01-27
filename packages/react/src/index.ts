@@ -189,6 +189,7 @@ export {
   type TableBulkActions,
   type TableBulkGeneralAction,
   type TableBulkOverflowAction,
+  type TableCollectable,
   type TableColumn,
   type TableColumnBase,
   type TableColumnBaseWithMinWidthRequired,
@@ -204,7 +205,6 @@ export {
   type TableDataSourceWithId,
   type TableDataSourceWithKey,
   type TableDraggable,
-  type TableDraggableState,
   type TableExpandable,
   type TableExpansionState,
   type TableNonVirtualizedProps,
@@ -220,10 +220,16 @@ export {
   type TableSelectionState,
   type TableSize,
   type TableSortingState,
+  type TableToggleable,
   type TableTransitionState,
   type TableVirtualizedProps,
   type UpdateDataSourceOptions,
   type UseTableDataSourceOptions,
+  type TableDraggableOnlyProps,
+  type TableNoDragOrPinProps,
+  type TableNonResizableProps,
+  type TablePinnableOnlyProps,
+  type TableResizableProps,
 } from './Table';
 export { default as Tag, TagGroup } from './Tag';
 export type { TagGroupProps, TagProps, TagSize } from './Tag';
@@ -293,6 +299,12 @@ export type {
 export { default as DateTimePicker } from './DateTimePicker';
 export type { DateTimePickerProps } from './DateTimePicker';
 export { FormControlContext, FormField, FormHintText, FormLabel } from './Form';
+export { FilterArea, FilterLine, Filter } from './FilterArea';
+export type {
+  FilterAreaProps,
+  FilterLineProps,
+  FilterProps,
+} from './FilterArea';
 export type {
   FormControl,
   FormFieldProps,
@@ -313,7 +325,7 @@ export type {
   PasswordInputProps,
   SearchInputProps,
   SelectInputProps,
-  UnitInputProps,
+  CurrencyInputProps,
   WithAffixInputProps,
   WithPasswordStrengthIndicator,
 } from './Input';

@@ -9,7 +9,11 @@ import Transition, {
 import { reflow } from './reflow';
 import { useSetNodeTransition } from './useSetNodeTransition';
 
-function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
+function getStyle(
+  state: TransitionState,
+  inProp: boolean,
+  from: SlideFrom,
+): CSSProperties {
   if (state === 'entering' || state === 'entered') {
     return {
       transform: 'translate3d(0, 0, 0)',
@@ -17,7 +21,10 @@ function getStyle(state: TransitionState, inProp: boolean): CSSProperties {
   }
 
   const style: CSSProperties = {
-    transform: 'translate3d(100%, 0, 0)',
+    transform: {
+      top: 'translate3d(0, -100%, 0)',
+      right: 'translate3d(100%, 0, 0)',
+    }[from],
   };
 
   if (state === 'exited' && !inProp) {
@@ -37,7 +44,15 @@ const defaultEasing = {
   exit: MOTION_EASING.standard,
 };
 
-export type SlideProps = TransitionImplementationProps;
+export type SlideFrom = 'right' | 'top';
+
+export interface SlideProps extends TransitionImplementationProps {
+  /**
+   * The position of child element will enter from.
+   * @default 'right'
+   */
+  from?: SlideFrom;
+}
 
 /**
  * The react component for `mezzanine` transition slide in/out.
@@ -51,6 +66,7 @@ const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
     delay = 0,
     duration: durationProp = defaultDuration,
     easing = defaultEasing,
+    from = 'right',
     in: inProp = false,
     onEnter,
     onEntered,
@@ -114,7 +130,7 @@ const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
             ...children.props,
             ref: composedNodeRef,
             style: {
-              ...getStyle(state, inProp),
+              ...getStyle(state, inProp, from),
               ...children.props.style,
             },
           }))}

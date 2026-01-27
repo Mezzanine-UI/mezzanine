@@ -204,7 +204,7 @@ export const NumberInput = () => {
   );
 };
 
-export const UnitInput = () => {
+export const CurrencyInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
@@ -220,14 +220,19 @@ export const UnitInput = () => {
       }}
     >
       <Typography variant="h2" style={typoStyle}>
-        Unit Input
+        currency Input
       </Typography>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Prefix
         </Typography>
-        <Input variant="unit" prefix="NT" defaultValue="1000" placeholder="0" />
+        <Input
+          variant="currency"
+          prefix="NT"
+          defaultValue="1000"
+          placeholder="0"
+        />
       </section>
 
       <section style={containerStyle}>
@@ -235,7 +240,7 @@ export const UnitInput = () => {
           Suffix
         </Typography>
         <Input
-          variant="unit"
+          variant="currency"
           suffix="NT"
           min={0}
           max={10000}
@@ -248,7 +253,7 @@ export const UnitInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Text Only
         </Typography>
-        <Input variant="unit" defaultValue="175" />
+        <Input variant="currency" defaultValue="175" />
       </section>
 
       <section style={containerStyle}>
@@ -256,7 +261,7 @@ export const UnitInput = () => {
           Spinner
         </Typography>
         <Input
-          variant="unit"
+          variant="currency"
           inputType="number"
           value={`${spinNumber}`}
           onChange={(evt) => setSpinNumber(Number(evt.target.value))}
@@ -277,14 +282,14 @@ export const UnitInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Size Main
         </Typography>
-        <Input variant="unit" size="main" defaultValue="70" />
+        <Input variant="currency" size="main" defaultValue="70" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Sub
         </Typography>
-        <Input variant="unit" size="sub" defaultValue="70" />
+        <Input variant="currency" size="sub" defaultValue="70" />
       </section>
     </div>
   );
@@ -349,7 +354,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => { },
+            onClick: () => {},
             disabled: true,
           }}
         />
@@ -367,7 +372,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => { },
+            onClick: () => {},
           }}
         />
       </section>
@@ -384,7 +389,7 @@ export const ActionInput = () => {
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
-            onClick: () => { },
+            onClick: () => {},
           }}
         />
       </section>
@@ -425,18 +430,24 @@ export const SelectInput = () => {
     selectedValue: string,
     onSelect: (value: string) => void,
     position: 'prefix' | 'suffix' | 'both',
-    additionalProps?: Partial<Omit<SelectInputProps, 'variant' | 'options' | 'selectedValue' | 'onSelect' | 'selectButton'>>,
-  ): SelectInputProps => ({
-    variant: 'select',
-    options: domainOptions,
-    selectedValue,
-    onSelect,
-    selectButton: {
-      position,
-      value: selectedValue,
-    },
-    ...additionalProps,
-  } as SelectInputProps);
+    additionalProps?: Partial<
+      Omit<
+        SelectInputProps,
+        'variant' | 'options' | 'selectedValue' | 'onSelect' | 'selectButton'
+      >
+    >,
+  ): SelectInputProps =>
+    ({
+      variant: 'select',
+      options: domainOptions,
+      selectedValue,
+      onSelect,
+      selectButton: {
+        position,
+        value: selectedValue,
+      },
+      ...additionalProps,
+    }) as SelectInputProps;
 
   return (
     <div
@@ -626,7 +637,7 @@ export const FormatterAndParser = () => {
           Currency Format (Thousand Separator)
         </Typography>
         <Input
-          variant="unit"
+          variant="currency"
           showSpinner
           placeholder="輸入金額"
           value={currencyValue}

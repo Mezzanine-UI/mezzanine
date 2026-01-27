@@ -146,7 +146,7 @@ export interface NotificationData
    * The time stamp of notification on the drawer list.
    * @default new Date().toLocaleTimeString()
    */
-  timeStamp?: string;
+  timeStamp?: string | number;
   /**
    * The locale of the time stamp.
    * @default 'zh-TW'
@@ -316,25 +316,56 @@ const NotificationCenter: NotificationCenter = ((
   const [timeStampAnchor, setTimeStampAnchor] = useState<HTMLElement | null>(null);
   const timeStampRef = useRef<HTMLElement>(null);
 
-  const formattedTimeStamp = useMemo(() => {
+  const isToday = useMemo(() => {
     try {
       const timestampDate = new Date(timeStamp);
 
       // Check if the time stamp is a valid date
-      if (isNaN(timestampDate.getTime())) {
-        return timeStamp;
+      if (Number.isNaN(timestampDate.getTime())) {
+        return false;
+      }
+
+      const now = new Date();
+      const nowStartOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const timestampStartOfDay = new Date(
+        timestampDate.getFullYear(),
+        timestampDate.getMonth(),
+        timestampDate.getDate(),
+      );
+
+      return timestampStartOfDay.getTime() === nowStartOfDay.getTime();
+    } catch {
+      return false;
+    }
+  }, [timeStamp]);
+
+  const formattedTimeStamp = useMemo(() => {
+    try {
+      const timestampDate = new Date(timeStamp);
+      const timeStampText = typeof timeStamp === 'string' ? timeStamp : String(timeStamp);
+
+      // Check if the time stamp is a valid date
+      if (Number.isNaN(timestampDate.getTime())) {
+        return timeStampText;
       }
 
       const now = Date.now();
-      const diffInMs = timestampDate.getTime() - now;
-      const diffInSeconds = Math.round(diffInMs / 1000);
-      const diffInDays = Math.round(diffInSeconds / 86400);
+      const nowDate = new Date(now);
+      const nowStartOfDay = new Date(nowDate.getFullYear(), nowDate.getMonth(), nowDate.getDate());
+      const timestampStartOfDay = new Date(
+        timestampDate.getFullYear(),
+        timestampDate.getMonth(),
+        timestampDate.getDate(),
+      );
+      const isToday = nowStartOfDay.getTime() === timestampStartOfDay.getTime();
 
-      if (Math.abs(diffInDays) <= 7) {
+      // Only show relative time if the timestamp is today
+      if (isToday) {
+        const diffInMs = timestampDate.getTime() - now;
+        const diffInSeconds = Math.round(diffInMs / 1000);
         const rtf = new Intl.RelativeTimeFormat(timeStampLocale, { numeric: 'always' });
 
         const units: Array<{ unit: Intl.RelativeTimeFormatUnit; seconds: number }> = [
-          { unit: 'day', seconds: 86400 },
           { unit: 'hour', seconds: 3600 },
           { unit: 'minute', seconds: 60 },
         ];
@@ -349,7 +380,7 @@ const NotificationCenter: NotificationCenter = ((
         return 'now';
       }
 
-      const hasTimeComponent = /:\d{2}/.test(timeStamp) || timeStamp.includes('T');
+      const hasTimeComponent = /:\d{2}/.test(timeStampText) || timeStampText.includes('T');
 
       if (hasTimeComponent) {
         const dateFormatter = new Intl.DateTimeFormat(timeStampLocale, {
@@ -370,7 +401,7 @@ const NotificationCenter: NotificationCenter = ((
         return dateFormatter.format(timestampDate).replace(/\//g, '-');
       }
     } catch {
-      return timeStamp;
+      return typeof timeStamp === 'string' ? timeStamp : String(timeStamp);
     }
   }, [timeStamp, timeStampLocale]);
 
@@ -435,7 +466,7 @@ const NotificationCenter: NotificationCenter = ((
   }, [onBadgeSelectProp]);
 
   const handleNotificationMouseEnter = () => {
-    if (type === 'drawer') {
+    if (type === 'drawer' && isToday) {
       setTimeout(() => {
         if (timeStampRef.current) {
           setTimeStampAnchor(timeStampRef.current);
@@ -445,7 +476,7 @@ const NotificationCenter: NotificationCenter = ((
   };
 
   const handleNotificationMouseLeave = () => {
-    if (type === 'drawer') {
+    if (type === 'drawer' && isToday) {
       setTimeStampAnchor(null);
     }
   };
@@ -511,31 +542,33 @@ const NotificationCenter: NotificationCenter = ((
         {
           type === 'drawer' && (
             <>
-              <Popper
-                anchor={timeStampAnchor}
-                open={Boolean(timeStampAnchor)}
-                arrow={{
-                  className: classes.timeStampPopperArrow,
-                  enabled: true,
-                  padding: 0,
-                }}
-                style={{
-                  zIndex: 'var(--mzn-z-index-popover)',
-                }}
-                options={{
-                  placement: 'bottom',
-                  middleware: [
-                    offset({ mainAxis: 8 }),
-                    flip(),
-                  ],
-                }}
-              >
-                <div className={classes.timeStampPopper}>
-                  <Typography className={classes.timeStampText}>
-                    {timeStamp}
-                  </Typography>
-                </div>
-              </Popper>
+              {isToday && (
+                <Popper
+                  anchor={timeStampAnchor}
+                  open={Boolean(timeStampAnchor)}
+                  arrow={{
+                    className: classes.timeStampPopperArrow,
+                    enabled: true,
+                    padding: 0,
+                  }}
+                  style={{
+                    zIndex: 'var(--mzn-z-index-popover)',
+                  }}
+                  options={{
+                    placement: 'bottom',
+                    middleware: [
+                      offset({ mainAxis: 8 }),
+                      flip(),
+                    ],
+                  }}
+                >
+                  <div className={classes.timeStampPopper}>
+                    <Typography className={classes.timeStampText}>
+                      {timeStamp}
+                    </Typography>
+                  </div>
+                </Popper>
+              )}
               <Typography ref={timeStampRef} className={classes.timeStamp}>
                 {formattedTimeStamp}
               </Typography>
@@ -582,18 +615,14 @@ const NotificationCenter: NotificationCenter = ((
 
   if (type === 'notification') {
     return (
-      <>
-        {prependTips && <Typography className={classes.prependTips}>{prependTips}</Typography>}
-        <Slide
-          in={open}
-          appear
-          onExited={onExited}
-          {...restTransitionProps}
-        >
-          {notificationContent}
-        </Slide>
-        {appendTips && <Typography className={classes.appendTips}>{appendTips}</Typography>}
-      </>
+      <Slide
+        in={open}
+        appear
+        onExited={onExited}
+        {...restTransitionProps}
+      >
+        {notificationContent}
+      </Slide>
     );
   }
 

@@ -5,6 +5,8 @@ export type { ModalFooterProps } from './ModalFooter';
 export { default as ModalFooter } from './ModalFooter';
 export type { ModalHeaderProps } from './ModalHeader';
 export { default as ModalHeader } from './ModalHeader';
+export type { MediaPreviewModalProps } from './MediaPreviewModal';
+export { default as MediaPreviewModal } from './MediaPreviewModal';
 export { default as useModalContainer } from './useModalContainer';
 export type { ModalContainerProps } from './useModalContainer';
 export type { ModalProps } from './Modal';

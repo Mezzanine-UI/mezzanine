@@ -1,16 +1,25 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import type { OverlayScrollbars } from 'overlayscrollbars';
 
 export interface UseTableScrollReturn {
   /** Container width (viewport width) */
   containerWidth: number;
-  handleScroll: (event: React.UIEvent<HTMLDivElement>) => void;
+  /** OverlayScrollbars scroll event handler */
+  handleScrollbarScroll: (instance: OverlayScrollbars, event: Event) => void;
+  /** Handler to be passed to Scrollbar's onViewportReady prop */
+  handleViewportReady: (
+    viewport: HTMLDivElement,
+    instance?: OverlayScrollbars,
+  ) => void;
+  /** Whether the scroll container ref has been set and is ready */
+  isContainerReady: boolean;
   isScrollingHorizontally: boolean;
   scrollLeft: number;
-  /** Ref object for internal use */
+  /** Ref object for internal use - points to the actual scrolling element */
   containerRef: React.RefObject<HTMLDivElement | null>;
-  /** Callback ref setter that should be used for the scroll container */
+  /** Callback ref setter for disabled Scrollbar fallback (plain div) */
   setContainerRef: (element: HTMLDivElement | null) => void;
 }
 
@@ -22,6 +31,7 @@ export function useTableScroll({
   const [isScrollingHorizontally, setIsScrollingHorizontally] = useState(false);
   const [scrollLeft, setScrollLeft] = useState(0);
   const [containerWidth, setContainerWidth] = useState(0);
+  const [isContainerReady, setIsContainerReady] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
@@ -35,9 +45,9 @@ export function useTableScroll({
     }
   }, []);
 
-  // Callback ref that sets up ResizeObserver when element is attached
-  const setContainerRef = useCallback(
-    (element: HTMLDivElement | null) => {
+  // Setup ResizeObserver on an element
+  const setupResizeObserver = useCallback(
+    (element: HTMLDivElement) => {
       // Clean up previous observer
       if (resizeObserverRef.current) {
         resizeObserverRef.current.disconnect();
@@ -47,6 +57,9 @@ export function useTableScroll({
       containerRef.current = element;
 
       if (element && enabled) {
+        // Mark container as ready
+        setIsContainerReady(true);
+
         // Measure immediately
         measureDimensions();
 
@@ -60,13 +73,44 @@ export function useTableScroll({
     [enabled, measureDimensions],
   );
 
-  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
-    const target = event.currentTarget;
-    const newScrollLeft = target.scrollLeft;
+  // Callback ref for disabled Scrollbar (plain div) fallback
+  const setContainerRef = useCallback(
+    (element: HTMLDivElement | null) => {
+      if (element) {
+        setupResizeObserver(element);
+      } else {
+        // Clean up when element is removed
+        if (resizeObserverRef.current) {
+          resizeObserverRef.current.disconnect();
+          resizeObserverRef.current = null;
+        }
 
-    setScrollLeft(newScrollLeft);
-    setIsScrollingHorizontally(newScrollLeft > 0);
-  }, []);
+        containerRef.current = null;
+        setIsContainerReady(false);
+      }
+    },
+    [setupResizeObserver],
+  );
+
+  // Handler for Scrollbar's onViewportReady - receives the viewport element
+  const handleViewportReady = useCallback(
+    (viewport: HTMLDivElement) => {
+      setupResizeObserver(viewport);
+    },
+    [setupResizeObserver],
+  );
+
+  // OverlayScrollbars scroll event handler
+  const handleScrollbarScroll = useCallback(
+    (_instance: OverlayScrollbars, event: Event) => {
+      const target = event.target as HTMLElement;
+      const newScrollLeft = target.scrollLeft;
+
+      setScrollLeft(newScrollLeft);
+      setIsScrollingHorizontally(newScrollLeft > 0);
+    },
+    [],
+  );
 
   // Cleanup on unmount
   useEffect(() => {
@@ -79,16 +123,20 @@ export function useTableScroll({
 
   return useMemo(
     () => ({
+      containerRef,
       containerWidth,
-      handleScroll,
+      handleScrollbarScroll,
+      handleViewportReady,
+      isContainerReady,
       isScrollingHorizontally,
       scrollLeft,
-      containerRef,
       setContainerRef,
     }),
     [
       containerWidth,
-      handleScroll,
+      handleScrollbarScroll,
+      handleViewportReady,
+      isContainerReady,
       isScrollingHorizontally,
       scrollLeft,
       setContainerRef,

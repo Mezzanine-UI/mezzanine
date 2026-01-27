@@ -11,6 +11,7 @@ import {
   ReactNode,
   Ref,
   useCallback,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -32,6 +33,8 @@ import PasswordStrengthIndicator, {
 } from './PasswordStrengthIndicator';
 import SelectButton, { SelectButtonProps } from './SelectButton';
 import SpinnerButton from './SpinnerButton';
+import { formatNumberWithCommas } from '../utils/format-number-with-commas';
+import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
 
 /**
  * Base props shared by all Input variants
@@ -48,6 +51,7 @@ export interface InputBaseProps
   /**
    * Formatter function to transform the value for display.
    * Common use cases: currency formatting (1000 → "1,000"), phone numbers, etc.
+   * Default to formatting number with commas for "currency" variant.
    * @example
    * formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
    */
@@ -92,6 +96,7 @@ export interface InputBaseProps
   /**
    * Parser function to extract the raw value from formatted display value.
    * Should reverse the formatter transformation.
+   * Default to removing commas for "currency" formatting.
    * @example
    * parser={(value) => value.replace(/,/g, '')}
    */
@@ -168,12 +173,12 @@ export type NumberInputProps = InputBaseProps &
   };
 
 /**
- * 5. Unit Input - Input with unit text and spinner buttons
+ * 5. Currency Input - Input with unit text and spinner buttons
  */
-export type UnitInputProps = InputBaseProps &
+export type CurrencyInputProps = InputBaseProps &
   NumberInput &
   TextFieldAffixProps & {
-    variant: 'unit';
+    variant: 'currency';
     /**
      * Whether to show spinner buttons.
      * @default false
@@ -244,22 +249,22 @@ export type SelectInputProps = InputBaseProps & {
  */
 export type WithPasswordStrengthIndicator =
   | {
-    /**
-     * Whether to show password strength indicator.
-     */
-    showPasswordStrengthIndicator?: false;
-    passwordStrengthIndicator?: never;
-  }
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator?: false;
+      passwordStrengthIndicator?: never;
+    }
   | {
-    /**
-     * Whether to show password strength indicator.
-     */
-    showPasswordStrengthIndicator: true;
-    /**
-     * The props for password strength indicator.
-     */
-    passwordStrengthIndicator: PasswordStrengthIndicatorProps;
-  };
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator: true;
+      /**
+       * The props for password strength indicator.
+       */
+      passwordStrengthIndicator: PasswordStrengthIndicatorProps;
+    };
 
 export type PasswordInputProps = InputBaseProps &
   ClearableInput &
@@ -272,7 +277,7 @@ export type InputProps =
   | WithAffixInputProps
   | SearchInputProps
   | NumberInputProps
-  | UnitInputProps
+  | CurrencyInputProps
   | ActionInputProps
   | SelectInputProps
   | PasswordInputProps;
@@ -288,7 +293,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       defaultValue,
       disabled = false,
       error = false,
-      formatter,
+      formatter: formatterProp,
       fullWidth = true,
       id,
       inputProps,
@@ -296,7 +301,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       inputRef: inputRefProp,
       name,
       onChange: onChangeProp,
-      parser,
+      parser: parserProp,
       placeholder,
       readonly,
       size = 'main',
@@ -316,6 +321,27 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     });
 
     // Handle formatter/parser logic
+    const formatter = useMemo(() => {
+      if (formatterProp) return formatterProp;
+
+      if (variant === 'currency') {
+        return (value: string) => formatNumberWithCommas(value);
+      }
+
+      return undefined;
+    }, [formatterProp, variant]);
+
+    const parser = useMemo(() => {
+      if (parserProp) return parserProp;
+
+      if (variant === 'currency') {
+        return (value: string) =>
+          parseNumberWithCommas(value)?.toString() ?? '';
+      }
+
+      return undefined;
+    }, [parserProp, variant]);
+
     const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
       (event) => {
         let newValue = event.target.value;
@@ -426,15 +452,15 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 
         break;
       }
-      case 'unit': {
-        const unitProps = props as UnitInputProps;
-        const { step = 1, max, min, onSpinUp, onSpinDown } = unitProps;
+      case 'currency': {
+        const currencyProps = props as CurrencyInputProps;
+        const { step = 1, max, min, onSpinUp, onSpinDown } = currencyProps;
 
         // 預設置右對齊
         inputStyle = { textAlign: 'right' };
         // 允許填入 prefix/suffix
-        prefix = unitProps.prefix;
-        suffix = unitProps.suffix;
+        prefix = currencyProps.prefix;
+        suffix = currencyProps.suffix;
 
         defaultInputProps = {
           min: min,
@@ -442,7 +468,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           step: step,
         };
 
-        if (unitProps.showSpinner) {
+        if (currencyProps.showSpinner) {
           const handleSpinUp = () => {
             const currentValue = parseFloat(value || '0');
             const newValue = currentValue + step;
@@ -471,7 +497,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 
           suffix = (
             <>
-              {unitProps.suffix}
+              {currencyProps.suffix}
               <div className={classes.spinners}>
                 <SpinnerButton
                   type="up"
@@ -524,16 +550,22 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       }
       case 'select': {
         const selectProps = props as SelectInputProps;
-        const { selectButton, options, dropdownWidth = 120, dropdownMaxHeight = 114 } = selectProps;
+        const {
+          selectButton,
+          options,
+          dropdownWidth = 120,
+          dropdownMaxHeight = 114,
+        } = selectProps;
         const defaultOptions = options || [];
-        const selectedOptions: DropdownOption[] = defaultOptions.length > 0
-          ? defaultOptions.map((option) => ({
-            ...option,
-            ...(option.id === selectProps.selectedValue
-              ? { checkSite: 'suffix' }
-              : {}),
-          }))
-          : [];
+        const selectedOptions: DropdownOption[] =
+          defaultOptions.length > 0
+            ? defaultOptions.map((option) => ({
+                ...option,
+                ...(option.id === selectProps.selectedValue
+                  ? { checkSite: 'suffix' }
+                  : {}),
+              }))
+            : [];
 
         if (
           selectButton.position === 'both' ||

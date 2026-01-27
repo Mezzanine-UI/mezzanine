@@ -7,6 +7,7 @@ import {
   ReactElement,
   use,
   useEffect,
+  useId,
   useMemo,
   useState,
 } from 'react';
@@ -58,17 +59,21 @@ export interface NavigationOptionProps
   /**
    * Unique ID of the item.
    */
+  id?: string;
+  /**
+   * Href of the item.
+   */
   href?: string;
   /**
    * Set display title for sub-menu item.
    */
-  title?: string;
+  title: string;
   /**
    * Open menu as default
    * @default false
    */
   defaultOpen?: boolean;
-  onTriggerClick?: (path: string[], href: string) => void;
+  onTriggerClick?: (path: string[], currentKey: string, href?: string) => void;
 }
 
 const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
@@ -80,6 +85,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       defaultOpen = false,
       href,
       icon,
+      id,
       onTriggerClick,
       title,
       ...rest
@@ -90,8 +96,10 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
     const { level, path: parentPath } = use(NavigationOptionLevelContext);
-    const currentLevel = level + 1;
-    const currentKey = href || title || 'unknownId';
+    const currentLevel = level + 1; // start as 1
+
+    const uuid = useId();
+    const currentKey = id || title || href || uuid;
     const currentPath = useMemo(
       () => [...parentPath, currentKey],
       [parentPath, currentKey],
@@ -99,10 +107,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
     const {
       activatedPath,
-      setActivatedPath,
-      currentPathname,
       collapsed,
+      currentPathname,
+      filterText,
       handleCollapseChange,
+      setActivatedPath,
     } = use(NavigationActivatedContext);
 
     useEffect(() => {
@@ -147,6 +156,20 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       return { badge: badgeComponent, items };
     }, [flattenedChildren]);
 
+    const [filter, setFilter] = useState(true);
+
+    useEffect(() => {
+      if (!filterText) {
+        setFilter(true);
+
+        return;
+      }
+
+      setFilter(
+        (title.includes(filterText) || href?.includes(filterText)) ?? false,
+      );
+    }, [currentPath, filterText, href, title]);
+
     return (
       <li
         {...rest}
@@ -158,6 +181,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
           collapsed && classes.collapsed,
+          !collapsed && !filter && classes.hidden,
           className,
         )}
         data-id={currentKey}
@@ -177,20 +201,20 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               href={href}
               onClick={() => {
                 setOpen(!open);
-                onTriggerClick?.(currentPath, href || '');
+                onTriggerClick?.(currentPath, currentKey, href);
 
                 if (collapsed) {
                   handleCollapseChange(false);
                 }
 
-                if (!children) setActivatedPath([...parentPath, currentKey]);
+                if (!children) setActivatedPath(currentPath);
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setOpen(!open);
 
-                  if (!children) setActivatedPath([...parentPath, currentKey]);
+                  if (!children) setActivatedPath(currentPath);
                 }
               }}
               role="menuitem"

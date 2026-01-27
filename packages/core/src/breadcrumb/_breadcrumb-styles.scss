@@ -14,45 +14,122 @@
   display: flex;
   flex-wrap: nowrap;
   gap: spacing.semantic-variable(gap, tiny);
+  position: relative;
+
+  &__icon-button {
+    @include button.reset();
+
+    border-radius: radius.variable(tiny);
+    position: relative;
+
+    & > :first-child {
+      color: palette.semantic-variable(icon, neutral);
+      transition: transition.standard(color, fast);
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &__menu {
+    z-index: 1;
+    background-color: palette.semantic-variable('background', base);
+    border-radius: radius.variable(roomy);
+    box-shadow: effect.variable(shadow, raised);
+    display: flex;
+    height: fit-content;
+    margin-top: spacing.semantic-variable(padding, vertical, tight);
+    padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, tight);
+    position: relative;
+    width: spacing.semantic-variable(size, container, tight);
+
+    &__content {
+      margin: spacing.semantic-variable(padding, vertical, tight) 0;
+      background-color: palette.semantic-variable('background', base);
+      padding: 0 spacing.semantic-variable(padding, horizontal, tight);
+      width: 100%;
+      display: grid;
+    }
+  }
 }
 
 .#{$prefix}__item {
-  @include button.reset();
+  position: relative;
 
-  align-items: center;
-  border-radius: radius.variable(tiny);
-  color: palette.semantic-variable(text, neutral);
-  display: flex;
-  gap: spacing.semantic-variable(gap, tiny);
-  transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
-  white-space: nowrap;
+  &__trigger {
+    @include button.reset();
+
+    align-items: center;
+    border-radius: radius.variable(tiny);
+    color: palette.semantic-variable(text, neutral);
+    display: flex;
+    gap: spacing.semantic-variable(gap, tiny);
+    transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
+    white-space: nowrap;
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
 
   &__icon {
     color: palette.semantic-variable(icon, neutral);
     transition: transition.standard(color, fast);
   }
 
-  &__menu {
-    inset-block-start: calc(100% + spacing.semantic-variable(gap, tight-fixed));
-    inset-inline-start: 0;
-    position: absolute;
-  }
-
   &--current {
-    color: palette.semantic-variable(text, neutral-solid);
-  }
-
-  &--expanded {
-    color: palette.semantic-variable(text, neutral-solid);
-
-    .#{$prefix}__item__icon {
-      color: palette.semantic-variable(icon, neutral-solid);
+    .#{$prefix}__item__trigger {
+      color: palette.semantic-variable(text, neutral-solid);
     }
   }
 
-  &:focus-visible {
-    background-color: palette.semantic-variable(background, white);
-    box-shadow: effect.variable(focus, primary);
+  &--expanded {
+    .#{$prefix}__item__trigger {
+      color: palette.semantic-variable(text, neutral-solid);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
+    }
+  }
+}
+
+.#{$prefix}__overflow-menu-item {
+  display: grid;
+
+  > :first-child {
+    display: grid;
+  }
+
+  &__trigger {
+    @include button.reset();
+
+    align-items: center;
+    color: palette.semantic-variable(text, neutral-solid);
+    display: flex;
+    gap: spacing.semantic-variable(gap, tiny);
+    justify-content: space-between;
+    transition: transition.standard(color, fast), transition.standard(background-color, fast), transition.standard(box-shadow, fast);
+    white-space: nowrap;
+    padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, base);
+    background-color: palette.semantic-variable('background', base);
+    border-radius: radius.variable(base);
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &__icon {
+    color: palette.semantic-variable(icon, neutral);
+    transition: transition.standard(color, fast);
+  }
+
+  &--expanded {
+    .#{$prefix}__overflow-menu-item__trigger {
+      background-color: palette.semantic-variable('background', neutral-subtle);
+    }
   }
 }
 

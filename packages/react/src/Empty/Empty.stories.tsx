@@ -73,7 +73,6 @@ export const AllTypes: Story = {
         size="main"
         title="Notification"
         type="notification"
-        pictogram={demoImage}
         actions={actionProps}
       />
       <Empty

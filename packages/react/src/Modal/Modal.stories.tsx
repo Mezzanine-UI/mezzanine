@@ -132,13 +132,7 @@ export const Playground: StoryObj<PlaygroundArgs> = {
       control: {
         type: 'select',
       },
-      options: [
-        'standard',
-        'extended',
-        'extendedSplit',
-        'mediaPreview',
-        'verification',
-      ],
+      options: ['standard', 'extended', 'extendedSplit', 'verification'],
     },
     size: {
       control: {
@@ -214,36 +208,32 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     };
 
     // Extended split specific props
-    const extendedSplitProps =
-      modalType === 'extendedSplit'
-        ? {
-            extendedSplitLeftSideContent: (
-              <div
-                style={{
-                  minHeight: '200px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <span>Left Side Content</span>
-              </div>
-            ),
-            extendedSplitRightSideContent: (
-              <div
-                style={{
-                  minHeight: '200px',
-                  width: '150px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <span>Right Side Content</span>
-              </div>
-            ),
-          }
-        : {};
+    const extendedSplitLeftSideContent = (
+      <div
+        style={{
+          minHeight: '200px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span>Left Side Content</span>
+      </div>
+    );
+
+    const extendedSplitRightSideContent = (
+      <div
+        style={{
+          minHeight: '200px',
+          width: '150px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <span>Right Side Content</span>
+      </div>
+    );
 
     // Type-safe props construction based on modalType, showModalHeader and showModalFooter
     // Handle extendedSplit separately due to discriminated union
@@ -256,7 +246,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
-              {...extendedSplitProps}
+              extendedSplitLeftSideContent={extendedSplitLeftSideContent}
+              extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               confirmText={confirmText || 'Confirm'}
@@ -281,7 +272,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
-              {...extendedSplitProps}
+              extendedSplitLeftSideContent={extendedSplitLeftSideContent}
+              extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               showStatusTypeIcon={showStatusTypeIcon}
@@ -304,7 +296,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
             </Button>
             <Modal
               {...baseProps}
-              {...extendedSplitProps}
+              extendedSplitLeftSideContent={extendedSplitLeftSideContent}
+              extendedSplitRightSideContent={extendedSplitRightSideContent}
               modalType="extendedSplit"
               size="wide"
               confirmText={confirmText || 'Confirm'}
@@ -321,7 +314,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
           </Button>
           <Modal
             {...baseProps}
-            {...extendedSplitProps}
+            extendedSplitLeftSideContent={extendedSplitLeftSideContent}
+            extendedSplitRightSideContent={extendedSplitRightSideContent}
             modalType="extendedSplit"
             size="wide"
           />
@@ -823,17 +817,14 @@ export const VerificationCodeInput: StoryObj = {
     }, []);
 
     const handleComplete4 = useCallback((value: string) => {
-      console.log('4-digit code completed:', value);
       alert(`Verification code entered: ${value}`);
     }, []);
 
     const handleComplete6 = useCallback((value: string) => {
-      console.log('6-digit code completed:', value);
       alert(`Verification code entered: ${value}`);
     }, []);
 
     const handleResend = useCallback(() => {
-      console.log('Resend verification code');
       alert('Verification code has been resent to your email!');
     }, []);
 

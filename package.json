@@ -25,6 +25,9 @@
     "node": ">=20.9.0"
   },
   "scripts": {
+    "check": "./scripts/check.sh",
+    "check:lint": "./scripts/check.sh --lint-only",
+    "check:types": "./scripts/check.sh --types-only",
     "format": "prettier './**/*.{json,md,mdx,html}' --write",
     "lint:css": "stylelint ./**/*.scss",
     "lint:es": "eslint . --ext .js,.ts,.tsx,.mdx,.html",
