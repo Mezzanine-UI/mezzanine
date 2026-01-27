@@ -163,6 +163,10 @@ async function run() {
         ) {
           return true;
         }
+        // Preserve side effects for scrollbar styles
+        if (id.includes('overlayscrollbars/overlayscrollbars.css')) {
+          return true;
+        }
         return false;
       },
     },
