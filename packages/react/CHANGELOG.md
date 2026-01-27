@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.4...@mezzanine-ui/react@1.0.0-canary.11) (2026-01-27)
+
+**Note:** Version bump only for package @mezzanine-ui/react
+
 # [1.0.0-beta.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.3...@mezzanine-ui/react@1.0.0-beta.4) (2026-01-27)
 
 ### Bug Fixes

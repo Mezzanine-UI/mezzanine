@@ -1,6 +1,6 @@
 {
   "name": "@mezzanine-ui/react",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-canary.11",
   "description": "React components for mezzanine-ui",
   "author": "Mezzanine",
   "repository": {
@@ -31,9 +31,9 @@
     "@floating-ui/dom": "^1.7.4",
     "@floating-ui/react-dom": "^2.1.6",
     "@hello-pangea/dnd": "^18.0.1",
-    "@mezzanine-ui/core": "1.0.0-beta.4",
-    "@mezzanine-ui/icons": "1.0.0-beta.4",
-    "@mezzanine-ui/system": "1.0.0-beta.4",
+    "@mezzanine-ui/core": "1.0.0-canary.11",
+    "@mezzanine-ui/icons": "1.0.0-canary.11",
+    "@mezzanine-ui/system": "1.0.0-canary.11",
     "@tanstack/react-virtual": "^3.13.13",
     "@types/react-transition-group": "^4.4.12",
     "clsx": "^2.1.1",
