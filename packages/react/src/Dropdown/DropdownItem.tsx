@@ -16,12 +16,30 @@ import { type IconDefinition } from '@mezzanine-ui/icons';
 
 import { CaretDownIcon, CaretRightIcon } from '@mezzanine-ui/icons';
 
+import type { OverlayScrollbars, PartialOptions } from 'overlayscrollbars';
+import type { OverlayScrollbarsComponentProps } from 'overlayscrollbars-react';
+
 import { useElementHeight } from '../hooks/useElementHeight';
+import Scrollbar from '../Scrollbar';
 import Typography from '../Typography';
 import DropdownAction, { type DropdownActionProps } from './DropdownAction';
 import DropdownItemCard from './DropdownItemCard';
 import DropdownStatus from './DropdownStatus';
 import shortcutTextHandler from './shortcutTextHandler';
+
+// Helper function to recursively get all descendant IDs from a tree option (excluding the option itself)
+function getAllDescendantIds(option: DropdownOption): string[] {
+  const ids: string[] = [];
+
+  if (option.children && option.children.length > 0) {
+    option.children.forEach((child) => {
+      ids.push(String(child.id));
+      ids.push(...getAllDescendantIds(child));
+    });
+  }
+
+  return ids;
+}
 
 export interface DropdownItemProps<T extends DropdownType | undefined = DropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
   /**
@@ -104,6 +122,37 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    * Only fires when `maxHeight` is set and the list is scrollable.
    */
   onLeaveBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list is scrolled.
+   * Receives the scroll event and computed scroll information.
+   */
+  onScroll?: (
+    computed: { scrollTop: number; maxScrollTop: number },
+    target: HTMLDivElement,
+  ) => void;
+  /**
+   * Whether to defer the initialization of OverlayScrollbars.
+   * This can improve initial render performance.
+   * @default true
+   */
+  scrollbarDefer?: boolean | object;
+  /**
+   * Whether to disable the custom scrollbar component.
+   * When false (default), Scrollbar component will be used when maxHeight is set.
+   * When true, falls back to native div scrolling (backward compatible).
+   * @default false
+   */
+  scrollbarDisabled?: boolean;
+  /**
+   * The maximum width of the scrollable container.
+   * Can be a CSS value string (e.g., '500px', '100%') or a number (treated as pixels).
+   */
+  scrollbarMaxWidth?: number | string;
+  /**
+   * Additional options to pass to OverlayScrollbars.
+   * @see https://kingsora.github.io/OverlayScrollbars/#!documentation/options
+   */
+  scrollbarOptions?: PartialOptions;
 }
 
 /**
@@ -184,14 +233,22 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     emptyIcon,
     onReachBottom,
     onLeaveBottom,
+    onScroll,
+    scrollbarDefer = true,
+    scrollbarDisabled = false,
+    scrollbarMaxWidth,
+    scrollbarOptions,
   } = props;
 
   const optionsContent = truncateArrayDepth(options, 3);
   const listRef = useRef<HTMLUListElement | null>(null);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
+  const viewportRef = useRef<HTMLDivElement | null>(null);
+  const wasAtBottomRef = useRef(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
   const hasActions = Boolean(actionConfig?.showActions);
   const hasHeader = Boolean(headerContent);
+  const shouldUseScrollbar = maxHeight && !scrollbarDisabled;
 
   // Use custom hook to measure element heights
   const [actionRef, actionHeight] = useElementHeight<HTMLDivElement>(hasActions && !!maxHeight);
@@ -374,21 +431,51 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     return { elements, nextIndex: currentIndex };
   };
 
+  const calculateNodeSelectionState = useCallback(
+    (option: DropdownOption, selectedIds: string[]): { checked: boolean; indeterminate: boolean } => {
+      if (!option.children || option.children.length === 0) {
+        const isSelected = selectedIds.includes(String(option.id));
+        return { checked: isSelected, indeterminate: false };
+      }
+
+      // Get all descendant IDs (excluding the parent node itself)
+      const allDescendantIds = getAllDescendantIds(option);
+      const selectedDescendants = allDescendantIds.filter((id) => selectedIds.includes(id));
+      const totalDescendants = allDescendantIds.length;
+
+      if (totalDescendants === 0) {
+        // No descendants, check if parent itself is selected
+        const isSelected = selectedIds.includes(String(option.id));
+        return { checked: isSelected, indeterminate: false };
+      }
+
+      if (selectedDescendants.length === 0) {
+        return { checked: false, indeterminate: false };
+      }
+      if (selectedDescendants.length === totalDescendants) {
+        // All descendants are selected
+        return { checked: true, indeterminate: false };
+      }
+
+      // Some but not all descendants are selected
+      return { checked: false, indeterminate: true };
+    },
+    [],
+  );
+
   const renderTreeOptions = (
     optionList: DropdownOption[] | undefined,
     depth: number,
     startIndex: number,
   ): { elements: ReactNode[]; nextIndex: number } => {
     let currentIndex = startIndex;
+    const selectedIds = Array.isArray(value) ? value.map((id) => String(id)) : value ? [String(value)] : [];
 
     const elements = (optionList ?? []).flatMap((option) => {
       currentIndex += 1;
       const optionIndex = currentIndex;
       const level = Math.min(depth, 2) as 0 | 1 | 2;
       const isActive = optionIndex === activeIndex;
-      const isSelected = Array.isArray(value)
-        ? value.includes(option.id)
-        : value === option.id;
       const hasChildren = Boolean(option.children && option.children.length > 0);
       const isExpanded = hasChildren && expandedNodes.has(option.id);
       let prependIcon: IconDefinition | undefined = undefined;
@@ -400,12 +487,19 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       const shortcutText = option.shortcutText
         ? option.shortcutText
         : shortcutTextHandler(option.shortcutKeys ?? []);
+      const selectionState = hasChildren && mode === 'multiple'
+        ? calculateNodeSelectionState(option, selectedIds)
+        : {
+          checked: selectedIds.includes(String(option.id)),
+          indeterminate: false,
+        };
 
       const card = (
         <DropdownItemCard
           key={option.id}
           active={isActive}
-          checked={isSelected}
+          checked={selectionState.checked}
+          indeterminate={selectionState.indeterminate}
           disabled={disabled}
           id={`${listboxId}-option-${optionIndex}`}
           label={option.name}
@@ -414,9 +508,16 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           name={option.name}
           onClick={() => {
             if (disabled) return;
-            if (hasChildren && type === 'tree') {
+            if (hasChildren && type === 'tree' && mode === 'multiple' && option.showCheckbox) {
+              toggleExpand(option.id);
+            } else if (hasChildren && type === 'tree') {
               toggleExpand(option.id);
             } else {
+              onSelect?.(option);
+            }
+          }}
+          onCheckedChange={() => {
+            if (!disabled) {
               onSelect?.(option);
             }
           }}
@@ -534,6 +635,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     };
   }, [maxHeight, actionHeight, headerHeight]);
 
+  const getIsAtBottom = useCallback((viewport: HTMLDivElement) => {
+    const { scrollTop, scrollHeight, clientHeight } = viewport;
+    return scrollTop + clientHeight >= scrollHeight - 1;
+  }, []);
+
   useEffect(() => {
     const listElement = listRef.current;
     if (!listElement || disabled) {
@@ -570,10 +676,22 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     };
   }, [disabled, matchShortcut, onSelect, type, toggleExpand, visibleShortcutOptions]);
 
-  // Handle scroll to bottom detection
+  const handleViewportReady = useCallback(
+    (viewport: HTMLDivElement) => {
+      viewportRef.current = viewport;
+      listWrapperRef.current = viewport;
+      wasAtBottomRef.current = getIsAtBottom(viewport);
+    },
+    [getIsAtBottom],
+  );
+
   useEffect(() => {
+    if (shouldUseScrollbar) {
+      return;
+    }
+
     const listWrapperElement = listWrapperRef.current;
-    if (!listWrapperElement || !maxHeight || (!onReachBottom && !onLeaveBottom)) {
+    if (!listWrapperElement || !maxHeight || (!onReachBottom && !onLeaveBottom && !onScroll)) {
       return;
     }
 
@@ -587,6 +705,19 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = listWrapperElement;
+      const maxScrollTop = scrollHeight - clientHeight;
+
+      // Call onScroll callback if provided
+      if (onScroll) {
+        onScroll(
+          {
+            scrollTop,
+            maxScrollTop,
+          },
+          listWrapperElement,
+        );
+      }
+
       // Check if scrolled to bottom (with 1px threshold for rounding errors)
       const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
 
@@ -608,7 +739,45 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     return () => {
       listWrapperElement.removeEventListener('scroll', handleScroll);
     };
-  }, [maxHeight, onReachBottom, onLeaveBottom]);
+  }, [maxHeight, onReachBottom, onLeaveBottom, onScroll, shouldUseScrollbar]);
+
+  const scrollbarEvents = useMemo<OverlayScrollbarsComponentProps['events'] | undefined>(() => {
+    if (!shouldUseScrollbar || (!onReachBottom && !onLeaveBottom && !onScroll)) {
+      return undefined;
+    }
+
+    return {
+      scroll: (_instance: OverlayScrollbars, _event: Event) => {
+        const viewport = viewportRef.current;
+        if (!viewport) return;
+
+        const { scrollTop, scrollHeight, clientHeight } = viewport;
+        const maxScrollTop = scrollHeight - clientHeight;
+
+        if (onScroll) {
+          onScroll(
+            {
+              scrollTop,
+              maxScrollTop,
+            },
+            viewport,
+          );
+        }
+
+        const isAtBottom = getIsAtBottom(viewport);
+
+        if (isAtBottom && !wasAtBottomRef.current) {
+          onReachBottom?.();
+        }
+
+        if (!isAtBottom && wasAtBottomRef.current) {
+          onLeaveBottom?.();
+        }
+
+        wasAtBottomRef.current = isAtBottom;
+      },
+    };
+  }, [getIsAtBottom, shouldUseScrollbar, onReachBottom, onLeaveBottom, onScroll]);
 
   return (
     <ul
@@ -634,22 +803,46 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
       {
         maxHeight
           ? (
-            <div
-              ref={listWrapperRef}
-              className={dropdownClasses.listWrapper}
-              style={listWrapperStyle}
-            >
-              {shouldShowStatus ? (
-                <DropdownStatus
-                  status={status}
-                  loadingText={loadingText}
-                  emptyText={emptyText}
-                  emptyIcon={emptyIcon}
-                />
-              ) : (
-                renderedOptions
-              )}
-            </div>
+            shouldUseScrollbar ? (
+              <Scrollbar
+                className={dropdownClasses.listWrapper}
+                defer={scrollbarDefer}
+                disabled={false}
+                events={scrollbarEvents}
+                maxHeight={listWrapperStyle?.maxHeight}
+                maxWidth={scrollbarMaxWidth}
+                onViewportReady={handleViewportReady}
+                options={scrollbarOptions}
+              >
+                {shouldShowStatus ? (
+                  <DropdownStatus
+                    status={status}
+                    loadingText={loadingText}
+                    emptyText={emptyText}
+                    emptyIcon={emptyIcon}
+                  />
+                ) : (
+                  renderedOptions
+                )}
+              </Scrollbar>
+            ) : (
+              <div
+                ref={listWrapperRef}
+                className={dropdownClasses.listWrapper}
+                style={listWrapperStyle}
+              >
+                {shouldShowStatus ? (
+                  <DropdownStatus
+                    status={status}
+                    loadingText={loadingText}
+                    emptyText={emptyText}
+                    emptyIcon={emptyIcon}
+                  />
+                ) : (
+                  renderedOptions
+                )}
+              </div>
+            )
           )
           : shouldShowStatus ? (
             <DropdownStatus

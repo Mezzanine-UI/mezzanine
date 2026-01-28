@@ -211,6 +211,37 @@ export interface DropdownProps extends DropdownItemSharedProps {
    * Only fires when `maxHeight` is set and the list is scrollable.
    */
   onLeaveBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list is scrolled.
+   * Receives the scroll event and computed scroll information.
+   */
+  onScroll?: (
+    computed: { scrollTop: number; maxScrollTop: number },
+    target: HTMLDivElement,
+  ) => void;
+  /**
+   * Whether to defer the initialization of OverlayScrollbars.
+   * This can improve initial render performance.
+   * @default true
+   */
+  scrollbarDefer?: boolean | object;
+  /**
+   * Whether to disable the custom scrollbar component.
+   * When false (default), Scrollbar component will be used when maxHeight is set.
+   * When true, falls back to native div scrolling (backward compatible).
+   * @default false
+   */
+  scrollbarDisabled?: boolean;
+  /**
+   * The maximum width of the scrollable container.
+   * Can be a CSS value string (e.g., '500px', '100%') or a number (treated as pixels).
+   */
+  scrollbarMaxWidth?: number | string;
+  /**
+   * Additional options to pass to OverlayScrollbars.
+   * @see https://kingsora.github.io/OverlayScrollbars/#!documentation/options
+   */
+  scrollbarOptions?: import('overlayscrollbars').PartialOptions;
 }
 
 export default function Dropdown(props: DropdownProps) {
@@ -255,8 +286,13 @@ export default function Dropdown(props: DropdownProps) {
     disablePortal = false,
     onReachBottom,
     onLeaveBottom,
+    onScroll,
     mode,
     value,
+    scrollbarDefer,
+    scrollbarDisabled,
+    scrollbarMaxWidth,
+    scrollbarOptions,
   } = props;
   const isInline = inputPosition === 'inside';
   const inputId = useId();
@@ -524,6 +560,7 @@ export default function Dropdown(props: DropdownProps) {
       onSelect,
       onReachBottom,
       onLeaveBottom,
+      onScroll,
       options,
       type,
       status,
@@ -532,6 +569,10 @@ export default function Dropdown(props: DropdownProps) {
       emptyIcon,
       mode,
       value,
+      scrollbarDefer,
+      scrollbarDisabled,
+      scrollbarMaxWidth,
+      scrollbarOptions,
     }),
     [
       actionConfig,
@@ -546,6 +587,7 @@ export default function Dropdown(props: DropdownProps) {
       onSelect,
       onReachBottom,
       onLeaveBottom,
+      onScroll,
       options,
       type,
       status,
@@ -554,6 +596,10 @@ export default function Dropdown(props: DropdownProps) {
       emptyIcon,
       mode,
       value,
+      scrollbarDefer,
+      scrollbarDisabled,
+      scrollbarMaxWidth,
+      scrollbarOptions,
     ],
   );
 
