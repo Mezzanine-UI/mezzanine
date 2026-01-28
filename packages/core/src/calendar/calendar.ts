@@ -52,12 +52,15 @@ export const calendarClasses = {
 
   /** Cell classes */
   cell: calendarCellPrefix,
+  cellMode: (mode: CalendarMode) => `${calendarCellPrefix}--mode-${mode}`,
   cellInner: `${calendarCellPrefix}__inner`,
   cellWeekend: `${calendarCellPrefix}--weekend`,
   cellToday: `${calendarCellPrefix}--today`,
   cellActive: `${calendarCellPrefix}--active`,
   cellDisabled: `${calendarCellPrefix}--disabled`,
   cellWithAnnotation: `${calendarCellPrefix}--with-annotation`,
+  cellRangeStart: `${calendarCellPrefix}--range-start`,
+  cellRangeEnd: `${calendarCellPrefix}--range-end`,
 
   /** Twelve grid classes */
   twelveGrid: calendarTwelveGridPrefix,
@@ -79,8 +82,10 @@ export const calendarClasses = {
 };
 
 /** Constants */
-export const calendarYearsBase = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-export const calendarYearModuler = 10;
+export const calendarYearsBase = [
+  0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+];
+export const calendarYearModuler = 20;
 export const calendarMonths = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 export const calendarQuarters = [1, 2, 3, 4];
 export const calendarQuarterYearsCount = 5;
@@ -99,7 +104,7 @@ export function getYearRange(year: number, mod: number) {
 export function getCalendarYearRange(year: number) {
   const [start, end] = getYearRange(year, calendarYearModuler);
 
-  return [start - 1, end + 1];
+  return [start, end];
 }
 
 /**

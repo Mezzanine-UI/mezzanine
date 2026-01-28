@@ -45,16 +45,14 @@
 }
 
 .#{$week-prefix} {
-  width: 32px;
   height: 100%;
-  padding-top: 34px;
+  padding-top: 40px;
   display: flex;
   flex-flow: column;
 
   &__row {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    padding: spacing.semantic-variable(padding, vertical, micro) 0 0;
+    width: spacing.semantic-variable(size, element, loose);
+    height: spacing.semantic-variable(size, element, loose);
     position: relative;
 
     &::after {
@@ -71,11 +69,12 @@
 
 .#{$days-grid-prefix} {
   flex: 1;
+  display: grid;
+  grid-auto-flow: row;
+  gap: spacing.semantic-variable(padding, vertical, micro);
 }
 
 .#{$button-prefix} {
-  --today-dot-color: #{palette.semantic-variable(icon, brand)};
-
   @include btn-utils.reset();
 
   display: flex;
@@ -105,12 +104,12 @@
   }
 
   &--inRange {
+    border-radius: 0;
     background-color: palette.semantic-variable("background", brand-faint);
   }
 
   &--active {
-    --today-dot-color: #{palette.semantic-variable(icon, fixed-light)};
-
+    border-radius: radius.variable(base);
     color: palette.semantic-variable(text, fixed-light);
     background-color: palette.semantic-variable("background", brand);
 
@@ -129,30 +128,13 @@
     color: palette.semantic-variable(text, neutral-faint);
   }
 
-  .#{$cell-prefix}--today & {
-    &::after {
-      position: absolute;
-      bottom: 7px;
-      left: 50%;
-      z-index: 1;
-      transform: translateX(-50%);
-      content: '';
-      width: spacing.semantic-variable(size, element, micro);
-      height: spacing.semantic-variable(size, element, micro);
-      border-radius: 1px;
-      background-color: var(--today-dot-color);
-    }
-  }
-
-  .#{$cell-prefix}--with-annotation & {
-    &::after {
-      bottom: 3px;
-    }
-  }
-
   &:focus-visible {
     outline: none;
     box-shadow: effect.variable(focus, inner);
+
+    &:not(.#{$button-prefix}--active):not(.#{$button-prefix}--inRange) {
+      background-color: palette.semantic-variable("background", neutral-faint);
+    }
   }
 }
 
@@ -161,11 +143,6 @@
   grid-template-columns: repeat(7, minmax(0, 1fr));
   column-gap: 0;
   width: 100%;
-  padding: spacing.semantic-variable(padding, vertical, micro) 0 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
 
   .#{$prefix}--quarter & {
     padding: spacing.semantic-variable(padding, vertical, tiny) 0;
@@ -185,6 +162,7 @@
 }
 
 .#{$cell-prefix} {
+  --today-dot-color: #{palette.semantic-variable(icon, brand)};
   --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
 
   position: relative;
@@ -195,6 +173,24 @@
   transition: transition.standard(color);
 
   @include typography.semantic-variable(input);
+
+  &--mode-day,
+  &--mode-week {
+    width: spacing.semantic-variable(size, element, loose);
+    height: spacing.semantic-variable(size, element, loose);
+  }
+
+  &--mode-month,
+  &--mode-half-year,
+  &--mode-year {
+    width: spacing.semantic-variable(size, element, extra);
+    height: spacing.semantic-variable(size, element, loose);
+  }
+
+  &--mode-quarter {
+    width: spacing.semantic-variable(size, element, wide-expanded);
+    height: spacing.semantic-variable(size, element, loose);
+  }
 
   button {
     width: 100%;
@@ -216,12 +212,18 @@
     --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, brand)};
   }
 
-  &--with-annotation {
-    width: spacing.semantic-variable(size, element, extra-wide);
-    height: spacing.semantic-variable(size, element, extra-wide);
+  &--range-start {
+    border-radius: radius.variable(base) 0 0 radius.variable(base);
+    background-color: palette.semantic-variable("background", brand-faint);
+  }
+
+  &--range-end {
+    border-radius: 0 radius.variable(base) radius.variable(base) 0;
+    background-color: palette.semantic-variable("background", brand-faint);
   }
 
   &--active {
+    --today-dot-color: #{palette.semantic-variable(icon, fixed-light)};
     --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
   }
 
@@ -233,16 +235,35 @@
   .#{$prefix}--half-year & {
     padding-top: 32px;
   }
+
+  &--today {
+    &::after {
+      position: absolute;
+      bottom: 7px;
+      left: 50%;
+      z-index: 1;
+      transform: translateX(-50%);
+      content: '';
+      width: spacing.semantic-variable(size, element, micro);
+      height: spacing.semantic-variable(size, element, micro);
+      border-radius: 1px;
+      background-color: var(--today-dot-color);
+      pointer-events: none;
+    }
+
+    &.#{$cell-prefix}--with-annotation::after {
+      bottom: 3px;
+    }
+  }
 }
 
 .#{$twelve-grid-prefix} {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: 32px;
-  gap: calc(#{spacing.semantic-variable(padding, vertical, micro)} * 2) spacing.semantic-variable(gap, tiny);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(#{spacing.semantic-variable(padding, vertical, micro)} * 2) 0;
   width: 100%;
 
-  @include typography.semantic-variable(label-primary);
+  @include typography.semantic-variable(input);
 
   color: palette.semantic-variable(text, neutral-solid);
 }
