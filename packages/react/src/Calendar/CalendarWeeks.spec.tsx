@@ -77,16 +77,17 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const cellElement = getByText(`${testDate}`).parentElement!;
-      const buttonElement = cellElement.parentElement;
+      // DOM structure: button > CalendarCell (div) > div.mzn-calendar-button > text
+      const textElement = getByText(`${testDate}`);
+      const innerDiv = textElement.parentElement!;
+      const cellElement = innerDiv.parentElement!;
+      const buttonElement = cellElement.parentElement!;
 
       expect(
         buttonElement?.classList.contains('mzn-calendar-button--disabled'),
       ).toBe(true);
       expect(buttonElement?.getAttribute('aria-disabled')).toBe('true');
-      expect(
-        cellElement.classList.contains('mzn-calendar-cell--disabled'),
-      ).toBe(true);
+      expect(buttonElement?.getAttribute('disabled')).toBe('');
     });
   });
 
@@ -109,12 +110,15 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      const target = getByText(`${testTargetDate}`).parentElement
-        ?.parentElement;
+      // DOM structure: button > CalendarCell (div) > div.mzn-calendar-button > text
+      const textElement = getByText(`${testTargetDate}`);
+      const innerDiv = textElement.parentElement!;
+      const cellElement = innerDiv.parentElement!;
+      const buttonElement = cellElement.parentElement!;
 
-      expect(target?.classList.contains('mzn-calendar-button--inRange')).toBe(
-        true,
-      );
+      expect(
+        buttonElement?.classList.contains('mzn-calendar-button--inRange'),
+      ).toBe(true);
     });
   });
 
@@ -212,7 +216,7 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate);
+      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate, 'en-us');
     });
   });
 
@@ -230,10 +234,11 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
       const dateElement = getByText(`${testDate}`);
-      const buttonElement = dateElement.parentElement?.parentElement;
+      // The active class is now on the inner div button inside CalendarCell
+      const innerButton = dateElement;
 
       expect(
-        buttonElement?.classList.contains('mzn-calendar-button--active'),
+        innerButton?.classList.contains('mzn-calendar-button--active'),
       ).toBe(true);
     });
   });

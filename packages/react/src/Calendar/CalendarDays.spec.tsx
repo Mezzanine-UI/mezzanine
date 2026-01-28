@@ -209,7 +209,7 @@ describe('<CalendarDays />', () => {
         </CalendarConfigProvider>,
       );
 
-      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate);
+      expect(getCalendarGridSpy).toHaveBeenCalledWith(referenceDate, 'en-us');
     });
   });
 
