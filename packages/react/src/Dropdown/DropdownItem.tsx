@@ -513,7 +513,12 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
             } else if (hasChildren && type === 'tree') {
               toggleExpand(option.id);
             } else {
-              onSelect?.(option);
+              // In `tree` + `multiple` mode, `DropdownItemCard` already triggers selection via
+              // `onCheckedChange` when row is clicked (it toggles checked first, then calls `onClick`),
+              // so calling `onSelect` here would cause it to fire twice for leaf nodes.
+              if (!(type === 'tree' && mode === 'multiple')) {
+                onSelect?.(option);
+              }
             }
           }}
           onCheckedChange={() => {
