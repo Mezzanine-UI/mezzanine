@@ -1,6 +1,3 @@
-// Mock CSS imports to avoid Jest parsing errors
-jest.mock('overlayscrollbars/overlayscrollbars.css', () => ({}));
-
 import { FilterAreaActionsAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
 import { FormFieldSize } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
