@@ -1,4 +1,7 @@
-import { calendarClasses as classes } from '@mezzanine-ui/core/calendar';
+import {
+  CalendarMode,
+  calendarClasses as classes,
+} from '@mezzanine-ui/core/calendar';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
@@ -13,6 +16,11 @@ export interface CalendarCellProps
    */
   disabled?: boolean;
   /**
+   * Calendar mode for applying mode specific styles.
+   * @default 'day'
+   */
+  mode?: CalendarMode;
+  /**
    * Apply today styles if true.
    */
   today?: boolean;
@@ -20,6 +28,22 @@ export interface CalendarCellProps
    * The role attribute for accessibility
    */
   role?: string;
+  /**
+   * Apply range start styles if true.
+   */
+  isRangeStart?: boolean;
+  /**
+   * Apply range end styles if true.
+   */
+  isRangeEnd?: boolean;
+  /**
+   * Apply weekend styles if true.
+   */
+  isWeekend?: boolean;
+  /**
+   * Apply annotation styles if true.
+   */
+  withAnnotation?: boolean;
 }
 
 /**
@@ -32,8 +56,13 @@ function CalendarCell(props: CalendarCellProps) {
     children,
     className,
     disabled,
+    mode = 'day',
     today,
     role,
+    isRangeStart,
+    isRangeEnd,
+    isWeekend,
+    withAnnotation,
     ...restCalendarCellProps
   } = props;
 
@@ -42,10 +71,15 @@ function CalendarCell(props: CalendarCellProps) {
       role={role}
       className={cx(
         classes.cell,
+        classes.cellMode(mode),
         {
           [classes.cellToday]: today,
           [classes.cellActive]: active,
           [classes.cellDisabled]: disabled,
+          [classes.cellWithAnnotation]: withAnnotation,
+          [classes.cellWeekend]: isWeekend,
+          [classes.cellRangeStart]: isRangeStart,
+          [classes.cellRangeEnd]: isRangeEnd,
         },
         className,
       )}

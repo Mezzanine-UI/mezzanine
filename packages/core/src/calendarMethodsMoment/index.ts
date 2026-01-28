@@ -71,6 +71,15 @@ const CalendarMethodsMoment: CalendarMethodsType = {
   },
   getFirstDayOfWeek: (locale) => getActualFirstDayOfWeek(locale),
   isISOWeekLocale,
+  getWeekends: (locale) => {
+    // Saturday and Sunday are always weekends
+    // For Monday-first: [Mon, Tue, Wed, Thu, Fri, Sat, Sun] → positions 5, 6 are weekends
+    // For Sunday-first: [Sun, Mon, Tue, Wed, Thu, Fri, Sat] → positions 0, 6 are weekends
+    if (isMondayFirst(locale)) {
+      return [false, false, false, false, false, true, true];
+    }
+    return [true, false, false, false, false, false, true];
+  },
 
   /** Manipulate */
   addHour: (date, diff) => {

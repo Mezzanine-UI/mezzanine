@@ -37,6 +37,11 @@ const CalendarMethodsLuxon: CalendarMethodsType = {
     return names[month];
   },
   getMonthShortNames: (locale) => Info.months('short', { locale }),
+  getWeekends: () => {
+    // Luxon always uses ISO week (Monday-first)
+    // [Mon, Tue, Wed, Thu, Fri, Sat, Sun] → positions 5, 6 are weekends
+    return [false, false, false, false, false, true, true];
+  },
 
   /** Manipulate */
   addHour: (date, diff) =>

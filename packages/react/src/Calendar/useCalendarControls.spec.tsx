@@ -44,7 +44,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('day');
 
       act(() => {
-        onPrev();
+        onPrev?.();
       });
 
       expect(
@@ -67,7 +67,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('day');
 
       act(() => {
-        onNext();
+        onNext?.();
       });
 
       expect(
@@ -90,7 +90,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('week');
 
       act(() => {
-        onPrev();
+        onPrev?.();
       });
 
       expect(
@@ -113,7 +113,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('week');
 
       act(() => {
-        onNext();
+        onNext?.();
       });
 
       expect(
@@ -136,7 +136,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('month');
 
       act(() => {
-        onPrev();
+        onPrev?.();
       });
 
       expect(
@@ -156,7 +156,7 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('month');
 
       act(() => {
-        onNext();
+        onNext?.();
       });
 
       expect(
@@ -164,7 +164,7 @@ describe('useCalendarControls', () => {
       ).toBe(-1);
     });
 
-    it('should minus 10 year on referenceDate when mode="year"', () => {
+    it('should minus 20 year on referenceDate when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useCalendarControls(initialReferenceDate, 'year'),
@@ -176,15 +176,15 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('year');
 
       act(() => {
-        onPrev();
+        onPrev?.();
       });
 
       expect(
         moment(initialReferenceDate).diff(result.current.referenceDate, 'year'),
-      ).toBe(10);
+      ).toBe(20);
     });
 
-    it('should add 10 year on referenceDate when mode="year"', () => {
+    it('should add 20 year on referenceDate when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useCalendarControls(initialReferenceDate, 'year'),
@@ -196,12 +196,12 @@ describe('useCalendarControls', () => {
       expect(currentMode).toBe('year');
 
       act(() => {
-        onNext();
+        onNext?.();
       });
 
       expect(
         moment(initialReferenceDate).diff(result.current.referenceDate, 'year'),
-      ).toBe(-10);
+      ).toBe(-20);
     });
   });
 });

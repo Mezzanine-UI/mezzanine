@@ -9,6 +9,7 @@ import type { CalendarYearsProps } from './CalendarYears';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
+import CalendarCell from './CalendarCell';
 
 export interface CalendarMonthsProps
   extends Omit<
@@ -56,7 +57,10 @@ export interface CalendarMonthsProps
 function CalendarMonths(props: CalendarMonthsProps) {
   const {
     locale,
+    getNow,
+    getMonth,
     getMonthShortNames,
+    isInMonth,
     isMonthIncluded,
     getCurrentMonthFirstDate,
     setMonth,
@@ -91,6 +95,14 @@ function CalendarMonths(props: CalendarMonthsProps) {
             isMonthDisabled?.(monthDateType) ||
             false;
           const inRange = isMonthInRange && isMonthInRange(monthDateType);
+          const isRangeStart =
+            value && value.length > 0
+              ? isMonthIncluded(monthDateType, [value[0]])
+              : false;
+          const isRangeEnd =
+            value && value.length > 0
+              ? isMonthIncluded(monthDateType, [value[value.length - 1]])
+              : false;
 
           const onClick = onClickProp
             ? () => {
@@ -120,23 +132,31 @@ function CalendarMonths(props: CalendarMonthsProps) {
             .join(', ');
 
           return (
-            <button
+            <CalendarCell
               key={month}
-              type="button"
-              aria-disabled={disabled}
-              disabled={disabled}
-              aria-label={ariaLabel}
-              aria-pressed={active}
-              className={cx(classes.button, {
-                [classes.buttonActive]: active,
-                [classes.buttonInRange]: inRange,
-                [classes.buttonDisabled]: disabled,
-              })}
-              onClick={onClick}
-              onMouseEnter={onMouseEnter}
+              mode="month"
+              today={isInMonth(monthDateType, getMonth(getNow()))}
+              active={active}
+              isRangeStart={isRangeStart}
+              isRangeEnd={isRangeEnd}
             >
-              {monthNames[month]}
-            </button>
+              <button
+                type="button"
+                aria-disabled={disabled}
+                disabled={disabled}
+                aria-label={ariaLabel}
+                aria-pressed={active}
+                className={cx(classes.button, {
+                  [classes.buttonActive]: active,
+                  [classes.buttonInRange]: inRange,
+                  [classes.buttonDisabled]: disabled,
+                })}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+              >
+                {monthNames[month]}
+              </button>
+            </CalendarCell>
           );
         })}
       </div>

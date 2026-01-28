@@ -33,7 +33,7 @@ describe('<CalendarControls />', () => {
       const { getByTitle } = render(
         <CalendarControls onNext={onNext}>No Data</CalendarControls>,
       );
-      const buttonElement = getByTitle('Next');
+      const buttonElement = getByTitle('Next Month');
       const iconElement = buttonElement.querySelector(
         '[data-icon-name="chevron-right"]',
       );
@@ -56,7 +56,7 @@ describe('<CalendarControls />', () => {
       const { getByTitle } = render(
         <CalendarControls onPrev={onPrev}>No Data</CalendarControls>,
       );
-      const buttonElement = getByTitle('Previous');
+      const buttonElement = getByTitle('Previous Month');
       const iconElement = buttonElement.querySelector(
         '[data-icon-name="chevron-left"]',
       );
@@ -81,7 +81,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Double Next');
+      const buttonElement = getByTitle('Next Year');
       const iconElement = buttonElement.querySelector(
         '[data-icon-name="double-chevron-right"]',
       );
@@ -106,7 +106,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Double Previous');
+      const buttonElement = getByTitle('Previous Year');
       const iconElement = buttonElement.querySelector(
         '[data-icon-name="double-chevron-left"]',
       );
@@ -131,7 +131,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Next') as HTMLButtonElement;
+      const buttonElement = getByTitle('Next Month') as HTMLButtonElement;
 
       expect(buttonElement.disabled).toBe(true);
       expect(buttonElement.hasAttribute('disabled')).toBe(true);
@@ -151,7 +151,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Previous') as HTMLButtonElement;
+      const buttonElement = getByTitle('Previous Month') as HTMLButtonElement;
 
       expect(buttonElement.disabled).toBe(true);
       expect(buttonElement.hasAttribute('disabled')).toBe(true);
@@ -171,7 +171,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Double Next') as HTMLButtonElement;
+      const buttonElement = getByTitle('Next Year') as HTMLButtonElement;
 
       expect(buttonElement.disabled).toBe(true);
       expect(buttonElement.hasAttribute('disabled')).toBe(true);
@@ -191,7 +191,7 @@ describe('<CalendarControls />', () => {
           No Data
         </CalendarControls>,
       );
-      const buttonElement = getByTitle('Double Previous') as HTMLButtonElement;
+      const buttonElement = getByTitle('Previous Year') as HTMLButtonElement;
 
       expect(buttonElement.disabled).toBe(true);
       expect(buttonElement.hasAttribute('disabled')).toBe(true);

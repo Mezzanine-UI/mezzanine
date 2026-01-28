@@ -23,10 +23,11 @@ export interface CalendarDayOfWeekProps
  * You may use it to compose your own calendar.
  */
 function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
-  const { getWeekDayNames, locale } = useCalendarContext();
+  const { getWeekDayNames, getWeekends, locale } = useCalendarContext();
   const { displayWeekDayLocale = locale, className, ...restRowProps } = props;
 
   const weekDayNames = getWeekDayNames(displayWeekDayLocale);
+  const weekends = getWeekends(displayWeekDayLocale);
 
   return (
     <div
@@ -39,6 +40,7 @@ function CalendarDayOfWeek(props: CalendarDayOfWeekProps) {
         <CalendarCell
           key={`CALENDAR_DAY_OF_WEEK/${name}-${idx}`}
           role="columnheader"
+          isWeekend={weekends[idx]}
         >
           {name}
         </CalendarCell>
