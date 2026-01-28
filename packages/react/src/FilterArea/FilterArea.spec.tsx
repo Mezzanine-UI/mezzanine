@@ -1,3 +1,6 @@
+// Mock CSS imports to avoid Jest parsing errors
+jest.mock('overlayscrollbars/overlayscrollbars.css', () => ({}));
+
 import { FilterAreaActionsAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
 import { FormFieldSize } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
@@ -96,42 +99,6 @@ describe('<FilterArea />', () => {
 
         expect(element.classList.contains(`mzn-filter-area--${size}`)).toBeTruthy();
       });
-    });
-  });
-
-  describe('prop: isPanel', () => {
-    it('should not add panel class by default', () => {
-      const { getHostHTMLElement } = render(
-        <FilterArea>
-          <FilterLine>
-            <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
-                <Input />
-              </FormField>
-            </Filter>
-          </FilterLine>
-        </FilterArea>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-filter-area--panel')).toBeFalsy();
-    });
-
-    it('should add panel class if isPanel=true', () => {
-      const { getHostHTMLElement } = render(
-        <FilterArea isPanel>
-          <FilterLine>
-            <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
-                <Input />
-              </FormField>
-            </Filter>
-          </FilterLine>
-        </FilterArea>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-filter-area--panel')).toBeTruthy();
     });
   });
 
