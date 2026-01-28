@@ -158,7 +158,6 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
                   isRangeEnd={isRangeEnd}
                 >
                   <button
-                    key={halfYear}
                     type="button"
                     disabled={disabled}
                     aria-disabled={disabled}

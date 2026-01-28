@@ -123,7 +123,6 @@ function CalendarYears(props: CalendarYearsProps) {
               isRangeEnd={isRangeEnd}
             >
               <button
-                key={base + start}
                 type="button"
                 aria-disabled={disabled}
                 disabled={disabled}

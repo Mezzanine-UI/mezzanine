@@ -34,12 +34,12 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
         single: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
         double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
       },
-      // month mode: only single (year)
+      // month mode: only single
       month: {
         single: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
         double: null,
       },
-      // year mode: only single (10 years)
+      // year mode: only single
       year: {
         single: [
           (date) => addYear(date, -calendarYearModuler),
@@ -47,7 +47,7 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
         ],
         double: null,
       },
-      // quarter mode: only single (5 years)
+      // quarter mode: only single
       quarter: {
         single: [
           (date) => addYear(date, -calendarQuarterYearsCount),
@@ -55,7 +55,7 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
         ],
         double: null,
       },
-      // half-year mode: only single (5 years)
+      // half-year mode: only single
       'half-year': {
         single: [
           (date) => addYear(date, -calendarHalfYearYearsCount),

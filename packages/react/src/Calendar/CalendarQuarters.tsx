@@ -164,7 +164,6 @@ function CalendarQuarters(props: CalendarQuartersProps) {
                   isRangeEnd={isRangeEnd}
                 >
                   <button
-                    key={quarter}
                     type="button"
                     disabled={disabled}
                     aria-disabled={disabled}

@@ -91,22 +91,50 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     [getCalendarGrid, referenceDate, displayWeekDayLocale],
   );
 
-  const weekFirstDates = useMemo(() => {
+  // Pre-calculate all weeks data including dates and week first dates
+  const weeksData = useMemo(() => {
+    const thisMonth = getMonth(referenceDate);
+
     return daysGrid.map((week, index) => {
-      const dateNum = week[0];
-      const isPrevMonth = index === 0 && dateNum > 7;
-      const isNextMonth = index > 3 && dateNum <= 14;
-      const thisMonth = getMonth(referenceDate);
+      const dates: DateType[] = [];
+      const weekStartInPrevMonth = index === 0 && week[0] > 7;
+      const weekStartInNextMonth = index > 3 && week[0] <= 14;
 
-      const month = isPrevMonth
-        ? thisMonth - 1
-        : isNextMonth
-          ? thisMonth + 1
-          : thisMonth;
+      week.forEach((dateNum) => {
+        const isPrevMonth = index === 0 && dateNum > 7;
+        const isNextMonth = index > 3 && dateNum <= 14;
 
-      const weekFirstDate = setDate(setMonth(referenceDate, month), dateNum);
+        const month = isPrevMonth
+          ? thisMonth - 1
+          : isNextMonth
+            ? thisMonth + 1
+            : thisMonth;
+        const date = setMillisecond(
+          setSecond(
+            setMinute(
+              setHour(setDate(setMonth(referenceDate, month), dateNum), 0),
+              0,
+            ),
+            0,
+          ),
+          0,
+        );
 
-      return getCurrentWeekFirstDate(weekFirstDate, displayWeekDayLocale);
+        dates.push(date);
+      });
+
+      const weekFirstDate = getCurrentWeekFirstDate(
+        dates[0],
+        displayWeekDayLocale,
+      );
+
+      return {
+        week,
+        dates,
+        weekStartInPrevMonth,
+        weekStartInNextMonth,
+        weekFirstDate,
+      };
     });
   }, [
     daysGrid,
@@ -114,6 +142,48 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     referenceDate,
     setDate,
     setMonth,
+    setHour,
+    setMinute,
+    setSecond,
+    setMillisecond,
+    getCurrentWeekFirstDate,
+    displayWeekDayLocale,
+  ]);
+
+  // Pre-calculate last week dates for range end comparison
+  const lastWeekDatesMap = useMemo(() => {
+    if (!value || value.length === 0) return null;
+
+    const rangeLastDate =
+      value.length === 1
+        ? setDate(value[0], getDate(value[0]) + 6)
+        : value[value.length - 1];
+
+    const lastWeekFirstDate = getCurrentWeekFirstDate(
+      rangeLastDate,
+      displayWeekDayLocale,
+    );
+    const lastWeekDates: DateType[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      lastWeekDates.push(
+        setDate(
+          setMonth(lastWeekFirstDate, getMonth(lastWeekFirstDate)),
+          getDate(lastWeekFirstDate) + i,
+        ),
+      );
+    }
+
+    return {
+      rangeLastDate,
+      lastWeekDates,
+    };
+  }, [
+    value,
+    setDate,
+    setMonth,
+    getDate,
+    getMonth,
     getCurrentWeekFirstDate,
     displayWeekDayLocale,
   ]);
@@ -121,190 +191,162 @@ function CalendarWeeks(props: CalendarWeeksProps) {
   return (
     <div {...rest} className={cx(classes.board, className)}>
       <div className={classes.week}>
-        {weekFirstDates.map((firstDate, idx) => (
+        {weeksData.map(({ weekFirstDate }, idx) => (
           <div key={idx} className={classes.weekRow}>
             <CalendarCell disabled>
-              {getWeek(firstDate, displayWeekDayLocale)}
+              {getWeek(weekFirstDate, displayWeekDayLocale)}
             </CalendarCell>
           </div>
         ))}
       </div>
       <div className={classes.daysGrid}>
         <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
-        {daysGrid.map((week, index) => {
-          const dates: DateType[] = [];
-          const weekStartInPrevMonth = index === 0 && week[0] > 7;
-          const weekStartInNextMonth = index > 3 && week[0] <= 14;
+        {weeksData.map(
+          (
+            { week, dates, weekStartInPrevMonth, weekStartInNextMonth },
+            index,
+          ) => {
+            const disabled =
+              isYearDisabled?.(dates[0]) ||
+              isMonthDisabled?.(dates[0]) ||
+              isWeekDisabled?.(dates[0]) ||
+              false;
+            const inactive =
+              !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
 
-          week.forEach((dateNum) => {
-            const isPrevMonth = index === 0 && dateNum > 7;
-            const isNextMonth = index > 3 && dateNum <= 14;
-            const thisMonth = getMonth(referenceDate);
+            const weekIncluded =
+              !disabled &&
+              !inactive &&
+              value &&
+              isWeekIncluded(dates[0], value, displayWeekDayLocale);
 
-            const month = isPrevMonth
-              ? thisMonth - 1
-              : isNextMonth
-                ? thisMonth + 1
-                : thisMonth;
-            const date = setMillisecond(
-              setSecond(
-                setMinute(
-                  setHour(setDate(setMonth(referenceDate, month), dateNum), 0),
-                  0,
-                ),
-                0,
-              ),
-              0,
-            );
+            const rangeFirstDate = value && value.length > 0 ? value[0] : null;
+            const rangeLastDate = lastWeekDatesMap?.rangeLastDate ?? null;
 
-            dates.push(date);
-          });
+            const inRange =
+              !disabled && isWeekInRange && isWeekInRange(dates[0]);
 
-          const disabled =
-            isYearDisabled?.(dates[0]) ||
-            isMonthDisabled?.(dates[0]) ||
-            isWeekDisabled?.(dates[0]) ||
-            false;
-          const inactive =
-            !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
-
-          const weekIncluded =
-            !disabled &&
-            !inactive &&
-            value &&
-            isWeekIncluded(dates[0], value, displayWeekDayLocale);
-
-          const rangeFirstDate = value && value.length > 0 ? value[0] : null;
-          const rangeLastDate =
-            value && value.length > 0 ? value[value.length - 1] : null;
-
-          const inRange =
-            !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
-          const inRangeStart = value ? isSameDate(dates[0], value[0]) : false;
-          const inRangeEnd = value
-            ? isSameDate(dates[dates.length - 1], value[value.length - 1])
-            : false;
-
-          const onMouseEnter = onWeekHover
-            ? () => {
-                onWeekHover(
-                  getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
-                );
-              }
-            : undefined;
-
-          const onClick = onClickProp
-            ? () => {
-                onClickProp(
-                  getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
-                );
-              }
-            : undefined;
-
-          // Accessible week label for screen readers
-          const firstDate = new Date(dates[0]);
-          const lastDate = new Date(dates[dates.length - 1]);
-          const weekNum = getWeek(dates[0], displayWeekDayLocale);
-          const startMonth = firstDate.toLocaleDateString(
-            displayWeekDayLocale,
-            { month: 'short' },
-          );
-          const endMonth = lastDate.toLocaleDateString(displayWeekDayLocale, {
-            month: 'short',
-          });
-          const startDay = firstDate.getDate();
-          const endDay = lastDate.getDate();
-
-          const ariaLabel = [
-            `Week ${weekNum}`,
-            `${startMonth} ${startDay} to ${endMonth} ${endDay}`,
-            weekIncluded && 'Selected',
-            disabled && 'Not available',
-            inactive && 'Outside current month',
-          ]
-            .filter(Boolean)
-            .join(', ');
-
-          return (
-            <button
-              key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
-              type="button"
-              className={cx(classes.button, classes.row, {
-                [classes.buttonInRange]: inRange,
-                [classes.buttonDisabled]: disabled,
-              })}
-              disabled={disabled}
-              aria-disabled={disabled}
-              aria-label={ariaLabel}
-              aria-pressed={weekIncluded}
-              onClick={onClick}
-              onMouseEnter={onMouseEnter}
-            >
-              {week.map((dateNum, dateIndex) => {
-                let cellActive = false;
-                if (weekIncluded && rangeFirstDate && rangeLastDate) {
-                  const currentDate = dates[dateIndex];
-                  const isFirstWeekFirstDate =
-                    isWeekIncluded(
-                      currentDate,
-                      [rangeFirstDate],
-                      displayWeekDayLocale,
-                    ) && isSameDate(currentDate, rangeFirstDate);
-
-                  const lastWeekLastDate = getCurrentWeekFirstDate(
-                    rangeLastDate,
-                    displayWeekDayLocale,
+            const onMouseEnter = onWeekHover
+              ? () => {
+                  onWeekHover(
+                    getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
                   );
-                  const lastWeekDates: DateType[] = [];
-                  for (let i = 0; i < 7; i++) {
-                    lastWeekDates.push(
-                      setDate(
-                        setMonth(lastWeekLastDate, getMonth(lastWeekLastDate)),
-                        getDate(lastWeekLastDate) + i,
-                      ),
-                    );
-                  }
-                  const isLastWeekLastDate =
-                    isWeekIncluded(
-                      currentDate,
-                      [rangeLastDate],
-                      displayWeekDayLocale,
-                    ) && isSameDate(currentDate, lastWeekDates[6]);
-
-                  cellActive = isFirstWeekFirstDate || isLastWeekLastDate;
                 }
+              : undefined;
 
-                return (
-                  <CalendarCell
-                    key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
-                    mode="week"
-                    today={isSameDate(dates[dateIndex], getNow())}
-                    disabled={
-                      disabled ||
-                      !isInMonth(dates[dateIndex], getMonth(referenceDate))
-                    }
-                    active={cellActive}
-                    isRangeStart={inRangeStart}
-                    isRangeEnd={inRangeEnd}
-                  >
-                    <div
-                      className={cx(classes.button, {
-                        [classes.buttonActive]: cellActive,
-                      })}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        pointerEvents: 'none',
-                      }}
+            const onClick = onClickProp
+              ? () => {
+                  onClickProp(
+                    getCurrentWeekFirstDate(dates[0], displayWeekDayLocale),
+                  );
+                }
+              : undefined;
+
+            // Accessible week label for screen readers
+            const firstDate = new Date(dates[0]);
+            const lastDate = new Date(dates[dates.length - 1]);
+            const weekNum = getWeek(dates[0], displayWeekDayLocale);
+            const startMonth = firstDate.toLocaleDateString(
+              displayWeekDayLocale,
+              { month: 'short' },
+            );
+            const endMonth = lastDate.toLocaleDateString(displayWeekDayLocale, {
+              month: 'short',
+            });
+            const startDay = firstDate.getDate();
+            const endDay = lastDate.getDate();
+
+            const ariaLabel = [
+              `Week ${weekNum}`,
+              `${startMonth} ${startDay} to ${endMonth} ${endDay}`,
+              weekIncluded && 'Selected',
+              disabled && 'Not available',
+              inactive && 'Outside current month',
+            ]
+              .filter(Boolean)
+              .join(', ');
+
+            return (
+              <button
+                key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
+                type="button"
+                className={cx(classes.button, classes.row, {
+                  [classes.buttonInRange]: inRange,
+                  [classes.buttonDisabled]: disabled,
+                })}
+                disabled={disabled}
+                aria-disabled={disabled}
+                aria-label={ariaLabel}
+                aria-pressed={weekIncluded}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+              >
+                {week.map((dateNum, dateIndex) => {
+                  let cellActive = false;
+                  let isFirstWeekFirstDate = false;
+                  let isLastWeekLastDate = false;
+
+                  if (
+                    weekIncluded &&
+                    rangeFirstDate &&
+                    rangeLastDate &&
+                    lastWeekDatesMap
+                  ) {
+                    const currentDate = dates[dateIndex];
+                    isFirstWeekFirstDate =
+                      isWeekIncluded(
+                        currentDate,
+                        [rangeFirstDate],
+                        displayWeekDayLocale,
+                      ) && isSameDate(currentDate, rangeFirstDate);
+
+                    isLastWeekLastDate =
+                      isWeekIncluded(
+                        currentDate,
+                        [rangeLastDate],
+                        displayWeekDayLocale,
+                      ) &&
+                      isSameDate(
+                        currentDate,
+                        lastWeekDatesMap.lastWeekDates[6],
+                      );
+
+                    cellActive = isFirstWeekFirstDate || isLastWeekLastDate;
+                  }
+
+                  return (
+                    <CalendarCell
+                      key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
+                      mode="week"
+                      today={isSameDate(dates[dateIndex], getNow())}
+                      disabled={
+                        disabled ||
+                        !isInMonth(dates[dateIndex], getMonth(referenceDate))
+                      }
+                      active={cellActive}
+                      isRangeStart={isFirstWeekFirstDate}
+                      isRangeEnd={isLastWeekLastDate}
                     >
-                      {dateNum}
-                    </div>
-                  </CalendarCell>
-                );
-              })}
-            </button>
-          );
-        })}
+                      <div
+                        className={cx(classes.button, {
+                          [classes.buttonInRange]: weekIncluded,
+                          [classes.buttonActive]: cellActive,
+                        })}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        {dateNum}
+                      </div>
+                    </CalendarCell>
+                  );
+                })}
+              </button>
+            );
+          },
+        )}
       </div>
     </div>
   );
