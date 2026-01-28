@@ -24,6 +24,7 @@ import React, {
 import Dropdown from '../Dropdown';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import {
+  SelectMultipleValueControl,
   UseSelectMultipleValueControl,
   UseSelectSingleValueControl,
   useSelectValueControl,
@@ -56,7 +57,7 @@ export interface SelectBaseProps
    * The children of select (Option components).
    * If `options` is provided, this will be ignored.
    */
-  children?: ReactElement[];
+  children?: ReactElement | ReactElement[];
   /**
    * Direct options array for dropdown (supports tree structure).
    * If provided, `children` will be ignored and `type` will be automatically set.
@@ -131,7 +132,7 @@ export type SelectMultipleProps = SelectBaseProps & {
   /**
    * The change event handler of input element.
    */
-  onChange?(newOptions: SelectValue[]): any;
+  onChange?(newOptions: SelectValue[]): void;
   /**
    * To customize rendering select input value
    */
@@ -155,7 +156,7 @@ export type SelectSingleProps = SelectBaseProps & {
   /**
    * The change event handler of input element.
    */
-  onChange?(newOptions: SelectValue): any;
+  onChange?(newOptions: SelectValue | null): void;
   /**
    * To customize rendering select input value
    */
@@ -232,22 +233,12 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       value: valueProp,
     } as UseSelectMultipleValueControl | UseSelectSingleValueControl);
 
-    // Wrap onClear to ensure onChange is called when clearing
+    // Wrap onClear and delegate to control hook
     const onClear = useCallback(
       (e: MouseEvent<Element>) => {
         onClearFromControl(e);
-        // Trigger onChange to sync external state
-        if (mode === 'multiple') {
-          if (typeof onChangeProp === 'function') {
-            (onChangeProp as (newOptions: SelectValue[]) => any)([]);
-          }
-        } else {
-          if (typeof onChangeProp === 'function') {
-            (onChangeProp as (newOption: SelectValue | null) => any)(null);
-          }
-        }
       },
-      [onClearFromControl, mode, onChangeProp],
+      [onClearFromControl],
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -270,16 +261,19 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     const getAllDescendantIds = useCallback(
       (option: DropdownOption): string[] => {
-        const ids: string[] = [String(option.id)];
+        const ids = new Set<string>();
 
-        if (option.children && option.children.length > 0) {
-          option.children.forEach((child) => {
-            ids.push(String(child.id));
-            ids.push(...getAllDescendantIds(child));
-          });
-        }
+        const collect = (opt: DropdownOption) => {
+          ids.add(String(opt.id));
 
-        return ids;
+          if (opt.children && opt.children.length > 0) {
+            opt.children.forEach(collect);
+          }
+        };
+
+        collect(option);
+
+        return Array.from(ids);
       },
       [],
     );
@@ -417,6 +411,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
     const handleDropdownSelect = useCallback(
       (option: DropdownOption) => {
         if (mode === 'multiple' && dropdownType === 'tree') {
+          const onChangeMultiple = onChange as SelectMultipleValueControl['onChange'];
           const currentValues = Array.isArray(value) ? value : [];
           const allDescendantIds = getAllDescendantIds(option);
           const allDescendantValues: SelectValue[] = allDescendantIds.map((id) => {
@@ -434,18 +429,20 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           const allSelected = selectedDescendantIds.length === allDescendantIds.length;
 
           if (allSelected) {
-            allDescendantValues.forEach((descValue) => {
-              onChange(descValue);
-            });
+            // Deselect all descendants in a single update
+            const descendantIdSet = new Set(allDescendantIds.map((id) => String(id)));
+            const nextValues = currentValues.filter(
+              (v) => !descendantIdSet.has(String(v.id)),
+            );
+            onChangeMultiple(nextValues);
           } else {
-            allDescendantValues.forEach((descValue) => {
-              const isAlreadySelected = currentValues.some(
-                (v) => String(v.id) === String(descValue.id),
-              );
-              if (!isAlreadySelected) {
-                onChange(descValue);
-              }
-            });
+            // Select all descendants that are not yet selected in a single update
+            const existingIdSet = new Set(currentValues.map((v) => String(v.id)));
+            const valuesToAdd = allDescendantValues.filter(
+              (descValue) => !existingIdSet.has(String(descValue.id)),
+            );
+            const nextValues = [...currentValues, ...valuesToAdd];
+            onChangeMultiple(nextValues);
           }
         } else {
           // Normal selection logic for non-tree mode
@@ -516,7 +513,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           >
             <SelectTrigger
               ref={composedRef}
-              active={open}
+              active={!readOnly && open}
               className={className}
               clearable={clearable}
               disabled={disabled}

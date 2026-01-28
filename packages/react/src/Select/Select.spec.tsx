@@ -1,6 +1,4 @@
 /* global document */
-// Mock CSS imports to avoid Jest parsing errors
-jest.mock('overlayscrollbars/overlayscrollbars.css', () => ({}));
 
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { PlusIcon } from '@mezzanine-ui/icons';
