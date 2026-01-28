@@ -587,19 +587,39 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           // Don't let Dropdown's onBlur close the dropdown when controlled
           // Only call onFocus(false) to update internal state
           onFocus(false);
+          // Clear search text and insert text when blur if keepSearchTextOnBlur is false
+          if (!keepSearchTextOnBlur) {
+            resetCreationInputs();
+          }
           inputProps?.onBlur?.(e);
           return;
         }
 
         // For uncontrolled mode, let Dropdown handle it normally
         // Dropdown's inlineTriggerElement will handle the blur and close logic
+        // Clear search text and insert text when blur if keepSearchTextOnBlur is false
+        if (!keepSearchTextOnBlur) {
+          resetCreationInputs();
+        }
         inputProps?.onBlur?.(e);
         return;
       }
 
       onFocus(false);
+      // Clear search text and insert text when blur if keepSearchTextOnBlur is false
+      if (!keepSearchTextOnBlur) {
+        resetCreationInputs();
+      }
       inputProps?.onBlur?.(e);
     };
+
+    const handleClear = useCallback(
+      (e: ReactMouseEvent<Element>) => {
+        onClear(e);
+        resetCreationInputs();
+      },
+      [onClear, resetCreationInputs],
+    );
 
     const onClickSuffixActionIcon = () => {
       toggleOpen((prev) => !prev);
@@ -893,7 +913,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               inputRef={inputRef}
               mode={mode}
               onTagClose={wrappedOnChange}
-              onClear={onClear}
+              onClear={handleClear}
               placeholder={getPlaceholder()}
               prefix={prefix}
               readOnly={false}
