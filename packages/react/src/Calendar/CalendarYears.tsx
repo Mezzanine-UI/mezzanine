@@ -7,6 +7,7 @@ import {
   calendarYearsBase,
 } from '@mezzanine-ui/core/calendar';
 import { useMemo } from 'react';
+import CalendarCell from './CalendarCell';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useCalendarContext } from './CalendarContext';
@@ -80,13 +81,17 @@ function CalendarYears(props: CalendarYearsProps) {
             thisYear,
           );
           const disabled = isYearDisabled && isYearDisabled(yearDateType);
-          const inactive = !disabled && (base === 0 || base === 11);
           const active =
-            !disabled &&
-            !inactive &&
-            value &&
-            isYearIncluded(yearDateType, value);
+            !disabled && value && isYearIncluded(yearDateType, value);
           const inRange = isYearInRange && isYearInRange(yearDateType);
+          const isRangeStart =
+            value && value.length > 0
+              ? isYearIncluded(yearDateType, [value[0]])
+              : false;
+          const isRangeEnd =
+            value && value.length > 0
+              ? isYearIncluded(yearDateType, [value[value.length - 1]])
+              : false;
 
           const onClick = onClickProp
             ? () => {
@@ -104,30 +109,37 @@ function CalendarYears(props: CalendarYearsProps) {
             `Year ${thisYear}`,
             active && 'Selected',
             disabled && 'Not available',
-            inactive && 'Outside range',
           ]
             .filter(Boolean)
             .join(', ');
 
           return (
-            <button
+            <CalendarCell
               key={base + start}
-              type="button"
-              aria-disabled={disabled}
-              disabled={disabled}
-              aria-label={ariaLabel}
-              aria-pressed={active}
-              className={cx(classes.button, {
-                [classes.buttonActive]: active,
-                [classes.buttonInRange]: inRange,
-                [classes.buttonDisabled]: disabled,
-                [classes.buttonInactive]: inactive,
-              })}
-              onClick={onClick}
-              onMouseEnter={onMouseEnter}
+              mode="year"
+              today={getYear(getNow()) === thisYear}
+              active={active}
+              isRangeStart={isRangeStart}
+              isRangeEnd={isRangeEnd}
             >
-              {thisYear}
-            </button>
+              <button
+                key={base + start}
+                type="button"
+                aria-disabled={disabled}
+                disabled={disabled}
+                aria-label={ariaLabel}
+                aria-pressed={active}
+                className={cx(classes.button, {
+                  [classes.buttonActive]: active,
+                  [classes.buttonInRange]: inRange,
+                  [classes.buttonDisabled]: disabled,
+                })}
+                onClick={onClick}
+                onMouseEnter={onMouseEnter}
+              >
+                {thisYear}
+              </button>
+            </CalendarCell>
           );
         })}
       </div>

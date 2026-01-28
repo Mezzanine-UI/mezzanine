@@ -61,39 +61,53 @@ export function useRangeCalendarControls(
   const modifierGroup = useCalendarControlModifiers();
 
   // First calendar controls
-  const onFirstPrev = () => {
+  const onFirstPrev = useMemo(() => {
     const modifiers = modifierGroup[currentMode].single;
     if (!modifiers) return;
 
-    const [handleMinus] = modifiers;
-    const newFirst = handleMinus(firstReferenceDate);
-    setFirstReferenceDate(newFirst);
-    setSecondReferenceDate(getSecondCalendarDate(newFirst));
-  };
+    return () => {
+      const [handleMinus] = modifiers;
+      const newFirst = handleMinus(firstReferenceDate);
+      setFirstReferenceDate(newFirst);
+      setSecondReferenceDate(getSecondCalendarDate(newFirst));
+    };
+  }, [currentMode, modifierGroup, firstReferenceDate, getSecondCalendarDate]);
 
-  const onFirstNext = () => {
+  const onFirstNext = useMemo(() => {
     const modifiers = modifierGroup[currentMode].single;
     if (!modifiers) return;
 
-    const [, handleAdd] = modifiers;
-    const newFirst = handleAdd(firstReferenceDate);
-    setFirstReferenceDate(newFirst);
-    setSecondReferenceDate(getSecondCalendarDate(newFirst));
-  };
+    return () => {
+      const [, handleAdd] = modifiers;
+      const newFirst = handleAdd(firstReferenceDate);
+      setFirstReferenceDate(newFirst);
+      setSecondReferenceDate(getSecondCalendarDate(newFirst));
+    };
+  }, [currentMode, modifierGroup, firstReferenceDate, getSecondCalendarDate]);
 
-  const onFirstDoublePrev = () => {
-    const [handleMinus] = modifierGroup[currentMode].double;
-    const newFirst = handleMinus(firstReferenceDate);
-    setFirstReferenceDate(newFirst);
-    setSecondReferenceDate(getSecondCalendarDate(newFirst));
-  };
+  const onFirstDoublePrev = useMemo(() => {
+    const modifiers = modifierGroup[currentMode].double;
+    if (!modifiers) return;
 
-  const onFirstDoubleNext = () => {
-    const [, handleAdd] = modifierGroup[currentMode].double;
-    const newFirst = handleAdd(firstReferenceDate);
-    setFirstReferenceDate(newFirst);
-    setSecondReferenceDate(getSecondCalendarDate(newFirst));
-  };
+    return () => {
+      const [handleMinus] = modifiers;
+      const newFirst = handleMinus(firstReferenceDate);
+      setFirstReferenceDate(newFirst);
+      setSecondReferenceDate(getSecondCalendarDate(newFirst));
+    };
+  }, [currentMode, modifierGroup, firstReferenceDate, getSecondCalendarDate]);
+
+  const onFirstDoubleNext = useMemo(() => {
+    const modifiers = modifierGroup[currentMode].double;
+    if (!modifiers) return;
+
+    return () => {
+      const [, handleAdd] = modifiers;
+      const newFirst = handleAdd(firstReferenceDate);
+      setFirstReferenceDate(newFirst);
+      setSecondReferenceDate(getSecondCalendarDate(newFirst));
+    };
+  }, [currentMode, modifierGroup, firstReferenceDate, getSecondCalendarDate]);
 
   // Second calendar controls (same behavior as first)
   const onSecondPrev = onFirstPrev;
@@ -101,20 +115,18 @@ export function useRangeCalendarControls(
   const onSecondDoublePrev = onFirstDoublePrev;
   const onSecondDoubleNext = onFirstDoubleNext;
 
-  const onMonthControlClick = () => {
+  const onMonthControlClick = useCallback(() => {
     setFirstReferenceDate(firstReferenceDate);
     setSecondReferenceDate(addYear(firstReferenceDate, 1));
     pushModeStack('month');
-  };
-  const onYearControlClick = () => {
+  }, [firstReferenceDate, pushModeStack, addYear]);
+
+  const onYearControlClick = useCallback(() => {
     setFirstReferenceDate(firstReferenceDate);
     setSecondReferenceDate(addYear(firstReferenceDate, calendarYearModuler));
     pushModeStack('year');
-  };
+  }, [firstReferenceDate, pushModeStack, addYear]);
 
-  // Wrapper functions for updating reference dates
-  // These should be used when switching modes (e.g., from month picker back to day mode)
-  // They update the target calendar and maintain the offset between calendars
   const updateFirstReferenceDate = useCallback(
     (date: DateType) => {
       setFirstReferenceDate(date);

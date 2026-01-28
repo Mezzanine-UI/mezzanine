@@ -67,7 +67,7 @@ function CalendarControls(props: CalendarControlsProps) {
   return (
     <div {...restElementProps} className={cx(classes.controls, className)}>
       <div className={cx(classes.controlsActions)}>
-        {onDoublePrev && (
+        {onDoublePrev ? (
           <button
             type="button"
             aria-disabled={disableOnDoublePrev}
@@ -79,8 +79,8 @@ function CalendarControls(props: CalendarControlsProps) {
           >
             <Icon icon={DoubleChevronLeftIcon} aria-hidden="true" />
           </button>
-        )}
-        {onPrev && (
+        ) : null}
+        {onPrev ? (
           <button
             type="button"
             aria-disabled={disableOnPrev}
@@ -92,11 +92,17 @@ function CalendarControls(props: CalendarControlsProps) {
           >
             <Icon icon={ChevronLeftIcon} aria-hidden="true" />
           </button>
-        )}
+        ) : null}
+        {!onPrev && !onDoublePrev ? (
+          <div
+            className={classes.controlsButton}
+            style={{ pointerEvents: 'none' }}
+          />
+        ) : null}
       </div>
       <div className={cx(classes.controlsMain)}>{children}</div>
       <div className={cx(classes.controlsActions)}>
-        {onNext && (
+        {onNext ? (
           <button
             type="button"
             aria-disabled={disableOnNext}
@@ -108,8 +114,8 @@ function CalendarControls(props: CalendarControlsProps) {
           >
             <Icon icon={ChevronRightIcon} aria-hidden="true" />
           </button>
-        )}
-        {onDoubleNext && (
+        ) : null}
+        {onDoubleNext ? (
           <button
             type="button"
             aria-disabled={disableOnDoubleNext}
@@ -121,7 +127,13 @@ function CalendarControls(props: CalendarControlsProps) {
           >
             <Icon icon={DoubleChevronRightIcon} aria-hidden="true" />
           </button>
-        )}
+        ) : null}
+        {!onNext && !onDoubleNext ? (
+          <div
+            className={classes.controlsButton}
+            style={{ pointerEvents: 'none' }}
+          />
+        ) : null}
       </div>
     </div>
   );

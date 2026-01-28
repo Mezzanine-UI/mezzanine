@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { DateType, CalendarMode } from '@mezzanine-ui/core/calendar';
 import { useCalendarControlModifiers } from './useCalendarControlModifiers';
 import { useCalendarModeStack } from './useCalendarModeStack';
@@ -21,35 +21,55 @@ export function useCalendarControls(
 
   const modifierGroup = useCalendarControlModifiers();
 
-  const onPrev = () => {
+  const onPrev = useMemo(() => {
     const modifiers = modifierGroup[currentMode].single;
     if (!modifiers) return;
 
-    const [handleMinus] = modifiers;
-    setReferenceDate(handleMinus(referenceDate));
-  };
+    return () => {
+      const [handleMinus] = modifiers;
+      setReferenceDate(handleMinus(referenceDate));
+    };
+  }, [currentMode, modifierGroup, referenceDate]);
 
-  const onNext = () => {
+  const onNext = useMemo(() => {
     const modifiers = modifierGroup[currentMode].single;
     if (!modifiers) return;
 
-    const [, handleAdd] = modifiers;
-    setReferenceDate(handleAdd(referenceDate));
-  };
+    return () => {
+      const [, handleAdd] = modifiers;
+      setReferenceDate(handleAdd(referenceDate));
+    };
+  }, [currentMode, modifierGroup, referenceDate]);
 
-  const onDoublePrev = () => {
-    const [handleMinus] = modifierGroup[currentMode].double;
-    setReferenceDate(handleMinus(referenceDate));
-  };
+  const onDoublePrev = useMemo(() => {
+    const modifiers = modifierGroup[currentMode].double;
+    if (!modifiers) return;
 
-  const onDoubleNext = () => {
-    const [, handleAdd] = modifierGroup[currentMode].double;
-    setReferenceDate(handleAdd(referenceDate));
-  };
+    return () => {
+      const [handleMinus] = modifiers;
+      setReferenceDate(handleMinus(referenceDate));
+    };
+  }, [currentMode, modifierGroup, referenceDate]);
 
-  const onMonthControlClick = () => pushModeStack('month');
+  const onDoubleNext = useMemo(() => {
+    const modifiers = modifierGroup[currentMode].double;
+    if (!modifiers) return;
 
-  const onYearControlClick = () => pushModeStack('year');
+    return () => {
+      const [, handleAdd] = modifiers;
+      setReferenceDate(handleAdd(referenceDate));
+    };
+  }, [currentMode, modifierGroup, referenceDate]);
+
+  const onMonthControlClick = useCallback(
+    () => pushModeStack('month'),
+    [pushModeStack],
+  );
+
+  const onYearControlClick = useCallback(
+    () => pushModeStack('year'),
+    [pushModeStack],
+  );
 
   return {
     currentMode,

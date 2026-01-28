@@ -53,6 +53,7 @@ export interface CalendarQuartersProps
  */
 function CalendarQuarters(props: CalendarQuartersProps) {
   const {
+    getNow,
     getYear,
     getCurrentQuarterFirstDate,
     isQuarterIncluded,
@@ -95,7 +96,9 @@ function CalendarQuarters(props: CalendarQuartersProps) {
               [classes.rowWithBorder]: yearIndex > 0,
             })}
           >
-            <CalendarCell disabled>{year}</CalendarCell>
+            <CalendarCell disabled mode="quarter">
+              {year}
+            </CalendarCell>
             {calendarQuarters.map((quarter) => {
               const quarterStartMonth = (quarter - 1) * 3;
               const quarterDate = setMonth(
@@ -112,6 +115,14 @@ function CalendarQuarters(props: CalendarQuartersProps) {
               const disabled =
                 isQuarterDisabled && isQuarterDisabled(quarterDate);
               const inRange = isQuarterInRange && isQuarterInRange(quarterDate);
+              const isRangeStart =
+                value && value.length > 0
+                  ? isQuarterIncluded(quarterDate, [value[0]])
+                  : false;
+              const isRangeEnd =
+                value && value.length > 0
+                  ? isQuarterIncluded(quarterDate, [value[value.length - 1]])
+                  : false;
 
               const onClick = onClickProp
                 ? () => {
@@ -144,23 +155,32 @@ function CalendarQuarters(props: CalendarQuartersProps) {
                 .join(', ');
 
               return (
-                <button
+                <CalendarCell
                   key={quarter}
-                  type="button"
-                  disabled={disabled}
-                  aria-disabled={disabled}
-                  aria-label={ariaLabel}
-                  aria-pressed={active}
-                  className={cx(classes.button, {
-                    [classes.buttonActive]: active,
-                    [classes.buttonInRange]: inRange,
-                    [classes.buttonDisabled]: disabled,
-                  })}
-                  onClick={onClick}
-                  onMouseEnter={onMouseEnter}
+                  mode="quarter"
+                  today={isQuarterIncluded(quarterDate, [getNow()])}
+                  active={active}
+                  isRangeStart={isRangeStart}
+                  isRangeEnd={isRangeEnd}
                 >
-                  Q{quarter}
-                </button>
+                  <button
+                    key={quarter}
+                    type="button"
+                    disabled={disabled}
+                    aria-disabled={disabled}
+                    aria-label={ariaLabel}
+                    aria-pressed={active}
+                    className={cx(classes.button, {
+                      [classes.buttonActive]: active,
+                      [classes.buttonInRange]: inRange,
+                      [classes.buttonDisabled]: disabled,
+                    })}
+                    onClick={onClick}
+                    onMouseEnter={onMouseEnter}
+                  >
+                    Q{quarter}
+                  </button>
+                </CalendarCell>
               );
             })}
           </div>

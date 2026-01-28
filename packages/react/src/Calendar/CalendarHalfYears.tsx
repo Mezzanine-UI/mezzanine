@@ -55,6 +55,7 @@ export interface CalendarHalfYearsProps
  */
 function CalendarHalfYears(props: CalendarHalfYearsProps) {
   const {
+    getNow,
     getYear,
     getCurrentHalfYearFirstDate,
     isHalfYearIncluded,
@@ -97,7 +98,9 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
               [classes.rowWithBorder]: yearIndex > 0,
             })}
           >
-            <CalendarCell disabled>{year}</CalendarCell>
+            <CalendarCell disabled mode="half-year">
+              {year}
+            </CalendarCell>
             {calendarHalfYears.map((halfYear) => {
               const halfYearStartMonth = (halfYear - 1) * 6;
               const halfYearDate = setMonth(
@@ -113,6 +116,14 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
                 isHalfYearInRange(halfYearDate);
               const active =
                 !disabled && value && isHalfYearIncluded(halfYearDate, value);
+              const isRangeStart =
+                value && value.length > 0
+                  ? isHalfYearIncluded(halfYearDate, [value[0]])
+                  : false;
+              const isRangeEnd =
+                value && value.length > 0
+                  ? isHalfYearIncluded(halfYearDate, [value[value.length - 1]])
+                  : false;
 
               const onClick = () => {
                 if (disabled) return;
@@ -138,23 +149,32 @@ function CalendarHalfYears(props: CalendarHalfYearsProps) {
                 .join(', ');
 
               return (
-                <button
+                <CalendarCell
                   key={halfYear}
-                  type="button"
-                  disabled={disabled}
-                  aria-disabled={disabled}
-                  aria-label={ariaLabel}
-                  aria-pressed={active}
-                  className={cx(classes.button, {
-                    [classes.buttonDisabled]: disabled,
-                    [classes.buttonInRange]: inRange,
-                    [classes.buttonActive]: active,
-                  })}
-                  onClick={onClick}
-                  onMouseEnter={onMouseEnter}
+                  mode="half-year"
+                  today={isHalfYearIncluded(halfYearDate, [getNow()])}
+                  active={active}
+                  isRangeStart={isRangeStart}
+                  isRangeEnd={isRangeEnd}
                 >
-                  H{halfYear}
-                </button>
+                  <button
+                    key={halfYear}
+                    type="button"
+                    disabled={disabled}
+                    aria-disabled={disabled}
+                    aria-label={ariaLabel}
+                    aria-pressed={active}
+                    className={cx(classes.button, {
+                      [classes.buttonDisabled]: disabled,
+                      [classes.buttonInRange]: inRange,
+                      [classes.buttonActive]: active,
+                    })}
+                    onClick={onClick}
+                    onMouseEnter={onMouseEnter}
+                  >
+                    H{halfYear}
+                  </button>
+                </CalendarCell>
               );
             })}
           </div>

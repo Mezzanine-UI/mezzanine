@@ -167,13 +167,23 @@ function CalendarWeeks(props: CalendarWeeksProps) {
             false;
           const inactive =
             !disabled && (weekStartInPrevMonth || weekStartInNextMonth);
-          const active =
+
+          const weekIncluded =
             !disabled &&
             !inactive &&
             value &&
             isWeekIncluded(dates[0], value, displayWeekDayLocale);
+
+          const rangeFirstDate = value && value.length > 0 ? value[0] : null;
+          const rangeLastDate =
+            value && value.length > 0 ? value[value.length - 1] : null;
+
           const inRange =
             !disabled && !inactive && isWeekInRange && isWeekInRange(dates[0]);
+          const inRangeStart = value ? isSameDate(dates[0], value[0]) : false;
+          const inRangeEnd = value
+            ? isSameDate(dates[dates.length - 1], value[value.length - 1])
+            : false;
 
           const onMouseEnter = onWeekHover
             ? () => {
@@ -208,7 +218,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
           const ariaLabel = [
             `Week ${weekNum}`,
             `${startMonth} ${startDay} to ${endMonth} ${endDay}`,
-            active && 'Selected',
+            weekIncluded && 'Selected',
             disabled && 'Not available',
             inactive && 'Outside current month',
           ]
@@ -220,30 +230,78 @@ function CalendarWeeks(props: CalendarWeeksProps) {
               key={`CALENDAR_WEEKS/WEEK_OF/${index}`}
               type="button"
               className={cx(classes.button, classes.row, {
-                [classes.buttonActive]: active,
                 [classes.buttonInRange]: inRange,
                 [classes.buttonDisabled]: disabled,
               })}
               disabled={disabled}
               aria-disabled={disabled}
               aria-label={ariaLabel}
-              aria-pressed={active}
+              aria-pressed={weekIncluded}
               onClick={onClick}
               onMouseEnter={onMouseEnter}
             >
-              {week.map((dateNum, dateIndex) => (
-                <CalendarCell
-                  key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
-                  today={isSameDate(dates[dateIndex], getNow())}
-                  disabled={
-                    disabled ||
-                    !isInMonth(dates[dateIndex], getMonth(referenceDate))
+              {week.map((dateNum, dateIndex) => {
+                let cellActive = false;
+                if (weekIncluded && rangeFirstDate && rangeLastDate) {
+                  const currentDate = dates[dateIndex];
+                  const isFirstWeekFirstDate =
+                    isWeekIncluded(
+                      currentDate,
+                      [rangeFirstDate],
+                      displayWeekDayLocale,
+                    ) && isSameDate(currentDate, rangeFirstDate);
+
+                  const lastWeekLastDate = getCurrentWeekFirstDate(
+                    rangeLastDate,
+                    displayWeekDayLocale,
+                  );
+                  const lastWeekDates: DateType[] = [];
+                  for (let i = 0; i < 7; i++) {
+                    lastWeekDates.push(
+                      setDate(
+                        setMonth(lastWeekLastDate, getMonth(lastWeekLastDate)),
+                        getDate(lastWeekLastDate) + i,
+                      ),
+                    );
                   }
-                  active={active}
-                >
-                  {dateNum}
-                </CalendarCell>
-              ))}
+                  const isLastWeekLastDate =
+                    isWeekIncluded(
+                      currentDate,
+                      [rangeLastDate],
+                      displayWeekDayLocale,
+                    ) && isSameDate(currentDate, lastWeekDates[6]);
+
+                  cellActive = isFirstWeekFirstDate || isLastWeekLastDate;
+                }
+
+                return (
+                  <CalendarCell
+                    key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
+                    mode="week"
+                    today={isSameDate(dates[dateIndex], getNow())}
+                    disabled={
+                      disabled ||
+                      !isInMonth(dates[dateIndex], getMonth(referenceDate))
+                    }
+                    active={cellActive}
+                    isRangeStart={inRangeStart}
+                    isRangeEnd={inRangeEnd}
+                  >
+                    <div
+                      className={cx(classes.button, {
+                        [classes.buttonActive]: cellActive,
+                      })}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        pointerEvents: 'none',
+                      }}
+                    >
+                      {dateNum}
+                    </div>
+                  </CalendarCell>
+                );
+              })}
             </button>
           );
         })}
