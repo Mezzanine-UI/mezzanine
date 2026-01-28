@@ -1,6 +1,6 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { TextFieldSize } from '../text-field';
 
-export type SelectInputSize = Size;
+export type SelectInputSize = TextFieldSize;
 export type SelectMode = 'single' | 'multiple';
 export type SelectTriggerType = 'default' | 'error';
 
