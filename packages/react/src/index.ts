@@ -407,6 +407,13 @@ export type {
 } from './TextField';
 export { default as TimePicker, TimePickerPanel } from './TimePicker';
 export type { TimePickerPanelProps, TimePickerProps } from './TimePicker';
+export { default as TimeRangePicker } from './TimeRangePicker';
+export type {
+  TimeRangePickerProps,
+  TimeRangePickerValue,
+  UseTimeRangePickerValueProps,
+} from './TimeRangePicker';
+export { useTimeRangePickerValue } from './TimeRangePicker';
 export { default as Switch } from './Toggle';
 export type {
   ToggleProps as SwitchProps,
