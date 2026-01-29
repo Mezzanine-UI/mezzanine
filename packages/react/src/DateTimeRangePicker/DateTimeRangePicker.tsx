@@ -7,7 +7,6 @@ import {
   LongTailArrowRightIcon,
 } from '@mezzanine-ui/icons';
 import { forwardRef, useCallback, useMemo } from 'react';
-import { useCalendarContext } from '../Calendar';
 import DateTimePicker, { DateTimePickerProps } from '../DateTimePicker';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
@@ -58,8 +57,6 @@ const DateTimeRangePicker = forwardRef<
   HTMLDivElement,
   DateTimeRangePickerProps
 >(function DateTimeRangePicker(props, ref) {
-  const { isBefore } = useCalendarContext();
-
   const {
     className,
     defaultValue,
@@ -117,13 +114,9 @@ const DateTimeRangePicker = forwardRef<
     (newFrom?: DateType) => {
       if (!onChangeProp) return;
 
-      if (newFrom && toValue && isBefore(toValue, newFrom)) {
-        onChangeProp([newFrom, undefined]);
-      } else {
-        onChangeProp([newFrom, toValue]);
-      }
+      onChangeProp([newFrom, toValue]);
     },
-    [onChangeProp, toValue, isBefore],
+    [onChangeProp, toValue],
   );
 
   // Handler for "to" DateTimePicker change
@@ -131,13 +124,9 @@ const DateTimeRangePicker = forwardRef<
     (newTo?: DateType) => {
       if (!onChangeProp) return;
 
-      if (newTo && fromValue && isBefore(newTo, fromValue)) {
-        onChangeProp([undefined, newTo]);
-      } else {
-        onChangeProp([fromValue, newTo]);
-      }
+      onChangeProp([fromValue, newTo]);
     },
-    [onChangeProp, fromValue, isBefore],
+    [onChangeProp, fromValue],
   );
 
   const sharedProps: Partial<DateTimePickerProps> = useMemo(
