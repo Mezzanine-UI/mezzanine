@@ -298,6 +298,11 @@ export type {
 } from './DateRangePicker';
 export { default as DateTimePicker } from './DateTimePicker';
 export type { DateTimePickerProps } from './DateTimePicker';
+export { DateTimeRangePicker } from './DateTimeRangePicker';
+export type {
+  DateTimeRangePickerProps,
+  DateTimeRangePickerValue,
+} from './DateTimeRangePicker';
 export { FormControlContext, FormField, FormHintText, FormLabel } from './Form';
 export { FilterArea, FilterLine, Filter } from './FilterArea';
 export type {
