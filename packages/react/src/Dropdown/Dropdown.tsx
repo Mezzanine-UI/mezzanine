@@ -195,12 +195,12 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   emptyIcon?: IconDefinition;
   /**
-   * Whether to disable portal.
+   * Whether to enable portal.
    * This prop is only relevant when `inputPosition` is set to 'outside'.
    * Controls whether the dropdown content is rendered within the current hierarchy or portaled to the body.
-   * @default false
+   * @default true
    */
-  disablePortal?: boolean;
+  globalPortal?: boolean;
   /**
    * Callback fired when the dropdown list reaches the bottom.
    * Only fires when `maxHeight` is set and the list is scrollable.
@@ -283,7 +283,7 @@ export default function Dropdown(props: DropdownProps) {
     emptyText,
     emptyIcon,
     followText: followTextProp,
-    disablePortal = false,
+    globalPortal = true,
     onReachBottom,
     onLeaveBottom,
     onScroll,
@@ -756,7 +756,7 @@ export default function Dropdown(props: DropdownProps) {
             className={dropdownClasses.popperWithPortal}
             controllerRef={popperControllerRef}
             open={isOpen}
-            disablePortal={disablePortal}
+            disablePortal={!globalPortal}
             options={{
               placement: popoverPlacement,
               middleware: [
