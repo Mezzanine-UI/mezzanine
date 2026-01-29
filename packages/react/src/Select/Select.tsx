@@ -82,10 +82,6 @@ export interface SelectBaseProps
     | `aria-${'controls' | 'expanded' | 'owns'}`
   >;
   /**
-   * Whether to disable portal.
-   */
-  disablePortal?: boolean;
-  /**
    * The max height of the dropdown list.
    */
   menuMaxHeight?: number | string;
@@ -118,6 +114,15 @@ export interface SelectBaseProps
    * The size of input.
    */
   size?: SelectInputSize;
+  /**
+   * The z-index of the dropdown.
+   */
+  dropdownZIndex?: number | string;
+  /**
+   * Whether to disable portal for the dropdown.
+   * @default false
+   */
+  globalPortal?: boolean;
 }
 
 export type SelectMultipleProps = SelectBaseProps & {
@@ -184,7 +189,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       clearable = false,
       defaultValue,
       disabled = disabledFromFormControl || false,
-      disablePortal = false,
       error = severity === 'error' || false,
       fullWidth = fullWidthFromFormControl || false,
       inputProps,
@@ -206,6 +210,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       suffixActionIcon,
       type = 'default',
       value: valueProp,
+      dropdownZIndex,
+      globalPortal = false,
     } = props;
 
     const [open, toggleOpen] = useState(false);
@@ -499,7 +505,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         >
           <Dropdown
             disabled={readOnly || disabled}
-            disablePortal={disablePortal}
             maxHeight={menuMaxHeight}
             mode={mode}
             onScroll={onScroll}
@@ -510,6 +515,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             sameWidth
             type={dropdownType}
             value={dropdownValue}
+            zIndex={dropdownZIndex}
+            disablePortal={globalPortal}
           >
             <SelectTrigger
               ref={composedRef}
