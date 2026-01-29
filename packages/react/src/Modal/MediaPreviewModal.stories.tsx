@@ -12,6 +12,7 @@ type UncontrolledArgs = {
   defaultIndex: number;
   disableCloseOnBackdropClick?: boolean;
   disableCloseOnEscapeKeyDown?: boolean;
+  enableCircularNavigation?: boolean;
   showPaginationIndicator?: boolean;
 };
 
@@ -28,6 +29,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
     defaultIndex: 0,
     disableCloseOnBackdropClick: false,
     disableCloseOnEscapeKeyDown: false,
+    enableCircularNavigation: false,
     showPaginationIndicator: true,
   },
   render: function Render(args) {
@@ -35,6 +37,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
       defaultIndex,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
+      enableCircularNavigation,
       showPaginationIndicator,
     } = args;
 
@@ -49,6 +52,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
           defaultIndex={defaultIndex}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+          enableCircularNavigation={enableCircularNavigation}
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
           open={open}
@@ -59,7 +63,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
   },
 };
 
-export const UncontrolledWithCallback: StoryObj = {
+export const TrackingIndexChanges: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [lastIndex, setLastIndex] = useState<number | null>(null);
@@ -103,33 +107,19 @@ export const SingleImage: StoryObj = {
   },
 };
 
-export const ControlledCircularNavigation: StoryObj = {
+export const CircularNavigation: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Custom circular navigation logic requires controlled mode
-    const handlePrev = () => {
-      setCurrentIndex(
-        (prev) => (prev - 1 + sampleImages.length) % sampleImages.length,
-      );
-    };
-
-    const handleNext = () => {
-      setCurrentIndex((prev) => (prev + 1) % sampleImages.length);
-    };
 
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Controlled: Circular Navigation
+          Open Gallery (Circular Navigation)
         </Button>
         <MediaPreviewModal
-          currentIndex={currentIndex}
+          enableCircularNavigation
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
-          onNext={handleNext}
-          onPrev={handlePrev}
           open={open}
         />
       </>

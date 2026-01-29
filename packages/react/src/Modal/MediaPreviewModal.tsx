@@ -35,6 +35,13 @@ export interface MediaPreviewModalProps
    */
   disablePrev?: boolean;
   /**
+   * Enable circular navigation (wrap around at boundaries).
+   * When enabled, navigating past the last item goes to the first,
+   * and navigating before the first item goes to the last.
+   * @default false
+   */
+  enableCircularNavigation?: boolean;
+  /**
    * Array of media items to display.
    * Each item should be a valid image URL or React node.
    */
@@ -76,6 +83,7 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
       disableNext = false,
       disablePortal = false,
       disablePrev = false,
+      enableCircularNavigation = false,
       mediaItems,
       onBackdropClick,
       onClose,
@@ -112,7 +120,12 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
         onNext();
       } else {
         // Uncontrolled mode: update internal state
-        const nextIndex = Math.min(currentIndex + 1, mediaItems.length - 1);
+        let nextIndex: number;
+        if (enableCircularNavigation) {
+          nextIndex = (currentIndex + 1) % mediaItems.length;
+        } else {
+          nextIndex = Math.min(currentIndex + 1, mediaItems.length - 1);
+        }
         setInternalIndex(nextIndex);
         onIndexChange?.(nextIndex);
       }
@@ -124,15 +137,25 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
         onPrev();
       } else {
         // Uncontrolled mode: update internal state
-        const prevIndex = Math.max(currentIndex - 1, 0);
+        let prevIndex: number;
+        if (enableCircularNavigation) {
+          prevIndex =
+            (currentIndex - 1 + mediaItems.length) % mediaItems.length;
+        } else {
+          prevIndex = Math.max(currentIndex - 1, 0);
+        }
         setInternalIndex(prevIndex);
         onIndexChange?.(prevIndex);
       }
     };
 
     // Auto-calculate disable states for uncontrolled mode
-    const isNextDisabled = disableNext || currentIndex >= mediaItems.length - 1;
-    const isPrevDisabled = disablePrev || currentIndex <= 0;
+    const isNextDisabled = enableCircularNavigation
+      ? false
+      : disableNext || currentIndex >= mediaItems.length - 1;
+    const isPrevDisabled = enableCircularNavigation
+      ? false
+      : disablePrev || currentIndex <= 0;
 
     const [displayedIndices, setDisplayedIndices] = useState<number[]>([
       currentIndex,
