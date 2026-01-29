@@ -217,6 +217,11 @@ export interface AutoCompleteBaseProps
    */
   dropdownZIndex?: number | string;
   /**
+   * Whether to enable portal for the dropdown.
+   * @default true
+   */
+  globalPortal?: boolean;
+  /**
    * Callback fired when the dropdown list reaches the bottom.
    * Only fires when `menuMaxHeight` is set and the list is scrollable.
    */
@@ -368,6 +373,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
       dropdownZIndex,
+      globalPortal = true,
       onReachBottom,
       onLeaveBottom,
     } = props;
@@ -899,6 +905,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             type="default"
             value={dropdownValue}
             zIndex={dropdownZIndex}
+            globalPortal={globalPortal}
             onReachBottom={onReachBottom}
             onLeaveBottom={onLeaveBottom}
           >

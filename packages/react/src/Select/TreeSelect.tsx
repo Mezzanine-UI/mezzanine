@@ -1,74 +1,75 @@
 'use client';
 
 import {
-  forwardRef,
-  useRef,
-  useState,
-  useContext,
-  KeyboardEventHandler,
-  useMemo,
-} from 'react';
-import {
   selectClasses as classes,
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import { TreeNodeValue } from '@mezzanine-ui/core/tree';
-import { useComposeRefs } from '../hooks/useComposeRefs';
+import {
+  forwardRef,
+  KeyboardEventHandler,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { FormControlContext, FormElementFocusHandlers } from '../Form';
 import Menu, { MenuProps } from '../Menu';
-import { useClickAway } from '../hooks/useClickAway';
-import { PickRenameMulti } from '../utils/general';
+import { PopperController } from '../Popper';
+import Tree, {
+  toggleValue,
+  traverseTree,
+  TreeNodeListProps,
+  TreeNodeProp,
+  TreeProps,
+} from '../Tree';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
 } from '../_internal/InputTriggerPopper';
-import SelectTrigger, {
-  SelectTriggerProps,
-  SelectTriggerInputProps,
-} from './SelectTrigger';
-import { SelectValue, TreeSelectOption } from './typings';
-import Tree, {
-  TreeProps,
-  TreeNodeProp,
-  traverseTree,
-  toggleValue,
-  TreeNodeListProps,
-} from '../Tree';
-import { cx } from '../utils/cx';
-import { PopperController } from '../Popper';
+import { useClickAway } from '../hooks/useClickAway';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useIsomorphicLayoutEffect } from '../hooks/useIsomorphicLayoutEffect';
+import { cx } from '../utils/cx';
+import { PickRenameMulti } from '../utils/general';
+import SelectTrigger from './SelectTrigger';
+import {
+  SelectTriggerInputProps,
+  SelectTriggerProps,
+  SelectValue, TreeSelectOption,
+} from './typings';
 
 export interface TreeSelectProps
   extends Omit<
-      SelectTriggerProps,
-      | 'active'
-      | 'onBlur'
-      | 'onChange'
-      | 'onClear'
-      | 'onClick'
-      | 'onFocus'
-      | 'onKeyDown'
-      | 'readOnly'
-      | 'searchInputProps'
-    >,
-    FormElementFocusHandlers,
-    Pick<
-      TreeProps,
-      'defaultExpandAll' | 'disabledValues' | 'expandControllerRef' | 'onExpand'
-    >,
-    PickRenameMulti<
-      Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>,
-      {
-        maxHeight: 'menuMaxHeight';
-        role: 'menuRole';
-        size: 'menuSize';
-      }
-    >,
-    PickRenameMulti<
-      Pick<InputTriggerPopperProps, 'options'>,
-      {
-        options: 'popperOptions';
-      }
-    > {
+    SelectTriggerProps,
+    | 'active'
+    | 'onBlur'
+    | 'onChange'
+    | 'onClear'
+    | 'onClick'
+    | 'onFocus'
+    | 'onKeyDown'
+    | 'readOnly'
+    | 'searchInputProps'
+  >,
+  FormElementFocusHandlers,
+  Pick<
+    TreeProps,
+    'defaultExpandAll' | 'disabledValues' | 'expandControllerRef' | 'onExpand'
+  >,
+  PickRenameMulti<
+    Pick<MenuProps, 'itemsInView' | 'maxHeight' | 'role' | 'size'>,
+    {
+      maxHeight: 'menuMaxHeight';
+      role: 'menuRole';
+      size: 'menuSize';
+    }
+  >,
+  PickRenameMulti<
+    Pick<InputTriggerPopperProps, 'options'>,
+    {
+      options: 'popperOptions';
+    }
+  > {
   /**
    * The width of options panel will be calculated based on the depth of your options.
    * If you know how many layers in your object, pass it via this prop will have better performance.
@@ -103,6 +104,12 @@ export interface TreeSelectProps
    * select input placeholder
    */
   placeholder?: string;
+  /**
+   * To customize rendering select input value.
+   * For single mode, receives the first value from the array.
+   * For multiple mode, receives the full array.
+   */
+  renderValue?: (value?: SelectValue | SelectValue[] | null) => string;
   /**
    * Whether the selection is required.
    * @default false
@@ -232,7 +239,7 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
   const controllerRef = useRef<PopperController>(null);
 
   useIsomorphicLayoutEffect(() => {
-    controllerRef.current?.forceUpdate?.();
+    controllerRef.current?.update?.();
   }, [valueProp]);
 
   /** Open control */
@@ -260,43 +267,43 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
   const onTextFieldClick = disabled
     ? undefined
     : () => {
-        onToggleOpen();
-      };
+      onToggleOpen();
+    };
 
   const onTextFieldKeydown: KeyboardEventHandler<HTMLElement> | undefined =
     disabled
       ? undefined
       : (event) => {
-          switch (event.code) {
-            case 'Enter':
+        switch (event.code) {
+          case 'Enter':
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            onTextFieldClick!();
+
+            break;
+          case 'ArrowUp':
+          case 'ArrowRight':
+          case 'ArrowLeft':
+          case 'ArrowDown': {
+            if (!open) {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               onTextFieldClick!();
-
-              break;
-            case 'ArrowUp':
-            case 'ArrowRight':
-            case 'ArrowLeft':
-            case 'ArrowDown': {
-              if (!open) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                onTextFieldClick!();
-              }
-
-              break;
-            }
-            case 'Tab': {
-              if (open) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                onTextFieldClick!();
-              }
-
-              break;
             }
 
-            default:
-              break;
+            break;
           }
-        };
+          case 'Tab': {
+            if (open) {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              onTextFieldClick!();
+            }
+
+            break;
+          }
+
+          default:
+            break;
+        }
+      };
 
   useClickAway(
     () => {
@@ -324,16 +331,16 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
   const onTagClose: SelectTriggerProps['onTagClose'] =
     onChangeProp && valueProp
       ? (target) => {
-          onChangeProp(valueProp.filter((v) => v.id !== target.id));
-        }
+        onChangeProp(valueProp.filter((v) => v.id !== target.id));
+      }
       : undefined;
 
   /** Clear method */
   const onClear: SelectTriggerProps['onClear'] =
     clearable && onChangeProp
       ? () => {
-          onChangeProp([]);
-        }
+        onChangeProp([]);
+      }
       : undefined;
 
   /** Map options to tree nodes */
@@ -377,12 +384,12 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
 
   const onSelect: TreeProps['onSelect'] = onChangeProp
     ? (values) => {
-        const selectValues = values.map(
-          (currentValue) => optionMap[currentValue],
-        );
+      const selectValues = values.map(
+        (currentValue) => optionMap[currentValue],
+      );
 
-        onChangeProp(selectValues);
-      }
+      onChangeProp(selectValues);
+    }
     : undefined;
 
   /** Controlled expanded value to avoid expanded values cleanup after panel toggled */
@@ -407,6 +414,14 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
     onExpandProp?.(value);
   };
 
+  // Convert valueProp to single value for single mode
+  const triggerValue = multiple ? valueProp : (valueProp?.[0] ?? undefined);
+
+  // Adapt renderValue for single mode
+  const adaptedRenderValue = renderValue && !multiple
+    ? (value?: SelectValue | null) => renderValue(value ?? null)
+    : undefined;
+
   return (
     <div ref={nodeRef} className={classes.treeSelect}>
       <SelectTrigger
@@ -426,11 +441,11 @@ const TreeSelect = forwardRef<HTMLDivElement, TreeSelectProps>((props, ref) => {
         onTagClose={onTagClose}
         prefix={prefix}
         readOnly
-        renderValue={renderValue}
+        {...(mode === 'single' && adaptedRenderValue ? { renderValue: adaptedRenderValue } : {})}
         required={required}
         size={size}
         suffixActionIcon={suffixActionIcon}
-        value={valueProp}
+        value={triggerValue}
       />
       <InputTriggerPopper
         ref={popperRef}

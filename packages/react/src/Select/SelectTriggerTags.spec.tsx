@@ -79,12 +79,12 @@ describe('<SelectTriggerTags />', () => {
   });
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<SelectTriggerTags ref={ref} ellipsis />),
+    render(<SelectTriggerTags ref={ref} overflowStrategy="counter" />),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <SelectTriggerTags ellipsis={false} />,
+      <SelectTriggerTags overflowStrategy="wrap" />,
     );
     const host = getHostHTMLElement();
 
@@ -95,7 +95,7 @@ describe('<SelectTriggerTags />', () => {
 
   it('has no tags if value not given', () => {
     const { getHostHTMLElement } = render(
-      <SelectTriggerTags ellipsis={false} />,
+      <SelectTriggerTags overflowStrategy="wrap" />,
     );
 
     const tags = getHostHTMLElement().getElementsByClassName('mzn-tag');
@@ -106,7 +106,7 @@ describe('<SelectTriggerTags />', () => {
   it('should call useSelectTriggerTags with ellipsis flag', () => {
     const value: SelectValue[] = [{ id: '1', name: 'Alpha' }];
 
-    render(<SelectTriggerTags ellipsis value={value} />);
+    render(<SelectTriggerTags overflowStrategy="counter" value={value} />);
     let lastCall = mockUseSelectTriggerTags.mock.calls.at(-1)?.[0];
     expect(lastCall).toEqual(
       expect.objectContaining({
@@ -115,7 +115,7 @@ describe('<SelectTriggerTags />', () => {
       }),
     );
 
-    render(<SelectTriggerTags ellipsis={false} value={value} />);
+    render(<SelectTriggerTags overflowStrategy="wrap" value={value} />);
     lastCall = mockUseSelectTriggerTags.mock.calls.at(-1)?.[0];
     expect(lastCall).toEqual(
       expect.objectContaining({
@@ -142,7 +142,7 @@ describe('<SelectTriggerTags />', () => {
 
         const { getByRole } = render(
           <SelectTriggerTags
-            ellipsis={isEllipsis}
+            overflowStrategy={isEllipsis ? 'counter' : 'wrap'}
             value={[
               {
                 id: 'foo',
@@ -152,7 +152,7 @@ describe('<SelectTriggerTags />', () => {
           />,
         );
 
-        const dismissButton = getByRole('button', { name: 'Dismiss tag' });
+        const dismissButton = getByRole('button');
 
         fireEvent.click(dismissButton);
 
@@ -177,7 +177,7 @@ describe('<SelectTriggerTags />', () => {
 
     const { getByRole } = render(
       <SelectTriggerTags
-        ellipsis
+        overflowStrategy="counter"
         onTagClose={onTagClose}
         value={[
           {
@@ -188,7 +188,7 @@ describe('<SelectTriggerTags />', () => {
       />,
     );
 
-    fireEvent.click(getByRole('button', { name: 'Dismiss tag' }));
+    fireEvent.click(getByRole('button'));
 
     expect(onTagClose).toHaveBeenCalledTimes(1);
     expect(onTagClose).toHaveBeenCalledWith({ id: 'foo', name: 'foo' });
@@ -211,7 +211,7 @@ describe('<SelectTriggerTags />', () => {
 
     const { getByTestId } = render(
       <SelectTriggerTags
-        ellipsis
+        overflowStrategy="counter"
         onTagClose={onTagClose}
         value={visibleSelections}
       />,
@@ -231,7 +231,7 @@ describe('<SelectTriggerTags />', () => {
 
   it('should render fake tags only when ellipsis is enabled', () => {
     const { getByTestId, rerender, queryByTestId } = render(
-      <SelectTriggerTags ellipsis value={[]} />,
+      <SelectTriggerTags overflowStrategy="counter" value={[]} />,
     );
 
     expect(mockRenderFakeTags).toHaveBeenCalled();
@@ -239,7 +239,7 @@ describe('<SelectTriggerTags />', () => {
 
     mockRenderFakeTags.mockClear();
 
-    rerender(<SelectTriggerTags ellipsis={false} value={[]} />);
+    rerender(<SelectTriggerTags overflowStrategy="wrap" value={[]} />);
 
     expect(mockRenderFakeTags).not.toHaveBeenCalled();
     expect(queryByTestId('fake-tags')).toBeNull();
@@ -248,7 +248,7 @@ describe('<SelectTriggerTags />', () => {
   it('should render search input when showTextInputAfterTags is true', () => {
     const { getByRole } = render(
       <SelectTriggerTags
-        ellipsis={false}
+        overflowStrategy="wrap"
         inputProps={{ placeholder: 'Search here' }}
         readOnly
         required

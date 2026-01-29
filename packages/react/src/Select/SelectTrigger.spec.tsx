@@ -64,9 +64,9 @@ describe('<SelectTrigger />', () => {
     const { getByTestId } = render(
       <SelectTrigger
         disabled
-        ellipsis
         mode="multiple"
         onTagClose={jest.fn()}
+        overflowStrategy="counter"
         readOnly
         value={selections}
       />,
@@ -76,7 +76,7 @@ describe('<SelectTrigger />', () => {
     expect(mockSelectTriggerTags).toHaveBeenCalledWith(
       expect.objectContaining({
         disabled: true,
-        ellipsis: true,
+        overflowStrategy: 'counter',
         value: selections,
       }),
     );
