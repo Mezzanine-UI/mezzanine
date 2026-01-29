@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-canary.11...@mezzanine-ui/system@1.0.0-beta.5) (2026-01-29)
+
+### Features
+
+- **system/effect:** add focus inner effect ([88ab73a](https://github.com/Mezzanine-UI/mezzanine/commit/88ab73a87bc3b37a390fe90a0c7c7dc0f72eb182))
+- **system/spacing:** add spacing tokens ([c7fcf8d](https://github.com/Mezzanine-UI/mezzanine/commit/c7fcf8d3471242674ef3548252ff2581b0db20c4))
+
 # [1.0.0-canary.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.4...@mezzanine-ui/system@1.0.0-canary.11) (2026-01-27)
 
 **Note:** Version bump only for package @mezzanine-ui/system

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.11...@mezzanine-ui/core@1.0.0-beta.5) (2026-01-29)
+
+### Bug Fixes
+
+- **core/select:** update SelectInputSize type definition ([c123d9c](https://github.com/Mezzanine-UI/mezzanine/commit/c123d9ca5243dc181e7312225c9c757e0a3b515c))
+
+### Features
+
+- **core/calendar:** calendar style updated ([2f304c4](https://github.com/Mezzanine-UI/mezzanine/commit/2f304c4ffd9b80bd9c215c8800860d1d6c632c6b))
+- **core/calendar:** update calendar styles and methods ([0179d51](https://github.com/Mezzanine-UI/mezzanine/commit/0179d51d553977d137e044bd38919f92f5ea938a))
+
 # [1.0.0-canary.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.4...@mezzanine-ui/core@1.0.0-canary.11) (2026-01-27)
 
 ### Bug Fixes

@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.11...@mezzanine-ui/react@1.0.0-beta.5) (2026-01-29)
+
+### Bug Fixes
+
+- **react/autocomplete:** improve blur and clear behavior ([fa1d641](https://github.com/Mezzanine-UI/mezzanine/commit/fa1d6417488d63cd9835203b8fab1110561cc879))
+- **react/calendar:** fix pr issues and optimize week calculation ([95a89af](https://github.com/Mezzanine-UI/mezzanine/commit/95a89af75ac87480fa698022692448ae4bef718c))
+- **react/date-range-picker:** fix hook control ([31c2c08](https://github.com/Mezzanine-UI/mezzanine/commit/31c2c08df51a6e19718d5edabe963d5af4a94f96))
+- **react/dropdown:** add scrollbar support and improve tree selection ([0bf48b4](https://github.com/Mezzanine-UI/mezzanine/commit/0bf48b4dc603f885bafd70fd50d458adb150ac42))
+- **react/dropdown:** avoid double select in tree multiple ([8b7cc5e](https://github.com/Mezzanine-UI/mezzanine/commit/8b7cc5ed56cfd142d86e15939bbc0383e8a9cd57))
+- **react/filterarea:** move overlay css mock to setup ([3234046](https://github.com/Mezzanine-UI/mezzanine/commit/32340468d711b71f5f7c9dfbd521cdb1260f4462))
+- **react/filterArea:** update test setup ([b43fd9c](https://github.com/Mezzanine-UI/mezzanine/commit/b43fd9ccbc49e7e80b60ca6aceb9a8a1f4ce6652))
+- **react/form:** align select value control types ([9302bc8](https://github.com/Mezzanine-UI/mezzanine/commit/9302bc8a12ac8406806252978850d00994eb1857))
+- **react/popper:** add autoUpdate for popper ([253ef42](https://github.com/Mezzanine-UI/mezzanine/commit/253ef42029efd067ff43e48d8d0f594cfa7c59c4))
+- **react/Select:** improve tree multi select behavior ([d5c807c](https://github.com/Mezzanine-UI/mezzanine/commit/d5c807cb5b06270f81696978b9b951c74bdfa08c))
+- **react/select:** refactor Select component and rewrite tests ([98d3a33](https://github.com/Mezzanine-UI/mezzanine/commit/98d3a33b0bc3ded648ab88bd9d00bcf6bc1be554))
+
+### Features
+
+- **react/calendar:** apply styles ([88064eb](https://github.com/Mezzanine-UI/mezzanine/commit/88064ebd08ef8398fe263bd08eb60d1392afac3c))
+- **react/calendar:** sync calendar behavior with design ([567176f](https://github.com/Mezzanine-UI/mezzanine/commit/567176f2e02fc1a5b5ca77919d570761b05d0565))
+
 # [1.0.0-canary.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.4...@mezzanine-ui/react@1.0.0-canary.11) (2026-01-27)
 
 **Note:** Version bump only for package @mezzanine-ui/react
