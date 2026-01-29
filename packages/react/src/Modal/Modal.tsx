@@ -35,7 +35,7 @@ interface CommonModalProps
   modalStatusType?: ModalStatusType;
   /**
    * Controls whether or not to show dismiss button at top-end.
-   * @default false
+   * @default true
    */
   showDismissButton?: boolean;
 }
@@ -192,7 +192,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       passwordCheckedOnChange,
       passwordOnClick,
       showCancelButton,
-      showDismissButton = false,
+      showDismissButton = true,
       showModalFooter = false,
       showModalHeader,
       showStatusTypeIcon,
