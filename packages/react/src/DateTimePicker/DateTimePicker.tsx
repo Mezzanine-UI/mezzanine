@@ -297,13 +297,16 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
     // Handle left complete - auto focus right
     const onRightComplete = useCallback(() => {
       if (dateValue) {
-        onClose();
+        /** Don't close the time panel */
+        setTimeout(() => {
+          inputRightRef.current?.focus();
+        }, 0);
       } else {
         setTimeout(() => {
           inputLeftRef.current?.focus();
         }, 0);
       }
-    }, [dateValue, onClose]);
+    }, [dateValue]);
 
     // Handle date change from input
     const onChangeLeft = useCallback(
