@@ -52,10 +52,16 @@ describe('<RangeCalendar />', () => {
     expect(calendars.length).toBe(3); // 1 host + 2 calendar children
   });
 
-  it('should render footer actions by default', () => {
+  it('should render footer actions when actions prop is provided', () => {
     const { getByText } = render(
       <CalendarConfigProvider methods={CalendarMethodsMoment}>
-        <RangeCalendar referenceDate={moment().toISOString()} />
+        <RangeCalendar
+          referenceDate={moment().toISOString()}
+          actions={{
+            secondaryButtonProps: { children: 'Cancel' },
+            primaryButtonProps: { children: 'Ok' },
+          }}
+        />
       </CalendarConfigProvider>,
     );
 

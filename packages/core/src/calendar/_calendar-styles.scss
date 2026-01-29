@@ -8,19 +8,6 @@
 @use '../button/utils' as btn-utils;
 @use './calendar' as *;
 
-// Todo: width fixed?
-@mixin mode-width {
-  @each $mode in $modes {
-    .#{$prefix}--#{$mode} & {
-      @if $mode == week {
-        width: 292px;
-      } @else {
-        width: 260px;
-      }
-    }
-  }
-}
-
 .#{$prefix} {
   display: inline-flex;
   box-sizing: border-box;
@@ -39,8 +26,6 @@
 }
 
 .#{$main-prefix} {
-  @include mode-width();
-
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
 
   &-with-footer {
@@ -60,16 +45,14 @@
 }
 
 .#{$week-prefix} {
-  width: 32px;
   height: 100%;
-  padding-top: 34px;
+  padding-top: 40px;
   display: flex;
   flex-flow: column;
 
   &__row {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    padding: spacing.semantic-variable(padding, vertical, micro) 0;
+    width: spacing.semantic-variable(size, element, loose);
+    height: spacing.semantic-variable(size, element, loose);
     position: relative;
 
     &::after {
@@ -86,6 +69,9 @@
 
 .#{$days-grid-prefix} {
   flex: 1;
+  display: grid;
+  grid-auto-flow: row;
+  gap: spacing.semantic-variable(padding, vertical, micro);
 }
 
 .#{$button-prefix} {
@@ -96,7 +82,7 @@
   align-items: center;
   justify-content: center;
   gap: 0;
-  border: 1px solid transparent;
+  border: none;
   border-radius: radius.variable(base);
   transition: transition.standard(background-color) transition.standard(color) transition.standard(border);
 
@@ -117,15 +103,13 @@
     background-color: palette.semantic-variable("background", neutral-faint);
   }
 
-  .#{$cell-prefix}--today & {
-    border: 1px solid palette.semantic-variable(border, brand);
-  }
-
   &--inRange {
+    border-radius: 0;
     background-color: palette.semantic-variable("background", brand-faint);
   }
 
   &--active {
+    border-radius: radius.variable(base);
     color: palette.semantic-variable(text, fixed-light);
     background-color: palette.semantic-variable("background", brand);
 
@@ -146,20 +130,19 @@
 
   &:focus-visible {
     outline: none;
-    box-shadow: effect.variable(focus, primary);
+    box-shadow: effect.variable(focus, inner);
+
+    &:not(.#{$button-prefix}--active):not(.#{$button-prefix}--inRange) {
+      background-color: palette.semantic-variable("background", neutral-faint);
+    }
   }
 }
 
 .#{$row-prefix} {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
-  column-gap: spacing.semantic-variable(gap, tiny);
+  column-gap: 0;
   width: 100%;
-  padding: spacing.semantic-variable(padding, vertical, micro) 0;
-
-  &:first-child {
-    padding-top: 0;
-  }
 
   .#{$prefix}--quarter & {
     padding: spacing.semantic-variable(padding, vertical, tiny) 0;
@@ -179,16 +162,35 @@
 }
 
 .#{$cell-prefix} {
+  --today-dot-color: #{palette.semantic-variable(icon, brand)};
   --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
 
   position: relative;
-  width: 100%;
-  padding-top: 100%;
+  width: spacing.semantic-variable(size, element, loose);
+  height: spacing.semantic-variable(size, element, loose);
   color: var(--#{$cell-prefix}-text-color);
   user-select: none;
   transition: transition.standard(color);
 
-  @include typography.semantic-variable(label-primary);
+  @include typography.semantic-variable(input);
+
+  &--mode-day,
+  &--mode-week {
+    width: spacing.semantic-variable(size, element, loose);
+    height: spacing.semantic-variable(size, element, loose);
+  }
+
+  &--mode-month,
+  &--mode-half-year,
+  &--mode-year {
+    width: spacing.semantic-variable(size, element, extra);
+    height: spacing.semantic-variable(size, element, loose);
+  }
+
+  &--mode-quarter {
+    width: spacing.semantic-variable(size, element, wide-expanded);
+    height: spacing.semantic-variable(size, element, loose);
+  }
 
   button {
     width: 100%;
@@ -206,7 +208,22 @@
     height: 100%;
   }
 
+  &--weekend {
+    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, brand)};
+  }
+
+  &--range-start {
+    border-radius: radius.variable(base) 0 0 radius.variable(base);
+    background-color: palette.semantic-variable("background", brand-faint);
+  }
+
+  &--range-end {
+    border-radius: 0 radius.variable(base) radius.variable(base) 0;
+    background-color: palette.semantic-variable("background", brand-faint);
+  }
+
   &--active {
+    --today-dot-color: #{palette.semantic-variable(icon, fixed-light)};
     --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
   }
 
@@ -218,28 +235,47 @@
   .#{$prefix}--half-year & {
     padding-top: 32px;
   }
+
+  &--today {
+    &::after {
+      position: absolute;
+      bottom: 7px;
+      left: 50%;
+      z-index: 1;
+      transform: translateX(-50%);
+      content: '';
+      width: spacing.semantic-variable(size, element, micro);
+      height: spacing.semantic-variable(size, element, micro);
+      border-radius: 1px;
+      background-color: var(--today-dot-color);
+      pointer-events: none;
+    }
+
+    &.#{$cell-prefix}--with-annotation::after {
+      bottom: 3px;
+    }
+  }
 }
 
 .#{$twelve-grid-prefix} {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: 32px;
-  gap: calc(#{spacing.semantic-variable(padding, vertical, micro)} * 2) spacing.semantic-variable(gap, tiny);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: calc(#{spacing.semantic-variable(padding, vertical, micro)} * 2) 0;
   width: 100%;
 
-  @include typography.semantic-variable(label-primary);
+  @include typography.semantic-variable(input);
 
   color: palette.semantic-variable(text, neutral-solid);
 }
 
 .#{$controls-prefix} {
-  padding: spacing.semantic-variable(padding, vertical, tiny) spacing.semantic-variable(padding, horizontal, relaxed);
+  padding: 0;
+  margin: 0;
   display: flex;
   justify-content: space-between;
   gap: spacing.semantic-variable(gap, tiny);
   position: relative;
   width: 100%;
-  margin: 0 0 spacing.semantic-variable(gap, tight);
   box-sizing: border-box;
 
   &__actions {
@@ -252,7 +288,9 @@
     @include btn-utils.reset();
 
     line-height: 0;
-    padding: spacing.semantic-variable(padding, vertical, micro) 0;
+    width: spacing.semantic-variable(size, element, roomy);
+    height: spacing.semantic-variable(size, element, roomy);
+    padding: 0;
     border-radius: radius.variable(base);
     color: palette.semantic-variable(icon, neutral);
 
@@ -290,7 +328,7 @@
 
       &:focus-visible {
         outline: none;
-        box-shadow: effect.variable(focus, primary);
+        box-shadow: effect.variable(focus, inner);
       }
 
       &:disabled {

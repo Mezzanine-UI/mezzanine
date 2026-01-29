@@ -130,6 +130,12 @@ function CalendarDays(props: CalendarDaysProps) {
                 false;
               const inactive = !disabled && (isPrevMonth || isNextMonth);
               const inRange = !inactive && isDateInRange && isDateInRange(date);
+              const inRangeStart =
+                inRange && value ? isSameDate(date, value[0]) : false;
+              const inRangeEnd =
+                inRange && value
+                  ? isSameDate(date, value[value.length - 1])
+                  : false;
               const active =
                 !disabled && !inactive && value && isDateIncluded(date, value);
 
@@ -171,9 +177,13 @@ function CalendarDays(props: CalendarDaysProps) {
               return (
                 <CalendarCell
                   key={`${getMonth(date)}/${getDate(date)}`}
+                  mode="day"
                   today={isSameDate(date, getNow())}
                   active={active}
                   disabled={isPrevMonth || isNextMonth}
+                  withAnnotation={Boolean(renderAnnotations)}
+                  isRangeStart={inRangeStart}
+                  isRangeEnd={inRangeEnd}
                 >
                   <button
                     type="button"

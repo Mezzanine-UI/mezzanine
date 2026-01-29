@@ -16,7 +16,7 @@ export type UseCalendarControlModifiersResult = Record<
   CalendarMode,
   {
     single: [CalendarControlModifier, CalendarControlModifier] | null;
-    double: [CalendarControlModifier, CalendarControlModifier];
+    double: [CalendarControlModifier, CalendarControlModifier] | null;
   }
 >;
 
@@ -34,34 +34,34 @@ export function useCalendarControlModifiers(): UseCalendarControlModifiersResult
         single: [(date) => addMonth(date, -1), (date) => addMonth(date, 1)],
         double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
       },
-      // month mode: only double (year)
+      // month mode: only single
       month: {
-        single: null,
-        double: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
+        single: [(date) => addYear(date, -1), (date) => addYear(date, 1)],
+        double: null,
       },
-      // year mode: only double (10 years)
+      // year mode: only single
       year: {
-        single: null,
-        double: [
+        single: [
           (date) => addYear(date, -calendarYearModuler),
           (date) => addYear(date, calendarYearModuler),
         ],
+        double: null,
       },
-      // quarter mode: only double (5 years)
+      // quarter mode: only single
       quarter: {
-        single: null,
-        double: [
+        single: [
           (date) => addYear(date, -calendarQuarterYearsCount),
           (date) => addYear(date, calendarQuarterYearsCount),
         ],
+        double: null,
       },
-      // half-year mode: only double (5 years)
+      // half-year mode: only single
       'half-year': {
-        single: null,
-        double: [
+        single: [
           (date) => addYear(date, -calendarHalfYearYearsCount),
           (date) => addYear(date, calendarHalfYearYearsCount),
         ],
+        double: null,
       },
     }),
     [addYear, addMonth],

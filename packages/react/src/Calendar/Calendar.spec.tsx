@@ -449,7 +449,7 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const nextButtonElement = getByTitle('Next');
+      const nextButtonElement = getByTitle('Next Month');
 
       expect(nextButtonElement).toBeInstanceOf(HTMLButtonElement);
 
@@ -459,9 +459,9 @@ describe('<Calendar />', () => {
       expect(onNext).toHaveBeenCalledWith('day');
     });
 
-    it('should not render single next button in year mode', () => {
+    it('should render single next button in year mode if onNext provided', () => {
       const onNext = jest.fn();
-      const { queryByTitle } = render(
+      const { getByTitle } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <Calendar
             referenceDate={moment().toISOString()}
@@ -470,9 +470,14 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const nextButtonElement = queryByTitle('Next');
+      const nextButtonElement = getByTitle('Next Month');
 
-      expect(nextButtonElement).toBeNull();
+      expect(nextButtonElement).toBeInstanceOf(HTMLButtonElement);
+
+      fireEvent.click(nextButtonElement);
+
+      expect(onNext).toHaveBeenCalledTimes(1);
+      expect(onNext).toHaveBeenCalledWith('year');
     });
   });
 
@@ -488,7 +493,7 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const prevButtonElement = getByTitle('Previous');
+      const prevButtonElement = getByTitle('Previous Month');
 
       expect(prevButtonElement).toBeInstanceOf(HTMLButtonElement);
 
@@ -498,9 +503,9 @@ describe('<Calendar />', () => {
       expect(onPrev).toHaveBeenCalledWith('day');
     });
 
-    it('should not render single prev button in month mode', () => {
+    it('should render single prev button in month mode if onPrev provided', () => {
       const onPrev = jest.fn();
-      const { queryByTitle } = render(
+      const { getByTitle } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <Calendar
             referenceDate={moment().toISOString()}
@@ -509,9 +514,14 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const prevButtonElement = queryByTitle('Previous');
+      const prevButtonElement = getByTitle('Previous Month');
 
-      expect(prevButtonElement).toBeNull();
+      expect(prevButtonElement).toBeInstanceOf(HTMLButtonElement);
+
+      fireEvent.click(prevButtonElement);
+
+      expect(onPrev).toHaveBeenCalledTimes(1);
+      expect(onPrev).toHaveBeenCalledWith('month');
     });
   });
 
@@ -552,7 +562,7 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const doubleNextButton = getByTitle('Double Next');
+      const doubleNextButton = getByTitle('Next Year');
 
       expect(doubleNextButton).toBeInstanceOf(HTMLButtonElement);
 
@@ -574,7 +584,7 @@ describe('<Calendar />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const doublePrevButton = getByTitle('Double Previous');
+      const doublePrevButton = getByTitle('Previous Year');
 
       expect(doublePrevButton).toBeInstanceOf(HTMLButtonElement);
 

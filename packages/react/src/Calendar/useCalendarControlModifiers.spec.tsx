@@ -13,33 +13,33 @@ describe('useCalendarControlModifiers', () => {
   const renderResult = renderHook(useCalendarControlModifiers, { wrapper });
   const { year, month, week, day } = renderResult.result.current;
 
-  it('should add or remove 10 years for year modifier', () => {
+  it('should add or remove 20 years for year modifier', () => {
     const current = '2022-01-02';
-    const [minus, add] = year;
+    const [minus, add] = year.single!;
 
-    expect(moment(current).diff(add(current), 'year')).toBe(-10);
-    expect(moment(current).diff(minus(current), 'year')).toBe(10);
+    expect(moment(current).diff(add(current), 'year')).toBe(-20);
+    expect(moment(current).diff(minus(current), 'year')).toBe(20);
   });
 
-  it('should add or remove 1 year for month modifier', () => {
+  it('should add or remove 1 year for month single modifier', () => {
     const current = '2022-01-02';
-    const [minus, add] = month;
+    const [minus, add] = month.single!;
 
     expect(moment(current).diff(add(current), 'year')).toBe(-1);
     expect(moment(current).diff(minus(current), 'year')).toBe(1);
   });
 
-  it('should add or remove 1 month for week modifier', () => {
+  it('should add or remove 1 month for week single modifier', () => {
     const current = '2022-01-02';
-    const [minus, add] = week;
+    const [minus, add] = week.single!;
 
     expect(moment(current).diff(add(current), 'month')).toBe(-1);
     expect(moment(current).diff(minus(current), 'month')).toBe(1);
   });
 
-  it('should add or remove 1 month for day modifier', () => {
+  it('should add or remove 1 month for day single modifier', () => {
     const current = '2022-01-02';
-    const [minus, add] = day;
+    const [minus, add] = day.single!;
 
     expect(moment(current).diff(add(current), 'month')).toBe(-1);
     expect(moment(current).diff(minus(current), 'month')).toBe(1);

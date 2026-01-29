@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-canary.11](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.4...@mezzanine-ui/core@1.0.0-canary.11) (2026-01-27)
+
+### Bug Fixes
+
+- **core/scrollbar:** remove some scrollbar styles ([763adfb](https://github.com/Mezzanine-UI/mezzanine/commit/763adfbf36bc8f6759c5f3260d93d4816f42887d))
+
 # [1.0.0-beta.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.3...@mezzanine-ui/core@1.0.0-beta.4) (2026-01-27)
 
 ### Bug Fixes

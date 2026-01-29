@@ -37,7 +37,9 @@ $element-tones: (
 );
 
 $container-tones: (
+  atomic,
   minimal,
+  micro,
   minimized,
   collapsed,
   reduced,
@@ -187,8 +189,8 @@ $semantic-spacings: (
         compact: primitive.variable(24),
       ),
       wide-expanded: (
-        default: primitive.variable(40),
-        compact: primitive.variable(24),
+        default: primitive.variable(48),
+        compact: primitive.variable(40),
       ),
       expansive: (
         default: primitive.variable(60),
@@ -212,9 +214,17 @@ $semantic-spacings: (
       ),
     ),
     container: (
+      atomic: (
+        default: primitive.variable(30),
+        compact: primitive.variable(26),
+      ),
       minimal: (
         default: primitive.variable(36),
         compact: primitive.variable(28),
+      ),
+      micro: (
+        default: primitive.variable(38),
+        compact: primitive.variable(30),
       ),
       minimized: (
         default: primitive.variable(40),

@@ -47,6 +47,9 @@ $effect-values: (
     primary: (
       value: string.unquote('0 0 0 1px #{semantic.variable(background, base)}, 0 0 0 2px #{semantic.variable(background, brand)}'),
     ),
+    inner: (
+      value: string.unquote('0 0 0 1px #{semantic.variable(background, brand)} inset, 0 0 0 2px #{semantic.variable(background, base)} inset'),
+    ),
     error: (
       value: string.unquote('0 0 0 1px #{semantic.variable(background, base)}, 0 0 0 2px #{semantic.variable(background, error)}'),
     ),

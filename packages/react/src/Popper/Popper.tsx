@@ -9,6 +9,7 @@ import {
   useCallback,
 } from 'react';
 import {
+  autoUpdate,
   useFloating,
   UseFloatingOptions,
   UseFloatingReturn,
@@ -76,6 +77,7 @@ const Popper = forwardRef<HTMLDivElement, PopperProps>(
     const anchorEl = getElement(anchor);
     const floatingReturn = useFloating({
       ...options,
+      whileElementsMounted: autoUpdate,
       middleware: [
         ...(options?.middleware ?? []),
         arrow?.enabled

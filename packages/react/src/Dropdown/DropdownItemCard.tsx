@@ -43,6 +43,11 @@ export interface DropdownItemCardProps {
    */
   checked?: boolean;
   /**
+   * Whether the checkbox is in indeterminate state.
+   * Used in tree mode when some but not all children are selected.
+   */
+  indeterminate?: boolean;
+  /**
    * Additional className for the list item.
    */
   className?: string;
@@ -128,6 +133,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     disabled,
     checked,
     defaultChecked,
+    indeterminate = false,
     checkSite,
     onCheckedChange,
     onClick,
@@ -181,11 +187,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     return followText
       ? highlightText(cardLabel, followText)
       : [
-          {
-            text: cardLabel,
-            highlight: false,
-          },
-        ];
+        {
+          text: cardLabel,
+          highlight: false,
+        },
+      ];
   }, [cardLabel, followText]);
 
   const showPrependContent = useMemo(() => {
@@ -201,11 +207,11 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
       ? highlightText(subTitle, followText)
       : subTitle
         ? [
-            {
-              text: subTitle,
-              highlight: false,
-            },
-          ]
+          {
+            text: subTitle,
+            highlight: false,
+          },
+        ]
         : [];
   }, [subTitle, followText]);
 
@@ -300,6 +306,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
                 <Checkbox
                   checked={isChecked}
                   disabled={disabled}
+                  indeterminate={indeterminate}
                   onChange={handleCheckboxChange}
                 />
               )}
