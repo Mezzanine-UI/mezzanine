@@ -1,0 +1,26 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
+@use './date-time-range-picker' as *;
+
+.#{$prefix} {
+  display: inline-flex;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, base);
+
+  &--row {
+    flex-direction: row;
+  }
+
+  &--column {
+    flex-direction: column;
+  }
+
+  &__arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--mzn-color-text-secondary);
+    font-size: typography.prop(body1, size);
+  }
+}
