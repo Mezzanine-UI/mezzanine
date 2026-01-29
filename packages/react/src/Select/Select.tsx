@@ -119,8 +119,8 @@ export interface SelectBaseProps
    */
   dropdownZIndex?: number | string;
   /**
-   * Whether to disable portal for the dropdown.
-   * @default false
+   * Whether to enable portal for the dropdown.
+   * @default true
    */
   globalPortal?: boolean;
 }
@@ -211,7 +211,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       type = 'default',
       value: valueProp,
       dropdownZIndex,
-      globalPortal = false,
+      globalPortal = true,
     } = props;
 
     const [open, toggleOpen] = useState(false);
@@ -516,7 +516,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             type={dropdownType}
             value={dropdownValue}
             zIndex={dropdownZIndex}
-            disablePortal={globalPortal}
+            globalPortal={globalPortal}
           >
             <SelectTrigger
               ref={composedRef}
