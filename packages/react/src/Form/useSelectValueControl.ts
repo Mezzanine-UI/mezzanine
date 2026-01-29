@@ -1,25 +1,24 @@
-import { MouseEvent } from 'react';
 import isEqual from 'lodash/isEqual';
+import { MouseEvent } from 'react';
 import { SelectValue } from '../Select/typings';
 import { useControlValueState } from './useControlValueState';
 
 export interface UseSelectBaseValueControl {
   onClear?(e: MouseEvent<Element>): void;
-  onChange?(newOptions: SelectValue[] | SelectValue): any;
   onClose?(): void;
 }
 
 export type UseSelectMultipleValueControl = UseSelectBaseValueControl & {
   defaultValue?: SelectValue[];
   mode: 'multiple';
-  onChange?(newOptions: SelectValue[]): any;
+  onChange?(newOptions: SelectValue[]): void;
   value?: SelectValue[];
 };
 
 export type UseSelectSingleValueControl = UseSelectBaseValueControl & {
   defaultValue?: SelectValue;
   mode: 'single';
-  onChange?(newOption: SelectValue): any;
+  onChange?(newOption: SelectValue | null): void;
   value?: SelectValue | null;
 };
 
@@ -32,7 +31,7 @@ export interface SelectBaseValueControl {
 }
 
 export type SelectMultipleValueControl = SelectBaseValueControl & {
-  onChange: (v: SelectValue | null) => SelectValue[];
+  onChange: (v: SelectValue | SelectValue[] | null) => SelectValue[];
   value: SelectValue[];
 };
 
@@ -74,66 +73,81 @@ function useSelectBaseValueControl(props: UseSelectValueControl) {
     value: valueProp,
   });
 
-  return {
-    value,
-    onChange: (chooseOption: SelectValue | null) => {
+  if (mode === 'multiple') {
+    const onChangeMultiple = (
+      chooseOption: SelectValue | SelectValue[] | null,
+    ) => {
       if (!chooseOption) {
-        if (mode === 'multiple') {
-          return [];
-        }
-
-        return null;
+        return [];
       }
 
-      let newValue: SelectValue[] | SelectValue | null =
-        mode === 'multiple' ? [] : null;
+      let newValue: SelectValue[] = [];
 
-      switch (mode) {
-        case 'multiple': {
-          const existedValueIdx = ((value as SelectValue[]) ?? []).findIndex(
-            (v: SelectValue) => v.id === chooseOption.id,
-          );
+      if (Array.isArray(chooseOption)) {
+        newValue = chooseOption;
+      } else {
+        const existedValueIdx = ((value as SelectValue[]) ?? []).findIndex(
+          (v: SelectValue) => v.id === chooseOption.id,
+        );
 
-          if (~existedValueIdx) {
-            newValue = [
-              ...(value as SelectValue[]).slice(0, existedValueIdx),
-              ...(value as SelectValue[]).slice(existedValueIdx + 1),
-            ];
-          } else {
-            newValue = [...(value as SelectValue[]), chooseOption];
-          }
-
-          if (typeof onChange === 'function') onChange(newValue);
-
-          break;
-        }
-
-        default: {
-          newValue = chooseOption;
-
-          if (typeof onClose === 'function') {
-            /** single selection should close modal when clicked */
-            onClose();
-          }
-
-          if (typeof onChange === 'function') onChange(newValue);
-
-          break;
+        if (~existedValueIdx) {
+          newValue = [
+            ...(value as SelectValue[]).slice(0, existedValueIdx),
+            ...(value as SelectValue[]).slice(existedValueIdx + 1),
+          ];
+        } else {
+          newValue = [...(value as SelectValue[]), chooseOption];
         }
       }
+
+      if (typeof onChange === 'function') onChange(newValue);
 
       setValue(newValue);
 
       return newValue;
-    },
+    };
+
+    return {
+      value: value as SelectValue[],
+      onChange: onChangeMultiple,
+      onClear: (e: MouseEvent<Element>) => {
+        e.stopPropagation();
+        setValue([]);
+        onChange?.([]);
+
+        if (typeof onClearProp === 'function') {
+          onClearProp(e);
+        }
+      },
+    };
+  }
+
+  const onChangeSingle = (chooseOption: SelectValue | null) => {
+    if (!chooseOption) {
+      return null;
+    }
+
+    const newValue = chooseOption;
+
+    if (typeof onClose === 'function') {
+      /** single selection should close modal when clicked */
+      onClose();
+    }
+
+    if (typeof onChange === 'function') onChange(newValue);
+
+    setValue(newValue);
+
+    return newValue;
+  };
+
+  return {
+    value: value as SelectValue | null,
+    onChange: onChangeSingle,
     onClear: (e: MouseEvent<Element>) => {
       e.stopPropagation();
-
-      if (mode === 'multiple') {
-        setValue([]);
-      } else {
-        setValue(null);
-      }
+      setValue(null);
+      onChange?.(null);
 
       if (typeof onClearProp === 'function') {
         onClearProp(e);

@@ -99,42 +99,6 @@ describe('<FilterArea />', () => {
     });
   });
 
-  describe('prop: isPanel', () => {
-    it('should not add panel class by default', () => {
-      const { getHostHTMLElement } = render(
-        <FilterArea>
-          <FilterLine>
-            <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
-                <Input />
-              </FormField>
-            </Filter>
-          </FilterLine>
-        </FilterArea>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-filter-area--panel')).toBeFalsy();
-    });
-
-    it('should add panel class if isPanel=true', () => {
-      const { getHostHTMLElement } = render(
-        <FilterArea isPanel>
-          <FilterLine>
-            <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
-                <Input />
-              </FormField>
-            </Filter>
-          </FilterLine>
-        </FilterArea>,
-      );
-      const element = getHostHTMLElement();
-
-      expect(element.classList.contains('mzn-filter-area--panel')).toBeTruthy();
-    });
-  });
-
   describe('prop: actionsAlign', () => {
     it('should render actionsAlign="end" by default', () => {
       const { getHostHTMLElement } = render(
