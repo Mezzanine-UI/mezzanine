@@ -217,8 +217,8 @@ export interface AutoCompleteBaseProps
    */
   dropdownZIndex?: number | string;
   /**
-   * Whether to disable portal for the dropdown.
-   * @default false
+   * Whether to enable portal for the dropdown.
+   * @default true
    */
   globalPortal?: boolean;
   /**
@@ -373,7 +373,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       createActionText,
       createActionTextTemplate = '建立 "{text}"',
       dropdownZIndex,
-      globalPortal = false,
+      globalPortal = true,
       onReachBottom,
       onLeaveBottom,
     } = props;
@@ -905,7 +905,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             type="default"
             value={dropdownValue}
             zIndex={dropdownZIndex}
-            disablePortal={globalPortal}
+            globalPortal={globalPortal}
             onReachBottom={onReachBottom}
             onLeaveBottom={onLeaveBottom}
           >
