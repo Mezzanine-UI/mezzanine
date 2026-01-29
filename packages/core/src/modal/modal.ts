@@ -33,6 +33,7 @@ export const modalStatusTypeIcons = {
 export const modalClasses = {
   host: modalPrefix,
   overlay: `${modalPrefix}__overlay`,
+  contentWrapper: `${modalPrefix}__content-wrapper`,
   closeIcon: `${modalPrefix}__close-icon`,
   modalStatusType: (severity: ModalStatusType) => `${modalPrefix}--${severity}`,
   size: (size: ModalSize) => `${modalPrefix}--${size}`,

@@ -2,9 +2,10 @@ import { modalClasses as classes } from '@mezzanine-ui/core/modal';
 import { forwardRef, ReactNode, useState } from 'react';
 import { cx } from '../utils/cx';
 import Backdrop, { BackdropProps } from '../Backdrop';
-import { Fade } from '../Transition';
+import { Scale } from '../Transition';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
 import useTopStack from '../_internal/SlideFadeOverlay/useTopStack';
+import { MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 export interface ModalContainerProps
   extends Pick<
@@ -90,13 +91,19 @@ const ModalContainer = forwardRef<HTMLDivElement, ModalContainerProps>(
         open={open}
         role="presentation"
       >
-        <Fade
+        <Scale
+          easing={{
+            enter: MOTION_EASING.entrance,
+            exit: MOTION_EASING.entrance,
+          }}
           in={open}
           onEntered={() => setExited(false)}
           onExited={() => setExited(true)}
         >
-          <div ref={ref}>{children}</div>
-        </Fade>
+          <div className={classes.contentWrapper} ref={ref}>
+            {children}
+          </div>
+        </Scale>
       </Backdrop>
     );
   },

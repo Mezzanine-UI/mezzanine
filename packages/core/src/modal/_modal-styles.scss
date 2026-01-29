@@ -37,10 +37,7 @@ $modalSizes: (
 }
 
 .#{$prefix} {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
   display: flex;
   flex-direction: column;
   background-color: palette.semantic-variable("background", base);
@@ -81,12 +78,15 @@ $modalSizes: (
   }
 
   &__overlay {
+    z-index: z-index.get(modal);
+  }
+
+  &__content-wrapper {
     display: flex;
-    width: 100%;
-    height: 100%;
     justify-content: center;
     align-items: center;
-    z-index: z-index.get(modal);
+    width: 100%;
+    height: 100%;
   }
 
   &__close-icon {

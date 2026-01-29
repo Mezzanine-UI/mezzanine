@@ -253,8 +253,8 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
             exit: MOTION_DURATION.fast,
           }}
           easing={{
-            enter: MOTION_EASING.entrance,
-            exit: MOTION_EASING.exit,
+            enter: MOTION_EASING.standard,
+            exit: MOTION_EASING.standard,
           }}
           in={isCurrent}
           key={index}
