@@ -83,6 +83,7 @@
   @include _load-styles($options, date-range-picker);
   @include _load-styles($options, date-time-picker);
   @include _load-styles($options, date-time-range-picker);
+  @include _load-styles($options, time-range-picker);
   @include _load-styles($options, slider);
   @include _load-styles($options, dropdown);
 
