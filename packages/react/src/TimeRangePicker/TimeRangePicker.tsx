@@ -9,7 +9,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { timeRangePickerClasses } from '@mezzanine-ui/core/time-range-picker';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import {
@@ -26,7 +25,6 @@ import {
 import TimePickerPanel, {
   TimePickerPanelProps,
 } from '../TimePicker/TimePickerPanel';
-import { cx } from '../utils/cx';
 
 export interface TimeRangePickerProps
   extends Pick<
@@ -248,7 +246,7 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
     return (
       <>
         <RangePickerTrigger
-          className={cx(timeRangePickerClasses.host, className)}
+          className={className}
           clearable={clearable}
           disabled={disabled}
           error={error}

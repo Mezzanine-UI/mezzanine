@@ -5,6 +5,7 @@ import {
 import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import Scrollbar from '../Scrollbar';
 import { cx } from '../utils/cx';
+import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 
 export interface TimePanelColumnProps {
   /**
@@ -30,7 +31,11 @@ export interface TimePanelColumnProps {
  */
 const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
   function TimePanelColumn(props, ref) {
-    const { activeUnit, cellHeight = 32, onChange, units } = props;
+    const { activeUnit, cellHeight: cellHeightProp, onChange, units } = props;
+
+    const cellHeight =
+      cellHeightProp ??
+      getNumericCSSVariablePixelValue('--mzn-spacing-size-element-loose');
 
     const viewportRef = useRef<HTMLDivElement>(null);
 
