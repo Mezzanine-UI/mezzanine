@@ -6,16 +6,16 @@ import {
   TreeSize,
 } from '@mezzanine-ui/core/tree';
 import { CaretRightIcon } from '@mezzanine-ui/icons';
-import { forwardRef, useMemo, useContext } from 'react';
+import { forwardRef, useContext, useMemo } from 'react';
 import Checkbox from '../Checkbox';
 import Icon from '../Icon';
+import { MezzanineConfig } from '../Provider/context';
+import Spin from '../Spin/Spin';
 import { Collapse, CollapseProps } from '../Transition';
 import Typography, { TypographySemanticType } from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { TreeNodeData } from './typings';
-import { MezzanineConfig } from '../Provider/context';
-import Spin from '../Spin/Spin';
 
 export type TreeNodeElementProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'li'>,
@@ -91,14 +91,14 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
 
     const onExpand = onExpandProp
       ? () => {
-          onExpandProp(value);
-        }
+        onExpandProp(value);
+      }
       : undefined;
     const onSelect =
       selectable && onSelectProp && !disabled
         ? () => {
-            onSelectProp(value);
-          }
+          onSelectProp(value);
+        }
         : undefined;
 
     const mayHaveChildren = children || dynamicNodesFetching;
@@ -128,7 +128,6 @@ const TreeNode = forwardRef<HTMLLIElement, TreeNodeProps>(
               disabled={disabled}
               indeterminate={indeterminate}
               onChange={onSelect}
-              size={size}
               value={`${value}`}
             >
               {label}
