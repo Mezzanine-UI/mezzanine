@@ -265,27 +265,6 @@ describe('<TimeRangePicker />', () => {
     });
   });
 
-  describe('prop: defaultValue', () => {
-    it('should render with default value', () => {
-      const defaultValue: TimeRangePickerValue = [
-        '2024-01-01T09:30:00',
-        '2024-01-01T17:45:00',
-      ];
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimeRangePicker defaultValue={defaultValue} format="HH:mm:ss" />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const inputs = element.getElementsByTagName('input');
-
-      expect(inputs[0]).toHaveValue('09:30:00');
-      expect(inputs[1]).toHaveValue('17:45:00');
-    });
-  });
-
   describe('prop: hideSecond', () => {
     it('should render correctly with hideSecond prop', () => {
       // Just test that the component renders without error when hideSecond is passed
@@ -310,7 +289,7 @@ describe('<TimeRangePicker />', () => {
 
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimeRangePicker defaultValue={defaultValue} format="HH:mm:ss" />
+          <TimeRangePicker value={defaultValue} format="HH:mm:ss" />
         </CalendarConfigProvider>,
       );
 

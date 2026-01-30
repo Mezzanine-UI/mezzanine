@@ -54,7 +54,7 @@ export function useTimeRangePickerValue({
   const inputToValue = formatTime(to);
 
   const onInputFromChange = useCallback(
-    (formattedValue: string) => {
+    (formattedValue: string | undefined) => {
       if (formattedValue) {
         setInternalFrom(formattedValue);
         onChangeProp?.([formattedValue, to]);
@@ -67,7 +67,7 @@ export function useTimeRangePickerValue({
   );
 
   const onInputToChange = useCallback(
-    (formattedValue: string) => {
+    (formattedValue: string | undefined) => {
       if (formattedValue) {
         setInternalTo(formattedValue);
         onChangeProp?.([from, formattedValue]);
@@ -123,14 +123,6 @@ export function useTimeRangePickerValue({
     setFocusedInput('to');
   }, []);
 
-  const onFromBlur = useCallback(() => {
-    // Don't immediately clear focus, let onToFocus handle the transition
-  }, []);
-
-  const onToBlur = useCallback(() => {
-    // Don't immediately clear focus, let onFromFocus handle the transition
-  }, []);
-
   // Get the currently focused value for the panel
   const panelValue =
     focusedInput === 'from' ? from : focusedInput === 'to' ? to : undefined;
@@ -141,12 +133,10 @@ export function useTimeRangePickerValue({
     inputToValue,
     onChange,
     onClear,
-    onFromBlur,
     onFromFocus,
     onInputFromChange,
     onInputToChange,
     onPanelChange,
-    onToBlur,
     onToFocus,
     panelValue,
     value,

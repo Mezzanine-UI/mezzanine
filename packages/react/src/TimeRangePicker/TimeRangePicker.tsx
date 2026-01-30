@@ -61,10 +61,6 @@ export interface TimeRangePickerProps
       | 'validateTo'
     > {
   /**
-   * Default value for time range picker.
-   */
-  defaultValue?: TimeRangePickerValue;
-  /**
    * The format for displaying time.
    * @default 'HH:mm:ss' or 'HH:mm' based on hideSecond
    */
@@ -94,7 +90,6 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
     const {
       className,
       clearable = true,
-      defaultValue,
       disabled = false,
       error = false,
       errorMessagesFrom,
@@ -152,19 +147,17 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
       inputToValue,
       onChange,
       onClear,
-      onFromBlur,
       onFromFocus,
       onInputFromChange,
       onInputToChange,
       onPanelChange,
-      onToBlur,
       onToFocus,
       panelValue,
       value: internalValue,
     } = useTimeRangePickerValue({
       format: resolvedFormat,
       onChange: onChangeProp,
-      value: valueProp ?? defaultValue,
+      value: valueProp,
     });
 
     /** Popper settings */
@@ -272,12 +265,10 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
           inputToRef={inputToRef}
           inputToValue={inputToValue}
           onClear={onClearHandler}
-          onFromBlur={onFromBlur}
           onFromFocus={onFromFocusHandler}
           onIconClick={onIconClick}
           onInputFromChange={onInputFromChange}
           onInputToChange={onInputToChange}
-          onToBlur={onToBlur}
           onToFocus={onToFocusHandler}
           prefix={prefix}
           readOnly={readOnly}

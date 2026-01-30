@@ -114,11 +114,6 @@ export const Basic = () => {
   const groupStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
   const [val, onChange] = usePickerChange<TimeRangePickerValue>();
-  const defaultVal: TimeRangePickerValue = [
-    moment().hour(9).minute(0).second(0).toISOString(),
-    moment().hour(17).minute(30).second(0).toISOString(),
-  ];
-  const [val2, onChange2] = usePickerChange<TimeRangePickerValue>();
 
   return (
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
@@ -127,16 +122,6 @@ export const Basic = () => {
           Basic Usage
         </Typography>
         <TimeRangePicker onChange={onChange} value={val} />
-      </div>
-      <div style={groupStyle}>
-        <Typography style={typoStyle} variant="h3">
-          With Default Value (09:00:00 ~ 17:30:00)
-        </Typography>
-        <TimeRangePicker
-          defaultValue={defaultVal}
-          onChange={onChange2}
-          value={val2}
-        />
       </div>
     </CalendarConfigProvider>
   );
@@ -196,24 +181,19 @@ export const States = () => {
         <Typography style={typoStyle} variant="h3">
           Disabled
         </Typography>
-        <TimeRangePicker defaultValue={defaultVal} disabled />
+        <TimeRangePicker value={defaultVal} disabled />
       </div>
       <div style={groupStyle}>
         <Typography style={typoStyle} variant="h3">
           Read Only
         </Typography>
-        <TimeRangePicker defaultValue={defaultVal} readOnly />
+        <TimeRangePicker value={defaultVal} readOnly />
       </div>
       <div style={groupStyle}>
         <Typography style={typoStyle} variant="h3">
           With Error State
         </Typography>
-        <TimeRangePicker
-          defaultValue={defaultVal}
-          value={val}
-          onChange={onChange}
-          error
-        />
+        <TimeRangePicker value={val} onChange={onChange} error />
       </div>
     </CalendarConfigProvider>
   );
