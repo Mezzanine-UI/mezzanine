@@ -77,13 +77,4 @@
     padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, tiny);
     border-radius: radius.variable(base);
   }
-
-  &__cells {
-    height: $cell-height * 7;
-    overflow: hidden;
-
-    &:hover {
-      overflow-y: auto;
-    }
-  }
 }
