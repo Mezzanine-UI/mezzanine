@@ -7,6 +7,7 @@ import { AutoComplete } from '../AutoComplete';
 import { CalendarConfigProviderDayjs } from '../Calendar';
 import { FormField } from '../Form';
 import Input from '../Input';
+import Select from '../Select';
 import { SelectValue } from '../Select/typings';
 
 export default {
@@ -66,7 +67,8 @@ export const Basic: Story = {
                 name="name"
                 size={horizontal}
               >
-                <Input placeholder="Enter name" />
+                <Select options={autoCompleteOptions} placeholder="請選擇" fullWidth />
+
               </FormField>
             </Filter>
             <Filter span={2}>
@@ -80,7 +82,7 @@ export const Basic: Story = {
             </Filter>
           </FilterLine>
           <FilterLine>
-            <Filter span={6}>
+            <Filter span={2}>
               <FormField
                 label="進階搜尋 1"
                 name="advanced1"
