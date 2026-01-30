@@ -34,13 +34,12 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
 
     const viewportRef = useRef<HTMLDivElement>(null);
 
-    const getChangeHandler = (unit: TimePanelUnit) => {
-      if (!onChange) return undefined;
-
-      return () => {
-        onChange(unit);
-      };
-    };
+    const getChangeHandler = useCallback(
+      (unit: TimePanelUnit) => () => {
+        onChange?.(unit);
+      },
+      [onChange],
+    );
 
     const preferSmoothScrollRef = useRef(true);
 
