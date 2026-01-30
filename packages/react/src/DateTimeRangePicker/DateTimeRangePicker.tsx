@@ -26,11 +26,6 @@ export interface DateTimeRangePickerProps
    */
   className?: string;
   /**
-   * Default value for date-time range picker.
-   * Array of [from, to] where each can be a DateType or undefined.
-   */
-  defaultValue?: DateTimeRangePickerValue;
-  /**
    * The direction of the two date-time pickers.
    * @default 'row'
    */
@@ -38,7 +33,6 @@ export interface DateTimeRangePickerProps
   /**
    * Change handler for the range value.
    * Called when either from or to value changes.
-   * The value will be validated to ensure from <= to.
    */
   onChange?: (value: DateTimeRangePickerValue) => void;
   /**
@@ -59,7 +53,6 @@ const DateTimeRangePicker = forwardRef<
 >(function DateTimeRangePicker(props, ref) {
   const {
     className,
-    defaultValue,
     direction = 'row',
     onChange: onChangeProp,
     value: valueProp,
@@ -105,9 +98,8 @@ const DateTimeRangePicker = forwardRef<
     size,
   } = props;
 
-  // Use controlled or uncontrolled value
-  const fromValue = valueProp?.[0] ?? defaultValue?.[0];
-  const toValue = valueProp?.[1] ?? defaultValue?.[1];
+  const fromValue = useMemo(() => valueProp?.[0], [valueProp]);
+  const toValue = useMemo(() => valueProp?.[1], [valueProp]);
 
   // Handler for "from" DateTimePicker change
   const handleFromChange = useCallback(
