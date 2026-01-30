@@ -501,7 +501,11 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       <SelectControlContext.Provider value={context}>
         <div
           ref={nodeRef}
-          className={cx(classes.host, fullWidth && classes.hostFullWidth)}
+          className={cx(
+            classes.host,
+            fullWidth && classes.hostFullWidth,
+            mode && classes.hostMode(mode),
+          )}
         >
           <Dropdown
             disabled={readOnly || disabled}

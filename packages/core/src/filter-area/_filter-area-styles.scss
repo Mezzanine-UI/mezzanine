@@ -3,6 +3,7 @@
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/transition' as transition;
 @use './filter-area' as *;
+@use '../form/form-field' as formField;
 
 // Actions alignment configs
 $actions-align-configs: (
@@ -135,6 +136,12 @@ $layout-configs: (
     min-width: 0;
     grid-column: span var(--#{$prefix}-filter-span);
 
+    .#{formField.$prefix}__data-entry {
+      max-width: none;
+      min-width: 0;
+      width: 100%;
+    }
+    
     @include _apply-filter-align(stretch);
 
     @each $span, $value in $filter-span-configs {

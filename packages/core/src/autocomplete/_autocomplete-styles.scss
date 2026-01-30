@@ -1,8 +1,17 @@
 @use '../select/select' as select;
 @use './autocomplete' as *;
+@use '~@mezzanine-ui/system/spacing' as spacing;
 
 .#{$prefix} {
   position: relative;
+
+  &--single {
+    min-width: spacing.semantic-variable(size, container, snug);
+  }
+
+  &--multiple {
+    min-width: spacing.semantic-variable(size, container, slim);
+  }
 
   &--full-width {
     width: 100%;

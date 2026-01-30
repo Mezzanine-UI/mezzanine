@@ -866,6 +866,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             {
               [classes.hostFullWidth]: fullWidth,
               [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
+              [classes.hostMode(mode)]: mode,
             },
           )}
         >
