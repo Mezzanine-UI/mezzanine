@@ -64,19 +64,6 @@ export type {
 /**
  * Navigation
  */
-export {
-  default as AppBar,
-  AppBarBrand,
-  AppBarMain,
-  AppBarSupport,
-} from './AppBar';
-export type {
-  AppBarBrandProps,
-  AppBarChild,
-  AppBarChildren,
-  AppBarMainProps,
-  AppBarSupportProps,
-} from './AppBar';
 export { default as Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbItemProps, BreadcrumbProps } from './Breadcrumb';
 export { default as Drawer } from './Drawer';
@@ -457,8 +444,6 @@ export type {
   NotificationData,
   NotificationSeverity,
 } from './NotificationCenter';
-export { default as Popconfirm } from './Popconfirm';
-export type { PopconfirmProps } from './Popconfirm';
 export { default as Progress } from './Progress';
 export type {
   ProgressProps,
@@ -533,8 +518,6 @@ export type {
   UseCalendarControlModifiersResult,
 } from './Calendar';
 export * from './Notifier';
-export { default as Popover } from './Popover';
-export type { PopoverProps } from './Popover';
 export { default as Popper } from './Popper';
 export type {
   PopperController,
