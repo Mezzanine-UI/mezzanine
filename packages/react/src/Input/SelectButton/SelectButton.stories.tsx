@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
 import SelectButton from './SelectButton';
 
 const meta: Meta<typeof SelectButton> = {
@@ -10,8 +11,16 @@ export default meta;
 
 type Story = StoryObj<typeof SelectButton>;
 
+const options = [
+  { id: 'https://', name: 'https://' },
+  { id: 'http://', name: 'http://' },
+  { id: 'ftp://', name: 'ftp://' },
+];
+
 export const Playground: Story = {
-  render: () => {
+  render: function PlaygroundRender() {
+    const [selectedValue, setSelectedValue] = useState('https://');
+
     return (
       <div
         style={{
@@ -23,24 +32,31 @@ export const Playground: Story = {
         <div>
           <h3 style={{ marginBottom: '12px' }}>Size: main (Normal)</h3>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <SelectButton size="main" />
-            <SelectButton value="www." size="main" />
+            <SelectButton
+              options={options}
+              size="main"
+              value={selectedValue}
+              onSelect={setSelectedValue}
+            />
           </div>
         </div>
 
         <div>
           <h3 style={{ marginBottom: '12px' }}>Size: sub (Normal)</h3>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <SelectButton size="sub" />
-            <SelectButton value="www." size="sub" />
+            <SelectButton
+              options={options}
+              size="sub"
+              value={selectedValue}
+              onSelect={setSelectedValue}
+            />
           </div>
         </div>
 
         <div>
           <h3 style={{ marginBottom: '12px' }}>Disabled State</h3>
           <div style={{ display: 'flex', gap: '12px' }}>
-            <SelectButton disabled />
-            <SelectButton value="www." disabled />
+            <SelectButton disabled options={options} value="www." />
           </div>
         </div>
       </div>

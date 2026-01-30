@@ -15,7 +15,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import Dropdown from '../Dropdown';
 import { useInputWithClearControlValue } from '../Form/useInputWithClearControlValue';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import Icon from '../Icon';
@@ -555,17 +554,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           options,
           dropdownWidth = 120,
           dropdownMaxHeight = 114,
+          dropdownPlacement = 'bottom-start',
         } = selectProps;
-        const defaultOptions = options || [];
-        const selectedOptions: DropdownOption[] =
-          defaultOptions.length > 0
-            ? defaultOptions.map((option) => ({
-                ...option,
-                ...(option.id === selectProps.selectedValue
-                  ? { checkSite: 'suffix' }
-                  : {}),
-              }))
-            : [];
 
         if (
           selectButton.position === 'both' ||
@@ -574,22 +564,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           const { ...restSelectButtonProps } = selectButton;
 
           prefixExternalButton = (
-            <Dropdown
-              options={selectedOptions}
-              value={selectProps.selectedValue}
-              customWidth={dropdownWidth}
-              maxHeight={dropdownMaxHeight}
-              placement="bottom-start"
-              onSelect={(option) => {
-                selectProps.onSelect?.(option.id);
-              }}
-            >
-              <SelectButton
-                {...restSelectButtonProps}
-                disabled={restSelectButtonProps.disabled || disabled}
-                size={size}
-              />
-            </Dropdown>
+            <SelectButton
+              {...restSelectButtonProps}
+              disabled={restSelectButtonProps.disabled || disabled}
+              dropdownMaxHeight={dropdownMaxHeight}
+              dropdownPlacement={dropdownPlacement}
+              dropdownWidth={dropdownWidth}
+              onSelect={selectProps.onSelect}
+              options={options}
+              size={size}
+            />
           );
         }
 
@@ -600,22 +584,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           const { ...restSelectButtonProps } = selectButton;
 
           suffixExternalButton = (
-            <Dropdown
-              options={selectedOptions}
-              value={selectProps.selectedValue}
-              customWidth={dropdownWidth}
-              maxHeight={dropdownMaxHeight}
-              placement="bottom-start"
-              onSelect={(option) => {
-                selectProps.onSelect?.(option.id);
-              }}
-            >
-              <SelectButton
-                {...restSelectButtonProps}
-                disabled={restSelectButtonProps.disabled || disabled}
-                size={size}
-              />
-            </Dropdown>
+            <SelectButton
+              {...restSelectButtonProps}
+              disabled={restSelectButtonProps.disabled || disabled}
+              dropdownMaxHeight={dropdownMaxHeight}
+              dropdownPlacement={dropdownPlacement}
+              dropdownWidth={dropdownWidth}
+              onSelect={selectProps.onSelect}
+              options={options}
+              size={size}
+            />
           );
         }
 
