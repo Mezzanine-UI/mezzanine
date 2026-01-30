@@ -28,7 +28,6 @@
 
   // Utility
   @include _load-styles($options, backdrop);
-  @include _load-styles($options, popover);
   @include _load-styles($options, tooltip);
   @include _load-styles($options, calendar);
   @include _load-styles($options, time-panel);
@@ -49,7 +48,6 @@
   @include _load-styles($options, pagination);
   @include _load-styles($options, drawer);
   @include _load-styles($options, navigation);
-  @include _load-styles($options, app-bar);
   @include _load-styles($options, page-footer);
   @include _load-styles($options, page-header);
   @include _load-styles($options, content-header);
@@ -97,7 +95,6 @@
   @include _load-styles($options, message);
   @include _load-styles($options, modal);
   @include _load-styles($options, notification-center);
-  @include _load-styles($options, popconfirm);
   @include _load-styles($options, progress);
   @include _load-styles($options, spin);
   @include _load-styles($options, skeleton);
