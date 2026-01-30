@@ -4,6 +4,7 @@ type ContentHeaderSize = 'main' | 'sub';
 
 export const contentHeaderClasses = {
   host: contentHeaderPrefix,
+  breakpoint: (breakpoint: string) => `${contentHeaderPrefix}--${breakpoint}`,
   size: (size: ContentHeaderSize) => `${contentHeaderPrefix}--${size}`,
   titleArea: `${contentHeaderPrefix}__title-area`,
   textGroup: `${contentHeaderPrefix}__text-group`,

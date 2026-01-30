@@ -16,7 +16,7 @@
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, tiny);
     max-width: spacing.semantic-variable(size, container, balanced);
-    width: 100%;
+    width: fit-content;
 
     .#{$prefix}__text-group {
       align-self: center;
@@ -59,5 +59,39 @@
     .#{$prefix}__action-area {
       gap: spacing.semantic-variable(gap, base);
     }
+  }
+}
+
+.#{$prefix}--above1080px {
+  @media (max-width: (1080px - 1px)) {
+    display: none;
+  }
+}
+
+.#{$prefix}--above680px {
+  @media (max-width: (680px - 1px)) {
+    display: none;
+  }
+}
+
+.#{$prefix}--below1080px {
+  @media (min-width: (1080px)) {
+    display: none;
+  }
+}
+
+.#{$prefix}--below680px {
+  @media (min-width: (680px)) {
+    display: none;
+  }
+}
+
+.#{$prefix}--between680and1080px {
+  @media (min-width: (1080px)) {
+    display: none;
+  }
+
+  @media (max-width: (680px - 1px)) {
+    display: none;
   }
 }
