@@ -39,9 +39,13 @@ const BreadcrumbItem = forwardRef<HTMLSpanElement, BreadcrumbItemProps>(
     };
 
     return (
-      <span {...rest} className={cx(classes.host, className)} ref={ref}>
+      <span
+        {...rest}
+        className={cx(classes.host, current && classes.current, className)}
+        ref={ref}
+      >
         <TriggerComponent
-          className={cx(classes.trigger, current && classes.current)}
+          className={classes.trigger}
           href={TriggerComponent === 'a' ? href : undefined}
           onClick={TriggerComponent === 'a' ? handleClick : undefined}
           rel={TriggerComponent === 'a' ? rel : undefined}

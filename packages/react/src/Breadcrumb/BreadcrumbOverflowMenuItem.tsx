@@ -43,7 +43,7 @@ const BreadcrumbOverflowMenuItem = forwardRef<
   return (
     <span {...rest} className={cx(classes.host, className)} ref={ref}>
       <TriggerComponent
-        className={cx(classes.trigger)}
+        className={classes.trigger}
         href={TriggerComponent === 'a' ? href : undefined}
         onClick={TriggerComponent === 'a' ? handleClick : undefined}
         rel={TriggerComponent === 'a' ? rel : undefined}
