@@ -22,7 +22,7 @@ import {
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 
-import { autoUpdate, offset, size } from '@floating-ui/react-dom';
+import { offset, size } from '@floating-ui/react-dom';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { TransitionGroup } from 'react-transition-group';
 
@@ -374,9 +374,10 @@ export default function Dropdown(props: DropdownProps) {
       return undefined;
     }
     // Try to get value from Input component props
-    const inputValue = (children.props as InputProps)?.value
-      ?? (children.props as InputProps)?.defaultValue
-      ?? '';
+    const inputValue =
+      (children.props as InputProps)?.value ??
+      (children.props as InputProps)?.defaultValue ??
+      '';
     // Ensure the value is a string or undefined
     return inputValue != null ? String(inputValue) : undefined;
   }, [children, isMatchInputValue, followTextProp]);
@@ -394,9 +395,8 @@ export default function Dropdown(props: DropdownProps) {
       return null;
     }
 
-    const widthValue = typeof customWidth === 'number'
-      ? `${customWidth}px`
-      : customWidth;
+    const widthValue =
+      typeof customWidth === 'number' ? `${customWidth}px` : customWidth;
 
     return {
       name: 'customWidth',
@@ -434,9 +434,12 @@ export default function Dropdown(props: DropdownProps) {
     return {
       name: 'zIndex',
       fn: ({ elements }: { elements: { floating: HTMLElement } }) => {
-        const zIndexNum = typeof zIndexValue === 'number'
-          ? zIndexValue
-          : (typeof zIndexValue === 'string' ? parseInt(zIndexValue, 10) || zIndexValue : 1);
+        const zIndexNum =
+          typeof zIndexValue === 'number'
+            ? zIndexValue
+            : typeof zIndexValue === 'string'
+              ? parseInt(zIndexValue, 10) || zIndexValue
+              : 1;
         Object.assign(elements.floating.style, {
           zIndex: zIndexNum,
         });
@@ -485,39 +488,9 @@ export default function Dropdown(props: DropdownProps) {
 
   const anchorRef = useRef<HTMLElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
-  const popperControllerRef = useRef<import('../Popper').PopperController | null>(null);
-
-  // Auto-update popper position when anchor element size changes
-  useEffect(() => {
-    if (!isOpen || isInline || !anchorRef.current || !popperControllerRef.current) {
-      return;
-    }
-
-    const update = popperControllerRef.current.update;
-    if (!update) {
-      return;
-    }
-
-    // Get floating element from controller refs
-    // Check refs exists before accessing nested properties
-    const refs = popperControllerRef.current.refs;
-    if (!refs) {
-      return;
-    }
-
-    const floatingElement = refs.floating.current;
-    if (!floatingElement) {
-      return;
-    }
-
-    const cleanup = autoUpdate(
-      anchorRef.current,
-      floatingElement,
-      update,
-    );
-
-    return cleanup;
-  }, [isOpen, isInline]);
+  const popperControllerRef = useRef<
+    import('../Popper').PopperController | null
+  >(null);
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
@@ -748,44 +721,41 @@ export default function Dropdown(props: DropdownProps) {
           )}
         </TransitionGroup>
       )}
-      {
-        !isInline && (
-          <Popper
-            ref={popperRef}
-            anchor={anchorRef}
-            className={dropdownClasses.popperWithPortal}
-            controllerRef={popperControllerRef}
-            open={isOpen}
-            disablePortal={!globalPortal}
-            options={{
-              placement: popoverPlacement,
-              middleware: [
-                offsetMiddleware,
-                zIndexMiddleware,
-                ...(customWidthMiddleware ? [customWidthMiddleware] : []),
-                ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
-              ],
-            }}
-          >
-            <TransitionGroup component={null}>
-              {
-                isOpen && (
-                  <Translate {...translateProps} from={translateFrom} key="popper-list" in>
-                    <div>
-                      <DropdownItem
-                        {...baseDropdownItemProps}
-                      />
-                    </div>
-                  </Translate>
-                )
-              }
-            </TransitionGroup>
-          </Popper>
-        )
-      }
-      {
-        !isInline && triggerElement
-      }
+      {!isInline && (
+        <Popper
+          ref={popperRef}
+          anchor={anchorRef}
+          className={dropdownClasses.popperWithPortal}
+          controllerRef={popperControllerRef}
+          open={isOpen}
+          disablePortal={!globalPortal}
+          options={{
+            placement: popoverPlacement,
+            middleware: [
+              offsetMiddleware,
+              zIndexMiddleware,
+              ...(customWidthMiddleware ? [customWidthMiddleware] : []),
+              ...(sameWidthMiddleware ? [sameWidthMiddleware] : []),
+            ],
+          }}
+        >
+          <TransitionGroup component={null}>
+            {isOpen && (
+              <Translate
+                {...translateProps}
+                from={translateFrom}
+                key="popper-list"
+                in
+              >
+                <div>
+                  <DropdownItem {...baseDropdownItemProps} />
+                </div>
+              </Translate>
+            )}
+          </TransitionGroup>
+        </Popper>
+      )}
+      {!isInline && triggerElement}
     </div>
   );
 }
