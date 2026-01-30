@@ -1,6 +1,5 @@
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { cloneElement, CSSProperties, forwardRef, ReactElement } from 'react';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface RotateProps {
   /**
@@ -55,20 +54,18 @@ const Rotate = forwardRef<HTMLElement, RotateProps>(function Rotate(
     transformOrigin = 'center',
   } = props;
 
-  const childRef = 'ref' in children ? (children as any).ref : undefined;
-  const composedRef = useComposeRefs([ref, childRef]);
   const childProps = children.props as Record<string, any>;
 
   const style: CSSProperties = {
     transform: inProp ? `rotate(${degrees}deg)` : 'rotate(0deg)',
     transformOrigin,
     transition: `transform ${duration}ms ${easing}`,
-    ...(childProps.style || {}),
+    ...(childProps?.style || {}),
   };
 
   return cloneElement(children, {
     ...childProps,
-    ref: composedRef,
+    ref,
     style,
   } as any);
 });
