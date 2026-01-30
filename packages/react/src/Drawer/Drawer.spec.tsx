@@ -477,6 +477,83 @@ describe('<Drawer />', () => {
     });
   });
 
+  describe('prop: renderControlBar', () => {
+    it('should not render control bar by default', () => {
+      render(<Drawer open>Content</Drawer>);
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector('[data-testid="control-bar"]');
+
+      expect(controlBarElement).toBe(null);
+    });
+
+    it('should render custom control bar when renderControlBar provided', () => {
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Custom Control Bar</div>
+      );
+
+      render(
+        <Drawer open renderControlBar={renderControlBar}>
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector('[data-testid="control-bar"]');
+
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(controlBarElement?.textContent).toBe('Custom Control Bar');
+    });
+
+    it('should render control bar between header and content', () => {
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Control Bar</div>
+      );
+
+      render(
+        <Drawer
+          headerTitle="Header"
+          isHeaderDisplay
+          open
+          renderControlBar={renderControlBar}
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const headerElement = drawerElement.querySelector(`.${classes.header}`);
+      const controlBarElement = drawerElement.querySelector('[data-testid="control-bar"]');
+      const contentElement = drawerElement.querySelector(`.${classes.content}`);
+
+      // Check all elements exist
+      expect(headerElement).toBeInstanceOf(Node);
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(contentElement).toBeInstanceOf(Node);
+
+      // Check order: header should come before control bar, control bar before content
+      const childNodes = Array.from(drawerElement.children);
+      const headerIndex = childNodes.indexOf(headerElement as Element);
+      const controlBarIndex = childNodes.indexOf(controlBarElement as Element);
+      const contentIndex = childNodes.indexOf(contentElement as Element);
+
+      expect(headerIndex).toBeLessThan(controlBarIndex);
+      expect(controlBarIndex).toBeLessThan(contentIndex);
+    });
+
+    it('should call renderControlBar function', () => {
+      const renderControlBar = jest.fn(() => <div>Control Bar</div>);
+
+      render(
+        <Drawer open renderControlBar={renderControlBar}>
+          Content
+        </Drawer>,
+      );
+
+      expect(renderControlBar).toHaveBeenCalled();
+    });
+  });
+
   describe('combinations', () => {
     it('should render complete drawer with header, content, and bottom actions', () => {
       const onClose = jest.fn();
@@ -514,6 +591,45 @@ describe('<Drawer />', () => {
       expect(headerElement?.textContent).toContain('Complete Drawer');
       expect(contentElement?.textContent).toBe('Main Content');
       expect(bottomElement?.querySelectorAll('button').length).toBe(3);
+    });
+
+    it('should render complete drawer with header, control bar, content, and bottom actions', () => {
+      const onClose = jest.fn();
+      const onPrimaryActionClick = jest.fn();
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Filter Control Bar</div>
+      );
+
+      render(
+        <Drawer
+          bottomOnPrimaryActionClick={onPrimaryActionClick}
+          bottomPrimaryActionText="Submit"
+          headerTitle="Complete Drawer"
+          isBottomDisplay
+          isHeaderDisplay
+          onClose={onClose}
+          open
+          renderControlBar={renderControlBar}
+          size="wide"
+        >
+          <div>Main Content</div>
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const headerElement = drawerElement.querySelector(`.${classes.header}`);
+      const controlBarElement = drawerElement.querySelector('[data-testid="control-bar"]');
+      const contentElement = drawerElement.querySelector(`.${classes.content}`);
+      const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+
+      expect(headerElement).toBeInstanceOf(Node);
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(contentElement).toBeInstanceOf(Node);
+      expect(bottomElement).toBeInstanceOf(Node);
+
+      expect(headerElement?.textContent).toContain('Complete Drawer');
+      expect(controlBarElement?.textContent).toBe('Filter Control Bar');
+      expect(contentElement?.textContent).toBe('Main Content');
     });
   });
 });

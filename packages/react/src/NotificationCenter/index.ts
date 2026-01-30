@@ -4,3 +4,5 @@ export type {
   NotificationConfigProps,
   NotificationData,
 } from './NotificationCenter';
+export { default as NotificationCenterDrawer } from './NotificationCenterDrawer';
+export type { NotificationCenterDrawerProps } from './NotificationCenterDrawer';

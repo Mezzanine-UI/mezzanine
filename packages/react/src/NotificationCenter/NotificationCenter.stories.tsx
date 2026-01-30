@@ -17,7 +17,12 @@ export default {
 
 type Story = StoryObj<NotificationData & { reference?: string }>;
 
-const severities: NotificationSeverity[] = ['success', 'warning', 'error', 'info'];
+const severities: NotificationSeverity[] = [
+  'success',
+  'warning',
+  'error',
+  'info',
+];
 
 export const Playground: Story = {
   argTypes: {
@@ -82,7 +87,8 @@ export const Playground: Story = {
 
 function SeverityExample() {
   const references = useMemo(
-    () => severities.map((severity, index) => `notification-${severity}-${index}`),
+    () =>
+      severities.map((severity, index) => `notification-${severity}-${index}`),
     [],
   );
 
@@ -110,7 +116,6 @@ export const Severity: Story = {
   render: () => <SeverityExample />,
 };
 
-
 type NotificationDataForDrawer = NotificationData & {
   key: Key;
   type: 'drawer';
@@ -119,7 +124,9 @@ type NotificationDataForDrawer = NotificationData & {
 function AddMethodExample() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const [notifications, setNotifications] = useState<NotificationDataForDrawer[]>([]);
+  const [notifications, setNotifications] = useState<
+    NotificationDataForDrawer[]
+  >([]);
 
   const handleViewAll = () => {
     setDrawerOpen(true);
@@ -276,18 +283,21 @@ function AddMethodExample() {
         </Button>
       </div>
       <NotificationCenterDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        title="通知中心"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
         notificationList={notifications}
+        onClose={() => setDrawerOpen(false)}
+        open={drawerOpen}
+        title="通知中心"
+        controlBarAllRadioLabel="全部"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       />
     </div>
   );
@@ -326,60 +336,63 @@ function DrawerWithChildrenExample() {
         開啟通知中心
       </Button>
       <NotificationCenterDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        title="通知中心"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
+        onClose={() => setOpen(false)}
+        open={open}
+        title="通知中心"
+        controlBarAllRadioLabel="全部"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       >
         <NotificationCenter
-          type="drawer"
-          severity="info"
-          title="系統更新通知"
           description="系統已完成更新，您現在可以使用最新版本功能。"
-          timeStamp="2025-12-15 10:00:00"
           reference="1"
-        />
-        <NotificationCenter
-          type="drawer"
-          severity="warning"
-          title="帳號安全提醒"
-          description="您的登入地點異常，請確認是否為本人操作。"
-          timeStamp="2025-12-14 10:00:00"
-          reference="2"
-        />
-        <NotificationCenter
-          type="drawer"
-          severity="success"
-          title="已上傳完成"
-          description="您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。"
-          timeStamp="2025-12-14 10:00:00"
-          reference="3"
-        />
-        <NotificationCenter
-          type="drawer"
-          severity="error"
-          title="上傳失敗"
-          showBadge
-          description="您的檔案「月報表.pdf」上傳失敗，請重新上傳。"
-          timeStamp="2025-12-14 10:00:00"
-          options={badgeOptions}
-          onBadgeSelect={handleBadgeSelect}
-          reference="4"
-        />
-        <NotificationCenter
-          type="drawer"
           severity="info"
-          title="資料更新通知"
-          description="後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。"
+          timeStamp="2025-12-15 10:00:00"
+          title="系統更新通知"
+          type="drawer"
+        />
+        <NotificationCenter
+          description="您的登入地點異常，請確認是否為本人操作。"
+          reference="2"
+          severity="warning"
           timeStamp="2025-12-14 10:00:00"
+          title="帳號安全提醒"
+          type="drawer"
+        />
+        <NotificationCenter
+          description="您的檔案「月報表.pdf」已成功上傳，可前往資料庫查看結果。"
+          reference="3"
+          severity="success"
+          timeStamp="2025-12-14 10:00:00"
+          title="已上傳完成"
+          type="drawer"
+        />
+        <NotificationCenter
+          description="您的檔案「月報表.pdf」上傳失敗，請重新上傳。"
+          onBadgeSelect={handleBadgeSelect}
+          options={badgeOptions}
+          reference="4"
+          severity="error"
+          showBadge
+          timeStamp="2025-12-14 10:00:00"
+          title="上傳失敗"
+          type="drawer"
+        />
+        <NotificationCenter
+          description="後端資料庫已完成更新，若您在操作中遇到延遲，屬正常現象，稍後即會改善。"
           reference="5"
+          severity="info"
+          timeStamp="2025-12-14 10:00:00"
+          title="資料更新通知"
+          type="drawer"
         />
       </NotificationCenterDrawer>
     </div>
@@ -460,18 +473,21 @@ function DrawerWithNotificationListExample() {
         開啟通知中心（使用 notificationList）
       </Button>
       <NotificationCenterDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        title="通知中心"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
         notificationList={notificationList}
+        onClose={() => setOpen(false)}
+        open={open}
+        title="通知中心"
+        controlBarAllRadioLabel="全部"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       />
     </div>
   );
@@ -481,8 +497,7 @@ export const DrawerWithNotificationList: DrawerStory = {
   render: () => <DrawerWithNotificationListExample />,
 };
 
-
-function DrawerWithCustomToolbarExample() {
+function DrawerWithCustomControlBarExample() {
   const [open, setOpen] = useState(false);
 
   const notificationList = useMemo(
@@ -513,29 +528,29 @@ function DrawerWithCustomToolbarExample() {
         開啟通知中心（自定義工具列）
       </Button>
       <NotificationCenterDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        title="通知中心"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部通知"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        customRadioLabel="全部已讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
-        onCustomButtonClick={() => console.log('全部已讀')}
         notificationList={notificationList}
+        onClose={() => setOpen(false)}
+        open={open}
+        title="通知中心"
+        controlBarAllRadioLabel="全部通知"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       />
     </div>
   );
 }
 
-export const DrawerWithCustomToolbar: DrawerStory = {
-  render: () => <DrawerWithCustomToolbarExample />,
+export const DrawerWithCustomControlBar: DrawerStory = {
+  render: () => <DrawerWithCustomControlBarExample />,
 };
-
 
 function DrawerEmptyExample() {
   const [open, setOpen] = useState(false);
@@ -546,18 +561,21 @@ function DrawerEmptyExample() {
         開啟通知中心（空狀態）
       </Button>
       <NotificationCenterDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        title="通知中心"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
         notificationList={[]}
+        onClose={() => setOpen(false)}
+        open={open}
+        title="通知中心"
+        controlBarAllRadioLabel="全部"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       />
     </div>
   );
@@ -652,7 +670,8 @@ function DrawerTimeStampExample() {
       type: 'drawer' as const,
       severity: 'error' as NotificationSeverity,
       title: '超過7天 - 有時間戳',
-      description: '這是8天前的通知（有時間戳），應該顯示「2025-XX-XX 20:08」格式',
+      description:
+        '這是8天前的通知（有時間戳），應該顯示「2025-XX-XX 20:08」格式',
       timeStamp: eightDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
@@ -675,7 +694,8 @@ function DrawerTimeStampExample() {
       type: 'drawer' as const,
       severity: 'success' as NotificationSeverity,
       title: '超過7天 - 有時間戳（11天前）',
-      description: '這是11天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
+      description:
+        '這是11天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
       timeStamp: elevenDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
@@ -687,7 +707,8 @@ function DrawerTimeStampExample() {
       type: 'drawer' as const,
       severity: 'warning' as NotificationSeverity,
       title: '超過7天 - 有時間戳（12天前）',
-      description: '這是12天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
+      description:
+        '這是12天前的通知（有時間戳），應該顯示「2025-XX-XX 15:30」格式',
       timeStamp: elevenDaysAgo.toISOString().replace('T', ' ').slice(0, 19),
     });
 
@@ -700,18 +721,21 @@ function DrawerTimeStampExample() {
         開啟通知中心（時間戳記範例）
       </Button>
       <NotificationCenterDrawer
-        open={open}
-        onClose={() => setOpen(false)}
-        title="通知中心 - 時間戳記顯示範例"
         drawerSize="narrow"
-        showToolbar
-        allRadioLabel="全部"
-        readRadioLabel="已讀"
-        unreadRadioLabel="未讀"
-        defaultValue="all"
-        value="all"
-        onRadioChange={(e) => console.log(e.target.value)}
         notificationList={notificationList}
+        onClose={() => setOpen(false)}
+        open={open}
+        title="通知中心 - 時間戳記顯示範例"
+        controlBarAllRadioLabel="全部"
+        controlBarCustomButtonLabel="全部已讀"
+        controlBarDefaultValue="all"
+        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
+        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarReadRadioLabel="已讀"
+        controlBarShow
+        controlBarShowUnreadButton
+        controlBarUnreadRadioLabel="未讀"
+        controlBarValue="all"
       />
     </div>
   );
@@ -719,4 +743,80 @@ function DrawerTimeStampExample() {
 
 export const DrawerTimeStamp: DrawerStory = {
   render: () => <DrawerTimeStampExample />,
+};
+
+function DrawerWithRenderControlBarExample() {
+  const [open, setOpen] = useState(false);
+
+  const notificationList = useMemo(
+    () => [
+      {
+        key: '1',
+        type: 'drawer' as const,
+        severity: 'info' as NotificationSeverity,
+        title: '系統更新通知',
+        description: '系統已完成更新，您現在可以使用最新版本功能。',
+        timeStamp: '2025-12-15 10:00:00',
+      },
+      {
+        key: '2',
+        type: 'drawer' as const,
+        severity: 'warning' as NotificationSeverity,
+        title: '帳號安全提醒',
+        description: '您的登入地點異常，請確認是否為本人操作。',
+        timeStamp: '2025-12-14 10:00:00',
+      },
+    ],
+    [],
+  );
+
+  return (
+    <div>
+      <Button variant="base-primary" onClick={() => setOpen(true)}>
+        開啟通知中心（使用 renderControlBar）
+      </Button>
+      <NotificationCenterDrawer
+        drawerSize="narrow"
+        notificationList={notificationList}
+        onClose={() => setOpen(false)}
+        open={open}
+        renderControlBar={() => (
+          <div
+            style={{
+              alignItems: 'center',
+              borderBottom: '1px solid #e0e0e0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              padding: '16px',
+            }}
+          >
+            <Typography variant="caption">自訂工具列</Typography>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <Button
+                onClick={() => console.log('自訂按鈕 1')}
+                size="minor"
+                type="button"
+                variant="base-secondary"
+              >
+                標示全部已讀
+              </Button>
+              <Button
+                onClick={() => console.log('自訂按鈕 2')}
+                size="minor"
+                type="button"
+                variant="base-ghost"
+              >
+                清除全部
+              </Button>
+            </div>
+          </div>
+        )}
+        title="通知中心"
+      />
+    </div>
+  );
+}
+
+export const DrawerWithRenderControlBar: DrawerStory = {
+  render: () => <DrawerWithRenderControlBarExample />,
 };
