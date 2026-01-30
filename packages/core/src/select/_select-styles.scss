@@ -12,6 +12,14 @@ $popper-horizontal-padding: 0 !default;
 .#{$prefix} {
   position: relative;
 
+  &--single {
+    min-width: spacing.semantic-variable(size, container, tiny);
+  }
+
+  &--multiple {
+    min-width: spacing.semantic-variable(size, container, slim);
+  }
+
   &--full-width {
     width: 100%;
   }
