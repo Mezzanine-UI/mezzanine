@@ -63,6 +63,7 @@
   @include _load-styles($options, tree);
   @include _load-styles($options, table);
   @include _load-styles($options, inline-message);
+  @include _load-styles($options, section);
 
   // Data Entry
   @include _load-styles($options, checkbox);
