@@ -45,9 +45,7 @@
     width: spacing.semantic-variable(size, container, tight);
 
     &__content {
-      margin: spacing.semantic-variable(padding, vertical, tight) 0;
       background-color: palette.semantic-variable('background', base);
-      padding: 0 spacing.semantic-variable(padding, horizontal, tight);
       width: 100%;
       display: grid;
     }
@@ -118,6 +116,10 @@
 
     &:focus-visible {
       box-shadow: effect.variable(focus, primary);
+    }
+
+    &:hover {
+      background-color: palette.semantic-variable('background', neutral-faint);
     }
   }
 
