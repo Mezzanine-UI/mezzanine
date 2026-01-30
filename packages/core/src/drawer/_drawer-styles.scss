@@ -5,7 +5,6 @@
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/radius';
 
-@use '../app-bar';
 @use './drawer' as *;
 
 $drawer-size: 256px !default;
@@ -92,10 +91,6 @@ $drawer-size-config: (
       display: flex;
       gap: spacing.semantic-variable(gap, base);
     }
-  }
-
-  .#{app-bar.$prefix} {
-    border: none;
   }
 
   &__overlay {

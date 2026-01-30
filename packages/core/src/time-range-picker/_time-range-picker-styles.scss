@@ -1,0 +1,5 @@
+@use './time-range-picker' as *;
+
+.#{$prefix} {
+  display: inline-flex;
+}

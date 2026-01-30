@@ -11,8 +11,7 @@
   &__arrow-icon {
     display: flex;
     align-items: center;
-    margin: 0 4px;
-    color: palette.color(action-inactive);
+    color: palette.semantic-variable(icon, neutral-light);
   }
 
   &__input-mono {

@@ -1,5 +1,5 @@
-export { default, OverflowTooltipProps } from './OverflowTooltip';
+export { default, type OverflowTooltipProps } from './OverflowTooltip';
 export {
   default as OverflowCounterTag,
-  OverflowCounterTagProps,
+  type OverflowCounterTagProps,
 } from './OverflowCounterTag';

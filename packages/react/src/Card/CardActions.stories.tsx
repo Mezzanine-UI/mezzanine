@@ -4,7 +4,7 @@ import Icon from '../Icon';
 import CardActions from './CardActions';
 
 export default {
-  title: 'Data Display/Card/CardActions',
+  title: 'V1/Card/CardActions',
 } as Meta;
 
 export const Basic = () => {

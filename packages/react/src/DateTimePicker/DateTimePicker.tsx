@@ -283,7 +283,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       [combineDateTime, onChangeProp],
     );
 
-    // Handle left complete - auto focus right
+    // Handle left complete
     const onLeftComplete = useCallback(() => {
       if (timeValue) {
         onClose();
@@ -294,16 +294,19 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       }
     }, [timeValue, onClose]);
 
-    // Handle left complete - auto focus right
+    // Handle right complete
     const onRightComplete = useCallback(() => {
       if (dateValue) {
-        onClose();
+        /** Don't close the time panel */
+        setTimeout(() => {
+          inputRightRef.current?.focus();
+        }, 0);
       } else {
         setTimeout(() => {
           inputLeftRef.current?.focus();
         }, 0);
       }
-    }, [dateValue, onClose]);
+    }, [dateValue]);
 
     // Handle date change from input
     const onChangeLeft = useCallback(

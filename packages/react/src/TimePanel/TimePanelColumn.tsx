@@ -2,7 +2,8 @@ import {
   TimePanelUnit,
   timePanelClasses as classes,
 } from '@mezzanine-ui/core/time-panel';
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
+import Scrollbar from '../Scrollbar';
 import { cx } from '../utils/cx';
 
 export interface TimePanelColumnProps {
@@ -31,34 +32,40 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
   function TimePanelColumn(props, ref) {
     const { activeUnit, cellHeight = 32, onChange, units } = props;
 
-    const cellsRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
 
-    const getChangeHandler = (unit: TimePanelUnit) => {
-      if (!onChange) return undefined;
-
-      return () => {
-        onChange(unit);
-      };
-    };
+    const getChangeHandler = useCallback(
+      (unit: TimePanelUnit) => () => {
+        onChange?.(unit);
+      },
+      [onChange],
+    );
 
     const preferSmoothScrollRef = useRef(true);
 
     useEffect(() => {
       const activeIndex = units.findIndex(({ value }) => value === activeUnit);
 
-      if (cellsRef.current) {
-        cellsRef.current.scrollTo({
-          top: activeIndex * cellHeight, // (activeIndex - 3) * cellHeight, (center)
+      if (viewportRef.current) {
+        viewportRef.current.scrollTo({
           behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
+          top: activeIndex * cellHeight, // (activeIndex - 3) * cellHeight, (center)
         });
       }
 
       preferSmoothScrollRef.current = false;
     }, [activeUnit, cellHeight, units]);
 
+    const handleViewportReady = useCallback((viewport: HTMLDivElement) => {
+      viewportRef.current = viewport;
+    }, []);
+
     return (
       <div ref={ref} className={classes.column}>
-        <div ref={cellsRef} className={classes.columnCells}>
+        <Scrollbar
+          maxHeight={cellHeight * 7}
+          onViewportReady={handleViewportReady}
+        >
           {units.map((unit) => (
             <button
               key={unit.value}
@@ -71,7 +78,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
               {unit.label}
             </button>
           ))}
-        </div>
+        </Scrollbar>
       </div>
     );
   },
