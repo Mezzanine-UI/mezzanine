@@ -85,6 +85,7 @@ export const Basic: Story = {
   ),
 };
 
+const withDropdownHref = '/?path=/story/navigation-breadcrumb--with-dropdown';
 export const WithDropdown: Story = {
   parameters: {
     controls: { disable: true },
@@ -113,6 +114,7 @@ export const WithDropdown: Story = {
             ]}
           />
         </Breadcrumb>
+
         <Breadcrumb
           items={[
             { id: 'Home', name: 'Home', href: '/' },
@@ -144,27 +146,51 @@ export const WithDropdown: Story = {
             },
           ]}
         />
+
         <Breadcrumb>
-          <BreadcrumbItem name="Home" href="/" />
-          <BreadcrumbItem name="Category" href="/" />
-          <BreadcrumbItem name="Subcategory" href="/" />
-          <BreadcrumbItem name="Tab" href="/" />
-          <BreadcrumbItem name="Detail" href="/" />
-          <BreadcrumbItem name="History" href="/" />
+          <BreadcrumbItem name="首頁" href={withDropdownHref} />
+          <BreadcrumbItem
+            name="內容管理"
+            options={[
+              { id: '建案管理', name: '建案管理' },
+              { id: '分類管理', name: '分類管理' },
+            ]}
+          />
+          <BreadcrumbItem name="建築" href={withDropdownHref} />
+        </Breadcrumb>
+
+        <Breadcrumb>
+          <BreadcrumbItem name="首頁" href={withDropdownHref} />
+          <BreadcrumbItem name="內容管理" href={withDropdownHref} />
+          <BreadcrumbItem name="相關新聞" href={withDropdownHref} />
+          <BreadcrumbItem name="建案資訊" href={withDropdownHref} />
+          <BreadcrumbItem name="活動新訊" href={withDropdownHref} />
+          <BreadcrumbItem name="文章列表" href={withDropdownHref} />
+          <BreadcrumbItem name="建築" href={withDropdownHref} />
+        </Breadcrumb>
+
+        <Typography variant="h2">Condensed</Typography>
+        <Breadcrumb condensed>
+          <BreadcrumbItem name="首頁" href={withDropdownHref} />
+          <BreadcrumbItem
+            name="建案管理"
+            options={[
+              { id: '建案基本資料', name: '建案基本資料' },
+              { id: '戶型設定', name: '戶型設定' },
+              { id: '預約參觀名單', name: '預約參觀名單' },
+            ]}
+          />
+          <BreadcrumbItem
+            name="分類管理"
+            options={[
+              { id: '分類清單', name: '分類清單' },
+              { id: '新增分類', name: '新增分類' },
+              { id: '分類排序', name: '分類排序' },
+            ]}
+          />
+          <BreadcrumbItem name="文章列表" href={withDropdownHref} />
         </Breadcrumb>
       </div>
     </div>
   ),
-};
-
-export const Playground: Story = {
-  args: {
-    items: [
-      { id: 'home', name: 'Home', href: '/' },
-      { id: 'category', name: 'Category', href: '/Category' },
-      { id: 'parent', name: 'Parent of Current', href: '/Category/Parent' },
-      { id: 'current', name: 'Current' },
-    ],
-  },
-  argTypes: {},
 };
