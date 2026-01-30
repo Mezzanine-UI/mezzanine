@@ -51,6 +51,7 @@ $drawer-container-config: (
 
   @if $severity-map {
     $value: map.get($severity-map, $property);
+
     @return $value;
   }
 
@@ -60,12 +61,14 @@ $drawer-container-config: (
 // Get drawer type configuration value
 @function _get-drawer-type-value($property) {
   $value: map.get($drawer-type-config, $property);
+
   @return $value;
 }
 
 // Get drawer container configuration value
 @function _get-drawer-container-value($property) {
   $value: map.get($drawer-container-config, $property);
+
   @return $value;
 }
 
@@ -160,7 +163,7 @@ $drawer-container-config: (
   height: fit-content;
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, vertical, spacious);
   border-radius: radius.variable(roomy);
-  background-color: palette.semantic-variable(background, base);
+  background-color: palette.semantic-variable("background", base);
   box-shadow: effect.variable(shadow, floating);
   box-sizing: border-box;
   pointer-events: auto;
@@ -184,6 +187,7 @@ $drawer-container-config: (
   &__prepend-tips {
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(body);
+
     padding-top: spacing.semantic-variable(padding, vertical, comfort);
     padding-bottom: spacing.semantic-variable(padding, vertical, micro);
     padding-inline: spacing.semantic-variable(padding, horizontal, comfort);
@@ -254,7 +258,7 @@ $drawer-container-config: (
   &__severity-icon {
     padding: spacing.semantic-variable(padding, vertical, micro) 0;
     color: var(--#{$prefix}-color);
-    font-size: typography.prop(h1, font-size);
+    font-size: typography.semantic-prop(h1, font-size);
   }
 
   &__close-icon {

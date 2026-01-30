@@ -1,6 +1,6 @@
 @use 'sass:map';
 @use '~@mezzanine-ui/system/spacing';
-@use '~@mezzanine-ui/system/typography';
+@use '~@mezzanine-ui/system/palette';
 @use './date-time-range-picker' as *;
 
 .#{$prefix} {
@@ -20,7 +20,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--mzn-color-text-secondary);
-    font-size: typography.prop(body1, size);
+    color: palette.semantic-variable(icon, neutral-light);
   }
 }

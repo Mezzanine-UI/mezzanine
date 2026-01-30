@@ -42,7 +42,7 @@
   @include typography.inherit;
 
   &:hover:not(.#{$button-prefix}--active) {
-    background-color: palette.color(primary-hover-bg);
+    background-color: palette.semantic-variable("background", neutral-subtle);
   }
 
   &--active {
@@ -52,9 +52,9 @@
 }
 
 .#{$column-prefix} {
-  $cell-height: 32px;
+  $cell-height: #{spacing.semantic-variable(size, element, loose)};
 
-  width: 68px;
+  width: spacing.semantic-variable(size, element, extra);
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, micro);
   position: relative;
 
@@ -74,7 +74,6 @@
     align-items: center;
     width: 100%;
     height: $cell-height;
-    padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, tiny);
     border-radius: radius.variable(base);
   }
 }

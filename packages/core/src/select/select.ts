@@ -38,8 +38,4 @@ export const selectClasses = {
   /** Tree select classes */
   treeSelect: treeSelectPrefix,
   tree: selectTreePrefix,
-
-  /** AutoComplete classes */
-  autoComplete: autoCompletePrefix,
-  autoCompleteIcon: `${autoCompletePrefix}__icon`,
 } as const;

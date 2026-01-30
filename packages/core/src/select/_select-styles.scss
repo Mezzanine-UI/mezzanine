@@ -129,30 +129,3 @@ $popper-horizontal-padding: 0 !default;
   box-sizing: border-box;
   padding: 0 8px;
 }
-
-.#{$autocomplete-prefix} {
-  width: 100%;
-  height: 32px;
-  padding: 0 12px 0 16px;
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background-color: palette.color(bg);
-  box-sizing: border-box;
-  text-align: left;
-  cursor: pointer;
-
-  p {
-    flex: 1;
-    margin: 0;
-    color: palette.color(text-primary);
-
-    @include typography.variant(input2);
-  }
-
-  &__icon {
-    font-size: 24px;
-    color: palette.color(text-secondary);
-  }
-}

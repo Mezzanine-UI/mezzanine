@@ -436,7 +436,7 @@ $modalSizes: (
     color: palette.semantic-variable(text, fixed-light);
     z-index: z-index.get(modal);
 
-    @include typography.variant(body1);
+    @include typography.semantic-variable(body);
   }
 
   &__media-preview-close-button {
