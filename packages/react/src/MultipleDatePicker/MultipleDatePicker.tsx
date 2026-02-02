@@ -167,6 +167,7 @@ const MultipleDatePicker = forwardRef<HTMLDivElement, MultipleDatePickerProps>(
       placeholder,
       popperProps,
       prefix,
+      required,
       readOnly = false,
       referenceDate: referenceDateProp,
       size = 'main',
@@ -422,6 +423,7 @@ const MultipleDatePicker = forwardRef<HTMLDivElement, MultipleDatePickerProps>(
           prefix={prefix}
           readOnly={readOnly}
           ref={triggerComposedRef}
+          required={required}
           size={size}
           suffix={suffixActionIcon}
           value={triggerValues}

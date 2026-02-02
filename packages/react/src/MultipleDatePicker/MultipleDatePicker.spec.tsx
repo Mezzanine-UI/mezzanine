@@ -15,7 +15,6 @@ import {
 import { CalendarConfigProvider } from '../Calendar';
 import MultipleDatePicker from '.';
 
-// Mock ResizeObserver - jsdom 不支援此 API
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 
 class ResizeObserverMock {

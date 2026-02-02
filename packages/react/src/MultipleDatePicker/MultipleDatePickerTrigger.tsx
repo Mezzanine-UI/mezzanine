@@ -62,6 +62,11 @@ export interface MultipleDatePickerTriggerProps
    */
   readOnly?: boolean;
   /**
+   * Whether the input is required.
+   * @default false
+   */
+  required?: boolean;
+  /**
    * Custom suffix element (e.g., calendar icon)
    */
   suffix?: ReactNode;
@@ -90,6 +95,7 @@ const MultipleDatePickerTrigger = forwardRef<
     overflowStrategy = 'counter',
     placeholder,
     readOnly = false,
+    required = false,
     size = 'main',
     suffix,
     value = [],
@@ -259,6 +265,7 @@ const MultipleDatePickerTrigger = forwardRef<
               aria-disabled={disabled}
               aria-multiline={false}
               aria-readonly={readOnly}
+              aria-required={required}
               className={cx(classes.triggerInput, classes.triggerInputAbsolute)}
               disabled={disabled}
               readOnly
@@ -272,6 +279,7 @@ const MultipleDatePickerTrigger = forwardRef<
             aria-disabled={disabled}
             aria-multiline={false}
             aria-readonly={readOnly}
+            aria-required={required}
             className={classes.triggerInput}
             disabled={disabled}
             placeholder={placeholder}

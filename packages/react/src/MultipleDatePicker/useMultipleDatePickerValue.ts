@@ -143,8 +143,8 @@ export function useMultipleDatePickerValue({
   }, [internalValue]);
 
   const revertToValue = useCallback(() => {
-    setInternalValue(value);
-  }, [value]);
+    setInternalValue(sortDates(value));
+  }, [sortDates, value]);
 
   return {
     clearAll,
