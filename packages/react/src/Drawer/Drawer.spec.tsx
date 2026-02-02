@@ -564,6 +564,7 @@ describe('<Drawer />', () => {
         <Drawer
           controlBarAllRadioLabel="All"
           controlBarCustomButtonLabel="Clear All"
+          controlBarOnCustomButtonClick={jest.fn()}
           controlBarShow
           open
         >
@@ -587,6 +588,7 @@ describe('<Drawer />', () => {
         <Drawer
           controlBarAllRadioLabel="All"
           controlBarIsEmpty
+          controlBarOnCustomButtonClick={jest.fn()}
           controlBarShow
           open
         >
@@ -610,6 +612,7 @@ describe('<Drawer />', () => {
         <Drawer
           controlBarAllRadioLabel="All"
           controlBarIsEmpty={false}
+          controlBarOnCustomButtonClick={jest.fn()}
           controlBarShow
           open
         >
@@ -754,7 +757,7 @@ describe('<Drawer />', () => {
       expect(checkedRadio?.value).toBe('read');
     });
 
-    it('should not render control bar when no radio labels are provided even if controlBarShow is true', () => {
+    it('should not render control bar when no radio labels and no button callback are provided', () => {
       render(
         <Drawer controlBarShow open>
           Content
@@ -767,6 +770,62 @@ describe('<Drawer />', () => {
       );
 
       expect(controlBarElement).toBe(null);
+    });
+
+    it('should render control bar with only button when no radio labels provided but button callback exists', () => {
+      const onCustomButtonClick = jest.fn();
+
+      render(
+        <Drawer
+          controlBarCustomButtonLabel="Action"
+          controlBarOnCustomButtonClick={onCustomButtonClick}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radioGroup = controlBarElement?.querySelector('.mzn-radio-group');
+      const button = controlBarElement?.querySelector('button');
+
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(
+        controlBarElement?.classList.contains(classes.controlBarButtonOnly),
+      ).toBeTruthy();
+      expect(radioGroup).toBe(null);
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(button?.textContent).toBe('Action');
+    });
+
+    it('should call button callback when only button is rendered', () => {
+      const onCustomButtonClick = jest.fn();
+
+      render(
+        <Drawer
+          controlBarOnCustomButtonClick={onCustomButtonClick}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      expect(onCustomButtonClick).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -136,6 +136,39 @@ export const WithControlBar: StoryObj<DrawerProps> = {
   },
 };
 
+export const WithControlBarButtonOnly: StoryObj<DrawerProps> = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    const handleClose = useCallback(() => setOpen(false), []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-text-link">
+          開啟 Drawer (僅控制列按鈕)
+        </Button>
+
+        <Drawer
+          controlBarCustomButtonLabel="重置全部"
+          controlBarOnCustomButtonClick={() => alert('重置')}
+          controlBarShow
+          headerTitle="設定"
+          isHeaderDisplay
+          onClose={handleClose}
+          open={open}
+          size="narrow"
+        >
+          <div style={{ padding: '16px' }}>
+            <Typography variant="body">
+              這個 Drawer 的控制列只有按鈕，沒有 Radio Group
+            </Typography>
+          </div>
+        </Drawer>
+      </>
+    );
+  },
+};
+
 export const WithCustomControlBar: StoryObj<DrawerProps> = {
   render: function Render() {
     const [open, setOpen] = useState(false);

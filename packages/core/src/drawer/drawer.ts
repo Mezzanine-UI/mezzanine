@@ -18,4 +18,5 @@ export const drawerClasses = {
   size: (size: DrawerSize) => `${drawerPrefix}--${size}`,
   content: `${drawerPrefix}__content`,
   controlBar: `${drawerPrefix}__control-bar`,
+  controlBarButtonOnly: `${drawerPrefix}__control-bar--button-only`,
 } as const;

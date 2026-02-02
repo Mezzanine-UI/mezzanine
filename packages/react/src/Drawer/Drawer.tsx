@@ -213,30 +213,43 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
         );
       }
 
-      if (radios.length === 0) {
+      const hasRadios = radios.length > 0;
+      const hasButton = controlBarOnCustomButtonClick !== undefined;
+
+      // Don't render if neither radios nor button are provided
+      if (!hasRadios && !hasButton) {
         return null;
       }
 
       return (
-        <div className={classes.controlBar}>
-          <RadioGroup
-            defaultValue={controlBarDefaultValue ?? 'all'}
-            onChange={controlBarOnRadioChange}
-            size="minor"
-            type="segment"
-            value={controlBarValue}
-          >
-            {radios}
-          </RadioGroup>
-          <Button
-            disabled={controlBarIsEmpty}
-            onClick={controlBarOnCustomButtonClick}
-            size="minor"
-            type="button"
-            variant="base-ghost"
-          >
-            {controlBarCustomButtonLabel}
-          </Button>
+        <div
+          className={cx(
+            classes.controlBar,
+            !hasRadios && hasButton && classes.controlBarButtonOnly,
+          )}
+        >
+          {hasRadios && (
+            <RadioGroup
+              defaultValue={controlBarDefaultValue ?? 'all'}
+              onChange={controlBarOnRadioChange}
+              size="minor"
+              type="segment"
+              value={controlBarValue}
+            >
+              {radios}
+            </RadioGroup>
+          )}
+          {hasButton && (
+            <Button
+              disabled={controlBarIsEmpty}
+              onClick={controlBarOnCustomButtonClick}
+              size="minor"
+              type="button"
+              variant="base-ghost"
+            >
+              {controlBarCustomButtonLabel}
+            </Button>
+          )}
         </div>
       );
     };
