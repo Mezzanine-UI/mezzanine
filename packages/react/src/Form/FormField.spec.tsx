@@ -1,4 +1,9 @@
-import { FormFieldCounterColor, FormFieldSize } from '@mezzanine-ui/core/form';
+import {
+  ControlFieldSlotLayout,
+  FormFieldCounterColor,
+  FormFieldSize,
+  LabelLayout,
+} from '@mezzanine-ui/core/form';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { InfoOutlineIcon } from '@mezzanine-ui/icons';
 import { useContext } from 'react';
@@ -332,6 +337,176 @@ describe('<FormField />', () => {
       );
 
       expect(iconElement).toBeTruthy();
+    });
+  });
+
+  describe('prop: labelLayout', () => {
+    it('should apply default horizontal-main layout', () => {
+      const { container } = render(
+        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+      );
+      const labelAreaElement = container.querySelector(
+        '.mzn-form-field__label-area',
+      );
+
+      expect(
+        labelAreaElement?.classList.contains(
+          'mzn-form-field__label-area--horizontal-main',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should apply horizontal-main layout class', () => {
+      const { container } = render(
+        <FormField
+          label="Test"
+          labelLayout={LabelLayout.HORIZONTAL_MAIN}
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        />,
+      );
+      const labelAreaElement = container.querySelector(
+        '.mzn-form-field__label-area',
+      );
+
+      expect(
+        labelAreaElement?.classList.contains(
+          'mzn-form-field__label-area--horizontal-main',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should apply horizontal-sub layout class', () => {
+      const { container } = render(
+        <FormField
+          label="Test"
+          labelLayout={LabelLayout.HORIZONTAL_SUB}
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        />,
+      );
+      const labelAreaElement = container.querySelector(
+        '.mzn-form-field__label-area',
+      );
+
+      expect(
+        labelAreaElement?.classList.contains(
+          'mzn-form-field__label-area--horizontal-sub',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should apply vertical layout class', () => {
+      const { container } = render(
+        <FormField
+          label="Test"
+          labelLayout={LabelLayout.VERTICAL}
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        />,
+      );
+      const labelAreaElement = container.querySelector(
+        '.mzn-form-field__label-area',
+      );
+
+      expect(
+        labelAreaElement?.classList.contains(
+          'mzn-form-field__label-area--vertical',
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should apply layout class for all LabelLayout enum values', () => {
+      Object.values(LabelLayout).forEach((layout) => {
+        const { container } = render(
+          <FormField
+            label="Test"
+            labelLayout={layout}
+            name="test"
+            size={FormFieldSize.VERTICAL}
+          />,
+        );
+        const labelAreaElement = container.querySelector(
+          '.mzn-form-field__label-area',
+        );
+
+        expect(
+          labelAreaElement?.classList.contains(
+            `mzn-form-field__label-area--${layout}`,
+          ),
+        ).toBeTruthy();
+      });
+    });
+  });
+
+  describe('prop: controlFieldSlotLayout', () => {
+    it('should apply default main layout', () => {
+      const { container } = render(
+        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+          <Input />
+        </FormField>,
+      );
+      const controlFieldSlotElement = container.querySelector(
+        '.mzn-form-field__control-field-slot--main',
+      );
+
+      expect(controlFieldSlotElement).toBeTruthy();
+    });
+
+    it('should apply main layout class', () => {
+      const { container } = render(
+        <FormField
+          controlFieldSlotLayout={ControlFieldSlotLayout.MAIN}
+          label="Test"
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        >
+          <Input />
+        </FormField>,
+      );
+      const controlFieldSlotElement = container.querySelector(
+        '.mzn-form-field__control-field-slot--main',
+      );
+
+      expect(controlFieldSlotElement).toBeTruthy();
+    });
+
+    it('should apply sub layout class', () => {
+      const { container } = render(
+        <FormField
+          controlFieldSlotLayout={ControlFieldSlotLayout.SUB}
+          label="Test"
+          name="test"
+          size={FormFieldSize.VERTICAL}
+        >
+          <Input />
+        </FormField>,
+      );
+      const controlFieldSlotElement = container.querySelector(
+        '.mzn-form-field__control-field-slot--sub',
+      );
+
+      expect(controlFieldSlotElement).toBeTruthy();
+    });
+
+    it('should apply layout class for all ControlFieldSlotLayout enum values', () => {
+      Object.values(ControlFieldSlotLayout).forEach((layout) => {
+        const { container } = render(
+          <FormField
+            controlFieldSlotLayout={layout}
+            label="Test"
+            name="test"
+            size={FormFieldSize.VERTICAL}
+          >
+            <Input />
+          </FormField>,
+        );
+        const controlFieldSlotElement = container.querySelector(
+          `.mzn-form-field__control-field-slot--${layout}`,
+        );
+
+        expect(controlFieldSlotElement).toBeTruthy();
+      });
     });
   });
 

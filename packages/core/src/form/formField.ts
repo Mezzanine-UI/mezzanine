@@ -25,6 +25,17 @@ export enum FormFieldSize {
   VERTICAL = 'vertical',
 }
 
+export enum LabelLayout {
+  HORIZONTAL_MAIN = 'horizontal-main',
+  HORIZONTAL_SUB = 'horizontal-sub',
+  VERTICAL = 'vertical',
+}
+
+export enum ControlFieldSlotLayout {
+  MAIN = 'main',
+  SUB = 'sub',
+}
+
 export const formFieldPrefix = `${formPrefix}-field`;
 
 export const formHintIcons: Record<SeverityWithInfo, IconDefinition> = {
@@ -39,6 +50,7 @@ export const formFieldClasses = {
   counter: `${formFieldPrefix}__counter`,
   counterColor: (color: FormFieldCounterColor) =>
     `${formFieldPrefix}__counter--${color}`,
+  controlFieldSlot: `${formFieldPrefix}__control-field-slot`,
   dataEntry: `${formFieldPrefix}__data-entry`,
   disabled: `${formFieldPrefix}--disabled`,
   fullWidth: `${formFieldPrefix}--full-width`,

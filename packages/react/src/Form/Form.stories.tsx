@@ -1,6 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { IconDefinition, InfoOutlineIcon } from '@mezzanine-ui/icons';
-import { FormFieldCounterColor, FormFieldSize } from '@mezzanine-ui/core/form';
+import {
+  ControlFieldSlotLayout,
+  FormFieldCounterColor,
+  FormFieldSize,
+  LabelLayout,
+} from '@mezzanine-ui/core/form';
 import { ReactNode, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
 import Input from '../Input';
@@ -16,6 +21,7 @@ export default {
 
 interface PlaygroundStoryArgs {
   clearable: boolean;
+  controlFieldSlotLayout: ControlFieldSlotLayout;
   counter?: string;
   counterColor: FormFieldCounterColor;
   disabled: boolean;
@@ -24,6 +30,7 @@ interface PlaygroundStoryArgs {
   hintTextIcon?: IconDefinition;
   label: string;
   labelInformationText: string;
+  labelLayout: LabelLayout;
   message: string;
   name: string;
   remark: string;
@@ -37,6 +44,7 @@ interface PlaygroundStoryArgs {
 export const Playground: StoryObj<PlaygroundStoryArgs> = {
   args: {
     clearable: false,
+    controlFieldSlotLayout: ControlFieldSlotLayout.MAIN,
     counter: '231/232',
     counterColor: FormFieldCounterColor.INFO,
     disabled: false,
@@ -44,6 +52,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     hintText: 'hint text',
     label: 'label',
     labelInformationText: 'This is information tooltip text',
+    labelLayout: LabelLayout.HORIZONTAL_MAIN,
     message: 'message',
     name: 'field-name',
     remark: 'remark',
@@ -54,11 +63,23 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     severity: 'info',
   },
   argTypes: {
+    controlFieldSlotLayout: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(ControlFieldSlotLayout),
+    },
     counterColor: {
       control: {
         type: 'select',
       },
       options: Object.values(FormFieldCounterColor),
+    },
+    labelLayout: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(LabelLayout),
     },
     size: {
       control: {
@@ -75,6 +96,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
   },
   render: function Render({
     clearable,
+    controlFieldSlotLayout,
     counter,
     counterColor,
     disabled,
@@ -82,6 +104,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     hintText,
     label,
     labelInformationText,
+    labelLayout,
     name,
     remark,
     required,
@@ -91,6 +114,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
   }) {
     const renderField = (control: ReactNode) => (
       <FormField
+        controlFieldSlotLayout={controlFieldSlotLayout}
         counter={counter}
         counterColor={counterColor}
         disabled={disabled}
@@ -99,6 +123,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         label={label}
         labelInformationIcon={showRemarkIcon ? InfoOutlineIcon : undefined}
         labelInformationText={labelInformationText}
+        labelLayout={labelLayout}
         labelOptionalMarker={remark}
         name={name}
         required={required}

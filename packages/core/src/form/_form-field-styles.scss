@@ -64,6 +64,23 @@ $form-field-counter-colors: (
 .#{$prefix}__label-area {
   padding-top: spacing.semantic-variable(padding, vertical, calm);
   padding-bottom: spacing.semantic-variable(padding, vertical, calm);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+
+  &--horizontal-main {
+    padding-top: spacing.semantic-variable(padding, vertical, calm);
+    min-height: spacing.semantic-variable(size, container, micro);
+  }
+
+  &--horizontal-sub {
+    padding-top: spacing.semantic-variable(padding, vertical, tight);
+    min-height: spacing.semantic-variable(size, container, atomic);
+  }
+
+  &--vertical {
+    padding-top: spacing.semantic-variable(padding, vertical, tiny);
+  }
 }
 
 @each $size in $form-field-sizes {
@@ -172,6 +189,16 @@ $form-field-counter-colors: (
   flex-direction: column;
   margin-left: spacing.semantic-variable(gap, base);
   gap: spacing.semantic-variable(gap, slim);
+}
+
+.#{$prefix}__control-field-slot {
+  &--main {
+    min-height: spacing.semantic-variable(size, container, micro);
+  }
+
+  &--sub {
+    min-height: spacing.semantic-variable(size, container, atomic);
+  }
 }
 
 .#{$prefix}__hint-text-and-counter-area {
