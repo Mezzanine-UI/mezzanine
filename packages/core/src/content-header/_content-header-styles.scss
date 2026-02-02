@@ -17,6 +17,13 @@
     gap: spacing.semantic-variable(gap, tiny);
     max-width: spacing.semantic-variable(size, container, balanced);
     width: 100%;
+
+    .#{$prefix}__text-group {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 
   &__action-area {
