@@ -94,7 +94,7 @@ const ModalContainer = forwardRef<HTMLDivElement, ModalContainerProps>(
         <Scale
           easing={{
             enter: MOTION_EASING.entrance,
-            exit: MOTION_EASING.entrance,
+            exit: MOTION_EASING.exit,
           }}
           in={open}
           onEntered={() => setExited(false)}
