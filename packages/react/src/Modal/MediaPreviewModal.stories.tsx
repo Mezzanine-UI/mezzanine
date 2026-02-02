@@ -12,6 +12,7 @@ type UncontrolledArgs = {
   defaultIndex: number;
   disableCloseOnBackdropClick?: boolean;
   disableCloseOnEscapeKeyDown?: boolean;
+  enableCircularNavigation?: boolean;
   showPaginationIndicator?: boolean;
 };
 
@@ -28,6 +29,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
     defaultIndex: 0,
     disableCloseOnBackdropClick: false,
     disableCloseOnEscapeKeyDown: false,
+    enableCircularNavigation: false,
     showPaginationIndicator: true,
   },
   render: function Render(args) {
@@ -35,6 +37,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
       defaultIndex,
       disableCloseOnBackdropClick,
       disableCloseOnEscapeKeyDown,
+      enableCircularNavigation,
       showPaginationIndicator,
     } = args;
 
@@ -49,6 +52,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
           defaultIndex={defaultIndex}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
+          enableCircularNavigation={enableCircularNavigation}
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
           open={open}
@@ -59,7 +63,7 @@ export const Playground: StoryObj<UncontrolledArgs> = {
   },
 };
 
-export const UncontrolledWithCallback: StoryObj = {
+export const TrackingIndexChanges: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [lastIndex, setLastIndex] = useState<number | null>(null);
@@ -103,26 +107,50 @@ export const SingleImage: StoryObj = {
   },
 };
 
-export const ControlledCircularNavigation: StoryObj = {
+export const CircularNavigation: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Gallery (Circular Navigation - Uncontrolled)
+        </Button>
+        <MediaPreviewModal
+          enableCircularNavigation
+          mediaItems={sampleImages}
+          onClose={() => setOpen(false)}
+          open={open}
+        />
+      </>
+    );
+  },
+};
+
+export const ControlledModeWithCircularNavigation: StoryObj = {
   render: function Render() {
     const [open, setOpen] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
-    // Custom circular navigation logic requires controlled mode
+    const handleNext = () => {
+      // Implement circular navigation in controlled mode
+      setCurrentIndex((prev) => (prev + 1) % sampleImages.length);
+    };
+
     const handlePrev = () => {
+      // Implement circular navigation in controlled mode
       setCurrentIndex(
         (prev) => (prev - 1 + sampleImages.length) % sampleImages.length,
       );
     };
 
-    const handleNext = () => {
-      setCurrentIndex((prev) => (prev + 1) % sampleImages.length);
-    };
-
     return (
       <>
+        <div style={{ marginBottom: '16px' }}>
+          <p>Current index: {currentIndex + 1}</p>
+        </div>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Controlled: Circular Navigation
+          Open Gallery (Circular Navigation - Controlled)
         </Button>
         <MediaPreviewModal
           currentIndex={currentIndex}
@@ -259,6 +287,104 @@ export const MixedOrientations: StoryObj = {
         <MediaPreviewModal
           defaultIndex={2}
           mediaItems={mixedImages}
+          onClose={() => setOpen(false)}
+          open={open}
+        />
+      </>
+    );
+  },
+};
+
+export const WithNextImageComponent: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+
+    /**
+     * Example of using Next.js Image component with MediaPreviewModal.
+     * In a real Next.js project, you would import and use the actual Image component:
+     *
+     * import Image from 'next/image';
+     *
+     * const mediaItems = [
+     *   <Image
+     *     key="1"
+     *     src="/path/to/image1.jpg"
+     *     alt="Image 1"
+     *     width={1920}
+     *     height={1080}
+     *     quality={90}
+     *     priority
+     *   />,
+     *   <Image
+     *     key="2"
+     *     src="/path/to/image2.jpg"
+     *     alt="Image 2"
+     *     width={1920}
+     *     height={1080}
+     *     quality={90}
+     *   />,
+     * ];
+     */
+
+    // Mock Next.js Image component for demonstration purposes
+    const MockNextImage = ({
+      src,
+      alt,
+      width,
+      height,
+    }: {
+      alt: string;
+      height: number;
+      src: string;
+      width: number;
+    }) => (
+      <img
+        alt={alt}
+        src={src}
+        style={{
+          height: 'auto',
+          maxHeight: '90vh',
+          maxWidth: '90vw',
+          objectFit: 'contain',
+          width: 'auto',
+        }}
+        // Next.js Image would handle optimization and responsive loading
+        width={width}
+        height={height}
+      />
+    );
+
+    const mediaItems = [
+      <MockNextImage
+        key="1"
+        alt="Landscape 1"
+        height={1920}
+        src="https://picsum.photos/id/10/2560/1920"
+        width={2560}
+      />,
+      <MockNextImage
+        key="2"
+        alt="Landscape 2"
+        height={1920}
+        src="https://picsum.photos/id/20/2560/1920"
+        width={2560}
+      />,
+      <MockNextImage
+        key="3"
+        alt="Landscape 3"
+        height={1920}
+        src="https://picsum.photos/id/30/2560/1920"
+        width={2560}
+      />,
+    ];
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open with Next/Image (Mock)
+        </Button>
+        <MediaPreviewModal
+          mediaItems={mediaItems}
           onClose={() => setOpen(false)}
           open={open}
         />
