@@ -78,11 +78,6 @@ export type ContentHeaderProps = Omit<
    * href prop from children will be ignored if onBackClick is provided. <br />
    * */
   onBackClick?: () => void;
-  /**
-   * Size variant of the toolbar. <br />
-   * Affects the size of buttons and filter component. <br />
-   */
-  size?: 'main' | 'sub';
   /** Main title text for the content header */
   title: string;
   /**
@@ -99,7 +94,25 @@ export type ContentHeaderProps = Omit<
       })
     | DropdownProps
   )[];
-};
+} & (
+    | {
+        /**
+         * Optional back button properties. <br />
+         * When provided, a back button will be rendered on the left side of the title. <br />
+         * href prop from children will be ignored if onBackClick is provided. <br />
+         * */
+        onBackClick?: () => void;
+        /**
+         * Size variant of the toolbar. <br />
+         * Affects the size of buttons and filter component. <br />
+         */
+        size?: 'main';
+      }
+    | {
+        onBackClick?: never;
+        size?: 'sub';
+      }
+  );
 
 /**
  * ContentHeader component. <br />
@@ -183,7 +196,7 @@ const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
       >
         <span className={classes.titleArea}>
           {/* title area */}
-          {renderBackButton && (
+          {renderBackButton && size !== 'sub' && (
             <span className={classes.backButton}>{renderBackButton}</span>
           )}
 
