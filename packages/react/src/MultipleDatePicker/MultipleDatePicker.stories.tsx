@@ -71,11 +71,14 @@ export const Basic: Story = {
           <Typography style={typoStyle} variant="body">
             Click on dates to select/deselect. Click Confirm to apply changes.
           </Typography>
-          <MultipleDatePicker
-            onChange={setValue}
-            placeholder="Select multiple dates"
-            value={value}
-          />
+          {/** Recommend to wrap MultipleDatePicker with a container to control width */}
+          <div style={{ width: '400px' }}>
+            <MultipleDatePicker
+              onChange={setValue}
+              placeholder="Select multiple dates"
+              value={value}
+            />
+          </div>
         </div>
         <div style={containerStyle}>
           <Typography style={typoStyle} variant="h3">

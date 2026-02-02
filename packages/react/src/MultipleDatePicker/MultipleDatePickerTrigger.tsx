@@ -16,7 +16,6 @@ import Tag from '../Tag';
 import TagGroup from '../Tag/TagGroup';
 import { OverflowCounterTag } from '../OverflowTooltip';
 import { cx } from '../utils/cx';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 import { useSelectTriggerTags } from '../Select/useSelectTriggerTags';
 
 export interface DateValue {
@@ -97,9 +96,8 @@ const MultipleDatePickerTrigger = forwardRef<
     ...restTextFieldProps
   } = props;
 
-  const wrapperRef = useRef<HTMLDivElement>(null);
+  const tagsContainerRef = useRef<HTMLDivElement>(null);
   const tagsRef = useRef<HTMLDivElement>(null);
-  const composedRef = useComposeRefs([ref, wrapperRef]);
 
   const tagSize: TagSize = size === 'main' ? 'main' : 'sub';
 
@@ -111,7 +109,7 @@ const MultipleDatePickerTrigger = forwardRef<
 
   const { overflowSelections, renderFakeTags, visibleSelections } =
     useSelectTriggerTags({
-      containerRef: wrapperRef,
+      containerRef: tagsContainerRef,
       enabled: overflowStrategy === 'counter',
       size: tagSize,
       tagsRef,
@@ -235,53 +233,55 @@ const MultipleDatePickerTrigger = forwardRef<
       clearable={!readOnly && clearable && hasValue}
       error={error}
       fullWidth={fullWidth}
-      ref={composedRef}
+      ref={ref}
       size={size}
       suffix={suffix}
     >
-      {hasValue ? (
-        <div
-          className={cx(classes.triggerTagsWrapper, {
-            [classes.triggerTagsWrapperEllipsis]:
-              overflowStrategy === 'counter',
-          })}
-        >
-          <div
-            className={cx(classes.triggerTags, {
-              [classes.triggerTagsEllipsis]: overflowStrategy === 'counter',
-            })}
-            ref={tagsRef}
-          >
-            <TagGroup>{tagChildren}</TagGroup>
-            {overflowStrategy === 'counter' ? renderFakeTags() : null}
-          </div>
-          {/* Hidden input for accessibility */}
+      <div
+        ref={tagsContainerRef}
+        className={cx(classes.triggerTagsWrapper, {
+          [classes.triggerTagsWrapperEllipsis]: overflowStrategy === 'counter',
+        })}
+      >
+        {hasValue ? (
+          <>
+            <div
+              className={cx(classes.triggerTags, {
+                [classes.triggerTagsEllipsis]: overflowStrategy === 'counter',
+              })}
+              ref={tagsRef}
+            >
+              <TagGroup>{tagChildren}</TagGroup>
+              {overflowStrategy === 'counter' ? renderFakeTags() : null}
+            </div>
+            {/* Hidden input for accessibility */}
+            <input
+              aria-disabled={disabled}
+              aria-multiline={false}
+              aria-readonly={readOnly}
+              className={cx(classes.triggerInput, classes.triggerInputAbsolute)}
+              disabled={disabled}
+              readOnly
+              tabIndex={-1}
+              type="text"
+              value=""
+            />
+          </>
+        ) : (
           <input
             aria-disabled={disabled}
             aria-multiline={false}
             aria-readonly={readOnly}
-            className={cx(classes.triggerInput, classes.triggerInputAbsolute)}
+            className={classes.triggerInput}
             disabled={disabled}
+            placeholder={placeholder}
             readOnly
             tabIndex={-1}
             type="text"
             value=""
           />
-        </div>
-      ) : (
-        <input
-          aria-disabled={disabled}
-          aria-multiline={false}
-          aria-readonly={readOnly}
-          className={classes.triggerInput}
-          disabled={disabled}
-          placeholder={placeholder}
-          readOnly
-          tabIndex={-1}
-          type="text"
-          value=""
-        />
-      )}
+        )}
+      </div>
     </TextField>
   );
 });

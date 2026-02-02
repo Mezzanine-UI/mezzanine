@@ -297,9 +297,15 @@ const MultipleDatePicker = forwardRef<HTMLDivElement, MultipleDatePickerProps>(
     }, [revertToValue, onCalendarToggle]);
 
     // Handle clear
-    const onClear = useCallback<MouseEventHandler<Element>>(() => {
-      clearAll();
-    }, [clearAll]);
+    const onClear = useCallback<MouseEventHandler<Element>>(
+      (e) => {
+        e.stopPropagation();
+
+        clearAll();
+        onChangeProp?.([]);
+      },
+      [clearAll, onChangeProp],
+    );
 
     // Auto-generate actions
     const actions: CalendarFooterActionsProps['actions'] = useMemo(() => {
