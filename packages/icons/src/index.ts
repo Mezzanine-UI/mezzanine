@@ -56,6 +56,7 @@ export { ChevronVerticalIcon } from './arrow/chevron-vertical';
 export { DoubleChevronRightIcon } from './arrow/double-chevron-right';
 export { DoubleChevronLeftIcon } from './arrow/double-chevron-left';
 export { SwitchVerticalIcon } from './arrow/switch-vertical';
+export { SwitchHorizontalIcon } from './arrow/switch-horizontal';
 export { ReverseLeftIcon } from './arrow/reverse-left';
 export { ReverseRightIcon } from './arrow/reverse-right';
 
@@ -133,6 +134,7 @@ export { ImageIcon } from './content/image';
 export { BoxIcon } from './content/box';
 export { CodeIcon } from './content/code';
 export { MailIcon } from './content/mail';
+export { MailUnreadIcon } from './content/mail-unread';
 
 /**
  * Stepper Icons
