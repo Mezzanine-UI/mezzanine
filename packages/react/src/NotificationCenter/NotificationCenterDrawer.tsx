@@ -1,6 +1,11 @@
 'use client';
 
-import { useMemo, type ComponentProps, type Key, type ReactElement } from 'react';
+import {
+  useMemo,
+  type ComponentProps,
+  type Key,
+  type ReactElement,
+} from 'react';
 
 import { DrawerSize } from '@mezzanine-ui/core/drawer';
 import { notificationClasses as classes } from '@mezzanine-ui/core/notification-center';
@@ -10,7 +15,9 @@ import { NotificationIcon, type IconDefinition } from '@mezzanine-ui/icons';
 import Drawer, { type DrawerProps } from '../Drawer';
 import Icon from '../Icon';
 import Typography from '../Typography';
-import NotificationCenter, { type NotificationData } from './NotificationCenter';
+import NotificationCenter, {
+  type NotificationData,
+} from './NotificationCenter';
 
 type NotificationDataForDrawer = NotificationData & {
   key: Key;
@@ -290,7 +297,6 @@ const NotificationCenterDrawer = (props: NotificationCenterDrawerProps) => {
     <Drawer
       className={classes.drawer}
       controlBarAllRadioLabel={controlBarAllRadioLabel}
-      controlBarClassName={classes.toolbar}
       controlBarCustomButtonLabel={controlBarCustomButtonLabel}
       controlBarDefaultValue={controlBarDefaultValue}
       controlBarIsEmpty={isEmpty}
