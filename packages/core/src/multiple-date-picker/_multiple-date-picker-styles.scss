@@ -68,6 +68,7 @@
     flex-flow: row wrap;
     align-items: center;
     justify-self: flex-start;
+    position: relative;
 
     &--ellipsis {
       flex-wrap: unset;
