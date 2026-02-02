@@ -400,6 +400,150 @@ describe('<MediaPreviewModal />', () => {
       fireEvent.click(prevButton);
       expect(onPrev).toHaveBeenCalledTimes(1);
     });
+
+    describe('circular navigation', () => {
+      it('should wrap from last to first item when enableCircularNavigation is true', () => {
+        const { rerender } = render(
+          <MediaPreviewModal
+            currentIndex={2}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        const overlayElement = getOverlayElement()!;
+        const nextButton = overlayElement.querySelector(
+          `button[aria-label="Next media"]`,
+        ) as HTMLButtonElement;
+
+        // Should not be disabled at the last item
+        expect(nextButton?.disabled).toBe(false);
+
+        // Click next to navigate to first item
+        fireEvent.click(nextButton);
+
+        // Re-render with updated index (simulating uncontrolled mode behavior)
+        rerender(
+          <MediaPreviewModal
+            currentIndex={0}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        // Verify pagination indicator shows first item
+        const indicator = getOverlayElement()!.querySelector(
+          `.${classes.mediaPreviewPaginationIndicator}`,
+        );
+
+        expect(indicator?.textContent).toBe('1/3');
+      });
+
+      it('should wrap from first to last item when enableCircularNavigation is true', () => {
+        const { rerender } = render(
+          <MediaPreviewModal
+            currentIndex={0}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        const overlayElement = getOverlayElement()!;
+        const prevButton = overlayElement.querySelector(
+          `button[aria-label="Previous media"]`,
+        ) as HTMLButtonElement;
+
+        // Should not be disabled at the first item
+        expect(prevButton?.disabled).toBe(false);
+
+        // Click prev to navigate to last item
+        fireEvent.click(prevButton);
+
+        // Re-render with updated index (simulating uncontrolled mode behavior)
+        rerender(
+          <MediaPreviewModal
+            currentIndex={2}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        // Verify pagination indicator shows last item
+        const indicator = getOverlayElement()!.querySelector(
+          `.${classes.mediaPreviewPaginationIndicator}`,
+        );
+
+        expect(indicator?.textContent).toBe('3/3');
+      });
+
+      it('should not wrap when enableCircularNavigation is false', () => {
+        render(
+          <MediaPreviewModal
+            currentIndex={2}
+            enableCircularNavigation={false}
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        const overlayElement = getOverlayElement()!;
+        const nextButton = overlayElement.querySelector(
+          `button[aria-label="Next media"]`,
+        ) as HTMLButtonElement;
+
+        // Should be disabled at the last item
+        expect(nextButton?.disabled).toBe(true);
+      });
+
+      it('should keep navigation buttons enabled when enableCircularNavigation is true', () => {
+        const { rerender } = render(
+          <MediaPreviewModal
+            currentIndex={0}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        let overlayElement = getOverlayElement()!;
+        let prevButton = overlayElement.querySelector(
+          `button[aria-label="Previous media"]`,
+        ) as HTMLButtonElement;
+        let nextButton = overlayElement.querySelector(
+          `button[aria-label="Next media"]`,
+        ) as HTMLButtonElement;
+
+        // At first item, both buttons should be enabled
+        expect(prevButton?.disabled).toBe(false);
+        expect(nextButton?.disabled).toBe(false);
+
+        // Navigate to last item
+        rerender(
+          <MediaPreviewModal
+            currentIndex={2}
+            enableCircularNavigation
+            mediaItems={mockMediaItems}
+            open
+          />,
+        );
+
+        overlayElement = getOverlayElement()!;
+        prevButton = overlayElement.querySelector(
+          `button[aria-label="Previous media"]`,
+        ) as HTMLButtonElement;
+        nextButton = overlayElement.querySelector(
+          `button[aria-label="Next media"]`,
+        ) as HTMLButtonElement;
+
+        // At last item, both buttons should still be enabled
+        expect(prevButton?.disabled).toBe(false);
+        expect(nextButton?.disabled).toBe(false);
+      });
+    });
   });
 
   describe('close button', () => {
