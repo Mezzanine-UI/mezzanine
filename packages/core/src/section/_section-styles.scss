@@ -1,0 +1,18 @@
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use './section' as *;
+
+.#{$prefix} {
+  width: 100%;
+  box-sizing: border-box;
+  padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, spacious);
+  border-radius: radius.variable(base);
+  background-color: palette.semantic-variable('background', base);
+  
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: spacing.semantic-variable(gap, calm);
+}
