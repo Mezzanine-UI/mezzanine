@@ -114,12 +114,50 @@ export const CircularNavigation: StoryObj = {
     return (
       <>
         <Button onClick={() => setOpen(true)} variant="base-primary">
-          Open Gallery (Circular Navigation)
+          Open Gallery (Circular Navigation - Uncontrolled)
         </Button>
         <MediaPreviewModal
           enableCircularNavigation
           mediaItems={sampleImages}
           onClose={() => setOpen(false)}
+          open={open}
+        />
+      </>
+    );
+  },
+};
+
+export const ControlledModeWithCircularNavigation: StoryObj = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleNext = () => {
+      // Implement circular navigation in controlled mode
+      setCurrentIndex((prev) => (prev + 1) % sampleImages.length);
+    };
+
+    const handlePrev = () => {
+      // Implement circular navigation in controlled mode
+      setCurrentIndex(
+        (prev) => (prev - 1 + sampleImages.length) % sampleImages.length,
+      );
+    };
+
+    return (
+      <>
+        <div style={{ marginBottom: '16px' }}>
+          <p>Current index: {currentIndex + 1}</p>
+        </div>
+        <Button onClick={() => setOpen(true)} variant="base-primary">
+          Open Gallery (Circular Navigation - Controlled)
+        </Button>
+        <MediaPreviewModal
+          currentIndex={currentIndex}
+          mediaItems={sampleImages}
+          onClose={() => setOpen(false)}
+          onNext={handleNext}
+          onPrev={handlePrev}
           open={open}
         />
       </>

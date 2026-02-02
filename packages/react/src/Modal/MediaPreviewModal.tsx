@@ -38,6 +38,10 @@ export interface MediaPreviewModalProps
    * Enable circular navigation (wrap around at boundaries).
    * When enabled, navigating past the last item goes to the first,
    * and navigating before the first item goes to the last.
+   *
+   * Note: This only applies in uncontrolled mode. In controlled mode
+   * (when onNext/onPrev are provided), you must implement circular
+   * navigation logic in your callbacks.
    * @default false
    */
   enableCircularNavigation?: boolean;
