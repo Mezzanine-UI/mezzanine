@@ -97,6 +97,7 @@ $popper-horizontal-padding: 0 !default;
     );
     display: flex;
     flex-flow: row wrap;
+    gap: spacing.semantic-variable(gap, tight);
     align-items: center;
     justify-self: flex-start;
 

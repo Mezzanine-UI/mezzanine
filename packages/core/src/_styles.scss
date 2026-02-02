@@ -79,6 +79,7 @@
   @include _load-styles($options, upload, upload-item);
   @include _load-styles($options, upload, upload-picture-card);
   @include _load-styles($options, picker);
+  @include _load-styles($options, multiple-date-picker);
   @include _load-styles($options, date-time-range-picker);
   @include _load-styles($options, slider);
   @include _load-styles($options, dropdown);
