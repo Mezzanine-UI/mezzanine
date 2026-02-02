@@ -205,7 +205,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     display: flex;
     flex-grow: 1;
     gap: spacing.semantic-variable(gap, base);
-    height: 100%;
+    border-radius: radius.variable(base);
   }
 
   &__title {
@@ -214,16 +214,13 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
   &--collapsed {
     .#{$header-prefix}__content {
+      top: spacing.semantic-variable(padding, vertical, comfort);
       left: spacing.semantic-variable(padding, horizontal, comfort-fixed);
       overflow-x: hidden;
       pointer-events: none;
       position: absolute;
       transition: transition.standard(opacity, fast);
       width: calc(100% - spacing.semantic-variable(padding, horizontal, comfort-fixed) - spacing.semantic-variable(padding, horizontal, comfort-fixed));
-
-      &:hover {
-        opacity: 0;
-      }
     }
 
     .#{$header-prefix}__title:not(:first-child) {
@@ -231,8 +228,13 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     }
 
     .#{$header-prefix}__title {
-      background-color: palette.semantic-variable('background', base);
-      text-overflow: clip;
+      display: flex;
+      place-items: center;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      justify-content: center;
+      background-color: palette.semantic-variable('background', brand);
+      color: palette.semantic-variable(text, fixed-light);
     }
 
     &:hover {
