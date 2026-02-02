@@ -17,8 +17,6 @@ export const multipleDatePickerClasses = {
   triggerTagsEllipsis: `${multipleDatePickerPrefix}-trigger__tags--ellipsis`,
   triggerInput: `${multipleDatePickerPrefix}-trigger__input`,
   triggerInputAbsolute: `${multipleDatePickerPrefix}-trigger__input--absolute`,
-  triggerSuffixIcon: `${multipleDatePickerPrefix}-trigger__suffix-icon`,
-  triggerSuffixIconActive: `${multipleDatePickerPrefix}-trigger__suffix-icon--active`,
 } as const;
 
 /** Types */

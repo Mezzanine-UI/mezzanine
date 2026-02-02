@@ -74,16 +74,4 @@
       flex-wrap: unset;
     }
   }
-
-  &__suffix-icon {
-    transition:
-      transition.standard(transform),
-      transition.standard(color),
-      transition.standard(opacity);
-    will-change: transform, color, opacity;
-
-    &--active {
-      transform: rotate(180deg);
-    }
-  }
 }
