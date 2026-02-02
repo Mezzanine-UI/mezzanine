@@ -292,6 +292,18 @@ export type {
   DateTimeRangePickerProps,
   DateTimeRangePickerValue,
 } from './DateTimeRangePicker';
+export {
+  default as MultipleDatePicker,
+  MultipleDatePickerTrigger,
+  useMultipleDatePickerValue,
+} from './MultipleDatePicker';
+export type {
+  MultipleDatePickerDateValue,
+  MultipleDatePickerProps,
+  MultipleDatePickerTriggerProps,
+  UseMultipleDatePickerValueProps,
+  UseMultipleDatePickerValueReturn,
+} from './MultipleDatePicker';
 export { FormControlContext, FormField, FormHintText, FormLabel } from './Form';
 export { FilterArea, FilterLine, Filter } from './FilterArea';
 export type {
