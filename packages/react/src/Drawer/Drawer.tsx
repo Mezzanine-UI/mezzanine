@@ -8,6 +8,12 @@ import {
   drawerClasses as classes,
   DrawerSize,
 } from '@mezzanine-ui/core/drawer';
+import { IconDefinition } from '@mezzanine-ui/icons';
+import {
+  ButtonIconType,
+  ButtonSize,
+  ButtonVariant,
+} from '@mezzanine-ui/core/button';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Backdrop, { BackdropProps } from '../Backdrop';
@@ -32,9 +38,34 @@ export interface DrawerProps
       | 'open'
     > {
   /**
+   * Disabled state for the ghost action button.
+   */
+  bottomGhostActionDisabled?: boolean;
+  /**
+   * Icon for the ghost action button.
+   */
+  bottomGhostActionIcon?: IconDefinition;
+  /**
+   * Icon type for the ghost action button.
+   */
+  bottomGhostActionIconType?: ButtonIconType;
+  /**
+   * Loading state for the ghost action button.
+   */
+  bottomGhostActionLoading?: boolean;
+  /**
+   * Size for the ghost action button.
+   */
+  bottomGhostActionSize?: ButtonSize;
+  /**
    * Text for the ghost action button in the bottom action area.
    */
   bottomGhostActionText?: string;
+  /**
+   * Variant for the ghost action button.
+   * @default 'base-ghost'
+   */
+  bottomGhostActionVariant?: ButtonVariant;
   /**
    * Click handler for the ghost action button in the bottom action area.
    */
@@ -48,13 +79,63 @@ export interface DrawerProps
    */
   bottomOnSecondaryActionClick?: VoidFunction;
   /**
+   * Disabled state for the primary action button.
+   */
+  bottomPrimaryActionDisabled?: boolean;
+  /**
+   * Icon for the primary action button.
+   */
+  bottomPrimaryActionIcon?: IconDefinition;
+  /**
+   * Icon type for the primary action button.
+   */
+  bottomPrimaryActionIconType?: ButtonIconType;
+  /**
+   * Loading state for the primary action button.
+   */
+  bottomPrimaryActionLoading?: boolean;
+  /**
+   * Size for the primary action button.
+   */
+  bottomPrimaryActionSize?: ButtonSize;
+  /**
    * Text for the primary action button in the bottom action area.
    */
   bottomPrimaryActionText?: string;
   /**
+   * Variant for the primary action button.
+   * @default 'base-primary'
+   */
+  bottomPrimaryActionVariant?: ButtonVariant;
+  /**
+   * Disabled state for the secondary action button.
+   */
+  bottomSecondaryActionDisabled?: boolean;
+  /**
+   * Icon for the secondary action button.
+   */
+  bottomSecondaryActionIcon?: IconDefinition;
+  /**
+   * Icon type for the secondary action button.
+   */
+  bottomSecondaryActionIconType?: ButtonIconType;
+  /**
+   * Loading state for the secondary action button.
+   */
+  bottomSecondaryActionLoading?: boolean;
+  /**
+   * Size for the secondary action button.
+   */
+  bottomSecondaryActionSize?: ButtonSize;
+  /**
    * Text for the secondary action button in the bottom action area.
    */
   bottomSecondaryActionText?: string;
+  /**
+   * Variant for the secondary action button.
+   * @default 'base-secondary'
+   */
+  bottomSecondaryActionVariant?: ButtonVariant;
   /**
    * The label of the all radio in control bar.
    */
@@ -134,12 +215,30 @@ export interface DrawerProps
 
 const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   const {
+    bottomGhostActionDisabled,
+    bottomGhostActionIcon,
+    bottomGhostActionIconType,
+    bottomGhostActionLoading,
+    bottomGhostActionSize,
     bottomGhostActionText,
+    bottomGhostActionVariant = 'base-ghost',
     bottomOnGhostActionClick,
     bottomOnPrimaryActionClick,
     bottomOnSecondaryActionClick,
+    bottomPrimaryActionDisabled,
+    bottomPrimaryActionIcon,
+    bottomPrimaryActionIconType,
+    bottomPrimaryActionLoading,
+    bottomPrimaryActionSize,
     bottomPrimaryActionText,
+    bottomPrimaryActionVariant = 'base-primary',
+    bottomSecondaryActionDisabled,
+    bottomSecondaryActionIcon,
+    bottomSecondaryActionIconType,
+    bottomSecondaryActionLoading,
+    bottomSecondaryActionSize,
     bottomSecondaryActionText,
+    bottomSecondaryActionVariant = 'base-secondary',
     children,
     className,
     container,
@@ -336,9 +435,14 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
               <div>
                 {bottomGhostActionText && bottomOnGhostActionClick && (
                   <Button
+                    disabled={bottomGhostActionDisabled}
+                    icon={bottomGhostActionIcon}
+                    iconType={bottomGhostActionIconType}
+                    loading={bottomGhostActionLoading}
                     onClick={bottomOnGhostActionClick}
+                    size={bottomGhostActionSize}
                     type="button"
-                    variant="base-ghost"
+                    variant={bottomGhostActionVariant}
                   >
                     {bottomGhostActionText}
                   </Button>
@@ -347,18 +451,28 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
               <div className={classes['bottom__actions']}>
                 {bottomSecondaryActionText && bottomOnSecondaryActionClick && (
                   <Button
+                    disabled={bottomSecondaryActionDisabled}
+                    icon={bottomSecondaryActionIcon}
+                    iconType={bottomSecondaryActionIconType}
+                    loading={bottomSecondaryActionLoading}
                     onClick={bottomOnSecondaryActionClick}
+                    size={bottomSecondaryActionSize}
                     type="button"
-                    variant="base-secondary"
+                    variant={bottomSecondaryActionVariant}
                   >
                     {bottomSecondaryActionText}
                   </Button>
                 )}
                 {bottomPrimaryActionText && bottomOnPrimaryActionClick && (
                   <Button
+                    disabled={bottomPrimaryActionDisabled}
+                    icon={bottomPrimaryActionIcon}
+                    iconType={bottomPrimaryActionIconType}
+                    loading={bottomPrimaryActionLoading}
                     onClick={bottomOnPrimaryActionClick}
+                    size={bottomPrimaryActionSize}
                     type="button"
-                    variant="base-primary"
+                    variant={bottomPrimaryActionVariant}
                   >
                     {bottomPrimaryActionText}
                   </Button>

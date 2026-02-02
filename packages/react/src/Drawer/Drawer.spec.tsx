@@ -256,6 +256,82 @@ describe('<Drawer />', () => {
 
         expect(buttons?.length).toBe(0);
       });
+
+      it('should render ghost action button with custom props', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionDisabled
+            bottomGhostActionLoading={false}
+            bottomGhostActionText="Custom Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Cancel');
+        expect(buttons?.[0].disabled).toBe(true);
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-ghost'),
+        ).toBeTruthy();
+      });
+
+      it('should apply loading state to ghost action button', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionLoading
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
+
+      it('should apply custom variant to ghost action button', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionText="Cancel"
+            bottomGhostActionVariant="base-secondary"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
     });
 
     describe('secondaryAction', () => {
@@ -312,6 +388,63 @@ describe('<Drawer />', () => {
 
         expect(onSecondaryActionClick).toHaveBeenCalledTimes(1);
       });
+
+      it('should render secondary action button with custom props', () => {
+        const onSecondaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionDisabled
+            bottomSecondaryActionText="Custom Back"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Back');
+        expect(buttons?.[0].disabled).toBe(true);
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
+
+      it('should apply loading state to secondary action button', () => {
+        const onSecondaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionLoading
+            bottomSecondaryActionText="Back"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
     });
 
     describe('primaryAction', () => {
@@ -367,6 +500,90 @@ describe('<Drawer />', () => {
         fireEvent.click(buttons![0]);
 
         expect(onPrimaryActionClick).toHaveBeenCalledTimes(1);
+      });
+
+      it('should render primary action button with custom props', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionLoading
+            bottomPrimaryActionText="Custom Submit"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Submit');
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-primary'),
+        ).toBeTruthy();
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
+
+      it('should apply disabled state to primary action button', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionDisabled
+            bottomPrimaryActionText="Submit"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.[0].disabled).toBe(true);
+      });
+
+      it('should apply custom variant to primary action button', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionText="Submit"
+            bottomPrimaryActionVariant="base-ghost"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-ghost'),
+        ).toBeTruthy();
       });
     });
 
