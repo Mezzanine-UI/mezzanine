@@ -350,6 +350,7 @@
 }
 
 .#{$footer-actions-prefix} {
+  box-sizing: border-box;
   width: 100%;
   border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
   padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);

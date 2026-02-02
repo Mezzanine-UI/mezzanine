@@ -1,0 +1,93 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/transition';
+@use '../text-field';
+@use './multiple-date-picker' as *;
+
+.#{$prefix} {
+  position: relative;
+  min-width: spacing.semantic-variable(size, container, slim);
+
+  &--full-width {
+    width: 100%;
+  }
+}
+
+.#{$prefix}-trigger {
+  cursor: pointer;
+
+  &--readonly {
+    cursor: default;
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+  }
+
+  &--selected {
+    padding: spacing.semantic-variable(padding, vertical, tiny)
+      spacing.semantic-variable(padding, horizontal, cozy)
+      spacing.semantic-variable(padding, horizontal, tiny)
+      spacing.semantic-variable(padding, vertical, tiny);
+    gap: spacing.semantic-variable(gap, slim);
+  }
+
+  &__input {
+    appearance: none;
+    min-width: 0;
+    padding: 0;
+
+    &--absolute {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+  }
+
+  &__tags-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    flex-wrap: wrap;
+
+    &--ellipsis {
+      flex-wrap: nowrap;
+    }
+  }
+
+  &__tags {
+    width: auto;
+    max-width: calc(
+      100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(
+          --#{text-field.$prefix}-icon-size
+        )
+    );
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-self: flex-start;
+
+    &--ellipsis {
+      flex-wrap: unset;
+    }
+  }
+
+  &__suffix-icon {
+    transition:
+      transition.standard(transform),
+      transition.standard(color),
+      transition.standard(opacity);
+    will-change: transform, color, opacity;
+
+    &--active {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+.#{$prefix}-panel {
+  display: flex;
+  flex-direction: column;
+}
