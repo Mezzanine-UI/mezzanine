@@ -20,6 +20,7 @@
   @include _load-styles($options, typography);
   @include _load-styles($options, icon);
   @include _load-styles($options, button);
+  @include _load-styles($options, cropper);
 
   // Internal
   @include _load-styles($options, scrollbar);
