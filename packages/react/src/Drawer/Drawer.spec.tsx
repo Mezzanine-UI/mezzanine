@@ -256,6 +256,82 @@ describe('<Drawer />', () => {
 
         expect(buttons?.length).toBe(0);
       });
+
+      it('should render ghost action button with custom props', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionDisabled
+            bottomGhostActionLoading={false}
+            bottomGhostActionText="Custom Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Cancel');
+        expect(buttons?.[0].disabled).toBe(true);
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-ghost'),
+        ).toBeTruthy();
+      });
+
+      it('should apply loading state to ghost action button', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionLoading
+            bottomGhostActionText="Cancel"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
+
+      it('should apply custom variant to ghost action button', () => {
+        const onGhostActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomGhostActionText="Cancel"
+            bottomGhostActionVariant="base-secondary"
+            bottomOnGhostActionClick={onGhostActionClick}
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const buttons = bottomElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
     });
 
     describe('secondaryAction', () => {
@@ -312,6 +388,63 @@ describe('<Drawer />', () => {
 
         expect(onSecondaryActionClick).toHaveBeenCalledTimes(1);
       });
+
+      it('should render secondary action button with custom props', () => {
+        const onSecondaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionDisabled
+            bottomSecondaryActionText="Custom Back"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Back');
+        expect(buttons?.[0].disabled).toBe(true);
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-secondary'),
+        ).toBeTruthy();
+      });
+
+      it('should apply loading state to secondary action button', () => {
+        const onSecondaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnSecondaryActionClick={onSecondaryActionClick}
+            bottomSecondaryActionLoading
+            bottomSecondaryActionText="Back"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
     });
 
     describe('primaryAction', () => {
@@ -367,6 +500,90 @@ describe('<Drawer />', () => {
         fireEvent.click(buttons![0]);
 
         expect(onPrimaryActionClick).toHaveBeenCalledTimes(1);
+      });
+
+      it('should render primary action button with custom props', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionLoading
+            bottomPrimaryActionText="Custom Submit"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.length).toBe(1);
+        expect(buttons?.[0].textContent).toBe('Custom Submit');
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-primary'),
+        ).toBeTruthy();
+        expect(
+          buttons?.[0].classList.contains('mzn-button--loading'),
+        ).toBeTruthy();
+      });
+
+      it('should apply disabled state to primary action button', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionDisabled
+            bottomPrimaryActionText="Submit"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(buttons?.[0].disabled).toBe(true);
+      });
+
+      it('should apply custom variant to primary action button', () => {
+        const onPrimaryActionClick = jest.fn();
+
+        render(
+          <Drawer
+            bottomOnPrimaryActionClick={onPrimaryActionClick}
+            bottomPrimaryActionText="Submit"
+            bottomPrimaryActionVariant="base-ghost"
+            isBottomDisplay
+            open
+          >
+            Content
+          </Drawer>,
+        );
+
+        const drawerElement = getDrawerElement()!;
+        const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+        const actionsElement = bottomElement?.querySelector(
+          `.${classes['bottom__actions']}`,
+        );
+        const buttons = actionsElement?.querySelectorAll('button');
+
+        expect(
+          buttons?.[0].classList.contains('mzn-button--base-ghost'),
+        ).toBeTruthy();
       });
     });
 
@@ -477,6 +694,469 @@ describe('<Drawer />', () => {
     });
   });
 
+  describe('prop: controlBar (default)', () => {
+    it('should not render control bar by default when controlBarShow is false', () => {
+      render(<Drawer open>Content</Drawer>);
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+
+      expect(controlBarElement).toBe(null);
+    });
+
+    it('should render control bar when controlBarShow is true', () => {
+      render(
+        <Drawer controlBarAllRadioLabel="All" controlBarShow open>
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+
+      expect(controlBarElement).toBeInstanceOf(Node);
+    });
+
+    it('should render RadioGroup with correct labels', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          controlBarShowUnreadButton
+          controlBarUnreadRadioLabel="Unread"
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radios = controlBarElement?.querySelectorAll('input[type="radio"]');
+
+      expect(radios?.length).toBe(3);
+
+      const labels = controlBarElement?.querySelectorAll('label');
+      const labelTexts = Array.from(labels || []).map(
+        (label) => label.textContent,
+      );
+
+      expect(labelTexts).toContain('All');
+      expect(labelTexts).toContain('Read');
+      expect(labelTexts).toContain('Unread');
+    });
+
+    it('should render only 2 radios when controlBarShowUnreadButton is false', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          controlBarShowUnreadButton={false}
+          controlBarUnreadRadioLabel="Unread"
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radios = controlBarElement?.querySelectorAll('input[type="radio"]');
+
+      expect(radios?.length).toBe(2);
+    });
+
+    it('should render custom button with correct label', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarCustomButtonLabel="Clear All"
+          controlBarOnCustomButtonClick={jest.fn()}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector('button');
+
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(button?.textContent).toBe('Clear All');
+      expect(button?.classList.contains('mzn-button--base-ghost')).toBeTruthy();
+    });
+
+    it('should disable custom button when controlBarIsEmpty is true', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarIsEmpty
+          controlBarOnCustomButtonClick={jest.fn()}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      expect(button?.disabled).toBe(true);
+    });
+
+    it('should enable custom button when controlBarIsEmpty is false', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarIsEmpty={false}
+          controlBarOnCustomButtonClick={jest.fn()}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      expect(button?.disabled).toBe(false);
+    });
+
+    it('should call controlBarOnCustomButtonClick when custom button clicked', () => {
+      const onCustomButtonClick = jest.fn();
+
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarOnCustomButtonClick={onCustomButtonClick}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      expect(onCustomButtonClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call controlBarOnRadioChange when radio selection changes', () => {
+      const onRadioChange = jest.fn();
+
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarOnRadioChange={onRadioChange}
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radios = controlBarElement?.querySelectorAll(
+        'input[type="radio"]',
+      ) as NodeListOf<HTMLInputElement>;
+
+      fireEvent.click(radios[1]);
+
+      expect(onRadioChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('should set default value for RadioGroup', () => {
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarDefaultValue="read"
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radios = controlBarElement?.querySelectorAll(
+        'input[type="radio"]',
+      ) as NodeListOf<HTMLInputElement>;
+      const checkedRadio = Array.from(radios).find((radio) => radio.checked);
+
+      expect(checkedRadio?.value).toBe('read');
+    });
+
+    it('should control RadioGroup value', () => {
+      const { rerender } = render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          controlBarValue="all"
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      let drawerElement = getDrawerElement()!;
+      let controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      let radios = controlBarElement?.querySelectorAll(
+        'input[type="radio"]',
+      ) as NodeListOf<HTMLInputElement>;
+      let checkedRadio = Array.from(radios).find((radio) => radio.checked);
+
+      expect(checkedRadio?.value).toBe('all');
+
+      rerender(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarReadRadioLabel="Read"
+          controlBarShow
+          controlBarValue="read"
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      drawerElement = getDrawerElement()!;
+      controlBarElement = drawerElement.querySelector(`.${classes.controlBar}`);
+      radios = controlBarElement?.querySelectorAll(
+        'input[type="radio"]',
+      ) as NodeListOf<HTMLInputElement>;
+      checkedRadio = Array.from(radios).find((radio) => radio.checked);
+
+      expect(checkedRadio?.value).toBe('read');
+    });
+
+    it('should not render control bar when no radio labels and no button callback are provided', () => {
+      render(
+        <Drawer controlBarShow open>
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+
+      expect(controlBarElement).toBe(null);
+    });
+
+    it('should render control bar with only button when no radio labels provided but button callback exists', () => {
+      const onCustomButtonClick = jest.fn();
+
+      render(
+        <Drawer
+          controlBarCustomButtonLabel="Action"
+          controlBarOnCustomButtonClick={onCustomButtonClick}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const radioGroup = controlBarElement?.querySelector('.mzn-radio-group');
+      const button = controlBarElement?.querySelector('button');
+
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(
+        controlBarElement?.classList.contains(classes.controlBarButtonOnly),
+      ).toBeTruthy();
+      expect(radioGroup).toBe(null);
+      expect(button).toBeInstanceOf(HTMLButtonElement);
+      expect(button?.textContent).toBe('Action');
+    });
+
+    it('should call button callback when only button is rendered', () => {
+      const onCustomButtonClick = jest.fn();
+
+      render(
+        <Drawer
+          controlBarOnCustomButtonClick={onCustomButtonClick}
+          controlBarShow
+          open
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+      const button = controlBarElement?.querySelector(
+        'button',
+      ) as HTMLButtonElement;
+
+      fireEvent.click(button);
+
+      expect(onCustomButtonClick).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('prop: renderControlBar', () => {
+    it('should not render control bar by default', () => {
+      render(<Drawer open>Content</Drawer>);
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        '[data-testid="control-bar"]',
+      );
+
+      expect(controlBarElement).toBe(null);
+    });
+
+    it('should render custom control bar when renderControlBar provided', () => {
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Custom Control Bar</div>
+      );
+
+      render(
+        <Drawer open renderControlBar={renderControlBar}>
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const controlBarElement = drawerElement.querySelector(
+        '[data-testid="control-bar"]',
+      );
+
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(controlBarElement?.textContent).toBe('Custom Control Bar');
+    });
+
+    it('should render control bar between header and content', () => {
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Control Bar</div>
+      );
+
+      render(
+        <Drawer
+          headerTitle="Header"
+          isHeaderDisplay
+          open
+          renderControlBar={renderControlBar}
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const headerElement = drawerElement.querySelector(`.${classes.header}`);
+      const controlBarElement = drawerElement.querySelector(
+        '[data-testid="control-bar"]',
+      );
+      const contentElement = drawerElement.querySelector(`.${classes.content}`);
+
+      // Check all elements exist
+      expect(headerElement).toBeInstanceOf(Node);
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(contentElement).toBeInstanceOf(Node);
+
+      // Check order: header should come before control bar, control bar before content
+      const childNodes = Array.from(drawerElement.children);
+      const headerIndex = childNodes.indexOf(headerElement as Element);
+      const controlBarIndex = childNodes.indexOf(controlBarElement as Element);
+      const contentIndex = childNodes.indexOf(contentElement as Element);
+
+      expect(headerIndex).toBeLessThan(controlBarIndex);
+      expect(controlBarIndex).toBeLessThan(contentIndex);
+    });
+
+    it('should call renderControlBar function', () => {
+      const renderControlBar = jest.fn(() => <div>Control Bar</div>);
+
+      render(
+        <Drawer open renderControlBar={renderControlBar}>
+          Content
+        </Drawer>,
+      );
+
+      expect(renderControlBar).toHaveBeenCalled();
+    });
+
+    it('should use renderControlBar over default control bar when both provided', () => {
+      const renderControlBar = () => (
+        <div data-testid="custom-control-bar">Custom Control Bar</div>
+      );
+
+      render(
+        <Drawer
+          controlBarAllRadioLabel="All"
+          controlBarShow
+          open
+          renderControlBar={renderControlBar}
+        >
+          Content
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const customControlBar = drawerElement.querySelector(
+        '[data-testid="custom-control-bar"]',
+      );
+      const defaultControlBar = drawerElement.querySelector(
+        `.${classes.controlBar}`,
+      );
+
+      expect(customControlBar).toBeInstanceOf(Node);
+      expect(defaultControlBar).toBe(null);
+    });
+  });
+
   describe('combinations', () => {
     it('should render complete drawer with header, content, and bottom actions', () => {
       const onClose = jest.fn();
@@ -514,6 +1194,47 @@ describe('<Drawer />', () => {
       expect(headerElement?.textContent).toContain('Complete Drawer');
       expect(contentElement?.textContent).toBe('Main Content');
       expect(bottomElement?.querySelectorAll('button').length).toBe(3);
+    });
+
+    it('should render complete drawer with header, control bar, content, and bottom actions', () => {
+      const onClose = jest.fn();
+      const onPrimaryActionClick = jest.fn();
+      const renderControlBar = () => (
+        <div data-testid="control-bar">Filter Control Bar</div>
+      );
+
+      render(
+        <Drawer
+          bottomOnPrimaryActionClick={onPrimaryActionClick}
+          bottomPrimaryActionText="Submit"
+          headerTitle="Complete Drawer"
+          isBottomDisplay
+          isHeaderDisplay
+          onClose={onClose}
+          open
+          renderControlBar={renderControlBar}
+          size="wide"
+        >
+          <div>Main Content</div>
+        </Drawer>,
+      );
+
+      const drawerElement = getDrawerElement()!;
+      const headerElement = drawerElement.querySelector(`.${classes.header}`);
+      const controlBarElement = drawerElement.querySelector(
+        '[data-testid="control-bar"]',
+      );
+      const contentElement = drawerElement.querySelector(`.${classes.content}`);
+      const bottomElement = drawerElement.querySelector(`.${classes.bottom}`);
+
+      expect(headerElement).toBeInstanceOf(Node);
+      expect(controlBarElement).toBeInstanceOf(Node);
+      expect(contentElement).toBeInstanceOf(Node);
+      expect(bottomElement).toBeInstanceOf(Node);
+
+      expect(headerElement?.textContent).toContain('Complete Drawer');
+      expect(controlBarElement?.textContent).toBe('Filter Control Bar');
+      expect(contentElement?.textContent).toBe('Main Content');
     });
   });
 });

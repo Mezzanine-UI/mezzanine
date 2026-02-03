@@ -69,11 +69,24 @@ $drawer-size-config: (
     }
   }
 
+  &__control-bar {
+    align-items: center;
+    border-block-end: 1px solid palette.semantic-variable(separator, neutral-faint);
+    display: flex;
+    justify-content: space-between;
+    padding-block: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, vertical, comfort);
+    padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
+
+    &--button-only {
+      justify-content: flex-end;
+    }
+  }
+
   &__content {
+    flex-grow: 1;
+    overflow: auto;
     padding-block: spacing.semantic-variable(padding, vertical, comfort);
     padding-inline: spacing.semantic-variable(padding, horizontal, spacious);
-    overflow: auto;
-    flex-grow: 1;
   }
 
   &__bottom {

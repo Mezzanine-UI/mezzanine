@@ -17,4 +17,6 @@ export const drawerClasses = {
   bottom__actions: `${drawerPrefix}__bottom__actions`,
   size: (size: DrawerSize) => `${drawerPrefix}--${size}`,
   content: `${drawerPrefix}__content`,
+  controlBar: `${drawerPrefix}__control-bar`,
+  controlBarButtonOnly: `${drawerPrefix}__control-bar--button-only`,
 } as const;

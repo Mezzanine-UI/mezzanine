@@ -54,7 +54,7 @@ describe('<NotificationCenter />', () => {
   describe('prop: cancelButtonText', () => {
     it('should render cancel button with text under action element', () => {
       const cancelButtonText = 'foo';
-      const { getByText, getHostHTMLElement } = render(
+      const { getByText } = render(
         <NotificationCenter reference="test" cancelButtonText={cancelButtonText} onConfirm={() => {}} onClose={() => {}} />,
       );
       const textElement = getByText(cancelButtonText);
