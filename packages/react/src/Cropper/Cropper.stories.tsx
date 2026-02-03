@@ -1,0 +1,146 @@
+import { Meta, StoryObj } from '@storybook/react-webpack5';
+import { useCallback, useState } from 'react';
+import Cropper, { CropperModal, cropToBlob, cropToDataURL } from '.';
+import Button from '../Button';
+import { Upload, type UploadFile } from '../Upload';
+
+const DEFAULT_IMAGE_URL = 'https://rytass.com/logo.png';
+
+export default {
+  component: Cropper,
+  title: 'Foundation/Cropper',
+} satisfies Meta<typeof Cropper>;
+
+type Story = StoryObj<typeof Cropper>;
+
+function UploaderStoryContent() {
+  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [processing, setProcessing] = useState(false);
+
+  const handleUpload = useCallback(
+    async (selectedFiles: File[]) => {
+      const file = selectedFiles[0];
+      if (!file) return [];
+      setProcessing(true);
+
+      let uploadResult: UploadFile[] | null = null;
+
+      await CropperModal.open({
+        cropperProps: {
+          imageSrc: file,
+        },
+        onConfirm: async ({ canvas, cropArea, imageSrc }) => {
+          if (!canvas || !cropArea || !imageSrc) return;
+          const blob = await cropToBlob({
+            canvas,
+            cropArea,
+            imageSrc,
+            format: 'image/png',
+            quality: 0.9,
+          });
+          const dataUrl = await cropToDataURL({
+            canvas,
+            cropArea,
+            imageSrc,
+            format: 'image/png',
+            quality: 0.9,
+          });
+          const croppedFile = new File([blob], `cropped-${Date.now()}.png`, {
+            type: 'image/png',
+          });
+          uploadResult = [
+            {
+              id: `cropped-${Date.now()}`,
+              file: croppedFile,
+              status: 'done',
+              url: dataUrl,
+            },
+          ];
+        },
+        onCancel: () => {
+          setFiles([]);
+        },
+        size: 'wide',
+        style: { width: '640px', maxWidth: '640px' },
+        title: '裁切頁首圖片',
+        supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
+      });
+
+      setProcessing(false);
+      if (!uploadResult) {
+        return [
+          {
+            errorMessage: '已取消',
+            id: `cancel-${Date.now()}`,
+            status: 'error',
+          },
+        ];
+      }
+      return uploadResult;
+    },
+    [setFiles],
+  );
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <Upload
+        accept="image/*"
+        disabled={processing}
+        files={files}
+        maxFiles={1}
+        mode="cards"
+        onChange={(nextFiles) =>
+          setFiles(
+            nextFiles.filter(
+              (file) => file.errorMessage !== '已取消',
+            ),
+          )
+        }
+        onUpload={handleUpload}
+      />
+    </div>
+  );
+}
+
+function ButtonStoryContent() {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const handleOpen = useCallback(async () => {
+    await CropperModal.open({
+      cropperProps: {
+        imageSrc: DEFAULT_IMAGE_URL,
+      },
+      onConfirm: async ({ canvas, cropArea, imageSrc }) => {
+        if (!canvas || !cropArea || !imageSrc) return;
+        const dataUrl = await cropToDataURL({
+          canvas,
+          cropArea,
+          format: 'image/png',
+          imageSrc,
+          quality: 0.9,
+        });
+        setPreviewUrl(dataUrl);
+      },
+      title: '裁切頁首圖片',
+      supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
+    });
+  }, []);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '600px' }}>
+      <Button variant="base-primary" onClick={handleOpen}>開啟裁切</Button>
+      {previewUrl && (
+        <img alt="Cropped preview" src={previewUrl} style={{ maxWidth: '100%' }} />
+      )}
+    </div>
+  );
+}
+
+export const WithUploader: Story = {
+  render: () => <UploaderStoryContent />,
+};
+
+export const WithButton: Story = {
+  render: () => <ButtonStoryContent />,
+};
+
