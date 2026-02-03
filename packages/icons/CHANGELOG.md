@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-beta.5...@mezzanine-ui/icons@1.0.0-beta.6) (2026-02-03)
+
+### Features
+
+- **icons:** add switch horizontal & mail unread ([14b952c](https://github.com/Mezzanine-UI/mezzanine/commit/14b952c666d1c354a22b1ec245cb040176ab4d6f))
+
 # [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-canary.11...@mezzanine-ui/icons@1.0.0-beta.5) (2026-01-29)
 
 **Note:** Version bump only for package @mezzanine-ui/icons

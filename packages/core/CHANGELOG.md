@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.5...@mezzanine-ui/core@1.0.0-beta.6) (2026-02-03)
+
+### Bug Fixes
+
+- **core/autocomplete:** add min-width styles for single and multiple modes ([2c42329](https://github.com/Mezzanine-UI/mezzanine/commit/2c42329567c6f8f46c32f4237e969052ce9621a2))
+- **core/breadcrumb:** Item margin, padding ([3d2c1b8](https://github.com/Mezzanine-UI/mezzanine/commit/3d2c1b84262d8f6c15354e657ef2622d7ed0af93))
+- **core/filter-area:** adjust form field data entry width ([8717dd2](https://github.com/Mezzanine-UI/mezzanine/commit/8717dd24d09ddaaf7b490f246bd6786fbad9d2bd))
+- **core/multiple-date-picker:** remove unused styles ([b81609e](https://github.com/Mezzanine-UI/mezzanine/commit/b81609edf6199521376362ff80f2a5aa33419008))
+- **core/picker:** fix picker icon color ([5e52c68](https://github.com/Mezzanine-UI/mezzanine/commit/5e52c68eda0d5dc7d8cc71d687241ba5df15f2ed))
+- **core/select:** add min-width styles for single and multiple modes ([4f2a482](https://github.com/Mezzanine-UI/mezzanine/commit/4f2a482a814e03249bbdd5c8f6359d7591e9fc7b))
+- **core/select:** fix tags gap ([e0cc810](https://github.com/Mezzanine-UI/mezzanine/commit/e0cc8103f2522660509680c59678515520b1d117))
+- **core/time-panel:** time panel styles remove scroll bar styles ([0109a7c](https://github.com/Mezzanine-UI/mezzanine/commit/0109a7caefe2b4abe6350b8eafd55fa3c84c42b8))
+- **core:** fix core deprecated styles and remove unused styles ([0660848](https://github.com/Mezzanine-UI/mezzanine/commit/0660848b86f8db2c02a29d3416014438a4f00737))
+- **core:** remove all unused deprecated component styles ([f0133dd](https://github.com/Mezzanine-UI/mezzanine/commit/f0133ddbb5b47d4793307e14aa5927fbb1b89038))
+
+### Features
+
+- **core/date-time-range-picker:** implement date time range picker styles ([5707a9a](https://github.com/Mezzanine-UI/mezzanine/commit/5707a9a5e5adfbf42a5314adf1c7384c03e3f16f))
+- **core/multiple-date-picker:** implement styles ([7193797](https://github.com/Mezzanine-UI/mezzanine/commit/7193797527eeff6f5df68b529ff9c499ec400c59))
+- **core/multiple-date-picker:** remove unused styles ([a0ab4b1](https://github.com/Mezzanine-UI/mezzanine/commit/a0ab4b1dd7f63746c1dd1d7916b14d4e8e812ad0))
+- **core/section:** styles configs ([c30aa2c](https://github.com/Mezzanine-UI/mezzanine/commit/c30aa2cf20e0afd0da99dbcd2ab41a63b4e212bc))
+- **core/time-range-picker:** implement time range picker styles ([fd18b3f](https://github.com/Mezzanine-UI/mezzanine/commit/fd18b3f1162e0d7b12f4b7edea2b645216f381ca))
+- **form-field:** add label and control field slot layout variants ([b98a123](https://github.com/Mezzanine-UI/mezzanine/commit/b98a1235da31af125c5cd296fbec837f302ac577))
+- **react/drawer:** integrate control bar functionality into Drawer component ([938d14c](https://github.com/Mezzanine-UI/mezzanine/commit/938d14c85bd930d9295fd6c2ba28d7d055c6b3a5))
+- **react/drawer:** support button-only control bar with right alignment ([00bdefd](https://github.com/Mezzanine-UI/mezzanine/commit/00bdefddffe2385773989840871041f40d3f2e03))
+- **react/modal:** implement scale-in transition for modal opening ([5715c10](https://github.com/Mezzanine-UI/mezzanine/commit/5715c10a1eeb793ae59fc086d2d1ff8b2c0547cb))
+
 # [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-canary.11...@mezzanine-ui/core@1.0.0-beta.5) (2026-01-29)
 
 ### Bug Fixes

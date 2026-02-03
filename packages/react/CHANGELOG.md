@@ -3,6 +3,56 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.5...@mezzanine-ui/react@1.0.0-beta.6) (2026-02-03)
+
+### Bug Fixes
+
+- **react/AutoComplete:** add globalPortal prop to control portal behavior ([3ee5927](https://github.com/Mezzanine-UI/mezzanine/commit/3ee5927e821c3c35c98aa2988f8ae826cd4293d2))
+- **react/AutoComplete:** apply mode class to component ([3a320c4](https://github.com/Mezzanine-UI/mezzanine/commit/3a320c4003f511432f7f8b6db679380966b4f464))
+- **react/Autocomplete:** replace disablePortal with globalPortal prop ([d6be646](https://github.com/Mezzanine-UI/mezzanine/commit/d6be6462ff872a6b684bc735e66d9c4afe0d68b5))
+- **react/breadcrumb:** move className handling ([ce2ddd7](https://github.com/Mezzanine-UI/mezzanine/commit/ce2ddd710f0cb26f5ec3d16513e6af444bb7c3de))
+- **react/date-time-picker:** fix right input complete behavior ([d081342](https://github.com/Mezzanine-UI/mezzanine/commit/d081342602b309ea8b15c22bf771fcbaf45ec74b))
+- **react/date-time-range-picker:** remove unused logic ([4637ebc](https://github.com/Mezzanine-UI/mezzanine/commit/4637ebcaeee64f19e442501eddefd030507237d6))
+- **react/dropdown:** remove dropdown autoupdate logic ([f925983](https://github.com/Mezzanine-UI/mezzanine/commit/f9259831315ed571c878ef4464bd0ca89ee74063))
+- **react/dropdown:** replace disablePortal with globalPortal prop ([42a0d92](https://github.com/Mezzanine-UI/mezzanine/commit/42a0d92ccaac54d71e1a035819b4c22b79c2e3e9))
+- **react/FilterArea:** update story example ([025a34d](https://github.com/Mezzanine-UI/mezzanine/commit/025a34de13e776230c10ebe293f09ec392eb77f7))
+- **react/input:** fix select button dropdown integration ([47efe38](https://github.com/Mezzanine-UI/mezzanine/commit/47efe382eea269913acaaec2547373ae433c8340))
+- **react/multiple-date-picker:** fix pr issue ([2860016](https://github.com/Mezzanine-UI/mezzanine/commit/2860016a43a5f9ca7096882889b45435a9e5dc86))
+- **react/notification-center:** remove deprecated controlBarClassName prop from Drawer ([51306e0](https://github.com/Mezzanine-UI/mezzanine/commit/51306e01af1ba92224af049099ea447ca53ad692))
+- **react/overflow-tooltip:** fix typing export ([85c9b10](https://github.com/Mezzanine-UI/mezzanine/commit/85c9b10323dd42b2f77a27752161ed6eb0077780))
+- **react/picker:** fix range picker always active bug ([d16ee3b](https://github.com/Mezzanine-UI/mezzanine/commit/d16ee3b1e03a15732f2081f2dc0c9f6fc7410bff))
+- **react/Select:** add globalPortal and dropdownZIndex props, fix TreeSelect renderValue ([7244e2a](https://github.com/Mezzanine-UI/mezzanine/commit/7244e2a2cd495f55cf91008a3cb8c3c06d284502))
+- **react/Select:** apply mode class to component ([4e22fcd](https://github.com/Mezzanine-UI/mezzanine/commit/4e22fcd37718d10a62c2496f92b4c87af65ac5a9))
+- **react/select:** replace disablePortal with globalPortal prop ([aa4095e](https://github.com/Mezzanine-UI/mezzanine/commit/aa4095e653c5115c756576d0fe74057117e48b2b))
+- **react/time-panel:** fix timepanel cell height ([a942da2](https://github.com/Mezzanine-UI/mezzanine/commit/a942da27dc31c0243c5f8a8ce40f1e36154b09e5))
+- **react/time-panel:** time panel column cache click callback ([30980d5](https://github.com/Mezzanine-UI/mezzanine/commit/30980d5002716bec2c9ebe47641f954e56ec3d8d))
+- **react/time-range-picker:** fix pr issue ([67078fa](https://github.com/Mezzanine-UI/mezzanine/commit/67078fa800b59b2bb10c035892be5c38d4ce6e5b))
+- **react/time-range-picker:** fix time range picker typing export ([6d6dd99](https://github.com/Mezzanine-UI/mezzanine/commit/6d6dd99a480b6eadb694da020c14156e5ee948fe))
+- **react/transition:** reomve clone child ref behavior ([6c395ae](https://github.com/Mezzanine-UI/mezzanine/commit/6c395ae6c69312d3deadf72218bd5a32571297a7))
+- **react/Tree:** remove size prop from Checkbox in TreeNode ([77119d1](https://github.com/Mezzanine-UI/mezzanine/commit/77119d1ea932a8bdf2f8ae5173043b395c453c8e))
+- **react:** remove all unused components ([1d5e393](https://github.com/Mezzanine-UI/mezzanine/commit/1d5e393b5c55235a0e6f10d845bba7ba86377459))
+- remove broken image ([2388877](https://github.com/Mezzanine-UI/mezzanine/commit/23888778eaffb02fa220c78a008ace27244bbd16))
+
+### Features
+
+- **drawer:** add button props for bottom actions ([a273337](https://github.com/Mezzanine-UI/mezzanine/commit/a273337a055dd34f875836718f9c9733a323aeb3))
+- **form-field:** add label and control field slot layout variants ([b98a123](https://github.com/Mezzanine-UI/mezzanine/commit/b98a1235da31af125c5cd296fbec837f302ac577))
+- **react/breadcrumb:** update storybook case ([fc494d6](https://github.com/Mezzanine-UI/mezzanine/commit/fc494d6afb158c4582f25bac6e046abe23afd317))
+- **react/date-time-range-picker:** date time range picker remove defaultValue ([a360337](https://github.com/Mezzanine-UI/mezzanine/commit/a360337680a74f5c200d4d98e3f346b218225520))
+- **react/date-time-range-picker:** implement date time range picker ([ed2a2e7](https://github.com/Mezzanine-UI/mezzanine/commit/ed2a2e7d5fed391b309ebe76b5eb72d21c5be843))
+- **react/drawer:** integrate control bar functionality into Drawer component ([938d14c](https://github.com/Mezzanine-UI/mezzanine/commit/938d14c85bd930d9295fd6c2ba28d7d055c6b3a5))
+- **react/drawer:** support button-only control bar with right alignment ([00bdefd](https://github.com/Mezzanine-UI/mezzanine/commit/00bdefddffe2385773989840871041f40d3f2e03))
+- **react/icon:** add new icons in story ([379ef61](https://github.com/Mezzanine-UI/mezzanine/commit/379ef61a8a6173d4d4c4def3ded133fc9a28cd97))
+- **react/modal:** add circular navigation support to MediaPreviewModal ([e2fc18b](https://github.com/Mezzanine-UI/mezzanine/commit/e2fc18bdb645e639dce610892f74e68d89032447)), closes [#86ewcz83](https://github.com/Mezzanine-UI/mezzanine/issues/86ewcz83)
+- **react/modal:** implement scale-in transition for modal opening ([5715c10](https://github.com/Mezzanine-UI/mezzanine/commit/5715c10a1eeb793ae59fc086d2d1ff8b2c0547cb))
+- **react/modal:** sets default for modal dismiss button to true ([94b8b6f](https://github.com/Mezzanine-UI/mezzanine/commit/94b8b6fd32c0db9adb9375f230d8bf004e4672ad))
+- **react/modal:** support Next.js Image component ([c748537](https://github.com/Mezzanine-UI/mezzanine/commit/c7485373cdb6d2a90eebbaefe5562726e541cd55))
+- **react/multiple-date-picker:** fix ellipsis wrapper ref ([29df927](https://github.com/Mezzanine-UI/mezzanine/commit/29df927b0904fb06bd69519f201ca1d2edfc7c48))
+- **react/multiple-date-picker:** implement multiple date picker ([9dc3de0](https://github.com/Mezzanine-UI/mezzanine/commit/9dc3de02001b7d6532c2110abbe4f572a37f5430))
+- **react/section:** add Section component with contentHeader, filterArea, and tab support ([7333ff8](https://github.com/Mezzanine-UI/mezzanine/commit/7333ff8b266db7381b0571966d8f0d8db34768cd))
+- **react/section:** export Section component from package entry ([ebf206f](https://github.com/Mezzanine-UI/mezzanine/commit/ebf206f6b766d0eba89be9e104e29a374361b9ac))
+- **react/time-range-picker:** implement time range picker ([87682a7](https://github.com/Mezzanine-UI/mezzanine/commit/87682a7d1f33dd32c84a93538d6dee30627d3764))
+
 # [1.0.0-beta.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-canary.11...@mezzanine-ui/react@1.0.0-beta.5) (2026-01-29)
 
 ### Bug Fixes
