@@ -25,14 +25,46 @@ export type CropperModalProps = Omit<
   | 'confirmText'
   | 'title'
 > & {
+  /**
+   * The text for the cancel button.
+   */
   cancelText?: ModalProps['cancelText'];
+  /**
+   * The text for the confirm button.
+   * @default '確認'
+   */
   confirmText?: string;
-  cropperProps?: CropperPropsBase;
+  /**
+   * Additional className for the cropper content wrapper.
+   */
   cropperContentClassName?: string;
+  /**
+   * Props for the CropperElement component.
+   */
+  cropperProps?: CropperPropsBase;
+  /**
+   * Callback fired when the cancel button is clicked.
+   */
   onCancel?: () => void;
+  /**
+   * Callback fired when the confirm button is clicked.
+   * Receives the cropping context with canvas, cropArea, and imageSrc.
+   */
   onConfirm?: (context: CropperModalConfirmContext) => void | Promise<void>;
+  /**
+   * Whether to show the modal footer with confirm and cancel buttons.
+   * @default true
+   */
   showModalFooter?: boolean;
+  /**
+   * Whether to show the modal header.
+   * @default true
+   */
   showModalHeader?: boolean;
+  /**
+   * The title of the modal header.
+   * @default '圖片裁切'
+   */
   title?: string;
 };
 
