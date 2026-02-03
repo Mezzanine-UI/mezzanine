@@ -93,8 +93,8 @@ $modalSizes: (
 
   &__close-icon {
     position: absolute;
-    right: spacing.semantic-variable(padding, horizontal, relaxed);
-    top: spacing.semantic-variable(padding, horizontal, relaxed);
+    right: spacing.semantic-variable(padding, horizontal, comfort);
+    top: spacing.semantic-variable(padding, horizontal, comfort);
     cursor: pointer;
   }
 
@@ -178,6 +178,8 @@ $modalSizes: (
   }
 
   &__body-container {
+    border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
+    border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
     padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, relaxed);
     overflow-y: auto;
     box-sizing: border-box;
@@ -185,6 +187,7 @@ $modalSizes: (
     &__extended-split {
       display: flex;
       flex-wrap: nowrap;
+      border-top: 1px solid palette.semantic-variable(separator, neutral-faint);
     }
 
     &__extended-split-right {
@@ -198,10 +201,12 @@ $modalSizes: (
       min-width: spacing.semantic-variable(size, container, narrow);
       display: flex;
       flex-direction: column;
+      border-left: 1px solid palette.semantic-variable(separator, neutral-faint);
     }
 
     &__extended-split-left__content {
       padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, relaxed);
+      border-bottom: 1px solid palette.semantic-variable(separator, neutral-faint);
     }
   }
 
