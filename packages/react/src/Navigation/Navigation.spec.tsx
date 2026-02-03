@@ -320,7 +320,7 @@ describe('<NavigationFooter />', () => {
       const { getHostHTMLElement } = render(
         <Navigation>
           <NavigationFooter>
-            <NavigationUserMenu>User Name</NavigationUserMenu>
+            <NavigationUserMenu options={[]}>User Name</NavigationUserMenu>
           </NavigationFooter>
         </Navigation>,
       );
@@ -353,7 +353,7 @@ describe('<NavigationFooter />', () => {
       const { getHostHTMLElement } = render(
         <Navigation>
           <NavigationFooter>
-            <NavigationUserMenu>User</NavigationUserMenu>
+            <NavigationUserMenu options={[]}>User</NavigationUserMenu>
             <button data-testid="icon-1">Icon 1</button>
             <button data-testid="icon-2">Icon 2</button>
           </NavigationFooter>
