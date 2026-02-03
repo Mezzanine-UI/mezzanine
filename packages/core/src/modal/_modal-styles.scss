@@ -44,6 +44,7 @@ $modalSizes: (
   box-sizing: border-box;
   box-shadow: effect.variable(shadow, modal);
   border-radius: radius.variable(roomy);
+  pointer-events: auto;
 
   // each size variant
   @each $size in $modalSizes {
@@ -87,6 +88,7 @@ $modalSizes: (
     align-items: center;
     width: 100%;
     height: 100%;
+    pointer-events: none;
   }
 
   &__close-icon {
