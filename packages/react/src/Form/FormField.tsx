@@ -1,8 +1,10 @@
 import { forwardRef } from 'react';
 import {
+  ControlFieldSlotLayout,
   formFieldClasses as classes,
   FormFieldCounterColor,
   FormFieldSize,
+  LabelLayout,
 } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -25,6 +27,12 @@ export interface FormFieldProps
    */
   counterColor?: FormFieldCounterColor;
   /**
+   * The layout variant for the control field slot.
+   * Controls the visual styling and appearance of the input control area.
+   * @default ControlFieldSlotLayout.MAIN
+   */
+  controlFieldSlotLayout?: ControlFieldSlotLayout;
+  /**
    * To control the field passed from children whether should be disabled.
    * The form message won't appear if disabled.
    */
@@ -45,7 +53,7 @@ export interface FormFieldProps
   /**
    * The label text for the form field.
    */
-  label: string;
+  label?: string;
   /**
    * The icon to display next to the label.
    * When provided, displays an icon that shows a tooltip on hover.
@@ -61,6 +69,12 @@ export interface FormFieldProps
    * Typically used to show "(optional)" or similar text.
    */
   labelOptionalMarker?: string;
+  /**
+   * The layout variant for the label area.
+   * Controls the visual styling and appearance of the label.
+   * @default LabelLayout.HORIZONTAL_MAIN
+   */
+  labelLayout?: LabelLayout;
   /**
    * The name attribute for the form field.
    * Used to identify the field in form submissions and as htmlFor in the label.
@@ -93,6 +107,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       className,
       counter,
       counterColor,
+      controlFieldSlotLayout = ControlFieldSlotLayout.MAIN,
       disabled = false,
       fullWidth = false,
       hintText,
@@ -101,6 +116,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       labelInformationIcon,
       labelInformationText,
       labelOptionalMarker,
+      labelLayout = LabelLayout.HORIZONTAL_MAIN,
       name,
       required = false,
       size,
@@ -129,16 +145,27 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         )}
       >
         <FormControlContext.Provider value={formControl}>
-          <FormLabel
-            className={classes.labelArea}
-            htmlFor={name}
-            informationIcon={labelInformationIcon}
-            informationText={labelInformationText}
-            labelText={label}
-            optionalMarker={labelOptionalMarker}
-          />
+          {label && (
+            <FormLabel
+              className={cx(
+                classes.labelArea,
+                `${classes.labelArea}--${labelLayout}`,
+              )}
+              htmlFor={name}
+              informationIcon={labelInformationIcon}
+              informationText={labelInformationText}
+              labelText={label}
+              optionalMarker={labelOptionalMarker}
+            />
+          )}
           <div className={cx(classes.dataEntry)}>
-            {children}
+            <div
+              className={cx(
+                `${classes.controlFieldSlot}--${controlFieldSlotLayout}`,
+              )}
+            >
+              {children}
+            </div>
             {hintText || hintTextIcon || counter ? (
               <div
                 className={cx(classes.hintTextAndCounterArea, {
