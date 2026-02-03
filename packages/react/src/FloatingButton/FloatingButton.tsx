@@ -28,7 +28,7 @@ export interface FloatingButtonProps
 /**
  * The react component for `mezzanine` floating button.
  */
-const FloatingButton = forwardRef<HTMLButtonElement, FloatingButtonProps>(
+const FloatingButton = forwardRef<HTMLDivElement, FloatingButtonProps>(
   function FloatingButton(props, ref) {
     const {
       autoHideWhenOpen = false,
@@ -39,10 +39,9 @@ const FloatingButton = forwardRef<HTMLButtonElement, FloatingButtonProps>(
     } = props;
 
     return (
-      <div className={cx(classes.host, className)}>
+      <div ref={ref} className={cx(classes.host, className)}>
         <Button
           {...rest}
-          ref={ref}
           className={cx(classes.button, {
             [classes.buttonHidden]: autoHideWhenOpen && open,
           })}
