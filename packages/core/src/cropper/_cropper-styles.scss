@@ -1,11 +1,9 @@
-@use 'sass:map';
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/radius' as radius;
-@use '~@mezzanine-ui/system/effect' as effect;
 @use '~@mezzanine-ui/system/transition' as transition;
-@use '~@mezzanine-ui/system/motion' as motion;
 @use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/z-index' as z-index;
 @use './_cropper' as *;
 
 .#{$prefix} {
@@ -62,7 +60,6 @@
     white-space: nowrap;
     transform: translate(-100%, -100%);
     pointer-events: none;
-    z-index: 10;
-    white-space: nowrap;
+    z-index: z-index.get(popover);
   }
 }
