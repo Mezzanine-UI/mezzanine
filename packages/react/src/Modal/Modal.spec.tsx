@@ -351,7 +351,7 @@ describe('<Modal />', () => {
       const onClose = jest.fn();
       render(<Modal open onClose={onClose} modalType="standard" />);
 
-      const backdrop = document.querySelector('.mzn-backdrop');
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
       fireEvent.click(backdrop!);
 
       expect(onClose).toHaveBeenCalled();
@@ -368,7 +368,56 @@ describe('<Modal />', () => {
         />,
       );
 
-      const backdrop = document.querySelector('.mzn-backdrop');
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
+      fireEvent.click(backdrop!);
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('should close modal when clicking backdrop area', () => {
+      const onClose = jest.fn();
+      render(
+        <Modal open onClose={onClose} modalType="standard">
+          <div>Modal content</div>
+        </Modal>,
+      );
+
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
+      fireEvent.click(backdrop!);
+
+      expect(onClose).toHaveBeenCalled();
+    });
+
+    it('should not close modal when clicking modal content itself', () => {
+      const onClose = jest.fn();
+      render(
+        <Modal open onClose={onClose} modalType="standard">
+          <div data-testid="modal-content">Modal content</div>
+        </Modal>,
+      );
+
+      const modalContent = document.querySelector(
+        '[data-testid="modal-content"]',
+      );
+      fireEvent.click(modalContent!);
+
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('should prevent close when clicking backdrop if disableCloseOnBackdropClick is true', () => {
+      const onClose = jest.fn();
+      render(
+        <Modal
+          disableCloseOnBackdropClick
+          onClose={onClose}
+          open
+          modalType="standard"
+        >
+          <div>Modal content</div>
+        </Modal>,
+      );
+
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
       fireEvent.click(backdrop!);
 
       expect(onClose).not.toHaveBeenCalled();
@@ -382,10 +431,62 @@ describe('<Modal />', () => {
         <Modal open onBackdropClick={onBackdropClick} modalType="standard" />,
       );
 
-      const backdrop = document.querySelector('.mzn-backdrop');
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
       fireEvent.click(backdrop!);
 
       expect(onBackdropClick).toHaveBeenCalled();
+    });
+
+    it('should call onBackdropClick when backdrop is clicked', () => {
+      const onBackdropClick = jest.fn();
+      render(
+        <Modal open onBackdropClick={onBackdropClick} modalType="standard">
+          <div>Modal content</div>
+        </Modal>,
+      );
+
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
+      fireEvent.click(backdrop!);
+
+      expect(onBackdropClick).toHaveBeenCalled();
+    });
+
+    it('should not call onBackdropClick when modal content itself is clicked', () => {
+      const onBackdropClick = jest.fn();
+      render(
+        <Modal open onBackdropClick={onBackdropClick} modalType="standard">
+          <div data-testid="modal-content">Modal content</div>
+        </Modal>,
+      );
+
+      const modalContent = document.querySelector(
+        '[data-testid="modal-content"]',
+      );
+      fireEvent.click(modalContent!);
+
+      expect(onBackdropClick).not.toHaveBeenCalled();
+    });
+
+    it('should call onBackdropClick even when disableCloseOnBackdropClick is true', () => {
+      const onBackdropClick = jest.fn();
+      const onClose = jest.fn();
+      render(
+        <Modal
+          disableCloseOnBackdropClick
+          onBackdropClick={onBackdropClick}
+          onClose={onClose}
+          open
+          modalType="standard"
+        >
+          <div>Modal content</div>
+        </Modal>,
+      );
+
+      const backdrop = document.querySelector('.mzn-backdrop__backdrop');
+      fireEvent.click(backdrop!);
+
+      expect(onBackdropClick).toHaveBeenCalled();
+      expect(onClose).not.toHaveBeenCalled();
     });
   });
 
