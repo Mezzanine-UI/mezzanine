@@ -487,9 +487,10 @@ export { default as Anchor, AnchorGroup } from './Anchor';
 export type { AnchorGroupProps, AnchorProps } from './Anchor';
 export { default as Backdrop } from './Backdrop';
 export type { BackdropProps } from './Backdrop';
-
 export { default as AlertBanner } from './AlertBanner';
 export type { AlertBannerProps } from './AlertBanner';
+export { default as FloatingButton } from './FloatingButton';
+export type { FloatingButtonProps } from './FloatingButton';
 
 /**
  * Utility
