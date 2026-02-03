@@ -1,0 +1,125 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/z-index' as z-index;
+@use './floating-button' as *;
+@use '../tooltip' as tooltip;
+
+$floating: (
+  enable: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable("background", fixed-dark),
+    shadow-effect: effect.variable(shadow, floating),
+  ),
+  hover: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable("background", fixed-dark),
+    shadow-effect: effect.variable(shadow, floating),
+  ),
+  active: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable("background", fixed-dark),
+    shadow-effect: effect.variable(shadow, floating),
+  ),
+  focus: (
+    text-color: palette.semantic-variable(text, fixed-light),
+    icon-color: palette.semantic-variable(icon, fixed-light),
+    background-color: palette.semantic-variable("background", fixed-dark),
+    shadow-effect: effect.variable(focus, primary),
+  ),
+  disabled: (
+    text-color: palette.semantic-variable(text, neutral-light),
+    icon-color: palette.semantic-variable(icon, neutral-light),
+    background-color: palette.semantic-variable("background", neutral-subtle),
+    shadow-effect: effect.variable(shadow, floating),
+  ),
+);
+
+@function _get-color($hierarchy, $property) {
+  $variant-map: $floating;
+
+  @if $variant-map {
+    $hierarchy-map: map.get($variant-map, $hierarchy);
+
+    @if $hierarchy-map {
+      $value: map.get($hierarchy-map, $property);
+
+      @return if($value == none, null, $value);
+    }
+  }
+
+  @return null;
+}
+
+@mixin _apply-hierarchy-colors($hierarchy) {
+  $text: _get-color($hierarchy, text-color);
+  $icon: _get-color($hierarchy, icon-color);
+  $bg: _get-color($hierarchy, background-color);
+  $shadow: _get-color($hierarchy, shadow-effect);
+
+  @if $text {
+    color: $text;
+  }
+
+  @if $bg {
+    background-color: $bg;
+  }
+
+  @if $icon {
+    --#{$prefix}-icon-color: #{$icon};
+  }
+
+  @if $shadow {
+    box-shadow: $shadow;
+  }
+}
+
+@mixin _apply-variant-states() {
+  @include _apply-hierarchy-colors(enable);
+
+  &:hover:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors(hover);
+  }
+
+  &:active:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors(active);
+  }
+
+  &:focus-visible:not(.#{$prefix}--disabled):not(.#{$prefix}--loading) {
+    @include _apply-hierarchy-colors(focus);
+  }
+
+  &.#{$prefix}--disabled {
+    @include _apply-hierarchy-colors(disabled);
+  }
+}
+
+.#{$prefix} {
+  position: fixed;
+  right: spacing.semantic-variable(padding, horizontal, spacious);
+  bottom: spacing.semantic-variable(padding, vertical, spacious);
+  z-index: z-index.get(base);
+
+  .#{tooltip.$prefix} {
+    white-space: nowrap;
+  }
+
+  &__button {
+    @include _apply-variant-states();
+
+    border-radius: radius.variable(full);
+    transition: transition.entrance(opacity, fast);
+
+    &--hidden {
+      opacity: 0;
+      pointer-events: none;
+      transition: transition.exit(opacity, fast);
+    }
+  }
+}

@@ -102,4 +102,5 @@
   // Others
   @include _load-styles($options, anchor);
   @include _load-styles($options, portal);
+  @include _load-styles($options, floating-button);
 }
