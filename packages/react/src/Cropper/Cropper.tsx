@@ -162,12 +162,16 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
     }, [onCancel, onClose]);
 
     const handleConfirm = useCallback(async () => {
-      await onConfirm?.({
-        canvas: canvasRef.current,
-        cropArea: currentCropArea,
-        imageSrc,
-      });
-      onClose?.();
+      try {
+        await onConfirm?.({
+          canvas: canvasRef.current,
+          cropArea: currentCropArea,
+          imageSrc,
+        });
+        onClose?.();
+      } catch (error) {
+        console.error('CropperModal onConfirm failed:', error);
+      }
     }, [currentCropArea, imageSrc, onClose, onConfirm]);
 
     const modalFooterProps = showModalFooter
@@ -263,8 +267,13 @@ const CropperModalNotifier = (props: CropperModalNotifierProps) => {
 
   const handleConfirm = useCallback(
     async (context: CropperModalConfirmContext) => {
-      await onConfirm?.(context);
-      resolveOnce(context);
+      try {
+        await onConfirm?.(context);
+        resolveOnce(context);
+      } catch (error) {
+        console.error('CropperModalNotifier onConfirm failed:', error);
+        resolveOnce(null);
+      }
     },
     [onConfirm, resolveOnce],
   );

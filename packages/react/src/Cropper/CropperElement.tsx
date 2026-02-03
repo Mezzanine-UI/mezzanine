@@ -73,6 +73,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const elementRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
+    const imageLoadIdRef = useRef(0);
     const [cropArea, setCropArea] = useState<CropArea | null>(
       initialCropArea || null,
     );
@@ -143,30 +144,39 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
     // Load image
     useEffect(() => {
+      const loadId = imageLoadIdRef.current + 1;
+      imageLoadIdRef.current = loadId;
+
       if (!imageSrc) {
         setImageLoaded(false);
         imageRef.current = null;
-        return;
+        return undefined;
       }
 
+      setImageLoaded(false);
+      imageRef.current = null;
+
+      let objectUrl: string | null = null;
       const img = new Image();
       img.crossOrigin = 'anonymous';
 
       const loadImage = async () => {
         try {
-          let url: string;
-
           if (typeof imageSrc === 'string') {
-            url = imageSrc;
+            img.src = imageSrc;
           } else {
-            url = URL.createObjectURL(imageSrc);
+            objectUrl = URL.createObjectURL(imageSrc);
+            img.src = objectUrl;
           }
 
-          img.src = url;
           await new Promise((resolve, reject) => {
             img.onload = resolve;
             img.onerror = reject;
           });
+
+          if (imageLoadIdRef.current !== loadId) {
+            return;
+          }
 
           imageRef.current = img;
           setImageLoaded(true);
@@ -182,8 +192,8 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
             const baseDisplayWidth = img.width / baseScale;
             const baseDisplayHeight = img.height / baseScale;
             baseDisplaySizeRef.current = {
-              width: baseDisplayWidth,
               height: baseDisplayHeight,
+              width: baseDisplayWidth,
             };
 
             const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
@@ -221,10 +231,10 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
             }
 
             setCropArea({
+              height: initialHeight,
+              width: initialWidth,
               x: initialX,
               y: initialY,
-              width: initialWidth,
-              height: initialHeight,
             });
 
             setImagePosition({
@@ -233,6 +243,9 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
             });
           }
         } catch (error) {
+          if (imageLoadIdRef.current !== loadId) {
+            return;
+          }
           console.error('Failed to load image:', error);
           setImageLoaded(false);
         }
@@ -241,31 +254,14 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       loadImage();
 
       return () => {
-        if (typeof imageSrc !== 'string' && imageSrc instanceof Blob) {
-          URL.revokeObjectURL(img.src);
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
         }
       };
     }, [imageSrc, initialCropArea, aspectRatio]);
 
     useLayoutEffect(() => {
       updateTagPosition();
-    }, [updateTagPosition]);
-
-    useEffect(() => {
-      if (!elementRef.current || !canvasRef.current) return undefined;
-
-      const resizeObserver = new ResizeObserver(() => {
-        updateTagPosition();
-      });
-
-      resizeObserver.observe(elementRef.current);
-      resizeObserver.observe(canvasRef.current);
-      window.addEventListener('resize', updateTagPosition);
-
-      return () => {
-        resizeObserver.disconnect();
-        window.removeEventListener('resize', updateTagPosition);
-      };
     }, [updateTagPosition]);
 
     // Calculate base display size
@@ -331,8 +327,10 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       if (!ctx) return;
 
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width;
-      canvas.height = rect.height;
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Calculate base scale
       const scaleX = img.width / rect.width;
@@ -373,7 +371,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       const finalOffsetY = constrainedPosition.offsetY;
 
       // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, rect.width, rect.height);
 
       // Draw image
       ctx.drawImage(img, finalOffsetX, finalOffsetY, displayWidth, displayHeight);
@@ -384,7 +382,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       // Create a path that covers the entire canvas except the crop area
       // Using even-odd rule to create a hole
       const path = new Path2D();
-      path.rect(0, 0, canvas.width, canvas.height);
+      path.rect(0, 0, rect.width, rect.height);
       path.rect(crop.x, crop.y, crop.width, crop.height);
       ctx.clip(path, 'evenodd');
 
@@ -393,15 +391,40 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         getCSSVariableValue('--mzn-color-overlay-strong') ||
         'rgba(0, 0, 0, 0.60)';
       ctx.fillStyle = overlayColor;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, rect.width, rect.height);
       ctx.restore();
 
       // Draw crop border
-      ctx.strokeStyle = getCSSVariableValue('--mzn-color-border-brand') || '#5D74E9';
+      ctx.strokeStyle =
+        getCSSVariableValue('--mzn-color-border-brand') || '#5D74E9';
       ctx.lineWidth = BORDER_WIDTH;
       ctx.strokeRect(crop.x, crop.y, crop.width, crop.height);
 
     }, [cropArea, scale, imagePosition, constrainImagePosition]);
+
+    useEffect(() => {
+      if (!elementRef.current || !canvasRef.current) return undefined;
+
+      const resizeObserver = new ResizeObserver(() => {
+        updateTagPosition();
+        if (imageLoaded) {
+          const baseSize = getBaseDisplaySize();
+          if (baseSize) {
+            baseDisplaySizeRef.current = baseSize;
+          }
+          drawCanvas();
+        }
+      });
+
+      resizeObserver.observe(elementRef.current);
+      resizeObserver.observe(canvasRef.current);
+      window.addEventListener('resize', updateTagPosition);
+
+      return () => {
+        resizeObserver.disconnect();
+        window.removeEventListener('resize', updateTagPosition);
+      };
+    }, [drawCanvas, getBaseDisplaySize, imageLoaded, updateTagPosition]);
 
     useEffect(() => {
       if (imageLoaded) {
@@ -547,6 +570,15 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
             break;
         }
 
+        const anchor = {
+          bottom: y + height,
+          centerX: x + width / 2,
+          centerY: y + height / 2,
+          left: x,
+          right: x + width,
+          top: y,
+        };
+
         // Apply aspect ratio if provided
         if (aspectRatio && handle.type !== 'move') {
           const currentAspect = width / height;
@@ -556,6 +588,41 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
             } else {
               width = height * aspectRatio;
             }
+          }
+
+          switch (handle.type) {
+            case 'nw':
+              x = anchor.right - width;
+              y = anchor.bottom - height;
+              break;
+            case 'ne':
+              x = anchor.left;
+              y = anchor.bottom - height;
+              break;
+            case 'sw':
+              x = anchor.right - width;
+              y = anchor.top;
+              break;
+            case 'se':
+              x = anchor.left;
+              y = anchor.top;
+              break;
+            case 'n':
+              x = anchor.centerX - width / 2;
+              y = anchor.bottom - height;
+              break;
+            case 's':
+              x = anchor.centerX - width / 2;
+              y = anchor.top;
+              break;
+            case 'w':
+              x = anchor.right - width;
+              y = anchor.centerY - height / 2;
+              break;
+            case 'e':
+              x = anchor.left;
+              y = anchor.centerY - height / 2;
+              break;
           }
         }
 
@@ -975,12 +1042,12 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       <div className={classes.element} ref={elementRef}>
         <Component
           {...rest}
-          ref={composedRef}
           className={cx(classes.host, classes.size(size), className)}
           onMouseDown={handleMouseDown}
-          onMouseMove={handleCanvasMouseMove}
           onMouseLeave={() => setHoverHandle(null)}
+          onMouseMove={handleCanvasMouseMove}
           onWheel={handleWheel}
+          ref={composedRef}
           style={{ cursor: cursorStyle, ...rest.style }}
         >
           {children}

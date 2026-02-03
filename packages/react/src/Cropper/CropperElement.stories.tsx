@@ -53,7 +53,7 @@ const argTypes: Partial<ArgTypes<CropperElementProps>> = {
 export default {
   argTypes,
   component: CropperElement,
-  title: 'Foundation/Cropper/CropperElement',
+  title: 'Feedback/Cropper/CropperElement',
 } satisfies Meta<typeof CropperElement>;
 
 type Story = StoryObj<CropperElementProps>;

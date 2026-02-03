@@ -222,18 +222,26 @@ async function loadImage(
 ): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
+    let objectUrl: string | null = null;
     img.crossOrigin = 'anonymous';
 
     img.onload = () => resolve(img);
-    img.onerror = reject;
+    img.onerror = (error) => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+      reject(error);
+    };
 
     if (typeof src === 'string') {
       img.src = src;
     } else {
-      const url = URL.createObjectURL(src);
-      img.src = url;
+      objectUrl = URL.createObjectURL(src);
+      img.src = objectUrl;
       img.onload = () => {
-        URL.revokeObjectURL(url);
+        if (objectUrl) {
+          URL.revokeObjectURL(objectUrl);
+        }
         resolve(img);
       };
     }

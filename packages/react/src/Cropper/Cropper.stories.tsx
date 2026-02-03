@@ -1,14 +1,157 @@
+import type { ArgTypes } from '@storybook/react-webpack5';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useCallback, useState } from 'react';
-import Cropper, { CropperModal, cropToBlob, cropToDataURL } from '.';
+import Cropper, { CropperModal, cropToBlob, cropToDataURL, type CropperModalProps } from '.';
 import Button from '../Button';
 import { Upload, type UploadFile } from '../Upload';
 
 const DEFAULT_IMAGE_URL = 'https://rytass.com/logo.png';
 
+const sizes: Array<'tight' | 'narrow' | 'regular' | 'wide'> = ['tight', 'narrow', 'regular', 'wide'];
+
+const argTypes: Partial<ArgTypes<CropperModalProps>> = {
+  cancelText: {
+    control: {
+      type: 'text',
+    },
+    description: 'The text for the cancel button',
+    table: {
+      type: { summary: 'string' },
+    },
+  },
+  confirmText: {
+    control: {
+      type: 'text',
+    },
+    description: 'The text for the confirm button',
+    table: {
+      defaultValue: { summary: "'確認'" },
+      type: { summary: 'string' },
+    },
+  },
+  cropperContentClassName: {
+    control: {
+      type: 'text',
+    },
+    description: 'Additional className for the cropper content wrapper',
+    table: {
+      type: { summary: 'string' },
+    },
+  },
+  cropperProps: {
+    control: {
+      type: 'object',
+    },
+    description: 'Props for the CropperElement component',
+    table: {
+      type: { summary: 'CropperPropsBase' },
+    },
+  },
+  disableCloseOnBackdropClick: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to disable closing the modal when clicking the backdrop',
+    table: {
+      type: { summary: 'boolean' },
+    },
+  },
+  disableCloseOnEscapeKeyDown: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to disable closing the modal when pressing the Escape key',
+    table: {
+      type: { summary: 'boolean' },
+    },
+  },
+  fullScreen: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to display the modal in full screen',
+    table: {
+      type: { summary: 'boolean' },
+    },
+  },
+  loading: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether the modal is in loading state',
+    table: {
+      type: { summary: 'boolean' },
+    },
+  },
+  onCancel: {
+    action: 'onCancel',
+    description: 'Callback fired when the cancel button is clicked',
+    table: {
+      type: { summary: '() => void' },
+    },
+  },
+  onConfirm: {
+    action: 'onConfirm',
+    description: 'Callback fired when the confirm button is clicked',
+    table: {
+      type: { summary: '(context: CropperModalConfirmContext) => void | Promise<void>' },
+    },
+  },
+  showModalFooter: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to show the modal footer with confirm and cancel buttons',
+    table: {
+      defaultValue: { summary: 'true' },
+      type: { summary: 'boolean' },
+    },
+  },
+  showModalHeader: {
+    control: {
+      type: 'boolean',
+    },
+    description: 'Whether to show the modal header',
+    table: {
+      defaultValue: { summary: 'true' },
+      type: { summary: 'boolean' },
+    },
+  },
+  size: {
+    control: {
+      options: sizes,
+      type: 'select',
+    },
+    description: 'The size of the modal',
+    table: {
+      type: { summary: 'ModalSize' },
+    },
+  },
+  supportingText: {
+    control: {
+      type: 'text',
+    },
+    description: 'Supporting text displayed below the title',
+    table: {
+      type: { summary: 'string' },
+    },
+  },
+  title: {
+    control: {
+      type: 'text',
+    },
+    description: 'The title of the modal header',
+    table: {
+      defaultValue: { summary: "'圖片裁切'" },
+      type: { summary: 'string' },
+    },
+  },
+};
+
 export default {
+  argTypes,
   component: Cropper,
-  title: 'Foundation/Cropper',
+  title: 'Feedback/Cropper',
 } satisfies Meta<typeof Cropper>;
 
 type Story = StoryObj<typeof Cropper>;
