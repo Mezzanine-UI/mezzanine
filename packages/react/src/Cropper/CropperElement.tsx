@@ -334,9 +334,19 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       if (!ctx) return;
 
       const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
+      const nextCanvasWidth = Math.round(rect.width * dpr);
+      const nextCanvasHeight = Math.round(rect.height * dpr);
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      if (canvas.width !== nextCanvasWidth) {
+        canvas.width = nextCanvasWidth;
+      }
+      if (canvas.height !== nextCanvasHeight) {
+        canvas.height = nextCanvasHeight;
+      }
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Calculate base scale
