@@ -8,6 +8,4 @@ export { SelectControlContext } from './SelectControlContext';
 export { default as SelectTrigger } from './SelectTrigger';
 export { default as SelectTriggerTags } from './SelectTriggerTags';
 export type { SelectTriggerTagsProps } from './SelectTriggerTags';
-export { default as TreeSelect } from './TreeSelect';
-export type { TreeSelectProps } from './TreeSelect';
 export * from './typings';

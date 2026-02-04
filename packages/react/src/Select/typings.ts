@@ -9,11 +9,6 @@ export interface SelectValue<T = string> {
   name: string;
 }
 
-export interface TreeSelectOption<T = string> extends SelectValue<T> {
-  dynamicChildrenFetching?: boolean;
-  siblings?: TreeSelectOption<T>[];
-}
-
 export interface SelectControl<T = string> {
   value: SelectValue<T>[] | SelectValue<T> | null;
   onChange: (

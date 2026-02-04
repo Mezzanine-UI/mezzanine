@@ -362,7 +362,6 @@ export {
   SelectControlContext,
   SelectTrigger,
   SelectTriggerTags,
-  TreeSelect,
 } from './Select';
 export type {
   OptionGroupProps,
@@ -373,8 +372,6 @@ export type {
   SelectTriggerProps,
   SelectTriggerTagsProps,
   SelectValue,
-  TreeSelectOption,
-  TreeSelectProps,
 } from './Select';
 export { default as Selection } from './Selection';
 export type { SelectionProps, SelectionPropsBase } from './Selection';
