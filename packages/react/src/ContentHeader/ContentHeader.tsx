@@ -14,6 +14,8 @@ import {
 } from './utils';
 import Typography from '../Typography';
 import { DropdownProps } from '../Dropdown';
+import { ToggleProps } from '../Toggle';
+import { CheckboxProps } from '../Checkbox';
 
 // TODO: Replace with actual SegmentedControlProps when SegmentedControl component is complete
 type SegmentedControlProps = {
@@ -24,6 +26,8 @@ type ContentHeaderChild =
   | ReactElement<SearchInputProps>
   | ReactElement<SelectProps>
   | ReactElement<SegmentedControlProps>
+  | ReactElement<ToggleProps>
+  | ReactElement<CheckboxProps>
   | ReactElement<ButtonProps>
   | ReactElement<DropdownProps>
   | ReactElement<{ href: string }>
@@ -67,10 +71,14 @@ export type ContentHeaderProps = Omit<
   /** Optional description text displayed below the title */
   description?: string;
   /** Filter component (SearchInput, Select, or SegmentedControl) */
-  filter?: { variant: 'search' | 'select' | 'segmentedControl' } & (
+  filter?: {
+    variant: 'search' | 'select' | 'segmentedControl' | 'toggle' | 'checkbox';
+  } & (
     | SearchInputProps
     | SelectProps
     | SegmentedControlProps
+    | ToggleProps
+    | CheckboxProps
   );
   /**
    * Optional back button properties. <br />

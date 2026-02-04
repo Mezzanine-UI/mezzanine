@@ -16,6 +16,8 @@ import { ContentHeaderProps } from './ContentHeader';
 import { flattenChildren } from '../utils/flatten-children';
 import Dropdown, { DropdownProps } from '../Dropdown';
 import { ChevronLeftIcon } from '@mezzanine-ui/icons';
+import Toggle, { ToggleProps } from '../Toggle';
+import Checkbox, { CheckboxProps } from '../Checkbox';
 
 // TODO: Replace with actual SegmentedControlProps when SegmentedControl component is complete
 type SegmentedControlProps = {
@@ -52,29 +54,43 @@ const withSize = (
 };
 
 export const renderFilterProp = (
-  prop: ContentHeaderProps['filter'],
+  props: ContentHeaderProps['filter'],
   size: 'main' | 'sub',
 ) => {
-  if (!prop) {
+  if (!props) {
     return null;
   }
 
-  const { variant } = prop;
+  const { variant } = props;
+
+  if ('size' in props) {
+    console.warn(
+      '[Mezzanine][ContentHeader]: size in ContentHeader filter is forced to match ContentHeader size.',
+    );
+  }
 
   if (variant === 'search') {
     return (
-      <Input {...(prop as SearchInputProps)} size={size} variant="search" />
+      <Input {...(props as SearchInputProps)} size={size} variant="search" />
     );
   }
 
   if (variant === 'select') {
-    return <Select {...(prop as SelectProps)} size={size} />;
+    return <Select {...(props as SelectProps)} size={size} />;
   }
 
   if (variant === 'segmentedControl') {
     console.warn('SegmentedControl component is not implemented yet.');
 
     return null;
+  }
+
+  if (variant === 'toggle') {
+    return <Toggle {...(props as ToggleProps)} size={size} />;
+  }
+
+  if (variant === 'checkbox') {
+    return <Checkbox {...(props as CheckboxProps)} />;
   }
 
   return null;
