@@ -5,7 +5,6 @@ export type SelectMode = 'single' | 'multiple';
 export type SelectTriggerType = 'default' | 'error';
 
 export const selectPrefix = 'mzn-select';
-export const treeSelectPrefix = 'mzn-tree-select';
 export const selectTriggerPrefix = `${selectPrefix}-trigger`;
 export const selectPopperPrefix = `${selectPrefix}-popper`;
 export const selectTreePrefix = `${selectPrefix}-tree`;
@@ -34,8 +33,4 @@ export const selectClasses = {
 
   /** Popper classes */
   popper: selectPopperPrefix,
-
-  /** Tree select classes */
-  treeSelect: treeSelectPrefix,
-  tree: selectTreePrefix,
 } as const;
