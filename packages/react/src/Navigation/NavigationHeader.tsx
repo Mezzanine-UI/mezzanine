@@ -46,7 +46,9 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
           onClick={onBrandClick}
         >
           {children}
-          <span className={classes.title}>{title}</span>
+          <span className={classes.title}>
+            {collapsed ? title?.[0] : title}
+          </span>
         </BrandComponent>
       </header>
     );

@@ -1,12 +1,17 @@
 import { useState } from 'react';
 import { Meta, StoryFn } from '@storybook/react-webpack5';
 import {
+  CalendarIcon,
   DownloadIcon,
-  EyeIcon,
+  FileIcon,
   FolderIcon,
+  HomeIcon,
+  ListIcon,
   NotificationIcon,
   QuestionOutlineIcon,
+  SystemIcon,
   UploadIcon,
+  UserIcon,
 } from '@mezzanine-ui/icons';
 import Navigation, { NavigationProps } from '.';
 import NavigationOption from './NavigationOption';
@@ -29,38 +34,46 @@ const userMenuOptions = [
 export const Basic: StoryFn<NavigationProps> = (args) => (
   <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
     <Navigation {...args}>
-      <NavigationHeader title="Navigation">
+      <NavigationHeader title="Mezzanine">
         <span
           aria-label="logo"
           style={{
-            height: '28px',
-            width: '28px',
             backgroundColor: '#5D74E9',
             borderRadius: '4px',
+            height: '28px',
+            width: '28px',
           }}
         />
       </NavigationHeader>
-      <NavigationOption title={'NavigationOption 1'}>
-        <NavigationOption title={'NavigationOption 1-1-1'} />
+      <NavigationOption icon={HomeIcon} title={'首頁'} />
+      <NavigationOption icon={FileIcon} title={'數據分析'}>
+        <NavigationOption title={'流量報表'} />
+        <NavigationOption title={'轉換率分析'} />
       </NavigationOption>
-      <NavigationOption title={'NavigationOption 2'}>
-        <NavigationOption title={'NavigationOption 1-2-1'} />
+      <NavigationOption icon={ListIcon} title={'訂單管理'}>
+        <Badge count={5} variant="count-brand" />
+        <NavigationOption title={'待處理訂單'} />
+        <NavigationOption title={'已完成訂單'} />
       </NavigationOption>
-      <NavigationOption title={'NavigationOption 3'}>
-        <Badge variant="count-brand" count={5} />
-        <NavigationOption title={'NavigationOption 3-1'} />
-      </NavigationOption>
-      <NavigationOption title={'NavigationOption 4'} />
+      <NavigationOption icon={UserIcon} title={'會員管理'} />
       <>
-        {Array.from(Array(20)).map((_, index) => (
-          <NavigationOption title={'Nav' + index} key={index}>
-            <NavigationOption title={'Nav' + index + ':Option'} />
+        {Array.from(Array(5)).map((_, index) => (
+          <NavigationOption
+            icon={FolderIcon}
+            key={index}
+            title={`專案 ${index + 1}`}
+          >
+            <NavigationOption title={'專案設定'} />
+            <NavigationOption title={'成員管理'} />
           </NavigationOption>
         ))}
       </>
       <NavigationFooter>
-        <NavigationUserMenu imgSrc="1" options={userMenuOptions}>
-          User Name
+        <NavigationUserMenu
+          imgSrc="https://i.pravatar.cc/150?u=admin"
+          options={userMenuOptions}
+        >
+          王小明
         </NavigationUserMenu>
         <NavigationIconButton icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
@@ -78,107 +91,116 @@ export const All: StoryFn<NavigationProps> = () => {
   const navChildren = (hasIcon: boolean, hasLogo: boolean) => (
     <>
       <NavigationHeader
-        title="Navigation"
-        onBrandClick={() => alert('Brand clicked')}
+        onBrandClick={() => alert('返回首頁')}
+        title="企業管理平台"
       >
         {hasLogo && (
           <span
             aria-label="logo"
             style={{
-              height: '28px',
-              width: '28px',
               backgroundColor: '#5D74E9',
               borderRadius: '4px',
+              height: '28px',
+              width: '28px',
             }}
           />
         )}
       </NavigationHeader>
-      <NavigationOptionCategory title="Category Title 1">
+      <NavigationOptionCategory title="主要功能">
         <NavigationOption
-          title={'Option 1-1'}
+          icon={hasIcon ? HomeIcon : undefined}
+          title={'儀表板'}
+        />
+        <NavigationOption
+          icon={hasIcon ? FileIcon : undefined}
+          title={'數據分析'}
+        >
+          <NavigationOption title={'銷售報表'} />
+          <NavigationOption title={'流量分析'} />
+          <NavigationOption title={'用戶行為'} />
+        </NavigationOption>
+        <NavigationOption
+          icon={hasIcon ? ListIcon : undefined}
+          title={'訂單管理'}
+        >
+          <NavigationOption title={'全部訂單'} />
+          <NavigationOption title={'待出貨'} />
+          <NavigationOption title={'退換貨處理'} />
+        </NavigationOption>
+      </NavigationOptionCategory>
+      <NavigationOptionCategory title="內容管理">
+        <NavigationOption
+          icon={hasIcon ? FileIcon : undefined}
+          title={'文章管理'}
+        >
+          <NavigationOption title={'文章列表'}>
+            <NavigationOption title={'已發布'} />
+            <NavigationOption title={'草稿'} />
+          </NavigationOption>
+          <NavigationOption title={'分類設定'} />
+        </NavigationOption>
+        <NavigationOption
+          icon={hasIcon ? FolderIcon : undefined}
+          title={'媒體庫'}
+        >
+          <NavigationOption title={'圖片'} />
+          <NavigationOption title={'影片'} />
+          <NavigationOption title={'文件'} />
+        </NavigationOption>
+      </NavigationOptionCategory>
+      <NavigationOptionCategory title="系統設定">
+        <NavigationOption
+          icon={hasIcon ? UserIcon : undefined}
+          title={'用戶管理'}
+        >
+          <NavigationOption title={'用戶列表'}>
+            <NavigationOption title={'活躍用戶'} />
+            <NavigationOption title={'停用帳號'} />
+          </NavigationOption>
+          <NavigationOption title={'角色權限'} />
+        </NavigationOption>
+        <NavigationOption
+          icon={hasIcon ? CalendarIcon : undefined}
+          title={'排程任務'}
+        >
+          <NavigationOption title={'定時任務'}>
+            <NavigationOption title={'資料備份'} />
+            <NavigationOption title={'報表寄送'} />
+          </NavigationOption>
+          <NavigationOption title={'執行紀錄'} />
+        </NavigationOption>
+        <NavigationOption
+          icon={hasIcon ? SystemIcon : undefined}
+          title={'系統設定'}
+        >
+          <NavigationOption title={'基本設定'}>
+            <NavigationOption title={'網站資訊'} />
+            <NavigationOption title={'SEO 設定'} />
+          </NavigationOption>
+          <NavigationOption title={'安全性設定'} />
+        </NavigationOption>
+        <NavigationOption
+          href="#download-center"
           icon={hasIcon ? DownloadIcon : undefined}
-        >
-          <NavigationOption title={'Option 1-1-1'} />
-        </NavigationOption>
-        <NavigationOption
-          title={'Option 1-2'}
-          icon={hasIcon ? EyeIcon : undefined}
-        >
-          <NavigationOption title={'Option 1-2-1'} />
-        </NavigationOption>
-        <NavigationOption
-          title={'Option 1-3'}
-          icon={hasIcon ? UploadIcon : undefined}
-        >
-          <NavigationOption title={'Option 1-3-1'} />
-        </NavigationOption>
-        <NavigationOption
-          title={'Option 1-4'}
-          icon={hasIcon ? UploadIcon : undefined}
-        />
-      </NavigationOptionCategory>
-      <NavigationOptionCategory title="Category Title 2">
-        <NavigationOption
-          title={'Option 2-1'}
-          icon={hasIcon ? UploadIcon : undefined}
-        >
-          <NavigationOption title={'Option 2-1-1'}>
-            <NavigationOption title={'Option 2-1-1-1'} />
-          </NavigationOption>
-        </NavigationOption>
-      </NavigationOptionCategory>
-      <NavigationOptionCategory title="Category Title 3">
-        <NavigationOption
-          title={'Option 3-1'}
-          icon={hasIcon ? UploadIcon : undefined}
-        >
-          <NavigationOption title={'Option 3-1-1'}>
-            <NavigationOption title={'Option 3-1-1-1'} />
-          </NavigationOption>
-        </NavigationOption>
-        <NavigationOption
-          title={'Option 3-2'}
-          icon={hasIcon ? UploadIcon : undefined}
-        >
-          <NavigationOption title={'Option 3-2-1'}>
-            <NavigationOption title={'Option 3-2-1-1'} />
-          </NavigationOption>
-        </NavigationOption>
-        <NavigationOption
-          title={'Option 3-3'}
-          icon={hasIcon ? UploadIcon : undefined}
-        >
-          <NavigationOption title={'Option 3-3-1'}>
-            <NavigationOption title={'Option 3-3-1-1'} />
-          </NavigationOption>
-        </NavigationOption>
-        <NavigationOption
-          href="#option-3-4"
-          title={'Option 3-4'}
-          icon={hasIcon ? FolderIcon : undefined}
+          title={'下載中心'}
         />
         <NavigationOption
+          icon={hasIcon ? UploadIcon : undefined}
           onTriggerClick={(path, currentKey) => {
-            alert(
-              'Option 3-5 clicked' +
-                path.join(' > ') +
-                ', currentKey: ' +
-                currentKey,
-            );
+            alert(`匯入資料：${path.join(' > ')}，目前項目：${currentKey}`);
           }}
-          title={'Option 3-5'}
-          icon={hasIcon ? FolderIcon : undefined}
+          title={'匯入資料'}
         />
       </NavigationOptionCategory>
       <NavigationFooter>
         <NavigationUserMenu
-          options={userMenuOptions}
+          imgSrc="https://i.pravatar.cc/150?u=manager"
           onSelect={(v) => {
             alert(v.name);
           }}
-          imgSrc="1"
+          options={userMenuOptions}
         >
-          User Name
+          李經理
         </NavigationUserMenu>
         <NavigationIconButton icon={QuestionOutlineIcon} />
         <Badge variant="dot-error">
@@ -190,17 +212,17 @@ export const All: StoryFn<NavigationProps> = () => {
 
   return (
     <div style={{ display: 'flex', gap: '48px', height: 'calc(100vh - 32px)' }}>
-      <Navigation filter onOptionClick={setActive} activatedPath={active}>
+      <Navigation activatedPath={active} filter onOptionClick={setActive}>
         {navChildren(true, true)}
       </Navigation>
-      <Navigation filter onOptionClick={setActive} activatedPath={active}>
+      <Navigation activatedPath={active} filter onOptionClick={setActive}>
         {navChildren(true, false)}
       </Navigation>
       <Navigation
-        onOptionClick={setActive}
         activatedPath={active}
         collapsed={collapsed}
         onCollapseChange={setCollapsed}
+        onOptionClick={setActive}
       >
         {navChildren(false, true)}
       </Navigation>
