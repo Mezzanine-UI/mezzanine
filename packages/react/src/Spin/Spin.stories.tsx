@@ -1,10 +1,9 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
 import Spin from '.';
-import Alert from '../Alert';
 import Button from '../Button/Button';
-import Menu, { MenuItem } from '../Menu';
 import Modal from '../Modal';
+import { Description, DescriptionContent } from '../Description';
 
 export default {
   title: 'Feedback/Spin',
@@ -29,14 +28,6 @@ export const Playground: StoryObj<typeof Spin> = {
       <div style={{ height: '100%', width: '100%' }}>
         <Spin {...args} />
       </div>
-      <Spin {...args}>
-        <Menu size="medium">
-          <MenuItem>item 1</MenuItem>
-          <MenuItem>item 2</MenuItem>
-          <MenuItem>item 3</MenuItem>
-          <MenuItem>item 4</MenuItem>
-        </Menu>
-      </Spin>
     </div>
   ),
 };
@@ -65,21 +56,14 @@ const NestedExample = () => (
       gap: 16,
     }}
   >
-    <Spin
-      iconProps={{
-        size: 24,
-      }}
-      loading
-    >
-      <Alert severity="success">成功送出</Alert>
-    </Spin>
     <Spin description="Loading..." loading>
-      <Menu size="medium">
-        <MenuItem>item 1</MenuItem>
-        <MenuItem>item 2</MenuItem>
-        <MenuItem>item 3</MenuItem>
-        <MenuItem>item 4</MenuItem>
-      </Menu>
+      <div style={{ width: '300px', height: '300px' }}>
+        <Description title="Test Description">
+          <DescriptionContent>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          </DescriptionContent>
+        </Description>
+      </div>
     </Spin>
   </div>
 );
@@ -103,11 +87,8 @@ const OnModalExample = () => {
         open={open}
         showModalHeader
       >
-        <Spin description="元件加載中..." loading stretch>
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Adipisci
-          pariatur aliquid voluptate, totam voluptatum numquam cupiditate
-          provident sed sint harum delectus nihil quod sequi vero porro
-          excepturi eos facilis quos.
+        <Spin description="內容加載中..." loading stretch>
+          <div style={{ width: '100%', height: '200px' }} />
         </Spin>
       </Modal>
     </>
