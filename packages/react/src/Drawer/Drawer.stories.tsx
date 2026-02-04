@@ -1,12 +1,11 @@
-import { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StoryObj } from '@storybook/react-webpack5';
 import {
-  CheckIcon,
+  CheckedFilledIcon,
   ChevronLeftIcon,
   CloseIcon,
   InfoOutlineIcon,
   PlusIcon,
-  SaveIcon,
 } from '@mezzanine-ui/icons';
 import Drawer, { DrawerProps } from '.';
 import { Button, Typography } from '../index';
@@ -14,16 +13,25 @@ import { Button, Typography } from '../index';
 // Icon mapping for Storybook controls
 const iconOptions = {
   None: undefined,
-  Check: CheckIcon,
+  Check: CheckedFilledIcon,
   ChevronLeft: ChevronLeftIcon,
   Close: CloseIcon,
   InfoOutline: InfoOutlineIcon,
   Plus: PlusIcon,
-  Save: SaveIcon,
 };
 
 export default {
   title: 'Feedback/Drawer',
+};
+
+const CustomComponent: React.FC<{ records: number[] }> = ({ records }) => {
+  return (
+    <div>
+      {records.map((item) => (
+        <div key={item}>{item}</div>
+      ))}
+    </div>
+  );
 };
 
 export const Playground: StoryObj<DrawerProps> = {
@@ -227,6 +235,13 @@ export const Playground: StoryObj<DrawerProps> = {
     size,
   }) {
     const [open, setOpen] = useState(false);
+    const [state, setState] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    useEffect(() => {
+      setTimeout(() => {
+        setState((prev) => [...prev.slice(0, 4)]);
+      }, 2000);
+    }, []);
 
     const handleClose = useCallback(() => setOpen(false), []);
 
@@ -274,7 +289,7 @@ export const Playground: StoryObj<DrawerProps> = {
           open={open}
           size={size}
         >
-          content
+          <CustomComponent records={state} />
         </Drawer>
       </>
     );
@@ -502,7 +517,7 @@ export const WithCustomButtonVariants: StoryObj<DrawerProps> = {
           bottomOnGhostActionClick={handleClose}
           bottomOnPrimaryActionClick={handleClose}
           bottomOnSecondaryActionClick={handleClose}
-          bottomPrimaryActionIcon={CheckIcon}
+          bottomPrimaryActionIcon={CheckedFilledIcon}
           bottomPrimaryActionIconType="trailing"
           bottomPrimaryActionSize="minor"
           bottomPrimaryActionText="確認"
