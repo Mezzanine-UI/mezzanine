@@ -968,7 +968,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
     // Handle wheel (trackpad) zoom
     const handleWheel = useCallback(
-      (e: React.WheelEvent<HTMLCanvasElement>) => {
+      (e: WheelEvent) => {
         if (!cropArea) return;
 
         e.preventDefault();
@@ -981,6 +981,18 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       },
       [scale, cropArea, handleScaleChange],
     );
+
+    // Add wheel event listener with passive: false to allow preventDefault
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      canvas.addEventListener('wheel', handleWheel, { passive: false });
+
+      return () => {
+        canvas.removeEventListener('wheel', handleWheel);
+      };
+    }, [handleWheel]);
 
     // Handle mouse move for cursor update
     const handleCanvasMouseMove = useCallback(
@@ -1028,7 +1040,6 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           onMouseDown={handleMouseDown}
           onMouseLeave={() => setHoverHandle(null)}
           onMouseMove={handleCanvasMouseMove}
-          onWheel={handleWheel}
           ref={composedRef}
           style={{ cursor: cursorStyle, ...rest.style }}
         >
