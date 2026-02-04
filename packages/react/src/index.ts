@@ -432,8 +432,6 @@ export type {
 /**
  * Feedback
  */
-export { default as Alert } from './Alert';
-export type { AlertProps, AlertSeverity } from './Alert';
 export { default as ConfirmActions } from './ConfirmActions';
 export type { ConfirmActionsProps } from './ConfirmActions';
 export { default as Message } from './Message';
