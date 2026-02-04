@@ -30,7 +30,4 @@ export const selectClasses = {
   triggerTagsEllipsis: `${selectTriggerPrefix}__tags--ellipsis`,
   triggerSuffixActionIcon: `${selectTriggerPrefix}__suffix-action-icon`,
   triggerSuffixActionIconActive: `${selectTriggerPrefix}__suffix-action-icon--active`,
-
-  /** Popper classes */
-  popper: selectPopperPrefix,
 } as const;

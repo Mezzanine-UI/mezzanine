@@ -6,9 +6,6 @@
 @use '../text-field';
 @use './select' as *;
 
-$popper-vertical-padding: 4px !default;
-$popper-horizontal-padding: 0 !default;
-
 .#{$prefix} {
   position: relative;
 
@@ -112,17 +109,4 @@ $popper-horizontal-padding: 0 !default;
       transform: rotate(180deg);
     }
   }
-}
-
-.#{$popper-prefix} {
-  width: auto;
-  padding: $popper-vertical-padding $popper-horizontal-padding;
-  background-color: palette.color(surface);
-  color: palette.color(text-primary);
-  box-sizing: border-box;
-}
-
-.#{$tree-prefix} {
-  box-sizing: border-box;
-  padding: 0 8px;
 }
