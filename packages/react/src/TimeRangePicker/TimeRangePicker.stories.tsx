@@ -119,7 +119,7 @@ export const Basic = () => {
     <CalendarConfigProvider methods={CalendarMethodsMoment}>
       <div style={groupStyle}>
         <Typography style={typoStyle} variant="h3">
-          Basic Usage
+          {`Value: ${val ? `[${val}]` : 'undefined'}`}
         </Typography>
         <TimeRangePicker onChange={onChange} value={val} />
       </div>
