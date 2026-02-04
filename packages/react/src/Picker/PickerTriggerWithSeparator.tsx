@@ -84,6 +84,16 @@ export interface PickerTriggerWithSeparatorProps
    */
   onLeftComplete?: () => void;
   /**
+   * Callback when a valid ISO date is pasted into the left input.
+   * Allows parent to sync other fields (e.g., update time when date+time is pasted).
+   */
+  onPasteIsoValueLeft?: (isoValue: string) => void;
+  /**
+   * Callback when a valid ISO date is pasted into the right input.
+   * Allows parent to sync other fields (e.g., update date when date+time is pasted).
+   */
+  onPasteIsoValueRight?: (isoValue: string) => void;
+  /**
    * Callback when right input is completed (all mask positions filled with valid value).
    */
   onRightComplete?: () => void;
@@ -183,6 +193,8 @@ const PickerTriggerWithSeparator = forwardRef<
     onFocusLeft,
     onFocusRight,
     onLeftComplete,
+    onPasteIsoValueLeft,
+    onPasteIsoValueRight,
     onRightComplete,
     placeholderLeft,
     placeholderRight,
@@ -312,6 +324,7 @@ const PickerTriggerWithSeparator = forwardRef<
             onBlur={handleLeftBlur}
             onChange={handleLeftChange}
             onFocus={handleLeftFocus}
+            onPasteIsoValue={onPasteIsoValueLeft}
             placeholder={placeholderLeft}
             readOnly={readOnly}
             required={required}
@@ -335,6 +348,7 @@ const PickerTriggerWithSeparator = forwardRef<
             onBlur={handleRightBlur}
             onChange={handleRightChange}
             onFocus={handleRightFocus}
+            onPasteIsoValue={onPasteIsoValueRight}
             placeholder={placeholderRight}
             readOnly={readOnly}
             required={required}

@@ -51,6 +51,12 @@ export interface UseDateInputFormatterProps {
    * Called after format validation passes.
    */
   validate?: (isoDate: string) => boolean;
+  /**
+   * Callback when a valid ISO date is pasted.
+   * This allows parent components to handle cross-field updates
+   * (e.g., updating time field when date+time is pasted into date field).
+   */
+  onPasteIsoValue?: (isoValue: string) => void;
 }
 
 /**
@@ -70,6 +76,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
     onFocus: onFocusProp,
     onBlur: onBlurProp,
     validate,
+    onPasteIsoValue,
   } = props;
 
   const { parseFormattedValue, isValid, locale, formatToString } =
@@ -456,7 +463,10 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
         const parsedDate = formatToString(locale, pasteData, format);
 
         if (parsedDate) {
+          // Notify parent about the full ISO value for cross-field sync
+          onPasteIsoValue?.(pasteData);
           triggerChange(parsedDate);
+
           return;
         }
       }
@@ -500,6 +510,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
       errorMessages,
       internalValue,
       maskFormat,
+      onPasteIsoValue,
       triggerChange,
       isValid,
       format,

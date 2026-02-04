@@ -17,7 +17,7 @@ export interface FormattedInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'>,
     Pick<
       UseDateInputFormatterProps,
-      'errorMessages' | 'validate' | 'format' | 'onChange'
+      'errorMessages' | 'validate' | 'format' | 'onChange' | 'onPasteIsoValue'
     > {
   /**
    * Placeholder to show when not focused and value is empty
@@ -49,6 +49,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       onChange,
       onFocus,
       onBlur,
+      onPasteIsoValue,
       ...inputProps
     } = props;
 
@@ -71,6 +72,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
       onFocus,
       onBlur,
       validate,
+      onPasteIsoValue,
     });
 
     const segments = useRef(parseFormatSegments(format)).current;

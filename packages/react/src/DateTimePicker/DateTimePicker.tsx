@@ -48,6 +48,8 @@ export interface DateTimePickerProps
       | 'onFocusLeft'
       | 'onFocusRight'
       | 'onLeftComplete'
+      | 'onPasteIsoValueLeft'
+      | 'onPasteIsoValueRight'
       | 'onRightComplete'
       | 'suffix'
       | 'valueLeft'
@@ -342,6 +344,27 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       [dateValue, isValid, notifyChange],
     );
 
+    const onPasteIsoValueLeft = useCallback(
+      (isoValue: string) => {
+        if (!timeValue && isValid(isoValue)) {
+          // Time is empty, update it from pasted value
+          setTimeValue(isoValue);
+        }
+      },
+      [isValid, timeValue],
+    );
+
+    const onPasteIsoValueRight = useCallback(
+      (isoValue: string) => {
+        if (!dateValue && isValid(isoValue)) {
+          // Date is empty, update it from pasted value
+          setDateValue(isoValue);
+          setReferenceDate(startOf(isoValue, 'day'));
+        }
+      },
+      [dateValue, isValid, startOf],
+    );
+
     const onCalendarChange = useCallback(
       (target: DateType) => {
         setDateValue(target);
@@ -435,6 +458,8 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           onFocusLeft={onFocusLeft}
           onFocusRight={onFocusRight}
           onLeftComplete={onLeftComplete}
+          onPasteIsoValueLeft={onPasteIsoValueLeft}
+          onPasteIsoValueRight={onPasteIsoValueRight}
           onRightComplete={onRightComplete}
           placeholderLeft={placeholderLeft}
           placeholderRight={placeholderRight}

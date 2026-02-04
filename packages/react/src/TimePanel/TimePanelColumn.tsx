@@ -47,23 +47,36 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
     );
 
     const preferSmoothScrollRef = useRef(true);
+    const onScrollToTarget = useCallback(
+      (element: HTMLDivElement) => {
+        const activeIndex = units.findIndex(
+          ({ value }) => value === activeUnit,
+        );
+
+        element.scrollTo({
+          behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
+          top: (activeIndex - 3) * cellHeight,
+        });
+
+        preferSmoothScrollRef.current = false;
+      },
+      [activeUnit, cellHeight, units],
+    );
 
     useEffect(() => {
-      const activeIndex = units.findIndex(({ value }) => value === activeUnit);
-
       if (viewportRef.current) {
-        viewportRef.current.scrollTo({
-          behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
-          top: activeIndex * cellHeight, // (activeIndex - 3) * cellHeight, (center)
-        });
+        onScrollToTarget(viewportRef.current);
       }
+    }, [onScrollToTarget]);
 
-      preferSmoothScrollRef.current = false;
-    }, [activeUnit, cellHeight, units]);
+    const handleViewportReady = useCallback(
+      (viewport: HTMLDivElement) => {
+        viewportRef.current = viewport;
 
-    const handleViewportReady = useCallback((viewport: HTMLDivElement) => {
-      viewportRef.current = viewport;
-    }, []);
+        onScrollToTarget(viewport);
+      },
+      [onScrollToTarget],
+    );
 
     return (
       <div ref={ref} className={classes.column}>
