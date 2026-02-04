@@ -1,16 +1,33 @@
-import React from 'react';
 import { CropperSize } from '@mezzanine-ui/core/cropper';
+import React from 'react';
 import { act, cleanup, cleanupHook, fireEvent, render, waitFor } from '../../__test-utils__';
 import CropperElement from './CropperElement';
 import { CropArea } from './typings';
 
 // Mock Image constructor
 class MockImage extends Image {
+  private _src: string = '';
+
   constructor() {
     super();
     // Simulate image dimensions
     Object.defineProperty(this, 'width', { value: 800, writable: false });
     Object.defineProperty(this, 'height', { value: 600, writable: false });
+
+    // Override src setter to trigger onload when src is set
+    Object.defineProperty(this, 'src', {
+      get: () => this._src,
+      set: (value: string) => {
+        this._src = value;
+        // Trigger onload after a short delay to simulate image loading
+        setTimeout(() => {
+          if (this.onload) {
+            this.onload(new Event('load') as any);
+          }
+        }, 0);
+      },
+      configurable: true,
+    });
   }
 }
 
@@ -42,7 +59,7 @@ describe('<CropperElement />', () => {
       width: 800,
       x: 0,
       y: 0,
-      toJSON: () => {},
+      toJSON: () => { },
     } as DOMRect);
 
     // Mock devicePixelRatio
@@ -144,7 +161,7 @@ describe('<CropperElement />', () => {
       // Simulate image load
       await act(async () => {
         const img = new Image();
-        img.onload = () => {};
+        img.onload = () => { };
         img.src = 'https://example.com/image.jpg';
         await new Promise((resolve) => setTimeout(resolve, 100));
       });
@@ -164,13 +181,13 @@ describe('<CropperElement />', () => {
 
     it('should handle image load error', async () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
-      const { container } = render(
+      render(
         <CropperElement imageSrc="https://invalid-url.com/image.jpg" />,
       );
 
       await act(async () => {
         const img = new Image();
-        img.onerror = () => {};
+        img.onerror = () => { };
         img.src = 'https://invalid-url.com/image.jpg';
         await new Promise((resolve) => setTimeout(resolve, 100));
       });
@@ -372,16 +389,11 @@ describe('<CropperElement />', () => {
         <CropperElement imageSrc="https://example.com/image.jpg" />,
       );
 
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+      // The tag should appear when crop area is set after image loads
+      await waitFor(() => {
+        const tag = container.querySelector('.mzn-cropper__tag');
+        expect(tag).toBeTruthy();
       });
-
-      // The tag should appear when crop area is set
-      // Note: This might require image to be fully loaded
-      const tag = container.querySelector('.mzn-cropper__tag');
-
-      // Tag might not be visible immediately, so we just check the component structure
-      expect(container.querySelector('.mzn-cropper__element')).toBeTruthy();
     });
   });
 

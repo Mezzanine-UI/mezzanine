@@ -225,7 +225,12 @@ async function loadImage(
     let objectUrl: string | null = null;
     img.crossOrigin = 'anonymous';
 
-    img.onload = () => resolve(img);
+    img.onload = () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+      resolve(img);
+    };
     img.onerror = (error) => {
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
@@ -238,12 +243,6 @@ async function loadImage(
     } else {
       objectUrl = URL.createObjectURL(src);
       img.src = objectUrl;
-      img.onload = () => {
-        if (objectUrl) {
-          URL.revokeObjectURL(objectUrl);
-        }
-        resolve(img);
-      };
     }
   });
 }

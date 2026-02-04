@@ -190,7 +190,7 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
     const modalHeaderProps = showModalHeader
       ? {
         showModalHeader: true as const,
-        title: title ?? '圖片裁切',
+        title,
       }
       : {
         showModalHeader: false as const,
