@@ -100,7 +100,11 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       left: number;
       top: number;
     } | null>(null);
+    const [tagCropArea, setTagCropArea] = useState<CropArea | null>(null);
     const baseDisplaySizeRef = useRef<{ width: number; height: number } | null>(
+      null,
+    );
+    const lastCanvasSizeRef = useRef<{ height: number; width: number } | null>(
       null,
     );
 
@@ -114,6 +118,56 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         }
       },
       [ref],
+    );
+
+    const calculateInitialCropArea = useCallback(
+      (img: HTMLImageElement, rect: DOMRect) => {
+        const scaleX = img.width / rect.width;
+        const scaleY = img.height / rect.height;
+        const baseScale = Math.max(scaleX, scaleY);
+
+        const baseDisplayWidth = img.width / baseScale;
+        const baseDisplayHeight = img.height / baseScale;
+        const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
+        const initialOffsetY = (rect.height - baseDisplayHeight) / 2;
+
+        let initialWidth = baseDisplayWidth;
+        let initialHeight = baseDisplayHeight;
+
+        if (aspectRatio) {
+          const maxWidthByHeight = baseDisplayHeight * aspectRatio;
+          const maxHeightByWidth = baseDisplayWidth / aspectRatio;
+
+          if (maxWidthByHeight <= baseDisplayWidth) {
+            initialWidth = maxWidthByHeight;
+            initialHeight = baseDisplayHeight;
+          } else {
+            initialWidth = baseDisplayWidth;
+            initialHeight = maxHeightByWidth;
+          }
+        }
+
+        const initialX =
+          initialOffsetX + (baseDisplayWidth - initialWidth) / 2;
+        const initialY =
+          initialOffsetY + (baseDisplayHeight - initialHeight) / 2;
+
+        return {
+          baseDisplayHeight,
+          baseDisplayWidth,
+          cropArea: {
+            height: initialHeight,
+            width: initialWidth,
+            x: initialX,
+            y: initialY,
+          },
+          imagePosition: {
+            offsetX: initialOffsetX,
+            offsetY: initialOffsetY,
+          },
+        };
+      },
+      [aspectRatio],
     );
 
     const updateTagPosition = useCallback(() => {
@@ -185,62 +239,20 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           if (!initialCropArea && canvasRef.current) {
             const canvas = canvasRef.current;
             const rect = canvas.getBoundingClientRect();
-            const scaleX = img.width / rect.width;
-            const scaleY = img.height / rect.height;
-            const baseScale = Math.min(scaleX, scaleY);
+            const {
+              baseDisplayHeight,
+              baseDisplayWidth,
+              cropArea: nextCropArea,
+              imagePosition: nextImagePosition,
+            } = calculateInitialCropArea(img, rect);
 
-            const baseDisplayWidth = img.width / baseScale;
-            const baseDisplayHeight = img.height / baseScale;
             baseDisplaySizeRef.current = {
               height: baseDisplayHeight,
               width: baseDisplayWidth,
             };
 
-            const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
-            const initialOffsetY = (rect.height - baseDisplayHeight) / 2;
-
-            let initialWidth: number;
-            let initialHeight: number;
-            let initialX: number;
-            let initialY: number;
-
-            if (aspectRatio) {
-              // Calculate maximum size that fits within image display area
-              const maxWidthByHeight = baseDisplayHeight * aspectRatio;
-              const maxHeightByWidth = baseDisplayWidth / aspectRatio;
-
-              // Choose the dimension that fits within image bounds
-              if (maxWidthByHeight <= baseDisplayWidth) {
-                // Height is the limiting factor
-                initialWidth = maxWidthByHeight;
-                initialHeight = baseDisplayHeight;
-              } else {
-                // Width is the limiting factor
-                initialWidth = baseDisplayWidth;
-                initialHeight = maxHeightByWidth;
-              }
-
-              // Center the crop area within the image display area
-              initialX = initialOffsetX + (baseDisplayWidth - initialWidth) / 2;
-              initialY = initialOffsetY + (baseDisplayHeight - initialHeight) / 2;
-            } else {
-              initialWidth = Math.min(rect.width * 0.6, baseDisplayWidth);
-              initialHeight = Math.min(rect.height * 0.6, baseDisplayHeight);
-              initialX = (rect.width - initialWidth) / 2;
-              initialY = (rect.height - initialHeight) / 2;
-            }
-
-            setCropArea({
-              height: initialHeight,
-              width: initialWidth,
-              x: initialX,
-              y: initialY,
-            });
-
-            setImagePosition({
-              offsetX: initialOffsetX,
-              offsetY: initialOffsetY,
-            });
+            setCropArea(nextCropArea);
+            setImagePosition(nextImagePosition);
           }
         } catch (error) {
           if (imageLoadIdRef.current !== loadId) {
@@ -258,7 +270,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           URL.revokeObjectURL(objectUrl);
         }
       };
-    }, [imageSrc, initialCropArea, aspectRatio]);
+    }, [imageSrc, initialCropArea, aspectRatio, calculateInitialCropArea]);
 
     useLayoutEffect(() => {
       updateTagPosition();
@@ -274,7 +286,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
       const scaleX = img.width / rect.width;
       const scaleY = img.height / rect.height;
-      const baseScale = Math.min(scaleX, scaleY);
+      const baseScale = Math.max(scaleX, scaleY);
 
       return {
         width: img.width / baseScale,
@@ -294,18 +306,13 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           return { offsetX: newOffsetX, offsetY: newOffsetY };
         }
 
-        const rect = canvasRef.current.getBoundingClientRect();
         const { x: cx, y: cy, width: cw, height: ch } = cropArea;
 
-        // Ensure image covers crop area (no white space)
-        // Left edge constraint
-        const minOffsetX = Math.min(cx + cw - displayWidth, 0);
-        // Right edge constraint
-        const maxOffsetX = Math.max(cx, rect.width - displayWidth);
-        // Top edge constraint
-        const minOffsetY = Math.min(cy + ch - displayHeight, 0);
-        // Bottom edge constraint
-        const maxOffsetY = Math.max(cy, rect.height - displayHeight);
+        // Ensure image always covers crop area (no white space in crop area)
+        const minOffsetX = cx + cw - displayWidth;
+        const maxOffsetX = cx;
+        const minOffsetY = cy + ch - displayHeight;
+        const maxOffsetY = cy;
 
         return {
           offsetX: Math.max(minOffsetX, Math.min(newOffsetX, maxOffsetX)),
@@ -335,7 +342,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       // Calculate base scale
       const scaleX = img.width / rect.width;
       const scaleY = img.height / rect.height;
-      const baseScale = Math.min(scaleX, scaleY);
+      const baseScale = Math.max(scaleX, scaleY);
 
       // Calculate display size with zoom
       const baseDisplayWidth = img.width / baseScale;
@@ -408,9 +415,30 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       const resizeObserver = new ResizeObserver(() => {
         updateTagPosition();
         if (imageLoaded) {
-          const baseSize = getBaseDisplaySize();
-          if (baseSize) {
-            baseDisplaySizeRef.current = baseSize;
+          const rect = canvasRef.current?.getBoundingClientRect();
+          const isSizeChanged =
+            rect &&
+            (!lastCanvasSizeRef.current ||
+              rect.height !== lastCanvasSizeRef.current.height ||
+              rect.width !== lastCanvasSizeRef.current.width);
+
+          if (isSizeChanged && rect) {
+            lastCanvasSizeRef.current = {
+              height: rect.height,
+              width: rect.width,
+            };
+            const baseSize = getBaseDisplaySize();
+            if (baseSize) {
+              baseDisplaySizeRef.current = baseSize;
+            }
+            if (!initialCropArea && canvasRef.current && imageRef.current) {
+              const {
+                cropArea: nextCropArea,
+                imagePosition: nextImagePosition,
+              } = calculateInitialCropArea(imageRef.current, rect);
+              setCropArea(nextCropArea);
+              setImagePosition(nextImagePosition);
+            }
           }
           drawCanvas();
         }
@@ -424,7 +452,14 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         resizeObserver.disconnect();
         window.removeEventListener('resize', updateTagPosition);
       };
-    }, [drawCanvas, getBaseDisplaySize, imageLoaded, updateTagPosition]);
+    }, [
+      calculateInitialCropArea,
+      drawCanvas,
+      getBaseDisplaySize,
+      imageLoaded,
+      initialCropArea,
+      updateTagPosition,
+    ]);
 
     useEffect(() => {
       if (imageLoaded) {
@@ -436,74 +471,60 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       }
     }, [imageLoaded, drawCanvas, getBaseDisplaySize]);
 
+    useEffect(() => {
+      if (!imageLoaded) return;
+      updateTagPosition();
+      drawCanvas();
+    }, [cropArea, drawCanvas, imageLoaded, imagePosition, scale, updateTagPosition]);
+
     // Get handle type from mouse position
     const getHandleType = useCallback(
-      (x: number, y: number): CropHandle | null => {
-        if (!cropArea) return null;
+      (_x: number, _y: number): CropHandle | null => null,
+      [],
+    );
 
-        const handleSize = 12;
-        const { x: cx, y: cy, width, height } = cropArea;
+    const emitCropChange = useCallback(
+      (nextCropArea: CropArea) => {
+        if (!onCropChange) return;
 
-        // Check corners
-        if (
-          Math.abs(x - cx) < handleSize &&
-          Math.abs(y - cy) < handleSize
-        ) {
-          return { x: cx, y: cy, type: 'nw' };
-        }
-        if (
-          Math.abs(x - (cx + width)) < handleSize &&
-          Math.abs(y - cy) < handleSize
-        ) {
-          return { x: cx + width, y: cy, type: 'ne' };
-        }
-        if (
-          Math.abs(x - cx) < handleSize &&
-          Math.abs(y - (cy + height)) < handleSize
-        ) {
-          return { x: cx, y: cy + height, type: 'sw' };
-        }
-        if (
-          Math.abs(x - (cx + width)) < handleSize &&
-          Math.abs(y - (cy + height)) < handleSize
-        ) {
-          return { x: cx + width, y: cy + height, type: 'se' };
+        if (!canvasRef.current || !imageRef.current) {
+          onCropChange(nextCropArea);
+          setTagCropArea(nextCropArea);
+          return;
         }
 
-        // Check edges
-        if (
-          Math.abs(x - (cx + width / 2)) < handleSize &&
-          Math.abs(y - cy) < handleSize
-        ) {
-          return { x: cx + width / 2, y: cy, type: 'n' };
-        }
-        if (
-          Math.abs(x - (cx + width / 2)) < handleSize &&
-          Math.abs(y - (cy + height)) < handleSize
-        ) {
-          return { x: cx + width / 2, y: cy + height, type: 's' };
-        }
-        if (
-          Math.abs(x - cx) < handleSize &&
-          Math.abs(y - (cy + height / 2)) < handleSize
-        ) {
-          return { x: cx, y: cy + height / 2, type: 'w' };
-        }
-        if (
-          Math.abs(x - (cx + width)) < handleSize &&
-          Math.abs(y - (cy + height / 2)) < handleSize
-        ) {
-          return { x: cx + width, y: cy + height / 2, type: 'e' };
-        }
+        const rect = canvasRef.current.getBoundingClientRect();
+        const img = imageRef.current;
+        const scaleX = img.width / rect.width;
+        const scaleY = img.height / rect.height;
+        const baseScale = Math.max(scaleX, scaleY);
+        const imageScale = baseScale / scale;
+        const rawWidth = nextCropArea.width * imageScale;
+        const rawHeight = nextCropArea.height * imageScale;
+        const rawX = (nextCropArea.x - imagePosition.offsetX) * imageScale;
+        const rawY = (nextCropArea.y - imagePosition.offsetY) * imageScale;
+        const clampedWidth = Math.min(img.width, Math.max(0, rawWidth));
+        const clampedHeight = Math.min(img.height, Math.max(0, rawHeight));
+        const clampedX = Math.min(
+          img.width - clampedWidth,
+          Math.max(0, rawX),
+        );
+        const clampedY = Math.min(
+          img.height - clampedHeight,
+          Math.max(0, rawY),
+        );
 
-        // Check if inside crop area (for moving)
-        if (x >= cx && x <= cx + width && y >= cy && y <= cy + height) {
-          return { x, y, type: 'move' };
-        }
+        const emittedCropArea = {
+          height: clampedHeight,
+          width: clampedWidth,
+          x: clampedX,
+          y: clampedY,
+        };
 
-        return null;
+        onCropChange(emittedCropArea);
+        setTagCropArea(emittedCropArea);
       },
-      [cropArea],
+      [imagePosition.offsetX, imagePosition.offsetY, onCropChange, scale],
     );
 
     // Update crop area based on drag
@@ -631,7 +652,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           const rect = canvasRef.current.getBoundingClientRect();
           const scaleX = imageRef.current.width / rect.width;
           const scaleY = imageRef.current.height / rect.height;
-          const baseScale = Math.min(scaleX, scaleY);
+          const baseScale = Math.max(scaleX, scaleY);
           const baseDisplayWidth = imageRef.current.width / baseScale;
           const baseDisplayHeight = imageRef.current.height / baseScale;
           const displayWidth = baseDisplayWidth * scale;
@@ -730,54 +751,27 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         const newCrop: CropArea = { x, y, width, height };
         setCropArea(newCrop);
 
-        if (!onCropChange) {
-          return;
+        if (onCropChange) {
+          emitCropChange(newCrop);
         }
-
-        if (!canvasRef.current || !imageRef.current) {
-          onCropChange(newCrop);
-          return;
-        }
-
-        const rect = canvasRef.current.getBoundingClientRect();
-        const img = imageRef.current;
-        const scaleX = img.width / rect.width;
-        const scaleY = img.height / rect.height;
-        const baseScale = Math.min(scaleX, scaleY);
-        const imageScale = baseScale / scale;
-        const rawWidth = newCrop.width * imageScale;
-        const rawHeight = newCrop.height * imageScale;
-        const rawX = (newCrop.x - imagePosition.offsetX) * imageScale;
-        const rawY = (newCrop.y - imagePosition.offsetY) * imageScale;
-        const clampedWidth = Math.min(img.width, Math.max(0, rawWidth));
-        const clampedHeight = Math.min(img.height, Math.max(0, rawHeight));
-        const clampedX = Math.min(
-          img.width - clampedWidth,
-          Math.max(0, rawX),
-        );
-        const clampedY = Math.min(
-          img.height - clampedHeight,
-          Math.max(0, rawY),
-        );
-
-        onCropChange({
-          height: clampedHeight,
-          width: clampedWidth,
-          x: clampedX,
-          y: clampedY,
-        });
       },
       [
         cropArea,
         aspectRatio,
         minWidth,
         minHeight,
-        onCropChange,
         imagePosition.offsetX,
         imagePosition.offsetY,
         scale,
+        emitCropChange,
+        onCropChange,
       ],
     );
+
+    useEffect(() => {
+      if (!cropArea || !imageLoaded) return;
+      emitCropChange(cropArea);
+    }, [cropArea, emitCropChange, imageLoaded, imagePosition, scale]);
 
     // Check if point is on image (not on crop handles)
     const isPointOnImage = useCallback(
@@ -786,19 +780,13 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
         const handle = getHandleType(x, y);
         // If it's a crop handle, return false
-        if (handle && handle.type !== 'move') return false;
-
-        // Check if point is inside crop area (for moving crop box)
-        const { x: cx, y: cy, width: cw, height: ch } = cropArea;
-        if (x >= cx && x <= cx + cw && y >= cy && y <= cy + ch) {
-          return false; // Inside crop area, should move crop box
-        }
+        if (handle) return false;
 
         // Check if point is on image
         const rect = canvasRef.current.getBoundingClientRect();
         const scaleX = imageRef.current.width / rect.width;
         const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.min(scaleX, scaleY);
+        const baseScale = Math.max(scaleX, scaleY);
         const baseDisplayWidth = imageRef.current.width / baseScale;
         const baseDisplayHeight = imageRef.current.height / baseScale;
         const displayWidth = baseDisplayWidth * scale;
@@ -835,15 +823,9 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           return;
         }
 
-        // Otherwise, check for crop handle
-        const handle = getHandleType(x, y);
-        if (handle) {
-          setIsDragging(true);
-          setDragHandle(handle);
-          setDragStart({ x: e.clientX, y: e.clientY });
-        }
+        // Crop area is fixed; no resize or move handlers.
       },
-      [cropArea, getHandleType, isPointOnImage, imagePosition],
+      [cropArea, isPointOnImage, imagePosition],
     );
 
     // Mouse move handler for crop area
@@ -881,7 +863,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         // Calculate display size
         const scaleX = imageRef.current.width / rect.width;
         const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.min(scaleX, scaleY);
+        const baseScale = Math.max(scaleX, scaleY);
         const baseDisplayWidth = imageRef.current.width / baseScale;
         const baseDisplayHeight = imageRef.current.height / baseScale;
         const displayWidth = baseDisplayWidth * scale;
@@ -940,7 +922,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         const rect = canvasRef.current.getBoundingClientRect();
         const scaleX = imageRef.current.width / rect.width;
         const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.min(scaleX, scaleY);
+        const baseScale = Math.max(scaleX, scaleY);
         const baseDisplayWidth = imageRef.current.width / baseScale;
         const baseDisplayHeight = imageRef.current.height / baseScale;
 
@@ -1061,7 +1043,8 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
               top: tagPosition.top,
             }}
           >
-            {Math.round(cropArea.width)} × {Math.round(cropArea.height)} px
+            {Math.round((tagCropArea || cropArea).width)} ×{' '}
+            {Math.round((tagCropArea || cropArea).height)} px
           </Typography>
         )}
         {/* Zoom Controls */}

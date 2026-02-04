@@ -69,19 +69,21 @@ function BasicStoryContent() {
   }, []);
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-      width: '600px'
-    }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        width: 'min(100%, 32rem)',
+      }}
+    >
       <CropperElement
         imageSrc={DEFAULT_IMAGE_URL}
         onCropChange={handleCropChange}
-        style={{ height: '600px', maxWidth: '800px', width: '100%' }}
+        aspectRatio={1 / 1}
       />
       {cropArea && (
-        <div style={{ fontSize: '14px' }}>
+        <div style={{ fontSize: '0.875rem' }}>
           <strong>裁切區域：</strong> x: {Math.round(cropArea.x)}, y:{' '}
           {Math.round(cropArea.y)}, width: {Math.round(cropArea.width)}, height:{' '}
           {Math.round(cropArea.height)}
@@ -121,13 +123,20 @@ function AspectRatioStoryContent() {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '600px' }}>
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        width: 'min(100%, 32rem)',
+      }}
+    >
+      <div style={{ alignItems: 'center', display: 'flex', gap: '0.5rem' }}>
+        <label style={{ alignItems: 'center', display: 'flex', gap: '0.5rem' }}>
           <strong>Aspect Ratio:</strong>
           <select
             onChange={(event) => handleAspectRatioChange(event.target.value)}
-            style={{ minWidth: '120px', padding: '4px 8px' }}
+            style={{ minWidth: '7.5rem', padding: '0.25rem 0.5rem' }}
             value={
               aspectRatio === undefined
                 ? ''
@@ -150,7 +159,7 @@ function AspectRatioStoryContent() {
           </select>
         </label>
         {aspectRatio !== undefined && (
-          <span style={{ color: '#666', fontSize: '14px' }}>
+          <span style={{ color: '#666', fontSize: '0.875rem' }}>
             當前比例: {aspectRatio.toFixed(3)}
           </span>
         )}
@@ -159,10 +168,9 @@ function AspectRatioStoryContent() {
         aspectRatio={aspectRatio}
         imageSrc={DEFAULT_IMAGE_URL}
         onCropChange={handleCropChange}
-        style={{ height: '600px', maxWidth: '800px', width: '100%' }}
       />
       {cropArea && (
-        <div style={{ fontSize: '14px' }}>
+        <div style={{ fontSize: '0.875rem' }}>
           <strong>裁切區域：</strong> x: {Math.round(cropArea.x)}, y:{' '}
           {Math.round(cropArea.y)}, width: {Math.round(cropArea.width)}, height:{' '}
           {Math.round(cropArea.height)}
@@ -198,7 +206,14 @@ function FileInputStoryContent() {
   }, [imageUrl]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '600px' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        width: 'min(100%, 32rem)',
+      }}
+    >
       <input
         accept="image/*"
         onChange={handleFileChange}
@@ -207,8 +222,8 @@ function FileInputStoryContent() {
       {imageUrl && (
         <CropperElement
           imageSrc={imageUrl}
+          aspectRatio={16 / 9}
           onCropChange={action('onCropChange')}
-          style={{ height: '600px', maxWidth: '800px', width: '100%' }}
         />
       )}
     </div>

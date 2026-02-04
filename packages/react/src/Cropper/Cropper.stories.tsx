@@ -171,6 +171,7 @@ function UploaderStoryContent() {
       await CropperModal.open({
         cropperProps: {
           imageSrc: file,
+          aspectRatio: 1
         },
         onConfirm: async ({ canvas, cropArea, imageSrc }) => {
           if (!canvas || !cropArea || !imageSrc) return;
@@ -252,6 +253,7 @@ function ButtonStoryContent() {
     await CropperModal.open({
       cropperProps: {
         imageSrc: DEFAULT_IMAGE_URL,
+        aspectRatio: 4 / 3
       },
       onConfirm: async ({ canvas, cropArea, imageSrc }) => {
         if (!canvas || !cropArea || !imageSrc) return;
@@ -265,6 +267,7 @@ function ButtonStoryContent() {
         setPreviewUrl(dataUrl);
       },
       title: '裁切頁首圖片',
+      size: 'regular',
       supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
     });
   }, []);
