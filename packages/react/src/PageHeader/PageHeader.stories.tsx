@@ -34,7 +34,7 @@ export const Default: Story = {
               {/* back button: use component with href prop or <Button /> component */}
               <a href="./" title="back" />
 
-              <Button>Secondary</Button>
+              <Button variant="base-secondary">Secondary</Button>
               <Button>Primary</Button>
 
               <Dropdown
