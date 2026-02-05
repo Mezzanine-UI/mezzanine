@@ -4,7 +4,6 @@
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/effect' as effect;
 @use '~@mezzanine-ui/system/transition' as transition;
-@use '~@mezzanine-ui/system/typography' as typography;
 @use './selection' as *;
 
 $input-size: spacing.primitive-variable(12);
@@ -154,8 +153,6 @@ $states: (
   padding-inline: spacing.semantic-variable(padding, horizontal, base-fixed);
   padding-block: spacing.semantic-variable(padding, vertical, base);
   gap: spacing.semantic-variable(gap, base);
-  @include typography.variant(body1);
-
   transition:
     transition.standard(color),
     transition.standard(background-color),
@@ -243,7 +240,6 @@ $states: (
     min-inline-size: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
-    @include typography.variant(body-highlight);
   }
 
   &--disabled &__text {
@@ -257,7 +253,6 @@ $states: (
     min-inline-size: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
-    @include typography.variant(caption);
   }
 
   &--disabled &__supporting-text {
