@@ -1,20 +1,20 @@
-import { ChevronDownIcon } from '@mezzanine-ui/icons';
+import { ChevronRightIcon } from '@mezzanine-ui/icons';
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Accordion, { AccordionSummary } from '.';
+import Accordion, { AccordionContent, AccordionTitle } from '.';
 
-describe('<AccordionSummary />', () => {
+describe('<AccordionTitle />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<AccordionSummary ref={ref} />),
+    render(<AccordionTitle ref={ref} />),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
-    render(<AccordionSummary className={className} />),
+    render(<AccordionTitle className={className} />),
   );
 
   describe('interact with Accordion', () => {
@@ -23,7 +23,8 @@ describe('<AccordionSummary />', () => {
     beforeEach(() => {
       const { getHostHTMLElement } = render(
         <Accordion>
-          <AccordionSummary id="accordion-1">test</AccordionSummary>
+          <AccordionTitle id="accordion-1">test</AccordionTitle>
+          <AccordionContent>content</AccordionContent>
         </Accordion>,
       );
 
@@ -31,116 +32,74 @@ describe('<AccordionSummary />', () => {
     });
 
     it('should aria- props correctly applied', async () => {
-      const summary = document.getElementById('accordion-1');
+      const title = hostElement.querySelector('[class*="accordion__title"]');
 
-      expect(summary?.getAttribute('aria-expanded')).toBe('false');
+      expect(title?.getAttribute('aria-expanded')).toBe('false');
+
+      const clickTarget =
+        hostElement.querySelector('[class*="title-main-part"]') ||
+        hostElement.querySelector('button') ||
+        title;
 
       await act(async () => {
-        fireEvent.click(summary!);
+        fireEvent.click(clickTarget!);
       });
 
-      expect(summary?.getAttribute('aria-expanded')).toBe('true');
-      expect(summary?.getAttribute('aria-controls')).toBe(
-        'accordion-1-details',
-      );
+      expect(title?.getAttribute('aria-expanded')).toBe('true');
+      expect(title?.getAttribute('aria-controls')).toBe('accordion-1-content');
     });
 
     it('should expand icon existed by default', () => {
-      const summaryIcon = hostElement.querySelector(
-        '.mzn-accordion__summary__icon',
+      const titleIcon = hostElement.querySelector('[data-icon-name]');
+
+      expect(titleIcon?.getAttribute('data-icon-name')).toBe(
+        ChevronRightIcon.name,
       );
-
-      expect(summaryIcon?.getAttribute('data-icon-name')).toBe(
-        ChevronDownIcon.name,
-      );
-    });
-
-    it('should icon expanded class applied when clicked on summary', async () => {
-      const summary = document.getElementById('accordion-1');
-
-      expect(
-        hostElement.querySelector('.mzn-accordion__summary__icon--expanded'),
-      ).toBeNull();
-
-      await act(async () => {
-        fireEvent.click(summary!);
-      });
-
-      const summaryIconExpanded = hostElement.querySelector(
-        '.mzn-accordion__summary__icon--expanded',
-      );
-
-      expect(summaryIconExpanded?.getAttribute('data-icon-name')).toBe(
-        ChevronDownIcon.name,
-      );
-    });
-
-    it('should icon expanded class applied when clicked on icon', async () => {
-      const icon = hostElement.querySelector('.mzn-accordion__summary__icon');
-
-      await act(async () => {
-        fireEvent.click(icon!);
-      });
-
-      const iconExpanded = hostElement.querySelector(
-        '.mzn-accordion__summary__icon--expanded',
-      );
-
-      expect(iconExpanded?.getAttribute('data-icon-name')).toBe(
-        ChevronDownIcon.name,
-      );
-    });
-
-    it('should nothing happened when `mouseDown` event trigger on icon', async () => {
-      const icon = hostElement.querySelector('.mzn-accordion__summary__icon');
-
-      await act(async () => {
-        fireEvent.mouseDown(icon!);
-      });
-
-      const iconExpanded = hostElement.querySelector(
-        '.mzn-accordion__summary__icon--expanded',
-      );
-
-      expect(iconExpanded).toBeNull();
     });
 
     describe('Keyboard Event', () => {
       it('should `Enter` keyboard event toggle Accordion to open', async () => {
-        const summary = document.getElementById('accordion-1');
+        const title = hostElement.querySelector('[class*="accordion__title"]');
+        const clickTarget =
+          hostElement.querySelector('[class*="title-main-part"]') ||
+          hostElement.querySelector('button') ||
+          title;
 
         await act(async () => {
-          fireEvent.keyDown(summary!, { key: 'Enter', code: 'Enter' });
+          fireEvent.keyDown(clickTarget!, { code: 'Enter', key: 'Enter' });
         });
 
-        const summaryIconExpanded = hostElement.querySelector(
-          '.mzn-accordion__summary__icon--expanded',
-        );
-
-        expect(summaryIconExpanded?.getAttribute('data-icon-name')).toBe(
-          ChevronDownIcon.name,
-        );
+        expect(title?.getAttribute('aria-expanded')).toBe('true');
       });
 
       it('should keyboard events been ignored except `Enter`', async () => {
-        const summary = document.getElementById('accordion-1');
+        const title = hostElement.querySelector('[class*="accordion__title"]');
+        const clickTarget =
+          hostElement.querySelector('[class*="title-main-part"]') ||
+          hostElement.querySelector('button') ||
+          title;
 
         await act(async () => {
-          fireEvent.keyDown(summary!, { key: 'ArrowDown', code: 'ArrowDown' });
-          fireEvent.keyDown(summary!, { key: 'ArrowUp', code: 'ArrowUp' });
-          fireEvent.keyDown(summary!, {
-            key: 'ArrowRight',
-            code: 'ArrowRight',
+          fireEvent.keyDown(clickTarget!, {
+            code: 'ArrowDown',
+            key: 'ArrowDown',
           });
-          fireEvent.keyDown(summary!, { key: 'ArrowLeft', code: 'ArrowLeft' });
-          fireEvent.keyDown(summary!, { key: 'Tab', code: 'Tab' });
+          fireEvent.keyDown(clickTarget!, {
+            code: 'ArrowUp',
+            key: 'ArrowUp',
+          });
+          fireEvent.keyDown(clickTarget!, {
+            code: 'ArrowRight',
+            key: 'ArrowRight',
+          });
+          fireEvent.keyDown(clickTarget!, {
+            code: 'ArrowLeft',
+            key: 'ArrowLeft',
+          });
+          fireEvent.keyDown(clickTarget!, { code: 'Tab', key: 'Tab' });
         });
 
-        const summaryIconExpanded = hostElement.querySelector(
-          '.mzn-accordion__summary__icon--expanded',
-        );
-
-        expect(summaryIconExpanded).toBeNull();
+        expect(title?.getAttribute('aria-expanded')).toBe('false');
       });
     });
   });
@@ -151,48 +110,48 @@ describe('<AccordionSummary />', () => {
     beforeEach(() => {
       const { getHostHTMLElement } = render(
         <Accordion disabled>
-          <AccordionSummary id="accordion-1">test</AccordionSummary>
+          <AccordionTitle id="accordion-1">test</AccordionTitle>
+          <AccordionContent>content</AccordionContent>
         </Accordion>,
       );
 
       hostElement = getHostHTMLElement();
     });
 
-    it('should summary disabled classes been applied', () => {
-      expect(
-        hostElement.querySelector('.mzn-accordion__summary--disabled'),
-      ).toBeInstanceOf(HTMLElement);
-      expect(
-        hostElement.querySelector('.mzn-accordion__summary__icon--disabled'),
-      ).toBeInstanceOf(HTMLElement);
+    it('should title disabled classes been applied', () => {
+      const title = hostElement.querySelector('[class*="accordion__title"]');
+      const titleIcon = hostElement.querySelector('[data-icon-name]');
+
+      expect(title?.className).toMatch(/disabled/);
+      expect(titleIcon?.className).toMatch(/disabled/);
     });
 
-    it('should not expanded when summary clicked', async () => {
-      const summary = hostElement.querySelector(
-        '.mzn-accordion__summary--disabled',
-      );
+    it('should not expanded when title clicked', async () => {
+      const title = hostElement.querySelector('[class*="accordion__title"]');
+      const clickTarget =
+        hostElement.querySelector('[class*="title-main-part"]') ||
+        hostElement.querySelector('button') ||
+        title;
 
       await act(async () => {
-        fireEvent.click(summary!);
+        fireEvent.click(clickTarget!);
       });
 
-      expect(summary?.getAttribute('aria-expanded')).toBe('false');
+      expect(title?.getAttribute('aria-expanded')).toBe('false');
     });
 
-    it('should not expanded when icon clicked', async () => {
-      const icon = hostElement.querySelector(
-        '.mzn-accordion__summary__icon--disabled',
-      );
+    it('should not expanded when keyboard event triggered', async () => {
+      const title = hostElement.querySelector('[class*="accordion__title"]');
+      const clickTarget =
+        hostElement.querySelector('[class*="title-main-part"]') ||
+        hostElement.querySelector('button') ||
+        title;
 
       await act(async () => {
-        fireEvent.click(icon!);
+        fireEvent.keyDown(clickTarget!, { code: 'Enter', key: 'Enter' });
       });
 
-      const iconExpanded = hostElement.querySelector(
-        '.mzn-accordion__summary__icon--expanded',
-      );
-
-      expect(iconExpanded).toBeNull();
+      expect(title?.getAttribute('aria-expanded')).toBe('false');
     });
   });
 });

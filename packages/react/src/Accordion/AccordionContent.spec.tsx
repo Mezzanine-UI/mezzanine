@@ -1,56 +1,50 @@
-import { act, cleanup, fireEvent, render } from '../../__test-utils__';
+import { cleanup, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Accordion, { AccordionTitle, AccordionContent } from '.';
 
-describe('<AccordionDetails />', () => {
+describe('<AccordionContent />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(<AccordionContent ref={ref} expanded />),
   );
 
-  it('should applied expanded className when prop expanded is true', () => {
+  it('should render when prop expanded is true', () => {
     const { getHostHTMLElement } = render(<AccordionContent expanded />);
 
     const host = getHostHTMLElement();
 
-    expect(
-      host.querySelector('.mzn-accordion__details--expanded'),
-    ).toBeInstanceOf(HTMLDivElement);
+    expect(host.querySelector('.mzn-accordion__content')).toBeInstanceOf(
+      HTMLDivElement,
+    );
   });
 
   describe('with Accordion', () => {
     let accordionHost: HTMLElement;
 
-    beforeEach(async () => {
+    beforeEach(() => {
       const { getHostHTMLElement } = render(
-        <Accordion>
+        <Accordion defaultExpanded>
           <AccordionTitle id="accordion-1">foo</AccordionTitle>
           <AccordionContent>bar</AccordionContent>
         </Accordion>,
       );
 
-      const tempHost = getHostHTMLElement();
-
-      await act(async () => {
-        fireEvent.click(tempHost.querySelector('.mzn-accordion__summary')!);
-      });
-
-      accordionHost = tempHost;
+      accordionHost = getHostHTMLElement();
     });
 
-    it('should be expanded when context `expanded` is true', () => {
+    it('should render content when context `expanded` is true', () => {
       expect(
-        accordionHost.querySelector('.mzn-accordion__details--expanded'),
+        accordionHost.querySelector('.mzn-accordion__content'),
       ).toBeInstanceOf(HTMLDivElement);
     });
 
     it('should aria- props applied', () => {
-      const details = accordionHost.querySelector('.mzn-accordion__details');
+      const content = accordionHost.querySelector('.mzn-accordion__content');
 
-      expect(details?.getAttribute('role')).toBe('region');
-      expect(details?.getAttribute('aria-labelledby')).toBe('accordion-1');
-      expect(details?.getAttribute('id')).toBe('accordion-1-details');
+      expect(content?.getAttribute('role')).toBe('region');
+      expect(content?.getAttribute('aria-labelledby')).toBe('accordion-1');
+      expect(content?.getAttribute('id')).toBe('accordion-1-content');
     });
   });
 });
