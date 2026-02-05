@@ -256,7 +256,7 @@ export const PlacementExample: Story = {
             options={simpleOptions}
             placement={placement}
             value={value}
-            disablePortal={false}
+            globalPortal={false}
             onSelect={(option) => {
               setValue(option.id);
             }}
@@ -436,9 +436,6 @@ export const LoadMoreOnReachBottom: Story = {
         setHasReachedBottom(false);
       }, []);
 
-      // 在載入時，暫時清空選項以顯示 DropdownStatus 的 loading
-      const displayOptions = loading ? [] : options;
-
       return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
           <Tag label={`已載入 ${options.length} / ${usStatesOptions.length} 個選項`} />
@@ -450,8 +447,9 @@ export const LoadMoreOnReachBottom: Story = {
               onSelect={(option) => {
                 setValue(option.id);
               }}
-              options={displayOptions}
+              options={options}
               status={loading ? 'loading' : undefined}
+              loadingPosition="bottom"
               loadingText="載入中..."
               value={value}
               placement="right-start"

@@ -2,6 +2,7 @@ import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
 import Button from '../Button';
 import TextField from '../TextField';
 import Dropdown from './Dropdown';
@@ -413,6 +414,185 @@ describe('<Dropdown />', () => {
       await user.click(outsideButton);
       await waitFor(() => {
         expect(screen.queryByText('Option 1')).not.toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('prop: children with ref', () => {
+    it('should merge refs correctly when children has ref', () => {
+      const childRef = React.createRef<HTMLButtonElement>();
+      render(
+        <Dropdown options={mockOptions} inputPosition="outside">
+          <Button ref={childRef}>Trigger</Button>
+        </Dropdown>
+      );
+      // 驗證 ref 被正確設置
+      expect(childRef.current).toBeInstanceOf(HTMLButtonElement);
+      expect(childRef.current?.textContent).toBe('Trigger');
+    });
+
+    it('should call original onClick handler from children', async () => {
+      const user = userEvent.setup();
+      const handleClick = jest.fn();
+      render(
+        <Dropdown options={mockOptions} inputPosition="outside">
+          <Button onClick={handleClick}>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      // 驗證原始的 onClick 被調用
+      expect(handleClick).toHaveBeenCalled();
+      // 驗證 dropdown 也打開了
+      await waitFor(() => {
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+      });
+    });
+
+    it('should call original onBlur handler from children in inline mode', async () => {
+      const user = userEvent.setup();
+      const handleBlur = jest.fn();
+      render(
+        <div>
+          <Dropdown options={mockOptions} inputPosition="inside">
+            <TextField>
+              <input
+                placeholder="Search"
+                onBlur={handleBlur}
+                data-testid="test-input"
+              />
+            </TextField>
+          </Dropdown>
+          <button>Outside</button>
+        </div>
+      );
+      const input = screen.getByTestId('test-input');
+      await user.click(input);
+      await waitFor(() => {
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+      });
+      const outsideButton = screen.getByText('Outside');
+      await user.click(outsideButton);
+      await waitFor(() => {
+        expect(handleBlur).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('prop: loadingPosition', () => {
+    it('should show full loading when loadingPosition is full and options are empty', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown
+          options={[]}
+          status="loading"
+          loadingPosition="full"
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        // 驗證顯示完整 loading（使用預設文字 "Loading..."）
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+        // 驗證有 spinner icon
+        const statusDiv = document.querySelector('.mzn-dropdown-status');
+        expect(statusDiv).toBeInTheDocument();
+      });
+    });
+
+    it('should show bottom loading when loadingPosition is bottom and options exist', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown
+          options={mockOptions}
+          status="loading"
+          loadingPosition="bottom"
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        // 驗證選項存在
+        expect(screen.getByText('Option 1')).toBeInTheDocument();
+        expect(screen.getByText('Option 2')).toBeInTheDocument();
+        expect(screen.getByText('Option 3')).toBeInTheDocument();
+      });
+      // 驗證底部 loading 存在（通過查找 loading-more class）
+      await waitFor(() => {
+        const loadingMore = document.querySelector('.mzn-dropdown-loading-more');
+        expect(loadingMore).toBeInTheDocument();
+        // 驗證底部 loading 中有 loading 文字
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+      });
+    });
+
+    it('should not show full loading when loadingPosition is bottom and options are empty', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown
+          options={[]}
+          status="loading"
+          loadingPosition="bottom"
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        // loadingPosition='bottom' 且 options 為空時，不應該顯示 full status
+        // 根據實作，當 options 為空且 loadingPosition='bottom' 時，shouldShowFullStatus 為 false
+        // 所以不應該顯示 .mzn-dropdown-status
+        const fullStatus = document.querySelector('.mzn-dropdown-status');
+        expect(fullStatus).not.toBeInTheDocument();
+      });
+    });
+
+    it('should use full as default loadingPosition', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown
+          options={[]}
+          status="loading"
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        // 預設應該顯示完整 loading（使用預設文字 "Loading..."）
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+        const statusDiv = document.querySelector('.mzn-dropdown-status');
+        expect(statusDiv).toBeInTheDocument();
+      });
+    });
+
+    it('should show custom loadingText when provided', async () => {
+      const user = userEvent.setup();
+      render(
+        <Dropdown
+          options={[]}
+          status="loading"
+          loadingText="載入中..."
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      const trigger = screen.getByText('Trigger');
+      await user.click(trigger);
+      await waitFor(() => {
+        // 驗證顯示自訂 loading 文字
+        expect(screen.getByText('載入中...')).toBeInTheDocument();
       });
     });
   });

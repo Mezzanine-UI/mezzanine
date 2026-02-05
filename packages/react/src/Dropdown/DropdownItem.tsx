@@ -7,6 +7,7 @@ import {
   DropdownCheckPosition,
   dropdownClasses,
   DropdownItemSharedProps,
+  DropdownLoadingPosition,
   DropdownOption,
   DropdownOptionsByType,
   DropdownStatus as DropdownStatusType,
@@ -112,6 +113,12 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    * The icon of the dropdown empty status.
    */
   emptyIcon?: IconDefinition;
+  /**
+   * The position to display the loading status.
+   * Only takes effect when `status === 'loading'`.
+   * @default 'full'
+   */
+  loadingPosition?: DropdownLoadingPosition;
   /**
    * Callback fired when the dropdown list reaches the bottom.
    * Only fires when `maxHeight` is set and the list is scrollable.
@@ -231,6 +238,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     loadingText,
     emptyText,
     emptyIcon,
+    loadingPosition = 'full',
     onReachBottom,
     onLeaveBottom,
     onScroll,
@@ -614,8 +622,11 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
 
   const { elements: renderedOptions } = renderOptions(optionsContent, 0, -1);
 
-  // Show status when options are empty and status is provided
-  const shouldShowStatus = optionsContent.length === 0 && status;
+  // Show full status when options are empty and status is provided, but not when loadingPosition is 'bottom'
+  const shouldShowFullStatus = optionsContent.length === 0 && status && loadingPosition !== 'bottom';
+
+  // Show bottom loading when status is loading, loadingPosition is bottom, and there are options
+  const shouldShowBottomLoading = status === 'loading' && loadingPosition === 'bottom' && optionsContent.length > 0;
 
   const listStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {
@@ -689,6 +700,37 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     },
     [getIsAtBottom],
   );
+
+  // Track previous loading state to only scroll when loading appears (not when it disappears)
+  const prevShouldShowBottomLoadingRef = useRef(false);
+
+  // Auto-scroll to bottom when bottom loading appears and user was at bottom
+  useEffect(() => {
+    // Only scroll when loading appears (transitions from false to true)
+    const loadingJustAppeared = shouldShowBottomLoading && !prevShouldShowBottomLoadingRef.current;
+    prevShouldShowBottomLoadingRef.current = shouldShowBottomLoading;
+
+    if (!loadingJustAppeared) return;
+
+    const scrollToBottom = (element: HTMLDivElement) => {
+      // Use requestAnimationFrame to ensure DOM is updated after loading element is rendered
+      requestAnimationFrame(() => {
+        element.scrollTop = element.scrollHeight;
+      });
+    };
+
+    if (shouldUseScrollbar) {
+      const viewport = viewportRef.current;
+      if (viewport && wasAtBottomRef.current) {
+        scrollToBottom(viewport);
+      }
+    } else {
+      const listWrapperElement = listWrapperRef.current;
+      if (listWrapperElement && maxHeight && wasAtBottomRef.current) {
+        scrollToBottom(listWrapperElement);
+      }
+    }
+  }, [shouldShowBottomLoading, shouldUseScrollbar, maxHeight]);
 
   useEffect(() => {
     if (shouldUseScrollbar) {
@@ -819,7 +861,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                 onViewportReady={handleViewportReady}
                 options={scrollbarOptions}
               >
-                {shouldShowStatus ? (
+                {shouldShowFullStatus ? (
                   <DropdownStatus
                     status={status}
                     loadingText={loadingText}
@@ -827,7 +869,20 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                     emptyIcon={emptyIcon}
                   />
                 ) : (
-                  renderedOptions
+                  <>
+                    {renderedOptions}
+                    {shouldShowBottomLoading && (
+                      <li
+                        className={dropdownClasses.loadingMore}
+                        role="presentation"
+                      >
+                        <DropdownStatus
+                          status="loading"
+                          loadingText={loadingText}
+                        />
+                      </li>
+                    )}
+                  </>
                 )}
               </Scrollbar>
             ) : (
@@ -836,7 +891,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                 className={dropdownClasses.listWrapper}
                 style={listWrapperStyle}
               >
-                {shouldShowStatus ? (
+                {shouldShowFullStatus ? (
                   <DropdownStatus
                     status={status}
                     loadingText={loadingText}
@@ -844,12 +899,25 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                     emptyIcon={emptyIcon}
                   />
                 ) : (
-                  renderedOptions
+                  <>
+                    {renderedOptions}
+                    {shouldShowBottomLoading && (
+                      <li
+                        className={dropdownClasses.loadingMore}
+                        role="presentation"
+                      >
+                        <DropdownStatus
+                          status="loading"
+                          loadingText={loadingText}
+                        />
+                      </li>
+                    )}
+                  </>
                 )}
               </div>
             )
           )
-          : shouldShowStatus ? (
+          : shouldShowFullStatus ? (
             <DropdownStatus
               status={status}
               loadingText={loadingText}
@@ -857,7 +925,20 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
               emptyIcon={emptyIcon}
             />
           ) : (
-            renderedOptions
+            <>
+              {renderedOptions}
+              {shouldShowBottomLoading && (
+                <li
+                  className={dropdownClasses.loadingMore}
+                  role="presentation"
+                >
+                  <DropdownStatus
+                    status="loading"
+                    loadingText={loadingText}
+                  />
+                </li>
+              )}
+            </>
           )
       }
       {hasActions && (
