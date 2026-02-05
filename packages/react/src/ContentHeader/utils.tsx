@@ -260,22 +260,29 @@ export const resolveContentHeaderChild = (
     const flatChildren = flattenChildren(children);
 
     const responsiveChildren: ReactNode[] = [];
-    flatChildren.forEach((child) => {
+
+    Children.forEach(flatChildren, (child) => {
       if (isValidElement(child) && child.type === ContentHeaderResponsive) {
         const props = child.props as any;
         const breakpointClass = contentHeaderClasses.breakpoint(
           props.breakpoint,
         );
 
-        flattenChildren(props.children).forEach((rwdChild) => {
-          const rwdProps = child.props as any;
+        Children.forEach(flattenChildren(props.children), (rwdChild) => {
+          if (isValidElement(rwdChild)) {
+            const rwdProps = rwdChild.props as any;
 
-          responsiveChildren.push(
-            cloneElement(rwdChild as ReactElement, {
-              ...rwdProps,
-              className: cx(breakpointClass, rwdProps?.className),
-            }),
-          );
+            responsiveChildren.push(
+              cloneElement(rwdChild as ReactElement, {
+                ...rwdProps,
+                className: cx(breakpointClass, rwdProps?.className),
+              }),
+            );
+          } else {
+            responsiveChildren.push(
+              <span className={breakpointClass}>{rwdChild}</span>,
+            );
+          }
         });
       } else {
         responsiveChildren.push(child);

@@ -75,11 +75,13 @@ export const MainSize: Story = {
           />
           <Input placeholder="請輸入料號或產品名稱..." variant="search" />
           <ContentHeaderResponsive breakpoint="above1080px">
-            <Button variant="destructive-primary">批次刪除</Button>
+            <Button variant="destructive-secondary">批次刪除</Button>
           </ContentHeaderResponsive>
           <Button>查詢料號</Button>
           <>
-            <Button icon={PlusIcon} />
+            <ContentHeaderResponsive breakpoint="above680px">
+              <Button icon={PlusIcon} />
+            </ContentHeaderResponsive>
             <Dropdown
               options={[
                 { id: '1', name: '重新整理' },

@@ -8,6 +8,7 @@ export interface ContentHeaderResponsiveProps {
   children?: React.ReactNode;
 }
 
+/** @experimental This component is still in testing and the API may change frequently */
 const ContentHeaderResponsive: React.FC<ContentHeaderResponsiveProps> = (
   props,
 ) => {
