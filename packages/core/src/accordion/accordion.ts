@@ -2,13 +2,20 @@ export const accordionPrefix = 'mzn-accordion';
 
 export const accordionClasses = {
   host: accordionPrefix,
-  summary: `${accordionPrefix}__summary`,
-  summaryDisabled: `${accordionPrefix}__summary--disabled`,
-  summaryIcon: `${accordionPrefix}__summary__icon`,
-  summaryIconDisabled: `${accordionPrefix}__summary__icon--disabled`,
-  summaryIconExpanded: `${accordionPrefix}__summary__icon--expanded`,
-  summaryMainPart: `${accordionPrefix}__summary__mainPart`,
-  summaryMainPartPrefix: `${accordionPrefix}__summary__mainPart__prefix`,
-  details: `${accordionPrefix}__details`,
-  detailsExpanded: `${accordionPrefix}__details--expanded`,
+  size: (size: 'main' | 'sub') => `${accordionPrefix}--${size}`,
+  title: `${accordionPrefix}__title`,
+  titleExpanded: `${accordionPrefix}__title--expanded`,
+  titleDisabled: `${accordionPrefix}__title--disabled`,
+  titleIcon: `${accordionPrefix}__title__icon`,
+  titleIconDisabled: `${accordionPrefix}__title__icon--disabled`,
+  titleIconExpanded: `${accordionPrefix}__title__icon--expanded`,
+  titleMainPart: `${accordionPrefix}__title__mainPart`,
+  titleActions: `${accordionPrefix}__title__actions`,
+  content: `${accordionPrefix}__content`,
+};
+
+export const accordionGroupPrefix = 'mzn-accordion-group';
+
+export const accordionGroupClasses = {
+  host: accordionGroupPrefix,
 };
