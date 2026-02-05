@@ -452,6 +452,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         break;
       }
       case 'currency': {
+        // 需注意 input type 不應是 number，因為要允許輸入格式化後的字串（例如 1,000）
         const currencyProps = props as CurrencyInputProps;
         const { step = 1, max, min, onSpinUp, onSpinDown } = currencyProps;
 

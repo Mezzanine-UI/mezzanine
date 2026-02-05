@@ -208,7 +208,7 @@ export const CurrencyInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
-  const [spinNumber, setSpinNumber] = useState(100);
+  const [spinNumber, setSpinNumber] = useState('1000');
 
   return (
     <div
@@ -262,9 +262,8 @@ export const CurrencyInput = () => {
         </Typography>
         <Input
           variant="currency"
-          inputType="number"
-          value={`${spinNumber}`}
-          onChange={(evt) => setSpinNumber(Number(evt.target.value))}
+          value={spinNumber}
+          onChange={(evt) => setSpinNumber(evt.target.value)}
           min={0}
           max={10000}
           step={100}
