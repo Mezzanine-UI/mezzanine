@@ -3,10 +3,10 @@
 import { createContext } from 'react';
 
 export interface AccordionControlContextValue {
-  detailsId?: string;
+  contentId?: string;
   disabled: boolean;
   expanded: boolean;
-  summaryId?: string;
+  titleId?: string;
   toggleExpanded(e: boolean): void;
 }
 

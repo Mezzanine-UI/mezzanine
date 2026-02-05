@@ -7,20 +7,23 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { AccordionControlContext } from './AccordionControlContext';
 import { Collapse } from '../Transition';
 
-export interface AccordionDetailsProps
+export interface AccordionContentProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * If true, expands the details, otherwise collapse it.
+   * If true, expands the content, otherwise collapse it.
    */
   expanded?: boolean;
 }
 
-const AccordionDetails = forwardRef<HTMLDivElement, AccordionDetailsProps>(
-  function AccordionDetails(props, ref) {
+const AccordionContent = forwardRef<HTMLDivElement, AccordionContentProps>(
+  function AccordionContent(props, ref) {
     const { className, children, expanded: expandedProp, ...rest } = props;
 
-    const { detailsId, expanded, summaryId } =
-      useContext(AccordionControlContext) || {};
+    const {
+      contentId: detailsId,
+      expanded,
+      titleId: summaryId,
+    } = useContext(AccordionControlContext) || {};
 
     const ariaProps = useMemo(() => {
       if (summaryId && detailsId) {
@@ -39,13 +42,7 @@ const AccordionDetails = forwardRef<HTMLDivElement, AccordionDetailsProps>(
           {...rest}
           {...ariaProps}
           ref={ref}
-          className={cx(
-            classes.details,
-            {
-              [classes.detailsExpanded]: expandedProp || expanded,
-            },
-            className,
-          )}
+          className={cx(classes.content, className)}
           role="region"
         >
           {children}
@@ -55,4 +52,4 @@ const AccordionDetails = forwardRef<HTMLDivElement, AccordionDetailsProps>(
   },
 );
 
-export default AccordionDetails;
+export default AccordionContent;
