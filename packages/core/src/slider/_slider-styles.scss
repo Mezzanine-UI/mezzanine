@@ -9,7 +9,7 @@
 $rail-height: spacing.semantic-variable(size, element, hairline) !default;
 $handler-size: spacing.semantic-variable(size, element, base) !default;
 $handler-scale-size: spacing.semantic-variable(size, element, relaxed) !default;
-$handler-color: palette.semantic-variable(background, brand) !default;
+$handler-color: palette.semantic-variable('background', brand) !default;
 
 .#{$prefix} {
   display: inline-flex;
@@ -25,6 +25,8 @@ $handler-color: palette.semantic-variable(background, brand) !default;
     }
 
     .#{$track-prefix} {
+      pointer-events: none;
+
       > span {
         background-color: palette.semantic-variable(background, neutral-light);
       }
@@ -183,6 +185,7 @@ $handler-color: palette.semantic-variable(background, brand) !default;
 
 .#{$prefix}__tick {
   background-color: palette.semantic-variable(background, base);
+  border-radius: 100%;
   display: flex;
   height: $rail-height;
   left: 0;
