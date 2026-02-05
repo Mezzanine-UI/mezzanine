@@ -3,7 +3,6 @@ import React, {
   useState,
   useCallback,
   useMemo,
-  Children,
   ReactElement,
   cloneElement,
 } from 'react';
@@ -14,7 +13,6 @@ import { cx } from '../utils/cx';
 import { Fade } from '../Transition';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import AccordionTitle, { AccordionTitleProps } from './AccordionTitle';
-import AccordionActions from './AccordionActions';
 import { flattenChildren } from '../utils/flatten-children';
 import AccordionContent, { AccordionContentProps } from './AccordionContent';
 
@@ -55,11 +53,17 @@ export interface AccordionProps
   title?: string;
   /**
    * The actions displayed on the right side of the accordion title. <br />
+   * Only `Button` or `Dropdown` is allowed.
    */
   actions?: AccordionTitleProps['actions'];
 }
 
-const resolveChildren = (children: React.ReactNode) => {
+const resolveChildren = (
+  children: React.ReactNode,
+): {
+  title: ReactElement<AccordionTitleProps> | null;
+  content: ReactElement<AccordionContentProps> | null;
+} => {
   let title: ReactElement<AccordionTitleProps> | null = null;
   let content: ReactElement<AccordionContentProps> | null = null;
   const restContentChildren: React.ReactNode[] = [];
@@ -82,21 +86,21 @@ const resolveChildren = (children: React.ReactNode) => {
 
       content = child as ReactElement<AccordionContentProps>;
     } else {
-      if (content || title) {
-        console.warn(
-          '[Mezzanine][Accordion] When <AccordionTitle> or <AccordionContent> is used as children. Please wrap other children with AccordionContent.',
-        );
-      }
-
       restContentChildren.push(child);
     }
   });
 
-  if (!content) {
-    content = <AccordionContent />;
-  }
-
   if (restContentChildren.length > 0) {
+    if (content || title) {
+      console.warn(
+        '[Mezzanine][Accordion] When <AccordionTitle> or <AccordionContent> is used as children. Please wrap other children with AccordionContent.',
+      );
+    }
+
+    if (!content) {
+      content = <AccordionContent />;
+    }
+
     content = cloneElement(content, {
       children: [content.props.children, ...restContentChildren],
     });
@@ -105,7 +109,6 @@ const resolveChildren = (children: React.ReactNode) => {
   return {
     title,
     content,
-    restContentChildren,
   };
 };
 
@@ -125,7 +128,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
     } = props;
 
     const [expanded, toggleExpanded] = useState<boolean>(
-      defaultExpanded || false,
+      defaultExpanded ?? false,
     );
 
     const onToggleExpanded = useCallback(
@@ -151,7 +154,7 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
             ? `${(resolvedTitle as ReactElement<any>).props.id}-content`
             : undefined,
         disabled,
-        expanded: expandedProp || expanded,
+        expanded: expandedProp ?? expanded,
         titleId:
           (resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id) ??
           undefined,
@@ -182,9 +185,9 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
               enter: MOTION_EASING.entrance,
               exit: MOTION_EASING.exit,
             }}
-            in={expandedProp || expanded}
+            in={expandedProp ?? expanded}
           >
-            {<div>{resolvedContent}</div>}
+            <div>{resolvedContent}</div>
           </Fade>
         </AccordionControlContext.Provider>
       </div>

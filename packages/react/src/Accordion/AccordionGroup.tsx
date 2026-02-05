@@ -1,15 +1,41 @@
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, isValidElement, useMemo } from 'react';
 import { accordionGroupClasses } from '@mezzanine-ui/core/accordion';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { flattenChildren } from '../utils/flatten-children';
+import Accordion, { AccordionProps } from './Accordion';
 
-export type AccordionGroupProps = NativeElementPropsWithoutKeyAndRef<'div'>;
+export interface AccordionGroupProps
+  extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /**
+   * The size of accordion group, which will be passed to each Accordion in the group.
+   * @default 'main'
+   */
+  size?: 'main' | 'sub';
+}
 
 const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
   function AccordionGroup(props, ref) {
-    const { className, children, ...rest } = props;
+    const { className, children, size, ...rest } = props;
+
+    const childrenWithSize = useMemo(
+      () =>
+        flattenChildren(children).map((child) => {
+          if (isValidElement(child) && child.type === Accordion) {
+            return {
+              ...child,
+              props: {
+                ...(child.props as AccordionProps),
+                size,
+              },
+            };
+          }
+          return child;
+        }),
+      [children, size],
+    );
 
     return (
       <div
@@ -17,7 +43,7 @@ const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
         ref={ref}
         className={cx(accordionGroupClasses.host, className)}
       >
-        {children}
+        {childrenWithSize}
       </div>
     );
   },

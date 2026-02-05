@@ -23,11 +23,11 @@ import { Rotate } from '../Transition';
 export interface AccordionTitleProps
   extends NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
-   * custom chevronDown icon className
+   * Custom ChevronRight icon className.
    */
   iconClassName?: string;
   /**
-   * custom suffix actions
+   * Custom suffix actions.
    */
   actions?: AccordionActionsProps;
 }
@@ -70,20 +70,8 @@ const AccordionTitle = forwardRef<HTMLDivElement, AccordionTitleProps>(
       [disabled, expanded, toggleExpanded],
     );
 
-    const onKeyDown = (e: KeyboardEvent<Element>) => {
-      switch (e.code) {
-        case 'Enter':
-          onToggle(e);
-
-          break;
-
-        default:
-          break;
-      }
-    };
-
     const ariaProps = useMemo(() => {
-      let result: any = {
+      let result: React.AriaAttributes = {
         'aria-expanded': expanded,
       };
 
@@ -105,21 +93,21 @@ const AccordionTitle = forwardRef<HTMLDivElement, AccordionTitleProps>(
     return (
       <div
         {...rest}
-        {...ariaProps}
         ref={ref}
         className={cx(
           classes.title,
           {
+            [classes.titleExpanded]: expanded,
             [classes.titleDisabled]: disabled,
           },
           className,
         )}
       >
         <button
-          onClick={onToggle}
-          onKeyDown={onKeyDown}
-          type="button"
           className={classes.titleMainPart}
+          onClick={onToggle}
+          type="button"
+          {...ariaProps}
         >
           <Rotate in={expanded} degrees={-90}>
             <Icon
@@ -127,7 +115,6 @@ const AccordionTitle = forwardRef<HTMLDivElement, AccordionTitleProps>(
               className={cx(
                 classes.titleIcon,
                 {
-                  // [classes.titleIconExpanded]: expanded,
                   [classes.titleIconDisabled]: disabled,
                 },
                 iconClassNameProp,

@@ -6,6 +6,7 @@ import Dropdown from '../Dropdown';
 import AccordionActions from './AccordionActions';
 import AutoComplete from '../AutoComplete';
 import AccordionGroup from './AccordionGroup';
+import Typography from '../Typography';
 
 export default {
   title: 'Data Display/Accordion',
@@ -16,9 +17,27 @@ export const Basic = () => (
     style={{
       maxWidth: '680px',
       width: '100%',
+      display: 'grid',
+      gap: '32px',
     }}
   >
-    <AccordionGroup>
+    <Typography variant="h3">Accordion Group - Size Main</Typography>
+    <AccordionGroup size="main">
+      <Accordion title="付款方式" disabled>
+        目前支援信用卡、Line Pay、Apple Pay 等多種付款方式，
+        您可以在結帳時選擇最方便的付款選項。
+      </Accordion>
+      <Accordion title="運送政策" defaultExpanded>
+        訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。 滿 $1,000
+        享免運優惠，未滿則需支付 $80 運費。
+      </Accordion>
+      <Accordion title="退換貨須知">
+        商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。
+        如有瑕疵或寄送錯誤，我們將負擔來回運費。
+      </Accordion>
+    </AccordionGroup>
+    <Typography variant="h3">Accordion Group - Size Sub</Typography>
+    <AccordionGroup size="sub">
       <Accordion title="付款方式" disabled>
         目前支援信用卡、Line Pay、Apple Pay 等多種付款方式，
         您可以在結帳時選擇最方便的付款選項。
@@ -45,11 +64,11 @@ export const Controlled = () => {
         width: '100%',
       }}
     >
-      <AccordionGroup title="篩選條件">
+      <AccordionGroup>
         <Accordion
           expanded={activeAccordion === 0}
           onChange={(open) => setActiveAccordion(open ? 0 : -1)}
-          title="帳號設定"
+          title="篩選條件"
         >
           您可以在此更新您的姓名、電子郵件與聯絡電話。 變更將在儲存後立即生效。
         </Accordion>
