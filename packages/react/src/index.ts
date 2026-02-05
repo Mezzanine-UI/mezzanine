@@ -411,8 +411,6 @@ export type {
 /**
  * Feedback
  */
-export { default as ConfirmActions } from './ConfirmActions';
-export type { ConfirmActionsProps } from './ConfirmActions';
 export { default as Message } from './Message';
 export type { MessageData, MessageSeverity, MessageType } from './Message';
 export {
