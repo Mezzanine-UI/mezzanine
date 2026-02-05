@@ -49,6 +49,13 @@ export type {
   ButtonSize,
   ButtonVariant,
 } from './Button';
+export { default as Cropper } from './Cropper';
+export type {
+  CropperComponent,
+  CropperProps,
+  CropperPropsBase,
+  CropperSize,
+} from './Cropper';
 export { default as Icon } from './Icon';
 export type { IconColor, IconProps } from './Icon';
 export { default as Typography } from './Typography';
