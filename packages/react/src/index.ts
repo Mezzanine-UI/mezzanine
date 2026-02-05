@@ -110,13 +110,17 @@ export type { TabItemProps, TabProps, TabsChild } from './Tab';
  */
 export {
   default as Accordion,
-  AccordionDetails,
-  AccordionSummary,
+  AccordionActions,
+  AccordionContent,
+  AccordionGroup,
+  AccordionTitle,
 } from './Accordion';
 export type {
-  AccordionDetailsProps,
+  AccordionActionsProps,
+  AccordionContentProps,
+  AccordionGroupProps,
   AccordionProps,
-  AccordionSummaryProps,
+  AccordionTitleProps,
 } from './Accordion';
 export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';

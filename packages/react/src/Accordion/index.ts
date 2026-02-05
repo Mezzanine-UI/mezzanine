@@ -1,6 +1,10 @@
 export type { AccordionProps } from './Accordion';
 export { default } from './Accordion';
-export { default as AccordionSummary } from './AccordionSummary';
-export type { AccordionSummaryProps } from './AccordionSummary';
-export { default as AccordionDetails } from './AccordionDetails';
-export type { AccordionDetailsProps } from './AccordionDetails';
+export { default as AccordionTitle } from './AccordionTitle';
+export type { AccordionTitleProps } from './AccordionTitle';
+export { default as AccordionContent } from './AccordionContent';
+export type { AccordionContentProps } from './AccordionContent';
+export { default as AccordionActions } from './AccordionActions';
+export type { AccordionActionsProps } from './AccordionActions';
+export { default as AccordionGroup } from './AccordionGroup';
+export type { AccordionGroupProps } from './AccordionGroup';

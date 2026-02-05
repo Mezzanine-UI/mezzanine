@@ -1,16 +1,16 @@
 import { act, cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
-import Accordion, { AccordionSummary, AccordionDetails } from '.';
+import Accordion, { AccordionTitle, AccordionContent } from '.';
 
 describe('<AccordionDetails />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<AccordionDetails ref={ref} expanded />),
+    render(<AccordionContent ref={ref} expanded />),
   );
 
   it('should applied expanded className when prop expanded is true', () => {
-    const { getHostHTMLElement } = render(<AccordionDetails expanded />);
+    const { getHostHTMLElement } = render(<AccordionContent expanded />);
 
     const host = getHostHTMLElement();
 
@@ -25,8 +25,8 @@ describe('<AccordionDetails />', () => {
     beforeEach(async () => {
       const { getHostHTMLElement } = render(
         <Accordion>
-          <AccordionSummary id="accordion-1">foo</AccordionSummary>
-          <AccordionDetails>bar</AccordionDetails>
+          <AccordionTitle id="accordion-1">foo</AccordionTitle>
+          <AccordionContent>bar</AccordionContent>
         </Accordion>,
       );
 

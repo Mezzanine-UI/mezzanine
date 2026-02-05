@@ -1,18 +1,31 @@
-import {
+import React, {
   forwardRef,
   useState,
   useCallback,
   useMemo,
   Children,
   ReactElement,
+  cloneElement,
 } from 'react';
 import { accordionClasses as classes } from '@mezzanine-ui/core/accordion';
 import { AccordionControlContext } from './AccordionControlContext';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { cx } from '../utils/cx';
+import { Fade } from '../Transition';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import AccordionTitle, { AccordionTitleProps } from './AccordionTitle';
+import AccordionActions from './AccordionActions';
+import { flattenChildren } from '../utils/flatten-children';
+import AccordionContent, { AccordionContentProps } from './AccordionContent';
 
 export interface AccordionProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'onChange'> {
+  /**
+   * The content of the component. <br />
+   * The first child will be treated as the title of the accordion, and the rest will be treated as the content of the accordion.
+   * You can also use `title` prop to set the title of the accordion, then all children will be treated as the content of the accordion.
+   */
+  children: React.ReactNode;
   /**
    * If true, expands the accordion by default.
    * @default false
@@ -31,17 +44,83 @@ export interface AccordionProps
    * Callback fired when the expand/collapse state is changed.
    */
   onChange?(e: boolean): void;
+  /**
+   * The size of accordion.
+   * @default 'main'
+   */
+  size?: 'main' | 'sub';
+  /**
+   * The title of accordion.
+   */
+  title?: string;
+  /**
+   * The actions displayed on the right side of the accordion title. <br />
+   */
+  actions?: AccordionTitleProps['actions'];
 }
+
+const resolveChildren = (children: React.ReactNode) => {
+  let title: ReactElement<AccordionTitleProps> | null = null;
+  let content: ReactElement<AccordionContentProps> | null = null;
+  const restContentChildren: React.ReactNode[] = [];
+
+  flattenChildren(children).forEach((child) => {
+    if (React.isValidElement(child) && child.type === AccordionTitle) {
+      if (title) {
+        console.warn(
+          '[Mezzanine][Accordion] Only one AccordionTitle is allowed as children of Accordion.',
+        );
+      }
+
+      title = child as ReactElement<AccordionTitleProps>;
+    } else if (React.isValidElement(child) && child.type === AccordionContent) {
+      if (content) {
+        console.warn(
+          '[Mezzanine][Accordion] Only one AccordionContent is allowed as children of Accordion.',
+        );
+      }
+
+      content = child as ReactElement<AccordionContentProps>;
+    } else {
+      if (content || title) {
+        console.warn(
+          '[Mezzanine][Accordion] When <AccordionTitle> or <AccordionContent> is used as children. Please wrap other children with AccordionContent.',
+        );
+      }
+
+      restContentChildren.push(child);
+    }
+  });
+
+  if (!content) {
+    content = <AccordionContent />;
+  }
+
+  if (restContentChildren.length > 0) {
+    content = cloneElement(content, {
+      children: [content.props.children, ...restContentChildren],
+    });
+  }
+
+  return {
+    title,
+    content,
+    restContentChildren,
+  };
+};
 
 const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
   function Accordion(props, ref) {
     const {
-      className,
+      actions,
       children: childrenProp,
+      className,
       defaultExpanded = false,
       disabled = false,
       expanded: expandedProp,
       onChange,
+      size = 'main',
+      title,
       ...rest
     } = props;
 
@@ -60,26 +139,53 @@ const Accordion = forwardRef<HTMLDivElement, AccordionProps>(
       [onChange],
     );
 
-    const [summary, ...children] = Children.toArray(childrenProp);
+    const { title: resolvedTitle, content: resolvedContent } = useMemo(
+      () => resolveChildren(childrenProp),
+      [childrenProp],
+    );
 
     const contextValue = useMemo(
       () => ({
-        detailsId: (summary as ReactElement<any>)?.props?.id
-          ? `${(summary as ReactElement<any>).props.id}-details`
-          : undefined,
+        contentId:
+          resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id
+            ? `${(resolvedTitle as ReactElement<any>).props.id}-content`
+            : undefined,
         disabled,
         expanded: expandedProp || expanded,
-        summaryId: (summary as ReactElement<any>)?.props?.id,
+        titleId:
+          (resolvedTitle && (resolvedTitle as ReactElement<any>)?.props?.id) ??
+          undefined,
         toggleExpanded: onToggleExpanded,
       }),
-      [disabled, expandedProp, expanded, onToggleExpanded, summary],
+      [disabled, expandedProp, expanded, onToggleExpanded, resolvedTitle],
     );
 
     return (
-      <div {...rest} ref={ref} className={cx(classes.host, className)}>
+      <div
+        {...rest}
+        ref={ref}
+        className={cx(classes.host, classes.size(size), className)}
+      >
         <AccordionControlContext.Provider value={contextValue}>
-          {summary}
-          {children}
+          {title ? (
+            <AccordionTitle actions={actions}>{title}</AccordionTitle>
+          ) : (
+            resolvedTitle
+          )}
+
+          <Fade
+            duration={{
+              enter: MOTION_DURATION.moderate,
+              exit: MOTION_DURATION.moderate,
+            }}
+            easing={{
+              enter: MOTION_EASING.entrance,
+              exit: MOTION_EASING.exit,
+            }}
+            in={expandedProp || expanded}
+          >
+            {<div>{resolvedContent}</div>}
+          </Fade>
         </AccordionControlContext.Provider>
       </div>
     );
