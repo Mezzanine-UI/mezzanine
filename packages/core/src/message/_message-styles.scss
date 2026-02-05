@@ -33,7 +33,7 @@
   flex-shrink: 0;
   display: flex;
   flex-flow: row;
-  align-items: flex-start;
+  align-items: center;
   gap: spacing.semantic-variable(gap, tight-fixed);
   padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, spacious);
   max-width: spacing.semantic-variable(size, container, standard);
@@ -49,9 +49,9 @@
   }
 
   &__content {
+    white-space: pre-line;
     color: palette.semantic-variable(text, neutral-solid);
     @include typography.semantic-variable(body);
-    @include typography.overflow-ellipsis();
   }
 
   @each $severity in $severities {
