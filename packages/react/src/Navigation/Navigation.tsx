@@ -37,6 +37,7 @@ export type NavigationChild =
   | null
   | undefined
   | false;
+
 export type NavigationChildren = NavigationChild | NavigationChild[];
 
 export interface NavigationProps

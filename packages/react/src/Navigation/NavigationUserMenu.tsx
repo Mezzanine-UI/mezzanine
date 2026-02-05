@@ -17,8 +17,6 @@ const NavigationUserMenu = forwardRef<
   HTMLButtonElement,
   NavigationUserMenuProps
 >((props, ref) => {
-  // shared props
-
   const { children, className, imgSrc, onClick, ...rest } = props;
   const {
     open: openProp,
