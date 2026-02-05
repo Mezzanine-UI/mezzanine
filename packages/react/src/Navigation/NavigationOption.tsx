@@ -19,7 +19,7 @@ import {
 } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import { Collapse } from '../Transition';
+import { Collapse, Fade } from '../Transition';
 import {
   NavigationActivatedContext,
   NavigationOptionLevelContext,
@@ -221,7 +221,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               tabIndex={0}
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
-              <span className={classes.title}>{title}</span>
+
+              <Fade in={collapsed === false || !icon}>
+                <span className={classes.title}>{title}</span>
+              </Fade>
+
               {badge}
               {children && (
                 <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
