@@ -133,8 +133,6 @@ export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
 export { default as Section } from './Section';
 export type { SectionProps } from './Section';
-export { default as Card, CardActions } from './Card';
-export type { CardActionsProps, CardProps } from './Card';
 export {
   Description,
   DescriptionContent,
