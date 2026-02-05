@@ -256,8 +256,13 @@ const CropperModalNotifier = (props: CropperModalNotifierProps) => {
     onClose,
     onConfirm,
     resolve,
+    maxCount: _maxCount,
+    duration: _duration,
     ...rest
-  } = props;
+  } = props as CropperModalNotifierProps & {
+    maxCount?: unknown;
+    duration?: unknown;
+  };
   const resolvedRef = useRef(false);
 
   const resolveOnce = useCallback(
@@ -302,12 +307,16 @@ const CropperModalNotifier = (props: CropperModalNotifierProps) => {
 };
 
 const cropperModalNotifier = createNotifier<CropperModalNotifierData>({
-  render: (notifierProps) => (
-    <CropperModalNotifier
-      {...notifierProps}
-      notifierKey={notifierProps.key}
-    />
-  ),
+  render: (notifierProps) => {
+    const { key, ...restProps } = notifierProps;
+
+    return (
+      <CropperModalNotifier
+        {...restProps}
+        notifierKey={key}
+      />
+    );
+  },
 });
 
 CropperModal.open = (options: CropperModalOpenOptions) =>

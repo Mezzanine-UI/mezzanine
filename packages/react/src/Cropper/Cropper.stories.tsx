@@ -118,13 +118,12 @@ const argTypes: Partial<ArgTypes<CropperModalProps>> = {
     },
   },
   size: {
-    control: {
-      options: sizes,
-      type: 'select',
-    },
-    description: 'The size of the modal',
+    control: 'inline-radio',
+    description: 'The size of cropper',
+    options: ['main', 'sub', 'minor'],
     table: {
-      type: { summary: 'ModalSize' },
+      defaultValue: { summary: "'main'" },
+      type: { summary: 'CropperSize' },
     },
   },
   supportingText: {

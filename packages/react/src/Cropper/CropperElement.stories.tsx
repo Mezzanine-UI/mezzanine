@@ -38,11 +38,9 @@ const argTypes: Partial<ArgTypes<CropperElementProps>> = {
     },
   },
   size: {
-    control: {
-      options: ['main', 'sub', 'minor'],
-      type: 'radio',
-    },
+    control: 'inline-radio',
     description: 'The size of cropper',
+    options: ['main', 'sub', 'minor'],
     table: {
       defaultValue: { summary: "'main'" },
       type: { summary: 'CropperSize' },
