@@ -35,6 +35,7 @@ export interface AccordionTitleProps
 const resolveChildren = (children: ReactNode) => {
   const mainPartChildren: ReactNode[] = [];
   const actionsChildren: ReactNode[] = [];
+
   flattenChildren(children).forEach((child) => {
     if (isValidElement(child) && child.type === AccordionActions) {
       actionsChildren.push(child);
@@ -105,6 +106,7 @@ const AccordionTitle = forwardRef<HTMLDivElement, AccordionTitleProps>(
       >
         <button
           className={classes.titleMainPart}
+          disabled={disabled}
           onClick={onToggle}
           type="button"
           {...ariaProps}
