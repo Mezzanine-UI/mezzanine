@@ -141,6 +141,11 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
       minHeight,
       minWidth,
       onCropChange,
+      onCropDragEnd,
+      onImageDragEnd,
+      onScaleChange,
+      onImageLoad,
+      onImageError,
       size: cropperSize = 'main',
     } = cropperProps ?? {};
     const [currentCropArea, setCurrentCropArea] = useState<CropArea | null>(
@@ -215,6 +220,11 @@ const CropperModalComponent = forwardRef<HTMLDivElement, CropperModalProps>(
           minHeight={minHeight}
           minWidth={minWidth}
           onCropChange={handleCropChange}
+          onCropDragEnd={onCropDragEnd}
+          onImageDragEnd={onImageDragEnd}
+          onScaleChange={onScaleChange}
+          onImageLoad={onImageLoad}
+          onImageError={onImageError}
           ref={canvasRef}
           size={cropperSize}
         />

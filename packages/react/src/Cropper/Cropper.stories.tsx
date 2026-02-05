@@ -168,38 +168,10 @@ function UploaderStoryContent() {
 
       let uploadResult: UploadFile[] | null = null;
 
-      await CropperModal.open({
+      const result = await CropperModal.open({
         cropperProps: {
           imageSrc: file,
           aspectRatio: 1
-        },
-        onConfirm: async ({ canvas, cropArea, imageSrc }) => {
-          if (!canvas || !cropArea || !imageSrc) return;
-          const blob = await cropToBlob({
-            canvas,
-            cropArea,
-            imageSrc,
-            format: 'image/png',
-            quality: 0.9,
-          });
-          const dataUrl = await cropToDataURL({
-            canvas,
-            cropArea,
-            imageSrc,
-            format: 'image/png',
-            quality: 0.9,
-          });
-          const croppedFile = new File([blob], `cropped-${Date.now()}.png`, {
-            type: 'image/png',
-          });
-          uploadResult = [
-            {
-              id: `cropped-${Date.now()}`,
-              file: croppedFile,
-              status: 'done',
-              url: dataUrl,
-            },
-          ];
         },
         onCancel: () => {
           setFiles([]);
@@ -209,6 +181,35 @@ function UploaderStoryContent() {
         title: '裁切頁首圖片',
         supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
       });
+
+      // Process after modal is closed (result contains the context)
+      if (result && result.canvas && result.cropArea && result.imageSrc) {
+        const blob = await cropToBlob({
+          canvas: result.canvas,
+          cropArea: result.cropArea,
+          imageSrc: result.imageSrc,
+          format: 'image/png',
+          quality: 0.9,
+        });
+        const dataUrl = await cropToDataURL({
+          canvas: result.canvas,
+          cropArea: result.cropArea,
+          imageSrc: result.imageSrc,
+          format: 'image/png',
+          quality: 0.9,
+        });
+        const croppedFile = new File([blob], `cropped-${Date.now()}.png`, {
+          type: 'image/png',
+        });
+        uploadResult = [
+          {
+            id: `cropped-${Date.now()}`,
+            file: croppedFile,
+            status: 'done',
+            url: dataUrl,
+          },
+        ];
+      }
 
       setProcessing(false);
       if (!uploadResult) {

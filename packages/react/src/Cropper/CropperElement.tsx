@@ -70,6 +70,11 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       size = 'main',
       imageSrc,
       onCropChange,
+      onCropDragEnd,
+      onImageDragEnd,
+      onScaleChange,
+      onImageLoad,
+      onImageError,
       initialCropArea,
       aspectRatio,
       minWidth = DEFAULT_MIN_WIDTH,
@@ -274,6 +279,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
           imageRef.current = img;
           setImageLoaded(true);
+          onImageLoad?.();
 
           // Initialize crop area if not provided
           if (!initialCropArea && canvasRef.current) {
@@ -300,6 +306,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           }
           console.error('Failed to load image:', error);
           setImageLoaded(false);
+          onImageError?.(error instanceof Error ? error : new Error(String(error)));
         }
       };
 
@@ -310,7 +317,15 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           URL.revokeObjectURL(objectUrl);
         }
       };
-    }, [imageSrc, initialCropArea, aspectRatio, calculateInitialCropArea, setCropAreaIfChanged]);
+    }, [
+      imageSrc,
+      initialCropArea,
+      aspectRatio,
+      calculateInitialCropArea,
+      setCropAreaIfChanged,
+      onImageLoad,
+      onImageError,
+    ]);
 
     useLayoutEffect(() => {
       updateTagPosition();
@@ -1037,7 +1052,8 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         dragRafIdRef.current = null;
       }
 
-      const wasDragging = isDragging || isDraggingImage;
+      const wasDraggingCrop = isDragging;
+      const wasDraggingImage = isDraggingImage;
 
       setIsDragging(false);
       setDragHandle(null);
@@ -1046,11 +1062,19 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       setImageDragStart(null);
 
       // Update tag position and emit crop change after drag ends
-      if (wasDragging) {
+      if (wasDraggingCrop || wasDraggingImage) {
         updateTagPosition();
         if (cropArea && imageLoaded) {
           emitCropChange(cropArea);
         }
+      }
+
+      // Call drag end callbacks
+      if (wasDraggingCrop && cropArea && onCropDragEnd) {
+        onCropDragEnd(cropArea);
+      }
+      if (wasDraggingImage && onImageDragEnd) {
+        onImageDragEnd();
       }
     }, [
       isDragging,
@@ -1059,6 +1083,8 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       imageLoaded,
       emitCropChange,
       updateTagPosition,
+      onCropDragEnd,
+      onImageDragEnd,
     ]);
 
     // Document events for dragging
@@ -1086,6 +1112,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       (newScale: number) => {
         if (!canvasRef.current || !imageRef.current || !cropArea) {
           setScale(newScale);
+          onScaleChange?.(newScale);
           return;
         }
 
@@ -1093,6 +1120,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         const baseSize = getBaseDisplaySizeUtil(rect, imageRef.current);
         if (!baseSize) {
           setScale(newScale);
+          onScaleChange?.(newScale);
           return;
         }
 
@@ -1127,8 +1155,9 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
         setScale(newScale);
         setImagePosition(constrained);
+        onScaleChange?.(newScale);
       },
-      [cropArea, imagePosition, scale],
+      [cropArea, imagePosition, scale, onScaleChange],
     );
 
     // Handle slider change

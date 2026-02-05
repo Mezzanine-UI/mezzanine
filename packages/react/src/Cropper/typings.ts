@@ -24,6 +24,26 @@ export interface CropperPropsBase {
    */
   onCropChange?: (cropArea: CropArea) => void;
   /**
+   * Callback fired when crop area drag ends.
+   */
+  onCropDragEnd?: (cropArea: CropArea) => void;
+  /**
+   * Callback fired when image drag ends.
+   */
+  onImageDragEnd?: () => void;
+  /**
+   * Callback fired when scale (zoom) changes.
+   */
+  onScaleChange?: (scale: number) => void;
+  /**
+   * Callback fired when image loads successfully.
+   */
+  onImageLoad?: () => void;
+  /**
+   * Callback fired when image fails to load.
+   */
+  onImageError?: (error: Error) => void;
+  /**
    * Initial crop area.
    */
   initialCropArea?: CropArea;
