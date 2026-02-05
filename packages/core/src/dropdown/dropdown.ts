@@ -18,6 +18,8 @@ export type DropdownCheckPosition = 'prefix' | 'suffix' | 'none';
 
 export type DropdownInputPosition = 'inside' | 'outside';
 
+export type DropdownLoadingPosition = 'full' | 'bottom';
+
 /**
  * Base dropdown option interface
  */
@@ -153,6 +155,7 @@ export const dropdownClasses = {
   // dropdown status
   status: `${dropdownPrefix}-status`,
   statusText: `${dropdownPrefix}-status-text`,
+  loadingMore: `${dropdownPrefix}-loading-more`,
   // dropdown action
   action: `${dropdownPrefix}-action`,
   actionTopBar: `${dropdownPrefix}-action--top-bar`,

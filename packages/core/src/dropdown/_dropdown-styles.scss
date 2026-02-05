@@ -402,4 +402,10 @@ $section-configs: (
     text-align: center;
     font-feature-settings: 'liga' off, 'clig' off;
   }
+
+  // dropdown loading more (bottom loading indicator)
+  &-loading-more {
+    display: flex;
+    width: fit-content;
+  }
 }
