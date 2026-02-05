@@ -38,11 +38,28 @@ import { composeRefs } from '../utils/composeRefs';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import DropdownItem from './DropdownItem';
 
-// Helper type to extract ref from ReactElement props in React 19
-// Supports any component element type, defaults to HTMLElement for compatibility
+// Helper type to extract ref from a ReactElement.
+// Models `ref` on the element itself, which is compatible with React 18 and 19.
 type ReactElementWithRef<P, E extends Element = HTMLElement> = ReactElement<P> & {
-  props: P & { ref?: Ref<E> };
+  ref?: Ref<E>;
 };
+
+type TriggerElementProps = Partial<ButtonProps & InputProps> & {
+  ref?: Ref<HTMLElement>;
+};
+
+/**
+ * Extracts ref from a ReactElement, supporting both React 18 and 19.
+ * In React 18, ref is on the element itself; in React 19, ref is in props.
+ */
+function getElementRef<E extends Element = HTMLElement>(
+  element: ReactElementWithRef<unknown, E>,
+): Ref<E> | undefined {
+  // React 19: ref is in props
+  const propsRef = (element.props as { ref?: Ref<E> })?.ref;
+  // React 18: ref is on the element itself
+  return propsRef ?? element.ref;
+}
 
 export interface DropdownProps extends DropdownItemSharedProps {
   /**
@@ -509,8 +526,8 @@ export default function Dropdown(props: DropdownProps) {
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
-    const childWithRef = children as ReactElement<ButtonProps | InputProps | HTMLElement>;
-    const isInput = childWithRef.type !== Button;
+    // Only access the type property to check if it's a Button component
+    const isInput = (children as { type: unknown }).type !== Button;
 
     if (!isInput) return {};
 
@@ -594,7 +611,7 @@ export default function Dropdown(props: DropdownProps) {
   const triggerElement = useMemo(() => {
     const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
     const childProps = childWithRef.props;
-    const childRef = childProps?.ref;
+    const childRef = getElementRef(childWithRef);
     const composedRef = composeRefs<HTMLElement>([anchorRef, childRef]);
     const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
 
@@ -609,8 +626,8 @@ export default function Dropdown(props: DropdownProps) {
           setOpen((prev) => !prev);
         }
       },
-    });
-  }, [children, getComboboxProps, isInline, setOpen, anchorRef]);
+    } as TriggerElementProps);
+  }, [children, getComboboxProps, isInline, setOpen]);
 
   const inlineTriggerElement = useMemo(() => {
     if (!isInline) {
@@ -619,7 +636,7 @@ export default function Dropdown(props: DropdownProps) {
 
     const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
     const childProps = childWithRef.props;
-    const childRef = childProps?.ref;
+    const childRef = getElementRef(childWithRef);
     const composedRef = composeRefs<HTMLElement>([childRef]);
     const originalOnBlur = childProps.onBlur as React.FocusEventHandler<HTMLElement> | undefined;
     const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
@@ -663,8 +680,8 @@ export default function Dropdown(props: DropdownProps) {
 
         setOpen(true);
       },
-    });
-  }, [children, getComboboxProps, isInline, isOpenControlled, setOpen, containerRef]);
+    } as TriggerElementProps);
+  }, [children, getComboboxProps, isInline, isOpenControlled, setOpen]);
 
   useDocumentEvents(() => {
     if (!isOpen) {

@@ -625,8 +625,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
   // Show full status when options are empty and status is provided, but not when loadingPosition is 'bottom'
   const shouldShowFullStatus = optionsContent.length === 0 && status && loadingPosition !== 'bottom';
 
-  // Show bottom loading when status is loading, loadingPosition is bottom, and there are options
-  const shouldShowBottomLoading = status === 'loading' && loadingPosition === 'bottom' && optionsContent.length > 0;
+  // Show bottom loading when status is loading and loadingPosition is bottom
+  const shouldShowBottomLoading = status === 'loading' && loadingPosition === 'bottom';
 
   const listStyle = useMemo((): React.CSSProperties | undefined => {
     if (!maxHeight) {
@@ -874,7 +874,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                     {shouldShowBottomLoading && (
                       <li
                         className={dropdownClasses.loadingMore}
-                        role="presentation"
+                        aria-live="polite"
+                        role="status"
                       >
                         <DropdownStatus
                           status="loading"
@@ -904,7 +905,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
                     {shouldShowBottomLoading && (
                       <li
                         className={dropdownClasses.loadingMore}
-                        role="presentation"
+                        aria-live="polite"
+                        role="status"
                       >
                         <DropdownStatus
                           status="loading"
@@ -930,7 +932,8 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
               {shouldShowBottomLoading && (
                 <li
                   className={dropdownClasses.loadingMore}
-                  role="presentation"
+                  aria-live="polite"
+                  role="status"
                 >
                   <DropdownStatus
                     status="loading"

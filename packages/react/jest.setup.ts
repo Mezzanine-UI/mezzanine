@@ -5,6 +5,10 @@ jest.mock('overlayscrollbars/overlayscrollbars.css', () => ({}));
 
 // Mock ResizeObserver for tests
 global.ResizeObserver = class ResizeObserver {
+  constructor(_callback: ResizeObserverCallback) {
+    // Mock implementation
+  }
+
   observe() {
     // Mock implementation
   }

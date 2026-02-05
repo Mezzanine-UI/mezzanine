@@ -549,9 +549,15 @@ describe('<Dropdown />', () => {
       await waitFor(() => {
         // loadingPosition='bottom' 且 options 為空時，不應該顯示 full status
         // 根據實作，當 options 為空且 loadingPosition='bottom' 時，shouldShowFullStatus 為 false
-        // 所以不應該顯示 .mzn-dropdown-status
-        const fullStatus = document.querySelector('.mzn-dropdown-status');
+        // 所以不應該在 list 直接子層顯示 full status
+        const fullStatus = document.querySelector(
+          '.mzn-dropdown-list > .mzn-dropdown-status',
+        );
         expect(fullStatus).not.toBeInTheDocument();
+        // 應顯示底部 loading，避免空白狀態
+        const loadingMore = document.querySelector('.mzn-dropdown-loading-more');
+        expect(loadingMore).toBeInTheDocument();
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
       });
     });
 
