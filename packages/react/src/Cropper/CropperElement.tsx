@@ -24,6 +24,15 @@ import {
   CropperElementComponent,
   CropperPropsBase,
 } from './typings';
+import {
+  calculateInitialCropArea as calculateInitialCropAreaUtil,
+  constrainImagePosition as constrainImagePositionUtil,
+  getBaseDisplaySize as getBaseDisplaySizeUtil,
+  getBaseScale as getBaseScaleUtil,
+  isCropAreaSimilar as isCropAreaSimilarUtil,
+  isImagePositionSimilar as isImagePositionSimilarUtil,
+  type ImagePosition,
+} from './utils/cropper-calculations';
 
 export type CropperElementProps<C extends CropperElementComponent = 'canvas'> =
   ComponentOverridableForwardRefComponentPropsFactory<
@@ -38,11 +47,7 @@ interface CropHandle {
   type: 'nw' | 'ne' | 'sw' | 'se' | 'n' | 's' | 'e' | 'w' | 'move';
 }
 
-interface ImagePosition {
-  offsetX: number;
-  offsetY: number;
-}
-
+// Constants
 const DEFAULT_MIN_WIDTH = 50;
 const DEFAULT_MIN_HEIGHT = 50;
 const MIN_SCALE = 1;
@@ -50,6 +55,8 @@ const MAX_SCALE = 2;
 const SCALE_STEP = 0.01;
 const BORDER_WIDTH = 2;
 const TAG_INSET_PX = 10;
+const CROP_AREA_SIMILARITY_THRESHOLD = 0.5;
+const IMAGE_POSITION_SIMILARITY_THRESHOLD = 0.1;
 
 /**
  * The react component for `mezzanine` cropper element (canvas).
@@ -70,43 +77,71 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       ...rest
     } = props;
 
+    // Refs
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const elementRef = useRef<HTMLDivElement>(null);
     const imageRef = useRef<HTMLImageElement | null>(null);
     const imageLoadIdRef = useRef(0);
+
+    // State - Core
     const [cropArea, setCropArea] = useState<CropArea | null>(
       initialCropArea || null,
     );
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragHandle, setDragHandle] = useState<CropHandle | null>(null);
-    const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
-      null,
-    );
     const [imageLoaded, setImageLoaded] = useState(false);
+    const [initReady, setInitReady] = useState(false);
     const [scale, setScale] = useState(1);
     const [imagePosition, setImagePosition] = useState<ImagePosition>({
       offsetX: 0,
       offsetY: 0,
     });
+
+    // State - UI
+    const [tagPosition, setTagPosition] = useState<{
+      left: number;
+      top: number;
+    } | null>(null);
+    const [tagCropArea, setTagCropArea] = useState<CropArea | null>(null);
+
+    // State - Interactions
+    const [isDragging, setIsDragging] = useState(false);
     const [isDraggingImage, setIsDraggingImage] = useState(false);
+    const [dragHandle, setDragHandle] = useState<CropHandle | null>(null);
+    const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
+      null,
+    );
     const [imageDragStart, setImageDragStart] = useState<{
       x: number;
       y: number;
       offsetX: number;
       offsetY: number;
     } | null>(null);
-    const [hoverHandle, setHoverHandle] = useState<CropHandle | null>(null);
-    const [tagPosition, setTagPosition] = useState<{
-      left: number;
-      top: number;
-    } | null>(null);
-    const [tagCropArea, setTagCropArea] = useState<CropArea | null>(null);
+
+    // Refs - Cache for optimization
     const baseDisplaySizeRef = useRef<{ width: number; height: number } | null>(
       null,
     );
     const lastCanvasSizeRef = useRef<{ height: number; width: number } | null>(
       null,
     );
+    const lastMeasuredSizeRef = useRef<{ height: number; width: number } | null>(
+      null,
+    );
+    const lastTagPositionRef = useRef<{ left: number; top: number } | null>(
+      null,
+    );
+    const lastCropAreaRef = useRef<CropArea | null>(null);
+    const lastImagePositionRef = useRef<ImagePosition | null>(null);
+    const lastDrawTriggerRef = useRef<{
+      cropArea: CropArea | null;
+      imagePosition: ImagePosition;
+      scale: number;
+    } | null>(null);
+
+    // Refs - Animation & Control
+    const rafIdRef = useRef<number | null>(null);
+    const skipDrawRef = useRef(false);
+    const resizeRafIdRef = useRef<number | null>(null);
+    const dragRafIdRef = useRef<number | null>(null);
 
     const composedRef = useCallback(
       (node: HTMLCanvasElement | null) => {
@@ -120,65 +155,59 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       [ref],
     );
 
+    // State management with debouncing
+    const setCropAreaIfChanged = useCallback(
+      (nextCropArea: CropArea | null) => {
+        if (
+          !isCropAreaSimilarUtil(
+            lastCropAreaRef.current,
+            nextCropArea,
+            CROP_AREA_SIMILARITY_THRESHOLD,
+          )
+        ) {
+          lastCropAreaRef.current = nextCropArea;
+          setCropArea(nextCropArea);
+        }
+      },
+      [],
+    );
+
+    const setImagePositionIfChanged = useCallback(
+      (nextImagePosition: ImagePosition) => {
+        if (
+          !isImagePositionSimilarUtil(
+            lastImagePositionRef.current,
+            nextImagePosition,
+            IMAGE_POSITION_SIMILARITY_THRESHOLD,
+          )
+        ) {
+          lastImagePositionRef.current = nextImagePosition;
+          setImagePosition(nextImagePosition);
+        }
+      },
+      [],
+    );
+
+    // Calculation helpers
     const calculateInitialCropArea = useCallback(
       (img: HTMLImageElement, rect: DOMRect) => {
-        const scaleX = img.width / rect.width;
-        const scaleY = img.height / rect.height;
-        const baseScale = Math.max(scaleX, scaleY);
-
-        const baseDisplayWidth = img.width / baseScale;
-        const baseDisplayHeight = img.height / baseScale;
-        const initialOffsetX = (rect.width - baseDisplayWidth) / 2;
-        const initialOffsetY = (rect.height - baseDisplayHeight) / 2;
-
-        let initialWidth = baseDisplayWidth;
-        let initialHeight = baseDisplayHeight;
-
-        if (aspectRatio) {
-          const maxWidthByHeight = baseDisplayHeight * aspectRatio;
-          const maxHeightByWidth = baseDisplayWidth / aspectRatio;
-
-          if (maxWidthByHeight <= baseDisplayWidth) {
-            initialWidth = maxWidthByHeight;
-            initialHeight = baseDisplayHeight;
-          } else {
-            initialWidth = baseDisplayWidth;
-            initialHeight = maxHeightByWidth;
-          }
-        }
-
-        const initialX =
-          initialOffsetX + (baseDisplayWidth - initialWidth) / 2;
-        const initialY =
-          initialOffsetY + (baseDisplayHeight - initialHeight) / 2;
-
-        return {
-          baseDisplayHeight,
-          baseDisplayWidth,
-          cropArea: {
-            height: initialHeight,
-            width: initialWidth,
-            x: initialX,
-            y: initialY,
-          },
-          imagePosition: {
-            offsetX: initialOffsetX,
-            offsetY: initialOffsetY,
-          },
-        };
+        return calculateInitialCropAreaUtil(img, rect, aspectRatio);
       },
       [aspectRatio],
     );
 
     const updateTagPosition = useCallback(() => {
       if (!cropArea || !canvasRef.current || !elementRef.current) {
-        setTagPosition(null);
+        if (lastTagPositionRef.current) {
+          lastTagPositionRef.current = null;
+          setTagPosition(null);
+        }
         return;
       }
       const canvasRect = canvasRef.current.getBoundingClientRect();
       const elementRect = elementRef.current.getBoundingClientRect();
 
-      setTagPosition({
+      const nextPosition = {
         left:
           canvasRect.left -
           elementRect.left +
@@ -193,13 +222,24 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           cropArea.height -
           TAG_INSET_PX -
           BORDER_WIDTH,
-      });
+      };
+
+      const prevPosition = lastTagPositionRef.current;
+      if (
+        !prevPosition ||
+        prevPosition.left !== nextPosition.left ||
+        prevPosition.top !== nextPosition.top
+      ) {
+        lastTagPositionRef.current = nextPosition;
+        setTagPosition(nextPosition);
+      }
     }, [cropArea]);
 
     // Load image
     useEffect(() => {
       const loadId = imageLoadIdRef.current + 1;
       imageLoadIdRef.current = loadId;
+      setInitReady(false);
 
       if (!imageSrc) {
         setImageLoaded(false);
@@ -251,7 +291,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
               width: baseDisplayWidth,
             };
 
-            setCropArea(nextCropArea);
+            setCropAreaIfChanged(nextCropArea);
             setImagePosition(nextImagePosition);
           }
         } catch (error) {
@@ -270,7 +310,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           URL.revokeObjectURL(objectUrl);
         }
       };
-    }, [imageSrc, initialCropArea, aspectRatio, calculateInitialCropArea]);
+    }, [imageSrc, initialCropArea, aspectRatio, calculateInitialCropArea, setCropAreaIfChanged]);
 
     useLayoutEffect(() => {
       updateTagPosition();
@@ -280,47 +320,10 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
     const getBaseDisplaySize = useCallback(() => {
       if (!canvasRef.current || !imageRef.current) return null;
 
-      const canvas = canvasRef.current;
-      const img = imageRef.current;
-      const rect = canvas.getBoundingClientRect();
-
-      const scaleX = img.width / rect.width;
-      const scaleY = img.height / rect.height;
-      const baseScale = Math.max(scaleX, scaleY);
-
-      return {
-        width: img.width / baseScale,
-        height: img.height / baseScale,
-      };
+      const rect = canvasRef.current.getBoundingClientRect();
+      return getBaseDisplaySizeUtil(rect, imageRef.current);
     }, []);
 
-    // Constrain image position to ensure it covers crop area
-    const constrainImagePosition = useCallback(
-      (
-        newOffsetX: number,
-        newOffsetY: number,
-        displayWidth: number,
-        displayHeight: number,
-      ): ImagePosition => {
-        if (!cropArea || !canvasRef.current) {
-          return { offsetX: newOffsetX, offsetY: newOffsetY };
-        }
-
-        const { x: cx, y: cy, width: cw, height: ch } = cropArea;
-
-        // Ensure image always covers crop area (no white space in crop area)
-        const minOffsetX = cx + cw - displayWidth;
-        const maxOffsetX = cx;
-        const minOffsetY = cy + ch - displayHeight;
-        const maxOffsetY = cy;
-
-        return {
-          offsetX: Math.max(minOffsetX, Math.min(newOffsetX, maxOffsetX)),
-          offsetY: Math.max(minOffsetY, Math.min(newOffsetY, maxOffsetY)),
-        };
-      },
-      [cropArea],
-    );
 
     // Draw canvas
     const drawCanvas = useCallback(() => {
@@ -334,29 +337,17 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       if (!ctx) return;
 
       const rect = canvas.getBoundingClientRect();
-      if (!rect.width || !rect.height) return;
-
       const dpr = window.devicePixelRatio || 1;
-      const nextCanvasWidth = Math.round(rect.width * dpr);
-      const nextCanvasHeight = Math.round(rect.height * dpr);
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-      if (canvas.width !== nextCanvasWidth) {
-        canvas.width = nextCanvasWidth;
-      }
-      if (canvas.height !== nextCanvasHeight) {
-        canvas.height = nextCanvasHeight;
-      }
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Calculate base scale
-      const scaleX = img.width / rect.width;
-      const scaleY = img.height / rect.height;
-      const baseScale = Math.max(scaleX, scaleY);
-
       // Calculate display size with zoom
-      const baseDisplayWidth = img.width / baseScale;
-      const baseDisplayHeight = img.height / baseScale;
+      const baseSize = getBaseDisplaySizeUtil(rect, img);
+      if (!baseSize) return;
+
+      const baseDisplayWidth = baseSize.width;
+      const baseDisplayHeight = baseSize.height;
 
       if (!baseDisplaySizeRef.current) {
         baseDisplaySizeRef.current = {
@@ -369,20 +360,13 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       const displayHeight = baseDisplayHeight * scale;
 
       // Constrain image position
-      const constrainedPosition = constrainImagePosition(
+      const constrainedPosition = constrainImagePositionUtil(
         imagePosition.offsetX,
         imagePosition.offsetY,
         displayWidth,
         displayHeight,
+        crop,
       );
-
-      // Update position if constrained
-      if (
-        constrainedPosition.offsetX !== imagePosition.offsetX ||
-        constrainedPosition.offsetY !== imagePosition.offsetY
-      ) {
-        setImagePosition(constrainedPosition);
-      }
 
       const finalOffsetX = constrainedPosition.offsetX;
       const finalOffsetY = constrainedPosition.offsetY;
@@ -417,41 +401,70 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       ctx.lineWidth = BORDER_WIDTH;
       ctx.strokeRect(crop.x, crop.y, crop.width, crop.height);
 
-    }, [cropArea, scale, imagePosition, constrainImagePosition]);
+    }, [cropArea, scale, imagePosition]);
+
+    const scheduleDraw = useCallback(() => {
+      if (rafIdRef.current !== null) return;
+      rafIdRef.current = window.requestAnimationFrame(() => {
+        rafIdRef.current = null;
+        drawCanvas();
+      });
+    }, [drawCanvas]);
+
+    useEffect(() => {
+      return () => {
+        if (rafIdRef.current !== null) {
+          window.cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
+      };
+    }, []);
 
     useEffect(() => {
       if (!elementRef.current || !canvasRef.current) return undefined;
 
       const resizeObserver = new ResizeObserver(() => {
-        updateTagPosition();
-        if (imageLoaded) {
-          const rect = canvasRef.current?.getBoundingClientRect();
-          const isSizeChanged =
-            rect &&
-            (!lastCanvasSizeRef.current ||
-              rect.height !== lastCanvasSizeRef.current.height ||
-              rect.width !== lastCanvasSizeRef.current.width);
+        if (resizeRafIdRef.current !== null) return;
+        resizeRafIdRef.current = window.requestAnimationFrame(() => {
+          resizeRafIdRef.current = null;
+          if (imageLoaded) {
+            const rect = canvasRef.current?.getBoundingClientRect();
+            if (!rect || !rect.height) return;
+            const isSizeChanged =
+              !lastMeasuredSizeRef.current ||
+              rect.height !== lastMeasuredSizeRef.current.height;
 
-          if (isSizeChanged && rect) {
-            lastCanvasSizeRef.current = {
-              height: rect.height,
-              width: rect.width,
-            };
-            const baseSize = getBaseDisplaySize();
-            if (baseSize) {
-              baseDisplaySizeRef.current = baseSize;
+            let shouldSkipDraw = false;
+            if (isSizeChanged) {
+              lastMeasuredSizeRef.current = {
+                height: rect.height,
+                width: rect.width,
+              };
+              lastCanvasSizeRef.current = {
+                height: rect.height,
+                width: rect.width,
+              };
+              setInitReady(false);
+              const baseSize = getBaseDisplaySize();
+              if (baseSize) {
+                baseDisplaySizeRef.current = baseSize;
+              }
+              if (!initialCropArea && canvasRef.current && imageRef.current) {
+                shouldSkipDraw = true;
+                skipDrawRef.current = true;
+                const {
+                  cropArea: nextCropArea,
+                  imagePosition: nextImagePosition,
+                } = calculateInitialCropArea(imageRef.current, rect);
+                setCropAreaIfChanged(nextCropArea);
+                setImagePosition(nextImagePosition);
+              }
             }
-            if (!initialCropArea && canvasRef.current && imageRef.current) {
-              const {
-                cropArea: nextCropArea,
-                imagePosition: nextImagePosition,
-              } = calculateInitialCropArea(imageRef.current, rect);
-              setCropArea(nextCropArea);
-              setImagePosition(nextImagePosition);
+            if (!shouldSkipDraw) {
+              scheduleDraw();
             }
           }
-          drawCanvas();
-        }
+        });
       });
 
       resizeObserver.observe(elementRef.current);
@@ -461,14 +474,19 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       return () => {
         resizeObserver.disconnect();
         window.removeEventListener('resize', updateTagPosition);
+        if (resizeRafIdRef.current !== null) {
+          window.cancelAnimationFrame(resizeRafIdRef.current);
+          resizeRafIdRef.current = null;
+        }
       };
     }, [
       calculateInitialCropArea,
-      drawCanvas,
       getBaseDisplaySize,
       imageLoaded,
       initialCropArea,
+      scheduleDraw,
       updateTagPosition,
+      setCropAreaIfChanged,
     ]);
 
     useEffect(() => {
@@ -477,21 +495,109 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         if (baseSize) {
           baseDisplaySizeRef.current = baseSize;
         }
-        drawCanvas();
       }
-    }, [imageLoaded, drawCanvas, getBaseDisplaySize]);
+    }, [imageLoaded, getBaseDisplaySize]);
 
     useEffect(() => {
-      if (!imageLoaded) return;
-      updateTagPosition();
-      drawCanvas();
-    }, [cropArea, drawCanvas, imageLoaded, imagePosition, scale, updateTagPosition]);
+      if (!cropArea || !imageLoaded || !canvasRef.current || !imageRef.current)
+        return;
 
-    // Get handle type from mouse position
-    const getHandleType = useCallback(
-      (_x: number, _y: number): CropHandle | null => null,
-      [],
-    );
+      const rect = canvasRef.current.getBoundingClientRect();
+      const baseSize = getBaseDisplaySizeUtil(rect, imageRef.current);
+      if (!baseSize) return;
+
+      const displayWidth = baseSize.width * scale;
+      const displayHeight = baseSize.height * scale;
+      const constrainedPosition = constrainImagePositionUtil(
+        imagePosition.offsetX,
+        imagePosition.offsetY,
+        displayWidth,
+        displayHeight,
+        cropArea,
+      );
+
+      if (
+        constrainedPosition.offsetX !== imagePosition.offsetX ||
+        constrainedPosition.offsetY !== imagePosition.offsetY
+      ) {
+        skipDrawRef.current = true;
+        setImagePositionIfChanged(constrainedPosition);
+      } else {
+        skipDrawRef.current = false;
+      }
+    }, [
+      cropArea,
+      imageLoaded,
+      imagePosition,
+      scale,
+      setImagePositionIfChanged,
+    ]);
+
+    useEffect(() => {
+      if (cropArea) {
+        lastCropAreaRef.current = cropArea;
+      }
+    }, [cropArea]);
+
+    useEffect(() => {
+      lastImagePositionRef.current = imagePosition;
+    }, [imagePosition]);
+
+    useEffect(() => {
+      if (!imageLoaded || !cropArea) return;
+      if (!lastCanvasSizeRef.current) return;
+      setInitReady(true);
+    }, [cropArea, imageLoaded]);
+
+    useEffect(() => {
+      if (!imageLoaded || !initReady) return;
+      if (skipDrawRef.current) {
+        skipDrawRef.current = false;
+        return;
+      }
+
+      const lastTrigger = lastDrawTriggerRef.current;
+      const hasChanged =
+        !lastTrigger ||
+        !cropArea ||
+        !isCropAreaSimilarUtil(
+          lastTrigger.cropArea,
+          cropArea,
+          CROP_AREA_SIMILARITY_THRESHOLD,
+        ) ||
+        !isImagePositionSimilarUtil(
+          lastTrigger.imagePosition,
+          imagePosition,
+          IMAGE_POSITION_SIMILARITY_THRESHOLD,
+        ) ||
+        lastTrigger.scale !== scale;
+
+      if (!hasChanged) {
+        return;
+      }
+
+      lastDrawTriggerRef.current = {
+        cropArea,
+        imagePosition,
+        scale,
+      };
+
+      // Skip tag position update during drag for better performance
+      if (!isDraggingImage && !isDragging) {
+        updateTagPosition();
+      }
+      scheduleDraw();
+    }, [
+      cropArea,
+      imageLoaded,
+      initReady,
+      imagePosition,
+      scale,
+      updateTagPosition,
+      scheduleDraw,
+      isDraggingImage,
+      isDragging,
+    ]);
 
     const emitCropChange = useCallback(
       (nextCropArea: CropArea) => {
@@ -505,9 +611,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
         const rect = canvasRef.current.getBoundingClientRect();
         const img = imageRef.current;
-        const scaleX = img.width / rect.width;
-        const scaleY = img.height / rect.height;
-        const baseScale = Math.max(scaleX, scaleY);
+        const baseScale = getBaseScaleUtil(rect, img);
         const imageScale = baseScale / scale;
         const rawWidth = nextCropArea.width * imageScale;
         const rawHeight = nextCropArea.height * imageScale;
@@ -660,11 +764,18 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         // Apply constraints - allow crop area to extend to image bounds
         if (canvasRef.current && imageRef.current) {
           const rect = canvasRef.current.getBoundingClientRect();
-          const scaleX = imageRef.current.width / rect.width;
-          const scaleY = imageRef.current.height / rect.height;
-          const baseScale = Math.max(scaleX, scaleY);
-          const baseDisplayWidth = imageRef.current.width / baseScale;
-          const baseDisplayHeight = imageRef.current.height / baseScale;
+          const baseSize = getBaseDisplaySizeUtil(rect, imageRef.current);
+          if (!baseSize) {
+            const newCrop: CropArea = { x, y, width, height };
+            setCropArea(newCrop);
+            if (onCropChange) {
+              emitCropChange(newCrop);
+            }
+            return;
+          }
+
+          const baseDisplayWidth = baseSize.width;
+          const baseDisplayHeight = baseSize.height;
           const displayWidth = baseDisplayWidth * scale;
           const displayHeight = baseDisplayHeight * scale;
           const imageOffsetX = imagePosition.offsetX;
@@ -780,27 +891,22 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
 
     useEffect(() => {
       if (!cropArea || !imageLoaded) return;
+      // Skip emitting during drag to avoid performance issues
+      if (isDraggingImage || isDragging) return;
       emitCropChange(cropArea);
-    }, [cropArea, emitCropChange, imageLoaded, imagePosition, scale]);
+    }, [cropArea, emitCropChange, imageLoaded, isDraggingImage, isDragging]);
 
-    // Check if point is on image (not on crop handles)
+    // Check if point is on image
     const isPointOnImage = useCallback(
       (x: number, y: number): boolean => {
         if (!cropArea || !canvasRef.current || !imageRef.current) return false;
 
-        const handle = getHandleType(x, y);
-        // If it's a crop handle, return false
-        if (handle) return false;
-
-        // Check if point is on image
         const rect = canvasRef.current.getBoundingClientRect();
-        const scaleX = imageRef.current.width / rect.width;
-        const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.max(scaleX, scaleY);
-        const baseDisplayWidth = imageRef.current.width / baseScale;
-        const baseDisplayHeight = imageRef.current.height / baseScale;
-        const displayWidth = baseDisplayWidth * scale;
-        const displayHeight = baseDisplayHeight * scale;
+        const baseSize = getBaseDisplaySizeUtil(rect, imageRef.current);
+        if (!baseSize) return false;
+
+        const displayWidth = baseSize.width * scale;
+        const displayHeight = baseSize.height * scale;
 
         return (
           x >= imagePosition.offsetX &&
@@ -809,7 +915,7 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           y <= imagePosition.offsetY + displayHeight
         );
       },
-      [cropArea, scale, imagePosition, getHandleType],
+      [cropArea, scale, imagePosition],
     );
 
     // Mouse down handler
@@ -859,47 +965,101 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           !isDraggingImage ||
           !imageDragStart ||
           !canvasRef.current ||
-          !imageRef.current
+          !imageRef.current ||
+          !cropArea
         )
           return;
 
-        const rect = canvasRef.current.getBoundingClientRect();
-        const deltaX = e.clientX - imageDragStart.x;
-        const deltaY = e.clientY - imageDragStart.y;
+        // Cancel previous RAF if exists
+        if (dragRafIdRef.current !== null) {
+          window.cancelAnimationFrame(dragRafIdRef.current);
+        }
 
-        const newOffsetX = imageDragStart.offsetX + deltaX;
-        const newOffsetY = imageDragStart.offsetY + deltaY;
+        dragRafIdRef.current = window.requestAnimationFrame(() => {
+          dragRafIdRef.current = null;
 
-        // Calculate display size
-        const scaleX = imageRef.current.width / rect.width;
-        const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.max(scaleX, scaleY);
-        const baseDisplayWidth = imageRef.current.width / baseScale;
-        const baseDisplayHeight = imageRef.current.height / baseScale;
-        const displayWidth = baseDisplayWidth * scale;
-        const displayHeight = baseDisplayHeight * scale;
+          const rect = canvasRef.current?.getBoundingClientRect();
+          const img = imageRef.current;
+          if (!rect || !img) return;
 
-        // Constrain position
-        const constrained = constrainImagePosition(
-          newOffsetX,
-          newOffsetY,
-          displayWidth,
-          displayHeight,
-        );
+          const deltaX = e.clientX - imageDragStart.x;
+          const deltaY = e.clientY - imageDragStart.y;
 
-        setImagePosition(constrained);
+          const newOffsetX = imageDragStart.offsetX + deltaX;
+          const newOffsetY = imageDragStart.offsetY + deltaY;
+
+          // Calculate display size
+          const baseSize = getBaseDisplaySizeUtil(rect, img);
+          if (!baseSize) return;
+
+          const displayWidth = baseSize.width * scale;
+          const displayHeight = baseSize.height * scale;
+
+          // Constrain position
+          const constrained = constrainImagePositionUtil(
+            newOffsetX,
+            newOffsetY,
+            displayWidth,
+            displayHeight,
+            cropArea,
+          );
+
+          // Check if position actually changed (avoid updates when at boundary)
+          // Use ref to get latest position value to avoid closure issues
+          const currentPosition = lastImagePositionRef.current || imagePosition;
+          if (
+            !isImagePositionSimilarUtil(
+              currentPosition,
+              constrained,
+              IMAGE_POSITION_SIMILARITY_THRESHOLD,
+            )
+          ) {
+            setImagePosition(constrained);
+            scheduleDraw();
+          }
+        });
       },
-      [isDraggingImage, imageDragStart, scale, constrainImagePosition],
+      [
+        isDraggingImage,
+        imageDragStart,
+        scale,
+        cropArea,
+        scheduleDraw,
+        imagePosition,
+      ],
     );
 
     // Mouse up handler
     const handleMouseUp = useCallback(() => {
+      // Cancel any pending drag RAF
+      if (dragRafIdRef.current !== null) {
+        window.cancelAnimationFrame(dragRafIdRef.current);
+        dragRafIdRef.current = null;
+      }
+
+      const wasDragging = isDragging || isDraggingImage;
+
       setIsDragging(false);
       setDragHandle(null);
       setDragStart(null);
       setIsDraggingImage(false);
       setImageDragStart(null);
-    }, []);
+
+      // Update tag position and emit crop change after drag ends
+      if (wasDragging) {
+        updateTagPosition();
+        if (cropArea && imageLoaded) {
+          emitCropChange(cropArea);
+        }
+      }
+    }, [
+      isDragging,
+      isDraggingImage,
+      cropArea,
+      imageLoaded,
+      emitCropChange,
+      updateTagPosition,
+    ]);
 
     // Document events for dragging
     useDocumentEvents(
@@ -930,42 +1090,45 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
         }
 
         const rect = canvasRef.current.getBoundingClientRect();
-        const scaleX = imageRef.current.width / rect.width;
-        const scaleY = imageRef.current.height / rect.height;
-        const baseScale = Math.max(scaleX, scaleY);
-        const baseDisplayWidth = imageRef.current.width / baseScale;
-        const baseDisplayHeight = imageRef.current.height / baseScale;
+        const baseSize = getBaseDisplaySizeUtil(rect, imageRef.current);
+        if (!baseSize) {
+          setScale(newScale);
+          return;
+        }
 
         // Calculate center point of crop area in canvas coordinates
         const centerX = cropArea.x + cropArea.width / 2;
         const centerY = cropArea.y + cropArea.height / 2;
 
         // Calculate current image position relative to center
-        const currentDisplayWidth = baseDisplayWidth * scale;
-        const currentDisplayHeight = baseDisplayHeight * scale;
-        const currentCenterOffsetX = centerX - (imagePosition.offsetX + currentDisplayWidth / 2);
-        const currentCenterOffsetY = centerY - (imagePosition.offsetY + currentDisplayHeight / 2);
+        const currentDisplayWidth = baseSize.width * scale;
+        const currentDisplayHeight = baseSize.height * scale;
+        const currentCenterOffsetX =
+          centerX - (imagePosition.offsetX + currentDisplayWidth / 2);
+        const currentCenterOffsetY =
+          centerY - (imagePosition.offsetY + currentDisplayHeight / 2);
 
         // Calculate new display size
-        const newDisplayWidth = baseDisplayWidth * newScale;
-        const newDisplayHeight = baseDisplayHeight * newScale;
+        const newDisplayWidth = baseSize.width * newScale;
+        const newDisplayHeight = baseSize.height * newScale;
 
         // Calculate new position to keep center point
         const newOffsetX = centerX - newDisplayWidth / 2 - currentCenterOffsetX;
         const newOffsetY = centerY - newDisplayHeight / 2 - currentCenterOffsetY;
 
         // Constrain new position
-        const constrained = constrainImagePosition(
+        const constrained = constrainImagePositionUtil(
           newOffsetX,
           newOffsetY,
           newDisplayWidth,
           newDisplayHeight,
+          cropArea,
         );
 
         setScale(newScale);
         setImagePosition(constrained);
       },
-      [cropArea, imagePosition, scale, constrainImagePosition],
+      [cropArea, imagePosition, scale],
     );
 
     // Handle slider change
@@ -1004,43 +1167,13 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
       };
     }, [handleWheel]);
 
-    // Handle mouse move for cursor update
-    const handleCanvasMouseMove = useCallback(
-      (e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!cropArea || !canvasRef.current || isDragging || isDraggingImage)
-          return;
-
-        const rect = canvasRef.current.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        const handle = getHandleType(x, y);
-        setHoverHandle(handle);
-      },
-      [cropArea, isDragging, isDraggingImage, getHandleType],
-    );
-
     // Update cursor style
     const cursorStyle = useMemo(() => {
       if (!cropArea) return 'default';
       if (isDragging || isDraggingImage) return 'grabbing';
-      const activeHandle = dragHandle || hoverHandle;
-      if (activeHandle) {
-        const cursors: Record<string, string> = {
-          nw: 'nwse-resize',
-          ne: 'nesw-resize',
-          sw: 'nesw-resize',
-          se: 'nwse-resize',
-          n: 'ns-resize',
-          s: 'ns-resize',
-          e: 'ew-resize',
-          w: 'ew-resize',
-          move: 'move',
-        };
-        return cursors[activeHandle.type] || 'default';
-      }
+
       return 'default';
-    }, [cropArea, isDragging, isDraggingImage, dragHandle, hoverHandle]);
+    }, [cropArea, isDragging, isDraggingImage]);
 
     return (
       <div className={classes.element} ref={elementRef}>
@@ -1048,10 +1181,8 @@ const CropperElement = forwardRef<HTMLCanvasElement, CropperElementProps>(
           {...rest}
           className={cx(classes.host, classes.size(size), className)}
           onMouseDown={handleMouseDown}
-          onMouseLeave={() => setHoverHandle(null)}
-          onMouseMove={handleCanvasMouseMove}
           ref={composedRef}
-          style={{ cursor: cursorStyle, ...rest.style }}
+          style={{ cursor: cursorStyle, width: '100%', ...rest.style }}
         >
           {children}
         </Component>
