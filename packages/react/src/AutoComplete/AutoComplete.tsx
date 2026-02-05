@@ -26,6 +26,7 @@ import {
 } from '@mezzanine-ui/core/autocomplete';
 import {
   DropdownInputPosition,
+  DropdownLoadingPosition,
   DropdownOption,
   DropdownStatus as DropdownStatusType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
@@ -131,6 +132,12 @@ export interface AutoCompleteBaseProps
    * The text of the dropdown loading status.
    */
   loadingText?: string;
+  /**
+   * The position to display the loading status.
+   * Only takes effect when `loading` is true.
+   * @default 'bottom'
+   */
+  loadingPosition?: DropdownLoadingPosition;
   /**
    * The max height of the dropdown list.
    */
@@ -351,6 +358,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       inputRef,
       loading = false,
       loadingText,
+      loadingPosition = 'bottom',
       menuMaxHeight,
       mode = 'single',
       name,
@@ -677,15 +685,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // Disable input when loading
     const isInputDisabled = disabled || isLoading;
 
-    // For rendering: when loading, force options to empty to show loading status in Dropdown
-    const dropdownOptionsForRender = useMemo(() => {
-      if (isLoading) return [];
-      return dropdownOptions;
-    }, [isLoading, dropdownOptions]);
-
     const dropdownStatus: DropdownStatusType | undefined = isLoading
       ? 'loading'
-      : dropdownOptionsForRender.length === 0
+      : dropdownOptions.length === 0
         ? 'empty'
         : undefined;
 
@@ -886,6 +888,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             isMatchInputValue
             listboxId={menuId}
             loadingText={loadingText}
+            loadingPosition={loadingPosition}
             maxHeight={menuMaxHeight}
             mode={mode}
             onActionCustom={
@@ -897,7 +900,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onSelect={handleDropdownSelect}
             onVisibilityChange={handleVisibilityChange}
             open={open}
-            options={dropdownOptionsForRender}
+            options={dropdownOptions}
             placement="bottom"
             sameWidth
             showDropdownActions={shouldShowCreateAction}
