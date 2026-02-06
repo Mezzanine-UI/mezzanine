@@ -78,7 +78,7 @@ describe('<BaseCard />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains(classes.disabled)).toBeTruthy();
+      expect(element.classList.contains(classes.baseDisabled)).toBeTruthy();
       expect(element.getAttribute('aria-disabled')).toBe('true');
     });
 
@@ -86,7 +86,7 @@ describe('<BaseCard />', () => {
       const { getHostHTMLElement } = render(<BaseCard>Content</BaseCard>);
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains(classes.disabled)).toBeFalsy();
+      expect(element.classList.contains(classes.baseDisabled)).toBeFalsy();
       expect(element.getAttribute('aria-disabled')).toBeNull();
     });
   });
@@ -98,7 +98,7 @@ describe('<BaseCard />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains(classes.readOnly)).toBeTruthy();
+      expect(element.classList.contains(classes.baseReadOnly)).toBeTruthy();
       expect(element.getAttribute('aria-readonly')).toBe('true');
     });
   });

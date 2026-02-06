@@ -1,4 +1,5 @@
 import { ChangeEventHandler, JSXElementConstructor, ReactNode } from 'react';
+import { IconDefinition } from '@mezzanine-ui/icons';
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { ToggleSize } from '@mezzanine-ui/core/toggle';
 
@@ -167,3 +168,82 @@ export type BaseCardProps =
   | BaseCardActionProps
   | BaseCardOverflowProps
   | BaseCardToggleProps;
+
+/**
+ * Allowed component types for QuickActionCard
+ */
+export type QuickActionCardComponent =
+  | 'button'
+  | 'a'
+  | JSXElementConstructor<any>;
+
+/**
+ * QuickActionCard layout mode
+ */
+export type QuickActionCardMode = 'horizontal' | 'vertical';
+
+/**
+ * Common props shared across all QuickActionCard variants
+ */
+export interface QuickActionCardPropsCommon {
+  /**
+   * Custom class name for the card
+   */
+  className?: string;
+  /**
+   * Whether the card is disabled
+   * @default false
+   */
+  disabled?: boolean;
+  /**
+   * Whether the card is read-only (non-interactive)
+   * @default false
+   */
+  readOnly?: boolean;
+  /**
+   * Card subtitle (optional)
+   */
+  subtitle?: string;
+  /**
+   * Layout mode
+   * @default 'horizontal'
+   */
+  mode?: QuickActionCardMode;
+}
+
+/**
+ * Props for QuickActionCard with icon only (no title)
+ */
+export interface QuickActionCardWithIconProps
+  extends QuickActionCardPropsCommon {
+  /**
+   * Icon to display (required when no title)
+   */
+  icon: IconDefinition;
+  /**
+   * Card title (optional when icon is provided)
+   */
+  title?: string;
+}
+
+/**
+ * Props for QuickActionCard with title only (no icon)
+ */
+export interface QuickActionCardWithTitleProps
+  extends QuickActionCardPropsCommon {
+  /**
+   * Icon to display (optional when title is provided)
+   */
+  icon?: IconDefinition;
+  /**
+   * Card title (required when no icon)
+   */
+  title: string;
+}
+
+/**
+ * Union type for QuickActionCard props - requires either icon or title (or both)
+ */
+export type QuickActionCardProps =
+  | QuickActionCardWithIconProps
+  | QuickActionCardWithTitleProps;

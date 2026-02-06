@@ -152,8 +152,8 @@ const BaseCard = forwardRef<HTMLDivElement, BaseCardComponentProps>(
         className={cx(
           classes.base,
           {
-            [classes.disabled]: disabled,
-            [classes.readOnly]: readOnly,
+            [classes.baseDisabled]: disabled,
+            [classes.baseReadOnly]: readOnly,
           },
           className,
         )}

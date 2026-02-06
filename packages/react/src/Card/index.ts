@@ -1,11 +1,14 @@
 import { PropsWithoutRef, ReactElement, RefAttributes } from 'react';
 import BaseCard, { BaseCardComponentProps } from './BaseCard';
-import { BaseCardComponent } from './typings';
+import QuickActionCard, {
+  QuickActionCardComponentProps,
+} from './QuickActionCard';
+import { BaseCardComponent, QuickActionCardComponent } from './typings';
 
 export { default as CardGroup } from './CardGroup';
 export type { CardGroupProps } from './CardGroup';
 
-export type { BaseCardComponentProps };
+export type { BaseCardComponentProps, QuickActionCardComponentProps };
 
 export type {
   BaseCardComponent,
@@ -17,6 +20,12 @@ export type {
   BaseCardActionProps,
   BaseCardOverflowProps,
   BaseCardToggleProps,
+  QuickActionCardComponent,
+  QuickActionCardMode,
+  QuickActionCardProps,
+  QuickActionCardPropsCommon,
+  QuickActionCardWithIconProps,
+  QuickActionCardWithTitleProps,
 } from './typings';
 
 /**
@@ -27,5 +36,12 @@ type GenericBaseCard = <C extends BaseCardComponent = 'div'>(
     RefAttributes<HTMLElement>,
 ) => ReactElement<any>;
 
-export { BaseCard };
+type GenericQuickActionCard = <C extends QuickActionCardComponent = 'button'>(
+  props: PropsWithoutRef<QuickActionCardComponentProps<C>> &
+    RefAttributes<HTMLElement>,
+) => ReactElement<any>;
+
+export { BaseCard, QuickActionCard };
 export default BaseCard as GenericBaseCard;
+
+export const QuickActionCardGeneric = QuickActionCard as GenericQuickActionCard;
