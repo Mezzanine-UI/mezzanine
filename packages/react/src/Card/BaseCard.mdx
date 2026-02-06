@@ -1,0 +1,30 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { BaseCard } from '.';
+import * as BaseCardStories from './BaseCard.stories';
+
+<Meta of={BaseCardStories} />
+
+# BaseCard
+
+<Description of={BaseCard} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Card/BaseCard.tsx)
+
+## Overview
+
+BaseCard is a versatile card component that supports four different types:
+
+- **default**: A simple card with no header action
+- **action**: A card with an action button in the header
+- **overflow**: A card with a dropdown menu in the header
+- **toggle**: A card with a toggle switch in the header
+
+## Component Props
+
+The card can be rendered as different HTML elements using the `component` prop:
+
+- `div` (default): Renders as a standard div element
+- `a`: Renders as an anchor element, useful for navigation cards
+- Custom component: Any React component (e.g., Next.js Link)
+
+<ArgTypes of={BaseCard} />

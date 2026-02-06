@@ -131,6 +131,20 @@ export type {
 } from './Accordion';
 export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
+export { BaseCard, CardGroup } from './Card';
+export type {
+  BaseCardActionProps,
+  BaseCardActionVariant,
+  BaseCardComponent,
+  BaseCardComponentProps,
+  BaseCardDefaultProps,
+  BaseCardOverflowProps,
+  BaseCardProps,
+  BaseCardPropsCommon,
+  BaseCardToggleProps,
+  BaseCardType,
+  CardGroupProps,
+} from './Card';
 export { default as Section } from './Section';
 export type { SectionProps } from './Section';
 export {
