@@ -133,7 +133,7 @@ export type {
 } from './Accordion';
 export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
-export { BaseCard, CardGroup } from './Card';
+export { BaseCard, CardGroup, QuickActionCard } from './Card';
 export type {
   BaseCardActionProps,
   BaseCardActionVariant,
@@ -146,6 +146,13 @@ export type {
   BaseCardToggleProps,
   BaseCardType,
   CardGroupProps,
+  QuickActionCardComponent,
+  QuickActionCardComponentProps,
+  QuickActionCardMode,
+  QuickActionCardProps,
+  QuickActionCardPropsCommon,
+  QuickActionCardWithIconProps,
+  QuickActionCardWithTitleProps,
 } from './Card';
 export {
   Description,

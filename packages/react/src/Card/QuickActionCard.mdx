@@ -1,0 +1,32 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { QuickActionCard } from '.';
+import * as QuickActionCardStories from './QuickActionCard.stories';
+
+<Meta of={QuickActionCardStories} />
+
+# QuickActionCard
+
+<Description of={QuickActionCard} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Card/QuickActionCard.tsx)
+
+## Overview
+
+QuickActionCard is a compact card component designed for quick actions. It displays an icon alongside a title and optional subtitle.
+
+**Note:** Either `icon` or `title` must be provided (or both). The component requires at least one of these props to be valid.
+
+## Layout Modes
+
+- **horizontal** (default): Icon and content are laid out in a row
+- **vertical**: Icon and content are laid out in a column
+
+## Component Props
+
+The card can be rendered as different HTML elements using the `component` prop:
+
+- `button` (default): Renders as a standard button element
+- `a`: Renders as an anchor element, useful for navigation cards
+- Custom component: Any React component (e.g., Next.js Link)
+
+<ArgTypes of={QuickActionCard} />
