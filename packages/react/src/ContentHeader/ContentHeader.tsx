@@ -80,12 +80,6 @@ export type ContentHeaderProps = Omit<
     | ToggleProps
     | CheckboxProps
   );
-  /**
-   * Optional back button properties. <br />
-   * When provided, a back button will be rendered on the left side of the title. <br />
-   * href prop from children will be ignored if onBackClick is provided. <br />
-   * */
-  onBackClick?: () => void;
   /** Main title text for the content header */
   title: string;
   /**

@@ -18,7 +18,9 @@ import Dropdown, { DropdownProps } from '../Dropdown';
 import { ChevronLeftIcon } from '@mezzanine-ui/icons';
 import Toggle, { ToggleProps } from '../Toggle';
 import Checkbox, { CheckboxProps } from '../Checkbox';
-import ContentHeaderResponsive from './ContentHeaderResponsive';
+import ContentHeaderResponsive, {
+  ContentHeaderResponsiveProps,
+} from './ContentHeaderResponsive';
 import { cx } from '../utils/cx';
 import { contentHeaderClasses } from '@mezzanine-ui/core/content-header';
 
@@ -263,17 +265,17 @@ export const resolveContentHeaderChild = (
 
     Children.forEach(flatChildren, (child) => {
       if (isValidElement(child) && child.type === ContentHeaderResponsive) {
-        const props = child.props as any;
+        const props = child.props as ContentHeaderResponsiveProps;
         const breakpointClass = contentHeaderClasses.breakpoint(
           props.breakpoint,
         );
 
         Children.forEach(flattenChildren(props.children), (rwdChild) => {
           if (isValidElement(rwdChild)) {
-            const rwdProps = rwdChild.props as any;
+            const rwdProps = rwdChild.props as { className?: string };
 
             responsiveChildren.push(
-              cloneElement(rwdChild as ReactElement, {
+              cloneElement(rwdChild as ReactElement<{ className?: string }>, {
                 ...rwdProps,
                 className: cx(breakpointClass, rwdProps?.className),
               }),
@@ -328,7 +330,8 @@ export const resolveContentHeaderChild = (
       // is filter
       if (
         (type === Input && (props as InputProps).variant === 'search') ||
-        type === Select
+        type === Select ||
+        type === Toggle
       ) {
         if (filter) {
           console.warn(
@@ -337,15 +340,19 @@ export const resolveContentHeaderChild = (
         }
 
         filter = withSize(
-          child as ReactElement<SearchInputProps | SelectProps>,
+          child as ReactElement<SearchInputProps | SelectProps | ToggleProps>,
           size,
         );
       } else if (type.toString() === 'SegmentedControl') {
         console.warn('SegmentedControl component is not implemented yet.');
-      } else if (type === Toggle) {
-        filter = withSize(child as ReactElement<ToggleProps>, size);
       } else if (type === Checkbox) {
-        filter = withSize(child as ReactElement<CheckboxProps>, size);
+        if (filter) {
+          console.warn(
+            '[Mezzanine][ContentHeader]: ContentHeader only accepts one filter component.',
+          );
+        }
+
+        filter = child as ReactElement<CheckboxProps>;
       } else if (
         // is utilities (icon button)
         (type === Button && (props as ButtonProps).iconType === 'icon-only') ||
