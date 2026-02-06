@@ -43,23 +43,32 @@ describe('<Checkbox />', () => {
   });
 
   describe('prop: mode', () => {
-    it('should render mode="main" by default', () => {
+    it('should render mode="default" by default', () => {
       const { getHostHTMLElement } = render(<Checkbox />);
       const element = getHostHTMLElement();
 
+      // Default mode doesn't add a mode class, but should have size class
       expect(element.classList.contains('mzn-checkbox--main')).toBeTruthy();
+      expect(element.classList.contains('mzn-checkbox--default')).toBeFalsy();
     });
 
-    const modes: CheckboxMode[] = ['main', 'sub', 'chip'];
+    const modes: CheckboxMode[] = ['default', 'chip'];
 
     modes.forEach((mode) => {
       it(`should add class if mode="${mode}"`, () => {
         const { getHostHTMLElement } = render(<Checkbox mode={mode} />);
         const element = getHostHTMLElement();
 
-        expect(
-          element.classList.contains(`mzn-checkbox--${mode}`),
-        ).toBeTruthy();
+        if (mode === 'default') {
+          // Default mode doesn't add a mode class
+          expect(
+            element.classList.contains(`mzn-checkbox--${mode}`),
+          ).toBeFalsy();
+        } else {
+          expect(
+            element.classList.contains(`mzn-checkbox--${mode}`),
+          ).toBeTruthy();
+        }
       });
     });
 
@@ -70,6 +79,41 @@ describe('<Checkbox />', () => {
       const element = getHostHTMLElement();
 
       expect(element.textContent).not.toContain('Description');
+    });
+  });
+
+  describe('prop: size', () => {
+    it('should render size="main" by default', () => {
+      const { getHostHTMLElement } = render(<Checkbox />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-checkbox--main')).toBeTruthy();
+    });
+
+    it('should add size class for default mode', () => {
+      const sizes: Array<'main' | 'sub'> = ['main', 'sub'];
+
+      sizes.forEach((size) => {
+        const { getHostHTMLElement } = render(<Checkbox mode="default" size={size} />);
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains(`mzn-checkbox--${size}`),
+        ).toBeTruthy();
+      });
+    });
+
+    it('should add size class for chip mode', () => {
+      const sizes: Array<'main' | 'sub' | 'minor'> = ['main', 'sub', 'minor'];
+
+      sizes.forEach((size) => {
+        const { getHostHTMLElement } = render(<Checkbox mode="chip" size={size} />);
+        const element = getHostHTMLElement();
+
+        expect(
+          element.classList.contains(`mzn-checkbox--${size}`),
+        ).toBeTruthy();
+      });
     });
   });
 

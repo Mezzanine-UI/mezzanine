@@ -12,7 +12,8 @@ import {
 } from 'react';
 
 import {
-  checkboxClasses as classes
+  CheckboxSize,
+  checkboxClasses as classes,
 } from '@mezzanine-ui/core/checkbox';
 
 import { CheckedIcon } from '@mezzanine-ui/icons';
@@ -154,7 +155,13 @@ export interface CheckboxProps
    * It is also recommended when integrating with react-hook-form.
    */
   value?: string;
-
+  /**
+   * The size of checkbox.
+   * When mode is 'chip', size can be 'main' | 'sub' | 'minor'.
+   * When mode is 'default', size can be 'main' | 'sub'.
+   * @default 'main'
+   */
+  size?: CheckboxSize<NonNullable<CheckboxPropsBase['mode']>>;
 }
 
 /**
@@ -179,7 +186,8 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       inputProps,
       inputRef: inputRefProp,
       label,
-      mode = 'main',
+      mode = 'default',
+      size = 'main',
       name = nameFromGroup,
       onChange: onChangeProp,
       value,
@@ -281,8 +289,9 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
           [classes.checked]: isChecked,
           [classes.indeterminate]: isIndeterminate,
           [classes.disabled]: disabled,
+          [classes.mode(mode)]: mode !== 'default',
         },
-        classes.mode(mode),
+        classes.size(size),
       )}>
         <label
           ref={ref}
