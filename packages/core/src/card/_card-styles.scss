@@ -8,12 +8,23 @@
 @use './card' as *;
 
 $base-card-min-width: spacing.semantic-variable(size, container, slim);
+$quick-action-card-min-width: spacing.semantic-variable(size, container, tight);
+
+@mixin card-group-min-width() {
+  --card-group-column-min-width: #{$base-card-min-width};
+
+  &--quick-action {
+    --card-group-column-min-width: #{$quick-action-card-min-width};
+  }
+}
 
 .#{$card-group-prefix} {
+  @include card-group-min-width();
+
   width: 100%;
   display: grid;
   grid-auto-flow: row;
-  grid-template-columns: repeat(auto-fill, minmax($base-card-min-width, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(var(--card-group-column-min-width), 1fr));
   gap: spacing.semantic-variable(gap, base);
 }
 
@@ -31,6 +42,8 @@ $base-card-min-width: spacing.semantic-variable(size, container, slim);
   display: flex;
   flex-flow: column;
   align-items: flex-start;
+  transition: transition.standard(box-shadow, fast);
+  text-align: left;
 
   * {
     box-sizing: border-box;
@@ -96,5 +109,84 @@ $base-card-min-width: spacing.semantic-variable(size, container, slim);
     flex: 1;
     width: 100%;
     padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, comfort);
+  }
+}
+
+.#{$quick-action-card-prefix} {
+  @include button-utils.reset();
+
+  --quick-action-card-title-color: #{palette.semantic-variable(text, neutral-solid)};
+  --quick-action-card-subtitle-color: #{palette.semantic-variable(text, neutral)};
+  --quick-action-card-icon-color: #{palette.semantic-variable(icon, brand)};
+
+  width: 100%;
+  height: 100%;
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, base-fixed);
+  border-radius: radius.variable(roomy);
+  border: 1px solid palette.semantic-variable(border, neutral-faint);
+  background-color: palette.semantic-variable("background", base);
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: spacing.semantic-variable(gap, base);
+  transition: transition.standard(box-shadow, fast);
+  text-align: left;
+
+  &:hover {
+    box-shadow: effect.variable(shadow, floating);
+  }
+
+  &:focus-visible {
+    box-shadow: effect.variable(focus, primary);
+  }
+
+  &--disabled {
+    --quick-action-card-title-color: #{palette.semantic-variable(text, neutral-light)};
+    --quick-action-card-subtitle-color: #{palette.semantic-variable(text, neutral-light)};
+    --quick-action-card-icon-color: #{palette.semantic-variable(icon, neutral-light)};
+
+    background-color: palette.semantic-variable("background", neutral-subtle);
+  }
+
+  &--disabled,
+  &--read-only {
+    pointer-events: none;
+  }
+
+  &__icon {
+    color: var(--quick-action-card-icon-color);
+  }
+
+  &__content {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    gap: spacing.semantic-variable(gap, tiny);
+
+    &__title {
+      @include typography.semantic-variable(body-highlight);
+      @include typography.overflow-ellipsis();
+
+      color: palette.semantic-variable(text, neutral-solid);
+    }
+
+    &__subtitle {
+      @include typography.semantic-variable(caption);
+
+      color: palette.semantic-variable(text, neutral);
+    }
+  }
+
+  &--vertical {
+    flex-flow: column;
+    align-items: flex-start;
+
+    & .#{$quick-action-card-prefix}__content {
+      width: 100%;
+      height: auto;
+      flex: 1;
+    }
   }
 }
