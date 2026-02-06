@@ -1,0 +1,21 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { CardGroup } from '.';
+import * as BaseCardStories from './BaseCard.stories';
+
+<Meta of={BaseCardStories} />
+
+# CardGroup
+
+<Description of={CardGroup} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Card/CardGroup.tsx)
+
+## Overview
+
+CardGroup is a container component for laying out multiple cards in a horizontal row with consistent spacing. It uses CSS Grid for layout management.
+
+## Usage
+
+CardGroup validates its children and only accepts card components (like BaseCard). Invalid children will be filtered out with a console warning in development.
+
+<ArgTypes of={CardGroup} />
