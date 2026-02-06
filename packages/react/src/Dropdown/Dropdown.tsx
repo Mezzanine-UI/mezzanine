@@ -4,6 +4,7 @@ import cx from 'clsx';
 import {
   cloneElement,
   ReactElement,
+  MouseEvent as ReactMouseEvent,
   Ref,
   useCallback,
   useEffect,
@@ -17,6 +18,7 @@ import {
   dropdownClasses,
   DropdownInputPosition,
   DropdownItemSharedProps,
+  DropdownLoadingPosition,
   DropdownOption,
   DropdownStatus as DropdownStatusType,
   DropdownType,
@@ -35,6 +37,29 @@ import { composeRefs } from '../utils/composeRefs';
 
 import { IconDefinition } from '@mezzanine-ui/icons';
 import DropdownItem from './DropdownItem';
+
+// Helper type to extract ref from a ReactElement.
+// Models `ref` on the element itself, which is compatible with React 18 and 19.
+type ReactElementWithRef<P, E extends Element = HTMLElement> = ReactElement<P> & {
+  ref?: Ref<E>;
+};
+
+type TriggerElementProps = Partial<ButtonProps & InputProps> & {
+  ref?: Ref<HTMLElement>;
+};
+
+/**
+ * Extracts ref from a ReactElement, supporting both React 18 and 19.
+ * In React 18, ref is on the element itself; in React 19, ref is in props.
+ */
+function getElementRef<E extends Element = HTMLElement>(
+  element: ReactElementWithRef<unknown, E>,
+): Ref<E> | undefined {
+  // React 19: ref is in props
+  const propsRef = (element.props as { ref?: Ref<E> })?.ref;
+  // React 18: ref is on the element itself
+  return propsRef ?? element.ref;
+}
 
 export interface DropdownProps extends DropdownItemSharedProps {
   /**
@@ -195,6 +220,12 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   emptyIcon?: IconDefinition;
   /**
+   * The position to display the loading status.
+   * Only takes effect when `status === 'loading'`.
+   * @default 'full'
+   */
+  loadingPosition?: DropdownLoadingPosition;
+  /**
    * Whether to enable portal.
    * This prop is only relevant when `inputPosition` is set to 'outside'.
    * Controls whether the dropdown content is rendered within the current hierarchy or portaled to the body.
@@ -282,6 +313,7 @@ export default function Dropdown(props: DropdownProps) {
     loadingText,
     emptyText,
     emptyIcon,
+    loadingPosition = 'full',
     followText: followTextProp,
     globalPortal = true,
     onReachBottom,
@@ -494,10 +526,8 @@ export default function Dropdown(props: DropdownProps) {
 
   // Extract combobox props logic to avoid duplication
   const getComboboxProps = useMemo(() => {
-    const childWithRef = children as ReactElement<any> & {
-      ref?: Ref<HTMLElement>;
-    };
-    const isInput = childWithRef.type !== Button;
+    // Only access the type property to check if it's a Button component
+    const isInput = (children as { type: unknown }).type !== Button;
 
     if (!isInput) return {};
 
@@ -540,6 +570,7 @@ export default function Dropdown(props: DropdownProps) {
       loadingText,
       emptyText,
       emptyIcon,
+      loadingPosition,
       mode,
       value,
       scrollbarDefer,
@@ -567,6 +598,7 @@ export default function Dropdown(props: DropdownProps) {
       loadingText,
       emptyText,
       emptyIcon,
+      loadingPosition,
       mode,
       value,
       scrollbarDefer,
@@ -577,23 +609,24 @@ export default function Dropdown(props: DropdownProps) {
   );
 
   const triggerElement = useMemo(() => {
-    const childWithRef = children as ReactElement<any> & {
-      ref?: Ref<HTMLElement>;
-    };
-    const composedRef = composeRefs<HTMLElement>([anchorRef, childWithRef.ref]);
+    const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
+    const childProps = childWithRef.props;
+    const childRef = getElementRef(childWithRef);
+    const composedRef = composeRefs<HTMLElement>([anchorRef, childRef]);
+    const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
 
     return cloneElement(childWithRef, {
       ref: composedRef,
       ...getComboboxProps,
-      onClick: (event: any) => {
-        childWithRef.props?.onClick?.(event);
+      onClick: (event: ReactMouseEvent<HTMLElement>) => {
+        originalOnClick?.(event);
         if (event?.defaultPrevented) return;
 
         if (!isInline) {
           setOpen((prev) => !prev);
         }
       },
-    });
+    } as TriggerElementProps);
   }, [children, getComboboxProps, isInline, setOpen]);
 
   const inlineTriggerElement = useMemo(() => {
@@ -601,16 +634,19 @@ export default function Dropdown(props: DropdownProps) {
       return null;
     }
 
-    const childWithRef = children as ReactElement<any> & {
-      ref?: Ref<HTMLElement>;
-    };
-    const composedRef = composeRefs<HTMLElement>([childWithRef.ref]);
+    const childWithRef = children as ReactElementWithRef<ButtonProps | InputProps, HTMLElement>;
+    const childProps = childWithRef.props;
+    const childRef = getElementRef(childWithRef);
+    const composedRef = composeRefs<HTMLElement>([childRef]);
+    const originalOnBlur = childProps.onBlur as React.FocusEventHandler<HTMLElement> | undefined;
+    const originalOnClick = childProps.onClick as React.MouseEventHandler<HTMLElement> | undefined;
+    const originalOnFocus = childProps.onFocus as React.FocusEventHandler<HTMLElement> | undefined;
 
     return cloneElement(childWithRef, {
       ref: composedRef,
       ...getComboboxProps,
-      onBlur: (event: any) => {
-        childWithRef.props?.onBlur?.(event);
+      onBlur: (event: React.FocusEvent<HTMLElement>) => {
+        originalOnBlur?.(event);
         if (event?.defaultPrevented) return;
 
         // When open is controlled, don't automatically close on blur
@@ -632,20 +668,20 @@ export default function Dropdown(props: DropdownProps) {
 
         setOpen(false);
       },
-      onClick: (event: any) => {
-        childWithRef.props?.onClick?.(event);
+      onClick: (event: ReactMouseEvent<HTMLElement>) => {
+        originalOnClick?.(event);
         if (event?.defaultPrevented) return;
 
         setOpen(true);
       },
-      onFocus: (event: any) => {
-        childWithRef.props?.onFocus?.(event);
+      onFocus: (event: React.FocusEvent<HTMLElement>) => {
+        originalOnFocus?.(event);
         if (event?.defaultPrevented) return;
 
         setOpen(true);
       },
-    });
-  }, [children, getComboboxProps, isInline, setOpen, isOpenControlled]);
+    } as TriggerElementProps);
+  }, [children, getComboboxProps, isInline, isOpenControlled, setOpen]);
 
   useDocumentEvents(() => {
     if (!isOpen) {
