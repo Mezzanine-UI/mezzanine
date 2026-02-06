@@ -27,16 +27,36 @@ $mode-configs: (
     padding-top: none,
     label-color: palette.semantic-variable(text, neutral-solid),
     label-color-disabled: palette.semantic-variable(text, neutral-light),
-    input-padding-horizontal: spacing.semantic-variable(padding, horizontal, base),
-    input-padding-vertical: spacing.semantic-variable(padding, vertical, tight),
-    input-padding-left-checked: spacing.semantic-variable(padding, horizontal, tight),
-    input-padding-right-checked: spacing.semantic-variable(padding, horizontal, base),
+  ),
+);
+
+// Chip size configurations for padding
+$chip-size-configs: (
+  main: (
+    padding-vertical: spacing.semantic-variable(padding, vertical, calm),
+    padding-left-unchecked: spacing.semantic-variable(padding, horizontal, cozy),
+    padding-right-unchecked: spacing.semantic-variable(padding, horizontal, cozy),
+    padding-left-checked: spacing.semantic-variable(padding, horizontal, base),
+    padding-right-checked: spacing.semantic-variable(padding, horizontal, cozy),
+  ),
+  sub: (
+    padding-vertical: spacing.semantic-variable(padding, vertical, tight),
+    padding-left-unchecked: spacing.semantic-variable(padding, horizontal, base),
+    padding-right-unchecked: spacing.semantic-variable(padding, horizontal, base),
+    padding-left-checked: spacing.semantic-variable(padding, horizontal, tight),
+    padding-right-checked: spacing.semantic-variable(padding, horizontal, base),
+  ),
+  minor: (
+    padding-vertical: spacing.semantic-variable(padding, vertical, tiny),
+    padding-left-unchecked: spacing.semantic-variable(padding, horizontal, tight),
+    padding-right-unchecked: spacing.semantic-variable(padding, horizontal, tight),
+    padding-left-checked: spacing.semantic-variable(padding, horizontal, tiny),
+    padding-right-checked: spacing.semantic-variable(padding, horizontal, tight),
   ),
 );
 
 $chip-host-states: (
   base: (
-    border-radius: radius.variable(tiny),
     border: 1px solid palette.semantic-variable(border, neutral-faint),
     background: palette.semantic-variable(background, base),
     gap: 0,
@@ -77,21 +97,33 @@ $chip-host-states: (
 }
 
 // Apply mode styles when checked
-@mixin _apply-mode-styles-checked($mode) {
-  $mode-config: map.get($mode-configs, $mode);
-  $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
-  $padding-left-checked: _get-mode-property($mode-config, input-padding-left-checked);
-  $padding-right-checked: _get-mode-property($mode-config, input-padding-right-checked);
+@mixin _apply-mode-styles-checked($mode, $size: null) {
+  // For chip mode, use size-specific padding
+  @if $mode == 'chip' and $size {
+    $size-config: map.get($chip-size-configs, $size);
+    $padding-vertical: _get-mode-property($size-config, padding-vertical);
+    $padding-left-checked: _get-mode-property($size-config, padding-left-checked);
+    $padding-right-checked: _get-mode-property($size-config, padding-right-checked);
 
-  @if $padding-vertical {
-    padding-top: $padding-vertical;
-    padding-bottom: $padding-vertical;
-  }
-  @if $padding-left-checked {
-    padding-left: $padding-left-checked;
-  }
-  @if $padding-right-checked {
-    padding-right: $padding-right-checked;
+    @if $padding-vertical {
+      padding-top: $padding-vertical;
+      padding-bottom: $padding-vertical;
+    }
+    @if $padding-left-checked {
+      padding-left: $padding-left-checked;
+    }
+    @if $padding-right-checked {
+      padding-right: $padding-right-checked;
+    }
+  } @else {
+    // For non-chip modes, use original logic
+    $mode-config: map.get($mode-configs, $mode);
+    $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
+
+    @if $padding-vertical {
+      padding-top: $padding-vertical;
+      padding-bottom: $padding-vertical;
+    }
   }
 }
 
@@ -113,15 +145,25 @@ $chip-host-states: (
 }
 
 // Apply mode input content padding styles
-@mixin _apply-mode-input-padding($mode) {
-  $mode-config: map.get($mode-configs, $mode);
-  $padding-horizontal: _get-mode-property($mode-config, input-padding-horizontal);
-  $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
-  $padding-left-checked: _get-mode-property($mode-config, input-padding-left-checked);
-  $padding-right-checked: _get-mode-property($mode-config, input-padding-right-checked);
+@mixin _apply-mode-input-padding($mode, $size: null) {
+  // For chip mode, use size-specific padding
+  @if $mode == 'chip' and $size {
+    $size-config: map.get($chip-size-configs, $size);
+    $padding-vertical: _get-mode-property($size-config, padding-vertical);
+    $padding-left-unchecked: _get-mode-property($size-config, padding-left-unchecked);
+    $padding-right-unchecked: _get-mode-property($size-config, padding-right-unchecked);
 
-  @if $padding-horizontal and $padding-vertical {
-    padding: $padding-vertical $padding-horizontal;
+    @if $padding-vertical and $padding-left-unchecked and $padding-right-unchecked {
+      padding: $padding-vertical $padding-right-unchecked $padding-vertical $padding-left-unchecked;
+    }
+  } @else {
+    // For non-chip modes, use original logic
+    $mode-config: map.get($mode-configs, $mode);
+    $padding-horizontal: _get-mode-property($mode-config, input-padding-horizontal);
+    $padding-vertical: _get-mode-property($mode-config, input-padding-vertical);
+    @if $padding-horizontal and $padding-vertical {
+      padding: $padding-vertical $padding-horizontal;
+    }
   }
 }
 
@@ -241,7 +283,6 @@ $checked-states: (
 
     &.#{$prefix}--chip {
       @include _apply-mode-styles(chip);
-      @include _apply-mode-input-padding(chip);
       @include _apply-chip-host-styles(base);
 
       cursor: pointer;
@@ -250,10 +291,44 @@ $checked-states: (
         transition.standard(background-color, fast),
         transition.standard(box-shadow, fast);
 
+      // Chip mode unchecked: no gap in label-container
+      &:not(.#{$prefix}--checked) {
+        .#{$prefix}__label-container {
+          gap: 0;
+        }
+      }
+
+      // Chip mode with different sizes - unchecked state
+      &.#{$prefix}--main {
+        @include _apply-mode-input-padding(chip, main);
+        border-radius: radius.variable(base);
+      }
+
+      &.#{$prefix}--sub {
+        @include _apply-mode-input-padding(chip, sub);
+        border-radius: radius.variable(tiny);
+      }
+
+      &.#{$prefix}--minor {
+        @include _apply-mode-input-padding(chip, minor);
+        border-radius: radius.variable(tiny);
+      }
+
       // Chip mode checked state
       &.#{$prefix}--checked {
         @include _apply-chip-host-styles(checked);
-        @include _apply-mode-styles-checked(chip);
+
+        &.#{$prefix}--main {
+          @include _apply-mode-styles-checked(chip, main);
+        }
+
+        &.#{$prefix}--sub {
+          @include _apply-mode-styles-checked(chip, sub);
+        }
+
+        &.#{$prefix}--minor {
+          @include _apply-mode-styles-checked(chip, minor);
+        }
       }
 
       // Chip mode disabled state
