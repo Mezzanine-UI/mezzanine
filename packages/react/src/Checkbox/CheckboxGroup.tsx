@@ -468,7 +468,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
             id={`${resolvedName}-level-control`}
             indeterminate={levelIndeterminate}
             label={level?.label ?? ''}
-            mode={level?.mode ?? 'main'}
+            mode={level?.mode ?? 'default'}
             name={`${resolvedName}-level-control`}
             onChange={handleLevelControlChange}
           />
@@ -488,7 +488,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
                 id={`${resolvedName}-level-control`}
                 indeterminate={levelIndeterminate}
                 label={level?.label ?? ''}
-                mode={level?.mode ?? 'main'}
+                mode={level?.mode ?? 'default'}
                 name={`${resolvedName}-level-control`}
                 onChange={handleLevelControlChange}
               />

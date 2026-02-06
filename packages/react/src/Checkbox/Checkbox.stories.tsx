@@ -11,14 +11,16 @@ export default {
 
 type Story = StoryObj<CheckboxProps>;
 
-const modes: CheckboxProps['mode'][] = ['main', 'sub', 'chip'];
+const modes: CheckboxProps['mode'][] = ['default', 'chip'];
+const sizesChip: CheckboxProps['size'][] = ['main', 'sub', 'minor'];
 
 export const Playground: Story = {
   args: {
     id: 'playground-checkbox',
     label: 'Checkbox Label',
     description: 'Supporting text',
-    mode: 'main',
+    mode: 'default',
+    size: 'main',
     name: 'playground-checkbox',
     checked: false,
     indeterminate: false,
@@ -53,7 +55,18 @@ export const Playground: Story = {
       options: modes,
       description: 'The mode of checkbox',
       table: {
-        type: { summary: "'main' | 'sub' | 'chip'" },
+        type: { summary: 'CheckboxMode' },
+        defaultValue: { summary: "'main'" },
+      },
+    },
+    size: {
+      control: {
+        type: 'select',
+      },
+      options: sizesChip,
+      description: 'The size of checkbox. When mode is "chip", size can be "main" | "sub" | "minor". When mode is "default", size can be "main" | "sub".',
+      table: {
+        type: { summary: 'CheckboxSize' },
         defaultValue: { summary: "'main'" },
       },
     },
@@ -157,13 +170,19 @@ export const Playground: Story = {
       });
     };
 
-    return <Checkbox {...props} onChange={handleChange} />;
+    // 確保 size 與 mode 匹配：當 mode 為 'default' 時，如果 size 是 'minor'，則重置為 'main'
+    const validSize = props.mode === 'default' && props.size === 'minor'
+      ? 'main'
+      : props.size;
+
+    return <Checkbox {...props} size={validSize} onChange={handleChange} />;
   },
 };
 
 export const State = () => {
   return (
     <>
+      <p>Check</p>
       <ItemList>
         <SectionItem label="Main" direction="column">
           <ItemContent>
@@ -211,19 +230,19 @@ export const State = () => {
         <SectionItem label="Sub" direction="column">
           <ItemContent>
             <Typography>Normal:</Typography>
-            <InteractiveCheckbox id="state-sub-1" label="Checkbox Label" name="state-sub-1" description="Supporting text" mode="sub" value="sub-1" />
+            <InteractiveCheckbox id="state-sub-1" label="Checkbox Label" name="state-sub-1" description="Supporting text" size="sub" value="sub-1" />
           </ItemContent>
           <ItemContent>
             <Typography>Checked:</Typography>
-            <InteractiveCheckbox id="state-sub-2" label="Checkbox Label" name="state-sub-2" description="Supporting text" mode="sub" initialChecked value="sub-2" />
+            <InteractiveCheckbox id="state-sub-2" label="Checkbox Label" name="state-sub-2" description="Supporting text" size="sub" initialChecked value="sub-2" />
           </ItemContent>
           <ItemContent>
             <Typography>Indeterminate:</Typography>
-            <Checkbox id="state-sub-indeterminate" label="Checkbox Label" name="state-sub-indeterminate" description="Supporting text" mode="sub" indeterminate />
+            <Checkbox id="state-sub-indeterminate" label="Checkbox Label" name="state-sub-indeterminate" description="Supporting text" size="sub" indeterminate />
           </ItemContent>
           <ItemContent>
             <Typography>Disabled:</Typography>
-            <Checkbox id="state-sub-disabled" label="Checkbox Label" name="state-sub-disabled" description="Supporting text" mode="sub" disabled />
+            <Checkbox id="state-sub-disabled" label="Checkbox Label" name="state-sub-disabled" description="Supporting text" size="sub" disabled />
           </ItemContent>
           <ItemContent>
             <Typography>With editable input:</Typography>
@@ -237,7 +256,10 @@ export const State = () => {
             />
           </ItemContent>
         </SectionItem>
-        <SectionItem label="Chip" direction="column">
+      </ItemList>
+      <p>Checkbox in Chip mode</p>
+      <ItemList>
+        <SectionItem label="Chip Main" direction="column">
           <ItemContent>
             <Typography>Normal:</Typography>
             <Checkbox id="state-chip-1" label="Checkbox Label" name="state-chip-1" description="Supporting text" mode="chip" />
@@ -249,6 +271,34 @@ export const State = () => {
           <ItemContent>
             <Typography>Disabled:</Typography>
             <Checkbox id="state-chip-3" label="Checkbox Label" name="state-chip-3" description="Supporting text" mode="chip" disabled />
+          </ItemContent>
+        </SectionItem>
+        <SectionItem label="Chip Sub" direction="column">
+          <ItemContent>
+            <Typography>Normal:</Typography>
+            <Checkbox id="state-chip-sub-1" label="Checkbox Label" name="state-chip-sub-1" description="Supporting text" mode="chip" size="sub" />
+          </ItemContent>
+          <ItemContent>
+            <Typography>Checked:</Typography>
+            <Checkbox id="state-chip-sub-2" label="Checkbox Label" name="state-chip-sub-2" description="Supporting text" mode="chip" size="sub" checked />
+          </ItemContent>
+          <ItemContent>
+            <Typography>Disabled:</Typography>
+            <Checkbox id="state-chip-sub-3" label="Checkbox Label" name="state-chip-sub-3" description="Supporting text" mode="chip" size="sub" disabled />
+          </ItemContent>
+        </SectionItem>
+        <SectionItem label="Chip Minor" direction="column">
+          <ItemContent>
+            <Typography>Normal:</Typography>
+            <Checkbox id="state-chip-minor-1" label="Checkbox Label" name="state-chip-minor-1" description="Supporting text" mode="chip" size="minor" />
+          </ItemContent>
+          <ItemContent>
+            <Typography>Checked:</Typography>
+            <Checkbox id="state-chip-minor-2" label="Checkbox Label" name="state-chip-minor-2" description="Supporting text" mode="chip" size="minor" checked />
+          </ItemContent>
+          <ItemContent>
+            <Typography>Disabled:</Typography>
+            <Checkbox id="state-chip-minor-3" label="Checkbox Label" name="state-chip-minor-3" description="Supporting text" mode="chip" size="minor" disabled />
           </ItemContent>
         </SectionItem>
       </ItemList>
