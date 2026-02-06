@@ -7,6 +7,8 @@ export const cardClasses = {
 
   /** base card */
   base: baseCardPrefix,
+  disabled: `${baseCardPrefix}--disabled`,
+  readOnly: `${baseCardPrefix}--read-only`,
   baseHeader: `${baseCardPrefix}__header`,
   baseHeaderContentWrapper: `${baseCardPrefix}__header__content-wrapper`,
   baseHeaderTitle: `${baseCardPrefix}__header__content-wrapper__title`,
