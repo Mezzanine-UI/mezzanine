@@ -91,7 +91,7 @@ describe('<Toggle />', () => {
 
     it('should use disabled from form control if disabled not passed', () => {
       const { getHostHTMLElement } = render(
-        <FormField disabled>
+        <FormField disabled name="test">
           <Toggle />
           <Toggle disabled={false} />
         </FormField>,

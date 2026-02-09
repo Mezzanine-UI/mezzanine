@@ -1,5 +1,8 @@
-import { FilterAreaActionsAlign, FilterAreaSize } from '@mezzanine-ui/core/filter-area';
-import { FormFieldSize } from '@mezzanine-ui/core/form';
+import {
+  FilterAreaActionsAlign,
+  FilterAreaSize,
+} from '@mezzanine-ui/core/filter-area';
+import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -19,7 +22,12 @@ describe('<FilterArea />', () => {
       <FilterArea ref={ref}>
         <FilterLine>
           <Filter>
-            <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+            <FormField
+              label="Test"
+              name="test"
+              density={FormFieldDensity.BASE}
+              layout={FormFieldLayout.HORIZONTAL}
+            >
               <Input />
             </FormField>
           </Filter>
@@ -33,7 +41,12 @@ describe('<FilterArea />', () => {
       <FilterArea className={className}>
         <FilterLine>
           <Filter>
-            <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+            <FormField
+              label="Test"
+              name="test"
+              density={FormFieldDensity.BASE}
+              layout={FormFieldLayout.HORIZONTAL}
+            >
               <Input />
             </FormField>
           </Filter>
@@ -47,7 +60,12 @@ describe('<FilterArea />', () => {
       <FilterArea>
         <FilterLine>
           <Filter>
-            <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+            <FormField
+              label="Test"
+              name="test"
+              density={FormFieldDensity.BASE}
+              layout={FormFieldLayout.HORIZONTAL}
+            >
               <Input />
             </FormField>
           </Filter>
@@ -65,7 +83,12 @@ describe('<FilterArea />', () => {
         <FilterArea>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -85,7 +108,12 @@ describe('<FilterArea />', () => {
           <FilterArea size={size}>
             <FilterLine>
               <Filter>
-                <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+                <FormField
+                  label="Test"
+                  name="test"
+                  density={FormFieldDensity.BASE}
+                  layout={FormFieldLayout.HORIZONTAL}
+                >
                   <Input />
                 </FormField>
               </Filter>
@@ -94,7 +122,9 @@ describe('<FilterArea />', () => {
         );
         const element = getHostHTMLElement();
 
-        expect(element.classList.contains(`mzn-filter-area--${size}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-filter-area--${size}`),
+        ).toBeTruthy();
       });
     });
   });
@@ -105,7 +135,12 @@ describe('<FilterArea />', () => {
         <FilterArea>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -115,7 +150,11 @@ describe('<FilterArea />', () => {
       const element = getHostHTMLElement();
       const actionsElement = element.querySelector('.mzn-filter-area__actions');
 
-      expect(actionsElement?.classList.contains('mzn-filter-area__actions--align-end')).toBeTruthy();
+      expect(
+        actionsElement?.classList.contains(
+          'mzn-filter-area__actions--align-end',
+        ),
+      ).toBeTruthy();
     });
 
     const aligns: FilterAreaActionsAlign[] = ['start', 'center', 'end'];
@@ -126,7 +165,12 @@ describe('<FilterArea />', () => {
           <FilterArea actionsAlign={align}>
             <FilterLine>
               <Filter>
-                <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+                <FormField
+                  label="Test"
+                  name="test"
+                  density={FormFieldDensity.BASE}
+                  layout={FormFieldLayout.HORIZONTAL}
+                >
                   <Input />
                 </FormField>
               </Filter>
@@ -134,9 +178,15 @@ describe('<FilterArea />', () => {
           </FilterArea>,
         );
         const element = getHostHTMLElement();
-        const actionsElement = element.querySelector('.mzn-filter-area__actions');
+        const actionsElement = element.querySelector(
+          '.mzn-filter-area__actions',
+        );
 
-        expect(actionsElement?.classList.contains(`mzn-filter-area__actions--align-${align}`)).toBeTruthy();
+        expect(
+          actionsElement?.classList.contains(
+            `mzn-filter-area__actions--align-${align}`,
+          ),
+        ).toBeTruthy();
       });
     });
   });
@@ -147,7 +197,12 @@ describe('<FilterArea />', () => {
         <FilterArea>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -165,7 +220,12 @@ describe('<FilterArea />', () => {
         <FilterArea isDirty={false}>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -185,7 +245,12 @@ describe('<FilterArea />', () => {
         <FilterArea>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -203,7 +268,12 @@ describe('<FilterArea />', () => {
         <FilterArea submitText="Submit" resetText="Clear">
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -224,7 +294,12 @@ describe('<FilterArea />', () => {
         <FilterArea onSubmit={handleSubmit}>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -245,7 +320,12 @@ describe('<FilterArea />', () => {
         <FilterArea onReset={handleReset}>
           <FilterLine>
             <Filter>
-              <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+              <FormField
+                label="Test"
+                name="test"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
                 <Input />
               </FormField>
             </Filter>
@@ -262,4 +342,3 @@ describe('<FilterArea />', () => {
     });
   });
 });
-

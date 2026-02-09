@@ -9,7 +9,7 @@ import Dropdown from '../Dropdown';
 import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import { Filter, FilterArea, FilterLine } from '../FilterArea';
 import { FormField } from '../Form';
-import { FormFieldSize } from '@mezzanine-ui/core/form';
+import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
 import Tab, { TabItem } from '../Tab';
 
 export default {
@@ -42,15 +42,30 @@ const sampleContentHeader = (
 );
 
 const sampleFilterArea = (
-  <FilterArea actionsAlign="end" resetText="Reset" size="sub" submitText="Search">
+  <FilterArea
+    actionsAlign="end"
+    resetText="Reset"
+    size="sub"
+    submitText="Search"
+  >
     <FilterLine>
       <Filter span={2}>
-        <FormField label="Label" name="name" size={FormFieldSize.HORIZONTAL_BASE}>
+        <FormField
+          label="Label"
+          name="name"
+          density={FormFieldDensity.BASE}
+          layout={FormFieldLayout.HORIZONTAL}
+        >
           <Input placeholder="Enter" size="sub" />
         </FormField>
       </Filter>
       <Filter span={2}>
-        <FormField label="Label" name="remark" size={FormFieldSize.HORIZONTAL_BASE}>
+        <FormField
+          label="Label"
+          name="remark"
+          density={FormFieldDensity.BASE}
+          layout={FormFieldLayout.HORIZONTAL}
+        >
           <Input placeholder="Enter" size="sub" />
         </FormField>
       </Filter>
@@ -74,7 +89,15 @@ const sampleContent = (
 
 export const All: Story = {
   render: () => (
-    <div style={{ backgroundColor: '#F3F4F6', display: 'flex', flexDirection: 'column', gap: '24px', padding: '16px' }}>
+    <div
+      style={{
+        backgroundColor: '#F3F4F6',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+        padding: '16px',
+      }}
+    >
       {/* All Props: contentHeader + filterArea + tab */}
       <Section
         contentHeader={sampleContentHeader}
@@ -93,40 +116,26 @@ export const All: Story = {
       </Section>
 
       {/* contentHeader + tab */}
-      <Section
-        contentHeader={sampleContentHeader}
-        tab={sampleTab}
-      >
+      <Section contentHeader={sampleContentHeader} tab={sampleTab}>
         {sampleContent}
       </Section>
 
       {/* filterArea + tab */}
-      <Section
-        filterArea={sampleFilterArea}
-        tab={sampleTab}
-      >
+      <Section filterArea={sampleFilterArea} tab={sampleTab}>
         {sampleContent}
       </Section>
 
       {/* contentHeader only */}
-      <Section contentHeader={sampleContentHeader}>
-        {sampleContent}
-      </Section>
+      <Section contentHeader={sampleContentHeader}>{sampleContent}</Section>
 
       {/* filterArea only */}
-      <Section filterArea={sampleFilterArea}>
-        {sampleContent}
-      </Section>
+      <Section filterArea={sampleFilterArea}>{sampleContent}</Section>
 
       {/* tab only */}
-      <Section tab={sampleTab}>
-        {sampleContent}
-      </Section>
+      <Section tab={sampleTab}>{sampleContent}</Section>
 
       {/* Content only (no props) */}
-      <Section>
-        {sampleContent}
-      </Section>
+      <Section>{sampleContent}</Section>
     </div>
   ),
 };

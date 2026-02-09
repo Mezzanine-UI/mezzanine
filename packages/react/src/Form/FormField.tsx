@@ -3,8 +3,9 @@ import {
   ControlFieldSlotLayout,
   formFieldClasses as classes,
   FormFieldCounterColor,
-  FormFieldSize,
-  LabelLayout,
+  FormFieldDensity,
+  FormFieldLabelSpacing,
+  FormFieldLayout,
 } from '@mezzanine-ui/core/form';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -70,11 +71,27 @@ export interface FormFieldProps
    */
   labelOptionalMarker?: string;
   /**
-   * The layout variant for the label area.
-   * Controls the visual styling and appearance of the label.
-   * @default LabelLayout.HORIZONTAL_MAIN
+   * The spacing variant for the label area.
+   * Controls the padding and min-height of the label.
+   * Only applicable when layout is 'horizontal' or 'stretch'.
+   * Ignored when layout is 'vertical'.
+   * @default FormFieldLabelSpacing.MAIN
    */
-  labelLayout?: LabelLayout;
+  labelSpacing?: FormFieldLabelSpacing;
+  /**
+   * The layout variant of the form field.
+   * Controls the arrangement direction of label and input.
+   * When set to 'vertical', density and labelSpacing are ignored.
+   * @default FormFieldLayout.HORIZONTAL
+   */
+  layout?: FormFieldLayout;
+  /**
+   * The density variant of the form field.
+   * Controls the width of label and max-width of data entry.
+   * Only applicable when layout is 'horizontal' or 'stretch'.
+   * Ignored when layout is 'vertical'.
+   */
+  density?: FormFieldDensity;
   /**
    * The name attribute for the form field.
    * Used to identify the field in form submissions and as htmlFor in the label.
@@ -84,11 +101,6 @@ export interface FormFieldProps
    * To control the field passed from children whether should be required.
    */
   required?: boolean;
-  /**
-   * The size variant of the form field.
-   * Controls the layout and spacing of label, input, and other elements.
-   */
-  size: FormFieldSize;
   /**
    * The severity level of the form field.
    * Used to indicate the importance or urgency of the field.
@@ -108,6 +120,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       counter,
       counterColor,
       controlFieldSlotLayout = ControlFieldSlotLayout.MAIN,
+      density,
       disabled = false,
       fullWidth = false,
       hintText,
@@ -116,10 +129,10 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       labelInformationIcon,
       labelInformationText,
       labelOptionalMarker,
-      labelLayout = LabelLayout.HORIZONTAL_MAIN,
+      labelSpacing = FormFieldLabelSpacing.MAIN,
+      layout = FormFieldLayout.HORIZONTAL,
       name,
       required = false,
-      size,
       severity = 'info',
       ...rest
     } = props;
@@ -136,8 +149,10 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         ref={ref}
         className={cx(
           classes.host,
-          classes.size(size),
+          classes.layout(layout),
           {
+            [classes.density(density!)]:
+              density && layout !== FormFieldLayout.VERTICAL,
             [classes.disabled]: disabled,
             [classes.fullWidth]: fullWidth,
           },
@@ -147,10 +162,10 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         <FormControlContext.Provider value={formControl}>
           {label && (
             <FormLabel
-              className={cx(
-                classes.labelArea,
-                `${classes.labelArea}--${labelLayout}`,
-              )}
+              className={cx(classes.labelArea, {
+                [classes.labelSpacing(labelSpacing)]:
+                  layout !== FormFieldLayout.VERTICAL,
+              })}
               htmlFor={name}
               informationIcon={labelInformationIcon}
               informationText={labelInformationText}

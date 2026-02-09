@@ -1,5 +1,4 @@
-
-import { FormFieldSize } from '@mezzanine-ui/core/form';
+import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import { Filter, FilterArea, FilterAreaProps, FilterLine } from '.';
@@ -55,7 +54,10 @@ export const Basic: Story = {
     size: 'main',
   },
   render: function BasicStory(args) {
-    const horizontal = FormFieldSize.HORIZONTAL_BASE;
+    const horizontal = {
+      density: FormFieldDensity.BASE,
+      layout: FormFieldLayout.HORIZONTAL,
+    };
 
     return (
       <CalendarConfigProviderDayjs locale="zh-TW">
@@ -65,17 +67,22 @@ export const Basic: Story = {
               <FormField
                 label="Label"
                 name="name"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
-                <Select options={autoCompleteOptions} placeholder="請選擇" fullWidth />
-
+                <Select
+                  options={autoCompleteOptions}
+                  placeholder="請選擇"
+                  fullWidth
+                />
               </FormField>
             </Filter>
             <Filter span={2}>
               <FormField
                 label="Label"
                 name="remark"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <Input placeholder="Enter name" />
               </FormField>
@@ -86,7 +93,8 @@ export const Basic: Story = {
               <FormField
                 label="進階搜尋 1"
                 name="advanced1"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <AutoComplete
                   fullWidth
@@ -100,7 +108,8 @@ export const Basic: Story = {
               <FormField
                 label="進階搜尋 3"
                 name="advanced3"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <AutoComplete
                   fullWidth
@@ -123,7 +132,10 @@ export const SubSize: Story = {
     size: 'sub',
   },
   render: function SubSizeStory(args) {
-    const horizontal = FormFieldSize.HORIZONTAL_BASE;
+    const horizontal = {
+      density: FormFieldDensity.BASE,
+      layout: FormFieldLayout.HORIZONTAL,
+    };
 
     return (
       <CalendarConfigProviderDayjs locale="zh-TW">
@@ -133,7 +145,8 @@ export const SubSize: Story = {
               <FormField
                 label="Label"
                 name="name"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <Input name="name" size="sub" placeholder="Enter name" />
               </FormField>
@@ -142,7 +155,8 @@ export const SubSize: Story = {
               <FormField
                 label="Label"
                 name="remark"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <Input name="remark" size="sub" placeholder="Enter name" />
               </FormField>
@@ -153,7 +167,8 @@ export const SubSize: Story = {
               <FormField
                 label="進階搜尋 1"
                 name="advanced1"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <AutoComplete
                   fullWidth
@@ -169,7 +184,8 @@ export const SubSize: Story = {
               <FormField
                 label="進階搜尋 3"
                 name="advanced3"
-                size={horizontal}
+                density={horizontal.density}
+                layout={horizontal.layout}
               >
                 <AutoComplete
                   fullWidth
