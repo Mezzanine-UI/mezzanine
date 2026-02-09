@@ -14,6 +14,7 @@ import { type IconDefinition, CheckedIcon } from '@mezzanine-ui/icons';
 
 import Checkbox from '../Checkbox';
 import Icon, { IconColor } from '../Icon';
+import Separator from '../Separator';
 import Typography from '../Typography';
 import { HighlightSegment, highlightText } from './highlightText';
 
@@ -333,7 +334,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
           )}
         </div>
       </li>
-      {showUnderline && <div className={classes.cardUnderline} />}
+      {showUnderline && <Separator orientation="horizontal" />}
     </>
   );
 }
