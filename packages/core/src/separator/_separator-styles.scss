@@ -7,13 +7,13 @@
 $orientation-configs: (
   horizontal: (
     border-block-start: 1px solid palette.semantic-variable(separator, neutral-faint),
-    margin-block: spacing.semantic-variable(size, element, hairline),
+    margin-block: spacing.semantic-variable(size, element, tiny),
     margin-inline: spacing.semantic-variable(padding, horizontal, none),
   ),
   vertical: (
     border-inline-start: 1px solid palette.semantic-variable(separator, neutral-faint),
     margin-inline: spacing.semantic-variable(padding, horizontal, tiny),
-    margin-block: spacing.semantic-variable(padding, horizontal, none),
+    margin-block: spacing.semantic-variable(padding, vertical, none),
   ),
 );
 
@@ -53,7 +53,7 @@ $orientation-configs: (
 }
 
 .#{$prefix} {
-  border: 0;
+  border: none;
   margin: 0;
   background-color: transparent;
 
