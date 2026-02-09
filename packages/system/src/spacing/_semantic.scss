@@ -45,6 +45,7 @@ $container-tones: (
   reduced,
   condensed,
   compressed,
+  concentrate-fixed,
   tightened,
   tiny,
   medium,
@@ -201,8 +202,8 @@ $semantic-spacings: (
         compact: primitive.variable(48),
       ),
       ultra-fixed: (
-        default: primitive.variable(68),
-        compact: primitive.variable(68),
+        default: primitive.variable(72),
+        compact: primitive.variable(72),
       ),
       max: (
         default: primitive.variable(80),
@@ -245,6 +246,10 @@ $semantic-spacings: (
       compressed: (
         default: primitive.variable(70),
         compact: primitive.variable(70),
+      ),
+      concentrate-fixed: (
+        default: primitive.variable(72),
+        compact: primitive.variable(72),
       ),
       tightened: (
         default: primitive.variable(76),

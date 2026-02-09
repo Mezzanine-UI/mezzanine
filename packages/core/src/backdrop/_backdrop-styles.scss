@@ -21,6 +21,12 @@ $variant-colors: (
     inset: 0;
   }
 
+  &__main {
+    width: 100%;
+    height: 100%;
+    position: relative;
+  }
+
   &__backdrop {
     position: absolute;
     inset: 0;

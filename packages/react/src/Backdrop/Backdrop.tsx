@@ -67,10 +67,6 @@ const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
     // Lock body scroll when backdrop is open
     useScrollLock({ enabled: open && !disableScrollLock });
 
-    // When using custom container or disablePortal, overlay should be absolutely positioned
-    // When using default Portal (to #mzn-portal-container), overlay uses relative positioning
-    const applyAbsolutePosition = Boolean(disablePortal || container);
-
     return (
       <Portal
         container={container}
@@ -83,40 +79,45 @@ const Backdrop = forwardRef<HTMLDivElement, BackdropProps>(
           aria-hidden={!open}
           className={cx(
             classes.host,
+            classes.hostAbsolute,
             {
-              [classes.hostAbsolute]: applyAbsolutePosition,
               [classes.hostOpen]: open,
             },
             className,
           )}
           role="presentation"
         >
-          <Fade
-            in={open}
-            duration={{
-              enter: MOTION_DURATION.fast,
-              exit: MOTION_DURATION.fast,
-            }}
-            easing={{
-              enter: MOTION_EASING.standard,
-              exit: MOTION_EASING.standard,
-            }}
-          >
-            <div
-              aria-hidden="true"
-              className={cx(classes.backdrop, classes.backdropVariant(variant))}
-              onClick={(event) => {
-                if (!disableCloseOnBackdropClick && onClose) {
-                  onClose();
-                }
-
-                if (onBackdropClick) {
-                  onBackdropClick(event);
-                }
+          <div className={classes.main}>
+            <Fade
+              in={open}
+              duration={{
+                enter: MOTION_DURATION.fast,
+                exit: MOTION_DURATION.fast,
               }}
-            />
-          </Fade>
-          <div className={classes.content}>{children}</div>
+              easing={{
+                enter: MOTION_EASING.standard,
+                exit: MOTION_EASING.standard,
+              }}
+            >
+              <div
+                aria-hidden="true"
+                className={cx(
+                  classes.backdrop,
+                  classes.backdropVariant(variant),
+                )}
+                onClick={(event) => {
+                  if (!disableCloseOnBackdropClick && onClose) {
+                    onClose();
+                  }
+
+                  if (onBackdropClick) {
+                    onBackdropClick(event);
+                  }
+                }}
+              />
+            </Fade>
+            <div className={classes.content}>{children}</div>
+          </div>
         </div>
       </Portal>
     );

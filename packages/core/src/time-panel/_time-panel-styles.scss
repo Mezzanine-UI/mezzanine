@@ -76,4 +76,9 @@
     height: $cell-height;
     border-radius: radius.variable(base);
   }
+
+  &__placeholder {
+    width: 100%;
+    height: $cell-height;
+  }
 }

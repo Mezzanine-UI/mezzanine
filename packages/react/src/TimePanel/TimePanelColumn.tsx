@@ -55,7 +55,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
 
         element.scrollTo({
           behavior: preferSmoothScrollRef.current ? 'auto' : 'smooth',
-          top: (activeIndex - 3) * cellHeight,
+          top: activeIndex * cellHeight,
         });
 
         preferSmoothScrollRef.current = false;
@@ -78,12 +78,24 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
       [onScrollToTarget],
     );
 
+    // Number of padding cells needed for centering (3 cells above and below the center position)
+    const paddingCellCount = 3;
+    const placeholders = Array.from({ length: paddingCellCount }, (_, i) => (
+      <div
+        key={`placeholder-${i}`}
+        className={classes.columnPlaceholder}
+        style={{ height: cellHeight }}
+        aria-hidden
+      />
+    ));
+
     return (
       <div ref={ref} className={classes.column}>
         <Scrollbar
           maxHeight={cellHeight * 7}
           onViewportReady={handleViewportReady}
         >
+          {placeholders}
           {units.map((unit) => (
             <button
               key={unit.value}
@@ -96,6 +108,7 @@ const TimePanelColumn = forwardRef<HTMLDivElement, TimePanelColumnProps>(
               {unit.label}
             </button>
           ))}
+          {placeholders}
         </Scrollbar>
       </div>
     );
