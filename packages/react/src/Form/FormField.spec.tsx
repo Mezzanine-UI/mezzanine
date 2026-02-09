@@ -271,6 +271,23 @@ describe('<FormField />', () => {
 
       expect(element.classList.contains('mzn-form-field--base')).toBeFalsy();
     });
+
+    it('should not add density class if density is omitted and layout is horizontal', () => {
+      const { getHostHTMLElement } = render(
+        <FormField
+          label="Test Label"
+          layout={FormFieldLayout.HORIZONTAL}
+          name="test-field"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      Object.values(FormFieldDensity).forEach((density) => {
+        expect(
+          element.classList.contains(`mzn-form-field--${density}`),
+        ).toBeFalsy();
+      });
+    });
   });
 
   describe('prop: label', () => {
