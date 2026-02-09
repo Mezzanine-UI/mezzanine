@@ -223,6 +223,7 @@ $variant-keys-by-type: (
   transition:
     transition.standard(background-color, fast),
     transition.standard(box-shadow, fast);
+  pointer-events: auto;
 
   &:focus {
     outline: none;
