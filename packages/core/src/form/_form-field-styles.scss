@@ -6,27 +6,6 @@
 @use '../text-field';
 @use './form-field' as *;
 
-// FormFieldLayout variants - keep this list in sync with TypeScript enum FormFieldLayout
-$form-field-layouts: (
-  'horizontal',
-  'vertical',
-  'stretch'
-);
-
-// FormFieldDensity variants - keep this list in sync with TypeScript enum FormFieldDensity
-$form-field-densities: (
-  'base',
-  'narrow',
-  'tight',
-  'wide'
-);
-
-// FormFieldLabelSpacing variants - keep this list in sync with TypeScript enum FormFieldLabelSpacing
-$form-field-label-spacings: (
-  'main',
-  'sub'
-);
-
 // FormFieldHintTextColor variants - keep this list in sync with TypeScript enum FormFieldHintTextColor
 $form-field-hint-text-colors: (
   'info',
