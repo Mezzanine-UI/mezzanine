@@ -6,6 +6,7 @@ export const backdropClasses = {
   host: backdropPrefix,
   hostOpen: `${backdropPrefix}--open`,
   hostAbsolute: `${backdropPrefix}--absolute`,
+  main: `${backdropPrefix}__main`,
   backdrop: `${backdropPrefix}__backdrop`,
   backdropVariant: (variant: BackdropVariant) =>
     `${backdropPrefix}__backdrop--${variant}`,
