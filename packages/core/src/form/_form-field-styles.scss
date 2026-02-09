@@ -106,6 +106,7 @@ $form-field-counter-colors: (
   .#{$prefix}__label-area {
     width: fit-content;
     padding-top: spacing.semantic-variable(padding, vertical, tiny);
+    padding-bottom: spacing.semantic-variable(padding, vertical, tiny);
   }
 
   .#{$prefix}__data-entry {
