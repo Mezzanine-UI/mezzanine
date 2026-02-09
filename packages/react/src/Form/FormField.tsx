@@ -143,6 +143,16 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       severity,
     };
 
+    const shouldApplyDensity = density && layout !== FormFieldLayout.VERTICAL;
+    const densityClass = shouldApplyDensity
+      ? classes.density(density)
+      : undefined;
+
+    const shouldApplyLabelSpacing = layout !== FormFieldLayout.VERTICAL;
+    const labelSpacingClass = shouldApplyLabelSpacing
+      ? classes.labelSpacing(labelSpacing)
+      : undefined;
+
     return (
       <div
         {...rest}
@@ -150,9 +160,8 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         className={cx(
           classes.host,
           classes.layout(layout),
+          densityClass,
           {
-            [classes.density(density!)]:
-              density && layout !== FormFieldLayout.VERTICAL,
             [classes.disabled]: disabled,
             [classes.fullWidth]: fullWidth,
           },
@@ -162,10 +171,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
         <FormControlContext.Provider value={formControl}>
           {label && (
             <FormLabel
-              className={cx(classes.labelArea, {
-                [classes.labelSpacing(labelSpacing)]:
-                  layout !== FormFieldLayout.VERTICAL,
-              })}
+              className={cx(classes.labelArea, labelSpacingClass)}
               htmlFor={name}
               informationIcon={labelInformationIcon}
               informationText={labelInformationText}

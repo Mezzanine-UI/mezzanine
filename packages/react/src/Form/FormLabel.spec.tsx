@@ -1,5 +1,5 @@
 import { InfoFilledIcon } from '@mezzanine-ui/icons';
-import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
+import { FormFieldLayout } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
