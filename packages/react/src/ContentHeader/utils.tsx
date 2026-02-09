@@ -16,6 +16,13 @@ import { ContentHeaderProps } from './ContentHeader';
 import { flattenChildren } from '../utils/flatten-children';
 import Dropdown, { DropdownProps } from '../Dropdown';
 import { ChevronLeftIcon } from '@mezzanine-ui/icons';
+import Toggle, { ToggleProps } from '../Toggle';
+import Checkbox, { CheckboxProps } from '../Checkbox';
+import ContentHeaderResponsive, {
+  ContentHeaderResponsiveProps,
+} from './ContentHeaderResponsive';
+import { cx } from '../utils/cx';
+import { contentHeaderClasses } from '@mezzanine-ui/core/content-header';
 
 // TODO: Replace with actual SegmentedControlProps when SegmentedControl component is complete
 type SegmentedControlProps = {
@@ -29,6 +36,7 @@ type SegmentedControlProps = {
 export const renderButton = (
   button: ButtonProps | ButtonGroupChild | undefined,
   size: ButtonProps['size'],
+  key?: string,
 ): ReactElement<ButtonProps> | null => {
   if (!button) {
     return null;
@@ -38,37 +46,52 @@ export const renderButton = (
     return cloneElement(button, {
       size,
       type: 'button',
+      key: button.key || key,
     });
   }
 
-  return <Button {...button} size={size} type="button" />;
+  return (
+    <Button {...button} size={size} type="button" key={key || button.title} />
+  );
 };
 
 const withSize = (
-  target: ReactElement<SearchInputProps | SelectProps | SegmentedControlProps>,
+  target: ReactElement<
+    | SearchInputProps
+    | SelectProps
+    | SegmentedControlProps
+    | ToggleProps
+    | CheckboxProps
+  >,
   size: 'main' | 'sub',
 ) => {
   return cloneElement(target, { size });
 };
 
 export const renderFilterProp = (
-  prop: ContentHeaderProps['filter'],
+  props: ContentHeaderProps['filter'],
   size: 'main' | 'sub',
 ) => {
-  if (!prop) {
+  if (!props) {
     return null;
   }
 
-  const { variant } = prop;
+  const { variant } = props;
+
+  if ('size' in props) {
+    console.warn(
+      '[Mezzanine][ContentHeader]: size in ContentHeader filter is forced to match ContentHeader size.',
+    );
+  }
 
   if (variant === 'search') {
     return (
-      <Input {...(prop as SearchInputProps)} size={size} variant="search" />
+      <Input {...(props as SearchInputProps)} size={size} variant="search" />
     );
   }
 
   if (variant === 'select') {
-    return <Select {...(prop as SelectProps)} size={size} />;
+    return <Select {...(props as SelectProps)} size={size} />;
   }
 
   if (variant === 'segmentedControl') {
@@ -77,12 +100,21 @@ export const renderFilterProp = (
     return null;
   }
 
+  if (variant === 'toggle') {
+    return <Toggle {...(props as ToggleProps)} size={size} />;
+  }
+
+  if (variant === 'checkbox') {
+    return <Checkbox {...(props as CheckboxProps)} />;
+  }
+
   return null;
 };
 
 export const renderIconButtonWithProps = (
   child: ReactElement<ButtonProps>,
   size: ButtonProps['size'],
+  key?: string,
 ): ReactElement<ButtonProps> => {
   const { icon } = child.props;
 
@@ -92,6 +124,7 @@ export const renderIconButtonWithProps = (
     size,
     variant: 'base-secondary',
     type: 'button',
+    key: child.key || key,
   });
 };
 
@@ -101,7 +134,7 @@ export const renderIconButtonsProp = (
 ): ButtonGroupChild | ButtonGroupChild[] => {
   const result: ButtonGroupChild[] = [];
 
-  utilities?.forEach((props) => {
+  utilities?.forEach((props, index) => {
     if (props instanceof Object && 'icon' in props) {
       result.push(
         <Button
@@ -110,6 +143,7 @@ export const renderIconButtonsProp = (
           size={size}
           iconType="icon-only"
           variant="base-secondary"
+          key={props.id || props['aria-label'] || `utility-${index}`}
         />,
       );
     }
@@ -127,7 +161,10 @@ export const renderIconButtonsProp = (
       }
 
       result.push(
-        <Dropdown {...(props as DropdownProps)}>
+        <Dropdown
+          {...(props as DropdownProps)}
+          key={props.id || `utility-dropdown-${index}`}
+        >
           {cloneElement(
             (props as DropdownProps).children as ReactElement<ButtonProps>,
             {
@@ -191,7 +228,9 @@ export const renderActionsProp = (
           variantOrder[a.variant || 'base-primary'] -
           variantOrder[b.variant || 'base-primary'],
       )
-      .map((v) => renderButton(v, size)) as ButtonGroupChild[];
+      .map((v, index) =>
+        renderButton(v, size, `action-${index}`),
+      ) as ButtonGroupChild[];
   }
 
   return null;
@@ -202,7 +241,11 @@ export const resolveContentHeaderChild = (
   size: 'main' | 'sub',
 ) => {
   let filter: ReactElement<
-    SearchInputProps | SelectProps | SegmentedControlProps
+    | SearchInputProps
+    | SelectProps
+    | SegmentedControlProps
+    | ToggleProps
+    | CheckboxProps
   > | null = null;
 
   // [destructive-secondary[], base-secondary[], base-primary[]]
@@ -217,7 +260,38 @@ export const resolveContentHeaderChild = (
 
   if (children) {
     const flatChildren = flattenChildren(children);
+
+    const responsiveChildren: ReactNode[] = [];
+
     Children.forEach(flatChildren, (child) => {
+      if (isValidElement(child) && child.type === ContentHeaderResponsive) {
+        const props = child.props as ContentHeaderResponsiveProps;
+        const breakpointClass = contentHeaderClasses.breakpoint(
+          props.breakpoint,
+        );
+
+        Children.forEach(flattenChildren(props.children), (rwdChild) => {
+          if (isValidElement(rwdChild)) {
+            const rwdProps = rwdChild.props as { className?: string };
+
+            responsiveChildren.push(
+              cloneElement(rwdChild as ReactElement<{ className?: string }>, {
+                ...rwdProps,
+                className: cx(breakpointClass, rwdProps?.className),
+              }),
+            );
+          } else {
+            responsiveChildren.push(
+              <span className={breakpointClass}>{rwdChild}</span>,
+            );
+          }
+        });
+      } else {
+        responsiveChildren.push(child);
+      }
+    });
+
+    Children.forEach(responsiveChildren, (child) => {
       if (!isValidElement(child)) {
         return;
       }
@@ -256,7 +330,8 @@ export const resolveContentHeaderChild = (
       // is filter
       if (
         (type === Input && (props as InputProps).variant === 'search') ||
-        type === Select
+        type === Select ||
+        type === Toggle
       ) {
         if (filter) {
           console.warn(
@@ -265,14 +340,21 @@ export const resolveContentHeaderChild = (
         }
 
         filter = withSize(
-          child as ReactElement<SearchInputProps | SelectProps>,
+          child as ReactElement<SearchInputProps | SelectProps | ToggleProps>,
           size,
         );
       } else if (type.toString() === 'SegmentedControl') {
         console.warn('SegmentedControl component is not implemented yet.');
-      }
-      // is utilities (icon button)
-      else if (
+      } else if (type === Checkbox) {
+        if (filter) {
+          console.warn(
+            '[Mezzanine][ContentHeader]: ContentHeader only accepts one filter component.',
+          );
+        }
+
+        filter = child as ReactElement<CheckboxProps>;
+      } else if (
+        // is utilities (icon button)
         (type === Button && (props as ButtonProps).iconType === 'icon-only') ||
         (type === Button &&
           (props as ButtonProps).icon &&

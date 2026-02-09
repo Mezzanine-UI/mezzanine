@@ -14,6 +14,8 @@ import {
 } from './utils';
 import Typography from '../Typography';
 import { DropdownProps } from '../Dropdown';
+import { ToggleProps } from '../Toggle';
+import { CheckboxProps } from '../Checkbox';
 
 // TODO: Replace with actual SegmentedControlProps when SegmentedControl component is complete
 type SegmentedControlProps = {
@@ -24,6 +26,8 @@ type ContentHeaderChild =
   | ReactElement<SearchInputProps>
   | ReactElement<SelectProps>
   | ReactElement<SegmentedControlProps>
+  | ReactElement<ToggleProps>
+  | ReactElement<CheckboxProps>
   | ReactElement<ButtonProps>
   | ReactElement<DropdownProps>
   | ReactElement<{ href: string }>
@@ -67,22 +71,15 @@ export type ContentHeaderProps = Omit<
   /** Optional description text displayed below the title */
   description?: string;
   /** Filter component (SearchInput, Select, or SegmentedControl) */
-  filter?: { variant: 'search' | 'select' | 'segmentedControl' } & (
+  filter?: {
+    variant: 'search' | 'select' | 'segmentedControl' | 'toggle' | 'checkbox';
+  } & (
     | SearchInputProps
     | SelectProps
     | SegmentedControlProps
+    | ToggleProps
+    | CheckboxProps
   );
-  /**
-   * Optional back button properties. <br />
-   * When provided, a back button will be rendered on the left side of the title. <br />
-   * href prop from children will be ignored if onBackClick is provided. <br />
-   * */
-  onBackClick?: () => void;
-  /**
-   * Size variant of the toolbar. <br />
-   * Affects the size of buttons and filter component. <br />
-   */
-  size?: 'main' | 'sub';
   /** Main title text for the content header */
   title: string;
   /**
@@ -99,7 +96,25 @@ export type ContentHeaderProps = Omit<
       })
     | DropdownProps
   )[];
-};
+} & (
+    | {
+        /**
+         * Optional back button properties. <br />
+         * When provided, a back button will be rendered on the left side of the title. <br />
+         * href prop from children will be ignored if onBackClick is provided. <br />
+         * */
+        onBackClick?: () => void;
+        /**
+         * Size variant of the toolbar. <br />
+         * Affects the size of buttons and filter component. <br />
+         */
+        size?: 'main';
+      }
+    | {
+        onBackClick?: never;
+        size?: 'sub';
+      }
+  );
 
 /**
  * ContentHeader component. <br />
@@ -183,7 +198,7 @@ const ContentHeader = forwardRef<HTMLElement, ContentHeaderProps>(
       >
         <span className={classes.titleArea}>
           {/* title area */}
-          {renderBackButton && (
+          {renderBackButton && size !== 'sub' && (
             <span className={classes.backButton}>{renderBackButton}</span>
           )}
 
