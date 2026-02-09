@@ -334,7 +334,14 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
           )}
         </div>
       </li>
-      {showUnderline && <Separator orientation="horizontal" />}
+      {showUnderline && (
+        <li role="presentation" aria-hidden="true">
+          <Separator
+            orientation="horizontal"
+            className={classes.cardUnderline}
+          />
+        </li>
+      )}
     </>
   );
 }
