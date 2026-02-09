@@ -416,6 +416,7 @@ $modalSizes: (
     cursor: pointer;
     z-index: z-index.get(modal);
     padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, cozy);
+    pointer-events: auto;
 
     &:hover:not(:disabled) {
       background-color: palette.semantic-variable(overlay, strong);
