@@ -29,6 +29,7 @@ export const timePanelClasses = {
   /** Column classes */
   column: timePanelColumnPrefix,
   columnButton: `${timePanelColumnPrefix}__button`,
+  columnPlaceholder: `${timePanelColumnPrefix}__placeholder`,
 };
 
 /** Helpers */
