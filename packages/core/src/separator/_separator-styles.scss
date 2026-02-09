@@ -1,0 +1,69 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use './separator' as *;
+
+// Orientation configurations
+$orientation-configs: (
+  horizontal: (
+    border-block-start: 1px solid palette.semantic-variable(separator, neutral-faint),
+    margin-block: spacing.semantic-variable(size, element, tiny),
+    margin-inline: spacing.semantic-variable(padding, horizontal, none),
+  ),
+  vertical: (
+    border-inline-start: 1px solid palette.semantic-variable(separator, neutral-faint),
+    margin-inline: spacing.semantic-variable(padding, horizontal, tiny),
+    margin-block: spacing.semantic-variable(padding, vertical, none),
+  ),
+);
+
+// Helper function to get orientation config
+@function _get-orientation-config($orientation, $property) {
+  $config: map.get($orientation-configs, $orientation);
+
+  @if $config {
+    @return map.get($config, $property);
+  }
+
+  @return null;
+}
+
+// Apply orientation styles
+@mixin _apply-orientation($orientation) {
+  $border-block-start: _get-orientation-config($orientation, border-block-start);
+  $border-inline-start: _get-orientation-config($orientation, border-inline-start);
+  $margin-block: _get-orientation-config($orientation, margin-block);
+  $margin-inline: _get-orientation-config($orientation, margin-inline);
+
+  @if $border-block-start {
+    border-block-start: $border-block-start;
+  }
+
+  @if $border-inline-start {
+    border-inline-start: $border-inline-start;
+  }
+
+  @if $margin-block {
+    margin-block: $margin-block;
+  }
+
+  @if $margin-inline {
+    margin-inline: $margin-inline;
+  }
+}
+
+.#{$prefix} {
+  border: none;
+  margin: 0;
+  background-color: transparent;
+
+  &--horizontal {
+    @include _apply-orientation(horizontal);
+  }
+
+  &--vertical {
+    align-self: stretch;
+    @include _apply-orientation(vertical);
+  }
+}
+
