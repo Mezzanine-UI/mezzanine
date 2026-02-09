@@ -1,10 +1,12 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import Separator, { SeparatorProps } from '.';
 
-export default {
+const meta: Meta<typeof Separator> = {
   title: 'Internal/Separator',
   component: Separator,
-} satisfies Meta<typeof Separator>;
+};
+
+export default meta;
 
 type Story = StoryObj<SeparatorProps>;
 

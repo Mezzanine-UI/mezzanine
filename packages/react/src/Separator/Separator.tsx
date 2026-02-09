@@ -1,8 +1,8 @@
-import { forwardRef } from 'react';
 import {
   SeparatorOrientation,
   separatorClasses as classes,
 } from '@mezzanine-ui/core/separator';
+import { forwardRef } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
@@ -25,6 +25,7 @@ const Separator = forwardRef<HTMLHRElement, SeparatorProps>(
     return (
       <hr
         {...rest}
+        aria-orientation={orientation === 'vertical' ? 'vertical' : undefined}
         ref={ref}
         className={cx(
           classes.host,

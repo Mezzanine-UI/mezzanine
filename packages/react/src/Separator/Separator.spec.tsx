@@ -1,4 +1,3 @@
-import { SeparatorOrientation } from '@mezzanine-ui/core/separator';
 import Separator from '.';
 import { cleanup, render } from '../../__test-utils__';
 import {
@@ -24,19 +23,33 @@ describe('<Separator />', () => {
 
       expect(element.classList.contains('mzn-separator--horizontal')).toBeTruthy();
       expect(element.classList.contains('mzn-separator--vertical')).toBeFalsy();
+      expect(element.getAttribute('aria-orientation')).toBeNull();
     });
 
-    const orientations: SeparatorOrientation[] = ['horizontal', 'vertical'];
+    it('should set aria-orientation="vertical" when orientation is vertical', () => {
+      const { getHostHTMLElement } = render(<Separator orientation="vertical" />);
+      const element = getHostHTMLElement();
 
-    orientations.forEach((orientation) => {
-      it(`should add class if orientation="${orientation}"`, () => {
-        const { getHostHTMLElement } = render(<Separator orientation={orientation} />);
-        const element = getHostHTMLElement();
+      expect(element.classList.contains('mzn-separator--vertical')).toBeTruthy();
+      expect(element.getAttribute('aria-orientation')).toBe('vertical');
+    });
 
-        expect(
-          element.classList.contains(`mzn-separator--${orientation}`),
-        ).toBeTruthy();
-      });
+    it('should not set aria-orientation when orientation is horizontal', () => {
+      const { getHostHTMLElement } = render(<Separator orientation="horizontal" />);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-separator--horizontal')).toBeTruthy();
+      expect(element.getAttribute('aria-orientation')).toBeNull();
+    });
+
+    it('aria-orientation from props should not override orientation prop', () => {
+      const { getHostHTMLElement } = render(
+        <Separator aria-orientation="horizontal" orientation="vertical" />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.getAttribute('aria-orientation')).toBe('vertical');
+      expect(element.classList.contains('mzn-separator--vertical')).toBeTruthy();
     });
   });
 });
