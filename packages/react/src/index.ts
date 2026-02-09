@@ -133,7 +133,7 @@ export type {
 } from './Accordion';
 export { default as Badge, BadgeContainer } from './Badge';
 export type { BadgeProps } from './Badge';
-export { BaseCard, CardGroup, QuickActionCard } from './Card';
+export { default as BaseCard, CardGroup, QuickActionCard } from './Card';
 export type {
   BaseCardActionProps,
   BaseCardActionVariant,

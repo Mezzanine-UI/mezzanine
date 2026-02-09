@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactElement } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { cx } from '../utils/cx';
@@ -24,7 +25,7 @@ const ALLOWED_CARD_TYPES = [BaseCard, QuickActionCard];
 /**
  * Get display name of a component for error messages
  */
-function getComponentDisplayName(child: React.ReactElement): string {
+function getComponentDisplayName(child: ReactElement): string {
   const { type } = child;
 
   if (typeof type === 'string') {

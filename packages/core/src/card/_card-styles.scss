@@ -169,13 +169,13 @@ $quick-action-card-min-width: spacing.semantic-variable(size, container, tight);
       @include typography.semantic-variable(body-highlight);
       @include typography.overflow-ellipsis();
 
-      color: palette.semantic-variable(text, neutral-solid);
+      color: var(--quick-action-card-title-color);
     }
 
     &__subtitle {
       @include typography.semantic-variable(caption);
 
-      color: palette.semantic-variable(text, neutral);
+      color: var(--quick-action-card-subtitle-color);
     }
   }
 
