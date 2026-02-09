@@ -8,7 +8,7 @@ import {
   PlusIcon,
 } from '@mezzanine-ui/icons';
 import Drawer, { DrawerProps } from '.';
-import { Button, Typography } from '../index';
+import { Button, Modal, Typography } from '../index';
 
 // Icon mapping for Storybook controls
 const iconOptions = {
@@ -538,6 +538,77 @@ export const WithCustomButtonVariants: StoryObj<DrawerProps> = {
             </Typography>
           </div>
         </Drawer>
+      </>
+    );
+  },
+};
+
+export const WithModalWhileDrawerOpen: StoryObj<DrawerProps> = {
+  render: function Render() {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handleDrawerClose = useCallback(() => {
+      setDrawerOpen(false);
+      setModalOpen(false);
+    }, []);
+    const handleModalClose = useCallback(() => setModalOpen(false), []);
+    const handleModalConfirm = useCallback(() => {
+      setModalOpen(false);
+    }, []);
+
+    return (
+      <>
+        <Button onClick={() => setDrawerOpen(true)} variant="base-text-link">
+          開啟 Drawer (測試 Modal 互動)
+        </Button>
+
+        <Drawer
+          headerTitle="Drawer 與 Modal 互動測試"
+          isHeaderDisplay
+          onClose={handleDrawerClose}
+          open={drawerOpen}
+          size="medium"
+        >
+          <div style={{ padding: '16px' }}>
+            <Typography variant="body">
+              點擊下方按鈕可以在 Drawer 中打開一個
+              Modal，用於測試兩者的層級和互動關係。
+            </Typography>
+            <div style={{ marginTop: '16px' }}>
+              <Button onClick={() => setModalOpen(true)} variant="base-primary">
+                打開 Modal
+              </Button>
+            </div>
+          </div>
+        </Drawer>
+
+        <Modal
+          cancelText="取消"
+          confirmText="確認"
+          disableCloseOnBackdropClick={false}
+          disableCloseOnEscapeKeyDown={false}
+          modalStatusType="info"
+          modalType="standard"
+          onCancel={handleModalClose}
+          onClose={handleModalClose}
+          onConfirm={handleModalConfirm}
+          open={modalOpen}
+          showCancelButton
+          showDismissButton
+          showModalFooter
+          showModalHeader
+          size="regular"
+          title="基本 Modal"
+        >
+          <Typography variant="body">
+            這是一個從 Drawer 中打開的基本 Modal。
+          </Typography>
+          <br />
+          <Typography variant="body">
+            測試 z-index 和背景遮罩是否正常運作。
+          </Typography>
+        </Modal>
       </>
     );
   },
