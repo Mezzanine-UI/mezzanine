@@ -6,6 +6,7 @@ import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { cx } from '../utils/cx';
 import BaseCard from './BaseCard';
 import QuickActionCard from './QuickActionCard';
+import SingleThumbnailCard from './SingleThumbnailCard';
 
 export interface CardGroupProps {
   /**
@@ -20,7 +21,7 @@ export interface CardGroupProps {
 }
 
 // List of allowed child component types
-const ALLOWED_CARD_TYPES = [BaseCard, QuickActionCard];
+const ALLOWED_CARD_TYPES = [BaseCard, QuickActionCard, SingleThumbnailCard];
 
 /**
  * Get display name of a component for error messages

@@ -4,7 +4,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { BaseCard, CardGroup } from '.';
+import { BaseCardGeneric as BaseCard, CardGroup } from '.';
 
 const originalConsoleWarn = console.warn;
 

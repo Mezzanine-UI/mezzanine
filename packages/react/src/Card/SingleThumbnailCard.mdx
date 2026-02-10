@@ -1,0 +1,94 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import { SingleThumbnailCard } from '.';
+import * as SingleThumbnailCardStories from './SingleThumbnailCard.stories';
+
+<Meta of={SingleThumbnailCardStories} />
+
+# SingleThumbnailCard
+
+<Description of={SingleThumbnailCard} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Card/SingleThumbnailCard.tsx)
+
+## Overview
+
+SingleThumbnailCard displays a single image thumbnail with optional tag, personal action, and info section.
+The card width is determined by the image child element.
+
+## Features
+
+- **Thumbnail Display**: Renders a single image with hover overlay effect
+- **Tag**: Optional label displayed on top-left of the thumbnail
+- **Personal Action**: Optional favorite/bookmark button on top-right (supports active/inactive states)
+- **Filetype Badge**: Shows file extension with color-coded background based on file type
+- **Action Types**: Supports three action modes in the info section
+
+## Action Types
+
+- **default**: No action button in the info section
+- **action**: Displays a text button with customizable label
+- **overflow**: Displays a dropdown menu with options
+
+## Filetype Categories
+
+The filetype badge color is automatically determined based on the file extension:
+
+| Category | Extensions                     | Color         |
+| -------- | ------------------------------ | ------------- |
+| Image    | jpg, png, gif, svg, webp, etc. | Brand         |
+| Media    | mp4, mp3, avi, mov, wav, etc.  | Error         |
+| Document | pdf, doc, xls, ppt, txt, etc.  | Warning       |
+| Archive  | zip, rar, 7z, tar, gz, etc.    | Success       |
+| Code     | js, ts, py, html, css, etc.    | Info          |
+| System   | exe, dll, sys, bin, etc.       | Neutral Solid |
+| Default  | Unknown extensions             | Neutral       |
+
+## Component Props
+
+The card can be rendered as different HTML elements using the `component` prop:
+
+- `div` (default): Renders as a standard div element
+- `a`: Renders as an anchor element, useful for navigation cards
+- Custom component: Any React component (e.g., Next.js Link)
+
+## Usage Examples
+
+### Basic Usage
+
+```tsx
+<SingleThumbnailCard filetype="pdf" subtitle="2.4 MB" title="document.pdf">
+  <img src="/thumbnail.jpg" alt="Document thumbnail" />
+</SingleThumbnailCard>
+```
+
+### With Personal Action
+
+```tsx
+const [isFavorite, setIsFavorite] = useState(false);
+
+<SingleThumbnailCard
+  filetype="jpg"
+  personalActionActive={isFavorite}
+  personalActionActiveIcon={StarFilledIcon}
+  personalActionIcon={StarOutlineIcon}
+  personalActionOnClick={() => setIsFavorite(!isFavorite)}
+  title="photo.jpg"
+>
+  <img src="/photo.jpg" alt="Photo" />
+</SingleThumbnailCard>;
+```
+
+### As Link
+
+```tsx
+<SingleThumbnailCard<'a'>
+  component="a"
+  filetype="pdf"
+  href="/files/123"
+  title="document.pdf"
+>
+  <img src="/thumbnail.jpg" alt="Document" />
+</SingleThumbnailCard>
+```
+
+<ArgTypes of={SingleThumbnailCard} />

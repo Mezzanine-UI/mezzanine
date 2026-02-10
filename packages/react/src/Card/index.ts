@@ -3,12 +3,26 @@ import BaseCard, { BaseCardComponentProps } from './BaseCard';
 import QuickActionCard, {
   QuickActionCardComponentProps,
 } from './QuickActionCard';
-import { BaseCardComponent, QuickActionCardComponent } from './typings';
+import SingleThumbnailCard, {
+  SingleThumbnailCardComponentProps,
+} from './SingleThumbnailCard';
+import {
+  BaseCardComponent,
+  QuickActionCardComponent,
+  SingleThumbnailCardComponent,
+} from './typings';
 
 export { default as CardGroup } from './CardGroup';
 export type { CardGroupProps } from './CardGroup';
 
-export type { BaseCardComponentProps, QuickActionCardComponentProps };
+export { default as ThumbnailCardInfo } from './ThumbnailCardInfo';
+export type { ThumbnailCardInfoProps } from './ThumbnailCardInfo';
+
+export type {
+  BaseCardComponentProps,
+  QuickActionCardComponentProps,
+  SingleThumbnailCardComponentProps,
+};
 
 export type {
   BaseCardComponent,
@@ -26,6 +40,13 @@ export type {
   QuickActionCardPropsCommon,
   QuickActionCardWithIconProps,
   QuickActionCardWithTitleProps,
+  SingleThumbnailCardComponent,
+  SingleThumbnailCardType,
+  SingleThumbnailCardProps,
+  SingleThumbnailCardPropsCommon,
+  SingleThumbnailCardDefaultProps,
+  SingleThumbnailCardActionProps,
+  SingleThumbnailCardOverflowProps,
 } from './typings';
 
 /**
@@ -41,7 +62,18 @@ type GenericQuickActionCard = <C extends QuickActionCardComponent = 'button'>(
     RefAttributes<HTMLElement>,
 ) => ReactElement<any>;
 
-export { BaseCard, QuickActionCard };
-export default BaseCard as GenericBaseCard;
+type GenericSingleThumbnailCard = <
+  C extends SingleThumbnailCardComponent = 'div',
+>(
+  props: PropsWithoutRef<SingleThumbnailCardComponentProps<C>> &
+    RefAttributes<HTMLElement> & {
+      children: ReactElement;
+    },
+) => ReactElement<any>;
 
+export { BaseCard, QuickActionCard, SingleThumbnailCard };
+
+export const BaseCardGeneric = BaseCard as GenericBaseCard;
 export const QuickActionCardGeneric = QuickActionCard as GenericQuickActionCard;
+export const SingleThumbnailCardGeneric =
+  SingleThumbnailCard as GenericSingleThumbnailCard;
