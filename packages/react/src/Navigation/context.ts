@@ -14,4 +14,5 @@ export const NavigationActivatedContext = createContext<{
   filterText: string;
   handleCollapseChange: (newCollapsed: boolean) => void;
   setActivatedPath: (path: string[]) => void;
+  optionsAnchorComponent?: React.ElementType;
 }>(null as any);

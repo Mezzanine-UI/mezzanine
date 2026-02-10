@@ -67,6 +67,10 @@ export interface NavigationProps
    * Called when a navigation option is clicked.
    */
   onOptionClick?: (activePath?: string[]) => void;
+  /**
+   * Custom component for rendering navigation options which have an href prop.
+   */
+  optionsAnchorComponent?: React.ElementType;
 }
 
 const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
@@ -78,6 +82,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     filter,
     onCollapseChange,
     onOptionClick,
+    optionsAnchorComponent,
     ...rest
   } = props;
   const [collapsedState, setCollapsedState] = useState(collapsedProp || false);
@@ -186,6 +191,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
           filterText,
           handleCollapseChange,
           setActivatedPath: combineSetActivatedPath,
+          optionsAnchorComponent,
         }}
       >
         {headerComponent}
