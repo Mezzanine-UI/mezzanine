@@ -13,9 +13,10 @@
   display: flex;
   justify-content: space-between;
   justify-self: flex-end;
-  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort);
   background-color: palette.semantic-variable("background", neutral-ghost);
   width: 100%;
+  gap: spacing.semantic-variable(gap, comfort);
 
   &__container {
     align-items: center;
