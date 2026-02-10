@@ -30,4 +30,22 @@ export const cardClasses = {
   quickActionTitle: `${quickActionCardPrefix}__content__title`,
   quickActionSubtitle: `${quickActionCardPrefix}__content__subtitle`,
   quickActionVertical: `${quickActionCardPrefix}--vertical`,
+
+  /** thumbnail card (shared) */
+  thumbnail: thumbnailCardPrefix,
+  thumbnailTag: `${thumbnailCardPrefix}__tag`,
+  thumbnailPersonalAction: `${thumbnailCardPrefix}__personal-action`,
+
+  /** single thumbnail card */
+  singleThumbnail: singleThumbnailCardPrefix,
+  singleThumbnailOverlay: `${singleThumbnailCardPrefix}__overlay`,
+
+  /** thumbnail card info */
+  thumbnailInfo: thumbnailCardInfoPrefix,
+  thumbnailInfoMain: `${thumbnailCardInfoPrefix}__main`,
+  thumbnailInfoFiletype: `${thumbnailCardInfoPrefix}__main__filetype`,
+  thumbnailInfoContent: `${thumbnailCardInfoPrefix}__main__content`,
+  thumbnailInfoTitle: `${thumbnailCardInfoPrefix}__main__content__title`,
+  thumbnailInfoSubtitle: `${thumbnailCardInfoPrefix}__main__content__subtitle`,
+  thumbnailInfoAction: `${thumbnailCardInfoPrefix}__action`,
 };
