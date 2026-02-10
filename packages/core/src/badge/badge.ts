@@ -1,6 +1,16 @@
 export const badgePrefix = 'mzn-badge';
 
-export type BadgeVariant = BadgeDotVariant | BadgeCountVariant;
+export type BadgeVariant =
+  | BadgeDotVariant
+  | BadgeCountVariant
+  | BadgeTextVariant;
+
+export type BadgeTextVariant =
+  | 'text-success'
+  | 'text-error'
+  | 'text-warning'
+  | 'text-info'
+  | 'text-inactive';
 
 export type BadgeDotVariant =
   | 'dot-success'
@@ -18,7 +28,7 @@ export type BadgeCountVariant =
 
 export const badgeClasses = {
   host: badgePrefix,
-  variant: (variant: BadgeDotVariant | BadgeCountVariant) =>
+  variant: (variant: BadgeDotVariant | BadgeCountVariant | BadgeTextVariant) =>
     `${badgePrefix}--${variant}`,
   container: (hasChilden: boolean) =>
     hasChilden
