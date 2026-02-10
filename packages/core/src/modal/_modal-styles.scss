@@ -53,10 +53,18 @@ $modalSizes: (
         width: spacing.semantic-variable(size, container, narrow);
       } @else if $size == 'narrow' {
         width: spacing.semantic-variable(size, container, balanced);
-        max-height: spacing.semantic-variable(size, container, wide);
+
+        .#{$prefix}__body-container {
+          min-height: spacing.semantic-variable(size, container, tight);
+          max-height: spacing.semantic-variable(size, container, wide);
+        }
       } @else if $size == 'regular' {
         width: spacing.semantic-variable(size, container, wide);
-        max-height: spacing.semantic-variable(size, container, expanded);
+
+        .#{$prefix}__body-container {
+          min-height: spacing.semantic-variable(size, container, tight);
+          max-height: spacing.semantic-variable(size, container, expanded);
+        }
       } @else if $size == 'wide' {
         width: max-content;
         max-width: calc(100% - spacing.semantic-variable(padding, horizontal, spacious) * 2);
