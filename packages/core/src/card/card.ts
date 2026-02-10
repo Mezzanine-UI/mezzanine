@@ -1,6 +1,9 @@
 export const cardGroupPrefix = 'mzn-card-group';
 export const baseCardPrefix = 'mzn-base-card';
 export const quickActionCardPrefix = 'mzn-quick-action-card';
+export const thumbnailCardPrefix = 'mzn-thumbnail-card';
+export const thumbnailCardInfoPrefix = 'mzn-thumbnail-card-info';
+export const singleThumbnailCardPrefix = 'mzn-single-thumbnail-card';
 
 export const cardClasses = {
   /** group */
