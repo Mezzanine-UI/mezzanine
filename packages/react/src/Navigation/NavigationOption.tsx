@@ -53,6 +53,10 @@ export interface NavigationOptionProps
    */
   children?: NavigationOptionChildren;
   /**
+   * Custom component to render, it should support `href` and `onClick` props if provided.
+   */
+  anchorComponent?: React.ElementType;
+  /**
    * Icon of the item.
    */
   icon?: IconDefinition;
@@ -82,6 +86,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       active,
       children,
       className,
+      anchorComponent,
       defaultOpen = false,
       href,
       icon,
@@ -112,6 +117,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       filterText,
       handleCollapseChange,
       setActivatedPath,
+      optionsAnchorComponent,
     } = use(NavigationActivatedContext);
 
     useEffect(() => {
@@ -122,7 +128,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const Component = href ? 'a' : 'div';
+    const Component = href
+      ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+      : 'div';
 
     const flattenedChildren = useMemo(
       () => flattenChildren(children) as NavigationOptionChildren,
@@ -195,9 +203,6 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
             <Component
               className={cx(classes.content, classes.level(currentLevel))}
-              onMouseEnter={onMouseEnter}
-              onMouseLeave={onMouseLeave}
-              ref={tooltipChildRef}
               href={href}
               onClick={() => {
                 setOpen(!open);
@@ -209,7 +214,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
                 if (!children) setActivatedPath(currentPath);
               }}
-              onKeyDown={(e) => {
+              onKeyDown={(
+                e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
+              ) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setOpen(!open);
@@ -217,6 +224,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                   if (!children) setActivatedPath(currentPath);
                 }
               }}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              ref={tooltipChildRef}
               role="menuitem"
               tabIndex={0}
             >

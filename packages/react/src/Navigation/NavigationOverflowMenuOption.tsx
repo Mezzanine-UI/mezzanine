@@ -44,6 +44,7 @@ const NavigationOverflowMenuOption = forwardRef<
     active,
     children,
     className,
+    anchorComponent,
     defaultOpen = false,
     href,
     icon,
@@ -65,9 +66,12 @@ const NavigationOverflowMenuOption = forwardRef<
     [parentPath, currentKey],
   );
 
-  const { activatedPath, setActivatedPath, currentPathname } = use(
-    NavigationActivatedContext,
-  );
+  const {
+    activatedPath,
+    setActivatedPath,
+    currentPathname,
+    optionsAnchorComponent,
+  } = use(NavigationActivatedContext);
 
   useEffect(() => {
     if (currentPathname === href) {
@@ -77,7 +81,9 @@ const NavigationOverflowMenuOption = forwardRef<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const Component = href ? 'a' : 'div';
+  const Component = href
+    ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+    : 'div';
 
   const flattenedChildren = useMemo(
     () => flattenChildren(children) as NavigationOptionChildren,
@@ -134,7 +140,9 @@ const NavigationOverflowMenuOption = forwardRef<
 
           if (!children) setActivatedPath(currentPath);
         }}
-        onKeyDown={(e) => {
+        onKeyDown={(
+          e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
+        ) => {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             setOpen(!open);
