@@ -1,4 +1,8 @@
-import { BadgeCountVariant, BadgeDotVariant } from '@mezzanine-ui/core/badge';
+import {
+  BadgeCountVariant,
+  BadgeDotVariant,
+  BadgeTextVariant,
+} from '@mezzanine-ui/core/badge';
 import { ReactNode } from 'react';
 import { NativeElementPropsWithoutKeyAndRef } from 'react/src/utils/jsx-types';
 
@@ -11,7 +15,8 @@ export type BadgeProps = Omit<
 type BadgeVariantProps =
   | BadgeCountProps
   | BadgeDotWithTextProps
-  | BadgeDotProps;
+  | BadgeDotProps
+  | BadgeTextProps;
 
 type BadgeCountProps = {
   /**
@@ -40,6 +45,14 @@ type BadgeCountProps = {
    * Controls the visual style (dot vs count variants) and enables the related overflow/hide rules.
    */
   variant: BadgeCountVariant;
+};
+
+type BadgeTextProps = {
+  children?: never;
+  count?: never;
+  overflowCount?: never;
+  text: string;
+  variant: BadgeTextVariant;
 };
 
 type BadgeDotWithTextProps = {
