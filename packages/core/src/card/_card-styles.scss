@@ -37,6 +37,13 @@ $file-icon-color: (
   grid-auto-flow: row;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-group-column-min-width), 1fr));
   gap: spacing.semantic-variable(gap, base);
+
+  &--single-thumbnail {
+    display: flex;
+    flex-flow: row wrap;
+    grid-auto-flow: unset;
+    grid-template-columns: unset;
+  }
 }
 
 .#{$base-card-prefix} {

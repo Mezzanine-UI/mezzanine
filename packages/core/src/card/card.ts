@@ -9,6 +9,7 @@ export const cardClasses = {
   /** group */
   group: cardGroupPrefix,
   groupQuickAction: `${cardGroupPrefix}--quick-action`,
+  groupSingleThumbnail: `${cardGroupPrefix}--single-thumbnail`,
 
   /** base card */
   base: baseCardPrefix,
