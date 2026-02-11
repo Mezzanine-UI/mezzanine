@@ -1,4 +1,13 @@
-import { Children, forwardRef, isValidElement, use } from 'react';
+import {
+  Children,
+  CSSProperties,
+  forwardRef,
+  isValidElement,
+  use,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { navigationFooterClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
@@ -37,14 +46,31 @@ const NavigationFooter = forwardRef<HTMLElement, NavigationFooterProps>(
 
     const { userMenu, otherChildren } = resolveChildren(children);
 
+    const iconsRef = useRef<HTMLSpanElement>(null);
+
+    const [iconsWidth, setIconsWidth] = useState(0);
+
+    useEffect(() => {
+      if (iconsRef.current) {
+        setIconsWidth(iconsRef.current.offsetWidth);
+      }
+    }, []);
+
     return (
       <footer
         {...rest}
         ref={ref}
         className={cx(classes.host, collapsed && classes.collapsed, className)}
+        style={
+          {
+            ['--icons-width']: `${iconsWidth}px`,
+          } as CSSProperties
+        }
       >
         {userMenu}
-        <span className={classes.icons}>{otherChildren}</span>
+        <span ref={iconsRef} className={classes.icons}>
+          {otherChildren}
+        </span>
       </footer>
     );
   },
