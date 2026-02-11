@@ -51,9 +51,19 @@ const NavigationFooter = forwardRef<HTMLElement, NavigationFooterProps>(
     const [iconsWidth, setIconsWidth] = useState(0);
 
     useEffect(() => {
-      if (iconsRef.current) {
-        setIconsWidth(iconsRef.current.offsetWidth);
-      }
+      if (!iconsRef.current) return;
+
+      const resizeObserver = new ResizeObserver(() => {
+        if (iconsRef.current) {
+          setIconsWidth(iconsRef.current.offsetWidth);
+        }
+      });
+
+      resizeObserver.observe(iconsRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
     }, []);
 
     return (
