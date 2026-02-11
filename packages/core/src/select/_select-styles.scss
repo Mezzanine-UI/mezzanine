@@ -48,37 +48,40 @@
       z-index: -1;
     }
   }
-}
 
-.#{$trigger-prefix}__tags-input-wrapper {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 1;
-  flex-wrap: wrap;
-
-  &--ellipsis {
-    flex-wrap: nowrap;
-  }
-}
-
-.#{$trigger-prefix} {
   &__tags-input-wrapper {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    flex: 1;
+    min-width: 0;
     flex-wrap: wrap;
 
     &--ellipsis {
-      flex-wrap: unset;
+      flex-wrap: nowrap;
     }
   }
 
   &__tags-input {
     flex: 1;
     min-width: 30%;
+
+    input {
+      /* Hide native search clear button to avoid duplicate clear icon in trigger. */
+      &[type='search']::-webkit-search-decoration,
+      &[type='search']::-webkit-search-cancel-button,
+      &[type='search']::-webkit-search-results-button,
+      &[type='search']::-webkit-search-results-decoration {
+        display: none;
+      }
+    }
+  }
+
+  // When clearable is visible, allow tags input to shrink to avoid layout overflow
+  // with clear icon and suffix icon in multiple mode.
+  &.#{text-field.$prefix}--clearable &__tags-input {
+    min-width: 0;
   }
 
   &__tags {
