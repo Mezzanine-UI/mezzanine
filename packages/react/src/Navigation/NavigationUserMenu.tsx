@@ -62,7 +62,11 @@ const NavigationUserMenu = forwardRef<
             />
           )}
         </span>
-        {children && <span className={classes.userName}>{children}</span>}
+        {children && (
+          <span className={classes.userName}>
+            <span>{children}</span>
+          </span>
+        )}
         <Icon className={classes.icon} icon={ChevronDownIcon} />
       </button>
     </Dropdown>
