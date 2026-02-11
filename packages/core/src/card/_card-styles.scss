@@ -374,16 +374,40 @@ $file-icon-color: (
     width: 100%;
     aspect-ratio: 4 / 3;
     border-radius: radius.variable(base);
+    background-color: palette.semantic-variable("background", base);
     overflow: hidden;
     position: relative;
+    transition: transition.standard(box-shadow, fast);
 
     &__overlay {
       position: absolute;
       z-index: 0;
       inset: 0;
+      padding: 0 spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, base);
       pointer-events: none;
       background-color: transparent;
       transition: transition.standard(background-color, fast);
+      display: flex;
+      flex-flow: row;
+      align-items: flex-end;
+      justify-content: flex-start;
+
+      & > span {
+        @include typography.semantic-variable(caption);
+
+        color: palette.semantic-variable(text, fixed-light);
+        white-space: pre-line;
+      }
+    }
+
+    &:hover {
+      &__overlay {
+        background-color: palette.semantic-variable("overlay", subtle);
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
     }
   }
 }
