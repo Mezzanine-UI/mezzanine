@@ -1,8 +1,9 @@
 import {
   ControlFieldSlotLayout,
   FormFieldCounterColor,
-  FormFieldSize,
-  LabelLayout,
+  FormFieldDensity,
+  FormFieldLabelSpacing,
+  FormFieldLayout,
 } from '@mezzanine-ui/core/form';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 import { InfoOutlineIcon } from '@mezzanine-ui/icons';
@@ -27,7 +28,7 @@ describe('<FormField />', () => {
         ref={ref}
         label="Test"
         name="test"
-        size={FormFieldSize.VERTICAL}
+        layout={FormFieldLayout.VERTICAL}
       />,
     ),
   );
@@ -38,14 +39,14 @@ describe('<FormField />', () => {
         className={className}
         label="Test"
         name="test"
-        size={FormFieldSize.VERTICAL}
+        layout={FormFieldLayout.VERTICAL}
       />,
     ),
   );
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+      <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL} />,
     );
     const element = getHostHTMLElement();
 
@@ -67,7 +68,7 @@ describe('<FormField />', () => {
             {...firstProps}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           >
             {children}
           </FormField>
@@ -97,7 +98,7 @@ describe('<FormField />', () => {
             {...secondProps}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           >
             {children}
           </FormField>
@@ -116,7 +117,11 @@ describe('<FormField />', () => {
 
     it('should render disabled by default', () => {
       const { getHostHTMLElement } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
       );
       const element = getHostHTMLElement();
 
@@ -134,7 +139,7 @@ describe('<FormField />', () => {
             disabled={disabled}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           />,
         );
         const element = getHostHTMLElement();
@@ -153,7 +158,11 @@ describe('<FormField />', () => {
 
     it('should render fullWidth by default', () => {
       const { getHostHTMLElement } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
       );
       const element = getHostHTMLElement();
 
@@ -171,7 +180,7 @@ describe('<FormField />', () => {
             fullWidth={fullWidth}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           />,
         );
         const element = getHostHTMLElement();
@@ -181,43 +190,43 @@ describe('<FormField />', () => {
     });
   });
 
-  describe('prop: size', () => {
-    it('should apply size class for all FormFieldSize enum values', () => {
+  describe('prop: layout', () => {
+    it('should apply layout class for all FormFieldLayout enum values', () => {
       // This test ensures TypeScript enum and SCSS styles are in sync
-      Object.values(FormFieldSize).forEach((size) => {
+      Object.values(FormFieldLayout).forEach((layout) => {
         const { getHostHTMLElement } = render(
-          <FormField label="Test Label" name="test-field" size={size} />,
+          <FormField label="Test Label" name="test-field" layout={layout} />,
         );
         const element = getHostHTMLElement();
 
-        // Check that the size class is applied
+        // Check that the layout class is applied
         expect(
-          element.classList.contains(`mzn-form-field--${size}`),
+          element.classList.contains(`mzn-form-field--${layout}`),
         ).toBeTruthy();
       });
     });
 
-    it('should add horizontal-base class if size=HORIZONTAL_BASE', () => {
+    it('should add horizontal class if layout=HORIZONTAL', () => {
       const { getHostHTMLElement } = render(
         <FormField
           label="Test Label"
           name="test-field"
-          size={FormFieldSize.HORIZONTAL_BASE}
+          layout={FormFieldLayout.HORIZONTAL}
         />,
       );
       const element = getHostHTMLElement();
 
       expect(
-        element.classList.contains('mzn-form-field--horizontal-base'),
+        element.classList.contains('mzn-form-field--horizontal'),
       ).toBeTruthy();
     });
 
-    it('should add vertical class if size=VERTICAL', () => {
+    it('should add vertical class if layout=VERTICAL', () => {
       const { getHostHTMLElement } = render(
         <FormField
           label="Test Label"
           name="test-field"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const element = getHostHTMLElement();
@@ -228,13 +237,66 @@ describe('<FormField />', () => {
     });
   });
 
+  describe('prop: density', () => {
+    it('should apply density class for all FormFieldDensity enum values when layout is not vertical', () => {
+      // This test ensures TypeScript enum and SCSS styles are in sync
+      Object.values(FormFieldDensity).forEach((density) => {
+        const { getHostHTMLElement } = render(
+          <FormField
+            density={density}
+            label="Test Label"
+            layout={FormFieldLayout.HORIZONTAL}
+            name="test-field"
+          />,
+        );
+        const element = getHostHTMLElement();
+
+        // Check that the density class is applied
+        expect(
+          element.classList.contains(`mzn-form-field--${density}`),
+        ).toBeTruthy();
+      });
+    });
+
+    it('should not apply density class when layout is vertical', () => {
+      const { getHostHTMLElement } = render(
+        <FormField
+          density={FormFieldDensity.BASE}
+          label="Test Label"
+          layout={FormFieldLayout.VERTICAL}
+          name="test-field"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains('mzn-form-field--base')).toBeFalsy();
+    });
+
+    it('should not add density class if density is omitted and layout is horizontal', () => {
+      const { getHostHTMLElement } = render(
+        <FormField
+          label="Test Label"
+          layout={FormFieldLayout.HORIZONTAL}
+          name="test-field"
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      Object.values(FormFieldDensity).forEach((density) => {
+        expect(
+          element.classList.contains(`mzn-form-field--${density}`),
+        ).toBeFalsy();
+      });
+    });
+  });
+
   describe('prop: label', () => {
     it('should render label text', () => {
       const { container } = render(
         <FormField
           label="Test Label"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const labelElement = container.querySelector('.mzn-form-field__label');
@@ -248,7 +310,7 @@ describe('<FormField />', () => {
         <FormField
           label="Test Label"
           name="test-field"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const labelElement = container.querySelector(
@@ -262,7 +324,11 @@ describe('<FormField />', () => {
   describe('prop: labelOptionalMarker', () => {
     it('should not render optional marker by default', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
       );
       const optionalMarkerElement = container.querySelector(
         '.mzn-form-field__label__optional-marker',
@@ -277,7 +343,7 @@ describe('<FormField />', () => {
           label="Test"
           labelOptionalMarker="(optional)"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const optionalMarkerElement = container.querySelector(
@@ -292,7 +358,11 @@ describe('<FormField />', () => {
   describe('prop: labelInformationIcon', () => {
     it('should not render information icon by default', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
       );
       const iconElement = container.querySelector(
         '.mzn-form-field__label__information-icon',
@@ -307,7 +377,7 @@ describe('<FormField />', () => {
           label="Test"
           labelInformationIcon={InfoOutlineIcon}
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const iconElement = container.querySelector(
@@ -329,7 +399,7 @@ describe('<FormField />', () => {
           labelInformationIcon={InfoOutlineIcon}
           labelInformationText="This is helpful information"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const iconElement = container.querySelector(
@@ -340,29 +410,13 @@ describe('<FormField />', () => {
     });
   });
 
-  describe('prop: labelLayout', () => {
-    it('should apply default horizontal-main layout', () => {
-      const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
-      );
-      const labelAreaElement = container.querySelector(
-        '.mzn-form-field__label-area',
-      );
-
-      expect(
-        labelAreaElement?.classList.contains(
-          'mzn-form-field__label-area--horizontal-main',
-        ),
-      ).toBeTruthy();
-    });
-
-    it('should apply horizontal-main layout class', () => {
+  describe('prop: labelSpacing', () => {
+    it('should apply default main spacing', () => {
       const { container } = render(
         <FormField
           label="Test"
-          labelLayout={LabelLayout.HORIZONTAL_MAIN}
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.HORIZONTAL}
         />,
       );
       const labelAreaElement = container.querySelector(
@@ -371,18 +425,18 @@ describe('<FormField />', () => {
 
       expect(
         labelAreaElement?.classList.contains(
-          'mzn-form-field__label-area--horizontal-main',
+          'mzn-form-field__label-area--main',
         ),
       ).toBeTruthy();
     });
 
-    it('should apply horizontal-sub layout class', () => {
+    it('should apply main spacing class', () => {
       const { container } = render(
         <FormField
           label="Test"
-          labelLayout={LabelLayout.HORIZONTAL_SUB}
+          labelSpacing={FormFieldLabelSpacing.MAIN}
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.HORIZONTAL}
         />,
       );
       const labelAreaElement = container.querySelector(
@@ -391,18 +445,18 @@ describe('<FormField />', () => {
 
       expect(
         labelAreaElement?.classList.contains(
-          'mzn-form-field__label-area--horizontal-sub',
+          'mzn-form-field__label-area--main',
         ),
       ).toBeTruthy();
     });
 
-    it('should apply vertical layout class', () => {
+    it('should apply sub spacing class', () => {
       const { container } = render(
         <FormField
           label="Test"
-          labelLayout={LabelLayout.VERTICAL}
+          labelSpacing={FormFieldLabelSpacing.SUB}
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.HORIZONTAL}
         />,
       );
       const labelAreaElement = container.querySelector(
@@ -410,20 +464,18 @@ describe('<FormField />', () => {
       );
 
       expect(
-        labelAreaElement?.classList.contains(
-          'mzn-form-field__label-area--vertical',
-        ),
+        labelAreaElement?.classList.contains('mzn-form-field__label-area--sub'),
       ).toBeTruthy();
     });
 
-    it('should apply layout class for all LabelLayout enum values', () => {
-      Object.values(LabelLayout).forEach((layout) => {
+    it('should apply spacing class for all FormFieldLabelSpacing enum values when layout is not vertical', () => {
+      Object.values(FormFieldLabelSpacing).forEach((spacing) => {
         const { container } = render(
           <FormField
             label="Test"
-            labelLayout={layout}
+            labelSpacing={spacing}
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.HORIZONTAL}
           />,
         );
         const labelAreaElement = container.querySelector(
@@ -432,17 +484,40 @@ describe('<FormField />', () => {
 
         expect(
           labelAreaElement?.classList.contains(
-            `mzn-form-field__label-area--${layout}`,
+            `mzn-form-field__label-area--${spacing}`,
           ),
         ).toBeTruthy();
       });
+    });
+
+    it('should not apply spacing class when layout is vertical', () => {
+      const { container } = render(
+        <FormField
+          label="Test"
+          labelSpacing={FormFieldLabelSpacing.MAIN}
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
+      );
+      const labelAreaElement = container.querySelector(
+        '.mzn-form-field__label-area',
+      );
+
+      expect(
+        labelAreaElement?.classList.contains(
+          'mzn-form-field__label-area--main',
+        ),
+      ).toBeFalsy();
+      expect(
+        labelAreaElement?.classList.contains('mzn-form-field__label-area--sub'),
+      ).toBeFalsy();
     });
   });
 
   describe('prop: controlFieldSlotLayout', () => {
     it('should apply default main layout', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
           <Input />
         </FormField>,
       );
@@ -459,7 +534,7 @@ describe('<FormField />', () => {
           controlFieldSlotLayout={ControlFieldSlotLayout.MAIN}
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -477,7 +552,7 @@ describe('<FormField />', () => {
           controlFieldSlotLayout={ControlFieldSlotLayout.SUB}
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -496,7 +571,7 @@ describe('<FormField />', () => {
             controlFieldSlotLayout={layout}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           >
             <Input />
           </FormField>,
@@ -513,7 +588,11 @@ describe('<FormField />', () => {
   describe('prop: required', () => {
     it('should not render asterisk by default', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL} />,
+        <FormField
+          label="Test"
+          name="test"
+          layout={FormFieldLayout.VERTICAL}
+        />,
       );
       const asteriskElement = container.querySelector(
         '.mzn-form-field__label__required-marker',
@@ -528,7 +607,7 @@ describe('<FormField />', () => {
           label="Test"
           name="test"
           required
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         />,
       );
       const asteriskElement = container.querySelector(
@@ -543,7 +622,7 @@ describe('<FormField />', () => {
   describe('prop: hintText', () => {
     it('should not render hint text by default', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
           <Input />
         </FormField>,
       );
@@ -560,7 +639,7 @@ describe('<FormField />', () => {
           hintText="This is a hint"
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -582,7 +661,7 @@ describe('<FormField />', () => {
           hintTextIcon={InfoOutlineIcon}
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -606,7 +685,7 @@ describe('<FormField />', () => {
           hintText="This is a hint"
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -635,7 +714,7 @@ describe('<FormField />', () => {
             label="Test"
             name="test"
             severity={severity}
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           >
             <Input />
           </FormField>,
@@ -656,7 +735,7 @@ describe('<FormField />', () => {
   describe('prop: counter', () => {
     it('should not render counter by default', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
           <Input />
         </FormField>,
       );
@@ -673,7 +752,7 @@ describe('<FormField />', () => {
           counter="10/100"
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -694,7 +773,7 @@ describe('<FormField />', () => {
           counter="10/100"
           label="Test"
           name="test"
-          size={FormFieldSize.VERTICAL}
+          layout={FormFieldLayout.VERTICAL}
         >
           <Input />
         </FormField>,
@@ -720,7 +799,7 @@ describe('<FormField />', () => {
             counterColor={color}
             label="Test"
             name="test"
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           >
             <Input />
           </FormField>,
@@ -741,7 +820,7 @@ describe('<FormField />', () => {
   describe('prop: children', () => {
     it('should render children inside data entry area', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
           <Input placeholder="test input" />
         </FormField>,
       );
@@ -757,7 +836,7 @@ describe('<FormField />', () => {
 
     it('should render multiple children', () => {
       const { container } = render(
-        <FormField label="Test" name="test" size={FormFieldSize.VERTICAL}>
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
           <Input placeholder="input 1" />
           <Input placeholder="input 2" />
         </FormField>,

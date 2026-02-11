@@ -1,5 +1,5 @@
 import { InfoFilledIcon } from '@mezzanine-ui/icons';
-import { FormFieldSize } from '@mezzanine-ui/core/form';
+import { FormFieldLayout } from '@mezzanine-ui/core/form';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -148,7 +148,7 @@ describe('<FormLabel />', () => {
             label="Test"
             name="test"
             required={required}
-            size={FormFieldSize.VERTICAL}
+            layout={FormFieldLayout.VERTICAL}
           />,
         );
         const labelElement = container.querySelector('.mzn-form-field__label');

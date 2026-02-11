@@ -6,18 +6,6 @@
 @use '../text-field';
 @use './form-field' as *;
 
-// FormFieldSize variants - keep this list in sync with TypeScript enum FormFieldSize
-$form-field-sizes: (
-  'horizontal-base',
-  'horizontal-tight',
-  'horizontal-narrow',
-  'horizontal-wide',
-  'stretch-tight',
-  'stretch-narrow',
-  'stretch-wide',
-  'vertical'
-);
-
 // FormFieldHintTextColor variants - keep this list in sync with TypeScript enum FormFieldHintTextColor
 $form-field-hint-text-colors: (
   'info',
@@ -68,118 +56,130 @@ $form-field-counter-colors: (
   display: flex;
   align-items: center;
 
-  &--horizontal-main {
+  &--main {
     padding-top: spacing.semantic-variable(padding, vertical, calm);
     min-height: spacing.semantic-variable(size, container, micro);
   }
 
-  &--horizontal-sub {
+  &--sub {
     padding-top: spacing.semantic-variable(padding, vertical, tight);
     min-height: spacing.semantic-variable(size, container, atomic);
   }
+}
 
-  &--vertical {
-    padding-top: spacing.semantic-variable(padding, vertical, tiny);
+// Layout styles
+.#{$prefix}--horizontal {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+
+  .#{$prefix}__label-area {
+    width: fit-content;
+  }
+
+  .#{$prefix}__data-entry {
+    flex-grow: 1;
+    max-width: spacing.semantic-variable(size, container, wide);
   }
 }
 
-@each $size in $form-field-sizes {
-  .#{$prefix}--#{$size} {
-    // 根據 size 設置不同的樣式
-    @if $size == 'horizontal-base' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      .#{$prefix}__label-area {
-        width: fit-content;
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, wide);
-      }
-    } @else if $size == 'horizontal-tight' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      .#{$prefix}__label-area {
-        width: spacing.semantic-variable(size, container, tight);
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, wide);
-      }
-    } @else if $size == 'horizontal-narrow' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      .#{$prefix}__label-area {
-        width: spacing.semantic-variable(size, container, slim);
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, wide);
-      }
-    } @else if $size == 'horizontal-wide' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      .#{$prefix}__label-area {
-        width: spacing.semantic-variable(size, container, narrow);
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, wide);
-      }
-    } @else if $size == 'stretch-tight' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      justify-content: space-between;
-      .#{$prefix}__label-area {
-        width: fit-content;
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, slim);
-      }
-    } @else if $size == 'stretch-narrow' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      justify-content: space-between;
-      .#{$prefix}__label-area {
-        width: fit-content;
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, standard);
-      }
-    } @else if $size == 'stretch-wide' {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: baseline;
-      justify-content: space-between;
-      .#{$prefix}__label-area {
-        width: fit-content;
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, broad);
-      }
-    } @else if $size == 'vertical' {
-      display: flex;
-      flex-direction: column;
-      gap: spacing.semantic-variable(gap, tight);
-      .#{$prefix}__label-area {
-        width: fit-content;
-        padding-top: spacing.semantic-variable(padding, vertical, tiny);
-        padding-bottom: spacing.semantic-variable(padding, vertical, tiny);
-      }
-      .#{$prefix}__data-entry {
-        flex-grow: 1;
-        max-width: spacing.semantic-variable(size, container, wide);
-        margin-left: 0;
-      }
+.#{$prefix}--stretch {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  justify-content: space-between;
+
+  .#{$prefix}__label-area {
+    width: fit-content;
+  }
+
+  .#{$prefix}__data-entry {
+    flex-grow: 1;
+  }
+}
+
+.#{$prefix}--vertical {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, tight);
+
+  .#{$prefix}__label-area {
+    width: fit-content;
+    padding-top: spacing.semantic-variable(padding, vertical, tiny);
+    padding-bottom: spacing.semantic-variable(padding, vertical, tiny);
+  }
+
+  .#{$prefix}__data-entry {
+    flex-grow: 1;
+    max-width: spacing.semantic-variable(size, container, wide);
+    margin-left: 0;
+  }
+}
+
+// Density styles for horizontal layout
+.#{$prefix}--horizontal {
+  &.#{$prefix}--base {
+    .#{$prefix}__label-area {
+      width: fit-content;
+    }
+
+    .#{$prefix}__data-entry {
+      flex-grow: 1;
+      max-width: spacing.semantic-variable(size, container, wide);
+    }
+  }
+
+  &.#{$prefix}--tight {
+    .#{$prefix}__label-area {
+      width: spacing.semantic-variable(size, container, tight);
+    }
+
+    .#{$prefix}__data-entry {
+      flex-grow: 1;
+      max-width: spacing.semantic-variable(size, container, wide);
+    }
+  }
+
+  &.#{$prefix}--narrow {
+    .#{$prefix}__label-area {
+      width: spacing.semantic-variable(size, container, slim);
+    }
+
+    .#{$prefix}__data-entry {
+      flex-grow: 1;
+      max-width: spacing.semantic-variable(size, container, wide);
+    }
+  }
+
+  &.#{$prefix}--wide {
+    .#{$prefix}__label-area {
+      width: spacing.semantic-variable(size, container, narrow);
+    }
+
+    .#{$prefix}__data-entry {
+      flex-grow: 1;
+      max-width: spacing.semantic-variable(size, container, wide);
+    }
+  }
+}
+
+// Density styles for stretch layout
+.#{$prefix}--stretch {
+  &.#{$prefix}--tight {
+    .#{$prefix}__data-entry {
+      max-width: spacing.semantic-variable(size, container, slim);
+    }
+  }
+
+  &.#{$prefix}--narrow {
+    .#{$prefix}__data-entry {
+      max-width: spacing.semantic-variable(size, container, standard);
+    }
+  }
+
+  &.#{$prefix}--wide {
+    .#{$prefix}__data-entry {
+      max-width: spacing.semantic-variable(size, container, broad);
     }
   }
 }

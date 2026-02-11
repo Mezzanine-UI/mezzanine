@@ -3,8 +3,9 @@ import { IconDefinition, InfoOutlineIcon } from '@mezzanine-ui/icons';
 import {
   ControlFieldSlotLayout,
   FormFieldCounterColor,
-  FormFieldSize,
-  LabelLayout,
+  FormFieldDensity,
+  FormFieldLabelSpacing,
+  FormFieldLayout,
 } from '@mezzanine-ui/core/form';
 import { ReactNode, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
@@ -24,20 +25,21 @@ interface PlaygroundStoryArgs {
   controlFieldSlotLayout: ControlFieldSlotLayout;
   counter?: string;
   counterColor: FormFieldCounterColor;
+  density?: FormFieldDensity;
   disabled: boolean;
   fullWidth: boolean;
   hintText?: string;
   hintTextIcon?: IconDefinition;
   label: string;
   labelInformationText: string;
-  labelLayout: LabelLayout;
+  labelSpacing: FormFieldLabelSpacing;
+  layout: FormFieldLayout;
   message: string;
   name: string;
   remark: string;
   required: boolean;
   showHintTextIcon: boolean;
   showRemarkIcon: boolean;
-  size: FormFieldSize;
   severity?: SeverityWithInfo;
 }
 
@@ -47,19 +49,20 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     controlFieldSlotLayout: ControlFieldSlotLayout.MAIN,
     counter: '231/232',
     counterColor: FormFieldCounterColor.INFO,
+    density: FormFieldDensity.BASE,
     disabled: false,
     fullWidth: false,
     hintText: 'hint text',
     label: 'label',
     labelInformationText: 'This is information tooltip text',
-    labelLayout: LabelLayout.HORIZONTAL_MAIN,
+    labelSpacing: FormFieldLabelSpacing.MAIN,
+    layout: FormFieldLayout.VERTICAL,
     message: 'message',
     name: 'field-name',
     remark: 'remark',
     required: false,
     showHintTextIcon: true,
     showRemarkIcon: false,
-    size: FormFieldSize.VERTICAL,
     severity: 'info',
   },
   argTypes: {
@@ -75,17 +78,23 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
       },
       options: Object.values(FormFieldCounterColor),
     },
-    labelLayout: {
+    density: {
       control: {
         type: 'select',
       },
-      options: Object.values(LabelLayout),
+      options: Object.values(FormFieldDensity),
     },
-    size: {
+    labelSpacing: {
       control: {
         type: 'select',
       },
-      options: Object.values(FormFieldSize),
+      options: Object.values(FormFieldLabelSpacing),
+    },
+    layout: {
+      control: {
+        type: 'select',
+      },
+      options: Object.values(FormFieldLayout),
     },
     severity: {
       control: {
@@ -99,17 +108,18 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     controlFieldSlotLayout,
     counter,
     counterColor,
+    density,
     disabled,
     fullWidth,
     hintText,
     label,
     labelInformationText,
-    labelLayout,
+    labelSpacing,
+    layout,
     name,
     remark,
     required,
     showRemarkIcon,
-    size,
     severity,
   }) {
     const renderField = (control: ReactNode) => (
@@ -117,17 +127,18 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         controlFieldSlotLayout={controlFieldSlotLayout}
         counter={counter}
         counterColor={counterColor}
+        density={density}
         disabled={disabled}
         fullWidth={fullWidth}
         hintText={hintText}
         label={label}
         labelInformationIcon={showRemarkIcon ? InfoOutlineIcon : undefined}
         labelInformationText={labelInformationText}
-        labelLayout={labelLayout}
         labelOptionalMarker={remark}
+        labelSpacing={labelSpacing}
+        layout={layout}
         name={name}
         required={required}
-        size={size}
         severity={severity}
       >
         {control}
@@ -211,44 +222,48 @@ export const SizeVariants: StoryObj = {
 
         <h3>Horizontal Base</h3>
         <FormField
+          density={FormFieldDensity.BASE}
           hintText="Label and input on the same row with base spacing"
           hintTextIcon={InfoOutlineIcon}
           label="Username"
+          layout={FormFieldLayout.HORIZONTAL}
           name="username-h-base"
-          size={FormFieldSize.HORIZONTAL_BASE}
         >
           <Input placeholder="Enter username" />
         </FormField>
 
         <h3>Horizontal Tight</h3>
         <FormField
+          density={FormFieldDensity.TIGHT}
           hintText="Label and input on the same row with tight spacing"
           hintTextIcon={InfoOutlineIcon}
           label="Email"
+          layout={FormFieldLayout.HORIZONTAL}
           name="email-h-tight"
-          size={FormFieldSize.HORIZONTAL_TIGHT}
         >
           <Input placeholder="Enter email" />
         </FormField>
 
         <h3>Horizontal Narrow</h3>
         <FormField
+          density={FormFieldDensity.NARROW}
           hintText="Label and input on the same row with narrow spacing"
           hintTextIcon={InfoOutlineIcon}
           label="Phone"
+          layout={FormFieldLayout.HORIZONTAL}
           name="phone-h-narrow"
-          size={FormFieldSize.HORIZONTAL_NARROW}
         >
           <Input placeholder="Enter phone" />
         </FormField>
 
         <h3>Horizontal Wide</h3>
         <FormField
+          density={FormFieldDensity.WIDE}
           hintText="Label and input on the same row with wide spacing"
           hintTextIcon={InfoOutlineIcon}
           label="Address"
+          layout={FormFieldLayout.HORIZONTAL}
           name="address-h-wide"
-          size={FormFieldSize.HORIZONTAL_WIDE}
         >
           <Input placeholder="Enter address" />
         </FormField>
@@ -259,33 +274,36 @@ export const SizeVariants: StoryObj = {
 
         <h3>Stretch Tight</h3>
         <FormField
+          density={FormFieldDensity.TIGHT}
           hintText="Compact vertical spacing between label and input"
           hintTextIcon={InfoOutlineIcon}
           label="First Name"
+          layout={FormFieldLayout.STRETCH}
           name="firstname-s-tight"
-          size={FormFieldSize.STRETCH_TIGHT}
         >
           <Input placeholder="Enter first name" />
         </FormField>
 
         <h3>Stretch Narrow</h3>
         <FormField
+          density={FormFieldDensity.NARROW}
           hintText="Standard vertical spacing between label and input"
           hintTextIcon={InfoOutlineIcon}
           label="Last Name"
+          layout={FormFieldLayout.STRETCH}
           name="lastname-s-narrow"
-          size={FormFieldSize.STRETCH_NARROW}
         >
           <Input placeholder="Enter last name" />
         </FormField>
 
         <h3>Stretch Wide</h3>
         <FormField
+          density={FormFieldDensity.WIDE}
           hintText="Spacious vertical spacing between label and input"
           hintTextIcon={InfoOutlineIcon}
           label="Biography"
+          layout={FormFieldLayout.STRETCH}
           name="bio-s-wide"
-          size={FormFieldSize.STRETCH_WIDE}
         >
           <Textarea placeholder="Tell us about yourself" rows={4} />
         </FormField>
@@ -295,9 +313,9 @@ export const SizeVariants: StoryObj = {
           hintText="Default vertical layout with standard spacing"
           hintTextIcon={InfoOutlineIcon}
           label="Comments"
+          layout={FormFieldLayout.VERTICAL}
           name="comments-vertical"
           required
-          size={FormFieldSize.VERTICAL}
         >
           <Textarea placeholder="Add your comments" rows={4} />
         </FormField>

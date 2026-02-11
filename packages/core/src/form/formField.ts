@@ -14,21 +14,22 @@ export enum FormFieldCounterColor {
   ERROR = 'error',
 }
 
-export enum FormFieldSize {
-  HORIZONTAL_BASE = 'horizontal-base',
-  HORIZONTAL_TIGHT = 'horizontal-tight',
-  HORIZONTAL_NARROW = 'horizontal-narrow',
-  HORIZONTAL_WIDE = 'horizontal-wide',
-  STRETCH_TIGHT = 'stretch-tight',
-  STRETCH_NARROW = 'stretch-narrow',
-  STRETCH_WIDE = 'stretch-wide',
+export enum FormFieldLayout {
+  HORIZONTAL = 'horizontal',
   VERTICAL = 'vertical',
+  STRETCH = 'stretch',
 }
 
-export enum LabelLayout {
-  HORIZONTAL_MAIN = 'horizontal-main',
-  HORIZONTAL_SUB = 'horizontal-sub',
-  VERTICAL = 'vertical',
+export enum FormFieldLabelSpacing {
+  MAIN = 'main',
+  SUB = 'sub',
+}
+
+export enum FormFieldDensity {
+  BASE = 'base',
+  TIGHT = 'tight',
+  NARROW = 'narrow',
+  WIDE = 'wide',
 }
 
 export enum ControlFieldSlotLayout {
@@ -52,6 +53,7 @@ export const formFieldClasses = {
     `${formFieldPrefix}__counter--${color}`,
   controlFieldSlot: `${formFieldPrefix}__control-field-slot`,
   dataEntry: `${formFieldPrefix}__data-entry`,
+  density: (density: FormFieldDensity) => `${formFieldPrefix}--${density}`,
   disabled: `${formFieldPrefix}--disabled`,
   fullWidth: `${formFieldPrefix}--full-width`,
   hintText: `${formFieldPrefix}__hint-text`,
@@ -67,5 +69,7 @@ export const formFieldClasses = {
   labelOptionalMarker: `${formFieldPrefix}__label__optional-marker`,
   labelInformationIcon: `${formFieldPrefix}__label__information-icon`,
   labelRequiredMarker: `${formFieldPrefix}__label__required-marker`,
-  size: (size: FormFieldSize) => `${formFieldPrefix}--${size}`,
+  labelSpacing: (spacing: FormFieldLabelSpacing) =>
+    `${formFieldPrefix}__label-area--${spacing}`,
+  layout: (layout: FormFieldLayout) => `${formFieldPrefix}--${layout}`,
 } as const;

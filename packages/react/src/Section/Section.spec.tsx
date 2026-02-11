@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { FormFieldSize } from '@mezzanine-ui/core/form';
+import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
 import { createRef } from 'react';
 import { cleanup, render } from '../../__test-utils__';
 import ContentHeader from '../ContentHeader';
@@ -61,13 +61,15 @@ describe('<Section />', () => {
       );
       const contentHeader = container.querySelector('.mzn-content-header');
 
-      expect(contentHeader?.classList.contains('mzn-content-header--sub')).toBeTruthy();
+      expect(
+        contentHeader?.classList.contains('mzn-content-header--sub'),
+      ).toBeTruthy();
     });
 
     it('should warn when contentHeader is not a ContentHeader component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-      render(<Section contentHeader={<div>Invalid</div> as never} />);
+      render(<Section contentHeader={(<div>Invalid</div>) as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
         '[Section] Invalid contentHeader type: <div>. Only <ContentHeader /> component from @mezzanine-ui/react is allowed.',
@@ -77,10 +79,10 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid contentHeader', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const { queryByText } = render(
-        <Section contentHeader={<div>Invalid</div> as never} />,
+        <Section contentHeader={(<div>Invalid</div>) as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
@@ -94,7 +96,12 @@ describe('<Section />', () => {
       <FilterArea>
         <FilterLine>
           <Filter>
-            <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+            <FormField
+              density={FormFieldDensity.BASE}
+              label="Test"
+              layout={FormFieldLayout.HORIZONTAL}
+              name="test"
+            >
               <Input />
             </FormField>
           </Filter>
@@ -103,27 +110,25 @@ describe('<Section />', () => {
     );
 
     it('should render FilterArea component', () => {
-      const { container } = render(
-        <Section filterArea={mockFilterArea} />,
-      );
+      const { container } = render(<Section filterArea={mockFilterArea} />);
       const filterArea = container.querySelector('.mzn-filter-area');
 
       expect(filterArea).toBeInTheDocument();
     });
 
     it('should pass size="sub" to FilterArea', () => {
-      const { container } = render(
-        <Section filterArea={mockFilterArea} />,
-      );
+      const { container } = render(<Section filterArea={mockFilterArea} />);
       const filterArea = container.querySelector('.mzn-filter-area');
 
-      expect(filterArea?.classList.contains('mzn-filter-area--sub')).toBeTruthy();
+      expect(
+        filterArea?.classList.contains('mzn-filter-area--sub'),
+      ).toBeTruthy();
     });
 
     it('should warn when filterArea is not a FilterArea component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-      render(<Section filterArea={<div>Invalid</div> as never} />);
+      render(<Section filterArea={(<div>Invalid</div>) as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
         '[Section] Invalid filterArea type: <div>. Only <FilterArea /> component from @mezzanine-ui/react is allowed.',
@@ -133,10 +138,10 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid filterArea', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const { queryByText } = render(
-        <Section filterArea={<div>Invalid</div> as never} />,
+        <Section filterArea={(<div>Invalid</div>) as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
@@ -150,7 +155,7 @@ describe('<Section />', () => {
       const { container } = render(
         <Section
           tab={
-            <Tab activeKey="tab1" onChange={() => { }}>
+            <Tab activeKey="tab1" onChange={() => {}}>
               <TabItem key="tab1">Tab 1</TabItem>
               <TabItem key="tab2">Tab 2</TabItem>
             </Tab>
@@ -163,9 +168,9 @@ describe('<Section />', () => {
     });
 
     it('should warn when tab is not a Tab component', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-      render(<Section tab={<div>Invalid</div> as never} />);
+      render(<Section tab={(<div>Invalid</div>) as never} />);
 
       expect(warnSpy).toHaveBeenCalledWith(
         '[Section] Invalid tab type: <div>. Only <Tab /> component from @mezzanine-ui/react is allowed.',
@@ -175,10 +180,10 @@ describe('<Section />', () => {
     });
 
     it('should not render invalid tab', () => {
-      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => { });
+      const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
       const { queryByText } = render(
-        <Section tab={<div>Invalid</div> as never} />,
+        <Section tab={(<div>Invalid</div>) as never} />,
       );
 
       expect(queryByText('Invalid')).not.toBeInTheDocument();
@@ -197,7 +202,12 @@ describe('<Section />', () => {
             <FilterArea>
               <FilterLine>
                 <Filter>
-                  <FormField label="Test" name="test" size={FormFieldSize.HORIZONTAL_BASE}>
+                  <FormField
+                    density={FormFieldDensity.BASE}
+                    label="Test"
+                    layout={FormFieldLayout.HORIZONTAL}
+                    name="test"
+                  >
                     <Input />
                   </FormField>
                 </Filter>
@@ -205,7 +215,7 @@ describe('<Section />', () => {
             </FilterArea>
           }
           tab={
-            <Tab activeKey="tab1" onChange={() => { }}>
+            <Tab activeKey="tab1" onChange={() => {}}>
               <TabItem key="tab1">Tab 1</TabItem>
             </Tab>
           }
@@ -215,7 +225,9 @@ describe('<Section />', () => {
       );
 
       expect(container.querySelector('.mzn-section')).toBeInTheDocument();
-      expect(container.querySelector('.mzn-content-header')).toBeInTheDocument();
+      expect(
+        container.querySelector('.mzn-content-header'),
+      ).toBeInTheDocument();
       expect(container.querySelector('.mzn-filter-area')).toBeInTheDocument();
       expect(container.querySelector('.mzn-tab')).toBeInTheDocument();
       expect(getByText('Header Title')).toBeInTheDocument();
