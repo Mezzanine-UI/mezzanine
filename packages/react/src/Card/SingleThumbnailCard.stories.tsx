@@ -89,9 +89,9 @@ export const TypeAction: Story = {
   render: () => (
     <div style={{ width: '320px' }}>
       <SingleThumbnailCard
-        actionName="Download"
+        actionName="Click"
         filetype="pdf"
-        onActionClick={() => alert('Download clicked')}
+        onActionClick={() => alert('Clicked')}
         subtitle="2.4 MB"
         title="report-2024.pdf"
         type="action"
