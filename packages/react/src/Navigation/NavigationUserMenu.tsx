@@ -1,9 +1,10 @@
-import { forwardRef, ReactNode, useState } from 'react';
+import { forwardRef, ReactNode, useEffect, useRef, useState } from 'react';
 import { navigationUserMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import Dropdown, { DropdownProps } from '../Dropdown';
+import Tooltip from '../Tooltip';
 
 export interface NavigationUserMenuProps
   extends Omit<DropdownProps, 'children' | 'type'> {
@@ -29,6 +30,27 @@ const NavigationUserMenu = forwardRef<
   const [_open, setOpen] = useState(false);
 
   const open = openProp ?? _open;
+
+  const userNameRef = useRef<HTMLSpanElement>(null);
+  const [userNameTooltip, setUserNameTooltip] = useState(false);
+
+  useEffect(() => {
+    if (!userNameRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (userNameRef.current) {
+        setUserNameTooltip(
+          userNameRef.current.scrollWidth > userNameRef.current.offsetWidth,
+        );
+      }
+    });
+
+    resizeObserver.observe(userNameRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   return (
     <Dropdown
@@ -63,9 +85,18 @@ const NavigationUserMenu = forwardRef<
           )}
         </span>
         {children && (
-          <span className={classes.userName}>
-            <span>{children}</span>
-          </span>
+          <Tooltip title={userNameTooltip && !open ? children : undefined}>
+            {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+              <span
+                className={classes.userName}
+                onMouseEnter={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+                ref={tooltipRef}
+              >
+                <span ref={userNameRef}>{children}</span>
+              </span>
+            )}
+          </Tooltip>
         )}
         <Icon className={classes.icon} icon={ChevronDownIcon} />
       </button>
