@@ -4,6 +4,7 @@ export const quickActionCardPrefix = 'mzn-quick-action-card';
 export const thumbnailCardPrefix = 'mzn-thumbnail-card';
 export const thumbnailCardInfoPrefix = 'mzn-thumbnail-card-info';
 export const singleThumbnailCardPrefix = 'mzn-single-thumbnail-card';
+export const fourThumbnailCardPrefix = 'mzn-four-thumbnail-card';
 
 export const cardClasses = {
   /** group */
@@ -49,4 +50,9 @@ export const cardClasses = {
   thumbnailInfoTitle: `${thumbnailCardInfoPrefix}__main__content__title`,
   thumbnailInfoSubtitle: `${thumbnailCardInfoPrefix}__main__content__subtitle`,
   thumbnailInfoAction: `${thumbnailCardInfoPrefix}__action`,
+
+  /** four thumbnail card */
+  fourThumbnail: fourThumbnailCardPrefix,
+  fourThumbnailThumbnail: `${fourThumbnailCardPrefix}__thumbnail`,
+  fourThumbnailOverlay: `${fourThumbnailCardPrefix}__thumbnail__overlay`,
 };
