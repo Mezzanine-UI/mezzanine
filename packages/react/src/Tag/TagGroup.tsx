@@ -5,17 +5,17 @@ import {
   ReactElement,
   ReactNode,
 } from 'react';
-import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import Tag, { TagProps } from '../Tag';
 import OverflowCounterTag, {
   OverflowCounterTagProps,
 } from '../OverflowTooltip/OverflowCounterTag';
+import Tag, { TagProps } from '../Tag';
+import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
 import { tagClasses as classes } from '@mezzanine-ui/core/tag';
-import { cx } from '../utils/cx';
+import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
 import { TransitionGroup } from 'react-transition-group';
 import { Fade, TransitionImplementationChildProps } from '../Transition';
-import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
+import { cx } from '../utils/cx';
 
 const isTagElement = (child: ReactNode): child is TagElement =>
   isValidElement(child) && child.type === Tag;
