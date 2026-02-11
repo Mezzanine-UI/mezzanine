@@ -1,0 +1,188 @@
+import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
+import {
+  FourThumbnailCardGeneric as FourThumbnailCard,
+  ThumbnailGeneric as Thumbnail,
+} from '.';
+import * as FourThumbnailCardStories from './FourThumbnailCard.stories';
+
+<Meta of={FourThumbnailCardStories} />
+
+# FourThumbnailCard
+
+<Description of={FourThumbnailCard} />
+
+[Source Code](https://github.com/Mezzanine-UI/mezzanine/blob/main/packages/react/src/Card/FourThumbnailCard.tsx)
+
+## Overview
+
+FourThumbnailCard displays a 2x2 grid of image thumbnails with optional tag, personal action, and info section.
+Each thumbnail can display an overlay with title on hover.
+
+## Features
+
+- **2x2 Grid Layout**: Displays up to 4 thumbnails in a grid pattern
+- **Auto-fill Empty Slots**: If less than 4 thumbnails are provided, empty slots are automatically rendered
+- **Thumbnail Component**: Each thumbnail must be wrapped in a `Thumbnail` component
+- **Polymorphic Thumbnail**: `Thumbnail` supports rendering as `div`, `a`, `button`, or custom components
+- **Tag**: Optional label displayed on top-left of the thumbnail grid
+- **Personal Action**: Optional favorite/bookmark button on top-right (supports active/inactive states)
+- **Filetype Badge**: Shows file extension with color-coded background based on file type
+- **Action Types**: Supports three action modes in the info section
+
+## Thumbnail Component
+
+The `Thumbnail` component is a required child of `FourThumbnailCard`. It wraps each image and provides:
+
+- **Hover Overlay**: Displays the `title` prop on hover with a gradient overlay
+- **Polymorphic Rendering**: Can be rendered as `div`, `a`, `button`, or custom components (e.g., Next.js Link)
+
+```tsx
+// Basic thumbnail
+<Thumbnail title="Photo 1">
+  <img src="/photo1.jpg" alt="Photo 1" />
+</Thumbnail>
+
+// Thumbnail as link
+<ThumbnailGeneric<'a'> component="a" href="/photos/1" title="Photo 1">
+  <img src="/photo1.jpg" alt="Photo 1" />
+</ThumbnailGeneric>
+
+// Thumbnail as button
+<ThumbnailGeneric<'button'> component="button" onClick={handleClick} title="Photo 1">
+  <img src="/photo1.jpg" alt="Photo 1" />
+</ThumbnailGeneric>
+```
+
+## Action Types
+
+- **default**: No action button in the info section
+- **action**: Displays a text button with customizable label
+- **overflow**: Displays a dropdown menu with options
+
+## Filetype Categories
+
+The filetype badge color is automatically determined based on the file extension:
+
+| Category | Extensions                     | Color         |
+| -------- | ------------------------------ | ------------- |
+| Image    | jpg, png, gif, svg, webp, etc. | Brand         |
+| Media    | mp4, mp3, avi, mov, wav, etc.  | Error         |
+| Document | pdf, doc, xls, ppt, txt, etc.  | Warning       |
+| Archive  | zip, rar, 7z, tar, gz, etc.    | Success       |
+| Code     | js, ts, py, html, css, etc.    | Info          |
+| System   | exe, dll, sys, bin, etc.       | Neutral Solid |
+| Default  | Unknown extensions             | Neutral       |
+
+## Usage Examples
+
+### Basic Usage
+
+```tsx
+<FourThumbnailCard filetype="jpg" subtitle="4 photos" title="Photo Album">
+  <Thumbnail title="Photo 1">
+    <img src="/photo1.jpg" alt="Photo 1" />
+  </Thumbnail>
+  <Thumbnail title="Photo 2">
+    <img src="/photo2.jpg" alt="Photo 2" />
+  </Thumbnail>
+  <Thumbnail title="Photo 3">
+    <img src="/photo3.jpg" alt="Photo 3" />
+  </Thumbnail>
+  <Thumbnail title="Photo 4">
+    <img src="/photo4.jpg" alt="Photo 4" />
+  </Thumbnail>
+</FourThumbnailCard>
+```
+
+### With Less Than 4 Thumbnails
+
+Empty slots are automatically rendered when fewer than 4 thumbnails are provided:
+
+```tsx
+<FourThumbnailCard subtitle="2 photos" title="Two Photos">
+  <Thumbnail title="Photo 1">
+    <img src="/photo1.jpg" alt="Photo 1" />
+  </Thumbnail>
+  <Thumbnail title="Photo 2">
+    <img src="/photo2.jpg" alt="Photo 2" />
+  </Thumbnail>
+</FourThumbnailCard>
+```
+
+### With Personal Action
+
+```tsx
+const [isFavorite, setIsFavorite] = useState(false);
+
+<FourThumbnailCard
+  personalActionActive={isFavorite}
+  personalActionActiveIcon={StarFilledIcon}
+  personalActionIcon={StarOutlineIcon}
+  personalActionOnClick={() => setIsFavorite(!isFavorite)}
+  title="Art Collection"
+>
+  <Thumbnail title="Painting 1">
+    <img src="/art1.jpg" alt="Painting 1" />
+  </Thumbnail>
+  <Thumbnail title="Painting 2">
+    <img src="/art2.jpg" alt="Painting 2" />
+  </Thumbnail>
+  <Thumbnail title="Painting 3">
+    <img src="/art3.jpg" alt="Painting 3" />
+  </Thumbnail>
+  <Thumbnail title="Painting 4">
+    <img src="/art4.jpg" alt="Painting 4" />
+  </Thumbnail>
+</FourThumbnailCard>;
+```
+
+### With Clickable Thumbnails
+
+```tsx
+<FourThumbnailCard subtitle="Click each thumbnail" title="Clickable Album">
+  <ThumbnailGeneric<'a'> component="a" href="/photos/1" title="Photo 1">
+    <img src="/photo1.jpg" alt="Photo 1" />
+  </ThumbnailGeneric>
+  <ThumbnailGeneric<'a'> component="a" href="/photos/2" title="Photo 2">
+    <img src="/photo2.jpg" alt="Photo 2" />
+  </ThumbnailGeneric>
+  <ThumbnailGeneric<'a'> component="a" href="/photos/3" title="Photo 3">
+    <img src="/photo3.jpg" alt="Photo 3" />
+  </ThumbnailGeneric>
+  <ThumbnailGeneric<'a'> component="a" href="/photos/4" title="Photo 4">
+    <img src="/photo4.jpg" alt="Photo 4" />
+  </ThumbnailGeneric>
+</FourThumbnailCard>
+```
+
+### Card As Link
+
+```tsx
+<FourThumbnailCardGeneric<'a'>
+  component="a"
+  filetype="jpg"
+  href="/albums/123"
+  title="Album Link"
+>
+  <Thumbnail title="Photo 1">
+    <img src="/photo1.jpg" alt="Photo 1" />
+  </Thumbnail>
+  <Thumbnail title="Photo 2">
+    <img src="/photo2.jpg" alt="Photo 2" />
+  </Thumbnail>
+  <Thumbnail title="Photo 3">
+    <img src="/photo3.jpg" alt="Photo 3" />
+  </Thumbnail>
+  <Thumbnail title="Photo 4">
+    <img src="/photo4.jpg" alt="Photo 4" />
+  </Thumbnail>
+</FourThumbnailCardGeneric>
+```
+
+## FourThumbnailCard Props
+
+<ArgTypes of={FourThumbnailCard} />
+
+## Thumbnail Props
+
+<ArgTypes of={Thumbnail} />

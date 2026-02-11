@@ -5,6 +5,7 @@ import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { cx } from '../utils/cx';
 import BaseCard from './BaseCard';
+import FourThumbnailCard from './FourThumbnailCard';
 import QuickActionCard from './QuickActionCard';
 import SingleThumbnailCard from './SingleThumbnailCard';
 
@@ -15,13 +16,18 @@ export interface CardGroupProps {
   className?: string;
   /**
    * Card components to render in the group.
-   * Only accepts BaseCard and QuickActionCard as children.
+   * Only accepts BaseCard, QuickActionCard, SingleThumbnailCard, and FourThumbnailCard as children.
    */
   children?: ReactNode;
 }
 
 // List of allowed child component types
-const ALLOWED_CARD_TYPES = [BaseCard, QuickActionCard, SingleThumbnailCard];
+const ALLOWED_CARD_TYPES = [
+  BaseCard,
+  FourThumbnailCard,
+  QuickActionCard,
+  SingleThumbnailCard,
+];
 
 /**
  * Get display name of a component for error messages
@@ -47,11 +53,13 @@ function getFirstCardType(
   children: ReactNode,
 ):
   | typeof BaseCard
+  | typeof FourThumbnailCard
   | typeof QuickActionCard
   | typeof SingleThumbnailCard
   | null {
   let firstType:
     | typeof BaseCard
+    | typeof FourThumbnailCard
     | typeof QuickActionCard
     | typeof SingleThumbnailCard
     | null = null;
@@ -67,6 +75,8 @@ function getFirstCardType(
       firstType = BaseCard;
     } else if (child.type === SingleThumbnailCard) {
       firstType = SingleThumbnailCard;
+    } else if (child.type === FourThumbnailCard) {
+      firstType = FourThumbnailCard;
     }
   });
 
@@ -99,7 +109,7 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
 
         console.warn(
           `[CardGroup] Invalid child type: <${displayName}>. ` +
-            'CardGroup only accepts Card components (BaseCard, QuickActionCard, SingleThumbnailCard) as children.',
+            'CardGroup only accepts Card components (BaseCard, FourThumbnailCard, QuickActionCard, SingleThumbnailCard) as children.',
         );
 
         return null;
@@ -114,6 +124,7 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
         className={cx(
           classes.group,
           {
+            [classes.groupFourThumbnail]: firstCardType === FourThumbnailCard,
             [classes.groupQuickAction]: firstCardType === QuickActionCard,
             [classes.groupSingleThumbnail]:
               firstCardType === SingleThumbnailCard,

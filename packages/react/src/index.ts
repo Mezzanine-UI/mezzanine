@@ -136,8 +136,10 @@ export type { BadgeProps } from './Badge';
 export {
   BaseCardGeneric as BaseCard,
   CardGroup,
+  FourThumbnailCardGeneric as FourThumbnailCard,
   QuickActionCardGeneric as QuickActionCard,
   SingleThumbnailCardGeneric as SingleThumbnailCard,
+  ThumbnailGeneric as Thumbnail,
 } from './Card';
 export type {
   BaseCardActionProps,
@@ -151,6 +153,14 @@ export type {
   BaseCardToggleProps,
   BaseCardType,
   CardGroupProps,
+  FourThumbnailCardActionProps,
+  FourThumbnailCardComponent,
+  FourThumbnailCardComponentProps,
+  FourThumbnailCardDefaultProps,
+  FourThumbnailCardOverflowProps,
+  FourThumbnailCardProps,
+  FourThumbnailCardPropsCommon,
+  FourThumbnailCardType,
   QuickActionCardComponent,
   QuickActionCardComponentProps,
   QuickActionCardMode,
@@ -167,6 +177,9 @@ export type {
   SingleThumbnailCardPropsCommon,
   SingleThumbnailCardType,
   ThumbnailCardInfoProps,
+  ThumbnailComponent,
+  ThumbnailComponentProps,
+  ThumbnailPropsBase,
 } from './Card';
 export {
   Description,

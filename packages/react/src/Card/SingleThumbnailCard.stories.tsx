@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { StarFilledIcon, StarOutlineIcon } from '@mezzanine-ui/icons';
 
-import { CardGroup, SingleThumbnailCard, SingleThumbnailCardGeneric } from '.';
+import {
+  CardGroup,
+  SingleThumbnailCardGeneric as SingleThumbnailCard,
+} from '.';
 import type { SingleThumbnailCardComponentProps } from './SingleThumbnailCard';
 
 export default {
@@ -280,7 +283,7 @@ export const AsLink: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: '16px' }}>
       <div style={{ width: '320px' }}>
-        <SingleThumbnailCardGeneric<'a'>
+        <SingleThumbnailCard<'a'>
           component="a"
           filetype="pdf"
           href="https://rytass.com/"
@@ -289,7 +292,7 @@ export const AsLink: Story = {
           title="external-link.pdf"
         >
           {sampleImage}
-        </SingleThumbnailCardGeneric>
+        </SingleThumbnailCard>
       </div>
     </div>
   ),
