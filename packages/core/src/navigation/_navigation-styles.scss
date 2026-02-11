@@ -457,32 +457,43 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 .#{$user-menu-prefix} {
   @include btn-utils.reset();
 
+  align-items: center;
+  border-radius: radius.variable(base);
   box-sizing: border-box;
   display: flex;
-  align-items: center;
   gap: spacing.semantic-variable(gap, tight-fixed);
-  width: fit-content;
-  border-radius: radius.variable(base);
+  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
   padding: spacing.semantic-variable(padding, vertical, micro)
     spacing.semantic-variable(padding, horizontal, tiny);
 
   &__avatar {
-    box-sizing: border-box;
-    width: spacing.semantic-variable(size, element, airy);
-    height: spacing.semantic-variable(size, element, airy);
-    border-radius: radius.variable(full);
-    background-color: palette.semantic-variable('background', neutral);
-    color: palette.semantic-variable(icon, fixed-light);
-    border: 1px solid palette.semantic-variable('background', neutral-subtle);
-    display: flex;
     align-items: center;
+    background-color: palette.semantic-variable('background', neutral);
+    border-radius: radius.variable(full);
+    border: 1px solid palette.semantic-variable('background', neutral-subtle);
+    box-sizing: border-box;
+    color: palette.semantic-variable(icon, fixed-light);
+    display: flex;
+    flex-shrink: 0;
+    height: spacing.semantic-variable(size, element, airy);
     justify-content: center;
+    width: spacing.semantic-variable(size, element, airy);
   }
 
   &__user-name {
     @include typography.semantic-variable(caption);
 
+    align-items: center;
     color: palette.semantic-variable(text, neutral-solid);
+    display: flex;
+    flex-shrink: 1;
+    overflow-x: hidden;
+
+    & > span {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 
   &__icon {
