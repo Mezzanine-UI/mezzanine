@@ -1,6 +1,8 @@
+import { SearchIcon } from '@mezzanine-ui/icons';
 import type { Meta, StoryObj } from '@storybook/react';
 import { useCallback, useRef, useState } from 'react';
 import { AutoComplete } from '.';
+import Icon from '../Icon';
 import { SelectValue } from '../Select/typings';
 import Tag from '../Tag';
 
@@ -50,42 +52,162 @@ const originOptions: SelectValue[] = [
   },
 ];
 
-export const Basic: StoryObj<typeof AutoComplete> = {
-  render: () => (
+const BasicComponent = () => {
+  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>([]);
+
+  return (
     <div
       style={{
-        display: 'inline-grid',
-        gridTemplateColumns: 'repeat(3, 240px)',
-        gap: '16px',
-        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
       }}
     >
-      <AutoComplete
-        fullWidth
-        menuMaxHeight={140}
-        options={originOptions}
-        placeholder="Placeholder"
-        required
-        size="sub"
-      />
-      <AutoComplete
-        error
-        fullWidth
-        menuMaxHeight={140}
-        options={originOptions}
-        placeholder="Placeholder"
-        required
-      />
-      <AutoComplete
-        disabled
-        fullWidth
-        menuMaxHeight={140}
-        options={originOptions}
-        placeholder="Placeholder"
-        required
-      />
+      <div
+        style={{
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(4, 240px)',
+          gap: '16px',
+          alignItems: 'center',
+        }}
+      >
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="單選"
+          required
+        />
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="multiple"
+          onChange={setMultipleSelections}
+          options={originOptions}
+          placeholder="多選"
+          required
+          value={multipleSelections}
+        />
+        <AutoComplete
+          error
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="錯誤"
+          required
+        />
+        <AutoComplete
+          disabled
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="已禁用"
+          required
+        />
+      </div>
+      <div
+        style={{
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(4, 240px)',
+          gap: '16px',
+          alignItems: 'center',
+        }}
+      >
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="單選"
+          required
+          size="sub"
+        />
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="multiple"
+          onChange={setMultipleSelections}
+          options={originOptions}
+          placeholder="多選"
+          required
+          size="sub"
+          value={multipleSelections}
+        />
+        <AutoComplete
+          error
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="錯誤"
+          required
+          size="sub"
+        />
+        <AutoComplete
+          disabled
+          fullWidth
+          menuMaxHeight={140}
+          options={originOptions}
+          placeholder="已禁用"
+          required
+          size="sub"
+        />
+      </div>
+      <div
+        style={{
+          display: 'inline-grid',
+          gridTemplateColumns: 'repeat(4, 240px)',
+          gap: '16px',
+          alignItems: 'center',
+        }}
+      >
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="single"
+          options={originOptions}
+          placeholder="單選"
+          prefix={<Icon icon={SearchIcon} />}
+          required
+        />
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="single"
+          size="sub"
+          options={originOptions}
+          placeholder="單選 sub 尺寸"
+          prefix={<Icon icon={SearchIcon} />}
+          required
+        />
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="multiple"
+          onChange={setMultipleSelections}
+          options={originOptions}
+          placeholder="多選"
+          prefix={<Icon icon={SearchIcon} />}
+          required
+          value={multipleSelections}
+        />
+        <AutoComplete
+          fullWidth
+          menuMaxHeight={140}
+          mode="multiple"
+          onChange={setMultipleSelections}
+          options={originOptions}
+          size="sub"
+          placeholder="多選 sub 尺寸"
+          prefix={<Icon icon={SearchIcon} />}
+          required
+          value={multipleSelections}
+        />
+      </div>
     </div>
-  ),
+  );
+};
+
+export const Basic: StoryObj<typeof AutoComplete> = {
+  render: () => <BasicComponent />,
 };
 
 const SingleModeAsyncSearchComponent = () => {
@@ -181,11 +303,14 @@ export const SingleModeSyncSearch: StoryObj<typeof AutoComplete> = {
 };
 
 const KeepSearchTextOnBlurComponent = () => {
-  const [options, setOptions] = useState<SelectValue[]>(originOptions);
+  const [multipleAutoClearSelections, setMultipleAutoClearSelections] = useState<SelectValue[]>([]);
+  const [singleOptions, setSingleOptions] = useState<SelectValue[]>(originOptions);
+  const [multipleOptions, setMultipleOptions] = useState<SelectValue[]>(originOptions);
+  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>([]);
 
-  const handleSearch = useCallback((search: string) => {
+  const handleSingleSearch = useCallback((search: string) => {
     if (!search) {
-      setOptions(originOptions);
+      setSingleOptions(originOptions);
       return;
     }
 
@@ -193,7 +318,20 @@ const KeepSearchTextOnBlurComponent = () => {
       opt.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    setOptions(filtered);
+    setSingleOptions(filtered);
+  }, []);
+
+  const handleMultipleSearch = useCallback((search: string) => {
+    if (!search) {
+      setMultipleOptions(originOptions);
+      return;
+    }
+
+    const filtered = originOptions.filter((opt) =>
+      opt.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setMultipleOptions(filtered);
   }, []);
 
   const handleSearchTextChange = useCallback((_search: string) => {
@@ -206,35 +344,106 @@ const KeepSearchTextOnBlurComponent = () => {
   return (
     <div
       style={{
-        display: 'inline-grid',
-        gridTemplateColumns: 'repeat(2, 300px)',
-        gap: '16px',
-        alignItems: 'center',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+        maxWidth: '800px',
       }}
     >
-      <AutoComplete
-        disabledOptionsFilter
-        emptyText="沒有符合的選項"
-        fullWidth
-        keepSearchTextOnBlur
-        menuMaxHeight={200}
-        mode="single"
-        onSearch={handleSearch}
-        options={options}
-        placeholder="輸入後失焦仍保留文字"
-        onSearchTextChange={handleSearchTextChange}
-      />
-      <AutoComplete
-        disabledOptionsFilter
-        emptyText="沒有符合的選項"
-        fullWidth
-        menuMaxHeight={200}
-        mode="single"
-        onSearch={handleSearch}
-        options={options}
-        placeholder="既有行為（失焦清空）"
-        size="sub"
-      />
+      <div>
+        <h3 style={{ marginBottom: '16px' }}>單選模式</h3>
+        <div
+          style={{
+            display: 'inline-grid',
+            gridTemplateColumns: 'repeat(2, 300px)',
+            gap: '16px',
+            alignItems: 'center',
+          }}
+        >
+          <AutoComplete
+            disabledOptionsFilter
+            emptyText="沒有符合的選項"
+            fullWidth
+            keepSearchTextOnBlur
+            menuMaxHeight={200}
+            mode="single"
+            onSearch={handleSingleSearch}
+            options={singleOptions}
+            placeholder="輸入後失焦仍保留文字"
+            onSearchTextChange={handleSearchTextChange}
+          />
+          <AutoComplete
+            disabledOptionsFilter
+            emptyText="沒有符合的選項"
+            fullWidth
+            menuMaxHeight={200}
+            mode="single"
+            onSearch={handleSingleSearch}
+            options={singleOptions}
+            placeholder="既有行為（失焦清空）"
+            size="sub"
+          />
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '16px' }}>多選模式</h3>
+        <div
+          style={{
+            display: 'inline-grid',
+            gridTemplateColumns: 'repeat(2, 300px)',
+            gap: '16px',
+            alignItems: 'center',
+          }}
+        >
+          <AutoComplete
+            disabledOptionsFilter
+            emptyText="沒有符合的選項"
+            fullWidth
+            keepSearchTextOnBlur
+            menuMaxHeight={200}
+            mode="multiple"
+            onChange={setMultipleSelections}
+            onSearch={handleMultipleSearch}
+            onSearchTextChange={handleSearchTextChange}
+            options={multipleOptions}
+            placeholder="輸入後失焦仍保留文字"
+            value={multipleSelections}
+          />
+          <AutoComplete
+            clearSearchTextOnSelect
+            disabledOptionsFilter
+            emptyText="沒有符合的選項"
+            fullWidth
+            menuMaxHeight={200}
+            mode="multiple"
+            onChange={setMultipleAutoClearSelections}
+            onSearch={handleMultipleSearch}
+            onSearchTextChange={handleSearchTextChange}
+            options={multipleOptions}
+            placeholder="多選後自動清空輸入（失焦也清空）"
+            value={multipleAutoClearSelections}
+          />
+        </div>
+        {multipleSelections.length > 0 && (
+          <div
+            style={{
+              marginTop: '12px',
+              padding: '12px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '4px',
+            }}
+          >
+            <p style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold' }}>
+              已選擇 ({multipleSelections.length} 個):
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {multipleSelections.map((item) => (
+                <Tag key={item.id} label={item.name} size="sub" type="static" />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -270,6 +479,75 @@ const MultipleComponent = () => {
 
 export const Multiple: StoryObj<typeof AutoComplete> = {
   render: () => <MultipleComponent />,
+};
+
+const OverflowStrategyComponent = () => {
+  const [counterSelections, setCounterSelections] = useState<SelectValue[]>([]);
+  const [wrapSelections, setWrapSelections] = useState<SelectValue[]>([]);
+
+  // 創建足夠多的選項來觸發溢出
+  const manyOptions: SelectValue[] = Array.from({ length: 20 }, (_, i) => ({
+    id: `item-${i + 1}`,
+    name: `選項 ${i + 1}`,
+  }));
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+        maxWidth: '800px',
+      }}
+    >
+      <div>
+        <h3 style={{ marginBottom: '16px' }}>Overflow Strategy: counter</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+          當標籤過多時，會顯示部分標籤並用 &quot;+ N&quot; 計數器表示剩餘數量
+        </p>
+        <div style={{ maxWidth: '300px' }}>
+          <AutoComplete
+            disabledOptionsFilter
+            fullWidth
+            mode="multiple"
+            onChange={setCounterSelections}
+            options={manyOptions}
+            overflowStrategy="counter"
+            placeholder="選擇多個選項..."
+            value={counterSelections}
+          />
+        </div>
+        <p style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+          已選擇: {counterSelections.length} 個
+        </p>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '16px' }}>Overflow Strategy: wrap</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
+          當標籤過多時，會自動換行顯示所有標籤
+        </p>
+        <div style={{ maxWidth: '300px' }}>
+          <AutoComplete
+            disabledOptionsFilter
+            fullWidth
+            mode="multiple"
+            onChange={setWrapSelections}
+            options={manyOptions}
+            overflowStrategy="wrap"
+            placeholder="選擇多個選項..."
+            value={wrapSelections}
+          />
+        </div>
+        <p style={{ marginTop: '8px', fontSize: '12px', color: '#666' }}>
+          已選擇: {wrapSelections.length} 個
+        </p>
+      </div>
+    </div>
+  );
+};
+
+export const OverflowStrategy: StoryObj<typeof AutoComplete> = {
+  render: () => <OverflowStrategyComponent />,
 };
 
 const CreatableSingleComponent = () => {

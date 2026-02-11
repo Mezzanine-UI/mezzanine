@@ -6,6 +6,7 @@ import {
   Dispatch,
   FocusEventHandler,
   forwardRef,
+  KeyboardEventHandler,
   MouseEvent as ReactMouseEvent,
   RefObject,
   SetStateAction,
@@ -81,6 +82,11 @@ export interface AutoCompleteBaseProps
    * @default false
    */
   asyncData?: boolean;
+  /**
+   * Whether to clear search text after selecting an option in multiple mode.
+   * @default false
+   */
+  clearSearchTextOnSelect?: boolean;
   /**
    * Characters that can be used to separate multiple items when creating.
    * When these characters are entered, they will trigger item creation.
@@ -254,6 +260,14 @@ export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
    */
   onChange?(newOptions: SelectValue[]): void;
   /**
+   * Tag overflow strategy:
+   * - counter: collapse extra tags into a counter tag showing the remaining count.
+   * - wrap: wrap to new lines to display all tags.
+   * @default 'counter'
+   * 
+   */
+  overflowStrategy?: 'counter' | 'wrap';
+  /**
    * The selector of input.
    * @default 'input'
    */
@@ -295,6 +309,7 @@ export type AutoCompleteProps =
   | AutoCompleteSingleProps;
 
 const MENU_ID_PREFIX = 'mzn-select-autocomplete-menu-id';
+const BLUR_RESET_OPTIONS_DELAY = 120;
 
 /**
  * Type guard to check if value is array (multiple mode)
@@ -343,6 +358,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const {
       addable = false,
       asyncData = false,
+      clearSearchTextOnSelect = false,
       className,
       createSeparators = [',', '+', '\n'],
       defaultValue,
@@ -370,6 +386,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onVisibilityChange,
       open: openProp,
       options: optionsProp,
+      overflowStrategy,
       placeholder = '',
       prefix,
       required = requiredFromFormControl || false,
@@ -531,8 +548,44 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
+    const inputElementRef = useRef<HTMLInputElement>(null);
     const controlRef = useRef<HTMLElement>(null);
+    const resetOptionsTimeoutRef = useRef<number | null>(null);
     const composedRef = useComposeRefs([ref, controlRef]);
+    const composedInputRef = useComposeRefs([inputRef, inputElementRef]);
+    const clearPendingOptionsReset = useCallback(() => {
+      if (resetOptionsTimeoutRef.current !== null) {
+        window.clearTimeout(resetOptionsTimeoutRef.current);
+        resetOptionsTimeoutRef.current = null;
+      }
+    }, []);
+    const clearSearchInputDisplay = useCallback(() => {
+      if (inputElementRef.current) {
+        inputElementRef.current.value = '';
+      }
+    }, []);
+    const resetSearchInputs = useCallback(() => {
+      resetCreationInputs();
+      clearSearchInputDisplay();
+    }, [clearSearchInputDisplay, resetCreationInputs]);
+
+    const resetSearchInputsAndOptions = useCallback(() => {
+      resetSearchInputs();
+      clearPendingOptionsReset();
+      cancelSearch();
+      resetOptionsTimeoutRef.current = window.setTimeout(() => {
+        runSearch('', { immediate: true });
+        resetOptionsTimeoutRef.current = null;
+      }, BLUR_RESET_OPTIONS_DELAY);
+    }, [cancelSearch, clearPendingOptionsReset, resetSearchInputs, runSearch]);
+
+    useEffect(
+      () => () => {
+        clearPendingOptionsReset();
+      },
+      [clearPendingOptionsReset],
+    );
+
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
     const renderValue = useMemo(() => {
@@ -558,6 +611,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     /** Trigger input props */
     const onSearchInputChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+      clearPendingOptionsReset();
       const nextSearch = e.target.value;
       /** should sync both search input and value */
       setSearchText(nextSearch);
@@ -576,6 +630,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     };
 
     const onSearchInputFocus: FocusEventHandler<HTMLInputElement> = (e) => {
+      clearPendingOptionsReset();
       // When inputPosition is inside, let Dropdown handle the focus event
       // Otherwise, stop propagation to prevent conflicts
       if (inputPosition !== 'inside') {
@@ -603,7 +658,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           onFocus(false);
           // Clear search text and insert text when blur if keepSearchTextOnBlur is false
           if (!keepSearchTextOnBlur) {
-            resetCreationInputs();
+            resetSearchInputsAndOptions();
           }
           inputProps?.onBlur?.(e);
           return;
@@ -613,7 +668,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         // Dropdown's inlineTriggerElement will handle the blur and close logic
         // Clear search text and insert text when blur if keepSearchTextOnBlur is false
         if (!keepSearchTextOnBlur) {
-          resetCreationInputs();
+          resetSearchInputsAndOptions();
         }
         inputProps?.onBlur?.(e);
         return;
@@ -622,7 +677,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onFocus(false);
       // Clear search text and insert text when blur if keepSearchTextOnBlur is false
       if (!keepSearchTextOnBlur) {
-        resetCreationInputs();
+        resetSearchInputsAndOptions();
       }
       inputProps?.onBlur?.(e);
     };
@@ -630,9 +685,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const handleClear = useCallback(
       (e: ReactMouseEvent<Element>) => {
         onClear(e);
-        resetCreationInputs();
+        resetSearchInputs();
       },
-      [onClear, resetCreationInputs],
+      [onClear, resetSearchInputs],
     );
 
     const onClickSuffixActionIcon = () => {
@@ -707,10 +762,23 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onFocus(false);
           } else {
             wrappedOnChange(selectedValue);
+            if (clearSearchTextOnSelect) {
+              resetSearchInputs();
+            }
           }
         }
       },
-      [mode, onFocus, options, setSearchText, setInsertText, toggleOpen, wrappedOnChange],
+      [
+        clearSearchTextOnSelect,
+        mode,
+        onFocus,
+        options,
+        resetSearchInputs,
+        setSearchText,
+        setInsertText,
+        toggleOpen,
+        wrappedOnChange,
+      ],
     );
 
     // Active index for dropdown keyboard navigation
@@ -759,7 +827,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       handleBulkCreate,
       handleDropdownSelect,
       inputPropsOnKeyDown: inputProps?.onKeyDown,
-      inputRef,
+      inputRef: inputElementRef,
       isMultiple,
       mode,
       onFocus,
@@ -776,6 +844,32 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       wrappedOnChange,
     });
 
+    const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+      (e) => {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleOpen(false);
+          setActiveIndex(null);
+          setListboxHasVisualFocus();
+          onFocus(false);
+          inputElementRef.current?.blur();
+          inputProps?.onKeyDown?.(e);
+          return;
+        }
+
+        handleInputKeyDown(e);
+      },
+      [
+        handleInputKeyDown,
+        inputProps,
+        onFocus,
+        setActiveIndex,
+        setListboxHasVisualFocus,
+        toggleOpen,
+      ],
+    );
+
     // Handle visibility change from Dropdown to prevent flickering
     const handleVisibilityChange = useCallback(
       (newOpen: boolean) => {
@@ -783,8 +877,20 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         if (newOpen !== open) {
           toggleOpen(newOpen);
         }
+
+        // In multiple mode, blur/close can be driven by Dropdown visibility updates.
+        // Keep input text cleanup consistent even when native input blur is not triggered.
+        if (!newOpen && isMultiple && !keepSearchTextOnBlur) {
+          resetSearchInputsAndOptions();
+        }
       },
-      [open, toggleOpen],
+      [
+        isMultiple,
+        keepSearchTextOnBlur,
+        open,
+        resetSearchInputsAndOptions,
+        toggleOpen,
+      ],
     );
 
     const handlePasteWithFallback = useCallback(
@@ -821,7 +927,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         if (!alreadySelected) {
           wrappedOnChange(matchingOption);
-          resetCreationInputs();
+          resetSearchInputs();
           return true;
         }
 
@@ -833,7 +939,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         isSingle,
         onFocus,
         options,
-        resetCreationInputs,
+        resetSearchInputs,
         setSearchText,
         setInsertText,
         toggleOpen,
@@ -853,11 +959,25 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onBlur: onSearchInputBlur,
       onChange: onSearchInputChange,
       onFocus: onSearchInputFocus,
-      onKeyDown: handleInputKeyDown,
+      onKeyDown: onSearchInputKeyDown,
       onPaste: handlePasteWithFallback,
       readOnly: false,
       role: 'combobox',
     };
+
+    // Calculate whether to show clearable button
+    // Show clearable only when there is selected value or search text
+    const shouldShowClearable = useMemo(() => {
+      // Check if there is selected value
+      const hasValue = isMultiple
+        ? (isMultipleValue(value) && value.length > 0)
+        : isSingleValue(value);
+
+      // Check if there is search text
+      const hasSearchText = Boolean(searchText && searchText.trim().length > 0);
+
+      return hasValue || hasSearchText;
+    }, [isMultiple, value, searchText]);
 
     return (
       <SelectControlContext.Provider value={context}>
@@ -917,14 +1037,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               ref={composedRef}
               active={open}
               className={className}
-              clearable
-              isForceClearable
               disabled={isInputDisabled}
               fullWidth={fullWidth}
-              inputRef={inputRef}
+              inputRef={composedInputRef}
+              isForceClearable={shouldShowClearable}
               mode={mode}
               onTagClose={wrappedOnChange}
               onClear={handleClear}
+              overflowStrategy={overflowStrategy}
               placeholder={getPlaceholder()}
               prefix={prefix}
               readOnly={false}
