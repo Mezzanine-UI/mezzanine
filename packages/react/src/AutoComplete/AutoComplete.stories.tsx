@@ -361,16 +361,16 @@ const KeepSearchTextOnBlurComponent = () => {
           }}
         >
           <AutoComplete
+            clearSearchText={false}
             disabledOptionsFilter
             emptyText="沒有符合的選項"
             fullWidth
-            keepSearchTextOnBlur
             menuMaxHeight={200}
             mode="single"
             onSearch={handleSingleSearch}
             options={singleOptions}
-            placeholder="輸入後失焦仍保留文字"
             onSearchTextChange={handleSearchTextChange}
+            placeholder="失焦後保留文字"
           />
           <AutoComplete
             disabledOptionsFilter
@@ -380,8 +380,7 @@ const KeepSearchTextOnBlurComponent = () => {
             mode="single"
             onSearch={handleSingleSearch}
             options={singleOptions}
-            placeholder="既有行為（失焦清空）"
-            size="sub"
+            placeholder="失焦後清空"
           />
         </div>
       </div>
@@ -396,21 +395,20 @@ const KeepSearchTextOnBlurComponent = () => {
           }}
         >
           <AutoComplete
+            clearSearchText={false}
             disabledOptionsFilter
             emptyText="沒有符合的選項"
             fullWidth
-            keepSearchTextOnBlur
             menuMaxHeight={200}
             mode="multiple"
             onChange={setMultipleSelections}
             onSearch={handleMultipleSearch}
             onSearchTextChange={handleSearchTextChange}
             options={multipleOptions}
-            placeholder="輸入後失焦仍保留文字"
+            placeholder="失焦後保留文字"
             value={multipleSelections}
           />
           <AutoComplete
-            clearSearchTextOnSelect
             disabledOptionsFilter
             emptyText="沒有符合的選項"
             fullWidth
@@ -420,7 +418,7 @@ const KeepSearchTextOnBlurComponent = () => {
             onSearch={handleMultipleSearch}
             onSearchTextChange={handleSearchTextChange}
             options={multipleOptions}
-            placeholder="多選後自動清空輸入（失焦也清空）"
+            placeholder="失焦後清空"
             value={multipleAutoClearSelections}
           />
         </div>
