@@ -145,6 +145,66 @@ export const CustomAnchorComponent: StoryFn<NavigationProps> = (args) => (
   </div>
 );
 
+export const Overflow: StoryFn<NavigationProps> = (args) => (
+  <div style={{ display: 'grid', height: 'calc(100vh - 32px)' }}>
+    <Navigation {...args}>
+      <NavigationHeader title="Mezzanine">
+        <span
+          aria-label="logo"
+          style={{
+            backgroundColor: '#5D74E9',
+            borderRadius: '4px',
+            height: '28px',
+            width: '28px',
+          }}
+        />
+      </NavigationHeader>
+      <NavigationOption
+        icon={HomeIcon}
+        title={
+          '首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁首頁'
+        }
+      />
+      <NavigationOption icon={FileIcon} title={'數據分析'}>
+        <NavigationOption
+          title={
+            '流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表流量報表'
+          }
+        />
+        <NavigationOption
+          title={
+            '轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析轉換率分析'
+          }
+        />
+      </NavigationOption>
+      <>
+        {Array.from(Array(20)).map((_, index) => (
+          <NavigationOption
+            icon={FolderIcon}
+            key={index}
+            title={`專案 ${index + 1}`}
+          >
+            <NavigationOption title={'專案設定'} />
+            <NavigationOption title={'成員管理'} />
+          </NavigationOption>
+        ))}
+      </>
+      <NavigationFooter>
+        <NavigationUserMenu
+          imgSrc="https://i.pravatar.cc/150?u=admin"
+          options={userMenuOptions}
+        >
+          Very long username Very long username Very long username
+        </NavigationUserMenu>
+        <NavigationIconButton icon={QuestionOutlineIcon} />
+        <Badge variant="dot-error">
+          <NavigationIconButton icon={NotificationIcon} />
+        </Badge>
+      </NavigationFooter>
+    </Navigation>
+  </div>
+);
+
 export const All: StoryFn<NavigationProps> = () => {
   const [active, setActive] = useState<string[]>();
   const [collapsed, setCollapsed] = useState(true);
