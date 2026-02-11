@@ -371,6 +371,8 @@ $file-icon-color: (
   position: relative;
 
   &__thumbnail {
+    @include button-utils.reset();
+
     width: 100%;
     aspect-ratio: 4 / 3;
     border-radius: radius.variable(base);
@@ -379,6 +381,10 @@ $file-icon-color: (
     position: relative;
     transition: transition.standard(box-shadow, fast);
 
+    &--empty {
+      pointer-events: none;
+    }
+
     &__overlay {
       position: absolute;
       z-index: 0;
@@ -386,11 +392,12 @@ $file-icon-color: (
       padding: 0 spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, base);
       pointer-events: none;
       background-color: transparent;
-      transition: transition.standard(background-color, fast);
+      transition: transition.standard(background-color, moderate) transition.standard(opacity, moderate);
       display: flex;
       flex-flow: row;
       align-items: flex-end;
       justify-content: flex-start;
+      opacity: 0;
 
       & > span {
         @include typography.semantic-variable(caption);
@@ -401,8 +408,9 @@ $file-icon-color: (
     }
 
     &:hover {
-      &__overlay {
+      & > .#{$four-thumbnail-card-prefix}__thumbnail__overlay {
         background-color: palette.semantic-variable("overlay", subtle);
+        opacity: 1;
       }
     }
 

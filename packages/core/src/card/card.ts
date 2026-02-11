@@ -11,6 +11,7 @@ export const cardClasses = {
   group: cardGroupPrefix,
   groupQuickAction: `${cardGroupPrefix}--quick-action`,
   groupSingleThumbnail: `${cardGroupPrefix}--single-thumbnail`,
+  groupFourThumbnail: `${cardGroupPrefix}--four-thumbnail`,
 
   /** base card */
   base: baseCardPrefix,
@@ -54,5 +55,6 @@ export const cardClasses = {
   /** four thumbnail card */
   fourThumbnail: fourThumbnailCardPrefix,
   fourThumbnailThumbnail: `${fourThumbnailCardPrefix}__thumbnail`,
+  fourThumbnailThumbnailEmpty: `${fourThumbnailCardPrefix}__thumbnail--empty`,
   fourThumbnailOverlay: `${fourThumbnailCardPrefix}__thumbnail__overlay`,
 };
