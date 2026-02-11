@@ -275,8 +275,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       padding: 0;
       width: 100%;
 
-      > :not(:first-child) {
-        display: none;
+      &__content {
+        & > :not(:first-child) {
+          display: none;
+        }
       }
     }
   }
@@ -457,14 +459,18 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 .#{$user-menu-prefix} {
   @include btn-utils.reset();
 
-  align-items: center;
-  border-radius: radius.variable(base);
-  box-sizing: border-box;
-  display: flex;
-  gap: spacing.semantic-variable(gap, tight-fixed);
-  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
   padding: spacing.semantic-variable(padding, vertical, micro)
     spacing.semantic-variable(padding, horizontal, tiny);
+  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
+
+  &__content {
+    align-items: center;
+    border-radius: radius.variable(base);
+    box-sizing: border-box;
+    display: flex;
+    gap: spacing.semantic-variable(gap, tight-fixed);
+    position: relative;
+  }
 
   &__avatar {
     align-items: center;
