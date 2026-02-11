@@ -261,6 +261,7 @@ $file-icon-color: (
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 
     &:hover {
       border: 1px solid palette.semantic-variable(separator, neutral-faint);
