@@ -53,10 +53,11 @@ export type TagGroupProps = Omit<
   'children'
 > & {
   children: TagGroupChild | TagGroupChild[];
+  transition?: 'fade' | 'none';
 };
 
 const TagGroup = forwardRef<HTMLDivElement, TagGroupProps>(function TagGroup(
-  { className, children, ...rest },
+  { className, children, transition = 'none', ...rest },
   ref,
 ) {
   const hasInvalidChild = Children.toArray(children).some((child) => {
@@ -75,13 +76,19 @@ const TagGroup = forwardRef<HTMLDivElement, TagGroupProps>(function TagGroup(
 
   return (
     <div {...rest} ref={ref} className={cx(classes.group, className)}>
-      <TransitionGroup component={null}>
-        {Children.map(children, (child, index) => (
-          <Fade {...fadeProps} key={child.key ?? index}>
-            <span>{child}</span>
-          </Fade>
-        ))}
-      </TransitionGroup>
+      {transition === 'fade' ? (
+        <TransitionGroup component={null}>
+          {Children.map(children, (child, index) => (
+            <Fade {...fadeProps} key={child.key ?? index}>
+              <span>{child}</span>
+            </Fade>
+          ))}
+        </TransitionGroup>
+      ) : (
+        Children.map(children, (child, index) => (
+          <span key={child.key ?? index}>{child}</span>
+        ))
+      )}
     </div>
   );
 });
