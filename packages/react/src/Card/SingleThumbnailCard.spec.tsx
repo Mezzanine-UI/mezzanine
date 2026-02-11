@@ -13,12 +13,16 @@ describe('<SingleThumbnailCard />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
-    render(<SingleThumbnailCard ref={ref}>{sampleImage}</SingleThumbnailCard>),
+    render(
+      <SingleThumbnailCard ref={ref} title="">
+        {sampleImage}
+      </SingleThumbnailCard>,
+    ),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
     render(
-      <SingleThumbnailCard className={className}>
+      <SingleThumbnailCard className={className} title="">
         {sampleImage}
       </SingleThumbnailCard>,
     ),
@@ -26,7 +30,7 @@ describe('<SingleThumbnailCard />', () => {
 
   it('should bind host class', () => {
     const { getHostHTMLElement } = render(
-      <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+      <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
     );
     const element = getHostHTMLElement();
 
@@ -35,7 +39,7 @@ describe('<SingleThumbnailCard />', () => {
 
   it('should render as div by default', () => {
     const { getHostHTMLElement } = render(
-      <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+      <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
     );
     const element = getHostHTMLElement();
 
@@ -44,7 +48,11 @@ describe('<SingleThumbnailCard />', () => {
 
   it('should render as anchor when component="a"', () => {
     const { getHostHTMLElement } = render(
-      <SingleThumbnailCard<'a'> component="a" href="https://example.com">
+      <SingleThumbnailCard<'a'>
+        component="a"
+        href="https://example.com"
+        title=""
+      >
         {sampleImage}
       </SingleThumbnailCard>,
     );
@@ -56,7 +64,7 @@ describe('<SingleThumbnailCard />', () => {
 
   it('should render single thumbnail container with overlay', () => {
     const { getHostHTMLElement } = render(
-      <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+      <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
     );
     const element = getHostHTMLElement();
     const thumbnailContainer = element.querySelector(
@@ -70,7 +78,7 @@ describe('<SingleThumbnailCard />', () => {
 
   it('should render children (image) in thumbnail container', () => {
     const { getHostHTMLElement } = render(
-      <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+      <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
     );
     const element = getHostHTMLElement();
     const thumbnailContainer = element.querySelector(
@@ -85,7 +93,9 @@ describe('<SingleThumbnailCard />', () => {
   describe('prop: tag', () => {
     it('should render tag when provided', () => {
       const { getByText } = render(
-        <SingleThumbnailCard tag="New">{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="" tag="New">
+          {sampleImage}
+        </SingleThumbnailCard>,
       );
 
       const tagElement = getByText('New');
@@ -95,7 +105,7 @@ describe('<SingleThumbnailCard />', () => {
 
     it('should not render tag when not provided', () => {
       const { getHostHTMLElement } = render(
-        <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
       );
       const element = getHostHTMLElement();
       const tagElement = element.querySelector(`.${classes.thumbnailTag}`);
@@ -107,7 +117,7 @@ describe('<SingleThumbnailCard />', () => {
   describe('prop: personalAction', () => {
     it('should render personal action button when icon is provided', () => {
       const { getByRole } = render(
-        <SingleThumbnailCard personalActionIcon={StarOutlineIcon}>
+        <SingleThumbnailCard title="" personalActionIcon={StarOutlineIcon}>
           {sampleImage}
         </SingleThumbnailCard>,
       );
@@ -122,7 +132,7 @@ describe('<SingleThumbnailCard />', () => {
 
     it('should not render personal action button when icon is not provided', () => {
       const { getHostHTMLElement } = render(
-        <SingleThumbnailCard>{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="">{sampleImage}</SingleThumbnailCard>,
       );
       const element = getHostHTMLElement();
       const button = element.querySelector(
@@ -136,6 +146,7 @@ describe('<SingleThumbnailCard />', () => {
       const handleClick = jest.fn();
       const { getByRole } = render(
         <SingleThumbnailCard
+          title=""
           personalActionIcon={StarOutlineIcon}
           personalActionOnClick={handleClick}
         >
@@ -155,6 +166,7 @@ describe('<SingleThumbnailCard />', () => {
       const handleClick = jest.fn();
       const { getByRole } = render(
         <SingleThumbnailCard
+          title=""
           personalActionActive
           personalActionIcon={StarOutlineIcon}
           personalActionOnClick={handleClick}
@@ -173,6 +185,7 @@ describe('<SingleThumbnailCard />', () => {
     it('should use activeIcon when personalActionActive is true', () => {
       const { container } = render(
         <SingleThumbnailCard
+          title=""
           personalActionActive
           personalActionActiveIcon={StarFilledIcon}
           personalActionIcon={StarOutlineIcon}
@@ -191,6 +204,7 @@ describe('<SingleThumbnailCard />', () => {
     it('should use regular icon when personalActionActive is false', () => {
       const { container } = render(
         <SingleThumbnailCard
+          title=""
           personalActionActive={false}
           personalActionActiveIcon={StarFilledIcon}
           personalActionIcon={StarOutlineIcon}
@@ -226,7 +240,7 @@ describe('<SingleThumbnailCard />', () => {
   describe('prop: subtitle', () => {
     it('should render subtitle in info section', () => {
       const { getByText } = render(
-        <SingleThumbnailCard subtitle="2.4 MB">
+        <SingleThumbnailCard title="" subtitle="2.4 MB">
           {sampleImage}
         </SingleThumbnailCard>,
       );
@@ -242,7 +256,9 @@ describe('<SingleThumbnailCard />', () => {
   describe('prop: filetype', () => {
     it('should render filetype badge', () => {
       const { getByText } = render(
-        <SingleThumbnailCard filetype="pdf">{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="" filetype="pdf">
+          {sampleImage}
+        </SingleThumbnailCard>,
       );
 
       const filetypeElement = getByText('PDF');
@@ -254,7 +270,9 @@ describe('<SingleThumbnailCard />', () => {
 
     it('should apply correct category class for known filetype', () => {
       const { getByText } = render(
-        <SingleThumbnailCard filetype="jpg">{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="" filetype="jpg">
+          {sampleImage}
+        </SingleThumbnailCard>,
       );
 
       const filetypeElement = getByText('JPG');
@@ -268,7 +286,9 @@ describe('<SingleThumbnailCard />', () => {
 
     it('should not apply category class for unknown filetype', () => {
       const { getByText } = render(
-        <SingleThumbnailCard filetype="xyz">{sampleImage}</SingleThumbnailCard>,
+        <SingleThumbnailCard title="" filetype="xyz">
+          {sampleImage}
+        </SingleThumbnailCard>,
       );
 
       const filetypeElement = getByText('XYZ');
@@ -302,7 +322,7 @@ describe('<SingleThumbnailCard />', () => {
   describe('type: action', () => {
     it('should render action button in info section', () => {
       const { getByRole } = render(
-        <SingleThumbnailCard actionName="Download" type="action">
+        <SingleThumbnailCard title="" actionName="Download" type="action">
           {sampleImage}
         </SingleThumbnailCard>,
       );
@@ -317,6 +337,7 @@ describe('<SingleThumbnailCard />', () => {
       const handleClick = jest.fn();
       const { getByRole } = render(
         <SingleThumbnailCard
+          title=""
           actionName="Download"
           onActionClick={handleClick}
           type="action"
@@ -341,7 +362,7 @@ describe('<SingleThumbnailCard />', () => {
 
     it('should render dropdown button in info section', () => {
       const { getByRole } = render(
-        <SingleThumbnailCard options={options} type="overflow">
+        <SingleThumbnailCard title="" options={options} type="overflow">
           {sampleImage}
         </SingleThumbnailCard>,
       );

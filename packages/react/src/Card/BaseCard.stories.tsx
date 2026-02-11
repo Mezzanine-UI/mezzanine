@@ -1,7 +1,7 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useState } from 'react';
 
-import BaseCard, { CardGroup } from '.';
+import { BaseCardGeneric as BaseCard, CardGroup } from '.';
 import type { BaseCardComponentProps } from './BaseCard';
 
 export default {

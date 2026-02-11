@@ -16,7 +16,12 @@ const sampleImage = (
   <img
     alt="Sample thumbnail"
     src="https://picsum.photos/320/180"
-    style={{ display: 'block', width: '100%', height: 'auto' }}
+    style={{
+      display: 'block',
+      width: '100%',
+      aspectRatio: '320/180',
+      objectFit: 'cover',
+    }}
   />
 );
 
@@ -54,6 +59,7 @@ export const Playground: Story = {
     <div style={{ width: '320px' }}>
       <SingleThumbnailCard
         {...props}
+        title={props.title || ''}
         personalActionActiveIcon={StarFilledIcon}
         personalActionIcon={StarOutlineIcon}
       >

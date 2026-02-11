@@ -314,7 +314,7 @@ export interface SingleThumbnailCardPropsCommon {
   /**
    * Title text shown in the info section
    */
-  title?: string;
+  title: string;
 }
 
 /**

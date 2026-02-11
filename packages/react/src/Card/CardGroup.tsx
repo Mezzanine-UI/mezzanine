@@ -45,8 +45,16 @@ function getComponentDisplayName(child: ReactElement): string {
  */
 function getFirstCardType(
   children: ReactNode,
-): typeof BaseCard | typeof QuickActionCard | null {
-  let firstType: typeof BaseCard | typeof QuickActionCard | null = null;
+):
+  | typeof BaseCard
+  | typeof QuickActionCard
+  | typeof SingleThumbnailCard
+  | null {
+  let firstType:
+    | typeof BaseCard
+    | typeof QuickActionCard
+    | typeof SingleThumbnailCard
+    | null = null;
 
   Children.forEach(children, (child) => {
     if (firstType !== null) return;
@@ -57,6 +65,8 @@ function getFirstCardType(
       firstType = QuickActionCard;
     } else if (child.type === BaseCard) {
       firstType = BaseCard;
+    } else if (child.type === SingleThumbnailCard) {
+      firstType = SingleThumbnailCard;
     }
   });
 
@@ -73,7 +83,6 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
 
     // Detect first card type to determine min-width class
     const firstCardType = getFirstCardType(children);
-    const isQuickActionGroup = firstCardType === QuickActionCard;
 
     // Validate children at runtime
     const validChildren = Children.map(children, (child) => {
@@ -90,7 +99,7 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
 
         console.warn(
           `[CardGroup] Invalid child type: <${displayName}>. ` +
-            'CardGroup only accepts Card components (BaseCard, QuickActionCard) as children.',
+            'CardGroup only accepts Card components (BaseCard, QuickActionCard, SingleThumbnailCard) as children.',
         );
 
         return null;
@@ -105,7 +114,9 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
         className={cx(
           classes.group,
           {
-            [classes.groupQuickAction]: isQuickActionGroup,
+            [classes.groupQuickAction]: firstCardType === QuickActionCard,
+            [classes.groupSingleThumbnail]:
+              firstCardType === SingleThumbnailCard,
           },
           className,
         )}
