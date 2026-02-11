@@ -5,9 +5,22 @@ import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { Children, forwardRef, isValidElement, ReactNode } from 'react';
 import { cx } from '../utils/cx';
 import BaseCard from './BaseCard';
+import BaseCardSkeleton from './BaseCardSkeleton';
 import FourThumbnailCard from './FourThumbnailCard';
+import FourThumbnailCardSkeleton from './FourThumbnailCardSkeleton';
 import QuickActionCard from './QuickActionCard';
+import QuickActionCardSkeleton from './QuickActionCardSkeleton';
 import SingleThumbnailCard from './SingleThumbnailCard';
+import SingleThumbnailCardSkeleton from './SingleThumbnailCardSkeleton';
+
+/**
+ * Card type for loading skeleton
+ */
+export type CardGroupLoadingType =
+  | 'base'
+  | 'four-thumbnail'
+  | 'quick-action'
+  | 'single-thumbnail';
 
 export interface CardGroupProps {
   /**
@@ -19,6 +32,21 @@ export interface CardGroupProps {
    * Only accepts BaseCard, QuickActionCard, SingleThumbnailCard, and FourThumbnailCard as children.
    */
   children?: ReactNode;
+  /**
+   * Whether to show loading skeletons
+   * @default false
+   */
+  loading?: boolean;
+  /**
+   * Number of skeleton items to render when loading
+   * @default 3
+   */
+  loadingCount?: number;
+  /**
+   * Type of card skeleton to render when loading.
+   * Required when loading is true.
+   */
+  loadingType?: CardGroupLoadingType;
 }
 
 // List of allowed child component types
@@ -84,12 +112,59 @@ function getFirstCardType(
 }
 
 /**
+ * Get the skeleton component based on loading type
+ */
+function getSkeletonComponent(loadingType: CardGroupLoadingType) {
+  switch (loadingType) {
+    case 'base':
+      return BaseCardSkeleton;
+
+    case 'four-thumbnail':
+      return FourThumbnailCardSkeleton;
+
+    case 'quick-action':
+      return QuickActionCardSkeleton;
+
+    case 'single-thumbnail':
+      return SingleThumbnailCardSkeleton;
+
+    default:
+      return BaseCardSkeleton;
+  }
+}
+
+/**
+ * Get the group class modifier based on loading type
+ */
+function getGroupClassFromLoadingType(loadingType: CardGroupLoadingType) {
+  switch (loadingType) {
+    case 'four-thumbnail':
+      return classes.groupFourThumbnail;
+
+    case 'quick-action':
+      return classes.groupQuickAction;
+
+    case 'single-thumbnail':
+      return classes.groupSingleThumbnail;
+
+    default:
+      return undefined;
+  }
+}
+
+/**
  * CardGroup is a container for card components.
  * It uses CSS Grid to layout cards in a horizontal row with consistent spacing.
  */
 const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
   function CardGroup(props, ref) {
-    const { className, children } = props;
+    const {
+      className,
+      children,
+      loading = false,
+      loadingCount = 3,
+      loadingType,
+    } = props;
 
     // Detect first card type to determine min-width class
     const firstCardType = getFirstCardType(children);
@@ -118,21 +193,45 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
       return child;
     });
 
+    // Render loading skeletons
+    const renderSkeletons = () => {
+      if (!loading || !loadingType) {
+        return null;
+      }
+
+      const SkeletonComponent = getSkeletonComponent(loadingType);
+
+      return Array.from({ length: loadingCount }, (_, index) => (
+        <SkeletonComponent key={`skeleton-${index}`} />
+      ));
+    };
+
+    // Determine group class modifier
+    const groupClassModifier = loadingType
+      ? getGroupClassFromLoadingType(loadingType)
+      : undefined;
+
     return (
       <div
         ref={ref}
         className={cx(
           classes.group,
           {
-            [classes.groupFourThumbnail]: firstCardType === FourThumbnailCard,
-            [classes.groupQuickAction]: firstCardType === QuickActionCard,
+            [classes.groupFourThumbnail]:
+              firstCardType === FourThumbnailCard ||
+              groupClassModifier === classes.groupFourThumbnail,
+            [classes.groupQuickAction]:
+              firstCardType === QuickActionCard ||
+              groupClassModifier === classes.groupQuickAction,
             [classes.groupSingleThumbnail]:
-              firstCardType === SingleThumbnailCard,
+              firstCardType === SingleThumbnailCard ||
+              groupClassModifier === classes.groupSingleThumbnail,
           },
           className,
         )}
       >
         {validChildren}
+        {renderSkeletons()}
       </div>
     );
   },

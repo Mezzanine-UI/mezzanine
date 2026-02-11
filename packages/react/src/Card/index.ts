@@ -19,10 +19,22 @@ import {
 } from './typings';
 
 export { default as CardGroup } from './CardGroup';
-export type { CardGroupProps } from './CardGroup';
+export type { CardGroupLoadingType, CardGroupProps } from './CardGroup';
 
 export { default as ThumbnailCardInfo } from './ThumbnailCardInfo';
 export type { ThumbnailCardInfoProps } from './ThumbnailCardInfo';
+
+export { default as BaseCardSkeleton } from './BaseCardSkeleton';
+export type { BaseCardSkeletonProps } from './BaseCardSkeleton';
+
+export { default as FourThumbnailCardSkeleton } from './FourThumbnailCardSkeleton';
+export type { FourThumbnailCardSkeletonProps } from './FourThumbnailCardSkeleton';
+
+export { default as QuickActionCardSkeleton } from './QuickActionCardSkeleton';
+export type { QuickActionCardSkeletonProps } from './QuickActionCardSkeleton';
+
+export { default as SingleThumbnailCardSkeleton } from './SingleThumbnailCardSkeleton';
+export type { SingleThumbnailCardSkeletonProps } from './SingleThumbnailCardSkeleton';
 
 export type {
   BaseCardComponentProps,
@@ -103,6 +115,14 @@ type GenericThumbnail = <C extends ThumbnailComponent = 'div'>(
       children: ReactNode;
     },
 ) => ReactElement<any>;
+
+export {
+  BaseCard,
+  FourThumbnailCard,
+  QuickActionCard,
+  SingleThumbnailCard,
+  Thumbnail,
+};
 
 export const BaseCardGeneric = BaseCard as GenericBaseCard;
 export const FourThumbnailCardGeneric =
