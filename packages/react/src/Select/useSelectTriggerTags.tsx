@@ -1,3 +1,5 @@
+import { selectClasses as classes } from '@mezzanine-ui/core/select';
+import { TagSize } from '@mezzanine-ui/core/tag';
 import {
   JSX,
   RefObject,
@@ -7,10 +9,8 @@ import {
   useRef,
   useState,
 } from 'react';
-import { selectClasses as classes } from '@mezzanine-ui/core/select';
-import { TagSize } from '@mezzanine-ui/core/tag';
-import { SelectValue } from './typings';
 import Tag from '../Tag';
+import { SelectValue } from './typings';
 
 export interface UseSelectTriggerTagsProps {
   /**
@@ -56,10 +56,15 @@ export function useSelectTriggerTags(
   const { containerRef, tagsRef, value = [], size, enabled = false } = props;
   const [takeCount, setTakeCount] = useState<number>(value.length);
   const fakeContainerRef = useRef<HTMLDivElement | null>(null);
+  const updateTakeCount = useCallback((nextCount: number) => {
+    setTakeCount((prevCount) =>
+      prevCount === nextCount ? prevCount : nextCount,
+    );
+  }, []);
 
   const measure = useCallback(() => {
     if (!enabled) {
-      setTakeCount(value.length);
+      updateTakeCount(value.length);
       return;
     }
 
@@ -67,7 +72,7 @@ export function useSelectTriggerTags(
     const fakeContainer = fakeContainerRef.current;
 
     if (!container || !fakeContainer) {
-      setTakeCount(value.length);
+      // Keep current takeCount when refs are temporarily unavailable to avoid flicker.
       return;
     }
 
@@ -79,7 +84,7 @@ export function useSelectTriggerTags(
     )[0] as HTMLElement | undefined;
 
     if (!fakeTags.length) {
-      setTakeCount(0);
+      // Keep current takeCount until fake tags are ready in DOM.
       return;
     }
 
@@ -110,8 +115,8 @@ export function useSelectTriggerTags(
       nextCount = i + 1;
     }
 
-    setTakeCount(nextCount);
-  }, [containerRef, enabled, tagsRef, value.length]);
+    updateTakeCount(nextCount);
+  }, [containerRef, enabled, tagsRef, updateTakeCount, value.length]);
 
   useLayoutEffect(() => {
     measure();
@@ -153,7 +158,7 @@ export function useSelectTriggerTags(
             <Tag
               disabled
               label={selection.name}
-              onClose={() => {}}
+              onClose={() => { }}
               size={size}
               type="dismissable"
             />

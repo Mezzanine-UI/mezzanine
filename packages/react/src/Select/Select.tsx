@@ -9,12 +9,10 @@ import {
   SelectInputSize,
 } from '@mezzanine-ui/core/select';
 import isArray from 'lodash/isArray';
-import React, {
-  Children,
+import {
   forwardRef,
   KeyboardEvent,
   MouseEvent,
-  ReactElement,
   useCallback,
   useContext,
   useMemo,
@@ -31,7 +29,6 @@ import {
 } from '../Form/useSelectValueControl';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
-import Option from './Option';
 import { SelectControlContext } from './SelectControlContext';
 import SelectTrigger from './SelectTrigger';
 import { SelectTriggerInputProps, SelectTriggerProps, SelectValue } from './typings';
@@ -54,13 +51,8 @@ export interface SelectBaseProps
   >,
   FormElementFocusHandlers {
   /**
-   * The children of select (Option components).
-   * If `options` is provided, this will be ignored.
-   */
-  children?: ReactElement | ReactElement[];
-  /**
    * Direct options array for dropdown (supports tree structure).
-   * If provided, `children` will be ignored and `type` will be automatically set.
+   * If provided, `type` will be automatically set.
    */
   options?: DropdownOption[];
   /**
@@ -184,7 +176,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       severity,
     } = useContext(FormControlContext) || {};
     const {
-      children,
       className,
       clearable = false,
       defaultValue,
@@ -302,43 +293,21 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       [],
     );
 
-    // Convert children (Option components) to DropdownOption format
-    // Or use provided options directly
+    // Use provided options directly
     const options = useMemo<DropdownOption[]>(() => {
-      // If options prop is provided, use it directly
-      if (optionsProp) {
-        // In tree mode (multiple mode with tree structure), ensure all options have checkbox
-        if (mode === 'multiple') {
-          const hasTreeStructure = optionsProp.some(
-            (opt) => opt.children && opt.children.length > 0,
-          );
-          if (hasTreeStructure) {
-            return addCheckboxToTreeOptions(optionsProp);
-          }
+      if (!optionsProp) return [];
+
+      // In tree mode (multiple mode with tree structure), ensure all options have checkbox
+      if (mode === 'multiple') {
+        const hasTreeStructure = optionsProp.some(
+          (opt) => opt.children && opt.children.length > 0,
+        );
+        if (hasTreeStructure) {
+          return addCheckboxToTreeOptions(optionsProp);
         }
-        return optionsProp;
       }
-
-      // Otherwise, convert children to options
-      if (!children) return [];
-
-      return Children.toArray(children)
-        .filter((child): child is ReactElement => {
-          return (
-            React.isValidElement(child) &&
-            (child.type === Option || (child.type as any)?.displayName === 'Option')
-          );
-        })
-        .map((child) => {
-          const props = child.props as { value: string; children: string };
-          return {
-            id: props.value,
-            name: props.children,
-            showCheckbox: mode === 'multiple',
-            checkSite: mode === 'multiple' ? 'prefix' : 'suffix',
-          };
-        });
-    }, [children, mode, optionsProp, addCheckboxToTreeOptions]);
+      return optionsProp;
+    }, [mode, optionsProp, addCheckboxToTreeOptions]);
 
     // Determine dropdown type based on options structure and mode
     // Tree mode is only available in multiple mode

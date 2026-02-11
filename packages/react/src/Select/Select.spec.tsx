@@ -6,7 +6,6 @@ import { createRef, RefObject } from 'react';
 import { act, cleanupHook, fireEvent, render, waitFor } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Icon from '../Icon';
-import Option from './Option';
 import Select from './Select';
 import { SelectValue } from './typings';
 
@@ -267,6 +266,9 @@ describe('<Select />', () => {
 
   describe('mode: single', () => {
     const defaultValue: SelectValue = { id: '1', name: 'foo' };
+    const singleOptions: DropdownOption[] = [
+      { id: '1', name: 'foo' },
+    ];
 
     let element: HTMLElement;
     const onChange = jest.fn();
@@ -274,13 +276,12 @@ describe('<Select />', () => {
     beforeEach(() => {
       onChange.mockClear();
       const { getHostHTMLElement } = render(
-        <Select defaultValue={defaultValue} mode="single" onChange={onChange}>
-          {[
-            <Option key={defaultValue.id} value={defaultValue.id}>
-              {defaultValue.name}
-            </Option>,
-          ]}
-        </Select>,
+        <Select
+          defaultValue={defaultValue}
+          mode="single"
+          options={singleOptions}
+          onChange={onChange}
+        />,
       );
 
       element = getHostHTMLElement();
@@ -330,6 +331,11 @@ describe('<Select />', () => {
       { id: '1', name: 'foo' },
       { id: '2', name: 'bar' },
     ];
+    const multipleOptions: DropdownOption[] = [
+      { id: '1', name: 'foo' },
+      { id: '2', name: 'bar' },
+      { id: '3', name: 'Alice' },
+    ];
 
     let element: HTMLElement;
     const onChange = jest.fn();
@@ -340,12 +346,9 @@ describe('<Select />', () => {
         <Select
           defaultValue={defaultValue}
           mode="multiple"
+          options={multipleOptions}
           onChange={onChange}
-        >
-          <Option value="1">foo</Option>
-          <Option value="2">bar</Option>
-          <Option value="3">Alice</Option>
-        </Select>,
+        />,
       );
 
       element = getHostHTMLElement();
@@ -574,11 +577,9 @@ describe('<Select />', () => {
       });
     });
 
-    it('should ignore children when options prop is provided', async () => {
+    it('should render only options from options prop', async () => {
       const { getHostHTMLElement } = render(
-        <Select options={flatOptions}>
-          {[<Option key="4" value="4">Option 4</Option>]}
-        </Select>,
+        <Select options={flatOptions} />,
       );
       const element = getHostHTMLElement();
 
@@ -587,11 +588,9 @@ describe('<Select />', () => {
       await waitFor(() => {
         const menuItems = document.querySelectorAll('.mzn-dropdown-item-card');
         expect(menuItems.length).toBe(3);
-        expect(
-          Array.from(menuItems).some((item) =>
-            item.textContent?.includes('Option 4'),
-          ),
-        ).toBe(false);
+        expect(menuItems[0].textContent).toContain('Option 1');
+        expect(menuItems[1].textContent).toContain('Option 2');
+        expect(menuItems[2].textContent).toContain('Option 3');
       });
     });
 

@@ -1,16 +1,15 @@
 'use client';
 
-import { forwardRef, MouseEventHandler, type JSX } from 'react';
 import { selectClasses as classes } from '@mezzanine-ui/core/select';
 import { ChevronDownIcon } from '@mezzanine-ui/icons';
+import { forwardRef } from 'react';
 import TextField, { TextFieldInteractiveStateProps } from '../TextField';
+import { cx } from '../utils/cx';
 import {
   SelectTriggerComponentProps,
   SelectTriggerMultipleProps,
   SelectTriggerProps,
-  SelectTriggerSingleProps,
 } from './typings';
-import { cx } from '../utils/cx';
 
 import Icon from '../Icon';
 import SelectTriggerTags from './SelectTriggerTags';
@@ -19,8 +18,6 @@ const isMultipleSelection = (
   props: SelectTriggerComponentProps,
 ): props is SelectTriggerMultipleProps => props.mode === 'multiple';
 
-function SelectTriggerComponent(props: SelectTriggerMultipleProps): JSX.Element;
-function SelectTriggerComponent(props: SelectTriggerSingleProps): JSX.Element;
 function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const {
     active,
@@ -47,12 +44,23 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     ...restTextFieldProps
   } = props;
 
+  const renderValueProp = 'renderValue' in props ? props.renderValue : undefined;
+
+  // Exclude renderValue to avoid leaking unknown props to DOM.
+  const sanitizedTextFieldProps = (() => {
+    if ('renderValue' in restTextFieldProps) {
+      const { renderValue: _removed, ...rest } = restTextFieldProps;
+      return rest;
+    }
+    return restTextFieldProps;
+  })();
+
   /** Render value to string for single selection trigger input */
   const renderValue = () => {
     if (isMultipleSelection(props)) return;
 
-    if (typeof props.renderValue === 'function') {
-      return props.renderValue(props.value);
+    if (typeof renderValueProp === 'function') {
+      return renderValueProp(props.value);
     }
 
     return props.value?.name ?? '';
@@ -68,7 +76,10 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         if (suffixAction) {
           suffixAction();
         } else {
-          (onClick as MouseEventHandler)?.(e);
+          // Delegate to trigger click behavior without fabricating a synthetic event.
+          e.currentTarget
+            .closest(`.${classes.trigger}`)
+            ?.dispatchEvent(new MouseEvent('click', { bubbles: true }));
         }
       }}
       className={cx(classes.triggerSuffixActionIcon, {
@@ -93,7 +104,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     <TextField
       ref={innerRef}
       {...interactiveProps}
-      {...restTextFieldProps}
+      {...sanitizedTextFieldProps}
       onClick={onClick}
       active={active}
       className={cx(
@@ -155,18 +166,35 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
 const SelectTrigger = forwardRef<HTMLDivElement, SelectTriggerProps>(
   (props, ref) => {
     if (props.mode === 'multiple') {
+      const {
+        mode: _mode,
+        value,
+        ...multipleModeProps
+      } = props;
+
       return (
         <SelectTriggerComponent
-          {...(props as SelectTriggerMultipleProps)}
+          {...multipleModeProps}
           innerRef={ref}
+          mode="multiple"
+          value={Array.isArray(value) ? value : undefined}
         />
       );
     }
 
+    const {
+      mode: _mode,
+      overflowStrategy: _overflowStrategy,
+      value,
+      ...singleModeProps
+    } = props;
+
     return (
       <SelectTriggerComponent
-        {...(props as SelectTriggerSingleProps)}
+        {...singleModeProps}
         innerRef={ref}
+        mode="single"
+        value={Array.isArray(value) ? undefined : value}
       />
     );
   },
