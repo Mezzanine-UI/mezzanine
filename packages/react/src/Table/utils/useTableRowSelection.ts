@@ -41,6 +41,13 @@ export function useTableRowSelection<
                 : undefined;
             }
 
+            if (!selectedRow) {
+              // trigger select all or deselect all, need to find subKeys for all selected rows
+              return subData?.length
+                ? subData.map((subRow) => getRowKey(subRow))
+                : undefined;
+            }
+
             return prev.find((item) => item.key === pk)?.subKeys;
           })();
 
