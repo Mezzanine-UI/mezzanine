@@ -7,10 +7,19 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Skeleton from '../Skeleton';
 import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 
-export type SingleThumbnailCardSkeletonProps = Omit<
-  NativeElementPropsWithoutKeyAndRef<'div'>,
-  'children'
->;
+export interface SingleThumbnailCardSkeletonProps
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
+  /**
+   * Width of the thumbnail skeleton.
+   * @default 360
+   */
+  thumbnailWidth?: number | string;
+  /**
+   * Aspect ratio of the thumbnail skeleton.
+   * @default '16/9'
+   */
+  thumbnailAspectRatio?: string;
+}
 
 /**
  * Skeleton placeholder for SingleThumbnailCard component.
@@ -20,25 +29,32 @@ const SingleThumbnailCardSkeleton = forwardRef<
   HTMLDivElement,
   SingleThumbnailCardSkeletonProps
 >(function SingleThumbnailCardSkeleton(props, ref) {
-  const { className, ...rest } = props;
+  const {
+    className,
+    thumbnailAspectRatio = '16/9',
+    thumbnailWidth = getNumericCSSVariablePixelValue(
+      '--mzn-spacing-size-container-slim',
+    ),
+    ...rest
+  } = props;
 
   return (
     <div {...rest} ref={ref} className={cx(classes.thumbnail, className)}>
       <div className={classes.singleThumbnail}>
         <Skeleton
           height="100%"
-          style={{ aspectRatio: '16/9' }}
-          width={getNumericCSSVariablePixelValue(
-            '--mzn-spacing-size-container-slim',
-          )}
+          style={{ aspectRatio: thumbnailAspectRatio }}
+          width={thumbnailWidth}
         />
       </div>
       <div className={classes.thumbnailInfo}>
         <div className={classes.thumbnailInfoMain}>
-          <Skeleton height={32} width={32} />
-          <div className={classes.thumbnailInfoContent}>
-            <Skeleton height={20} width="70%" />
-            <Skeleton height={16} width="50%" />
+          <div
+            className={classes.thumbnailInfoContent}
+            style={{ width: '100%' }}
+          >
+            <Skeleton height={20} width="100%" />
+            <Skeleton height={16} width="100%" />
           </div>
         </div>
       </div>

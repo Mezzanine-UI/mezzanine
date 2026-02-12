@@ -6,10 +6,20 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Skeleton from '../Skeleton';
 
-export type FourThumbnailCardSkeletonProps = Omit<
-  NativeElementPropsWithoutKeyAndRef<'div'>,
-  'children'
->;
+export interface FourThumbnailCardSkeletonProps
+  extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
+  /**
+   * Width of the card skeleton container.
+   * @default 360
+   */
+  thumbnailWidth?: number | string;
+  /**
+   * Aspect ratio of each thumbnail skeleton.
+   * For four-thumbnail layout, force to '4/3' to maintain the grid layout.
+   * @default '4/3'
+   */
+  thumbnailAspectRatio?: string;
+}
 
 /**
  * Skeleton placeholder for FourThumbnailCard component.
@@ -19,7 +29,12 @@ const FourThumbnailCardSkeleton = forwardRef<
   HTMLDivElement,
   FourThumbnailCardSkeletonProps
 >(function FourThumbnailCardSkeleton(props, ref) {
-  const { className, ...rest } = props;
+  const {
+    className,
+    // thumbnailAspectRatio = '4/3',
+    thumbnailWidth = 200,
+    ...rest
+  } = props;
 
   return (
     <div {...rest} ref={ref} className={cx(classes.thumbnail, className)}>
@@ -28,17 +43,19 @@ const FourThumbnailCardSkeleton = forwardRef<
           <Skeleton
             key={index}
             className={classes.fourThumbnailThumbnail}
-            height="100%"
-            width="100%"
+            width={thumbnailWidth}
+            style={{ aspectRatio: '4/3' }}
           />
         ))}
       </div>
       <div className={classes.thumbnailInfo}>
         <div className={classes.thumbnailInfoMain}>
-          <Skeleton height={32} width={32} />
-          <div className={classes.thumbnailInfoContent}>
-            <Skeleton height={20} width="70%" />
-            <Skeleton height={16} width="50%" />
+          <div
+            className={classes.thumbnailInfoContent}
+            style={{ width: '100%' }}
+          >
+            <Skeleton height={20} width="100%" />
+            <Skeleton height={16} width="100%" />
           </div>
         </div>
       </div>

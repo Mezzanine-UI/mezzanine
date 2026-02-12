@@ -47,6 +47,16 @@ export interface CardGroupProps {
    * Required when loading is true.
    */
   loadingType?: CardGroupLoadingType;
+  /**
+   * Width of each thumbnail skeleton when loadingType is 'single-thumbnail' or 'four-thumbnail'.
+   * @default 360
+   */
+  loadingThumbnailWidth?: number | string;
+  /**
+   * Aspect ratio of thumbnail skeletons when loadingType is 'single-thumbnail' or 'four-thumbnail'.
+   * For single-thumbnail, defaults to '16/9'. For four-thumbnail, defaults to '4/3'.
+   */
+  loadingThumbnailAspectRatio?: string;
 }
 
 // List of allowed child component types
@@ -163,6 +173,8 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
       children,
       loading = false,
       loadingCount = 3,
+      loadingThumbnailAspectRatio,
+      loadingThumbnailWidth,
       loadingType,
     } = props;
 
@@ -201,8 +213,26 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
 
       const SkeletonComponent = getSkeletonComponent(loadingType);
 
+      // Build props for thumbnail skeletons
+      const thumbnailSkeletonProps:
+        | { thumbnailAspectRatio?: string; thumbnailWidth?: number | string }
+        | undefined =
+        loadingType === 'single-thumbnail' || loadingType === 'four-thumbnail'
+          ? {
+              ...(loadingThumbnailAspectRatio && {
+                thumbnailAspectRatio: loadingThumbnailAspectRatio,
+              }),
+              ...(loadingThumbnailWidth && {
+                thumbnailWidth: loadingThumbnailWidth,
+              }),
+            }
+          : undefined;
+
       return Array.from({ length: loadingCount }, (_, index) => (
-        <SkeletonComponent key={`skeleton-${index}`} />
+        <SkeletonComponent
+          key={`skeleton-${index}`}
+          {...thumbnailSkeletonProps}
+        />
       ));
     };
 

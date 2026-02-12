@@ -60,7 +60,13 @@ export const LoadingSingleThumbnailCard: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
         <h4 style={{ margin: '0 0 16px 0' }}>Loading State (3 skeletons)</h4>
-        <CardGroup loading loadingCount={3} loadingType="single-thumbnail">
+        <CardGroup
+          loading
+          loadingCount={3}
+          loadingType="single-thumbnail"
+          loadingThumbnailWidth={360}
+          loadingThumbnailAspectRatio="360/240"
+        >
           <SingleThumbnailCard
             subtitle="Uploaded yesterday"
             title="Product Image 1"
@@ -89,7 +95,12 @@ export const LoadingFourThumbnailCard: Story = {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
         <h4 style={{ margin: '0 0 16px 0' }}>Loading State (3 skeletons)</h4>
-        <CardGroup loading loadingCount={3} loadingType="four-thumbnail">
+        <CardGroup
+          loading
+          loadingCount={3}
+          loadingType="four-thumbnail"
+          loadingThumbnailWidth={160}
+        >
           <FourThumbnailCard
             subtitle="4 items"
             title="Photo Album A"
@@ -98,25 +109,25 @@ export const LoadingFourThumbnailCard: Story = {
             <Thumbnail>
               <img
                 alt="Album A - Item 1"
-                src="https://picsum.photos/seed/a1/200/200"
+                src="https://picsum.photos/seed/a1/160/160"
               />
             </Thumbnail>
             <Thumbnail>
               <img
                 alt="Album A - Item 2"
-                src="https://picsum.photos/seed/a2/200/200"
+                src="https://picsum.photos/seed/a2/160/160"
               />
             </Thumbnail>
             <Thumbnail>
               <img
                 alt="Album A - Item 3"
-                src="https://picsum.photos/seed/a3/200/200"
+                src="https://picsum.photos/seed/a3/160/160"
               />
             </Thumbnail>
             <Thumbnail>
               <img
                 alt="Album A - Item 4"
-                src="https://picsum.photos/seed/a4/200/200"
+                src="https://picsum.photos/seed/a4/160/160"
               />
             </Thumbnail>
           </FourThumbnailCard>
@@ -143,6 +154,38 @@ export const LoadingCountVariations: Story = {
       <div>
         <h4 style={{ margin: '0 0 16px 0' }}>loadingCount: 6</h4>
         <CardGroup loading loadingCount={6} loadingType="quick-action" />
+      </div>
+    </div>
+  ),
+};
+
+export const CustomThumbnailSkeletonSize: Story = {
+  name: 'Custom Thumbnail Skeleton Size',
+  render: () => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+      <div>
+        <h4 style={{ margin: '0 0 16px 0' }}>
+          SingleThumbnail: Custom width (160px) and aspect ratio (4/3)
+        </h4>
+        <CardGroup
+          loading
+          loadingCount={2}
+          loadingThumbnailAspectRatio="4/3"
+          loadingThumbnailWidth={160}
+          loadingType="single-thumbnail"
+        />
+      </div>
+
+      <div>
+        <h4 style={{ margin: '0 0 16px 0' }}>
+          FourThumbnail: Custom width (100px)
+        </h4>
+        <CardGroup
+          loading
+          loadingCount={2}
+          loadingThumbnailWidth={100}
+          loadingType="four-thumbnail"
+        />
       </div>
     </div>
   ),
