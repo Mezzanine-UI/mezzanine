@@ -96,6 +96,7 @@ $vertical-tones: (
   tight,
   tight-fixed,
   base,
+  base-fixed,
   calm,
   comfort,
   roomy,
@@ -482,6 +483,10 @@ $semantic-spacings: (
       base: (
         default: primitive.variable(8),
         compact: primitive.variable(4),
+      ),
+      base-fixed: (
+        default: primitive.variable(8),
+        compact: primitive.variable(8),
       ),
       calm: (
         default: primitive.variable(10),

@@ -1,11 +1,31 @@
 'use client';
 
-import { ReactElement } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
-import { Children, forwardRef, isValidElement, ReactNode } from 'react';
+import {
+  Children,
+  forwardRef,
+  isValidElement,
+  ReactNode,
+  ReactElement,
+} from 'react';
 import { cx } from '../utils/cx';
 import BaseCard from './BaseCard';
+import BaseCardSkeleton from './BaseCardSkeleton';
+import FourThumbnailCard from './FourThumbnailCard';
+import FourThumbnailCardSkeleton from './FourThumbnailCardSkeleton';
 import QuickActionCard from './QuickActionCard';
+import QuickActionCardSkeleton from './QuickActionCardSkeleton';
+import SingleThumbnailCard from './SingleThumbnailCard';
+import SingleThumbnailCardSkeleton from './SingleThumbnailCardSkeleton';
+
+/**
+ * Card type for loading skeleton
+ */
+export type CardGroupLoadingType =
+  | 'base'
+  | 'four-thumbnail'
+  | 'quick-action'
+  | 'single-thumbnail';
 
 export interface CardGroupProps {
   /**
@@ -14,13 +34,43 @@ export interface CardGroupProps {
   className?: string;
   /**
    * Card components to render in the group.
-   * Only accepts BaseCard and QuickActionCard as children.
+   * Only accepts BaseCard, QuickActionCard, SingleThumbnailCard, and FourThumbnailCard as children.
    */
   children?: ReactNode;
+  /**
+   * Whether to show loading skeletons
+   * @default false
+   */
+  loading?: boolean;
+  /**
+   * Number of skeleton items to render when loading
+   * @default 3
+   */
+  loadingCount?: number;
+  /**
+   * Type of card skeleton to render when loading.
+   * Required when loading is true.
+   */
+  loadingType?: CardGroupLoadingType;
+  /**
+   * Width of each thumbnail skeleton when loadingType is 'single-thumbnail' or 'four-thumbnail'.
+   * @default 360
+   */
+  loadingThumbnailWidth?: number | string;
+  /**
+   * Aspect ratio of thumbnail skeletons when loadingType is 'single-thumbnail' or 'four-thumbnail'.
+   * For single-thumbnail, defaults to '16/9'. For four-thumbnail, defaults to '4/3'.
+   */
+  loadingThumbnailAspectRatio?: string;
 }
 
 // List of allowed child component types
-const ALLOWED_CARD_TYPES = [BaseCard, QuickActionCard];
+const ALLOWED_CARD_TYPES = [
+  BaseCard,
+  FourThumbnailCard,
+  QuickActionCard,
+  SingleThumbnailCard,
+];
 
 /**
  * Get display name of a component for error messages
@@ -44,8 +94,18 @@ function getComponentDisplayName(child: ReactElement): string {
  */
 function getFirstCardType(
   children: ReactNode,
-): typeof BaseCard | typeof QuickActionCard | null {
-  let firstType: typeof BaseCard | typeof QuickActionCard | null = null;
+):
+  | typeof BaseCard
+  | typeof FourThumbnailCard
+  | typeof QuickActionCard
+  | typeof SingleThumbnailCard
+  | null {
+  let firstType:
+    | typeof BaseCard
+    | typeof FourThumbnailCard
+    | typeof QuickActionCard
+    | typeof SingleThumbnailCard
+    | null = null;
 
   Children.forEach(children, (child) => {
     if (firstType !== null) return;
@@ -56,10 +116,55 @@ function getFirstCardType(
       firstType = QuickActionCard;
     } else if (child.type === BaseCard) {
       firstType = BaseCard;
+    } else if (child.type === SingleThumbnailCard) {
+      firstType = SingleThumbnailCard;
+    } else if (child.type === FourThumbnailCard) {
+      firstType = FourThumbnailCard;
     }
   });
 
   return firstType;
+}
+
+/**
+ * Get the skeleton component based on loading type
+ */
+function getSkeletonComponent(loadingType: CardGroupLoadingType) {
+  switch (loadingType) {
+    case 'base':
+      return BaseCardSkeleton;
+
+    case 'four-thumbnail':
+      return FourThumbnailCardSkeleton;
+
+    case 'quick-action':
+      return QuickActionCardSkeleton;
+
+    case 'single-thumbnail':
+      return SingleThumbnailCardSkeleton;
+
+    default:
+      return BaseCardSkeleton;
+  }
+}
+
+/**
+ * Get the group class modifier based on loading type
+ */
+function getGroupClassFromLoadingType(loadingType: CardGroupLoadingType) {
+  switch (loadingType) {
+    case 'four-thumbnail':
+      return classes.groupFourThumbnail;
+
+    case 'quick-action':
+      return classes.groupQuickAction;
+
+    case 'single-thumbnail':
+      return classes.groupSingleThumbnail;
+
+    default:
+      return undefined;
+  }
 }
 
 /**
@@ -68,11 +173,18 @@ function getFirstCardType(
  */
 const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
   function CardGroup(props, ref) {
-    const { className, children } = props;
+    const {
+      className,
+      children,
+      loading = false,
+      loadingCount = 3,
+      loadingThumbnailAspectRatio,
+      loadingThumbnailWidth,
+      loadingType,
+    } = props;
 
     // Detect first card type to determine min-width class
     const firstCardType = getFirstCardType(children);
-    const isQuickActionGroup = firstCardType === QuickActionCard;
 
     // Validate children at runtime
     const validChildren = Children.map(children, (child) => {
@@ -89,7 +201,7 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
 
         console.warn(
           `[CardGroup] Invalid child type: <${displayName}>. ` +
-            'CardGroup only accepts Card components (BaseCard, QuickActionCard) as children.',
+            'CardGroup only accepts Card components (BaseCard, FourThumbnailCard, QuickActionCard, SingleThumbnailCard) as children.',
         );
 
         return null;
@@ -98,18 +210,64 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
       return child;
     });
 
+    // Render loading skeletons
+    const renderSkeletons = () => {
+      if (!loading || !loadingType) {
+        return null;
+      }
+
+      const SkeletonComponent = getSkeletonComponent(loadingType);
+
+      // Build props for thumbnail skeletons
+      const thumbnailSkeletonProps:
+        | { thumbnailAspectRatio?: string; thumbnailWidth?: number | string }
+        | undefined =
+        loadingType === 'single-thumbnail' || loadingType === 'four-thumbnail'
+          ? {
+              ...(loadingThumbnailAspectRatio && {
+                thumbnailAspectRatio: loadingThumbnailAspectRatio,
+              }),
+              ...(loadingThumbnailWidth && {
+                thumbnailWidth: loadingThumbnailWidth,
+              }),
+            }
+          : undefined;
+
+      return Array.from({ length: loadingCount }, (_, index) => (
+        <SkeletonComponent
+          key={`skeleton-${index}`}
+          {...thumbnailSkeletonProps}
+        />
+      ));
+    };
+
+    // Determine group class modifier
+    const groupClassModifier =
+      loadingType && loading
+        ? getGroupClassFromLoadingType(loadingType)
+        : undefined;
+
     return (
       <div
         ref={ref}
         className={cx(
           classes.group,
           {
-            [classes.groupQuickAction]: isQuickActionGroup,
+            [classes.groupFourThumbnail]:
+              firstCardType === FourThumbnailCard ||
+              groupClassModifier === classes.groupFourThumbnail,
+            [classes.groupQuickAction]:
+              firstCardType === QuickActionCard ||
+              groupClassModifier === classes.groupQuickAction,
+            [classes.groupSingleThumbnail]:
+              firstCardType === SingleThumbnailCard ||
+              groupClassModifier === classes.groupSingleThumbnail,
           },
           className,
         )}
       >
         {validChildren}
+        {renderSkeletons()}
       </div>
     );
   },

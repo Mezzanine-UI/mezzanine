@@ -1,10 +1,11 @@
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
+import { skeletonClasses } from '@mezzanine-ui/core/skeleton';
 import { cleanup, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import { BaseCard, CardGroup } from '.';
+import { BaseCardGeneric as BaseCard, CardGroup } from '.';
 
 const originalConsoleWarn = console.warn;
 
@@ -110,5 +111,100 @@ describe('<CardGroup />', () => {
 
     expect(cards.length).toBe(2);
     expect(console.warn).not.toHaveBeenCalled();
+  });
+
+  describe('loading state', () => {
+    it('should not render skeletons when loading is false', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading={false} loadingType="base">
+          <BaseCard>Card 1</BaseCard>
+        </CardGroup>,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${skeletonClasses.host}`);
+
+      expect(skeletons.length).toBe(0);
+    });
+
+    it('should not render skeletons when loadingType is not provided', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading>
+          <BaseCard>Card 1</BaseCard>
+        </CardGroup>,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${skeletonClasses.host}`);
+
+      expect(skeletons.length).toBe(0);
+    });
+
+    it('should render BaseCardSkeleton when loadingType="base"', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingType="base" />,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${classes.base}`);
+
+      expect(skeletons.length).toBe(3); // default loadingCount is 3
+    });
+
+    it('should render QuickActionCardSkeleton when loadingType="quick-action"', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingType="quick-action" />,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${classes.quickAction}`);
+
+      expect(skeletons.length).toBe(3);
+      expect(element.classList.contains(classes.groupQuickAction)).toBeTruthy();
+    });
+
+    it('should render SingleThumbnailCardSkeleton when loadingType="single-thumbnail"', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingType="single-thumbnail" />,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${classes.thumbnail}`);
+
+      expect(skeletons.length).toBe(3);
+      expect(
+        element.classList.contains(classes.groupSingleThumbnail),
+      ).toBeTruthy();
+    });
+
+    it('should render FourThumbnailCardSkeleton when loadingType="four-thumbnail"', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingType="four-thumbnail" />,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${classes.thumbnail}`);
+
+      expect(skeletons.length).toBe(3);
+      expect(
+        element.classList.contains(classes.groupFourThumbnail),
+      ).toBeTruthy();
+    });
+
+    it('should render custom number of skeletons based on loadingCount', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingCount={5} loadingType="base" />,
+      );
+      const element = getHostHTMLElement();
+      const skeletons = element.querySelectorAll(`.${classes.base}`);
+
+      expect(skeletons.length).toBe(5);
+    });
+
+    it('should render skeletons after children', () => {
+      const { getHostHTMLElement } = render(
+        <CardGroup loading loadingCount={2} loadingType="base">
+          <BaseCard>Card 1</BaseCard>
+        </CardGroup>,
+      );
+      const element = getHostHTMLElement();
+      const allCards = element.querySelectorAll(`.${classes.base}`);
+
+      expect(allCards.length).toBe(3); // 1 card + 2 skeletons
+    });
   });
 });

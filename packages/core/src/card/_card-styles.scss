@@ -1,3 +1,4 @@
+@use 'sass:map';
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography' as typography;
@@ -9,6 +10,16 @@
 
 $base-card-min-width: spacing.semantic-variable(size, container, slim);
 $quick-action-card-min-width: spacing.semantic-variable(size, container, tight);
+
+$file-icon-color: (
+  image: palette.semantic-variable("background", brand),
+  media: palette.semantic-variable("background", error),
+  document: palette.semantic-variable("background", warning),
+  archive: palette.semantic-variable("background", success),
+  code: palette.semantic-variable("background", info),
+  system: palette.semantic-variable("background", neutral-solid),
+  default: palette.semantic-variable("background", neutral),
+);
 
 @mixin card-group-min-width() {
   --card-group-column-min-width: #{$base-card-min-width};
@@ -26,6 +37,14 @@ $quick-action-card-min-width: spacing.semantic-variable(size, container, tight);
   grid-auto-flow: row;
   grid-template-columns: repeat(auto-fill, minmax(var(--card-group-column-min-width), 1fr));
   gap: spacing.semantic-variable(gap, base);
+
+  &--single-thumbnail,
+  &--four-thumbnail {
+    display: flex;
+    flex-flow: row wrap;
+    grid-auto-flow: unset;
+    grid-template-columns: unset;
+  }
 }
 
 .#{$base-card-prefix} {
@@ -187,6 +206,218 @@ $quick-action-card-min-width: spacing.semantic-variable(size, container, tight);
       width: 100%;
       height: auto;
       flex: 1;
+    }
+  }
+}
+
+.#{$thumbnail-card-prefix} {
+  @include button-utils.reset();
+
+  width: auto;
+  height: 100%;
+  border-radius: radius.variable(roomy);
+  border: 1px solid palette.semantic-variable(border, neutral-ghost);
+  background-color: palette.semantic-variable("background", base);
+  display: flex;
+  flex-flow: column;
+
+  * {
+    box-sizing: border-box;
+  }
+
+  &__tag {
+    position: absolute;
+    z-index: 1;
+    left: spacing.semantic-variable(padding, horizontal, base-fixed);
+    top: spacing.semantic-variable(padding, vertical, base-fixed);
+    width: auto;
+    height: spacing.semantic-variable(size, element, airy);
+    padding: spacing.semantic-variable(padding, vertical, tight) spacing.semantic-variable(padding, horizontal, base);
+    border-radius: radius.variable(base);
+    border: 1px solid palette.semantic-variable(border, ghost);
+    background: palette.semantic-variable("background", neutral-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    @include typography.semantic-variable(label-primary);
+
+    color: palette.semantic-variable(text, neutral-solid);
+  }
+
+  &__personal-action {
+    position: absolute;
+    z-index: 1;
+    right: spacing.semantic-variable(padding, horizontal, base-fixed);
+    top: spacing.semantic-variable(padding, vertical, base-fixed);
+    width: auto;
+    height: auto;
+    padding: spacing.semantic-variable(gap, slim) spacing.semantic-variable(padding, horizontal, tight);
+    border-radius: radius.variable(full);
+    border: 1px solid palette.semantic-variable(border, ghost);
+    background-color: palette.semantic-variable("overlay", strong);
+    transition: transition.standard(background-color, fast) transition.standard(border-color, fast);
+    color: palette.semantic-variable(icon, fixed-light);
+    line-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid palette.semantic-variable(separator, neutral-faint);
+      background-color: palette.semantic-variable("overlay", default);
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
+  }
+
+  &:hover {
+    .#{$single-thumbnail-card-prefix}__overlay {
+      background-color: palette.semantic-variable("overlay", subtle);
+    }
+  }
+}
+
+.#{$single-thumbnail-card-prefix} {
+  width: 100%;
+  line-height: 0;
+  position: relative;
+  border-radius: radius.variable(roomy) radius.variable(roomy) 0 0;
+  overflow: hidden;
+
+  &__overlay {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    pointer-events: none;
+    background-color: transparent;
+    transition: transition.standard(background-color, fast);
+  }
+}
+
+.#{$thumbnail-card-info-prefix} {
+  width: 100%;
+  padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, cozy);
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, calm);
+
+  &__main {
+    flex: 1;
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    gap: spacing.semantic-variable(gap, slim);
+
+    &__filetype {
+      flex-shrink: 0;
+      width: spacing.semantic-variable(size, element, roomy);
+      height: spacing.semantic-variable(size, element, roomy);
+      border-radius: radius.variable(base);
+      background-color: map.get($file-icon-color, default);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      @include typography.semantic-variable(annotation-highlight);
+
+      color: palette.semantic-variable(text, fixed-light);
+      text-align: center;
+
+      @each $type, $color in $file-icon-color {
+        &--#{$type} {
+          background-color: $color;
+        }
+      }
+    }
+
+    &__content {
+      display: flex;
+      flex-flow: column;
+      align-items: flex-start;
+      gap: spacing.semantic-variable(gap, tiny);
+
+      &__title {
+        @include typography.semantic-variable(body-highlight);
+
+        color: palette.semantic-variable(text, neutral-solid);
+        white-space: pre-line;
+      }
+
+      &__subtitle {
+        @include typography.semantic-variable(caption);
+
+        color: palette.semantic-variable(text, neutral);
+        white-space: pre-line;
+      }
+    }
+  }
+
+  &__action {
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
+.#{$four-thumbnail-card-prefix} {
+  width: 100%;
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort) 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: spacing.semantic-variable(gap, base);
+  position: relative;
+
+  &__thumbnail {
+    @include button-utils.reset();
+
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border-radius: radius.variable(base);
+    background-color: palette.semantic-variable("background", base);
+    overflow: hidden;
+    position: relative;
+    line-height: 0;
+    transition: transition.standard(box-shadow, fast);
+
+    &--empty {
+      pointer-events: none;
+    }
+
+    &__overlay {
+      position: absolute;
+      z-index: 0;
+      inset: 0;
+      padding: 0 spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, base);
+      pointer-events: none;
+      background-color: transparent;
+      transition: transition.standard(background-color, moderate) transition.standard(opacity, moderate);
+      display: flex;
+      flex-flow: row;
+      align-items: flex-end;
+      justify-content: flex-start;
+      opacity: 0;
+
+      & > span {
+        @include typography.semantic-variable(caption);
+
+        color: palette.semantic-variable(text, fixed-light);
+        white-space: pre-line;
+      }
+    }
+
+    &:hover {
+      & > .#{$four-thumbnail-card-prefix}__thumbnail__overlay {
+        background-color: palette.semantic-variable("overlay", subtle);
+        opacity: 1;
+      }
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
     }
   }
 }

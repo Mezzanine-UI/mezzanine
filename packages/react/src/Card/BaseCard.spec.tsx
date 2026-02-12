@@ -4,7 +4,7 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import BaseCard from '.';
+import { BaseCardGeneric as BaseCard } from '.';
 
 describe('<BaseCard />', () => {
   afterEach(cleanup);
