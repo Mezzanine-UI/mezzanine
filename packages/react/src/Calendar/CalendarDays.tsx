@@ -210,7 +210,7 @@ function CalendarDays(props: CalendarDaysProps) {
                               variant="annotation"
                               color={annotation?.color ?? 'text-neutral'}
                             >
-                              {annotation?.value ?? ''}
+                              {annotation?.value ?? '--'}
                             </Typography>
                           );
                         })()
