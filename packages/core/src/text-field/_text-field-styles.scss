@@ -312,24 +312,10 @@ $size-configs: (
   &__clear-icon {
     opacity: 0;
     pointer-events: none;
+    transition: transition.standard(opacity, fast);
 
     .#{icon.$prefix} {
       font-size: var(--#{$prefix}-icon-size);
-    }
-  }
-
-  &--clearable:hover,
-  &--clearable:focus-within {
-    &:not(.#{$prefix}--disabled):not(.#{$prefix}--readonly) {
-      .#{$prefix}__clear-icon {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .#{$prefix}__action-icon {
-        opacity: 0;
-        pointer-events: none;
-      }
     }
   }
 
