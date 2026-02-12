@@ -3,6 +3,78 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.6...@mezzanine-ui/core@1.0.0-beta.7) (2026-02-12)
+
+### Bug Fixes
+
+- **core/AutoComplete:** adjust min-width and add prefix icon detection ([0af620a](https://github.com/Mezzanine-UI/mezzanine/commit/0af620a0547af6cd186e9cfb39dcab63cd6133a4))
+- **core/backdrop:** fix backdrop position ([730ddaa](https://github.com/Mezzanine-UI/mezzanine/commit/730ddaa3cdcf7b0d811da9c3d8cf9f3a946b7bfa))
+- **core/calendar:** update today mark styles with annotation ([1d7d460](https://github.com/Mezzanine-UI/mezzanine/commit/1d7d4603d100d05db4b33cfcabdb768ded7be811))
+- **core/card:** add cursor for action ([d418217](https://github.com/Mezzanine-UI/mezzanine/commit/d418217dbb9b9d6f09000193841eac541975d08c))
+- **core/card:** add line-height ([8b14116](https://github.com/Mezzanine-UI/mezzanine/commit/8b141166b8e1f7773d123ad748686ba1d56e8243))
+- **core/card:** fix card group layout for single thumbnail ([db5271b](https://github.com/Mezzanine-UI/mezzanine/commit/db5271bed4fd1d548883e17c36321f23732646e8))
+- **core/card:** fix card styles ([7c7a761](https://github.com/Mezzanine-UI/mezzanine/commit/7c7a7613cd9c8c6a738e548895087c61c984662e))
+- **core/checkbox:** separate mode and size types ([a9c94ca](https://github.com/Mezzanine-UI/mezzanine/commit/a9c94ca9829dce32cb4fc0c581df2915257bc8c7))
+- **core/clear-actions:** add pointer events for clear actions ([8fa7fe8](https://github.com/Mezzanine-UI/mezzanine/commit/8fa7fe8193caad9756a08803bfc6ba3395d5467d))
+- **core/cropper:** improve styles and follow development guidelines ([4c9b266](https://github.com/Mezzanine-UI/mezzanine/commit/4c9b2663566761399a4e8d575e4acb5493260de3))
+- **core/cropper:** remove duplicate styles and unused variables ([3dcb608](https://github.com/Mezzanine-UI/mezzanine/commit/3dcb60832f55b2b0ac769647f614eff93f04a77d))
+- **core/dropdown:** add loadingPosition prop support ([21f4957](https://github.com/Mezzanine-UI/mezzanine/commit/21f495733fbe69778a22028d83de5ec88fb2579f))
+- **core/dropdown:** fix dropdown class selector stylelint error ([95896d1](https://github.com/Mezzanine-UI/mezzanine/commit/95896d1f4bfd2728e35e52ed60e45838557c03a4))
+- **core/form:** restore symmetric padding for vertical layout ([15210d3](https://github.com/Mezzanine-UI/mezzanine/commit/15210d339aa353382b88b66a6dc0126f533495ec))
+- **core/message:** remove message ellipsis and add white space preline ([aba5a08](https://github.com/Mezzanine-UI/mezzanine/commit/aba5a084f7c60902bcd555a702a7a9992cb076fa))
+- **core/modal:** fix modal nav button pointer events ([9704448](https://github.com/Mezzanine-UI/mezzanine/commit/9704448d9478f3f3081e0a8edc46f06d16bae70f))
+- **core/Select:** improve trigger layout and clearable behavior ([cb5bdca](https://github.com/Mezzanine-UI/mezzanine/commit/cb5bdcae09f2da2c327cd82f9e4168097e3cd05c))
+- **core/selection:** remove unused typography dependencies ([a3b698a](https://github.com/Mezzanine-UI/mezzanine/commit/a3b698a2fab2db13101b0f8285b0d008257bdc60))
+- **core/Separator:** fix semantic variable axis mismatch and style consistency ([e7a1869](https://github.com/Mezzanine-UI/mezzanine/commit/e7a18697cc92eff158e021d5a9aaa291f7661c4e))
+- **core/textField:** remove CSS hover/focus rules for clear icon ([f69f15b](https://github.com/Mezzanine-UI/mezzanine/commit/f69f15be00826fe1c3e3b33ae00a3ff388268754))
+- **core/time-panel:** time panel styles updated ([883e1ac](https://github.com/Mezzanine-UI/mezzanine/commit/883e1ac1f0c3b49601e30313480c768cc4453255))
+- **core:** fix core stylelint errors ([b5aa600](https://github.com/Mezzanine-UI/mezzanine/commit/b5aa600d8d28633045474e5aa8e4f84b580db6a3))
+- **modal:** fix backdrop click not working ([89ce2ab](https://github.com/Mezzanine-UI/mezzanine/commit/89ce2ab04dc74730f1b212ec4fd175288306619d))
+- pr issue ([527fc7d](https://github.com/Mezzanine-UI/mezzanine/commit/527fc7d046fd331a2e889bb1b692ecb04418059c))
+
+### Code Refactoring
+
+- **react/form:** restructure layout props API ([71f285d](https://github.com/Mezzanine-UI/mezzanine/commit/71f285d958d16d8516d2ccb57a8e88fd01c5115a))
+
+### Features
+
+- **core/accordion:** v2 styles implement ([5a64de6](https://github.com/Mezzanine-UI/mezzanine/commit/5a64de659d5e6edcce485f6428d948e9f321f3d2))
+- **core/card:** add thumbnail empty state ([68606e4](https://github.com/Mezzanine-UI/mezzanine/commit/68606e477ba63d8e662d1466846c861ef0000f6a))
+- **core/card:** fix four thumbnail card styles ([5c41e66](https://github.com/Mezzanine-UI/mezzanine/commit/5c41e66f21dc32b5ac42a19283ee83c91b793432))
+- **core/card:** implement base card and card group styles ([09822a9](https://github.com/Mezzanine-UI/mezzanine/commit/09822a96c8ac6ed2ee942804556a5f69941d5c0c))
+- **core/card:** implement base card basic styles ([a2963cd](https://github.com/Mezzanine-UI/mezzanine/commit/a2963cda3a057729c732f571dc4ec802befc861a))
+- **core/card:** implement quick action card styles ([af90a09](https://github.com/Mezzanine-UI/mezzanine/commit/af90a092a33dce2174dfdd46f7c8be2c8a0f740d))
+- **core/card:** implement single thumbnail card styles and typings ([69117de](https://github.com/Mezzanine-UI/mezzanine/commit/69117de4f818fd153f8b4712d033a7662dc8b2c8))
+- **core/card:** single thumbnail card styles ([8526f3b](https://github.com/Mezzanine-UI/mezzanine/commit/8526f3baa286e7bf76e78c750b8715bade03bbd2))
+- **core/content-header:** responsive breakpoint ([44c7b2b](https://github.com/Mezzanine-UI/mezzanine/commit/44c7b2bb35db6679c0cb051227481e5ded4585c7))
+- **core/content-header:** responsive styles ([ac2ddf9](https://github.com/Mezzanine-UI/mezzanine/commit/ac2ddf9e7158eec23238f0b2afbcb1c90d92960b))
+- **core/content-header:** update text-group layout ([60d9b26](https://github.com/Mezzanine-UI/mezzanine/commit/60d9b26a0ecb3314c7b9bfc85a8eacec6db3e743))
+- **core/cropper:** add cropper styles and class definitions ([ec00685](https://github.com/Mezzanine-UI/mezzanine/commit/ec00685877f618faade0a0fe3f5547615bdfbc27))
+- **core/floating-button:** floating button styles ([4e4912d](https://github.com/Mezzanine-UI/mezzanine/commit/4e4912d18a795a26ac6631d2fe054e2528562f7c))
+- **core/navigation:** update Header TextIcon ([d463740](https://github.com/Mezzanine-UI/mezzanine/commit/d4637401a885d602608ddfef42060fa61a438d6e))
+- **core/separator:** add separator component ([c26761b](https://github.com/Mezzanine-UI/mezzanine/commit/c26761bb4f5c781efb151176f3e2856fec151bcc))
+
+### BREAKING CHANGES
+
+- **react/form:** Replace `size` and `labelLayout` props with `layout`, `density`, and `labelSpacing`
+
+* Replace FormFieldSize enum with FormFieldLayout, FormFieldDensity
+* Replace LabelLayout enum with FormFieldLabelSpacing
+* Split layout control into three orthogonal props:
+  - layout: 'horizontal' | 'vertical' | 'stretch' (controls arrangement)
+  - density: 'base' | 'narrow' | 'tight' | 'wide' (controls label width)
+  - labelSpacing: 'main' | 'sub' (controls label padding)
+* Vertical layout now ignores density and labelSpacing props
+* Refactor SCSS to support new prop structure
+* Update all related tests and stories
+
+Migration guide:
+
+- size={FormFieldSize.HORIZONTAL_BASE} → layout="horizontal" density="base"
+- size={FormFieldSize.STRETCH_TIGHT} → layout="stretch" density="tight"
+- size={FormFieldSize.VERTICAL} → layout="vertical"
+- labelLayout={LabelLayout.HORIZONTAL_MAIN} → labelSpacing="main"
+
 # [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.5...@mezzanine-ui/core@1.0.0-beta.6) (2026-02-03)
 
 ### Bug Fixes

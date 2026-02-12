@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.6...@mezzanine-ui/system@1.0.0-beta.7) (2026-02-12)
+
+### Bug Fixes
+
+- **system/z-index:** exchange modal drawer z-index ([0ca80f6](https://github.com/Mezzanine-UI/mezzanine/commit/0ca80f6b459894899055ca8b509bce9bf692d91e))
+
+### Features
+
+- **system/spacing:** add missing vertical base-fixed ([4dfd8d3](https://github.com/Mezzanine-UI/mezzanine/commit/4dfd8d30eca58dd907f4b144dc5e6b54b3d30957))
+- **system/spacing:** add new spacing tokens ([bbee20b](https://github.com/Mezzanine-UI/mezzanine/commit/bbee20b968379a2465a845be3ad578b1e8d36bcf))
+
 # [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.5...@mezzanine-ui/system@1.0.0-beta.6) (2026-02-03)
 
 **Note:** Version bump only for package @mezzanine-ui/system

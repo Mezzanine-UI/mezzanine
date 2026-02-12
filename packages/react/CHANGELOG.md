@@ -3,6 +3,103 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.6...@mezzanine-ui/react@1.0.0-beta.7) (2026-02-12)
+
+### Bug Fixes
+
+- **modal:** fix backdrop click not working ([89ce2ab](https://github.com/Mezzanine-UI/mezzanine/commit/89ce2ab04dc74730f1b212ec4fd175288306619d))
+- pr issue ([527fc7d](https://github.com/Mezzanine-UI/mezzanine/commit/527fc7d046fd331a2e889bb1b692ecb04418059c))
+- **react/accordion:** remove deprecated components import in markdown ([79f23a4](https://github.com/Mezzanine-UI/mezzanine/commit/79f23a4353a6c25ecf812686d561bd7d757b3059))
+- **react/accordion:** resolve pr issue ([b44095e](https://github.com/Mezzanine-UI/mezzanine/commit/b44095ef16c7df60af38a6aea87026cf1b280964))
+- **react/autocomplete:** add loadingPosition prop support ([26f3808](https://github.com/Mezzanine-UI/mezzanine/commit/26f3808e52d444999f6804c63245c9a44e2f8031))
+- **react/AutoComplete:** remove isForceClearable prop ([b7f0a8c](https://github.com/Mezzanine-UI/mezzanine/commit/b7f0a8c10943340014525079dbcf9ce599b2c1ec))
+- **react/AutoComplete:** simplify search text clearing behavior ([fd32401](https://github.com/Mezzanine-UI/mezzanine/commit/fd32401c54f2492f14e7b2df4a18732983dc2526))
+- **react/AutoComplete:** update clearable logic and component behavior ([d36b049](https://github.com/Mezzanine-UI/mezzanine/commit/d36b049ae87e5f9ea1cb6621b2c1fbb2e1db4230))
+- **react/backdrop:** apply absolute as default for backdrop ([d50ec77](https://github.com/Mezzanine-UI/mezzanine/commit/d50ec773f3f33e3c55ceb5c8b3fcc4d5cd48d6e8))
+- **react/calendar:** add default value for renderAnnotation ([784145e](https://github.com/Mezzanine-UI/mezzanine/commit/784145e8bfc8eddffc65b06f77fe788b21b790d0))
+- **react/card:** correct examples ([28b5ba7](https://github.com/Mezzanine-UI/mezzanine/commit/28b5ba7bbd98515c9bac450e6f8653ba2da8f8e0))
+- **react/card:** fix pr issue ([83f77e8](https://github.com/Mezzanine-UI/mezzanine/commit/83f77e83316573c98cc35ce0706b3ef860de1244))
+- **react/card:** fix thumbnail card story ([79b77d9](https://github.com/Mezzanine-UI/mezzanine/commit/79b77d9a0d7976179671d37b10af13471e0d8eb0))
+- **react/checkbox:** update component to use new mode and size types ([07d59ae](https://github.com/Mezzanine-UI/mezzanine/commit/07d59ae5e600cc7fad5d823f09ed38d70e42625f))
+- **react/cropper:** add JSDoc comments and fix props ordering ([d464cfd](https://github.com/Mezzanine-UI/mezzanine/commit/d464cfdeedad37ee49ebf4db2fe365bbd242cd73))
+- **react/cropper:** avoid passive wheel warning ([09de8fb](https://github.com/Mezzanine-UI/mezzanine/commit/09de8fb79def7adb8c08534ebfcfaef115539d11))
+- **react/cropper:** fix crop area behavior and display ([e954ab4](https://github.com/Mezzanine-UI/mezzanine/commit/e954ab44c17d091c4a4535debcb5ede8d5ebc189))
+- **react/cropper:** fix Storybook argTypes and React prop warnings ([59fc22b](https://github.com/Mezzanine-UI/mezzanine/commit/59fc22b371e86672c7aa145eac173747f8a9c173))
+- **react/cropper:** fix test failures in cropper specs ([33c8e2f](https://github.com/Mezzanine-UI/mezzanine/commit/33c8e2f4f0ff042c32ae85b20883aa6873cd5be4))
+- **react/cropper:** fix the size is bigger then window issue ([47c9ab4](https://github.com/Mezzanine-UI/mezzanine/commit/47c9ab44614166fa75e43e797c73346bc08c7e36))
+- **react/cropper:** improve error handling and image loading ([7d08494](https://github.com/Mezzanine-UI/mezzanine/commit/7d084949ae35efa4ecb9ea2a8b299cfb08e6097e))
+- **react/cropper:** optimize performance and refactor code structure ([a9fb921](https://github.com/Mezzanine-UI/mezzanine/commit/a9fb9215a766d43a10206af5f4fee24f8c061a51))
+- **react/cropper:** remove redundant code and fix test issues ([58fdd53](https://github.com/Mezzanine-UI/mezzanine/commit/58fdd533958f7fa4e5728695322c0b59623b40ff))
+- **react/drawer:** drawer story deprecated icons updated ([8a7875b](https://github.com/Mezzanine-UI/mezzanine/commit/8a7875b24414ad2f78097b8f40f998c092bd3904))
+- **react/dropdown:** fix copilot suggestion ([877821f](https://github.com/Mezzanine-UI/mezzanine/commit/877821f28bc20d1617c3143de358628f295580e7))
+- **react/dropdown:** preserve cardUnderline class when using Separator ([c4eeded](https://github.com/Mezzanine-UI/mezzanine/commit/c4eededed782f79f2f24b6c0b5e05bfaa7d0151d))
+- **react/dropdown:** React 19 compatibility and loadingPosition feature ([f04a695](https://github.com/Mezzanine-UI/mezzanine/commit/f04a6952124d64adc19359cb40b2b09064917213))
+- **react/dropdown:** use Separator component for underline ([28c0120](https://github.com/Mezzanine-UI/mezzanine/commit/28c01200db782a364d51b563e1948116f4c99684))
+- **react/form:** remove non-null assertion in density class and unused import ([506e5ee](https://github.com/Mezzanine-UI/mezzanine/commit/506e5eea13ce9b28f6b195cceff671936903b941))
+- **react/input:** fix currency input example ([4f09292](https://github.com/Mezzanine-UI/mezzanine/commit/4f092927551f4f4905437fd46c3f71d85d7ce1ff))
+- **react/MultipleDatePicker:** reorganize imports and format ([ed56209](https://github.com/Mezzanine-UI/mezzanine/commit/ed5620929658a7504f0573be9954f907eadb1720))
+- **react/Select:** update SelectTrigger and remove Option component ([b9018d4](https://github.com/Mezzanine-UI/mezzanine/commit/b9018d404340812146fc29147e7c2f6bf7dbcce9))
+- **react/Separator:** add aria-orientation support and update tests ([7d6d09f](https://github.com/Mezzanine-UI/mezzanine/commit/7d6d09f46b3f0ef930b316aad019012d83bdce83))
+- **react/spin:** remove deprecated components usage ([78c028a](https://github.com/Mezzanine-UI/mezzanine/commit/78c028a36f3d43250707202e6ab4991f9e4dd999))
+- **react/table:** fix useTableRowSelection parentOnChange behavior ([ecd82de](https://github.com/Mezzanine-UI/mezzanine/commit/ecd82de7c583e727b469db3dc12afceac6c74b0e))
+- **react/Tag:** add transition prop support ([70f5d66](https://github.com/Mezzanine-UI/mezzanine/commit/70f5d665f37b999bc4b518ef729bbffaa0ec41c3))
+- **react/TagGroup:** sort imports alphabetically ([ca34241](https://github.com/Mezzanine-UI/mezzanine/commit/ca3424127559a8ee56c5cbea4dbcf8c939e4e3f6))
+- **react/textField:** refactor clear icon visibility to use JavaScript state ([f9c2a6a](https://github.com/Mezzanine-UI/mezzanine/commit/f9c2a6a02758bd68626bf5a45f3d9c1b520f5aa2))
+- **react/time-panel:** time panel column add placeholders ([593c8f2](https://github.com/Mezzanine-UI/mezzanine/commit/593c8f2226fa00caa98304ed7c7653b386e6a30b))
+- **react:** fix linter error ([5d0dd03](https://github.com/Mezzanine-UI/mezzanine/commit/5d0dd0316983e37dbb802c94100e48d25731346e))
+
+### Code Refactoring
+
+- **react/form:** restructure layout props API ([71f285d](https://github.com/Mezzanine-UI/mezzanine/commit/71f285d958d16d8516d2ccb57a8e88fd01c5115a))
+
+### Features
+
+- **react/accordion:** v2 implement ([80d2cec](https://github.com/Mezzanine-UI/mezzanine/commit/80d2cecbf4267abf501ab68a81930342eb470bda))
+- **react/card:** card group thumbnail width fixed and story updated ([2727f94](https://github.com/Mezzanine-UI/mezzanine/commit/2727f949d6c497164d61a0778268d6f6674564f7))
+- **react/card:** fix card skeleton sizing and examples ([a69d2c0](https://github.com/Mezzanine-UI/mezzanine/commit/a69d2c0725e69ba3f6006109b8979ea895157066))
+- **react/card:** implement basecard and cardgroup ([4cb7183](https://github.com/Mezzanine-UI/mezzanine/commit/4cb7183cfe1dd6ae71c3fe698d58a692f91e5d3b))
+- **react/card:** implement card group loading ([56dc77a](https://github.com/Mezzanine-UI/mezzanine/commit/56dc77ae71b740b49c0b3beb0edceef71301e398))
+- **react/card:** implement four thumbnail card and thumbnail ([b47d823](https://github.com/Mezzanine-UI/mezzanine/commit/b47d82314cfbaf5ea81868444a17d660fb5b4fb7))
+- **react/card:** implement quick action card and update base card ([b001761](https://github.com/Mezzanine-UI/mezzanine/commit/b001761c0342f84d0707360c50931c168e0514ec))
+- **react/card:** implement SingleThumbnailCard and fix export ([ccc16b3](https://github.com/Mezzanine-UI/mezzanine/commit/ccc16b3d0c25733726b4e7dce4735ced0139b471))
+- **react/content-header:** refine size variant handling and back button rendering ([9ab0743](https://github.com/Mezzanine-UI/mezzanine/commit/9ab0743c7c67866c4cf5775e371df32d4d7afabb))
+- **react/content-header:** resolve pr issue ([6e77846](https://github.com/Mezzanine-UI/mezzanine/commit/6e778461b41c963cc96ad3f775bb8f27a09e643c))
+- **react/content-header:** responsive ([fb51bd5](https://github.com/Mezzanine-UI/mezzanine/commit/fb51bd5df97ceb1630d8eb506beb3783c66c68dc))
+- **react/content-header:** responsive note ([a8fe7b8](https://github.com/Mezzanine-UI/mezzanine/commit/a8fe7b8d972cd5cad5abb13fe62f14e86b91174f))
+- **react/content-header:** update sub size filter ([47ca25d](https://github.com/Mezzanine-UI/mezzanine/commit/47ca25d37a23eed2c3528755fef395a35420c077))
+- **react/cropper:** add image cropper component with modal support ([9937b96](https://github.com/Mezzanine-UI/mezzanine/commit/9937b96d0eac92b3558a9a2a8e6c605565dcac01))
+- **react/cropper:** add the cropper calculation unit test ([510ee0f](https://github.com/Mezzanine-UI/mezzanine/commit/510ee0f6ee0cd5af4013aed33d495ecbc56a0e07))
+- **react/cropper:** update cropper component with new props and tests ([18e3734](https://github.com/Mezzanine-UI/mezzanine/commit/18e3734ff1a58626f5bcc50ea060bd18a5656de4))
+- **react/date-time-picker:** fix timepanel scroll issue and optimize paste behavior ([562f017](https://github.com/Mezzanine-UI/mezzanine/commit/562f017e9c15b565ed565f095dffc727f8f87ca4))
+- **react/drawer:** add story for testing modal inside drawer ([f5658db](https://github.com/Mezzanine-UI/mezzanine/commit/f5658dbb7e654507492299e4ff860bc886fa897c))
+- **react/floating-button:** complete tests ([c236c33](https://github.com/Mezzanine-UI/mezzanine/commit/c236c33f5ade2cd4693bbc2ecd72ff816eceafbf))
+- **react/floating-button:** implement floating button ([b673ff6](https://github.com/Mezzanine-UI/mezzanine/commit/b673ff62a11c13948ef3a6e1bd76ff115a0b90fc))
+- **react/input:** readonly should mark action button disabled as default ([4e4ab36](https://github.com/Mezzanine-UI/mezzanine/commit/4e4ab3693b7c2cfe6184e179cb36127b3a96fa3c))
+- **react/navigation:** update Header TextIcon ([a5c7b69](https://github.com/Mezzanine-UI/mezzanine/commit/a5c7b6929c256451320220f03efc973fa753a77e))
+- **react/navigation:** update storybook ([a3e66a9](https://github.com/Mezzanine-UI/mezzanine/commit/a3e66a94263f84735250a4bb54cc5cf7a1ab8f9d))
+- **react/separator:** add separator component ([6bbefbd](https://github.com/Mezzanine-UI/mezzanine/commit/6bbefbd13cf8fe3ba723430ab8ba7f250ea70523))
+
+### BREAKING CHANGES
+
+- **react/form:** Replace `size` and `labelLayout` props with `layout`, `density`, and `labelSpacing`
+
+* Replace FormFieldSize enum with FormFieldLayout, FormFieldDensity
+* Replace LabelLayout enum with FormFieldLabelSpacing
+* Split layout control into three orthogonal props:
+  - layout: 'horizontal' | 'vertical' | 'stretch' (controls arrangement)
+  - density: 'base' | 'narrow' | 'tight' | 'wide' (controls label width)
+  - labelSpacing: 'main' | 'sub' (controls label padding)
+* Vertical layout now ignores density and labelSpacing props
+* Refactor SCSS to support new prop structure
+* Update all related tests and stories
+
+Migration guide:
+
+- size={FormFieldSize.HORIZONTAL_BASE} → layout="horizontal" density="base"
+- size={FormFieldSize.STRETCH_TIGHT} → layout="stretch" density="tight"
+- size={FormFieldSize.VERTICAL} → layout="vertical"
+- labelLayout={LabelLayout.HORIZONTAL_MAIN} → labelSpacing="main"
+
 # [1.0.0-beta.6](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.5...@mezzanine-ui/react@1.0.0-beta.6) (2026-02-03)
 
 ### Bug Fixes
