@@ -344,17 +344,52 @@ export const ActionInput = () => {
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
-          Disabled Action Button
+          Disabled Button
         </Typography>
         <Input
           variant="action"
           defaultValue="content"
+          disabled
           actionButton={{
             position: 'suffix',
             icon: CopyIcon,
             label: '複製',
             onClick: () => {},
-            disabled: true,
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Readonly with Action Disabled (Default)
+        </Typography>
+        <Input
+          variant="action"
+          defaultValue="content"
+          readonly
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => {},
+          }}
+        />
+      </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Readonly with Action Enabled
+        </Typography>
+        <Input
+          variant="action"
+          defaultValue="content"
+          readonly
+          actionButton={{
+            position: 'suffix',
+            icon: CopyIcon,
+            label: '複製',
+            onClick: () => {},
+            disabled: false,
           }}
         />
       </section>

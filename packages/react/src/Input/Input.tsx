@@ -525,10 +525,15 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         if (actionButton.position === 'prefix') {
           const { ...restActionButtonProps } = actionButton;
 
+          const actionDisabled =
+            typeof restActionButtonProps.disabled === 'boolean'
+              ? restActionButtonProps.disabled
+              : disabled || readonly;
+
           prefixExternalButton = (
             <ActionButton
               {...restActionButtonProps}
-              disabled={restActionButtonProps.disabled || disabled}
+              disabled={actionDisabled}
               size={size}
             />
           );
@@ -537,10 +542,15 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         if (actionButton.position === 'suffix') {
           const { ...restActionButtonProps } = actionButton;
 
+          const actionDisabled =
+            typeof restActionButtonProps.disabled === 'boolean'
+              ? restActionButtonProps.disabled
+              : disabled || readonly;
+
           suffixExternalButton = (
             <ActionButton
               {...restActionButtonProps}
-              disabled={restActionButtonProps.disabled || disabled}
+              disabled={actionDisabled}
               size={size}
             />
           );
