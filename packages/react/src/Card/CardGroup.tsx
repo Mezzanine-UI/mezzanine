@@ -1,8 +1,13 @@
 'use client';
 
-import { ReactElement } from 'react';
 import { cardClasses as classes } from '@mezzanine-ui/core/card';
-import { Children, forwardRef, isValidElement, ReactNode } from 'react';
+import {
+  Children,
+  forwardRef,
+  isValidElement,
+  ReactNode,
+  ReactElement,
+} from 'react';
 import { cx } from '../utils/cx';
 import BaseCard from './BaseCard';
 import BaseCardSkeleton from './BaseCardSkeleton';
@@ -237,9 +242,10 @@ const CardGroup = forwardRef<HTMLDivElement, CardGroupProps>(
     };
 
     // Determine group class modifier
-    const groupClassModifier = loadingType
-      ? getGroupClassFromLoadingType(loadingType)
-      : undefined;
+    const groupClassModifier =
+      loadingType && loading
+        ? getGroupClassFromLoadingType(loadingType)
+        : undefined;
 
     return (
       <div

@@ -1,5 +1,5 @@
 import { Meta, ArgTypes, Description } from '@storybook/addon-docs/blocks';
-import { SingleThumbnailCard } from '.';
+import { SingleThumbnailCardGeneric as SingleThumbnailCard } from '.';
 import * as SingleThumbnailCardStories from './SingleThumbnailCard.stories';
 
 <Meta of={SingleThumbnailCardStories} />
@@ -28,20 +28,6 @@ The card width is determined by the image child element.
 - **default**: No action button in the info section
 - **action**: Displays a text button with customizable label
 - **overflow**: Displays a dropdown menu with options
-
-## Filetype Categories
-
-The filetype badge color is automatically determined based on the file extension:
-
-| Category | Extensions                     | Color         |
-| -------- | ------------------------------ | ------------- |
-| Image    | jpg, png, gif, svg, webp, etc. | Brand         |
-| Media    | mp4, mp3, avi, mov, wav, etc.  | Error         |
-| Document | pdf, doc, xls, ppt, txt, etc.  | Warning       |
-| Archive  | zip, rar, 7z, tar, gz, etc.    | Success       |
-| Code     | js, ts, py, html, css, etc.    | Info          |
-| System   | exe, dll, sys, bin, etc.       | Neutral Solid |
-| Default  | Unknown extensions             | Neutral       |
 
 ## Component Props
 

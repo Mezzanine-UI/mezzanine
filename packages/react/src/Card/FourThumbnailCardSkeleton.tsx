@@ -10,15 +10,9 @@ export interface FourThumbnailCardSkeletonProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Width of the card skeleton container.
-   * @default 360
+   * @default 200
    */
   thumbnailWidth?: number | string;
-  /**
-   * Aspect ratio of each thumbnail skeleton.
-   * For four-thumbnail layout, force to '4/3' to maintain the grid layout.
-   * @default '4/3'
-   */
-  thumbnailAspectRatio?: string;
 }
 
 /**
@@ -29,12 +23,7 @@ const FourThumbnailCardSkeleton = forwardRef<
   HTMLDivElement,
   FourThumbnailCardSkeletonProps
 >(function FourThumbnailCardSkeleton(props, ref) {
-  const {
-    className,
-    // thumbnailAspectRatio = '4/3',
-    thumbnailWidth = 200,
-    ...rest
-  } = props;
+  const { className, thumbnailWidth = 200, ...rest } = props;
 
   return (
     <div {...rest} ref={ref} className={cx(classes.thumbnail, className)}>
@@ -44,6 +33,7 @@ const FourThumbnailCardSkeleton = forwardRef<
             key={index}
             className={classes.fourThumbnailThumbnail}
             width={thumbnailWidth}
+            // For four-thumbnail layout, force to '4/3' to maintain the grid layout.
             style={{ aspectRatio: '4/3' }}
           />
         ))}

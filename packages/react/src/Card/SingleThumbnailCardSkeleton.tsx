@@ -5,13 +5,12 @@ import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Skeleton from '../Skeleton';
-import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 
 export interface SingleThumbnailCardSkeletonProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * Width of the thumbnail skeleton.
-   * @default 360
+   * @default 'var(--mzn-spacing-size-container-slim)'
    */
   thumbnailWidth?: number | string;
   /**
@@ -32,9 +31,7 @@ const SingleThumbnailCardSkeleton = forwardRef<
   const {
     className,
     thumbnailAspectRatio = '16/9',
-    thumbnailWidth = getNumericCSSVariablePixelValue(
-      '--mzn-spacing-size-container-slim',
-    ),
+    thumbnailWidth = 'var(--mzn-spacing-size-container-slim)',
     ...rest
   } = props;
 
