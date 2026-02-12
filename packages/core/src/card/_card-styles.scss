@@ -283,6 +283,7 @@ $file-icon-color: (
 
 .#{$single-thumbnail-card-prefix} {
   width: 100%;
+  line-height: 0;
   position: relative;
   border-radius: radius.variable(roomy) radius.variable(roomy) 0 0;
   overflow: hidden;
@@ -379,6 +380,7 @@ $file-icon-color: (
     background-color: palette.semantic-variable("background", base);
     overflow: hidden;
     position: relative;
+    line-height: 0;
     transition: transition.standard(box-shadow, fast);
 
     &--empty {
