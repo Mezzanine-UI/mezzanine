@@ -5,6 +5,7 @@ import { cardClasses as classes } from '@mezzanine-ui/core/card';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Skeleton from '../Skeleton';
+import { getNumericCSSVariablePixelValue } from '../utils/get-css-variable-value';
 
 export type SingleThumbnailCardSkeletonProps = Omit<
   NativeElementPropsWithoutKeyAndRef<'div'>,
@@ -24,7 +25,13 @@ const SingleThumbnailCardSkeleton = forwardRef<
   return (
     <div {...rest} ref={ref} className={cx(classes.thumbnail, className)}>
       <div className={classes.singleThumbnail}>
-        <Skeleton height="100%" style={{ aspectRatio: '16/9' }} width="100%" />
+        <Skeleton
+          height="100%"
+          style={{ aspectRatio: '16/9' }}
+          width={getNumericCSSVariablePixelValue(
+            '--mzn-spacing-size-container-slim',
+          )}
+        />
       </div>
       <div className={classes.thumbnailInfo}>
         <div className={classes.thumbnailInfoMain}>

@@ -39,7 +39,6 @@ const BaseCardSkeleton = forwardRef<HTMLDivElement, BaseCardSkeletonProps>(
           <div className={classes.baseContent}>
             <Skeleton height={16} width="100%" />
             <Skeleton height={16} style={{ marginTop: 8 }} width="80%" />
-            <Skeleton height={16} style={{ marginTop: 8 }} width="90%" />
           </div>
         )}
       </div>
