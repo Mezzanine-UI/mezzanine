@@ -1042,7 +1042,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               disabled={isInputDisabled}
               fullWidth={fullWidth}
               inputRef={composedInputRef}
-              isForceClearable
               mode={mode}
               onTagClose={wrappedOnChange}
               onClear={handleClear}
