@@ -1,22 +1,22 @@
 'use client';
 
 import {
-  forwardRef,
-  MouseEventHandler,
-  ReactNode,
-  useState,
-  useRef,
-  useEffect,
-} from 'react';
-import {
   textFieldClasses as classes,
   TextFieldSize,
 } from '@mezzanine-ui/core/text-field';
+import {
+  forwardRef,
+  MouseEventHandler,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import ClearActions from '../ClearActions';
+import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import { useTextFieldControl } from './useTextFieldControl';
-import ClearActions from '../ClearActions';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 
 /**
  * Padding info provided to children function
@@ -101,37 +101,37 @@ export type TextFieldAffixProps = {
  */
 export type TextFieldInteractiveStateProps =
   | {
-      /**
-       * Whether the user is currently typing.
-       * If not provided, will be auto-detected.
-       */
-      typing?: boolean;
-      disabled?: never;
-      readonly?: never;
-    }
+    /**
+     * Whether the user is currently typing.
+     * If not provided, will be auto-detected.
+     */
+    typing?: boolean;
+    disabled?: never;
+    readonly?: never;
+  }
   | {
-      typing?: never;
-      /**
-       * Whether the field is disabled.
-       * @default false
-       */
-      disabled: true;
-      readonly?: never;
-    }
+    typing?: never;
+    /**
+     * Whether the field is disabled.
+     * @default false
+     */
+    disabled: true;
+    readonly?: never;
+  }
   | {
-      typing?: never;
-      disabled?: never;
-      /**
-       * Whether the field is readonly.
-       * @default false
-       */
-      readonly: true;
-    }
+    typing?: never;
+    disabled?: never;
+    /**
+     * Whether the field is readonly.
+     * @default false
+     */
+    readonly: true;
+  }
   | {
-      typing?: never;
-      disabled?: never;
-      readonly?: never;
-    };
+    typing?: never;
+    disabled?: never;
+    readonly?: never;
+  };
 
 export type TextFieldProps = TextFieldBaseProps &
   TextFieldAffixProps &
@@ -164,7 +164,11 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
     } = props;
 
     const [isTyping, setIsTyping] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
+    const [hasValue, setHasValue] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
+    const checkValueRef = useRef<(() => void) | null>(null);
     const hostRef = useComposeRefs([ref, containerRef]);
 
     const typing =
@@ -175,30 +179,82 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
           : isTyping;
 
     useEffect(() => {
-      if (typingProp !== undefined || disabled || readonly) return;
-
       const container = containerRef.current;
       if (!container) return;
 
-      const input = container.querySelector('input, textarea');
+      const input = container.querySelector('input, textarea') as
+        | HTMLInputElement
+        | HTMLTextAreaElement
+        | null;
       if (!input) return;
+
+      const checkValue = () => {
+        // 檢查值是否為空（包括空字符串和只有空白字符）
+        const value = (input.value || '').trim();
+        setHasValue(value.length > 0);
+      };
+
+      // 保存 checkValue 函數到 ref，以便在 onClear 後可以立即調用
+      checkValueRef.current = checkValue;
 
       const handleInput = () => {
         setIsTyping(true);
+        checkValue();
+      };
+
+      const handleFocus = () => {
+        setIsFocused(true);
+        checkValue();
       };
 
       const handleBlur = () => {
         setIsTyping(false);
+        setIsFocused(false);
+        checkValue();
       };
 
-      input.addEventListener('input', handleInput, false);
-      input.addEventListener('mousedown', handleInput, false);
+      const handleMouseEnter = () => {
+        checkValue(); // 在 hover 時也檢查值，確保狀態正確
+        setIsHovered(true);
+      };
+
+      const handleMouseLeave = () => {
+        setIsHovered(false);
+      };
+
+      // 初始化檢查值
+      checkValue();
+
+      // 監聽輸入框事件（用於 typing 狀態）
+      if (typingProp === undefined && !disabled && !readonly) {
+        input.addEventListener('input', handleInput, false);
+        input.addEventListener('mousedown', handleInput, false);
+      }
+
+      // 監聽 focus/blur 事件
+      input.addEventListener('focus', handleFocus, false);
       input.addEventListener('blur', handleBlur, false);
 
+      // 監聽 hover 事件（在容器上）
+      container.addEventListener('mouseenter', handleMouseEnter, false);
+      container.addEventListener('mouseleave', handleMouseLeave, false);
+
+      // 監聽值變化（適用於受控組件）
+      input.addEventListener('input', checkValue, false);
+      input.addEventListener('change', checkValue, false);
+
       return () => {
-        input.removeEventListener('input', handleInput, false);
-        input.removeEventListener('mousedown', handleInput, false);
+        if (typingProp === undefined && !disabled && !readonly) {
+          input.removeEventListener('input', handleInput, false);
+          input.removeEventListener('mousedown', handleInput, false);
+        }
+        input.removeEventListener('focus', handleFocus, false);
         input.removeEventListener('blur', handleBlur, false);
+        container.removeEventListener('mouseenter', handleMouseEnter, false);
+        container.removeEventListener('mouseleave', handleMouseLeave, false);
+        input.removeEventListener('input', checkValue, false);
+        input.removeEventListener('change', checkValue, false);
+        checkValueRef.current = null;
       };
     }, [typingProp, disabled, readonly]);
 
@@ -208,6 +264,10 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
     });
 
     const isChildrenFunction = typeof children === 'function';
+    const shouldShowClearable =
+      clearable &&
+      hasValue &&
+      (isHovered || typing || isFocused);
 
     const paddingInfo: TextFieldPaddingInfo = {
       paddingClassName: cx(
@@ -256,9 +316,16 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
           <ClearActions
             type="clearable"
             className={classes.clearIcon}
+            style={{
+              opacity: shouldShowClearable ? 1 : 0,
+              pointerEvents: shouldShowClearable ? 'auto' : 'none',
+            }}
             onClick={(event) => {
               if (!disabled && !readonly && onClear) {
                 onClear(event);
+                requestAnimationFrame(() => {
+                  checkValueRef.current?.();
+                });
               }
             }}
             onMouseDown={(event) => event.preventDefault()}

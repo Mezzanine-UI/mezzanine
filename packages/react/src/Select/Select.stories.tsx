@@ -1,7 +1,7 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useRef, useState } from 'react';
-import Select, { Option } from '.';
+import Select from '.';
 import Typography from '../Typography';
 
 export default {
@@ -10,6 +10,26 @@ export default {
 
 const BasicComponent = () => {
   const [value, setValue] = useState<{ id: string; name: string } | null>(null);
+
+  const basicOptions: DropdownOption[] = [
+    { id: '1', name: 'item1 has very long description' },
+    { id: '2', name: 'item2 has very long description' },
+    { id: '3', name: 'item3 has very long description' },
+    { id: '4', name: 'item4 has very long description' },
+    { id: '5', name: 'item5 has very long description' },
+  ];
+
+  const simpleOptions: DropdownOption[] = [
+    { id: '1', name: 'item1' },
+    { id: '2', name: 'item2' },
+    { id: '3', name: 'item3' },
+  ];
+
+  const multipleOptions: DropdownOption[] = [
+    { id: '1', name: 'item123' },
+    { id: '2', name: 'item26666' },
+    { id: '3', name: 'item3' },
+  ];
 
   return (
     <div
@@ -24,26 +44,13 @@ const BasicComponent = () => {
         clearable
         fullWidth
         required
+        options={basicOptions}
         placeholder="預設文字"
         value={value}
         onChange={(newValue) => setValue(newValue)}
-      >
-        <Option value="1">item1 has very long description</Option>
-        <Option value="2">item2 has very long description</Option>
-        <Option value="3">item3 has very long description</Option>
-        <Option value="4">item4 has very long description</Option>
-        <Option value="5">item5 has very long description</Option>
-      </Select>
-      <Select disabled fullWidth placeholder="預設文字">
-        <Option value="1">item1</Option>
-        <Option value="2">item2</Option>
-        <Option value="3">item3</Option>
-      </Select>
-      <Select error fullWidth placeholder="預設文字">
-        <Option value="1">item1</Option>
-        <Option value="2">item2</Option>
-        <Option value="3">item3</Option>
-      </Select>
+      />
+      <Select disabled fullWidth options={simpleOptions} placeholder="預設文字" />
+      <Select error fullWidth options={simpleOptions} placeholder="預設文字" />
       <Select
         clearable
         defaultValue={[
@@ -52,12 +59,9 @@ const BasicComponent = () => {
         ]}
         fullWidth
         mode="multiple"
+        options={multipleOptions}
         placeholder="我是多選"
-      >
-        <Option value="1">item123</Option>
-        <Option value="2">item26666</Option>
-        <Option value="3">item3</Option>
-      </Select>
+      />
     </div>
   );
 };
@@ -71,6 +75,12 @@ const WithReadOnlyComponent = () => {
     id: '1',
     name: 'item1',
   });
+
+  const readOnlyOptions: DropdownOption[] = [
+    { id: '1', name: 'item1' },
+    { id: '2', name: 'item2' },
+    { id: '3', name: 'item3' },
+  ];
 
   return (
     <div
@@ -88,14 +98,11 @@ const WithReadOnlyComponent = () => {
         <Select
           clearable
           fullWidth
+          options={readOnlyOptions}
           placeholder="預設文字"
           value={value}
           onChange={(newValue) => setValue(newValue)}
-        >
-          <Option value="1">item1</Option>
-          <Option value="2">item2</Option>
-          <Option value="3">item3</Option>
-        </Select>
+        />
       </div>
       <div>
         <Typography variant="body" style={{ marginBottom: '8px' }}>
@@ -104,15 +111,12 @@ const WithReadOnlyComponent = () => {
         <Select
           clearable
           fullWidth
+          options={readOnlyOptions}
           readOnly
           placeholder="預設文字"
           value={value}
           onChange={(newValue) => setValue(newValue)}
-        >
-          <Option value="1">item1</Option>
-          <Option value="2">item2</Option>
-          <Option value="3">item3</Option>
-        </Select>
+        />
       </div>
     </div>
   );
@@ -123,7 +127,7 @@ export const WithReadOnly: StoryObj<typeof Select> = {
 };
 
 const WithScrollComponent = () => {
-  const [options, setOptions] = useState(
+  const [options, setOptions] = useState<DropdownOption[]>(
     Array.from({ length: 10 }, (_, i) => ({
       id: String(i + 1),
       name: `item${i + 1}`,
@@ -138,6 +142,7 @@ const WithScrollComponent = () => {
         clearable
         fullWidth
         menuMaxHeight={200}
+        options={options}
         onScroll={({ scrollTop, maxScrollTop }) => {
           if (scrollTop + 40 >= maxScrollTop && !isFetchingRef.current) {
             setIsLoading(true);
@@ -157,13 +162,7 @@ const WithScrollComponent = () => {
           }
         }}
         placeholder="滾動載入更多"
-      >
-        {options.map((opt) => (
-          <Option key={opt.id} value={opt.id}>
-            {opt.name}
-          </Option>
-        ))}
-      </Select>
+      />
       {isLoading && (
         <div style={{ padding: '8px', textAlign: 'center', marginTop: '8px' }}>
           <Typography variant="body">載入中...</Typography>

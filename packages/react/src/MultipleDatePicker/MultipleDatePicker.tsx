@@ -1,15 +1,6 @@
 'use client';
 
 import {
-  forwardRef,
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import {
   calendarClasses,
   DateType,
   getDefaultModeFormat,
@@ -19,50 +10,58 @@ import {
   MultipleDatePickerValue,
 } from '@mezzanine-ui/core/multiple-date-picker';
 import { CalendarIcon } from '@mezzanine-ui/icons';
+import {
+  forwardRef,
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Calendar, {
   CalendarProps,
   useCalendarContext,
   useCalendarControls,
 } from '../Calendar';
-import { CalendarFooterActionsProps } from '../Calendar/CalendarFooterActions';
-import CalendarFooterActions from '../Calendar/CalendarFooterActions';
+import CalendarFooterActions, { CalendarFooterActionsProps } from '../Calendar/CalendarFooterActions';
+import Icon from '../Icon';
+import { usePickerDocumentEventClose } from '../Picker';
 import InputTriggerPopper, {
   InputTriggerPopperProps,
 } from '../_internal/InputTriggerPopper';
+import { useComposeRefs } from '../hooks/useComposeRefs';
+import { cx } from '../utils/cx';
 import MultipleDatePickerTrigger, {
   DateValue,
   MultipleDatePickerTriggerProps,
 } from './MultipleDatePickerTrigger';
 import { useMultipleDatePickerValue } from './useMultipleDatePickerValue';
-import { usePickerDocumentEventClose } from '../Picker';
-import Icon from '../Icon';
-import { cx } from '../utils/cx';
-import { useComposeRefs } from '../hooks/useComposeRefs';
 
 export interface MultipleDatePickerProps
   extends Pick<
-      MultipleDatePickerTriggerProps,
-      | 'className'
-      | 'clearable'
-      | 'disabled'
-      | 'error'
-      | 'fullWidth'
-      | 'overflowStrategy'
-      | 'prefix'
-      | 'readOnly'
-      | 'size'
-    >,
-    Pick<
-      CalendarProps,
-      | 'disabledMonthSwitch'
-      | 'disableOnNext'
-      | 'disableOnPrev'
-      | 'disableOnDoubleNext'
-      | 'disableOnDoublePrev'
-      | 'disabledYearSwitch'
-      | 'displayMonthLocale'
-      | 'isDateDisabled'
-    > {
+    MultipleDatePickerTriggerProps,
+    | 'className'
+    | 'clearable'
+    | 'disabled'
+    | 'error'
+    | 'fullWidth'
+    | 'overflowStrategy'
+    | 'prefix'
+    | 'readOnly'
+    | 'size'
+  >,
+  Pick<
+    CalendarProps,
+    | 'disabledMonthSwitch'
+    | 'disableOnNext'
+    | 'disableOnPrev'
+    | 'disableOnDoubleNext'
+    | 'disableOnDoublePrev'
+    | 'disabledYearSwitch'
+    | 'displayMonthLocale'
+    | 'isDateDisabled'
+  > {
   /**
    * Custom action button props. Allows overriding confirm/cancel button text and behavior.
    */

@@ -361,7 +361,6 @@ export type {
   RadioSize,
 } from './Radio';
 export {
-  Option,
   OptionGroup,
   default as Select,
   SelectControlContext,
@@ -370,7 +369,6 @@ export {
 } from './Select';
 export type {
   OptionGroupProps,
-  OptionProps,
   SelectControl,
   SelectProps,
   SelectTriggerInputProps,

@@ -1,7 +1,5 @@
 export { default as OptionGroup } from '../Menu/MenuItemGroup';
 export type { MenuItemGroupProps as OptionGroupProps } from '../Menu/MenuItemGroup';
-export { default as Option } from './Option';
-export type { OptionProps } from './Option';
 export { default } from './Select';
 export type { SelectProps } from './Select';
 export { SelectControlContext } from './SelectControlContext';
