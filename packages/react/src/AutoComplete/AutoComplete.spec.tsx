@@ -18,16 +18,18 @@ import { SelectValue } from '../Select/typings';
 // Mock ResizeObserver - jsdom 不支援此 API
 const originalResizeObserver = (global as typeof globalThis).ResizeObserver;
 class ResizeObserverMock {
-  observe() { }
-  unobserve() { }
-  disconnect() { }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
 }
 
 // Mock scrollIntoView
 const originalScrollIntoView = Element.prototype.scrollIntoView;
 
 function getDropdownListbox() {
-  return document.querySelector('[role="listbox"][id^="mzn-select-autocomplete-menu-id"]');
+  return document.querySelector(
+    '[role="listbox"][id^="mzn-select-autocomplete-menu-id"]',
+  );
 }
 
 function getDropdownOptions() {
@@ -104,7 +106,10 @@ describe('<AutoComplete />', () => {
         const inputByQuery = container.querySelector('input');
         const inputsByRole = screen.getAllByRole('combobox');
         const inputByRole = inputsByRole.find((el) => el.tagName === 'INPUT');
-        input = (inputByQuery as HTMLInputElement | null) ?? (inputByRole as HTMLInputElement | null) ?? inputRef.current;
+        input =
+          (inputByQuery as HTMLInputElement | null) ??
+          (inputByRole as HTMLInputElement | null) ??
+          inputRef.current;
         expect(input).not.toBeNull();
       });
 
@@ -188,9 +193,8 @@ describe('<AutoComplete />', () => {
     // In single mode, clearable is not shown by SelectTrigger's logic
     it('should clear value and trigger onClear, onChange in mode="multiple"', async () => {
       jest.useFakeTimers();
-      const user = userEvent.setup({ delay: null });
 
-      const onClear = jest.fn<void, [MouseEvent<Element>]>(() => { });
+      const onClear = jest.fn<void, [MouseEvent<Element>]>(() => {});
       const inputRef = createRef<HTMLInputElement>();
       const onChange = jest.fn();
       const onSearch = jest.fn();
@@ -213,10 +217,13 @@ describe('<AutoComplete />', () => {
       });
 
       // Wait for clear icon to appear (only shown in multiple mode with values)
-      await waitFor(() => {
-        const clearIcon = getClearIcon(container);
-        expect(clearIcon).toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          const clearIcon = getClearIcon(container);
+          expect(clearIcon).toBeInTheDocument();
+        },
+        { timeout: 3000 },
+      );
 
       const clearIcon = getClearIcon(container);
       expect(clearIcon).toBeInTheDocument();
@@ -235,7 +242,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onSearch = jest.fn<void, [string]>(() => { });
+      const onSearch = jest.fn<void, [string]>(() => {});
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -267,7 +274,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onSearch = jest.fn<void, [string]>(() => { });
+      const onSearch = jest.fn<void, [string]>(() => {});
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -337,21 +344,25 @@ describe('<AutoComplete />', () => {
       const user = userEvent.setup({ delay: null });
 
       const { container } = render(
-        <AutoComplete
-          options={defaultOptions}
-          open
-        />,
+        <AutoComplete options={defaultOptions} open />,
       );
 
       // Wait for input to be available - try multiple ways to find it
       let input: HTMLInputElement | null = null;
-      await waitFor(() => {
-        const inputByQuery = container.querySelector('input') as HTMLInputElement | null;
-        const inputsByRole = screen.getAllByRole('combobox');
-        const inputByRole = inputsByRole.find((el) => el.tagName === 'INPUT') as HTMLInputElement | undefined;
-        input = inputByQuery || inputByRole || null;
-        expect(input).not.toBeNull();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          const inputByQuery = container.querySelector(
+            'input',
+          ) as HTMLInputElement | null;
+          const inputsByRole = screen.getAllByRole('combobox');
+          const inputByRole = inputsByRole.find(
+            (el) => el.tagName === 'INPUT',
+          ) as HTMLInputElement | undefined;
+          input = inputByQuery || inputByRole || null;
+          expect(input).not.toBeNull();
+        },
+        { timeout: 3000 },
+      );
 
       await act(async () => {
         await user.click(input!);
@@ -374,7 +385,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => { });
+      const onBlur = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -403,7 +414,7 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => { });
+      const onFocus = jest.fn<void, [FocusEvent<HTMLInputElement>]>(() => {});
       const inputRef = createRef<HTMLInputElement>();
 
       render(
@@ -434,10 +445,7 @@ describe('<AutoComplete />', () => {
       const user = userEvent.setup({ delay: null });
 
       const onInsert = jest.fn((text: string) => {
-        return [
-          ...defaultOptions,
-          { id: text, name: text },
-        ];
+        return [...defaultOptions, { id: text, name: text }];
       });
 
       const { container } = render(
@@ -455,7 +463,9 @@ describe('<AutoComplete />', () => {
         const inputByQuery = container.querySelector('input');
         const inputsByRole = screen.getAllByRole('combobox');
         const inputByRole = inputsByRole.find((el) => el.tagName === 'INPUT');
-        input = (inputByQuery as HTMLInputElement | null) ?? (inputByRole as HTMLInputElement | null);
+        input =
+          (inputByQuery as HTMLInputElement | null) ??
+          (inputByRole as HTMLInputElement | null);
         expect(input).not.toBeNull();
       });
 
@@ -477,12 +487,11 @@ describe('<AutoComplete />', () => {
       jest.useFakeTimers();
       const user = userEvent.setup({ delay: null });
 
-      const onInsert = jest.fn((text: string, currentOptions: SelectValue[]) => {
-        return [
-          ...currentOptions,
-          { id: text, name: text },
-        ];
-      });
+      const onInsert = jest.fn(
+        (text: string, currentOptions: SelectValue[]) => {
+          return [...currentOptions, { id: text, name: text }];
+        },
+      );
       const onChange = jest.fn();
 
       const { container } = render(
@@ -500,7 +509,9 @@ describe('<AutoComplete />', () => {
         const inputByQuery = container.querySelector('input');
         const inputsByRole = screen.getAllByRole('combobox');
         const inputByRole = inputsByRole.find((el) => el.tagName === 'INPUT');
-        input = (inputByQuery as HTMLInputElement | null) ?? (inputByRole as HTMLInputElement | null);
+        input =
+          (inputByQuery as HTMLInputElement | null) ??
+          (inputByRole as HTMLInputElement | null);
         expect(input).not.toBeNull();
       });
 
@@ -537,10 +548,13 @@ describe('<AutoComplete />', () => {
 
       // Wait for input可用（只需確認 DOM 中有 input）
       let input: HTMLInputElement | null = null;
-      await waitFor(() => {
-        input = container.querySelector('input');
-        expect(input).not.toBeNull();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          input = container.querySelector('input');
+          expect(input).not.toBeNull();
+        },
+        { timeout: 3000 },
+      );
 
       await act(async () => {
         await user.click(input!);
@@ -702,12 +716,7 @@ describe('<AutoComplete />', () => {
 
       const inputRef = createRef<HTMLInputElement>();
 
-      render(
-        <AutoComplete
-          inputRef={inputRef}
-          options={defaultOptions}
-        />,
-      );
+      render(<AutoComplete inputRef={inputRef} options={defaultOptions} />);
 
       await waitFor(() => {
         expect(inputRef.current).toBeInTheDocument();
@@ -746,7 +755,9 @@ describe('<AutoComplete />', () => {
       // But when not focused, it shows the original placeholder
       // When focused, it shows the value name as placeholder
       const inputs = screen.getAllByRole('combobox');
-      const input = inputs.find((el) => el.tagName === 'INPUT') as HTMLInputElement;
+      const input = inputs.find(
+        (el) => el.tagName === 'INPUT',
+      ) as HTMLInputElement;
       expect(input).toBeInTheDocument();
       // The input should exist and the component should render correctly
       // The actual display logic depends on focus state
@@ -770,8 +781,12 @@ describe('<AutoComplete />', () => {
       expect(fooTags.length).toBeGreaterThan(0);
       expect(barTags.length).toBeGreaterThan(0);
       // Check that at least one is a tag label
-      const fooTag = fooTags.find((el) => el.classList.contains('mzn-tag__label'));
-      const barTag = barTags.find((el) => el.classList.contains('mzn-tag__label'));
+      const fooTag = fooTags.find((el) =>
+        el.classList.contains('mzn-tag__label'),
+      );
+      const barTag = barTags.find((el) =>
+        el.classList.contains('mzn-tag__label'),
+      );
       expect(fooTag).toBeInTheDocument();
       expect(barTag).toBeInTheDocument();
     });

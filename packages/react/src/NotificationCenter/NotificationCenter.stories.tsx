@@ -64,12 +64,8 @@ export const Playground: Story = {
     function PlaygroundNotification() {
       const reference = useMemo(() => `notification-playground`, []);
 
-      const onConfirm = () => {
-        console.log('onConfirm');
-      };
-      const onCancel = () => {
-        console.log('onCancel');
-      };
+      const onConfirm = () => {};
+      const onCancel = () => {};
 
       return (
         <NotificationCenter
@@ -291,8 +287,8 @@ function AddMethodExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -326,9 +322,7 @@ function DrawerWithChildrenExample() {
     [],
   );
 
-  const handleBadgeSelect = (option: DropdownOption) => {
-    console.log(option);
-  };
+  const handleBadgeSelect = (_: DropdownOption) => {};
 
   return (
     <div>
@@ -343,8 +337,8 @@ function DrawerWithChildrenExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -450,9 +444,7 @@ function DrawerWithNotificationListExample() {
             id: 'delete',
           },
         ] as DropdownOption[],
-        onBadgeSelect: (option: DropdownOption) => {
-          console.log(option);
-        },
+        onBadgeSelect: (_: DropdownOption) => {},
       },
       {
         key: '5',
@@ -481,8 +473,8 @@ function DrawerWithNotificationListExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -536,8 +528,8 @@ function DrawerWithCustomControlBarExample() {
         controlBarAllRadioLabel="全部通知"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -569,8 +561,8 @@ function DrawerEmptyExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -729,8 +721,8 @@ function DrawerTimeStampExample() {
         controlBarAllRadioLabel="全部"
         controlBarCustomButtonLabel="全部已讀"
         controlBarDefaultValue="all"
-        controlBarOnCustomButtonClick={() => console.log('全部已讀')}
-        controlBarOnRadioChange={(e) => console.log(e.target.value)}
+        controlBarOnCustomButtonClick={() => {}}
+        controlBarOnRadioChange={() => {}}
         controlBarReadRadioLabel="已讀"
         controlBarShow
         controlBarShowUnreadButton
@@ -793,7 +785,7 @@ function DrawerWithRenderControlBarExample() {
             <Typography variant="caption">自訂工具列</Typography>
             <div style={{ display: 'flex', gap: '8px' }}>
               <Button
-                onClick={() => console.log('自訂按鈕 1')}
+                onClick={() => {}}
                 size="minor"
                 type="button"
                 variant="base-secondary"
@@ -801,7 +793,7 @@ function DrawerWithRenderControlBarExample() {
                 標示全部已讀
               </Button>
               <Button
-                onClick={() => console.log('自訂按鈕 2')}
+                onClick={() => {}}
                 size="minor"
                 type="button"
                 variant="base-ghost"

@@ -1,13 +1,16 @@
 import type { ArgTypes } from '@storybook/react-webpack5';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { useCallback, useState } from 'react';
-import Cropper, { CropperModal, cropToBlob, cropToDataURL, type CropperModalProps } from '.';
+import Cropper, {
+  CropperModal,
+  cropToBlob,
+  cropToDataURL,
+  type CropperModalProps,
+} from '.';
 import Button from '../Button';
 import { Upload, type UploadFile } from '../Upload';
 
 const DEFAULT_IMAGE_URL = 'https://rytass.com/logo.png';
-
-const sizes: Array<'tight' | 'narrow' | 'regular' | 'wide'> = ['tight', 'narrow', 'regular', 'wide'];
 
 const argTypes: Partial<ArgTypes<CropperModalProps>> = {
   cancelText: {
@@ -51,7 +54,8 @@ const argTypes: Partial<ArgTypes<CropperModalProps>> = {
     control: {
       type: 'boolean',
     },
-    description: 'Whether to disable closing the modal when clicking the backdrop',
+    description:
+      'Whether to disable closing the modal when clicking the backdrop',
     table: {
       type: { summary: 'boolean' },
     },
@@ -60,7 +64,8 @@ const argTypes: Partial<ArgTypes<CropperModalProps>> = {
     control: {
       type: 'boolean',
     },
-    description: 'Whether to disable closing the modal when pressing the Escape key',
+    description:
+      'Whether to disable closing the modal when pressing the Escape key',
     table: {
       type: { summary: 'boolean' },
     },
@@ -94,14 +99,18 @@ const argTypes: Partial<ArgTypes<CropperModalProps>> = {
     action: 'onConfirm',
     description: 'Callback fired when the confirm button is clicked',
     table: {
-      type: { summary: '(context: CropperModalConfirmContext) => void | Promise<void>' },
+      type: {
+        summary:
+          '(context: CropperModalConfirmContext) => void | Promise<void>',
+      },
     },
   },
   showModalFooter: {
     control: {
       type: 'boolean',
     },
-    description: 'Whether to show the modal footer with confirm and cancel buttons',
+    description:
+      'Whether to show the modal footer with confirm and cancel buttons',
     table: {
       defaultValue: { summary: 'true' },
       type: { summary: 'boolean' },
@@ -170,7 +179,7 @@ function UploaderStoryContent() {
       const result = await CropperModal.open({
         cropperProps: {
           imageSrc: file,
-          aspectRatio: 1
+          aspectRatio: 1,
         },
         onCancel: () => {
           setFiles([]);
@@ -178,7 +187,7 @@ function UploaderStoryContent() {
         size: 'wide',
         style: { width: '640px', maxWidth: '640px' },
         title: '裁切頁首圖片',
-        supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
+        supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。',
       });
 
       // Process after modal is closed (result contains the context)
@@ -234,11 +243,7 @@ function UploaderStoryContent() {
         maxFiles={1}
         mode="cards"
         onChange={(nextFiles) =>
-          setFiles(
-            nextFiles.filter(
-              (file) => file.errorMessage !== '已取消',
-            ),
-          )
+          setFiles(nextFiles.filter((file) => file.errorMessage !== '已取消'))
         }
         onUpload={handleUpload}
       />
@@ -253,7 +258,7 @@ function ButtonStoryContent() {
     await CropperModal.open({
       cropperProps: {
         imageSrc: DEFAULT_IMAGE_URL,
-        aspectRatio: 4 / 3
+        aspectRatio: 4 / 3,
       },
       onConfirm: async ({ canvas, cropArea, imageSrc }) => {
         if (!canvas || !cropArea || !imageSrc) return;
@@ -268,15 +273,28 @@ function ButtonStoryContent() {
       },
       title: '裁切頁首圖片',
       size: 'regular',
-      supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。'
+      supportingText: '建議上傳尺寸為 2100 × 900 像素，以獲得最佳顯示效果。',
     });
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '600px' }}>
-      <Button variant="base-primary" onClick={handleOpen}>開啟裁切</Button>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        width: '600px',
+      }}
+    >
+      <Button variant="base-primary" onClick={handleOpen}>
+        開啟裁切
+      </Button>
       {previewUrl && (
-        <img alt="Cropped preview" src={previewUrl} style={{ maxWidth: '100%' }} />
+        <img
+          alt="Cropped preview"
+          src={previewUrl}
+          style={{ maxWidth: '100%' }}
+        />
       )}
     </div>
   );
@@ -289,4 +307,3 @@ export const WithUploader: Story = {
 export const WithButton: Story = {
   render: () => <ButtonStoryContent />,
 };
-

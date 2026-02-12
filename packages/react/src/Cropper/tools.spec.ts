@@ -1,17 +1,24 @@
-import { cropToBlob, cropToDataURL, cropToFile, CropToBlobOptions } from './tools';
+import {
+  cropToBlob,
+  cropToDataURL,
+  cropToFile,
+  CropToBlobOptions,
+} from './tools';
 import { CropArea } from './typings';
 
 // Mock Image constructor
 class MockImage extends Image {
   private _src: string = '';
   public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null = null;
-  public onerror: ((this: GlobalEventHandlers, ev: Event | string) => any) | null = null;
+  public onerror:
+    | ((this: GlobalEventHandlers, ev: Event | string) => any)
+    | null = null;
 
   constructor() {
     super();
     Object.defineProperty(this, 'width', { value: 800, writable: false });
     Object.defineProperty(this, 'height', { value: 600, writable: false });
-    
+
     // Auto-resolve onload when src is set
     Object.defineProperty(this, 'src', {
       get: () => this._src,
@@ -74,9 +81,12 @@ beforeAll(() => {
   }
 
   // Mock HTMLCanvasElement
-  HTMLCanvasElement.prototype.getContext = mockGetContext as unknown as typeof HTMLCanvasElement.prototype.getContext;
-  HTMLCanvasElement.prototype.toBlob = mockToBlob as unknown as typeof HTMLCanvasElement.prototype.toBlob;
-  HTMLCanvasElement.prototype.toDataURL = mockToDataURL as unknown as typeof HTMLCanvasElement.prototype.toDataURL;
+  HTMLCanvasElement.prototype.getContext =
+    mockGetContext as unknown as typeof HTMLCanvasElement.prototype.getContext;
+  HTMLCanvasElement.prototype.toBlob =
+    mockToBlob as unknown as typeof HTMLCanvasElement.prototype.toBlob;
+  HTMLCanvasElement.prototype.toDataURL =
+    mockToDataURL as unknown as typeof HTMLCanvasElement.prototype.toDataURL;
 });
 
 afterEach(() => {
@@ -237,8 +247,11 @@ describe('cropToBlob', () => {
     // Mock Image to throw error
     const originalImage = global.Image;
     global.Image = class {
-      public onerror: ((this: GlobalEventHandlers, ev: Event | string) => any) | null = null;
-      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null = null;
+      public onerror:
+        | ((this: GlobalEventHandlers, ev: Event | string) => any)
+        | null = null;
+      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null =
+        null;
 
       set src(_value: string) {
         setTimeout(() => {
@@ -420,8 +433,11 @@ describe('cropToDataURL', () => {
     // Mock Image to throw error
     const originalImage = global.Image;
     global.Image = class {
-      public onerror: ((this: GlobalEventHandlers, ev: Event | string) => any) | null = null;
-      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null = null;
+      public onerror:
+        | ((this: GlobalEventHandlers, ev: Event | string) => any)
+        | null = null;
+      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null =
+        null;
 
       set src(_value: string) {
         setTimeout(() => {
@@ -445,8 +461,11 @@ describe('cropToDataURL', () => {
     const originalImage = global.Image;
 
     global.Image = class {
-      public onerror: ((this: GlobalEventHandlers, ev: Event | string) => any) | null = null;
-      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null = null;
+      public onerror:
+        | ((this: GlobalEventHandlers, ev: Event | string) => any)
+        | null = null;
+      public onload: ((this: GlobalEventHandlers, ev: Event) => any) | null =
+        null;
 
       set src(_value: string) {
         setTimeout(() => {
@@ -465,7 +484,8 @@ describe('cropToDataURL', () => {
         ...defaultOptions,
         imageSrc: file,
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error('Expected error:', error);
       // Expected to throw
     }
 
@@ -474,4 +494,3 @@ describe('cropToDataURL', () => {
     global.Image = originalImage;
   }, 10000);
 });
-
