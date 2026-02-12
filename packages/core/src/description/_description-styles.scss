@@ -52,6 +52,8 @@
 
   &__text {
     @include typography.semantic-variable(body);
+
+    /* stylelint-disable-next-line */
     color: palette.semantic-variable(text, neutral) !important;
   }
 }

@@ -68,7 +68,7 @@ $bar-width: 2px !default;
     }
 
     &:focus-visible {
-      background-color: palette.semantic-variable(background, base);
+      background-color: palette.semantic-variable("background", base);
       box-shadow: effect.variable(focus, primary);
     }
   }

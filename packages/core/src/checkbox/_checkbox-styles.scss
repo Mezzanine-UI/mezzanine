@@ -301,16 +301,19 @@ $checked-states: (
       // Chip mode with different sizes - unchecked state
       &.#{$prefix}--main {
         @include _apply-mode-input-padding(chip, main);
+
         border-radius: radius.variable(base);
       }
 
       &.#{$prefix}--sub {
         @include _apply-mode-input-padding(chip, sub);
+
         border-radius: radius.variable(tiny);
       }
 
       &.#{$prefix}--minor {
         @include _apply-mode-input-padding(chip, minor);
+
         border-radius: radius.variable(tiny);
       }
 

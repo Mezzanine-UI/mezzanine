@@ -1,5 +1,5 @@
 @use '../select/select' as select;
-@use '../text-field/_text-field' as text-field;
+@use '../text-field/text-field' as text-field;
 @use './autocomplete' as *;
 @use '~@mezzanine-ui/system/spacing' as spacing;
 

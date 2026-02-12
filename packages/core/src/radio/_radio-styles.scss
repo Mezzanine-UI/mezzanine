@@ -103,7 +103,7 @@
   }
 
   .#{input-check.$prefix}--disabled & {
-    background-color: palette.semantic-variable(background, neutral-subtle);
+    background-color: palette.semantic-variable("background", neutral-subtle);
 
     &--checked {
       &::before {
@@ -118,6 +118,7 @@
 
   &--segmented {
     border: none;
+    /* stylelint-disable-next-line */
     background-color: transparent !important;
 
     &::before {

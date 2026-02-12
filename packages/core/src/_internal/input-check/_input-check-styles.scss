@@ -100,6 +100,7 @@
 
   &__label {
     @include typography.semantic-variable(label-primary);
+
     display: inline-flex;
     flex-direction: column;
     color: palette.semantic-variable(text, neutral-solid);
@@ -112,6 +113,7 @@
 
   &__hint {
     @include typography.semantic-variable(caption);
+
     color: palette.semantic-variable(text, neutral);
   }
 

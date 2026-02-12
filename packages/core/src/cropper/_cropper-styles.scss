@@ -4,7 +4,7 @@
 @use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography' as typography;
 @use '~@mezzanine-ui/system/z-index' as z-index;
-@use './_cropper' as *;
+@use './cropper' as *;
 
 .#{$prefix} {
   display: inline-block;
@@ -19,6 +19,7 @@
   user-select: none;
   text-decoration: none;
   @include typography.semantic-variable(body);
+
   color: palette.semantic-variable(text, neutral-strong);
   transition:
     transition.standard(color, fast),
