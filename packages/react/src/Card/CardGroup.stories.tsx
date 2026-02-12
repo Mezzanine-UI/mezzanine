@@ -55,7 +55,7 @@ export const LoadingQuickActionCard: Story = {
 };
 
 export const LoadingSingleThumbnailCard: Story = {
-  name: 'Loading: SingleThumbnailCard',
+  name: 'Loading Type: single thumbnail',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
@@ -90,7 +90,7 @@ export const LoadingSingleThumbnailCard: Story = {
 };
 
 export const LoadingFourThumbnailCard: Story = {
-  name: 'Loading: FourThumbnailCard',
+  name: 'Loading Type: four thumbnail',
   render: () => (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       <div>
