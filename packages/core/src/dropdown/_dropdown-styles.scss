@@ -9,6 +9,7 @@
 
 .#{$prefix} {
   // When used as Input trigger, don't affect layout
+  /* stylelint-disable-next-line */
   &:has(> .mzn-input__select-button) {
     display: contents;
   }
