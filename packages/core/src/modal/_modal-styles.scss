@@ -1,5 +1,4 @@
 @use 'sass:map';
-@use '~@mezzanine-ui/system/breakpoint' as breakpoint;
 @use '~@mezzanine-ui/system/palette' as palette;
 @use '~@mezzanine-ui/system/transition' as transition;
 @use '~@mezzanine-ui/system/typography' as typography;
@@ -76,10 +75,6 @@ $modalSizes: (
         }
       }
     }
-  }
-
-  @include breakpoint.below(sm) {
-    @include _full-screen();
   }
 
   &--full-screen {
