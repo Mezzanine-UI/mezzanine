@@ -14,6 +14,21 @@
 .#{$prefix} {
   width: 100%;
   display: flex;
+  min-width: spacing.semantic-variable(size, container, concentrate-fixed);
+  
+  &:has(.#{text-field.$prefix}__prefix),
+  &:has(.#{text-field.$prefix}__suffix) {
+    min-width: spacing.semantic-variable(size, container, snug);
+  }
+
+  &--with-prefix-external-action,
+  &--with-suffix-external-action {
+    min-width: spacing.semantic-variable(size, container, snug);
+  }
+
+  &--search:has(.#{text-field.$prefix}__prefix) {
+    min-width: spacing.semantic-variable(size, container, small);
+  }
 
   &--with-prefix-external-action {
     .#{text-field.$prefix} {
@@ -46,6 +61,28 @@
       border-left: none;
       border-top-right-radius: radius.variable(base);
       border-bottom-right-radius: radius.variable(base);
+    }
+  }
+
+  &--currency-with-spinner {
+    min-width: spacing.semantic-variable(size, container, concentrate-fixed);
+
+    &:has(.#{text-field.$prefix}__prefix),
+    &:has(.#{text-field.$prefix}__suffix),
+    &.#{$prefix}--with-prefix-external-action,
+    &.#{$prefix}--with-suffix-external-action {
+      min-width: spacing.semantic-variable(size, container, concentrate-fixed);
+    }
+  }
+
+  &--currency-without-spinner {
+    min-width: spacing.semantic-variable(size, container, small);
+
+    &:has(.#{text-field.$prefix}__prefix),
+    &:has(.#{text-field.$prefix}__suffix),
+    &.#{$prefix}--with-prefix-external-action,
+    &.#{$prefix}--with-suffix-external-action {
+      min-width: spacing.semantic-variable(size, container, small);
     }
   }
 

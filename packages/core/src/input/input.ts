@@ -49,4 +49,7 @@ export const inputClasses = {
   number: `${inputPrefix}--number`,
   size: (size: InputSize) => `${inputPrefix}--${size}`,
   spinners: `${inputPrefix}__spinners`,
+  searchInput: `${inputPrefix}--search`,
+  currencyWithSpinner: `${inputPrefix}--currency-with-spinner`,
+  currencyWithoutSpinner: `${inputPrefix}--currency-without-spinner`,
 } as const;
