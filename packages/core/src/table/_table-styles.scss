@@ -14,11 +14,11 @@ $header-cell: (
     gap: spacing.semantic-variable(gap, tiny),
     padding: (
       horizontal: spacing.semantic-variable(padding, horizontal, comfort),
-      vertical: spacing.semantic-variable(padding, vertical, calm),
+      vertical: spacing.semantic-variable(padding, vertical, base),
     ),
-    help-size: spacing.semantic-variable(size, element, base),
-    sort-size: spacing.semantic-variable(size, element, base),
-    menu-size: spacing.semantic-variable(size, element, base),
+    help-size: spacing.semantic-variable(size, element, base-fixed),
+    sort-size: spacing.semantic-variable(size, element, base-fixed),
+    menu-size: spacing.semantic-variable(size, element, base-fixed),
     resize: (
       width: spacing.semantic-variable(size, element, hairline),
       height: spacing.semantic-variable(size, element, relaxed),
@@ -31,9 +31,9 @@ $header-cell: (
       horizontal: spacing.semantic-variable(padding, horizontal, comfort),
       vertical: spacing.semantic-variable(padding, vertical, base),
     ),
-    help-size: spacing.semantic-variable(size, element, base),
-    sort-size: spacing.semantic-variable(size, element, base),
-    menu-size: spacing.semantic-variable(size, element, base),
+    help-size: spacing.semantic-variable(size, element, base-fixed),
+    sort-size: spacing.semantic-variable(size, element, base-fixed),
+    menu-size: spacing.semantic-variable(size, element, base-fixed),
     resize: (
       width: spacing.semantic-variable(size, element, hairline),
       height: spacing.semantic-variable(size, element, relaxed),
