@@ -603,12 +603,6 @@ $checked-states: (
     }
   }
 
-  &__all {
-    .#{input-check.$group-prefix} {
-      margin: spacing.level(1) 0 0 spacing.level(5);
-    }
-  }
-
   &__editable-input-container {
     width: 120px;
   }
