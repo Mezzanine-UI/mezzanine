@@ -25,15 +25,15 @@ import TextField, {
   TextFieldProps,
 } from '../TextField';
 import { cx } from '../utils/cx';
+import { formatNumberWithCommas } from '../utils/format-number-with-commas';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
 import ActionButton, { ActionButtonProps } from './ActionButton';
 import PasswordStrengthIndicator, {
   PasswordStrengthIndicatorProps,
 } from './PasswordStrengthIndicator';
 import SelectButton, { SelectButtonProps } from './SelectButton';
 import SpinnerButton from './SpinnerButton';
-import { formatNumberWithCommas } from '../utils/format-number-with-commas';
-import { parseNumberWithCommas } from '../utils/parse-number-with-commas';
 
 /**
  * Base props shared by all Input variants
@@ -248,22 +248,22 @@ export type SelectInputProps = InputBaseProps & {
  */
 export type WithPasswordStrengthIndicator =
   | {
-      /**
-       * Whether to show password strength indicator.
-       */
-      showPasswordStrengthIndicator?: false;
-      passwordStrengthIndicator?: never;
-    }
+    /**
+     * Whether to show password strength indicator.
+     */
+    showPasswordStrengthIndicator?: false;
+    passwordStrengthIndicator?: never;
+  }
   | {
-      /**
-       * Whether to show password strength indicator.
-       */
-      showPasswordStrengthIndicator: true;
-      /**
-       * The props for password strength indicator.
-       */
-      passwordStrengthIndicator: PasswordStrengthIndicatorProps;
-    };
+    /**
+     * Whether to show password strength indicator.
+     */
+    showPasswordStrengthIndicator: true;
+    /**
+     * The props for password strength indicator.
+     */
+    passwordStrengthIndicator: PasswordStrengthIndicatorProps;
+  };
 
 export type PasswordInputProps = InputBaseProps &
   ClearableInput &
@@ -392,6 +392,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     let passwordStrengthIndicatorProps:
       | PasswordStrengthIndicatorProps
       | undefined = undefined;
+    let hasSpinner: boolean = false;
 
     // Handle different input types with type narrowing
     switch (variant) {
@@ -469,6 +470,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
         };
 
         if (currencyProps.showSpinner) {
+          hasSpinner = true;
+
           const handleSpinUp = () => {
             const currentValue = parseFloat(value || '0');
             const newValue = currentValue + step;
@@ -514,6 +517,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
               </div>
             </>
           );
+        } else {
+          hasSpinner = false;
         }
 
         break;
@@ -672,6 +677,11 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
               prefixExternalButton !== undefined,
             [classes.withSuffixExternalAction]:
               suffixExternalButton !== undefined,
+            [classes.searchInput]: variant === 'search',
+            [classes.currencyWithSpinner]:
+              variant === 'currency' && hasSpinner,
+            [classes.currencyWithoutSpinner]:
+              variant === 'currency' && !hasSpinner,
           })}
         >
           {prefixExternalButton}
