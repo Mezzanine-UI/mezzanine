@@ -4,7 +4,7 @@ import { cx } from '../utils/cx';
 import Backdrop, { BackdropProps } from '../Backdrop';
 import { Scale } from '../Transition';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
-import useTopStack from '../_internal/SlideFadeOverlay/useTopStack';
+import useTopStack from '../hooks/useTopStack';
 import { MOTION_EASING } from '@mezzanine-ui/system/motion';
 
 export interface ModalContainerProps

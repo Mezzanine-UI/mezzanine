@@ -19,7 +19,7 @@ import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import Backdrop, { BackdropProps } from '../Backdrop';
 import { Slide } from '../Transition';
 import { useDocumentEscapeKeyDown } from '../hooks/useDocumentEscapeKeyDown';
-import useTopStack from '../_internal/SlideFadeOverlay/useTopStack';
+import useTopStack from '../hooks/useTopStack';
 import ClearActions from '../ClearActions';
 import Button from '../Button';
 import Radio from '../Radio/Radio';

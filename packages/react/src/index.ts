@@ -19,6 +19,7 @@ export * from './hooks/useLastCallback';
 export * from './hooks/useLastValue';
 export * from './hooks/usePreviousValue';
 export * from './hooks/useScrollLock';
+export * from './hooks/useTopStack';
 export * from './hooks/useWindowWidth';
 export * from './Tooltip/useDelayMouseEnterLeave';
 
@@ -582,7 +583,6 @@ export {
   Rotate,
   Scale,
   Slide,
-  SlideFade,
   default as Transition,
   Translate,
 } from './Transition';
@@ -591,17 +591,11 @@ export type {
   FadeProps,
   RotateProps,
   ScaleProps,
-  SlideFadeDirection,
-  SlideFadeProps,
   SlideProps,
   TransitionProps,
   TranslateFrom,
   TranslateProps,
 } from './Transition';
-
-/** Context */
-export { default as ConfigProvider, MezzanineConfig } from './Provider';
-export type { ConfigProviderProps, MezzanineConfigContext } from './Provider';
 
 /**
  * internal

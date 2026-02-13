@@ -20,7 +20,5 @@ export type { ScaleProps } from './Scale';
 export { default as Scale } from './Scale';
 export { default as Slide } from './Slide';
 export type { SlideProps } from './Slide';
-export { default as SlideFade } from './SlideFade';
-export type { SlideFadeDirection, SlideFadeProps } from './SlideFade';
 export { default as Translate } from './Translate';
 export type { TranslateFrom, TranslateProps } from './Translate';
