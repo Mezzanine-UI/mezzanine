@@ -8,13 +8,10 @@
 
 .#{$prefix} {
   position: relative;
-
-  &--single {
-    min-width: spacing.semantic-variable(size, container, tiny);
-  }
+  min-width: spacing.semantic-variable(size, container, concentrate-fixed);
 
   &--multiple {
-    min-width: spacing.semantic-variable(size, container, slim);
+    min-width: spacing.semantic-variable(size, container, snug);
   }
 
   &--full-width {
@@ -78,8 +75,6 @@
     }
   }
 
-  // When clearable is visible, allow tags input to shrink to avoid layout overflow
-  // with clear icon and suffix icon in multiple mode.
   &.#{text-field.$prefix}--clearable &__tags-input {
     min-width: 0;
   }
