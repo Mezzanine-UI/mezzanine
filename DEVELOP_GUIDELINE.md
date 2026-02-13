@@ -88,7 +88,6 @@ packages/
 | `size`        | ✅ 已更新   | 尺寸系統                              |
 | `typography`  | ✅ 已更新   | 文字排版系統（primitives + semantic） |
 | `spacing`     | ✅ 已更新   | 間距系統（primitives + semantic）     |
-| `breakpoint`  | ⏳ 等待設計 | 響應式斷點                            |
 | `motion`      | ✅ 已更新   | 動畫參數（duration、easing、pattern） |
 | `transition`  | ✅ 已更新   | 轉場效果便利函數                      |
 | `css`         | 🔒 舊版維持 | CSS 工具函式                          |
@@ -919,25 +918,4 @@ Mezzanine UI v2 的 **Light/Dark Mode 已在 System 層級定義完成**，使�
 .mzn-button {
   padding: 16px; // 無法根據 mode 切換
 }
-```
-
-## 參考資源
-
-### 已完成的元件範例
-
-- **Button**：`packages/react/src/Button`
-- **Typography**：`packages/react/src/Typography`
-- **Skeleton**：`packages/react/src/Skeleton`
-- **Toggle**：`packages/react/src/Toggle`
-- **Badge**：`packages/react/src/Badge`
-- **Tag**：`packages/react/src/Tag`
-- **Tooltip**：`packages/react/src/Tooltip`
-- **Spin**：`packages/react/src/Spin`
-- **Message**：`packages/react/src/Message`
-- **Backdrop**：`packages/react/src/Backdrop`
-- **ResultState**：`packages/react/src/ResultState`
-- **PageFooter**：`packages/react/src/PageFooter`
-
-```
-
 ```
