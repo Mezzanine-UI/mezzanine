@@ -1,5 +1,4 @@
 @forward './utils';
-@forward './typography'; // @deprecated - will be removed in next major version
 @forward './primitives' as primitive-*;
 @forward './semantic' as semantic-*;
 @forward './sf-mono';

@@ -1,6 +1,3 @@
-/** @deprecated */
-export type SpacingLevel = number;
-
 /**
  * Spacing primitive scales - 間距原始級距（對應 px 值）
  */

@@ -1,6 +1,0 @@
-/* @deprecated */
-@function color($color-name) {
-  @warn "This 'color' function is deprecated. Please use 'palette.semantic-variable' instead.";
-
-  @return 'none';
-}
