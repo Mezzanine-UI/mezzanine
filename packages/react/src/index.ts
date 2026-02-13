@@ -77,14 +77,6 @@ export { default as Breadcrumb } from './Breadcrumb';
 export type { BreadcrumbItemProps, BreadcrumbProps } from './Breadcrumb';
 export { default as Drawer } from './Drawer';
 export type { DrawerPlacement, DrawerProps } from './Drawer';
-export { default as Menu, MenuDivider, MenuItem, MenuItemGroup } from './Menu';
-export type {
-  MenuDividerProps,
-  MenuItemGroupProps,
-  MenuItemProps,
-  MenuProps,
-  MenuSize,
-} from './Menu';
 export {
   default as Navigation,
   NavigationFooter,
@@ -397,14 +389,12 @@ export type {
   RadioSize,
 } from './Radio';
 export {
-  OptionGroup,
   default as Select,
   SelectControlContext,
   SelectTrigger,
   SelectTriggerTags,
 } from './Select';
 export type {
-  OptionGroupProps,
   SelectControl,
   SelectProps,
   SelectTriggerInputProps,
