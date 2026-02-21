@@ -214,112 +214,138 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
   },
 };
 
-export const SizeVariants: StoryObj = {
+export const HorizontalBase: StoryObj = {
   render: function Render() {
     return (
-      <>
-        <h2>Horizontal Layouts</h2>
+      <FormField
+        density={FormFieldDensity.BASE}
+        hintText="Label and input on the same row with base spacing"
+        hintTextIcon={InfoOutlineIcon}
+        label="Username"
+        layout={FormFieldLayout.HORIZONTAL}
+        name="username-h-base"
+      >
+        <Input placeholder="Enter username" />
+      </FormField>
+    );
+  },
+};
 
-        <h3>Horizontal Base</h3>
-        <FormField
-          density={FormFieldDensity.BASE}
-          hintText="Label and input on the same row with base spacing"
-          hintTextIcon={InfoOutlineIcon}
-          label="Username"
-          layout={FormFieldLayout.HORIZONTAL}
-          name="username-h-base"
-        >
-          <Input placeholder="Enter username" />
-        </FormField>
+export const HorizontalTight: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.TIGHT}
+        hintText="Label and input on the same row with tight spacing"
+        hintTextIcon={InfoOutlineIcon}
+        label="Email"
+        layout={FormFieldLayout.HORIZONTAL}
+        name="email-h-tight"
+      >
+        <Input placeholder="Enter email" />
+      </FormField>
+    );
+  },
+};
 
-        <h3>Horizontal Tight</h3>
-        <FormField
-          density={FormFieldDensity.TIGHT}
-          hintText="Label and input on the same row with tight spacing"
-          hintTextIcon={InfoOutlineIcon}
-          label="Email"
-          layout={FormFieldLayout.HORIZONTAL}
-          name="email-h-tight"
-        >
-          <Input placeholder="Enter email" />
-        </FormField>
+export const HorizontalNarrow: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.NARROW}
+        hintText="Label and input on the same row with narrow spacing"
+        hintTextIcon={InfoOutlineIcon}
+        label="Phone"
+        layout={FormFieldLayout.HORIZONTAL}
+        name="phone-h-narrow"
+      >
+        <Input placeholder="Enter phone" />
+      </FormField>
+    );
+  },
+};
 
-        <h3>Horizontal Narrow</h3>
-        <FormField
-          density={FormFieldDensity.NARROW}
-          hintText="Label and input on the same row with narrow spacing"
-          hintTextIcon={InfoOutlineIcon}
-          label="Phone"
-          layout={FormFieldLayout.HORIZONTAL}
-          name="phone-h-narrow"
-        >
-          <Input placeholder="Enter phone" />
-        </FormField>
+export const HorizontalWide: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.WIDE}
+        hintText="Label and input on the same row with wide spacing"
+        hintTextIcon={InfoOutlineIcon}
+        label="Address"
+        layout={FormFieldLayout.HORIZONTAL}
+        name="address-h-wide"
+      >
+        <Input placeholder="Enter address" />
+      </FormField>
+    );
+  },
+};
 
-        <h3>Horizontal Wide</h3>
-        <FormField
-          density={FormFieldDensity.WIDE}
-          hintText="Label and input on the same row with wide spacing"
-          hintTextIcon={InfoOutlineIcon}
-          label="Address"
-          layout={FormFieldLayout.HORIZONTAL}
-          name="address-h-wide"
-        >
-          <Input placeholder="Enter address" />
-        </FormField>
+export const StretchTight: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.TIGHT}
+        hintText="Compact vertical spacing between label and input"
+        hintTextIcon={InfoOutlineIcon}
+        label="First Name"
+        layout={FormFieldLayout.STRETCH}
+        name="firstname-s-tight"
+      >
+        <Input placeholder="Enter first name" />
+      </FormField>
+    );
+  },
+};
 
-        <hr style={{ margin: '40px 0' }} />
+export const StretchNarrow: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.NARROW}
+        hintText="Standard vertical spacing between label and input"
+        hintTextIcon={InfoOutlineIcon}
+        label="Last Name"
+        layout={FormFieldLayout.STRETCH}
+        name="lastname-s-narrow"
+      >
+        <Input placeholder="Enter last name" />
+      </FormField>
+    );
+  },
+};
 
-        <h2>Vertical/Stretch Layouts</h2>
+export const StretchWide: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        density={FormFieldDensity.WIDE}
+        hintText="Spacious vertical spacing between label and input"
+        hintTextIcon={InfoOutlineIcon}
+        label="Company"
+        layout={FormFieldLayout.STRETCH}
+        name="company-s-wide"
+      >
+        <Input placeholder="Enter company name" />
+      </FormField>
+    );
+  },
+};
 
-        <h3>Stretch Tight</h3>
-        <FormField
-          density={FormFieldDensity.TIGHT}
-          hintText="Compact vertical spacing between label and input"
-          hintTextIcon={InfoOutlineIcon}
-          label="First Name"
-          layout={FormFieldLayout.STRETCH}
-          name="firstname-s-tight"
-        >
-          <Input placeholder="Enter first name" />
-        </FormField>
-
-        <h3>Stretch Narrow</h3>
-        <FormField
-          density={FormFieldDensity.NARROW}
-          hintText="Standard vertical spacing between label and input"
-          hintTextIcon={InfoOutlineIcon}
-          label="Last Name"
-          layout={FormFieldLayout.STRETCH}
-          name="lastname-s-narrow"
-        >
-          <Input placeholder="Enter last name" />
-        </FormField>
-
-        <h3>Stretch Wide</h3>
-        <FormField
-          density={FormFieldDensity.WIDE}
-          hintText="Spacious vertical spacing between label and input"
-          hintTextIcon={InfoOutlineIcon}
-          label="Biography"
-          layout={FormFieldLayout.STRETCH}
-          name="bio-s-wide"
-        >
-          <Textarea placeholder="Tell us about yourself" rows={4} />
-        </FormField>
-
-        <h3>Vertical</h3>
-        <FormField
-          hintText="Default vertical layout with standard spacing"
-          hintTextIcon={InfoOutlineIcon}
-          label="Comments"
-          layout={FormFieldLayout.VERTICAL}
-          name="comments-vertical"
-          required
-        >
-          <Textarea placeholder="Add your comments" rows={4} />
-        </FormField>
-      </>
+export const Vertical: StoryObj = {
+  render: function Render() {
+    return (
+      <FormField
+        hintText="Default vertical layout with standard spacing"
+        hintTextIcon={InfoOutlineIcon}
+        label="Name"
+        layout={FormFieldLayout.VERTICAL}
+        name="name-vertical"
+        required
+      >
+        <Input placeholder="Enter your name" />
+      </FormField>
     );
   },
 };
