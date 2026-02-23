@@ -31,12 +31,11 @@ import {
   DropdownOption,
   DropdownStatus as DropdownStatusType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
+import { selectClasses as selectTriggerClasses } from '@mezzanine-ui/core/select';
 
 import Dropdown from '../Dropdown';
 import { FormControlContext } from '../Form';
-import {
-  useAutoCompleteValueControl,
-} from '../Form/useAutoCompleteValueControl';
+import { useAutoCompleteValueControl } from '../Form/useAutoCompleteValueControl';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { PopperProps } from '../Popper';
 import { SelectControlContext } from '../Select/SelectControlContext';
@@ -104,7 +103,7 @@ export interface AutoCompleteBaseProps
   emptyText?: string;
   /**
    * The id attribute of the input element.
-   * 
+   *
    * @important When using with react-hook-form or native forms, this prop is recommended.
    */
   id?: string;
@@ -145,9 +144,9 @@ export interface AutoCompleteBaseProps
   menuMaxHeight?: number | string;
   /**
    * The name attribute of the input element.
-   * 
+   *
    * @important When using with react-hook-form or native forms, this prop is recommended.
-   * 
+   *
    * @example With react-hook-form
    * ```tsx
    * const { register } = useForm();
@@ -259,7 +258,7 @@ export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
    * - counter: collapse extra tags into a counter tag showing the remaining count.
    * - wrap: wrap to new lines to display all tags.
    * @default 'counter'
-   * 
+   *
    */
   overflowStrategy?: 'counter' | 'wrap';
   /**
@@ -309,14 +308,18 @@ const BLUR_RESET_OPTIONS_DELAY = 120;
 /**
  * Type guard to check if value is array (multiple mode)
  */
-function isMultipleValue(value: SelectValue[] | SelectValue | null | undefined): value is SelectValue[] {
+function isMultipleValue(
+  value: SelectValue[] | SelectValue | null | undefined,
+): value is SelectValue[] {
   return Array.isArray(value);
 }
 
 /**
  * Type guard to check if value is single (single mode)
  */
-function isSingleValue(value: SelectValue[] | SelectValue | null | undefined): value is SelectValue {
+function isSingleValue(
+  value: SelectValue[] | SelectValue | null | undefined,
+): value is SelectValue {
   return value !== null && value !== undefined && !Array.isArray(value);
 }
 
@@ -404,15 +407,19 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const isOpenControlled = openProp !== undefined;
     const open = isOpenControlled ? openProp : uncontrolledOpen;
 
-    const toggleOpen = useCallback((newOpen: boolean | ((prev: boolean) => boolean)) => {
-      const nextValue = typeof newOpen === 'function' ? newOpen(open) : newOpen;
+    const toggleOpen = useCallback(
+      (newOpen: boolean | ((prev: boolean) => boolean)) => {
+        const nextValue =
+          typeof newOpen === 'function' ? newOpen(open) : newOpen;
 
-      if (!isOpenControlled) {
-        setUncontrolledOpen(nextValue);
-      }
+        if (!isOpenControlled) {
+          setUncontrolledOpen(nextValue);
+        }
 
-      onVisibilityChange?.(nextValue);
-    }, [isOpenControlled, open, onVisibilityChange]);
+        onVisibilityChange?.(nextValue);
+      },
+      [isOpenControlled, open, onVisibilityChange],
+    );
     const {
       focused,
       onFocus,
@@ -425,10 +432,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } = useAutoCompleteValueControl(
       isMultiple
         ? {
-          defaultValue: isMultipleValue(defaultValue) ? defaultValue : undefined,
+          defaultValue: isMultipleValue(defaultValue)
+            ? defaultValue
+            : undefined,
           disabledOptionsFilter,
           mode: 'multiple',
-          onChange: onChangeProp as ((newOptions: SelectValue[]) => void) | undefined,
+          onChange: onChangeProp as
+            | ((newOptions: SelectValue[]) => void)
+            | undefined,
           onClear: onClearProp,
           onClose: () => toggleOpen(false),
           onSearch,
@@ -436,15 +447,22 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           value: isMultipleValue(valueProp) ? valueProp : undefined,
         }
         : {
-          defaultValue: isSingleValue(defaultValue) ? defaultValue : undefined,
+          defaultValue: isSingleValue(defaultValue)
+            ? defaultValue
+            : undefined,
           disabledOptionsFilter,
           mode: 'single',
-          onChange: onChangeProp as ((newOption: SelectValue | null) => void) | undefined,
+          onChange: onChangeProp as
+            | ((newOption: SelectValue | null) => void)
+            | undefined,
           onClear: onClearProp,
           onClose: () => toggleOpen(false),
           onSearch,
           options: optionsProp,
-          value: isSingleValue(valueProp) || valueProp === null ? valueProp : undefined,
+          value:
+            isSingleValue(valueProp) || valueProp === null
+              ? valueProp
+              : undefined,
         },
     );
 
@@ -504,11 +522,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       wrappedOnChange: (chooseOption) => wrappedOnChange(chooseOption),
     });
 
-    const {
-      cancelSearch,
-      isLoading,
-      runSearch,
-    } = useAutoCompleteSearch({
+    const { cancelSearch, isLoading, runSearch } = useAutoCompleteSearch({
       asyncData,
       loading,
       onSearch,
@@ -539,7 +553,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
         return result;
       },
-      [clearNewlyCreated, isMultiple, isSingle, markUnselected, onChange, value],
+      [
+        clearNewlyCreated,
+        isMultiple,
+        isSingle,
+        markUnselected,
+        onChange,
+        value,
+      ],
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
@@ -582,12 +603,31 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       [clearPendingOptionsReset],
     );
 
+    useEffect(() => {
+      if (!isMultiple) return;
+
+      const hiddenTriggerInput =
+        nodeRef.current?.querySelector<HTMLInputElement>(
+          `.${selectTriggerClasses.triggerInput}`,
+        );
+
+      if (!hiddenTriggerInput) return;
+
+      const hasSelectedValue = isMultipleValue(value) && value.length > 0;
+      const bridgeValue = searchText || (hasSelectedValue ? '\u200B' : '');
+
+      if (hiddenTriggerInput.value === bridgeValue) return;
+
+      hiddenTriggerInput.value = bridgeValue;
+      hiddenTriggerInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }, [isMultiple, searchText, value]);
+
     // In single mode, show searchText when focused, otherwise show selected value
     // In multiple mode, always return empty string to avoid displaying "0"
     const renderValue = useMemo(() => {
       if (
-        isSingle
-        && (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
+        isSingle &&
+        (focused || (!shouldClearSearchTextOnBlur && !value && searchText))
       ) {
         return () => searchText;
       }
@@ -595,7 +635,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         return () => '';
       }
       return undefined;
-    }, [focused, isMultiple, isSingle, searchText, shouldClearSearchTextOnBlur, value]);
+    }, [
+      focused,
+      isMultiple,
+      isSingle,
+      searchText,
+      shouldClearSearchTextOnBlur,
+      value,
+    ]);
 
     function getPlaceholder() {
       if (isSingle && focused && isSingleValue(value)) {
@@ -699,9 +746,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       !!searchText &&
       options.find((option) => option.name === searchText) === undefined;
 
-    const shouldShowCreateAction = !!(searchTextExistWithoutOption && creationEnabled && insertText);
+    const shouldShowCreateAction = !!(
+      searchTextExistWithoutOption &&
+      creationEnabled &&
+      insertText
+    );
 
-    const context = useMemo(() => ({ onChange: wrappedOnChange, value }), [wrappedOnChange, value]);
+    const context = useMemo(
+      () => ({ onChange: wrappedOnChange, value }),
+      [wrappedOnChange, value],
+    );
 
     // Convert SelectValue[] to DropdownOption[]
     const dropdownOptions: DropdownOption[] = useMemo(() => {
@@ -746,6 +800,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       : dropdownOptions.length === 0
         ? 'empty'
         : undefined;
+    const shouldForceClearable = isMultiple
+      ? (isMultipleValue(value) && value.length > 0) ||
+      searchText.trim().length > 0
+      : isSingleValue(value);
 
     // Handle dropdown option selection
     const handleDropdownSelect = useCallback(
@@ -843,31 +901,32 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       wrappedOnChange,
     });
 
-    const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
-      (e) => {
-        if (e.key === 'Escape') {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleOpen(false);
-          setActiveIndex(null);
-          setListboxHasVisualFocus(false);
-          onFocus(false);
-          inputElementRef.current?.blur();
-          inputProps?.onKeyDown?.(e);
-          return;
-        }
+    const onSearchInputKeyDown: KeyboardEventHandler<HTMLInputElement> =
+      useCallback(
+        (e) => {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleOpen(false);
+            setActiveIndex(null);
+            setListboxHasVisualFocus(false);
+            onFocus(false);
+            inputElementRef.current?.blur();
+            inputProps?.onKeyDown?.(e);
+            return;
+          }
 
-        handleInputKeyDown(e);
-      },
-      [
-        handleInputKeyDown,
-        inputProps,
-        onFocus,
-        setActiveIndex,
-        setListboxHasVisualFocus,
-        toggleOpen,
-      ],
-    );
+          handleInputKeyDown(e);
+        },
+        [
+          handleInputKeyDown,
+          inputProps,
+          onFocus,
+          setActiveIndex,
+          setListboxHasVisualFocus,
+          toggleOpen,
+        ],
+      );
 
     // Handle visibility change from Dropdown to prevent flickering
     const handleVisibilityChange = useCallback(
@@ -884,11 +943,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             const menuElement = document.getElementById(menuId);
             const activeElement = document.activeElement;
             const activeWithinHost = !!(
-              activeElement
-              && (
-                nodeRef.current?.contains(activeElement)
-                || (menuElement && menuElement.contains(activeElement))
-              )
+              activeElement &&
+              (nodeRef.current?.contains(activeElement) ||
+                (menuElement && menuElement.contains(activeElement)))
             );
 
             skipNextMultipleCloseResetRef.current = false;
@@ -922,7 +979,9 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       (keyword: string) => {
         if (!creationEnabled || !keyword.length) return false;
 
-        const matchingOption = options.find((option) => option.name === keyword);
+        const matchingOption = options.find(
+          (option) => option.name === keyword,
+        );
 
         if (!matchingOption) return false;
 
@@ -940,7 +999,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           return false;
         }
 
-        const alreadySelected = isOptionSelected(matchingOption, value, isMultiple);
+        const alreadySelected = isOptionSelected(
+          matchingOption,
+          value,
+          isMultiple,
+        );
 
         if (!alreadySelected) {
           wrappedOnChange(matchingOption);
@@ -984,21 +1047,18 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       <SelectControlContext.Provider value={context}>
         <div
           ref={nodeRef}
-          className={cx(
-            classes.host,
-            {
-              [classes.hostFullWidth]: fullWidth,
-              [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
-              [classes.hostMode(mode)]: mode,
-            },
-          )}
+          className={cx(classes.host, {
+            [classes.hostFullWidth]: fullWidth,
+            [classes.hostInsideClosed]: inputPosition === 'inside' && !open,
+            [classes.hostMode(mode)]: mode,
+          })}
         >
           <Dropdown
             actionText={
               shouldShowCreateAction
-                ? (createActionText
+                ? createActionText
                   ? createActionText(insertText)
-                  : createActionTextTemplate.replace('{text}', insertText))
+                  : createActionTextTemplate.replace('{text}', insertText)
                 : undefined
             }
             activeIndex={activeIndex}
@@ -1013,9 +1073,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             maxHeight={menuMaxHeight}
             mode={mode}
             onActionCustom={
-              shouldShowCreateAction
-                ? handleActionCustom
-                : undefined
+              shouldShowCreateAction ? handleActionCustom : undefined
             }
             onItemHover={setActiveIndex}
             onSelect={handleDropdownSelect}
@@ -1041,6 +1099,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               clearable
               disabled={isInputDisabled}
               fullWidth={fullWidth}
+              isForceClearable={shouldForceClearable}
               inputRef={composedInputRef}
               mode={mode}
               onTagClose={wrappedOnChange}
@@ -1067,9 +1126,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               showTextInputAfterTags
               suffixAction={onClickSuffixActionIcon}
               value={
-                mode === 'multiple' && isMultipleValue(value) && value.length === 0
+                mode === 'multiple' &&
+                  isMultipleValue(value) &&
+                  value.length === 0
                   ? undefined
-                  : value ?? undefined
+                  : (value ?? undefined)
               }
               {...(mode === 'single' && renderValue ? { renderValue } : {})}
             />
@@ -1081,5 +1142,3 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 );
 
 export default AutoComplete;
-
-
