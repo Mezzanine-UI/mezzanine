@@ -31,7 +31,11 @@ import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
 import { SelectControlContext } from './SelectControlContext';
 import SelectTrigger from './SelectTrigger';
-import { SelectTriggerInputProps, SelectTriggerProps, SelectValue } from './typings';
+import {
+  SelectTriggerInputProps,
+  SelectTriggerProps,
+  SelectValue,
+} from './typings';
 
 export interface SelectBaseProps
   extends Omit<
@@ -221,7 +225,11 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       toggleOpen(false);
     }, [onBlur]);
 
-    const { onChange, onClear: onClearFromControl, value } = useSelectValueControl({
+    const {
+      onChange,
+      onClear: onClearFromControl,
+      value,
+    } = useSelectValueControl({
       defaultValue,
       mode,
       onChange: onChangeProp,
@@ -386,33 +394,41 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
     const handleDropdownSelect = useCallback(
       (option: DropdownOption) => {
         if (mode === 'multiple' && dropdownType === 'tree') {
-          const onChangeMultiple = onChange as SelectMultipleValueControl['onChange'];
+          const onChangeMultiple =
+            onChange as SelectMultipleValueControl['onChange'];
           const currentValues = Array.isArray(value) ? value : [];
           const allDescendantIds = getAllDescendantIds(option);
-          const allDescendantValues: SelectValue[] = allDescendantIds.map((id) => {
-            const foundOption = findOptionById(id, options);
+          const allDescendantValues: SelectValue[] = allDescendantIds.map(
+            (id) => {
+              const foundOption = findOptionById(id, options);
 
-            return {
-              id,
-              name: foundOption?.name || id,
-            };
-          });
+              return {
+                id,
+                name: foundOption?.name || id,
+              };
+            },
+          );
 
           const selectedDescendantIds = allDescendantIds.filter((id) =>
             currentValues.some((v) => String(v.id) === id),
           );
-          const allSelected = selectedDescendantIds.length === allDescendantIds.length;
+          const allSelected =
+            selectedDescendantIds.length === allDescendantIds.length;
 
           if (allSelected) {
             // Deselect all descendants in a single update
-            const descendantIdSet = new Set(allDescendantIds.map((id) => String(id)));
+            const descendantIdSet = new Set(
+              allDescendantIds.map((id) => String(id)),
+            );
             const nextValues = currentValues.filter(
               (v) => !descendantIdSet.has(String(v.id)),
             );
             onChangeMultiple(nextValues);
           } else {
             // Select all descendants that are not yet selected in a single update
-            const existingIdSet = new Set(currentValues.map((v) => String(v.id)));
+            const existingIdSet = new Set(
+              currentValues.map((v) => String(v.id)),
+            );
             const valuesToAdd = allDescendantValues.filter(
               (descValue) => !existingIdSet.has(String(descValue.id)),
             );
@@ -434,7 +450,16 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           }
         }
       },
-      [mode, onChange, onClose, value, dropdownType, getAllDescendantIds, findOptionById, options],
+      [
+        mode,
+        onChange,
+        onClose,
+        value,
+        dropdownType,
+        getAllDescendantIds,
+        findOptionById,
+        options,
+      ],
     );
 
     const handleVisibilityChange = useCallback(
@@ -454,7 +479,6 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     const resolvedInputProps: SelectTriggerInputProps = {
       ...inputProps,
-      placeholder: getPlaceholder(),
       role: 'combobox',
     };
 
@@ -512,6 +536,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               size={size}
               suffixActionIcon={suffixActionIcon}
               value={value === null ? undefined : value}
+              placeholder={getPlaceholder()}
             />
           </Dropdown>
         </div>
