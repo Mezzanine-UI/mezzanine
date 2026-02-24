@@ -9,6 +9,7 @@ import {
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
@@ -178,6 +179,27 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       );
     }, [currentPath, filterText, href, title]);
 
+    const titleRef = useRef<HTMLSpanElement>(null);
+    const [titleOverflow, setTitleOverflow] = useState(false);
+
+    useEffect(() => {
+      if (!titleRef.current) return;
+
+      const resizeObserver = new ResizeObserver(() => {
+        if (!titleRef.current) return false;
+
+        const { scrollWidth, clientWidth } = titleRef.current;
+
+        setTitleOverflow(scrollWidth > clientWidth);
+      });
+
+      resizeObserver.observe(titleRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }, [title]);
+
     return (
       <li
         {...rest}
@@ -198,7 +220,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           options={{
             placement: 'right',
           }}
-          title={collapsed ? title : undefined}
+          title={collapsed || titleOverflow ? title : undefined}
         >
           {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
             <Component
@@ -233,7 +255,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               {icon && <Icon className={classes.icon} icon={icon} />}
 
               <Fade in={collapsed === false || !icon}>
-                <span className={classes.title}>{title}</span>
+                <span ref={titleRef} className={classes.title}>
+                  {title}
+                </span>
               </Fade>
 
               {badge}
