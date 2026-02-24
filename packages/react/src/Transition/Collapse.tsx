@@ -49,7 +49,8 @@ export interface CollapseProps
 
 /**
  * The react component for `mezzanine` transition collapse.
- * @deprecated 設計師未定義，暫時標記為 deprecated
+ * @deprecated 設計師未定義，暫時標記為 deprecated.
+ * 目前 NavigationOption 與 Accordion 正在使用此元件.
  */
 const Collapse = forwardRef<HTMLElement, CollapseProps>(
   function Collapse(props, ref) {
