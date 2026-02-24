@@ -1,16 +1,18 @@
-import { forwardRef, ReactNode, useEffect, useRef, useState } from 'react';
+import { forwardRef, ReactNode, use, useEffect, useRef, useState } from 'react';
 import { navigationUserMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import { ChevronDownIcon, UserIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import Dropdown, { DropdownProps } from '../Dropdown';
 import Tooltip from '../Tooltip';
+import { NavigationActivatedContext } from './context';
 
 export interface NavigationUserMenuProps
   extends Omit<DropdownProps, 'children' | 'type'> {
   children?: ReactNode;
   className?: string;
-  imgSrc?: string;
+  collapsedPlacement?: DropdownProps['placement'];
+  imgSrc: string;
   onClick?: () => void;
 }
 
@@ -23,23 +25,26 @@ const NavigationUserMenu = forwardRef<
     open: openProp,
     onClose,
     placement = 'top-end',
+    collapsedPlacement = 'top-start',
     onVisibilityChange,
     ...dropdownRest
   } = rest;
   const [imgError, setImgError] = useState(false);
   const [_open, setOpen] = useState(false);
 
+  const { collapsed } = use(NavigationActivatedContext);
+
   const open = openProp ?? _open;
 
   const userNameRef = useRef<HTMLSpanElement>(null);
-  const [userNameTooltip, setUserNameTooltip] = useState(false);
+  const [userNameOverflow, setUserNameOverflow] = useState(false);
 
   useEffect(() => {
     if (!userNameRef.current) return;
 
     const resizeObserver = new ResizeObserver(() => {
       if (userNameRef.current) {
-        setUserNameTooltip(
+        setUserNameOverflow(
           userNameRef.current.scrollWidth > userNameRef.current.offsetWidth,
         );
       }
@@ -56,7 +61,7 @@ const NavigationUserMenu = forwardRef<
     <Dropdown
       {...dropdownRest}
       open={open}
-      placement={placement}
+      placement={collapsed ? collapsedPlacement : placement}
       onVisibilityChange={() => {
         setOpen(!open);
         onVisibilityChange?.(!open);
@@ -68,37 +73,44 @@ const NavigationUserMenu = forwardRef<
       }}
     >
       <button
-        type="button"
-        ref={ref}
         className={cx(classes.host, open && classes.open, className)}
+        ref={ref}
+        type="button"
       >
-        <span className={classes.avatar}>
-          {imgError ? (
-            <Icon icon={UserIcon} />
-          ) : (
-            <img
-              alt="User avatar"
-              className={classes.avatar}
-              src={imgSrc}
-              onError={() => setImgError(true)}
-            />
-          )}
-        </span>
-        {children && (
-          <Tooltip title={userNameTooltip && !open ? children : undefined}>
-            {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
-              <span
-                className={classes.userName}
-                onMouseEnter={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-                ref={tooltipRef}
-              >
-                <span ref={userNameRef}>{children}</span>
+        <Tooltip
+          options={{
+            placement: collapsed ? 'right' : 'right',
+          }}
+          title={userNameOverflow && !open ? children : undefined}
+        >
+          {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+            <span
+              className={classes.content}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              ref={tooltipRef}
+            >
+              <span className={classes.avatar}>
+                {imgError ? (
+                  <Icon icon={UserIcon} />
+                ) : (
+                  <img
+                    alt="User avatar"
+                    className={classes.avatar}
+                    src={imgSrc}
+                    onError={() => setImgError(true)}
+                  />
+                )}
               </span>
-            )}
-          </Tooltip>
-        )}
-        <Icon className={classes.icon} icon={ChevronDownIcon} />
+              {children && (
+                <span className={classes.userName}>
+                  <span ref={userNameRef}>{children}</span>
+                </span>
+              )}
+              <Icon className={classes.icon} icon={ChevronDownIcon} />
+            </span>
+          )}
+        </Tooltip>
       </button>
     </Dropdown>
   );
