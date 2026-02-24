@@ -1,0 +1,3 @@
+@use './form';
+
+$prefix: #{form.$prefix}-group;
