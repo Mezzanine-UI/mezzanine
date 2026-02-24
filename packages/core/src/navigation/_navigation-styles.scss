@@ -351,7 +351,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   }
 
   &--active.#{$option-prefix}--open {
-    .#{$option-prefix}__content {
+    & > .#{$option-prefix}__content {
       background-color: palette.semantic-variable('background', brand-ghost);
     }
   }
