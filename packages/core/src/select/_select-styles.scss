@@ -44,6 +44,10 @@
       inset: 0;
       z-index: -1;
     }
+
+    &:has(.#{text-field.$prefix}__prefix) {
+      padding-left: spacing.semantic-variable(padding, horizontal, cozy);
+    }
   }
 
   &__tags-input-wrapper {
