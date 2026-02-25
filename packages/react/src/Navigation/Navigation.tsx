@@ -165,10 +165,10 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       return { headerComponent, footerComponent, items, level1Items };
     }, [flattenedChildren]);
 
-  const [ready, setReady] = useState(false);
-  // 掃描 level1Items 與其子孫(最多到level3)，找出 href 是否匹配，以決定是否預設展開以及 activatedPath
+  const [hrefActivated, setHrefActivated] = useState(false);
+  // Scan level1Items and its descendants (up to level3) to find out whether href matches to determine whether to preset expansion and activatedPath
   useEffect(() => {
-    if (ready || !currentPathname) {
+    if (hrefActivated || !currentPathname) {
       return;
     }
 
@@ -210,8 +210,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     };
 
     checkActivatedPathKey(level1Items, []);
-    setReady(true);
-  }, [combineSetActivatedPath, currentPathname, level1Items, ready]);
+    setHrefActivated(true);
+  }, [combineSetActivatedPath, currentPathname, level1Items, hrefActivated]);
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
