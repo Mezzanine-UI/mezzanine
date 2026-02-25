@@ -18,6 +18,11 @@
   width: 100%;
   gap: spacing.semantic-variable(gap, comfort);
 
+  &__result-summary {
+    margin-right: auto;
+    width: 100%;
+  }
+
   &__container {
     align-items: center;
     column-gap: spacing.semantic-variable(gap, comfort);
@@ -95,6 +100,10 @@
 
   .#{$jumper-prefix}__input {
     width: spacing.semantic-variable(size, element, loose-fixed);
+
+    .mzn-input {
+      min-width: unset;
+    }
 
     $input-padding-container: mzn-input--number;
     .#{$input-padding-container} {
