@@ -6,6 +6,7 @@ import {
   isValidElement,
   ReactElement,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
@@ -95,11 +96,17 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     [onCollapseChange],
   );
 
-  const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
+  const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>(
+    activatedPath || [],
+  );
+  const [activatedPathKey, setActivatedPathKey] = useState<string>(
+    activatedPath ? activatedPath.join('::') : '',
+  );
   const combineSetActivatedPath = useCallback(
     (newActivatedPath: string[]) => {
       onOptionClick?.(newActivatedPath);
       setInnerActivatedPath(newActivatedPath);
+      setActivatedPathKey(newActivatedPath.join('::'));
     },
     [onOptionClick],
   );
@@ -158,6 +165,54 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       return { headerComponent, footerComponent, items, level1Items };
     }, [flattenedChildren]);
 
+  const [ready, setReady] = useState(false);
+  // 掃描 level1Items 與其子孫(最多到level3)，找出 href 是否匹配，以決定是否預設展開以及 activatedPath
+  useEffect(() => {
+    if (ready || !currentPathname) {
+      return;
+    }
+
+    const checkActivatedPathKey = (
+      items: ReactElement<NavigationOptionProps>[],
+      path: string[],
+    ): boolean => {
+      items.forEach((item) => {
+        if (!isValidElement(item) || item.type !== NavigationOption) {
+          return;
+        }
+
+        const newKey = item.props.id || item.props.title || item.props.href;
+
+        if (!newKey) {
+          return;
+        }
+
+        const newPath = [...path, newKey];
+
+        if (item.props.href && item.props.href === currentPathname) {
+          combineSetActivatedPath(newPath);
+
+          return true;
+        }
+
+        if (item.props.children) {
+          const flattenedChildren = flattenChildren(
+            item.props.children,
+          ) as ReactElement<NavigationOptionProps>[];
+
+          if (checkActivatedPathKey(flattenedChildren, newPath)) {
+            return true;
+          }
+        }
+      });
+
+      return false;
+    };
+
+    checkActivatedPathKey(level1Items, []);
+    setReady(true);
+  }, [combineSetActivatedPath, currentPathname, level1Items, ready]);
+
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
   const { collapsedItems, collapsedMenuItems } = useMemo(() => {
@@ -186,6 +241,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       <NavigationActivatedContext.Provider
         value={{
           activatedPath: activatedPath || innerActivatedPath,
+          activatedPathKey,
           collapsed,
           currentPathname,
           filterText,
