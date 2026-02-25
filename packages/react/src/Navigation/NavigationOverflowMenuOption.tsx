@@ -65,21 +65,21 @@ const NavigationOverflowMenuOption = forwardRef<
     () => [...parentPath, currentKey],
     [parentPath, currentKey],
   );
+  const currentPathKey = currentPath.join('::');
 
   const {
     activatedPath,
+    activatedPathKey,
     setActivatedPath,
-    currentPathname,
     optionsAnchorComponent,
   } = use(NavigationActivatedContext);
 
+  // Default open if current path is activated
   useEffect(() => {
-    if (currentPathname === href) {
-      setActivatedPath(currentPath);
+    if (activatedPathKey.startsWith(currentPathKey)) {
       setOpen(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [activatedPathKey, currentLevel, currentPathKey]);
 
   const Component = href
     ? (anchorComponent ?? optionsAnchorComponent ?? 'a')

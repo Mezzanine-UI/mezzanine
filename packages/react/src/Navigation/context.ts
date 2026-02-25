@@ -1,14 +1,20 @@
 import { createContext } from 'react';
 
-export const navigationOptionLevelContextDefaultValues = { level: 0, path: [] };
+export const navigationOptionLevelContextDefaultValues = {
+  level: 0,
+  path: [],
+  pathKey: '',
+};
 
 export const NavigationOptionLevelContext = createContext<{
   level: number;
   path: string[];
+  pathKey: string;
 }>(navigationOptionLevelContextDefaultValues);
 
 export const NavigationActivatedContext = createContext<{
   activatedPath: string[];
+  activatedPathKey: string;
   collapsed: boolean;
   currentPathname: string | null;
   filterText: string;

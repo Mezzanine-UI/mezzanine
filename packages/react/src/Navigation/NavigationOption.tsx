@@ -88,7 +88,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       children,
       className,
       anchorComponent,
-      defaultOpen = false,
+      defaultOpen,
       href,
       icon,
       id,
@@ -97,7 +97,17 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       ...rest
     } = props;
 
-    const [open, setOpen] = useState<boolean>(defaultOpen);
+    const {
+      activatedPathKey,
+      activatedPath,
+      collapsed,
+      filterText,
+      handleCollapseChange,
+      setActivatedPath,
+      optionsAnchorComponent,
+    } = use(NavigationActivatedContext);
+
+    const [open, setOpen] = useState<boolean>(defaultOpen ?? false);
 
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
@@ -110,28 +120,12 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       () => [...parentPath, currentKey],
       [parentPath, currentKey],
     );
+    const currentPathKey = currentPath.join('::');
 
-    const {
-      activatedPath,
-      collapsed,
-      currentPathname,
-      filterText,
-      handleCollapseChange,
-      setActivatedPath,
-      optionsAnchorComponent,
-    } = use(NavigationActivatedContext);
-
-    useEffect(() => {
-      if (currentPathname === href) {
-        setActivatedPath(currentPath);
-        setOpen(true);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const Component = href
-      ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
-      : 'div';
+    const Component =
+      href && !children
+        ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+        : 'div';
 
     const flattenedChildren = useMemo(
       () => flattenChildren(children) as NavigationOptionChildren,
@@ -164,6 +158,13 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
       return { badge: badgeComponent, items };
     }, [flattenedChildren]);
+
+    // Default open if current path is activated
+    useEffect(() => {
+      if (activatedPathKey.startsWith(currentPathKey)) {
+        setOpen(true);
+      }
+    }, [activatedPathKey, currentLevel, currentPathKey]);
 
     const [filter, setFilter] = useState(true);
 
@@ -268,17 +269,12 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           )}
         </Tooltip>
         {children && !collapsed && (
-          <Collapse
-            className={classes.childrenWrapper}
-            style={{
-              width: '100%',
-            }}
-            in={!!open}
-          >
+          <Collapse lazyMount className={cx(classes.childrenWrapper)} in={open}>
             <NavigationOptionLevelContext.Provider
               value={{
                 level: currentLevel,
                 path: currentPath,
+                pathKey: currentPathKey,
               }}
             >
               <ul className={classes.group}>{items}</ul>
