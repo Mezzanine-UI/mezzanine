@@ -147,6 +147,26 @@ describe('DropdownItemCard', () => {
       await user.click(option);
       expect(onCheckedChange).not.toHaveBeenCalled();
     });
+
+    it('should call onCheckedChange once when clicking checkbox in multiple mode with prefix', async () => {
+      const user = userEvent.setup();
+      const onCheckedChange = jest.fn();
+      const onClick = jest.fn();
+      render(
+        <DropdownItemCard
+          {...defaultProps}
+          mode="multiple"
+          checkSite="prefix"
+          onCheckedChange={onCheckedChange}
+          onClick={onClick}
+        />
+      );
+      const checkbox = screen.getByRole('checkbox');
+      await user.click(checkbox);
+      expect(onCheckedChange).toHaveBeenCalledTimes(1);
+      expect(onCheckedChange).toHaveBeenCalledWith(true);
+      expect(onClick).not.toHaveBeenCalled();
+    });
   });
 
   describe('single mode', () => {

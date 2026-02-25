@@ -316,8 +316,14 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
                   disabled={disabled}
                   indeterminate={indeterminate}
                   onChange={handleCheckboxChange}
-                  onClick={(event) => event.stopPropagation()}
-                  onMouseDown={(event) => event.stopPropagation()}
+                  {...(onCheckedChange
+                    ? {
+                        onClick: (event: React.MouseEvent) =>
+                          event.stopPropagation(),
+                        onMouseDown: (event: React.MouseEvent) =>
+                          event.stopPropagation(),
+                      }
+                    : {})}
                 />
               )}
             </div>
