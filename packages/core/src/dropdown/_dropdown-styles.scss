@@ -272,6 +272,10 @@ $section-configs: (
       transition.standard(border, fast),
       transition.standard(box-shadow, fast);
 
+    &:first-child {
+      margin-top: 2px;
+    }
+
     &--disabled {
       cursor: not-allowed;
 
