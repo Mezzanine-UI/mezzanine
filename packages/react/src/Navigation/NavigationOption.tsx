@@ -274,7 +274,6 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
               value={{
                 level: currentLevel,
                 path: currentPath,
-                pathKey: currentPathKey,
               }}
             >
               <ul className={classes.group}>{items}</ul>
