@@ -22,6 +22,7 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
   const {
     active,
     className,
+    clearable: clearableProp = false,
     disabled,
     forceHideSuffixActionIcon,
     inputProps,
@@ -100,6 +101,11 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
     return {};
   })();
 
+  const hasMultipleSelections =
+    mode === 'multiple' && Array.isArray(props.value) && props.value.length > 0;
+  const shouldEnableClearable =
+    isForceClearable || (clearableProp && hasMultipleSelections);
+
   return (
     <TextField
       ref={innerRef}
@@ -120,14 +126,10 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         className,
       )}
       error={type === 'error'}
+      forceShowClearable={shouldEnableClearable}
       size={size}
       suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
-      clearable={
-        isForceClearable ||
-        (mode === 'multiple' &&
-          Array.isArray(props.value) &&
-          !!props.value.length)
-      }
+      clearable={shouldEnableClearable}
     >
       <input
         {...inputProps}
@@ -144,21 +146,25 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         value={renderValue()}
       />
 
-      {isMultipleSelection(props) && props.value?.length && (
-        <SelectTriggerTags
-          disabled={disabled}
-          overflowStrategy={overflowStrategy}
-          inputProps={inputProps}
-          inputRef={inputRef}
-          onTagClose={onTagClose}
-          readOnly={readOnly}
-          required={required}
-          searchText={searchText}
-          size={size}
-          showTextInputAfterTags={showTextInputAfterTags}
-          value={props.value}
-        />
-      )}
+      {
+        isMultipleSelection(props) && props.value?.length
+          ? (
+            <SelectTriggerTags
+              disabled={disabled}
+              overflowStrategy={overflowStrategy}
+              inputProps={inputProps}
+              inputRef={inputRef}
+              onTagClose={onTagClose}
+              readOnly={readOnly}
+              required={required}
+              searchText={searchText}
+              size={size}
+              showTextInputAfterTags={showTextInputAfterTags}
+              value={props.value}
+            />
+          )
+          : null
+      }
     </TextField>
   );
 }
