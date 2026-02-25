@@ -391,6 +391,13 @@ export type {
   RadioProps,
   RadioSize,
 } from './Radio';
+export { default as Cascader, CascaderPanel } from './Cascader';
+export type {
+  CascaderOption,
+  CascaderPanelProps,
+  CascaderProps,
+  CascaderSize,
+} from './Cascader';
 export {
   default as Select,
   SelectControlContext,
