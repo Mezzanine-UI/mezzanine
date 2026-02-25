@@ -368,6 +368,39 @@ describe('<Dropdown />', () => {
         expect(screen.getByText('Parent')).toBeInTheDocument();
       });
     });
+
+    it('should pass toggleCheckedOnClick to dropdown items', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      const treeOptions: DropdownOption[] = [
+        {
+          id: '1',
+          name: 'Parent',
+          showCheckbox: true,
+          children: [{ id: '1-1', name: 'Child', showCheckbox: true }],
+        },
+      ];
+      render(
+        <Dropdown
+          mode="multiple"
+          onSelect={onSelect}
+          options={treeOptions}
+          toggleCheckedOnClick={true}
+          type="tree"
+          value={[]}
+          inputPosition="outside"
+        >
+          <Button>Trigger</Button>
+        </Dropdown>
+      );
+      await user.click(screen.getByText('Trigger'));
+      await waitFor(() => {
+        expect(screen.getByText('Parent')).toBeInTheDocument();
+      });
+
+      await user.click(screen.getByText('Parent'));
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+    });
   });
 
   describe('prop: onItemHover', () => {

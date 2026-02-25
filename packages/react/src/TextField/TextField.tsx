@@ -57,6 +57,11 @@ export interface TextFieldBaseProps
    */
   clearable?: boolean;
   /**
+   * Force clear button visibility logic to ignore input value check.
+   * @default false
+   */
+  forceShowClearable?: boolean;
+  /**
    * Whether the field is in error state.
    * @default false
    */
@@ -149,6 +154,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       clearable = false,
       disabled,
       error = false,
+      forceShowClearable = false,
       fullWidth = true,
       onClear,
       onClick: onClickProps,
@@ -266,7 +272,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
     const isChildrenFunction = typeof children === 'function';
     const shouldShowClearable =
       clearable &&
-      hasValue &&
+      (forceShowClearable || hasValue) &&
       (isHovered || typing || isFocused);
 
     const paddingInfo: TextFieldPaddingInfo = {
