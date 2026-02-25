@@ -1,2 +1,2 @@
-export { default } from './Layout';
-export type { LayoutProps } from './Layout';
+export { default, LayoutMain, LayoutSidePanel } from './Layout';
+export type { LayoutMainProps, LayoutProps, LayoutSidePanelProps } from './Layout';

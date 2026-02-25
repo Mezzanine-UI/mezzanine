@@ -1,13 +1,17 @@
 @use '~@mezzanine-ui/system/z-index';
 @use '~@mezzanine-ui/system/palette';
 @use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/effect' as effect;
 
 @use './layout' as *;
 
 .#{$prefix} {
   &__main {
-    margin-inline-end: calc(var(--mzn-layout-side-panel-width) + 1px);
     min-inline-size: spacing.semantic-variable(size, container, slim);
+
+    .#{$prefix}--open & {
+      margin-inline-end: calc(var(--mzn-layout-side-panel-width) + 1px);
+    }
   }
 
   &__divider {
@@ -25,6 +29,11 @@
       inset-inline-start: -4px;
       inline-size: 9px;
       position: absolute;
+    }
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+      outline: none;
     }
 
     &--dragging {

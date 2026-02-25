@@ -1,19 +1,47 @@
 'use client';
 
-import { forwardRef, useCallback, useRef, useState } from 'react';
+import {
+  Children,
+  forwardRef,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { layoutClasses as classes } from '@mezzanine-ui/core/layout';
 import { cx } from '../utils/cx';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-// size-container-slim = 240px
 const MIN_PANEL_WIDTH = 240;
+const ARROW_KEY_STEP = 10;
+
+export interface LayoutMainProps {
+  children?: React.ReactNode;
+}
+
+export function LayoutMain({ children }: LayoutMainProps) {
+  return <>{children}</>;
+}
+
+LayoutMain.displayName = 'Layout.Main';
+
+export interface LayoutSidePanelProps {
+  children?: React.ReactNode;
+}
+
+export function LayoutSidePanel({ children }: LayoutSidePanelProps) {
+  return <>{children}</>;
+}
+
+LayoutSidePanel.displayName = 'Layout.SidePanel';
 
 export interface LayoutProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   defaultSidePanelWidth?: number;
   onSidePanelWidthChange?: (width: number) => void;
-  sidePanelChildren: React.ReactNode;
+  open?: boolean;
 }
 
 const Layout = forwardRef<HTMLDivElement, LayoutProps>(
@@ -23,15 +51,60 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
       className,
       defaultSidePanelWidth = 320,
       onSidePanelWidthChange,
-      sidePanelChildren,
+      open = false,
       style,
       ...rest
     } = props;
 
     const [isDragging, setIsDragging] = useState(false);
-    const [sidePanelWidth, setSidePanelWidth] = useState(defaultSidePanelWidth);
+    const [sidePanelWidth, setSidePanelWidth] = useState(() => {
+      const maxWidth =
+        typeof window !== 'undefined'
+          ? window.innerWidth - MIN_PANEL_WIDTH - 1
+          : Infinity;
+
+      return Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, defaultSidePanelWidth));
+    });
     const dragStartRef = useRef<{ width: number; x: number } | null>(null);
     const rafIdRef = useRef<number | null>(null);
+
+    useEffect(() => {
+      return () => {
+        if (rafIdRef.current !== null) {
+          window.cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
+      };
+    }, []);
+
+    let mainContent: React.ReactNode = null;
+    let sidePanelContent: React.ReactNode = null;
+
+    Children.forEach(children, (child) => {
+      if (!isValidElement(child)) return;
+
+      if (child.type === LayoutMain) {
+        mainContent = (child as React.ReactElement<LayoutMainProps>).props.children;
+      } else if (child.type === LayoutSidePanel) {
+        sidePanelContent = (child as React.ReactElement<LayoutSidePanelProps>).props.children;
+      }
+    });
+
+    const handleDividerKeyDown = useCallback(
+      (e: React.KeyboardEvent) => {
+        if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+
+        e.preventDefault();
+
+        const step = e.key === 'ArrowLeft' ? ARROW_KEY_STEP : -ARROW_KEY_STEP;
+        const maxWidth = window.innerWidth - MIN_PANEL_WIDTH - 1;
+        const newWidth = Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, sidePanelWidth + step));
+
+        setSidePanelWidth(newWidth);
+        onSidePanelWidthChange?.(newWidth);
+      },
+      [onSidePanelWidthChange, sidePanelWidth],
+    );
 
     const handleDividerMouseDown = useCallback(
       (e: React.MouseEvent) => {
@@ -85,24 +158,40 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
     return (
       <div
         {...rest}
-        className={cx(classes.host, className)}
+        className={cx(classes.host, { [classes.hostOpen]: open }, className)}
         ref={ref}
         style={{
           ...style,
           '--mzn-layout-side-panel-width': `${sidePanelWidth}px`,
         } as React.CSSProperties}
       >
-        <main className={classes.main}>{children}</main>
-        <div
-          aria-orientation="vertical"
-          className={cx(classes.divider, { [classes.dividerDragging]: isDragging })}
-          onMouseDown={handleDividerMouseDown}
-          role="separator"
-        />
-        <aside className={classes.sidePanel}>{sidePanelChildren}</aside>
+        <main className={classes.main}>{mainContent}</main>
+        {open && (
+          <div
+            aria-orientation="vertical"
+            aria-valuemax={
+              typeof window !== 'undefined'
+                ? window.innerWidth - MIN_PANEL_WIDTH - 1
+                : undefined
+            }
+            aria-valuemin={MIN_PANEL_WIDTH}
+            aria-valuenow={sidePanelWidth}
+            className={cx(classes.divider, { [classes.dividerDragging]: isDragging })}
+            onKeyDown={handleDividerKeyDown}
+            onMouseDown={handleDividerMouseDown}
+            role="separator"
+            tabIndex={0}
+          />
+        )}
+        {open && <aside className={classes.sidePanel}>{sidePanelContent}</aside>}
       </div>
     );
   },
 );
 
-export default Layout;
+const LayoutWithSubComponents = Object.assign(Layout, {
+  Main: LayoutMain,
+  SidePanel: LayoutSidePanel,
+});
+
+export default LayoutWithSubComponents;
