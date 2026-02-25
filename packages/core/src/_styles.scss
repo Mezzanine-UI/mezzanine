@@ -86,6 +86,7 @@
 
   // Data Entry Form
   @include _load-styles($options, form, form-field);
+  @include _load-styles($options, form, form-group);
   @include _load-styles($options, filter-area);
 
   // Feedback

@@ -1,0 +1,23 @@
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+@use '~@mezzanine-ui/system/typography';
+@use './form-group' as *;
+
+.#{$prefix} {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, comfort);
+}
+
+.#{$prefix}__title {
+  display: flex;
+  color: palette.semantic-variable(text, neutral-solid);
+
+  @include typography.semantic-variable(label-primary);
+}
+
+.#{$prefix}__fields-container {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.semantic-variable(gap, calm);
+}
