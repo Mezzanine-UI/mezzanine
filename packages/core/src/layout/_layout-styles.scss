@@ -1,0 +1,45 @@
+@use '~@mezzanine-ui/system/z-index';
+@use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/spacing';
+
+@use './layout' as *;
+
+.#{$prefix} {
+  &__main {
+    margin-inline-end: calc(var(--mzn-layout-side-panel-width) + 1px);
+    min-inline-size: spacing.semantic-variable(size, container, slim);
+  }
+
+  &__divider {
+    background-color: palette.semantic-variable(separator, neutral-faint);
+    cursor: col-resize;
+    inline-size: 1px;
+    inset-block: 0;
+    inset-inline-end: var(--mzn-layout-side-panel-width);
+    position: fixed;
+    z-index: z-index.get(base);
+
+    &::before {
+      content: '';
+      inset-block: 0;
+      inset-inline-start: -4px;
+      inline-size: 9px;
+      position: absolute;
+    }
+
+    &--dragging {
+      background-color: palette.semantic-variable(separator, neutral-light);
+    }
+  }
+
+  &__side-panel {
+    background-color: palette.semantic-variable(background, base);
+    inline-size: var(--mzn-layout-side-panel-width);
+    inset-block: 0;
+    inset-inline-end: 0;
+    min-inline-size: spacing.semantic-variable(size, container, slim);
+    overflow-y: auto;
+    position: fixed;
+    z-index: z-index.get(base);
+  }
+}
