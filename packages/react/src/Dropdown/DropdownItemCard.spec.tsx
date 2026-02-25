@@ -130,6 +130,23 @@ describe('DropdownItemCard', () => {
       await user.click(option);
       expect(onCheckedChange).toHaveBeenCalledWith(true);
     });
+
+    it('should not toggle checked state when toggleCheckedOnClick is false', async () => {
+      const user = userEvent.setup();
+      const onCheckedChange = jest.fn();
+      render(
+        <DropdownItemCard
+          {...defaultProps}
+          mode="multiple"
+          checkSite="prefix"
+          onCheckedChange={onCheckedChange}
+          toggleCheckedOnClick={false}
+        />
+      );
+      const option = screen.getByRole('option');
+      await user.click(option);
+      expect(onCheckedChange).not.toHaveBeenCalled();
+    });
   });
 
   describe('single mode', () => {

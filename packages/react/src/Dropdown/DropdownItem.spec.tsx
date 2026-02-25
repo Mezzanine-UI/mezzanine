@@ -181,10 +181,12 @@ describe('DropdownItem', () => {
       {
         id: '1',
         name: 'Parent',
+        showCheckbox: true,
         children: [
           {
             id: '1-1',
             name: 'Child',
+            showCheckbox: true,
             children: [{ id: '1-1-1', name: 'Grandchild' }],
           },
         ],
@@ -215,6 +217,79 @@ describe('DropdownItem', () => {
       await user.click(parent);
       // After clicking, child should be visible
       expect(screen.getByText('Child')).toBeInTheDocument();
+    });
+
+    it('should not select parent when clicking non-checkbox area', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      render(
+        <DropdownItem
+          {...defaultProps}
+          mode="multiple"
+          onSelect={onSelect}
+          type="tree"
+          options={treeOptions}
+        />
+      );
+      await user.click(screen.getByText('Parent'));
+      expect(onSelect).not.toHaveBeenCalled();
+      expect(screen.getByText('Child')).toBeInTheDocument();
+    });
+
+    it('should select parent when clicking parent checkbox', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      render(
+        <DropdownItem
+          {...defaultProps}
+          mode="multiple"
+          onSelect={onSelect}
+          type="tree"
+          options={treeOptions}
+        />
+      );
+      const [parentCheckbox] = screen.getAllByRole('checkbox');
+      await user.click(parentCheckbox);
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+    });
+
+    it('should keep parent expanded when clicking parent checkbox', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      render(
+        <DropdownItem
+          {...defaultProps}
+          mode="multiple"
+          onSelect={onSelect}
+          type="tree"
+          options={treeOptions}
+        />
+      );
+      await user.click(screen.getByText('Parent'));
+      expect(screen.getByText('Child')).toBeInTheDocument();
+
+      const [parentCheckbox] = screen.getAllByRole('checkbox');
+      await user.click(parentCheckbox);
+
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
+      expect(screen.getByText('Child')).toBeInTheDocument();
+    });
+
+    it('should allow parent row click to select when toggleCheckedOnClick is true', async () => {
+      const user = userEvent.setup();
+      const onSelect = jest.fn();
+      render(
+        <DropdownItem
+          {...defaultProps}
+          mode="multiple"
+          onSelect={onSelect}
+          toggleCheckedOnClick={true}
+          type="tree"
+          options={treeOptions}
+        />
+      );
+      await user.click(screen.getByText('Parent'));
+      expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
   });
 

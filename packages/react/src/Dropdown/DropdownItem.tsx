@@ -98,6 +98,12 @@ export interface DropdownItemProps<T extends DropdownType | undefined = Dropdown
    */
   type?: DropdownType;
   /**
+   * Whether clicking an option row should toggle checked state in multiple mode.
+   * If not provided, tree parent nodes with checkboxes default to `false`,
+   * while other options default to `true`.
+   */
+  toggleCheckedOnClick?: boolean;
+  /**
    * The status of the dropdown (loading or empty).
    */
   status?: DropdownStatusType;
@@ -226,6 +232,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
     listboxLabel,
     mode = 'single',
     options,
+    toggleCheckedOnClick,
     value,
     type,
     maxHeight,
@@ -419,6 +426,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
               label={option.name}
               mode={mode}
               name={option.name}
+              toggleCheckedOnClick={toggleCheckedOnClick}
               onClick={() => {
                 if (disabled) return;
                 onSelect?.(option);
@@ -501,6 +509,12 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           checked: selectedIds.includes(String(option.id)),
           indeterminate: false,
         };
+      const resolvedToggleCheckedOnClick = toggleCheckedOnClick ?? !(
+        hasChildren
+        && type === 'tree'
+        && mode === 'multiple'
+        && option.showCheckbox
+      );
 
       const card = (
         <DropdownItemCard
@@ -514,6 +528,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           level={level}
           mode={mode}
           name={option.name}
+          toggleCheckedOnClick={resolvedToggleCheckedOnClick}
           onClick={() => {
             if (disabled) return;
             if (hasChildren && type === 'tree' && mode === 'multiple' && option.showCheckbox) {
@@ -587,6 +602,7 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
           label={option.name}
           mode={mode}
           name={option.name}
+          toggleCheckedOnClick={toggleCheckedOnClick}
           onClick={() => {
             if (disabled) return;
             onSelect?.(option);

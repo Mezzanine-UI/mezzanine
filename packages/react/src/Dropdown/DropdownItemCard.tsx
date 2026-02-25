@@ -112,6 +112,12 @@ export interface DropdownItemCardProps {
    */
   subTitle?: string;
   /**
+   * Whether clicking the list item should toggle checked state in multiple mode.
+   * Used in tree mode when clicking a parent node should toggle the checked state of all its children.
+   * @default true
+   */
+  toggleCheckedOnClick?: boolean;
+  /**
    * The validation of the dropdown item card.
    */
   validate?: DropdownItemValidate;
@@ -130,6 +136,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
     name: _name,
     prependIcon,
     subTitle,
+    toggleCheckedOnClick = true,
     validate,
     disabled,
     checked,
@@ -254,7 +261,7 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
   const handleClick = () => {
     if (disabled) return;
 
-    if (mode === 'multiple') {
+    if (mode === 'multiple' && toggleCheckedOnClick) {
       toggleChecked();
     }
 
@@ -309,6 +316,8 @@ export default function DropdownItemCard(props: DropdownItemCardProps) {
                   disabled={disabled}
                   indeterminate={indeterminate}
                   onChange={handleCheckboxChange}
+                  onClick={(event) => event.stopPropagation()}
+                  onMouseDown={(event) => event.stopPropagation()}
                 />
               )}
             </div>

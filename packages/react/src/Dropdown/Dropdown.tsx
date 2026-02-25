@@ -200,6 +200,11 @@ export interface DropdownProps extends DropdownItemSharedProps {
    */
   type?: DropdownType;
   /**
+   * Whether clicking an option row should toggle checked state in multiple mode.
+   * Passed through to `DropdownItem`.
+   */
+  toggleCheckedOnClick?: boolean;
+  /**
    * The z-index of the dropdown.
    */
   zIndex?: number | string;
@@ -282,6 +287,7 @@ export default function Dropdown(props: DropdownProps) {
     children,
     options = [],
     type = 'default',
+    toggleCheckedOnClick,
     maxHeight,
     disabled = false,
     showDropdownActions = false,
@@ -577,6 +583,7 @@ export default function Dropdown(props: DropdownProps) {
       scrollbarDisabled,
       scrollbarMaxWidth,
       scrollbarOptions,
+      toggleCheckedOnClick,
     }),
     [
       actionConfig,
@@ -605,6 +612,7 @@ export default function Dropdown(props: DropdownProps) {
       scrollbarDisabled,
       scrollbarMaxWidth,
       scrollbarOptions,
+      toggleCheckedOnClick,
     ],
   );
 
