@@ -112,7 +112,7 @@ export const WithActions = () => {
         options={[
           { id: 'view', name: '查看' },
           { id: 'edit', name: '編輯', showUnderline: true },
-          { id: 'delete', name: '刪除' },
+          { id: 'delete', name: '刪除', validate: 'danger' },
         ]}
         placement="bottom-end"
       >

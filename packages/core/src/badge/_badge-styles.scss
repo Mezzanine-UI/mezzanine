@@ -84,6 +84,15 @@ $count-type-config: (
     }
   }
 
+  @each $type in $text-types {
+    &.#{$prefix}--text-#{$type} {
+      @include typography.semantic-variable(body);
+
+      column-gap: spacing.semantic-variable(gap, base);
+      color: map.get($dot-type-config, $type, text-color);
+    }
+  }
+
   @each $type in $count-types {
     &.#{$prefix}--count-#{$type} {
       @include typography.semantic-variable(label-secondary);
@@ -122,4 +131,3 @@ $count-type-config: (
     opacity: 0;
   }
 }
-

@@ -155,7 +155,7 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
       className={cx(classes.host, className)}
     >
       {renderResultSummary && (
-        <Typography variant="label-primary">
+        <Typography variant="label-primary" className={classes.resultSummary}>
           {renderResultSummary(
             pageSize * (current - 1) + 1,
             Math.min(pageSize * current, total),
@@ -163,20 +163,20 @@ const Pagination = forwardRef<HTMLElement, PaginationProps>((props, ref) => {
           )}
         </Typography>
       )}
+      {showPageSizeOptions && (
+        <li className={classes.pageSize}>
+          <PaginationPageSize
+            disabled={disabled}
+            label={pageSizeLabel}
+            onChange={onChangePageSize}
+            options={pageSizeOptions}
+            renderOptionName={renderPageSizeOptionName}
+            value={pageSize}
+          />
+        </li>
+      )}
 
       <ul className={classes.container}>
-        {showPageSizeOptions && (
-          <li className={classes.pageSize}>
-            <PaginationPageSize
-              disabled={disabled}
-              label={pageSizeLabel}
-              onChange={onChangePageSize}
-              options={pageSizeOptions}
-              renderOptionName={renderPageSizeOptionName}
-              value={pageSize}
-            />
-          </li>
-        )}
         <li>
           <ul className={classes.itemList}>
             {items.map((item, index) => (

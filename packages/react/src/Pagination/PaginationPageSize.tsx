@@ -1,8 +1,15 @@
-import { forwardRef, DetailedHTMLProps, HTMLAttributes, useMemo } from 'react';
+import {
+  forwardRef,
+  DetailedHTMLProps,
+  HTMLAttributes,
+  useMemo,
+  useState,
+} from 'react';
 import { paginationPageSizeClasses as classes } from '@mezzanine-ui/core/pagination';
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
-import { SelectTrigger } from '../Select';
+import Select, { SelectTrigger } from '../Select';
+import Dropdown from '../Dropdown';
 
 export interface PaginationPageSizeProps
   extends Omit<
@@ -55,6 +62,8 @@ const PaginationPageSize = forwardRef<HTMLDivElement, PaginationPageSizeProps>(
       ...rest
     } = props;
 
+    const [open, setOpen] = useState(false);
+
     const currentValue = useMemo(
       () =>
         value
@@ -66,6 +75,19 @@ const PaginationPageSize = forwardRef<HTMLDivElement, PaginationPageSizeProps>(
       [value, renderOptionName],
     );
 
+    const selectOptions = useMemo(
+      () =>
+        options.map((option) => ({
+          id: `${option}`,
+          name: renderOptionName(option),
+        })),
+      [options, renderOptionName],
+    );
+    const dropDownOnSelect = (option: { id: string; name: string }) => {
+      onChange?.(Number(option.id));
+      setOpen(false);
+    };
+
     return (
       <div {...rest} ref={ref} className={cx(classes.host, className)}>
         {label ? (
@@ -73,14 +95,21 @@ const PaginationPageSize = forwardRef<HTMLDivElement, PaginationPageSizeProps>(
             {label}
           </Typography>
         ) : null}
-        <SelectTrigger
-          className={classes.select}
+        <Dropdown
           disabled={disabled}
-          size="sub"
-          value={currentValue}
+          onSelect={dropDownOnSelect}
+          onVisibilityChange={setOpen}
+          open={open}
+          options={selectOptions}
+          sameWidth
         >
-          {/* TODO: waiting Select onChange, Dropdown Menu options */}
-        </SelectTrigger>
+          <SelectTrigger
+            className={classes.select}
+            disabled={disabled}
+            size="sub"
+            value={currentValue}
+          />
+        </Dropdown>
       </div>
     );
   },
