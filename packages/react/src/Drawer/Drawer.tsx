@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useEffect,
   useMemo,
   useState,
   type ChangeEventHandler,
@@ -37,6 +38,17 @@ export interface DrawerProps
       | 'onClose'
       | 'open'
     > {
+  /**
+   * Key prop for forcing content remount when data changes.
+   * Use this to prevent DOM residue when list items decrease (e.g., records.length).
+   * If not provided, content will auto-remount when drawer reopens.
+   * @example
+   * // Force remount when filtered list changes
+   * <Drawer contentKey={filteredCars.length}>
+   *   <VehicleList cars={filteredCars} />
+   * </Drawer>
+   */
+  contentKey?: string | number;
   /**
    * Disabled state for the ghost action button.
    */
@@ -242,6 +254,7 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
     children,
     className,
     container,
+    contentKey,
     controlBarAllRadioLabel,
     controlBarCustomButtonLabel = '全部已讀',
     controlBarDefaultValue,
@@ -268,6 +281,15 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
   } = props;
 
   const [exited, setExited] = useState(true);
+  const [openCount, setOpenCount] = useState(0);
+
+  // Track open state changes to auto-remount content when drawer reopens
+  // This provides automatic content cleanup when contentKey is not provided
+  useEffect(() => {
+    if (open) {
+      setOpenCount((count) => count + 1);
+    }
+  }, [open]);
 
   /**
    * Escape keydown close: escape will only close the top drawer
@@ -428,7 +450,12 @@ const Drawer = forwardRef<HTMLDivElement, DrawerProps>((props, ref) => {
 
           {renderControlBar?.()}
 
-          <div className={classes.content}>{children}</div>
+          <div
+            key={contentKey !== undefined ? contentKey : openCount}
+            className={classes.content}
+          >
+            {children}
+          </div>
 
           {isBottomDisplay && (
             <div className={classes.bottom}>

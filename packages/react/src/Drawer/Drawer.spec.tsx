@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import {
   DrawerSize,
   drawerClasses as classes,
@@ -1154,6 +1155,230 @@ describe('<Drawer />', () => {
 
       expect(customControlBar).toBeInstanceOf(Node);
       expect(defaultControlBar).toBe(null);
+    });
+  });
+
+  describe('content remount behavior', () => {
+    describe('prop: contentKey', () => {
+      it('should remount content when contentKey changes', () => {
+        const StatefulChild = () => {
+          const [count, setCount] = useState(0);
+
+          return (
+            <div>
+              <span data-testid="count">{count}</span>
+              <button onClick={() => setCount((c) => c + 1)}>+</button>
+            </div>
+          );
+        };
+
+        const { rerender } = render(
+          <Drawer contentKey="key1" open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const contentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        fireEvent.click(contentEl.querySelector('button')!);
+        expect(
+          contentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('1');
+
+        rerender(
+          <Drawer contentKey="key2" open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const newContentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        expect(
+          newContentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('0');
+      });
+
+      it('should preserve child state when contentKey stays the same', () => {
+        const StatefulChild = () => {
+          const [count, setCount] = useState(0);
+
+          return (
+            <div>
+              <span data-testid="count">{count}</span>
+              <button onClick={() => setCount((c) => c + 1)}>+</button>
+            </div>
+          );
+        };
+
+        const { rerender } = render(
+          <Drawer contentKey="stable" open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const contentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        fireEvent.click(contentEl.querySelector('button')!);
+        expect(
+          contentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('1');
+
+        rerender(
+          <Drawer contentKey="stable" open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const sameContentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        expect(
+          sameContentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('1');
+      });
+
+      it('should accept a numeric contentKey', () => {
+        const StatefulChild = () => {
+          const [count, setCount] = useState(0);
+
+          return (
+            <div>
+              <span data-testid="count">{count}</span>
+              <button onClick={() => setCount((c) => c + 1)}>+</button>
+            </div>
+          );
+        };
+
+        const { rerender } = render(
+          <Drawer contentKey={1} open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const contentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        fireEvent.click(contentEl.querySelector('button')!);
+        expect(
+          contentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('1');
+
+        rerender(
+          <Drawer contentKey={2} open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const newContentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        expect(
+          newContentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('0');
+      });
+    });
+
+    describe('auto-remount on reopen (without contentKey)', () => {
+      it('should remount content when drawer reopens', () => {
+        const StatefulChild = () => {
+          const [count, setCount] = useState(0);
+
+          return (
+            <div>
+              <span data-testid="count">{count}</span>
+              <button onClick={() => setCount((c) => c + 1)}>+</button>
+            </div>
+          );
+        };
+
+        const { rerender } = render(
+          <Drawer open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const contentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        fireEvent.click(contentEl.querySelector('button')!);
+        expect(
+          contentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('1');
+
+        rerender(
+          <Drawer open={false}>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        rerender(
+          <Drawer open>
+            <StatefulChild />
+          </Drawer>,
+        );
+
+        const newContentEl = getDrawerElement()!.querySelector(
+          `.${classes.content}`,
+        )!;
+
+        expect(
+          newContentEl.querySelector('[data-testid="count"]')?.textContent,
+        ).toBe('0');
+      });
+
+      it('should increment openCount on each open, causing content remount', () => {
+        let mountCount = 0;
+
+        const Child = () => {
+          useEffect(() => {
+            mountCount++;
+          }, []);
+
+          return null;
+        };
+
+        const { rerender } = render(
+          <Drawer open={false}>
+            <Child />
+          </Drawer>,
+        );
+
+        expect(mountCount).toBe(0);
+
+        rerender(
+          <Drawer open>
+            <Child />
+          </Drawer>,
+        );
+
+        const mountsAfterFirstOpen = mountCount;
+
+        expect(mountsAfterFirstOpen).toBeGreaterThan(0);
+
+        rerender(
+          <Drawer open={false}>
+            <Child />
+          </Drawer>,
+        );
+
+        rerender(
+          <Drawer open>
+            <Child />
+          </Drawer>,
+        );
+
+        expect(mountCount).toBeGreaterThan(mountsAfterFirstOpen);
+      });
     });
   });
 

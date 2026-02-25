@@ -245,6 +245,9 @@ export const Playground: StoryObj<DrawerProps> = {
 
     const handleClose = useCallback(() => setOpen(false), []);
 
+    // Use state.length as key to force remount when list size changes
+    const contentKey = state.length;
+
     const handleClick = () => {
       setOpen(true);
     };
@@ -280,6 +283,7 @@ export const Playground: StoryObj<DrawerProps> = {
           bottomSecondaryActionSize={bottomSecondaryActionSize}
           bottomSecondaryActionText={bottomSecondaryActionText}
           bottomSecondaryActionVariant={bottomSecondaryActionVariant}
+          contentKey={contentKey}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}
           headerTitle={headerTitle}
@@ -609,6 +613,75 @@ export const WithModalWhileDrawerOpen: StoryObj<DrawerProps> = {
             測試 z-index 和背景遮罩是否正常運作。
           </Typography>
         </Modal>
+      </>
+    );
+  },
+};
+
+export const WithContentKeyAutoFallback: StoryObj<DrawerProps> = {
+  render: function Render() {
+    const [open, setOpen] = useState(false);
+    const [state, setState] = useState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+    const handleClose = useCallback(() => setOpen(false), []);
+
+    const handleReduceItems = useCallback(() => {
+      setState((prev) => prev.slice(0, 3));
+    }, []);
+
+    const handleReset = useCallback(() => {
+      setState([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    }, []);
+
+    return (
+      <>
+        <Button onClick={() => setOpen(true)} variant="base-text-link">
+          開啟 Drawer (自動清理機制測試)
+        </Button>
+
+        <Drawer
+          headerTitle="自動清理機制測試"
+          isHeaderDisplay
+          onClose={handleClose}
+          open={open}
+          size="medium"
+        >
+          <div style={{ padding: '16px' }}>
+            <Typography variant="body">目前項目數量: {state.length}</Typography>
+            <Typography variant="body" style={{ marginTop: '8px' }}>
+              沒有傳入 contentKey，但當 Drawer 重新開啟時會自動清理內容。
+            </Typography>
+            <div style={{ marginTop: '16px' }}>
+              <Button
+                onClick={handleReduceItems}
+                size="minor"
+                variant="base-secondary"
+              >
+                減少到 3 個項目
+              </Button>
+              <Button
+                onClick={handleReset}
+                size="minor"
+                style={{ marginLeft: '8px' }}
+                variant="base-secondary"
+              >
+                重置為 10 個項目
+              </Button>
+            </div>
+            <div style={{ marginTop: '16px' }}>
+              <CustomComponent records={state} />
+            </div>
+            <Typography variant="body" style={{ marginTop: '16px' }}>
+              測試步驟:
+              <br />
+              1. 減少到 3 個項目（可能會看到殘留）
+              <br />
+              2. 關閉並重新開啟 Drawer（自動清理）
+              <br />
+              3. 應該只會看到 3 個項目
+            </Typography>
+          </div>
+        </Drawer>
       </>
     );
   },
