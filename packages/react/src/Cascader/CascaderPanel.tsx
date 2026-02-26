@@ -12,6 +12,10 @@ export interface CascaderPanelProps {
    */
   activeId?: string;
   /**
+   * The id of the keyboard-focused option in this panel.
+   */
+  focusedId?: string;
+  /**
    * The max height for the panel.
    */
   maxHeight?: number | string;
@@ -32,6 +36,7 @@ export interface CascaderPanelProps {
 
 export default function CascaderPanel({
   activeId,
+  focusedId,
   maxHeight,
   onSelect,
   options,
@@ -54,8 +59,9 @@ export default function CascaderPanel({
               className={cx(
                 classes.item,
                 isActive && classes.itemActive,
-                isSelected && classes.itemSelected,
                 option.disabled && classes.itemDisabled,
+                option.id === focusedId && classes.itemFocused,
+                isSelected && classes.itemSelected,
               )}
               onClick={() => {
                 if (!option.disabled) {

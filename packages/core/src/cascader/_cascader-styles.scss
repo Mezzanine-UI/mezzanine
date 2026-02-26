@@ -94,6 +94,10 @@
     background-color: palette.semantic-variable('background', neutral-subtle);
   }
 
+  &--focused:not(.#{$item-prefix}--disabled) {
+    box-shadow: effect.variable(focus, primary);
+  }
+
   &--disabled {
     cursor: not-allowed;
 
