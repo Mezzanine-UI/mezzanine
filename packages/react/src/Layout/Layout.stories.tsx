@@ -16,7 +16,7 @@ export const Playground: StoryObj<typeof Layout> = {
     const [open, setOpen] = useState(false);
 
     return (
-      <Layout defaultSidePanelWidth={320} open={open}>
+      <Layout>
         <Layout.Main>
           <div style={{ width: '100%', height: '200vh' }}>
             <h1>Main Content</h1>
@@ -35,7 +35,7 @@ export const Playground: StoryObj<typeof Layout> = {
             Open Panel
           </FloatingButton>
         </Layout.Main>
-        <Layout.SidePanel>
+        <Layout.SidePanel defaultSidePanelWidth={320} open={open}>
           <div style={{ padding: 'var(--mzn-spacing-primitive-24)' }}>
             <h2>Side Panel</h2>
             <p>This panel is position: fixed and scrolls independently.</p>
