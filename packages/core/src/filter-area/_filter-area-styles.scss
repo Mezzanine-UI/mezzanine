@@ -29,23 +29,23 @@ $filter-span-configs: (
 // Grid configs
 $grid-configs: (
   columns: 12,
-  default-gap: comfort,
+  default-gap: calm,
   actions-gap: base,
 );
 
 // Layout configs
 $layout-configs: (
   container: (
-    gap: comfort,
+    gap: calm,
     padding-inline-direction: horizontal,
     padding-inline-size: spacious,
   ),
   row: (
-    gap: comfort,
+    gap: calm,
     align-items: flex-end,
   ),
   line: (
-    gap: comfort,
+    gap: calm,
   ),
 );
 
@@ -116,6 +116,10 @@ $layout-configs: (
 
     > .#{$prefix}__actions {
       margin-inline-start: auto;
+
+      &--expanded {
+        width: fit-content;
+      }
     }
   }
 
