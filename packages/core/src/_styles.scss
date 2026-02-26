@@ -16,6 +16,9 @@
 }
 
 @mixin styles($options: ()) {
+  // Foundation
+  @include _load-styles($options, layout);
+
   // General
   @include _load-styles($options, typography);
   @include _load-styles($options, icon);
