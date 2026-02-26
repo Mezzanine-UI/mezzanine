@@ -266,11 +266,11 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
     const getLeafDescendantIds = useCallback(
       (option: DropdownOption): string[] => {
-        const ids: string[] = [];
+        const ids = new Set<string>();
 
         const collect = (opt: DropdownOption) => {
           if (!opt.children || opt.children.length === 0) {
-            ids.push(String(opt.id));
+            ids.add(String(opt.id));
           } else {
             opt.children.forEach(collect);
           }
@@ -278,7 +278,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
 
         collect(option);
 
-        return ids;
+        return Array.from(ids);
       },
       [],
     );
