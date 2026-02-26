@@ -118,7 +118,6 @@
 
   &.#{text-field.$prefix}--clearable {
     &:hover:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly),
-    &.#{text-field.$prefix}--active,
     &.#{text-field.$prefix}--typing,
     &:focus-within:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly) {
       .#{text-field.$prefix}__clear-icon {
