@@ -24,6 +24,36 @@ import { cx } from '../utils/cx';
 import CascaderPanel from './CascaderPanel';
 import { CascaderOption, CascaderProps } from './typings';
 
+/**
+ * Walks the options tree using ids from `value` and returns a new activePath
+ * whose items carry proper `children` references from the tree.
+ * Items in `value` may omit `children`, so we cannot rely on them directly
+ * for panel expansion.
+ */
+function resolveActivePath(
+  options: CascaderOption[],
+  value: CascaderOption[],
+): CascaderOption[] {
+  const result: CascaderOption[] = [];
+  let currentOptions = options;
+
+  for (const selectedItem of value) {
+    const found = currentOptions.find((o) => o.id === selectedItem.id);
+
+    if (!found) break;
+
+    result.push(found);
+
+    if (found.children && found.children.length > 0) {
+      currentOptions = found.children;
+    } else {
+      break;
+    }
+  }
+
+  return result;
+}
+
 const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
   function Cascader(props, ref) {
     const {
@@ -68,10 +98,10 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
 
     const handleOpen = useCallback(() => {
       if (readOnly || disabled) return;
-      setActivePath(value);
+      setActivePath(resolveActivePath(options, value));
       onFocus?.();
       setOpen(true);
-    }, [disabled, onFocus, readOnly, value]);
+    }, [disabled, onFocus, options, readOnly, value]);
 
     const handleClose = useCallback(() => {
       onBlur?.();
@@ -185,7 +215,8 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
               break;
             }
             case 'ArrowRight':
-            case 'Enter': {
+            case 'Enter':
+            case ' ': {
               if (keyboardFocusedIndex === -1) return;
               const focusedOption = currentPanelOptions[keyboardFocusedIndex];
               if (!focusedOption || focusedOption.disabled) return;
@@ -319,6 +350,14 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
           className={cx(className, isPartial && classes.triggerPartial)}
           disabled={disabled}
           fullWidth={fullWidth}
+          inputProps={{
+            onKeyDown: (e) => {
+              if (!open && (e.key === ' ' || e.key === 'Enter')) {
+                e.preventDefault();
+                handleOpen();
+              }
+            },
+          }}
           isForceClearable={
             clearable && !disabled && !readOnly && value.length > 0
           }
