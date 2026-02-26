@@ -111,4 +111,23 @@
       transform: rotate(180deg);
     }
   }
+
+  .#{text-field.$prefix}__clear-icon {
+    display: none;
+  }
+
+  &.#{text-field.$prefix}--clearable {
+    &:hover:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly),
+    &.#{text-field.$prefix}--active,
+    &.#{text-field.$prefix}--typing,
+    &:focus-within:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly) {
+      .#{text-field.$prefix}__clear-icon {
+        display: inline-flex;
+      }
+
+      .#{text-field.$prefix}__suffix {
+        display: none;
+      }
+    }
+  }
 }
