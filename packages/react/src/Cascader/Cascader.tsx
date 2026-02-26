@@ -71,7 +71,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
       dropdownZIndex,
       error = severity === 'error' || false,
       fullWidth = fullWidthFromFormControl || false,
-      globalPortal = false,
+      globalPortal = true,
       menuMaxHeight,
       onBlur,
       onChange: onChangeProp,
