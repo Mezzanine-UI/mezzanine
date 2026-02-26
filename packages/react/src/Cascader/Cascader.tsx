@@ -56,6 +56,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
 
     const [open, setOpen] = useState(false);
     const [activePath, setActivePath] = useState<CascaderOption[]>([]);
+    const [keyboardFocusedIndex, setKeyboardFocusedIndex] = useState(-1);
 
     const [value, setValue] = useControlValueState<CascaderOption[]>({
       defaultValue: defaultValue ?? [],
@@ -75,6 +76,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
     const handleClose = useCallback(() => {
       onBlur?.();
       setOpen(false);
+      setKeyboardFocusedIndex(-1);
     }, [onBlur]);
 
     const handleClear = useCallback<MouseEventHandler>(
@@ -88,6 +90,36 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
       },
       [handleClose, onChangeProp, open, setValue],
     );
+
+    const handleItemSelect = useCallback(
+      (panelIndex: number, option: CascaderOption, isLeaf: boolean) => {
+        const newActivePath = [...activePath.slice(0, panelIndex), option];
+        setActivePath(newActivePath);
+
+        if (isLeaf) {
+          setValue(newActivePath);
+          onChangeProp?.(newActivePath);
+          handleClose();
+        } else {
+          setKeyboardFocusedIndex(-1);
+        }
+      },
+      [activePath, handleClose, onChangeProp, setValue],
+    );
+
+    const panels = useMemo<CascaderOption[][]>(() => {
+      const result: CascaderOption[][] = [options];
+
+      for (const activeOption of activePath) {
+        if (activeOption.children && activeOption.children.length > 0) {
+          result.push(activeOption.children);
+        } else {
+          break;
+        }
+      }
+
+      return result;
+    }, [activePath, options]);
 
     useDocumentEvents(() => {
       if (!open) return;
@@ -111,33 +143,80 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
       };
     }, [handleClose, open]);
 
-    const handleItemSelect = useCallback(
-      (panelIndex: number, option: CascaderOption, isLeaf: boolean) => {
-        const newActivePath = [...activePath.slice(0, panelIndex), option];
-        setActivePath(newActivePath);
+    useDocumentEvents(() => {
+      if (!open) return;
 
-        if (isLeaf) {
-          setValue(newActivePath);
-          onChangeProp?.(newActivePath);
-          handleClose();
-        }
-      },
-      [activePath, handleClose, onChangeProp, setValue],
-    );
+      const currentPanelOptions = panels[panels.length - 1];
 
-    const panels = useMemo<CascaderOption[][]>(() => {
-      const result: CascaderOption[][] = [options];
-
-      for (const activeOption of activePath) {
-        if (activeOption.children && activeOption.children.length > 0) {
-          result.push(activeOption.children);
-        } else {
-          break;
-        }
-      }
-
-      return result;
-    }, [activePath, options]);
+      return {
+        keydown(event: KeyboardEvent) {
+          switch (event.key) {
+            case 'Escape': {
+              event.preventDefault();
+              handleClose();
+              break;
+            }
+            case 'ArrowDown': {
+              event.preventDefault();
+              let next = keyboardFocusedIndex + 1;
+              while (
+                next < currentPanelOptions.length &&
+                currentPanelOptions[next].disabled
+              ) {
+                next++;
+              }
+              if (next < currentPanelOptions.length) {
+                setKeyboardFocusedIndex(next);
+              }
+              break;
+            }
+            case 'ArrowUp': {
+              event.preventDefault();
+              let prev =
+                keyboardFocusedIndex === -1
+                  ? currentPanelOptions.length - 1
+                  : keyboardFocusedIndex - 1;
+              while (prev >= 0 && currentPanelOptions[prev].disabled) {
+                prev--;
+              }
+              if (prev >= 0) {
+                setKeyboardFocusedIndex(prev);
+              }
+              break;
+            }
+            case 'ArrowRight':
+            case 'Enter': {
+              if (keyboardFocusedIndex === -1) return;
+              const focusedOption = currentPanelOptions[keyboardFocusedIndex];
+              if (!focusedOption || focusedOption.disabled) return;
+              const isLeaf =
+                !focusedOption.children || focusedOption.children.length === 0;
+              if (event.key === 'ArrowRight' && isLeaf) return;
+              event.preventDefault();
+              handleItemSelect(panels.length - 1, focusedOption, isLeaf);
+              break;
+            }
+            case 'ArrowLeft': {
+              event.preventDefault();
+              if (activePath.length === 0) return;
+              const removedItem = activePath[activePath.length - 1];
+              const parentPanel = panels[activePath.length - 1];
+              const idx = parentPanel.findIndex((o) => o.id === removedItem.id);
+              setActivePath(activePath.slice(0, -1));
+              setKeyboardFocusedIndex(idx >= 0 ? idx : -1);
+              break;
+            }
+          }
+        },
+      };
+    }, [
+      activePath,
+      handleClose,
+      handleItemSelect,
+      keyboardFocusedIndex,
+      open,
+      panels,
+    ]);
 
     const displayPath = open ? activePath : value;
     const displayString = displayPath.map((o) => o.name).join(' / ');
@@ -209,6 +288,12 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
                       <CascaderPanel
                         key={panelIndex}
                         activeId={activePath[panelIndex]?.id}
+                        focusedId={
+                          panelIndex === panels.length - 1 &&
+                          keyboardFocusedIndex >= 0
+                            ? panels[panelIndex][keyboardFocusedIndex]?.id
+                            : undefined
+                        }
                         maxHeight={menuMaxHeight}
                         onSelect={(option, isLeaf) =>
                           handleItemSelect(panelIndex, option, isLeaf)

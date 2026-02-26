@@ -406,6 +406,228 @@ describe('<Cascader />', () => {
     });
   });
 
+  describe('keyboard interaction', () => {
+    it('should close dropdown and call onBlur on Escape key', async () => {
+      const onBlur = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} onBlur={onBlur} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      await waitFor(() => {
+        expect(
+          document.querySelector('.mzn-cascader-dropdown-panels'),
+        ).toBeInstanceOf(HTMLDivElement);
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Escape' });
+      });
+
+      await waitFor(() => {
+        expect(
+          document.querySelector('.mzn-cascader-dropdown-panels'),
+        ).toBeNull();
+        expect(onBlur).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should move keyboard focus to first option on ArrowDown', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await waitFor(() => {
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        expect(items[0].classList.contains('mzn-cascader-item--focused')).toBe(
+          true,
+        );
+      });
+    });
+
+    it('should move keyboard focus to last option on ArrowUp from start', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowUp' });
+      });
+
+      await waitFor(() => {
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        expect(
+          items[items.length - 1].classList.contains(
+            'mzn-cascader-item--focused',
+          ),
+        ).toBe(true);
+      });
+    });
+
+    it('should expand child panel on ArrowRight for non-leaf option', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' }); // focus Option A
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowRight' }); // expand
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+    });
+
+    it('should expand child panel on Enter for non-leaf option', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' }); // focus Option A
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Enter' }); // expand
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+    });
+
+    it('should select leaf option and close on Enter', async () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} onChange={onChange} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      // Option C is at index 2 (leaf)
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Enter' });
+      });
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledWith([
+          expect.objectContaining({ id: 'c' }),
+        ]);
+        expect(
+          document.querySelector('.mzn-cascader-dropdown-panels'),
+        ).toBeNull();
+      });
+    });
+
+    it('should go back one panel on ArrowLeft and restore parent focus', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' }); // focus Option A (index 0)
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowRight' }); // expand A
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowLeft' }); // go back
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(1);
+        // focus should be restored to Option A (index 0)
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        expect(items[0].classList.contains('mzn-cascader-item--focused')).toBe(
+          true,
+        );
+      });
+    });
+
+    it('should not navigate to disabled options with ArrowDown', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      // expand Option A → children: [A1, A2(disabled)]
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowRight' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+
+      // focus A1 (first non-disabled in children)
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      // ArrowDown again — A2 is disabled, should stay on A1
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await waitFor(() => {
+        const panels = document.querySelectorAll('.mzn-cascader-panel');
+        const childItems = panels[1].querySelectorAll('li');
+
+        expect(
+          childItems[0].classList.contains('mzn-cascader-item--focused'),
+        ).toBe(true);
+        expect(
+          childItems[1].classList.contains('mzn-cascader-item--focused'),
+        ).toBe(false);
+      });
+    });
+
+    it('should not handle keyboard events when dropdown is closed', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      getHostHTMLElement(); // ensure render
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      expect(
+        document.querySelector('.mzn-cascader-dropdown-panels'),
+      ).toBeNull();
+    });
+  });
+
   describe('prop: clearable', () => {
     it('should render clear button when clearable and value is set', () => {
       const value: CascaderOption[] = [

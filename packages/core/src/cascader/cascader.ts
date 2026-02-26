@@ -17,8 +17,9 @@ export const cascaderClasses = {
 
   item: `${cascaderPrefix}-item`,
   itemActive: `${cascaderPrefix}-item--active`,
-  itemSelected: `${cascaderPrefix}-item--selected`,
   itemDisabled: `${cascaderPrefix}-item--disabled`,
+  itemFocused: `${cascaderPrefix}-item--focused`,
+  itemSelected: `${cascaderPrefix}-item--selected`,
   itemLabel: `${cascaderPrefix}-item-label`,
   itemAppend: `${cascaderPrefix}-item-append`,
 } as const;
