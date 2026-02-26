@@ -147,6 +147,26 @@ describe('<MultipleDatePicker />', () => {
 
       expect(clearButton).toBe(null);
     });
+
+    it('should make clear button interactive on hover when clearable and has value', async () => {
+      const { getHostHTMLElement } = render(
+        <CalendarConfigProvider methods={CalendarMethodsMoment}>
+          <MultipleDatePicker clearable onChange={() => {}} value={['2025-01-01']} />
+        </CalendarConfigProvider>,
+      );
+
+      // getHostHTMLElement() returns the TextField root div (mzn-text-field) itself
+      const element = getHostHTMLElement();
+
+      await act(async () => {
+        fireEvent.mouseEnter(element);
+      });
+
+      await waitFor(() => {
+        const clearButton = element.querySelector('.mzn-text-field__clear-icon') as HTMLElement;
+        expect(clearButton.style.pointerEvents).toBe('auto');
+      });
+    });
   });
 
   describe('prop: placeholder', () => {
