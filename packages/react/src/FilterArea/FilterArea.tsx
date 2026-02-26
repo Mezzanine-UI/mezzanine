@@ -156,7 +156,9 @@ const FilterArea = forwardRef<HTMLDivElement, FilterAreaProps>(
         {expanded ? (
           <>
             {filterLines}
-            {renderAction()}
+            <div className={classes.row}>
+              {renderAction()}
+            </div>
           </>
         ) : (
           <>
