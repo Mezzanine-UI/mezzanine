@@ -18,7 +18,7 @@ export const Playground: StoryObj<typeof Layout> = {
     return (
       <Layout defaultSidePanelWidth={320} open={open}>
         <Layout.Main>
-          <div style={{ padding: 'var(--mzn-spacing-primitive-24)' }}>
+          <div style={{ width: '100%', height: '200vh' }}>
             <h1>Main Content</h1>
             <p>
               This area uses the body scrollbar. Click the floating button to
