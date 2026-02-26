@@ -42,12 +42,19 @@ export default function CascaderPanel({
   options,
   selectedId,
 }: CascaderPanelProps) {
+  const toItemId = (optionId: string) => `mzn-cascader-option-${optionId}`;
+
   return (
     <div
       className={classes.panel}
       style={maxHeight ? { maxHeight } : undefined}
     >
-      <ul style={{ listStyle: 'none', margin: 0, padding: 0 }}>
+      <ul
+        aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
+        aria-label="Options"
+        role="listbox"
+        style={{ listStyle: 'none', margin: 0, padding: 0 }}
+      >
         {options.map((option) => {
           const isLeaf = !option.children || option.children.length === 0;
           const isActive = option.id === activeId;
@@ -56,6 +63,9 @@ export default function CascaderPanel({
           return (
             <li
               key={option.id}
+              aria-disabled={option.disabled || undefined}
+              aria-expanded={!isLeaf ? isActive : undefined}
+              aria-selected={isSelected}
               className={cx(
                 classes.item,
                 isActive && classes.itemActive,
@@ -63,11 +73,13 @@ export default function CascaderPanel({
                 option.id === focusedId && classes.itemFocused,
                 isSelected && classes.itemSelected,
               )}
+              id={toItemId(option.id)}
               onClick={() => {
                 if (!option.disabled) {
                   onSelect(option, isLeaf);
                 }
               }}
+              role="option"
             >
               <span className={classes.itemLabel}>{option.name}</span>
               <span className={classes.itemAppend}>
