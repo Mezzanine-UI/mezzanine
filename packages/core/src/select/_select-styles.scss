@@ -44,6 +44,10 @@
       inset: 0;
       z-index: -1;
     }
+
+    &:has(.#{text-field.$prefix}__prefix) {
+      padding-left: spacing.semantic-variable(padding, horizontal, cozy);
+    }
   }
 
   &__tags-input-wrapper {
@@ -105,6 +109,24 @@
 
     &--active {
       transform: rotate(180deg);
+    }
+  }
+
+  .#{text-field.$prefix}__clear-icon {
+    display: none;
+  }
+
+  &.#{text-field.$prefix}--clearable {
+    &:hover:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly),
+    &.#{text-field.$prefix}--typing,
+    &:focus-within:not(.#{text-field.$prefix}--disabled):not(.#{text-field.$prefix}--readonly) {
+      .#{text-field.$prefix}__clear-icon {
+        display: inline-flex;
+      }
+
+      .#{text-field.$prefix}__suffix {
+        display: none;
+      }
     }
   }
 }

@@ -291,6 +291,95 @@ describe('DropdownItem', () => {
       await user.click(screen.getByText('Parent'));
       expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: '1' }));
     });
+
+    describe('parent checkbox state based on leaf descendants only', () => {
+      const twoLeavesOptions: DropdownOption[] = [
+        {
+          id: '1',
+          name: 'Parent',
+          showCheckbox: true,
+          children: [
+            { id: '1-a', name: 'Leaf A', showCheckbox: true },
+            { id: '1-b', name: 'Leaf B', showCheckbox: true },
+          ],
+        },
+      ];
+
+      it('should show parent as unchecked when no leaf descendants are selected', () => {
+        render(
+          <DropdownItem
+            {...defaultProps}
+            mode="multiple"
+            options={twoLeavesOptions}
+            type="tree"
+            value={[]}
+          />
+        );
+        const [parentCheckbox] = screen.getAllByRole('checkbox');
+        expect(parentCheckbox).not.toBeChecked();
+        expect(parentCheckbox).not.toBePartiallyChecked();
+      });
+
+      it('should show parent as indeterminate when only some leaf descendants are selected', () => {
+        render(
+          <DropdownItem
+            {...defaultProps}
+            mode="multiple"
+            options={twoLeavesOptions}
+            type="tree"
+            value={['1-a']}
+          />
+        );
+        const [parentCheckbox] = screen.getAllByRole('checkbox');
+        expect(parentCheckbox).toBePartiallyChecked();
+      });
+
+      it('should show parent as checked when all leaf descendants are selected', () => {
+        render(
+          <DropdownItem
+            {...defaultProps}
+            mode="multiple"
+            options={twoLeavesOptions}
+            type="tree"
+            value={['1-a', '1-b']}
+          />
+        );
+        const [parentCheckbox] = screen.getAllByRole('checkbox');
+        expect(parentCheckbox).toBeChecked();
+      });
+
+      it('should not count intermediate node id in value when calculating parent checkbox state', () => {
+        // treeOptions: Parent(1) → Child(1-1, intermediate) → Grandchild(1-1-1, leaf)
+        // value contains intermediate node '1-1', NOT the leaf '1-1-1'
+        render(
+          <DropdownItem
+            {...defaultProps}
+            mode="multiple"
+            options={treeOptions}
+            type="tree"
+            value={['1-1']}
+          />
+        );
+        const [parentCheckbox] = screen.getAllByRole('checkbox');
+        expect(parentCheckbox).not.toBeChecked();
+        expect(parentCheckbox).not.toBePartiallyChecked();
+      });
+
+      it('should show parent as checked when the only leaf descendant is selected', () => {
+        // treeOptions: Parent(1) → Child(1-1, intermediate) → Grandchild(1-1-1, only leaf)
+        render(
+          <DropdownItem
+            {...defaultProps}
+            mode="multiple"
+            options={treeOptions}
+            type="tree"
+            value={['1-1-1']}
+          />
+        );
+        const [parentCheckbox] = screen.getAllByRole('checkbox');
+        expect(parentCheckbox).toBeChecked();
+      });
+    });
   });
 
   describe('maxHeight', () => {

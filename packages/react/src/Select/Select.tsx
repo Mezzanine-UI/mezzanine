@@ -264,14 +264,14 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       [],
     );
 
-    const getAllDescendantIds = useCallback(
+    const getLeafDescendantIds = useCallback(
       (option: DropdownOption): string[] => {
         const ids = new Set<string>();
 
         const collect = (opt: DropdownOption) => {
-          ids.add(String(opt.id));
-
-          if (opt.children && opt.children.length > 0) {
+          if (!opt.children || opt.children.length === 0) {
+            ids.add(String(opt.id));
+          } else {
             opt.children.forEach(collect);
           }
         };
@@ -397,8 +397,8 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
           const onChangeMultiple =
             onChange as SelectMultipleValueControl['onChange'];
           const currentValues = Array.isArray(value) ? value : [];
-          const allDescendantIds = getAllDescendantIds(option);
-          const allDescendantValues: SelectValue[] = allDescendantIds.map(
+          const leafDescendantIds = getLeafDescendantIds(option);
+          const leafDescendantValues: SelectValue[] = leafDescendantIds.map(
             (id) => {
               const foundOption = findOptionById(id, options);
 
@@ -409,27 +409,27 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
             },
           );
 
-          const selectedDescendantIds = allDescendantIds.filter((id) =>
+          const selectedLeafIds = leafDescendantIds.filter((id) =>
             currentValues.some((v) => String(v.id) === id),
           );
           const allSelected =
-            selectedDescendantIds.length === allDescendantIds.length;
+            selectedLeafIds.length === leafDescendantIds.length;
 
           if (allSelected) {
-            // Deselect all descendants in a single update
-            const descendantIdSet = new Set(
-              allDescendantIds.map((id) => String(id)),
+            // Deselect all leaf descendants in a single update
+            const leafIdSet = new Set(
+              leafDescendantIds.map((id) => String(id)),
             );
             const nextValues = currentValues.filter(
-              (v) => !descendantIdSet.has(String(v.id)),
+              (v) => !leafIdSet.has(String(v.id)),
             );
             onChangeMultiple(nextValues);
           } else {
-            // Select all descendants that are not yet selected in a single update
+            // Select all leaf descendants that are not yet selected in a single update
             const existingIdSet = new Set(
               currentValues.map((v) => String(v.id)),
             );
-            const valuesToAdd = allDescendantValues.filter(
+            const valuesToAdd = leafDescendantValues.filter(
               (descValue) => !existingIdSet.has(String(descValue.id)),
             );
             const nextValues = [...currentValues, ...valuesToAdd];
@@ -456,7 +456,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         onClose,
         value,
         dropdownType,
-        getAllDescendantIds,
+        getLeafDescendantIds,
         findOptionById,
         options,
       ],

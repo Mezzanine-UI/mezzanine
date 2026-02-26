@@ -28,18 +28,12 @@ import DropdownItemCard from './DropdownItemCard';
 import DropdownStatus from './DropdownStatus';
 import shortcutTextHandler from './shortcutTextHandler';
 
-// Helper function to recursively get all descendant IDs from a tree option (excluding the option itself)
-function getAllDescendantIds(option: DropdownOption): string[] {
-  const ids: string[] = [];
-
-  if (option.children && option.children.length > 0) {
-    option.children.forEach((child) => {
-      ids.push(String(child.id));
-      ids.push(...getAllDescendantIds(child));
-    });
+// Helper function to get only leaf descendant IDs from a tree option (nodes without children)
+function getLeafDescendantIds(option: DropdownOption): string[] {
+  if (!option.children || option.children.length === 0) {
+    return [String(option.id)];
   }
-
-  return ids;
+  return option.children.flatMap(getLeafDescendantIds);
 }
 
 export interface DropdownItemProps<T extends DropdownType | undefined = DropdownType> extends Omit<DropdownItemSharedProps, 'type'> {
@@ -454,26 +448,18 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
         return { checked: isSelected, indeterminate: false };
       }
 
-      // Get all descendant IDs (excluding the parent node itself)
-      const allDescendantIds = getAllDescendantIds(option);
-      const selectedDescendants = allDescendantIds.filter((id) => selectedIds.includes(id));
-      const totalDescendants = allDescendantIds.length;
+      // Only check leaf descendants since parent nodes are never added to selectedIds
+      const leafIds = getLeafDescendantIds(option);
+      const selectedLeafCount = leafIds.filter((id) => selectedIds.includes(id)).length;
+      const totalLeafCount = leafIds.length;
 
-      if (totalDescendants === 0) {
-        // No descendants, check if parent itself is selected
-        const isSelected = selectedIds.includes(String(option.id));
-        return { checked: isSelected, indeterminate: false };
-      }
-
-      if (selectedDescendants.length === 0) {
+      if (selectedLeafCount === 0) {
         return { checked: false, indeterminate: false };
       }
-      if (selectedDescendants.length === totalDescendants) {
-        // All descendants are selected
+      if (selectedLeafCount === totalLeafCount) {
         return { checked: true, indeterminate: false };
       }
 
-      // Some but not all descendants are selected
       return { checked: false, indeterminate: true };
     },
     [],
