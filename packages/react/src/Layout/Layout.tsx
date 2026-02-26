@@ -182,6 +182,7 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
         }
       >
         <main className={classes.main}>{mainContent}</main>
+        {/* eslint-disable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex -- WAI-ARIA 1.2: focusable separator with aria-valuenow is an interactive widget */}
         {open && (
           <div
             aria-label="Resize side panel"
@@ -202,6 +203,7 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
             tabIndex={0}
           />
         )}
+        {/* eslint-enable jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-noninteractive-tabindex */}
         {open && (
           <aside aria-label="Side panel" className={classes.sidePanel}>
             {sidePanelContent}
