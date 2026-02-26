@@ -237,6 +237,7 @@ const MultipleDatePickerTrigger = forwardRef<
         className,
       )}
       clearable={!readOnly && clearable && hasValue}
+      forceShowClearable={!readOnly && clearable && hasValue}
       error={error}
       fullWidth={fullWidth}
       ref={ref}
