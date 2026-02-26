@@ -726,4 +726,83 @@ describe('<Select />', () => {
       expect(inputElement.classList.contains('custom-input-class')).toBe(true);
     });
   });
+
+  describe('tree + multiple mode (leaf-only selection)', () => {
+    const treeOptions: DropdownOption[] = [
+      {
+        id: 'parent',
+        name: 'Parent',
+        showCheckbox: true,
+        children: [
+          { id: 'leaf-a', name: 'Leaf A', showCheckbox: true },
+          { id: 'leaf-b', name: 'Leaf B', showCheckbox: true },
+        ],
+      },
+    ];
+
+    it('should add only leaf descendants to value when parent checkbox is clicked', async () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Select mode="multiple" onChange={onChange} options={treeOptions} />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeTruthy();
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('input[type="checkbox"]')).toBeTruthy();
+      });
+
+      await act(async () => {
+        fireEvent.click(document.querySelector('input[type="checkbox"]')!);
+      });
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalled();
+        const calledWith = onChange.mock.calls[0][0] as SelectValue[];
+        expect(calledWith.find((v) => String(v.id) === 'parent')).toBeUndefined();
+        expect(calledWith.find((v) => String(v.id) === 'leaf-a')).toBeDefined();
+        expect(calledWith.find((v) => String(v.id) === 'leaf-b')).toBeDefined();
+      });
+    });
+
+    it('should remove only leaf descendants from value when checked parent checkbox is clicked', async () => {
+      const onChange = jest.fn();
+      const initialValue: SelectValue[] = [
+        { id: 'leaf-a', name: 'Leaf A' },
+        { id: 'leaf-b', name: 'Leaf B' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Select
+          defaultValue={initialValue}
+          mode="multiple"
+          onChange={onChange}
+          options={treeOptions}
+        />,
+      );
+      const element = getHostHTMLElement();
+
+      await testTextFieldClicked(element);
+
+      await waitFor(() => {
+        expect(document.querySelector('.mzn-dropdown-popper--with-portal')).toBeTruthy();
+      });
+
+      await waitFor(() => {
+        expect(document.querySelector('input[type="checkbox"]')).toBeTruthy();
+      });
+
+      await act(async () => {
+        fireEvent.click(document.querySelector('input[type="checkbox"]')!);
+      });
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledWith([]);
+      });
+    });
+  });
 });
