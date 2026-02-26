@@ -678,6 +678,50 @@ describe('<FormField />', () => {
     });
   });
 
+  describe('prop: showHintTextIcon', () => {
+    it('should not render any icon when showHintTextIcon=false even with severity', () => {
+      const { container } = render(
+        <FormField
+          hintText="This is a hint"
+          label="Test"
+          name="test"
+          severity="error"
+          showHintTextIcon={false}
+          layout={FormFieldLayout.VERTICAL}
+        >
+          <Input />
+        </FormField>,
+      );
+      const hintTextArea = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
+      const iconElement = hintTextArea?.querySelector('i');
+
+      expect(iconElement).toBeFalsy();
+    });
+
+    it('should not render any icon when showHintTextIcon=false even with custom hintTextIcon', () => {
+      const { container } = render(
+        <FormField
+          hintText="This is a hint"
+          hintTextIcon={InfoOutlineIcon}
+          label="Test"
+          name="test"
+          showHintTextIcon={false}
+          layout={FormFieldLayout.VERTICAL}
+        >
+          <Input />
+        </FormField>,
+      );
+      const hintTextArea = container.querySelector(
+        '.mzn-form-field__hint-text',
+      );
+      const iconElement = hintTextArea?.querySelector('i');
+
+      expect(iconElement).toBeFalsy();
+    });
+  });
+
   describe('prop: severity', () => {
     it('should apply default info severity to hint text', () => {
       const { container } = render(

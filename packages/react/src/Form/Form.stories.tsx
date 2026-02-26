@@ -1,5 +1,13 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { IconDefinition, InfoOutlineIcon } from '@mezzanine-ui/icons';
+import {
+  CheckedOutlineIcon,
+  ErrorOutlineIcon,
+  IconDefinition,
+  InfoFilledIcon,
+  InfoOutlineIcon,
+  QuestionOutlineIcon,
+  WarningOutlineIcon,
+} from '@mezzanine-ui/icons';
 import {
   ControlFieldSlotLayout,
   FormFieldCounterColor,
@@ -16,6 +24,18 @@ import Textarea from '../Textarea';
 import { FormField } from '.';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
+const hintTextIconOptions = {
+  none: undefined,
+  InfoOutlineIcon,
+  InfoFilledIcon,
+  WarningOutlineIcon,
+  ErrorOutlineIcon,
+  CheckedOutlineIcon,
+  QuestionOutlineIcon,
+} satisfies Record<string, IconDefinition | undefined>;
+
+type HintTextIconOptionKey = keyof typeof hintTextIconOptions;
+
 export default {
   title: 'Data Entry/Form',
 } as Meta;
@@ -29,7 +49,7 @@ interface PlaygroundStoryArgs {
   disabled: boolean;
   fullWidth: boolean;
   hintText?: string;
-  hintTextIcon?: IconDefinition;
+  hintTextIcon: HintTextIconOptionKey;
   label: string;
   labelInformationText: string;
   labelSpacing: FormFieldLabelSpacing;
@@ -53,6 +73,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     disabled: false,
     fullWidth: false,
     hintText: 'hint text',
+    hintTextIcon: 'InfoOutlineIcon',
     label: 'label',
     labelInformationText: 'This is information tooltip text',
     labelSpacing: FormFieldLabelSpacing.MAIN,
@@ -96,6 +117,12 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
       },
       options: Object.values(FormFieldLayout),
     },
+    hintTextIcon: {
+      control: {
+        type: 'select',
+      },
+      options: Object.keys(hintTextIconOptions),
+    },
     severity: {
       control: {
         type: 'select',
@@ -112,6 +139,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     disabled,
     fullWidth,
     hintText,
+    hintTextIcon,
     label,
     labelInformationText,
     labelSpacing,
@@ -119,6 +147,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     name,
     remark,
     required,
+    showHintTextIcon,
     showRemarkIcon,
     severity,
   }) {
@@ -131,6 +160,8 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
         disabled={disabled}
         fullWidth={fullWidth}
         hintText={hintText}
+        hintTextIcon={hintTextIconOptions[hintTextIcon]}
+        showHintTextIcon={showHintTextIcon}
         label={label}
         labelInformationIcon={showRemarkIcon ? InfoOutlineIcon : undefined}
         labelInformationText={labelInformationText}
