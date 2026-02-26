@@ -18,11 +18,11 @@ export const Playground: StoryObj<typeof Layout> = {
     return (
       <Layout defaultSidePanelWidth={320} open={open}>
         <Layout.Main>
-          <div style={{ padding: '24px' }}>
+          <div style={{ padding: 'var(--mzn-spacing-primitive-24)' }}>
             <h1>Main Content</h1>
             <p>
-              This area uses the body scrollbar. Click the floating button to open the side panel,
-              and drag the separator line to resize it.
+              This area uses the body scrollbar. Click the floating button to
+              open the side panel, and drag the separator line to resize it.
             </p>
           </div>
           <FloatingButton
@@ -36,7 +36,7 @@ export const Playground: StoryObj<typeof Layout> = {
           </FloatingButton>
         </Layout.Main>
         <Layout.SidePanel>
-          <div style={{ padding: '24px' }}>
+          <div style={{ padding: 'var(--mzn-spacing-primitive-24)' }}>
             <h2>Side Panel</h2>
             <p>This panel is position: fixed and scrolls independently.</p>
             <button onClick={() => setOpen(false)}>Close</button>

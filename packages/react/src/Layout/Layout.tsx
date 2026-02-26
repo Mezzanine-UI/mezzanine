@@ -18,6 +18,7 @@ const MIN_PANEL_WIDTH = 240;
 const ARROW_KEY_STEP = 10;
 
 export interface LayoutMainProps {
+  /** The content rendered inside the main area. */
   children?: React.ReactNode;
 }
 
@@ -28,6 +29,7 @@ export function LayoutMain({ children }: LayoutMainProps) {
 LayoutMain.displayName = 'Layout.Main';
 
 export interface LayoutSidePanelProps {
+  /** The content rendered inside the side panel. */
   children?: React.ReactNode;
 }
 
@@ -38,9 +40,13 @@ export function LayoutSidePanel({ children }: LayoutSidePanelProps) {
 LayoutSidePanel.displayName = 'Layout.SidePanel';
 
 export interface LayoutProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
+  /** The slot children: use `Layout.Main` and `Layout.SidePanel` as direct children. */
   children?: React.ReactNode;
+  /** Initial width (in px) of the side panel. Clamped to a minimum of 240px. */
   defaultSidePanelWidth?: number;
+  /** Callback fired when the side panel width changes during resize. */
   onSidePanelWidthChange?: (width: number) => void;
+  /** Controls whether the side panel and divider are visible. */
   open?: boolean;
 }
 
@@ -63,7 +69,10 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
           ? window.innerWidth - MIN_PANEL_WIDTH - 1
           : Infinity;
 
-      return Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, defaultSidePanelWidth));
+      return Math.min(
+        maxWidth,
+        Math.max(MIN_PANEL_WIDTH, defaultSidePanelWidth),
+      );
     });
     const dragStartRef = useRef<{ width: number; x: number } | null>(null);
     const rafIdRef = useRef<number | null>(null);
@@ -84,9 +93,11 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
       if (!isValidElement(child)) return;
 
       if (child.type === LayoutMain) {
-        mainContent = (child as React.ReactElement<LayoutMainProps>).props.children;
+        mainContent = (child as React.ReactElement<LayoutMainProps>).props
+          .children;
       } else if (child.type === LayoutSidePanel) {
-        sidePanelContent = (child as React.ReactElement<LayoutSidePanelProps>).props.children;
+        sidePanelContent = (child as React.ReactElement<LayoutSidePanelProps>)
+          .props.children;
       }
     });
 
@@ -98,7 +109,10 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
 
         const step = e.key === 'ArrowLeft' ? ARROW_KEY_STEP : -ARROW_KEY_STEP;
         const maxWidth = window.innerWidth - MIN_PANEL_WIDTH - 1;
-        const newWidth = Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, sidePanelWidth + step));
+        const newWidth = Math.min(
+          maxWidth,
+          Math.max(MIN_PANEL_WIDTH, sidePanelWidth + step),
+        );
 
         setSidePanelWidth(newWidth);
         onSidePanelWidthChange?.(newWidth);
@@ -115,59 +129,62 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
       [sidePanelWidth],
     );
 
-    useDocumentEvents(
-      () => {
-        if (!isDragging) return undefined;
+    useDocumentEvents(() => {
+      if (!isDragging) return undefined;
 
-        return {
-          mousemove: (e: MouseEvent) => {
+      return {
+        mousemove: (e: MouseEvent) => {
+          if (!dragStartRef.current) return;
+
+          if (rafIdRef.current !== null) {
+            window.cancelAnimationFrame(rafIdRef.current);
+          }
+
+          rafIdRef.current = window.requestAnimationFrame(() => {
+            rafIdRef.current = null;
+
             if (!dragStartRef.current) return;
 
-            if (rafIdRef.current !== null) {
-              window.cancelAnimationFrame(rafIdRef.current);
-            }
+            const delta = dragStartRef.current.x - e.clientX;
+            const newWidth = dragStartRef.current.width + delta;
+            const maxWidth = window.innerWidth - MIN_PANEL_WIDTH - 1;
+            const clamped = Math.min(
+              maxWidth,
+              Math.max(MIN_PANEL_WIDTH, newWidth),
+            );
 
-            rafIdRef.current = window.requestAnimationFrame(() => {
-              rafIdRef.current = null;
+            setSidePanelWidth(clamped);
+            onSidePanelWidthChange?.(clamped);
+          });
+        },
+        mouseup: () => {
+          if (rafIdRef.current !== null) {
+            window.cancelAnimationFrame(rafIdRef.current);
+            rafIdRef.current = null;
+          }
 
-              if (!dragStartRef.current) return;
-
-              const delta = dragStartRef.current.x - e.clientX;
-              const newWidth = dragStartRef.current.width + delta;
-              const maxWidth = window.innerWidth - MIN_PANEL_WIDTH - 1;
-              const clamped = Math.min(maxWidth, Math.max(MIN_PANEL_WIDTH, newWidth));
-
-              setSidePanelWidth(clamped);
-              onSidePanelWidthChange?.(clamped);
-            });
-          },
-          mouseup: () => {
-            if (rafIdRef.current !== null) {
-              window.cancelAnimationFrame(rafIdRef.current);
-              rafIdRef.current = null;
-            }
-
-            setIsDragging(false);
-            dragStartRef.current = null;
-          },
-        };
-      },
-      [isDragging, onSidePanelWidthChange],
-    );
+          setIsDragging(false);
+          dragStartRef.current = null;
+        },
+      };
+    }, [isDragging, onSidePanelWidthChange]);
 
     return (
       <div
         {...rest}
         className={cx(classes.host, { [classes.hostOpen]: open }, className)}
         ref={ref}
-        style={{
-          ...style,
-          '--mzn-layout-side-panel-width': `${sidePanelWidth}px`,
-        } as React.CSSProperties}
+        style={
+          {
+            ...style,
+            '--mzn-layout-side-panel-width': `${sidePanelWidth}px`,
+          } as React.CSSProperties
+        }
       >
         <main className={classes.main}>{mainContent}</main>
         {open && (
           <div
+            aria-label="Resize side panel"
             aria-orientation="vertical"
             aria-valuemax={
               typeof window !== 'undefined'
@@ -176,14 +193,20 @@ const Layout = forwardRef<HTMLDivElement, LayoutProps>(
             }
             aria-valuemin={MIN_PANEL_WIDTH}
             aria-valuenow={sidePanelWidth}
-            className={cx(classes.divider, { [classes.dividerDragging]: isDragging })}
+            className={cx(classes.divider, {
+              [classes.dividerDragging]: isDragging,
+            })}
             onKeyDown={handleDividerKeyDown}
             onMouseDown={handleDividerMouseDown}
             role="separator"
             tabIndex={0}
           />
         )}
-        {open && <aside className={classes.sidePanel}>{sidePanelContent}</aside>}
+        {open && (
+          <aside aria-label="Side panel" className={classes.sidePanel}>
+            {sidePanelContent}
+          </aside>
+        )}
       </div>
     );
   },
