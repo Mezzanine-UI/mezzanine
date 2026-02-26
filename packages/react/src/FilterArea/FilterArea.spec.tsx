@@ -3,7 +3,7 @@ import {
   FilterAreaSize,
 } from '@mezzanine-ui/core/filter-area';
 import { FormFieldDensity, FormFieldLayout } from '@mezzanine-ui/core/form';
-import { cleanup, render } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -339,6 +339,53 @@ describe('<FilterArea />', () => {
       resetButton?.click();
 
       expect(handleReset).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('expanded state (multiple lines)', () => {
+    it('should wrap actions in row when expanded so they align to the right', () => {
+      const { getHostHTMLElement } = render(
+        <FilterArea>
+          <FilterLine>
+            <Filter>
+              <FormField
+                label="Line1"
+                name="a"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
+                <Input />
+              </FormField>
+            </Filter>
+          </FilterLine>
+          <FilterLine>
+            <Filter>
+              <FormField
+                label="Line2"
+                name="b"
+                density={FormFieldDensity.BASE}
+                layout={FormFieldLayout.HORIZONTAL}
+              >
+                <Input />
+              </FormField>
+            </Filter>
+          </FilterLine>
+        </FilterArea>,
+      );
+      const element = getHostHTMLElement();
+      const expandButton = element.querySelector(
+        '[aria-label="Expand filters"]',
+      ) as HTMLButtonElement;
+
+      expect(expandButton).toBeTruthy();
+      fireEvent.click(expandButton);
+
+      const row = element.querySelector('.mzn-filter-area__row');
+      const actions = element.querySelector('.mzn-filter-area__actions');
+
+      expect(row).toBeTruthy();
+      expect(actions).toBeTruthy();
+      expect(row?.contains(actions)).toBe(true);
     });
   });
 });
