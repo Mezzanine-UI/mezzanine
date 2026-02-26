@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.7...@mezzanine-ui/react@1.0.0-rc.0) (2026-02-26)
+
+### Bug Fixes
+
+- **react/accordion:** AccordionTitle disabled prop ([d912755](https://github.com/Mezzanine-UI/mezzanine/commit/d912755d5edfcc056fab8d29b7d9538257019cc3))
+- **react/autocomplete:** show clear button in multiple mode ([efa704b](https://github.com/Mezzanine-UI/mezzanine/commit/efa704b401fcf5056a4ae4fa18dca20989afe514))
+- **react/description:** fix DescriptionGroup storybook ([7eaaefb](https://github.com/Mezzanine-UI/mezzanine/commit/7eaaefb2bef93df213fc5ba1ad31447d20ad563c))
+- **react/dropdown:** Add row toggle control for dropdown multiple mode ([a17601f](https://github.com/Mezzanine-UI/mezzanine/commit/a17601f383c3921e876d049bae3e7a9915c43346))
+- **react/dropdown:** fix dropdown unit test ([7aec7b1](https://github.com/Mezzanine-UI/mezzanine/commit/7aec7b1db1a6fcb6cb6d6b4a8e22c752df6a9662))
+- **react/dropdown:** make checkbox stopPropagation conditional and add spec ([2847d00](https://github.com/Mezzanine-UI/mezzanine/commit/2847d00b0bb82600ea9adbd5c0ec07cde308ed9e))
+- **react/Dropdown:** use leaf descendants only for tree item checkbox state ([2cbe96d](https://github.com/Mezzanine-UI/mezzanine/commit/2cbe96d5ff47d2953947a0939d904e1f4100bb81))
+- **react/filterArea:** wrap actions in row when expanded ([0288d7e](https://github.com/Mezzanine-UI/mezzanine/commit/0288d7e1b91f7599fcffc68593f42bebfa44a9fe))
+- **react/input:** add currency spinner state tracking ([8234777](https://github.com/Mezzanine-UI/mezzanine/commit/82347778173d89fa72eac14c0e2d0d1ee2ea91f0))
+- **react/layout:** add a11y labels, JSDoc comments, mdx doc, and fix hardcoded px in stories ([7b0ff8b](https://github.com/Mezzanine-UI/mezzanine/commit/7b0ff8bbe50670c48107fad444cb5c516227c53d))
+- **react/layout:** register styles in core/\_styles.scss and fix Storybook category ([ba5710a](https://github.com/Mezzanine-UI/mezzanine/commit/ba5710a9011eb21ed4a058bbd4619e38172b6a6b))
+- **react/layout:** suppress false-positive jsx-a11y rules for interactive separator ([0c4096f](https://github.com/Mezzanine-UI/mezzanine/commit/0c4096f8ba6b730d0d67985a7eb340ecfce3768e))
+- **react/MultipleDatePicker:** force show clear when clearable and has value ([3608b99](https://github.com/Mezzanine-UI/mezzanine/commit/3608b9993d7b8ac54b2a1aefc81bbafbac87ef09))
+- **react/MultipleDatePicker:** update the unit test about MultipleDatePicker ([13995da](https://github.com/Mezzanine-UI/mezzanine/commit/13995da89c7245bf010873fc642219a942d7b024))
+- **react/page-header:** storybook variant ([272d066](https://github.com/Mezzanine-UI/mezzanine/commit/272d066ce429192f5c56fac0b9aefc5e6c8c152f))
+- **react/pagination:** update Dropdown component to support disabled state ([ed647c6](https://github.com/Mezzanine-UI/mezzanine/commit/ed647c65ad401fa6ce960796efddaf34de6eb9ba))
+- **react/select:** fix duplicate selection on the select tree mode ([32b503e](https://github.com/Mezzanine-UI/mezzanine/commit/32b503ee6c74435c8cc837042531b057fefae153))
+- **react/select:** Fix multiple Select trigger clear behavior and stray zero ([be3cc53](https://github.com/Mezzanine-UI/mezzanine/commit/be3cc53e5c449553d6d3abcdb660757eec784eb8))
+- **react/select:** fix Select placeholder ([8774caf](https://github.com/Mezzanine-UI/mezzanine/commit/8774caf6991b61f5b45a77dd45ecfc4c60b77d92))
+- **react/select:** update the unit test about select ([e0d808b](https://github.com/Mezzanine-UI/mezzanine/commit/e0d808bb1cd9a0952470949e30807ee0eb6abc9e))
+- **react/Select:** use leaf descendants only for tree multi-select ([b2a984d](https://github.com/Mezzanine-UI/mezzanine/commit/b2a984dd2af907763df48b677fa2dd528094d20e))
+- **react/textFiled:** Add force option for clear icon visibility ([4651566](https://github.com/Mezzanine-UI/mezzanine/commit/4651566e29394e6439e7e0353d692a727d979d0c))
+
+### Features
+
+- **form:** add FormGroup component ([ac83e7c](https://github.com/Mezzanine-UI/mezzanine/commit/ac83e7cef98591e6582abe9b8678db4ce042110a))
+- **react/accordion:** add danger color ([873f1cc](https://github.com/Mezzanine-UI/mezzanine/commit/873f1cc359fb2ccdb1e9be76cbe592ab06bc3472))
+- **react/badge:** add text only variant CU-86ewhq2xh ([b9840fd](https://github.com/Mezzanine-UI/mezzanine/commit/b9840fd3c85673a6b2f569695cab5cb3ab17d8a4))
+- **react/drawer:** add contentKey prop to prevent DOM residue ([46a12d6](https://github.com/Mezzanine-UI/mezzanine/commit/46a12d695e4e3b502d58642a504ca0f8a0886d8a))
+- **react/layout:** add Layout component with draggable split-panel ([cbd0b68](https://github.com/Mezzanine-UI/mezzanine/commit/cbd0b6878d43420d9651641d0c04d887eb9055b2))
+- **react/layout:** add open prop, slot sub-components, and FloatingButton story ([9852059](https://github.com/Mezzanine-UI/mezzanine/commit/9852059600957b6f8dfb10e79ba5785d12a2bb65))
+- **react/pagination:** add dropdown menu, update select width CU-86ewhq361 ([793810b](https://github.com/Mezzanine-UI/mezzanine/commit/793810b50017a693eec958cd36bcc8309114c318))
+- **react/pagination:** PaginationPageSize layout CU-86ewkmdqj ([353b5c3](https://github.com/Mezzanine-UI/mezzanine/commit/353b5c3727562d3cfaf3177298c355f328d24845))
+
 # [1.0.0-beta.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.6...@mezzanine-ui/react@1.0.0-beta.7) (2026-02-12)
 
 ### Bug Fixes

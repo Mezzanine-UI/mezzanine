@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.7...@mezzanine-ui/core@1.0.0-rc.0) (2026-02-26)
+
+### Bug Fixes
+
+- **core/filterArea:** default gap calm, actions right when expanded ([a1a2696](https://github.com/Mezzanine-UI/mezzanine/commit/a1a26960be351dd0bb9f164cd3a57c89ff02962b))
+- **core/input:** add min-width styles and currency spinner support ([5b5aa45](https://github.com/Mezzanine-UI/mezzanine/commit/5b5aa45ed3bbfc16b6ba136690629ec5a3e48420))
+- **core/select:** Drop the --active selector so the suffix is only hidden when the clear icon is actually visible (hover/focus/typing) ([7ef4c4e](https://github.com/Mezzanine-UI/mezzanine/commit/7ef4c4e426832b11e51e14359f41946f3c11bd7d))
+- **core/select:** show clear icon on hover/focus, hide suffix when clearable ([cec4d02](https://github.com/Mezzanine-UI/mezzanine/commit/cec4d020488a1e2aa82284fdbfca5cadc6b80ac1))
+- **core/select:** update min-width to use semantic variables ([5014d73](https://github.com/Mezzanine-UI/mezzanine/commit/5014d737ba54acad540f6a9ca61a190889b9fd32))
+- **core/table:** update table header cell token ([7749325](https://github.com/Mezzanine-UI/mezzanine/commit/77493259ff0cfa385d3230f219dd2e638626d025))
+- **core/textarea:** replace hardcoded min-width with semantic variable ([b42c03a](https://github.com/Mezzanine-UI/mezzanine/commit/b42c03a8750f52aed18701994e3e114a7a8b8d5b))
+- **react/layout:** register styles in core/\_styles.scss and fix Storybook category ([ba5710a](https://github.com/Mezzanine-UI/mezzanine/commit/ba5710a9011eb21ed4a058bbd4619e38172b6a6b))
+
+### Features
+
+- **core/badge:** add text only styles CU-86ewhq2xh ([361e616](https://github.com/Mezzanine-UI/mezzanine/commit/361e616d5751df39aa4279e6c0752107d4811b21))
+- **core/pagination:** PaginationPageSize layout CU-86ewkmdqj ([6adeaff](https://github.com/Mezzanine-UI/mezzanine/commit/6adeaff2ad7b1def8eea2c82d8eed59026bddf98))
+- **core/pagination:** update padding, gap token ([e348e48](https://github.com/Mezzanine-UI/mezzanine/commit/e348e48be35d810d76c42f3a29da620e40653a58))
+- **core/pagination:** update select width CU-86ewhq361 ([ed951ab](https://github.com/Mezzanine-UI/mezzanine/commit/ed951ab7be8d54340964b44a849924fc90bbb26b))
+- **form:** add FormGroup component ([ac83e7c](https://github.com/Mezzanine-UI/mezzanine/commit/ac83e7cef98591e6582abe9b8678db4ce042110a))
+- **react/layout:** add Layout component with draggable split-panel ([cbd0b68](https://github.com/Mezzanine-UI/mezzanine/commit/cbd0b6878d43420d9651641d0c04d887eb9055b2))
+- **react/layout:** add open prop, slot sub-components, and FloatingButton story ([9852059](https://github.com/Mezzanine-UI/mezzanine/commit/9852059600957b6f8dfb10e79ba5785d12a2bb65))
+
 # [1.0.0-beta.7](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.6...@mezzanine-ui/core@1.0.0-beta.7) (2026-02-12)
 
 ### Bug Fixes
