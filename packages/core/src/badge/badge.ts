@@ -26,12 +26,15 @@ export type BadgeCountVariant =
   | 'count-brand'
   | 'count-info';
 
+export type BadgeTextSize = 'main' | 'sub';
+
 export const badgeClasses = {
   host: badgePrefix,
   variant: (variant: BadgeDotVariant | BadgeCountVariant | BadgeTextVariant) =>
     `${badgePrefix}--${variant}`,
-  container: (hasChilden: boolean) =>
-    hasChilden
+  size: (size: BadgeTextSize) => `${badgePrefix}--${size}`,
+  container: (hasChildren: boolean) =>
+    hasChildren
       ? `${badgePrefix}__container--has-children`
       : `${badgePrefix}__container`,
   hide: `${badgePrefix}--hide`,
