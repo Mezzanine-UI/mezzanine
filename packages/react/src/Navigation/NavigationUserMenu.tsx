@@ -25,7 +25,7 @@ const NavigationUserMenu = forwardRef<
     open: openProp,
     onClose,
     placement = 'top-end',
-    collapsedPlacement = 'top-start',
+    collapsedPlacement = 'right-end',
     onVisibilityChange,
     ...dropdownRest
   } = rest;
