@@ -180,19 +180,23 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       );
     }, [currentPath, filterText, href, title]);
 
-    const titleRef = useRef<HTMLSpanElement>(null);
+    const titleRef = useRef<HTMLElement>(null);
     const [titleOverflow, setTitleOverflow] = useState(false);
 
     useEffect(() => {
       if (!titleRef.current) return;
 
-      const resizeObserver = new ResizeObserver(() => {
-        if (!titleRef.current) return false;
+      const checkOverflow = () => {
+        if (!titleRef.current) return;
 
         const { scrollWidth, clientWidth } = titleRef.current;
 
         setTitleOverflow(scrollWidth > clientWidth);
-      });
+      };
+
+      checkOverflow();
+
+      const resizeObserver = new ResizeObserver(checkOverflow);
 
       resizeObserver.observe(titleRef.current);
 
@@ -218,8 +222,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
         data-id={currentKey}
       >
         <Tooltip
+          disablePortal={false}
           options={{
-            placement: 'right',
+            placement: collapsed ? 'right' : 'top',
           }}
           title={collapsed || titleOverflow ? title : undefined}
         >
@@ -255,10 +260,8 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
 
-              <Fade in={collapsed === false || !icon}>
-                <span ref={titleRef} className={classes.title}>
-                  {title}
-                </span>
+              <Fade ref={titleRef} in={collapsed === false || !icon}>
+                <span className={classes.title}>{title}</span>
               </Fade>
 
               {badge}

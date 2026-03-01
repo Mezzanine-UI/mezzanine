@@ -78,10 +78,13 @@ const NavigationUserMenu = forwardRef<
         type="button"
       >
         <Tooltip
+          disablePortal={false}
           options={{
-            placement: collapsed ? 'right' : 'right',
+            placement: collapsed ? 'right' : 'top',
           }}
-          title={userNameOverflow && !open ? children : undefined}
+          title={
+            (collapsed || userNameOverflow) && !open ? children : undefined
+          }
         >
           {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
             <span
