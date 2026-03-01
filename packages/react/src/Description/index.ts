@@ -6,3 +6,5 @@ export { default as DescriptionContent } from './DescriptionContent';
 export type { DescriptionContentProps } from './DescriptionContent';
 export { default as DescriptionGroup } from './DescriptionGroup';
 export type { DescriptionGroupProps } from './DescriptionGroup';
+export { DescriptionContext } from './DescriptionContext';
+export type { DescriptionContextValue } from './DescriptionContext';

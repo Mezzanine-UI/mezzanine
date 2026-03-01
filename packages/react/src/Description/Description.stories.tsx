@@ -37,7 +37,11 @@ export const Playground: Story = {
         <Typography variant="h3" style={{ marginBottom: 8 }}>
           Badge
         </Typography>
-        <Description title="訂單狀態" widthType="narrow">
+        <Description size="main" title="訂單狀態" widthType="narrow">
+          <Badge variant="dot-success" text="已訂購" />
+        </Description>
+
+        <Description size="sub" title="訂單狀態" widthType="narrow">
           <Badge variant="dot-success" text="已訂購" />
         </Description>
       </div>
