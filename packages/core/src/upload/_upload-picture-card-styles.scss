@@ -189,11 +189,7 @@ $image-size: spacing.primitive-variable(140);
       .#{$prefix}__actions--done {
         opacity: 1;
         pointer-events: auto;
-        background: linear-gradient(
-          0deg,
-          palette.semantic-variable(overlay, strong) 0%,
-          palette.semantic-variable(overlay, strong) 100%
-        );
+        background: palette.semantic-variable(overlay, subtle);
 
         .#{$prefix}__replace-label {
           opacity: 1;
@@ -213,7 +209,7 @@ $image-size: spacing.primitive-variable(140);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: palette.semantic-variable(canvas, fixed-dark);
+    background-color: palette.semantic-variable("overlay", default);
     color: palette.semantic-variable(text, fixed-light);
     border-radius: radius.variable(base);
     padding-block: spacing.semantic-variable(padding, vertical, tight);
