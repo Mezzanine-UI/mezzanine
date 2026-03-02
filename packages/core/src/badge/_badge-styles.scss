@@ -94,6 +94,10 @@ $count-type-config: (
 
       column-gap: spacing.semantic-variable(gap, base);
       color: map.get($dot-type-config, $type, text-color);
+
+      &.#{$prefix}--sub {
+        @include typography.semantic-variable(caption);
+      }
     }
   }
 
