@@ -177,15 +177,15 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       items: ReactElement<NavigationOptionProps>[],
       path: string[],
     ): boolean => {
-      items.forEach((item) => {
+      for (const item of items) {
         if (!isValidElement(item) || item.type !== NavigationOption) {
-          return;
+          continue;
         }
 
         const newKey = item.props.id || item.props.title || item.props.href;
 
         if (!newKey) {
-          return;
+          continue;
         }
 
         const newPath = [...path, newKey];
@@ -205,7 +205,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
             return true;
           }
         }
-      });
+      }
 
       return false;
     };

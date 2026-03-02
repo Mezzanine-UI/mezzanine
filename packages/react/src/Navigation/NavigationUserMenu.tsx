@@ -12,7 +12,7 @@ export interface NavigationUserMenuProps
   children?: ReactNode;
   className?: string;
   collapsedPlacement?: DropdownProps['placement'];
-  imgSrc: string;
+  imgSrc?: string;
   onClick?: () => void;
 }
 
@@ -94,7 +94,7 @@ const NavigationUserMenu = forwardRef<
               ref={tooltipRef}
             >
               <span className={classes.avatar}>
-                {imgError ? (
+                {imgError || !imgSrc ? (
                   <Icon icon={UserIcon} />
                 ) : (
                   <img

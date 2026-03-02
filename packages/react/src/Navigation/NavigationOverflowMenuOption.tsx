@@ -76,7 +76,10 @@ const NavigationOverflowMenuOption = forwardRef<
 
   // Default open if current path is activated
   useEffect(() => {
-    if (activatedPathKey.startsWith(currentPathKey)) {
+    if (
+      activatedPathKey === currentPathKey ||
+      activatedPathKey.startsWith(`${currentPathKey}::`)
+    ) {
       setOpen(true);
     }
   }, [activatedPathKey, currentLevel, currentPathKey]);

@@ -161,7 +161,10 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
     // Default open if current path is activated
     useEffect(() => {
-      if (activatedPathKey.startsWith(currentPathKey)) {
+      if (
+        activatedPathKey === currentPathKey ||
+        activatedPathKey.startsWith(`${currentPathKey}::`)
+      ) {
         setOpen(true);
       }
     }, [activatedPathKey, currentLevel, currentPathKey]);
@@ -231,7 +234,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
             <Component
               className={cx(classes.content, classes.level(currentLevel))}
-              href={href}
+              href={Component === 'div' ? undefined : href}
               onClick={() => {
                 setOpen(!open);
                 onTriggerClick?.(currentPath, currentKey, href);

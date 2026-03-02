@@ -320,7 +320,12 @@ describe('<NavigationFooter />', () => {
       const { getHostHTMLElement } = render(
         <Navigation>
           <NavigationFooter>
-            <NavigationUserMenu options={[]}>User Name</NavigationUserMenu>
+            <NavigationUserMenu
+              options={[]}
+              imgSrc="https://example.com/avatar.png"
+            >
+              User Name
+            </NavigationUserMenu>
           </NavigationFooter>
         </Navigation>,
       );
@@ -328,6 +333,25 @@ describe('<NavigationFooter />', () => {
       const userMenu = element.querySelector('.mzn-navigation-user-menu');
 
       expect(userMenu).toBeTruthy();
+    });
+
+    it('should render fallback icon when imgSrc is not provided', () => {
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationFooter>
+            <NavigationUserMenu options={[]}>User Name</NavigationUserMenu>
+          </NavigationFooter>
+        </Navigation>,
+      );
+      const element = getHostHTMLElement();
+      const avatar = element.querySelector(
+        '.mzn-navigation-user-menu .mzn-navigation-user-menu__avatar',
+      );
+      const img = avatar?.querySelector('img');
+      const icon = avatar?.querySelector('.mzn-icon');
+
+      expect(img).toBeFalsy();
+      expect(icon).toBeTruthy();
     });
 
     it('should wrap other children in icons container', () => {
@@ -353,7 +377,12 @@ describe('<NavigationFooter />', () => {
       const { getHostHTMLElement } = render(
         <Navigation>
           <NavigationFooter>
-            <NavigationUserMenu options={[]}>User</NavigationUserMenu>
+            <NavigationUserMenu
+              options={[]}
+              imgSrc="https://example.com/avatar.png"
+            >
+              User
+            </NavigationUserMenu>
             <button data-testid="icon-1">Icon 1</button>
             <button data-testid="icon-2">Icon 2</button>
           </NavigationFooter>
