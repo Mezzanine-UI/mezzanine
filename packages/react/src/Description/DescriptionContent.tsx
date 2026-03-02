@@ -7,12 +7,13 @@ import {
   CaretDownIcon,
 } from '@mezzanine-ui/icons';
 import {
-  DescriptionSize,
   DescriptionContentVariant,
+  DescriptionSize,
   descriptionClasses as classes,
 } from '@mezzanine-ui/core/description';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
+import { useDescriptionContext } from './DescriptionContext';
 
 interface DescriptionContentBaseProps {
   /**
@@ -24,8 +25,9 @@ interface DescriptionContentBaseProps {
    */
   children: string;
   /**
-   * Control the text size of the content
-   * @default 'main'
+   * Controls the text size of the content. When provided, overrides the size
+   * inherited from a parent <Description> component.
+   * @default context value or 'main'
    */
   size?: DescriptionSize;
   /**
@@ -49,6 +51,11 @@ interface DescriptionContentBaseProps {
 interface DescriptionContentWithClickableIcon {
   className?: string;
   children: string;
+  /**
+   * Controls the text size of the content. When provided, overrides the size
+   * inherited from a parent <Description> component.
+   * @default context value or 'main'
+   */
   size?: DescriptionSize;
   variant: Extract<DescriptionContentVariant, 'with-icon'>;
   icon: IconDefinition;
@@ -66,9 +73,12 @@ const DescriptionContent = forwardRef<HTMLSpanElement, DescriptionContentProps>(
       children,
       icon,
       onClickIcon,
-      size = 'main',
+      size: sizeProp,
       variant = 'normal',
     } = props;
+
+    const { size: contextSize } = useDescriptionContext();
+    const size = sizeProp ?? contextSize;
 
     return (
       <span

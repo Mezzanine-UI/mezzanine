@@ -8,7 +8,7 @@ import {
 import { paginationPageSizeClasses as classes } from '@mezzanine-ui/core/pagination';
 import Typography from '../Typography';
 import { cx } from '../utils/cx';
-import Select, { SelectTrigger } from '../Select';
+import { SelectTrigger } from '../Select';
 import Dropdown from '../Dropdown';
 
 export interface PaginationPageSizeProps

@@ -1,13 +1,15 @@
 'use client';
 
-import { forwardRef, ReactElement } from 'react';
+import { cloneElement, forwardRef, isValidElement, ReactElement } from 'react';
 import { cx } from '../utils/cx';
 import {
   DescriptionOrientation,
+  DescriptionSize,
   descriptionClasses as classes,
 } from '@mezzanine-ui/core/description';
 import DescriptionTitle, { DescriptionTitleProps } from './DescriptionTitle';
 import { DescriptionContentProps } from './DescriptionContent';
+import { DescriptionContext } from './DescriptionContext';
 import { BadgeProps } from '../Badge/typings';
 import { ButtonProps } from '../Button';
 import { ProgressProps } from '../Progress';
@@ -40,6 +42,11 @@ export type DescriptionProps = DistributiveOmit<
    */
   orientation?: DescriptionOrientation;
   /**
+   * Controls the text size of the description content
+   * @default 'main'
+   */
+  size?: DescriptionSize;
+  /**
    * title text for description
    */
   title: string;
@@ -51,22 +58,31 @@ const Description = forwardRef<HTMLDivElement, DescriptionProps>(
       children,
       className,
       orientation = 'horizontal',
+      size = 'main',
       title,
       ...rest
     } = props;
 
+    const injectedChildren = isValidElement(children)
+      ? cloneElement(children as ReactElement<{ size?: DescriptionSize }>, {
+          size: (children.props as { size?: DescriptionSize }).size ?? size,
+        })
+      : children;
+
     return (
-      <div
-        className={cx(
-          classes.host,
-          classes.orientation(orientation),
-          className,
-        )}
-        ref={ref}
-      >
-        <DescriptionTitle {...rest}>{title}</DescriptionTitle>
-        {children}
-      </div>
+      <DescriptionContext.Provider value={{ size }}>
+        <div
+          className={cx(
+            classes.host,
+            classes.orientation(orientation),
+            className,
+          )}
+          ref={ref}
+        >
+          <DescriptionTitle {...rest}>{title}</DescriptionTitle>
+          {injectedChildren}
+        </div>
+      </DescriptionContext.Provider>
     );
   },
 );
