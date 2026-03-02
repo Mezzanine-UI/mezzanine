@@ -182,6 +182,53 @@ $image-size: spacing.primitive-variable(140);
     }
   }
 
+  &--replace-mode {
+    cursor: pointer;
+
+    .#{$prefix}__container:hover {
+      .#{$prefix}__actions--done {
+        opacity: 1;
+        pointer-events: auto;
+        background: linear-gradient(
+          0deg,
+          palette.semantic-variable(overlay, strong) 0%,
+          palette.semantic-variable(overlay, strong) 100%
+        );
+
+        .#{$prefix}__replace-label {
+          opacity: 1;
+          visibility: visible;
+        }
+
+        .#{$prefix}__tools {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+    }
+  }
+
+  &__replace-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: palette.semantic-variable(canvas, fixed-dark);
+    color: palette.semantic-variable(text, fixed-light);
+    border-radius: radius.variable(base);
+    padding-block: spacing.semantic-variable(padding, vertical, tight);
+    padding-inline: spacing.semantic-variable(padding, horizontal, base);
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      transition.standard(opacity, fast),
+      transition.standard(visibility, fast);
+
+    @include typography.semantic-variable(caption);
+  }
+
   &__size {
     color: palette.semantic-variable(text, neutral);
     @include typography.semantic-variable(annotation);

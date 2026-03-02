@@ -41,6 +41,26 @@ export interface UploadPictureCardAriaLabels {
    */
   cancelUpload?: string;
   /**
+   * Aria label for the click-to-replace overlay label.
+   * @default 'Click to Replace'
+   */
+  clickToReplace?: string;
+  /**
+   * Aria label for delete button.
+   * @default 'Delete file'
+   */
+  delete?: string;
+  /**
+   * Aria label for download button.
+   * @default 'Download file'
+   */
+  download?: string;
+  /**
+   * Aria label for reload/retry button.
+   * @default 'Retry upload'
+   */
+  reload?: string;
+  /**
    * Aria label for uploading status.
    * @default 'Uploading'
    */
@@ -50,21 +70,6 @@ export interface UploadPictureCardAriaLabels {
    * @default 'Zoom in image'
    */
   zoomIn?: string;
-  /**
-   * Aria label for download button.
-   * @default 'Download file'
-   */
-  download?: string;
-  /**
-   * Aria label for delete button.
-   * @default 'Delete file'
-   */
-  delete?: string;
-  /**
-   * Aria label for reload/retry button.
-   * @default 'Retry upload'
-   */
-  reload?: string;
 }
 
 export interface UploadPictureCardProps
@@ -125,10 +130,6 @@ export interface UploadPictureCardProps
    */
   onDelete?: MouseEventHandler;
   /**
-   * When zoom in icon is clicked, this callback will be fired.
-   */
-  onZoomIn?: MouseEventHandler;
-  /**
    * When download icon is clicked, this callback will be fired.
    */
   onDownload?: MouseEventHandler;
@@ -136,6 +137,15 @@ export interface UploadPictureCardProps
    * When reload icon is clicked, this callback will be fired.
    */
   onReload?: MouseEventHandler;
+  /**
+   * When provided, the card becomes a replacement trigger in done status.
+   * On hover, shows a "Click to Replace" overlay label. Fired when the card body is clicked.
+   */
+  onReplace?: MouseEventHandler;
+  /**
+   * When zoom in icon is clicked, this callback will be fired.
+   */
+  onZoomIn?: MouseEventHandler;
 }
 
 /**
@@ -155,19 +165,21 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
       errorMessage,
       errorIcon,
       onDelete,
-      onZoomIn,
       onDownload,
       onReload,
+      onReplace,
+      onZoomIn,
       ...rest
     } = props;
 
     const defaultAriaLabels: Required<UploadPictureCardAriaLabels> = {
       cancelUpload: 'Cancel upload',
+      clickToReplace: 'Click to Replace',
+      delete: 'Delete file',
+      download: 'Download file',
+      reload: 'Retry upload',
       uploading: 'Uploading',
       zoomIn: 'Zoom in image',
-      download: 'Download file',
-      delete: 'Delete file',
-      reload: 'Retry upload',
     };
 
     const labels = { ...defaultAriaLabels, ...ariaLabels };
@@ -254,13 +266,15 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
 
     return (
       <div
+        aria-disabled={disabled}
         className={cx(
           classes.host,
           classes.size(size),
           disabled && classes.disabled,
+          onReplace && status === 'done' && classes.replaceMode,
           className,
         )}
-        aria-disabled={disabled}
+        onClick={onReplace && status === 'done' ? onReplace : undefined}
         ref={ref}
         role="group"
         tabIndex={disabled ? -1 : 0}
@@ -319,22 +333,26 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
               <>
                 <div className={classes.tools}>
                   <div className={classes.toolsContent}>
-                    <Button
-                      variant="base-secondary"
-                      size="minor"
-                      icon={ZoomInIcon}
-                      iconType="icon-only"
-                      onClick={onZoomIn}
-                      aria-label={labels.zoomIn}
-                    />
-                    <Button
-                      variant="base-secondary"
-                      size="minor"
-                      iconType="icon-only"
-                      icon={DownloadIcon}
-                      onClick={onDownload}
-                      aria-label={labels.download}
-                    />
+                    {onZoomIn && (
+                      <Button
+                        variant="base-secondary"
+                        size="minor"
+                        icon={ZoomInIcon}
+                        iconType="icon-only"
+                        onClick={onZoomIn}
+                        aria-label={labels.zoomIn}
+                      />
+                    )}
+                    {onDownload && (
+                      <Button
+                        variant="base-secondary"
+                        size="minor"
+                        iconType="icon-only"
+                        icon={DownloadIcon}
+                        onClick={onDownload}
+                        aria-label={labels.download}
+                      />
+                    )}
                     <Button
                       variant="base-secondary"
                       size="minor"
@@ -345,6 +363,11 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
                     />
                   </div>
                 </div>
+                {onReplace && (
+                  <span className={classes.replaceLabel}>
+                    {labels.clickToReplace}
+                  </span>
+                )}
               </>
             )}
             {status === 'error' && size !== 'minor' && (
