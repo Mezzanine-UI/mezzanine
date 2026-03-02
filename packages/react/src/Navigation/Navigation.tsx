@@ -6,7 +6,9 @@ import {
   isValidElement,
   ReactElement,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
@@ -37,6 +39,7 @@ export type NavigationChild =
   | null
   | undefined
   | false;
+
 export type NavigationChildren = NavigationChild | NavigationChild[];
 
 export interface NavigationProps
@@ -66,6 +69,10 @@ export interface NavigationProps
    * Called when a navigation option is clicked.
    */
   onOptionClick?: (activePath?: string[]) => void;
+  /**
+   * Custom component for rendering navigation options which have an href prop.
+   */
+  optionsAnchorComponent?: React.ElementType;
 }
 
 const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
@@ -77,6 +84,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     filter,
     onCollapseChange,
     onOptionClick,
+    optionsAnchorComponent,
     ...rest
   } = props;
   const [collapsedState, setCollapsedState] = useState(collapsedProp || false);
@@ -89,11 +97,17 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     [onCollapseChange],
   );
 
-  const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>([]);
+  const [innerActivatedPath, setInnerActivatedPath] = useState<string[]>(
+    activatedPath || [],
+  );
+  const [activatedPathKey, setActivatedPathKey] = useState<string>(
+    activatedPath ? activatedPath.join('::') : '',
+  );
   const combineSetActivatedPath = useCallback(
     (newActivatedPath: string[]) => {
       onOptionClick?.(newActivatedPath);
       setInnerActivatedPath(newActivatedPath);
+      setActivatedPathKey(newActivatedPath.join('::'));
     },
     [onOptionClick],
   );
@@ -152,6 +166,54 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       return { headerComponent, footerComponent, items, level1Items };
     }, [flattenedChildren]);
 
+  const hrefActivated = useRef(false);
+  // Scan level1Items and its descendants (up to level3) to find out whether href matches to determine whether to preset expansion and activatedPath
+  useEffect(() => {
+    if (hrefActivated.current || !currentPathname) {
+      return;
+    }
+
+    const checkActivatedPathKey = (
+      items: ReactElement<NavigationOptionProps>[],
+      path: string[],
+    ): boolean => {
+      for (const item of items) {
+        if (!isValidElement(item) || item.type !== NavigationOption) {
+          continue;
+        }
+
+        const newKey = item.props.id || item.props.title || item.props.href;
+
+        if (!newKey) {
+          continue;
+        }
+
+        const newPath = [...path, newKey];
+
+        if (item.props.href && item.props.href === currentPathname) {
+          combineSetActivatedPath(newPath);
+
+          return true;
+        }
+
+        if (item.props.children) {
+          const flattenedChildren = flattenChildren(
+            item.props.children,
+          ) as ReactElement<NavigationOptionProps>[];
+
+          if (checkActivatedPathKey(flattenedChildren, newPath)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    };
+
+    checkActivatedPathKey(level1Items, []);
+    hrefActivated.current = true;
+  }, [combineSetActivatedPath, currentPathname, level1Items]);
+
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
   const { collapsedItems, collapsedMenuItems } = useMemo(() => {
@@ -180,11 +242,13 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       <NavigationActivatedContext.Provider
         value={{
           activatedPath: activatedPath || innerActivatedPath,
+          activatedPathKey,
           collapsed,
           currentPathname,
           filterText,
           handleCollapseChange,
           setActivatedPath: combineSetActivatedPath,
+          optionsAnchorComponent,
         }}
       >
         {headerComponent}
