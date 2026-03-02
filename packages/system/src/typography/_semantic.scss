@@ -24,6 +24,7 @@ $semantic-types: (
   button-highlight,
   input,
   input-mono,
+  input-highlight,
   label-primary,
   label-primary-highlight,
   label-secondary
@@ -149,6 +150,12 @@ $semantic-typographies: (
     font-family: primitive.font-family-variable(sfmono),
     font-size: primitive.font-size-variable(14),
     font-weight: primitive.font-weight-variable(regular),
+    line-height: primitive.line-height-variable(functional),
+    letter-spacing: primitive.letter-spacing-variable(0),
+  ),
+  input-highlight: (
+    font-size: primitive.font-size-variable(14),
+    font-weight: primitive.font-weight-variable(medium),
     line-height: primitive.line-height-variable(functional),
     letter-spacing: primitive.letter-spacing-variable(0),
   ),

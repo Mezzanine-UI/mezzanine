@@ -58,6 +58,7 @@ const variants: TypographySemanticType[] = [
   'button-highlight',
   'input',
   'input-mono',
+  'input-highlight',
   'label-primary',
   'label-primary-highlight',
   'label-secondary',
@@ -158,6 +159,9 @@ export const Variants: Story = {
       </Typography>
       <Typography variant="input-mono" display="block">
         input-mono. Monospace input text
+      </Typography>
+      <Typography variant="input-highlight" display="block">
+        input-highlight. Highlighted input text
       </Typography>
       <br />
       <Typography variant="label-primary" display="block">
