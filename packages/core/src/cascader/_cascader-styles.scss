@@ -1,0 +1,137 @@
+@use 'sass:map';
+@use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/spacing' as spacing;
+@use '~@mezzanine-ui/system/radius' as radius;
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/transition' as transition;
+@use '~@mezzanine-ui/system/typography' as typography;
+@use '~@mezzanine-ui/system/motion' as motion;
+@use './cascader' as *;
+
+@keyframes #{$prefix}-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes #{$prefix}-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+// When trigger shows partial selection (open + navigating), apply brand color to input text.
+// Two-class selector to win over text-field's active state selector.
+.#{$prefix}-trigger--partial.mzn-text-field,
+.#{$prefix}-trigger--partial.mzn-text-field.mzn-text-field--active {
+  color: palette.semantic-variable(text, brand);
+}
+
+.#{$prefix} {
+  position: relative;
+  min-width: spacing.semantic-variable(size, container, concentrate-fixed);
+
+  &--full-width {
+    width: 100%;
+  }
+}
+
+.#{$dropdown-prefix}-panels {
+  background-color: palette.semantic-variable('background', base);
+  border-radius: radius.variable(roomy);
+  box-shadow: effect.variable(shadow, inner-top-and-bottom);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.#{$panel-prefix} {
+  display: flex;
+  flex-direction: column;
+  width: spacing.semantic-variable(size, container, tight);
+  max-height: spacing.semantic-variable(size, container, expanded);
+  overflow-y: auto;
+  padding: spacing.semantic-variable(padding, vertical, tight)
+    spacing.semantic-variable(padding, horizontal, tight);
+  box-sizing: border-box;
+  animation: #{$prefix}-fade-in motion.duration(fast) motion.easing(standard) both;
+
+  & + & {
+    border-inline-start: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
+}
+
+.#{$item-prefix} {
+  display: flex;
+  align-items: center;
+  gap: spacing.semantic-variable(gap, base);
+  padding-inline: spacing.semantic-variable(padding, horizontal, base);
+  padding-block: spacing.semantic-variable(padding, vertical, base);
+  border-radius: radius.variable(base);
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: palette.semantic-variable('background', base);
+  list-style: none;
+  transition:
+    transition.standard(background-color, fast),
+    transition.standard(color, fast);
+
+  &:hover:not(.#{$item-prefix}--active):not(.#{$item-prefix}--disabled) {
+    background-color: palette.semantic-variable('background', neutral-faint);
+  }
+
+  &--active {
+    background-color: palette.semantic-variable('background', neutral-subtle);
+  }
+
+  &--focused:not(.#{$item-prefix}--disabled) {
+    box-shadow: effect.variable(focus, primary);
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+
+    .#{$item-prefix}-label {
+      color: palette.semantic-variable(text, neutral-light);
+    }
+
+    .#{$item-prefix}-append {
+      color: palette.semantic-variable(icon, neutral-light);
+    }
+  }
+}
+
+.#{$item-prefix}-label {
+  @include typography.semantic-variable(label-primary);
+
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: palette.semantic-variable(text, neutral-solid);
+  transition: transition.standard(color, fast);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  .#{$item-prefix}--selected & {
+    color: palette.semantic-variable(text, brand);
+  }
+}
+
+.#{$item-prefix}-append {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: palette.semantic-variable(icon, neutral);
+  transition: transition.standard(color, fast);
+}
