@@ -24,4 +24,5 @@ export { HomeIcon } from './home';
 export { SpinnerIcon } from './spinner';
 export { LoginIcon } from './login';
 export { LogoutIcon } from './logout';
+export { SaveIcon } from './save';
 export { SystemIcon } from './system';

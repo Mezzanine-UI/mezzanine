@@ -28,6 +28,7 @@ export { HomeIcon } from './system/home';
 export { SpinnerIcon } from './system/spinner';
 export { LoginIcon } from './system/login';
 export { LogoutIcon } from './system/logout';
+export { SaveIcon } from './system/save';
 export { SystemIcon } from './system/system';
 
 /**

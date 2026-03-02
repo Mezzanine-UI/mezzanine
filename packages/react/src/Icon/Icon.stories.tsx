@@ -88,6 +88,7 @@ export const All: Story = {
           AllIcons.SpinnerIcon,
           AllIcons.LoginIcon,
           AllIcons.LogoutIcon,
+          AllIcons.SaveIcon,
           AllIcons.SystemIcon,
         ],
       },
