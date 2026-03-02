@@ -284,7 +284,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
         {...restTextFieldProps}
         {...defaultTextFieldProps}
         ref={ref}
-        className={cx(classes.host, className)}
+        className={cx(classes.host, classes.hostRange, className)}
         clearable={!readOnly && clearable}
         suffix={suffix ?? defaultSuffix}
       >

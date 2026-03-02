@@ -53,6 +53,7 @@ $container-tones: (
   snug,
   tight,
   slim,
+  slender,
   narrow,
   compact,
   standard,
@@ -279,6 +280,10 @@ $semantic-spacings: (
       slim: (
         default: primitive.variable(240),
         compact: primitive.variable(240),
+      ),
+      slender: (
+        default: primitive.variable(280),
+        compact: primitive.variable(280),
       ),
       narrow: (
         default: primitive.variable(320),
