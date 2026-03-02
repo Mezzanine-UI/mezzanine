@@ -67,7 +67,7 @@ type BadgeDotWithTextProps = {
   count?: never;
   overflowCount?: never;
   /**
-   * Controls the size of the dot and text.
+   * Controls the size of the text.
    * @default 'main'
    */
   size?: BadgeTextSize;
