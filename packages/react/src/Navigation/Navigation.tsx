@@ -8,6 +8,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
@@ -165,10 +166,10 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
       return { headerComponent, footerComponent, items, level1Items };
     }, [flattenedChildren]);
 
-  const [hrefActivated, setHrefActivated] = useState(false);
+  const hrefActivated = useRef(false);
   // Scan level1Items and its descendants (up to level3) to find out whether href matches to determine whether to preset expansion and activatedPath
   useEffect(() => {
-    if (hrefActivated || !currentPathname) {
+    if (hrefActivated.current || !currentPathname) {
       return;
     }
 
@@ -210,8 +211,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     };
 
     checkActivatedPathKey(level1Items, []);
-    setHrefActivated(true);
-  }, [combineSetActivatedPath, currentPathname, level1Items, hrefActivated]);
+    hrefActivated.current = true;
+  }, [combineSetActivatedPath, currentPathname, level1Items]);
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
