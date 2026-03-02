@@ -8,6 +8,10 @@
   display: inline-flex;
   align-items: center;
 
+  &--range {
+    min-width: spacing.semantic-variable(size, container, slender);
+  }
+
   &__arrow-icon {
     display: flex;
     align-items: center;
