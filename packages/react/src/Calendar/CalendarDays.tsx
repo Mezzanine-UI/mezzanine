@@ -65,6 +65,7 @@ function CalendarDays(props: CalendarDaysProps) {
     getDate,
     getMonth,
     getNow,
+    getWeekends,
     isDateIncluded,
     isSameDate,
     setDate,
@@ -89,6 +90,11 @@ function CalendarDays(props: CalendarDaysProps) {
     ...rest
   } = props;
 
+  const weekends = useMemo(
+    () => getWeekends(displayWeekDayLocale),
+    [getWeekends, displayWeekDayLocale],
+  );
+
   const daysGrid = useMemo(
     () => getCalendarGrid(referenceDate, displayWeekDayLocale),
     [getCalendarGrid, displayWeekDayLocale, referenceDate],
@@ -100,7 +106,7 @@ function CalendarDays(props: CalendarDaysProps) {
         <CalendarDayOfWeek displayWeekDayLocale={displayWeekDayLocale} />
         {daysGrid.map((week, index) => (
           <div key={`CALENDAR_DAYS/WEEK_OF/${index}`} className={classes.row}>
-            {week.map((dateNum) => {
+            {week.map((dateNum, dayIndex) => {
               const isPrevMonth = index === 0 && dateNum > 7;
               const isNextMonth = index > 3 && dateNum <= 14;
               const thisMonth = getMonth(referenceDate);
@@ -177,13 +183,14 @@ function CalendarDays(props: CalendarDaysProps) {
               return (
                 <CalendarCell
                   key={`${getMonth(date)}/${getDate(date)}`}
-                  mode="day"
-                  today={isSameDate(date, getNow())}
                   active={active}
                   disabled={isPrevMonth || isNextMonth}
-                  withAnnotation={Boolean(renderAnnotations)}
-                  isRangeStart={inRangeStart}
                   isRangeEnd={inRangeEnd}
+                  isRangeStart={inRangeStart}
+                  isWeekend={weekends[dayIndex]}
+                  mode="day"
+                  today={isSameDate(date, getNow())}
+                  withAnnotation={Boolean(renderAnnotations)}
                 >
                   <button
                     type="button"
