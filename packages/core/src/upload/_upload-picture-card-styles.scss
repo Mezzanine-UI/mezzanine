@@ -222,7 +222,7 @@ $image-size: spacing.primitive-variable(140);
       transition.standard(opacity, fast),
       transition.standard(visibility, fast);
 
-    @include typography.semantic-variable(caption);
+    @include typography.semantic-variable(input);
   }
 
   &__size {
