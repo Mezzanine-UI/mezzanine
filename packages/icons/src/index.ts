@@ -134,8 +134,11 @@ export { BookmarkAddedIcon } from './content/bookmark-added';
 export { ImageIcon } from './content/image';
 export { BoxIcon } from './content/box';
 export { CodeIcon } from './content/code';
+export { CameraIcon } from './content/camera';
+export { CameraAddIcon } from './content/camera-add';
 export { MailIcon } from './content/mail';
 export { MailUnreadIcon } from './content/mail-unread';
+export { NfcIcon } from './content/nfc';
 
 /**
  * Stepper Icons

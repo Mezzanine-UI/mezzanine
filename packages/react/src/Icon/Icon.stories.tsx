@@ -198,7 +198,10 @@ export const All: Story = {
           AllIcons.MailIcon,
           AllIcons.MailUnreadIcon,
           AllIcons.BoxIcon,
+          AllIcons.CameraIcon,
+          AllIcons.CameraAddIcon,
           AllIcons.CodeIcon,
+          AllIcons.NfcIcon,
         ],
       },
       {
