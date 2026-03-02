@@ -161,7 +161,8 @@ export const Variants: Story = {
           }}
         >
           Success
-          <Badge variant="dot-success" text="States" />
+          <Badge variant="dot-success" text="States" size="main" />
+          <Badge variant="dot-success" text="States" size="sub" />
         </div>
 
         <div
@@ -172,7 +173,8 @@ export const Variants: Story = {
           }}
         >
           Error
-          <Badge variant="dot-error" text="States" />
+          <Badge variant="dot-error" text="States" size="main" />
+          <Badge variant="dot-error" text="States" size="sub" />
         </div>
 
         <div
@@ -183,7 +185,8 @@ export const Variants: Story = {
           }}
         >
           Warning
-          <Badge variant="dot-warning" text="States" />
+          <Badge variant="dot-warning" text="States" size="main" />
+          <Badge variant="dot-warning" text="States" size="sub" />
         </div>
 
         <div
@@ -194,7 +197,8 @@ export const Variants: Story = {
           }}
         >
           Info
-          <Badge variant="dot-info" text="States" />
+          <Badge variant="dot-info" text="States" size="main" />
+          <Badge variant="dot-info" text="States" size="sub" />
         </div>
 
         <div
@@ -205,7 +209,8 @@ export const Variants: Story = {
           }}
         >
           Inactive
-          <Badge variant="dot-inactive" text="States" />
+          <Badge variant="dot-inactive" text="States" size="main" />
+          <Badge variant="dot-inactive" text="States" size="sub" />
         </div>
       </div>
 
@@ -220,7 +225,8 @@ export const Variants: Story = {
           }}
         >
           Success
-          <Badge variant="text-success" text="States" />
+          <Badge variant="text-success" text="States" size="main" />
+          <Badge variant="text-success" text="States" size="sub" />
         </div>
 
         <div
@@ -231,7 +237,8 @@ export const Variants: Story = {
           }}
         >
           Error
-          <Badge variant="text-error" text="States" />
+          <Badge variant="text-error" text="States" size="main" />
+          <Badge variant="text-error" text="States" size="sub" />
         </div>
 
         <div
@@ -242,7 +249,8 @@ export const Variants: Story = {
           }}
         >
           Warning
-          <Badge variant="text-warning" text="States" />
+          <Badge variant="text-warning" text="States" size="main" />
+          <Badge variant="text-warning" text="States" size="sub" />
         </div>
 
         <div
@@ -253,7 +261,8 @@ export const Variants: Story = {
           }}
         >
           Info
-          <Badge variant="text-info" text="States" />
+          <Badge variant="text-info" text="States" size="main" />
+          <Badge variant="text-info" text="States" size="sub" />
         </div>
 
         <div
@@ -264,7 +273,8 @@ export const Variants: Story = {
           }}
         >
           Inactive
-          <Badge variant="text-inactive" text="States" />
+          <Badge variant="text-inactive" text="States" size="main" />
+          <Badge variant="text-inactive" text="States" size="sub" />
         </div>
       </div>
 
@@ -324,65 +334,6 @@ export const Variants: Story = {
         >
           Info
           <Badge variant="count-info" count={5} />
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        <Typography variant="h2">Sub size</Typography>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          Success
-          <Badge variant="dot-success" text="States" size="sub" />
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          Error
-          <Badge variant="dot-error" text="States" size="sub" />
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          Warning
-          <Badge variant="dot-warning" text="States" size="sub" />
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          Info
-          <Badge variant="dot-info" text="States" size="sub" />
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-        >
-          Inactive
-          <Badge variant="dot-inactive" text="States" size="sub" />
         </div>
       </div>
     </div>
