@@ -52,6 +52,12 @@ export interface FormFieldProps
    */
   hintTextIcon?: IconDefinition;
   /**
+   * Whether to display the hint text icon.
+   * When false, neither the custom icon nor the default severity icon will be shown.
+   * @default true
+   */
+  showHintTextIcon?: boolean;
+  /**
    * The label text for the form field.
    */
   label?: string;
@@ -125,6 +131,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       fullWidth = false,
       hintText,
       hintTextIcon,
+      showHintTextIcon,
       label,
       labelInformationIcon,
       labelInformationText,
@@ -199,6 +206,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
                     hintText={hintText}
                     hintTextIcon={hintTextIcon}
                     severity={severity}
+                    showHintTextIcon={showHintTextIcon}
                   />
                 )}
                 {counter && (

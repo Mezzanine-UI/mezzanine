@@ -67,6 +67,48 @@ describe('<FormHintText />', () => {
     });
   });
 
+  describe('prop: showHintTextIcon', () => {
+    it('should not render any icon when showHintTextIcon=false with severity', () => {
+      const { getHostHTMLElement } = render(
+        <FormHintText
+          hintText="Hello"
+          severity="error"
+          showHintTextIcon={false}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector(
+        '.mzn-form-field__hint-text__icon',
+      );
+
+      expect(iconElement).toBeNull();
+    });
+
+    it('should not render any icon when showHintTextIcon=false with custom hintTextIcon', () => {
+      const customIcon = {
+        name: 'custom-icon',
+        definition: {
+          svg: { viewBox: '0 0 24 24' },
+          path: { fill: 'currentColor', d: 'M0 0h24v24H0z' },
+        },
+      };
+
+      const { getHostHTMLElement } = render(
+        <FormHintText
+          hintText="Hello"
+          hintTextIcon={customIcon}
+          showHintTextIcon={false}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const iconElement = element.querySelector(
+        '.mzn-form-field__hint-text__icon',
+      );
+
+      expect(iconElement).toBeNull();
+    });
+  });
+
   describe('prop: hintTextIcon', () => {
     const customIcon = {
       name: 'custom-icon',
