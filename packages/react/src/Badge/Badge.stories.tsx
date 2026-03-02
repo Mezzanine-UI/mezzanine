@@ -83,6 +83,7 @@ export const Variants: Story = {
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
+        rowGap: '32px',
       }}
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -323,6 +324,65 @@ export const Variants: Story = {
         >
           Info
           <Badge variant="count-info" count={5} />
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        <Typography variant="h2">Sub size</Typography>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          Success
+          <Badge variant="dot-success" text="States" size="sub" />
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          Error
+          <Badge variant="dot-error" text="States" size="sub" />
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          Warning
+          <Badge variant="dot-warning" text="States" size="sub" />
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          Info
+          <Badge variant="dot-info" text="States" size="sub" />
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          Inactive
+          <Badge variant="dot-inactive" text="States" size="sub" />
         </div>
       </div>
     </div>
