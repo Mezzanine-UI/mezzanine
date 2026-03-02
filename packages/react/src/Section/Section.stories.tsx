@@ -82,7 +82,13 @@ const sampleTab = (
 );
 
 const sampleContent = (
-  <div style={{ backgroundColor: '#F9FAFB', padding: '16px' }}>
+  <div
+    style={{
+      backgroundColor: '#F9FAFB',
+      padding: '16px',
+      minHeight: 'var(--mzn-spacing-size-container-small)',
+    }}
+  >
     Content of Section
   </div>
 );

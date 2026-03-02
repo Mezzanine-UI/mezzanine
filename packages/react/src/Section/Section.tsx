@@ -40,9 +40,11 @@ function getDisplayName(element: ReactElement): string {
     return type;
   }
 
-  return (type as { displayName?: string }).displayName
-    || (type as { name?: string }).name
-    || 'Unknown';
+  return (
+    (type as { displayName?: string }).displayName ||
+    (type as { name?: string }).name ||
+    'Unknown'
+  );
 }
 
 function isContentHeaderElement(
@@ -68,13 +70,7 @@ function isTabElement(
  */
 const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
   function Section(props, ref) {
-    const {
-      children,
-      className,
-      contentHeader,
-      filterArea,
-      tab,
-    } = props;
+    const { children, className, contentHeader, filterArea, tab } = props;
 
     let renderedContentHeader: ReactElement<ContentHeaderProps> | null = null;
     let renderedFilterArea: ReactElement<FilterAreaProps> | null = null;
@@ -115,7 +111,7 @@ const Section = forwardRef<HTMLDivElement, PropsWithChildren<SectionProps>>(
         {renderedContentHeader}
         {renderedFilterArea}
         {renderedTab}
-        {children}
+        <div className={classes.hostContent}>{children}</div>
       </div>
     );
   },
