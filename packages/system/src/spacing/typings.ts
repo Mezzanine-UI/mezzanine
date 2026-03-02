@@ -27,6 +27,7 @@ export type SpacingScale =
   | 80
   | 160
   | 240
+  | 280
   | 320
   | 360
   | 400
@@ -93,6 +94,7 @@ export type ContainerTone =
   | 'tiny'
   | 'tight'
   | 'slim'
+  | 'slender'
   | 'narrow'
   | 'compact'
   | 'standard'
