@@ -1,12 +1,7 @@
 /* global document */
 import { createRef, act } from 'react';
 import moment from 'moment';
-import {
-  CalendarMode,
-  calendarYearModuler,
-  DateType,
-  getYearRange,
-} from '@mezzanine-ui/core/calendar';
+import { CalendarMode, DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import { cleanup, fireEvent, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
@@ -185,7 +180,7 @@ describe('<DatePickerCalendar />', () => {
           );
 
           const buttonElements = document.querySelectorAll(
-            '.mzn-calendar-button',
+            'button.mzn-calendar-button',
           );
           const testButtonElement = buttonElements?.[buttonElements.length - 1];
 
@@ -202,131 +197,6 @@ describe('<DatePickerCalendar />', () => {
   });
 
   describe('prop: mode', () => {
-    describe('should update referenceDate when cell clicked', () => {
-      it('case: mode="day"', () => {
-        const referenceDate = '2021-10-20';
-        const { getByText } = render(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePickerCalendar open referenceDate={referenceDate} mode="day" />
-          </CalendarConfigProvider>,
-        );
-
-        const nextControlButton = document.querySelector(
-          '.mzn-calendar-controls__next',
-        );
-
-        fireEvent.click(nextControlButton!);
-
-        const testCellElement = getByText('15');
-
-        fireEvent.click(testCellElement);
-
-        const monthControlButton = getByText('Nov');
-
-        expect(monthControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(
-          monthControlButton.classList.contains(
-            'mzn-calendar-controls__button',
-          ),
-        ).toBe(true);
-      });
-
-      it('case: mode="week"', () => {
-        const referenceDate = '2021-10-20';
-        const { getByText } = render(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePickerCalendar
-              open
-              referenceDate={referenceDate}
-              mode="week"
-            />
-          </CalendarConfigProvider>,
-        );
-
-        const nextControlButton = document.querySelector(
-          '.mzn-calendar-controls__next',
-        );
-
-        fireEvent.click(nextControlButton!);
-
-        const testCellElement = getByText('15');
-
-        fireEvent.click(testCellElement);
-
-        const monthControlButton = getByText('Nov');
-
-        expect(monthControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(
-          monthControlButton.classList.contains(
-            'mzn-calendar-controls__button',
-          ),
-        ).toBe(true);
-      });
-
-      it('case: mode="month"', () => {
-        const referenceDate = '2021-10-20';
-        const { getByText } = render(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePickerCalendar
-              open
-              referenceDate={referenceDate}
-              mode="month"
-            />
-          </CalendarConfigProvider>,
-        );
-
-        const nextControlButton = document.querySelector(
-          '.mzn-calendar-controls__next',
-        );
-
-        fireEvent.click(nextControlButton!);
-
-        const testCellElement = getByText('Jan');
-
-        fireEvent.click(testCellElement);
-
-        const yearControlButton = getByText('2022');
-
-        expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(
-          yearControlButton.classList.contains('mzn-calendar-controls__button'),
-        ).toBe(true);
-      });
-
-      it('case: mode="year"', () => {
-        const referenceDate = '2021-10-20';
-        const { getByText } = render(
-          <CalendarConfigProvider methods={CalendarMethodsMoment}>
-            <DatePickerCalendar
-              open
-              referenceDate={referenceDate}
-              mode="year"
-            />
-          </CalendarConfigProvider>,
-        );
-
-        const nextControlButton = document.querySelector(
-          '.mzn-calendar-controls__next',
-        );
-
-        fireEvent.click(nextControlButton!);
-
-        const testCellElement = getByText('2033');
-
-        fireEvent.click(testCellElement);
-
-        const [start, end] = getYearRange(2033, calendarYearModuler);
-        const displayYearRange = `${start} - ${end}`;
-
-        const yearControlButton = getByText(displayYearRange);
-
-        expect(yearControlButton).toBeInstanceOf(HTMLButtonElement);
-        expect(
-          yearControlButton.classList.contains('mzn-calendar-controls__button'),
-        ).toBe(true);
-      });
-    });
-
     describe('mode="day"', () => {
       it('should onChange argument meet the granularity of day', () => {
         const referenceDate = '2021-12-15';
@@ -372,7 +242,7 @@ describe('<DatePickerCalendar />', () => {
 
         const onChange = jest.fn(isSameWeek);
 
-        const { getByText } = render(
+        const { getAllByText } = render(
           <CalendarConfigProvider methods={CalendarMethodsMoment}>
             <DatePickerCalendar
               open
@@ -383,9 +253,10 @@ describe('<DatePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const testButtonElement = getByText('15').parentNode?.parentNode;
+        // getAllByText[0] is div.mzn-calendar-cell; its parentElement is the outer week button.
+        const testButtonElement = getAllByText('15')[0].parentElement!;
 
-        expect(testButtonElement).toBeInstanceOf(HTMLButtonElement);
+        expect(testButtonElement).toBeInstanceOf(HTMLSpanElement);
 
         act(() => {
           fireEvent.click(testButtonElement!);

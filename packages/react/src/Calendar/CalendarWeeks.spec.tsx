@@ -68,7 +68,7 @@ describe('<CalendarWeeks />', () => {
       const isWeekDisabled: CalendarWeeksProps['isWeekDisabled'] = (date) =>
         moment(date).isSame(today, 'week');
 
-      const { getByText } = render(
+      const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
             referenceDate={moment().format('YYYY-MM-DD')}
@@ -77,11 +77,18 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      // DOM structure: button > CalendarCell (div) > div.mzn-calendar-button > text
-      const textElement = getByText(`${testDate}`);
-      const innerDiv = textElement.parentElement!;
-      const cellElement = innerDiv.parentElement!;
-      const buttonElement = cellElement.parentElement!;
+      // Outer week rows are <button.mzn-calendar-button>. Find the one containing day 15.
+      const element = getHostHTMLElement();
+      const weekButtons = Array.from(
+        element.querySelectorAll<HTMLButtonElement>(
+          'button.mzn-calendar-button',
+        ),
+      );
+      const buttonElement = weekButtons.find((btn) =>
+        [...btn.querySelectorAll('.mzn-calendar-cell')].some(
+          (cell) => cell.textContent?.trim() === `${testDate}`,
+        ),
+      )!;
 
       expect(
         buttonElement?.classList.contains('mzn-calendar-button--disabled'),
@@ -101,7 +108,7 @@ describe('<CalendarWeeks />', () => {
       const isWeekInRange: CalendarWeeksProps['isWeekInRange'] = (date) =>
         moment(date).isBetween(rangeStart, rangeEnd, undefined, '[]');
 
-      const { getByText } = render(
+      const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
             referenceDate={moment().format('YYYY-MM-DD')}
@@ -110,11 +117,18 @@ describe('<CalendarWeeks />', () => {
         </CalendarConfigProvider>,
       );
 
-      // DOM structure: button > CalendarCell (div) > div.mzn-calendar-button > text
-      const textElement = getByText(`${testTargetDate}`);
-      const innerDiv = textElement.parentElement!;
-      const cellElement = innerDiv.parentElement!;
-      const buttonElement = cellElement.parentElement!;
+      // Outer week rows are <button.mzn-calendar-button>. Find the one containing day 14.
+      const element = getHostHTMLElement();
+      const weekButtons = Array.from(
+        element.querySelectorAll<HTMLButtonElement>(
+          'button.mzn-calendar-button',
+        ),
+      );
+      const buttonElement = weekButtons.find((btn) =>
+        [...btn.querySelectorAll('.mzn-calendar-cell')].some(
+          (cell) => cell.textContent?.trim() === `${testTargetDate}`,
+        ),
+      )!;
 
       expect(
         buttonElement?.classList.contains('mzn-calendar-button--inRange'),
@@ -225,7 +239,7 @@ describe('<CalendarWeeks />', () => {
       const testDate = 15;
       const value = [moment().date(testDate).format('YYYY-MM-DD')];
 
-      const { getByText } = render(
+      const { getAllByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <CalendarWeeks
             referenceDate={moment().format('YYYY-MM-DD')}
@@ -233,9 +247,8 @@ describe('<CalendarWeeks />', () => {
           />
         </CalendarConfigProvider>,
       );
-      const dateElement = getByText(`${testDate}`);
-      // The active class is now on the inner div button inside CalendarCell
-      const innerButton = dateElement;
+      // .at(-1) is the innermost element (div.mzn-calendar-button), which carries the active class.
+      const innerButton = getAllByText(`${testDate}`).at(-1)!;
 
       expect(
         innerButton?.classList.contains('mzn-calendar-button--active'),

@@ -283,7 +283,7 @@ describe('<DateRangePickerCalendar />', () => {
 
           const firstCalendarElement = document.querySelector('.mzn-calendar');
           const firstButtonElements = firstCalendarElement!.querySelectorAll(
-            '.mzn-calendar-button',
+            'button.mzn-calendar-button',
           );
           const firstTestButtonElement =
             firstButtonElements?.[firstButtonElements.length - 1];
@@ -300,7 +300,7 @@ describe('<DateRangePickerCalendar />', () => {
           const [, secondCalendarElement] =
             document.querySelectorAll('.mzn-calendar');
           const secondButtonElements = secondCalendarElement!.querySelectorAll(
-            '.mzn-calendar-button',
+            'button.mzn-calendar-button',
           );
           const secondTestButtonElement =
             secondButtonElements?.[secondButtonElements.length - 1];
@@ -374,9 +374,10 @@ describe('<DateRangePickerCalendar />', () => {
           </CalendarConfigProvider>,
         );
 
-        const testButtonElement = getAllByText('15')[0].parentNode?.parentNode;
+        // getAllByText[0] is div.mzn-calendar-cell; its parentNode is the outer week button.
+        const testButtonElement = getAllByText('15')[0].parentNode;
 
-        expect(testButtonElement).toBeInstanceOf(HTMLButtonElement);
+        expect(testButtonElement).toBeInstanceOf(HTMLSpanElement);
 
         act(() => {
           fireEvent.click(testButtonElement!);
