@@ -275,6 +275,16 @@ const UploadPictureCard = forwardRef<HTMLDivElement, UploadPictureCardProps>(
           className,
         )}
         onClick={onReplace && status === 'done' ? onReplace : undefined}
+        onKeyDown={
+          onReplace && status === 'done'
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  e.currentTarget.click();
+                }
+              }
+            : undefined
+        }
         ref={ref}
         role="group"
         tabIndex={disabled ? -1 : 0}
