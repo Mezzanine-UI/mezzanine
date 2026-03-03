@@ -52,6 +52,7 @@
   flex-direction: row;
   overflow: hidden;
   box-sizing: border-box;
+  pointer-events: auto;
 }
 
 .#{$panel-prefix} {
