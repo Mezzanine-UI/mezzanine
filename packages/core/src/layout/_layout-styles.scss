@@ -42,7 +42,7 @@
   }
 
   &__side-panel {
-    background-color: palette.semantic-variable(background, base);
+    background-color: palette.semantic-variable("background", base);
     inline-size: var(--mzn-layout-side-panel-width);
     inset-block: 0;
     inset-inline-end: 0;
