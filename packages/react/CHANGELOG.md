@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.0...@mezzanine-ui/react@1.0.0-rc.1) (2026-03-03)
+
+### Bug Fixes
+
+- **calendar:** adjust cell styles for weekend, today, and annotation ([eff8384](https://github.com/Mezzanine-UI/mezzanine/commit/eff8384bfddada029677d1c2063a3ec0780ea347)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+- **calendar:** apply isWeekend to CalendarWeeks date cells ([08edb3f](https://github.com/Mezzanine-UI/mezzanine/commit/08edb3fcd6268263b6f2e16c97d3f460e969eccc))
+- **react/navigation:** update pr issue ([ce9b9bf](https://github.com/Mezzanine-UI/mezzanine/commit/ce9b9bfb81b47d071cae7bad93079812591c9dc9))
+- **react/navigation:** update UserMenu/Option tooltips ([b15dac1](https://github.com/Mezzanine-UI/mezzanine/commit/b15dac16f1ae019d1080cc0c075c133546a40f5c))
+- **react/navigation:** user menu collapsedPlacement ([8b0ac5e](https://github.com/Mezzanine-UI/mezzanine/commit/8b0ac5e765f55d8e6aa83f5d1b7e90c7607ba465))
+- **react/picker:** range picker add range specific className ([bba3fd6](https://github.com/Mezzanine-UI/mezzanine/commit/bba3fd6943d65b428478a56a1e2b8ecf79f0876b))
+- **upload:** add keyboard handler for a11y and update tests for conditional zoom/download buttons ([fc6501c](https://github.com/Mezzanine-UI/mezzanine/commit/fc6501cc2f78819a60519c3f4bcaa1e1ee14d2bf)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+
+### Features
+
+- **icons:** add CameraIcon, CameraAddIcon, NfcIcon to Content category ([78ff612](https://github.com/Mezzanine-UI/mezzanine/commit/78ff612fce82af71b472127bfe1fd51eed46c7f7))
+- **icons:** add SaveIcon to System category ([#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewr0cbz) ([5dc38f9](https://github.com/Mezzanine-UI/mezzanine/commit/5dc38f9025fc15422a193df65dfa1bae6d70c40f)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+- **react/badge:** add sub size CU-86ewkmf3f ([31389fa](https://github.com/Mezzanine-UI/mezzanine/commit/31389fa1beda5f2e089b9d5cac640b3c37d71923))
+- **react/badge:** storybook update ([1bc05b2](https://github.com/Mezzanine-UI/mezzanine/commit/1bc05b287abfdfce0d3a21d0d6900c1b61c2919a))
+- **react/badge:** storybook update ([f9bea10](https://github.com/Mezzanine-UI/mezzanine/commit/f9bea10cd699ca9d74ce6c0e00733283dfeaa9c3))
+- **react/description:** add sizeProp overrides ,update jest ([a945560](https://github.com/Mezzanine-UI/mezzanine/commit/a945560ecd033c70d08e201f7a823d7c86182b18))
+- **react/description:** add state(badge) sub size ([67c8a95](https://github.com/Mezzanine-UI/mezzanine/commit/67c8a95c4a9b7c220bad5196bca817d65da1515e))
+- **react/form:** add showHintTextIcon prop to FormField and FormHintText ([0cef331](https://github.com/Mezzanine-UI/mezzanine/commit/0cef331490e969e4df9be70f6ba79b2059155570))
+- **react/navigation:** add custom anchor component ([3995172](https://github.com/Mezzanine-UI/mezzanine/commit/3995172857953c71fff71d03db4cfb82517b36cf))
+- **react/navigation:** add text fade transition ([110dccd](https://github.com/Mezzanine-UI/mezzanine/commit/110dccde294a96545e8a9e61e6165ab8f063a13f))
+- **react/navigation:** auto activate nav option ([45a24c2](https://github.com/Mezzanine-UI/mezzanine/commit/45a24c2f640638e3f5cef60906c81b937bc4ce52))
+- **react/navigation:** overflow story ([66b7a4f](https://github.com/Mezzanine-UI/mezzanine/commit/66b7a4f02e500fb355ae07697d1675cdbd002fab))
+- **react/navigation:** remove path key ([73b3f4c](https://github.com/Mezzanine-UI/mezzanine/commit/73b3f4c3f127a6322e005d553c16819662088a28))
+- **react/navigation:** userMenu overflow ([b47f3e6](https://github.com/Mezzanine-UI/mezzanine/commit/b47f3e647e4bdea533fa5b124c014fe964c1468a))
+- **react/navigation:** username overflow ([32622e0](https://github.com/Mezzanine-UI/mezzanine/commit/32622e0db6824231536e95f41901508065e63cd4))
+- **react/navigation:** username tooltip ([d1c1d85](https://github.com/Mezzanine-UI/mezzanine/commit/d1c1d859845bb56c445bb91e74918e534b401b54))
+- **react/section:** implement section min-height ([4c9a505](https://github.com/Mezzanine-UI/mezzanine/commit/4c9a505a70dfdd35ab3daaf8ca880c334172cfd3))
+- **system/typography:** add input-highlight semantic type ([07d4d5b](https://github.com/Mezzanine-UI/mezzanine/commit/07d4d5b9f120a4b70518fcfb3f8dc617a50ce013))
+- **upload:** add single-file hover replace mode for UploadPictureCard ([cc2de27](https://github.com/Mezzanine-UI/mezzanine/commit/cc2de27a090447a8c3621514606393824e03f22d)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+
 # [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-beta.7...@mezzanine-ui/react@1.0.0-rc.0) (2026-02-26)
 
 ### Bug Fixes

@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.0...@mezzanine-ui/system@1.0.0-rc.1) (2026-03-03)
+
+### Features
+
+- **system/spacing:** add primitive space-280 and semantic size-container-slender ([0652757](https://github.com/Mezzanine-UI/mezzanine/commit/0652757db2be4b8aad816c7f14d71646ed6ddcd8)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+- **system/typography:** add input-highlight semantic type ([07d4d5b](https://github.com/Mezzanine-UI/mezzanine/commit/07d4d5b9f120a4b70518fcfb3f8dc617a50ce013))
+
 # [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-beta.7...@mezzanine-ui/system@1.0.0-rc.0) (2026-02-26)
 
 **Note:** Version bump only for package @mezzanine-ui/system

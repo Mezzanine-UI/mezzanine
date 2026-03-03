@@ -3,6 +3,13 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-rc.0...@mezzanine-ui/icons@1.0.0-rc.1) (2026-03-03)
+
+### Features
+
+- **icons:** add CameraIcon, CameraAddIcon, NfcIcon to Content category ([78ff612](https://github.com/Mezzanine-UI/mezzanine/commit/78ff612fce82af71b472127bfe1fd51eed46c7f7))
+- **icons:** add SaveIcon to System category ([#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewr0cbz) ([5dc38f9](https://github.com/Mezzanine-UI/mezzanine/commit/5dc38f9025fc15422a193df65dfa1bae6d70c40f)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+
 # [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/icons@1.0.0-beta.7...@mezzanine-ui/icons@1.0.0-rc.0) (2026-02-26)
 
 **Note:** Version bump only for package @mezzanine-ui/icons

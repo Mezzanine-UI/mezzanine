@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.0...@mezzanine-ui/core@1.0.0-rc.1) (2026-03-03)
+
+### Bug Fixes
+
+- **calendar:** adjust cell styles for weekend, today, and annotation ([eff8384](https://github.com/Mezzanine-UI/mezzanine/commit/eff8384bfddada029677d1c2063a3ec0780ea347)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+- **core/layout:** fix stylelint error ([105d7d2](https://github.com/Mezzanine-UI/mezzanine/commit/105d7d2b18fa35d87178af2f3f4f1d67509b7ea5))
+- **core/navigation:** open&active bg-color ([c370d6d](https://github.com/Mezzanine-UI/mezzanine/commit/c370d6db378e0350ce17933352235df064d4c3dd))
+- **core/navigation:** open&active text-color, nav min-width ([d11361f](https://github.com/Mezzanine-UI/mezzanine/commit/d11361f7e1fd504431548951d43bda2b30f74f8a))
+- **core/picker:** update picker min-width for range picker ([2ff76ff](https://github.com/Mezzanine-UI/mezzanine/commit/2ff76ff180ac3a62ee845f8b65a7a0295826c124))
+- **core/tag:** apply size-element height tokens per size ([52608ea](https://github.com/Mezzanine-UI/mezzanine/commit/52608ea1a96c98fe7f65179edfe800ccd034b864)), closes [#86ewqj5b3](https://github.com/Mezzanine-UI/mezzanine/issues/86ewqj5b3)
+- **core/upload:** fix upload picture card bg style ([f04f628](https://github.com/Mezzanine-UI/mezzanine/commit/f04f62829880b4257000f2b8bfed864fe961d80e))
+- **core/upload:** fix upload picture card bg style ([e0fa5b0](https://github.com/Mezzanine-UI/mezzanine/commit/e0fa5b0179b5f42a67fec41f6516611d303d02dc))
+
+### Features
+
+- **core/badge:** add sub size ([e415cfe](https://github.com/Mezzanine-UI/mezzanine/commit/e415cfeea3c5199982ee7d7168d85ad9ec629e0b))
+- **core/badge:** update text-sub-size ([fcf10cc](https://github.com/Mezzanine-UI/mezzanine/commit/fcf10ccd5e61041205610d1519a9e1e96e57ed90))
+- **core/navigation:** username content layout ([84f4ac5](https://github.com/Mezzanine-UI/mezzanine/commit/84f4ac5b69499278860fe62c63435cc206b987e1))
+- **core/navigation:** username overflow ([d589b43](https://github.com/Mezzanine-UI/mezzanine/commit/d589b43a5edcd34581ccc2c2fa73473d36114942))
+- **core/page-footer:** update padding token ([d83925b](https://github.com/Mezzanine-UI/mezzanine/commit/d83925bb3a5eb9e69d3b62e84303c9a31c3998a5))
+- **core/section:** add min-height for section content, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewr0ea7 ([d4d4f57](https://github.com/Mezzanine-UI/mezzanine/commit/d4d4f57b4c322eda3a84447743308d28ee430dd1)), closes [#86ewr0ea7](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0ea7)
+- **upload:** add single-file hover replace mode for UploadPictureCard ([cc2de27](https://github.com/Mezzanine-UI/mezzanine/commit/cc2de27a090447a8c3621514606393824e03f22d)), closes [#86ewr0](https://github.com/Mezzanine-UI/mezzanine/issues/86ewr0)
+
 # [1.0.0-rc.0](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-beta.7...@mezzanine-ui/core@1.0.0-rc.0) (2026-02-26)
 
 ### Bug Fixes
