@@ -61,6 +61,7 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     getDate,
     getMonth,
     getNow,
+    getWeekends,
     isInMonth,
     isSameDate,
     isWeekIncluded,
@@ -85,6 +86,11 @@ function CalendarWeeks(props: CalendarWeeksProps) {
     value,
     ...rest
   } = props;
+
+  const weekends = useMemo(
+    () => getWeekends(displayWeekDayLocale),
+    [getWeekends, displayWeekDayLocale],
+  );
 
   const daysGrid = useMemo(
     () => getCalendarGrid(referenceDate, displayWeekDayLocale),
@@ -317,15 +323,16 @@ function CalendarWeeks(props: CalendarWeeksProps) {
                   return (
                     <CalendarCell
                       key={`${getMonth(dates[dateIndex])}/${getDate(dates[dateIndex])}`}
-                      mode="week"
-                      today={isSameDate(dates[dateIndex], getNow())}
+                      active={cellActive}
                       disabled={
                         disabled ||
                         !isInMonth(dates[dateIndex], getMonth(referenceDate))
                       }
-                      active={cellActive}
-                      isRangeStart={isFirstWeekFirstDate}
                       isRangeEnd={isLastWeekLastDate}
+                      isRangeStart={isFirstWeekFirstDate}
+                      isWeekend={weekends[dateIndex]}
+                      mode="week"
+                      today={isSameDate(dates[dateIndex], getNow())}
                     >
                       <div
                         className={cx(classes.button, {

@@ -5,6 +5,7 @@ export const pickerPrefix = 'mzn-picker';
 
 export const pickerClasses = {
   host: pickerPrefix,
+  hostRange: `${pickerPrefix}--range`,
   arrowIcon: `${pickerPrefix}__arrow-icon`,
   inputMono: `${pickerPrefix}__input-mono`,
   formattedInput: `${pickerPrefix}__formatted-input`,

@@ -26,6 +26,12 @@ export type FormHintTextProps = NativeElementPropsWithoutKeyAndRef<'span'> & {
    * if not provided, no icon will be displayed.
    */
   severity?: keyof typeof formHintIcons | undefined;
+  /**
+   * Whether to display the hint text icon.
+   * When false, neither the custom icon nor the default severity icon will be shown.
+   * @default true
+   */
+  showHintTextIcon?: boolean;
 };
 
 /**
@@ -38,6 +44,7 @@ const FormHintText = forwardRef<HTMLSpanElement, FormHintTextProps>(
       hintText,
       hintTextIcon,
       severity = 'info',
+      showHintTextIcon = true,
       ...rest
     } = props;
     const defaultIcon = severity ? formHintIcons[severity] : null;
@@ -52,21 +59,22 @@ const FormHintText = forwardRef<HTMLSpanElement, FormHintTextProps>(
           className,
         )}
       >
-        {hintTextIcon ? (
-          <Icon
-            className={classes.hintTextIcon}
-            icon={hintTextIcon}
-            color={severity}
-          />
-        ) : (
-          defaultIcon && (
+        {showHintTextIcon &&
+          (hintTextIcon ? (
             <Icon
               className={classes.hintTextIcon}
-              icon={defaultIcon}
+              icon={hintTextIcon}
               color={severity}
             />
-          )
-        )}
+          ) : (
+            defaultIcon && (
+              <Icon
+                className={classes.hintTextIcon}
+                icon={defaultIcon}
+                color={severity}
+              />
+            )
+          ))}
         {hintText}
       </span>
     );

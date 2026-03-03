@@ -71,7 +71,7 @@ $count-type-config: (
     &.#{$prefix}--dot-#{$type} {
       @include typography.semantic-variable(body);
 
-      column-gap: spacing.semantic-variable(gap, base);
+      column-gap: spacing.semantic-variable(gap, tight-fixed);
       color: map.get($dot-type-config, $type, text-color);
 
       &::before {
@@ -80,6 +80,10 @@ $count-type-config: (
         height: $dot-size;
         border-radius: radius.variable(full);
         background-color: map.get($dot-type-config, $type, icon-color);
+      }
+
+      &.#{$prefix}--sub {
+        @include typography.semantic-variable(caption);
       }
     }
   }
@@ -90,6 +94,10 @@ $count-type-config: (
 
       column-gap: spacing.semantic-variable(gap, base);
       color: map.get($dot-type-config, $type, text-color);
+
+      &.#{$prefix}--sub {
+        @include typography.semantic-variable(caption);
+      }
     }
   }
 

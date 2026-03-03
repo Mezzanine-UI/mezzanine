@@ -1,6 +1,7 @@
 import {
   BadgeCountVariant,
   BadgeDotVariant,
+  BadgeTextSize,
   BadgeTextVariant,
 } from '@mezzanine-ui/core/badge';
 import { ReactNode } from 'react';
@@ -38,6 +39,11 @@ type BadgeCountProps = {
   overflowCount?: number;
   /**
    * ONLY AVAILABLE FOR DOT WITH TEXT BADGE.
+   * Controls the size of the dot and text.
+   */
+  size?: never;
+  /**
+   * ONLY AVAILABLE FOR DOT WITH TEXT BADGE.
    * String displayed next to the dot badge.
    */
   text?: never;
@@ -51,6 +57,7 @@ type BadgeTextProps = {
   children?: never;
   count?: never;
   overflowCount?: never;
+  size?: BadgeTextSize;
   text: string;
   variant: BadgeTextVariant;
 };
@@ -59,6 +66,11 @@ type BadgeDotWithTextProps = {
   children?: never;
   count?: never;
   overflowCount?: never;
+  /**
+   * Controls the size of the text.
+   * @default 'main'
+   */
+  size?: BadgeTextSize;
   text?: string;
   variant: BadgeDotVariant;
 };
@@ -67,6 +79,7 @@ type BadgeDotProps = {
   children?: ReactNode;
   count?: never;
   overflowCount?: never;
+  size?: never;
   text?: never;
   variant: BadgeDotVariant;
 };

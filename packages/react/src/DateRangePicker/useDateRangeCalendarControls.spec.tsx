@@ -366,7 +366,7 @@ describe('useDateRangeCalendarControls', () => {
       ).toBe(-2);
     });
 
-    it('should onPrev of the first calendar minus 10 years on referenceDates when mode="year"', () => {
+    it('should onPrev of the first calendar minus 20 years on referenceDates when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(initialReferenceDate, 'year'),
@@ -386,7 +386,7 @@ describe('useDateRangeCalendarControls', () => {
           result.current.referenceDates[0],
           'year',
         ),
-      ).toBe(10);
+      ).toBe(20);
       expect(
         moment(initialReferenceDate).diff(
           result.current.referenceDates[1],
@@ -395,7 +395,7 @@ describe('useDateRangeCalendarControls', () => {
       ).toBe(0);
     });
 
-    it('should onNext of the first calendar add 10 years on referenceDates when mode="year"', () => {
+    it('should onNext of the first calendar add 20 years on referenceDates when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(initialReferenceDate, 'year'),
@@ -415,16 +415,16 @@ describe('useDateRangeCalendarControls', () => {
           result.current.referenceDates[0],
           'year',
         ),
-      ).toBe(-10);
+      ).toBe(-20);
       expect(
         moment(initialReferenceDate).diff(
           result.current.referenceDates[1],
           'year',
         ),
-      ).toBe(-20);
+      ).toBe(-40);
     });
 
-    it('should onPrev of the second calendar minus 10 years on referenceDates when mode="year"', () => {
+    it('should onPrev of the second calendar minus 20 years on referenceDates when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(initialReferenceDate, 'year'),
@@ -444,7 +444,7 @@ describe('useDateRangeCalendarControls', () => {
           result.current.referenceDates[0],
           'year',
         ),
-      ).toBe(10);
+      ).toBe(20);
       expect(
         moment(initialReferenceDate).diff(
           result.current.referenceDates[1],
@@ -453,7 +453,7 @@ describe('useDateRangeCalendarControls', () => {
       ).toBe(0);
     });
 
-    it('should onNext of the second calendar add 10 years on referenceDates when mode="year"', () => {
+    it('should onNext of the second calendar add 20 years on referenceDates when mode="year"', () => {
       const initialReferenceDate = '2021-10-20';
       const { result } = renderHook(
         () => useDateRangeCalendarControls(initialReferenceDate, 'year'),
@@ -473,13 +473,13 @@ describe('useDateRangeCalendarControls', () => {
           result.current.referenceDates[0],
           'year',
         ),
-      ).toBe(-10);
+      ).toBe(-20);
       expect(
         moment(initialReferenceDate).diff(
           result.current.referenceDates[1],
           'year',
         ),
-      ).toBe(-20);
+      ).toBe(-40);
     });
 
     describe('should guard months and years when switching calendars', () => {

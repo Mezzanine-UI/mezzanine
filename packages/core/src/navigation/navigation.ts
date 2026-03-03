@@ -83,6 +83,7 @@ export const navigationUserMenuPrefix =
 
 export const navigationUserMenuClasses = {
   host: navigationUserMenuPrefix,
+  content: `${navigationUserMenuPrefix}__content`,
   open: `${navigationUserMenuPrefix}--open`,
   avatar: `${navigationUserMenuPrefix}__avatar`,
   userName: `${navigationUserMenuPrefix}__user-name`,

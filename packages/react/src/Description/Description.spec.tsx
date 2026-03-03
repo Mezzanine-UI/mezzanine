@@ -231,6 +231,40 @@ describe('<Description />', () => {
     });
   });
 
+  describe('prop: size', () => {
+    it('default size is "main", content should have mzn-description-content--main class', () => {
+      const { getHostHTMLElement } = render(
+        <Description title="title">
+          <DescriptionContent>content</DescriptionContent>
+        </Description>,
+      );
+      const element = getHostHTMLElement();
+      const [contentElement] = element.getElementsByClassName(
+        'mzn-description-content',
+      );
+
+      expect(
+        contentElement!.classList.contains('mzn-description-content--main'),
+      ).toBeTruthy();
+    });
+
+    it('when size is "sub", content should have mzn-description-content--sub class', () => {
+      const { getHostHTMLElement } = render(
+        <Description size="sub" title="title">
+          <DescriptionContent>content</DescriptionContent>
+        </Description>,
+      );
+      const element = getHostHTMLElement();
+      const [contentElement] = element.getElementsByClassName(
+        'mzn-description-content',
+      );
+
+      expect(
+        contentElement!.classList.contains('mzn-description-content--sub'),
+      ).toBeTruthy();
+    });
+  });
+
   describe('prop: orientation', () => {
     it('default orientation is "horizontal"', () => {
       const { getHostHTMLElement } = render(

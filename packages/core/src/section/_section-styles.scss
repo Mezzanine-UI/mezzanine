@@ -14,4 +14,8 @@
   justify-content: flex-start;
   align-items: stretch;
   gap: spacing.semantic-variable(gap, calm);
+
+  &__content {
+    min-height: spacing.semantic-variable(size, container, small);
+  }
 }

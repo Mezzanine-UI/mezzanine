@@ -26,6 +26,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       count,
       className,
       overflowCount,
+      size,
       text,
       variant,
       ...rest
@@ -42,6 +43,7 @@ const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
             classes.host,
             classes.variant(variant),
             { [classes.hide]: isCountVariant(variant) && count === 0 },
+            size && classes.size(size),
             className,
           )}
         >

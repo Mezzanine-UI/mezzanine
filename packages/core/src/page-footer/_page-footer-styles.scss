@@ -4,7 +4,7 @@
 
 .#{$prefix} {
   width: 100%;
-  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, comfort-fixed);
+  padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, spacious);
   background-color: palette.semantic-variable("background", base);
   display: flex;
   align-items: center;

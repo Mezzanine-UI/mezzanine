@@ -162,7 +162,6 @@
 }
 
 .#{$cell-prefix} {
-  --today-dot-color: #{palette.semantic-variable(icon, brand)};
   --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
 
   position: relative;
@@ -178,6 +177,11 @@
   &--mode-week {
     width: spacing.semantic-variable(size, element, loose);
     height: spacing.semantic-variable(size, element, loose);
+
+    &.#{$cell-prefix}--with-annotation {
+      width: spacing.semantic-variable(size, element, extra-wide);
+      height: spacing.semantic-variable(size, element, extra-wide);
+    }
   }
 
   &--mode-month,
@@ -209,7 +213,7 @@
   }
 
   &--weekend {
-    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, brand)};
+    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral)};
   }
 
   &--range-start {
@@ -223,7 +227,6 @@
   }
 
   &--active {
-    --today-dot-color: #{palette.semantic-variable(icon, fixed-light)};
     --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, neutral-solid)};
   }
 
@@ -237,27 +240,9 @@
   }
 
   &--today {
-    &::after {
-      position: absolute;
-      bottom: 7px;
-      left: 50%;
-      z-index: 1;
-      transform: translateX(-50%);
-      content: '';
-      width: spacing.semantic-variable(size, element, micro);
-      height: spacing.semantic-variable(size, element, micro);
-      border-radius: 1px;
-      background-color: var(--today-dot-color);
-      pointer-events: none;
-    }
+    --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, brand)};
 
-    &.#{$cell-prefix}--with-annotation::after {
-      display: none;
-    }
-
-    &.#{$cell-prefix}--with-annotation {
-      --#{$cell-prefix}-text-color: #{palette.semantic-variable(text, brand)};
-    }
+    @include typography.semantic-variable(input-highlight);
   }
 }
 

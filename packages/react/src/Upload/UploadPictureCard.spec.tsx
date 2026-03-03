@@ -9,7 +9,11 @@ describe('<UploadPictureCard />', () => {
     jest.clearAllMocks();
   });
 
-  const createMockFile = (name: string, type: string, size: number = 1024): File => {
+  const createMockFile = (
+    name: string,
+    type: string,
+    size: number = 1024,
+  ): File => {
     const file = new File([''], name, { type });
     Object.defineProperty(file, 'size', { value: size });
     return file;
@@ -38,13 +42,19 @@ describe('<UploadPictureCard />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-upload-picture-card')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-picture-card'),
+      ).toBeTruthy();
     });
 
     it('應該支持自定義 className', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { getHostHTMLElement } = render(
-        <UploadPictureCard file={file} status="done" className="custom-class" />,
+        <UploadPictureCard
+          file={file}
+          status="done"
+          className="custom-class"
+        />,
       );
       const element = getHostHTMLElement();
 
@@ -56,48 +66,83 @@ describe('<UploadPictureCard />', () => {
     it('預設 status 應該是 "loading"', async () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="loading" size="main" onDelete={jest.fn()} />,
+        <UploadPictureCard
+          file={file}
+          status="loading"
+          size="main"
+          onDelete={jest.fn()}
+        />,
       );
 
       // 等待組件渲染完成（包括 useEffect 執行）
-      await waitFor(() => {
-        // loadingIcon 是一個 div，class 是 mzn-upload-picture-card__loading-icon
-        // 它在 actions 區域內，當 status="loading" 且 size !== "minor" 時顯示
-        const loadingIcon = container.querySelector('.mzn-upload-picture-card__loading-icon');
-        expect(loadingIcon).toBeTruthy();
-      }, { timeout: 1000 });
+      await waitFor(
+        () => {
+          // loadingIcon 是一個 div，class 是 mzn-upload-picture-card__loading-icon
+          // 它在 actions 區域內，當 status="loading" 且 size !== "minor" 時顯示
+          const loadingIcon = container.querySelector(
+            '.mzn-upload-picture-card__loading-icon',
+          );
+          expect(loadingIcon).toBeTruthy();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it('應該正確渲染 status="loading"', async () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="loading" size="main" onDelete={jest.fn()} />,
+        <UploadPictureCard
+          file={file}
+          status="loading"
+          size="main"
+          onDelete={jest.fn()}
+        />,
       );
 
       // 等待組件渲染完成（包括 useEffect 執行）
-      await waitFor(() => {
-        // loadingIcon 是一個 div，class 是 mzn-upload-picture-card__loading-icon
-        // 它在 actions 區域內，當 status="loading" 且 size !== "minor" 時顯示
-        const loadingIcon = container.querySelector('.mzn-upload-picture-card__loading-icon');
-        // ClearActions 渲染為 button，預設 aria-label="Close"（硬編碼，不會被覆蓋）
-        // 但我們傳入了 aria-label="Cancel upload"，需要檢查實際的渲染結果
-        const cancelButton = container.querySelector('button[aria-label="Cancel upload"]')
-          || container.querySelector('button[aria-label="Close"]');
+      await waitFor(
+        () => {
+          // loadingIcon 是一個 div，class 是 mzn-upload-picture-card__loading-icon
+          // 它在 actions 區域內，當 status="loading" 且 size !== "minor" 時顯示
+          const loadingIcon = container.querySelector(
+            '.mzn-upload-picture-card__loading-icon',
+          );
+          // ClearActions 渲染為 button，預設 aria-label="Close"（硬編碼，不會被覆蓋）
+          // 但我們傳入了 aria-label="Cancel upload"，需要檢查實際的渲染結果
+          const cancelButton =
+            container.querySelector('button[aria-label="Cancel upload"]') ||
+            container.querySelector('button[aria-label="Close"]');
 
-        // loading icon 應該存在（在 actions 區域內）
-        expect(loadingIcon).toBeTruthy();
-        // cancel button 應該存在
-        expect(cancelButton).toBeTruthy();
-      }, { timeout: 1000 });
+          // loading icon 應該存在（在 actions 區域內）
+          expect(loadingIcon).toBeTruthy();
+          // cancel button 應該存在
+          expect(cancelButton).toBeTruthy();
+        },
+        { timeout: 1000 },
+      );
     });
 
     it('應該正確渲染 status="done"', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="done" />);
+      const { container } = render(
+        <UploadPictureCard
+          file={file}
+          status="done"
+          onZoomIn={jest.fn()}
+          onDownload={jest.fn()}
+          onDelete={jest.fn()}
+        />,
+      );
       const tools = container.querySelector('.mzn-upload-picture-card__tools');
-      const zoomButton = container.querySelector('button[aria-label="Zoom in image"]');
-      const downloadButton = container.querySelector('button[aria-label="Download file"]');
-      const deleteButton = container.querySelector('button[aria-label="Delete file"]');
+      const zoomButton = container.querySelector(
+        'button[aria-label="Zoom in image"]',
+      );
+      const downloadButton = container.querySelector(
+        'button[aria-label="Download file"]',
+      );
+      const deleteButton = container.querySelector(
+        'button[aria-label="Delete file"]',
+      );
 
       expect(tools).toBeTruthy();
       expect(zoomButton).toBeTruthy();
@@ -108,12 +153,21 @@ describe('<UploadPictureCard />', () => {
     it('應該正確渲染 status="error"', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="error" size="main" errorMessage="上傳失敗" />,
+        <UploadPictureCard
+          file={file}
+          status="error"
+          size="main"
+          errorMessage="上傳失敗"
+        />,
       );
       // 錯誤訊息在 container 內，有 role="alert"
       const errorMessage = container.querySelector('[role="alert"]');
-      const reloadButton = container.querySelector('button[aria-label="Retry upload"]');
-      const deleteButton = container.querySelector('button[aria-label="Delete file"]');
+      const reloadButton = container.querySelector(
+        'button[aria-label="Retry upload"]',
+      );
+      const deleteButton = container.querySelector(
+        'button[aria-label="Delete file"]',
+      );
 
       expect(errorMessage).toBeTruthy();
       expect(reloadButton).toBeTruthy();
@@ -133,14 +187,21 @@ describe('<UploadPictureCard />', () => {
         const element = getHostHTMLElement();
 
         // size class 格式是 mzn-upload-picture-card__size--main
-        expect(element.classList.contains(`mzn-upload-picture-card__size--${size}`)).toBeTruthy();
+        expect(
+          element.classList.contains(`mzn-upload-picture-card__size--${size}`),
+        ).toBeTruthy();
       });
     });
 
     it('應該在 error 狀態且 size="main" 時顯示錯誤訊息', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="error" size="main" errorMessage="上傳失敗" />,
+        <UploadPictureCard
+          file={file}
+          status="error"
+          size="main"
+          errorMessage="上傳失敗"
+        />,
       );
       // 錯誤訊息在 actions 區域外，有 role="alert"
       const errorMessage = container.querySelector('[role="alert"]');
@@ -150,20 +211,33 @@ describe('<UploadPictureCard />', () => {
 
     it('預設 size 應該是 "main"', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { getHostHTMLElement } = render(<UploadPictureCard file={file} status="done" />);
+      const { getHostHTMLElement } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
       const element = getHostHTMLElement();
 
       // size class 格式是 mzn-upload-picture-card__size--main
-      expect(element.classList.contains('mzn-upload-picture-card__size--main')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-picture-card__size--main'),
+      ).toBeTruthy();
     });
 
     it('應該在 error 狀態且 size="main" 時顯示操作按鈕', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="error" size="main" errorMessage="錯誤" />,
+        <UploadPictureCard
+          file={file}
+          status="error"
+          size="main"
+          errorMessage="錯誤"
+        />,
       );
-      const reloadButton = container.querySelector('button[aria-label="Retry upload"]');
-      const deleteButton = container.querySelector('button[aria-label="Delete file"]');
+      const reloadButton = container.querySelector(
+        'button[aria-label="Retry upload"]',
+      );
+      const deleteButton = container.querySelector(
+        'button[aria-label="Delete file"]',
+      );
 
       // 這些按鈕應該存在
       expect(reloadButton).toBeTruthy();
@@ -174,7 +248,9 @@ describe('<UploadPictureCard />', () => {
   describe('prop: imageFit', () => {
     it('預設 imageFit 應該是 "cover"', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="done" />);
+      const { container } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img?.style.objectFit).toBe('cover');
@@ -199,7 +275,9 @@ describe('<UploadPictureCard />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains('mzn-upload-picture-card--disabled')).toBeTruthy();
+      expect(
+        element.classList.contains('mzn-upload-picture-card--disabled'),
+      ).toBeTruthy();
       expect(element.getAttribute('aria-disabled')).toBe('true');
       expect(element.getAttribute('tabIndex')).toBe('-1');
     });
@@ -217,7 +295,9 @@ describe('<UploadPictureCard />', () => {
 
     it('應該在卸載時清理 blob URL', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { unmount } = render(<UploadPictureCard file={file} status="done" />);
+      const { unmount } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
 
       unmount();
 
@@ -240,7 +320,9 @@ describe('<UploadPictureCard />', () => {
 
     it('應該直接使用 url 顯示圖片', () => {
       const url = 'https://example.com/image.jpg';
-      const { container } = render(<UploadPictureCard url={url} status="done" />);
+      const { container } = render(
+        <UploadPictureCard url={url} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img?.src).toBe(url);
@@ -250,7 +332,9 @@ describe('<UploadPictureCard />', () => {
   describe('文件類型識別', () => {
     it('應該正確識別圖片文件', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="done" />);
+      const { container } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img).toBeTruthy();
@@ -258,7 +342,9 @@ describe('<UploadPictureCard />', () => {
 
     it('應該從 URL 推斷圖片類型', () => {
       const url = 'https://example.com/image.png';
-      const { container } = render(<UploadPictureCard url={url} status="done" />);
+      const { container } = render(
+        <UploadPictureCard url={url} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img).toBeTruthy();
@@ -285,7 +371,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="done" size="main" />,
       );
-      const content = container.querySelector('.mzn-upload-picture-card__content');
+      const content = container.querySelector(
+        '.mzn-upload-picture-card__content',
+      );
 
       expect(content).toBeTruthy();
     });
@@ -295,24 +383,36 @@ describe('<UploadPictureCard />', () => {
     it('應該顯示錯誤訊息', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="error" errorMessage="自定義錯誤訊息" />,
+        <UploadPictureCard
+          file={file}
+          status="error"
+          errorMessage="自定義錯誤訊息"
+        />,
       );
-      const errorMessage = container.querySelector('.mzn-upload-picture-card__error-message-text');
+      const errorMessage = container.querySelector(
+        '.mzn-upload-picture-card__error-message-text',
+      );
 
       expect(errorMessage?.textContent).toBe('自定義錯誤訊息');
     });
 
     it('應該使用文件名作為預設錯誤訊息', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="error" />);
-      const errorMessage = container.querySelector('.mzn-upload-picture-card__error-message-text');
+      const { container } = render(
+        <UploadPictureCard file={file} status="error" />,
+      );
+      const errorMessage = container.querySelector(
+        '.mzn-upload-picture-card__error-message-text',
+      );
 
       expect(errorMessage?.textContent).toBe('test.jpg');
     });
 
     it('應該在沒有文件名時使用預設錯誤訊息', () => {
       const { container } = render(<UploadPictureCard status="error" />);
-      const errorMessage = container.querySelector('.mzn-upload-picture-card__error-message-text');
+      const errorMessage = container.querySelector(
+        '.mzn-upload-picture-card__error-message-text',
+      );
 
       expect(errorMessage?.textContent).toBe('Upload error');
     });
@@ -330,7 +430,9 @@ describe('<UploadPictureCard />', () => {
         />,
       );
 
-      const errorIcon = container.querySelector('.mzn-icon[data-icon-name="info-filled"]');
+      const errorIcon = container.querySelector(
+        '.mzn-icon[data-icon-name="info-filled"]',
+      );
       expect(errorIcon).toBeTruthy();
     });
   });
@@ -342,7 +444,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="done" onDelete={onDelete} />,
       );
-      const deleteButton = container.querySelector('button[aria-label="Delete file"]');
+      const deleteButton = container.querySelector(
+        'button[aria-label="Delete file"]',
+      );
 
       await act(async () => {
         if (deleteButton) {
@@ -359,7 +463,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="error" onReload={onReload} />,
       );
-      const reloadButton = container.querySelector('button[aria-label="Retry upload"]');
+      const reloadButton = container.querySelector(
+        'button[aria-label="Retry upload"]',
+      );
 
       await act(async () => {
         if (reloadButton) {
@@ -376,7 +482,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="done" onDownload={onDownload} />,
       );
-      const downloadButton = container.querySelector('button[aria-label="Download file"]');
+      const downloadButton = container.querySelector(
+        'button[aria-label="Download file"]',
+      );
 
       await act(async () => {
         if (downloadButton) {
@@ -393,7 +501,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="done" onZoomIn={onZoomIn} />,
       );
-      const zoomButton = container.querySelector('button[aria-label="Zoom in image"]');
+      const zoomButton = container.querySelector(
+        'button[aria-label="Zoom in image"]',
+      );
 
       await act(async () => {
         if (zoomButton) {
@@ -408,15 +518,21 @@ describe('<UploadPictureCard />', () => {
       const onDelete = jest.fn();
       const file = createMockFile('test.jpg', 'image/jpeg');
       const { container } = render(
-        <UploadPictureCard file={file} status="loading" size="main" onDelete={onDelete} />,
+        <UploadPictureCard
+          file={file}
+          status="loading"
+          size="main"
+          onDelete={onDelete}
+        />,
       );
 
       // ClearActions 組件渲染為 button
       // 注意：ClearActions 硬編碼 aria-label="Close"，即使傳入 aria-label 也不會覆蓋
       // 所以我們使用 class 或直接查找 button
-      const cancelButton = container.querySelector('.mzn-clear-actions')
-        || container.querySelector('button[aria-label="Close"]')
-        || container.querySelector('button[aria-label="Cancel upload"]');
+      const cancelButton =
+        container.querySelector('.mzn-clear-actions') ||
+        container.querySelector('button[aria-label="Close"]') ||
+        container.querySelector('button[aria-label="Cancel upload"]');
       expect(cancelButton).toBeTruthy();
 
       await act(async () => {
@@ -442,11 +558,24 @@ describe('<UploadPictureCard />', () => {
       };
 
       const { container } = render(
-        <UploadPictureCard file={file} status="done" ariaLabels={ariaLabels} />,
+        <UploadPictureCard
+          file={file}
+          status="done"
+          ariaLabels={ariaLabels}
+          onZoomIn={jest.fn()}
+          onDownload={jest.fn()}
+          onDelete={jest.fn()}
+        />,
       );
-      const zoomButton = container.querySelector('button[aria-label="放大圖片"]');
-      const downloadButton = container.querySelector('button[aria-label="下載文件"]');
-      const deleteButton = container.querySelector('button[aria-label="刪除文件"]');
+      const zoomButton = container.querySelector(
+        'button[aria-label="放大圖片"]',
+      );
+      const downloadButton = container.querySelector(
+        'button[aria-label="下載文件"]',
+      );
+      const deleteButton = container.querySelector(
+        'button[aria-label="刪除文件"]',
+      );
 
       expect(zoomButton).toBeTruthy();
       expect(downloadButton).toBeTruthy();
@@ -460,7 +589,9 @@ describe('<UploadPictureCard />', () => {
       const { container } = render(
         <UploadPictureCard file={file} status="done" size="minor" />,
       );
-      const zoomIcon = container.querySelector('.mzn-icon[data-icon-name="zoom-in"]');
+      const zoomIcon = container.querySelector(
+        '.mzn-icon[data-icon-name="zoom-in"]',
+      );
       const tools = container.querySelector('.mzn-upload-picture-card__tools');
 
       expect(zoomIcon).toBeTruthy();
@@ -471,7 +602,9 @@ describe('<UploadPictureCard />', () => {
   describe('圖片顯示', () => {
     it('應該在 done 狀態且是圖片時顯示圖片', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="done" />);
+      const { container } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img).toBeTruthy();
@@ -489,7 +622,9 @@ describe('<UploadPictureCard />', () => {
 
     it('應該設置圖片的 alt 屬性為文件名', () => {
       const file = createMockFile('test.jpg', 'image/jpeg');
-      const { container } = render(<UploadPictureCard file={file} status="done" />);
+      const { container } = render(
+        <UploadPictureCard file={file} status="done" />,
+      );
       const img = container.querySelector('img');
 
       expect(img?.alt).toBe('test.jpg');

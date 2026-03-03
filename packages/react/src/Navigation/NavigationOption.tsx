@@ -9,6 +9,7 @@ import {
   useEffect,
   useId,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { navigationOptionClasses as classes } from '@mezzanine-ui/core/navigation';
@@ -19,7 +20,7 @@ import {
 } from '@mezzanine-ui/icons';
 import { cx } from '../utils/cx';
 import Icon from '../Icon';
-import { Collapse } from '../Transition';
+import { Collapse, Fade } from '../Transition';
 import {
   NavigationActivatedContext,
   NavigationOptionLevelContext,
@@ -53,6 +54,10 @@ export interface NavigationOptionProps
    */
   children?: NavigationOptionChildren;
   /**
+   * Custom component to render, it should support `href` and `onClick` props if provided.
+   */
+  anchorComponent?: React.ElementType;
+  /**
    * Icon of the item.
    */
   icon?: IconDefinition;
@@ -82,7 +87,8 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       active,
       children,
       className,
-      defaultOpen = false,
+      anchorComponent,
+      defaultOpen,
       href,
       icon,
       id,
@@ -91,7 +97,17 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       ...rest
     } = props;
 
-    const [open, setOpen] = useState<boolean>(defaultOpen);
+    const {
+      activatedPathKey,
+      activatedPath,
+      collapsed,
+      filterText,
+      handleCollapseChange,
+      setActivatedPath,
+      optionsAnchorComponent,
+    } = use(NavigationActivatedContext);
+
+    const [open, setOpen] = useState<boolean>(defaultOpen ?? false);
 
     const GroupToggleIcon = open ? ChevronUpIcon : ChevronDownIcon;
 
@@ -104,25 +120,12 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       () => [...parentPath, currentKey],
       [parentPath, currentKey],
     );
+    const currentPathKey = currentPath.join('::');
 
-    const {
-      activatedPath,
-      collapsed,
-      currentPathname,
-      filterText,
-      handleCollapseChange,
-      setActivatedPath,
-    } = use(NavigationActivatedContext);
-
-    useEffect(() => {
-      if (currentPathname === href) {
-        setActivatedPath(currentPath);
-        setOpen(true);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const Component = href ? 'a' : 'div';
+    const Component =
+      href && !children
+        ? (anchorComponent ?? optionsAnchorComponent ?? 'a')
+        : 'div';
 
     const flattenedChildren = useMemo(
       () => flattenChildren(children) as NavigationOptionChildren,
@@ -156,6 +159,16 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       return { badge: badgeComponent, items };
     }, [flattenedChildren]);
 
+    // Default open if current path is activated
+    useEffect(() => {
+      if (
+        activatedPathKey === currentPathKey ||
+        activatedPathKey.startsWith(`${currentPathKey}::`)
+      ) {
+        setOpen(true);
+      }
+    }, [activatedPathKey, currentLevel, currentPathKey]);
+
     const [filter, setFilter] = useState(true);
 
     useEffect(() => {
@@ -169,6 +182,31 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
         (title.includes(filterText) || href?.includes(filterText)) ?? false,
       );
     }, [currentPath, filterText, href, title]);
+
+    const titleRef = useRef<HTMLElement>(null);
+    const [titleOverflow, setTitleOverflow] = useState(false);
+
+    useEffect(() => {
+      if (!titleRef.current) return;
+
+      const checkOverflow = () => {
+        if (!titleRef.current) return;
+
+        const { scrollWidth, clientWidth } = titleRef.current;
+
+        setTitleOverflow(scrollWidth > clientWidth);
+      };
+
+      checkOverflow();
+
+      const resizeObserver = new ResizeObserver(checkOverflow);
+
+      resizeObserver.observe(titleRef.current);
+
+      return () => {
+        resizeObserver.disconnect();
+      };
+    }, [title]);
 
     return (
       <li
@@ -187,18 +225,16 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
         data-id={currentKey}
       >
         <Tooltip
+          disablePortal={false}
           options={{
-            placement: 'right',
+            placement: collapsed ? 'right' : 'top',
           }}
-          title={collapsed ? title : undefined}
+          title={collapsed || titleOverflow ? title : undefined}
         >
           {({ onMouseEnter, onMouseLeave, ref: tooltipChildRef }) => (
             <Component
               className={cx(classes.content, classes.level(currentLevel))}
-              onMouseEnter={onMouseEnter}
-              onMouseLeave={onMouseLeave}
-              ref={tooltipChildRef}
-              href={href}
+              href={Component === 'div' ? undefined : href}
               onClick={() => {
                 setOpen(!open);
                 onTriggerClick?.(currentPath, currentKey, href);
@@ -209,7 +245,9 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
 
                 if (!children) setActivatedPath(currentPath);
               }}
-              onKeyDown={(e) => {
+              onKeyDown={(
+                e: React.KeyboardEvent<HTMLAnchorElement | HTMLDivElement>,
+              ) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
                   setOpen(!open);
@@ -217,11 +255,18 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
                   if (!children) setActivatedPath(currentPath);
                 }
               }}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+              ref={tooltipChildRef}
               role="menuitem"
               tabIndex={0}
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
-              <span className={classes.title}>{title}</span>
+
+              <Fade ref={titleRef} in={collapsed === false || !icon}>
+                <span className={classes.title}>{title}</span>
+              </Fade>
+
               {badge}
               {children && (
                 <Icon className={classes.toggleIcon} icon={GroupToggleIcon} />
@@ -230,13 +275,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           )}
         </Tooltip>
         {children && !collapsed && (
-          <Collapse
-            className={classes.childrenWrapper}
-            style={{
-              width: '100%',
-            }}
-            in={!!open}
-          >
+          <Collapse lazyMount className={cx(classes.childrenWrapper)} in={open}>
             <NavigationOptionLevelContext.Provider
               value={{
                 level: currentLevel,

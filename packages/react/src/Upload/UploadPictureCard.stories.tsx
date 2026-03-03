@@ -19,7 +19,11 @@ async function createFileFromUrl(url: string, fileName: string): Promise<File> {
 }
 
 // React component for loading images
-function UploadPictureCardWithImageLoader({ args }: { args: UploadPictureCardProps }) {
+function UploadPictureCardWithImageLoader({
+  args,
+}: {
+  args: UploadPictureCardProps;
+}) {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -124,7 +128,7 @@ function BasicStoryContent() {
   }, []);
 
   if (!imageFile) {
-    return <></>
+    return <></>;
   }
 
   return (
@@ -136,7 +140,15 @@ function BasicStoryContent() {
         width: 400,
       }}
     >
-      <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', padding: 0 }}>
+      <ul
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          listStyle: 'none',
+          padding: 0,
+        }}
+      >
         <li>
           <UploadPictureCard
             file={imageFile}
@@ -185,10 +197,18 @@ export const Basic: Story = {
 
 function NonImageFilesStoryContent() {
   // Create mock non-image files
-  const pdfFile = new File(['PDF content'], 'document.pdf', { type: 'application/pdf' });
-  const docFile = new File(['DOC content'], 'document.doc', { type: 'application/msword' });
-  const txtFile = new File(['Text content'], 'document.txt', { type: 'text/plain' });
-  const zipFile = new File(['ZIP content'], 'archive.zip', { type: 'application/zip' });
+  const pdfFile = new File(['PDF content'], 'document.pdf', {
+    type: 'application/pdf',
+  });
+  const docFile = new File(['DOC content'], 'document.doc', {
+    type: 'application/msword',
+  });
+  const txtFile = new File(['Text content'], 'document.txt', {
+    type: 'text/plain',
+  });
+  const zipFile = new File(['ZIP content'], 'archive.zip', {
+    type: 'application/zip',
+  });
 
   return (
     <div
@@ -199,10 +219,25 @@ function NonImageFilesStoryContent() {
         width: 400,
       }}
     >
-      <h3 style={{ marginBottom: '8px', marginTop: 0, fontSize: '16px', fontWeight: 600 }}>
+      <h3
+        style={{
+          marginBottom: '8px',
+          marginTop: 0,
+          fontSize: '16px',
+          fontWeight: 600,
+        }}
+      >
         Non-Image Files
       </h3>
-      <ul style={{ display: 'flex', flexDirection: 'column', gap: '8px', listStyle: 'none', padding: 0 }}>
+      <ul
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          listStyle: 'none',
+          padding: 0,
+        }}
+      >
         <li>
           <UploadPictureCard
             file={pdfFile}
@@ -268,7 +303,75 @@ export const NonImageFiles: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Examples of UploadPictureCard displaying non-image files (PDF, DOC, TXT, ZIP, etc.). When a non-image file is provided, the component will display accordingly based on the file type.',
+        story:
+          'Examples of UploadPictureCard displaying non-image files (PDF, DOC, TXT, ZIP, etc.). When a non-image file is provided, the component will display accordingly based on the file type.',
+      },
+    },
+  },
+};
+
+function ReplaceModeStoryContent() {
+  const pdfFile = new File(['PDF content'], 'report.pdf', {
+    type: 'application/pdf',
+  });
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        width: 400,
+      }}
+    >
+      <h3
+        style={{
+          marginBottom: '8px',
+          marginTop: 0,
+          fontSize: '16px',
+          fontWeight: 600,
+        }}
+      >
+        Replace Mode (hover to see overlay)
+      </h3>
+      <ul
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          listStyle: 'none',
+          padding: 0,
+        }}
+      >
+        <li>
+          <UploadPictureCard
+            file={pdfFile}
+            status="done"
+            onDelete={action('onDelete')}
+            onReplace={action('onReplace')}
+          />
+        </li>
+        <li>
+          <UploadPictureCard
+            file={pdfFile}
+            status="done"
+            size="sub"
+            onDelete={action('onDelete')}
+            onReplace={action('onReplace')}
+          />
+        </li>
+      </ul>
+    </div>
+  );
+}
+
+export const ReplaceMode: Story = {
+  render: () => <ReplaceModeStoryContent />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'When `onReplace` is provided and status is `done`, the card becomes a replacement trigger. Hover to reveal the "Click to Replace" overlay label. The trash button remains visible on hover; zoom and download buttons are omitted when not passed.',
       },
     },
   },

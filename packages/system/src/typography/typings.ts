@@ -36,6 +36,7 @@ export type TypographySemanticType =
   | 'button-highlight'
   | 'input'
   | 'input-mono'
+  | 'input-highlight'
   | 'label-primary'
   | 'label-primary-highlight'
   | 'label-secondary';
