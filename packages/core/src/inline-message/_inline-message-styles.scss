@@ -48,7 +48,11 @@ $variant-hierarchy: (
   @if $variant-map {
     $value: map.get($variant-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;
@@ -111,11 +115,15 @@ $variant-hierarchy: (
 
   @each $severity in $severities {
     &--#{$severity} {
-      $variant-key: if(
-        $severity == 'info',
-        'base-info',
-        if($severity == 'error', 'base-error', 'base-warning')
-      );
+      $variant-key: null;
+
+      @if $severity == 'info' {
+        $variant-key: 'base-info';
+      } @else if $severity == 'error' {
+        $variant-key: 'base-error';
+      } @else {
+        $variant-key: 'base-warning';
+      }
 
       @include _apply-variant-colors($variant-key);
     }

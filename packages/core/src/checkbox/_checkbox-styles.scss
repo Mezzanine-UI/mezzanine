@@ -83,7 +83,11 @@ $chip-host-states: (
 @function _get-mode-property($mode-map, $property) {
   $value: map.get($mode-map, $property);
 
-  @return if($value == none, null, $value);
+  @if $value == none {
+    @return null;
+  } @else {
+    @return $value;
+  }
 }
 
 // Apply mode styles
@@ -214,7 +218,11 @@ $checked-states: (
 @function _get-state-color($state-map, $property) {
   $value: map.get($state-map, $property);
 
-  @return if($value == none, null, $value);
+  @if $value == none {
+    @return null;
+  } @else {
+    @return $value;
+  }
 }
 
 // Apply state colors to input
