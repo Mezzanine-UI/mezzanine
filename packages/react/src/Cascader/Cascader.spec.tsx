@@ -1,6 +1,5 @@
 /* global document */
 
-import { createRef } from 'react';
 import {
   act,
   cleanupHook,
