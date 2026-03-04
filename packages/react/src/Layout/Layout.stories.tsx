@@ -167,24 +167,6 @@ export const WithPartialRendering: StoryObj<typeof Layout> = {
             </p>
           </section>
 
-          {/* ── Dynamic section (PPR streaming hole) ──────────────────────
-           * Wrap async content in <Suspense> to defer it from the static shell.
-           *
-           * Next.js PPR sends the fallback (<StatsSkeleton />) as part of the
-           * initial HTML response, then streams the real content once the async
-           * RSC resolves — all on the server, with no client-side waterfall.
-           *
-           * Replace <DashboardStats /> with your own async Server Component:
-           *
-           *   async function DashboardStats() {
-           *     const data = await fetch('/api/stats').then(r => r.json());
-           *     return <div>{data.value}</div>;
-           *   }
-           */}
-          <Suspense fallback={<StatsSkeleton />}>
-            <DashboardStats />
-          </Suspense>
-
           <FloatingButton
             autoHideWhenOpen
             icon={PlusIcon}
@@ -201,6 +183,23 @@ export const WithPartialRendering: StoryObj<typeof Layout> = {
             <h2>Side Panel</h2>
             <p>This panel is position: fixed and scrolls independently.</p>
             <button onClick={() => setOpen(false)}>Close</button>
+            {/* ── Dynamic section (PPR streaming hole) ──────────────────────
+             * Wrap async content in <Suspense> to defer it from the static shell.
+             *
+             * Next.js PPR sends the fallback (<StatsSkeleton />) as part of the
+             * initial HTML response, then streams the real content once the async
+             * RSC resolves — all on the server, with no client-side waterfall.
+             *
+             * Replace <DashboardStats /> with your own async Server Component:
+             *
+             *   async function DashboardStats() {
+             *     const data = await fetch('/api/stats').then(r => r.json());
+             *     return <div>{data.value}</div>;
+             *   }
+             */}
+            <Suspense fallback={<StatsSkeleton />}>
+              <DashboardStats />
+            </Suspense>
           </div>
         </Layout.SidePanel>
       </Layout>
