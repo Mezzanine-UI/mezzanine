@@ -69,7 +69,11 @@ $status-hierarchy: (
   @if $type-map {
     $value: map.get($type-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;
@@ -82,7 +86,11 @@ $status-hierarchy: (
   @if $status-map {
     $value: map.get($status-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;

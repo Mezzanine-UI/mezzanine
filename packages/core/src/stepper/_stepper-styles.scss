@@ -49,7 +49,11 @@ $status-colors: (
   @if $status-map {
     $value: map.get($status-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;

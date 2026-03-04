@@ -3,31 +3,37 @@
 @use '../motion';
 
 @function entrance($property, $duration: moderate, $delay: 0ms) {
-  $duration-value: if(
-    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
-    $duration,
-    motion.duration($duration)
-  );
+  $duration-value: null;
+
+  @if meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') {
+    $duration-value: $duration;
+  } @else {
+    $duration-value: motion.duration($duration);
+  }
 
   @return $property $duration-value motion.easing(entrance) $delay;
 }
 
 @function exit($property, $duration: moderate, $delay: 0ms) {
-  $duration-value: if(
-    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
-    $duration,
-    motion.duration($duration)
-  );
+  $duration-value: null;
+
+  @if meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') {
+    $duration-value: $duration;
+  } @else {
+    $duration-value: motion.duration($duration);
+  }
 
   @return $property $duration-value motion.easing(exit) $delay;
 }
 
 @function standard($property, $duration: moderate, $delay: 0ms) {
-  $duration-value: if(
-    meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') != null,
-    $duration,
-    motion.duration($duration)
-  );
+  $duration-value: null;
+
+  @if meta.type-of($duration) == number or string.index(meta.inspect($duration), 'calc') {
+    $duration-value: $duration;
+  } @else {
+    $duration-value: motion.duration($duration);
+  }
 
   @return $property $duration-value motion.easing(standard) $delay;
 }

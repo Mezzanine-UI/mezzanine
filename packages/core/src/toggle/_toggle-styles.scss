@@ -71,7 +71,11 @@ $radius: radius.variable(full);
     @if $switch-map {
       $value: map.get($switch-map, $switch);
 
-      @return if($value == none, null, $value);
+      @if $value == none {
+        @return null;
+      } @else {
+        @return $value;
+      }
     }
   }
 
@@ -85,7 +89,11 @@ $radius: radius.variable(full);
   @if $size-map {
     $value: map.get($size-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;

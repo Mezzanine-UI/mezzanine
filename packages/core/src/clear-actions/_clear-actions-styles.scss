@@ -146,7 +146,11 @@ $variant-hierarchy: (
     @if $hierarchy-map {
       $value: map.get($hierarchy-map, $property);
 
-      @return if($value == none, null, $value);
+      @if $value == none {
+        @return null;
+      } @else {
+        @return $value;
+      }
     }
   }
 

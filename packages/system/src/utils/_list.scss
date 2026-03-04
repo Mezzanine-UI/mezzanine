@@ -12,11 +12,14 @@
 
 @function flat-push($list, $values...) {
   @each $value in $values {
-    $pusher: if(
-      meta.type-of($value) == list,
-      meta.get-function('join', $module: list),
-      meta.get-function('append', $module: list)
-    );
+    $pusher: null;
+
+    @if meta.type-of($value) == list {
+      $pusher: meta.get-function('join', $module: list);
+    } @else {
+      $pusher: meta.get-function('append', $module: list);
+    }
+
     $list: meta.call($pusher, $list, $value);
   }
 

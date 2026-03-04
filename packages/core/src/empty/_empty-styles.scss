@@ -54,7 +54,11 @@ $size-configs: (
   @if $size-map {
     $value: map.get($size-map, $property);
 
-    @return if($value == none, null, $value);
+    @if $value == none {
+      @return null;
+    } @else {
+      @return $value;
+    }
   }
 
   @return null;
