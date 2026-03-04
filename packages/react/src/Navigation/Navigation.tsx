@@ -58,6 +58,12 @@ export interface NavigationProps
    */
   collapsed?: boolean;
   /**
+   * When true, href must match the current pathname exactly to be activated.
+   * When false (default), any href that is a prefix of the current pathname will be activated.
+   * @default false
+   */
+  exactActivatedMatch?: boolean;
+  /**
    * Whether to show search input
    */
   filter?: boolean;
@@ -81,6 +87,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
     children = [],
     className,
     collapsed: collapsedProp,
+    exactActivatedMatch = false,
     filter,
     onCollapseChange,
     onOptionClick,
@@ -190,7 +197,12 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
 
         const newPath = [...path, newKey];
 
-        if (item.props.href && item.props.href === currentPathname) {
+        const hrefMatches = exactActivatedMatch
+          ? item.props.href === currentPathname
+          : currentPathname === item.props.href ||
+            currentPathname.startsWith(item.props.href + '/');
+
+        if (item.props.href && hrefMatches) {
           combineSetActivatedPath(newPath);
 
           return true;
@@ -212,7 +224,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
 
     checkActivatedPathKey(level1Items, []);
     hrefActivated.current = true;
-  }, [combineSetActivatedPath, currentPathname, level1Items]);
+  }, [combineSetActivatedPath, currentPathname, exactActivatedMatch, level1Items]);
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 

@@ -1,5 +1,5 @@
 import { PlusIcon } from '@mezzanine-ui/icons';
-import { cleanup, fireEvent, render } from '../../__test-utils__';
+import { act, cleanup, fireEvent, render, waitFor } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -11,6 +11,7 @@ import NavigationHeader from './NavigationHeader';
 import NavigationFooter from './NavigationFooter';
 import NavigationOptionCategory from './NavigationOptionCategory';
 import NavigationUserMenu from './NavigationUserMenu';
+import * as useCurrentPathnameModule from './useCurrentPathname';
 
 // Mock ResizeObserver
 class ResizeObserverMock {
@@ -149,6 +150,100 @@ describe('<Navigation />', () => {
       fireEvent.click(option!);
 
       expect(onOptionClick).toHaveBeenCalled();
+    });
+  });
+
+  describe('prop: exactActivatedMatch', () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should activate option when pathname starts with href (prefix match by default)', async () => {
+      jest
+        .spyOn(useCurrentPathnameModule, 'useCurrentPathname')
+        .mockReturnValue('/settings/profile');
+
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" href="/settings" />
+        </Navigation>,
+      );
+
+      await waitFor(() => {
+        const option = getHostHTMLElement().querySelector(
+          '.mzn-navigation-option',
+        );
+
+        expect(
+          option?.classList.contains('mzn-navigation-option--active'),
+        ).toBeTruthy();
+      });
+    });
+
+    it('should not activate option when pathname only shares a non-path prefix with href', async () => {
+      jest
+        .spyOn(useCurrentPathnameModule, 'useCurrentPathname')
+        .mockReturnValue('/settings-other');
+
+      const { getHostHTMLElement } = render(
+        <Navigation>
+          <NavigationOption title="Settings" href="/settings" />
+        </Navigation>,
+      );
+
+      await act(async () => {});
+
+      const option = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option',
+      );
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--active'),
+      ).toBeFalsy();
+    });
+
+    it('should not activate option on prefix match when exactActivatedMatch is true', async () => {
+      jest
+        .spyOn(useCurrentPathnameModule, 'useCurrentPathname')
+        .mockReturnValue('/settings/profile');
+
+      const { getHostHTMLElement } = render(
+        <Navigation exactActivatedMatch>
+          <NavigationOption title="Settings" href="/settings" />
+        </Navigation>,
+      );
+
+      await act(async () => {});
+
+      const option = getHostHTMLElement().querySelector(
+        '.mzn-navigation-option',
+      );
+
+      expect(
+        option?.classList.contains('mzn-navigation-option--active'),
+      ).toBeFalsy();
+    });
+
+    it('should activate option when pathname matches href exactly and exactActivatedMatch is true', async () => {
+      jest
+        .spyOn(useCurrentPathnameModule, 'useCurrentPathname')
+        .mockReturnValue('/settings');
+
+      const { getHostHTMLElement } = render(
+        <Navigation exactActivatedMatch>
+          <NavigationOption title="Settings" href="/settings" />
+        </Navigation>,
+      );
+
+      await waitFor(() => {
+        const option = getHostHTMLElement().querySelector(
+          '.mzn-navigation-option',
+        );
+
+        expect(
+          option?.classList.contains('mzn-navigation-option--active'),
+        ).toBeTruthy();
+      });
     });
   });
 
