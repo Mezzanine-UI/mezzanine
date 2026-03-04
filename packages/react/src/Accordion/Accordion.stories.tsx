@@ -93,6 +93,30 @@ export const Controlled = () => {
   );
 };
 
+export const Exclusive = () => (
+  <div
+    style={{
+      maxWidth: '680px',
+      width: '100%',
+    }}
+  >
+    <AccordionGroup exclusive>
+      <Accordion title="付款方式">
+        目前支援信用卡、Line Pay、Apple Pay 等多種付款方式，
+        您可以在結帳時選擇最方便的付款選項。
+      </Accordion>
+      <Accordion title="運送政策">
+        訂單成立後 1-3 個工作天內出貨，全台宅配約 1-2 天送達。 滿 $1,000
+        享免運優惠，未滿則需支付 $80 運費。
+      </Accordion>
+      <Accordion title="退換貨須知">
+        商品到貨後 7 天內可申請退換貨，請保持商品完整包裝。
+        如有瑕疵或寄送錯誤，我們將負擔來回運費。
+      </Accordion>
+    </AccordionGroup>
+  </div>
+);
+
 export const WithActions = () => {
   const [open, toggleOpen] = useState<boolean>(false);
   const [anchor, setAnchor] = useState<HTMLButtonElement | null>(null);
