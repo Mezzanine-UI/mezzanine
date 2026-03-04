@@ -880,6 +880,301 @@ describe('<Cascader />', () => {
         document.querySelector('.mzn-cascader-dropdown-panels'),
       ).toBeNull();
     });
+
+    it('should not open dropdown on Enter when disabled', async () => {
+      const { getHostHTMLElement } = render(
+        <Cascader disabled options={options} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await act(async () => {
+        fireEvent.keyDown(input, { key: 'Enter' });
+      });
+
+      expect(
+        document.querySelector('.mzn-cascader-dropdown-panels'),
+      ).toBeNull();
+    });
+
+    it('should not expand panel when ArrowRight is pressed on a leaf option', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      // navigate to Option C (index 2, leaf)
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowRight' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(1);
+      });
+    });
+
+    it('should do nothing when ArrowLeft is pressed at root level', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowLeft' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(1);
+      });
+    });
+
+    it('should not move focus past the last option on ArrowDown', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      // options has 3 items; navigate past the end
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      await waitFor(() => {
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        expect(
+          items[items.length - 1].classList.contains(
+            'mzn-cascader-item--focused',
+          ),
+        ).toBe(true);
+      });
+    });
+
+    it('should skip disabled options when navigating with ArrowUp', async () => {
+      const optionsWithMiddleDisabled: CascaderOption[] = [
+        {
+          id: 'x',
+          name: 'Option X',
+          children: [
+            { id: 'x1', name: 'Option X1' },
+            { id: 'x2', name: 'Option X2', disabled: true },
+            { id: 'x3', name: 'Option X3' },
+          ],
+        },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader options={optionsWithMiddleDisabled} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      // expand X
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowRight' });
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+
+      // navigate to X3 (index 2, skipping X2)
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' });
+      });
+
+      // ArrowUp from X3 should skip X2 and land on X1
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowUp' });
+      });
+
+      await waitFor(() => {
+        const panels = document.querySelectorAll('.mzn-cascader-panel');
+        const childItems = panels[1].querySelectorAll('li');
+
+        expect(
+          childItems[0].classList.contains('mzn-cascader-item--focused'),
+        ).toBe(true);
+        expect(
+          childItems[2].classList.contains('mzn-cascader-item--focused'),
+        ).toBe(false);
+      });
+    });
+
+    it('should expand child panel on Space for non-leaf option', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'ArrowDown' }); // focus Option A
+      });
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: ' ' }); // expand
+      });
+
+      await waitFor(() => {
+        expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(2);
+      });
+    });
+
+    it('should do nothing on Enter when no item is keyboard-focused', async () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} onChange={onChange} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      // press Enter immediately without ArrowDown
+      await act(async () => {
+        fireEvent.keyDown(document, { key: 'Enter' });
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(1);
+    });
+
+    it('should do nothing on Space when no item is keyboard-focused', async () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} onChange={onChange} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        fireEvent.keyDown(document, { key: ' ' });
+      });
+
+      expect(onChange).not.toHaveBeenCalled();
+      expect(document.querySelectorAll('.mzn-cascader-panel').length).toBe(1);
+    });
+  });
+
+  describe('CSS class state', () => {
+    it('should apply active class to clicked non-leaf option', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+
+      await clickTrigger(getHostHTMLElement());
+
+      await act(async () => {
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        fireEvent.click(items[0]); // Option A (non-leaf)
+      });
+
+      await waitFor(() => {
+        const optionA = document.getElementById('mzn-cascader-option-a');
+
+        expect(optionA?.classList.contains('mzn-cascader-item--active')).toBe(
+          true,
+        );
+      });
+    });
+
+    it('should apply selected class to confirmed leaf value item when reopened', async () => {
+      const value: CascaderOption[] = [
+        { id: 'a', name: 'Option A' },
+        { id: 'a1', name: 'Option A1' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={value} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      await waitFor(() => {
+        // panel 1 contains A's children; a1 should be selected
+        const optionA1 = document.getElementById('mzn-cascader-option-a1');
+
+        expect(
+          optionA1?.classList.contains('mzn-cascader-item--selected'),
+        ).toBe(true);
+      });
+    });
+
+    it('should apply partial class to trigger when navigating into a sub-menu', async () => {
+      const { getHostHTMLElement } = render(<Cascader options={options} />);
+      const element = getHostHTMLElement();
+
+      await clickTrigger(element);
+
+      await act(async () => {
+        const items = document.querySelectorAll('.mzn-cascader-item');
+
+        fireEvent.click(items[0]); // Option A (has children → isPartial becomes true)
+      });
+
+      await waitFor(() => {
+        const trigger = element.querySelector('.mzn-select-trigger');
+
+        expect(
+          trigger?.classList.contains('mzn-cascader-trigger--partial'),
+        ).toBe(true);
+      });
+    });
+  });
+
+  describe('prop: menuMaxHeight', () => {
+    it('should apply menuMaxHeight as inline style on each panel', async () => {
+      const { getHostHTMLElement } = render(
+        <Cascader menuMaxHeight={200} options={options} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      await waitFor(() => {
+        const panel = document.querySelector(
+          '.mzn-cascader-panel',
+        ) as HTMLElement | null;
+
+        expect(panel?.style.maxHeight).toBe('200px');
+      });
+    });
+  });
+
+  describe('prop: size', () => {
+    it('should apply sub size class to TextField', () => {
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} size="sub" />,
+      );
+      const textField = getHostHTMLElement().querySelector('.mzn-text-field');
+
+      expect(textField?.classList.contains('mzn-text-field--sub')).toBe(true);
+    });
+  });
+
+  describe('prop: required', () => {
+    it('should set required attribute on the input', () => {
+      const { getHostHTMLElement } = render(
+        <Cascader required options={options} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      expect(input.required).toBe(true);
+    });
   });
 
   describe('prop: clearable', () => {
@@ -948,6 +1243,38 @@ describe('<Cascader />', () => {
       );
 
       expect(clearButton).toBeNull();
+    });
+
+    it('should close dropdown when clear button is clicked while dropdown is open', async () => {
+      const value: CascaderOption[] = [
+        { id: 'a', name: 'Option A' },
+        { id: 'a1', name: 'Option A1' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader clearable options={options} value={value} />,
+      );
+
+      await clickTrigger(getHostHTMLElement());
+
+      await waitFor(() => {
+        expect(
+          document.querySelector('.mzn-cascader-dropdown-panels'),
+        ).toBeInstanceOf(HTMLDivElement);
+      });
+
+      await act(async () => {
+        const clearButton = getHostHTMLElement().querySelector(
+          'button[aria-label="Close"]',
+        )!;
+
+        fireEvent.click(clearButton);
+      });
+
+      await waitFor(() => {
+        expect(
+          document.querySelector('.mzn-cascader-dropdown-panels'),
+        ).toBeNull();
+      });
     });
 
     it('should not render clear button when clearable and readOnly', () => {
