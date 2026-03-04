@@ -97,6 +97,8 @@
 
   &--focused:not(.#{$item-prefix}--disabled) {
     box-shadow: effect.variable(focus, primary);
+    position: relative;
+    z-index: 1;
   }
 
   &--disabled {
