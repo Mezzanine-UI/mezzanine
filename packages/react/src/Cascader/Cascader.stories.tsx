@@ -734,6 +734,117 @@ export const InForm: StoryObj<typeof Cascader> = {
   render: () => <InFormComponent />,
 };
 
+const mixedDepthOptions: CascaderOption[] = [
+  {
+    id: 'flash-sale',
+    name: '限時特賣',
+  },
+  {
+    id: 'new-arrivals',
+    name: '新品上市',
+  },
+  {
+    id: 'food',
+    name: '美食',
+    children: [
+      { id: 'coffee', name: '咖啡' },
+      { id: 'dessert', name: '甜點' },
+      { id: 'fast-food', name: '速食' },
+    ],
+  },
+  {
+    id: 'electronics',
+    name: '3C 數位',
+    children: [
+      {
+        id: 'phone',
+        name: '手機',
+        children: [
+          { id: 'iphone', name: 'iPhone' },
+          { id: 'android', name: 'Android' },
+        ],
+      },
+      {
+        id: 'laptop',
+        name: '筆記型電腦',
+        children: [
+          { id: 'windows-laptop', name: 'Windows 筆電' },
+          { id: 'mac-laptop', name: 'Mac 筆電' },
+        ],
+      },
+      { id: 'tablet', name: '平板電腦' },
+    ],
+  },
+  {
+    id: 'clothing',
+    name: '服飾',
+    children: [
+      {
+        id: 'mens',
+        name: '男裝',
+        children: [
+          { id: 'mens-top', name: '上衣' },
+          { id: 'mens-pants', name: '褲子' },
+          { id: 'mens-jacket', name: '外套' },
+        ],
+      },
+      {
+        id: 'womens',
+        name: '女裝',
+        children: [
+          { id: 'womens-top', name: '上衣' },
+          { id: 'womens-skirt', name: '裙裝' },
+          { id: 'womens-jacket', name: '外套' },
+        ],
+      },
+      { id: 'kids', name: '童裝' },
+    ],
+  },
+];
+
+const MixedDepthComponent = () => {
+  const [value, setValue] = useState<CascaderOption[]>([]);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        maxWidth: '400px',
+      }}
+    >
+      <Typography variant="body" style={{ marginBottom: '4px' }}>
+        混合深度（部分選項僅第一層、部分第二層、部分第三層）
+      </Typography>
+      <Cascader
+        fullWidth
+        options={mixedDepthOptions}
+        placeholder="分類 / 子分類 / 品項"
+        value={value}
+        onChange={setValue}
+      />
+      {value.length > 0 && (
+        <div
+          style={{
+            padding: '8px 12px',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '4px',
+          }}
+        >
+          <Typography variant="body">
+            已選取：{value.map((v) => v.name).join(' / ')}
+          </Typography>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export const MixedDepth: StoryObj<typeof Cascader> = {
+  render: () => <MixedDepthComponent />,
+};
+
 const ClearableComponent = () => {
   const [value, setValue] = useState<CascaderOption[]>([
     { id: 'taiwan', name: '台灣' },
