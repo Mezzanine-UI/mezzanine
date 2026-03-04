@@ -18,6 +18,10 @@ interface CommonModalProps
     Partial<Omit<ModalHeaderProps, 'children' | 'className' | 'title'>>,
     Partial<Omit<ModalFooterProps, 'children' | 'className' | 'confirmText'>> {
   /**
+   * The custom class name applied to the modal container.
+   */
+  backdropClassName?: string;
+  /**
    * Whether to force full screen on any breakpoint.
    * @default false
    */
@@ -164,6 +168,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
       auxiliaryContentOnChange,
       auxiliaryContentOnClick,
       auxiliaryContentType,
+      backdropClassName,
       cancelButtonProps,
       cancelText,
       children,
@@ -246,7 +251,7 @@ const Modal = forwardRef<HTMLDivElement, ModalProps>(
     return (
       <ModalControlContext.Provider value={modalControl}>
         <ModalContainer
-          className={classes.overlay}
+          className={backdropClassName}
           container={container}
           disableCloseOnBackdropClick={disableCloseOnBackdropClick}
           disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}

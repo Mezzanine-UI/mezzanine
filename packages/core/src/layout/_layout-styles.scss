@@ -6,21 +6,56 @@
 @use './layout' as *;
 
 .#{$prefix} {
-  &__main {
-    min-inline-size: spacing.semantic-variable(size, container, slim);
+  display: flex;
+  flex-flow: row nowrap;
 
-    .#{$prefix}--open & {
-      margin-inline-end: calc(var(--mzn-layout-side-panel-width) + 1px);
+  &__navigation {
+    position: sticky;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100dvh;
+    z-index: z-index.get(base);
+  }
+
+  &__content-wrapper {
+    flex: 1;
+    min-inline-size: 0;
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  &__main {
+    flex: 1;
+    min-inline-size: spacing.semantic-variable(size, container, slim);
+    overflow: hidden;
+
+    &__content {
+      min-inline-size: spacing.semantic-variable(size, container, expanded);
     }
+  }
+
+  &__side-panel {
+    background-color: palette.semantic-variable('background', base);
+    block-size: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    min-inline-size: spacing.semantic-variable(size, container, slim);
+  }
+
+  &__side-panel-content {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    overflow: hidden;
   }
 
   &__divider {
     background-color: palette.semantic-variable(separator, neutral-faint);
     cursor: col-resize;
+    flex-shrink: 0;
     inline-size: 1px;
-    inset-block: 0;
-    inset-inline-end: var(--mzn-layout-side-panel-width);
-    position: fixed;
+    position: relative;
     z-index: z-index.get(base);
 
     &::before {
@@ -39,16 +74,5 @@
     &--dragging {
       background-color: palette.semantic-variable(separator, neutral-light);
     }
-  }
-
-  &__side-panel {
-    background-color: palette.semantic-variable("background", base);
-    inline-size: var(--mzn-layout-side-panel-width);
-    inset-block: 0;
-    inset-inline-end: 0;
-    min-inline-size: spacing.semantic-variable(size, container, slim);
-    overflow-y: auto;
-    position: fixed;
-    z-index: z-index.get(base);
   }
 }

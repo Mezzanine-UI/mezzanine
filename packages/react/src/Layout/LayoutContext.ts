@@ -1,11 +1,11 @@
 'use client';
 
-import { createContext } from 'react';
+import { createContext, RefObject } from 'react';
 
-export interface LayoutPanelContextValue {
-  onPanelStateChange: (state: { isOpen: boolean; width: number }) => void;
+export interface LayoutContextValue {
+  hostRef: RefObject<HTMLDivElement | null>;
+  mainRef: RefObject<HTMLDivElement | null>;
+  registerMain: (el: HTMLDivElement | null) => void;
 }
 
-export const LayoutPanelContext = createContext<
-  LayoutPanelContextValue | undefined
->(undefined);
+export const LayoutContext = createContext<LayoutContextValue | null>(null);

@@ -15,6 +15,10 @@ export interface MediaPreviewModalProps
   extends Omit<ModalContainerProps, 'children'>,
     NativeElementPropsWithoutKeyAndRef<'div'> {
   /**
+   * The custom class name applied to the modal container.
+   */
+  backdropClassName?: string;
+  /**
    * The current index of the media being displayed (controlled mode).
    * If provided along with onNext/onPrev, the component operates in controlled mode.
    */
@@ -78,6 +82,7 @@ export interface MediaPreviewModalProps
 const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
   function MediaPreviewModal(props, ref) {
     const {
+      backdropClassName,
       className,
       container,
       currentIndex: controlledIndex,
@@ -293,7 +298,7 @@ const MediaPreviewModal = forwardRef<HTMLDivElement, MediaPreviewModalProps>(
 
     return (
       <ModalContainer
-        className={classes.overlay}
+        className={backdropClassName}
         container={container}
         disableCloseOnBackdropClick={disableCloseOnBackdropClick}
         disableCloseOnEscapeKeyDown={disableCloseOnEscapeKeyDown}

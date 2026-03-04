@@ -10,7 +10,8 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Layout, { LayoutMain, LayoutSidePanel } from '.';
+import Navigation from '../Navigation';
+import Layout, { LayoutLeftPanel, LayoutMain, LayoutRightPanel } from '.';
 
 const MIN_PANEL_WIDTH = 240;
 
@@ -49,7 +50,20 @@ describe('<Layout />', () => {
     ),
   );
 
-  it('should render LayoutMain children inside main element', () => {
+  it('should render Navigation as the navigation node', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <Navigation />
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    expect(getHostHTMLElement().querySelector('.mzn-navigation')).toBeTruthy();
+  });
+
+  it('should render LayoutMain children inside a div with the main class', () => {
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
@@ -61,104 +75,118 @@ describe('<Layout />', () => {
     const host = getHostHTMLElement();
     const main = host.querySelector(`.${classes.main}`);
 
-    expect(main?.tagName).toBe('MAIN');
+    expect(main?.tagName).toBe('DIV');
     expect(main?.querySelector('[data-testid="main-content"]')).toBeTruthy();
   });
 
-  it('should not render divider or aside when open is false', () => {
+  it('should render children in order: nav → left panel → main → right panel', () => {
     const { getHostHTMLElement } = render(
       <Layout>
+        <LayoutRightPanel defaultWidth={320} open>
+          <div>Right</div>
+        </LayoutRightPanel>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel open={false}>
-          <div>Side</div>
-        </LayoutSidePanel>
+        <Navigation />
+        <LayoutLeftPanel defaultWidth={320} open>
+          <div>Left</div>
+        </LayoutLeftPanel>
       </Layout>,
     );
 
     const host = getHostHTMLElement();
+    const hostChildren = Array.from(host.children);
 
-    expect(host.querySelector(`.${classes.divider}`)).toBeNull();
-    expect(host.querySelector(`.${classes.sidePanel}`)).toBeNull();
+    // Navigation wrapper precedes the content wrapper at the host level
+    const navWrapperIndex = hostChildren.findIndex((el) =>
+      el.classList.contains(classes.navigation),
+    );
+    const contentWrapperIndex = hostChildren.findIndex((el) =>
+      el.classList.contains(classes.contentWrapper),
+    );
+
+    expect(navWrapperIndex).toBeLessThan(contentWrapperIndex);
+
+    // Left panel, main, right panel are ordered correctly inside the content wrapper
+    const contentWrapper = host.querySelector(
+      `.${classes.contentWrapper}`,
+    ) as HTMLElement;
+    const wrapperChildren = Array.from(contentWrapper.children);
+    const leftIndex = wrapperChildren.findIndex((el) =>
+      el.classList.contains(classes.sidePanelLeft),
+    );
+    const mainIndex = wrapperChildren.findIndex((el) =>
+      el.classList.contains(classes.main),
+    );
+    const rightIndex = wrapperChildren.findIndex((el) =>
+      el.classList.contains(classes.sidePanelRight),
+    );
+
+    expect(leftIndex).toBeLessThan(mainIndex);
+    expect(mainIndex).toBeLessThan(rightIndex);
   });
+});
 
-  it('should render divider and aside when open is true', () => {
+describe('<Layout.RightPanel />', () => {
+  it('should not render when open is false', () => {
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel open>
-          <div data-testid="side-content">Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel open={false}>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
-
-    const host = getHostHTMLElement();
-    const divider = host.querySelector(`.${classes.divider}`);
-    const aside = host.querySelector(`.${classes.sidePanel}`);
-
-    expect(divider).toBeTruthy();
-    expect(aside?.tagName).toBe('ASIDE');
-    expect(aside?.querySelector('[data-testid="side-content"]')).toBeTruthy();
-  });
-
-  it('should apply hostOpen class when open is true', () => {
-    const { getHostHTMLElement } = render(
-      <Layout>
-        <LayoutMain>
-          <div>Main</div>
-        </LayoutMain>
-        <LayoutSidePanel open>
-          <div>Side</div>
-        </LayoutSidePanel>
-      </Layout>,
-    );
-
-    act(() => {});
 
     expect(
-      getHostHTMLElement().classList.contains(classes.hostOpen),
+      getHostHTMLElement().querySelector(`.${classes.sidePanel}`),
+    ).toBeNull();
+  });
+
+  it('should render aside with correct classes when open is true', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+        <LayoutRightPanel open>
+          <div data-testid="right-content">Right</div>
+        </LayoutRightPanel>
+      </Layout>,
+    );
+
+    const host = getHostHTMLElement();
+    const aside = host.querySelector('aside');
+
+    expect(aside).toBeTruthy();
+    expect(aside?.classList.contains(classes.sidePanel)).toBeTruthy();
+    expect(aside?.classList.contains(classes.sidePanelRight)).toBeTruthy();
+    expect(aside?.querySelector('[data-testid="right-content"]')).toBeTruthy();
+  });
+
+  it('should render children inside the side-panel-content div', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+        <LayoutRightPanel open>
+          <div data-testid="right-content">Right</div>
+        </LayoutRightPanel>
+      </Layout>,
+    );
+
+    const content = getHostHTMLElement().querySelector(
+      `.${classes.sidePanelContent}`,
+    );
+
+    expect(content).toBeTruthy();
+    expect(
+      content?.querySelector('[data-testid="right-content"]'),
     ).toBeTruthy();
-  });
-
-  it('should set --mzn-layout-side-panel-width from defaultSidePanelWidth (clamped to min)', () => {
-    const { getHostHTMLElement } = render(
-      <Layout>
-        <LayoutMain>
-          <div>Main</div>
-        </LayoutMain>
-        <LayoutSidePanel defaultSidePanelWidth={400}>
-          <div>Side</div>
-        </LayoutSidePanel>
-      </Layout>,
-    );
-
-    expect(
-      (getHostHTMLElement() as HTMLElement).style.getPropertyValue(
-        '--mzn-layout-side-panel-width',
-      ),
-    ).toBe('400px');
-  });
-
-  it('should clamp defaultSidePanelWidth to MIN_PANEL_WIDTH when below minimum', () => {
-    const { getHostHTMLElement } = render(
-      <Layout>
-        <LayoutMain>
-          <div>Main</div>
-        </LayoutMain>
-        <LayoutSidePanel defaultSidePanelWidth={50}>
-          <div>Side</div>
-        </LayoutSidePanel>
-      </Layout>,
-    );
-
-    expect(
-      (getHostHTMLElement() as HTMLElement).style.getPropertyValue(
-        '--mzn-layout-side-panel-width',
-      ),
-    ).toBe(`${MIN_PANEL_WIDTH}px`);
   });
 
   it('should render divider with correct ARIA attributes', () => {
@@ -167,9 +195,9 @@ describe('<Layout />', () => {
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel defaultSidePanelWidth={320} open>
-          <div>Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel defaultWidth={320} open>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
 
@@ -184,15 +212,39 @@ describe('<Layout />', () => {
     expect(divider.getAttribute('tabindex')).toBe('0');
   });
 
+  it('should place divider before content in DOM (left edge)', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+        <LayoutRightPanel open>
+          <div>Right</div>
+        </LayoutRightPanel>
+      </Layout>,
+    );
+
+    const aside = getHostHTMLElement().querySelector('aside') as HTMLElement;
+    const children = Array.from(aside.children);
+    const dividerIndex = children.findIndex((el) =>
+      el.classList.contains(classes.divider),
+    );
+    const contentIndex = children.findIndex((el) =>
+      el.classList.contains(classes.sidePanelContent),
+    );
+
+    expect(dividerIndex).toBeLessThan(contentIndex);
+  });
+
   it('should add dragging class on mousedown and remove on mouseup', () => {
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel open>
-          <div>Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel open>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
 
@@ -211,21 +263,17 @@ describe('<Layout />', () => {
     expect(divider.classList.contains(classes.dividerDragging)).toBeFalsy();
   });
 
-  it('should update side panel width and call onSidePanelWidthChange on drag', () => {
-    const onSidePanelWidthChange = jest.fn();
+  it('should expand panel and call onWidthChange when dragging left', () => {
+    const onWidthChange = jest.fn();
 
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel
-          defaultSidePanelWidth={320}
-          onSidePanelWidthChange={onSidePanelWidthChange}
-          open
-        >
-          <div>Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
 
@@ -240,12 +288,7 @@ describe('<Layout />', () => {
       fireEvent.mouseMove(document, { clientX: 450 });
     });
 
-    expect(onSidePanelWidthChange).toHaveBeenCalledWith(370);
-    expect(
-      (getHostHTMLElement() as HTMLElement).style.getPropertyValue(
-        '--mzn-layout-side-panel-width',
-      ),
-    ).toBe('370px');
+    expect(onWidthChange).toHaveBeenCalledWith(370);
 
     act(() => {
       fireEvent.mouseUp(document);
@@ -253,14 +296,16 @@ describe('<Layout />', () => {
   });
 
   it('should clamp width to MIN_PANEL_WIDTH when dragging past minimum', () => {
+    const onWidthChange = jest.fn();
+
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel defaultSidePanelWidth={320} open>
-          <div>Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
 
@@ -275,46 +320,200 @@ describe('<Layout />', () => {
       fireEvent.mouseMove(document, { clientX: 9999 });
     });
 
-    expect(
-      (getHostHTMLElement() as HTMLElement).style.getPropertyValue(
-        '--mzn-layout-side-panel-width',
-      ),
-    ).toBe(`${MIN_PANEL_WIDTH}px`);
+    expect(onWidthChange).toHaveBeenCalledWith(MIN_PANEL_WIDTH);
 
     act(() => {
       fireEvent.mouseUp(document);
     });
   });
 
-  it('should resize via ArrowLeft and ArrowRight keyboard events', () => {
+  it('should resize via ArrowLeft (expand) and ArrowRight (shrink) keyboard events', () => {
+    const onWidthChange = jest.fn();
+
     const { getHostHTMLElement } = render(
       <Layout>
         <LayoutMain>
           <div>Main</div>
         </LayoutMain>
-        <LayoutSidePanel defaultSidePanelWidth={320} open>
-          <div>Side</div>
-        </LayoutSidePanel>
+        <LayoutRightPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Right</div>
+        </LayoutRightPanel>
       </Layout>,
     );
 
-    const host = getHostHTMLElement() as HTMLElement;
-    const divider = host.querySelector(`.${classes.divider}`) as HTMLElement;
+    const divider = getHostHTMLElement().querySelector(
+      `.${classes.divider}`,
+    ) as HTMLElement;
 
     act(() => {
       fireEvent.keyDown(divider, { key: 'ArrowLeft' });
     });
 
-    expect(host.style.getPropertyValue('--mzn-layout-side-panel-width')).toBe(
-      '330px',
-    );
+    expect(onWidthChange).toHaveBeenLastCalledWith(330);
 
     act(() => {
       fireEvent.keyDown(divider, { key: 'ArrowRight' });
     });
 
-    expect(host.style.getPropertyValue('--mzn-layout-side-panel-width')).toBe(
-      '320px',
+    expect(onWidthChange).toHaveBeenLastCalledWith(320);
+  });
+});
+
+describe('<Layout.LeftPanel />', () => {
+  it('should not render when open is false', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel open={false}>
+          <div>Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
     );
+
+    expect(
+      getHostHTMLElement().querySelector(`.${classes.sidePanel}`),
+    ).toBeNull();
+  });
+
+  it('should render aside with correct classes when open is true', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel open>
+          <div data-testid="left-content">Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    const host = getHostHTMLElement();
+    const aside = host.querySelector('aside');
+
+    expect(aside).toBeTruthy();
+    expect(aside?.classList.contains(classes.sidePanel)).toBeTruthy();
+    expect(aside?.classList.contains(classes.sidePanelLeft)).toBeTruthy();
+    expect(aside?.querySelector('[data-testid="left-content"]')).toBeTruthy();
+  });
+
+  it('should place divider after content in DOM (right edge)', () => {
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel open>
+          <div>Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    const aside = getHostHTMLElement().querySelector('aside') as HTMLElement;
+    const children = Array.from(aside.children);
+    const contentIndex = children.findIndex((el) =>
+      el.classList.contains(classes.sidePanelContent),
+    );
+    const dividerIndex = children.findIndex((el) =>
+      el.classList.contains(classes.divider),
+    );
+
+    expect(contentIndex).toBeLessThan(dividerIndex);
+  });
+
+  it('should expand panel and call onWidthChange when dragging right', () => {
+    const onWidthChange = jest.fn();
+
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    const divider = getHostHTMLElement().querySelector(
+      `.${classes.divider}`,
+    ) as HTMLElement;
+
+    act(() => {
+      fireEvent.mouseDown(divider, { clientX: 320 });
+    });
+    act(() => {
+      fireEvent.mouseMove(document, { clientX: 370 });
+    });
+
+    expect(onWidthChange).toHaveBeenCalledWith(370);
+
+    act(() => {
+      fireEvent.mouseUp(document);
+    });
+  });
+
+  it('should clamp width to MIN_PANEL_WIDTH when dragging past minimum', () => {
+    const onWidthChange = jest.fn();
+
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    const divider = getHostHTMLElement().querySelector(
+      `.${classes.divider}`,
+    ) as HTMLElement;
+
+    act(() => {
+      fireEvent.mouseDown(divider, { clientX: 320 });
+    });
+    act(() => {
+      fireEvent.mouseMove(document, { clientX: -9999 });
+    });
+
+    expect(onWidthChange).toHaveBeenCalledWith(MIN_PANEL_WIDTH);
+
+    act(() => {
+      fireEvent.mouseUp(document);
+    });
+  });
+
+  it('should resize via ArrowRight (expand) and ArrowLeft (shrink) keyboard events', () => {
+    const onWidthChange = jest.fn();
+
+    const { getHostHTMLElement } = render(
+      <Layout>
+        <LayoutLeftPanel defaultWidth={320} onWidthChange={onWidthChange} open>
+          <div>Left</div>
+        </LayoutLeftPanel>
+        <LayoutMain>
+          <div>Main</div>
+        </LayoutMain>
+      </Layout>,
+    );
+
+    const divider = getHostHTMLElement().querySelector(
+      `.${classes.divider}`,
+    ) as HTMLElement;
+
+    act(() => {
+      fireEvent.keyDown(divider, { key: 'ArrowRight' });
+    });
+
+    expect(onWidthChange).toHaveBeenLastCalledWith(330);
+
+    act(() => {
+      fireEvent.keyDown(divider, { key: 'ArrowLeft' });
+    });
+
+    expect(onWidthChange).toHaveBeenLastCalledWith(320);
   });
 });

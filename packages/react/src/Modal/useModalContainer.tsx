@@ -34,7 +34,6 @@ const defaultOptions: Pick<
   | 'disablePortal'
   | 'open'
 > = {
-  className: classes.overlay,
   disableCloseOnBackdropClick: false,
   disableCloseOnEscapeKeyDown: false,
   disablePortal: false,
