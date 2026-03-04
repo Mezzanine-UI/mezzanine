@@ -81,10 +81,6 @@ $modalSizes: (
     @include _full-screen();
   }
 
-  &__overlay {
-    z-index: z-index.get(modal);
-  }
-
   &__content-wrapper {
     display: flex;
     justify-content: center;
