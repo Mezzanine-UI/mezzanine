@@ -59,8 +59,18 @@ export type {
 } from './Cropper';
 export { default as Icon } from './Icon';
 export type { IconColor, IconProps } from './Icon';
-export { default as Layout, LayoutMain, LayoutSidePanel } from './Layout';
-export type { LayoutMainProps, LayoutProps, LayoutSidePanelProps } from './Layout';
+export {
+  default as Layout,
+  LayoutLeftPanel,
+  LayoutMain,
+  LayoutRightPanel,
+} from './Layout';
+export type {
+  LayoutLeftPanelProps,
+  LayoutMainProps,
+  LayoutProps,
+  LayoutRightPanelProps,
+} from './Layout';
 export { default as Separator } from './Separator';
 export type { SeparatorProps } from './Separator';
 export { default as Typography } from './Typography';
