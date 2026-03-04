@@ -54,6 +54,7 @@ export default function CascaderPanel({
         aria-label="Options"
         role="listbox"
         style={{ listStyle: 'none', margin: 0, padding: 0 }}
+        tabIndex={-1}
       >
         {options.map((option) => {
           const isLeaf = !option.children || option.children.length === 0;
@@ -77,6 +78,14 @@ export default function CascaderPanel({
               onClick={() => {
                 if (!option.disabled) {
                   onSelect(option, isLeaf);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  if (!option.disabled) {
+                    onSelect(option, isLeaf);
+                  }
                 }
               }}
               role="option"
