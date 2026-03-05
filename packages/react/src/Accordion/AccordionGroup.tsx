@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  cloneElement,
   forwardRef,
   isValidElement,
+  ReactElement,
   useMemo,
   useState,
   useCallback,
@@ -31,7 +33,27 @@ const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
   function AccordionGroup(props, ref) {
     const { className, children, exclusive = false, size, ...rest } = props;
 
-    const [expandedIndex, setExpandedIndex] = useState<number>(-1);
+    const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+
+    const flattenedChildren = useMemo(
+      () => flattenChildren(children),
+      [children],
+    );
+
+    const defaultExpandedIndex = useMemo(
+      () =>
+        flattenedChildren.findIndex(
+          (child) =>
+            isValidElement(child) &&
+            child.type === Accordion &&
+            typeof (child.props as AccordionProps).expanded === 'undefined' &&
+            !!(child.props as AccordionProps).defaultExpanded,
+        ),
+      [flattenedChildren],
+    );
+
+    const resolvedExpandedIndex =
+      expandedIndex === null ? defaultExpandedIndex : expandedIndex;
 
     const handleChange = useCallback((index: number, open: boolean) => {
       setExpandedIndex(open ? index : -1);
@@ -39,27 +61,38 @@ const AccordionGroup = forwardRef<HTMLDivElement, AccordionGroupProps>(
 
     const childrenWithProps = useMemo(
       () =>
-        flattenChildren(children).map((child, index) => {
+        flattenedChildren.map((child, index) => {
           if (isValidElement(child) && child.type === Accordion) {
+            const accordionProps = child.props as AccordionProps;
             const extraProps: Partial<AccordionProps> = { size };
 
             if (exclusive) {
-              extraProps.expanded = expandedIndex === index;
-              extraProps.onChange = (open: boolean) =>
-                handleChange(index, open);
+              const isExpandedControlled =
+                typeof accordionProps.expanded !== 'undefined';
+
+              if (!isExpandedControlled) {
+                extraProps.expanded = resolvedExpandedIndex === index;
+              }
+
+              extraProps.onChange = (open: boolean) => {
+                if (typeof accordionProps.onChange === 'function') {
+                  accordionProps.onChange(open);
+                }
+
+                if (!isExpandedControlled) {
+                  handleChange(index, open);
+                }
+              };
             }
 
-            return {
-              ...child,
-              props: {
-                ...(child.props as AccordionProps),
-                ...extraProps,
-              },
-            };
+            return cloneElement(child as ReactElement<AccordionProps>, {
+              ...accordionProps,
+              ...extraProps,
+            });
           }
           return child;
         }),
-      [children, exclusive, expandedIndex, handleChange, size],
+      [exclusive, flattenedChildren, handleChange, resolvedExpandedIndex, size],
     );
 
     return (

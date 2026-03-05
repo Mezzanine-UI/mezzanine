@@ -1,4 +1,4 @@
-import { cleanup, render } from '../../__test-utils__';
+import { cleanup, fireEvent, render } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -60,19 +60,19 @@ describe('<AccordionGroup />', () => {
       );
 
       const host = getHostHTMLElement();
-      const titles = host.querySelectorAll('.mzn-accordion__title');
+      const titles = host.querySelectorAll('.mzn-accordion__title__mainPart');
 
       // initially all collapsed
       expect(titles[0].getAttribute('aria-expanded')).toBe('false');
       expect(titles[1].getAttribute('aria-expanded')).toBe('false');
 
       // expand first
-      titles[0].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fireEvent.click(titles[0]);
       expect(titles[0].getAttribute('aria-expanded')).toBe('true');
       expect(titles[1].getAttribute('aria-expanded')).toBe('false');
 
       // expand second — first should collapse
-      titles[1].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fireEvent.click(titles[1]);
       expect(titles[0].getAttribute('aria-expanded')).toBe('false');
       expect(titles[1].getAttribute('aria-expanded')).toBe('true');
     });
@@ -88,13 +88,54 @@ describe('<AccordionGroup />', () => {
       );
 
       const host = getHostHTMLElement();
-      const title = host.querySelector('.mzn-accordion__title')!;
+      const title = host.querySelector('.mzn-accordion__title__mainPart')!;
 
-      title.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fireEvent.click(title);
       expect(title.getAttribute('aria-expanded')).toBe('true');
 
-      title.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+      fireEvent.click(title);
       expect(title.getAttribute('aria-expanded')).toBe('false');
+    });
+
+    it('should keep defaultExpanded child expanded on first render', () => {
+      const { getHostHTMLElement } = render(
+        <AccordionGroup exclusive>
+          <Accordion>
+            <AccordionTitle id="accordion-1">Title 1</AccordionTitle>
+            <AccordionContent>Content 1</AccordionContent>
+          </Accordion>
+          <Accordion defaultExpanded>
+            <AccordionTitle id="accordion-2">Title 2</AccordionTitle>
+            <AccordionContent>Content 2</AccordionContent>
+          </Accordion>
+        </AccordionGroup>,
+      );
+
+      const host = getHostHTMLElement();
+      const titles = host.querySelectorAll('.mzn-accordion__title__mainPart');
+
+      expect(titles[0].getAttribute('aria-expanded')).toBe('false');
+      expect(titles[1].getAttribute('aria-expanded')).toBe('true');
+    });
+
+    it('should call child onChange when exclusive is enabled', () => {
+      const onChange = jest.fn();
+
+      const { getHostHTMLElement } = render(
+        <AccordionGroup exclusive>
+          <Accordion onChange={onChange}>
+            <AccordionTitle id="accordion-1">Title 1</AccordionTitle>
+            <AccordionContent>Content 1</AccordionContent>
+          </Accordion>
+        </AccordionGroup>,
+      );
+
+      const host = getHostHTMLElement();
+      const title = host.querySelector('.mzn-accordion__title__mainPart')!;
+
+      fireEvent.click(title);
+
+      expect(onChange).toHaveBeenCalledWith(true);
     });
   });
 
