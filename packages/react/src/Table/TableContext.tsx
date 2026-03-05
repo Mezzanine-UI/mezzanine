@@ -9,6 +9,7 @@ import type {
   TableDataSource,
   TableExpandable,
   TableRowSelection,
+  TableRowState,
   TableScroll,
   TableSelectionMode,
   TableCollectable,
@@ -86,6 +87,9 @@ export interface TableContextValue<
   pagination?: PaginationProps;
   pinnable?: TablePinnable;
   resizable?: boolean;
+  rowState?:
+    | TableRowState
+    | ((rowData: TableDataSource) => TableRowState | undefined);
   rowHeight: number;
   scroll?: TableScroll;
   scrollContainerRef?: React.RefObject<HTMLDivElement | null>;

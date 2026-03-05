@@ -17,6 +17,7 @@ import {
   TOGGLEABLE_KEY,
   type FixedType,
   type TableDataSource,
+  type TableRowState,
 } from '@mezzanine-ui/core/table';
 import { calculateColumnWidths } from '../utils/calculateColumnWidths';
 import type { DraggableProvided } from '@hello-pangea/dnd';
@@ -43,6 +44,21 @@ export interface TableRowProps<T extends TableDataSource = TableDataSource> {
   style?: React.CSSProperties;
 }
 
+const resolveRowStateClass = (
+  state: TableRowState | undefined,
+): string | undefined => {
+  switch (state) {
+    case 'added':
+      return classes.bodyRowStateAdded;
+    case 'deleted':
+      return classes.bodyRowStateDeleted;
+    case 'disabled':
+      return classes.bodyRowStateDisabled;
+    default:
+      return undefined;
+  }
+};
+
 const parseFixed = (fixed: FixedType | undefined): 'end' | 'start' | null => {
   if (fixed === true || fixed === 'start') return 'start';
   if (fixed === 'end') return 'end';
@@ -62,6 +78,7 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
       fixedOffsets,
       highlight,
       pinnable,
+      rowState,
       rowHeight,
       selection,
       separatorAtRowIndexes,
@@ -359,6 +376,9 @@ const TableRowInner = forwardRef<HTMLTableRowElement, TableRowProps>(
             [classes.bodyRowSeparator]: isSeparatorRow,
             [classes.bodyRowZebra]: isZebraRow,
           },
+          resolveRowStateClass(
+            typeof rowState === 'function' ? rowState(record) : rowState,
+          ),
           className,
         )}
         data-index={rowIndex}

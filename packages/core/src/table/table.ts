@@ -23,6 +23,9 @@ export const tableClasses = {
   bodyRowSelected: `${tableBodyPrefix}__row--selected`,
   bodyRowSeparator: `${tableBodyPrefix}__row--separator`,
   bodyRowZebra: `${tableBodyPrefix}__row--zebra`,
+  bodyRowStateAdded: `${tableBodyPrefix}__row--state-added`,
+  bodyRowStateDeleted: `${tableBodyPrefix}__row--state-deleted`,
+  bodyRowStateDisabled: `${tableBodyPrefix}__row--state-disabled`,
   bulkActions: `${tablePrefix}__bulk-actions`,
   bulkActionsFixed: `${tablePrefix}__bulk-actions--fixed`,
   bulkActionsSelectionSummary: `${tablePrefix}__bulk-actions__selection-summary`,
@@ -115,6 +118,9 @@ export type FixedType = boolean | 'start' | 'end';
 
 /** Table size type */
 export type TableSize = 'main' | 'sub';
+
+/** Row state for semantic background color overrides */
+export type TableRowState = 'added' | 'deleted' | 'disabled';
 
 /**
  * Title menu configuration for table column header dropdown

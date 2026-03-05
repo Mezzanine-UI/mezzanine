@@ -1542,6 +1542,31 @@ export const CollectableRows: Story = {
   },
 };
 
+export const RowState: Story = {
+  render: function RowStateStory() {
+    return (
+      <div>
+        <div
+          style={{ display: 'flex', gap: 16, marginBottom: 16, fontSize: 13 }}
+        >
+          <span>props.rowState for customizing row background color</span>
+        </div>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={baseData}
+          rowState={(record) => {
+            if (record.age >= 42) return 'deleted';
+            if (record.age >= 33) return 'disabled';
+            if (record.age < 25) return 'added';
+
+            return undefined;
+          }}
+        />
+      </div>
+    );
+  },
+};
+
 export const HighlightMode: Story = {
   render: function HighlightMode() {
     const [mode, setMode] = useState<'row' | 'cell' | 'column' | 'cross'>(

@@ -10,6 +10,7 @@ import type {
   TableExpandable,
   TablePinnable,
   TableRowSelection,
+  TableRowState,
   TableScroll,
   TableSize,
   TableToggleable,
@@ -65,6 +66,8 @@ export interface TableBaseProps<T extends TableDataSource = TableDataSource>
   rowHeightPreset?: 'base' | 'condensed' | 'detailed' | 'roomy';
   /** Row selection configuration */
   rowSelection?: TableRowSelection<T>;
+  /** Semantic state applied to each row. Accepts a state string or a function that receives the row data and returns a state string. */
+  rowState?: TableRowState | ((rowData: T) => TableRowState | undefined);
   /** Row indexes where a separator border should be displayed */
   separatorAtRowIndexes?: number[];
   /** Show header row */

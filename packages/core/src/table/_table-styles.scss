@@ -337,6 +337,24 @@ $z-index-config: (
       }
     }
 
+    &--state-added {
+      td {
+        background-color: palette.semantic-variable("background", brand-ghost);
+      }
+    }
+
+    &--state-deleted {
+      td {
+        background-color: palette.semantic-variable("background", error-ghost);
+      }
+    }
+
+    &--state-disabled {
+      td {
+        background-color: palette.semantic-variable("background", neutral-subtle);
+      }
+    }
+
     &--zebra {
       td {
         background-color: palette.semantic-variable("background", neutral-ghost);

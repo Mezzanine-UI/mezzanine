@@ -34,6 +34,7 @@ export {
   type TableToggleable,
   type TableRowSelection,
   type TableRowSelectionBase,
+  type TableRowState,
   type TableRowSelectionCheckbox,
   type TableRowSelectionRadio,
   type TableScroll,
