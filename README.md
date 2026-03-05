@@ -4,14 +4,14 @@ A comprehensive React component library with a complete design system, built for
 
 ## ⚠️ Current Status
 
-This project is currently in **beta** (`1.0.0-beta.x`) and under active development for v2. While it has been widely utilized across various Rytass internal projects, please note that API changes may still occur before the stable release. We recommend pinning to specific versions in production environments.
+This project is currently in **rc** (`1.0.0-rc.x`) and under active development for v2. While it has been widely utilized across various Rytass internal projects, please note that API changes may still occur before the stable release. We recommend pinning to specific versions in production environments.
 
 ```json
 {
-  "@mezzanine-ui/core": "1.0.0-beta.7",
-  "@mezzanine-ui/react": "1.0.0-beta.7",
-  "@mezzanine-ui/system": "1.0.0-beta.7",
-  "@mezzanine-ui/icons": "1.0.0-beta.7"
+  "@mezzanine-ui/core": "1.0.0-rc.2",
+  "@mezzanine-ui/react": "1.0.0-rc.2",
+  "@mezzanine-ui/system": "1.0.0-rc.2",
+  "@mezzanine-ui/icons": "1.0.0-rc.2"
 }
 ```
 
@@ -466,6 +466,117 @@ function Example() {
   );
 }
 ```
+
+#### Layout
+
+`Layout` is the top-level page shell for building full-application frames. It manages a responsive structure with a sticky navigation sidebar and optional resizable side panels. The sub-components (`Layout.Main`, `Layout.LeftPanel`, `Layout.RightPanel`) can be placed in any order — the layout always renders them in the correct visual sequence.
+
+| Sub-component         | Purpose                                 |
+| --------------------- | --------------------------------------- |
+| `<Navigation>`        | Sticky left navigation sidebar          |
+| `<Layout.Main>`       | Main scrollable content area (required) |
+| `<Layout.LeftPanel>`  | Resizable left panel (optional)         |
+| `<Layout.RightPanel>` | Resizable right panel (optional)        |
+
+**Basic layout with navigation:**
+
+```tsx
+import { useState } from 'react';
+import { Layout, Navigation, NavigationFooter, NavigationHeader, NavigationOption } from '@mezzanine-ui/react';
+import { FileIcon, HomeIcon } from '@mezzanine-ui/icons';
+
+function App() {
+  const [activatedPath, setActivatedPath] = useState(['Home']);
+
+  return (
+    <Layout>
+      <Navigation activatedPath={activatedPath} onOptionClick={(path) => path && setActivatedPath(path)}>
+        <NavigationHeader title="My App" />
+        <NavigationOption icon={HomeIcon} title="Home" />
+        <NavigationOption icon={FileIcon} title="Reports">
+          <NavigationOption title="Traffic" />
+          <NavigationOption title="Conversion" />
+        </NavigationOption>
+        <NavigationFooter />
+      </Navigation>
+      <Layout.Main>
+        <h1>Page Content</h1>
+      </Layout.Main>
+    </Layout>
+  );
+}
+```
+
+**With a toggleable right panel:**
+
+```tsx
+import { useState } from 'react';
+import { Layout, Navigation, NavigationFooter, NavigationHeader } from '@mezzanine-ui/react';
+
+function App() {
+  const [rightOpen, setRightOpen] = useState(false);
+
+  return (
+    <Layout>
+      <Navigation>
+        <NavigationHeader title="My App" />
+        <NavigationFooter />
+      </Navigation>
+      <Layout.Main>
+        <button onClick={() => setRightOpen(true)}>Open Details</button>
+      </Layout.Main>
+      <Layout.RightPanel defaultWidth={320} open={rightOpen}>
+        <div>
+          <h2>Details</h2>
+          <button onClick={() => setRightOpen(false)}>Close</button>
+        </div>
+      </Layout.RightPanel>
+    </Layout>
+  );
+}
+```
+
+**With dual panels (left + right):**
+
+```tsx
+import { useState } from 'react';
+import { Layout, Navigation, NavigationFooter, NavigationHeader } from '@mezzanine-ui/react';
+
+function App() {
+  const [leftOpen, setLeftOpen] = useState(true);
+  const [rightOpen, setRightOpen] = useState(false);
+
+  return (
+    <Layout>
+      <Navigation>
+        <NavigationHeader title="My App" />
+        <NavigationFooter />
+      </Navigation>
+      <Layout.LeftPanel defaultWidth={240} open={leftOpen}>
+        <div>Sidebar filters, navigation trees, etc.</div>
+      </Layout.LeftPanel>
+      <Layout.Main>
+        <h1>Main Content</h1>
+        {!rightOpen && <button onClick={() => setRightOpen(true)}>Open Right</button>}
+      </Layout.Main>
+      <Layout.RightPanel defaultWidth={320} open={rightOpen}>
+        <div>Detail view, preview, contextual actions, etc.</div>
+      </Layout.RightPanel>
+    </Layout>
+  );
+}
+```
+
+**`Layout.LeftPanel` / `Layout.RightPanel` props:**
+
+| Prop             | Type                      | Default | Description                            |
+| ---------------- | ------------------------- | ------- | -------------------------------------- |
+| `open`           | `boolean`                 | `false` | Controls panel visibility              |
+| `defaultWidth`   | `number`                  | `320`   | Initial width in px (minimum 240)      |
+| `onWidthChange`  | `(width: number) => void` | —       | Callback when the panel is resized     |
+| `scrollbarProps` | `ScrollbarProps`          | —       | Props forwarded to the inner scrollbar |
+
+> Panels are resizable by dragging the divider. Focus the divider and use `←` / `→` arrow keys to resize with keyboard.
 
 ---
 
