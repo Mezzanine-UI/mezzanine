@@ -3,6 +3,12 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.1...@mezzanine-ui/system@1.0.0-rc.2) (2026-03-05)
+
+### Bug Fixes
+
+- **system:** replace deprecated Sass if() with @if/[@else](https://github.com/else) blocks ([eb51559](https://github.com/Mezzanine-UI/mezzanine/commit/eb51559f2f8f766528ef48e25b8c566511598776))
+
 # [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/system@1.0.0-rc.0...@mezzanine-ui/system@1.0.0-rc.1) (2026-03-03)
 
 ### Features

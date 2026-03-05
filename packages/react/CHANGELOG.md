@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.1...@mezzanine-ui/react@1.0.0-rc.2) (2026-03-05)
+
+### Bug Fixes
+
+- **cascader:** correct globalPortal default to true ([c14de36](https://github.com/Mezzanine-UI/mezzanine/commit/c14de36f494f4771f06110ca92f41601c55f1a66))
+- **react/cascader:** resolve jsx-a11y violations in CascaderPanel ([a707fdf](https://github.com/Mezzanine-UI/mezzanine/commit/a707fdf045a081ffab8b369ba20dd010f06fa774))
+- **react/modal:** remove default modal className for backdrop ([7259988](https://github.com/Mezzanine-UI/mezzanine/commit/7259988c8c8864101549708c7e1d21a4486ab816))
+- **react/modal:** remove overlay classes usage and add custom classname ([5748fca](https://github.com/Mezzanine-UI/mezzanine/commit/5748fca157136e81d4c579fc340db42f42d52ec2))
+
+### Features
+
+- **cascader:** add keyboard navigation and Escape-to-close support ([804e340](https://github.com/Mezzanine-UI/mezzanine/commit/804e340b762f66e635e73c59fb760d6006311445))
+- **cascader:** implement Cascader component ([f275da6](https://github.com/Mezzanine-UI/mezzanine/commit/f275da6571a056941602208f3c3d59b4d1c92392))
+- **cascader:** improve a11y, keyboard open, and activePath resolution ([523a0f7](https://github.com/Mezzanine-UI/mezzanine/commit/523a0f7e9de4c3d5d3d85924cc748542be84f5c7))
+- **react/layout:** refactor Layout to support dual side panels with drag resize ([62e0744](https://github.com/Mezzanine-UI/mezzanine/commit/62e074423f3ba66933cbe52c72e50f289416f43f))
+
 # [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.0...@mezzanine-ui/react@1.0.0-rc.1) (2026-03-03)
 
 ### Bug Fixes

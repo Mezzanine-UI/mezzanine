@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.1...@mezzanine-ui/core@1.0.0-rc.2) (2026-03-05)
+
+### Bug Fixes
+
+- **/corecascader:** use relative path in \_index.scss and remove redundant forward ([1c865c5](https://github.com/Mezzanine-UI/mezzanine/commit/1c865c5da74d35ea0de4034bc87e64d59b0a2f62))
+- **core/cascader:** ensure focused item focus ring renders above siblings ([333a771](https://github.com/Mezzanine-UI/mezzanine/commit/333a7710b68d631e61185c791d6fc7a03e37a892))
+- **core/cascader:** restore pointer-events on dropdown panels inside portal ([0824492](https://github.com/Mezzanine-UI/mezzanine/commit/0824492b6d61ddca348dbbb07b77136b3d2ecfee))
+- **core/modal:** remove modal override backdrop z-index classname ([90576ba](https://github.com/Mezzanine-UI/mezzanine/commit/90576baff60ae6bec36f251377c9ce1704761271))
+- **core:** replace deprecated Sass if() with @if/[@else](https://github.com/else) blocks ([fed135d](https://github.com/Mezzanine-UI/mezzanine/commit/fed135d482403c7a35d818e5417f848eccd7dba1))
+
+### Features
+
+- **cascader:** add keyboard navigation and Escape-to-close support ([804e340](https://github.com/Mezzanine-UI/mezzanine/commit/804e340b762f66e635e73c59fb760d6006311445))
+- **cascader:** implement Cascader component ([f275da6](https://github.com/Mezzanine-UI/mezzanine/commit/f275da6571a056941602208f3c3d59b4d1c92392))
+- **react/layout:** refactor Layout to support dual side panels with drag resize ([62e0744](https://github.com/Mezzanine-UI/mezzanine/commit/62e074423f3ba66933cbe52c72e50f289416f43f))
+
 # [1.0.0-rc.1](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.0...@mezzanine-ui/core@1.0.0-rc.1) (2026-03-03)
 
 ### Bug Fixes
