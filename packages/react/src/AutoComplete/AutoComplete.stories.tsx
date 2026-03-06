@@ -1,7 +1,8 @@
 import { SearchIcon } from '@mezzanine-ui/icons';
 import type { Meta, StoryObj } from '@storybook/react';
-import { useCallback, useRef, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useRef, useState } from 'react';
 import { AutoComplete } from '.';
+import Button from '../Button';
 import Icon from '../Icon';
 import { SelectValue } from '../Select/typings';
 import Tag from '../Tag';
@@ -53,7 +54,9 @@ const originOptions: SelectValue[] = [
 ];
 
 const BasicComponent = () => {
-  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>([]);
+  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>(
+    [],
+  );
 
   return (
     <div
@@ -222,7 +225,7 @@ const SingleModeAsyncSearchComponent = () => {
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         const filtered = originOptions.filter((opt) =>
-          opt.name.toLowerCase().includes(search.toLowerCase())
+          opt.name.toLowerCase().includes(search.toLowerCase()),
         );
         setOptions(filtered);
         resolve();
@@ -269,7 +272,7 @@ const SingleModeSyncSearchComponent = () => {
     }
 
     const filtered = originOptions.filter((opt) =>
-      opt.name.toLowerCase().includes(search.toLowerCase())
+      opt.name.toLowerCase().includes(search.toLowerCase()),
     );
 
     setOptions(filtered);
@@ -303,10 +306,15 @@ export const SingleModeSyncSearch: StoryObj<typeof AutoComplete> = {
 };
 
 const KeepSearchTextOnBlurComponent = () => {
-  const [multipleAutoClearSelections, setMultipleAutoClearSelections] = useState<SelectValue[]>([]);
-  const [singleOptions, setSingleOptions] = useState<SelectValue[]>(originOptions);
-  const [multipleOptions, setMultipleOptions] = useState<SelectValue[]>(originOptions);
-  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>([]);
+  const [multipleAutoClearSelections, setMultipleAutoClearSelections] =
+    useState<SelectValue[]>([]);
+  const [singleOptions, setSingleOptions] =
+    useState<SelectValue[]>(originOptions);
+  const [multipleOptions, setMultipleOptions] =
+    useState<SelectValue[]>(originOptions);
+  const [multipleSelections, setMultipleSelections] = useState<SelectValue[]>(
+    [],
+  );
 
   const handleSingleSearch = useCallback((search: string) => {
     if (!search) {
@@ -315,7 +323,7 @@ const KeepSearchTextOnBlurComponent = () => {
     }
 
     const filtered = originOptions.filter((opt) =>
-      opt.name.toLowerCase().includes(search.toLowerCase())
+      opt.name.toLowerCase().includes(search.toLowerCase()),
     );
 
     setSingleOptions(filtered);
@@ -328,7 +336,7 @@ const KeepSearchTextOnBlurComponent = () => {
     }
 
     const filtered = originOptions.filter((opt) =>
-      opt.name.toLowerCase().includes(search.toLowerCase())
+      opt.name.toLowerCase().includes(search.toLowerCase()),
     );
 
     setMultipleOptions(filtered);
@@ -431,7 +439,13 @@ const KeepSearchTextOnBlurComponent = () => {
               borderRadius: '4px',
             }}
           >
-            <p style={{ margin: '0 0 8px 0', fontSize: '14px', fontWeight: 'bold' }}>
+            <p
+              style={{
+                margin: '0 0 8px 0',
+                fontSize: '14px',
+                fontWeight: 'bold',
+              }}
+            >
               已選擇 ({multipleSelections.length} 個):
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
@@ -742,7 +756,9 @@ const BulkCreateComponent = () => {
         </p>
         {selections.length > 0 && (
           <div style={{ marginTop: '8px' }}>
-            <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: 'bold' }}>
+            <p
+              style={{ margin: '4px 0', fontSize: '14px', fontWeight: 'bold' }}
+            >
               已選擇的項目：
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
@@ -789,7 +805,14 @@ const InputPositionInsideComponent = () => {
         <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
           點擊 Button 展開 AutoComplete，輸入框會顯示在下拉選單內部
         </p>
-        <div style={{ display: 'flex', gap: '8px', alignItems: 'flex-start', flexDirection: 'column' }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'flex-start',
+            flexDirection: 'column',
+          }}
+        >
           <Tag
             onMouseDown={(event) => event.stopPropagation()}
             onClick={(event) => {
@@ -827,7 +850,7 @@ export const InputPositionInside: StoryObj<typeof AutoComplete> = {
 
 const LoadMoreOnReachBottomComponent = () => {
   const [options, setOptions] = useState<SelectValue[]>(() =>
-    originOptions.slice(0, 5)
+    originOptions.slice(0, 5),
   );
   const [value, setValue] = useState<SelectValue | null>(null);
   const [loading, setLoading] = useState(false);
@@ -867,8 +890,17 @@ const LoadMoreOnReachBottomComponent = () => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, maxWidth: 320 }}>
-      <Tag label={`已載入 ${options.length} / ${originOptions.length} 個選項`} />
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12,
+        maxWidth: 320,
+      }}
+    >
+      <Tag
+        label={`已載入 ${options.length} / ${originOptions.length} 個選項`}
+      />
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <AutoComplete
           disabledOptionsFilter
@@ -901,4 +933,156 @@ const LoadMoreOnReachBottomComponent = () => {
 
 export const LoadMoreOnReachBottom: StoryObj<typeof AutoComplete> = {
   render: () => <LoadMoreOnReachBottomComponent />,
+};
+
+type SearchTextControlRef = {
+  reset: () => void;
+  setSearchText: Dispatch<SetStateAction<string>>;
+};
+
+const SearchTextControlRefComponent = () => {
+  const setSearchTextControlRef = useRef<SearchTextControlRef | undefined>(
+    undefined,
+  );
+
+  const [resetValue, setResetValue] = useState<SelectValue[]>([]);
+  const resetControlRef = useRef<SearchTextControlRef | undefined>(undefined);
+
+  const [submitValue, setSubmitValue] = useState<SelectValue[]>([]);
+  const [submittedItems, setSubmittedItems] = useState<SelectValue[]>([]);
+  const submitControlRef = useRef<SearchTextControlRef | undefined>(undefined);
+
+  const handleSubmit = useCallback(() => {
+    if (!submitValue.length) return;
+    setSubmittedItems((prev) => [...prev, ...submitValue]);
+    setSubmitValue([]);
+    submitControlRef.current?.reset();
+  }, [submitValue]);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '32px',
+        maxWidth: '480px',
+      }}
+    >
+      <div>
+        <h3 style={{ marginBottom: '8px' }}>setSearchText — 只清空輸入文字</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+          呼叫 <code>setSearchText(&apos;&apos;)</code>{' '}
+          僅清除輸入框的搜尋文字，已選取的值與下拉選項狀態不受影響。
+        </p>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <AutoComplete
+              fullWidth
+              options={originOptions}
+              placeholder="輸入後點擊清除文字"
+              searchTextControlRef={setSearchTextControlRef}
+            />
+          </div>
+          <Button
+            variant="base-secondary"
+            onClick={() => setSearchTextControlRef.current?.setSearchText('')}
+          >
+            清除文字
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ marginBottom: '8px' }}>reset — 完整重置</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+          呼叫 <code>reset()</code>{' '}
+          同時清除搜尋文字、已選取的值與下拉選單狀態，等同回到初始狀態。
+        </p>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <AutoComplete
+              fullWidth
+              mode="multiple"
+              onChange={setResetValue}
+              options={originOptions}
+              placeholder="選取後點擊重置"
+              searchTextControlRef={resetControlRef}
+              value={resetValue}
+            />
+          </div>
+          <Button
+            size="main"
+            variant="base-secondary"
+            onClick={() => {
+              setResetValue([]);
+              resetControlRef.current?.reset();
+            }}
+          >
+            重置
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ marginBottom: '8px' }}>Submit 流程</h3>
+        <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+          選取後按下送出，呼叫 <code>reset()</code> 清除欄位並記錄已送出的項目。
+        </p>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <AutoComplete
+              fullWidth
+              mode="multiple"
+              onChange={setSubmitValue}
+              options={originOptions}
+              placeholder="選取項目後送出"
+              searchTextControlRef={submitControlRef}
+              value={submitValue}
+            />
+          </div>
+          <Button
+            disabled={!submitValue.length}
+            size="main"
+            onClick={handleSubmit}
+          >
+            送出
+          </Button>
+        </div>
+        {submittedItems.length > 0 && (
+          <div
+            style={{
+              marginTop: '12px',
+              padding: '12px',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '4px',
+            }}
+          >
+            <p
+              style={{
+                margin: '0 0 8px 0',
+                fontSize: '14px',
+                fontWeight: 'bold',
+              }}
+            >
+              已送出 ({submittedItems.length} 個):
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+              {submittedItems.map((item, index) => (
+                <Tag
+                  key={`${item.id}-${index}`}
+                  label={item.name}
+                  size="sub"
+                  type="static"
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export const SearchTextControlRef: StoryObj<typeof AutoComplete> = {
+  render: () => <SearchTextControlRefComponent />,
 };
