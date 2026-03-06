@@ -331,6 +331,63 @@ describe('<TextField />', () => {
     });
   });
 
+  describe('prop: hideSuffixWhenClearable', () => {
+    it('should render suffix directly (no wrapper) when hideSuffixWhenClearable=false', () => {
+      const { getHostHTMLElement } = render(
+        <TextField suffix={<Icon icon={SearchIcon} />} clearable onClear={jest.fn()}>
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const suffixElement = element.querySelector('.mzn-text-field__suffix');
+
+      expect(suffixElement).toBeInstanceOf(HTMLElement);
+      expect(suffixElement?.firstElementChild?.tagName.toLowerCase()).toBe('i');
+    });
+
+    it('should render overlay structure when hideSuffixWhenClearable=true', () => {
+      const { getHostHTMLElement } = render(
+        <TextField
+          suffix={<Icon icon={SearchIcon} />}
+          clearable
+          hideSuffixWhenClearable
+          onClear={jest.fn()}
+        >
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const suffixElement = element.querySelector('.mzn-text-field__suffix');
+      const suffixContent = element.querySelector('.mzn-text-field__suffix-content');
+      const clearIcon = suffixElement?.querySelector('.mzn-text-field__clear-icon');
+
+      expect(suffixElement?.classList.contains('mzn-text-field__suffix--overlay')).toBe(true);
+      expect(suffixContent).toBeInstanceOf(HTMLElement);
+      expect(clearIcon).toBeInstanceOf(HTMLElement);
+    });
+
+    it('should not render clear icon outside suffix when hideSuffixWhenClearable=true', () => {
+      const { getHostHTMLElement } = render(
+        <TextField
+          suffix={<Icon icon={SearchIcon} />}
+          clearable
+          hideSuffixWhenClearable
+          onClear={jest.fn()}
+        >
+          <input type="text" />
+        </TextField>,
+      );
+      const element = getHostHTMLElement();
+      const suffixElement = element.querySelector('.mzn-text-field__suffix');
+      const allClearIcons = element.querySelectorAll('.mzn-text-field__clear-icon');
+
+      // All clear icons should be inside the suffix overlay
+      allClearIcons.forEach((icon) => {
+        expect(suffixElement?.contains(icon)).toBe(true);
+      });
+    });
+  });
+
   describe('prop: typing auto-detection', () => {
     it('should detect typing state on input event', () => {
       const { getHostHTMLElement } = render(
