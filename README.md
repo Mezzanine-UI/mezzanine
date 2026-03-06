@@ -8,10 +8,10 @@ This project is currently in **rc** (`1.0.0-rc.x`) and under active development 
 
 ```json
 {
-  "@mezzanine-ui/core": "1.0.0-rc.2",
-  "@mezzanine-ui/react": "1.0.0-rc.2",
-  "@mezzanine-ui/system": "1.0.0-rc.2",
-  "@mezzanine-ui/icons": "1.0.0-rc.2"
+  "@mezzanine-ui/core": "1.0.0-rc.3",
+  "@mezzanine-ui/react": "1.0.0-rc.3",
+  "@mezzanine-ui/system": "1.0.0-rc.3",
+  "@mezzanine-ui/icons": "1.0.0-rc.3"
 }
 ```
 
