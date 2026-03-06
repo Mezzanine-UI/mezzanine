@@ -200,7 +200,10 @@ export interface AutoCompleteBaseProps
    * Imperative handle to control search text externally (e.g. reset or sync).
    */
   searchTextControlRef?: RefObject<
-    { setSearchText: Dispatch<SetStateAction<string>> } | undefined
+    {
+      reset: () => void;
+      setSearchText: Dispatch<SetStateAction<string>>;
+    } | undefined
   >;
   /**
    * Whether to trim whitespace from created items.
@@ -467,7 +470,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     /** export set search text action to props (allow user to customize search text) */
-    useImperativeHandle(searchTextControlRef, () => ({ setSearchText }));
+    useImperativeHandle(searchTextControlRef, () => ({
+      reset: resetSearchInputsAndOptions,
+      setSearchText,
+    }));
 
     /** Track created items (new, unselected, all) */
     const {

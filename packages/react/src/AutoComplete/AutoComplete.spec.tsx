@@ -1,7 +1,7 @@
 /* global document */
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
-import { createRef, FocusEvent, MouseEvent } from 'react';
+import { createRef, Dispatch, FocusEvent, MouseEvent, RefObject, SetStateAction } from 'react';
 import { AutoComplete } from '.';
 import {
   act,
@@ -73,6 +73,7 @@ describe('<AutoComplete />', () => {
   });
 
   afterEach(() => {
+    jest.useRealTimers();
     cleanup();
     cleanupHook();
   });
@@ -524,11 +525,13 @@ describe('<AutoComplete />', () => {
         expect(getDropdownListbox()).toBeInTheDocument();
       });
 
+      act(() => {
+        jest.runAllTimers();
+      });
+
       const createButton = screen.getByText(/建立.*newitem/i);
 
-      await act(async () => {
-        await user.click(createButton);
-      });
+      fireEvent.click(createButton);
 
       expect(onInsert).toHaveBeenCalledWith('newitem', expect.any(Array));
     });
@@ -762,6 +765,39 @@ describe('<AutoComplete />', () => {
       // The input should exist and the component should render correctly
       // The actual display logic depends on focus state
       expect(input).toBeTruthy();
+    });
+
+    it('searchTextControlRef.reset should clear search text and reset options', async () => {
+      jest.useRealTimers();
+      type ControlRef = {
+        reset: () => void;
+        setSearchText: Dispatch<SetStateAction<string>>;
+      };
+      const controlRef = createRef<ControlRef | null>() as unknown as {
+        current: ControlRef | undefined;
+      };
+
+      const { container } = render(
+        <AutoComplete
+          options={defaultOptions}
+          searchTextControlRef={controlRef as RefObject<ControlRef | undefined>}
+        />,
+      );
+
+      const input = container.querySelector('input') as HTMLInputElement;
+
+      // Type to trigger search
+      await userEvent.type(input, 'foo');
+      expect(input.value).toBe('foo');
+
+      // Reset via ref
+      act(() => {
+        controlRef.current?.reset();
+      });
+
+      await waitFor(() => {
+        expect(input.value).toBe('');
+      });
     });
 
     it('should display selected values in multiple mode', () => {
