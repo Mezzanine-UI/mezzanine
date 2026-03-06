@@ -388,6 +388,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     @include utils.reset();
 
     display: grid;
+    gap: spacing.semantic-variable(gap, tight);
   }
 
 
