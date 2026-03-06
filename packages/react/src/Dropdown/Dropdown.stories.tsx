@@ -102,7 +102,7 @@ export const Playground: Story = {
   args: {
     disabled: false,
     options: simpleOptions,
-    placement: 'bottom',
+    placement: 'bottom-start',
     showDropdownActions: false,
     type: 'default',
   },
