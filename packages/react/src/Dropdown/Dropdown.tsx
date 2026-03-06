@@ -299,7 +299,7 @@ export default function Dropdown(props: DropdownProps) {
     showActionShowTopBar,
     isMatchInputValue = false,
     inputPosition = 'outside',
-    placement = 'bottom',
+    placement = 'bottom-start',
     customWidth,
     sameWidth = false,
     listboxId: listboxIdProp,
