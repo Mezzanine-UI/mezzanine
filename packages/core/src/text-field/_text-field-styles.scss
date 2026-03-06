@@ -323,6 +323,38 @@ $size-configs: (
     }
   }
 
+  &--clearing {
+    & > .#{$prefix}__clear-icon {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .#{$prefix}__suffix--overlay {
+      .#{$prefix}__suffix-content {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .#{$prefix}__clear-icon {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  &__suffix--overlay {
+    display: grid;
+
+    .#{$prefix}__suffix-content,
+    .#{$prefix}__clear-icon {
+      grid-area: 1 / 1;
+    }
+  }
+
+  &__suffix-content {
+    transition: transition.standard(opacity, fast);
+  }
+
   &--disabled {
     cursor: not-allowed;
     pointer-events: none;
