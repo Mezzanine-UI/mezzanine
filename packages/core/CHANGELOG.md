@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.2...@mezzanine-ui/core@1.0.0-rc.3) (2026-03-06)
+
+### Bug Fixes
+
+- **core/autocomplete:** replace deprecated Size with GeneralSize ([5fc89dd](https://github.com/Mezzanine-UI/mezzanine/commit/5fc89dd740168179e8be0c3cdbda6b26c3a3f3ea))
+- **core/textField:** add clearing overlay CSS classes and tokens ([7b92f53](https://github.com/Mezzanine-UI/mezzanine/commit/7b92f53f8593680ff5a081dabd4af546815434f6))
+
+### Features
+
+- **table:** add rowState prop for semantic row background overrides ([74bf113](https://github.com/Mezzanine-UI/mezzanine/commit/74bf113895ef9a7860c2cb2965b6657e72cff570))
+
 # [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.1...@mezzanine-ui/core@1.0.0-rc.2) (2026-03-05)
 
 ### Bug Fixes

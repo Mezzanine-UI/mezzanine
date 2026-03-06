@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.2...@mezzanine-ui/react@1.0.0-rc.3) (2026-03-06)
+
+### Bug Fixes
+
+- **react/autoComplete:** add SearchTextControlRef story and format fixes ([b4ae15f](https://github.com/Mezzanine-UI/mezzanine/commit/b4ae15f67c125e2dc613ef44e1323535c70f5ff7))
+- **react/autoComplete:** expose reset() on searchTextControlRef ([4cfa863](https://github.com/Mezzanine-UI/mezzanine/commit/4cfa8638483abf25ce8c6a86184ee30c96f813c0))
+- **react/datePicker:** use suffix overlay for clearable icon ([61aef51](https://github.com/Mezzanine-UI/mezzanine/commit/61aef511690282fb464557388bc66ece90101c4f))
+- **react/dateRangePicker:** use suffix overlay for clearable icon ([1ac2d35](https://github.com/Mezzanine-UI/mezzanine/commit/1ac2d350917632a9e3348246abfb4aa42ae0ca17))
+- **react/dropdown:** show empty status when loadingPosition is bottom ([f7f6d23](https://github.com/Mezzanine-UI/mezzanine/commit/f7f6d239f24c853a4932523882a4c5b6b624ff8a))
+- **react/textField:** add hideSuffixWhenClearable prop and CSS-driven clearing state ([81b2171](https://github.com/Mezzanine-UI/mezzanine/commit/81b2171e5d8d7f2b0d67d384b1a2c73566272717))
+- **react:** address accordion group review feedback ([b3ebd3e](https://github.com/Mezzanine-UI/mezzanine/commit/b3ebd3e189e84d56cdcaf68e866f951c2bef648c))
+
+### Features
+
+- **react/navigation:** add exactActivatedMatch prop ([29483a6](https://github.com/Mezzanine-UI/mezzanine/commit/29483a6d2d8a7bbc81265dd5692628c72b5761f5))
+- **table:** add rowState prop for semantic row background overrides ([74bf113](https://github.com/Mezzanine-UI/mezzanine/commit/74bf113895ef9a7860c2cb2965b6657e72cff570))
+
 # [1.0.0-rc.2](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.1...@mezzanine-ui/react@1.0.0-rc.2) (2026-03-05)
 
 ### Bug Fixes
