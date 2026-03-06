@@ -62,6 +62,11 @@ export interface TextFieldBaseProps
    */
   forceShowClearable?: boolean;
   /**
+   * Whether to hide the suffix when the clear button is visible.
+   * @default false
+   */
+  hideSuffixWhenClearable?: boolean;
+  /**
    * Whether the field is in error state.
    * @default false
    */
@@ -156,6 +161,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       error = false,
       forceShowClearable = false,
       fullWidth = true,
+      hideSuffixWhenClearable = false,
       onClear,
       onClick: onClickProps,
       onKeyDown: onKeyDownProps,
@@ -311,6 +317,7 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
             [classes.readonly]: readonly,
             [classes.typing]: typing,
             [classes.active]: active,
+            [classes.clearing]: shouldShowClearable,
             [classes.warning]: warning,
           },
           className,
@@ -318,14 +325,10 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
       >
         {prefix && <div className={classes.prefix}>{prefix}</div>}
         {renderedChildren}
-        {clearable && (
+        {clearable && !hideSuffixWhenClearable && (
           <ClearActions
             type="clearable"
             className={classes.clearIcon}
-            style={{
-              opacity: shouldShowClearable ? 1 : 0,
-              pointerEvents: shouldShowClearable ? 'auto' : 'none',
-            }}
             onClick={(event) => {
               if (!disabled && !readonly && onClear) {
                 onClear(event);
@@ -338,7 +341,31 @@ const TextField = forwardRef<HTMLDivElement, TextFieldProps>(
             tabIndex={-1}
           />
         )}
-        {suffix && <div className={classes.suffix}>{suffix}</div>}
+        {suffix && (
+          <div className={cx(classes.suffix, { [classes.suffixOverlay]: hideSuffixWhenClearable })}>
+            {hideSuffixWhenClearable ? (
+              <>
+                <div className={classes.suffixContent}>{suffix}</div>
+                {clearable && (
+                  <ClearActions
+                    type="clearable"
+                    className={classes.clearIcon}
+                    onClick={(event) => {
+                      if (!disabled && !readonly && onClear) {
+                        onClear(event);
+                        requestAnimationFrame(() => {
+                          checkValueRef.current?.();
+                        });
+                      }
+                    }}
+                    onMouseDown={(event) => event.preventDefault()}
+                    tabIndex={-1}
+                  />
+                )}
+              </>
+            ) : suffix}
+          </div>
+        )}
       </div>
     );
   },

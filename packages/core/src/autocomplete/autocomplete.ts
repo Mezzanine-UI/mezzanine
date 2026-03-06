@@ -1,6 +1,6 @@
-import { Size } from '@mezzanine-ui/system/size';
+import { GeneralSize } from '@mezzanine-ui/system/size';
 
-export type AutoCompleteInputSize = Size;
+export type AutoCompleteInputSize = GeneralSize;
 export type AutoCompleteMode = 'single' | 'multiple';
 export type AutoCompleteTriggerType = 'default' | 'error';
 

@@ -126,10 +126,10 @@ function SelectTriggerComponent(props: SelectTriggerComponentProps) {
         className,
       )}
       error={type === 'error'}
+      clearable={shouldEnableClearable}
       forceShowClearable={shouldEnableClearable}
       size={size}
       suffix={forceHideSuffixActionIcon ? undefined : suffixActionIcon}
-      clearable={shouldEnableClearable}
     >
       <input
         {...inputProps}

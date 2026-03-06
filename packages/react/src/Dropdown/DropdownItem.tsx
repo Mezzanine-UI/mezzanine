@@ -624,8 +624,12 @@ export default function DropdownItem<T extends DropdownType | undefined = Dropdo
 
   const { elements: renderedOptions } = renderOptions(optionsContent, 0, -1);
 
-  // Show full status when options are empty and status is provided, but not when loadingPosition is 'bottom'
-  const shouldShowFullStatus = optionsContent.length === 0 && status && loadingPosition !== 'bottom';
+  // Show full status when options are empty and status is provided.
+  // Empty status always shows as full; loading status respects loadingPosition (bottom vs full).
+  const shouldShowFullStatus =
+    optionsContent.length === 0 &&
+    status &&
+    (status === 'empty' || loadingPosition !== 'bottom');
 
   // Show bottom loading when status is loading and loadingPosition is bottom
   const shouldShowBottomLoading = status === 'loading' && loadingPosition === 'bottom';
