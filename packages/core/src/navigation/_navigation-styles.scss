@@ -352,13 +352,21 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     }
   }
 
-  &--active.#{$option-prefix}--open {
+  &--active:not(.#{$option-prefix}--open):not(.#{$option-prefix}--basic) {
     & > .#{$option-prefix}__content {
       background-color: palette.semantic-variable('background', brand-ghost);
+
+      .#{$option-prefix}__title {
+        color: palette.semantic-variable(text, neutral-solid);
+      }
+
+      .#{$option-prefix}__icon {
+        color: palette.semantic-variable(icon, neutral-solid);
+      }
     }
   }
 
-  &--active {
+  &--active.#{$option-prefix}--open {
     & > .#{$option-prefix}__content {
       .#{$option-prefix}__title {
         color: palette.semantic-variable(text, brand);
@@ -366,6 +374,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
       .#{$option-prefix}__icon {
         color: palette.semantic-variable(icon, brand);
+      }
+
+      .#{$option-prefix}__toggle-icon {
+        color: palette.semantic-variable(icon, neutral-solid);
       }
     }
   }
