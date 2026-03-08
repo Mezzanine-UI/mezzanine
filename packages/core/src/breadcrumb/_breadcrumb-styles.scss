@@ -20,7 +20,9 @@
     @include button.reset();
 
     border-radius: radius.variable(tiny);
+    line-height: 0;
     position: relative;
+    transition: transition.standard(background-color, fast), transition.standard(box-shadow, fast);
 
     & > :first-child {
       color: palette.semantic-variable(icon, neutral);
@@ -28,7 +30,12 @@
     }
 
     &:focus-visible {
+      background-color: palette.semantic-variable('background', base);
       box-shadow: effect.variable(focus, primary);
+    }
+
+    &:hover > :first-child {
+      color: palette.semantic-variable(icon, brand);
     }
   }
 
@@ -67,7 +74,16 @@
     white-space: nowrap;
 
     &:focus-visible {
+      background-color: palette.semantic-variable('background', base);
       box-shadow: effect.variable(focus, primary);
+    }
+
+    &:hover {
+      color: palette.semantic-variable(text, brand);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, brand);
+      }
     }
   }
 
@@ -79,6 +95,14 @@
   &--current {
     .#{$prefix}__item__trigger {
       color: palette.semantic-variable(text, neutral-solid);
+
+      &:hover {
+        color: palette.semantic-variable(text, neutral-solid);
+
+        .#{$prefix}__item__icon {
+          color: palette.semantic-variable(icon, neutral);
+        }
+      }
     }
   }
 
@@ -88,6 +112,14 @@
 
       .#{$prefix}__item__icon {
         color: palette.semantic-variable(icon, neutral-solid);
+      }
+
+      &:hover {
+        color: palette.semantic-variable(text, neutral-solid);
+
+        .#{$prefix}__item__icon {
+          color: palette.semantic-variable(icon, neutral-solid);
+        }
       }
     }
   }
@@ -131,16 +163,6 @@
   &--expanded {
     .#{$prefix}__overflow-menu-item__trigger {
       background-color: palette.semantic-variable('background', neutral-subtle);
-    }
-  }
-}
-
-a.#{$prefix}__item, button.#{$prefix}__item:not(.#{$prefix}__item--expanded) {
-  &:hover {
-    color: palette.semantic-variable(text, brand);
-
-    .#{$prefix}__item__icon {
-      color: palette.semantic-variable(icon, brand);
     }
   }
 }
