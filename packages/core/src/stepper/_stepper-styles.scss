@@ -1,5 +1,8 @@
 @use 'sass:map';
+@use '~@mezzanine-ui/system/effect' as effect;
+@use '~@mezzanine-ui/system/motion' as motion;
 @use '~@mezzanine-ui/system/palette';
+@use '~@mezzanine-ui/system/radius';
 @use '~@mezzanine-ui/system/spacing';
 @use '~@mezzanine-ui/system/transition';
 @use '~@mezzanine-ui/system/typography';
@@ -70,9 +73,29 @@ $status-colors: (
 
 $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
 
+@keyframes stepper-dot-breath {
+  0% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+
+  50% {
+    box-shadow: 0 0 0 #{$dotBoxShadowMargin} palette.semantic-variable(background, brand-subtle);
+  }
+
+  100% {
+    box-shadow: 0 0 0 #{$dotBoxShadowMargin} transparent;
+  }
+}
+
 .#{$prefix-step} {
   &--interactive {
+    border-radius: radius.variable(base);
     cursor: pointer;
+    outline: none;
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
   }
 
   // transitions
@@ -249,6 +272,17 @@ $dotBoxShadowMargin: #{spacing.semantic-variable(size, element, tiny)};
       .#{$prefix-step}__status-indicator::after,
       .#{$prefix-step}__status-indicator-dot::after {
         background-color: _get-status-color($current-status, line-color);
+      }
+    }
+  }
+
+  &--dot {
+    &.#{$prefix-step}--processing {
+      .#{$prefix-step}__status-indicator-dot {
+        @include motion.pattern(breathe, animation);
+
+        animation-iteration-count: infinite;
+        animation-name: stepper-dot-breath;
       }
     }
   }
