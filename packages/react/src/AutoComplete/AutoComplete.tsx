@@ -374,7 +374,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       inputRef,
       loading = false,
       loadingText = '載入中...',
-      loadingPosition = 'bottom-start',
+      loadingPosition = 'bottom',
       menuMaxHeight,
       mode = 'single',
       name,
