@@ -48,7 +48,7 @@ export interface TabProps
    * The size of tab, controls padding around the tab group.
    * main: padding-horizontal-spacious + padding-vertical-spacious (top only)
    * sub: no padding
-   * @default 'sub'
+   * @default 'main'
    */
   size?: 'main' | 'sub';
 }
@@ -67,7 +67,7 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
     defaultActiveKey = 0,
     direction = 'horizontal',
     onChange,
-    size,
+    size = 'main',
     ...rest
   } = props;
 

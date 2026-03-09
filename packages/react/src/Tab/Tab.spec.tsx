@@ -106,7 +106,7 @@ describe('<Tab />', () => {
   });
 
   describe('prop: size', () => {
-    it('should not apply size class by default', () => {
+    it('should apply main size class by default', () => {
       const { getHostHTMLElement } = render(
         <Tab activeKey="1">
           <TabItem key="1">tab</TabItem>
@@ -114,7 +114,7 @@ describe('<Tab />', () => {
       );
       const element = getHostHTMLElement();
 
-      expect(element.classList.contains(tabClasses.tabSizeMain)).toBe(false);
+      expect(element.classList.contains(tabClasses.tabSizeMain)).toBe(true);
       expect(element.classList.contains(tabClasses.tabSizeSub)).toBe(false);
     });
 

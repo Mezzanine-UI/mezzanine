@@ -86,7 +86,7 @@ export const TabsSize = () => {
     <>
       <TabItem key="0">Tab 1</TabItem>
       <TabItem key="1">Tab 2</TabItem>
-      <TabItem key="2">Tab3</TabItem>
+      <TabItem key="2">Tab 3</TabItem>
       <TabItem key="3">Tab 4</TabItem>
       <TabItem key="4">Tab 5</TabItem>
       <TabItem key="5">Tab 6</TabItem>
