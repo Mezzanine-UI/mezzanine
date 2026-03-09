@@ -1,4 +1,4 @@
-import { forwardRef, KeyboardEvent, MouseEvent } from 'react';
+import { forwardRef, KeyboardEvent } from 'react';
 import { stepClasses as classes } from '@mezzanine-ui/core/stepper';
 import {
   CheckedOutlineIcon,
@@ -85,7 +85,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
     ? (e: KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          rest.onClick?.(e as unknown as MouseEvent<HTMLDivElement>);
+          e.currentTarget.click();
         }
         rest.onKeyDown?.(e);
       }
@@ -113,6 +113,7 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
         },
         className,
       )}
+      role={rest.onClick ? 'button' : undefined}
       ref={ref}
       tabIndex={rest.onClick ? 0 : undefined}
       {...rest}
