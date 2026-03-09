@@ -96,6 +96,31 @@ describe('<TabItem />', () => {
     });
   });
 
+  describe('prop: error', () => {
+    it('should not have error class by default', () => {
+      const { getHostHTMLElement } = render(<TabItem>tab</TabItem>);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabItemError)).toBe(false);
+    });
+
+    it('should have error class when error=true', () => {
+      const { getHostHTMLElement } = render(<TabItem error>tab</TabItem>);
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabItemError)).toBe(true);
+    });
+
+    it('should not have error class when error=false', () => {
+      const { getHostHTMLElement } = render(
+        <TabItem error={false}>tab</TabItem>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabItemError)).toBe(false);
+    });
+  });
+
   describe('prop: onClick', () => {
     it('should call onClick handler when clicked', () => {
       const onClick = jest.fn();

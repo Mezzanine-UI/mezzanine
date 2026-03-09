@@ -38,9 +38,10 @@ export function flattenChildren(
         );
       } else {
         if (isValidElement(node)) {
+          const rawKey = String(node.key).replace(/^\.\$/, '');
           acc.push(
             cloneElement(node, {
-              key: keys.concat(String(node.key)).join('.'),
+              key: keys.length > 0 ? keys.concat(rawKey).join('.') : rawKey,
             }),
           );
         } else if (

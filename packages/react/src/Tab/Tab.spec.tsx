@@ -105,6 +105,42 @@ describe('<Tab />', () => {
     });
   });
 
+  describe('prop: size', () => {
+    it('should not apply size class by default', () => {
+      const { getHostHTMLElement } = render(
+        <Tab activeKey="1">
+          <TabItem key="1">tab</TabItem>
+        </Tab>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabSizeMain)).toBe(false);
+      expect(element.classList.contains(tabClasses.tabSizeSub)).toBe(false);
+    });
+
+    it('should apply main size class when size="main"', () => {
+      const { getHostHTMLElement } = render(
+        <Tab activeKey="1" size="main">
+          <TabItem key="1">tab</TabItem>
+        </Tab>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabSizeMain)).toBe(true);
+    });
+
+    it('should apply sub size class when size="sub"', () => {
+      const { getHostHTMLElement } = render(
+        <Tab activeKey="1" size="sub">
+          <TabItem key="1">tab</TabItem>
+        </Tab>,
+      );
+      const element = getHostHTMLElement();
+
+      expect(element.classList.contains(tabClasses.tabSizeSub)).toBe(true);
+    });
+  });
+
   describe('prop: onChange', () => {
     it('should call onChange when TabItem is clicked', () => {
       const onChange = jest.fn();
@@ -120,7 +156,7 @@ describe('<Tab />', () => {
       fireEvent.click(buttons[1]);
 
       expect(onChange).toHaveBeenCalledTimes(1);
-      expect(onChange).toHaveBeenCalledWith('2');
+      expect(onChange).toHaveBeenCalledWith('2', 1);
     });
 
     it('should not call onChange when disabled TabItem is clicked', () => {
