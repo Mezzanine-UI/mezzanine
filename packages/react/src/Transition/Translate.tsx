@@ -131,7 +131,6 @@ const Translate = forwardRef<HTMLElement, TranslateProps>(function Translate(
       {children &&
         ((state) =>
           cloneElement(children, {
-            ...children.props,
             ref: composedNodeRef,
             style: {
               ...getStyle(state, inProp, from),
