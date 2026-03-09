@@ -26,8 +26,16 @@
       position: absolute;
     }
 
+    &.#{$prefix}--main {
+      padding: spacing.semantic-variable(padding, vertical, spacious) spacing.semantic-variable(padding, horizontal, spacious) 0;
+    }
+
     .#{$prefix}__item {
       padding: spacing.semantic-variable(padding, vertical, base) 0 spacing.semantic-variable(padding, vertical, comfort);
+    }
+
+    &.#{$prefix}--sub .#{$prefix}__item {
+      padding: spacing.semantic-variable(padding, vertical, tight) 0 spacing.semantic-variable(padding, vertical, calm);
     }
 
     .#{$prefix}__active-bar {
@@ -36,8 +44,14 @@
       height: spacing.semantic-variable(size, element, hairline);
       left: var(--active-bar-shift, 0);
       position: absolute;
-      transition: transition.standard(left, moderate), transition.standard(width, moderate);
+      transition: transition.standard(left, moderate), transition.standard(width, moderate), transition.standard(border-color, fast);
       width: var(--active-bar-length, 0);
+    }
+
+    &:has(.#{$prefix}__item--active.#{$prefix}__item--error) {
+      .#{$prefix}__active-bar {
+        border-bottom-color: palette.semantic-variable(border, error);
+      }
     }
   }
 
@@ -55,9 +69,17 @@
       position: absolute;
     }
 
+    &.#{$prefix}--main {
+      padding: 0 0 0 spacing.semantic-variable(padding, horizontal, spacious);
+    }
+
     .#{$prefix}__item {
       padding: spacing.semantic-variable(padding, vertical, calm) spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, calm) 0;
       width: fit-content;
+    }
+
+    &.#{$prefix}--sub .#{$prefix}__item {
+      padding: spacing.semantic-variable(padding, vertical, base) spacing.semantic-variable(padding, horizontal, base) spacing.semantic-variable(padding, vertical, base) 0;
     }
 
     .#{$prefix}__active-bar {
@@ -68,8 +90,14 @@
       position: absolute;
       right: 0;
       top: calc(var(--active-bar-shift, 0) + #{$vertical-spacing});
-      transition: transition.standard(top, moderate), transition.standard(height, moderate);
+      transition: transition.standard(top, moderate), transition.standard(height, moderate), transition.standard(border-color, fast);
       width: spacing.semantic-variable(size, element, hairline);
+    }
+
+    &:has(.#{$prefix}__item--active.#{$prefix}__item--error) {
+      .#{$prefix}__active-bar {
+        border-right-color: palette.semantic-variable(border, error);
+      }
     }
   }
 
@@ -81,10 +109,12 @@
     box-sizing: border-box;
     color: palette.semantic-variable(text, neutral-strong);
     display: flex;
+    transition: transition.standard(color, fast);
 
     &__icon {
       color: palette.semantic-variable(icon, neutral-strong);
       margin-right: spacing.semantic-variable(gap, base);
+      transition: transition.standard(color, fast);
     }
 
     &__badge {
@@ -92,7 +122,7 @@
     }
 
     &:hover:not(&--active) {
-      color: palette.semantic-variable(text, neutral-solid);
+      color: palette.semantic-variable(text, brand);
 
       .#{$prefix}__item__icon {
         color: palette.semantic-variable(icon, brand);
@@ -117,6 +147,14 @@
 
       .#{$prefix}__item__icon {
         color: palette.semantic-variable(icon, brand);
+      }
+    }
+
+    &--error {
+      color: palette.semantic-variable(text, error);
+
+      .#{$prefix}__item__icon {
+        color: palette.semantic-variable(icon, error);
       }
     }
 
