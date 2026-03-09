@@ -127,7 +127,6 @@ const Slide = forwardRef<HTMLElement, SlideProps>(function Slide(
       {children &&
         ((state) =>
           cloneElement(children, {
-            ...children.props,
             ref: composedNodeRef,
             style: {
               ...getStyle(state, inProp, from),
