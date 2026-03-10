@@ -8,7 +8,6 @@ export const cascaderClasses = {
   host: cascaderPrefix,
   hostFullWidth: `${cascaderPrefix}--full-width`,
 
-  dropdown: `${cascaderPrefix}-dropdown`,
   dropdownPanels: `${cascaderPrefix}-dropdown-panels`,
 
   panel: `${cascaderPrefix}-panel`,
