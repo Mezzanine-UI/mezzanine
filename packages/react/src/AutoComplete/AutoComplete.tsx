@@ -799,7 +799,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     }, [mode, value]);
 
     // Disable input when loading
-    const isInputDisabled = disabled || isLoading;
+    const isInputDisabled = disabled || (!asyncData && isLoading);
 
     const dropdownStatus: DropdownStatusType | undefined = isLoading
       ? 'loading'
@@ -1085,7 +1085,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onSelect={handleDropdownSelect}
             onVisibilityChange={handleVisibilityChange}
             open={open}
-            options={dropdownOptions}
+            options={asyncData && isLoading ? [] : dropdownOptions}
             placement="bottom"
             sameWidth
             showDropdownActions={shouldShowCreateAction}
