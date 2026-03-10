@@ -75,6 +75,8 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
     );
 
     const tagChildren = useMemo(() => {
+      if (overflowStrategy !== 'counter') return [];
+
       const tags = displaySelections.map((selection) => {
         if (readOnly) {
           return (
@@ -136,6 +138,63 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
       size,
     ]);
 
+    const inputElement = showTextInputAfterTags ? (
+      <div className={classes.triggerTagsInput}>
+        <input
+          {...inputProps}
+          ref={inputRef}
+          aria-autocomplete="list"
+          aria-disabled={disabled}
+          aria-haspopup="listbox"
+          aria-readonly={readOnly}
+          aria-required={required}
+          autoComplete="off"
+          disabled={disabled}
+          readOnly={readOnly}
+          required={required}
+          type="search"
+          value={searchText}
+        />
+      </div>
+    ) : null;
+
+    if (overflowStrategy === 'wrap') {
+      return (
+        <div
+          ref={composedRef}
+          className={cx(
+            classes.triggerTagsInputWrapper,
+            classes.triggerTagsInputWrapperWrap,
+          )}
+        >
+          {value.map((selection) => (
+            <span key={selection.id}>
+              {readOnly ? (
+                <Tag
+                  type="static"
+                  size={size}
+                  label={selection.name}
+                  readOnly
+                />
+              ) : (
+                <Tag
+                  type="dismissable"
+                  disabled={disabled}
+                  onClose={(e) => {
+                    e.stopPropagation();
+                    onTagClose?.(selection);
+                  }}
+                  size={size}
+                  label={selection.name}
+                />
+              )}
+            </span>
+          ))}
+          {inputElement}
+        </div>
+      );
+    }
+
     return (
       <div
         ref={composedRef}
@@ -152,28 +211,10 @@ const SelectTriggerTags = forwardRef<HTMLDivElement, SelectTriggerTagsProps>(
         >
           <TagGroup>{tagChildren}</TagGroup>
 
-          {overflowStrategy === 'counter' ? renderFakeTags() : null}
+          {renderFakeTags()}
         </div>
 
-        {showTextInputAfterTags ? (
-          <div className={classes.triggerTagsInput}>
-            <input
-              {...inputProps}
-              ref={inputRef}
-              aria-autocomplete="list"
-              aria-disabled={disabled}
-              aria-haspopup="listbox"
-              aria-readonly={readOnly}
-              aria-required={required}
-              autoComplete="off"
-              disabled={disabled}
-              readOnly={readOnly}
-              required={required}
-              type="search"
-              value={searchText}
-            />
-          </div>
-        ) : null}
+        {inputElement}
       </div>
     );
   },
