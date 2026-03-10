@@ -129,6 +129,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  color: palette.semantic-variable(icon, neutral-solid);
 
   .#{$item-prefix}--selected & {
     color: palette.semantic-variable(icon, brand);
