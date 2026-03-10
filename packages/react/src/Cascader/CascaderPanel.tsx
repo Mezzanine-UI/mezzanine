@@ -2,6 +2,7 @@
 
 import { cascaderClasses as classes } from '@mezzanine-ui/core/cascader';
 import { CheckedIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
+import { useEffect } from 'react';
 import Icon from '../Icon';
 import Scrollbar from '../Scrollbar';
 import { cx } from '../utils/cx';
@@ -44,6 +45,13 @@ export default function CascaderPanel({
   selectedId,
 }: CascaderPanelProps) {
   const toItemId = (optionId: string) => `mzn-cascader-option-${optionId}`;
+
+  useEffect(() => {
+    if (!focusedId) return;
+    document
+      .getElementById(toItemId(focusedId))
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [focusedId]);
 
   return (
     <div
