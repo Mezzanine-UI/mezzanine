@@ -1,7 +1,7 @@
 'use client';
 
 import { cascaderClasses as classes } from '@mezzanine-ui/core/cascader';
-import { CaretRightIcon, CheckedIcon } from '@mezzanine-ui/icons';
+import { CheckedIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import { cx } from '../utils/cx';
 import { CascaderOption } from './typings';
@@ -95,7 +95,7 @@ export default function CascaderPanel({
                 {isLeaf ? (
                   isSelected && <Icon icon={CheckedIcon} />
                 ) : (
-                  <Icon icon={CaretRightIcon} />
+                  <Icon icon={ChevronRightIcon} />
                 )}
               </span>
             </li>
