@@ -8,6 +8,7 @@ import {
   MouseEventHandler,
   useCallback,
   useContext,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -19,6 +20,7 @@ import { useDocumentEvents } from '../hooks/useDocumentEvents';
 import Popper from '../Popper';
 import SelectTrigger from '../Select/SelectTrigger';
 import { SelectValue } from '../Select';
+import Tooltip from '../Tooltip';
 import Translate from '../Transition/Translate';
 import { cx } from '../utils/cx';
 import CascaderPanel from './CascaderPanel';
@@ -87,6 +89,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
     const [open, setOpen] = useState(false);
     const [activePath, setActivePath] = useState<CascaderOption[]>([]);
     const [keyboardFocusedIndex, setKeyboardFocusedIndex] = useState(-1);
+    const [isOverflowing, setIsOverflowing] = useState(false);
 
     const [value, setValue] = useControlValueState<CascaderOption[]>({
       defaultValue: defaultValue ?? [],
@@ -95,6 +98,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
 
     const anchorRef = useRef<HTMLDivElement>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const measureRef = useRef<HTMLSpanElement>(null);
 
     const handleOpen = useCallback(() => {
       if (readOnly || disabled) return;
@@ -251,11 +255,42 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
 
     const displayPath = open ? activePath : value;
     const displayString = displayPath.map((o) => o.name).join(' / ');
+    const shouldCollapse = !open && displayPath.length >= 3 && isOverflowing;
+    const collapsedDisplayString = shouldCollapse
+      ? `${displayPath[0].name} / ... / ${displayPath[displayPath.length - 1].name}`
+      : displayString;
+
+    useLayoutEffect(() => {
+      if (open || displayPath.length < 3) {
+        setIsOverflowing(false);
+        return;
+      }
+
+      if (!anchorRef.current) return;
+
+      const check = () => {
+        const inputEl = anchorRef.current?.querySelector('input');
+        const measureEl = measureRef.current;
+
+        if (!inputEl || !measureEl) return;
+
+        measureEl.style.font = getComputedStyle(inputEl).font;
+        setIsOverflowing(measureEl.offsetWidth > inputEl.clientWidth);
+      };
+
+      check();
+
+      const observer = new ResizeObserver(check);
+
+      observer.observe(anchorRef.current);
+
+      return () => observer.disconnect();
+    }, [open, displayString, displayPath.length]);
 
     const triggerValue = useMemo<SelectValue | undefined>(() => {
       if (displayPath.length === 0) return undefined;
-      return { id: 'cascader-value', name: displayString };
-    }, [displayPath.length, displayString]);
+      return { id: 'cascader-value', name: collapsedDisplayString };
+    }, [displayPath.length, collapsedDisplayString]);
 
     const isPartial =
       open &&
@@ -296,6 +331,18 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
         ref={ref}
         className={cx(classes.host, fullWidth && classes.hostFullWidth)}
       >
+        <span
+          ref={measureRef}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            visibility: 'hidden',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+          }}
+        >
+          {displayString}
+        </span>
         <Popper
           anchor={anchorRef}
           open={open}
@@ -344,33 +391,46 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
           </TransitionGroup>
         </Popper>
 
-        <SelectTrigger
-          ref={anchorRef}
-          active={open}
-          className={cx(className, isPartial && classes.triggerPartial)}
-          disabled={disabled}
-          fullWidth={fullWidth}
-          inputProps={{
-            onKeyDown: (e) => {
-              if (!open && (e.key === ' ' || e.key === 'Enter')) {
-                e.preventDefault();
-                handleOpen();
-              }
-            },
-          }}
-          isForceClearable={
-            clearable && !disabled && !readOnly && value.length > 0
-          }
-          mode="single"
-          onClick={open ? handleClose : handleOpen}
-          onClear={handleClear}
-          placeholder={placeholder}
-          readOnly={readOnly}
-          required={required}
-          size={size}
-          type={error ? 'error' : 'default'}
-          value={triggerValue}
-        />
+        <Tooltip
+          options={{ placement: 'bottom-start' }}
+          title={shouldCollapse ? displayString : undefined}
+        >
+          {({ onMouseEnter, onMouseLeave, ref: tooltipRef }) => (
+            <div
+              ref={tooltipRef}
+              onMouseEnter={onMouseEnter}
+              onMouseLeave={onMouseLeave}
+            >
+              <SelectTrigger
+                ref={anchorRef}
+                active={open}
+                className={cx(className, isPartial && classes.triggerPartial)}
+                disabled={disabled}
+                fullWidth={fullWidth}
+                inputProps={{
+                  onKeyDown: (e) => {
+                    if (!open && (e.key === ' ' || e.key === 'Enter')) {
+                      e.preventDefault();
+                      handleOpen();
+                    }
+                  },
+                }}
+                isForceClearable={
+                  clearable && !disabled && !readOnly && value.length > 0
+                }
+                mode="single"
+                onClick={open ? handleClose : handleOpen}
+                onClear={handleClear}
+                placeholder={placeholder}
+                readOnly={readOnly}
+                required={required}
+                size={size}
+                type={error ? 'error' : 'default'}
+                value={triggerValue}
+              />
+            </div>
+          )}
+        </Tooltip>
       </div>
     );
   },
