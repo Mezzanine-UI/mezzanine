@@ -55,7 +55,6 @@ export default function CascaderPanel({
           aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
           aria-label="Options"
           role="listbox"
-          style={{ listStyle: 'none', margin: 0, padding: 0 }}
           tabIndex={-1}
         >
           {options.map((option) => {

@@ -69,6 +69,12 @@
   & + & {
     border-inline-start: 1px solid palette.semantic-variable(separator, neutral-faint);
   }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 3px;
+  }
 }
 
 .#{$item-prefix} {
