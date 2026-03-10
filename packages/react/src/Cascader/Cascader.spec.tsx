@@ -1241,6 +1241,34 @@ describe('<Cascader />', () => {
       expect(span).toBeInstanceOf(HTMLSpanElement);
     });
 
+    it('should set input title to full path when collapsed', async () => {
+      mockOverflow();
+
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={threeItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.title).toBe('Level One / Level Two / Level Three');
+      });
+    });
+
+    it('should not set input title when path is not collapsed', async () => {
+      const twoItemValue: CascaderOption[] = [
+        { id: 'a', name: 'Option A' },
+        { id: 'a1', name: 'Option A1' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={twoItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.title).toBe('');
+      });
+    });
+
     it('should display collapsed path when text overflows with 3+ items', async () => {
       mockOverflow();
 

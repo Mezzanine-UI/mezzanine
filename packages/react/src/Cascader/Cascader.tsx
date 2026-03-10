@@ -414,6 +414,7 @@ const Cascader = forwardRef<HTMLDivElement, CascaderProps>(
                       handleOpen();
                     }
                   },
+                  title: shouldCollapse ? displayString : undefined,
                 }}
                 isForceClearable={
                   clearable && !disabled && !readOnly && value.length > 0
