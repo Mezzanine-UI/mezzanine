@@ -25,6 +25,7 @@ export const selectClasses = {
   triggerInput: `${selectTriggerPrefix}__input`,
   triggerTagsInputWrapper: `${selectTriggerPrefix}__tags-input-wrapper`,
   triggerTagsInputWrapperEllipsis: `${selectTriggerPrefix}__tags-input-wrapper--ellipsis`,
+  triggerTagsInputWrapperWrap: `${selectTriggerPrefix}__tags-input-wrapper--wrap`,
   triggerTagsInput: `${selectTriggerPrefix}__tags-input`,
   triggerTags: `${selectTriggerPrefix}__tags`,
   triggerTagsEllipsis: `${selectTriggerPrefix}__tags--ellipsis`,

@@ -62,6 +62,10 @@
     &--ellipsis {
       flex-wrap: nowrap;
     }
+
+    &--wrap {
+      gap: spacing.semantic-variable(gap, tight);
+    }
   }
 
   &__tags-input {
@@ -86,8 +90,8 @@
   &__tags {
     width: auto;
     max-width: calc(
-      100% - var(--#{text-field.$prefix}-prefix-x-gap) - var(
-          --#{text-field.$prefix}-icon-size
+      100% - var(--#{text-field.$prefix}-prefix-x-gap, 0px) - var(
+          --#{text-field.$prefix}-icon-size, 0px
         )
     );
     display: flex;
