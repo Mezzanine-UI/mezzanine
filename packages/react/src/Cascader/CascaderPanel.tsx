@@ -50,7 +50,7 @@ export default function CascaderPanel({
       className={classes.panel}
       style={maxHeight ? { maxHeight } : undefined}
     >
-      <Scrollbar maxHeight="100%">
+      <Scrollbar style={{ flex: 1, minHeight: 0 }}>
         <ul
           aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
           aria-label="Options"
