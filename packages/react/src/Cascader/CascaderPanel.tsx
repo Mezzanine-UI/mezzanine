@@ -36,6 +36,10 @@ export interface CascaderPanelProps {
   selectedId?: string;
 }
 
+function toItemId(optionId: string) {
+  return `mzn-cascader-option-${optionId}`;
+}
+
 export default function CascaderPanel({
   activeId,
   focusedId,
@@ -44,8 +48,6 @@ export default function CascaderPanel({
   options,
   selectedId,
 }: CascaderPanelProps) {
-  const toItemId = (optionId: string) => `mzn-cascader-option-${optionId}`;
-
   useEffect(() => {
     if (!focusedId) return;
     document
