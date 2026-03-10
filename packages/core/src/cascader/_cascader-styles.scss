@@ -102,10 +102,6 @@
     z-index: 1;
   }
 
-  &--selected {
-    color: palette.semantic-variable(text, brand);
-  }
-
   &--disabled {
     cursor: not-allowed;
     color: palette.semantic-variable(text, neutral-light);
@@ -127,4 +123,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
+  .#{$item-prefix}--selected & {
+    color: palette.semantic-variable(icon, brand);
+  }
 }
