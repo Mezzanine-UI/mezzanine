@@ -131,6 +131,10 @@
   flex-shrink: 0;
   color: palette.semantic-variable(icon, neutral-solid);
 
+  .#{$item-prefix}--disabled & {
+    color: palette.semantic-variable(icon, neutral-light);
+  }
+
   .#{$item-prefix}--selected & {
     color: palette.semantic-variable(icon, brand);
   }
