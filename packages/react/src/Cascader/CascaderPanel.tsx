@@ -3,6 +3,7 @@
 import { cascaderClasses as classes } from '@mezzanine-ui/core/cascader';
 import { CheckedIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
+import Scrollbar from '../Scrollbar';
 import { cx } from '../utils/cx';
 import { CascaderOption } from './typings';
 
@@ -49,59 +50,61 @@ export default function CascaderPanel({
       className={classes.panel}
       style={maxHeight ? { maxHeight } : undefined}
     >
-      <ul
-        aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
-        aria-label="Options"
-        role="listbox"
-        style={{ listStyle: 'none', margin: 0, padding: 0 }}
-        tabIndex={-1}
-      >
-        {options.map((option) => {
-          const isLeaf = !option.children || option.children.length === 0;
-          const isActive = option.id === activeId;
-          const isSelected = option.id === selectedId;
+      <Scrollbar maxHeight="100%">
+        <ul
+          aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
+          aria-label="Options"
+          role="listbox"
+          style={{ listStyle: 'none', margin: 0, padding: 0 }}
+          tabIndex={-1}
+        >
+          {options.map((option) => {
+            const isLeaf = !option.children || option.children.length === 0;
+            const isActive = option.id === activeId;
+            const isSelected = option.id === selectedId;
 
-          return (
-            <li
-              key={option.id}
-              aria-disabled={option.disabled || undefined}
-              aria-expanded={!isLeaf ? isActive : undefined}
-              aria-selected={isSelected}
-              className={cx(
-                classes.item,
-                isActive && classes.itemActive,
-                option.disabled && classes.itemDisabled,
-                option.id === focusedId && classes.itemFocused,
-                isSelected && classes.itemSelected,
-              )}
-              id={toItemId(option.id)}
-              onClick={() => {
-                if (!option.disabled) {
-                  onSelect(option, isLeaf);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+            return (
+              <li
+                key={option.id}
+                aria-disabled={option.disabled || undefined}
+                aria-expanded={!isLeaf ? isActive : undefined}
+                aria-selected={isSelected}
+                className={cx(
+                  classes.item,
+                  isActive && classes.itemActive,
+                  option.disabled && classes.itemDisabled,
+                  option.id === focusedId && classes.itemFocused,
+                  isSelected && classes.itemSelected,
+                )}
+                id={toItemId(option.id)}
+                onClick={() => {
                   if (!option.disabled) {
                     onSelect(option, isLeaf);
                   }
-                }
-              }}
-              role="option"
-            >
-              <span className={classes.itemLabel}>{option.name}</span>
-              <span className={classes.itemAppend}>
-                {isLeaf ? (
-                  isSelected && <Icon icon={CheckedIcon} />
-                ) : (
-                  <Icon icon={ChevronRightIcon} />
-                )}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!option.disabled) {
+                      onSelect(option, isLeaf);
+                    }
+                  }
+                }}
+                role="option"
+              >
+                <span className={classes.itemLabel}>{option.name}</span>
+                <span className={classes.itemAppend}>
+                  {isLeaf ? (
+                    isSelected && <Icon icon={CheckedIcon} />
+                  ) : (
+                    <Icon icon={ChevronRightIcon} />
+                  )}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </Scrollbar>
     </div>
   );
 }

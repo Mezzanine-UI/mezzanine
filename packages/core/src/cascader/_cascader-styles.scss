@@ -60,7 +60,7 @@
   flex-direction: column;
   width: spacing.semantic-variable(size, container, tight);
   max-height: spacing.semantic-variable(size, container, expanded);
-  overflow-y: auto;
+  overflow: hidden;
   padding: spacing.semantic-variable(padding, vertical, tight)
     spacing.semantic-variable(padding, horizontal, tight);
   box-sizing: border-box;
