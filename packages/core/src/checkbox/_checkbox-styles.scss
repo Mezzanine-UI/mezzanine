@@ -259,6 +259,12 @@ $checked-disabled: (
     align-items: center;
   }
 
+  &--main {
+    .#{$prefix}__label-container {
+      gap: spacing.semantic-variable(gap, slim);
+    }
+  }
+
   &__label-container {
     display: flex;
     align-items: flex-start;
