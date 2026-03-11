@@ -7,9 +7,9 @@
 @use '../_internal/input-check';
 @use './checkbox' as *;
 
-$indeterminate-line-width: 8px !default;
+$indeterminate-line-width: 6px !default;
 $indeterminate-line-width-small: 5px !default;
-$indeterminate-line-height: 2px !default;
+$indeterminate-line-height: 1px !default;
 
 // Mode configurations
 $mode-configs: (
