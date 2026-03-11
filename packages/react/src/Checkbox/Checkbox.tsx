@@ -314,7 +314,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
               {mode === 'chip' && isChecked && (
                 <Icon
                   aria-hidden="true"
-                  className={classes.icon}
+                  className={cx(classes.icon, classes.chipIcon)}
                   color="brand"
                   icon={CheckedIcon}
                   size={16}
