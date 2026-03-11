@@ -334,23 +334,6 @@ function isSingleValue(
 }
 
 /**
- * Check if an option is already selected
- */
-function isOptionSelected(
-  option: SelectValue,
-  value: SelectValue[] | SelectValue | null | undefined,
-  isMultiple: boolean,
-): boolean {
-  if (isMultiple && isMultipleValue(value)) {
-    return value.some((v) => v.id === option.id);
-  }
-  if (!isMultiple && isSingleValue(value)) {
-    return value.id === option.id;
-  }
-  return false;
-}
-
-/**
  * The AutoComplete component for react. <br />
  * Note that if you need search for ONLY given options, not included your typings,
  * should considering using the `Select` component with `onSearch` prop.
@@ -685,8 +668,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       setInsertText(nextSearch);
       onSearchTextChange?.(nextSearch);
 
-      if (autoSelectMatchingOption(nextSearch)) return;
-
       if (!nextSearch) {
         cancelSearch();
         runSearch(nextSearch, { immediate: true });
@@ -1002,57 +983,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         inputProps?.onPaste?.(e);
       },
       [handlePaste, inputProps],
-    );
-
-    const autoSelectMatchingOption = useCallback(
-      (keyword: string) => {
-        if (!creationEnabled || !keyword.length) return false;
-
-        const matchingOption = options.find(
-          (option) => option.name === keyword,
-        );
-
-        if (!matchingOption) return false;
-
-        if (isSingle) {
-          if (!value) {
-            // Update searchText first to prevent showing old value
-            setSearchText(matchingOption.name);
-            setInsertText(matchingOption.name);
-            // Then update value and focus state
-            wrappedOnChange(matchingOption);
-            toggleOpen(false);
-            onFocus(false);
-            return true;
-          }
-          return false;
-        }
-
-        const alreadySelected = isOptionSelected(
-          matchingOption,
-          value,
-          isMultiple,
-        );
-
-        if (!alreadySelected) {
-          wrappedOnChange(matchingOption);
-          return true;
-        }
-
-        return false;
-      },
-      [
-        creationEnabled,
-        isMultiple,
-        isSingle,
-        onFocus,
-        options,
-        setSearchText,
-        setInsertText,
-        toggleOpen,
-        value,
-        wrappedOnChange,
-      ],
     );
 
     const resolvedInputProps: SelectTriggerInputProps = {
