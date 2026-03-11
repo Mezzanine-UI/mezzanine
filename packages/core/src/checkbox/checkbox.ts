@@ -10,6 +10,8 @@ export type CheckboxSize<M extends CheckboxMode = CheckboxMode> = M extends 'chi
   ? CheckboxSizeChip
   : CheckboxSizeDefault;
 
+export type CheckboxSeverity = 'info' | 'error';
+
 export const checkboxClasses = {
   host: checkboxPrefix,
   labelContainer: `${checkboxPrefix}__label-container`,
@@ -21,6 +23,8 @@ export const checkboxClasses = {
   mode: (mode: CheckboxMode) => `${checkboxPrefix}--${mode}`,
   // size
   size: (size: CheckboxSize) => `${checkboxPrefix}--${size}`,
+  // severity
+  severity: (severity: CheckboxSeverity) => `${checkboxPrefix}--${severity}`,
   // controller
   inputContainer: `${checkboxPrefix}__input-container`,
   inputContent: `${checkboxPrefix}__input-content`,

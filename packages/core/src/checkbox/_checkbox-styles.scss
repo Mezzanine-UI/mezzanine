@@ -182,36 +182,15 @@ $chip-host-states: (
   }
 }
 
-// Unchecked state configurations
-$unchecked-states: (
-  enable: (
-    background-color: palette.semantic-variable(background, base),
-    border-color: palette.semantic-variable(border, neutral),
-  ),
-  hover: (
-    background-color: palette.semantic-variable(background, base),
-    border-color: palette.semantic-variable(border, brand),
-  ),
-  disabled: (
-    background-color: palette.semantic-variable(background, neutral-subtle),
-    border-color: palette.semantic-variable(border, neutral-light),
-  ),
+// Disabled state configurations (enable/hover are handled via CSS variables)
+$unchecked-disabled: (
+  background-color: palette.semantic-variable(background, neutral-subtle),
+  border-color: palette.semantic-variable(border, neutral-light),
 );
 
-// Checked/Indeterminate state configurations
-$checked-states: (
-  enable: (
-    background-color: var(--#{$prefix}-color),
-    border-color: var(--#{$prefix}-color),
-  ),
-  hover: (
-    background-color: palette.semantic-variable(background, brand-strong),
-    border-color: palette.semantic-variable(background, brand-strong),
-  ),
-  disabled: (
-    background-color: palette.semantic-variable(background, neutral-subtle),
-    border-color: palette.semantic-variable(background, neutral-subtle),
-  ),
+$checked-disabled: (
+  background-color: palette.semantic-variable(background, neutral-subtle),
+  border-color: palette.semantic-variable(background, neutral-subtle),
 );
 
 // Get color value from state map
@@ -260,6 +239,13 @@ $checked-states: (
     #{palette.semantic-variable(icon, fixed-light)}
   );
   --#{$prefix}-indeterminate-line-width: #{$indeterminate-line-width};
+
+  // Severity color variables — override these to change the visual theme
+  --#{$prefix}-unchecked-border: #{palette.semantic-variable(border, neutral)};
+  --#{$prefix}-unchecked-border-hover: #{palette.semantic-variable(border, brand)};
+  --#{$prefix}-checked-bg: #{palette.semantic-variable(background, brand)};
+  --#{$prefix}-checked-bg-hover: #{palette.semantic-variable(background, brand-strong)};
+  --#{$prefix}-focus-shadow: #{effect.variable(focus, primary)};
 
   position: relative;
   width: fit-content;
@@ -471,17 +457,19 @@ $checked-states: (
     z-index: 0;
 
     // Enable state (unchecked)
-    @include _apply-input-state-colors(map.get($unchecked-states, enable));
+    background-color: palette.semantic-variable(background, base);
+    border-color: var(--#{$prefix}-unchecked-border);
 
     // Checked/Indeterminate enable state
     &:checked,
     &:indeterminate {
-      @include _apply-input-state-colors(map.get($checked-states, enable));
+      background-color: var(--#{$prefix}-checked-bg);
+      border-color: var(--#{$prefix}-checked-bg);
     }
 
     &:focus-visible:not(:disabled),
     &:focus:not(:disabled) {
-      box-shadow: effect.variable(focus, primary);
+      box-shadow: var(--#{$prefix}-focus-shadow);
     }
 
     // Chip mode: hide native input
@@ -495,26 +483,30 @@ $checked-states: (
   }
   &:focus-within:not(.#{$prefix}--disabled) {
     .#{$prefix}__input {
-      box-shadow: effect.variable(focus, primary);
+      box-shadow: var(--#{$prefix}-focus-shadow);
     }
 
     // Chip mode focus state
     &.#{$prefix}--chip {
-      box-shadow: effect.variable(focus, primary);
+      box-shadow: var(--#{$prefix}-focus-shadow);
     }
   }
 
 
-  &--checked {
-    .#{$prefix}__input {
-      @include _apply-input-state-colors(map.get($checked-states, enable));
-    }
-  }
-
+  &--checked,
   &--indeterminate {
     .#{$prefix}__input {
-      @include _apply-input-state-colors(map.get($checked-states, enable));
+      background-color: var(--#{$prefix}-checked-bg);
+      border-color: var(--#{$prefix}-checked-bg);
     }
+  }
+
+  &--error:not(.#{$prefix}--chip) {
+    --#{$prefix}-unchecked-border: #{palette.semantic-variable(border, error-subtle)};
+    --#{$prefix}-unchecked-border-hover: #{palette.semantic-variable(border, error)};
+    --#{$prefix}-checked-bg: #{palette.semantic-variable(background, error)};
+    --#{$prefix}-checked-bg-hover: #{palette.semantic-variable(background, error-strong)};
+    --#{$prefix}-focus-shadow: #{effect.variable(focus, error)};
   }
 
   &--disabled,
@@ -528,14 +520,14 @@ $checked-states: (
     }
 
     .#{$prefix}__input {
-      @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+      @include _apply-input-state-colors($unchecked-disabled);
 
       cursor: not-allowed;
     }
 
     // Chip mode disabled state (cursor only, colors handled in &:has block)
     &.#{$prefix}--chip {
-      @include _apply-input-state-colors(map.get($unchecked-states, disabled));
+      @include _apply-input-state-colors($unchecked-disabled);
 
       cursor: not-allowed;
     }
@@ -543,12 +535,12 @@ $checked-states: (
     &.#{$prefix}--checked,
     &.#{$prefix}--indeterminate {
       .#{$prefix}__input {
-        @include _apply-input-state-colors(map.get($checked-states, disabled));
+        @include _apply-input-state-colors($checked-disabled);
       }
 
       // Chip mode checked disabled state (colors handled in &:has block)
       &.#{$prefix}--chip {
-        @include _apply-input-state-colors(map.get($checked-states, disabled));
+        @include _apply-input-state-colors($checked-disabled);
       }
 
       .#{$prefix}__icon {
@@ -566,12 +558,14 @@ $checked-states: (
   .#{input-check.$prefix}:hover &:not(.#{$prefix}--disabled) {
     .#{$prefix}__input {
       &:not(:checked, :indeterminate) {
-        @include _apply-input-state-colors(map.get($unchecked-states, hover));
+        background-color: palette.semantic-variable(background, base);
+        border-color: var(--#{$prefix}-unchecked-border-hover);
       }
 
       &:checked,
       &:indeterminate {
-        @include _apply-input-state-colors(map.get($checked-states, hover));
+        background-color: var(--#{$prefix}-checked-bg-hover);
+        border-color: var(--#{$prefix}-checked-bg-hover);
       }
     }
 
@@ -585,12 +579,8 @@ $checked-states: (
     &.#{$prefix}--checked,
     &.#{$prefix}--indeterminate {
       .#{$prefix}__input {
-        @include _apply-input-state-colors(map.get($checked-states, hover));
-
-        &:checked,
-        &:indeterminate {
-          @include _apply-input-state-colors(map.get($checked-states, hover));
-        }
+        background-color: var(--#{$prefix}-checked-bg-hover);
+        border-color: var(--#{$prefix}-checked-bg-hover);
       }
 
       // Chip mode hover state (checked)
