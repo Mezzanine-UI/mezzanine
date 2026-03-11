@@ -31,6 +31,9 @@ import Input, { InputProps } from '../Input';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Typography from '../Typography';
+import { offset } from '@floating-ui/react-dom';
+import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import { resolveNumericCSSVariable } from '../utils/get-css-variable-value';
 
 export interface SliderBaseProps
   extends Omit<
@@ -178,6 +181,14 @@ function SliderComponent(props: SliderComponentProps) {
 
   const shouldHaveInputHandlers = withInput && onChange && !disabled;
 
+  // Compensate for the handler circle expanding into the outer hit-target div on hover.
+  // handler div = size-element-relaxed (24px), circle at rest = size-element-base (16px)
+  // → circle top is (24-16)/2 = 4px inside the div top → add 4px so visual gap stays ≥ gap-base
+  const handlerTooltipExtraOffset =
+    (resolveNumericCSSVariable(`--${spacingPrefix}-size-element-relaxed`) -
+      resolveNumericCSSVariable(`--${spacingPrefix}-size-element-base`)) /
+    2;
+
   const getHandle = (handlerValue: number, index: number) => (
     <div
       className={cx(
@@ -188,6 +199,7 @@ function SliderComponent(props: SliderComponentProps) {
     >
       <Tooltip
         options={{
+          middleware: [offset(handlerTooltipExtraOffset)],
           placement: 'top',
         }}
         title={handlerValue.toString()}
@@ -312,9 +324,14 @@ function SliderComponent(props: SliderComponentProps) {
 
     if (isRangeSlider(value)) {
       const next = preventValueOverflow((value as RangeSliderValue)[0] - step);
-      (onChange as UseRangeSliderProps['onChange'])([next, (value as RangeSliderValue)[1]]);
+      (onChange as UseRangeSliderProps['onChange'])([
+        next,
+        (value as RangeSliderValue)[1],
+      ]);
     } else {
-      (onChange as UseSingleSliderProps['onChange'])(preventValueOverflow((value as SingleSliderValue) - step));
+      (onChange as UseSingleSliderProps['onChange'])(
+        preventValueOverflow((value as SingleSliderValue) - step),
+      );
     }
   }
 
@@ -328,9 +345,14 @@ function SliderComponent(props: SliderComponentProps) {
 
     if (isRangeSlider(value)) {
       const next = preventValueOverflow((value as RangeSliderValue)[1] + step);
-      (onChange as UseRangeSliderProps['onChange'])([(value as RangeSliderValue)[0], next]);
+      (onChange as UseRangeSliderProps['onChange'])([
+        (value as RangeSliderValue)[0],
+        next,
+      ]);
     } else {
-      (onChange as UseSingleSliderProps['onChange'])(preventValueOverflow((value as SingleSliderValue) + step));
+      (onChange as UseSingleSliderProps['onChange'])(
+        preventValueOverflow((value as SingleSliderValue) + step),
+      );
     }
   }
 
@@ -487,7 +509,14 @@ function SliderComponent(props: SliderComponentProps) {
         <span
           className={classes.icon}
           onClick={iconClickable ? handlePrefixIconClick : undefined}
-          onKeyDown={iconClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') handlePrefixIconClick(); } : undefined}
+          onKeyDown={
+            iconClickable
+              ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ')
+                    handlePrefixIconClick();
+                }
+              : undefined
+          }
           role={iconClickable ? 'button' : undefined}
           tabIndex={iconClickable ? 0 : undefined}
           style={iconClickable ? { cursor: 'pointer' } : undefined}
@@ -561,7 +590,14 @@ function SliderComponent(props: SliderComponentProps) {
         <span
           className={classes.icon}
           onClick={iconClickable ? handleSuffixIconClick : undefined}
-          onKeyDown={iconClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleSuffixIconClick(); } : undefined}
+          onKeyDown={
+            iconClickable
+              ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ')
+                    handleSuffixIconClick();
+                }
+              : undefined
+          }
           role={iconClickable ? 'button' : undefined}
           tabIndex={iconClickable ? 0 : undefined}
           style={iconClickable ? { cursor: 'pointer' } : undefined}
