@@ -6,6 +6,7 @@ import {
   Key,
   ReactElement,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -13,6 +14,7 @@ import { tabClasses as classes } from '@mezzanine-ui/core/tab';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import TabItem, { TabItemProps } from './TabItem';
+import { flattenChildren } from '../utils/flatten-children';
 
 export type TabsChild = ReactElement<TabItemProps>;
 
@@ -42,6 +44,13 @@ export interface TabProps
    * The change event handler of Tab
    */
   onChange?: (activeKey: Key, index: number) => void;
+  /**
+   * The size of tab, controls padding around the tab group.
+   * main: padding-horizontal-spacious + padding-vertical-spacious (top only)
+   * sub: no padding
+   * @default 'main'
+   */
+  size?: 'main' | 'sub';
 }
 
 /**
@@ -56,8 +65,9 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
     children,
     className,
     defaultActiveKey = 0,
-    onChange,
     direction = 'horizontal',
+    onChange,
+    size = 'main',
     ...rest
   } = props;
 
@@ -66,17 +76,24 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
 
   const activeTabItemRef = useRef<HTMLButtonElement>(null);
 
-  const tabItems = Children.map(children, (tabItem, index) => {
-    if (!tabItem || tabItem.type !== TabItem) {
-      return null;
-    }
+  const flattenedChildren = useMemo(
+    () => flattenChildren(children),
+    [children],
+  );
 
-    const key = tabItem.key ?? index;
-    const active = activeKey === key;
+  const tabItems = Children.map(
+    flattenedChildren as TabProps['children'],
+    (tabItem, index) => {
+      if (!tabItem || tabItem.type !== TabItem) {
+        return null;
+      }
 
-    return cloneElement<TabItemProps & { ref?: React.Ref<HTMLButtonElement> }>(
-      tabItem,
-      {
+      const key = tabItem.key ?? index;
+      const active = activeKey === key;
+
+      return cloneElement<
+        TabItemProps & { ref?: React.Ref<HTMLButtonElement> }
+      >(tabItem, {
         key,
         active,
         ref: active ? activeTabItemRef : undefined,
@@ -88,9 +105,9 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
 
           tabItem.props.onClick?.(event);
         },
-      },
-    );
-  });
+      });
+    },
+  );
 
   // get active TabItem left and width for activeBar position
   const [activeBarStyle, setActiveBarStyle] = useState<CSSProperties>({
@@ -123,6 +140,8 @@ const Tab = forwardRef<HTMLDivElement, TabProps>(function Tab(
         {
           [classes.tabHorizontal]: direction === 'horizontal',
           [classes.tabVertical]: direction === 'vertical',
+          [classes.tabSizeMain]: size === 'main',
+          [classes.tabSizeSub]: size === 'sub',
         },
         className,
       )}

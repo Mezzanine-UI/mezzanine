@@ -23,6 +23,11 @@ export interface TabItemProps
    */
   disabled?: boolean;
   /**
+   * Whether the tab item is in error state.
+   * @default false
+   */
+  error?: boolean;
+  /**
    * The icon to display on the tab item.
    */
   icon?: IconDefinition;
@@ -39,6 +44,7 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
       children,
       className,
       disabled = false,
+      error = false,
       icon,
       ...rest
     } = props;
@@ -51,6 +57,7 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
           classes.tabItem,
           {
             [classes.tabItemActive]: active,
+            [classes.tabItemError]: error,
           },
           className,
         )}
@@ -64,7 +71,7 @@ const TabItem = forwardRef<HTMLButtonElement, TabItemProps>(
           <Badge
             className={classes.tabItemBadge}
             count={badgeCount}
-            variant={active ? 'count-brand' : 'count-inactive'}
+            variant={error ? 'count-alert' : active ? 'count-brand' : 'count-inactive'}
           />
         )}
       </button>

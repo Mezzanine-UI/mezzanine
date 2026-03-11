@@ -1,4 +1,4 @@
-import { render } from '../../__test-utils__';
+import { cleanup, render, fireEvent } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
@@ -500,6 +500,75 @@ describe('<Stepper />', () => {
       const element = getHostHTMLElement();
 
       expect(element.children).toHaveLength(3);
+    });
+  });
+
+  describe('<Step /> keyboard interaction', () => {
+    afterEach(cleanup);
+
+    it('should set tabIndex=0 when onClick is provided', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Stepper>
+          <Step onClick={onClick} />
+        </Stepper>,
+      );
+      const step = getHostHTMLElement().children[0] as HTMLElement;
+
+      expect(step.getAttribute('tabindex')).toBe('0');
+    });
+
+    it('should not set tabIndex when onClick is not provided', () => {
+      const { getHostHTMLElement } = render(
+        <Stepper>
+          <Step />
+        </Stepper>,
+      );
+      const step = getHostHTMLElement().children[0] as HTMLElement;
+
+      expect(step.getAttribute('tabindex')).toBeNull();
+    });
+
+    it('should call onClick when Enter is pressed', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Stepper>
+          <Step onClick={onClick} />
+        </Stepper>,
+      );
+      const step = getHostHTMLElement().children[0] as HTMLElement;
+
+      fireEvent.keyDown(step, { key: 'Enter' });
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call onClick when Space is pressed', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Stepper>
+          <Step onClick={onClick} />
+        </Stepper>,
+      );
+      const step = getHostHTMLElement().children[0] as HTMLElement;
+
+      fireEvent.keyDown(step, { key: ' ' });
+
+      expect(onClick).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not trigger click on other keys', () => {
+      const onClick = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Stepper>
+          <Step onClick={onClick} />
+        </Stepper>,
+      );
+      const step = getHostHTMLElement().children[0] as HTMLElement;
+
+      fireEvent.keyDown(step, { key: 'Tab' });
+
+      expect(onClick).not.toHaveBeenCalled();
     });
   });
 });

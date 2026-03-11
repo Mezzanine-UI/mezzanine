@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { forwardRef, KeyboardEvent } from 'react';
 import { stepClasses as classes } from '@mezzanine-ui/core/stepper';
 import {
   CheckedOutlineIcon,
@@ -81,6 +81,16 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
     ...rest
   } = props;
 
+  const handleKeyDown = rest.onClick
+    ? (e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.currentTarget.click();
+        }
+        rest.onKeyDown?.(e);
+      }
+    : rest.onKeyDown;
+
   return (
     <div
       className={cx(
@@ -99,12 +109,15 @@ const Step = forwardRef<HTMLDivElement, StepProps>(function Step(props, ref) {
           [classes.dot]: type === 'dot',
           [classes.number]: type === 'number',
           // interactive
-          [classes.interactive]: rest.onClick,
+          [classes.interactive]: !!rest.onClick,
         },
         className,
       )}
+      role={rest.onClick ? 'button' : undefined}
       ref={ref}
+      tabIndex={rest.onClick ? 0 : undefined}
       {...rest}
+      onKeyDown={handleKeyDown}
     >
       {type === 'number' && (
         <NumberStatusIndicator
