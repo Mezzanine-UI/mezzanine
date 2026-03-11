@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.3...@mezzanine-ui/react@1.0.0-rc.4) (2026-03-11)
+
+### Bug Fixes
+
+- **react/autocomplete:** set the default empty text and default loading text ([8b4dae3](https://github.com/Mezzanine-UI/mezzanine/commit/8b4dae3f70303d5b8294019b76b3268a038851a1))
+- **react/AutoCompletet:** change AutoComplete loadingPosition default to bottom ([cdc8d38](https://github.com/Mezzanine-UI/mezzanine/commit/cdc8d38e4f9619e3b11f0888eb4b345c1db748f5))
+- **react/composeRefs:** support React 19 ref callback cleanup in composeRefs ([709bbd2](https://github.com/Mezzanine-UI/mezzanine/commit/709bbd2e200210d03f6111c22df155ac7b250392))
+- **react/dropdown:** change default dropdown placement ([766d84f](https://github.com/Mezzanine-UI/mezzanine/commit/766d84f7f53a84b46153439137d726a98c21c613))
+- **react/hooks:** remove unused eslint-disable ([bfaa4a7](https://github.com/Mezzanine-UI/mezzanine/commit/bfaa4a7260f285f72a33ab41af6d1565319cfd70))
+- **react/hooks:** stabilize useComposeRefs under React 19 Strict Mode ([6b0d35e](https://github.com/Mezzanine-UI/mezzanine/commit/6b0d35ec40f1dc6f53d24137629140048d375259))
+- **react/section:** fix section index file type ([fd3412f](https://github.com/Mezzanine-UI/mezzanine/commit/fd3412f1ff158fe7ebeaefc7c0544f0027b6f3f1))
+- **react/stepper:** add role=button, fix keyboard event cast, add keyboard tests ([3a3b086](https://github.com/Mezzanine-UI/mezzanine/commit/3a3b08659170c086775b708a29f1635b67d19a46))
+- **react/Stepper:** apply step.props first in Stepper cloneElement so injected props win ([ef87507](https://github.com/Mezzanine-UI/mezzanine/commit/ef875075b3a59e04dbf4a6c18ffb110c5b8a261b))
+- **react/table:** pass dragHandleProps to Skeleton when loading in drag mode ([dd5d666](https://github.com/Mezzanine-UI/mezzanine/commit/dd5d666758e21439ddd2aa5893d09bd20291e040))
+- **react/tab:** set size default to main, fix typo in stories ([86cc207](https://github.com/Mezzanine-UI/mezzanine/commit/86cc2073a838126fbeb161815f96e00c06743bd7))
+
+### Features
+
+- **react/stepper:** add keydown handler ([72845af](https://github.com/Mezzanine-UI/mezzanine/commit/72845af34599d060eb4a29cb1d41dc3b0c631f25))
+- **react/tab:** add size, add error status ([303ba22](https://github.com/Mezzanine-UI/mezzanine/commit/303ba220454cdab4a5239293cd1b1dfd57a69785))
+
 # [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.2...@mezzanine-ui/react@1.0.0-rc.3) (2026-03-06)
 
 ### Bug Fixes
