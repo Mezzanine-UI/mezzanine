@@ -71,8 +71,10 @@ $spinner-button-sizes: (
   justify-content: center;
   border: none;
   overflow: hidden;
+  outline: none;
   cursor: pointer;
   box-sizing: border-box;
+  position: relative;
   transition: transition.standard(background-color, fast), transition.standard(color, fast), transition.standard(box-shadow, fast);
 
   @include _apply-spinner-button-states(enable);
@@ -83,6 +85,8 @@ $spinner-button-sizes: (
 
   &:focus-visible:not(.#{$prefix}__spinner-button--disabled) {
     @include _apply-spinner-button-states(focus);
+
+    z-index: 1;
   }
 
   &:active:not(.#{$prefix}__spinner-button--disabled) {
@@ -98,7 +102,7 @@ $spinner-button-sizes: (
   &--main {
     @include _apply-spinner-button-size(main);
 
-    font-size: spacing.semantic-variable(size, element, fixed);
+    font-size: spacing.semantic-variable(size, element, base-fixed);
   }
 
   &--sub {
