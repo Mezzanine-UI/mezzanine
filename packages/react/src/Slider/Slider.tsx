@@ -2,6 +2,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   forwardRef,
+  KeyboardEvent as ReactKeyboardEvent,
   KeyboardEventHandler,
   Ref,
   useCallback,
@@ -31,6 +32,8 @@ import Input, { InputProps } from '../Input';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Typography from '../Typography';
+import { spacingPrefix } from '@mezzanine-ui/system/spacing';
+import { resolveNumericCSSVariable } from '../utils/get-css-variable-value';
 
 export interface SliderBaseProps
   extends Omit<
@@ -73,6 +76,8 @@ export interface SliderBaseProps
 }
 
 export type SliderWithInputProps = SliderBaseProps & {
+  onPrefixIconClick?: never;
+  onSuffixIconClick?: never;
   prefixIcon?: never;
   suffixIcon?: never;
   /**
@@ -87,13 +92,23 @@ export type SliderWithIconProps = SliderBaseProps & {
    */
   prefixIcon: IconDefinition;
   /**
+   * Custom click handler for prefix icon. If not provided, defaults to decrementing the value by step.
+   */
+  onPrefixIconClick?: () => void;
+  /**
    * Set suffix icon.
    */
   suffixIcon: IconDefinition;
+  /**
+   * Custom click handler for suffix icon. If not provided, defaults to incrementing the value by step.
+   */
+  onSuffixIconClick?: () => void;
   withInput?: never;
 };
 
 export type SliderWithoutAddonsProps = SliderBaseProps & {
+  onPrefixIconClick?: never;
+  onSuffixIconClick?: never;
   prefixIcon?: never;
   suffixIcon?: never;
   withInput?: never;
@@ -133,6 +148,8 @@ function SliderComponent(props: SliderComponentProps) {
     max = 100,
     min = 0,
     onChange,
+    onPrefixIconClick,
+    onSuffixIconClick,
     prefixIcon,
     step = 1,
     style: styleProp,
@@ -164,6 +181,18 @@ function SliderComponent(props: SliderComponentProps) {
 
   const shouldHaveInputHandlers = withInput && onChange && !disabled;
 
+  // Compensate for the handler circle expanding into the outer hit-target div on hover.
+  // handler div = size-element-relaxed (24px), circle at rest = size-element-base (16px)
+  // → circle top is (24-16)/2 = 4px inside the div top → add 4px so visual gap stays ≥ gap-base
+  const handlerTooltipExtraOffset =
+    (resolveNumericCSSVariable(`--${spacingPrefix}-size-element-relaxed`) -
+      resolveNumericCSSVariable(`--${spacingPrefix}-size-element-base`)) /
+    2;
+
+  const handlerTooltipOffsetMainAxis =
+    resolveNumericCSSVariable(`--${spacingPrefix}-gap-base`) +
+    handlerTooltipExtraOffset;
+
   const getHandle = (handlerValue: number, index: number) => (
     <div
       className={cx(
@@ -173,6 +202,7 @@ function SliderComponent(props: SliderComponentProps) {
       )}
     >
       <Tooltip
+        offsetMainAxis={handlerTooltipOffsetMainAxis}
         options={{
           placement: 'top',
         }}
@@ -284,6 +314,65 @@ function SliderComponent(props: SliderComponentProps) {
     }
 
     return roundToStep(target, step, min, max);
+  }
+
+  const iconClickable = !disabled && !!onChange;
+
+  function handleIconKeyDown(
+    e: ReactKeyboardEvent<HTMLSpanElement>,
+    handler: () => void,
+  ) {
+    if (e.key === 'Enter') {
+      handler();
+      return;
+    }
+
+    if (e.key === ' ') {
+      e.preventDefault();
+      handler();
+    }
+  }
+
+  function handlePrefixIconClick() {
+    if (!iconClickable) return;
+
+    if (onPrefixIconClick) {
+      onPrefixIconClick();
+      return;
+    }
+
+    if (isRangeSlider(value)) {
+      const next = preventValueOverflow((value as RangeSliderValue)[0] - step);
+      (onChange as UseRangeSliderProps['onChange'])([
+        next,
+        (value as RangeSliderValue)[1],
+      ]);
+    } else {
+      (onChange as UseSingleSliderProps['onChange'])(
+        preventValueOverflow((value as SingleSliderValue) - step),
+      );
+    }
+  }
+
+  function handleSuffixIconClick() {
+    if (!iconClickable) return;
+
+    if (onSuffixIconClick) {
+      onSuffixIconClick();
+      return;
+    }
+
+    if (isRangeSlider(value)) {
+      const next = preventValueOverflow((value as RangeSliderValue)[1] + step);
+      (onChange as UseRangeSliderProps['onChange'])([
+        (value as RangeSliderValue)[0],
+        next,
+      ]);
+    } else {
+      (onChange as UseSingleSliderProps['onChange'])(
+        preventValueOverflow((value as SingleSliderValue) + step),
+      );
+    }
   }
 
   const onStartInputChange: ChangeEventHandler<HTMLInputElement> | undefined =
@@ -436,7 +525,21 @@ function SliderComponent(props: SliderComponentProps) {
         />
       ) : null}
       {prefixIcon ? (
-        <span className={classes.icon}>
+        <span
+          aria-label={iconClickable ? 'Decrease value' : undefined}
+          className={classes.icon}
+          onClick={iconClickable ? handlePrefixIconClick : undefined}
+          onKeyDown={
+            iconClickable
+              ? (e) => {
+                  handleIconKeyDown(e, handlePrefixIconClick);
+                }
+              : undefined
+          }
+          role={iconClickable ? 'button' : undefined}
+          tabIndex={iconClickable ? 0 : undefined}
+          style={iconClickable ? { cursor: 'pointer' } : undefined}
+        >
           <Icon icon={prefixIcon} />
         </span>
       ) : null}
@@ -503,7 +606,21 @@ function SliderComponent(props: SliderComponentProps) {
         />
       ) : null}
       {suffixIcon ? (
-        <span className={classes.icon}>
+        <span
+          aria-label={iconClickable ? 'Increase value' : undefined}
+          className={classes.icon}
+          onClick={iconClickable ? handleSuffixIconClick : undefined}
+          onKeyDown={
+            iconClickable
+              ? (e) => {
+                  handleIconKeyDown(e, handleSuffixIconClick);
+                }
+              : undefined
+          }
+          role={iconClickable ? 'button' : undefined}
+          tabIndex={iconClickable ? 0 : undefined}
+          style={iconClickable ? { cursor: 'pointer' } : undefined}
+        >
           <Icon icon={suffixIcon} />
         </span>
       ) : null}
