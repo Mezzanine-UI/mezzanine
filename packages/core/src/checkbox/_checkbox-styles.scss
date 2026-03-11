@@ -408,6 +408,12 @@ $checked-disabled: (
       left: initial;
       transform: initial;
     }
+    &--chip {
+      svg {
+        aspect-ratio: 1 / 1;
+        filter: none;
+      }
+    }
   }
 
   &__indeterminate-line {
