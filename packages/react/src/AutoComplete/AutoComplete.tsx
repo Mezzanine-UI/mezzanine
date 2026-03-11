@@ -740,10 +740,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     const handleClear = useCallback(
       (e: ReactMouseEvent<Element>) => {
+        if (isSingle && isSingleValue(value)) {
+          markUnselected([value.id]);
+        }
         onClear(e);
         resetSearchInputs();
       },
-      [onClear, resetSearchInputs],
+      [isSingle, markUnselected, onClear, resetSearchInputs, value],
     );
 
     const onClickSuffixActionIcon = () => {
