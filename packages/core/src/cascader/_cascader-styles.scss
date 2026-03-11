@@ -60,7 +60,7 @@
   flex-direction: column;
   width: spacing.semantic-variable(size, container, tight);
   max-height: spacing.semantic-variable(size, container, expanded);
-  overflow-y: auto;
+  overflow: hidden;
   padding: spacing.semantic-variable(padding, vertical, tight)
     spacing.semantic-variable(padding, horizontal, tight);
   box-sizing: border-box;
@@ -68,6 +68,12 @@
 
   & + & {
     border-inline-start: 1px solid palette.semantic-variable(separator, neutral-faint);
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 3px;
   }
 }
 
@@ -82,6 +88,7 @@
   width: 100%;
   box-sizing: border-box;
   background-color: palette.semantic-variable('background', base);
+  color: palette.semantic-variable(text, neutral-solid);
   list-style: none;
   transition:
     transition.standard(background-color, fast),
@@ -103,14 +110,7 @@
 
   &--disabled {
     cursor: not-allowed;
-
-    .#{$item-prefix}-label {
-      color: palette.semantic-variable(text, neutral-light);
-    }
-
-    .#{$item-prefix}-append {
-      color: palette.semantic-variable(icon, neutral-light);
-    }
+    color: palette.semantic-variable(text, neutral-light);
   }
 }
 
@@ -121,13 +121,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: palette.semantic-variable(text, neutral-solid);
-  transition: transition.standard(color, fast);
   font-feature-settings: 'liga' off, 'clig' off;
-
-  .#{$item-prefix}--selected & {
-    color: palette.semantic-variable(text, brand);
-  }
 }
 
 .#{$item-prefix}-append {
@@ -135,6 +129,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: palette.semantic-variable(icon, neutral);
-  transition: transition.standard(color, fast);
+  color: palette.semantic-variable(icon, neutral-solid);
+
+  .#{$item-prefix}--disabled & {
+    color: palette.semantic-variable(icon, neutral-light);
+  }
+
+  .#{$item-prefix}--selected & {
+    color: palette.semantic-variable(icon, brand);
+  }
 }

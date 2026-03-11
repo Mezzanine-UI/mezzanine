@@ -1,8 +1,10 @@
 'use client';
 
 import { cascaderClasses as classes } from '@mezzanine-ui/core/cascader';
-import { CaretRightIcon, CheckedIcon } from '@mezzanine-ui/icons';
+import { CheckedIcon, ChevronRightIcon } from '@mezzanine-ui/icons';
+import { useEffect } from 'react';
 import Icon from '../Icon';
+import Scrollbar from '../Scrollbar';
 import { cx } from '../utils/cx';
 import { CascaderOption } from './typings';
 
@@ -34,6 +36,10 @@ export interface CascaderPanelProps {
   selectedId?: string;
 }
 
+function toItemId(optionId: string) {
+  return `mzn-cascader-option-${optionId}`;
+}
+
 export default function CascaderPanel({
   activeId,
   focusedId,
@@ -42,66 +48,72 @@ export default function CascaderPanel({
   options,
   selectedId,
 }: CascaderPanelProps) {
-  const toItemId = (optionId: string) => `mzn-cascader-option-${optionId}`;
+  useEffect(() => {
+    if (!focusedId) return;
+    document
+      .getElementById(toItemId(focusedId))
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [focusedId]);
 
   return (
     <div
       className={classes.panel}
       style={maxHeight ? { maxHeight } : undefined}
     >
-      <ul
-        aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
-        aria-label="Options"
-        role="listbox"
-        style={{ listStyle: 'none', margin: 0, padding: 0 }}
-        tabIndex={-1}
-      >
-        {options.map((option) => {
-          const isLeaf = !option.children || option.children.length === 0;
-          const isActive = option.id === activeId;
-          const isSelected = option.id === selectedId;
+      <Scrollbar style={{ flex: 1, minHeight: 0 }}>
+        <ul
+          aria-activedescendant={focusedId ? toItemId(focusedId) : undefined}
+          aria-label="Options"
+          role="listbox"
+          tabIndex={-1}
+        >
+          {options.map((option) => {
+            const isLeaf = !option.children || option.children.length === 0;
+            const isActive = option.id === activeId;
+            const isSelected = option.id === selectedId;
 
-          return (
-            <li
-              key={option.id}
-              aria-disabled={option.disabled || undefined}
-              aria-expanded={!isLeaf ? isActive : undefined}
-              aria-selected={isSelected}
-              className={cx(
-                classes.item,
-                isActive && classes.itemActive,
-                option.disabled && classes.itemDisabled,
-                option.id === focusedId && classes.itemFocused,
-                isSelected && classes.itemSelected,
-              )}
-              id={toItemId(option.id)}
-              onClick={() => {
-                if (!option.disabled) {
-                  onSelect(option, isLeaf);
-                }
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
+            return (
+              <li
+                key={option.id}
+                aria-disabled={option.disabled || undefined}
+                aria-expanded={!isLeaf ? isActive : undefined}
+                aria-selected={isSelected}
+                className={cx(
+                  classes.item,
+                  isActive && classes.itemActive,
+                  option.disabled && classes.itemDisabled,
+                  option.id === focusedId && classes.itemFocused,
+                  isSelected && classes.itemSelected,
+                )}
+                id={toItemId(option.id)}
+                onClick={() => {
                   if (!option.disabled) {
                     onSelect(option, isLeaf);
                   }
-                }
-              }}
-              role="option"
-            >
-              <span className={classes.itemLabel}>{option.name}</span>
-              <span className={classes.itemAppend}>
-                {isLeaf ? (
-                  isSelected && <Icon icon={CheckedIcon} />
-                ) : (
-                  <Icon icon={CaretRightIcon} />
-                )}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!option.disabled) {
+                      onSelect(option, isLeaf);
+                    }
+                  }
+                }}
+                role="option"
+              >
+                <span className={classes.itemLabel}>{option.name}</span>
+                <span className={classes.itemAppend}>
+                  {isLeaf ? (
+                    isSelected && <Icon icon={CheckedIcon} />
+                  ) : (
+                    <Icon icon={ChevronRightIcon} />
+                  )}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </Scrollbar>
     </div>
   );
 }

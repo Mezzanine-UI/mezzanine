@@ -1176,6 +1176,152 @@ describe('<Cascader />', () => {
     });
   });
 
+  describe('overflow collapse', () => {
+    const threeItemValue: CascaderOption[] = [
+      { id: 'level1', name: 'Level One' },
+      { id: 'level2', name: 'Level Two' },
+      { id: 'level3', name: 'Level Three' },
+    ];
+
+    let originalOffsetWidth: PropertyDescriptor | undefined;
+    let originalClientWidth: PropertyDescriptor | undefined;
+
+    beforeEach(() => {
+      originalOffsetWidth = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        'offsetWidth',
+      );
+      originalClientWidth = Object.getOwnPropertyDescriptor(
+        HTMLElement.prototype,
+        'clientWidth',
+      );
+    });
+
+    afterEach(() => {
+      if (originalOffsetWidth) {
+        Object.defineProperty(
+          HTMLElement.prototype,
+          'offsetWidth',
+          originalOffsetWidth,
+        );
+      }
+
+      if (originalClientWidth) {
+        Object.defineProperty(
+          HTMLElement.prototype,
+          'clientWidth',
+          originalClientWidth,
+        );
+      }
+    });
+
+    function mockOverflow() {
+      Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+        configurable: true,
+        get() {
+          return 300;
+        },
+      });
+      Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+        configurable: true,
+        get() {
+          return 100;
+        },
+      });
+    }
+
+    it('should render hidden measuring span with aria-hidden', () => {
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={threeItemValue} />,
+      );
+      const span = getHostHTMLElement().querySelector(
+        'span[aria-hidden="true"]',
+      );
+
+      expect(span).toBeInstanceOf(HTMLSpanElement);
+    });
+
+    it('should set input title to full path when collapsed', async () => {
+      mockOverflow();
+
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={threeItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.title).toBe('Level One / Level Two / Level Three');
+      });
+    });
+
+    it('should not set input title when path is not collapsed', async () => {
+      const twoItemValue: CascaderOption[] = [
+        { id: 'a', name: 'Option A' },
+        { id: 'a1', name: 'Option A1' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={twoItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.title).toBe('');
+      });
+    });
+
+    it('should display collapsed path when text overflows with 3+ items', async () => {
+      mockOverflow();
+
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={threeItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.value).toBe('Level One / ... / Level Three');
+      });
+    });
+
+    it('should not collapse when path has fewer than 3 items', async () => {
+      mockOverflow();
+
+      const twoItemValue: CascaderOption[] = [
+        { id: 'a', name: 'Option A' },
+        { id: 'a1', name: 'Option A1' },
+      ];
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={twoItemValue} />,
+      );
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      await waitFor(() => {
+        expect(input.value).toBe('Option A / Option A1');
+      });
+    });
+
+    it('should not collapse when dropdown is open', async () => {
+      mockOverflow();
+
+      const { getHostHTMLElement } = render(
+        <Cascader options={options} value={threeItemValue} />,
+      );
+
+      const input = getHostHTMLElement().querySelector('input')!;
+
+      // Before opening: overflow is mocked, so collapsed format is shown
+      await waitFor(() => {
+        expect(input.value).toBe('Level One / ... / Level Three');
+      });
+
+      await clickTrigger(getHostHTMLElement());
+
+      // After opening: shouldCollapse = !open && ... = false, regardless of isOverflowing
+      await waitFor(() => {
+        expect(input.value).not.toContain('...');
+      });
+    });
+  });
+
   describe('prop: clearable', () => {
     it('should render clear button when clearable and value is set', () => {
       const value: CascaderOption[] = [

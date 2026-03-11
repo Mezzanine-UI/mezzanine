@@ -909,3 +909,53 @@ const ClearableComponent = () => {
 export const Clearable: StoryObj<typeof Cascader> = {
   render: () => <ClearableComponent />,
 };
+
+const OverflowCollapseComponent = () => {
+  const preselectedValue: CascaderOption[] = [
+    { id: 'taiwan', name: '台灣' },
+    { id: 'taipei', name: '台北市' },
+    { id: 'zhongzheng', name: '中正區' },
+  ];
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px',
+      }}
+    >
+      <div>
+        <Typography variant="body" style={{ marginBottom: '8px' }}>
+          寬度不足時，中間路徑折疊為「...」，hover 顯示完整路徑 Tooltip（width:
+          160px）
+        </Typography>
+        <div style={{ width: '160px' }}>
+          <Cascader
+            fullWidth
+            options={taiwanOptions}
+            placeholder="國家 / 城市 / 區域"
+            defaultValue={preselectedValue}
+          />
+        </div>
+      </div>
+      <div>
+        <Typography variant="body" style={{ marginBottom: '8px' }}>
+          寬度充足時不折疊，顯示完整路徑（width: 320px）
+        </Typography>
+        <div style={{ width: '320px' }}>
+          <Cascader
+            fullWidth
+            options={taiwanOptions}
+            placeholder="國家 / 城市 / 區域"
+            defaultValue={preselectedValue}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const OverflowCollapse: StoryObj<typeof Cascader> = {
+  render: () => <OverflowCollapseComponent />,
+};
