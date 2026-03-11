@@ -73,6 +73,8 @@ export interface SliderBaseProps
 }
 
 export type SliderWithInputProps = SliderBaseProps & {
+  onPrefixIconClick?: never;
+  onSuffixIconClick?: never;
   prefixIcon?: never;
   suffixIcon?: never;
   /**
@@ -87,13 +89,23 @@ export type SliderWithIconProps = SliderBaseProps & {
    */
   prefixIcon: IconDefinition;
   /**
+   * Custom click handler for prefix icon. If not provided, defaults to decrementing the value by step.
+   */
+  onPrefixIconClick?: () => void;
+  /**
    * Set suffix icon.
    */
   suffixIcon: IconDefinition;
+  /**
+   * Custom click handler for suffix icon. If not provided, defaults to incrementing the value by step.
+   */
+  onSuffixIconClick?: () => void;
   withInput?: never;
 };
 
 export type SliderWithoutAddonsProps = SliderBaseProps & {
+  onPrefixIconClick?: never;
+  onSuffixIconClick?: never;
   prefixIcon?: never;
   suffixIcon?: never;
   withInput?: never;
@@ -133,6 +145,8 @@ function SliderComponent(props: SliderComponentProps) {
     max = 100,
     min = 0,
     onChange,
+    onPrefixIconClick,
+    onSuffixIconClick,
     prefixIcon,
     step = 1,
     style: styleProp,
@@ -286,6 +300,40 @@ function SliderComponent(props: SliderComponentProps) {
     return roundToStep(target, step, min, max);
   }
 
+  const iconClickable = !disabled && !!onChange;
+
+  function handlePrefixIconClick() {
+    if (!iconClickable) return;
+
+    if (onPrefixIconClick) {
+      onPrefixIconClick();
+      return;
+    }
+
+    if (isRangeSlider(value)) {
+      const next = preventValueOverflow((value as RangeSliderValue)[0] - step);
+      (onChange as UseRangeSliderProps['onChange'])([next, (value as RangeSliderValue)[1]]);
+    } else {
+      (onChange as UseSingleSliderProps['onChange'])(preventValueOverflow((value as SingleSliderValue) - step));
+    }
+  }
+
+  function handleSuffixIconClick() {
+    if (!iconClickable) return;
+
+    if (onSuffixIconClick) {
+      onSuffixIconClick();
+      return;
+    }
+
+    if (isRangeSlider(value)) {
+      const next = preventValueOverflow((value as RangeSliderValue)[1] + step);
+      (onChange as UseRangeSliderProps['onChange'])([(value as RangeSliderValue)[0], next]);
+    } else {
+      (onChange as UseSingleSliderProps['onChange'])(preventValueOverflow((value as SingleSliderValue) + step));
+    }
+  }
+
   const onStartInputChange: ChangeEventHandler<HTMLInputElement> | undefined =
     shouldHaveInputHandlers
       ? (e) => {
@@ -436,7 +484,14 @@ function SliderComponent(props: SliderComponentProps) {
         />
       ) : null}
       {prefixIcon ? (
-        <span className={classes.icon}>
+        <span
+          className={classes.icon}
+          onClick={iconClickable ? handlePrefixIconClick : undefined}
+          onKeyDown={iconClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') handlePrefixIconClick(); } : undefined}
+          role={iconClickable ? 'button' : undefined}
+          tabIndex={iconClickable ? 0 : undefined}
+          style={iconClickable ? { cursor: 'pointer' } : undefined}
+        >
           <Icon icon={prefixIcon} />
         </span>
       ) : null}
@@ -503,7 +558,14 @@ function SliderComponent(props: SliderComponentProps) {
         />
       ) : null}
       {suffixIcon ? (
-        <span className={classes.icon}>
+        <span
+          className={classes.icon}
+          onClick={iconClickable ? handleSuffixIconClick : undefined}
+          onKeyDown={iconClickable ? (e) => { if (e.key === 'Enter' || e.key === ' ') handleSuffixIconClick(); } : undefined}
+          role={iconClickable ? 'button' : undefined}
+          tabIndex={iconClickable ? 0 : undefined}
+          style={iconClickable ? { cursor: 'pointer' } : undefined}
+        >
           <Icon icon={suffixIcon} />
         </span>
       ) : null}
