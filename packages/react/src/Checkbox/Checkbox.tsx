@@ -326,7 +326,7 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
                   className={classes.icon}
                   color="fixed-light"
                   icon={CheckedIcon}
-                  size={7}
+                  size={9}
                 />
               )}
               {mode !== 'chip' && isIndeterminate && (
