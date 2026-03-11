@@ -259,6 +259,10 @@ $size-configs: (
     gap: spacing.semantic-variable(gap, slim);
   }
 
+  &--tiny-gap {
+    gap: spacing.semantic-variable(padding, horizontal, tiny);
+  }
+
   &--full-width {
     width: 100%;
   }

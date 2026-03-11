@@ -7,6 +7,7 @@ export const textFieldPrefix = 'mzn-text-field';
 export const textFieldClasses = {
   host: textFieldPrefix,
   slimGap: `${textFieldPrefix}--slim-gap`,
+  tinyGap: `${textFieldPrefix}--tiny-gap`,
   active: `${textFieldPrefix}--active`,
   clearIcon: `${textFieldPrefix}__clear-icon`,
   clearable: `${textFieldPrefix}--clearable`,
