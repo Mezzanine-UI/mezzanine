@@ -261,6 +261,10 @@ $size-configs: (
 
   &--tiny-gap {
     gap: spacing.semantic-variable(padding, horizontal, tiny);
+
+    &:has(.#{$prefix}__suffix) {
+      padding-right: spacing.semantic-variable(padding, horizontal, micro);
+    }
   }
 
   &--full-width {
