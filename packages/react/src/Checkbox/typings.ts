@@ -36,4 +36,8 @@ export interface CheckboxPropsBase {
    * @default 'main'
    */
   mode?: CheckboxMode;
+  /**
+   * Visual severity: `info` for hint state, `error` for error state.
+   */
+  severity?: 'info' | 'error';
 }

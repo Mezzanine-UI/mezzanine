@@ -58,7 +58,7 @@ export interface CheckboxProps
    * Whether to show an editable input when checkbox is checked.
    * When `true`, an Input component will be displayed after the checkbox when checked.
    * If `editableInput` is not provided, default values will be used (name, id, placeholder).
-   * 
+   *
    * @example Simple usage
    * ```tsx
    * <Checkbox
@@ -68,7 +68,7 @@ export interface CheckboxProps
    *   onChange={(e) => setOtherValue(e.target.value)}
    * />
    * ```
-   * 
+   *
    * @example With custom editableInput
    * ```tsx
    * <Checkbox
@@ -82,12 +82,12 @@ export interface CheckboxProps
    *   }}
    * />
    * ```
-   * 
+   *
    * @example With react-hook-form
    * ```tsx
    * const { register, watch } = useForm();
    * const isOtherChecked = watch('options.other');
-   * 
+   *
    * <Checkbox
    *   label="其他"
    *   {...register('options.other')}
@@ -103,7 +103,7 @@ export interface CheckboxProps
   /**
    * Configuration for editable input that appears when checkbox is checked.
    * When `withEditInput` is `true` and this prop is not provided, default values will be used.
-   * 
+   *
    * Default values when not provided:
    * - `name`: `{checkboxName}_input` or `{checkboxId}_input`
    * - `id`: `{checkboxId}_input`
@@ -121,22 +121,22 @@ export interface CheckboxProps
   inputProps?: CheckboxInputElementProps;
   /**
    * The react ref passed to input element.
-   * 
+   *
    * @important When using with react-hook-form's `register`, pass the ref through this prop:
    * ```tsx
    * const { register } = useForm();
    * <Checkbox inputRef={register('fieldName').ref} name="fieldName" />
    * ```
-   * 
+   *
    * For CheckboxGroup, use `Controller` instead of `register` for better array value handling.
    */
   inputRef?: Ref<HTMLInputElement>;
   /**
    * The name attribute of the input element.
-   * 
+   *
    * @important When using with react-hook-form or inside a CheckboxGroup, this prop is recommended.
    * For CheckboxGroup, all checkboxes should share the same `name` attribute.
-   * 
+   *
    * When using with react-hook-form's `register`, ensure this matches the field name:
    * ```tsx
    * const { register } = useForm();
@@ -150,7 +150,7 @@ export interface CheckboxProps
   onChange?: ChangeEventHandler<HTMLInputElement>;
   /**
    * The value of checkbox. Used when checkbox is inside a CheckboxGroup.
-   * 
+   *
    * @important This prop is required when checkbox is inside a CheckboxGroup.
    * It is also recommended when integrating with react-hook-form.
    */
@@ -170,10 +170,8 @@ export interface CheckboxProps
 const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
   function Checkbox(props, ref) {
     const checkboxGroup = useContext(CheckboxGroupContext);
-    const {
-      disabled: disabledFromGroup,
-      name: nameFromGroup,
-    } = checkboxGroup || {};
+    const { disabled: disabledFromGroup, name: nameFromGroup } =
+      checkboxGroup || {};
     const {
       checked: checkedProp,
       className,
@@ -187,18 +185,16 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       inputRef: inputRefProp,
       label,
       mode = 'default',
-      size = 'main',
       name = nameFromGroup,
       onChange: onChangeProp,
+      severity = 'info',
+      size = 'main',
       value,
       withEditInput = false,
       ...rest
     } = props;
 
-    const {
-      name: nameFromInputProps,
-      ...restInputProps
-    } = inputProps || {};
+    const { name: nameFromInputProps, ...restInputProps } = inputProps || {};
 
     // Generate unique id if not provided
     const generatedId = useId();
@@ -269,7 +265,9 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
       }
 
       // Default values when editableInput is not provided
-      const defaultName = resolvedName ? `${resolvedName}_input` : `${finalInputId}_input`;
+      const defaultName = resolvedName
+        ? `${resolvedName}_input`
+        : `${finalInputId}_input`;
       const defaultId = `${finalInputId}_input`;
 
       return {
@@ -282,22 +280,21 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
     const shouldShowEditableInput = withEditInput && defaultEditableInput;
 
     return (
-      <div className={cx(
-        classes.host,
-        className,
-        {
-          [classes.checked]: isChecked,
-          [classes.indeterminate]: isIndeterminate,
-          [classes.disabled]: disabled,
-          [classes.mode(mode)]: mode !== 'default',
-        },
-        classes.size(size),
-      )}>
-        <label
-          ref={ref}
-          {...rest}
-          className={classes.labelContainer}
-        >
+      <div
+        className={cx(
+          classes.host,
+          className,
+          {
+            [classes.checked]: isChecked,
+            [classes.indeterminate]: isIndeterminate,
+            [classes.disabled]: disabled,
+            [classes.mode(mode)]: mode !== 'default',
+            ...(severity && { [classes.severity(severity)]: true }),
+          },
+          classes.size(size),
+        )}
+      >
+        <label ref={ref} {...rest} className={classes.labelContainer}>
           <div className={classes.inputContainer}>
             <div className={classes.inputContent}>
               <input
@@ -333,7 +330,10 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
                 />
               )}
               {mode !== 'chip' && isIndeterminate && (
-                <span aria-hidden="true" className={classes.indeterminateLine} />
+                <span
+                  aria-hidden="true"
+                  className={classes.indeterminateLine}
+                />
               )}
             </div>
           </div>
@@ -360,23 +360,28 @@ const Checkbox = forwardRef<HTMLLabelElement, CheckboxProps>(
             </span>
           )}
         </label>
-        {shouldShowEditableInput && defaultEditableInput && mode !== 'chip' && !indeterminate && (
-          <div className={classes.editableInputContainer}>
-            <Input
-              {...defaultEditableInput}
-              {...((!isChecked || disabled) && defaultEditableInput.disabled !== true ? { disabled: true } : {})}
-              inputRef={composeRefs([
-                defaultEditableInput.inputRef,
-                editableInputRef,
-              ])}
-              variant="base"
-            />
-          </div>
-        )}
+        {shouldShowEditableInput &&
+          defaultEditableInput &&
+          mode !== 'chip' &&
+          !indeterminate && (
+            <div className={classes.editableInputContainer}>
+              <Input
+                {...defaultEditableInput}
+                {...((!isChecked || disabled) &&
+                  defaultEditableInput.disabled !== true
+                  ? { disabled: true }
+                  : {})}
+                inputRef={composeRefs([
+                  defaultEditableInput.inputRef,
+                  editableInputRef,
+                ])}
+                variant="base"
+              />
+            </div>
+          )}
       </div>
     );
   },
 );
 
 export default Checkbox;
-
