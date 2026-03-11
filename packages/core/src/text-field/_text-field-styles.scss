@@ -352,6 +352,7 @@ $size-configs: (
   }
 
   &__suffix-content {
+    line-height: 0;
     transition: transition.standard(opacity, fast);
   }
 
