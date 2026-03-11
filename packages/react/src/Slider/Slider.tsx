@@ -2,6 +2,7 @@ import {
   ChangeEventHandler,
   FocusEventHandler,
   forwardRef,
+  KeyboardEvent as ReactKeyboardEvent,
   KeyboardEventHandler,
   Ref,
   useCallback,
@@ -31,7 +32,6 @@ import Input, { InputProps } from '../Input';
 import { IconDefinition } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 import Typography from '../Typography';
-import { offset } from '@floating-ui/react-dom';
 import { spacingPrefix } from '@mezzanine-ui/system/spacing';
 import { resolveNumericCSSVariable } from '../utils/get-css-variable-value';
 
@@ -189,6 +189,10 @@ function SliderComponent(props: SliderComponentProps) {
       resolveNumericCSSVariable(`--${spacingPrefix}-size-element-base`)) /
     2;
 
+  const handlerTooltipOffsetMainAxis =
+    resolveNumericCSSVariable(`--${spacingPrefix}-gap-base`) +
+    handlerTooltipExtraOffset;
+
   const getHandle = (handlerValue: number, index: number) => (
     <div
       className={cx(
@@ -198,8 +202,8 @@ function SliderComponent(props: SliderComponentProps) {
       )}
     >
       <Tooltip
+        offsetMainAxis={handlerTooltipOffsetMainAxis}
         options={{
-          middleware: [offset(handlerTooltipExtraOffset)],
           placement: 'top',
         }}
         title={handlerValue.toString()}
@@ -313,6 +317,21 @@ function SliderComponent(props: SliderComponentProps) {
   }
 
   const iconClickable = !disabled && !!onChange;
+
+  function handleIconKeyDown(
+    e: ReactKeyboardEvent<HTMLSpanElement>,
+    handler: () => void,
+  ) {
+    if (e.key === 'Enter') {
+      handler();
+      return;
+    }
+
+    if (e.key === ' ') {
+      e.preventDefault();
+      handler();
+    }
+  }
 
   function handlePrefixIconClick() {
     if (!iconClickable) return;
@@ -507,13 +526,13 @@ function SliderComponent(props: SliderComponentProps) {
       ) : null}
       {prefixIcon ? (
         <span
+          aria-label={iconClickable ? 'Decrease value' : undefined}
           className={classes.icon}
           onClick={iconClickable ? handlePrefixIconClick : undefined}
           onKeyDown={
             iconClickable
               ? (e) => {
-                  if (e.key === 'Enter' || e.key === ' ')
-                    handlePrefixIconClick();
+                  handleIconKeyDown(e, handlePrefixIconClick);
                 }
               : undefined
           }
@@ -588,13 +607,13 @@ function SliderComponent(props: SliderComponentProps) {
       ) : null}
       {suffixIcon ? (
         <span
+          aria-label={iconClickable ? 'Increase value' : undefined}
           className={classes.icon}
           onClick={iconClickable ? handleSuffixIconClick : undefined}
           onKeyDown={
             iconClickable
               ? (e) => {
-                  if (e.key === 'Enter' || e.key === ' ')
-                    handleSuffixIconClick();
+                  handleIconKeyDown(e, handleSuffixIconClick);
                 }
               : undefined
           }
