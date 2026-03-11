@@ -42,10 +42,11 @@ $bar-width: 2px !default;
       position: absolute;
       left: 0;
       top: spacing.semantic-variable(gap, tight);
+      bottom: spacing.semantic-variable(gap, tight);
       width: $bar-width;
-      height: calc(100% - 2 * spacing.semantic-variable(gap, tight));
+      height: auto;
       background-color: palette.semantic-variable('border', neutral-faint);
-      transition: transition.standard(background-color);
+      transition: transition.standard(background-color), transition.standard(top), transition.standard(bottom);
     }
 
     &:hover {
@@ -57,6 +58,8 @@ $bar-width: 2px !default;
       position: relative;
 
       &::before {
+        top: 0;
+        bottom: 0;
         background-color: palette.semantic-variable(text, brand);
       }
     }
@@ -70,6 +73,11 @@ $bar-width: 2px !default;
     &:focus-visible {
       background-color: palette.semantic-variable("background", base);
       box-shadow: effect.variable(focus, primary);
+
+      &::before {
+        top: 0;
+        bottom: 0;
+      }
     }
   }
 
