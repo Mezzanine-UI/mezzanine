@@ -48,8 +48,9 @@ export const inputClasses = {
   field: `${inputPrefix}__field`,
   number: `${inputPrefix}--number`,
   size: (size: InputSize) => `${inputPrefix}--${size}`,
-  spinners: `${inputPrefix}__spinners`,
+  measureWithSpinner: `${inputPrefix}--measure-with-spinner`,
+  measureWithoutSpinner: `${inputPrefix}--measure-without-spinner`,
+  passwordInput: `${inputPrefix}--password`,
   searchInput: `${inputPrefix}--search`,
-  currencyWithSpinner: `${inputPrefix}--currency-with-spinner`,
-  currencyWithoutSpinner: `${inputPrefix}--currency-without-spinner`,
+  spinners: `${inputPrefix}__spinners`,
 } as const;

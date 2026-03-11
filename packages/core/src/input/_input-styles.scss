@@ -64,7 +64,7 @@
     }
   }
 
-  &--currency-with-spinner {
+  &--measure-with-spinner {
     min-width: spacing.semantic-variable(size, container, concentrate-fixed);
 
     &:has(.#{text-field.$prefix}__prefix),
@@ -75,18 +75,20 @@
     }
   }
 
-  &--currency-without-spinner {
-    min-width: spacing.semantic-variable(size, container, small);
+  &--measure-without-spinner {
+    min-width: spacing.semantic-variable(size, container, concentrate-fixed);
 
     &:has(.#{text-field.$prefix}__prefix),
     &:has(.#{text-field.$prefix}__suffix),
     &.#{$prefix}--with-prefix-external-action,
     &.#{$prefix}--with-suffix-external-action {
-      min-width: spacing.semantic-variable(size, container, small);
+      min-width: spacing.semantic-variable(size, container, concentrate-fixed);
     }
   }
 
   &--number {
+    min-width: spacing.semantic-variable(size, element, loose);
+
     input {
       width: 100%;
       text-align: center;
@@ -113,6 +115,12 @@
 
     .#{$prefix}__spinners {
       margin: calc(spacing.semantic-variable(padding, vertical, tight) * -1) 0;
+    }
+  }
+
+  &--password {
+    &:has(.#{text-field.$prefix}__suffix) {
+      min-width: unset;
     }
   }
 
