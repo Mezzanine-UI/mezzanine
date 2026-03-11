@@ -507,6 +507,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const idSeed = useId();
     const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
 
+    const inputElementRef = useRef<HTMLInputElement>(null);
+    const onSetInputDisplay = useCallback((text: string) => {
+      if (inputElementRef.current) {
+        inputElementRef.current.value = text;
+      }
+    }, []);
+
     const {
       getPendingCreateList,
       handleActionCustom,
@@ -531,6 +538,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         : undefined,
       onFocus,
       onInsert,
+      onSetInputDisplay,
       options: optionsProp,
       setSearchText,
       stepByStepBulkCreate,
@@ -582,7 +590,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
-    const inputElementRef = useRef<HTMLInputElement>(null);
     const controlRef = useRef<HTMLElement>(null);
     const resetOptionsTimeoutRef = useRef<number | null>(null);
     const skipNextMultipleCloseResetRef = useRef(false);

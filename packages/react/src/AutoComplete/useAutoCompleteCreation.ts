@@ -21,6 +21,7 @@ type UseAutoCompleteCreationParams = {
   onChangeMultiple?: (newOptions: SelectValue[]) => void;
   onFocus: (focus: boolean) => void;
   onInsert?: (text: string, currentOptions: SelectValue[]) => SelectValue[];
+  onSetInputDisplay?: (text: string) => void;
   options: SelectValue[];
   stepByStepBulkCreate?: boolean;
   toggleOpen: (newOpen: boolean | ((prev: boolean) => boolean)) => void;
@@ -93,6 +94,7 @@ export function useAutoCompleteCreation({
   onChangeMultiple,
   onFocus,
   onInsert,
+  onSetInputDisplay,
   options,
   stepByStepBulkCreate = false,
   toggleOpen,
@@ -115,11 +117,6 @@ export function useAutoCompleteCreation({
     setSearchText('');
     setInsertText('');
   }, [setSearchText]);
-
-  const getFullParsedListInternal = useCallback(
-    (text: string): string[] => getFullParsedList(text, createSeparators, trimOnCreate),
-    [createSeparators, trimOnCreate],
-  );
 
   const processBulkCreate = useCallback<ProcessBulkCreate>(
     (text: string) => {
@@ -278,36 +275,26 @@ export function useAutoCompleteCreation({
       insertText.includes(sep),
     );
 
-    if (
-      stepByStepBulkCreate &&
-      hasSeparator &&
-      isMultiple
-    ) {
-      const fullParsed = getFullParsedListInternal(insertText);
+    if (stepByStepBulkCreate && hasSeparator && isMultiple) {
       const pending = getPendingCreateList(insertText);
       const firstPending = pending[0];
 
       if (!firstPending) {
-        const remaining = fullParsed.slice(1).join(
-          createSeparators[0] ?? ',',
-        );
-        setSearchText(remaining);
-        setInsertText(remaining);
-        if (!remaining.trim()) {
-          resetCreationInputs();
-        }
+        resetCreationInputs();
+        onSetInputDisplay?.('');
         return;
       }
 
       handleBulkCreate([firstPending]);
 
-      const remaining = fullParsed.slice(1).join(
-        createSeparators[0] ?? ',',
-      );
-      setSearchText(remaining);
-      setInsertText(remaining);
-      if (!remaining.trim()) {
+      const remaining = pending.slice(1).join(', ');
+      if (remaining) {
+        setSearchText(remaining);
+        setInsertText(remaining);
+        onSetInputDisplay?.(remaining);
+      } else {
         resetCreationInputs();
+        onSetInputDisplay?.('');
       }
       return;
     }
@@ -329,11 +316,11 @@ export function useAutoCompleteCreation({
   }, [
     addable,
     createSeparators,
-    getFullParsedListInternal,
     getPendingCreateList,
     handleBulkCreate,
     insertText,
     isMultiple,
+    onSetInputDisplay,
     processBulkCreate,
     resetCreationInputs,
     stepByStepBulkCreate,
@@ -359,9 +346,10 @@ export function useAutoCompleteCreation({
           if (stepByStepBulkCreate) {
             e.preventDefault();
             const pending = getPendingCreateList(pastedText);
-            const pendingJoin = pending.join(createSeparators[0] ?? ',');
+            const pendingJoin = pending.join(', ');
             setSearchText(pendingJoin);
             setInsertText(pendingJoin);
+            onSetInputDisplay?.(pendingJoin);
             return;
           }
 
@@ -382,6 +370,7 @@ export function useAutoCompleteCreation({
       handleBulkCreate,
       isMultiple,
       onInsert,
+      onSetInputDisplay,
       processBulkCreate,
       resetCreationInputs,
       setInsertText,
