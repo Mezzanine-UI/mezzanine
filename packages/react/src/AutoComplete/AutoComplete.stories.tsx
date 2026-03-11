@@ -582,6 +582,10 @@ const CreatableSingleComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -598,11 +602,11 @@ const CreatableSingleComponent = () => {
         </p>
         <AutoComplete
           addable
-          disabledOptionsFilter
           fullWidth
           mode="single"
           onChange={setSelection}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
           placeholder="輸入文字新增選項..."
           value={selection}
@@ -640,6 +644,10 @@ const CreatableMultipleComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -656,11 +664,11 @@ const CreatableMultipleComponent = () => {
         </p>
         <AutoComplete
           addable
-          disabledOptionsFilter
           fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
           placeholder="輸入文字新增選項..."
           value={selections}
@@ -698,6 +706,10 @@ const BulkCreateComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -734,6 +746,7 @@ const BulkCreateComponent = () => {
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
           placeholder="試試輸入: Apple, Banana, Cherry 或 Apple+Banana+Cherry"
           trimOnCreate

@@ -241,6 +241,13 @@ export interface AutoCompleteBaseProps
    * Only fires when `menuMaxHeight` is set and the list is scrollable.
    */
   onLeaveBottom?: () => void;
+  /**
+   * Called on blur when addable mode has unselected created items.
+   * Receives the cleaned options (unselected created items already removed).
+   * Use this to update your options state.
+   * Only called when `addable` is true and there are unselected created items.
+   */
+  onRemoveCreated?(cleanedOptions: SelectValue[]): void;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -401,6 +408,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       globalPortal = true,
       onReachBottom,
       onLeaveBottom,
+      onRemoveCreated,
     } = props;
     const shouldClearSearchTextOnBlur = clearSearchText;
 
@@ -520,7 +528,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         : undefined,
       onFocus,
       onInsert,
-      options,
+      options: optionsProp,
       setSearchText,
       toggleOpen,
       trimOnCreate,
@@ -601,6 +609,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         resetOptionsTimeoutRef.current = null;
       }, BLUR_RESET_OPTIONS_DELAY);
     }, [cancelSearch, clearPendingOptionsReset, resetSearchInputs, runSearch]);
+
+    const cleanupUnselectedCreated = useCallback(() => {
+      if (!creationEnabled || typeof onRemoveCreated !== 'function') return;
+
+      const cleanedOptions = filterUnselected(optionsProp);
+      if (cleanedOptions.length === optionsProp.length) return;
+
+      clearUnselected();
+      onRemoveCreated(cleanedOptions);
+    }, [clearUnselected, creationEnabled, filterUnselected, onRemoveCreated, optionsProp]);
 
     useEffect(
       () => () => {
@@ -713,6 +731,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           // Clear search text and insert text when blur clear behavior is enabled
           if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
             resetSearchInputsAndOptions();
+            cleanupUnselectedCreated();
           }
           inputProps?.onBlur?.(e);
           return;
@@ -723,6 +742,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         // Clear search text and insert text when blur clear behavior is enabled
         if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
           resetSearchInputsAndOptions();
+          cleanupUnselectedCreated();
         }
         inputProps?.onBlur?.(e);
         return;
@@ -732,6 +752,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       // Clear search text and insert text when blur clear behavior is enabled
       if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
         resetSearchInputsAndOptions();
+        cleanupUnselectedCreated();
       }
       inputProps?.onBlur?.(e);
     };
@@ -961,9 +982,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           }
 
           resetSearchInputsAndOptions();
+          cleanupUnselectedCreated();
         }
       },
       [
+        cleanupUnselectedCreated,
         isMultiple,
         menuId,
         open,
