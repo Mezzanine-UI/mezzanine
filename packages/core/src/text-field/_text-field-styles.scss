@@ -259,14 +259,6 @@ $size-configs: (
     gap: spacing.semantic-variable(gap, slim);
   }
 
-  &--tiny-gap {
-    gap: spacing.semantic-variable(padding, horizontal, tiny);
-
-    &:has(.#{$prefix}__suffix) {
-      padding-right: spacing.semantic-variable(padding, horizontal, micro);
-    }
-  }
-
   &--full-width {
     width: 100%;
   }
@@ -319,6 +311,14 @@ $size-configs: (
 
   &:has(.#{$prefix}__suffix) {
     padding-right: spacing.semantic-variable(padding, horizontal, cozy);
+  }
+
+  &--tiny-gap {
+    gap: spacing.semantic-variable(padding, horizontal, tiny);
+
+    &:has(.#{$prefix}__suffix) {
+      padding-right: spacing.semantic-variable(padding, horizontal, micro);
+    }
   }
 
   &__clear-icon {
