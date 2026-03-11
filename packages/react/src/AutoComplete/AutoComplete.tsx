@@ -516,7 +516,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
 
     const {
       getPendingCreateList,
-      handleActionCustom,
+      handleActionCustom: handleActionCustomBase,
       handleBulkCreate,
       handlePaste,
       insertText,
@@ -536,7 +536,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onChangeMultiple: isMultiple
         ? (onChangeProp as ((newOptions: SelectValue[]) => void) | undefined)
         : undefined,
-      onFocus,
       onInsert,
       onSetInputDisplay,
       options: optionsProp,
@@ -547,6 +546,14 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       value,
       wrappedOnChange: (chooseOption) => wrappedOnChange(chooseOption),
     });
+
+    const handleActionCustom = useCallback(() => {
+      suppressNextCloseRef.current = true;
+      handleActionCustomBase();
+      window.setTimeout(() => {
+        suppressNextCloseRef.current = false;
+      }, 0);
+    }, [handleActionCustomBase]);
 
     const { cancelSearch, isLoading, runSearch } = useAutoCompleteSearch({
       asyncData,
@@ -593,6 +600,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const controlRef = useRef<HTMLElement>(null);
     const resetOptionsTimeoutRef = useRef<number | null>(null);
     const skipNextMultipleCloseResetRef = useRef(false);
+    const suppressNextCloseRef = useRef(false);
     const composedRef = useComposeRefs([ref, controlRef]);
     const composedInputRef = useComposeRefs([inputRef, inputElementRef]);
     const clearPendingOptionsReset = useCallback(() => {
@@ -813,9 +821,13 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       [wrappedOnChange, value],
     );
 
-    // Convert SelectValue[] to DropdownOption[]
+    // Convert SelectValue[] to DropdownOption[] (created options first)
     const dropdownOptions: DropdownOption[] = useMemo(() => {
-      return options.map((option) => {
+      const sortedOptions = [...options].sort(
+        (a, b) =>
+          (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
+      );
+      return sortedOptions.map((option) => {
         const created = isCreated(option.id);
         const result: DropdownOption = {
           id: option.id,
@@ -989,6 +1001,12 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // Handle visibility change from Dropdown to prevent flickering
     const handleVisibilityChange = useCallback(
       (newOpen: boolean) => {
+        // Suppress spurious closes triggered immediately after create action
+        if (!newOpen && suppressNextCloseRef.current) {
+          suppressNextCloseRef.current = false;
+          return;
+        }
+
         // Only update if state actually changed to prevent flickering
         if (newOpen !== open) {
           toggleOpen(newOpen);

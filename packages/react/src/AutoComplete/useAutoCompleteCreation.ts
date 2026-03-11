@@ -19,7 +19,6 @@ type UseAutoCompleteCreationParams = {
   clearNewlyCreated: (ids?: string[]) => void;
   markUnselected: (ids: string[]) => void;
   onChangeMultiple?: (newOptions: SelectValue[]) => void;
-  onFocus: (focus: boolean) => void;
   onInsert?: (text: string, currentOptions: SelectValue[]) => SelectValue[];
   onSetInputDisplay?: (text: string) => void;
   options: SelectValue[];
@@ -92,7 +91,6 @@ export function useAutoCompleteCreation({
   markCreated,
   markUnselected,
   onChangeMultiple,
-  onFocus,
   onInsert,
   onSetInputDisplay,
   options,
@@ -216,8 +214,6 @@ export function useAutoCompleteCreation({
       if (itemsToAdd.length > 0) {
         if (isSingle && itemsToAdd[0]) {
           wrappedOnChange(itemsToAdd[0]);
-          toggleOpen(false);
-          onFocus(false);
           newlySelectedIds.add(itemsToAdd[0].id);
         } else if (isMultiple) {
           const currentValues = isMultipleValue(valueRef.current)
@@ -260,10 +256,8 @@ export function useAutoCompleteCreation({
       markCreated,
       markUnselected,
       onChangeMultiple,
-      onFocus,
       onInsert,
       options,
-      toggleOpen,
       wrappedOnChange,
     ],
   );
@@ -286,6 +280,7 @@ export function useAutoCompleteCreation({
       }
 
       handleBulkCreate([firstPending]);
+      toggleOpen(true);
 
       const remaining = pending.slice(1).join(', ');
       if (remaining) {
@@ -324,6 +319,7 @@ export function useAutoCompleteCreation({
     processBulkCreate,
     resetCreationInputs,
     stepByStepBulkCreate,
+    toggleOpen,
   ]);
 
   const handlePaste = useCallback(
