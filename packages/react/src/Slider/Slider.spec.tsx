@@ -1,3 +1,4 @@
+import { MinusIcon, PlusIcon } from '@mezzanine-ui/icons';
 import { cleanupHook, render, fireEvent, cleanup } from '../../__test-utils__';
 import {
   describeForwardRefToHTMLElement,
@@ -562,6 +563,120 @@ describe('<Slider />', () => {
         expect(onChange).not.toHaveBeenCalled();
         expect(secondInput.value).toBe('100');
       });
+    });
+  });
+
+  describe('icon interactions', () => {
+    it('should update single slider value with icon click and keyboard', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Slider
+          onChange={onChange}
+          prefixIcon={MinusIcon}
+          step={10}
+          suffixIcon={PlusIcon}
+          value={50}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const decrease = element.querySelector(
+        '[aria-label="Decrease value"]',
+      ) as HTMLSpanElement;
+      const increase = element.querySelector(
+        '[aria-label="Increase value"]',
+      ) as HTMLSpanElement;
+
+      fireEvent.click(decrease);
+
+      expect(onChange).toHaveBeenCalledWith(40);
+
+      onChange.mockClear();
+
+      fireEvent.keyDown(increase, { key: 'Enter' });
+
+      expect(onChange).toHaveBeenCalledWith(60);
+
+      onChange.mockClear();
+
+      const spaceEvent = new KeyboardEvent('keydown', {
+        bubbles: true,
+        cancelable: true,
+        key: ' ',
+      });
+
+      increase.dispatchEvent(spaceEvent);
+
+      expect(spaceEvent.defaultPrevented).toBe(true);
+      expect(onChange).toHaveBeenCalledWith(60);
+    });
+
+    it('should update range slider value with default prefix and suffix behavior', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Slider
+          onChange={onChange}
+          prefixIcon={MinusIcon}
+          step={10}
+          suffixIcon={PlusIcon}
+          value={[20, 70]}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const decrease = element.querySelector(
+        '[aria-label="Decrease value"]',
+      ) as HTMLSpanElement;
+      const increase = element.querySelector(
+        '[aria-label="Increase value"]',
+      ) as HTMLSpanElement;
+
+      fireEvent.click(decrease);
+
+      expect(onChange).toHaveBeenCalledWith([10, 70]);
+
+      onChange.mockClear();
+
+      fireEvent.click(increase);
+
+      expect(onChange).toHaveBeenCalledWith([20, 80]);
+    });
+
+    it('should not make icons interactive when disabled', () => {
+      const onChange = jest.fn();
+      const { getHostHTMLElement } = render(
+        <Slider
+          disabled
+          onChange={onChange}
+          prefixIcon={MinusIcon}
+          suffixIcon={PlusIcon}
+          value={50}
+        />,
+      );
+      const element = getHostHTMLElement();
+      const icons = element.querySelectorAll('.mzn-slider__icon');
+
+      expect(icons).toHaveLength(2);
+      expect(element.querySelector('[aria-label="Decrease value"]')).toBeNull();
+      expect(element.querySelector('[aria-label="Increase value"]')).toBeNull();
+      expect(icons[0].getAttribute('role')).toBeNull();
+      expect(icons[1].getAttribute('role')).toBeNull();
+      expect(icons[0].getAttribute('tabindex')).toBeNull();
+      expect(icons[1].getAttribute('tabindex')).toBeNull();
+    });
+
+    it('should not make icons interactive when onChange is missing', () => {
+      const { getHostHTMLElement } = render(
+        <Slider prefixIcon={MinusIcon} suffixIcon={PlusIcon} value={50} />,
+      );
+      const element = getHostHTMLElement();
+      const icons = element.querySelectorAll('.mzn-slider__icon');
+
+      expect(icons).toHaveLength(2);
+      expect(element.querySelector('[aria-label="Decrease value"]')).toBeNull();
+      expect(element.querySelector('[aria-label="Increase value"]')).toBeNull();
+      expect(icons[0].getAttribute('role')).toBeNull();
+      expect(icons[1].getAttribute('role')).toBeNull();
+      expect(icons[0].getAttribute('tabindex')).toBeNull();
+      expect(icons[1].getAttribute('tabindex')).toBeNull();
     });
   });
 
