@@ -50,8 +50,8 @@ export interface InputBaseProps
   defaultValue?: string;
   /**
    * Formatter function to transform the value for display.
-   * Common use cases: currency formatting (1000 → "1,000"), phone numbers, etc.
-   * Default to formatting number with commas for "currency" variant.
+   * Common use cases: measure formatting (1000 → "1,000"), phone numbers, etc.
+   * Default to formatting number with commas for "measure" variant.
    * @example
    * formatter={(value) => value.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
    */
@@ -96,7 +96,7 @@ export interface InputBaseProps
   /**
    * Parser function to extract the raw value from formatted display value.
    * Should reverse the formatter transformation.
-   * Default to removing commas for "currency" formatting.
+   * Default to removing commas for "measure" formatting.
    * @example
    * parser={(value) => value.replace(/,/g, '')}
    */
@@ -173,12 +173,12 @@ export type NumberInputProps = InputBaseProps &
   };
 
 /**
- * 5. Currency Input - Input with unit text and spinner buttons
+ * 5. Measure Input - Input with unit text and spinner buttons
  */
-export type CurrencyInputProps = InputBaseProps &
+export type MeasureInputProps = InputBaseProps &
   NumberInput &
   TextFieldAffixProps & {
-    variant: 'currency';
+    variant: 'measure';
     /**
      * Whether to show spinner buttons.
      * @default false
@@ -277,7 +277,7 @@ export type InputProps =
   | WithAffixInputProps
   | SearchInputProps
   | NumberInputProps
-  | CurrencyInputProps
+  | MeasureInputProps
   | ActionInputProps
   | SelectInputProps
   | PasswordInputProps;
@@ -324,7 +324,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     const formatter = useMemo(() => {
       if (formatterProp) return formatterProp;
 
-      if (variant === 'currency') {
+      if (variant === 'measure') {
         return (value: string) => formatNumberWithCommas(value);
       }
 
@@ -334,7 +334,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
     const parser = useMemo(() => {
       if (parserProp) return parserProp;
 
-      if (variant === 'currency') {
+      if (variant === 'measure') {
         return (value: string) =>
           parseNumberWithCommas(value)?.toString() ?? '';
       }
@@ -453,16 +453,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 
         break;
       }
-      case 'currency': {
+      case 'measure': {
         // 需注意 input type 不應是 number，因為要允許輸入格式化後的字串（例如 1,000）
-        const currencyProps = props as CurrencyInputProps;
-        const { step = 1, max, min, onSpinUp, onSpinDown } = currencyProps;
+        const measureProps = props as MeasureInputProps;
+        const { step = 1, max, min, onSpinUp, onSpinDown } = measureProps;
 
         // 預設置右對齊
         inputStyle = { textAlign: 'right' };
         // 允許填入 prefix/suffix
-        prefix = currencyProps.prefix;
-        suffix = currencyProps.suffix;
+        prefix = measureProps.prefix;
+        suffix = measureProps.suffix;
 
         defaultInputProps = {
           min: min,
@@ -470,7 +470,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
           step: step,
         };
 
-        if (currencyProps.showSpinner) {
+        if (measureProps.showSpinner) {
           hasSpinner = true;
 
           const handleSpinUp = () => {
@@ -501,7 +501,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
 
           suffix = (
             <>
-              {currencyProps.suffix}
+              {measureProps.suffix}
               <div className={classes.spinners}>
                 <SpinnerButton
                   type="up"
@@ -674,14 +674,16 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
       <div ref={ref} className={cx(classes.container, className)}>
         <div
           className={cx(classes.host, {
+            [classes.number]: variant === 'number',
+            [classes.passwordInput]: variant === 'password',
             [classes.withPrefixExternalAction]:
               prefixExternalButton !== undefined,
             [classes.withSuffixExternalAction]:
               suffixExternalButton !== undefined,
             [classes.searchInput]: variant === 'search',
-            [classes.currencyWithSpinner]: variant === 'currency' && hasSpinner,
-            [classes.currencyWithoutSpinner]:
-              variant === 'currency' && !hasSpinner,
+            [classes.measureWithSpinner]: variant === 'measure' && hasSpinner,
+            [classes.measureWithoutSpinner]:
+              variant === 'measure' && !hasSpinner,
           })}
         >
           {prefixExternalButton}
@@ -691,8 +693,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
               classes.field,
               {
                 [classes.number]: variant === 'number',
-                [textFieldClasses.tinyGap]:
-                  variant === 'currency' && hasSpinner,
+                [textFieldClasses.monoInput]: variant === 'measure',
+                [textFieldClasses.tinyGap]: variant === 'measure' && hasSpinner,
               },
               classes.size(size),
             )}

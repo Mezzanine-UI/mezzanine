@@ -356,7 +356,7 @@ export type {
   ActionInputProps,
   BaseInputProps,
   ClearableInput,
-  CurrencyInputProps,
+  MeasureInputProps,
   InputBaseProps,
   InputProps,
   InputSize,

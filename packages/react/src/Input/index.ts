@@ -7,7 +7,7 @@ export type {
   WithAffixInputProps,
   SearchInputProps,
   NumberInputProps,
-  CurrencyInputProps,
+  MeasureInputProps,
   ActionInputProps,
   SelectInputProps,
   WithPasswordStrengthIndicator,

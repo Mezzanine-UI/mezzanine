@@ -249,7 +249,7 @@ export const NumberInput = () => {
   );
 };
 
-export const CurrencyInput = () => {
+export const MeasureInput = () => {
   const containerStyle = { margin: '0 0 24px 0' };
   const typoStyle = { margin: '0 0 12px 0' };
 
@@ -265,7 +265,7 @@ export const CurrencyInput = () => {
       }}
     >
       <Typography variant="h2" style={typoStyle}>
-        currency Input
+        Measure Input
       </Typography>
 
       <section style={containerStyle}>
@@ -273,7 +273,7 @@ export const CurrencyInput = () => {
           Prefix
         </Typography>
         <Input
-          variant="currency"
+          variant="measure"
           prefix="NT"
           defaultValue="1000"
           placeholder="0"
@@ -285,7 +285,7 @@ export const CurrencyInput = () => {
           Suffix
         </Typography>
         <Input
-          variant="currency"
+          variant="measure"
           suffix="NT"
           min={0}
           max={10000}
@@ -298,7 +298,7 @@ export const CurrencyInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Text Only
         </Typography>
-        <Input variant="currency" defaultValue="175" />
+        <Input variant="measure" defaultValue="175" />
       </section>
 
       <section style={containerStyle}>
@@ -306,7 +306,7 @@ export const CurrencyInput = () => {
           Spinner
         </Typography>
         <Input
-          variant="currency"
+          variant="measure"
           value={spinNumber}
           onChange={(evt) => setSpinNumber(evt.target.value)}
           min={0}
@@ -326,14 +326,14 @@ export const CurrencyInput = () => {
         <Typography variant="h3" style={typoStyle}>
           Size Main
         </Typography>
-        <Input variant="currency" size="main" defaultValue="70" />
+        <Input variant="measure" size="main" defaultValue="70" />
       </section>
 
       <section style={containerStyle}>
         <Typography variant="h3" style={typoStyle}>
           Size Sub
         </Typography>
-        <Input variant="currency" size="sub" defaultValue="70" />
+        <Input variant="measure" size="sub" defaultValue="70" />
       </section>
     </div>
   );
@@ -716,7 +716,7 @@ export const FormatterAndParser = () => {
           Currency Format (Thousand Separator)
         </Typography>
         <Input
-          variant="currency"
+          variant="measure"
           showSpinner
           placeholder="輸入金額"
           value={currencyValue}
