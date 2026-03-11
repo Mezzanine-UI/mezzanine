@@ -112,6 +112,7 @@ export default function DropdownAction(props: DropdownActionProps) {
                 size={actionButtonSize}
                 variant="base-ghost"
                 {...customActionButtonProps}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={onClick}
               >
                 {actionLabel}

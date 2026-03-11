@@ -13,6 +13,7 @@ import { useControlValueState } from './useControlValueState';
 
 export interface UseAutoCompleteBaseValueControl {
   disabledOptionsFilter: boolean;
+  getOptionsFilterQuery?: (searchText: string) => string | undefined;
   onChange?(newOptions: SelectValue[] | SelectValue | null): any;
   onClear?(e: MouseEvent<Element>): void;
   onClose?(): void;
@@ -76,6 +77,7 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const {
     defaultValue,
     disabledOptionsFilter,
+    getOptionsFilterQuery,
     mode,
     onChange,
     onClear: onClearProp,
@@ -96,9 +98,11 @@ function useAutoCompleteBaseValueControl(props: UseAutoCompleteValueControl) {
   const [searchText, setSearchText] = useState<string>('');
   const [focused, setFocused] = useState<boolean>(false);
 
+  const filterQuery = getOptionsFilterQuery?.(searchText) ?? searchText;
+
   /** escape all special characters */
   const searchTextReg = new RegExp(
-    searchText.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d'),
+    filterQuery.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&').replace(/-/g, '\\x2d'),
   );
 
   const onFocus = useCallback((focus: boolean) => {

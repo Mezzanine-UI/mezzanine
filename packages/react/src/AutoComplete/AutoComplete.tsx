@@ -46,7 +46,7 @@ import type {
 } from '../Select/typings';
 import { SelectValue } from '../Select/typings';
 import { PickRenameMulti } from '../utils/general';
-import { useAutoCompleteCreation } from './useAutoCompleteCreation';
+import { getFullParsedList, useAutoCompleteCreation } from './useAutoCompleteCreation';
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
@@ -211,6 +211,13 @@ export interface AutoCompleteBaseProps
    */
   trimOnCreate?: boolean;
   /**
+   * When true, pasted bulk text is kept in the input and user creates one item at a time
+   * (create button shows only the first pending item; after create, input updates to remaining).
+   * When false, pasted bulk text creates all items at once (default).
+   * @default false
+   */
+  stepByStepBulkCreate?: boolean;
+  /**
    * Custom text for the create action button.
    * @default '建立 "{text}"'
    */
@@ -241,6 +248,13 @@ export interface AutoCompleteBaseProps
    * Only fires when `menuMaxHeight` is set and the list is scrollable.
    */
   onLeaveBottom?: () => void;
+  /**
+   * Called on blur when addable mode has unselected created items.
+   * Receives the cleaned options (unselected created items already removed).
+   * Use this to update your options state.
+   * Only called when `addable` is true and there are unselected created items.
+   */
+  onRemoveCreated?(cleanedOptions: SelectValue[]): void;
 }
 
 export type AutoCompleteMultipleProps = AutoCompleteBaseProps & {
@@ -327,23 +341,6 @@ function isSingleValue(
 }
 
 /**
- * Check if an option is already selected
- */
-function isOptionSelected(
-  option: SelectValue,
-  value: SelectValue[] | SelectValue | null | undefined,
-  isMultiple: boolean,
-): boolean {
-  if (isMultiple && isMultipleValue(value)) {
-    return value.some((v) => v.id === option.id);
-  }
-  if (!isMultiple && isSingleValue(value)) {
-    return value.id === option.id;
-  }
-  return false;
-}
-
-/**
  * The AutoComplete component for react. <br />
  * Note that if you need search for ONLY given options, not included your typings,
  * should considering using the `Select` component with `onSearch` prop.
@@ -393,6 +390,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       searchDebounceTime = 300,
       searchTextControlRef,
       size,
+      stepByStepBulkCreate = false,
       trimOnCreate = true,
       value: valueProp,
       createActionText,
@@ -401,6 +399,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       globalPortal = true,
       onReachBottom,
       onLeaveBottom,
+      onRemoveCreated,
     } = props;
     const shouldClearSearchTextOnBlur = clearSearchText;
 
@@ -435,38 +434,49 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } = useAutoCompleteValueControl(
       isMultiple
         ? {
-          defaultValue: isMultipleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          mode: 'multiple',
-          onChange: onChangeProp as
-            | ((newOptions: SelectValue[]) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value: isMultipleValue(valueProp) ? valueProp : undefined,
-        }
-        : {
-          defaultValue: isSingleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          mode: 'single',
-          onChange: onChangeProp as
-            | ((newOption: SelectValue | null) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value:
-            isSingleValue(valueProp) || valueProp === null
-              ? valueProp
+            defaultValue: isMultipleValue(defaultValue)
+              ? defaultValue
               : undefined,
-        },
+            disabledOptionsFilter,
+            getOptionsFilterQuery:
+              stepByStepBulkCreate && addable && onInsert
+                ? (st) => {
+                    const full = getFullParsedList(
+                      st,
+                      createSeparators,
+                      trimOnCreate,
+                    );
+                    return full.length > 1 ? full[0] ?? undefined : undefined;
+                  }
+                : undefined,
+            mode: 'multiple',
+            onChange: onChangeProp as
+              | ((newOptions: SelectValue[]) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value: isMultipleValue(valueProp) ? valueProp : undefined,
+          }
+        : {
+            defaultValue: isSingleValue(defaultValue)
+              ? defaultValue
+              : undefined,
+            disabledOptionsFilter,
+            mode: 'single',
+            onChange: onChangeProp as
+              | ((newOption: SelectValue | null) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value:
+              isSingleValue(valueProp) || valueProp === null
+                ? valueProp
+                : undefined,
+          },
     );
 
     /** export set search text action to props (allow user to customize search text) */
@@ -497,8 +507,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const idSeed = useId();
     const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
 
+    const inputElementRef = useRef<HTMLInputElement>(null);
+    const onSetInputDisplay = useCallback((text: string) => {
+      if (inputElementRef.current) {
+        inputElementRef.current.value = text;
+      }
+    }, []);
+
     const {
-      handleActionCustom,
+      getPendingCreateList,
+      handleActionCustom: handleActionCustomBase,
       handleBulkCreate,
       handlePaste,
       insertText,
@@ -518,15 +536,24 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onChangeMultiple: isMultiple
         ? (onChangeProp as ((newOptions: SelectValue[]) => void) | undefined)
         : undefined,
-      onFocus,
       onInsert,
-      options,
+      onSetInputDisplay,
+      options: optionsProp,
       setSearchText,
+      stepByStepBulkCreate,
       toggleOpen,
       trimOnCreate,
       value,
       wrappedOnChange: (chooseOption) => wrappedOnChange(chooseOption),
     });
+
+    const handleActionCustom = useCallback(() => {
+      suppressNextCloseRef.current = true;
+      handleActionCustomBase();
+      window.setTimeout(() => {
+        suppressNextCloseRef.current = false;
+      }, 0);
+    }, [handleActionCustomBase]);
 
     const { cancelSearch, isLoading, runSearch } = useAutoCompleteSearch({
       asyncData,
@@ -570,10 +597,10 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     );
 
     const nodeRef = useRef<HTMLDivElement>(null);
-    const inputElementRef = useRef<HTMLInputElement>(null);
     const controlRef = useRef<HTMLElement>(null);
     const resetOptionsTimeoutRef = useRef<number | null>(null);
     const skipNextMultipleCloseResetRef = useRef(false);
+    const suppressNextCloseRef = useRef(false);
     const composedRef = useComposeRefs([ref, controlRef]);
     const composedInputRef = useComposeRefs([inputRef, inputElementRef]);
     const clearPendingOptionsReset = useCallback(() => {
@@ -601,6 +628,16 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         resetOptionsTimeoutRef.current = null;
       }, BLUR_RESET_OPTIONS_DELAY);
     }, [cancelSearch, clearPendingOptionsReset, resetSearchInputs, runSearch]);
+
+    const cleanupUnselectedCreated = useCallback(() => {
+      if (!creationEnabled || typeof onRemoveCreated !== 'function') return;
+
+      const cleanedOptions = filterUnselected(optionsProp);
+      if (cleanedOptions.length === optionsProp.length) return;
+
+      clearUnselected();
+      onRemoveCreated(cleanedOptions);
+    }, [clearUnselected, creationEnabled, filterUnselected, onRemoveCreated, optionsProp]);
 
     useEffect(
       () => () => {
@@ -667,8 +704,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       setInsertText(nextSearch);
       onSearchTextChange?.(nextSearch);
 
-      if (autoSelectMatchingOption(nextSearch)) return;
-
       if (!nextSearch) {
         cancelSearch();
         runSearch(nextSearch, { immediate: true });
@@ -713,6 +748,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           // Clear search text and insert text when blur clear behavior is enabled
           if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
             resetSearchInputsAndOptions();
+            cleanupUnselectedCreated();
           }
           inputProps?.onBlur?.(e);
           return;
@@ -723,6 +759,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         // Clear search text and insert text when blur clear behavior is enabled
         if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
           resetSearchInputsAndOptions();
+          cleanupUnselectedCreated();
         }
         inputProps?.onBlur?.(e);
         return;
@@ -732,40 +769,65 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       // Clear search text and insert text when blur clear behavior is enabled
       if (shouldClearSearchTextOnBlur && !shouldDeferMultipleBlurReset) {
         resetSearchInputsAndOptions();
+        cleanupUnselectedCreated();
       }
       inputProps?.onBlur?.(e);
     };
 
     const handleClear = useCallback(
       (e: ReactMouseEvent<Element>) => {
+        if (isSingle && isSingleValue(value)) {
+          markUnselected([value.id]);
+        }
         onClear(e);
         resetSearchInputs();
       },
-      [onClear, resetSearchInputs],
+      [isSingle, markUnselected, onClear, resetSearchInputs, value],
     );
 
     const onClickSuffixActionIcon = () => {
       toggleOpen((prev) => !prev);
     };
 
-    const searchTextExistWithoutOption: boolean =
-      !!searchText &&
-      options.find((option) => option.name === searchText) === undefined;
+    const hasStepByStepBulkSeparator =
+      stepByStepBulkCreate &&
+      createSeparators.some((sep) => insertText.includes(sep));
+    const firstPendingText = hasStepByStepBulkSeparator
+      ? getPendingCreateList(insertText)[0]
+      : undefined;
+
+    const searchTextExistWithoutOption: boolean = !!(
+      (firstPendingText
+        ? firstPendingText &&
+          options.find((option) => option.name === firstPendingText) ===
+            undefined
+        : searchText &&
+          options.find((option) => option.name === searchText) === undefined)
+    );
 
     const shouldShowCreateAction = !!(
       searchTextExistWithoutOption &&
       creationEnabled &&
-      insertText
+      (firstPendingText ?? insertText)
     );
+
+    const createActionDisplayText =
+      firstPendingText !== undefined && firstPendingText !== ''
+        ? firstPendingText
+        : insertText;
 
     const context = useMemo(
       () => ({ onChange: wrappedOnChange, value }),
       [wrappedOnChange, value],
     );
 
-    // Convert SelectValue[] to DropdownOption[]
+    // Convert SelectValue[] to DropdownOption[] (created options first)
     const dropdownOptions: DropdownOption[] = useMemo(() => {
-      return options.map((option) => {
+      const sortedOptions = [...options].sort(
+        (a, b) =>
+          (isCreated(b.id) ? 1 : 0) - (isCreated(a.id) ? 1 : 0),
+      );
+      return sortedOptions.map((option) => {
         const created = isCreated(option.id);
         const result: DropdownOption = {
           id: option.id,
@@ -799,7 +861,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     }, [mode, value]);
 
     // Disable input when loading
-    const isInputDisabled = disabled || isLoading;
+    const isInputDisabled = disabled || (!asyncData && isLoading);
 
     const dropdownStatus: DropdownStatusType | undefined = isLoading
       ? 'loading'
@@ -887,6 +949,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       addable: creationEnabled,
       createSeparators,
       dropdownOptions,
+      handleActionCustom,
       handleBulkCreate,
       handleDropdownSelect,
       inputPropsOnKeyDown: inputProps?.onKeyDown,
@@ -902,6 +965,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       setInsertText,
       setListboxHasVisualFocus,
       setSearchText,
+      stepByStepBulkCreate,
       toggleOpen,
       value,
       wrappedOnChange,
@@ -937,6 +1001,12 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     // Handle visibility change from Dropdown to prevent flickering
     const handleVisibilityChange = useCallback(
       (newOpen: boolean) => {
+        // Suppress spurious closes triggered immediately after create action
+        if (!newOpen && suppressNextCloseRef.current) {
+          suppressNextCloseRef.current = false;
+          return;
+        }
+
         // Only update if state actually changed to prevent flickering
         if (newOpen !== open) {
           toggleOpen(newOpen);
@@ -961,9 +1031,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
           }
 
           resetSearchInputsAndOptions();
+          cleanupUnselectedCreated();
         }
       },
       [
+        cleanupUnselectedCreated,
         isMultiple,
         menuId,
         open,
@@ -979,57 +1051,6 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
         inputProps?.onPaste?.(e);
       },
       [handlePaste, inputProps],
-    );
-
-    const autoSelectMatchingOption = useCallback(
-      (keyword: string) => {
-        if (!creationEnabled || !keyword.length) return false;
-
-        const matchingOption = options.find(
-          (option) => option.name === keyword,
-        );
-
-        if (!matchingOption) return false;
-
-        if (isSingle) {
-          if (!value) {
-            // Update searchText first to prevent showing old value
-            setSearchText(matchingOption.name);
-            setInsertText(matchingOption.name);
-            // Then update value and focus state
-            wrappedOnChange(matchingOption);
-            toggleOpen(false);
-            onFocus(false);
-            return true;
-          }
-          return false;
-        }
-
-        const alreadySelected = isOptionSelected(
-          matchingOption,
-          value,
-          isMultiple,
-        );
-
-        if (!alreadySelected) {
-          wrappedOnChange(matchingOption);
-          return true;
-        }
-
-        return false;
-      },
-      [
-        creationEnabled,
-        isMultiple,
-        isSingle,
-        onFocus,
-        options,
-        setSearchText,
-        setInsertText,
-        toggleOpen,
-        value,
-        wrappedOnChange,
-      ],
     );
 
     const resolvedInputProps: SelectTriggerInputProps = {
@@ -1063,8 +1084,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             actionText={
               shouldShowCreateAction
                 ? createActionText
-                  ? createActionText(insertText)
-                  : createActionTextTemplate.replace('{text}', insertText)
+                  ? createActionText(createActionDisplayText)
+                  : createActionTextTemplate.replace(
+                      '{text}',
+                      createActionDisplayText,
+                    )
                 : undefined
             }
             activeIndex={activeIndex}
@@ -1085,7 +1109,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             onSelect={handleDropdownSelect}
             onVisibilityChange={handleVisibilityChange}
             open={open}
-            options={dropdownOptions}
+            options={asyncData && isLoading ? [] : dropdownOptions}
             placement="bottom"
             sameWidth
             showDropdownActions={shouldShowCreateAction}
@@ -1110,7 +1134,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
               mode={mode}
               onTagClose={wrappedOnChange}
               onClear={handleClear}
-              overflowStrategy={overflowStrategy}
+              overflowStrategy={isMultiple ? (overflowStrategy ?? 'wrap') : overflowStrategy}
               placeholder={getPlaceholder()}
               prefix={prefix}
               readOnly={false}

@@ -582,6 +582,10 @@ const CreatableSingleComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -598,11 +602,11 @@ const CreatableSingleComponent = () => {
         </p>
         <AutoComplete
           addable
-          disabledOptionsFilter
           fullWidth
           mode="single"
           onChange={setSelection}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
           placeholder="輸入文字新增選項..."
           value={selection}
@@ -640,6 +644,10 @@ const CreatableMultipleComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -656,11 +664,11 @@ const CreatableMultipleComponent = () => {
         </p>
         <AutoComplete
           addable
-          disabledOptionsFilter
           fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
           placeholder="輸入文字新增選項..."
           value={selections}
@@ -698,6 +706,10 @@ const BulkCreateComponent = () => {
     [],
   );
 
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
   return (
     <div
       style={{
@@ -713,29 +725,30 @@ const BulkCreateComponent = () => {
           <p>功能：</p>
           <ul style={{ marginLeft: '20px', lineHeight: '1.8' }}>
             <li>
-              使用分隔字元批次新增：輸入 &quot;Apple, Banana, Cherry&quot; 或
-              &quot;Apple+Banana+Cherry&quot;
+              貼上後逐個確認：貼上如 &quot;Grid chart, Griddle, Grid&quot;
+              時，輸入框保留字串，dropdown 僅顯示「建立 &quot;Grid chart&quot;」
             </li>
-            <li>按 Enter 新增：輸入文字後按 Enter 鍵</li>
             <li>
-              貼上批次新增：貼上包含分隔字元的文字（如 &quot;Item1, Item2,
-              Item3&quot;）
+              依序建立：點擊建立後只新增第一個項目，輸入框更新為剩餘字串，再建立下一筆
             </li>
-            <li>自動去除前後空白</li>
-            <li>避免重複新增</li>
-            <li>自動清理未選擇的新增選項</li>
+            <li>已存在選項會從字串中濾除，不會重複顯示建立按鈕</li>
+            <li>以第一個待建立字串過濾選項；無符合時顯示「沒有符合的項目」</li>
+            <li>按 Enter 或點擊建立按鈕新增單筆</li>
+            <li>自動去除前後空白、自動清理未選擇的新增選項</li>
           </ul>
         </div>
         <AutoComplete
           addable
           createSeparators={[',', '+', '\n']}
-          disabledOptionsFilter
+          emptyText="沒有符合的項目"
           fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
           options={options}
-          placeholder="試試輸入: Apple, Banana, Cherry 或 Apple+Banana+Cherry"
+          placeholder="試試貼上: Grid chart, Griddle, Grid"
+          stepByStepBulkCreate
           trimOnCreate
           value={selections}
         />
@@ -788,8 +801,33 @@ export const BulkCreate: StoryObj<typeof AutoComplete> = {
 };
 
 const InputPositionInsideComponent = () => {
-  const [selection, setSelection] = useState<SelectValue | null>(null);
   const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState<SelectValue[]>(originOptions);
+  const [selections, setSelections] = useState<SelectValue[]>([]);
+  const nextIdRef = useRef(originOptions.length + 1);
+
+  const handleInsert = useCallback(
+    (text: string, currentOptions: SelectValue[]): SelectValue[] => {
+      const newOption: SelectValue = {
+        id: `new-${nextIdRef.current++}`,
+        name: text,
+      };
+      const updatedOptions = [...currentOptions, newOption];
+
+      setOptions(updatedOptions);
+
+      return updatedOptions;
+    },
+    [],
+  );
+
+  const handleRemoveCreated = useCallback((cleanedOptions: SelectValue[]) => {
+    setOptions(cleanedOptions);
+  }, []);
+
+  const closeDropdown = useCallback(() => {
+    setOpen(false);
+  }, []);
 
   return (
     <div
@@ -797,48 +835,61 @@ const InputPositionInsideComponent = () => {
         display: 'flex',
         flexDirection: 'column',
         gap: '24px',
-        maxWidth: '400px',
+        maxWidth: '200px',
       }}
     >
       <div>
-        <h3>輸入框在內部</h3>
+        <h3>多選模式 - 可新增選項</h3>
         <p style={{ fontSize: '12px', color: '#666', marginBottom: '8px' }}>
-          點擊 Button 展開 AutoComplete，輸入框會顯示在下拉選單內部
+          輸入文字後按 Enter 或點擊 + 號新增選項
         </p>
         <div
           style={{
             display: 'flex',
-            gap: '8px',
-            alignItems: 'flex-start',
-            flexDirection: 'column',
+            flexWrap: 'wrap',
+            gap: '4px',
+            width: '100%',
+            marginBlock: '8px',
           }}
         >
-          <Tag
-            onMouseDown={(event) => event.stopPropagation()}
-            onClick={(event) => {
-              event.stopPropagation();
-              setOpen(!open);
-            }}
-            type="addable"
-            label={open ? '收起選單' : '展開選單'}
-          />
-          <div style={{ flex: 1 }}>
-            <AutoComplete
-              fullWidth
-              inputPosition="inside"
-              mode="single"
-              onChange={setSelection}
-              onVisibilityChange={setOpen}
-              open={open}
-              options={originOptions}
-              placeholder="請選擇或輸入..."
-              value={selection}
+          {selections.map((selection) => (
+            <Tag
+              key={selection.id}
+              label={selection.name}
+              type="dismissable"
+              onClose={() =>
+                setSelections(selections.filter((s) => s.id !== selection.id))
+              }
             />
-          </div>
+          ))}
         </div>
+        <Tag
+          onMouseDown={(event) => event.stopPropagation()}
+          onClick={(event) => {
+            event.stopPropagation();
+            setOpen(!open);
+          }}
+          type="addable"
+          label={open ? '收起選單' : '展開選單'}
+        />
+        <AutoComplete
+          addable
+          fullWidth
+          mode="multiple"
+          inputPosition="inside"
+          onChange={setSelections}
+          onInsert={handleInsert}
+          onRemoveCreated={handleRemoveCreated}
+          onVisibilityChange={closeDropdown}
+          options={options}
+          open={open}
+          placeholder="輸入文字新增選項..."
+          value={selections}
+        />
       </div>
       <div>
-        <p>已選擇: {selection?.name || '無'}</p>
+        <p>已選擇數量: {selections.length}</p>
+        <p>選項數量: {options.length}</p>
       </div>
     </div>
   );

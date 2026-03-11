@@ -576,6 +576,125 @@ describe('<AutoComplete />', () => {
     });
   });
 
+  describe('prop: stepByStepBulkCreate', () => {
+    it('should keep pasted text in input and show create button for first item only', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string, currentOptions: SelectValue[]) => [
+        ...currentOptions,
+        { id: `new-${text}`, name: text },
+      ]);
+      const onChange = jest.fn();
+
+      const { container } = render(
+        <AutoComplete
+          addable
+          createSeparators={[',']}
+          mode="multiple"
+          onInsert={onInsert}
+          onChange={onChange}
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = container.querySelector('input');
+      expect(input).not.toBeNull();
+      await act(async () => {
+        await user.click(input!);
+      });
+
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'Grid chart, Griddle, Grid' },
+      });
+
+      await waitFor(() => {
+        const trimmed = 'Grid chart, Griddle, Grid'.split(',').map((s) => s.trim()).join(',');
+        expect(input!.value).toBe(trimmed);
+      });
+
+      await waitFor(() => {
+        const createButton = screen.queryByText(/建立.*Grid chart/i);
+        expect(createButton).toBeInTheDocument();
+      });
+    });
+
+    it('should update input to remaining and show next create after clicking create', async () => {
+      jest.useFakeTimers();
+      const user = userEvent.setup({ delay: null });
+
+      const onInsert = jest.fn((text: string, currentOptions: SelectValue[]) => [
+        ...currentOptions,
+        { id: `new-${text}`, name: text },
+      ]);
+      const onChange = jest.fn();
+
+      const { container } = render(
+        <AutoComplete
+          addable
+          createSeparators={[',']}
+          mode="multiple"
+          onInsert={onInsert}
+          onChange={onChange}
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = container.querySelector('input');
+      await act(async () => {
+        await user.click(input!);
+      });
+
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'A, B, C' },
+      });
+
+      await waitFor(() => {
+        expect(input!.value).toBe('A,B,C');
+      });
+
+      const createButton = await screen.findByText(/建立.*"A"/i);
+      fireEvent.click(createButton);
+
+      await waitFor(() => {
+        expect(input!.value).toBe('B,C');
+      });
+
+      await waitFor(() => {
+        const nextCreateButton = screen.queryByText(/建立.*"B"/i);
+        expect(nextCreateButton).toBeInTheDocument();
+      });
+    });
+
+    it('should filter out existing options from pasted string', async () => {
+      const { container } = render(
+        <AutoComplete
+          addable
+          createSeparators={[',']}
+          mode="multiple"
+          onInsert={(text, opts) => [...opts, { id: `new-${text}`, name: text }]}
+          options={defaultOptions}
+          stepByStepBulkCreate
+          trimOnCreate
+        />,
+      );
+
+      const input = container.querySelector('input');
+      fireEvent.focus(input!);
+      fireEvent.paste(input!, {
+        clipboardData: { getData: () => 'foo, NewItem, bar' },
+      });
+
+      await waitFor(() => {
+        expect(input!.value).toBe('NewItem');
+      });
+    });
+  });
+
   describe('prop: asyncData', () => {
     it('should show loading state when asyncData is true and onSearch returns promise', async () => {
       jest.useFakeTimers();
