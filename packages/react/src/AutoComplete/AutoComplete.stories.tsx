@@ -725,30 +725,34 @@ const BulkCreateComponent = () => {
           <p>功能：</p>
           <ul style={{ marginLeft: '20px', lineHeight: '1.8' }}>
             <li>
-              使用分隔字元批次新增：輸入 &quot;Apple, Banana, Cherry&quot; 或
-              &quot;Apple+Banana+Cherry&quot;
+              貼上後逐個確認：貼上如 &quot;Grid chart, Griddle, Grid&quot;
+              時，輸入框保留字串，dropdown 僅顯示「建立 &quot;Grid chart&quot;」
             </li>
-            <li>按 Enter 新增：輸入文字後按 Enter 鍵</li>
             <li>
-              貼上批次新增：貼上包含分隔字元的文字（如 &quot;Item1, Item2,
-              Item3&quot;）
+              依序建立：點擊建立後只新增第一個項目，輸入框更新為剩餘字串，再建立下一筆
             </li>
-            <li>自動去除前後空白</li>
-            <li>避免重複新增</li>
-            <li>自動清理未選擇的新增選項</li>
+            <li>
+              已存在選項會從字串中濾除，不會重複顯示建立按鈕
+            </li>
+            <li>
+              以第一個待建立字串過濾選項；無符合時顯示「沒有符合的項目」
+            </li>
+            <li>按 Enter 或點擊建立按鈕新增單筆</li>
+            <li>自動去除前後空白、自動清理未選擇的新增選項</li>
           </ul>
         </div>
         <AutoComplete
           addable
           createSeparators={[',', '+', '\n']}
-          disabledOptionsFilter
+          emptyText="沒有符合的項目"
           fullWidth
           mode="multiple"
           onChange={setSelections}
           onInsert={handleInsert}
           onRemoveCreated={handleRemoveCreated}
           options={options}
-          placeholder="試試輸入: Apple, Banana, Cherry 或 Apple+Banana+Cherry"
+          placeholder="試試貼上: Grid chart, Griddle, Grid"
+          stepByStepBulkCreate
           trimOnCreate
           value={selections}
         />

@@ -46,7 +46,7 @@ import type {
 } from '../Select/typings';
 import { SelectValue } from '../Select/typings';
 import { PickRenameMulti } from '../utils/general';
-import { useAutoCompleteCreation } from './useAutoCompleteCreation';
+import { getFullParsedList, useAutoCompleteCreation } from './useAutoCompleteCreation';
 import { useAutoCompleteKeyboard } from './useAutoCompleteKeyboard';
 import { useAutoCompleteSearch } from './useAutoCompleteSearch';
 import { useCreationTracker } from './useCreationTracker';
@@ -210,6 +210,13 @@ export interface AutoCompleteBaseProps
    * @default true
    */
   trimOnCreate?: boolean;
+  /**
+   * When true, pasted bulk text is kept in the input and user creates one item at a time
+   * (create button shows only the first pending item; after create, input updates to remaining).
+   * When false, pasted bulk text creates all items at once (default).
+   * @default false
+   */
+  stepByStepBulkCreate?: boolean;
   /**
    * Custom text for the create action button.
    * @default '建立 "{text}"'
@@ -383,6 +390,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       searchDebounceTime = 300,
       searchTextControlRef,
       size,
+      stepByStepBulkCreate = false,
       trimOnCreate = true,
       value: valueProp,
       createActionText,
@@ -426,38 +434,49 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     } = useAutoCompleteValueControl(
       isMultiple
         ? {
-          defaultValue: isMultipleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          mode: 'multiple',
-          onChange: onChangeProp as
-            | ((newOptions: SelectValue[]) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value: isMultipleValue(valueProp) ? valueProp : undefined,
-        }
-        : {
-          defaultValue: isSingleValue(defaultValue)
-            ? defaultValue
-            : undefined,
-          disabledOptionsFilter,
-          mode: 'single',
-          onChange: onChangeProp as
-            | ((newOption: SelectValue | null) => void)
-            | undefined,
-          onClear: onClearProp,
-          onClose: () => toggleOpen(false),
-          onSearch,
-          options: optionsProp,
-          value:
-            isSingleValue(valueProp) || valueProp === null
-              ? valueProp
+            defaultValue: isMultipleValue(defaultValue)
+              ? defaultValue
               : undefined,
-        },
+            disabledOptionsFilter,
+            getOptionsFilterQuery:
+              stepByStepBulkCreate && addable && onInsert
+                ? (st) => {
+                    const full = getFullParsedList(
+                      st,
+                      createSeparators,
+                      trimOnCreate,
+                    );
+                    return full.length > 1 ? full[0] ?? undefined : undefined;
+                  }
+                : undefined,
+            mode: 'multiple',
+            onChange: onChangeProp as
+              | ((newOptions: SelectValue[]) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value: isMultipleValue(valueProp) ? valueProp : undefined,
+          }
+        : {
+            defaultValue: isSingleValue(defaultValue)
+              ? defaultValue
+              : undefined,
+            disabledOptionsFilter,
+            mode: 'single',
+            onChange: onChangeProp as
+              | ((newOption: SelectValue | null) => void)
+              | undefined,
+            onClear: onClearProp,
+            onClose: () => toggleOpen(false),
+            onSearch,
+            options: optionsProp,
+            value:
+              isSingleValue(valueProp) || valueProp === null
+                ? valueProp
+                : undefined,
+          },
     );
 
     /** export set search text action to props (allow user to customize search text) */
@@ -489,6 +508,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
     const menuId = useMemo(() => `${MENU_ID_PREFIX}-${idSeed}`, [idSeed]);
 
     const {
+      getPendingCreateList,
       handleActionCustom,
       handleBulkCreate,
       handlePaste,
@@ -513,6 +533,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       onInsert,
       options: optionsProp,
       setSearchText,
+      stepByStepBulkCreate,
       toggleOpen,
       trimOnCreate,
       value,
@@ -753,15 +774,32 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       toggleOpen((prev) => !prev);
     };
 
-    const searchTextExistWithoutOption: boolean =
-      !!searchText &&
-      options.find((option) => option.name === searchText) === undefined;
+    const hasStepByStepBulkSeparator =
+      stepByStepBulkCreate &&
+      createSeparators.some((sep) => insertText.includes(sep));
+    const firstPendingText = hasStepByStepBulkSeparator
+      ? getPendingCreateList(insertText)[0]
+      : undefined;
+
+    const searchTextExistWithoutOption: boolean = !!(
+      (firstPendingText
+        ? firstPendingText &&
+          options.find((option) => option.name === firstPendingText) ===
+            undefined
+        : searchText &&
+          options.find((option) => option.name === searchText) === undefined)
+    );
 
     const shouldShowCreateAction = !!(
       searchTextExistWithoutOption &&
       creationEnabled &&
-      insertText
+      (firstPendingText ?? insertText)
     );
+
+    const createActionDisplayText =
+      firstPendingText !== undefined && firstPendingText !== ''
+        ? firstPendingText
+        : insertText;
 
     const context = useMemo(
       () => ({ onChange: wrappedOnChange, value }),
@@ -892,6 +930,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       addable: creationEnabled,
       createSeparators,
       dropdownOptions,
+      handleActionCustom,
       handleBulkCreate,
       handleDropdownSelect,
       inputPropsOnKeyDown: inputProps?.onKeyDown,
@@ -907,6 +946,7 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
       setInsertText,
       setListboxHasVisualFocus,
       setSearchText,
+      stepByStepBulkCreate,
       toggleOpen,
       value,
       wrappedOnChange,
@@ -1019,8 +1059,11 @@ const AutoComplete = forwardRef<HTMLDivElement, AutoCompleteProps>(
             actionText={
               shouldShowCreateAction
                 ? createActionText
-                  ? createActionText(insertText)
-                  : createActionTextTemplate.replace('{text}', insertText)
+                  ? createActionText(createActionDisplayText)
+                  : createActionTextTemplate.replace(
+                      '{text}',
+                      createActionDisplayText,
+                    )
                 : undefined
             }
             activeIndex={activeIndex}

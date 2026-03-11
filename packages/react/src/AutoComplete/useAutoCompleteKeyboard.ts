@@ -17,6 +17,7 @@ type UseAutoCompleteKeyboardParams = {
   addable: boolean;
   createSeparators: string[];
   dropdownOptions: DropdownOption[];
+  handleActionCustom: () => void;
   handleBulkCreate: (texts: string[]) => void;
   handleDropdownSelect: (option: DropdownOption) => void;
   inputRef?: Ref<HTMLInputElement>;
@@ -32,6 +33,7 @@ type UseAutoCompleteKeyboardParams = {
   setListboxHasVisualFocus: (focus: boolean) => void;
   setInsertText: (value: string) => void;
   setSearchText: (value: string) => void;
+  stepByStepBulkCreate?: boolean;
   toggleOpen: (newOpen: boolean | ((prev: boolean) => boolean)) => void;
   value: SelectValue[] | SelectValue | null | undefined;
   wrappedOnChange: (
@@ -50,6 +52,7 @@ export function useAutoCompleteKeyboard({
   addable,
   createSeparators,
   dropdownOptions,
+  handleActionCustom,
   handleBulkCreate,
   handleDropdownSelect,
   inputPropsOnKeyDown,
@@ -64,6 +67,7 @@ export function useAutoCompleteKeyboard({
   setInsertText,
   setListboxHasVisualFocus,
   setSearchText,
+  stepByStepBulkCreate = false,
   toggleOpen,
   value,
   wrappedOnChange,
@@ -122,6 +126,12 @@ export function useAutoCompleteKeyboard({
           );
 
           if (hasSeparator && mode === 'multiple') {
+            if (stepByStepBulkCreate) {
+              e.preventDefault();
+              e.stopPropagation();
+              handleActionCustom();
+              return true;
+            }
             e.preventDefault();
             e.stopPropagation();
             const textsToCreate = processBulkCreate(searchText);
@@ -168,6 +178,7 @@ export function useAutoCompleteKeyboard({
       addable,
       createSeparators,
       dropdownOptions,
+      handleActionCustom,
       handleBulkCreate,
       handleDropdownSelect,
       mode,
@@ -178,6 +189,7 @@ export function useAutoCompleteKeyboard({
       searchTextExistWithoutOption,
       setInsertText,
       setSearchText,
+      stepByStepBulkCreate,
       toggleOpen,
     ],
   );

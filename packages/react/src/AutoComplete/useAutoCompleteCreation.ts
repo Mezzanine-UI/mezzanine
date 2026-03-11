@@ -22,6 +22,7 @@ type UseAutoCompleteCreationParams = {
   onFocus: (focus: boolean) => void;
   onInsert?: (text: string, currentOptions: SelectValue[]) => SelectValue[];
   options: SelectValue[];
+  stepByStepBulkCreate?: boolean;
   toggleOpen: (newOpen: boolean | ((prev: boolean) => boolean)) => void;
   trimOnCreate: boolean;
   value: SelectValue[] | SelectValue | null | undefined;
@@ -32,6 +33,27 @@ type UseAutoCompleteCreationParams = {
 };
 
 type ProcessBulkCreate = (text: string) => string[];
+
+export function getFullParsedList(
+  text: string,
+  createSeparators: string[],
+  trimOnCreate: boolean,
+): string[] {
+  if (!text) return [];
+
+  let parts: string[] = [text];
+  createSeparators.forEach((separator) => {
+    const newParts: string[] = [];
+    parts.forEach((part) => {
+      newParts.push(...part.split(separator));
+    });
+    parts = newParts;
+  });
+
+  return parts
+    .map((part) => (trimOnCreate ? part.trim() : part))
+    .filter((part) => part.length > 0);
+}
 
 function isMultipleValue(
   value: SelectValue[] | SelectValue | null | undefined,
@@ -72,6 +94,7 @@ export function useAutoCompleteCreation({
   onFocus,
   onInsert,
   options,
+  stepByStepBulkCreate = false,
   toggleOpen,
   trimOnCreate,
   value,
@@ -92,6 +115,11 @@ export function useAutoCompleteCreation({
     setSearchText('');
     setInsertText('');
   }, [setSearchText]);
+
+  const getFullParsedListInternal = useCallback(
+    (text: string): string[] => getFullParsedList(text, createSeparators, trimOnCreate),
+    [createSeparators, trimOnCreate],
+  );
 
   const processBulkCreate = useCallback<ProcessBulkCreate>(
     (text: string) => {
@@ -122,6 +150,19 @@ export function useAutoCompleteCreation({
       return processed.filter((part) => !selectedNames.has(part.toLowerCase()));
     },
     [addable, createSeparators, isMultiple, isSingle, onInsert, trimOnCreate],
+  );
+
+  const getPendingCreateList = useCallback(
+    (text: string): string[] => {
+      const processed = processBulkCreate(text);
+      const optionNames = new Set(
+        options.map((o) => o.name.toLowerCase()),
+      );
+      return processed.filter(
+        (part) => !optionNames.has(part.toLowerCase()),
+      );
+    },
+    [options, processBulkCreate],
   );
 
   const handleBulkCreate = useCallback(
@@ -237,6 +278,40 @@ export function useAutoCompleteCreation({
       insertText.includes(sep),
     );
 
+    if (
+      stepByStepBulkCreate &&
+      hasSeparator &&
+      isMultiple
+    ) {
+      const fullParsed = getFullParsedListInternal(insertText);
+      const pending = getPendingCreateList(insertText);
+      const firstPending = pending[0];
+
+      if (!firstPending) {
+        const remaining = fullParsed.slice(1).join(
+          createSeparators[0] ?? ',',
+        );
+        setSearchText(remaining);
+        setInsertText(remaining);
+        if (!remaining.trim()) {
+          resetCreationInputs();
+        }
+        return;
+      }
+
+      handleBulkCreate([firstPending]);
+
+      const remaining = fullParsed.slice(1).join(
+        createSeparators[0] ?? ',',
+      );
+      setSearchText(remaining);
+      setInsertText(remaining);
+      if (!remaining.trim()) {
+        resetCreationInputs();
+      }
+      return;
+    }
+
     if (hasSeparator && isMultiple) {
       const textsToCreate = processBulkCreate(insertText);
       if (textsToCreate.length > 0) {
@@ -254,11 +329,14 @@ export function useAutoCompleteCreation({
   }, [
     addable,
     createSeparators,
+    getFullParsedListInternal,
+    getPendingCreateList,
     handleBulkCreate,
     insertText,
     isMultiple,
     processBulkCreate,
     resetCreationInputs,
+    stepByStepBulkCreate,
   ]);
 
   const handlePaste = useCallback(
@@ -278,6 +356,15 @@ export function useAutoCompleteCreation({
         );
 
         if (hasSeparator) {
+          if (stepByStepBulkCreate) {
+            e.preventDefault();
+            const pending = getPendingCreateList(pastedText);
+            const pendingJoin = pending.join(createSeparators[0] ?? ',');
+            setSearchText(pendingJoin);
+            setInsertText(pendingJoin);
+            return;
+          }
+
           e.preventDefault();
           const textsToCreate = processBulkCreate(pastedText);
           if (textsToCreate.length > 0) {
@@ -291,15 +378,20 @@ export function useAutoCompleteCreation({
     [
       addable,
       createSeparators,
+      getPendingCreateList,
       handleBulkCreate,
       isMultiple,
       onInsert,
       processBulkCreate,
       resetCreationInputs,
+      setInsertText,
+      setSearchText,
+      stepByStepBulkCreate,
     ],
   );
 
   return {
+    getPendingCreateList,
     handleActionCustom,
     handleBulkCreate,
     handlePaste,
