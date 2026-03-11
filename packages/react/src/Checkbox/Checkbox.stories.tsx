@@ -28,6 +28,7 @@ export const Playground: Story = {
     value: 'checkbox-value',
     withEditInput: false,
     editableInput: undefined,
+    severity: 'info',
   },
   argTypes: {
     label: {
@@ -68,6 +69,16 @@ export const Playground: Story = {
       table: {
         type: { summary: 'CheckboxSize' },
         defaultValue: { summary: "'main'" },
+      },
+    },
+    severity: {
+      control: {
+        type: 'select',
+      },
+      options: ['info', 'error'],
+      description: 'Visual severity: info for hint state, error for error state.',
+      table: {
+        type: { summary: "'info' | 'error'" },
       },
     },
     checked: {
@@ -177,6 +188,33 @@ export const Playground: Story = {
 
     return <Checkbox {...props} size={validSize} onChange={handleChange} />;
   },
+};
+
+export const Severity: Story = {
+  render: () => (
+    <ItemList>
+      <SectionItem label="Default mode" direction="column">
+        <ItemContent>
+          <Typography>Info:</Typography>
+          <Checkbox id="severity-default-info" label="Info checkbox" name="severity-default-info" severity="info" />
+        </ItemContent>
+        <ItemContent>
+          <Typography>Error:</Typography>
+          <Checkbox id="severity-default-error" label="Error checkbox" name="severity-default-error" severity="error" />
+        </ItemContent>
+      </SectionItem>
+      <SectionItem label="Chip mode" direction="column">
+        <ItemContent>
+          <Typography>Info:</Typography>
+          <Checkbox id="severity-chip-info" label="Info chip" mode="chip" name="severity-chip-info" severity="info" />
+        </ItemContent>
+        <ItemContent>
+          <Typography>Error:</Typography>
+          <Checkbox id="severity-chip-error" label="Error chip" mode="chip" name="severity-chip-error" severity="error" />
+        </ItemContent>
+      </SectionItem>
+    </ItemList>
+  ),
 };
 
 export const State = () => {

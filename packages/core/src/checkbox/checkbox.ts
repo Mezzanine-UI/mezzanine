@@ -6,9 +6,10 @@ export type CheckboxSizeDefault = 'main' | 'sub';
 
 export type CheckboxSizeChip = 'main' | 'sub' | 'minor';
 
-export type CheckboxSize<M extends CheckboxMode = CheckboxMode> = M extends 'chip'
-  ? CheckboxSizeChip
-  : CheckboxSizeDefault;
+export type CheckboxSize<M extends CheckboxMode = CheckboxMode> =
+  M extends 'chip' ? CheckboxSizeChip : CheckboxSizeDefault;
+
+export type CheckboxSeverity = 'info' | 'error';
 
 export const checkboxClasses = {
   host: checkboxPrefix,
@@ -21,11 +22,14 @@ export const checkboxClasses = {
   mode: (mode: CheckboxMode) => `${checkboxPrefix}--${mode}`,
   // size
   size: (size: CheckboxSize) => `${checkboxPrefix}--${size}`,
+  // severity
+  severity: (severity: CheckboxSeverity) => `${checkboxPrefix}--${severity}`,
   // controller
   inputContainer: `${checkboxPrefix}__input-container`,
   inputContent: `${checkboxPrefix}__input-content`,
   input: `${checkboxPrefix}__input`,
   icon: `${checkboxPrefix}__icon`,
+  chipIcon: `${checkboxPrefix}__icon--chip`,
   indeterminateLine: `${checkboxPrefix}__indeterminate-line`,
   // text content
   textContainer: `${checkboxPrefix}__text-container`,
@@ -34,4 +38,4 @@ export const checkboxClasses = {
   // editable input
   editableInputContainer: `${checkboxPrefix}__editable-input-container`,
   editableInput: `${checkboxPrefix}__editable-input`,
-}
+};
