@@ -2,6 +2,7 @@
 
 import { DropdownOption } from '@mezzanine-ui/core/dropdown';
 import { inputClasses as classes } from '@mezzanine-ui/core/input';
+import { textFieldClasses } from '@mezzanine-ui/core/text-field';
 import { EyeIcon, EyeInvisibleIcon, SearchIcon } from '@mezzanine-ui/icons';
 import {
   ChangeEventHandler,
@@ -248,22 +249,22 @@ export type SelectInputProps = InputBaseProps & {
  */
 export type WithPasswordStrengthIndicator =
   | {
-    /**
-     * Whether to show password strength indicator.
-     */
-    showPasswordStrengthIndicator?: false;
-    passwordStrengthIndicator?: never;
-  }
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator?: false;
+      passwordStrengthIndicator?: never;
+    }
   | {
-    /**
-     * Whether to show password strength indicator.
-     */
-    showPasswordStrengthIndicator: true;
-    /**
-     * The props for password strength indicator.
-     */
-    passwordStrengthIndicator: PasswordStrengthIndicatorProps;
-  };
+      /**
+       * Whether to show password strength indicator.
+       */
+      showPasswordStrengthIndicator: true;
+      /**
+       * The props for password strength indicator.
+       */
+      passwordStrengthIndicator: PasswordStrengthIndicatorProps;
+    };
 
 export type PasswordInputProps = InputBaseProps &
   ClearableInput &
@@ -678,8 +679,7 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
             [classes.withSuffixExternalAction]:
               suffixExternalButton !== undefined,
             [classes.searchInput]: variant === 'search',
-            [classes.currencyWithSpinner]:
-              variant === 'currency' && hasSpinner,
+            [classes.currencyWithSpinner]: variant === 'currency' && hasSpinner,
             [classes.currencyWithoutSpinner]:
               variant === 'currency' && !hasSpinner,
           })}
@@ -691,6 +691,8 @@ const Input = forwardRef<HTMLDivElement, InputProps>(
               classes.field,
               {
                 [classes.number]: variant === 'number',
+                [textFieldClasses.tinyGap]:
+                  variant === 'currency' && hasSpinner,
               },
               classes.size(size),
             )}

@@ -60,6 +60,13 @@ export const BaseInput = () => {
           readonly
         />
       </section>
+
+      <section style={containerStyle}>
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input name="input-sub" size="sub" placeholder="請輸入文字" />
+      </section>
     </div>
   );
 };
@@ -105,6 +112,44 @@ export const WithAffixInput = () => {
         </Typography>
         <Input
           variant="affix"
+          prefix="Prefix"
+          suffix="Suffix"
+          placeholder="Placeholder"
+        />
+      </section>
+
+      <section
+        style={{
+          ...containerStyle,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '12px',
+        }}
+      >
+        <Typography variant="h3" style={typoStyle}>
+          Size Sub
+        </Typography>
+        <Input
+          variant="affix"
+          size="sub"
+          prefix={<Icon icon={UserIcon} />}
+          placeholder="Placeholder"
+        />
+        <Input
+          variant="affix"
+          size="sub"
+          prefix="Prefix"
+          placeholder="Placeholder"
+        />
+        <Input
+          variant="affix"
+          size="sub"
+          suffix="Suffix"
+          placeholder="Placeholder"
+        />
+        <Input
+          variant="affix"
+          size="sub"
           prefix="Prefix"
           suffix="Suffix"
           placeholder="Placeholder"
