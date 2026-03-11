@@ -107,7 +107,6 @@ const Fade = forwardRef<HTMLElement, FadeProps>(function Fade(
       {children &&
         ((state) =>
           cloneElement(children, {
-            ...children.props,
             ref: composedNodeRef,
             style: {
               ...getStyle(state, inProp),

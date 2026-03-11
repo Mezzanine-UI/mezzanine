@@ -68,6 +68,7 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
       const step = element as ReactElement<StepProps>;
 
       return cloneElement(step as ReactElement<any>, {
+        ...step.props,
         index,
         orientation,
         ref: (el: HTMLDivElement | null) => {
@@ -81,7 +82,6 @@ const Stepper = forwardRef<HTMLDivElement, StepperProps>(
           ...step.props.style,
         } as CSSProperties,
         type,
-        ...step.props,
       });
     });
 

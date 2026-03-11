@@ -22,12 +22,21 @@ export type ComposedRef<T> = Extract<Ref<T>, (...args: any[]) => any>;
  */
 export function composeRefs<T>(refs: ComposableRef<T>[]): ComposedRef<T> {
   return (element) => {
+    const cleanups: Array<() => void> = [];
+
     refs.forEach((ref) => {
       if (typeof ref === 'function') {
-        ref(element);
+        const cleanup = ref(element);
+        if (typeof cleanup === 'function') {
+          cleanups.push(cleanup);
+        }
       } else if (ref) {
         (ref as { current: T | null }).current = element;
       }
     });
+
+    if (cleanups.length > 0) {
+      return () => cleanups.forEach((c) => c());
+    }
   };
 }

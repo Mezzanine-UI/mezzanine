@@ -157,7 +157,6 @@ const Scale = forwardRef<HTMLElement, ScaleProps>(function Scale(
       {children &&
         ((state) =>
           cloneElement(children, {
-            ...children.props,
             ref: composedNodeRef,
             style: {
               visibility: state === 'exited' && !inProp ? 'hidden' : undefined,
