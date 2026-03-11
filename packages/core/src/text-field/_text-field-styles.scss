@@ -313,6 +313,13 @@ $size-configs: (
     padding-right: spacing.semantic-variable(padding, horizontal, cozy);
   }
 
+  &--mono-input {
+    input,
+    textarea {
+      @include typography.semantic-variable(input-mono);
+    }
+  }
+
   &--tiny-gap {
     gap: spacing.semantic-variable(padding, horizontal, tiny);
 
