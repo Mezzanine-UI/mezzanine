@@ -41,12 +41,12 @@ $bar-width: 2px !default;
       content: '';
       position: absolute;
       left: 0;
-      top: spacing.semantic-variable(gap, tight);
-      bottom: spacing.semantic-variable(gap, tight);
+      top: 0;
+      bottom: 0;
       width: $bar-width;
-      height: auto;
       background-color: palette.semantic-variable('border', neutral-faint);
-      transition: transition.standard(background-color), transition.standard(top), transition.standard(bottom);
+      clip-path: inset(spacing.semantic-variable(gap, tight) 0);
+      transition: transition.standard(background-color), transition.standard(clip-path);
     }
 
     &:hover {
@@ -58,8 +58,7 @@ $bar-width: 2px !default;
       position: relative;
 
       &::before {
-        top: 0;
-        bottom: 0;
+        clip-path: inset(0);
         background-color: palette.semantic-variable(text, brand);
       }
     }
@@ -75,8 +74,7 @@ $bar-width: 2px !default;
       box-shadow: effect.variable(focus, primary);
 
       &::before {
-        top: 0;
-        bottom: 0;
+        clip-path: inset(0);
       }
     }
   }
