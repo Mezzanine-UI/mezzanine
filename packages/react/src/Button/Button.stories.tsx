@@ -2,7 +2,7 @@ import { DotHorizontalIcon, PlusIcon, SearchIcon } from '@mezzanine-ui/icons';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 
 import Button, { ButtonProps, ButtonSize, ButtonVariant } from '.';
-import { DropdownOption } from '..';
+import { DropdownOption, getNumericCSSVariablePixelValue } from '..';
 import Dropdown from '../Dropdown';
 
 export default {
@@ -215,7 +215,7 @@ export const IconOnlyWithTooltip: Story = {
       style={{
         display: 'inline-grid',
         gridTemplateColumns: 'repeat(4, min-content)',
-        gap: '16px',
+        gap: getNumericCSSVariablePixelValue('--mzn-spacing-gap-base'),
         alignItems: 'center',
         padding: '60px',
       }}
@@ -375,8 +375,12 @@ const dropdownOptions: DropdownOption[] = [
 export const WithDropdown: Story = {
   render: () => (
     <div>
-      <Dropdown options={dropdownOptions} placement="right-start">
-        <Button icon={DotHorizontalIcon} iconType="icon-only" variant="base-secondary" />
+      <Dropdown options={dropdownOptions} placement="bottom-start">
+        <Button
+          icon={DotHorizontalIcon}
+          iconType="icon-only"
+          variant="base-secondary"
+        />
       </Dropdown>
     </div>
   ),
