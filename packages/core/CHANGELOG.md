@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.3...@mezzanine-ui/core@1.0.0-rc.4) (2026-03-11)
+
+### Bug Fixes
+
+- **core/breadcrumb:** refine breadcrumb hover and focus transitions ([5c8e9f8](https://github.com/Mezzanine-UI/mezzanine/commit/5c8e9f88eeccf30e57bc81a88c54c558dbe3b294))
+- **core/content-header:** correct sub size gap to gap-base ([a6c9e22](https://github.com/Mezzanine-UI/mezzanine/commit/a6c9e220b3759229f51a068795caf4d5dce852f8))
+- **core/navigation:** add gap-tight to option group for level 2 and 3 ([65471c5](https://github.com/Mezzanine-UI/mezzanine/commit/65471c539f0e3e1645dce1afbf444516660b033e))
+- **core/navigation:** correct active-collapsed and active-expand trigger styles ([f9cd3f4](https://github.com/Mezzanine-UI/mezzanine/commit/f9cd3f4ffa0aa431cf704347fd9857661aaca738))
+- **core/stepper:** add focus styles and dot processing breath animation ([bf79d3f](https://github.com/Mezzanine-UI/mezzanine/commit/bf79d3fe93fc87c9f84058047f6ce0c898588d6c))
+
+### Features
+
+- **core/tab:** add size, add error status ([fd92e38](https://github.com/Mezzanine-UI/mezzanine/commit/fd92e38361655d71aea1998545e5239623c62e30))
+
 # [1.0.0-rc.3](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.2...@mezzanine-ui/core@1.0.0-rc.3) (2026-03-06)
 
 ### Bug Fixes
