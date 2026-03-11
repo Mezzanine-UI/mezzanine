@@ -1418,6 +1418,54 @@ export const DraggableRows: Story = {
   },
 };
 
+export const DraggableRowsWithRefetch: Story = {
+  render: function DraggableRowsWithRefetchStory() {
+    const [data, setData] = useState<DataType[]>(baseData);
+    const [loading, setLoading] = useState(false);
+
+    const draggable: TableDraggable<DataType> = useMemo(
+      () => ({
+        enabled: true,
+        onDragEnd: (newData: DataType[]) => setData(newData),
+      }),
+      [],
+    );
+
+    const scroll = useMemo(() => ({ y: 300 }), []);
+
+    const handleRefetch = useCallback(() => {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
+    }, []);
+
+    return (
+      <div>
+        <p style={{ margin: '0 0 8px' }}>
+          Simulates a refetch while data rows are still rendered inside
+          Draggable. Click the button to trigger loading — drag handles should
+          remain functional without dnd errors.
+        </p>
+        <Button
+          style={{ marginBottom: '16px' }}
+          onClick={handleRefetch}
+          variant="base-primary"
+        >
+          Simulate Refetch
+        </Button>
+        <Table<DataType>
+          columns={baseColumns}
+          dataSource={data}
+          draggable={draggable}
+          loading={loading}
+          scroll={scroll}
+        />
+      </div>
+    );
+  },
+};
+
 export const PinnableRows: Story = {
   render: function PinnableRowsStory() {
     const [pinnedRowKeys, setPinnedRowKeys] = useState<string[]>([]);

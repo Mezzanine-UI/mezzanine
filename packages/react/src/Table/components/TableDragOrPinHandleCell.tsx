@@ -85,7 +85,13 @@ function TableDragOrPinHandleCellInner<
     }
 
     if (loading) {
-      return <Skeleton variant="body-highlight" width="100%" />;
+      return (
+        <Skeleton
+          variant="body-highlight"
+          width="100%"
+          {...(mode === 'drag' ? dragHandleProps : {})}
+        />
+      );
     }
 
     if (mode === 'drag') {

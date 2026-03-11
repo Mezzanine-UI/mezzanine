@@ -301,5 +301,29 @@ describe('<TableDragOrPinHandleCell />', () => {
 
       expect(skeleton).toBeInTheDocument();
     });
+
+    it('should pass dragHandleProps to skeleton in drag mode when loading', () => {
+      const dragHandleProps = { 'data-testid': 'drag-handle-skeleton' };
+
+      renderWithContext(
+        { dragHandleProps, mode: 'drag', record: testRecord },
+        { ...defaultContextValue, loading: true },
+      );
+
+      expect(screen.getByTestId('drag-handle-skeleton')).toBeInTheDocument();
+    });
+
+    it('should not pass dragHandleProps to skeleton in pin mode when loading', () => {
+      const dragHandleProps = { 'data-testid': 'drag-handle-skeleton' };
+
+      renderWithContext(
+        { dragHandleProps, mode: 'pin', record: testRecord },
+        { ...defaultContextValue, loading: true },
+      );
+
+      expect(
+        screen.queryByTestId('drag-handle-skeleton'),
+      ).not.toBeInTheDocument();
+    });
   });
 });
