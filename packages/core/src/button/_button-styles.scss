@@ -861,6 +861,11 @@ $size-configs: (
         }
       }
 
+      // Dashed variant 需要虛線邊框
+      @if $variant == 'base-dashed' {
+        border-style: dashed;
+      }
+
       // Text link variants 不需要 padding
       @if $variant == 'base-text-link' or $variant == 'destructive-text-link' {
         padding: 0;
@@ -869,6 +874,11 @@ $size-configs: (
         &.#{$prefix}--icon-trailing,
         &.#{$prefix}--icon-only {
           padding: 0;
+        }
+
+        // minor size 需要 font-weight: 500
+        &.#{$prefix}--minor {
+          font-weight: 500;
         }
       }
     }
