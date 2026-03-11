@@ -45,6 +45,11 @@ export interface TooltipProps
    */
   mouseLeaveDelay?: number;
   /**
+   * Override tooltip distance to anchor on main axis. Unit: px.
+   * @default value of spacing token `gap-base`
+   */
+  offsetMainAxis?: number;
+  /**
    * title of tooltip
    */
   title?: ReactNode;
@@ -62,6 +67,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
       className,
       disablePortal = true,
       mouseLeaveDelay = 0.1,
+      offsetMainAxis,
       open = false,
       options = {},
       title,
@@ -83,6 +89,7 @@ const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(
     const isTooltipVisible = open || (visible && Boolean(title));
 
     const offsetValue =
+      offsetMainAxis ??
       Number(
         getCSSVariableValue(`--${spacingPrefix}-gap-base`).replace('rem', ''),
       ) * 16;
