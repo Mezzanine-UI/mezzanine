@@ -109,7 +109,7 @@ describe('<DateTimePicker />', () => {
       expect(document.querySelector('.mzn-time-panel')).toBe(null);
     });
 
-    it('should toggle calendar panel when calendar icon clicked', async () => {
+    it('should toggle calendar panel when calendar-time icon clicked', async () => {
       jest.useFakeTimers();
 
       const { getHostHTMLElement } = render(
@@ -119,12 +119,14 @@ describe('<DateTimePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const calendarIcon = element.querySelector('[data-icon-name="calendar"]');
+      const calendarTimeIcon = element.querySelector(
+        '[data-icon-name="calendar-time"]',
+      );
 
-      expect(calendarIcon).toBeInstanceOf(HTMLElement);
+      expect(calendarTimeIcon).toBeInstanceOf(HTMLElement);
 
       await waitFor(() => {
-        fireEvent.click(calendarIcon!);
+        fireEvent.click(calendarTimeIcon!);
       });
 
       expect(document.querySelector('.mzn-calendar')).toBeInstanceOf(
@@ -132,7 +134,7 @@ describe('<DateTimePicker />', () => {
       );
 
       await waitFor(() => {
-        fireEvent.click(calendarIcon!);
+        fireEvent.click(calendarTimeIcon!);
       });
 
       act(() => {
@@ -140,39 +142,6 @@ describe('<DateTimePicker />', () => {
       });
 
       expect(document.querySelector('.mzn-calendar')).toBe(null);
-    });
-
-    it('should toggle time panel when clock icon clicked', async () => {
-      jest.useFakeTimers();
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <DateTimePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const clockIcon = element.querySelector('[data-icon-name="clock"]');
-
-      expect(clockIcon).toBeInstanceOf(HTMLElement);
-
-      await waitFor(() => {
-        fireEvent.click(clockIcon!);
-      });
-
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
-        HTMLDivElement,
-      );
-
-      await waitFor(() => {
-        fireEvent.click(clockIcon!);
-      });
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(document.querySelector('.mzn-time-panel')).toBe(null);
     });
 
     it('should close panel when escape key down', async () => {
@@ -478,7 +447,7 @@ describe('<DateTimePicker />', () => {
       expect(separator).toBeInstanceOf(HTMLDivElement);
     });
 
-    it('should render both calendar and clock icons', () => {
+    it('should render the calendar-time icon', () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <DateTimePicker />
@@ -486,11 +455,11 @@ describe('<DateTimePicker />', () => {
       );
 
       const element = getHostHTMLElement();
-      const calendarIcon = element.querySelector('[data-icon-name="calendar"]');
-      const clockIcon = element.querySelector('[data-icon-name="clock"]');
+      const calendarTimeIcon = element.querySelector(
+        '[data-icon-name="calendar-time"]',
+      );
 
-      expect(calendarIcon).toBeInstanceOf(HTMLElement);
-      expect(clockIcon).toBeInstanceOf(HTMLElement);
+      expect(calendarTimeIcon).toBeInstanceOf(HTMLElement);
     });
   });
 });
