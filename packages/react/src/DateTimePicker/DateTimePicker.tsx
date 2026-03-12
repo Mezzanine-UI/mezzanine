@@ -175,6 +175,58 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
     );
     const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
 
+    // Pending time value: adjusted in the panel before user confirms
+    const [pendingTimeValue, setPendingTimeValue] = useState<
+      DateType | undefined
+    >(undefined);
+
+    // Compute rounded current time respecting step and hide settings
+    const computeCurrentTime = useCallback((): DateType => {
+      const now = getNow();
+      const h = getHour(now);
+      const m = getMinute(now);
+      const s = getSecond(now);
+
+      let result = now;
+
+      if (!hideHour) {
+        result = setHour(
+          result,
+          Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
+        );
+      }
+
+      if (!hideMinute) {
+        result = setMinute(
+          result,
+          Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
+        );
+      }
+
+      if (!hideSecond) {
+        result = setSecond(
+          result,
+          Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
+        );
+      }
+
+      return result;
+    }, [
+      getNow,
+      getHour,
+      getMinute,
+      getSecond,
+      setHour,
+      setMinute,
+      setSecond,
+      hideHour,
+      hideMinute,
+      hideSecond,
+      hourStep,
+      minuteStep,
+      secondStep,
+    ]);
+
     // Refs
     const inputLeftRef = useRef<HTMLInputElement>(null);
     const inputRightRef = useRef<HTMLInputElement>(null);
@@ -239,9 +291,10 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       useCallback(() => {
         if (!readOnly) {
           setFocusedInput('right');
+          setPendingTimeValue(timeValue ?? computeCurrentTime());
           onPanelToggle(true, 'right');
         }
-      }, [onPanelToggle, readOnly]);
+      }, [computeCurrentTime, onPanelToggle, readOnly, timeValue]);
 
     // Combine date and time into a single value
     const combineDateTime = useCallback(
@@ -376,17 +429,27 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       [notifyChange, startOf, timeValue, onLeftComplete],
     );
 
-    // Handle time change from panel
-    const onTimePanelChange = useCallback(
-      (target?: DateType) => {
-        if (!target) return;
+    // Handle time change from panel (pending only — not committed until onTimeConfirm)
+    const onTimePanelChange = useCallback((target?: DateType) => {
+      if (target) setPendingTimeValue(target);
+    }, []);
 
-        setTimeValue(target);
-        notifyChange(dateValue, target);
-        onRightComplete();
-      },
-      [dateValue, notifyChange, onRightComplete],
-    );
+    // Confirm: commit pendingTimeValue and close time panel
+    const onTimeConfirm = useCallback(() => {
+      if (pendingTimeValue) {
+        setTimeValue(pendingTimeValue);
+        notifyChange(dateValue, pendingTimeValue);
+      }
+
+      setPendingTimeValue(undefined);
+      onClose();
+    }, [pendingTimeValue, dateValue, notifyChange, onClose]);
+
+    // Cancel: discard pendingTimeValue and close time panel
+    const onTimeCancel = useCallback(() => {
+      setPendingTimeValue(undefined);
+      onClose();
+    }, [onClose]);
 
     // Document event close for calendar
     usePickerDocumentEventClose({
@@ -398,12 +461,12 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
       popperRef: calendarPanelRef,
     });
 
-    // Document event close for time panel
+    // Document event close for time panel — clicking away = cancel
     usePickerDocumentEventClose({
       anchorRef,
       lastElementRefInFlow: inputRightRef,
-      onChangeClose: onClose,
-      onClose,
+      onChangeClose: onTimeCancel,
+      onClose: onTimeCancel,
       open: openTimePanel,
       popperRef: timePanelRef,
     });
@@ -517,10 +580,12 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           hourStep={hourStep}
           minuteStep={minuteStep}
           onChange={onTimePanelChange}
+          onCancel={onTimeCancel}
+          onConfirm={onTimeConfirm}
           open={openTimePanel}
           popperProps={popperPropsTime}
           secondStep={secondStep}
-          value={timeValue}
+          value={pendingTimeValue}
         />
       </>
     );
