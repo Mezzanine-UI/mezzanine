@@ -71,10 +71,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   function TimePicker(props, ref) {
     const {
       defaultTimeFormat,
+      formatToString,
       getNow,
       getHour,
       getMinute,
       getSecond,
+      locale,
       setHour,
       setMinute,
       setSecond,
@@ -377,10 +379,19 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
+          hoverValue={
+            open && !inputValue && pendingValue
+              ? (formatToString(locale, pendingValue, resolvedFormat) ??
+                undefined)
+              : undefined
+          }
           onChange={(e) => {
-            onInputChange(e);
-            onPanelChange(e.target.value);
-            openPanelWithInit();
+            const val = e.target.value as DateType;
+
+            onInputChange(e); // Update inputValue display
+            onChange(val); // Commit to internalValue
+            onChangeProp?.(val); // Notify parent immediately
+            onPanelChange(val); // Keep panel pendingValue in sync
           }}
           onClear={onClear}
           onFocus={() => openPanelWithInit()}
