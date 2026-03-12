@@ -137,9 +137,11 @@ function CalendarDays(props: CalendarDaysProps) {
               const inactive = !disabled && (isPrevMonth || isNextMonth);
               const inRange = !inactive && isDateInRange && isDateInRange(date);
               const inRangeStart =
-                inRange && value ? isSameDate(date, value[0]) : false;
+                !inactive && value && value.length > 0
+                  ? isSameDate(date, value[0])
+                  : false;
               const inRangeEnd =
-                inRange && value
+                !inactive && value && value.length > 0
                   ? isSameDate(date, value[value.length - 1])
                   : false;
               const active =
@@ -215,7 +217,11 @@ function CalendarDays(props: CalendarDaysProps) {
                           return (
                             <Typography
                               variant="annotation"
-                              color={annotation?.color ?? 'text-neutral'}
+                              color={
+                                active
+                                  ? 'text-fixed-light'
+                                  : (annotation?.color ?? 'text-neutral')
+                              }
                             >
                               {annotation?.value ?? '--'}
                             </Typography>
