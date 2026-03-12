@@ -522,6 +522,7 @@ export function useDateInputFormatter(props: UseDateInputFormatterProps) {
   return {
     value: internalValue,
     focused,
+    isComplete: isValueComplete(internalValue),
     handleKeyDown,
     handleFocus,
     handleBlur,

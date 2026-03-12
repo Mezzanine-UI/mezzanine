@@ -98,6 +98,10 @@ export interface PickerTriggerWithSeparatorProps
    */
   onRightComplete?: () => void;
   /**
+   * A pre-formatted date string to preview in the left input when it is empty and not focused.
+   */
+  hoverValueLeft?: string;
+  /**
    * Placeholder for the left input element.
    */
   placeholderLeft?: string;
@@ -182,6 +186,7 @@ const PickerTriggerWithSeparator = forwardRef<
     errorMessagesRight,
     formatLeft,
     formatRight,
+    hoverValueLeft,
     inputLeftProps,
     inputLeftRef: inputLeftRefProp,
     inputRightProps,
@@ -321,6 +326,7 @@ const PickerTriggerWithSeparator = forwardRef<
             disabled={disabled}
             errorMessages={errorMessagesLeft}
             format={formatLeft}
+            hoverValue={hoverValueLeft}
             onBlur={handleLeftBlur}
             onChange={handleLeftChange}
             onFocus={handleLeftFocus}

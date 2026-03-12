@@ -123,6 +123,14 @@ export interface RangePickerTriggerProps
    */
   validateTo?: (isoDate: string) => boolean;
   /**
+   * A pre-formatted date string to preview in the 'from' input when it is empty and not focused.
+   */
+  hoverFromValue?: string;
+  /**
+   * A pre-formatted date string to preview in the 'to' input when it is empty and not focused.
+   */
+  hoverToValue?: string;
+  /**
    * Other input props you may provide to the 'from' input element.
    */
   inputFromProps?: Omit<
@@ -165,6 +173,8 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
       errorMessagesFrom,
       errorMessagesTo,
       format,
+      hoverFromValue,
+      hoverToValue,
       inputFromPlaceholder,
       inputFromProps,
       inputFromRef: inputFromRefProp,
@@ -299,6 +309,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
           disabled={disabled}
           errorMessages={errorMessagesFrom}
           format={format}
+          hoverValue={hoverFromValue}
           onBlur={handleFromBlur}
           onChange={handleFromChange}
           onFocus={handleFromFocus}
@@ -324,6 +335,7 @@ const RangePickerTrigger = forwardRef<HTMLDivElement, RangePickerTriggerProps>(
           disabled={disabled}
           errorMessages={errorMessagesTo}
           format={format}
+          hoverValue={hoverToValue}
           onBlur={handleToBlur}
           onChange={handleToChange}
           onFocus={handleToFocus}

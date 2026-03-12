@@ -15,7 +15,10 @@ export interface PickerTriggerProps
       | 'readonly'
       | 'typing'
     >,
-    Pick<FormattedInputProps, 'errorMessages' | 'validate' | 'format'> {
+    Pick<
+      FormattedInputProps,
+      'errorMessages' | 'hoverValue' | 'validate' | 'format'
+    > {
   /**
    * Whether the input is disabled.
    * @default false
@@ -78,6 +81,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
       disabled,
       errorMessages,
       format,
+      hoverValue,
       inputProps,
       inputRef,
       onChange,
@@ -118,6 +122,7 @@ const PickerTrigger = forwardRef<HTMLDivElement, PickerTriggerProps>(
           disabled={disabled}
           errorMessages={errorMessages}
           format={format}
+          hoverValue={hoverValue}
           onChange={(formatted, _rawDigits) => {
             if (onChange) {
               onChange({
