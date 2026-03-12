@@ -63,6 +63,10 @@
       color: palette.semantic-variable(text, neutral-solid);
     }
 
+    &--filling {
+      color: palette.semantic-variable(text, brand);
+    }
+
     &--disabled {
       color: palette.semantic-variable(text, neutral-light);
     }
