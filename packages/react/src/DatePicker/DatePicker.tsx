@@ -89,7 +89,7 @@ export interface DatePickerProps
  */
 const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
   function DatePicker(props, ref) {
-    const { getNow } = useCalendarContext();
+    const { formatToString, getNow, locale } = useCalendarContext();
     const {
       calendarProps,
       className,
@@ -244,6 +244,9 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       [internalValue, onCalendarToggle, onChangeProp, onKeyDown, onKeyDownProp],
     );
 
+    /** Hover preview value for calendar */
+    const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
+
     /** using internal reference date */
     const [referenceDate, setReferenceDate] = useState(
       referenceDateProp || defaultValue || getNow(),
@@ -327,6 +330,11 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
       />
     );
 
+    const hoverDisplayValue =
+      open && !inputValue && hoverDate
+        ? (formatToString(locale, hoverDate, format) ?? undefined)
+        : undefined;
+
     return (
       <>
         <PickerTrigger
@@ -341,6 +349,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           errorMessages={errorMessages}
           format={format}
           fullWidth={fullWidth}
+          hoverValue={hoverDisplayValue}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
           onChange={(e) => {
@@ -379,6 +388,8 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
           isHalfYearDisabled={isHalfYearDisabled}
           mode={mode}
           onChange={onCalendarChange}
+          onHover={setHoverDate}
+          onLeave={() => setHoverDate(undefined)}
           open={open}
           popperProps={popperProps}
           referenceDate={referenceDate}

@@ -273,6 +273,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
     const {
       calendarValue,
       checkIsInRange,
+      hoverFromValue,
+      hoverToValue,
       inputFromValue,
       inputToValue,
       onCalendarChange,
@@ -281,6 +283,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
       onClear,
       onFromBlur,
       onFromFocus,
+      onHoverClear,
       onInputFromChange,
       onInputToChange,
       onToBlur,
@@ -475,6 +478,8 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           errorMessagesTo={errorMessagesTo}
           format={format}
           fullWidth={fullWidth}
+          hoverFromValue={open ? hoverFromValue : undefined}
+          hoverToValue={open ? hoverToValue : undefined}
           inputFromPlaceholder={inputFromPlaceholder}
           inputFromProps={inputFromProps}
           inputFromRef={inputFromRef}
@@ -528,6 +533,7 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
           mode={mode}
           onChange={onCalendarChangeWithCloseControl}
           onDateHover={onCalendarHover}
+          onLeave={onHoverClear}
           onHalfYearHover={onCalendarHover}
           onMonthHover={onCalendarHover}
           onQuarterHover={onCalendarHover}

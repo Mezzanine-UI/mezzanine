@@ -173,6 +173,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
     const [timeValue, setTimeValue] = useState<DateType | undefined>(
       defaultValue ?? valueProp,
     );
+    const [hoverDate, setHoverDate] = useState<DateType | undefined>(undefined);
 
     // Refs
     const inputLeftRef = useRef<HTMLInputElement>(null);
@@ -450,6 +451,11 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           formatLeft={formatDate}
           formatRight={formatTime}
           fullWidth={fullWidth}
+          hoverValueLeft={
+            openCalendar && !displayDateValue && hoverDate
+              ? (formatToString(locale, hoverDate, formatDate) ?? undefined)
+              : undefined
+          }
           inputLeftRef={inputLeftRef}
           inputRightRef={inputRightRef}
           onBlurLeft={() => {}}
@@ -494,6 +500,8 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
           isYearDisabled={isYearDisabled}
           mode={mode}
           onChange={onCalendarChange}
+          onHover={setHoverDate}
+          onLeave={() => setHoverDate(undefined)}
           open={openCalendar}
           popperProps={popperProps}
           referenceDate={referenceDate}

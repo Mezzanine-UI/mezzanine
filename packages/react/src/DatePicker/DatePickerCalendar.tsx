@@ -80,6 +80,16 @@ export interface DatePickerCalendarProps
    * The calendar cell will be marked as active if it matches the same date of given value.
    */
   value?: DateType;
+  /**
+   * Callback fired when the user hovers over a calendar cell.
+   * Receives the hovered date regardless of the current calendar mode.
+   */
+  onHover?: (date: DateType) => void;
+  /**
+   * Callback fired when the mouse leaves the calendar panel.
+   * Useful for clearing hover preview state.
+   */
+  onLeave?: () => void;
 }
 
 const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
@@ -106,6 +116,8 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
       isYearDisabled,
       mode = 'day',
       onChange: onChangeProp,
+      onHover,
+      onLeave,
       open,
       popperProps,
       referenceDate: referenceDateProp,
@@ -192,34 +204,42 @@ const DatePickerCalendar = forwardRef<HTMLDivElement, DatePickerCalendarProps>(
         open={open}
         fadeProps={fadeProps}
       >
-        <Calendar
-          {...restCalendarProps}
-          ref={calendarRef}
-          className={calendarClassName}
-          disabledMonthSwitch={disabledMonthSwitch}
-          disableOnNext={disableOnNext}
-          disableOnPrev={disableOnPrev}
-          disableOnDoubleNext={disableOnDoubleNext}
-          disableOnDoublePrev={disableOnDoublePrev}
-          disabledYearSwitch={disabledYearSwitch}
-          displayMonthLocale={displayMonthLocale}
-          isDateDisabled={isDateDisabled}
-          isMonthDisabled={isMonthDisabled}
-          isQuarterDisabled={isQuarterDisabled}
-          isHalfYearDisabled={isHalfYearDisabled}
-          isWeekDisabled={isWeekDisabled}
-          isYearDisabled={isYearDisabled}
-          mode={currentMode}
-          onChange={onChange}
-          onMonthControlClick={onMonthControlClick}
-          onNext={onNext}
-          onDoubleNext={onDoubleNext}
-          onPrev={onPrev}
-          onDoublePrev={onDoublePrev}
-          onYearControlClick={onYearControlClick}
-          referenceDate={referenceDate}
-          value={value}
-        />
+        <div onMouseLeave={onLeave}>
+          <Calendar
+            {...restCalendarProps}
+            ref={calendarRef}
+            className={calendarClassName}
+            disabledMonthSwitch={disabledMonthSwitch}
+            disableOnNext={disableOnNext}
+            disableOnPrev={disableOnPrev}
+            disableOnDoubleNext={disableOnDoubleNext}
+            disableOnDoublePrev={disableOnDoublePrev}
+            disabledYearSwitch={disabledYearSwitch}
+            displayMonthLocale={displayMonthLocale}
+            isDateDisabled={isDateDisabled}
+            isMonthDisabled={isMonthDisabled}
+            isQuarterDisabled={isQuarterDisabled}
+            isHalfYearDisabled={isHalfYearDisabled}
+            isWeekDisabled={isWeekDisabled}
+            isYearDisabled={isYearDisabled}
+            mode={currentMode}
+            onChange={onChange}
+            onDateHover={currentMode === 'day' ? onHover : undefined}
+            onDoubleNext={onDoubleNext}
+            onDoublePrev={onDoublePrev}
+            onHalfYearHover={currentMode === 'half-year' ? onHover : undefined}
+            onMonthControlClick={onMonthControlClick}
+            onMonthHover={currentMode === 'month' ? onHover : undefined}
+            onNext={onNext}
+            onPrev={onPrev}
+            onQuarterHover={currentMode === 'quarter' ? onHover : undefined}
+            onWeekHover={currentMode === 'week' ? onHover : undefined}
+            onYearControlClick={onYearControlClick}
+            onYearHover={currentMode === 'year' ? onHover : undefined}
+            referenceDate={referenceDate}
+            value={value}
+          />
+        </div>
       </InputTriggerPopper>
     );
   },

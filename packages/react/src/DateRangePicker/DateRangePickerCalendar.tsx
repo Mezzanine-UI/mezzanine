@@ -64,6 +64,11 @@ export interface DateRangePickerCalendarProps
     'anchor' | 'children' | 'fadeProps' | 'open'
   >;
   /**
+   * Callback fired when the mouse leaves the calendar panel.
+   * Useful for clearing hover preview state.
+   */
+  onLeave?: () => void;
+  /**
    * The reference date for getting the calendar.
    */
   referenceDate: DateType;
@@ -106,6 +111,7 @@ const DateRangePickerCalendar = forwardRef<
     mode = 'day',
     onChange,
     onDateHover,
+    onLeave,
     onHalfYearHover,
     onMonthHover,
     onQuarterHover,
@@ -128,44 +134,46 @@ const DateRangePickerCalendar = forwardRef<
       fadeProps={fadeProps}
       open={open}
     >
-      <RangeCalendar
-        actions={actions}
-        calendarProps={calendarProps}
-        disabledMonthSwitch={disabledMonthSwitch}
-        disabledYearSwitch={disabledYearSwitch}
-        disableOnDoubleNext={disableOnDoubleNext}
-        disableOnDoublePrev={disableOnDoublePrev}
-        disableOnNext={disableOnNext}
-        disableOnPrev={disableOnPrev}
-        displayMonthLocale={displayMonthLocale}
-        displayWeekDayLocale={displayWeekDayLocale}
-        firstCalendarRef={firstCalendarRef}
-        isDateDisabled={isDateDisabled}
-        isDateInRange={isDateInRange}
-        isHalfYearDisabled={isHalfYearDisabled}
-        isHalfYearInRange={isHalfYearInRange}
-        isMonthDisabled={isMonthDisabled}
-        isMonthInRange={isMonthInRange}
-        isQuarterDisabled={isQuarterDisabled}
-        isQuarterInRange={isQuarterInRange}
-        isWeekDisabled={isWeekDisabled}
-        isWeekInRange={isWeekInRange}
-        isYearDisabled={isYearDisabled}
-        isYearInRange={isYearInRange}
-        mode={mode}
-        onChange={onChange}
-        onDateHover={onDateHover}
-        onHalfYearHover={onHalfYearHover}
-        onMonthHover={onMonthHover}
-        onQuarterHover={onQuarterHover}
-        onWeekHover={onWeekHover}
-        onYearHover={onYearHover}
-        quickSelect={quickSelect}
-        referenceDate={referenceDate}
-        renderAnnotations={renderAnnotations}
-        secondCalendarRef={secondCalendarRef}
-        value={value}
-      />
+      <div onMouseLeave={onLeave}>
+        <RangeCalendar
+          actions={actions}
+          calendarProps={calendarProps}
+          disabledMonthSwitch={disabledMonthSwitch}
+          disabledYearSwitch={disabledYearSwitch}
+          disableOnDoubleNext={disableOnDoubleNext}
+          disableOnDoublePrev={disableOnDoublePrev}
+          disableOnNext={disableOnNext}
+          disableOnPrev={disableOnPrev}
+          displayMonthLocale={displayMonthLocale}
+          displayWeekDayLocale={displayWeekDayLocale}
+          firstCalendarRef={firstCalendarRef}
+          isDateDisabled={isDateDisabled}
+          isDateInRange={isDateInRange}
+          isHalfYearDisabled={isHalfYearDisabled}
+          isHalfYearInRange={isHalfYearInRange}
+          isMonthDisabled={isMonthDisabled}
+          isMonthInRange={isMonthInRange}
+          isQuarterDisabled={isQuarterDisabled}
+          isQuarterInRange={isQuarterInRange}
+          isWeekDisabled={isWeekDisabled}
+          isWeekInRange={isWeekInRange}
+          isYearDisabled={isYearDisabled}
+          isYearInRange={isYearInRange}
+          mode={mode}
+          onChange={onChange}
+          onDateHover={onDateHover}
+          onHalfYearHover={onHalfYearHover}
+          onMonthHover={onMonthHover}
+          onQuarterHover={onQuarterHover}
+          onWeekHover={onWeekHover}
+          onYearHover={onYearHover}
+          quickSelect={quickSelect}
+          referenceDate={referenceDate}
+          renderAnnotations={renderAnnotations}
+          secondCalendarRef={secondCalendarRef}
+          value={value}
+        />
+      </div>
     </InputTriggerPopper>
   );
 });
