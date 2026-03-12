@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { DateType } from '@mezzanine-ui/core/calendar';
 import { ClockIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import {
@@ -84,7 +85,16 @@ export interface TimeRangePickerProps
  */
 const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
   function TimeRangePicker(props, ref) {
-    const { defaultTimeFormat } = useCalendarContext();
+    const {
+      defaultTimeFormat,
+      getNow,
+      getHour,
+      getMinute,
+      getSecond,
+      setHour,
+      setMinute,
+      setSecond,
+    } = useCalendarContext();
     const {
       className,
       clearable = true,
@@ -121,6 +131,53 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
     const resolvedFormat =
       formatProp ?? (hideSecond ? 'HH:mm' : defaultTimeFormat);
 
+    // Compute rounded current time respecting step and hide settings
+    const computeCurrentTime = useCallback((): DateType => {
+      const now = getNow();
+      const h = getHour(now);
+      const m = getMinute(now);
+      const s = getSecond(now);
+
+      let result = now;
+
+      if (!hideHour) {
+        result = setHour(
+          result,
+          Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
+        );
+      }
+
+      if (!hideMinute) {
+        result = setMinute(
+          result,
+          Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
+        );
+      }
+
+      if (!hideSecond) {
+        result = setSecond(
+          result,
+          Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
+        );
+      }
+
+      return result;
+    }, [
+      getNow,
+      getHour,
+      getMinute,
+      getSecond,
+      setHour,
+      setMinute,
+      setSecond,
+      hideHour,
+      hideMinute,
+      hideSecond,
+      hourStep,
+      minuteStep,
+      secondStep,
+    ]);
+
     /** Panel open control */
     const [open, setOpen] = useState(false);
     const preventOpen = readOnly;
@@ -149,6 +206,8 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
       onInputFromChange,
       onInputToChange,
       onPanelChange,
+      onPanelCancel,
+      onPanelConfirm,
       onToFocus,
       panelValue,
       value: internalValue,
@@ -176,36 +235,63 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
       return inputFromRef;
     }, [focusedInput]);
 
-    /** Input focus handlers */
+    /** Input focus handlers — initialize panel to current value or current time */
     const onFromFocusHandler = useCallback(
       (_event: FocusEvent<HTMLInputElement>) => {
         onFromFocus();
+
+        const currentFrom = valueProp?.[0] ?? internalValue[0];
+
+        if (!currentFrom) {
+          onPanelChange(computeCurrentTime());
+        }
+
         onPanelToggle(true);
       },
-      [onPanelToggle, onFromFocus],
+      [
+        computeCurrentTime,
+        internalValue,
+        onFromFocus,
+        onPanelChange,
+        onPanelToggle,
+        valueProp,
+      ],
     );
 
     const onToFocusHandler = useCallback(
       (_event: FocusEvent<HTMLInputElement>) => {
         onToFocus();
-        onPanelToggle(true);
-      },
-      [onPanelToggle, onToFocus],
-    );
 
-    /** Icon click handler */
-    const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
-      (e) => {
-        e.stopPropagation();
+        const currentTo = valueProp?.[1] ?? internalValue[1];
 
-        if (open) {
-          onChange(valueProp);
+        if (!currentTo) {
+          onPanelChange(computeCurrentTime());
         }
 
-        onPanelToggle(!open);
+        onPanelToggle(true);
       },
-      [open, onChange, onPanelToggle, valueProp],
+      [
+        computeCurrentTime,
+        internalValue,
+        onPanelChange,
+        onPanelToggle,
+        onToFocus,
+        valueProp,
+      ],
     );
+
+    /** Ok: commit pending value + close */
+    const onConfirm = useCallback(() => {
+      onPanelConfirm();
+      onPanelToggle(false);
+    }, [onPanelConfirm, onPanelToggle]);
+
+    /** Cancel / click away: revert pending value + close */
+    const onCancel = useCallback(() => {
+      onPanelCancel();
+      onChange(valueProp);
+      onPanelToggle(false);
+    }, [onChange, onPanelCancel, onPanelToggle, valueProp]);
 
     /** Clear handler */
     const onClearHandler = useCallback<
@@ -214,22 +300,25 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
       onClear();
     }, [onClear]);
 
-    /** Close handlers */
-    const onClose = useCallback(() => {
-      onChange(valueProp);
-      onPanelToggle(false);
-    }, [onChange, onPanelToggle, valueProp]);
+    /** Icon click handler */
+    const onIconClick: MouseEventHandler<HTMLElement> = useCallback(
+      (e) => {
+        e.stopPropagation();
 
-    const onChangeClose = useCallback(() => {
-      onChangeProp?.(internalValue);
-      onPanelToggle(false);
-    }, [internalValue, onChangeProp, onPanelToggle]);
+        if (open) {
+          onCancel();
+        } else {
+          onPanelToggle(true);
+        }
+      },
+      [open, onCancel, onPanelToggle],
+    );
 
     usePickerDocumentEventClose({
       anchorRef,
       lastElementRefInFlow: inputToRef,
-      onChangeClose,
-      onClose,
+      onChangeClose: onCancel,
+      onClose: onCancel,
       open,
       popperRef: panelRef,
     });
@@ -287,6 +376,8 @@ const TimeRangePicker = forwardRef<HTMLDivElement, TimeRangePickerProps>(
             hourStep={hourStep}
             minuteStep={minuteStep}
             onChange={onPanelChange}
+            onCancel={onCancel}
+            onConfirm={onConfirm}
             open={open}
             popperProps={popperProps}
             ref={panelRef}

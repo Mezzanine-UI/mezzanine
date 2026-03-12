@@ -79,18 +79,43 @@ export function useTimeRangePickerValue({
     [from, onChangeProp],
   );
 
+  /**
+   * Update the pending value for the focused input.
+   * Does NOT call onChangeProp — committed only when onPanelConfirm fires.
+   */
   const onPanelChange = useCallback(
     (newTime: DateType | undefined) => {
       if (focusedInput === 'from') {
         setInternalFrom(newTime);
-        onChangeProp?.([newTime, to]);
       } else if (focusedInput === 'to') {
         setInternalTo(newTime);
-        onChangeProp?.([from, newTime]);
       }
     },
-    [focusedInput, from, to, onChangeProp],
+    [focusedInput],
   );
+
+  /**
+   * Commit the pending value for the focused input and notify parent.
+   */
+  const onPanelConfirm = useCallback(() => {
+    const confirmed: TimeRangePickerValue = [
+      focusedInput === 'from' ? internalFrom : from,
+      focusedInput === 'to' ? internalTo : to,
+    ];
+
+    onChangeProp?.(confirmed);
+  }, [focusedInput, from, to, internalFrom, internalTo, onChangeProp]);
+
+  /**
+   * Revert the pending value for the focused input (cancel).
+   */
+  const onPanelCancel = useCallback(() => {
+    if (focusedInput === 'from') {
+      setInternalFrom(from);
+    } else if (focusedInput === 'to') {
+      setInternalTo(to);
+    }
+  }, [focusedInput, from, to]);
 
   const onChange = useCallback(
     (target?: TimeRangePickerValue): TimeRangePickerValue | undefined => {
@@ -137,6 +162,8 @@ export function useTimeRangePickerValue({
     onInputFromChange,
     onInputToChange,
     onPanelChange,
+    onPanelCancel,
+    onPanelConfirm,
     onToFocus,
     panelValue,
     value,
