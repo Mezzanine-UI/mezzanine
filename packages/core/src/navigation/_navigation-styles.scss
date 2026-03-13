@@ -317,10 +317,12 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     .#{$option-prefix}__title-wrapper {
       flex-shrink: 1;
       margin-right: auto;
-      max-width: 9999px;
       min-width: 0;
       overflow: hidden;
-      transition: transition.standard(max-width);
+
+      &:empty {
+        display: none;
+      }
     }
 
     .#{$option-prefix}__title {
@@ -447,11 +449,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
       > :not(:first-child, .mzn-tooltip, .#{$option-prefix}__title-wrapper) {
         display: none;
-      }
-
-      &:has(.#{$option-prefix}__icon) .#{$option-prefix}__title-wrapper {
-        margin-right: 0;
-        max-width: 0;
       }
     }
 
