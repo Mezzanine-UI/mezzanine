@@ -1,6 +1,6 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Select from '.';
 import Typography from '../Typography';
 
@@ -133,41 +133,54 @@ const WithScrollComponent = () => {
       name: `item${i + 1}`,
     })),
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const isFetchingRef = useRef(false);
+
+  const loadMore = useCallback(() => {
+    if (isFetchingRef.current) return;
+
+    isFetchingRef.current = true;
+    setLoading(true);
+
+    setTimeout(() => {
+      setOptions((prev) => [
+        ...prev,
+        ...Array.from({ length: 10 }, (_, i) => ({
+          id: String(prev.length + i + 1),
+          name: `item${prev.length + i + 1}`,
+        })),
+      ]);
+      setLoading(false);
+      isFetchingRef.current = false;
+      setHasReachedBottom(false);
+    }, 1000);
+  }, []);
+
+  const handleReachBottom = useCallback(() => {
+    if (!hasReachedBottom && !isFetchingRef.current) {
+      setHasReachedBottom(true);
+      loadMore();
+    }
+  }, [hasReachedBottom, loadMore]);
+
+  const handleLeaveBottom = useCallback(() => {
+    setHasReachedBottom(false);
+  }, []);
 
   return (
     <div style={{ maxWidth: '300px' }}>
       <Select
         clearable
         fullWidth
+        loading={loading}
+        loadingText="載入中..."
         menuMaxHeight={200}
+        onLeaveBottom={handleLeaveBottom}
+        onReachBottom={handleReachBottom}
         options={options}
-        onScroll={({ scrollTop, maxScrollTop }) => {
-          if (scrollTop + 40 >= maxScrollTop && !isFetchingRef.current) {
-            setIsLoading(true);
-            isFetchingRef.current = true;
-
-            setTimeout(() => {
-              setOptions((prev) => [
-                ...prev,
-                ...Array.from({ length: 10 }, (_, i) => ({
-                  id: String(prev.length + i + 1),
-                  name: `item${prev.length + i + 1}`,
-                })),
-              ]);
-              setIsLoading(false);
-              isFetchingRef.current = false;
-            }, 1000);
-          }
-        }}
         placeholder="滾動載入更多"
       />
-      {isLoading && (
-        <div style={{ padding: '8px', textAlign: 'center', marginTop: '8px' }}>
-          <Typography variant="body">載入中...</Typography>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,7 +1,9 @@
 'use client';
 
 import {
+  DropdownLoadingPosition,
   DropdownOption,
+  DropdownStatus as DropdownStatusType,
   DropdownType,
 } from '@mezzanine-ui/core/dropdown/dropdown';
 import {
@@ -119,6 +121,28 @@ export interface SelectBaseProps
    * @default true
    */
   globalPortal?: boolean;
+  /**
+   * Whether the dropdown is in a loading state.
+   * @default false
+   */
+  loading?: boolean;
+  /**
+   * The position of the loading indicator.
+   * @default 'bottom'
+   */
+  loadingPosition?: DropdownLoadingPosition;
+  /**
+   * The text displayed while loading.
+   */
+  loadingText?: string;
+  /**
+   * Callback fired when the dropdown list leaves the bottom.
+   */
+  onLeaveBottom?: () => void;
+  /**
+   * Callback fired when the dropdown list reaches the bottom.
+   */
+  onReachBottom?: () => void;
 }
 
 export type SelectMultipleProps = SelectBaseProps & {
@@ -188,12 +212,17 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       fullWidth = fullWidthFromFormControl || false,
       inputProps,
       inputRef,
+      loading = false,
+      loadingPosition = 'bottom',
+      loadingText,
       menuMaxHeight,
       mode = 'single',
       onBlur,
       onChange: onChangeProp,
       onClear: onClearProp,
       onFocus,
+      onLeaveBottom,
+      onReachBottom,
       onScroll,
       options: optionsProp,
       placeholder = '',
@@ -208,6 +237,10 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       dropdownZIndex,
       globalPortal = true,
     } = props;
+
+    const dropdownStatus: DropdownStatusType | undefined = loading
+      ? 'loading'
+      : undefined;
 
     const [open, toggleOpen] = useState(false);
     const onOpen = useCallback(() => {
@@ -502,18 +535,23 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
         >
           <Dropdown
             disabled={readOnly || disabled}
+            globalPortal={globalPortal}
+            loadingPosition={loadingPosition}
+            loadingText={loadingText}
             maxHeight={menuMaxHeight}
             mode={mode}
+            onLeaveBottom={onLeaveBottom}
+            onReachBottom={onReachBottom}
             onScroll={onScroll}
             onSelect={handleDropdownSelect}
             onVisibilityChange={handleVisibilityChange}
             open={readOnly ? false : open}
             options={options}
             sameWidth
+            status={dropdownStatus}
             type={dropdownType}
             value={dropdownValue}
             zIndex={dropdownZIndex}
-            globalPortal={globalPortal}
           >
             <SelectTrigger
               ref={composedRef}
