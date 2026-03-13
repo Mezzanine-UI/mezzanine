@@ -30,7 +30,8 @@ export interface FormFieldProps
   counterColor?: FormFieldCounterColor;
   /**
    * The number of equal-width columns in the control field slot.
-   * When set to 2, 3, or 4, children are arranged in a CSS Grid row.
+   * Children are arranged in a CSS Grid row with equal widths.
+   * Omit this prop for single-column (default) layout.
    */
   controlFieldSlotColumns?: ControlFieldSlotColumns;
   /**
@@ -197,7 +198,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
             <div
               className={cx(
                 `${classes.controlFieldSlot}--${controlFieldSlotLayout}`,
-                controlFieldSlotColumns && controlFieldSlotColumns > 1
+                controlFieldSlotColumns
                   ? classes.controlFieldSlotColumns(controlFieldSlotColumns)
                   : undefined,
               )}
