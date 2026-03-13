@@ -596,7 +596,14 @@ describe('<FormField />', () => {
         '.mzn-form-field__control-field-slot--main',
       );
 
-      expect(controlFieldSlotElement?.className).not.toMatch(/--columns-/);
+      expect(controlFieldSlotElement).toBeTruthy();
+      ([2, 3, 4] as const).forEach((columns) => {
+        expect(
+          controlFieldSlotElement!.classList.contains(
+            `mzn-form-field__control-field-slot--columns-${columns}`,
+          ),
+        ).toBeFalsy();
+      });
     });
 
     it('should not apply columns class when controlFieldSlotColumns=1', () => {
@@ -614,7 +621,14 @@ describe('<FormField />', () => {
         '.mzn-form-field__control-field-slot--main',
       );
 
-      expect(controlFieldSlotElement?.className).not.toMatch(/--columns-/);
+      expect(controlFieldSlotElement).toBeTruthy();
+      ([2, 3, 4] as const).forEach((columns) => {
+        expect(
+          controlFieldSlotElement!.classList.contains(
+            `mzn-form-field__control-field-slot--columns-${columns}`,
+          ),
+        ).toBeFalsy();
+      });
     });
 
     ([2, 3, 4] as const).forEach((columns) => {
