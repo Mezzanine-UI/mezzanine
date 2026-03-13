@@ -63,6 +63,7 @@ export const navigationOptionClasses = {
   content: `${navigationOptionPrefix}__content`,
   trigger: `${navigationOptionPrefix}__content--trigger`,
   title: `${navigationOptionPrefix}__title`,
+  titleWrapper: `${navigationOptionPrefix}__title-wrapper`,
   toggleIcon: `${navigationOptionPrefix}__toggle-icon`,
   icon: `${navigationOptionPrefix}__icon`,
   active: `${navigationOptionPrefix}--active`,

@@ -314,12 +314,19 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     transition: transition.standard(background-color, fast), transition.standard(color, fast);
     text-decoration: none;
 
+    .#{$option-prefix}__title-wrapper {
+      flex-shrink: 1;
+      margin-right: auto;
+      max-width: 9999px;
+      overflow: hidden;
+      transition: transition.standard(max-width);
+    }
+
     .#{$option-prefix}__title {
       @include typography.semantic-variable(label-primary-highlight, (line-height));
 
       color: palette.semantic-variable(text, neutral-solid);
       line-height: #{$option-icon-size};
-      margin-right: auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -436,8 +443,13 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       margin: 0 auto;
       width: fit-content;
 
-      > :not(:first-child, .mzn-tooltip) {
+      > :not(:first-child, .mzn-tooltip, .#{$option-prefix}__title-wrapper) {
         display: none;
+      }
+
+      &:has(.#{$option-prefix}__icon) .#{$option-prefix}__title-wrapper {
+        margin-right: 0;
+        max-width: 0;
       }
     }
 
