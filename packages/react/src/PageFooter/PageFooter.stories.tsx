@@ -1,5 +1,5 @@
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import PageFooter from '.';
 
 export default {
@@ -44,7 +44,7 @@ export const OverflowType: Story = {
         children: '儲存草稿',
       },
     },
-    supportingActionIcon: DotVerticalIcon,
+    supportingActionIcon: DotHorizontalIcon,
     dropdownProps: {
       options: [
         {
