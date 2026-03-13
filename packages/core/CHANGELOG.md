@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.4...@mezzanine-ui/core@1.0.0-rc.5) (2026-03-13)
+
+### Bug Fixes
+
+- **cascader:** add ul padding to prevent focus ring from being clipped by scrollbar viewport ([319d5fc](https://github.com/Mezzanine-UI/mezzanine/commit/319d5fc3e1f2fcc8d91d9fa4c4320911926557b4))
+- **cascader:** update dropdown item icon and color [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewuzt04 ([f366deb](https://github.com/Mezzanine-UI/mezzanine/commit/f366deb91e858b394f1b123a62e408e9ef13a9ac)), closes [#86ewuzt04](https://github.com/Mezzanine-UI/mezzanine/issues/86ewuzt04)
+- **cascader:** use overlay scrollbar in panel via Scrollbar component ([41822c0](https://github.com/Mezzanine-UI/mezzanine/commit/41822c08e7cb2c9fe00dc06d6c86691093f25978))
+- **core/button:** fix dashed border style and text-link minor font-weight ([65e8a7f](https://github.com/Mezzanine-UI/mezzanine/commit/65e8a7f48c57594dcb91a9df1b0cf6e47c7cbb89)), closes [#86ewuezc2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewuezc2)
+- **core/calendar:** update quick select disabled color, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwg9fw ([e466b1f](https://github.com/Mezzanine-UI/mezzanine/commit/e466b1f2c6c1fb54135e13c8e9e269c7dfce1bc2)), closes [#86ewwg9](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwg9)
+- **core/calendar:** update range calendar panel wrapper styles, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwgakc ([05a21e6](https://github.com/Mezzanine-UI/mezzanine/commit/05a21e67a12b50f3f7ea489ac78b25da15387a0d))
+- **core/cascader:** apply icon/neutral-light to item-append when item is disabled ([4094ff8](https://github.com/Mezzanine-UI/mezzanine/commit/4094ff84daafa52e9bac91518cd20ea855a0f38c))
+- **core/cascader:** restore icon/neutral-solid base color on item-append ([1c0a772](https://github.com/Mezzanine-UI/mezzanine/commit/1c0a772617574ae61bc864503ef8c7a71b1e8e05))
+- **core/cascader:** set selected leaf item icon color to icon/brand ([1000404](https://github.com/Mezzanine-UI/mezzanine/commit/1000404b5541ad6c8ebd863085657ccf02a7d286))
+- **core/checkbox:** add checkbox style & setting about checked icon[CU-86ewwf60z] ([1973576](https://github.com/Mezzanine-UI/mezzanine/commit/1973576f469267b62536eb9cea5c894e67d8739e))
+- **core/checkbox:** change main chip selected gap tight -> slim[CU-86ewwf4tu] ([fce989d](https://github.com/Mezzanine-UI/mezzanine/commit/fce989ded4f902c49279f2c56dac97c0e8d9c263))
+- **core/checkbox:** change the indeterminate line size[CU-86ewwf11p] ([9ec92d3](https://github.com/Mezzanine-UI/mezzanine/commit/9ec92d3c0156b0791b95c43c306f44fbc612c3cf))
+- **core/checkbox:** fix stylelint error ([fb29341](https://github.com/Mezzanine-UI/mezzanine/commit/fb293414f19fc1f68c9a15b18a0a2a7a74bf8f95))
+- **core/checkbox:** update the main, sub checkbox padding setting[CU-86ewwf0uu] ([df0b212](https://github.com/Mezzanine-UI/mezzanine/commit/df0b21236a01dc1de5f11bffe51a9f9625edbc05))
+- **core/input:** correct spinner button focus effect, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwgg3h ([eb8defd](https://github.com/Mezzanine-UI/mezzanine/commit/eb8defd9b7054f854609a6e3a6338f802b540e76)), closes [#86ewwgg3](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwgg3)
+- **core/picker:** add --filling modifier for brand color during typing [CU-86ewwf7mk] ([811c1db](https://github.com/Mezzanine-UI/mezzanine/commit/811c1dbeb39f815dae57a446f5c1b508cdf4c14f))
+- **core/picker:** add min-width for pickers, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwfph5 ([2806e9e](https://github.com/Mezzanine-UI/mezzanine/commit/2806e9e13faa281265a2f9e298ffe681f3f32db3)), closes [#86ewwfph5](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwfph5)
+- **core/select:** add wrap modifier and fix max-width CSS variable fallback ([c923642](https://github.com/Mezzanine-UI/mezzanine/commit/c92364240a7cf394501015b6c521743169db1514))
+- **core/text-field:** add tiny-gap modifier for currency spinner gap ([d52e37d](https://github.com/Mezzanine-UI/mezzanine/commit/d52e37d5c0d7dc5b6ac50d450607ff07a744eb9c)), closes [#86ewv14](https://github.com/Mezzanine-UI/mezzanine/issues/86ewv14)
+- **core/text-field:** correct input styling, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewv14ke ([ab0d0b8](https://github.com/Mezzanine-UI/mezzanine/commit/ab0d0b84fdb2caa950c2b388fd6437c2335a45d8)), closes [#86ewv14](https://github.com/Mezzanine-UI/mezzanine/issues/86ewv14)
+- **core/text-field:** override padding-right to micro for tiny-gap variant ([92d49de](https://github.com/Mezzanine-UI/mezzanine/commit/92d49de472d9d1194dbb8d2fcfff2d06f51f9e0b)), closes [#86ewv14](https://github.com/Mezzanine-UI/mezzanine/issues/86ewv14)
+- **core/text-field:** remove line-height for suffix-content wrapper ([19715be](https://github.com/Mezzanine-UI/mezzanine/commit/19715bea647af5811ee547d706e26c242fef6293))
+- **core/time-panel:** time panel add focus effect, [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewwg805 ([6cc1dd0](https://github.com/Mezzanine-UI/mezzanine/commit/6cc1dd0e254712c79b9b45a0044c98976160ec00)), closes [#86ewwg805](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwg805)
+
+### Features
+
+- **core/checkbox:** add severity setting on the checkox ([cf89785](https://github.com/Mezzanine-UI/mezzanine/commit/cf897856e29b523d7f5e86fa31737dcd51abd7e0))
+- **core/input:** rename currency to measure, fix number/password min-width ([14256f6](https://github.com/Mezzanine-UI/mezzanine/commit/14256f6e27d7bf2ebef64b613ab388a55f85399d)), closes [#86ewwgj87](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwgj87)
+- **core/text-field:** add mono-input modifier for input-mono typography ([4158f64](https://github.com/Mezzanine-UI/mezzanine/commit/4158f6422f9760da22ea7ced4ec67fbf6aa594a7)), closes [#86ewwgj87](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwgj87)
+
 # [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/core@1.0.0-rc.3...@mezzanine-ui/core@1.0.0-rc.4) (2026-03-11)
 
 ### Bug Fixes

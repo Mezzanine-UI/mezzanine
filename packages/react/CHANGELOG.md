@@ -3,6 +3,55 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-rc.5](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.4...@mezzanine-ui/react@1.0.0-rc.5) (2026-03-13)
+
+### Bug Fixes
+
+- **cascader:** add ul padding to prevent focus ring from being clipped by scrollbar viewport ([319d5fc](https://github.com/Mezzanine-UI/mezzanine/commit/319d5fc3e1f2fcc8d91d9fa4c4320911926557b4))
+- **cascader:** update dropdown item icon and color [#86](https://github.com/Mezzanine-UI/mezzanine/issues/86)ewuzt04 ([f366deb](https://github.com/Mezzanine-UI/mezzanine/commit/f366deb91e858b394f1b123a62e408e9ef13a9ac)), closes [#86ewuzt04](https://github.com/Mezzanine-UI/mezzanine/issues/86ewuzt04)
+- **cascader:** use overlay scrollbar in panel via Scrollbar component ([41822c0](https://github.com/Mezzanine-UI/mezzanine/commit/41822c08e7cb2c9fe00dc06d6c86691093f25978))
+- **react/AutoComplete:** add inside auto complete sample code ([50a53a4](https://github.com/Mezzanine-UI/mezzanine/commit/50a53a435289a2c7fe6e39d79b2c4778d0b17aec))
+- **react/AutoComplete:** add onRemoveCreated and cleanup unselected on blur ([aed5208](https://github.com/Mezzanine-UI/mezzanine/commit/aed520842ad0344552c0ab5d5311399c69791c96))
+- **react/AutoComplete:** add stepByStepBulkCreate for paste then create one by one ([b99a1a7](https://github.com/Mezzanine-UI/mezzanine/commit/b99a1a76a0faa8116456b6315b8f220b0874adea))
+- **react/AutoComplete:** default overflowStrategy to wrap in multiple mode ([17d3e2a](https://github.com/Mezzanine-UI/mezzanine/commit/17d3e2aecfcc6e5403b26a74e0bd1930f641f2b3))
+- **react/autoComplete:** fix the async mode show loading and disabled settings ([988a133](https://github.com/Mezzanine-UI/mezzanine/commit/988a133078c268f8d663f10daaa9f99d2886c683))
+- **react/AutoComplete:** mark cleared single value as unselected ([5516045](https://github.com/Mezzanine-UI/mezzanine/commit/55160453bbef4b3b052e7ae2d0795167219aa86f))
+- **react/AutoComplete:** select option only by enter or click ([f7318d9](https://github.com/Mezzanine-UI/mezzanine/commit/f7318d9e7a9efd451e84456757295983f4e0be91))
+- **react/AutoComplete:** suppress close after create and show created options first ([f1ca8b8](https://github.com/Mezzanine-UI/mezzanine/commit/f1ca8b80ca6d8dadc8ad5229ab3ba3f444bd533e))
+- **react/AutoComplete:** sync input value in stepByStepBulkCreate via onSetInputDisplay ([b593569](https://github.com/Mezzanine-UI/mezzanine/commit/b59356939f9598dc9baf32f06eaaf937d4579392))
+- **react/button:** update button stories ([92478fd](https://github.com/Mezzanine-UI/mezzanine/commit/92478fdf3da665c0ae8cc782cca4f8b290421488)), closes [#86ewuezc2](https://github.com/Mezzanine-UI/mezzanine/issues/86ewuezc2)
+- **react/calendar:** apply new classname for range calendar panel ([4adad83](https://github.com/Mezzanine-UI/mezzanine/commit/4adad83c36936456fa3c5d033935b4808f629953))
+- **react/calendar:** range-start/end class and annotation color on active [CU-86ewwfzr7] ([9233aa6](https://github.com/Mezzanine-UI/mezzanine/commit/9233aa6177a9ffae4e0292b012bf6d1540780813))
+- **react/cascader:** expose full path via input title for keyboard and screen reader accessibility ([8458a52](https://github.com/Mezzanine-UI/mezzanine/commit/8458a521f85105f018bd2e000e97a7243c0d9a73))
+- **react/cascader:** fix panel scrollbar not activating due to unresolvable percentage maxHeight ([bcf292e](https://github.com/Mezzanine-UI/mezzanine/commit/bcf292e48e80978ecf4c891b7193f869ac90fa0e))
+- **react/cascader:** scroll focused item into view on keyboard navigation ([c9600e1](https://github.com/Mezzanine-UI/mezzanine/commit/c9600e1ed9df37c80a31734bb690bb26dbef41b7))
+- **react/checkbox:** add checkbox chip mode checked icon class ([e622d87](https://github.com/Mezzanine-UI/mezzanine/commit/e622d875823b44085f9bf481429d8b94bef8cd56))
+- **react/checkbox:** change check icon size ([1613dc8](https://github.com/Mezzanine-UI/mezzanine/commit/1613dc85df8ab158b5a5fe4a5aa2b0cc6dbf34bd))
+- **react/date-picker:** wire hover preview and mouse leave clear [CU-86ewwfnwt] ([eebe337](https://github.com/Mezzanine-UI/mezzanine/commit/eebe3370b60e7da1088a8d9462cc21313404ea0c))
+- **react/date-time-picker:** pending time value and Ok/Cancel flow [CU-86ewwg61v][CU-86ewwg7aj] ([0370f59](https://github.com/Mezzanine-UI/mezzanine/commit/0370f59835c4caf65fd08b9fe289f2ea7d3c679e))
+- **react/Dropdown:** prevent action button from stealing focus on mousedown ([7f0d0d5](https://github.com/Mezzanine-UI/mezzanine/commit/7f0d0d517fda01d7156956828c6707ddce93bc84))
+- **react/Form:** support getOptionsFilterQuery in useAutoCompleteValueControl ([a9d8e0e](https://github.com/Mezzanine-UI/mezzanine/commit/a9d8e0e557e103252ecbcbea7d5cfe45578982f2))
+- **react/input:** apply tiny-gap to currency spinner and add sub size stories ([65bb839](https://github.com/Mezzanine-UI/mezzanine/commit/65bb839dd7c2e838a23ec837482b94d36f6c5674)), closes [#86ewv14](https://github.com/Mezzanine-UI/mezzanine/issues/86ewv14)
+- **react/picker:** isComplete and hoverValue for hover preview [CU-86ewwf7mk][CU-86ewwfnwt] ([b764a52](https://github.com/Mezzanine-UI/mezzanine/commit/b764a52aa6b27ff73044f4cb0f63fd9c76c27da5))
+- **react/picker:** pickers apply min-width ([9bc9015](https://github.com/Mezzanine-UI/mezzanine/commit/9bc901597ac7d06321988942b86dcdaedaacafb1))
+- **react/SelectTriggerTags:** support inline input after tags in wrap overflow strategy ([0f5c8a7](https://github.com/Mezzanine-UI/mezzanine/commit/0f5c8a772f8187c2e9371a207d09494429a15dfa))
+- **react/slider:** icon keyboard a11y and tooltip offset integration ([9b125e0](https://github.com/Mezzanine-UI/mezzanine/commit/9b125e00bbb90cc3fdd85cdf527f6543b2bd9f39))
+- **react/time-panel:** use CalendarFooterActions with Ok/Cancel [CU-86ewwg61v][CU-86ewwg7aj] ([8b0216f](https://github.com/Mezzanine-UI/mezzanine/commit/8b0216f437f5ec20e3b9f9c40c4a7aa8247c8c60))
+- **react/time-picker:** immediate commit on typed input and pending preview in input [CU-86ewwg61v] ([3ea6d6e](https://github.com/Mezzanine-UI/mezzanine/commit/3ea6d6edc2a829b2daaca2e4a489c709a4cc42aa))
+- **react/time-picker:** pending value and Ok/Cancel confirm flow [CU-86ewwg61v][CU-86ewwg7aj] ([6c34e92](https://github.com/Mezzanine-UI/mezzanine/commit/6c34e9252a8007a57bc90ac7e55a75446f7455d3))
+- **react/time-range-picker:** fix panel freeze when re-editing committed values [CU-86ewwg61v] ([c4bfa0b](https://github.com/Mezzanine-UI/mezzanine/commit/c4bfa0b0f36297769a502bf775ed8c1aac9546d5))
+- **react/time-range-picker:** pending value and Ok/Cancel flow [CU-86ewwg61v][CU-86ewwg7aj] ([4978b77](https://github.com/Mezzanine-UI/mezzanine/commit/4978b7734d52e0404f6b5d963b83e351e07409b9))
+- **react/utils:** robust CSS variable numeric resolver ([601f61e](https://github.com/Mezzanine-UI/mezzanine/commit/601f61edcb8208c691f4f2090af31111b2227b63))
+
+### Features
+
+- **react/cascader:** collapse middle path with tooltip on overflow ([66ddeb8](https://github.com/Mezzanine-UI/mezzanine/commit/66ddeb8a0369425e4f306a284a6534ecc02aecf5))
+- **react/checkbox:** add the checkbox severity[CU-86ewwf0z6] ([12a4ac4](https://github.com/Mezzanine-UI/mezzanine/commit/12a4ac41644cae400d64090eec43c133bf5d0c71))
+- **react/input:** rename currency to measure, fix min-width, add mono font ([1b336b8](https://github.com/Mezzanine-UI/mezzanine/commit/1b336b81e7d243e3fd210167de37da9069a83392)), closes [#86ewwgj87](https://github.com/Mezzanine-UI/mezzanine/issues/86ewwgj87)
+- **react/slider:** add icon click handlers for value increment/decrement ([858e3cd](https://github.com/Mezzanine-UI/mezzanine/commit/858e3cd784e3f8d2aa20729d7efa13a6ed13b654))
+- **react/slider:** fix tooltip gap offset using spacing tokens ([e2c6993](https://github.com/Mezzanine-UI/mezzanine/commit/e2c6993bd6722d2a9b572c79871dd781600018ff))
+- **react/tooltip:** support offsetMainAxis override ([f020e1f](https://github.com/Mezzanine-UI/mezzanine/commit/f020e1f886915391a6eca54713f5a54731799cff))
+
 # [1.0.0-rc.4](https://github.com/Mezzanine-UI/mezzanine/compare/@mezzanine-ui/react@1.0.0-rc.3...@mezzanine-ui/react@1.0.0-rc.4) (2026-03-11)
 
 ### Bug Fixes
