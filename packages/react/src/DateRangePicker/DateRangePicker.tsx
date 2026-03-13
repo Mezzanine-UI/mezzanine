@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
-import { RangePickerValue } from '@mezzanine-ui/core/picker';
+import { pickerClasses, RangePickerValue } from '@mezzanine-ui/core/picker';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
 import { CalendarFooterActionsProps } from '../Calendar/CalendarFooterActions';
@@ -26,6 +26,7 @@ import {
 } from '../Picker';
 import Icon from '../Icon';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import { cx } from '../utils/cx';
 
 export interface DateRangePickerProps
   extends Pick<
@@ -465,10 +466,17 @@ const DateRangePicker = forwardRef<HTMLDivElement, DateRangePickerProps>(
 
     const suffixActionIcon = <Icon icon={CalendarIcon} onClick={onIconClick} />;
 
+    const rangeWidthClass =
+      mode === 'year'
+        ? pickerClasses.hostRangeYear
+        : mode !== 'day'
+          ? pickerClasses.hostRangeSlim
+          : undefined;
+
     return (
       <>
         <RangePickerTrigger
-          className={className}
+          className={cx(rangeWidthClass, className)}
           clearable={clearable}
           disabled={disabled}
           forceShowClearable={!!(internalValue[0] || internalValue[1])}

@@ -1,6 +1,7 @@
 'use client';
 
 import { DateType } from '@mezzanine-ui/core/calendar';
+import { pickerClasses } from '@mezzanine-ui/core/picker';
 import { CalendarTimeIcon } from '@mezzanine-ui/icons';
 import {
   FocusEventHandler,
@@ -15,6 +16,7 @@ import {
 import { useCalendarContext } from '../Calendar';
 import { DatePickerCalendar, DatePickerCalendarProps } from '../DatePicker';
 import { useComposeRefs } from '../hooks/useComposeRefs';
+import { cx } from '../utils/cx';
 import Icon from '../Icon';
 import {
   PickerTriggerWithSeparator,
@@ -505,7 +507,7 @@ const DateTimePicker = forwardRef<HTMLDivElement, DateTimePickerProps>(
         <PickerTriggerWithSeparator
           {...restTriggerProps}
           ref={triggerComposedRef}
-          className={className}
+          className={cx(pickerClasses.hostDatetime, className)}
           clearable={clearable}
           disabled={disabled}
           forceShowClearable={!!(dateValue || timeValue)}

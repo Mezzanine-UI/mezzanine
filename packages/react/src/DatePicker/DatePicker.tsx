@@ -12,8 +12,10 @@ import {
   forwardRef,
 } from 'react';
 import { DateType, getDefaultModeFormat } from '@mezzanine-ui/core/calendar';
+import { pickerClasses } from '@mezzanine-ui/core/picker';
 import { CalendarIcon } from '@mezzanine-ui/icons';
 import { useCalendarContext } from '../Calendar';
+import { cx } from '../utils/cx';
 import DatePickerCalendar, {
   DatePickerCalendarProps,
 } from './DatePickerCalendar';
@@ -340,7 +342,7 @@ const DatePicker = forwardRef<HTMLDivElement, DatePickerProps>(
         <PickerTrigger
           {...restTriggerProps}
           ref={triggerComposedRef}
-          className={className}
+          className={cx(pickerClasses.hostDate, className)}
           clearable={clearable}
           disabled={disabled}
           error={error}
