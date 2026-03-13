@@ -480,7 +480,7 @@ const RangeCalendar = forwardRef<HTMLDivElement, RangeCalendarProps>(
           />
         )}
         <div className={calendarClasses.mainWithFooter}>
-          <div style={{ display: 'inline-flex', flexFlow: 'row' }}>
+          <div className={calendarClasses.mainRangeCalendarWrapper}>
             <Calendar
               {...calendarProps}
               renderAnnotations={renderAnnotations}
