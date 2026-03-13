@@ -1,7 +1,5 @@
 import { forwardRef, useRef } from 'react';
-import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { iconClasses as classes } from '@mezzanine-ui/core/spin';
-import Icon, { IconProps } from '../Icon';
 import Backdrop, { BackdropProps } from '../Backdrop';
 import { useComposeRefs } from '../hooks/useComposeRefs';
 import { cx } from '../utils/cx';
@@ -28,10 +26,6 @@ export interface SpinProps extends NativeElementPropsWithoutKeyAndRef<'div'> {
    */
   stretch?: boolean;
   /**
-   * Custom icon props
-   */
-  iconProps?: Omit<IconProps, 'icon' | 'spin'>;
-  /**
    * Whether Spin is loading.
    * @default false
    */
@@ -51,18 +45,9 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
     descriptionClassName,
     stretch = false,
     size = 'main',
-    iconProps = {},
     loading = false,
     backdropProps = {},
   } = props;
-
-  const {
-    className: iconClassName,
-    color: iconColor,
-    size: iconSize,
-    style: iconStyle,
-    ...iconPropsRest
-  } = iconProps;
 
   const isNestedPattern = typeof children !== 'undefined';
   const composedHostRef = useComposeRefs([ref, hostRef]);
@@ -74,17 +59,9 @@ const Spin = forwardRef<HTMLDivElement, SpinProps>(function Spin(props, ref) {
         [classes.stretch]: stretch,
       })}
     >
-      <Icon
-        {...iconPropsRest}
-        className={cx(classes.icon, iconClassName)}
-        color={iconColor}
-        icon={SpinnerIcon}
-        spin
-        style={{
-          ...(iconSize ? { fontSize: `${iconSize}px` } : {}),
-          ...(iconStyle || {}),
-        }}
-      />
+      <span className={classes.spinnerRing}>
+        <span className={classes.spinnerTail} />
+      </span>
       {description ? (
         <span className={cx(classes.description, descriptionClassName)}>
           {description}

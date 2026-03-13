@@ -87,7 +87,7 @@ const OnModalExample = () => {
         open={open}
         showModalHeader
       >
-        <Spin description="內容加載中..." loading stretch>
+        <Spin description="內容加載中..." loading stretch size="sub">
           <div style={{ width: '100%', height: '200px' }} />
         </Spin>
       </Modal>

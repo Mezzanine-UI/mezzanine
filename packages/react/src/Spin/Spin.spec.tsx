@@ -1,4 +1,3 @@
-import { SpinnerIcon } from '@mezzanine-ui/icons';
 import { act, cleanupHook, render } from '../../__test-utils__';
 import { describeForwardRefToHTMLElement } from '../../__test-utils__/common';
 import Spin from '.';
@@ -48,9 +47,9 @@ describe('<Spin />', () => {
       const { getHostHTMLElement } = render(<Spin loading />);
 
       const host = getHostHTMLElement();
-      const icon = host.querySelector('.mzn-spin__spin__icon');
+      const ring = host.querySelector('.mzn-spin__spin__ring');
 
-      expect(icon?.getAttribute('data-icon-name')).toBe(SpinnerIcon.name);
+      expect(ring).toBeInstanceOf(HTMLElement);
     });
   });
 
@@ -141,42 +140,6 @@ describe('<Spin />', () => {
       const host = getHostHTMLElement();
 
       expect(host.classList.contains('mzn-spin--stretch')).toBe(true);
-    });
-  });
-
-  describe('prop: iconProps', () => {
-    it('should apply custom icon size', () => {
-      const { getHostHTMLElement } = render(
-        <Spin iconProps={{ size: 48 }} loading />,
-      );
-
-      const host = getHostHTMLElement();
-      const icon = host.querySelector('.mzn-spin__spin__icon');
-
-      expect(icon?.getAttribute('style')).toContain('font-size: 48px');
-    });
-
-    it('should apply custom icon className', () => {
-      const { getHostHTMLElement } = render(
-        <Spin iconProps={{ className: 'custom-icon' }} loading />,
-      );
-
-      const host = getHostHTMLElement();
-      const icon = host.querySelector('.mzn-spin__spin__icon');
-
-      expect(icon?.classList.contains('custom-icon')).toBe(true);
-    });
-
-    it('should apply custom icon color', () => {
-      const { getHostHTMLElement } = render(
-        <Spin iconProps={{ color: 'brand' }} loading />,
-      );
-
-      const host = getHostHTMLElement();
-      const icon = host.querySelector('.mzn-spin__spin__icon');
-
-      // Icon color 會透過 CSS variable 設定，檢查 class 是否存在
-      expect(icon?.classList.contains('mzn-icon--color')).toBe(true);
     });
   });
 
