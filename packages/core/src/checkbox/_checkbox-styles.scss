@@ -408,6 +408,7 @@ $checked-disabled: (
       left: initial;
       transform: initial;
     }
+
     &--chip {
       svg {
         aspect-ratio: 1 / 1;
@@ -469,7 +470,7 @@ $checked-disabled: (
     z-index: 0;
 
     // Enable state (unchecked)
-    background-color: palette.semantic-variable(background, base);
+    background-color: palette.semantic-variable("background", base);
     border-color: var(--#{$prefix}-unchecked-border);
 
     // Checked/Indeterminate enable state
@@ -570,7 +571,7 @@ $checked-disabled: (
   .#{input-check.$prefix}:hover &:not(.#{$prefix}--disabled) {
     .#{$prefix}__input {
       &:not(:checked, :indeterminate) {
-        background-color: palette.semantic-variable(background, base);
+        background-color: palette.semantic-variable("background", base);
         border-color: var(--#{$prefix}-unchecked-border-hover);
       }
 
