@@ -73,7 +73,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     disabled: false,
     fullWidth: false,
     hintText: 'hint text',
-    hintTextIcon: 'InfoOutlineIcon',
+    hintTextIcon: 'InfoFilledIcon',
     label: 'label',
     labelInformationText: 'This is information tooltip text',
     labelSpacing: FormFieldLabelSpacing.MAIN,
@@ -251,7 +251,7 @@ export const HorizontalBase: StoryObj = {
       <FormField
         density={FormFieldDensity.BASE}
         hintText="Label and input on the same row with base spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Username"
         layout={FormFieldLayout.HORIZONTAL}
         name="username-h-base"
@@ -268,7 +268,7 @@ export const HorizontalTight: StoryObj = {
       <FormField
         density={FormFieldDensity.TIGHT}
         hintText="Label and input on the same row with tight spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Email"
         layout={FormFieldLayout.HORIZONTAL}
         name="email-h-tight"
@@ -285,7 +285,7 @@ export const HorizontalNarrow: StoryObj = {
       <FormField
         density={FormFieldDensity.NARROW}
         hintText="Label and input on the same row with narrow spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Phone"
         layout={FormFieldLayout.HORIZONTAL}
         name="phone-h-narrow"
@@ -302,7 +302,7 @@ export const HorizontalWide: StoryObj = {
       <FormField
         density={FormFieldDensity.WIDE}
         hintText="Label and input on the same row with wide spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Address"
         layout={FormFieldLayout.HORIZONTAL}
         name="address-h-wide"
@@ -319,7 +319,7 @@ export const StretchTight: StoryObj = {
       <FormField
         density={FormFieldDensity.TIGHT}
         hintText="Compact vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="First Name"
         layout={FormFieldLayout.STRETCH}
         name="firstname-s-tight"
@@ -336,7 +336,7 @@ export const StretchNarrow: StoryObj = {
       <FormField
         density={FormFieldDensity.NARROW}
         hintText="Standard vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Last Name"
         layout={FormFieldLayout.STRETCH}
         name="lastname-s-narrow"
@@ -353,7 +353,7 @@ export const StretchWide: StoryObj = {
       <FormField
         density={FormFieldDensity.WIDE}
         hintText="Spacious vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Company"
         layout={FormFieldLayout.STRETCH}
         name="company-s-wide"
@@ -369,7 +369,7 @@ export const Vertical: StoryObj = {
     return (
       <FormField
         hintText="Default vertical layout with standard spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Name"
         layout={FormFieldLayout.VERTICAL}
         name="name-vertical"
