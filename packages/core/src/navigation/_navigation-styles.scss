@@ -221,7 +221,8 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       pointer-events: none;
       position: absolute;
       transition: transition.standard(opacity, fast);
-      width: calc(100% - spacing.semantic-variable(padding, horizontal, comfort-fixed) - spacing.semantic-variable(padding, horizontal, comfort-fixed));
+      width: spacing.semantic-variable(size, element, airy);
+      height: spacing.semantic-variable(size, element, airy);
     }
 
     .#{$header-prefix}__title:not(:first-child) {
@@ -238,9 +239,17 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       color: palette.semantic-variable(text, fixed-light);
     }
 
+    .#{$icon-button-prefix} {
+      opacity: 0;
+    }
+
     &:hover {
       .#{$header-prefix}__content {
         opacity: 0;
+      }
+
+      .#{$icon-button-prefix} {
+        opacity: 1;
       }
     }
   }
@@ -266,6 +275,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   &--collapsed {
     display: flex;
     flex-direction: column-reverse;
+    align-items: flex-start;
 
     .#{$footer-prefix}__icons {
       display: flex;
@@ -445,11 +455,21 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
     .#{$option-prefix}__content {
       margin: 0 auto;
-      width: fit-content;
+      max-width: 100%;
 
       .#{$option-prefix}__toggle-icon,
       .mzn-badge {
         display: none;
+      }
+    }
+
+    &.#{$option-prefix}--active.#{$option-prefix}--open {
+      & > .#{$option-prefix}__content {
+        background-color: palette.semantic-variable('background', brand-faint);
+
+        .#{$option-prefix}__icon {
+          color: palette.semantic-variable(icon, neutral-solid);
+        }
       }
     }
 
@@ -472,7 +492,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   display: flex;
   padding: spacing.semantic-variable(padding, vertical, tight-fixed)
     spacing.semantic-variable(padding, horizontal, tight-fixed);
-  transition: transition.standard(background-color, fast);
+  transition: transition.standard(background-color, fast), transition.standard(opacity, fast);
   width: spacing.semantic-variable(size, element, airy);
   height: spacing.semantic-variable(size, element, airy);
 
