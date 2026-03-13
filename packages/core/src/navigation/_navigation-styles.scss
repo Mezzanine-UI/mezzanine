@@ -454,7 +454,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   justify-content: center;
   border-radius: radius.variable(base);
   box-sizing: border-box;
-  color: palette.semantic-variable(icon, neutral);
+  color: palette.semantic-variable(icon, neutral-strong);
   display: flex;
   padding: spacing.semantic-variable(padding, vertical, tight-fixed)
     spacing.semantic-variable(padding, horizontal, tight-fixed);
@@ -462,8 +462,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   width: spacing.semantic-variable(size, element, airy);
   height: spacing.semantic-variable(size, element, airy);
 
-  &:hover {
+  &:hover,
+  &:active {
     background-color: palette.semantic-variable('background', neutral-faint);
+    color: palette.semantic-variable(icon, neutral-strong);
   }
 
   &:focus-visible {
@@ -474,9 +476,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 .#{$user-menu-prefix} {
   @include btn-utils.reset();
 
+  border-radius: radius.variable(base);
+  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
   padding: spacing.semantic-variable(padding, vertical, micro)
     spacing.semantic-variable(padding, horizontal, tiny);
-  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
 
   &__content {
     align-items: center;
