@@ -8,9 +8,9 @@ import {
 } from '@mezzanine-ui/core/time-panel';
 import { forwardRef, useMemo } from 'react';
 import { useCalendarContext } from '../Calendar';
+import CalendarFooterActions from '../Calendar/CalendarFooterActions';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
-import TimePanelAction from './TimePanelAction';
 import TimePanelColumn from './TimePanelColumn';
 
 export interface TimePanelProps
@@ -44,6 +44,14 @@ export interface TimePanelProps
    * Change handler. Takes `DateType` as its argument.
    */
   onChange?: (target: DateType) => void;
+  /**
+   * Called when the user clicks the Cancel button.
+   */
+  onCancel?: VoidFunction;
+  /**
+   * Called when the user clicks the Ok button.
+   */
+  onConfirm?: VoidFunction;
   /**
    * The steps of second.
    * @default 1
@@ -79,6 +87,8 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
       hourStep = 1,
       minuteStep = 1,
       onChange,
+      onCancel,
+      onConfirm,
       secondStep = 1,
       value,
       ...restHostProps
@@ -118,40 +128,6 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
       };
     }
 
-    const onThisMoment = () => {
-      if (!onChange) return;
-
-      const now = getNow();
-      const currentHour = getHour(now);
-      const currentMinute = getMinute(now);
-      const currentSecond = getSecond(now);
-
-      const closestHour = hideHour
-        ? currentHour
-        : Math.round(currentHour / hourStep) * hourStep;
-
-      const closestMinute = hideMinute
-        ? currentMinute
-        : Math.round(currentMinute / minuteStep) * minuteStep;
-
-      const closestSecond = hideSecond
-        ? currentSecond
-        : Math.round(currentSecond / secondStep) * secondStep;
-
-      let result = now;
-      if (!hideHour) {
-        result = setHour(result, Math.min(closestHour, 23));
-      }
-      if (!hideMinute) {
-        result = setMinute(result, Math.min(closestMinute, 59));
-      }
-      if (!hideSecond) {
-        result = setSecond(result, Math.min(closestSecond, 59));
-      }
-
-      onChange(result);
-    };
-
     return (
       <div {...restHostProps} ref={ref} className={cx(classes.host, className)}>
         <div className={classes.columns}>
@@ -177,7 +153,18 @@ const TimePanel = forwardRef<HTMLDivElement, TimePanelProps>(
             />
           )}
         </div>
-        <TimePanelAction onClick={onThisMoment} />
+        <CalendarFooterActions
+          actions={{
+            secondaryButtonProps: {
+              children: 'Cancel',
+              onClick: onCancel,
+            },
+            primaryButtonProps: {
+              children: 'Ok',
+              onClick: onConfirm,
+            },
+          }}
+        />
       </div>
     );
   },

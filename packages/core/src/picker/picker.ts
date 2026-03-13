@@ -6,6 +6,10 @@ export const pickerPrefix = 'mzn-picker';
 export const pickerClasses = {
   host: pickerPrefix,
   hostRange: `${pickerPrefix}--range`,
+  hostDate: `${pickerPrefix}--date`,
+  hostDatetime: `${pickerPrefix}--datetime`,
+  hostRangeYear: `${pickerPrefix}--range-year`,
+  hostRangeSlim: `${pickerPrefix}--range-slim`,
   arrowIcon: `${pickerPrefix}__arrow-icon`,
   inputMono: `${pickerPrefix}__input-mono`,
   formattedInput: `${pickerPrefix}__formatted-input`,
@@ -13,6 +17,7 @@ export const pickerClasses = {
   formattedInputDisplay: `${pickerPrefix}__formatted-input-display`,
   formattedInputSegment: `${pickerPrefix}__formatted-input-segment`,
   formattedInputSegmentFilled: `${pickerPrefix}__formatted-input-segment--filled`,
+  formattedInputSegmentFilling: `${pickerPrefix}__formatted-input-segment--filling`,
   formattedInputSegmentDisabled: `${pickerPrefix}__formatted-input-segment--disabled`,
   separator: `${pickerPrefix}__separator`,
   separatorInputs: `${pickerPrefix}__separator-inputs`,

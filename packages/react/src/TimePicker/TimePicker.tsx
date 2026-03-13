@@ -32,7 +32,10 @@ function isValidStep(value: number, step: number): boolean {
 }
 
 export interface TimePickerProps
-  extends Omit<TimePickerPanelProps, 'anchor' | 'onChange' | 'open' | 'value'>,
+  extends Omit<
+      TimePickerPanelProps,
+      'anchor' | 'onChange' | 'onCancel' | 'onConfirm' | 'open' | 'value'
+    >,
     Omit<
       PickerTriggerProps,
       'format' | 'inputRef' | 'onChange' | 'onClear' | 'suffix' | 'value'
@@ -66,7 +69,18 @@ export interface TimePickerProps
  */
 const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
   function TimePicker(props, ref) {
-    const { defaultTimeFormat } = useCalendarContext();
+    const {
+      defaultTimeFormat,
+      formatToString,
+      getNow,
+      getHour,
+      getMinute,
+      getSecond,
+      locale,
+      setHour,
+      setMinute,
+      setSecond,
+    } = useCalendarContext();
     const {
       className,
       clearable = true,
@@ -98,7 +112,55 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
     const resolvedFormat =
       props.format ?? (hideSecond ? 'HH:mm' : defaultTimeFormat);
 
-    const { getHour, getMinute, getSecond } = useCalendarContext();
+    /**
+     * Compute rounded current time respecting step and hide settings.
+     * Mirrors the original onThisMoment logic from TimePanel.
+     */
+    const computeCurrentTime = useCallback((): DateType => {
+      const now = getNow();
+      const h = getHour(now);
+      const m = getMinute(now);
+      const s = getSecond(now);
+
+      let result = now;
+
+      if (!hideHour) {
+        result = setHour(
+          result,
+          Math.min(Math.round(h / (hourStep ?? 1)) * (hourStep ?? 1), 23),
+        );
+      }
+
+      if (!hideMinute) {
+        result = setMinute(
+          result,
+          Math.min(Math.round(m / (minuteStep ?? 1)) * (minuteStep ?? 1), 59),
+        );
+      }
+
+      if (!hideSecond) {
+        result = setSecond(
+          result,
+          Math.min(Math.round(s / (secondStep ?? 1)) * (secondStep ?? 1), 59),
+        );
+      }
+
+      return result;
+    }, [
+      getNow,
+      getHour,
+      getMinute,
+      getSecond,
+      setHour,
+      setMinute,
+      setSecond,
+      hideHour,
+      hideMinute,
+      hideSecond,
+      hourStep,
+      minuteStep,
+      secondStep,
+    ]);
 
     /**
      * Validate time value against step constraints.
@@ -158,22 +220,6 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       [onPanelToggleProp, preventOpen],
     );
 
-    const onFocus = useMemo<
-      FocusEventHandler<HTMLInputElement> | undefined
-    >(() => {
-      if (readOnly) {
-        return undefined;
-      }
-
-      return (event) => {
-        if (onFocusProp) {
-          onFocusProp(event);
-        }
-
-        onPanelToggle(true);
-      };
-    }, [onPanelToggle, onFocusProp, readOnly]);
-
     /** Controlling input value and bind change handler */
     const inputRef = useRef<HTMLInputElement>(null);
     const {
@@ -190,13 +236,59 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       value: valueProp,
     });
 
-    /** Bind close control to handlers */
-    const onPanelChange = (val?: DateType) => {
-      if (val) {
-        onChange(val);
-        onChangeProp?.(val);
+    /**
+     * Pending value: the time being adjusted in the panel before confirmation.
+     * Not committed to internalValue until the user clicks Ok.
+     */
+    const [pendingValue, setPendingValue] = useState<DateType | undefined>(
+      undefined,
+    );
+
+    /** Open panel and initialize pendingValue */
+    const openPanelWithInit = useCallback(() => {
+      const initValue = internalValue ?? computeCurrentTime();
+
+      setPendingValue(initValue);
+      onPanelToggle(true);
+    }, [internalValue, computeCurrentTime, onPanelToggle]);
+
+    /** Panel column selection → update pending only, do not commit */
+    const onPanelChange = useCallback((val?: DateType) => {
+      if (val) setPendingValue(val);
+    }, []);
+
+    /** Ok: commit pendingValue → update input + notify parent → close */
+    const onConfirm = useCallback(() => {
+      if (pendingValue) {
+        onChange(pendingValue);
+        onChangeProp?.(pendingValue);
       }
-    };
+
+      setPendingValue(undefined);
+      onPanelToggle(false);
+    }, [pendingValue, onChange, onChangeProp, onPanelToggle]);
+
+    /** Cancel / close: discard pendingValue → close without committing */
+    const onCancel = useCallback(() => {
+      setPendingValue(undefined);
+      onPanelToggle(false);
+    }, [onPanelToggle]);
+
+    const onFocus = useMemo<
+      FocusEventHandler<HTMLInputElement> | undefined
+    >(() => {
+      if (readOnly) {
+        return undefined;
+      }
+
+      return (event) => {
+        if (onFocusProp) {
+          onFocusProp(event);
+        }
+
+        openPanelWithInit();
+      };
+    }, [openPanelWithInit, onFocusProp, readOnly]);
 
     const onKeyDownWithCloseControl = useCallback<
       KeyboardEventHandler<HTMLInputElement>
@@ -209,11 +301,10 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
         }
 
         if (event.key === 'Enter') {
-          onChangeProp?.(internalValue);
-          onPanelToggle(false);
+          onConfirm();
         }
       },
-      [internalValue, onPanelToggle, onChangeProp, onKeyDown, onKeyDownProp],
+      [onConfirm, onKeyDown, onKeyDownProp],
     );
 
     /** Resolve input props */
@@ -246,26 +337,14 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       onChangeProp?.(undefined);
     }, [onChange, onChangeProp]);
 
-    /** Blur, click away and key down close */
-    const onClose = () => {
-      onChange(valueProp);
-
-      onPanelToggle(false);
-    };
-
-    const onChangeClose = () => {
-      onChangeProp?.(internalValue);
-
-      onPanelToggle(false);
-    };
-
+    /** Click away → cancel (do not commit) */
     usePickerDocumentEventClose({
       open,
       anchorRef,
       popperRef: panelRef,
       lastElementRefInFlow: inputRef,
-      onClose,
-      onChangeClose,
+      onClose: onCancel,
+      onChangeClose: onCancel,
     });
 
     /** Icon */
@@ -273,10 +352,10 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
       e.stopPropagation();
 
       if (open) {
-        onChange(valueProp);
+        onCancel();
+      } else {
+        openPanelWithInit();
       }
-
-      onPanelToggle(!open);
     };
 
     const suffixIcon = (
@@ -300,13 +379,22 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
           fullWidth={fullWidth}
           inputProps={resolvedInputProps}
           inputRef={inputRef}
+          hoverValue={
+            open && !inputValue && pendingValue
+              ? (formatToString(locale, pendingValue, resolvedFormat) ??
+                undefined)
+              : undefined
+          }
           onChange={(e) => {
-            onInputChange(e);
-            onPanelChange(e.target.value);
-            onPanelToggle(true);
+            const val = e.target.value as DateType;
+
+            onInputChange(e); // Update inputValue display
+            onChange(val); // Commit to internalValue
+            onChangeProp?.(val); // Notify parent immediately
+            onPanelChange(val); // Keep panel pendingValue in sync
           }}
           onClear={onClear}
-          onFocus={() => onPanelToggle(true)}
+          onFocus={() => openPanelWithInit()}
           placeholder={placeholder}
           prefix={prefix}
           readOnly={readOnly}
@@ -326,10 +414,12 @@ const TimePicker = forwardRef<HTMLDivElement, TimePickerProps>(
           hourStep={hourStep}
           minuteStep={minuteStep}
           onChange={onPanelChange}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
           open={open}
           popperProps={popperProps}
           secondStep={secondStep}
-          value={internalValue}
+          value={pendingValue}
         />
       </>
     );

@@ -39,6 +39,8 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
           <TimePanel
             value={val}
             onChange={setVal}
+            onConfirm={() => {}}
+            onCancel={() => setVal(undefined)}
             hourStep={hourStep}
             minuteStep={minuteStep}
             secondStep={secondStep}
@@ -51,6 +53,8 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
           <TimePanel
             value={val2}
             onChange={setVal2}
+            onConfirm={() => {}}
+            onCancel={() => setVal2(undefined)}
             hourStep={hourStep}
             minuteStep={minuteStep}
             secondStep={secondStep}
@@ -64,6 +68,8 @@ export const Playground: StoryFn<PlaygroundArgs> = ({
           <TimePanel
             value={val3}
             onChange={setVal3}
+            onConfirm={() => {}}
+            onCancel={() => setVal3(undefined)}
             hourStep={1}
             minuteStep={5}
             secondStep={10}

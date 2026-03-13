@@ -20,6 +20,11 @@ export interface FormattedInputProps
       'errorMessages' | 'validate' | 'format' | 'onChange' | 'onPasteIsoValue'
     > {
   /**
+   * A pre-formatted date string to preview when the input is empty and not focused.
+   * Used to show calendar hover preview in placeholder color.
+   */
+  hoverValue?: string;
+  /**
    * Placeholder to show when not focused and value is empty
    */
   placeholder?: string;
@@ -43,6 +48,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
         invalidPaste: 'Pasted content is not valid.',
       },
       format,
+      hoverValue,
       placeholder,
       validate,
       value: externalValue,
@@ -59,6 +65,7 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     const {
       value,
       focused,
+      isComplete,
       handleKeyDown,
       handleFocus,
       handleBlur,
@@ -78,31 +85,33 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
     const segments = useRef(parseFormatSegments(format)).current;
 
     const renderMixedColorDisplay = () => {
-      const currentValue = value || '';
+      const template = getTemplateWithoutBrackets(format);
+      const isTemplate = value === template;
+      const isHoverPreview = isTemplate && !!hoverValue;
+      const currentValue = isHoverPreview ? hoverValue : value || '';
 
-      // Show placeholder when no value
-      if (currentValue === getTemplateWithoutBrackets(format) && placeholder) {
+      // Show native placeholder when no value and no hover preview
+      if (isTemplate && !isHoverPreview && placeholder) {
         return null;
       }
 
-      // Show format mask when focused or has value
       const displaySegments: Array<{ text: string; filled: boolean }> = [];
 
       for (const segment of segments) {
         if (segment.type === 'mask') {
-          // Render each character of the mask segment
           for (let i = segment.start; i < segment.end; i++) {
             displaySegments.push({
               text: currentValue[i] || segment.text[i - segment.start],
-              filled: /\d/.test(currentValue[i]),
+              filled: isHoverPreview ? false : /\d/.test(currentValue[i]),
             });
           }
         } else {
-          // Separator or literal - show as filled if previous mask segment is filled
           const prevMask = findPreviousMaskSegment(segments, segment.start);
-          const isFilled = prevMask
-            ? isMaskSegmentFilled(currentValue, prevMask)
-            : false;
+          const isFilled = isHoverPreview
+            ? false
+            : prevMask
+              ? isMaskSegmentFilled(currentValue, prevMask)
+              : false;
 
           displaySegments.push({
             text: segment.text,
@@ -118,7 +127,10 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
               key={index}
               className={cx(
                 classes.formattedInputSegment,
-                segment.filled && classes.formattedInputSegmentFilled,
+                segment.filled &&
+                  (isComplete
+                    ? classes.formattedInputSegmentFilled
+                    : classes.formattedInputSegmentFilling),
                 disabled && classes.formattedInputSegmentDisabled,
               )}
             >
@@ -131,6 +143,9 @@ const FormattedInput = forwardRef<HTMLInputElement, FormattedInputProps>(
 
     const renderPlaceholder = () => {
       if (value === getTemplateWithoutBrackets(format)) {
+        // Suppress native placeholder when hover preview is active
+        if (hoverValue) return undefined;
+
         if (focused) return getTemplateWithoutBrackets(format);
 
         return placeholder;

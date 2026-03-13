@@ -177,10 +177,10 @@ describe('<TimeRangePicker />', () => {
   });
 
   describe('prop: onChange', () => {
-    it('should call onChange when value changes', async () => {
+    it('should call onChange when Ok is clicked after selecting a value', async () => {
       const onChange = jest.fn();
 
-      const { getHostHTMLElement } = render(
+      const { getHostHTMLElement, getByText } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
           <TimeRangePicker format="HH:mm:ss" onChange={onChange} />
         </CalendarConfigProvider>,
@@ -194,24 +194,28 @@ describe('<TimeRangePicker />', () => {
       });
 
       // Panel should be open now
-      const panel = document.querySelector('.mzn-time-panel');
+      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
+        HTMLDivElement,
+      );
 
-      expect(panel).toBeInstanceOf(HTMLDivElement);
+      // Select a unit from the hour column
+      const hourColumn = document.querySelector('.mzn-time-panel-column');
+      const hourItems = hourColumn?.querySelectorAll(
+        '.mzn-time-panel-column__button',
+      );
 
-      // Click on an hour
-      const hourColumn = document.querySelector('.mzn-time-panel__column');
-
-      if (hourColumn) {
-        const hourItems = hourColumn.querySelectorAll('.mzn-time-panel__cell');
-
-        if (hourItems.length > 0) {
-          await waitFor(() => {
-            fireEvent.click(hourItems[9]); // Click 09
-          });
-
-          expect(onChange).toHaveBeenCalled();
-        }
+      if (hourItems && hourItems.length > 0) {
+        await waitFor(() => {
+          fireEvent.click(hourItems[9]); // Click 09
+        });
       }
+
+      // Confirm via Ok button to commit and fire onChange
+      await waitFor(() => {
+        fireEvent.click(getByText('Ok'));
+      });
+
+      expect(onChange).toHaveBeenCalled();
     });
   });
 

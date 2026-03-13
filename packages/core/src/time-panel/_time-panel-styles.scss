@@ -45,9 +45,18 @@
     background-color: palette.semantic-variable("background", neutral-subtle);
   }
 
+  &:focus-visible:not(.#{$button-prefix}--active) {
+    background-color: palette.semantic-variable("background", neutral-subtle);
+    box-shadow: effect.variable(focus, primary);
+  }
+
   &--active {
     color: palette.semantic-variable(text, fixed-light);
     background-color: palette.semantic-variable("background", brand);
+
+    &:focus-visible {
+      box-shadow: effect.variable(focus, primary);
+    }
   }
 }
 

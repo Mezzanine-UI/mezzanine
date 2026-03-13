@@ -8,8 +8,24 @@
   display: inline-flex;
   align-items: center;
 
+  &--date {
+    min-width: spacing.semantic-variable(size, container, snug);
+  }
+
+  &--datetime {
+    min-width: spacing.semantic-variable(size, container, slim);
+  }
+
   &--range {
     min-width: spacing.semantic-variable(size, container, slender);
+  }
+
+  &--range-year {
+    min-width: spacing.semantic-variable(size, container, tight);
+  }
+
+  &--range-slim {
+    min-width: spacing.semantic-variable(size, container, slim);
   }
 
   &__arrow-icon {
@@ -61,6 +77,10 @@
 
     &--filled {
       color: palette.semantic-variable(text, neutral-solid);
+    }
+
+    &--filling {
+      color: palette.semantic-variable(text, brand);
     }
 
     &--disabled {

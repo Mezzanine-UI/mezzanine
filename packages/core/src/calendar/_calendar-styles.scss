@@ -22,16 +22,27 @@
 
   &--no-shadow {
     box-shadow: none;
+
+    .#{$main-prefix} {
+      padding: 0;
+    }
   }
 }
 
 .#{$main-prefix} {
-  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort);
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort) spacing.semantic-variable(padding, vertical, base);
 
   &-with-footer {
     display: inline-flex;
     flex-flow: column;
   }
+}
+
+.#{$main-prefix}-range-calendar-wrapper {
+  display: inline-flex;
+  flex-flow: row;
+  gap: spacing.semantic-variable(gap, comfort);
+  padding: spacing.semantic-variable(padding, vertical, comfort) spacing.semantic-variable(padding, horizontal, comfort) spacing.semantic-variable(padding, vertical, base);
 }
 
 .#{$board-prefix} {
@@ -398,7 +409,7 @@
 
     &:disabled {
       cursor: default;
-      color: palette.semantic-variable(text, neutral-faint);
+      color: palette.semantic-variable(text, neutral-light);
     }
 
     &:focus-visible {

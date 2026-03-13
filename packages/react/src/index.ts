@@ -586,16 +586,8 @@ export type {
 } from './Popper';
 export { default as Portal } from './Portal';
 export type { PortalProps } from './Portal';
-export {
-  default as TimePanel,
-  TimePanelAction,
-  TimePanelColumn,
-} from './TimePanel';
-export type {
-  TimePanelActionProps,
-  TimePanelColumnProps,
-  TimePanelProps,
-} from './TimePanel';
+export { default as TimePanel, TimePanelColumn } from './TimePanel';
+export type { TimePanelColumnProps, TimePanelProps } from './TimePanel';
 export {
   Collapse,
   Fade,

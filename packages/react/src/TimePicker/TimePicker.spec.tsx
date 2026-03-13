@@ -114,37 +114,6 @@ describe('<TimePicker />', () => {
       expect(document.querySelector('.mzn-time-panel')).toBe(null);
     });
 
-    it('should close panel when enter key down', async () => {
-      jest.useFakeTimers();
-
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimePicker />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      expect(document.querySelector('.mzn-time-panel')).toBeInstanceOf(
-        HTMLDivElement,
-      );
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement, { key: 'Enter' });
-      });
-
-      act(() => {
-        jest.runAllTimers();
-      });
-
-      expect(document.querySelector('.mzn-time-panel')).toBe(null);
-    });
-
     it('should close panel when escape key down', async () => {
       jest.useFakeTimers();
 
@@ -282,7 +251,7 @@ describe('<TimePicker />', () => {
     it('should by default clear input value', async () => {
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimePicker clearable />
+          <TimePicker clearable value="2021-10-20T15:00:00.000Z" />
         </CalendarConfigProvider>,
       );
 
@@ -290,17 +259,12 @@ describe('<TimePicker />', () => {
       const [inputElement] = element.getElementsByTagName('input');
 
       await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
-      });
-
-      await waitFor(() => {
         inputElement.focus();
 
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
-        );
+        const clearButton = element.querySelector('button[aria-label="Close"]');
 
-        fireEvent.click(clearIconElement!);
+        expect(clearButton).toBeInstanceOf(HTMLElement);
+        fireEvent.click(clearButton!);
       });
 
       expect(inputElement.value).toBe('');
@@ -310,7 +274,11 @@ describe('<TimePicker />', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
         <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimePicker onChange={onChange} clearable />
+          <TimePicker
+            onChange={onChange}
+            clearable
+            value="2021-10-20T15:00:00.000Z"
+          />
         </CalendarConfigProvider>,
       );
 
@@ -318,42 +286,28 @@ describe('<TimePicker />', () => {
       const [inputElement] = element.getElementsByTagName('input');
 
       await waitFor(() => {
-        fireEvent.focus(inputElement!);
+        fireEvent.mouseOver(element);
       });
 
       await waitFor(() => {
-        fireEvent.change(inputElement!, { target: { value: '2021-10-20' } });
-      });
+        inputElement.focus();
 
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!, { key: 'Enter' });
-      });
+        const clearButton = element.querySelector('button[aria-label="Close"]');
 
-      onChange.mockClear();
-
-      await waitFor(() => {
-        fireEvent.mouseOver(element!);
-      });
-
-      await waitFor(() => {
-        const clearIconElement = element.querySelector(
-          '[data-icon-name="times"]',
-        );
-
-        fireEvent.click(clearIconElement!);
+        expect(clearButton).toBeInstanceOf(HTMLElement);
+        fireEvent.click(clearButton!);
       });
 
       expect(onChange).toHaveBeenCalledTimes(1);
+      expect(onChange).toHaveBeenCalledWith(undefined);
     });
   });
 
   describe('prop: inputProps', () => {
-    it('should bind focus, blur, keydown events to input element', async () => {
-      const onKeyDown = jest.fn();
+    it('should bind focus and blur events to input element', async () => {
       const onBlur = jest.fn();
       const onFocus = jest.fn();
       const inputProps: TimePickerProps['inputProps'] = {
-        onKeyDown,
         onBlur,
         onFocus,
       };
@@ -373,17 +327,6 @@ describe('<TimePicker />', () => {
 
       expect(onFocus).toHaveBeenCalledTimes(1);
       expect(onFocus).toHaveBeenCalledWith(
-        expect.objectContaining({
-          target: inputElement,
-        }),
-      );
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!);
-      });
-
-      expect(onKeyDown).toHaveBeenCalledTimes(1);
-      expect(onKeyDown).toHaveBeenCalledWith(
         expect.objectContaining({
           target: inputElement,
         }),
@@ -418,32 +361,10 @@ describe('<TimePicker />', () => {
         fireEvent.focus(inputElement!);
       });
 
-      const confirmButtonElement = getByText('OK');
+      const confirmButtonElement = getByText('Ok');
 
       await waitFor(() => {
         fireEvent.click(confirmButtonElement);
-      });
-
-      expect(onChange).toHaveBeenCalledTimes(1);
-    });
-
-    it('should be invoked when enter key down', async () => {
-      const onChange = jest.fn();
-      const { getHostHTMLElement } = render(
-        <CalendarConfigProvider methods={CalendarMethodsMoment}>
-          <TimePicker onChange={onChange} />
-        </CalendarConfigProvider>,
-      );
-
-      const element = getHostHTMLElement();
-      const [inputElement] = element.getElementsByTagName('input');
-
-      await waitFor(() => {
-        fireEvent.focus(inputElement!);
-      });
-
-      await waitFor(() => {
-        fireEvent.keyDown(inputElement!, { key: 'Enter' });
       });
 
       expect(onChange).toHaveBeenCalledTimes(1);

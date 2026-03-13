@@ -232,7 +232,10 @@ export function useDateRangePickerValue({
     [anchor1, anchor2, hasDisabledDateInRange],
   );
 
-  const onCalendarHover = !(from && to) && anchor1 ? setHoverValue : undefined;
+  const onCalendarHover = !(from && to) ? setHoverValue : undefined;
+
+  const hoverFromValue = !from ? formatDate(hoverValue) : undefined;
+  const hoverToValue = from && !to ? formatDate(hoverValue) : undefined;
 
   const onClear = useCallback(() => {
     setInternalFrom(undefined);
@@ -241,6 +244,10 @@ export function useDateRangePickerValue({
     setIsSelecting(false);
     onChangeProp?.(undefined);
   }, [onChangeProp]);
+
+  const onHoverClear = useCallback(() => {
+    setHoverValue(undefined);
+  }, []);
 
   const onFromFocus = useCallback(() => {
     // Optional: add focus logic
@@ -261,6 +268,8 @@ export function useDateRangePickerValue({
   return {
     calendarValue,
     checkIsInRange,
+    hoverFromValue,
+    hoverToValue,
     inputFromValue,
     inputToValue,
     onCalendarChange,
@@ -269,6 +278,7 @@ export function useDateRangePickerValue({
     onClear,
     onFromBlur,
     onFromFocus,
+    onHoverClear,
     onInputFromChange,
     onInputToChange,
     onToBlur,

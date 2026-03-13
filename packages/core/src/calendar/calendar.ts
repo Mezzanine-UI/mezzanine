@@ -30,6 +30,7 @@ export const calendarClasses = {
   noShadowHost: `${calendarPrefix}--no-shadow`,
   mode: (mode: CalendarMode) => `${calendarPrefix}--${mode}`,
   mainWithFooter: `${calendarMainPrefix}-with-footer`,
+  mainRangeCalendarWrapper: `${calendarMainPrefix}-range-calendar-wrapper`,
   main: calendarMainPrefix,
 
   /** Date grid classes */

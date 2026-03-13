@@ -23,6 +23,14 @@ export interface TimePickerPanelProps
    */
   onChange?: (value?: DateType) => void;
   /**
+   * Called when the user cancels time selection.
+   */
+  onCancel?: VoidFunction;
+  /**
+   * Called when the user confirms time selection.
+   */
+  onConfirm?: VoidFunction;
+  /**
    * Other props you may provide to `Popper` component
    */
   popperProps?: Omit<
@@ -50,6 +58,8 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
       hourStep,
       minuteStep,
       onChange,
+      onCancel,
+      onConfirm,
       open,
       popperProps,
       secondStep,
@@ -73,6 +83,8 @@ const TimePickerPanel = forwardRef<HTMLDivElement, TimePickerPanelProps>(
           hourStep={hourStep}
           minuteStep={minuteStep}
           onChange={onChange}
+          onCancel={onCancel}
+          onConfirm={onConfirm}
           secondStep={secondStep}
           style={style}
           value={value}
