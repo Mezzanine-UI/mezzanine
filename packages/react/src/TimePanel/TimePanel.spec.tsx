@@ -1,4 +1,3 @@
-import { DateType } from '@mezzanine-ui/core/calendar';
 import CalendarMethodsMoment from '@mezzanine-ui/core/calendarMethodsMoment';
 import moment from 'moment';
 import { getUnitLabel } from '@mezzanine-ui/core/time-panel';
@@ -9,7 +8,6 @@ import {
 } from '../../__test-utils__/common';
 import TimePanel from '.';
 import { CalendarConfigProvider } from '../Calendar';
-import { TimePanelProps } from './TimePanel';
 
 describe('<TimePanel />', () => {
   Element.prototype.scrollTo = () => {};

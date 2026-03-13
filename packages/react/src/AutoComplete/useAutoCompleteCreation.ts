@@ -150,12 +150,8 @@ export function useAutoCompleteCreation({
   const getPendingCreateList = useCallback(
     (text: string): string[] => {
       const processed = processBulkCreate(text);
-      const optionNames = new Set(
-        options.map((o) => o.name.toLowerCase()),
-      );
-      return processed.filter(
-        (part) => !optionNames.has(part.toLowerCase()),
-      );
+      const optionNames = new Set(options.map((o) => o.name.toLowerCase()));
+      return processed.filter((part) => !optionNames.has(part.toLowerCase()));
     },
     [options, processBulkCreate],
   );
@@ -319,6 +315,7 @@ export function useAutoCompleteCreation({
     processBulkCreate,
     resetCreationInputs,
     stepByStepBulkCreate,
+    setSearchText,
     toggleOpen,
   ]);
 
