@@ -398,7 +398,7 @@
 
     &:disabled {
       cursor: default;
-      color: palette.semantic-variable(text, neutral-faint);
+      color: palette.semantic-variable(text, neutral-light);
     }
 
     &:focus-visible {
