@@ -629,6 +629,7 @@ export const CalendarIntegration: Story = {
       {
         id: 'lastWeek',
         name: 'Last Week',
+        disabled: true,
         onClick: () =>
           setValQuickSelect(moment().subtract(7, 'days').toISOString()),
       },
