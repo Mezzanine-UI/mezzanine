@@ -15,13 +15,13 @@ import {
   FormFieldLabelSpacing,
   FormFieldLayout,
 } from '@mezzanine-ui/core/form';
-import { ReactNode, useState } from 'react';
+import { ChangeEvent, ReactNode, useRef, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
 import Input from '../Input';
 import Radio, { RadioGroup } from '../Radio';
 import Switch from '../Toggle';
 import Textarea from '../Textarea';
-import { FormField } from '.';
+import { FormField, FormGroup } from '.';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
 const hintTextIconOptions = {
@@ -421,6 +421,160 @@ export const ControlFieldSlotColumnsExample: StoryObj = {
         >
           <Input placeholder="請輸入檢查碼" />
         </FormField>
+      </div>
+    );
+  },
+};
+
+export const CreditCardRecipeExample: StoryObj = {
+  render: function Render() {
+    const [cardSegments, setCardSegments] = useState(['', '', '', '']);
+    const [expireMonth, setExpireMonth] = useState('');
+    const [expireYear, setExpireYear] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [name, setName] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+
+    const cardRefs = [
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+    ];
+    const expireYearRef = useRef<HTMLInputElement>(null);
+    const cvvRef = useRef<HTMLInputElement>(null);
+
+    const handleCardSegmentChange =
+      (index: number) => (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+        const next = [...cardSegments];
+        next[index] = value;
+        setCardSegments(next);
+        if (value.length === 4 && index < 3) {
+          cardRefs[index + 1].current?.focus();
+        }
+      };
+
+    const handleExpireMonthChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+      setExpireMonth(value);
+      if (value.length === 2) {
+        expireYearRef.current?.focus();
+      }
+    };
+
+    const handleExpireYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+      setExpireYear(value);
+      if (value.length === 2) {
+        cvvRef.current?.focus();
+      }
+    };
+
+    const isCardComplete = cardSegments.every((s) => s.length === 4);
+    const isExpireComplete =
+      expireMonth.length === 2 && expireYear.length === 2;
+    const isCvvComplete = cvv.length >= 3;
+    const isNameComplete = name.trim().length > 0;
+
+    const cardSeverity: SeverityWithInfo =
+      submitted && !isCardComplete ? 'error' : 'info';
+    const expireSeverity: SeverityWithInfo =
+      submitted && !isExpireComplete ? 'error' : 'info';
+    const cvvSeverity: SeverityWithInfo =
+      submitted && !isCvvComplete ? 'error' : 'info';
+    const nameSeverity: SeverityWithInfo =
+      submitted && !isNameComplete ? 'error' : 'info';
+
+    return (
+      <div style={{ maxWidth: 480 }}>
+        <FormGroup title="信用卡資訊">
+          <FormField
+            hintText={
+              submitted && !isNameComplete ? '請輸入持卡人姓名' : undefined
+            }
+            label="持卡人姓名："
+            layout={FormFieldLayout.VERTICAL}
+            name="cardholder-name"
+            severity={nameSeverity}
+          >
+            <Input
+              onChange={(e) => setName(e.target.value)}
+              placeholder="請輸入姓名"
+              value={name}
+            />
+          </FormField>
+          <FormField
+            controlFieldSlotColumns={4}
+            hintText={
+              submitted && !isCardComplete ? '請輸入完整卡號' : undefined
+            }
+            label="信用卡號："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-number"
+            severity={cardSeverity}
+          >
+            {cardSegments.map((segment, i) => (
+              <Input
+                key={i}
+                inputRef={cardRefs[i]}
+                onChange={handleCardSegmentChange(i)}
+                placeholder="0000"
+                value={segment}
+              />
+            ))}
+          </FormField>
+          <FormField
+            controlFieldSlotColumns={2}
+            hintText={
+              submitted && !isExpireComplete ? '請輸入有效期限' : undefined
+            }
+            label="有效期限："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-expiry"
+            severity={expireSeverity}
+          >
+            <Input
+              onChange={handleExpireMonthChange}
+              placeholder="MM"
+              value={expireMonth}
+            />
+            <Input
+              inputRef={expireYearRef}
+              onChange={handleExpireYearChange}
+              placeholder="YY"
+              value={expireYear}
+            />
+          </FormField>
+          <FormField
+            hintText={submitted && !isCvvComplete ? '請輸入 CVV' : undefined}
+            label="檢查碼："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-cvv"
+            severity={cvvSeverity}
+          >
+            <Input
+              inputRef={cvvRef}
+              onChange={(e) =>
+                setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))
+              }
+              placeholder="CVV"
+              value={cvv}
+            />
+          </FormField>
+        </FormGroup>
+        <div style={{ marginTop: 16 }}>
+          <button onClick={() => setSubmitted(true)} type="button">
+            送出
+          </button>
+          {submitted &&
+            isCardComplete &&
+            isExpireComplete &&
+            isCvvComplete &&
+            isNameComplete && (
+              <span style={{ marginLeft: 12, color: 'green' }}>✓ 驗證通過</span>
+            )}
+        </div>
       </div>
     );
   },
