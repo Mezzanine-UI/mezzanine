@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { navigationOverflowMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import Popper from '../Popper';
+import Scrollbar from '../Scrollbar';
 import NavigationIconButton from './NavigationIconButton';
 import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import NavigationOverflowMenuOption from './NavigationOverflowMenuOption';
@@ -143,7 +144,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                   aria-haspopup="true"
                   aria-expanded={menuOpen}
                 >
-                  {<ul className={classes.subMenu}>{renderedItems}</ul>}
+                  <Scrollbar className={classes.subMenu}>
+                    <ul>{renderedItems}</ul>
+                  </Scrollbar>
                   <NavigationOptionLevelContext.Provider
                     value={{
                       level: 1,
@@ -151,7 +154,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                     }}
                   >
                     {level2Items.length > 0 && (
-                      <ul className={classes.subMenu}>{renderedItems2}</ul>
+                      <Scrollbar className={classes.subMenu}>
+                        <ul>{renderedItems2}</ul>
+                      </Scrollbar>
                     )}
                   </NavigationOptionLevelContext.Provider>
                   <NavigationOptionLevelContext.Provider
@@ -161,7 +166,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                     }}
                   >
                     {level3Items.length > 0 && (
-                      <ul className={classes.subMenu}>{renderedItems3}</ul>
+                      <Scrollbar className={classes.subMenu}>
+                        <ul>{renderedItems3}</ul>
+                      </Scrollbar>
                     )}
                   </NavigationOptionLevelContext.Provider>
                 </span>

@@ -14,6 +14,7 @@ import {
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import Scrollbar from '../Scrollbar';
 import NavigationOption, { NavigationOptionProps } from './NavigationOption';
 import NavigationHeader, { NavigationHeaderProps } from './NavigationHeader';
 import NavigationFooter, { NavigationFooterProps } from './NavigationFooter';
@@ -277,15 +278,17 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
                 onChange={(e) => setFilterText(e.target.value)}
               />
             )}
-            <ul key={collapsed ? 'collapsed' : 'expand'}>
-              {collapsed ? collapsedItems : items}
+            <Scrollbar disabled={collapsed} style={{ flex: '1 1 0', minHeight: 0 }}>
+              <ul key={collapsed ? 'collapsed' : 'expand'}>
+                {collapsed ? collapsedItems : items}
 
-              {collapsed &&
-                visibleCount !== null &&
-                visibleCount < level1Items.length && (
-                  <NavigationOverflowMenu items={collapsedMenuItems} />
-                )}
-            </ul>
+                {collapsed &&
+                  visibleCount !== null &&
+                  visibleCount < level1Items.length && (
+                    <NavigationOverflowMenu items={collapsedMenuItems} />
+                  )}
+              </ul>
+            </Scrollbar>
           </div>
         </NavigationOptionLevelContext.Provider>
         {footerComponent}
