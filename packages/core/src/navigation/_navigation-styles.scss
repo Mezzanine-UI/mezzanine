@@ -318,6 +318,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       flex-shrink: 1;
       margin-right: auto;
       max-width: 9999px;
+      min-width: 0;
       overflow: hidden;
       transition: transition.standard(max-width);
     }
@@ -326,6 +327,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       @include typography.semantic-variable(label-primary-highlight, (line-height));
 
       color: palette.semantic-variable(text, neutral-solid);
+      display: block;
       line-height: #{$option-icon-size};
       overflow: hidden;
       text-overflow: ellipsis;
