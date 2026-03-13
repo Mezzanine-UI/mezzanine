@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import {
+  ControlFieldSlotColumns,
   ControlFieldSlotLayout,
   formFieldClasses as classes,
   FormFieldCounterColor,
@@ -27,6 +28,11 @@ export interface FormFieldProps
    * @default FormFieldCounterColor.INFO
    */
   counterColor?: FormFieldCounterColor;
+  /**
+   * The number of equal-width columns in the control field slot.
+   * When set to 2, 3, or 4, children are arranged in a CSS Grid row.
+   */
+  controlFieldSlotColumns?: ControlFieldSlotColumns;
   /**
    * The layout variant for the control field slot.
    * Controls the visual styling and appearance of the input control area.
@@ -125,6 +131,7 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
       className,
       counter,
       counterColor,
+      controlFieldSlotColumns,
       controlFieldSlotLayout = ControlFieldSlotLayout.MAIN,
       density,
       disabled = false,
@@ -190,6 +197,9 @@ const FormField = forwardRef<HTMLDivElement, FormFieldProps>(
             <div
               className={cx(
                 `${classes.controlFieldSlot}--${controlFieldSlotLayout}`,
+                controlFieldSlotColumns && controlFieldSlotColumns > 1
+                  ? classes.controlFieldSlotColumns(controlFieldSlotColumns)
+                  : undefined,
               )}
             >
               {children}

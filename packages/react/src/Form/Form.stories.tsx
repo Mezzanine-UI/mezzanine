@@ -380,3 +380,48 @@ export const Vertical: StoryObj = {
     );
   },
 };
+
+export const ControlFieldSlotColumnsExample: StoryObj = {
+  render: function Render() {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <FormField
+          controlFieldSlotColumns={1}
+          label="持卡人姓名："
+          layout={FormFieldLayout.VERTICAL}
+          name="cardholder-name"
+        >
+          <Input placeholder="請輸入姓名" />
+        </FormField>
+        <FormField
+          controlFieldSlotColumns={4}
+          label="信用卡號："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-number"
+        >
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+        </FormField>
+        <FormField
+          controlFieldSlotColumns={2}
+          label="信用卡到期日："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-expiry"
+        >
+          <Input placeholder="mm" />
+          <Input placeholder="yy" />
+        </FormField>
+        <FormField
+          controlFieldSlotColumns={1}
+          label="信用卡檢查碼："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-cvv"
+        >
+          <Input placeholder="請輸入檢查碼" />
+        </FormField>
+      </div>
+    );
+  },
+};
