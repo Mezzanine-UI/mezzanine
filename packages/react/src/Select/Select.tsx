@@ -230,6 +230,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
       readOnly = false,
       renderValue,
       required = requiredFromFormControl || false,
+      overflowStrategy,
       size,
       suffixActionIcon,
       type = 'default',
@@ -571,6 +572,7 @@ const Select = forwardRef<HTMLDivElement, SelectProps>(
               {...(mode === 'single' && renderValue ? { renderValue } : {})}
               required={required}
               inputProps={resolvedInputProps}
+              overflowStrategy={overflowStrategy}
               size={size}
               suffixActionIcon={suffixActionIcon}
               value={value === null ? undefined : value}
