@@ -242,6 +242,10 @@ $form-field-counter-colors: (
   @include typography.semantic-variable(annotation);
 }
 
+.#{$prefix}__hint-text__icon {
+  font-size: spacing.semantic-variable(size, element, narrow);
+}
+
 @each $color in $form-field-hint-text-colors {
   .#{$prefix}__hint-text--#{$color} {
     @if $color == 'info' {
