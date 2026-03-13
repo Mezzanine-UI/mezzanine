@@ -20,6 +20,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  transition: transition.standard(width);
 
   &__content {
     box-sizing: border-box;
@@ -43,10 +44,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     width: spacing.semantic-variable(size, container, slim);
     min-width: spacing.semantic-variable(size, container, slim);
     height: 100%;
-
-    .#{$prefix}__content {
-      overflow-y: auto;
-    }
   }
 
   &--collapsed {
@@ -67,6 +64,9 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 }
 
 .#{$overflow-menu-prefix} {
+  $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
+  $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
+
   margin-left: spacing.semantic-variable(padding, horizontal, tight);
   box-shadow: effect.variable(shadow, raised);
   border-radius: radius.variable(roomy);
@@ -79,21 +79,20 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     display: flex;
     overflow-y: hidden;
     width: fit-content;
-
-    $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
-    $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
-
     height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$sub-menu-item-height} * 5.5 + #{$sub-menu-item-gap} * 5);
   }
 
   &__sub-menu {
+    height: calc(#{$sub-menu-item-height} * 5.5 + #{$sub-menu-item-gap} * 5);
     margin: spacing.semantic-variable(padding, vertical, tight) 0;
-    padding: 0 spacing.semantic-variable(padding, horizontal, tight);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
     width: spacing.semantic-variable(size, container, tight);
-    gap: spacing.semantic-variable(gap, tiny);
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      gap: $sub-menu-item-gap;
+      padding: 0 spacing.semantic-variable(padding, horizontal, tight);
+    }
   }
 }
 
