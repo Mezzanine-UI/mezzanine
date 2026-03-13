@@ -592,17 +592,13 @@ describe('<FormField />', () => {
           <Input />
         </FormField>,
       );
-      const controlFieldSlotElement = container.querySelector(
-        '.mzn-form-field__control-field-slot--main',
-      );
 
-      expect(controlFieldSlotElement).toBeTruthy();
       ([2, 3, 4] as const).forEach((columns) => {
         expect(
-          controlFieldSlotElement!.classList.contains(
-            `mzn-form-field__control-field-slot--columns-${columns}`,
+          container.querySelector(
+            `.mzn-form-field__control-field-slot--columns-${columns}`,
           ),
-        ).toBeFalsy();
+        ).toBeNull();
       });
     });
 
