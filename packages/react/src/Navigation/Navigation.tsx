@@ -225,7 +225,12 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
 
     checkActivatedPathKey(level1Items, []);
     hrefActivated.current = true;
-  }, [combineSetActivatedPath, currentPathname, exactActivatedMatch, level1Items]);
+  }, [
+    combineSetActivatedPath,
+    currentPathname,
+    exactActivatedMatch,
+    level1Items,
+  ]);
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
@@ -278,8 +283,14 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
                 onChange={(e) => setFilterText(e.target.value)}
               />
             )}
-            <Scrollbar disabled={collapsed} style={{ flex: '1 1 0', minHeight: 0 }}>
-              <ul key={collapsed ? 'collapsed' : 'expand'}>
+            <Scrollbar
+              disabled={collapsed}
+              style={{ flex: '1 1 0', minHeight: 0 }}
+            >
+              <ul
+                className={classes.list}
+                key={collapsed ? 'collapsed' : 'expand'}
+              >
                 {collapsed ? collapsedItems : items}
 
                 {collapsed &&
