@@ -1,11 +1,79 @@
 import { DropdownOption } from '@mezzanine-ui/core/dropdown/dropdown';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Select from '.';
 import Typography from '../Typography';
 
 export default {
   title: 'Data Entry/Select',
+  component: Select,
+  argTypes: {
+    clearable: {
+      control: { type: 'boolean' },
+      description: '是否顯示清除按鈕',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    disabled: {
+      control: { type: 'boolean' },
+      description: '是否禁用',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    error: {
+      control: { type: 'boolean' },
+      description: '是否為錯誤狀態',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    fullWidth: {
+      control: { type: 'boolean' },
+      description: '是否撐滿父容器寬度',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    loading: {
+      control: { type: 'boolean' },
+      description: '是否顯示載入狀態',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    loadingText: {
+      control: { type: 'text' },
+      description: '載入狀態顯示的文字',
+    },
+    menuMaxHeight: {
+      control: { type: 'number' },
+      description: '下拉選單最大高度',
+    },
+    mode: {
+      control: { type: 'select' },
+      options: ['single', 'multiple'],
+      description: '選擇模式',
+      table: { defaultValue: { summary: 'single' } },
+    },
+    overflowStrategy: {
+      control: { type: 'select' },
+      options: ['counter', 'wrap'],
+      description: '多選時 tag 的溢出策略（僅 multiple 模式有效）',
+      table: { defaultValue: { summary: 'counter' } },
+    },
+    placeholder: {
+      control: { type: 'text' },
+      description: '未選擇時的提示文字',
+    },
+    readOnly: {
+      control: { type: 'boolean' },
+      description: '是否為唯讀狀態',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    required: {
+      control: { type: 'boolean' },
+      description: '是否為必填',
+      table: { defaultValue: { summary: 'false' } },
+    },
+    size: {
+      control: { type: 'select' },
+      options: ['main', 'sub'],
+      description: '輸入框尺寸',
+      table: { defaultValue: { summary: 'main' } },
+    },
+  },
 } satisfies Meta<typeof Select>;
 
 const BasicComponent = () => {
@@ -49,7 +117,12 @@ const BasicComponent = () => {
         value={value}
         onChange={(newValue) => setValue(newValue)}
       />
-      <Select disabled fullWidth options={simpleOptions} placeholder="預設文字" />
+      <Select
+        disabled
+        fullWidth
+        options={simpleOptions}
+        placeholder="預設文字"
+      />
       <Select error fullWidth options={simpleOptions} placeholder="預設文字" />
       <Select
         clearable
@@ -68,6 +141,84 @@ const BasicComponent = () => {
 
 export const Basic: StoryObj<typeof Select> = {
   render: () => <BasicComponent />,
+};
+
+const WithSizeComponent = () => {
+  const sizeOptions: DropdownOption[] = [
+    { id: '1', name: 'item1' },
+    { id: '2', name: 'item2' },
+    { id: '3', name: 'item3' },
+  ];
+
+  return (
+    <div
+      style={{
+        display: 'inline-grid',
+        gridTemplateColumns: 'repeat(2, 300px)',
+        gap: '16px',
+        alignItems: 'center',
+      }}
+    >
+      <div>
+        <Typography variant="body" style={{ marginBottom: '8px' }}>
+          size = main (default)
+        </Typography>
+        <Select
+          fullWidth
+          options={sizeOptions}
+          placeholder="預設文字"
+          size="main"
+        />
+      </div>
+      <div>
+        <Typography variant="body" style={{ marginBottom: '8px' }}>
+          size = sub
+        </Typography>
+        <Select
+          fullWidth
+          options={sizeOptions}
+          placeholder="預設文字"
+          size="sub"
+        />
+      </div>
+    </div>
+  );
+};
+
+export const Size: StoryObj<typeof Select> = {
+  render: () => <WithSizeComponent />,
+};
+
+const MultipleComponent = () => {
+  const [value, setValue] = useState<{ id: string; name: string }[]>([]);
+
+  const multipleOptions: DropdownOption[] = [
+    { id: '1', name: 'item1' },
+    { id: '2', name: 'item2' },
+    { id: '3', name: 'item3' },
+    { id: '4', name: 'item4' },
+    { id: '5', name: 'item5' },
+    { id: '6', name: 'item6' },
+  ];
+
+  return (
+    <div style={{ maxWidth: '300px' }}>
+      <Select
+        clearable
+        fullWidth
+        mode="multiple"
+        onChange={setValue}
+        options={multipleOptions}
+        overflowStrategy="wrap"
+        placeholder="請選擇多個項目"
+        value={value}
+      />
+    </div>
+  );
+};
+
+export const Multiple: StoryObj<typeof Select> = {
+  render: () => <MultipleComponent />,
 };
 
 const WithReadOnlyComponent = () => {
@@ -133,41 +284,54 @@ const WithScrollComponent = () => {
       name: `item${i + 1}`,
     })),
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const isFetchingRef = useRef(false);
+
+  const loadMore = useCallback(() => {
+    if (isFetchingRef.current) return;
+
+    isFetchingRef.current = true;
+    setLoading(true);
+
+    setTimeout(() => {
+      setOptions((prev) => [
+        ...prev,
+        ...Array.from({ length: 10 }, (_, i) => ({
+          id: String(prev.length + i + 1),
+          name: `item${prev.length + i + 1}`,
+        })),
+      ]);
+      setLoading(false);
+      isFetchingRef.current = false;
+      setHasReachedBottom(false);
+    }, 1000);
+  }, []);
+
+  const handleReachBottom = useCallback(() => {
+    if (!hasReachedBottom && !isFetchingRef.current) {
+      setHasReachedBottom(true);
+      loadMore();
+    }
+  }, [hasReachedBottom, loadMore]);
+
+  const handleLeaveBottom = useCallback(() => {
+    setHasReachedBottom(false);
+  }, []);
 
   return (
     <div style={{ maxWidth: '300px' }}>
       <Select
         clearable
         fullWidth
+        loading={loading}
+        loadingText="載入中..."
         menuMaxHeight={200}
+        onLeaveBottom={handleLeaveBottom}
+        onReachBottom={handleReachBottom}
         options={options}
-        onScroll={({ scrollTop, maxScrollTop }) => {
-          if (scrollTop + 40 >= maxScrollTop && !isFetchingRef.current) {
-            setIsLoading(true);
-            isFetchingRef.current = true;
-
-            setTimeout(() => {
-              setOptions((prev) => [
-                ...prev,
-                ...Array.from({ length: 10 }, (_, i) => ({
-                  id: String(prev.length + i + 1),
-                  name: `item${prev.length + i + 1}`,
-                })),
-              ]);
-              setIsLoading(false);
-              isFetchingRef.current = false;
-            }, 1000);
-          }
-        }}
         placeholder="滾動載入更多"
       />
-      {isLoading && (
-        <div style={{ padding: '8px', textAlign: 'center', marginTop: '8px' }}>
-          <Typography variant="body">載入中...</Typography>
-        </div>
-      )}
     </div>
   );
 };
