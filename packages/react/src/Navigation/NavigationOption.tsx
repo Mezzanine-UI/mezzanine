@@ -264,9 +264,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
 
-              <Fade ref={titleRef} in={collapsed === false || !icon}>
-                <span className={classes.title}>{title}</span>
-              </Fade>
+              <span className={classes.titleWrapper}>
+                <Fade keepMount ref={titleRef} in={collapsed === false || !icon}>
+                  <span className={classes.title}>{title}</span>
+                </Fade>
+              </span>
 
               {badge}
               {children && (
