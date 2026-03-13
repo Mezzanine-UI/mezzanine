@@ -585,6 +585,44 @@ describe('<FormField />', () => {
     });
   });
 
+  describe('prop: controlFieldSlotColumns', () => {
+    it('should not apply columns class when controlFieldSlotColumns is omitted', () => {
+      const { container } = render(
+        <FormField label="Test" name="test" layout={FormFieldLayout.VERTICAL}>
+          <Input />
+        </FormField>,
+      );
+
+      ([2, 3, 4] as const).forEach((columns) => {
+        expect(
+          container.querySelector(
+            `.mzn-form-field__control-field-slot--columns-${columns}`,
+          ),
+        ).toBeNull();
+      });
+    });
+
+    ([2, 3, 4] as const).forEach((columns) => {
+      it(`should apply --columns-${columns} class when controlFieldSlotColumns=${columns}`, () => {
+        const { container } = render(
+          <FormField
+            controlFieldSlotColumns={columns}
+            label="Test"
+            name="test"
+            layout={FormFieldLayout.VERTICAL}
+          >
+            <Input />
+          </FormField>,
+        );
+        const controlFieldSlotElement = container.querySelector(
+          `.mzn-form-field__control-field-slot--columns-${columns}`,
+        );
+
+        expect(controlFieldSlotElement).toBeTruthy();
+      });
+    });
+  });
+
   describe('prop: required', () => {
     it('should not render asterisk by default', () => {
       const { container } = render(

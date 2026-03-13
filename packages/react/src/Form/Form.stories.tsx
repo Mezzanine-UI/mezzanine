@@ -15,13 +15,13 @@ import {
   FormFieldLabelSpacing,
   FormFieldLayout,
 } from '@mezzanine-ui/core/form';
-import { ReactNode, useState } from 'react';
+import { ChangeEvent, ReactNode, useRef, useState } from 'react';
 import Checkbox, { CheckAll, CheckboxGroup } from '../Checkbox';
 import Input from '../Input';
 import Radio, { RadioGroup } from '../Radio';
 import Switch from '../Toggle';
 import Textarea from '../Textarea';
-import { FormField } from '.';
+import { FormField, FormGroup } from '.';
 import { SeverityWithInfo } from '@mezzanine-ui/system/severity';
 
 const hintTextIconOptions = {
@@ -73,7 +73,7 @@ export const Playground: StoryObj<PlaygroundStoryArgs> = {
     disabled: false,
     fullWidth: false,
     hintText: 'hint text',
-    hintTextIcon: 'InfoOutlineIcon',
+    hintTextIcon: 'InfoFilledIcon',
     label: 'label',
     labelInformationText: 'This is information tooltip text',
     labelSpacing: FormFieldLabelSpacing.MAIN,
@@ -251,7 +251,7 @@ export const HorizontalBase: StoryObj = {
       <FormField
         density={FormFieldDensity.BASE}
         hintText="Label and input on the same row with base spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Username"
         layout={FormFieldLayout.HORIZONTAL}
         name="username-h-base"
@@ -268,7 +268,7 @@ export const HorizontalTight: StoryObj = {
       <FormField
         density={FormFieldDensity.TIGHT}
         hintText="Label and input on the same row with tight spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Email"
         layout={FormFieldLayout.HORIZONTAL}
         name="email-h-tight"
@@ -285,7 +285,7 @@ export const HorizontalNarrow: StoryObj = {
       <FormField
         density={FormFieldDensity.NARROW}
         hintText="Label and input on the same row with narrow spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Phone"
         layout={FormFieldLayout.HORIZONTAL}
         name="phone-h-narrow"
@@ -302,7 +302,7 @@ export const HorizontalWide: StoryObj = {
       <FormField
         density={FormFieldDensity.WIDE}
         hintText="Label and input on the same row with wide spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Address"
         layout={FormFieldLayout.HORIZONTAL}
         name="address-h-wide"
@@ -319,7 +319,7 @@ export const StretchTight: StoryObj = {
       <FormField
         density={FormFieldDensity.TIGHT}
         hintText="Compact vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="First Name"
         layout={FormFieldLayout.STRETCH}
         name="firstname-s-tight"
@@ -336,7 +336,7 @@ export const StretchNarrow: StoryObj = {
       <FormField
         density={FormFieldDensity.NARROW}
         hintText="Standard vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Last Name"
         layout={FormFieldLayout.STRETCH}
         name="lastname-s-narrow"
@@ -353,7 +353,7 @@ export const StretchWide: StoryObj = {
       <FormField
         density={FormFieldDensity.WIDE}
         hintText="Spacious vertical spacing between label and input"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Company"
         layout={FormFieldLayout.STRETCH}
         name="company-s-wide"
@@ -369,7 +369,7 @@ export const Vertical: StoryObj = {
     return (
       <FormField
         hintText="Default vertical layout with standard spacing"
-        hintTextIcon={InfoOutlineIcon}
+        hintTextIcon={InfoFilledIcon}
         label="Name"
         layout={FormFieldLayout.VERTICAL}
         name="name-vertical"
@@ -377,6 +377,203 @@ export const Vertical: StoryObj = {
       >
         <Input placeholder="Enter your name" />
       </FormField>
+    );
+  },
+};
+
+export const ControlFieldSlotColumnsExample: StoryObj = {
+  render: function Render() {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <FormField
+          label="持卡人姓名："
+          layout={FormFieldLayout.VERTICAL}
+          name="cardholder-name"
+        >
+          <Input placeholder="請輸入姓名" />
+        </FormField>
+        <FormField
+          controlFieldSlotColumns={4}
+          label="信用卡號："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-number"
+        >
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+          <Input placeholder="0000" />
+        </FormField>
+        <FormField
+          controlFieldSlotColumns={2}
+          label="信用卡到期日："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-expiry"
+        >
+          <Input placeholder="mm" />
+          <Input placeholder="yy" />
+        </FormField>
+        <FormField
+          label="信用卡檢查碼："
+          layout={FormFieldLayout.VERTICAL}
+          name="card-cvv"
+        >
+          <Input placeholder="請輸入檢查碼" />
+        </FormField>
+      </div>
+    );
+  },
+};
+
+export const CreditCardRecipeExample: StoryObj = {
+  render: function Render() {
+    const [cardSegments, setCardSegments] = useState(['', '', '', '']);
+    const [expireMonth, setExpireMonth] = useState('');
+    const [expireYear, setExpireYear] = useState('');
+    const [cvv, setCvv] = useState('');
+    const [name, setName] = useState('');
+    const [submitted, setSubmitted] = useState(false);
+
+    const cardRefs = [
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+      useRef<HTMLInputElement>(null),
+    ];
+    const expireYearRef = useRef<HTMLInputElement>(null);
+    const cvvRef = useRef<HTMLInputElement>(null);
+
+    const handleCardSegmentChange =
+      (index: number) => (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 4);
+        const next = [...cardSegments];
+        next[index] = value;
+        setCardSegments(next);
+        if (value.length === 4 && index < 3) {
+          cardRefs[index + 1].current?.focus();
+        }
+      };
+
+    const handleExpireMonthChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+      setExpireMonth(value);
+      if (value.length === 2) {
+        expireYearRef.current?.focus();
+      }
+    };
+
+    const handleExpireYearChange = (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value.replace(/\D/g, '').slice(0, 2);
+      setExpireYear(value);
+      if (value.length === 2) {
+        cvvRef.current?.focus();
+      }
+    };
+
+    const isCardComplete = cardSegments.every((s) => s.length === 4);
+    const isExpireComplete =
+      expireMonth.length === 2 && expireYear.length === 2;
+    const isCvvComplete = cvv.length >= 3;
+    const isNameComplete = name.trim().length > 0;
+
+    const cardSeverity: SeverityWithInfo =
+      submitted && !isCardComplete ? 'error' : 'info';
+    const expireSeverity: SeverityWithInfo =
+      submitted && !isExpireComplete ? 'error' : 'info';
+    const cvvSeverity: SeverityWithInfo =
+      submitted && !isCvvComplete ? 'error' : 'info';
+    const nameSeverity: SeverityWithInfo =
+      submitted && !isNameComplete ? 'error' : 'info';
+
+    return (
+      <div style={{ maxWidth: 480 }}>
+        <FormGroup title="信用卡資訊">
+          <FormField
+            hintText={
+              submitted && !isNameComplete ? '請輸入持卡人姓名' : undefined
+            }
+            label="持卡人姓名："
+            layout={FormFieldLayout.VERTICAL}
+            name="cardholder-name"
+            severity={nameSeverity}
+          >
+            <Input
+              onChange={(e) => setName(e.target.value)}
+              placeholder="請輸入姓名"
+              value={name}
+            />
+          </FormField>
+          <FormField
+            controlFieldSlotColumns={4}
+            hintText={
+              submitted && !isCardComplete ? '請輸入完整卡號' : undefined
+            }
+            label="信用卡號："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-number"
+            severity={cardSeverity}
+          >
+            {cardSegments.map((segment, i) => (
+              <Input
+                key={i}
+                inputRef={cardRefs[i]}
+                onChange={handleCardSegmentChange(i)}
+                placeholder="0000"
+                value={segment}
+              />
+            ))}
+          </FormField>
+          <FormField
+            controlFieldSlotColumns={2}
+            hintText={
+              submitted && !isExpireComplete ? '請輸入有效期限' : undefined
+            }
+            label="有效期限："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-expiry"
+            severity={expireSeverity}
+          >
+            <Input
+              onChange={handleExpireMonthChange}
+              placeholder="MM"
+              value={expireMonth}
+            />
+            <Input
+              inputRef={expireYearRef}
+              onChange={handleExpireYearChange}
+              placeholder="YY"
+              value={expireYear}
+            />
+          </FormField>
+          <FormField
+            hintText={submitted && !isCvvComplete ? '請輸入 CVV' : undefined}
+            label="檢查碼："
+            layout={FormFieldLayout.VERTICAL}
+            name="card-cvv"
+            severity={cvvSeverity}
+          >
+            <Input
+              inputRef={cvvRef}
+              onChange={(e) =>
+                setCvv(e.target.value.replace(/\D/g, '').slice(0, 4))
+              }
+              placeholder="CVV"
+              value={cvv}
+            />
+          </FormField>
+        </FormGroup>
+        <div style={{ marginTop: 16 }}>
+          <button onClick={() => setSubmitted(true)} type="button">
+            送出
+          </button>
+          {submitted &&
+            isCardComplete &&
+            isExpireComplete &&
+            isCvvComplete &&
+            isNameComplete && (
+              <span style={{ marginLeft: 12, color: 'green' }}>✓ 驗證通過</span>
+            )}
+        </div>
+      </div>
     );
   },
 };

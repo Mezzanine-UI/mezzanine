@@ -46,12 +46,16 @@ export const formHintIcons: Record<SeverityWithInfo, IconDefinition> = {
   info: InfoFilledIcon,
 };
 
+export type ControlFieldSlotColumns = 2 | 3 | 4;
+
 export const formFieldClasses = {
   host: formFieldPrefix,
   counter: `${formFieldPrefix}__counter`,
   counterColor: (color: FormFieldCounterColor) =>
     `${formFieldPrefix}__counter--${color}`,
   controlFieldSlot: `${formFieldPrefix}__control-field-slot`,
+  controlFieldSlotColumns: (columns: ControlFieldSlotColumns) =>
+    `${formFieldPrefix}__control-field-slot--columns-${columns}`,
   dataEntry: `${formFieldPrefix}__data-entry`,
   density: (density: FormFieldDensity) => `${formFieldPrefix}--${density}`,
   disabled: `${formFieldPrefix}--disabled`,
