@@ -447,7 +447,8 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       margin: 0 auto;
       width: fit-content;
 
-      > :not(:first-child, .mzn-tooltip, .#{$option-prefix}__title-wrapper) {
+      .#{$option-prefix}__toggle-icon,
+      .mzn-badge {
         display: none;
       }
     }
