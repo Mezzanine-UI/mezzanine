@@ -386,7 +386,6 @@ export const ControlFieldSlotColumnsExample: StoryObj = {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         <FormField
-          controlFieldSlotColumns={1}
           label="持卡人姓名："
           layout={FormFieldLayout.VERTICAL}
           name="cardholder-name"
@@ -414,7 +413,6 @@ export const ControlFieldSlotColumnsExample: StoryObj = {
           <Input placeholder="yy" />
         </FormField>
         <FormField
-          controlFieldSlotColumns={1}
           label="信用卡檢查碼："
           layout={FormFieldLayout.VERTICAL}
           name="card-cvv"

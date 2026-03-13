@@ -606,31 +606,6 @@ describe('<FormField />', () => {
       });
     });
 
-    it('should not apply columns class when controlFieldSlotColumns=1', () => {
-      const { container } = render(
-        <FormField
-          controlFieldSlotColumns={1}
-          label="Test"
-          name="test"
-          layout={FormFieldLayout.VERTICAL}
-        >
-          <Input />
-        </FormField>,
-      );
-      const controlFieldSlotElement = container.querySelector(
-        '.mzn-form-field__control-field-slot--main',
-      );
-
-      expect(controlFieldSlotElement).toBeTruthy();
-      ([2, 3, 4] as const).forEach((columns) => {
-        expect(
-          controlFieldSlotElement!.classList.contains(
-            `mzn-form-field__control-field-slot--columns-${columns}`,
-          ),
-        ).toBeFalsy();
-      });
-    });
-
     ([2, 3, 4] as const).forEach((columns) => {
       it(`should apply --columns-${columns} class when controlFieldSlotColumns=${columns}`, () => {
         const { container } = render(

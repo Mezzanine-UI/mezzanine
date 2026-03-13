@@ -46,7 +46,7 @@ export const formHintIcons: Record<SeverityWithInfo, IconDefinition> = {
   info: InfoFilledIcon,
 };
 
-export type ControlFieldSlotColumns = 1 | 2 | 3 | 4;
+export type ControlFieldSlotColumns = 2 | 3 | 4;
 
 export const formFieldClasses = {
   host: formFieldPrefix,
