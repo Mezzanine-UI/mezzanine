@@ -8,5 +8,7 @@ export const iconClasses = {
   spin: `${spinPrefix}__spin`,
   size: (size: GeneralSize) => `${spinPrefix}__spin--${size}`,
   icon: `${spinPrefix}__spin__icon`,
+  spinnerRing: `${spinPrefix}__spin__ring`,
+  spinnerTail: `${spinPrefix}__spin__tail`,
   description: `${spinPrefix}__spin__description`,
 } as const;

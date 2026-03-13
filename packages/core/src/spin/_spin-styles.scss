@@ -2,6 +2,7 @@
 @use '~@mezzanine-ui/system/typography' as typography;
 @use '~@mezzanine-ui/system/spacing' as spacing;
 @use '~@mezzanine-ui/system/palette' as palette;
+@use '~@mezzanine-ui/system/motion' as motion;
 @use '~@mezzanine-ui/system/radius' as radius;
 @use '~@mezzanine-ui/system/z-index' as z-index;
 @use './spin' as *;
@@ -9,7 +10,8 @@
 $size-configs: (
   main: (
     typography: body-highlight,
-    icon: spacing.semantic-variable(size, element, extra),
+    ring-size: spacing.semantic-variable(size, element, extra),
+    stroke-width: 4px,
     padding-x: spacing.semantic-variable(padding, horizontal, none),
     padding-y: spacing.semantic-variable(padding, vertical, none),
     gap: spacing.semantic-variable(gap, comfort),
@@ -17,7 +19,8 @@ $size-configs: (
   ),
   sub: (
     typography: body-highlight,
-    icon: spacing.semantic-variable(size, element, airy),
+    ring-size: spacing.semantic-variable(size, element, airy),
+    stroke-width: 3px,
     padding-x: spacing.semantic-variable(padding, horizontal, none),
     padding-y: spacing.semantic-variable(padding, vertical, none),
     gap: spacing.semantic-variable(gap, calm),
@@ -25,7 +28,8 @@ $size-configs: (
   ),
   minor: (
     typography: label-primary,
-    icon: spacing.semantic-variable(size, element, base-fixed),
+    ring-size: spacing.semantic-variable(size, element, base-fixed),
+    stroke-width: 2px,
     padding-x: spacing.semantic-variable(padding, horizontal, none),
     padding-y: spacing.semantic-variable(padding, vertical, none),
     gap: spacing.semantic-variable(gap, tight-fixed),
@@ -38,7 +42,8 @@ $size-configs: (
 
   @if $config {
     $typography: map.get($config, typography);
-    $icon: map.get($config, icon);
+    $ring-size: map.get($config, ring-size);
+    $stroke-width: map.get($config, stroke-width);
     $padding-x: map.get($config, padding-x);
     $padding-y: map.get($config, padding-y);
     $gap: map.get($config, gap);
@@ -47,12 +52,17 @@ $size-configs: (
     @if $typography {
       .#{$prefix}__spin__description {
         @include typography.semantic-variable($typography);
+
+        color: palette.semantic-variable(text, neutral);
       }
     }
 
-    @if $icon {
-      .#{$prefix}__spin__icon {
-        font-size: $icon;
+    @if $ring-size {
+      .#{$prefix}__spin__ring {
+        --mzn-spin--stroke-width: #{$stroke-width};
+
+        width: $ring-size;
+        height: $ring-size;
       }
     }
 
@@ -73,6 +83,29 @@ $size-configs: (
 @mixin _full-container() {
   width: 100%;
   height: 100%;
+}
+
+@keyframes mzn-spin-ring {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes mzn-spin-tail {
+  0%   { transform: rotate(-135deg); }
+  50%  { transform: rotate(0deg); }
+  100% { transform: rotate(225deg); }
+}
+
+@keyframes mzn-spin-tail-before {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(105deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes mzn-spin-tail-after {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(225deg); }
+  100% { transform: rotate(0deg); }
 }
 
 .#{$prefix} {
@@ -109,7 +142,48 @@ $size-configs: (
     flex-flow: row;
   }
 
-  &__icon {
+  &__ring {
+    --mzn-spin--stroke-width: 3px;
+
+    position: relative;
+    flex-shrink: 0;
+    border-radius: 50%;
+    mask-image: radial-gradient(
+      closest-side,
+      transparent calc(100% - var(--mzn-spin--stroke-width) - 1px),
+      white       calc(100% - var(--mzn-spin--stroke-width)) calc(100% - 1px),
+      transparent 100%
+    );
+    background-color: transparent;
     color: palette.semantic-variable(icon, brand);
+    animation: mzn-spin-ring motion.duration(loop) linear infinite;
+  }
+
+  &__tail {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    mask-image: conic-gradient(transparent 105deg, white 105deg);
+    animation: mzn-spin-tail motion.duration(loop) motion.easing(entrance) infinite;
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 100%;
+      height: 100%;
+      animation: inherit;
+      background-image: conic-gradient(currentcolor 135deg, transparent 135deg);
+    }
+
+    &::before {
+      animation-name: mzn-spin-tail-before;
+    }
+
+    &::after {
+      animation-name: mzn-spin-tail-after;
+    }
   }
 }
