@@ -2,6 +2,7 @@ export const navigationPrefix = 'mzn-navigation';
 
 export const navigationClasses = {
   host: navigationPrefix,
+  list: `${navigationPrefix}__list`,
   expand: `${navigationPrefix}--expand`,
   collapsed: `${navigationPrefix}--collapsed`,
   content: `${navigationPrefix}__content`,

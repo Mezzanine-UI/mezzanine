@@ -32,7 +32,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     padding: spacing.semantic-variable(padding, vertical, base)
       spacing.semantic-variable(padding, horizontal, comfort-fixed);
 
-    > ul {
+    .#{$prefix}__list {
       @include utils.reset();
 
       display: grid;
@@ -433,6 +433,9 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     }
 
     .#{$option-prefix}__content {
+      margin: 0 auto;
+      width: fit-content;
+
       > :not(:first-child, .mzn-tooltip) {
         display: none;
       }
