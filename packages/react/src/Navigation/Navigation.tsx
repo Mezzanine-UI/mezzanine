@@ -234,16 +234,21 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
-  const { collapsedItems, collapsedMenuItems } = useMemo(() => {
-    return {
-      collapsedItems:
-        visibleCount !== null
-          ? level1Items.slice(0, visibleCount)
-          : level1Items,
-      collapsedMenuItems:
-        visibleCount !== null ? level1Items.slice(visibleCount) : [],
-    };
+  const collapsedMenuItems = useMemo(() => {
+    return visibleCount !== null ? level1Items.slice(visibleCount) : [];
   }, [level1Items, visibleCount]);
+
+  const collapsedHiddenKeys = useMemo(() => {
+    if (!collapsed || visibleCount === null) return new Set<string>();
+
+    return new Set(
+      level1Items
+        .slice(visibleCount)
+        .map(
+          (item) => item.props.id || item.props.title || item.props.href || '',
+        ),
+    );
+  }, [collapsed, visibleCount, level1Items]);
 
   const [filterText, setFilterText] = useState('');
 
@@ -262,6 +267,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
           activatedPath: activatedPath || innerActivatedPath,
           activatedPathKey,
           collapsed,
+          collapsedHiddenKeys,
           currentPathname,
           filterText,
           handleCollapseChange,
@@ -287,11 +293,8 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
               disabled={collapsed}
               style={{ flex: '1 1 0', minHeight: 0 }}
             >
-              <ul
-                className={classes.list}
-                key={collapsed ? 'collapsed' : 'expand'}
-              >
-                {collapsed ? collapsedItems : items}
+              <ul className={classes.list}>
+                {items}
 
                 {collapsed &&
                   visibleCount !== null &&

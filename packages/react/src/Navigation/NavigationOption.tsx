@@ -101,6 +101,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       activatedPathKey,
       activatedPath,
       collapsed,
+      collapsedHiddenKeys,
       filterText,
       handleCollapseChange,
       setActivatedPath,
@@ -219,7 +220,10 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
           collapsed && classes.collapsed,
-          !collapsed && !filter && classes.hidden,
+          (collapsed && collapsedHiddenKeys.has(currentKey)) ||
+            (!collapsed && !filter)
+            ? classes.hidden
+            : undefined,
           className,
         )}
         data-id={currentKey}
