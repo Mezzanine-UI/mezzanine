@@ -209,8 +209,24 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     border-radius: radius.variable(base);
   }
 
+  &__children-wrapper {
+    display: flex;
+    flex: 0 0 auto;
+    width: spacing.semantic-variable(size, element, airy);
+    height: spacing.semantic-variable(size, element, airy);
+    transition: transition.standard(opacity, fast);
+  }
+
   &__title {
     @include typography.semantic-variable(h3);
+
+    transition: transition.standard(width, fast), transition.standard(opacity, fast), transition.standard(background-color, fast);
+  }
+
+  &--collapsed.#{$header-prefix}--has-children {
+    .#{$header-prefix}__title {
+      width: 0;
+    }
   }
 
   &--collapsed {
@@ -220,13 +236,8 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       overflow-x: hidden;
       pointer-events: none;
       position: absolute;
-      transition: transition.standard(opacity, fast);
       width: spacing.semantic-variable(size, element, airy);
       height: spacing.semantic-variable(size, element, airy);
-    }
-
-    .#{$header-prefix}__title:not(:first-child) {
-      display: none;
     }
 
     .#{$header-prefix}__title {
@@ -245,6 +256,10 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 
     &:hover {
       .#{$header-prefix}__content {
+        opacity: 0;
+      }
+
+      .#{$header-prefix}__children-wrapper {
         opacity: 0;
       }
 
@@ -329,6 +344,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       margin-right: auto;
       min-width: 0;
       overflow: hidden;
+      transition: transition.standard(opacity, fast);
 
       &:empty {
         display: none;

@@ -14,6 +14,8 @@ export const navigationHeaderPrefix = `${navigationPrefix}-header` as const;
 export const navigationHeaderClasses = {
   host: navigationHeaderPrefix,
   content: `${navigationHeaderPrefix}__content`,
+  hasChildren: `${navigationHeaderPrefix}--has-children`,
+  childrenWrapper: `${navigationHeaderPrefix}__children-wrapper`,
   title: `${navigationHeaderPrefix}__title`,
   collapsed: `${navigationHeaderPrefix}--collapsed`,
 } as const;
