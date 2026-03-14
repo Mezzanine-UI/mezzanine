@@ -5,6 +5,7 @@ import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 import NavigationIconButton from './NavigationIconButton';
 import { NavigationActivatedContext } from './context';
+import { Fade } from '../Transition';
 
 export interface NavigationHeaderProps
   extends NativeElementPropsWithoutKeyAndRef<'header'> {
@@ -34,7 +35,12 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
       <header
         {...rest}
         ref={ref}
-        className={cx(classes.host, collapsed && classes.collapsed, className)}
+        className={cx(
+          classes.host,
+          collapsed && classes.collapsed,
+          !!children && classes.hasChildren,
+          className,
+        )}
       >
         <NavigationIconButton
           onClick={() => handleCollapseChange(!collapsed)}
@@ -45,10 +51,15 @@ const NavigationHeader = forwardRef<HTMLElement, NavigationHeaderProps>(
           className={classes.content}
           onClick={onBrandClick}
         >
-          {children}
-          <span className={classes.title}>
-            {collapsed ? title?.[0] : title}
-          </span>
+          {!!children && (
+            <span className={classes.childrenWrapper}>{children}</span>
+          )}
+
+          <Fade in={!collapsed || !children}>
+            <span className={classes.title}>
+              {collapsed ? title?.[0] : title}
+            </span>
+          </Fade>
         </BrandComponent>
       </header>
     );
