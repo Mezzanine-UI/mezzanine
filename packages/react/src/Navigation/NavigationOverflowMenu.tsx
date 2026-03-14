@@ -2,6 +2,7 @@ import {
   createElement,
   FC,
   ReactElement,
+  use,
   useCallback,
   useMemo,
   useRef,
@@ -17,7 +18,10 @@ import { NavigationOptionProps } from './NavigationOption';
 import { TransitionGroup } from 'react-transition-group';
 import { Translate } from '../Transition';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { NavigationOptionLevelContext } from './context';
+import {
+  NavigationActivatedContext,
+  NavigationOptionLevelContext,
+} from './context';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 
 export interface NavigationOverflowMenuProps {
@@ -27,6 +31,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
   items,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { activatedPath, collapsedHiddenKeys } = use(NavigationActivatedContext);
+  const isActive = activatedPath.length > 0 && collapsedHiddenKeys.has(activatedPath[0]);
 
   const targetRef = useRef<HTMLButtonElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
@@ -122,6 +129,7 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
   return (
     <>
       <NavigationIconButton
+        active={isActive}
         ref={targetRef}
         icon={DotHorizontalIcon}
         onClick={() => setMenuOpen(!menuOpen)}
