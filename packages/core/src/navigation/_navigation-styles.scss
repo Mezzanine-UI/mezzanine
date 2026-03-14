@@ -505,6 +505,17 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   &:focus-visible {
     box-shadow: effect.variable(focus, primary);
   }
+
+  &--active {
+    background-color: palette.semantic-variable('background', brand-faint);
+    color: palette.semantic-variable(icon, brand-solid);
+
+    &:hover,
+    &:active {
+      background-color: palette.semantic-variable('background', brand-faint);
+      color: palette.semantic-variable(icon, brand-solid);
+    }
+  }
 }
 
 .#{$user-menu-prefix} {

@@ -97,4 +97,5 @@ export const navigationIconButtonPrefix =
 
 export const navigationIconButtonClasses = {
   host: navigationIconButtonPrefix,
+  active: `${navigationIconButtonPrefix}--active`,
 } as const;
