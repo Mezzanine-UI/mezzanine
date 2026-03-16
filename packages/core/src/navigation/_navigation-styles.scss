@@ -20,6 +20,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  transition: transition.standard(width);
 
   &__content {
     box-sizing: border-box;
@@ -31,7 +32,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     padding: spacing.semantic-variable(padding, vertical, base)
       spacing.semantic-variable(padding, horizontal, comfort-fixed);
 
-    > ul {
+    .#{$prefix}__list {
       @include utils.reset();
 
       display: grid;
@@ -43,10 +44,6 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     width: spacing.semantic-variable(size, container, slim);
     min-width: spacing.semantic-variable(size, container, slim);
     height: 100%;
-
-    .#{$prefix}__content {
-      overflow-y: auto;
-    }
   }
 
   &--collapsed {
@@ -67,33 +64,37 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
 }
 
 .#{$overflow-menu-prefix} {
-  margin-left: spacing.semantic-variable(padding, horizontal, tight);
-  box-shadow: effect.variable(shadow, raised);
-  border-radius: radius.variable(roomy);
+  $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
+  $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
+
   background-color: palette.semantic-variable('background', base);
-  height: fit-content;
-  width: fit-content;
+  border-radius: radius.variable(roomy);
+  box-shadow: effect.variable(shadow, raised);
   display: flex;
+  height: fit-content;
+  margin-left: spacing.semantic-variable(padding, horizontal, tight);
+  width: fit-content;
 
   &__content {
     display: flex;
     overflow-y: hidden;
     width: fit-content;
-
-    $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
-    $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
-
     height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #{$sub-menu-item-height} * 5.5 + #{$sub-menu-item-gap} * 5);
   }
 
   &__sub-menu {
+    height: calc(#{$sub-menu-item-height} * 5.5 + #{$sub-menu-item-gap} * 5);
     margin: spacing.semantic-variable(padding, vertical, tight) 0;
-    padding: 0 spacing.semantic-variable(padding, horizontal, tight);
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
     width: spacing.semantic-variable(size, container, tight);
-    gap: spacing.semantic-variable(gap, tiny);
+
+    ul {
+      @include utils.reset();
+
+      display: flex;
+      flex-direction: column;
+      gap: $sub-menu-item-gap;
+      padding: 0 spacing.semantic-variable(padding, horizontal, tight);
+    }
   }
 }
 
@@ -210,8 +211,24 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     border-radius: radius.variable(base);
   }
 
+  &__children-wrapper {
+    display: flex;
+    flex: 0 0 auto;
+    width: spacing.semantic-variable(size, element, airy);
+    height: spacing.semantic-variable(size, element, airy);
+    transition: transition.standard(opacity, fast);
+  }
+
   &__title {
     @include typography.semantic-variable(h3);
+
+    transition: transition.standard(width, fast), transition.standard(opacity, fast), transition.standard(background-color, fast);
+  }
+
+  &--collapsed.#{$header-prefix}--has-children {
+    .#{$header-prefix}__title {
+      width: 0;
+    }
   }
 
   &--collapsed {
@@ -221,12 +238,8 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       overflow-x: hidden;
       pointer-events: none;
       position: absolute;
-      transition: transition.standard(opacity, fast);
-      width: calc(100% - spacing.semantic-variable(padding, horizontal, comfort-fixed) - spacing.semantic-variable(padding, horizontal, comfort-fixed));
-    }
-
-    .#{$header-prefix}__title:not(:first-child) {
-      display: none;
+      width: spacing.semantic-variable(size, element, airy);
+      height: spacing.semantic-variable(size, element, airy);
     }
 
     .#{$header-prefix}__title {
@@ -239,9 +252,21 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
       color: palette.semantic-variable(text, fixed-light);
     }
 
+    .#{$icon-button-prefix} {
+      opacity: 0;
+    }
+
     &:hover {
       .#{$header-prefix}__content {
         opacity: 0;
+      }
+
+      .#{$header-prefix}__children-wrapper {
+        opacity: 0;
+      }
+
+      .#{$icon-button-prefix} {
+        opacity: 1;
       }
     }
   }
@@ -267,6 +292,7 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   &--collapsed {
     display: flex;
     flex-direction: column-reverse;
+    align-items: flex-start;
 
     .#{$footer-prefix}__icons {
       display: flex;
@@ -315,12 +341,24 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     transition: transition.standard(background-color, fast), transition.standard(color, fast);
     text-decoration: none;
 
+    .#{$option-prefix}__title-wrapper {
+      flex-shrink: 1;
+      margin-right: auto;
+      min-width: 0;
+      overflow: hidden;
+      transition: transition.standard(opacity, fast);
+
+      &:empty {
+        display: none;
+      }
+    }
+
     .#{$option-prefix}__title {
       @include typography.semantic-variable(label-primary-highlight, (line-height));
 
       color: palette.semantic-variable(text, neutral-solid);
+      display: block;
       line-height: #{$option-icon-size};
-      margin-right: auto;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -434,8 +472,22 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     }
 
     .#{$option-prefix}__content {
-      > :not(:first-child, .mzn-tooltip) {
+      margin: 0 auto;
+      max-width: 100%;
+
+      .#{$option-prefix}__toggle-icon,
+      .mzn-badge {
         display: none;
+      }
+    }
+
+    &.#{$option-prefix}--active.#{$option-prefix}--open {
+      & > .#{$option-prefix}__content {
+        background-color: palette.semantic-variable('background', brand-faint);
+
+        .#{$option-prefix}__icon {
+          color: palette.semantic-variable(icon, neutral-solid);
+        }
       }
     }
 
@@ -454,29 +506,43 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   justify-content: center;
   border-radius: radius.variable(base);
   box-sizing: border-box;
-  color: palette.semantic-variable(icon, neutral);
+  color: palette.semantic-variable(icon, neutral-strong);
   display: flex;
   padding: spacing.semantic-variable(padding, vertical, tight-fixed)
     spacing.semantic-variable(padding, horizontal, tight-fixed);
-  transition: transition.standard(background-color, fast);
+  transition: transition.standard(background-color, fast), transition.standard(opacity, fast);
   width: spacing.semantic-variable(size, element, airy);
   height: spacing.semantic-variable(size, element, airy);
 
-  &:hover {
+  &:hover,
+  &:active {
     background-color: palette.semantic-variable('background', neutral-faint);
+    color: palette.semantic-variable(icon, neutral-strong);
   }
 
   &:focus-visible {
     box-shadow: effect.variable(focus, primary);
+  }
+
+  &--active {
+    background-color: palette.semantic-variable('background', brand-faint);
+    color: palette.semantic-variable(icon, brand-solid);
+
+    &:hover,
+    &:active {
+      background-color: palette.semantic-variable('background', brand-faint);
+      color: palette.semantic-variable(icon, brand-solid);
+    }
   }
 }
 
 .#{$user-menu-prefix} {
   @include btn-utils.reset();
 
+  border-radius: radius.variable(base);
+  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
   padding: spacing.semantic-variable(padding, vertical, micro)
     spacing.semantic-variable(padding, horizontal, tiny);
-  max-width: calc(spacing.semantic-variable(size, container, slim) - var(--icons-width) - spacing.semantic-variable(padding, horizontal, comfort-fixed) * 2 - spacing.semantic-variable(gap, tight-fixed));
 
   &__content {
     align-items: center;

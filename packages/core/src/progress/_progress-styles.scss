@@ -216,7 +216,7 @@ $status-hierarchy: (
   }
 
   &__info-percent {
-    @include typography.semantic-variable(input);
+    @include typography.semantic-variable(body);
 
     color: palette.semantic-variable(text, neutral-solid);
     text-align: right;

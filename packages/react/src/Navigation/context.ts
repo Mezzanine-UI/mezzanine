@@ -14,6 +14,7 @@ export const NavigationActivatedContext = createContext<{
   activatedPath: string[];
   activatedPathKey: string;
   collapsed: boolean;
+  collapsedHiddenKeys: Set<string>;
   currentPathname: string | null;
   filterText: string;
   handleCollapseChange: (newCollapsed: boolean) => void;

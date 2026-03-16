@@ -2,6 +2,7 @@ export const navigationPrefix = 'mzn-navigation';
 
 export const navigationClasses = {
   host: navigationPrefix,
+  list: `${navigationPrefix}__list`,
   expand: `${navigationPrefix}--expand`,
   collapsed: `${navigationPrefix}--collapsed`,
   content: `${navigationPrefix}__content`,
@@ -13,6 +14,8 @@ export const navigationHeaderPrefix = `${navigationPrefix}-header` as const;
 export const navigationHeaderClasses = {
   host: navigationHeaderPrefix,
   content: `${navigationHeaderPrefix}__content`,
+  hasChildren: `${navigationHeaderPrefix}--has-children`,
+  childrenWrapper: `${navigationHeaderPrefix}__children-wrapper`,
   title: `${navigationHeaderPrefix}__title`,
   collapsed: `${navigationHeaderPrefix}--collapsed`,
 } as const;
@@ -62,6 +65,7 @@ export const navigationOptionClasses = {
   content: `${navigationOptionPrefix}__content`,
   trigger: `${navigationOptionPrefix}__content--trigger`,
   title: `${navigationOptionPrefix}__title`,
+  titleWrapper: `${navigationOptionPrefix}__title-wrapper`,
   toggleIcon: `${navigationOptionPrefix}__toggle-icon`,
   icon: `${navigationOptionPrefix}__icon`,
   active: `${navigationOptionPrefix}--active`,
@@ -95,4 +99,5 @@ export const navigationIconButtonPrefix =
 
 export const navigationIconButtonClasses = {
   host: navigationIconButtonPrefix,
+  active: `${navigationIconButtonPrefix}--active`,
 } as const;

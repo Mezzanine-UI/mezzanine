@@ -45,7 +45,6 @@ $animation-back: palette.semantic-variable(background, neutral-subtle) !default;
 
   @keyframes active-animation {
     0% { background-position: 100%; }
-    33% { background-position: 0%; }
     100% { background-position: 0%; }
   }
 }

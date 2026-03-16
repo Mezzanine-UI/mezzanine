@@ -14,6 +14,7 @@ import {
 import { navigationClasses as classes } from '@mezzanine-ui/core/navigation';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
+import Scrollbar from '../Scrollbar';
 import NavigationOption, { NavigationOptionProps } from './NavigationOption';
 import NavigationHeader, { NavigationHeaderProps } from './NavigationHeader';
 import NavigationFooter, { NavigationFooterProps } from './NavigationFooter';
@@ -224,20 +225,30 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
 
     checkActivatedPathKey(level1Items, []);
     hrefActivated.current = true;
-  }, [combineSetActivatedPath, currentPathname, exactActivatedMatch, level1Items]);
+  }, [
+    combineSetActivatedPath,
+    currentPathname,
+    exactActivatedMatch,
+    level1Items,
+  ]);
 
   const { contentRef, visibleCount } = useVisibleItems(items, collapsed);
 
-  const { collapsedItems, collapsedMenuItems } = useMemo(() => {
-    return {
-      collapsedItems:
-        visibleCount !== null
-          ? level1Items.slice(0, visibleCount)
-          : level1Items,
-      collapsedMenuItems:
-        visibleCount !== null ? level1Items.slice(visibleCount) : [],
-    };
+  const collapsedMenuItems = useMemo(() => {
+    return visibleCount !== null ? level1Items.slice(visibleCount) : [];
   }, [level1Items, visibleCount]);
+
+  const collapsedHiddenKeys = useMemo(() => {
+    if (!collapsed || visibleCount === null) return new Set<string>();
+
+    return new Set(
+      level1Items
+        .slice(visibleCount)
+        .map(
+          (item) => item.props.id || item.props.title || item.props.href || '',
+        ),
+    );
+  }, [collapsed, visibleCount, level1Items]);
 
   const [filterText, setFilterText] = useState('');
 
@@ -256,6 +267,7 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
           activatedPath: activatedPath || innerActivatedPath,
           activatedPathKey,
           collapsed,
+          collapsedHiddenKeys,
           currentPathname,
           filterText,
           handleCollapseChange,
@@ -277,15 +289,20 @@ const Navigation = forwardRef<HTMLElement, NavigationProps>((props, ref) => {
                 onChange={(e) => setFilterText(e.target.value)}
               />
             )}
-            <ul key={collapsed ? 'collapsed' : 'expand'}>
-              {collapsed ? collapsedItems : items}
+            <Scrollbar
+              disabled={collapsed}
+              style={{ flex: '1 1 0', minHeight: 0 }}
+            >
+              <ul className={classes.list}>
+                {items}
 
-              {collapsed &&
-                visibleCount !== null &&
-                visibleCount < level1Items.length && (
-                  <NavigationOverflowMenu items={collapsedMenuItems} />
-                )}
-            </ul>
+                {collapsed &&
+                  visibleCount !== null &&
+                  visibleCount < level1Items.length && (
+                    <NavigationOverflowMenu items={collapsedMenuItems} />
+                  )}
+              </ul>
+            </Scrollbar>
           </div>
         </NavigationOptionLevelContext.Provider>
         {footerComponent}

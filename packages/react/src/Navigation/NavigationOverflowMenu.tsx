@@ -2,6 +2,7 @@ import {
   createElement,
   FC,
   ReactElement,
+  use,
   useCallback,
   useMemo,
   useRef,
@@ -9,6 +10,7 @@ import {
 } from 'react';
 import { navigationOverflowMenuClasses as classes } from '@mezzanine-ui/core/navigation';
 import Popper from '../Popper';
+import Scrollbar from '../Scrollbar';
 import NavigationIconButton from './NavigationIconButton';
 import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 import NavigationOverflowMenuOption from './NavigationOverflowMenuOption';
@@ -16,7 +18,10 @@ import { NavigationOptionProps } from './NavigationOption';
 import { TransitionGroup } from 'react-transition-group';
 import { Translate } from '../Transition';
 import { MOTION_DURATION, MOTION_EASING } from '@mezzanine-ui/system/motion';
-import { NavigationOptionLevelContext } from './context';
+import {
+  NavigationActivatedContext,
+  NavigationOptionLevelContext,
+} from './context';
 import { useDocumentEvents } from '../hooks/useDocumentEvents';
 
 export interface NavigationOverflowMenuProps {
@@ -26,6 +31,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
   items,
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const { activatedPath, collapsedHiddenKeys } = use(NavigationActivatedContext);
+  const isActive = activatedPath.length > 0 && collapsedHiddenKeys.has(activatedPath[0]);
 
   const targetRef = useRef<HTMLButtonElement | null>(null);
   const popperRef = useRef<HTMLDivElement | null>(null);
@@ -121,6 +129,7 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
   return (
     <>
       <NavigationIconButton
+        active={isActive}
         ref={targetRef}
         icon={DotHorizontalIcon}
         onClick={() => setMenuOpen(!menuOpen)}
@@ -143,7 +152,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                   aria-haspopup="true"
                   aria-expanded={menuOpen}
                 >
-                  {<ul className={classes.subMenu}>{renderedItems}</ul>}
+                  <Scrollbar className={classes.subMenu}>
+                    <ul>{renderedItems}</ul>
+                  </Scrollbar>
                   <NavigationOptionLevelContext.Provider
                     value={{
                       level: 1,
@@ -151,7 +162,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                     }}
                   >
                     {level2Items.length > 0 && (
-                      <ul className={classes.subMenu}>{renderedItems2}</ul>
+                      <Scrollbar className={classes.subMenu}>
+                        <ul>{renderedItems2}</ul>
+                      </Scrollbar>
                     )}
                   </NavigationOptionLevelContext.Provider>
                   <NavigationOptionLevelContext.Provider
@@ -161,7 +174,9 @@ export const NavigationOverflowMenu: FC<NavigationOverflowMenuProps> = ({
                     }}
                   >
                     {level3Items.length > 0 && (
-                      <ul className={classes.subMenu}>{renderedItems3}</ul>
+                      <Scrollbar className={classes.subMenu}>
+                        <ul>{renderedItems3}</ul>
+                      </Scrollbar>
                     )}
                   </NavigationOptionLevelContext.Provider>
                 </span>

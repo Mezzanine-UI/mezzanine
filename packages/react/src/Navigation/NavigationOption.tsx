@@ -101,6 +101,7 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
       activatedPathKey,
       activatedPath,
       collapsed,
+      collapsedHiddenKeys,
       filterText,
       handleCollapseChange,
       setActivatedPath,
@@ -219,13 +220,17 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
           (active ?? activatedPath?.[currentLevel - 1] === currentKey) &&
             classes.active,
           collapsed && classes.collapsed,
-          !collapsed && !filter && classes.hidden,
+          (collapsed && collapsedHiddenKeys.has(currentKey)) ||
+            (!collapsed && !filter)
+            ? classes.hidden
+            : undefined,
           className,
         )}
         data-id={currentKey}
       >
         <Tooltip
           disablePortal={false}
+          offsetMainAxis={8 + 6 /* 6 is the padding of the item */}
           options={{
             placement: collapsed ? 'right' : 'top',
           }}
@@ -263,9 +268,11 @@ const NavigationOption = forwardRef<HTMLLIElement, NavigationOptionProps>(
             >
               {icon && <Icon className={classes.icon} icon={icon} />}
 
-              <Fade ref={titleRef} in={collapsed === false || !icon}>
-                <span className={classes.title}>{title}</span>
-              </Fade>
+              <span className={classes.titleWrapper}>
+                <Fade ref={titleRef} in={collapsed === false || !icon}>
+                  <span className={classes.title}>{title}</span>
+                </Fade>
+              </span>
 
               {badge}
               {children && (

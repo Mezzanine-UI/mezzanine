@@ -10,6 +10,10 @@ export type NavigationIconButtonProps = Omit<
   'children'
 > & {
   /**
+   * Whether the button is in an active state.
+   */
+  active?: boolean;
+  /**
    * The icon to be displayed.
    */
   icon: IconDefinition;
@@ -19,13 +23,13 @@ const NavigationIconButton = forwardRef<
   HTMLButtonElement,
   NavigationIconButtonProps
 >((props, ref) => {
-  const { className, icon, ...rest } = props;
+  const { active, className, icon, ...rest } = props;
 
   return (
     <button
       {...rest}
       ref={ref}
-      className={cx(classes.host, className)}
+      className={cx(classes.host, active && classes.active, className)}
       type="button"
     >
       <Icon icon={icon} size={16} />

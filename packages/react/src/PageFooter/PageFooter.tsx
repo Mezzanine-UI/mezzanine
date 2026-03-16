@@ -6,7 +6,7 @@ import type { ButtonProps } from '../Button';
 import Button, { ButtonGroup } from '../Button';
 import Typography from '../Typography';
 import Dropdown, { DropdownProps } from '../Dropdown';
-import { DotVerticalIcon } from '@mezzanine-ui/icons';
+import { DotHorizontalIcon } from '@mezzanine-ui/icons';
 
 /**
  * Single button configuration - only primary button is allowed
@@ -80,7 +80,7 @@ type PageFooterOverflowProps = PageFooterBaseProps & {
   type: 'overflow';
   /**
    * Overflow type: Icon for the icon-only button.
-   * @default DotVerticalIcon
+   * @default DotHorizontalIcon
    */
   supportingActionIcon?: ButtonProps['icon'];
   /**
@@ -160,7 +160,7 @@ const PageFooter = forwardRef<HTMLElement, PageFooterProps>(
               <Button
                 type="button"
                 iconType="icon-only"
-                icon={supportingActionIcon || DotVerticalIcon}
+                icon={supportingActionIcon || DotHorizontalIcon}
                 size="main"
                 variant="base-ghost"
               />
