@@ -74,7 +74,7 @@
   @include _load-styles($options, radio);
   @include _load-styles($options, select);
   @include _load-styles($options, autocomplete);
-  @include _load-styles($options, selection);
+  @include _load-styles($options, selection-card);
   @include _load-styles($options, textarea);
   @include _load-styles($options, toggle);
   @include _load-styles($options, upload, upload);

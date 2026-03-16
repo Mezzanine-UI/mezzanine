@@ -3,8 +3,8 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Selection from './Selection';
-import SelectionGroup from './SelectionGroup';
+import SelectionCard from './SelectionCard';
+import SelectionCardGroup from './SelectionCardGroup';
 
 const defaultSelections = [
   {
@@ -30,40 +30,40 @@ const defaultSelections = [
   },
 ];
 
-describe('<SelectionGroup />', () => {
+describe('<SelectionCardGroup />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLDivElement, (ref) =>
     render(
-      <SelectionGroup ref={ref} selections={defaultSelections} />,
+      <SelectionCardGroup ref={ref} selections={defaultSelections} />,
     ),
   );
 
   describeHostElementClassNameAppendable('foo', (className) =>
     render(
-      <SelectionGroup className={className} selections={defaultSelections} />,
+      <SelectionCardGroup className={className} selections={defaultSelections} />,
     ),
   );
 
   describe('prop: children', () => {
     it('should render children Selection components', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup>
-          <Selection
+        <SelectionCardGroup>
+          <SelectionCard
             name="test-group"
             selector="radio"
             supportingText="Child 1"
             text="選項 1"
             value="option-1"
           />
-          <Selection
+          <SelectionCard
             name="test-group"
             selector="radio"
             supportingText="Child 2"
             text="選項 2"
             value="option-2"
           />
-        </SelectionGroup>,
+        </SelectionCardGroup>,
       );
       const element = getHostHTMLElement();
       const inputs = element.querySelectorAll('input[type="radio"]');
@@ -73,15 +73,15 @@ describe('<SelectionGroup />', () => {
 
     it('should render single child Selection component', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup>
-          <Selection
+        <SelectionCardGroup>
+          <SelectionCard
             name="test-group"
             selector="radio"
             supportingText="Single child"
             text="選項 1"
             value="option-1"
           />
-        </SelectionGroup>,
+        </SelectionCardGroup>,
       );
       const element = getHostHTMLElement();
       const inputs = element.querySelectorAll('input[type="radio"]');
@@ -93,7 +93,7 @@ describe('<SelectionGroup />', () => {
   describe('prop: selections', () => {
     it('should render Selection components from selections array', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={defaultSelections} />,
+        <SelectionCardGroup selections={defaultSelections} />,
       );
       const element = getHostHTMLElement();
       const inputs = element.querySelectorAll('input[type="radio"]');
@@ -114,7 +114,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selections} />,
+        <SelectionCardGroup selections={selections} />,
       );
       const element = getHostHTMLElement();
       const input = element.querySelector('input[type="radio"]') as HTMLInputElement;
@@ -143,7 +143,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={checkboxSelections} />,
+        <SelectionCardGroup selections={checkboxSelections} />,
       );
       const element = getHostHTMLElement();
       const inputs = element.querySelectorAll('input[type="checkbox"]');
@@ -167,9 +167,9 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { container } = render(
-        <SelectionGroup selections={selectionsWithoutValue} />,
+        <SelectionCardGroup selections={selectionsWithoutValue} />,
       );
-      const selections = container.querySelectorAll('.mzn-selection');
+      const selections = container.querySelectorAll('.mzn-selection-card');
 
       expect(selections.length).toBe(2);
     });
@@ -178,15 +178,15 @@ describe('<SelectionGroup />', () => {
   describe('mutual exclusivity', () => {
     it('should prioritize children when both children and selections are provided', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={defaultSelections}>
-          <Selection
+        <SelectionCardGroup selections={defaultSelections}>
+          <SelectionCard
             name="test-group"
             selector="radio"
             supportingText="Child option"
             text="子選項"
             value="child-option"
           />
-        </SelectionGroup>,
+        </SelectionCardGroup>,
       );
       const element = getHostHTMLElement();
       const inputs = element.querySelectorAll('input[type="radio"]');
@@ -200,19 +200,19 @@ describe('<SelectionGroup />', () => {
   describe('prop: className', () => {
     it('should apply custom className', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup className="custom-class" selections={defaultSelections} />,
+        <SelectionCardGroup className="custom-class" selections={defaultSelections} />,
       );
       const element = getHostHTMLElement();
 
       expect(element.classList.contains('custom-class')).toBeTruthy();
-      expect(element.classList.contains('mzn-selection-group')).toBeTruthy();
+      expect(element.classList.contains('mzn-selection-card-group')).toBeTruthy();
     });
   });
 
   describe('prop: other div props', () => {
     it('should pass other props to div element', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup
+        <SelectionCardGroup
           data-testid="selection-group"
           id="test-id"
           selections={defaultSelections}
@@ -226,7 +226,7 @@ describe('<SelectionGroup />', () => {
 
     it('should not pass selections prop to div element', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={defaultSelections} />,
+        <SelectionCardGroup selections={defaultSelections} />,
       );
       const element = getHostHTMLElement();
 
@@ -238,7 +238,7 @@ describe('<SelectionGroup />', () => {
     it('should handle radio selection changes', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <SelectionGroup
+        <SelectionCardGroup
           selections={[
             {
               name: 'test-radio',
@@ -269,7 +269,7 @@ describe('<SelectionGroup />', () => {
     it('should handle checkbox selection changes', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <SelectionGroup
+        <SelectionCardGroup
           selections={[
             {
               name: 'test-checkbox',
@@ -306,7 +306,7 @@ describe('<SelectionGroup />', () => {
   describe('edge cases', () => {
     it('should render empty when neither children nor selections provided', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup />,
+        <SelectionCardGroup />,
       );
       const element = getHostHTMLElement();
 
@@ -315,7 +315,7 @@ describe('<SelectionGroup />', () => {
 
     it('should render empty selections array', () => {
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={[]} />,
+        <SelectionCardGroup selections={[]} />,
       );
       const element = getHostHTMLElement();
 
@@ -334,7 +334,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selectionsWithImages} />,
+        <SelectionCardGroup selections={selectionsWithImages} />,
       );
       const element = getHostHTMLElement();
       const image = element.querySelector('img');
@@ -363,11 +363,11 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selections} />,
+        <SelectionCardGroup selections={selections} />,
       );
       const element = getHostHTMLElement();
-      const verticalSelection = element.querySelector('.mzn-selection--vertical');
-      const horizontalSelection = element.querySelector('.mzn-selection--horizontal');
+      const verticalSelection = element.querySelector('.mzn-selection-card--vertical');
+      const horizontalSelection = element.querySelector('.mzn-selection-card--horizontal');
 
       expect(verticalSelection).not.toBeNull();
       expect(horizontalSelection).not.toBeNull();
@@ -385,7 +385,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selectionsWithEmptyImage} />,
+        <SelectionCardGroup selections={selectionsWithEmptyImage} />,
       );
       const element = getHostHTMLElement();
       const img = element.querySelector('img');
@@ -408,7 +408,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selectionsWithCustomIcon} />,
+        <SelectionCardGroup selections={selectionsWithCustomIcon} />,
       );
       const element = getHostHTMLElement();
       const icon = element.querySelector('[aria-hidden="true"]');
@@ -429,7 +429,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selectionsWithOnClick} />,
+        <SelectionCardGroup selections={selectionsWithOnClick} />,
       );
       const element = getHostHTMLElement();
       // Click on a non-interactive part to avoid triggering input
@@ -452,7 +452,7 @@ describe('<SelectionGroup />', () => {
         },
       ];
       const { getHostHTMLElement } = render(
-        <SelectionGroup selections={selectionsWithAttributes} />,
+        <SelectionCardGroup selections={selectionsWithAttributes} />,
       );
       const element = getHostHTMLElement();
       const label = element.querySelector('label');

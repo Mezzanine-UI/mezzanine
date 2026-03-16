@@ -422,8 +422,8 @@ export type {
   SelectTriggerTagsProps,
   SelectValue,
 } from './Select';
-export { default as Selection } from './Selection';
-export type { SelectionProps, SelectionPropsBase } from './Selection';
+export { default as SelectionCard } from './SelectionCard';
+export type { SelectionCardProps, SelectionCardPropsBase } from './SelectionCard';
 export { default as Slider, useSlider } from './Slider';
 export type {
   RangeSliderProps,

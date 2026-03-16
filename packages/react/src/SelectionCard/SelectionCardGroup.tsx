@@ -5,11 +5,11 @@ import { ComponentProps, forwardRef, ReactElement, useMemo } from 'react';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-import Selection, { SelectionProps } from './Selection';
+import SelectionCard, { SelectionCardProps } from './SelectionCard';
 
-import { selectionClasses as classes } from '@mezzanine-ui/core/selection';
+import { selectionCardClasses as classes } from '@mezzanine-ui/core/selection-card';
 
-export interface SelectionGroupBaseProps
+export interface SelectionCardGroupBaseProps
   extends Omit<NativeElementPropsWithoutKeyAndRef<'div'>, 'children'> {
   /**
    * The class name of the selection group.
@@ -17,28 +17,28 @@ export interface SelectionGroupBaseProps
   className?: string;
 }
 
-export interface SelectionGroupProps extends SelectionGroupBaseProps {
+export interface SelectionCardGroupProps extends SelectionCardGroupBaseProps {
   /**
    * The selections in the group.
-   * Only Selection components are allowed.
+   * Only SelectionCard components are allowed.
    * When provided, will take priority over selections prop.
    */
   children?:
-  | ReactElement<ComponentProps<typeof Selection>>
-  | ReactElement<ComponentProps<typeof Selection>>[];
+  | ReactElement<ComponentProps<typeof SelectionCard>>
+  | ReactElement<ComponentProps<typeof SelectionCard>>[];
   /**
    * The selections array.
-   * When provided, Selection components will be automatically rendered.
+   * When provided, SelectionCard components will be automatically rendered.
    * Will be ignored if children is provided.
    */
-  selections?: SelectionProps[];
+  selections?: SelectionCardProps[];
 }
 
 /**
- * The react component for `mezzanine` selection group.
+ * The react component for `mezzanine` selection card group.
  */
-const SelectionGroup = forwardRef<HTMLDivElement, SelectionGroupProps>(
-  function SelectionGroup(props, ref) {
+const SelectionCardGroup = forwardRef<HTMLDivElement, SelectionCardGroupProps>(
+  function SelectionCardGroup(props, ref) {
     const { className, ...rest } = props;
 
     const hasSelections = 'selections' in rest && rest.selections !== undefined;
@@ -52,7 +52,7 @@ const SelectionGroup = forwardRef<HTMLDivElement, SelectionGroupProps>(
 
       if (hasSelections && rest.selections) {
         return rest.selections.map((selectionProps, index) => (
-          <Selection key={selectionProps.value || index} {...selectionProps} />
+          <SelectionCard key={selectionProps.value || index} {...selectionProps} />
         ));
       }
 
@@ -78,4 +78,4 @@ const SelectionGroup = forwardRef<HTMLDivElement, SelectionGroupProps>(
   },
 );
 
-export default SelectionGroup;
+export default SelectionCardGroup;

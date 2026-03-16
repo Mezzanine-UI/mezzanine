@@ -5,14 +5,14 @@ import {
   describeForwardRefToHTMLElement,
   describeHostElementClassNameAppendable,
 } from '../../__test-utils__/common';
-import Selection from './Selection';
+import SelectionCard from './SelectionCard';
 
-describe('<Selection />', () => {
+describe('<SelectionCard />', () => {
   afterEach(cleanup);
 
   describeForwardRefToHTMLElement(HTMLLabelElement, (ref) =>
     render(
-      <Selection
+      <SelectionCard
         ref={ref}
         selector="radio"
         text="Test"
@@ -23,7 +23,7 @@ describe('<Selection />', () => {
 
   describeHostElementClassNameAppendable('foo', (className) =>
     render(
-      <Selection
+      <SelectionCard
         className={className}
         selector="radio"
         text="Test"
@@ -35,7 +35,7 @@ describe('<Selection />', () => {
   describe('prop: text and supportingText', () => {
     it('should render text and supportingText', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Radio Selection"
           supportingText="This is a radio button"
@@ -50,7 +50,7 @@ describe('<Selection />', () => {
     it('should return null and error when text is missing', () => {
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
       const { container } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           supportingText="Supporting text"
           text=""
@@ -59,7 +59,7 @@ describe('<Selection />', () => {
 
       expect(container.firstChild).toBeNull();
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Selection: `text` (title) is required.',
+        'SelectionCard: `text` (title) is required.',
       );
 
       consoleErrorSpy.mockRestore();
@@ -68,7 +68,7 @@ describe('<Selection />', () => {
     it('should warn when supportingText is missing but still render', () => {
       const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           supportingText=""
           text="Test"
@@ -79,7 +79,7 @@ describe('<Selection />', () => {
       expect(element).not.toBeNull();
       expect(element.textContent).toContain('Test');
       expect(consoleWarnSpy).toHaveBeenCalledWith(
-        'Selection: `supportingText` is optional but strongly recommended for better accessibility.',
+        'SelectionCard: `supportingText` is optional but strongly recommended for better accessibility.',
       );
 
       consoleWarnSpy.mockRestore();
@@ -89,7 +89,7 @@ describe('<Selection />', () => {
   describe('prop: selector', () => {
     it('should render radio input by default', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -103,7 +103,7 @@ describe('<Selection />', () => {
 
     it('should render checkbox input when selector="checkbox"', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="checkbox"
           text="Test"
           supportingText="Supporting text"
@@ -119,7 +119,7 @@ describe('<Selection />', () => {
   describe('prop: checked', () => {
     it('should use controlled checked when checked prop is provided', () => {
       const { getHostHTMLElement, rerender } = render(
-        <Selection
+        <SelectionCard
           checked={false}
           selector="radio"
           text="Test"
@@ -134,7 +134,7 @@ describe('<Selection />', () => {
       expect(input.getAttribute('aria-checked')).toBe('false');
 
       rerender(
-        <Selection
+        <SelectionCard
           checked={true}
           selector="radio"
           text="Test"
@@ -148,7 +148,7 @@ describe('<Selection />', () => {
 
     it('should use defaultChecked when checked prop is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           defaultChecked={true}
           selector="radio"
           text="Test"
@@ -164,7 +164,7 @@ describe('<Selection />', () => {
 
     it('should prioritize checked over defaultChecked when both are provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           checked={false}
           defaultChecked={true}
           selector="radio"
@@ -183,7 +183,7 @@ describe('<Selection />', () => {
   describe('prop: disabled', () => {
     it('should render disabled=false by default', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -194,12 +194,12 @@ describe('<Selection />', () => {
 
       expect(input.disabled).toBe(false);
       expect(element.getAttribute('aria-disabled')).toBeNull();
-      expect(element.classList.contains('mzn-selection--disabled')).toBe(false);
+      expect(element.classList.contains('mzn-selection-card--disabled')).toBe(false);
     });
 
     it('should add disabled class and set aria-disabled when disabled=true', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           disabled={true}
           selector="radio"
           text="Test"
@@ -211,13 +211,13 @@ describe('<Selection />', () => {
 
       expect(input.disabled).toBe(true);
       expect(element.getAttribute('aria-disabled')).toBe('true');
-      expect(element.classList.contains('mzn-selection--disabled')).toBe(true);
+      expect(element.classList.contains('mzn-selection-card--disabled')).toBe(true);
     });
 
     it('should have disabled input when disabled=true', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           disabled={true}
           onChange={onChange}
           selector="radio"
@@ -236,7 +236,7 @@ describe('<Selection />', () => {
   describe('prop: readonly', () => {
     it('should not render input when readonly=true', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           readonly={true}
           selector="radio"
           text="Test"
@@ -247,12 +247,12 @@ describe('<Selection />', () => {
       const input = element.querySelector('input');
 
       expect(input).toBeNull();
-      expect(element.classList.contains('mzn-selection--readonly')).toBe(true);
+      expect(element.classList.contains('mzn-selection-card--readonly')).toBe(true);
     });
 
     it('should render input when readonly=false', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           readonly={false}
           selector="radio"
           text="Test"
@@ -263,13 +263,13 @@ describe('<Selection />', () => {
       const input = element.querySelector('input');
 
       expect(input).not.toBeNull();
-      expect(element.classList.contains('mzn-selection--readonly')).toBe(false);
+      expect(element.classList.contains('mzn-selection-card--readonly')).toBe(false);
     });
 
     it('should call onClick when readonly and label is clicked', () => {
       const onClick = jest.fn();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           onClick={onClick}
           readonly={true}
           selector="radio"
@@ -288,7 +288,7 @@ describe('<Selection />', () => {
   describe('prop: direction', () => {
     it('should render horizontal by default', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -297,13 +297,13 @@ describe('<Selection />', () => {
       const element = getHostHTMLElement();
 
       expect(
-        element.classList.contains('mzn-selection--horizontal'),
+        element.classList.contains('mzn-selection-card--horizontal'),
       ).toBeTruthy();
     });
 
     it('should add vertical class when direction="vertical"', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           direction="vertical"
           selector="radio"
           text="Test"
@@ -313,7 +313,7 @@ describe('<Selection />', () => {
       const element = getHostHTMLElement();
 
       expect(
-        element.classList.contains('mzn-selection--vertical'),
+        element.classList.contains('mzn-selection-card--vertical'),
       ).toBeTruthy();
     });
   });
@@ -321,7 +321,7 @@ describe('<Selection />', () => {
   describe('prop: image', () => {
     it('should render image when image URL is provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image="https://example.com/image.png"
           selector="radio"
           text="Test"
@@ -338,7 +338,7 @@ describe('<Selection />', () => {
 
     it('should render icon when image is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -354,7 +354,7 @@ describe('<Selection />', () => {
 
     it('should render image when image is a non-empty string', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image="invalid-url"
           selector="radio"
           text="Test"
@@ -372,7 +372,7 @@ describe('<Selection />', () => {
 
     it('should render icon when image is empty string', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image=""
           selector="radio"
           text="Test"
@@ -389,7 +389,7 @@ describe('<Selection />', () => {
 
     it('should render icon when image is only whitespace', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image="   "
           selector="radio"
           text="Test"
@@ -407,7 +407,7 @@ describe('<Selection />', () => {
     it('should prioritize image over customIcon when both are provided', () => {
       const CustomIcon = FileIcon;
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           customIcon={CustomIcon}
           image="https://example.com/image.png"
           selector="radio"
@@ -428,7 +428,7 @@ describe('<Selection />', () => {
     it('should use customIcon when provided', () => {
       const CustomIcon = FileIcon;
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           customIcon={CustomIcon}
           selector="radio"
           text="Test"
@@ -443,7 +443,7 @@ describe('<Selection />', () => {
 
     it('should use FileIcon by default when customIcon is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -459,7 +459,7 @@ describe('<Selection />', () => {
   describe('prop: name', () => {
     it('should bind name to input', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           name="test-name"
           selector="radio"
           text="Test"
@@ -476,7 +476,7 @@ describe('<Selection />', () => {
   describe('prop: value', () => {
     it('should bind value to input', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -493,7 +493,7 @@ describe('<Selection />', () => {
   describe('prop: id', () => {
     it('should use provided id', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           id="custom-id"
           selector="radio"
           text="Test"
@@ -509,7 +509,7 @@ describe('<Selection />', () => {
 
     it('should generate id when id is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           selector="radio"
           text="Test"
           supportingText="Supporting text"
@@ -526,7 +526,7 @@ describe('<Selection />', () => {
   describe('prop: imageObjectFit', () => {
     it('should apply imageObjectFit style to image', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image="https://example.com/image.png"
           imageObjectFit="contain"
           selector="radio"
@@ -542,7 +542,7 @@ describe('<Selection />', () => {
 
     it('should use cover as default imageObjectFit', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           image="https://example.com/image.png"
           selector="radio"
           text="Test"
@@ -560,7 +560,7 @@ describe('<Selection />', () => {
     it('should call onChange when input changes', () => {
       const onChange = jest.fn();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           onChange={onChange}
           selector="radio"
           text="Test"
@@ -580,7 +580,7 @@ describe('<Selection />', () => {
     it('should call onClick when label is clicked', () => {
       const onClick = jest.fn();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           onClick={onClick}
           selector="radio"
           text="Test"
@@ -601,7 +601,7 @@ describe('<Selection />', () => {
     it('should forward inputRef to input element', () => {
       const inputRef = createRef<HTMLInputElement>();
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           inputRef={inputRef}
           selector="radio"
           text="Test"
@@ -618,7 +618,7 @@ describe('<Selection />', () => {
   describe('accessibility', () => {
     it('should set aria-labelledby to text id', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           id="test-id"
           selector="radio"
           text="Test"
@@ -633,7 +633,7 @@ describe('<Selection />', () => {
 
     it('should set aria-describedby to supportingText id when supportingText is provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           id="test-id"
           selector="radio"
           text="Test"
@@ -650,7 +650,7 @@ describe('<Selection />', () => {
 
     it('should not set aria-describedby when supportingText is not provided', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           id="test-id"
           selector="radio"
           text="Test"
@@ -667,7 +667,7 @@ describe('<Selection />', () => {
 
     it('should set aria-checked only for radio and checkbox when checked is provided', () => {
       const { getHostHTMLElement, rerender } = render(
-        <Selection
+        <SelectionCard
           checked={true}
           id="test-id"
           selector="radio"
@@ -681,7 +681,7 @@ describe('<Selection />', () => {
       expect(input.getAttribute('aria-checked')).toBe('true');
 
       rerender(
-        <Selection
+        <SelectionCard
           checked={true}
           id="test-id"
           selector="checkbox"
@@ -697,7 +697,7 @@ describe('<Selection />', () => {
   describe('prop: native HTML attributes', () => {
     it('should pass data attributes to label element', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           data-testid="selection-test"
           selector="radio"
           text="Test"
@@ -711,7 +711,7 @@ describe('<Selection />', () => {
 
     it('should pass aria attributes to label element', () => {
       const { getHostHTMLElement } = render(
-        <Selection
+        <SelectionCard
           aria-label="Custom label"
           selector="radio"
           text="Test"
