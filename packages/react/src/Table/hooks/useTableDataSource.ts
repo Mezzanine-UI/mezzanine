@@ -16,12 +16,12 @@ export interface TableTransitionState {
 export interface UseTableDataSourceOptions<T extends TableDataSource> {
   /** Initial data source */
   initialData?: T[];
-  /** Duration of highlight animation in ms
-   * @default 1000
+  /** Duration of highlight animation in ms (stay phase)
+   * @default 700 — matches `long` motion token
    */
   highlightDuration?: number;
-  /** Duration of fade out animation in ms
-   * @default 200
+  /** Duration of fade out animation in ms (exit phase)
+   * @default 150 — matches `fast` motion token
    */
   fadeOutDuration?: number;
 }
@@ -68,8 +68,8 @@ export function useTableDataSource<T extends TableDataSource>(
 ): UseTableDataSourceReturn<T> {
   const {
     initialData = [],
-    highlightDuration = 1000,
-    fadeOutDuration = 200,
+    highlightDuration = 700,
+    fadeOutDuration = 150,
   } = options;
 
   // Internal data source that includes items being deleted (for animation)

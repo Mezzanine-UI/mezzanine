@@ -585,8 +585,8 @@ export const CreateDeleteTransitionWithExpansion: Story = {
       updateDataSource: updateParentDataSource,
     } = useTableDataSource<DataType>({
       initialData: baseData,
-      highlightDuration: 1500,
-      fadeOutDuration: 300,
+      highlightDuration: 700,
+      fadeOutDuration: 150,
     });
 
     const columns: TableColumn<DataType>[] = useMemo(
