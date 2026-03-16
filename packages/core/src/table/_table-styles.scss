@@ -313,6 +313,8 @@ $z-index-config: (
     &--adding {
       td {
         @include active-bg;
+
+        transition: transition.entrance(background-color, fast);
       }
     }
 
@@ -324,7 +326,7 @@ $z-index-config: (
 
     &--fading-out {
       opacity: 0;
-      transition: transition.entrance(opacity, moderate);
+      transition: transition.exit(opacity, fast);
 
       td {
         background-color: palette.semantic-variable("background", error-ghost);
@@ -531,6 +533,7 @@ $z-index-config: (
   &--adding {
     & > .#{$prefix}__expanded-row__cell {
       background-color: palette.semantic-variable("background", brand-ghost);
+      transition: transition.entrance(background-color, fast);
     }
   }
 
@@ -542,7 +545,7 @@ $z-index-config: (
 
   &--fading-out {
     opacity: 0;
-    transition: transition.entrance(opacity, moderate);
+    transition: transition.exit(opacity, fast);
 
     & > .#{$prefix}__expanded-row__cell {
       background-color: palette.semantic-variable("background", error-ghost);
