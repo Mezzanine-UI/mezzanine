@@ -24,7 +24,7 @@ $floating: (
   active: (
     text-color: palette.semantic-variable(text, fixed-light),
     icon-color: palette.semantic-variable(icon, fixed-light),
-    background-color: palette.semantic-variable("background", fixed-dark),
+    background-color: palette.semantic-variable("background", fixed-solid),
     shadow-effect: effect.variable(shadow, floating),
   ),
   focus: (
