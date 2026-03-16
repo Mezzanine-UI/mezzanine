@@ -67,13 +67,13 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
   $sub-menu-item-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + spacing.semantic-variable(size, element, base));
   $sub-menu-item-gap: spacing.semantic-variable(gap, tiny);
 
-  margin-left: spacing.semantic-variable(padding, horizontal, tight);
-  box-shadow: effect.variable(shadow, raised);
-  border-radius: radius.variable(roomy);
   background-color: palette.semantic-variable('background', base);
-  height: fit-content;
-  width: fit-content;
+  border-radius: radius.variable(roomy);
+  box-shadow: effect.variable(shadow, raised);
   display: flex;
+  height: fit-content;
+  margin-left: spacing.semantic-variable(padding, horizontal, tight);
+  width: fit-content;
 
   &__content {
     display: flex;
@@ -88,6 +88,8 @@ $option-height: calc(spacing.semantic-variable(padding, vertical, tight) * 2 + #
     width: spacing.semantic-variable(size, container, tight);
 
     ul {
+      @include utils.reset();
+
       display: flex;
       flex-direction: column;
       gap: $sub-menu-item-gap;
