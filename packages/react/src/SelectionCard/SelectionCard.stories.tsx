@@ -1,23 +1,33 @@
-import { SelectionDirection, SelectionImageObjectFit, SelectionType } from '@mezzanine-ui/core/selection';
+import {
+  SelectionCardDirection,
+  SelectionCardImageObjectFit,
+  SelectionCardType,
+} from '@mezzanine-ui/core/selection-card';
 import { Meta, StoryObj } from '@storybook/react-webpack5';
 import { ReactNode, useState } from 'react';
-import Selection, { SelectionProps } from '.';
+import SelectionCard, { SelectionCardProps } from '.';
 import Tag from '../Tag';
 import Typography from '../Typography';
-import SelectionGroup from './SelectionGroup';
+import SelectionCardGroup from './SelectionCardGroup';
 
 export default {
-  title: 'Data Entry/Selection',
-  component: Selection,
-} satisfies Meta<typeof Selection>;
+  title: 'Data Entry/SelectionCard',
+  component: SelectionCard,
+} satisfies Meta<typeof SelectionCard>;
 
-type Story = StoryObj<SelectionProps>;
+type Story = StoryObj<SelectionCardProps>;
 
-const selectorTypes: SelectionType[] = ['radio', 'checkbox'];
-const directions: SelectionDirection[] = ['horizontal', 'vertical'];
-const imageObjectFits: SelectionImageObjectFit[] = ['contain', 'cover', 'fill', 'none', 'scale-down'];
+const selectorTypes: SelectionCardType[] = ['radio', 'checkbox'];
+const directions: SelectionCardDirection[] = ['horizontal', 'vertical'];
+const imageObjectFits: SelectionCardImageObjectFit[] = [
+  'contain',
+  'cover',
+  'fill',
+  'none',
+  'scale-down',
+];
 
-type PlaygroundArgs = SelectionProps;
+type PlaygroundArgs = SelectionCardProps;
 
 export const Playground: StoryObj<PlaygroundArgs> = {
   args: {
@@ -43,7 +53,8 @@ export const Playground: StoryObj<PlaygroundArgs> = {
     },
     defaultChecked: {
       control: 'boolean',
-      description: 'Whether the selection is checked by default (uncontrolled mode)',
+      description:
+        'Whether the selection is checked by default (uncontrolled mode)',
     },
     className: {
       control: 'text',
@@ -182,7 +193,7 @@ export const Horizontal: Story = {
           <SectionItem label="Text Only:">
             <ItemContent>
               <Typography>Radio:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -190,7 +201,7 @@ export const Horizontal: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -199,7 +210,7 @@ export const Horizontal: Story = {
                 checked={true}
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -208,7 +219,7 @@ export const Horizontal: Story = {
                 disabled={true}
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -219,7 +230,7 @@ export const Horizontal: Story = {
             </ItemContent>
             <ItemContent>
               <Typography>Unchecked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
@@ -227,7 +238,7 @@ export const Horizontal: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
@@ -236,7 +247,7 @@ export const Horizontal: Story = {
                 checked={true}
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
@@ -245,7 +256,7 @@ export const Horizontal: Story = {
                 disabled={true}
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
@@ -262,7 +273,7 @@ export const Horizontal: Story = {
           <SectionItem label="Text Only:">
             <ItemContent>
               <Typography>Radio:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -271,7 +282,7 @@ export const Horizontal: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -281,7 +292,7 @@ export const Horizontal: Story = {
                 checked={true}
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -291,7 +302,7 @@ export const Horizontal: Story = {
                 disabled={true}
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 selector="radio"
                 text="Radio Selection"
                 supportingText="This is a radio button"
@@ -303,7 +314,7 @@ export const Horizontal: Story = {
             </ItemContent>
             <ItemContent>
               <Typography>Unchecked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 image="https://rytass.com/logo.png"
@@ -312,7 +323,7 @@ export const Horizontal: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 supportingText="This is a checkbox"
@@ -322,7 +333,7 @@ export const Horizontal: Story = {
                 checked={true}
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 text="Checkbox Selection"
                 image="https://rytass.com/logo.png"
@@ -332,7 +343,7 @@ export const Horizontal: Story = {
                 disabled={true}
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 selector="checkbox"
                 image="https://rytass.com/logo.png"
                 text="Checkbox Selection"
@@ -351,7 +362,7 @@ export const Horizontal: Story = {
             <SectionItem direction="column" label="Radios:">
               <ItemContent>
                 <Typography>Multiple Radios:</Typography>
-                <Selection
+                <SelectionCard
                   defaultChecked
                   name="multiple-radio-three"
                   selector="radio"
@@ -359,14 +370,14 @@ export const Horizontal: Story = {
                   text="Radio Option 1"
                   value="radio-1"
                 />
-                <Selection
+                <SelectionCard
                   name="multiple-radio-three"
                   selector="radio"
                   supportingText="Second option"
                   text="Radio Option 2"
                   value="radio-2"
                 />
-                <Selection
+                <SelectionCard
                   name="multiple-radio-three"
                   selector="radio"
                   supportingText="Third option"
@@ -378,7 +389,7 @@ export const Horizontal: Story = {
             <SectionItem direction="column" label="Checkboxes:">
               <ItemContent>
                 <Typography>Multiple Checkboxes:</Typography>
-                <Selection
+                <SelectionCard
                   defaultChecked
                   name="multiple-checkbox-three"
                   selector="checkbox"
@@ -386,14 +397,14 @@ export const Horizontal: Story = {
                   text="Checkbox Option 1"
                   value="checkbox-1"
                 />
-                <Selection
+                <SelectionCard
                   name="multiple-checkbox-three"
                   selector="checkbox"
                   supportingText="Second checkbox"
                   text="Checkbox Option 2"
                   value="checkbox-2"
                 />
-                <Selection
+                <SelectionCard
                   name="multiple-checkbox-three"
                   selector="checkbox"
                   supportingText="Third checkbox"
@@ -417,7 +428,7 @@ export const Vertical: Story = {
           <SectionItem label="Text Only:">
             <ItemContent>
               <Typography>Radio:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 selector="radio"
                 text="Radio Selection"
@@ -426,7 +437,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 checked={true}
                 direction="vertical"
                 selector="radio"
@@ -436,7 +447,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 disabled={true}
                 selector="radio"
@@ -446,7 +457,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 readonly={true}
                 selector="radio"
@@ -458,7 +469,7 @@ export const Vertical: Story = {
             </ItemContent>
             <ItemContent>
               <Typography>Unchecked:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 selector="checkbox"
                 text="Checkbox Selection"
@@ -467,7 +478,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 checked={true}
                 direction="vertical"
                 selector="checkbox"
@@ -477,7 +488,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 disabled={true}
                 selector="checkbox"
@@ -487,7 +498,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 readonly={true}
                 selector="checkbox"
@@ -505,7 +516,7 @@ export const Vertical: Story = {
           <SectionItem label="Text Only:">
             <ItemContent>
               <Typography>Radio:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 selector="radio"
@@ -515,7 +526,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 checked={true}
                 direction="vertical"
                 image="https://rytass.com/logo.png"
@@ -526,7 +537,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 disabled={true}
                 image="https://rytass.com/logo.png"
@@ -537,7 +548,7 @@ export const Vertical: Story = {
                 value="radio-1"
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 readonly={true}
@@ -550,7 +561,7 @@ export const Vertical: Story = {
             </ItemContent>
             <ItemContent>
               <Typography>Unchecked:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 selector="checkbox"
@@ -560,7 +571,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Checked:</Typography>
-              <Selection
+              <SelectionCard
                 checked={true}
                 direction="vertical"
                 image="https://rytass.com/logo.png"
@@ -571,7 +582,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Disabled:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 disabled={true}
                 image="https://rytass.com/logo.png"
@@ -582,7 +593,7 @@ export const Vertical: Story = {
                 value="checkbox-1"
               />
               <Typography>Readonly:</Typography>
-              <Selection
+              <SelectionCard
                 direction="vertical"
                 image="https://rytass.com/logo.png"
                 readonly={true}
@@ -602,7 +613,7 @@ export const Vertical: Story = {
             <SectionItem direction="column" label="Radios:">
               <ItemContent>
                 <Typography>Multiple Radios:</Typography>
-                <Selection
+                <SelectionCard
                   defaultChecked
                   direction="vertical"
                   name="vertical-multiple-radio-three"
@@ -611,7 +622,7 @@ export const Vertical: Story = {
                   text="Radio Option 1"
                   value="radio-1"
                 />
-                <Selection
+                <SelectionCard
                   direction="vertical"
                   name="vertical-multiple-radio-three"
                   selector="radio"
@@ -619,7 +630,7 @@ export const Vertical: Story = {
                   text="Radio Option 2"
                   value="radio-2"
                 />
-                <Selection
+                <SelectionCard
                   direction="vertical"
                   name="vertical-multiple-radio-three"
                   selector="radio"
@@ -632,7 +643,7 @@ export const Vertical: Story = {
             <SectionItem direction="column" label="Checkboxes:">
               <ItemContent>
                 <Typography>Multiple Checkboxes:</Typography>
-                <Selection
+                <SelectionCard
                   defaultChecked
                   direction="vertical"
                   name="vertical-multiple-checkbox-three"
@@ -641,7 +652,7 @@ export const Vertical: Story = {
                   text="Checkbox Option 1"
                   value="checkbox-1"
                 />
-                <Selection
+                <SelectionCard
                   direction="vertical"
                   name="vertical-multiple-checkbox-three"
                   selector="checkbox"
@@ -649,7 +660,7 @@ export const Vertical: Story = {
                   text="Checkbox Option 2"
                   value="checkbox-2"
                 />
-                <Selection
+                <SelectionCard
                   direction="vertical"
                   name="vertical-multiple-checkbox-three"
                   selector="checkbox"
@@ -666,15 +677,15 @@ export const Vertical: Story = {
   ),
 };
 
-export const SelectionGroupBasic: Story = {
+export const SelectionCardGroupBasic: Story = {
   render: () => (
     <>
       <Section title="Radio Group:">
         <ItemList>
           <SectionItem direction="column" label="Basic Radio Group:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   defaultChecked
                   name="plan-selection"
                   selector="radio"
@@ -682,55 +693,55 @@ export const SelectionGroupBasic: Story = {
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合C方案"
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合D方案"
                   text="D方案"
                   value="Dplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合E方案"
                   text="E方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合F方案"
                   text="F方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   name="plan-selection"
                   selector="radio"
                   supportingText="適合G方案"
                   text="G方案"
                   value="Gplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
           <SectionItem direction="column" label="Checkbox Group:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   defaultChecked
                   name="interest-selection"
                   selector="checkbox"
@@ -738,49 +749,49 @@ export const SelectionGroupBasic: Story = {
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合C方案"
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合D方案"
                   text="D方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合E方案"
                   text="E方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合F方案"
                   text="F方案"
                   value="Gplan"
                 />
-                <Selection
+                <SelectionCard
                   name="interest-selection"
                   selector="checkbox"
                   supportingText="適合G方案"
                   text="G方案"
                   value="Hplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
         </ItemList>
@@ -789,8 +800,8 @@ export const SelectionGroupBasic: Story = {
         <ItemList>
           <SectionItem direction="column" label="Radio Group with Image:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   defaultChecked
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
@@ -799,7 +810,7 @@ export const SelectionGroupBasic: Story = {
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -807,7 +818,7 @@ export const SelectionGroupBasic: Story = {
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -815,7 +826,7 @@ export const SelectionGroupBasic: Story = {
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -823,7 +834,7 @@ export const SelectionGroupBasic: Story = {
                   text="D方案"
                   value="Dplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -831,7 +842,7 @@ export const SelectionGroupBasic: Story = {
                   text="E方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -839,7 +850,7 @@ export const SelectionGroupBasic: Story = {
                   text="F方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   image="https://rytass.com/logo.png"
                   name="plan-selection-image"
                   selector="radio"
@@ -847,7 +858,7 @@ export const SelectionGroupBasic: Story = {
                   text="G方案"
                   value="Gplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
         </ItemList>
@@ -856,77 +867,77 @@ export const SelectionGroupBasic: Story = {
         <ItemList>
           <SectionItem direction="column" label="Required:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   name="required-selection"
                   selector="radio"
                   supportingText="適合A方案"
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="required-selection"
                   selector="radio"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
           <SectionItem direction="column" label="Disabled:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合A方案"
                   text="選項 1"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合C方案"
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合D方案"
                   text="D方案"
                   value="Dplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合E方案"
                   text="E方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合F方案"
                   text="F方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   name="disabled-selection"
                   selector="radio"
                   supportingText="適合G方案"
                   text="G方案"
                   value="Gplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
         </ItemList>
@@ -935,112 +946,112 @@ export const SelectionGroupBasic: Story = {
         <ItemList>
           <SectionItem direction="column" label="Horizontal Base:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合A方案"
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合C方案"
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合D方案"
                   text="D方案"
                   value="Dplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合E方案"
                   text="E方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合F方案"
                   text="F方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   name="horizontal-base-selection"
                   selector="radio"
                   supportingText="適合G方案"
                   text="G方案"
                   value="Gplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
           <SectionItem direction="column" label="Vertical:">
             <ItemContent>
-              <SelectionGroup>
-                <Selection
+              <SelectionCardGroup>
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合A方案"
                   text="A方案"
                   value="Aplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合B方案"
                   text="B方案"
                   value="Bplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合C方案"
                   text="C方案"
                   value="Cplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合D方案"
                   text="D方案"
                   value="Dplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合E方案"
                   text="E方案"
                   value="Eplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合F方案"
                   text="F方案"
                   value="Fplan"
                 />
-                <Selection
+                <SelectionCard
                   name="vertical-selection"
                   selector="radio"
                   supportingText="適合G方案"
                   text="G方案"
                   value="Gplan"
                 />
-              </SelectionGroup>
+              </SelectionCardGroup>
             </ItemContent>
           </SectionItem>
         </ItemList>
@@ -1049,14 +1060,14 @@ export const SelectionGroupBasic: Story = {
   ),
 };
 
-export const SelectionGroupWithOptions: Story = {
+export const SelectionCardGroupWithOptions: Story = {
   render: () => (
     <>
       <Section title="Using Selections Array:">
         <ItemList>
           <SectionItem direction="column" label="Radio Group with Selections:">
             <ItemContent>
-              <SelectionGroup
+              <SelectionCardGroup
                 selections={[
                   {
                     defaultChecked: true,
@@ -1091,9 +1102,12 @@ export const SelectionGroupWithOptions: Story = {
               />
             </ItemContent>
           </SectionItem>
-          <SectionItem direction="column" label="Checkbox Group with Selections:">
+          <SectionItem
+            direction="column"
+            label="Checkbox Group with Selections:"
+          >
             <ItemContent>
-              <SelectionGroup
+              <SelectionCardGroup
                 selections={[
                   {
                     defaultChecked: true,
@@ -1134,7 +1148,7 @@ export const SelectionGroupWithOptions: Story = {
         <ItemList>
           <SectionItem direction="column" label="Radio Group with Image:">
             <ItemContent>
-              <SelectionGroup
+              <SelectionCardGroup
                 selections={[
                   {
                     defaultChecked: true,
@@ -1175,7 +1189,7 @@ export const SelectionGroupWithOptions: Story = {
                 const [value, setValue] = useState('option-1');
 
                 return (
-                  <SelectionGroup
+                  <SelectionCardGroup
                     selections={[
                       {
                         checked: value === 'option-1',
@@ -1223,7 +1237,7 @@ export const SelectionGroupWithOptions: Story = {
           </SectionItem>
           <SectionItem direction="column" label="Vertical Direction:">
             <ItemContent>
-              <SelectionGroup
+              <SelectionCardGroup
                 selections={[
                   {
                     defaultChecked: true,

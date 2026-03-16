@@ -6,17 +6,17 @@ import Typography from '../Typography';
 import { cx } from '../utils/cx';
 import { NativeElementPropsWithoutKeyAndRef } from '../utils/jsx-types';
 
-import { selectionClasses as classes, SelectionDirection, SelectionImageObjectFit, SelectionType } from '@mezzanine-ui/core/selection';
+import { selectionCardClasses as classes, SelectionCardDirection, SelectionCardImageObjectFit, SelectionCardType } from '@mezzanine-ui/core/selection-card';
 
 import type { IconDefinition } from '@mezzanine-ui/icons';
 import { FileIcon } from '@mezzanine-ui/icons';
 import Icon from '../Icon';
 
-// Icon size constant for Selection component
+// Icon size constant for SelectionCard component
 // Note: This value is component-specific and doesn't have a corresponding design token
 const SELECTION_ICON_SIZE = 26;
 
-export interface SelectionPropsBase
+export interface SelectionCardPropsBase
   extends Omit<NativeElementPropsWithoutKeyAndRef<'label'>, 'onChange'> {
   /**
    * Whether the selection is checked.
@@ -31,7 +31,7 @@ export interface SelectionPropsBase
    * The type of selection.
    * @default 'radio'
    */
-  selector: SelectionType;
+  selector: SelectionCardType;
   /**
    * If true, selection will be disabled
    * @default false
@@ -41,7 +41,7 @@ export interface SelectionPropsBase
    * The direction of selection.
    * @default 'horizontal'
    */
-  direction?: SelectionDirection;
+  direction?: SelectionCardDirection;
   /**
    * The image of selection. Supports image URL.
    */
@@ -50,14 +50,14 @@ export interface SelectionPropsBase
    * The object fit of selection image.
    * @default 'cover'
    */
-  imageObjectFit?: SelectionImageObjectFit;
+  imageObjectFit?: SelectionCardImageObjectFit;
   /**
    * The custom icon of selection.
    */
   customIcon?: IconDefinition;
   /**
    * The name of selection.
-   * 
+   *
    * @important When using with react-hook-form or inside a RadioGroup/CheckboxGroup, this prop is recommended.
    */
   name?: string;
@@ -80,18 +80,18 @@ export interface SelectionPropsBase
   readonly?: boolean;
   /**
    * The value of selection.
-   * 
+   *
    * @important This prop is required when selection is inside a RadioGroup/CheckboxGroup.
    * It is also recommended when integrating with react-hook-form.
    */
   value?: string;
   /**
    * The react ref passed to input element.
-   * 
+   *
    * @important When using with react-hook-form's `register`, pass the ref through this prop:
    * ```tsx
    * const { register } = useForm();
-   * <Selection inputRef={register('fieldName').ref} name="fieldName" />
+   * <SelectionCard inputRef={register('fieldName').ref} name="fieldName" />
    * ```
    */
   inputRef?: Ref<HTMLInputElement>;
@@ -101,7 +101,7 @@ export interface SelectionPropsBase
   onChange?: ChangeEventHandler<HTMLInputElement>;
 }
 
-export interface SelectionProps extends SelectionPropsBase {
+export interface SelectionCardProps extends SelectionCardPropsBase {
   /**
    * Callback when the selection is clicked.
    */
@@ -109,10 +109,10 @@ export interface SelectionProps extends SelectionPropsBase {
 }
 
 /**
- * The react component for `mezzanine` selection.
+ * The react component for `mezzanine` selection card.
  */
-const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
-  function Selection(props, ref) {
+const SelectionCard = forwardRef<HTMLLabelElement, SelectionCardProps>(
+  function SelectionCard(props, ref) {
     const {
       checked: checkedProp,
       className,
@@ -148,13 +148,13 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
     const haveImage = useMemo(() => Boolean(image && typeof image === 'string' && image.trim().length > 0), [image]);
 
     if (!text) {
-      console.error('Selection: `text` (title) is required.');
+      console.error('SelectionCard: `text` (title) is required.');
 
       return null;
     }
 
     if (!supportingText) {
-      console.warn('Selection: `supportingText` is optional but strongly recommended for better accessibility.');
+      console.warn('SelectionCard: `supportingText` is optional but strongly recommended for better accessibility.');
     }
 
     return (
@@ -241,5 +241,4 @@ const Selection = forwardRef<HTMLLabelElement, SelectionProps>(
   },
 );
 
-export default Selection;
-
+export default SelectionCard;
